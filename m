@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7742A7A3FD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4332C7A3FDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236717AbjIREEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40384 "EHLO
+        id S238294AbjIREIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 00:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232944AbjIRED5 (ORCPT
+        with ESMTP id S230360AbjIREHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:03:57 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B820FF
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:03:52 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-577fb90bbebso2762759a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:03:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1695009831; x=1695614631; darn=vger.kernel.org;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fkj+ilWgLWNJQbtZF0y92BH3EfaM8mYrGUt+ZNYlBcA=;
-        b=W/nLxAil9CWx9JnkEq1UDWPvDUb7SRbscy/uiZiKggWF8EyCITE89q0h65Ru2pxUOt
-         aO+3RnCG14nvENQJNZWcSuRadDkeeKw8WwDVL4nMCG2MLmne62tyClkI+C6q4ud2lD7J
-         FmVFvxKYKggItMRlWlRRi3JJyuEBg9HIN3cO9pWju6s9gmFFcqcpWdOQxpWqRswJHf+e
-         ydIAYL66GNhU6prKttO3xXwJfjsBTcKdz6IGg2YyYozuE02reMfUth+Cp8Yk6XtHclSj
-         /UzkcSoXMRTh5aWRZRblOSQLrzKNciQqI3mhcFLzzjSIAvrYsqqigBbdnhUbHIvwjk6q
-         dOuA==
+        Mon, 18 Sep 2023 00:07:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF8F116
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695010001;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RyEnCFT5C38bhUURLkGzvUajSXRR1/fSXXPcrqWJ/i0=;
+        b=LwdVkMPnlBKCXg4FMg9VrDqBR7wr6kSj7A0SE+1eY0cXvztUB6b9f+OE8r6g8e361zID8n
+        PBXxJQda3vx9zcUxcXCgi46i6OLdNfT1qT6YlZi8ROXipesbPD4MR+O9BgRdMk9j+mp8Cx
+        j5fNGvB2I7lar2hUhu/kfh2fRiQ53ss=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-cCtDEGxUM1qALjiaRjXBpQ-1; Mon, 18 Sep 2023 00:06:38 -0400
+X-MC-Unique: cCtDEGxUM1qALjiaRjXBpQ-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1c387a09de4so32202435ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:06:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695009831; x=1695614631;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fkj+ilWgLWNJQbtZF0y92BH3EfaM8mYrGUt+ZNYlBcA=;
-        b=sM4Tgew1BxNgx0WSV25ECS8MYpL5JiQZ2qfDnHbj8LjRQ3Yewndn/KoFsI2QD5XoWS
-         /gWmE774rYmqXmu8WquoWaEcGxKUdss4Dz2lbM8LbRW3nWDlUlvT/wkHi9bOgIgI9kxe
-         lNkltUA5bYy6SaYJcfTkzDUf++tqkFiIiFupD4vmTGqHZnIzvXlZUZoXEsarrK/Na1kF
-         g6fUw2Kxw7w8FMxJ4LLbHiajpMjbVw+79E14CGUTilfSOGLSkJqTsguLUVfxWAvLbIyU
-         HLseUn/BuNOM9JH1fG4VUhHxaOh/KN1ugTDBEnfwFtJgY5Lh1xnhHIgcpRo8vGkXRqFv
-         4LrQ==
-X-Gm-Message-State: AOJu0YzYvwLVb4aq15H2FC5GHV7N/T5XaIjvJH2OXiVJw9ipZ4mSH4xe
-        MXtrbC2L1HRB6CsSvlb/tMZkOg==
-X-Google-Smtp-Source: AGHT+IESuVmEAOWn1XKQO9o0uYHbdIHCu/swCuCFd6oTlQVftKoIQLIFB7z8L2ugvPM+bSUBJhJocA==
-X-Received: by 2002:a05:6a20:8f0c:b0:14c:5dc3:f1c9 with SMTP id b12-20020a056a208f0c00b0014c5dc3f1c9mr9545279pzk.49.1695009831597;
-        Sun, 17 Sep 2023 21:03:51 -0700 (PDT)
-Received: from DougS18 (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
-        by smtp.gmail.com with ESMTPSA id v2-20020a62a502000000b0066a2e8431a0sm6314133pfm.183.2023.09.17.21.03.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 17 Sep 2023 21:03:51 -0700 (PDT)
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
-        <rafael.j.wysocki@intel.com>
-Cc:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <Mario.Limonciello@amd.com>,
-        "'Swapnil Sapkal'" <swapnil.sapkal@amd.com>, <Ray.Huang@amd.com>,
-        "Doug Smythies" <dsmythies@telus.net>
-References: <001701d9e9ae$02438120$06ca8360$@telus.net> <002301d9e9e2$13424090$39c6c1b0$@telus.net>
-In-Reply-To: <002301d9e9e2$13424090$39c6c1b0$@telus.net>
-Subject: [PATCH v3] tools/power/x86/intel_pstate_tracer: python minimum version
-Date:   Sun, 17 Sep 2023 21:03:54 -0700
-Message-ID: <002401d9e9e5$248f3d50$6dadb7f0$@telus.net>
+        d=1e100.net; s=20230601; t=1695009997; x=1695614797;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RyEnCFT5C38bhUURLkGzvUajSXRR1/fSXXPcrqWJ/i0=;
+        b=mr6Qiev3hy2skWpVN+pWPTBmSRi3dmCIkDNxgp9drFdsXIBlJSb0ruJicZyNC5yqjn
+         im4YIJ04TZkj3AqUzFFbrl7hibBOazdHDSeFBkyvUs3KfjUpSRhRFgBwPrk82htsa2qJ
+         Ojy7gomntbx2/M1++UAtPuDtX26l9gTdBcMmkWp37wKiE74kZoo9yMXMwhoR3Y8PZvOP
+         IBXWkqiPlm+ZkI93wsTmiun08heyROfMpXAL2VM1iXTztzA6wBcd904VY6fp7cUVxqTQ
+         q90W80GbcOQCbYSkTxnmTi+rF9VHgUTGDtm082YlOUEK9EIpJJSnMqiWQOcCva+kJHxa
+         OBjA==
+X-Gm-Message-State: AOJu0YwyFFJCGUKkSdrFSDmjeryTWhWH+8FNymrbi6PWQ3i5xkplu21U
+        tKrZHA9IpIR8kdWjE67wX3ff7fjVAOkQ/Iu68mR48I8mA6PSmwER/e9EdSFqV8mWj2IG7nNz0X8
+        1ZJ7In3X6MZBNUkM8sHs5MGd7
+X-Received: by 2002:a17:902:ed13:b0:1c4:2639:fcac with SMTP id b19-20020a170902ed1300b001c42639fcacmr6826548pld.44.1695009997182;
+        Sun, 17 Sep 2023 21:06:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEF065/Z94SfXDjWgy8eNRhRV8ONjtcc1kg9eJW1xxYmQI4hKUxuHGFuBMDdEioAhl0IB04WA==
+X-Received: by 2002:a17:902:ed13:b0:1c4:2639:fcac with SMTP id b19-20020a170902ed1300b001c42639fcacmr6826541pld.44.1695009996903;
+        Sun, 17 Sep 2023 21:06:36 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id ju3-20020a170903428300b001bdb8c0b578sm5892366plb.192.2023.09.17.21.06.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 21:06:36 -0700 (PDT)
+Message-ID: <4e5aaed1-bf7d-18a8-0f77-8f29bb2e43bc@redhat.com>
+Date:   Mon, 18 Sep 2023 14:06:28 +1000
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 12/35] ACPI: Use the acpi_device_is_present()
+ helper in more places
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
+Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-13-james.morse@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230913163823.7880-13-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-ca
-Thread-Index: Adnp5IxFciJ5SBfmQOq9Nt1eFtgl9g==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,65 +90,42 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-From: Doug Smythies <dsmythies@telus.net>
 
-Change the minimum python version from 2.7 to 3.6.
-Remove a 2.X backwards compatibility line.
+On 9/14/23 02:38, James Morse wrote:
+> acpi_device_is_present() checks the present or functional bits
+> from the cached copy of _STA.
+> 
+> A few places open-code this check. Use the helper instead to
+> improve readability.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>   drivers/acpi/scan.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
-Signed-off-by: Doug Smythies <dsmythies@telus.net>
----
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-v2 -> v3: Try to fix mess that was v2.
-v1 -> v2: Fix careless typos.
-
----
-.../x86/intel_pstate_tracer/intel_pstate_tracer.py   | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-index ec3323100e1a..38cfbdcdedb7 100755
---- a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-+++ b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-@@ -1,4 +1,4 @@
--#!/usr/bin/env python
-+#!/usr/bin/env python3
- # SPDX-License-Identifier: GPL-2.0-only
- # -*- coding: utf-8 -*-
- #
-@@ -11,11 +11,11 @@ then this utility enables and collects trace data for a user specified interval
- and generates performance plots.
-
- Prerequisites:
--    Python version 2.7.x or higher
-+    Python version 3.6.x or higher
-     gnuplot 5.0 or higher
--    gnuplot-py 1.8 or higher
-+    python3-gnuplot 1.8 or higher
-     (Most of the distributions have these required packages. They may be called
--     gnuplot-py, phython-gnuplot or phython3-gnuplot, gnuplot-nox, ... )
-+     gnuplot-py, python-gnuplot or python3-gnuplot, gnuplot-nox, ... )
-
-     HWP (Hardware P-States are disabled)
-     Kernel config for Linux trace is enabled
-@@ -23,7 +23,7 @@ Prerequisites:
-     see print_help(): for Usage and Output details
-
- """
--from __future__ import print_function
-+
- from datetime import datetime
- import subprocess
- import os
-@@ -562,7 +562,7 @@ if __name__ == "__main__":
-
-     # Temporary (or perhaps not)
-     cur_version = sys.version_info
--    print('python version (should be >= 2.7):')
-+    print('python version (should be >= 3.6):')
-     print(cur_version)
-
-     # Left as "cleanup" for potential future re-run ability.
---
-2.25.1
-
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index 691d4b7686ee..ed01e19514ef 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+>   	int error;
+>   
+>   	acpi_bus_get_status(adev);
+> -	if (adev->status.present || adev->status.functional) {
+> +	if (acpi_device_is_present(adev)) {
+>   		/*
+>   		 * This function is only called for device objects for which
+>   		 * matching scan handlers exist.  The only situation in which
+> @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
+>   	int error;
+>   
+>   	acpi_bus_get_status(adev);
+> -	if (!(adev->status.present || adev->status.functional)) {
+> +	if (!acpi_device_is_present(adev)) {
+>   		acpi_scan_device_not_present(adev);
+>   		return 0;
+>   	}
 
