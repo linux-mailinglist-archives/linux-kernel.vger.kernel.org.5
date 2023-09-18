@@ -2,289 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2187A4018
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D481E7A401B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236397AbjIREjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43890 "EHLO
+        id S239532AbjIRElm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 00:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235918AbjIREjO (ORCPT
+        with ESMTP id S239451AbjIRElP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:39:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE66103
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:38:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695011901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZzMmP6/zgsWd+5OqGjuqADEa5yIk7Th2EFtqn3v9+E0=;
-        b=YZ1qvjdEm0eSkM8OsksU1athBdS4A8ZMkqq8uadfqQe4mrhDrumWgdiVfa3O5mEioAvAnO
-        JDrBx+PBg652fX0X9t5uSjAlT4r3q16tOeYwHhyHZm7GWYfNDrqu9nu48G1qZtpy5lU9wa
-        ZXQ6GVvQCf7Gbw/5KJqDdl+vGEaKjsM=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-316-PfL5cXqHNTOjpsGhsCE6HQ-1; Mon, 18 Sep 2023 00:38:19 -0400
-X-MC-Unique: PfL5cXqHNTOjpsGhsCE6HQ-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-274d83f0f5fso1326315a91.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:38:19 -0700 (PDT)
+        Mon, 18 Sep 2023 00:41:15 -0400
+Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADFFC4
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:41:09 -0700 (PDT)
+Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-572b583c7d3so6037024eaf.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:41:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695011899; x=1695616699;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZzMmP6/zgsWd+5OqGjuqADEa5yIk7Th2EFtqn3v9+E0=;
-        b=MR7cdOwDbBdsSy3Lr2BmbgcBlXZOh5vEmvHKQC0qyXrb1p0ORnaTxBba+Hzf2b3oqR
-         sUFSq3+9qakoq2OL1iy4UwXDl6/SZa/pVVIPNYSdooOmM1VzoT7hJM/mi5XvT33k+57V
-         C1ipl+gNZHl1CLavFdgGar0R0AukiLXS+GohuzhfXXPym1n5EQ+tn2YCa6VpZ0LiaXyN
-         pPSQXNCwey6OKXjtVub7B4n0uFyZEcvB6vAM+qTSVd+AuKIwluBM64u1iuKi1Aw6BZj4
-         BbaQSUCm97uVRCAQ9MMN8nKI67jp7mdVGMfAlNxSw15ry/s8hCylWBIcPpXo1IysGauv
-         RGlQ==
-X-Gm-Message-State: AOJu0Yz7+zaaF6maCK9QZuW4EJHp6HVOGxNKB5j6LUTBseXYQWkJ4dCQ
-        XGZuqHuLJnyUuTmfAtu5tG04+Xt9G3tqhn5YRHWL8Z4dqvk5pGGdItv1cpaxPz2ESQB7CTht62Z
-        eNJZfgrXsLh3ciWSXWvNYdgZy
-X-Received: by 2002:a17:903:2783:b0:1c4:1089:887d with SMTP id jw3-20020a170903278300b001c41089887dmr7556764plb.3.1695011898760;
-        Sun, 17 Sep 2023 21:38:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHeSL0ocTJIKkzpLkWb/n99b9zzJCshhAa0pU0c6Fh0POTC0xKzg/5jZAqM1VM9TTL6+osffQ==
-X-Received: by 2002:a17:903:2783:b0:1c4:1089:887d with SMTP id jw3-20020a170903278300b001c41089887dmr7556751plb.3.1695011898391;
-        Sun, 17 Sep 2023 21:38:18 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id q22-20020a170902bd9600b001bb9f104328sm7342815pls.146.2023.09.17.21.38.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 21:38:17 -0700 (PDT)
-Message-ID: <7b5f8dda-93c9-6338-15a5-acf76910c35b@redhat.com>
-Date:   Mon, 18 Sep 2023 14:38:09 +1000
+        d=1e100.net; s=20230601; t=1695012068; x=1695616868;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Njj1cFpFl6P5XczNJtRHj5unyeppmn930r6gY5zCeN0=;
+        b=SVie0RtBguiUZT7dMimoIJR5KpHXj30ncAEdWUEYjJu4nFh0/am+/Rvwk2Pq7qiQZv
+         5vhmaCCaA/SvXrkvKEqS/NUYiFrftNOD6NKUSP5gXu0df5wZjg1WJ0sqf0zm8+7gzRX4
+         v1i7ckX1QPh4L3IW/4l8+SCN4xm77NnLHZ4Pp+StheeDtn4VLXIV9RNtb84YWjIhPZ5H
+         7vpxjvOrj/bDOX2nNmNmOX1MaPKOZUjCmDsKXqUYeB7vmfHMZedpx3d9iPQ391Zsv+F8
+         LZ6H0B4AGkwW3fitMXBzMe+M9dz3HPCTvR3Felf0yXFfW2F/QoS775j0x5Sq6VVsScMQ
+         3JlQ==
+X-Gm-Message-State: AOJu0Yxn9A0asnXoDr6oKhxUrlI3QHjKLHHwTsMcwyxgHzxWiPg96WOI
+        RxFSTWujpiKemLcr9Dk5ICoBkK9fIQzYZG4fjCsKH4uzHrJD
+X-Google-Smtp-Source: AGHT+IH36LNEUnGMAeMXmlQNVH5WxS7Mii7fn4raTyMmtgevC5fZjJjZojnKRU5aBVH1N1s8pW7OLTunfCts9ukRd1orioKhlr0A
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [RFC PATCH v2 14/35] ACPI: Only enumerate enabled (or functional)
- devices
-Content-Language: en-US
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        James Morse <james.morse@arm.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-15-james.morse@arm.com>
- <20230914132732.00006908@Huawei.com>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20230914132732.00006908@Huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a4a:4fd7:0:b0:571:1df7:c13f with SMTP id
+ c206-20020a4a4fd7000000b005711df7c13fmr3109792oob.1.1695012068423; Sun, 17
+ Sep 2023 21:41:08 -0700 (PDT)
+Date:   Sun, 17 Sep 2023 21:41:08 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003a7ffb06059ac0dd@google.com>
+Subject: [syzbot] [fs?] [mm?] WARNING in page_copy_sane
+From:   syzbot <syzbot+c225dea486da4d5592bd@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        llvm@lists.linux.dev, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        sidhartha.kumar@oracle.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 9/14/23 22:27, Jonathan Cameron wrote:
-> On Wed, 13 Sep 2023 16:38:02 +0000
-> James Morse <james.morse@arm.com> wrote:
-> 
->> Today the ACPI enumeration code 'visits' all devices that are present.
->>
->> This is a problem for arm64, where CPUs are always present, but not
->> always enabled. When a device-check occurs because the firmware-policy
->> has changed and a CPU is now enabled, the following error occurs:
->> | acpi ACPI0007:48: Enumeration failure
->>
->> This is ultimately because acpi_dev_ready_for_enumeration() returns
->> true for a device that is not enabled. The ACPI Processor driver
->> will not register such CPUs as they are not 'decoding their resources'.
->>
->> Change acpi_dev_ready_for_enumeration() to also check the enabled bit.
->> ACPI allows a device to be functional instead of maintaining the
->> present and enabled bit. Make this behaviour an explicit check with
->> a reference to the spec, and then check the present and enabled bits.
-> 
-> "and the" only applies if the functional route hasn't been followed
-> "if not this case check the present and enabled bits."
-> 
->> This is needed to avoid enumerating present && functional devices that
->> are not enabled.
->>
->> Signed-off-by: James Morse <james.morse@arm.com>
->> ---
->> If this change causes problems on deployed hardware, I suggest an
->> arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
->> acpi_dev_ready_for_enumeration() to only check the present bit.
->> ---
->>   drivers/acpi/device_pm.c    |  2 +-
->>   drivers/acpi/device_sysfs.c |  2 +-
->>   drivers/acpi/internal.h     |  1 -
->>   drivers/acpi/property.c     |  2 +-
->>   drivers/acpi/scan.c         | 23 +++++++++++++----------
->>   5 files changed, 16 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
->> index f007116a8427..76c38478a502 100644
->> --- a/drivers/acpi/device_pm.c
->> +++ b/drivers/acpi/device_pm.c
->> @@ -313,7 +313,7 @@ int acpi_bus_init_power(struct acpi_device *device)
->>   		return -EINVAL;
->>   
->>   	device->power.state = ACPI_STATE_UNKNOWN;
->> -	if (!acpi_device_is_present(device)) {
->> +	if (!acpi_dev_ready_for_enumeration(device)) {
->>   		device->flags.initialized = false;
->>   		return -ENXIO;
->>   	}
->> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
->> index b9bbf0746199..16e586d74aa2 100644
->> --- a/drivers/acpi/device_sysfs.c
->> +++ b/drivers/acpi/device_sysfs.c
->> @@ -141,7 +141,7 @@ static int create_pnp_modalias(const struct acpi_device *acpi_dev, char *modalia
->>   	struct acpi_hardware_id *id;
->>   
->>   	/* Avoid unnecessarily loading modules for non present devices. */
->> -	if (!acpi_device_is_present(acpi_dev))
->> +	if (!acpi_dev_ready_for_enumeration(acpi_dev))
->>   		return 0;
->>   
->>   	/*
->> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
->> index 866c7c4ed233..a1b45e345bcc 100644
->> --- a/drivers/acpi/internal.h
->> +++ b/drivers/acpi/internal.h
->> @@ -107,7 +107,6 @@ int acpi_device_setup_files(struct acpi_device *dev);
->>   void acpi_device_remove_files(struct acpi_device *dev);
->>   void acpi_device_add_finalize(struct acpi_device *device);
->>   void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
->> -bool acpi_device_is_present(const struct acpi_device *adev);
->>   bool acpi_device_is_battery(struct acpi_device *adev);
->>   bool acpi_device_is_first_physical_node(struct acpi_device *adev,
->>   					const struct device *dev);
->> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
->> index 413e4fcadcaf..e03f00b98701 100644
->> --- a/drivers/acpi/property.c
->> +++ b/drivers/acpi/property.c
->> @@ -1418,7 +1418,7 @@ static bool acpi_fwnode_device_is_available(const struct fwnode_handle *fwnode)
->>   	if (!is_acpi_device_node(fwnode))
->>   		return false;
->>   
->> -	return acpi_device_is_present(to_acpi_device_node(fwnode));
->> +	return acpi_dev_ready_for_enumeration(to_acpi_device_node(fwnode));
->>   }
->>   
->>   static const void *
->> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
->> index 17ab875a7d4e..f898591ce05f 100644
->> --- a/drivers/acpi/scan.c
->> +++ b/drivers/acpi/scan.c
->> @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
->>   	int error;
->>   
->>   	acpi_bus_get_status(adev);
->> -	if (acpi_device_is_present(adev)) {
->> +	if (acpi_dev_ready_for_enumeration(adev)) {
->>   		/*
->>   		 * This function is only called for device objects for which
->>   		 * matching scan handlers exist.  The only situation in which
->> @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
->>   	int error;
->>   
->>   	acpi_bus_get_status(adev);
->> -	if (!acpi_device_is_present(adev)) {
->> +	if (!acpi_dev_ready_for_enumeration(adev)) {
->>   		acpi_scan_device_not_enumerated(adev);
->>   		return 0;
->>   	}
->> @@ -1908,11 +1908,6 @@ static bool acpi_device_should_be_hidden(acpi_handle handle)
->>   	return true;
->>   }
->>   
->> -bool acpi_device_is_present(const struct acpi_device *adev)
->> -{
->> -	return adev->status.present || adev->status.functional;
->> -}
->> -
->>   static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
->>   				       const char *idstr,
->>   				       const struct acpi_device_id **matchid)
->> @@ -2375,16 +2370,24 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
->>    * acpi_dev_ready_for_enumeration - Check if the ACPI device is ready for enumeration
->>    * @device: Pointer to the &struct acpi_device to check
->>    *
->> - * Check if the device is present and has no unmet dependencies.
->> + * Check if the device is functional or enabled and has no unmet dependencies.
->>    *
->> - * Return true if the device is ready for enumeratino. Otherwise, return false.
->> + * Return true if the device is ready for enumeration. Otherwise, return false.
->>    */
->>   bool acpi_dev_ready_for_enumeration(const struct acpi_device *device)
->>   {
->>   	if (device->flags.honor_deps && device->dep_unmet)
->>   		return false;
->>   
->> -	return acpi_device_is_present(device);
->> +	/*
->> +	 * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
->> +	 * (!present && functional) for certain types of devices that should be
->> +	 * enumerated.
-> 
-> I'd call out the fact that enumeration isn't same as "device driver should be loaded"
-> which is the thing that functional is supposed to indicate should not happen.
-> 
->> +	 */
->> +	if (!device->status.present && !device->status.enabled)
-> 
-> In theory no need to check !enabled if !present
-> "If bit [0] is cleared, then bit 1 must also be cleared (in other words, a device that is not present cannot be enabled)."
-> We could report an ACPI bug if that's seen.  If that bug case is ignored this code can
-> become the simpler.
-> 
-> 	if (device->status.present)
-> 		return device->status_enabled;
-> 	else
-> 		return device->status.functional;
-> 
-> Or the following also valid here (as functional should be set for enabled present devices
-> unless they failed diagnostics).
-> 
-> 	if (dev->status.functional)
-> 		return true;
-> 	return device->status.present && device->status.enabled;
-> 
-> On assumption we want to enumerate dead devices for debug purposes...
-> 
+syzbot found the following issue on:
 
-I think it's worthy to include the words about the synchronization between present/enabled
-bits into comments, outlined by Jonathan, to help readers to understand the code. Something
-like below for the comments:
+HEAD commit:    98897dc735cf Add linux-next specific files for 20230914
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1548728c680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1502c503717ada5c
+dashboard link: https://syzkaller.appspot.com/bug?extid=c225dea486da4d5592bd
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171fffd8680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17bbbf1c680000
 
-	/*
-          * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
-	 * (!present && functional) for certain types of devices that should be
-          * enumerated. Note that the enabled bit can't be set until the present
-          * bit is set.
-          */
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/00e4c0af5a8a/disk-98897dc7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7b54a00eee56/vmlinux-98897dc7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/100094353b8e/bzImage-98897dc7.xz
 
-> 
->> +		return device->status.functional;
->> +
->> +	return device->status.present && device->status.enabled;
-> 
-> 
->>   }
->>   EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
->>   
+The issue was bisected to:
+
+commit 591a2520fbfd6565d9a5c732afa53f62228798e6
+Author: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Date:   Mon Sep 11 21:53:19 2023 +0000
+
+    mm/filemap: remove hugetlb special casing in filemap.c
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15e15464680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17e15464680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13e15464680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c225dea486da4d5592bd@syzkaller.appspotmail.com
+Fixes: 591a2520fbfd ("mm/filemap: remove hugetlb special casing in filemap.c")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5040 at lib/iov_iter.c:463 page_copy_sane+0xc2/0x2c0 lib/iov_iter.c:463
+Modules linked in:
+CPU: 1 PID: 5040 Comm: syz-executor204 Not tainted 6.6.0-rc1-next-20230914-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:page_copy_sane+0xc2/0x2c0 lib/iov_iter.c:463
+Code: e8 73 db 63 fd 66 90 e8 6c db 63 fd e8 67 db 63 fd 4c 89 ee 48 89 ef e8 6c d6 63 fd 49 39 ed 0f 83 eb 00 00 00 e8 4e db 63 fd <0f> 0b 31 db e8 45 db 63 fd 89 d8 5b 5d 41 5c 41 5d 41 5e 41 5f c3
+RSP: 0018:ffffc90003eefa58 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88807a01d940 RSI: ffffffff84241482 RDI: 0000000000000006
+RBP: 0000000000200000 R08: 0000000000000006 R09: 0000000000201000
+R10: 0000000000200000 R11: 0000000000000000 R12: 0000000000000009
+R13: 0000000000201000 R14: 0000000000000001 R15: ffffea0001fe0000
+FS:  0000555556937380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200001c0 CR3: 000000002911d000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ copy_page_to_iter+0x35/0x180 lib/iov_iter.c:472
+ hugetlbfs_read_iter+0x3d7/0xa60 fs/hugetlbfs/inode.c:385
+ call_read_iter include/linux/fs.h:1980 [inline]
+ do_iter_readv_writev+0x2f2/0x3c0 fs/read_write.c:733
+ do_iter_read+0x315/0x870 fs/read_write.c:795
+ vfs_readv+0x12d/0x1a0 fs/read_write.c:915
+ do_preadv fs/read_write.c:1007 [inline]
+ __do_sys_preadv fs/read_write.c:1057 [inline]
+ __se_sys_preadv fs/read_write.c:1052 [inline]
+ __x64_sys_preadv+0x228/0x300 fs/read_write.c:1052
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f85cc7932e9
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffda50bbbd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000127
+RAX: ffffffffffffffda RBX: 00007ffda50bbdb8 RCX: 00007f85cc7932e9
+RDX: 0000000000000002 RSI: 0000000020000180 RDI: 0000000000000003
+RBP: 00007f85cc806610 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffda50bbda8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
 
 
-Thanks,
-Gavin
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
