@@ -2,326 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4687A4F7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A277A50A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbjIRQn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
+        id S231238AbjIRRKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbjIRQm6 (ORCPT
+        with ESMTP id S230476AbjIRRK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:42:58 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC755FDC;
-        Mon, 18 Sep 2023 09:41:16 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rq6KB3WSpz4f3n6X;
-        Mon, 18 Sep 2023 22:15:58 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-        by APP2 (Coremail) with SMTP id Syh0CgBHUwieWwhli80bAw--.34921S2;
-        Mon, 18 Sep 2023 22:16:00 +0800 (CST)
-Message-ID: <041d4f6b-1350-105e-6ab0-73980aba26ea@huaweicloud.com>
-Date:   Mon, 18 Sep 2023 22:15:58 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
-Content-Language: en-US
-To:     Puranjay Mohan <puranjay12@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Mon, 18 Sep 2023 13:10:29 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0B393
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:10:20 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-532addba879so195195a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:10:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1695057018; x=1695661818; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+qntkmutwprS+2oQeQzgmaP97TAaIsTbzLeg5qvDo3I=;
+        b=A7PzIX1ha/XLiSxe6mtZWfCVuFxL5e1sZ4fZQSvUXHkIlkktCpnFmIuf8V3Z7GFf2g
+         eeDtWSB1RRwrZsQC+hjKnctsFccDCS3ZQHVk6CpH/8cr+NkeWc+K5/EbggOCQ3VnlxyP
+         9xom1T2j1eS9gfRxXw3YzJcjMBkmOGjBMbcJTzmDESOI+KlYjo9YOKGADIAB2h+HcApI
+         /nZaJTz2LnYd9vcau6Fr3V+NWTR4DmjBmgL5Nc93OC0l35ubw9W3OsDx5WRuUTxl6iwG
+         Apd/vnGjKPkOEP+Kl7IvUlRDAq1kQfGOR6AZZTeubPAKjskbGRprL5og+3NaJRK4jOxU
+         t0HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695057018; x=1695661818;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+qntkmutwprS+2oQeQzgmaP97TAaIsTbzLeg5qvDo3I=;
+        b=nqZOhNAF/mG8Dub0oKfxxl2y+eqj/Ibt5ck7u8sbyShk/WXAxujX8pA/kRK0/QmDDl
+         E0VUUpsM/7hVcU0Ba+TRWbDAMIVtZI5TZcssVpsFl95aW2taIXugiFHH0ZQoNfCwkgUi
+         maVn0q3t2OzfPDsdQau7DdLKJERYxsZ3zf57HyZwpdTBXJEu+AurgVfCE6BP/w1zuhui
+         imq5lC3C6K3r6mnsBB8rmxomJQiFl2INguZfLC9Rp2NecdIkKEZiG9rux744bdVRvokf
+         mscJZZd4T+xuY/XnM5cL+EQBsU/7k5StoD9kF5s9xlZlMKesU+Mgjt/vpluQ2bGSchcz
+         ZTQA==
+X-Gm-Message-State: AOJu0YzLtos6dvdEKZsr9IejkvDrv8JBWnSLlb8TeYfeqmpFZemmu4Tm
+        xFMnh0TsNs5s4l8dJlPRgMHs19oiy165ubZ0QgqN9g==
+X-Google-Smtp-Source: AGHT+IG2rNuc/qU7cun35uIs/6xu+f6PNjQcCosf7tlGzspNosTVVLVBRGNxbIq/UI3P0ddJC/NsSA==
+X-Received: by 2002:a17:907:3e91:b0:9aa:206d:b052 with SMTP id hs17-20020a1709073e9100b009aa206db052mr17366327ejc.27.1695046722736;
+        Mon, 18 Sep 2023 07:18:42 -0700 (PDT)
+Received: from localhost ([82.150.214.1])
+        by smtp.gmail.com with UTF8SMTPSA id g24-20020a170906199800b0099364d9f0e9sm6530301ejd.102.2023.09.18.07.18.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 07:18:42 -0700 (PDT)
+From:   David Gstir <david@sigma-star.at>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     David Gstir <david@sigma-star.at>, Shawn Guo <shawnguo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        sigma star Kernel Team <upstream+dcp@sigma-star.at>,
+        David Howells <dhowells@redhat.com>,
+        Li Yang <leoyang.li@nxp.com>, Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <20230917000045.56377-1-puranjay12@gmail.com>
- <20230917000045.56377-2-puranjay12@gmail.com>
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <20230917000045.56377-2-puranjay12@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgBHUwieWwhli80bAw--.34921S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3XrWDJr4kuryfKw15WF13XFb_yoWfKr4xpF
-        Z5C3y3Grs7XF45WF18tr18XFy5Krs2gF47tr15C34rJFsa9ryUKF1FkFWjkF9xCr95Jw4r
-        ZFWjkrn3C3yjv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU13rcDUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-security-module@vger.kernel.org,
+        Richard Weinberger <richard@nod.at>,
+        David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH v3 3/3] doc: trusted-encrypted: add DCP as new trust source
+Date:   Mon, 18 Sep 2023 16:18:25 +0200
+Message-ID: <20230918141826.8139-4-david@sigma-star.at>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230918141826.8139-1-david@sigma-star.at>
+References: <20230918141826.8139-1-david@sigma-star.at>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/2023 8:00 AM, Puranjay Mohan wrote:
-> Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be used
-> by bpf_throw() to unwind till the program marked as exception boundary and
-> run the callback with the stack of the main program.
-> 
-> The prologue generation code has been modified to make the callback
-> program use the stack of the program marked as exception boundary where
-> callee-saved registers are already pushed.
-> 
-> As the bpf_throw function never returns, if it clobbers any callee-saved
-> registers, they would remain clobbered. So, the prologue of the
-> exception-boundary program is modified to push R23 and R24 as well,
-> which the callback will then recover in its epilogue.
-> 
-> The Procedure Call Standard for the Arm 64-bit Architecture[1] states
-> that registers r19 to r28 should be saved by the callee. BPF programs on
-> ARM64 already save all callee-saved registers except r23 and r24. This
-> patch adds an instruction in prologue of the  program to save these
-> two registers and another instruction in the epilogue to recover them.
-> 
-> These extra instructions are only added if bpf_throw() used. Otherwise
-> the emitted prologue/epilogue remains unchanged.
-> 
-> [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->   arch/arm64/net/bpf_jit_comp.c                | 98 ++++++++++++++++----
->   tools/testing/selftests/bpf/DENYLIST.aarch64 |  1 -
->   2 files changed, 79 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index 7d4af64e3982..fcc55e558863 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -21,6 +21,7 @@
->   #include <asm/insn.h>
->   #include <asm/patching.h>
->   #include <asm/set_memory.h>
-> +#include <asm/stacktrace.h>
->   
->   #include "bpf_jit.h"
->   
-> @@ -285,7 +286,7 @@ static bool is_lsi_offset(int offset, int scale)
->   /* Tail call offset to jump into */
->   #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
->   
-> -static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
-> +static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf, bool is_exception_cb)
->   {
->   	const struct bpf_prog *prog = ctx->prog;
->   	const bool is_main_prog = !bpf_is_subprog(prog);
-> @@ -333,19 +334,28 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->   	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
->   	emit(A64_NOP, ctx);
->   
-> -	/* Sign lr */
-> -	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
-> -		emit(A64_PACIASP, ctx);
-> -
-> -	/* Save FP and LR registers to stay align with ARM64 AAPCS */
-> -	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
-> -	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
-> -
-> -	/* Save callee-saved registers */
-> -	emit(A64_PUSH(r6, r7, A64_SP), ctx);
-> -	emit(A64_PUSH(r8, r9, A64_SP), ctx);
-> -	emit(A64_PUSH(fp, tcc, A64_SP), ctx);
-> -	emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
-> +	if (!is_exception_cb) {
-> +		/* Sign lr */
-> +		if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
-> +			emit(A64_PACIASP, ctx);
-> +		/* Save FP and LR registers to stay align with ARM64 AAPCS */
-> +		emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
-> +		emit(A64_MOV(1, A64_FP, A64_SP), ctx);
-> +
-> +		/* Save callee-saved registers */
-> +		emit(A64_PUSH(r6, r7, A64_SP), ctx);
-> +		emit(A64_PUSH(r8, r9, A64_SP), ctx);
-> +		emit(A64_PUSH(fp, tcc, A64_SP), ctx);
-> +		emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
-> +	} else {
-> +		/* Exception callback receives FP of Main Program as third parameter */
-> +		emit(A64_MOV(1, A64_FP, A64_R(2)), ctx);
-> +		/*
-> +		 * Main Program already pushed the frame record and the callee-saved registers. The
-> +		 * exception callback will not push anything and re-use the main program's stack.
-> +		 */
-> +		emit(A64_SUB_I(1, A64_SP, A64_FP, 80), ctx); /* 10 registers are on the stack */
+Update the documentation for trusted and encrypted KEYS with DCP as new
+trust source:
 
-To ensure th calculated A6_SP is always correct, add an assertion
-to ensure the distance between A64_FP and A64_SP is 80 after all
-callee-registers are pushed to the stack?
+- Describe security properties of DCP trust source
+- Describe key usage
+- Document blob format
 
-> +	}
->   
->   	/* Set up BPF prog stack base register */
->   	emit(A64_MOV(1, fp, A64_SP), ctx);
-> @@ -365,6 +375,13 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->   		emit_bti(A64_BTI_J, ctx);
->   	}
->   
-> +	/*
-> +	 * Program acting as exception boundary should save all ARM64 Callee-saved registers as the
-> +	 * exception callback needs to recover all ARM64 Callee-saved registers in its epilogue.
-> +	 */
-> +	if (prog->aux->exception_boundary)
-> +		emit(A64_PUSH(A64_R(23), A64_R(24), A64_SP), ctx);
+Co-developed-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Signed-off-by: David Gstir <david@sigma-star.at>
+---
+ .../security/keys/trusted-encrypted.rst       | 85 +++++++++++++++++++
+ 1 file changed, 85 insertions(+)
 
-Blindly storing x23/x24 to BPF_FP -8/16 is incorrect, as the stack
-space below BPF_FP might be written with other values by the bpf
-prog.
-
-> +
->   	emit(A64_SUB_I(1, fpb, fp, ctx->fpb_offset), ctx);
->   
->   	/* Stack must be multiples of 16B */
-> @@ -653,7 +670,7 @@ static void build_plt(struct jit_ctx *ctx)
->   		plt->target = (u64)&dummy_tramp;
->   }
->   
-> -static void build_epilogue(struct jit_ctx *ctx)
-> +static void build_epilogue(struct jit_ctx *ctx, bool is_exception_cb)
->   {
->   	const u8 r0 = bpf2a64[BPF_REG_0];
->   	const u8 r6 = bpf2a64[BPF_REG_6];
-> @@ -666,6 +683,14 @@ static void build_epilogue(struct jit_ctx *ctx)
->   	/* We're done with BPF stack */
->   	emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
->   
-> +	/*
-> +	 * Program acting as exception boundary pushes R23 and R24 in addition to BPF callee-saved
-> +	 * registers. Exception callback uses the boundary program's stack frame, so recover these
-
-Keep the line width within 80 characters?
-
-> +	 * extra registers in the above two cases.
-> +	 */
-> +	if (ctx->prog->aux->exception_boundary || is_exception_cb)
-> +		emit(A64_POP(A64_R(23), A64_R(24), A64_SP), ctx);
-> +
->   	/* Restore x27 and x28 */
->   	emit(A64_POP(fpb, A64_R(28), A64_SP), ctx);
->   	/* Restore fs (x25) and x26 */
-> @@ -1575,7 +1600,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   	 * BPF line info needs ctx->offset[i] to be the offset of
->   	 * instruction[i] in jited image, so build prologue first.
->   	 */
-> -	if (build_prologue(&ctx, was_classic)) {
-> +	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb)) {
->   		prog = orig_prog;
->   		goto out_off;
->   	}
-> @@ -1586,7 +1611,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   	}
->   
->   	ctx.epilogue_offset = ctx.idx;
-> -	build_epilogue(&ctx);
-> +	build_epilogue(&ctx, prog->aux->exception_cb);
->   	build_plt(&ctx);
->   
->   	extable_align = __alignof__(struct exception_table_entry);
-> @@ -1614,7 +1639,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   	ctx.idx = 0;
->   	ctx.exentry_idx = 0;
->   
-> -	build_prologue(&ctx, was_classic);
-> +	build_prologue(&ctx, was_classic, prog->aux->exception_cb);
->   
->   	if (build_body(&ctx, extra_pass)) {
->   		bpf_jit_binary_free(header);
-> @@ -1622,7 +1647,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   		goto out_off;
->   	}
->   
-> -	build_epilogue(&ctx);
-> +	build_epilogue(&ctx, prog->aux->exception_cb);
->   	build_plt(&ctx);
->   
->   	/* 3. Extra pass to validate JITed code. */
-> @@ -2286,3 +2311,38 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
->   
->   	return ret;
->   }
-> +
-> +bool bpf_jit_supports_exceptions(void)
-> +{
-> +	/* We unwind through both kernel frames (starting from within bpf_throw call) and
-> +	 * BPF frames. Therefore we require FP unwinder to be enabled to walk kernel frames and
-> +	 * reach BPF frames in the stack trace.
-> +	 * ARM64 kernel is aways compiled with CONFIG_FRAME_POINTER=y
-> +	 */
-> +	return true;
-> +}
-> +
-> +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
-> +{
-> +	struct stack_info stacks[] = {
-> +		stackinfo_get_task(current),
-> +	};
-> +
-
-Seems there is no need to define "stacks" as an array
-
-> +	struct unwind_state state = {
-> +		.stacks = stacks,
-> +		.nr_stacks = ARRAY_SIZE(stacks),
-> +	};
-> +	unwind_init_common(&state, current);
-> +	state.fp = (unsigned long)__builtin_frame_address(1);
-> +	state.pc = (unsigned long)__builtin_return_address(0);
-> +
-> +	if (unwind_next_frame_record(&state))
-> +		return;
-> +	while (1) {
-> +		/* We only use the fp in the exception callback. Pass 0 for sp as it's unavailable*/
-> +		if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.fp))
-> +			break;
-> +		if (unwind_next_frame_record(&state))
-
-When PTR_AUTH is implemented, lr is encoded before being pushed to
-the stack, but unwind_next_frame_record() does not decode state.pc
-when fetching it from the stack.
-
-> +			break;
-> +	}
-
-And it's better to simplify the if-while(1)-if to:
-
-while (!unwind_next_frame_record(&state)) {
-     ...
-}
-
-> +}
-> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> index f5065576cae9..7f768d335698 100644
-> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> @@ -1,6 +1,5 @@
->   bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
->   bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
-> -exceptions					 # JIT does not support calling kfunc bpf_throw: -524
->   fexit_sleep                                      # The test never returns. The remaining tests cannot start.
->   kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
->   kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
+index 9bc9db8ec651..4452070afbe9 100644
+--- a/Documentation/security/keys/trusted-encrypted.rst
++++ b/Documentation/security/keys/trusted-encrypted.rst
+@@ -42,6 +42,14 @@ safe.
+          randomly generated and fused into each SoC at manufacturing time.
+          Otherwise, a common fixed test key is used instead.
+ 
++     (4) DCP (Data Co-Processor: crypto accelerator of various i.MX SoCs)
++
++         Rooted to a one-time programmable key (OTP) that is generally burnt
++         in the on-chip fuses and is accessible to the DCP encryption engine only.
++         DCP provides two keys that can be used as root of trust: the OTP key
++         and the UNIQUE key. Default is to use the UNIQUE key, but selecting
++         the OTP key can be done via a module parameter (dcp_use_otp_key).
++
+   *  Execution isolation
+ 
+      (1) TPM
+@@ -57,6 +65,12 @@ safe.
+ 
+          Fixed set of operations running in isolated execution environment.
+ 
++     (4) DCP
++
++         Fixed set of cryptographic operations running in isolated execution
++         environment. Only basic blob key encryption is executed there.
++         The actual key sealing/unsealing is done on main processor/kernel space.
++
+   * Optional binding to platform integrity state
+ 
+      (1) TPM
+@@ -79,6 +93,11 @@ safe.
+          Relies on the High Assurance Boot (HAB) mechanism of NXP SoCs
+          for platform integrity.
+ 
++     (4) DCP
++
++         Relies on Secure/Trusted boot process (called HAB by vendor) for
++         platform integrity.
++
+   *  Interfaces and APIs
+ 
+      (1) TPM
+@@ -94,6 +113,11 @@ safe.
+ 
+          Interface is specific to silicon vendor.
+ 
++     (4) DCP
++
++         Vendor-specific API that is implemented as part of the DCP crypto driver in
++         ``drivers/crypto/mxs-dcp.c``.
++
+   *  Threat model
+ 
+      The strength and appropriateness of a particular trust source for a given
+@@ -129,6 +153,13 @@ selected trust source:
+      CAAM HWRNG, enable CRYPTO_DEV_FSL_CAAM_RNG_API and ensure the device
+      is probed.
+ 
++  *  DCP (Data Co-Processor: crypto accelerator of various i.MX SoCs)
++
++     The DCP hardware device itself does not provide a dedicated RNG interface,
++     so the kernel default RNG is used. SoCs with DCP like the i.MX6ULL do have
++     a dedicated hardware RNG that is independent from DCP which can be enabled
++     to back the kernel RNG.
++
+ Users may override this by specifying ``trusted.rng=kernel`` on the kernel
+ command-line to override the used RNG with the kernel's random number pool.
+ 
+@@ -231,6 +262,19 @@ Usage::
+ CAAM-specific format.  The key length for new keys is always in bytes.
+ Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
+ 
++Trusted Keys usage: DCP
++-----------------------
++
++Usage::
++
++    keyctl add trusted name "new keylen" ring
++    keyctl add trusted name "load hex_blob" ring
++    keyctl print keyid
++
++"keyctl print" returns an ASCII hex copy of the sealed key, which is in format
++specific to this DCP key-blob implementation.  The key length for new keys is
++always in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
++
+ Encrypted Keys usage
+ --------------------
+ 
+@@ -426,3 +470,44 @@ string length.
+ privkey is the binary representation of TPM2B_PUBLIC excluding the
+ initial TPM2B header which can be reconstructed from the ASN.1 octed
+ string length.
++
++DCP Blob Format
++---------------
++
++The Data Co-Processor (DCP) provides hardware-bound AES keys using its
++AES encryption engine only. It does not provide direct key sealing/unsealing.
++To make DCP hardware encryption keys usable as trust source, we define
++our own custom format that uses a hardware-bound key to secure the sealing
++key stored in the key blob.
++
++Whenever a new trusted key using DCP is generated, we generate a random 128-bit
++blob encryption key (BEK) and 128-bit nonce. The BEK and nonce are used to
++encrypt the trusted key payload using AES-128-GCM.
++
++The BEK itself is encrypted using the hardware-bound key using the DCP's AES
++encryption engine with AES-128-ECB. The encrypted BEK, generated nonce,
++BEK-encrypted payload and authentication tag make up the blob format together
++with a version number, payload length and authentication tag::
++
++    /*
++     * struct dcp_blob_fmt - DCP BLOB format.
++     *
++     * @fmt_version: Format version, currently being %1
++     * @blob_key: Random AES 128 key which is used to encrypt @payload,
++     *            @blob_key itself is encrypted with OTP or UNIQUE device key in
++     *            AES-128-ECB mode by DCP.
++     * @nonce: Random nonce used for @payload encryption.
++     * @payload_len: Length of the plain text @payload.
++     * @payload: The payload itself, encrypted using AES-128-GCM and @blob_key,
++     *           GCM auth tag of size AES_BLOCK_SIZE is attached at the end of it.
++     *
++     * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + @payload_len +
++     * AES_BLOCK_SIZE.
++     */
++    struct dcp_blob_fmt {
++            __u8 fmt_version;
++            __u8 blob_key[AES_KEYSIZE_128];
++            __u8 nonce[AES_KEYSIZE_128];
++            __le32 payload_len;
++            __u8 payload[];
++    } __packed;
+-- 
+2.35.3
 
