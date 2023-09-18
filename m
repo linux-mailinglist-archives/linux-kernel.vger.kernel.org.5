@@ -2,169 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 600297A52E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15587A52FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjIRTWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 15:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
+        id S229540AbjIRTXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 15:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjIRTWC (ORCPT
+        with ESMTP id S229524AbjIRTWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 15:22:02 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 150D210E
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:21:52 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA14A1FB;
-        Mon, 18 Sep 2023 12:22:28 -0700 (PDT)
-Received: from [10.57.94.165] (unknown [10.57.94.165])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 526413F5A1;
-        Mon, 18 Sep 2023 12:21:50 -0700 (PDT)
-Message-ID: <982143de-ec1e-aff4-e65f-77a38e48cf20@arm.com>
-Date:   Mon, 18 Sep 2023 20:21:45 +0100
+        Mon, 18 Sep 2023 15:22:55 -0400
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F88112
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:22:49 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id iJpUqXaW8vRSUiJpVqOPuM; Mon, 18 Sep 2023 21:22:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695064967;
+        bh=qUTILhPdiaRO8mrn/9Xa/LyWEJmc0jgEzY8KobjS0VU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=IOzxAW2lb1j3Wwnmt0nnTQ9t31+qJFPnpTRxYU9+Wupy4Kk82Di9jWTUtPUXyQ48R
+         PvIEWdTX/wwZQY5s+RLBnI/tga8o72m10FsOXACjCxkuxPZNG+wY5TEO5oUW0g+KkE
+         nz5N5o3jtwVqEbus7SQSHMAlLcDb/iJW3QhZjErBHCdDbMuqeRxLtGTSPdEwnCQeR1
+         xCwIs3USoUec9heY2cu3RZ/bcuj3VXmsX4MiYCI/dWA9mdFaUiW1rVygJ09aqNC21n
+         L7cK7pAwtCxzt3irmbIoBQTzRGoJcLhzKyqSq8pa+OEfzXsuWf6BWSdVOvRloEd75X
+         M1lDb3Pv0IOjA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 18 Sep 2023 21:22:47 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <a49f800e-e56f-433a-81d2-6edd68a0a015@wanadoo.fr>
+Date:   Mon, 18 Sep 2023 21:22:44 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/7] iommu: Decouple iommu_present() from bus ops
-Content-Language: en-GB
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        baolu.lu@linux.intel.com
-References: <cover.1694693889.git.robin.murphy@arm.com>
- <b7cd933aa7774ad687c695ebe5e00c17178a7542.1694693889.git.robin.murphy@arm.com>
- <20230918171216.GK13733@nvidia.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230918171216.GK13733@nvidia.com>
+Subject: Re: [PATCH] udmabuf: Fix a potential (and unlikely) access to
+ unallocated memory
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+References: <3e37f05c7593f1016f0a46de188b3357cbbd0c0b.1695060389.git.christophe.jaillet@wanadoo.fr>
+ <7043f179-b670-db3c-3ab0-a1f3e991add9@embeddedor.com>
+Content-Language: fr, en-US
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <7043f179-b670-db3c-3ab0-a1f3e991add9@embeddedor.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-18 18:12, Jason Gunthorpe wrote:
-> On Fri, Sep 15, 2023 at 05:58:06PM +0100, Robin Murphy wrote:
->> Much as I'd like to remove iommu_present(), the final remaining users
->> are proving stubbornly difficult to clean up, so kick that can down
->> the road and just rework it to preserve the current behaviour without
->> depending on bus ops.
+Le 18/09/2023 à 05:10, Gustavo A. R. Silva a écrit :
+> 
+> 
+> On 9/18/23 12:46, Christophe JAILLET wrote:
+>> If 'list_limit' is set to a very high value, 'lsize' computation could
+>> overflow if 'head.count' is big enough.
 >>
->> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
->> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>> In such a case, udmabuf_create() will access to memory beyond 'list'.
 >>
+>> Use size_mul() to saturate the value, and have memdup_user() fail.
+>>
+>> Fixes: fbb0de795078 ("Add udmabuf misc device")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 >> ---
+>>   drivers/dma-buf/udmabuf.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>
->> v3: Tweak to use the ops-based check rather than group-based, to
->>      properly match the existing behaviour
->> ---
->>   drivers/iommu/iommu.c | 17 ++++++++++++++++-
->>   1 file changed, 16 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 4566d0001cd3..2f29ee9dea64 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -1907,9 +1907,24 @@ int bus_iommu_probe(const struct bus_type *bus)
->>   	return 0;
->>   }
->>   
->> +static int __iommu_present(struct device *dev, void *unused)
->> +{
->> +	return dev_has_iommu(dev);
->> +}
+>> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+>> index c40645999648..fb4c4b5b3332 100644
+>> --- a/drivers/dma-buf/udmabuf.c
+>> +++ b/drivers/dma-buf/udmabuf.c
+>> @@ -314,13 +314,13 @@ static long udmabuf_ioctl_create_list(struct 
+>> file *filp, unsigned long arg)
+>>       struct udmabuf_create_list head;
+>>       struct udmabuf_create_item *list;
+>>       int ret = -EINVAL;
+>> -    u32 lsize;
+>> +    size_t lsize;
+>>       if (copy_from_user(&head, (void __user *)arg, sizeof(head)))
+>>           return -EFAULT;
+>>       if (head.count > list_limit)
+>>           return -EINVAL;
+>> -    lsize = sizeof(struct udmabuf_create_item) * head.count;
+>> +    lsize = size_mul(sizeof(struct udmabuf_create_item), head.count);
+>>       list = memdup_user((void __user *)(arg + sizeof(head)), lsize);
+>>       if (IS_ERR(list))
+>>           return PTR_ERR(list);
 > 
-> This is not locked right..
+> How about this, and we get rid of `lsize`:
 
-Urgh, yes, I suppose technically this walk could run in parallel with 
-the bus_iommu_probe() of another IOMMU instance that our caller here 
-doesn't depend on. I agree that's suboptimal, even if it shouldn't 
-happen in practice for the remaining in-tree callers.
+Keeping or removing lsize is mostly a matter of taste, I think.
 
-> Rather than perpetuate that, can we fix the two callers instead?
-> 
-> Maybe this for mtk:
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> index 93552d76b6e778..e7fe0e6f27de85 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> @@ -500,6 +500,8 @@ static int mtk_drm_kms_init(struct drm_device *drm)
->                  dev_err(drm->dev, "Need at least one OVL device\n");
->                  goto err_component_unbind;
->          }
-> +       if (!device_iommu_mapped(dma_dev))
-> +               return -EPROBE_DEFER;
->   
->          for (i = 0; i < private->data->mmsys_dev_num; i++)
->                  private->all_drm_private[i]->dma_dev = dma_dev;
-> @@ -583,9 +585,6 @@ static int mtk_drm_bind(struct device *dev)
->          struct drm_device *drm;
->          int ret, i;
->   
-> -       if (!iommu_present(&platform_bus_type))
-> -               return -EPROBE_DEFER;
-> -
->          pdev = of_find_device_by_node(private->mutex_node);
->          if (!pdev) {
->                  dev_err(dev, "Waiting for disp-mutex device %pOF\n",
-> 
-> 
-> ? It doesn't seem to use the iommu API so I guess all it is doing is
-> trying to fix some kind of probe ordering issue? Maybe the probe
-> ordering issue is already gone and we can just delete the check?
+Using sizeof(*list) is better.
 
-As I've said before, the correct fix for this one is [1]. I've sent it 
-twice now, it just gets ignored :(
+Let see if there are some other comments, and I'll send a v2.
 
-> And tegra:
-> 
-> 	if (host1x_drm_wants_iommu(dev) && iommu_present(&platform_bus_type)) {
-> 		tegra->domain = iommu_domain_alloc(&platform_bus_type);
-> 		if (!tegra->domain) {
-> 
-> Lets do the same:
-> 
-> 	if (host1x_drm_wants_iommu(dev) && device_iommu_mapped(dev->dev.parent)) {
-> 
-> ?
+Thanks for the feed-back.
 
-IIRC the problem here is that the Host1x (or GPU?) wants to allocate a 
-domain for the GPU (or Host1x) to use, even if the former isn't itself 
-associated with the IOMMU, and at this point it doesn't actually have a 
-suitable handle to the latter device.
+CJ
 
-> Alternatively how about:
 > 
-> bool iommu_present(void)
-> {
-> 	bool ret;
+> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+> index c40645999648..5cf9d849aaa8 100644
+> --- a/drivers/dma-buf/udmabuf.c
+> +++ b/drivers/dma-buf/udmabuf.c
+> @@ -314,14 +314,13 @@ static long udmabuf_ioctl_create_list(struct file 
+> *filp, unsigned long arg)
+>          struct udmabuf_create_list head;
+>          struct udmabuf_create_item *list;
+>          int ret = -EINVAL;
+> -       u32 lsize;
 > 
-> 	spin_lock(&iommu_device_lock);
-> 	ret = !list_empty(&iommu_device_list);
-> 	spin_unlock(&iommu_device_lock);
-> 	return ret;
-> }
-> EXPORT_SYMBOL_GPL(iommu_present);
+>          if (copy_from_user(&head, (void __user *)arg, sizeof(head)))
+>                  return -EFAULT;
+>          if (head.count > list_limit)
+>                  return -EINVAL;
+> -       lsize = sizeof(struct udmabuf_create_item) * head.count;
+> -       list = memdup_user((void __user *)(arg + sizeof(head)), lsize);
+> +       list = memdup_user((void __user *)(arg + sizeof(head)),
+> +                          size_mul(sizeof(*list), head.count));
+>          if (IS_ERR(list))
+>                  return PTR_ERR(list);
 > 
-> Since neither of the two users is really needing anything more than that?
+> 
+> -- 
+> Gustavo
+> 
 
-Hmm, I guess maybe I did get a bit hung up on the bus notion... Indeed I 
-think this wouldn't really be any more inaccurate than the current 
-behaviour, and might be arguably truer to the intent of the function 
-(whatever that is) since in the new design any instance is effectively 
-present for all relevant buses anyway. I've respun along these lines 
-(but retaining the argument with some token validation) and I don't hate 
-it, so I'll send that as v4.
-
-Thanks,
-Robin.
-
-[1] 
-https://lore.kernel.org/dri-devel/49bafdabd2263cfc543bb22fb7f1bf32ea6bfd22.1683735862.git.robin.murphy@arm.com/
