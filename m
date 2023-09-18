@@ -2,274 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8287A5659
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 01:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5937A565C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 01:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbjIRXvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 19:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        id S230297AbjIRXz1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Sep 2023 19:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbjIRXvj (ORCPT
+        with ESMTP id S229436AbjIRXz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 19:51:39 -0400
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CE997
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:51:33 -0700 (PDT)
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mx0.riseup.net (Postfix) with ESMTPS id 4RqM5K25QMz9sDQ;
-        Mon, 18 Sep 2023 23:51:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1695081093; bh=x22YPI6sDj/sWj8HG5tKh7VF6xuH/TdAmtm3VfWtHMM=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=Era9uTyJRjhJlMrWoEeDZ8mvAra+XWgMZJsi0NcgtkKtJqJPGCZSENF8BqL24h8W2
-         PU2RhP+wb6X6xcUy/M2OZfRvzWMT0kf6DaSNlAwUw0urYfTQGQA+i7rmCkMxmpTLlH
-         kVkMrcbTjH0VZ/aI7fpM2927RnSlSxdlak1oX45Y=
-X-Riseup-User-ID: 3C05971EFE853241E528C230627B6979A5A62B0854AC17267660E136C34E970B
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4RqM5G3JhQzFs0H;
-        Mon, 18 Sep 2023 23:51:30 +0000 (UTC)
-From:   Arthur Grillo <arthurgrillo@riseup.net>
-Date:   Mon, 18 Sep 2023 20:51:05 -0300
-Subject: [PATCH RESEND v3 2/2] drm/tests: Add new format conversion tests
- to better cover drm_fb_blit()
+        Mon, 18 Sep 2023 19:55:26 -0400
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAD190;
+        Mon, 18 Sep 2023 16:55:20 -0700 (PDT)
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-76c64da0e46so197314939f.0;
+        Mon, 18 Sep 2023 16:55:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695081319; x=1695686119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=32Geyxo6Wez9nlnCFYhmzhhOce0/GBBaedRUh12+AWQ=;
+        b=eNrCgjAUmeEIj7twHIZGxY4JubrMUMdsrLWjMhqfmhrFAc938GuTVS22J2O6Rf33mD
+         IywOJnYjDvpKJOnMQCIh3QSTcBMg6EMJk2YPtzptniL9bgz5ctrhBJOBJYrQuQhMLrT2
+         tlKsyJugKwruv+WhPK7575yK/DIsWWDI3uK5IOW3e+bLX+tyz2QL9ITnkE4McQ5FjVZ9
+         cZmE2RBXLoPIPjslazcWaQgsCOORKFp0xKm1FNfc54Bcfrs6JkZlck90UNX3dmUu6QoW
+         5YSqd5BAF6rtJyN/5Cq8YCxAy3h7y6tiyrQayh/jYxJKmGPr8wF6PoW6AZ8L294H5VbF
+         4aYQ==
+X-Gm-Message-State: AOJu0Yy45BwIFf9rU30/zD7yUPUvMGrHqvJuLjHeh7EMZnGZ6nTqgih2
+        +bYjOcXrV7Mpf2a11liX5D5uZbrAXPCGHOIxEIk=
+X-Google-Smtp-Source: AGHT+IFbLxCYIvaKuYR8u8i+mk+abA5iRP66MeIEw6GnRFCMCPYf2ifQo1vICVxyq4Xg8rLkI6MyoX1ur+v01l8s0gI=
+X-Received: by 2002:a5d:84c5:0:b0:790:f866:d71b with SMTP id
+ z5-20020a5d84c5000000b00790f866d71bmr10706784ior.13.1695081319684; Mon, 18
+ Sep 2023 16:55:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230918-final-gsoc-v3-2-b999c042a4cc@riseup.net>
-References: <20230918-final-gsoc-v3-0-b999c042a4cc@riseup.net>
-In-Reply-To: <20230918-final-gsoc-v3-0-b999c042a4cc@riseup.net>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Arthur Grillo <arthurgrillo@riseup.net>, tales.aparecida@gmail.com,
-        andrealmeid@riseup.net, mairacanal@riseup.net,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?utf-8?q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918030304.24832-1-yangjihong1@huawei.com>
+In-Reply-To: <20230918030304.24832-1-yangjihong1@huawei.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 18 Sep 2023 16:55:08 -0700
+Message-ID: <CAM9d7cjCwykJ+9oB_u1cP+qgLNbwUCFhR31iK9rfjfSFxs13fg@mail.gmail.com>
+Subject: Re: [PATCH] perf jevents: Fix segfault in perf_pmu__find_events_table
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To fully cover drm_fb_blit(), add format conversion tests that are only
-supported through drm_fb_blit().
+Hello,
 
-Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-Reviewed-by: Maíra Canal <mairacanal@riseup.net>
----
- drivers/gpu/drm/tests/drm_format_helper_test.c | 142 +++++++++++++++++++++++++
- 1 file changed, 142 insertions(+)
+On Sun, Sep 17, 2023 at 8:05 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>
+> Before caching the JSON events table, perf_pmu__find_events_table() need
+> to check whether table is empty.
+>
+> For example, AuthenticAMD-15-6B-1 is used. The matching events table cannot
+> be found. As a result, a null pointer is accessed when caching JSON events
+> table, causing segfault.
+>
+> Before:
+>   # perf record -vv true
+>   DEBUGINFOD_URLS=
+>   Using CPUID AuthenticAMD-15-6B-1
+>   Segmentation fault (core dumped)
+>
+> After:
+>   # perf record -vv true
+>   DEBUGINFOD_URLS=
+>   Using CPUID AuthenticAMD-15-6B-1
+>   <SNIP>
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 0.005 MB perf.data ]
+>
+> Fixes: 7c52f10c0d4d ("perf pmu: Cache JSON events table")
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 
-diff --git a/drivers/gpu/drm/tests/drm_format_helper_test.c b/drivers/gpu/drm/tests/drm_format_helper_test.c
-index 9cad723ada9d..8ad062bd2396 100644
---- a/drivers/gpu/drm/tests/drm_format_helper_test.c
-+++ b/drivers/gpu/drm/tests/drm_format_helper_test.c
-@@ -81,6 +81,16 @@ struct fb_swab_result {
- 	const u32 expected[TEST_BUF_SIZE];
- };
- 
-+struct convert_to_xbgr8888_result {
-+	unsigned int dst_pitch;
-+	const u32 expected[TEST_BUF_SIZE];
-+};
-+
-+struct convert_to_abgr8888_result {
-+	unsigned int dst_pitch;
-+	const u32 expected[TEST_BUF_SIZE];
-+};
-+
- struct convert_xrgb8888_case {
- 	const char *name;
- 	unsigned int pitch;
-@@ -98,6 +108,8 @@ struct convert_xrgb8888_case {
- 	struct convert_to_argb2101010_result argb2101010_result;
- 	struct convert_to_mono_result mono_result;
- 	struct fb_swab_result swab_result;
-+	struct convert_to_xbgr8888_result xbgr8888_result;
-+	struct convert_to_abgr8888_result abgr8888_result;
- };
- 
- static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
-@@ -155,6 +167,14 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
- 			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
- 			.expected = { 0x0000FF01 },
- 		},
-+		.xbgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = { 0x010000FF },
-+		},
-+		.abgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = { 0xFF0000FF },
-+		},
- 	},
- 	{
- 		.name = "single_pixel_clip_rectangle",
-@@ -213,6 +233,14 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
- 			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
- 			.expected = { 0x0000FF10 },
- 		},
-+		.xbgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = { 0x100000FF },
-+		},
-+		.abgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = { 0xFF0000FF },
-+		},
- 	},
- 	{
- 		/* Well known colors: White, black, red, green, blue, magenta,
-@@ -343,6 +371,24 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
- 				0x00FFFF77, 0xFFFF0088,
- 			},
- 		},
-+		.xbgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = {
-+				0x11FFFFFF, 0x22000000,
-+				0x330000FF, 0x4400FF00,
-+				0x55FF0000, 0x66FF00FF,
-+				0x7700FFFF, 0x88FFFF00,
-+			},
-+		},
-+		.abgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = {
-+				0xFFFFFFFF, 0xFF000000,
-+				0xFF0000FF, 0xFF00FF00,
-+				0xFFFF0000, 0xFFFF00FF,
-+				0xFF00FFFF, 0xFFFFFF00,
-+			},
-+		},
- 	},
- 	{
- 		/* Randomly picked colors. Full buffer within the clip area. */
-@@ -458,6 +504,22 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
- 				0x0303A8C2, 0x73F06CD2, 0x9C440EA3, 0x00000000, 0x00000000,
- 			},
- 		},
-+		.xbgr8888_result = {
-+			.dst_pitch =  20,
-+			.expected = {
-+				0xA19C440E, 0xB1054D11, 0xC103F3A8, 0x00000000, 0x00000000,
-+				0xD173F06C, 0xA29C440E, 0xB2054D11, 0x00000000, 0x00000000,
-+				0xC20303A8, 0xD273F06C, 0xA39C440E, 0x00000000, 0x00000000,
-+			},
-+		},
-+		.abgr8888_result = {
-+			.dst_pitch =  20,
-+			.expected = {
-+				0xFF9C440E, 0xFF054D11, 0xFF03F3A8, 0x00000000, 0x00000000,
-+				0xFF73F06C, 0xFF9C440E, 0xFF054D11, 0x00000000, 0x00000000,
-+				0xFF0303A8, 0xFF73F06C, 0xFF9C440E, 0x00000000, 0x00000000,
-+			},
-+		},
- 	},
- };
- 
-@@ -1082,6 +1144,84 @@ static void drm_test_fb_swab(struct kunit *test)
- 	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
- }
- 
-+static void drm_test_fb_xrgb8888_to_abgr8888(struct kunit *test)
-+{
-+	const struct convert_xrgb8888_case *params = test->param_value;
-+	const struct convert_to_abgr8888_result *result = &params->abgr8888_result;
-+	size_t dst_size;
-+	u32 *buf = NULL;
-+	__le32 *xrgb8888 = NULL;
-+	struct iosys_map dst, src;
-+
-+	struct drm_framebuffer fb = {
-+		.format = drm_format_info(DRM_FORMAT_XRGB8888),
-+		.pitches = { params->pitch, 0, 0 },
-+	};
-+
-+	dst_size = conversion_buf_size(DRM_FORMAT_XBGR8888, result->dst_pitch, &params->clip, 0);
-+
-+	KUNIT_ASSERT_GT(test, dst_size, 0);
-+
-+	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-+	iosys_map_set_vaddr(&dst, buf);
-+
-+	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
-+	iosys_map_set_vaddr(&src, xrgb8888);
-+
-+	const unsigned int *dst_pitch = (result->dst_pitch == TEST_USE_DEFAULT_PITCH) ?
-+		NULL : &result->dst_pitch;
-+
-+	int blit_result = 0;
-+
-+	blit_result = drm_fb_blit(&dst, dst_pitch, DRM_FORMAT_ABGR8888, &src, &fb, &params->clip);
-+
-+	buf = le32buf_to_cpu(test, (__force const __le32 *)buf, dst_size / sizeof(u32));
-+
-+	KUNIT_EXPECT_FALSE(test, blit_result);
-+	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
-+}
-+
-+static void drm_test_fb_xrgb8888_to_xbgr8888(struct kunit *test)
-+{
-+	const struct convert_xrgb8888_case *params = test->param_value;
-+	const struct convert_to_xbgr8888_result *result = &params->xbgr8888_result;
-+	size_t dst_size;
-+	u32 *buf = NULL;
-+	__le32 *xrgb8888 = NULL;
-+	struct iosys_map dst, src;
-+
-+	struct drm_framebuffer fb = {
-+		.format = drm_format_info(DRM_FORMAT_XRGB8888),
-+		.pitches = { params->pitch, 0, 0 },
-+	};
-+
-+	dst_size = conversion_buf_size(DRM_FORMAT_XBGR8888, result->dst_pitch, &params->clip, 0);
-+
-+	KUNIT_ASSERT_GT(test, dst_size, 0);
-+
-+	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-+	iosys_map_set_vaddr(&dst, buf);
-+
-+	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
-+	iosys_map_set_vaddr(&src, xrgb8888);
-+
-+	const unsigned int *dst_pitch = (result->dst_pitch == TEST_USE_DEFAULT_PITCH) ?
-+		NULL : &result->dst_pitch;
-+
-+	int blit_result = 0;
-+
-+	blit_result = drm_fb_blit(&dst, dst_pitch, DRM_FORMAT_XBGR8888, &src, &fb, &params->clip);
-+
-+	buf = le32buf_to_cpu(test, (__force const __le32 *)buf, dst_size / sizeof(u32));
-+
-+	KUNIT_EXPECT_FALSE(test, blit_result);
-+	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
-+}
-+
- struct clip_offset_case {
- 	const char *name;
- 	unsigned int pitch;
-@@ -1701,6 +1841,8 @@ static struct kunit_case drm_format_helper_test_cases[] = {
- 	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_argb2101010, convert_xrgb8888_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_mono, convert_xrgb8888_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_swab, convert_xrgb8888_gen_params),
-+	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_xbgr8888, convert_xrgb8888_gen_params),
-+	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_abgr8888, convert_xrgb8888_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_clip_offset, clip_offset_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_build_fourcc_list, fb_build_fourcc_list_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_memcpy, fb_memcpy_gen_params),
+Thanks for the fix but please see
 
--- 
-2.41.0
+https://lore.kernel.org/all/20230913125157.2790375-1-tmricht@linux.ibm.com/
 
+Thanks,
+Namhyung
+
+
+> ---
+>  tools/perf/pmu-events/jevents.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+> index a7e88332276d..72ba4a9239c6 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -991,7 +991,7 @@ const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu)
+>                  }
+>          }
+>          free(cpuid);
+> -        if (!pmu)
+> +        if (!pmu || !table)
+>                  return table;
+>
+>          for (i = 0; i < table->num_pmus; i++) {
+> --
+> 2.34.1
+>
