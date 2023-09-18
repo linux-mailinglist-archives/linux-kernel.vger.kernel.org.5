@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6DC7A53C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D947A53C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjIRUS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
+        id S229845AbjIRUSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjIRUS4 (ORCPT
+        with ESMTP id S229822AbjIRUSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:18:56 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF99E115
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:18:48 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso3855e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:18:48 -0700 (PDT)
+        Mon, 18 Sep 2023 16:18:47 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D32129
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:18:40 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5031426b626so2496609e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695068327; x=1695673127; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gkkuj5E4x1e6TpkXqhUiBmxr9QkX14PDo84XKtGvNno=;
-        b=ALreQFON1ZyxVPrJtG+ADSKUyWCJuHAtFFPIB1YyZ2J3cSqAMr7l1D6YW0WolnFJdJ
-         ydaRpRtX40gYxRRGiECs0f1w2IP7fqQb7B1Al35xIQRk5+5fvWLVLYdNBJvkMUAc1iu4
-         9cW1q7K4obVhgYA9iEAC+XiO3H4BbE/liTKirm4Pa2i7zZ7IN0lpX0/Cz8hp3Uk2/ewF
-         OL+Z/HtODL8IwI1Zzv2QWIHgDyGRAj+XLgA73ppa3bh+ryRodeT7EWFdHRO6+ynrCw2X
-         Avf0IpLe9/uDYeuhenjWcQanYQ3XFAI8k/nnZPJ6UR9+bWQomEQjYP/KqP5Fstx8idzK
-         ZYoA==
+        d=linaro.org; s=google; t=1695068319; x=1695673119; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jEjcvyS6CReblMj/llRKVSIcv9klWKbGSR5hpu3hTaI=;
+        b=BIxesoOAHtH7Ru3HaeIWY+6Buj3DGyQ8VBwUVet7lFrFKzKvdzLc92gda4mmPqTsv8
+         NG2Ylzf3FqfNzRSuryxq8tGptkEkULYK57IenlNYpZToBFoidofwSgAubug2/ED47uHQ
+         9buC9Mi39hIu/FuiP57ZHNAhfV89irTG+Je7XcZ+iL6U5otKsOVC+zyfYHRs4+men9l2
+         /O7j4/WxYMihnlTAqEYyVJ3QAEPT8VeX+/5raUbLb7K6WOM6UGhFTNZJZrfJZyu5EKKI
+         q4Go/oc9oOfY1zOu1WpTuXCy36Ysgq2flcsY2E8HWaGIDsbEkPzijkBxaqd/9D9vEhDY
+         Pffg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695068327; x=1695673127;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gkkuj5E4x1e6TpkXqhUiBmxr9QkX14PDo84XKtGvNno=;
-        b=Jv6M4hne6Oi48HE19jpvMMcQ2qGPS3SWaTTWcU+BhEq6GaDJteDztIIRSf07vqwNvY
-         bIj+JvsR0ijWKOTydKxaRr+IuuwLnAru12bxWjR3vMJB280UsMvQxKOnt1wINhxmE81E
-         9KbfMd7R7u2n1q2c7a/brd/7i7d5yQxt/CXJGzkSqg9/aIkX0gI0hXlCot9DcqRrdymw
-         mh9jykrjQmhxtwSHw7NVoFMwIyV+QbE2M6q0NLMii77YZ4hQMsjFf6o+clQbC1FUfsUT
-         zA9G2vUvQajwBBjM2S8uuhashrOcz9l3B2Qo0dJFdTpVQOPeFpqclnVSkqMxc0wGwqqW
-         tn+w==
-X-Gm-Message-State: AOJu0YyVOu5JnOb47NIMhveakzf5Zd2J+tZ9jfllBDrQVT6wrrT/ReBT
-        QdLJkW/AYjksZXYeW5mhSNZgLw==
-X-Google-Smtp-Source: AGHT+IFPfXjLQWY+XTrivjGyq5y6EUdbaEOdn9f05wDcTfA1C8e0Gf41avxSx5fLPuTL4g/18veJ1w==
-X-Received: by 2002:a05:600c:4fd6:b0:3fe:ef25:8b86 with SMTP id o22-20020a05600c4fd600b003feef258b86mr22708wmq.4.1695068326889;
-        Mon, 18 Sep 2023 13:18:46 -0700 (PDT)
-Received: from localhost ([2a00:79e0:9d:4:2d2b:53ca:9e7d:d91b])
-        by smtp.gmail.com with ESMTPSA id a4-20020a5d4d44000000b00317e77106dbsm13372719wru.48.2023.09.18.13.18.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 13:18:43 -0700 (PDT)
-From:   Jann Horn <jannh@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] mm: document mmu_notifier_invalidate_range_start_nonblock()
-Date:   Mon, 18 Sep 2023 22:18:32 +0200
-Message-ID: <20230918201832.265108-1-jannh@google.com>
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+        d=1e100.net; s=20230601; t=1695068319; x=1695673119;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jEjcvyS6CReblMj/llRKVSIcv9klWKbGSR5hpu3hTaI=;
+        b=LzzCUGNmuC68cx0cibpLFJETARaWzwV0XuSOGZOo1n7dRqSjq6GKUBpPFEMxbfNS2Z
+         rdzEe7hr+qHyFYB3hbaTeyNOylIn1MhJm8S5P/gCBSq34Wzcj9hDl60zyLnIPJwFIzAK
+         EutgTr71l7S+lh0bXN7xuI6pWGdikr2k3lgd2PiS7i2lzXGN1zH8MkAjtdQbo0MbxwKU
+         3lKWJLIj2dvZCmW0GNy3spr/F0Bhr9G4UYws5Y16JHmrwNPjx6VkMLPgIcIC/R6lffSZ
+         6cjQbGYm9J31HzXiO57hNjyWcnuVubI++ehEtChaFHpbz2945BoPBhnb9yDRmw13R/07
+         n+OQ==
+X-Gm-Message-State: AOJu0YzjMegPmQt/71N5lcb1JscqhvdDT3IUX3laUqZpDi3VjRlPClau
+        q9byQXmCe49cmdBZMLoCt9CbMA==
+X-Google-Smtp-Source: AGHT+IFPe4/whAq4HvHLWe07ubJb3d7j4FOxiy0RP340hlHxpJkBuzKiTaqldCS3obe/AAOmx18muw==
+X-Received: by 2002:a05:6512:3144:b0:4fe:ecd:4950 with SMTP id s4-20020a056512314400b004fe0ecd4950mr8302805lfi.1.1695068318901;
+        Mon, 18 Sep 2023 13:18:38 -0700 (PDT)
+Received: from [172.25.80.114] ([217.67.225.27])
+        by smtp.gmail.com with ESMTPSA id v4-20020aa7d644000000b0052567e6586bsm6528461edr.38.2023.09.18.13.18.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 13:18:38 -0700 (PDT)
+Message-ID: <b7a337f2-a810-d14c-e7cd-15e33a9ecb5d@linaro.org>
+Date:   Mon, 18 Sep 2023 22:18:37 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 1/2] dt-binding: usb: ci-hdrc-usb2: document Nuvoton
+ NPCM supprt
+Content-Language: en-US
+To:     Tomer Maimon <tmaimon77@gmail.com>, peter.chen@kernel.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, xu.yang_2@nxp.com,
+        peng.fan@nxp.com, avifishman70@gmail.com, tali.perry1@gmail.com,
+        joel@jms.id.au, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, j.neuschaefer@gmx.net
+Cc:     openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230918165958.2659-1-tmaimon77@gmail.com>
+ <20230918165958.2659-2-tmaimon77@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230918165958.2659-2-tmaimon77@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,37 +82,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document what mmu_notifier_invalidate_range_start_nonblock() is for.
-Also add a __must_check annotation to signal that callers must bail out if
-a notifier vetoes the operation.
+On 18/09/2023 18:59, Tomer Maimon wrote:
+> Nuvoton NPCM BMC SoCs use ChipIdea silicon IP for the USB device controller.
+> 
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
 
-Signed-off-by: Jann Horn <jannh@google.com>
----
- include/linux/mmu_notifier.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching. It's dt-bindings.
 
-diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
-index 6e3c857606f1..f349e08a9dfe 100644
---- a/include/linux/mmu_notifier.h
-+++ b/include/linux/mmu_notifier.h
-@@ -459,7 +459,14 @@ mmu_notifier_invalidate_range_start(struct mmu_notifier_range *range)
- 	lock_map_release(&__mmu_notifier_invalidate_range_start_map);
- }
- 
--static inline int
-+/*
-+ * This version of mmu_notifier_invalidate_range_start() avoids blocking, but it
-+ * can return an error if a notifier can't proceed without blocking, in which
-+ * case you're not allowed to modify PTEs in the specified range.
-+ *
-+ * This is mainly intended for OOM handling.
-+ */
-+static inline int __must_check
- mmu_notifier_invalidate_range_start_nonblock(struct mmu_notifier_range *range)
- {
- 	int ret = 0;
 
-base-commit: 6704c78e2963a5682b4ac3c0e609d36f2405cf17
--- 
-2.42.0.459.ge4e396fd5e-goog
+> ---
+>  .../devicetree/bindings/usb/ci-hdrc-usb2.yaml    | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
+> index 1394557517b1..9de4dfe004d1 100644
+> --- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
+> +++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
+> @@ -16,6 +16,7 @@ properties:
+>        - enum:
+>            - chipidea,usb2
+>            - lsi,zevio-usb
+> +          - nuvoton,npcm-udc
+
+You need SoC specific compatible.
+
+>            - nvidia,tegra20-ehci
+>            - nvidia,tegra20-udc
+>            - nvidia,tegra30-ehci
+> @@ -325,6 +326,20 @@ properties:
+>      type: boolean
+>      deprecated: true
+>  
+> +  nuvoton,sysgcr:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    items:
+> +      - items:
+> +          - description: phandle to syscon that configures usb phy mux.
+> +          - description: offset of usb phy mux selection.
+> +          - description: mask usb phy mux selection.
+> +          - description: value usb phy mux selection.
+> +    description:
+> +      A phandle to syscon with three arguments that configure usb phy mux.
+> +      The argument one is the offset of usb phy mux selection, the argument two
+> +      is the mask usb phy mux selection, the argument three is the mask usb phy
+> +      mux selection.
+
+Sorry, you miss phy driver. Don't use syscon instead of proper hardware
+devices.
+
+
+Best regards,
+Krzysztof
 
