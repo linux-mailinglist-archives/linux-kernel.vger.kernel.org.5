@@ -2,227 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B00DA7A491E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE237A4914
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241785AbjIRMCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
+        id S241823AbjIRMAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241850AbjIRMBr (ORCPT
+        with ESMTP id S241881AbjIRMAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:01:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DC4E6;
-        Mon, 18 Sep 2023 04:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CSAuLcN2B1IGMk2HbjQNJ4Nh7HyohB5NpAVac3rhSsE=; b=RsMABq7/iljhI0FmpePxzpnH82
-        0Acgl+VSKDN1od2dyoyaLmzu26r+4mx7mFQxVNdQpxS/Y0i7MBNEwnpY/3CSOH0HUPYOURnvW3yZI
-        NXZuxlteYDFYcLDaU2Skl9SI9as2XeOulXYCPllNZKZ7ZSzSh7pWIPOWKJseqXzviv0esOTmhdmYR
-        pVAREu713MEmB5WuExK2UNSGPQlaeAOOgRikG/ykLafOb4jByrKISMzFMRO45XbWQFOiqHyrXJBLZ
-        TxUICjD9hwWHEGRRr06U3rCbosDNsx6igOnWv35X4FMoJhzYelewzSMhnUy1h0BmRAw+uUPhE9HEa
-        waIUVWqw==;
-Received: from [2001:8b0:10b:5:cea0:d147:7c2e:9e61] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qiCuE-00Arl9-2c; Mon, 18 Sep 2023 11:59:10 +0000
-Message-ID: <74077fcadd5ddc9dba742987e1419fc13713cd7a.camel@infradead.org>
-Subject: Re: [PATCH v2 09/12] KVM: selftests / xen: set
- KVM_XEN_VCPU_ATTR_TYPE_VCPU_ID
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Date:   Mon, 18 Sep 2023 12:59:09 +0100
-In-Reply-To: <20230918112148.28855-10-paul@xen.org>
-References: <20230918112148.28855-1-paul@xen.org>
-         <20230918112148.28855-10-paul@xen.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-qYuZe1UJPnOZxnDVx8X3"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 18 Sep 2023 08:00:18 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0040DCD0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:59:27 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99de884ad25so588642666b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695038366; x=1695643166; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mx+1LEKjG08mHXdWiW0HFl/U3LRaOvUzyjCNt5ITLZc=;
+        b=Fw4HkzC7pcvppLJYx2wITGv2sEElnkg7QPGY7lPh7ux1OM1cE15GesUPD7c2aSD7gd
+         gq8V1nqYbytebM71PrH3/4Szgg8SpC/kOjXkxNN8twzIwSPvUwjPXNmQiYnvuDXEoo0w
+         PveSKvaKppysaMOdITgl9uIfGINmxR6DeI0XZCp0wyLwU1i5H6MGcRjKDK+U5FSF3/Kf
+         upMkjHEnlhjg7qOnu8PH5WGGjwRi2WTZ4xp6C25gS/f9X7Eg5LsVNJVAsMdXmzRxewVM
+         KbEoeB9B5nilqxDXOGyk96GtBPx9SVgIjrwBc1/5XmvExhasUQXRIlI/TraaCXHatyQN
+         jeZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695038366; x=1695643166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mx+1LEKjG08mHXdWiW0HFl/U3LRaOvUzyjCNt5ITLZc=;
+        b=wvV89LBlaw9DdmL6Zwmd579GqeEwRqRPejUjVkfnOQJwivYjA0eLntGhaqG+9f/sJJ
+         W94FjZcfUKXnuzKwpxcGfFZQUcWiq17iiHANu9lZfwxIM6CyJNT8/m2l2BOyk5U5EO/Y
+         VzDNSZTKjVJbhFgOx23p/jkjNtPSO0pa+cI3Ej1qW9BCuRtbhKIEdkXQYT1/leDcnKy1
+         5PU+q8guLJ/qQx6fh3sleH5g36OUwbFokwr7e86ph+UFFwdio+afLJC3Ov7cf/F5Rg9Z
+         NrKHFRlOPKO1W5QmaIbb1d90rec6lVrYJigiDJgesrywJ37mDvgEIEChVJuYqPH5Ltd3
+         gptw==
+X-Gm-Message-State: AOJu0YysUsMWdEZ/tBUQqpmTodboJmUzsxY2G5bSqeHno9cT8JjfLwIi
+        LNLZVFOaXOI3utLq3MSuDJA/Cg==
+X-Google-Smtp-Source: AGHT+IEQU5aP9n0ZpbF9FIWm05VurFH/Lgko0yhluHa5UJmuOfDQoNjoIOALZWR4TY4wUZ0dcYYJAQ==
+X-Received: by 2002:a17:906:5188:b0:9a1:db97:62a1 with SMTP id y8-20020a170906518800b009a1db9762a1mr7333228ejk.46.1695038366283;
+        Mon, 18 Sep 2023 04:59:26 -0700 (PDT)
+Received: from [172.25.80.114] ([217.67.225.27])
+        by smtp.gmail.com with ESMTPSA id j9-20020a170906410900b0099cc3c7ace2sm6466812ejk.140.2023.09.18.04.59.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 04:59:25 -0700 (PDT)
+Message-ID: <fad9eb3c-49f9-5ece-b51a-aaff4d8888ad@linaro.org>
+Date:   Mon, 18 Sep 2023 13:59:24 +0200
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 3/3] dt-bindings: hwinfo: Add mtk-socinfo driver
+Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        William-tw Lin <william-tw.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20230915152607.18116-1-william-tw.lin@mediatek.com>
+ <20230915152607.18116-4-william-tw.lin@mediatek.com>
+ <3e7bc476-ffc7-fb07-8e64-246427da736c@linaro.org>
+ <9acc8d99-e3db-3df8-4051-21d95450b28d@collabora.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <9acc8d99-e3db-3df8-4051-21d95450b28d@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-qYuZe1UJPnOZxnDVx8X3
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2023-09-18 at 11:21 +0000, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
->=20
-> If the capability (KVM_XEN_HVM_CONFIG_EVTCHN_SEND) is present then set
-> the guest's vCPU id to match the chosen vcpu_info offset.
-
-I think from KVM's point of view, the vcpu_id is still zero. As is the
-vcpu_idx. What you're setting is the *Xen* vcpu_id.
-
-I like that it's *different* to the vcpu_id; we should definitely be
-testing that case. I don't quite know why the code was using
-vcpu_info[1] in the shinfo before when we were explicitly setting the
-address from userspace; I suppose it didn't matter.
-
-> Also make some cosmetic fixes to the code for clarity.
->=20
-> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> ---
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
->=20
-> v2:
-> =C2=A0- New in this version.
-> ---
-> =C2=A0.../selftests/kvm/x86_64/xen_shinfo_test.c=C2=A0=C2=A0=C2=A0 | 19 +=
-++++++++++++++----
-> =C2=A01 file changed, 15 insertions(+), 4 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c b/tools=
-/testing/selftests/kvm/x86_64/xen_shinfo_test.c
-> index 05898ad9f4d9..49d0c91ee078 100644
-> --- a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
-> @@ -38,6 +38,8 @@
-> =C2=A0#define VCPU_INFO_VADDR=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0(SHINFO_REGION_GVA + 0x40)
-> =C2=A0#define RUNSTATE_VADDR=C2=A0(SHINFO_REGION_GVA + PAGE_SIZE + PAGE_S=
-IZE - 15)
-> =C2=A0
-> +#define VCPU_ID=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A01 /* Must correspond to offset of VC=
-PU_INFO_[V]ADDR */
->=20
-
-As well as being a bit clearer in the commit comment as noted above,
-let's call this XEN_VCPU_ID ?=C2=A0
-
-With that cleaned up,
-
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-
-
---=-qYuZe1UJPnOZxnDVx8X3
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTE4MTE1OTA5WjAvBgkqhkiG9w0BCQQxIgQgaW+Oszk4
-7pV9Rf1dh4PaRmlFDPEACUtCMCh3lLF6rgIwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCwO4hwpfxr6gKBaOSCK7dSs/Ea9gbnUjqu
-PZATYUSDyyu0wx9SOs+O+Fpw2osgZ/oCn6o33Asi51+R94tT0kbjo44agBLVvGIICNcZbcBBamrJ
-ZSfHwFwfatTNHdkZ3C78ux+IAvU4pM6DJ7njfVlhzfNNWfso+OZzj4Y7QsKEtFIOTFAVrTCnjj+x
-8QoUJCnX2IAUjCWLtY1HiF/9YY/L16Jt6msGgvLDDqPQPbn361NdcmRgIxVfTi69pc63Etrac5Lq
-bkhkOLbsvGO9QZ7cYEJhY6ujQ93Tb2ou6lBLNKPSItUbItmlYTMwAlaUow0jYy4VZxT5FgO4ljQX
-Y+ONkxpnNXxGG6NEdokwsHslduBm3FOhyxNw6Bl5wtWtf86ds3127lEZs9hhKRo2/X1L+pm2nqeQ
-42g0m4R92xW8lyMYq5X9LbOgBLiJUOUURba0xID57gIP/YSeMDya/MckRqVHpWmf9f0tDmHKNS2m
-Z2uDUd82xlsrovQuPvD+Ddn3kUG9vuEvA97jNWKivGJhN00uEGuO0wOkjE0zZR8Jpr1WV+X9GfWD
-RRJ9/AbxtBOE/UUyRFs1xg9kwXsZU0enLCtylx1sA4baGuQZ9oQ/iqXwLArZo0QUmvKpAou14Y9i
-LSmPeAEneWK+ylon98WkjxNvrvvrMPe45y3Bb7J+IQAAAAAAAA==
+On 18/09/2023 10:47, AngeloGioacchino Del Regno wrote:
+> Il 17/09/23 10:26, Krzysztof Kozlowski ha scritto:
+>> On 15/09/2023 17:26, William-tw Lin wrote:
+>>> dt-binding documentation for mtk-socinfo driver.
+>>
+>> Here and in subject, drop driver and instead descrbe hardware.
+>>
+>>> mtk-socinfo driver provides SoC-related information.
+>>> Such information includes manufacturer information, SoC name,
+>>> SoC segment name, and SoC marketing name.
+>>>
+>>> Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
+>>> ---
+>>>   .../bindings/hwinfo/mtk-socinfo.yaml          | 48 +++++++++++++++++++
+>>>   1 file changed, 48 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+>>> new file mode 100644
+>>> index 000000000000..74f03f1dc404
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+>>
+>> Nothing improved.
+>>
+>> This is a friendly reminder during the review process.
+>>
+>> It seems my previous comments were not fully addressed. Maybe my
+>> feedback got lost between the quotes, maybe you just forgot to apply it.
+>> Please go back to the previous discussion and either implement all
+>> requested changes or keep discussing them.
+>>
+>> Thank you.
+>>
+>>> @@ -0,0 +1,48 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/hwinfo/mtk-socinfo.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: MediaTek SoC ChipID
+>>> +
+>>> +maintainers:
+>>> +  - William Lin <william-tw.lin@mediatek.com>
+>>> +  - Matthias Brugger <matthias.bgg@gmail.com>
+>>> +  - Kevin Hilman <khilman@kernel.org>
+>>> +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>> +
+>>> +description:
+>>> +  MediaTek SoCs store various product information in eFuses, including
+>>> +  Chip ID and Revision fields, usable to identify the manufacturer,
+>>> +  SoC version, plus segment and marketing names.
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    const: mediatek,socinfo
+>>
+>> What happened to compatibles? No, this is just wrong and no explained.
+>> You ignored other comments as well. Really, that's not the way to go.
+>>
+> 
+> Practically, having different compatibles for each SoC is not needed, as
+> the only thing that changes between SoCs is the eFuse(s) that you read to
+> get the information - and that's all.
 
 
---=-qYuZe1UJPnOZxnDVx8X3--
+And how do you guarantee that no future SoC will have any difference?
+How can you even predict it?
+
+> 
+> So ... we either use this driver with devicetree, giving it the right eFuses
+
+I am talking about bindings, no driver.
+
+> to read from, or we duplicate the mtk-efuse driver, or we statically assign
+> the eFuses in the driver itself and we set compatibles like
+> "mediatek,mt8195-socinfo" to select that... ideas?
+
+Device specific compatibles followed by fallback, just like for every
+other review coming from me.
+
+Best regards,
+Krzysztof
+
