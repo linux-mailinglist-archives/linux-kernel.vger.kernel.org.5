@@ -2,233 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B337A4641
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF057A4648
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241128AbjIRJnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 05:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
+        id S240156AbjIRJos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241124AbjIRJm4 (ORCPT
+        with ESMTP id S240975AbjIRJo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:42:56 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9A8CC7;
-        Mon, 18 Sep 2023 02:41:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AA89E1F37F;
-        Mon, 18 Sep 2023 09:41:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695030076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dQP1wPJDUgx7ZLJLXNhEB9grdPp9c1uarNW8JL9bAWU=;
-        b=vlkbnDMDju+XgrwdDYfedeuYfzjEk817K2JhOTs4N7fhhzPU59q+5+mBT5Z9PejJ0zSpOA
-        uhL9g0wSPB2ETzIMhNpIJ13h03U1jd4hMlSFbDsHtooSPi5Hfgd1CAyMuoreAAJV5pWJdG
-        gWpHqDNtb8u1jId+LACHTEt756NP3oY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695030076;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dQP1wPJDUgx7ZLJLXNhEB9grdPp9c1uarNW8JL9bAWU=;
-        b=cgeXizwHufg+26MLNkJsbe3TLqNfoh1bAOp/RgAN9jvLGTQfP54G8gPG/tQQAwAe5DTud7
-        EXTHTGujAtLNx7AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B45513480;
-        Mon, 18 Sep 2023 09:41:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZCnlJTwbCGUFHwAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 09:41:16 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 2EA86A0759; Mon, 18 Sep 2023 11:41:16 +0200 (CEST)
-Date:   Mon, 18 Sep 2023 11:41:16 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     Philipp Stanner <pstanner@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Chris Mason <clm@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org, Yury Norov <yury.norov@gmail.com>
-Subject: Re: [PATCH v1 1/1] xarray: fix the data-race in xas_find_chunk() by
- using READ_ONCE()
-Message-ID: <20230918094116.2mgquyxhnxcawxfu@quack3>
-References: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
+        Mon, 18 Sep 2023 05:44:26 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D0A185;
+        Mon, 18 Sep 2023 02:43:33 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id DE40D60173;
+        Mon, 18 Sep 2023 11:43:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695030210; bh=UAR54t9dMY0nehsS36lVh7rquLz3fO7dCaJ7AB/uei8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MqIPTgkE6TPSeY4Co3P2P7Z68rWEDAoEg3lfQ/3fzRofDhcPfj/zOH0HtkJ/zsmkf
+         A6RGxb4rqzeiubXv0jIh62zbF22Le8bCHjcy0aMhzZf/4qIC8Z8bUQSrLiHYrOv5bS
+         LNhpqqQgzrsAKRNFRbd6vopGfUdoZqlNFpSqidLZ2WJ3n51IeW/IMZ8sweHEKT+3jA
+         +2vuLpKklBT1CfXfBJc7mTV+E2wDZ8wWh0obewxRfGdBXdz0PwUnHbFcBCsLxmXKUL
+         R/cKwAgnLRuuneAn6yFkSPYn81UvxRYU01E4MIi5naldBrxOaJEdfeXKpst1Q4fsvM
+         hJMYmHYhDuJ0g==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vWS9WHmqcIL9; Mon, 18 Sep 2023 11:43:28 +0200 (CEST)
+Received: from [192.168.1.6] (78-1-184-14.adsl.net.t-com.hr [78.1.184.14])
+        by domac.alu.hr (Postfix) with ESMTPSA id 0BCBD6015E;
+        Mon, 18 Sep 2023 11:43:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695030208; bh=UAR54t9dMY0nehsS36lVh7rquLz3fO7dCaJ7AB/uei8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Y65HsXdzy0F67RF3vCvoNdtG+ujRx5uXi4xPzWZT917Ko6oXDZpP1qDJOCAwfAI0+
+         LtdCfnOH+rz5vfBsuZDkK9S30OkcqVlmrZWBOlp2VCUdkYsEE0yxoYv3jhdXrWuPbq
+         iwHV6pHSdGr1omIhVkQhTSw30+mhS40D5ZEp64F0FIKZhRhpzd3uGC/cmOjjOkWjGe
+         Tkd29LCDcE394qkHIM3z30zDQ+v/Fz3OU5blcUn6ewzbVtmFEdSDAa+lBhY0ihqsH0
+         HvpT53W8l3xAWxd0QQ4iJvi9cMT/bAIfbyYwIInf8ui5gTUP2PWdeOmN0GRInHpnYp
+         0K+QszwkKKnkQ==
+Message-ID: <3e306b0a-24b8-60d4-c516-1db738d79e92@alu.unizg.hr>
+Date:   Mon, 18 Sep 2023 11:43:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: BUG: KCSAN: data-race in rtl8169_poll
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     nic_swsd@realtek.com, Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ed59c1b9-6c5c-4774-a871-a24564f3a270@alu.unizg.hr>
+ <CANn89iJv8VRPwQBAE=5-oKHGMs9JVCvCiCBwL+3QW9sJDxo5cQ@mail.gmail.com>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <CANn89iJv8VRPwQBAE=5-oKHGMs9JVCvCiCBwL+3QW9sJDxo5cQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 18-09-23 06:47:40, Mirsad Goran Todorovac wrote:
-> KCSAN has discovered the following data-race:
+On 9/18/23 09:41, Eric Dumazet wrote:
+> On Mon, Sep 18, 2023 at 8:15 AM Mirsad Todorovac
+> <mirsad.todorovac@alu.unizg.hr> wrote:
+>>
+>> Hi all,
+>>
+>> In the vanilla torvalds tree kernel on Ubuntu 22.04, commit 6.6.0-rc1-kcsan-00269-ge789286468a9,
+>> KCSAN discovered a data-race in rtl8169_poll():
+>>
+>> [ 9591.740976] ==================================================================
+>> [ 9591.740990] BUG: KCSAN: data-race in rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4430 drivers/net/ethernet/realtek/r8169_main.c:4583) r8169
+>>
+>> [ 9591.741060] race at unknown origin, with read to 0xffff888109773130 of 4 bytes by interrupt on cpu 21:
+>> [ 9591.741073] rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4430 drivers/net/ethernet/realtek/r8169_main.c:4583) r8169
+>> [ 9591.741135] __napi_poll (net/core/dev.c:6527)
+>> [ 9591.741149] net_rx_action (net/core/dev.c:6596 net/core/dev.c:6727)
+>> [ 9591.741161] __do_softirq (kernel/softirq.c:553)
+>> [ 9591.741175] __irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632)
+>> [ 9591.741185] irq_exit_rcu (kernel/softirq.c:647)
+>> [ 9591.741194] common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
+>> [ 9591.741206] asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
+>> [ 9591.741217] cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
+>> [ 9591.741227] cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
+>> [ 9591.741237] call_cpuidle (kernel/sched/idle.c:135)
+>> [ 9591.741249] do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:282)
+>> [ 9591.741259] cpu_startup_entry (kernel/sched/idle.c:378 (discriminator 1))
+>> [ 9591.741268] start_secondary (arch/x86/kernel/smpboot.c:210 arch/x86/kernel/smpboot.c:294)
+>> [ 9591.741281] secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:433)
+>>
+>> [ 9591.741300] value changed: 0x80003fff -> 0x34044510
+>>
+>> [ 9591.741314] Reported by Kernel Concurrency Sanitizer on:
+>> [ 9591.741322] CPU: 21 PID: 0 Comm: swapper/21 Tainted: G             L     6.6.0-rc1-kcsan-00269-ge789286468a9-dirty #4
+>> [ 9591.741334] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+>> [ 9591.741343] ==================================================================
+>>
+>> (The taint is not from the proprietary module, but triggered from the previous reported and unfixed bug.)
+>>
+>> Apparently, it is this code:
+>>
+>> static int rtl8169_poll(struct napi_struct *napi, int budget)
+>> {
+>>          struct rtl8169_private *tp = container_of(napi, struct rtl8169_private, napi);
+>>          struct net_device *dev = tp->dev;
+>>          int work_done;
+>>
+>>          rtl_tx(dev, tp, budget);
+>>
+>> →       work_done = rtl_rx(dev, tp, budget);
+>>
+>>          if (work_done < budget && napi_complete_done(napi, work_done))
+>>                  rtl_irq_enable(tp);
+>>
+>>          return work_done;
+>> }
+>>
+>> and
+>>
+>> static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget)
+>> {
+>>          struct device *d = tp_to_dev(tp);
+>>          int count;
+>>
+>>          for (count = 0; count < budget; count++, tp->cur_rx++) {
+>>                  unsigned int pkt_size, entry = tp->cur_rx % NUM_RX_DESC;
+>>                  struct RxDesc *desc = tp->RxDescArray + entry;
+>>                  struct sk_buff *skb;
+>>                  const void *rx_buf;
+>>                  dma_addr_t addr;
+>>                  u32 status;
+>>
+>> →               status = le32_to_cpu(desc->opts1);
+>>                  if (status & DescOwn)
+>>                          break;
+>>
+>>                  /* This barrier is needed to keep us from reading
+>>                   * any other fields out of the Rx descriptor until
+>>                   * we know the status of DescOwn
+>>                   */
+>>                  dma_rmb();
+>>
+>>                  if (unlikely(status & RxRES)) {
+>> .
+>> .
+>> .
+>>
+>> The reason isn't obvious, so it might be interesting if this is a valid report and whether it caused spurious corruption
+>> of the network data on Realtek 8169 compatible cards ...
+>>
 > 
-> [  206.510010] ==================================================================
-> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+> I think this is pretty much expected.
 > 
-> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
-> [  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
-> [  206.510097] __xa_clear_mark (lib/xarray.c:1923)
-> [  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
-> [  206.510128] folio_end_writeback (mm/filemap.c:1616)
-> [  206.510143] end_page_writeback (mm/folio-compat.c:28)
-> [  206.510155] btrfs_page_clear_writeback (fs/btrfs/subpage.c:646) btrfs
-> [  206.510994] end_bio_extent_writepage (./include/linux/bio.h:84 fs/btrfs/extent_io.c:542) btrfs
-> [  206.511817] __btrfs_bio_end_io (fs/btrfs/bio.c:117 fs/btrfs/bio.c:112) btrfs
-> [  206.512640] btrfs_orig_bbio_end_io (fs/btrfs/bio.c:164) btrfs
-> [  206.513497] btrfs_simple_end_io (fs/btrfs/bio.c:380) btrfs
-> [  206.514350] bio_endio (block/bio.c:1617)
-> [  206.514362] blk_mq_end_request_batch (block/blk-mq.c:837 block/blk-mq.c:1073)
-> [  206.514377] nvme_pci_complete_batch (drivers/nvme/host/pci.c:986) nvme
-> [  206.514437] nvme_irq (drivers/nvme/host/pci.c:1086) nvme
-> [  206.514500] __handle_irq_event_percpu (kernel/irq/handle.c:158)
-> [  206.514517] handle_irq_event (kernel/irq/handle.c:195 kernel/irq/handle.c:210)
-> [  206.514533] handle_edge_irq (kernel/irq/chip.c:836)
-> [  206.514549] __common_interrupt (./include/linux/irqdesc.h:161 arch/x86/kernel/irq.c:238 arch/x86/kernel/irq.c:257)
-> [  206.514563] common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
-> [  206.514583] asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
-> [  206.514599] kcsan_setup_watchpoint (kernel/kcsan/core.c:705 (discriminator 1))
-> [  206.514612] __tsan_read8 (kernel/kcsan/core.c:1025)
-> [  206.514626] steal_from_bitmap.part.0 (./include/linux/find.h:186 fs/btrfs/free-space-cache.c:2557 fs/btrfs/free-space-cache.c:2613) btrfs
-> [  206.515491] __btrfs_add_free_space (fs/btrfs/free-space-cache.c:2689 fs/btrfs/free-space-cache.c:2667) btrfs
-> [  206.516361] btrfs_add_free_space_async_trimmed (fs/btrfs/free-space-cache.c:2798) btrfs
-> [  206.517231] add_new_free_space (fs/btrfs/block-group.c:550) btrfs
-> [  206.518095] load_free_space_tree (fs/btrfs/free-space-tree.c:1595 fs/btrfs/free-space-tree.c:1658) btrfs
-> [  206.518953] caching_thread (fs/btrfs/block-group.c:873) btrfs
-> [  206.519800] btrfs_work_helper (fs/btrfs/async-thread.c:314) btrfs
-> [  206.520643] process_one_work (kernel/workqueue.c:2600)
-> [  206.520658] worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2752)
-> [  206.520672] kthread (kernel/kthread.c:389)
-> [  206.520684] ret_from_fork (arch/x86/kernel/process.c:145)
-> [  206.520701] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
+> Driver reads a piece of memory that the hardware can modify.
 > 
-> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
-> [  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
-> [  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
-> [  206.520763] __filemap_fdatawait_range (mm/filemap.c:519)
-> [  206.520777] filemap_fdatawait_range (mm/filemap.c:556)
-> [  206.520790] btrfs_wait_ordered_range (fs/btrfs/ordered-data.c:839) btrfs
-> [  206.521641] btrfs_sync_file (fs/btrfs/file.c:1859) btrfs
-> [  206.522495] vfs_fsync_range (fs/sync.c:188)
-> [  206.522509] __x64_sys_fsync (./include/linux/file.h:45 fs/sync.c:213 fs/sync.c:220 fs/sync.c:218 fs/sync.c:218)
-> [  206.522522] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
-> [  206.522535] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+> Adding data_race() annotations could avoid these false positives.
 > 
-> [  206.522557] value changed: 0xfffffffffff80000 -> 0xfffffffffff00000
-> 
-> [  206.522574] Reported by Kernel Concurrency Sanitizer on:
-> [  206.522585] CPU: 6 PID: 2793 Comm: tracker-extract Tainted: G             L     6.5.0-rc6+ #44
-> [  206.522600] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-> [  206.522608] ==================================================================
+>> Hope this helps.
+>>
+>> Best regards,
+>> Mirsad Todorovac
 
-Thanks for working on this. I guess the full KCSAN warning isn't that
-useful in the changelog. Rather I'd spend more time explaining the real
-problem here ...
+Well, another approach was this quick fix that eliminated all those rtl8169_poll() KCSAN warnings.
 
-> As Jan Kara explained, the problem is in the function xas_find_chuck():
-> 
-> /* Private */
-> static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
-> 		xa_mark_t mark)
-> {
-> 	unsigned long *addr = xas->xa_node->marks[(__force unsigned)mark];
-> 	unsigned int offset = xas->xa_offset;
-> 
-> 	if (advance)
-> 		offset++;
-> 	if (XA_CHUNK_SIZE == BITS_PER_LONG) {
-> 		if (offset < XA_CHUNK_SIZE) {
-> →			unsigned long data = *addr & (~0UL << offset);
-> 			if (data)
-> 				return __ffs(data);
+If READ_ONCE(desc->opts1) fixed it, then maybe there is more to this than meets the eye?
 
-... which is that xas_find_chunk() is called only under RCU protection and
-thus the two uses of 'data' in the above code can yield different results.
+-------------------------------------------------
+  drivers/net/ethernet/realtek/r8169_main.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 		}
-> 		return XA_CHUNK_SIZE;
-> 	}
-> 
-> 	return find_next_bit(addr, XA_CHUNK_SIZE, offset);
-> }
-> 
-> In particular, the line
-> 
-> 			unsigned long data = *addr & (~0UL << offset);
-> 
-> contains a data race that is best avoided using READ_ONCE(), which eliminated the KCSAN
-> data-race warning completely.
-
-Yes, this improves the situation for xarray use on 64-bit architectures but
-doesn't fix cases on 32-bit archs or if CONFIG_BASE_SMALL is set. As I
-mentioned in my previous reply, I'd rather:
-
-1) Fix find_next_bit(), find_first_bit() and related functions in
-lib/find_bit.c to use READ_ONCE() - such as _find_first_bit() etc. It is
-quite some churn but I don't see how else to make these functions safe when
-the underlying contents can change.
-
-2) Change xas_find_chunk() to unconditionally use find_next_bit() as the
-special case XA_CHUNK_SIZE == BITS_PER_LONG seems pointless these days
-because find_next_bit() is inline and does small_const_nbits(size) check.
-
-								Honza
-
- 
-> Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Fixes: b803b42823d0d ("xarray: Add XArray iterators")
-> Matthew Wilcox <willy@infradead.org>
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: linux-btrfs@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-> ---
-> v1: the proposed fix (RFC)
-> 
->  include/linux/xarray.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-> index cb571dfcf4b1..1715fd322d62 100644
-> --- a/include/linux/xarray.h
-> +++ b/include/linux/xarray.h
-> @@ -1720,7 +1720,7 @@ static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
->  		offset++;
->  	if (XA_CHUNK_SIZE == BITS_PER_LONG) {
->  		if (offset < XA_CHUNK_SIZE) {
-> -			unsigned long data = *addr & (~0UL << offset);
-> +			unsigned long data = READ_ONCE(*addr) & (~0UL << offset);
->  			if (data)
->  				return __ffs(data);
->  		}
-> -- 
-> 2.34.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 6351a2dc13bc..051551ee2a15 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -4427,7 +4427,7 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget
+                 dma_addr_t addr;
+                 u32 status;
+  
+-               status = le32_to_cpu(desc->opts1);
++               status = le32_to_cpu(READ_ONCE(desc->opts1));
+                 if (status & DescOwn)
+                         break;
+  
