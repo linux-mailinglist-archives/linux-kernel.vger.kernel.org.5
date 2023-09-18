@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 893177A4535
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333637A4543
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240835AbjIRIzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
+        id S240703AbjIRI6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240837AbjIRIzD (ORCPT
+        with ESMTP id S240837AbjIRI5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:55:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4EDD1;
-        Mon, 18 Sep 2023 01:54:58 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695027296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7SaupYWhDkXFaEEUUd3eBV7dIU5O04Mi5eNGHFaaIGY=;
-        b=xHYrdQl9Fyoq2TE360zSXtB4EpAvVmpUsqJQpJCnBTY1s7EdBTSxJ0kILkRn3qXRxXgtp0
-        nfxfbDMQ0ZG4N7C+KkJrrwtXxEWWHEny4xgOcwRFjBAAttlvZkXW3jGJBTwdpzVorw4OrS
-        luXaqlQEd42Bsv/YmV0AB2ouM4q+mcctSLE86o8iO4baw2eKCUkhYo6sLZyQbhg2xuqobe
-        +NKagOTTe5hfBorbaO4q+/uEx3sgaJuNf6rdXaubMoL8KyKN7TdaI5H+9YKEa6wLUKaq68
-        wEg7wefJe9mJ8IR3fEk8PV3hN6mT1KemifGFaN1TJklEMLeKGac0hGSHc6gh7A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695027296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7SaupYWhDkXFaEEUUd3eBV7dIU5O04Mi5eNGHFaaIGY=;
-        b=3ZW1E3MWTMz7DFU1FAMoJ/GG7soyRLlrVp1Vn4DtvHHcTlA7fK4xv+J7kmUdsWGqizQAF8
-        C2XhGyt13zv7ZyAA==
-To:     Petr Mladek <pmladek@suse.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Enlin Mu <enlinmu@gmail.com>, Enlin Mu <enlin.mu@outlook.com>,
-        rostedt@goodmis.org, senozhatsky@chromium.org,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        enlin.mu@unisoc.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] printk: add cpu id information to printk() output
-In-Reply-To: <ZQSHJ_786kZNjEDX@alley>
-References: <JH0PR04MB7072A4B6946EAEEB1EB8B0BE8AF6A@JH0PR04MB7072.apcprd04.prod.outlook.com>
- <8734zfx2bo.fsf@jogness.linutronix.de>
- <CAAfh-jPc+UWMcLPFbYy6rYUh4OU36frkVYVbkhNPNX4L6RG5sA@mail.gmail.com>
- <2023091547-mug-unlikable-571f@gregkh> <ZQSHJ_786kZNjEDX@alley>
-Date:   Mon, 18 Sep 2023 11:00:48 +0206
-Message-ID: <87ttrrlv3b.fsf@jogness.linutronix.de>
+        Mon, 18 Sep 2023 04:57:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B754BC5;
+        Mon, 18 Sep 2023 01:57:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695027459; x=1726563459;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=HeFp7tILd3nxt9A1X2feyEpN3APhXPS4vq/kQkpBxPg=;
+  b=lLA1bQcYf729vRNzqMhNkZCWVNOF/2AAKfesF8/L7IxBZnTkdFEXzm8c
+   Rf4Et2j+t7oCVoJ0EwpYg9KkxfV9rPB+Qk0xMccSi5IaBF/IGEDonBbsC
+   J+XqXQ6q8Agy0yfTpiLm3mQc+zVpXGQTM0KNxmmsUEpBtJzpYHiqebbev
+   mNQlGsIZIMhwZ7qh7AXxq/2KH58wmGqqlBePAWDRPIBb2QBK8ODGxyNIr
+   dz16rcjLyESuRSPNCzdJ5my6YhI6EPUq4JE2nfo4syv9as/grA+mbyNMm
+   oUGpDPYtx/X13JYsPbqk9b8Zhicd67h8gDEYGkuzwpDHKjAIUtV8byngO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="376916427"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="376916427"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:55:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="811280109"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="811280109"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:55:42 -0700
+Date:   Mon, 18 Sep 2023 11:55:38 +0300
+From:   Raag Jadav <raag.jadav@intel.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
+        Jonathan.Cameron@huawei.com, andriy.shevchenko@linux.intel.com,
+        lars@metafoo.de, rmfrfs@gmail.com, jean-baptiste.maneyrol@tdk.com,
+        lee@kernel.org, laurentiu.palcu@oss.nxp.com,
+        l.stach@pengutronix.de, james.schulman@cirrus.com,
+        david.rhodes@cirrus.com, rf@opensource.cirrus.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        patches@opensource.cirrus.com,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH for-next v2 02/10] PM: Update EXPORT_*_DEV_PM_OPS() to
+ EXPORT_*_RUNTIME_PM_OPS()
+Message-ID: <ZQgQilY20yEUPtt3@black.fi.intel.com>
+References: <20230918080951.3615-1-raag.jadav@intel.com>
+ <20230918080951.3615-3-raag.jadav@intel.com>
+ <a31817a460f8ee66c9d460e97aeea62b2bcfbc51.camel@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a31817a460f8ee66c9d460e97aeea62b2bcfbc51.camel@crapouillou.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-15, Petr Mladek <pmladek@suse.com> wrote:
-> The biggest problem is that it would change the format of the
-> ringbuffer so that it would require updating external tools,
-> working with crashdump, especially crash but there are also
-> alternative python extensions for gdb.
+On Mon, Sep 18, 2023 at 10:20:29AM +0200, Paul Cercueil wrote:
+> Le lundi 18 septembre 2023 à 13:39 +0530, Raag Jadav a écrit :
+> > Rename EXPORT_*_DEV_PM_OPS() macros to EXPORT_*_RUNTIME_PM_OPS()
+> > and while at it, move them to pm_runtime.h.
+> > This is done in conjunction with the introduction of
+> > EXPORT_*_SIMPLE_PM_OPS() set of macros, to make things less
+> > confusing.
+> > This makes both _RUNTIME_ and _SIMPLE_ variants of export macros more
+> > distinguishable and self explanatory.
+> 
+> Well I don't really agree with this one. The EXPORT_*_DEV_PM_OPS() can
+> be used with any callback you need, not just the typical runtime-PM
+> callbacks. They are generic PM macros.
 
-I already have experience updating these external tools. It is
-manageable. But I would prefer we had bigger changes to make. Let us not
-forget your RFC [0] where you wanted to add similar metadata and
-more. We should put all these changes into a single release.
+I agree on the usage part. But with the introduction of export macros for
+_SIMPLE_ variants, current naming scheme would make things unnecessarily
+confusing to the users in my opinion.
 
-John Ogness
+Perhaps we can have it simplified some other way?
 
-[0] https://lore.kernel.org/lkml/20200923135617.27149-1-pmladek@suse.com
+Raag
