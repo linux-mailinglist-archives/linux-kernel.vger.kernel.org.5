@@ -2,93 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BCE7A4A5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 15:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AD37A4A73
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 15:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242061AbjIRNAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 09:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
+        id S242062AbjIRNB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 09:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242040AbjIRM7r (ORCPT
+        with ESMTP id S229594AbjIRNBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:59:47 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCD1CD0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:58:56 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4B5066000A;
-        Mon, 18 Sep 2023 12:58:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695041935;
+        Mon, 18 Sep 2023 09:01:23 -0400
+Received: from out-230.mta1.migadu.com (out-230.mta1.migadu.com [IPv6:2001:41d0:203:375::e6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F70B10F3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 06:00:30 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1695042028;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oBXbmgI35Ay6iC6gwJK7LAKP2TjFS8/WQ3+OgmLbkxg=;
-        b=eASqEhaQOxhMM0xv2JXtw7MYTf+HDpkUT/wk/+Zw2osl+qMPMkyzZBuIU/fQz2sxzOFFSB
-        vw4pHo8+omK/W7OCuTiynmHRBXCLA2eMtZfsYVqWBApHNzFR2eRmnwhvaX37om4kZn18zp
-        do4bZYwXanFr193bP8khG3YKXG/pTESP37eRX1wXmvHal4iM3Ykk1o4j/N9Mo0bi2Ipm7q
-        0VjUEYkxTRTCcSSfqyB6/oLkoRiTTsQsIOTdNp6cPG+2/bla76DLjprJUCfuQTFUHWovy3
-        shQNTgXsLQz2Z5H5lLacO45iqlp4Zs3Se/sMmIeDLp9NuM+6Ydv/h8zDyiaQmQ==
-Date:   Mon, 18 Sep 2023 14:58:52 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Nikita Shubin via B4 Relay 
-        <devnull+nikita.shubin.maquefel.me@kernel.org>
-Cc:     <nikita.shubin@maquefel.me>, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Liang Yang <liang.yang@amlogic.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Johan Jonker <jbx6244@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Subject: Re: [PATCH v4 26/42] mtd: nand: add support for ts72xx
-Message-ID: <20230918145852.46a15c77@xps-13>
-In-Reply-To: <20230915-ep93xx-v4-26-a1d779dcec10@maquefel.me>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
-        <20230915-ep93xx-v4-26-a1d779dcec10@maquefel.me>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        bh=R5G1aT+AHi7jek6Uf/y5TeohqhmCW5n4KHyN+Nw2tzQ=;
+        b=bun50opM5dimzLsCGjkw0y6gEd/JNoD69i4kGYHbMosSzIWcI6JEbEe3YOPdIkVMtmlYMc
+        eHk5W2A6fZmjDuawkH3jAU2G1rjte6655tRV/3p/gvxH7aMLbwULpSUc55a04VxZ69jdGT
+        EgQjHwChB8NVupEWTmUQH52l8To57xkrOsawTvyWNxCpyRLJDvydVoiEvIylak4iT32pEC
+        OktAc0d2GpWkM67mx8BO4YJxMmjRucC41ecehCnulaDNxK7DHeKu99aoqbAuvcCPFkuIkT
+        iLV9vaq+5JWP/nYqeMFUy8wIqO5gVitcquNkVyfdnWkDzgUPwunWYIqZ2LQsLQ==
+From:   John Watts <contact@jookia.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>, John Watts <contact@jookia.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2 9/9] dt-bindings: display: panel: add Fascontek FS035VG158 panel
+Date:   Mon, 18 Sep 2023 22:58:53 +1000
+Message-ID: <20230918125853.2249187-10-contact@jookia.org>
+In-Reply-To: <20230918125853.2249187-1-contact@jookia.org>
+References: <20230918125853.2249187-1-contact@jookia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
+This is a small 3.5" 640x480 IPS LCD panel.
 
-devnull+nikita.shubin.maquefel.me@kernel.org wrote on Fri, 15 Sep 2023
-11:11:08 +0300:
+Signed-off-by: John Watts <contact@jookia.org>
+---
+ .../display/panel/fascontek,fs035vg158.yaml   | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml
 
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
->=20
-> Technologic Systems has it's own nand controller implementation in CPLD.
-
-I initially agreed to accept a first version of this controller driver
-with a legacy API because people were apparently under time pressure to
-get this in. I see it's been a couple of months, so this is not that
-urgent after all. As the driver is only 166 lines long, I would
-strongly prefer a very straight ->exec_op() conversion in order to get
-rid of these ugly direct I/O accesses.
-
-Thanks,
-Miqu=C3=A8l
-
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
->  drivers/mtd/nand/raw/Kconfig                       |   7 +
->  drivers/mtd/nand/raw/Makefile                      |   1 +
->  drivers/mtd/nand/raw/technologic-nand-controller.c | 166 +++++++++++++++=
-++++++
->  3 files changed, 174 insertions(+)
->=20
+diff --git a/Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml b/Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml
+new file mode 100644
+index 000000000000..d13c4bd26de4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/fascontek,fs035vg158.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Fascontek FS035VG158 3.5" (640x480 pixels) 24-bit IPS LCD panel
++
++maintainers:
++  - John Watts <contact@jookia.org>
++
++allOf:
++  - $ref: panel-common.yaml#
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++properties:
++  compatible:
++    const: fascontek,fs035vg158
++
++  spi-3wire: true
++
++required:
++  - compatible
++  - reg
++  - port
++  - power-supply
++  - reset-gpios
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        panel@0 {
++            compatible = "fascontek,fs035vg158";
++            reg = <0>;
++
++            spi-3wire;
++            spi-max-frequency = <3125000>;
++
++            reset-gpios = <&gpe 2 GPIO_ACTIVE_LOW>;
++
++            backlight = <&backlight>;
++            power-supply = <&vcc>;
++
++            port {
++                panel_input: endpoint {
++                    remote-endpoint = <&panel_output>;
++                };
++            };
++        };
++    };
+-- 
+2.42.0
 
