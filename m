@@ -2,128 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB1C7A4BAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BCC7A4C7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235019AbjIRPU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
+        id S229619AbjIRPeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbjIRPUT (ORCPT
+        with ESMTP id S229822AbjIRPeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:20:19 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2041.outbound.protection.outlook.com [40.107.223.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F11619BC;
-        Mon, 18 Sep 2023 08:18:18 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZpJovo5p/5cmdk/KbTVUikLjSmUJyCbWW7T0EDzyUb/VMc5IlhXe9nqfIVVCdtMigEmKXcF70P9qoKTcrD0MXzaUzvAXxiNtNKGNd8FhIfGJnYLyUOJzA8OlWWnzDXKqcpIAzQEW0bPKu74/KVIuUaUgO4PS3DPjJUtn5kF7CyeO4xDburJzI6zQ4yElGosSLuDf5S/6jnLBoad7wNSLz2NxidacsR353ssaixayHwaECMYQgQ34uoHhxFnzXINX2pqn0sq85OidypyupVx5FC9BJ3NWOFvi3HcbaKXNPg5UzRBdsEpTOejEuedTZyhXYm4Z/+7FOd/XNmKe1qQIvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4nCzCmilvp3Su1FcnK3u++hsUeUE9frZQ5nt1rg3F8k=;
- b=hgepvnpqltMNvkfMxdq7MnF3pR9HGGpgaZ1CIxzvObFI7urM0iEVqctthy0MCm0iaRJaMbsiKOfNV+wzD3WT+rs/Ya723EMvwtUcF/pWyfsNQUy1e5dM0RrrqVF7ud4UYDynCbpMPYIfCTUWMUkR0JamV7RK4xtU8pMkdjDheW1mTpnJnRu7TRREZSWbbU8dQg5kwgAzSskbhJx4+YbgGOrz+eU74Q8NQ0BL/3hFdjxtBUILIc0URGXK4/J551WDXYR7g5lp9fz5g4zDFSuaRiZk8HxQdxqSSR7A02cb46C4OByvyrSUv0DuZLw6b0ylsfjEdPztcBehVEadLWIHFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4nCzCmilvp3Su1FcnK3u++hsUeUE9frZQ5nt1rg3F8k=;
- b=KWi4jU020GUmhoDZ6cbhG6j7G7/Yp3WHtFYxzBIUCeUwGf3OBPkf47mpTV9SkOfykRD4HBizfKJJiinXWZxhArrspxWuyf7Ebz61qb8jqGhCOhINK/Uy5zNKzH4q2oGKZa4uzDGoWXdKHpVZNpDF60hynf3J9SmJb5wv9iwG5dh4zRODNDGXBmwG8GDio0B9zV/U7bQEKDzQm4lF/8K2Nes7xh+D1/8NYqYazdsdvIyFVg8di+c+zIVxQ10c6+sjV8g8E4bCbUQkFan5fpmC4nkbN0TMElo0n6ZuDqdKhQEEGBMZ71IeneACiO0or5uoIyrOd2NFzkEemoQoWFS0OA==
-Received: from DM6PR14CA0071.namprd14.prod.outlook.com (2603:10b6:5:18f::48)
- by CYYPR12MB8653.namprd12.prod.outlook.com (2603:10b6:930:c5::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Mon, 18 Sep
- 2023 14:58:51 +0000
-Received: from DS1PEPF00017095.namprd03.prod.outlook.com
- (2603:10b6:5:18f:cafe::c7) by DM6PR14CA0071.outlook.office365.com
- (2603:10b6:5:18f::48) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27 via Frontend
- Transport; Mon, 18 Sep 2023 14:58:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- DS1PEPF00017095.mail.protection.outlook.com (10.167.17.138) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.19 via Frontend Transport; Mon, 18 Sep 2023 14:58:51 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 18 Sep
- 2023 07:58:41 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 18 Sep
- 2023 07:58:41 -0700
-Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Mon, 18 Sep 2023 07:58:41 -0700
-Date:   Mon, 18 Sep 2023 07:58:39 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Baolu Lu <baolu.lu@linux.intel.com>, Will Deacon <will@kernel.org>
-CC:     <robin.murphy@arm.com>, <joro@8bytes.org>, <jgg@nvidia.com>,
-        <jean-philippe@linaro.org>, <apopple@nvidia.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <stable@vger.kernel.org>
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Fix soft lockup triggered by
- arm_smmu_mm_invalidate_range
-Message-ID: <ZQhln3EQ5DeXhfEU@Asurada-Nvidia>
-References: <20230901203904.4073-1-nicolinc@nvidia.com>
- <ZQQLNmmAOsNmvtDs@Asurada-Nvidia>
- <9334dfcd-7749-6ae1-1170-b4952f2b8181@linux.intel.com>
- <20230918092341.GB17341@willie-the-truck>
+        Mon, 18 Sep 2023 11:34:04 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5F0CF8;
+        Mon, 18 Sep 2023 08:29:53 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59c0d002081so30586957b3.2;
+        Mon, 18 Sep 2023 08:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695050777; x=1695655577; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Pyv4oO8rrHEd4wiz5Er/b8SPSG4uhIlASx2HO5yMlQ=;
+        b=fiAIwznoeOaPa8f54jwL7chi2HiACFejgzjdsMYYCi287WDijxzyWrr6GJVNcAOz3s
+         pvyB0kL9KQ72Ggx08iaGDxrhoopTh6Mf0lfBlt11FkGQHwbXg16U2SbOWt6oOh1jk8FL
+         l+OUfcIZ6LRxdkgkptqJ3nLkuYvmciJH9ve7clBSx5DtNgCB9nyqrtK9nmeT7LTetVWx
+         sRDqJPHlNKykyb1Y9+ReoxumSVUbrZBD0iZXm0C0+2Sx778am2/KjuRhDGPRRiS1HLOH
+         DCnsRtRofIulQz1MXV/ySRftWxXyJ6OX4UHiADJjXk5psCZT8+qE2CESeDYQfaGQINGf
+         viVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695050777; x=1695655577;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7Pyv4oO8rrHEd4wiz5Er/b8SPSG4uhIlASx2HO5yMlQ=;
+        b=h11kBMIM/fRe8oEg8XofbJahS8BaRSKYzvy8oK4mZlE3FhOzFO9JmoZNAKzmfRSNGv
+         jJTIoaOtg0NAFvtQGqBOM6aUTdMLOmlMfwQmSLuEk6yRsbd5bgBR6i9bj3IxZ7+ctU7e
+         lQwxfH6j4GNIu7CcSGT6oU1Q5meMdS5lLucehpUyaGvvXh7NwdrWOFk5dSp8O6jMVjT5
+         7Vyxxl8L4cZxHU2xO+D3k6Jxr8YC/o++jolF1KB0rAtPfKnG+fR5hHNfEhERYwcEe7An
+         DJU8qk4sa6rKjfkIk0cz1UWp7bX9mbw8U9eZnrR3Ey0vo75PmARZBwepcdVQq51Oxhii
+         RLGQ==
+X-Gm-Message-State: AOJu0YyTKNCvZky/k0nFGMxCDS5Xz3OwHnFX9ax/YFJwzuk4/P5kAYiu
+        OecL5AKc1d24k/qvps5ECgL3uAhbQxo=
+X-Google-Smtp-Source: AGHT+IF7JTS/i+m9/oQRFXfvKeREFGeGsE6KslGHKMNcg+tSAckFmk+2b7p+zXlHPu/4uvCOHinHTA==
+X-Received: by 2002:a6b:dc0c:0:b0:795:13ea:477a with SMTP id s12-20020a6bdc0c000000b0079513ea477amr11908098ioc.8.1695049290863;
+        Mon, 18 Sep 2023 08:01:30 -0700 (PDT)
+Received: from localhost ([216.228.127.130])
+        by smtp.gmail.com with ESMTPSA id h2-20020a6b7a02000000b00786aa1eb582sm2818737iom.31.2023.09.18.08.01.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 08:01:29 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 07:59:03 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Jan Kara <jack@suse.cz>, Philipp Stanner <pstanner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v1 1/1] xarray: fix the data-race in xas_find_chunk() by
+ using READ_ONCE()
+Message-ID: <ZQhlt/EbRf3Y+0jT@yury-ThinkPad>
+References: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
+ <20230918094116.2mgquyxhnxcawxfu@quack3>
+ <22ca3ad4-42ef-43bc-51d0-78aaf274977b@alu.unizg.hr>
+ <20230918113840.h3mmnuyer44e5bc5@quack3>
+ <fb0f5ba9-7fe3-a951-0587-640e7672efec@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230918092341.GB17341@willie-the-truck>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017095:EE_|CYYPR12MB8653:EE_
-X-MS-Office365-Filtering-Correlation-Id: 31b086e0-55b6-4c60-377d-08dbb857c53f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d4xzwbFXRdpu6/qOj1aajcXbCnN2iHqp6MVewkMVxiZ52esvOdbO10np35Vp33pg0C5S3QYnKZQKZlKkm9bYoFv7P6zWngq/cTcvt/7ldYW+Bl+TWaEFR+P/ExOP3zibFBVl6Ke4oyMvmGfsp3D8/oHQzDxA6t5Bfk49SYCOBGc0k9XjWkFHQwEneHSDxtM8vbNAIsNWVBGikh7E6X5k8Bo92AltpBRRRgcToOSxanLl217Tu3fOlQrYKZadF1wc5tpdHIHjQW/0ev2LuK95goUsf9D1aRKxVZGgpIu6kz14/bY2yIsiINsZ9oZ06m6DWe6mXQYM9U6XpgjiMsZl5mGPwKgnwCHmd89wfR9/99TavWFvQj1GIS0o7oXC1s4IokmRtYfdhWSWN8BMZHtovS4M2BATI3jwxc7ykpEnqDV49LwHqpGeNR4YuXp41NmdRhYiJfl560+pyJ6XAzVdWqttRUPZuFNGY21151ZOBSQTmK7tn7lnGum2vyPi+KQ+ZJM7mLGSrpmxrbK9Sz3kOGj+DQoBQ9gsF3PJEaaE+tgjMdsx8wmfOsOPNBAmmTGq1qv1NcUFjCugGclnWS/wlYrKr1xgG6wF/bwvkP4g5VWEk63I3OpjHQ0J26ar8hIbjfQrTjMHB91YYJwjBOV7h8EhLO7aAl4yrlr9oeUikOV7Q+0XKvaf2C61d+k01+QhgLkSFBQYFEUZ8xAISm6Y8Gy/UYzutm5ePVu2oPcuiGmkB26S7ehQqvAqaL+DBe9r
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(82310400011)(186009)(1800799009)(451199024)(40470700004)(36840700001)(46966006)(9686003)(478600001)(26005)(4744005)(336012)(426003)(47076005)(2906002)(33716001)(70206006)(54906003)(70586007)(316002)(110136005)(8676002)(5660300002)(4326008)(8936002)(41300700001)(40460700003)(40480700001)(36860700001)(7636003)(356005)(82740400003)(86362001)(55016003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 14:58:51.2414
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31b086e0-55b6-4c60-377d-08dbb857c53f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017095.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8653
+In-Reply-To: <fb0f5ba9-7fe3-a951-0587-640e7672efec@alu.unizg.hr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 10:23:42AM +0100, Will Deacon wrote:
+On Mon, Sep 18, 2023 at 02:46:02PM +0200, Mirsad Todorovac wrote:
 
-> > If the patch does not apply to any stable kernel that you want it to be
-> > there, you can then post a back-ported patch to the stable mailing list.
-> >
-> > When doing so, it's better to include the following information:
-> >
-> > - The mainline commit ID of the back-ported patch.
-> > - The versions of the stable kernel(s) to which you want the back-ported
-> >   patch to be applied.
-> >
-> > Hope this helps.
+...
 
-Yes! Thanks :)
+> Ah, I see. This is definitely not good. But I managed to fix and test the find_next_bit()
+> family, but this seems that simply
+> 
+> -------------------------------------------
+>  include/linux/xarray.h | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+> index 1715fd322d62..89918b65b00d 100644
+> --- a/include/linux/xarray.h
+> +++ b/include/linux/xarray.h
+> @@ -1718,14 +1718,6 @@ static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
+>         if (advance)
+>                 offset++;
+> -       if (XA_CHUNK_SIZE == BITS_PER_LONG) {
+> -               if (offset < XA_CHUNK_SIZE) {
+> -                       unsigned long data = READ_ONCE(*addr) & (~0UL << offset);
+> -                       if (data)
+> -                               return __ffs(data);
+> -               }
+> -               return XA_CHUNK_SIZE;
+> -       }
+>         return find_next_bit(addr, XA_CHUNK_SIZE, offset);
+>  }
 
-> Yup, please send a version against -rc1 so we can land that first.
+This looks correct. As per my understanding, the removed part is the
+1-word bitmap optimization for find_next_bit. If so, it's not needed
+because find_next_bit() bears this optimization itself.
 
-Yea, will send a new version.
+...
 
-Thank you
-Nicolin
+> --------------------------------------------------------
+>  lib/find_bit.c | 33 +++++++++++++++++----------------
+>  1 file changed, 17 insertions(+), 16 deletions(-)
+> 
+> diff --git a/lib/find_bit.c b/lib/find_bit.c
+> index 32f99e9a670e..56244e4f744e 100644
+> --- a/lib/find_bit.c
+> +++ b/lib/find_bit.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/math.h>
+>  #include <linux/minmax.h>
+>  #include <linux/swab.h>
+> +#include <asm/rwonce.h>
+>  /*
+>   * Common helper for find_bit() function family
+> @@ -98,7 +99,7 @@ out:                                                                          \
+>   */
+>  unsigned long _find_first_bit(const unsigned long *addr, unsigned long size)
+>  {
+> -       return FIND_FIRST_BIT(addr[idx], /* nop */, size);
+> +       return FIND_FIRST_BIT(READ_ONCE(addr[idx]), /* nop */, size);
+>  }
+>  EXPORT_SYMBOL(_find_first_bit);
+>  #endif
+
+...
+
+That doesn't look correct. READ_ONCE() implies that there's another
+thread modifying the bitmap concurrently. This is not the true for
+vast majority of bitmap API users, and I expect that forcing
+READ_ONCE() would affect performance for them.
+
+Bitmap functions, with a few rare exceptions like set_bit(), are not
+thread-safe and require users to perform locking/synchronization where
+needed.
+
+If you really need READ_ONCE, I think it's better to implement a new
+flavor of the function(s) separately, like:
+        find_first_bit_read_once()
+
+Thanks,
+Yury
