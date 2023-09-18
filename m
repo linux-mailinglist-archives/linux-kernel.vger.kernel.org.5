@@ -2,215 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5937A4C49
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CFA7A4C6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbjIRPaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
+        id S229615AbjIRPcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjIRP3o (ORCPT
+        with ESMTP id S229671AbjIRPcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:29:44 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0E92724
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:27:52 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-656340e666eso18686386d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:27:52 -0700 (PDT)
+        Mon, 18 Sep 2023 11:32:33 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49170CEB
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:27:56 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c1ff5b741cso43352645ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:27:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695050706; x=1695655506; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1695050707; x=1695655507; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ys8ZuxyrYrmqdRpBskmFPDEMMgzPmmgYAlaMVeRpyj0=;
-        b=OoL/LYepxyn7fq5yLXK7HVkQfKnaUwW9v7EAHw+0/BqIW7xpbUjv7ImzN6RRGVYvBB
-         LSdoSk7MN1Ly/fxCL2Y+SuTUqfpymM3UYxEVBUYNPrhkZrNlO9wu7rUVv2pvoCMzyVxE
-         lqdjza/DAyPELaLP1pYEw+LeIWLv11GbQ2egzU6IRqNBc62NBRHAdMpApbZdmVlFFCoF
-         d8W+M6cPzASeKEaoqBllc/rxOVBmpUfz8Y77v6srfgZOmmN8fm/gEYSlNKFE1RQdM1ot
-         eNYjvKobxwT0l37bAa4e5JlrJAiplopZCJ5kKeqzSHt8SVT4iMcKpjQp8MDiDn8CNUuy
-         rSwA==
+        bh=pudypFwSwvYWUA8GZ6yWJQWZyEDdbHX7BphECmHVSNw=;
+        b=QimgOvFpmjMbI25FGHNAb4EU9OVm5BesSOwBaeQKNXBzh9Cs/0fA2EuSCY61vT2b0a
+         1zy1Kk9k8hr3gXUcQUnLqiRc7O1m9ZmlK7AsY6WGx1Aur2wQ+CS4AP9wPKKS5jpExQ5B
+         TYwiAf1fO5Xu5OF4g+CoIAekC9V3R0kg62t6c4ZGaezkMxnw4blt8t+3X+nlUnIDsdST
+         jjHsI9Y2nc1zs+U7ZhP2mdLjpjrgAs5vxAZaTKnwLVYh09Qt9A7AEdEE/KFkYleapepA
+         v28t0TYarg3nWTK5MgjqNI9EQQrEpsR7VOZJM5Rlmq/zUktlD7/43nZ7l1q1szbD2XkZ
+         pprg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695050706; x=1695655506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695050707; x=1695655507;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ys8ZuxyrYrmqdRpBskmFPDEMMgzPmmgYAlaMVeRpyj0=;
-        b=pYrdVBQmUtK8yQ4paD+eNF3Ay2CBdBq9DkbQHtR3zrxseXj2CZ4hAtpx69hsoL9JkG
-         5IGXRK8SeTaLVObcYxOigjmuIOcwvCjX8dKvzehmeiqEESyqfvXDmqgOtqSkP0qdDhQ6
-         yU/oRDfdD6Z+n9MapT9kstdYrB8iaLqfdHaLcd60ZdYA0ZvWfLCzNkZrgu2us6TQGjTD
-         /7ELy0VhO5To7xR0WVCJXM6ORaW0o0HTqVAOsJeJaOmfLIVNZWEp3Ogo/zRUe3pFgV6m
-         jCZNpjoOOw0NGBcd35wWC6gEPbK0Z6XRE2sLdlvnk+cLMK3n6miSmdCbXXhNcOHA6jM6
-         wisg==
-X-Gm-Message-State: AOJu0YzFCO9IKBhi1tkiYnXSireaEstHRnt2940jrO04RD3+PtgG2dae
-        DdFiNIjk0Lf3S4+MS50PXfscLTBrjfx/eeoCDlm/dA==
-X-Google-Smtp-Source: AGHT+IH9LLqV92rpZ5LSrWwBipB0Ihf+9x9uQ6G4zR4uCe4P2fA/teIqsQ/gOUdead92SW7V7k086l24NnhTpkdsTVY=
-X-Received: by 2002:ad4:4c48:0:b0:64f:3bec:9b29 with SMTP id
- cs8-20020ad44c48000000b0064f3bec9b29mr10357719qvb.39.1695050705847; Mon, 18
- Sep 2023 08:25:05 -0700 (PDT)
+        bh=pudypFwSwvYWUA8GZ6yWJQWZyEDdbHX7BphECmHVSNw=;
+        b=CEanrjCuf0B63SIf+kB0SubqcXzHA9K4BvlYs6qwM+jv17Xk0GjbzZ9YUOo0bfTsrx
+         +C53iB+3l9lzFOsRfLLcSlHTEuauwz60ePMTU7eL3FgNCsi+KV5NyDs1T/2qt9UAn8ms
+         UEKsC8yPp6kv2acEeo8J01CfKS+xhBk4IWoTdv3LakUmXSXCx+hpqRcT9+ngZb26plWa
+         AQZF7TmkZY4WPMYh4cOL6UENdsxFIWQ3LRLgHDhGNsHcQ8QvjUJn7lCycN5XMb2NxNHD
+         qJe8c+E5FWYKWKVbvkeJGLBXxa+fwuyw6cBtS/89z8/Ze/IYbXMCY0p3a/uGWKYpjjnl
+         /P5Q==
+X-Gm-Message-State: AOJu0Ywg97LEZVLIZHth6sLq/nrndEsMakT41U/C2jwnKIhZukmBr3uq
+        YjMzzrs8dr6aiuwb64YO+xqJ3w==
+X-Google-Smtp-Source: AGHT+IExjXc7IVtiPsvm4aeJW5nIUZKxHF7MeFoJNQs3pxieErXLk9RYT1n73k5aZDfIEpUzQJO4bQ==
+X-Received: by 2002:a17:903:60e:b0:1c4:6cc2:a27e with SMTP id kg14-20020a170903060e00b001c46cc2a27emr4245837plb.69.1695050707125;
+        Mon, 18 Sep 2023 08:25:07 -0700 (PDT)
+Received: from PF2LML5M-SMJ.lan ([103.175.14.91])
+        by smtp.gmail.com with ESMTPSA id b6-20020a170902ed0600b001b9ecee459csm3031991pld.34.2023.09.18.08.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 08:25:06 -0700 (PDT)
+From:   Jinhui Guo <guojinhui.liam@bytedance.com>
+To:     rafael@kernel.org
+Cc:     guojinhui.liam@bytedance.com, gregkh@linuxfoundation.org,
+        lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
+        lkp@intel.com, stable@vger.kernel.org
+Subject: Re: [PATCH v6] driver core: platform: set numa_node before platform_device_add()
+Date:   Mon, 18 Sep 2023 23:25:02 +0800
+Message-Id: <20230918152502.316-1-guojinhui.liam@bytedance.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230918134527.252-1-guojinhui.liam@bytedance.com>
+References: <20230918134527.252-1-guojinhui.liam@bytedance.com>
 MIME-Version: 1.0
-References: <20230915172900.3784163-1-mmaurer@google.com> <9966E047-44E7-4665-9628-169F3EBE2F06@kloenk.dev>
- <SLZSYLg5E9OQKI546K87wxTYYLNlT1xM-LhC4W1JFhIate6PFsKq27RcBNhSjUkErYDlzsZB4F2Vc2KOP9tDThg58_tXycWn3K29mQXlFtU=@protonmail.com>
- <0561303E-2089-43FC-AA31-836C7BB844B7@kloenk.dev> <CAGSQo02p0LWZgV8oVidwvN6X__rv3-rj+ZVg9SaZ5Kx+zYahYQ@mail.gmail.com>
-In-Reply-To: <CAGSQo02p0LWZgV8oVidwvN6X__rv3-rj+ZVg9SaZ5Kx+zYahYQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 18 Sep 2023 08:24:51 -0700
-Message-ID: <CAKwvOdnUdFjN+aCDrHKP6RzZCFB033ycN_KkB1WKucGd6VzUSg@mail.gmail.com>
-Subject: Re: [PATCH] rust: Respect HOSTCC when linking for host
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Finn Behrens <me@kloenk.dev>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 12:54=E2=80=AFPM Matthew Maurer <mmaurer@google.com=
-> wrote:
+> On Mon, Sep 18, 2023 at 3:46 PM Jinhui Guo <guojinhui.liam@bytedance.com> wrote:
+> >
+> > Setting the devices' numa_node needs to be done in
+> > platform_device_register_full(), because that's where the
+> > platform device object is allocated.
+> >
+> > Fixes: 4a60406d3592 ("driver core: platform: expose numa_node to users in sysfs")
+> > Cc: stable@vger.kernel.org
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202309122309.mbxAnAIe-lkp@intel.com/
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+> 
+> No, I haven't given you this tag.
+> 
+> I don't think that Greg has given you the one above either.
+> 
+> Please don't add tage that you haven't received to your patches,
+> because they are not applicable with incorrect tags.
 >
-> On Sat, Sep 16, 2023 at 11:07=E2=80=AFAM Finn Behrens <me@kloenk.dev> wro=
-te:
+
+I appologize to it. I just misunderstand what it means. I will drop it out soon.
+ 
+> > Signed-off-by: Jinhui Guo <guojinhui.liam@bytedance.com>
+> > ---
+> > V5 -> V6:
+> >   1. Update subject to correct function name platform_device_add().
+> >   2. Provide a more clear and accurate description of the changes
+> >      made in commit (suggested by Rafael J. Wysocki).
+> >   3. Add reviewer name.
 > >
+> > V4 -> V5:
+> >   Add Cc: stable line and changes from the previous submited patches.
 > >
+> > V3 -> V4:
+> >   Refactor code to be an ACPI function call.
 > >
-> > On 16 Sep 2023, at 19:53, Bj=C3=B6rn Roy Baron wrote:
+> > V2 -> V3:
+> >   Fix Signed-off name.
 > >
-> > > On Saturday, September 16th, 2023 at 18:52, Finn Behrens <me@kloenk.d=
-ev> wrote:
-> > >
-> > >>
-> > >> On 15 Sep 2023, at 19:28, Matthew Maurer wrote:
-> > >>
-> > >>> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is def=
-ined,
-> > >>> resulting in build failures in hermetic environments where `cc` doe=
-s not
-> > >>> exist. This includes both hostprogs and proc-macros.
-> > >>>
-> > >>> Since we are setting the linker to `HOSTCC`, we set the linker flav=
-or to
-> > >>> `gcc` explicitly.
-> > >> But as `HOSTCC` could also be clang, the linker flavor would then be=
- wrong, would that create a problem?
-> > >
-> > > Rustc uses the gcc linker flavor for clang too. There has been a prop=
-osal to split it up, but I'm not sure of the status of that. In any case cl=
-ang's cli is similar enough to gcc that it works fine to use the gcc linker=
- flavor.
-> > >
-> > In that case this looks very reasonable.
+> > V1 -> V2:
+> >   Fix compile error without enabling CONFIG_ACPI.
+> > ---
 > >
-> > Second thing I noticed is that `HOSTCC` could be the wrong variable, an=
-d `HOSTLD` would make more sense as we look for the linker and not the gene=
-ral C compiler.
+> >  drivers/acpi/acpi_platform.c | 4 +---
+> >  drivers/base/platform.c      | 1 +
+> >  include/linux/acpi.h         | 5 +++++
+> >  3 files changed, 7 insertions(+), 3 deletions(-)
 > >
-> Yes, thanks Bjorn - "gcc" is the linker flavor used for "Use the C
-> compiler as a linker".
->
-> With regards to HOSTLD, I was trying to make the minimum possible
-> change. Currently, it is using the command `cc` as a linker, so this
-> would preserve existing behavior when HOSTCC is unset.
-
-Hey! Isn't HOSTCC always set? Top level Makefile lines 442-445?
-
-What happens if you invoke the linker directly?
-
-Generally, the kernel either invokes the compiler or the linker
-directly. (For assembler, it is typically preprocessed, as are linker
-scripts!)  So invoking the linker directly is a common pattern in
-kbuild.  It also makes me slightly sad if the rust compiler ends up
-invoking a c compiler, even if it's simply to drive the linker.
-
-I'm concerned that while this might invoke $HOSTCC, it probably won't
-do so with any of the $KBUILD_HOSTCFLAGS set.  That's generally been a
-problem in the past.
-
-For example, Android carries a downstream patch to set `-fuse-ld=3Dlld`
-for $KBUILD_HOSTCFLAGS, because its build environment doesn't contain
-GNU binutils ("guilty, officer").
-
-So if you set `rustc` to use `clang` as the linker, how do you
-guarantee that `-fuse-ld=3Dlld` or any of the upstream
-$KBUILD_HOSTCFLAGS get used?
-
-Android also sets `--sysroot` for the $KBUILD_HOSTCFLAGS to guarantee
-that the UAPI header tests can be built against bionic (Android's
-libc).
-
-Or is that handled elsewhere in rust/Makefile already?
-
-Also, if this is your first kernel patch, nice job! Welcome!
-
->
-> If we would prefer `HOSTLD` instead we can do that, but we would need
-> to additionally inspect `LLVM` to set the linker flavor accordingly
-> (e.g. set ld vs ld.lld).
->
-> Do folks have strong opinions between these? My primary concern is to
-> avoid calling programs by foo when their HOSTFOO variable is set.
->
-> See https://doc.rust-lang.org/rustc/codegen-options/index.html#linker-fla=
-vor
-> for details on linker flavor settings.
-> > >>>
-> > >>> Signed-off-by: Matthew Maurer <mmaurer@google.com>
-> > >>> ---
-> > >>>  rust/Makefile         | 1 +
-> > >>>  scripts/Makefile.host | 1 +
-> > >>>  2 files changed, 2 insertions(+)
-> > >>>
-> > >>> diff --git a/rust/Makefile b/rust/Makefile
-> > >>> index 87958e864be0..2a2352638f11 100644
-> > >>> --- a/rust/Makefile
-> > >>> +++ b/rust/Makefile
-> > >>> @@ -383,6 +383,7 @@ $(obj)/exports_kernel_generated.h: $(obj)/kerne=
-l.o FORCE
-> > >>>  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
-> > >>>        cmd_rustc_procmacro =3D \
-> > >>>     $(RUSTC_OR_CLIPPY) $(rust_common_flags) \
-> > >>> +           -C linker-flavor=3Dgcc -C linker=3D$(HOSTCC) \
-> > >>>             --emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --ext=
-ern proc_macro \
-> > >>>             --crate-type proc-macro \
-> > >>>             --crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
-> > >>> diff --git a/scripts/Makefile.host b/scripts/Makefile.host
-> > >>> index 8f7f842b54f9..0aa95a3af1c4 100644
-> > >>> --- a/scripts/Makefile.host
-> > >>> +++ b/scripts/Makefile.host
-> > >>> @@ -91,6 +91,7 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
-> > >>>  # current working directory, which may be not accessible in the ou=
-t-of-tree
-> > >>>  # modules case.
-> > >>>  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfi=
-le) \
-> > >>> +            -C linker-flavor=3Dgcc -C linker=3D$(HOSTCC) \
-> > >>>                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
-> > >>>                   $(HOSTRUSTFLAGS_$(target-stem))
-> > >>>
-> > >>> --
-> > >>> 2.42.0.459.ge4e396fd5e-goog
-
-
-
---=20
-Thanks,
-~Nick Desaulniers
+> > diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
+> > index 48d15dd785f6..adcbfbdc343f 100644
+> > --- a/drivers/acpi/acpi_platform.c
+> > +++ b/drivers/acpi/acpi_platform.c
+> > @@ -178,11 +178,9 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+> >         if (IS_ERR(pdev))
+> >                 dev_err(&adev->dev, "platform device creation failed: %ld\n",
+> >                         PTR_ERR(pdev));
+> > -       else {
+> > -               set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
+> > +       else
+> >                 dev_dbg(&adev->dev, "created platform device %s\n",
+> >                         dev_name(&pdev->dev));
+> > -       }
+> >
+> >         kfree(resources);
+> >
+> > diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> > index 76bfcba25003..35c891075d95 100644
+> > --- a/drivers/base/platform.c
+> > +++ b/drivers/base/platform.c
+> > @@ -841,6 +841,7 @@ struct platform_device *platform_device_register_full(
+> >                         goto err;
+> >         }
+> >
+> > +       set_dev_node(&pdev->dev, ACPI_NODE_GET(ACPI_COMPANION(&pdev->dev)));
+> >         ret = platform_device_add(pdev);
+> >         if (ret) {
+> >  err:
+> > diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> > index a73246c3c35e..6a349d53f19e 100644
+> > --- a/include/linux/acpi.h
+> > +++ b/include/linux/acpi.h
+> > @@ -477,6 +477,10 @@ static inline int acpi_get_node(acpi_handle handle)
+> >         return 0;
+> >  }
+> >  #endif
+> > +
+> > +#define ACPI_NODE_GET(adev) ((adev) && (adev)->handle ? \
+> > +       acpi_get_node((adev)->handle) : NUMA_NO_NODE)
+> > +
+> >  extern int pnpacpi_disabled;
+> >
+> >  #define PXM_INVAL      (-1)
+> > @@ -770,6 +774,7 @@ const char *acpi_get_subsystem_id(acpi_handle handle);
+> >  #define ACPI_COMPANION_SET(dev, adev)  do { } while (0)
+> >  #define ACPI_HANDLE(dev)               (NULL)
+> >  #define ACPI_HANDLE_FWNODE(fwnode)     (NULL)
+> > +#define ACPI_NODE_GET(adev)            NUMA_NO_NODE
+> >
+> >  #include <acpi/acpi_numa.h>
+> >
+> > --
+> > 2.20.1
+> >
