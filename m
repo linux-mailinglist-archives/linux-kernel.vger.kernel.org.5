@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3638E7A51FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9367A5203
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbjIRSYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 14:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        id S229501AbjIRSZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 14:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjIRSYw (ORCPT
+        with ESMTP id S229668AbjIRSZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 14:24:52 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1A1101
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 11:24:46 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50307acd445so3266389e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 11:24:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695061485; x=1695666285; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=l4dXk6Q78Nq5eL8rDRkALATs4DmJ8BnONZg2xTC0Jc0=;
-        b=SRmWWcQZjLCKCvOafhEkJYbsDkRQDuThsR0JjAnOFQjFKuroOUZLaLjUIDqXk4BJBW
-         ciKZPKmcYDtgHrLxerQdLQC+JGLM+VKJdo/IO7sLR7DkRL6chRho6iTR63y/i696uuBe
-         fAkZd6LkPwAFMt51COjtS+lT3D1OYWPfSGN7k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695061485; x=1695666285;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l4dXk6Q78Nq5eL8rDRkALATs4DmJ8BnONZg2xTC0Jc0=;
-        b=YHVFD2QmQ+0Wcrp9Q2jVGIeOxJYMYu0G+1zNNN4kHFhMs2QSAXYW+rlbgDx/nEywIX
-         9vftv+7FmnUAh/RyYDXKNZJtKdujFuUwfJv+YCWks9bYaWzuXsjRBY4xUUV3P+3kNA+J
-         dc2yPqDrukyfRkUesphMnMks+ZTk4cnYV+CliFxNKGTlZbGl92vC1rWG0O7wnMwnzc4U
-         K4STHIcxxtceAhlPPffp8rWNm7jmwIMpBmNkeARDBPTIgvkg3KdhOFmoYM6TxXNYsiDS
-         yS0mSd/G/QtCWvAtNCPviBkBiVnRWfSCW/R2vS7fBKJvn0xftnd1v93m/LNuXIX72ukq
-         G+8Q==
-X-Gm-Message-State: AOJu0YyLzeDT5+KnJsH/oH0DlEhU1lWHltV65Dx9wHoJdeXHfC7YgehT
-        JUIHCMVaIdxfNsD/T3EmqNXWCe0yZ117rg+ac7XND8Iq
-X-Google-Smtp-Source: AGHT+IFF+oHK9mb4dNe0cKDxpE1KMi0gxr3iFQq8BEPkyL3g6ZDDBSJUdgto2Sf2BD4avH3YhNtDDA==
-X-Received: by 2002:a19:5011:0:b0:503:2561:adbc with SMTP id e17-20020a195011000000b005032561adbcmr1162966lfb.64.1695061484768;
-        Mon, 18 Sep 2023 11:24:44 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id z3-20020a19f703000000b0050084e55bd8sm1901744lfe.138.2023.09.18.11.24.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 11:24:44 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50307acd445so3266336e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 11:24:43 -0700 (PDT)
-X-Received: by 2002:a19:ae07:0:b0:500:9524:f733 with SMTP id
- f7-20020a19ae07000000b005009524f733mr7387536lfc.20.1695061483382; Mon, 18 Sep
- 2023 11:24:43 -0700 (PDT)
+        Mon, 18 Sep 2023 14:25:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2E4112;
+        Mon, 18 Sep 2023 11:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TC8wfBk+ib87P7TgIQGCMrwtRUP58vsgw9dhZZ19d68=; b=hC17YkoDr54/vXu9pLxNScC1tR
+        58CYaFjKwojnqasqeKRlYiiyhGN4QyLMZXo7pvNF53AngJGnujARir/IibZbgbOBHea1gQYCq/Adb
+        bY5llp7euvOgmQscF8JZZw9iTzNILN3n52VgSdhzDId6M8HxQP0WtxdNDKMDmvtwQXhWX0X9/EnRZ
+        9Z6DFZm9ZT5/K0IK4Ws+5L/W2vrIs5ZY9T68/cVRDQHoxPATR3IoWSXl/ui2SpfPnqwTCmj9haQmR
+        RirTOGJJ0Z7SauWIWNgcAPcK3Hu/mpvfOupj/ssb6jbVGh4m3ZRjt0hZ4omWsTPNe4GOm9Y3x16Ps
+        SNP1t+ig==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qiIvX-00CXHT-W9; Mon, 18 Sep 2023 18:24:56 +0000
+Date:   Mon, 18 Sep 2023 19:24:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Daniel Gomez <da.gomez@samsung.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/6] filemap: make the folio order calculation shareable
+Message-ID: <ZQiV96mTMiSXF9yf@casper.infradead.org>
+References: <20230915095042.1320180-1-da.gomez@samsung.com>
+ <CGME20230915095124eucas1p1eb0e0ef883f6316cf14c349404a51150@eucas1p1.samsung.com>
+ <20230915095042.1320180-2-da.gomez@samsung.com>
+ <ZQRet4w5VSbvKvKB@casper.infradead.org>
+ <ZQiSPEKRJSkeh3Fe@bombadil.infradead.org>
 MIME-Version: 1.0
-References: <20230918-hirte-neuzugang-4c2324e7bae3@brauner>
-In-Reply-To: <20230918-hirte-neuzugang-4c2324e7bae3@brauner>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 18 Sep 2023 11:24:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiTNktN1k+D-3uJ-jGOMw8nxf45xSHHf8TzpjKj6HaYqQ@mail.gmail.com>
-Message-ID: <CAHk-=wiTNktN1k+D-3uJ-jGOMw8nxf45xSHHf8TzpjKj6HaYqQ@mail.gmail.com>
-Subject: Re: [GIT PULL] timestamp fixes
-To:     Christian Brauner <brauner@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQiSPEKRJSkeh3Fe@bombadil.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Sept 2023 at 04:54, Christian Brauner <brauner@kernel.org> wrote:
->
-> * Only update the atime if "now" is later than the current value. This
->   can happen when the atime gets updated with a fine-grained timestamp
->   and then later gets updated using a coarse-grained timestamp.
+On Mon, Sep 18, 2023 at 11:09:00AM -0700, Luis Chamberlain wrote:
+> On Fri, Sep 15, 2023 at 02:40:07PM +0100, Matthew Wilcox wrote:
+> > On Fri, Sep 15, 2023 at 09:51:23AM +0000, Daniel Gomez wrote:
+> > > To make the code that clamps the folio order in the __filemap_get_folio
+> > > routine reusable to others, move and merge it to the fgf_set_order
+> > > new subroutine (mapping_size_order), so when mapping the size at a
+> > > given index, the order calculated is already valid and ready to be
+> > > used when order is retrieved from fgp_flags with FGF_GET_ORDER.
+> > > 
+> > > Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
+> > > ---
+> > >  fs/iomap/buffered-io.c  |  6 ++++--
+> > >  include/linux/pagemap.h | 42 ++++++++++++++++++++++++++++++++++++-----
+> > >  mm/filemap.c            |  8 --------
+> > >  3 files changed, 41 insertions(+), 15 deletions(-)
+> > 
+> > That seems like a lot of extra code to add in order to avoid copying
+> > six lines of code and one comment into the shmem code.
+> > 
+> > It's not wrong, but it seems like a bad tradeoff to me.
+> 
+> The suggestion to merge came from me, mostly based on later observations
+> that in the future we may want to extend this with a min order to ensure
+> the index is aligned the the order. This check would only be useful for
+> buffred IO for iomap, readahead. It has me wondering if buffer-heads
+> support for large order folios come around would we a similar check
+> there?
+> 
+> So Willy, you would know better if and when a shared piece of code would
+> be best with all these things in mind.
 
-I pulled this, and then I unpulled it again.
+In my mind, this is fundamentally code which belongs in the page cache
+rather than in individual filesystems.  The fly in the ointment is that
+shmem has forked the page cache in order to do its own slightly
+specialised thing.  I don't see the buffer_head connection; shmem is
+an extremely special case, and we shouldn't mess around with other
+filesystems to avoid changing shmem.
 
-I think this is fundamentally wrong.
-
-If somebody has set the time into the future (for whatever reason -
-maybe the clocks were wrong at some point), afaik accessing a file
-should reset it, and very much used to do that.
-
-Am I missing something? Because this really seems *horribly* broken garbage.
-
-Any "go from fine-grained back to coarse-grained" situation needs to
-explicitly test *that* case.
-
-Not some kind of completely broken "don't update to past value" like this.
-
-               Linus
+Ideally, we'd reunify (parts of) shmem and the regular page cache, but
+that's a lot of work, probably involving the swap layer changing.
