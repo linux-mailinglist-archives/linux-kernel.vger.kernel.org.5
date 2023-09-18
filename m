@@ -2,119 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C97AA7A509E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7D57A50A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbjIRRKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        id S231308AbjIRRLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbjIRRJ7 (ORCPT
+        with ESMTP id S230266AbjIRRLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:09:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF81A6;
-        Mon, 18 Sep 2023 10:09:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E14FCC433C8;
-        Mon, 18 Sep 2023 17:09:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695056990;
-        bh=ie0dC3735TiHhNHywyLZGNNJXTNALR8fq5hX9ARI43M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FRl8ot8Ru8cylWwmvUFsC8/QAQNlyPWbLQhkGQilrOqy854VlLcloQduphYb9MHC2
-         3HCe61+jkh1M/lMJDiC3PBW/Ns73uVWyeUz+q8W3CMGW1Gjgno7tz73rdtIV4SLjLa
-         5AN+SgTBbhUmWHxcZcDSw5r3aClyXXPfT3QFzH/TR02CVAjnqm7qDwlkxEj2OLS8AX
-         DjcsOOlSBvr7YJ65DwkVixKUIttWLzS3buBYqRI2NJx0JDJUB4seW3FTOTcns9LZ/J
-         H/5ezvoK5RHeNZRE+N7H4PTGjvxxrb+gZ5/xMBcjLvHJiFBmVvxLIh0lfJsh6eZedy
-         g9veMrkFyCBhQ==
-Date:   Mon, 18 Sep 2023 18:09:45 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Nik Bune <n3q5u8@yahoo.com>
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: watchdog: atmel,at91rm9200-wdt: convert txt
- to yaml
-Message-ID: <20230918-929fd60eab94754c28ce5cd4@fedora>
-References: <20230916154826.84925-1-n3q5u8@yahoo.com>
- <20230917193556.10783-1-n3q5u8@yahoo.com>
+        Mon, 18 Sep 2023 13:11:36 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B4190
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:11:30 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34fa117f92bso4235ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695057090; x=1695661890; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3k+upgBrLGSSOmHlswDoCSbrUwpeYXhWKscYPZe5kLQ=;
+        b=jpuEAafRAsD6rveD9aUrpLk1zUqrDaWIyMOp4DdOydmp4GJZLQXUPa3aMBbLR0ej9s
+         ChNwJcbJYAJrrTYHtQOUNzNwrKy238HWQw0UeUn4fmGybS/7cV2gXKohH6GCXm8eRGwc
+         MbShtu+YvojO0J97a7g1Um8g9q33qzgkjHrWTOBm8AK4iH9Ns7CRxJaJ7gYcA+Ny1jsB
+         laoTmjl7CzfwyKjYRwQg1SOSO4wlASlL9WDM6aDYrzz9ccJLFGVPlHmPkcncovOQ1pRv
+         ElT8yuWMjA1sq1JfjQ8L02Yf5COdZWU2NsCGiTIy9Rf8HN3FgzzojRdvKqgqYdEZb8oO
+         MqLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695057090; x=1695661890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3k+upgBrLGSSOmHlswDoCSbrUwpeYXhWKscYPZe5kLQ=;
+        b=wBlddZHOQUFMObbdBfZLJXDzRdSXnPycqcJcdxxjPC7jgzlccIKWKuLV90Xk6K0lST
+         TJrnkN6twJcEZvL5HRY8Qq/Mp0bU/5qDtqDxdOvsHhYBs7HafzQA303KKvahSVBoqF4s
+         gmWKnhOtpXnmYTn+jT57KPK7iQwA5BEr4+e0gA7tEHEpaCkQOyrwFa0Tj2/vw2wxsSLZ
+         67/PU/kRHfPHya/424bEgjHI2hNvKqCTASdegnGv1eptNm6BSZKND08dzvZIZznz9g6g
+         M9XpCLqz30spDv2JfZbkb8/IPA7+b3AAYseTA+DWHXjuc15ZFCCat4rn4ZoGZse/VSiv
+         kgzA==
+X-Gm-Message-State: AOJu0YxrA/M/h/TUPmNRkBvAQr2PzAdMGaKJDD5ryPUiFz4eftc3DPgH
+        Pb4ou54zaC3kktgDx2x6uvwgv90Bs9S0tk6vkWGAzQ==
+X-Google-Smtp-Source: AGHT+IFXnWVBdmal21Mo0WOdEFrfSBufsaS+Fo7roEwvkyqUs6Wh6JTU3kxhl16Zf6PSyXCLyOwgCR1YaZoJgobr8mg=
+X-Received: by 2002:a92:c247:0:b0:346:139d:4549 with SMTP id
+ k7-20020a92c247000000b00346139d4549mr459650ilo.1.1695057089709; Mon, 18 Sep
+ 2023 10:11:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="73rtgbxXCV6DBhLK"
-Content-Disposition: inline
-In-Reply-To: <20230917193556.10783-1-n3q5u8@yahoo.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230817003029.3073210-1-rananta@google.com> <20230817003029.3073210-9-rananta@google.com>
+ <ZQTEN664F/5PzyId@linux.dev> <ZQTSffkkI1x5lWIG@linux.dev>
+In-Reply-To: <ZQTSffkkI1x5lWIG@linux.dev>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 18 Sep 2023 10:11:17 -0700
+Message-ID: <CAJHc60y+xwV3oYk7-YxE1WiOfnSNFzroM419UDJwTeb=MCJdkA@mail.gmail.com>
+Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
+ PMCR_EL0.N for the guest
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---73rtgbxXCV6DBhLK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Sep 17, 2023 at 09:35:56PM +0200, Nik Bune wrote:
-> Hello, thank you for your review!=20
->=20
-> On Sat, Sep 16, 2023 at 10:37:23PM +0200, Krzysztof Kozlowski wrote:
->=20
-> >On 16/09/2023 17:48, Nik Bune wrote:
-> >> Convert txt file to yaml.
-> >> Add reg to the list of required properties.
-> >> Add mainteiners from ./scripts/get_maintainer.pl output.
-> >>
-> >> Signed-off-by: Nik Bune <n3q5u8@yahoo.com>
-> >> ---
-> >>  .../watchdog/atmel,at91rm9200-wdt.yaml        | 31 +++++++++++++++++++
-> >>  .../watchdog/atmel-at91rm9200-wdt.txt        |  9 ------
-> >>  2 files changed, 31 insertions(+), 9 deletions(-)
-> >>  create mode 100644 Documentation/devicetree/bindings/watchdog/atmel,a=
-t91rm9200-wdt.yaml
-> >>  delete mode 100644 Documentation/devicetree/bindings/watchdog/atmel-a=
-t91rm9200-wdt.txt
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/watchdog/atmel,at91rm92=
-00-wdt.yaml b/Documentation/devicetree/bindings/watchdog/atmel,at91rm9200-w=
-dt.yaml
-> >> new file mode 100644
-> >> index 000000000000..e9706b9c1e6b
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/watchdog/atmel,at91rm9200-wdt.=
-yaml
-> >> @@ -0,0 +1,31 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +# Copyright (C) 2022 Microchip Technology, Inc. and its subsidiaries
+On Fri, Sep 15, 2023 at 2:54=E2=80=AFPM Oliver Upton <oliver.upton@linux.de=
+v> wrote:
+>
+> On Fri, Sep 15, 2023 at 08:53:16PM +0000, Oliver Upton wrote:
+> > Hi Raghu,
 > >
-> >How this copyright appeared here? Why are you adding some 2022
-> >copyrights of someone else?
->=20
-> I copied it from the neighbour file atmel,at91sam9-wdt.yaml.
-> I assume I should leave only "SPDX-License-Identifier: (GPL-2.0-only OR B=
-SD-2-Clause)" here.
+> > On Thu, Aug 17, 2023 at 12:30:25AM +0000, Raghavendra Rao Ananta wrote:
+> > > From: Reiji Watanabe <reijiw@google.com>
+> > >
+> > > KVM does not yet support userspace modifying PMCR_EL0.N (With
+> > > the previous patch, KVM ignores what is written by upserspace).
+> >
+> > typo: userspace
+> >
+> > > diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> > > index ce7de6bbdc967..39ad56a71ad20 100644
+> > > --- a/arch/arm64/kvm/pmu-emul.c
+> > > +++ b/arch/arm64/kvm/pmu-emul.c
+> > > @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct ar=
+m_pmu *arm_pmu)
+> > >      * while the latter does not.
+> > >      */
+> > >     kvm->arch.pmcr_n =3D arm_pmu->num_events - 1;
+> > > +   kvm->arch.pmcr_n_limit =3D arm_pmu->num_events - 1;
+> >
+> > Can't we just get at this through the arm_pmu instance rather than
+> > copying it into kvm_arch?
+> >
+> > >     return 0;
+> > >  }
+> > > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> > > index 2075901356c5b..c01d62afa7db4 100644
+> > > --- a/arch/arm64/kvm/sys_regs.c
+> > > +++ b/arch/arm64/kvm/sys_regs.c
+> > > @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, con=
+st struct sys_reg_desc *r,
+> > >     return 0;
+> > >  }
+> > >
+> > > +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc=
+ *r,
+> > > +               u64 val)
+> > > +{
+> > > +   struct kvm *kvm =3D vcpu->kvm;
+> > > +   u64 new_n, mutable_mask;
+> > > +   int ret =3D 0;
+> > > +
+> > > +   new_n =3D FIELD_GET(ARMV8_PMU_PMCR_N, val);
+> > > +
+> > > +   mutex_lock(&kvm->arch.config_lock);
+> > > +   if (unlikely(new_n !=3D kvm->arch.pmcr_n)) {
+> > > +           /*
+> > > +            * The vCPU can't have more counters than the PMU
+> > > +            * hardware implements.
+> > > +            */
+> > > +           if (new_n <=3D kvm->arch.pmcr_n_limit)
+> > > +                   kvm->arch.pmcr_n =3D new_n;
+> > > +           else
+> > > +                   ret =3D -EINVAL;
+> > > +   }
+> >
+> > Hmm, I'm not so sure about returning an error here. ABI has it that
+> > userspace can write any value to PMCR_EL0 successfully. Can we just
+> > ignore writes that attempt to set PMCR_EL0.N to something higher than
+> > supported by hardware? Our general stance should be that system registe=
+r
+> > fields responsible for feature identification are immutable after the V=
+M
+> > has started.
+>
+> I hacked up my reply and dropped some context; this doesn't read right.
+> Shaoqin made the point about preventing changes to PMCR_EL0.N after the
+> VM has started and I firmly agree. The behavior should be:
+>
+>  - Writes to PMCR always succeed
+>
+>  - PMCR_EL0.N values greater than what's supported by hardware are
+>    ignored
+>
+>  - Changes to N after the VM has started are ignored.
+>
+Reiji and I were wondering if we should proceed with this as this
+would change userspace expectation. BTW, when you said "ignored", does
+that mean we silently return to userspace with a success or with EBUSY
+(changing the expectations)?
 
-The original file does not contain a license, which means (AFAIU) to
-GPL-2.0-only, unless the original author ACKs a relicensing.
-
->=20
-> Thank you!
-
---73rtgbxXCV6DBhLK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQiEVAAKCRB4tDGHoIJi
-0ot9AP9gc12jMqf92DMjVEqIb7XtEMn6oIkJS8wSL0SfQVFYhQEAiBYvCYLNFJKd
-NXAz7wDn0QEFAHtv54asRO5qYtO0wQI=
-=Df90
------END PGP SIGNATURE-----
-
---73rtgbxXCV6DBhLK--
+Thank you.
+Raghavendra
+> --
+> Thanks,
+> Oliver
