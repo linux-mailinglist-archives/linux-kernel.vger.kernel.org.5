@@ -2,196 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D83BA7A4993
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BB17A4995
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241602AbjIRM0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        id S241955AbjIRM06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:26:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241982AbjIRM0f (ORCPT
+        with ESMTP id S242064AbjIRM0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:26:35 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A506711F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:25:53 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-530ab2d9e89so2936491a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695039952; x=1695644752; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nh7sVBi8Tr0GCkJ5LEg4c3aaDQBLO8oy7P4IhXqjoh0=;
-        b=tgWQe8tMVLxLX0migf21dRYpneXO5RhjgI2Z64g+PCM+TsjPsAMD92Xf5cKADSGKBW
-         kipqwJSQAqwZ4dONxqPn7cEz7meAgsNwXB/9rIfPrxuxNCpcqQsGF3jaqx4zkzJ555so
-         6Zi1r474jA45Bu7qrjJyjA9JvCJEu1bVSby4ikExPPYmenY+xqj5M/Z2eYMRa38ZOML1
-         j7tikX1QCSwyEj8qri0cqxkiyOPRbYuwafYvNqTKt9n/0Ba3yPtxR7imNSGcQQCNyapM
-         zNZ9JEjVbbjFh2g0UDWRXHFvPTpTeYV58TPSVqB8xypwaF1uTRePp9X8E/eVKz1L3sZc
-         V5+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695039952; x=1695644752;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nh7sVBi8Tr0GCkJ5LEg4c3aaDQBLO8oy7P4IhXqjoh0=;
-        b=rW7U/7gTaFO7mUDZiAB9IFY+n3ELT6nND5tXz/CpkEgXNByXe6LqmkCSS6R9e/hiKb
-         l+I8XoIfw6Zu80WoAiq0Vw0IdeDtvTc4Zt3NOg+siw89O3XoVyUFumSlb3ma+5oKHLFh
-         NZtygbTO+Y1H5rmcQMPR5/4Vcsq90tK/jOzSLqLCd1gYXZ465OAY4hN/c5n7DH3YgytF
-         uWMrNh2i3a4ekGg/wZBjNxmVRapCe7sgociagCcLr7asLMZWEx9rqBmD10QjrZ3Fio/A
-         /QSRciQmoVsHYxAY1373XDJl7ghkMFaMGU18G0ijbWNWnC9ObCTDzOTgbwFdWUd7Gphc
-         9DCA==
-X-Gm-Message-State: AOJu0Yw5jkORzT+oa8Y+Z9r81EDiozv4l2HmhSHkGrsY19IohwMpPeZw
-        Osi1vgNS+BoskyB4+eWQod+oGg==
-X-Google-Smtp-Source: AGHT+IFUsmBxk+UST91vkvG7DlspBA0d9tLOkRo5UFxKQJHZ0oiyt0tGaJ1O4VjssoKueW88iRybFw==
-X-Received: by 2002:a50:9358:0:b0:530:db1d:bd99 with SMTP id n24-20020a509358000000b00530db1dbd99mr4044416eda.13.1695039951975;
-        Mon, 18 Sep 2023 05:25:51 -0700 (PDT)
-Received: from [172.25.80.114] ([217.67.225.27])
-        by smtp.gmail.com with ESMTPSA id s25-20020aa7cb19000000b0052333e5237esm5993474edt.88.2023.09.18.05.25.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 05:25:51 -0700 (PDT)
-Message-ID: <b27b58d9-9e55-b803-dd61-dd86a78e7c5c@linaro.org>
-Date:   Mon, 18 Sep 2023 14:25:50 +0200
+        Mon, 18 Sep 2023 08:26:47 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DBFD1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:26:31 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38I85PTM017571;
+        Mon, 18 Sep 2023 14:26:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:content-transfer-encoding:mime-version; s=
+        selector1; bh=9LpcWqyU6j+ruwMsRPUjQwhjDUYiqwuo2YGiyOEQqJE=; b=AR
+        XsFTAwgva6oMXYgi5uoX1t/naUqU3RyKd7CKWVS5BSEk4RlndhipDBITqBJZI6Oi
+        mmCTi7MBdM6PGiy16/ee6MNWPB0P4Upky4Y8Jq7mIba2KN7VXvv13SiZN1y4PN2f
+        YDzirs4kI0BhNxdOiUzk3eOqujAcVTLT8CsFKPeYRTeKo5kNf8Q3p4vvJYD285YL
+        B9ULU+Lbvq2CnnIMDHDlW6HBtfHqMA1yYEIgd2tP1RxIt08/ZyYegrvz/h0t9668
+        AKif8SEQBuY5cu5LxKaiq8XIdE+HFULe7J2Imq96PvnqLp7TRt8ZJNjrNBAYiWAb
+        QeCZlUzrELagpfnw+3rg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t5nx0cabh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 14:26:27 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D35E9100061;
+        Mon, 18 Sep 2023 14:26:26 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C416625AF07;
+        Mon, 18 Sep 2023 14:26:26 +0200 (CEST)
+Received: from [192.168.8.15] (10.201.20.114) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 18 Sep
+ 2023 14:26:26 +0200
+Message-ID: <556007adcfd12f5f0bd997dba6c050aa28922ed3.camel@foss.st.com>
+Subject: async probe: boot crash with v5.10.188 on STM32MP157
+From:   Antonio Borneo <antonio.borneo@foss.st.com>
+To:     Saravana Kannan <saravanak@google.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Date:   Mon, 18 Sep 2023 14:26:21 +0200
+In-Reply-To: <AS8PR10MB4712C2960C439EF76E25DA98EEF7A@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
+References: <cd0d84738c07dea1410e4bb739fb1c1e0e8f8a26.camel@st.com>
+         <AS8PR10MB47124BE71CB331EEE18891FDEEF7A@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
+         <fdb9b57462fd6d532365fcf3795f3a6825bb1f07.camel@st.com>
+         <AS8PR10MB4712C2960C439EF76E25DA98EEF7A@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.3 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC 1/2] dt-bindings: iio: imu: Add DT binding doc for BMI323
-Content-Language: en-US
-To:     Jagath Jog J <jagathjog1996@gmail.com>, jic23@kernel.org,
-        andriy.shevchenko@linux.intel.com, lars@metafoo.de,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230918080314.11959-1-jagathjog1996@gmail.com>
- <20230918080314.11959-2-jagathjog1996@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230918080314.11959-2-jagathjog1996@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.201.20.114]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-18_05,2023-09-18_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 10:03, Jagath Jog J wrote:
-> Add devicetree description document for Bosch BMI323, a 6-Axis IMU.
+Hi Saravana,
 
-I don't know why this is RFC and cover letter does not explain it. Shall
-I just ignore it? Patch is no ready? Recently at least two times someone
-was disappointed that his code marked as RFC received my review.
+while devlink and async probe looks ok in v6.6-rc1, I get randomly boot
+crash on STM32MP157 with kernel v5.10.188 after the upstream commit
+3108eb2e8aa7 ("mmc: mmci: Set PROBE_PREFER_ASYNCHRONOUS") got backported.
 
-A nit, subject: drop second/last, redundant "DT binding doc for". The
-"dt-bindings" prefix is already stating that these are bindings. Four
-words entirely redundant and duplicating what prefix is saying...
+In v6.6-rc1, really_probe() checks for probe dependencies with
+device_links_check_suppliers(). In older kernels this part is missing.
+In the specific case of STM32MP157, the driver mmci can get async-probed
+while the probe of pinctrl/stm32/pinctrl-stm32.c has already registered
+the pinctrl but has not added any gpiochip yet.
+This causes pinmux_ops::set_mux() to fail and thus mmci probe fails too.
 
+Boot log contains:
 
-> 
-> Signed-off-by: Jagath Jog J <jagathjog1996@gmail.com>
-> ---
->  .../bindings/iio/imu/bosch,bmi323.yaml        | 81 +++++++++++++++++++
->  1 file changed, 81 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bmi323.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/imu/bosch,bmi323.yaml b/Documentation/devicetree/bindings/iio/imu/bosch,bmi323.yaml
-> new file mode 100644
-> index 000000000000..9c08988103c5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/imu/bosch,bmi323.yaml
-> @@ -0,0 +1,81 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/imu/bosch,bmi323.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Bosch BMI323 6-Axis IMU
-> +
-> +maintainers:
-> +  - Jagath Jog J <jagathjog1996@gmail.com>
-> +
-> +description:
-> +  BMI323 is a 6-axis inertial measurement unit that supports acceleration and
-> +  gyroscopic measurements with hardware fifo buffering. Sensor also provides
-> +  events information such as motion, steps, orientation, single and double
-> +  tap detection.
-> +
-> +properties:
-> +  compatible:
-> +    const: bosch,bmi323
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-names:
-> +    enum:
-> +      - INT1
-> +      - INT2
-> +    description: |
+[2.205476] stm32mp157-pinctrl soc:pin-controller@50002000: No gpio range de=
+fined.
+[2.205515] mmci-pl18x 58005000.sdmmc: Error applying setting, reverse thing=
+s back
+[2.205828] mmci-pl18x: probe of 58005000.sdmmc failed with error -22
+[2.210434] stm32mp157-pinctrl soc:pin-controller@50002000: GPIOA bank added
 
-Do not need '|' unless you need to preserve formatting.
+From a quick code check, also the LTS v5.15 and v6.1 looks impacted, but
+I have not tested them, so far, due to the difficulties to replicate the
+crash.
 
-> +      set to "INT1" if INT1 pin should be used as interrupt input, set
-> +      to "INT2" if INT2 pin should be used instead
+Is there any mandatory upstream patch that got lost in the backport process=
+?
 
-And what happens with other INT pin? Remains floating?
+Or is there something incorrect to be fixed in pinctrl-stm32 driver?
 
-> +
-> +  drive-open-drain:
-> +    description: |
+What are the possible workaround I can use? Would kernel flag fw_devlink=3D=
+off
+work reliably for all the mentioned kernel versions?
 
-Do not need '|' unless you need to preserve formatting.
-
-> +      set if the specified interrupt pin should be configured as
-> +      open drain. If not set, defaults to push-pull.
-
-Missing supplies. Are you sure device does not use any electric energy?
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +allOf:
-> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    // Example for I2C
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +> +        bmi323@68 {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-> +            compatible = "bosch,bmi323";
-> +            reg = <0x68>;
-> +            interrupt-parent = <&gpio1>;
-> +            interrupts = <29 IRQ_TYPE_EDGE_RISING>;
-> +            interrupt-names = "INT1";
-> +        };
-> +    };
-> +  - |
-> +    // Example for SPI
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    spi {
-
-
-It's the same as other example. No difference. Drop.
-
-Best regards,
-Krzysztof
-
+Regards,
+Antonio
