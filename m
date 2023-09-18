@@ -2,113 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9587A4976
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65797A4977
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241881AbjIRMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
+        id S241336AbjIRMWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240281AbjIRMUa (ORCPT
+        with ESMTP id S241970AbjIRMVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:20:30 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0329F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:20:13 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-503065c4b25so2624838e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:20:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695039611; x=1695644411; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=37gGL6Jw2l0tKYWgVGTCg3eSN+EAxtW6F9x/TNJWld4=;
-        b=KwTCEsd4Z9EC9n6Y7NqI5fHh4S4UMCyDip5G83Gikn4/5JC/rt/nz4Ev3hpvS7ax/m
-         iqul//xCSnyFR1fJkCMpatOdVFQNQCxlZGBtm3xbW0eNfJ66B6+1EeeJhCcoA+NgruHh
-         9sU6eMDhLS4jramsQUHjeVbyk9cUYVoxRioewKQpPEJZR+ArS/Ilmu2/xp39jNPe0iDT
-         IiMMU1jps4KSEwZkfYbx9XTUmywALJmN5PZYbqNbkLDWCjgnKMo1LulAmQsPhNxABjm6
-         1PCDtKn3q5x0Kn0/UuhROiJzZAHEh2NLTmKeZSleKAOj8Y/kDz6RiBbHhvMfHEwcE8/W
-         8nGQ==
+        Mon, 18 Sep 2023 08:21:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED32DE
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:21:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695039666;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E5iqxcEoFL+nI91XzTtwFeU0EzRStoTmjKrAt0kFCFY=;
+        b=ckpEYUsCC8+RHlWMWy+4bq3LFQdc/feUsBQO9CG5WN3pDkIoPQsCguaOjBuUIlW9n2923/
+        6S2quxITV6WgX/nUJhItr0AsmEs4i9Q0BhvUKbEy9oOd0ePB+L9U3c89BERLpuIOdlhRvr
+        8cZwNPsIlpR+8asroM6KyUm555n8mh4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-686-T3HKI-YIP0q386tDpRlCKg-1; Mon, 18 Sep 2023 08:21:05 -0400
+X-MC-Unique: T3HKI-YIP0q386tDpRlCKg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32009388bb6so1006755f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:21:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695039611; x=1695644411;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=37gGL6Jw2l0tKYWgVGTCg3eSN+EAxtW6F9x/TNJWld4=;
-        b=Tghi1i4Wvs0aYiE7vmWo0+sdRMLI/ejmfq08oKC55uDy1TM6srak9COllISAbldasi
-         uwiEx3joRs6jefydaAM47A8Cwt4a+HuFNVdO3MN4cy4w6B8Qu6oY0ETCJLGIprleeSdJ
-         8My5xU7RK+newbCwbaZNdYXmU1du5pkNKs5cM/Bi5jIZhizYmvAZr6BFCL9v/v+eQ0pq
-         ZBGZaFSoS9cW2fetEnpLQUcBlVNuJNVBxJuKIdLf39ZWXtq9R2m7raF6R6nDNHB3ir07
-         pSG9SgbiZ2RrWYgq9iEJt+csrF9780iyZ7F1MV3LI9eJHuSzpgX+OaOJBDV9NQQy1Fnm
-         crIw==
-X-Gm-Message-State: AOJu0YwdRg9AWRZWCjchkYJNOtID1B6mJJfVZGNmqAK5eWRtZN5KiGQn
-        ct4DaHzh29QTnr7sIXQWeiyJJQ==
-X-Google-Smtp-Source: AGHT+IHMkJKZiVpJg+tLigw+N6NXKAtpmNFN/BdLPmJ+19DhydtwsrfEqqkG3R0omuA7UHeHeMpURw==
-X-Received: by 2002:a05:6512:1115:b0:4fb:9f93:365f with SMTP id l21-20020a056512111500b004fb9f93365fmr8492523lfg.38.1695039611392;
-        Mon, 18 Sep 2023 05:20:11 -0700 (PDT)
-Received: from [172.25.80.114] ([217.67.225.27])
-        by smtp.gmail.com with ESMTPSA id a3-20020aa7cf03000000b0052e1959db1csm5966342edy.20.2023.09.18.05.20.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 05:20:10 -0700 (PDT)
-Message-ID: <d70ae419-0038-c9da-8e4a-5ce90fe61f79@linaro.org>
-Date:   Mon, 18 Sep 2023 14:20:10 +0200
+        d=1e100.net; s=20230601; t=1695039664; x=1695644464;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E5iqxcEoFL+nI91XzTtwFeU0EzRStoTmjKrAt0kFCFY=;
+        b=f52HdAOfN4uNMy07beRURAY2tDqkdTfMKR5fe1e9wt2iVpBW4zJ4AHqjd1q50VJfB0
+         2a2YjZU+VQ2NcqM/5DkO6+xWpSm4vXP21apbAcdWUVhz1eDSWb3Z/bakHYrANmCNJBS1
+         WCiQJvUsm6oHpAMGyywVepFmbq7s77Z8nwre0/trbl8hLKnxBaGup/rOPTuX7VFbw8q2
+         n5WCDAi0i29V3DYst+urPQQjLbyRVvDw5off8kpGnzmwK4eLNbQ4cjX8emlgTu3UWMG7
+         M3OebLMTZ0yeYq77spsSjEc92ekHcCi0g+Ft9luAUJ6gRE3ALJpSO0gMA9q2KRTcLKq0
+         AwKQ==
+X-Gm-Message-State: AOJu0YywFaQ5PNx4PZTX8zRIHcXv0jI8jgiUM6EvOaUnZkScMFzAa+Kx
+        +N9odpBqsAAWawt5X+DloLXfUqWjA7/ekrX4SC+PqKbV6I4y77PWwk5F9r+1CbIQgqq8GR1Uc4q
+        a2PQoU16Cb67HoWDE8OCzeEMh
+X-Received: by 2002:a05:6000:12ce:b0:316:e249:c285 with SMTP id l14-20020a05600012ce00b00316e249c285mr7502451wrx.71.1695039663843;
+        Mon, 18 Sep 2023 05:21:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGWGr8ikdKyB1diJTGmOzil5UyJNpYhns+7WYWnPWeYC32jlgGUasly/JwonHWNRQ41dX265Q==
+X-Received: by 2002:a05:6000:12ce:b0:316:e249:c285 with SMTP id l14-20020a05600012ce00b00316e249c285mr7502436wrx.71.1695039663554;
+        Mon, 18 Sep 2023 05:21:03 -0700 (PDT)
+Received: from vschneid.remote.csb (anice-256-1-26-111.w86-203.abo.wanadoo.fr. [86.203.135.111])
+        by smtp.gmail.com with ESMTPSA id f4-20020adfdb44000000b00318147fd2d3sm12653529wrj.41.2023.09.18.05.21.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 05:21:02 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Pierre Gondois <pierre.gondois@arm.com>,
+        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, quentin.perret@arm.com,
+        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
+        mingo@kernel.org, yu.c.chen@intel.com, tim.c.chen@linux.intel.com,
+        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+Subject: Re: [PATCH v3] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
+In-Reply-To: <ff3a1e32-74c3-56bc-94dc-78d088faf8b7@arm.com>
+References: <20230913114807.665094-1-sshegde@linux.vnet.ibm.com>
+ <xhsmhil8cvi7s.mognet@vschneid.remote.csb>
+ <7c6dd2ec-b9a9-b364-5a29-05336127e519@linux.vnet.ibm.com>
+ <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
+ <ff3a1e32-74c3-56bc-94dc-78d088faf8b7@arm.com>
+Date:   Mon, 18 Sep 2023 14:21:01 +0200
+Message-ID: <xhsmhbkdzvfiq.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/2] dt-bindings: soc: mediatek: add mt8188 svs
- dt-bindings
-Content-Language: en-US
-To:     Mark Tseng <chun-jen.tseng@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Roger Lu <roger.lu@mediatek.com>,
-        Kevin Hilman <khilman@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230918031835.12352-1-chun-jen.tseng@mediatek.com>
- <20230918031835.12352-2-chun-jen.tseng@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230918031835.12352-2-chun-jen.tseng@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 05:18, Mark Tseng wrote:
-> Add mt8188 svs compatible in dt-bindings.
-> 
-> Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
-> ---
+On 15/09/23 15:35, Pierre Gondois wrote:
+> Hello Valentin,
+>
+> On 9/15/23 14:00, Valentin Schneider wrote:
+>> On 14/09/23 23:26, Shrikanth Hegde wrote:
+>>> On 9/14/23 9:51 PM, Valentin Schneider wrote:
+>>>> On 13/09/23 17:18, Shrikanth Hegde wrote:
+>>>>> sysctl_sched_energy_aware is available for the admin to disable/enable
+>>>>> energy aware scheduling(EAS). EAS is enabled only if few conditions are
+>>>>> met by the platform. They are, asymmetric CPU capacity, no SMT,
+>>>>> valid cpufreq policy, frequency invariant load tracking. It is possible
+>>>>> platform when booting may not have EAS capability, but can do that after.
+>>>>> For example, changing/registering the cpufreq policy.
+>>>>>
+>>>>> At present, though platform doesn't support EAS, this sysctl is still
+>>>>> present and it ends up calling rebuild of sched domain on write to 1 and
+>>>>> NOP when writing to 0. That is confusing and un-necessary.
+>>>>>
+>>>>
+>>>
+>>> Hi Valentin, Thanks for taking a look at this patch.
+>>>
+>>>> But why would you write to it in the first place? Or do you mean to use
+>>>> this as an indicator for userspace that EAS is supported?
+>>>>
+>>>
+>>> Since this sysctl is present and its value being 1, it gives the
+>>> impression to the user that EAS is supported when it is not.
+>>> So its an attempt to correct that part.
+>>>
+>> 
+>> Ah, I see. Then how about just making the sysctl return 0 when EAS isn't
+>> supported? And on top of it, prevent all writes when EAS isn't supported
+>> (perf domains cannot be built, so there would be no point in forcing a
+>> rebuild that will do nothing).
+>
+> I think the issue comes from the fact there is no variable representing
+> whether EAS is supported or not. sched_energy_enabled()/sched_energy_present
+> tells whether EAS is actively running on the system instead.
+>
+> So on a system with EAS running, I think what would happen is:
+> # Disable EAS and set sched_energy_present=0
+> echo 0 > /proc/sys/kernel/sched_energy_aware
+>
+> # sched_energy_present==0, so we get -EOPNOTSUPP
+> echo 1 > /proc/sys/kernel/sched_energy_aware
+>
 
-This is a friendly reminder during the review process.
-
-It looks like you received a tag and forgot to add it.
-
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-If a tag was not added on purpose, please state why and what changed.
-
-Best regards,
-Krzysztof
+Ah, quite so, I didn't think this through!
 
