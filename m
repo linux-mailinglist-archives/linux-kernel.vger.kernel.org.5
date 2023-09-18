@@ -2,216 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 138067A513A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF277A5140
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbjIRRra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S229691AbjIRRsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbjIRRr3 (ORCPT
+        with ESMTP id S229501AbjIRRsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:47:29 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2066.outbound.protection.outlook.com [40.107.243.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444E6101;
-        Mon, 18 Sep 2023 10:47:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J9456PpYnVLfuxHaeCzCliKeHAsqdFxM0m0R9bofGcI9iqQIkhu/Oc53Bs3BKp8lhXCM3y2vAIf423py0SVqIut4zcIBsPZGlZ99eJ1vcnG/xn2S5nyRJtURdBPM/WMorKrkmaFZtKdnJjUkJhMMgfIU4fBcooamUd7/lXZhmMDV+bwR0dvy3I2Ulf8LudYfjPem5hQmDdjZWXqh4CUcU2a40FOjMBXKM7B1xuABN8VyFmMc4giNkjQdKBrZZJLAuwFTYjiDy3E7q0TGCBp4KJFz1dbCzmaITpnVEU8GBSmporEeLD6ITaqG6XnfThebAZ4VLo7d/FgBhGGhwdJfpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a6EOln1EzZbW3BGlMWt6IAo7m7yuVn16URHt8lo7DGA=;
- b=h+WcuVVmLezAwQ61/M2y433mUx1uNKvHjGbmjlgu5ZZMOS1/VVJcdo7o76hIOghv9peZeuuheQViBQgIWibf+YwD+qmr+2dySoDn2nlsTietsynEt+2f36cj+DYeZXiJ9VvKQDrTo97BHtbIjkfTYddv7QFrn8SnDN2jfbIkSHlSmTPPT2sm+pvM6IlmW34jXM0MMWtdqCWDAMgwSScpEFLPe7dj3zkbuBsW/R6edLudQMGkl4qVJ4+LAcBVAJrJc/Nn/7t+OvwQZJdRyCTqk+5wfdH0gmbWg99PYCsdSPzjHsIEre9HLeWGkg8beRnnnuxM5bcsJ6rsloTViV/2BQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a6EOln1EzZbW3BGlMWt6IAo7m7yuVn16URHt8lo7DGA=;
- b=EOWahcWEgQHL35rTJ3XDEugsAmRlsrXG6AwV0IiJ0AnE8Ta1qnd0lX+CCmVm7Sez0EPBzPZlTY+wt3cdneUJ3o/oUVwaGw48U4G/PSJgY+K23QzydAP25zE9ly8vIAw0bTN7Fw8a5hyFQxqhrxoK7jlUaassYJldnVNrl/pAsGDOs6gU7+FGQwWneBJc2yi3BToA9BLeEzYlutz4dZFYGnfOWc5lu2lOGUzjMDmuwcjr2UsdrpxjCbyv0dm146iWq/qBypnkHMbSA6bULS26FLPdVIdq5x6DbEZc3D2yYBz8vb7D70BLVsEqsnVUOWCcCmVC69t+kNlvj2V09tHBTA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH7PR12MB7114.namprd12.prod.outlook.com (2603:10b6:510:1ed::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Mon, 18 Sep
- 2023 17:47:19 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Mon, 18 Sep 2023
- 17:47:18 +0000
-Date:   Mon, 18 Sep 2023 14:47:16 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     ankita@nvidia.com, yishaih@nvidia.com,
-        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        anuaggarwal@nvidia.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 1/1] vfio/nvgpu: Add vfio pci variant module for
- grace hopper
-Message-ID: <20230918174716.GL13733@nvidia.com>
-References: <20230915025415.6762-1-ankita@nvidia.com>
- <20230915082430.11096aa3.alex.williamson@redhat.com>
- <20230918130256.GE13733@nvidia.com>
- <20230918082748.631e9fd9.alex.williamson@redhat.com>
- <20230918144923.GH13733@nvidia.com>
- <20230918111949.1d6c8482.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918111949.1d6c8482.alex.williamson@redhat.com>
-X-ClientProxiedBy: BL0PR0102CA0065.prod.exchangelabs.com
- (2603:10b6:208:25::42) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 18 Sep 2023 13:48:18 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737B5FA;
+        Mon, 18 Sep 2023 10:48:12 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IGMAwr002222;
+        Mon, 18 Sep 2023 17:48:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=uUbP9kQV+ThBkIavYQf5xISOTHSD636KoaAoeeOli5M=;
+ b=jqvmDqUEG362Dekj8vMU+Y0YYO35eYNr5UtZXD82LFn3lsR36xZbXv2sfccrtotD7wih
+ ok4/PPGlJXA4eY9I8mI5rn430Nbs4eDok3nSv/v/yNrFQjPP91GmdzAis+yM7HK+PE5U
+ PVXe140O2Qm3qt2/NuIMig4wBI6Af6YoJJLhsBKssqX1EXcgcphsN8jtZhu4vbvnvwhi
+ ejaz5rr4HpOjEwlCz+fuMH1caz7sdf6pMF7TkkOSxYL/S1Qlx907MMCpQELobanJmnJT
+ dm+FhTzGzspGrHvk6//WhZTnr3cCxwuhoNMt1ZBwPuKodwUv8yyNe06JRuHXIPIqHicn 6g== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t53ps3pgd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 17:48:02 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38IHm1R1009244
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 17:48:01 GMT
+Received: from [10.71.109.209] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 18 Sep
+ 2023 10:48:00 -0700
+Message-ID: <2f98d5f1-57c1-d9fe-cb1c-b975db057287@quicinc.com>
+Date:   Mon, 18 Sep 2023 10:47:59 -0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB7114:EE_
-X-MS-Office365-Filtering-Correlation-Id: 56e6d9b9-5ea0-41a3-6c76-08dbb86f4d1e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: skdM2M+2NBXjtQe5gPsCS+cx5Li7Q2/fztyl/9iMDSqHHaRS+Ulf0saGl06WMXc9y4H049nOWgmarXPX6pifsjnu4x6Kz7SJdXbBrRKfhooQVwWSHsk1xgLK3fnMdNiJ8WWAhkixS3hMhryk0iANvmUHxkZvn5JAHvc1aG0DXLceZRikET0qM9ie7y+b7B5rpAffDyaYAzI/xZ1KphFAOOccMtm11BMcF0bjps9Ag4Xyk49lDMMzMM4WnlsSCnq7HYQblYP8syUDFURfhgxmpuPYTFYOvQtDXDKLXfFFO5zp17xi9OCUb/SB5PspZHqOA5bGLxo4/MMyZz/fk7YEPnWPGlwNo1SM5Bg3PpUM6l9Hvc74ybySxnZjpshguTbfJifU9e790xhW1/gZ/6A5EQCqrQz65Mk3YRC+9kDMSi+zi31T4TNyuNENDw2kESuod1uGNtIAhVp19iuyAkzjvjLqhgzdA7cJfOhZlEPvmZBDAHx7pRF70wlKid59lfTrUH9jBIMaw7KOYUWue33QSWpPBNN0gSsW/EHkpERaCwnQECCqvwpARczIXzHSHCtwTi9F7QnSKkppQe582/7Kjvvt21weijAqe1UINQ9dIKQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(376002)(136003)(396003)(1800799009)(451199024)(186009)(66946007)(66476007)(316002)(6916009)(8936002)(8676002)(4326008)(41300700001)(6486002)(6506007)(6512007)(478600001)(966005)(83380400001)(2616005)(26005)(1076003)(86362001)(33656002)(2906002)(38100700002)(5660300002)(36756003)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FSsmhXY3JFVb8RFIeydVS6ny5TggAOTjbCMYVWk6H1TGu1D4N7xqqXE/1giV?=
- =?us-ascii?Q?aJly8r2nh78YjaZN/BUxwx4zFnWvS0q0a9CQLICY5U34qYXKU0VurKWqjj1Q?=
- =?us-ascii?Q?GbOAlHQlZl3baFdaAeyLFfDYPhqCWmIoScby6kIKpVEZNOkOJ7TQOXz5Atn8?=
- =?us-ascii?Q?JaDEmpFX9DuLvpny3nd9DPJHZrKEGeZj//jadcFreAiLmTJ7TMIrTSticQuw?=
- =?us-ascii?Q?d29JFu+T911HBpvTjd8EnZH7IzlYHOE8Iz9kjMxcQpebQk/3Cw1yrSyif1p0?=
- =?us-ascii?Q?05gPutFHgf4OnAL1fE55tSPSUA/7PqyvHGoLOl7f3TYWPYA/NMbadq2eIRyg?=
- =?us-ascii?Q?fP1PL7fH56MfyqJN9t9w9Hvu4HgNZR0yGWeH3Y3780OmvXVuLLOtTeTZJIFy?=
- =?us-ascii?Q?LQCvb+EXErrZ9siMEs6v/IfX96OctxUdnCfCKaKpGvAVwgBW0uAa7zTuHkMq?=
- =?us-ascii?Q?xVW4ZfhDUtwR1PrWdS6xghgf/cGEtasctuL7Idu2seYSWaNxKGlaQaZHWKD/?=
- =?us-ascii?Q?lHZ3F92UwjGcO6Uz8nI0IUiD70i7D8/ldX67ZW9qcqDq3v0LnbL1MWiT7ofo?=
- =?us-ascii?Q?kE+uo64AKPdjZFgotleb+i1ugK0Cs35LF0y37/VKUo96OC6XTn/RzcNNEmJi?=
- =?us-ascii?Q?fvJdmaFu4wQNyaGjUmTkhdviMgrGrRgr2bM3WgqxWz671e77NwDYXIpBhI5w?=
- =?us-ascii?Q?9yJO/JTwFEGwsBeaj18YoveozH5XNl3QQWduNTbVHDYcySezulr1OtBDZkZA?=
- =?us-ascii?Q?7DI0d3d68UA0qjykvCD9Run7QndKS539OeA9Oe9fPq7hNGOhXn/LfGSF7fzN?=
- =?us-ascii?Q?JPvT2g36osaFHP4tKz1xPeUiaYIrz0AMnqlsha6WnGhsd8APcXui1AQRhl6h?=
- =?us-ascii?Q?vfBZRz0/3Jn/JpadE2UGY/Mxvxo7TQ9+fjl7XDaiHxez3aEedA5pSKYa8O0E?=
- =?us-ascii?Q?DCa3psF4OI27b9IpQBFA9ScIrQJr6XYjWqpItllYeWgO1FNcHJLcS7bIg6a9?=
- =?us-ascii?Q?OrqQdslJDq7zwqHdazlkA4btfLxxJhUdu2ZTg0Us+F2hDYFIjJp19QHhD0oi?=
- =?us-ascii?Q?DN5Negd7By6RRxJSoylbNnSETG34KtNJgPivhjU5SOn3IJrGdtPKboOzzZwX?=
- =?us-ascii?Q?L+84IHrg88mAWhFWko2xUYnemLkUKvw1e+EmroLRZDyZkMAlSh1HkvLw2ob0?=
- =?us-ascii?Q?ED9Gpnr7LtlcxgQoonsHH3E3XykmT3CxeLs6GER9+s9AkfEfH/TJdoznYy7Z?=
- =?us-ascii?Q?9KGWXe58j27ZmiTfLfq5zIJZ5SlLa8vXdP/tlQ21uA000m+Oc7ulE57nnEzt?=
- =?us-ascii?Q?t6yQ0Lx511s2psURxit7tE1/7gl2gcl7VIw7CizLcsPO0DK8sEMAdIHROQv7?=
- =?us-ascii?Q?XPuxP7Txo2ZSVZpsP9iBTZyJajjh7fBdJKTdQdLCiL7milikXSOWHofzvRr0?=
- =?us-ascii?Q?+yj/f9XSeWPnkqyx99FuoygmaXOZRpj6nDyHy+xugTf2/fPcTgA/TBa6bnIU?=
- =?us-ascii?Q?v9KKysmqA6mgZyGauV2oqJ0OvXmnyGDig331S+/N2A/zKGCLlc7XPxJkWWTa?=
- =?us-ascii?Q?nammkiy5+rtsEHY58Dvs7OyIH4+8KOYu0v30HRnP?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56e6d9b9-5ea0-41a3-6c76-08dbb86f4d1e
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 17:47:18.6288
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a6sZM0Yak2+HnWHhtqzoTvGrGjdyQCq5180iHDTN6lqowYxkU8utOq8tr4VLP0aj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7114
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 6/7] drm/msm/dp: add
+ pm_runtime_force_suspend()/resume()
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
+ <1694813901-26952-7-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqPXoFX4LXyXYgfh07Vpxg-KgD8VBR6x5bXf4GOJmbOtw@mail.gmail.com>
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <CAA8EJpqPXoFX4LXyXYgfh07Vpxg-KgD8VBR6x5bXf4GOJmbOtw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2yRmZoFFq4PYJjGmGlmP9W4LESvPS1d0
+X-Proofpoint-GUID: 2yRmZoFFq4PYJjGmGlmP9W4LESvPS1d0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-18_08,2023-09-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 clxscore=1015 adultscore=0
+ malwarescore=0 mlxlogscore=999 spamscore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309180157
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 11:19:49AM -0600, Alex Williamson wrote:
 
-> > > And the VMM usage is self inflicted because we insist on
-> > > masquerading the coherent memory as a nondescript PCI BAR rather
-> > > than providing a device specific region to enlighten the VMM to this
-> > > unique feature.  
-> > 
-> > I see it as two completely seperate things.
-> > 
-> > 1) VFIO and qemu creating a vPCI device. Here we don't need this
-> >    information.
-> > 
-> > 2) This ACPI pxm stuff to emulate the bare metal FW.
-> >    Including a proposal for auto-detection what kind of bare metal FW
-> >    is being used.
-> > 
-> > This being a poor idea for #2 doesn't jump to problems with #1, it
-> > just says more work is needed on the ACPI PXM stuff.
-> 
-> But I don't think we've justified why it's a good idea for #1.  Does
-> the composed vPCI device with coherent memory masqueraded as BAR2 have
-> a stand alone use case without #2?
+On 9/15/2023 6:21 PM, Dmitry Baryshkov wrote:
+> On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>> Add pm_runtime_force_suspend()/resume() to complete incorporating pm
+>> runtime framework into DP driver. Both dp_pm_prepare() and dp_pm_complete()
+>> are added to set hpd_state to correct state. After resume, DP driver will
+>> re training its main link after .hpd_enable() callback enabled HPD
+>> interrupts and bring up display accordingly.
+> How will it re-train the main link? What is the code path for that?
 
-Today there is no SW that can operate that configuration. But that is
-a purely SW in the VM problem.
+1) for edp, dp_bridge_atomic_enable(), called from framework, to start 
+link training and bring up display.
 
-Jonathan got it right here:
+2) for external DP, HPD_PLUG_INT will be generated to start link 
+training and bring up display.
 
-https://lore.kernel.org/all/20230915153740.00006185@Huawei.com/
+>
+> I think this is a misuse for prepare/complete callbacks, at least
+> judging from their documentation.
 
-If Linux in the VM wants to use certain Linux kernel APIs then the FW
-must provision these empty nodes. Universally. It is a CXL problem as
-well.
+1) dp_pm_prepare() is called to make sure eDP/DP related power/clocks 
+are off and set hpd_state  to ST_SUSPENDED and nothing else.
 
-For instance I could hack up Linux and force it to create extra nodes
-regardless of ACPI and then everything would be fine with #1 alone.
+2) dp_pm_completed() is called to set hpd_state to ST_ST_DISCONNECTED 
+(default state) and nothing else.
 
-When/if Linux learns to dynmically create these things without relying
-on FW then we don't need #2.
+I think both are doing proper action.
 
-It is ugly, it is hack, but it is copying what real FW decided to do.
 
-> My understanding based on these series is that the guest driver somehow
-> carves up the coherent memory among a set of memory-less NUMA nodes
-> (how to know how many?) created by the VMM and reported via the _DSD for
-> the device.  If this sort of configuration is a requirement for making
-> use of the coherent memory, then what exactly becomes easier by the fact
-> that it's exposed as a PCI BAR?
-
-It is keeping two concerns seperate. The vPCI layer doesn't care about
-any of this because it is a Linux problem. A coherent BAR is fine and
-results in the least amount of special code everywhere.
-
-The ACPI layer has to learn how to make this hack to support Linux.
-
-I don't think we should dramatically warp the modeling of the VFIO
-regions just to support auto detecting an ACPI hack.
-
-> In fact, if it weren't a BAR I'd probably suggest that the whole
-> configuration of this device should be centered around a new
-> nvidia-gpu-mem object.  That object could reference the ID of a
-> vfio-pci device providing the coherent memory via a device specific
-> region and be provided with a range of memory-less nodes created for
-> its use.  The object would insert the coherent memory range into the VM
-> address space and provide the device properties to make use of it in
-> the same way as done on bare metal.
-
-How does that give auto configuration? The other thread mentions that
-many other things need this too, like CXL and imagined coherent
-virtio stuff?
-
-Can we do the API you imagine more generically with any VFIO region
-(even a normal BAR) providing the memory object?
-
-> It seems to me that the PCI BAR representation of coherent memory is
-> largely just a shortcut to getting it into the VM address space, but
-> it's also leading us down these paths where the "pxm stuff" is invoked
-> based on the device attached to the VM, which is getting a lot of
-> resistance.  
-
-I don't like the idea of a dedicated memory region type, I think we
-will have more of these than just one.
-
-Some kind of flag on the vfio device indicating that PXM nodes (and
-how many) should be auto created would be fine.
-
-But if there is resistance to auto configuration I don't see how that
-goes away just because we shift around the indicator to trigger
-auto configuration??
-
-Jason
+>
+>> Changes in v3:
+>> -- replace dp_pm_suspend() with pm_runtime_force_suspend()
+>> -- replace dp_pm_resume() with pm_runtime_force_resume()
+>>
+>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/msm/dp/dp_display.c | 87 +++++--------------------------------
+>>   1 file changed, 10 insertions(+), 77 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index b6992202..b58cb02 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -1333,101 +1333,35 @@ static int dp_pm_runtime_resume(struct device *dev)
+>>          return 0;
+>>   }
+>>
+>> -static int dp_pm_resume(struct device *dev)
+>> +static void dp_pm_complete(struct device *dev)
+>>   {
+>> -       struct platform_device *pdev = to_platform_device(dev);
+>> -       struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>> -       struct dp_display_private *dp;
+>> -       int sink_count = 0;
+>> -
+>> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+>> +       struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>>
+>>          mutex_lock(&dp->event_mutex);
+>>
+>>          drm_dbg_dp(dp->drm_dev,
+>> -               "Before, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
+>> +               "type=%d core_inited=%d phy_inited=%d power_on=%d\n",
+>>                  dp->dp_display.connector_type, dp->core_initialized,
+>> -               dp->phy_initialized, dp_display->power_on);
+>> +               dp->phy_initialized, dp->dp_display.power_on);
+>>
+>>          /* start from disconnected state */
+>>          dp->hpd_state = ST_DISCONNECTED;
+>>
+>> -       /* turn on dp ctrl/phy */
+>> -       dp_display_host_init(dp);
+>> -
+>> -       if (dp_display->is_edp)
+>> -               dp_catalog_ctrl_hpd_enable(dp->catalog);
+>> -
+>> -       if (dp_catalog_link_is_connected(dp->catalog)) {
+>> -               /*
+>> -                * set sink to normal operation mode -- D0
+>> -                * before dpcd read
+>> -                */
+>> -               dp_display_host_phy_init(dp);
+>> -               dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+>> -               sink_count = drm_dp_read_sink_count(dp->aux);
+>> -               if (sink_count < 0)
+>> -                       sink_count = 0;
+>> -
+>> -               dp_display_host_phy_exit(dp);
+>> -       }
+>> -
+>> -       dp->link->sink_count = sink_count;
+>> -       /*
+>> -        * can not declared display is connected unless
+>> -        * HDMI cable is plugged in and sink_count of
+>> -        * dongle become 1
+>> -        * also only signal audio when disconnected
+>> -        */
+>> -       if (dp->link->sink_count) {
+>> -               dp->dp_display.link_ready = true;
+>> -       } else {
+>> -               dp->dp_display.link_ready = false;
+>> -               dp_display_handle_plugged_change(dp_display, false);
+>> -       }
+>> -
+>> -       drm_dbg_dp(dp->drm_dev,
+>> -               "After, type=%d sink=%d conn=%d core_init=%d phy_init=%d power=%d\n",
+>> -               dp->dp_display.connector_type, dp->link->sink_count,
+>> -               dp->dp_display.link_ready, dp->core_initialized,
+>> -               dp->phy_initialized, dp_display->power_on);
+>> -
+>>          mutex_unlock(&dp->event_mutex);
+>> -
+>> -       return 0;
+>>   }
+>>
+>> -static int dp_pm_suspend(struct device *dev)
+>> +static int dp_pm_prepare(struct device *dev)
+>>   {
+>> -       struct platform_device *pdev = to_platform_device(dev);
+>> -       struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>> -       struct dp_display_private *dp;
+>> -
+>> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+>> +       struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>>
+>>          mutex_lock(&dp->event_mutex);
+>>
+>> -       drm_dbg_dp(dp->drm_dev,
+>> -               "Before, type=%d core_inited=%d  phy_inited=%d power_on=%d\n",
+>> -               dp->dp_display.connector_type, dp->core_initialized,
+>> -               dp->phy_initialized, dp_display->power_on);
+>> -
+>>          /* mainlink enabled */
+>>          if (dp_power_clk_status(dp->power, DP_CTRL_PM))
+>>                  dp_ctrl_off_link_stream(dp->ctrl);
+>>
+>> -       dp_display_host_phy_exit(dp);
+>> -
+>> -       /* host_init will be called at pm_resume */
+>> -       dp_display_host_deinit(dp);
+>> -
+>>          dp->hpd_state = ST_SUSPENDED;
+>>
+>> -       drm_dbg_dp(dp->drm_dev,
+>> -               "After, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
+>> -               dp->dp_display.connector_type, dp->core_initialized,
+>> -               dp->phy_initialized, dp_display->power_on);
+>> -
+>>          mutex_unlock(&dp->event_mutex);
+>>
+>>          return 0;
+>> @@ -1435,8 +1369,10 @@ static int dp_pm_suspend(struct device *dev)
+>>
+>>   static const struct dev_pm_ops dp_pm_ops = {
+>>          SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, NULL)
+>> -       .suspend = dp_pm_suspend,
+>> -       .resume =  dp_pm_resume,
+>> +       SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+>> +                                pm_runtime_force_resume)
+>> +       .prepare = dp_pm_prepare,
+>> +       .complete = dp_pm_complete,
+>>   };
+>>
+>>   static struct platform_driver dp_display_driver = {
+>> @@ -1670,9 +1606,6 @@ void dp_bridge_atomic_post_disable(struct drm_bridge *drm_bridge,
+>>
+>>          dp_display = container_of(dp, struct dp_display_private, dp_display);
+>>
+>> -       if (dp->is_edp)
+>> -               dp_hpd_unplug_handle(dp_display, 0);
+>> -
+>>          mutex_lock(&dp_display->event_mutex);
+>>
+>>          state = dp_display->hpd_state;
+>> --
+>> 2.7.4
+>>
+>
