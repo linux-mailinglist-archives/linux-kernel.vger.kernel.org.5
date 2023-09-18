@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3429D7A4DAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010F27A4D8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbjIRP5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
+        id S229500AbjIRPxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjIRP5H (ORCPT
+        with ESMTP id S229485AbjIRPxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:57:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297761729;
-        Mon, 18 Sep 2023 08:55:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695052537; x=1726588537;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=kJ0CYEQlLTz2M55BKeG/DtPrqJTf7eCb6Wpd+3qKrgE=;
-  b=JFcATaBdF64Sa7Zv48SKRKN5QhcCsdg/uiwUC3BO3gKrJCMbvqYkdQPH
-   HjeUl7yDxKihtWQ0lkav+2Yx3c/TKCPdjPii1sDFrL8wnAYOXwIQXHgpb
-   iOwbfjzg3LtueYinHKrCsieAZOXcNN5z0980fPlrglCuAftWRwMEkI9t0
-   FJ5mMEKuotOeRgcvddfeZ/lISbmBZv84+rCpEEECUBT3HMO4lX/Nobgbs
-   cXzMWOe7I6WGUhawonrKbMWmgdN0rLLNPqIeY/17Os+SZIMjtDkEi3oA7
-   LZ3EiLk99l1PLATJshTwU/zreA+6l8VRiL/O/t4c4rnHJR8woP56KlXJ4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="446158379"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="446158379"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 08:44:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="836076981"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="836076981"
-Received: from ecochran-mobl1.amr.corp.intel.com (HELO [10.212.244.237]) ([10.212.244.237])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 08:44:52 -0700
-Message-ID: <ad1a55eb-0476-401a-9839-eae51e1fd426@intel.com>
-Date:   Mon, 18 Sep 2023 08:44:51 -0700
+        Mon, 18 Sep 2023 11:53:05 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26A419B7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:51:13 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76ef935abaeso308459185a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:51:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695051996; x=1695656796; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eSP+16G1Bwl8A9IxgIP/Sa5BiOxstbUYl8oEInDZp+w=;
+        b=txqFLE+MS1O0Bp7OnBjkA3p+ajO0hNQdaN+PLm2WUvcPzKQvXyQC6oMnVYaaZpcABt
+         NXC3G+Dz0RhnO7X5bBeuZVSr0WpSxLu84maUJN39GHh07inBahBrRmF9233eb87K19Xf
+         nR3m49yrcdkHHmLcHKzlUozy75I/X+oK5spNKnxoBMCUaXYgiAicPp39BFMX3nfoNJdW
+         mYlO3aR11caVCuf7bn8w/VwWm5phZkzMcRlEaT/bfWmoHUMtg4CGcJdWENTYZC9LaLfc
+         J/zGsqPp6H3wKS86PSAei6YuqFtjh21AxR0Z0mUXvvDxLvaeknLekTPNTK1dRQrrVZcH
+         e3LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695051996; x=1695656796;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eSP+16G1Bwl8A9IxgIP/Sa5BiOxstbUYl8oEInDZp+w=;
+        b=kULmuVDSGYRJKxW33EMzUzrV7v5Y7v3QYWeh5lDoJAGiXFOnGCKJACsm9ox3wyWOfF
+         6v1YEpQiiFXLB91xorWEtQZYJSlgapDdTwykdaZ3ckQrCGVITkHsomFMLLzuNIjvtNXs
+         ztjxS0O+1uxXlxzlTsquk4hWycMuoIRx0/sGUVXGOr8/YF5jpE0o5aP4bbcdiQhMpQGG
+         wLupa34IxbfOModXfhiEYXxPbpDLMSfNkKLXn2piQ8+c7U2EFMFW2vbV+pYvIdhyyRaC
+         5kJJyLikQTRXLyLEnyrWqtL4j+MueAB9qhHpa3gSP4du1cpvSEZnvOczJ9rD2PpmCE0d
+         zEXA==
+X-Gm-Message-State: AOJu0Yw9ESnCIykI3fEaP8lXFBcp1ta+f5q1SVnoIJMWWm3tklvMEWcq
+        S3p6PfcI4nQ85qmPSZXkV/Dvr/KxpNCOYPztGNDMGO04/vrJV8yUVLRjDg==
+X-Google-Smtp-Source: AGHT+IGSUULgLx9FvIM2G5gEeM7ybNMOW2H+dM1B3pvbSlmQSrVHa/ewZDJJ/XayWLE5Hm+MVwugsUEgSOjdjnGSzrQ=
+X-Received: by 2002:a0c:e38f:0:b0:64f:539b:f52a with SMTP id
+ a15-20020a0ce38f000000b0064f539bf52amr9516982qvl.20.1695051996407; Mon, 18
+ Sep 2023 08:46:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v13 17/22] x86/kexec: Flush cache of TDX private memory
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Shahar, Sagi" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "Gao, Chao" <chao.gao@intel.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-References: <cover.1692962263.git.kai.huang@intel.com>
- <1fa1eb80238dc19b4c732706b40604169316eb34.1692962263.git.kai.huang@intel.com>
- <fb70d8c29ebc91dc63e524a5d5cdf1f64cdbec73.camel@intel.com>
- <52e9ae7e-2e08-5341-99f7-b68eb62974df@intel.com>
- <b6b5f6f06ccdbbef900cfe7db87f490aac3e77a4.camel@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <b6b5f6f06ccdbbef900cfe7db87f490aac3e77a4.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230914131225.13415-1-will@kernel.org> <20230914131225.13415-4-will@kernel.org>
+In-Reply-To: <20230914131225.13415-4-will@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 18 Sep 2023 08:46:22 -0700
+Message-ID: <CAKwvOd=gDX4ebkyHyqr276nrZVuRaoJG9Ptofpq8WjejD3s5AA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] scripts/faddr2line: Skip over mapping symbols in
+ output from readelf
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,38 +75,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/23 05:08, Huang, Kai wrote:
-> On Fri, 2023-09-15 at 10:50 -0700, Dave Hansen wrote:
->> On 9/15/23 10:43, Edgecombe, Rick P wrote:
->>> On Sat, 2023-08-26 at 00:14 +1200, Kai Huang wrote:
->>>> There are two problems in terms of using kexec() to boot to a new
->>>> kernel when the old kernel has enabled TDX: 1) Part of the memory
->>>> pages are still TDX private pages; 2) There might be dirty
->>>> cachelines associated with TDX private pages.
->>> Does TDX support hibernate?
->> No.
->>
->> There's a whole bunch of volatile state that's generated inside the CPU
->> and never leaves the CPU, like the ephemeral key that protects TDX
->> module memory.
->>
->> SGX, for instance, never even supported suspend, IIRC.  Enclaves just
->> die and have to be rebuilt.
-> 
-> Right.  AFAICT TDX cannot survive from S3 either.  All TDX keys get lost when
-> system enters S3.  However I don't think TDX can be rebuilt after resume like
-> SGX.  Let me confirm with TDX guys on this.
+On Thu, Sep 14, 2023 at 6:12=E2=80=AFAM Will Deacon <will@kernel.org> wrote=
+:
+>
+> Mapping symbols emitted in the readelf output can confuse the
+> 'faddr2line' symbol size calculation, resulting in the erroneous
+> rejection of valid offsets. This is especially prevalent when building
+> an arm64 kernel with CONFIG_CFI_CLANG=3Dy, where most functions are
+> prefixed with a 32-bit data value in a '$d.n' section. For example:
+>
+> 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcal=
+l
+>    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
+>    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
+>    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
+>    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
+>     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_proce=
+ss
+>
+> Adding a warning to do_one_initcall() results in:
+>
+>   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
+>
+> Which 'faddr2line' refuses to accept:
+>
+> $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
+> skipping do_one_initcall address at 0xffff800080014c74 due to size mismat=
+ch (0x260 !=3D 0x224)
+> no match for do_one_initcall+0xf4/0x260
+>
+> Filter out these entries from readelf using a shell reimplementation of
+> is_mapping_symbol(), so that the size of a symbol is calculated as a
+> delta to the next symbol present in ksymtab.
+>
+> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+> Cc: John Stultz <jstultz@google.com>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  scripts/faddr2line | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/scripts/faddr2line b/scripts/faddr2line
+> index 6b8206802157..20d9b3d37843 100755
+> --- a/scripts/faddr2line
+> +++ b/scripts/faddr2line
+> @@ -179,6 +179,11 @@ __faddr2line() {
+>                         local cur_sym_elf_size=3D${fields[2]}
+>                         local cur_sym_name=3D${fields[7]:-}
+>
+> +                       # is_mapping_symbol(cur_sym_name)
+> +                       if [[ ${cur_sym_name} =3D~ ^((\.L)|(L0)|(\$[adtx]=
+(\.|$))) ]]; then
 
-By "rebuilt" I mean all private data is totally destroyed and rebuilt
-from scratch.  The SGX architecture provides zero help other than
-delivering a fault and saying: "whoops all your data is gone".
+Thanks for the patch!
 
-> I think we can register syscore_ops->suspend for TDX, and refuse to suspend when
-> TDX is enabled.  This covers hibernate case too.
-> 
-> In terms of how to check "TDX is enabled", ideally it's better to check whether
-> TDX module is actually initialized, but the worst case is we can use
-> platform_tdx_enabled(). (I need to think more on this)
+I'm curious about the `|$` in the final part of the regex.  IIUC that
+will match something like
+$a
+Do we have any such symbols without `.<n>` suffixes?
 
-*Ideally* the firmware would have a choke point where it could just tell
-the OS that it can't suspend rather than the OS having to figure it out.
+With aarch64 defconfig + cfi:
+$ llvm-readelf -s vmlinux | grep '\$' | rev | cut -d ' ' -f 1 | rev | sort =
+-u
+I only see $d.<n> and $x.<n> where the initial value of <n> is zero
+(as opposed to no `.<n>` suffix).
+Can we tighten up that last part of the regex to be `\$[adtx]\.[0-9]+$` ?
+Or perhaps you've observed mapping symbols use another convention than
+what clang is doing?
+
+https://sourceware.org/binutils/docs/as/AArch64-Mapping-Symbols.html
+also only mentions $d and $x. Ah,
+https://developer.arm.com/documentation/dui0803/a/Accessing-and-managing-sy=
+mbols-with-armlink/About-mapping-symbols
+mentions $a for A32 and $t for T32.
+Consider adding a link to the ARM documentation on mapping symbols in
+the commit message?
+
+(Curiously, `llvm-nm` does not print these symbols, but `llvm-readelf -s` d=
+oes).
+
+> +                               continue
+> +                       fi
+> +
+>                         if [[ $cur_sym_addr =3D $sym_addr ]] &&
+>                            [[ $cur_sym_elf_size =3D $sym_elf_size ]] &&
+>                            [[ $cur_sym_name =3D $sym_name ]]; then
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
