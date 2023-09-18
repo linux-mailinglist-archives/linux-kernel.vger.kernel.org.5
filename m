@@ -2,184 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F597A471F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77B37A4730
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241254AbjIRKc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 06:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
+        id S239650AbjIRKeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 06:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241333AbjIRKcs (ORCPT
+        with ESMTP id S241358AbjIRKdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:32:48 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E261C126;
-        Mon, 18 Sep 2023 03:32:23 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 03E856607033;
-        Mon, 18 Sep 2023 11:32:20 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695033141;
-        bh=HGMvGDB1wXK1aRkUwoJnCxcXLdv/SVTCzXE3f2Tt9xM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RsE+wqV8sbDR9OSTd+VuqzXCftzJcvO21AdTW1ssvOFGHr0mdkQUHpA6Gf2pDQS8M
-         MFb7079lvPGsDPOwehksrjU4P0lBX+pv+EFkh+KT94I96tHIIIhq/8dnPe0Ahcgc5C
-         cdujUQ7GSp2mQ+rJ9BbCcBxu3duhnxAyltmQpyU/P7pUurHHlt6UsIZWso7fyb4Jd9
-         rW7FllLfPZBHluppsY+e8LYxKFlx1amx076LYhLbyK597vh3WW0XBNWzrd44ISk+5f
-         j71082ERaq4BvLeNkcGVo1uOSqr2quygMvWnFydnCU521gtWKZEgiRfa38aSToeau8
-         J2uVpMSO+8WJQ==
-Date:   Mon, 18 Sep 2023 12:32:18 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        healych@amazon.com, kernel@collabora.com
-Subject: Re: [PATCH v5 5/6] drm/panfrost: Implement generic DRM object RSS
- reporting function
-Message-ID: <20230918123218.14ca9fde@collabora.com>
-In-Reply-To: <a8d9fe07-7acc-db10-5660-293a449d9dd2@arm.com>
-References: <20230914223928.2374933-1-adrian.larumbe@collabora.com>
-        <20230914223928.2374933-6-adrian.larumbe@collabora.com>
-        <a8d9fe07-7acc-db10-5660-293a449d9dd2@arm.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 18 Sep 2023 06:33:43 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99AEF12C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:33:33 -0700 (PDT)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3ab7fb1173cso7145397b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:33:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695033213; x=1695638013;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TGRLeptGZvLp1hUYEMjYiRhp/wDfnF1GLg92JMr4Fig=;
+        b=IvY+GU0CxffylbrcIuSYoC8yGc4EWxmkQ2tGrKag/MwTYINEvLCukWWeBOj7esf3KK
+         uWXt58I0OAzQX4roDTstrM4wxINtOFKiIlw3V8OlKVfk7QMwWz38Vkqsfo8PDxhuu8+N
+         rfzHYATrLglfag4XjwEUHkAz86fg+5mtNZb+KrznJU4MAacASIZx7KZBrAITnnxGlp6+
+         Px6UdJTmSqjlV34Bo6BPrV9ajqxR2cGp+7sFWAKfD2Oa4j7bmDnz8rnApxkmQS6g3ReW
+         w1SVpYnp/a34wc4Jru7ue8wgLBChWP4wXmxCYDNjwc0CkFNwkmgo9ddJ3N94urY9tp6r
+         oIqQ==
+X-Gm-Message-State: AOJu0YyU3JySJmH76hRww2h2/atW8HDg3HFCwj70HvrlM8evWJK9lZwG
+        xBPV+2kfSNGAt2U6eVXoyS4FTSEwqzIGdDBSOijybHb6ahL8
+X-Google-Smtp-Source: AGHT+IEhT6lrIQ3NypWojHeJGdRpTkqBG7gOMcP6APFSfTvf2EDMdZgPLQy/VATxZvrCrEux6Exk/iXUwchO/8G02Ie0b9nn54uK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:1a1f:b0:3ac:ab4f:ef3 with SMTP id
+ bk31-20020a0568081a1f00b003acab4f0ef3mr3979852oib.6.1695033212795; Mon, 18
+ Sep 2023 03:33:32 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 03:33:32 -0700
+In-Reply-To: <3905313.1695031861@warthog.procyon.org.uk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000088066006059fac87@google.com>
+Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
+From:   syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, davem@davemloft.net, dhowells@redhat.com,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Sep 2023 11:01:43 +0100
-Steven Price <steven.price@arm.com> wrote:
+Hello,
 
-> On 14/09/2023 23:38, Adri=C3=A1n Larumbe wrote:
-> > BO's RSS is updated every time new pages are allocated on demand and ma=
-pped
-> > for the object at GPU page fault's IRQ handler, but only for heap buffe=
-rs.
-> > The reason this is unnecessary for non-heap buffers is that they are ma=
-pped
-> > onto the GPU's VA space and backed by physical memory in their entirety=
- at
-> > BO creation time.
-> >=20
-> > This calculation is unnecessary for imported PRIME objects, since heap
-> > buffers cannot be exported by our driver, and the actual BO RSS size is=
- the
-> > one reported in its attached dmabuf structure.
-> >=20
-> > Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
-> > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com> =20
->=20
-> Am I missing something, or are we missing a way of resetting
-> heap_rss_size when the shrinker purges? It looks like after several
-> grow/purge cycles, heap_rss_size could actually grow to be larger than
-> the BO which is clearly wrong.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in __ip6_append_data
 
-Didn't even consider this case since we don't flag heap BOs purgeable
-in mesa(panfrost), but let's assume we did. If the BO is purged, I'd
-expect the core to report 0MB of resident memory anyway. And purged BOs
-are not supposed to be re-used if MADVISE(WILL_NEED) returns
-retained=3Dfalse, they should be destroyed. Not 100% sure this is
-enforced everywhere though (we might actually miss tests to make sure
-users don't pass purged BOs to jobs, or make the alloc-on-fault logic
-doesn't try to grow a purged GEM).
+l2tp_ip6_sendmsg()
+MAXPLEN
+check 0 4100 65575 40, 4 65536
+l2tp_ip6_sendmsg()
+MAXPLEN
+check 4100 4100 65575 40, 0 65536
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5455 at net/ipv6/ip6_output.c:1812 __ip6_append_data.isra.0+0x1c6d/0x4900 net/ipv6/ip6_output.c:1812
+Modules linked in:
+CPU: 0 PID: 5455 Comm: syz-executor.0 Not tainted 6.5.0-syzkaller-11938-g65d6e954e378-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:__ip6_append_data.isra.0+0x1c6d/0x4900 net/ipv6/ip6_output.c:1812
+Code: c4 f6 ff ff e8 84 d4 97 f8 49 8d 44 24 ff 48 89 44 24 68 49 8d 6c 24 07 e9 ab f6 ff ff 4c 8b b4 24 90 01 00 00 e8 63 d4 97 f8 <0f> 0b 48 8b 44 24 10 45 89 f4 48 8d 98 74 02 00 00 e8 4d d4 97 f8
+RSP: 0018:ffffc90004f373b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000001004 RCX: 0000000000000000
+RDX: ffff888019e8bb80 RSI: ffffffff88efcf9d RDI: 0000000000000006
+RBP: 0000000000001000 R08: 0000000000000006 R09: 0000000000001004
+R10: 0000000000001000 R11: 0000000000000001 R12: 0000000000000001
+R13: dffffc0000000000 R14: 0000000000001004 R15: ffff888027b1d640
+FS:  00007feae40ff6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0f01e4e378 CR3: 000000007d467000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ip6_append_data+0x1e6/0x510 net/ipv6/ip6_output.c:1909
+ l2tp_ip6_sendmsg+0xe0c/0x1ce0 net/l2tp/l2tp_ip6.c:633
+ inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:840
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:753
+ splice_to_socket+0xade/0x1010 fs/splice.c:881
+ do_splice_from fs/splice.c:933 [inline]
+ direct_splice_actor+0x118/0x180 fs/splice.c:1142
+ splice_direct_to_actor+0x347/0xa30 fs/splice.c:1088
+ do_splice_direct+0x1af/0x280 fs/splice.c:1194
+ do_sendfile+0xb88/0x1390 fs/read_write.c:1254
+ __do_sys_sendfile64 fs/read_write.c:1322 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1308 [inline]
+ __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7feae347cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007feae40ff0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007feae359bf80 RCX: 00007feae347cae9
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000005
+RBP: 00007feae34c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 000000010000a006 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007feae359bf80 R15: 00007ffc444d03c8
+ </TASK>
 
-If we want to implement transparent BO swap{out,in} (Dmitry's
-patchset), that's be a different story, and we'll indeed have to set
-heap_rss_size back to zero on eviction.
 
->=20
-> Steve
->=20
-> > ---
-> >  drivers/gpu/drm/panfrost/panfrost_gem.c | 15 +++++++++++++++
-> >  drivers/gpu/drm/panfrost/panfrost_gem.h |  5 +++++
-> >  drivers/gpu/drm/panfrost/panfrost_mmu.c |  1 +
-> >  3 files changed, 21 insertions(+)
-> >=20
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/=
-panfrost/panfrost_gem.c
-> > index 7d8f83d20539..4365434b48db 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> > @@ -208,6 +208,20 @@ static enum drm_gem_object_status panfrost_gem_sta=
-tus(struct drm_gem_object *obj
-> >  	return res;
-> >  }
-> > =20
-> > +static size_t panfrost_gem_rss(struct drm_gem_object *obj)
-> > +{
-> > +	struct panfrost_gem_object *bo =3D to_panfrost_bo(obj);
-> > +
-> > +	if (bo->is_heap) {
-> > +		return bo->heap_rss_size;
-> > +	} else if (bo->base.pages) {
-> > +		WARN_ON(bo->heap_rss_size);
-> > +		return bo->base.base.size;
-> > +	} else {
-> > +		return 0;
-> > +	}
-> > +}
-> > +
-> >  static const struct drm_gem_object_funcs panfrost_gem_funcs =3D {
-> >  	.free =3D panfrost_gem_free_object,
-> >  	.open =3D panfrost_gem_open,
-> > @@ -220,6 +234,7 @@ static const struct drm_gem_object_funcs panfrost_g=
-em_funcs =3D {
-> >  	.vunmap =3D drm_gem_shmem_object_vunmap,
-> >  	.mmap =3D drm_gem_shmem_object_mmap,
-> >  	.status =3D panfrost_gem_status,
-> > +	.rss =3D panfrost_gem_rss,
-> >  	.vm_ops =3D &drm_gem_shmem_vm_ops,
-> >  };
-> > =20
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/=
-panfrost/panfrost_gem.h
-> > index ad2877eeeccd..13c0a8149c3a 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
-> > @@ -36,6 +36,11 @@ struct panfrost_gem_object {
-> >  	 */
-> >  	atomic_t gpu_usecount;
-> > =20
-> > +	/*
-> > +	 * Object chunk size currently mapped onto physical memory
-> > +	 */
-> > +	size_t heap_rss_size;
-> > +
-> >  	bool noexec		:1;
-> >  	bool is_heap		:1;
-> >  };
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/=
-panfrost/panfrost_mmu.c
-> > index d54d4e7b2195..7b1490cdaa48 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> > @@ -522,6 +522,7 @@ static int panfrost_mmu_map_fault_addr(struct panfr=
-ost_device *pfdev, int as,
-> >  		   IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
-> > =20
-> >  	bomapping->active =3D true;
-> > +	bo->heap_rss_size +=3D SZ_2;
-> > =20
-> >  	dev_dbg(pfdev->dev, "mapped page fault @ AS%d %llx", as, addr);
-> >   =20
->=20
+Tested on:
+
+commit:         65d6e954 Merge tag 'gfs2-v6.5-rc5-fixes' of git://git...
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12133ac4680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b273cdfbc13e9a4b
+dashboard link: https://syzkaller.appspot.com/bug?extid=62cbf263225ae13ff153
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=139cae54680000
 
