@@ -2,144 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC027A4063
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A986B7A4067
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236630AbjIRFQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 01:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S239579AbjIRFUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 01:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239504AbjIRFQG (ORCPT
+        with ESMTP id S237269AbjIRFUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 01:16:06 -0400
-Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2294C10E
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:16:00 -0700 (PDT)
-Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1d665ea8121so4491908fac.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:16:00 -0700 (PDT)
+        Mon, 18 Sep 2023 01:20:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A2E11F
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695014353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+VmGOP6k6PklzaSQw+Wb8ACfwVkFKcepFidWWf6BMLc=;
+        b=coFpRnGgd8dmM+r+ob0HuNvrPBYaEoaIb/GAdQHuSAUtDTV2IuSjRnNyu5KeLMh3Fi0CTR
+        FQOR+g1TpA/x+4UuH1JTRHr4Wxqn/213Y/rzoNIKqgOBvLG6xdkkLbi4AKyO6OUMr/KPZf
+        7FP9KQU5gyNQPFmi677em9Uj/DGEWGk=
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
+ [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-439-ff685WPKNf2OJx6u0ngD0w-1; Mon, 18 Sep 2023 01:19:11 -0400
+X-MC-Unique: ff685WPKNf2OJx6u0ngD0w-1
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1d6c4b1a621so2137446fac.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:19:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695014157; x=1695618957;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m1ItRi5jKTmhwOVx6QlQ/dcqMcK3lZjIo74/O9TFpE8=;
-        b=ChVB4otkSnwiHxrmKleIs//Kc4e/hjABB1fdDRl7ar42mToTlpV+msBmhCZxkgOJ1F
-         uNvRQLyhgVpmHrOzkYBpixeoaUJOeEEs4gtzC0MgnnV6tkdX8c5ScWjEzEjF6Ag1duTP
-         wNTNn2miFFhrwX4cgZwaUha8E4wR51OXbQCoGY3l15J7+xg1T2Hqf46V+Sh2SAxUYXnE
-         M9G/1Jta/HZ6WnKmtPgDTcZqx23/xFzPPGmciTSOb7bjBPFtPEZlU4DkPILiwJIjVMK1
-         bI+xBZHpQKairz1oAPSY1/lMl1SX5xmGMOcHmcJofhIkJi5Y6RdKSfDU6WaJPFFuksOU
-         9OQA==
-X-Gm-Message-State: AOJu0YyaWjiPTenROgpdhKOPGEytMeJAGRqEgHDagHAU6r/r7jPprCg/
-        T+A4y2mtLiPuOYNrSJbhmUWLX3YB/TvEn/nXJnlGsN5yZjYy
-X-Google-Smtp-Source: AGHT+IF7mAyVIHV6YnGModzlYH0POb+0lxli3uAArJRWyyKInpRNbqwzru/TIaqBALOx4uHh0DvMAeBC+ox7qzLUN2qkIj4mKHX9
+        d=1e100.net; s=20230601; t=1695014351; x=1695619151;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+VmGOP6k6PklzaSQw+Wb8ACfwVkFKcepFidWWf6BMLc=;
+        b=nkrR0STZsIEKGuw+4TXvFfbLk69yYhF6S8Zhma77IoDLr0akmxDACpWu8fWqe0Qhsp
+         88yAe74LVgy/CtAhn1UzbPjdDL8y1ZuUAdaEUi3Z9ETaHH5KKgcKeKO4WvptIThyYAoD
+         LHA5+ao2nNMNBhEcgNKH7RImjvm/T07Egpdxu9GJa7/VpaWR34fp5geeSxSi7rr/MVO+
+         fAx8vFcaHicPy3WPOQ4ruEVOB+qwDyBTIUoFLGKMX2gHhb7qFr6eilMERmOtRgT0qjvV
+         lTWupHtQLvfLONnre2pF4Ufej0s8qPDsDAOaED+R/KQOZ7UxH6/qNaDZx8Db9xTN0Pmr
+         WYlw==
+X-Gm-Message-State: AOJu0YzCZ5jgs3627RFJmsBcPk7DVW/lWFaXP1Gw8l0+fXeL+YWlY2ub
+        S+T3U/jdlJ52M/G4VjydYL9cJDGSvbIWSd4Pd7AgmUQMzO7qMnqcQJwUxe+uvsxg+vF9TrWDQD5
+        uXFspivoW42ko69VqzUungvQv
+X-Received: by 2002:a05:6870:9191:b0:1d6:925:840d with SMTP id b17-20020a056870919100b001d60925840dmr9769141oaf.55.1695014350350;
+        Sun, 17 Sep 2023 22:19:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHgNPgTZtS/hsL5sJUv2LZbTkXkuBlyKD4NiO3GPGQyDZIhzwEA3s34zGbwVBHMpylSMNZ4ZQ==
+X-Received: by 2002:a05:6870:9191:b0:1d6:925:840d with SMTP id b17-20020a056870919100b001d60925840dmr9769120oaf.55.1695014350060;
+        Sun, 17 Sep 2023 22:19:10 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id mu13-20020a17090b388d00b0026596b8f33asm8145403pjb.40.2023.09.17.22.19.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 22:19:09 -0700 (PDT)
+Message-ID: <2d0e2fd7-5a6e-04ef-578d-713d8e14c30c@redhat.com>
+Date:   Mon, 18 Sep 2023 15:19:01 +1000
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:c79a:b0:1c8:e107:4193 with SMTP id
- dy26-20020a056870c79a00b001c8e1074193mr3142395oab.3.1695014157501; Sun, 17
- Sep 2023 22:15:57 -0700 (PDT)
-Date:   Sun, 17 Sep 2023 22:15:57 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bf4d0c06059b3c95@google.com>
-Subject: [syzbot] [bpf?] WARNING in bpf_mprog_pos_after
-From:   syzbot <syzbot+2558ca3567a77b7af4e3@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com,
-        yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 17/35] ACPI: processor: Register all CPUs from
+ acpi_processor_get_info()
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
+Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-18-james.morse@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230913163823.7880-18-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+On 9/14/23 02:38, James Morse wrote:
+> To allow ACPI to skip the call to arch_register_cpu() when the _STA
+> value indicates the CPU can't be brought online right now, move the
+> arch_register_cpu() call into acpi_processor_get_info().
+> 
+> Systems can still be booted with 'acpi=off', or not include an
+> ACPI description at all. For these, the CPUs continue to be
+> registered by cpu_dev_register_generic().
+> 
+> This moves the CPU register logic back to a subsys_initcall(),
+> while the memory nodes will have been registered earlier.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>   drivers/acpi/acpi_processor.c | 13 +++++++++++++
+>   drivers/base/cpu.c            |  2 +-
+>   2 files changed, 14 insertions(+), 1 deletion(-)
+> 
 
-HEAD commit:    ca5ab9638e92 Merge branch 'selftests-classid'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=110ef2c2680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e82a7781f9208c0d
-dashboard link: https://syzkaller.appspot.com/bug?extid=2558ca3567a77b7af4e3
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+With the following nits addressed:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3410dfa76b34/disk-ca5ab963.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/993bfbc60422/vmlinux-ca5ab963.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/40dff86d8c81/bzImage-ca5ab963.xz
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index a01e315aa16a..867782bc50b0 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -313,6 +313,19 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>   			cpufreq_add_device("acpi-cpufreq");
+>   	}
+>   
+> +	/*
+> +	 * Register CPUs that are present.
+> +	 * Use get_cpu_device() to skip duplicate CPU descriptions from
+> +	 * firmware.
+> +	 */
+> +	if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
+> +	    !get_cpu_device(pr->id)) {
+> +		int ret = arch_register_cpu(pr->id);
+> +
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2558ca3567a77b7af4e3@syzkaller.appspotmail.com
+The multiple lines of comments could be combined a bit:
 
-8021q: adding VLAN 0 to HW filter on device batadv38
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 14695 at include/linux/bpf_mprog.h:198 bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
-WARNING: CPU: 0 PID: 14695 at include/linux/bpf_mprog.h:198 bpf_mprog_pos_after+0x194/0x2b0 kernel/bpf/mprog.c:216
-Modules linked in:
-CPU: 0 PID: 14695 Comm: syz-executor.3 Not tainted 6.5.0-syzkaller-12718-gca5ab9638e92 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
-RIP: 0010:bpf_mprog_pos_after+0x194/0x2b0 kernel/bpf/mprog.c:216
-Code: e8 03 42 80 3c 38 00 0f 85 f2 00 00 00 4d 3b 65 00 0f 85 26 ff ff ff e8 3a 55 e3 ff 8d 43 01 89 44 24 14 eb 48 e8 2c 55 e3 ff <0f> 0b e9 36 ff ff ff e8 20 55 e3 ff 4c 89 f2 48 b8 00 00 00 00 00
-RSP: 0018:ffffc90004d87ac8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888043c88000 RSI: ffffffff81a47c94 RDI: 0000000000000005
-RBP: 0000000000000040 R08: 0000000000000005 R09: 000000000000003f
-R10: 0000000000000040 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888042c89418 R14: ffffc90004d87b98 R15: dffffc0000000000
-FS:  00007f51b80af6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30823000 CR3: 0000000026678000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_mprog_attach+0x433/0xfe0 kernel/bpf/mprog.c:266
- tcx_prog_attach+0x2bd/0xbd0 kernel/bpf/tcx.c:39
- bpf_prog_attach kernel/bpf/syscall.c:3848 [inline]
- __sys_bpf+0x413e/0x4e90 kernel/bpf/syscall.c:5344
- __do_sys_bpf kernel/bpf/syscall.c:5439 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5437 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5437
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f51b727cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f51b80af0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f51b739bf80 RCX: 00007f51b727cae9
-RDX: 0000000000000020 RSI: 0000000020000140 RDI: 0000000000000008
-RBP: 00007f51b72c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f51b739bf80 R15: 00007ffe27bee9b8
- </TASK>
+	/*
+	 * Register CPUs that are present. get_cpu_device() is used to
+	 * skip duplicate CPU description from firmware.
+          */
 
+>   	/*
+>   	 *  Extra Processor objects may be enumerated on MP systems with
+>   	 *  less than the max # of CPUs. They should be ignored _iff
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index d31c936f0955..677f963e02ce 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -537,7 +537,7 @@ static void __init cpu_dev_register_generic(void)
+>   {
+>   	int i, ret;
+>   
+> -	if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
+> +	if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disabled)
+>   		return;
+>   
+>   	for_each_present_cpu(i) {
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Some comments may be worthy, to explain why we need "!acpi_disabled" here.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Gavin
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
