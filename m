@@ -2,192 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B9D7A4886
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4583D7A4891
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241604AbjIRLf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53958 "EHLO
+        id S239962AbjIRLjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241821AbjIRLfy (ORCPT
+        with ESMTP id S241663AbjIRLit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:35:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF03F12E;
-        Mon, 18 Sep 2023 04:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lcMc94k377L0RtG7zfE5GRCtv6klLjT8RZUn9jMyTsk=; b=FAMTnFtoCj93B8t/+BLcetfVHJ
-        cq9H6JA79Wdovfqsj9+FRplzdhJrETR00Uxxz9QhhohYnw8/LPV/G60AtW89+RGyDCr50r2aQC82J
-        GE1coUuPOyEEzTop+riRRVNZ0K+0S7FvTO4nO1EkZbuSksqmMKQzh+CQrCRd4AEybm3rYh1pwCsw+
-        sLoMJuFigcX85ujnazk+atLmbLuMTSs2iel7/CQ2BAaBdqxBaTCL293xo/UUk0nSbdfwaaqpSgeNK
-        olgyMkd/hcpNN55yJ1VZ2As38Z99QpwOGb6TTijKa4sfRD7buul38Ifa/E5pBqNjmGB8NHiAY4kH9
-        dTs4Vm7Q==;
-Received: from [2001:8b0:10b:5:cea0:d147:7c2e:9e61] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qiCWf-00Al9j-R2; Mon, 18 Sep 2023 11:34:49 +0000
-Message-ID: <e4ac95d3370b997c17ce6924425d693a7e856c7e.camel@infradead.org>
-Subject: Re: [PATCH v2 05/12] KVM: pfncache: allow a cache to be activated
- with a fixed (userspace) HVA
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Date:   Mon, 18 Sep 2023 12:34:49 +0100
-In-Reply-To: <20230918112148.28855-6-paul@xen.org>
-References: <20230918112148.28855-1-paul@xen.org>
-         <20230918112148.28855-6-paul@xen.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-t7NXodRzZKv+xz5YsdZv"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 18 Sep 2023 07:38:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C928AD2;
+        Mon, 18 Sep 2023 04:38:42 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 846A71FE30;
+        Mon, 18 Sep 2023 11:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695037121; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OWPfjl4TaEOoTmtK5kGXCmf06QsGKtTXWPBDmobZg9o=;
+        b=LzB4M1Bh+d7XwNL1q7z2sQGVXW/lOcQexlMKrPxIPJey5PcLsp3MFsTH8XslIsu8daZzYf
+        UgUyQpAYx4aRBzBZbK0qtdrMCMeht28a2SKinNETMqgeN+ZE7OJSP6OIOOLI4Kn9CyensD
+        457yYlzeAGrLipW4BT7Q08+IvCJyFbM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695037121;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OWPfjl4TaEOoTmtK5kGXCmf06QsGKtTXWPBDmobZg9o=;
+        b=+OGGZvUSdWFGrNrsHxKgKPL7dZCLQsSFq94BfjJwhWXFHefiqxtDxadlYPz3XHLdloF1OP
+        m7Wq4tZC8J999TCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6D65013480;
+        Mon, 18 Sep 2023 11:38:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 44etGsE2CGW1XAAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 11:38:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id DC2FCA0759; Mon, 18 Sep 2023 13:38:40 +0200 (CEST)
+Date:   Mon, 18 Sep 2023 13:38:40 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Jan Kara <jack@suse.cz>, Philipp Stanner <pstanner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org, Yury Norov <yury.norov@gmail.com>
+Subject: Re: [PATCH v1 1/1] xarray: fix the data-race in xas_find_chunk() by
+ using READ_ONCE()
+Message-ID: <20230918113840.h3mmnuyer44e5bc5@quack3>
+References: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
+ <20230918094116.2mgquyxhnxcawxfu@quack3>
+ <22ca3ad4-42ef-43bc-51d0-78aaf274977b@alu.unizg.hr>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <22ca3ad4-42ef-43bc-51d0-78aaf274977b@alu.unizg.hr>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 18-09-23 12:20:09, Mirsad Todorovac wrote:
+> On 9/18/23 11:41, Jan Kara wrote:
+> > On Mon 18-09-23 06:47:40, Mirsad Goran Todorovac wrote:
+> > > KCSAN has discovered the following data-race:
+> > > 
+> > > [  206.510010] ==================================================================
+> > > [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+> > > 
+> > > [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
+> > > [  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
+> > > [  206.510097] __xa_clear_mark (lib/xarray.c:1923)
+> > > [  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
+> > > [  206.510128] folio_end_writeback (mm/filemap.c:1616)
+> > > [  206.510143] end_page_writeback (mm/folio-compat.c:28)
+> > > [  206.510155] btrfs_page_clear_writeback (fs/btrfs/subpage.c:646) btrfs
+> > > [  206.510994] end_bio_extent_writepage (./include/linux/bio.h:84 fs/btrfs/extent_io.c:542) btrfs
+> > > [  206.511817] __btrfs_bio_end_io (fs/btrfs/bio.c:117 fs/btrfs/bio.c:112) btrfs
+> > > [  206.512640] btrfs_orig_bbio_end_io (fs/btrfs/bio.c:164) btrfs
+> > > [  206.513497] btrfs_simple_end_io (fs/btrfs/bio.c:380) btrfs
+> > > [  206.514350] bio_endio (block/bio.c:1617)
+> > > [  206.514362] blk_mq_end_request_batch (block/blk-mq.c:837 block/blk-mq.c:1073)
+> > > [  206.514377] nvme_pci_complete_batch (drivers/nvme/host/pci.c:986) nvme
+> > > [  206.514437] nvme_irq (drivers/nvme/host/pci.c:1086) nvme
+> > > [  206.514500] __handle_irq_event_percpu (kernel/irq/handle.c:158)
+> > > [  206.514517] handle_irq_event (kernel/irq/handle.c:195 kernel/irq/handle.c:210)
+> > > [  206.514533] handle_edge_irq (kernel/irq/chip.c:836)
+> > > [  206.514549] __common_interrupt (./include/linux/irqdesc.h:161 arch/x86/kernel/irq.c:238 arch/x86/kernel/irq.c:257)
+> > > [  206.514563] common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
+> > > [  206.514583] asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
+> > > [  206.514599] kcsan_setup_watchpoint (kernel/kcsan/core.c:705 (discriminator 1))
+> > > [  206.514612] __tsan_read8 (kernel/kcsan/core.c:1025)
+> > > [  206.514626] steal_from_bitmap.part.0 (./include/linux/find.h:186 fs/btrfs/free-space-cache.c:2557 fs/btrfs/free-space-cache.c:2613) btrfs
+> > > [  206.515491] __btrfs_add_free_space (fs/btrfs/free-space-cache.c:2689 fs/btrfs/free-space-cache.c:2667) btrfs
+> > > [  206.516361] btrfs_add_free_space_async_trimmed (fs/btrfs/free-space-cache.c:2798) btrfs
+> > > [  206.517231] add_new_free_space (fs/btrfs/block-group.c:550) btrfs
+> > > [  206.518095] load_free_space_tree (fs/btrfs/free-space-tree.c:1595 fs/btrfs/free-space-tree.c:1658) btrfs
+> > > [  206.518953] caching_thread (fs/btrfs/block-group.c:873) btrfs
+> > > [  206.519800] btrfs_work_helper (fs/btrfs/async-thread.c:314) btrfs
+> > > [  206.520643] process_one_work (kernel/workqueue.c:2600)
+> > > [  206.520658] worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2752)
+> > > [  206.520672] kthread (kernel/kthread.c:389)
+> > > [  206.520684] ret_from_fork (arch/x86/kernel/process.c:145)
+> > > [  206.520701] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
+> > > 
+> > > [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
+> > > [  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
+> > > [  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
+> > > [  206.520763] __filemap_fdatawait_range (mm/filemap.c:519)
+> > > [  206.520777] filemap_fdatawait_range (mm/filemap.c:556)
+> > > [  206.520790] btrfs_wait_ordered_range (fs/btrfs/ordered-data.c:839) btrfs
+> > > [  206.521641] btrfs_sync_file (fs/btrfs/file.c:1859) btrfs
+> > > [  206.522495] vfs_fsync_range (fs/sync.c:188)
+> > > [  206.522509] __x64_sys_fsync (./include/linux/file.h:45 fs/sync.c:213 fs/sync.c:220 fs/sync.c:218 fs/sync.c:218)
+> > > [  206.522522] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+> > > [  206.522535] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+> > > 
+> > > [  206.522557] value changed: 0xfffffffffff80000 -> 0xfffffffffff00000
+> > > 
+> > > [  206.522574] Reported by Kernel Concurrency Sanitizer on:
+> > > [  206.522585] CPU: 6 PID: 2793 Comm: tracker-extract Tainted: G             L     6.5.0-rc6+ #44
+> > > [  206.522600] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+> > > [  206.522608] ==================================================================
+> > 
+> > Thanks for working on this. I guess the full KCSAN warning isn't that
+> > useful in the changelog. Rather I'd spend more time explaining the real
+> > problem here ...
+> > 
+> > > As Jan Kara explained, the problem is in the function xas_find_chuck():
+> > > 
+> > > /* Private */
+> > > static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
+> > > 		xa_mark_t mark)
+> > > {
+> > > 	unsigned long *addr = xas->xa_node->marks[(__force unsigned)mark];
+> > > 	unsigned int offset = xas->xa_offset;
+> > > 
+> > > 	if (advance)
+> > > 		offset++;
+> > > 	if (XA_CHUNK_SIZE == BITS_PER_LONG) {
+> > > 		if (offset < XA_CHUNK_SIZE) {
+> > > →			unsigned long data = *addr & (~0UL << offset);
+> > > 			if (data)
+> > > 				return __ffs(data);
+> > 
+> > ... which is that xas_find_chunk() is called only under RCU protection and
+> > thus the two uses of 'data' in the above code can yield different results.
+> > 
+> > > 		}
+> > > 		return XA_CHUNK_SIZE;
+> > > 	}
+> > > 
+> > > 	return find_next_bit(addr, XA_CHUNK_SIZE, offset);
+> > > }
+> > > 
+> > > In particular, the line
+> > > 
+> > > 			unsigned long data = *addr & (~0UL << offset);
+> > > 
+> > > contains a data race that is best avoided using READ_ONCE(), which eliminated the KCSAN
+> > > data-race warning completely.
+> > 
+> > Yes, this improves the situation for xarray use on 64-bit architectures but
+> > doesn't fix cases on 32-bit archs or if CONFIG_BASE_SMALL is set. As I
+> > mentioned in my previous reply, I'd rather:
+> > 
+> > 1) Fix find_next_bit(), find_first_bit() and related functions in
+> > lib/find_bit.c to use READ_ONCE() - such as _find_first_bit() etc. It is
+> > quite some churn but I don't see how else to make these functions safe when
+> > the underlying contents can change.
+> 
+> Thank you for your review.
+> 
+> I assume you have the big picture, but just a stupid question:
+> 
+> 	if (XA_CHUNK_SIZE == BITS_PER_LONG) {
+> 		if (offset < XA_CHUNK_SIZE) {
+> 			unsigned long data = READ_ONCE(*addr) & (~0UL << offset);
+> 			if (data)
+> 				return __ffs(data);
+> 		}
+> 		return XA_CHUNK_SIZE;
+> 	}
+> 
+> I would hate to argue, but ...
 
---=-t7NXodRzZKv+xz5YsdZv
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+No problem, asking questions isn't argueing ;).
 
-On Mon, 2023-09-18 at 11:21 +0000, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
->=20
-> Some cached pages may actually be overlays on guest memory that have a
-> fixed HVA within the VMM. It's pointless to invalidate such cached
-> mappings if the overlay is moved so allow a cache to be activated directl=
-y
-> with the HVA to cater for such cases. A subsequent patch will make use
-> of this facility.
->=20
-> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> Wouldn't BITS_PER_LONG simply change to 32 on 32-bit architectures?
 
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+Yes, they will. But XA_CHUNK_SIZE will still be 64 on 32-bit AFAICT so
+XA_CHUNK_SIZE != BITS_PER_LONG there.
 
-Btw, I think you have falsified some Reviewed-by: tags on the rest of
-the series. Remember, if they aren't literally cut and pasted, the
-magic gets lost. Just the same as Signed-off-by: tags. Never type them
-for someone else.
+> Is there something I am missing?
+> 
+> From include/asm-generic/bitsperlong.h:
+> ----------------------------------------
+> #ifdef CONFIG_64BIT
+> #define BITS_PER_LONG 64
+> #else
+> #define BITS_PER_LONG 32
+> #endif /* CONFIG_64BIT */
+> 
+> About the CONFIG_BASE_SMALL I cannot tell:
+> ----------------------------------------
+> #ifndef XA_CHUNK_SHIFT
+> #define XA_CHUNK_SHIFT		(CONFIG_BASE_SMALL ? 4 : 6)
+> #endif
+> #define XA_CHUNK_SIZE		(1UL << XA_CHUNK_SHIFT)
+> #define XA_CHUNK_MASK		(XA_CHUNK_SIZE - 1)
+> #define XA_MAX_MARKS		3
+> #define XA_MARK_LONGS		DIV_ROUND_UP(XA_CHUNK_SIZE, BITS_PER_LONG)
+> ----------------------------------------
 
---=-t7NXodRzZKv+xz5YsdZv
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+Again with CONFIG_BASE_SMALL we have XA_CHUNK_SIZE == 16 so it will not be
+equal to BITS_PER_LONG.
+ 
+> I see why you would want find_next_bit() and find_first_bit() fixed, but
+> I am not that deep into those bitops, so I guess I cannot make this in
+> one step ... Probably it would require a lot of homework.
+> 
+> _find_*_bit() functions and/or macros cause quite a number of KCSAN BUG warnings:
+> 
+>  95 _find_first_and_bit (lib/find_bit.c:114 (discriminator 10))
+>  31 _find_first_zero_bit (lib/find_bit.c:125 (discriminator 10))
+> 173 _find_next_and_bit (lib/find_bit.c:171 (discriminator 2))
+> 655 _find_next_bit (lib/find_bit.c:133 (discriminator 2))
+>   5 _find_next_zero_bit
+> 
+> ... but I am simply not certain what is the right thing to do ATM about
+> those and whether they are false positives.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTE4MTEzNDQ5WjAvBgkqhkiG9w0BCQQxIgQgYPCU9/OP
-WP0VTvz296OG3Qkhr7Cz0UT6Xf+j679lMfYwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCC2JE9/oDgsA0IovjjoQ3Dfb0J9uD13tSE
-YX19hZV8YKvViS8gHMH/k+THwJ+RS3aJC14WGmWarJBOq4knJ3SaK2oXpllLMTEBL1dDJyh4DYJc
-c2a4kJ+Q963EcVhKVgiiRaFJ5usDh7uSCwXtz3yAxMYnicNal/A0YWY79rDc9nifx8za+NozzRCi
-nTzInj3eJ5qWhIbFjQJp4bia4P0l2T25hOV69ntQ5J92CtQZD3Zl3R2rDaXoU44gCelC6dyZ4Yk0
-nCrfTE1UQXtZQSAecbbGj2QcFj0qWs9SddvG4ywPFG5LLRx0yHy/rvQJv3zi0oES3XkS/eUi4NrK
-sb/sNgLpLIhjby/mBxpr1YAbRtYA7oBTN/n5LOFNAxRsi8vcYcd6Idv/JADGhwvKKaT2CBgAxHw/
-s8gDCLK4UYZb25v7bA36mS8i9wj3C9BuxDFD/+h6gTdAsGZSAZEHhsp71i+C1U1+xtcrwH9Yb+Pi
-kyM5rrXhf5wBEdrAszym+GDzPzh9S2eXeK5StDSJSDT4/LtR5Qnlnc/6lU/w+KvMpdIEwCMGljKe
-qvnvYVVZTW0JflJ2VbRSXMgfLfWw1iSyf0mcdagpGPs8PM56eTYUWbPv0j1xshl80L/691JSAduh
-Z5tmSRJbKpS5dV2EXNp9YZVDBLrkN/K8zA6jr2o58wAAAAAAAA==
+Well, it would require some auditing to be sure but there is at least one
+user of these functions (xarray) where the problem is real so given the fix
+has no real runtime cost the fix looks justified.
+
+> AFAICS, READ_ONCE() here solves the case of 64 and 32 architectures which is
+> an incremental step, and it works ... I am just not ready for an
+> universal solution ATM.
+> 
+> > 2) Change xas_find_chunk() to unconditionally use find_next_bit() as the
+> > special case XA_CHUNK_SIZE == BITS_PER_LONG seems pointless these days
+> > because find_next_bit() is inline and does small_const_nbits(size) check.
+> 
+> I see your point. A generalised solution would of course be better. But
+> from the report about data-races in those functions it seems that they
+> need a major rethink. It isn't that obvious to me what should be
+> READ_ONCE()-ed in a bit field ...
+
+Well, it's actually not that difficult. They all need a treatment like:
+
+unsigned long _find_next_bit(const unsigned long *addr, unsigned long nbits, uns
+{
+-       return FIND_NEXT_BIT(addr[idx], /* nop */, nbits, start);
++       return FIND_NEXT_BIT(READ_ONCE(addr[idx]), /* nop */, nbits, start);
+}
 
 
---=-t7NXodRzZKv+xz5YsdZv--
+> Those functions are extensively used throughout the kernel and I get the
+> notion it is a job for someone with more experience ...
+
+Sure, if you don't feel like doing the general change, I can look into it
+myself.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
