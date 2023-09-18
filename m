@@ -2,197 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A40007A4C48
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E969E7A4C44
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjIRPaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
+        id S229471AbjIRP37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjIRP3j (ORCPT
+        with ESMTP id S229627AbjIRP3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:29:39 -0400
-Received: from frasgout.his.huawei.com (unknown [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C819CCE9;
-        Mon, 18 Sep 2023 08:26:40 -0700 (PDT)
-Received: from lhrpeml500002.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rq7LC1Qt4z67fBs;
-        Mon, 18 Sep 2023 23:01:55 +0800 (CST)
-Received: from lhrpeml500006.china.huawei.com (7.191.161.198) by
- lhrpeml500002.china.huawei.com (7.191.160.78) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 18 Sep 2023 16:03:52 +0100
-Received: from lhrpeml500006.china.huawei.com ([7.191.161.198]) by
- lhrpeml500006.china.huawei.com ([7.191.161.198]) with mapi id 15.01.2507.031;
- Mon, 18 Sep 2023 16:03:52 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     David Hildenbrand <david@redhat.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Linuxarm <linuxarm@huawei.com>
-CC:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "jiaqiyan@google.com" <jiaqiyan@google.com>,
-        "jthoughton@google.com" <jthoughton@google.com>,
-        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
-        "erdemaktas@google.com" <erdemaktas@google.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "duenwen@google.com" <duenwen@google.com>,
-        "Vilas.Sridharan@amd.com" <Vilas.Sridharan@amd.com>,
-        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>,
-        "gthelen@google.com" <gthelen@google.com>,
-        tanxiaofei <tanxiaofei@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-Subject: RE: [RFC PATCH 3/9] Documentation/scrub-configure.rst: Add
- documentation for scrub driver
-Thread-Topic: [RFC PATCH 3/9] Documentation/scrub-configure.rst: Add
- documentation for scrub driver
-Thread-Index: AQHZ5/ogEycepSDhbUOm98pdzG2eC7AgIWsAgAAq9pCAACaMgIAAA76AgAABnYCAADN9QA==
-Date:   Mon, 18 Sep 2023 15:03:52 +0000
-Message-ID: <a5443c2ddf8246d987c4b9a70ba6239a@huawei.com>
-References: <20230915172818.761-1-shiju.jose@huawei.com>
- <20230915172818.761-4-shiju.jose@huawei.com>
- <887344ee-068d-f78f-d5f8-e816b966d875@redhat.com>
- <946f29d2370c41deb7a7c5a6f2bff0f3@huawei.com>
- <7282d074-15ba-4fe7-bf62-6a4dd6089817@redhat.com>
- <20230918132835.000031b7@huawei.com>
- <930acbe1-942f-d10f-f33e-020693b60d6e@redhat.com>
-In-Reply-To: <930acbe1-942f-d10f-f33e-020693b60d6e@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.48.156.14]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 18 Sep 2023 11:29:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A6E173B;
+        Mon, 18 Sep 2023 08:26:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76177C32792;
+        Mon, 18 Sep 2023 15:04:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695049481;
+        bh=4MLreeIO68p1hnvnQV5lOUn5ZmB/PhzS9DxiBUzViFk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FhsBVkdg/byvdPZ+3BzMPtkX0Y4n7DBY+mSzruJLGshA8a9VuV8F2PZMhXJh44Nx+
+         eOqPP3VhTw+FJjSTupoLpVj+jKT2Hh9zNgQoYPYZhsn5phWf/tkvj06H205BmdTs6U
+         mIupbRmIQzihk55JKcoTxWhAsPNE02mMKbAu/0SCrXE+6ieh4bReZW8DG2oa3C7ZnG
+         3D8TViND9HIy73DQkS2WOkstvDAJ0cg9LefZizSCE8zbQo6mrM8HcUgoNpbuWgVroa
+         5But5lnTMO8EeFwDfvjccNgytpBf7BU3F6/UfVMn5v50MUaxaixkZqz49CSUB3CkLH
+         3aUdMO4VJ2UlQ==
+Received: by mercury (Postfix, from userid 1000)
+        id D7DCA10604BC; Mon, 18 Sep 2023 17:04:38 +0200 (CEST)
+Date:   Mon, 18 Sep 2023 17:04:38 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+Subject: Re: [PATCH] power: supply: Fix info use-after-free
+Message-ID: <20230918150438.4pliix4fhbpjld3l@mercury.elektranox.org>
+References: <20230918-power-uaf-v1-1-73c397178c42@axis.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kaghlg4vvcp2xwwj"
+Content-Disposition: inline
+In-Reply-To: <20230918-power-uaf-v1-1-73c397178c42@axis.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IERhdmlkIEhpbGRlbmJyYW5k
-IDxkYXZpZEByZWRoYXQuY29tPg0KPlNlbnQ6IDE4IFNlcHRlbWJlciAyMDIzIDEzOjM1DQo+VG86
-IEpvbmF0aGFuIENhbWVyb24gPGpvbmF0aGFuLmNhbWVyb25AaHVhd2VpLmNvbT47IExpbnV4YXJt
-DQo+PGxpbnV4YXJtQGh1YXdlaS5jb20+DQo+Q2M6IFNoaWp1IEpvc2UgPHNoaWp1Lmpvc2VAaHVh
-d2VpLmNvbT47IGxpbnV4LWFjcGlAdmdlci5rZXJuZWwub3JnOyBsaW51eC0NCj5tbUBrdmFjay5v
-cmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHJhZmFlbEBrZXJuZWwub3JnOw0KPmxl
-bmJAa2VybmVsLm9yZzsgbmFveWEuaG9yaWd1Y2hpQG5lYy5jb207IHRvbnkubHVja0BpbnRlbC5j
-b207DQo+amFtZXMubW9yc2VAYXJtLmNvbTsgZGF2ZS5oYW5zZW5AbGludXguaW50ZWwuY29tOyBq
-aWFxaXlhbkBnb29nbGUuY29tOw0KPmp0aG91Z2h0b25AZ29vZ2xlLmNvbTsgc29tYXN1bmRhcmFt
-LmFAaHBlLmNvbTsNCj5lcmRlbWFrdGFzQGdvb2dsZS5jb207IHBnb25kYUBnb29nbGUuY29tOyBy
-aWVudGplc0Bnb29nbGUuY29tOw0KPmR1ZW53ZW5AZ29vZ2xlLmNvbTsgVmlsYXMuU3JpZGhhcmFu
-QGFtZC5jb207IG1pa2UubWFsdmVzdHV0b0BpbnRlbC5jb207DQo+Z3RoZWxlbkBnb29nbGUuY29t
-OyB0YW54aWFvZmVpIDx0YW54aWFvZmVpQGh1YXdlaS5jb20+OyBaZW5ndGFvIChCKQ0KPjxwcmlt
-ZS56ZW5nQGhpc2lsaWNvbi5jb20+DQo+U3ViamVjdDogUmU6IFtSRkMgUEFUQ0ggMy85XSBEb2N1
-bWVudGF0aW9uL3NjcnViLWNvbmZpZ3VyZS5yc3Q6IEFkZA0KPmRvY3VtZW50YXRpb24gZm9yIHNj
-cnViIGRyaXZlcg0KPg0KPk9uIDE4LjA5LjIzIDE0OjI4LCBKb25hdGhhbiBDYW1lcm9uIHdyb3Rl
-Og0KPj4gT24gTW9uLCAxOCBTZXAgMjAyMyAxNDoxNTozMyArMDIwMA0KPj4gRGF2aWQgSGlsZGVu
-YnJhbmQgPGRhdmlkQHJlZGhhdC5jb20+IHdyb3RlOg0KPj4NCj4+PiBPbiAxOC4wOS4yMyAxMjoy
-NSwgU2hpanUgSm9zZSB3cm90ZToNCj4+Pj4gSGkgRGF2aWQsDQo+Pj4+DQo+Pj4+IFRoYW5rcyBm
-b3IgbG9va2luZyBpbnRvIHRoaXMuDQo+Pj4+DQo+Pj4+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQ0KPj4+Pj4gRnJvbTogRGF2aWQgSGlsZGVuYnJhbmQgPGRhdmlkQHJlZGhhdC5jb20+DQo+
-Pj4+PiBTZW50OiAxOCBTZXB0ZW1iZXIgMjAyMyAwODoyNA0KPj4+Pj4gVG86IFNoaWp1IEpvc2Ug
-PHNoaWp1Lmpvc2VAaHVhd2VpLmNvbT47IGxpbnV4LWFjcGlAdmdlci5rZXJuZWwub3JnOw0KPj4+
-Pj4gbGludXgtIG1tQGt2YWNrLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPj4+
-Pj4gQ2M6IHJhZmFlbEBrZXJuZWwub3JnOyBsZW5iQGtlcm5lbC5vcmc7IG5hb3lhLmhvcmlndWNo
-aUBuZWMuY29tOw0KPj4+Pj4gdG9ueS5sdWNrQGludGVsLmNvbTsgamFtZXMubW9yc2VAYXJtLmNv
-bTsNCj4+Pj4+IGRhdmUuaGFuc2VuQGxpbnV4LmludGVsLmNvbTsgamlhcWl5YW5AZ29vZ2xlLmNv
-bTsNCj4+Pj4+IGp0aG91Z2h0b25AZ29vZ2xlLmNvbTsgc29tYXN1bmRhcmFtLmFAaHBlLmNvbTsN
-Cj4+Pj4+IGVyZGVtYWt0YXNAZ29vZ2xlLmNvbTsgcGdvbmRhQGdvb2dsZS5jb207IHJpZW50amVz
-QGdvb2dsZS5jb207DQo+Pj4+PiBkdWVud2VuQGdvb2dsZS5jb207IFZpbGFzLlNyaWRoYXJhbkBh
-bWQuY29tOw0KPj4+Pj4gbWlrZS5tYWx2ZXN0dXRvQGludGVsLmNvbTsgZ3RoZWxlbkBnb29nbGUu
-Y29tOyBMaW51eGFybQ0KPj4+Pj4gPGxpbnV4YXJtQGh1YXdlaS5jb20+OyBKb25hdGhhbiBDYW1l
-cm9uDQo+Pj4+PiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29tPjsgdGFueGlhb2ZlaSA8dGFu
-eGlhb2ZlaUBodWF3ZWkuY29tPjsNCj4+Pj4+IFplbmd0YW8gKEIpIDxwcmltZS56ZW5nQGhpc2ls
-aWNvbi5jb20+DQo+Pj4+PiBTdWJqZWN0OiBSZTogW1JGQyBQQVRDSCAzLzldIERvY3VtZW50YXRp
-b24vc2NydWItY29uZmlndXJlLnJzdDogQWRkDQo+Pj4+PiBkb2N1bWVudGF0aW9uIGZvciBzY3J1
-YiBkcml2ZXINCj4+Pj4+DQo+Pj4+PiBPbiAxNS4wOS4yMyAxOToyOCwgc2hpanUuam9zZUBodWF3
-ZWkuY29tIHdyb3RlOg0KPj4+Pj4+IEZyb206IFNoaWp1IEpvc2UgPHNoaWp1Lmpvc2VAaHVhd2Vp
-LmNvbT4NCj4+Pj4+Pg0KPj4+Pj4+IEFkZCBkb2N1bWVudGF0aW9uIGZvciBzY3J1YiBkcml2ZXIs
-IHN1cHBvcnRzIGNvbmZpZ3VyZSBzY3J1Yg0KPj4+Pj4+IHBhcmFtZXRlcnMsIGluIERvY3VtZW50
-YXRpb24vc2NydWItY29uZmlndXJlLnJzdA0KPj4+Pj4+DQo+Pj4+Pj4gU2lnbmVkLW9mZi1ieTog
-U2hpanUgSm9zZSA8c2hpanUuam9zZUBodWF3ZWkuY29tPg0KPj4+Pj4+IC0tLQ0KPj4+Pj4+ICAg
-ICBEb2N1bWVudGF0aW9uL3NjcnViLWNvbmZpZ3VyZS5yc3QgfCA1NQ0KPj4+Pj4gKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKw0KPj4+Pj4+ICAgICAxIGZpbGUgY2hhbmdlZCwgNTUgaW5z
-ZXJ0aW9ucygrKQ0KPj4+Pj4+ICAgICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9z
-Y3J1Yi1jb25maWd1cmUucnN0DQo+Pj4+Pj4NCj4+Pj4+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRh
-dGlvbi9zY3J1Yi1jb25maWd1cmUucnN0DQo+Pj4+Pj4gYi9Eb2N1bWVudGF0aW9uL3NjcnViLWNv
-bmZpZ3VyZS5yc3QNCj4+Pj4+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPj4+Pj4+IGluZGV4IDAw
-MDAwMDAwMDAwMC4uOWY4NTgxYjg4Nzg4DQo+Pj4+Pj4gLS0tIC9kZXYvbnVsbA0KPj4+Pj4+ICsr
-KyBiL0RvY3VtZW50YXRpb24vc2NydWItY29uZmlndXJlLnJzdA0KPj4+Pj4+IEBAIC0wLDAgKzEs
-NTUgQEANCj4+Pj4+PiArPT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4+Pj4+PiArU2NydWIg
-c3Vic3lzdGVtIGRyaXZlcg0KPj4+Pj4+ICs9PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPj4+
-Pj4+ICsNCj4+Pj4+PiArQ29weXJpZ2h0IChjKSAyMDIzIEhpU2lsaWNvbiBMaW1pdGVkLg0KPj4+
-Pj4+ICsNCj4+Pj4+PiArOkF1dGhvcjogICBTaGlqdSBKb3NlIDxzaGlqdS5qb3NlQGh1YXdlaS5j
-b20+DQo+Pj4+Pj4gKzpMaWNlbnNlOiAgVGhlIEdOVSBGcmVlIERvY3VtZW50YXRpb24gTGljZW5z
-ZSwgVmVyc2lvbiAxLjINCj4+Pj4+PiArICAgICAgICAgIChkdWFsIGxpY2Vuc2VkIHVuZGVyIHRo
-ZSBHUEwgdjIpIDpPcmlnaW5hbCBSZXZpZXdlcnM6DQo+Pj4+Pj4gKw0KPj4+Pj4+ICstIFdyaXR0
-ZW4gZm9yOiA2LjcNCj4+Pj4+PiArLSBVcGRhdGVkIGZvcjoNCj4+Pj4+PiArDQo+Pj4+Pj4gK0lu
-dHJvZHVjdGlvbg0KPj4+Pj4+ICstLS0tLS0tLS0tLS0NCj4+Pj4+PiArVGhlIHNjcnViIHN1YnN5
-c3RlbSBkcml2ZXIgcHJvdmlkZXMgdGhlIGludGVyZmFjZSBmb3IgY29uZmlndXJlDQo+Pj4+Pj4g
-K3RoZQ0KPj4+Pj4NCj4+Pj4+ICIuLi4gaW50ZXJmYWNlIGZvciBjb25maWd1cmluZyBtZW1vcnkg
-c2NydWJiZXJzIGluIHRoZSBzeXN0ZW0uIg0KPj4+Pj4NCj4+Pj4+IGFyZSB3ZSBvbmx5IGNvbmZp
-Z3VyaW5nIGZpcm13YXJlL2h3LWJhc2VkIG1lbW9yeSBzY3J1YmJpbmc/IEkgYXNzdW1lDQo+c28u
-DQo+Pj4+IFRoZSBzY3J1YiBjb250cm9sIGNvdWxkIGJlIHVzZWQgZm9yIHRoZSBTVyAgYmFzZWQg
-bWVtb3J5IHNjcnViYmluZyB0b28uDQo+Pj4NCj4+PiBPa2F5LCBsb29rcyBsaWtlIHRoZXJlIGlz
-IG5vdCB0b28gbXVjaCBody9maXJtd2FyZSBzcGVjaWZpYyBpbiB0aGVyZQ0KPj4+IChiZXNpZGVz
-IHRoZXNlIHdlaXJkIHJhbmdlIGNoYW5nZXMpLg0KPj4+IFsuLi5dDQo+Pj4NCj4+Pj4+PiArLS0t
-LS0tLQ0KPj4+Pj4+ICsNCj4+Pj4+PiArICBUaGUgdXNhZ2UgdGFrZXMgdGhlIGZvcm0gc2hvd24g
-aW4gdGhpcyBleGFtcGxlOjoNCj4+Pj4+PiArDQo+Pj4+Pj4gKyAgICAjIGVjaG8gMHgzMDAwMDAg
-PiAvc3lzL2NsYXNzL3NjcnViL3NjcnViMC9yZWdpb24wL2FkZHJfYmFzZQ0KPj4+Pj4+ICsgICAg
-IyBlY2hvIDB4MTAwMDAwID4gL3N5cy9jbGFzcy9zY3J1Yi9zY3J1YjAvcmVnaW9uMC9hZGRyX3Np
-emUNCj4+Pj4+PiArICAgICMgY2F0IC9zeXMvY2xhc3Mvc2NydWIvc2NydWIwL3JlZ2lvbjAvc3Bl
-ZWRfYXZhaWxhYmxlDQo+Pj4+Pj4gKyAgICAjIDEtNjANCj4+Pj4+PiArICAgICMgZWNobyAyNSA+
-IC9zeXMvY2xhc3Mvc2NydWIvc2NydWIwL3JlZ2lvbjAvc3BlZWQNCj4+Pj4+PiArICAgICMgZWNo
-byAxID4gL3N5cy9jbGFzcy9zY3J1Yi9zY3J1YjAvcmVnaW9uMC9lbmFibGUNCj4+Pj4+PiArDQo+
-Pj4+Pj4gKyAgICAjIGNhdCAvc3lzL2NsYXNzL3NjcnViL3NjcnViMC9yZWdpb24wL3NwZWVkDQo+
-Pj4+Pj4gKyAgICAjIDB4MTkNCj4+Pj4+DQo+Pj4+PiBJcyBpdCByZWFzb25hYmxlIHRvIHJldHVy
-biB0aGUgc3BlZWQgYXMgaGV4PyBZb3Ugc2V0IGl0IGFzIGRlYy4NCj4+Pj4gUHJlc2VudGx5IHJl
-dHVybiBzcGVlZCAgYXMgaGV4IHRvIHJlZHVjZSB0aGUgbnVtYmVyIG9mIGNhbGxiYWNrDQo+Pj4+
-IGZ1bmN0aW9uIG5lZWRlZCBmb3IgcmVhZGluZyB0aGUgaGV4L2RlYyBkYXRhIGJlY2F1c2UgdGhl
-IHZhbHVlcyBmb3INCj4+Pj4gdGhlIGFkZHJlc3MgcmFuZ2UgbmVlZCB0byBiZSBpbiBoZXguDQo+
-Pj4NCj4+PiBJZiBzcGVlZF9hdmFpbGFibGUgcmV0dXJucyBkZWMsIHNwZWVkIGJldHRlciBhbHNv
-IHJldHVybiBkZWMgSU1ITy4NCj4+Pg0KPj4+Pg0KPj4+Pj4NCj4+Pj4+PiArICAgICMgY2F0IC9z
-eXMvY2xhc3Mvc2NydWIvc2NydWIwL3JlZ2lvbjAvYWRkcl9iYXNlDQo+Pj4+Pj4gKyAgICAjIDB4
-MTAwMDAwDQo+Pj4+Pg0KPj4+Pj4gQnV0IGRpZG4ndCB3ZSBzZXQgaXQgdG8gMHgzMDAwMDAgLi4u
-DQo+Pj4+IFRoaXMgaXMgYW4gZW11bGF0ZWQgZXhhbXBsZSBmb3IgdGVzdGluZyB0aGUgUkFTRi9S
-QVMyIGRlZmluaXRpb24uDQo+Pj4+IEFjY29yZGluZyB0byB0aGUgUkFTRiAmIFJBUzIgZGVmaW5p
-dGlvbiwgdGhlIGFjdHVhbCBhZGRyZXNzIHJhbmdlIGluDQo+Pj4+IHRoZSBwbGF0Zm9ybSBjb3Vs
-ZCB2YXJ5IGZyb20gdGhlIHJlcXVlc3RlZCBhZGRyZXNzIHJhbmdlIGZvciB0aGUgcGF0cm9sDQo+
-c2NydWJiaW5nLg0KPj4+PiAiVGhlIHBsYXRmb3JtIGNhbGN1bGF0ZXMgdGhlIG5lYXJlc3QgcGF0
-cm9sIHNjcnViIGJvdW5kYXJ5IGFkZHJlc3MNCj4+Pj4gZnJvbSB3aGVyZSBpdCBjYW4gc3RhcnQi
-LiBUaGUgcGxhdGZvcm0gcmV0dXJucyB0aGUgYWN0dWFsIGFkZHJlc3MNCj4+Pj4gcmFuZ2UgaW4g
-cmVzcG9uc2UgdG8gR0VUX1BBVFJPTF9QQVJBTUVURVJTIGNvbW1hbmQgdG8gdGhlDQo+ZmlybXdh
-cmUuDQo+Pj4+IFBsZWFzZSBzZWUgc2VjdGlvbiA1LjIuMjEuMi4xIEhhcmR3YXJlLWJhc2VkIE1l
-bW9yeSBTY3J1YmJpbmcgLA0KPj4+PiBUYWJsZSA1Ljg3OiBQYXJhbWV0ZXIgQmxvY2sgU3RydWN0
-dXJlIGZvciBQQVRST0xfU0NSVUIgaW4gdGhlIEFDUEkNCj4+Pj4gNi41IHNwZWNpZmljYXRpb24u
-DQo+Pj4+DQo+Pj4NCj4+PiBTbyB5b3UgY29uZmlndXJlIFsweDMwMDAwMCAtIDB4NDAwMDAwXSBh
-bmQgeW91IGdldCBbMHgxMDAwMDAgLQ0KPj4+IDB4MzAwMDAwXQ0KPj4+DQo+Pj4gSG93IGRvZXMg
-dGhhdCBtYWtlIGFueSBzZW5zZT8gOikNCj4+Pg0KPj4+IFNob3VsZG4ndCB3ZSByYXRoZXIgcmV0
-dXJuIGFuIGVycm9yIHdoZW4gc2V0dGluZyBhIHJhbmdlIHRoYXQgaXMNCj4+PiBpbXBvc3NpYmxl
-LCBpbnN0ZWFkIG9mIHRoZSBoYXJkd2FyZSBkZWNpZGluZyB0byBzY3J1YiBzb21ldGhpbmcNCj4+
-PiBjb21wbGV0ZWx5IGRpZmZlcmVudCAoYXMgY2FuIGJlIHNlZW4gaW4gdGhlIGV4YW1wbGUpPw0K
-Pj4+DQo+Pg0KPj4gQSBicm9hZGVyIHNjcnViIGlzIHByb2JhYmx5IHJlYXNvbmFibGUsIGJ1dCBh
-Z3JlZWQgdGhhdCBzY3J1YmJpbmcNCj4+IG5hcnJvd2VyIGlzICdpbnRlcmVzdGluZycgYXMgbm90
-IHNjcnViYmluZyB0aGUgbWVtb3J5IHJlcXVlc2V0ZWQuDQo+DQo+SXQncyBub3QgZXZlbiBuYXJy
-b3dlci4gQm90aCByYW5nZXMgZG9uJ3QgZXZlbiBpbnRlcnNlY3QhIChzb3JyeSB0byBzYXksIGJ1
-dCB0aGlzDQo+Y29uZmlndXJhdGlvbiBpbnRlcmZhY2UgZG9lc24ndCBtYWtlIGFueSBzZW5zZSBp
-ZiBoYXJkd2FyZSBqdXN0IGRvZXMNCj4qc29tZXRoaW5nKiBlbHNlKS4NCj4NCj5JZiB5b3UgY2Fu
-J3QgY29uZmlndXJlIGl0IHByb3Blcmx5LCBmYWlsIHdpdGggYW4gZXJyb3IuDQo+DQo+PiBJdCdz
-IHJlYWxseSBhbm5veWluZyB0aGF0IG5laXRoZXIgQUNQSSB0YWJsZSBwcm92aWRlcyBhbnkgcHJv
-cGVyDQo+PiBkaXNjb3ZlcmFiaWxpdHkuICBXaGlsc3Qgd2UgY2FuIGZpeCB0aGF0IGxvbmcgdGVy
-bSwgd2UgYXJlIHN0dWNrIHdpdGgNCj4+IGEgY2x1bmt5IHBva2UgaXQgYW5kIHNlZSBpbnRlcmZh
-Y2UgaW4gdGhlIG1lYW50aW1lLg0KPg0KPkNhbid0IHlvdSBzZXQgaXQsIGJyaWVmbHkgZW5hYmxl
-IGl0LCBhbmQgcmVhZCB0aGUgdmFsdWVzIGJhY2s/IFRoZW4sIHlvdSBjYW4NCj5jb21wbGFpbiB0
-byB0aGUgdXNlciB0aGF0IHRoZSBjb25maWd1cmVkIHJhbmdlIGlzIGltcG9zc2libGUuDQoNCldp
-bGwgdHJ5IHRvIGFkZCByZXBvcnQgdG8gdGhlIHVzZXIgdGhhdCB0aGUgY29uZmlndXJlZCBhZGRy
-ZXNzIHJhbmdlIGlzIG5vdCBwb3NzaWJsZS4NCg0KPg0KPi0tDQo+Q2hlZXJzLA0KPg0KPkRhdmlk
-IC8gZGhpbGRlbmINCg0KVGhhbmtzLA0KU2hpanUNCg==
+
+--kaghlg4vvcp2xwwj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Vincent,
+
+On Mon, Sep 18, 2023 at 09:33:26AM +0200, Vincent Whitchurch wrote:
+> power_supply_uevent() which is called to emit a udev event on device
+> deletion attempts to use the info structure which is device-managed and
+> has been freed before this point.  The use-after-free is triggered since
+> commit 699fb50d99039 ("drivers: base: Free devm resources when
+> unregistering a device").
+>=20
+> Fix this by associating the devm resource with the parent device
+> instead, similar to recent fixes done in the input subsystem, such as
+> commit dd613a4e45f8 ("HID: uclogic: Correct devm device reference for
+> hidinput input_dev").
+>=20
+> Note that the power supply subsystem allows drivers to register a device
+> without a parent (with a warning), in this case there is still a risk of
+> use-after-free since we have no other device to attach the devm to.
+
+Thanks for the bug report with a potential fix already included :)
+I think in case of power-supply this might be enough?
+
+diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supp=
+ly/power_supply_sysfs.c
+index 06e5b6b0e255..d483a81560ab 100644
+--- a/drivers/power/supply/power_supply_sysfs.c
++++ b/drivers/power/supply/power_supply_sysfs.c
+@@ -482,6 +482,13 @@ int power_supply_uevent(const struct device *dev, stru=
+ct kobj_uevent_env *env)
+        if (ret)
+                return ret;
+=20
++       /*
++        * Kernel generates KOBJ_REMOVE uevent in device removal path, after
++        * resources have been freed. Exit early to avoid use-after-free.
++        */
++       if (psy->removing)
++               return 0;
++
+        prop_buf =3D (char *)get_zeroed_page(GFP_KERNEL);
+        if (!prop_buf)
+                return -ENOMEM;
+
+That would also cover the no-parent-device part and avoid the
+device(s) being queried for data at device removal time, which
+wouldn't work if the device removal happens due to a hot-unplug.
+
+-- Sebastian
+
+>=20
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>  BUG: KASAN: slab-use-after-free in power_supply_battery_info_has_prop (p=
+ower_supply_core.c:872)
+>  Read of size 4 at addr 0000000062e59028 by task python3/27
+>=20
+>  Call Trace:
+>   power_supply_battery_info_has_prop (power_supply_core.c:872)
+>   power_supply_uevent (power_supply_sysfs.c:504)
+>   dev_uevent (drivers/base/core.c:2590)
+>   kobject_uevent_env (lib/kobject_uevent.c:558)
+>   kobject_uevent (lib/kobject_uevent.c:643)
+>   device_del (drivers/base/core.c:3266 drivers/base/core.c:3831)
+>   device_unregister (drivers/base/core.c:3730 drivers/base/core.c:3854)
+>   power_supply_unregister (power_supply_core.c:1608)
+>   devm_power_supply_release (power_supply_core.c:1515)
+>   release_nodes (drivers/base/devres.c:506)
+>   devres_release_group (drivers/base/devres.c:669)
+>   i2c_device_remove (drivers/i2c/i2c-core-base.c:629)
+>   device_remove (drivers/base/dd.c:570)
+>   device_release_driver_internal (drivers/base/dd.c:1274 drivers/base/dd.=
+c:1295)
+>   device_driver_detach (drivers/base/dd.c:1332)
+>   unbind_store (drivers/base/bus.c:247)
+>   ...
+>=20
+>  Allocated by task 27:
+>   devm_kmalloc (drivers/base/devres.c:119 drivers/base/devres.c:829)
+>   power_supply_get_battery_info (include/linux/device.h:316 power_supply_=
+core.c:626)
+>   __power_supply_register (power_supply_core.c:1408)
+>   devm_power_supply_register (power_supply_core.c:1544)
+>   bq256xx_probe (bq256xx_charger.c:1539 bq256xx_charger.c:1727) bq256xx_c=
+harger
+>   i2c_device_probe (drivers/i2c/i2c-core-base.c:584)
+>   really_probe (drivers/base/dd.c:579 drivers/base/dd.c:658)
+>   __driver_probe_device (drivers/base/dd.c:800)
+>   device_driver_attach (drivers/base/dd.c:1128)
+>   bind_store (drivers/base/bus.c:273)
+>   ...
+>=20
+>  Freed by task 27:
+>   kfree (mm/slab_common.c:1073)
+>   release_nodes (drivers/base/devres.c:503)
+>   devres_release_all (drivers/base/devres.c:536)
+>   device_del (drivers/base/core.c:3829)
+>   device_unregister (drivers/base/core.c:3730 drivers/base/core.c:3854)
+>   power_supply_unregister (power_supply_core.c:1608)
+>   devm_power_supply_release (power_supply_core.c:1515)
+>   release_nodes (drivers/base/devres.c:506)
+>   devres_release_group (drivers/base/devres.c:669)
+>   i2c_device_remove (drivers/i2c/i2c-core-base.c:629)
+>   device_remove (drivers/base/dd.c:570)
+>   device_release_driver_internal (drivers/base/dd.c:1274 drivers/base/dd.=
+c:1295)
+>   device_driver_detach (drivers/base/dd.c:1332)
+>   unbind_store (drivers/base/bus.c:247)
+>   ...
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> Fixes: 27a2195efa8d ("power: supply: core: auto-exposure of simple-batter=
+y data")
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  drivers/power/supply/power_supply_core.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/sup=
+ply/power_supply_core.c
+> index 0b69fb7bafd8..2863b0a4dfc7 100644
+> --- a/drivers/power/supply/power_supply_core.c
+> +++ b/drivers/power/supply/power_supply_core.c
+> @@ -573,6 +573,7 @@ EXPORT_SYMBOL_GPL(devm_power_supply_get_by_phandle);
+>  int power_supply_get_battery_info(struct power_supply *psy,
+>  				  struct power_supply_battery_info **info_out)
+>  {
+> +	struct device *allocdev =3D psy->dev.parent ?: &psy->dev;
+>  	struct power_supply_resistance_temp_table *resist_table;
+>  	struct power_supply_battery_info *info;
+>  	struct device_node *battery_np =3D NULL;
+> @@ -623,7 +624,7 @@ int power_supply_get_battery_info(struct power_supply=
+ *psy,
+>  		goto out_put_node;
+>  	}
+> =20
+> -	info =3D devm_kzalloc(&psy->dev, sizeof(*info), GFP_KERNEL);
+> +	info =3D devm_kzalloc(allocdev, sizeof(*info), GFP_KERNEL);
+>  	if (!info) {
+>  		err =3D -ENOMEM;
+>  		goto out_put_node;
+> @@ -776,7 +777,7 @@ int power_supply_get_battery_info(struct power_supply=
+ *psy,
+>  		info->ocv_table_size[index] =3D tab_len;
+> =20
+>  		table =3D info->ocv_table[index] =3D
+> -			devm_kcalloc(&psy->dev, tab_len, sizeof(*table), GFP_KERNEL);
+> +			devm_kcalloc(allocdev, tab_len, sizeof(*table), GFP_KERNEL);
+>  		if (!info->ocv_table[index]) {
+>  			power_supply_put_battery_info(psy, info);
+>  			err =3D -ENOMEM;
+> @@ -796,7 +797,7 @@ int power_supply_get_battery_info(struct power_supply=
+ *psy,
+>  		goto out_ret_pointer;
+> =20
+>  	info->resist_table_size =3D len / (2 * sizeof(__be32));
+> -	resist_table =3D info->resist_table =3D devm_kcalloc(&psy->dev,
+> +	resist_table =3D info->resist_table =3D devm_kcalloc(allocdev,
+>  							 info->resist_table_size,
+>  							 sizeof(*resist_table),
+>  							 GFP_KERNEL);
+> @@ -825,17 +826,18 @@ EXPORT_SYMBOL_GPL(power_supply_get_battery_info);
+>  void power_supply_put_battery_info(struct power_supply *psy,
+>  				   struct power_supply_battery_info *info)
+>  {
+> +	struct device *allocdev =3D psy->dev.parent ?: &psy->dev;
+>  	int i;
+> =20
+>  	for (i =3D 0; i < POWER_SUPPLY_OCV_TEMP_MAX; i++) {
+>  		if (info->ocv_table[i])
+> -			devm_kfree(&psy->dev, info->ocv_table[i]);
+> +			devm_kfree(allocdev, info->ocv_table[i]);
+>  	}
+> =20
+>  	if (info->resist_table)
+> -		devm_kfree(&psy->dev, info->resist_table);
+> +		devm_kfree(allocdev, info->resist_table);
+> =20
+> -	devm_kfree(&psy->dev, info);
+> +	devm_kfree(allocdev, info);
+>  }
+>  EXPORT_SYMBOL_GPL(power_supply_put_battery_info);
+> =20
+>=20
+> ---
+> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> change-id: 20230918-power-uaf-6f7f1b585ec5
+>=20
+> Best regards,
+> --=20
+> Vincent Whitchurch <vincent.whitchurch@axis.com>
+>=20
+
+--kaghlg4vvcp2xwwj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUIZvcACgkQ2O7X88g7
++prThQ//T85vagGhjO10u1TdO4dZDH3WweRz1YmdNdtujCddadUH72t4RyJhVFGw
+RWKgoL7gQD18uC+tbmPpCDFuKWBq6sDdUXHbde7YM8vgC1ttuTeJhyjQ/pZKJErp
+eI50oU2Wkr17qefBt841vbHyyN2DnSyswipmU/EsGHTvi/AicWzvXXvNK0S5F3w7
+G18HzCacqnMjJomccKx4tKOsVFpkQEEga8/aZ9ks3v2qJqZsDb1Mw2p9RrNlrfuj
+coVmPzCmDeColzquLhGExMYx1q6VRb3lfMF28ROiTpjBobUqf2nos4DAItvphiRB
+7BdLvW2kxBp/PaK65ttBFnXwnF1Pf33LfdzK0jZm59JIo2UP/GOR6Qyjc2Wl3EKN
+mZHaw7DUUtubrcx9zhEYR/eMbeRU2jCQb9mswVo+2qVjUQeeEQ9WFVTAafaCT6n4
+7EFhdLebccb5c+7szzMbTrt7THpt0cWLwRstt0OMaDKOsf7CGqILx45Zx1+f2J8A
+GCH6TjL5h8S7A7GZmmEJox+oOGX9A/mEHqUXFYT2MHtxAHIINuIUmpc3TcZNuTjI
+7GzdZ3M98ttdifSqHyfF62ttIEuDxNuseOPHAj4EbFwiNB9OP/vxXdmH/M9CxH+X
+5AFnLmac7tWRO/H+NHJ+MBoqmktgdLlpPeSn29/I9gAlyy9gnPM=
+=wDXC
+-----END PGP SIGNATURE-----
+
+--kaghlg4vvcp2xwwj--
