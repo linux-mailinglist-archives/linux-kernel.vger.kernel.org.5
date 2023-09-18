@@ -2,193 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8859F7A4046
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9E67A404A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239472AbjIRFB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 01:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
+        id S239521AbjIRFEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 01:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233195AbjIRFAz (ORCPT
+        with ESMTP id S231475AbjIRFDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 01:00:55 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23BFAC;
-        Sun, 17 Sep 2023 22:00:49 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-274c05edb69so473997a91.2;
-        Sun, 17 Sep 2023 22:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695013249; x=1695618049; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UVNF5sAoH2+S/vs1X3i/qSh9lM2MoEqXJhGdzFOpd3Y=;
-        b=EIplKW9LURVX+E4g1KdCgDxlQUbVjAoQvLJ14xk4IhauKfPzBhFkirWd/5U/TQ+XAi
-         4Z1LEvrKTFbPq+3D7oWm2aFrAhzdRxufE4DFcQbfdK5FoMs29TCWxfxH6c9aDzN1Z3mL
-         LMv9TtoqRX/8d6SRC98eW9aMxvtaA9Fvq2UsVLLMTNcfAABBt75uNElHz677b220dE3c
-         NVaEZX13drF7hnLkBRFmgvedvaFXk9k0N+UOm7Qy5pzzIsUZ7tPMei8DtWNK5hmaXX6c
-         kGT/ZY+rp8iuAftv2S6zcXM/5WvdrUVjxiS1jo+UOYxhLLtQ4IQ32WqNBUPC10vongHz
-         57bA==
+        Mon, 18 Sep 2023 01:03:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68423120
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695013388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hCDoXZnQJiBgGjXOi0ciKhKqeO4OfqPdXpxnEdvp7mI=;
+        b=HK7O0PsyH5oVXvcJAI/R3Mba7UUeTnc9hH4nIBeowIGJnCqUwZStD5+IZSpDVboxMOJ9NA
+        s+Hsx4chuSe2hg9Wv4ZXZvrz9G41hKOIIsA5E625JdtyDQkI+laORX98mSSr/nOuL4CbIo
+        GI0YbGlkI3mlxKPXP+THFm82PsX1taE=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-593-fIUz5AUxOJ-wFupaJiyNbg-1; Mon, 18 Sep 2023 01:03:02 -0400
+X-MC-Unique: fIUz5AUxOJ-wFupaJiyNbg-1
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-68faf55989cso4085206b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:03:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695013249; x=1695618049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UVNF5sAoH2+S/vs1X3i/qSh9lM2MoEqXJhGdzFOpd3Y=;
-        b=O/PMFFsH+zIIdXmjffJMFbYL5m2xeMbmD2p1EX/oIwwUzw/VkKMFSGle6BV640K+K7
-         N/vOL+aM+fd6+N7T8MQavbOqw2BlqGcSU6q8qHdgsJVWsGyZu4+1z95Z6mOeQ9SNfjdb
-         dFjzFNWt1VItNHEtFOrj9qZjBpIAm/wb905l9Qk4FhUeoh5LUXO8ZrNHUrc7+EbEk2Tu
-         uDEQBsELFWVM76XXvo1lH89VcxN3NPWks0DetjxxSGHjW47jl3qpFG0pMXAD+H1/qk3C
-         d/6A475dqzsWT74Cb1qgG4YJmyaxrhML4+VlNYG6zcByMxQhIMw8AFTKz9xjQPBiJUWW
-         J+fw==
-X-Gm-Message-State: AOJu0Yx0sUN8R9XQKg+ORL3kSgYZfz/UX830lcDl2LOLgiONfP/7+owJ
-        F5FU6wdJ+nWgTvc09sP18sKOGxzq5T5JNY/zEJk=
-X-Google-Smtp-Source: AGHT+IFI+iihCDqE8YIc6IjinrCImEQ/bsS70zAv7j9bLn5alZdsPVXi1Rds61BqWssOaMz8RfFx/UcWxVyd/5Ob+VE=
-X-Received: by 2002:a17:90a:3ea5:b0:276:6b9d:7503 with SMTP id
- k34-20020a17090a3ea500b002766b9d7503mr995967pjc.28.1695013249158; Sun, 17 Sep
- 2023 22:00:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695013381; x=1695618181;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hCDoXZnQJiBgGjXOi0ciKhKqeO4OfqPdXpxnEdvp7mI=;
+        b=dVLw1ABcmsJUFc5vadhl9M5Eko3f2FuSX4R90/wmjld4oL6omSfHoT8J4Fu65O7/0+
+         XsB84dO52f9Sjk5Jy/iqPm2WRvzEo5tKPBlBO4HXytOe97F5Vnj7V6DaeksKMTlMsl+F
+         MVke+zyy9+EYcU+Ae2dAPn2tVth13rnYZPYzpcTZDAH5zFDGddSxYqEH1FdqRc1gsTTl
+         FhtSF7QmAcDfp5RzZUVzL/XO/Hc9z473EzFH5/9GnqZsrQCR6sj+V6OyACcywKeBNoWh
+         drD/rjXvXEKex/Q7tl0vqthC2XD5dNv9bdhUB+53fy4JyRcgk917v+6So3pFZF/VIAlf
+         Umaw==
+X-Gm-Message-State: AOJu0YyE9zMGPwYZciI8rfaU1wA2VRlcqAdtggfao4fe6hMq9yCSw60C
+        QMdgSCyGsk09HwE3/nXyjGF96eJkbcnKLA0LQEesSnygn5ynbWyeVbYOOVlt5ksUBEBuzcnYoJW
+        74VShy5+pudZJ/cNmFVwA/F0H
+X-Received: by 2002:a05:6a00:2344:b0:68e:43ed:d30b with SMTP id j4-20020a056a00234400b0068e43edd30bmr6879611pfj.21.1695013381113;
+        Sun, 17 Sep 2023 22:03:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGqmnfE9QFPe9E5tdKFUUF/pg2T2yxaduIzlP4FnKDLuVWyov/hE0tCEtGqZQwTLT17gzDFFw==
+X-Received: by 2002:a05:6a00:2344:b0:68e:43ed:d30b with SMTP id j4-20020a056a00234400b0068e43edd30bmr6879587pfj.21.1695013380748;
+        Sun, 17 Sep 2023 22:03:00 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id j26-20020aa783da000000b00687a4b70d1esm6322062pfn.218.2023.09.17.22.02.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 22:03:00 -0700 (PDT)
+Message-ID: <50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com>
+Date:   Mon, 18 Sep 2023 15:02:53 +1000
 MIME-Version: 1.0
-References: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
-In-Reply-To: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sun, 17 Sep 2023 22:00:37 -0700
-Message-ID: <CAHCN7xJ8KrBd-532=gDE+82xo1ZNtoDT7pZsYwy9-9WiJvmkvw@mail.gmail.com>
-Subject: Re: [PATCH 00/13] imx8mp: first clock propagation attempt (for LVDS)
-To:     Benjamin Bara <bbara93@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 15/35] ACPI: processor: Add support for processors
+ described as container packages
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
+Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
         Russell King <linux@armlinux.org.uk>,
-        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Frank Oltmanns <frank@oltmanns.dev>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        Lucas Stach <l.stach@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-16-james.morse@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230913163823.7880-16-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 3:40=E2=80=AFPM Benjamin Bara <bbara93@gmail.com> w=
-rote:
->
-> Hi!
->
-> Target of this series is to dynamically set the rate of video_pll1 to
-> the required LVDS clock rate(s), which are configured by the panel, and
-> the lvds-bridge respectively.
->
-> Some background:
-> The LVDS panel requires two clocks: the crtc clock and the lvds clock.
-> The lvds rate is always 7x the crtc rate. On the imx8mp, these are
-> assigned to media_disp2_pix and media_ldb, which are both
-> clk-composite-8m. The rates are set by drm_client_modeset_commit() (and
-> later by fsl_ldb_atomic_enable()), and the fsl-ldb driver, first crtc,
-> then lvds. The parent is typically assigned to video_pll1, which is a
-> clk-pll14xx (pll1443x).
->
-> The main problem:
-> As the clk-composite-8m currently doesn't support CLK_SET_RATE_PARENT,
-> the crtc rate is not propagated to video_pll1, and therefore must be
-> assigned in the device-tree manually.
->
-> The idea:
-> Enable CLK_SET_RATE_PARENT, at least for media_disp2_pix and media_ldb.
-> When this is done, ensure that the pll1443x can be re-configured,
-> meaning it ensures that an already configured rate (crtc rate) is still
-> supported when a second child requires a different rate (lvds rate). As
 
-Have you tested with the DSI as well?  If memory servers, the DSI
-clock and the LVDS clock are both clocked from the same video_pll.  At
-one time, I had done some experimentation with trying the DSI
-connected to an HDMI bridge chip connected to a monitor and the LVDS
-was connected to a display panel with a static resolution and refresh
-rate.  For my LVDS display, it needs 30MHz to display properly, but
-various HDMI resolutions needed values that were not evenly divisible
-by 30MHz which appeared to cause display sync issues when trying to
-share a clock that was trying to dynamically adjust for two different
-displays especially when trying to change the resoltuion of the HDMI
-display to various values for different resolutions.
+On 9/14/23 02:38, James Morse wrote:
+> ACPI has two ways of describing processors in the DSDT. Either as a device
+> object with HID ACPI0007, or as a type 'C' package inside a Processor
+> Container. The ACPI processor driver probes CPUs described as devices, but
+> not those described as packages.
+> 
+> Duplicate descriptions are not allowed, the ACPI processor driver already
+> parses the UID from both devices and containers. acpi_processor_get_info()
+> returns an error if the UID exists twice in the DSDT.
+> 
+> The missing probe for CPUs described as packages creates a problem for
+> moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> described like this don't get registered, leading to errors from other
+> subsystems when they try to add new sysfs entries to the CPU node.
+> (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> 
+> To fix this, parse the processor container and call acpi_processor_add()
+> for each processor that is discovered like this. The processor container
+> handler is added with acpi_scan_add_handler(), so no detach call will
+> arrive.
+> 
+> Qemu TCG describes CPUs using packages in a processor container.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>   drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
+>   1 file changed, 22 insertions(+)
+> 
 
-> the children have divider, the current approach is straight forward by
-> calculating the LCM of the required rates. During the rate change of the
-> PLL, it must ensure that all children still have the configured rate at
-> the end (and maybe also bypass the clock while doing so?). This is done
-> by implementing a notifier function for the clk-composite-8m. The tricky
-> part is now to find out if the rate change was intentional or not. This
-> is done by adding the "change trigger" to the notify data. In our case,
-> we now can infer if we aren't the change trigger, we need to keep the
-> existing rate after the PLL's rate change. We keep the existing rate by
-> modifying the new_rate of the clock's core, as we are quite late in an
-> already ongoing clock change process.
->
-> Future work:
-> The re-configuration of the PLL can definitely be improved for other use
-> cases where the children have more fancy inter-dependencies. That's one
-> of the main reasons I currently only touched the mentioned clocks.
-> Additionally, it might make sense to automatically re-parent if a
-> different possible parent suits better.
-> For the core part, I thought about extending my "unintentional change
-> check" so that the core ensures that the children keep the configured
-> rate, which might not be easy as the parent could be allowed to "round",
-> but it's not clear (at least to me yet) how much rounding is allowed. I
-> found a similar discussion posted here[1], therefore added Frank and
-> Maxime.
->
-> Thanks & regards,
-> Benjamin
->
-> [1] https://lore.kernel.org/lkml/20230825-pll-mipi_keep_rate-v1-0-35bc435=
-70730@oltmanns.dev/
->
-> ---
-> Benjamin Bara (13):
->       arm64: dts: imx8mp: lvds_bridge: use root instead of composite
->       arm64: dts: imx8mp: re-parent IMX8MP_CLK_MEDIA_MIPI_PHY1_REF
->       clk: implement clk_hw_set_rate()
->       clk: print debug message if parent change is ignored
->       clk: keep track of the trigger of an ongoing clk_set_rate
->       clk: keep track if a clock is explicitly configured
->       clk: detect unintended rate changes
->       clk: divider: stop early if an optimal divider is found
->       clk: imx: pll14xx: consider active rate for re-config
->       clk: imx: composite-8m: convert compute_dividers to void
->       clk: imx: composite-8m: implement CLK_SET_RATE_PARENT
->       clk: imx: imx8mp: allow LVDS clocks to set parent rate
->       arm64: dts: imx8mp: remove assigned-clock-rate of IMX8MP_VIDEO_PLL1
->
->  arch/arm64/boot/dts/freescale/imx8mp.dtsi |  14 +--
->  drivers/clk/clk-divider.c                 |   9 ++
->  drivers/clk/clk.c                         | 146 ++++++++++++++++++++++++=
-+++++-
->  drivers/clk/imx/clk-composite-8m.c        |  89 +++++++++++++++---
->  drivers/clk/imx/clk-imx8mp.c              |   4 +-
->  drivers/clk/imx/clk-pll14xx.c             |  20 ++++
->  drivers/clk/imx/clk.h                     |   4 +
->  include/linux/clk-provider.h              |   2 +
->  include/linux/clk.h                       |   2 +
->  9 files changed, 261 insertions(+), 29 deletions(-)
-> ---
-> base-commit: e143016b56ecb0fcda5bb6026b0a25fe55274f56
-> change-id: 20230913-imx8mp-dtsi-7c6e25907e0e
->
-> Best regards,
-> --
-> Benjamin Bara <benjamin.bara@skidata.com>
->
+I don't understand the last sentence of the commit log. QEMU
+always have "ACPI0007" for the processor devices.
+
+#define ACPI_PROCESSOR_DEVICE_HID      "ACPI0007"
+#define ACPI_PROCESSOR_OBJECT_HID      "LNXCPU"
+
+[gshan@gshan q]$ git grep ACPI0007
+hw/acpi/cpu.c:                aml_append(dev, aml_name_decl("_HID", aml_string("ACPI0007")));
+hw/arm/virt-acpi-build.c:        aml_append(dev, aml_name_decl("_HID", aml_string("ACPI0007")));
+hw/riscv/virt-acpi-build.c:            aml_append(dev, aml_name_decl("_HID", aml_string("ACPI0007")));
+[gshan@gshan q]$ git grep LNXCPU
+
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index c0839bcf78c1..b4bde78121bb 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -625,9 +625,31 @@ static struct acpi_scan_handler processor_handler = {
+>   	},
+>   };
+>   
+> +static acpi_status acpi_processor_container_walk(acpi_handle handle,
+> +						 u32 lvl,
+> +						 void *context,
+> +						 void **rv)
+> +{
+> +	struct acpi_device *adev;
+> +	acpi_status status;
+> +
+> +	adev = acpi_get_acpi_dev(handle);
+> +	if (!adev)
+> +		return AE_ERROR;
+> +
+> +	status = acpi_processor_add(adev, &processor_device_ids[0]);
+> +	acpi_put_acpi_dev(adev);
+> +
+> +	return status;
+> +}
+> +
+>   static int acpi_processor_container_attach(struct acpi_device *dev,
+>   					   const struct acpi_device_id *id)
+>   {
+> +	acpi_walk_namespace(ACPI_TYPE_PROCESSOR, dev->handle,
+> +			    ACPI_UINT32_MAX, acpi_processor_container_walk,
+> +			    NULL, NULL, NULL);
+> +
+>   	return 1;
+>   }
+>   
+
+Thanks,
+Gavin
+
