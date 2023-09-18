@@ -2,382 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F0C7A462F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5084B7A4636
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239344AbjIRJjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 05:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
+        id S239133AbjIRJmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240994AbjIRJii (ORCPT
+        with ESMTP id S233492AbjIRJlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:38:38 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08E612A
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:38:28 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-530a6cbbb47so2925919a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:38:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695029907; x=1695634707; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sjClo4xkeDmrqc325xBc4ylMLN29H3Nj2c2sd61GlRk=;
-        b=aTEjsuPCC6PPuhvB4tZ37I5hFzy6+VAKRJBl34OzasX2Cz7Vq6eNI2JR3CUJE0gOHN
-         yOGPhmod3gzYtS/xUs2rpTc/Y3tvVyQVdH0hqNxYIX0mQAF0fPpuNfSQKnRMhLdAwPb6
-         vE9sl5pAigGw39AaAfP/n4TI8wLmBGWM7CX+Y752LRK31pk8Tq5R10uHnvG7j/D0Ggev
-         A8174NhVzJ6QZGZQ7DpibHNECoHALaaV19Puc2dfMruxr4xtBVwZJyoCe2wezoJXxa1u
-         ixihBwYRG9xN0zVRFyeV3dZBoRJ2hoMlCWyyFdED5bzpbwL7WK7piGug8qZlEscHQVuc
-         zeeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695029907; x=1695634707;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sjClo4xkeDmrqc325xBc4ylMLN29H3Nj2c2sd61GlRk=;
-        b=q2GAXmJJgn6qDc9Yl8vJL0M04f4nGMMVPFJBfLpyzU73YWV9Sf6XB7euGfnDtj/fI5
-         M2cwMPW6HCf2C3q/XMWMl0jKiOSoekX2eKki6n5279CbEcRgDe+YQmlUoFS/p3YW/TP5
-         PrygdXbWrYvQEQY3fU9SnxXF/TuKTE6IBLUl3xR3IdpbBQchGtGBu9jVVFkIx8kDdKTD
-         ubEN0mQegE/lsZQZmfUP2zU5ETZ8A84HRTFS5mSCzeNjbwxLcHFrXKICvnB8+xylAERo
-         72r/zf3fERRsa04p+Md7TdYyG298qn9YUahyo8dap9nrfpzEEG6Wdr0ld/NFuSRSFutt
-         MeNA==
-X-Gm-Message-State: AOJu0YxTKyjAyE5j5Wk9EV0ZPCAPgEN9RF+iI9lTNeRnJ5GobJQhoaLO
-        Mr/9l2zIaE/OWYI4W9KTI45bvg==
-X-Google-Smtp-Source: AGHT+IG5kT7m81nr2cfYALjUa49dNQ97RPPmoYgDi+S4RJYIvoH7+IKgfpfd4AnrNN10ZqjeCYkGUw==
-X-Received: by 2002:a17:906:2011:b0:9ae:1de:f4f3 with SMTP id 17-20020a170906201100b009ae01def4f3mr2608681ejo.13.1695029907127;
-        Mon, 18 Sep 2023 02:38:27 -0700 (PDT)
-Received: from blmsp.fritz.box ([2001:4091:a246:8222:872:4a5b:b69c:1318])
-        by smtp.gmail.com with ESMTPSA id o10-20020a1709061d4a00b0099293cdbc98sm6251164ejh.145.2023.09.18.02.38.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 02:38:26 -0700 (PDT)
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Alexandre Mergnat <amergnat@baylibre.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Tinghan Shen <tinghan.shen@mediatek.com>,
-        Fabien Parent <parent.f@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Fabien Parent <fparent@baylibre.com>,
-        Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v8 8/8] soc: mediatek: pm-domains: Add support for MT8365
-Date:   Mon, 18 Sep 2023 11:37:52 +0200
-Message-Id: <20230918093751.1188668-9-msp@baylibre.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230918093751.1188668-1-msp@baylibre.com>
-References: <20230918093751.1188668-1-msp@baylibre.com>
+        Mon, 18 Sep 2023 05:41:37 -0400
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABB7CCD;
+        Mon, 18 Sep 2023 02:40:03 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VsKThJJ_1695029998;
+Received: from 30.240.112.49(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VsKThJJ_1695029998)
+          by smtp.aliyun-inc.com;
+          Mon, 18 Sep 2023 17:40:00 +0800
+Message-ID: <e486db16-d36d-9e14-4f10-dc755c0ef97d@linux.alibaba.com>
+Date:   Mon, 18 Sep 2023 17:39:58 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Content-Language: en-US
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+Subject: Questions: Should kernel panic when PCIe fatal error occurs?
+To:     "lenb@kernel.org" <lenb@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>, mahesh@linux.ibm.com,
+        bhelgaas@google.com,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        gregkh@linuxfoundation.org
+Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Shuai Xue <xueshuai@linux.alibaba.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabien Parent <fparent@baylibre.com>
+Hi, all folks,
 
-Add the needed board data to support MT8365 SoC.
+Error reporting and recovery are one of the important features of PCIe, and
+the kernel has been supporting them since version 2.6, 17 years ago.
+I am very curious about the expected behavior of the software.
+I first recap the error classification and then list my questions bellow it.
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
-Tested-by: Alexandre Mergnat <amergnat@baylibre.com>
----
- drivers/pmdomain/mediatek/mt8365-pm-domains.h | 197 ++++++++++++++++++
- drivers/pmdomain/mediatek/mtk-pm-domains.c    |   5 +
- include/linux/soc/mediatek/infracfg.h         |  41 ++++
- 3 files changed, 243 insertions(+)
- create mode 100644 drivers/pmdomain/mediatek/mt8365-pm-domains.h
+## Recap: Error classification
 
-diff --git a/drivers/pmdomain/mediatek/mt8365-pm-domains.h b/drivers/pmdomain/mediatek/mt8365-pm-domains.h
-new file mode 100644
-index 000000000000..3d83d49eaa7c
---- /dev/null
-+++ b/drivers/pmdomain/mediatek/mt8365-pm-domains.h
-@@ -0,0 +1,197 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __SOC_MEDIATEK_MT8365_PM_DOMAINS_H
-+#define __SOC_MEDIATEK_MT8365_PM_DOMAINS_H
-+
-+#include "mtk-pm-domains.h"
-+#include <dt-bindings/power/mediatek,mt8365-power.h>
-+
-+/*
-+ * MT8365 power domain support
-+ */
-+
-+#define MT8365_BUS_PROT_INFRA_WR_TOPAXI(_mask)				\
-+		BUS_PROT_WR(INFRA, _mask,				\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_SET,		\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_CLR,		\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_STA1)
-+
-+#define MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(_mask)			\
-+		BUS_PROT_WR(INFRA, _mask,				\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_1_SET,	\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_1_CLR,	\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_1_STA1)
-+
-+#define MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(port)			\
-+		BUS_PROT_WR(SMI, BIT(port),				\
-+			    MT8365_SMI_COMMON_CLAMP_EN_SET,		\
-+			    MT8365_SMI_COMMON_CLAMP_EN_CLR,		\
-+			    MT8365_SMI_COMMON_CLAMP_EN)
-+
-+#define MT8365_BUS_PROT_WAY_EN(_set_mask, _set, _sta_mask, _sta)	\
-+		_BUS_PROT(_set_mask, _set, _set, _sta_mask, _sta,	\
-+			  BUS_PROT_COMPONENT_INFRA |			\
-+			  BUS_PROT_STA_COMPONENT_INFRA_NAO |		\
-+			  BUS_PROT_INVERTED |				\
-+			  BUS_PROT_REG_UPDATE)
-+
-+static const struct scpsys_domain_data scpsys_domain_data_mt8365[] = {
-+	[MT8365_POWER_DOMAIN_MM] = {
-+		.name = "mm",
-+		.sta_mask = PWR_STATUS_DISP,
-+		.ctl_offs = 0x30c,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(8, 8),
-+		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_MM2INFRA_AXI_GALS_MST_0 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_MM2INFRA_AXI_GALS_MST_1),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MM_M0 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MDMCU_M1 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MM2INFRA_AXI_GALS_SLV_0 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MM2INFRA_AXI_GALS_SLV_1),
-+			MT8365_BUS_PROT_WAY_EN(
-+				MT8365_INFRA_TOPAXI_SI0_WAY_EN_MMAPB_S,
-+				MT8365_INFRA_TOPAXI_SI0_CTL,
-+				MT8365_INFRA_NAO_TOPAXI_SI0_CTRL_UPDATED,
-+				MT8365_INFRA_NAO_TOPAXI_SI0_STA),
-+			MT8365_BUS_PROT_WAY_EN(
-+				MT8365_INFRA_TOPAXI_SI2_WAY_EN_PERI_M1,
-+				MT8365_INFRA_TOPAXI_SI2_CTL,
-+				MT8365_INFRA_NAO_TOPAXI_SI2_CTRL_UPDATED,
-+				MT8365_INFRA_NAO_TOPAXI_SI2_STA),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MMAPB_S),
-+		},
-+		.caps = MTK_SCPD_STRICT_BUS_PROTECTION | MTK_SCPD_HAS_INFRA_NAO,
-+	},
-+	[MT8365_POWER_DOMAIN_VENC] = {
-+		.name = "venc",
-+		.sta_mask = PWR_STATUS_VENC,
-+		.ctl_offs = 0x0304,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(8, 8),
-+		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(1),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_AUDIO] = {
-+		.name = "audio",
-+		.sta_mask = PWR_STATUS_AUDIO,
-+		.ctl_offs = 0x0314,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(12, 8),
-+		.sram_pdn_ack_bits = GENMASK(17, 13),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_PWRDNREQ_MP1_L2C_AFIFO |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_AUDIO_M),
-+		},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP,
-+	},
-+	[MT8365_POWER_DOMAIN_CONN] = {
-+		.name = "conn",
-+		.sta_mask = PWR_STATUS_CONN,
-+		.ctl_offs = 0x032c,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = 0,
-+		.sram_pdn_ack_bits = 0,
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_AP2CONN_AHB),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_CONN2INFRA_AXI_GALS_MST),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_CONN2INFRA_AHB),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_INFRA2CONN_AHB_GALS_SLV),
-+		},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP | MTK_SCPD_KEEP_DEFAULT_OFF,
-+	},
-+	[MT8365_POWER_DOMAIN_MFG] = {
-+		.name = "mfg",
-+		.sta_mask = PWR_STATUS_MFG,
-+		.ctl_offs = 0x0338,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(9, 8),
-+		.sram_pdn_ack_bits = GENMASK(13, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(BIT(25)),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MFG_M0 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_INFRA2MFG),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_CAM] = {
-+		.name = "cam",
-+		.sta_mask = BIT(25),
-+		.ctl_offs = 0x0344,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(9, 8),
-+		.sram_pdn_ack_bits = GENMASK(13, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_CAM2MM_AXI_GALS_MST),
-+			MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(2),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_VDEC] = {
-+		.name = "vdec",
-+		.sta_mask = BIT(31),
-+		.ctl_offs = 0x0370,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(8, 8),
-+		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(3),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_APU] = {
-+		.name = "apu",
-+		.sta_mask = BIT(16),
-+		.ctl_offs = 0x0378,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(14, 8),
-+		.sram_pdn_ack_bits = GENMASK(21, 15),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_APU2AP |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_APU_CBIP_GALS_MST),
-+			MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(4),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_DSP] = {
-+		.name = "dsp",
-+		.sta_mask = BIT(17),
-+		.ctl_offs = 0x037C,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(11, 8),
-+		.sram_pdn_ack_bits = GENMASK(15, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_PWRDNREQ_INFRA_GALS_ADB |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_DSP_M |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_DSP_S),
-+		},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP,
-+	},
-+};
-+
-+static const struct scpsys_soc_data mt8365_scpsys_data = {
-+	.domains_data = scpsys_domain_data_mt8365,
-+	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8365),
-+};
-+
-+#endif /* __SOC_MEDIATEK_MT8365_PM_DOMAINS_H */
-diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.c b/drivers/pmdomain/mediatek/mtk-pm-domains.c
-index 69cdf6ff00b8..e26dc17d07ad 100644
---- a/drivers/pmdomain/mediatek/mtk-pm-domains.c
-+++ b/drivers/pmdomain/mediatek/mtk-pm-domains.c
-@@ -24,6 +24,7 @@
- #include "mt8188-pm-domains.h"
- #include "mt8192-pm-domains.h"
- #include "mt8195-pm-domains.h"
-+#include "mt8365-pm-domains.h"
- 
- #define MTK_POLL_DELAY_US		10
- #define MTK_POLL_TIMEOUT		USEC_PER_SEC
-@@ -652,6 +653,10 @@ static const struct of_device_id scpsys_of_match[] = {
- 		.compatible = "mediatek,mt8195-power-controller",
- 		.data = &mt8195_scpsys_data,
- 	},
-+	{
-+		.compatible = "mediatek,mt8365-power-controller",
-+		.data = &mt8365_scpsys_data,
-+	},
- 	{ }
- };
- 
-diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
-index 07f67b3d8e97..6c6cccc848f4 100644
---- a/include/linux/soc/mediatek/infracfg.h
-+++ b/include/linux/soc/mediatek/infracfg.h
-@@ -2,6 +2,47 @@
- #ifndef __SOC_MEDIATEK_INFRACFG_H
- #define __SOC_MEDIATEK_INFRACFG_H
- 
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_STA1				0x228
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_SET				0x2a0
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_CLR				0x2a4
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MM_M0				BIT(1)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MDMCU_M1				BIT(2)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MMAPB_S				BIT(6)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MM2INFRA_AXI_GALS_SLV_0		BIT(10)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MM2INFRA_AXI_GALS_SLV_1		BIT(11)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_AP2CONN_AHB			BIT(13)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_CONN2INFRA_AHB			BIT(14)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MFG_M0				BIT(21)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_INFRA2MFG			BIT(22)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_STA1				0x258
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_SET				0x2a8
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_CLR				0x2ac
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_APU2AP				BIT(2)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_MM2INFRA_AXI_GALS_MST_0	BIT(16)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_MM2INFRA_AXI_GALS_MST_1	BIT(17)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_CONN2INFRA_AXI_GALS_MST	BIT(18)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_CAM2MM_AXI_GALS_MST		BIT(19)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_APU_CBIP_GALS_MST		BIT(20)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_INFRA2CONN_AHB_GALS_SLV	BIT(21)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_PWRDNREQ_INFRA_GALS_ADB	BIT(24)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_PWRDNREQ_MP1_L2C_AFIFO		BIT(27)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_AUDIO_M		BIT(28)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_DSP_M		BIT(30)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_DSP_S		BIT(31)
-+
-+#define MT8365_INFRA_NAO_TOPAXI_SI0_STA					0x0
-+#define MT8365_INFRA_NAO_TOPAXI_SI0_CTRL_UPDATED			BIT(24)
-+#define MT8365_INFRA_NAO_TOPAXI_SI2_STA					0x28
-+#define MT8365_INFRA_NAO_TOPAXI_SI2_CTRL_UPDATED			BIT(14)
-+#define MT8365_INFRA_TOPAXI_SI0_CTL					0x200
-+#define MT8365_INFRA_TOPAXI_SI0_WAY_EN_MMAPB_S				BIT(6)
-+#define MT8365_INFRA_TOPAXI_SI2_CTL					0x234
-+#define MT8365_INFRA_TOPAXI_SI2_WAY_EN_PERI_M1				BIT(5)
-+
-+#define MT8365_SMI_COMMON_CLAMP_EN			0x3c0
-+#define MT8365_SMI_COMMON_CLAMP_EN_SET			0x3c4
-+#define MT8365_SMI_COMMON_CLAMP_EN_CLR			0x3c8
-+
- #define MT8195_TOP_AXI_PROT_EN_STA1                     0x228
- #define MT8195_TOP_AXI_PROT_EN_1_STA1                   0x258
- #define MT8195_TOP_AXI_PROT_EN_SET			0x2a0
--- 
-2.40.1
+- Fatal Errors
+
+Fatal errors are uncorrectable error conditions which render the particular
+Link and related hardware unreliable. For Fatal errors, a reset of the
+components on the Link may be required to return to reliable operation.
+Platform handling of Fatal errors, and any efforts to limit the effects of
+these errors, is platform implementation specific. (PCIe 6.0.1, sec
+6.2.2.2.1 Fatal Errors).
+
+- Non-Fatal Errors
+
+Non-fatal errors are uncorrectable errors which cause a particular
+transaction to be unreliable but the Link is otherwise fully functional.
+Isolating Non-fatal from Fatal errors provides Requester/Receiver logic in
+a device or system management software the opportunity to recover from the
+error without resetting the components on the Link and disturbing other
+transactions in progress. Devices not associated with the transaction in
+error are not impacted by the error.  (PCIe 6.0.1, sec 6.2.2.2.1 Non-Fatal
+Errors).
+
+## What the kernel do?
+
+The Linux kernel supports both the OS native and firmware first modes in
+AER and DPC drivers. The error recovery API is defined in `struct
+pci_error_handlers`, and the recovery process is performed in several
+stages in pcie_do_recovery(). One main difference in handling PCIe errors
+is that the kernel only resets the link when a fatal error is detected.
+
+## Questions
+
+1. Should kernel panic when fatal errors occur without AER recovery?
+
+IMHO, the answer is NO. The AER driver handles both fatal and non-fatal
+errors, and I have not found any panic changes in the recovery path in OS
+native mode.
+
+As far as I know, on many X86 platforms, struct `acpi_hest_generic_status::error_severity`
+is set as CPER_SEV_FATAL in firmware first mode. As a result, kernel will
+panic immediately in ghes_proc() when fatal AER errors occur, and there
+is no chance to handle the error and perform recovery in AER driver.
+
+For fatal and non-fatal errors, struct `acpi_hest_generic_status::error_severity`
+should as CPER_SEV_RECOVERABLE, and struct `acpi_hest_generic_data::error_severity`
+should reflect its real severity. Then, the kernel is equivalent to handling
+PCIe errors in Firmware first mode as it does in OS native mode.
+Please correct me if I am wrong.
+
+However, I have changed my mind on this issue as I encounter a case where
+a error propagation is detected due to fatal DLLP (Data Link Protocol
+Error) error. A DLLP error occurred in the Compute node, causing the
+node to panic because `struct acpi_hest_generic_status::error_severity` was
+set as CPER_SEV_FATAL. However, data corruption was still detected in the
+storage node by CRC.
+
+2. Should kernel panic when AER recovery failed?
+
+This question is actually a TODO that was added when the AER driver was
+first upstreamed 17 years ago, and it is still relevant today. The kernel
+does not proactively panic regardless of the error types occurring in OS
+native mode. The DLLP error propagation case indicates that the kernel
+might should panic when recovery failed?
+
+3. Should DPC be enabled by default to contain fatal and non-fatal error?
+
+According to the PCIe specification, DPC halts PCIe traffic below a
+Downstream Port after an unmasked uncorrectable error is detected at or
+below the Port, avoiding the potential spread of any data corruption.
+
+The kernel configures DPC to be triggered only on ERR_FATAL. Literally
+speaking, only fatal error have the potential spread of any data
+corruption? In addition, the AER Severity is programable by the
+Uncorrectable Error Severity Register (Offset 0Ch in PCIe AER cap). If a
+default fatal error, e.g. DLLP, set as non-fatal, DPC will not be
+triggered.
+
+
+Looking forward to any comments and reply :)
+
+Thank you.
+
+Best Regards,
+Shuai
+
+
+[1] https://github.com/torvalds/linux/commit/6c2b374d74857e892080ee726184ec1d15e7d4e4#diff-fea64904d30501b59d2e948189bbedc476fc270ed4c15e4ae29d7f0efd06771aR438
+
+
+
+
+
+
+
+
 
