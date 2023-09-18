@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7777A3F5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 04:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2823C7A3F63
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 04:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236161AbjIRCBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 22:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33788 "EHLO
+        id S237575AbjIRCFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 22:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236197AbjIRCBF (ORCPT
+        with ESMTP id S238003AbjIRCEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 22:01:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C04E97;
-        Sun, 17 Sep 2023 19:01:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC020C433C8;
-        Mon, 18 Sep 2023 02:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695002459;
-        bh=P5kbmZu6oeMbM/PnhQwtSFCxSpJ/ktMepMBX4j4Jido=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=HUAbS/TCe7nPwq9iMY0e26ipjFoUiBffiD5fT7l2g3TaWQyMdO6TQtwxPrAL8OAyA
-         tOx6KNswGmyoE1K3q4YUgvR/3c1Maio31BPI5X+1KK6j02difk4fccVLavTCwm7O8v
-         VcwoQnPM1mbeLHUxZUmguNzib4JS8g9ky5cgwrcOL5tYfEo6buOuPJ8tvmkjwrLhgH
-         f8OeEJfCCkwVsiSuHfZC3wWCcIWzkheG+zFPJ941VYLeKvHmvZhECqiX+rjG21HYbe
-         asL6UhTSv7j2kSuOq8eAeFq+yXT2tqyWWUCBfECV951LtP9WzNMdeAvPSkMTbnTPnK
-         zl3YvI+dQttEg==
-Date:   Sun, 17 Sep 2023 19:00:58 -0700
-From:   Kees Cook <kees@kernel.org>
-To:     Xiubo Li <xiubli@redhat.com>, Kees Cook <keescook@chromium.org>,
-        Ilya Dryomov <idryomov@gmail.com>
-CC:     Jeff Layton <jlayton@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, ceph-devel@vger.kernel.org,
-        netdev@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ceph: Annotate struct ceph_monmap with __counted_by
-User-Agent: K-9 Mail for Android
-In-Reply-To: <3c4c7ca8-e1a2-fbb1-bda4-b7000eb9a8d9@redhat.com>
-References: <20230915201510.never.365-kees@kernel.org> <3c4c7ca8-e1a2-fbb1-bda4-b7000eb9a8d9@redhat.com>
-Message-ID: <6122C479-ADD9-43A8-8EB6-CF518F97F64C@kernel.org>
+        Sun, 17 Sep 2023 22:04:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED3F12A;
+        Sun, 17 Sep 2023 19:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KqQ/QYkzoA6iiYkHXcsQez0zjLQ2/Y9CTcBq2HhMheY=; b=3zIISxp33DxakmM4bv+pOsTPtw
+        WoGWkER9yy3i+jAiKvT5JkmDmNyyBXWrluAq9epBzWkszCpRONGatWah1PgQ0A4W1bMphZ8RMM6AN
+        iSW0xC2tuFzOYlgQK+wbOqkmZHoPSHFlL7+emPX0KB8KHiEh1e0SWhuoMfas9h0ooD8W7PimHSrAT
+        ZxmCuNzq9Yl4CEbaFqXBni76lvbtf7/jBl5fzrpme1dosz0/q90D+YHyHKKpK6amlLaxT8q0Pmc2J
+        jJB2MH15bvOSfszYcfxlRqTjQMYBmX3wonLhJXtGX2Lz7bVDcpl8Ecw66Koa/kLB706NO1kMuI/ug
+        gTgnotKQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qi3ce-00EDre-1D;
+        Mon, 18 Sep 2023 02:04:24 +0000
+Date:   Sun, 17 Sep 2023 19:04:24 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Pankaj Raghav <kernel@pankajraghav.com>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, p.raghav@samsung.com,
+        da.gomez@samsung.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, willy@infradead.org,
+        djwong@kernel.org, linux-mm@kvack.org, chandan.babu@oracle.com,
+        gost.dev@samsung.com
+Subject: Re: [RFC 00/23] Enable block size > page size in XFS
+Message-ID: <ZQewKIfRYcApEYXt@bombadil.infradead.org>
+References: <20230915183848.1018717-1-kernel@pankajraghav.com>
+ <ZQd4IPeVI+o6M38W@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQd4IPeVI+o6M38W@dread.disaster.area>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,50 +56,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On September 17, 2023 5:25:10 PM PDT, Xiubo Li <xiubli@redhat=2Ecom> wrote:
->
->On 9/16/23 04:15, Kees Cook wrote:
-> > [=2E=2E=2E]
->> Additionally, since the element count member must be set before accessi=
-ng
->> the annotated flexible array member, move its initialization earlier=2E
->>=20
->> [=2E=2E=2E]
->> diff --git a/net/ceph/mon_client=2Ec b/net/ceph/mon_client=2Ec
->> index faabad6603db=2E=2Ef263f7e91a21 100644
->> --- a/net/ceph/mon_client=2Ec
->> +++ b/net/ceph/mon_client=2Ec
->> @@ -1136,6 +1136,7 @@ static int build_initial_monmap(struct ceph_mon_c=
-lient *monc)
->>   			       GFP_KERNEL);
->>   	if (!monc->monmap)
->>   		return -ENOMEM;
->> +	monc->monmap->num_mon =3D num_mon;
->>     	for (i =3D 0; i < num_mon; i++) {
->>   		struct ceph_entity_inst *inst =3D &monc->monmap->mon_inst[i];
->> @@ -1147,7 +1148,6 @@ static int build_initial_monmap(struct ceph_mon_c=
-lient *monc)
->>   		inst->name=2Etype =3D CEPH_ENTITY_TYPE_MON;
->>   		inst->name=2Enum =3D cpu_to_le64(i);
->>   	}
->> -	monc->monmap->num_mon =3D num_mon;
->
->BTW, is this change related ?
+On Mon, Sep 18, 2023 at 08:05:20AM +1000, Dave Chinner wrote:
+> On Fri, Sep 15, 2023 at 08:38:25PM +0200, Pankaj Raghav wrote:
+> > From: Pankaj Raghav <p.raghav@samsung.com>
+> > 
+> > There has been efforts over the last 16 years to enable enable Large
+> > Block Sizes (LBS), that is block sizes in filesystems where bs > page
+> > size [1] [2]. Through these efforts we have learned that one of the
+> > main blockers to supporting bs > ps in fiesystems has been a way to
+> > allocate pages that are at least the filesystem block size on the page
+> > cache where bs > ps [3]. Another blocker was changed in filesystems due to
+> > buffer-heads. Thanks to these previous efforts, the surgery by Matthew
+> > Willcox in the page cache for adopting xarray's multi-index support, and
+> > iomap support, it makes supporting bs > ps in XFS possible with only a few
+> > line change to XFS. Most of changes are to the page cache to support minimum
+> > order folio support for the target block size on the filesystem.
+> > 
+> > A new motivation for LBS today is to support high-capacity (large amount
+> > of Terabytes) QLC SSDs where the internal Indirection Unit (IU) are
+> > typically greater than 4k [4] to help reduce DRAM and so in turn cost
+> > and space. In practice this then allows different architectures to use a
+> > base page size of 4k while still enabling support for block sizes
+> > aligned to the larger IUs by relying on high order folios on the page
+> > cache when needed. It also enables to take advantage of these same
+> > drive's support for larger atomics than 4k with buffered IO support in
+> > Linux. As described this year at LSFMM, supporting large atomics greater
+> > than 4k enables databases to remove the need to rely on their own
+> > journaling, so they can disable double buffered writes [5], which is a
+> > feature different cloud providers are already innovating and enabling
+> > customers for through custom storage solutions.
+> > 
+> > This series still needs some polishing and fixing some crashes, but it is
+> > mainly targeted to get initial feedback from the community, enable initial
+> > experimentation, hence the RFC. It's being posted now given the results from
+> > our testing are proving much better results than expected and we hope to
+> > polish this up together with the community. After all, this has been a 16
+> > year old effort and none of this could have been possible without that effort.
+> > 
+> > Implementation:
+> > 
+> > This series only adds the notion of a minimum order of a folio in the
+> > page cache that was initially proposed by Willy. The minimum folio order
+> > requirement is set during inode creation. The minimum order will
+> > typically correspond to the filesystem block size. The page cache will
+> > in turn respect the minimum folio order requirement while allocating a
+> > folio. This series mainly changes the page cache's filemap, readahead, and
+> > truncation code to allocate and align the folios to the minimum order set for the
+> > filesystem's inode's respective address space mapping.
+> > 
+> > Only XFS was enabled and tested as a part of this series as it has
+> > supported block sizes up to 64k and sector sizes up to 32k for years.
+> > The only thing missing was the page cache magic to enable bs > ps. However any filesystem
+> > that doesn't depend on buffer-heads and support larger block sizes
+> > already should be able to leverage this effort to also support LBS,
+> > bs > ps.
+> > 
+> > This also paves the way for supporting block devices where their logical
+> > block size > page size in the future by leveraging iomap's address space
+> > operation added to the block device cache by Christoph Hellwig [6]. We
+> > have work to enable support for this, enabling LBAs > 4k on NVME,  and
+> > at the same time allow coexistence with buffer-heads on the same block
+> > device so to enable support allow for a drive to use filesystem's to
+> > switch between filesystem's which may depend on buffer-heads or need the
+> > iomap address space operations for the block device cache. Patches for
+> > this will be posted shortly after this patch series.
+> 
+> Do you have a git tree branch that I can pull this from
+> somewhere?
+> 
+> As it is, I'd really prefer stuff that adds significant XFS
+> functionality that we need to test to be based on a current Linus
+> TOT kernel so that we can test it without being impacted by all
+> the random unrelated breakages that regularly happen in linux-next
+> kernels....
 
-Yes, this is needed so that the __counted_by size is set before accessing =
-the flexible array=2E
+That's understandable! I just rebased onto Linus' tree, this only
+has the bs > ps support on 4k sector size:
 
->
->>   	return 0;
->>   }
->>  =20
->
->Else LGTM=2E
->
->Reviewed-by: Xiubo Li <xiubli@redhat=2Ecom>
+https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=v6.6-rc2-lbs-nobdev
 
-Thanks!
+I just did a cursory build / boot / fsx with 16k block size / 4k sector size
+test with this tree only. I havne't ran fstests on it.
 
+Just a heads up, using 512 byte sector size will fail for now, it's a
+regression we have to fix. Likewise using block sizes 1k, 2k will also
+regress on fsx right now. These are regressions we are aware of but
+haven't had time yet to bisect / fix.
 
---=20
-Kees Cook
+  Luis
