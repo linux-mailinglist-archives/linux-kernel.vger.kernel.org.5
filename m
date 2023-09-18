@@ -2,172 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FAB7A4962
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF847A4966
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241931AbjIRMPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        id S240024AbjIRMQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241902AbjIRMPY (ORCPT
+        with ESMTP id S241933AbjIRMQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:15:24 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA31F9F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:15:17 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 4E62C6017F;
-        Mon, 18 Sep 2023 14:15:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695039315; bh=SmfqklREwhtysYYvbmNPpcGx0lhPTuzHH1rw1V6w+XE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=0YonrsqF6qkijU2DWZMLYfcdCkedqGWwK1sw5bKp61obrGYXHkGnVzwz2eTZUTOfd
-         bFCKCIP4BkyeXKb7typtBBArj1XjfrVEijDY4VtC2yKlVv1t96KdWSHIIlpDTlUgyv
-         XJTaHRqQh6RxXefQaxJ4jBYT58qxanidd6XSnBQCrXHl2zzbfcdFi4lL+rsi4ZdIge
-         zjI/UC1Nm+eiMhTbrPcQyDhjNVRXX3AC0wSAgyzilAhqnJUX6pmkx+Bu4vntBjhZ8t
-         Yvs8Mlkpd/6WyRLO+arnJe8daiRAm4i/WfxzKoRkekusM75h8TGlrp472JpkvT9n+Q
-         THybAyMpAtH1Q==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4qPMsXhXqbja; Mon, 18 Sep 2023 14:15:12 +0200 (CEST)
-Received: from [192.168.1.6] (78-1-184-14.adsl.net.t-com.hr [78.1.184.14])
-        by domac.alu.hr (Postfix) with ESMTPSA id 4686160173;
-        Mon, 18 Sep 2023 14:15:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695039312; bh=SmfqklREwhtysYYvbmNPpcGx0lhPTuzHH1rw1V6w+XE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gk2KGKAp7x3cXYvNB99Bmq3W6BWRwc1dUlIcR/uER2qL+5i4R6bJv5K2xdidoA5it
-         Qdli27w+eK2ko2hwFxoKZu9XUtAsfyjwOXpgeSLVo7hjrYzHOquPo/CNk3DjcvpNjs
-         V8sMSznMgovYc0nQEnqc2XJqjiR/C4jofqbR3i0bf1QL3JOBBd4KdIY4tJMTV1f3G9
-         eMQI2OSrZa7R2zH5lgMRJNvuU9J9zadNTghE5Whst5MI16ni7hU7Zg9SZ4Q6eVVTxI
-         HtFq2MIVXijNJQPJrAbkxXM59ZM8Ficd6vKsZzTUsq3yoCQ5OBgu5t3JAdqDw475vS
-         l8lu6scF36qmA==
-Message-ID: <22a42774-ebe1-081a-c9b9-e11f4d74bc3a@alu.unizg.hr>
-Date:   Mon, 18 Sep 2023 14:15:05 +0200
+        Mon, 18 Sep 2023 08:16:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10F79F
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695039338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QLQP8ymBv8WYGYUV0p0EWAvpDFWaTDPT4dt30n9P+aU=;
+        b=dlh5Tf0Pk/gFsCX1hm4bThlvFMdjHCvqvYWgPqDR08UdVOORUHu0Qr93Lv7vjX7Ty61ose
+        vi9XDdFclCKyZHeol1KvEvPm4JVnYNS2BFc5zIaThXaHawEKM5gEVeAYEUttKiSBFxM3Ib
+        tchqEqKn1ma4ZOGS7UybpJRgl6pnNAg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-448-MnqLMesrO5OuMHD_zvZloQ-1; Mon, 18 Sep 2023 08:15:36 -0400
+X-MC-Unique: MnqLMesrO5OuMHD_zvZloQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-320bf1de0a6so704481f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:15:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695039335; x=1695644135;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QLQP8ymBv8WYGYUV0p0EWAvpDFWaTDPT4dt30n9P+aU=;
+        b=oDjO1H+WS0aUAagv1ZtfX21A2yQwPlEfJdcNOUa0r46qRBa1uw5FSiVrWu8+EU0HsD
+         uIpvsfsTzXnVAiqNV+ImEwVT/7yRZZPDkIPPquuJ057T8meBgzzEonAKELu3Fgkdwgsz
+         scq7oEGHQUlZI8Jjasn/vuR4Q0HcHz+8BwmF4YusYHw5K8w3MZwNnuRv9uXoDFklFQSU
+         1FWx4fYxDk++TxJEptmc00yAO3fzfQnTkH3ZcvJJPsoh+BcK6ewXWtTu6WkIm4kU/u7G
+         pht1jYPwQ17DbDvyA8UfhEipdL2CmncSSFe9Hdo9Pux6bBPK9dzpy06OYuT5u8sq0ox7
+         y5Ew==
+X-Gm-Message-State: AOJu0YzDpCh4hjaGg3ik0Ydr9NfJcxifS9vC3WIXTrPWiLzb1PTtfS5y
+        iCL2ceoCZ9hYzx3wF2DQwkJ8w/8XOoYdIGrVUiVFbOO4OJ/g976uJGbQxnSnRL3C45RqtRWDtLF
+        w7JNUqbu6aTr9+0eI2cHpgP7C
+X-Received: by 2002:adf:a3c4:0:b0:31f:f664:d87 with SMTP id m4-20020adfa3c4000000b0031ff6640d87mr6993010wrb.20.1695039335557;
+        Mon, 18 Sep 2023 05:15:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFiPzVINpDFunwk9RW0aGFYMYz2VP26Mb7bcSOQByHhJW+M0WEKDin38PjK49YHEn7Lq+uRxA==
+X-Received: by 2002:adf:a3c4:0:b0:31f:f664:d87 with SMTP id m4-20020adfa3c4000000b0031ff6640d87mr6992985wrb.20.1695039335149;
+        Mon, 18 Sep 2023 05:15:35 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:3400:ec51:7a3a:274e:cbee? (p200300cbc74b3400ec517a3a274ecbee.dip0.t-ipconnect.de. [2003:cb:c74b:3400:ec51:7a3a:274e:cbee])
+        by smtp.gmail.com with ESMTPSA id q30-20020adfab1e000000b003177074f830sm11029025wrc.59.2023.09.18.05.15.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 05:15:34 -0700 (PDT)
+Message-ID: <7282d074-15ba-4fe7-bf62-6a4dd6089817@redhat.com>
+Date:   Mon, 18 Sep 2023 14:15:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: BUG: KCSAN: data-race in folio_batch_move_lru / mpage_read_end_io
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org
-References: <cbb9d596-43ac-bad4-b6f6-8c13f95d244e@alu.unizg.hr>
- <ZPCpQQVTtlB0FA5A@casper.infradead.org>
- <ZPs8+sLv5oaubrKj@casper.infradead.org>
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 3/9] Documentation/scrub-configure.rst: Add
+ documentation for scrub driver
 Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZPs8+sLv5oaubrKj@casper.infradead.org>
+To:     Shiju Jose <shiju.jose@huawei.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "jiaqiyan@google.com" <jiaqiyan@google.com>,
+        "jthoughton@google.com" <jthoughton@google.com>,
+        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
+        "erdemaktas@google.com" <erdemaktas@google.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "duenwen@google.com" <duenwen@google.com>,
+        "Vilas.Sridharan@amd.com" <Vilas.Sridharan@amd.com>,
+        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>,
+        "gthelen@google.com" <gthelen@google.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        tanxiaofei <tanxiaofei@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>
+References: <20230915172818.761-1-shiju.jose@huawei.com>
+ <20230915172818.761-4-shiju.jose@huawei.com>
+ <887344ee-068d-f78f-d5f8-e816b966d875@redhat.com>
+ <946f29d2370c41deb7a7c5a6f2bff0f3@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <946f29d2370c41deb7a7c5a6f2bff0f3@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/23 17:25, Matthew Wilcox wrote:
-> On Thu, Aug 31, 2023 at 03:52:49PM +0100, Matthew Wilcox wrote:
->>>   read to 0xffffef9a44978bc0 of 8 bytes by task 348 on cpu 12:
->>>   folio_batch_move_lru (./include/linux/mm.h:1814 ./include/linux/mm.h:1824 ./include/linux/memcontrol.h:1636 ./include/linux/memcontrol.h:1659 mm/swap.c:216)
->>>   folio_batch_add_and_move (mm/swap.c:235)
->>>   folio_add_lru (./arch/x86/include/asm/preempt.h:95 mm/swap.c:518)
->>>   folio_add_lru_vma (mm/swap.c:538)
->>>   do_anonymous_page (mm/memory.c:4146)
->>
->> This is the part I don't understand.  The path to calling
->> folio_add_lru_vma() comes directly from vma_alloc_zeroed_movable_folio():
->>
-> [snip]
->>
->> (sorry that's a lot of lines).  But there's _nowhere_ there that sets
->> PG_locked.  It's a freshly allocated page; all page flags (that are
->> actually flags; ignore the stuff up at the top) should be clear.  We
->> even check that with PAGE_FLAGS_CHECK_AT_PREP.  Plus, it doesn't
->> make sense that we'd start I/O; the page is freshly allocated, full of
->> zeroes; there's no backing store to read the page from.
->>
->> It really feels like this page was freed while it was still under I/O
->> and it's been reallocated to this victim process.
->>
->> I'm going to try a few things and see if I can figure this out.
+On 18.09.23 12:25, Shiju Jose wrote:
+> Hi David,
 > 
-> I'm having trouble reproducing this.  Can you get it to happen reliably?
+> Thanks for looking into this.
 > 
-> This is what I'm currently running with, and it doesn't trigger.
-> I'd expect it to if we were going to hit the KCSAN bug.
+>> -----Original Message-----
+>> From: David Hildenbrand <david@redhat.com>
+>> Sent: 18 September 2023 08:24
+>> To: Shiju Jose <shiju.jose@huawei.com>; linux-acpi@vger.kernel.org; linux-
+>> mm@kvack.org; linux-kernel@vger.kernel.org
+>> Cc: rafael@kernel.org; lenb@kernel.org; naoya.horiguchi@nec.com;
+>> tony.luck@intel.com; james.morse@arm.com; dave.hansen@linux.intel.com;
+>> jiaqiyan@google.com; jthoughton@google.com; somasundaram.a@hpe.com;
+>> erdemaktas@google.com; pgonda@google.com; rientjes@google.com;
+>> duenwen@google.com; Vilas.Sridharan@amd.com; mike.malvestuto@intel.com;
+>> gthelen@google.com; Linuxarm <linuxarm@huawei.com>; Jonathan Cameron
+>> <jonathan.cameron@huawei.com>; tanxiaofei <tanxiaofei@huawei.com>;
+>> Zengtao (B) <prime.zeng@hisilicon.com>
+>> Subject: Re: [RFC PATCH 3/9] Documentation/scrub-configure.rst: Add
+>> documentation for scrub driver
+>>
+>> On 15.09.23 19:28, shiju.jose@huawei.com wrote:
+>>> From: Shiju Jose <shiju.jose@huawei.com>
+>>>
+>>> Add documentation for scrub driver, supports configure scrub
+>>> parameters, in Documentation/scrub-configure.rst
+>>>
+>>> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+>>> ---
+>>>    Documentation/scrub-configure.rst | 55
+>> +++++++++++++++++++++++++++++++
+>>>    1 file changed, 55 insertions(+)
+>>>    create mode 100644 Documentation/scrub-configure.rst
+>>>
+>>> diff --git a/Documentation/scrub-configure.rst
+>>> b/Documentation/scrub-configure.rst
+>>> new file mode 100644
+>>> index 000000000000..9f8581b88788
+>>> --- /dev/null
+>>> +++ b/Documentation/scrub-configure.rst
+>>> @@ -0,0 +1,55 @@
+>>> +==========================
+>>> +Scrub subsystem driver
+>>> +==========================
+>>> +
+>>> +Copyright (c) 2023 HiSilicon Limited.
+>>> +
+>>> +:Author:   Shiju Jose <shiju.jose@huawei.com>
+>>> +:License:  The GNU Free Documentation License, Version 1.2
+>>> +          (dual licensed under the GPL v2) :Original Reviewers:
+>>> +
+>>> +- Written for: 6.7
+>>> +- Updated for:
+>>> +
+>>> +Introduction
+>>> +------------
+>>> +The scrub subsystem driver provides the interface for configure the
+>>
+>> "... interface for configuring memory scrubbers in the system."
+>>
+>> are we only configuring firmware/hw-based memory scrubbing? I assume so.
+> The scrub control could be used for the SW  based memory scrubbing too.
+
+Okay, looks like there is not too much hw/firmware specific in there 
+(besides these weird range changes).
+[...]
+
+>>> +-------
+>>> +
+>>> +  The usage takes the form shown in this example::
+>>> +
+>>> +    # echo 0x300000 > /sys/class/scrub/scrub0/region0/addr_base
+>>> +    # echo 0x100000 > /sys/class/scrub/scrub0/region0/addr_size
+>>> +    # cat /sys/class/scrub/scrub0/region0/speed_available
+>>> +    # 1-60
+>>> +    # echo 25 > /sys/class/scrub/scrub0/region0/speed
+>>> +    # echo 1 > /sys/class/scrub/scrub0/region0/enable
+>>> +
+>>> +    # cat /sys/class/scrub/scrub0/region0/speed
+>>> +    # 0x19
+>>
+>> Is it reasonable to return the speed as hex? You set it as dec.
+> Presently return speed  as hex to reduce the number of callback function needed
+> for reading the hex/dec data because the values for the address range
+> need to be in hex.
+
+If speed_available returns dec, speed better also return dec IMHO.
+
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 0c5be12f9336..d22e8798c326 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4439,6 +4439,7 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
->   	page = __alloc_pages_slowpath(alloc_gfp, order, &ac);
->   
->   out:
-> +	VM_BUG_ON_PAGE(page && (page->flags & (PAGE_FLAGS_CHECK_AT_PREP &~ (1 << PG_head))), page);
->   	if (memcg_kmem_online() && (gfp & __GFP_ACCOUNT) && page &&
->   	    unlikely(__memcg_kmem_charge_page(page, gfp, order) != 0)) {
->   		__free_pages(page, order);
+>>
+>>> +    # cat /sys/class/scrub/scrub0/region0/addr_base
+>>> +    # 0x100000
+>>
+>> But didn't we set it to 0x300000 ...
+> This is an emulated example for testing the RASF/RAS2 definition.
+> According to the RASF & RAS2 definition, the actual address range in the
+> platform could vary from the requested address range for the patrol scrubbing.
+> "The platform calculates the nearest patrol scrub boundary address
+> from where it can start". The platform returns the actual address range
+> in response to GET_PATROL_PARAMETERS command to the firmware.
+> Please see section 5.2.21.2.1 Hardware-based Memory Scrubbing ,
+> Table 5.87: Parameter Block Structure for PATROL_SCRUB in the
+> ACPI 6.5 specification.
+> 
 
-Hi,
+So you configure [0x300000 - 0x400000] and you get [0x100000 - 0x300000]
 
-Caught another instance of this bug involving folio_batch_move_lru: I don't seem that I can make it
-happen reliably by the nature of the data racing conditions if I understood them well.
+How does that make any sense? :)
 
-I have only found them in dmesg, I cannot determine what exactly the system was doing at that
-spurious moment ...
+Shouldn't we rather return an error when setting a range that is 
+impossible, instead of the hardware deciding to scrub something 
+completely different (as can be seen in the example)?
 
-Hope this will get some more light on the issue (6.6-rc2 vanilla torvalds tree kernel):
+-- 
+Cheers,
 
-[  114.557937] ==================================================================
-[  114.558262] BUG: KCSAN: data-race in btrfs_page_set_uptodate [btrfs] / folio_batch_move_lru
+David / dhildenb
 
-[  114.558902] write (marked) to 0xffffea0006f68f00 of 8 bytes by task 2678 on cpu 19:
-[  114.558912] btrfs_page_set_uptodate (/home/marvin/linux/kernel/torvalds2/./arch/x86/include/asm/bitops.h:55 /home/marvin/linux/kernel/torvalds2/./include/asm-generic/bitops/instrumented-atomic.h:29 /home/marvin/linux/kernel/torvalds2/./include/linux/page-flags.h:741 /home/marvin/linux/kernel/torvalds2/./include/linux/page-flags.h:751 /home/marvin/linux/kernel/torvalds2/fs/btrfs/subpage.c:642) btrfs
-[  114.559539] end_page_read (/home/marvin/linux/kernel/torvalds2/fs/btrfs/extent_io.c:445) btrfs
-[  114.560166] end_bio_extent_readpage (/home/marvin/linux/kernel/torvalds2/fs/btrfs/extent_io.c:660) btrfs
-[  114.560796] __btrfs_bio_end_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:120) btrfs
-[  114.561434] btrfs_orig_bbio_end_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:164) btrfs
-[  114.562079] btrfs_check_read_bio (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:324) btrfs
-[  114.562724] btrfs_end_bio_work (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:359) btrfs
-[  114.563360] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
-[  114.563371] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
-[  114.563381] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
-[  114.563390] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
-[  114.563401] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
-
-[  114.563416] read to 0xffffea0006f68f00 of 8 bytes by task 3540 on cpu 20:
-[  114.563426] folio_batch_move_lru (/home/marvin/linux/kernel/torvalds2/./include/linux/mm.h:1849 /home/marvin/linux/kernel/torvalds2/./include/linux/mm.h:1859 /home/marvin/linux/kernel/torvalds2/./include/linux/memcontrol.h:1639 /home/marvin/linux/kernel/torvalds2/./include/linux/memcontrol.h:1662 /home/marvin/linux/kernel/torvalds2/mm/swap.c:216)
-[  114.563436] folio_batch_add_and_move (/home/marvin/linux/kernel/torvalds2/mm/swap.c:235)
-[  114.563446] folio_add_lru (/home/marvin/linux/kernel/torvalds2/./arch/x86/include/asm/preempt.h:95 /home/marvin/linux/kernel/torvalds2/mm/swap.c:518)
-[  114.563455] filemap_add_folio (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:957)
-[  114.563464] page_cache_ra_unbounded (/home/marvin/linux/kernel/torvalds2/mm/readahead.c:250)
-[  114.563477] page_cache_ra_order (/home/marvin/linux/kernel/torvalds2/mm/readahead.c:547)
-[  114.563490] ondemand_readahead (/home/marvin/linux/kernel/torvalds2/mm/readahead.c:669)
-[  114.563499] page_cache_async_ra (/home/marvin/linux/kernel/torvalds2/mm/readahead.c:718)
-[  114.563507] filemap_fault (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:3227 /home/marvin/linux/kernel/torvalds2/mm/filemap.c:3281)
-[  114.563518] __do_fault (/home/marvin/linux/kernel/torvalds2/mm/memory.c:4204)
-[  114.563528] do_fault (/home/marvin/linux/kernel/torvalds2/mm/memory.c:4568 /home/marvin/linux/kernel/torvalds2/mm/memory.c:4705)
-[  114.563538] __handle_mm_fault (/home/marvin/linux/kernel/torvalds2/mm/memory.c:3669 /home/marvin/linux/kernel/torvalds2/mm/memory.c:4978 /home/marvin/linux/kernel/torvalds2/mm/memory.c:5119)
-[  114.563549] handle_mm_fault (/home/marvin/linux/kernel/torvalds2/mm/memory.c:5284)
-[  114.563560] do_user_addr_fault (/home/marvin/linux/kernel/torvalds2/arch/x86/mm/fault.c:1413)
-[  114.563572] exc_page_fault (/home/marvin/linux/kernel/torvalds2/./arch/x86/include/asm/paravirt.h:695 /home/marvin/linux/kernel/torvalds2/arch/x86/mm/fault.c:1513 /home/marvin/linux/kernel/torvalds2/arch/x86/mm/fault.c:1561)
-[  114.563582] asm_exc_page_fault (/home/marvin/linux/kernel/torvalds2/./arch/x86/include/asm/idtentry.h:570)
-
-[  114.563597] value changed: 0x0017ffffc0008101 -> 0x0017ffffc0008108
-
-[  114.563612] Reported by Kernel Concurrency Sanitizer on:
-[  114.563619] CPU: 20 PID: 3540 Comm: chrome Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #11
-[  114.563630] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[  114.563636] ==================================================================
-
-Best regards,
-Mirsad Todorovac
