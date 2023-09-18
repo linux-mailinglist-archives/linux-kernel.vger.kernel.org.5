@@ -2,98 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B817A4247
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1EB7A424A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240098AbjIRH0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        id S240184AbjIRH0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240075AbjIRH0A (ORCPT
+        with ESMTP id S240128AbjIRH0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:26:00 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A6DE6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:25:50 -0700 (PDT)
-X-UUID: 961e5f3e55f411eea33bb35ae8d461a2-20230918
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=pmAQXDi1eFJFIz1BbU82J1+CnIbylJEmn229iHCJQIs=;
-        b=iXQBjyY+RHy3WfgWsRoEQk9ClNi24G+J9sMkQbBwomqELi5Sc59HCFnuCrY217QGTtK0HQtbfE2ZrXZVrjcGPKrqVwRspTafgyhE/84ceszmRUVXQszV2++LCssmXe375Mw790g8n6d5VhcdE3VSrLbuNxPhzjxz7qbi4x7e9/4=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:7d7382ba-4a4a-4e4a-9eb9-67af55be4359,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:31a6f5be-14cc-44ca-b657-2d2783296e72,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:817|102,TC:nil,Content:0|-5,EDM:-3,I
-        P:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-        SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 1,FCT|NGT
-X-CID-BAS: 1,FCT|NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 961e5f3e55f411eea33bb35ae8d461a2-20230918
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <haibo.li@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1752200225; Mon, 18 Sep 2023 15:25:47 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 18 Sep 2023 15:25:46 +0800
-Received: from mszsdtlt102.gcn.mediatek.inc (10.16.4.142) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 18 Sep 2023 15:25:45 +0800
-From:   Haibo Li <haibo.li@mediatek.com>
-To:     <andreyknvl@gmail.com>
-CC:     <akpm@linux-foundation.org>,
-        <angelogioacchino.delregno@collabora.com>, <dvyukov@google.com>,
-        <glider@google.com>, <haibo.li@mediatek.com>, <jannh@google.com>,
-        <kasan-dev@googlegroups.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>,
-        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
-        <ryabinin.a.a@gmail.com>, <vincenzo.frascino@arm.com>,
-        <xiaoming.yu@mediatek.com>
-Subject: Re: [PATCH] kasan:fix access invalid shadow address when input is illegal
-Date:   Mon, 18 Sep 2023 15:25:45 +0800
-Message-ID: <20230918072545.87653-1-haibo.li@mediatek.com>
-X-Mailer: git-send-email 2.34.3
-In-Reply-To: <CA+fCnZfuaovc4fk6Z+p1haLk7iemgtpF522sej3oWYARhBYYUQ@mail.gmail.com>
-References: <CA+fCnZfuaovc4fk6Z+p1haLk7iemgtpF522sej3oWYARhBYYUQ@mail.gmail.com>
+        Mon, 18 Sep 2023 03:26:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF66912A;
+        Mon, 18 Sep 2023 00:25:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 94A24219A6;
+        Mon, 18 Sep 2023 07:25:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695021953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=vKwk4cXuwZ+0Bj7BBjjpxp8mqSTp942qI/Lfi+RSh3Y=;
+        b=aNlUXcE+6l0DLWDufFGtgMi7BIIZnO3kmUK+2v7ouknq21uUpcyryHhCEKt99Hhp3bQSrG
+        7309HJpXBTgRzlhPhyXwx8Iich7D5P9+FFCoybmmbhOPIrW/Hno4ZO08/MB8rTpwhGPJpC
+        /MpMJMzC0cWCAOW33YgogMoyYWky+R8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695021953;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=vKwk4cXuwZ+0Bj7BBjjpxp8mqSTp942qI/Lfi+RSh3Y=;
+        b=nhxcWdZle4mmQcc6UHeCykb/zwbMht8WdkBl7EtaEAIfT4PYOkVmJZiRug4R5Whb6DCLpj
+        aEhyWMrD4SMz6ODw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F72813480;
+        Mon, 18 Sep 2023 07:25:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rCOKDoH7B2VlUwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 18 Sep 2023 07:25:53 +0000
+Message-ID: <971f1e86-bcc4-4462-81c7-571a05748b46@suse.de>
+Date:   Mon, 18 Sep 2023 09:25:52 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helge Deller <deller@gmx.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Jim Cromie <jim.cromie@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+References: <20230911205338.2385278-1-arnd@kernel.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20230911205338.2385278-1-arnd@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------e0LwbSQiUoDLxKh4O0uZGxrf"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Sep 15, 2023 at 4:46 AM 'Haibo Li' via kasan-dev
-> <kasan-dev@googlegroups.com> wrote:
-> >
-> > The patch checks each shadow address,so it introduces extra overhead.
->
-> Ack. Could still be fine, depends on the overhead.
->
-I do a simple test by reading memory.
-Read 4096 memory by loop and the reading unit is 8 bytes.
-__hwasan_load8_noabort is called 512(4096/8) times.
-Measure the time of memory read.
-Here is the result on ARM CA7X(repeat 100 times):
----------------min-------max-----avg----
-before patch | 77.3ms | 80.6ms | 79.2ms|
-after  patch | 77.2ms | 80.7ms | 79.2ms|
-----------------------------------------
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------e0LwbSQiUoDLxKh4O0uZGxrf
+Content-Type: multipart/mixed; boundary="------------HBdjsAFyOEkIfku9Yw1VdQhm";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Arnd Bergmann <arnd@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Helge Deller <deller@gmx.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Dave Airlie <airlied@redhat.com>,
+ Javier Martinez Canillas <javierm@redhat.com>,
+ Jim Cromie <jim.cromie@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Arthur Grillo <arthurgrillo@riseup.net>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org
+Message-ID: <971f1e86-bcc4-4462-81c7-571a05748b46@suse.de>
+Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
+References: <20230911205338.2385278-1-arnd@kernel.org>
+In-Reply-To: <20230911205338.2385278-1-arnd@kernel.org>
 
-There is no obvious drop in this scenario.
-It may differ in different arch.
-just for information if you are intrested in it.
+--------------HBdjsAFyOEkIfku9Yw1VdQhm
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> But if the message printed by kasan_non_canonical_hook is good enough
-> for your use case, I would rather stick to that.
+SGkNCg0KQW0gMTEuMDkuMjMgdW0gMjI6NTIgc2NocmllYiBBcm5kIEJlcmdtYW5uOg0KPiBG
+cm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KPiANCj4gQXMgYSByZXN1bHQg
+b2YgdGhlIHJlY2VudCBLY29uZmlnIHJld29ya3MsIHRoZSBkZWZhdWx0IHNldHRpbmdzIGZv
+ciB0aGUNCj4gZnJhbWVidWZmZXIgaW50ZXJmYWNlcyBjaGFuZ2VkIGluIHVuZXhwZWN0ZWQg
+d2F5czoNCj4gDQo+IENvbmZpZ3VyYXRpb25zIHRoYXQgbGVhdmUgQ09ORklHX0ZCIGRpc2Fi
+bGVkIGJ1dCB1c2UgRFJNIG5vdyBnZXQNCj4gRFJNX0ZCREVWX0VNVUxBVElPTiBieSBkZWZh
+dWx0LiBUaGlzIGFsc28gdHVybnMgb24gdGhlIGRlcHJlY2F0ZWQgL2Rldi9mYg0KPiBkZXZp
+Y2Ugbm9kZXMgZm9yIG1hY2hpbmVzIHRoYXQgZG9uJ3QgYWN0dWFsbHkgd2FudCBpdC4NCj4g
+DQo+IEluIHR1cm4sIGNvbmZpZ3VyYXRpb25zIHRoYXQgcHJldmlvdXNseSBoYWQgRFJNX0ZC
+REVWX0VNVUxBVElPTiBlbmFibGVkDQo+IG5vdyBvbmx5IGdldCB0aGUgL2Rldi9mYiBmcm9u
+dC1lbmQgYnV0IG5vdCB0aGUgbW9yZSB1c2VmdWwgZnJhbWVidWZmZXINCj4gY29uc29sZSwg
+d2hpY2ggaXMgbm90IHNlbGVjdGVkIGFueSBtb3JlLg0KPiANCj4gV2UgaGFkIHByZXZpb3Vz
+bHkgZGVjaWRlZCB0aGF0IGFueSBjb21iaW5hdGlvbiBvZiB0aGUgdGhyZWUgZnJvbnRlbmRz
+DQo+IChGQl9ERVZJQ0UsIEZSQU1FQlVGRkVSX0NPTlNPTEUgYW5kIExPR08pIHNob3VsZCBi
+ZSBzZWxlY3RhYmxlLCBidXQgdGhlDQo+IG5ldyBkZWZhdWx0IHNldHRpbmdzIG1lYW4gdGhh
+dCBhIGxvdCBvZiBkZWZjb25maWcgZmlsZXMgd291bGQgaGF2ZSB0bw0KPiBnZXQgYWRhcHRl
+ZC4NCj4gDQo+IENoYW5nZSB0aGUgZGVmYXVsdHMgYmFjayB0byB3aGF0IHRoZXkgd2VyZSBp
+biBMaW51eCA2LjU6DQo+IA0KPiAgIC0gTGVhdmUgRFJNX0ZCREVWX0VNVUxBVElPTiB0dXJu
+ZWQgb2ZmIHVubGVzcyBDT05GSUdfRkINCj4gICAgIGlzIGVuYWJsZWQuIFByZXZpb3VzbHkg
+dGhpcyB3YXMgYSBoYXJkIGRlcGVuZGVuY3kgYnV0IG5vdyB0aGUgdHdvIGFyZQ0KPiAgICAg
+aW5kZXBlbmRlbnQuIEhvd2V2ZXIsIGNvbmZpZ3VyYXRpb25zIHRoYXQgZW5hYmxlIENPTkZJ
+R19GQiBwcm9iYWJseQ0KPiAgICAgYWxzbyB3YW50IHRvIGtlZXAgdGhlIGVtdWxhdGlvbiBm
+b3IgRFJNLCB3aGlsZSB0aG9zZSB3aXRob3V0IEZCDQo+ICAgICBwcmVzdW1hYmx5IGRpZCB0
+aGF0IGludGVudGlvbmFsbHkgaW4gdGhlIHBhc3QuDQo+IA0KPiAgIC0gTGVhdmUgRkJfREVW
+SUNFIHR1cm5lZCBvZmYgZm9yIEZCPW4uIEZvbGxvd2luZyB0aGUgc2FtZQ0KPiAgICAgbG9n
+aWMsIHRoZSBkZXByZWNhdGVkIG9wdGlvbiBzaG91bGQgbm90IGF1dG9tYXRpY2FsbHkgZ2V0
+IGVuYWJsZWQNCj4gICAgIGhlcmUsIG1vc3QgdXNlcnMgdGhhdCBoYWQgRkIgdHVybmVkIG9m
+ZiBpbiB0aGUgcGFzdCBkbyBub3Qgd2FudCBpdCwNCj4gICAgIGV2ZW4gaWYgdGhleSB3YW50
+IHRoZSBjb25zb2xlDQo+IA0KPiAgIC0gVHVybiB0aGUgRlJBTUVCVUZGRVJfQ09OU09MRSBv
+cHRpb24gb24gaWYNCj4gICAgIERSTV9GQkRFVl9FTVVMQVRJT04gaXMgc2V0IHRvIGF2b2lk
+IGhhdmluZyB0byBjaGFuZ2UgZGVmY29uZmlnDQo+ICAgICBmaWxlcyB0aGF0IHJlbGllZCBv
+biBpdCBiZWluZyBzZWxlY3RlZCB1bmNvbmRpdGlvbmFsbHkgaW4gdGhlIHBhc3QuDQo+ICAg
+ICBUaGlzIGFsc28gbWFrZXMgc2Vuc2Ugc2luY2UgYm90aCBMT0dPIGFuZCBGQl9ERVZJQ0Ug
+YXJlIG5vdyBkaXNhYmxlZA0KPiAgICAgYnkgZGVmYXVsdCBmb3IgYnVpbGRzIHdpdGhvdXQg
+Q09ORklHX0ZCLCBidXQgRFJNX0ZCREVWX0VNVUxBVElPTg0KPiAgICAgd291bGQgbWFrZSBu
+byBzZW5zZSBpZiBhbGwgdGhyZWUgYXJlIGRpc2FibGVkLg0KPiANCj4gRml4ZXM6IGE1YWUz
+MzFlZGIwMmIgKCJkcm06IERyb3Agc2VsZWN0IEZSQU1FQlVGRkVSX0NPTlNPTEUgZm9yIERS
+TV9GQkRFVl9FTVVMQVRJT04iKQ0KPiBGaXhlczogNzAxZDIwNTRmYTMxNyAoImZiZGV2OiBN
+YWtlIHN1cHBvcnQgZm9yIHVzZXJzcGFjZSBpbnRlcmZhY2VzIGNvbmZpZ3VyYWJsZSIpDQo+
+IFJlcG9ydGVkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3Jn
+Pg0KPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KDQpB
+Y2tlZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQoNCj4g
+LS0tDQo+ICAgZHJpdmVycy9ncHUvZHJtL0tjb25maWcgICAgICAgICAgfCAyICstDQo+ICAg
+ZHJpdmVycy92aWRlby9jb25zb2xlL0tjb25maWcgICAgfCAxICsNCj4gICBkcml2ZXJzL3Zp
+ZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZyB8IDIgKy0NCj4gICAzIGZpbGVzIGNoYW5nZWQsIDMg
+aW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL2dwdS9kcm0vS2NvbmZpZyBiL2RyaXZlcnMvZ3B1L2RybS9LY29uZmlnDQo+IGluZGV4
+IDdkZjhiNjg3NWIxMjEuLjE0NGE5YTFkMzFjZWEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
+Z3B1L2RybS9LY29uZmlnDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9LY29uZmlnDQo+IEBA
+IC0xMzUsNyArMTM1LDcgQEAgY29uZmlnIERSTV9GQkRFVl9FTVVMQVRJT04NCj4gICAJYm9v
+bCAiRW5hYmxlIGxlZ2FjeSBmYmRldiBzdXBwb3J0IGZvciB5b3VyIG1vZGVzZXR0aW5nIGRy
+aXZlciINCj4gICAJZGVwZW5kcyBvbiBEUk0NCj4gICAJc2VsZWN0IEZSQU1FQlVGRkVSX0NP
+TlNPTEVfREVURUNUX1BSSU1BUlkgaWYgRlJBTUVCVUZGRVJfQ09OU09MRQ0KPiAtCWRlZmF1
+bHQgeQ0KPiArCWRlZmF1bHQgRkINCj4gICAJaGVscA0KPiAgIAkgIENob29zZSB0aGlzIG9w
+dGlvbiBpZiB5b3UgaGF2ZSBhIG5lZWQgZm9yIHRoZSBsZWdhY3kgZmJkZXYNCj4gICAJICBz
+dXBwb3J0LiBOb3RlIHRoYXQgdGhpcyBzdXBwb3J0IGFsc28gcHJvdmlkZXMgdGhlIGxpbnV4
+IGNvbnNvbGUNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlkZW8vY29uc29sZS9LY29uZmln
+IGIvZHJpdmVycy92aWRlby9jb25zb2xlL0tjb25maWcNCj4gaW5kZXggYjU3NWNmNTQxNzRh
+Zi4uODNjMmQ3MzI5Y2E1OCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy92aWRlby9jb25zb2xl
+L0tjb25maWcNCj4gKysrIGIvZHJpdmVycy92aWRlby9jb25zb2xlL0tjb25maWcNCj4gQEAg
+LTc0LDYgKzc0LDcgQEAgY29uZmlnIERVTU1ZX0NPTlNPTEVfUk9XUw0KPiAgIGNvbmZpZyBG
+UkFNRUJVRkZFUl9DT05TT0xFDQo+ICAgCWJvb2wgIkZyYW1lYnVmZmVyIENvbnNvbGUgc3Vw
+cG9ydCINCj4gICAJZGVwZW5kcyBvbiBGQl9DT1JFICYmICFVTUwNCj4gKwlkZWZhdWx0IERS
+TV9GQkRFVl9FTVVMQVRJT04NCj4gICAJc2VsZWN0IFZUX0hXX0NPTlNPTEVfQklORElORw0K
+PiAgIAlzZWxlY3QgQ1JDMzINCj4gICAJc2VsZWN0IEZPTlRfU1VQUE9SVA0KPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy92aWRlby9mYmRldi9jb3JlL0tjb25maWcgYi9kcml2ZXJzL3ZpZGVv
+L2ZiZGV2L2NvcmUvS2NvbmZpZw0KPiBpbmRleCAxMTRjYjhhYTZjOGZkLi44MDRjMmJlYzli
+NDNjIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZw0K
+PiArKysgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZw0KPiBAQCAtMjgsNyAr
+MjgsNyBAQCBjb25maWcgRklSTVdBUkVfRURJRA0KPiAgIGNvbmZpZyBGQl9ERVZJQ0UNCj4g
+ICAJYm9vbCAiUHJvdmlkZSBsZWdhY3kgL2Rldi9mYiogZGV2aWNlIg0KPiAgIAlkZXBlbmRz
+IG9uIEZCX0NPUkUNCj4gLQlkZWZhdWx0IHkNCj4gKwlkZWZhdWx0IEZCDQo+ICAgCWhlbHAN
+Cj4gICAJICBTYXkgWSBoZXJlIGlmIHlvdSB3YW50IHRoZSBsZWdhY3kgL2Rldi9mYiogZGV2
+aWNlIGZpbGUgYW5kDQo+ICAgCSAgaW50ZXJmYWNlcyB3aXRoaW4gc3lzZnMgYW5jIHByb2Nm
+cy4gSXQgaXMgb25seSByZXF1aXJlZCBpZiB5b3UNCg0KLS0gDQpUaG9tYXMgWmltbWVybWFu
+bg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMg
+R2VybWFueSBHbWJIDQpGcmFua2Vuc3RyYXNzZSAxNDYsIDkwNDYxIE51ZXJuYmVyZywgR2Vy
+bWFueQ0KR0Y6IEl2byBUb3RldiwgQW5kcmV3IE15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJv
+dWRpZW4gTW9lcm1hbg0KSFJCIDM2ODA5IChBRyBOdWVybmJlcmcpDQo=
+
+--------------HBdjsAFyOEkIfku9Yw1VdQhm--
+
+--------------e0LwbSQiUoDLxKh4O0uZGxrf
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUH+4AFAwAAAAAACgkQlh/E3EQov+Bw
+cg/8DWmNIhrNugq7VIusUlgLb6hmXZrVDMNb5EAhIQ3zPoRvX5GDYQNioIelPIvlmI/4ziemLPjb
+MQt5GI8YJhslppBtw4JCxIh+YJfj1rsE0ihEh331Z9uPfSXfAx9S30MTOjReq1BpliuwsVyKvdz/
+yJOrciEJ2ulB/bKsyA+zs7YKuftt/rQxuFg6iNt0kX3sppFvM7o9bO82cG0+CvnZTRGA0slqI+t1
+cAdMAicf/CcMvPNXpz4/xpusB0jb3cbVnsK1mQb8+aJ2Ae1EiV7w1Brpw37NSBuOw0WL9qp0hx73
+vxijfAqaEmKSXfgEvQJ36b5SbIVP0vtKLG75wm+j8cv9WCiOA82WXw5YOJpd2Hyebe0Dl+RP1FQ5
+hGviM1jZTM4cSXmMPFSt5kNItlaK3WLzl7cmJDV1nEJ3vhcRSrgGiLcsG5xxhctdziPhaWfAQmYr
+g09UbDuYhblPe0WttEL2ReXv4IgRCZpmro5AlvDv4VKj5zToI541zF9NBWnrOgtPPi9YxMSQt0cK
+N3wz9G72qxDNKu+7t2pE0u9XMRGtB/IAUQvmRfEXi+MNMbaR5PbpvxxYgVEzr/yeXIC5DGfnfM4c
+t5gjkkzFYXKKcuBwqyrbGhJbyu0tSJ0TmjplCyTE/BZ9jmHza/lETjSk20rRAFmXpLENvaGKuNfL
+ST4=
+=tLSR
+-----END PGP SIGNATURE-----
+
+--------------e0LwbSQiUoDLxKh4O0uZGxrf--
