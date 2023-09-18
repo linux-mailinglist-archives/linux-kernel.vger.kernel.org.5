@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EDC7A5473
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2147A5488
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjIRUwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
+        id S229999AbjIRUzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjIRUwN (ORCPT
+        with ESMTP id S229554AbjIRUzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:52:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711368E;
-        Mon, 18 Sep 2023 13:52:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F46C433C8;
-        Mon, 18 Sep 2023 20:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695070327;
-        bh=FM/e+9HNsj6WL+QzLvyQRkXOh67nb09Zq87aiKOG1q0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pH8BCdYF/Yflrh8hB2gbeCZNc9siAwwWX8IncR/7W/YYbZOThKjjSk2Pi/6Oywguy
-         j3Ep6STTZJf8R4pKFk6e3eRtd0+e5sjd/3fFDiaLWn9z7m5D6xrBW6DObkA8AinTqr
-         pZ5A5F0FxCfrslRtZp2xTE+2jTFHTpxEtzwR5V+iUjqLyzOek2fRjP4GQ9NVKvvMdw
-         bJmry0dl4nrYdz3L9uyXwGyu+X/RhcGQpUbQo2gOs2SnG4/nauXruHJKjhIz+i7giO
-         uVsjBkom1+UtO5bMCp8AXrsVNMWrlZn0fFPNIIuwDCSe07sPepkZVWdrhvAGat6xoR
-         z5LRiZ5hD8v5g==
-Date:   Mon, 18 Sep 2023 13:52:06 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the vfs-brauner tree
-Message-ID: <20230918205206.GA348037@frogsfrogsfrogs>
-References: <20230915093953.310503ee@canb.auug.org.au>
+        Mon, 18 Sep 2023 16:55:53 -0400
+Received: from out-214.mta1.migadu.com (out-214.mta1.migadu.com [IPv6:2001:41d0:203:375::d6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D6C8E
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:55:46 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 06:52:12 +1000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1695070544;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tD3Att9ZhAZZWzcTqs+Nca0qUc5//9Lj3PJessBJC+g=;
+        b=HKE82hVocAGjDR2kt68+KpmpTheJCyztaklVxUtX3SHGrx4HzRMVdI3iPeoGg7+PBgoOtF
+        vlQ+3OFyeZDExfQTm3HKsoRW4arlQHEpJUve7lcbTSsxGEa5ukeimCgEmJZzP6VPK4hBKN
+        v70auWxJIRvlL1Rn9L1J1Rq9PtXWkEBcHlG/PRLVsFdQGeNYM8ZwYaFwos2kn+ZyjjO3oN
+        XCgCxh01FPxxlZJi8G4jQRjO0UzWz82/Vnvbt9VVXLPIf4Dd9RQeW1hupUVlcT79PZbwAF
+        igylu3P62bukh89pQq4WaORPfsCTchPYIXPItXaqAxSo+ngZnaKKgzUOacPP1g==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   John Watts <contact@jookia.org>
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 3/9] drm/panel: nv3052c: Sleep for 150ms after
+ reset
+Message-ID: <ZQi4fFZ0VnsUIiXO@titan>
+References: <20230918125853.2249187-1-contact@jookia.org>
+ <20230918125853.2249187-4-contact@jookia.org>
+ <7fc1ca68-ca7c-59b2-0b70-27bc34d83cee@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230915093953.310503ee@canb.auug.org.au>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <7fc1ca68-ca7c-59b2-0b70-27bc34d83cee@quicinc.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 09:39:53AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Sep 18, 2023 at 01:19:03PM -0700, Jessica Zhang wrote:
+> Hi John,
 > 
-> The following commit is also in the iomap tree as a different commit
-> (but the same patch):
+> Just wondering, is there some context to this change? I.e., was this made to
+> fix a specific issue?
 > 
->   de5b0b257ee3 ("iomap: handle error conditions more gracefully in iomap_to_bh")
+> This seems like a pretty significant increase in wait time so, if it's not a
+> fix, I'm not sure if this would be an improvement on the current behavior.
 > 
-> This is commit
+> Thanks,
 > 
->   4aa8cdd5e523 ("iomap: handle error conditions more gracefully in iomap_to_bh")
-> 
-> in the iomap tree.
+> Jessica Zhang
 
-Christian, do you want to push this to Linus instead of me?  I've a
-couple more fixes that I'm about to send out to fsdevel and could just
-roll all the iomap stuff into a single branch... but if you were about
-to this to Linus I don't mind letting that happen.
+Hi Jessica,
 
---D
+Thank you for the feedback.
 
-> -- 
-> Cheers,
-> Stephen Rothwell
+This patch here is required by the data sheet if the screen was already running
+and was reset. This is necessary if for example the bootloader set up and had
+the screen running. However I have not tested this, it's possible the specific
+panels have shorter tolerances for resets. This is purely precautionary at
+this stage based on what the data sheet says.
 
+That said I will be investigating this specific use case with this panel over
+the next few months. I am okay separating out this patch until I have proof it's
+needed for my particular display. I don't know anything about the ltk display.
 
+The second sleep patch can probably be omitted as I don't think the panel being
+prepared then unprepared in rapid succession is a realistic situation, but I 
+figured I might as well propose it to see if it's the right thing to do.
+
+Thanks for your time and review,
+John.
