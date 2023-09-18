@@ -2,84 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5D37A50B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98367A50BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbjIRRNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37270 "EHLO
+        id S230266AbjIRRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231432AbjIRRM6 (ORCPT
+        with ESMTP id S231296AbjIRRNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:12:58 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08140B6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:12:49 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AB85640E00F4;
-        Mon, 18 Sep 2023 17:12:47 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id S_UsqsTXJ-MG; Mon, 18 Sep 2023 17:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695057165; bh=YI3I1QxOIrQjiyjqRgir31veHbJdJ0FWupmJqtauMmw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T0LE1gqORf/+0ZhdGOFNWLEf79QlZWiyTyBzyNZn2zVHfBgflX0ZLiiSyRPnjvq6e
-         WGYzdXMDN1FJYecevJEaqttwCdVMiA5zy7lNK/jeK9W1e6bumvKnsUFPbRhZ2mFlDe
-         L2XeGG2RiapiCEPHMlqatxocIopAhV2tBAiXMkm8gBoRqXq+8IYJzhb4d+Z7nGF+Lx
-         MZZT11R/85n5ogmiGQE6vSzFqJLxb5R21vocJT/acxV9hxwuOfXiBntsJ2DC0GoCBU
-         opURzWFiN9q9lvE86zUSHNywLhGnQyl+1JIg1uQMdTKnLdS1s+5sMqjUxAaWVj9Rsw
-         M6tJp+bT0X1U8c7WK5em0qnO9/tatFcRbAWwegkRfQo/nbphgyKxy1s1jXU+EUtTLB
-         5TZEoST8XtpkDcYdPNPzZ2IZ/ttf34aVG1tpyeJClVdikGET5y+DZoBt5R/Q1oDeYM
-         zARuG98s5JYAHHjslFXTf19Evcbr6r4veqc7rbwjD6bU9Aa3p/E49l16m8q98vXkH8
-         YzgQkfs85xlXzraC6R5x+fnYRfJc51uKm/MZQPPpUMe0NjCXlEmscirUjtoXWofJUB
-         GPzxV7T+KPOEeBFZEaqmAHlUr76UeZGQl82g9GphZW2vfc36v8yvybIuS3JOHU+tcV
-         ny84ftHSDrQiHiB3q49BnefE=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD62C40E01A3;
-        Mon, 18 Sep 2023 17:12:39 +0000 (UTC)
-Date:   Mon, 18 Sep 2023 19:12:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 02/30] x86/boot/32: Disable stackprotector and tracing
- for mk_early_pgtbl_32()
-Message-ID: <20230918171238.GAZQiFBkcW5W6odCCg@fat_crate.local>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065500.886599632@linutronix.de>
+        Mon, 18 Sep 2023 13:13:40 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5EC83
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:13:35 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4047c6ec21dso4425e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:13:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695057213; x=1695662013; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8NCRoQtasHBhaxbBJof29twbnK3J3FpNXqEPensTrQU=;
+        b=k+xVY/UYy34DW9Sij4WkPswS8rzDpog6MBsUzSw+XHVXVDUQ4ShslsRo3NJ1owRpYU
+         eA1EcvRvvr+rj/yCy93Zs+rmnI3BzXxb0GEHUmgDOSMd8n3tTXvGOdpF6xEIugIzlCMV
+         FFCEpZp8dHFCliICJKDp7RmWRNPJ6SWke7WGY8EXu9q/sV/lsBqtHQLB5y2xRp6Vb83M
+         kTzV4O1im60vHLHICOnak8HTMrp0PhOeOBJrKoR+Ufm4knAOkk7D6a3hbMNW7YxWxy+C
+         q1XNixjC3/XlEOaKtPXiiMGhSlTXrBtqEZB+6RZMWUMZ4gi9g2NLUJuxRmNbLEeLGzfL
+         V1fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695057213; x=1695662013;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8NCRoQtasHBhaxbBJof29twbnK3J3FpNXqEPensTrQU=;
+        b=CF4REPmT6Vpo+yCez0qK00eJunx6M+d3xicSub3dUxhuGFcYthM3R5ExRvM9TSkfWS
+         mpfEP/b8hYsGccP7XPvE4nKoG6BxSaRZbCGYOYeDvpusP92K8xdeyhkddgHkN0dkAHnM
+         2b4r7dk2NC73QLGVnZ38Vy2mhWqWOy6mFf9pygMubA2T11xqnHgglDjQ7K/s0SphKLn4
+         8ZiND/7d61ZwHSwDjWZUClN6/rlK4aJbA6ZSAt9jkdk8+zeGxWhKSYU/v1c4Lo0ryxK1
+         r8asAyPoHYfRiepz+Wng4/bwlQGTuKaVGor0KCWDWsUyh3nKfm9vWMRyBGpVzlPVmoKp
+         KaYQ==
+X-Gm-Message-State: AOJu0YzCeYN8dFdFO1VJGGOztHZ5F6omjhalR3398nUTNg/4xtQpWXNx
+        cXEMPzD0WUh7ASNby65qbarehkny/6X/dzGV0Kj0+czBwdVXpTHgDoKLDw==
+X-Google-Smtp-Source: AGHT+IEkRFchjpZqPNvI+IkS94xt8vvX5NVo36F/WMbxfNTZHxp7itGvCJT+AIT8wUnE3U2ITQL++aALeT4I/3XmYoI=
+X-Received: by 2002:a05:600c:3acd:b0:400:c6de:6a20 with SMTP id
+ d13-20020a05600c3acd00b00400c6de6a20mr181501wms.3.1695057213310; Mon, 18 Sep
+ 2023 10:13:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230912065500.886599632@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 18 Sep 2023 19:12:56 +0200
+Message-ID: <CAG48ez0YBOUGnj+N_MBp2WCvp0BLk1o7n6uSH2nrj1z-qgf+0A@mail.gmail.com>
+Subject: KVM nonblocking MMU notifier with KVM_GUEST_USES_PFN looks racy [but
+ is currently unused]
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        David Woodhouse <dwmw@amazon.co.uk>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:57:46AM +0200, Thomas Gleixner wrote:
-> Remove function tracing from the whole source file as there is no way to
-> trace this at all, but in case of CONFIG_DYNAMIC_FTRACE=n
-> mk_early_pgtbl_32() would access global function tracer variables in
-> physcial address mode which again might work by chance.
+Hi!
 
-Unknown word [physcial] in commit message.
-Suggestions: ['physical'
+I haven't tested this and might be missing something, but I think that
+the MMU notifier for KVM_GUEST_USES_PFN pfncache is currently a bit
+broken. Except that nothing seems to actually use KVM_GUEST_USES_PFN,
+so currently it's not actually a problem?
 
--- 
-Regards/Gruss,
-    Boris.
+gfn_to_pfn_cache_invalidate_start() contains the following:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+    /*
+     * If the OOM reaper is active, then all vCPUs should have
+     * been stopped already, so perform the request without
+     * KVM_REQUEST_WAIT and be sad if any needed to be IPI'd.
+     */
+    if (!may_block)
+      req &= ~KVM_REQUEST_WAIT;
+
+    called = kvm_make_vcpus_request_mask(kvm, req, vcpu_bitmap);
+
+    WARN_ON_ONCE(called && !may_block);
+
+The comment explains that we rely on OOM reaping only happening when a
+process is sufficiently far into being stopped that it is no longer
+executing vCPUs, but from what I can tell, that's not what the caller
+actually guarantees. Especially on the path from the
+process_mrelease() syscall (if we're dealing with a process whose mm
+is not shared with other processes), we only check that the target
+process has SIGNAL_GROUP_EXIT set. From what I can tell, that does
+imply that delivery of a fatal signal has begun, but doesn't even
+imply that the CPU running the target process has been IPI'd, let
+alone that the target process has died or anything like that.
+
+But I also don't see any reason why
+gfn_to_pfn_cache_invalidate_start() actually has to do anything
+special for non-blocking invalidation - from what I can tell, nothing
+in there can block, basically everything runs with preemption
+disabled. The first half of the function holds a spinlock; the second
+half is basically a call to kvm_make_vcpus_request_mask(), which
+disables preemption across the whole function with
+get_cpu()/put_cpu(). A synchronous IPI spins until the IPI has been
+acked but that doesn't count as sleeping. (And the rest of the OOM
+reaping code will do stuff like synchronous IPIs for its TLB flushes,
+too.)
+
+So maybe you/I can just rip out the special-casing of nonblocking mode
+from gfn_to_pfn_cache_invalidate_start() to fix this?
+
+Relevant call paths for the theoretical race:
+
+sys_kill
+  prepare_kill_siginfo
+  kill_something_info
+    kill_proc_info
+      rcu_read_lock
+      kill_pid_info
+        rcu_read_lock
+        group_send_sig_info [PIDTYPE_TGID]
+          do_send_sig_info
+            lock_task_sighand [task->sighand->siglock]
+            send_signal_locked
+              __send_signal_locked
+                prepare_signal
+                legacy_queue
+                signalfd_notify
+                sigaddset(&pending->signal, sig)
+                complete_signal
+                  signal->flags = SIGNAL_GROUP_EXIT [mrelease will
+work starting here]
+                  for each thread:
+                    sigaddset(&t->pending.signal, SIGKILL)
+                    signal_wake_up [IPI happens here]
+            unlock_task_sighand [task->sighand->siglock]
+        rcu_read_unlock
+      rcu_read_unlock
+
+sys_process_mrelease
+  find_lock_task_mm
+    spin_lock(&p->alloc_lock)
+  task_will_free_mem
+    SIGNAL_GROUP_EXIT suffices
+    PF_EXITING suffices if singlethreaded?
+  task_unlock
+  mmap_read_lock_killable
+  __oom_reap_task_mm
+    for each private non-PFNMAP/MIXED VMA:
+      tlb_gather_mmu
+      mmu_notifier_invalidate_range_start_nonblock
+        __mmu_notifier_invalidate_range_start
+          mn_hlist_invalidate_range_start
+            kvm_mmu_notifier_invalidate_range_start [as
+ops->invalidate_range_start]
+              gfn_to_pfn_cache_invalidate_start
+                [loop over gfn_to_pfn_cache instances]
+                  if overlap and KVM_GUEST_USES_PFN [UNUSED]: evict_vcpus=true
+                [if evict_vcpus]
+                  kvm_make_vcpus_request_mask
+              __kvm_handle_hva_range
+      unmap_page_range
+      mmu_notifier_invalidate_range_end
+      tlb_finish_mmu
+  mmap_read_unlock
