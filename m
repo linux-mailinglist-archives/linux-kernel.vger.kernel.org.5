@@ -2,55 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D481E7A401B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5293D7A4024
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239532AbjIRElm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
+        id S236303AbjIRErC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 00:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239451AbjIRElP (ORCPT
+        with ESMTP id S233195AbjIREqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:41:15 -0400
-Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADFFC4
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:41:09 -0700 (PDT)
-Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-572b583c7d3so6037024eaf.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:41:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695012068; x=1695616868;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Njj1cFpFl6P5XczNJtRHj5unyeppmn930r6gY5zCeN0=;
-        b=SVie0RtBguiUZT7dMimoIJR5KpHXj30ncAEdWUEYjJu4nFh0/am+/Rvwk2Pq7qiQZv
-         5vhmaCCaA/SvXrkvKEqS/NUYiFrftNOD6NKUSP5gXu0df5wZjg1WJ0sqf0zm8+7gzRX4
-         v1i7ckX1QPh4L3IW/4l8+SCN4xm77NnLHZ4Pp+StheeDtn4VLXIV9RNtb84YWjIhPZ5H
-         7vpxjvOrj/bDOX2nNmNmOX1MaPKOZUjCmDsKXqUYeB7vmfHMZedpx3d9iPQ391Zsv+F8
-         LZ6H0B4AGkwW3fitMXBzMe+M9dz3HPCTvR3Felf0yXFfW2F/QoS775j0x5Sq6VVsScMQ
-         3JlQ==
-X-Gm-Message-State: AOJu0Yxn9A0asnXoDr6oKhxUrlI3QHjKLHHwTsMcwyxgHzxWiPg96WOI
-        RxFSTWujpiKemLcr9Dk5ICoBkK9fIQzYZG4fjCsKH4uzHrJD
-X-Google-Smtp-Source: AGHT+IH36LNEUnGMAeMXmlQNVH5WxS7Mii7fn4raTyMmtgevC5fZjJjZojnKRU5aBVH1N1s8pW7OLTunfCts9ukRd1orioKhlr0A
+        Mon, 18 Sep 2023 00:46:33 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91B0EA
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:46:27 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CF4E4C85;
+        Mon, 18 Sep 2023 06:44:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1695012288;
+        bh=y0RF+BI8BL3G3i24tJIXIt8o19HAYlgYB7kLpnCevas=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=aKCTNR/VKWPEgbE+MxaMJhOiOj3ThpZKcNt7+fQlDHZnMiCs+k0EOpApe/NAw953j
+         8LN5T5w4TCZubGecmlVusvIP+ekW2IHeIcoHSE9tRrCtwkp/P1WqrYc78vyPdXIq+7
+         CefCl9hDHzzjGPXyHIK5y071Utl9XZc+VvdnOyxM=
+Message-ID: <f521cd35-daaa-94e8-2957-f0bf1c10ee0b@ideasonboard.com>
+Date:   Mon, 18 Sep 2023 07:46:19 +0300
 MIME-Version: 1.0
-X-Received: by 2002:a4a:4fd7:0:b0:571:1df7:c13f with SMTP id
- c206-20020a4a4fd7000000b005711df7c13fmr3109792oob.1.1695012068423; Sun, 17
- Sep 2023 21:41:08 -0700 (PDT)
-Date:   Sun, 17 Sep 2023 21:41:08 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003a7ffb06059ac0dd@google.com>
-Subject: [syzbot] [fs?] [mm?] WARNING in page_copy_sane
-From:   syzbot <syzbot+c225dea486da4d5592bd@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        llvm@lists.linux.dev, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        sidhartha.kumar@oracle.com, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 00/12] drm/bridge: tc358768: Fixes and timings
+ improvements
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>
+References: <20230906-tc358768-v4-0-31725f008a50@ideasonboard.com>
+Content-Language: en-US
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <20230906-tc358768-v4-0-31725f008a50@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,106 +64,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi bridge maintainers!
 
-syzbot found the following issue on:
+On 06/09/2023 09:50, Tomi Valkeinen wrote:
+> This series contains various fixes and cleanups for TC358768. The target
+> of this work is to get TC358768 working on Toradex's AM62 based board,
+> which has the following display pipeline:
+> 
+> AM62 DPI -> TC358768 -> LT8912B -> HDMI connector
+> 
+> The main thing the series does is to improve the DSI HSW, HFP and VSDly
+> calculations.
 
-HEAD commit:    98897dc735cf Add linux-next specific files for 20230914
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1548728c680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1502c503717ada5c
-dashboard link: https://syzkaller.appspot.com/bug?extid=c225dea486da4d5592bd
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171fffd8680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17bbbf1c680000
+Any comments on this series?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/00e4c0af5a8a/disk-98897dc7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7b54a00eee56/vmlinux-98897dc7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/100094353b8e/bzImage-98897dc7.xz
+  Tomi
 
-The issue was bisected to:
+>   Tomi
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+> Changes in v4:
+> - Add Tested-by tags
+> - Fix a typo in a comment
+> - Link to v3: https://lore.kernel.org/r/20230822-tc358768-v3-0-c82405dac0c1@ideasonboard.com
+> 
+> Changes in v3:
+> - Add Peter's reviewed-bys
+> - Move "Default to positive h/v syncs" earlier in the series to avoid
+>    regression in the middle of the series
+> - Link to v2: https://lore.kernel.org/r/20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com
+> 
+> Changes in v2:
+> - Add "drm/tegra: rgb: Parameterize V- and H-sync polarities" so that
+>    Tegra can configure the polarities correctly.
+> - Add "drm/bridge: tc358768: Default to positive h/v syncs" as we don't
+>    (necessarily) have the polarities set in the mode.
+> - Drop "drm/bridge: tc358768: Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>    support" as it's not needed for DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>    support.
+> - Link to v1: https://lore.kernel.org/r/20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com
+> 
+> ---
+> Thierry Reding (1):
+>        drm/tegra: rgb: Parameterize V- and H-sync polarities
+> 
+> Tomi Valkeinen (11):
+>        drm/bridge: tc358768: Fix use of uninitialized variable
+>        drm/bridge: tc358768: Default to positive h/v syncs
+>        drm/bridge: tc358768: Fix bit updates
+>        drm/bridge: tc358768: Cleanup PLL calculations
+>        drm/bridge: tc358768: Use struct videomode
+>        drm/bridge: tc358768: Print logical values, not raw register values
+>        drm/bridge: tc358768: Use dev for dbg prints, not priv->dev
+>        drm/bridge: tc358768: Rename dsibclk to hsbyteclk
+>        drm/bridge: tc358768: Clean up clock period code
+>        drm/bridge: tc358768: Fix tc358768_ns_to_cnt()
+>        drm/bridge: tc358768: Attempt to fix DSI horizontal timings
+> 
+>   drivers/gpu/drm/bridge/tc358768.c | 381 ++++++++++++++++++++++++++++----------
+>   drivers/gpu/drm/tegra/rgb.c       |  16 +-
+>   2 files changed, 295 insertions(+), 102 deletions(-)
+> ---
+> base-commit: f45acf7acf75921c0409d452f0165f51a19a74fd
+> change-id: 20230804-tc358768-1b6949ef2e3d
+> 
+> Best regards,
 
-commit 591a2520fbfd6565d9a5c732afa53f62228798e6
-Author: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Date:   Mon Sep 11 21:53:19 2023 +0000
-
-    mm/filemap: remove hugetlb special casing in filemap.c
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15e15464680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17e15464680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13e15464680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c225dea486da4d5592bd@syzkaller.appspotmail.com
-Fixes: 591a2520fbfd ("mm/filemap: remove hugetlb special casing in filemap.c")
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5040 at lib/iov_iter.c:463 page_copy_sane+0xc2/0x2c0 lib/iov_iter.c:463
-Modules linked in:
-CPU: 1 PID: 5040 Comm: syz-executor204 Not tainted 6.6.0-rc1-next-20230914-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:page_copy_sane+0xc2/0x2c0 lib/iov_iter.c:463
-Code: e8 73 db 63 fd 66 90 e8 6c db 63 fd e8 67 db 63 fd 4c 89 ee 48 89 ef e8 6c d6 63 fd 49 39 ed 0f 83 eb 00 00 00 e8 4e db 63 fd <0f> 0b 31 db e8 45 db 63 fd 89 d8 5b 5d 41 5c 41 5d 41 5e 41 5f c3
-RSP: 0018:ffffc90003eefa58 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88807a01d940 RSI: ffffffff84241482 RDI: 0000000000000006
-RBP: 0000000000200000 R08: 0000000000000006 R09: 0000000000201000
-R10: 0000000000200000 R11: 0000000000000000 R12: 0000000000000009
-R13: 0000000000201000 R14: 0000000000000001 R15: ffffea0001fe0000
-FS:  0000555556937380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200001c0 CR3: 000000002911d000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- copy_page_to_iter+0x35/0x180 lib/iov_iter.c:472
- hugetlbfs_read_iter+0x3d7/0xa60 fs/hugetlbfs/inode.c:385
- call_read_iter include/linux/fs.h:1980 [inline]
- do_iter_readv_writev+0x2f2/0x3c0 fs/read_write.c:733
- do_iter_read+0x315/0x870 fs/read_write.c:795
- vfs_readv+0x12d/0x1a0 fs/read_write.c:915
- do_preadv fs/read_write.c:1007 [inline]
- __do_sys_preadv fs/read_write.c:1057 [inline]
- __se_sys_preadv fs/read_write.c:1052 [inline]
- __x64_sys_preadv+0x228/0x300 fs/read_write.c:1052
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f85cc7932e9
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffda50bbbd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000127
-RAX: ffffffffffffffda RBX: 00007ffda50bbdb8 RCX: 00007f85cc7932e9
-RDX: 0000000000000002 RSI: 0000000020000180 RDI: 0000000000000003
-RBP: 00007f85cc806610 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffda50bbda8 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
