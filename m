@@ -2,62 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C03CA7A535C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0F57A552E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 23:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbjIRTwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 15:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55156 "EHLO
+        id S230183AbjIRVmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 17:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjIRTvt (ORCPT
+        with ESMTP id S229643AbjIRVmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 15:51:49 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CB4197
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:51:41 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qiKHC-0003v0-1P; Mon, 18 Sep 2023 21:51:22 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qiKHB-007I9Y-Hh; Mon, 18 Sep 2023 21:51:21 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qiKHB-002mDB-7z; Mon, 18 Sep 2023 21:51:21 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-        Keyur Chudgar <keyur@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 19/19] net: mdio: xgene: Convert to platform remove callback returning void
-Date:   Mon, 18 Sep 2023 21:51:02 +0200
-Message-Id: <20230918195102.1302746-20-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230918195102.1302746-1-u.kleine-koenig@pengutronix.de>
-References: <20230918195102.1302746-1-u.kleine-koenig@pengutronix.de>
+        Mon, 18 Sep 2023 17:42:03 -0400
+X-Greylist: delayed 16802 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Sep 2023 14:41:47 PDT
+Received: from 16.mo584.mail-out.ovh.net (16.mo584.mail-out.ovh.net [188.165.55.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B55590
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 14:41:47 -0700 (PDT)
+Received: from director10.ghost.mail-out.ovh.net (unknown [10.108.20.144])
+        by mo584.mail-out.ovh.net (Postfix) with ESMTP id 7302F257F5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:54:01 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-ql8wh (unknown [10.110.115.91])
+        by director10.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 5C6E31FE3E;
+        Mon, 18 Sep 2023 16:54:00 +0000 (UTC)
+Received: from foxhound.fi ([37.59.142.99])
+        by ghost-submission-6684bf9d7b-ql8wh with ESMTPSA
+        id adfcCaiACGU3agUANQvNOQ
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Mon, 18 Sep 2023 16:54:00 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-99G0037c8a767e-0457-49d5-a574-5fea09979b6f,
+                    AE3083DFCBC61AB1F6EF444133692A68B539629B) smtp.auth=jose.pekkarinen@foxhound.fi
+X-OVh-ClientIp: 91.157.107.67
+From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        skhan@linuxfoundation.org
+Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] drm/atomic-helper: prevent uaf in wait_for_vblanks
+Date:   Mon, 18 Sep 2023 19:53:39 +0300
+Message-Id: <20230918165340.2330-1-jose.pekkarinen@foxhound.fi>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1888; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=+lRpMpTPOqtxkBsIhgMJZMmhqpybzGn51IpnndXHe20=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlCKoVxIes308o6YqvuoA1oRizRNhw4eywBhr9t iUjxlYbnGaJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZQiqFQAKCRCPgPtYfRL+ TmxCB/4/Kgd4hHK5avDIvbMAescmiI8fyE6w2FIEs0ibcV7oQkt20IzJE0kJVpEr6iarQJ0MhDM FXMPcHgHiqhnkz/JvfVz8xVGfy1PMyCv69MMZrD5g62mbrfIQKjx10WtjEh+AA6SQgYvSd4LnZj 1SZ0cWAs3nLYYxzlleFvhT1ulbRemLTAyQZYXTX9sfyM/r9iGYCwnok69zoJ1cOw8enpQexgKjV uxqdu+65O5XnO7BAqkpPeEEG5wcI4USfDPJx7cRmdKYZjCYr77tcfyXdlw5qh8p3YeK7oqqlX5E rTqWpH7erqc4dcDwSMxpEkUflHlA6Y2V4n/OJ8OkJS/AY+8J
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Ovh-Tracer-Id: 9270941311783970470
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudejkedguddthecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvvefufffkofggtgfgsehtkeertdertdejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepfedtleeuteeitedvtedtteeuieevudejfeffvdetfeekleehhfelleefteetjeejnecukfhppeduvdejrddtrddtrddupdeluddrudehjedruddtjedrieejpdefjedrheelrddugedvrdelleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekgedpmhhouggvpehsmhhtphhouhht
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_DNS_FOR_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,54 +57,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-.remove_new() which already returns void. Eventually after all drivers
-are converted, .remove_new() is renamed to .remove().
+Kasan reported the following in my system:
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+[ 3935.321003] ==================================================================
+[ 3935.321022] BUG: KASAN: slab-use-after-free in drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+[ 3935.321124] Read of size 1 at addr ffff88818a6f8009 by task kworker/u16:3/5268
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+[ 3935.321124] CPU: 7 PID: 5268 Comm: kworker/u16:3 Not tainted 6.6.0-rc2+ #1
+[ 3935.321124] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+[ 3935.321124] Workqueue: events_unbound commit_work [drm_kms_helper]
+[ 3935.321124] Call Trace:
+[ 3935.321124]  <TASK>
+[ 3935.321124]  dump_stack_lvl+0x43/0x60
+[ 3935.321124]  print_report+0xcf/0x660
+[ 3935.321124]  ? remove_entity_load_avg+0xdc/0x100
+[ 3935.321124]  ? __virt_addr_valid+0xd9/0x160
+[ 3935.321124]  ? drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+[ 3935.321124]  kasan_report+0xda/0x110
+[ 3935.321124]  ? drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+[ 3935.321124]  drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+[ 3935.321124]  ? __pfx_drm_atomic_helper_wait_for_vblanks.part.0+0x10/0x10 [drm_kms_helper]
+[ 3935.321124]  ? complete_all+0x48/0x100
+[ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x19/0x40
+[ 3935.321124]  ? preempt_count_sub+0x14/0xc0
+[ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x23/0x40
+[ 3935.321124]  ? drm_atomic_helper_commit_hw_done+0x1ac/0x240 [drm_kms_helper]
+[ 3935.321124]  drm_atomic_helper_commit_tail+0x82/0x90 [drm_kms_helper]
+[ 3935.321124]  commit_tail+0x15c/0x1d0 [drm_kms_helper]
+[ 3935.323185]  process_one_work+0x31a/0x610
+[ 3935.323185]  worker_thread+0x38e/0x5f0
+[ 3935.323185]  ? __pfx_worker_thread+0x10/0x10
+[ 3935.323185]  kthread+0x184/0x1c0
+[ 3935.323185]  ? __pfx_kthread+0x10/0x10
+[ 3935.323185]  ret_from_fork+0x30/0x50
+[ 3935.323185]  ? __pfx_kthread+0x10/0x10
+[ 3935.323185]  ret_from_fork_asm+0x1b/0x30
+[ 3935.323185]  </TASK>
+
+[ 3935.323185] Allocated by task 3751:
+[ 3935.323185]  kasan_save_stack+0x2f/0x50
+[ 3935.323185]  kasan_set_track+0x21/0x30
+[ 3935.323185]  __kasan_kmalloc+0xa6/0xb0
+[ 3935.323185]  drm_atomic_helper_crtc_duplicate_state+0x42/0x70 [drm_kms_helper]
+[ 3935.323185]  drm_atomic_get_crtc_state+0xc3/0x1e0 [drm]
+[ 3935.323185]  page_flip_common+0x42/0x160 [drm_kms_helper]
+[ 3935.323185]  drm_atomic_helper_page_flip+0x6b/0xf0 [drm_kms_helper]
+[ 3935.323185]  drm_mode_page_flip_ioctl+0x8ad/0x900 [drm]
+[ 3935.323185]  drm_ioctl_kernel+0x169/0x240 [drm]
+[ 3935.323185]  drm_ioctl+0x399/0x6b0 [drm]
+[ 3935.324772]  __x64_sys_ioctl+0xc5/0x100
+[ 3935.324772]  do_syscall_64+0x5b/0xc0
+[ 3935.324772]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+
+[ 3935.324772] Freed by task 3751:
+[ 3935.324772]  kasan_save_stack+0x2f/0x50
+[ 3935.324772]  kasan_set_track+0x21/0x30
+[ 3935.324772]  kasan_save_free_info+0x27/0x40
+[ 3935.324772]  ____kasan_slab_free+0x166/0x1c0
+[ 3935.324772]  slab_free_freelist_hook+0x9f/0x1e0
+[ 3935.324772]  __kmem_cache_free+0x187/0x2d0
+[ 3935.324772]  drm_atomic_state_default_clear+0x226/0x5e0 [drm]
+[ 3935.324772]  __drm_atomic_state_free+0xc8/0x130 [drm]
+[ 3935.324772]  drm_atomic_helper_update_plane+0x17d/0x1b0 [drm_kms_helper]
+[ 3935.324772]  drm_mode_cursor_universal+0x2a4/0x4d0 [drm]
+[ 3935.324772]  drm_mode_cursor_common+0x1cf/0x430 [drm]
+[ 3935.324772]  drm_mode_cursor_ioctl+0xc6/0x100 [drm]
+[ 3935.326167]  drm_ioctl_kernel+0x169/0x240 [drm]
+[ 3935.326167]  drm_ioctl+0x399/0x6b0 [drm]
+[ 3935.326614]  __x64_sys_ioctl+0xc5/0x100
+[ 3935.326614]  do_syscall_64+0x5b/0xc0
+[ 3935.326614]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+
+[ 3935.326614] The buggy address belongs to the object at ffff88818a6f8000
+                which belongs to the cache kmalloc-512 of size 512
+[ 3935.326614] The buggy address is located 9 bytes inside of
+                freed 512-byte region [ffff88818a6f8000, ffff88818a6f8200)
+
+[ 3935.326614] The buggy address belongs to the physical page:
+[ 3935.326614] page:00000000b0fb0816 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x18a6f8
+[ 3935.326614] head:00000000b0fb0816 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[ 3935.326614] anon flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+[ 3935.326614] page_type: 0xffffffff()
+[ 3935.326614] raw: 0017ffffc0000840 ffff888100042c80 0000000000000000 dead000000000001
+[ 3935.326614] raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+[ 3935.326614] page dumped because: kasan: bad access detected
+
+[ 3935.326614] Memory state around the buggy address:
+[ 3935.326614]  ffff88818a6f7f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 3935.326614]  ffff88818a6f7f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 3935.326614] >ffff88818a6f8000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[ 3935.326772]                       ^
+[ 3935.326772]  ffff88818a6f8080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[ 3935.326772]  ffff88818a6f8100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[ 3935.326772] ==================================================================
+
+This suggest there may be some situation where a
+struct drm_crtc_state is referenced after already
+being freed by drm_atomic_state_default_clear. This
+patch will check the new_crtc_state is not null before
+using it.
+
+Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
 ---
- drivers/net/mdio/mdio-xgene.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/drm_atomic_helper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/mdio/mdio-xgene.c b/drivers/net/mdio/mdio-xgene.c
-index 1190a793555a..7909d7caf45c 100644
---- a/drivers/net/mdio/mdio-xgene.c
-+++ b/drivers/net/mdio/mdio-xgene.c
-@@ -432,7 +432,7 @@ static int xgene_mdio_probe(struct platform_device *pdev)
- 	return ret;
- }
+diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+index 292e38eb6218..cc75d387a542 100644
+--- a/drivers/gpu/drm/drm_atomic_helper.c
++++ b/drivers/gpu/drm/drm_atomic_helper.c
+@@ -1647,7 +1647,7 @@ drm_atomic_helper_wait_for_vblanks(struct drm_device *dev,
+ 		return;
  
--static int xgene_mdio_remove(struct platform_device *pdev)
-+static void xgene_mdio_remove(struct platform_device *pdev)
- {
- 	struct xgene_mdio_pdata *pdata = platform_get_drvdata(pdev);
- 	struct mii_bus *mdio_bus = pdata->mdio_bus;
-@@ -443,8 +443,6 @@ static int xgene_mdio_remove(struct platform_device *pdev)
+ 	for_each_oldnew_crtc_in_state(old_state, crtc, old_crtc_state, new_crtc_state, i) {
+-		if (!new_crtc_state->active)
++		if (new_crtc_state && !new_crtc_state->active)
+ 			continue;
  
- 	if (dev->of_node)
- 		clk_disable_unprepare(pdata->clk);
--
--	return 0;
- }
- 
- static struct platform_driver xgene_mdio_driver = {
-@@ -454,7 +452,7 @@ static struct platform_driver xgene_mdio_driver = {
- 		.acpi_match_table = ACPI_PTR(xgene_mdio_acpi_match),
- 	},
- 	.probe = xgene_mdio_probe,
--	.remove = xgene_mdio_remove,
-+	.remove_new = xgene_mdio_remove,
- };
- 
- module_platform_driver(xgene_mdio_driver);
+ 		ret = drm_crtc_vblank_get(crtc);
 -- 
-2.40.1
+2.39.2
 
