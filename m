@@ -2,109 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB1B7A4BD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886737A4BAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238328AbjIRPWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S236204AbjIRPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbjIRPWs (ORCPT
+        with ESMTP id S230227AbjIRPUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:22:48 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EB3CC9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:21:02 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so2833306a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:21:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1695050434; x=1695655234; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P9zireYzfZqPvtmuSRJPvpYJD83Rj6yAr7QXhkyH79c=;
-        b=NFDGMAHRraOLQP7dDl3tliKzHXofkkfKIfbDnwTbBnxVpeiXwYg/yX70sVogp4lGWd
-         m4OlfqC7Bu5sJGbfbbQ04T6zZ+Nvrsskma67oriWeaasQp5R2J6Koic9c+bf9RTcfE1N
-         FSjO0KW2botLd0+ZXi4Vh9zz0rPtsKX8cGaUs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695050434; x=1695655234;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P9zireYzfZqPvtmuSRJPvpYJD83Rj6yAr7QXhkyH79c=;
-        b=lM2tE8ELKd3MZ0on9d2Woz7umjCYk/ugK0Ev2h9LFXvmWamSIrIFpE3I/jT8ZFIhHe
-         +HZ/xTEyIL3rT/yi9thBxzvrqPkjF4JkxGcWDCJCR4ZVQzjnrhPj8o+KZFJz9fRrOQ5P
-         luGDl0yFPhD9aECB0AqphR3tE85vOWtzQHlEZljQtBEQ0ZHbMg2MDM9IexxtSlqzgueF
-         vByI3/LwStVc1c7DdZ1BfNfznD9mQRouBpJYTiVCQnyYybvOZa0X3a9KlE23C53JYgWY
-         IdX3vBK+gZH5Ay9wX/bV59Jr0ryZkHEj4KrZ5YRBqw7nWofWqtZpJ2d7FXbBZMxzOZdF
-         i+Ug==
-X-Gm-Message-State: AOJu0YyaA4fz84recJZP/1vHN1clxVXz6eCUrRqGta7/h4Pgf3cwekmO
-        WDrso1qMplT9SKbRmmIZqH063sGjUbBKdWHTI2O0Dg==
-X-Google-Smtp-Source: AGHT+IG85HoCQwWQ+0t5nMcdQfG4+rFMbC0pjWDcLyJx5ppNu+YRsczWqfK45z60KXWJ0QobOv5rxA==
-X-Received: by 2002:a17:906:fe4a:b0:9a1:e0b1:e919 with SMTP id wz10-20020a170906fe4a00b009a1e0b1e919mr16662172ejb.4.1695048523437;
-        Mon, 18 Sep 2023 07:48:43 -0700 (PDT)
-Received: from [172.16.11.116] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id o15-20020a1709061d4f00b009a1e73f2b4bsm6555817ejh.48.2023.09.18.07.48.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 07:48:42 -0700 (PDT)
-Message-ID: <c6caae28-01fc-2354-6c7a-3f515a0e1402@rasmusvillemoes.dk>
-Date:   Mon, 18 Sep 2023 16:48:40 +0200
+        Mon, 18 Sep 2023 11:20:21 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2079.outbound.protection.outlook.com [40.107.237.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDFE1A6;
+        Mon, 18 Sep 2023 08:18:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OPgzibipDRQAxAXLb2/xTIEZz5XR/yiTnvAMd/BQ/AIpmLailGvaMNtMbFU6e/9gXTpgFdAHyZ+Q5LO10/urGRisPaThoL8nyEHUFtIvIu5qYtNpVk6fxor96zIk2XJMnhnOXcTJJNp6aruk0xOBjNU07sKoCNjzuKy9BNxmcWD1PR5gMuIL+zhRW2Iu20q9eEHVTDXcYCKI1stfivO4flR3sz/9ZL0/OgbHKKxIFqy6T3AyRSHin8919Jcj2S0HiKxrSo3OKRjeXkQehMzRlUUqq9X1r8IOVF7Or+MqE9bHGiYk63Nby3Jge6cGu9zSTSkOUPZ4Bf9iyiQCcYMJaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K1QXsSCqTjeUmb/ayOP22JMSVRGDB5g2Oe20VEmMZHs=;
+ b=CidkoajLQAmO++SoC4iSZDl/OTuaA03xMGrTBSyskebE+1SQR1J5IrsIftazIS5UQI63lYNwgNMbnOBaJYLUPpaMLMyEtaUTlcZu3tGubPm8krNU2A+gaJ3YoFdneuG1otUCSifMp5L1hh1LZXS2ry3iguRGwn9w6L74Qtu37sOmXthBsgr8QirammWk3jpUh1HHltx63PQLhCEDt76fXxsBmNqq8E5tCDrRHuM6beK0EpqUNkEmbiFBwKbmjHr4ru2mYEgrILfI6CZcy84u0u0zahFJrz/1rUkNYLdarwyjUCLVH579MpTn1X0UKQYkO0qgOY5bh8S2YBoSqwMNCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K1QXsSCqTjeUmb/ayOP22JMSVRGDB5g2Oe20VEmMZHs=;
+ b=o7C62ZbxZZctqAZs2XXOPbS2cJuRqJRqupgQ2NWWh1KG5sTQucf/yUOys2dSRa0XvlMbyWeH/JVTzB62pGz1lToCbAhkE4rwY0tIQHKZgWWcaAo+rjeG2A8SMwYs6Ph167atOCqX0Fy6jjO/6G9PjAerH8BkXxSZR4AD6iFWRc1aYV3rYYXKp2nb/rlOqBguKgUegqE0aFr+RhOx6zHjFafHOde0nW8x4P+kR2TTnJbLuZvruq3S7M0Vmo38esYM5oY/SFYB8z/XmDd+Au+j4jiFdjA3BZ3/eQKCkzkmIdGVQ8AxiNBHAKGA4L/M+GNnkyLZlwerV0aOtPEukHYxkw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by LV8PR12MB9357.namprd12.prod.outlook.com (2603:10b6:408:1ff::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.24; Mon, 18 Sep
+ 2023 14:49:24 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Mon, 18 Sep 2023
+ 14:49:24 +0000
+Date:   Mon, 18 Sep 2023 11:49:23 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     ankita@nvidia.com, yishaih@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        anuaggarwal@nvidia.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20230918144923.GH13733@nvidia.com>
+References: <20230915025415.6762-1-ankita@nvidia.com>
+ <20230915082430.11096aa3.alex.williamson@redhat.com>
+ <20230918130256.GE13733@nvidia.com>
+ <20230918082748.631e9fd9.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918082748.631e9fd9.alex.williamson@redhat.com>
+X-ClientProxiedBy: BLAPR03CA0088.namprd03.prod.outlook.com
+ (2603:10b6:208:329::33) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v1 2/2] platform/x86: think-lmi: Use strreplace() to
- replace a character by nul
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Pearson <mpearson-lenovo@squebb.ca>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mark Pearson <markpearson@lenovo.com>,
-        Mark Gross <markgross@kernel.org>
-References: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com>
- <20230913092701.440959-2-andriy.shevchenko@linux.intel.com>
-Content-Language: en-US, da
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-In-Reply-To: <20230913092701.440959-2-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV8PR12MB9357:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a1f7219-3d1e-4991-ffc3-08dbb8567342
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dOKR4An1j7aGPeaumm0bEPCSirf1dPjn/ZXAM7jmumBa0AhQ4Y5uVXSZLy7OSx6V0qqLfPJzhfpJuiZtoKQZpQHNvKQI35Lj1ZJwSnU00+jpEj/sTWb+RU5r0/2xewm+ecvXMccBIbAjufrO0/dtUl2pa6qumC06IQqHjNHEXTmghYU2XNK6cKyD53dAixun/XKaL3H5AK2HlKybA2y/aD5ENiwwrdkA/ailDXxnXUHlwgmRh2DWsl2tEE9xcNHAGFIEiCKEfdTLJsyo6qWI9eMwGzhcWZdTogdNdUWnzkA8kggNFQVZn585iU6vOO2nsTC0eaM8zpbTU95SOJ+kJFTbcWcfdXR/ezBf6cyB0YbUQCUmkv3FXLEdw/2EAAUM2OW3EItscAEAfPeo/UKFpXBioyowXfWNtDLlx0E7o83uLRaDIspYSw6CUV2lKIsb8R2baO2eHhU451PbMCCRdfyE1dvPrKVec4+7Of+8HMVnZNwSWxpZmegCgDzMT+A0838nyObjQ3aSD8EEHu5asGxWC4AKfcBhg+xQNXeuP5VWZqACSqUI38/KmCkuPGb1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(39860400002)(376002)(346002)(1800799009)(186009)(451199024)(83380400001)(6506007)(6486002)(36756003)(86362001)(38100700002)(33656002)(1076003)(26005)(2906002)(6512007)(2616005)(478600001)(41300700001)(8676002)(4326008)(5660300002)(8936002)(66946007)(6916009)(66556008)(66476007)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AaZjKIP2/YURX5Xee9o+235ea9LWSOzWgt5vV+IT9dwJIP1uNfryuIOzVs8N?=
+ =?us-ascii?Q?6kT5W2M4o2Q3vWYfYnjpEnKbIkDcPAAzmO14Uocy9D1uwDuLY4YrhoK9F6ls?=
+ =?us-ascii?Q?3yNk1Mc2z3YfxG1y+t5hbBwYoc9WGFqJAlqhlTSiCgSdPPVLxMXgcVXdsPM7?=
+ =?us-ascii?Q?9Iiv0Nf7SvkvxlVmWQDTZPmd7GdiniaQvcKaXmhEd0tWZyYGou6xkQByQ7sv?=
+ =?us-ascii?Q?Cc14lExsITyNUf7512T1Spb+9/yfl2rNBxDRDkbqxiFF/oapgNY238DSfTVS?=
+ =?us-ascii?Q?9MHju1PhYZKFD/nmWg60n7iGkzXe0Y/da914yJKnZX9CkXNmcZP47A6nBHYV?=
+ =?us-ascii?Q?uJvD8BhtV18KsJoQqNgfLEKnks/hVsLL/6Edr88os3qou+Nv8RHmW6o1pzdM?=
+ =?us-ascii?Q?P2AmJh8Os46IJIkIw7Vvw9DsJ6MmhUKnTdIMMMgXKlvxinmzFVrNXq8jXDO/?=
+ =?us-ascii?Q?N5uJJtveQHGcTcgKPZJMT9Qmj0kkPXDXhkJsicPcJth23piHI10J4JWl1ECQ?=
+ =?us-ascii?Q?Jk5LfxEJVjD/hx61oKjraNxM38sA/YGeFGKUeHTCYovvmuUWe1+4REW/RBgd?=
+ =?us-ascii?Q?/JFu+PSA1dEhN9ejIkJi/k0SRxoNCzM+cjXsVG/q//JTcD0wA4uNrDruUl3S?=
+ =?us-ascii?Q?t0/w8qSau9eVw4fVy3f6NTTMDfYCQqTltEMu3Z0YuHMNh/3bdRfpxqfzrVOj?=
+ =?us-ascii?Q?ptF0oiBxTsf9Fs+6tCVsKkM0ZJ4o8x9WqXcjMX9HHRJmZMGf9eYrDdMi8Y8N?=
+ =?us-ascii?Q?OtF+8pF6rFGxSUmS0emgcDPT7h6asvLyWddbFupPJ6CbESk00zgMvJMOCcck?=
+ =?us-ascii?Q?ib7b5WgVomRcNBqjvs+n+yeEUKmDAn6FoG0NVDZhd26q2BvTIpmnYVgF6Gn1?=
+ =?us-ascii?Q?T0Pbkw1ILPm6dTMjFKVnJA8sT4ABKkXcMPxgBc5sTcrMPcfXmICRSq18tyct?=
+ =?us-ascii?Q?bMTasT8p7E6AwEKPSyFs+sh7Yz9MUQpj7Y6adSgSjhxvJUzrA+bo3J+GtmXY?=
+ =?us-ascii?Q?btZHvDBN+/DkSRan33saVx9Gkr4u4l29RpoUTXkNXdTCvL2B5Gm90PZqRQza?=
+ =?us-ascii?Q?FYlkegoIHVF1+akOIBa7zyaXboi9rA7ytT2at826PKuyVdNvS5UR+6k7UYQY?=
+ =?us-ascii?Q?KClN4YYMZn7q5YT44sgJrxMyklUjvPlrvSXUDKOgqTojNh6ffH/+01KQUQCu?=
+ =?us-ascii?Q?Zttc6BuNPhGjWbyQONJxh4EJIopqiNoV7An1Shmspk8ZkG9cAZuhWrVW9o62?=
+ =?us-ascii?Q?9npTvCw2AJJTHMWlG1p1sTjs8xoU7NiaNaKyCUMxKJKxiZXIuWmQwNAEkRNX?=
+ =?us-ascii?Q?7CgW629e5RamXQB5x8lRL9sydfKSd0HH25I6+Kj4Hgn5rw8JXqyO7q1ZxG6x?=
+ =?us-ascii?Q?deP5+Vpm5r40N3xXnGUi+QTCK2ivrTfyBmwZJ3tfEpJge9hrsc9h81BGPuik?=
+ =?us-ascii?Q?y9y50gaqsRH6cjxISh/5NBTW2rk+cbmJS9yL9wxuf6jGUkHtv3pnn4L5b2eC?=
+ =?us-ascii?Q?GE4rnD44pIU1Gr19+khH1nNtb0adUkqsUraq/Mkuskpxs5Zbr4IyVAhO3gXc?=
+ =?us-ascii?Q?jBKXJ2aQKfzskY0IAcecB0BW/sWjSoJ1s1/IBVDh?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a1f7219-3d1e-4991-ffc3-08dbb8567342
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 14:49:24.5221
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: me4mUtKHJMzD28WJAe/gP8urccus0LBOwXKONXjfjWqqQCEIeGn/czqkt+/QYZF4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9357
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 11.27, Andy Shevchenko wrote:
+On Mon, Sep 18, 2023 at 08:27:48AM -0600, Alex Williamson wrote:
 
-> @@ -921,7 +913,7 @@ static ssize_t display_name_show(struct kobject *kobj, struct kobj_attribute *at
->  static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
->  {
->  	struct tlmi_attr_setting *setting = to_tlmi_attr_setting(kobj);
-> -	char *item, *value, *p;
-> +	char *item, *value;
->  	int ret;
->  
->  	ret = tlmi_setting(setting->index, &item, LENOVO_BIOS_SETTING_GUID);
-> @@ -934,8 +926,7 @@ static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *a
->  		ret = -EINVAL;
->  	else {
->  		/* On Workstations remove the Options part after the value */
-> -		p = strchrnul(value, ';');
-> -		*p = '\0';
-> +		strreplace(value, ';', '\0');
+> > > This looks like a giant red flag that this approach of masquerading the
+> > > coherent memory as a PCI BAR is the wrong way to go.  If the VMM needs
+> > > to know about this coherent memory, it needs to get that information
+> > > in-band.   
+> > 
+> > The VMM part doesn't need this flag, nor does the VM. The
+> > orchestration needs to know when to setup the pxm stuff.
+> 
+> Subject: [PATCH v1 1/4] vfio: new command line params for device memory NUMA nodes
+> --- a/hw/vfio/pci.c
+> +++ b/hw/vfio/pci.c
+> ...
+> +static bool vfio_pci_read_cohmem_support_sysfs(VFIODevice *vdev)
+> +{
+> +    gchar *contents = NULL;
+> +    gsize length;
+> +    char *path;
+> +    bool ret = false;
+> +    uint32_t supported;
+> +
+> +    path = g_strdup_printf("%s/coherent_mem", vdev->sysfsdev);
+> +    if (g_file_get_contents(path, &contents, &length, NULL) && length > 0) {
+> +        if ((sscanf(contents, "%u", &supported) == 1) && supported) {
+> +            ret = true;
+> +        }
+> +    }
 
-So how do you know that the string contains at most one ';'? Same for
-all the other replacements. If that's not guaranteed, this is not at all
-equivalent.
+Yes, but it drives the ACPI pxm auto configuration stuff, not really
+vfio stuff.
 
-Or maybe the result is just used a normal string afterwards, and it
-doesn't matter at all how the content after the first ';' has been mangled?
+> > I think we should drop the sysfs for now until the qemu thread about
+> > the pxm stuff settles into an idea.
+> > 
+> > When the qemu API is clear we can have a discussion on what component
+> > should detect this driver and setup the pxm things, then answer the
+> > how should the detection work from the kernel side.
+> > 
+> > > be reaching out to arbitrary sysfs attributes.  Minimally this
+> > > information should be provided via a capability on the region info
+> > > chain,   
+> > 
+> > That definitely isn't suitable, eg libvirt won't have access to inband
+> > information if it turns out libvirt is supposed to setup the pxm qemu
+> > arguments?
+> 
+> Why would libvirt look for a "coherent_mem" attribute in sysfs when it
+> can just look at the driver used by the device.  
 
-It's certainly not obvious to me that this is correct, but of course I
-know nothing about this code.
+Sure, if that is consensus. Also I think coherent_mem is a terrible
+sysfs name for this, it should be more like 'num_pxm_nodes' or
+something.
 
-Rasmus
+> Part of the QEMU series is also trying to invoke the VM
+> configuration based only on this
+> device being attached to avoid libvirt orchestration changes:
 
+Right, that is where it gets confusing - it mixes the vfio world in
+qemu with the pxm world. That should be cleaned up somehow.
+
+> > > A "coherent_mem" attribute on the device provides a very weak
+> > > association to the memory region it's trying to describe.  
+> > 
+> > That's because it's use has nothing to do with the memory region :)
+> 
+> So we're creating a very generic sysfs attribute, which is meant to be
+> used by orchestration to invoke device specific configuration, but is
+> currently only proposed for use by the VMM.  The orchestration problem
+> doesn't really exist, libvirt could know simply by the driver name that
+> the device requires this configuration.  
+
+Yep
+
+> And the VMM usage is self inflicted because we insist on
+> masquerading the coherent memory as a nondescript PCI BAR rather
+> than providing a device specific region to enlighten the VMM to this
+> unique feature.
+
+I see it as two completely seperate things.
+
+1) VFIO and qemu creating a vPCI device. Here we don't need this
+   information.
+
+2) This ACPI pxm stuff to emulate the bare metal FW.
+   Including a proposal for auto-detection what kind of bare metal FW
+   is being used.
+
+This being a poor idea for #2 doesn't jump to problems with #1, it
+just says more work is needed on the ACPI PXM stuff.
+
+So lets remove the sysfs, reach a conclusion with the qemu folks on
+how the pxm is supposed to be modeled and then Ankit can come back
+with some suggestion how to do auto configure. If it needs a sysfs or
+not we can see.
+
+Jason
