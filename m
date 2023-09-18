@@ -2,197 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A76A7A5111
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D2A7A511B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjIRRf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55044 "EHLO
+        id S229944AbjIRRjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjIRRfz (ORCPT
+        with ESMTP id S229449AbjIRRjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:35:55 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2040.outbound.protection.outlook.com [40.107.243.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0FBDB;
-        Mon, 18 Sep 2023 10:35:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ol1X9RKTJxrs2mWcnRMWLFk3Say85SxtOy3cKAhboeHbMvdHLKbam9yFfSidUFgRnzwzCBz3DpG7/m6G1Jzs/3FOYSvQwt3N5rSOdUv960xEbg6JUQ2myaBuQH68tM77iSvqE/mP9Y7gu81qXXMtxw470yFzDU2PoeF8FyEu/+g+JK+XR2CDZHjQ3Bw8vR8LlFI/SjAE59T+m1K0j28Ovi51vF9E07H4O7XeJ8B3Lu+M/X71+W2dLFRbfTanxm7nXeQGIjQRJE9FxCBHwaOuCdlEHxUnLKpty4oGERkgKcxhpZZestNKjO/q0YDczXrYwg+rgSrC9QZNfnoggN0vvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WH+hxLoJo6haRalroq6RRXy/B8eENqAS4lVUcV0XlIk=;
- b=QivUZrGdKW00fLo2unmlq/hX10ox8vRiBVtGi3zA6dvL2qflJ24fPqDFLotLwfgJb7f0itnhJ4+1txkPW6VMXKeEAdUod4PpAzSyAFn43fSeE1GXAVreOEMjCmk2xXu12UJ2lRWgbSk/WLKV9NaQykVaKpBu6cgSS7yGQ5cZlA9hNPppHYkEN0SKXWDr98VzWdMjBhp+uEqcLBKSEP/B82KQUc0+hqwKnu0Lh8lJqA4BJ4m4UGlaHC3DCC7EQRRZH/giIjYMkIfOuGacBCpLuYhfzA02nNKH4hhDgsemx3Q3B7q2kkn0yFYP0wfJJ84Z5xuCIVxiOqY8YLdL5FjoeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WH+hxLoJo6haRalroq6RRXy/B8eENqAS4lVUcV0XlIk=;
- b=j+JwX0vNA/+was56FV5oQblx/dPhOPPD7UDVl/PCd5pND6y4jd8MEOoGlU02nW1b0W6rSCk6kAJor28m0qVf9Z2Dv9n7n67XQyG/44Gxbaw0YmNbIBVBBFFrPKfd8MWb6tUI+Yo9y1PZ0E0bChbPiNG189O8Bw3ZR9RSdQCA46Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6095.namprd12.prod.outlook.com (2603:10b6:8:9c::19) by
- PH0PR12MB7840.namprd12.prod.outlook.com (2603:10b6:510:28a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Mon, 18 Sep
- 2023 17:35:43 +0000
-Received: from DS7PR12MB6095.namprd12.prod.outlook.com
- ([fe80::44a:f414:7a0f:9dae]) by DS7PR12MB6095.namprd12.prod.outlook.com
- ([fe80::44a:f414:7a0f:9dae%7]) with mapi id 15.20.6792.026; Mon, 18 Sep 2023
- 17:35:43 +0000
-Message-ID: <84acb0d2-66c2-4cc0-9993-2832b3bd7ae7@amd.com>
-Date:   Mon, 18 Sep 2023 12:35:41 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] tools/power/x86/intel_pstate_tracer: python minimum
- version
+        Mon, 18 Sep 2023 13:39:52 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE0DFA
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:39:46 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IHc3je011071;
+        Mon, 18 Sep 2023 17:39:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=bRtqGsMpzQD9i3r/eIni7BsyBbstHlbJlJyLqFd6lg0=;
+ b=QkJBgbfl3f4sX7Gfw59hNsfid+MVM60EidHlgfrgZmeEoqJF9JiOXWs7v0kLP1c2RBt4
+ 2cYGS5gt9GvbaL+2j5SaqY/td8qRC/JyjPZjghsaL3T8iPU5AydPJj6rUO9raNKxd9+Y
+ WlxbI4nV0j7IFwv3BvMqBaEIDEzDguGxCecgYmiABdngkoctAxH7szfWVf9Ek7bv3N5I
+ phvx6SkgWZQLjbBcK8r1eHF/W6fAv+C7ERl+pc1oOas4IEVUs0AEAeWQRHWq0A2Y/Yit
+ Q61DAXNMmXyEaCHjOUDtLIij3tVcNPuD7tEbALmkcgaXDP53yKIbFu+8yQZXExf06YXc Kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t6rk7vv7h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 17:39:24 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38IHdNqn018325;
+        Mon, 18 Sep 2023 17:39:23 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t6rk7vv67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 17:39:23 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38IH7L9D018133;
+        Mon, 18 Sep 2023 17:39:22 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t5ppsdcfy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 17:39:22 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38IHdLaK2556552
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Sep 2023 17:39:21 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 61C5D58054;
+        Mon, 18 Sep 2023 17:39:21 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 74DE35805D;
+        Mon, 18 Sep 2023 17:39:15 +0000 (GMT)
+Received: from [9.171.63.81] (unknown [9.171.63.81])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 18 Sep 2023 17:39:15 +0000 (GMT)
+Message-ID: <5a2e835e-557b-f87c-b2f0-25670c70e9ad@linux.vnet.ibm.com>
+Date:   Mon, 18 Sep 2023 23:09:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
 Content-Language: en-US
-To:     Doug Smythies <dsmythies@telus.net>,
-        'Srinivas Pandruvada' <srinivas.pandruvada@linux.intel.com>,
-        rafael.j.wysocki@intel.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        'Swapnil Sapkal' <swapnil.sapkal@amd.com>, Ray.Huang@amd.com
-References: <001701d9e9ae$02438120$06ca8360$@telus.net>
- <002301d9e9e2$13424090$39c6c1b0$@telus.net>
- <002401d9e9e5$248f3d50$6dadb7f0$@telus.net>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <002401d9e9e5$248f3d50$6dadb7f0$@telus.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Valentin Schneider <vschneid@redhat.com>, pierre.gondois@arm.com,
+        pauld@redhat.com
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, quentin.perret@arm.com,
+        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
+        mingo@kernel.org, yu.c.chen@intel.com, tim.c.chen@linux.intel.com,
+        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+References: <20230913114807.665094-1-sshegde@linux.vnet.ibm.com>
+ <xhsmhil8cvi7s.mognet@vschneid.remote.csb>
+ <7c6dd2ec-b9a9-b364-5a29-05336127e519@linux.vnet.ibm.com>
+ <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
+ <bd8a3c47-80f5-61f3-b884-85a7ee92767d@linux.vnet.ibm.com>
+ <xhsmha5tjvfgm.mognet@vschneid.remote.csb>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <xhsmha5tjvfgm.mognet@vschneid.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NXy51xejNI_ZO9fTuFpC1DB-2QLZd2SO
+X-Proofpoint-GUID: H5gV-4cmryqEJruIJn0VFKzssbbBH8la
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0176.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:3c4::12) To DS7PR12MB6095.namprd12.prod.outlook.com
- (2603:10b6:8:9c::19)
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6095:EE_|PH0PR12MB7840:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef29b7ba-b8ea-48b5-c7f3-08dbb86daf12
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aZiVYNtylHhRZ/c9Jq8qNrls+YERfMESDP8zk0orcJt2Kx8Q2S3k8hp2R3ZODZ4wQYIlcJnoDuO0dzIkim9xY7F47dFuUYe+QzhPDL1oxvaztK0AQn/QEeZMUYh3u3QLMo2s0GLgXwXE6Bdk4MnSZ4y296pA5FQbZyFRQf8Q17K4bML2yXij/ZIZdL4wsBchd7wh+VKRG8Z4YJfkyKAPhGeZ+8aSHg2ME56UyGLKoqb0n57pct3Pz+014Z5JCaig4xFBNUxETz7V0pRPF5eU2N5KPkHSMQSW/FWAt0ToyhLT1q6BaZMg8/jkgNOsx+M39FkVz9aeFDXqnouNea8Kn0CnaxIqFnv0sakFveRzSmT3+vSDF1iehLyc7bguHAxJ8Vyi0qMTYvQKIl9iqf+UnGAHaF1L7fYrWA7w5OaMJJdwk/aVuDSqc6L8bSjrh16gwhORyLAEru8Gju5glO0hCt57apZIduvpr+Cs4XHX5fMIVnZCTrdNqc8Qm9dpcHEuJhHTEi6pRKvRttuAyElCpIPrVrTBEH8vUTKyJrqDGVjGdsxtYcvleumpRszJbxm0XdviXOvAcS7wTxP6o3z8ASO83TlS9WCRNXI1aTfD7zD8zf0WlNfWA2G2Uq4ZZWOAuaxGKHaDqXoJ3mrOem2qQQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6095.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(346002)(376002)(136003)(186009)(451199024)(1800799009)(110136005)(316002)(66556008)(41300700001)(66476007)(38100700002)(66946007)(478600001)(2906002)(86362001)(31696002)(36756003)(44832011)(5660300002)(8936002)(8676002)(26005)(4326008)(2616005)(83380400001)(31686004)(6506007)(53546011)(6512007)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cE9VWEN0OVZ6VnBNQUo0TmtEUG5COHR6VTdoRTloVlJvSW50eHI2WTcrS3NZ?=
- =?utf-8?B?dCtOa0k4aUp6NUpsZ091bktmME5jcDluaGRZN1F4eWY4YjEzL041Wi9OQ2tR?=
- =?utf-8?B?NDFVUDZBVC9hZ2tHa2NzVFk1V2NJYlNUYURteHNMdWZGaThOYXp6dXFnOE4r?=
- =?utf-8?B?SS9XSklkMVh0YmQ5aHVYV3A5MWx4WDBnNjIyMEUvRmxDYW5tRHNtdExOMXg0?=
- =?utf-8?B?ajNwMjljTHJ4T00ya1d5MkZoUGpSU3FTdGpmblgyZHVDTENiY201Nm5UYU9l?=
- =?utf-8?B?ajZLckxkVkdZMW5QZWhieEdQbC8yWWs3blJaVEh1MmswNThEL3JWMGZyTkxD?=
- =?utf-8?B?OTE2czVOWDVmT0ZSQzM5b3VDWDVHMWhoNkVwejFEVk81Y2xSTHZ0OTNuaWk4?=
- =?utf-8?B?Q2srWUd3enFKTHNtclFHa09jbWNzaTFHM291dGpxdFBLc1d4NFJPVUYxdFBO?=
- =?utf-8?B?VGRBNnI1OXFWSUU1ZkdCSGl3S1BKUzErZGdEbndPVUUrOXBNbm82ZzVlRGhq?=
- =?utf-8?B?a0J6aHQzT0lVOW9GbGRGcXNGK1JtWHJXaEk1ZkRseU9GbEk5UVJFT09HSC9v?=
- =?utf-8?B?VHBkU09WK1FvZXlnT0NwbGdHc0J4T0R2WlFaUExlQVpkaURlSGw5T0ZrcXNN?=
- =?utf-8?B?aUxvYkZiZlJVVThmMGlya2RkRk9kQTZvRlJLei9PVGd5eHBTYmJXSUdXOFRF?=
- =?utf-8?B?MFYrR1I4SytIc1ZJaWpob2VEdk1iRWtKZCtBU1dMOTh5Tk0vT1pibTR4M0ZO?=
- =?utf-8?B?emlhbEVtRWVXQTFJWjd4a2RqSkJUYThaWUtuMVFHcVNoVmZ6dDVtUG9DZW51?=
- =?utf-8?B?ZDZyUHkya0RNTW1MUTA5MGxpaVV2ZHdsdnc3WDYrQXY2V3RrOERhQXBQUjNu?=
- =?utf-8?B?dmdkeVVsN2NyT0YrZzJFcmNvdjZwZlZzcVJIUVlVVmpZWnRqa1kyRmFBV25O?=
- =?utf-8?B?RHZmM2RJWWFLSkRuMVphNkFLZDBxK2pmK215U0FlZVdUeFdzcU1vWFR2a0Ez?=
- =?utf-8?B?SXdBSW1lUkQrT3ZBM041ci9pNGJBRGZXMHFOODZhdjE2bTVOQnR4OEdEaXdP?=
- =?utf-8?B?QUJTR20yaVpjbG12UFVKU0QrQXhNWWdZSzVrTVdIbnhwSkpaUVduNWNuK21S?=
- =?utf-8?B?TUxXa0hYak0zaTFPcUZqVzRZQkJDeXdwdm0zQWpsckFiSWRrb1JiQ1dsTDJo?=
- =?utf-8?B?N3pLdzBNRnBHV2QzTXFmbEZGdWNUOEJpZ09EUEJ4ZUtOanpIamlsemJ2MlBr?=
- =?utf-8?B?VVovMUprQksreWdMUXQvdng2aE5oTHJyZzJteGF0UGk0RGdLRFNteXVRQXdn?=
- =?utf-8?B?dzFMckxSUTlJYStPdjNjbXZ0SEM2SmxIODhXRW9pQkRHQ1I0VlZkeDNRbEox?=
- =?utf-8?B?NC81NUZFc215R2hZQzVVMWJPS2NLZUNqaWtROXdYNS9SMnk5bXJSWk0zMHdV?=
- =?utf-8?B?T3dNR3c5d3FQM0tST1RJeE1ZT2pzZWZjajNvcFYvU2hpTnZVMldxR21JcUkz?=
- =?utf-8?B?dDVWMm9STHF2cGRDU01FYm45WnlDYXRCSC9ZUGtxa0xhL21NUGdHSGc4aWhh?=
- =?utf-8?B?KzJHU0dKbno1d3o2M0R3SldLa2IwSUN0NFhmUDFSV05xN2JZSUFVaVhvcFpn?=
- =?utf-8?B?eUJaVHFkRjMxQ3p5M1J1R3VlTERGQVZvbDM1bnVQdXFaY0MyR2srdlBqWDhi?=
- =?utf-8?B?eGVrRUNRbmVxLzJ4VWxXMmMwaU1mMkMyaDVzQWZtOFFydjZHNm9PZzkzTTRW?=
- =?utf-8?B?NnZsOHNkRmxSQm0vVmpYM3M2djVXbisvZ3ladnc0SEM5eFVFUEdVQkRnN3E1?=
- =?utf-8?B?MFIzRUVwUjFzbnR3ZmVrams5YzlBQ3NPZkxLNDlGQTU3VVhkbjQxYUlIVTNt?=
- =?utf-8?B?N0pnR2FnOWRsUGVzYmNSRXFwS1B1R2Qzcjd2LzlsZWswdnQyTjZVMzBIelZz?=
- =?utf-8?B?U1V3ZkVuNkNId09JYTlJL01rNS9KOGpteXlncEtvMERwYk5ITE42aGx3Z1pT?=
- =?utf-8?B?V1pJVnNadHRYejJxM3FHZkxsa0pSMWh6c2hWazBMZ0NVaVk1endTRWtGUGFQ?=
- =?utf-8?B?alJ0cmdwdE1ZVklmYXl4VkcwVWNHL0UxTE9MNTQ3STgrYXJ0MjNnM2tlUThl?=
- =?utf-8?Q?2ELlLWCj27GAZt6LVhKGtIpzX?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef29b7ba-b8ea-48b5-c7f3-08dbb86daf12
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6095.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 17:35:43.3094
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xu51K7Zu5hLmppQ54A/ALEa37+Cqwh6FJaafTm8fkk8T6lFGFXru92oAZv07Jy2gGzWU20SAIdvNoI5fmVDi0A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7840
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-18_08,2023-09-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 phishscore=0 mlxscore=0 impostorscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309180155
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/2023 23:03, Doug Smythies wrote:
-> 
-> From: Doug Smythies <dsmythies@telus.net>
-> 
-> Change the minimum python version from 2.7 to 3.6.
-> Remove a 2.X backwards compatibility line.
-> 
-> Signed-off-by: Doug Smythies <dsmythies@telus.net>
-> ---
-> 
-> v2 -> v3: Try to fix mess that was v2.
-> v1 -> v2: Fix careless typos.
-> 
-> ---
-> .../x86/intel_pstate_tracer/intel_pstate_tracer.py   | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
-> 
 
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 
-> diff --git a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-> index ec3323100e1a..38cfbdcdedb7 100755
-> --- a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-> +++ b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-> @@ -1,4 +1,4 @@
-> -#!/usr/bin/env python
-> +#!/usr/bin/env python3
->   # SPDX-License-Identifier: GPL-2.0-only
->   # -*- coding: utf-8 -*-
->   #
-> @@ -11,11 +11,11 @@ then this utility enables and collects trace data for a user specified interval
->   and generates performance plots.
+On 9/18/23 5:52 PM, Valentin Schneider wrote:
+> On 15/09/23 23:40, Shrikanth Hegde wrote:
+>> On 9/15/23 5:30 PM, Valentin Schneider wrote:
+>>> On 14/09/23 23:26, Shrikanth Hegde wrote:
+>>>> On 9/14/23 9:51 PM, Valentin Schneider wrote:
+>>>>> On 13/09/23 17:18, Shrikanth Hegde wrote:
+>>>>>> sysctl_sched_energy_aware is available for the admin to disable/enable
+>>>>>> energy aware scheduling(EAS). EAS is enabled only if few conditions are
+>>>>>> met by the platform. They are, asymmetric CPU capacity, no SMT,
+>>>>>> valid cpufreq policy, frequency invariant load tracking. It is possible
+>>>>>> platform when booting may not have EAS capability, but can do that after.
+>>>>>> For example, changing/registering the cpufreq policy.
+>>>>>>
+>>>>>> At present, though platform doesn't support EAS, this sysctl is still
+>>>>>> present and it ends up calling rebuild of sched domain on write to 1 and
+>>>>>> NOP when writing to 0. That is confusing and un-necessary.
+>>>>>>
+>>>>>
+>>>>
+>>>> Hi Valentin, Thanks for taking a look at this patch.
+>>>>
+>>>>> But why would you write to it in the first place? Or do you mean to use
+>>>>> this as an indicator for userspace that EAS is supported?
+>>>>>
+>>>>
+>>>> Since this sysctl is present and its value being 1, it gives the
+>>>> impression to the user that EAS is supported when it is not.
+>>>> So its an attempt to correct that part.
+>>>>
+>>>
+>>> Ah, I see. Then how about just making the sysctl return 0 when EAS isn't
+>>> supported? And on top of it, prevent all writes when EAS isn't supported
+>>> (perf domains cannot be built, so there would be no point in forcing a
+>>> rebuild that will do nothing).
+>>
+>> Yes. That's another way. Thats what I had as possible approach in 
+>> https://lore.kernel.org/lkml/d2c945d6-c4f0-a096-0623-731b11484f51@linux.vnet.ibm.com/
+>>
 > 
->   Prerequisites:
-> -    Python version 2.7.x or higher
-> +    Python version 3.6.x or higher
->       gnuplot 5.0 or higher
-> -    gnuplot-py 1.8 or higher
-> +    python3-gnuplot 1.8 or higher
->       (Most of the distributions have these required packages. They may be called
-> -     gnuplot-py, phython-gnuplot or phython3-gnuplot, gnuplot-nox, ... )
-> +     gnuplot-py, python-gnuplot or python3-gnuplot, gnuplot-nox, ... )
+> Thanks for the link; and apologies for bringing up topics that have been
+> discussed already.
 > 
->       HWP (Hardware P-States are disabled)
->       Kernel config for Linux trace is enabled
-> @@ -23,7 +23,7 @@ Prerequisites:
->       see print_help(): for Usage and Output details
+>>
+>>
+>>>
+>>> I can never remember how to properly use the sysctl API, so that's a very
+>>> crude implementation, but something like so?
+>>>
+>>> ---
+>>>
+>>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>>> index 05a5bc678c089..dadfc5afc4121 100644
+>>> --- a/kernel/sched/topology.c
+>>> +++ b/kernel/sched/topology.c
+>>> @@ -230,9 +230,28 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
+>>>  	if (write && !capable(CAP_SYS_ADMIN))
+>>>  		return -EPERM;
+>>>
+>>> +	if (!sched_energy_enabled()) {
+>>
+>> Use of sched_energy_enabled won't work as Pierre has indicated. 
+>>
+>> Instead this can be done by adding those checks in a helper function to
+>> do similar checks as done build_perf_domains. 
+>>
+>> I can send v4 with this approach if it makes more sense. Please let me know.
+>>
 > 
->   """
-> -from __future__ import print_function
-> +
->   from datetime import datetime
->   import subprocess
->   import os
-> @@ -562,7 +562,7 @@ if __name__ == "__main__":
+> So what I'm thinking is the standard approach seems to be to keep the knobs
+> visible, but change how reads/writes to them are handled.
 > 
->       # Temporary (or perhaps not)
->       cur_version = sys.version_info
-> -    print('python version (should be >= 2.7):')
-> +    print('python version (should be >= 3.6):')
->       print(cur_version)
+> For instance, SMT support has
 > 
->       # Left as "cleanup" for potential future re-run ability.
-> --
-> 2.25.1
+>   /sys/devices/system/cpu/smt
+>     /control
+>     /active
 > 
+> And a system with CONFIG_HOTPLUG_SMT=y but no actual hardware SMT will
+> have:
 > 
+>     /control = notsupported
+>     /active  = 0
+> 
+> So IMO it would make sense to keep sched_energy_aware around, but make it
+> read 0 and prevent writes for systems that have the software support
+> compiled but don't have the actual hardware support.
 
+ok.
+
+> 
+> In a pinch it also helps to know if CONFIG_ENERGY_MODEL was selected,
+> though that's obvious enough with CONFIG_SCHED_DEBUG=y.
+> 
+ok. This would be simpler to implement as well. Removing it would have 
+few tricky corner case scenarios as pierre has indicated. 
+
+Should be able to send out v4 sometime soon. I am on a holiday till Sep 19.
+
+Pierre and Phil, thanks for the suggestions to commit message. I will 
+incorporate the suggestions. 
