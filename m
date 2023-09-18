@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D69A47A443C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A557A4411
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240685AbjIRIMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        id S240595AbjIRIKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240681AbjIRILj (ORCPT
+        with ESMTP id S240500AbjIRIK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:11:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192B5D2;
-        Mon, 18 Sep 2023 01:11:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695024694; x=1726560694;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=SKBpwvJ+2z+sXH/P1raKgMvPz1M4b8A8fYC4yoa4lwM=;
-  b=E6wCBSzCBIHziGkulYHe54BRTOvsMR2KkOrf2J8dlnjM99BVOpX+Ue6y
-   u4SyfZlXgeuANEWbk2VYaFOxc8jloLp0ktdaaTvspP4dTtvOZqwopWKkn
-   hkPBnro0bf82FQP2PqgXzIx/nFWe4zFKlwzDceiXPHznn5SaIAV9j0lJH
-   ALG/EUR26avsNY+1A5TsnKbsXkMFMBgn3TbfnpeKD8Be5Fv74ZUoe9pJc
-   6QVXMxz+0/+kWQ8oDwBqQWJqGBZNeoPfZSQc8E36bxk5TMpJAed8x30iu
-   7Q6CArkcVQ0fnd3DYEdvoFkCdpUnZd/g/dV6foZ+X93wKoHCK3/AmGTau
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="410551297"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="410551297"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:11:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="695442857"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="695442857"
-Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by orsmga003.jf.intel.com with ESMTP; 18 Sep 2023 01:11:23 -0700
-From:   Raag Jadav <raag.jadav@intel.com>
-To:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
-        Jonathan.Cameron@huawei.com, paul@crapouillou.net,
-        andriy.shevchenko@linux.intel.com, lars@metafoo.de,
-        rmfrfs@gmail.com, jean-baptiste.maneyrol@tdk.com, lee@kernel.org,
-        laurentiu.palcu@oss.nxp.com, l.stach@pengutronix.de,
-        james.schulman@cirrus.com, david.rhodes@cirrus.com,
-        rf@opensource.cirrus.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        patches@opensource.cirrus.com,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com,
-        Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH for-next v2 10/10] ASoC: cs35l41: convert to EXPORT_GPL_RUNTIME_PM_OPS()
-Date:   Mon, 18 Sep 2023 13:39:51 +0530
-Message-Id: <20230918080951.3615-11-raag.jadav@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230918080951.3615-1-raag.jadav@intel.com>
-References: <20230918080951.3615-1-raag.jadav@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 18 Sep 2023 04:10:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D87394;
+        Mon, 18 Sep 2023 01:10:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 738C4C433C7;
+        Mon, 18 Sep 2023 08:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695024620;
+        bh=CRIeDeVdhZmvgG8ZW1WaCGgmchWzoCZjUdxtSTLJV/A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=x4BlyBJDiBWr1kd1Ig5VTJA/mMN3WIZiY996QmmespWNm9IV8PFWp3yInsK68FA9X
+         pAu+exvk7+koqJmeI5LwNpb+dUoceo1O/C6DB6/ykYfPdnYwTvI53vdUXWg81qQogQ
+         l0viG6PRuoPEA5xzSfKbu9QpAHlcpPq/YPeeX2KU=
+Date:   Mon, 18 Sep 2023 10:10:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Ingo Molnar <mingo@elte.hu>,
+        kernel@collabora.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3] tty/sysrq: replace smp_processor_id() with get_cpu()
+Message-ID: <2023091835-quill-congress-b691@gregkh>
+References: <20230822102606.2821311-1-usama.anjum@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822102606.2821311-1-usama.anjum@collabora.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With original macro being renamed to EXPORT_GPL_RUNTIME_PM_OPS(),
-use the new macro.
+On Tue, Aug 22, 2023 at 03:26:06PM +0500, Muhammad Usama Anjum wrote:
+> The smp_processor_id() shouldn't be called from preemptible code.
+> Instead use get_cpu() and put_cpu() which disables preemption in
+> addition to getting the processor id. This fixes the following bug:
+> 
+> [  119.143590] sysrq: Show backtrace of all active CPUs
+> [  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
+> [  119.144586] caller is debug_smp_processor_id+0x20/0x30
+> [  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
+> [  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
+> [  119.145053] Call trace:
+> [  119.145093]  dump_backtrace+0x0/0x1a0
+> [  119.145122]  show_stack+0x18/0x70
+> [  119.145141]  dump_stack+0xc4/0x11c
+> [  119.145159]  check_preemption_disabled+0x100/0x110
+> [  119.145175]  debug_smp_processor_id+0x20/0x30
+> [  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
+> [  119.145211]  __handle_sysrq+0x8c/0x1a0
+> [  119.145227]  write_sysrq_trigger+0x94/0x12c
+> [  119.145247]  proc_reg_write+0xa8/0xe4
+> [  119.145266]  vfs_write+0xec/0x280
+> [  119.145282]  ksys_write+0x6c/0x100
+> [  119.145298]  __arm64_sys_write+0x20/0x30
+> [  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
+> [  119.145332]  do_el0_svc+0x24/0x8c
+> [  119.145348]  el0_svc+0x10/0x20
+> [  119.145364]  el0_sync_handler+0x134/0x140
+> [  119.145381]  el0_sync+0x180/0x1c0
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+> Changes since v2:
+> - Add changelog and resend
+> 
+> Changes since v1:
+> - Add "Cc: stable@vger.kernel.org" tag
+> ---
+>  drivers/tty/sysrq.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+> index 23198e3f1461a..6b4a28bcf2f5f 100644
+> --- a/drivers/tty/sysrq.c
+> +++ b/drivers/tty/sysrq.c
+> @@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
+>  		if (in_hardirq())
+>  			regs = get_irq_regs();
+>  
+> -		pr_info("CPU%d:\n", smp_processor_id());
+> +		pr_info("CPU%d:\n", get_cpu());
 
-Signed-off-by: Raag Jadav <raag.jadav@intel.com>
----
- sound/soc/codecs/cs35l41.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Why not call put_cpu() right here?
 
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 4bc64ba71cd6..651aeaa6a5c4 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -1454,7 +1454,7 @@ static int cs35l41_sys_resume(struct device *dev)
- 	return 0;
- }
- 
--EXPORT_GPL_DEV_PM_OPS(cs35l41_pm_ops) = {
-+EXPORT_GPL_RUNTIME_PM_OPS(cs35l41_pm_ops) = {
- 	RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume, NULL)
- 
- 	SYSTEM_SLEEP_PM_OPS(cs35l41_sys_suspend, cs35l41_sys_resume)
--- 
-2.17.1
+>  		if (regs)
+>  			show_regs(regs);
+>  		else
+>  			show_stack(NULL, NULL, KERN_INFO);
+>  
+>  		schedule_work(&sysrq_showallcpus);
+> +		put_cpu();
 
+Why wait so long here after you have scheduled work?  Please drop the
+cpu reference right away, you don't need to hold it for this length of
+time, right?
+
+thanks,
+
+greg k-h
