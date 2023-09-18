@@ -2,243 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF3C7A4F35
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4687A4F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjIRQf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
+        id S230515AbjIRQn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbjIRQfd (ORCPT
+        with ESMTP id S230364AbjIRQm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:35:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83EB28B6D
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:16:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695053769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KEnkYg296WtOmgfRUE57PJ4oLhWmzs88dx68A5cViHk=;
-        b=JWclkQER1QEDsusmu++4e6c8f934fi7K+yiLKrlDgVs27hKS0bWEMs++iydaDpeNXy4aAK
-        PB2E8FuAv1n/Rwcyl9SDARjh/pBZdBDwC2paoJJMmPkF41XZz2FfgYAigyyJFmT4xiT8wV
-        4cOvbSKO5DlmFfT7UVrFVN9KIw2qUgM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-76-cr41bOkWMNWtVt8JV0Vymw-1; Mon, 18 Sep 2023 10:15:29 -0400
-X-MC-Unique: cr41bOkWMNWtVt8JV0Vymw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EF0A6945924;
-        Mon, 18 Sep 2023 14:15:28 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ABA5840C6EA8;
-        Mon, 18 Sep 2023 14:15:27 +0000 (UTC)
-Date:   Mon, 18 Sep 2023 10:15:21 -0400
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, David Laight <David.Laight@aculab.com>,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH v2 2/3] vfio: use __aligned_u64 in struct
- vfio_device_gfx_plane_info
-Message-ID: <20230918141521.GB1279696@fedora>
-References: <20230829182720.331083-1-stefanha@redhat.com>
- <20230829182720.331083-3-stefanha@redhat.com>
- <20230915140458.392e436a.alex.williamson@redhat.com>
+        Mon, 18 Sep 2023 12:42:58 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC755FDC;
+        Mon, 18 Sep 2023 09:41:16 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rq6KB3WSpz4f3n6X;
+        Mon, 18 Sep 2023 22:15:58 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+        by APP2 (Coremail) with SMTP id Syh0CgBHUwieWwhli80bAw--.34921S2;
+        Mon, 18 Sep 2023 22:16:00 +0800 (CST)
+Message-ID: <041d4f6b-1350-105e-6ab0-73980aba26ea@huaweicloud.com>
+Date:   Mon, 18 Sep 2023 22:15:58 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="T9LRd/OHSsH3oZV0"
-Content-Disposition: inline
-In-Reply-To: <20230915140458.392e436a.alex.williamson@redhat.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
+Content-Language: en-US
+To:     Puranjay Mohan <puranjay12@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20230917000045.56377-1-puranjay12@gmail.com>
+ <20230917000045.56377-2-puranjay12@gmail.com>
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <20230917000045.56377-2-puranjay12@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgBHUwieWwhli80bAw--.34921S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3XrWDJr4kuryfKw15WF13XFb_yoWfKr4xpF
+        Z5C3y3Grs7XF45WF18tr18XFy5Krs2gF47tr15C34rJFsa9ryUKF1FkFWjkF9xCr95Jw4r
+        ZFWjkrn3C3yjv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU13rcDUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/17/2023 8:00 AM, Puranjay Mohan wrote:
+> Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be used
+> by bpf_throw() to unwind till the program marked as exception boundary and
+> run the callback with the stack of the main program.
+> 
+> The prologue generation code has been modified to make the callback
+> program use the stack of the program marked as exception boundary where
+> callee-saved registers are already pushed.
+> 
+> As the bpf_throw function never returns, if it clobbers any callee-saved
+> registers, they would remain clobbered. So, the prologue of the
+> exception-boundary program is modified to push R23 and R24 as well,
+> which the callback will then recover in its epilogue.
+> 
+> The Procedure Call Standard for the Arm 64-bit Architecture[1] states
+> that registers r19 to r28 should be saved by the callee. BPF programs on
+> ARM64 already save all callee-saved registers except r23 and r24. This
+> patch adds an instruction in prologue of the  program to save these
+> two registers and another instruction in the epilogue to recover them.
+> 
+> These extra instructions are only added if bpf_throw() used. Otherwise
+> the emitted prologue/epilogue remains unchanged.
+> 
+> [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
+> 
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> ---
+>   arch/arm64/net/bpf_jit_comp.c                | 98 ++++++++++++++++----
+>   tools/testing/selftests/bpf/DENYLIST.aarch64 |  1 -
+>   2 files changed, 79 insertions(+), 20 deletions(-)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 7d4af64e3982..fcc55e558863 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -21,6 +21,7 @@
+>   #include <asm/insn.h>
+>   #include <asm/patching.h>
+>   #include <asm/set_memory.h>
+> +#include <asm/stacktrace.h>
+>   
+>   #include "bpf_jit.h"
+>   
+> @@ -285,7 +286,7 @@ static bool is_lsi_offset(int offset, int scale)
+>   /* Tail call offset to jump into */
+>   #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
+>   
+> -static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+> +static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf, bool is_exception_cb)
+>   {
+>   	const struct bpf_prog *prog = ctx->prog;
+>   	const bool is_main_prog = !bpf_is_subprog(prog);
+> @@ -333,19 +334,28 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>   	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
+>   	emit(A64_NOP, ctx);
+>   
+> -	/* Sign lr */
+> -	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
+> -		emit(A64_PACIASP, ctx);
+> -
+> -	/* Save FP and LR registers to stay align with ARM64 AAPCS */
+> -	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
+> -	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
+> -
+> -	/* Save callee-saved registers */
+> -	emit(A64_PUSH(r6, r7, A64_SP), ctx);
+> -	emit(A64_PUSH(r8, r9, A64_SP), ctx);
+> -	emit(A64_PUSH(fp, tcc, A64_SP), ctx);
+> -	emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
+> +	if (!is_exception_cb) {
+> +		/* Sign lr */
+> +		if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
+> +			emit(A64_PACIASP, ctx);
+> +		/* Save FP and LR registers to stay align with ARM64 AAPCS */
+> +		emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
+> +		emit(A64_MOV(1, A64_FP, A64_SP), ctx);
+> +
+> +		/* Save callee-saved registers */
+> +		emit(A64_PUSH(r6, r7, A64_SP), ctx);
+> +		emit(A64_PUSH(r8, r9, A64_SP), ctx);
+> +		emit(A64_PUSH(fp, tcc, A64_SP), ctx);
+> +		emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
+> +	} else {
+> +		/* Exception callback receives FP of Main Program as third parameter */
+> +		emit(A64_MOV(1, A64_FP, A64_R(2)), ctx);
+> +		/*
+> +		 * Main Program already pushed the frame record and the callee-saved registers. The
+> +		 * exception callback will not push anything and re-use the main program's stack.
+> +		 */
+> +		emit(A64_SUB_I(1, A64_SP, A64_FP, 80), ctx); /* 10 registers are on the stack */
 
---T9LRd/OHSsH3oZV0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To ensure th calculated A6_SP is always correct, add an assertion
+to ensure the distance between A64_FP and A64_SP is 80 after all
+callee-registers are pushed to the stack?
 
-On Fri, Sep 15, 2023 at 02:04:58PM -0600, Alex Williamson wrote:
-> On Tue, 29 Aug 2023 14:27:19 -0400
-> Stefan Hajnoczi <stefanha@redhat.com> wrote:
->=20
-> > The memory layout of struct vfio_device_gfx_plane_info is
-> > architecture-dependent due to a u64 field and a struct size that is not
-> > a multiple of 8 bytes:
-> > - On x86_64 the struct size is padded to a multiple of 8 bytes.
-> > - On x32 the struct size is only a multiple of 4 bytes, not 8.
-> > - Other architectures may vary.
-> >=20
-> > Use __aligned_u64 to make memory layout consistent. This reduces the
-> > chance of 32-bit userspace on a 64-bit kernel breakage.
-> >=20
-> > This patch increases the struct size on x32 but this is safe because of
-> > the struct's argsz field. The kernel may grow the struct as long as it
-> > still supports smaller argsz values from userspace (e.g. applications
-> > compiled against older kernel headers).
-> >=20
-> > Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-> > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> > ---
-> >  include/uapi/linux/vfio.h        | 3 ++-
-> >  drivers/gpu/drm/i915/gvt/kvmgt.c | 4 +++-
-> >  samples/vfio-mdev/mbochs.c       | 6 ++++--
-> >  samples/vfio-mdev/mdpy.c         | 4 +++-
-> >  4 files changed, 12 insertions(+), 5 deletions(-)
-> >=20
-> > diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> > index 94007ca348ed..777374dd7725 100644
-> > --- a/include/uapi/linux/vfio.h
-> > +++ b/include/uapi/linux/vfio.h
-> > @@ -816,7 +816,7 @@ struct vfio_device_gfx_plane_info {
-> >  	__u32 drm_plane_type;	/* type of plane: DRM_PLANE_TYPE_* */
-> >  	/* out */
-> >  	__u32 drm_format;	/* drm format of plane */
-> > -	__u64 drm_format_mod;   /* tiled mode */
-> > +	__aligned_u64 drm_format_mod;   /* tiled mode */
-> >  	__u32 width;	/* width of plane */
-> >  	__u32 height;	/* height of plane */
-> >  	__u32 stride;	/* stride of plane */
-> > @@ -829,6 +829,7 @@ struct vfio_device_gfx_plane_info {
-> >  		__u32 region_index;	/* region index */
-> >  		__u32 dmabuf_id;	/* dma-buf id */
-> >  	};
-> > +	__u32 reserved;
-> >  };
-> > =20
-> >  #define VFIO_DEVICE_QUERY_GFX_PLANE _IO(VFIO_TYPE, VFIO_BASE + 14)
-> > diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gv=
-t/kvmgt.c
-> > index 9cd9e9da60dd..813cfef23453 100644
-> > --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-> > +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> > @@ -1382,7 +1382,7 @@ static long intel_vgpu_ioctl(struct vfio_device *=
-vfio_dev, unsigned int cmd,
-> >  		intel_gvt_reset_vgpu(vgpu);
-> >  		return 0;
-> >  	} else if (cmd =3D=3D VFIO_DEVICE_QUERY_GFX_PLANE) {
-> > -		struct vfio_device_gfx_plane_info dmabuf;
-> > +		struct vfio_device_gfx_plane_info dmabuf =3D {};
-> >  		int ret =3D 0;
-> > =20
-> >  		minsz =3D offsetofend(struct vfio_device_gfx_plane_info,
-> > @@ -1392,6 +1392,8 @@ static long intel_vgpu_ioctl(struct vfio_device *=
-vfio_dev, unsigned int cmd,
-> >  		if (dmabuf.argsz < minsz)
-> >  			return -EINVAL;
-> > =20
-> > +		minsz =3D min(dmabuf.argsz, sizeof(dmabuf));
-> > +
-> >  		ret =3D intel_vgpu_query_plane(vgpu, &dmabuf);
-> >  		if (ret !=3D 0)
-> >  			return ret;
-> > diff --git a/samples/vfio-mdev/mbochs.c b/samples/vfio-mdev/mbochs.c
-> > index 3764d1911b51..78aa977ae597 100644
-> > --- a/samples/vfio-mdev/mbochs.c
-> > +++ b/samples/vfio-mdev/mbochs.c
-> > @@ -1262,7 +1262,7 @@ static long mbochs_ioctl(struct vfio_device *vdev=
-, unsigned int cmd,
-> > =20
-> >  	case VFIO_DEVICE_QUERY_GFX_PLANE:
-> >  	{
-> > -		struct vfio_device_gfx_plane_info plane;
-> > +		struct vfio_device_gfx_plane_info plane =3D {};
-> > =20
-> >  		minsz =3D offsetofend(struct vfio_device_gfx_plane_info,
-> >  				    region_index);
-> > @@ -1273,11 +1273,13 @@ static long mbochs_ioctl(struct vfio_device *vd=
-ev, unsigned int cmd,
-> >  		if (plane.argsz < minsz)
-> >  			return -EINVAL;
-> > =20
-> > +		outsz =3D min_t(unsigned long, plane.argsz, sizeof(plane));
->=20
-> Sorry, I'm struggling with why these two sample drivers use min_t()
-> when passed the exact same args as kvmgt above which just uses min().
+> +	}
+>   
+>   	/* Set up BPF prog stack base register */
+>   	emit(A64_MOV(1, fp, A64_SP), ctx);
+> @@ -365,6 +375,13 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>   		emit_bti(A64_BTI_J, ctx);
+>   	}
+>   
+> +	/*
+> +	 * Program acting as exception boundary should save all ARM64 Callee-saved registers as the
+> +	 * exception callback needs to recover all ARM64 Callee-saved registers in its epilogue.
+> +	 */
+> +	if (prog->aux->exception_boundary)
+> +		emit(A64_PUSH(A64_R(23), A64_R(24), A64_SP), ctx);
 
-min() would work fine here, too.
+Blindly storing x23/x24 to BPF_FP -8/16 is incorrect, as the stack
+space below BPF_FP might be written with other values by the bpf
+prog.
 
-> But more importantly I'm also confused why we need this at all.  The
-> buffer we're copying to is provided by the user, so what's wrong with
-> leaving the user provided reserved data?  Are we just trying to return
-> a zero'd reserved field if argsz allows for it?
->=20
-> Any use of the reserved field other than as undefined data would need
-> to be associated with a flags bit, so I don't think it's buying us
-> anything to return it zero'd.  What am I missing?  Thanks,
+> +
+>   	emit(A64_SUB_I(1, fpb, fp, ctx->fpb_offset), ctx);
+>   
+>   	/* Stack must be multiples of 16B */
+> @@ -653,7 +670,7 @@ static void build_plt(struct jit_ctx *ctx)
+>   		plt->target = (u64)&dummy_tramp;
+>   }
+>   
+> -static void build_epilogue(struct jit_ctx *ctx)
+> +static void build_epilogue(struct jit_ctx *ctx, bool is_exception_cb)
+>   {
+>   	const u8 r0 = bpf2a64[BPF_REG_0];
+>   	const u8 r6 = bpf2a64[BPF_REG_6];
+> @@ -666,6 +683,14 @@ static void build_epilogue(struct jit_ctx *ctx)
+>   	/* We're done with BPF stack */
+>   	emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
+>   
+> +	/*
+> +	 * Program acting as exception boundary pushes R23 and R24 in addition to BPF callee-saved
+> +	 * registers. Exception callback uses the boundary program's stack frame, so recover these
 
-I don't remember anymore and what you've described makes sense to me.
-I'll remove this in the next revision.
+Keep the line width within 80 characters?
 
-Stefan
+> +	 * extra registers in the above two cases.
+> +	 */
+> +	if (ctx->prog->aux->exception_boundary || is_exception_cb)
+> +		emit(A64_POP(A64_R(23), A64_R(24), A64_SP), ctx);
+> +
+>   	/* Restore x27 and x28 */
+>   	emit(A64_POP(fpb, A64_R(28), A64_SP), ctx);
+>   	/* Restore fs (x25) and x26 */
+> @@ -1575,7 +1600,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   	 * BPF line info needs ctx->offset[i] to be the offset of
+>   	 * instruction[i] in jited image, so build prologue first.
+>   	 */
+> -	if (build_prologue(&ctx, was_classic)) {
+> +	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb)) {
+>   		prog = orig_prog;
+>   		goto out_off;
+>   	}
+> @@ -1586,7 +1611,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   	}
+>   
+>   	ctx.epilogue_offset = ctx.idx;
+> -	build_epilogue(&ctx);
+> +	build_epilogue(&ctx, prog->aux->exception_cb);
+>   	build_plt(&ctx);
+>   
+>   	extable_align = __alignof__(struct exception_table_entry);
+> @@ -1614,7 +1639,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   	ctx.idx = 0;
+>   	ctx.exentry_idx = 0;
+>   
+> -	build_prologue(&ctx, was_classic);
+> +	build_prologue(&ctx, was_classic, prog->aux->exception_cb);
+>   
+>   	if (build_body(&ctx, extra_pass)) {
+>   		bpf_jit_binary_free(header);
+> @@ -1622,7 +1647,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   		goto out_off;
+>   	}
+>   
+> -	build_epilogue(&ctx);
+> +	build_epilogue(&ctx, prog->aux->exception_cb);
+>   	build_plt(&ctx);
+>   
+>   	/* 3. Extra pass to validate JITed code. */
+> @@ -2286,3 +2311,38 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+>   
+>   	return ret;
+>   }
+> +
+> +bool bpf_jit_supports_exceptions(void)
+> +{
+> +	/* We unwind through both kernel frames (starting from within bpf_throw call) and
+> +	 * BPF frames. Therefore we require FP unwinder to be enabled to walk kernel frames and
+> +	 * reach BPF frames in the stack trace.
+> +	 * ARM64 kernel is aways compiled with CONFIG_FRAME_POINTER=y
+> +	 */
+> +	return true;
+> +}
+> +
+> +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
+> +{
+> +	struct stack_info stacks[] = {
+> +		stackinfo_get_task(current),
+> +	};
+> +
 
->=20
-> Alex
->=20
-> > +
-> >  		ret =3D mbochs_query_gfx_plane(mdev_state, &plane);
-> >  		if (ret)
-> >  			return ret;
-> > =20
-> > -		if (copy_to_user((void __user *)arg, &plane, minsz))
-> > +		if (copy_to_user((void __user *)arg, &plane, outsz))
-> >  			return -EFAULT;
-> > =20
-> >  		return 0;
-> > diff --git a/samples/vfio-mdev/mdpy.c b/samples/vfio-mdev/mdpy.c
-> > index 064e1c0a7aa8..f5c2effc1cec 100644
-> > --- a/samples/vfio-mdev/mdpy.c
-> > +++ b/samples/vfio-mdev/mdpy.c
-> > @@ -591,7 +591,7 @@ static long mdpy_ioctl(struct vfio_device *vdev, un=
-signed int cmd,
-> > =20
-> >  	case VFIO_DEVICE_QUERY_GFX_PLANE:
-> >  	{
-> > -		struct vfio_device_gfx_plane_info plane;
-> > +		struct vfio_device_gfx_plane_info plane =3D {};
-> > =20
-> >  		minsz =3D offsetofend(struct vfio_device_gfx_plane_info,
-> >  				    region_index);
-> > @@ -602,6 +602,8 @@ static long mdpy_ioctl(struct vfio_device *vdev, un=
-signed int cmd,
-> >  		if (plane.argsz < minsz)
-> >  			return -EINVAL;
-> > =20
-> > +		minsz =3D min_t(unsigned long, plane.argsz, sizeof(plane));
-> > +
-> >  		ret =3D mdpy_query_gfx_plane(mdev_state, &plane);
-> >  		if (ret)
-> >  			return ret;
->=20
+Seems there is no need to define "stacks" as an array
 
---T9LRd/OHSsH3oZV0
-Content-Type: application/pgp-signature; name="signature.asc"
+> +	struct unwind_state state = {
+> +		.stacks = stacks,
+> +		.nr_stacks = ARRAY_SIZE(stacks),
+> +	};
+> +	unwind_init_common(&state, current);
+> +	state.fp = (unsigned long)__builtin_frame_address(1);
+> +	state.pc = (unsigned long)__builtin_return_address(0);
+> +
+> +	if (unwind_next_frame_record(&state))
+> +		return;
+> +	while (1) {
+> +		/* We only use the fp in the exception callback. Pass 0 for sp as it's unavailable*/
+> +		if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.fp))
+> +			break;
+> +		if (unwind_next_frame_record(&state))
 
------BEGIN PGP SIGNATURE-----
+When PTR_AUTH is implemented, lr is encoded before being pushed to
+the stack, but unwind_next_frame_record() does not decode state.pc
+when fetching it from the stack.
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmUIW3gACgkQnKSrs4Gr
-c8jxdggAqmEiI+Ao4OaZR6saj2CtHW15SNrDLvYpBv+e4N80qp00lQULYbe5FKEN
-ogP+F1MtDy72BVFjvW/jjrUBuxko6s2lfT3fTLWzwk1ySYuc7g/dtCN5OxIRI1m5
-KUFq8/fFcXJ9WjMoasvCNjTajeDHqS6dcUQuIuV8J02wdPUbiFC/gdotp1LmTY/O
-E1x5wWmq2dD2EamXQrz8O9seWVSusdYQU5lTdnpHDpeOS89hvzUlfIARdFby/1Tf
-OgJzYqfCCANZ3DEw7AGvZ9rPGSOgha6rQPAw3rPfDGrvMZ3lPd1DzlOxgLYs4MKF
-4TvwNvX/VwOWwpKKlf+R5+VmD7h6Zg==
-=AFe6
------END PGP SIGNATURE-----
+> +			break;
+> +	}
 
---T9LRd/OHSsH3oZV0--
+And it's better to simplify the if-while(1)-if to:
+
+while (!unwind_next_frame_record(&state)) {
+     ...
+}
+
+> +}
+> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> index f5065576cae9..7f768d335698 100644
+> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
+> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> @@ -1,6 +1,5 @@
+>   bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+>   bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+> -exceptions					 # JIT does not support calling kfunc bpf_throw: -524
+>   fexit_sleep                                      # The test never returns. The remaining tests cannot start.
+>   kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+>   kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
 
