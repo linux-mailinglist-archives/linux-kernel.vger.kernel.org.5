@@ -2,76 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C187A4531
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893177A4535
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238919AbjIRIyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
+        id S240835AbjIRIzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240839AbjIRIy0 (ORCPT
+        with ESMTP id S240837AbjIRIzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:54:26 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE99C5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:54:21 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41517088479so22638771cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:54:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695027260; x=1695632060; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ClIL0dCrkOnBpg+a8Xrgg6ALAEbCrlXjT2IySqiHtKo=;
-        b=u8ZD/tLHkghAHL1x3Z5csY7TS0x+qzQBg7+JO2T+rrz2vxZXX4PdG/WowjG1wbpgOP
-         EusnK1jwBMoUINUZta0mngSq9MY0J//NmAKyhKIX9pVWBG+PTWWYoiLbbpSmihtS0GzF
-         BT9SfrwL5Y9KOnuNVtaa+YwNOlygraUVVApm1shy2+Z3NOiM0rcPwCDJyB6vz/gDvDlg
-         8U48mjZrPdBzKSHdIVAvmK7CrMTwww2nRKSP4D29OrMrWAq1BAN5HfZfIASoQFwR/AeR
-         490YwGdMJLfLzVg9F32eA8uIoHaqZLK8edaawRMrYXEKj5Z7xT8iUe0KqCb2pghVZ4Za
-         iWXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695027260; x=1695632060;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ClIL0dCrkOnBpg+a8Xrgg6ALAEbCrlXjT2IySqiHtKo=;
-        b=M75abQatcJv0lZBQ13o0SIApIvuZHuhtzUL+IEgp3L3/ZV/RqxB1GKyGiWGYk/nLdI
-         6fCQXUJNqLkiGIxIFZK1HsBd7rjWyt7h3srAwQ6KwfSckwzhDirdfcNuqa8ZODG9Q7Lw
-         HLTMEPJVaqGOWsV72aG8J229A69x+GtWniKVFPmSnOY/hNR6STIqS/gK2aZDDgRa+/VY
-         Vad2n4gIq1exh/fXUuTEhXqG7Cd5EW15/PlauCLbOYw5L853/NkOwDzPTpBZFdDIgvOw
-         tMjIGbn/DL6icLP0k9C30j1heQ65QcHzW4Q6bQcIgmNe5tKQBfwdLe6OI9bMahZIY4QO
-         LRoQ==
-X-Gm-Message-State: AOJu0Yx8mMCDVhDh9i/lym/LIHKJekcJkmSxBSIGwebOp4mCNkEvwUM9
-        P5cbSVmBUXnMyEbWckgrW0pER38JUrHwrI9YK53ldA==
-X-Google-Smtp-Source: AGHT+IFYgHG0dZf5nqkpv4qVu0ChzNBIdAhruIWmcSZxRpa53s1lF8WlI4xTjt862E295HdVdB8Wq01IovaBffAM0m0=
-X-Received: by 2002:a0c:8f1a:0:b0:653:589b:ac47 with SMTP id
- z26-20020a0c8f1a000000b00653589bac47mr10654295qvd.18.1695027260535; Mon, 18
- Sep 2023 01:54:20 -0700 (PDT)
+        Mon, 18 Sep 2023 04:55:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4EDD1;
+        Mon, 18 Sep 2023 01:54:58 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695027296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7SaupYWhDkXFaEEUUd3eBV7dIU5O04Mi5eNGHFaaIGY=;
+        b=xHYrdQl9Fyoq2TE360zSXtB4EpAvVmpUsqJQpJCnBTY1s7EdBTSxJ0kILkRn3qXRxXgtp0
+        nfxfbDMQ0ZG4N7C+KkJrrwtXxEWWHEny4xgOcwRFjBAAttlvZkXW3jGJBTwdpzVorw4OrS
+        luXaqlQEd42Bsv/YmV0AB2ouM4q+mcctSLE86o8iO4baw2eKCUkhYo6sLZyQbhg2xuqobe
+        +NKagOTTe5hfBorbaO4q+/uEx3sgaJuNf6rdXaubMoL8KyKN7TdaI5H+9YKEa6wLUKaq68
+        wEg7wefJe9mJ8IR3fEk8PV3hN6mT1KemifGFaN1TJklEMLeKGac0hGSHc6gh7A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695027296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7SaupYWhDkXFaEEUUd3eBV7dIU5O04Mi5eNGHFaaIGY=;
+        b=3ZW1E3MWTMz7DFU1FAMoJ/GG7soyRLlrVp1Vn4DtvHHcTlA7fK4xv+J7kmUdsWGqizQAF8
+        C2XhGyt13zv7ZyAA==
+To:     Petr Mladek <pmladek@suse.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Enlin Mu <enlinmu@gmail.com>, Enlin Mu <enlin.mu@outlook.com>,
+        rostedt@goodmis.org, senozhatsky@chromium.org,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        enlin.mu@unisoc.com, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] printk: add cpu id information to printk() output
+In-Reply-To: <ZQSHJ_786kZNjEDX@alley>
+References: <JH0PR04MB7072A4B6946EAEEB1EB8B0BE8AF6A@JH0PR04MB7072.apcprd04.prod.outlook.com>
+ <8734zfx2bo.fsf@jogness.linutronix.de>
+ <CAAfh-jPc+UWMcLPFbYy6rYUh4OU36frkVYVbkhNPNX4L6RG5sA@mail.gmail.com>
+ <2023091547-mug-unlikable-571f@gregkh> <ZQSHJ_786kZNjEDX@alley>
+Date:   Mon, 18 Sep 2023 11:00:48 +0206
+Message-ID: <87ttrrlv3b.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20230915105933.495735-1-matteorizzo@google.com>
- <20230915105933.495735-11-matteorizzo@google.com> <202309151410.E65B8300F@keescook>
- <64e62982-6d0e-f742-be5c-15390d8e7c2b@intel.com>
-In-Reply-To: <64e62982-6d0e-f742-be5c-15390d8e7c2b@intel.com>
-From:   Matteo Rizzo <matteorizzo@google.com>
-Date:   Mon, 18 Sep 2023 10:54:07 +0200
-Message-ID: <CAHKB1wJkkkq_yt88_XcrpoM74nhOEBAZuMZLwFkoXoeQQfin9A@mail.gmail.com>
-Subject: Re: [RFC PATCH 10/14] x86: Create virtual memory region for SLUB
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kees Cook <keescook@chromium.org>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, linux-hardening@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        corbet@lwn.net, luto@kernel.org, peterz@infradead.org,
-        jannh@google.com, evn@google.com, poprdi@google.com,
-        jordyzomer@google.com, ardb@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,33 +62,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 23:50, Dave Hansen <dave.hansen@intel.com> wrote:
->
-> I have the feeling folks just grabbed the first big-ish chunk they saw
-> free in the memory map and stole that one.  Not a horrible approach,
-> mind you, but I have the feeling it didn't go through the most rigorous
-> sizing procedure. :)
->
-> My laptop memory is ~6% consumed by slab, 90% of which is reclaimable.
-> If a 64TB system had the same ratio, it would bump into this 512GB
-> limit.  But it _should_ just reclaim thing earlier rather than falling over.
->
-> That said, we still have gobs of actual vmalloc() space.  It's ~30TiB in
-> size and I'm not aware of anyone consuming anywhere near that much.  If
-> the 512GB fills up somehow, there are other places to steal the space.
->
-> One minor concern is that the virtual area is the same size on 4 and
-> 5-level paging systems.  It might be a good idea to pick one of the
-> holes that actually gets bigger on 5-level systems.
+On 2023-09-15, Petr Mladek <pmladek@suse.com> wrote:
+> The biggest problem is that it would change the format of the
+> ringbuffer so that it would require updating external tools,
+> working with crashdump, especially crash but there are also
+> alternative python extensions for gdb.
 
-One of the other ideas that we had was to use the KASAN shadow memory instead of
-a dedicated area. As far as I know the KASAN region is not used by anything else
-when KASAN is disabled, and I don't think it makes sense to have both KASAN and
-SLAB_VIRTUAL enabled at the same time (see the patch which introduces the
-Kconfig option for why). The KASAN region is 16 TiB on 4-level systems and 8 PiB
-on 5-level, in both cases 1/16th the size of the address space.
+I already have experience updating these external tools. It is
+manageable. But I would prefer we had bigger changes to make. Let us not
+forget your RFC [0] where you wanted to add similar metadata and
+more. We should put all these changes into a single release.
 
-Could that work?
+John Ogness
 
---
-Matteo
+[0] https://lore.kernel.org/lkml/20200923135617.27149-1-pmladek@suse.com
