@@ -2,148 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D017A478F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2267A4796
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241169AbjIRKuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 06:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
+        id S234130AbjIRKvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 06:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241232AbjIRKuV (ORCPT
+        with ESMTP id S241269AbjIRKu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:50:21 -0400
+        Mon, 18 Sep 2023 06:50:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B381AD;
-        Mon, 18 Sep 2023 03:49:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8891BC433C8;
-        Mon, 18 Sep 2023 10:49:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE16D188;
+        Mon, 18 Sep 2023 03:50:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8666AC433C8;
+        Mon, 18 Sep 2023 10:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695034182;
-        bh=omo90vbvxu9QZeYX3a8b8+CNEeUkpugaGhRbaHCeEXY=;
+        s=k20201202; t=1695034223;
+        bh=xrXFiitV9cg7iNtsA2pDOZav9rtVTmsOfAZLd0oEB9s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z1bCkFvlusnmPxZevHaIZtLiKEome6S8kM4zv3NxRgOlDve22ZBtp24/xi4dhRjcl
-         M/vR3jCvbo5htzp1FZ6Wn6rbTKybliUmiMkVMyREJk7z5dPh43hWt4AbEiz2xmnTOW
-         nvlsMz1OfygnA/tBqGzDEoqWMAB01qjY8eK00F5d883NScpoFFgNqgbWxuuxIuoDVW
-         xDPJ+rBrf3z5J2MIkcmYYYq4kvtUfKQiYQhGwv9wSBw5PnqaWkrCboPA04TbefGCY4
-         E5WLZciSchHgX76DEMN75L0agdixnFEaDyQ5VnDPmoYgp8v0kcWdaxJVQPdAuLU7Ds
-         bw1NfRnnoggxg==
-Date:   Mon, 18 Sep 2023 13:49:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2][next] RDMA/core: Use size_{add,mul}() in calls to
- struct_size()
-Message-ID: <20230918104938.GD13757@unreal>
-References: <ZP+if342EMhModzZ@work>
- <202309142029.D432EEB8C@keescook>
- <2594c7ff-0301-90aa-d48c-6b4d674f850e@embeddedor.com>
+        b=TZsAy5ZMjVjc0xrbAbhRHXJ1nxSna2ldKcvq+v1lyoaFDxfqgU610q4ghN2XNNLMY
+         hcYmU5z9f+/v2qpSkTVJHuwFBKOd4+uKePjbPFZhZ38prfruBw4Yo5P65IOphxiecm
+         OTsas2wwkvfIk9Atujdyx1JSyaZ12BPVOI8l+hURw9AOa1D0lWLW10Gn+0P3Qt9GH0
+         8OBL5w9iLIUx3r3a3tdehWgaT52QbuPHFkVyIfAKcRCihHINLOCzLq67AYoQdMj+zi
+         BRUUUasfAX5R+zOVUQeE9Yozs/DmmerXrvr2fnTn+bRGhojBF7xIOGMP1+Js6cKoJ0
+         sIWBIg6HzmyAw==
+Date:   Mon, 18 Sep 2023 12:50:13 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     syzbot <syzbot+450a6d7e0a2db0d8326a@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, jlayton@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [ext4?] WARNING in setattr_copy
+Message-ID: <20230918-adrenalin-extra-64562065d07b@brauner>
+References: <00000000000033d44706057458b3@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2594c7ff-0301-90aa-d48c-6b4d674f850e@embeddedor.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+In-Reply-To: <00000000000033d44706057458b3@google.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 12:06:21PM -0600, Gustavo A. R. Silva wrote:
+On Fri, Sep 15, 2023 at 11:51:54PM -0700, syzbot wrote:
+> Hello,
 > 
+> syzbot found the following issue on:
 > 
-> On 9/14/23 21:29, Kees Cook wrote:
-> > On Mon, Sep 11, 2023 at 05:27:59PM -0600, Gustavo A. R. Silva wrote:
-> > > Harden calls to struct_size() with size_add() and size_mul().
-> > 
-> > Specifically, make sure that open-coded arithmetic cannot cause an
-> > overflow/wraparound. (i.e. it will stay saturated at SIZE_MAX.)
+> HEAD commit:    3c13c772fc23 Add linux-next specific files for 20230912
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=15b02b0c680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f7149cbda1664bc5
+> dashboard link: https://syzkaller.appspot.com/bug?extid=450a6d7e0a2db0d8326a
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155b32b4680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12cf6028680000
 > 
-> Yep; I have another patch where I explain this in similar terms.
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/eb6fbc71f83a/disk-3c13c772.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/2d671ade67d9/vmlinux-3c13c772.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/b2b7190a3a61/bzImage-3c13c772.xz
 > 
-> I'll send it, shortly.
+> The issue was bisected to:
+> 
+> commit d6f106662147d78e9a439608e8deac7d046ca0fa
+> Author: Jeff Layton <jlayton@kernel.org>
+> Date:   Wed Aug 30 18:28:43 2023 +0000
+> 
+>     fs: have setattr_copy handle multigrain timestamps appropriately
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1419f8d8680000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1619f8d8680000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1219f8d8680000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+450a6d7e0a2db0d8326a@syzkaller.appspotmail.com
+> Fixes: d6f106662147 ("fs: have setattr_copy handle multigrain timestamps appropriately")
 
-You missed other places with similar arithmetic.
-drivers/infiniband/core/device.c:       pdata_rcu = kzalloc(struct_size(pdata_rcu, pdata,
-drivers/infiniband/core/device.c-                                       rdma_end_port(device) + 1),
-drivers/infiniband/core/device.c-                           GFP_KERNEL);
-
-drivers/infiniband/core/sa_query.c:     sa_dev = kzalloc(struct_size(sa_dev, port, e - s + 1), GFP_KERNEL);
-drivers/infiniband/core/user_mad.c:     umad_dev = kzalloc(struct_size(umad_dev, ports, e - s + 1), GFP_KERNEL);
-
-Thanks
-
-> 
-> > 
-> > > 
-> > > Fixes: 467f432a521a ("RDMA/core: Split port and device counter sysfs attributes")
-> > > Fixes: a4676388e2e2 ("RDMA/core: Simplify how the gid_attrs sysfs is created")
-> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > 
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-> Thanks!
-> 
-> --
-> Gustavo
-> 
-> > 
-> > -Kees
-> > 
-> > > ---
-> > > Changes in v2:
-> > >   - Update changelog text: remove the part about binary differences (it
-> > >     was added by mistake).
-> > > 
-> > >   drivers/infiniband/core/sysfs.c | 10 +++++-----
-> > >   1 file changed, 5 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-> > > index ee59d7391568..ec5efdc16660 100644
-> > > --- a/drivers/infiniband/core/sysfs.c
-> > > +++ b/drivers/infiniband/core/sysfs.c
-> > > @@ -903,7 +903,7 @@ alloc_hw_stats_device(struct ib_device *ibdev)
-> > >   	 * Two extra attribue elements here, one for the lifespan entry and
-> > >   	 * one to NULL terminate the list for the sysfs core code
-> > >   	 */
-> > > -	data = kzalloc(struct_size(data, attrs, stats->num_counters + 1),
-> > > +	data = kzalloc(struct_size(data, attrs, size_add(stats->num_counters, 1)),
-> > >   		       GFP_KERNEL);
-> > >   	if (!data)
-> > >   		goto err_free_stats;
-> > > @@ -1009,7 +1009,7 @@ alloc_hw_stats_port(struct ib_port *port, struct attribute_group *group)
-> > >   	 * Two extra attribue elements here, one for the lifespan entry and
-> > >   	 * one to NULL terminate the list for the sysfs core code
-> > >   	 */
-> > > -	data = kzalloc(struct_size(data, attrs, stats->num_counters + 1),
-> > > +	data = kzalloc(struct_size(data, attrs, size_add(stats->num_counters, 1)),
-> > >   		       GFP_KERNEL);
-> > >   	if (!data)
-> > >   		goto err_free_stats;
-> > > @@ -1140,7 +1140,7 @@ static int setup_gid_attrs(struct ib_port *port,
-> > >   	int ret;
-> > >   	gid_attr_group = kzalloc(struct_size(gid_attr_group, attrs_list,
-> > > -					     attr->gid_tbl_len * 2),
-> > > +					     size_mul(attr->gid_tbl_len, 2)),
-> > >   				 GFP_KERNEL);
-> > >   	if (!gid_attr_group)
-> > >   		return -ENOMEM;
-> > > @@ -1205,8 +1205,8 @@ static struct ib_port *setup_port(struct ib_core_device *coredev, int port_num,
-> > >   	int ret;
-> > >   	p = kvzalloc(struct_size(p, attrs_list,
-> > > -				attr->gid_tbl_len + attr->pkey_tbl_len),
-> > > -		    GFP_KERNEL);
-> > > +				size_add(attr->gid_tbl_len, attr->pkey_tbl_len)),
-> > > +		     GFP_KERNEL);
-> > >   	if (!p)
-> > >   		return ERR_PTR(-ENOMEM);
-> > >   	p->ibdev = device;
-> > > -- 
-> > > 2.34.1
-> > > 
-> > 
+#syz unset subsystems: ext4
+#syz set subsystems: overlayfs
