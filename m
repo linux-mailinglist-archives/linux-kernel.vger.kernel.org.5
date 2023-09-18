@@ -2,112 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C597A407E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278D57A4085
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239689AbjIRFfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 01:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
+        id S239698AbjIRFiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 01:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239754AbjIRFeq (ORCPT
+        with ESMTP id S239716AbjIRFhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 01:34:46 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13975124
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:34:39 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52a1ce52ef4so5039830a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:34:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1695015277; x=1695620077; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JAs0kcdMl/DoP/iL5tBvKuG9qrkDrcB6k4947uVL0cQ=;
-        b=uOyQim9VOwPYXvBu/iCkVEVuDRVuBKZZCv+zIT3nfc9HcLkfdPb92sbkcd1zFaebkO
-         UMBfk0GwvHxuIIWID14xsPdvGo+RcNQJDOWJAXDCY6bw0xnoqDpqIRN6sUztX/5bPTkE
-         oyl4/+6PxhmcsfkUV1QjPGECocPJIACFH67d/s2ZiuVBRCIACkOfzZKApqmpVoGqYrQA
-         GDE6VeqsiRlzkQg2aCwWRPjkqn+D34ReUSjmlynAQHA9OiSnRNRv3jWifxrbsy5PsBlO
-         eYmHLJ2zRleZTAkhjn2f7mo8easiIh5Zq3xoBhZw2b4PS3PlrOs5A1BDdyaM0/YqED3D
-         sEMw==
+        Mon, 18 Sep 2023 01:37:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83482126
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695015429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y6uwQw2TQzRDCyynk3SluHNCszt0yuiUGbPEkJxyENg=;
+        b=TMBU6+sm38UKj+JgTXH6c/PrAhLyz/OVZGCEj29PdQhfmzFu2CXyK+LriPJ1kLYhJ2T6np
+        2wtTYo6b2uL//D8qlaTNuxomRDIqRLP/d3dHSecCVl84wJpWenQDouDyRMXZa1F8Zfq4MB
+        ix0smdi4SKO4t3xK8V1Tl+rUCeuhqAg=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-36-X9IPHRlaN4GyM2C28mQM2Q-1; Mon, 18 Sep 2023 01:37:07 -0400
+X-MC-Unique: X9IPHRlaN4GyM2C28mQM2Q-1
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c0d58f127fso42440985ad.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:37:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695015277; x=1695620077;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JAs0kcdMl/DoP/iL5tBvKuG9qrkDrcB6k4947uVL0cQ=;
-        b=opKrsyCYgKGEnoa3Ht+eUaxLsgClQjla8aZrYkU8GZOkSbVL/znaq7yKtMblDOzXoI
-         kcOxpkgG/Fzs08Z3qG6UhJW4sAP5HJ+oj//+rdNEh+MjlOxqwmS1kugWtvrVdi8dtbeX
-         8GTIZrtJx5xOz1m1FkyS7lYupkjwRsSunQXKqGuDS+Fp+LZxmFp2HK+cJ6LIRNaZzjmi
-         R/zlemjyqFS+5qJ/ZvQhKK0W9apVZEHvZ/GnemaCR6YG+4TkXPW05vjMb0V+JfjvYd1r
-         +rBeGvo2f1xi/Z4nQbBxDo/cgipIASLAVSdJiwkYt2iDrjNIOHSzmpv+aSDjFiTYp0PD
-         vZTw==
-X-Gm-Message-State: AOJu0Yx0BtVT1ZmzXOfrgs7H+aD3TG0LAfJ9oHz+zH1cDkci8z0uT90b
-        6WplSgOf7dM7+dFCH3rt4wfsroDSI3AEaNSvgaJX1A==
-X-Google-Smtp-Source: AGHT+IHbQfrgDKC8eysrPXQk3qAY1NMSiNM+gX4sza0ZICIOgDc2Kb0HSY3yfpRZ3jeGXHl9hu5DnhCmo6Ef6NXxbOc=
-X-Received: by 2002:aa7:dd14:0:b0:52f:3051:f7dd with SMTP id
- i20-20020aa7dd14000000b0052f3051f7ddmr6172159edv.35.1695015277156; Sun, 17
- Sep 2023 22:34:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695015426; x=1695620226;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y6uwQw2TQzRDCyynk3SluHNCszt0yuiUGbPEkJxyENg=;
+        b=FjTok/PPXI6QV9ImZWs9RJk9pQ9TaYnRKjp8YNOmCn1ypWwKEpHCjQG9x0smUABuwt
+         V+eMWiBsFVfhhZ95m2h/s47fs6Qkh16bL+NdpmGmYaVtJK61g9TsoXM93ehRoxvaJ1L/
+         rnXRBC1dXEAptgmKGH195DUTRVHYNUJQymzCCNqQKQVuyhcjup15mhiTrRHCaUNoYNnn
+         YekIA3/7cOFIcGc/XAIWKlr5KfMw6mWDb2wM2cx1Zw5NqumZdhatxpYaOC4orJGLUU+d
+         L9qKhkOJxBZh5xH9karnANYmVnlnWCgAbw6BoG3lHHlgp3Etsp8ate0DozCDxbnlQN2i
+         B8Mg==
+X-Gm-Message-State: AOJu0YzShh/tKawsmeAxuSr0I1BRAQmLvsUyp99Vd79r19R4XqshB7C2
+        HaiAzd6qBEQYozVMFzqlxhSGTMTP3aaqJZ1EW78kJKght+eGbO85UMt22ItiDCM3Dms10EAP9yZ
+        NENfi5gmWHhqxbrNYHwOrJe6b
+X-Received: by 2002:a17:902:ab12:b0:1c3:df77:3159 with SMTP id ik18-20020a170902ab1200b001c3df773159mr7962022plb.50.1695015426139;
+        Sun, 17 Sep 2023 22:37:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4LA6vy59tdBGF7Ljgoach/YoGNT9CDJsVEh22V2F8alWKcyjdRZQRbNbCFRoo5eBTb6guIw==
+X-Received: by 2002:a17:902:ab12:b0:1c3:df77:3159 with SMTP id ik18-20020a170902ab1200b001c3df773159mr7962003plb.50.1695015425836;
+        Sun, 17 Sep 2023 22:37:05 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001b9d95945afsm7488399plf.155.2023.09.17.22.37.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 22:37:05 -0700 (PDT)
+Message-ID: <add60819-1d36-9b96-7bfa-148907dc44ce@redhat.com>
+Date:   Mon, 18 Sep 2023 15:36:58 +1000
 MIME-Version: 1.0
-References: <20230917191040.964416434@linuxfoundation.org>
-In-Reply-To: <20230917191040.964416434@linuxfoundation.org>
-From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date:   Mon, 18 Sep 2023 14:34:26 +0900
-Message-ID: <CAKL4bV7k_Hi0rugjnx1Gf6Bqae93c=28nwhN1XfP7arqkLKqNQ@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/219] 6.1.54-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 19/35] ACPI: Move acpi_bus_trim_one() before
+ acpi_scan_hot_remove()
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
+Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-20-james.morse@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230913163823.7880-20-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
 
-On Mon, Sep 18, 2023 at 5:03=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.54 release.
-> There are 219 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.54-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 9/14/23 02:38, James Morse wrote:
+> A subsequent patch will change acpi_scan_hot_remove() to call
+> acpi_bus_trim_one() instead of acpi_bus_trim(), meaning it can no longer
+> rely on the prototype in the header file.
+> 
+> Move these functions further up the file.
+> No change in behaviour.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>   drivers/acpi/scan.c | 76 ++++++++++++++++++++++-----------------------
+>   1 file changed, 38 insertions(+), 38 deletions(-)
+> 
 
-6.1.54-rc1 tested.
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index f898591ce05f..a675333618ae 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -244,6 +244,44 @@ static int acpi_scan_try_to_offline(struct acpi_device *device)
+>   	return 0;
+>   }
+>   
+> +static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
+> +{
+> +	struct acpi_scan_handler *handler = adev->handler;
+> +
+> +	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
+> +
+> +	adev->flags.match_driver = false;
+> +	if (handler) {
+> +		if (handler->detach)
+> +			handler->detach(adev);
+> +
+> +		adev->handler = NULL;
+> +	} else {
+> +		device_release_driver(&adev->dev);
+> +	}
+> +	/*
+> +	 * Most likely, the device is going away, so put it into D3cold before
+> +	 * that.
+> +	 */
+> +	acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
+> +	adev->flags.initialized = false;
+> +	acpi_device_clear_enumerated(adev);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * acpi_bus_trim - Detach scan handlers and drivers from ACPI device objects.
+> + * @adev: Root of the ACPI namespace scope to walk.
+> + *
+> + * Must be called under acpi_scan_lock.
+> + */
+> +void acpi_bus_trim(struct acpi_device *adev)
+> +{
+> +	acpi_bus_trim_one(adev, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(acpi_bus_trim);
+> +
+>   static int acpi_scan_hot_remove(struct acpi_device *device)
+>   {
+>   	acpi_handle handle = device->handle;
+> @@ -2506,44 +2544,6 @@ int acpi_bus_scan(acpi_handle handle)
+>   }
+>   EXPORT_SYMBOL(acpi_bus_scan);
+>   
+> -static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
+> -{
+> -	struct acpi_scan_handler *handler = adev->handler;
+> -
+> -	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
+> -
+> -	adev->flags.match_driver = false;
+> -	if (handler) {
+> -		if (handler->detach)
+> -			handler->detach(adev);
+> -
+> -		adev->handler = NULL;
+> -	} else {
+> -		device_release_driver(&adev->dev);
+> -	}
+> -	/*
+> -	 * Most likely, the device is going away, so put it into D3cold before
+> -	 * that.
+> -	 */
+> -	acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
+> -	adev->flags.initialized = false;
+> -	acpi_device_clear_enumerated(adev);
+> -
+> -	return 0;
+> -}
+> -
+> -/**
+> - * acpi_bus_trim - Detach scan handlers and drivers from ACPI device objects.
+> - * @adev: Root of the ACPI namespace scope to walk.
+> - *
+> - * Must be called under acpi_scan_lock.
+> - */
+> -void acpi_bus_trim(struct acpi_device *adev)
+> -{
+> -	acpi_bus_trim_one(adev, NULL);
+> -}
+> -EXPORT_SYMBOL_GPL(acpi_bus_trim);
+> -
+>   int acpi_bus_register_early_device(int type)
+>   {
+>   	struct acpi_device *device = NULL;
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+Thanks,
+Gavin
 
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
