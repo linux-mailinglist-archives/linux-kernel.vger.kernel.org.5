@@ -2,183 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C53F77A44FF
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0C77A44FE
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240815AbjIRImc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
+        id S238805AbjIRIm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240911AbjIRImU (ORCPT
+        with ESMTP id S240725AbjIRImC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:42:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1845122
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695026475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UCPsfcbIVqzhPMc9WpjHh54nSWIDbNSd7gzRQ5+/f94=;
-        b=ZtOOpbhrAAN6iKIa5oCGAQadxZQ7RulnPPpfo69X0gJ7vj5shF0EcfIXVS0VLmLHpmyhxb
-        DctLn5RPK7302cUdbUU9Z+lQdPwSNkwcaSaVB9RHK/aVovO2+ZD8bSaaVqVyj9oJH+Gawa
-        YRxsIw/fMimmEoLjpgr3pNOien5qj24=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-203-QuBryRPFMQapLWgwR5YFNw-1; Mon, 18 Sep 2023 04:41:13 -0400
-X-MC-Unique: QuBryRPFMQapLWgwR5YFNw-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50076a3fd35so4889975e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:41:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695026472; x=1695631272;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UCPsfcbIVqzhPMc9WpjHh54nSWIDbNSd7gzRQ5+/f94=;
-        b=VRFGHfP6qXX4k/V8UqZN7Eetl4X/VfKT3xD79ki+VqfxEZEdFf+Lyd+SLuyXpD3EKs
-         Ml8Jd3em/PLNlx68UDiX0qn6dzQ4LO150ABVfgs5z23tuQSCqJnHMzmVvuXTcU0fZxFi
-         3I58PpU6imuYCQBLbMfu3LLPG6PN7MVEdUc1/xNcVVM5O1L8KkskrMjiWwhPRlBbUdDN
-         uttPNkrN225XuF7gl/J3EgggqTCW73Qb0+me6bLFM+jLeCjY4JgGbDTGSHSYWsbiwaTI
-         N5/kfqqNGgSQDJpm/cVmAtA68sk2JPFrg6WKrex59v/yXq9UCswjQ+1Tn+8vpuOEppBR
-         yo1g==
-X-Gm-Message-State: AOJu0YwKsNo/flmdCGxir1Z6XuCtlnnPlnd1v1Bs5LDG2pci1xEzQW1N
-        RqDwhduwAH9K3NhYcssTQ4OunTUfMwyRwVtelRq6YwyV75Q9HsvVKyi6cVhp7uOqgalgwpV4a0h
-        nNUvNaAGsY4/U1cB8lUNRglcSjTZKqk6n3CY8kpUK
-X-Received: by 2002:a05:6512:23a7:b0:500:a092:d085 with SMTP id c39-20020a05651223a700b00500a092d085mr7708220lfv.68.1695026472252;
-        Mon, 18 Sep 2023 01:41:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHftb4P10wWIp3v1EHXZOaP1ysBNS2M6oNZ6GDQlDzpedtNdGUMoZMBhfxfUMabxjFMqZEsMi5wHIELNox0cn8=
-X-Received: by 2002:a05:6512:23a7:b0:500:a092:d085 with SMTP id
- c39-20020a05651223a700b00500a092d085mr7708204lfv.68.1695026471949; Mon, 18
- Sep 2023 01:41:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-2-lulu@redhat.com>
-In-Reply-To: <20230912030008.3599514-2-lulu@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 18 Sep 2023 16:41:00 +0800
-Message-ID: <CACGkMEuwjga949gGBKyZozfppMa2UF5mu8wuk4o88Qi6GthtXw@mail.gmail.com>
-Subject: Re: [RFC v2 1/4] vduse: Add function to get/free the pages for reconnection
-To:     Cindy Lu <lulu@redhat.com>
-Cc:     mst@redhat.com, maxime.coquelin@redhat.com,
-        xieyongji@bytedance.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 18 Sep 2023 04:42:02 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AEF18C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:41:41 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230918084139euoutp02784bb9d24b0437873715a462bddadbea~F8Z7qXJ_u0820908209euoutp02b
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:41:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230918084139euoutp02784bb9d24b0437873715a462bddadbea~F8Z7qXJ_u0820908209euoutp02b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695026499;
+        bh=I6/F7qFZPtrg6H/Jcv8LXXx7VGKpvo96ZTN4LGrf6fw=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=dp7Lmea9EJ7tbdvZDslnP6QUxppeaNpFLMQDgxDUVIU2zPqhR6CbI85J5ObViZBoJ
+         cwH22lQE2vP1BSZbI1R0uq9/GAveSrl2JxsxypRzcuEtyFqbkS83fuF0mUQMKtNdRt
+         7mpIEHsPyhl06C5LPbz1uo0upe7xEJUpeKbeTD+U=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230918084139eucas1p2bca1ce458c270cd2d518ba89853b4b2f~F8Z7Nddnn1417714177eucas1p2d;
+        Mon, 18 Sep 2023 08:41:39 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 63.83.37758.34D08056; Mon, 18
+        Sep 2023 09:41:39 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230918084138eucas1p1ecd026f8b438b8023d4a7b1db5b2a776~F8Z6vIPXh1114411144eucas1p1Q;
+        Mon, 18 Sep 2023 08:41:38 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230918084138eusmtrp2db991ae9bf97063fa586edd5cedc7b12~F8Z6uUAsB0622806228eusmtrp24;
+        Mon, 18 Sep 2023 08:41:38 +0000 (GMT)
+X-AuditID: cbfec7f5-7ffff7000002937e-33-65080d43afb8
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id CC.AB.10549.24D08056; Mon, 18
+        Sep 2023 09:41:38 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230918084138eusmtip1ee030262885b16ac08365ff6c0b85118~F8Z6hVy1p1042310423eusmtip1B;
+        Mon, 18 Sep 2023 08:41:38 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
+        Server (TLS) id 15.0.1497.2; Mon, 18 Sep 2023 09:41:37 +0100
+Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
+        ([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Mon, 18 Sep
+        2023 09:41:37 +0100
+From:   Daniel Gomez <da.gomez@samsung.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     "minchan@kernel.org" <minchan@kernel.org>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/6] filemap: make the folio order calculation shareable
+Thread-Topic: [PATCH 1/6] filemap: make the folio order calculation
+        shareable
+Thread-Index: AQHZ57ovaMdf9q/cjECRh1BbWSoXsbAb1A+AgARjlAA=
+Date:   Mon, 18 Sep 2023 08:41:37 +0000
+Message-ID: <20230918084134.d276vadcmkvwonmb@sarkhan>
+In-Reply-To: <ZQRet4w5VSbvKvKB@casper.infradead.org>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [106.110.32.103]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <DE33310D18359544AC6BBC07702B73B0@scsc.local>
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SeUiTYRzHefa+e/dutHib14ORwSgzNc0OeCuNousljFSiQLpWvbmxTWVv
+        6zCijYJSQs1Y6bSaS6fzyHw7pistVmnrorDWtDJddrAiUbND7XC+K/bf58fzPX4/eHBE8owf
+        jisy99CaTJlKionQa20/H89ZIcbpud1WhCxrqMPI2tcFGNnRN5l8N5iPki1dMeSNFidKdtjL
+        MLK77g+ftI81CUh34TtAWob7BeT1RjNGjv4ow5aJqVLdU5QysVrqcnU01fFIS7E1uRjFDhYJ
+        qHvFoyg1xEak4OmixF20SrGX1sQv3S6SX31Vx8vWifb3NFciOvBNkAeEOCQWwCf9Ll4eEOES
+        ohpAV5HbP3wF0FTkBdwwBGCl1cL7ZzlydBj4WEJUAfjnqeK/qNtY5Xc8BLD14oA/ywqg0dbN
+        91kwYjZsdbLj7TgeTETBz1fm+TQIcZcPK+pZ1KcJIpLhYLttoi6YWA+7btoQjhfDzsvnEZ8X
+        JWbCWyeCfCgmFsK3lxJ9CuH4cs6KhokUQEyDHuvIxJ0IEQa7+s77D5gCzaU3EI5D4W97L8Zx
+        LHz0og9wPBderWxFOZbCsePlgMuJhabrgxjHi+Azp53PcQy0lH+ayBSP5ztL+lDfWZAwiKC5
+        psQfuhKOfi/2LxEEve1XBIUg1hiwnzGgwxjQYQzoMAZ0mAC/BoTRWkadQTPzM+l9cYxMzWgz
+        M+J2ZqlZMP7xHvxuH24C1d6BOAfg4cABII5Ig8UlCRgtEe+SHcihNVnbNFoVzTjAVByVholj
+        kpw7JUSGbA+tpOlsWvPvlYcLw3W86S8jj+Wo3UkvxjZW6JRZxHM3eUIzNLO/1JUfeakw124D
+        kjPNIdpOxQqXvjbxgNcqarwTdTbJY0uuGli7AMtPPWiomR1xPzI1V7x/9aYLjnXL2/Vj2oX1
+        StZc+16boEkJ/SVMjWea03K/Hsou3oq4ez/u69XLDA8sR11N0QVvBiKuhWy+F9uzRmBpW7ZF
+        dNehCrNFHw8/V16ww8P/IM8aEubhux0f9aYZd1Z5XuNyxeEm+bn0nzm3RpTepOkpLvSNUnWs
+        onEkeVYa9QFUzdAbeqzLg257QhhpT17+Z/Maz5fJhpOHJx2pVUundnUknw6+vZ09tWFJfMOP
+        zg0thTukKCOXJUQjGkb2F87yX4HnAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLKsWRmVeSWpSXmKPExsVy+t/xu7pOvBypBtOnKlrMWb+GzWL13X42
+        i8tP+Cyefupjsdh7S9tiz96TLBaXd81hs7i35j+rxa4/O9gtbkx4ymix7Ot7dovdGxexWfz+
+        MYfNgddjdsNFFo8Fm0o9Nq/Q8rh8ttRj06pONo9Nnyaxe5yY8ZvF4/MmuQCOKD2bovzSklSF
+        jPziElulaEMLIz1DSws9IxNLPUNj81grI1MlfTublNSczLLUIn27BL2MrXfWMBU0cFU82LmU
+        uYHxG3sXIyeHhICJRHPLV8YuRi4OIYGljBJbZ+1jgUjISGz8cpUVwhaW+HOtiw2i6COjRMN7
+        kASIc4ZRYn3zemYIZyWjxLvdZ5lAWtgENCX2ndwEtIODQ0RAQ+LNFiOQGmaBo6wSS9ZuAlsh
+        LOAj8en4drB6EQFfiS0ntrBB2FYSNzfPZwbpZRFQlTjQIwxi8gqYSjzeYAOx6jWjRN/8V2DX
+        cQK9cHLJerCRjAKyEo9W/gJ7jVlAXOLWk/lMEB8ISCzZc54ZwhaVePn4H9RnOhJnrz9hhLAN
+        JLYuhfleSeJPx0JGiDk6Egt2f2KDsC0lrpzcxQpha0ssW/gabCavgKDEyZlPWCYwysxCsnoW
+        kvZZSNpnIWmfhaR9ASPrKkaR1NLi3PTcYkO94sTc4tK8dL3k/NxNjMB0tu3Yz807GOe9+qh3
+        iJGJg/EQowQHs5II70xDtlQh3pTEyqrUovz4otKc1OJDjKbAoJvILCWanA9MqHkl8YZmBqaG
+        JmaWBqaWZsZK4ryeBR2JQgLpiSWp2ampBalFMH1MHJxSDUzqE5p+C8s3fn24MzO31Z9L+ml6
+        96zLRptVFfdaF+V9n8K63/IJ9/LNXoyNupcVv268tNsxMSz1HdsDCU6r79/cnbVkFnxf0aZU
+        0HJoQx2j2M/sIoZnxnt2iPJLHl/vOCPIVX772y1VdbNdJd4VN3MFs4YJPHmazqAo5nCiovs7
+        4y3jrkUdcvJmi3jVKjVZ+82XvF4hu0tc7VfrvsripN3aqVyrg8WKp62YKnnp7GN2bpY24anr
+        VnHaP7m2LN5B6fPH+4u9u9icZv+JE1Ccb/Po/JRbFtNMm55/FrLZu7Bp2qKE/VPF2XOSIpx5
+        hBcseLPxW0Tk/9bm/fdv2pgcEJ+0fvU81RW7siyfnmDXElNiKc5INNRiLipOBACzjsVg8AMA
+        AA==
+X-CMS-MailID: 20230918084138eucas1p1ecd026f8b438b8023d4a7b1db5b2a776
+X-Msg-Generator: CA
+X-RootMTR: 20230915095124eucas1p1eb0e0ef883f6316cf14c349404a51150
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230915095124eucas1p1eb0e0ef883f6316cf14c349404a51150
+References: <20230915095042.1320180-1-da.gomez@samsung.com>
+        <CGME20230915095124eucas1p1eb0e0ef883f6316cf14c349404a51150@eucas1p1.samsung.com>
+        <20230915095042.1320180-2-da.gomez@samsung.com>
+        <ZQRet4w5VSbvKvKB@casper.infradead.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 11:00=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote:
+On Fri, Sep 15, 2023 at 02:40:07PM +0100, Matthew Wilcox wrote:
+> On Fri, Sep 15, 2023 at 09:51:23AM +0000, Daniel Gomez wrote:
+> > To make the code that clamps the folio order in the __filemap_get_folio
+> > routine reusable to others, move and merge it to the fgf_set_order
+> > new subroutine (mapping_size_order), so when mapping the size at a
+> > given index, the order calculated is already valid and ready to be
+> > used when order is retrieved from fgp_flags with FGF_GET_ORDER.
+> >
+> > Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
+> > ---
+> >  fs/iomap/buffered-io.c  |  6 ++++--
+> >  include/linux/pagemap.h | 42 ++++++++++++++++++++++++++++++++++++-----
+> >  mm/filemap.c            |  8 --------
+> >  3 files changed, 41 insertions(+), 15 deletions(-)
 >
-> Add the function vduse_alloc_reconnnect_info_mem
-> and vduse_alloc_reconnnect_info_mem
-> In this 2 function, vduse will get/free (vq_num + 1)*page
-> Page 0 will be used to save the reconnection information, The
-> Userspace App will maintain this. Page 1 ~ vq_num + 1 will save
-> the reconnection information for vqs.
-
-Please explain why this is needed instead of only describing how it is
-implemented. (Code can explain itself).
-
+> That seems like a lot of extra code to add in order to avoid copying
+> six lines of code and one comment into the shmem code.
 >
-> Signed-off-by: Cindy Lu <lulu@redhat.com>
-> ---
->  drivers/vdpa/vdpa_user/vduse_dev.c | 86 ++++++++++++++++++++++++++++++
->  1 file changed, 86 insertions(+)
->
-> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
-vduse_dev.c
-> index 26b7e29cb900..4c256fa31fc4 100644
-> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> @@ -30,6 +30,10 @@
->  #include <uapi/linux/virtio_blk.h>
->  #include <linux/mod_devicetable.h>
->
-> +#ifdef CONFIG_X86
-> +#include <asm/set_memory.h>
-> +#endif
-> +
->  #include "iova_domain.h"
->
->  #define DRV_AUTHOR   "Yongji Xie <xieyongji@bytedance.com>"
-> @@ -41,6 +45,23 @@
->  #define VDUSE_IOVA_SIZE (128 * 1024 * 1024)
->  #define VDUSE_MSG_DEFAULT_TIMEOUT 30
->
-> +/* struct vdpa_reconnect_info save the page information for reconnection
-> + * kernel will init these information while alloc the pages
-> + * and use these information to free the pages
-> + */
-> +struct vdpa_reconnect_info {
-> +       /* Offset (within vm_file) in PAGE_SIZE,
-> +        * this just for check, not using
-> +        */
-> +       u32 index;
-> +       /* physical address for this page*/
-> +       phys_addr_t addr;
-> +       /* virtual address for this page*/
-> +       unsigned long vaddr;
+> It's not wrong, but it seems like a bad tradeoff to me.
 
-If it could be switched by virt_to_phys() why duplicate those fields?
+I saw some value in sharing the logic but I'll merge this code directly
+in shmem and add a comment 'Like filemap_' similar to the one in
+shmem_add_to_page_cache.
 
-> +       /* memory size, here always page_size*/
-> +       phys_addr_t size;
-
-If it's always PAGE_SIZE why would we have this?
-
-> +};
-> +
->  struct vduse_virtqueue {
->         u16 index;
->         u16 num_max;
-> @@ -57,6 +78,7 @@ struct vduse_virtqueue {
->         struct vdpa_callback cb;
->         struct work_struct inject;
->         struct work_struct kick;
-> +       struct vdpa_reconnect_info reconnect_info;
->  };
->
->  struct vduse_dev;
-> @@ -106,6 +128,7 @@ struct vduse_dev {
->         u32 vq_align;
->         struct vduse_umem *umem;
->         struct mutex mem_lock;
-> +       struct vdpa_reconnect_info reconnect_status;
->  };
->
->  struct vduse_dev_msg {
-> @@ -1030,6 +1053,65 @@ static int vduse_dev_reg_umem(struct vduse_dev *de=
-v,
->         return ret;
->  }
->
-> +int vduse_alloc_reconnnect_info_mem(struct vduse_dev *dev)
-> +{
-> +       struct vdpa_reconnect_info *info;
-> +       struct vduse_virtqueue *vq;
-> +       void *addr;
-> +
-> +       /*page 0 is use to save status,dpdk will use this to save the inf=
-ormation
-> +        *needed in reconnection,kernel don't need to maintain this
-> +        */
-> +       info =3D &dev->reconnect_status;
-> +       addr =3D (void *)get_zeroed_page(GFP_KERNEL);
-> +       if (!addr)
-> +               return -1;
-
--ENOMEM?
-
-Thanks
-
+Thanks for the quick feedback and review Matthew. I'll do a V2 with the
+changes and retest the series again using latest next tag.=
