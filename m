@@ -2,135 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21217A4D8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A857A4CCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjIRPxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
+        id S229677AbjIRPkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjIRPxe (ORCPT
+        with ESMTP id S229468AbjIRPko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:53:34 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DF5173D
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:52:16 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34f1ffda46fso313225ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:52:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695052060; x=1695656860; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UvV317n6yyGUg56R/7pdLcqCtdADu2ogATpf8Oy64Nk=;
-        b=ssBsfFlkBcWmKH1Gng1juSZnLRvr7D2rKBG9Nz3JRiABpRTdRL04/wSie7IcL/v3TS
-         JF6Inpet9jk6aXvf+JTl0w4Jh4d+PtpaKaWNZ2SJly5d+uNjONnH11c1Af/1/MG0k/r/
-         TivRuuFP+z9cROsXK5N2+4Pt1t+BwlQWWM6pwTY9wHXWvtkn9gMSlgpYQXISqKGMpAtL
-         gkOXT/et0pEiHD2A/tkC9J5ashpaJYFXVrzwlD57MGNUYZMv97hVMjHVg0cXlvtHeTzH
-         dvIY0Djox6fc0HYtkJD3BzljSyEkBfBee1mZbZF/NlafvQquh+pe56c1k6QhfipL5IQ/
-         Srbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695052060; x=1695656860;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UvV317n6yyGUg56R/7pdLcqCtdADu2ogATpf8Oy64Nk=;
-        b=nU7B1dQehK7L2AF+iRDHBbX7jK6nGzgoX0XFN43WLO1XWMmGlO8ID3CIsMDd6WcWpY
-         msJ9ICOjuACXiS4criGlLYR/Zwb1Ug1hspBCCE3Y3WHJ++swTGw/i7qczyIiqi2exmx+
-         zSq5wdxlFJdUCfOQ0TnVwsGha7ZC9Va4OX4OrHSwVwGaGXWZMOsUrpCzkhEJMva1knPz
-         LxHsT3F3SwIuzUotAN8UuAa60MTNzDg2OXZdA0LcAU6BMa2Lwmboftb171/zeGXyWvdy
-         ptloRWcPVRwzej31UxB+2inNyNkMbVdVyGuL6MEdrq3ctYJfKh5QANNjrRd4DojoOMm4
-         VqUw==
-X-Gm-Message-State: AOJu0YziA98srU0nd/ccrcXC5ZDKW+y6//SJfeHB4NxfjVBKpmVLKOy2
-        S4x4N/jNWDvucE11JnhdTEgB/X62MzJvRaxCQpCnXZl/FPW2E7DAKurE7A==
-X-Google-Smtp-Source: AGHT+IG9qqBMe+choJ4leMLCkiIje8FUPx8O31NwXMKGaaM7qF1rlAYaYJnEXhRPBK/ZOM1AGuaJPBQA0/aP9CZaDVI=
-X-Received: by 2002:ac8:5ac2:0:b0:417:944a:bcb2 with SMTP id
- d2-20020ac85ac2000000b00417944abcb2mr385498qtd.13.1695045901037; Mon, 18 Sep
- 2023 07:05:01 -0700 (PDT)
+        Mon, 18 Sep 2023 11:40:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CADFC;
+        Mon, 18 Sep 2023 08:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=XYZRHs0p/FMaKDD4jecbFxZVy3DXCvr3GOvUaH+nvWE=; b=SnOACfvHrRzPMC4goTXMpBR5cm
+        saYnBnGyRHJ2rvvxeS84D4/j9ufP1KrZResbTQ6pLykCWbCBZlAfsFhmWa1NCduEtGm4lyeeaChrE
+        IY0NDCLoSX9JF6i/kbqYbAYGFsDRPWBnh3lzq/Ci4ylddEa1rjNCBm8+J9weqsbLcQXrx5JoDsxrf
+        FghbzcLgUxBCW5JCFpXEpdYzhaUIGo603ZHhN4//Yv5XcP/kIT6NzfFFH7k52qrw3dHyUoUHuiRd4
+        IKlccJ1iYDF4xb2w1LZFK53XBBGDszwIWUbDN5WjUw8Fqqwx+EVDrpwPuhcsABDunlDeB8lLspvIG
+        eF8T+IqA==;
+Received: from [2a00:23ee:2830:116e:a875:a49a:29fd:de50] (helo=[IPv6:::1])
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qiEsk-00BPSw-5o; Mon, 18 Sep 2023 14:05:51 +0000
+Date:   Mon, 18 Sep 2023 15:05:39 +0100
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     paul@xen.org, Paul Durrant <xadimgnik@gmail.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+CC:     Paul Durrant <pdurrant@amazon.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v2_11/12=5D_KVM=3A_selftests_/_xen=3A?= =?US-ASCII?Q?_don=27t_explicitly_set_the_vcpu=5Finfo_address?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <f5eab713-fa74-2cbc-7df5-81d8d26fee0a@xen.org>
+References: <20230918112148.28855-1-paul@xen.org> <20230918112148.28855-12-paul@xen.org> <f649285c0973ec59180ed51c4ee10cdc51279505.camel@infradead.org> <56dad458-8816-2de5-544e-a5e50c5ad2a2@xen.org> <c9a1961812b0cbb6e9f641dec5c6edcb21482161.camel@infradead.org> <f5eab713-fa74-2cbc-7df5-81d8d26fee0a@xen.org>
+Message-ID: <425F7A5D-58D1-4D94-A88C-E7B1EAEAD084@infradead.org>
 MIME-Version: 1.0
-References: <3793723.1694795079@warthog.procyon.org.uk> <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com>
- <0000000000001c12b30605378ce8@google.com> <3905046.1695031382@warthog.procyon.org.uk>
- <65085768c17da_898cd294ae@willemb.c.googlers.com.notmuch>
-In-Reply-To: <65085768c17da_898cd294ae@willemb.c.googlers.com.notmuch>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 18 Sep 2023 16:04:49 +0200
-Message-ID: <CANn89iJ39Hguu6bRm2am6J_u0pSnm++ORa_UVpC0+8-mxORFfw@mail.gmail.com>
-Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 3:58=E2=80=AFPM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> David Howells wrote:
-> > David Howells <dhowells@redhat.com> wrote:
-> >
-> > > I think the attached is probably an equivalent cleaned up reproducer.=
-  Note
-> > > that if the length given to sendfile() is less than 65536, it fails w=
-ith
-> > > EINVAL before it gets into __ip6_append_data().
-> >
-> > Actually, it only fails with EINVAL if the size is not a multiple of th=
-e block
-> > size of the source file because it's open O_DIRECT so, say, 65536-512 i=
-s fine
-> > (and works).
-> >
-> > But thinking more on this further, is this even a bug in my code, I won=
-der?
-> > The length passed is 65536 - but a UDP packet can't carry that, so it
-> > shouldn't it have errored out before getting that far?  (which is what =
-it
-> > seems to do when I try it).
-> >
-> > I don't see how we get past the length check in ip6_append_data() with =
-the
-> > reproducer we're given unless the MTU is somewhat bigger than 65536 (is=
- that
-> > even possible?)
->
-> An ipv6 packet can carry 64KB of payload, so maxnonfragsize of 65535 + 40
-> sounds correct. But payload length passed of 65536 is not (ignoring ipv6
-> jumbograms). So that should probably trigger an EINVAL -- if that is inde=
-ed
-> what the repro does.
 
-l2tp_ip6_sendmsg() claims ip6_append_data() can make better checks,
-but what about simply replacing INT_MAX by 65535 ?
 
-diff --git a/net/l2tp/l2tp_ip6.c b/net/l2tp/l2tp_ip6.c
-index 44cfb72bbd18a34e83e50bebca09729c55df524f..ab57a134923bfc8040dba0d8fb7=
-02551ff265184
-100644
---- a/net/l2tp/l2tp_ip6.c
-+++ b/net/l2tp/l2tp_ip6.c
-@@ -502,10 +502,7 @@ static int l2tp_ip6_sendmsg(struct sock *sk,
-struct msghdr *msg, size_t len)
-        int ulen;
-        int err;
+On 18 September 2023 14:41:08 BST, Paul Durrant <xadimgnik@gmail=2Ecom> wr=
+ote:
+>Well, if the VMM is using the default then it can't unmap it=2E But setti=
+ng a vcpu_info *after* enabling any event channels would be a very odd thin=
+g for a guest to do and IMO it gets to keep the pieces if it does so=2E
 
--       /* Rough check on arithmetic overflow,
--        * better check is made in ip6_append_data().
--        */
--       if (len > INT_MAX - transhdrlen)
-+       if (len > 65535 - transhdrlen)
-                return -EMSGSIZE;
-        ulen =3D len + transhdrlen;
+
+Hm, I suppose I'm OK with that approach=2E The fact that both VMM implemen=
+tations using this KVM/Xen support let the guest keep precisely those piece=
+s is a testament to that :)
+
+But now we're hard-coding the behaviour in the kernel and declaring that n=
+o VMM will be *able* to "fix" that case even if it does want to=2E So perha=
+ps it wants a modicum more thought and at least some explicit documentation=
+ to that effect?
+
+And a hand-wavy plan at least for what we'd do if we suddenly did find a r=
+eason to care?
