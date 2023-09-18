@@ -2,180 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A177A4356
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500497A4351
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240503AbjIRHpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
+        id S240460AbjIRHpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240509AbjIRHoi (ORCPT
+        with ESMTP id S240510AbjIRHoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:44:38 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20B3CCE;
-        Mon, 18 Sep 2023 00:43:10 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E2503C000B;
-        Mon, 18 Sep 2023 07:42:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695022989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yImr8034vhbpOmwr9ltkLzW5eGzffuc8l1c+tIEQu4k=;
-        b=keY1QUS7dtQt/GsW5vOiYAwTOlPRGRRxUYperfcoQ3wCmbAj7I76ON/0gdvYrWD/tWoiYL
-        Hn2p1FGMOpV7FuqzU15Nt0trTIa4GFq+b3F4Y28Uz6Ve9PGSwCgX4jLzvbWGR8Yu1pLEU2
-        1NsWUihV3cVL74ZjiCyIFfG1zGI8LQKIzhHCMa2BxY0+rOJWZITaXBmNywrfT6C1fyWcdT
-        BT636wpK0zzG/fVKstJkQo/SGNr6otVeseu8nm3FvgklIDVTPkEnJ5ewMLWMjVYTzmE0Xf
-        nT6R9OlIbFGA9Kw5pzgn3EYX71nox4MtzDHt0P9KrBj9kFNiHbI+pVNi3AYXKQ==
-Date:   Mon, 18 Sep 2023 09:42:39 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v5 08/31] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc:
- Add support for QMC HDLC
-Message-ID: <20230918094239.4d2d0c32@bootlin.com>
-In-Reply-To: <20230913-unburned-overturn-41b83e1eed25@spud>
-References: <20230912081527.208499-1-herve.codina@bootlin.com>
-        <20230912101018.225246-1-herve.codina@bootlin.com>
-        <20230912-capable-stash-c7a3e33078ac@spud>
-        <20230913092640.76934b31@bootlin.com>
-        <20230913-unruly-recite-7dbbbd7e63e0@spud>
-        <20230913165250.02bab2ad@bootlin.com>
-        <20230913-oversold-delay-05368e5de9fe@spud>
-        <20230913-unburned-overturn-41b83e1eed25@spud>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 18 Sep 2023 03:44:39 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC35FCF8;
+        Mon, 18 Sep 2023 00:43:08 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38I6ld5U014295;
+        Mon, 18 Sep 2023 07:42:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=kW+M14qfpcF97hoQluC9tM98hOjjeZ40Kqhq2jXRfr8=;
+ b=BGvjtnWK+Cg0TYVBbxLWhrVTI8OTU9Zs/doYmTy+ShojJHz2wvzUOTO1zwUih1hfSXE4
+ X2SugyTqUUds5ABNOvMIMwO69sp383+R3XzHQHqYBi0Uga/aWVpk+7wLcDV+S0RhfCZM
+ jSPNvQmEu4cOa0wVKSIKQ8ZxNjU8u3QuZBx+lJLXzh1tlUwABr0YwBz72R9BkJqI8ih6
+ G5sYy5UXnlAoC/SMCLPVtEvQ8fnB7Timyza7YoFyTU/rqQwLd2pey/8aEKx8k7SxLsF8
+ 6jbsPAOjPACUJSaxxorbuc8L+lxyVf2UZhuVKTdKTVa3gjCTPf/1oZUt50NGVzb0+8fF EA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t53ayaqgp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 07:42:53 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38I7gqMm015793
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 07:42:52 GMT
+Received: from [10.216.25.71] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 18 Sep
+ 2023 00:42:45 -0700
+Message-ID: <961b0ad4-baac-4ca4-bc2a-7dae6f129e6f@quicinc.com>
+Date:   Mon, 18 Sep 2023 13:12:42 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 10/13] usb: dwc3: qcom: Add multiport suspend/resume
+ support for wrapper
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Johan Hovold <johan@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
+        <quic_shazhuss@quicinc.com>
+References: <20230828133033.11988-1-quic_kriskura@quicinc.com>
+ <20230828133033.11988-11-quic_kriskura@quicinc.com>
+ <825bc60b-2067-43e2-8b43-9d38b7cebf02@linaro.org>
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <825bc60b-2067-43e2-8b43-9d38b7cebf02@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: CxEyHg7gQX47R1U-FyrDzTqzLzbI0dFx
+X-Proofpoint-ORIG-GUID: CxEyHg7gQX47R1U-FyrDzTqzLzbI0dFx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 impostorscore=0 malwarescore=0 bulkscore=0
+ clxscore=1015 priorityscore=1501 mlxlogscore=411 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309180067
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
 
-On Wed, 13 Sep 2023 15:59:41 +0100
-Conor Dooley <conor@kernel.org> wrote:
 
-> On Wed, Sep 13, 2023 at 03:56:16PM +0100, Conor Dooley wrote:
-> > On Wed, Sep 13, 2023 at 04:52:50PM +0200, Herve Codina wrote:  
-> > > On Wed, 13 Sep 2023 15:42:45 +0100
-> > > Conor Dooley <conor@kernel.org> wrote:
-> > >   
-> > > > On Wed, Sep 13, 2023 at 09:26:40AM +0200, Herve Codina wrote:  
-> > > > > Hi Conor,
-> > > > > 
-> > > > > On Tue, 12 Sep 2023 18:21:58 +0100
-> > > > > Conor Dooley <conor@kernel.org> wrote:
-> > > > >     
-> > > > > > On Tue, Sep 12, 2023 at 12:10:18PM +0200, Herve Codina wrote:    
-> > > > > > > The QMC (QUICC mutichannel controller) is a controller present in some
-> > > > > > > PowerQUICC SoC such as MPC885.
-> > > > > > > The QMC HDLC uses the QMC controller to transfer HDLC data.
-> > > > > > > 
-> > > > > > > Additionally, a framer can be connected to the QMC HDLC.
-> > > > > > > If present, this framer is the interface between the TDM bus used by the
-> > > > > > > QMC HDLC and the E1/T1 line.
-> > > > > > > The QMC HDLC can use this framer to get information about the E1/T1 line
-> > > > > > > and configure the E1/T1 line.
-> > > > > > > 
-> > > > > > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > > > > > > ---
-> > > > > > >  .../bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml   | 13 +++++++++++++
-> > > > > > >  1 file changed, 13 insertions(+)
-> > > > > > > 
-> > > > > > > diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-> > > > > > > index 82d9beb48e00..b5073531f3f1 100644
-> > > > > > > --- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-> > > > > > > +++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-> > > > > > > @@ -101,6 +101,16 @@ patternProperties:
-> > > > > > >            Channel assigned Rx time-slots within the Rx time-slots routed by the
-> > > > > > >            TSA to this cell.
-> > > > > > >  
-> > > > > > > +      compatible:
-> > > > > > > +        const: fsl,qmc-hdlc
-> > > > > > > +
-> > > > > > > +      fsl,framer:
-> > > > > > > +        $ref: /schemas/types.yaml#/definitions/phandle
-> > > > > > > +        description:
-> > > > > > > +          phandle to the framer node. The framer is in charge of an E1/T1 line
-> > > > > > > +          interface connected to the TDM bus. It can be used to get the E1/T1 line
-> > > > > > > +          status such as link up/down.      
-> > > > > > 
-> > > > > > Sounds like this fsl,framer property should depend on the compatible
-> > > > > > being present, no?    
-> > > > > 
-> > > > > Well from the implementation point of view, only the QMC HDLC driver uses this
-> > > > > property.
-> > > > > 
-> > > > > From the hardware description point of view, this property means that the time slots
-> > > > > handled by this channel are connected to the framer. So I think it makes sense for
-> > > > > any channel no matter the compatible (even if compatible is not present).
-> > > > > 
-> > > > > Should I change and constraint the fsl,framer property to the compatible presence ?
-> > > > > If so, is the following correct for this contraint ?
-> > > > >    --- 8< ---
-> > > > >    dependencies:
-> > > > >      - fsl,framer: [ compatible ];
-> > > > >    --- 8< ---    
-> > > > 
-> > > > The regular sort of
-> > > > if:
-> > > > 	compatible:
-> > > > 		contains:
-> > > > 			const: foo
-> > > > then:
-> > > > 	required:
-> > > > 		- fsl,framer
-> > > > would fit the bill, no?  
-> > > 
-> > > Not sure.
-> > > "fsl,framer" is an optional property (depending on the hardware we can have
-> > > a framer or not).  
-> > 
-> > Ah apologies, I had it backwards! Your suggestion seems fair in that
-> > case.  
+On 9/15/2023 7:18 PM, Konrad Dybcio wrote:
+>>   
+>> -#define PWR_EVNT_IRQ_STAT_REG			0x58
+>> +#define PWR_EVNT_IRQ1_STAT_REG			0x58
+>> +#define PWR_EVNT_IRQ2_STAT_REG			0x1dc
+>> +#define PWR_EVNT_IRQ3_STAT_REG			0x228
+>> +#define PWR_EVNT_IRQ4_STAT_REG			0x238
+>> +
+>>   #define PWR_EVNT_LPM_IN_L2_MASK			BIT(4)
+>>   #define PWR_EVNT_LPM_OUT_L2_MASK		BIT(5)
+>>   
+>> @@ -107,6 +111,19 @@ struct dwc3_qcom {
+>>   	int			num_ports;
+>>   };
+>>   
+>> +/*
+>> + * SA8295 has 4 power event IRQ STAT registers to be checked
+>> + * during suspend resume.
+>> + */
+> But this driver supports much more than just SA8295?
 > 
-> Or actually,
-> if:
-> 	compatible:
-> 		not:
-> 	 		contains:
-> 	 			const: foo
->  then:
->  	properties:
->  		fsl,framer: false
-> ? That should do the trick in a more conventional way.
+Yes. Other than SA8295, all single port controllers and SA8195(2 port 
+controller), have these reigsters.
 
-Thanks for this proposal.
-I will use it in the next iteration.
+The rational behind adding this array was that depending on num_ports, 
+any controller can access its required pwr_event_irq_stat register and 
+loop in the suspend/resume code would take care of it. Perhaps I can 
+change the comments to indicate that the array would be used by all 
+controllers and not just SA8295.
+
+>> +#define NUM_PWR_EVENT_STAT_REGS	4
+>> +
+>> +static u32 pwr_evnt_irq_stat_reg_offset[NUM_PWR_EVENT_STAT_REGS] = {
+>> +	PWR_EVNT_IRQ1_STAT_REG,
+>> +	PWR_EVNT_IRQ2_STAT_REG,
+>> +	PWR_EVNT_IRQ3_STAT_REG,
+>> +	PWR_EVNT_IRQ4_STAT_REG,
+>> +};
+>> +
+>>   static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
+>>   {
+>>   	u32 reg;
+>> @@ -440,15 +457,19 @@ static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
+>>   
+>>   static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
+>>   {
+>> +	u8 num_ports;
+> Maybe I'm picky, but I'm not sure defining a variable for
+> a single use of an object with a rather short name
+> (qcom->num_ports) is justified, here and below..
+> 
+
+Sure, will replace num_ports with (qcom->num_ports) and remove the extra 
+variable.
 
 Regards,
-Hervé
+Krishna,
