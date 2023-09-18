@@ -2,47 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F577A40E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE8F7A40F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235940AbjIRGM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 02:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
+        id S239749AbjIRGOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 02:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239697AbjIRGMT (ORCPT
+        with ESMTP id S239799AbjIRGOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 02:12:19 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A800A123;
-        Sun, 17 Sep 2023 23:12:11 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 38I6BSTj019869;
-        Mon, 18 Sep 2023 14:11:28 +0800 (+08)
-        (envelope-from xingxing.luo@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RpvVQ1FmFz2SCXQ3;
-        Mon, 18 Sep 2023 14:08:14 +0800 (CST)
-Received: from zebjkernups01.spreadtrum.com (10.0.93.153) by
- shmbx06.spreadtrum.com (10.0.1.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Mon, 18 Sep 2023 14:11:27 +0800
-From:   Xingxing Luo <xingxing.luo@unisoc.com>
-To:     <b-liu@ti.com>, <gregkh@linuxfoundation.org>, <s.shtylyov@omp.ru>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <xingxing0070.luo@gmail.com>, <Zhiyong.Liu@unisoc.com>,
-        <Cixi.Geng1@unisoc.com>, <Orson.Zhai@unisoc.com>,
-        <zhang.lyra@gmail.com>
-Subject: [PATCH V2] usb: musb: Get the musb_qh poniter after musb_giveback
-Date:   Mon, 18 Sep 2023 14:10:38 +0800
-Message-ID: <20230918061038.30949-1-xingxing.luo@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 18 Sep 2023 02:14:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B89121
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695017647; x=1726553647;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=kUpHOK5IBjbqfbjc9MQ81MuDWUW3Xr1pW4Y/QY8RBCE=;
+  b=QbDy/rHBS7N0L08Lb2/NsJoZqLSBaq4wHJ0Sg5zeWPl1G5uoOEbaR1VF
+   vcIPenAkmXODF04mWFaQtu93DNqAyQj+8G8EEQJF9Um3AzvL+xVoMJFp9
+   2LY+JDH/m0scehIYN1uqjU5srwZWldFeregAMdGkZX8SP05GyntVRPlLg
+   MhVeQwaydLlZrx4yDe8bAs9SOMvFZe30JwIqGKHh3FRMknS9x29SgaZdj
+   mZWaDJKUW0hQKPHMcdtSNxhLOg42RapEIdC0jftEbD49JjtOyN88qqG/z
+   0UMQdrzeglcFfV3m5npXxJmtV3klVGHpNVySwCsSW2XCqBMkHqSgHhTDZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="364618652"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="364618652"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 23:14:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="722351024"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="722351024"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga006.jf.intel.com with ESMTP; 17 Sep 2023 23:14:04 -0700
+Message-ID: <e0a7969a-60e3-6b3c-4f74-592654d4407f@linux.intel.com>
+Date:   Mon, 18 Sep 2023 14:10:58 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.0.93.153]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx06.spreadtrum.com (10.0.1.11)
-X-MAIL: SHSQR01.spreadtrum.com 38I6BSTj019869
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        jgg@nvidia.com
+Subject: Re: [PATCH v3 4/7] iommu: Switch __iommu_domain_alloc() to device ops
+Content-Language: en-US
+To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
+        will@kernel.org
+References: <cover.1694693889.git.robin.murphy@arm.com>
+ <404d8395cf4252c6fe6d98f317f3570127451778.1694693889.git.robin.murphy@arm.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <404d8395cf4252c6fe6d98f317f3570127451778.1694693889.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,48 +67,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When multiple threads are performing USB transmission, musb->lock will be
-unlocked when musb_giveback is executed. At this time, qh may be released
-in the dequeue process in other threads, resulting in a wild pointer, so
-it needs to be here get qh again, and judge whether qh is NULL, and when
-dequeue, you need to set qh to NULL.
+On 9/16/23 12:58 AM, Robin Murphy wrote:
+> @@ -1997,16 +1995,13 @@ void iommu_set_fault_handler(struct iommu_domain *domain,
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_set_fault_handler);
+>   
+> -static struct iommu_domain *__iommu_domain_alloc(const struct bus_type *bus,
+> +static struct iommu_domain *__iommu_domain_alloc(struct device *dev,
+>   						 unsigned type)
+>   {
+> -	const struct iommu_ops *ops = bus ? bus->iommu_ops : NULL;
+> +	const struct iommu_ops *ops = dev_iommu_ops(dev);
+>   	struct iommu_domain *domain;
+>   	unsigned int alloc_type = type & IOMMU_DOMAIN_ALLOC_FLAGS;
+>   
+> -	if (!ops)
+> -		return NULL;
+> -
+>   	domain = ops->domain_alloc(alloc_type);
+>   	if (!domain)
+>   		return NULL;
+> @@ -2030,9 +2025,28 @@ static struct iommu_domain *__iommu_domain_alloc(const struct bus_type *bus,
+>   	return domain;
+>   }
+>   
+> +static int __iommu_domain_alloc_dev(struct device *dev, void *data)
+> +{
+> +	struct device **alloc_dev = data;
+> +
+> +	if (!dev_has_iommu(dev))
+> +		return 0;
+> +
+> +	WARN_ONCE(*alloc_dev && dev_iommu_ops(dev) != dev_iommu_ops(*alloc_dev),
+> +		  "Multiple IOMMU drivers present, which the public IOMMU API can't fully support yet. You may still need to disable one or more to get the expected result here, sorry!\n");
+> +
+> +	*alloc_dev = dev;
+> +	return 0;
+> +}
+> +
+>   struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
+>   {
+> -	return __iommu_domain_alloc(bus, IOMMU_DOMAIN_UNMANAGED);
+> +	struct device *dev = NULL;
+> +
+> +	if (bus_for_each_dev(bus, NULL, &dev, __iommu_domain_alloc_dev))
+> +		return NULL;
 
-Fixes: dbac5d07d13e ("usb: musb: host: don't start next rx urb if current one failed")
-Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
----
- drivers/usb/musb/musb_host.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+__iommu_domain_alloc_dev() always returns 0. Hence above if condition
+will never be true. Perhaps, in __iommu_domain_alloc_dev(),
 
-diff --git a/drivers/usb/musb/musb_host.c b/drivers/usb/musb/musb_host.c
-index a02c29216955..bc4507781167 100644
---- a/drivers/usb/musb/musb_host.c
-+++ b/drivers/usb/musb/musb_host.c
-@@ -321,10 +321,16 @@ static void musb_advance_schedule(struct musb *musb, struct urb *urb,
- 	musb_giveback(musb, urb, status);
- 	qh->is_ready = ready;
- 
-+	/*
-+	 * musb->lock had been unlocked in musb_giveback, so qh may
-+	 * be freed, need to get it again
-+	 */
-+	qh = musb_ep_get_qh(hw_ep, is_in);
-+
- 	/* reclaim resources (and bandwidth) ASAP; deschedule it, and
- 	 * invalidate qh as soon as list_empty(&hep->urb_list)
- 	 */
--	if (list_empty(&qh->hep->urb_list)) {
-+	if (qh && list_empty(&qh->hep->urb_list)) {
- 		struct list_head	*head;
- 		struct dma_controller	*dma = musb->dma_controller;
- 
-@@ -2398,6 +2404,7 @@ static int musb_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
- 		 * and its URB list has emptied, recycle this qh.
- 		 */
- 		if (ready && list_empty(&qh->hep->urb_list)) {
-+			musb_ep_set_qh(qh->hw_ep, is_in, NULL);
- 			qh->hep->hcpriv = NULL;
- 			list_del(&qh->ring);
- 			kfree(qh);
--- 
-2.17.1
+	if (WARN_ON(*alloc_dev && dev_iommu_ops(dev) !=
+             dev_iommu_ops(*alloc_dev))
+		return -EPERM;
 
+?
+
+> +
+> +	return __iommu_domain_alloc(dev, IOMMU_DOMAIN_UNMANAGED);
+
+Is it possible that all devices on this bus have dev_has_iommu() to be
+false? If so, we probably need something like below:
+
+	if (!dev_has_iommu(dev))
+		return -ENODEV;
+
+?
+
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_domain_alloc);
+>   
+> @@ -3228,13 +3242,17 @@ static int __iommu_group_alloc_blocking_domain(struct iommu_group *group)
+>   	if (group->blocking_domain)
+>   		return 0;
+>   
+> -	group->blocking_domain = __iommu_domain_alloc(dev->bus, IOMMU_DOMAIN_BLOCKED);
+> +	/* noiommu groups should never be here */
+> +	if (WARN_ON(!dev_has_iommu(dev)))
+> +		return -ENODEV;
+> +
+> +	group->blocking_domain = __iommu_domain_alloc(dev, IOMMU_DOMAIN_BLOCKED);
+>   	if (!group->blocking_domain) {
+>   		/*
+>   		 * For drivers that do not yet understand IOMMU_DOMAIN_BLOCKED
+>   		 * create an empty domain instead.
+>   		 */
+> -		group->blocking_domain = __iommu_domain_alloc(dev->bus, IOMMU_DOMAIN_UNMANAGED);
+> +		group->blocking_domain = __iommu_domain_alloc(dev, IOMMU_DOMAIN_UNMANAGED);
+>   		if (!group->blocking_domain)
+>   			return -EINVAL;
+>   	}
+
+Best regards,
+baolu
