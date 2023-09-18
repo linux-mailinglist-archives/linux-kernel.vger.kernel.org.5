@@ -2,149 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1E87A4A0B
+	by mail.lfdr.de (Postfix) with ESMTP id EB2257A4A0D
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241969AbjIRMr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
+        id S241993AbjIRMrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242008AbjIRMrK (ORCPT
+        with ESMTP id S242012AbjIRMrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Sep 2023 08:47:10 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3AF106;
-        Mon, 18 Sep 2023 05:46:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hI31fhfoG9Wc2ecJpeVou8AENT/Mn2vqmVP/sSO8fu234MJcD9gnLu+flEIUp8+/LsXCQGjriwz5mnDPzICdlD9qJahYP56fOrb4lGcvCpuHO40skQMJnsL1nsZASJ4OfzGrbHCjB/Z49VyKcHC11muCO4gW+kAHfTC0IK/jcpbQTlB3qfkMWmBBEmTdDrU7sHs9rCi/dRBbaQDDMshQl45ATxZlnuaX4Yah5O0a0UPiYQU5Vut5/dfusuk2En5mN3dh2ml3Tzrisqj2MzG8pXYjTAIQiIYvOwhOFC/0/lyIIkrDpdhUy6JEN1Us6SoC/H3t/vKlhAiscDppC6pwTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B4Qt0qilhsjaRGaLYks3Muhi5Dj/h3lL2suZzwSrtz4=;
- b=SCIPj86XnsuqoxT3kcf0Pi22sch+yvgli5O4fgNvw3A9Nz2+BleoAA3zzNAGUWxtP65vfsKpY4o6lGmh9jg2oKzX4y9AuFcyyTA9sPS59YcqQQFW//LJjVEcMezHrV2oTS9zYCKl/S2dYBTtGNurSb33byxfAPm/dBqLug7Dlpn25THcXnFyXh5RaZCmILhi7sq7In2PQD/1bC6+QjIMrjEqEKW+5hMS0yEdwV7eZrffXDU6ZUhkPR4Pt00q+ciC0MrI5fxTVcoxGR3W5PmPuX8XA84cG42jO2sTXCMXijXMCGA9S0rYJzBvWLxtVwv6DXqm65y/dleT1ANd0PmtLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B4Qt0qilhsjaRGaLYks3Muhi5Dj/h3lL2suZzwSrtz4=;
- b=DL7kBAxIh7PBubbyknWobphYK4HQq4jFbQS85m29SUyEZ9bDn0ont6tYZegoy8jnbyNrXkFqOkip240YiOE1/Dd4LzuG+ODrc+hXIrEJRLhGu8zeHd++0unMEsQNbgOdCRvJ2llltmwyOdi1TiQk5ZcHZ2Anyg09bSpTn/QITjTpor8ZcfaC6Z8osYiXl/eYA0TU9sM9iFHqpsX8PO0E3/FfI64Wr8LTCqNLp8fYws5UrH72u2BieH4D2WE/fVt9t7RmcgzCP9nM2/NCF6CqQZlzdDPxKKj1dOD6lQSk5nbbOkNyujbzgpOcLt6AEfMq3QwJR6BzUbljv75e6b8CSg==
-Received: from BL0PR0102CA0020.prod.exchangelabs.com (2603:10b6:207:18::33) by
- MN0PR12MB6224.namprd12.prod.outlook.com (2603:10b6:208:3c0::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Mon, 18 Sep
- 2023 12:46:35 +0000
-Received: from MN1PEPF0000ECD4.namprd02.prod.outlook.com
- (2603:10b6:207:18:cafe::4b) by BL0PR0102CA0020.outlook.office365.com
- (2603:10b6:207:18::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20 via Frontend
- Transport; Mon, 18 Sep 2023 12:46:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- MN1PEPF0000ECD4.mail.protection.outlook.com (10.167.242.132) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.20 via Frontend Transport; Mon, 18 Sep 2023 12:46:35 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 18 Sep
- 2023 05:46:21 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 18 Sep 2023 05:46:21 -0700
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Mon, 18 Sep 2023 05:46:21 -0700
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.10 000/406] 5.10.195-rc1 review
-In-Reply-To: <20230917191101.035638219@linuxfoundation.org>
-References: <20230917191101.035638219@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE07710E;
+        Mon, 18 Sep 2023 05:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695041206; x=1726577206;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LJ1zp68bNG5G9J5GGwAmMBIOGWs61scPElasfTnNOpg=;
+  b=UuwBQVtKPugcK0VmbAqilryGhqK6UfoMEj9IdKym871dZLiSoA4HIAXe
+   cyg5KRX1Yd30VSikc/BtX1WSaEX0k+IhVoKC1DDNHRsrJGHBYSxD758kQ
+   o1Mjgga2O8RvKYVueWmmkMCCMSZ+oSoRMUWHYtLTort63nHxB4xCnuJyN
+   /p2Tq4M8718IdHL735gtXwf5mzG1epbzKP93vchMqVZzCx060uoPUQdxT
+   pN9TF2ZR2BXuNTuy/7NwaNCKYrIijUMzhS4Nfs8QSTslmiyu3DfCF8fE/
+   cHF7v365MSs0HwVtdja5oFvKiX0ruA6UwFROC4cG05QS+tTQZ0drO0J40
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="383465402"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="383465402"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 05:46:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="739128262"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="739128262"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga007.jf.intel.com with SMTP; 18 Sep 2023 05:46:41 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 18 Sep 2023 15:46:40 +0300
+Date:   Mon, 18 Sep 2023 15:46:40 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Abdel Alkuor <alkuor@gmail.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        abdelalkuor@geotab.com
+Subject: Re: [PATCH v5 08/15] USB: typec: Add interrupt support for TPS25750
+Message-ID: <ZQhGsA4PyiaUy7+7@kuha.fi.intel.com>
+References: <20230917152639.21443-1-alkuor@gmail.com>
+ <20230917152639.21443-9-alkuor@gmail.com>
 MIME-Version: 1.0
-Message-ID: <d3e3f3f0-c0bd-4a75-a218-a3068d5ff95a@drhqmail201.nvidia.com>
-Date:   Mon, 18 Sep 2023 05:46:21 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD4:EE_|MN0PR12MB6224:EE_
-X-MS-Office365-Filtering-Correlation-Id: 875c61a7-a850-4c7c-1a95-08dbb8454b4a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xw1TQHmVw+Jvku2/5YrBFfmvU7jgJMo9dgwVrJxhcx6sLqU5MejP6C0qwgS/2IDVSrtYTZBlx2EKABzBlFyfM5v+0Y5dVDTx0q2A76rtJAit+Hq+kbANDbOBzSvhQlKoxBNxh1LEYH8GVlHDGaU/kIq1u/HBUlKsYiUenGy1PG76DvIypQlFjaaQk1dF4GGYI06Q0FYZQhUlQ9uCLhrwU2+FuO/0i4X3a/z7o6j/zTT2m3E22u2BsxUOwp82sifJTrYB7XchOaK+svSN4a+tyffsJVJFesqMzV1dawICFkUJ1/VckWJjK+A+YiYJIm8j1tcssOGlznYwjTlllBZHgcEmqc8XKIxzI86mdZChD5KI1JsVxWxIvTdNnUwzetNznYpSISpVmVPZ2YOP+g4WiO2Iw+abRGDaOOJsXm01frTOHsrkRj4E5CtKKGY6Tfgx1/j8qFxK0+9pePpSiPlEPalOQJOSh5EXVHz6Uq5QIWibvzvVn21dXNZE3Crqw7uMhm6bhIfPVrjlcU3dm9OWXi06NgPguj8pMK90BWhcY4Fd11SpRI/EpFRGhDjSTyo8Cz1WkhaQvAvaMR7k4N+H0uZJCB74miQCSDjRFrf4fYtR4c6HKTdyPRk0nBhSj25nBB84+rAnoWGXMubD9LkJwbglCzQ1eLCf0U4mGPTve4I9ho1hJOEO8mZ8WBB3oXTZRG4lam5lC5HX7Inihj1kJuPHQYcYR+KV8zhr4hx8ANV5cecDRO7WUd8nZx6cYrSTQlqN1IddVKR+uJX1xWh36Un410WYSDIpmVAxziOvg0w=
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(136003)(396003)(186009)(451199024)(1800799009)(82310400011)(36840700001)(40470700004)(46966006)(4326008)(26005)(40480700001)(426003)(336012)(40460700003)(8676002)(8936002)(82740400003)(356005)(7636003)(2906002)(36860700001)(41300700001)(86362001)(70586007)(70206006)(54906003)(316002)(6916009)(31686004)(31696002)(5660300002)(7416002)(966005)(47076005)(478600001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 12:46:35.5959
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 875c61a7-a850-4c7c-1a95-08dbb8454b4a
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD4.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6224
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230917152639.21443-9-alkuor@gmail.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Sep 2023 21:07:34 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.195 release.
-> There are 406 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hi,
+
+On Sun, Sep 17, 2023 at 11:26:32AM -0400, Abdel Alkuor wrote:
+> From: Abdel Alkuor <abdelalkuor@geotab.com>
 > 
-> Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
-> Anything received after that time might be too late.
+> Update tps6598x interrupt handler to accommodate tps25750 interrupt
+
+You have the "why" explained here, but please also explain what you
+are doing - in this case it's not completely clear.
+
+> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+> ---
+>  drivers/usb/typec/tipd/core.c | 49 +++++++++++++++++++++++++----------
+>  1 file changed, 35 insertions(+), 14 deletions(-)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.195-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index bd5436fd88fd..17b3bc480f97 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -120,6 +120,7 @@ struct tps6598x {
+>  	enum power_supply_usb_type usb_type;
+>  
+>  	int wakeup;
+> +	u32 status; /* status reg */
+>  	u16 pwr_status;
+>  	struct delayed_work	wq_poll;
+>  	irq_handler_t irq_handler;
+> @@ -539,50 +540,71 @@ static irqreturn_t cd321x_interrupt(int irq, void *data)
+>  	return IRQ_NONE;
+>  }
+>  
+> +static bool tps6598x_has_role_changed(struct tps6598x *tps, u32 status)
+> +{
+> +	status ^= tps->status;
+> +
+> +	return status & (TPS_STATUS_PORTROLE | TPS_STATUS_DATAROLE);
+> +}
+> +
+>  static irqreturn_t tps6598x_interrupt(int irq, void *data)
+>  {
+>  	struct tps6598x *tps = data;
+> -	u64 event1 = 0;
+> -	u64 event2 = 0;
+> +	u64 event[2] = { };
+>  	u32 status;
+>  	int ret;
+>  
+>  	mutex_lock(&tps->lock);
+>  
+> -	ret = tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event1);
+> -	ret |= tps6598x_read64(tps, TPS_REG_INT_EVENT2, &event2);
+> +	if (tps->is_tps25750) {
+> +		ret = tps6598x_block_read(tps, TPS_REG_INT_EVENT1, event, 11);
+> +	} else {
+> +		ret = tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event[0]);
+> +		ret |= tps6598x_read64(tps, TPS_REG_INT_EVENT2, &event[1]);
+> +	}
+> +
+>  	if (ret) {
+>  		dev_err(tps->dev, "%s: failed to read events\n", __func__);
+>  		goto err_unlock;
+>  	}
+> -	trace_tps6598x_irq(event1, event2);
+> +	trace_tps6598x_irq(event[0], event[1]);
+>  
+> -	if (!(event1 | event2))
+> +	if (!(event[0] | event[1]))
+>  		goto err_unlock;
+>  
+>  	if (!tps6598x_read_status(tps, &status))
+>  		goto err_clear_ints;
+>  
+> -	if ((event1 | event2) & TPS_REG_INT_POWER_STATUS_UPDATE)
+> +	if ((event[0] | event[1]) & TPS_REG_INT_POWER_STATUS_UPDATE)
+>  		if (!tps6598x_read_power_status(tps))
+>  			goto err_clear_ints;
+>  
+> -	if ((event1 | event2) & TPS_REG_INT_DATA_STATUS_UPDATE)
+> +	if ((event[0] | event[1]) & TPS_REG_INT_DATA_STATUS_UPDATE)
+>  		if (!tps6598x_read_data_status(tps))
+>  			goto err_clear_ints;
+>  
+> -	/* Handle plug insert or removal */
+> -	if ((event1 | event2) & TPS_REG_INT_PLUG_EVENT)
+> +	/*
+> +	 * data/port roles could be updated independently after
+> +	 * a plug event. Therefore, we need to check
+> +	 * for pr/dr status change to set TypeC dr/pr accordingly.
+> +	 */
+> +	if ((event[0] | event[1]) & TPS_REG_INT_PLUG_EVENT ||
+> +		tps6598x_has_role_changed(tps, status))
 
-All tests passing for Tegra ...
+Alignment.
 
-Test results for stable-v5.10:
-    11 builds:	11 pass, 0 fail
-    28 boots:	28 pass, 0 fail
-    75 tests:	75 pass, 0 fail
+>  		tps6598x_handle_plug_event(tps, status);
+>  
+> +	tps->status = status;
+>  err_clear_ints:
+> -	tps6598x_write64(tps, TPS_REG_INT_CLEAR1, event1);
+> -	tps6598x_write64(tps, TPS_REG_INT_CLEAR2, event2);
+> +	if (tps->is_tps25750) {
+> +		tps6598x_block_write(tps, TPS_REG_INT_CLEAR1, event, 11);
+> +	} else {
+> +		tps6598x_write64(tps, TPS_REG_INT_CLEAR1, event[0]);
+> +		tps6598x_write64(tps, TPS_REG_INT_CLEAR2, event[1]);
+> +	}
+>  
+>  err_unlock:
+>  	mutex_unlock(&tps->lock);
+>  
+> -	if (event1 | event2)
+> +	if (event[0] | event[1])
+>  		return IRQ_HANDLED;
+>  	return IRQ_NONE;
+>  }
+> @@ -1003,7 +1025,6 @@ static int tps6598x_probe(struct i2c_client *client)
+>  
+>  		irq_handler = cd321x_interrupt;
+>  	} else {
+> -
 
-Linux version:	5.10.195-rc1-g95379666b7a6
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
+You need to fix patch 4 instead - that's where you add that empty
+line.
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+>  		tps->is_tps25750 = of_device_is_compatible(np, "ti,tps25750");
+>  		/* Enable power status, data status and plug event interrupts */
+>  		mask1 = TPS_REG_INT_POWER_STATUS_UPDATE |
+> -- 
+> 2.34.1
 
-Jon
+-- 
+heikki
