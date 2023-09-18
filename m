@@ -2,249 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C127A49D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BBF7A49D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241333AbjIRMgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        id S241167AbjIRMf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241492AbjIRMgH (ORCPT
+        with ESMTP id S241946AbjIRMf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:36:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801EFC9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:34:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695040487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IxFBEQg9b7yDnMf45q5jDLqhs0KEwZwJPO2ZTdtr6EU=;
-        b=b6jexObs26gK65Z4cCywujMXEyMz7jA2w4jPcTG4p/FD2OoNLcRxo/5s7ytXuDY+a7Enj2
-        EXPm3KjJGW9SlmOX+YzAhV4qnJwFqwIXYSCU6sEz8ap11Lh+saHtMGCDPhfA/xjYuPejpf
-        bplKvPouuhGCA7npNjfO2oMlMAOYiZw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-135-w1QNmMc6OW6p_HmEH-XsvA-1; Mon, 18 Sep 2023 08:34:46 -0400
-X-MC-Unique: w1QNmMc6OW6p_HmEH-XsvA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-404f81fe7cfso8484355e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:34:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695040485; x=1695645285;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IxFBEQg9b7yDnMf45q5jDLqhs0KEwZwJPO2ZTdtr6EU=;
-        b=ILzm0qTJTmMV3ruXm95lNnIg8dikznBCXgZNEyBEXXPuRzNmnEzxDpNJ8ezJ41DI3B
-         hM1Z32kXX8yhspOVRVdkS6NKGeRxejjNN6B3GgSsdYX16QySoemvyLu6FOCszHKJKHBz
-         0ow0zKXAhPKO/fdf3wzgwPwbtRkSo31GcixK6eeDwlFUQfRxJBIIl6W/eLDA1lgORmCR
-         7lmQxW7kTuvZwth/hfZkE7mmubWJWr9LNxVpJCCCZAlbEb7uEPaiyDdGFRKr3RfGNHdO
-         DiAb9AYvqT59LYQVDf+D7FNCa+0c6d82I/iEHJFpUQtLXQCfyOyMx6myWDl4bTc/o7HW
-         N/Uw==
-X-Gm-Message-State: AOJu0Yw6eOW82NyHCfAiUVfZaDEon0spY6x/j49l7wAyl4IiSb50zSdc
-        h54cyyzunm4cuQPrGZFfTFHSqjJNi04LTERUKKi6KqaTn2e+YO3HZYhMCKTIxwTr5hatWFOYE/J
-        AuH2w+mEoNDwOYl5WYmf6rETq
-X-Received: by 2002:a05:600c:28f:b0:402:e68f:8a4f with SMTP id 15-20020a05600c028f00b00402e68f8a4fmr6611910wmk.0.1695040485467;
-        Mon, 18 Sep 2023 05:34:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGaeDx1qVaRUmxQ681t+ZPcMtzpakFvnIYiPyEpet9vdJoZO7fGocfGRpPzZdBXcMLYaAhZPg==
-X-Received: by 2002:a05:600c:28f:b0:402:e68f:8a4f with SMTP id 15-20020a05600c028f00b00402e68f8a4fmr6611890wmk.0.1695040485051;
-        Mon, 18 Sep 2023 05:34:45 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c74b:3400:ec51:7a3a:274e:cbee? (p200300cbc74b3400ec517a3a274ecbee.dip0.t-ipconnect.de. [2003:cb:c74b:3400:ec51:7a3a:274e:cbee])
-        by smtp.gmail.com with ESMTPSA id u20-20020a05600c211400b003fe1fe56202sm12327862wml.33.2023.09.18.05.34.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 05:34:44 -0700 (PDT)
-Message-ID: <930acbe1-942f-d10f-f33e-020693b60d6e@redhat.com>
-Date:   Mon, 18 Sep 2023 14:34:43 +0200
+        Mon, 18 Sep 2023 08:35:56 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B468CC7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:35:33 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230918123530euoutp01deecb03ae631b7414b8cd4669791d149~F-mHUoLRQ0358503585euoutp019
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:35:30 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230918123530euoutp01deecb03ae631b7414b8cd4669791d149~F-mHUoLRQ0358503585euoutp019
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695040530;
+        bh=i8zc9iaYygMGUIBqdtuTE0T+kxO2lOWm6HxzXg91t0A=;
+        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
+        b=f8WxOS+sD490Ku8mAk2RRHaG5OUoSM+QIFzy7fI2MX5a8OmyDBWC7bJVDt0pBsEoR
+         YjrA55Bo2A4BTYdceI14iaGzzGFeE68fcIykblzXJxmG2KcWFoh5vQVXs75HjT2zdl
+         yM22O85vKSiTEd+QcdTfMU4I3nP9gWATykbL8nhE=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230918123530eucas1p1b02dd398e6cc9f91afea96d8d9493af9~F-mG5gCKT1129911299eucas1p1c;
+        Mon, 18 Sep 2023 12:35:30 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 72.9A.42423.21448056; Mon, 18
+        Sep 2023 13:35:30 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230918123529eucas1p2eff7928119d9f97e7b4e338408db7a16~F-mGbTQOz2707827078eucas1p2W;
+        Mon, 18 Sep 2023 12:35:29 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230918123529eusmtrp1d6a09092578b08891381f7e1215e6077~F-mGYvN8b1928419284eusmtrp1U;
+        Mon, 18 Sep 2023 12:35:29 +0000 (GMT)
+X-AuditID: cbfec7f2-a51ff7000002a5b7-46-65084412f88e
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 21.76.14344.11448056; Mon, 18
+        Sep 2023 13:35:29 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230918123529eusmtip19fdff081bcf68bf4c4329787c4676c3e~F-mGPMTH81256512565eusmtip16;
+        Mon, 18 Sep 2023 12:35:29 +0000 (GMT)
+Received: from [192.168.8.209] (106.210.248.18) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Mon, 18 Sep 2023 13:35:28 +0100
+Message-ID: <4dbdcc6c-6bd1-faf4-7187-cc048acd2125@samsung.com>
+Date:   Mon, 18 Sep 2023 14:35:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 3/9] Documentation/scrub-configure.rst: Add
- documentation for scrub driver
+        Thunderbird/102.15.1
+Subject: Re: [RFC 00/23] Enable block size > page size in XFS
 Content-Language: en-US
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>, linuxarm@huawei.com
-Cc:     Shiju Jose <shiju.jose@huawei.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "jiaqiyan@google.com" <jiaqiyan@google.com>,
-        "jthoughton@google.com" <jthoughton@google.com>,
-        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
-        "erdemaktas@google.com" <erdemaktas@google.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "duenwen@google.com" <duenwen@google.com>,
-        "Vilas.Sridharan@amd.com" <Vilas.Sridharan@amd.com>,
-        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>,
-        "gthelen@google.com" <gthelen@google.com>,
-        tanxiaofei <tanxiaofei@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-References: <20230915172818.761-1-shiju.jose@huawei.com>
- <20230915172818.761-4-shiju.jose@huawei.com>
- <887344ee-068d-f78f-d5f8-e816b966d875@redhat.com>
- <946f29d2370c41deb7a7c5a6f2bff0f3@huawei.com>
- <7282d074-15ba-4fe7-bf62-6a4dd6089817@redhat.com>
- <20230918132835.000031b7@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230918132835.000031b7@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Matthew Wilcox <willy@infradead.org>,
+        Pankaj Raghav <kernel@pankajraghav.com>
+CC:     <linux-xfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <david@fromorbit.com>, <da.gomez@samsung.com>,
+        <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <djwong@kernel.org>, <linux-mm@kvack.org>,
+        <chandan.babu@oracle.com>, <mcgrof@kernel.org>,
+        <gost.dev@samsung.com>
+From:   Pankaj Raghav <p.raghav@samsung.com>
+In-Reply-To: <ZQSnWUF2M1iNzGWM@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [106.210.248.18]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDKsWRmVeSWpSXmKPExsWy7djPc7pCLhypBkuOSFjMWb+GzeLSUTmL
+        LcfuMVpcfsJnceblZxaLPXtPslhc3jWHzeLemv+sFrv+7GC3uDHhKaPF7x9z2By4PU4tkvDY
+        vELLY9OqTjaPTZ8msXucmPGbxePj01ssHmdXOnp83iQXwBHFZZOSmpNZllqkb5fAldE15S5T
+        wUHOihnz5zM2MO5j72Lk5JAQMJF4s2IuI4gtJLCCUWJmv2cXIxeQ/YVRYvmBD2wQzmdGiY/d
+        K+A6uhu3s0AkljNKnN67AqHq5qNmqMwuRom/Z98xdTFycPAK2Ek8eBoK0s0ioCpx8/AsJhCb
+        V0BQ4uTMJywgtqhAtMTMaQvB7hAWsJX4+OkZK4jNLCAucevJfLAxIgLBEq/PmoGMZxZYyiTx
+        4exvFpA4m4CWRGMn2HGcQMf1LO1khmjVlGjd/psdwpaX2P52DjPEA0oSC9vusEHYtRKnttxi
+        ApkpIbCaU+JJ/0qohIvEpm3noGxhiVfHt0B9LyNxenIPC4RdLfH0xm9miOYWRon+nevZQA6S
+        ELCW6DuTA1HjKHF4xXlmiDCfxI23ghD38ElM2jadeQKj6iykkJiF5ONZSF6YheSFBYwsqxjF
+        U0uLc9NTiw3zUsv1ihNzi0vz0vWS83M3MQIT2Ol/xz/tYJz76qPeIUYmDsZDjBIczEoivDMN
+        2VKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ82rbnkwWEkhPLEnNTk0tSC2CyTJxcEo1MJlLLfY8
+        HWCk38EbtU+qT7qkPOfexLVrczh6tkQePjejNmze3CUno67G1//f7jrxv057+NFULzvpyCXJ
+        ZZN1PWQyd/3zF1RZ91RddbeRVYKQyJOZ4gXrJj35EzLJ1TzIV9Hh1sWz59NXOCSZuE+x/lJw
+        XXXGbndu9vzFTF+D/18zDEm28176cvqbL/4HLaZ92zrb62bjAf6KN1827ZQUvDN5Y81nXc/z
+        GgkL8macUr5ntntDqqbqBq9e5QPttaHnsheYtL2+F9F+I/BIqeUWEY6s2Z7MQjtjxCx/V3W9
+        dFbynsvaddYwm2tl8/ElL+bvKvjEXGUw8/yjhiiWdkbHJSmKvJeTnsQW/Vjsy33XR4mlOCPR
+        UIu5qDgRAGFb1UbPAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrIIsWRmVeSWpSXmKPExsVy+t/xu7qCLhypBhN3mljMWb+GzeLSUTmL
+        LcfuMVpcfsJnceblZxaLPXtPslhc3jWHzeLemv+sFrv+7GC3uDHhKaPF7x9z2By4PU4tkvDY
+        vELLY9OqTjaPTZ8msXucmPGbxePj01ssHmdXOnp83iQXwBGlZ1OUX1qSqpCRX1xiqxRtaGGk
+        Z2hpoWdkYqlnaGwea2VkqqRvZ5OSmpNZllqkb5egl9E15S5TwUHOihnz5zM2MO5j72Lk5JAQ
+        MJHobtzO0sXIxSEksJRRYtLql1AJGYmNX66yQtjCEn+udbFBFH1klFh7+i1Uxy5Gie1/bgN1
+        cHDwCthJPHgaCtLAIqAqcfPwLCYQm1dAUOLkzCcsICWiAtESXS+NQcLCArYSHz89A5vPLCAu
+        cevJfCaQEhGBYInXZ81ApjMLLGWS+HD2N9SqPYwSn16tBitiE9CSaOwEu5MT6IGepZ3MEHM0
+        JVq3/2aHsOUltr+dwwxxv5LEwrY7bBB2rcTnv88YJzCKzkJy3SwkZ8xCMmoWklELGFlWMYqk
+        lhbnpucWG+kVJ+YWl+al6yXn525iBMb9tmM/t+xgXPnqo94hRiYOxkOMEhzMSiK8Mw3ZUoV4
+        UxIrq1KL8uOLSnNSiw8xmgKDaCKzlGhyPjDx5JXEG5oZmBqamFkamFqaGSuJ83oWdCQKCaQn
+        lqRmp6YWpBbB9DFxcEo1MC36uuCfcsNOiblvgz/tkLt7peTASu1ZO942fwwp/hT93yjhquHy
+        lvSpBVLFW9y33+xamLWYjz/drSaD9USuF8vXdesuWVTzPrxkN0eNiW/ZNcv2JY5RmzO7yifN
+        CbxSXKgjGOaUtu5//4UuJxNhweaXEqsFfn9Zw3mJ19WyTPDTn+2xEe9yRZczPbVg3bPh8oZ9
+        +97rHFFv+b1r+3UjiZLHDuKZl/xznMUu7pPTylWJWjWz4tOcst5fO+Z6Fl2zkhZlYSlpXpnl
+        /pv91J+Ateb+K34HSWv8fvjhROSdOQ88C8UfzA9LkZ2Vol9z5LbcfJ2SH+/2GC9bf5rJg7VO
+        ONrALkqq80W2z0Gvyl43PiWW4oxEQy3mouJEAELC1IKEAwAA
+X-CMS-MailID: 20230918123529eucas1p2eff7928119d9f97e7b4e338408db7a16
+X-Msg-Generator: CA
+X-RootMTR: 20230915185016eucas1p18b6d44c1b875ef8d87a9575e3ddff8d1
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230915185016eucas1p18b6d44c1b875ef8d87a9575e3ddff8d1
+References: <20230915183848.1018717-1-kernel@pankajraghav.com>
+        <CGME20230915185016eucas1p18b6d44c1b875ef8d87a9575e3ddff8d1@eucas1p1.samsung.com>
+        <ZQSnWUF2M1iNzGWM@casper.infradead.org>
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.09.23 14:28, Jonathan Cameron wrote:
-> On Mon, 18 Sep 2023 14:15:33 +0200
-> David Hildenbrand <david@redhat.com> wrote:
+On 2023-09-15 20:50, Matthew Wilcox wrote:
+> On Fri, Sep 15, 2023 at 08:38:25PM +0200, Pankaj Raghav wrote:
+>> Only XFS was enabled and tested as a part of this series as it has
+>> supported block sizes up to 64k and sector sizes up to 32k for years.
+>> The only thing missing was the page cache magic to enable bs > ps. However any filesystem
+>> that doesn't depend on buffer-heads and support larger block sizes
+>> already should be able to leverage this effort to also support LBS,
+>> bs > ps.
 > 
->> On 18.09.23 12:25, Shiju Jose wrote:
->>> Hi David,
->>>
->>> Thanks for looking into this.
->>>    
->>>> -----Original Message-----
->>>> From: David Hildenbrand <david@redhat.com>
->>>> Sent: 18 September 2023 08:24
->>>> To: Shiju Jose <shiju.jose@huawei.com>; linux-acpi@vger.kernel.org; linux-
->>>> mm@kvack.org; linux-kernel@vger.kernel.org
->>>> Cc: rafael@kernel.org; lenb@kernel.org; naoya.horiguchi@nec.com;
->>>> tony.luck@intel.com; james.morse@arm.com; dave.hansen@linux.intel.com;
->>>> jiaqiyan@google.com; jthoughton@google.com; somasundaram.a@hpe.com;
->>>> erdemaktas@google.com; pgonda@google.com; rientjes@google.com;
->>>> duenwen@google.com; Vilas.Sridharan@amd.com; mike.malvestuto@intel.com;
->>>> gthelen@google.com; Linuxarm <linuxarm@huawei.com>; Jonathan Cameron
->>>> <jonathan.cameron@huawei.com>; tanxiaofei <tanxiaofei@huawei.com>;
->>>> Zengtao (B) <prime.zeng@hisilicon.com>
->>>> Subject: Re: [RFC PATCH 3/9] Documentation/scrub-configure.rst: Add
->>>> documentation for scrub driver
->>>>
->>>> On 15.09.23 19:28, shiju.jose@huawei.com wrote:
->>>>> From: Shiju Jose <shiju.jose@huawei.com>
->>>>>
->>>>> Add documentation for scrub driver, supports configure scrub
->>>>> parameters, in Documentation/scrub-configure.rst
->>>>>
->>>>> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
->>>>> ---
->>>>>     Documentation/scrub-configure.rst | 55
->>>> +++++++++++++++++++++++++++++++
->>>>>     1 file changed, 55 insertions(+)
->>>>>     create mode 100644 Documentation/scrub-configure.rst
->>>>>
->>>>> diff --git a/Documentation/scrub-configure.rst
->>>>> b/Documentation/scrub-configure.rst
->>>>> new file mode 100644
->>>>> index 000000000000..9f8581b88788
->>>>> --- /dev/null
->>>>> +++ b/Documentation/scrub-configure.rst
->>>>> @@ -0,0 +1,55 @@
->>>>> +==========================
->>>>> +Scrub subsystem driver
->>>>> +==========================
->>>>> +
->>>>> +Copyright (c) 2023 HiSilicon Limited.
->>>>> +
->>>>> +:Author:   Shiju Jose <shiju.jose@huawei.com>
->>>>> +:License:  The GNU Free Documentation License, Version 1.2
->>>>> +          (dual licensed under the GPL v2) :Original Reviewers:
->>>>> +
->>>>> +- Written for: 6.7
->>>>> +- Updated for:
->>>>> +
->>>>> +Introduction
->>>>> +------------
->>>>> +The scrub subsystem driver provides the interface for configure the
->>>>
->>>> "... interface for configuring memory scrubbers in the system."
->>>>
->>>> are we only configuring firmware/hw-based memory scrubbing? I assume so.
->>> The scrub control could be used for the SW  based memory scrubbing too.
->>
->> Okay, looks like there is not too much hw/firmware specific in there
->> (besides these weird range changes).
->> [...]
->>
->>>>> +-------
->>>>> +
->>>>> +  The usage takes the form shown in this example::
->>>>> +
->>>>> +    # echo 0x300000 > /sys/class/scrub/scrub0/region0/addr_base
->>>>> +    # echo 0x100000 > /sys/class/scrub/scrub0/region0/addr_size
->>>>> +    # cat /sys/class/scrub/scrub0/region0/speed_available
->>>>> +    # 1-60
->>>>> +    # echo 25 > /sys/class/scrub/scrub0/region0/speed
->>>>> +    # echo 1 > /sys/class/scrub/scrub0/region0/enable
->>>>> +
->>>>> +    # cat /sys/class/scrub/scrub0/region0/speed
->>>>> +    # 0x19
->>>>
->>>> Is it reasonable to return the speed as hex? You set it as dec.
->>> Presently return speed  as hex to reduce the number of callback function needed
->>> for reading the hex/dec data because the values for the address range
->>> need to be in hex.
->>
->> If speed_available returns dec, speed better also return dec IMHO.
->>
->>>    
->>>>   
->>>>> +    # cat /sys/class/scrub/scrub0/region0/addr_base
->>>>> +    # 0x100000
->>>>
->>>> But didn't we set it to 0x300000 ...
->>> This is an emulated example for testing the RASF/RAS2 definition.
->>> According to the RASF & RAS2 definition, the actual address range in the
->>> platform could vary from the requested address range for the patrol scrubbing.
->>> "The platform calculates the nearest patrol scrub boundary address
->>> from where it can start". The platform returns the actual address range
->>> in response to GET_PATROL_PARAMETERS command to the firmware.
->>> Please see section 5.2.21.2.1 Hardware-based Memory Scrubbing ,
->>> Table 5.87: Parameter Block Structure for PATROL_SCRUB in the
->>> ACPI 6.5 specification.
->>>    
->>
->> So you configure [0x300000 - 0x400000] and you get [0x100000 - 0x300000]
->>
->> How does that make any sense? :)
->>
->> Shouldn't we rather return an error when setting a range that is
->> impossible, instead of the hardware deciding to scrub something
->> completely different (as can be seen in the example)?
->>
+> I think you should choose whether you're going to use 'bs > ps' or LBS
+> and stick to it.  They're both pretty inscrutable and using both
+> interchanagbly is worse.
 > 
-> A broader scrub is probably reasonable, but agreed that scrubbing narrower
-> is 'interesting' as not scrubbing the memory requeseted.
 
-It's not even narrower. Both ranges don't even intersect! (sorry to say, 
-but this configuration interface doesn't make any sense if hardware just 
-does *something* else).
+Got it! Probably I will stick to Large block size and explain what it means
+at the start of the patchset.
 
-If you can't configure it properly, fail with an error.
+> But I think filesystems which use buffer_heads should be fine to support
+> bs > ps.  The problems with the buffer cache are really when you try to
+> support small block sizes and large folio sizes (eg arrays of bhs on
+> the stack).  Supporting bs == folio_size shouldn't be a problem.
+> 
 
-> It's really annoying that neither ACPI table provides any proper
-> discoverability.  Whilst we can fix that long term, we are stuck with
-> a clunky poke it and see interface in the meantime.
-
-Can't you set it, briefly enable it, and read the values back? Then, you 
-can complain to the user that the configured range is impossible.
-
--- 
-Cheers,
-
-David / dhildenb
-
+I remember some patches from you trying to avoid the stack limitation while working
+with bh. Thanks for the clarification!
