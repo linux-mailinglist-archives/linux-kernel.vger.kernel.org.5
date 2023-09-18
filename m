@@ -2,175 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D227A5054
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39657A4FE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbjIRRDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
+        id S231150AbjIRQ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbjIRRDR (ORCPT
+        with ESMTP id S231222AbjIRQ4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:03:17 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D88CCA;
-        Mon, 18 Sep 2023 10:02:52 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 391A1120005;
-        Mon, 18 Sep 2023 20:02:49 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 391A1120005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1695056569;
-        bh=0o7hfC4+F2euSGNP8krkD3xbGeD5dgDDhH9/E/Lq2pU=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=alLQUDbysr3L8dz+yeBvWT/+riB6RuYqj7NgmEpmNffdudRO0n1tnLS3FhR/bUSzj
-         7xupnALTsYbWRHcoHWJBLuj/wWLdObKCAXFtGT5Pq+pjt0Sj9X8a3YYcCwftuBhPVZ
-         N4GKOnCVOsdacrg3XxJ3rg8Gurb/r5JXe8AHsKv/TmDCFY7dKzJqoyfs79P+cdbkUz
-         9y49nVvJ52TdBH/W6r4QZCvBd5V4HH1TZxbxMUOH0kLzrjzqB23b5gIrTh3TLRJXE4
-         msqgEqiqmlu3mrokmPsaplWm9+V2JGxws9bCJbYcu/OTHHAiSphOnz/O4/Znwunr0p
-         6Nqhqfn27mdKQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Mon, 18 Sep 2023 20:02:48 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 18 Sep 2023 20:02:47 +0300
-Message-ID: <b5873e36-fe8c-85e8-e11b-4ccec386c015@salutedevices.com>
-Date:   Mon, 18 Sep 2023 19:56:00 +0300
+        Mon, 18 Sep 2023 12:56:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E492F9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:56:12 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695056171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jqSeGkdJelXJR4R5QDfLd7TCXye/v14hQ40SjD7MaS8=;
+        b=IQnxCFYWTQq0YyJLqJzRpw23hTE8dIS14c8Y1HwPOes69H7mj0XQYZjFDR+u4CqQ++Hn+0
+        t406NcRjVNdq7L1ZXy3DXPvV7DJ8I3qRKjaA1fZv7G4s7n22mWKuTHitZIT23OoN+DeG5M
+        fm2YOubCa7WFRwI+56bywI48hTnENJkD6cLTW1YPch3u594Oihu75KHSTD9dDKgLrFLARu
+        E2EpiEc0phGo/X98p/ZmazYuSFX1aBkaVURlAe7ecwrYG51Vp1G7RIoo9pDnJ7DMfZiUxW
+        KwfIpz2VBNewQ5ywjEukAVJc0tv0V6hMJXRUi2FMAZEEwxdKi5LHhGzF5JX42g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695056171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jqSeGkdJelXJR4R5QDfLd7TCXye/v14hQ40SjD7MaS8=;
+        b=XGi0q3E3DA776cF9oLKi0SG8jJsA57NHDmuH34hbRhnBvHFBvnBAIF0p2VqNe9JOlqrmWO
+        4gMzAbu+Ii6yTbDA==
+To:     Brendan Jackman <jackmanb@google.com>, luto@kernel.org
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        laijs@linux.alibaba.com, yosryahmed@google.com, reijiw@google.com,
+        oweisse@google.com, Brendan Jackman <jackmanb@google.com>
+Subject: Re: [PATCH RESEND] x86/entry: Don't write to CR3 when restoring to
+ kernel CR3
+In-Reply-To: <20230817121513.1382800-1-jackmanb@google.com>
+References: <20230817121513.1382800-1-jackmanb@google.com>
+Date:   Mon, 18 Sep 2023 18:56:10 +0200
+Message-ID: <87sf7bxvx1.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v9 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
- preparations
-Content-Language: en-US
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179934 [Sep 18 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;git.kernel.org:7.1.1;lore.kernel.org:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/09/18 14:42:00
-X-KSMG-LinksScanning: Clean, bases: 2023/09/18 16:49:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/18 14:09:00 #21917825
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefano,
+On Thu, Aug 17 2023 at 12:15, Brendan Jackman wrote:
 
-thanks for review! So when this patchset will be merged to net-next,
-I'll start sending next part of MSG_ZEROCOPY patchset, e.g. AF_VSOCK +
-Documentation/ patches.
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+>
+> Skip resuming KERNEL pages since it is already KERNEL CR3
 
-Thanks, Arseniy
+This really want's some more explanation than this.
 
-On 16.09.2023 16:09, Arseniy Krasnov wrote:
-> Hello,
-> 
-> this patchset is first of three parts of another big patchset for
-> MSG_ZEROCOPY flag support:
-> https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
-> 
-> During review of this series, Stefano Garzarella <sgarzare@redhat.com>
-> suggested to split it for three parts to simplify review and merging:
-> 
-> 1) virtio and vhost updates (for fragged skbs) <--- this patchset
-> 2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
->    tx completions) and update for Documentation/.
-> 3) Updates for tests and utils.
-> 
-> This series enables handling of fragged skbs in virtio and vhost parts.
-> Newly logic won't be triggered, because SO_ZEROCOPY options is still
-> impossible to enable at this moment (next bunch of patches from big
-> set above will enable it).
-> 
-> I've included changelog to some patches anyway, because there were some
-> comments during review of last big patchset from the link above.
-> 
-> Head for this patchset is:
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=f2fa1c812c91e99d0317d1fc7d845e1e05f39716
-> 
-> Link to v1:
-> https://lore.kernel.org/netdev/20230717210051.856388-1-AVKrasnov@sberdevices.ru/
-> Link to v2:
-> https://lore.kernel.org/netdev/20230718180237.3248179-1-AVKrasnov@sberdevices.ru/
-> Link to v3:
-> https://lore.kernel.org/netdev/20230720214245.457298-1-AVKrasnov@sberdevices.ru/
-> Link to v4:
-> https://lore.kernel.org/netdev/20230727222627.1895355-1-AVKrasnov@sberdevices.ru/
-> Link to v5:
-> https://lore.kernel.org/netdev/20230730085905.3420811-1-AVKrasnov@sberdevices.ru/
-> Link to v6:
-> https://lore.kernel.org/netdev/20230814212720.3679058-1-AVKrasnov@sberdevices.ru/
-> Link to v7:
-> https://lore.kernel.org/netdev/20230827085436.941183-1-avkrasnov@salutedevices.com/
-> Link to v8:
-> https://lore.kernel.org/netdev/20230911202234.1932024-1-avkrasnov@salutedevices.com/
-> 
-> Changelog:
->  v3 -> v4:
->  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->  v4 -> v5:
->  * See per-patch changelog after ---.
->  v5 -> v6:
->  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->  * See per-patch changelog after ---.
->  v6 -> v7:
->  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->  * See per-patch changelog after ---.
->  v7 -> v8:
->  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->  * See per-patch changelog after ---.
->  v8 -> v9:
->  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->  * See per-patch changelog after ---.
-> 
-> Arseniy Krasnov (4):
->   vsock/virtio/vhost: read data from non-linear skb
->   vsock/virtio: support to send non-linear skb
->   vsock/virtio: non-linear skb handling for tap
->   vsock/virtio: MSG_ZEROCOPY flag support
-> 
->  drivers/vhost/vsock.c                         |  14 +-
->  include/linux/virtio_vsock.h                  |  10 +
->  .../events/vsock_virtio_transport_common.h    |  12 +-
->  net/vmw_vsock/virtio_transport.c              |  92 +++++-
->  net/vmw_vsock/virtio_transport_common.c       | 307 ++++++++++++++----
->  5 files changed, 348 insertions(+), 87 deletions(-)
-> 
+Also the subject line does not make much sense to me. Something like:
+
+  x86/entry: Avoid redundant CR3 write on paranoid returns
+
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+>
+> While staring at paranoid_exit I was confused about why we had this CR3
+> write, avoiding it seems like a free optimisation. The original commit
+> 21e94459110252 ("x86/mm: Optimize RESTORE_CR3") says "Most NMI/paranoid
+> exceptions will not in fact change pagetables" but I didn't't understand
+> what the "most" was referring to. I then discovered this patch on the
+> mailing list, Andy said[1] that it looks correct so maybe now is the
+> time to merge it?
+>
+> Note there's another patch in [1] as well, the benefit of that one is
+> not obvious to me though.
+
+The point is that RESTORE_CR3 is only used for exceptions which enter
+via paranoid_entry(): #DF, #MCE, #VC, #DB and the NMI low level return
+code.
+
+#NMI, #MCE, #VC, #DB use this code path only when the exception
+interrupted kernel mode. #DF uses it unconditionally.
+
+Entries from user space for #NMI, #MCE, #VC, #DB switch away from the
+IST stack to the thread stack and handle the exception there. So they
+won't return via a code path which uses RESTORE_CR3.
+
+So your patch optimizes the CR3 handling vs. kernel entries. If the
+exception hits code which has kernel CR3 loaded then restoring the
+unchanged kernel CR3 is a pointless exercise. CR3 is guaranteed to be
+unchanged as none of those exceptions can schedule when the exception
+hit kernel mode, i.e. CPL=0.
+
+Now the second change Lai did is to get rid of the conditional flush.
+
+The reasoning is that the code paths where kernel mode (CPL=0) runs with
+user CR3 are pretty small. They all look like this:
+
+     SWITCH_TO_USER_CR3
+     // Do the final preparation for return
+     IRET 	// SYSRET, SYSEXIT
+
+and therefore the probability that an affected exception hits between
+the CR3 switch and the instruction which returns to user space is pretty
+small.
+
+The only case where an unconditional flush might matter is #NMI. #DF,
+#MCE, #VC, #DB are slow path anyway.
+
+As the probability is low Lai removed the conditional flush optimization
+and turned it into an unconditional flush to make the code simpler.
+
+It's debatable whether this matters or not, but as that optimization and
+sits in the rarely executed code path it is not hurting either and
+avoids the occasional pointless flush when perf(1) is used.
+
+> --- a/arch/x86/entry/calling.h
+> +++ b/arch/x86/entry/calling.h
+> @@ -236,14 +236,13 @@ For 32-bit we have the following conventions - kernel is built with
+>  .macro RESTORE_CR3 scratch_reg:req save_reg:req
+>  	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
+>  
+> -	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+> -
+>  	/*
+> -	 * KERNEL pages can always resume with NOFLUSH as we do
+> -	 * explicit flushes.
+> +	 * Skip resuming KERNEL pages since it is already KERNEL CR3.
+>  	 */
+
+         /*
+          * If CR3 contained the kernel page tables at the paranoid
+          * exception entry, then there is nothing to restore as CR3
+          * is not modified while handling the exception.
+          */
+
+Perhaps?
+
+There are now stale comments vs. the restore mechanism and
+paranoid_entry() in some places in entry_64.S. They really want to be
+fixed up to avoid lots of head scratching later. E.g. this:
+
+	/* Always restore stashed CR3 value (see paranoid_entry) */
+	RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
+
+does not make sense now. Neither does the comment in paranoid_entry()
+itself.
+
+Also the macro name is misleading with this change. It does not
+unconditionally restore CR3 as the name suggests.
+
+PARANOID_RESTORE_USER_CR3 or something like that makes it clear what
+this is about.
+
+There is another detail. The slightly convoluted code flow in the user
+restore path noflush handling.
+
+	movq	\save_reg, \scratch_reg
+	andq	$(0x7FF), \scratch_reg
+	bt	\scratch_reg, THIS_CPU_user_pcid_flush_mask
+	jnc	.Lnoflush_\@
+
+	btr	\scratch_reg, THIS_CPU_user_pcid_flush_mask
+	jmp	.Lwrcr3_\@
+
+.Lnoflush_\@:
+	SET_NOFLUSH_BIT \save_reg
+
+The only reason why this code is so convoluted was to reuse the setting
+of the NOFLUSH bit for the kernel CR3 write:
+
+	bt	$PTI_USER_PGTABLE_BIT, \save_reg
+	jnc	.Lnoflush_\@
+
+which this patch eliminates.
+
+So this logic can be simplified to
+
+	movq	\save_reg, \scratch_reg
+	andq	$(0x7FF), \scratch_reg
+	btr	\scratch_reg, THIS_CPU_user_pcid_flush_mask
+	jc	.Lwrcr3_\@
+
+	SET_NOFLUSH_BIT \save_reg
+
+Thanks,
+
+        tglx
