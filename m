@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71E27A55F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 00:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F507A55F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 00:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjIRW4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 18:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
+        id S230101AbjIRW5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 18:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjIRW4Q (ORCPT
+        with ESMTP id S229907AbjIRW5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 18:56:16 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB36D8F;
-        Mon, 18 Sep 2023 15:56:10 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a64619d8fbso664555766b.0;
-        Mon, 18 Sep 2023 15:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695077769; x=1695682569; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tftkfCRDvcs4v9yhjyjUTVMx7qSfJ5Yv3Qi6b8m0pFI=;
-        b=O0WFZ+zzLWhT9X5G7eiq1e9CwaGn5oX1smu3hlkLv4qGf8br8pz8lhL8dJwEJilNTb
-         1H2u7mZ6u1NDJBLrJrCrZeDBfgGT1Z3GUjykVPHbiprY4EHJUM7I0FTtqGhUHcH52T0T
-         MWweEchCume+SBtp0H0A7s9e8dPFfnGOlbPYpaZB6oFlGYbooAw3iUcVvEvhwRl1slUv
-         1c9s4sg3F2CadYB5Hz9wdflrhig1QpBxSnA/t4AzrjsL/szu4Y2YRiS55i1syvOTOFLJ
-         geDcP/I4o/wHYTE9W2B3rSD3kRYWLCJ97X3b6+8mGAL0TDQ16b0XCRfmu/wChqzNNC2S
-         X9pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695077769; x=1695682569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tftkfCRDvcs4v9yhjyjUTVMx7qSfJ5Yv3Qi6b8m0pFI=;
-        b=Mut4vwGgMtkzil67eIggTYY1J4R9P8eeMePaBYAlifVZdh/nJAlRDun8oX6EYHUJ/e
-         pSBu8Ao4+eTn1xCk1KA2rE+dP20UirEq+lbmx6uwftL5IwLLa4dwvoO5IMQtjzeGg0ar
-         F6v9LDbtUNbKyRtXXLDwF2PFJ/Y9ZUW8szpgzW1SosIr/H45a2yN6VuhXieWnUATtZ1Z
-         mKxuSWpUTzi+Z7jsiPswfgsfAJorK9K9AiZpZabT37+0ZkHg9r6wZh+ReaFAmGHzJ8It
-         RBez+uE590ud4i6P2EYn+i0xjKSEttP0KLgX15jquZT0reExG6tB4hy40fn1//QP92CX
-         /qCQ==
-X-Gm-Message-State: AOJu0YzEtIZZCz/n7G/56vUTSaVH3lAxJ/nYxBscEovqwPZ8R3aBaOqL
-        1L0dcEn7ZYm7cHPT6JouK2kdlt9vWQPLkwsfL8w=
-X-Google-Smtp-Source: AGHT+IFpC7h3oiR2e/FsAxZpvqmdBeNGyNbZC00OQ9F6uY4pZs5emDtplxQ/fvPIz/FLvbM4UJDM2JpjENynkjMDLyA=
-X-Received: by 2002:a17:906:519b:b0:9ad:e298:a5d with SMTP id
- y27-20020a170906519b00b009ade2980a5dmr9218002ejk.19.1695077769209; Mon, 18
- Sep 2023 15:56:09 -0700 (PDT)
+        Mon, 18 Sep 2023 18:57:35 -0400
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5241891
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 15:57:29 -0700 (PDT)
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mx1.riseup.net (Postfix) with ESMTPS id 4RqKtw2Q2LzDqQM;
+        Mon, 18 Sep 2023 22:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1695077848; bh=a5qAWNm+UMJ0Oyu8eITh6RRhujsvqMrn9VkHcbL3nk4=;
+        h=From:Subject:Date:To:Cc:From;
+        b=daGdVxYE+0zbAtpDifVUClum9DZe9o0COOjbhj9kfSRx9Or1gLy6hycFgSdFdOnyz
+         Cpv8nIzDF/f+lF6/hIRdpgYYTY8DV36CiHTaz3uFGse3yxDqKw4D9BMiNbW99ZL9Cp
+         /RDJ3tkqnjeC6CF30scjM8++4LGp7R517TKRnSi8=
+X-Riseup-User-ID: 2538954746E958B3E3F0350A99AB2068EEE6747AE17944B8B3C05C62FFF11EC0
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4RqKtr1W32zFs0H;
+        Mon, 18 Sep 2023 22:57:23 +0000 (UTC)
+From:   Arthur Grillo <arthurgrillo@riseup.net>
+Subject: [PATCH v3 0/2] Add KUnit tests for drm_fb_blit()
+Date:   Mon, 18 Sep 2023 19:57:14 -0300
+Message-Id: <20230918-final-gsoc-v3-0-02a79380b844@riseup.net>
 MIME-Version: 1.0
-References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
- <ZPfPfyIoVxw5L6El@debian.me> <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
-In-Reply-To: <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
-From:   Brian Pardy <brian.pardy@gmail.com>
-Date:   Mon, 18 Sep 2023 18:55:58 -0400
-Message-ID: <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
-Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
- is mounted (cifsd-cfid-laundromat in"D" state)
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux CIFS <linux-cifs@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Steve French <sfrench@samba.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAMrVCGUC/22MSwqDMBQAryJZ95V8jI2ueo/SRUyf+qBESWxoE
+ e/e6KpClzMws7CIgTCyplhYwESRRp9BnQrmBut7BHpkZpJLxWsuoCNvn9DH0YGqtTVlWSpnOpa
+ DKWBH7312u2ceKM5j+OzvJDb7d5MECEAluLtURtdGXgNFfE1njzPbPkn+tvrQSuDQaonGtbwya
+ A/tuq5fKN0jueEAAAA=
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     tales.aparecida@gmail.com, andrealmeid@riseup.net,
+        mairacanal@riseup.net, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?utf-8?q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Arthur Grillo <arthurgrillo@riseup.net>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[RS removed from CC due to bounce message]
+This patchset tests the drm_fb_blit() function.
 
-On Wed, Sep 6, 2023 at 5:03=E2=80=AFPM Brian Pardy <brian.pardy@gmail.com> =
-wrote:
-> On Tue, Sep 5, 2023 at 9:01=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.co=
-m> wrote:
-> > Thanks for the regression report. But if you want to get it fixed,
-> > you have to do your part: perform bisection. See Documentation/admin-gu=
-ide/bug-bisect.rst in the kernel sources for how to do that.
-> >
-> > Anyway, I'm adding it to regzbot:
-> >
-> > #regzbot ^introduced: v6.4..v6.5
-> > #regzbot title: incorrect CPU utilization report (multiplied) when moun=
-ting CIFS
->
-> Thank you for directing me to the bug-bisect documentation. Results below=
-:
->
-> # git bisect bad
-> d14de8067e3f9653cdef5a094176d00f3260ab20 is the first bad commit
-> commit d14de8067e3f9653cdef5a094176d00f3260ab20
-> Author: Ronnie Sahlberg <lsahlber@redhat.com>
-> Date:   Thu Jul 6 12:32:24 2023 +1000
->
->     cifs: Add a laundromat thread for cached directories
->
->     and drop cached directories after 30 seconds
->
->     Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
->     Signed-off-by: Steve French <stfrench@microsoft.com>
->
->  fs/smb/client/cached_dir.c | 67 ++++++++++++++++++++++++++++++++++++++++=
-++++++
->  fs/smb/client/cached_dir.h |  1 +
->  2 files changed, 68 insertions(+)
+As this function can be used with already tested formats, the first
+patch adds calls to drm_fb_blit() on the tests of supported formats.
 
-Is there any further information I can provide to aid in debugging
-this issue? Should I just expect incorrect load average reporting when
-a CIFS share is mounted on any kernel >6.5.0?
+Some supported formats were not yet covered by the existing tests
+because they are only supported by drm_fb_blit(). The second patch
+adds those format conversion tests.
 
-I'm not clear on the value or necessity of this "laundromat thread" -
-everything worked as expected before it was added - shall I just patch
-it out of my kernel builds going forward if there is no interest in
-fixing it? Is a .config option to disable it possible?
+Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+---
+Changes in v3:
+- Fix memset sizes to avoid out-of-bound access
+- Link to v2: https://lore.kernel.org/r/20230905-final-gsoc-v2-0-b52e8cb068ea@riseup.net
+
+Changes in v2:
+- Split the patch into two (Maíra Canal)
+- Link to v1: https://lore.kernel.org/r/20230901-final-gsoc-v1-1-e310c7685982@riseup.net
+
+---
+Arthur Grillo (2):
+      drm/tests: Add calls to drm_fb_blit() on supported format conversion tests
+      drm/tests: Add new format conversion tests to better cover drm_fb_blit()
+
+ drivers/gpu/drm/tests/drm_format_helper_test.c | 285 +++++++++++++++++++++++++
+ 1 file changed, 285 insertions(+)
+---
+base-commit: 37454bcbb68601c326b58ac45f508067047d791f
+change-id: 20230901-final-gsoc-395a84443c8f
+
+Best regards,
+-- 
+Arthur Grillo <arthurgrillo@riseup.net>
+
