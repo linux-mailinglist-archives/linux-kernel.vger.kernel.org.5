@@ -2,172 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9E67A404A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2C47A404F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239521AbjIRFEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 01:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
+        id S235668AbjIRFIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 01:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231475AbjIRFDv (ORCPT
+        with ESMTP id S233195AbjIRFHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 01:03:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68423120
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695013388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hCDoXZnQJiBgGjXOi0ciKhKqeO4OfqPdXpxnEdvp7mI=;
-        b=HK7O0PsyH5oVXvcJAI/R3Mba7UUeTnc9hH4nIBeowIGJnCqUwZStD5+IZSpDVboxMOJ9NA
-        s+Hsx4chuSe2hg9Wv4ZXZvrz9G41hKOIIsA5E625JdtyDQkI+laORX98mSSr/nOuL4CbIo
-        GI0YbGlkI3mlxKPXP+THFm82PsX1taE=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-593-fIUz5AUxOJ-wFupaJiyNbg-1; Mon, 18 Sep 2023 01:03:02 -0400
-X-MC-Unique: fIUz5AUxOJ-wFupaJiyNbg-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-68faf55989cso4085206b3a.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:03:01 -0700 (PDT)
+        Mon, 18 Sep 2023 01:07:54 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E3E11F
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:07:46 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c0c6d4d650so36978735ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:07:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1695013666; x=1695618466; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M6z0XBRSxgiJriY+TPnWcbvaSWUhO2fbf3ilso8ZY+s=;
+        b=YB3b/JSAWf2HsmkfVBSfQpwGFIOi+soaGNRuCdaPIk+iTUscwbTtedkhoNs5A6/94T
+         cMm0HGKKohHZJVTtfkqnqqrPaolSMDmZQ5qYNDqX7K8qdFH0+4LqlS02WOZtY9R90Ur/
+         +E6DLq7MODP4GnwkrBbX0wdEnVyKRPmnnm/ZXXAYQhaFBDwsyJjw0ntl00mCvKgU/uCK
+         2rZS43jaejre8Dqw5nuAL5o8rRMsYPGdDAElKshxV71LLJ2LjE0Q22OoB+zNRFNyfA7g
+         8Cp3DBAybnHvsFxbkEYsCWbyx2GYWTm+8IGkru3iu4JynxnFIfaEpvvMByutMhhYNd+E
+         S4QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695013381; x=1695618181;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hCDoXZnQJiBgGjXOi0ciKhKqeO4OfqPdXpxnEdvp7mI=;
-        b=dVLw1ABcmsJUFc5vadhl9M5Eko3f2FuSX4R90/wmjld4oL6omSfHoT8J4Fu65O7/0+
-         XsB84dO52f9Sjk5Jy/iqPm2WRvzEo5tKPBlBO4HXytOe97F5Vnj7V6DaeksKMTlMsl+F
-         MVke+zyy9+EYcU+Ae2dAPn2tVth13rnYZPYzpcTZDAH5zFDGddSxYqEH1FdqRc1gsTTl
-         FhtSF7QmAcDfp5RzZUVzL/XO/Hc9z473EzFH5/9GnqZsrQCR6sj+V6OyACcywKeBNoWh
-         drD/rjXvXEKex/Q7tl0vqthC2XD5dNv9bdhUB+53fy4JyRcgk917v+6So3pFZF/VIAlf
-         Umaw==
-X-Gm-Message-State: AOJu0YyE9zMGPwYZciI8rfaU1wA2VRlcqAdtggfao4fe6hMq9yCSw60C
-        QMdgSCyGsk09HwE3/nXyjGF96eJkbcnKLA0LQEesSnygn5ynbWyeVbYOOVlt5ksUBEBuzcnYoJW
-        74VShy5+pudZJ/cNmFVwA/F0H
-X-Received: by 2002:a05:6a00:2344:b0:68e:43ed:d30b with SMTP id j4-20020a056a00234400b0068e43edd30bmr6879611pfj.21.1695013381113;
-        Sun, 17 Sep 2023 22:03:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGqmnfE9QFPe9E5tdKFUUF/pg2T2yxaduIzlP4FnKDLuVWyov/hE0tCEtGqZQwTLT17gzDFFw==
-X-Received: by 2002:a05:6a00:2344:b0:68e:43ed:d30b with SMTP id j4-20020a056a00234400b0068e43edd30bmr6879587pfj.21.1695013380748;
-        Sun, 17 Sep 2023 22:03:00 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id j26-20020aa783da000000b00687a4b70d1esm6322062pfn.218.2023.09.17.22.02.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 22:03:00 -0700 (PDT)
-Message-ID: <50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com>
-Date:   Mon, 18 Sep 2023 15:02:53 +1000
+        d=1e100.net; s=20230601; t=1695013666; x=1695618466;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M6z0XBRSxgiJriY+TPnWcbvaSWUhO2fbf3ilso8ZY+s=;
+        b=v3ecZSygo2uUbLWKZ07hLvXFo8Eq0TzDrssttr3xZsejVJzXAPVcsOfyPU3MVgYt0j
+         W4kFebEKQ/4f1ior7dCSkipzSVAUGNEvZ9Sq/Pi9eHRejMPKcwKvIfmr3XrhQ/tf6CMQ
+         TZG6R3w4voZeVt4rR/NfGKQ4l7WyiXrBtVNHd7D/M/G0pX6gH1POyRn5+BnuhB7rTL82
+         sHkCqgThgOAQppsW7HY8zqHDcO7VXzt08l8tVF4NfB8YZo615mKK4uAYS7r2pSwIJGHy
+         f5XHO1kJsJoUfR2N7TVlZvZpUMkXrZPuwsI86EYT1Wr/BnbWQxyc0zBogppYSPDtCtc/
+         o5LA==
+X-Gm-Message-State: AOJu0Ywliui0YerXXcly2k06MD43d+NCC2miNllPZKnY2umMaRvXgKt5
+        Qf6B8kGj0xRkCCfKNMDOCchBLw==
+X-Google-Smtp-Source: AGHT+IE8P1OEwOYx0scttNCXcS7VvsJAwL4czH20HKd4GAJinQSVG8BkRdzXGitYN9r1svmoTect/A==
+X-Received: by 2002:a17:902:efc6:b0:1b8:76ce:9d91 with SMTP id ja6-20020a170902efc600b001b876ce9d91mr7789080plb.1.1695013666187;
+        Sun, 17 Sep 2023 22:07:46 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id iz17-20020a170902ef9100b001b9de4fb749sm7494951plb.20.2023.09.17.22.07.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 22:07:45 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qi6U2-002DLu-32;
+        Mon, 18 Sep 2023 15:07:42 +1000
+Date:   Mon, 18 Sep 2023 15:07:42 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Pankaj Raghav <kernel@pankajraghav.com>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, p.raghav@samsung.com,
+        da.gomez@samsung.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, willy@infradead.org,
+        djwong@kernel.org, linux-mm@kvack.org, chandan.babu@oracle.com,
+        gost.dev@samsung.com
+Subject: Re: [RFC 00/23] Enable block size > page size in XFS
+Message-ID: <ZQfbHloBUpDh+zCg@dread.disaster.area>
+References: <20230915183848.1018717-1-kernel@pankajraghav.com>
+ <ZQd4IPeVI+o6M38W@dread.disaster.area>
+ <ZQewKIfRYcApEYXt@bombadil.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [RFC PATCH v2 15/35] ACPI: processor: Add support for processors
- described as container packages
-Content-Language: en-US
-To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
-Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-16-james.morse@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20230913163823.7880-16-james.morse@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQewKIfRYcApEYXt@bombadil.infradead.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/14/23 02:38, James Morse wrote:
-> ACPI has two ways of describing processors in the DSDT. Either as a device
-> object with HID ACPI0007, or as a type 'C' package inside a Processor
-> Container. The ACPI processor driver probes CPUs described as devices, but
-> not those described as packages.
+On Sun, Sep 17, 2023 at 07:04:24PM -0700, Luis Chamberlain wrote:
+> On Mon, Sep 18, 2023 at 08:05:20AM +1000, Dave Chinner wrote:
+> > On Fri, Sep 15, 2023 at 08:38:25PM +0200, Pankaj Raghav wrote:
+> > > From: Pankaj Raghav <p.raghav@samsung.com>
+> > > 
+> > > There has been efforts over the last 16 years to enable enable Large
+> > > Block Sizes (LBS), that is block sizes in filesystems where bs > page
+> > > size [1] [2]. Through these efforts we have learned that one of the
+> > > main blockers to supporting bs > ps in fiesystems has been a way to
+> > > allocate pages that are at least the filesystem block size on the page
+> > > cache where bs > ps [3]. Another blocker was changed in filesystems due to
+> > > buffer-heads. Thanks to these previous efforts, the surgery by Matthew
+> > > Willcox in the page cache for adopting xarray's multi-index support, and
+> > > iomap support, it makes supporting bs > ps in XFS possible with only a few
+> > > line change to XFS. Most of changes are to the page cache to support minimum
+> > > order folio support for the target block size on the filesystem.
+> > > 
+> > > A new motivation for LBS today is to support high-capacity (large amount
+> > > of Terabytes) QLC SSDs where the internal Indirection Unit (IU) are
+> > > typically greater than 4k [4] to help reduce DRAM and so in turn cost
+> > > and space. In practice this then allows different architectures to use a
+> > > base page size of 4k while still enabling support for block sizes
+> > > aligned to the larger IUs by relying on high order folios on the page
+> > > cache when needed. It also enables to take advantage of these same
+> > > drive's support for larger atomics than 4k with buffered IO support in
+> > > Linux. As described this year at LSFMM, supporting large atomics greater
+> > > than 4k enables databases to remove the need to rely on their own
+> > > journaling, so they can disable double buffered writes [5], which is a
+> > > feature different cloud providers are already innovating and enabling
+> > > customers for through custom storage solutions.
+> > > 
+> > > This series still needs some polishing and fixing some crashes, but it is
+> > > mainly targeted to get initial feedback from the community, enable initial
+> > > experimentation, hence the RFC. It's being posted now given the results from
+> > > our testing are proving much better results than expected and we hope to
+> > > polish this up together with the community. After all, this has been a 16
+> > > year old effort and none of this could have been possible without that effort.
+> > > 
+> > > Implementation:
+> > > 
+> > > This series only adds the notion of a minimum order of a folio in the
+> > > page cache that was initially proposed by Willy. The minimum folio order
+> > > requirement is set during inode creation. The minimum order will
+> > > typically correspond to the filesystem block size. The page cache will
+> > > in turn respect the minimum folio order requirement while allocating a
+> > > folio. This series mainly changes the page cache's filemap, readahead, and
+> > > truncation code to allocate and align the folios to the minimum order set for the
+> > > filesystem's inode's respective address space mapping.
+> > > 
+> > > Only XFS was enabled and tested as a part of this series as it has
+> > > supported block sizes up to 64k and sector sizes up to 32k for years.
+> > > The only thing missing was the page cache magic to enable bs > ps. However any filesystem
+> > > that doesn't depend on buffer-heads and support larger block sizes
+> > > already should be able to leverage this effort to also support LBS,
+> > > bs > ps.
+> > > 
+> > > This also paves the way for supporting block devices where their logical
+> > > block size > page size in the future by leveraging iomap's address space
+> > > operation added to the block device cache by Christoph Hellwig [6]. We
+> > > have work to enable support for this, enabling LBAs > 4k on NVME,  and
+> > > at the same time allow coexistence with buffer-heads on the same block
+> > > device so to enable support allow for a drive to use filesystem's to
+> > > switch between filesystem's which may depend on buffer-heads or need the
+> > > iomap address space operations for the block device cache. Patches for
+> > > this will be posted shortly after this patch series.
+> > 
+> > Do you have a git tree branch that I can pull this from
+> > somewhere?
+> > 
+> > As it is, I'd really prefer stuff that adds significant XFS
+> > functionality that we need to test to be based on a current Linus
+> > TOT kernel so that we can test it without being impacted by all
+> > the random unrelated breakages that regularly happen in linux-next
+> > kernels....
 > 
-> Duplicate descriptions are not allowed, the ACPI processor driver already
-> parses the UID from both devices and containers. acpi_processor_get_info()
-> returns an error if the UID exists twice in the DSDT.
+> That's understandable! I just rebased onto Linus' tree, this only
+> has the bs > ps support on 4k sector size:
 > 
-> The missing probe for CPUs described as packages creates a problem for
-> moving the cpu_register() calls into the acpi_processor driver, as CPUs
-> described like this don't get registered, leading to errors from other
-> subsystems when they try to add new sysfs entries to the CPU node.
-> (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
-> 
-> To fix this, parse the processor container and call acpi_processor_add()
-> for each processor that is discovered like this. The processor container
-> handler is added with acpi_scan_add_handler(), so no detach call will
-> arrive.
-> 
-> Qemu TCG describes CPUs using packages in a processor container.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->   drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
-> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=v6.6-rc2-lbs-nobdev
 
-I don't understand the last sentence of the commit log. QEMU
-always have "ACPI0007" for the processor devices.
 
-#define ACPI_PROCESSOR_DEVICE_HID      "ACPI0007"
-#define ACPI_PROCESSOR_OBJECT_HID      "LNXCPU"
+> I just did a cursory build / boot / fsx with 16k block size / 4k sector size
+> test with this tree only. I havne't ran fstests on it.
 
-[gshan@gshan q]$ git grep ACPI0007
-hw/acpi/cpu.c:                aml_append(dev, aml_name_decl("_HID", aml_string("ACPI0007")));
-hw/arm/virt-acpi-build.c:        aml_append(dev, aml_name_decl("_HID", aml_string("ACPI0007")));
-hw/riscv/virt-acpi-build.c:            aml_append(dev, aml_name_decl("_HID", aml_string("ACPI0007")));
-[gshan@gshan q]$ git grep LNXCPU
+W/ 64k block size, generic/042 fails (maybe just a test block size
+thing), generic/091 fails (data corruption on read after ~70 ops)
+and then generic/095 hung with a crash in iomap_readpage_iter()
+during readahead.
 
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index c0839bcf78c1..b4bde78121bb 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -625,9 +625,31 @@ static struct acpi_scan_handler processor_handler = {
->   	},
->   };
->   
-> +static acpi_status acpi_processor_container_walk(acpi_handle handle,
-> +						 u32 lvl,
-> +						 void *context,
-> +						 void **rv)
-> +{
-> +	struct acpi_device *adev;
-> +	acpi_status status;
-> +
-> +	adev = acpi_get_acpi_dev(handle);
-> +	if (!adev)
-> +		return AE_ERROR;
-> +
-> +	status = acpi_processor_add(adev, &processor_device_ids[0]);
-> +	acpi_put_acpi_dev(adev);
-> +
-> +	return status;
-> +}
-> +
->   static int acpi_processor_container_attach(struct acpi_device *dev,
->   					   const struct acpi_device_id *id)
->   {
-> +	acpi_walk_namespace(ACPI_TYPE_PROCESSOR, dev->handle,
-> +			    ACPI_UINT32_MAX, acpi_processor_container_walk,
-> +			    NULL, NULL, NULL);
-> +
->   	return 1;
->   }
->   
+Looks like a null folio was passed to ifs_alloc(), which implies the
+iomap_readpage_ctx didn't have a folio attached to it. Something
+isn't working properly in the readahead code, which would also
+explain the quick fsx failure...
 
-Thanks,
-Gavin
+> Just a heads up, using 512 byte sector size will fail for now, it's a
+> regression we have to fix. Likewise using block sizes 1k, 2k will also
+> regress on fsx right now. These are regressions we are aware of but
+> haven't had time yet to bisect / fix.
 
+I'm betting that the recently added sub-folio dirty tracking code
+got broken by this patchset....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
