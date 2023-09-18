@@ -2,78 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0B47A4FE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2F97A4FA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbjIRQ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
+        id S231171AbjIRQse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbjIRQ4R (ORCPT
+        with ESMTP id S230075AbjIRQsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:56:17 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5ADB6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:55:44 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ad8a33fd0dso603382066b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:55:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695056143; x=1695660943; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mkIPCmF85o/Z4anDms5oP2/zj6Pfs9qZf8v1CyX5iac=;
-        b=hLq4sP06/tCXKLY4n43QK90NBL4671OPdZbHeM9fJEW/QBI1aLhpzd3q9dDY+lu0Kp
-         OhyfMnukSrYe7BcSKvfIdufFB44RK+OYK5yJs9tBcEN8C1RgI8zl/xvY6r2gX2Z3YIof
-         PCFoq2SNLWUVjHrRxXqoffban4y4M4ouv5e9qu6bF4cdp4halRYkSkMM66zj8u+2KpVT
-         mod3hvU93mrMcOLMsWcIVMtF/8X4JPj7/f/1w2BHID3yqzibmcqqqjmL2Z86ixlWSh6t
-         qQv8ScSveFc0+VyQCfbf7RmwjrCRSVsein2hQcentSOYzrK4+TexLhJQK5Z7OcsdvHH4
-         cNRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695056143; x=1695660943;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mkIPCmF85o/Z4anDms5oP2/zj6Pfs9qZf8v1CyX5iac=;
-        b=AwjUc3a5p0lO61cfbeJxjjgnLSbh1BLao9d8CiCl9SdkyQFIvUQMXdHkbckk9ZZqSj
-         /lALieJcYOJhDEcvTEfsxCSinWPThpXL6kcfFQn4TtPWCBvCEvzVkeXjS2aDq5aFV6mZ
-         QKeeCuyS6LamnWMFfH/g97JwNZDpisLPy6r7vjmtmkdLFr/ZjZw3QNcb3CgOL9ZYSmAV
-         1kGq5WDhaBGoUrBGCwBp9qYYZKYNDV42qANprFZMLnMlOx7TL/8r3dBMDBDh95TDMv7M
-         ldGU9RS5ETHXj+Wvd/bOHVo+slaaUtpm2rG0Gjn2plgLoz8JvgZodVM/Frp9shnl40+Z
-         9sEQ==
-X-Gm-Message-State: AOJu0Yyu4p/JIjvIv4soekMcf/JLp5JVADe4PdVsgr2wZu/Go9I1yTx9
-        9yqDTa+lj93ndy8+cP4kUJd45og0zcvX2A==
-X-Google-Smtp-Source: AGHT+IF3pP06MbA2fpJivVwXf6I/ctosGSQGU8JcfvKJCaBMXnSJnn68HwjCizrPWA8uiNf6oFYZTQ==
-X-Received: by 2002:a05:6512:1089:b0:4ff:7e80:4f1d with SMTP id j9-20020a056512108900b004ff7e804f1dmr8970145lfg.57.1695042243496;
-        Mon, 18 Sep 2023 06:04:03 -0700 (PDT)
-Received: from giga-mm.home ([2a02:1210:8629:800:82ee:73ff:feb8:99e3])
-        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e8100b00531050807a9sm1822387eda.13.2023.09.18.06.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 06:04:03 -0700 (PDT)
-Message-ID: <fbcd27f27c37cebbc565b6a0caac44b1590b6603.camel@gmail.com>
-Subject: Re: [PATCH v4 02/42] ARM: ep93xx: add swlocked prototypes
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     nikita.shubin@maquefel.me,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 18 Sep 2023 15:04:02 +0200
-In-Reply-To: <93997981fb20fd83f42b83853e258ea28575cbe1.camel@gmail.com>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
-         <20230915-ep93xx-v4-2-a1d779dcec10@maquefel.me>
-         <93997981fb20fd83f42b83853e258ea28575cbe1.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Mon, 18 Sep 2023 12:48:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACAC1728;
+        Mon, 18 Sep 2023 09:47:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A389CC433C7;
+        Mon, 18 Sep 2023 13:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695042351;
+        bh=HYgvqysiYXEBze4xu0V7hvbNlfumeLQhBcoLM4ehRSM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b1RHVr7VnZBKe35gk2YjibsLWGUFzDa6Rs5pzFVjT3+aDGTpZh34yeHyFrXrynL2K
+         KqjZOVvPMxxpba5mXuTr+rNifmaKdTuBJuThpw3mmOpXucP7FoM/T58YcsXVi2ZjX9
+         s6rZikmVXh85yURmqt1dPNeOfA8Eo9m5VW/ZNnDtU6rn7/KPyyZqSeXk17FbB2klQ4
+         KgpaR9KKO4x3mG3x6rPOhzPwULyda9Gqt/uPciIbk1huxNbbpuVBvY9pFglPRCV0bl
+         wpTGdRsSI2tIKAu8fxG6rG4rjjrdoJijWw14OEaRpYE84ISzldJIP8Z1St5PBmrS7t
+         I5bRR5ywRd8zg==
+Date:   Mon, 18 Sep 2023 15:05:46 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+Message-ID: <20230918-bruchfest-erliegen-2bff785bf978@brauner>
+References: <20230913152238.905247-1-mszeredi@redhat.com>
+ <20230913152238.905247-3-mszeredi@redhat.com>
+ <CAMp4zn-r5BV_T9VBPJf8Z-iG6=ziDEpCdmPgHRRXF78UoOjTjQ@mail.gmail.com>
+ <39dc7081-fef3-007b-eee3-273bff549ecf@themaw.net>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <39dc7081-fef3-007b-eee3-273bff549ecf@themaw.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,65 +61,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
+On Mon, Sep 18, 2023 at 07:36:39AM +0800, Ian Kent wrote:
+> 
+> On 18/9/23 02:18, Sargun Dhillon wrote:
+> > On Wed, Sep 13, 2023 at 9:25 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
+> > > Add a way to query attributes of a single mount instead of having to parse
+> > > the complete /proc/$PID/mountinfo, which might be huge.
+> > > 
+> > > Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
+> > > needs to be queried based on path, then statx(2) can be used to first query
+> > > the mount ID belonging to the path.
+> > > 
+> > > Design is based on a suggestion by Linus:
+> > > 
+> > >    "So I'd suggest something that is very much like "statfsat()", which gets
+> > >     a buffer and a length, and returns an extended "struct statfs" *AND*
+> > >     just a string description at the end."
+> > > 
+> > > The interface closely mimics that of statx.
+> > > 
+> > > Handle ASCII attributes by appending after the end of the structure (as per
+> > > above suggestion).  Allow querying multiple string attributes with
+> > > individual offset/length for each.  String are nul terminated (termination
+> > > isn't counted in length).
+> > > 
+> > > Mount options are also delimited with nul characters.  Unlike proc, special
+> > > characters are not quoted.
+> > > 
+> > Thank you for writing this patch. I wish that this had existed the many times
+> > I've written parsers for mounts files in my life.
+> > 
+> > What do you think about exposing the locked flags, a la what happens
+> > on propagation of mount across user namespaces?
+> 
+> Which flags do you mean?
 
-On Sat, 2023-09-16 at 17:38 +0200, Alexander Sverdlin wrote:
-> > Add ep93xx_regmap_write and ep93xx_regmap_update_bits to make drivers
-> > compilable before actual implementation is added.
->=20
-> It should be possible to re-arrange the patch series so that real
-> implementation comes before the drivers using it.
->=20
-> We must assure that bisecting the kernel tree is possible, that
-> means no matter which (initial) part of your series is applied, there is =
-no
-> regression allowed.
->=20
+When you propagate mounts across mount+user namespaces a subset of
+(security sensitive) mount attributes become locked. This information is
+currently only available via internal flags but not in any way
+explicitly exposed to userspace.
 
-sorry for the confusion, there is no bisectability problem in it
-indeed, because only new drivers use it and they are not active until
-the last patches in the series swith to DT.
+There's a proposal to extend mount_setattr(2) to explicitly allow
+locking flags but that would mean a new set of mount attr flags.
 
-I'd personally probably melt commit 10 ("soc: Add SoC driver for Cirrus ep9=
-3xx")
-into this one, but I don't see it necessary after all.
-
-> > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> > ---
-> > =C2=A0include/linux/soc/cirrus/ep93xx.h | 6 ++++++
-> > =C2=A01 file changed, 6 insertions(+)
-> >=20
-> > diff --git a/include/linux/soc/cirrus/ep93xx.h b/include/linux/soc/cirr=
-us/ep93xx.h
-> > index 56fbe2dc59b1..8b4b8221ed4c 100644
-> > --- a/include/linux/soc/cirrus/ep93xx.h
-> > +++ b/include/linux/soc/cirrus/ep93xx.h
-> > @@ -3,6 +3,7 @@
-> > =C2=A0#define _SOC_EP93XX_H
-> > =C2=A0
-> > =C2=A0struct platform_device;
-> > +struct regmap;
-> > =C2=A0
-> > =C2=A0#define EP93XX_CHIP_REV_D0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A03
-> > =C2=A0#define EP93XX_CHIP_REV_D1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A04
-> > @@ -34,4 +35,9 @@ static inline unsigned int ep93xx_chip_revision(void)=
- { return 0; }
-> > =C2=A0
-> > =C2=A0#endif
-> > =C2=A0
-> > +static inline void ep93xx_regmap_write(struct regmap *map, unsigned in=
-t reg, unsigned int val) {}
-> > +static inline void ep93xx_regmap_update_bits(struct regmap *map, unsig=
-ned int reg,
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int mask, unsigned int val=
-)
-> > +{ }
-> > +
-> > =C2=A0#endif
-
---=20
-Alexander Sverdlin.
-
+So until the format of that is determined and settled this should be
+kept out of statmount().
