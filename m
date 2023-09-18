@@ -2,144 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B517A4F03
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E02E7A5084
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjIRQdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
+        id S231216AbjIRRH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjIRQce (ORCPT
+        with ESMTP id S231354AbjIRRHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:32:34 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355AE2715
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:17:52 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-576918d0a42so2825484eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695053871; x=1695658671; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2rBowV5k7lk2ieUe+gHPEvDWhBOkpthR4x1/BaQpS1E=;
-        b=ESaHyDhWEulbPo6HdTI8dpbxc78878phm1n7MTeZWOcJ1glIlDFB+xvREUCeBiF31u
-         ZYoc0Y3VCiJBk3x9AGNvfPKdY6FrH3bCOSEb3Dkrph1fbhg7zAcPSd4b98mHfLlmIU1W
-         2gVeR2PNdPG73CAz326pM8+sBULieLySXErI9f5dK7lNSKRQDHQdKNBbzoO8GIklD3UH
-         +uWySu2PI4Ybv6+cMxQY1GICAc+7ucSB98SwS7NY1Gqbv3dyv3hB4XVYdFQ19qZBiW+r
-         6bYXjKAzpFVHw2ZVlCKyVEp/WmOpzMI6ILOFjCSc2Io0PvFM+pGfYmSh4HQ+nSvLqAld
-         vitw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695053871; x=1695658671;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2rBowV5k7lk2ieUe+gHPEvDWhBOkpthR4x1/BaQpS1E=;
-        b=OAIcP60gkLvqTThvNg+IodNtFoj1FaRQgKRBWgtpfG7Lz2suX7V5THyQt6sSSVBQhw
-         gEjet1yVT9uKsD2ydDIK/nPc3LNo8/KhxR91nwlAsibWhmpPtlMpB30w9uuLzBr9vbGv
-         cewlGUXtsTvyozUwJGa3I8gdh77j/wuyTXjCrIY0c0F58FECWqVcZc/JuXyMV9ViU6Ed
-         AfYy2Xhw/FW17tAKIb5xBaePvI8rF05qvPhGOgiPZfcxK3CaWE0bXmm32OmSjHba7Ssk
-         GLfJWbphUhmzb4zR2W86cyLsPN1etNBJQvNxIzym5mto0qyPoIQoULQPomJwpOIrO0ge
-         vhEA==
-X-Gm-Message-State: AOJu0YyMbHccJmLRhupBzewkeJcQ+9MT12fAfisAeT3frNIw+MlsMZVy
-        hAa6w3+lRWzhZu7RoEC4p2DmQg==
-X-Google-Smtp-Source: AGHT+IEIIPi01LMzDkzmjlUBhug1qKaxU6nRjVuZ+XGbMUgkxm1Qfw0TLzJDUPnbwFfEuT1QKajmag==
-X-Received: by 2002:a05:6358:7207:b0:13f:411:c1a9 with SMTP id h7-20020a056358720700b0013f0411c1a9mr13490229rwa.17.1695053871422;
-        Mon, 18 Sep 2023 09:17:51 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id pz10-20020ad4550a000000b00656260e67afsm3340834qvb.115.2023.09.18.09.17.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 09:17:50 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qiGwY-0005mj-Ao;
-        Mon, 18 Sep 2023 13:17:50 -0300
-Date:   Mon, 18 Sep 2023 13:17:50 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Anish Ghulati <aghulati@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        Andrew Thornton <andrewth@google.com>
-Subject: Re: [PATCH 06/26] KVM: Drop CONFIG_KVM_VFIO and just look at KVM+VFIO
-Message-ID: <20230918161750.GM13795@ziepe.ca>
-References: <20230916003118.2540661-1-seanjc@google.com>
- <20230916003118.2540661-7-seanjc@google.com>
- <20230918152946.GJ13795@ziepe.ca>
- <ZQhySMjmuyW2Czas@google.com>
+        Mon, 18 Sep 2023 13:07:51 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1698FE3;
+        Mon, 18 Sep 2023 10:07:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=4dwqbabpRXtAFfSri7LBE3DGA0CnqUUPOENxivi1UzE=; b=lzrXogp/kL8mBy8K9gKe6RuiQk
+        2joE3ilZNPoITCwSoJQJn6JMlDtBYr8oVbiH9gFaWl7rIExh6fiqpmpD17Y1b/vrycqL3J20/Cebh
+        AfHqNIDExteB9DzPDiZ7+czGCHJ6WWBa9Hte8Uepc1WOVbDdJGXAy7nIgGfF6OFaLE1M=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qiGwi-006oFv-Mn; Mon, 18 Sep 2023 18:18:00 +0200
+Date:   Mon, 18 Sep 2023 18:18:00 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jay Monkman <jtm@lopingdog.com>
+Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+        Arndt Schuebel <Arndt.Schuebel@onsemi.com>
+Subject: Re: [PATCH 3/4] net: phy: Add GPIO and DT support to NCN26000
+Message-ID: <4242c63c-eec2-4168-ae59-b4fac8cdea3e@lunn.ch>
+References: <ZQf1Nx+2amtUZulX@lopingdog.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZQhySMjmuyW2Czas@google.com>
+In-Reply-To: <ZQf1Nx+2amtUZulX@lopingdog.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 08:52:40AM -0700, Sean Christopherson wrote:
-
-> > I wonder if we should be making the VFIO drivers that need the kvm to
-> > ask for it? 'select CONFIG_NEED_VFIO_KVM' or something?
+On Mon, Sep 18, 2023 at 01:59:03AM -0500, Jay Monkman wrote:
 > 
-> I wondered the same thing, if only to make it easier to track which
-> drivers actually end up interacting directly with KVM.
+> This adds GPIO support and devicetree configuration for
+> the NCN26000 PHY.
 
-There are two usages I've seen..
+Please Cc: the GPIO maintainers. They have specialist knowledge that
+netdev reviews like me don't have. You probably want to separate this
+out into a patch of its own, since you don't want to be spamming GPIO
+people with a MAC driver etc.
 
-GVT's uage is just totally broken:
+> +// clause 45 vendor specific registers
+> +#define NCN26000_REG_PHYCFG1_MMD	MDIO_MMD_VEND2
 
-https://lore.kernel.org/kvm/661447fd-b041-c08d-cedc-341b31c405f8@intel.com/
+Please use MDIO_MMD_VEND2 directly, so it is clear you are in vendor
+space.
 
-It is trying to use KVM to write protect IOVA DMA memory, and it just
-doesn't work. If we want to do something like this the core vfio code
-should provide this service and it should be wired into KVM
-properly.
+> +static int ncn26000_gpio_request(struct gpio_chip *gc, unsigned int offset)
+> +{
+> +	struct ncn26000_priv *priv = gpiochip_get_data(gc);
+> +
+> +	if (offset > 2)
+> +		return -ENODEV;
 
-power and s390 have actual architectural "virtual machines" and they
-need actual arch operations to install VFIO devices into those
-things. In this regard having the arch opt into the integration would
-make some sense. I expect this will get worse in our CC future where
-VFIO devices will need to be passed into arch specific CC code
-somehow.
+Can that happen? I would expect the GPIO core to perform this
+validation?
 
-This arch stuff isn't cleanly done, the code is sprinkled all over the
-place. Some in mdevs, some in PCI arch code, some in #ifdefs..
+> +
+> +	if (priv->gpiomask & (1 << offset))
+> +		return 0;
+> +
+> +	return -EBUSY;
 
-Maybe the CC people will clean it up instead of making the mess bigger :)
+Is this function even needed? All it seems to do is validation. No
+resources are actually reserved.
 
-Jason
+> +static void ncn26000_gpio_set(struct gpio_chip *gc, unsigned int offset, int val)
+> +{
+> +	struct ncn26000_priv *priv = gpiochip_get_data(gc);
+> +	u32 dio_reg;
+> +
+> +	dio_reg = phy_read(priv->phydev, NCN26000_REG_DIO_CONFIG);
+> +
+> +	switch (offset) {
+> +	case 0:
+> +		if (!val == !(priv->diocfg & NCN26000_DIO_CFG_VAL0))
+> +			dio_reg |= NCN26000_DIO_CFG_VAL0;
+> +		else
+> +			dio_reg &= ~NCN26000_DIO_CFG_VAL0;
+> +		break;
+> +
+> +	case 1:
+> +		if (!val == !(priv->diocfg & NCN26000_DIO_CFG_VAL1))
+> +			dio_reg |= NCN26000_DIO_CFG_VAL1;
+> +		else
+> +			dio_reg &= ~NCN26000_DIO_CFG_VAL1;
+> +		break;
+> +
+> +	default:
+> +		dev_err(priv->dev, "invalid GPIO offset: %d\n", offset);
+> +		return;
+> +	}
+> +
+> +	phy_write(priv->phydev, NCN26000_REG_DIO_CONFIG, dio_reg);
+
+You are doing a read/modify/write here. How does locking work?
+
+> +static int ncn26000_gpio_get_dir(struct gpio_chip *gc, unsigned int offset)
+> +{
+> +	return GPIO_LINE_DIRECTION_OUT;
+> +}
+
+So they are all GPO? No GPI or GPIO?
+
+> +static int ncn26000_gpio_setup(struct ncn26000_priv *priv)
+> +{
+> +	struct gpio_chip *gc = &priv->gpio_chip;
+> +
+> +	gc->request            = ncn26000_gpio_request;
+> +	gc->get_direction      = ncn26000_gpio_get_dir;
+> +	gc->direction_output   = ncn26000_gpio_dir_out;
+> +	gc->set                = ncn26000_gpio_set;
+> +	gc->label              = "ncn26000-gpio";
+> +	gc->base               = -1;
+> +	gc->ngpio              = 2;
+> +	gc->parent             = priv->dev;
+> +	gc->owner              = THIS_MODULE;
+> +
+> +	return devm_gpiochip_add_data(priv->dev, gc, priv);
+> +}
+
+Am i right in saying that the rest of this patch has nothing to do
+with GPIOs? Please split it up into multiple patches.
+
+     Andrew
