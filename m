@@ -2,155 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F797A4DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6527A4DEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjIRQAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        id S229838AbjIRQD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjIRQAc (ORCPT
+        with ESMTP id S229630AbjIRQDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:00:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C52FE;
-        Mon, 18 Sep 2023 08:57:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BC00F21E21;
-        Mon, 18 Sep 2023 15:54:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695052444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BO0o7mc51KvupjydrTvNuZTowoiGCihD2MFz1LzYzPM=;
-        b=hPyVo6xQ/5JYBEGBWzgWV1gR7wcLXkl8skxnWsiADUcukIRsswrZlRp4H7Q2rp2y0rLPYf
-        hy20KmHGuedlI5a1O1IQkctlT7ysTSghj1lN6N9TCyvl3PQFNq2gUlUhgXbfpMRUYal5O4
-        vIbr/uLGwth4ZwbOXcZgs+b2058Z0rI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695052444;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BO0o7mc51KvupjydrTvNuZTowoiGCihD2MFz1LzYzPM=;
-        b=K/YCBDd4H1NBX1EBhbtAbx3l0jAwQCKJS6k+0RRGk+UHsy/dvQVFn9Xz60jhP24bmToRnW
-        /NBs6u4t2V4yr2Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A966A13480;
-        Mon, 18 Sep 2023 15:54:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id llpRKZxyCGWsaQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 15:54:04 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EF583A0759; Mon, 18 Sep 2023 17:54:03 +0200 (CEST)
-Date:   Mon, 18 Sep 2023 17:54:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Jan Kara <jack@suse.cz>, Philipp Stanner <pstanner@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+        Mon, 18 Sep 2023 12:03:52 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B55C49C9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:01:51 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b59e1ac70so58939667b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695052667; x=1695657467; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s17YssV/eLMk3v6BQw21PztJLVQ1uDSUDnGyHA0nJic=;
+        b=29mFCgzEaKXgI7BJZgdelVVGImtdHCE2jfWHG7m0Kw0Ihmz69s1VSQ4NvYUCM6MJol
+         A9yr4B7MUuqqWO9htV1FHHai+1Wf6SeDdosUaIQhlIdAVUWgadhsgqOCJHybVx08RyUf
+         j0KXbhEe6dYJ9g7Sh2neYuUkRUevWzwLdDSU8u6cCI4tPtvcvBprx15w0BN8eTfqO7kl
+         6Dgqn4BODRv4r+XzJjGkwpkVWEUz3GbSoYbMgBJhlqUoasBORVmSAQFFSiGpTtJQrEOl
+         YwQpxNh3jBhjxcv5+WtUiau53mI8EgAEEqSkeKzyPNuAqZ4PkfjAnfhBVK+JuhypuyiU
+         CN4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695052667; x=1695657467;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s17YssV/eLMk3v6BQw21PztJLVQ1uDSUDnGyHA0nJic=;
+        b=oGXQnSjbeoYsw4gKNSIz17/jEDQf8EOb+lRDc3gZONH3H4q4U69SOWfrK1ERowrPe8
+         OLvHosf7kfOuSy5zIorSWlzAwQrmqDPpZMjyY5n/pJKCffy3PIdq+EbM2oXFmpUbSEaH
+         ygG7xzJK0UDuSJPMDFyUWuPhmkuW2EES4IDbS8G7401xMqdu+3evxbIWWNGCE78cp2ig
+         Oug6PontzBVYLuZvbP8vGhPLonLrv4ujeTmnjeaZ7gNwrU2HAQ/bl7bto0wYfZgYOeuB
+         IgdJUowOewF0hhuGtwesQNQu8iEK729vfCojianRXVeD7fJz8HNbzYzx+5xp+Mih+AZF
+         Opvw==
+X-Gm-Message-State: AOJu0YxPruMG1KkbxlPuz9doGLV5ZtNVYHjMAut+FtNE6OmUgs18BILN
+        3Jy7fdqJgkaR2B5cxiOx7KkDL1O2SaY=
+X-Google-Smtp-Source: AGHT+IFqXVMaW5EWUR3sn7RRHAULv1S9Ax+JzluU+Y462jgw29bgpZAEkbL739S68Hx7QOlYkiFqSLcGAUw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:4cf:b0:d7f:f3e:74ab with SMTP id
+ v15-20020a05690204cf00b00d7f0f3e74abmr227961ybs.1.1695052667494; Mon, 18 Sep
+ 2023 08:57:47 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 08:57:45 -0700
+In-Reply-To: <9925e01b-7fa9-95e4-dc21-1d760ef9cde4@linux.intel.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-11-seanjc@google.com>
+ <9925e01b-7fa9-95e4-dc21-1d760ef9cde4@linux.intel.com>
+Message-ID: <ZQhzeQLbB5zz2yIc@google.com>
+Subject: Re: [RFC PATCH v12 10/33] KVM: Set the stage for handling only shared
+ mappings in mmu_notifier events
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v1 1/1] xarray: fix the data-race in xas_find_chunk() by
- using READ_ONCE()
-Message-ID: <20230918155403.ylhfdbscgw6yek6p@quack3>
-References: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
- <20230918094116.2mgquyxhnxcawxfu@quack3>
- <22ca3ad4-42ef-43bc-51d0-78aaf274977b@alu.unizg.hr>
- <20230918113840.h3mmnuyer44e5bc5@quack3>
- <fb0f5ba9-7fe3-a951-0587-640e7672efec@alu.unizg.hr>
- <ZQhlt/EbRf3Y+0jT@yury-ThinkPad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQhlt/EbRf3Y+0jT@yury-ThinkPad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 18-09-23 07:59:03, Yury Norov wrote:
-> On Mon, Sep 18, 2023 at 02:46:02PM +0200, Mirsad Todorovac wrote:
-> > --------------------------------------------------------
-> >  lib/find_bit.c | 33 +++++++++++++++++----------------
-> >  1 file changed, 17 insertions(+), 16 deletions(-)
+On Mon, Sep 18, 2023, Binbin Wu wrote:
+> 
+> 
+> On 9/14/2023 9:55 AM, Sean Christopherson wrote:
+> > Add flags to "struct kvm_gfn_range" to let notifier events target only
+> > shared and only private mappings, and write up the existing mmu_notifier
+> > events to be shared-only (private memory is never associated with a
+> > userspace virtual address, i.e. can't be reached via mmu_notifiers).
 > > 
-> > diff --git a/lib/find_bit.c b/lib/find_bit.c
-> > index 32f99e9a670e..56244e4f744e 100644
-> > --- a/lib/find_bit.c
-> > +++ b/lib/find_bit.c
-> > @@ -18,6 +18,7 @@
-> >  #include <linux/math.h>
-> >  #include <linux/minmax.h>
-> >  #include <linux/swab.h>
-> > +#include <asm/rwonce.h>
-> >  /*
-> >   * Common helper for find_bit() function family
-> > @@ -98,7 +99,7 @@ out:                                                                          \
-> >   */
-> >  unsigned long _find_first_bit(const unsigned long *addr, unsigned long size)
-> >  {
-> > -       return FIND_FIRST_BIT(addr[idx], /* nop */, size);
-> > +       return FIND_FIRST_BIT(READ_ONCE(addr[idx]), /* nop */, size);
-> >  }
-> >  EXPORT_SYMBOL(_find_first_bit);
-> >  #endif
+> > Add two flags so that KVM can handle the three possibilities (shared,
+> > private, and shared+private) without needing something like a tri-state
+> > enum.
 > 
-> ...
-> 
-> That doesn't look correct. READ_ONCE() implies that there's another
-> thread modifying the bitmap concurrently. This is not the true for
-> vast majority of bitmap API users, and I expect that forcing
-> READ_ONCE() would affect performance for them.
-> 
-> Bitmap functions, with a few rare exceptions like set_bit(), are not
-> thread-safe and require users to perform locking/synchronization where
-> needed.
+> How to understand the word "stage" in short log?
 
-Well, for xarray the write side is synchronized with a spinlock but the read
-side is not (only RCU protected).
+Sorry, it's an idiom[*] that essentially means "to prepare for".  I'll rephrase
+the shortlog to be more straightforward (I have a bad habit of using idioms).
 
-> If you really need READ_ONCE, I think it's better to implement a new
-> flavor of the function(s) separately, like:
->         find_first_bit_read_once()
-
-So yes, xarray really needs READ_ONCE(). And I don't think READ_ONCE()
-imposes any real perfomance overhead in this particular case because for
-any sane compiler the generated assembly with & without READ_ONCE() will be
-exactly the same. For example I've checked disassembly of _find_next_bit()
-using READ_ONCE(). The main loop is:
-
-   0xffffffff815a2b6d <+77>:	inc    %r8
-   0xffffffff815a2b70 <+80>:	add    $0x8,%rdx
-   0xffffffff815a2b74 <+84>:	mov    %r8,%rcx
-   0xffffffff815a2b77 <+87>:	shl    $0x6,%rcx
-   0xffffffff815a2b7b <+91>:	cmp    %rcx,%rax
-   0xffffffff815a2b7e <+94>:	jbe    0xffffffff815a2b9b <_find_next_bit+123>
-   0xffffffff815a2b80 <+96>:	mov    (%rdx),%rcx
-   0xffffffff815a2b83 <+99>:	test   %rcx,%rcx
-   0xffffffff815a2b86 <+102>:	je     0xffffffff815a2b6d <_find_next_bit+77>
-   0xffffffff815a2b88 <+104>:	shl    $0x6,%r8
-   0xffffffff815a2b8c <+108>:	tzcnt  %rcx,%rcx
-
-So you can see the value we work with is copied from the address (rdx) into
-a register (rcx) and the test and __ffs() happens on a register value and
-thus READ_ONCE() has no practical effect. It just prevents the compiler
-from doing some stupid de-optimization.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+[*] https://dictionary.cambridge.org/us/dictionary/english/set-the-stage-for
