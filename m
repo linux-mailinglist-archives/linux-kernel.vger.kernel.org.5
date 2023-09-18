@@ -2,106 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 921D27A53B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCCF7A53BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbjIRUP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45966 "EHLO
+        id S229849AbjIRUQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIRUP4 (ORCPT
+        with ESMTP id S229472AbjIRUQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:15:56 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4312110D
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:15:50 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so6331469a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695068148; x=1695672948; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M2m8Sbfwj+u+lTjFSP79r7yKZtx9J+wc0Oa9bsS9kLI=;
-        b=IkQZv3hYill1oc2WZM3U2A6MzrRCHVOCHLqdsc2BMQnyo4dMUNktL2KwhgzSJPXsu0
-         lOPlA1n/ha2zAHhX9i0fT43PjNPeGMafXVhD8NLXnSOQ9Yl+bPql8+attlACESQYQLzH
-         +Pt2J26vcDlbOwgN/64tcScSHMJIFH6QczveNVJ32AlgIkAT9jjqXXaQsTvijB5eKQ87
-         RGnBeg0QEv+5JqEFGScX77FutOAddfoFiAdpVBlxBFuMzWsvW+NQRWMcqV1u5ak4yZUe
-         BsilOAZDjjFHPqFBDfO9rIY69f5dmr+7diNDvKrPCerMvqetM6S8P4zPQX/S95pGi6jP
-         IIjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695068148; x=1695672948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M2m8Sbfwj+u+lTjFSP79r7yKZtx9J+wc0Oa9bsS9kLI=;
-        b=Rv/8/hZOFsVLE5pcZdZ5xTz6hunDkAGzFZKZjJJXde33nK476kfwcUPkdFgmNieiBr
-         zMZ0O/zlZ0TLp9GGiqxX5/ZlYLz6ghRwLVuWNGIriIn5iXoXGojUddr0eT6LhbFEixil
-         vAM1FmdwvRox0vaAhDtNfczpDI952YE2f0EsfMhYg+uwpc2DYj+wxvqrkTy4dDu1Umvx
-         zeYeMVQVkro2ravtfvkpNwkrmbc2ULqnlrfKPKNkKBoXZElR/PWny1nNJnwbvcI8xWoV
-         FuIrAAwT4qiGC9QHsvfwqY2JbHR+bouairyL9RAdUtvvvcOFQq4ZDcOIw8Llpu1a8kSg
-         VuvA==
-X-Gm-Message-State: AOJu0YzJtlg3lRLX0JkAze20HTcoUQ+Iww4DfSm2u9jn54DVpigWqJOu
-        vc/b6ef4KvyXmarUis5CrmCQcw==
-X-Google-Smtp-Source: AGHT+IGpwXjOHzqhVz9BxHPwLWhbOmaxmMQnWiyGQWOBpz6HZ2COGji7alRXtAxTCpE7TM6YqLpCQA==
-X-Received: by 2002:a05:6402:4492:b0:531:9c1:8271 with SMTP id er18-20020a056402449200b0053109c18271mr3914020edb.14.1695068148443;
-        Mon, 18 Sep 2023 13:15:48 -0700 (PDT)
-Received: from [172.25.80.114] ([217.67.225.27])
-        by smtp.gmail.com with ESMTPSA id dk13-20020a0564021d8d00b005312b68cb37sm1297313edb.28.2023.09.18.13.15.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 13:15:47 -0700 (PDT)
-Message-ID: <0f25cc55-b353-9bec-009f-589b04e36cb4@linaro.org>
-Date:   Mon, 18 Sep 2023 22:15:46 +0200
+        Mon, 18 Sep 2023 16:16:15 -0400
+Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30008118
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:16:08 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id iKf5q22uye2oZiKf6qefCq; Mon, 18 Sep 2023 22:16:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695068165;
+        bh=oteOYinY96sYKpsCTLEZtYYk6TSB+1fIxVTYQrzuetw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=hx0DZRp+EEAKHbCyNJBXIo5Ca/0HssLB1W4kgdMbsv/90SpK9vEKQDB4MkxOOyx8U
+         k9pyYZhmdsjqCFZjBeWp9g4H0of0PpEXLzfDS7gbBWCqAqi2dXQmUZ9dAVDHbAs/Sd
+         82PPGqycSqDvJQmQR5Ag22Ag/TtoXVDGBgTdaeorgtCVRj6GB5HokNvwe832XxurHR
+         8Z+7YqwhCezGcdbF1czmQKQ1h8L+eFiq0UVdBGMGaeFva3/DcaJtTbq1x2/wC2ldQI
+         BJB4BXqE6GMXSljT+jFdLw9GJ8m26cJxDldDHyZtA6Hvs6s764bSjcXk/UmKSx4rtD
+         C7Rp/E74y/0Ng==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 18 Sep 2023 22:16:05 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <aefe3865-dcd1-54c8-d9d6-446af31c73d3@wanadoo.fr>
+Date:   Mon, 18 Sep 2023 22:16:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 09/12] dt-bindings: serial: snps-dw-apb-uart: Add Sophgo
- SG2042 uarts
-Content-Language: en-US
-To:     Chen Wang <unicorn_wang@outlook.com>,
-        Wang Chen <unicornxw@gmail.com>,
-        linux-riscv@lists.infradead.org, conor@kernel.org,
-        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-References: <20230915072517.118266-1-wangchen20@iscas.ac.cn>
- <c4aa8d45-1248-5656-a045-a475ec737c0f@linaro.org>
- <MA0P287MB033226287163E5E20485433DFEFBA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <MA0P287MB033226287163E5E20485433DFEFBA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2 2/3] soc: mediatek: mtk-socinfo: Add driver for getting
+ chip information
+Content-Language: fr
+To:     william-tw.lin@mediatek.com
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        angelogioacchino.delregno@collabora.com, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, khilman@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        robh+dt@kernel.org
+References: <20230915152607.18116-1-william-tw.lin@mediatek.com>
+ <20230915152607.18116-3-william-tw.lin@mediatek.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230915152607.18116-3-william-tw.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 14:49, Chen Wang wrote:
-> Hi, Krzysztof,
+Le 15/09/2023 à 17:26, William-tw Lin a écrit :
+> Add driver for socinfo retrieval. This patch includes the following:
+> 1. mtk-socinfo driver for chip info retrieval
+> 2. Related changes to Makefile and Kconfig
 > 
-> I see Emil has clarified in anther email, I copy it here for your quick 
-> reference:
-> 
->  >Sophgo and StarFive are not the same company. Sophgo are using RISC-V 
-> cores from T-Head and StarFive are using cores from SiFive.
-> 
-> And SG2042 is chip from Sophgo, and JH7100 is chip from StarFive.
-> 
-> So I think it should be better to use a new entry for sg2042, what do 
-> you think?
+> Signed-off-by: William-tw Lin <william-tw.lin-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+> ---
 
-We talked about different things. Previous discussion was about
-compatibility. Here, you should just not create your own enum, because
-there is no single need. Just put it to previous enum.
+...
 
-Best regards,
-Krzysztof
+> +static int mtk_socinfo_create_socinfo_node(struct mtk_socinfo *mtk_socinfop)
+> +{
+> +	struct soc_device_attribute *attrs;
+> +	static char machine[30] = {0};
+> +
+> +	attrs = devm_kzalloc(mtk_socinfop->dev, sizeof(*attrs), GFP_KERNEL);
+> +	if (!attrs)
+> +		return -ENOMEM;
+> +
+> +	snprintf(machine, 30, "%s (%s)", mtk_socinfop->socinfo_data->marketing_name,
+
+sizeof(machine) instead of 30?
+
+> +		mtk_socinfop->socinfo_data->soc_name);
+> +	attrs->family = soc_manufacturer;
+> +	attrs->machine = machine;
+> +
+> +	soc_dev = soc_device_register(attrs);
+> +	if (IS_ERR(soc_dev))
+> +		return PTR_ERR(soc_dev);
+> +
+> +	dev_info(mtk_socinfop->dev, "%s SoC detected.\n", attrs->machine);
+> +	return 0;
+> +}
+> +
+> +static int mtk_socinfo_get_socinfo_data(struct mtk_socinfo *mtk_socinfop)
+> +{
+> +	unsigned int i = 0, j = 0;
+
+No need to init.
+
+> +	unsigned int num_cell_data = 0;
+> +	u32 *cell_datap[MAX_CELLS] = { NULL };
+> +	size_t efuse_bytes;
+> +	struct nvmem_cell *cell;
+> +	bool match_socinfo = true;
+
+No need to init.
+
+> +	int match_socinfo_index = -1;
+> +
+> +	for (i = 0; i < MAX_CELLS; i++) {
+> +		cell = nvmem_cell_get(mtk_socinfop->dev, cell_names[i]);
+> +		if (IS_ERR_OR_NULL(cell))
+
+I don't think that testing for NULL is needed.
+
+> +			break;
+> +		cell_datap[i] = (u32 *)nvmem_cell_read(cell, &efuse_bytes);
+> +		nvmem_cell_put(cell);
+> +		num_cell_data++;
+> +	}
+> +
+> +	if (!num_cell_data)
+> +		return -ENOENT;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(socinfo_data_table); i++) {
+> +		match_socinfo = true;
+> +		for (j = 0; j < num_cell_data; j++) {
+> +			if (*(cell_datap[j]) != socinfo_data_table[i].cell_data[j])
+> +				match_socinfo = false;
+
+I think that a "break" could be added.
+
+> +		}
+> +		if (num_cell_data > 0 && match_socinfo) {
+
+This test can be simplified, becasue 'num_cell_data' can't be <= 0. It 
+is an unsigned int, and we return -ENOENT if it is zero.
+
+> +			mtk_socinfop->socinfo_data = &(socinfo_data_table[i]);
+> +			match_socinfo_index = i;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return match_socinfo_index >= 0 ? match_socinfo_index : -ENOENT;
+> +}
+> +
+> +static const struct of_device_id mtk_socinfo_id_table[] = {
+> +	{ .compatible = "mediatek,socinfo" },
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, mtk_socinfo_id_table);
+> +
+> +static int mtk_socinfo_probe(struct platform_device *pdev)
+> +{
+> +	struct mtk_socinfo *mtk_socinfop;
+> +	int ret = 0;
+
+No need to init.
+
+> +
+> +	mtk_socinfop = devm_kzalloc(&pdev->dev, sizeof(*mtk_socinfop), GFP_KERNEL);
+> +	if (!mtk_socinfop)
+> +		return -ENOMEM;
+> +
+> +	mtk_socinfop->dev = &pdev->dev;
+> +
+> +	ret = mtk_socinfo_get_socinfo_data(mtk_socinfop);
+> +	if (ret < 0)
+> +		return dev_err_probe(mtk_socinfop->dev, ret, "Failed to get socinfo data\n");
+> +
+> +	ret = mtk_socinfo_create_socinfo_node(mtk_socinfop);
+> +	if (ret != 0)
+> +		return dev_err_probe(mtk_socinfop->dev, -EINVAL, "Failed to create socinfo node\n");
+
+Why not propagating 'ret'?
+
+CJ
+
+> +
+> +	return 0;
+> +}
+
+...
 
