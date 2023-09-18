@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E90097A4309
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8167A42FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240217AbjIRHmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
+        id S240095AbjIRHkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240171AbjIRHlu (ORCPT
+        with ESMTP id S240282AbjIRHkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:41:50 -0400
+        Mon, 18 Sep 2023 03:40:11 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5ED170D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3342D1711;
         Mon, 18 Sep 2023 00:38:14 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 06:21:22 -0000
+Date:   Mon, 18 Sep 2023 06:21:23 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1695022692;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ifDIpIeokB6phVtS5ilxDHQ0vg3820UzqC9/Ocq+NZI=;
-        b=qYpAQ8ZKcmKRRba1kUEMjWqQaBbBWxo+Y+quB6QOnLNKE2nnw8RkBhTVUXWtghm5WlB1jr
-        7wSfPNUU61yXXw8U0Q70mpGNc+yQgj3efNcjn9qZK88QvHzE9NkQt+78bfBKIziNj0VWbU
-        2xH+IZw1AQBlxsy69kQixZ7xQ+IpfNP6wbEvOdDi5mcH/P+tYQafQMkFMO8ncWdHzpoDl0
-        +gvMdRDOJwXTY0MHtfhCTq+Svl2JyyQR7RXf1GtTGDl5UBOoVmy0oP7+/qWM3UtPMT2r+W
-        j2gI+Z8bIpSPDJ6LczkH4dEUblwwYeO82KNcrjIpB+hbA+TteUcvUGyHYtkzrg==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=/tv/cW4VFXXfUEoCJ6/DJ7tbok7IFkyfL1VEDSRPrGA=;
+        b=1js5R5mJ09MR6PiFc2eVBg1KyFicOxVVRuCXVru8M9l6BnmgTFqce+hoQHnGjDaG+Py/CG
+        b65H4AJUytNizW+nA9WudS8FtbZ+kWPHIJpCbh6VQwKW3q3OxXhUJUowf27+LKW87gCSc0
+        3Qc15AakQH2H54UmPLwva75FnAecGUqbAnvniSjUCElhWJx/EodeJC+W7KIS7GszpDTGcT
+        YZwJ9AYUrR+KCbDc2taJQVGenpYmljSzavpuWzl3fGWafXmkUcUgplEU1VAx/UBBxBX0mY
+        RSKqbLfwCFnUs38zRIlQ1Mol/tjN/uqk2XYzOKyY5/1aNPodnm/6jYBByiz+hA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1695022692;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ifDIpIeokB6phVtS5ilxDHQ0vg3820UzqC9/Ocq+NZI=;
-        b=XDhu9yzbmDO1nKzhS/SiZykcuQDBTuztDN1zYj44TG7L+6hWbtZWGtWbs0iMf52MQf0A7P
-        aO7xNqv877HaifAw==
-From:   "tip-bot2 for Aaron Lu" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=/tv/cW4VFXXfUEoCJ6/DJ7tbok7IFkyfL1VEDSRPrGA=;
+        b=+Vob4eVNTy4pqABzyf7WcOEMHT2jPQU9T68BJ2yX6xbWHKUACU6HnrRNs7y6w3toWL6LtU
+        br4p+94QsLOeDaBg==
+From:   "tip-bot2 for Elliot Berman" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Ratelimit update to tg->load_avg
-Cc:     Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Aaron Lu <aaron.lu@intel.com>,
+Subject: [tip: sched/core] freezer,sched: Use saved_state to reduce some
+ spurious wakeups
+Cc:     Prakash Viswalingam <quic_prakashv@quicinc.com>,
+        Elliot Berman <quic_eberman@quicinc.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        David Vernet <void@manifault.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230912065808.2530-2-aaron.lu@intel.com>
-References: <20230912065808.2530-2-aaron.lu@intel.com>
 MIME-Version: 1.0
-Message-ID: <169501808279.27769.6827304555334200206.tip-bot2@tip-bot2>
+Message-ID: <169501808337.27769.14753741283379327202.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -72,242 +63,179 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     1528c661c24b407e92194426b0adbb43de859ce0
-Gitweb:        https://git.kernel.org/tip/1528c661c24b407e92194426b0adbb43de8=
-59ce0
-Author:        Aaron Lu <aaron.lu@intel.com>
-AuthorDate:    Tue, 12 Sep 2023 14:58:08 +08:00
+Commit-ID:     8f0eed4a78a81668bc78923ea09f51a7a663c2b0
+Gitweb:        https://git.kernel.org/tip/8f0eed4a78a81668bc78923ea09f51a7a663c2b0
+Author:        Elliot Berman <quic_eberman@quicinc.com>
+AuthorDate:    Fri, 08 Sep 2023 15:49:16 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 18 Sep 2023 08:14:45 +02:00
+CommitterDate: Mon, 18 Sep 2023 08:14:36 +02:00
 
-sched/fair: Ratelimit update to tg->load_avg
+freezer,sched: Use saved_state to reduce some spurious wakeups
 
-When using sysbench to benchmark Postgres in a single docker instance
-with sysbench's nr_threads set to nr_cpu, it is observed there are times
-update_cfs_group() and update_load_avg() shows noticeable overhead on
-a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
+After commit f5d39b020809 ("freezer,sched: Rewrite core freezer logic"),
+tasks that transition directly from TASK_FREEZABLE to TASK_FROZEN  are
+always woken up on the thaw path. Prior to that commit, tasks could ask
+freezer to consider them "frozen enough" via freezer_do_not_count(). The
+commit replaced freezer_do_not_count() with a TASK_FREEZABLE state which
+allows freezer to immediately mark the task as TASK_FROZEN without
+waking up the task.  This is efficient for the suspend path, but on the
+thaw path, the task is always woken up even if the task didn't need to
+wake up and goes back to its TASK_(UN)INTERRUPTIBLE state. Although
+these tasks are capable of handling of the wakeup, we can observe a
+power/perf impact from the extra wakeup.
 
-    13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
-    10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
+We observed on Android many tasks wait in the TASK_FREEZABLE state
+(particularly due to many of them being binder clients). We observed
+nearly 4x the number of tasks and a corresponding linear increase in
+latency and power consumption when thawing the system. The latency
+increased from ~15ms to ~50ms.
 
-Annotate shows the cycles are mostly spent on accessing tg->load_avg
-with update_load_avg() being the write side and update_cfs_group() being
-the read side. tg->load_avg is per task group and when different tasks
-of the same taskgroup running on different CPUs frequently access
-tg->load_avg, it can be heavily contended.
+Avoid the spurious wakeups by saving the state of TASK_FREEZABLE tasks.
+If the task was running before entering TASK_FROZEN state
+(__refrigerator()) or if the task received a wake up for the saved
+state, then the task is woken on thaw. saved_state from PREEMPT_RT locks
+can be re-used because freezer would not stomp on the rtlock wait flow:
+TASK_RTLOCK_WAIT isn't considered freezable.
 
-E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus Intel
-Sappire Rapids, during a 5s window, the wakeup number is 14millions and
-migration number is 11millions and with each migration, the task's load
-will transfer from src cfs_rq to target cfs_rq and each change involves
-an update to tg->load_avg. Since the workload can trigger as many wakeups
-and migrations, the access(both read and write) to tg->load_avg can be
-unbound. As a result, the two mentioned functions showed noticeable
-overhead. With netperf/nr_client=3Dnr_cpu/UDP_RR, the problem is worse:
-during a 5s window, wakeup number is 21millions and migration number is
-14millions; update_cfs_group() costs ~25% and update_load_avg() costs ~16%.
-
-Reduce the overhead by limiting updates to tg->load_avg to at most once
-per ms. The update frequency is a tradeoff between tracking accuracy and
-overhead. 1ms is chosen because PELT window is roughly 1ms and it
-delivered good results for the tests that I've done. After this change,
-the cost of accessing tg->load_avg is greatly reduced and performance
-improved. Detailed test results below.
-
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-  postgres_sysbench on SPR:
-  25%
-  base:   42382=C2=B119.8%
-  patch:  50174=C2=B19.5%  (noise)
-
-  50%
-  base:   67626=C2=B11.3%
-  patch:  67365=C2=B13.1%  (noise)
-
-  75%
-  base:   100216=C2=B11.2%
-  patch:  112470=C2=B10.1% +12.2%
-
-  100%
-  base:    93671=C2=B10.4%
-  patch:  113563=C2=B10.2% +21.2%
-
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-  hackbench on ICL:
-  group=3D1
-  base:    114912=C2=B15.2%
-  patch:   117857=C2=B12.5%  (noise)
-
-  group=3D4
-  base:    359902=C2=B11.6%
-  patch:   361685=C2=B12.7%  (noise)
-
-  group=3D8
-  base:    461070=C2=B10.8%
-  patch:   491713=C2=B10.3% +6.6%
-
-  group=3D16
-  base:    309032=C2=B15.0%
-  patch:   378337=C2=B11.3% +22.4%
-
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-  hackbench on SPR:
-  group=3D1
-  base:    100768=C2=B12.9%
-  patch:   103134=C2=B12.9%  (noise)
-
-  group=3D4
-  base:    413830=C2=B112.5%
-  patch:   378660=C2=B116.6% (noise)
-
-  group=3D8
-  base:    436124=C2=B10.6%
-  patch:   490787=C2=B13.2% +12.5%
-
-  group=3D16
-  base:    457730=C2=B13.2%
-  patch:   680452=C2=B11.3% +48.8%
-
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-  netperf/udp_rr on ICL
-  25%
-  base:    114413=C2=B10.1%
-  patch:   115111=C2=B10.0% +0.6%
-
-  50%
-  base:    86803=C2=B10.5%
-  patch:   86611=C2=B10.0%  (noise)
-
-  75%
-  base:    35959=C2=B15.3%
-  patch:   49801=C2=B10.6% +38.5%
-
-  100%
-  base:    61951=C2=B16.4%
-  patch:   70224=C2=B10.8% +13.4%
-
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-  netperf/udp_rr on SPR
-  25%
-  base:   104954=C2=B11.3%
-  patch:  107312=C2=B12.8%  (noise)
-
-  50%
-  base:    55394=C2=B14.6%
-  patch:   54940=C2=B17.4%  (noise)
-
-  75%
-  base:    13779=C2=B13.1%
-  patch:   36105=C2=B11.1% +162%
-
-  100%
-  base:     9703=C2=B13.7%
-  patch:   28011=C2=B10.2% +189%
-
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-  netperf/tcp_stream on ICL (all in noise range)
-  25%
-  base:    43092=C2=B10.1%
-  patch:   42891=C2=B10.5%
-
-  50%
-  base:    19278=C2=B114.9%
-  patch:   22369=C2=B17.2%
-
-  75%
-  base:    16822=C2=B13.0%
-  patch:   17086=C2=B12.3%
-
-  100%
-  base:    18216=C2=B10.6%
-  patch:   18078=C2=B12.9%
-
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-  netperf/tcp_stream on SPR (all in noise range)
-  25%
-  base:    34491=C2=B10.3%
-  patch:   34886=C2=B10.5%
-
-  50%
-  base:    19278=C2=B114.9%
-  patch:   22369=C2=B17.2%
-
-  75%
-  base:    16822=C2=B13.0%
-  patch:   17086=C2=B12.3%
-
-  100%
-  base:    18216=C2=B10.6%
-  patch:   18078=C2=B12.9%
-
-Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
-Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Aaron Lu <aaron.lu@intel.com>
+Reported-by: Prakash Viswalingam <quic_prakashv@quicinc.com>
+Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: David Vernet <void@manifault.com>
-Tested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Tested-by: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-Link: https://lkml.kernel.org/r/20230912065808.2530-2-aaron.lu@intel.com
 ---
- kernel/sched/fair.c  | 13 ++++++++++++-
- kernel/sched/sched.h |  1 +
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ kernel/freezer.c    | 41 +++++++++++++++++++----------------------
+ kernel/sched/core.c | 23 ++++++++++++++---------
+ 2 files changed, 33 insertions(+), 31 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c893721..d087787 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3876,7 +3876,8 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs=
-_rq)
-  */
- static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
- {
--	long delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
-+	long delta;
-+	u64 now;
-=20
- 	/*
- 	 * No need to update load_avg for root_task_group as it is not used.
-@@ -3884,9 +3885,19 @@ static inline void update_tg_load_avg(struct cfs_rq *c=
-fs_rq)
- 	if (cfs_rq->tg =3D=3D &root_task_group)
- 		return;
-=20
-+	/*
-+	 * For migration heavy workloads, access to tg->load_avg can be
-+	 * unbound. Limit the update rate to at most once per ms.
-+	 */
-+	now =3D sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
-+	if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
-+		return;
-+
-+	delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
- 	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
- 		atomic_long_add(delta, &cfs_rq->tg->load_avg);
- 		cfs_rq->tg_load_avg_contrib =3D cfs_rq->avg.load_avg;
-+		cfs_rq->last_update_tg_load_avg =3D now;
- 	}
+diff --git a/kernel/freezer.c b/kernel/freezer.c
+index 4fad0e6..c450fa8 100644
+--- a/kernel/freezer.c
++++ b/kernel/freezer.c
+@@ -71,7 +71,11 @@ bool __refrigerator(bool check_kthr_stop)
+ 	for (;;) {
+ 		bool freeze;
+ 
++		raw_spin_lock_irq(&current->pi_lock);
+ 		set_current_state(TASK_FROZEN);
++		/* unstale saved_state so that __thaw_task() will wake us up */
++		current->saved_state = TASK_RUNNING;
++		raw_spin_unlock_irq(&current->pi_lock);
+ 
+ 		spin_lock_irq(&freezer_lock);
+ 		freeze = freezing(current) && !(check_kthr_stop && kthread_should_stop());
+@@ -129,6 +133,7 @@ static int __set_task_frozen(struct task_struct *p, void *arg)
+ 		WARN_ON_ONCE(debug_locks && p->lockdep_depth);
+ #endif
+ 
++	p->saved_state = p->__state;
+ 	WRITE_ONCE(p->__state, TASK_FROZEN);
+ 	return TASK_FROZEN;
  }
-=20
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 68768f4..887468c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -594,6 +594,7 @@ struct cfs_rq {
- 	} removed;
-=20
- #ifdef CONFIG_FAIR_GROUP_SCHED
-+	u64			last_update_tg_load_avg;
- 	unsigned long		tg_load_avg_contrib;
- 	long			propagate;
- 	long			prop_runnable_sum;
+@@ -170,42 +175,34 @@ bool freeze_task(struct task_struct *p)
+ }
+ 
+ /*
+- * The special task states (TASK_STOPPED, TASK_TRACED) keep their canonical
+- * state in p->jobctl. If either of them got a wakeup that was missed because
+- * TASK_FROZEN, then their canonical state reflects that and the below will
+- * refuse to restore the special state and instead issue the wakeup.
++ * Restore the saved_state before the task entered freezer. For typical task
++ * in the __refrigerator(), saved_state == TASK_RUNNING so nothing happens
++ * here. For tasks which were TASK_NORMAL | TASK_FREEZABLE, their initial state
++ * is restored unless they got an expected wakeup (see ttwu_state_match()).
++ * Returns 1 if the task state was restored.
+  */
+-static int __set_task_special(struct task_struct *p, void *arg)
++static int __restore_freezer_state(struct task_struct *p, void *arg)
+ {
+-	unsigned int state = 0;
++	unsigned int state = p->saved_state;
+ 
+-	if (p->jobctl & JOBCTL_TRACED)
+-		state = TASK_TRACED;
+-
+-	else if (p->jobctl & JOBCTL_STOPPED)
+-		state = TASK_STOPPED;
+-
+-	if (state)
++	if (state != TASK_RUNNING) {
+ 		WRITE_ONCE(p->__state, state);
++		return 1;
++	}
+ 
+-	return state;
++	return 0;
+ }
+ 
+ void __thaw_task(struct task_struct *p)
+ {
+-	unsigned long flags, flags2;
++	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&freezer_lock, flags);
+ 	if (WARN_ON_ONCE(freezing(p)))
+ 		goto unlock;
+ 
+-	if (lock_task_sighand(p, &flags2)) {
+-		/* TASK_FROZEN -> TASK_{STOPPED,TRACED} */
+-		bool ret = task_call_func(p, __set_task_special, NULL);
+-		unlock_task_sighand(p, &flags2);
+-		if (ret)
+-			goto unlock;
+-	}
++	if (task_call_func(p, __restore_freezer_state, NULL))
++		goto unlock;
+ 
+ 	wake_up_state(p, TASK_FROZEN);
+ unlock:
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 49541e3..5a50c4e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2242,8 +2242,8 @@ static __always_inline
+ int task_state_match(struct task_struct *p, unsigned int state)
+ {
+ 	/*
+-	 * Serialize against current_save_and_set_rtlock_wait_state() and
+-	 * current_restore_rtlock_saved_state().
++	 * Serialize against current_save_and_set_rtlock_wait_state(),
++	 * current_restore_rtlock_saved_state(), and __refrigerator().
+ 	 */
+ 	guard(raw_spinlock_irq)(&p->pi_lock);
+ 	return __task_state_match(p, state);
+@@ -4015,13 +4015,17 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
+  * The caller holds p::pi_lock if p != current or has preemption
+  * disabled when p == current.
+  *
+- * The rules of PREEMPT_RT saved_state:
++ * The rules of saved_state:
+  *
+  *   The related locking code always holds p::pi_lock when updating
+  *   p::saved_state, which means the code is fully serialized in both cases.
+  *
+- *   The lock wait and lock wakeups happen via TASK_RTLOCK_WAIT. No other
+- *   bits set. This allows to distinguish all wakeup scenarios.
++ *   For PREEMPT_RT, the lock wait and lock wakeups happen via TASK_RTLOCK_WAIT.
++ *   No other bits set. This allows to distinguish all wakeup scenarios.
++ *
++ *   For FREEZER, the wakeup happens via TASK_FROZEN. No other bits set. This
++ *   allows us to prevent early wakeup of tasks before they can be run on
++ *   asymmetric ISA architectures (eg ARMv9).
+  */
+ static __always_inline
+ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+@@ -4037,10 +4041,11 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+ 
+ 	/*
+ 	 * Saved state preserves the task state across blocking on
+-	 * an RT lock.  If the state matches, set p::saved_state to
+-	 * TASK_RUNNING, but do not wake the task because it waits
+-	 * for a lock wakeup. Also indicate success because from
+-	 * the regular waker's point of view this has succeeded.
++	 * an RT lock or TASK_FREEZABLE tasks.  If the state matches,
++	 * set p::saved_state to TASK_RUNNING, but do not wake the task
++	 * because it waits for a lock wakeup or __thaw_task(). Also
++	 * indicate success because from the regular waker's point of
++	 * view this has succeeded.
+ 	 *
+ 	 * After acquiring the lock the task will restore p::__state
+ 	 * from p::saved_state which ensures that the regular
