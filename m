@@ -2,209 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EF67A43F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333ED7A43F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240449AbjIRIGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
+        id S240548AbjIRIIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240682AbjIRIGK (ORCPT
+        with ESMTP id S240642AbjIRIIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:06:10 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D5DCF9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:05:21 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41513d2cca7so420341cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695024320; x=1695629120; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PPWRnEDlmzjDvKCuAcepEH2uKQacvVIlU4RvOyhuSnA=;
-        b=GllnoLzg7aWr3e6VmVYQq8dkj6H7ipAuoWhjF0SUuytBFGUkhsQpzvh5bffYVy9N9Z
-         nRwvXFJGTNlOIAdW/hFIBCEMPAnbCykXKTJVPx1v2eMveiT2QtSAf7Ee+o0tuj1AliLM
-         G9qjjgk42Z3zGkmACJDfFfkbhdyUWBPcCYJ3A+XfzkdqufjdSTOE6kSbdZXgbiL078Ao
-         3q8oSIFQ11AQsmUP6Z1nB0pfaUOonUtNDqCdsCTvofhgebsV+FDZTE9hkGpO1fMSu6Id
-         j5mpkS1g+tp+YVCUhtqoZ5rUAv1JmDbUu0jRzYPsXpSu0GaCfVNDrByjIjZHFWgl/nOC
-         nH4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695024320; x=1695629120;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PPWRnEDlmzjDvKCuAcepEH2uKQacvVIlU4RvOyhuSnA=;
-        b=Cw0q3X2//i/T9L5txa3ZZMmqFn63W3JHB3KCrd9GQxm9oGpov3NPS+o+Fe3QWWwHMu
-         aZPbnOL+NnygFBrv1tKvlwZI2VHT6EvDp+wqrJNWGu0rHvuBR9lkpOT2xsD+eVo51VVK
-         Cw/yvVsUXmmLY6+ea0hLuw708eyJ4MoCu8SsV/XGqAl2nckpdcPMSJUWu/krlH0DM3rX
-         tCPhoC7ukUeIo0DXcldh6yfnC8j2Gpu8cEZWVMbtWleYkO8o3GMSWgzi5gtI2ApsDwWF
-         dLtOibRGI8CWfXQPlkTsjmum1YOVVV6psSGC8ZN9aKtPWwUA0QCa2GeACODJ8QnbjujK
-         hYMg==
-X-Gm-Message-State: AOJu0Yzxjw4wJR5NMF37hhcLlMTieZaO37OZwbktfEq+d4l/E7uDkqC9
-        lepjUEIu/8X6w2tnB/WvRdQ5V8w3vMgdufrVZx9zQg==
-X-Google-Smtp-Source: AGHT+IFRIMz0D/vZED3GkAZFZcTtAHDSy2HcE7KbS6iJ5+GbAWb7kjTWJ3WhxNfrV7aD1K21VRYJqOQvJc/7LTZGChc=
-X-Received: by 2002:a05:622a:1307:b0:40f:d1f4:aa58 with SMTP id
- v7-20020a05622a130700b0040fd1f4aa58mr316425qtk.8.1695024320296; Mon, 18 Sep
- 2023 01:05:20 -0700 (PDT)
+        Mon, 18 Sep 2023 04:08:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5341AD
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:06:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35444C433CA
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:06:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695024364;
+        bh=AxhP1qUZ6L8D85WygjwNWOG3OogI8UwnrtK6B11kuho=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ev0bMudmfGo1Sm5fm2k7W1Pz9Sc41I8Oxj/tg9dQLDH7oPS5/rQ4HI9q/QIHbNO0s
+         5q++zG0X6c9MOEeie/uiQpP/r6N0nV2eeKlsyR88/4DbBWPEg8hy9+ca71B63dtff3
+         S1tl/9Y+iLS4JX3qBNFzoYwRPiphVu5Hy/ASiA9RCueATCjs7QCE0tqiViSpGk2/O6
+         jBsKHDSKJzTADQcKxVowR/d885gHV2qWq+xWHNgwMkNDDrvn4HzEFJcz6WbxHCul8n
+         QWZD2liOEkKooGwXIMDWixVcWy9baVErtS12qGXdgk4cJ4wy5YIiZeu5uhUPXAKnWg
+         rzlrDp51xZBpA==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-52c88a03f99so4795204a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:06:04 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwpcpbUCG4KZn8gahbGzLgbvtCGbLvr+sypzFlLmAsQRqR78Lbt
+        1RlncLcr5bJP6NDBOaLCQcTdA3g++PbPWSULtwo=
+X-Google-Smtp-Source: AGHT+IHUuSYye6BWA93KBT5rLo5F4a0/T5b7KQein1/mOTRyb192Farkzy4tF6PxQyNKGpHh3XWDfwzJA1lW5D5wqIU=
+X-Received: by 2002:a05:6402:14c4:b0:530:4fc4:50f8 with SMTP id
+ f4-20020a05640214c400b005304fc450f8mr6228588edx.29.1695024362563; Mon, 18 Sep
+ 2023 01:06:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230918014752.1791518-1-guodongtai@kylinos.cn>
-In-Reply-To: <20230918014752.1791518-1-guodongtai@kylinos.cn>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 18 Sep 2023 10:05:09 +0200
-Message-ID: <CANn89i+WshtNwNSALCpbQbZFWN41xP85+c8GdHX2DabzQzx+6A@mail.gmail.com>
-Subject: Re: [PATCH v1] tcp: enhancing timestamps random algo to address
- issues arising from NAT mapping
-To:     George Guo <guodongtai@kylinos.cn>, Florian Westphal <fw@strlen.de>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        dsahern@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230914103445.511285-1-andriy.shevchenko@linux.intel.com>
+ <CAAhV-H6Q0sirFEDdc1v4BSfDY94eZvJazy0XLKM8V94GMJvQnQ@mail.gmail.com>
+ <ZQNWh2DY319jGbfq@smile.fi.intel.com> <CAAhV-H66LUWHP-eGp6VGvs0F+QD=QJ69uR3_1A3SqH9cyPUPoQ@mail.gmail.com>
+ <ZQWCeI6E7rm8Akbt@smile.fi.intel.com> <CAAhV-H6dakVH0a4Mt9MdcY8OO3gdne6rW0Z1kK6YRq9hDLP05w@mail.gmail.com>
+ <ZQfzDXc0WRHCUeIq@smile.fi.intel.com>
+In-Reply-To: <ZQfzDXc0WRHCUeIq@smile.fi.intel.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Mon, 18 Sep 2023 16:05:50 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4HkA=SZAb-4q5QVdyDB1MsEsmjVO_N8h30MkSXzpzimQ@mail.gmail.com>
+Message-ID: <CAAhV-H4HkA=SZAb-4q5QVdyDB1MsEsmjVO_N8h30MkSXzpzimQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] LoongArch: Add missing headers
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        WANG Xuerui <kernel@xen0n.name>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 3:46=E2=80=AFAM George Guo <guodongtai@kylinos.cn> =
-wrote:
->
-> Tsval=3Dtsoffset+local_clock, here tsoffset is randomized with saddr and =
-daddr parameters in func
-> secure_tcp_ts_off. Most of time it is OK except for NAT mapping to the sa=
-me port and daddr.
-> Consider the following scenario:
->         ns1:                ns2:
->         +-----------+        +-----------+
->         |           |        |           |
->         |           |        |           |
->         |           |        |           |
->         | veth1     |        | vethb     |
->         |192.168.1.1|        |192.168.1.2|
->         +----+------+        +-----+-----+
->              |                     |
->              |                     |
->              | br0:192.168.1.254   |
->              +----------+----------+
->          veth0          |     vetha
->          192.168.1.3    |    192.168.1.4
->                         |
->                        nat(192.168.1.x -->172.30.60.199)
->                         |
->                         V
->                        eth0
->                  172.30.60.199
->                        |
->                        |
->                        +----> ... ...    ---->server: 172.30.60.191
->
-> Let's say ns1 (192.168.1.1) generates a timestamp ts1, and ns2 (192.168.1=
-.2) generates a timestamp
-> ts2, with ts1 > ts2.
->
-> If ns1 initiates a connection to a server, and then the server actively c=
-loses the connection,
-> entering the TIME_WAIT state, and ns2 attempts to connect to the server w=
-hile port reuse is in
-> progress, due to the presence of NAT, the server sees both connections as=
- originating from the
-> same IP address (e.g., 172.30.60.199) and port. However, since ts2 is sma=
-ller than ts1, the server
-> will respond with the acknowledgment (ACK) for the fourth handshake.
->
->        SERVER                                                   CLIENT
->
->    1.  ESTABLISHED                                              ESTABLISH=
-ED
->
->        (Close)
->    2.  FIN-WAIT-1  --> <SEQ=3D100><ACK=3D300><TSval=3D20><CTL=3DFIN,ACK> =
- --> CLOSE-WAIT
->
->    3.  FIN-WAIT-2  <-- <SEQ=3D300><ACK=3D101><TSval=3D40><CTL=3DACK>     =
- <-- CLOSE-WAIT
->
->                                                             (Close)
->    4.  TIME-WAIT   <-- <SEQ=3D300><ACK=3D101><TSval=3D41><CTL=3DFIN,ACK> =
- <-- LAST-ACK
->
->    5.  TIME-WAIT   --> <SEQ=3D101><ACK=3D301><TSval=3D25><CTL=3DACK>     =
- --> CLOSED
->
->   - - - - - - - - - - - - - port reused - - - - - - - - - - - - - - -
->
->    5.1. TIME-WAIT   <-- <SEQ=3D255><TSval=3D30><CTL=3DSYN>             <-=
-- SYN-SENT
->
->    5.2. TIME-WAIT   --> <SEQ=3D101><ACK=3D301><TSval=3D35><CTL=3DACK>    =
---> SYN-SENT
->
->    5.3. CLOSED      <-- <SEQ=3D301><CTL=3DRST>                       <-- =
-SYN-SENT
->
->    6.  SYN-RECV    <-- <SEQ=3D255><TSval=3D34><CTL=3DSYN>              <-=
-- SYN-SENT
->
->    7.  SYN-RECV    --> <SEQ=3D400><ACK=3D301><TSval=3D40><CTL=3DSYN,ACK> =
---> ESTABLISHED
->
->    1.  ESTABLISH   <-- <SEQ=3D301><ACK=3D401><TSval=3D55><CTL=3DACK>     =
-<-- ESTABLISHED
->
-> This enhancement uses sport and daddr rather than saddr and daddr, which =
-keep the timestamp
-> monotonically increasing in the situation described above. Then the port =
-reuse is like this:
->
->        SERVER                                                   CLIENT
->
->    1.  ESTABLISHED                                              ESTABLISH=
-ED
->
->        (Close)
->    2.  FIN-WAIT-1  --> <SEQ=3D100><ACK=3D300><TSval=3D20><CTL=3DFIN,ACK> =
- --> CLOSE-WAIT
->
->    3.  FIN-WAIT-2  <-- <SEQ=3D300><ACK=3D101><TSval=3D40><CTL=3DACK>     =
- <-- CLOSE-WAIT
->
->                                                             (Close)
->    4.  TIME-WAIT   <-- <SEQ=3D300><ACK=3D101><TSval=3D41><CTL=3DFIN,ACK> =
- <-- LAST-ACK
->
->    5.  TIME-WAIT   --> <SEQ=3D101><ACK=3D301><TSval=3D25><CTL=3DACK>     =
- --> CLOSED
->
->   - - - - - - - - - - - - - port reused - - - - - - - - - - - - - - -
->
->    5.1. TIME-WAIT  <-- <SEQ=3D300><TSval=3D50><CTL=3DSYN>               <=
--- SYN-SENT
->
->    6.  SYN-RECV    --> <SEQ=3D400><ACK=3D301><TSval=3D40><CTL=3DSYN,ACK> =
- --> ESTABLISHED
->
->    1.  ESTABLISH   <-- <SEQ=3D301><ACK=3D401><TSval=3D55><CTL=3DACK>     =
- <-- ESTABLISHED
->
-> The enhancement lets port reused more efficiently.
->
-> Signed-off-by: George Guo <guodongtai@kylinos.cn>
->
+Hi, Andy,
 
-CC Florian
+On Mon, Sep 18, 2023 at 2:49=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Sat, Sep 16, 2023 at 08:05:52PM +0800, Huacai Chen wrote:
+> > On Sat, Sep 16, 2023 at 6:27=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Fri, Sep 15, 2023 at 08:36:24AM +0800, Huacai Chen wrote:
+> > > > On Fri, Sep 15, 2023 at 2:53=E2=80=AFAM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > On Thu, Sep 14, 2023 at 11:25:22PM +0800, Huacai Chen wrote:
+> > >
+> > > > > > Thank you for your patch, can this patch solve the problem belo=
+w?
+> > > > > > https://lore.kernel.org/oe-kbuild-all/202309072237.9zxMv4MZ-lkp=
+@intel.com/T/#u
+> > > > >
+> > > > > Nope, this just adds missing includes.
+> > > > > No functional change, so warnings will still be there.
+> > > > But I think a patch should solve a problem.
+> > >
+> > > No, that problem is static analyser concern, not the compiler nor lin=
+ker.
+> > >
+> > > > If we don't get a build
+> > > > error or warning without this patch, does that mean the 'missing'
+> > > > headers are actually included indirectly?
+> > >
+> > > I might be missing something, but I do not see any build error in the=
+ above message.
+> > Hmm, then I think I will take the second patch only.
+>
+> Thanks, but can you shed a light why?
+>
+> The rule of thumb is to include the headers we are direct users of, we ha=
+ve not
+> to imply any other inclusions done by others, unless it's kinda same fami=
+ly of
+> headers (like types.h always includes compiler_types.h). Since in your ca=
+se
+> the const.h is included the other two are missing and it's even worse, as=
+ I
+> understand you rely on the specific headers to be included _before_ using=
+ this
+> one in the users.
+I agree with you more or less, but I doubt there is another rule: no
+break, no fix. Please see:
 
-I do not think we can 'fix' tcp timestamp vs NAT.
-Unless the NAT device makes sure a port is dedicated for a peer,
-and/or the NAT rewrites TS values
-(which would be bad).
+https://lore.kernel.org/loongarch/20221024070105.306280-1-chenhuacai@loongs=
+on.cn/T/#t
 
-I personally prefer seeing the same timestamps from A to B regardless
-of ports, it helps detect various issues.
+Obviously static_key is used in page-flags.h and it really causes
+build errors once before, but at last I removed the inclusion of
+static_key.h to get that series merged.
 
-Also, you seem to forget IPv6.
+Huacai
+
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
+>
