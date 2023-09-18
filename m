@@ -2,107 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BC17A495A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D697A495F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241913AbjIRMMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S241874AbjIRMPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241966AbjIRMME (ORCPT
+        with ESMTP id S233296AbjIRMOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:12:04 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838A6109;
-        Mon, 18 Sep 2023 05:11:56 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-402d0eda361so48334335e9.0;
-        Mon, 18 Sep 2023 05:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695039115; x=1695643915; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nk6sK+L98Z0Oqp/nQXgUvAOvctfkomMX7KeuEQexiso=;
-        b=C7/cgGXhdrWtcn+afZAPCzV39sl96nX6Qv4MCUbgE3hCQX8i7GxG0NxZlKhSZXBSy0
-         Uy1QzsKgKvgq9GuagkB/0++rthE+mlwdCUguw2TE3F0uyGB7nRpoGa7JNqlAGYU6cgDS
-         KUmCB3v6cz0Xm5jGCtCk68horwsFreGXvhTSASTtEl3r3WrSRzcWODSXSnddb8psQYHT
-         MVJP4vrJr0QOOq2t+NiwGbnKrp7++tfZBdw1yskCgudqxSqm+flriaCSa4KJGp4qgss9
-         kN5S9SCZYavrlGDVCcd+8Nm+gtU7e+udlfB1fhGF3bcEgN8xYcUXjQq3+rVAetNbkZeT
-         lQkA==
+        Mon, 18 Sep 2023 08:14:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DAA100
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695039213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wx2f1+2HnAFhsvhsxrZw9nEEGujdlUUy53e9UvEgMlk=;
+        b=PZEaQwUQdNoFD5K6qUJSdeezAuqB+SwKjjHgWUdJTGV5p8RVToBcUbjKQ7a3Wkxj6mjGmR
+        h4Pq8D9+IySJdQYm1rT/8WFDtChwecK+iERyy2GHJDszQlicrjtEK6NA6CqYP3sEX6KOrI
+        aBuoAPZpIILYaUEUcNqqHD8GwJynNlw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-644-U6gM66W1N2O0KZO3SIK3jg-1; Mon, 18 Sep 2023 08:13:31 -0400
+X-MC-Unique: U6gM66W1N2O0KZO3SIK3jg-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-51d981149b5so3027419a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:13:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695039115; x=1695643915;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nk6sK+L98Z0Oqp/nQXgUvAOvctfkomMX7KeuEQexiso=;
-        b=By3zPsgAgo99b0U3dwrTq+7bW1J8ADbmmhVj9blOGgY8ghkDHuiXJp3HD4LVBRQGXu
-         tH6bo0uIGyx0X0cjOfdmWRuZ7RkhQcKjLlPYIOTG8Vi4BJrAqTCtAmhPEZaXoyfqyW57
-         8A+z57ook+M0ekK8BCIaViygpuGYTCHM65qK8GNt3+XdJR1HtLB4u+0tGfgEQi09i/wV
-         tLfz25AWUnSWhSeqqsqPF1ENAr2h8bTCRsT14T7zBJmwlsUtgUGYcIrPJmnXPu6C+hXq
-         Kvj3jldJ/tx5zGY4+KKW9cxL1qhh3EZZzszEjwGJzJbIjxdoVg70L4VOWqB6YNKJSGdz
-         t5hw==
-X-Gm-Message-State: AOJu0Yy7MUVqsLbiq2bHVEtaf31/N8ach21AmbadZKnZ3OY9d+fbqkF7
-        s8FOzpDdM0ctpPUEO5AkS8CwwW+AngSEtIsD
-X-Google-Smtp-Source: AGHT+IEqLV8hsB03yHLXw+Cq3V5jwj6IAWDD/c9Y7nuaCJs4/WixifxU6P91e6lueQleY5d+eTi26g==
-X-Received: by 2002:a1c:7c0e:0:b0:403:cab3:b763 with SMTP id x14-20020a1c7c0e000000b00403cab3b763mr7651013wmc.33.1695039114627;
-        Mon, 18 Sep 2023 05:11:54 -0700 (PDT)
-Received: from [192.168.7.59] (54-240-197-228.amazon.com. [54.240.197.228])
-        by smtp.gmail.com with ESMTPSA id y14-20020a7bcd8e000000b004030e8ff964sm15244651wmj.34.2023.09.18.05.11.53
+        d=1e100.net; s=20230601; t=1695039210; x=1695644010;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wx2f1+2HnAFhsvhsxrZw9nEEGujdlUUy53e9UvEgMlk=;
+        b=R6UHnAN8oA2kq6Xx+KPr7mGD5yDiWCnobv9iJ72VlfgOT6Q/VR8cuQrcnb8hh62fwJ
+         MlRzQ3Z2xcy/fpNPpM6zaHWfLZ0bs2G8ULTAMkE0+OBYnB1crTQrRySaLub0TZTtR/YO
+         YEO4nuWnyJ1toDbPgAVEyCGWAvgdi/uFU413J+2lryLAJRWbb3AXaj8yLYC9DZiLCpoc
+         oIquihCb6PFg4YlIaZyi9kizeFCAlsggu96Kbpwz17FvMKOiNG7xykmP+sh6XksRTxL3
+         4q2gSsz6gyD4HGbF4AXVOByssdrsWc/XnLkd7VMqfkbkuMscn2RmGOcn1sB9U+jwX0Fw
+         H2Tg==
+X-Gm-Message-State: AOJu0YzKKXFLdARfT2d8ldre5/Wp0l+t3a1EqVSiOKLkcBU/h32T52fv
+        neEHQjPE94yzxZ9IZ36lPrH/QGFJYWad4Z6/LPdHpK4A50H98Zp30aWnBxC+m/stUp6+jb/mgy7
+        WlUckqLUD0olJb6C2fwZxuLoR
+X-Received: by 2002:a50:e70a:0:b0:52a:1d54:2534 with SMTP id a10-20020a50e70a000000b0052a1d542534mr8016085edn.25.1695039210461;
+        Mon, 18 Sep 2023 05:13:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG7qiA8iH/ArdS2FFofIIAUon0MqR5+N/dcN+jgIF2BO6r6iIKf9czBbmlfEGi0ZoFtiLdIFg==
+X-Received: by 2002:a50:e70a:0:b0:52a:1d54:2534 with SMTP id a10-20020a50e70a000000b0052a1d542534mr8016055edn.25.1695039210012;
+        Mon, 18 Sep 2023 05:13:30 -0700 (PDT)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id i23-20020a50fc17000000b005256d4d58a6sm5914103edr.18.2023.09.18.05.13.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 05:11:54 -0700 (PDT)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <3cf7adca-aa69-4ac8-ca92-f10b1bd2e163@xen.org>
-Date:   Mon, 18 Sep 2023 13:11:53 +0100
+        Mon, 18 Sep 2023 05:13:29 -0700 (PDT)
+Message-ID: <fd57c44a-a457-f348-523c-ac2e17b60322@redhat.com>
+Date:   Mon, 18 Sep 2023 14:13:28 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v2 05/12] KVM: pfncache: allow a cache to be activated
- with a fixed (userspace) HVA
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] media: i2c: Add ROHM BU64754 Camera Autofocus
+ Actuator
 Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20230918112148.28855-1-paul@xen.org>
- <20230918112148.28855-6-paul@xen.org>
- <e4ac95d3370b997c17ce6924425d693a7e856c7e.camel@infradead.org>
-Organization: Xen Project
-In-Reply-To: <e4ac95d3370b997c17ce6924425d693a7e856c7e.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230915165946.4183839-1-kieran.bingham@ideasonboard.com>
+ <20230915165946.4183839-3-kieran.bingham@ideasonboard.com>
+ <CAPY8ntCeo2LVCRbcrx8q+RSvo2B+KcUYRCAkoHCeVywioknM2A@mail.gmail.com>
+ <169480557269.84025.9501931492272338428@ping.linuxembedded.co.uk>
+ <ZQg8FugCJfrlmMiR@kekkonen.localdomain>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <ZQg8FugCJfrlmMiR@kekkonen.localdomain>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 12:34, David Woodhouse wrote:
-> On Mon, 2023-09-18 at 11:21 +0000, Paul Durrant wrote:
->> From: Paul Durrant <pdurrant@amazon.com>
->>
->> Some cached pages may actually be overlays on guest memory that have a
->> fixed HVA within the VMM. It's pointless to invalidate such cached
->> mappings if the overlay is moved so allow a cache to be activated directly
->> with the HVA to cater for such cases. A subsequent patch will make use
->> of this facility.
->>
->> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> 
-> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> Btw, I think you have falsified some Reviewed-by: tags on the rest of
-> the series. Remember, if they aren't literally cut and pasted, the
-> magic gets lost. Just the same as Signed-off-by: tags. Never type them
-> for someone else.
+Hi,
 
-Indeed. They were all copied and pasted.
+On 9/18/23 14:01, Sakari Ailus wrote:
+> Hi Kieran, Dave,
+> 
+> On Fri, Sep 15, 2023 at 08:19:32PM +0100, Kieran Bingham wrote:
+>> Hi Dave,
+>>
+>> Quoting Dave Stevenson (2023-09-15 18:44:02)
+>>> Hi Kieran
+>>>
+>>> On Fri, 15 Sept 2023 at 18:02, Kieran Bingham
+>>> <kieran.bingham@ideasonboard.com> wrote:
+>>>>
+>>>> Add support for the ROHM BU64754 Motor Driver for Camera Autofocus. A
+>>>> V4L2 Subdevice is registered and provides a single
+>>>> V4L2_CID_FOCUS_ABSOLUTE control.
+>>>>
+>>>> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+>>>> ---
+>>>>  MAINTAINERS                 |   1 +
+>>>>  drivers/media/i2c/Kconfig   |  13 ++
+>>>>  drivers/media/i2c/Makefile  |   1 +
+>>>>  drivers/media/i2c/bu64754.c | 308 ++++++++++++++++++++++++++++++++++++
+>>>>  4 files changed, 323 insertions(+)
+>>>>  create mode 100644 drivers/media/i2c/bu64754.c
+>>>>
+>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>> index f43e0ffcaf56..fd244560c317 100644
+>>>> --- a/MAINTAINERS
+>>>> +++ b/MAINTAINERS
+>>>> @@ -18576,6 +18576,7 @@ L:      linux-media@vger.kernel.org
+>>>>  S:     Maintained
+>>>>  T:     git git://linuxtv.org/media_tree.git
+>>>>  F:     Documentation/devicetree/bindings/media/i2c/rohm,bu64754.yaml
+>>>> +F:     drivers/media/i2c/bu64754.c
+>>>>
+>>>>  ROHM MULTIFUNCTION BD9571MWV-M PMIC DEVICE DRIVERS
+>>>>  M:     Marek Vasut <marek.vasut+renesas@gmail.com>
+>>>> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+>>>> index 74ff833ff48c..b7b8004816ed 100644
+>>>> --- a/drivers/media/i2c/Kconfig
+>>>> +++ b/drivers/media/i2c/Kconfig
+>>>> @@ -641,6 +641,19 @@ config VIDEO_AK7375
+>>>>           capability. This is designed for linear control of
+>>>>           voice coil motors, controlled via I2C serial interface.
+>>>>
+>>>> +config VIDEO_BU64754
+>>>> +       tristate "BU64754 Motor Driver for Camera Autofocus"
+>>>> +       depends on I2C && VIDEO_DEV
+>>>> +       select MEDIA_CONTROLLER
+>>>> +       select VIDEO_V4L2_SUBDEV_API
+>>>> +       select V4L2_ASYNC
+>>>> +       select V4L2_CCI_I2C
+>>>> +       help
+>>>> +         This is a driver for the BU64754 Motor Driver for Camera
+>>>> +         Autofocus. The BU64754 is an actuator driver IC which can
+>>>> +         control the actuator position precisely using an internal
+>>>> +         Hall Sensor.
+>>>
+>>> I can't find any data on this driver.
+>>> Is it still expecting a VCM and hence near instantaneous movement? I
+>>> was noting your comment on the hall sensor and thinking you
+>>> potentially needed to be able to report whether the target position
+>>> had been reached or not. Michael's series at [1] was trying to address
+>>> that.
+>>
+>> The hall sensor is internal. The component description is just a
+>> slightly fixed grammar of the product brief.
+>>
+>> As I understand it, this is a VCM yes but I have so little visibility.
+>>
+>>>
+>>> [1] https://patchwork.linuxtv.org/project/linux-media/cover/20230406-feature-controls-lens-v2-0-faa8ad2bc404@wolfvision.net/
+>>>
+>>>> +
+>>>>  config VIDEO_DW9714
+>>>>         tristate "DW9714 lens voice coil support"
+>>>>         depends on I2C && VIDEO_DEV
+>>>> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+>>>> index 80b00d39b48f..e62aa0df7b1a 100644
+>>>> --- a/drivers/media/i2c/Makefile
+>>>> +++ b/drivers/media/i2c/Makefile
+>>>> @@ -22,6 +22,7 @@ obj-$(CONFIG_VIDEO_AR0521) += ar0521.o
+>>>>  obj-$(CONFIG_VIDEO_BT819) += bt819.o
+>>>>  obj-$(CONFIG_VIDEO_BT856) += bt856.o
+>>>>  obj-$(CONFIG_VIDEO_BT866) += bt866.o
+>>>> +obj-$(CONFIG_VIDEO_BU64754) += bu64754.o
+>>>>  obj-$(CONFIG_VIDEO_CCS) += ccs/
+>>>>  obj-$(CONFIG_VIDEO_CCS_PLL) += ccs-pll.o
+>>>>  obj-$(CONFIG_VIDEO_CS3308) += cs3308.o
+>>>> diff --git a/drivers/media/i2c/bu64754.c b/drivers/media/i2c/bu64754.c
+>>>> new file mode 100644
+>>>> index 000000000000..3367b6f17660
+>>>> --- /dev/null
+>>>> +++ b/drivers/media/i2c/bu64754.c
+>>>> @@ -0,0 +1,308 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +/*
+>>>> + * The BU64754 is an actuator driver IC which can control the
+>>>> + * actuator position precisely using an internal Hall Sensor.
+>>>> + */
+>>>> +
+>>>> +#include <linux/delay.h>
+>>>> +#include <linux/i2c.h>
+>>>> +#include <linux/module.h>
+>>>> +#include <linux/pm_runtime.h>
+>>>> +#include <linux/regulator/consumer.h>
+>>>> +
+>>>> +#include <media/v4l2-cci.h>
+>>>> +#include <media/v4l2-ctrls.h>
+>>>> +#include <media/v4l2-device.h>
+>>>> +
+>>>> +#define BU64754_REG_ACTIVE     CCI_REG16(0x07)
+>>>> +#define BU64754_ACTIVE_MODE    0x8080
+>>>> +
+>>>> +#define BU64754_REG_SERVE      CCI_REG16(0xd9)
+>>>> +#define BU64754_SERVE_ON       0x0404
+>>>> +
+>>>> +#define BU64754_REG_POSITION   CCI_REG16(0x45)
+>>>> +#define BU64753_POSITION_MAX   1023 /* 0x3ff */
+>>>> +
+>>>> +#define BU64754_POWER_ON_DELAY 800 /* uS : t1, t3 */
+>>>> +
+>>>> +struct bu64754 {
+>>>> +       struct device *dev;
+>>>> +
+>>>> +       struct v4l2_ctrl_handler ctrls_vcm;
+>>>> +       struct v4l2_subdev sd;
+>>>> +       struct regmap *cci;
+>>>> +
+>>>> +       u16 current_val;
+>>>> +       struct regulator *vdd;
+>>>> +       struct notifier_block notifier;
+>>>> +};
+>>>> +
+>>>> +static inline struct bu64754 *sd_to_bu64754(struct v4l2_subdev *subdev)
+>>>> +{
+>>>> +       return container_of(subdev, struct bu64754, sd);
+>>>> +}
+>>>> +
+>>>> +static int bu64754_set(struct bu64754 *bu64754, u16 position)
+>>>> +{
+>>>> +       int ret;
+>>>> +
+>>>> +       ret = cci_write(bu64754->cci, BU64754_REG_POSITION, position, NULL);
+>>>> +       if (ret) {
+>>>> +               dev_err(bu64754->dev, "Set position failed ret=%d\n", ret);
+>>>> +               return ret;
+>>>> +       }
+>>>> +
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>> +static int bu64754_active(struct bu64754 *bu64754)
+>>>> +{
+>>>> +       int ret;
+>>>> +
+>>>> +       /* Power on */
+>>>> +       ret = cci_write(bu64754->cci, BU64754_REG_ACTIVE, BU64754_ACTIVE_MODE,
+>>>> +                       NULL);
+>>>> +       if (ret < 0) {
+>>>> +               dev_err(bu64754->dev, "Failed to set active mode ret = %d\n",
+>>>> +                       ret);
+>>>> +               return ret;
+>>>> +       }
+>>>> +
+>>>> +       /* Serve on */
+>>>> +       ret = cci_write(bu64754->cci, BU64754_REG_SERVE, BU64754_SERVE_ON,
+>>>> +                       NULL);
+>>>> +       if (ret < 0) {
+>>>> +               dev_err(bu64754->dev, "Failed to enable serve ret = %d\n",
+>>>> +                       ret);
+>>>> +               return ret;
+>>>> +       }
+>>>> +
+>>>> +       return bu64754_set(bu64754, bu64754->current_val);
+>>>> +}
+>>>> +
+>>>> +static int bu64754_standby(struct bu64754 *bu64754)
+>>>> +{
+>>>> +       int ret;
+>>>> +
+>>>> +       cci_write(bu64754->cci, BU64754_REG_ACTIVE, 0, &ret);
+>>>> +       if (ret < 0)
+>>>> +               dev_err(bu64754->dev, "Failed to set active mode ret = %d\n",
+>>>> +                       ret);
+>>>> +
+>>>> +       return ret;
+>>>> +}
+>>>> +
+>>>> +static int bu64754_regulator_event(struct notifier_block *nb,
+>>>> +                                  unsigned long action, void *data)
+>>>> +{
+>>>> +       struct bu64754 *bu64754 = container_of(nb, struct bu64754, notifier);
+>>>> +
+>>>> +       if (action & REGULATOR_EVENT_ENABLE) {
+>>>> +               /*
+>>>> +                * Initialisation delay between VDD low->high and availability
+>>>> +                * i2c operation.
+>>>> +                */
+>>>> +               usleep_range(BU64754_POWER_ON_DELAY,
+>>>> +                            BU64754_POWER_ON_DELAY + 100);
+>>>> +
+>>>> +               bu64754_active(bu64754);
+>>>> +       } else if (action & REGULATOR_EVENT_PRE_DISABLE) {
+>>>> +               bu64754_standby(bu64754);
+>>>> +       }
+>>>
+>>> Presumably this is based on the assumption that the same regulator
+>>> controls sensor and lens, so when the sensor is powered up the lens
+>>> position gets restored.
+>>> I'm sure when I suggested doing the same previously it was shot down
+>>> in flames ... found it [2]
+>>>
+>>> Personally I think it makes sense that the lens powers up
+>>> automagically, and have almost exactly the same code as this in a
+>>> couple of our VCM drivers, but others disagree.
+>>
+>> I've tested this on the Raspberry Pi, and I expect this design model
+>> comes from you originally then. I thought it was a good way to handle
+>> things, but I wasn't aware that others had already disagreed.
+>>
+>> Being a module that will connect over the RPi interface, with a single
+>> POWER_EN, indeed - the regulators are shared with the camera, and
+>> synchronising how it is handled seemed reasonable. I guess I have some
+>> more reading to do now then.
+> 
+> Consider this is a driver for a VCM that may well be used in other sensors
+> and so wired differently.
+> 
+> Is there no reset GPIO? Or another regulator? Add these, and you will start
+> having circular dependencies.
+> 
+> In general case, the power up sequence is specific to the camera module.
+> We don't have a device for the modules but I think we could for cases where
+> you can't correctly execute the power on and off sequences separately for
+> the sensor and the lens.
+> 
+> What comes to powering on the lens based on the sensor --- could you use a
+> device link for that purpose?
 
-   Paul
+I don't think we should try to auto-enable the VCM. Instead userspace
+should open it when it needs it.
+
+The VCM relying on the sensor to be powered up for its own power
+is somewhat common.
+
+ATM the ipu-bridge code contains a device-link in the *other* direction,
+powering up the sensor when the VCM is runtime-resumed (so the model here
+is that the VCM relies on the sensor to be powered up not the other way
+around).
+
+This is done so that probing the VCM, which may involve reading some
+id register will work.
+
+Under normal post-probe use I would expect userspace to always first
+activate the sensor and then start to control the VCM to adjust
+the focus, so then the device-link is a no-op since the sensor
+is already on.
+
+As for linking the 2 together using regulator events, please don't
+do that. On e.g. ACPI platform the regulator might be hidden /
+abstracted  away in _PS0 / _PS3 ACPI methods so there will be no
+regulator to listen to.
+
+The correct model here to indicate the power-dependency is
+using a device-link with DL_FLAG_PM_RUNTIME set.
+
+Regards,
+
+Hans
+
+
+
+
+
+> 
+>>
+>> I'm already thinking about making a 'simple-vcm' module or parent-driver
+>> that can reduce the boilerplate for the vcms though. There's very little
+>> difference between them all ... and I think they could be abstracted out
+>> substantially to simplify adding new devices.
+> 
+> Either that, or a library to have the helpers modular. That approach could
+> produce lots of very small drivers though.
+> 
 
