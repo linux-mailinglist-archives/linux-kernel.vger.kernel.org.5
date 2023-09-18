@@ -2,72 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3601F7A42D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB487A42E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240248AbjIRHen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
+        id S238432AbjIRHhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240525AbjIRHeX (ORCPT
+        with ESMTP id S240398AbjIRHhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:34:23 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7566B13E;
-        Mon, 18 Sep 2023 00:33:49 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c3cbfa40d6so37526375ad.1;
-        Mon, 18 Sep 2023 00:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695022429; x=1695627229; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z9axyicU382Wx57Axqhzn+OpOnJ8J96M6SztAroiYJ4=;
-        b=iDmLc/LVeWcOJZSo1eeUblrgVfoCgSnIiTI7BpJe2Cgxl93Mazw3wtenohNOsEC0MK
-         5HknrHE00ZVU5V481D1nOSNMyfpH0ASYoFwWmcndG3YLV9gH4R3AhHZof2m+e1eT1xuZ
-         om5J5fShI+RSK2LYRAqMfjlsFbqgSESG4HctEx7yOuzdmCMa+qgYOl6jSFivQDMuHlT7
-         7T5nHjoMBeM4LzYOB2owwRj2e982Bjh2l7DmVtR/lILww4nIP2Mi9ZbKYJ93Hob8FmoZ
-         uLFpUzSKEz31borDc/WFEsjcacyIV1TUV3ayLTTn716OHIeGnEInclFg0I2gbTq5oxEg
-         bMtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695022429; x=1695627229;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z9axyicU382Wx57Axqhzn+OpOnJ8J96M6SztAroiYJ4=;
-        b=LZkzemFNOCLdfiUQLu3cknck27l0OQa/R53Uq1Cd/41kZJCmi5XHwUf67TlFvaaTPI
-         yFk6lgHqj64OydVcP/ngMf1YpivKtlqlzaLqSTjmuFtJxeISvDwB/p96uTEhJgCVNt02
-         6TYR6A5mexrOEJSEVtv6ohuh4TGmNCGvBDdmbKrbNLpJiM2BX1d/6nFoTWFhzxthTsBq
-         mlutGL8Elq5W9PrwB2XNZKLT59pvF001or4HGpCUIU0HJSXU1rR1sTALnEm2pmtSqvC3
-         0T3xTWRebDdKKpl/6z0ogtbULFq7CZAu4cddOyJ4Wa7xHSDchIr19C3T+hOCLPL7Lk1N
-         neXw==
-X-Gm-Message-State: AOJu0Yz0OSiD7dzz7RdaviuP5HHPn1twbEDt2BxPsF/FCmX0gHf2Dxyu
-        y5F6yIxT7Gqn++oJtSGtOMA=
-X-Google-Smtp-Source: AGHT+IHCvr0c0V4kcGq2yVg4a3uADaAMj0rHY9u126lIOA4UJdIeTedksYARQrYi0Z+KRSTjVSprew==
-X-Received: by 2002:a17:903:234e:b0:1c3:d864:d6a8 with SMTP id c14-20020a170903234e00b001c3d864d6a8mr10237307plh.23.1695022428741;
-        Mon, 18 Sep 2023 00:33:48 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902ed0600b001b9ecee459csm2290542pld.34.2023.09.18.00.33.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 00:33:48 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id ED56980D9E27; Mon, 18 Sep 2023 14:33:43 +0700 (WIB)
-Date:   Mon, 18 Sep 2023 14:33:43 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Charles Han <hanchunchao@inspur.com>, <corbet@lwn.net>,
-        <djwong@kernel.org>, <dchinner@redhat.com>,
-        <allison.henderson@oracle.com>, <bhelgaas@google.com>
-Cc:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Documentation: xfs: Remove repeated word in comments
-Message-ID: <ZQf9V5fz5NItte_i@debian.me>
-References: <20230918071905.296081-1-hanchunchao@inspur.com>
+        Mon, 18 Sep 2023 03:37:36 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6E310F7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:34:26 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VsIAQZk_1695022459;
+Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VsIAQZk_1695022459)
+          by smtp.aliyun-inc.com;
+          Mon, 18 Sep 2023 15:34:21 +0800
+Message-ID: <28f76c7c-4b84-5e08-2f27-07592d8078a2@linux.alibaba.com>
+Date:   Mon, 18 Sep 2023 15:34:25 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nGYxsMAcG22j/Khb"
-Content-Disposition: inline
-In-Reply-To: <20230918071905.296081-1-hanchunchao@inspur.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC PATCH 2/4] mm/compaction: optimize >0 order folio compaction
+ with free page split.
+To:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rohan Puri <rohan.puri15@gmail.com>,
+        Mcgrof Chamberlain <mcgrof@kernel.org>,
+        Adam Manzanares <a.manzanares@samsung.com>,
+        John Hubbard <jhubbard@nvidia.com>
+References: <20230912162815.440749-1-zi.yan@sent.com>
+ <20230912162815.440749-3-zi.yan@sent.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230912162815.440749-3-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,49 +58,87 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nGYxsMAcG22j/Khb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 18, 2023 at 03:19:05PM +0800, Charles Han wrote:
-> diff --git a/Documentation/filesystems/xfs-online-fsck-design.rst b/Docum=
-entation/filesystems/xfs-online-fsck-design.rst
-> index 1625d1131093..a0678101a7d0 100644
-> --- a/Documentation/filesystems/xfs-online-fsck-design.rst
-> +++ b/Documentation/filesystems/xfs-online-fsck-design.rst
-> @@ -1585,7 +1585,7 @@ The transaction sequence looks like this:
->  2. The second transaction contains a physical update to the free space b=
-trees
->     of AG 3 to release the former BMBT block and a second physical update=
- to the
->     free space btrees of AG 7 to release the unmapped file space.
-> -   Observe that the the physical updates are resequenced in the correct =
-order
-> +   Observe that the physical updates are resequenced in the correct order
->     when possible.
->     Attached to the transaction is a an extent free done (EFD) log item.
->     The EFD contains a pointer to the EFI logged in transaction #1 so tha=
-t log
+On 9/13/2023 12:28 AM, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> During migration in a memory compaction, free pages are placed in an array
+> of page lists based on their order. But the desired free page order (i.e.,
+> the order of a source page) might not be always present, thus leading to
+> migration failures. Split a high order free pages when source migration
+> page has a lower order to increase migration successful rate.
+> 
+> Note: merging free pages when a migration fails and a lower order free
+> page is returned via compaction_free() is possible, but there is too much
+> work. Since the free pages are not buddy pages, it is hard to identify
+> these free pages using existing PFN-based page merging algorithm.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>   mm/compaction.c | 40 +++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 868e92e55d27..45747ab5f380 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1801,9 +1801,46 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
+>   	struct compact_control *cc = (struct compact_control *)data;
+>   	struct folio *dst;
+>   	int order = folio_order(src);
+> +	bool has_isolated_pages = false;
+>   
+> +again:
+>   	if (!cc->freepages[order].nr_free) {
+> -		isolate_freepages(cc);
+> +		int i;
+> +
+> +		for (i = order + 1; i <= MAX_ORDER; i++) {
+> +			if (cc->freepages[i].nr_free) {
+> +				struct page *freepage =
+> +					list_first_entry(&cc->freepages[i].pages,
+> +							 struct page, lru);
+> +
+> +				int start_order = i;
+> +				unsigned long size = 1 << start_order;
+> +
+> +				list_del(&freepage->lru);
+> +				cc->freepages[i].nr_free--;
+> +
+> +				while (start_order > order) {
+> +					start_order--;
+> +					size >>= 1;
+> +
+> +					list_add(&freepage[size].lru,
+> +						&cc->freepages[start_order].pages);
+> +					cc->freepages[start_order].nr_free++;
+> +					set_page_private(&freepage[size], start_order);
 
-I don't see any code comments in that doc. The patch title should have been
-"Documentation: xfs: Remove duplicate 'the' in transaction sequence process=
-".
+IIUC, these split pages should also call functions to initialize? e.g. 
+prep_compound_page()?
 
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---nGYxsMAcG22j/Khb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQf9UQAKCRD2uYlJVVFO
-o5IwAQDHbUekcN12IVObhYxj7ZNBAapn0riFXPkSi8MV+sXE8AEA00EC05unU4u0
-HNj0trC03PZGMlKVAAlR96xtaOPZuw8=
-=iVTH
------END PGP SIGNATURE-----
-
---nGYxsMAcG22j/Khb--
+> +				}
+> +				post_alloc_hook(freepage, order, __GFP_MOVABLE);
+> +				if (order)
+> +					prep_compound_page(freepage, order);
+> +				dst = page_folio(freepage);
+> +				goto done;
+> +			}
+> +		}
+> +		if (!has_isolated_pages) {
+> +			isolate_freepages(cc);
+> +			has_isolated_pages = true;
+> +			goto again;
+> +		}
+> +
+>   		if (!cc->freepages[order].nr_free)
+>   			return NULL;
+>   	}
+> @@ -1814,6 +1851,7 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
+>   	post_alloc_hook(&dst->page, order, __GFP_MOVABLE);
+>   	if (order)
+>   		prep_compound_page(&dst->page, order);
+> +done:
+>   	cc->nr_freepages -= 1 << order;
+>   	return dst;
+>   }
