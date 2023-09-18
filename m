@@ -2,172 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE237A4914
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1207A4918
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241823AbjIRMAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S231883AbjIRMBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241881AbjIRMAS (ORCPT
+        with ESMTP id S241895AbjIRMA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:00:18 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0040DCD0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:59:27 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99de884ad25so588642666b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:59:27 -0700 (PDT)
+        Mon, 18 Sep 2023 08:00:56 -0400
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D64DE;
+        Mon, 18 Sep 2023 04:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695038366; x=1695643166; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Mx+1LEKjG08mHXdWiW0HFl/U3LRaOvUzyjCNt5ITLZc=;
-        b=Fw4HkzC7pcvppLJYx2wITGv2sEElnkg7QPGY7lPh7ux1OM1cE15GesUPD7c2aSD7gd
-         gq8V1nqYbytebM71PrH3/4Szgg8SpC/kOjXkxNN8twzIwSPvUwjPXNmQiYnvuDXEoo0w
-         PveSKvaKppysaMOdITgl9uIfGINmxR6DeI0XZCp0wyLwU1i5H6MGcRjKDK+U5FSF3/Kf
-         upMkjHEnlhjg7qOnu8PH5WGGjwRi2WTZ4xp6C25gS/f9X7Eg5LsVNJVAsMdXmzRxewVM
-         KbEoeB9B5nilqxDXOGyk96GtBPx9SVgIjrwBc1/5XmvExhasUQXRIlI/TraaCXHatyQN
-         jeZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695038366; x=1695643166;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mx+1LEKjG08mHXdWiW0HFl/U3LRaOvUzyjCNt5ITLZc=;
-        b=wvV89LBlaw9DdmL6Zwmd579GqeEwRqRPejUjVkfnOQJwivYjA0eLntGhaqG+9f/sJJ
-         W94FjZcfUKXnuzKwpxcGfFZQUcWiq17iiHANu9lZfwxIM6CyJNT8/m2l2BOyk5U5EO/Y
-         VzDNSZTKjVJbhFgOx23p/jkjNtPSO0pa+cI3Ej1qW9BCuRtbhKIEdkXQYT1/leDcnKy1
-         5PU+q8guLJ/qQx6fh3sleH5g36OUwbFokwr7e86ph+UFFwdio+afLJC3Ov7cf/F5Rg9Z
-         NrKHFRlOPKO1W5QmaIbb1d90rec6lVrYJigiDJgesrywJ37mDvgEIEChVJuYqPH5Ltd3
-         gptw==
-X-Gm-Message-State: AOJu0YysUsMWdEZ/tBUQqpmTodboJmUzsxY2G5bSqeHno9cT8JjfLwIi
-        LNLZVFOaXOI3utLq3MSuDJA/Cg==
-X-Google-Smtp-Source: AGHT+IEQU5aP9n0ZpbF9FIWm05VurFH/Lgko0yhluHa5UJmuOfDQoNjoIOALZWR4TY4wUZ0dcYYJAQ==
-X-Received: by 2002:a17:906:5188:b0:9a1:db97:62a1 with SMTP id y8-20020a170906518800b009a1db9762a1mr7333228ejk.46.1695038366283;
-        Mon, 18 Sep 2023 04:59:26 -0700 (PDT)
-Received: from [172.25.80.114] ([217.67.225.27])
-        by smtp.gmail.com with ESMTPSA id j9-20020a170906410900b0099cc3c7ace2sm6466812ejk.140.2023.09.18.04.59.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 04:59:25 -0700 (PDT)
-Message-ID: <fad9eb3c-49f9-5ece-b51a-aaff4d8888ad@linaro.org>
-Date:   Mon, 18 Sep 2023 13:59:24 +0200
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1695038398; x=1726574398;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=eG1C2BVfgTVepLC8sSyqp0SwuaWBXylv0y093IGXnjg=;
+  b=TA/qFGuc7dCF5wMPiQGsqwunvKi3A24nQ3fGyvNir3hu4wsaIVDueQ6x
+   NuRUPs6CCeNjHlEPLt6yg+4ZznhTJH1dGDWWv+onXMEzlXf0pxFiWFCdI
+   xGVJq9vut3EUWz3Lvd5jv5hG5Ck1/haUpFnGM8xBJFBhSrJLtH6a/++V5
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.02,156,1688428800"; 
+   d="scan'208";a="29601258"
+Subject: Re: [RFC] KVM: x86: Allow userspace exit on HLT and MWAIT,
+ else yield on MWAIT
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-8c5b1df3.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 11:59:56 +0000
+Received: from EX19MTAUWA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2c-m6i4x-8c5b1df3.us-west-2.amazon.com (Postfix) with ESMTPS id A557840D69;
+        Mon, 18 Sep 2023 11:59:55 +0000 (UTC)
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Mon, 18 Sep 2023 11:59:55 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 18 Sep
+ 2023 11:59:52 +0000
+Message-ID: <db756c13-eee5-414a-a28d-2ce08e7b77d9@amazon.de>
+Date:   Mon, 18 Sep 2023 13:59:50 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 3/3] dt-bindings: hwinfo: Add mtk-socinfo driver
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        William-tw Lin <william-tw.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>
-Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-References: <20230915152607.18116-1-william-tw.lin@mediatek.com>
- <20230915152607.18116-4-william-tw.lin@mediatek.com>
- <3e7bc476-ffc7-fb07-8e64-246427da736c@linaro.org>
- <9acc8d99-e3db-3df8-4051-21d95450b28d@collabora.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <9acc8d99-e3db-3df8-4051-21d95450b28d@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-GB
+To:     David Woodhouse <dwmw2@infradead.org>, <kvm@vger.kernel.org>,
+        "Peter Zijlstra" <peterz@infradead.org>
+CC:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, <linux-kernel@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@amazon.es>,
+        "Griffoul, Fred" <fgriffo@amazon.com>
+References: <1b52b557beb6606007f7ec5672eab0adf1606a34.camel@infradead.org>
+ <63b382bf-d1fb-464f-ab06-4185f796a85f@amazon.de>
+ <b3c1a64daa6d265b295aedd6176daa8ab95e273f.camel@infradead.org>
+From:   Alexander Graf <graf@amazon.de>
+In-Reply-To: <b3c1a64daa6d265b295aedd6176daa8ab95e273f.camel@infradead.org>
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D046UWB001.ant.amazon.com (10.13.139.187) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SPF_PERMERROR
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 10:47, AngeloGioacchino Del Regno wrote:
-> Il 17/09/23 10:26, Krzysztof Kozlowski ha scritto:
->> On 15/09/2023 17:26, William-tw Lin wrote:
->>> dt-binding documentation for mtk-socinfo driver.
->>
->> Here and in subject, drop driver and instead descrbe hardware.
->>
->>> mtk-socinfo driver provides SoC-related information.
->>> Such information includes manufacturer information, SoC name,
->>> SoC segment name, and SoC marketing name.
->>>
->>> Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
->>> ---
->>>   .../bindings/hwinfo/mtk-socinfo.yaml          | 48 +++++++++++++++++++
->>>   1 file changed, 48 insertions(+)
->>>   create mode 100644 Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
->>> new file mode 100644
->>> index 000000000000..74f03f1dc404
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
->>
->> Nothing improved.
->>
->> This is a friendly reminder during the review process.
->>
->> It seems my previous comments were not fully addressed. Maybe my
->> feedback got lost between the quotes, maybe you just forgot to apply it.
->> Please go back to the previous discussion and either implement all
->> requested changes or keep discussing them.
->>
->> Thank you.
->>
->>> @@ -0,0 +1,48 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/hwinfo/mtk-socinfo.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: MediaTek SoC ChipID
->>> +
->>> +maintainers:
->>> +  - William Lin <william-tw.lin@mediatek.com>
->>> +  - Matthias Brugger <matthias.bgg@gmail.com>
->>> +  - Kevin Hilman <khilman@kernel.org>
->>> +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->>> +
->>> +description:
->>> +  MediaTek SoCs store various product information in eFuses, including
->>> +  Chip ID and Revision fields, usable to identify the manufacturer,
->>> +  SoC version, plus segment and marketing names.
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: mediatek,socinfo
->>
->> What happened to compatibles? No, this is just wrong and no explained.
->> You ignored other comments as well. Really, that's not the way to go.
->>
-> 
-> Practically, having different compatibles for each SoC is not needed, as
-> the only thing that changes between SoCs is the eFuse(s) that you read to
-> get the information - and that's all.
-
-
-And how do you guarantee that no future SoC will have any difference?
-How can you even predict it?
-
-> 
-> So ... we either use this driver with devicetree, giving it the right eFuses
-
-I am talking about bindings, no driver.
-
-> to read from, or we duplicate the mtk-efuse driver, or we statically assign
-> the eFuses in the driver itself and we set compatibles like
-> "mediatek,mt8195-socinfo" to select that... ideas?
-
-Device specific compatibles followed by fallback, just like for every
-other review coming from me.
-
-Best regards,
-Krzysztof
+Ck9uIDE4LjA5LjIzIDEzOjEwLCBEYXZpZCBXb29kaG91c2Ugd3JvdGU6Cj4gT24gTW9uLCAyMDIz
+LTA5LTE4IGF0IDExOjQxICswMjAwLCBBbGV4YW5kZXIgR3JhZiB3cm90ZToKPj4gSUlVQyB5b3Ug
+d2FudCB0byBkbyB3b3JrIGluIGEgdXNlciBzcGFjZSB2Q1BVIHRocmVhZCB3aGVuIHRoZSBndWVz
+dCB2Q1BVCj4+IGlzIGlkbGUuIEFzIHlvdSBwb2ludGVkIG91dCBhYm92ZSwgS1ZNIGNhbiBub3Qg
+YWN0dWFsbHkgZG8gbXVjaCBhYm91dAo+PiBNV0FJVDogSXQgYmFzaWNhbGx5IGJ1c3kgbG9vcHMg
+YW5kIGhvZ3MgdGhlIENQVS4KPiBXZWxsLi4gSSBzdXNwZWN0IHdoYXQgSSAqcmVhbGx5KiB3YW50
+IGlzIGEgZGVjZW50IHdheSB0byBlbXVsYXRlIE1XQUlUCj4gcHJvcGVybHkgYW5kIGxldCBpdCBh
+Y3R1YWxseSBzbGVlcC4gT3IgZmFpbGluZyB0aGF0LCB0byBkZWNsYXJlIHRoYXQgd2UKPiBjYW4g
+YWN0dWFsbHkgY2hhbmdlIHRoZSBndWVzdC12aXNpYmxlIGV4cGVyaWVuY2Ugd2hlbiB0aG9zZSBn
+dWVzdHMgYXJlCj4gbWlncmF0ZWQgdG8gS1ZNLCBhbmQgdGFrZSBhd2F5IE1XQUlUIGNvbXBsZXRl
+bHkuCj4KPj4gVGhlIHR5cGljYWwgZmxvdyBJIHdvdWxkIGV4cGVjdCBmb3IgIndvcmsgaW4gYSB2
+Q1BVIHRocmVhZCIgaXM6Cj4+Cj4+IDApIHZDUFUgcnVucy4gSExUL01XQUlUIGlzIGRpcmVjdGx5
+IGV4cG9zZWQgdG8gZ3Vlc3QuCj4+IDEpIHZDUFUgZXhpdHMuIENyZWF0ZXMgZGVmZXJyZWQgd29y
+ay4gRW5hYmxlcyBITFQvTVdBSVQgdHJhcHBpbmcuCj4gVGhhdCBjYW4gaGFwcGVuLCBidXQgaXQg
+bWF5IGFsc28gYmUgYSBzZXBhcmF0ZSBJL08gdGhyZWFkIHdoaWNoCj4gcmVjZWl2ZXMgYW4gZXZl
+bnRmZCBub3RpZmljYXRpb24gYW5kIGZpbmRzIHRoYXQgdGhlcmUgaXMgbm93IHdvcmsgdG8gYmUK
+PiBkb25lLiBJZiB0aGF0IHdvcmsgY2FuIGJlIGZhaXJseSBtdWNoIGluc3RhbnRhbmVvdXMsIGl0
+IGNhbiBiZSBkb25lCj4gaW1tZWRpYXRlbHkuIEVsc2UgaXQgZ2V0cyBkZWZlcnJlZCB0byB3aGF0
+IHdlIExpbnV4IGhhY2tlcnMgbWlnaHQgdGhpbmsKPiBvZiBhcyBhIHdvcmtxdWV1ZS4KPgo+IElm
+IGFsbCB0aGUgdkNQVXMgYXJlIGluIEhMVCB3aGVuIHRoZSB3b3JrIHF1ZXVlIGJlY29tZXMgbm9u
+LWVtcHR5LCB3ZSdkCj4gbmVlZCB0byBwcm9kIHRoZW0gKmFsbCogdG8gY2hhbmdlIHRoZWlyIGV4
+aXQtb24te0hMVCxNV0FJVH0gc3RhdHVzIHdoZW4KPiB3b3JrIGJlY29tZXMgYXZhaWxhYmxlLCBq
+dXN0IGluIGNhc2Ugb25lIG9mIHRoZW0gYmVjb21lcyBpZGxlIGFuZCBjYW4KPiBwcm9jZXNzIHRo
+ZSB3b3JrICJmb3IgZnJlZSIgdXNpbmcgaWRsZSBjeWNsZXMuCj4KPj4gMikgdkNQVSBydW5zIGFn
+YWluCj4+IDMpIHZDUFUgY2FsbHMgSExUL01XQUlULiBXZSBleGl0IHRvIHVzZXIgc3BhY2UgdG8g
+ZmluaXNoIHdvcmsgZnJvbSAxCj4+IDQpIHZDUFUgcnVucyBhZ2FpbiB3aXRob3V0IEhMVC9NV0FJ
+VCB0cmFwcGluZwo+Pgo+PiBUaGF0IG1lYW5zIG9uIHRvcCAob3IgaW5zdGVhZD8pIG9mIHRoZSBi
+aXRzIHlvdSBoYXZlIGJlbG93IHRoYXQgaW5kaWNhdGUKPj4gIlNob3VsZCBJIGV4aXQgdG8gdXNl
+ciBzcGFjZT8iLCB3aGF0IHlvdSByZWFsbHkgbmVlZCBhcmUgYml0cyB0aGF0IGRvCj4+IHdoYXQg
+ZW5hYmxlX2NhcChLVk1fQ0FQX1g4Nl9ESVNBQkxFX0VYSVRTKSBkb2VzIGluIGxpZ2h0LXdlaWdo
+dDogRGlzYWJsZQo+PiBITFQvTVdBSVQgdHJhcHBpbmcgdGVtcG9yYXJpbHkuCj4gSWYgSSBkbyBp
+dCB0aGF0IHdheSwgeWVzLiBBIGxpZ2h0d2VpZ2h0IHdheSB0byBlbmFibGUvZGlzYWJsZSB0aGUg
+ZXhpdHMKPiBldmVuIHRvIGtlcm5lbCB3b3VsZCBiZSBhIG5pY2UgdG8gaGF2ZS4gQnV0IGl0J3Mg
+YSB0cmFkZS1vZmYuIEZvciBITFQKPiB5b3UnZCBnZXQgbG93ZXIgbGF0ZW5jeSByZS1lbnRlcmlu
+ZyB0aGUgdkNQVSBhdCBhIGNvc3Qgb2YgbXVjaCBoaWdoZXIKPiBsYXRlbmN5IHByb2Nlc3Npbmcg
+d29yayBpZiB0aGUgdkNQVSB3YXMgKmFscmVhZHkqIGluIEhMVC4KPgo+IFdlIHByb2JhYmx5IHdv
+dWxkIHdhbnQgdG8gc3RvcCBidXJuaW5nIHBvd2VyIGluIHRoZSBNV0FJVCBsb29wIHRob3VnaCwK
+PiBhbmQgbGV0IHRoZSBwQ1BVIHNpdCBpbiB0aGUgZ3Vlc3QgaW4gTVdBSVQgaWYgdGhlcmUgcmVh
+bGx5IGlzIG5vdGhpbmcKPiBlbHNlIHRvIGRvLgo+Cj4gV2UncmUgZXhwZXJpbWVudGluZyB3aXRo
+IHZhcmlvdXMgcGVybXV0YXRpb25zLgo+Cj4+IEFsc28sIHBsZWFzZSBrZWVwIGluIG1pbmQgdGhh
+dCB5b3Ugc3RpbGwgd291bGQgbmVlZCBhIGZhbGxiYWNrIG1lY2hhbmlzbQo+PiB0byBydW4geW91
+ciAiZGVmZXJyZWQgd29yayIgZXZlbiB3aGVuIHRoZSBndWVzdCBkb2VzIG5vdCBjYWxsIEhMVC9N
+V0FJVCwKPj4gbGlrZSBhIHJlZ3VsYXIgdGltZXIgaW4geW91ciBtYWluIHRocmVhZC4KPiBZZWFo
+LiBJbiB0aGF0IGNhc2UgSSB0aGluayB0aGUgaWRlYWwgYW5zd2VyIGlzIHRoYXQgd2UgbGV0IHRo
+ZSBrZXJuZWwKPiBzY2hlZHVsZXIgc29ydCBpdCBvdXQuIEkgd2FzIHRoaW5raW5nIG9mIGEgbW9k
+ZWwgd2hlcmUgd2UgaGF2ZSBJL08gKG9yCj4gd29ya3F1ZXVlKSB0aHJlYWRzIGluICphZGRpdGlv
+biogdG8gdGhlIHVzZXJzcGFjZSBleGl0cyBvbiBpZGxlLiBUaGUKPiBzZXBhcmF0ZSB0aHJlYWRz
+IG93biB0aGUgd29yayAoYW5kIGEgbnVtYmVyIG9mIHRoZW0gYXJlIHdva2VuIGFjY29yZGluZwo+
+IHRvIHRoZSBxdWV1ZSBkZXB0aCksIGFuZCBpZGxlIHZDUFVzICpvcHBvcnR1bmlzdGljYWxseSog
+cHJvY2VzcyB3b3JrCj4gaXRlbXMgb24gdG9wIG9mIHRoYXQuCj4KPiBUaGF0IGFwcHJvYWNoIGFs
+b25lIHdvdWxkIHdvcmsgZmluZSB3aXRoIHRoZSBleGlzdGluZyBITFQgc2NoZWR1bGluZzsKPiBp
+dCdzIGp1c3QgTVdBSVQgd2hpY2ggaXMgYSBwYWluIGJlY2F1c2UgeWllbGQoKSBkb2Vzbid0IHJl
+YWxseSBkbyBtdWNoCj4gKGJ1dCBhcyBub3RlZCwgaXQncyBiZXR0ZXIgdGhhbiAqbm90aGluZyop
+Lgo+Cj4+IE9uIHRvcCBvZiBhbGwgdGhpcywgSSdtIG5vdCBzdXJlIGl0J3MgbW9yZSBlZmZpY2ll
+bnQgdG8gZG8gdGhlIHRyYXAgdG8KPj4gdGhlIHZDUFUgdGhyZWFkIGNvbXBhcmVkIHRvIGp1c3Qg
+Y3JlYXRpbmcgYSBzZXBhcmF0ZSByZWFsIHRocmVhZC4gWW91cgo+PiBtYWluIHByb2JsZW0gaXMg
+dGhlIGVtdWxhdGFiaWxpdHkgb2YgTVdBSVQgYmVjYXVzZSB0aGF0IGxlYXZlcyAibm8gdGltZSIK
+Pj4gdG8gZG8gZGVmZXJyZWQgd29yay4gQnV0IHRoZW4gYWdhaW4sIGlmIHlvdXIgZGVmZXJyZWQg
+d29yayBpcyBzbyBjb21wbGV4Cj4+IHRoYXQgaXQgbmVlZHMgbW9yZSB0aGFuIGEgZmV3IG1zICh3
+aGljaCB5b3UgY2FuIGFsd2F5cyBzdGVhbCBmcm9tIHRoZQo+PiB2Q1BVIHRocmVhZCwgZXNwZWNp
+YWxsIHdpdGggeWllbGQoKSksIHlvdSdsbCBuZWVkIHRvIHN0YXJ0IGltcGxlbWVudGluZwo+PiB0
+aW1lIHNsaWNpbmcgb2YgdGhhdCB3b3JrIGluIHVzZXIgc3BhY2UgbmV4dCAtIGFuZCBiYXNpY2Fs
+bHkgcmVidWlsZAo+PiB5b3VyIG93biBzY2hlZHVsZXIgdGhlcmUuIFVnaC4KPj4KPj4gSU1ITyB0
+aGUgcmVhbCBjb3JlIHZhbHVlIG9mIHRoaXMgaWRlYSB3b3VsZCBiZSBpbiBhIHZjcHVfcnVuIGJp
+dCB0aGF0IG9uCj4+IFZDUFVfUlVOIGNhbiB0b2dnbGUgYmV0d2VlbiBITFQvTVdBSVQgaW50ZXJj
+ZXB0IG9uIGFuZCBvZmYuIFRoZSBhY3R1YWwKPj4gdHJhcCB0byB1c2VyIHNwYWNlLCB5b3UncmUg
+bW9zdCBsaWtlbHkgYmV0dGVyIG9mZiB3aXRoIGEgc2VwYXJhdGUgdGhyZWFkLgo+IE5vLCB0aGF0
+J3MgdmVyeSBtdWNoIG5vdCB0aGUgcG9pbnQuIFRoZSBwcm9ibGVtIGlzIHRoYXQgeWllbGQoKSBk
+b2Vzbid0Cj4gd29yayB3ZWxsIGVub3VnaCDigJQgYW5kIGlzbid0IGRlc2lnbmVkIG9yIGd1YXJh
+bnRlZWQgdG8gZG8gYW55dGhpbmcgaW4KPiBwYXJ0aWN1bGFyIGZvciBtb3N0IGNhc2VzLiBJdCdz
+IGJldHRlciB0aGFuICpub3RoaW5nKiBidXQgd2Ugd2FudCB0aGUKPiBvcHBvcnR1bml0eSB0byBk
+byB0aGUgYWN0dWFsIHdvcmsgcmlnaHQgdGhlcmUgaW4gdGhlICpsb29wKiBvZiB0aGUKPiBndWVz
+dCBib3VuY2luZyB0aHJvdWdoIE1XQUlULgoKClRoZSBwcm9ibGVtIHdpdGggTVdBSVQgaXMgdGhh
+dCB5b3UgZG9uJ3QgcmVhbGx5IGtub3cgd2hlbiBpdCdzIGRvbmUuCgpZb3UgY291bGQgZmluZCBv
+dXQgYnkgbWFraW5nIE1PTklUT1InZWQgcGFnZXMoISkgcmVhZC1vbmx5IHNvIHlvdSBjYW4gCndh
+a2UgdXAgYW55IHRhcmdldCB2Q1BVIHRoYXQncyBpbiBNV0FJVCwgYnV0IHRoYXQncyBjb25zaWRl
+cmFibHkgCmV4cGVuc2l2ZSBpZiB5b3Ugd2FudCB0byBkbyBpdCB3ZWxsLgoKWW91IGNvdWxkIGFs
+c28gYnVybiBvbmUgVk0vc3lzdGVtIHdpZGUgQ1BVIHRoYXQgZG9lcyBub3RoaW5nIGJ1dCB3YWl0
+cyAKZm9yIGNoYW5nZXMgaW4gYW55IE1PTklUT1InZWQgY2FjaGUgbGluZS4gRG9hYmxlIHdpdGgg
+bGVzcyBwb3dlciAKY29uc3VtcHRpb24gaWYgeW91IHVzZSBUU1ggSSBndWVzcy4gQnV0IHByb2Jh
+Ymx5IG5vdCB3aGF0IHlvdSB3YW50IGVpdGhlci4KCkFub3RoZXIgYWx0ZXJuYXRpdmUgd291bGQg
+YmUgdG8gbWFrZSBndWVzdHMgUFYgYXdhcmUsIHNvIHRoZXkgdW5kZXJzdGFuZCAKeW91IGRvbid0
+IGFjdHVhbGx5IGRvIE1XQUlUIGFuZCBnaXZlIHlvdSBhIGh5cGVyY2FsbCBldmVyeSB0aW1lIHRo
+ZXkgCm1vZGlmeSB3aGF0ZXZlciBhbnlvbmUgd291bGQgd2FudCB0byBtb25pdG9yIChzdWNoIGFz
+IAp0aHJlYWRfaW5mby0+ZmxhZ3MpLiBCdXQgdGhhdCByZXF1aXJlcyBuZXcgZ3Vlc3Qga2VybmVs
+cy4gSSBkb24ndCB0aGluayAKeW91IHdhbnQgdG8gd2FpdCBmb3IgdGhhdCA6KS4KClNvIGluIGEg
+bnV0c2hlbGwsIGVtdWxhdGluZyBNV0FJVCBwcm9wZXJseSBpcyBqdXN0IHN1cGVyIGRpZmZpY3Vs
+dC4gSWYgCnlvdSBoYXZlIGV2ZW4gdGhlIHJlbW90ZXN0IGNoYW5jZSB0byBnZXQgYXdheSB3aXRo
+IGRvaW5nIEhMVCBpbnN0ZWFkLCAKSSdkIHRha2UgdGhhdC4gSW4gdGhhdCBtb2RlbCwgYW4gSS9P
+IHRocmVhZCB0aGF0IHNjaGVkdWxlcyBvdmVyIGlkbGUgCnRocmVhZHMgYmVjb21lcyBuYXR1cmFs
+LgoKCkFsZXgKCgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApLcmF1
+c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4gU2No
+bGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFybG90
+dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5IDIz
+NyA4NzkKCgo=
 
