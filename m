@@ -2,174 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEE57A45EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB64A7A45F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238979AbjIRJbF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Sep 2023 05:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
+        id S240719AbjIRJcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235797AbjIRJa0 (ORCPT
+        with ESMTP id S240895AbjIRJbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:30:26 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14D0118;
-        Mon, 18 Sep 2023 02:30:13 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 30AB824E2BA;
-        Mon, 18 Sep 2023 17:30:09 +0800 (CST)
-Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 18 Sep
- 2023 17:30:09 +0800
-Received: from [192.168.1.218] (180.164.60.184) by EXMBX073.cuchost.com
- (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 18 Sep
- 2023 17:30:08 +0800
-Message-ID: <41370a5d-ffa3-f85b-aa2a-b6dd9cc570f6@starfivetech.com>
-Date:   Mon, 18 Sep 2023 17:30:08 +0800
+        Mon, 18 Sep 2023 05:31:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B085FD3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695029459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K9mKfMs2axUjRk4VejYXL9YNHsofaFImODtn3an3J0Q=;
+        b=HKnJ1Q1/Gmg8a2th+z+8irXMsfuEQTW+jOumgrPyD1+VaDEubvXo2+I+TowsWqYjyMhMRp
+        PUHJlA7G50vaMsHLfvgIa7jxChI7k6KE9oI3rf9xbejy8PwcsMV4c+uEUH6ZKyWKujMcoV
+        8m+WCqqMuuJl++W1oz0hNDD+74PS6sg=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-656-TrEBaldwPOysCQFTNzSq8w-1; Mon, 18 Sep 2023 05:30:57 -0400
+X-MC-Unique: TrEBaldwPOysCQFTNzSq8w-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32006e08483so966323f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:30:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695029456; x=1695634256;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K9mKfMs2axUjRk4VejYXL9YNHsofaFImODtn3an3J0Q=;
+        b=FEaKQL3XXZMykAlykMmZmiXXUbhTQ2c5WDnnzJSEgpMxE9Jzk6rTHOEFKY+G3gKfNB
+         l+s95PlkUUxaPGHe1EU9L3v8DikRBp7yplYe+AkVPbnNcxtnrmef1zZ0/oYTeM2cqJ7x
+         wHMH1pS+TA0cHvmH+RzgnmdxK12+jJNzJbD3ZZDbiKSzyL0oOgTchqnD2J7zhhIVWBlI
+         OJNiI45sFG50ng0hpqzB/WsmLpJaCzj6g+kf8uL5rvaqsw7SV62icvTYYVfWeIJewOTi
+         HufL72AeH6Utcr6Ed2zTEPYx4c0Ch4HYGa+TeC4126ne9LBmY1AYNLOGEPOAqsJ2w/Nk
+         Bqrw==
+X-Gm-Message-State: AOJu0YzWIdvV05NAZwnt74QDcGaC81LKLaJnzoQ37o4Rj1Vu/XA6LyYt
+        B7BdkhRCIyyXQemWSB7JkPLBcwppn7qFwLr7MhwqPU4MNMy009VhtTOz/iOeM/a1snu8DuxXYSc
+        qC2+CnMpnw+KPZKsNj9rOzlx3
+X-Received: by 2002:a5d:4152:0:b0:317:5182:7b55 with SMTP id c18-20020a5d4152000000b0031751827b55mr6601625wrq.42.1695029455962;
+        Mon, 18 Sep 2023 02:30:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFuVwKer/t6wO8e6EaqpLJk3xr8QAnbzNM6Ra4QUQXA+9orH05TCHII2aGbpDgbji3C7zRZ1Q==
+X-Received: by 2002:a5d:4152:0:b0:317:5182:7b55 with SMTP id c18-20020a5d4152000000b0031751827b55mr6601614wrq.42.1695029455646;
+        Mon, 18 Sep 2023 02:30:55 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id q11-20020adff50b000000b0031c71693449sm12122610wro.1.2023.09.18.02.30.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 02:30:55 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
+        sam@ravnborg.org, arnd@arndb.de, rdunlap@infradead.org,
+        glaubitz@physik.fu-berlin.de
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] fbdev/sh7760fb: Depend on FB=y
+In-Reply-To: <20230918090400.13264-1-tzimmermann@suse.de>
+References: <20230918090400.13264-1-tzimmermann@suse.de>
+Date:   Mon, 18 Sep 2023 11:30:54 +0200
+Message-ID: <87o7hz4ylt.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v9 0/8] Add StarFive Camera Subsystem driver
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        <bryan.odonoghue@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-staging@lists.linux.dev>,
-        <changhuang.liang@starfivetech.com>
-References: <20230914031607.34877-1-jack.zhu@starfivetech.com>
- <11735008-1adf-4b84-9023-d295371caed5@xs4all.nl>
-Content-Language: en-US
-From:   Jack Zhu <jack.zhu@starfivetech.com>
-In-Reply-To: <11735008-1adf-4b84-9023-d295371caed5@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [180.164.60.184]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX073.cuchost.com
- (172.16.6.83)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans，
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-Thanks for your comment.
+Hello Thomas,
 
-On 2023/9/15 17:26, Hans Verkuil wrote:
-> On 14/09/2023 05:15, Jack Zhu wrote:
->> Hi,
->> 
->> This series is the v9 series that attempts to support the Camera Subsystem
->> found on StarFive JH7110 SoC.
->> 
->> This series is based on top of the master branch of media_stage repository.
->> 
->> The following are the media graph for the device and the v4l2-compliance
->> output.
->> 
->> ===========================================================================
->> [the media graph]:
->> 
->> digraph board {
->> 	rankdir=TB
->> 	n00000001 [label="{{<port0> 0} | stf_isp\n/dev/v4l-subdev0 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
->> 	n00000001:port1 -> n00000008 [style=dashed]
->> 	n00000004 [label="capture_raw\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
->> 	n00000008 [label="capture_yuv\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
->> 	n0000000e [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
->> 	n0000000e:port1 -> n00000001:port0 [style=dashed]
->> 	n0000000e:port1 -> n00000004 [style=dashed]
->> 	n00000018 [label="{{} | imx219 6-0010\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
->> 	n00000018:port0 -> n0000000e:port0 [style=bold]
->> }
->> 
->> [the device topology]:
->> 
->> Media controller API version 6.5.0
->> 
->> Media device information
->> ------------------------
->> driver          starfive-camss
->> model           Starfive Camera Subsystem
->> serial          
->> bus info        platform:19840000.camss
->> hw revision     0x0
->> driver version  6.5.0
->> 
->> Device topology
->> - entity 1: stf_isp (2 pads, 2 links)
->>             type V4L2 subdev subtype Unknown flags 0
->>             device node name /dev/v4l-subdev0
->> 	pad0: Sink
->> 		[fmt:SRGGB10_1X10/1920x1080 field:none colorspace:srgb
->> 		 crop.bounds:(0,0)/1920x1080
->> 		 crop:(0,0)/1920x1080]
->> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
->> 	pad1: Source
->> 		[fmt:YUYV8_1_5X8/1920x1080 field:none colorspace:srgb
->> 		 crop.bounds:(0,0)/1920x1080
->> 		 crop:(0,0)/1920x1080]
->> 		-> "capture_yuv":0 []
->> 
->> - entity 4: capture_raw (1 pad, 1 link)
->>             type Node subtype V4L flags 0
->>             device node name /dev/video0
->> 	pad0: Sink
->> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
->> 
->> - entity 8: capture_yuv (1 pad, 1 link)
->>             type Node subtype V4L flags 0
->>             device node name /dev/video1
->> 	pad0: Sink
->> 		<- "stf_isp":1 []
->> 
->> - entity 14: cdns_csi2rx.19800000.csi-bridge (5 pads, 3 links)
->>              type V4L2 subdev subtype Unknown flags 0
->> 	pad0: Sink
->> 		<- "imx219 6-0010":0 [ENABLED,IMMUTABLE]
->> 	pad1: Source
->> 		-> "stf_isp":0 []
->> 		-> "capture_raw":0 []
->> 	pad2: Source
->> 	pad3: Source
->> 	pad4: Source
->> 
->> - entity 24: imx219 6-0010 (1 pad, 1 link)
->>              type V4L2 subdev subtype Sensor flags 0
->>              device node name /dev/v4l-subdev1
->> 	pad0: Source
->> 		[fmt:SRGGB10_1X10/3280x2464 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range
->> 		 crop.bounds:(8,8)/3280x2464
->> 		 crop:(8,8)/3280x2464]
->> 		-> "cdns_csi2rx.19800000.csi-bridge":0 [ENABLED,IMMUTABLE]
->> 
->> ===========================================================================
->> [the v4l2-compliance output]:
->> 
->> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
-> 
-> This v4l2-compliance version is from a distro. For driver acceptance you
-> must test with a v4l2-compliance compiled from the git repo (git://linuxtv.org/v4l-utils.git).
-> 
+> Fix linker error if FB=m about missing fb_io_read and fb_io_write. The
+> linker's error message suggests that this config setting has already
+> been broken for other symbols.
+>
+>   All errors (new ones prefixed by >>):
+>
+>      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_probe':
+>      sh7760fb.c:(.text+0x374): undefined reference to `framebuffer_alloc'
+>      sh4-linux-ld: sh7760fb.c:(.text+0x394): undefined reference to `fb_videomode_to_var'
+>      sh4-linux-ld: sh7760fb.c:(.text+0x39c): undefined reference to `fb_alloc_cmap'
+>      sh4-linux-ld: sh7760fb.c:(.text+0x3a4): undefined reference to `register_framebuffer'
+>      sh4-linux-ld: sh7760fb.c:(.text+0x3ac): undefined reference to `fb_dealloc_cmap'
+>      sh4-linux-ld: sh7760fb.c:(.text+0x434): undefined reference to `framebuffer_release'
+>      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_remove':
+>      sh7760fb.c:(.text+0x800): undefined reference to `unregister_framebuffer'
+>      sh4-linux-ld: sh7760fb.c:(.text+0x804): undefined reference to `fb_dealloc_cmap'
+>      sh4-linux-ld: sh7760fb.c:(.text+0x814): undefined reference to `framebuffer_release'
+>   >> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0xc): undefined reference to `fb_io_read'
+>   >> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x10): undefined reference to `fb_io_write'
+>      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x2c): undefined reference to `cfb_fillrect'
+>      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x30): undefined reference to `cfb_copyarea'
+>      sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x34): undefined reference to `cfb_imageblit'
+>
+> Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309130632.LS04CPWu-lkp@intel.com/
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> ---
 
-It is compiled from buildroot, but its source code is also downloaded from the repo tag v4l-utils-1.24.1.
-Do you mean I should use the latest stable version (stable-1.24) on the repo?
+Agreed with your change.
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 
 -- 
-Regards,
+Best regards,
 
-Jack Zhu
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
