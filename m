@@ -2,108 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1823D7A4344
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA197A42C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240522AbjIRHoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        id S240200AbjIRHdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240488AbjIRHoR (ORCPT
+        with ESMTP id S240613AbjIRHd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:44:17 -0400
-X-Greylist: delayed 533 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Sep 2023 00:41:51 PDT
-Received: from m177126.mail.qiye.163.com (m177126.mail.qiye.163.com [123.58.177.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DDFCE8;
-        Mon, 18 Sep 2023 00:41:51 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256;
-        b=Dx/i0c+8V9/7en//12Jz5c5gBRAnA8seIFegWNqTloJQOPfPosEIAnxJ1nBsv+tCOpQGQCpkO+lYIuC78m77ZmKAjoLc/754Y4JguuMLbdU4uEus9lhZ8++WIk9IK1EHT6o4fxKHB5bOa6uEL0UmZCgFwQY0OyBrVcqhRHUdll8=;
-        s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
-        bh=FkT1/NwLGJhJV/2v8LOqPw2GTHqfJkCBrpYsiomQWlQ=;
-        h=date:mime-version:subject:message-id:from;
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by mail-m11879.qiye.163.com (Hmail) with ESMTPA id 5EF406804E8;
-        Mon, 18 Sep 2023 15:32:00 +0800 (CST)
-From:   Elaine Zhang <zhangqing@rock-chips.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org,
-        kever.yang@rock-chips.com, zhangqing@rock-chips.com,
-        heiko@sntech.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huangtao@rock-chips.com,
-        xxx@rock-chips.com, xf@rock-chips.com
-Subject: [PATCH v1 8/8] clk: rockchip: fix the clk config to support module build
-Date:   Mon, 18 Sep 2023 15:31:51 +0800
-Message-Id: <20230918073151.7660-9-zhangqing@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230918073151.7660-1-zhangqing@rock-chips.com>
-References: <20230918073151.7660-1-zhangqing@rock-chips.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGRgZTVZKS0JISRoaHh5PHhpVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
-        kG
-X-HM-Tid: 0a8aa7340c5a2eb5kusn5ef406804e8
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ngg6NBw5OT1CL0oWIgwPSBMy
-        QkxPFBVVSlVKTUJOS0lJSElKSE9CVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
-        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUhLQ003Bg++
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Mon, 18 Sep 2023 03:33:26 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C5FE50
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:33:03 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230918073300euoutp026151c5e6341cdb8996356d0d5eaf537e~F7d-ZBoLj2801528015euoutp02z
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 07:33:00 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230918073300euoutp026151c5e6341cdb8996356d0d5eaf537e~F7d-ZBoLj2801528015euoutp02z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695022380;
+        bh=dbgURMvRB5vglPwXNEinmDiIBwhTERpqxwujlCbmGpc=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=rwf73w9ncRjC3brjfD2715hl1hXTN9ifCUZWS6AqyxjK1saqp/dwicu0ASeLR8B9v
+         M8ZAO9HxO0PODwhFOtBXAkg7xHFTwD+U3Tc/kZ5euqBdpJY35IahXFk91ADBGIuXVq
+         GpcVCsPJrdp3OqBVb7PXSAHL1CgqA4BkLxv2gXbk=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230918073300eucas1p1c9a31881336f26a495b69de4e7d0c071~F7d-DshJ-1309713097eucas1p1g;
+        Mon, 18 Sep 2023 07:33:00 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 6E.9B.11320.B2DF7056; Mon, 18
+        Sep 2023 08:33:00 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230918073259eucas1p1cfcfbfd6a8c37c7cebd0b4734beffbc5~F7d_ue6-f0660306603eucas1p1s;
+        Mon, 18 Sep 2023 07:32:59 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230918073259eusmtrp287fc632a8e38eea9a64656ffaf30256d~F7d_s7iJo3259532595eusmtrp2T;
+        Mon, 18 Sep 2023 07:32:59 +0000 (GMT)
+X-AuditID: cbfec7f4-97dff70000022c38-9b-6507fd2bc863
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 28.AB.10549.B2DF7056; Mon, 18
+        Sep 2023 08:32:59 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230918073259eusmtip2f600a41fd36323b49a478548a33828b6~F7d_frRyu1441814418eusmtip2j;
+        Mon, 18 Sep 2023 07:32:59 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
+        Server (TLS) id 15.0.1497.2; Mon, 18 Sep 2023 08:32:58 +0100
+Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
+        ([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Mon, 18 Sep
+        2023 08:32:58 +0100
+From:   Daniel Gomez <da.gomez@samsung.com>
+To:     David Hildenbrand <david@redhat.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+CC:     "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 0/6] shmem: high order folios support in write path
+Thread-Topic: [PATCH 0/6] shmem: high order folios support in write path
+Thread-Index: AQHZ57ou5Qxd50H2CkCAi/G4rRLLzbAb8riAgAQxuQA=
+Date:   Mon, 18 Sep 2023 07:32:57 +0000
+Message-ID: <20230918073252.7nljdakmdk5kcpdt@sarkhan>
+In-Reply-To: <b8f75b8e-77f5-4aa1-ce73-6c90f7d87d43@redhat.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [106.110.32.103]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <7FB5FC383E12CC4DB148D262FACCE602@scsc.local>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUxTZxjd297eXmraXFoiT1icpmxjo7UI6naZylAxXlmWmOzHAppoxTvK
+        N2utTmIMokamia2bASkkYCcgyCRcwRAsEIvCKh/tIAPGmA65bKSkdPIVPoTNcmvSf+d5znnP
+        eU7yEkL5C1EYkZZ9itFnazOVuAR72LnUt1W9Kma2cU8QVVZfh1P3/jTh1Hz9spAa4GTUxMx1
+        jGodUVG2VgdGDbSU4dTzuv9EVMvrZjE1bJ5AVNW8V0w9arDi1MpiGR4vo0vzf8XoCtZIP7gb
+        SQ/0Gmm29nucZmd+ENO/3FrBaG/bbzg9y753OChZsvskk5l2mtFHxR2X6LoW/kC5bPB3tjGH
+        MB9dk11FQQSQO2D8ygS6iiSEnLyLwN3jFvPDHILfC6b9zCyC1qeV+Nsns51eEU9UI2ivuif2
+        EeuqzqWjPNGDoKD7J5wfahAU/tUq8qlw8mNoc7DrISFkhwicdYWYjxCSSVBkYtetFORBqC7o
+        Qz4cQtLw+MZNEY8/g3+9JW80BIGRH8DiVK5vLSV3wkhpu8C3DiLj4M6Pp31rRG6ClzXLYt49
+        FEa4cgHfIBispTYhjzfCWsuYv5kaeoc4xONt0FTZhvFYCa8LbyPeRw0Vj2ZwHseCZ9Tl91dB
+        1e0pIX9OMDhKOMxXEchKCXDWm37TBPhn6I4/TAHurkaxGaktAfdZAjIsARmWgAxLQEYFEtWi
+        UMZoyEplDDHZzBmNQZtlMGanalJyslj05g92r3XNNaNq9yuNHQkIZEdACJUh0pJonJFLT2rP
+        5jH6nGN6YyZjsKN3CUwZKlXtcaTIyVTtKSaDYXIZ/VtWQASF5Qsul7tMxq8S8y90P3tfl3Zr
+        skG5qenE8CHdlw1rggMxuheRk87V5UOxyWcU33xd/LLf+Q5TQH0x5m3cmJLLVcSVTiLNlowr
+        NvdcvXGhpnn7wtJHRy6GN6uSv43bn25z7ew3JKKExydGP+nvkBbLbeO1ERGePI/VUbP3Wui5
+        nPN7NQn2HfRib5RMZi9R7w/veZCYpAqL8MDuss/VU+HTpqSmYUef69N9MY3BK1T62dXYxvOX
+        m2RDm53P4m9cGhw8vD3aU1882h8Rbn6e3q4o3zDhzHkybuqwmu2O6/ddGd3xYwej5NNF52Tu
+        1V37PuR+Nv9tmUesosiWMs8N2jbXDucpMYNOGx0p1Bu0/wOXt2Ji8gMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOKsWRmVeSWpSXmKPExsVy+t/xe7raf9lTDTYvVLGYs34Nm8Xqu/1s
+        Fl/X/2K2uPyEz+Lppz4Wi723tC327D3JYnF51xw2i3tr/rNa7Pqzg93ixoSnjBbLvr5nt9i9
+        cRGbxe8fc9gc+DxmN1xk8ViwqdRj8wotj8tnSz02repk89j0aRK7x4kZv1k83u+7yubxeZNc
+        AGeUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsbx
+        b7cZCzYJVux5eJK5gbGbr4uRk0NCwETi87H3rF2MXBxCAksZJR7NvcoIkZCR2PjlKiuELSzx
+        51oXG0TRR0aJ968OskM4ZxglFu7eBdW+klHi5O4lbCAtbAKaEvtObgKrEhE4yCrR/fQVE0iC
+        WSBSYlo/SIKTQ1jAXWJ50zmwfSICHhIHJ05hhbCtJD68nwlUw8HBIqAq8eN1AUiYV8BU4tbs
+        /WBjhAQOM0o07LEAKeEUsJNYMrkMJMwoICvxaOUvdohN4hK3nsxngvhAQGLJnvPMELaoxMvH
+        /6A+05E4e/0J1McGEluX7mOBsJUk/nQsZISYoyOxYPcnNgjbUuLtnQtQ87Ulli18zQxxmqDE
+        yZlPWCYwysxCsnoWkvZZSNpnIWmfhaR9ASPrKkaR1NLi3PTcYkO94sTc4tK8dL3k/NxNjMAU
+        t+3Yz807GOe9+qh3iJGJg/EQowQHs5II70xDtlQh3pTEyqrUovz4otKc1OJDjKbAkJvILCWa
+        nA9Msnkl8YZmBqaGJmaWBqaWZsZK4ryeBR2JQgLpiSWp2ampBalFMH1MHJxSDUw9R2977tHt
+        u7zI1qvx3Dod3s2SM/lsLEM+1mcaNed3dUgfe/55c7jqN/v/L9Zl3hTb5PH7sWDhp8ur+8Vv
+        TOPc4/FVQIH98plyFb1bXPdLLmr5XskWC5z/MdA4adGVHxb80i8/tHW6V7DNUnhVYrzmoUHj
+        /1uyGx9fn3QiwensvRZPq3/ZR/rTDsbez/odtMArhTP/6N3Kz+lFFzfXR2RZfLr8sUm99Mez
+        lX8eWd5982/+Br1TwbVLZe047t2IfrW6ZJ9b9hM2pu7Dz7NOl+65cHz7zI+HVT4G6X1gCHWc
+        4nnvdAD/B70rwhFpcyeHyBf+PDs9aU7/4n6LVdW5V1cvNcqyXXBa4H7xJrkyzuizSizFGYmG
+        WsxFxYkAyQ+4L/oDAAA=
+X-CMS-MailID: 20230918073259eucas1p1cfcfbfd6a8c37c7cebd0b4734beffbc5
+X-Msg-Generator: CA
+X-RootMTR: 20230915095123eucas1p2c23d8a8d910f5a8e9fd077dd9579ad0a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230915095123eucas1p2c23d8a8d910f5a8e9fd077dd9579ad0a
+References: <CGME20230915095123eucas1p2c23d8a8d910f5a8e9fd077dd9579ad0a@eucas1p2.samsung.com>
+        <20230915095042.1320180-1-da.gomez@samsung.com>
+        <b8f75b8e-77f5-4aa1-ce73-6c90f7d87d43@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark COMMON_CLK_ROCKCHIP\CONFIG_CLK_RK3399\CONFIG_CLK_RK3568\
-CONFIG_CLK_RK3588 to "tristate",
-to support building Rk3399\Rk3568\Rk3588 SoC clock driver as module.
+On Fri, Sep 15, 2023 at 05:29:51PM +0200, David Hildenbrand wrote:
+> On 15.09.23 11:51, Daniel Gomez wrote:
+> > This series add support for high order folios in shmem write
+> > path.
+> >
+> > This is a continuation of the shmem work from Luis here [1]
+> > following Matthew Wilcox's suggestion [2] regarding the path to take
+> > for the folio allocation order calculation.
+> >
+> > [1] RFC v2 add support for blocksize > PAGE_SIZE
+> > https://lore.kernel.org/all/ZHBowMEDfyrAAOWH@bombadil.infradead.org/T/#=
+md3e93ab46ce2ad9254e1eb54ffe71211988b5632
+> > [2] https://lore.kernel.org/all/ZHD9zmIeNXICDaRJ@casper.infradead.org/
+> >
+> > Patches have been tested and sent from next-230911. They do apply
+> > cleanly to the latest next-230914.
+> >
+> > fsx and fstests has been performed on tmpfs with noswap with the
+> > following results:
+> > - fsx: 2d test, 21,5B
+> > - fstests: Same result as baseline for next-230911 [3][4][5]
+> >
+> > [3] Baseline next-230911 failures are: generic/080 generic/126
+> > generic/193 generic/633 generic/689
+> > [4] fstests logs baseline: https://gitlab.com/-/snippets/3598621
+> > [5] fstests logs patches: https://gitlab.com/-/snippets/3598628
+> >
+> > There are at least 2 cases/topics to handle that I'd appreciate
+> > feedback.
+> > 1. With the new strategy, you might end up with a folio order matching
+> > HPAGE_PMD_ORDER. However, we won't respect the 'huge' flag anymore if
+> > THP is enabled.
+> > 2. When the above (1.) occurs, the code skips the huge path, so
+> > xa_find with hindex is skipped.
+>
+> Similar to large anon folios (but different to large non-shmem folios in =
+the
+> pagecache), this can result in memory waste.
+>
+> We discussed that topic in the last bi-weekly mm meeting, and also how to
+> eventually configure that for shmem.
+>
+> Refer to of a summary. [1]
+>
+> [1] https://lkml.kernel.org/r/4966f496-9f71-460c-b2ab-8661384ce626@arm.co=
+m
 
-Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
----
- drivers/clk/rockchip/Kconfig | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Thanks for the summary David (I was missing linux-MM from kvack in lei).
 
-diff --git a/drivers/clk/rockchip/Kconfig b/drivers/clk/rockchip/Kconfig
-index 9aad86925cd2..8574c2f6ecf6 100644
---- a/drivers/clk/rockchip/Kconfig
-+++ b/drivers/clk/rockchip/Kconfig
-@@ -2,7 +2,7 @@
- # common clock support for ROCKCHIP SoC family.
- 
- config COMMON_CLK_ROCKCHIP
--	bool "Rockchip clock controller common support"
-+	tristate "Rockchip clock controller common support"
- 	depends on ARCH_ROCKCHIP
- 	default ARCH_ROCKCHIP
- 	help
-@@ -87,21 +87,21 @@ config CLK_RK3368
- 	  Build the driver for RK3368 Clock Driver.
- 
- config CLK_RK3399
--	bool "Rockchip RK3399 clock controller support"
-+	tristate "Rockchip RK3399 clock controller support"
- 	depends on ARM64 || COMPILE_TEST
- 	default y
- 	help
- 	  Build the driver for RK3399 Clock Driver.
- 
- config CLK_RK3568
--	bool "Rockchip RK3568 clock controller support"
-+	tristate "Rockchip RK3568 clock controller support"
- 	depends on ARM64 || COMPILE_TEST
- 	default y
- 	help
- 	  Build the driver for RK3568 Clock Driver.
- 
- config CLK_RK3588
--	bool "Rockchip RK3588 clock controller support"
-+	tristate "Rockchip RK3588 clock controller support"
- 	depends on ARM64 || COMPILE_TEST
- 	default y
- 	help
--- 
-2.17.1
-
+I think the PMD_ORDER-1 as max would suffice here to honor/respect the
+huge flag. Although, we would end up having a different max value
+than pagecache/readahead.
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>=
