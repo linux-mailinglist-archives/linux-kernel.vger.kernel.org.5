@@ -2,112 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB517A5494
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F537A548A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbjIRU5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        id S230032AbjIRU42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbjIRU5R (ORCPT
+        with ESMTP id S229554AbjIRU41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:57:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47EE126
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:56:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695070589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yLsvJ8l6b+MBG1WK2YqkwTaPRwUV38lxkQNhQoUhHr4=;
-        b=Sgmkz1z5E/eYs0cNHrUb2U2SVRiA1enLs+j/OLDBsJL6qrszhZKNqinJebcVuhtmnUFUNk
-        cXhGs/lCbUyJAue/YvWIlT1uXA4tb2tVfRE2dZipwu2iqUpXrXJUfP64SgAVxQ8oLQb6Ld
-        ntY7dQdYhlBaKX4AE5sq4ksyBe6B9b8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-418-udjHwg-TN4W0iNphIn-i9w-1; Mon, 18 Sep 2023 16:56:27 -0400
-X-MC-Unique: udjHwg-TN4W0iNphIn-i9w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8338A3C11A00;
-        Mon, 18 Sep 2023 20:56:26 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 02F621C5BB;
-        Mon, 18 Sep 2023 20:56:24 +0000 (UTC)
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH v3 3/3] vfio: use __aligned_u64 in struct vfio_device_ioeventfd
-Date:   Mon, 18 Sep 2023 16:56:17 -0400
-Message-ID: <20230918205617.1478722-4-stefanha@redhat.com>
-In-Reply-To: <20230918205617.1478722-1-stefanha@redhat.com>
-References: <20230918205617.1478722-1-stefanha@redhat.com>
+        Mon, 18 Sep 2023 16:56:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1147B10D;
+        Mon, 18 Sep 2023 13:56:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23884C433C8;
+        Mon, 18 Sep 2023 20:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695070581;
+        bh=L6kH7I7vxTcEdxUEzJG0/gQjECizpvaLfH5gelE6giY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=hD0k645DVxr+hYslCpXAQcfYQVp4F3bQrBwXCMMpESZ8qnbxZdaEPxL9pbFfIvzR3
+         PEMPtLdbSWqZwklElcwcHRueYpeuZtOaWyyIxzMjpdo894w743aVmnOd50VRZ49za8
+         rVrTHF4e6Cu+iXb16rW6iTYb+ZQojQovuOfwYyihR5hi3wAZu1j2/k2KAKC9PapY/2
+         7avlqHrKhSe51s/69OOvH5wJsKqyxWTPap5Er7vU44+pPaKmW+axfPgb1niyYKcLHf
+         LXJPOVcxEGx+EhjVw5msncwyQlB8jFALHQHjW8fcGPGaaFlvpnNZMd3pEkKtRCvCPp
+         jyhpzTjgEhSqA==
+Message-ID: <2020b8dfd062afb41cd8b74f1a41e61de0684d3f.camel@kernel.org>
+Subject: Re: [GIT PULL] timestamp fixes
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 18 Sep 2023 16:56:19 -0400
+In-Reply-To: <CAHk-=wgxpneOTcf_05rXMMc-djV44HD-Sx6RdM9dnfvL3m10EA@mail.gmail.com>
+References: <20230918-hirte-neuzugang-4c2324e7bae3@brauner>
+         <CAHk-=wiTNktN1k+D-3uJ-jGOMw8nxf45xSHHf8TzpjKj6HaYqQ@mail.gmail.com>
+         <e321d3cfaa5facdc8f167d42d9f3cec9246f40e4.camel@kernel.org>
+         <CAHk-=wgxpneOTcf_05rXMMc-djV44HD-Sx6RdM9dnfvL3m10EA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory layout of struct vfio_device_ioeventfd is
-architecture-dependent due to a u64 field and a struct size that is not
-a multiple of 8 bytes:
-- On x86_64 the struct size is padded to a multiple of 8 bytes.
-- On x32 the struct size is only a multiple of 4 bytes, not 8.
-- Other architectures may vary.
+On Mon, 2023-09-18 at 13:18 -0700, Linus Torvalds wrote:
+> On Mon, 18 Sept 2023 at 12:39, Jeff Layton <jlayton@kernel.org> wrote:
+> >=20
+> > In general, we always update the atime with a coarse-grained timestamp,
+> > since atime and ctime updates are never done together during normal rea=
+d
+> > and write operations. As you note, things are a little more murky with
+> > utimes() updates but I think we should be safe to overwrite the atime
+> > with a coarse-grained timestamp unconditionally.
+>=20
+> I do think utimes() ends up always overwriting, but that's a different
+> code-path entirely (ie it goes through the ->setattr() logic, not this
+> inode_update_timestamps() code).
+>=20
+> So I *think* that even with your patch, doing a "touch" would end up
+> doing the right thing - it would update atime even if it was in the
+> future before.
+>=20
+> But doing a plain "read()" would break, and not update atime.
+>=20
+> That said, I didn't actually ever *test* any of this, so this is
+> purely from reading the patch, and I can easily have missed something.
+>=20
 
-Use __aligned_u64 to make memory layout consistent. This reduces the
-chance that 32-bit userspace on a 64-bit kernel breakage.
+No, you're quite right. That's exactly what would have happened.
 
-This patch increases the struct size on x32 but this is safe because of
-the struct's argsz field. The kernel may grow the struct as long as it
-still supports smaller argsz values from userspace (e.g. applications
-compiled against older kernel headers).
+> Anyway, I do think that the timespec64_equal() tests are a bit iffy in
+> fs/inode.c now, since the timespecs that are being tested might be of
+> different precision.
+>=20
+> So I do think there's a *problem* here, I just do not believe that
+> doing that timespec64_equal() -> timespec64_compare() is at all the
+> right thing to do.
+>=20
+> My *gut* feel is that in both cases, we have this
+>=20
+>         if (timespec64_equal(&inode->i_atime, &now))
+>=20
+> and the problem is that *sometimes* 'now' is the coarse time, but
+> sometimes it's the fine-grained one, and so checking for equality is
+> simply nonsensical.
+>=20
+> I get the feeling that that timespec64_equal() logic for those atime
+> updates should be something like
+>=20
+>  - if 'now' is in the future, we always considering it different, and
+> update the time
+>=20
+>  - if 'now' is further in the past than the coarse granularity, we
+> also update the time ("clearly not equal")
+>=20
+>  - but if 'now' is in the past, but within the coarse time
+> granularity, we consider it equal and do not update anything
+>=20
+> but it's not like I have really given this a huge amount of thought.
+> It's just that "don't update if in the past" that I am pretty sure can
+> *not* be right.
+>=20
+>=20
 
-The code that uses struct vfio_device_ioeventfd already works correctly
-when the struct size grows, so only the struct definition needs to be
-changed.
+I think the atime problem is solved by just dropping the patch I
+mentioned before. The atime is updated for read operations and the
+m/ctime for write. You only get a fine-grained timestamp when updating
+the ctime, so for an atime update we always use a coarse timestamp. It
+should never roll backward. [1]
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
----
- include/uapi/linux/vfio.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+We may have a problem with the ctime update though, since you pointed it
+out. We have this in inode_set_ctime_current(), in the codepath where
+the QUERIED bit isn't set:
 
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index ee98b6d4a112..049ce8065a32 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -864,9 +864,10 @@ struct vfio_device_ioeventfd {
- #define VFIO_DEVICE_IOEVENTFD_32	(1 << 2) /* 4-byte write */
- #define VFIO_DEVICE_IOEVENTFD_64	(1 << 3) /* 8-byte write */
- #define VFIO_DEVICE_IOEVENTFD_SIZE_MASK	(0xf)
--	__u64	offset;			/* device fd offset of write */
--	__u64	data;			/* data to be written */
-+	__aligned_u64	offset;		/* device fd offset of write */
-+	__aligned_u64	data;		/* data to be written */
- 	__s32	fd;			/* -1 for de-assignment */
-+	__u32	reserved;
- };
- 
- #define VFIO_DEVICE_IOEVENTFD		_IO(VFIO_TYPE, VFIO_BASE + 16)
--- 
-2.41.0
+                /*
+                 * If we've recently updated with a fine-grained timestamp,
+                 * then the coarse-grained one may still be earlier than th=
+e
+                 * existing ctime. Just keep the existing value if so.
+                 */
+                ctime.tv_sec =3D inode->__i_ctime.tv_sec;
+                if (timespec64_compare(&ctime, &now) > 0)
+                        return ctime;
+
+The ctime can't be set via utimes(), so that's not an issue here, but we
+could get a realtime clock jump backward that causes this to not be
+updated like it should be.
+
+I think (like you suggest above) that this needs some bounds-checking
+where we make sure that the current coarse grained time isn't more than
+around 1-2 jiffies earlier than the existing ctime. If it is, then we'll
+go ahead and just update it anyway.
+
+Thoughts?
+--=20
+Jeff Layton <jlayton@kernel.org>
+
+
+[1]: You _could_ do a write and then a read against a file, and end up
+with an atime that looks to be earlier than the ctime, even though you
+know that they were done in the other order. I'm operating under the
+assumption that this isn't a problem we need to worry about.
 
