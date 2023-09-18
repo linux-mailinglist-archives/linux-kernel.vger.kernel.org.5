@@ -2,88 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F12AE7A5337
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93EF7A533F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbjIRTpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 15:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
+        id S229547AbjIRTry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 15:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjIRTpf (ORCPT
+        with ESMTP id S229454AbjIRTrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 15:45:35 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30440B6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:45:29 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b962c226ceso80342631fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:45:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695066327; x=1695671127; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zW90+4LnhcXuYh4PgbZ4Zl6heO2MhvqvxAqb1aqy9sA=;
-        b=KCR/+8gZYD6+QDchae8pwZvJni38Hbn1IT+ROSaQtdjgJ8L+elvODQ9fPv+1Z//Byv
-         gStV5BMuMxwhv8bepohgoxGmuqH7X8RGxVXwLtxb2aqmIlkYhqgHPxO2SWf6qhAJYtBc
-         wxk1ndck4R/upcAe5XkByj7y1htLnTPWuDKt1R+564SHG5jhoOQlB5H6bNvXjDcUQx9g
-         4JCZt2sHyIe2AANQ3/7357FA104vZuowS/PqIcsyT03UJ48BEHIyx4HixZgsfy2Qi5c8
-         cYU4OCYOhj7f3NEY0WBIi4diTfQzhIbiA4rAit6ocPbQ7KAEKxXx45xeO9F3qhy5G/+j
-         uvVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695066327; x=1695671127;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zW90+4LnhcXuYh4PgbZ4Zl6heO2MhvqvxAqb1aqy9sA=;
-        b=lNspgcvHf7SIXrbZGRDkLVJgDpkG0BaZD4pS8Uvzxg7NtENwheFWYSH/MjWK2NzEfy
-         gQ4bTFIVIr5mdpxuQKCWSQKSB6AWFtNz9fWKBfRm6QJuttozjNzacb+Wb0DYg/PLCv2M
-         dlqu8gQOsY/YdBWMWvTj7AQjPc1dVw3ttP+nuXYemg/wa8Rqrzhd3ebnTP5r1gB3nlon
-         OZywaeH8d4qaGDUp+iy5yaKyKimmubHWVWdn9MOrgL4VcRLc36xtZ89izUMZHqS15ySU
-         LBE/zUdVDyp4FWO3CFJDTDgA85LxpQbG2AqvJpCKzNdqMW4Q0bs2y9AoDGnL92zKLHOa
-         NVwg==
-X-Gm-Message-State: AOJu0YzCQopJyZe1c1LG6CuyI4g8PYscnutCHpZ9cGBx9HHjPYOtCbPX
-        0BGmyYeXNXf1GyUGmS+dkxjDiHL4RGsIeE7owD0+7A==
-X-Google-Smtp-Source: AGHT+IEL7ZbuHmHMhfSt7oo20tbProZdj8HUKQ/ND2lyRw+9QyGxP5DFrXFBvAttMLQBi94pczJfRMAdGXrMRRT/fgM=
-X-Received: by 2002:a2e:9607:0:b0:2bc:f252:6cc4 with SMTP id
- v7-20020a2e9607000000b002bcf2526cc4mr8663483ljh.10.1695066327372; Mon, 18 Sep
- 2023 12:45:27 -0700 (PDT)
+        Mon, 18 Sep 2023 15:47:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728548F
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:47:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D85BBC433C9;
+        Mon, 18 Sep 2023 19:47:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695066467;
+        bh=ewvdOKMJiJkXoXzc+h132xxTW89f9qi+QEhmHjAqHsY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RfTEKuAy8jLjjuWXkRdfn/hGnmvYFUCfWoPOiIQ/XZYIGIGYuZR7PNwQ+UbGSSYcU
+         kXH2kUhNHsCrhF/ymroD3V808e5Q+hss4Zmj8l/Rxs3W+/2FR9yFHM+UVuFp4pbVW4
+         UAjvVQU/1IGvwK+wRMFt3TgDu7Und3b6+6MKi7nlzIeQKexugEhJZiwyTPZ5ow65XW
+         zJSOL7gIZ1ub5Gch+g7PHZ8+fNUxcyoqs57G9F6LBfyf++GKeoH04jQBtPuDlcA7a4
+         ohvadedFu6yUU5onAzhDYDcXmAVXjSFwGWXQrlEXnaL6Bshpcoyfd0Z6GCN7g/tzRm
+         U77lQjwzOq1vQ==
+Received: (nullmailer pid 1577852 invoked by uid 1000);
+        Mon, 18 Sep 2023 19:47:44 -0000
+Date:   Mon, 18 Sep 2023 14:47:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        William-tw Lin <william-tw.lin@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 3/3] dt-bindings: hwinfo: Add mtk-socinfo driver
+Message-ID: <20230918194744.GA1572413-robh@kernel.org>
+References: <20230915152607.18116-1-william-tw.lin@mediatek.com>
+ <20230915152607.18116-4-william-tw.lin@mediatek.com>
+ <3e7bc476-ffc7-fb07-8e64-246427da736c@linaro.org>
+ <9acc8d99-e3db-3df8-4051-21d95450b28d@collabora.com>
 MIME-Version: 1.0
-References: <20230918123217.932179-1-max.kellermann@ionos.com>
- <20230918123217.932179-3-max.kellermann@ionos.com> <20230918124050.hzbgpci42illkcec@quack3>
-In-Reply-To: <20230918124050.hzbgpci42illkcec@quack3>
-From:   Max Kellermann <max.kellermann@ionos.com>
-Date:   Mon, 18 Sep 2023 21:45:16 +0200
-Message-ID: <CAKPOu+9yAKCtrRZsZPFDtM6RP6Ev_-2x84WYCLf_SPHJcr3Faw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] inotify_user: add system call inotify_add_watch_at()
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amir73il@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9acc8d99-e3db-3df8-4051-21d95450b28d@collabora.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 2:40=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
-> Is there any problem with using fanotify for you?
+On Mon, Sep 18, 2023 at 10:47:53AM +0200, AngeloGioacchino Del Regno wrote:
+> Il 17/09/23 10:26, Krzysztof Kozlowski ha scritto:
+> > On 15/09/2023 17:26, William-tw Lin wrote:
+> > > dt-binding documentation for mtk-socinfo driver.
+> > 
+> > Here and in subject, drop driver and instead descrbe hardware.
+> > 
+> > > mtk-socinfo driver provides SoC-related information.
+> > > Such information includes manufacturer information, SoC name,
+> > > SoC segment name, and SoC marketing name.
+> > > 
+> > > Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
+> > > ---
+> > >   .../bindings/hwinfo/mtk-socinfo.yaml          | 48 +++++++++++++++++++
+> > >   1 file changed, 48 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+> > > new file mode 100644
+> > > index 000000000000..74f03f1dc404
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+> > 
+> > Nothing improved.
+> > 
+> > This is a friendly reminder during the review process.
+> > 
+> > It seems my previous comments were not fully addressed. Maybe my
+> > feedback got lost between the quotes, maybe you just forgot to apply it.
+> > Please go back to the previous discussion and either implement all
+> > requested changes or keep discussing them.
+> > 
+> > Thank you.
+> > 
+> > > @@ -0,0 +1,48 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/hwinfo/mtk-socinfo.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: MediaTek SoC ChipID
+> > > +
+> > > +maintainers:
+> > > +  - William Lin <william-tw.lin@mediatek.com>
+> > > +  - Matthias Brugger <matthias.bgg@gmail.com>
+> > > +  - Kevin Hilman <khilman@kernel.org>
+> > > +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> > > +
+> > > +description:
+> > > +  MediaTek SoCs store various product information in eFuses, including
+> > > +  Chip ID and Revision fields, usable to identify the manufacturer,
+> > > +  SoC version, plus segment and marketing names.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: mediatek,socinfo
+> > 
+> > What happened to compatibles? No, this is just wrong and no explained.
+> > You ignored other comments as well. Really, that's not the way to go.
+> > 
+> 
+> Practically, having different compatibles for each SoC is not needed, as
+> the only thing that changes between SoCs is the eFuse(s) that you read to
+> get the information - and that's all.
+> 
+> So ... we either use this driver with devicetree, giving it the right eFuses
+> to read from, or we duplicate the mtk-efuse driver, or we statically assign
+> the eFuses in the driver itself and we set compatibles like
+> "mediatek,mt8195-socinfo" to select that... ideas?
 
-Turns out fanotify is unusable for me, unfortunately.
-I have been using inotify to get notifications of cgroup events, but
-the cgroup filesystem appears to be unsupported by fanotify: all
-attempts to use fanotify_mark() on cgroup event files fail with
-ENODEV. I think that comes from fanotify_test_fsid(). Filesystems
-without a fsid work just fine with inotify, but fail with fanotify.
+So this one is just a virtual device to instantiate a driver and there 
+is no socinfo hw block? If so, that's definitely a NAK. Either 
+instantiate your socinfo driver from the efuse driver or register as a 
+socinfo provider in it.
 
-Since fanotify lacks important features, is it really a good idea to
-feature-freeze inotify?
-
-(By the way, what was not documented is that fanotify_init() can only
-be used by unprivileged processes if the FAN_REPORT_FID flag was
-specified. I had to read the kernel sources to figure that out - I
-have no idea why this limitation exists - the code comment in the
-kernel source doesn't explain it.)
+Rob
