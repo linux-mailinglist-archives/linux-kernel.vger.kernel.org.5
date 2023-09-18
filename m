@@ -2,269 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB907A50DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58547A50DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbjIRRXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46720 "EHLO
+        id S230042AbjIRRWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbjIRRXJ (ORCPT
+        with ESMTP id S229608AbjIRRWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:23:09 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF95116
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:23:03 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0AC3D5C0080;
-        Mon, 18 Sep 2023 13:23:01 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 18 Sep 2023 13:23:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1695057781; x=1695144181; bh=jV
-        QBYyUTJJ4XZImO4TIi7G98RVRFmRGFf34VYApWKsE=; b=DtNkukzIOJ62UAnf6C
-        KwefgWfUIwqrKygEjFOrzSE3ooTaNAtV3WPx3IUoER9uDpPOU3K637wOPoNWRBTg
-        /eA72QSO5wTidirja8BeVTr396neEnId0eb4BWPMtw7qB4h7m3r3LuHY9gJihqPN
-        LsHfvGYDREabYoeLTqFMKzogxqu75tA1XxuTz+g7sVYv4aRdIFBOkHDRTgK3lRuo
-        PrkmPZyeOtHA02FiVZk1S4p7KDohNX8vJU1wns/ixbvDdxJboHggxZZrvgOHIej7
-        KvUC5wn5BzIncIjd24ezQTjG4vye+uMSjZd778L+Fd5BXr4QTeFQPxiGJ5M/UnUY
-        sGig==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695057781; x=1695144181; bh=jVQBYyUTJJ4XZ
-        ImO4TIi7G98RVRFmRGFf34VYApWKsE=; b=LCR516+Mdbgg4foFRNqTUNuQXxt5C
-        AmY0ru7m8gWXUjXtAy/GcW/7mdAm6F1jtfQh0UlGMXlI6u0vowkU4Bqg+SE7b7HV
-        ZvXtm6QuTl/0BqdGp4Qdq3kaJKNWnRB8YSaKXFWRZgQG5UEKcljMvvmPmUA6KktS
-        NElPWfSygEe/PYsT1lN899qYhZxSaXH7H74xoFhpiFQDKnf2/9+Yk7M+kwGiIEbH
-        WOsPeqo8VGxzJqiQtai+sBmlzaw9phR/TXNCAm86QAAwBzwIKPyu82kcmB13jEgG
-        0oo/33O02n/E9d4vbYX30A+CSkAKcWiLuo9PPGAzQHyqYe0aDCv8EkDNA==
-X-ME-Sender: <xms:dIcIZUgO7JLkw9h0k3tpTZr9EuG0ZKuZqljbnDvi04IjLirO3eOutA>
-    <xme:dIcIZdDgrIWoiPgQkJXhzHiM_qOwRWTV7dmOjpMzuvhCe0kOGWq24yC9Zi8GYPT4B
-    0APNlBmak5GotYcXSE>
-X-ME-Received: <xmr:dIcIZcHwttOI1ov-qsWakyh4SWT7uZvTZK82XqVA-MRKU4uM34b6--RtMRzMzkR-kX8RX5y95qZhMglJL2No-yuj4pTpFYM4qwVMgv22wLqG>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejkedgudduudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgv
-    fhgrnhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrg
-    htthgvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdu
-    geeutdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hshhhrseguvghvkhgvrhhnvghlrdhioh
-X-ME-Proxy: <xmx:dIcIZVRUARYMfMPjKdS8ZAJARlCM3fq9Ed96WBZlpj-SJmL7KvRJdw>
-    <xmx:dIcIZRwkCGJQaePw1FOlw1z8poQ1Tt44TUnzO5t88Bbr0X1OyVb36Q>
-    <xmx:dIcIZT4knyB4F43j12zRIH6YLK_lCf9tDadS3hNxfW7zXZEHXcYHWA>
-    <xmx:dYcIZUrVvBbNl09OLqTWZDXQJ4BUWkDLHvcObiXQRdqTL-FmC8DOXQ>
-Feedback-ID: i84614614:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Sep 2023 13:22:59 -0400 (EDT)
-References: <20230912175228.952039-1-shr@devkernel.io>
- <20230912175228.952039-2-shr@devkernel.io>
- <6447ab02-1a22-efe4-68c9-4f595e2499fc@redhat.com>
- <qvqwled3jvq2.fsf@devbig1114.prn1.facebook.com>
- <5bf3e7ad-b666-ae88-449a-074f17a9cbba@redhat.com>
-User-agent: mu4e 1.10.1; emacs 28.2.50
-From:   Stefan Roesch <shr@devkernel.io>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 1/4] mm/ksm: add "smart" page scanning mode
-Date:   Mon, 18 Sep 2023 10:22:09 -0700
-In-reply-to: <5bf3e7ad-b666-ae88-449a-074f17a9cbba@redhat.com>
-Message-ID: <qvqwo7hz4cr3.fsf@devbig1114.prn1.facebook.com>
+        Mon, 18 Sep 2023 13:22:51 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D633DB
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:22:45 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-414ba610766so22531cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695057764; x=1695662564; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xvvJYFIiUxdYFTdPHEaO0CeIjpRLTphScVUwzbxkZK0=;
+        b=wndlOZ7zcAzDQaFfix5uVbtaIVLy3pxjyxzT0S+erwGtCKgO7JR5HMn0Lh2iV545k6
+         R1psIzr8Vy04SxEEFUZwM6KF+oc5KEQwzP66wHJKKWNGGEQJM5HIRdmz5RZxXHfOvyfZ
+         z6LAXfIyTgOfGVHIqaBNu5QMEx0v/mPTvvcNw/TMO0k/M2rVc4X1Y/SFmbWuKI9GxnYc
+         MTMzvuhUxUBu3KpQ6lBZTf6TJM/JFLxR/HJnlyblSrKWVX74uEOEbLIwP1yDHT0GohV0
+         IyxKbIdsFg5f0v1Okg8uyUKwTz1k3+LmiWpsMWghvwGzjQ8FyApQUGBN6enhMICzDZ/n
+         Qkug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695057764; x=1695662564;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xvvJYFIiUxdYFTdPHEaO0CeIjpRLTphScVUwzbxkZK0=;
+        b=JNUkSpYf/HdyT1EcY09vseTPUQQyasd5BUZQJbU5gFF8oEi8iHJ0NOM3DYDwXyCv6v
+         Ecwozsp+hL8vsi6dVX4r4kttYYp8vQ6/xYTAbXoICRM7inwte4O1TAljgE+cb0RjVXGi
+         WC1Y6uCcaksK5uCmwFsriOUUcKTV0Dm/gIAg5CgS5WmreTnxW17PH9xTK23mY6HUDgLc
+         Umw6EmTdYbglglOJcl+8tcc5TgB05poP99RDG//F0uRQhLHg9fggSToOlVhRmT8ed39d
+         njbjAE8QMKQKXhCmAgz/pxv8KBSj1Fd3SS5IrNJiwXsf5iN6HbKa/7X/5DDFaeMF2nBW
+         DFug==
+X-Gm-Message-State: AOJu0YwyoiQQ8ts6/Zam0uvz5NFnMUxe5EhI6Y7j4NtVNTyKBH9C9U2I
+        MDgLk40jJ+v85BK72jSkKBGSNAh87z57Dd6y6kCDNg==
+X-Google-Smtp-Source: AGHT+IHAUHQ/AMU/gJEDTtvG0y4/dOXnZypfx1XktwC4AQ0OOJH50KDr2c6hw6wINJLIcAGQ28aoPbcDfjjgNSFkLq4=
+X-Received: by 2002:a05:622a:1049:b0:410:9855:ac6 with SMTP id
+ f9-20020a05622a104900b0041098550ac6mr5770qte.14.1695057764287; Mon, 18 Sep
+ 2023 10:22:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230817003029.3073210-1-rananta@google.com> <20230817003029.3073210-9-rananta@google.com>
+ <ZQTEN664F/5PzyId@linux.dev> <ZQTSffkkI1x5lWIG@linux.dev> <CAJHc60y+xwV3oYk7-YxE1WiOfnSNFzroM419UDJwTeb=MCJdkA@mail.gmail.com>
+In-Reply-To: <CAJHc60y+xwV3oYk7-YxE1WiOfnSNFzroM419UDJwTeb=MCJdkA@mail.gmail.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 18 Sep 2023 10:22:32 -0700
+Message-ID: <CAJHc60xT61+o2SY45X9m=ffypo9L3k_wMAU9FTCDay9w1RwM5g@mail.gmail.com>
+Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
+ PMCR_EL0.N for the guest
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Oliver,
 
-David Hildenbrand <david@redhat.com> writes:
+On Mon, Sep 18, 2023 at 10:11=E2=80=AFAM Raghavendra Rao Ananta
+<rananta@google.com> wrote:
+>
+> On Fri, Sep 15, 2023 at 2:54=E2=80=AFPM Oliver Upton <oliver.upton@linux.=
+dev> wrote:
+> >
+> > On Fri, Sep 15, 2023 at 08:53:16PM +0000, Oliver Upton wrote:
+> > > Hi Raghu,
+> > >
+> > > On Thu, Aug 17, 2023 at 12:30:25AM +0000, Raghavendra Rao Ananta wrot=
+e:
+> > > > From: Reiji Watanabe <reijiw@google.com>
+> > > >
+> > > > KVM does not yet support userspace modifying PMCR_EL0.N (With
+> > > > the previous patch, KVM ignores what is written by upserspace).
+> > >
+> > > typo: userspace
+> > >
+> > > > diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> > > > index ce7de6bbdc967..39ad56a71ad20 100644
+> > > > --- a/arch/arm64/kvm/pmu-emul.c
+> > > > +++ b/arch/arm64/kvm/pmu-emul.c
+> > > > @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct =
+arm_pmu *arm_pmu)
+> > > >      * while the latter does not.
+> > > >      */
+> > > >     kvm->arch.pmcr_n =3D arm_pmu->num_events - 1;
+> > > > +   kvm->arch.pmcr_n_limit =3D arm_pmu->num_events - 1;
+> > >
+> > > Can't we just get at this through the arm_pmu instance rather than
+> > > copying it into kvm_arch?
+> > >
+> > > >     return 0;
+> > > >  }
+> > > > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> > > > index 2075901356c5b..c01d62afa7db4 100644
+> > > > --- a/arch/arm64/kvm/sys_regs.c
+> > > > +++ b/arch/arm64/kvm/sys_regs.c
+> > > > @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, c=
+onst struct sys_reg_desc *r,
+> > > >     return 0;
+> > > >  }
+> > > >
+> > > > +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_de=
+sc *r,
+> > > > +               u64 val)
+> > > > +{
+> > > > +   struct kvm *kvm =3D vcpu->kvm;
+> > > > +   u64 new_n, mutable_mask;
+> > > > +   int ret =3D 0;
+> > > > +
+> > > > +   new_n =3D FIELD_GET(ARMV8_PMU_PMCR_N, val);
+> > > > +
+> > > > +   mutex_lock(&kvm->arch.config_lock);
+> > > > +   if (unlikely(new_n !=3D kvm->arch.pmcr_n)) {
+> > > > +           /*
+> > > > +            * The vCPU can't have more counters than the PMU
+> > > > +            * hardware implements.
+> > > > +            */
+> > > > +           if (new_n <=3D kvm->arch.pmcr_n_limit)
+> > > > +                   kvm->arch.pmcr_n =3D new_n;
+> > > > +           else
+> > > > +                   ret =3D -EINVAL;
+> > > > +   }
+> > >
+> > > Hmm, I'm not so sure about returning an error here. ABI has it that
+> > > userspace can write any value to PMCR_EL0 successfully. Can we just
+> > > ignore writes that attempt to set PMCR_EL0.N to something higher than
+> > > supported by hardware? Our general stance should be that system regis=
+ter
+> > > fields responsible for feature identification are immutable after the=
+ VM
+> > > has started.
+> >
+> > I hacked up my reply and dropped some context; this doesn't read right.
+> > Shaoqin made the point about preventing changes to PMCR_EL0.N after the
+> > VM has started and I firmly agree. The behavior should be:
+> >
+> >  - Writes to PMCR always succeed
+> >
+> >  - PMCR_EL0.N values greater than what's supported by hardware are
+> >    ignored
+> >
+> >  - Changes to N after the VM has started are ignored.
+> >
+> Reiji and I were wondering if we should proceed with this as this
+> would change userspace expectation. BTW, when you said "ignored", does
+> that mean we silently return to userspace with a success or with EBUSY
+> (changing the expectations)?
+>
+Sorry, I just read your earlier comment (one before you detailed the
+behavior), from which I'm guessing "ignore" means simply disregard the
+change and return success to userspace. But wouldn't that cause issues
+in debugging?
 
-> On 18.09.23 18:18, Stefan Roesch wrote:
->> David Hildenbrand <david@redhat.com> writes:
->>
->>> On 12.09.23 19:52, Stefan Roesch wrote:
->>>> This change adds a "smart" page scanning mode for KSM. So far all the
->>>> candidate pages are continuously scanned to find candidates for
->>>> de-duplication. There are a considerably number of pages that cannot be
->>>> de-duplicated. This is costly in terms of CPU. By using smart scanning
->>>> considerable CPU savings can be achieved.
->>>> This change takes the history of scanning pages into account and skips
->>>> the page scanning of certain pages for a while if de-deduplication for
->>>> this page has not been successful in the past.
->>>> To do this it introduces two new fields in the ksm_rmap_item structure:
->>>> age and skip_age. age, is the KSM age and skip_page is the age for how
->>>> long page scanning of this page is skipped. The age field is incremented
->>>> each time the page is scanned and the page cannot be de-duplicated.
->>>> How often a page is skipped is dependent how often de-duplication has
->>>> been tried so far and the number of skips is currently limited to 8.
->>>> This value has shown to be effective with different workloads.
->>>> The feature is currently disable by default and can be enabled with the
->>>> new smart_scan knob.
->>>> The feature has shown to be very effective: upt to 25% of the page scans
->>>> can be eliminated; the pages_to_scan rate can be reduced by 40 - 50% and
->>>> a similar de-duplication rate can be maintained.
->>>> Signed-off-by: Stefan Roesch <shr@devkernel.io>
->>>> ---
->>>>    mm/ksm.c | 75 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->>>>    1 file changed, 75 insertions(+)
->>>> diff --git a/mm/ksm.c b/mm/ksm.c
->>>> index 981af9c72e7a..bfd5087c7d5a 100644
->>>> --- a/mm/ksm.c
->>>> +++ b/mm/ksm.c
->>>> @@ -56,6 +56,8 @@
->>>>    #define DO_NUMA(x)	do { } while (0)
->>>>    #endif
->>>>    +typedef u8 rmap_age_t;
->>>> +
->>>>    /**
->>>>     * DOC: Overview
->>>>     *
->>>> @@ -193,6 +195,8 @@ struct ksm_stable_node {
->>>>     * @node: rb node of this rmap_item in the unstable tree
->>>>     * @head: pointer to stable_node heading this list in the stable tree
->>>>     * @hlist: link into hlist of rmap_items hanging off that stable_node
->>>> + * @age: number of scan iterations since creation
->>>> + * @skip_age: skip rmap item until age reaches skip_age
->>>>     */
->>>>    struct ksm_rmap_item {
->>>>    	struct ksm_rmap_item *rmap_list;
->>>> @@ -212,6 +216,8 @@ struct ksm_rmap_item {
->>>>    			struct hlist_node hlist;
->>>>    		};
->>>>    	};
->>>> +	rmap_age_t age;
->>>> +	rmap_age_t skip_age;
->>>>    };
->>>>      #define SEQNR_MASK	0x0ff	/* low bits of unstable tree seqnr */
->>>> @@ -281,6 +287,9 @@ static unsigned int zero_checksum __read_mostly;
->>>>    /* Whether to merge empty (zeroed) pages with actual zero pages */
->>>>    static bool ksm_use_zero_pages __read_mostly;
->>>>    +/* Skip pages that couldn't be de-duplicated previously  */
->>>> +static bool ksm_smart_scan;
->>>> +
->>>>    /* The number of zero pages which is placed by KSM */
->>>>    unsigned long ksm_zero_pages;
->>>>    @@ -2305,6 +2314,45 @@ static struct ksm_rmap_item
->>>> *get_next_rmap_item(struct ksm_mm_slot *mm_slot,
->>>>    	return rmap_item;
->>>>    }
->>>>    +static unsigned int inc_skip_age(rmap_age_t age)
->>>> +{
->>>> +	if (age <= 3)
->>>> +		return 1;
->>>> +	if (age <= 5)
->>>> +		return 2;
->>>> +	if (age <= 8)
->>>> +		return 4;
->>>> +
->>>> +	return 8;
->>>> +}
->>>> +
->>>> +static bool skip_rmap_item(struct page *page, struct ksm_rmap_item *rmap_item)
->>>> +{
->>>> +	rmap_age_t age;
->>>> +
->>>> +	if (!ksm_smart_scan)
->>>> +		return false;
->>>> +
->>>> +	if (PageKsm(page))
->>>> +		return false;
->>>
->>>
->>> I'm a bit confused about this check here. scan_get_next_rmap_item() would return
->>> a PageKsm() page and call cmp_and_merge_page().
->>>
->>> cmp_and_merge_page() says: "first see if page can be merged into the stable
->>> tree"
->>>
->>> ... but shouldn't a PageKsm page *already* be in the stable tree?
->>>
->>> Maybe that's what cmp_and_merge_page() does via:
->>>
->>> 	kpage = stable_tree_search(page);
->>> 	if (kpage == page && rmap_item->head == stable_node) {
->>> 		put_page(kpage);
->>> 		return;
->>> 	}
->>>
->>>
->>> Hoping you can enlighten me :)
->>>
->> The above description sounds correct. During each scan we go through all
->> the candidate pages and this includes rmap_items that maps to KSM pages.
->> The above check simply skips these pages.
->
-> Can we add a comment why we don't skip them? Like
->
-> /*
->  * Never skip pages that are already KSM; pages cmp_and_merge_page()
->  * will essentially ignore them, but we still have to process them
->  * properly.
->  */
->
-
-I'll add the comment in the next version.
-
->>
->>>> +
->>>> +	age = rmap_item->age++;
->>>
->>> Can't we overflow here? Is that desired, or would you want to stop at the
->>> maximum you can store?
->>>
->> Yes, we can overflow here and it was a deliberate choice. If we overflow
->> after we tried unsuccessfully for 255 times, we re-start with shorter
->> skip values, but that should be fine. In return we avoid an if statement.
->> The age is defined as unsigned.
->
-> Can we make that explicit instead? Dealing with implicit overflows really makes
-> the code harder to grasp.
->
-
-I'll make it explicit.
-
->>
->>>> +	if (age < 3)
->>>> +		return false;
->>>> +
->>>> +	if (rmap_item->skip_age == age) {
->>>> +		rmap_item->skip_age = 0;
->>>> +		return false;
->>>> +	}
->>>> +
->>>> +	if (rmap_item->skip_age == 0) {
->>>> +		rmap_item->skip_age = age + inc_skip_age(age);
->>>
->>> Can't you overflow here as well?
->>>
->> Yes, you can. See the above discussion. This skip_age is also an
->> unsigned value.
->
-> Dito.
->
-
-I'll make it explicit.
-
->>
->>>> +		remove_rmap_item_from_tree(rmap_item);
->>>
->>>
->>> Can you enlighten me why that is required?
->>>
->> This is required for age calculation and BUG_ON check in
->> remove_rmap_item_from_tree. If we don't call remove_rmap_item_from_tree,
->> we will hit the BUG_ON for the skipped pages later on.
->
-> I see, thanks!
+Thank you.
+Raghavendra
+> Thank you.
+> Raghavendra
+> > --
+> > Thanks,
+> > Oliver
