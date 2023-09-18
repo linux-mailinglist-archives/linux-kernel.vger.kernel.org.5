@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDBD7A44E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABB97A44E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240625AbjIRIgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        id S238806AbjIRIiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240830AbjIRIgV (ORCPT
+        with ESMTP id S240837AbjIRIhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:36:21 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D4A91;
-        Mon, 18 Sep 2023 01:36:16 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38I4SDP2011029;
-        Mon, 18 Sep 2023 03:35:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=2n7pNpKVLOivSG4
-        DFdhrlBJ2AweybJOuaBKfhmO5+JM=; b=kUGIJAndEcaXMxWvuhig7Y6FQ6y2eOk
-        HW/J3SoI/94qHe5pHPlMCKcaxsuL2pdTiyvxqmHAfe8u6T5wz3uj/IFDnvYQGU84
-        KHhSlT/2bSYNQSxie9tYS5ba0KBfqUMbRk0qV4I8YvO912YhMK4CybluE/QG7b4C
-        YRUVgWoLGg6SSasWQNdcjKOskJ58zPGd7+vksiE/oYF4hCJu8d6N5weHMMaYgH5s
-        /OxTOx3g/bjncb3pS4KuEz/7T6ERT8lIGsGsZVqtOOf7YvOyMLIqM+e2u7uGLbq7
-        vhPMU0clNUf9YVsOyPet39zXW2PEPVkwiXoHTNrLtoBpJzBFfHFpk0g==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry235y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 03:35:47 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 18 Sep
- 2023 09:35:45 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Mon, 18 Sep 2023 09:35:45 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7EB9315B4;
-        Mon, 18 Sep 2023 08:35:45 +0000 (UTC)
-Date:   Mon, 18 Sep 2023 08:35:45 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     John Watts <contact@jookia.org>
-CC:     <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <patches@opensource.cirrus.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] ASoC: dt-bindings: wlf,wm8782: Add wlf,fsampen
- property
-Message-ID: <20230918083545.GX103419@ediswmail.ad.cirrus.com>
-References: <20230917173726.1916439-1-contact@jookia.org>
- <20230917173726.1916439-4-contact@jookia.org>
- <ZQc7XnrXX5VenYoX@titan>
+        Mon, 18 Sep 2023 04:37:47 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12425EA
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:37:33 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-503178a0d7fso82564e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:37:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695026251; x=1695631051; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l+QC3uvRAP/qwqfmL2VbNl9H9w4JnwrITUvS9mJuYN4=;
+        b=coQE0q1QXizI6/zxln70piCSkLCmAJJE7+aXzVoZtmc43KOeEcMmz4fEFKBJOm0eA/
+         NHvwlVBZNf1YW67Kq0DotflHJLW7AYAWK19beTuDXN0+JFQmjVyRUXf5LGD8nUmZ2r6r
+         rhGLsVXcAO8PV+86QEwlLjdXz42Umn5WIAtfSY/B/IElMQG8Qp+dX3yHZkoa57CnrksN
+         qrOqkf1iQXSdJlBN8KO0MfRBgDqAEq0sYK1vc3zNy6ebyPmOrpyeWm5jYq9UMhhKmP6D
+         gCgxFVmGcYA3uRlcFmwbS/h3orRN2Ezo1bo5njba/rrRucimQ3yG8UpoWv3VBizAd2FT
+         lvbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695026251; x=1695631051;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l+QC3uvRAP/qwqfmL2VbNl9H9w4JnwrITUvS9mJuYN4=;
+        b=TJVSLPeDfWWGcp2aWIix94MRpCBKWWuAi270LPSWezqJbzCSg7a62Pujks482j6Sgq
+         dsB2WoUaZxcNNwDrtLqim2utLtpJrSKC8xD7zLS9FKMjYJFmHkePFLbCr7hqQk0TFVrX
+         vAFtDmcZ5SQOfQ9wgOf6hhLAJTrBVhhY3eOUfBgnpr6Rd15p1dOgoKMyFy4M65cjAtnL
+         cei5dhrDN4pS1G6YRJcgZdYk6KPIBT5yE1TKz9YJxLJWzI4Jozi0YqXlXFQlRPo0iLkd
+         qIoHqZtuUzuBnSZxjcAU+hsyqN6ISsvdzqS+X2iaYhvrcTbfcglEfJD1iIuAEyNbSRFl
+         kf0g==
+X-Gm-Message-State: AOJu0Yzg/hJ9JtfWxtoQiRP0RudTxnz7Ja04y/qxmQrvQPdzXcF9EMYp
+        CeNPux6bIt4RFnEy+PZPVX5HMQ==
+X-Google-Smtp-Source: AGHT+IGqlyUHqGssPW9OItxaQq+8XrdPXTEEGva1/JuVqIRzAHPdyXcTigzqELXnHgp+vzlARJInWA==
+X-Received: by 2002:a19:ca04:0:b0:503:46c:5577 with SMTP id a4-20020a19ca04000000b00503046c5577mr3420792lfg.3.1695026251229;
+        Mon, 18 Sep 2023 01:37:31 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:3e7c:f127:3270:503e? ([2a01:e0a:999:a3a0:3e7c:f127:3270:503e])
+        by smtp.gmail.com with ESMTPSA id j3-20020a056000124300b0031fb91f23e9sm11992220wrx.43.2023.09.18.01.37.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 01:37:30 -0700 (PDT)
+Message-ID: <086307ce-2d0d-4cf7-98c8-66a00ddec2aa@rivosinc.com>
+Date:   Mon, 18 Sep 2023 10:37:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZQc7XnrXX5VenYoX@titan>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: 8HuOBrbWGgJulNyoGbHCm-8cWOZUTd7y
-X-Proofpoint-ORIG-GUID: 8HuOBrbWGgJulNyoGbHCm-8cWOZUTd7y
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
+ alignment
+Content-Language: en-US
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>
+References: <20230914131102.179100-1-cleger@rivosinc.com>
+ <94183afa1fca44d18459da3d12a155d3@AcuMS.aculab.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <94183afa1fca44d18459da3d12a155d3@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 03:46:06AM +1000, John Watts wrote:
-> On Mon, Sep 18, 2023 at 03:37:26AM +1000, John Watts wrote:
-> > +Optional properties:
-> > +
-> > + - wlf,fsampen : FSAMPEN pin value, 0 for low, 1 for high, 2 for disconnected
-> > +
+
+
+On 17/09/2023 23:09, David Laight wrote:
+> From: Clément Léger
+>> Sent: 14 September 2023 14:11
+>>
+>> enabler->uaddr can be aligned on 32 or 64 bits. If aligned on 32 bits,
+>> this will result in a misaligned access on 64 bits architectures since
+>> set_bit()/clear_bit() are expecting an unsigned long (aligned) pointer.
+>> On architecture that do not support misaligned access, this will crash
+>> the kernel. Align uaddr on unsigned long size to avoid such behavior.
+>> This bug was found while running kselftests on RISC-V.
 > 
-> Uh-oh, I forgot to specify what it defaults to.
-> Should I reply to this patch with a fix or re-send the entire series after I get feedback?
+> You don't want to do it on x86-64 either.
+> A locked accesses that crosses a cache line boundary is horrid.
+> So horrid that recent cpu's can be made to fault.
+
+Hi David,
+
+Thanks for the additional information.
+
 > 
+> I'd also doubt that other cpu that can do misaligned transfers
+> can even do locked ones.
+> 
+> For x86 (and LE) the long[] bitmap can be treated as char[]
+> avoiding all the problems.
+> 
+> Perhaps there ought to be bit a bit-array based on char[]
+> (not long[]) that would be endianness independent and
+> use byte-sized atomics.
 
-I would probably send a new spin with the fix and my acks.
+That would work for a few architectures but I don't think all of them
+have byte "grain" atomics. So I guess Masami solution (long aligned
+set/clear_bit()) remains the best out there.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Clément
 
-Thanks,
-Charles
+> (IIRC that is still an issue on sparc32...)
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
