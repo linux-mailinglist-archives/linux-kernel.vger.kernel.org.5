@@ -2,274 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F657A3F31
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 03:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5270F7A3F0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 03:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbjIRBXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 21:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S234032AbjIRA5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 20:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236990AbjIRBXM (ORCPT
+        with ESMTP id S234114AbjIRA52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 21:23:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C99A124;
-        Sun, 17 Sep 2023 18:23:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695000187; x=1726536187;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=6EbWrAqaFv/oHwPa3uHaSjB2vXOYqABxuhluMCXJBeU=;
-  b=VOEYMjEc+GF43u5sl6ky8S+gjFASjzsMp8R58sGjT/goZgWYcgEz7+il
-   IXohIMpjWUnHBOHjaJEPo+6xya4nn8S1VgPia2EDRsbtpTlMdf2YUI4kl
-   Ffajd5NVhLIgmuQCJ88PXLjpTmPrPy9GNeqpt58S9eqyxMKrHYOJ+KJid
-   N0ShU5wgMpOP1zIcVd+RFefxqlNusFjZLfg3Pf1CG3Vd01ubi/4MjJG+F
-   0ERAi3P+l8pgzMI8ZmOcCx+wGrUcdPJwKsn+hIwmGgHs5tn+qd/Eu9UMn
-   hoEPhbdMHQ/FJUp/JuN/Ze0KpjnAQPvsdkvmkkJaNBMQYD3+qZCc9etDG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="378457085"
-X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
-   d="scan'208";a="378457085"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 18:23:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="780722719"
-X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
-   d="scan'208";a="780722719"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Sep 2023 18:23:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 17 Sep 2023 18:23:04 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 17 Sep 2023 18:23:04 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sun, 17 Sep 2023 18:23:04 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sun, 17 Sep 2023 18:23:03 -0700
+        Sun, 17 Sep 2023 20:57:28 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2053.outbound.protection.outlook.com [40.107.93.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAE6103;
+        Sun, 17 Sep 2023 17:57:22 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J4lxWoZMRzAo59z1I2pLgOx3hN8lzTQUlvMzOM7K9OUhvudB00Qu/9HvqCF01lRRIFdsVZYY4bo2vYGAyqFY2JnT3Hp1bTWC37DE99k4emtDOJrGX8tczu6KpmKbc9BCONTtGewX269+ksZt40semzuXvnEC/lgn4eKQpVQ8aUidPgoMYo/p31pTas3eSXPWIpVJdbrQquQrQkbtV0GSwrcfbtDKDfNoYX+e5HUZZPKrBKA+supJxWF99rV/qLXh9yLR+MQAZEWKoDTRQDJtm1djuk2qzmdFSiGSOYcv4dqTXby1GbSKzv0XxdQHY9T4mwqIsYx89A4AcSChZB65Yg==
+ b=O9XcEycS0HM0MiWvYVbx02uuNXNQw7hZ1ZX1Epx2IZWJINahqN3RWpP+eAMYopugu4LVLXSuhKz2kgLc2gSlwR40XeTFh9RRsuTKuZskbnDSuio55J+yVlQmQszyU8nrinhVs610Hq+gSrzEp2tqsBYdLZHzVyxqz4UMwuACRR9uWtzqBEzZQLm5erSutANr8YbbZqee+3KAKQEvBMK6gi3Wgd69vLzsnzfpsG399rDK1PJbML+OIiXFFiMyAVXs0ZFl0SX4e84UxV1lxxvv4IXXboNwAyjzqCtAj0GqtqwNCbmpWUDdYX4wpeFtm+hMK4GBKZGDZQny+jTpg2ys6Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ur7Su/Z1/S0UvJGlJ+MkSZAJR/Mdw50edtAS62R+TIo=;
- b=k6QX1ZS3kU/YiOJYmeT2AbpagbgPgVCgip9actldoQxQLS3Uhb9BVf8hLUs3I/2xOfp8Zd1rcj8PP//MlxYOAZJ8eX/DpeJf7P4SUhRkrbhbp2zuQnqrKPm8KovJ31tPVyfcc1ISYWq+DwrGFv2xPo4mEqIY6VUoslpzfXlG9jAE0nujlh1zJUVBM6M4oPxuAjGcgnzFGK5n92SSOgKZ+7b+TV014UQxoZ4tRx1rzqLtX6wwY/crBgkLcNuaXC6o2RLZySmU1npKh7CXTJta3R9cc88G0FB6Ntf3LeKosCl8sAnINhHKy52VWbsahhWCaTE3EzA+91kxrcgGHMpBKw==
+ bh=5mAu0QQd0dPiXO1FDrtJIQ0IEBFiE5tK/RPMnhAGKxU=;
+ b=LWe/0/ltS8OmqYwOkrhgxL/m0IrRZW1IohPSKT6inU/CTPEMhj0g4n0WtLULeR/3Fdm+XaiycNXQc5F2aBvf429llu5iQzvYWpISxskUeC6LuKYtXQ9OKtO07MF+EQEp2v1D9ZgwDcBrhHMLF1YxoOFLVck5TddzhqdQ/R9uHCd08gJ0xVHCPiM63HjjtyRYdWBDZzgrvNUo9Pu0gfzpB0y2AuvJaX86ydU4lhnw6z+YZ+Cuv8QIpKBRtogbExHRmElA03bv0OaRKEhl/sBzvCBHivY9VD3P5Kk/rYMbpd3TEfrchMJvhBqmP7Tr9QbPmWhwYhjGyDIW7+WAHS1Q6g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5mAu0QQd0dPiXO1FDrtJIQ0IEBFiE5tK/RPMnhAGKxU=;
+ b=jJmo2Y1AMIHpR1CIjt9Vqim1MwCKNeSN7hUZkg4yALmZp961tbEXW6psbAbg9g3dK905iXsoBLzZ/15EuOKlN40oDlZ5+/KRSaqj7o71U4+Y3BBPwm44LXN4pZ81XWFXVyIpYorABpv8tDQFvWA6viPgUNms/NyoGQEGccJBZe0=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- LV3PR11MB8529.namprd11.prod.outlook.com (2603:10b6:408:1b3::9) with Microsoft
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by DS0PR12MB6632.namprd12.prod.outlook.com (2603:10b6:8:d0::9) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.26; Mon, 18 Sep 2023 01:23:01 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::5e79:2d52:51e:f602]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::5e79:2d52:51e:f602%6]) with mapi id 15.20.6792.024; Mon, 18 Sep 2023
- 01:23:01 +0000
-Date:   Mon, 18 Sep 2023 08:54:55 +0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, <kvm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <linux-mips@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <kvm-riscv@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        "Liam Merwick" <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC PATCH v12 18/33] KVM: x86/mmu: Handle page fault for
- private memory
-Message-ID: <ZQef3zAEYjZMkn9k@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20230914015531.1419405-1-seanjc@google.com>
- <20230914015531.1419405-19-seanjc@google.com>
- <ZQPuMK6D/7UzDH+D@yzhao56-desk.sh.intel.com>
- <ZQRpiOd1DNDDJQ3r@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZQRpiOd1DNDDJQ3r@google.com>
-X-ClientProxiedBy: SG3P274CA0022.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::34)
- To DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6)
+ 15.20.6792.26; Mon, 18 Sep 2023 00:57:17 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::96b:b6f7:193d:82d5]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::96b:b6f7:193d:82d5%2]) with mapi id 15.20.6792.024; Mon, 18 Sep 2023
+ 00:57:17 +0000
+Message-ID: <e8a05f05-deec-4784-9627-354939ad30f6@amd.com>
+Date:   Sun, 17 Sep 2023 19:57:14 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tools/power/x86/intel_pstate_tracer: python minimum
+ version
+Content-Language: en-US
+To:     Doug Smythies <dsmythies@telus.net>,
+        'Srinivas Pandruvada' <srinivas.pandruvada@linux.intel.com>,
+        rafael.j.wysocki@intel.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        'Swapnil Sapkal' <swapnil.sapkal@amd.com>, Ray.Huang@amd.com
+References: <001701d9e9ae$02438120$06ca8360$@telus.net>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <001701d9e9ae$02438120$06ca8360$@telus.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR04CA0075.namprd04.prod.outlook.com
+ (2603:10b6:805:f2::16) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|LV3PR11MB8529:EE_
-X-MS-Office365-Filtering-Correlation-Id: bef82a8b-4508-4e7d-100d-08dbb7e5cbca
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS0PR12MB6632:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4c00e2b9-7ed0-4e7e-5c04-08dbb7e23443
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GZxw9XyHnvNfIg4V0xpSa90vulloD9GcHC30G1Pw4rK3AUp1NRWTn5y1psz16m6Xh0yVXYUN7RDdbZ+hoV4XCEVwXJScoqGutuzZ5YzCFx48WmwGwGaLybzjZQ07kNE3TggRY4kw3uNShmRsjCB6WcZXOt3CaxU81WtdmMMKk6y4Mu5pNPVIe+1erm2urVM1ZyPXkTSAgKRHNBjvWJcr3wXpWuWIgfRgNqzB7bP17BgSY2ZVU53gbUwIzw2Q1hqVHXeqOttx+VoHQnVaoLLJZ18qqL1/MzG37wwjWs9bBtb92t2UYNSiO/ovuqWUQ0spY6/Y7dpRpOhKjSmhzaYKI6gjO/bnLUCZb0je/vKQYSzyiMHyzx13aI6nNCehFizXVw+aEy4ukTVv+bdmi3vvPHPjEQx2KBvj2yuM6d1g4HtjEJWg2p59LcUfPLU2tgvexeUoy98urVFXh0BQldeoZBaAlFAS3Np1fV2TJFJn3k8ZIFSCM8SvresZfG+iSLzgqlLUhiiCxa8PG51n43VjT66WWfZCK5TXa1Urt9e/S1Z7UzE+g8k9nf0d+prm0p/Q
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39850400004)(396003)(136003)(346002)(366004)(186009)(1800799009)(451199024)(478600001)(66476007)(6916009)(54906003)(316002)(66946007)(66556008)(6506007)(26005)(6486002)(6512007)(6666004)(8936002)(8676002)(41300700001)(7416002)(7406005)(5660300002)(2906002)(4326008)(3450700001)(38100700002)(82960400001)(86362001)(83380400001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: Ya3L9eLp4tMvMi+jRITCtXe/lQdmANAe6ZrrhXyecyt/awxpKB4jGstW6zx2bE3HD8chFwyyhdkWIhKSb7XIktSeTkEUWTkNnRByM2vEcSeDmxnd9x0dY3EsYOQK4Hie7qDk5Goi/CZuBG+Js30fBi81MkALcJqzzWVu5+SVm990m6KR3Mf9MyNSSsyCyu9B5WMQMz3Hz4pCAvAHr6gZioTOpJ2c8zOzcjZgHi0HOZ0s6XTl2ieNpZMP1TJ9FD0j17TFbFRRqhTwmhxCRy+Ma+EyR/3Wc8OBT3qKUfRJU8VNaODLsbCBXDWEHAqGIyKsr//VFQHyeJkoDB1KMuxbmY8ydi1tKlSnwL9sA4YEkZ4o/aXZGaKl442Wyqq7CyRyxjHbr0EIMAkOz+Nr6TQdkR+mKn5j++W5cVaxps6MWnkfD5ShkDk/nTaEeW3rMBVyNlkTqkWY5RXvvxgWf0X5fajyJfPBMEY3nNVrkohXUUgRlkVbHWyFOTmQUAwJfctvZfJqsTH7XYlTR/VQaPnzWvR/8+/x279JDdPrQt2rFLTKLM+hgdUvHp0+PAvBN+Ka2Hk3Jzh/Pokqf0WMc2DHelhkP1N2/gk5nytvGp3ykJplO8CdwuEhbNMkHCjCl/tyujwccOYTR17VMICRmB3Hog==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(39860400002)(136003)(396003)(1800799009)(186009)(451199024)(26005)(2616005)(8936002)(8676002)(4326008)(83380400001)(2906002)(36756003)(31696002)(5660300002)(44832011)(86362001)(53546011)(6506007)(6486002)(478600001)(31686004)(6666004)(316002)(6512007)(110136005)(66946007)(41300700001)(38100700002)(66476007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+QC4LkLcreg4ZiO8oKZsUBSIAB3DK50h5w8kyIS8oDZ5L6oRmkpsZ6uGBagA?=
- =?us-ascii?Q?Htgj33E49Bvr/fWfSYMLNIJVnzwWNRu6lt8KmuBxfHg1+OGAcpqUBOjSwMT9?=
- =?us-ascii?Q?J5RiEdOZHc+HD1vo3+N1STPQPVSqeXfiyvN9ePFhCmVtJN/mL7cd5TzxMnkd?=
- =?us-ascii?Q?BpE0AP7ZZqjlD3mRCE/JPBYbTIfkFsZnzCkihlUR3ohS4aFhrpL16/GB6N4/?=
- =?us-ascii?Q?JTs1x/MzR7WG9RmD+eA+2YbPK91cA1PJ/MpnODua/dBAYlkFmKgfcqo9udcN?=
- =?us-ascii?Q?S2YFarnz9ZRKzz2vVc+4wuOvjIiGpV3VHhwOgg6BBNAEzb7NaYiKwdBud/h4?=
- =?us-ascii?Q?NHnjDcbWl9ZYBlORS7KDRjtwraieDcGk+jTHeAaPrSTAwjI9pl2yxgkTExRp?=
- =?us-ascii?Q?J19vr6+qSFwMmmJcEfOBk+8b6ItzuF7gU3arbmmc0GUz/AwIKHZNbDaYgYRd?=
- =?us-ascii?Q?SwbjPV0NsOGHO0Oywr0W6nksTLg2wZeCrg/ic2Z+Up8S8s+oFSq2t/D0SE8J?=
- =?us-ascii?Q?XlUt2BpflFhLcO52+VfrYno66dvD9HvhwVobPSVH60xOpvdOrj0Z7Y+Rhqow?=
- =?us-ascii?Q?XZnOphonStxah3V7SXZEgDMSBT1V3dVgbOafMkvNgovXXZXSzRCWaonngOyl?=
- =?us-ascii?Q?mvy+zkmHC7No1lLPilhos7sTp2oC/31F3XNxUHS0KM5RfpyinTRqV0oarC4r?=
- =?us-ascii?Q?L+fzuIw8YRX6wkBFEbqzqnMqhypC34rbHUlC4XVBZFLGEgCQTVc2xPpBtHou?=
- =?us-ascii?Q?Wb/bTY0oqLzU/lUgsVkzIXZtv+z4KCBOrTpfQ7JEzbs9NBBP5Wz6qd5rH5uD?=
- =?us-ascii?Q?tpI7ESebV9jzaJBT8q8GCfykL9LoIDZawx+FGQij45abNHDZVYIxRdjMu8BX?=
- =?us-ascii?Q?vyVh8BFwVF1+F5QINLZU8jeSOnSdaA/ZRoz/2qyjlR0P419mqvewsNqSas8g?=
- =?us-ascii?Q?OEtEehOMirrIa46yE0JZmTznT/1UOoKAwWgP13gAiaHiX005TAR9zY+YYT6x?=
- =?us-ascii?Q?KUGnGU2Sp/Q1FrWJ26lIqHR71ieEPfVl+PdHnN3eRynxCYX5N22ieneMcFNS?=
- =?us-ascii?Q?sqq2Uba8I8TzECItrY9TKxKWA83oU1KlMihP8tjvI393y6ela0gzuolkO/zo?=
- =?us-ascii?Q?fJUe5dQfg5tCFwc33T9DZjNjzomBoFrMZw7pRI5iUFERScaGbvvqDpVBp8G3?=
- =?us-ascii?Q?LMbYSQPuE++1toe2Astb3QOAY4upFR5HVJxIermEr63HR3yjBlsLIe5XRsTq?=
- =?us-ascii?Q?ozqzFpdTvvcNkCewLJCg3QW4MRRzW73itY0RDaOtG6aQyke2r3Z1iie7HUYH?=
- =?us-ascii?Q?n8+kW5zTok+ClZm8Xk2Xx6bdlfxgDMVD+CDA2rtGzjXZVzjJzT0xiUN4PHWu?=
- =?us-ascii?Q?folYGbFtU8vB+oZ09iU/NHKy33Dc07am9LdgztlQMbZAgr1MixN6sJfin9PD?=
- =?us-ascii?Q?zSkEW/bCTtNLDQ4rWtvL1HIE2yVH6PN+PSCe2N2IiQiQz8/TGEQ04WY3ts3L?=
- =?us-ascii?Q?zxwGATpFJPp6fyd2szMQIcAeOeyojmMH4bQUYSCeYV4Ocu94qwOKprLdGqRj?=
- =?us-ascii?Q?Be9OHBH+r7cTaQwMZHWurNzQxfohkAnrJS6zucCj?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bef82a8b-4508-4e7d-100d-08dbb7e5cbca
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MXdUQnhEL0JFcFQ1TFY3VG9nT0EvZUdYWHVCS09iQ3FpNHdnSjcxNThNa1Ja?=
+ =?utf-8?B?eHk2S01sWHdqK1JnM2gyek13bDFDTVYrTVdvWXVaV00zVU5XN3I2Z1NHYUZE?=
+ =?utf-8?B?OVgyV1dXSGp0VTQxN043R2lZc3pSUC9JVmxXL2tNeXBOUTE1OFRSTVhWajJK?=
+ =?utf-8?B?V3B5bC9WOEdKaTNoUGtaSFhxdDZhcG52ZDZZbUc1WDJQaExPWmdiQXZqWHZY?=
+ =?utf-8?B?WXhCMEZYanZoSlFHVnV5c1IxdlpHMzQ0bXFaTWdFUzM2bW5hY2tTUGhMNUNo?=
+ =?utf-8?B?V1YvY1ZvSjV1UGlyb3VXRWJsVUpxamd3UERxQVNrZksvRVdSMHJISXF3a0NY?=
+ =?utf-8?B?aVVmUXppUzRubWpyTDdCNUhvaFpPM1diUkcyZEMzRTZuajhsUm9xVWt3QkhL?=
+ =?utf-8?B?cG4xTHgrdjl6WVMxRE9yV0RLMDN3ajlPVG1qZ3hCWStuRzh5ZlZUd1ZHbHJG?=
+ =?utf-8?B?SlNnVTRTTk1zTDh4M01MaXpEaUVZdHd6M0NLT21rcVVkeDZQWEcrV2dZK1Z6?=
+ =?utf-8?B?ZGZ4VWFMZyt1VG1jUmlNaFZWa2lCdVJEYzRBbG9JOXYyNmdwTFJaZEtqVEdT?=
+ =?utf-8?B?Znh1aVpWa2hkK2JjQzRaQkd4ZUtTTlFySGJOaTJXdEd4U3lrc1U2SE5qZWhq?=
+ =?utf-8?B?M3V1VU1IOWlWU2lHNWpzZVNzTmI5YmwvUEJIMmZ2QmRIWXIyNEpxcEhJOWt2?=
+ =?utf-8?B?K1dmZXFDNHFUUHVuT3BMU2Q2Yk1UTWsralpCaVh5YVlNdm9UbGYvMmVLMmNz?=
+ =?utf-8?B?cFhDVENzTzdTQkkyZk9oVlNZQzhQTGZuamYyWlNqTWcxWCtqa1hnNlVtYnVH?=
+ =?utf-8?B?UnhOZk5nNDZYSXJ4SUpCU3FXR0hTVVphTVkrdzROSDhLTDMwVk9lS2hNTDlj?=
+ =?utf-8?B?UnRQWkhaWk51d3NjU0NRdlcxTlZmVkNDWkFxdnZ3ZHFCWFVBSHJQdzFzeVpK?=
+ =?utf-8?B?S3JibWZlRzR3SlVud0krbUpiU2kxZzlXam1rQUtTd0M4b052YVEwNHhYZ29r?=
+ =?utf-8?B?c25ZaHdZY3doSzNuWHRJRVNwQlJHRm4yQk5zV2ZrQjdWeFdGQVdCQ1J2SEJv?=
+ =?utf-8?B?SmlpNVZySXhZQWhkeEh3Rk5MYnFKRTJRRkRLTmJ1UGFhVklyL002OXZBSjFE?=
+ =?utf-8?B?eUc1TjErRU9QcXlHQU1zdk9PSFdHbUxkR3BYbUtUMVVIUjdTOUNKWEcvMjU4?=
+ =?utf-8?B?WHZQVXpUdjBUMXlnWFNYRTY4MGx2TkU2a1RZRVRTU1NxQnE0UU9jRVRSQ3Aw?=
+ =?utf-8?B?eUJXSDhLQ2JqTldOT1NPbkE5dmFQUEFLVzZCSUFtSlgraTZSMThscVB3eWRG?=
+ =?utf-8?B?MnBacnFHR0ZCZVdmVlNWbmFnNWRnOGt3SUZSbHlLQjEzNG1JQmVvanBPWktF?=
+ =?utf-8?B?YUxCM1lHT0Rrc2VKckNHM2JVejVsQThGa3IvL1A3ZEI1c0QyVUw2L3IvSEFu?=
+ =?utf-8?B?K0RHcGFLMVpYMUlPZW9GWi9tWDRBa1Y5bzVwYWRhUkNIYTJlM1k5V09nQXNk?=
+ =?utf-8?B?S1kxMHI0bGJzT2FFSnFJcTdFVVVZaVhMaFEyKzlCOXdtcjU0WWlVeXFXUitl?=
+ =?utf-8?B?aUI4dHo1TzRNOFJCSzVNL2xVaWUwbjd5SUJWdjk2N1FyazlKeng3VEZqSG5W?=
+ =?utf-8?B?MExCTGRsSHozVTY0SmJKL0FVNFJGMXp3V0N4VmMvVktwL2YveE5CdGU0d0oy?=
+ =?utf-8?B?V1FaZFYvbk03TU1nWDVhcnA3eFZsN1dXOWllMEREK3hGclM4WnUrSWJZTkxl?=
+ =?utf-8?B?clNxc3Jja1hWTlVlY3RUeTdzdjhvTk9MYWRqM1VhSnNDeDAzTUZLQlZSajBr?=
+ =?utf-8?B?WTVHK0ZSdnlkVk5CMVdCbmErNWd3SXU5QW9LdGZmL1VNYWNDdjNVNG92L3Ny?=
+ =?utf-8?B?NVdJekw0RlRZbFNCcDd4SURBcU1uVG1mY3Jodkl3Y2pCRDBxUmRReWplenIz?=
+ =?utf-8?B?OHpvTEI4MUVIR0U5RXBnSVV3bzVsbTB3SHVnaXFvaUJHSWZnNk4wcXBJRW8y?=
+ =?utf-8?B?ZW1LdDdiM3ZYWVM0MS9CZ2kyQ0I0NHNDeEdyM2NnSWVSWGNzeStaNzNuYVdM?=
+ =?utf-8?B?R1pha2ZObFkyNUhsdDZXbDRQaG9raUpxL1pVanRWZ1FWeHVHK1BLQUJlbDIy?=
+ =?utf-8?Q?2DrYE7joxAhLzaSEhDJV2+gJ7?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c00e2b9-7ed0-4e7e-5c04-08dbb7e23443
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 01:22:59.9211
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 00:57:17.2804
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RGUJS95eCjqGyaHpC1kPLEmwQl1il+Ri5x/Lf061Du/Wdw2FNu22cj+zYJ/uHmeOZDW0s7WR0Jxjl66m0PIz0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8529
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: d/5ddm+QvKBztVg5aO6KRx2hAffvKyvng7FzaVdeLCKhW/3X9Elep2ewlzXq+gLcKSuw6xELs9I3jCmBmrUS7g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6632
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 07:26:16AM -0700, Sean Christopherson wrote:
-> On Fri, Sep 15, 2023, Yan Zhao wrote:
-> > On Wed, Sep 13, 2023 at 06:55:16PM -0700, Sean Christopherson wrote:
-> > ....
-> > > +static void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
-> > > +					      struct kvm_page_fault *fault)
-> > > +{
-> > > +	kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT,
-> > > +				      PAGE_SIZE, fault->write, fault->exec,
-> > > +				      fault->is_private);
-> > > +}
-> > > +
-> > > +static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
-> > > +				   struct kvm_page_fault *fault)
-> > > +{
-> > > +	int max_order, r;
-> > > +
-> > > +	if (!kvm_slot_can_be_private(fault->slot)) {
-> > > +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> > > +		return -EFAULT;
-> > > +	}
-> > > +
-> > > +	r = kvm_gmem_get_pfn(vcpu->kvm, fault->slot, fault->gfn, &fault->pfn,
-> > > +			     &max_order);
-> > > +	if (r) {
-> > > +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> > > +		return r;
-> > > +	}
-> > > +
-> > > +	fault->max_level = min(kvm_max_level_for_order(max_order),
-> > > +			       fault->max_level);
-> > > +	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
-> > > +
-> > > +	return RET_PF_CONTINUE;
-> > > +}
-> > > +
-> > >  static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> > >  {
-> > >  	struct kvm_memory_slot *slot = fault->slot;
-> > > @@ -4293,6 +4356,14 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
-> > >  			return RET_PF_EMULATE;
-> > >  	}
-> > >  
-> > > +	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
-> > In patch 21,
-> > fault->is_private is set as:
-> > 	".is_private = kvm_mem_is_private(vcpu->kvm, cr2_or_gpa >> PAGE_SHIFT)",
-> > then, the inequality here means memory attribute has been updated after
-> > last check.
-> > So, why an exit to user space for converting is required instead of a mere retry?
-> > 
-> > Or, is it because how .is_private is assigned in patch 21 is subjected to change
-> > in future? 
+On 9/17/2023 16:29, Doug Smythies wrote:
+> From: Doug Smythies <dsmythies@telus.net>
 > 
-> This.  Retrying on SNP or TDX would hang the guest.  I suppose we could special
-Is this because if the guest access a page in private way (e.g. via
-private key in TDX), the returned page must be a private page?
+> Change the minimum python version from 2.7 to 3.6.
+> Remove a 2.X backwards compatibility line.
+> 
+> Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> ---
+>   .../x86/intel_pstate_tracer/intel_pstate_tracer.py     | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
+> index ec3323100e1a..6b0790e6465a 100755
+> --- a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
+> +++ b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/env python
+> +#!/usr/bin/env python3
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   # -*- coding: utf-8 -*-
+>   #
+> @@ -11,9 +11,9 @@ then this utility enables and collects trace data for a user specified interval
+>   and generates performance plots.
+> 
+>   Prerequisites:
+> -    Python version 2.7.x or higher
+> +    Python version 3.6.x or higher
+>       gnuplot 5.0 or higher
+> -    gnuplot-py 1.8 or higher
+> +    phython3-gnuplot 1.8 or higher
 
-> case VMs where .is_private is derived from the memory attributes, but the
-> SW_PROTECTED_VM type is primary a development vehicle at this point.  I'd like to
-> have it mimic SNP/TDX as much as possible; performance is a secondary concern.
-Ok. But this mimic is somewhat confusing as it may be problematic in below scenario,
-though sane guest should ensure no one is accessing a page before doing memory
-conversion.
+Presumably you mean 'python3-gnuplot'.
 
+>       (Most of the distributions have these required packages. They may be called
+>        gnuplot-py, phython-gnuplot or phython3-gnuplot, gnuplot-nox, ... )
+> 
 
-CPU 0                           CPU 1
-access GFN A in private way
-fault->is_private=true
-                                convert GFN A to shared
-			        set memory attribute of A to shared
+Likewise here too.
 
-faultin, mismatch and exit
-set memory attribute of A
-to private
+> @@ -23,7 +23,7 @@ Prerequisites:
+>       see print_help(): for Usage and Output details
+> 
+>   """
+> -from __future__ import print_function
+> +
+>   from datetime import datetime
+>   import subprocess
+>   import os
+> @@ -562,7 +562,7 @@ if __name__ == "__main__":
+> 
+>       # Temporary (or perhaps not)
+>       cur_version = sys.version_info
+> -    print('python version (should be >= 2.7):')
+> +    print('python version (should be >= 3.6):')
+>       print(cur_version)
 
-                                vCPU access GFN A in shared way
-                                fault->is_private = true
-                                faultin, match and map a private PFN B
-
-                                vCPU accesses private PFN B in shared way
+Is this block printing the version really needed at all?
+I don't see 'cur_version' used anywhere else in the file.
 
 > 
-> E.g. userspace needs to be prepared for "spurious" exits due to races on SNP and
-> TDX, which this can theoretically exercise.  Though the window is quite small so
-> I doubt that'll actually happen in practice; which of course also makes it less
-> important to retry instead of exiting.
+>       # Left as "cleanup" for potential future re-run ability.
+> --
+> 2.25.1
+> 
+> 
+
