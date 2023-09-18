@@ -2,61 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 066B67A47C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54BC7A47C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236035AbjIRLDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
+        id S233396AbjIRLDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbjIRLDN (ORCPT
+        with ESMTP id S233013AbjIRLDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Sep 2023 07:03:13 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC0B94;
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209378F;
         Mon, 18 Sep 2023 04:03:07 -0700 (PDT)
-Received: from [192.168.0.125] (unknown [82.76.24.202])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B0D066607095;
-        Mon, 18 Sep 2023 12:03:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695034986;
-        bh=v0kfhus51k2k8c4hQ+BgUzlZKVruHcTbgFeT81afp2Q=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=EQHULyuHA0LylSZe+l9E5vhmHEV0eiOEBOwd4RvOqtSXhf+ypG9pX2jt7zV2XH6i2
-         H+3e5lEl4QfL+a6U+V/betDz/X/1da2OnMDdGFdOQmIoPAY8Ma7UTWF9K+ZbNUtDDI
-         9JwG02rbV4zYWQlCMTNbG6xytC5i2bTH+/Uw75N/eh4wL67Js3npy+yJy8fwZ6QB2q
-         NXT8/HAPBlTsVc+kUMBToqCoYqzH5ih2BpRujU8Yn9g52o5L3ulOYw3A/b80rcQheo
-         fLCKsIeQb2ZoG9aMoMPTtzhXoGmDxQpLqQ788qyforyhSRDyovVULw0Dd5GJBcxrKC
-         qOmq0G/1guQ/g==
-Message-ID: <55e85f31-fab6-07f9-0ffe-8ebcd2a56489@collabora.com>
-Date:   Mon, 18 Sep 2023 14:03:02 +0300
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF0D7C433C7;
+        Mon, 18 Sep 2023 11:03:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695034986;
+        bh=xheY1ymXh/wvdjFd8+v/+GHt+em90YiVp8HQxiG3Nd4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Zi8DFmZm1oR8NWs7ka2iDKaLGQgBPU04YKEruMLQeiJ774r2K4wMKMxgQlFbp0FXY
+         DVGTGCkK3T7WQjdQpTp3+N2ZL5QC5N9Gy8vU+peGy6qMXRCMihR+yHriLYH8u8USqs
+         oH77NXEo9PjHiLOFfKckdkLwWnoU6NUZtvBWOp6isqjzwTFuUr0BLR8By8DyzBG09o
+         wx1RIIFk9yHkzPt3uwX6qM3TdpaT/IaK7OToIC1uWLx/WJyBd5mkIx7ThNpYeCgc/C
+         7MY5w7xw2c9gadANljIDPj9Ko/P54/tQ02XB23waPsc+5OO0aiTxgrN79iAEf4Sr0R
+         5aVR5b1Ik8Hjg==
+From:   SeongJae Park <sj@kernel.org>
+To:     Jinjie Ruan <ruanjinjie@huawei.com>
+Cc:     sj@kernel.org, akpm@linux-foundation.org,
+        brendan.higgins@linux.dev, feng.tang@intel.com,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mm/damon/core-test: Fix memory leak in damon_new_ctx()
+Date:   Mon, 18 Sep 2023 11:03:04 +0000
+Message-Id: <20230918110304.81807-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230918074759.3895339-3-ruanjinjie@huawei.com>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI
- MICROCHIP DRIVERS
-Content-Language: en-US
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        aubin.constans@microchip.com, Ludovic.Desroches@microchip.com
-Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Hari.PrasathGE@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@tuxon.dev
-References: <20230911153246.137148-1-aubin.constans@microchip.com>
- <fd02d42e-7b24-4f50-849e-b0c752d1f011@microchip.com>
- <CAPDyKFpYzgwPvrWntgDQCZo97OZr2qd2FaVXpi7OnNc7i_gYtw@mail.gmail.com>
- <c4f43487-da93-4e67-0389-e31dde550d40@microchip.com>
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <c4f43487-da93-4e67-0389-e31dde550d40@microchip.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,88 +52,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 20:01, Nicolas Ferre wrote:
-> On 14/09/2023 at 16:21, Ulf Hansson wrote:
->> On Tue, 12 Sept 2023 at 07:21, <Ludovic.Desroches@microchip.com> wrote:
->>>
->>> On 9/11/23 17:32, Aubin Constans wrote:
->>>> On the one hand Eugen has taken responsibilities outside Microchip,
->>>> on the other hand I have some experience with the Microchip SDMMC
->>>> SDHCI controller.
->>>> Change Eugen as reviewer and take over maintainership of the SDHCI
->>>> MICROCHIP DRIVER.
->>>> Also, take over maintainership of its predecessor, that is the MCI
->>>> MICROCHIP DRIVER.
->>>>
->>>> Cc: Eugen Hristev <eugen.hristev@collabora.com>
->>>> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
->>>> Signed-off-by: Aubin Constans <aubin.constans@microchip.com>
->>>
->>> For atmel-mci:
->>> Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
->>
->> Sounds like the patch could be split up, as there is an agreement on
->> the atmel-mci part.
->>
->> Aubin, can you make a separate patch for the atmel-mci part and add
->> Ludovic's ack to it?
->>
->> In regards to the sdhci driver, I suggest you just add yourself as a
->> maintainer too, along with Eugen.
+Hi Jinjie,
+
+On Mon, 18 Sep 2023 15:47:59 +0800 Jinjie Ruan <ruanjinjie@huawei.com> wrote:
+
+> When CONFIG_DAMON_KUNIT_TEST=y and making CONFIG_DEBUG_KMEMLEAK=y
+> and CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y, the below memory leak is detected.
 > 
-> For adding more background to this patch, in fact it was created in 
-> coordination with Eugen. We can wait a bit for him to catch-up with 
-> emails, no hurry there as Aubin won't have access to emails for a few 
-> days anyway.
+> The damon_ctx which is allocated by kzalloc() in damon_new_ctx() in
+> damon_test_ops_registration() and damon_test_set_attrs() are not freed.
+> So use damon_destroy_ctx() to free it. After applying this patch, the
+> following memory leak is never detected
 > 
-> If it has an interest you can add my:
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> But definitively, no problem to delay this change.
-
-Hi,
-
-I am fine with this change, as Nicolas has already discussed this with me.
-
-Acked-by: Eugen Hristev <eugen.hristev@collabora.com>
-
-P.S. I have a mailmap entry for the new e-mail so the change is not 
-compulsory, you can change as you see fit.
-
-Eugen
-
+>     unreferenced object 0xffff2b49c6968800 (size 512):
+>       comm "kunit_try_catch", pid 350, jiffies 4294895294 (age 557.028s)
+>       hex dump (first 32 bytes):
+>         88 13 00 00 00 00 00 00 a0 86 01 00 00 00 00 00  ................
+>         00 87 93 03 00 00 00 00 0a 00 00 00 00 00 00 00  ................
+>       backtrace:
+>         [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
+>         [<0000000073acab3b>] __kmem_cache_alloc_node+0x174/0x290
+>         [<00000000b5f89cef>] kmalloc_trace+0x40/0x164
+>         [<00000000eb19e83f>] damon_new_ctx+0x28/0xb4
+>         [<00000000daf6227b>] damon_test_ops_registration+0x34/0x328
+>         [<00000000559c4801>] kunit_try_run_case+0x50/0xac
+>         [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
+>         [<000000003c3e9211>] kthread+0x124/0x130
+>         [<0000000028f85bdd>] ret_from_fork+0x10/0x20
+>     unreferenced object 0xffff2b49c1a9cc00 (size 512):
+>       comm "kunit_try_catch", pid 356, jiffies 4294895306 (age 557.000s)
+>       hex dump (first 32 bytes):
+>         88 13 00 00 00 00 00 00 a0 86 01 00 00 00 00 00  ................
+>         00 00 00 00 00 00 00 00 0a 00 00 00 00 00 00 00  ................
+>       backtrace:
+>         [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
+>         [<0000000073acab3b>] __kmem_cache_alloc_node+0x174/0x290
+>         [<00000000b5f89cef>] kmalloc_trace+0x40/0x164
+>         [<00000000eb19e83f>] damon_new_ctx+0x28/0xb4
+>         [<00000000058495c4>] damon_test_set_attrs+0x30/0x1a8
+>         [<00000000559c4801>] kunit_try_run_case+0x50/0xac
+>         [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
+>         [<000000003c3e9211>] kthread+0x124/0x130
+>         [<0000000028f85bdd>] ret_from_fork+0x10/0x20
 > 
-> Thanks for your understanding. Best regards,
->    Nicolas
-> 
->>>> ---
->>>>    MAINTAINERS | 5 +++--
->>>>    1 file changed, 3 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/MAINTAINERS b/MAINTAINERS
->>>> index 2833e2da63e0..52beaf4f7fbb 100644
->>>> --- a/MAINTAINERS
->>>> +++ b/MAINTAINERS
->>>> @@ -14022,7 +14022,7 @@ F:    
->>>> Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
->>>>    F:  drivers/iio/adc/mcp3911.c
->>>>
->>>>    MICROCHIP MMC/SD/SDIO MCI DRIVER
->>>> -M:   Ludovic Desroches <ludovic.desroches@microchip.com>
->>>> +M:   Aubin Constans <aubin.constans@microchip.com>
->>>>    S:  Maintained
->>>>    F:  drivers/mmc/host/atmel-mci.c
->>>>
->>>> @@ -19235,7 +19235,8 @@ F:    
->>>> Documentation/devicetree/bindings/mmc/sdhci-common.yaml
->>>>    F:  drivers/mmc/host/sdhci*
->>>>
->>>>    SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
->>>> -M:   Eugen Hristev <eugen.hristev@microchip.com>
->>>> +M:   Aubin Constans <aubin.constans@microchip.com>
->>>> +R:   Eugen Hristev <eugen.hristev@collabora.com>
->>>>    L:  linux-mmc@vger.kernel.org
->>>>    S:  Supported
->>>>    F:  drivers/mmc/host/sdhci-of-at91.c
->>>
-> 
+> Fixes: d1836a3b2a9a ("mm/damon/core-test: initialise context before test in damon_test_set_attrs()")
+> Fixes: 4f540f5ab4f2 ("mm/damon/core-test: add a kunit test case for ops registration")
+> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+> Reviewed-by: Feng Tang <feng.tang@intel.com>
 
+Reviewed-by: SeongJae Park <sj@kernel.org>
+
+
+Thanks,
+SJ
+
+> ---
+> v2:
+> - Add Reviewed-by.
+> - Rebased on mm-unstable.
+> - Update the commit message.
+> ---
+>  mm/damon/core-test.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
+> index 3959be35b901..649adf91ebc5 100644
+> --- a/mm/damon/core-test.h
+> +++ b/mm/damon/core-test.h
+> @@ -269,6 +269,8 @@ static void damon_test_ops_registration(struct kunit *test)
+>  
+>  	/* Check double-registration failure again */
+>  	KUNIT_EXPECT_EQ(test, damon_register_ops(&ops), -EINVAL);
+> +
+> +	damon_destroy_ctx(c);
+>  }
+>  
+>  static void damon_test_set_regions(struct kunit *test)
+> @@ -346,6 +348,8 @@ static void damon_test_set_attrs(struct kunit *test)
+>  	invalid_attrs = valid_attrs;
+>  	invalid_attrs.aggr_interval = 4999;
+>  	KUNIT_EXPECT_EQ(test, damon_set_attrs(c, &invalid_attrs), -EINVAL);
+> +
+> +	damon_destroy_ctx(c);
+>  }
+>  
+>  static void damon_test_moving_sum(struct kunit *test)
+> -- 
+> 2.34.1
+> 
+> 
