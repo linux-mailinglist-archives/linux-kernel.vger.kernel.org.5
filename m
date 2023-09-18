@@ -2,525 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AB67A465E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71C17A4663
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239306AbjIRJuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 05:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
+        id S240864AbjIRJwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239319AbjIRJuX (ORCPT
+        with ESMTP id S239166AbjIRJvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:50:23 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E90F5A8;
-        Mon, 18 Sep 2023 02:50:15 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79AB91FB;
-        Mon, 18 Sep 2023 02:50:52 -0700 (PDT)
-Received: from [10.57.64.210] (unknown [10.57.64.210])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 43EED3F67D;
-        Mon, 18 Sep 2023 02:50:11 -0700 (PDT)
-Message-ID: <fa2d4155-fd38-1f63-85fa-03e8a719748c@arm.com>
-Date:   Mon, 18 Sep 2023 10:50:12 +0100
+        Mon, 18 Sep 2023 05:51:48 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16521115
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:51:42 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38I6K0DO017792;
+        Mon, 18 Sep 2023 04:51:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=O
+        ekxzRcVaZo051lSiRKtMaMlNmQuGAT/oxmqstQ4suc=; b=gfd3uiuOnWYePPdhl
+        bCXvCzRs1/ROHAIha7pMHyteS/I6mlruBwTeyXRtpgxlgeLKNQXE907/VaAk7CTM
+        OvccVfFLSL6ymPd2HLqjpBw4h/OvRDxRspctV1f6eS8Bsh3zqt1DY45BbCt9LTLV
+        DDUNDmkS9RMMTCDYMHs3kO3z222qocZOR3MO4XY3ReiEFxVr3odd8f8qSK+XQltL
+        w+xDCkMRPKVx8rLyc+NeplW8p3G0LWGRm+tWZiW/aqlU9ldAvZmjOcurFg+ZfwiF
+        F/ashZ07xeRG3U1oZ2LVtRdILoWjjPyJHWfuFAxt5WyfSmhUNcL5bjuyc7SDXHcZ
+        SplWQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry256c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 04:51:35 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 18 Sep
+ 2023 10:51:33 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Mon, 18 Sep 2023 10:51:33 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.90.238.137])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9DE0611AA;
+        Mon, 18 Sep 2023 09:51:32 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 0/2] ALSA: hda: cs35l56: Handle speaker id GPIOs
+Date:   Mon, 18 Sep 2023 10:51:27 +0100
+Message-ID: <20230918095129.440-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v5 2/6] drm/panfrost: Add fdinfo support GPU load metrics
-To:     =?UTF-8?Q?Adri=c3=a1n_Larumbe?= <adrian.larumbe@collabora.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        healych@amazon.com, kernel@collabora.com,
-        Boris Brezillon <boris.brezillon@collabora.com>
-References: <20230914223928.2374933-1-adrian.larumbe@collabora.com>
- <20230914223928.2374933-3-adrian.larumbe@collabora.com>
-Content-Language: en-GB
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <20230914223928.2374933-3-adrian.larumbe@collabora.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-GUID: lvXNau_bsidQSZVhdqEAskyfFpke2A4r
+X-Proofpoint-ORIG-GUID: lvXNau_bsidQSZVhdqEAskyfFpke2A4r
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 23:38, Adrián Larumbe wrote:
-> The drm-stats fdinfo tags made available to user space are drm-engine,
-> drm-cycles, drm-max-freq and drm-curfreq, one per job slot.
-> 
-> This deviates from standard practice in other DRM drivers, where a single
-> set of key:value pairs is provided for the whole render engine. However,
-> Panfrost has separate queues for fragment and vertex/tiler jobs, so a
-> decision was made to calculate bus cycles and workload times separately.
-> 
-> Maximum operating frequency is calculated at devfreq initialisation time.
-> Current frequency is made available to user space because nvtop uses it
-> when performing engine usage calculations.
-> 
-> It is important to bear in mind that both GPU cycle and kernel time numbers
-> provided are at best rough estimations, and always reported in excess from
-> the actual figure because of two reasons:
->  - Excess time because of the delay between the end of a job processing,
->    the subsequent job IRQ and the actual time of the sample.
->  - Time spent in the engine queue waiting for the GPU to pick up the next
->    job.
-> 
-> To avoid race conditions during enablement/disabling, a reference counting
-> mechanism was introduced, and a job flag that tells us whether a given job
-> increased the refcount. This is necessary, because user space can toggle
-> cycle counting through a debugfs file, and a given job might have been in
-> flight by the time cycle counting was disabled.
-> 
-> The main goal of the debugfs cycle counter knob is letting tools like nvtop
-> or IGT's gputop switch it at any time, to avoid power waste in case no
-> engine usage measuring is necessary.
-> 
-> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> ---
->  drivers/gpu/drm/panfrost/Makefile           |  2 +
->  drivers/gpu/drm/panfrost/panfrost_debugfs.c | 20 ++++++++
->  drivers/gpu/drm/panfrost/panfrost_debugfs.h | 13 +++++
->  drivers/gpu/drm/panfrost/panfrost_devfreq.c |  8 +++
->  drivers/gpu/drm/panfrost/panfrost_devfreq.h |  3 ++
->  drivers/gpu/drm/panfrost/panfrost_device.c  |  2 +
->  drivers/gpu/drm/panfrost/panfrost_device.h  | 13 +++++
->  drivers/gpu/drm/panfrost/panfrost_drv.c     | 57 ++++++++++++++++++++-
->  drivers/gpu/drm/panfrost/panfrost_gpu.c     | 41 +++++++++++++++
->  drivers/gpu/drm/panfrost/panfrost_gpu.h     |  4 ++
->  drivers/gpu/drm/panfrost/panfrost_job.c     | 24 +++++++++
->  drivers/gpu/drm/panfrost/panfrost_job.h     |  5 ++
->  12 files changed, 191 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
->  create mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
-> 
-> diff --git a/drivers/gpu/drm/panfrost/Makefile b/drivers/gpu/drm/panfrost/Makefile
-> index 7da2b3f02ed9..2c01c1e7523e 100644
-> --- a/drivers/gpu/drm/panfrost/Makefile
-> +++ b/drivers/gpu/drm/panfrost/Makefile
-> @@ -12,4 +12,6 @@ panfrost-y := \
->  	panfrost_perfcnt.o \
->  	panfrost_dump.o
->  
-> +panfrost-$(CONFIG_DEBUG_FS) += panfrost_debugfs.o
-> +
->  obj-$(CONFIG_DRM_PANFROST) += panfrost.o
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.c b/drivers/gpu/drm/panfrost/panfrost_debugfs.c
-> new file mode 100644
-> index 000000000000..cc14eccba206
-> --- /dev/null
-> +++ b/drivers/gpu/drm/panfrost/panfrost_debugfs.c
-> @@ -0,0 +1,20 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright 2023 Collabora ltd. */
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/platform_device.h>
-> +#include <drm/drm_debugfs.h>
-> +#include <drm/drm_file.h>
-> +#include <drm/panfrost_drm.h>
-> +
-> +#include "panfrost_device.h"
-> +#include "panfrost_gpu.h"
-> +#include "panfrost_debugfs.h"
-> +
-> +void panfrost_debugfs_init(struct drm_minor *minor)
-> +{
-> +	struct drm_device *dev = minor->dev;
-> +	struct panfrost_device *pfdev = platform_get_drvdata(to_platform_device(dev->dev));
-> +
-> +	debugfs_create_atomic_t("profile", 0600, minor->debugfs_root, &pfdev->profile_mode);
-> +}
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.h b/drivers/gpu/drm/panfrost/panfrost_debugfs.h
-> new file mode 100644
-> index 000000000000..db1c158bcf2f
-> --- /dev/null
-> +++ b/drivers/gpu/drm/panfrost/panfrost_debugfs.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright 2023 Collabora ltd.
-> + */
-> +
-> +#ifndef PANFROST_DEBUGFS_H
-> +#define PANFROST_DEBUGFS_H
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +void panfrost_debugfs_init(struct drm_minor *minor);
-> +#endif
-> +
-> +#endif  /* PANFROST_DEBUGFS_H */
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> index 58dfb15a8757..28caffc689e2 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> @@ -58,6 +58,7 @@ static int panfrost_devfreq_get_dev_status(struct device *dev,
->  	spin_lock_irqsave(&pfdevfreq->lock, irqflags);
->  
->  	panfrost_devfreq_update_utilization(pfdevfreq);
-> +	pfdevfreq->current_frequency = status->current_frequency;
->  
->  	status->total_time = ktime_to_ns(ktime_add(pfdevfreq->busy_time,
->  						   pfdevfreq->idle_time));
-> @@ -117,6 +118,7 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->  	struct devfreq *devfreq;
->  	struct thermal_cooling_device *cooling;
->  	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
-> +	unsigned long freq = ULONG_MAX;
->  
->  	if (pfdev->comp->num_supplies > 1) {
->  		/*
-> @@ -172,6 +174,12 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->  		return ret;
->  	}
->  
-> +	/* Find the fastest defined rate  */
-> +	opp = dev_pm_opp_find_freq_floor(dev, &freq);
-> +	if (IS_ERR(opp))
-> +		return PTR_ERR(opp);
-> +	pfdevfreq->fast_rate = freq;
-> +
->  	dev_pm_opp_put(opp);
->  
->  	/*
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> index 1514c1f9d91c..48dbe185f206 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> @@ -19,6 +19,9 @@ struct panfrost_devfreq {
->  	struct devfreq_simple_ondemand_data gov_data;
->  	bool opp_of_table_added;
->  
-> +	unsigned long current_frequency;
-> +	unsigned long fast_rate;
-> +
->  	ktime_t busy_time;
->  	ktime_t idle_time;
->  	ktime_t time_last_update;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-> index fa1a086a862b..28f7046e1b1a 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> @@ -207,6 +207,8 @@ int panfrost_device_init(struct panfrost_device *pfdev)
->  
->  	spin_lock_init(&pfdev->as_lock);
->  
-> +	spin_lock_init(&pfdev->cycle_counter.lock);
-> +
->  	err = panfrost_clk_init(pfdev);
->  	if (err) {
->  		dev_err(pfdev->dev, "clk init failed %d\n", err);
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index b0126b9fbadc..1e85656dc2f7 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -107,6 +107,7 @@ struct panfrost_device {
->  	struct list_head scheduled_jobs;
->  
->  	struct panfrost_perfcnt *perfcnt;
-> +	atomic_t profile_mode;
->  
->  	struct mutex sched_lock;
->  
-> @@ -121,6 +122,11 @@ struct panfrost_device {
->  	struct shrinker shrinker;
->  
->  	struct panfrost_devfreq pfdevfreq;
-> +
-> +	struct {
-> +		atomic_t use_count;
-> +		spinlock_t lock;
-> +	} cycle_counter;
->  };
->  
->  struct panfrost_mmu {
-> @@ -135,12 +141,19 @@ struct panfrost_mmu {
->  	struct list_head list;
->  };
->  
-> +struct panfrost_engine_usage {
-> +	unsigned long long elapsed_ns[NUM_JOB_SLOTS];
-> +	unsigned long long cycles[NUM_JOB_SLOTS];
-> +};
-> +
->  struct panfrost_file_priv {
->  	struct panfrost_device *pfdev;
->  
->  	struct drm_sched_entity sched_entity[NUM_JOB_SLOTS];
->  
->  	struct panfrost_mmu *mmu;
-> +
-> +	struct panfrost_engine_usage engine_usage;
->  };
->  
->  static inline struct panfrost_device *to_panfrost_device(struct drm_device *ddev)
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> index a2ab99698ca8..a8d02273afab 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -20,6 +20,7 @@
->  #include "panfrost_job.h"
->  #include "panfrost_gpu.h"
->  #include "panfrost_perfcnt.h"
-> +#include "panfrost_debugfs.h"
->  
->  static bool unstable_ioctls;
->  module_param_unsafe(unstable_ioctls, bool, 0600);
-> @@ -267,6 +268,7 @@ static int panfrost_ioctl_submit(struct drm_device *dev, void *data,
->  	job->requirements = args->requirements;
->  	job->flush_id = panfrost_gpu_get_latest_flush_id(pfdev);
->  	job->mmu = file_priv->mmu;
-> +	job->engine_usage = &file_priv->engine_usage;
->  
->  	slot = panfrost_job_get_slot(job);
->  
-> @@ -523,7 +525,55 @@ static const struct drm_ioctl_desc panfrost_drm_driver_ioctls[] = {
->  	PANFROST_IOCTL(MADVISE,		madvise,	DRM_RENDER_ALLOW),
->  };
->  
-> -DEFINE_DRM_GEM_FOPS(panfrost_drm_driver_fops);
-> +
-> +static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
-> +				     struct panfrost_file_priv *panfrost_priv,
-> +				     struct drm_printer *p)
-> +{
-> +	int i;
-> +
-> +	/*
-> +	 * IMPORTANT NOTE: drm-cycles and drm-engine measurements are not
-> +	 * accurate, as they only provide a rough estimation of the number of
-> +	 * GPU cycles and CPU time spent in a given context. This is due to two
-> +	 * different factors:
-> +	 * - Firstly, we must consider the time the CPU and then the kernel
-> +	 *   takes to process the GPU interrupt, which means additional time and
-> +	 *   GPU cycles will be added in excess to the real figure.
-> +	 * - Secondly, the pipelining done by the Job Manager (2 job slots per
-> +	 *   engine) implies there is no way to know exactly how much time each
-> +	 *   job spent on the GPU.
-> +	 */
-> +
-> +	static const char * const engine_names[] = {
-> +		"fragment", "vertex-tiler", "compute-only"
-> +	};
-> +
-> +	for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
-> +		drm_printf(p, "drm-engine-%s:\t%llu ns\n",
-> +			   engine_names[i], panfrost_priv->engine_usage.cycles[i]);
-> +		drm_printf(p, "drm-cycles-%s:\t%llu\n",
-> +			   engine_names[i], panfrost_priv->engine_usage.elapsed_ns[i]);
+Some manufacturers use multiple sources of speakers. Motherboard
+GPIOs are set to indicate which type of speaker is fitted so that
+the correct tunings can be loaded. Patch #1 adds support for this
+and patch #2 adds a KUnit test for the new code.
 
-Aren't these backwards?
+Richard Fitzgerald (2):
+  ALSA: hda: cs35l56: Add support for speaker id
+  ALSA: hda: cirrus_scodec: Add KUnit test
 
-I just spent quite a while wondering why the cycles and time seemed to
-be reporting rather different percentage utilisation. Swapping these two
-round results in much more plausible values ;)
+ MAINTAINERS                        |   1 +
+ sound/pci/hda/Kconfig              |  17 ++
+ sound/pci/hda/Makefile             |   4 +
+ sound/pci/hda/cirrus_scodec.c      |  73 ++++++
+ sound/pci/hda/cirrus_scodec.h      |  13 +
+ sound/pci/hda/cirrus_scodec_test.c | 370 +++++++++++++++++++++++++++++
+ sound/pci/hda/cs35l56_hda.c        |  24 +-
+ 7 files changed, 501 insertions(+), 1 deletion(-)
+ create mode 100644 sound/pci/hda/cirrus_scodec.c
+ create mode 100644 sound/pci/hda/cirrus_scodec.h
+ create mode 100644 sound/pci/hda/cirrus_scodec_test.c
 
-With this fixed:
-
-Reviewed-by: Steven Price <steven.price@arm.com>
-
---
-Steve
-
-> +		drm_printf(p, "drm-maxfreq-%s:\t%lu Hz\n",
-> +			   engine_names[i], pfdev->pfdevfreq.fast_rate);
-> +		drm_printf(p, "drm-curfreq-%s:\t%lu Hz\n",
-> +			   engine_names[i], pfdev->pfdevfreq.current_frequency);
-> +	}
-> +}
-> +
-> +static void panfrost_show_fdinfo(struct drm_printer *p, struct drm_file *file)
-> +{
-> +	struct drm_device *dev = file->minor->dev;
-> +	struct panfrost_device *pfdev = dev->dev_private;
-> +
-> +	panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
-> +}
-> +
-> +static const struct file_operations panfrost_drm_driver_fops = {
-> +	.owner = THIS_MODULE,
-> +	DRM_GEM_FOPS,
-> +	.show_fdinfo = drm_show_fdinfo,
-> +};
->  
->  /*
->   * Panfrost driver version:
-> @@ -535,6 +585,7 @@ static const struct drm_driver panfrost_drm_driver = {
->  	.driver_features	= DRIVER_RENDER | DRIVER_GEM | DRIVER_SYNCOBJ,
->  	.open			= panfrost_open,
->  	.postclose		= panfrost_postclose,
-> +	.show_fdinfo		= panfrost_show_fdinfo,
->  	.ioctls			= panfrost_drm_driver_ioctls,
->  	.num_ioctls		= ARRAY_SIZE(panfrost_drm_driver_ioctls),
->  	.fops			= &panfrost_drm_driver_fops,
-> @@ -546,6 +597,10 @@ static const struct drm_driver panfrost_drm_driver = {
->  
->  	.gem_create_object	= panfrost_gem_create_object,
->  	.gem_prime_import_sg_table = panfrost_gem_prime_import_sg_table,
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +	.debugfs_init		= panfrost_debugfs_init,
-> +#endif
->  };
->  
->  static int panfrost_probe(struct platform_device *pdev)
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> index 2faa344d89ee..f0be7e19b13e 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -73,6 +73,13 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
->  	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
->  	gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
->  
-> +	/*
-> +	 * All in-flight jobs should have released their cycle
-> +	 * counter references upon reset, but let us make sure
-> +	 */
-> +	if (drm_WARN_ON(pfdev->ddev, atomic_read(&pfdev->cycle_counter.use_count) != 0))
-> +		atomic_set(&pfdev->cycle_counter.use_count, 0);
-> +
->  	return 0;
->  }
->  
-> @@ -321,6 +328,40 @@ static void panfrost_gpu_init_features(struct panfrost_device *pfdev)
->  		 pfdev->features.shader_present, pfdev->features.l2_present);
->  }
->  
-> +void panfrost_cycle_counter_get(struct panfrost_device *pfdev)
-> +{
-> +	if (atomic_inc_not_zero(&pfdev->cycle_counter.use_count))
-> +		return;
-> +
-> +	spin_lock(&pfdev->cycle_counter.lock);
-> +	if (atomic_inc_return(&pfdev->cycle_counter.use_count) == 1)
-> +		gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_START);
-> +	spin_unlock(&pfdev->cycle_counter.lock);
-> +}
-> +
-> +void panfrost_cycle_counter_put(struct panfrost_device *pfdev)
-> +{
-> +	if (atomic_add_unless(&pfdev->cycle_counter.use_count, -1, 1))
-> +		return;
-> +
-> +	spin_lock(&pfdev->cycle_counter.lock);
-> +	if (atomic_dec_return(&pfdev->cycle_counter.use_count) == 0)
-> +		gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_STOP);
-> +	spin_unlock(&pfdev->cycle_counter.lock);
-> +}
-> +
-> +unsigned long long panfrost_cycle_counter_read(struct panfrost_device *pfdev)
-> +{
-> +	u32 hi, lo;
-> +
-> +	do {
-> +		hi = gpu_read(pfdev, GPU_CYCLE_COUNT_HI);
-> +		lo = gpu_read(pfdev, GPU_CYCLE_COUNT_LO);
-> +	} while (hi != gpu_read(pfdev, GPU_CYCLE_COUNT_HI));
-> +
-> +	return ((u64)hi << 32) | lo;
-> +}
-> +
->  void panfrost_gpu_power_on(struct panfrost_device *pfdev)
->  {
->  	int ret;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> index 468c51e7e46d..876fdad9f721 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> @@ -16,6 +16,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
->  void panfrost_gpu_power_on(struct panfrost_device *pfdev);
->  void panfrost_gpu_power_off(struct panfrost_device *pfdev);
->  
-> +void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
-> +void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
-> +unsigned long long panfrost_cycle_counter_read(struct panfrost_device *pfdev);
-> +
->  void panfrost_gpu_amlogic_quirk(struct panfrost_device *pfdev);
->  
->  #endif
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-> index 033f5e684707..fb16de2d0420 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-> @@ -159,6 +159,16 @@ panfrost_dequeue_job(struct panfrost_device *pfdev, int slot)
->  	struct panfrost_job *job = pfdev->jobs[slot][0];
->  
->  	WARN_ON(!job);
-> +	if (job->is_profiled) {
-> +		if (job->engine_usage) {
-> +			job->engine_usage->elapsed_ns[slot] +=
-> +				ktime_to_ns(ktime_sub(ktime_get(), job->start_time));
-> +			job->engine_usage->cycles[slot] +=
-> +				panfrost_cycle_counter_read(pfdev) - job->start_cycles;
-> +		}
-> +		panfrost_cycle_counter_put(job->pfdev);
-> +	}
-> +
->  	pfdev->jobs[slot][0] = pfdev->jobs[slot][1];
->  	pfdev->jobs[slot][1] = NULL;
->  
-> @@ -233,6 +243,13 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
->  	subslot = panfrost_enqueue_job(pfdev, js, job);
->  	/* Don't queue the job if a reset is in progress */
->  	if (!atomic_read(&pfdev->reset.pending)) {
-> +		if (atomic_read(&pfdev->profile_mode)) {
-> +			panfrost_cycle_counter_get(pfdev);
-> +			job->is_profiled = true;
-> +			job->start_time = ktime_get();
-> +			job->start_cycles = panfrost_cycle_counter_read(pfdev);
-> +		}
-> +
->  		job_write(pfdev, JS_COMMAND_NEXT(js), JS_COMMAND_START);
->  		dev_dbg(pfdev->dev,
->  			"JS: Submitting atom %p to js[%d][%d] with head=0x%llx AS %d",
-> @@ -660,10 +677,14 @@ panfrost_reset(struct panfrost_device *pfdev,
->  	 * stuck jobs. Let's make sure the PM counters stay balanced by
->  	 * manually calling pm_runtime_put_noidle() and
->  	 * panfrost_devfreq_record_idle() for each stuck job.
-> +	 * Let's also make sure the cycle counting register's refcnt is
-> +	 * kept balanced to prevent it from running forever
->  	 */
->  	spin_lock(&pfdev->js->job_lock);
->  	for (i = 0; i < NUM_JOB_SLOTS; i++) {
->  		for (j = 0; j < ARRAY_SIZE(pfdev->jobs[0]) && pfdev->jobs[i][j]; j++) {
-> +			if (pfdev->jobs[i][j]->is_profiled)
-> +				panfrost_cycle_counter_put(pfdev->jobs[i][j]->pfdev);
->  			pm_runtime_put_noidle(pfdev->dev);
->  			panfrost_devfreq_record_idle(&pfdev->pfdevfreq);
->  		}
-> @@ -926,6 +947,9 @@ void panfrost_job_close(struct panfrost_file_priv *panfrost_priv)
->  			}
->  
->  			job_write(pfdev, JS_COMMAND(i), cmd);
-> +
-> +			/* Jobs can outlive their file context */
-> +			job->engine_usage = NULL;
->  		}
->  	}
->  	spin_unlock(&pfdev->js->job_lock);
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
-> index 8becc1ba0eb9..17ff808dba07 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
-> @@ -32,6 +32,11 @@ struct panfrost_job {
->  
->  	/* Fence to be signaled by drm-sched once its done with the job */
->  	struct dma_fence *render_done_fence;
-> +
-> +	struct panfrost_engine_usage *engine_usage;
-> +	bool is_profiled;
-> +	ktime_t start_time;
-> +	u64 start_cycles;
->  };
->  
->  int panfrost_job_init(struct panfrost_device *pfdev);
+-- 
+2.30.2
 
