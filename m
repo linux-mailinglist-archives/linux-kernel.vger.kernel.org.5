@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF1D7A5277
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A427A5275
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbjIRS6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 14:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
+        id S229966AbjIRS64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 14:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbjIRS6n (ORCPT
+        with ESMTP id S229875AbjIRS6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 14:58:43 -0400
-Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E33D11F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 11:58:37 -0700 (PDT)
+        Mon, 18 Sep 2023 14:58:44 -0400
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42050109
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 11:58:38 -0700 (PDT)
 Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
-        id 35309C25F82C; Mon, 18 Sep 2023 11:58:22 -0700 (PDT)
+        id 3D51DC25F82E; Mon, 18 Sep 2023 11:58:22 -0700 (PDT)
 From:   Stefan Roesch <shr@devkernel.io>
 To:     kernel-team@fb.com
 Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
         hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v2 3/4] mm/ksm: document smart scan mode
-Date:   Mon, 18 Sep 2023 11:58:15 -0700
-Message-Id: <20230918185816.1518366-4-shr@devkernel.io>
+Subject: [PATCH v2 4/4] mm/ksm: document pages_skipped sysfs knob
+Date:   Mon, 18 Sep 2023 11:58:16 -0700
+Message-Id: <20230918185816.1518366-5-shr@devkernel.io>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230918185816.1518366-1-shr@devkernel.io>
 References: <20230918185816.1518366-1-shr@devkernel.io>
@@ -39,38 +39,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds documentation for the smart scan mode of KSM.
+This adds documentation for the new metric pages_skipped.
 
 Signed-off-by: Stefan Roesch <shr@devkernel.io>
 Reviewed-by: David Hildenbrand <david@redhat.com>
 ---
- Documentation/admin-guide/mm/ksm.rst | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ Documentation/admin-guide/mm/ksm.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/admin-guide/mm/ksm.rst b/Documentation/admin-g=
 uide/mm/ksm.rst
-index 776f244bdae4..1762219baf51 100644
+index 1762219baf51..27d949250b67 100644
 --- a/Documentation/admin-guide/mm/ksm.rst
 +++ b/Documentation/admin-guide/mm/ksm.rst
-@@ -155,6 +155,15 @@ stable_node_chains_prune_millisecs
-         scan. It's a noop if not a single KSM page hit the
-         ``max_page_sharing`` yet.
-=20
-+smart_scan
-+        By default KSM checks every candidate page for each scan. It doe=
-s
-+        not take into account historic information. When smart scan is
-+        enabled, pages that have previously not been de-duplicated get
-+        skipped. How often these pages are skipped depends on how often
-+        de-duplication has already been tried and failed. By default thi=
-s
-+        optimization is disabled. The ``pages_skipped`` metric shows how
-+        effetive the setting is.
-+
- The effectiveness of KSM and MADV_MERGEABLE is shown in ``/sys/kernel/mm=
-/ksm/``:
-=20
- general_profit
+@@ -178,6 +178,8 @@ pages_unshared
+         how many pages unique but repeatedly checked for merging
+ pages_volatile
+         how many pages changing too fast to be placed in a tree
++pages_skipped
++        how many pages did the "smart" page scanning algorithm skip
+ full_scans
+         how many times all mergeable areas have been scanned
+ stable_node_chains
 --=20
 2.39.3
 
