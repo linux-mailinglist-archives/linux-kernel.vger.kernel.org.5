@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A576D7A4E2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78927A4FA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjIRQIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        id S231152AbjIRQsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbjIRQH4 (ORCPT
+        with ESMTP id S229514AbjIRQsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:07:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360AA4C01;
-        Mon, 18 Sep 2023 09:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695053156; x=1726589156;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Zfxh6xGoJ87Sh7tABUQTQr3Sju0eUbicnGbi8Y0sZAM=;
-  b=NhVq+IrBigxeAl+8P/zohqPN8r26guu/hUyO16Xsf5t/L1PU+q/Ft6i/
-   2HiCfAEHyH01FsITBzxNiPZvSB+mdy4ghnpN88lwgSmQNrKHVKD0FPXog
-   N0qGNK2WPbxBh1lcbwVHn8hBuZBP9Qce7Q7O5sCPCZBpF9jGQITwRO+Pn
-   t0Dgj773yd0wqsDxLe9JILN1cjBsNHiFVRkOG5RT5hUOXrJL8SPGMxqhG
-   Lnj0pZwJPUEEimpbooETvs4O2f9wjirG+0tVSrDFBLbGuMvLiGU/QaOCH
-   CxsClrTcMCVl6uaxnPDGZ+cIdZkKT/KmsXugBTmxzVKqzQSsMyaN7QGzo
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="443735192"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="443735192"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 07:00:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="811365257"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="811365257"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 07:00:12 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qiEnK-00000009fzT-0gvO;
-        Mon, 18 Sep 2023 17:00:10 +0300
-Date:   Mon, 18 Sep 2023 17:00:09 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Mark Pearson <mpearson-lenovo@squebb.ca>,
-        Joe Perches <joe@perches.com>
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] platform/x86: think-lmi: Add bulk save feature
-Message-ID: <ZQhX6Ynz-cl1gkNu@smile.fi.intel.com>
-References: <mpearson-lenovo@squebb.ca>
- <20230906121328.50437-1-mpearson-lenovo@squebb.ca>
- <ZQhXZkBHviGOEl-x@smile.fi.intel.com>
+        Mon, 18 Sep 2023 12:48:04 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399861B8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:47:14 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d8207f87163so475999276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:47:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695055633; x=1695660433; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bC2phskuIFvD/AaiWBQwD/RidKu+taALyCRQa/nknSE=;
+        b=UDKaXZv3Zf9Np39Rkb8CoPpxkkxYwUYEdauolRfPP5PGD3ae6tQJEqtZoPCFdbDgpc
+         1dUEwTmzeypPkg4C0D4YqB6RpRZXQ3GpmahYjsCBo7tlGCjeLk7L3prSpWdZ1IDmeK3N
+         FQhBMfCMEBihxEoM4APQF/IoszSdaDyxLlL7E3nyLxtaiqZPt4JeKB1NGGlqjBTipILz
+         +3U7jsOpMdip7lYm0q26cBKYa+IF+vk9/DE76iBb7JKzLWq6b9mvAMwGkpyPJ2RYVRT7
+         hwTq98q0kG8Q/R9Fvg80yEibQ0sui6Q/aOL2vmlC1Anuug0Q527OBacCncMvJrqwM/f4
+         fd3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695055633; x=1695660433;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bC2phskuIFvD/AaiWBQwD/RidKu+taALyCRQa/nknSE=;
+        b=g2yYsbympuiY/DnjeRcV4GAu7a8e6BcotJNBlIOx8JwTw8Fmu5twdKjpPy9cp9oxr2
+         MW0uk7LPTTB1Jjv9ovf4+IAc5F35naEZZ0uoiAqQjrBNFjFz5YT3ANlTiFeKMBa3dmbz
+         KljvpG/0qy0B7BoUDPtNs2CqeNMJ09GEMoCd1MAzLdKsasBStte/C2ZAYCrlNHgA3JZJ
+         0ZKCbmW6kmBbPhNxhdIbvb6XFiRr+uTo84koHKtX8YP+MXe9h6et4EHS7L07EvFwaKYx
+         hpPzITdbcrCjxIl3xFe/5Ye+3QOSnKron81LrTQuxEi1InT0ZRaeIa8r5UCDZHblwtIx
+         Z3Aw==
+X-Gm-Message-State: AOJu0YxDjgxloHxkgWg+2LtMwqi8JPomdjH/fGXpJwJcIkRj/Ygsl76+
+        vc1JMhoS/dsfuIc9XEKQqwrRcpnU5otCgUnNL+z1Uw==
+X-Google-Smtp-Source: AGHT+IE4huNJ9ieYLbRr1wXk9YJVyZSV0RaDTxWDJMPdpQYjKG794yWqTTw/d7v2WKKlkf7zMRwoMQ==
+X-Received: by 2002:a6b:c94d:0:b0:795:172f:977a with SMTP id z74-20020a6bc94d000000b00795172f977amr9665856iof.1.1695045646340;
+        Mon, 18 Sep 2023 07:00:46 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id em8-20020a0566384da800b0042b068d921esm2836235jab.16.2023.09.18.07.00.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 07:00:45 -0700 (PDT)
+Message-ID: <e6433ada-16db-4d16-801b-9a3fd5460467@kernel.dk>
+Date:   Mon, 18 Sep 2023 08:00:45 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQhXZkBHviGOEl-x@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] aoe: refactor deprecated strncpy
+Content-Language: en-US
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Justin Sanders <justin@coraid.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Xu Panda <xu.panda@zte.com.cn>,
+        Yang Yang <yang.yang29@zte.com>
+References: <20230911-strncpy-drivers-block-aoe-aoenet-c-v1-1-9643d6137ff9@google.com>
+ <202309142019.23A7D80A@keescook>
+ <6338fbac-0177-43eb-be4f-7c586956953f@kernel.dk>
+ <CAFhGd8pwtUSJBzepe=GBeyKuhD6ND6aWjeeT477Sdb4YTYDL_Q@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <CAFhGd8pwtUSJBzepe=GBeyKuhD6ND6aWjeeT477Sdb4YTYDL_Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 04:57:58PM +0300, Andy Shevchenko wrote:
-> On Wed, Sep 06, 2023 at 08:13:14AM -0400, Mark Pearson wrote:
-
-...
-
-> > +Date:		August 2023
-> > +KernelVersion:	6.5
+On 9/18/23 1:03 AM, Justin Stitt wrote:
+>> Change looks fine to me too, but for the love of $deity, please use
+>> a proper subject line for these kinds of patches. It's not refactoring
+>> anything.
+>>
 > 
-> This is obviously incorrect (outdated) information.
+> Fair.
+> 
+> Perhaps "xyz: replace strncpy with strscpy"?
 
-Joe, does checkpatch have a hook to test that (using phb-crystal-ball data)?
+That's a lot more descriptive, as a) it's actually accurate, and b) this
+is what the patch does. You just sent another one with this refactor
+wording which makes zero sense, please resend this and others targeted
+at block with a proper description.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Jens Axboe
 
