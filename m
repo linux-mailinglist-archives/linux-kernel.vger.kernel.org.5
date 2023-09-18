@@ -2,247 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0F77A463F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B337A4641
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241070AbjIRJnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 05:43:12 -0400
+        id S241128AbjIRJnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:43:22 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241137AbjIRJm6 (ORCPT
+        with ESMTP id S241124AbjIRJm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:42:58 -0400
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E9B11B;
-        Mon, 18 Sep 2023 02:41:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1695030083; x=1726566083;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=pyo06pKNnJJNoJ+zjYuTzutG28oP6lWWxnAYYRZB4yg=;
-  b=YeW+zs3tcIBTNhvZw1PFhR5ZSIw+Z1W0TcREUj4ygeXDgiaceH6n+KJj
-   kR18nSYULnmp4YjiaYGEh7q+ytOOYzvlTKGJhFGfqrwxUtoXLs75X8rYx
-   UrZHy5UhJlRS3K0lRcf5oE4v4zKDCpONNjbpH9Z1eM6yx+iHYZJTpniBt
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.02,156,1688428800"; 
-   d="scan'208";a="364113906"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-54a853e6.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 09:41:16 +0000
-Received: from EX19MTAUWA002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1a-m6i4x-54a853e6.us-east-1.amazon.com (Postfix) with ESMTPS id 0B3844803B;
-        Mon, 18 Sep 2023 09:41:11 +0000 (UTC)
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 18 Sep 2023 09:41:11 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 18 Sep
- 2023 09:41:08 +0000
-Message-ID: <63b382bf-d1fb-464f-ab06-4185f796a85f@amazon.de>
-Date:   Mon, 18 Sep 2023 11:41:06 +0200
+        Mon, 18 Sep 2023 05:42:56 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9A8CC7;
+        Mon, 18 Sep 2023 02:41:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AA89E1F37F;
+        Mon, 18 Sep 2023 09:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695030076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQP1wPJDUgx7ZLJLXNhEB9grdPp9c1uarNW8JL9bAWU=;
+        b=vlkbnDMDju+XgrwdDYfedeuYfzjEk817K2JhOTs4N7fhhzPU59q+5+mBT5Z9PejJ0zSpOA
+        uhL9g0wSPB2ETzIMhNpIJ13h03U1jd4hMlSFbDsHtooSPi5Hfgd1CAyMuoreAAJV5pWJdG
+        gWpHqDNtb8u1jId+LACHTEt756NP3oY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695030076;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQP1wPJDUgx7ZLJLXNhEB9grdPp9c1uarNW8JL9bAWU=;
+        b=cgeXizwHufg+26MLNkJsbe3TLqNfoh1bAOp/RgAN9jvLGTQfP54G8gPG/tQQAwAe5DTud7
+        EXTHTGujAtLNx7AA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B45513480;
+        Mon, 18 Sep 2023 09:41:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZCnlJTwbCGUFHwAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 09:41:16 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 2EA86A0759; Mon, 18 Sep 2023 11:41:16 +0200 (CEST)
+Date:   Mon, 18 Sep 2023 11:41:16 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Philipp Stanner <pstanner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Chris Mason <clm@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org, Yury Norov <yury.norov@gmail.com>
+Subject: Re: [PATCH v1 1/1] xarray: fix the data-race in xas_find_chunk() by
+ using READ_ONCE()
+Message-ID: <20230918094116.2mgquyxhnxcawxfu@quack3>
+References: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] KVM: x86: Allow userspace exit on HLT and MWAIT, else yield
- on MWAIT
-Content-Language: en-GB
-To:     David Woodhouse <dwmw2@infradead.org>, <kvm@vger.kernel.org>,
-        "Peter Zijlstra" <peterz@infradead.org>
-CC:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, <linux-kernel@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@amazon.es>,
-        "Griffoul, Fred" <fgriffo@amazon.com>
-References: <1b52b557beb6606007f7ec5672eab0adf1606a34.camel@infradead.org>
-From:   Alexander Graf <graf@amazon.de>
-In-Reply-To: <1b52b557beb6606007f7ec5672eab0adf1606a34.camel@infradead.org>
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D031UWA002.ant.amazon.com (10.13.139.96) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_PERMERROR,URI_DOTEDU autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ck9uIDE4LjA5LjIzIDExOjA2LCBEYXZpZCBXb29kaG91c2Ugd3JvdGU6Cj4gRnJvbTogRGF2aWQg
-V29vZGhvdXNlIDxkd213QGFtYXpvbi5jby51az4KPgo+IFRoZSBWTU0gbWF5IGhhdmUgd29yayB0
-byBkbyBvbiBiZWhhbGYgb2YgdGhlIGd1ZXN0LCBhbmQgaXQncyBvZnRlbgo+IGRlc2lyYWJsZSB0
-byB1c2UgdGhlIGN5Y2xlcyB3aGVuIHRoZSB2Q1BVUyBhcmUgaWRsZS4KPgo+IFdoZW4gdGhlIHZD
-UFUgdXNlcyBITFQgdGhpcyB3b3JrcyBvdXQgT0sgYmVjYXVzZSB0aGUgVk1NIGNhbiBydW4gaXRz
-Cj4gdGFza3MgaW4gYSBzZXBhcmF0ZSB0aHJlYWQgd2hpY2ggZ2V0cyBzY2hlZHVsZWQgd2hlbiB0
-aGUgaW4ta2VybmVsCj4gZW11bGF0aW9uIG9mIEhMVCBzY2hlZHVsZXMgYXdheS4gSXQgaXNuJ3Qg
-cGVyZmVjdCwgYmVjYXVzZSBpdCBkb2Vzbid0Cj4gZWFzaWx5IGFsbG93IGZvciBoYW5kbGluZyBi
-b3RoIGxvdy1wcmlvcml0eSBtYWludGVuYW5jZSB0YXNrcyB3aGVuIHRoZQo+IFZNTSB3YW50cyB0
-byB3YWl0IHVudGlsIHRoZSB2Q1BVIGlzIGlkbGUsIGFuZCBhbHNvIGZvciBoaWdoZXIgcHJpb3Jp
-dHkKPiB0YXNrcyB3aGVyZSB0aGUgVk1NIGRvZXMgd2FudCB0byBwcmVlbXB0IHRoZSB2Q1BVLiBJ
-dCBjYW4gYWxzbyBsZWFkIHRvCj4gbm9pc3kgbmVpZ2hib3VyIGVmZmVjdHMsIHdoZW4gYSBob3N0
-IGhhcyBpc24ndCBuZWNlc3NhcmlseSBzaXplZCB0bwo+IGV4cGVjdCBhbnkgZ2l2ZW4gVk1NIHRv
-IHN1ZGRlbmx5IGJlIGNvbnRlbmRpbmcgZm9yIG1hbnkgKm1vcmUqIHBDUFVzCj4gdGhhbiBpdCBo
-YXMgdkNQVXMuCj4KPiBJbiBhZGRpdGlvbiwgdGhlcmUgYXJlIHRpbWVzIHdoZW4gd2UgbmVlZCB0
-byBleHBvc2UgTVdBSVQgdG8gYSBndWVzdAo+IGZvciBjb21wYXRpYmlsaXR5IHdpdGggYSBwcmV2
-aW91cyBlbnZpcm9ubWVudC4gQW5kIE1XQUlUIGlzIG11Y2ggaGFyZGVyCj4gYmVjYXVzZSBpdCdz
-IHZlcnkgaGFyZCB0byBlbXVsYXRlIHByb3Blcmx5Lgo+Cj4gVGhlcmUgd2VyZSBhdHRlbXB0cyBh
-dCBkb2luZyBzbyBiYXNlZCBvbiBtYXJraW5nIHRoZSB0YXJnZXQgcGFnZSByZWFkLQo+IG9ubHkg
-aW4gTU9OSVRPUiBhbmQgdHJpZ2dlcmluZyB0aGUgd2FrZSB3aGVuIGl0IHRha2VzIGEgbWlub3Ig
-ZmF1bHQsCj4gYnV0IHNvIGZhciB0aGV5IGhhdmVuJ3QgbGVkIHRvIGEgd29ya2luZyBzb2x1dGlv
-bjoKPiBodHRwczovL3d3dy5jb250cmliLmFuZHJldy5jbXUuZWR1L35zb21sby9PU1hLVk0vbXdh
-aXQuaHRtbAo+Cj4gU28gd2hlbiBhIGd1ZXN0IGV4ZWN1dGVzIE1XQUlULCBlaXRoZXIgd2UndmUg
-ZGlzYWJsZWQgZXhpdC1vbi1td2FpdCBhbmQKPiB0aGUgZ3Vlc3QgYWN0dWFsbHkgc2l0cyBpbiBu
-b24tcm9vdCBtb2RlIGhvZ2dpbmcgdGhlIHBDUFUsIG9yIGlmIHdlIGRvCj4gZW5hYmxlIGV4aXQt
-b24tbXdhaXQgdGhlIGtlcm5lbCBqdXN0IHRyZWF0cyBpdCBhcyBhIE5PUCBhbmQgYm91bmNlcwo+
-IHJpZ2h0IGJhY2sgaW50byB0aGUgZ3Vlc3QgdG8gYnVzeS13YWl0IHJvdW5kIGl0cyBpZGxlIGxv
-b3AuCj4KPiBGb3IgYSBzdGFydCwgd2UgY2FuIHN0aWNrIGEgeWllbGQoKSBpbnRvIHRoYXQgYnVz
-eS1sb29wLiBUaGUgeWllbGQoKQo+IGhhcyBmYWlybHkgcG9vcmx5IGRlZmluZWQgc2VtYW50aWNz
-LCBidXQgaXQncyBiZXR0ZXIgdGhhbiAqbm90aGluZyogYW5kCj4gZG9lcyBhbGxvdyBhIFZNTSdz
-IHRocmVhZC1iYXNlZCBJL08gYW5kIG1haW50ZW5hbmNlIHRhc2tzIHRvIHJ1biBhCj4gKmxpdHRs
-ZSogYmV0dGVyLgo+Cj4gQmV0dGVyIHN0aWxsLCB3ZSBjYW4gYm91bmNlIGFsbCB0aGUgd2F5IG91
-dCB0byAqdXNlcnNwYWNlKiBvbiBhbiBNV0FJVAo+IGV4aXQsIGFuZCBsZXQgdGhlIFZNTSBwZXJm
-b3JtIHNvbWUgb2YgaXRzIHBlbmRpbmcgd29yayByaWdodCB0aGVyZSBhbmQKPiB0aGVuIGluIHRo
-ZSB2Q1BVIHRocmVhZCBiZWZvcmUgcmUtZW50ZXJpbmcgdGhlIHZDUFUuIFRoYXQncyBtdWNoIG5p
-Y2VyCj4gdGhhbiB5aWVsZCgpLiBUaGUgdkNQVSBpcyBzdGlsbCBydW5uYWJsZSwgc2luY2Ugd2Ug
-c3RpbGwgZG9uJ3QgaGF2ZSBhCj4gKnJlYWwqIGVtdWxhdGlvbiBvZiBNV0FJVCwgc28gdGhlIHZD
-UFUgdGhyZWFkIGNhbiBkbyBhICpsaXR0bGUqIGJpdCBvZgo+IHdvcmsgYW5kIHRoZW4gZ28gYmFj
-ayBpbnRvIHRoZSB2Q1BVIGZvciBhbm90aGVyIHR1cm4gYXJvdW5kIHRoZSBsb29wLgo+Cj4gQW5k
-IGlmIHdlJ3JlIGdvaW5nIHRvIGRvIHRoYXQga2luZCBvZiB0YXNrIHByb2Nlc3NpbmcgZm9yIE1X
-QUlULWlkbGUKPiBndWVzdHMgZGlyZWN0bHkgZnJvbSB0aGUgdkNQVSB0aHJlYWQsIGl0J3MgbmVh
-dGVyIHRvIGRvIGl0IGZvciBITFQtaWRsZQo+IGd1ZXN0cyB0aGF0IHdheSB0b28uCj4KPiBGb3Ig
-SExULCB0aGUgdkNQVSAqaXNuJ3QqIHJ1bm5hYmxlOyBpdCdsbCBiZSBpbiBLVk1fTVBfU1RBVEVf
-SEFMVEVELgo+IFRoZSBWTU0gY2FuIHBvbGwgdGhlIG1wX3N0YXRlIGFuZCBrbm93IHdoZW4gdGhl
-IHZDUFUgc2hvdWxkIGJlIHJ1bgo+IGFnYWluLiBCdXQgbm90IHBvbGwoKSwgYWx0aG91Z2ggd2Ug
-bWlnaHQgd2FudCB0byBob29rIHVwIHNvbWV0aGluZyBsaWtlCj4gdGhhdCAob3IganVzdCBhIHNp
-Z25hbCBvciBldmVudGZkKSBmb3Igb3RoZXIgcmVhc29ucyBmb3IgVlNNIGFueXdheS4KPiBUaGUg
-Vk1NIGNhbiBhbHNvIGp1c3QgZG8gc29tZSB3b3JrIGFuZCB0aGVuIHJlLWVudGVyIHRoZSB2Q1BV
-IHdpdGhvdXQKPiB0aGUgY29ycmVzcG9uZGluZyBiaXQgc2V0IGluIHRoZSBrdm1fcnVuIHN0cnVj
-dC4KPgo+IFNvLCBlciwgd2hhdCBkb2VzIHRoaXMgcGF0Y2ggZG8/IEFkZCBhIGNhcGFiaWxpdHks
-IGRlZmluZSB0d28gYml0cyBmb3IKPiBleGl0aW5nIHRvIHVzZXJzcGFjZSBvbiBITFQgb3IgTVdB
-SVQg4oCUIGluIHRoZSBrdm1fcnVuIHN0cnVjdCByYXRoZXIKPiB0aGFuIG5lZWRpbmcgYSBzZXBh
-cmF0ZSBpb2N0bCB0byB0dXJuIHRoZW0gb24gb3Igb2ZmLCBzbyB0aGF0IHRoZSBWTU0KPiBjYW4g
-bWFrZSB0aGUgZGVjaXNpb24gZWFjaCB0aW1lIGl0IGVudGVycyB0aGUgdkNQVS4gSG9vayBpdCB1
-cCB0bwo+IChhYj8pdXNlIHRoZSBleGlzdGluZyBLVk1fRVhJVF9ITFQgd2hpY2ggd2FzIHByZXZp
-b3VzbHkgb25seSB1c2VkIHdoZW4KPiB0aGUgbG9jYWwgQVBJQyB3YXMgZW11bGF0ZWQgaW4gdXNl
-cnNwYWNlLCBhbmQgYWRkIGEgbmV3IEtWTV9FWElUX01XQUlULgo+Cj4gRmFpcmx5IG11Y2ggdW50
-ZXN0ZWQuCj4KPiBJZiB0aGlzIGFwcHJvYWNoIHNlZW1zIHJlYXNvbmFibGUsIG9mIGNvdXJzZSBJ
-J2xsIGFkZCB0ZXN0IGNhc2VzIGFuZAo+IHByb3BlciBkb2N1bWVudGF0aW9uIGJlZm9yZSBwb3N0
-aW5nIGl0IGZvciByZWFsLiBUaGlzIGlzIHRoZSBwcm9vZiBvZgo+IGNvbmNlcHQgYmVmb3JlIHdl
-IGV2ZW4gcHV0IGl0IHRocm91Z2ggdGVzdGluZyB0byBzZWUgd2hhdCBwZXJmb3JtYW5jZQo+IHdl
-IGdldCBvdXQgb2YgaXQgZXNwZWNpYWxseSBmb3IgdGhvc2Ugb2Jub3hpb3VzIE1XQUlULWVuYWJs
-ZWQgZ3Vlc3RzLgo+Cj4gU2lnbmVkLW9mZi1ieTogRGF2aWQgV29vZGhvdXNlIDxkd213QGFtYXpv
-bi5jby51az4KCgpJSVVDIHlvdSB3YW50IHRvIGRvIHdvcmsgaW4gYSB1c2VyIHNwYWNlIHZDUFUg
-dGhyZWFkIHdoZW4gdGhlIGd1ZXN0IHZDUFUgCmlzIGlkbGUuIEFzIHlvdSBwb2ludGVkIG91dCBh
-Ym92ZSwgS1ZNIGNhbiBub3QgYWN0dWFsbHkgZG8gbXVjaCBhYm91dCAKTVdBSVQ6IEl0IGJhc2lj
-YWxseSBidXN5IGxvb3BzIGFuZCBob2dzIHRoZSBDUFUuCgpUaGUgdHlwaWNhbCBmbG93IEkgd291
-bGQgZXhwZWN0IGZvciAid29yayBpbiBhIHZDUFUgdGhyZWFkIiBpczoKCjApIHZDUFUgcnVucy4g
-SExUL01XQUlUIGlzIGRpcmVjdGx5IGV4cG9zZWQgdG8gZ3Vlc3QuCjEpIHZDUFUgZXhpdHMuIENy
-ZWF0ZXMgZGVmZXJyZWQgd29yay4gRW5hYmxlcyBITFQvTVdBSVQgdHJhcHBpbmcuCjIpIHZDUFUg
-cnVucyBhZ2FpbgozKSB2Q1BVIGNhbGxzIEhMVC9NV0FJVC4gV2UgZXhpdCB0byB1c2VyIHNwYWNl
-IHRvIGZpbmlzaCB3b3JrIGZyb20gMQo0KSB2Q1BVIHJ1bnMgYWdhaW4gd2l0aG91dCBITFQvTVdB
-SVQgdHJhcHBpbmcKClRoYXQgbWVhbnMgb24gdG9wIChvciBpbnN0ZWFkPykgb2YgdGhlIGJpdHMg
-eW91IGhhdmUgYmVsb3cgdGhhdCBpbmRpY2F0ZSAKIlNob3VsZCBJIGV4aXQgdG8gdXNlciBzcGFj
-ZT8iLCB3aGF0IHlvdSByZWFsbHkgbmVlZCBhcmUgYml0cyB0aGF0IGRvIAp3aGF0IGVuYWJsZV9j
-YXAoS1ZNX0NBUF9YODZfRElTQUJMRV9FWElUUykgZG9lcyBpbiBsaWdodC13ZWlnaHQ6IERpc2Fi
-bGUgCkhMVC9NV0FJVCB0cmFwcGluZyB0ZW1wb3JhcmlseS4KCkFsc28sIHBsZWFzZSBrZWVwIGlu
-IG1pbmQgdGhhdCB5b3Ugc3RpbGwgd291bGQgbmVlZCBhIGZhbGxiYWNrIG1lY2hhbmlzbSAKdG8g
-cnVuIHlvdXIgImRlZmVycmVkIHdvcmsiIGV2ZW4gd2hlbiB0aGUgZ3Vlc3QgZG9lcyBub3QgY2Fs
-bCBITFQvTVdBSVQsIApsaWtlIGEgcmVndWxhciB0aW1lciBpbiB5b3VyIG1haW4gdGhyZWFkLgoK
-T24gdG9wIG9mIGFsbCB0aGlzLCBJJ20gbm90IHN1cmUgaXQncyBtb3JlIGVmZmljaWVudCB0byBk
-byB0aGUgdHJhcCB0byAKdGhlIHZDUFUgdGhyZWFkIGNvbXBhcmVkIHRvIGp1c3QgY3JlYXRpbmcg
-YSBzZXBhcmF0ZSByZWFsIHRocmVhZC4gWW91ciAKbWFpbiBwcm9ibGVtIGlzIHRoZSBlbXVsYXRh
-YmlsaXR5IG9mIE1XQUlUIGJlY2F1c2UgdGhhdCBsZWF2ZXMgIm5vIHRpbWUiIAp0byBkbyBkZWZl
-cnJlZCB3b3JrLiBCdXQgdGhlbiBhZ2FpbiwgaWYgeW91ciBkZWZlcnJlZCB3b3JrIGlzIHNvIGNv
-bXBsZXggCnRoYXQgaXQgbmVlZHMgbW9yZSB0aGFuIGEgZmV3IG1zICh3aGljaCB5b3UgY2FuIGFs
-d2F5cyBzdGVhbCBmcm9tIHRoZSAKdkNQVSB0aHJlYWQsIGVzcGVjaWFsbCB3aXRoIHlpZWxkKCkp
-LCB5b3UnbGwgbmVlZCB0byBzdGFydCBpbXBsZW1lbnRpbmcgCnRpbWUgc2xpY2luZyBvZiB0aGF0
-IHdvcmsgaW4gdXNlciBzcGFjZSBuZXh0IC0gYW5kIGJhc2ljYWxseSByZWJ1aWxkIAp5b3VyIG93
-biBzY2hlZHVsZXIgdGhlcmUuIFVnaC4KCklNSE8gdGhlIHJlYWwgY29yZSB2YWx1ZSBvZiB0aGlz
-IGlkZWEgd291bGQgYmUgaW4gYSB2Y3B1X3J1biBiaXQgdGhhdCBvbiAKVkNQVV9SVU4gY2FuIHRv
-Z2dsZSBiZXR3ZWVuIEhMVC9NV0FJVCBpbnRlcmNlcHQgb24gYW5kIG9mZi4gVGhlIGFjdHVhbCAK
-dHJhcCB0byB1c2VyIHNwYWNlLCB5b3UncmUgbW9zdCBsaWtlbHkgYmV0dGVyIG9mZiB3aXRoIGEg
-c2VwYXJhdGUgdGhyZWFkLgoKCkFsZXgKCgo+Cj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2t2bS94
-ODYuYyBiL2FyY2gveDg2L2t2bS94ODYuYwo+IGluZGV4IGE2NTgyYzFmZDhiOS4uOGY5MzE1Mzkx
-MTRhIDEwMDY0NAo+IC0tLSBhL2FyY2gveDg2L2t2bS94ODYuYwo+ICsrKyBiL2FyY2gveDg2L2t2
-bS94ODYuYwo+IEBAIC0yMTI4LDkgKzIxMjgsMjMgQEAgc3RhdGljIGludCBrdm1fZW11bGF0ZV9t
-b25pdG9yX213YWl0KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwgY29uc3QgY2hhciAqaW5zbikKPiAg
-IAlwcl93YXJuX29uY2UoIiVzIGluc3RydWN0aW9uIGVtdWxhdGVkIGFzIE5PUCFcbiIsIGluc24p
-Owo+ICAgCXJldHVybiBrdm1fZW11bGF0ZV9hc19ub3AodmNwdSk7Cj4gICB9Cj4gKwo+ICAgaW50
-IGt2bV9lbXVsYXRlX213YWl0KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkKPiAgIHsKPiAtCXJldHVy
-biBrdm1fZW11bGF0ZV9tb25pdG9yX213YWl0KHZjcHUsICJNV0FJVCIpOwo+ICsJaW50IHJldCA9
-IGt2bV9lbXVsYXRlX21vbml0b3JfbXdhaXQodmNwdSwgIk1XQUlUIik7Cj4gKwo+ICsJaWYgKHJl
-dCAmJiBrdm1fdXNlcnNwYWNlX2V4aXQodmNwdSwgS1ZNX0VYSVRfTVdBSVQpKSB7Cj4gKwkJdmNw
-dS0+cnVuLT5leGl0X3JlYXNvbiA9IEtWTV9FWElUX01XQUlUOwo+ICsJCXJldCA9IDA7Cj4gKwl9
-IGVsc2Ugewo+ICsJCS8qCj4gKwkJICogQ2FsbGluZyB5aWVsZCgpIGhhcyBwb29ybHkgZGVmaW5l
-ZCBzZW1hbnRpY3MsIGJ1dCB0aGUKPiArCQkgKiBndWVzdCBpcyBpbiBhIGJ1c3kgbG9vcCBhbmQg
-aXQncyB0aGUgYmVzdCB3ZSBjYW4gZG8KPiArCQkgKiB3aXRob3V0IGEgZnVsbCBlbXVsYXRpb24g
-b2YgTU9OSVRPUi9NV0FJVC4KPiArCQkgKi8KPiArCQl5aWVsZCgpOwo+ICsJfQo+ICsJcmV0dXJu
-IHJldDsKPiAgIH0KPiAgIEVYUE9SVF9TWU1CT0xfR1BMKGt2bV9lbXVsYXRlX213YWl0KTsKPiAg
-IAo+IEBAIC00NTU0LDYgKzQ1NjgsOSBAQCBpbnQga3ZtX3ZtX2lvY3RsX2NoZWNrX2V4dGVuc2lv
-bihzdHJ1Y3Qga3ZtICprdm0sIGxvbmcgZXh0KQo+ICAgCQkJCXIgfD0gS1ZNX1g4Nl9ESVNBQkxF
-X0VYSVRTX01XQUlUOwo+ICAgCQl9Cj4gICAJCWJyZWFrOwo+ICsJY2FzZSBLVk1fQ0FQX1g4Nl9V
-U0VSU1BBQ0VfRVhJVFM6Cj4gKwkJciA9IEtWTV9YODZfVVNFUlNQQUNFX1ZBTElEX0VYSVRTOwo+
-ICsJCWJyZWFrOwo+ICAgCWNhc2UgS1ZNX0NBUF9YODZfU01NOgo+ICAgCQlpZiAoIUlTX0VOQUJM
-RUQoQ09ORklHX0tWTV9TTU0pKQo+ICAgCQkJYnJlYWs7Cj4gQEAgLTk2NDMsMTEgKzk2NjAsMTEg
-QEAgc3RhdGljIGludCBfX2t2bV9lbXVsYXRlX2hhbHQoc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCBp
-bnQgc3RhdGUsIGludCByZWFzb24pCj4gICAJKyt2Y3B1LT5zdGF0LmhhbHRfZXhpdHM7Cj4gICAJ
-aWYgKGxhcGljX2luX2tlcm5lbCh2Y3B1KSkgewo+ICAgCQl2Y3B1LT5hcmNoLm1wX3N0YXRlID0g
-c3RhdGU7Cj4gLQkJcmV0dXJuIDE7Cj4gLQl9IGVsc2Ugewo+IC0JCXZjcHUtPnJ1bi0+ZXhpdF9y
-ZWFzb24gPSByZWFzb247Cj4gLQkJcmV0dXJuIDA7Cj4gKwkJaWYgKCFrdm1fdXNlcnNwYWNlX2V4
-aXQodmNwdSwgcmVhc29uKSkKPiArCQkJcmV0dXJuIDE7Cj4gICAJfQo+ICsJdmNwdS0+cnVuLT5l
-eGl0X3JlYXNvbiA9IHJlYXNvbjsKPiArCXJldHVybiAwOwo+ICAgfQo+ICAgCj4gICBpbnQga3Zt
-X2VtdWxhdGVfaGFsdF9ub3NraXAoc3RydWN0IGt2bV92Y3B1ICp2Y3B1KQo+IGRpZmYgLS1naXQg
-YS9hcmNoL3g4Ni9rdm0veDg2LmggYi9hcmNoL3g4Ni9rdm0veDg2LmgKPiBpbmRleCAxZTdiZTFm
-NmFiMjkuLmNlMTBhODA5MTUxYyAxMDA2NDQKPiAtLS0gYS9hcmNoL3g4Ni9rdm0veDg2LmgKPiAr
-KysgYi9hcmNoL3g4Ni9rdm0veDg2LmgKPiBAQCAtNDMwLDYgKzQzMCwxOSBAQCBzdGF0aWMgaW5s
-aW5lIGJvb2wga3ZtX25vdGlmeV92bWV4aXRfZW5hYmxlZChzdHJ1Y3Qga3ZtICprdm0pCj4gICAJ
-cmV0dXJuIGt2bS0+YXJjaC5ub3RpZnlfdm1leGl0X2ZsYWdzICYgS1ZNX1g4Nl9OT1RJRllfVk1F
-WElUX0VOQUJMRUQ7Cj4gICB9Cj4gICAKPiArc3RhdGljIGlubGluZSBib29sIGt2bV91c2Vyc3Bh
-Y2VfZXhpdChzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUsIGludCByZWFzb24pCj4gK3sKPiArCWlmIChy
-ZWFzb24gPT0gS1ZNX0VYSVRfSExUICYmCj4gKwkgICAgKHZjcHUtPnJ1bi0+dXNlcnNwYWNlX2V4
-aXRzICYgS1ZNX1g4Nl9VU0VSU1BBQ0VfRVhJVF9ITFQpKQo+ICsJCXJldHVybiB0cnVlOwo+ICsK
-PiArCWlmIChyZWFzb24gPT0gS1ZNX0VYSVRfTVdBSVQgJiYKPiArCSAgICAodmNwdS0+cnVuLT51
-c2Vyc3BhY2VfZXhpdHMgJiBLVk1fWDg2X1VTRVJTUEFDRV9FWElUX01XQUlUKSkKPiArCQlyZXR1
-cm4gdHJ1ZTsKPiArCj4gKwlyZXR1cm4gZmFsc2U7Cj4gK30KPiArCj4gICBlbnVtIGt2bV9pbnRy
-X3R5cGUgewo+ICAgCS8qIFZhbHVlcyBhcmUgYXJiaXRyYXJ5LCBidXQgbXVzdCBiZSBub24temVy
-by4gKi8KPiAgIAlLVk1fSEFORExJTkdfSVJRID0gMSwKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91
-YXBpL2xpbnV4L2t2bS5oIGIvaW5jbHVkZS91YXBpL2xpbnV4L2t2bS5oCj4gaW5kZXggMTMwNjVk
-ZDk2MTMyLi40M2Q5NGQ0OWZjMjQgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS91YXBpL2xpbnV4L2t2
-bS5oCj4gKysrIGIvaW5jbHVkZS91YXBpL2xpbnV4L2t2bS5oCj4gQEAgLTI2NCw2ICsyNjQsNyBA
-QCBzdHJ1Y3Qga3ZtX3hlbl9leGl0IHsKPiAgICNkZWZpbmUgS1ZNX0VYSVRfUklTQ1ZfU0JJICAg
-ICAgICAzNQo+ICAgI2RlZmluZSBLVk1fRVhJVF9SSVNDVl9DU1IgICAgICAgIDM2Cj4gICAjZGVm
-aW5lIEtWTV9FWElUX05PVElGWSAgICAgICAgICAgMzcKPiArI2RlZmluZSBLVk1fRVhJVF9NV0FJ
-VCAgICAgICAgICAgIDM4Cj4gICAKPiAgIC8qIEZvciBLVk1fRVhJVF9JTlRFUk5BTF9FUlJPUiAq
-Lwo+ICAgLyogRW11bGF0ZSBpbnN0cnVjdGlvbiBmYWlsZWQuICovCj4gQEAgLTI4Myw3ICsyODQs
-OCBAQCBzdHJ1Y3Qga3ZtX3J1biB7Cj4gICAJLyogaW4gKi8KPiAgIAlfX3U4IHJlcXVlc3RfaW50
-ZXJydXB0X3dpbmRvdzsKPiAgIAlfX3U4IGltbWVkaWF0ZV9leGl0Owo+IC0JX191OCBwYWRkaW5n
-MVs2XTsKPiArCV9fdTggdXNlcnNwYWNlX2V4aXRzOwo+ICsJX191OCBwYWRkaW5nMVs1XTsKPiAg
-IAo+ICAgCS8qIG91dCAqLwo+ICAgCV9fdTMyIGV4aXRfcmVhc29uOwo+IEBAIC04NDEsNiArODQz
-LDExIEBAIHN0cnVjdCBrdm1faW9ldmVudGZkIHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBLVk1fWDg2X0RJU0FCTEVfRVhJVFNfUEFVU0UgfCBcCj4g
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgS1ZNX1g4Nl9E
-SVNBQkxFX0VYSVRTX0NTVEFURSkKPiAgIAo+ICsjZGVmaW5lIEtWTV9YODZfVVNFUlNQQUNFX0VY
-SVRfTVdBSVQJICAgICAoMSA8PCAwKQo+ICsjZGVmaW5lIEtWTV9YODZfVVNFUlNQQUNFX0VYSVRf
-SExUCSAgICAgKDEgPDwgMSkKPiArI2RlZmluZSBLVk1fWDg2X1VTRVJTUEFDRV9WQUxJRF9FWElU
-UyAgICAgICAgKEtWTV9YODZfVVNFUlNQQUNFX0VYSVRfTVdBSVQgfCBcCj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBLVk1fWDg2X1VTRVJTUEFDRV9FWElU
-X0hMVCkKPiArCj4gICAvKiBmb3IgS1ZNX0VOQUJMRV9DQVAgKi8KPiAgIHN0cnVjdCBrdm1fZW5h
-YmxlX2NhcCB7Cj4gICAJLyogaW4gKi8KPiBAQCAtMTE5Miw2ICsxMTk5LDcgQEAgc3RydWN0IGt2
-bV9wcGNfcmVzaXplX2hwdCB7Cj4gICAjZGVmaW5lIEtWTV9DQVBfQ09VTlRFUl9PRkZTRVQgMjI3
-Cj4gICAjZGVmaW5lIEtWTV9DQVBfQVJNX0VBR0VSX1NQTElUX0NIVU5LX1NJWkUgMjI4Cj4gICAj
-ZGVmaW5lIEtWTV9DQVBfQVJNX1NVUFBPUlRFRF9CTE9DS19TSVpFUyAyMjkKPiArI2RlZmluZSBL
-Vk1fQ0FQX1g4Nl9VU0VSU1BBQ0VfRVhJVFMgMjMwCj4gICAKPiAgICNpZmRlZiBLVk1fQ0FQX0lS
-UV9ST1VUSU5HCj4gICAKPgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21i
-SApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3Rp
-YW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBD
-aGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUg
-Mjg5IDIzNyA4NzkKCgo=
+On Mon 18-09-23 06:47:40, Mirsad Goran Todorovac wrote:
+> KCSAN has discovered the following data-race:
+> 
+> [  206.510010] ==================================================================
+> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+> 
+> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
+> [  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
+> [  206.510097] __xa_clear_mark (lib/xarray.c:1923)
+> [  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
+> [  206.510128] folio_end_writeback (mm/filemap.c:1616)
+> [  206.510143] end_page_writeback (mm/folio-compat.c:28)
+> [  206.510155] btrfs_page_clear_writeback (fs/btrfs/subpage.c:646) btrfs
+> [  206.510994] end_bio_extent_writepage (./include/linux/bio.h:84 fs/btrfs/extent_io.c:542) btrfs
+> [  206.511817] __btrfs_bio_end_io (fs/btrfs/bio.c:117 fs/btrfs/bio.c:112) btrfs
+> [  206.512640] btrfs_orig_bbio_end_io (fs/btrfs/bio.c:164) btrfs
+> [  206.513497] btrfs_simple_end_io (fs/btrfs/bio.c:380) btrfs
+> [  206.514350] bio_endio (block/bio.c:1617)
+> [  206.514362] blk_mq_end_request_batch (block/blk-mq.c:837 block/blk-mq.c:1073)
+> [  206.514377] nvme_pci_complete_batch (drivers/nvme/host/pci.c:986) nvme
+> [  206.514437] nvme_irq (drivers/nvme/host/pci.c:1086) nvme
+> [  206.514500] __handle_irq_event_percpu (kernel/irq/handle.c:158)
+> [  206.514517] handle_irq_event (kernel/irq/handle.c:195 kernel/irq/handle.c:210)
+> [  206.514533] handle_edge_irq (kernel/irq/chip.c:836)
+> [  206.514549] __common_interrupt (./include/linux/irqdesc.h:161 arch/x86/kernel/irq.c:238 arch/x86/kernel/irq.c:257)
+> [  206.514563] common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
+> [  206.514583] asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
+> [  206.514599] kcsan_setup_watchpoint (kernel/kcsan/core.c:705 (discriminator 1))
+> [  206.514612] __tsan_read8 (kernel/kcsan/core.c:1025)
+> [  206.514626] steal_from_bitmap.part.0 (./include/linux/find.h:186 fs/btrfs/free-space-cache.c:2557 fs/btrfs/free-space-cache.c:2613) btrfs
+> [  206.515491] __btrfs_add_free_space (fs/btrfs/free-space-cache.c:2689 fs/btrfs/free-space-cache.c:2667) btrfs
+> [  206.516361] btrfs_add_free_space_async_trimmed (fs/btrfs/free-space-cache.c:2798) btrfs
+> [  206.517231] add_new_free_space (fs/btrfs/block-group.c:550) btrfs
+> [  206.518095] load_free_space_tree (fs/btrfs/free-space-tree.c:1595 fs/btrfs/free-space-tree.c:1658) btrfs
+> [  206.518953] caching_thread (fs/btrfs/block-group.c:873) btrfs
+> [  206.519800] btrfs_work_helper (fs/btrfs/async-thread.c:314) btrfs
+> [  206.520643] process_one_work (kernel/workqueue.c:2600)
+> [  206.520658] worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2752)
+> [  206.520672] kthread (kernel/kthread.c:389)
+> [  206.520684] ret_from_fork (arch/x86/kernel/process.c:145)
+> [  206.520701] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
+> 
+> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
+> [  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
+> [  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
+> [  206.520763] __filemap_fdatawait_range (mm/filemap.c:519)
+> [  206.520777] filemap_fdatawait_range (mm/filemap.c:556)
+> [  206.520790] btrfs_wait_ordered_range (fs/btrfs/ordered-data.c:839) btrfs
+> [  206.521641] btrfs_sync_file (fs/btrfs/file.c:1859) btrfs
+> [  206.522495] vfs_fsync_range (fs/sync.c:188)
+> [  206.522509] __x64_sys_fsync (./include/linux/file.h:45 fs/sync.c:213 fs/sync.c:220 fs/sync.c:218 fs/sync.c:218)
+> [  206.522522] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+> [  206.522535] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+> 
+> [  206.522557] value changed: 0xfffffffffff80000 -> 0xfffffffffff00000
+> 
+> [  206.522574] Reported by Kernel Concurrency Sanitizer on:
+> [  206.522585] CPU: 6 PID: 2793 Comm: tracker-extract Tainted: G             L     6.5.0-rc6+ #44
+> [  206.522600] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+> [  206.522608] ==================================================================
 
+Thanks for working on this. I guess the full KCSAN warning isn't that
+useful in the changelog. Rather I'd spend more time explaining the real
+problem here ...
+
+> As Jan Kara explained, the problem is in the function xas_find_chuck():
+> 
+> /* Private */
+> static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
+> 		xa_mark_t mark)
+> {
+> 	unsigned long *addr = xas->xa_node->marks[(__force unsigned)mark];
+> 	unsigned int offset = xas->xa_offset;
+> 
+> 	if (advance)
+> 		offset++;
+> 	if (XA_CHUNK_SIZE == BITS_PER_LONG) {
+> 		if (offset < XA_CHUNK_SIZE) {
+> →			unsigned long data = *addr & (~0UL << offset);
+> 			if (data)
+> 				return __ffs(data);
+
+... which is that xas_find_chunk() is called only under RCU protection and
+thus the two uses of 'data' in the above code can yield different results.
+
+> 		}
+> 		return XA_CHUNK_SIZE;
+> 	}
+> 
+> 	return find_next_bit(addr, XA_CHUNK_SIZE, offset);
+> }
+> 
+> In particular, the line
+> 
+> 			unsigned long data = *addr & (~0UL << offset);
+> 
+> contains a data race that is best avoided using READ_ONCE(), which eliminated the KCSAN
+> data-race warning completely.
+
+Yes, this improves the situation for xarray use on 64-bit architectures but
+doesn't fix cases on 32-bit archs or if CONFIG_BASE_SMALL is set. As I
+mentioned in my previous reply, I'd rather:
+
+1) Fix find_next_bit(), find_first_bit() and related functions in
+lib/find_bit.c to use READ_ONCE() - such as _find_first_bit() etc. It is
+quite some churn but I don't see how else to make these functions safe when
+the underlying contents can change.
+
+2) Change xas_find_chunk() to unconditionally use find_next_bit() as the
+special case XA_CHUNK_SIZE == BITS_PER_LONG seems pointless these days
+because find_next_bit() is inline and does small_const_nbits(size) check.
+
+								Honza
+
+ 
+> Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Fixes: b803b42823d0d ("xarray: Add XArray iterators")
+> Matthew Wilcox <willy@infradead.org>
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: linux-btrfs@vger.kernel.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+> ---
+> v1: the proposed fix (RFC)
+> 
+>  include/linux/xarray.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+> index cb571dfcf4b1..1715fd322d62 100644
+> --- a/include/linux/xarray.h
+> +++ b/include/linux/xarray.h
+> @@ -1720,7 +1720,7 @@ static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
+>  		offset++;
+>  	if (XA_CHUNK_SIZE == BITS_PER_LONG) {
+>  		if (offset < XA_CHUNK_SIZE) {
+> -			unsigned long data = *addr & (~0UL << offset);
+> +			unsigned long data = READ_ONCE(*addr) & (~0UL << offset);
+>  			if (data)
+>  				return __ffs(data);
+>  		}
+> -- 
+> 2.34.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
