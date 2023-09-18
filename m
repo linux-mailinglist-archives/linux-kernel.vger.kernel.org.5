@@ -2,96 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0167A43F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EA37A441A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240570AbjIRIFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
+        id S240654AbjIRILE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Sep 2023 04:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240634AbjIRIEk (ORCPT
+        with ESMTP id S240564AbjIRIKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:04:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE59E55;
-        Mon, 18 Sep 2023 01:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695024242; x=1726560242;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IOZ5ST0b115tZcGqcBmYtjTOXXLGsl37rzvNJdPtNrQ=;
-  b=bl2sQZq4uXKYMUkzNg4evqfgSI/op5RzCKhuW1OTKi5iCY2xoOSfHECJ
-   +twNAiSINxaeK/dhqFRZr25S2PpLzGe2aRGWHC6/UuOEhuO1fRNv0Qyvo
-   uGTsgIb++mZZ6H3PHn2wGoVmm/fAwMzF6oeT/rNIKPFuw8l6b3XrRlIVA
-   bfTdJKyen1pVhVPEsS6OeTZMTUtmoNExSIf7F9dwpxJshODmLjxTdCIpX
-   aOmV+/MURSxTWQSLWiCFKk6K1s1s0vXKqEmj7I50xOkoUuIaIjs3s341c
-   8fNpDHeipY0E5mi/Y1TNe9HoMDD7cdACfsNct3ZN1+M/ymtJkKYrg+Rpz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="443670758"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="443670758"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:04:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="992621087"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="992621087"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga006.fm.intel.com with SMTP; 18 Sep 2023 01:03:58 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 18 Sep 2023 11:03:57 +0300
-Date:   Mon, 18 Sep 2023 11:03:57 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "chrome-platform@lists.linux.dev" <chrome-platform@lists.linux.dev>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "bleung@chromium.org" <bleung@chromium.org>
-Subject: Re: [PATCH v3 3/4] platform/chrome: cros_ec_typec: Add Displayport
- Alternatemode 2.1 Support
-Message-ID: <ZQgEbXDNZ+Ap/HiV@kuha.fi.intel.com>
-References: <20230912005752.1532888-1-utkarsh.h.patel@intel.com>
- <20230912005752.1532888-4-utkarsh.h.patel@intel.com>
- <CACeCKacmH19niA7gWTZCj89ZmFth0LWvkMYasYwUvVHrmFKCZw@mail.gmail.com>
- <MWHPR11MB0048848CD12DC750417E7264A9F6A@MWHPR11MB0048.namprd11.prod.outlook.com>
+        Mon, 18 Sep 2023 04:10:47 -0400
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6573E91;
+        Mon, 18 Sep 2023 01:10:42 -0700 (PDT)
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-65642ade0easo12524116d6.1;
+        Mon, 18 Sep 2023 01:10:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695024641; x=1695629441;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LX+6XiZ9i9bduvS7LsPDJJ/qIaDd1B/wTxi5s+/d5gs=;
+        b=gLQe+fp4gNihvquT5rZUYAslzC0hDLrDAWD5jjhkHvnBeaO2uu3f3h+aU1LC8/xKvZ
+         RKYj7h9T1qR2iyfHaAxr5zkz2Me7v9d21PscfG1wci0KHJFOvheYKzNIfJKCJHbC97/+
+         W/1GtCm+x55PDjX178BPuPfsiB4j/q0ESHKUh3Ra/q5/1E+q7Zc31ldQY4NWLpWeKKo6
+         AdoKWcwMRQdQna5X1M4rCwmtFZaJfNsTSCco7wJ1nMc87A6zHR0nGk1gb2/iZ1HsAoeY
+         asdozON9i86aGTXqCdEcDPaGpAPOUaOjdTIZPfE6Vzo0wZMASTnq7THOLBYtU7zq3uCL
+         xHpg==
+X-Gm-Message-State: AOJu0Yw1O1KjXXtnbClHolvj8duyPGwzTZhbFhzuvW+IltAEWUQPaw3n
+        kNs8U1GnXjEB+rwxzhd7glMgrtBWO2aE/w==
+X-Google-Smtp-Source: AGHT+IEssz/h2MzmVPfY/xAB1BaTSjOhI/Bwq5sx6gVrWw2l9kRGzoEy1ex5EvPT1YRDd3dVZtTFBQ==
+X-Received: by 2002:a05:6214:4b12:b0:656:1c7b:5aa1 with SMTP id pj18-20020a0562144b1200b006561c7b5aa1mr9485316qvb.29.1695024641328;
+        Mon, 18 Sep 2023 01:10:41 -0700 (PDT)
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com. [209.85.219.47])
+        by smtp.gmail.com with ESMTPSA id mu7-20020a056214328700b0064f42b1ab05sm3179770qvb.39.2023.09.18.01.10.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 01:10:41 -0700 (PDT)
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-65631aa8b93so18948376d6.3;
+        Mon, 18 Sep 2023 01:10:41 -0700 (PDT)
+X-Received: by 2002:a81:6d84:0:b0:58f:c452:74da with SMTP id
+ i126-20020a816d84000000b0058fc45274damr9139447ywc.42.1695024249288; Mon, 18
+ Sep 2023 01:04:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB0048848CD12DC750417E7264A9F6A@MWHPR11MB0048.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-15-claudiu.beznea.uj@bp.renesas.com> <CAMuHMdWRxaBsPAn0OR15WFua_5HZVPTmWabFnnex5gDLKjE9Cw@mail.gmail.com>
+In-Reply-To: <CAMuHMdWRxaBsPAn0OR15WFua_5HZVPTmWabFnnex5gDLKjE9Cw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 18 Sep 2023 10:03:58 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV1_Hyqzkf73k2-Vou_qJX8eUzEG+hJ-yP+9TYErWjyGg@mail.gmail.com>
+Message-ID: <CAMuHMdV1_Hyqzkf73k2-Vou_qJX8eUzEG+hJ-yP+9TYErWjyGg@mail.gmail.com>
+Subject: Re: [PATCH 14/37] clk: renesas: rzg2l: use u32 for flag and mux_flags
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 04:01:44PM +0000, Patel, Utkarsh H wrote:
+On Thu, Sep 14, 2023 at 3:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >
+> > flag and mux_flags are intended to keep bit masks. Use u32 type for it.
+> >
+> > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/clk/renesas/rzg2l-cpg.h
+> > +++ b/drivers/clk/renesas/rzg2l-cpg.h
+> > @@ -92,8 +92,8 @@ struct cpg_core_clk {
+> >         unsigned int conf;
+> >         const struct clk_div_table *dtable;
+> >         const char * const *parent_names;
+> > -       int flag;
+> > -       int mux_flags;
+> > +       u32 flag;
+>
+> "flag" is used for several purposes, which expected different types:
+>     - clk_init_data.flags is unsigned long,
+>     - The clk_divider_flags parameter of clk_hw_register_divider_table() is u8,
+>     - The clk_divider_flags parameter of __clk_hw_register_divider() is u8,
+>     - The flags parameter of __devm_clk_hw_register_mux() is unsigned long.
+>
+> > +       u32 mux_flags;
+>
+> Actually the clk_mux_flags parameter of __devm_clk_hw_register_mux() is u8.
+>
+> >         int num_parents;
+> >  };
+>
+> I guess u32 is fine for all.
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> > > b057250704e8..3a747938cdab 100644
-> > > --- a/include/linux/usb/pd_vdo.h
-> > > +++ b/include/linux/usb/pd_vdo.h
-> > > @@ -376,6 +376,7 @@
-> > >          | ((vbm) & 0x3) << 9 | (sbu) << 8 | (sbut) << 7 | ((cur) & 0x3) << 5   \
-> > >          | (vbt) << 4 | (sopp) << 3 | ((spd) & 0x7))
-> > >
-> > > +#define VDO_TYPEC_CABLE_SPEED(vdo)     ((vdo) & 0x7)
-> > 
-> > I would suggest putting this header modification in a separate patch; if for
-> > some reason we have to revert the Chrome part of the change, then we won't
-> > rip this part out too (some other driver down the road may use the macro and
-> > would break if it were to be removed). But I'll leave it to Heikki to determine
-> > whether that is preferred.
-> > 
-> Heikki,  What's your preference here?
+Thx, will queue in renesas-clk-for-v6.7.
 
-I think separate patch for this like Prashant said.
+Gr{oetje,eeting}s,
 
-thanks,
+                        Geert
 
 -- 
-heikki
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
