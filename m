@@ -2,141 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 960CD7A511D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451F57A511F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbjIRRj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59656 "EHLO
+        id S230018AbjIRRkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjIRRjz (ORCPT
+        with ESMTP id S230302AbjIRRkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:39:55 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F871FB;
-        Mon, 18 Sep 2023 10:39:49 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-403012f276dso51795025e9.0;
-        Mon, 18 Sep 2023 10:39:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695058787; x=1695663587; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y1/lgZVflqyyt3jw5+T2bDLyWXYZmvdRzCSXLWVSuYA=;
-        b=IHpu5u0eF6S17A6mQotrBp0DJ48IH9du+vf5GRu3S8foEQi0e0xkL5fFf+g3dm5AgT
-         rdBaEkXTvGD9Hofhrc0l6tdKQ6xVe9M3jkTfHIq6VcUqXEzTXHgi8mbLD/3KpF+n1JX0
-         TXh/AmM0aoBPOKrXXcECvq9zNEc/Si11xiBp0vmatAHVSxdW71zbkJUZVBv9YVWAMnS6
-         PTwY1XhkHPJOq7KL2uDIzNGMBVKGVZQSSEMP1tzDXGgxZR6vWwA0+KRHrZIll34rpP5x
-         C5QVYtRmtnm3DLdi/fnz5d7xv8ST2w5yYbGhTxvQ2Xe2ZH+uXUylH6IU8WW3JW3qIYnx
-         B/wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695058787; x=1695663587;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y1/lgZVflqyyt3jw5+T2bDLyWXYZmvdRzCSXLWVSuYA=;
-        b=doeRMNkGPN+PVh5haatu1g90mH3+VTmhg9z+xHq6+cw/WT7k49marKg/Bf3ceswszM
-         wG+6T1e5t4Nnv30xxEF7n+pdyAwxqJl2HJVa0CF2Zd+ZJNcUXLxu/FAdsvoZsi+UinZQ
-         49+pH+cryayCDgxdNCjAGrgQSOXNuwUCYyKvJ0r2XcopawoMMEY1MVJeW6yvv0xFMOSC
-         9PIgcPOdz1hla14vzmkUbT2TlGgPa21ZS7p38iGYjlGdEc2xvKW6A3XyND3+UXFWVRBm
-         Zav2RRXs+rkWUZuVwsqEcQ4aeCLby8KX3q5WRdlCUhKDcn4ruCMNXhO8FaUHzXZ7P4hk
-         mJaA==
-X-Gm-Message-State: AOJu0YwSy1cTTRBAIZPcXkDaeIbB8oJVpl5128c2lkgeAxvhhQ4QUnVG
-        UAXTDScupc5+nV1P+Z2+2lc=
-X-Google-Smtp-Source: AGHT+IFrFTFR1xyoFqyL58si/yxpKchP5xcdqD8vMS6vIA5LBpyvQftnW10N0ehIERFDMNXGwC/i3w==
-X-Received: by 2002:a05:600c:2209:b0:404:746e:c601 with SMTP id z9-20020a05600c220900b00404746ec601mr8928944wml.9.1695058787287;
-        Mon, 18 Sep 2023 10:39:47 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id m6-20020a7bca46000000b003fefb94ccc9sm12968401wml.11.2023.09.18.10.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 10:39:46 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 18 Sep 2023 19:39:43 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Matteo Rizzo <matteorizzo@google.com>
-Cc:     "Lameter, Christopher" <cl@os.amperecomputing.com>,
-        Dave Hansen <dave.hansen@intel.com>, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-hardening@vger.kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, corbet@lwn.net, luto@kernel.org,
-        peterz@infradead.org, jannh@google.com, evn@google.com,
-        poprdi@google.com, jordyzomer@google.com,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [RFC PATCH 00/14] Prevent cross-cache attacks in the SLUB
- allocator
-Message-ID: <ZQiLX0W2Tcr+wdJT@gmail.com>
-References: <20230915105933.495735-1-matteorizzo@google.com>
- <7a4f5128-28fd-3c5f-34c2-1c34f4448174@intel.com>
- <1d7573c0-ebbc-6ed2-f152-1045eb0542f9@os.amperecomputing.com>
- <CAHKB1w+rVyww0UrHhzeGfPA7FM482Z-7ApzXvekVqLHvTDAV3Q@mail.gmail.com>
+        Mon, 18 Sep 2023 13:40:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456B4120;
+        Mon, 18 Sep 2023 10:40:05 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 17:40:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695058803;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nMV+aYIwt4Khm50JTk4ncuxEaUe0Ws1UZVFqlZVBTSY=;
+        b=hR8/RRt6J6Ud5RnhKy4vv95FQI2JaiQvzTlAZ4n8n0+ZK6FTmNQSr/PRvqZCJRaCkF9MMs
+        gMKkXRsMmytwU2U7sZLYpUbfPyFiTtPyJibd/SyuP9e3CqFvPMVeZoD/epuooawAWkq+K6
+        Ai7ZD4vsVIHjvEtKRwKIrRATNbU2PNOZAC8Rc3qv+YQ2BP8ZbDxSoNw5+p8H28reW9BDbO
+        mOzOHjs0/gAzBihExIsCqkI5BGY7QrbuWf6ZYU4H9acrreSiyXpzwcnfUq5asGjtqkGfhn
+        187qvfBddVJFDWbXAh0nGDYq/OTu4e6nBW7pJcLCmV9HfeQy1TIE21Ev8Q2ewg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695058803;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nMV+aYIwt4Khm50JTk4ncuxEaUe0Ws1UZVFqlZVBTSY=;
+        b=NayFbMprSHikNNtEYuEhdBmHIttmsmSksLPM1tk1ccXH8SVk+KTPE6nWOTlNH0Kb0Wz8e9
+        AQ9WEmP4uPgG/WBw==
+From:   "tip-bot2 for Vincent Whitchurch" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/asm: Fix build of UML with KASAN
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230918-uml-kasan-v3-1-7ad6db477df6@axis.com>
+References: <20230918-uml-kasan-v3-1-7ad6db477df6@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHKB1w+rVyww0UrHhzeGfPA7FM482Z-7ApzXvekVqLHvTDAV3Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Message-ID: <169505880286.27769.17911777703263341245.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/urgent branch of tip:
 
-* Matteo Rizzo <matteorizzo@google.com> wrote:
+Commit-ID:     10f4c9b9a33b7df000f74fa0d896351fb1a61e6a
+Gitweb:        https://git.kernel.org/tip/10f4c9b9a33b7df000f74fa0d896351fb1a61e6a
+Author:        Vincent Whitchurch <vincent.whitchurch@axis.com>
+AuthorDate:    Mon, 18 Sep 2023 12:52:34 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 18 Sep 2023 19:30:08 +02:00
 
-> On Fri, 15 Sept 2023 at 18:30, Lameter, Christopher
-> <cl@os.amperecomputing.com> wrote:
-> >
-> > On Fri, 15 Sep 2023, Dave Hansen wrote:
-> >
-> > > What's the cost?
-> >
-> > The only thing that I see is 1-2% on kernel compilations (and "more on
-> > machines with lots of cores")?
-> 
-> I used kernel compilation time (wall clock time) as a benchmark while
-> preparing the series. Lower is better.
-> 
-> Intel Skylake, 112 cores:
-> 
->       LABEL    | COUNT |   MIN   |   MAX   |   MEAN  |  MEDIAN | STDDEV
-> ---------------+-------+---------+---------+---------+---------+--------
-> SLAB_VIRTUAL=n | 150   | 49.700s | 51.320s | 50.449s | 50.430s | 0.29959
-> SLAB_VIRTUAL=y | 150   | 50.020s | 51.660s | 50.880s | 50.880s | 0.30495
->                |       | +0.64%  | +0.66%  | +0.85%  | +0.89%  | +1.79%
-> 
-> AMD Milan, 256 cores:
-> 
->     LABEL      | COUNT |   MIN   |   MAX   |   MEAN  |  MEDIAN | STDDEV
-> ---------------+-------+---------+---------+---------+---------+--------
-> SLAB_VIRTUAL=n | 150   | 25.480s | 26.550s | 26.065s | 26.055s | 0.23495
-> SLAB_VIRTUAL=y | 150   | 25.820s | 27.080s | 26.531s | 26.540s | 0.25974
->                |       | +1.33%  | +2.00%  | +1.79%  | +1.86%  | +10.55%
+x86/asm: Fix build of UML with KASAN
 
-That's sadly a rather substantial overhead for a compiler/linker workload 
-that is dominantly user-space: a kernel build is about 90% user-time and 
-10% system-time:
+Building UML with KASAN fails since commit 69d4c0d32186 ("entry, kasan,
+x86: Disallow overriding mem*() functions") with the following errors:
 
-   $ perf stat --null make -j64 vmlinux
-   ...
+ $ tools/testing/kunit/kunit.py run --kconfig_add CONFIG_KASAN=y
+ ...
+ ld: mm/kasan/shadow.o: in function `memset':
+ shadow.c:(.text+0x40): multiple definition of `memset';
+ arch/x86/lib/memset_64.o:(.noinstr.text+0x0): first defined here
+ ld: mm/kasan/shadow.o: in function `memmove':
+ shadow.c:(.text+0x90): multiple definition of `memmove';
+ arch/x86/lib/memmove_64.o:(.noinstr.text+0x0): first defined here
+ ld: mm/kasan/shadow.o: in function `memcpy':
+ shadow.c:(.text+0x110): multiple definition of `memcpy';
+ arch/x86/lib/memcpy_64.o:(.noinstr.text+0x0): first defined here
 
-   Performance counter stats for 'make -j64 vmlinux':
+UML does not use GENERIC_ENTRY and is still supposed to be allowed to
+override the mem*() functions, so use weak aliases in that case.
 
-        59.840704481 seconds time elapsed
+Fixes: 69d4c0d32186 ("entry, kasan, x86: Disallow overriding mem*() functions")
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20230918-uml-kasan-v3-1-7ad6db477df6@axis.com
+---
+ arch/x86/include/asm/linkage.h | 7 +++++++
+ arch/x86/lib/memcpy_64.S       | 2 +-
+ arch/x86/lib/memmove_64.S      | 2 +-
+ arch/x86/lib/memset_64.S       | 2 +-
+ 4 files changed, 10 insertions(+), 3 deletions(-)
 
-      2000.774537000 seconds user
-       219.138280000 seconds sys
-
-What's the split of the increase in overhead due to SLAB_VIRTUAL=y, between 
-user-space execution and kernel-space execution?
-
-Thanks,
-
-	Ingo
+diff --git a/arch/x86/include/asm/linkage.h b/arch/x86/include/asm/linkage.h
+index 5ff49fd..571fe4d 100644
+--- a/arch/x86/include/asm/linkage.h
++++ b/arch/x86/include/asm/linkage.h
+@@ -105,6 +105,13 @@
+ 	CFI_POST_PADDING					\
+ 	SYM_FUNC_END(__cfi_##name)
+ 
++/* UML needs to be able to override memcpy() and friends for KASAN. */
++#ifdef CONFIG_UML
++# define SYM_FUNC_ALIAS_MEMFUNC	SYM_FUNC_ALIAS_WEAK
++#else
++# define SYM_FUNC_ALIAS_MEMFUNC	SYM_FUNC_ALIAS
++#endif
++
+ /* SYM_TYPED_FUNC_START -- use for indirectly called globals, w/ CFI type */
+ #define SYM_TYPED_FUNC_START(name)				\
+ 	SYM_TYPED_START(name, SYM_L_GLOBAL, SYM_F_ALIGN)	\
+diff --git a/arch/x86/lib/memcpy_64.S b/arch/x86/lib/memcpy_64.S
+index 8f95fb2..76697df 100644
+--- a/arch/x86/lib/memcpy_64.S
++++ b/arch/x86/lib/memcpy_64.S
+@@ -40,7 +40,7 @@ SYM_TYPED_FUNC_START(__memcpy)
+ SYM_FUNC_END(__memcpy)
+ EXPORT_SYMBOL(__memcpy)
+ 
+-SYM_FUNC_ALIAS(memcpy, __memcpy)
++SYM_FUNC_ALIAS_MEMFUNC(memcpy, __memcpy)
+ EXPORT_SYMBOL(memcpy)
+ 
+ SYM_FUNC_START_LOCAL(memcpy_orig)
+diff --git a/arch/x86/lib/memmove_64.S b/arch/x86/lib/memmove_64.S
+index 0559b20..ccdf3a5 100644
+--- a/arch/x86/lib/memmove_64.S
++++ b/arch/x86/lib/memmove_64.S
+@@ -212,5 +212,5 @@ SYM_FUNC_START(__memmove)
+ SYM_FUNC_END(__memmove)
+ EXPORT_SYMBOL(__memmove)
+ 
+-SYM_FUNC_ALIAS(memmove, __memmove)
++SYM_FUNC_ALIAS_MEMFUNC(memmove, __memmove)
+ EXPORT_SYMBOL(memmove)
+diff --git a/arch/x86/lib/memset_64.S b/arch/x86/lib/memset_64.S
+index 7c59a70..3d818b8 100644
+--- a/arch/x86/lib/memset_64.S
++++ b/arch/x86/lib/memset_64.S
+@@ -40,7 +40,7 @@ SYM_FUNC_START(__memset)
+ SYM_FUNC_END(__memset)
+ EXPORT_SYMBOL(__memset)
+ 
+-SYM_FUNC_ALIAS(memset, __memset)
++SYM_FUNC_ALIAS_MEMFUNC(memset, __memset)
+ EXPORT_SYMBOL(memset)
+ 
+ SYM_FUNC_START_LOCAL(memset_orig)
