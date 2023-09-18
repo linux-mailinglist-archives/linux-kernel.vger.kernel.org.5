@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0124B7A418E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538F67A418C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239683AbjIRGuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 02:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        id S237821AbjIRGuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 02:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbjIRGuH (ORCPT
+        with ESMTP id S232571AbjIRGuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Sep 2023 02:50:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1970EE6
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695019795; x=1726555795;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=s13Nvbs3mBAq9NYXqy3wsR4au6DsVgO9kA2QvCPDpFQ=;
-  b=VH1wxZgjhn0tReHqGYCT33u7r8ZfIRWmFvJPq4+m/dIe8UgfA52UzJ4t
-   +p5bHyrZNxmnZv6txyLCjlWOrchjEKidv69myaRKJdLPyVyYKKB6NVfCD
-   CPEBV+Hbz5B3ZAyB7fta2FNeki0GG8NQ2vhjBpxRaKIKQQOGOXdTJvVHQ
-   49tUBPHq6pRCF7/OUkaNoE0A03a6FPf+255EzqM6nMtwS8cYiiuhdhryP
-   mF72WN9Ihq+f2Qwp+fOQJjlHtt7c51j1gAqGfpsRzc24d36ELlVGq+NU9
-   JJvyog8NcVtwazswY835JmSJz32grbTZ3MYTiv/ASH2/w/cnKD6+79V5L
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="382322551"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="382322551"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 23:49:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="815900624"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="815900624"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 23:49:52 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qi84s-0000000DKWC-0L9V;
-        Mon, 18 Sep 2023 09:49:50 +0300
-Date:   Mon, 18 Sep 2023 09:49:49 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        WANG Xuerui <kernel@xen0n.name>
-Subject: Re: [PATCH v1 1/2] LoongArch: Add missing headers
-Message-ID: <ZQfzDXc0WRHCUeIq@smile.fi.intel.com>
-References: <20230914103445.511285-1-andriy.shevchenko@linux.intel.com>
- <CAAhV-H6Q0sirFEDdc1v4BSfDY94eZvJazy0XLKM8V94GMJvQnQ@mail.gmail.com>
- <ZQNWh2DY319jGbfq@smile.fi.intel.com>
- <CAAhV-H66LUWHP-eGp6VGvs0F+QD=QJ69uR3_1A3SqH9cyPUPoQ@mail.gmail.com>
- <ZQWCeI6E7rm8Akbt@smile.fi.intel.com>
- <CAAhV-H6dakVH0a4Mt9MdcY8OO3gdne6rW0Z1kK6YRq9hDLP05w@mail.gmail.com>
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468569F;
+        Sun, 17 Sep 2023 23:50:00 -0700 (PDT)
+Received: from localhost (89-26-75-29.dyn.cablelink.at [89.26.75.29])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sebastianfricke)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0203B66003B0;
+        Mon, 18 Sep 2023 07:49:56 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695019797;
+        bh=/fk3WgWVIYNC71tqjOyEDy5t6GDP5pCDuBwKWMnwgxE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j8kgdFNsDeMRL6vqcTTQWRS4ULKyBARTk6YDzIJGP0giAKjB77H8rH5FIkbfal5Lr
+         m4qSH0C4uewsXm/CleX3j9mrtcuyNZ7Kh09gtuP0oVkZDTstRKcWyN8j1vCSdoIyJ4
+         cYN8W6nIJrOlyUQcyHVEc6SccOCFJFGCrNdMJ8htc95VcYYZSmxNtA/PD3WU2XkAFq
+         4AeJTjwplgQ92u/gkzWzl9LWIpuMx39KuwNqq16QRULcX955sCVeVB3npl1ZySq1Dl
+         jIKotKXefBTLe0dLrwozioMgBz/jFmEOO6lOgnJPnhAjGY4X5p4GkGdItmtgVFCkJx
+         7Si/joxR7ImPg==
+Date:   Mon, 18 Sep 2023 08:49:54 +0200
+From:   Sebastian Fricke <sebastian.fricke@collabora.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Robert Beckett <bob.beckett@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Subject: Re: [PATCH v12 6/7] dt-bindings: media: wave5: add yaml devicetree
+ bindings
+Message-ID: <20230918064954.iuomunsckduawiay@basti-XPS-13-9310>
+References: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
+ <20230915-wave5_v12_on_media_master-v12-6-92fc66cd685d@collabora.com>
+ <30384744-94d7-2675-63ad-d8531e3156d1@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAhV-H6dakVH0a4Mt9MdcY8OO3gdne6rW0Z1kK6YRq9hDLP05w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+In-Reply-To: <30384744-94d7-2675-63ad-d8531e3156d1@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,42 +73,205 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 08:05:52PM +0800, Huacai Chen wrote:
-> On Sat, Sep 16, 2023 at 6:27 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Fri, Sep 15, 2023 at 08:36:24AM +0800, Huacai Chen wrote:
-> > > On Fri, Sep 15, 2023 at 2:53 AM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Thu, Sep 14, 2023 at 11:25:22PM +0800, Huacai Chen wrote:
-> >
-> > > > > Thank you for your patch, can this patch solve the problem below?
-> > > > > https://lore.kernel.org/oe-kbuild-all/202309072237.9zxMv4MZ-lkp@intel.com/T/#u
-> > > >
-> > > > Nope, this just adds missing includes.
-> > > > No functional change, so warnings will still be there.
-> > > But I think a patch should solve a problem.
-> >
-> > No, that problem is static analyser concern, not the compiler nor linker.
-> >
-> > > If we don't get a build
-> > > error or warning without this patch, does that mean the 'missing'
-> > > headers are actually included indirectly?
-> >
-> > I might be missing something, but I do not see any build error in the above message.
-> Hmm, then I think I will take the second patch only.
+Hey Krzysztof,
 
-Thanks, but can you shed a light why?
+thanks for your review.
 
-The rule of thumb is to include the headers we are direct users of, we have not
-to imply any other inclusions done by others, unless it's kinda same family of
-headers (like types.h always includes compiler_types.h). Since in your case
-the const.h is included the other two are missing and it's even worse, as I
-understand you rely on the specific headers to be included _before_ using this
-one in the users.
+On 17.09.2023 09:56, Krzysztof Kozlowski wrote:
+>On 15/09/2023 23:11, Sebastian Fricke wrote:
+>> From: Robert Beckett <bob.beckett@collabora.com>
+>>
+>> Add bindings for the wave5 chips&media codec driver
+>>
+>> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+>
+>So this is v12 and still no tested?
 
+I have tested it, multiple times actually since V11. (For some reason
+that indentation issue slipped by me though ...)
+If you mean the tested by tag, the patch was completely unnoticed until
+v10 by the community, which was partially because me and the previous
+commiters didn't use the right recipients for this patch. So from that
+point of view this is more like v2.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>
+>A nit, subject: drop second/last, redundant "yaml devicetree indings".
+>The "dt-bindings" prefix is already stating that these are bindings.
+>Basically three words bringing zero information.
 
+Okay so:
+`dt-bindings: media: wave5: add devicetree`
+?
 
+>
+>> ---
+>>  .../devicetree/bindings/media/cnm,wave5.yaml       | 66 ++++++++++++++++++++++
+>>  1 file changed, 66 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/cnm,wave5.yaml b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
+>> new file mode 100644
+>> index 000000000000..b8f383621805
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
+>> @@ -0,0 +1,66 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/media/cnm,wave5.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Chips&Media Wave 5 Series multi-standard codec IP
+>> +
+>> +maintainers:
+>> +  - Nas Chung <nas.chung@chipsnmedia.com>
+>> +  - Jackson Lee <jackson.lee@chipsnmedia.com>
+>> +
+>> +description: |-
+>
+>Do not need '|-' unless you need to preserve formatting.
+
+Ack.
+
+>
+>> +  The Chips&Media WAVE codec IP is a multi format video encoder/decoder
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +        - cnm,cm521c-vpu
+>
+>It does not look like you tested the bindings, at least after quick
+>look. Please run `make dt_binding_check` (see
+>Documentation/devicetree/bindings/writing-schema.rst for instructions).
+>Maybe you need to update your dtschema and yamllint.
+
+Here my testing output:
+```
+❯ make dt_binding_check DT_SCHEMA_FILES=cnm,wave5.yaml
+   HOSTCC  scripts/basic/fixdep
+   HOSTCC  scripts/dtc/dtc.o
+   HOSTCC  scripts/dtc/flattree.o
+   HOSTCC  scripts/dtc/fstree.o
+   HOSTCC  scripts/dtc/data.o
+   HOSTCC  scripts/dtc/livetree.o
+   HOSTCC  scripts/dtc/treesource.o
+   HOSTCC  scripts/dtc/srcpos.o
+   HOSTCC  scripts/dtc/checks.o
+   HOSTCC  scripts/dtc/util.o
+   LEX     scripts/dtc/dtc-lexer.lex.c
+   YACC    scripts/dtc/dtc-parser.tab.[ch]
+   HOSTCC  scripts/dtc/dtc-lexer.lex.o
+   HOSTCC  scripts/dtc/dtc-parser.tab.o
+   HOSTLD  scripts/dtc/dtc
+   LINT    Documentation/devicetree/bindings
+./Documentation/devicetree/bindings/media/cnm,wave5.yaml:19:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
+   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+   DTEX    Documentation/devicetree/bindings/media/cnm,wave5.example.dts
+   DTC_CHK Documentation/devicetree/bindings/media/cnm,wave5.example.dtb
+```
+
+Again sorry about missing the indentation warning, but nothing else was
+highlighted.
+
+Both dtschema and yamllint seem to be up-to-date:
+```
+❯ python3 -m pip --version
+pip 23.2.1 from /home/basti/.local/lib/python3.8/site-packages/pip (python 3.8)
+❯ pip3 show dtschema
+Name: dtschema
+Version: 2023.7
+Summary: DeviceTree validation schema and tools
+Home-page: https://github.com/devicetree-org/dt-schema
+Author: Rob Herring
+Author-email: robh@kernel.org
+License: BSD
+Location: /home/basti/.local/lib/python3.8/site-packages
+Requires: jsonschema, pylibfdt, rfc3987, ruamel.yaml
+Required-by: 
+❯ pip3 show yamllint
+Name: yamllint
+Version: 1.32.0
+Summary: A linter for YAML files.
+Home-page: 
+Author: Adrien Vergé
+Author-email: 
+License: GPL-3.0-only
+Location: /home/basti/.local/lib/python3.8/site-packages
+Requires: pathspec, pyyaml
+Required-by: 
+```
+
+>
+>Missing blank line
+
+Ack, will add that.
+>
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: VCODEC clock
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: vcodec
+>
+>Drop clock-names, not really useful for one entry.
+
+Ack
+
+>
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  power-domains:
+>> +    maxItems: 1
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  sram:
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>
+>Drop blank line
+
+Ack
+
+>
+>> +    description:
+>> +      The VPU uses the SRAM to store some of the reference data instead of
+>> +      storing it on DMA memory. It is mainly used for the purpose of reducing
+>> +      bandwidth.
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupts
+>
+>Keep the same order as listed in properties:
+
+Ack
+
+>
+>> +  - clocks
+>> +  - clock-names
+>> +
+>> +additionalProperties: false
+>> +
+>
+>Best regards,
+>Krzysztof
+
+Sincerely,
+Sebastian
+
+>
+>_______________________________________________
+>Kernel mailing list -- kernel@mailman.collabora.com
+>To unsubscribe send an email to kernel-leave@mailman.collabora.com
