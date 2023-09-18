@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF27E7A4416
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6397A4417
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240615AbjIRIKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
+        id S240628AbjIRIK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240534AbjIRIK3 (ORCPT
+        with ESMTP id S240550AbjIRIKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:10:29 -0400
+        Mon, 18 Sep 2023 04:10:33 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D51499;
-        Mon, 18 Sep 2023 01:10:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8AA99;
+        Mon, 18 Sep 2023 01:10:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695024624; x=1726560624;
-  h=from:to:cc:subject:date:message-id;
-  bh=z53DQi3OMtw1hJWbbZsWKA60P424xUL1Xq/vuIDGPRw=;
-  b=G9LJdc+RmSbo1DOm8yvcT21HUTTi/X8zmjp7+3RyhCXh75z7k52NXzxM
-   15R5t2xs9/Q8+xzGm9ZvVxRk3HsfeyzFLMiW+9DnFk1nSqRXnJL8lQgBH
-   UZy8znv9F5+y/YJzuIhFuNmWqcedyKm2oXFUQW8ofz6cE86c5pUydhjc2
-   eSFyV7j7L2oYsgjyHSivSPqpXW8vZD6Wl2FSp1Fu4pgtUQhV1Yy7c16OL
-   fstLZvd6ajlOxM+EV7f2q3xcJ3UNt8I476I4VUe4TBHwqrGYEmcdfW04B
-   1B5OqBdr/WO9PedxJ+buufRNommgv6dxw4JdTmkn+oo5mwLCXePTpRQRC
+  t=1695024628; x=1726560628;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=nzvv6eDUMuWEVi9A5kctA5+LBLiff1ltxVOjQscs/XM=;
+  b=AeJUesqPUvyew1vBIkkIburP6BnZUNqWtQFngTPU12rBaCQyhdGsQZjd
+   6ZS6uj+96NUnKUaSfTPsZ6OqAAx+6CD8+82zF0+iHosYtNN8j8o/HrNBG
+   Ayk1XUo4BB2QKOPY5TXKV1AVduDIaa4dohh5p09G0K3UKoBMNXJwQtg9x
+   ye5Nd2ktF1UGyVkrz3IC26aMi1z/cJNlFU8IlMtcYmlOMj5jK8wsyMYpy
+   k5qSYuuD00TqLg2XmzzUzVo/Fe5kI4x6C1V/90+jino6Lj2NOLBcFulNS
+   gubJpHdSKQAttlYg/zWCV4xDHxqYEPXJqOPi0o8u9AIzU1e5/zRYNrowF
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="410550826"
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="410550864"
 X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="410550826"
+   d="scan'208";a="410550864"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:10:23 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:10:27 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="695442254"
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="695442273"
 X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="695442254"
+   d="scan'208";a="695442273"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by orsmga003.jf.intel.com with ESMTP; 18 Sep 2023 01:10:10 -0700
+  by orsmga003.jf.intel.com with ESMTP; 18 Sep 2023 01:10:19 -0700
 From:   Raag Jadav <raag.jadav@intel.com>
 To:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
         Jonathan.Cameron@huawei.com, paul@crapouillou.net,
@@ -51,10 +52,12 @@ Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
         patches@opensource.cirrus.com,
         mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com,
         Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH for-next v2 00/10] Fix symbol export for _SIMPLE_ variants of _PM_OPS()
-Date:   Mon, 18 Sep 2023 13:39:41 +0530
-Message-Id: <20230918080951.3615-1-raag.jadav@intel.com>
+Subject: [PATCH for-next v2 01/10] PM: Introduce export macros for _SIMPLE_ variants of _PM_OPS()
+Date:   Mon, 18 Sep 2023 13:39:42 +0530
+Message-Id: <20230918080951.3615-2-raag.jadav@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230918080951.3615-1-raag.jadav@intel.com>
+References: <20230918080951.3615-1-raag.jadav@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
@@ -65,46 +68,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently EXPORT_*_SIMPLE_DEV_PM_OPS() use EXPORT_*_DEV_PM_OPS() set of
-macros to export dev_pm_ops symbol, which export the symbol in case
-CONFIG_PM=y but don't take CONFIG_PM_SLEEP into consideration.
+Introduce a new set of export macros for _SIMPLE_ variants of _PM_OPS(),
+which export dev_pm_ops symbol only in case CONFIG_PM_SLEEP=y and discard
+it otherwise.
 
-Since _SIMPLE_ variants of _PM_OPS() do not include runtime PM handles
-and are only used in case CONFIG_PM_SLEEP=y, we should not be exporting
-dev_pm_ops symbol for them in case CONFIG_PM_SLEEP=n.
+Fixes: 34e1ed189fab ("PM: Improve EXPORT_*_DEV_PM_OPS macros")
+Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+---
+ include/linux/pm.h | 43 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
 
-This can be fixed by having two distinct set of export macros for both
-_RUNTIME_ and _SIMPLE_ variants of _PM_OPS(), such that the export of
-dev_pm_ops symbol used in each variant depends on CONFIG_PM and
-CONFIG_PM_SLEEP respectively.
-
-Changes since v1:
-- Update drivers to new set of macros
-
-Raag Jadav (10):
-  PM: Introduce export macros for _SIMPLE_ variants of _PM_OPS()
-  PM: Update EXPORT_*_DEV_PM_OPS() to EXPORT_*_RUNTIME_PM_OPS()
-  iio: accel: fxls8962af: convert to EXPORT_NS_GPL_RUNTIME_PM_OPS()
-  iio: gyro: fxas21002c: convert to EXPORT_NS_GPL_RUNTIME_PM_OPS()
-  iio: imu: inv_icm42600: convert to EXPORT_NS_GPL_RUNTIME_PM_OPS()
-  iio: imu: inv_mpu: convert to EXPORT_NS_GPL_RUNTIME_PM_OPS()
-  drm/imx/dcss: convert to EXPORT_GPL_RUNTIME_PM_OPS()
-  mfd: arizona: convert to EXPORT_GPL_RUNTIME_PM_OPS()
-  mfd: cs42l43: convert to EXPORT_NS_GPL_RUNTIME_PM_OPS()
-  ASoC: cs35l41: convert to EXPORT_GPL_RUNTIME_PM_OPS()
-
- drivers/gpu/drm/imx/dcss/dcss-dev.c           |  2 +-
- drivers/iio/accel/fxls8962af-core.c           |  2 +-
- drivers/iio/gyro/fxas21002c_core.c            |  2 +-
- .../iio/imu/inv_icm42600/inv_icm42600_core.c  |  2 +-
- drivers/iio/imu/inv_mpu6050/inv_mpu_core.c    |  2 +-
- drivers/mfd/arizona-core.c                    |  2 +-
- drivers/mfd/cs42l43.c                         |  2 +-
- include/linux/pm.h                            | 38 ++++++++++++-------
- include/linux/pm_runtime.h                    | 13 +++++--
- sound/soc/codecs/cs35l41.c                    |  2 +-
- 10 files changed, 41 insertions(+), 26 deletions(-)
-
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index 1400c37b29c7..6e7ab6950ad1 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -374,24 +374,39 @@ const struct dev_pm_ops name = { \
+ 	RUNTIME_PM_OPS(runtime_suspend_fn, runtime_resume_fn, idle_fn) \
+ }
+ 
+-#ifdef CONFIG_PM
+-#define _EXPORT_DEV_PM_OPS(name, license, ns)				\
++#define _EXPORT_PM_OPS(name, license, ns)				\
+ 	const struct dev_pm_ops name;					\
+ 	__EXPORT_SYMBOL(name, license, ns);				\
+ 	const struct dev_pm_ops name
+-#define EXPORT_PM_FN_GPL(name)		EXPORT_SYMBOL_GPL(name)
+-#define EXPORT_PM_FN_NS_GPL(name, ns)	EXPORT_SYMBOL_NS_GPL(name, ns)
+-#else
+-#define _EXPORT_DEV_PM_OPS(name, license, ns)				\
++
++#define _PM_OPS(name, license, ns)					\
+ 	static __maybe_unused const struct dev_pm_ops __static_##name
++
++#ifdef CONFIG_PM
++#define _EXPORT_RUNTIME_PM_OPS(name, license, ns)	_EXPORT_PM_OPS(name, license, ns)
++#define EXPORT_PM_FN_GPL(name)				EXPORT_SYMBOL_GPL(name)
++#define EXPORT_PM_FN_NS_GPL(name, ns)			EXPORT_SYMBOL_NS_GPL(name, ns)
++#else
++#define _EXPORT_RUNTIME_PM_OPS(name, license, ns)	_PM_OPS(name, license, ns)
+ #define EXPORT_PM_FN_GPL(name)
+ #define EXPORT_PM_FN_NS_GPL(name, ns)
+ #endif
+ 
+-#define EXPORT_DEV_PM_OPS(name) _EXPORT_DEV_PM_OPS(name, "", "")
+-#define EXPORT_GPL_DEV_PM_OPS(name) _EXPORT_DEV_PM_OPS(name, "GPL", "")
+-#define EXPORT_NS_DEV_PM_OPS(name, ns) _EXPORT_DEV_PM_OPS(name, "", #ns)
+-#define EXPORT_NS_GPL_DEV_PM_OPS(name, ns) _EXPORT_DEV_PM_OPS(name, "GPL", #ns)
++#ifdef CONFIG_PM_SLEEP
++#define _EXPORT_SIMPLE_PM_OPS(name, license, ns)	_EXPORT_PM_OPS(name, license, ns)
++#else
++#define _EXPORT_SIMPLE_PM_OPS(name, license, ns)	_PM_OPS(name, license, ns)
++#endif
++
++#define EXPORT_DEV_PM_OPS(name)				_EXPORT_RUNTIME_PM_OPS(name, "", "")
++#define EXPORT_GPL_DEV_PM_OPS(name)			_EXPORT_RUNTIME_PM_OPS(name, "GPL", "")
++#define EXPORT_NS_DEV_PM_OPS(name, ns)			_EXPORT_RUNTIME_PM_OPS(name, "", #ns)
++#define EXPORT_NS_GPL_DEV_PM_OPS(name, ns)		_EXPORT_RUNTIME_PM_OPS(name, "GPL", #ns)
++
++#define EXPORT_SIMPLE_PM_OPS(name)			_EXPORT_SIMPLE_PM_OPS(name, "", "")
++#define EXPORT_GPL_SIMPLE_PM_OPS(name)			_EXPORT_SIMPLE_PM_OPS(name, "GPL", "")
++#define EXPORT_NS_SIMPLE_PM_OPS(name, ns)		_EXPORT_SIMPLE_PM_OPS(name, "", #ns)
++#define EXPORT_NS_GPL_SIMPLE_PM_OPS(name, ns)		_EXPORT_SIMPLE_PM_OPS(name, "GPL", #ns)
+ 
+ /*
+  * Use this if you want to use the same suspend and resume callbacks for suspend
+@@ -404,19 +419,19 @@ const struct dev_pm_ops name = { \
+ 	_DEFINE_DEV_PM_OPS(name, suspend_fn, resume_fn, NULL, NULL, NULL)
+ 
+ #define EXPORT_SIMPLE_DEV_PM_OPS(name, suspend_fn, resume_fn) \
+-	EXPORT_DEV_PM_OPS(name) = { \
++	EXPORT_SIMPLE_PM_OPS(name) = { \
+ 		SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+ 	}
+ #define EXPORT_GPL_SIMPLE_DEV_PM_OPS(name, suspend_fn, resume_fn) \
+-	EXPORT_GPL_DEV_PM_OPS(name) = { \
++	EXPORT_GPL_SIMPLE_PM_OPS(name) = { \
+ 		SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+ 	}
+ #define EXPORT_NS_SIMPLE_DEV_PM_OPS(name, suspend_fn, resume_fn, ns)	\
+-	EXPORT_NS_DEV_PM_OPS(name, ns) = { \
++	EXPORT_NS_SIMPLE_PM_OPS(name, ns) = { \
+ 		SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+ 	}
+ #define EXPORT_NS_GPL_SIMPLE_DEV_PM_OPS(name, suspend_fn, resume_fn, ns)	\
+-	EXPORT_NS_GPL_DEV_PM_OPS(name, ns) = { \
++	EXPORT_NS_GPL_SIMPLE_PM_OPS(name, ns) = { \
+ 		SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+ 	}
+ 
 -- 
 2.17.1
 
