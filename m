@@ -2,152 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 898747A456E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD69C7A4570
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239103AbjIRJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 05:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36154 "EHLO
+        id S239116AbjIRJEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238768AbjIRJDn (ORCPT
+        with ESMTP id S239072AbjIRJEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:03:43 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29407D1;
-        Mon, 18 Sep 2023 02:03:35 -0700 (PDT)
+        Mon, 18 Sep 2023 05:04:11 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA3FD1;
+        Mon, 18 Sep 2023 02:04:03 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C91D1219C3;
-        Mon, 18 Sep 2023 09:03:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695027813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IC0SUrYAdgtUMCLwxcZUGJH7Iwy4fhSRwoJTp5TcPCo=;
-        b=aoItDb6YbEgvE+Bx7FTmvVFbsBAva7Jv7lvPl9LLm38kfLzYnj2y8iU5rn6JkUS8JhlMGf
-        H/KzZiJRCo6XT4NMHBkRyzhRYBsFth6q5wIQtg2025Pp3cNZsT7RsetzqsjfspQIfeMHWw
-        T1gB3b4lGaOZVMRoV3BqkWZoEkTBbKA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695027813;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 626931FD92;
+        Mon, 18 Sep 2023 09:04:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695027842; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=y8ulxZTAU8ZHRSVUlnFEqeNxmI2g5k3RdNfkDBzDyL4=;
+        b=QanKoGQDn+l/JZ21hEKb+AMs28Dq5uMeR9Nld3yJhyelrsKXD+fQWu0yhKkOvf8o/eL133
+        TUbfm5z033M+P24F1F3RBppZXJh4LsRzwrrJGrL8cjO6I5BLv8Sw6AhQKhRdo6xpJiWFsZ
+        ZizWAnL1AcrKj2kqj12ABhoiGUwA5vs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695027842;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IC0SUrYAdgtUMCLwxcZUGJH7Iwy4fhSRwoJTp5TcPCo=;
-        b=fR9Hnrsr0PCeEFgrTwHaR3lHdc8qzvLQfDAi6kJOcXCapzUY+p1hD6mbKF6h9PtrMPbuNZ
-        U4hK84gRWnxzRpDw==
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=y8ulxZTAU8ZHRSVUlnFEqeNxmI2g5k3RdNfkDBzDyL4=;
+        b=54tZC2yWZS+MbxdWdVOcFqsWohg5jRmfAqQ3t+wOtGjMKL6HtRuU2g8FpClwaYuF+9q6TC
+        gprw7VKHpq/QNhBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BC5C913480;
-        Mon, 18 Sep 2023 09:03:33 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A5CA13480;
+        Mon, 18 Sep 2023 09:04:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id KGr0LWUSCGWxCgAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 09:03:33 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 5B10FA0759; Mon, 18 Sep 2023 11:03:33 +0200 (CEST)
-Date:   Mon, 18 Sep 2023 11:03:33 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Chunhai Guo <guochunhai@vivo.com>
-Cc:     jack@suse.cz, brauner@kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs-writeback: do not requeue a clean inode having
- skipped pages
-Message-ID: <20230918090333.ymwsnjt2d7wpghtu@quack3>
-References: <20230916045131.957929-1-guochunhai@vivo.com>
+        id tgl1CYISCGX7CgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 18 Sep 2023 09:04:02 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     deller@gmx.de, sam@ravnborg.org, arnd@arndb.de, javierm@redhat.com,
+        rdunlap@infradead.org, glaubitz@physik.fu-berlin.de
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] fbdev/sh7760fb: Depend on FB=y
+Date:   Mon, 18 Sep 2023 11:03:49 +0200
+Message-ID: <20230918090400.13264-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230916045131.957929-1-guochunhai@vivo.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 15-09-23 22:51:31, Chunhai Guo wrote:
-> When writing back an inode and performing an fsync on it concurrently, a
-> deadlock issue may arise as shown below. In each writeback iteration, a
-> clean inode is requeued to the wb->b_dirty queue due to non-zero
-> pages_skipped, without anything actually being written. This causes an
-> infinite loop and prevents the plug from being flushed, resulting in a
-> deadlock. We now avoid requeuing the clean inode to prevent this issue.
-> 
->     wb_writeback        fsync (inode-Y)
-> blk_start_plug(&plug)
-> for (;;) {
->   iter i-1: some reqs with page-X added into plug->mq_list // f2fs node page-X with PG_writeback
->                         filemap_fdatawrite
->                           __filemap_fdatawrite_range // write inode-Y with sync_mode WB_SYNC_ALL
->                            do_writepages
->                             f2fs_write_data_pages
->                              __f2fs_write_data_pages // wb_sync_req[DATA]++ for WB_SYNC_ALL
->                               f2fs_write_cache_pages
->                                f2fs_write_single_data_page
->                                 f2fs_do_write_data_page
->                                  f2fs_outplace_write_data
->                                   f2fs_update_data_blkaddr
->                                    f2fs_wait_on_page_writeback
->                                      wait_on_page_writeback // wait for f2fs node page-X
->   iter i:
->     progress = __writeback_inodes_wb(wb, work)
->     . writeback_sb_inodes
->     .   __writeback_single_inode // write inode-Y with sync_mode WB_SYNC_NONE
->     .   . do_writepages
->     .   .   f2fs_write_data_pages
->     .   .   .  __f2fs_write_data_pages // skip writepages due to (wb_sync_req[DATA]>0)
->     .   .   .   wbc->pages_skipped += get_dirty_pages(inode) // wbc->pages_skipped = 1
->     .   if (!(inode->i_state & I_DIRTY_ALL)) // i_state = I_SYNC | I_SYNC_QUEUED
->     .    total_wrote++;  // total_wrote = 1
->     .   requeue_inode // requeue inode-Y to wb->b_dirty queue due to non-zero pages_skipped
->     if (progress) // progress = 1
->       continue;
->   iter i+1:
->       queue_io
->       // similar process with iter i, infinite for-loop !
-> }
-> blk_finish_plug(&plug)   // flush plug won't be called
-> 
-> Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
+Fix linker error if FB=m about missing fb_io_read and fb_io_write. The
+linker's error message suggests that this config setting has already
+been broken for other symbols.
 
-Looks good. Feel free to add:
+  All errors (new ones prefixed by >>):
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+     sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_probe':
+     sh7760fb.c:(.text+0x374): undefined reference to `framebuffer_alloc'
+     sh4-linux-ld: sh7760fb.c:(.text+0x394): undefined reference to `fb_videomode_to_var'
+     sh4-linux-ld: sh7760fb.c:(.text+0x39c): undefined reference to `fb_alloc_cmap'
+     sh4-linux-ld: sh7760fb.c:(.text+0x3a4): undefined reference to `register_framebuffer'
+     sh4-linux-ld: sh7760fb.c:(.text+0x3ac): undefined reference to `fb_dealloc_cmap'
+     sh4-linux-ld: sh7760fb.c:(.text+0x434): undefined reference to `framebuffer_release'
+     sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_remove':
+     sh7760fb.c:(.text+0x800): undefined reference to `unregister_framebuffer'
+     sh4-linux-ld: sh7760fb.c:(.text+0x804): undefined reference to `fb_dealloc_cmap'
+     sh4-linux-ld: sh7760fb.c:(.text+0x814): undefined reference to `framebuffer_release'
+  >> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0xc): undefined reference to `fb_io_read'
+  >> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x10): undefined reference to `fb_io_write'
+     sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x2c): undefined reference to `cfb_fillrect'
+     sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x30): undefined reference to `cfb_copyarea'
+     sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x34): undefined reference to `cfb_imageblit'
 
-								Honza
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309130632.LS04CPWu-lkp@intel.com/
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ drivers/video/fbdev/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 969ce991b0b0..c1af01b2c42d 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -1535,10 +1535,15 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
->  
->  	if (wbc->pages_skipped) {
->  		/*
-> -		 * writeback is not making progress due to locked
-> -		 * buffers. Skip this inode for now.
-> +		 * Writeback is not making progress due to locked buffers.
-> +		 * Skip this inode for now. Although having skipped pages
-> +		 * is odd for clean inodes, it can happen for some
-> +		 * filesystems so handle that gracefully.
->  		 */
-> -		redirty_tail_locked(inode, wb);
-> +		if (inode->i_state & I_DIRTY_ALL)
-> +			redirty_tail_locked(inode, wb);
-> +		else
-> +			inode_cgwb_move_to_attached(inode, wb);
->  		return;
->  	}
->  
-> -- 
-> 2.25.1
-> 
+diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+index 4455bfd57f0ec..64ccb34d882dd 100644
+--- a/drivers/video/fbdev/Kconfig
++++ b/drivers/video/fbdev/Kconfig
+@@ -1756,7 +1756,7 @@ config FB_COBALT
+ 
+ config FB_SH7760
+ 	bool "SH7760/SH7763/SH7720/SH7721 LCDC support"
+-	depends on FB && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
++	depends on FB=y && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
+ 		|| CPU_SUBTYPE_SH7720 || CPU_SUBTYPE_SH7721)
+ 	select FB_IOMEM_HELPERS
+ 	help
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.42.0
+
