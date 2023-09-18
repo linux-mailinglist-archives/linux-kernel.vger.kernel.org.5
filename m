@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 603D67A48FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C617A4903
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241792AbjIRL6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        id S241809AbjIRL7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241809AbjIRL6J (ORCPT
+        with ESMTP id S241791AbjIRL6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:58:09 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2085.outbound.protection.outlook.com [40.107.220.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAA519A9;
-        Mon, 18 Sep 2023 04:54:48 -0700 (PDT)
+        Mon, 18 Sep 2023 07:58:32 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2061.outbound.protection.outlook.com [40.107.220.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFBC10C4;
+        Mon, 18 Sep 2023 04:55:24 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dvpi7oG++m27m3gnRVYpLhSQQhAu9JoI/YzJzm82kt5Rrr/S+1WLWJdXCcwFtmXXldhDcA8mc0n6NjokFNftskRidRAvfJjCjDmVVKLnEuIAnbIVkFuKzTDuPOr2iTGXdcadfVEpR8AW+TVlNAnuiPgnoG0X5tg7RKD0Epg/73w0DPq3eV0shXGNrs0yV69rDw2D2zXxLYokENmQWZgTAz1wuCa/gnslzhuG8fNscys1D//MUic4JdinUvY1RBErCEnxx2R2xjqNg5CZHOgdULGv3lbGZY4CgoWnD9SMd2AXpUlriO3Gauw0YcvrqIJCKtriJxTEcQvk8dyZ3eQ+AA==
+ b=k2WoUic1+IJlrnoD7TeH2HTuWdrFYlyJzrbl8ECeAznoYFM0N/TIjPk5Iz2zEkj2gehLXwvP4QKK/vIGn0vvXZfubLI0D/8E50qOPUCafCEUSsfY3tNIB91RXwVFtPaXAw9daf8pJf0mG9b/n2FsyQpKmXR0l79L6pxh71BDpojnqBVC1Phe0I4W/laiBsnZbl6QsPq4Vl6oeFB6aSrUc2yJ0wJ4NXVPvFNna7pQMXFrL5c1MSxYalDQcwANfkcPFYiE7gX8A7TLDzXUNjA5x0W6REIbWPVMVDtw5hMv2azR0IzMAFEPOH0A+/aPGDFOjqGw65Nig5qZ60Ys8cOFgw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VeRzHHEC9N8TLcL30izVuKIHODCdH6kdTThQsE5G9N4=;
- b=CmnSQHxf4Ngf/8Ben30a00JlJkMhneIoUmjJGnQtJo8AQS30cPYlj/UcMv1MnDGgNqVdgYLVqt+fwemK1/dbduB7FAdd82wNQDhv8xwHMob7stM3flp4mwPCpltqxeD32HcFfnoJD683g6fhHCpiggGyNo4fOApk9BkezRLLDl4GGTpuV7auhlxH7uaCW3xHnPBjoG/EUH7SiDCFI4DiZE5p51HiSmB5axgxgyq/KqXIeXQCr3/ixM8cu0OLbtpiIyo+q6txqNqqfYITcVm6I5Uw1nL8HeL1VwwMX4+OZmWNB0rlVJx2Ny6lDV+fEPOuo2T64/HcWAe7T1GtDGQMDA==
+ bh=ByEztzR3QuMkR9qnReBnsK1Qq2OKwkHGtxkuklAGczM=;
+ b=H4plHnD+6iBIrmWLx9MZFX4cF3wIcte1YvmfHS6kbqnpsZidVeng5XTqDbGUsb49X3tLmPEWCX6fA7iyWjO4OlgaqvgZHvchCYFubXUs6hkeaMntNnYi+CKrxHmooRin7mNJdwL1zghiWZXPQPruiQCZ57uAsBkfsi/9KDNjeuJJBDDfN5z+fpM7i3btzDNWUE2jwYV/QhXmxfo20IuaDfdFhnBbUUTVpDLeNJ4tfwtfc5TQ3g/armL1cCV55JwKsAB+5OVdLSbhlfUF1Hzn4n++7xnZgALa03v1J/tnF61K15j3kL5ShCC06J2uBXe7TItzEkF4KAacBFgB9JzP8g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VeRzHHEC9N8TLcL30izVuKIHODCdH6kdTThQsE5G9N4=;
- b=SryFs1gYVJsiCRWkG55MTyMijU/2yHFMCM8qADqgouMRzlZfAF1Pts/CPsIwLbJ7KMFD0nafXrwT2EmOfSmKX1bzCxDQjlcrAnlVm8/1NVVlHbPuQbODyXktyRGZJCDRQzXaetG7QX8I1iNF8PlO3c9AcLtEnoGdLMnJdwwHOr8H/hhS5kAZvdfZE12QakdzUGPX3RoaSn3bamCVtU5Gsg4WHA7PZ8FeRp9Jq6Jhl6wTT8Phy8UzrCZkgNfRRM2Vvfge5ICjlZMj4wegur4K/4dwIxl1SpR7jPhH8G0ALlxLnK83iS4QZiui4hKQfsQHpkvT2NsMyywPqc8JbMu/hA==
+ bh=ByEztzR3QuMkR9qnReBnsK1Qq2OKwkHGtxkuklAGczM=;
+ b=XU1sF9a7Z7aGpQGhaA7ioFVw1unbIRX96Vk61IuiEjKvnBY73BShHUGQWngtPj539yD4l2azYcf6VZWkYN+4QXLloi2g98oOSvVUwjT6qkRlc92Fvv6o/s96YIaJgKE5WMHRImsRGihx72irehy6Qd/cLIbpdRdiTs/+IXzmwFLMkI73jcK1ZkoEAqFneKsqc9mJTuaGGLqCR0Ow8m/QQHeYkKHvrfc55S92j5HbCZXKfjZOiODg6cF5poghkKvrIZc5tnEH68+9quPlOxpwk3DUSkHhYlU1K3m3T0j0jWADOH4l1Ro1ZbREgX0ZDPg+VBdKcu5eoBlFMVQ48RNxDg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
  by PH7PR12MB7872.namprd12.prod.outlook.com (2603:10b6:510:27c::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Mon, 18 Sep
- 2023 11:54:45 +0000
+ 2023 11:54:47 +0000
 Received: from BYAPR12MB2743.namprd12.prod.outlook.com
  ([fe80::5cc1:1ea3:4ec5:72af]) by BYAPR12MB2743.namprd12.prod.outlook.com
  ([fe80::5cc1:1ea3:4ec5:72af%5]) with mapi id 15.20.6792.026; Mon, 18 Sep 2023
- 11:54:45 +0000
+ 11:54:47 +0000
 From:   Rahul Rameshbabu <rrameshbabu@nvidia.com>
 To:     Jiri Kosina <jikos@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>
@@ -48,62 +48,65 @@ Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         kernel-janitors@vger.kernel.org, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: [PATCH v3 0/3] HID: nvidia-shield: Fix the error handling path of shield_probe()
-Date:   Mon, 18 Sep 2023 04:54:29 -0700
-Message-Id: <20230918115432.30076-1-rrameshbabu@nvidia.com>
+Subject: [PATCH v3 1/3] HID: nvidia-shield: Fix a missing led_classdev_unregister() in the probe error handling path
+Date:   Mon, 18 Sep 2023 04:54:30 -0700
+Message-Id: <20230918115432.30076-2-rrameshbabu@nvidia.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230918115432.30076-1-rrameshbabu@nvidia.com>
+References: <20230918115432.30076-1-rrameshbabu@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BY3PR05CA0010.namprd05.prod.outlook.com
- (2603:10b6:a03:254::15) To BYAPR12MB2743.namprd12.prod.outlook.com
+X-ClientProxiedBy: BYAPR06CA0032.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::45) To BYAPR12MB2743.namprd12.prod.outlook.com
  (2603:10b6:a03:61::28)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|PH7PR12MB7872:EE_
-X-MS-Office365-Filtering-Correlation-Id: 10e85b63-5415-4fbc-6677-08dbb83e0d47
+X-MS-Office365-Filtering-Correlation-Id: bd7dc719-d49f-4d76-567e-08dbb83e0e3f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rXEMsmnY6Ynh2kz1fwT2Ty3+WpJKR+EO26vSbyz+TuSJ5/Z3ORP+12Fm81Qp9w0rb7ZVaTtyENbQJ7dpExQ0wrJRq2+JKf9klQMCSEyh02i9NWwl109q9bSaDnpKayhAozA5eyKytq9VgS1TwkVkrTJwS9V/pm8sB18Wj7Lf0QuPyjCg0i2jOUC7Jva5SqIw1gEIgqv7ebmu2lL9wCcgZIyVku8SnYaW+QnI21yrS8YgCBEPOW5m4HEkOPS1eOpscqkduPnUMCZDtloZIkoqW/fNaO1CsvvTyT4FuCT3Fh4b4S0usU0wmYUSi5gix2nbZiidj6jO/ksIFDC7xYKIPEvB5RIGCY43PFtJyDgx8V5FA4XZLiNzHVzj4abcF1TGuFiF/wr9MiZ3KWzTGqA5e/FoWDrdDehNOf9h13Zvjdhvo/kvyePMTEwpV62Sads02LPKZddQURRmhV5wZzyj8QfL90JJNeNhhpTph2zg+HY49QalDMBpodMQAH3JKGPfJpzg3P904d83483bZkmSNKB3ei8t7EdMR9lYPdIYyUdrgg1KPHvv/g0UGUqHtPHFZwbjBiwZYt8dNi0P0bqwrhtt5zIzhE/BGE0cQnj5tAA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(376002)(39860400002)(346002)(1800799009)(186009)(451199024)(26005)(2616005)(8936002)(8676002)(1076003)(4326008)(107886003)(83380400001)(2906002)(36756003)(5660300002)(86362001)(6506007)(6486002)(966005)(478600001)(6666004)(316002)(54906003)(6512007)(110136005)(66946007)(66476007)(41300700001)(66556008)(38100700002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: yMFtArjR/U9JD0u15ZE4lH2Dpr70YTfimHZuTd4nKNjkvYEo27A3B0ryNCemH14wjgY6GKdU2PDRn+h5lzplJ9+bVF4JSBroqqsqVKeLdBG2YK1T5KkbsrUvn4UYoF465tpzovLVeRsqvZ8syQPCKcftcyEti4DX/cGXEte7NI3naLKyVdA40LhEr8uTcoZvh3ubnXNQcicOeLzxRpgNNRylDVuzaOFpQ5d3OlxaBFiQJpsIWhJXfVx/c4SrfrKPGbImvIx5C1Y92ShB49JxWQCrHNw3cSehyYPyoldcuyrM6nuBCmCooH6wPtoCCI1fwrwW35mUtfyi0xQ8t8ursd/yqQ2fOSg4q2bOZkVAGhPAKIDnd/bfIduWqf0VRhBe1EJJN9gKPgn+PGS0Y55Fy7tzWYwkTT5M9HBN8MM4rEJXz4FTXiEUF2DlFqgeFC0RY9m/WiZkEXEEKFVBmiIE5u3w32J2m1bunnwjucdsPcCrPq9Fyz6nqnut6AyDhWb0pWADIdDQtIG/igxcR0gCsax7CxaCrNrYnJpyWXtVqGGp/xp1Om077urdzRA350KM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(376002)(39860400002)(346002)(1800799009)(186009)(451199024)(26005)(2616005)(8936002)(8676002)(1076003)(4326008)(107886003)(83380400001)(2906002)(36756003)(5660300002)(86362001)(6506007)(6486002)(478600001)(6666004)(316002)(54906003)(6512007)(110136005)(66946007)(66476007)(41300700001)(66556008)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Apsu6kkoSyCUX5jrM8MJt8ugg4KcKBBI66cVz3g4x/Gs88xaqRh74OPNPLxF?=
- =?us-ascii?Q?iJ4ITkXauW4ZCYF3rgiqcDTUTXUYHKR9iRzUDlNCKUpwgNHo0fBkPsvz9LxY?=
- =?us-ascii?Q?Uk1XP0GuTmcwuyxRJBV5mQ0QvCIg+GDS1Yg7szaEUrL6HH+nQ4N93dKsL2Rw?=
- =?us-ascii?Q?6xn1pUPvs0ryzVS9FfKjKSFYjxGExH5FVr2FE1IccopGTkhUPIaG8K+qxVjY?=
- =?us-ascii?Q?uctHVhbsLNEzYgay3ZXE1H/9GMFFYuT3GbJN8XeYwroUmqdd5d0v+qBhx3x/?=
- =?us-ascii?Q?V2xlDOoI7Xbwp9qo+MQ7hgukrFatMaRSkxtU/mmsXBIPAu/zk5cs7Lte3W/T?=
- =?us-ascii?Q?fb2Mk2yDv7J/bS2S0qWQqu7YkiQmmqSLr0kH34hQxtA5S7s/GZ6tDY+lqVR0?=
- =?us-ascii?Q?oIN80miwutfGXgZOCUfyEkwhf6v7CkP5Cpp4DNMY+HAYdW91ey7LEWyA3ZI2?=
- =?us-ascii?Q?DkXE3KKZnh2+gbY8jj1c8hXmqMwbA49LCCdQZUzz7IfGbwWbMG62/1fcb3zo?=
- =?us-ascii?Q?wgHUtv8igRdQ3ktskjafF8HOxLvIWqLngMuNxoVWEFdSLBKCyz7AKJJnklkL?=
- =?us-ascii?Q?oHeJiMRgcKzkKA/OwLcl0kvP9jJvKcFgPCLqfDs47n/A16sG2VnS6+H4bJn3?=
- =?us-ascii?Q?oaKYLX6NEwQmWnVAXn50zRifMBbT2UPEYKDGJB78RlcIBRxWE5gIIp5b1vvz?=
- =?us-ascii?Q?xAr9t2b7BEs6iz3oyVhyBjHVzJgBuLf8O45Mqxwt9BH6nwtiqidMxrr5VXk4?=
- =?us-ascii?Q?/ajoxAm/lRtlvDeHKwp5xCQxxsmg7uBO9+AxTaEcwE9tqW1rtidgkq+BASTW?=
- =?us-ascii?Q?OUISZ+WUUMVGO1+1zI7GqgpUlhCELr7lUwwM45gBOt4NS23dCnVV7bfhJmxX?=
- =?us-ascii?Q?oCxjOw5GkcyWDAJ4Pf8ZqSJvjXoSTJs+UioyzQguBd5yGUqgqgpl0AYDXHSz?=
- =?us-ascii?Q?0uau5xUffkBIqnn5xaXHYS54lxAYs4MASR3p9tLpgW54xrHVSCqhp8XH3llK?=
- =?us-ascii?Q?s/yOYTLw8zQB7Sxoa35LFw3OQZfS7t7XHWg73FK04w9NptBlFpJtb/uCxOda?=
- =?us-ascii?Q?pQbDwQ80Fz3y4C8hpyvnL1v41rmX7NJx2gtwhSw3M/ZY/iAGKgQLOaIy35zl?=
- =?us-ascii?Q?DO1wMevHFams0uiYCduf2lLTYYPVOKHpCrz3N5vN0CKEzwA3Ucc7RyBY4a/w?=
- =?us-ascii?Q?hzn2NIMaTqO0PzN7lVQsyIepwPqITfLYn+x14fT6Qp9zZCpyw+53dS2ovSH/?=
- =?us-ascii?Q?19+TNjGBcrMWob4WP5LeRxBG1z1qYIKlyauyVckeOFbpAHW/P0HLRMQQcVFq?=
- =?us-ascii?Q?rElfABRch2io8dqnE3h5KE0cwkZx8kPoGGiU5j5/JRbRQ+3b4RBr4D5BzNId?=
- =?us-ascii?Q?nF3XC8wKar4Jt0WPqX0YHBkAkbEtPUraEKJKMAEw/ypGjHcaTKNw0WDMTTlG?=
- =?us-ascii?Q?C+TExaktU+DW7AuUyVSU/lW5dtX61ogx6XF4zR0bLi/tJzh3DSwVvVxpxrIF?=
- =?us-ascii?Q?5atmDhMWiIc4F+vYe8WUnEEO0Z2Vu2z4SnP13ZBFx3bke6HI70jwCE6Hf+KQ?=
- =?us-ascii?Q?LaiEPhlH/fGcEpptlDlPLjTrgEx9DeBLAUjhJ4YB?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?I0oWNNpbbfzRFXDC/aavYhtxTq+o6mTcDCYfwl85xirJaMJZ0YgzaNrsNOnw?=
+ =?us-ascii?Q?i/NVdAtT4D5Gt5SikJqWCYX3FjJt5eweQk1sQbqFY8JlgR0/ZwEkTsbXFrZJ?=
+ =?us-ascii?Q?xg8e07nD04PR5hA+ZgRSeS3xXMhZJpo7Bpl5iElTaUHsuFTg5PiQBBnad//k?=
+ =?us-ascii?Q?LVEyPSJdDOEeALNJBOEkA6pzP20RbN7jd8c5e7rQS6FnMhVLeOqg/SsHMTM3?=
+ =?us-ascii?Q?E9s+yVaMBwST4gYu4OuqBV/jxzeEGYGWT9EonW82ElewOCuhPKE4Wb2VnkfU?=
+ =?us-ascii?Q?lDZ+GlQsnecZt5p6LQRposVAD5Wma1ELm43iZ2uaub4Xy+rPtzyEYLFaiTBx?=
+ =?us-ascii?Q?M/miCBUiRoup/YYUadTCG8BkhOcJH9KSuZIDgbhXgNPkE8h5zhrzvNr7x5G+?=
+ =?us-ascii?Q?wXytW/ugbUqL/DDq5TcriVGGzAT4A50dZbliFtVKPuEXZqGHsxo1rHBNlvVZ?=
+ =?us-ascii?Q?gDio1DQEePx24/9kc7zjIRqk/XKMCdGU+qAyhamrwuIe6QTIMppVG6u3DVwZ?=
+ =?us-ascii?Q?kGoYy42XhODr+vhoEqlU/Wo/TltpNddEEwHpdQVTUjBPn270TtBHdkpSW17y?=
+ =?us-ascii?Q?3Rs1+VBbW7uOW+nX30aiTVrSnNJ1+ePATRm3eslHDIhpDwUmlY33A7b+n6Bj?=
+ =?us-ascii?Q?CUjcHW0Az10TzPf1paGMQe3aOM1fNdYEhjpXfuUnTFmHaKrHHgmIUtTenn9R?=
+ =?us-ascii?Q?b+v7+Z++t62RxWaBQj0qd53I53zmYMPgqHl6ET7wAq4/+0mznrwP/d578MUy?=
+ =?us-ascii?Q?7Ycm8YGD6V1l0L2mPtr5cnF077tqOpIQ+yKTdFuniBM27d31hW2xTXXVR/12?=
+ =?us-ascii?Q?5mNmN+HOQAT0MgWnBwSUFqeRis1HfOEcsGbd+AE95WaeNJmlcoCV2sVjJi/t?=
+ =?us-ascii?Q?Bs8NiLA7fen3fcKuvlaxYk/cHZlzcqf6zDteM/x1/dWXAscpf/ZTvUWn/E4r?=
+ =?us-ascii?Q?E2rNkDp72MYTWia65uqMD5Mq4eGj2VO4qhjlc/sI//NZvUsS+1NTn9GzYB/C?=
+ =?us-ascii?Q?1QnaP4pQP3+kdAVi5V5Ebh8gcIZH10VrZkf4c3HGtViwpAaKEp2GlYHTtPht?=
+ =?us-ascii?Q?yAjMlOVG4eT9XuxiC6hjA0VDFka2TNneHVEQ7ITgk2pXANHDRC5XwnKKxL8Q?=
+ =?us-ascii?Q?qXRTPDmD7HJv4mLmAwTbiefGo/9z8tY4EwkJvyeU4mgkeqLTTXXGs4R1CKaV?=
+ =?us-ascii?Q?yrsv75jSJZ9WfBXN1IwjIuFyyMFNOPUaVdM+eERRTnnOy+IivUWiM2Vgl17R?=
+ =?us-ascii?Q?qz2iGh3T3qo3oR0pzSAD57m+e/3poKyZV7WdLwg6tbfu07OjnvhqtUUUczA4?=
+ =?us-ascii?Q?Rmt3fiv5Q4340CPTOxy6sYd6eDCJzgOSDeEZGBfFgAePOyZ90OVmKs9gDrvq?=
+ =?us-ascii?Q?LXSPnr8GZQS09f+/GoDUc8IV6j0uiiGtFE5BJ8tIEY+ovUN0VfKNMAC/txrv?=
+ =?us-ascii?Q?wGCvE1Bv4q5dyXV1GW4VW0fW1FLFNYEfjYWYsdQpVUWRwx/JzDSlnm55wtEb?=
+ =?us-ascii?Q?dHVP65H24rAJH11SLYC24GP4FMlsvwFMF5Hl8I/JKoG1fL6oltHttG9WgSUP?=
+ =?us-ascii?Q?b9U6XOFrztvgu+WmUKTDtYASVBKT5MYPVXpz9yGQLa7vtfoYbILxwlrPQ0Hu?=
+ =?us-ascii?Q?JA=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10e85b63-5415-4fbc-6677-08dbb83e0d47
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd7dc719-d49f-4d76-567e-08dbb83e0e3f
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 11:54:45.4499
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 11:54:47.0740
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o7sKrrQRgpYReFEEP5xNNIgoYRtbvxcl66IUsE1b4rrqmxZCAJi7ZDoyDh9YntkIVsAl71RMbdLx+7pJnRefTw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: CLhhrHljH3Jko+fRaM/tqjaqt6YYY4Li3MGy9bI7fN5yu9d7CPNdSJ2b6ViElaQ8l6Q6Br0mbquWD5mB6Hwd8A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7872
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
@@ -115,48 +118,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series fixes some missing clean-up function calls in the error handling of
-the probe.
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Patch 1 and 2 fix some similar issues introduced in 2 different commits (hence 2
-patches)
+The commit in Fixes updated the error handling path of
+thunderstrike_create() and the remove function but not the error handling
+path of shield_probe(), should an error occur after a successful
+thunderstrike_create() call.
 
-Patch 3 is an enhancement that creates a common function for cleaning up
-thunderstrike instances.
+Add the missing call. Make sure it is safe to call in the probe error
+handling path by preventing the led_classdev from attempting to set the LED
+brightness to the off state on unregister.
 
-Changes:
+Fixes: f88af60e74a5 ("HID: nvidia-shield: Support LED functionality for Thunderstrike")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+---
 
-  v1->v2:
-    - Add the LED_RETAIN_AT_SHUTDOWN flag to prevent
-      led_classdev_unregister from trying to set the LED to off before a
-      successful call to hid_hw_start.
-    - Rename err_haptics label to err_ts_create to make the label name more
-      accurate.
-    - Re-order operations in thunderstrike_destroy to be in LIFO order with
-      regards to the operations in thunderstrike_create.
-  v2->v3:
-    - Refactor thunderstrike_destroy to take a thunderstrike instance
-      pointer as a parameter and prevent a variable from being unused
-      in shield_probe.
+Notes:
+    Changes:
+    
+      v1->v2:
+        - Add the LED_RETAIN_AT_SHUTDOWN flag to prevent
+          led_classdev_unregister from trying to set the LED to off before a
+          successful call to hid_hw_start.
+      v2->v3:
+        - No changes.
 
-Link: https://lore.kernel.org/linux-input/cover.1693070958.git.christophe.jaillet@wanadoo.fr/
-Link: https://lore.kernel.org/linux-input/20230918041345.59859-1-rrameshbabu@nvidia.com/
+ drivers/hid/hid-nvidia-shield.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Notes from Rahul:
-  - Thank you so much Christophe for these patches.
-  - Sent v2 without accounting for the fact that thunderstrike_destroy in v1
-    makes the thunderstrike instance in shield_probe unused. Tested v3 with W=1.
-
-Christophe JAILLET (3):
-  HID: nvidia-shield: Fix a missing led_classdev_unregister() in the
-    probe error handling path
-  HID: nvidia-shield: Fix some missing function calls() in the probe
-    error handling path
-  HID: nvidia-shield: Introduce thunderstrike_destroy()
-
- drivers/hid/hid-nvidia-shield.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
-
+diff --git a/drivers/hid/hid-nvidia-shield.c b/drivers/hid/hid-nvidia-shield.c
+index 43784bb57d3f..c144641452d3 100644
+--- a/drivers/hid/hid-nvidia-shield.c
++++ b/drivers/hid/hid-nvidia-shield.c
+@@ -801,7 +801,7 @@ static inline int thunderstrike_led_create(struct thunderstrike *ts)
+ 	led->name = devm_kasprintf(&ts->base.hdev->dev, GFP_KERNEL,
+ 				   "thunderstrike%d:blue:led", ts->id);
+ 	led->max_brightness = 1;
+-	led->flags = LED_CORE_SUSPENDRESUME;
++	led->flags = LED_CORE_SUSPENDRESUME | LED_RETAIN_AT_SHUTDOWN;
+ 	led->brightness_get = &thunderstrike_led_get_brightness;
+ 	led->brightness_set = &thunderstrike_led_set_brightness;
+ 
+@@ -1076,6 +1076,7 @@ static int shield_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ err_haptics:
+ 	if (ts->haptics_dev)
+ 		input_unregister_device(ts->haptics_dev);
++	led_classdev_unregister(&ts->led_dev);
+ 	return ret;
+ }
+ 
 -- 
 2.40.1
 
