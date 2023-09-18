@@ -2,139 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 221717A438A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8BE7A437E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240211AbjIRHxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S240297AbjIRHw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240604AbjIRHw4 (ORCPT
+        with ESMTP id S240607AbjIRHwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:52:56 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D8E3AA7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:50:47 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bffc55af02so15827561fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:50:47 -0700 (PDT)
+        Mon, 18 Sep 2023 03:52:22 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B60C3AB2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:50:52 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-5733710eecaso2556930eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:50:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1695023432; x=1695628232; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3y431fp7zImpDWkvcmWfe4LAHrYOVE+zuYJQGH6Vve8=;
-        b=SISV0CS8M5bxkkPkub1VMfMVIDBOE2nLvyt9OK5Yc8nrVfgdWuhLYOV0FuDEVzVBuA
-         3y83V5Fj2s7lqszoHZ/V5ULI7nGf5pqU9hCRz6mXzxrub0WXLerP9+QVWPGbUhCvKq+h
-         XXElYbaAKLNGJ260n5qM3flrj6P7SelcmSCBMAAy5TSpI5YnphYLFqBA790hDM9n0KQG
-         CTgkQvZFbspQuu8HgG2bObtmiCLwn52G9O3D+c13cWV0dYQS4RUaBAnnhBQJeMuC8jAh
-         j972D6N2rUmqCRyNSrUMYSNAQvkfsUT2QIyCl/EhbJSfRsSSB9MKqstiExrEqWgo+6Ps
-         9j7A==
+        d=chromium.org; s=google; t=1695023448; x=1695628248; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BGqLnfLS16BMC5Edk6K47RqEUmOdv7ff2FeIy28NY94=;
+        b=N0eVana+QLdnghT5op/ir1CiGuZp5zFrkUFF/DwrQOKLWPeIQOE6sl7AQQCqYWiNJw
+         HexN5ZuyYEU4g0OH5ldw+jHiAbt4uCiHwzv5BFck0OAMXOGKTN2wUHdkyzk9wDc8KUFg
+         bI8a0yzLHquanpG5fPBcQjAQkR4KjlwMEgfYM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695023432; x=1695628232;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3y431fp7zImpDWkvcmWfe4LAHrYOVE+zuYJQGH6Vve8=;
-        b=tn6pjrCmYqOls/j5jXE+oyPdPNCDzX/7NRxG3QuXZDChwfFcPYSW2o+DfL6nOduxK9
-         hu/lzU5OlHa1lf8Xdvo+tzrI/rp47H6sug/zY6clLluiB2/TnTJD03gL2cQztV7s5KJ1
-         RkjXF+TaApYJEC6lUnbV9i7hvxn1AiGWwPpm6Z6giE92fpZyM2wX9nU5bKtApfmBOCpb
-         Y6tnYcI7WkWjkBgiZT94i0FkHgKaR8BMLgqlMwqAD0sKl/77kJ+bMBNdWilMIglZcyIV
-         E6WAc69Z4uTsZVg2nqtHvx40lKqB9mzcCDk/dXkUR3dcdsUksQxulmfjw9ES3FpzKl+t
-         TRJg==
-X-Gm-Message-State: AOJu0Yx/MBwB95GM7Ezfk1nWr2Jg2tZZNGmq9BADSxQzD+SlVJ0JJXEV
-        OXeQH/NBgGKyBvzfi/qSM6xCbA==
-X-Google-Smtp-Source: AGHT+IGDwTGCqvI7ErFSwd5+9EaU2bhKoinXXuDhfENDvQM6ygOX7ZuQ/7Sf1mEAGjlycsO7Ct0+tg==
-X-Received: by 2002:a2e:9b87:0:b0:2bd:d4d:7fb6 with SMTP id z7-20020a2e9b87000000b002bd0d4d7fb6mr6798737lji.2.1695023431915;
-        Mon, 18 Sep 2023 00:50:31 -0700 (PDT)
-Received: from [192.168.32.2] ([82.78.167.145])
-        by smtp.gmail.com with ESMTPSA id r11-20020a170906350b00b009a5f1d1564dsm5993808eja.126.2023.09.18.00.50.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 00:50:31 -0700 (PDT)
-Message-ID: <701ee3bd-5d16-6b5f-2d34-4a4919c4c532@tuxon.dev>
-Date:   Mon, 18 Sep 2023 10:50:28 +0300
+        d=1e100.net; s=20230601; t=1695023448; x=1695628248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BGqLnfLS16BMC5Edk6K47RqEUmOdv7ff2FeIy28NY94=;
+        b=U4vHi7Nai3j0J3hvQDeZGIrIKNCGTNV4pllHuMSIm0v5bQfRLj0QgHEOavKolaPP87
+         bwVkoEt5bTo+Uuz7EQYyzH57EiA3CiFdLXid0Tk8CjOlY7FgBeitMtDPO8M4XI06cSkV
+         jy2/3gv8dU6fUZeOoVGJ8BkH6wh+gZBv2u6zOEBIwp+TdgL0/HRiPvnH5c6yU6TLLs7b
+         V6nqpbk5dImgIOkfxXmlXC9ZEuCik85Q6xYDUo/DZ5NVFv1w6I0MrUKCSpzb3GFlqhfw
+         XYyuuk/fWFVCNsEuwfEu+RH2S3JcYs7Y05jZmMvN4EyBWSkn8+CsOLoG8MMrXsXQ9SXT
+         O8MQ==
+X-Gm-Message-State: AOJu0YxxI8HFu8kJ6Gg2zjM/caHwBPuxWfZmSnagVZh44pJexKF6+OmA
+        RJwAuUD+hDC20MVwGkgiI+6tmRz866X/o9k2tPzO+w==
+X-Google-Smtp-Source: AGHT+IFQwkO1wOvSdW3thitMuylCuXAXRgN/DraI5tqYKk2lxwowV+q7D4RihOvOHn9tLlJa+cEHRbohaQVXnP48ZUI=
+X-Received: by 2002:a4a:d208:0:b0:571:aceb:26d2 with SMTP id
+ c8-20020a4ad208000000b00571aceb26d2mr8459102oos.3.1695023448533; Mon, 18 Sep
+ 2023 00:50:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 22/37] clk: renesas: add minimal boot support for RZ/G3S
- SoC
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, ulf.hansson@linaro.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, magnus.damm@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-23-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdUCpbPA3cDjNAq1irvr6z4Jux-5-tVDBuyr6nx_qOQGpg@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdUCpbPA3cDjNAq1irvr6z4Jux-5-tVDBuyr6nx_qOQGpg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230908104308.1546501-1-treapking@chromium.org>
+ <ZQIcDWKrmgoPkwlN@google.com> <CAEXTbpc=QC6wC-W2VZCaRCp6rSpyNSsq5M6cxNcqAQxciNj0vg@mail.gmail.com>
+ <ZQOZZZgHP2EeDNix@google.com>
+In-Reply-To: <ZQOZZZgHP2EeDNix@google.com>
+From:   Matthew Wang <matthewmwang@chromium.org>
+Date:   Mon, 18 Sep 2023 09:50:37 +0200
+Message-ID: <CABRiz0ph56X48Y0VjS1yDEUW3=kihE4+WSHPuFVQv-CCdR=0cw@mail.gmail.com>
+Subject: Re: [PATCH v3] wifi: mwifiex: Fix oob check condition in mwifiex_process_rx_packet
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Pin-yen Lin <treapking@chromium.org>,
+        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@kernel.org>,
+        Polaris Pi <pinkperfect2021@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Geert,
+lgtm
 
-On 15.09.2023 15:52, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Add minimal clock and reset support for RZ/G3S SoC to be able to boot
->> Linux from SD Card/eMMC. This includes necessary core clocks for booting
->> and GIC, SCIF, GPIO, SD0 mod clocks and resets.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Thanks for your patch!
-> 
+Reviewed-by: Matthew Wang <matthewmwang@chromium.org>
 
-[ ... ]
-
->> +       CLK_PLL3_DIV2_4,
->> +       CLK_PLL3_DIV2_8,
->> +       CLK_PLL3_DIV6,
->> +       CLK_PLL4,
->> +       CLK_PLL6,
->> +       CLK_PLL6_DIV2,
->> +       CLK_SEL_SDHI0,
->> +       CLK_SEL_PLL4,
->> +       CLK_P1_DIV2,
->> +       CLK_P3_DIV2,
-> 
-> Do you need CLK_P1_DIV2 and CLK_P3_DIV2?
-> I don't see them in Figure 7.3 ("Clock System Diagram (2)").
-> 
-
-P1_DIV2 is clock source for MHU_PCLK or OTFDE_DDR_PCLK.
-P3_DIV2 is clock source for DMAC_PCLK, OTFDE_SPI_PCLK.
-These are expressed in clock list document
-(RZG3S_clock_list_r1.00_20230602.xlsx).
-
-It is true the functionality could be preserved even w/o these 2 clocks but
-I kept them here as I saw them as core clocks even though they are not
-present in the Clock System Diagram from HW manual.
-
-With these, would you prefer to keep these clocks or just remove them?
-
-Thank you,
-Claudiu Beznea
+On Fri, Sep 15, 2023 at 1:38=E2=80=AFAM Brian Norris <briannorris@chromium.=
+org> wrote:
+>
+> On Thu, Sep 14, 2023 at 03:09:47PM +0800, Pin-yen Lin wrote:
+> > On Thu, Sep 14, 2023 at 4:31=E2=80=AFAM Brian Norris <briannorris@chrom=
+ium.org> wrote:
+> > > I'd appreciate another review/test from one of the others here
+> > > (Matthew?), even though I know y'all are already working together.
+>
+> I'd still appreciate some comment here.
+>
+> > > > -     if ((!memcmp(&rx_pkt_hdr->rfc1042_hdr, bridge_tunnel_header,
+> > > > -                  sizeof(bridge_tunnel_header))) ||
+> > > > -         (!memcmp(&rx_pkt_hdr->rfc1042_hdr, rfc1042_header,
+> > > > -                  sizeof(rfc1042_header)) &&
+> > > > -          ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) !=3D ETH_P_AARP=
+ &&
+> > > > -          ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) !=3D ETH_P_IPX)=
+) {
+> > > > +     if (sizeof(*rx_pkt_hdr) + rx_pkt_off <=3D skb->len &&
+> > >
+> > > Are you sure you want this length check to fall back to the non-802.3
+> > > codepath? Isn't it an error to look like an 802.3 frame but to be too
+> > > small? I'd think we want to drop such packets, not process them as-is=
+.
+> >
+> > I did that because I saw other drivers (e.g., [1], [2]) use similar
+> > approaches, and I assumed that the rest of the pipeline will
+> > eventually drop it if the packet cannot be recognized. But, yes, we
+> > can just drop the packet here if it doesn't look good.
+> >
+> > [1]: https://elixir.bootlin.com/linux/latest/source/drivers/net/wireles=
+s/intersil/hostap/hostap_80211_rx.c#L1035
+> > [2]: https://elixir.bootlin.com/linux/latest/source/drivers/net/wireles=
+s/intel/ipw2x00/libipw_rx.c#L735
+>
+> Hmm, I suppose. I'm frankly not sure how exactly all upper layers handle
+> this, but at least in a non-raw mode, we'll drop them. (We might be
+> delivering awfully weird packets to tcpdump though, but this is already
+> a weird situation, if it's such a weird-looking packet.)
+>
+> > > If I'm correct, then this check should move inside the 'if' branch of
+> > > this if/else.
+> >
+> > We can't simply move the check inside the if branch because the
+> > condition also checks rx_pkt_hdr->rfc1042_hdr.snap_type. Though, of
+> > course, it is doable by adding another `if` conditions.
+>
+> Right.
+>
+> I guess this is probably OK as-is:
+>
+> Acked-by: Brian Norris <briannorris@chromium.org>
