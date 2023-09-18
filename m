@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 269197A4249
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B817A4247
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240125AbjIRH0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
+        id S240098AbjIRH0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240106AbjIRH0B (ORCPT
+        with ESMTP id S240075AbjIRH0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:26:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46CD12E;
-        Mon, 18 Sep 2023 00:25:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F832C433BB;
-        Mon, 18 Sep 2023 07:25:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695021955;
-        bh=XczSW4IgXwy5b6EVDrL1hNFjSu1hIpUOMnIm2ormMw0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hnLTYbHm8lA7WkZiTVQmgo+uMmyokOVLQr6OynysDQ8dV1xKrXa9zsTpehK/PFkXh
-         LlxkZa/m9FU4fwGcoysNP0Pz7LT2tCcSP2LAbkzAwb8cCvIGXVWTUyVfBcTAGpRZqE
-         3LKRX7rtogBziaC8eHPfJIcNQKxClkP3HjXPI66055IdQZkmUVvxYzkiXKmLLfdGhy
-         AMfOXaFznZ5ojZ2Bz+Xl2N4twPR3s87o9NWtJZNZGkKGf+21zNpV5l3zQE/No/Az01
-         e80tIe8P4atINnrVJx3VzYxHt1eMpf/b4gKLN9ugdpAdXlI7qeajnRO/rmmveIxsBJ
-         WrTTSuQogjFFA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>
-Subject: Re: [PATCH] aio: Annotate struct kioctx_table with __counted_by
-Date:   Mon, 18 Sep 2023 09:25:40 +0200
-Message-Id: <20230918-fotoreporter-beheimatet-5e7732ed6298@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230915201413.never.881-kees@kernel.org>
-References: <20230915201413.never.881-kees@kernel.org>
+        Mon, 18 Sep 2023 03:26:00 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A6DE6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:25:50 -0700 (PDT)
+X-UUID: 961e5f3e55f411eea33bb35ae8d461a2-20230918
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=pmAQXDi1eFJFIz1BbU82J1+CnIbylJEmn229iHCJQIs=;
+        b=iXQBjyY+RHy3WfgWsRoEQk9ClNi24G+J9sMkQbBwomqELi5Sc59HCFnuCrY217QGTtK0HQtbfE2ZrXZVrjcGPKrqVwRspTafgyhE/84ceszmRUVXQszV2++LCssmXe375Mw790g8n6d5VhcdE3VSrLbuNxPhzjxz7qbi4x7e9/4=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:7d7382ba-4a4a-4e4a-9eb9-67af55be4359,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:31a6f5be-14cc-44ca-b657-2d2783296e72,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:817|102,TC:nil,Content:0|-5,EDM:-3,I
+        P:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+        SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 1,FCT|NGT
+X-CID-BAS: 1,FCT|NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 961e5f3e55f411eea33bb35ae8d461a2-20230918
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
+        (envelope-from <haibo.li@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1752200225; Mon, 18 Sep 2023 15:25:47 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 18 Sep 2023 15:25:46 +0800
+Received: from mszsdtlt102.gcn.mediatek.inc (10.16.4.142) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 18 Sep 2023 15:25:45 +0800
+From:   Haibo Li <haibo.li@mediatek.com>
+To:     <andreyknvl@gmail.com>
+CC:     <akpm@linux-foundation.org>,
+        <angelogioacchino.delregno@collabora.com>, <dvyukov@google.com>,
+        <glider@google.com>, <haibo.li@mediatek.com>, <jannh@google.com>,
+        <kasan-dev@googlegroups.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <ryabinin.a.a@gmail.com>, <vincenzo.frascino@arm.com>,
+        <xiaoming.yu@mediatek.com>
+Subject: Re: [PATCH] kasan:fix access invalid shadow address when input is illegal
+Date:   Mon, 18 Sep 2023 15:25:45 +0800
+Message-ID: <20230918072545.87653-1-haibo.li@mediatek.com>
+X-Mailer: git-send-email 2.34.3
+In-Reply-To: <CA+fCnZfuaovc4fk6Z+p1haLk7iemgtpF522sej3oWYARhBYYUQ@mail.gmail.com>
+References: <CA+fCnZfuaovc4fk6Z+p1haLk7iemgtpF522sej3oWYARhBYYUQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1229; i=brauner@kernel.org; h=from:subject:message-id; bh=XczSW4IgXwy5b6EVDrL1hNFjSu1hIpUOMnIm2ormMw0=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSy/w6NsNnv8cu+2pKZn1VAdONDo+3XD2gtEVomdaooT3nN FYPEjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgImI/2b4ZxZ/4d+jqeX72gO0vk49dk fDJyx+p5Xn0jU1V3p1A1fwpjAy3A8/8snn6vE4J+5UW1+F130Lz1kJLJY8ub2nXiB2QxQ/PwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,31 +74,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sep 2023 13:14:14 -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct kioctx_table.
-> 
-> [...]
+> On Fri, Sep 15, 2023 at 4:46 AM 'Haibo Li' via kasan-dev
+> <kasan-dev@googlegroups.com> wrote:
+> >
+> > The patch checks each shadow address,so it introduces extra overhead.
+>
+> Ack. Could still be fine, depends on the overhead.
+>
+I do a simple test by reading memory.
+Read 4096 memory by loop and the reading unit is 8 bytes.
+__hwasan_load8_noabort is called 512(4096/8) times.
+Measure the time of memory read.
+Here is the result on ARM CA7X(repeat 100 times):
+---------------min-------max-----avg----
+before patch | 77.3ms | 80.6ms | 79.2ms|
+after  patch | 77.2ms | 80.7ms | 79.2ms|
+----------------------------------------
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+There is no obvious drop in this scenario.
+It may differ in different arch.
+just for information if you are intrested in it.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] aio: Annotate struct kioctx_table with __counted_by
-      https://git.kernel.org/vfs/vfs/c/7f3782aef7e6
+> But if the message printed by kasan_non_canonical_hook is good enough
+> for your use case, I would rather stick to that.
