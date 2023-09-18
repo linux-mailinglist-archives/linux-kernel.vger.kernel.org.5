@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A8D7A4C9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BFF7A4B92
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjIRPhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        id S230294AbjIRPSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjIRPhg (ORCPT
+        with ESMTP id S233344AbjIRPSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:37:36 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A0718F;
-        Mon, 18 Sep 2023 08:35:51 -0700 (PDT)
-Received: from jupiter.universe (dyndsl-091-248-188-252.ewe-ip-backbone.de [91.248.188.252])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4CF326607286;
-        Mon, 18 Sep 2023 15:14:58 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695046498;
-        bh=bXZx9XdtvZgH7jGGWc4OyQZ2ltC3stVZRxLpBsUab7E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/swLfEc0qDBI/zKIJwds4NVS8gJaAMfDtlvkJUHv+peWLSz0ejA1XMR2v9iGGDlS
-         JgAYhGzb0eRYT31aKFpHZ3GoYOqd230KjBKvrMT2AdkzBJZ5wQJMILb4XjIQR9I3CB
-         2rEdqulrv7/Y4u8LzOtKJNRV3KVn0cTxZwZHoN9K20yiRTQ7m9B8hu13w4lrH6/B71
-         GXnr1RR/7yXQt0T/gPNkUcC7pF3xdiFBSHWswLW8joEAs28QV9poQx3LoLqCdVX2zX
-         /TuGbw5aIOgSODQbHqIUwDlvE9g3EDmuWmqw7UN9ppcxvWwwEpXR58QqcjzM7+Ik/f
-         QXvMsx1ZeC+mg==
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 856F04800D1; Mon, 18 Sep 2023 16:14:56 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH 3/3] arm64: dts: rockchip: rock-5b: add PCIe for M.2 E-Key
-Date:   Mon, 18 Sep 2023 16:14:51 +0200
-Message-Id: <20230918141451.131247-4-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230918141451.131247-1-sebastian.reichel@collabora.com>
-References: <20230918141451.131247-1-sebastian.reichel@collabora.com>
+        Mon, 18 Sep 2023 11:18:50 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6951706
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:17:32 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-5733bcf6eb6so2414598eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1695050252; x=1695655052; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lj5dxmdz31KH6AK++Iu1oSHNEdMOKTOEa8EzHyb8OO4=;
+        b=DzqQ4xV/tSCjuAwgM2E5R/vQvNCxPt0tZ1n4yvCcv85Gfp/I9CiMMjHi29I8pas3ea
+         Bt/o1RAOUyjuJt+0CnLAZCSkQuohrMQa631imXzcldFOjfWzPIcjtWBuEzdgoSRoeb/M
+         G4cu9xI5rRIefzAK0ApQ0QAkh7/pgh8Ne/K44cUcUrB3jyIngJ/Mr8DTBSCYWPLuJE+V
+         ZEPPIYh5TyKSFjHzldLykvjS7ZUupOSn1FOIo8rMoRs+xcvYjgY8BG+7K9ZOE2ZR9EX6
+         i5zoEjKl2FmA7TJCXFdI8e3qwznTKOMQHTkE1h9oIM8bHvllR+DwyTg6O0xr2qSBOqqa
+         fOKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695050252; x=1695655052;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lj5dxmdz31KH6AK++Iu1oSHNEdMOKTOEa8EzHyb8OO4=;
+        b=LDzYSNy4203tDdk9VffX72iINvfWMqwb+xDptaNsaZ1DI3tLlzfwW0GrJrGKLp5ROR
+         8t87tBTkHxnh1joEL7wnjRT4WaHIX+25h3WtlOndz8Umy7fhWLODVjSRed9/Xqu/ksuy
+         YHdMYXxDbZYrj+1kfTdFM+Mst4JdOc02P+DJ1T625GbsPXYsGBcULnFdCDVaGHy0MbPe
+         BVJ+R+Zo5NP7c90MruhNOt6xKpo0awnuqn9APOo0CTXs4CXISmWhyxOvkBHmUSzjH4fX
+         o1/z5i8NzZs+MP+wr+yTnqYkw/Hmva2q04AKZtayo6afMp8EoI31A1CriQewF2C7nTZU
+         JjMw==
+X-Gm-Message-State: AOJu0YyLmpZIKBJD8nNXKINUpidEC1wpJ4CLbEsgHP5o4jYqGxJPY35R
+        L8gSgewHEZMzfBFm2Qk1TkK82ueVzs4LNCliO2g=
+X-Google-Smtp-Source: AGHT+IFNhLbse4fMScsyVGa4C7/zZePvwAGFSXOes1CURAA9QoCkvaC8bU10ioWe6oH7Sby42aFfXg==
+X-Received: by 2002:ad4:4110:0:b0:64f:91de:3aab with SMTP id i16-20020ad44110000000b0064f91de3aabmr9453857qvp.29.1695046626845;
+        Mon, 18 Sep 2023 07:17:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id w26-20020a0ca81a000000b00655e2005350sm3491584qva.9.2023.09.18.07.17.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 07:17:06 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qiF3h-00054J-Oj;
+        Mon, 18 Sep 2023 11:17:05 -0300
+Date:   Mon, 18 Sep 2023 11:17:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Shannon Nelson <shannon.nelson@amd.com>
+Cc:     alex.williamson@redhat.com, kevin.tian@intel.com,
+        reinette.chatre@intel.com, tglx@linutronix.de, kvm@vger.kernel.org,
+        brett.creeley@amd.com, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH vfio] vfio/pci: remove msi domain on msi disable
+Message-ID: <20230918141705.GE13795@ziepe.ca>
+References: <20230914191406.54656-1-shannon.nelson@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914191406.54656-1-shannon.nelson@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,81 +76,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable PCIe2_0 controller and its voltage supply, which is routed
-to the M.2 E-Key on the upper side of the Radxa Rock 5B.
+On Thu, Sep 14, 2023 at 12:14:06PM -0700, Shannon Nelson wrote:
+> The new MSI dynamic allocation machinery is great for making the irq
+> management more flexible.  It includes caching information about the
+> MSI domain which gets reused on each new open of a VFIO fd.  However,
+> this causes an issue when the underlying hardware has flexible MSI-x
+> configurations, as a changed configuration doesn't get seen between
+> new opens, and is only refreshed between PCI unbind/bind cycles.
+> 
+> In our device we can change the per-VF MSI-x resource allocation
+> without the need for rebooting or function reset.  For example,
+> 
+>   1. Initial power up and kernel boot:
+> 	# lspci -s 2e:00.1 -vv | grep MSI-X
+> 	        Capabilities: [a0] MSI-X: Enable+ Count=8 Masked-
+> 
+>   2. Device VF configuration change happens with no reset
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- .../boot/dts/rockchip/rk3588-rock-5b.dts      | 35 +++++++++++++++++++
- 1 file changed, 35 insertions(+)
+Is this an out of tree driver problem?
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-index 6e52b5cf49a9..947a5ebe5bb3 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-@@ -44,6 +44,21 @@ fan: pwm-fan {
- 		#cooling-cells = <2>;
- 	};
- 
-+	vcc3v3_pcie2x1l0: vcc3v3-pcie2x1l0-regulator {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pcie2_0_vcc3v3_en>;
-+		regulator-name = "vcc3v3_pcie2x1l0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <50000>;
-+		vin-supply = <&vcc5v0_sys>;
-+	};
-+
- 	vcc3v3_pcie2x1l2: vcc3v3-pcie2x1l2-regulator {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc3v3_pcie2x1l2";
-@@ -104,6 +119,10 @@ &combphy0_ps {
- 	status = "okay";
- };
- 
-+&combphy1_ps {
-+	status = "okay";
-+};
-+
- &cpu_b0 {
- 	cpu-supply = <&vdd_cpu_big0_s0>;
- };
-@@ -230,6 +249,14 @@ i2s0_8ch_p0_0: endpoint {
- 	};
- };
- 
-+&pcie2x1l0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pcie2_0_rst>;
-+	reset-gpios = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
-+	vpcie3v3-supply = <&vcc3v3_pcie2x1l0>;
-+	status = "okay";
-+};
-+
- &pcie2x1l2 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pcie2_2_rst>;
-@@ -264,6 +291,14 @@ hp_detect: hp-detect {
- 	};
- 
- 	pcie2 {
-+		pcie2_0_rst: pcie2-0-rst {
-+			rockchip,pins = <4 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		pcie2_0_vcc3v3_en: pcie2-0-vcc-en {
-+			rockchip,pins = <1 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
- 		pcie2_2_rst: pcie2-2-rst {
- 			rockchip,pins = <3 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
--- 
-2.40.1
+The intree way to alter the MSI configuration is via
+sriov_set_msix_vec_count, and there is only one in-tree driver that
+uses it right now.
 
+If something is going wrong here it should be fixed in the
+sriov_set_msix_vec_count() machinery, possibly in the pci core to
+synchronize the msi_domain view of the world.
+
+Jason
