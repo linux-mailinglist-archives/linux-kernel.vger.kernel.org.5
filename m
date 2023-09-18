@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F867A42B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4F37A42BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240373AbjIRHcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
+        id S240362AbjIRHdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240456AbjIRHc0 (ORCPT
+        with ESMTP id S240354AbjIRHcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:32:26 -0400
+        Mon, 18 Sep 2023 03:32:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3421B9;
-        Mon, 18 Sep 2023 00:32:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE792C433BC;
-        Mon, 18 Sep 2023 07:31:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4389ED2;
+        Mon, 18 Sep 2023 00:32:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B212CC433A9;
+        Mon, 18 Sep 2023 07:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695022322;
-        bh=1UL8tl9eANdNOFG3ZTSYgBTww7VCSn8pNWCEuJfnTK4=;
+        s=k20201202; t=1695022331;
+        bh=g2ysQzPrupxvZBEk8R4nz6nGqIwxox2mdTADaK2KSBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jOnWnURBWcrt92iQ1E5Vr3mXWyQ6RAJ4i9B8tsY7FXOUVwWaNtFLbRVsEzVfJ0Nfg
-         zcF2T76bilI3SPkaUjpMzEfs1sQN/JzTRMR83DnXh+Ov+MJ2AuKwZwF8Fnu/AObC0k
-         QAdcrio7/1JZevOAFEj9aMF9cUGQUD6UCX9K1G2jVF2I2HWuIYbnj0wy/Rm4EXVNom
-         HeAH3TaXGuMZDe4Y3BnUwv/DnuIZbNW8G+v45crhACvScxYPJb49nAjf6MNnqIIZFe
-         chFFMgGweSzKG7hh/3g3keI9zbSw1HmwgbPcUexA3rwgKV2tInhKeo5IsMuopaavQ2
-         VqOvvHTW8VtZw==
+        b=kT3NctsEzR46ZMcvQmZYEzpOY6ldmIA+UpjJflzhcN6xMD3eDfrH5TshpxPSzqYKZ
+         4RtqZhzZqqMGjQFg0TiMJ4pIA+4pgayZMlfPQIIGjFZSqPjnRRF0/SACLSULT/WzJX
+         e5w4J3wzseysRp3HjruUqlEklzGHP8/6ICjr9417gwdOyxSuUT0n9ca5FaDmjgMb4N
+         wh+TlKoXNolf6tuh2rWFnkZ3l88wMsKsT34tZyIMrsdUBBtjJC/AKV44QLF3klepDN
+         XUU8NCM4DCe8D1KxoJHEl8Op3szJMcdX1IE3cH+lAoAp79l+6uCu78MbUgn4aNR/c+
+         j8TJxIqTZhi6w==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -60,9 +60,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
         netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v3 11/13] x86/ftrace: enable dynamic ftrace without CONFIG_MODULES
-Date:   Mon, 18 Sep 2023 10:29:53 +0300
-Message-Id: <20230918072955.2507221-12-rppt@kernel.org>
+Subject: [PATCH v3 12/13] kprobes: remove dependency on CONFIG_MODULES
+Date:   Mon, 18 Sep 2023 10:29:54 +0300
+Message-Id: <20230918072955.2507221-13-rppt@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230918072955.2507221-1-rppt@kernel.org>
 References: <20230918072955.2507221-1-rppt@kernel.org>
@@ -80,61 +80,181 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-Dynamic ftrace must allocate memory for code and this was impossible
-without CONFIG_MODULES.
+kprobes depended on CONFIG_MODULES because it has to allocate memory for
+code.
 
-With execmem separated from the modules code, execmem_text_alloc() is
-available regardless of CONFIG_MODULES.
+Since code allocations are now implemented with execmem, kprobes can be
+enabled in non-modular kernels.
 
-Remove dependency of dynamic ftrace on CONFIG_MODULES and make
-CONFIG_DYNAMIC_FTRACE select CONFIG_EXECMEM in Kconfig.
+Add #ifdef CONFIG_MODULE guards for the code dealing with kprobes inside
+modules, make CONFIG_KPROBES select CONFIG_EXECMEM and drop the
+dependency of CONFIG_KPROBES on CONFIG_MODULES.
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 ---
- arch/x86/Kconfig         |  1 +
- arch/x86/kernel/ftrace.c | 10 ----------
- 2 files changed, 1 insertion(+), 10 deletions(-)
+ arch/Kconfig                |  2 +-
+ kernel/kprobes.c            | 43 +++++++++++++++++++++----------------
+ kernel/trace/trace_kprobe.c | 11 ++++++++++
+ 3 files changed, 37 insertions(+), 19 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 982b777eadc7..cc7c4a0a8c16 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -35,6 +35,7 @@ config X86_64
- 	select SWIOTLB
- 	select ARCH_HAS_ELFCORE_COMPAT
- 	select ZONE_DMA32
-+	select EXECMEM if DYNAMIC_FTRACE
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 12d51495caec..c52a600b63ca 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -52,9 +52,9 @@ config GENERIC_ENTRY
  
- config FORCE_DYNAMIC_FTRACE
- 	def_bool y
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index ae56d79a6a74..7ed7e8297ba3 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -261,8 +261,6 @@ void arch_ftrace_update_code(int command)
- /* Currently only x86_64 supports dynamic trampolines */
- #ifdef CONFIG_X86_64
+ config KPROBES
+ 	bool "Kprobes"
+-	depends on MODULES
+ 	depends on HAVE_KPROBES
+ 	select KALLSYMS
++	select EXECMEM
+ 	select TASKS_RCU if PREEMPTION
+ 	help
+ 	  Kprobes allows you to trap at almost any kernel address and
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 0ccb4d2ec9a2..c95d0088f966 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1580,6 +1580,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 		goto out;
+ 	}
  
--#ifdef CONFIG_MODULES
--/* Module allocation simplifies allocating memory for code */
- static inline void *alloc_tramp(unsigned long size)
- {
- 	return execmem_text_alloc(EXECMEM_FTRACE, size);
-@@ -271,14 +269,6 @@ static inline void tramp_free(void *tramp)
- {
- 	execmem_free(tramp);
++#ifdef CONFIG_MODULES
+ 	/* Check if 'p' is probing a module. */
+ 	*probed_mod = __module_text_address((unsigned long) p->addr);
+ 	if (*probed_mod) {
+@@ -1603,6 +1604,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 			ret = -ENOENT;
+ 		}
+ 	}
++#endif
++
+ out:
+ 	preempt_enable();
+ 	jump_label_unlock();
+@@ -2495,24 +2498,6 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+ 	return 0;
  }
--#else
--/* Trampolines can only be created if modules are supported */
--static inline void *alloc_tramp(unsigned long size)
--{
--	return NULL;
--}
--static inline void tramp_free(void *tramp) { }
--#endif
  
- /* Defined as markers to the end of the ftrace default trampolines */
- extern void ftrace_regs_caller_end(void);
+-/* Remove all symbols in given area from kprobe blacklist */
+-static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+-{
+-	struct kprobe_blacklist_entry *ent, *n;
+-
+-	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
+-		if (ent->start_addr < start || ent->start_addr >= end)
+-			continue;
+-		list_del(&ent->list);
+-		kfree(ent);
+-	}
+-}
+-
+-static void kprobe_remove_ksym_blacklist(unsigned long entry)
+-{
+-	kprobe_remove_area_blacklist(entry, entry + 1);
+-}
+-
+ int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+ 				   char *type, char *sym)
+ {
+@@ -2577,6 +2562,25 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+ 	return ret ? : arch_populate_kprobe_blacklist();
+ }
+ 
++#ifdef CONFIG_MODULES
++/* Remove all symbols in given area from kprobe blacklist */
++static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
++{
++	struct kprobe_blacklist_entry *ent, *n;
++
++	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
++		if (ent->start_addr < start || ent->start_addr >= end)
++			continue;
++		list_del(&ent->list);
++		kfree(ent);
++	}
++}
++
++static void kprobe_remove_ksym_blacklist(unsigned long entry)
++{
++	kprobe_remove_area_blacklist(entry, entry + 1);
++}
++
+ static void add_module_kprobe_blacklist(struct module *mod)
+ {
+ 	unsigned long start, end;
+@@ -2678,6 +2682,7 @@ static struct notifier_block kprobe_module_nb = {
+ 	.notifier_call = kprobes_module_callback,
+ 	.priority = 0
+ };
++#endif
+ 
+ void kprobe_free_init_mem(void)
+ {
+@@ -2737,8 +2742,10 @@ static int __init init_kprobes(void)
+ 	err = arch_init_kprobes();
+ 	if (!err)
+ 		err = register_die_notifier(&kprobe_exceptions_nb);
++#ifdef CONFIG_MODULES
+ 	if (!err)
+ 		err = register_module_notifier(&kprobe_module_nb);
++#endif
+ 
+ 	kprobes_initialized = (err == 0);
+ 	kprobe_sysctls_init();
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 3d7a180a8427..25a5293a80c0 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+ 	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
+ }
+ 
++#ifdef CONFIG_MODULES
+ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ {
+ 	char *p;
+@@ -129,6 +130,12 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ 
+ 	return ret;
+ }
++#else
++static inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
++{
++	return false;
++}
++#endif
+ 
+ static bool trace_kprobe_is_busy(struct dyn_event *ev)
+ {
+@@ -670,6 +677,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_MODULES
+ /* Module notifier call back, checking event on the module */
+ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 				       unsigned long val, void *data)
+@@ -704,6 +712,7 @@ static struct notifier_block trace_kprobe_module_nb = {
+ 	.notifier_call = trace_kprobe_module_callback,
+ 	.priority = 1	/* Invoked after kprobe module callback */
+ };
++#endif
+ 
+ static int __trace_kprobe_create(int argc, const char *argv[])
+ {
+@@ -1810,8 +1819,10 @@ static __init int init_kprobe_trace_early(void)
+ 	if (ret)
+ 		return ret;
+ 
++#ifdef CONFIG_MODULES
+ 	if (register_module_notifier(&trace_kprobe_module_nb))
+ 		return -EINVAL;
++#endif
+ 
+ 	return 0;
+ }
 -- 
 2.39.2
 
