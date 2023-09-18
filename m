@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 302667A4D2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38237A4DA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjIRPrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44648 "EHLO
+        id S229797AbjIRPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjIRPrE (ORCPT
+        with ESMTP id S229436AbjIRPzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:47:04 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535F1E72
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:45:55 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-530ea522f5eso1846121a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:45:55 -0700 (PDT)
+        Mon, 18 Sep 2023 11:55:42 -0400
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EA610D0;
+        Mon, 18 Sep 2023 08:54:27 -0700 (PDT)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1d544a4a315so3020032fac.3;
+        Mon, 18 Sep 2023 08:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695051736; x=1695656536; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1695052210; x=1695657010; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9C9LMcgPXK0TzUHzj0llknV/i85+aKix5XO5smaiKOg=;
-        b=dWcdYG0bWYWuLkkekdErc0mCmQeubj06fRU3g7NC7pFqEjv5jlka9NhyjhIs0z0MXD
-         av3Qs8YffnXo/36arlTt/x30nkYAUje6JuVappy2H6KOlwqwoQ2p9/95btvhETCXSgV+
-         neYKFO9O1k96hwXpYMcy7PdyFWYplFSZnPTwEFG9y0Rn+BD0pzTd78wrVUjMpAK/QVzx
-         mDE8z6ryfUf2UK2itrtzR2GIS4IF4vzLIp8I9boGCV+xRZswkiF0BFFHMMS/YDLR0v74
-         vc6anLYp26meUaXu/EvMSspgySmRtF7CwzfkGWXebP1L1o+OjZB3GuI5X036xyX0EzVi
-         IV3g==
+        bh=61snCKe06KPtK8SZFvfz/MMgI8Hd2GlUCK6N97LWobM=;
+        b=aAsBq0m6J+VzutsMpV30BVv5d1+lbdIJcstgS+f2tfC7WZH9+67GAW7FtohbIswlXu
+         qW6pvF2Exl8f93VklFOxlAMrrW2fh7sur+hcKOSU5zOHWXnjLGfjjGSAe+5CL9RPeT4A
+         g/6YCHVDbx9KsyyEIyW7LPFKUqXSyahvZ5K/E5LLZxbVd2vQCPvGwas1Ox0EIjSW+n2a
+         wIvbD90ALLxBdhLiM4xr9hZ2M9ddv97i8Vw+e3uGp07fAKHiyomVdNEyv0hGAwmu/fWs
+         LF4gjiG5APBRK0v/lEzS79d4ozPtxtW7oE6WDhhGySJ8W8ToLz7x6EvgdU5oegUHgo9+
+         RpLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695051736; x=1695656536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9C9LMcgPXK0TzUHzj0llknV/i85+aKix5XO5smaiKOg=;
-        b=QTGJFiZzroqzoXPpi8LOeFya+DU+LgbXkLBI21ehkeSA6ILH2RFRl1iH0vR8iQgQ0N
-         uUHyUsiWNzQ3DWYSKueoPjThIpWpDU6nHJgT3rYgHDqcpcKzEEAJJDoNR/1PEMOH+s1p
-         1uNyx2QimZvuZwrzD0FvR6/8SpR4KMgQ6tqyCHfVTJySJe6u7/s5VwIRreJjjHOtJYvs
-         MikkWr0hSDyGsrJB5pdDzwLwMiZrfSSydN5c8gIqvKzbGtVrAr19pYXEd41ZrQkqHQM1
-         +4IYukD/7it03wPQC0m+0/fbAOsVrxlfXC8SpQYbbsw6Nam8NGQ4abj+G2gyiIXyLIx8
-         7G9Q==
-X-Gm-Message-State: AOJu0YxH9fYWxtHREzIBCiNsQZkxP6W/78dVPEDciOl3Nktwbj+MLsOI
-        VLt9IvaUYhhgjQZhajyq1hda78HQOChe//JS+GYUpUdz+Fq/difX
-X-Google-Smtp-Source: AGHT+IFxQdZh1SSfT9LlcG8tguxv47bZ6juM9AMuyh79H5Fz+DIpzr7wrwRr2QmAMQ4fv2MEeFcw6z/nFXVW1jP2iKM=
-X-Received: by 2002:a2e:3e0e:0:b0:2b6:bc30:7254 with SMTP id
- l14-20020a2e3e0e000000b002b6bc307254mr7553866lja.13.1695045474573; Mon, 18
- Sep 2023 06:57:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230918123217.932179-1-max.kellermann@ionos.com>
- <20230918123217.932179-3-max.kellermann@ionos.com> <20230918124050.hzbgpci42illkcec@quack3>
-In-Reply-To: <20230918124050.hzbgpci42illkcec@quack3>
-From:   Max Kellermann <max.kellermann@ionos.com>
-Date:   Mon, 18 Sep 2023 15:57:43 +0200
-Message-ID: <CAKPOu+-Nx_cvBZNox63R1ah76wQp6eH4RLah0O5mDaLo9h60ww@mail.gmail.com>
-Subject: Re: [PATCH 3/4] inotify_user: add system call inotify_add_watch_at()
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amir73il@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20230601; t=1695052210; x=1695657010;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=61snCKe06KPtK8SZFvfz/MMgI8Hd2GlUCK6N97LWobM=;
+        b=KYmm+CTvmopQy3X8MOAa52HOn/l4b54KvEtvSvz/CtLTbjC5hklPqPjniB7fjv4XKY
+         46Rmosj0TIw6oDX6i4g34gTT820bNV9fy/3rLUu/Sg8Tm0gh3Wun4wiRYjWC/dQDoFU3
+         n/Jp9czNGTU8NOSlG8dYkEqNf5PeqC3cEyF+YvgFR5uvY2MYHOX/jcZCYwoSqE+1br43
+         9D68JLTiOLiP3t448iVtC7SFqOKyOW4GabePOYut1HP+/QXZZk7ePOq+I1LSPx4XgSrN
+         C8fsDgjDImVaywdQ9G8DNNHw8CitrbSASfALvRmJF2NjsOM6FG5m9BEPGBNjPyd4A4v7
+         PY3g==
+X-Gm-Message-State: AOJu0Yxiht7rcxM/J5NGiVUHkkWzbwkwpSAkKLMIt7CmKGviXkpy1H2k
+        50TCxdZE+1eQPAa8dAPPvASLZA0edwJ8pw==
+X-Google-Smtp-Source: AGHT+IEzx/KVZBPGz2VbExUWiBpA46W8imxgXBV2iRh0gYXZXb1hNpFROGMdgbEmKHjxz+ijKNaF3w==
+X-Received: by 2002:a67:eb98:0:b0:44d:e70d:8a4b with SMTP id e24-20020a67eb98000000b0044de70d8a4bmr6951497vso.8.1695045481946;
+        Mon, 18 Sep 2023 06:58:01 -0700 (PDT)
+Received: from localhost (193.132.150.34.bc.googleusercontent.com. [34.150.132.193])
+        by smtp.gmail.com with ESMTPSA id r11-20020a0ce28b000000b00646e0411e8csm1833490qvl.30.2023.09.18.06.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 06:58:01 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 09:58:00 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     dhowells@redhat.com,
+        syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Message-ID: <65085768c17da_898cd294ae@willemb.c.googlers.com.notmuch>
+In-Reply-To: <3905046.1695031382@warthog.procyon.org.uk>
+References: <3793723.1694795079@warthog.procyon.org.uk>
+ <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com>
+ <0000000000001c12b30605378ce8@google.com>
+ <3905046.1695031382@warthog.procyon.org.uk>
+Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 2:40=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
-> Note that since kernel 5.13 you
-> don't need CAP_SYS_ADMIN capability for fanotify functionality that is
-> more-or-less equivalent to what inotify provides.
+David Howells wrote:
+> David Howells <dhowells@redhat.com> wrote:
+> 
+> > I think the attached is probably an equivalent cleaned up reproducer.  Note
+> > that if the length given to sendfile() is less than 65536, it fails with
+> > EINVAL before it gets into __ip6_append_data().
+> 
+> Actually, it only fails with EINVAL if the size is not a multiple of the block
+> size of the source file because it's open O_DIRECT so, say, 65536-512 is fine
+> (and works).
+> 
+> But thinking more on this further, is this even a bug in my code, I wonder?
+> The length passed is 65536 - but a UDP packet can't carry that, so it
+> shouldn't it have errored out before getting that far?  (which is what it
+> seems to do when I try it).
+> 
+> I don't see how we get past the length check in ip6_append_data() with the
+> reproducer we're given unless the MTU is somewhat bigger than 65536 (is that
+> even possible?)
 
-Oh, I missed that change - I remember fanotify as being inaccessible
-for unprivileged processes, and fanotify being designed for things
-like virus scanners. Indeed I should migrate my code to fanotify.
+An ipv6 packet can carry 64KB of payload, so maxnonfragsize of 65535 + 40
+sounds correct. But payload length passed of 65536 is not (ignoring ipv6
+jumbograms). So that should probably trigger an EINVAL -- if that is indeed
+what the repro does.
 
-If fanotify has now become the designated successor of inotify, that
-should be hinted in the inotify manpage, and if inotify is effectively
-feature-frozen, maybe that should be an extra status in the
-MAINTAINERS file?
 
-Max
