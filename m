@@ -2,132 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755F17A4FED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198837A4FD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjIRQ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        id S230505AbjIRQwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbjIRQ4p (ORCPT
+        with ESMTP id S230246AbjIRQwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:56:45 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA3F9D;
-        Mon, 18 Sep 2023 09:56:39 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rq4tN1qJgzMl74;
-        Mon, 18 Sep 2023 21:11:08 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 18 Sep 2023 21:14:40 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH RFC] rdma: Add support to dump SRQ resource in raw format
-Date:   Mon, 18 Sep 2023 21:11:40 +0800
-Message-ID: <20230918131140.4037213-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+        Mon, 18 Sep 2023 12:52:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67758A3;
+        Mon, 18 Sep 2023 09:52:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E745DC433CA;
+        Mon, 18 Sep 2023 13:14:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695042862;
+        bh=XDOvjrjguMe0O3jeSSKS15M6Sp7a2R6O1nCtq8TDOqo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=moy/uvBgM6HQA8GWIujBSefdQevbL1rDY6drGoWCOGAlRwHdu8P/KHLhnJT+tInE4
+         l44tiN9OEtrlAXsiw2qAUwUR3MtgNqen8AbL2Z/IhiGH2naAKgbsQ3QAv8hSXmVk/3
+         HibdaCy/zzKUZszzEX+CwGKBdA4qiQizGxtg7aBQ=
+Date:   Mon, 18 Sep 2023 15:14:19 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Sameer Pujar <spujar@nvidia.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 6.5 000/285] 6.5.4-rc1 review
+Message-ID: <2023091850-gossip-denatured-ce2b@gregkh>
+References: <20230917191051.639202302@linuxfoundation.org>
+ <dfe78c1a-8322-413b-f1b7-3a6a307a831c@nvidia.com>
+ <e5a0e1cc-1360-23fe-408d-03f46dd76c5f@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e5a0e1cc-1360-23fe-408d-03f46dd76c5f@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wenglianfa <wenglianfa@huawei.com>
+On Mon, Sep 18, 2023 at 02:04:27PM +0100, Jon Hunter wrote:
+> 
+> On 18/09/2023 13:52, Jon Hunter wrote:
+> > Hi Greg,
+> > 
+> > On 17/09/2023 20:10, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 6.5.4 release.
+> > > There are 285 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > > The whole patch series can be found in one patch at:
+> > >     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.4-rc1.gz
+> > > or in the git tree and branch at:
+> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> > > and the diffstat can be found below.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > > 
+> > > -------------
+> > > Pseudo-Shortlog of commits:
+> > 
+> > ...
+> > 
+> > > Sameer Pujar <spujar@nvidia.com>
+> > >      arm64: tegra: Update AHUB clock parent and rate
+> > 
+> > 
+> > Unfortunately, the above change is causing a regression in one of our
+> > audio tests and we are looking into why this is.
+> > 
+> > Can we drop this from stable for now?
+> 
+> 
+> An alternative to dropping this change is to pull in the following fixes ...
+> 
+> https://lore.kernel.org/linux-tegra/169447691068.2390116.10518505217580469969.b4-ty@kernel.org/T/#t
 
-Add support to dump SRQ resource in raw format.
+they aren't in Linus's tree yet, any plans on when that will happen?
 
-This patch relies on the corresponding kernel patch:
-RDMA/core: Add support to dump SRQ resource in RAW format
+And to confirm, what are the git ids of these in linux-next?
 
-Example:
-$ rdma res show srq -r
-dev hns3 149000...
+thanks,
 
-$ rdma res show srq -j -r
-[{"ifindex":0,"ifname":"hns3","data":[149,0,0,...]}]
-
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
----
- rdma/include/uapi/rdma/rdma_netlink.h |  2 ++
- rdma/res-srq.c                        | 17 ++++++++++++++++-
- rdma/res.h                            |  2 ++
- 3 files changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/rdma/include/uapi/rdma/rdma_netlink.h b/rdma/include/uapi/rdma/rdma_netlink.h
-index 92c528a0..84f775be 100644
---- a/rdma/include/uapi/rdma/rdma_netlink.h
-+++ b/rdma/include/uapi/rdma/rdma_netlink.h
-@@ -299,6 +299,8 @@ enum rdma_nldev_command {
- 
- 	RDMA_NLDEV_CMD_STAT_GET_STATUS,
- 
-+	RDMA_NLDEV_CMD_RES_SRQ_GET_RAW,
-+
- 	RDMA_NLDEV_NUM_OPS
- };
- 
-diff --git a/rdma/res-srq.c b/rdma/res-srq.c
-index 186ae281..d2581a3f 100644
---- a/rdma/res-srq.c
-+++ b/rdma/res-srq.c
-@@ -162,6 +162,20 @@ out:
- 	return -EINVAL;
- }
- 
-+static int res_srq_line_raw(struct rd *rd, const char *name, int idx,
-+			    struct nlattr **nla_line)
-+{
-+	if (!nla_line[RDMA_NLDEV_ATTR_RES_RAW])
-+		return MNL_CB_ERROR;
-+
-+	open_json_object(NULL);
-+	print_dev(rd, idx, name);
-+	print_raw_data(rd, nla_line);
-+	newline(rd);
-+
-+	return MNL_CB_OK;
-+}
-+
- static int res_srq_line(struct rd *rd, const char *name, int idx,
- 			struct nlattr **nla_line)
- {
-@@ -276,7 +290,8 @@ int res_srq_parse_cb(const struct nlmsghdr *nlh, void *data)
- 		if (ret != MNL_CB_OK)
- 			break;
- 
--		ret = res_srq_line(rd, name, idx, nla_line);
-+		ret = (rd->show_raw) ? res_srq_line_raw(rd, name, idx, nla_line) :
-+		       res_srq_line(rd, name, idx, nla_line);
- 		if (ret != MNL_CB_OK)
- 			break;
- 	}
-diff --git a/rdma/res.h b/rdma/res.h
-index 70e51acd..e880c28b 100644
---- a/rdma/res.h
-+++ b/rdma/res.h
-@@ -39,6 +39,8 @@ static inline uint32_t res_get_command(uint32_t command, struct rd *rd)
- 		return RDMA_NLDEV_CMD_RES_CQ_GET_RAW;
- 	case RDMA_NLDEV_CMD_RES_MR_GET:
- 		return RDMA_NLDEV_CMD_RES_MR_GET_RAW;
-+	case RDMA_NLDEV_CMD_RES_SRQ_GET:
-+		return RDMA_NLDEV_CMD_RES_SRQ_GET_RAW;
- 	default:
- 		return command;
- 	}
--- 
-2.30.0
-
+greg k-h
