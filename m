@@ -2,289 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAA47A5028
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2930D7A5049
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbjIRRAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52688 "EHLO
+        id S231411AbjIRRCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbjIRRAX (ORCPT
+        with ESMTP id S231225AbjIRRCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:00:23 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2082.outbound.protection.outlook.com [40.107.117.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A75F95;
-        Mon, 18 Sep 2023 10:00:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y8KdJNMikKJfObxRyfgFNzmd/33RBk5rUhHc9X2Vs5R5zxqYCAogrgwFqCH2ofcVUkwFEQh0BYaWu+I8X/eTvaxRxuG5b7ZHFPamYhzY3SXAt/qdO1bo9jgBaKETiWMxryWMMOav+kJrXKx/UNqxnZQIt9RK2ArVHreotO8CCfhqN4fNWqCiae3OSGc2E4HDQBoKFXGe/+IW9x7oNW9zAzi6zGRbh4u6HyZCpHgOxpgWWSTBsQLd9IdoLuaL0QQ8aaRKRqfYx4UI7He4fV12OEYcaM+zzl+rsSKPvtEgXgJvaJTxcdz5qFb06FMdJc3pt0IIAY4uG6CsA3/NCWoz+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DOqOMGTmJpthW2Uqreeehqg9BcUS8kh3LUPBQksWZN8=;
- b=Zyj51pizDmNUxisZB5KfosHDwH4oHBCEJnBhk/wpcN7SBjHuAJi5rcyTJmLO8xQ9PTCABe6MDrCCEPYj23D6Em3dUn2RgV9XENWYpKbJCpEe6TIwzlj3x0Q5+v6DJPCnEpoNcRcO1BRt4hBu6tSO0uI+G1mFmGlmqlLKI+Y0KIMdOIvTWMGDMCE018oxfJRRwHsUcdgOa0nI6YOsxGDzjFwH2RItwIsKrFgdxobu2tvgFH4uUeO9P259CpwbL7Wibylstdelth3Ro59tZwzHkHtLdIDkijwp3jcTIcRCXplxsidhk543vYUBqcmTthrciOHqFDWnySj8lJQfhoqXgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 175.98.123.7) smtp.rcpttodomain=gmail.com smtp.mailfrom=nuvoton.com;
- dmarc=fail (p=none sp=quarantine pct=100) action=none header.from=gmail.com;
- dkim=none (message not signed); arc=none
+        Mon, 18 Sep 2023 13:02:38 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8817599
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:02:32 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34fc9b461b6so2265ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:02:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DOqOMGTmJpthW2Uqreeehqg9BcUS8kh3LUPBQksWZN8=;
- b=sG6vJwd+qBbmkCXSjiIRXgX5lbmoKbwGWVaOtaQUUMWZffde1Gam3LS/ypmGfeZ1d+oJRMRMm1fhwKleWeYnj/ndMrojcgJk3m+8R8DZRhKwqtAQrzW/pjmWa/s3h3nMHNmcagSDp9iKZC7BffWKpAZcALj6EUt+i5kA2vlJfcg=
-Received: from SI2PR02CA0054.apcprd02.prod.outlook.com (2603:1096:4:196::13)
- by SEYPR03MB7697.apcprd03.prod.outlook.com (2603:1096:101:147::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Mon, 18 Sep
- 2023 17:00:09 +0000
-Received: from SG2PEPF000B66CB.apcprd03.prod.outlook.com
- (2603:1096:4:196:cafe::54) by SI2PR02CA0054.outlook.office365.com
- (2603:1096:4:196::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26 via Frontend
- Transport; Mon, 18 Sep 2023 17:00:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
- smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=gmail.com;
-Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
- 175.98.123.7 as permitted sender) receiver=protection.outlook.com;
- client-ip=175.98.123.7; helo=NTHCCAS04.nuvoton.com; pr=C
-Received: from NTHCCAS04.nuvoton.com (175.98.123.7) by
- SG2PEPF000B66CB.mail.protection.outlook.com (10.167.240.24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.20.6792.20 via Frontend Transport; Mon, 18 Sep 2023 17:00:09 +0000
-Received: from NTHCML01B.nuvoton.com (10.1.8.178) by NTHCCAS04.nuvoton.com
- (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Tue, 19
- Sep 2023 01:00:04 +0800
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01B.nuvoton.com
- (10.1.8.178) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Tue, 19 Sep
- 2023 01:00:03 +0800
-Received: from taln60.nuvoton.co.il (10.191.1.180) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Tue, 19 Sep 2023 01:00:03 +0800
-Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
-        id DEC7D64741; Mon, 18 Sep 2023 20:00:02 +0300 (IDT)
-From:   Tomer Maimon <tmaimon77@gmail.com>
-To:     <peter.chen@kernel.org>, <gregkh@linuxfoundation.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <xu.yang_2@nxp.com>, <peng.fan@nxp.com>, <avifishman70@gmail.com>,
-        <tali.perry1@gmail.com>, <joel@jms.id.au>, <venture@google.com>,
-        <yuenn@google.com>, <benjaminfair@google.com>,
-        <j.neuschaefer@gmx.net>
-CC:     <openbmc@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tomer Maimon <tmaimon77@gmail.com>
-Subject: [PATCH v1 2/2] usb: chipidea: Add support for NPCM
-Date:   Mon, 18 Sep 2023 19:59:58 +0300
-Message-ID: <20230918165958.2659-3-tmaimon77@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230918165958.2659-1-tmaimon77@gmail.com>
-References: <20230918165958.2659-1-tmaimon77@gmail.com>
+        d=google.com; s=20230601; t=1695056552; x=1695661352; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UAIfwvZ+63Hgn0zk0yrYnb3ogYKWcNYJOySoDjwnNsI=;
+        b=lGZ6+5Tv3bFq2sxiYKnEHQ27wAK0lSkPh+93NjFZPex139bJNe6jFLwJ5flfliF+/i
+         HBx4VqaeEtFVR/BbTN7454JthT8OsjMVBGz0hCEaaXGte9ZGrjia/FnoIOTbIlHuSiwv
+         eBJfqhsjOClMD5e+U4UBFCFbizdbi+PGgna/vuecfEYF3QkCINu42sdE6r+aDoqYxU/3
+         cbM0b1VzVIigQxwzL4+1XcB8fw7VzH1Y6UXl3WCoHOWJ1EPKwJZuzPTK4W8Ctpa0j9gp
+         0yyfTXx88pwlLT2y4c5Rr9Bh/0DU0XzromfHMNwhNkiHdnXWlVv158AyHgdmX6ddCC6x
+         fQ+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695056552; x=1695661352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UAIfwvZ+63Hgn0zk0yrYnb3ogYKWcNYJOySoDjwnNsI=;
+        b=NK14fmZbaUqKFR2HKQEk4z6zzTQcMr7gHyDAkFE//8EAgI5zcIXpLp086tPcgrXNB+
+         VG4/yIEA6mPbXyudipQn2ad/6wtAr2o1t6amOkYRgFqeV6/RhmCgfLERx9fgjqNf46mc
+         Lj6oFfG21i79ET2pl6ilYR1Tsmke7r4HTIABxpsKDKj7Tn3/nKAHeaWWiyQe9R5rb/6Y
+         4ljfu+cn5vAAheVhPxs3LDxtAhrNLS2o8GHKcr5nLVKOuqNiorOiG+nWuLTE1+FVwQv9
+         7FI1U5PyA6t0FzdB6stTHzpEgVPsHiAJegF/8EKczS9G0cVoJot7xl+HUqXBYbymTv8F
+         peYA==
+X-Gm-Message-State: AOJu0YwLJYwWQQEQ6HpdY5vEmeYsPLrmzmYF7XKjX5QuefLCJd5yfYB+
+        wcFgJHTHZ3KVvYMc01Cv60BfRM0UsCACCNL6rzy2VQ==
+X-Google-Smtp-Source: AGHT+IGbG5HCAHrf21JXiJ2VopMjnmhcCdJ+ID6HHTdX+uCNc+yb9AJgBSzDPxGjHJugKAvODmx8+FJZW+RvRyCe3Kw=
+X-Received: by 2002:a05:6e02:144e:b0:34c:acb5:11bd with SMTP id
+ p14-20020a056e02144e00b0034cacb511bdmr598183ilo.16.1695056551832; Mon, 18 Sep
+ 2023 10:02:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NotSetDelaration: True
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CB:EE_|SEYPR03MB7697:EE_
-X-MS-Office365-Filtering-Correlation-Id: 82f53c75-1d14-4877-8764-08dbb868b77c
-X-MS-Exchange-SenderADCheck: 0
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F8LtVg8s3+WgALI8Ec1vpfTFbyqGbm/PVy1K9GkD3PiHnQFvSAB01xqcn5QfYYplA4jUsHtam4MbzeWNjnzwTPT5xoSgDaqt7XPdtzyqYh80sSvS0KNkaUk3VcHzZ+HLYw8fsxlkVNhXOQ8ZfNXIRKx3Xsh9PzApdCOtCXt7RQxEOvCOJ4teFN5Bg1olloEpW04KolZ44rpzxzckNeBIUUHMyoj9ysuBjsO2z7vYiYaTZ28BEtn476zXheNfofPhvifTck4vvxJAuZMgKdQMAN57ew1pxBW8Ts38r/BAOwWiYRWc5d+e8x7DtM+6eGAeiQ9i3Nj1yr5BvZLOmxRP0LKjT2YtuLI8Q7hfqG3H4FjYqaTz26okfy+N2fWWW+mE1tAMQ1lrwuPjWCfILxjRMWfHTw7P+ybkV9t8Q8k1twboerjMvQCHouUn5FRikLnLjAv7P5FzRoslA6L7t359On29MqEhFfS4aEoiUCYY/Zos2Q8mD9udG0WFJ0nFZ6izeDO1jjaREcufDmMmGYlFBkfXkQzyjmW6dKmLnP6vTXcwGUxOLDpStWLKdF0/7hdi0qhmmkjlK5ZrgDNibnXH8IATU/R7w02ywanqbs5HNoDUxCsQbYG3QQUn7EqqIYxpaINK0GtHhFqWehEJTaw+13RFbMdvjINhsiWQO3lDnAt3G4gWtRjbKTSs+enoqbXnxLyncOVR3OtF9rSjT54E18sWUfluVMyGMSaZbyII+V1Oao/cpUJOgADMi4w+1cJRQdv2baOUFNu5PeMi/vKvHBqxaPkXX2XSHeDOPRmTgerE4XZcAIcPk9odNPDcrPJw+tGtzh98x03oNStHLqb28DVfNeTmgsJH1KglxHXffPca2IOEiVyE8kxJPAbullsuUscWd/G2Rne3I6+yu16sEw==
-X-Forefront-Antispam-Report: CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS04.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(396003)(39860400002)(186009)(61400799006)(451199024)(48200799006)(82310400011)(40470700004)(46966006)(36840700001)(2906002)(40460700003)(76482006)(83380400001)(82202003)(1076003)(36756003)(55446002)(6666004)(2616005)(478600001)(42882007)(73392003)(336012)(6266002)(26005)(40480700001)(8936002)(8676002)(36860700001)(4326008)(41300700001)(83170400001)(47076005)(70586007)(5660300002)(7416002)(316002)(356005)(82740400003)(921005)(81166007)(42186006)(54906003)(110136005)(70206006)(45356006)(35450700002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 17:00:09.5839
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82f53c75-1d14-4877-8764-08dbb868b77c
-X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS04.nuvoton.com]
-X-MS-Exchange-CrossTenant-AuthSource: SG2PEPF000B66CB.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB7697
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        DKIM_SIGNED,DKIM_VALID,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
-        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NML_ADSP_CUSTOM_MED,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230817003029.3073210-1-rananta@google.com> <20230817003029.3073210-9-rananta@google.com>
+ <6dc460d2-c7fb-e299-b0a3-55b43de31555@redhat.com> <CAJHc60whpvOHYCFueqh0Q=SbmmeRBG_x90QOvX+vOun73ttjPA@mail.gmail.com>
+ <e479914b-7ba2-3a9a-2b07-9965532cbcfa@redhat.com> <ZQTAOcTsGPos/mBD@linux.dev>
+In-Reply-To: <ZQTAOcTsGPos/mBD@linux.dev>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 18 Sep 2023 10:02:20 -0700
+Message-ID: <CAJHc60zNaCOckeBdqfq1Ac8p7TTRFK6j7bMGMA49Twa763NTkA@mail.gmail.com>
+Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
+ PMCR_EL0.N for the guest
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Shaoqin Huang <shahuang@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Nuvoton NPCM BMC SoCs support to USB ChipIdea driver.
-NPCM SoC include ChipIdea IP block that used for USB device controller
-mode.
+On Fri, Sep 15, 2023 at 1:36=E2=80=AFPM Oliver Upton <oliver.upton@linux.de=
+v> wrote:
+>
+> On Tue, Aug 22, 2023 at 11:26:23AM +0800, Shaoqin Huang wrote:
+>
+> [...]
+>
+> > > > > +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_=
+desc *r,
+> > > > > +                 u64 val)
+> > > > > +{
+> > > > > +     struct kvm *kvm =3D vcpu->kvm;
+> > > > > +     u64 new_n, mutable_mask;
+> > > > > +     int ret =3D 0;
+> > > > > +
+> > > > > +     new_n =3D FIELD_GET(ARMV8_PMU_PMCR_N, val);
+> > > > > +
+> > > > > +     mutex_lock(&kvm->arch.config_lock);
+> > > > > +     if (unlikely(new_n !=3D kvm->arch.pmcr_n)) {
+> > > > > +             /*
+> > > > > +              * The vCPU can't have more counters than the PMU
+> > > > > +              * hardware implements.
+> > > > > +              */
+> > > > > +             if (new_n <=3D kvm->arch.pmcr_n_limit)
+> > > > > +                     kvm->arch.pmcr_n =3D new_n;
+> > > > > +             else
+> > > > > +                     ret =3D -EINVAL;
+> > > > > +     }
+> > > >
+> > > > Since we have set the default value of pmcr_n, if we want to set a =
+new
+> > > > pmcr_n, shouldn't it be a different value?
+> > > >
+> > > > So how about change the checking to:
+> > > >
+> > > > if (likely(new_n <=3D kvm->arch.pmcr_n_limit)
+> > > >          kvm->arch.pmcr_n =3D new_n;
+> > > > else
+> > > >          ret =3D -EINVAL;
+> > > >
+> > > > what do you think?
+> > > >
+> > > Sorry, I guess I didn't fully understand your suggestion. Are you
+> > > saying that it's 'likely' that userspace would configure the correct
+> > > value?
+> > >
+> > It depends on how userspace use this api to limit the number of pmcr. I
+> > think what you mean in the code is that userspace need to set every vcp=
+u's
+> > pmcr to the same value, so the `unlikely` here is right, only one vcpu =
+can
+> > change the kvm->arch.pmcr.n, it saves the cpu cycles.
+> >
+> > What suggest above might be wrong. Since I think when userspace want to
+> > limit the number of pmcr, it may just set the new_n on one vcpu, since =
+the
+> > kvm->arch.pmcr_n is a VM-local value, every vcpu can see it, so it's
+> > `likely` the (new_n <=3D kvm->arch.pmcr_n_limit), it can decrease one c=
+hecking
+> > statement.
+>
+> How about we just do away with branch hints in the first place? This is
+> _not_ a hot path.
+>
+Sounds good to me.
 
-Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
----
- drivers/usb/chipidea/Kconfig        |   4 +
- drivers/usb/chipidea/Makefile       |   1 +
- drivers/usb/chipidea/ci_hdrc_npcm.c | 126 ++++++++++++++++++++++++++++
- 3 files changed, 131 insertions(+)
- create mode 100644 drivers/usb/chipidea/ci_hdrc_npcm.c
-
-diff --git a/drivers/usb/chipidea/Kconfig b/drivers/usb/chipidea/Kconfig
-index c815824a0b2d..bab45bc62361 100644
---- a/drivers/usb/chipidea/Kconfig
-+++ b/drivers/usb/chipidea/Kconfig
-@@ -43,6 +43,10 @@ config USB_CHIPIDEA_MSM
- 	tristate "Enable MSM hsusb glue driver" if EXPERT
- 	default USB_CHIPIDEA
- 
-+config USB_CHIPIDEA_NPCM
-+	tristate "Enable NPCM hsusb glue driver" if EXPERT
-+	default USB_CHIPIDEA
-+
- config USB_CHIPIDEA_IMX
- 	tristate "Enable i.MX USB glue driver" if EXPERT
- 	depends on OF
-diff --git a/drivers/usb/chipidea/Makefile b/drivers/usb/chipidea/Makefile
-index 71afeab97e83..718cb24603dd 100644
---- a/drivers/usb/chipidea/Makefile
-+++ b/drivers/usb/chipidea/Makefile
-@@ -13,6 +13,7 @@ ci_hdrc-$(CONFIG_USB_OTG_FSM)		+= otg_fsm.o
- 
- obj-$(CONFIG_USB_CHIPIDEA_GENERIC)	+= ci_hdrc_usb2.o
- obj-$(CONFIG_USB_CHIPIDEA_MSM)		+= ci_hdrc_msm.o
-+obj-$(CONFIG_USB_CHIPIDEA_NPCM)		+= ci_hdrc_npcm.o
- obj-$(CONFIG_USB_CHIPIDEA_PCI)		+= ci_hdrc_pci.o
- obj-$(CONFIG_USB_CHIPIDEA_IMX)		+= usbmisc_imx.o ci_hdrc_imx.o
- obj-$(CONFIG_USB_CHIPIDEA_TEGRA)	+= ci_hdrc_tegra.o
-diff --git a/drivers/usb/chipidea/ci_hdrc_npcm.c b/drivers/usb/chipidea/ci_hdrc_npcm.c
-new file mode 100644
-index 000000000000..8214a4d1e418
---- /dev/null
-+++ b/drivers/usb/chipidea/ci_hdrc_npcm.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2023 Nuvoton Technology corporation.
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/usb/chipidea.h>
-+#include <linux/clk.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/regmap.h>
-+#include <linux/io.h>
-+#include <linux/reset-controller.h>
-+#include <linux/of.h>
-+
-+#include "ci.h"
-+
-+struct npcm_udc_data {
-+	struct platform_device	*ci;
-+	struct clk		*core_clk;
-+	struct ci_hdrc_platform_data pdata;
-+};
-+
-+static int npcm_udc_notify_event(struct ci_hdrc *ci, unsigned event)
-+{
-+	struct device *dev = ci->dev->parent;
-+
-+	switch (event) {
-+	case CI_HDRC_CONTROLLER_RESET_EVENT:
-+		/* clear all mode bits */
-+		hw_write(ci, OP_USBMODE, 0xffffffff, 0x0);
-+		break;
-+	default:
-+		dev_dbg(dev, "unknown ci_hdrc event\n");
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int npcm_udc_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	unsigned int args[3];
-+	struct regmap *gcr_regmap;
-+	struct npcm_udc_data *ci;
-+	struct platform_device *plat_ci;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+
-+	ci = devm_kzalloc(&pdev->dev, sizeof(*ci), GFP_KERNEL);
-+	if (!ci)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, ci);
-+
-+	ci->core_clk = devm_clk_get_optional(dev, NULL);
-+	if (IS_ERR(ci->core_clk))
-+		return PTR_ERR(ci->core_clk);
-+
-+	ret = clk_prepare_enable(ci->core_clk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable the clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ci->pdata.name = dev_name(dev);
-+	ci->pdata.capoffset = DEF_CAPOFFSET;
-+	ci->pdata.flags	= CI_HDRC_REQUIRES_ALIGNED_DMA |
-+		CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS;
-+	ci->pdata.phy_mode = USBPHY_INTERFACE_MODE_UTMI;
-+	ci->pdata.notify_event = npcm_udc_notify_event;
-+
-+	gcr_regmap = syscon_regmap_lookup_by_phandle_args(np, "nuvoton,sysgcr",
-+							  3, args);
-+	if (!IS_ERR(gcr_regmap))
-+		regmap_update_bits(gcr_regmap, args[0], args[1], args[2]);
-+
-+	plat_ci = ci_hdrc_add_device(dev, pdev->resource, pdev->num_resources,
-+				     &ci->pdata);
-+	if (IS_ERR(plat_ci)) {
-+		ret = PTR_ERR(plat_ci);
-+		dev_err(dev, "failed to register HDRC NPCM device: %d\n", ret);
-+		goto clk_err;
-+	}
-+
-+	pm_runtime_no_callbacks(dev);
-+	pm_runtime_enable(dev);
-+
-+	return 0;
-+
-+clk_err:
-+	clk_disable_unprepare(ci->core_clk);
-+	return ret;
-+}
-+
-+static int npcm_udc_remove(struct platform_device *pdev)
-+{
-+	struct npcm_udc_data *ci = platform_get_drvdata(pdev);
-+
-+	pm_runtime_disable(&pdev->dev);
-+	ci_hdrc_remove_device(ci->ci);
-+	clk_disable_unprepare(ci->core_clk);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id npcm_udc_dt_match[] = {
-+	{ .compatible = "nuvoton,npcm-udc", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, npcm_udc_dt_match);
-+
-+static struct platform_driver npcm_udc_driver = {
-+	.probe = npcm_udc_probe,
-+	.remove = npcm_udc_remove,
-+	.driver = {
-+		.name = "npcm_udc",
-+		.of_match_table = npcm_udc_dt_match,
-+	},
-+};
-+
-+module_platform_driver(npcm_udc_driver);
-+
-+MODULE_DESCRIPTION("NPCM USB device controller driver");
-+MODULE_AUTHOR("Tomer Maimon <tomer.maimon@nuvoton.com>");
-+MODULE_ALIAS("platform:npcm-udc");
-+MODULE_LICENSE("GPL v2");
--- 
-2.33.0
-
+Thank you.
+Raghavendra
+> --
+> Thanks,
+> Oliver
