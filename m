@@ -2,120 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8983E7A5631
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 01:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D9E7A5634
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 01:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjIRXbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 19:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
+        id S229881AbjIRXcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 19:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjIRXbP (ORCPT
+        with ESMTP id S229690AbjIRXc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 19:31:15 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C6590
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:31:05 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-59c04237bf2so43047767b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:31:05 -0700 (PDT)
+        Mon, 18 Sep 2023 19:32:28 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1425C99
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:32:21 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-6563022e3d3so22241876d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:32:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695079865; x=1695684665; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AvmZeLJa5EyjvpWd7at0QcGbhWatmHcWmtqRx8CiCf4=;
-        b=pGExb2pPuLuG/EbV4lKr/lwnQIudowJDrj3y1Pd/+B2GSU0hVGnW3RJ7TW5JBhYgOG
-         aD1VVHLT9gUR6YdQiXZQ5cPgCwn7NdkR0wy1BcdUa7HKSg67Xsq0ZeoStyF3UIRlWbVt
-         h60Yii3bW3KfIzpEwajXnrLANTGz6GMw5fVUAaXwl4ioGBc10CygbsGR13gNPaNTM0bu
-         NZKNNiIYiBinOPSG+bSzBqs4/8jrSfA/JNWf4zOtYNNcB/7qNwFVWUD1l6tdXWNi3eUh
-         Gm4mF+szpQXaGaQftRWu31znIu890mA+SH+SHpXej30I52zj4mZqny3AgzU7mbVOWDgW
-         jLkg==
+        d=ziepe.ca; s=google; t=1695079940; x=1695684740; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TLMTysNlum9+o+e8fKNP7w+Tu5sJ8VKKnB80pE3BFH0=;
+        b=IjvoLD0TTCc6A6xURATDmZNc7fa8hV3+sU4fcV85fqUzdrs2v6tS2Q4z0l0lfx4MFs
+         /OilwIkmChsJjccGtXrEJCgB0v69ym33m3+13IDsmSfe4Je4zyR7rJxnDo5LIQXJSuES
+         jnUgruyjVnKrOd+yLQsfM/BYyRjJmEnBJ6s1rSS09p+BSQ7CVRQ9THMdzlEaVQstZfFU
+         HamNE+g+FeorfOP5SFZMe92/b5wqsr8WABbZrlKrvLdS71lEOMc0CPZAym0bE1wxaWGx
+         aDec422XLLCjw/HrglC13N3evXASxgnJRTA4yWLU4qvzNtlVdwijGXg4Gkj+Mzq+F0KV
+         cB4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695079865; x=1695684665;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AvmZeLJa5EyjvpWd7at0QcGbhWatmHcWmtqRx8CiCf4=;
-        b=LSTBNHLumZb8gR4Zcn5kFGXemM5xf5LKE90YKjFPMkvHFuMtPyH5OttiRWeu/nwB87
-         T2AxcYFmjJgfl7vSwJynTe8Xs3D/vHm05XTTDVgzGaCsU/OeDTgAYgK220qHzj9MDGf1
-         mWZGabOpfaYczs825H1dv44JRlL1jDypsLaIiXCXs1L8cUrYB5LyO0fZX7SsX2S+SZqO
-         X8uGX0wPuhnX9FwxOY23nqg/Mm8H/BT4jrZC6TS2snsoMUKstpOWqHHa0SXvkShd4rst
-         ntFEKCJ2p55q/H2mF+zaKlnpK9cvthCRFSKIXp3SDcwEF9VTWIsQLA09nGEbgTfb/P3D
-         MoUg==
-X-Gm-Message-State: AOJu0Yza8JIfs5Bxxp3PLkteSEPdkQBl+4V1YKg+nKFo9VtG7dd5TUdE
-        mClskKvviP1Bet2M/Pw9YLwOTw==
-X-Google-Smtp-Source: AGHT+IF3JT5bCA7I7Ld7k7UXeUjFs+gdf923oWqmQjQTHiHBf/0n5u4GnJW18U8J/QECAfDT+CG+XA==
-X-Received: by 2002:a0d:efc6:0:b0:595:be7:a38 with SMTP id y189-20020a0defc6000000b005950be70a38mr9618335ywe.49.1695079864905;
-        Mon, 18 Sep 2023 16:31:04 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id x8-20020a817c08000000b00589b653b7adsm2888815ywc.136.2023.09.18.16.31.02
+        d=1e100.net; s=20230601; t=1695079940; x=1695684740;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TLMTysNlum9+o+e8fKNP7w+Tu5sJ8VKKnB80pE3BFH0=;
+        b=h0KlNCgjDH+UAJ4IbfpM+UEjqWwW+2vZeAluMvVV1DBxzPXkqzY9z/vLusaoHgGkAh
+         G9cJ+GfA9vFwmOd8QJX8AS8+xgWw8lFow6fFFl9aF+YN2taV3ZzLmXOWMHdJ5t1vMc6q
+         Emr2GBX5+wMwhgA8Nnv5JQXo14yyB0L/o0r9++YFKw40WYtjhMZPob9EQOTZ3O53V0aQ
+         7uH6DhVJgtmVjC/d8qQ/jFbrrT6Gbtt3RxV0VINKeztypDxpqWXnOajBNRdHuWc5qCft
+         WO/sc/fYlyFRMtlLcBWtvHTpwchZzl+Nnixk7OD2ls5PCcATvgSaTr/o6qs4c4XleY6h
+         rLkw==
+X-Gm-Message-State: AOJu0YzuLKJ6ywAQJRPgtZNsbFN9LCdLKh5t+eIucZPRLG6fbt6nZkQ0
+        ea7KGEeNxT83STGrR+gBgfpJ9w==
+X-Google-Smtp-Source: AGHT+IHi0Q0ITncG6MvwdO9eyFMUFwfFVtfnb2S2HnVMbYlxJUgy6VpYKVg3eHv9VYd73T9cBmTR3w==
+X-Received: by 2002:a0c:da88:0:b0:651:65f4:31fa with SMTP id z8-20020a0cda88000000b0065165f431famr11660526qvj.39.1695079940190;
+        Mon, 18 Sep 2023 16:32:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id s16-20020a0ce310000000b00655e83dfa16sm2709466qvl.11.2023.09.18.16.32.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 16:31:03 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 16:30:54 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Suren Baghdasaryan <surenb@google.com>
-cc:     akpm@linux-foundation.org, willy@infradead.org, hughd@google.com,
-        shy828301@gmail.com, mhocko@suse.com, vbabka@suse.cz,
-        syzkaller-bugs@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/1] mm: lock VMAs skipped by a failed
- queue_pages_range()
-In-Reply-To: <20230918211608.3580629-1-surenb@google.com>
-Message-ID: <512d487a-758c-6d9c-787c-4169117d20cf@google.com>
-References: <20230918211608.3580629-1-surenb@google.com>
+        Mon, 18 Sep 2023 16:32:19 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qiNj1-0007pV-8S;
+        Mon, 18 Sep 2023 20:32:19 -0300
+Date:   Mon, 18 Sep 2023 20:32:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Nelson, Shannon" <shannon.nelson@amd.com>
+Cc:     alex.williamson@redhat.com, kevin.tian@intel.com,
+        reinette.chatre@intel.com, tglx@linutronix.de, kvm@vger.kernel.org,
+        brett.creeley@amd.com, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH vfio] vfio/pci: remove msi domain on msi disable
+Message-ID: <20230918233219.GO13795@ziepe.ca>
+References: <20230914191406.54656-1-shannon.nelson@amd.com>
+ <20230918141705.GE13795@ziepe.ca>
+ <acfa5d59-242b-4b31-a3ef-b4163972f26b@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <acfa5d59-242b-4b31-a3ef-b4163972f26b@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Sep 2023, Suren Baghdasaryan wrote:
+On Mon, Sep 18, 2023 at 10:48:54AM -0700, Nelson, Shannon wrote:
 
-> When queue_pages_range() encounters an unmovable page, it terminates
-> its page walk. This walk, among other things, locks the VMAs in the range.
-> This termination might result in some VMAs being left unlock after
-> queue_pages_range() completes. Since do_mbind() continues to operate on
-> these VMAs despite the failure from queue_pages_range(), it will encounter
-> an unlocked VMA.
-> This mbind() behavior has been modified several times before and might
-> need some changes to either finish the page walk even in the presence
-> of unmovable pages or to error out immediately after the failure to
-> queue_pages_range(). However that requires more discussions, so to
-> fix the immediate issue, explicitly lock the VMAs in the range if
-> queue_pages_range() failed. The added condition does not save much
-> but is added for documentation purposes to understand when this extra
-> locking is needed.
-> 
-> Fixes: 49b0638502da ("mm: enable page walking API to lock vmas during the walk")
-> Reported-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/000000000000f392a60604a65085@google.com/
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> In our case, the VF device's msix count value found in PCI config space is
+> changed by device configuration management outside of the baremetal host and
+> read by the QEMU instance when it starts up, and then read by the vfio PCI
+> core when QEMU requests the first IRQ.  
 
-Acked-by: Hugh Dickins <hughd@google.com>
+Oh, you definitely can't do that!
 
-> ---
->  mm/mempolicy.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 42b5567e3773..cbc584e9b6ca 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1342,6 +1342,9 @@ static long do_mbind(unsigned long start, unsigned long len,
->  	vma_iter_init(&vmi, mm, start);
->  	prev = vma_prev(&vmi);
->  	for_each_vma_range(vmi, vma, end) {
-> +		/* If queue_pages_range failed then not all VMAs might be locked */
-> +		if (ret)
-> +			vma_start_write(vma);
->  		err = mbind_range(&vmi, vma, &prev, start, end, new);
->  		if (err)
->  			break;
-> -- 
-> 2.42.0.459.ge4e396fd5e-goog
+PCI config space is not allowed to change outside the OS's view and we
+added sriov_set_msix_vec_count() specifically as a way to provide the
+necessary synchronization between all the parts.
+
+Randomly changing, what should be immutable, parts of the config space
+from under a running OS is just non-compliant PCI behavior.
+
+> The msix vectors are freed, but the msi_domain is not, and the msi_domain
+> holds the MSIx count that it read when it was created.  If the device's MSIx
+> count is increased, the next QEMU session will see the new number in PCI
+> config space and try to use that new larger number, but the msi_domain is
+> still using the smaller hwsize and the QEMU IRQ setup fails in
+> msi_insert_desc().
+
+Correct, devices are not allowed to change these parameters
+autonomously, so there is no reason to accommodate this.
+
+> This patch adds a msi_remove_device_irq_domain() call when the irqs are
+> disabled in order to force a new read on the next IRQ allocation cycle. This
+> is limited to only the vfio use of the msi_domain.
+
+Definately no.
+ 
+> I suppose we could add this to the trailing end of callbacks in our own
+> driver, but this looks more like a generic vfio/msi issue than a driver
+> specific thing.
+
+Certainly not.
+ 
+> The other possibility is to force the user to always do a bind cycle between
+> QEMU sessions using the VF.  This seems to be unnecessary overhead and was
+> not necessary when using the v6.1 kernel.  To the user, this looks like a
+> regression - this is how it was reported to me.
+
+You need to use sriov_set_msix_vec_count() and only
+sriov_set_msix_vec_count() to change this parameter or I expect you
+will constantly experience problems.
+
+Jason
