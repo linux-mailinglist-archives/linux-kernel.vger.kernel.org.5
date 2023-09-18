@@ -2,44 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 596D27A47D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433097A47F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239788AbjIRLFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
+        id S241204AbjIRLG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237827AbjIRLFp (ORCPT
+        with ESMTP id S239871AbjIRLFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:05:45 -0400
+        Mon, 18 Sep 2023 07:05:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6958F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:05:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D23CAC433C9;
-        Mon, 18 Sep 2023 11:05:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA6CC3;
+        Mon, 18 Sep 2023 04:05:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 857E7C433C7;
+        Mon, 18 Sep 2023 11:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695035140;
-        bh=nTQlrt3lgAXWEoIiVTnu+p7YvjL/2P0PI5wfelUMFBU=;
+        s=k20201202; t=1695035149;
+        bh=HqsMws0S5nYHBfNxFRC4VwWzZrM1nY/Eb3cwT5rJn5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QdLFniGb+wsrAEKo6lm+VWEu0UwTCRq5XkYety8W3AUn+3mF/vcAUz+QAJ4QQcQKK
-         NzCU52X7NzUJhFeSraLzj1lKUVpKl4e9RoM+Pk//M7VA9ct4SEpDflWTBV234PS1nC
-         SAipN9fgfLsDFs4Al+X0xzjYD7xqZWg0i1A5clFZH68YQUPGatf/1gBlO9FPo8h06n
-         YjZGc2D5W9kxWdN14xFYHWZ1SYDfbcBkSPnQUtWLFDJjBK6UaT8rO+oZoZWjsresis
-         dECQZSvmA6/mfWkD1UpLDrAOa61RtYDIfP/jW1OXzllYP6yCssfJtF26H/00O7JCpy
-         povGm16SA0f/w==
+        b=CqCdEj7iTIHgp5d6BjvnkSieRxktCUrr9FV+8xBI5NBYv+AE+zFcTSKYOA+Hk7d+A
+         /u3Xp9DmUSAbiAT77855XQ7sIP4QQKDhZ7krIEF8r1ZMCAKqUzY8P4+D7/unRxs0xF
+         dD7naM3PuFGatTKQzpk2ZJFkZ8bhpfgLux+3KcC1C2Pa+sDWK4eB0S131tYzw+I4LD
+         YFwOom+MS7yPM1o/4/LuT+PQOaTsZeeQBCxoTmghQyoRzRebrzS8CKig8sGGkxqTfO
+         Z8vay8j09Q8CrmAzNF8wHRcMLFzTjJlkKg53+iVc+4l3wuBcl8hPlIxMc+jBMA2x0d
+         Owi/2GGz7b94g==
 From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Maydell <peter.maydell@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64/sme: Include ID_AA64PFR1_EL1.SME in cpu-feature-registers.rst
-Date:   Mon, 18 Sep 2023 12:05:16 +0100
-Message-Id: <169503037342.1328390.858083161547236740.b4-ty@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        iommu@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 00/14] Clean up RPM bus clocks remnants
+Date:   Mon, 18 Sep 2023 12:05:19 +0100
+Message-Id: <169502865701.264764.7151801488936699892.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230914-arm64-pfr1-sme-doc-v1-1-b6c497d10d77@kernel.org>
-References: <20230914-arm64-pfr1-sme-doc-v1-1-b6c497d10d77@kernel.org>
+In-Reply-To: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
+References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,16 +70,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sep 2023 11:11:31 +0100, Mark Brown wrote:
-> We expose ID_AA64PFR1_EL1.SME to userspace but do not document this in
-> cpu-feature-registers.rst. Add it.
+On Tue, 12 Sep 2023 15:31:38 +0200, Konrad Dybcio wrote:
+> After the recent cleanups ([1], [2]) some in-tree abusers that directly
+> accessed the RPM bus clocks, effectively circumventing and working
+> against the efforts of the interconnect framework, were found.
 > 
+> Patches 1-5 drop deprecated references and the rest attempt to stop
+> direct bus clock abuses.
 > 
+> [...]
 
-Applied to arm64 (for-next/fixes), thanks!
+Applied SMMU bindings fix to will (for-joerg/arm-smmu/fixes), thanks!
 
-[1/1] arm64/sme: Include ID_AA64PFR1_EL1.SME in cpu-feature-registers.rst
-      https://git.kernel.org/arm64/c/046b212ac930
+[04/14] dt-bindings: arm-smmu: Fix SDM630 clocks description
+        https://git.kernel.org/will/c/938ba2f252a5
 
 Cheers,
 -- 
