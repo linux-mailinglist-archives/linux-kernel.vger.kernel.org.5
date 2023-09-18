@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF7E7A5393
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D35D37A53AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjIRUOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
+        id S229765AbjIRUPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIRUOy (ORCPT
+        with ESMTP id S229472AbjIRUPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:14:54 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96531B6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:14:48 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bffd6c1460so29834891fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:14:48 -0700 (PDT)
+        Mon, 18 Sep 2023 16:15:48 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74476B6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:15:42 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-77dcff76e35so62527739f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:15:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695068087; x=1695672887; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=foir4CYi7UwePbsanUl7EqFTPVU+gOMJyfvtDpuR/qE=;
-        b=ES/kj03omgUBweTWniF9JePXJdplALuWIpGyAJZPQIYSX/R7aS4wIIb05OxcM98I8D
-         Oa6qeB/Z1qc2Yk+KWOVqRdSzzKgEwJ77Yf7YEBrnk0o4ts3raoaHq6/V7nLDJDPK9eVI
-         WxOSV0151SAm2DAZj7RAldPdYaLhameaVbVXJAR8KU/OS4mCYkqqIVcN6PD/czfx8od1
-         DwK1KhVFvoj0ZTqOQehBKqAWHi3w8zCPMt6TEZUdLEDELCQQIz6YGE2vS2hPly/jBZcY
-         FcLqHw8OP1BDHZ2SzfLymYwUvJGoQ3uO2raDAvKTHw8FSF9PSidl/4FLvHgXzEeZ5nSN
-         yKcA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695068142; x=1695672942; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hjmj7plkbnOlDMjCra3y3a09oBx1pW45VyaUM21Y7AM=;
+        b=VvO4wGnHhG/8yjHEZ+ktbqa+0WjjZOpfuhYQhzYHwRmO3Tfs5PrCeFVIGb+RuvuoVS
+         o3uXe1boJTJycm6bAbDMp6Hd/tbkXt9Cuuw7LO1rqVIDX9I3NM4rla0o6VeMpKwUW0jl
+         ANojvXB0M+qOAVYToTPvF0TDjLZd1axval+XzTlrF496/Tayu32+0GypnTJJ2bCtd50l
+         aCB90HkTSL4VvjqbxYDpq0q7IbdGjjPWb9m6D8PIvCl32b55qUTrUmuYrtBXpaF9PX3V
+         NkzmW68hNHy/OLqhwsh1kVB+mDibMa3Zi2NIwDE8cet2LPMT06TB+jpN78sj2ENKx4ww
+         T2IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695068087; x=1695672887;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=foir4CYi7UwePbsanUl7EqFTPVU+gOMJyfvtDpuR/qE=;
-        b=XYN32+Iwp2qw5pb5EAomYXo+r65oIZTsaaijnnUEiFskDX0uxadI95o4yWxOF6wSyF
-         bhn77HZMu6yXE7Rp1pvw1/btI76i5KfqhMFZM3CIB5diYxXozibCQkCjSTAJTqV2P7xx
-         DzHw55tWIHKkKfmifJvbtNXUNNCpzKJ+1yBy0l12KjbSSSQNfwc6pbwE9hpkm4F1OTVB
-         DtiCDnSTD2SaisnAdVTPfXwgpgJ7UN0MOO6X2AOF9Gs908h1j46evb2xN2z1yRU+fYOc
-         AVuLTBMLci4PsQSch0y2R3TJn8gU1TDS5l4JX63InVXQ0F1VeK2dej5ZJtz1QBpo7Rpr
-         loAw==
-X-Gm-Message-State: AOJu0YxXxWa7GF1QBrd+ij/EEnd0TFXPs0UBsHEQGDJcY+RWF6dBFrTc
-        T/DUHuYTW155LCrLd9gkE7g+Xw==
-X-Google-Smtp-Source: AGHT+IESNYwKw/yvTzkMUYIbu+kKT964yTO8C2nh7iIsPR3ZHyrUuYIec+59pv6vLgQaJn81wkR3SQ==
-X-Received: by 2002:a2e:86c2:0:b0:2b9:daa4:f4b6 with SMTP id n2-20020a2e86c2000000b002b9daa4f4b6mr9066399ljj.45.1695068086835;
-        Mon, 18 Sep 2023 13:14:46 -0700 (PDT)
-Received: from [172.25.80.114] ([217.67.225.27])
-        by smtp.gmail.com with ESMTPSA id sd5-20020a170906ce2500b00992a8a54f32sm6792638ejb.139.2023.09.18.13.14.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 13:14:46 -0700 (PDT)
-Message-ID: <7f5021c9-49a8-ad06-5a48-1d531dbda12e@linaro.org>
-Date:   Mon, 18 Sep 2023 22:14:44 +0200
+        d=1e100.net; s=20230601; t=1695068142; x=1695672942;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hjmj7plkbnOlDMjCra3y3a09oBx1pW45VyaUM21Y7AM=;
+        b=P9wUQbMqqSDVR6ExJNB9MWcOzad3Pd8Ay9e2azdKwcW6VzDgG683ojmT4XF/QBfpXR
+         b9DLRpDc8Ur7sHFt1Nq0itFfHBt5aF+4xSg6dji5U5T+4lLSfTY+6n4yIcQ2FNd+MKEO
+         1mjnebMX/xC0KX82msNrcglZ6IFZroaW/ZNxvhweaH6qmGmNvJHCDmIihUAdcVwhSRMt
+         wWLOW7cwatrwAekS6eDRlZuvIlpIE7aeS91W162QNbJ8WSXV7z8SuzYzQLOlMZJYVjLB
+         eazPqNjkIQ7lfJHaH2a5Lz1zXCzMxu29MZmJRMtQx5ZGcaaBW7EuO8lO0jjNnSIikHar
+         rAWQ==
+X-Gm-Message-State: AOJu0YztZ9MD59hEKEbxRSpW/Qs2sZbzaSZycJGC3yoUOVdkW+oiJqZX
+        AhBJtmBIP66fgU4S24bJrNyW2A==
+X-Google-Smtp-Source: AGHT+IF6ZrFTRNOlSrFYsTgxKrHJFPd36vms08lvaqfmFTt5ikRLAhqAeHlPU/sHGBbXLkoXXETm0w==
+X-Received: by 2002:a92:907:0:b0:34f:6e08:d6a3 with SMTP id y7-20020a920907000000b0034f6e08d6a3mr10411038ilg.0.1695068141828;
+        Mon, 18 Sep 2023 13:15:41 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id o20-20020a056638125400b0042b451aa95esm2945116jas.150.2023.09.18.13.15.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 13:15:40 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     tj@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kemeng Shi <shikemeng@huaweicloud.com>
+In-Reply-To: <20230914091508.36232-1-shikemeng@huaweicloud.com>
+References: <20230914091508.36232-1-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH] block: correct stale comment in rq_qos_wait
+Message-Id: <169506814063.372099.2658807658177703138.b4-ty@kernel.dk>
+Date:   Mon, 18 Sep 2023 14:15:40 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v12 6/7] dt-bindings: media: wave5: add yaml devicetree
- bindings
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Robert Beckett <bob.beckett@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
- <20230915-wave5_v12_on_media_master-v12-6-92fc66cd685d@collabora.com>
- <30384744-94d7-2675-63ad-d8531e3156d1@linaro.org>
- <20230918064954.iuomunsckduawiay@basti-XPS-13-9310>
- <6d87034e-6727-09fd-60fc-10f8ca47f85b@linaro.org>
- <7412a756ee4c83c62b3dc866b5a351e1bc4afa33.camel@collabora.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <7412a756ee4c83c62b3dc866b5a351e1bc4afa33.camel@collabora.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,28 +72,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 21:16, Nicolas Dufresne wrote:
->>>>
->>>> A nit, subject: drop second/last, redundant "yaml devicetree indings".
->>>> The "dt-bindings" prefix is already stating that these are bindings.
->>>> Basically three words bringing zero information.
->>>
->>> Okay so:
->>> `dt-bindings: media: wave5: add devicetree`
->>
->> Still not, because devicetree is duplicating "dt". It's redundant.
->>
->> Instead should be (with correct order of prefixes):
->>
->> media: dt-bindings: wave5: add AzureWaveFooBar XYL ABC10 (whatever
->> company and full product name it is)
-> 
-> So maybe this one ?
-> 
->   media: dt-bindings: wave5: add Chips&Media 521c codec IP support
 
-Sure, sounds good for me.
+On Thu, 14 Sep 2023 17:15:08 +0800, Kemeng Shi wrote:
+> The rq_qos_wait calls common wake-up function rq_qos_wake_function to get
+> token. Just replace stale wbt_wake_function with rq_qos_wake_function in
+> comment.
+> 
+> 
+
+Applied, thanks!
+
+[1/1] block: correct stale comment in rq_qos_wait
+      commit: e599ed7866cd804ca15de7a92f7f629944cc278d
 
 Best regards,
-Krzysztof
+-- 
+Jens Axboe
+
+
 
