@@ -2,135 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2CF7A4BAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8687A4BB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbjIRPUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
+        id S230227AbjIRPU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjIRPUU (ORCPT
+        with ESMTP id S234346AbjIRPUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:20:20 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E791738
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:18:07 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-76dc77fd024so300973785a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695050286; x=1695655086; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=skILK3+RqLs29/E8NIb2upQKKLhMeBuYLpBX+o8j0o8=;
-        b=epA4f9kEjYmtgyDTAraRytjVHXA60gPqpXFLNZUI5T6CmfNozGMDgtHTsswK3xeFwN
-         1OaIl3PXjp3zhr9NqAE6nOG7HQ8FSaxPaWwdzzepp4y2otKnJRYR0ljNSEWGJUC57f69
-         8+EzWR5gOljFD37THkSHlK62BilBydq+YTXLvCRJyRuRyVS6jLambIhSM9cnk6bUzXaU
-         DD/8zo7gvasZZOWGlx7j8A/q91DMAH0eXiDRJeOxTgckOdb9dXBPpC/a/9XPINqgguT6
-         8A3KbK4V1xG0nVPOIs5OeUSwfxXBg7P621lqHwQ+yM5jTU2N3hkAE+juEg3hcIBfJV7w
-         ARbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695050286; x=1695655086;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=skILK3+RqLs29/E8NIb2upQKKLhMeBuYLpBX+o8j0o8=;
-        b=vEkQjtcmKzGzv+UPc7QBgDWc0wJM0UKjNArHcf3sBN9TEF4Qb4ieKhSuzpnqNuCsmF
-         OBsNvuHXfcmVoTTP71aCfEZYhS6D6WpBAjaxO7jKtmTKFZw2pL3lozz5O5f98QpQmgpm
-         gd7ol12HYcLUY4+FEfLe0B+ZN5afSEgg1fuY83BRHqIGhkrGoyU7lsG+fXhNTPV9tEiA
-         kPos2hsEWXyyeaSkQG6XcvhmDcy2dAvgZZELOIVps0tCdSqX7MelybnSR2zc4qb6K5ua
-         wfOWASc+0ZzSzqH0PphGiAyb77+aVz98aaAkCFjyIEnCQF+tZfZ68VF4a4wQSxpeo8/h
-         Vp7A==
-X-Gm-Message-State: AOJu0YxMhEb9afcQiBAhSqnAQM0AiW74YYnvjq9OJEnNxwmf4NjNqima
-        d79CfHk1MpeLaH4v2ABsH0802A==
-X-Google-Smtp-Source: AGHT+IEPjZK20Aqh4DOH80nyWTVB2XY8RoIapnvcyiksM3wp5qxi6JV9wSTNi2A0D4DmrBL930vlSw==
-X-Received: by 2002:ad4:458d:0:b0:63f:9aa3:867b with SMTP id x13-20020ad4458d000000b0063f9aa3867bmr9395365qvu.40.1695050286275;
-        Mon, 18 Sep 2023 08:18:06 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id r28-20020a0cb29c000000b0063d038df3f3sm3532215qve.52.2023.09.18.08.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 08:18:05 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qiG0i-0005OR-Iy;
-        Mon, 18 Sep 2023 12:18:04 -0300
-Date:   Mon, 18 Sep 2023 12:18:04 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Anish Ghulati <aghulati@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        Andrew Thornton <andrewth@google.com>
-Subject: Re: [PATCH 03/26] virt: Declare and define vfio_file_set_kvm() iff
- CONFIG_KVM is enabled
-Message-ID: <20230918151804.GH13795@ziepe.ca>
-References: <20230916003118.2540661-1-seanjc@google.com>
- <20230916003118.2540661-4-seanjc@google.com>
+        Mon, 18 Sep 2023 11:20:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB5A123;
+        Mon, 18 Sep 2023 08:19:01 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IEfb5o008143;
+        Mon, 18 Sep 2023 15:18:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=sNZugfDj0EUXzn0lGOUGppcQYeOxKSNN7aJIe/l8fAU=;
+ b=BM5TRVH1EmWNOXCgNxBmxBW19IvPEqX/nUk2xVdWXwHLinf16ZB0KImLTX+GI3InKBnb
+ 9iLk9dw4KkXjj8rXjz0s756nKi2wU3EnxX5ayj8FF/a1klYmuucKIfF6qTOteo15pTYe
+ FYIf10uVabqUMn046JPp1bfn8pnJUWffS93ONxtW2IroQFL4sC7I1oQaIuV80EMpF+eF
+ 1mZ6BEh232cPEa1wWsOIVEgswS8VSwu7Sz+CdLPO+ZZVJ6K80h4YYrJeAN9kFecCXIGE
+ fhE0P07RnZ5XzVAHaGDrdK8tHbipcPfKRr0sl5LsRuFqUPb8Uz8Zt3lPBwGjvP9veir5 VQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6nh78drg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 15:18:51 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38IFIo3i028903
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 15:18:50 GMT
+Received: from [10.216.52.36] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 18 Sep
+ 2023 08:18:48 -0700
+Message-ID: <e753bc37-5fe7-0962-00e7-2df0de49c20f@quicinc.com>
+Date:   Mon, 18 Sep 2023 20:48:44 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230916003118.2540661-4-seanjc@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: usb: typec: ucsi: Clear EVENT_PENDING bit if ucsi_send_command
+ fails
+Content-Language: en-US
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "# 5 . 16" <stable@vger.kernel.org>
+References: <1694423055-8440-1-git-send-email-quic_prashk@quicinc.com>
+ <ZP8M6zqgsLTK25PI@kuha.fi.intel.com>
+ <21d247d3-83be-ba53-c982-2ab0e2e4ffb3@quicinc.com>
+ <ZQROzNqr7fbmJC87@kuha.fi.intel.com>
+ <4e876097-aed1-2b0d-ecb4-6434add4ef26@quicinc.com>
+ <ZQRi20nC0j5c4LGI@kuha.fi.intel.com>
+ <d0c27255-fcd2-39ed-f7af-b3b79d965ddf@quicinc.com>
+ <ZQhd0qic2wGvCoUo@kuha.fi.intel.com>
+From:   Prashanth K <quic_prashk@quicinc.com>
+In-Reply-To: <ZQhd0qic2wGvCoUo@kuha.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: cwjP36aFSjAg90LUWnvfML0geSJOkLMG
+X-Proofpoint-GUID: cwjP36aFSjAg90LUWnvfML0geSJOkLMG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-18_08,2023-09-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ adultscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309180134
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 05:30:55PM -0700, Sean Christopherson wrote:
-> Hide vfio_file_set_kvm() and its unique helpers if KVM is not enabled,
-> nothing else in the kernel (or out of the kernel) should be using a
-> KVM specific helper.
+
+
+On 18-09-23 07:55 pm, Heikki Krogerus wrote:
+> On Sat, Sep 16, 2023 at 01:58:30PM +0530, Prashanth K wrote:
+>>
+>>
+>> On 15-09-23 07:27 pm, Heikki Krogerus wrote:
+>>> Hi Prashanth,
+>>>
+>>> On Fri, Sep 15, 2023 at 07:10:25PM +0530, Prashanth K wrote:
+>>>> On 15-09-23 06:02 pm, Heikki Krogerus wrote:
+>>>>> On Tue, Sep 12, 2023 at 04:37:47PM +0530, Prashanth K wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 11-09-23 06:19 pm, Heikki Krogerus wrote:
+>>>>>>> On Mon, Sep 11, 2023 at 02:34:15PM +0530, Prashanth K wrote:
+>>>>>>>> Currently if ucsi_send_command() fails, then we bail out without
+>>>>>>>> clearing EVENT_PENDING flag. So when the next connector change
+>>>>>>>> event comes, ucsi_connector_change() won't queue the con->work,
+>>>>>>>> because of which none of the new events will be processed.
+>>>>>>>>
+>>>>>>>> Fix this by clearing EVENT_PENDING flag if ucsi_send_command()
+>>>>>>>> fails.
+>>>>>>>>
+>>>>>>>> Cc: <stable@vger.kernel.org> # 5.16
+>>>>>>>> Fixes: 512df95b9432 ("usb: typec: ucsi: Better fix for missing unplug events issue")
+>>>>>>>> Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+>>>>>>>> ---
+>>>>>>>>      drivers/usb/typec/ucsi/ucsi.c | 1 +
+>>>>>>>>      1 file changed, 1 insertion(+)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+>>>>>>>> index c6dfe3d..509c67c 100644
+>>>>>>>> --- a/drivers/usb/typec/ucsi/ucsi.c
+>>>>>>>> +++ b/drivers/usb/typec/ucsi/ucsi.c
+>>>>>>>> @@ -884,6 +884,7 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+>>>>>>>>      	if (ret < 0) {
+>>>>>>>>      		dev_err(ucsi->dev, "%s: GET_CONNECTOR_STATUS failed (%d)\n",
+>>>>>>>>      			__func__, ret);
+>>>>>>>> +		clear_bit(EVENT_PENDING, &con->ucsi->flags);
+>>>>>>>>      		goto out_unlock;
+>>>>>>>>      	}
+>>>>>>>
+>>>>>>> I think it would be better to just move that label (out_unlock) above
+>>>>>>> the point where clear_bit() is already called instead of separately
+>>>>>>> calling it like that. That way the Connector Change Event will
+>>>>>>> also get acknowledged.
+>>>>>> Do we really need to ACK in this case since we didn't process the current
+>>>>>> connector change event
+>>>>>
+>>>>> You won't get the next event before the first one was ACK'd, right?
+>>>>>
+>>>>
+>>>> The spec says that we need to ACK if we received AND processed a CCI
+>>>>
+>>>> "4.5.4 Acknowledge Command Completion and/or Change Indication (R)
+>>>> This command is used to acknowledge to the PPM that the OPM received and
+>>>> processed a Command Completion and/or a Connector Change Indication."
+>>>>
+>>>> And here in this case, we have received, but not processed the event.
+>>>> So I'm not really sure what to do here in this case. If we don't send an
+>>>> ACK, then would the PPM think that OPM is not responding and reset it?
+>>>> OR would it resend the previous event again since we didn't ACK?
+>>>
+>>> Every PPM behaves differently.
+>>>
+>>> Did you actually see that happening - GET_CONNECTOR_STATUS failed? Can
+>>> you reproduce it?
+>>>
+>>
+>> Yea we actually hit the issue once where GET_CONNECTOR_STATUS failed and
+>> subsequent events didn't get queued since EVENT_PENDING wasn't cleared. Its
+>> not easily reproducible (<1%) though.
+>>
+>> [4948:kworker/0:3]UCSI: ucsi_qti_glink_write: timed out
+>> [4948:kworker/0:3]ucsi_glink soc:qcom,pmic_glink:qcom,ucsi:
+>> ucsi_handle_connector_change: GET_CONNECTOR_STATUS failed (-110)
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  drivers/vfio/vfio_main.c | 2 +-
->  include/linux/vfio.h     | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
+> Okay. It would be really interesting to know why is it failing.
+> But let's just go with this for now.
+> 
+> thanks,
+> 
 
-Patch subject should be vfio not virt
+Agreed, I'm not really sure why its failing, because its in happening 
+the lower layers. Anyways thanks for the comments and review!
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-> @@ -1388,6 +1387,7 @@ void vfio_file_set_kvm(struct file *file, struct kvm *kvm)
->  		vfio_device_file_set_kvm(file, kvm);
->  }
->  EXPORT_SYMBOL_GPL(vfio_file_set_kvm);
-> +#endif
-
-We could even put this in a symbol namespace..
-
-Jason
+Regards,
