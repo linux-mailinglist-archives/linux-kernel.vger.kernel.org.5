@@ -2,199 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C54167A45D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269A77A45DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239102AbjIRJ0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 05:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
+        id S239293AbjIRJ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239359AbjIRJZs (ORCPT
+        with ESMTP id S239313AbjIRJ0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:25:48 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DAE114
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:25:36 -0700 (PDT)
-X-UUID: 4fab43da560511eea33bb35ae8d461a2-20230918
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=pzfZTUanIfnGNAovIEVrKv/gBkq5bPK/7nqMuIgHTz0=;
-        b=NWewDNwkBZF8qsQGynUMHxAqRh16+CxBogvwAU7Qx7hrIgMjdjXDmM/23FpaNWMcEzTDlD1TPtcFpX4Zq7ZiA3s4w8woNRivaB+NVykgTKcMs4ni9lQXNqotE6u8YOc4xZx+5K/upG+vvRge7XwmePM8Mx5fVdzCGJWTgkl8GtU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:162f0a45-ffda-4b1a-8e86-bd5ff007eb4c,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:9ed827c3-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 4fab43da560511eea33bb35ae8d461a2-20230918
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2105696782; Mon, 18 Sep 2023 17:25:30 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 18 Sep 2023 17:25:29 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 18 Sep 2023 17:25:29 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n9Dy+TBz1cSy5wTZXHTvIjTzMYaVqhd1DJR5CasOuJDp63UkxqGPOoQkipScbDzQp1kp0svqNz/J0jDqaHcGcO78qTfgPyzooOQdgEdJYK6wfrcSQ4mBHzRM54yALHsKxruAWSJmkyn5YeEBeQe7vQYyZAPSafWFFi+UYDiJI34w2iMtPOLvmr/5uVBQwFCIge4+XjBgQDxgZ5WBEQM8G61abVBDMzPv7hqiyN8a0vm8nWxZ99DcqEowz/ZxEjCNFw3de8EY3UAEsz2RAtpo9DU+svwlUV/VBdvctfltZpnb8Hs+6XThEDqqwQVD8yTEnY7/buU+g3xMpwQsiPrHBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pzfZTUanIfnGNAovIEVrKv/gBkq5bPK/7nqMuIgHTz0=;
- b=HeWScu/zw29HGeREZYQ+obf/WvfZAuJZUcc5ESIZu4sAzyr1yu1gxmEaB4wL0rJ8MpNRn3o5dxdGiD1L+qN9CWT1DeagFazJamG7+Bzx4tM5W50RyNZQx/mLof0TIgQYTK7DLwxmr5nO26x8ihbp1t9HfYTTVoTuqzB5R6QvLIR4FVE/pRBAyFtO/q0kFWEsg489FLIHOERtDKK1BUWyiytd/3yr1cuYoaGRdT+qlo8He1vz9TTS4XcfwfZYsrhwNOXxJzGMpkbrHkcZj6d3ZF3XVcM0aCqpXUF/ML1l2rLeyJQq5U3XAb55KMHBpYIaJmrfRjeYxjXyNqzwbz+csg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pzfZTUanIfnGNAovIEVrKv/gBkq5bPK/7nqMuIgHTz0=;
- b=IwsxAQUrXW5tYIPKo972I1v6SUiZYQha6stzyK3MX4RPcYhUl6n0RZ+xoCqgp8VKl+RNvcSqQ96VLTsj+kEjRMOTK/eCDh+g/dD3/Fy66qHLP0KLpQaiLwz/2hARzrB+3jLUtCzVOBxDJzxsxUzbuBSUir8Y5pvWs3i8LSD14VU=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by SEZPR03MB7915.apcprd03.prod.outlook.com (2603:1096:101:187::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.24; Mon, 18 Sep
- 2023 09:25:27 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984%6]) with mapi id 15.20.6792.022; Mon, 18 Sep 2023
- 09:25:27 +0000
-From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To:     =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
-        <Shawn.Sung@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 06/11] drm/mediatek: Support alpha blending in display
- driver
-Thread-Topic: [PATCH v2 06/11] drm/mediatek: Support alpha blending in display
- driver
-Thread-Index: AQHZ6gwiF9lkCQP7EEen77wiynwUj7AgUAUA
-Date:   Mon, 18 Sep 2023 09:25:27 +0000
-Message-ID: <a8b238c575564af364c07e31556d5b1f7f9d162f.camel@mediatek.com>
-References: <20230918084207.23604-1-shawn.sung@mediatek.com>
-         <20230918084207.23604-7-shawn.sung@mediatek.com>
-In-Reply-To: <20230918084207.23604-7-shawn.sung@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEZPR03MB7915:EE_
-x-ms-office365-filtering-correlation-id: 784f50a7-d0b1-4ccc-a0c0-08dbb82931b8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: v968JVVuR5CiOdULNwJkj1Rugg5fSRq4/cdLAhqrRzJ9znkwghX4e4I5rmdY6HHWnzRlDp4FDmquOgUsUM63n8x7TZWQKBxCTYww25r3ewVDnoEm5B9kaW5AIw1sPdORkk3NLlpEymbS6cKpcnh8oBTbc5XsStjLNXhclzzHoTAcDpv0aj/KrS6N8FebOMC04KBZ5hESMEi0iJ/9nIsFHFWPlEylKMHtEjSUSYSrBxsW5Ly9y6v/iXxrgOr1RGv0eh6MbH8fOgU30Los/BgDhULYNHkEQDB272ZMu/qfGbMIEAUvCzZ0tgeTovfBESRBbAsgnzGsl3N3a211YjimFdsMfwo4zqbgzcguGP6deCyzD43Qh3GxeZWUfH0mhjKLtUkX0dOmbnybD9qwPWnqaWxrn0YC3fHqPSxJo6ghEsMnsA+HNtabcDu0ccCGJF3s34OSbRBz7wtSyUGwdqySglP8F+zjkyTOgabq2EOTOCyHoP8pKTnRCZcXugZkbWFMh5Mm6xj7TnPMguaUmO9LiF4LvUZYssQG5nef9q+fC0TUN6MX8UAt7WqEGV2dF7HgbSIhjs9TfHAQkrBMiuYcw4ngzhkHRvW6onWWpcRXfTH92msvS4OsZT6YR/jQnZUa3eCa3JjYTbebicFy9dhpCASXK1RTWpUWkkvkxbr7P6o=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(346002)(39860400002)(1800799009)(451199024)(186009)(7416002)(2906002)(8676002)(4326008)(8936002)(5660300002)(41300700001)(66446008)(54906003)(64756008)(66556008)(66476007)(76116006)(316002)(110136005)(66946007)(478600001)(122000001)(36756003)(6486002)(6506007)(6512007)(85182001)(26005)(2616005)(71200400001)(38070700005)(86362001)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UldjWmJxbUZPVDJ6Um5ocjlqUnRJaG11Q3VhY0hqcFFaYTJtaFdCaWVGajc5?=
- =?utf-8?B?eGU3a0pYbUU1Tm9JOUREZjBOdFp2bVhUckg4Ty9hK1pneUJ2TElWNDgxY1dG?=
- =?utf-8?B?c2NDc1BNeWxueFRsR2w1aThtNnlEZk1iWDJNWkwrK1hDaDlrL0I0TlJQSnht?=
- =?utf-8?B?S0VwQjhVL21HUUFRZzdLUW1Ld1djY293dHVTTDQ1UVk1TjEvbVR2VDRjUENk?=
- =?utf-8?B?UHIxYU05Y1JkelRCeXpZcDRFR09xY093Y0hlNGRxcU1iaks4Q0I1T2ZSWkdh?=
- =?utf-8?B?VXl3bkpKellTNWhyTTJ1c1dLZGVzbi9jWTJNTG1wTlZJTjlGNkVtbllOb3Z2?=
- =?utf-8?B?N01NSDBmZ09EOXV3bkpTQURZUFViaktkWmdGd0I3VHBxZFBiV0hhcDFXV1Na?=
- =?utf-8?B?ZTRMTEd1WXBUckJpa2VMSU5VN2ZGaUxoQjREOTRTSXU2cWVVZHNWSStoUC9P?=
- =?utf-8?B?aExoakY1MUlIeHRhTHlPQkxsMk5OTWFpZVNFV1JuU2w1bGpmMEhaR2hjaVAw?=
- =?utf-8?B?UncxQ2M2eHV5Vzk0aUIzbmNHVVczbWZWcm5UYWJod1RCd1pCQ3VrM3VweVFC?=
- =?utf-8?B?ZGE1by8xMGhmWG5hd1NURzlFR2ZMVHlLR3JwLzdoTE5JWC9HaU9IbmMvelR5?=
- =?utf-8?B?L1RySjloaHZEZFVTRlNkM0V4Mi9XbUNDZGIwM0lGSGNnWUlrZXZtT1F1dzdL?=
- =?utf-8?B?anA4Z1RrcGl3YUFhZVMzb3lCejVNQU1Hd0ZVMnd0dFNNeHJuUjJnVW8zY3pj?=
- =?utf-8?B?N2ZGYVFSTjdKS3lvekQ0cEZtRCs5dlJTVUw0UFpIYXNnNEN6MHpKSExWWXlz?=
- =?utf-8?B?dUZ5eGpwQkhuMXczWVVuSzlWOGk0eldNd2NDcUovWjlIeUdxQnQ3ZWVPZ0xH?=
- =?utf-8?B?QmNqRmdwbjJ5Vml0eFpDS1FSUWhxd0dJK2NsQjVtdGYrazVIcEtLUktIazVh?=
- =?utf-8?B?NlVtSGUrYjN2SW04bEU3K2R0QjBqMTFGVTlwaC9hV3RSYjE5dTRqMTh1ZG9T?=
- =?utf-8?B?VlhSYTBreGl0Sy9UTCtwM3RyaXhCWUhsY21iWnljZ3hONVNuSTdvWmNod1R3?=
- =?utf-8?B?YVg3bk5QdWlOWldVTlBtMlhvWnV3WFdxN3JUVEV2OG1LM2I1Nmp4cmh3RjFD?=
- =?utf-8?B?SVdTT0pBRmtkQ2Y1dFBQTjlhaUVQclFGeDBVbEFIUHdkNjJCbEUxLzd1WmtQ?=
- =?utf-8?B?b0FCeCtFSjhHbWlZU1l3Z1NYQVMxMjBWSnUxc3J5VHpyM1RHeWhmeHVRS0Z4?=
- =?utf-8?B?Nld4dXpQc1RRamZrTTQxSy90Q3hHMzhOZitNOFRRc0JoN3NBM3hBVGxJNTJm?=
- =?utf-8?B?NHpsSlFycldoOWppalVqNUNiUTExK1hsTUdTTHhzNkR4alNENThPZndsOHVv?=
- =?utf-8?B?dENDeFZmZXhoOGJYSmllV0VZOXpOTVY3bmNpZEdsMWFEUkMyU3ZoQWFLZEl3?=
- =?utf-8?B?SDdkVWJjSlIwc0JiMnY1eDVsNXhSclBpZFpUMFdpbStZSHZ0SWdmQmd1Qmts?=
- =?utf-8?B?UEkzd21wWjVLWGlLc3UrZUhOUDFyTE1icVBiblhKckY2T2FaU3ZPaEhXUXB5?=
- =?utf-8?B?bStTTHlZZ0w2czNEdEtpQk5xSk9Id3pkeVJyU0I0bFhjMWZBYVdNcS8xdGFv?=
- =?utf-8?B?ZFJuQjFsVEVVTnk2aENxN2I5RmxHYkpCeWtaLzFlQWFPenRxcTRrQXlMZk03?=
- =?utf-8?B?aDlDMG94N1l3N0d6dW1SczlNakdDbXFTYWhDbmJGTlBETXEvcHVEK3JzS214?=
- =?utf-8?B?SzYwckdFZnJ5dk0zSGxHZXFUdFlGaHVIL2RNbUpSamVaVk5ickFxZ1N5Rzh4?=
- =?utf-8?B?NjBVdjJpdUt3SDBvL0Z0dndpSVV6Q1JQaWU4dlZtT1JNbVdXSTNMUVhCOG0y?=
- =?utf-8?B?T2h6c0pnVmEzdXFWc25Cdk16NE50OFM3aWprWU9FTVBxeFF5R2lRYWRLRm5r?=
- =?utf-8?B?QXR4bDg0UVY3d3JnU2lMK3JvL1VOZFpzbkxKQXdVN3NkU3R4Q0lyYWNhdXRW?=
- =?utf-8?B?R1dTdHJyK01ENldRSnJlRjZVUXhzNEZyTWh4dUd6bHppVWt1ZGsvUFdUVkhD?=
- =?utf-8?B?bWRuYzR6aTVDcWhGZGoxRnNzeXc4Y1dQTENWREl1NjE5dWpHVTFGWjVtMXBh?=
- =?utf-8?B?ZW0vWU81Um5oSEJzaWw1RjBhSTVxVmFTQjFKZ0hqZkYzSWhUUStpZkkreEI2?=
- =?utf-8?B?YVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0AD14ED4BA12FB46B096F2B11392840B@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 18 Sep 2023 05:26:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0F110D;
+        Mon, 18 Sep 2023 02:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695029170; x=1726565170;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=m3S2iJ6j3tD+50xgQRW0LmCvHsaXc0Bmt3ebkzB3hxc=;
+  b=jFyqJg82kEzW4hOKu4XIr8gI7MTQ+ddLMbJ8Wn3LcPgKS1Vb6QD3vFLd
+   TERxrpqkPhbN8ZDeBTd7FTJCE45nayKH2YcXPF6V/AMwX+IhEr9TyHe8E
+   XpsK2Xjg3RR0Xyae/ecWQg5uUtp/BbgpI7iUxbykWpIgRWevrtMYW9YAL
+   h3sC44DiML6ShKK2MCgust/LbcS/hKMXhvULFP/obpgwieGCJqJiSuwTP
+   Zkp1TAMme91Hkcr4/4Kxoe1frTJoNKY2oTYPf4A6JpbaaCF35ahA2XhRU
+   gfDUSCmBeO8N8GTcvdRmF6Wvt+Okp6IlnzxbOzHBy/xH1k/+YA4a95hjV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="383430574"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="383430574"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 02:26:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="811288402"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="811288402"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 18 Sep 2023 02:26:06 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qiAW4-0005zN-0S;
+        Mon, 18 Sep 2023 09:26:04 +0000
+Date:   Mon, 18 Sep 2023 17:25:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Paul Durrant <pdurrant@amazon.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>, x86@kernel.org
+Subject: Re: [PATCH 7/8] KVM: xen: prepare for using 'default' vcpu_info
+Message-ID: <202309181725.cpTHcjo6-lkp@intel.com>
+References: <20230914084946.200043-8-paul@xen.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 784f50a7-d0b1-4ccc-a0c0-08dbb82931b8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2023 09:25:27.0332
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /bBv4YTLBmjkhuwB7zPEDebfoBAVZdDoL7WryFRnuf/Uh33mgTZ324mOnigI+JqreXtKgYeoLoVk4qcpImhVyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB7915
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914084946.200043-8-paul@xen.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaWFvLWNoaWVuOg0KDQpPbiBNb24sIDIwMjMtMDktMTggYXQgMTY6NDIgKzA4MDAsIEhz
-aWFvIENoaWVuIFN1bmcgd3JvdGU6DQo+IFN1cHBvcnQgYWxwaGEgYmxlbmRpbmcgYnkgYWRkaW5n
-IGNvcnJlY3QgYmxlbmQgbW9kZSBhbmQNCj4gYWxwaGEgcHJvcGVydHkgaW4gcGxhbmUgaW5pdGlh
-bGl6YXRpb24uDQo+IA0KPiBSZXZpZXdlZC1ieTogQW5nZWxvR2lvYWNjaGlubyBEZWwgUmVnbm8g
-PA0KPiBhbmdlbG9naW9hY2NoaW5vLmRlbHJlZ25vQGNvbGxhYm9yYS5jb20+DQo+IFNpZ25lZC1v
-ZmYtYnk6IEhzaWFvIENoaWVuIFN1bmcgPHNoYXduLnN1bmdAbWVkaWF0ZWsuY29tPg0KPiAtLS0N
-Cj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX3BsYW5lLmMgfCAxMSArKysrKysr
-KysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9wbGFuZS5jDQo+IGIvZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fcGxhbmUuYw0KPiBpbmRleCBkYjJmNzBhZTA2MGQu
-LmY4N2NmNTZmYjg0NiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
-a19kcm1fcGxhbmUuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9w
-bGFuZS5jDQo+IEBAIC0zMDEsNiArMzAxLDkgQEAgaW50IG10a19wbGFuZV9pbml0KHN0cnVjdCBk
-cm1fZGV2aWNlICpkZXYsIHN0cnVjdA0KPiBkcm1fcGxhbmUgKnBsYW5lLA0KPiAgCQkgICBzaXpl
-X3QgbnVtX2Zvcm1hdHMpDQo+ICB7DQo+ICAJaW50IGVycjsNCj4gKwl1MzIgYmxlbmRfbW9kZSA9
-IEJJVChEUk1fTU9ERV9CTEVORF9QSVhFTF9OT05FKSB8DQo+ICsJCQkgQklUKERSTV9NT0RFX0JM
-RU5EX1BSRU1VTFRJKSAgIHwNCj4gKwkJCSBCSVQoRFJNX01PREVfQkxFTkRfQ09WRVJBR0UpOw0K
-PiAgDQo+ICAJaWYgKCFmb3JtYXRzIHx8ICFudW1fZm9ybWF0cykgew0KPiAgCQlEUk1fRVJST1Io
-Im5vIGZvcm1hdHMgZm9yIHBsYW5lXG4iKTsNCj4gQEAgLTMyMyw2ICszMjYsMTQgQEAgaW50IG10
-a19wbGFuZV9pbml0KHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsDQo+IHN0cnVjdCBkcm1fcGxhbmUg
-KnBsYW5lLA0KPiAgCQkJRFJNX0lORk8oIkNyZWF0ZSByb3RhdGlvbiBwcm9wZXJ0eSBmYWlsZWRc
-biIpOw0KPiAgCX0NCj4gIA0KPiArCWVyciA9IGRybV9wbGFuZV9jcmVhdGVfYWxwaGFfcHJvcGVy
-dHkocGxhbmUpOw0KPiArCWlmIChlcnIpDQo+ICsJCURSTV9FUlJPUigiZmFpbGVkIHRvIGNyZWF0
-ZSBwcm9wZXJ0eTogYWxwaGFcbiIpOw0KPiArDQo+ICsJZXJyID0gZHJtX3BsYW5lX2NyZWF0ZV9i
-bGVuZF9tb2RlX3Byb3BlcnR5KHBsYW5lLCBibGVuZF9tb2RlKTsNCj4gKwlpZiAoZXJyKQ0KPiAr
-CQlEUk1fRVJST1IoImZhaWxlZCB0byBjcmVhdGUgcHJvcGVydHk6IGJsZW5kX21vZGVcbiIpOw0K
-DQpEbyBub3QgYWx3YXlzIGVuYWJsZSBhbHBoYSBmdW5jdGlvbi4gRW5hYmxlIGl0IGRlcGVuZCBv
-biBoYXJkd2FyZQ0KY2FwYWJpbGl0eS4NCg0KUmVnYXJkcywNCkNLDQoNCj4gKw0KPiAgCWRybV9w
-bGFuZV9oZWxwZXJfYWRkKHBsYW5lLCAmbXRrX3BsYW5lX2hlbHBlcl9mdW5jcyk7DQo+ICANCj4g
-IAlyZXR1cm4gMDsNCg==
+Hi Paul,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on kvm/queue]
+[also build test WARNING on mst-vhost/linux-next linus/master v6.6-rc2 next-20230918]
+[cannot apply to kvm/linux-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Paul-Durrant/KVM-pfncache-add-a-map-helper-function/20230914-171017
+base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
+patch link:    https://lore.kernel.org/r/20230914084946.200043-8-paul%40xen.org
+patch subject: [PATCH 7/8] KVM: xen: prepare for using 'default' vcpu_info
+config: i386-randconfig-063-20230918 (https://download.01.org/0day-ci/archive/20230918/202309181725.cpTHcjo6-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230918/202309181725.cpTHcjo6-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309181725.cpTHcjo6-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> arch/x86/kvm/xen.c:492:25: sparse: sparse: symbol 'get_vcpu_info_cache' was not declared. Should it be static?
+   arch/x86/kvm/xen.c:441:9: sparse: sparse: context imbalance in 'kvm_xen_update_runstate_guest' - unexpected unlock
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
