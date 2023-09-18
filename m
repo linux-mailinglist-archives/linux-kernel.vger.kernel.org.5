@@ -2,88 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBDA7A48C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCB37A48C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241355AbjIRLvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
+        id S241250AbjIRLwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbjIRLub (ORCPT
+        with ESMTP id S241745AbjIRLwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:50:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B53E3;
-        Mon, 18 Sep 2023 04:50:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B14C7C433C7;
-        Mon, 18 Sep 2023 11:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695037824;
-        bh=lLmkRmQrVDMuWLiRnc6WZi6wkS4qkGabF5MldHO9ynE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XMsUM/6PTgmQgGOOp+k7DuQuDMgisWtNdzkwmPbc9znYTejBeA+hsBwQw3bKOTREQ
-         gw/88uAwnjD/eBg5/DaeyqOfGKRvuutbX4nMRIL3elp/RoyhlzIPMeRFx+BTfIVpEA
-         lGC7Y/mu+YyXSR3UY7IJF2t3xHwj26jtDMSa2kNablJvBh402XtE76bGbdXeYxTvky
-         WcSEacr2gCfOqDXYr6jwORaRCG2EFYBzeqyvdsgPUVWpYbJ7YDaxEEWDGgo88Xtpc0
-         xT2b6SQzQyW5I0JAzykFpg8Ml9NRGr2tfwZkXFgUgZQpXdgf6wuy7SqgKWd7eQg0Po
-         KWftbkmHd8jCA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 909DFE11F41;
-        Mon, 18 Sep 2023 11:50:24 +0000 (UTC)
+        Mon, 18 Sep 2023 07:52:31 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EAFE1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:52:26 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IBbd9Y008356;
+        Mon, 18 Sep 2023 11:52:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : date :
+ message-id : content-type : to : cc : content-transfer-encoding :
+ mime-version; s=pp1; bh=zeil5EHqXdkAJiDROyv+aJGQitO2NHr1r/cNwSoEua8=;
+ b=o2styL2jwOota/j2/3AFMQxF8MeC1Af+lVzYDoVd8tB/ehr4ohSpcC60/XoekyTASgvb
+ GhZE8Q/SM4x/Ia6yfg0VZWLUP0CR8GF6FzPZBmaL/8HLpJv5eFrBTxvNnir5RO6sfT0l
+ x+Z68VdW+HZ0T9C/thPSsg2cVubAL1xQ3uVYUbBBAY35zObZFqySQ89+V28s6bmhFBbx
+ UIvVu38pDQ84q6zl1V7MXMwzaO0MjDV6xMfne/MWWtuqz+0uuLbPKSWxmRd1nMMGxRyu
+ 1kkz/3Pniy9FrcRXBqvmuwaAc/KRr14sO5oo+pR78KRol2bplTPyxAFLtM2cJEQ5IBV0 hQ== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t6nks8htp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 11:52:06 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38IB7LpM010124;
+        Mon, 18 Sep 2023 11:52:06 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t5rwjsy79-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 11:52:05 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38IBq4Ix20185692
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Sep 2023 11:52:04 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3977020040;
+        Mon, 18 Sep 2023 11:52:04 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09C4D2004B;
+        Mon, 18 Sep 2023 11:52:04 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 18 Sep 2023 11:52:03 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH v2 0/2] iommu/virtio: Enable IOMMU_CAP_DERRED_FLUSH
+Date:   Mon, 18 Sep 2023 13:51:42 +0200
+Message-Id: <20230918-viommu-sync-map-v2-0-f33767f6cf7a@linux.ibm.com>
 Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAM45CGUC/3WNQQ6CMBBFr0Jm7ZC2ilFX3MOwKEMrk9iWtNJAC
+ He3snf5XvLf3yCZyCbBo9ogmsyJgy+gThXQqP3LIA+FQQl1FjfVYObg3Ixp9YROTyh7K4gudiD
+ ZQFlN0VhejuKzKzxy+oS4HgdZ/uz/VpYosLn2A1mt1d1Q+2Y/LzX3rqbgoNv3/QsVhUf6sgAAA
+ A==
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2257;
+ i=schnelle@linux.ibm.com; h=from:subject:message-id;
+ bh=hYfpjQ4hgqRYixGYa10FkDDypLezqIMzaeNq0Xgplxg=;
+ b=owGbwMvMwCH2Wz534YHOJ2GMp9WSGFI5LC9Waj443tmo+2TZ7kUsVx+1sKaEXrDd4n6zlumrv
+ H300rLTHaUsDGIcDLJiiiyLupz91hVMMd0T1N8BM4eVCWQIAxenAEzkZgnDP33OjMadE662RnWm
+ CkXe0kz1YN798qXgpVTx80f/r1r3SYaRofu/bWfS23cSflMtdzNPXRAW96Y+nb1blHnZ050zhGf
+ uYwQA
+X-Developer-Key: i=schnelle@linux.ibm.com; a=openpgp;
+ fpr=9DB000B2D2752030A5F72DDCAFE43F15E8C26090
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XWH3eRYEFscA15lREfSDhsBGfnCuo69e
+X-Proofpoint-ORIG-GUID: XWH3eRYEFscA15lREfSDhsBGfnCuo69e
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/5] mptcp: fix stalled connections
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169503782458.2272.14155670573882201410.git-patchwork-notify@kernel.org>
-Date:   Mon, 18 Sep 2023 11:50:24 +0000
-References: <20230916-upstream-net-20230915-mptcp-hanging-conn-v1-0-05d1a8b851a8@tessares.net>
-In-Reply-To: <20230916-upstream-net-20230915-mptcp-hanging-conn-v1-0-05d1a8b851a8@tessares.net>
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     mptcp@lists.linux.dev, martineau@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        dcaratti@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-18_04,2023-09-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ suspectscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
+ lowpriorityscore=0 impostorscore=0 mlxscore=0 bulkscore=0 clxscore=1011
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309180101
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi All,
 
-This series was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+Previously I used virtio-iommu as a non-s390x test vehicle[0] for the
+single queue flushing scheme introduced by my s390x DMA API conversion
+series[1]. For this I modified virtio-iommu to a) use .iotlb_sync_map
+and b) enable IOMMU_CAP_DEFERRED_FLUSH. It turned out that deferred
+flush and even just the introduction of ops->iotlb_sync_map yield
+performance uplift[2] even with per-CPU queues. So here is a small
+series of these two changes. This still applies on top of my series[1]
+because its first patch titled "iommu: Allow .iotlb_sync_map to fail and
+handle s390's -ENOMEM return" enable ops->iotlb_sync_map to return
+errors and virtio-iommu's sync can fail. This also makes sure there is
+no merge conflict with that series.
 
-On Sat, 16 Sep 2023 12:52:44 +0200 you wrote:
-> Daire reported a few issues with MPTCP where some connections were
-> stalled in different states. Paolo did a great job fixing them.
-> 
-> Patch 1 fixes bogus receive window shrinkage with multiple subflows. Due
-> to a race condition and unlucky circumstances, that may lead to
-> TCP-level window shrinkage, and the connection being stalled on the
-> sender end.
-> 
-> [...]
+The code is also available on the b4/viommu-deferred-flush branch of my
+kernel.org git repository[3]
 
-Here is the summary with links:
-  - [net,1/5] mptcp: fix bogus receive window shrinkage with multiple subflows
-    https://git.kernel.org/netdev/net/c/6bec041147a2
-  - [net,2/5] mptcp: move __mptcp_error_report in protocol.c
-    https://git.kernel.org/netdev/net/c/d5fbeff1ab81
-  - [net,3/5] mptcp: process pending subflow error on close
-    https://git.kernel.org/netdev/net/c/9f1a98813b4b
-  - [net,4/5] mptcp: rename timer related helper to less confusing names
-    https://git.kernel.org/netdev/net/c/f6909dc1c1f4
-  - [net,5/5] mptcp: fix dangling connection hang-up
-    https://git.kernel.org/netdev/net/c/27e5ccc2d5a5
+Thanks,
+Niklas
 
-You are awesome, thank you!
+[0] https://lore.kernel.org/lkml/20230726111433.1105665-1-schnelle@linux.ibm.com/
+[1] https://lore.kernel.org/lkml/20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com/
+[2] https://lore.kernel.org/lkml/20230802123612.GA6142@myrica/
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=b4/viommu-deferred-flush
+
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+---
+Changes in v2:
+- Check for viommu == NULL in viommu_sync_req() instead of for
+  0 endpoints in ops (Jean-Philippe)
+- Added comment where viommu can be NULL (me)
+- Link to v1: https://lore.kernel.org/r/20230825-viommu-sync-map-v1-0-56bdcfaa29ec@linux.ibm.com
+
+---
+Niklas Schnelle (2):
+      iommu/virtio: Make use of ops->iotlb_sync_map
+      iommu/virtio: Add ops->flush_iotlb_all and enable deferred flush
+
+ drivers/iommu/virtio-iommu.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
+---
+base-commit: e165388f6d32dc8a49f49ef6e80584ad3def3d78
+change-id: 20230825-viommu-sync-map-1bf0cc4fdc15
+
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Niklas Schnelle
+Linux on Z Development
 
+IBM Deutschland Research & Development GmbH
+Vorsitzender des Aufsichtsrats: Gregor Pillen
+Geschäftsführung: David Faller
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM Data Privacy Statement - https://www.ibm.com/privacy 
 
