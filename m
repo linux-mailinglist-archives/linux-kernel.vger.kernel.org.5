@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9B07A540A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E5E7A5413
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbjIRUYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S229956AbjIRU1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbjIRUYo (ORCPT
+        with ESMTP id S229559AbjIRU1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:24:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571058F;
-        Mon, 18 Sep 2023 13:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695068678; x=1726604678;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cD9aWdh0g+KCQJtJTKordl0I6iSumVWkrBzStxTXKAw=;
-  b=Yj+lFZuos7ASvmLA627iGkQqXDm4qLAS+exmhVsXeELWrBxV4+CvrMiJ
-   t9i1bSNHZLM7BCyJR9sw2EfYPS/dMcxhgXCC/oxwc69ZkqmCtu2QO/Ii9
-   kTwJb6PnmJi57X8uP9Um/jvxRAJnPakbfAZ2it53CkhBVliBR9Xkgt2yi
-   TxJVIlpCsrSDeb1R5Xx+px8ANCKBKtnra+QPIc6jozw4Iex0XaQaInfN9
-   lBi2C24uY4O3FwD9NEuFV0ZYrMAPE4/XdK5AOp+6ddgRgF7NRtl4zvPNr
-   JIkd3TJZVem8nuOH2RvEKq+un8isjsy5DHg1FG9kCTMJsi7KLia9clvTW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="466110213"
-X-IronPort-AV: E=Sophos;i="6.02,157,1688454000"; 
-   d="scan'208";a="466110213"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 13:24:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="775263452"
-X-IronPort-AV: E=Sophos;i="6.02,157,1688454000"; 
-   d="scan'208";a="775263452"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 18 Sep 2023 13:24:36 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiKnJ-0006RF-2x;
-        Mon, 18 Sep 2023 20:24:33 +0000
-Date:   Tue, 19 Sep 2023 04:24:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Max Kellermann <max.kellermann@ionos.com>, jack@suse.cz,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, amir73il@gmail.com,
-        max.kellermann@ionos.com
-Subject: Re: [PATCH 4/4] arch: register inotify_add_watch_at
-Message-ID: <202309190447.Md4xeYhu-lkp@intel.com>
-References: <20230918123217.932179-4-max.kellermann@ionos.com>
+        Mon, 18 Sep 2023 16:27:44 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8556E116;
+        Mon, 18 Sep 2023 13:27:38 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IK7O5V029990;
+        Mon, 18 Sep 2023 20:27:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ACVw4rp0FamgaBhcqjxntg9e4OvnXiwruT7sOlPwj8I=;
+ b=UrTuqvJ617mOQgwtl3uppx9k3PcN3wt97BS3N+LPAyqnXuanvHias2rCjRcxrCH2R0np
+ 0HKEeGbEDTy7IfELI1b7E6lWWgzk0TU5NhEu+nHsM11fK+6D2eRNJ9rxfgxUgBZ6Q/NS
+ Meyen7C+Jkh8N+bLiYOw0s/ZQBaFFIFq6FoTtdt+ILDEgoJMQaPwepg6wwZhzhaJfjPa
+ 3XyLx3VkwHivbRYmCqqjRtBpA70tmm/unZEt73hL2L07GYfoPSOShij9BCB+IyHO9qCg
+ NsTvMhbd8Rx7jQ/ShOY1iqfdm6L6TI+WnY6iX0R98tzIcEVOwVDI4ndtlS5P4RTrUWQ3 Kg== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6mts9apr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 20:27:07 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38IKR6jr005970
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 20:27:06 GMT
+Received: from [10.110.125.66] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 18 Sep
+ 2023 13:27:06 -0700
+Message-ID: <64760d6e-10f4-4108-d467-f40289a1c6b4@quicinc.com>
+Date:   Mon, 18 Sep 2023 13:27:05 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918123217.932179-4-max.kellermann@ionos.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 4/9] drm/panel: nv3052c: Wait before entering sleep
+ mode
+Content-Language: en-US
+To:     John Watts <contact@jookia.org>, <dri-devel@lists.freedesktop.org>
+CC:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230918125853.2249187-1-contact@jookia.org>
+ <20230918125853.2249187-5-contact@jookia.org>
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20230918125853.2249187-5-contact@jookia.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: AiiOecIg-oIqUSVsEc1jm7-2K1ue1XDx
+X-Proofpoint-ORIG-GUID: AiiOecIg-oIqUSVsEc1jm7-2K1ue1XDx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-18_09,2023-09-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309180178
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max,
 
-kernel test robot noticed the following build errors:
 
-[auto build test ERROR on tip/x86/asm]
-[also build test ERROR on linus/master v6.6-rc2]
-[cannot apply to jack-fs/fsnotify arm64/for-next/core next-20230918]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On 9/18/2023 5:58 AM, John Watts wrote:
+> The panel needs us to wait 120ms between exiting and entering sleep.
+> Guarantee that by always waiting 150ms before entering sleep mode.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/inotify_user-move-code-to-do_inotify_add_watch/20230918-203410
-base:   tip/x86/asm
-patch link:    https://lore.kernel.org/r/20230918123217.932179-4-max.kellermann%40ionos.com
-patch subject: [PATCH 4/4] arch: register inotify_add_watch_at
-config: openrisc-allnoconfig (https://download.01.org/0day-ci/archive/20230919/202309190447.Md4xeYhu-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309190447.Md4xeYhu-lkp@intel.com/reproduce)
+Hi John,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309190447.Md4xeYhu-lkp@intel.com/
+Same question as the last patch -- is this a fix for something?
 
-All errors (new ones prefixed by >>):
+Thanks,
 
->> or1k-linux-ld: arch/openrisc/kernel/sys_call_table.o:(.data+0x718): undefined reference to `sys_inotify_add_watch_at'
+Jessica Zhang
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> Signed-off-by: John Watts <contact@jookia.org>
+> ---
+>   drivers/gpu/drm/panel/panel-newvision-nv3052c.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
+> index 2526b123b1f5..307335d0f1fc 100644
+> --- a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
+> +++ b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
+> @@ -289,6 +289,9 @@ static int nv3052c_unprepare(struct drm_panel *panel)
+>   	struct mipi_dbi *dbi = &priv->dbi;
+>   	int err;
+>   
+> +	/* Wait 150ms in case we just exited sleep mode */
+> +	msleep(150);
+> +
+>   	err = mipi_dbi_command(dbi, MIPI_DCS_ENTER_SLEEP_MODE);
+>   	if (err)
+>   		dev_err(priv->dev, "Unable to enter sleep mode: %d\n", err);
+> -- 
+> 2.42.0
+> 
