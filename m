@@ -2,91 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 342737A526E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20DB7A5273
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbjIRS6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 14:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
+        id S229870AbjIRS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 14:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbjIRS57 (ORCPT
+        with ESMTP id S229839AbjIRS6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 14:57:59 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED6B10D;
-        Mon, 18 Sep 2023 11:57:52 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c44c0f9138so19316245ad.2;
-        Mon, 18 Sep 2023 11:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695063471; x=1695668271; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LQDoCkknityzKxYLZnoGn22QkefMP1I66BO9eL96RWg=;
-        b=DX44+TkfJEkrRIvfFqd9Zdwn5DZ8gInosV7cROO0uElsTlCV89+H7JT4Pbul457jZT
-         EMXQysi1yJjdUQeFd644wJUDCohAlNJ1mT0lxoQhiJwvxjJeQDcJgplo3PBJTSA1iI9G
-         3btEyg8x2EsG9AeJ3jphxKuhPtZlRETAj00qOpiT1TC8lFrytHT7ObcJgEPf4PSp8XJ9
-         CzgE6tVmncuHlDpcon+jLI7id6Ld14Pyi5R+WO6bqlWNVpBo9Tu0IBMNyr5AD5G8DBbU
-         qvPCEbi3bmusYMJ/ceFgnSd07mJmmTfkFkUlr6tBLcafMNb1zJbPSYwuil24+HzjQHzw
-         Bv7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695063471; x=1695668271;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LQDoCkknityzKxYLZnoGn22QkefMP1I66BO9eL96RWg=;
-        b=nAdHaOT6mSdUlcEFTldTupz8V4R80fS+vVHrOmizdx+CD7x6K9YDg4Basay8NFmJPy
-         EZT4U4HDaO/w/B71HGSmU5BbEey8vLLFqfaRsVqpJstf0/k5UlZxts/R6KasiL8iZOFw
-         5XPSc1EDNhp//WB+DW6dE1xIvAUHXGiGiYThSF5d2R+1MiheiPC5Wr+qXQURW0fDKMu0
-         I43QxLvHar6dydNoAGnMlVWEh1bnGV1N7U1ji5LY0CNnbE8GHxKaWPYLtJA6Na4Y4lix
-         ftWj8MGKEMm4XMMhiG7HguvMNsN1z+kbZDg9djFOvAWjKo+JiGYI0LBwz2ipCsyHefyR
-         XaKw==
-X-Gm-Message-State: AOJu0YwbAgWm+l1dZUn9Ax9TNKmrPRfSGVET6jgc/L4EDGgyKkv9TkiW
-        DRHzXwvDYBnEEZxZbbdyekc=
-X-Google-Smtp-Source: AGHT+IFXSRZjXV7Qeq0rPe1QSZNvckH3pxdhiyDsqIGPtj0hDRufrXVyv4PtUXuAU/0CElPFMDJUKg==
-X-Received: by 2002:a17:902:c404:b0:1c3:1f0c:fb82 with SMTP id k4-20020a170902c40400b001c31f0cfb82mr8807898plk.41.1695063471578;
-        Mon, 18 Sep 2023 11:57:51 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id q21-20020a170902bd9500b001c1f016015esm8597114pls.84.2023.09.18.11.57.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 11:57:51 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 18 Sep 2023 08:57:49 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Kamalesh Babulal <kamalesh.babulal@oracle.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] cgroup: Check for ret during cgroup1_base_files cft
- addition
-Message-ID: <ZQidrVijM8g6tdBC@slm.duckdns.org>
-References: <96694dfc5f4caf4d84a740c3b18b0a456c9ff522.1694501024.git.kamalesh.babulal@oracle.com>
+        Mon, 18 Sep 2023 14:58:42 -0400
+Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BDC116
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 11:58:36 -0700 (PDT)
+Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
+        id 0F2F0C25F823; Mon, 18 Sep 2023 11:58:22 -0700 (PDT)
+From:   Stefan Roesch <shr@devkernel.io>
+To:     kernel-team@fb.com
+Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
+        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 0/4] Smart scanning mode for KSM
+Date:   Mon, 18 Sep 2023 11:58:12 -0700
+Message-Id: <20230918185816.1518366-1-shr@devkernel.io>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96694dfc5f4caf4d84a740c3b18b0a456c9ff522.1694501024.git.kamalesh.babulal@oracle.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_NEUTRAL,
+        TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:34:34PM +0530, Kamalesh Babulal wrote:
-> There is no check for possible failure while populating
-> cgroup1_base_files cft in css_populate_dir(), like its cgroup v2 counter
-> parts cgroup_{base,psi}_files.  In case of failure, the cgroup might not
-> be set up right.  Add ret value check to return on failure.
-> 
-> Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
+This patch series adds "smart scanning" for KSM.
 
-Applied to cgroup/for-6.7 with double spaces removed.
+What is smart scanning?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+KSM evaluates all the candidate pages for each scan. It does not use hist=
+oric
+information from previous scans. This has the effect that candidate pages=
+ that
+couldn't be used for KSM de-duplication continue to be evaluated for each=
+ scan.
 
-Thanks.
+The idea of "smart scanning" is to keep historic information. With the hi=
+storic
+information we can temporarily skip the candidate page for one or several=
+ scans.
 
--- 
-tejun
+Details:
+=3D=3D=3D=3D=3D=3D=3D=3D
+"Smart scanning" is to keep two small counters to store if the page has b=
+een
+used for KSM. One counter stores how often we already tried to use the pa=
+ge for
+KSM and the other counter stores when a page will be used as a candidate =
+page
+again.
+
+How often we skip the candidate page depends how often a page failed KSM
+de-duplication. The code skips a maximum of 8 times. During testing this =
+has
+shown to be a good compromise for different workloads.
+
+New sysfs knob:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Smart scanning is not enabled by default. With /sys/kernel/mm/ksm/smart_s=
+can
+smart scanning can be enabled.
+
+Monitoring:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+To monitor how effective smart scanning is a new sysfs knob has been intr=
+oduced.
+/sys/kernel/mm/pages_skipped report how many pages have been skipped by s=
+mart
+scanning.
+
+Results:
+=3D=3D=3D=3D=3D=3D=3D=3D
+- Various workloads have shown a 20% - 25% reduction in page scans
+  For the instagram workload for instance, the number of pages scanned ha=
+s been
+  reduced from over 20M pages per scan to less than 15M pages.
+- Less pages scans also resulted in an overall higher de-duplication rate=
+ as
+  some shorter lived pages could be de-duplicated additionally
+- Less pages scanned allows to reduce the pages_to_scan parameter
+  and this resulted in  a 25% reduction in terms of CPU.
+- The improvements have been observed for workloads that enable KSM with
+  madvise as well as prctl
+
+
+Changes:
+  - V2:
+    - Renamed function inc_skip_age() to skip_age()
+    - Added comment to skip_age() function
+    - Renamed function skip_rmap_item() to should_skip_rmap_item()
+    - Added more comments to should_skip_rmap_item function
+    - Added explicit modification of age with overflow check
+
+
+
+Stefan Roesch (4):
+  mm/ksm: add "smart" page scanning mode
+  mm/ksm: add pages_skipped metric
+  mm/ksm: document smart scan mode
+  mm/ksm: document pages_skipped sysfs knob
+
+ Documentation/admin-guide/mm/ksm.rst |  11 +++
+ mm/ksm.c                             | 120 +++++++++++++++++++++++++++
+ 2 files changed, 131 insertions(+)
+
+
+base-commit: 15bcc9730fcd7526a3b92eff105d6701767a53bb
+--=20
+2.39.3
+
