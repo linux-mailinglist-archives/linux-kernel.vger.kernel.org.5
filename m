@@ -2,181 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B497A50DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB907A50DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjIRRWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
+        id S230059AbjIRRXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjIRRV6 (ORCPT
+        with ESMTP id S229973AbjIRRXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:21:58 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D76FA;
-        Mon, 18 Sep 2023 10:21:52 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IEPn2i017417;
-        Mon, 18 Sep 2023 17:21:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=qcppdkim1;
- bh=cS+wpZ5V56K6I1xkmbCKM44QVguTfU3WjZmElYRFn1U=;
- b=kvtxfzLOp1GSqAV/VfcwV0c1voqGpNZziks9IPDwRwhdxuqSidzrlywqmYAq6m3yp2sX
- YITBS/aQbUuJBitskLKuZwAuOVc3DTSPFAHsbDWb9mKbgGZxI5DEkj4ZnL2CRL61fnJ+
- dOftVK7Q+bupZJrNx5E8IFPbvKIHn/7ZdOF/T06yPX5ZOHv0bsfOx2dEG4Lv9nlGE9ag
- /xqQAomXQlIq/7ofqpB5rtAq2P/g30dANeGCsLSuT1kjjYg5eQ3jNn9u1pJb+2yMKH/t
- 6teuJQVZfDDPSJRoNaO73res34PXW0cazOBeTvCH1bxiPtPS4VSiHgAwGPp22eq74KbP Fw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6pmq0pd5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 17:21:43 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38IHLgwO019030
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 17:21:42 GMT
-Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 18 Sep
- 2023 10:21:42 -0700
-From:   Oza Pawandeep <quic_poza@quicinc.com>
-To:     <sudeep.holla@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
-CC:     Oza Pawandeep <quic_poza@quicinc.com>
-Subject: [PATCH v8] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
-Date:   Mon, 18 Sep 2023 10:21:40 -0700
-Message-ID: <20230918172140.2825357-1-quic_poza@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 18 Sep 2023 13:23:09 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF95116
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:23:03 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0AC3D5C0080;
+        Mon, 18 Sep 2023 13:23:01 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 18 Sep 2023 13:23:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1695057781; x=1695144181; bh=jV
+        QBYyUTJJ4XZImO4TIi7G98RVRFmRGFf34VYApWKsE=; b=DtNkukzIOJ62UAnf6C
+        KwefgWfUIwqrKygEjFOrzSE3ooTaNAtV3WPx3IUoER9uDpPOU3K637wOPoNWRBTg
+        /eA72QSO5wTidirja8BeVTr396neEnId0eb4BWPMtw7qB4h7m3r3LuHY9gJihqPN
+        LsHfvGYDREabYoeLTqFMKzogxqu75tA1XxuTz+g7sVYv4aRdIFBOkHDRTgK3lRuo
+        PrkmPZyeOtHA02FiVZk1S4p7KDohNX8vJU1wns/ixbvDdxJboHggxZZrvgOHIej7
+        KvUC5wn5BzIncIjd24ezQTjG4vye+uMSjZd778L+Fd5BXr4QTeFQPxiGJ5M/UnUY
+        sGig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695057781; x=1695144181; bh=jVQBYyUTJJ4XZ
+        ImO4TIi7G98RVRFmRGFf34VYApWKsE=; b=LCR516+Mdbgg4foFRNqTUNuQXxt5C
+        AmY0ru7m8gWXUjXtAy/GcW/7mdAm6F1jtfQh0UlGMXlI6u0vowkU4Bqg+SE7b7HV
+        ZvXtm6QuTl/0BqdGp4Qdq3kaJKNWnRB8YSaKXFWRZgQG5UEKcljMvvmPmUA6KktS
+        NElPWfSygEe/PYsT1lN899qYhZxSaXH7H74xoFhpiFQDKnf2/9+Yk7M+kwGiIEbH
+        WOsPeqo8VGxzJqiQtai+sBmlzaw9phR/TXNCAm86QAAwBzwIKPyu82kcmB13jEgG
+        0oo/33O02n/E9d4vbYX30A+CSkAKcWiLuo9PPGAzQHyqYe0aDCv8EkDNA==
+X-ME-Sender: <xms:dIcIZUgO7JLkw9h0k3tpTZr9EuG0ZKuZqljbnDvi04IjLirO3eOutA>
+    <xme:dIcIZdDgrIWoiPgQkJXhzHiM_qOwRWTV7dmOjpMzuvhCe0kOGWq24yC9Zi8GYPT4B
+    0APNlBmak5GotYcXSE>
+X-ME-Received: <xmr:dIcIZcHwttOI1ov-qsWakyh4SWT7uZvTZK82XqVA-MRKU4uM34b6--RtMRzMzkR-kX8RX5y95qZhMglJL2No-yuj4pTpFYM4qwVMgv22wLqG>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejkedgudduudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgv
+    fhgrnhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrg
+    htthgvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdu
+    geeutdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hshhhrseguvghvkhgvrhhnvghlrdhioh
+X-ME-Proxy: <xmx:dIcIZVRUARYMfMPjKdS8ZAJARlCM3fq9Ed96WBZlpj-SJmL7KvRJdw>
+    <xmx:dIcIZRwkCGJQaePw1FOlw1z8poQ1Tt44TUnzO5t88Bbr0X1OyVb36Q>
+    <xmx:dIcIZT4knyB4F43j12zRIH6YLK_lCf9tDadS3hNxfW7zXZEHXcYHWA>
+    <xmx:dYcIZUrVvBbNl09OLqTWZDXQJ4BUWkDLHvcObiXQRdqTL-FmC8DOXQ>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Sep 2023 13:22:59 -0400 (EDT)
+References: <20230912175228.952039-1-shr@devkernel.io>
+ <20230912175228.952039-2-shr@devkernel.io>
+ <6447ab02-1a22-efe4-68c9-4f595e2499fc@redhat.com>
+ <qvqwled3jvq2.fsf@devbig1114.prn1.facebook.com>
+ <5bf3e7ad-b666-ae88-449a-074f17a9cbba@redhat.com>
+User-agent: mu4e 1.10.1; emacs 28.2.50
+From:   Stefan Roesch <shr@devkernel.io>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 1/4] mm/ksm: add "smart" page scanning mode
+Date:   Mon, 18 Sep 2023 10:22:09 -0700
+In-reply-to: <5bf3e7ad-b666-ae88-449a-074f17a9cbba@redhat.com>
+Message-ID: <qvqwo7hz4cr3.fsf@devbig1114.prn1.facebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: c86pfDBfPTRVd9Mv1waKxsQghRSdD3LG
-X-Proofpoint-ORIG-GUID: c86pfDBfPTRVd9Mv1waKxsQghRSdD3LG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-18_08,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=40 malwarescore=0 spamscore=40
- priorityscore=1501 impostorscore=0 mlxlogscore=18 mlxscore=40 phishscore=0
- clxscore=1015 lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309180153
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arm® Functional Fixed Hardware Specification defines LPI states,
-which provide an architectural context loss flags field that can
-be used to describe the context that might be lost when an LPI
-state is entered.
 
-- Core context Lost
-        - General purpose registers.
-        - Floating point and SIMD registers.
-        - System registers, include the System register based
-        - generic timer for the core.
-        - Debug register in the core power domain.
-        - PMU registers in the core power domain.
-        - Trace register in the core power domain.
-- Trace context loss
-- GICR
-- GICD
+David Hildenbrand <david@redhat.com> writes:
 
-Qualcomm's custom CPUs preserves the architectural state,
-including keeping the power domain for local timers active.
-when core is power gated, the local timers are sufficient to
-wake the core up without needing broadcast timer.
+> On 18.09.23 18:18, Stefan Roesch wrote:
+>> David Hildenbrand <david@redhat.com> writes:
+>>
+>>> On 12.09.23 19:52, Stefan Roesch wrote:
+>>>> This change adds a "smart" page scanning mode for KSM. So far all the
+>>>> candidate pages are continuously scanned to find candidates for
+>>>> de-duplication. There are a considerably number of pages that cannot be
+>>>> de-duplicated. This is costly in terms of CPU. By using smart scanning
+>>>> considerable CPU savings can be achieved.
+>>>> This change takes the history of scanning pages into account and skips
+>>>> the page scanning of certain pages for a while if de-deduplication for
+>>>> this page has not been successful in the past.
+>>>> To do this it introduces two new fields in the ksm_rmap_item structure:
+>>>> age and skip_age. age, is the KSM age and skip_page is the age for how
+>>>> long page scanning of this page is skipped. The age field is incremented
+>>>> each time the page is scanned and the page cannot be de-duplicated.
+>>>> How often a page is skipped is dependent how often de-duplication has
+>>>> been tried so far and the number of skips is currently limited to 8.
+>>>> This value has shown to be effective with different workloads.
+>>>> The feature is currently disable by default and can be enabled with the
+>>>> new smart_scan knob.
+>>>> The feature has shown to be very effective: upt to 25% of the page scans
+>>>> can be eliminated; the pages_to_scan rate can be reduced by 40 - 50% and
+>>>> a similar de-duplication rate can be maintained.
+>>>> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+>>>> ---
+>>>>    mm/ksm.c | 75 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>>>    1 file changed, 75 insertions(+)
+>>>> diff --git a/mm/ksm.c b/mm/ksm.c
+>>>> index 981af9c72e7a..bfd5087c7d5a 100644
+>>>> --- a/mm/ksm.c
+>>>> +++ b/mm/ksm.c
+>>>> @@ -56,6 +56,8 @@
+>>>>    #define DO_NUMA(x)	do { } while (0)
+>>>>    #endif
+>>>>    +typedef u8 rmap_age_t;
+>>>> +
+>>>>    /**
+>>>>     * DOC: Overview
+>>>>     *
+>>>> @@ -193,6 +195,8 @@ struct ksm_stable_node {
+>>>>     * @node: rb node of this rmap_item in the unstable tree
+>>>>     * @head: pointer to stable_node heading this list in the stable tree
+>>>>     * @hlist: link into hlist of rmap_items hanging off that stable_node
+>>>> + * @age: number of scan iterations since creation
+>>>> + * @skip_age: skip rmap item until age reaches skip_age
+>>>>     */
+>>>>    struct ksm_rmap_item {
+>>>>    	struct ksm_rmap_item *rmap_list;
+>>>> @@ -212,6 +216,8 @@ struct ksm_rmap_item {
+>>>>    			struct hlist_node hlist;
+>>>>    		};
+>>>>    	};
+>>>> +	rmap_age_t age;
+>>>> +	rmap_age_t skip_age;
+>>>>    };
+>>>>      #define SEQNR_MASK	0x0ff	/* low bits of unstable tree seqnr */
+>>>> @@ -281,6 +287,9 @@ static unsigned int zero_checksum __read_mostly;
+>>>>    /* Whether to merge empty (zeroed) pages with actual zero pages */
+>>>>    static bool ksm_use_zero_pages __read_mostly;
+>>>>    +/* Skip pages that couldn't be de-duplicated previously  */
+>>>> +static bool ksm_smart_scan;
+>>>> +
+>>>>    /* The number of zero pages which is placed by KSM */
+>>>>    unsigned long ksm_zero_pages;
+>>>>    @@ -2305,6 +2314,45 @@ static struct ksm_rmap_item
+>>>> *get_next_rmap_item(struct ksm_mm_slot *mm_slot,
+>>>>    	return rmap_item;
+>>>>    }
+>>>>    +static unsigned int inc_skip_age(rmap_age_t age)
+>>>> +{
+>>>> +	if (age <= 3)
+>>>> +		return 1;
+>>>> +	if (age <= 5)
+>>>> +		return 2;
+>>>> +	if (age <= 8)
+>>>> +		return 4;
+>>>> +
+>>>> +	return 8;
+>>>> +}
+>>>> +
+>>>> +static bool skip_rmap_item(struct page *page, struct ksm_rmap_item *rmap_item)
+>>>> +{
+>>>> +	rmap_age_t age;
+>>>> +
+>>>> +	if (!ksm_smart_scan)
+>>>> +		return false;
+>>>> +
+>>>> +	if (PageKsm(page))
+>>>> +		return false;
+>>>
+>>>
+>>> I'm a bit confused about this check here. scan_get_next_rmap_item() would return
+>>> a PageKsm() page and call cmp_and_merge_page().
+>>>
+>>> cmp_and_merge_page() says: "first see if page can be merged into the stable
+>>> tree"
+>>>
+>>> ... but shouldn't a PageKsm page *already* be in the stable tree?
+>>>
+>>> Maybe that's what cmp_and_merge_page() does via:
+>>>
+>>> 	kpage = stable_tree_search(page);
+>>> 	if (kpage == page && rmap_item->head == stable_node) {
+>>> 		put_page(kpage);
+>>> 		return;
+>>> 	}
+>>>
+>>>
+>>> Hoping you can enlighten me :)
+>>>
+>> The above description sounds correct. During each scan we go through all
+>> the candidate pages and this includes rmap_items that maps to KSM pages.
+>> The above check simply skips these pages.
+>
+> Can we add a comment why we don't skip them? Like
+>
+> /*
+>  * Never skip pages that are already KSM; pages cmp_and_merge_page()
+>  * will essentially ignore them, but we still have to process them
+>  * properly.
+>  */
+>
 
-The patch fixes the evaluation of cpuidle arch_flags, and moves only to
-broadcast timer if core context lost is defined in ACPI LPI.
+I'll add the comment in the next version.
 
-Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
----
+>>
+>>>> +
+>>>> +	age = rmap_item->age++;
+>>>
+>>> Can't we overflow here? Is that desired, or would you want to stop at the
+>>> maximum you can store?
+>>>
+>> Yes, we can overflow here and it was a deliberate choice. If we overflow
+>> after we tried unsuccessfully for 255 times, we re-start with shorter
+>> skip values, but that should be fine. In return we avoid an if statement.
+>> The age is defined as unsigned.
+>
+> Can we make that explicit instead? Dealing with implicit overflows really makes
+> the code harder to grasp.
+>
 
-Notes:
-    Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
+I'll make it explicit.
 
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index 4d537d56eb84..269d21209723 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -9,6 +9,7 @@
- #ifndef _ASM_ACPI_H
- #define _ASM_ACPI_H
- 
-+#include <linux/cpuidle.h>
- #include <linux/efi.h>
- #include <linux/memblock.h>
- #include <linux/psci.h>
-@@ -44,6 +45,23 @@
- 
- #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
- 	trbe_interrupt) + sizeof(u16))
-+/*
-+ * Arm® Functional Fixed Hardware Specification Version 1.2.
-+ * Table 2: Arm Architecture context loss flags
-+ */
-+#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
-+
-+static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
-+							unsigned int *sflags)
-+{
-+	if (arch_flags & CPUIDLE_CORE_CTXT)
-+		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
-+}
-+#define arch_update_idle_state_flags _arch_update_idle_state_flags
-+
-+#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
-+#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
-+#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
- 
- /* Basic configuration for ACPI */
- #ifdef	CONFIG_ACPI
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index dc615ef6550a..5c1d13eecdd1 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
- 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
- 		state->exit_latency = lpi->wake_latency;
- 		state->target_residency = lpi->min_residency;
--		if (lpi->arch_flags)
--			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-+		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
- 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
- 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
- 		state->enter = acpi_idle_lpi_enter;
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index a73246c3c35e..07a825c76bab 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1480,6 +1480,12 @@ static inline int lpit_read_residency_count_address(u64 *address)
- }
- #endif
- 
-+#ifdef CONFIG_ACPI_PROCESSOR_IDLE
-+#ifndef arch_update_idle_state_flags
-+#define arch_update_idle_state_flags(af, sf)	do {} while (0)
-+#endif
-+#endif /* CONFIG_ACPI_PROCESSOR_IDLE */
-+
- #ifdef CONFIG_ACPI_PPTT
- int acpi_pptt_cpu_is_thread(unsigned int cpu);
- int find_acpi_cpu_topology(unsigned int cpu, int level);
--- 
-2.25.1
+>>
+>>>> +	if (age < 3)
+>>>> +		return false;
+>>>> +
+>>>> +	if (rmap_item->skip_age == age) {
+>>>> +		rmap_item->skip_age = 0;
+>>>> +		return false;
+>>>> +	}
+>>>> +
+>>>> +	if (rmap_item->skip_age == 0) {
+>>>> +		rmap_item->skip_age = age + inc_skip_age(age);
+>>>
+>>> Can't you overflow here as well?
+>>>
+>> Yes, you can. See the above discussion. This skip_age is also an
+>> unsigned value.
+>
+> Dito.
+>
 
+I'll make it explicit.
+
+>>
+>>>> +		remove_rmap_item_from_tree(rmap_item);
+>>>
+>>>
+>>> Can you enlighten me why that is required?
+>>>
+>> This is required for age calculation and BUG_ON check in
+>> remove_rmap_item_from_tree. If we don't call remove_rmap_item_from_tree,
+>> we will hit the BUG_ON for the skipped pages later on.
+>
+> I see, thanks!
