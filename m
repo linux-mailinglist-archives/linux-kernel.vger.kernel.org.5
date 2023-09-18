@@ -2,120 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0677A4EA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E0D7A4F1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjIRQUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
+        id S230213AbjIRQeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbjIRQU2 (ORCPT
+        with ESMTP id S230246AbjIRQeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:20:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81497EFB;
-        Mon, 18 Sep 2023 09:17:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60B51C433AB;
-        Mon, 18 Sep 2023 13:49:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695044999;
-        bh=VNgj3ibSIjeoHvbwHyjlxMIDlcI3vpbC0COb4xKHMOo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=nCSQJE0UAVOTe05d26M1mSNVEPEi9P4p2t49urcIeD12JNgqwKoUpRGLqB0q246Oq
-         iUCzop8GzTjWPYLQtRsO45rtdJn2oD493GXgd5uYgVp1J+cSyQlyOZs7+OBBjL502H
-         vqJjyk6COfZvXF6Bu4puBBfxKyy+jjWujRnJ8ZyLplIldy1t2bNSDUrza43FDuTH5v
-         gANAkPA6ClbFh88fhlhpjh8F+QEo1Ri2epiFY8M783Lfgbgwk+HZJrNiKJblvMdMrB
-         wp2YPBLTFA7JNVRn9tLfHNqNWEaIqu4d3q2IubWyPr4ejK1SiQ70ulSchBwktHu5ZE
-         Ha+WTOTY+ZmVg==
-Message-ID: <9deaa260-7a15-502e-0159-2012d06c8d05@kernel.org>
-Date:   Mon, 18 Sep 2023 15:49:56 +0200
+        Mon, 18 Sep 2023 12:34:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE71199FE;
+        Mon, 18 Sep 2023 09:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695053670; x=1726589670;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7q0+gtbfGqVgyGk+Cwd1SLXvZsiPOH5fBdOFQlGjaJU=;
+  b=PmCom6xpPlzdGH4XcSi2e1G+lx4KzaHHtp8ImZDqb1qbgSGYGFxpZVLU
+   S4+tGcHvb2MAzH8CobOpqw5MyNdzlod0ueUSitFFlCymu6AaXpsLCTevL
+   tvtHLGqkFaKv6XNk2ohzonfI0m0WoQjjHXYgH/w5lv59oY0R7xQgJzLhy
+   l6lMsZYB9j5fSHeQdHAMqxjlB/G1o9MWdqdLoXD280HH5pDaVXWLT+6vD
+   2yslC+eb232RBrBTJTS8WGUyzc6wZtwzseMR3pa+5rZrvNuVta2rb3EY9
+   3TwIRAKHOQAdPEEXbEWLl6NFijL4zmewBE5oqXKBmRodDagR6A+L3H/W1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="379564931"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="379564931"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 06:51:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="775135964"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="775135964"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 18 Sep 2023 06:51:19 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9699118E; Mon, 18 Sep 2023 16:51:18 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Pearson <mpearson-lenovo@squebb.ca>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Pearson <markpearson@lenovo.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v2 1/2] platform/x86: think-lmi: Replace kstrdup() + strreplace() with kstrdup_and_replace()
+Date:   Mon, 18 Sep 2023 16:51:15 +0300
+Message-Id: <20230918135116.1248560-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] tracing/timerlat: Hotplug support for the user-space
- interface
-To:     kernel test robot <lkp@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <b619d9fd08a3bb47018cf40afa95783844a3c1fd.1694789910.git.bristot@kernel.org>
- <202309160854.SAw0rIUm-lkp@intel.com>
-Content-Language: en-US, pt-BR, it-IT
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <202309160854.SAw0rIUm-lkp@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/23 02:21, kernel test robot wrote:
-> Hi Daniel,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on linus/master]
-> [also build test WARNING on v6.6-rc1 next-20230915]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Bristot-de-Oliveira/tracing-timerlat-Hotplug-support-for-the-user-space-interface/20230915-230157
-> base:   linus/master
-> patch link:    https://lore.kernel.org/r/b619d9fd08a3bb47018cf40afa95783844a3c1fd.1694789910.git.bristot%40kernel.org
-> patch subject: [PATCH] tracing/timerlat: Hotplug support for the user-space interface
-> config: um-randconfig-002-20230916 (https://download.01.org/0day-ci/archive/20230916/202309160854.SAw0rIUm-lkp@intel.com/config)
-> 
+Replace open coded functionalify of kstrdup_and_replace() with a call.
 
-^^ The config has no timerlat and no hotplug...
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: rebased on top of review-hans (Hans), added tag (Ilpo)
+ drivers/platform/x86/think-lmi.c | 43 +++++++++++---------------------
+ 1 file changed, 15 insertions(+), 28 deletions(-)
 
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309160854.SAw0rIUm-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309160854.SAw0rIUm-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> kernel/trace/trace_osnoise.c:2125:13: warning: 'timerlat_rm_per_cpu_interface' defined but not used [-Wunused-function]
->     2125 | static void timerlat_rm_per_cpu_interface(long cpu) {};
->          |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>> kernel/trace/trace_osnoise.c:2124:12: warning: 'timerlat_add_per_cpu_interface' defined but not used [-Wunused-function]
->     2124 | static int timerlat_add_per_cpu_interface(long cpu) { return 0; };
->          |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+index f69003c30fa2..4e0d52dc3944 100644
+--- a/drivers/platform/x86/think-lmi.c
++++ b/drivers/platform/x86/think-lmi.c
+@@ -15,7 +15,7 @@
+ #include <linux/errno.h>
+ #include <linux/fs.h>
+ #include <linux/mutex.h>
+-#include <linux/string.h>
++#include <linux/string_helpers.h>
+ #include <linux/types.h>
+ #include <linux/dmi.h>
+ #include <linux/wmi.h>
+@@ -432,13 +432,11 @@ static ssize_t new_password_store(struct kobject *kobj,
+ 	if (!tlmi_priv.can_set_bios_password)
+ 		return -EOPNOTSUPP;
+ 
+-	new_pwd = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present, setting password won't work if it is present */
++	new_pwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_pwd)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present, setting password won't work if it is present */
+-	strip_cr(new_pwd);
+-
+ 	/* Use lock in case multiple WMI operations needed */
+ 	mutex_lock(&tlmi_mutex);
+ 
+@@ -709,13 +707,11 @@ static ssize_t cert_to_password_store(struct kobject *kobj,
+ 	if (!setting->signature || !setting->signature[0])
+ 		return -EACCES;
+ 
+-	passwd = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	passwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!passwd)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(passwd);
+-
+ 	/* Format: 'Password,Signature' */
+ 	auth_str = kasprintf(GFP_KERNEL, "%s,%s", passwd, setting->signature);
+ 	if (!auth_str) {
+@@ -765,11 +761,10 @@ static ssize_t certificate_store(struct kobject *kobj,
+ 		return ret ?: count;
+ 	}
+ 
+-	new_cert = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_cert = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_cert)
+ 		return -ENOMEM;
+-	/* Strip out CR if one is present */
+-	strip_cr(new_cert);
+ 
+ 	if (setting->cert_installed) {
+ 		/* Certificate is installed so this is an update */
+@@ -817,13 +812,11 @@ static ssize_t signature_store(struct kobject *kobj,
+ 	if (!tlmi_priv.certificate_support)
+ 		return -EOPNOTSUPP;
+ 
+-	new_signature = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_signature)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(new_signature);
+-
+ 	/* Free any previous signature */
+ 	kfree(setting->signature);
+ 	setting->signature = new_signature;
+@@ -846,13 +839,11 @@ static ssize_t save_signature_store(struct kobject *kobj,
+ 	if (!tlmi_priv.certificate_support)
+ 		return -EOPNOTSUPP;
+ 
+-	new_signature = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_signature)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(new_signature);
+-
+ 	/* Free any previous signature */
+ 	kfree(setting->save_signature);
+ 	setting->save_signature = new_signature;
+@@ -992,13 +983,11 @@ static ssize_t current_value_store(struct kobject *kobj,
+ 	if (tlmi_priv.save_mode == TLMI_SAVE_BULK && tlmi_priv.reboot_required)
+ 		return -EPERM;
+ 
+-	new_setting = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_setting)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(new_setting);
+-
+ 	/* Use lock in case multiple WMI operations needed */
+ 	mutex_lock(&tlmi_mutex);
+ 
+@@ -1279,13 +1268,11 @@ static ssize_t debug_cmd_store(struct kobject *kobj, struct kobj_attribute *attr
+ 	if (!tlmi_priv.can_debug_cmd)
+ 		return -EOPNOTSUPP;
+ 
+-	new_setting = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_setting)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(new_setting);
+-
+ 	if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+ 		auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
+ 				tlmi_priv.pwd_admin->password,
+-- 
+2.40.0.1.gaa8946217a0b
 
-These functions are called when hotplug but no timerlat.... when no hotplug: defined but not used.
-
-> 
-> vim +/timerlat_rm_per_cpu_interface +2125 kernel/trace/trace_osnoise.c
-> 
->   2112	
->   2113	static void timerlat_rm_per_cpu_interface(long cpu)
->   2114	{
->   2115		struct dentry *cpu_dir = per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root;
->   2116	
->   2117		if (cpu_dir) {
->   2118			tracefs_remove(cpu_dir);
->   2119			per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root = NULL;
->   2120			per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->timerlat_fd = NULL;
->   2121		}
->   2122	}
->   2123	#else
->> 2124	static int timerlat_add_per_cpu_interface(long cpu) { return 0; };
->> 2125	static void timerlat_rm_per_cpu_interface(long cpu) {};
->   2126	#endif
->   2127	
-> 
-
-Fixing it.
-
--- Daniel
