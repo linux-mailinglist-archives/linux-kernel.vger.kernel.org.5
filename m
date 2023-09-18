@@ -2,185 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A627D7A46D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DACC7A46D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241082AbjIRKWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 06:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
+        id S241046AbjIRKWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 06:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241109AbjIRKVu (ORCPT
+        with ESMTP id S241153AbjIRKWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:21:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18047CD
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695032456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yU55zmy+tifjpDLUpfSCylMp4XR9haoWnULzlns5xls=;
-        b=MurVU8+4Z8s+Q3xe4MUZviebgLj4z+XkZBjVoHtT+yrFzLukOqY6hRs6ArcAQ0IRplHFr4
-        fT5Gay35I/TtLS0MazWUFefNjgURxVA92RU5mG/LIa8bw3H1JM5Ua7pPStjsBtgJdOjbwG
-        QwR5Irp0aEacpT4XrsQyWxuQoEEIlWM=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-531-_yPWnvrcO927DGIiAELsyg-1; Mon, 18 Sep 2023 06:20:55 -0400
-X-MC-Unique: _yPWnvrcO927DGIiAELsyg-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-274b736cae3so1140719a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:20:54 -0700 (PDT)
+        Mon, 18 Sep 2023 06:22:25 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB67126
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:22:14 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so72333931fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:22:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695032533; x=1695637333; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iX6Za3zyMvqmXctAk0a5Iwv/WZyf9mXODoigV6qCMRo=;
+        b=ZGApVSmVoU5dsPak7V2A+WWxPOXQHT38YTpcdkRXJqP0sIe2id4VnHMT2usiMKq44u
+         Iz+zyerWrb9CTjN0T+oh18hoX1kQRDLLyHGuYQEYzDvpf7/Blm7EEeOb3kQcG0JXALQL
+         qPw6bTvQM/lJa3H9aTKMuMvwhtwQ7BYBhgPNQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695032454; x=1695637254;
+        d=1e100.net; s=20230601; t=1695032533; x=1695637333;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yU55zmy+tifjpDLUpfSCylMp4XR9haoWnULzlns5xls=;
-        b=go9pRUaq8iJmjMWYGdARwEXoGynqTa3Q5z8kTQ2q+nxPGiQP2JGlzuravx3fYPGsBu
-         TudBe96/xf3AdEjg8s3iFVgiNAqb0YLcLVORYkrxPbcKKAV0hVV2iv5VSJ4T2ezyZ1UQ
-         RigAVx2OCHzSlnBS+USNeqLLe4azuSvkvxvlvUKBYwB4s2mIAYFSC9SUyWf5wNH9SnJ4
-         lLbUDkHFsSigQhI6SnzRZfOqXOzFMy1f8rZ+D63sin9zz3scC/Ohrp/VW31zODYPv0w7
-         50CkNhHOQzf0TdTLeNxPE2Tpz4LbYGlYKyEiHh2i4TnEYlcyWHbu/C520j5cOnh0eugp
-         1hJQ==
-X-Gm-Message-State: AOJu0YyWQshz2XHbXQ6Jk29/EEWPiEpKXFOaiA9juMykCMbI6G0JaVGp
-        11ALKlPfTpVSX+vww+WpBKsbffgycU/V1t3qqxhdLoxx03TYLshIdmOZlRPx92f7/idUKXoy+SV
-        RpNcEQ64PXNSVRtoeIQDBeX/0RY2tANBNJSiL5bWr
-X-Received: by 2002:a17:90b:23c4:b0:259:466:940f with SMTP id md4-20020a17090b23c400b002590466940fmr5945978pjb.22.1695032454027;
-        Mon, 18 Sep 2023 03:20:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGEtH10NqI0T9ljzjjgrVprcPWZuTNpuV3VTBMkk2Q5qVxQsg5e+/Uzg2XIHnu21aI/ILioVf9Pa2At0kqn5VI=
-X-Received: by 2002:a17:90b:23c4:b0:259:466:940f with SMTP id
- md4-20020a17090b23c400b002590466940fmr5945960pjb.22.1695032453718; Mon, 18
- Sep 2023 03:20:53 -0700 (PDT)
+        bh=iX6Za3zyMvqmXctAk0a5Iwv/WZyf9mXODoigV6qCMRo=;
+        b=Eh17ZOkBUwSu+S+K8XBmUeboh1DV/N8vlT+uGMJUSkkTKjLqewfZkJrYSA9E2duHzS
+         V29lsPglE9bmlDU92MIVGH16ZGaWzjzhOi3WNmRFZAvbztr9ldEEDetFvWzst7HA2pnm
+         /vvsBaLPogMc1EnzxoNLIXkh1IL3M8/D0/ya7g4Bn9Kamm06zw7cOGt2HarTpGLuSxqm
+         XFQ28CIlDcSuD3bcSsSPeIrcfJVNVP6LsxP2X4xvYVADoZmDJ0j8KUlxTrh6TwY6R4aE
+         lwJm6neB+NgVar8AZ5hYpEonHalkjYIjiOAxrnjrA3WFgmAShmFxbX04xhe5F0rDtI/H
+         blyg==
+X-Gm-Message-State: AOJu0YzwnYJdhiaqLpet6b4vnSqc7AyGfXB+PcJHGIk0Y0IBIum6RHdG
+        ALyHaNQEoBHXAXxu0G3JuhciJY4bAGA+6NO83P3oKA==
+X-Google-Smtp-Source: AGHT+IGrOZ01cn2qw0qI6mUsa0BPS8suIqLpCLQSaooT4447KAkiTjntIXrQMcMfujDWXRNpeNDPG7ExNaXoGbZJW2E=
+X-Received: by 2002:a05:6512:1115:b0:4fb:9f93:365f with SMTP id
+ l21-20020a056512111500b004fb9f93365fmr8180795lfg.38.1695032532962; Mon, 18
+ Sep 2023 03:22:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZOWFtqA2om0w5Vmz@fedora> <20230823-kuppe-lassen-bc81a20dd831@brauner>
- <CAFj5m9KiBDzNHCsTjwUevZh3E3RRda2ypj9+QcRrqEsJnf9rXQ@mail.gmail.com>
- <CAHj4cs_MqqWYy+pKrNrLqTb=eoSOXcZdjPXy44x-aA1WvdVv0w@mail.gmail.com>
- <89d049ed-6bbf-bba7-80d4-06c060e65e5b@huawei.com> <20230917091031.GA1543@noisy.programming.kicks-ass.net>
- <9efe2f14-c3d9-e526-d561-b6a0aca6c491@huawei.com>
-In-Reply-To: <9efe2f14-c3d9-e526-d561-b6a0aca6c491@huawei.com>
-From:   Yi Zhang <yi.zhang@redhat.com>
-Date:   Mon, 18 Sep 2023 18:20:41 +0800
-Message-ID: <CAHj4cs-6M+fORJOGOxH3sO5BytBwi4y9hcnS+xQ3wLZO20UXWg@mail.gmail.com>
-Subject: Re: [czhong@redhat.com: [bug report] WARNING: CPU: 121 PID: 93233 at
- fs/dcache.c:365 __dentry_kill+0x214/0x278]
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>, mark.rutland@arm.com,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Changhui Zhong <czhong@redhat.com>,
-        yangerkun <yangerkun@huawei.com>,
-        "zhangyi (F)" <yi.zhang@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        chengzhihao <chengzhihao1@huawei.com>
+References: <20230822084520.564937-1-wenst@chromium.org> <20230822084520.564937-3-wenst@chromium.org>
+ <7f743fba-6cba-cce0-d499-0a9d95e3b026@collabora.com>
+In-Reply-To: <7f743fba-6cba-cce0-d499-0a9d95e3b026@collabora.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 18 Sep 2023 18:22:01 +0800
+Message-ID: <CAGXv+5FgGtpY697e9-Dnk=1Ro0dM7C6qmtdXkWHb5EtocU+t_w@mail.gmail.com>
+Subject: Re: [PATCH v2 02/11] mfd: mt6358: Add registers for MT6366 specific regulators
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 9:10=E2=80=AFAM Baokun Li <libaokun1@huawei.com> wr=
-ote:
+On Fri, Sep 15, 2023 at 4:55=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
 >
-> On 2023/9/17 17:10, Peter Zijlstra wrote:
-> > On Sat, Sep 16, 2023 at 02:55:47PM +0800, Baokun Li wrote:
-> >> On 2023/9/13 16:59, Yi Zhang wrote:
-> >>> The issue still can be reproduced on the latest linux tree[2].
-> >>> To reproduce I need to run about 1000 times blktests block/001, and
-> >>> bisect shows it was introduced with commit[1], as it was not 100%
-> >>> reproduced, not sure if it's the culprit?
-> >>>
-> >>>
-> >>> [1] 9257959a6e5b locking/atomic: scripts: restructure fallback ifdeff=
-ery
-> >> Hello, everyone=EF=BC=81
-> >>
-> >> We have confirmed that the merge-in of this patch caused hlist_bl_lock
-> >> (aka, bit_spin_lock) to fail, which in turn triggered the issue above.
-> >> [root@localhost ~]# insmod mymod.ko
-> >> [   37.994787][  T621] >>> a =3D 725, b =3D 724
-> >> [   37.995313][  T621] ------------[ cut here ]------------
-> >> [   37.995951][  T621] kernel BUG at fs/mymod/mymod.c:42!
-> >> [r[  oo 3t7@.l996o4c61al]h[o s T6t21] ~ ]#Int ernal error: Oops - BUG:
-> >> 00000000f2000800 [#1] SMP
-> >> [   37.997420][  T621] Modules linked in: mymod(E)
-> >> [   37.997891][  T621] CPU: 9 PID: 621 Comm: bl_lock_thread2 Tainted:
-> >> G            E      6.4.0-rc2-00034-g9257959a6e5b-dirty #117
-> >> [   37.999038][  T621] Hardware name: linux,dummy-virt (DT)
-> >> [   37.999571][  T621] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT=
- -SSBS
-> >> BTYPE=3D--)
-> >> [   38.000344][  T621] pc : increase_ab+0xcc/0xe70 [mymod]
-> >> [   38.000882][  T621] lr : increase_ab+0xcc/0xe70 [mymod]
-> >> [   38.001416][  T621] sp : ffff800008b4be40
-> >> [   38.001822][  T621] x29: ffff800008b4be40 x28: 0000000000000000 x27=
-:
-> >> 0000000000000000
-> >> [   38.002605][  T621] x26: 0000000000000000 x25: 0000000000000000 x24=
-:
-> >> 0000000000000000
-> >> [   38.003385][  T621] x23: ffffd9930c698190 x22: ffff800008a0ba38 x21=
-:
-> >> 0000000000000001
-> >> [   38.004174][  T621] x20: ffffffffffffefff x19: ffffd9930c69a580 x18=
-:
-> >> 0000000000000000
-> >> [   38.004955][  T621] x17: 0000000000000000 x16: ffffd9933011bd38 x15=
-:
-> >> ffffffffffffffff
-> >> [   38.005754][  T621] x14: 0000000000000000 x13: 205d313236542020 x12=
-:
-> >> ffffd99332175b80
-> >> [   38.006538][  T621] x11: 0000000000000003 x10: 0000000000000001 x9 =
-:
-> >> ffffd9933022a9d8
-> >> [   38.007325][  T621] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 =
-:
-> >> ffffd993320b5b40
-> >> [   38.008124][  T621] x5 : ffff0001f7d1c708 x4 : 0000000000000000 x3 =
-:
-> >> 0000000000000000
-> >> [   38.008912][  T621] x2 : 0000000000000000 x1 : 0000000000000000 x0 =
-:
-> >> 0000000000000015
-> >> [   38.009709][  T621] Call trace:
-> >> [   38.010035][  T621]  increase_ab+0xcc/0xe70 [mymod]
-> >> [   38.010539][  T621]  kthread+0xdc/0xf0
-> >> [   38.010927][  T621]  ret_from_fork+0x10/0x20
-> >> [   38.011370][  T621] Code: 17ffffe0 90000020 91044000 9400000d (d421=
-0000)
-> >> [   38.012067][  T621] ---[ end trace 0000000000000000 ]---
-> > Is this arm64 or something? You seem to have forgotten to mention what
-> > platform you're using.
+> Il 22/08/23 10:45, Chen-Yu Tsai ha scritto:
+> > The MT6366 PMIC, compared to the MT6358, does away with the VCAM*
+> > regulators. Two regulators VM18 and VMDDR reuse their register space.
+> > There's also a VSRAM type regulator VSRAM_CORE thats' split between
+> > the VCAM* register space and other parts.
 > >
-> Sorry for the late reply.
-> We tested both x86 and arm64, and the problem is only encountered under
-> arm64.
-
-Yeah, my reproduced environment is also aarch64.
-
-
-
+> > Add register address macros for these MT6366 specific regulators.
+> >
+> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 >
-> --
-> With Best Regards,
-> Baokun Li
-> .
+> For ease of applying to MFD, I think it's ok to have the header changes s=
+plit
+> from the actual user; so:
+
+Actually that doesn't help, because this is a compile time dependency.
+Merging this through the MFD tree and the rest through the regulator
+tree would mean either creating an immutable branch, or Lee giving an
+ack for this patch to go through the regulator tree. We would be doing
+the latter if we squashed the patches together anyway. I think squashing
+them does make sense.
+
+ChenYu
+
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
 >
-
-
---=20
-Best Regards,
-  Yi Zhang
-
+> Cheers!
+>
+> > ---
+> >   include/linux/mfd/mt6358/registers.h | 17 +++++++++++++++++
+> >   1 file changed, 17 insertions(+)
+> >
+> > diff --git a/include/linux/mfd/mt6358/registers.h b/include/linux/mfd/m=
+t6358/registers.h
+> > index 5ea2590be710..d83e87298ac4 100644
+> > --- a/include/linux/mfd/mt6358/registers.h
+> > +++ b/include/linux/mfd/mt6358/registers.h
+> > @@ -294,4 +294,21 @@
+> >   #define MT6358_AUD_TOP_INT_CON0               0x2228
+> >   #define MT6358_AUD_TOP_INT_STATUS0            0x2234
+> >
+> > +/*
+> > + * MT6366 has no VCAM*, but has other regulators in its place. The nam=
+es
+> > + * keep the MT6358 prefix for ease of use in the regulator driver.
+> > + */
+> > +#define MT6358_LDO_VSRAM_CON5                 0x1bf8
+> > +#define MT6358_LDO_VM18_CON0                  MT6358_LDO_VCAMA1_CON0
+> > +#define MT6358_LDO_VM18_CON1                  MT6358_LDO_VCAMA1_CON1
+> > +#define MT6358_LDO_VM18_CON2                  MT6358_LDO_VCAMA1_CON2
+> > +#define MT6358_LDO_VMDDR_CON0                 MT6358_LDO_VCAMA2_CON0
+> > +#define MT6358_LDO_VMDDR_CON1                 MT6358_LDO_VCAMA2_CON1
+> > +#define MT6358_LDO_VMDDR_CON2                 MT6358_LDO_VCAMA2_CON2
+> > +#define MT6358_LDO_VSRAM_CORE_CON0            MT6358_LDO_VCAMD_CON0
+> > +#define MT6358_LDO_VSRAM_CORE_DBG0            0x1cb6
+> > +#define MT6358_LDO_VSRAM_CORE_DBG1            0x1cb8
+> > +#define MT6358_VM18_ANA_CON0                  MT6358_VCAMA1_ANA_CON0
+> > +#define MT6358_VMDDR_ANA_CON0                 MT6358_VCAMD_ANA_CON0
+> > +
+> >   #endif /* __MFD_MT6358_REGISTERS_H__ */
+>
