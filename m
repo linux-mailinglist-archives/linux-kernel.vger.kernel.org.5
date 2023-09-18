@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB487A4424
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054BE7A442C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240728AbjIRILw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
+        id S240852AbjIRILy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240700AbjIRILX (ORCPT
+        with ESMTP id S240705AbjIRILY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:11:23 -0400
+        Mon, 18 Sep 2023 04:11:24 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E3194;
-        Mon, 18 Sep 2023 01:11:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7EC99;
+        Mon, 18 Sep 2023 01:11:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695024677; x=1726560677;
+  t=1695024679; x=1726560679;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=It2kqe+kTCquWeEQ9viRQTyzWE81890eZANk3eir1zY=;
-  b=XCShpkjAQ0gMHn8etX7HvdOOO8s6CCTBA61mqeMrm3RpEi9GcoYJc6ix
-   bC0SeMqdLbocR62FAujuTUvNv5AHMc9yIuJaDSbuyqJPa8fQ0Szq4S3k2
-   gt8fyttkzQIluxPJQMhY3+szT2q2hxPWbIKoaZXROnrcmPER2yXELZvLX
-   UxdoxWRDJddkyCk8p0NqwHstSMXRNbSNErjj0F6WkE/y2QlRJDocDFFAN
-   25wSnLBiuFBj4ePUQ4QceMGaBEpE+we3I2xSrebbpi2nrxlSpjGL6k0VH
-   m+mtzRgE//GwUqPoF6x04uizRdAIz3NA/LgIG4aDjxJpT9mNEgrnkBteV
+  bh=JOfYWZvSrqz98ohv43tBDBTpo/UNSaZ+11aVlYab1rY=;
+  b=H36Q5HA4xni35nZY2dUIEFEIvdnnTukfErQHm0plNLWTwyhnV8bv9rQW
+   8WGm1glwXTxjmCeJkFjVB3WlIE2HpTim4tYv++OQdmKu4wmenTllWKJ8O
+   4yTkb1ydM62Xj1yXmBI3oAAAJTyQV0v88enB+BOTi+Ysk6A7aYYL2QGlD
+   mHsRbfxjavxHm6pwpOciP8oOzyO5sz0WnJnoY1L+ofphB667ByjvwXGCa
+   bHPHXbDZKQukT89h95IuyEQarW6vTik3pNx4R+1Tj3jBkuNJ/nDwF5jSA
+   felKiKPJiNMqA3Uos1sExpGCZIiv5U5KwuthKLdj/boHzSN0f5pzOEZD1
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="410551213"
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="410551226"
 X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="410551213"
+   d="scan'208";a="410551226"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:11:16 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:11:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="695442689"
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="695442772"
 X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="695442689"
+   d="scan'208";a="695442772"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by orsmga003.jf.intel.com with ESMTP; 18 Sep 2023 01:11:00 -0700
+  by orsmga003.jf.intel.com with ESMTP; 18 Sep 2023 01:11:07 -0700
 From:   Raag Jadav <raag.jadav@intel.com>
 To:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
         Jonathan.Cameron@huawei.com, paul@crapouillou.net,
@@ -52,9 +52,9 @@ Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
         patches@opensource.cirrus.com,
         mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com,
         Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH for-next v2 07/10] drm/imx/dcss: convert to EXPORT_GPL_RUNTIME_PM_OPS()
-Date:   Mon, 18 Sep 2023 13:39:48 +0530
-Message-Id: <20230918080951.3615-8-raag.jadav@intel.com>
+Subject: [PATCH for-next v2 08/10] mfd: arizona: convert to EXPORT_GPL_RUNTIME_PM_OPS()
+Date:   Mon, 18 Sep 2023 13:39:49 +0530
+Message-Id: <20230918080951.3615-9-raag.jadav@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230918080951.3615-1-raag.jadav@intel.com>
 References: <20230918080951.3615-1-raag.jadav@intel.com>
@@ -73,22 +73,22 @@ use the new macro.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 ---
- drivers/gpu/drm/imx/dcss/dcss-dev.c | 2 +-
+ drivers/mfd/arizona-core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.c b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-index 4f3af0dfb344..8544c2db4187 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dev.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-@@ -318,7 +318,7 @@ static int dcss_dev_runtime_resume(struct device *dev)
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 19a0adf8ce3d..1d36deb1b79f 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -781,7 +781,7 @@ static int arizona_resume(struct device *dev)
  	return 0;
  }
  
--EXPORT_GPL_DEV_PM_OPS(dcss_dev_pm_ops) = {
-+EXPORT_GPL_RUNTIME_PM_OPS(dcss_dev_pm_ops) = {
- 	RUNTIME_PM_OPS(dcss_dev_runtime_suspend, dcss_dev_runtime_resume, NULL)
- 	SYSTEM_SLEEP_PM_OPS(dcss_dev_suspend, dcss_dev_resume)
- };
+-EXPORT_GPL_DEV_PM_OPS(arizona_pm_ops) = {
++EXPORT_GPL_RUNTIME_PM_OPS(arizona_pm_ops) = {
+ 	RUNTIME_PM_OPS(arizona_runtime_suspend,
+ 		       arizona_runtime_resume,
+ 		       NULL)
 -- 
 2.17.1
 
