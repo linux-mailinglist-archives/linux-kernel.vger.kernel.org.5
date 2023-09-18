@@ -2,229 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B377A4152
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BA57A414E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239880AbjIRGeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 02:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
+        id S238338AbjIRGdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 02:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240031AbjIRGdt (ORCPT
+        with ESMTP id S239901AbjIRGdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 02:33:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CB612E
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:33:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695018821; x=1726554821;
-  h=date:from:to:cc:subject:message-id;
-  bh=vhMVriNZGPuhEuckchabwcRUEd9m4qqP+8vYu1EsCgw=;
-  b=USt64oC2B6ZUnm9739wT44DBQz25UsVv5DomgaEEqneu1iaSV2n+oJWj
-   s7KtD7eL/O05vIorvKPzKCsXv4ek9xT5tSnkTQFWQZe4mby8wZKTuoNZC
-   ZMHoQStgr4QFS92PBRICPoXztZwLzbU6KAV6CbGMSELR+0h4fNDfePjA4
-   48Zc5yR9Hoeb0smhlu0OYI5JDmauKSXY7RzOhWNt56HwWm84ordtm1vm0
-   VXyG7omDRCVPRpuoSM51RHyQdObAzT9pQNlKUnxvDu8HBR78LEb9+FgRQ
-   ejMFjV3Fpqf8NXIxoWm+eXFI//eXCa7ISk5y6Ve5r+JA5RYuPlPK+Ji7d
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="443653966"
-X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
-   d="scan'208";a="443653966"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 23:31:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="722355150"
-X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
-   d="scan'208";a="722355150"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 17 Sep 2023 23:31:23 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qi7mz-0005ow-0j;
-        Mon, 18 Sep 2023 06:31:21 +0000
-Date:   Mon, 18 Sep 2023 14:30:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/boot] BUILD SUCCESS
- 3e3eabe26dc88692d34cf76ca0e0dd331481cc15
-Message-ID: <202309181449.jyDYZAnX-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 18 Sep 2023 02:33:25 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDC71B9;
+        Sun, 17 Sep 2023 23:31:57 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0VsH48PF_1695018713;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VsH48PF_1695018713)
+          by smtp.aliyun-inc.com;
+          Mon, 18 Sep 2023 14:31:54 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     will@kernel.org, aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
+        peterz@infradead.org, catalin.marinas@arm.com,
+        chenhuacai@kernel.org, tsbogend@alpha.franken.de,
+        dave.hansen@linux.intel.com, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, arnd@arndb.de, willy@infradead.org,
+        baolin.wang@linux.alibaba.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org
+Subject: [PATCH] mm: add statistics for PUD level pagetable
+Date:   Mon, 18 Sep 2023 14:31:42 +0800
+Message-Id: <876c71c03a7e69c17722a690e3225a4f7b172fb2.1695017383.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
-branch HEAD: 3e3eabe26dc88692d34cf76ca0e0dd331481cc15  x86/boot: Increase section and file alignment to 4k/512
+Recently, we found that cross-die access to pagetable pages on ARM64
+machines can cause performance fluctuations in our business. Currently,
+there are no PMU events available to track this situation on our ARM64
+machines, so an accurate pagetable accounting can help to analyze this
+issue, but now the PUD level pagetable accounting is missed.
 
-elapsed time: 723m
+So introducing pagetable_pud_ctor/dtor() to help to get an accurate
+PUD pagetable accounting, as well as converting the architectures with
+using generic PUD pagatable allocation to add corresponding PUD pagetable
+accounting. Moreover this patch will also mark the PUD level pagetable
+with PG_table flag, which will help to do sanity validation in unpoison_memory().
 
-configs tested: 152
-configs skipped: 2
+On my testing machine, I can see more pagetables statistics after the patch
+with page-types tool:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Before patch:
+        flags           page-count      MB  symbolic-flags                     long-symbolic-flags
+0x0000000004000000           27326      106  __________________________g_________________       pgtable
+After patch:
+0x0000000004000000           27541      107  __________________________g_________________       pgtable
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsimosci_defconfig   gcc  
-arc                   randconfig-001-20230918   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                           imxrt_defconfig   gcc  
-arm                         lpc32xx_defconfig   clang
-arm                             pxa_defconfig   gcc  
-arm                   randconfig-001-20230918   gcc  
-arm                         socfpga_defconfig   clang
-arm                        spear6xx_defconfig   gcc  
-arm                    vt8500_v6_v7_defconfig   clang
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230918   gcc  
-i386         buildonly-randconfig-002-20230918   gcc  
-i386         buildonly-randconfig-003-20230918   gcc  
-i386         buildonly-randconfig-004-20230918   gcc  
-i386         buildonly-randconfig-005-20230918   gcc  
-i386         buildonly-randconfig-006-20230918   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230918   gcc  
-i386                  randconfig-002-20230918   gcc  
-i386                  randconfig-003-20230918   gcc  
-i386                  randconfig-004-20230918   gcc  
-i386                  randconfig-005-20230918   gcc  
-i386                  randconfig-006-20230918   gcc  
-i386                  randconfig-011-20230918   gcc  
-i386                  randconfig-012-20230918   gcc  
-i386                  randconfig-013-20230918   gcc  
-i386                  randconfig-014-20230918   gcc  
-i386                  randconfig-015-20230918   gcc  
-i386                  randconfig-016-20230918   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230918   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5307c3_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1830-neo_defconfig   clang
-mips                      maltaaprp_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           alldefconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                      walnut_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230918   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230918   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                            hp6xx_defconfig   gcc  
-sh                           se7751_defconfig   gcc  
-sh                        sh7757lcr_defconfig   gcc  
-sh                   sh7770_generic_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230918   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230918   gcc  
-x86_64       buildonly-randconfig-002-20230918   gcc  
-x86_64       buildonly-randconfig-003-20230918   gcc  
-x86_64       buildonly-randconfig-004-20230918   gcc  
-x86_64       buildonly-randconfig-005-20230918   gcc  
-x86_64       buildonly-randconfig-006-20230918   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230918   gcc  
-x86_64                randconfig-002-20230918   gcc  
-x86_64                randconfig-003-20230918   gcc  
-x86_64                randconfig-004-20230918   gcc  
-x86_64                randconfig-005-20230918   gcc  
-x86_64                randconfig-006-20230918   gcc  
-x86_64                randconfig-011-20230918   gcc  
-x86_64                randconfig-012-20230918   gcc  
-x86_64                randconfig-013-20230918   gcc  
-x86_64                randconfig-014-20230918   gcc  
-x86_64                randconfig-015-20230918   gcc  
-x86_64                randconfig-016-20230918   gcc  
-x86_64                randconfig-071-20230918   gcc  
-x86_64                randconfig-072-20230918   gcc  
-x86_64                randconfig-073-20230918   gcc  
-x86_64                randconfig-074-20230918   gcc  
-x86_64                randconfig-075-20230918   gcc  
-x86_64                randconfig-076-20230918   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ arch/arm64/include/asm/tlb.h         |  5 ++++-
+ arch/loongarch/include/asm/pgalloc.h |  1 +
+ arch/mips/include/asm/pgalloc.h      |  1 +
+ arch/x86/mm/pgtable.c                |  3 +++
+ include/asm-generic/pgalloc.h        |  7 ++++++-
+ include/linux/mm.h                   | 16 ++++++++++++++++
+ 6 files changed, 31 insertions(+), 2 deletions(-)
 
+diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
+index 2c29239d05c3..846c563689a8 100644
+--- a/arch/arm64/include/asm/tlb.h
++++ b/arch/arm64/include/asm/tlb.h
+@@ -96,7 +96,10 @@ static inline void __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmdp,
+ static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pudp,
+ 				  unsigned long addr)
+ {
+-	tlb_remove_ptdesc(tlb, virt_to_ptdesc(pudp));
++	struct ptdesc *ptdesc = virt_to_ptdesc(pudp);
++
++	pagetable_pud_dtor(ptdesc);
++	tlb_remove_ptdesc(tlb, ptdesc);
+ }
+ #endif
+ 
+diff --git a/arch/loongarch/include/asm/pgalloc.h b/arch/loongarch/include/asm/pgalloc.h
+index 79470f0b4f1d..4e2d6b7ca2ee 100644
+--- a/arch/loongarch/include/asm/pgalloc.h
++++ b/arch/loongarch/include/asm/pgalloc.h
+@@ -84,6 +84,7 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
+ 
+ 	if (!ptdesc)
+ 		return NULL;
++	pagetable_pud_ctor(ptdesc);
+ 	pud = ptdesc_address(ptdesc);
+ 
+ 	pud_init(pud);
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 40e40a7eb94a..f4440edcd8fe 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -95,6 +95,7 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
+ 
+ 	if (!ptdesc)
+ 		return NULL;
++	pagetable_pud_ctor(ptdesc);
+ 	pud = ptdesc_address(ptdesc);
+ 
+ 	pud_init(pud);
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index 9deadf517f14..0cbc1b8e8e3d 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -76,6 +76,9 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
+ #if CONFIG_PGTABLE_LEVELS > 3
+ void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
+ {
++	struct ptdesc *ptdesc = virt_to_ptdesc(pud);
++
++	pagetable_pud_dtor(ptdesc);
+ 	paravirt_release_pud(__pa(pud) >> PAGE_SHIFT);
+ 	paravirt_tlb_remove_table(tlb, virt_to_page(pud));
+ }
+diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
+index c75d4a753849..879e5f8aa5e9 100644
+--- a/include/asm-generic/pgalloc.h
++++ b/include/asm-generic/pgalloc.h
+@@ -169,6 +169,8 @@ static inline pud_t *__pud_alloc_one(struct mm_struct *mm, unsigned long addr)
+ 	ptdesc = pagetable_alloc(gfp, 0);
+ 	if (!ptdesc)
+ 		return NULL;
++
++	pagetable_pud_ctor(ptdesc);
+ 	return ptdesc_address(ptdesc);
+ }
+ 
+@@ -190,8 +192,11 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
+ 
+ static inline void __pud_free(struct mm_struct *mm, pud_t *pud)
+ {
++	struct ptdesc *ptdesc = virt_to_ptdesc(pud);
++
+ 	BUG_ON((unsigned long)pud & (PAGE_SIZE-1));
+-	pagetable_free(virt_to_ptdesc(pud));
++	pagetable_pud_dtor(ptdesc);
++	pagetable_free(ptdesc);
+ }
+ 
+ #ifndef __HAVE_ARCH_PUD_FREE
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 12335de50140..2232bfebb88a 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3049,6 +3049,22 @@ static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
+ 	return ptl;
+ }
+ 
++static inline void pagetable_pud_ctor(struct ptdesc *ptdesc)
++{
++	struct folio *folio = ptdesc_folio(ptdesc);
++
++	__folio_set_pgtable(folio);
++	lruvec_stat_add_folio(folio, NR_PAGETABLE);
++}
++
++static inline void pagetable_pud_dtor(struct ptdesc *ptdesc)
++{
++	struct folio *folio = ptdesc_folio(ptdesc);
++
++	__folio_clear_pgtable(folio);
++	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
++}
++
+ extern void __init pagecache_init(void);
+ extern void free_initmem(void);
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
