@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B1D7A40B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146377A4077
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239802AbjIRFzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 01:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
+        id S239626AbjIRF3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 01:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239828AbjIRFzl (ORCPT
+        with ESMTP id S239595AbjIRF3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 01:55:41 -0400
-X-Greylist: delayed 64 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 17 Sep 2023 22:55:33 PDT
-Received: from ssh247.corpemail.net (ssh247.corpemail.net [210.51.61.247])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A492A3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:55:32 -0700 (PDT)
-Received: from ssh247.corpemail.net
-        by ssh247.corpemail.net ((D)) with ASMTP (SSL) id NEU00124;
-        Mon, 18 Sep 2023 13:54:24 +0800
-Received: from localhost.localdomain.com (10.200.104.41) by
- jtjnmail201610.home.langchao.com (10.100.2.10) with Microsoft SMTP Server id
- 15.1.2507.32; Mon, 18 Sep 2023 13:54:23 +0800
-From:   chuguangqing <chuguangqing@inspur.com>
-To:     <linux@armlinux.org.uk>, <matthias.bgg@gmail.com>,
-        <angelogioacchino.delregno@collabora.com>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <trix@redhat.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <llvm@lists.linux.dev>,
-        chuguangqing <chuguangqing@inspur.com>
-Subject: [PATCH] The Kconfig help text contains the phrase "the the" in the help text. Fix this.
-Date:   Mon, 18 Sep 2023 13:26:20 +0800
-Message-ID: <20230918052620.243394-1-chuguangqing@inspur.com>
-X-Mailer: git-send-email 2.39.3
+        Mon, 18 Sep 2023 01:29:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9445122;
+        Sun, 17 Sep 2023 22:29:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695014951; x=1726550951;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=S7w/IL8NIihi9+H4a9k/xqpL9VbUcHnAUJRNdz0CiPE=;
+  b=EyIJqtQGxoddfrayM8PHtiSkbD7DeHl5+DOU+Mr+adaYMndaA8vcneXG
+   CIyW8111THeFM3gd53mgO+CTM2b6FL1gnCof7Gl6PBHKPH7sf0vVvkuQM
+   PXVWN+sWyf8NDRyBgakfgsPeHQgFKTHBUMXuqm8rmsiJHrMwt6kYIMvvA
+   ST4QXmuo3Hy+3HOdHrS3Te1cDpNStlPP1mW1gqVBZJXZM+Dj1K/x3CsrH
+   tsF5vGIitGUZ3UYa4+ruzbRlvCtd9Ba6lr2Dv3E3Cdklg95Ums4asj2XN
+   ASONaj2QsSg0qc0SEQOi8GebHd3vrPbEgeMt1QFj8f+ijhpjaL8Srm4C7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="465913815"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="465913815"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 22:29:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="738992690"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="738992690"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 17 Sep 2023 22:29:08 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 69AEB18E; Mon, 18 Sep 2023 08:29:07 +0300 (EEST)
+Date:   Mon, 18 Sep 2023 08:29:07 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 09/11] gpio: acpi: replace gpiochip_find() with
+ gpio_device_find()
+Message-ID: <20230918052907.GR1599918@black.fi.intel.com>
+References: <20230915150327.81918-1-brgl@bgdev.pl>
+ <20230915150327.81918-10-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.200.104.41]
-tUid:   2023918135424e7e62442672a3dfd332ceec2984494d3
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230915150327.81918-10-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- arch/arm/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, Sep 15, 2023 at 05:03:24PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> We're porting all users of gpiochip_find() to using gpio_device_find().
+> Update the ACPI GPIO code.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 9557808e8..2321be76a 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -1563,7 +1563,7 @@ config ARM_ATAG_DTB_COMPAT_CMDLINE_EXTEND
- 	bool "Extend with bootloader kernel arguments"
- 	help
- 	  The command-line arguments provided by the boot loader will be
--	  appended to the the device tree bootargs property.
-+	  appended to the device tree bootargs property.
- 
- endchoice
- 
-@@ -1701,7 +1701,7 @@ config DMI
- 	  continue to boot on existing non-UEFI platforms.
- 
- 	  NOTE: This does *NOT* enable or encourage the use of DMI quirks,
--	  i.e., the the practice of identifying the platform via DMI to
-+	  i.e., the practice of identifying the platform via DMI to
- 	  decide whether certain workarounds for buggy hardware and/or
- 	  firmware need to be enabled. This would require the DMI subsystem
- 	  to be enabled much earlier than we do on ARM, which is non-trivial.
--- 
-2.39.3
-
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
