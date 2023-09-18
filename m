@@ -2,109 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 891177A52C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764777A52CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjIRTOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 15:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
+        id S229994AbjIRTQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 15:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjIRTOD (ORCPT
+        with ESMTP id S229770AbjIRTQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 15:14:03 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E454B10D;
-        Mon, 18 Sep 2023 12:13:57 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68fb79ef55eso4452130b3a.0;
-        Mon, 18 Sep 2023 12:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695064437; x=1695669237; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dBgll0vV+9Vhff8vKZmdxvYEuk870/D/EdkI0S+iCj4=;
-        b=F2fsigFUj5Svrxbg5msXILOystSHnAv7eHqXkE6U6zz5eFxvqTi5Eqw96abtd2nEt6
-         zx+L6BOaqXu05UibJguLUHRl57B70Wrisf1RKIx7JDhIbWyCLm2ZA47osPpcev2VPfem
-         KLOJbYZLkiuizTbTMQB6VVcvbNVMtYx9J8PuC5fhLV4YpmgUQB/E5UM/D7nbyHlKdXve
-         r/pgH9pJkaobSDUAo+EqIz+/IYyEkrdL2dDb10I5d2kn8ANJPTKHFu4kgTOw+v5AQdHg
-         c8JtJou7Gb17kDgC/1oJXflVhqeROhrlBFF0Yjk3TryIU3wmRFHtxN3EnKlq22e+ycU5
-         /HOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695064437; x=1695669237;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dBgll0vV+9Vhff8vKZmdxvYEuk870/D/EdkI0S+iCj4=;
-        b=CSb+Ln5OguYZfVnB23xwakDTBxO1DWPAxGTbfrZWf9SsnE5B8WJSHGakguSypzKild
-         61zIEBEZZYPUUbq0i8qW03ZRCZoMhI8Yiaf5vu9JBZaThjOeFrImTyWj/cJR1K3vM0mO
-         pLJIAqLZzRcHiuwRnTI7KAid2++uz7R/OdjTi41smHgZ7/wFOHG9Y60dsVwxF+3OsBie
-         6wEoKYPgpkhsmveLSHuoiWsn5pvw4osEelKR8Tye4Owd8zBnEWUu/PNIOSVa+lh8ws+t
-         nFzSgzNZE8Aacrjh7b/QtV+PUKGb1P02ayhA7A/0c/WDDBIIJBuekue8jUi6Mv1UutDb
-         bSgQ==
-X-Gm-Message-State: AOJu0YyX/8dlvq5dJNfDdsPIYzrUuQGmLr7m6FNU4DigrvXFn4/rWlZh
-        C8wydtWo/qdJsdh8HgxLW0I=
-X-Google-Smtp-Source: AGHT+IEtPQ2gcwZwvuxi1RJu0eheIDLvUbluLfxgaER7RLlWeuh5FuziT2DXJl1qR/5NlGU6wAT+sA==
-X-Received: by 2002:a05:6a00:18a5:b0:68e:2d9d:b0cc with SMTP id x37-20020a056a0018a500b0068e2d9db0ccmr13002251pfh.6.1695064437259;
-        Mon, 18 Sep 2023 12:13:57 -0700 (PDT)
-Received: from [10.67.49.139] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id de11-20020a056a00468b00b00686236718d8sm334088pfb.41.2023.09.18.12.13.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 12:13:56 -0700 (PDT)
-Message-ID: <ce0230eb-8bd4-a587-c034-f390337d8b3c@gmail.com>
-Date:   Mon, 18 Sep 2023 12:13:54 -0700
+        Mon, 18 Sep 2023 15:16:57 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66EFF7;
+        Mon, 18 Sep 2023 12:16:51 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nicolas)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 57D646607186;
+        Mon, 18 Sep 2023 20:16:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695064610;
+        bh=ghwssrv6LMhLjo/fzK7LxIyO3gF6PBgn2BzLfbzm+Mo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ID2KRBKYLpI/a9zZTJxdwIpFGXEC2fMdhddvY4ujyhojlYJE193QalJIvWrvISLFa
+         toBU/GtVYBe1KY4V3YOmIWcTnT8KrNfSefQ/uPR+TlahTk1Lbl6jbHm0cvMofPLTdT
+         QwYAixFqImhO6XzGkRuFdlWj0gaWjpdbAqDK1SH7ughvLgVx9hdsjt8ysFIW6bCtuP
+         ZCQEQaeqyDToXvfBgPBAxEvq98IxEWcmdZ7b38c5cQe7QDPV3UwYNxk8LKcg/NxJGH
+         +QC5FJJNlUrHbf5cFoS+/j5OYBX32aSMsQcTD/GG2ngB0VULiQrwMR9P6N1PA4h8/J
+         /lzwI7J7Sn5lw==
+Message-ID: <7412a756ee4c83c62b3dc866b5a351e1bc4afa33.camel@collabora.com>
+Subject: Re: [PATCH v12 6/7] dt-bindings: media: wave5: add yaml devicetree
+ bindings
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Sebastian Fricke <sebastian.fricke@collabora.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Robert Beckett <bob.beckett@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Date:   Mon, 18 Sep 2023 15:16:39 -0400
+In-Reply-To: <6d87034e-6727-09fd-60fc-10f8ca47f85b@linaro.org>
+References: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
+         <20230915-wave5_v12_on_media_master-v12-6-92fc66cd685d@collabora.com>
+         <30384744-94d7-2675-63ad-d8531e3156d1@linaro.org>
+         <20230918064954.iuomunsckduawiay@basti-XPS-13-9310>
+         <6d87034e-6727-09fd-60fc-10f8ca47f85b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 6.5 000/285] 6.5.4-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230917191051.639202302@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20230917191051.639202302@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le lundi 18 septembre 2023 =C3=A0 14:02 +0200, Krzysztof Kozlowski a =C3=A9=
+crit=C2=A0:
+> On 18/09/2023 08:49, Sebastian Fricke wrote:
+> > Hey Krzysztof,
+> >=20
+> > thanks for your review.
+> >=20
+> > On 17.09.2023 09:56, Krzysztof Kozlowski wrote:
+> > > On 15/09/2023 23:11, Sebastian Fricke wrote:
+> > > > From: Robert Beckett <bob.beckett@collabora.com>
+> > > >=20
+> > > > Add bindings for the wave5 chips&media codec driver
+> > > >=20
+> > > > Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+> > > > Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> > > > Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+> > >=20
+> > > So this is v12 and still no tested?
+> >=20
+> > I have tested it, multiple times actually since V11. (For some reason
+> > that indentation issue slipped by me though ...)
+> > If you mean the tested by tag, the patch was completely unnoticed until
+> > v10 by the community, which was partially because me and the previous
+> > commiters didn't use the right recipients for this patch. So from that
+> > point of view this is more like v2.
+> >=20
+> > >=20
+> > > A nit, subject: drop second/last, redundant "yaml devicetree indings"=
+.
+> > > The "dt-bindings" prefix is already stating that these are bindings.
+> > > Basically three words bringing zero information.
+> >=20
+> > Okay so:
+> > `dt-bindings: media: wave5: add devicetree`
+>=20
+> Still not, because devicetree is duplicating "dt". It's redundant.
+>=20
+> Instead should be (with correct order of prefixes):
+>=20
+> media: dt-bindings: wave5: add AzureWaveFooBar XYL ABC10 (whatever
+> company and full product name it is)
 
+So maybe this one ?
 
-On 9/17/2023 12:10 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.4 release.
-> There are 285 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.4-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+  media: dt-bindings: wave5: add Chips&Media 521c codec IP support
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
-
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+>=20
+>=20
+> Best regards,
+> Krzysztof
+>=20
 
