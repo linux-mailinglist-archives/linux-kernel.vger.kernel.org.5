@@ -2,227 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C247A4014
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2187A4018
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236975AbjIREgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+        id S236397AbjIREjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 00:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239556AbjIREgr (ORCPT
+        with ESMTP id S235918AbjIREjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:36:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FE8EA;
-        Sun, 17 Sep 2023 21:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695011801; x=1726547801;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=2eEpcKG7Dklf+1yZNwkEy6EPo6DwzB6pT/2D1L62gTM=;
-  b=Gkx+Jefwk/YNU3avdZOdLKcG2Nb9x/OspKHAjlew2GCEGurbsdpMVAA4
-   AIqrohlQ4iT8rnmmBr5gArHvZqW0lTKG6txTTDOQ97R+OBMYclil61o7/
-   lshD17GgorPXnzSvTinuLCCJ4bfmekSB1waJapOT+49Sw9nXuTzEHKyDS
-   V7LI49KQeIYyXUgW037OiZyHoh+S6EL5hdUf/f6GAVNCQqtiTE7ZyYhLx
-   bob3sgJAG6dXycZ55nsWfkbWQLROHB+FCnFcSxQfdHRY90jHthC67q0TC
-   X9x28OfE5mxSqyh1J46nmFofwZv4luUCq8bQBcK+lCM9c8sWBFMsElaZD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="465908558"
-X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
-   d="scan'208";a="465908558"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 21:36:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="815875985"
-X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
-   d="scan'208";a="815875985"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Sep 2023 21:36:40 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 17 Sep 2023 21:36:37 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 17 Sep 2023 21:36:36 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sun, 17 Sep 2023 21:36:36 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.103)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sun, 17 Sep 2023 21:36:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O9mHM3aADVAb1lNazBsjRgeLzKVj9YPhWpkfyF5I7WG6RuuiS2+hp4ir+gZpUrHMiNho9ZDofYc3xsSG6JgTqs+X49E/DmEM+ePjjOpwlcR1TnOJWxTJDVd0s6oVNWr9Tib6MttMhr44XvBEw43tH+RoNM4uCBdlf6wAxne70x1urZYjHnSXdSAnyfcdoHNoNwRfok4795XNwH24zVvXf/uR9t07tXjAv+iLJB9Mwy4VIBtSk3cVJc/iRX3fluRJREeqSeCKCGUEpZ3SossQjYGX8svJ89QXibysSy+hkgzcr/6qsfBGxBy6JHrxuNc9aLmPbrDjUauZGM01Wxqu3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2eEpcKG7Dklf+1yZNwkEy6EPo6DwzB6pT/2D1L62gTM=;
- b=n1+/zgtPARTV7uuiEFVTjLyPNNbyNKtaHAncZuZ57bBgW5fyTk2idJtffrxLD2ZK2TTv46DmBExLPqH6I2LqmV9CkKZcAkvsjcQ9x27+Mo7/JZJF5cAIcvNPm8Kz20qVmuQSfA3/7ZrF0msVfH3KKV6/ek51OTB7BrpW2LQplWY5Kg5ysE6Pmv6fhbLLIV0ynmLRgmD1u+UfOV8p18MqUxOkQajjozjAJ66IydJYo7Ls/Cg6fuK4gJRIRBk/L94PfHtjVNHANGoZKT2VxxKQZiUtcth9eXLm8SNeY6Il/QEh3AwUxFGW1Wv+bzaJsXy+AdLeWAX8Q2RilccwoIWQnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by SN7PR11MB6923.namprd11.prod.outlook.com (2603:10b6:806:2aa::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.24; Mon, 18 Sep
- 2023 04:36:33 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::31a9:b803:fe81:5236]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::31a9:b803:fe81:5236%4]) with mapi id 15.20.6792.026; Mon, 18 Sep 2023
- 04:36:33 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-CC:     "Raj, Ashok" <ashok.raj@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Shahar, Sagi" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "Gao, Chao" <chao.gao@intel.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v13 20/22] x86/kexec(): Reset TDX private memory on
- platforms with TDX erratum
-Thread-Topic: [PATCH v13 20/22] x86/kexec(): Reset TDX private memory on
- platforms with TDX erratum
-Thread-Index: AQHZ101Okhxwq9ktjkOz/F9rFTzkybAa+E0AgADsmYCAAFPVAIAD7A0A
-Date:   Mon, 18 Sep 2023 04:36:33 +0000
-Message-ID: <11e8d55976b7f36715597dfc329c017de3f77ea3.camel@intel.com>
-References: <cover.1692962263.git.kai.huang@intel.com>
-         <12c249371edcbad8fbb15af558715fb8ea1f1e05.1692962263.git.kai.huang@intel.com>
-         <87497f25d91c5f633939c1cb87001dde656bd220.camel@intel.com>
-         <c33f7c61a1a24c283294075862cae4452d7dec3d.camel@intel.com>
-         <c1227134ab2430872824334d2e68e8f43d6d630f.camel@intel.com>
-In-Reply-To: <c1227134ab2430872824334d2e68e8f43d6d630f.camel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|SN7PR11MB6923:EE_
-x-ms-office365-filtering-correlation-id: e9978213-2039-4152-b1c6-08dbb800d643
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lqO0cl/trGAjeYciemm/lVd7dlTs734kw+uY6uFjFfgQd0I9AQ2yKStujZXXTtpgFbGknvI/CWr40cavfsE2yFlmxlJCPsAHP8y6n9lhONkcj7qgAE57fkKFkoFYMs4A3F9El264ugdVI2yPwK61tx72PPVE+mb0JqTT52UA6fQ0AOY93+fohZLnM2moERjQraVgJmNyCjrbrSvvncaAWt9FR0Ubb9Qk54XeRKHDnpSxT42XO6WxezsZdJRh6VOYroqkHnqEjgeBNxrX1mfdjyHsH6dtxg3NFUaANLqbLRXh964Vc2AC0D2R7W4IPO8907iHQ61TfTw7TcKQ0lTBhus9vplRWug63dJUhDrwRQp9Vvqe92vW0Vf3K5+PLUwh4xfuvw1tfqKAVo2JgcMsaq3/ZkODW6eVDQBdV3Cec/aXVKZskEIdzT1YTjFfxVfTxdwRmxT/+21ntJe8AbBnDk0SWgTYDy92NVYlZxshCi6kYcUbtJlRmuXYzF/icKCBkkE3nZzc+3MCrIcQhBUzNIivJqm5ipDaLUzF9wbOBJrlj/1XeF9YMum/obHvc7bo8C3aAns3cQXnLasDPq/SJfzelRdlQRA4hLPcDgHpeuG3Z8gRBh7E7s7f2gOuGrRD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(136003)(366004)(396003)(451199024)(186009)(1800799009)(6486002)(5660300002)(6506007)(86362001)(54906003)(316002)(6512007)(66446008)(64756008)(66946007)(38100700002)(41300700001)(66556008)(66476007)(38070700005)(76116006)(110136005)(91956017)(71200400001)(478600001)(6636002)(82960400001)(8936002)(2616005)(8676002)(26005)(2906002)(36756003)(122000001)(4326008)(83380400001)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OGZnb3NoYlpTNVp0cDRjTHZkWlpmcEptZ2g5VDRBb0dWTXlZTkdvYlVQOFd3?=
- =?utf-8?B?aFdMUnliZnRZbTFSOGJKTk4ydDUyZm1iUGRjWjRsOW9RWUdDWnJRRFMyVmhL?=
- =?utf-8?B?dmVlNVNwc1lLOS9haG1od1R6S0FESThLdllMY2ZLMW52a2k2Mk1PVTBTWnlF?=
- =?utf-8?B?K0l6QlV1WURrak9IZENFbmdlVnpDLzFiaXdKT2Z3YjVaZzd4MjJ4T2ZvWnZa?=
- =?utf-8?B?UVR1TS9mdmE4eTR5b1RsVGJ1ZTVMTk54b2xoc2lYZFNVNGlFcDlJL29uWVJE?=
- =?utf-8?B?dzU1bXNpSlozZTl3bmQ2TWNVRmxHcGR2SERJZkVCc3ppZ3ZJcDVxd3d3LzNV?=
- =?utf-8?B?S1FtWnBoZENUd3QvOEtNMUNXK1orRndYeHg3M1ZNczhnY2R2N1VnZ2NpTkFs?=
- =?utf-8?B?cG1Hc1F4ZFJaNzJ3RDA1QXRUeTBGb3hXNXlLcFc2YmtqK0NYVDlERjZYSGVp?=
- =?utf-8?B?WUZ4Ti9zZy9DY3hLUVhFMmdjSlJKZjhWR1Z0MWZiV0tXWC95SkZSYUg2VVdq?=
- =?utf-8?B?dUF1VmtXSE50VEZPTGVac2k4WEJkUjBZT2RVUzF6ckpFajVhdU01QU85eUtL?=
- =?utf-8?B?UFJxQVY2d2xDVzl5cW1ZOE54cGptUHVhaU45b2V5RXNVc1BwODZDalB2YmNY?=
- =?utf-8?B?dmNnQkJxVFVka0xmc04wa091MTh4MWl4WDQwNkNacHZ6Rk1BaE85Rm9EVTNh?=
- =?utf-8?B?WU5odUp1OGxXZTl6Yk9naHVGY2ZKVkhXSzhqUUE5ZWJpWEE3TkNReTN0YXR2?=
- =?utf-8?B?NTFvYTdpd1d3V0hrbmRhVW5tSkNDL0NBaWtqZlRxbVZCSDJiYXVwYkJycHFi?=
- =?utf-8?B?UWN1ak5YdkFoeGVOVmxGWmw4N3RMUU9wUTNjak02czQ1cXYxd3VRVGtHb3gv?=
- =?utf-8?B?amFURDFkV3NoSncyK0xpcHpyUi9ZSTY3SUZpaHBTbkVjV2N1eTVGdjJkU1Ju?=
- =?utf-8?B?QXZEMFNkUFB0Z01FT3RQenFub0hXZFBPTCs5Q0tLZ29SeWRMMmh4a3FwWnMy?=
- =?utf-8?B?Z3pieG9MQTJicHJ3MldyV0NmVjhXL2tXWFRrTXhoVWdkR0h1YWFmN0w2VjlZ?=
- =?utf-8?B?SVErSmdJYnRmUmwxOUVUamN1N2Q2UnN6QUVLcEQvbTlnS29tZHJxai9ZTkls?=
- =?utf-8?B?Q2tzNjlwb0cwMkFVd1ZHS1R2b3NtQTdpdVpMcUZLejg1K2lOZmVJQzBTNU1U?=
- =?utf-8?B?VXlKSDRwSjIrK2VNamtiVGZ0UTFLQjQzNFUzbnF0b3ZFdnZVak00SUNpaG9j?=
- =?utf-8?B?MndDNVpuK2RwMWZRb2RSNjZZZkkvOTQ2WHJIVVdld1l4NXJOaXZ4ODJLU3BH?=
- =?utf-8?B?T0FkOGJmUVJETVFKOEs3bFpOdW9kUFNKcUZBV1pQRnVVVnZERVFITWluQ1Zj?=
- =?utf-8?B?enJVTDNoT3ZZaFlPeXBGQlRKVjRJTkp6RzhjVExkNDhNeWEzbytEQnFWUlNp?=
- =?utf-8?B?M2tOUnkvNTRLVjFEeDBSU1AyT2plbFU1c2h4RmNVd3lnMGpLZzhsRG51VFRa?=
- =?utf-8?B?Y0hya3JlVkxMUi9lZFRVQ3A3OXRsTDFvODNyelN3QzM4ZllLRDZESTJ0WEFX?=
- =?utf-8?B?THlQMWhEQ044R2ZhT0JZdlhpUmpDdGF3amd0QW5Pbk5xaUNrb1k0cWk3YytG?=
- =?utf-8?B?T2tyT0hEeXBwb2k2NFNTWTVMcFRWbk9ialI2MkIzSW9Ga2U3RnJzQ3k5T3NU?=
- =?utf-8?B?M1l5NWZNdmtpYXdkQmN6Wkg0WUpDdjRzdnJpcHBTOFcwdEN3MUhRNWV4V1o4?=
- =?utf-8?B?OE1mVGFZYU9OaTVqRE5VMjZzRkJPbCswQzR2RDZOVHBwRjN6aTV6T25hMGUx?=
- =?utf-8?B?VlVTTzhqNlFTRnJTOVFMYVNaVnBLZkovaE04bXo2R215SXlhYitKcDlBQ2JF?=
- =?utf-8?B?cmg3RS9xdzR4aVZxRE5wSmVjd2dkUUdjK3lOY0xqQUNwTTY3Y25CRHlvQTZV?=
- =?utf-8?B?aU1zOU1rMDFMTmpmU3V4eWVLQWhFSzB3OTNiVEFJeml5OGdaUlNLLysvZmJX?=
- =?utf-8?B?QmtCc3ZXTnRMMVU3Z1VwWG9Ta2JBWnVwaDkzanhPOERwSExWbXNsMzJTK0c2?=
- =?utf-8?B?NU13YThwSFFtWjdSZkROVDJXamtWTmU3MnA4Mml3eGdYdzVwR3ZpakFRcG1P?=
- =?utf-8?B?TnZ2OUNwMFN3em1GTDVNR2dSdTVFN1dYbTdLRnFNY0tXRDRhem9XT0NLTkZ4?=
- =?utf-8?B?Vnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <02114CF6F6DE2740A18751ACD397B379@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 18 Sep 2023 00:39:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE66103
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695011901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZzMmP6/zgsWd+5OqGjuqADEa5yIk7Th2EFtqn3v9+E0=;
+        b=YZ1qvjdEm0eSkM8OsksU1athBdS4A8ZMkqq8uadfqQe4mrhDrumWgdiVfa3O5mEioAvAnO
+        JDrBx+PBg652fX0X9t5uSjAlT4r3q16tOeYwHhyHZm7GWYfNDrqu9nu48G1qZtpy5lU9wa
+        ZXQ6GVvQCf7Gbw/5KJqDdl+vGEaKjsM=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-316-PfL5cXqHNTOjpsGhsCE6HQ-1; Mon, 18 Sep 2023 00:38:19 -0400
+X-MC-Unique: PfL5cXqHNTOjpsGhsCE6HQ-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-274d83f0f5fso1326315a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:38:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695011899; x=1695616699;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZzMmP6/zgsWd+5OqGjuqADEa5yIk7Th2EFtqn3v9+E0=;
+        b=MR7cdOwDbBdsSy3Lr2BmbgcBlXZOh5vEmvHKQC0qyXrb1p0ORnaTxBba+Hzf2b3oqR
+         sUFSq3+9qakoq2OL1iy4UwXDl6/SZa/pVVIPNYSdooOmM1VzoT7hJM/mi5XvT33k+57V
+         C1ipl+gNZHl1CLavFdgGar0R0AukiLXS+GohuzhfXXPym1n5EQ+tn2YCa6VpZ0LiaXyN
+         pPSQXNCwey6OKXjtVub7B4n0uFyZEcvB6vAM+qTSVd+AuKIwluBM64u1iuKi1Aw6BZj4
+         BbaQSUCm97uVRCAQ9MMN8nKI67jp7mdVGMfAlNxSw15ry/s8hCylWBIcPpXo1IysGauv
+         RGlQ==
+X-Gm-Message-State: AOJu0Yz7+zaaF6maCK9QZuW4EJHp6HVOGxNKB5j6LUTBseXYQWkJ4dCQ
+        XGZuqHuLJnyUuTmfAtu5tG04+Xt9G3tqhn5YRHWL8Z4dqvk5pGGdItv1cpaxPz2ESQB7CTht62Z
+        eNJZfgrXsLh3ciWSXWvNYdgZy
+X-Received: by 2002:a17:903:2783:b0:1c4:1089:887d with SMTP id jw3-20020a170903278300b001c41089887dmr7556764plb.3.1695011898760;
+        Sun, 17 Sep 2023 21:38:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHeSL0ocTJIKkzpLkWb/n99b9zzJCshhAa0pU0c6Fh0POTC0xKzg/5jZAqM1VM9TTL6+osffQ==
+X-Received: by 2002:a17:903:2783:b0:1c4:1089:887d with SMTP id jw3-20020a170903278300b001c41089887dmr7556751plb.3.1695011898391;
+        Sun, 17 Sep 2023 21:38:18 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id q22-20020a170902bd9600b001bb9f104328sm7342815pls.146.2023.09.17.21.38.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 21:38:17 -0700 (PDT)
+Message-ID: <7b5f8dda-93c9-6338-15a5-acf76910c35b@redhat.com>
+Date:   Mon, 18 Sep 2023 14:38:09 +1000
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9978213-2039-4152-b1c6-08dbb800d643
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2023 04:36:33.7269
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cd2Jg1XSO8zcHaqMJdD4TRzyn+H4Gu9ma9bMrJxnV7O4oDwRzybnggxKgsAcJDmB69nEacNka2ixnvFWyv1xPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6923
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 14/35] ACPI: Only enumerate enabled (or functional)
+ devices
+Content-Language: en-US
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        James Morse <james.morse@arm.com>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-15-james.morse@arm.com>
+ <20230914132732.00006908@Huawei.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230914132732.00006908@Huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+ID4gDQo+ID4gDQo+ID4gR29vZCBwb2ludC7CoCBUaGFua3MhDQo+ID4gDQo+ID4gQmFzZWQg
-b24gbXkgdW5kZXJzdGFuZGluZywgaXQgc2hvdWxkIGJlIE9LIHRvIHNraXAgdGR4X3Jlc2V0X21l
-bW9yeSgpDQo+ID4gKG9yIGJldHRlcg0KPiA+IHRvKSB3aGVuIHByZXNlcnZlX2NvbnRleHQgaXMg
-b24uwqAgVGhlIHNlY29uZCBrZXJuZWwgc2hvdWxkbid0IHRvdWNoDQo+ID4gZmlyc3QNCj4gPiBr
-ZXJuZWwncyBtZW1vcnkgYW55d2F5IG90aGVyd2lzZSBpdCBtYXkgY29ycnVwdCB0aGUgZmlyc3Qg
-a2VybmVsDQo+ID4gc3RhdGUgKGlmIGl0DQo+ID4gZG9lcyB0aGlzIG1hbGljaW91c2x5IG9yIGFj
-Y2lkZW50YWxseSwgdGhlbiB0aGUgZmlyc3Qga2VybmVsIGlzbid0DQo+ID4gZ3VhcmFudGVlZCB0
-bw0KPiA+IHdvcmsgYW55d2F5KS4gwqANCj4gDQo+IEkgdGhpbmsgaXQgbWF5IHJlYWQgdGhlIG1l
-bW9yeSwgaXMgaXQgb2s/DQoNClJlYWQgaXMgZmluZS4gIE9ubHkgInBhcnRpYWwgd3JpdGUiIGNh
-biBwb2lzb24gdGhlIG1lbW9yeS4NCg0KWy4uLl0NCj4gDQoNCj4gDQo+IE5vdCB0aGUgbW9zdCBi
-ZWF1dGlmdWwgaWZkZWZmZXJ5LCBJJ2QganVzdCBkdXBsaWNhdGUgdGhlDQo+IHRkeF9yZXNldF9t
-ZW1vcnkoKSBjYWxsLiBCdXQgbm90IGEgc3Ryb25nIG9waW5pb24uDQo+IA0KDQpSZWZpbmVkIHRv
-IGJlbG93LiAgTGV0IG1lIGtub3cgaWYgeW91IGhhdmUgYW55IGZ1cnRoZXIgY29tbWVudHM/DQoN
-Ci0tLSBhL2FyY2gveDg2L2tlcm5lbC9tYWNoaW5lX2tleGVjXzY0LmMNCisrKyBiL2FyY2gveDg2
-L2tlcm5lbC9tYWNoaW5lX2tleGVjXzY0LmMNCkBAIC0zMDcsMTIgKzMwNywxOSBAQCB2b2lkIG1h
-Y2hpbmVfa2V4ZWMoc3RydWN0IGtpbWFnZSAqaW1hZ2UpDQogICAgICAgICAqIGFsbCBURFggcHJp
-dmF0ZSBwYWdlcyBuZWVkIHRvIGJlIGNvbnZlcnRlZCBiYWNrIHRvIG5vcm1hbA0KICAgICAgICAg
-KiBiZWZvcmUgYm9vdGluZyB0byB0aGUgbmV3IGtlcm5lbCwgb3RoZXJ3aXNlIHRoZSBuZXcga2Vy
-bmVsDQogICAgICAgICAqIG1heSBnZXQgdW5leHBlY3RlZCBtYWNoaW5lIGNoZWNrLg0KKyAgICAg
-ICAgKg0KKyAgICAgICAgKiBCdXQgc2tpcCB0aGlzIHdoZW4gcHJlc2VydmVfY29udGV4dCBpcyBv
-bi4gIFRoZSBzZWNvbmQga2VybmVsDQorICAgICAgICAqIHNob3VsZG4ndCB3cml0ZSB0byB0aGUg
-Zmlyc3Qga2VybmVsJ3MgbWVtb3J5IGFueXdheS4gIFNraXBwaW5nDQorICAgICAgICAqIHRoaXMg
-YWxzbyBhdm9pZHMga2lsbGluZyBURFggaW4gdGhlIGZpcnN0IGtlcm5lbCwgd2hpY2ggd291bGQN
-CisgICAgICAgICogcmVxdWlyZSBtb3JlIGNvbXBsaWNhdGVkIGhhbmRsaW5nLg0KICAgICAgICAg
-Ki8NCi0gICAgICAgdGR4X3Jlc2V0X21lbW9yeSgpOw0KLQ0KICNpZmRlZiBDT05GSUdfS0VYRUNf
-SlVNUA0KICAgICAgICBpZiAoaW1hZ2UtPnByZXNlcnZlX2NvbnRleHQpDQogICAgICAgICAgICAg
-ICAgc2F2ZV9wcm9jZXNzb3Jfc3RhdGUoKTsNCisgICAgICAgZWxzZQ0KKyAgICAgICAgICAgICAg
-IHRkeF9yZXNldF9tZW1vcnkoKTsNCisjZWxzZQ0KKyAgICAgICB0ZHhfcmVzZXRfbWVtb3J5KCk7
-DQogI2VuZGlmDQoNCg0KDQo=
+
+On 9/14/23 22:27, Jonathan Cameron wrote:
+> On Wed, 13 Sep 2023 16:38:02 +0000
+> James Morse <james.morse@arm.com> wrote:
+> 
+>> Today the ACPI enumeration code 'visits' all devices that are present.
+>>
+>> This is a problem for arm64, where CPUs are always present, but not
+>> always enabled. When a device-check occurs because the firmware-policy
+>> has changed and a CPU is now enabled, the following error occurs:
+>> | acpi ACPI0007:48: Enumeration failure
+>>
+>> This is ultimately because acpi_dev_ready_for_enumeration() returns
+>> true for a device that is not enabled. The ACPI Processor driver
+>> will not register such CPUs as they are not 'decoding their resources'.
+>>
+>> Change acpi_dev_ready_for_enumeration() to also check the enabled bit.
+>> ACPI allows a device to be functional instead of maintaining the
+>> present and enabled bit. Make this behaviour an explicit check with
+>> a reference to the spec, and then check the present and enabled bits.
+> 
+> "and the" only applies if the functional route hasn't been followed
+> "if not this case check the present and enabled bits."
+> 
+>> This is needed to avoid enumerating present && functional devices that
+>> are not enabled.
+>>
+>> Signed-off-by: James Morse <james.morse@arm.com>
+>> ---
+>> If this change causes problems on deployed hardware, I suggest an
+>> arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
+>> acpi_dev_ready_for_enumeration() to only check the present bit.
+>> ---
+>>   drivers/acpi/device_pm.c    |  2 +-
+>>   drivers/acpi/device_sysfs.c |  2 +-
+>>   drivers/acpi/internal.h     |  1 -
+>>   drivers/acpi/property.c     |  2 +-
+>>   drivers/acpi/scan.c         | 23 +++++++++++++----------
+>>   5 files changed, 16 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+>> index f007116a8427..76c38478a502 100644
+>> --- a/drivers/acpi/device_pm.c
+>> +++ b/drivers/acpi/device_pm.c
+>> @@ -313,7 +313,7 @@ int acpi_bus_init_power(struct acpi_device *device)
+>>   		return -EINVAL;
+>>   
+>>   	device->power.state = ACPI_STATE_UNKNOWN;
+>> -	if (!acpi_device_is_present(device)) {
+>> +	if (!acpi_dev_ready_for_enumeration(device)) {
+>>   		device->flags.initialized = false;
+>>   		return -ENXIO;
+>>   	}
+>> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+>> index b9bbf0746199..16e586d74aa2 100644
+>> --- a/drivers/acpi/device_sysfs.c
+>> +++ b/drivers/acpi/device_sysfs.c
+>> @@ -141,7 +141,7 @@ static int create_pnp_modalias(const struct acpi_device *acpi_dev, char *modalia
+>>   	struct acpi_hardware_id *id;
+>>   
+>>   	/* Avoid unnecessarily loading modules for non present devices. */
+>> -	if (!acpi_device_is_present(acpi_dev))
+>> +	if (!acpi_dev_ready_for_enumeration(acpi_dev))
+>>   		return 0;
+>>   
+>>   	/*
+>> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+>> index 866c7c4ed233..a1b45e345bcc 100644
+>> --- a/drivers/acpi/internal.h
+>> +++ b/drivers/acpi/internal.h
+>> @@ -107,7 +107,6 @@ int acpi_device_setup_files(struct acpi_device *dev);
+>>   void acpi_device_remove_files(struct acpi_device *dev);
+>>   void acpi_device_add_finalize(struct acpi_device *device);
+>>   void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
+>> -bool acpi_device_is_present(const struct acpi_device *adev);
+>>   bool acpi_device_is_battery(struct acpi_device *adev);
+>>   bool acpi_device_is_first_physical_node(struct acpi_device *adev,
+>>   					const struct device *dev);
+>> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+>> index 413e4fcadcaf..e03f00b98701 100644
+>> --- a/drivers/acpi/property.c
+>> +++ b/drivers/acpi/property.c
+>> @@ -1418,7 +1418,7 @@ static bool acpi_fwnode_device_is_available(const struct fwnode_handle *fwnode)
+>>   	if (!is_acpi_device_node(fwnode))
+>>   		return false;
+>>   
+>> -	return acpi_device_is_present(to_acpi_device_node(fwnode));
+>> +	return acpi_dev_ready_for_enumeration(to_acpi_device_node(fwnode));
+>>   }
+>>   
+>>   static const void *
+>> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+>> index 17ab875a7d4e..f898591ce05f 100644
+>> --- a/drivers/acpi/scan.c
+>> +++ b/drivers/acpi/scan.c
+>> @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+>>   	int error;
+>>   
+>>   	acpi_bus_get_status(adev);
+>> -	if (acpi_device_is_present(adev)) {
+>> +	if (acpi_dev_ready_for_enumeration(adev)) {
+>>   		/*
+>>   		 * This function is only called for device objects for which
+>>   		 * matching scan handlers exist.  The only situation in which
+>> @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
+>>   	int error;
+>>   
+>>   	acpi_bus_get_status(adev);
+>> -	if (!acpi_device_is_present(adev)) {
+>> +	if (!acpi_dev_ready_for_enumeration(adev)) {
+>>   		acpi_scan_device_not_enumerated(adev);
+>>   		return 0;
+>>   	}
+>> @@ -1908,11 +1908,6 @@ static bool acpi_device_should_be_hidden(acpi_handle handle)
+>>   	return true;
+>>   }
+>>   
+>> -bool acpi_device_is_present(const struct acpi_device *adev)
+>> -{
+>> -	return adev->status.present || adev->status.functional;
+>> -}
+>> -
+>>   static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
+>>   				       const char *idstr,
+>>   				       const struct acpi_device_id **matchid)
+>> @@ -2375,16 +2370,24 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
+>>    * acpi_dev_ready_for_enumeration - Check if the ACPI device is ready for enumeration
+>>    * @device: Pointer to the &struct acpi_device to check
+>>    *
+>> - * Check if the device is present and has no unmet dependencies.
+>> + * Check if the device is functional or enabled and has no unmet dependencies.
+>>    *
+>> - * Return true if the device is ready for enumeratino. Otherwise, return false.
+>> + * Return true if the device is ready for enumeration. Otherwise, return false.
+>>    */
+>>   bool acpi_dev_ready_for_enumeration(const struct acpi_device *device)
+>>   {
+>>   	if (device->flags.honor_deps && device->dep_unmet)
+>>   		return false;
+>>   
+>> -	return acpi_device_is_present(device);
+>> +	/*
+>> +	 * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
+>> +	 * (!present && functional) for certain types of devices that should be
+>> +	 * enumerated.
+> 
+> I'd call out the fact that enumeration isn't same as "device driver should be loaded"
+> which is the thing that functional is supposed to indicate should not happen.
+> 
+>> +	 */
+>> +	if (!device->status.present && !device->status.enabled)
+> 
+> In theory no need to check !enabled if !present
+> "If bit [0] is cleared, then bit 1 must also be cleared (in other words, a device that is not present cannot be enabled)."
+> We could report an ACPI bug if that's seen.  If that bug case is ignored this code can
+> become the simpler.
+> 
+> 	if (device->status.present)
+> 		return device->status_enabled;
+> 	else
+> 		return device->status.functional;
+> 
+> Or the following also valid here (as functional should be set for enabled present devices
+> unless they failed diagnostics).
+> 
+> 	if (dev->status.functional)
+> 		return true;
+> 	return device->status.present && device->status.enabled;
+> 
+> On assumption we want to enumerate dead devices for debug purposes...
+> 
+
+I think it's worthy to include the words about the synchronization between present/enabled
+bits into comments, outlined by Jonathan, to help readers to understand the code. Something
+like below for the comments:
+
+	/*
+          * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
+	 * (!present && functional) for certain types of devices that should be
+          * enumerated. Note that the enabled bit can't be set until the present
+          * bit is set.
+          */
+
+> 
+>> +		return device->status.functional;
+>> +
+>> +	return device->status.present && device->status.enabled;
+> 
+> 
+>>   }
+>>   EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
+>>   
+
+
+Thanks,
+Gavin
+
