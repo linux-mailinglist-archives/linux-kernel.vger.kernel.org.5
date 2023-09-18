@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA107A53C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AE87A53C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbjIRUQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        id S229823AbjIRUSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIRUQp (ORCPT
+        with ESMTP id S229436AbjIRUSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:16:45 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29648F;
-        Mon, 18 Sep 2023 13:16:39 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IJdVsM020599;
-        Mon, 18 Sep 2023 20:16:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=m9ycPkoqh3F+kHpg0TZyKjSV6+fgyQLXKdhx826xOxg=;
- b=XR8jDin4k0rlT0vPG5CAMyTFoXHpVaNaLqJL0mQmbjuxN9ZVgSzyzv2FGeF0G5cUzkdz
- BJ0B8TA6Dt3VvAFle3EtYBRNyC0KvM/e02mseHK4vra1DVaC6Zup75Jdg6YkmIOT/C4j
- P7/R0xnToi/QJPaLe9bMstfJ3Oqz1WcDRgK51O+o3W1wFFLlnuZlk0U6UOIHmfTq+ZLo
- DEuNAHtsGKiOahuAlrLgVH3E5fSy+Qh5NWNrDppnPOJMQrfR+lumJ8cu5xkqevX9xSlB
- xaWP8O8I65JBK4nGLoMd9AVLMTWc24kADcDQ50gqRagnhxUX4FlPbRBaMsSwlUfco56X RQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6qf6gx82-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 20:16:18 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38IKGHm9024910
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 20:16:17 GMT
-Received: from [10.71.109.209] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 18 Sep
- 2023 13:16:16 -0700
-Message-ID: <f855b3db-2754-5f66-9fc2-061a517814ef@quicinc.com>
-Date:   Mon, 18 Sep 2023 13:16:16 -0700
+        Mon, 18 Sep 2023 16:18:32 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9996DB6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:18:26 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso6013064a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695068305; x=1695673105; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5hiqGPeu+uF2kVYNtC9QmaELCxRejOYJFO8VayGWNAw=;
+        b=gnPtYwIWD9VYq0nKHU0jqdq0LngTIh0/PqrWRm5+GEtU1lCAN9y4oGeGUyv0UQ/Q82
+         WqwBguxXgShXF5VK3zw+PxPS++I/x3w/ZEc5DPgEpKDlBcz10JBHpY2nqcY2By/z/ycr
+         /64z6aGaBlqFwt6jYWYwK21A5XR3QOH1ezDZM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695068305; x=1695673105;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5hiqGPeu+uF2kVYNtC9QmaELCxRejOYJFO8VayGWNAw=;
+        b=pvmZTKN24eUqdPOddLMFC4FgasfE/x7SZTiCGsogjqoboT6kWXx7DRMtrnrF5URxXQ
+         1OwNEDL0Y3tg4qUAqvBK1xLQa7abVNlNoBB0WzJUPiHWX55UpinC/iaybhd62bA9DqyZ
+         AZTxOZo07IlD6AYlif5ibCPyluDYdOCiF6rD0Ab3G/RX16DQiWXdFSO6zfaQl4t3+swS
+         D8ASrQkwq6Rzx7ATLolSlWiquucIRmfiFaTp3Y+L4dJO8SzSRxXIHRKSOlG0daOHYdrC
+         O9vB1E6oTgzJkf44cj3WmsyDQbjCQ3xE2ZrclVRZwf9uKPkxYUpSLdJkN3DlS7XNgzsZ
+         3WoQ==
+X-Gm-Message-State: AOJu0Ywxk9Fp6DzqOheeceXwy8bg5qRvg3IYpBptDBLJgOHN9KRYifba
+        I8u6LAN4FeNA/HX88q3wB/eiiGOCPc9omwDOV9sl2eKi
+X-Google-Smtp-Source: AGHT+IF4EuAQmGaNrQiSyuXfkZ1+kZCOFGNs8rIQo0M7PX+3s0QvdjwwWYPRrRc2O9bqZ/8Qs4gU2w==
+X-Received: by 2002:aa7:d68d:0:b0:525:70b3:72c2 with SMTP id d13-20020aa7d68d000000b0052570b372c2mr8339341edr.14.1695068304870;
+        Mon, 18 Sep 2023 13:18:24 -0700 (PDT)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id z21-20020a50cd15000000b00532af2a18casm213601edi.3.2023.09.18.13.18.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 13:18:24 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-530ab2d9e89so3562495a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:18:24 -0700 (PDT)
+X-Received: by 2002:aa7:c152:0:b0:52f:6942:4553 with SMTP id
+ r18-20020aa7c152000000b0052f69424553mr8578677edp.6.1695068303973; Mon, 18 Sep
+ 2023 13:18:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 3/7] drm/msm/dp: use drm_bridge_hpd_notify() to report
- HPD status changes
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
- <1694813901-26952-4-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJprG8HuhDHV9k5_4+vkejnYmwmg61isZXT7EsBCbGP0pJA@mail.gmail.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAA8EJprG8HuhDHV9k5_4+vkejnYmwmg61isZXT7EsBCbGP0pJA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: FSoKitydHwGDgxHFMPdmw9NlfXjdQMtr
-X-Proofpoint-ORIG-GUID: FSoKitydHwGDgxHFMPdmw9NlfXjdQMtr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-18_09,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 spamscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309180177
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230918-hirte-neuzugang-4c2324e7bae3@brauner>
+ <CAHk-=wiTNktN1k+D-3uJ-jGOMw8nxf45xSHHf8TzpjKj6HaYqQ@mail.gmail.com> <e321d3cfaa5facdc8f167d42d9f3cec9246f40e4.camel@kernel.org>
+In-Reply-To: <e321d3cfaa5facdc8f167d42d9f3cec9246f40e4.camel@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 18 Sep 2023 13:18:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgxpneOTcf_05rXMMc-djV44HD-Sx6RdM9dnfvL3m10EA@mail.gmail.com>
+Message-ID: <CAHk-=wgxpneOTcf_05rXMMc-djV44HD-Sx6RdM9dnfvL3m10EA@mail.gmail.com>
+Subject: Re: [GIT PULL] timestamp fixes
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,77 +75,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/15/2023 5:41 PM, Dmitry Baryshkov wrote:
-> On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->> Currently DP driver use drm_helper_hpd_irq_event(), bypassing drm bridge
->> framework, to report HPD status changes to user space frame work.
->> Replace it with drm_bridge_hpd_notify() since DP driver is part of drm
->> bridge.
->>
->> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+On Mon, 18 Sept 2023 at 12:39, Jeff Layton <jlayton@kernel.org> wrote:
 >
-> Also see the comment below.
->
->> ---
->>   drivers/gpu/drm/msm/dp/dp_display.c | 20 ++------------------
->>   1 file changed, 2 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
->> index 18d16c7..59f9d85 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -356,26 +356,10 @@ static bool dp_display_is_sink_count_zero(struct dp_display_private *dp)
->>                  (dp->link->sink_count == 0);
->>   }
->>
->> -static void dp_display_send_hpd_event(struct msm_dp *dp_display)
->> -{
->> -       struct dp_display_private *dp;
->> -       struct drm_connector *connector;
->> -
->> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
->> -
->> -       connector = dp->dp_display.connector;
->> -       drm_helper_hpd_irq_event(connector->dev);
->> -}
->> -
->>   static int dp_display_send_hpd_notification(struct dp_display_private *dp,
->>                                              bool hpd)
->>   {
->> -       if ((hpd && dp->dp_display.link_ready) ||
->> -                       (!hpd && !dp->dp_display.link_ready)) {
->> -               drm_dbg_dp(dp->drm_dev, "HPD already %s\n",
->> -                               (hpd ? "on" : "off"));
->> -               return 0;
->> -       }
->> +       struct drm_bridge *bridge = dp->dp_display.bridge;
->>
->>          /* reset video pattern flag on disconnect */
->>          if (!hpd)
-> Note, this part (resetting the video_test and setting of is_connected)
-> should be moved to the dp_bridge_hpd_notify() too. Please ignore this
-> comment if this is handled later in the series.
+> In general, we always update the atime with a coarse-grained timestamp,
+> since atime and ctime updates are never done together during normal read
+> and write operations. As you note, things are a little more murky with
+> utimes() updates but I think we should be safe to overwrite the atime
+> with a coarse-grained timestamp unconditionally.
 
-I think keep them here is better since eDP does not populate hpd_enable, 
-hpd_disable and hpd_notify at edp_bridge_ops at drm_bridge_attach().
+I do think utimes() ends up always overwriting, but that's a different
+code-path entirely (ie it goes through the ->setattr() logic, not this
+inode_update_timestamps() code).
 
-Keep them here will work for both eDP and DP.
+So I *think* that even with your patch, doing a "touch" would end up
+doing the right thing - it would update atime even if it was in the
+future before.
 
+But doing a plain "read()" would break, and not update atime.
 
->
->
->> @@ -385,7 +369,7 @@ static int dp_display_send_hpd_notification(struct dp_display_private *dp,
->>
->>          drm_dbg_dp(dp->drm_dev, "type=%d hpd=%d\n",
->>                          dp->dp_display.connector_type, hpd);
->> -       dp_display_send_hpd_event(&dp->dp_display);
->> +       drm_bridge_hpd_notify(bridge, dp->dp_display.link_ready);
->>
->>          return 0;
->>   }
->> --
->> 2.7.4
->>
->
+That said, I didn't actually ever *test* any of this, so this is
+purely from reading the patch, and I can easily have missed something.
+
+Anyway, I do think that the timespec64_equal() tests are a bit iffy in
+fs/inode.c now, since the timespecs that are being tested might be of
+different precision.
+
+So I do think there's a *problem* here, I just do not believe that
+doing that timespec64_equal() -> timespec64_compare() is at all the
+right thing to do.
+
+My *gut* feel is that in both cases, we have this
+
+        if (timespec64_equal(&inode->i_atime, &now))
+
+and the problem is that *sometimes* 'now' is the coarse time, but
+sometimes it's the fine-grained one, and so checking for equality is
+simply nonsensical.
+
+I get the feeling that that timespec64_equal() logic for those atime
+updates should be something like
+
+ - if 'now' is in the future, we always considering it different, and
+update the time
+
+ - if 'now' is further in the past than the coarse granularity, we
+also update the time ("clearly not equal")
+
+ - but if 'now' is in the past, but within the coarse time
+granularity, we consider it equal and do not update anything
+
+but it's not like I have really given this a huge amount of thought.
+It's just that "don't update if in the past" that I am pretty sure can
+*not* be right.
+
+                  Linus
