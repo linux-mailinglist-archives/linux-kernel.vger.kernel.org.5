@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 077CD7A4834
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23DE7A4837
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240037AbjIRLTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
+        id S240457AbjIRLUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241638AbjIRLTi (ORCPT
+        with ESMTP id S241439AbjIRLUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:19:38 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6C694;
-        Mon, 18 Sep 2023 04:19:31 -0700 (PDT)
-Received: from [192.168.2.59] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F38DE6607181;
-        Mon, 18 Sep 2023 12:19:29 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695035970;
-        bh=hgnk48RgG+7cwbqcRVLD9sBkHSjtoXbVw0Wf/m2TIho=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=Hg2rvjWDbAtt9zyN/6VUG9k4ys3RaaAGEoyLFGIezgW+Uos5TX8wEmjQ6ecZAbq7l
-         XBoaIVFRHfXyJJH+PG9upVQG+pKyXj+4+VZRFq+AUE8o9wa80TNtkMHEtmLG1hQdS3
-         lPimLpF4Aqc06t+CnwguDX3nJVz/TnemE+oSluae5+OANtdnqVhhNDj+O8x8QMsucn
-         lqknbR2nO/mTE/7YEUrzpirP61UUywYq600UE+DdosRs/pTtqGS/LbBlavecnYa8bn
-         d6lSQYdURwN+dxkWyYSShW0KEFnr/IyeYGSRRA9CxqFnJlylocRHY2lPkS7tt92XxG
-         jXM1+rczch0OA==
-Message-ID: <207c8e59-f92a-96c0-bc5e-39b73a840110@collabora.com>
-Date:   Mon, 18 Sep 2023 14:19:27 +0300
+        Mon, 18 Sep 2023 07:20:16 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A22B3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:20:09 -0700 (PDT)
+Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
+        by cmsmtp with ESMTP
+        id hqoMqkFnNez0CiCI5qOqbK; Mon, 18 Sep 2023 11:19:45 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id iCIRqh9ZDZRGziCIRqwZ65; Mon, 18 Sep 2023 11:20:07 +0000
+X-Authority-Analysis: v=2.4 cv=PLscRNmC c=1 sm=1 tr=0 ts=65083267
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=A8hhA0xKOrAuU+Gm1IuefMwmNPbEdpwZ1JE6l7dMRg8=; b=DFBY+heH+LMU75a+xmj9w6Sejb
+        QwTxWXQOcFqiFoKG166jcSsvjsUjr3GDiSsyx6WbbtyNazzSHdeZWpQammM3UnuFzmxLnwia4WzXn
+        2psGeYpvsDrOo/OnIat5DKyIXlhkJy6ipi5tzDeWUvvzolQHZsEeouK1778dRGx+eb4L69a76osH4
+        Uq3mkNOEfy7yHP/fi9T27KIPaKrLeIGfKhqTcwtb/Ff55vBVVly5vq/XwfTPnaWF2G69GuAcs34n0
+        Yfe33nZlulaITZ8haM+22IMp2jfZ6rJ98mxYd0yAnwiJbbWceePkXuPyaNTuPMBR6SOvWx29o2X2X
+        FbIRSZbg==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:40824 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qiCIP-000Oa0-0c;
+        Mon, 18 Sep 2023 05:20:05 -0600
+Subject: Re: [PATCH 6.5 000/285] 6.5.4-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230917191051.639202302@linuxfoundation.org>
+In-Reply-To: <20230917191051.639202302@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <01385204-3046-cc93-7e49-6d9c0fe4ad1b@w6rz.net>
+Date:   Mon, 18 Sep 2023 04:20:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v9 6/6] KVM: x86/mmu: Handle non-refcounted pages
-Content-Language: en-US
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     David Stevens <stevensd@chromium.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20230911021637.1941096-1-stevensd@google.com>
- <20230911021637.1941096-7-stevensd@google.com>
- <14db8c0b-77de-34ec-c847-d7360025a571@collabora.com>
-In-Reply-To: <14db8c0b-77de-34ec-c847-d7360025a571@collabora.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qiCIP-000Oa0-0c
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:40824
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfL1j8m9+KB5KEFQlXNWYuAozpxLjCO0sQrPKn/K7yyKZGouSeHZJcM7Xs9WwGvz8mF6YchNR9o6Rlz8Y/zXVJHJ7t0O415hwqtLXaedZWuBq0xxWcY/1
+ fKe6PuJ5mx99DtSPoag5mSNel87Gs0AuRT9udBvgmAG82o46sbBNfOnWTggVZ4JkfSMzpssshXxNFAQMJ1gsOKO9g1mXk9L9yh4=
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/23 12:58, Dmitry Osipenko wrote:
-> On 9/11/23 05:16, David Stevens wrote:
->> From: David Stevens <stevensd@chromium.org>
->>
->> Handle non-refcounted pages in __kvm_faultin_pfn. This allows the host
->> to map memory into the guest that is backed by non-refcounted struct
->> pages - for example, the tail pages of higher order non-compound pages
->> allocated by the amdgpu driver via ttm_pool_alloc_page.
->>
->> The bulk of this change is tracking the is_refcounted_page flag so that
->> non-refcounted pages don't trigger page_count() == 0 warnings. This is
->> done by storing the flag in an unused bit in the sptes. There are no
->> bits available in PAE SPTEs, so non-refcounted pages can only be handled
->> on TDP and x86-64.
->>
->> Signed-off-by: David Stevens <stevensd@chromium.org>
->> ---
->>  arch/x86/kvm/mmu/mmu.c          | 52 +++++++++++++++++++++++----------
->>  arch/x86/kvm/mmu/mmu_internal.h |  1 +
->>  arch/x86/kvm/mmu/paging_tmpl.h  |  8 +++--
->>  arch/x86/kvm/mmu/spte.c         |  4 ++-
->>  arch/x86/kvm/mmu/spte.h         | 12 +++++++-
->>  arch/x86/kvm/mmu/tdp_mmu.c      | 22 ++++++++------
->>  include/linux/kvm_host.h        |  3 ++
->>  virt/kvm/kvm_main.c             |  6 ++--
->>  8 files changed, 76 insertions(+), 32 deletions(-)
-> 
-> Could you please tell which kernel tree you used for the base of this
-> series? This patch #6 doesn't apply cleanly to stable/mainline/next/kvm
-> 
-> error: sha1 information is lacking or useless (arch/x86/kvm/mmu/mmu.c).
-> error: could not build fake ancestor
+On 9/17/23 12:10 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.4 release.
+> There are 285 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I applied the patch manually to v6.5.2 and tested Venus using Intel TGL iGPU, the intel driver is crashing:
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-   BUG: kernel NULL pointer dereference, address: 0000000000000058
-   #PF: supervisor read access in kernel mode
-   #PF: error_code(0x0000) - not-present page
-   PGD 0 P4D 0 
-   Oops: 0000 [#1] PREEMPT SMP
-   CPU: 1 PID: 5926 Comm: qemu-system-x86 Not tainted 6.5.2+ #114
-   Hardware name: LENOVO 20VE/LNVNB161216, BIOS F8CN43WW(V2.06) 08/12/2021
-   RIP: 0010:gen8_ppgtt_insert+0x50b/0x8f0
-   Code: 00 00 f7 c2 00 00 20 00 74 15 f7 c3 ff ff 1f 00 75 0d 41 81 fc ff ff 1f 00 0f 87 0e 02 00 00 48 8b 74 24 08 44 89 c0 45 85 ed <48> 8b 4e 58 48 8b 04 c1 0f 85 0b 02 00 00 81 e2 00 00 01 00 0f 84
-   RSP: 0018:ffffafc085afb820 EFLAGS: 00010246
-   RAX: 0000000000000000 RBX: 00000000e9604000 RCX: 000000000000001b
-   RDX: 0000000000211000 RSI: 0000000000000000 RDI: ffff9513d44c1000
-   RBP: ffff951106f8dfc0 R08: 0000000000000000 R09: 0000000000000003
-   R10: 0000000000000fff R11: 00000000e9800000 R12: 00000000001fc000
-   R13: 0000000000000000 R14: 0000000000001000 R15: 0000ffff00000000
-   FS:  00007f2a5bcced80(0000) GS:ffff951a87a40000(0000) knlGS:0000000000000000
-   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   CR2: 0000000000000058 CR3: 0000000116f16006 CR4: 0000000000772ee0
-   PKRU: 55555554
-   Call Trace:
-    <TASK>
-    ? __die+0x1f/0x60
-    ? page_fault_oops+0x14d/0x420
-    ? exc_page_fault+0x3d7/0x880
-    ? lock_acquire+0xc9/0x290
-    ? asm_exc_page_fault+0x22/0x30
-    ? gen8_ppgtt_insert+0x50b/0x8f0
-    ppgtt_bind_vma+0x4f/0x60
-    fence_work+0x1b/0x70
-    fence_notify+0x8f/0x130
-    __i915_sw_fence_complete+0x58/0x230
-    i915_vma_pin_ww+0x513/0xa80
-    eb_validate_vmas+0x17e/0x9e0
-    ? eb_pin_engine+0x2bb/0x340
-    i915_gem_do_execbuffer+0xc85/0x2bf0
-    ? __lock_acquire+0x3b6/0x21c0
-    i915_gem_execbuffer2_ioctl+0xee/0x240
-    ? i915_gem_do_execbuffer+0x2bf0/0x2bf0
-    drm_ioctl_kernel+0x9d/0x140
-    drm_ioctl+0x1dd/0x410
-    ? i915_gem_do_execbuffer+0x2bf0/0x2bf0
-    ? __fget_files+0xc5/0x170
-    __x64_sys_ioctl+0x8c/0xc0
-    do_syscall_64+0x34/0x80
-    entry_SYSCALL_64_after_hwframe+0x46/0xb0
-   RIP: 0033:0x7f2a60b0c9df
-
-
-$ ./scripts/faddr2line ./vmlinux gen8_ppgtt_insert+0x50b/0x8f0
-gen8_ppgtt_insert+0x50b/0x8f0:
-i915_pt_entry at drivers/gpu/drm/i915/gt/intel_gtt.h:557
-(inlined by) gen8_ppgtt_insert_huge at drivers/gpu/drm/i915/gt/gen8_ppgtt.c:641
-(inlined by) gen8_ppgtt_insert at drivers/gpu/drm/i915/gt/gen8_ppgtt.c:743
-
-It's likely should be the i915 driver issue that is crashes with the NULL deref, but the origin of the bug should be the kvm page fault handling. 
-
-David, could you please tell what tests you've run and post a link to yours kernel tree? Maybe I made obscure mistake while applied the patch manually.
-
--- 
-Best regards,
-Dmitry
+Tested-by: Ron Economos <re@w6rz.net>
 
