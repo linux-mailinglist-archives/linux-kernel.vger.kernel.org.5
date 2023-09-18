@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3797A5630
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 01:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8983E7A5631
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 01:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjIRX0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 19:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
+        id S230158AbjIRXbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 19:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjIRX0a (ORCPT
+        with ESMTP id S229436AbjIRXbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 19:26:30 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F9A99
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:26:24 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-76dc7b0da9fso306627285a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:26:24 -0700 (PDT)
+        Mon, 18 Sep 2023 19:31:15 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C6590
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:31:05 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-59c04237bf2so43047767b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 16:31:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695079584; x=1695684384; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oAEtx1s5KODmNlfwZDRx/5fDgP/BvGwuP+6p/LeySyc=;
-        b=DwZfbqTC7AvXz9ZXkivsv5q/c7I19qi/wfaxefQ+g8okYQYGKQGrNEfO19t7bVJBXT
-         qFv0gjob3n2cQSBv8ULRwUCgkSqIH0+6qkC6TbOLczROI2o/pAcgYsA6Dd/PwL+u570v
-         eI90iUK89OBcsznOnuy6tFTqjTNcRjnFeKYkLI+T7YOHlpF8/wzuUecf8cUKfE5m3OC7
-         nyiKJKE6a0WslmYAqv407a0EaWAUjoVfvkNPHadJG7/YTnOxI2LfqojBziqHMXTwNPAE
-         ZUU5EOOXY7fY/RC0uqkRTJygBjpHpQIGJWgxYIhq4oH+gQX5eDdpNbPVD+eHxef9nVLq
-         T6kg==
+        d=google.com; s=20230601; t=1695079865; x=1695684665; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AvmZeLJa5EyjvpWd7at0QcGbhWatmHcWmtqRx8CiCf4=;
+        b=pGExb2pPuLuG/EbV4lKr/lwnQIudowJDrj3y1Pd/+B2GSU0hVGnW3RJ7TW5JBhYgOG
+         aD1VVHLT9gUR6YdQiXZQ5cPgCwn7NdkR0wy1BcdUa7HKSg67Xsq0ZeoStyF3UIRlWbVt
+         h60Yii3bW3KfIzpEwajXnrLANTGz6GMw5fVUAaXwl4ioGBc10CygbsGR13gNPaNTM0bu
+         NZKNNiIYiBinOPSG+bSzBqs4/8jrSfA/JNWf4zOtYNNcB/7qNwFVWUD1l6tdXWNi3eUh
+         Gm4mF+szpQXaGaQftRWu31znIu890mA+SH+SHpXej30I52zj4mZqny3AgzU7mbVOWDgW
+         jLkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695079584; x=1695684384;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oAEtx1s5KODmNlfwZDRx/5fDgP/BvGwuP+6p/LeySyc=;
-        b=JQr1AoSi9Q/UELJFaUXz4cay1kHC11WWhI9k60uBqeVgmU9/RcM/U/qMOhIwesJPIY
-         RyxBPhGRiEWVNQLWkjAiVdL7VM5o4sc4jDRqV38li9zS3ynwzn8aGPr9kQRwZrtnKo/7
-         ROTtT/iR26R02513DIfFRqd+kC+EHb9NO0yA9VSc149HqAJ+xeGHm6hhETkyHZ/0DGFK
-         SQNOm6hh8k2zlOu1ePWT78H+8BA0nDPwyuVN3+721W6eWYqN1xdQfhXhrA72PJRfs4o/
-         3q9i2C9aB/fk2Y8MH+fzvNMlKPV70bPpArvQBGF2V+QaKLKfGUkfxOKuOuiJAIhdjAZZ
-         vkAw==
-X-Gm-Message-State: AOJu0YxVilntve+v//8bE18HDvNs1wYoUdP7/pNpDVWxaQ5scQz5OBus
-        UDTAm7oj6QbYhZJdNsm797svkQ==
-X-Google-Smtp-Source: AGHT+IEXRIdmJQWyD0S5IhYq/RPfPN15fkMe6wTPmqLT8+ltrjCiLknrpDQvIt75XWrfMAomw0TJ5Q==
-X-Received: by 2002:a0c:e493:0:b0:658:2a3b:4a1f with SMTP id n19-20020a0ce493000000b006582a3b4a1fmr2642260qvl.22.1695079583965;
-        Mon, 18 Sep 2023 16:26:23 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id u11-20020a0cec8b000000b00641899958efsm3617260qvo.130.2023.09.18.16.26.23
+        d=1e100.net; s=20230601; t=1695079865; x=1695684665;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AvmZeLJa5EyjvpWd7at0QcGbhWatmHcWmtqRx8CiCf4=;
+        b=LSTBNHLumZb8gR4Zcn5kFGXemM5xf5LKE90YKjFPMkvHFuMtPyH5OttiRWeu/nwB87
+         T2AxcYFmjJgfl7vSwJynTe8Xs3D/vHm05XTTDVgzGaCsU/OeDTgAYgK220qHzj9MDGf1
+         mWZGabOpfaYczs825H1dv44JRlL1jDypsLaIiXCXs1L8cUrYB5LyO0fZX7SsX2S+SZqO
+         X8uGX0wPuhnX9FwxOY23nqg/Mm8H/BT4jrZC6TS2snsoMUKstpOWqHHa0SXvkShd4rst
+         ntFEKCJ2p55q/H2mF+zaKlnpK9cvthCRFSKIXp3SDcwEF9VTWIsQLA09nGEbgTfb/P3D
+         MoUg==
+X-Gm-Message-State: AOJu0Yza8JIfs5Bxxp3PLkteSEPdkQBl+4V1YKg+nKFo9VtG7dd5TUdE
+        mClskKvviP1Bet2M/Pw9YLwOTw==
+X-Google-Smtp-Source: AGHT+IF3JT5bCA7I7Ld7k7UXeUjFs+gdf923oWqmQjQTHiHBf/0n5u4GnJW18U8J/QECAfDT+CG+XA==
+X-Received: by 2002:a0d:efc6:0:b0:595:be7:a38 with SMTP id y189-20020a0defc6000000b005950be70a38mr9618335ywe.49.1695079864905;
+        Mon, 18 Sep 2023 16:31:04 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x8-20020a817c08000000b00589b653b7adsm2888815ywc.136.2023.09.18.16.31.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 16:26:23 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qiNdG-0007o0-U7;
-        Mon, 18 Sep 2023 20:26:22 -0300
-Date:   Mon, 18 Sep 2023 20:26:22 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm: document
- mmu_notifier_invalidate_range_start_nonblock()
-Message-ID: <20230918232622.GN13795@ziepe.ca>
-References: <20230918201832.265108-1-jannh@google.com>
+        Mon, 18 Sep 2023 16:31:03 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 16:30:54 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Suren Baghdasaryan <surenb@google.com>
+cc:     akpm@linux-foundation.org, willy@infradead.org, hughd@google.com,
+        shy828301@gmail.com, mhocko@suse.com, vbabka@suse.cz,
+        syzkaller-bugs@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/1] mm: lock VMAs skipped by a failed
+ queue_pages_range()
+In-Reply-To: <20230918211608.3580629-1-surenb@google.com>
+Message-ID: <512d487a-758c-6d9c-787c-4169117d20cf@google.com>
+References: <20230918211608.3580629-1-surenb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918201832.265108-1-jannh@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 10:18:32PM +0200, Jann Horn wrote:
-> Document what mmu_notifier_invalidate_range_start_nonblock() is for.
-> Also add a __must_check annotation to signal that callers must bail out if
-> a notifier vetoes the operation.
+On Mon, 18 Sep 2023, Suren Baghdasaryan wrote:
+
+> When queue_pages_range() encounters an unmovable page, it terminates
+> its page walk. This walk, among other things, locks the VMAs in the range.
+> This termination might result in some VMAs being left unlock after
+> queue_pages_range() completes. Since do_mbind() continues to operate on
+> these VMAs despite the failure from queue_pages_range(), it will encounter
+> an unlocked VMA.
+> This mbind() behavior has been modified several times before and might
+> need some changes to either finish the page walk even in the presence
+> of unmovable pages or to error out immediately after the failure to
+> queue_pages_range(). However that requires more discussions, so to
+> fix the immediate issue, explicitly lock the VMAs in the range if
+> queue_pages_range() failed. The added condition does not save much
+> but is added for documentation purposes to understand when this extra
+> locking is needed.
 > 
-> Signed-off-by: Jann Horn <jannh@google.com>
+> Fixes: 49b0638502da ("mm: enable page walking API to lock vmas during the walk")
+> Reported-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000f392a60604a65085@google.com/
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+
+Acked-by: Hugh Dickins <hughd@google.com>
+
 > ---
->  include/linux/mmu_notifier.h | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+>  mm/mempolicy.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 42b5567e3773..cbc584e9b6ca 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -1342,6 +1342,9 @@ static long do_mbind(unsigned long start, unsigned long len,
+>  	vma_iter_init(&vmi, mm, start);
+>  	prev = vma_prev(&vmi);
+>  	for_each_vma_range(vmi, vma, end) {
+> +		/* If queue_pages_range failed then not all VMAs might be locked */
+> +		if (ret)
+> +			vma_start_write(vma);
+>  		err = mbind_range(&vmi, vma, &prev, start, end, new);
+>  		if (err)
+>  			break;
+> -- 
+> 2.42.0.459.ge4e396fd5e-goog
