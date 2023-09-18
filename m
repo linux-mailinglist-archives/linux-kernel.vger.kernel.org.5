@@ -2,172 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BFC7A4029
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85A67A4035
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239556AbjIREtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S239577AbjIREv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 00:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239627AbjIREtf (ORCPT
+        with ESMTP id S239560AbjIREvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:49:35 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D443D12D;
-        Sun, 17 Sep 2023 21:49:21 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 939606015E;
-        Mon, 18 Sep 2023 06:49:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695012560; bh=F/BMLDEayJFvrEb777veIWDYiWEXyubU7F/o8rvVZSY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BAvG8HHE/HngnzOfSv0X/KlenJbgZgM9QkXUAwZH5gNNkQflJokqlAw0fSP7jRoSw
-         rgCjNSiaF1klJ6Eia+0MMti/OU5td+7DRYSK3bZiWOtBdqZY6oLo6kCuBUYMuF8Qsc
-         q1s6Qqlz8F9dYSHbzaRe+MGwUA7LNN16WqhUfRMUKMARGWT4xIjSSov1JFaBC6qO0o
-         GKi566ys9I/yrZSTwFAtSiKfpYu2Syl61GJ1JceXtFCIkAWdIVTq9eqkUpFXndmxPC
-         fcsPaL634cYkXSjoXL2NVuDA+1TnaYbbnG8dNLsf5FDxLygowJ7OpRplpoAbQ0Pj9W
-         NgMAGk8iat9OQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id SaN-Jvvn3b1b; Mon, 18 Sep 2023 06:49:18 +0200 (CEST)
-Received: from defiant.home (78-1-184-14.adsl.net.t-com.hr [78.1.184.14])
-        by domac.alu.hr (Postfix) with ESMTPSA id D268860155;
-        Mon, 18 Sep 2023 06:49:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695012558; bh=F/BMLDEayJFvrEb777veIWDYiWEXyubU7F/o8rvVZSY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=2KlRj1nHXInXy8QCrSD6Gvru6VkMgNubtMI3yoySr0nVvYsho/HqZS+c9J2yGsKYh
-         rOSfG6qbSfKwkAFUzX5EXJXQ2qUph4W8jBZCFsbD0XnpB7TW1V1NbWCSOmVQ5hwb4M
-         lsRxLLrFC3d6sn1dKk0UWoNAR991lWZPWV0b/l2Op4fQ2O/KXg2y1nVjtpY22J2G3v
-         2BvlgObK3iHvzFaAlqqZrkQkKuO+LvRbvqp23KXKJypvUpxvXE69xZ/zT79yWT9e3I
-         dN/BWh+89q6a2xHGch8Ol6EF60ouz9rmlZoZV03YftHJmkTnpNv0R4i2josqtGExQc
-         4EwBfp+TP/VGQ==
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Tejun Heo <htejun@gmail.com>
-Subject: [PATCH v1 1/1] poll: fix the data race in the use of pwq->triggered in poll_schedule_timeout()
-Date:   Mon, 18 Sep 2023 06:48:38 +0200
-Message-Id: <20230918044837.29859-1-mirsad.todorovac@alu.unizg.hr>
+        Mon, 18 Sep 2023 00:51:48 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B9F120
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:51:40 -0700 (PDT)
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230918045136epoutp01d70cabbafca33231421d813b3f5608c9~F5REG_6V93111131111epoutp01L
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:51:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230918045136epoutp01d70cabbafca33231421d813b3f5608c9~F5REG_6V93111131111epoutp01L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695012696;
+        bh=4FgVh3QxMa/Oikq/jXVD32FeK6Wx2JOARgZJ7Ni1RI4=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=ZnK4yGcXT5dFy/B9rbTeCBi/i6VCHpNiR4JcNFnSKZK7KGkXlWIowdAJTickqjyxA
+         KE5VMAQSXX9gj8dXtUW+kT3cGXLIxvjPvzRi0AtLefhqxJz+vvFtjZgAoakYIU310I
+         Gm/Cy/5oyWwCHieepLhRa+SvrawU9jcBwm396+7A=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230918045135epcas1p25bee43ead6f894264e78fc4145651b9d~F5RDnUjZQ0670906709epcas1p2J;
+        Mon, 18 Sep 2023 04:51:35 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.38.231]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Rpsny3thxz4x9Px; Mon, 18 Sep
+        2023 04:51:34 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        19.E3.09646.657D7056; Mon, 18 Sep 2023 13:51:34 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230918045133epcas1p42fa41cb80a1250b9db28f398b31d041c~F5RCIf5p03009130091epcas1p4D;
+        Mon, 18 Sep 2023 04:51:33 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230918045133epsmtrp14a4e100ea519bd5d6c5c025eed515910~F5RCFcE4G1930419304epsmtrp1W;
+        Mon, 18 Sep 2023 04:51:33 +0000 (GMT)
+X-AuditID: b6c32a37-b23ff700000025ae-b9-6507d756af12
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B6.A4.08742.557D7056; Mon, 18 Sep 2023 13:51:33 +0900 (KST)
+Received: from mediaserver.. (unknown [10.113.111.131]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230918045133epsmtip1e90f1f5e8eaf366cc5538f719f0474e0~F5RByW3bD1750717507epsmtip1j;
+        Mon, 18 Sep 2023 04:51:33 +0000 (GMT)
+From:   Kwanghoon Son <k.son@samsung.com>
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, wefu@redhat.com,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, inki.dae@samsung.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v3 0/3] Introduce reset driver for T-HEAD th1520 SoC
+Date:   Mon, 18 Sep 2023 04:51:22 +0000
+Message-Id: <20230918045125.4000083-1-k.son@samsung.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGJsWRmVeSWpSXmKPExsWy7bCmgW7YdfZUg+NPxS22/p7FbrFm7zkm
+        i/lHzrFavNjbyGIx6f4EFovmY+vZLPpePGS2uLxrDpvFts8tbBZ3751gsXh5uYfZom0Wv0Xr
+        3iPsFi37p7A48Hm8efmSxeNwxxd2j02rOtk87lzbw+axeUm9R/9fA4/3+66yefRtWcXocan5
+        OrvH501yAVxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6
+        bpk5QPcrKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgpMC/SKE3OLS/PS9fJSS6wM
+        DQyMTIEKE7IzJu1bw1owmbdi5revbA2Mi7i6GDk5JARMJI6cfcECYgsJ7GCUWHVEsYuRC8j+
+        xChxef1JRojEN0aJzh+VMA3dff1MEEV7GSXufHjMCOG8YZT49KALrINNQF1iSdtadpCEiMB/
+        Rok3f1qZQBLMAvESJ66dYwaxhQVcJC7tOgHWwCKgKvGlcTrYHbwCFhI7zxxghlgnL7H/4Flm
+        iLigxMmZT1gg5shLNG+dzQyyQEJgJYfE1Pt9TBANLhKTrj+FsoUlXh3fwg5hS0m87G+DsrMl
+        jn7cywZhl0hcn7WIFcI2lti/dDJQLwfQAk2J9bv0IcKKEjt/z2WE2Msn8e5rDytIiYQAr0RH
+        mxCEKS9xq7McolpU4szTj1DDPSSurT3IBlIiJBArMWeRxARG+VlIfpmF5JdZCGsXMDKvYhRL
+        LSjOTU8tNiwwhkdpcn7uJkZwAtYy38E47e0HvUOMTByMhxglOJiVRHhnGrKlCvGmJFZWpRbl
+        xxeV5qQWH2I0BYbuRGYp0eR8YA7IK4k3NLE0MDEzMjaxMDQzVBLnvfWsN0VIID2xJDU7NbUg
+        tQimj4mDU6qBSaqmjWGmVMO6PUaFwfyOYe8SSypaJNKmK8oKt6mff5tUuyXmjULYnq/8lXeu
+        MH1YezP9isdMwTr5O+GCE/7n9W4z4lFYmiPe80xBePvt7EP3uKSsL1zQWGkQpfH4/WphV7cw
+        q93CXKe1dbfmzAoKfJjSxv7vZVHSe7VV2smrd65U+1sdcux0fONMXvvw33uL/+i07C1IumJm
+        nmpod32Pfbfm/sCvL+yOSoUaX+7bcYsxLb/VSFjpaLuF5uoYf/lFjXdrt+rOrnUSXprM8Lpe
+        Uu+duLpcyvOgr0fPT9QqW69qViYhcFY07gl/wwPWs2kBP9SM+D2mca1nblr+l0Fu4fuXQl3r
+        1fr2hmhpfFJiKc5INNRiLipOBAAyF+joSQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBLMWRmVeSWpSXmKPExsWy7bCSnG7odfZUgzmthhZbf89it1iz9xyT
+        xfwj51gtXuxtZLGYdH8Ci0XzsfVsFn0vHjJbXN41h81i2+cWNou7906wWLy83MNs0TaL36J1
+        7xF2i5b9U1gc+DzevHzJ4nG44wu7x6ZVnWwed67tYfPYvKTeo/+vgcf7fVfZPPq2rGL0uNR8
+        nd3j8ya5AK4oLpuU1JzMstQifbsEroxJ+9awFkzmrZj57StbA+Miri5GTg4JAROJ7r5+pi5G
+        Lg4hgd2MEreOXWGFSIhKdFxuZOxi5ACyhSUOHy6GqHnFKLHi9io2kBo2AXWJJW1r2UESIgK9
+        TBIfPi5hAkkwCyRKbPn6mhnEFhZwkbi06wQjiM0ioCrxpXE6C4jNK2AhsfPMAWaIZfIS+w+e
+        ZYaIC0qcnPmEBWKOvETz1tnMExj5ZiFJzUKSWsDItIpRMrWgODc9t9iwwDAvtVyvODG3uDQv
+        XS85P3cTIzgytDR3MG5f9UHvECMTB+MhRgkOZiUR3pmGbKlCvCmJlVWpRfnxRaU5qcWHGKU5
+        WJTEecVf9KYICaQnlqRmp6YWpBbBZJk4OKUamA7sMBSsPm6npP/FevGjuucx8234rgfEibm8
+        2W+awBxd1M7X8aTj/dPXRyY+XjdhWY3+jUsTuepLD3EmB5Xs0lt79ZKp4NZzr2OWXFJL7rad
+        y6b/L/KmYGboz92lP3nZbat9M1aemHHzYvaFpV8cztSXtxhIex+vftjfVtF6pmDhCplD8Udl
+        4msuZCz04vtxsDon7PHOWfY+qcv/F6VnPd111X82l9BmbfEv+79dvjz9woOzn2R/+HmLbeoq
+        PlYX2TBf+cW5pu98bWIVQb9frUsVlI1Km/X7NZ/tbX+PJy4/565J4XlgL30u/8IXnj9VbKf4
+        zzXNMvUIFvGw5i3VWJnLP/VD2T5N0V7vJaIP5iuxFGckGmoxFxUnAgCqHlk4+wIAAA==
+X-CMS-MailID: 20230918045133epcas1p42fa41cb80a1250b9db28f398b31d041c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230918045133epcas1p42fa41cb80a1250b9db28f398b31d041c
+References: <CGME20230918045133epcas1p42fa41cb80a1250b9db28f398b31d041c@epcas1p4.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KCSAN had discovered the following data-race:
+This patchset adds initial support for reset driver.
+Register information is from vendor kernel [1].
+I sent an e-mail to get permission the original author,
+but there was no answer. So I upload patch since it has GPL license.
 
-[  139.315774] ==================================================================
-[  139.315798] BUG: KCSAN: data-race in poll_schedule_timeout.constprop.0 / pollwake
+This patch also can be tested with watchdog simply with 
 
-[  139.315830] write to 0xffffc90003f3fb60 of 4 bytes by task 1848 on cpu 6:
-[  139.315843]  pollwake+0xc0/0x110
-[  139.315860]  __wake_up_common+0x7a/0x150
-[  139.315877]  __wake_up_common_lock+0x7f/0xd0
-[  139.315893]  __wake_up_sync_key+0x20/0x50
-[  139.315905]  sock_def_readable+0x67/0x160
-[  139.315917]  unix_stream_sendmsg+0x35f/0x990
-[  139.315932]  sock_sendmsg+0x15d/0x170
-[  139.315947]  ____sys_sendmsg+0x3d5/0x500
-[  139.315962]  ___sys_sendmsg+0x9e/0x100
-[  139.315976]  __sys_sendmsg+0x6f/0x100
-[  139.315990]  __x64_sys_sendmsg+0x47/0x60
-[  139.316005]  do_syscall_64+0x5d/0xa0
-[  139.316022]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+watchdog0: watchdog@ffefc30000 {
+        compatible = "snps,dw-wdt";
+        reg = <0xff 0xefc30000 0x0 0x1000>;
+        interrupts = <24 IRQ_TYPE_LEVEL_HIGH>;
+        clocks = <&osc>;
+        resets = <&rst TH1520_RESET_WDT0>;
+};
 
-[  139.316043] read to 0xffffc90003f3fb60 of 4 bytes by task 1877 on cpu 18:
-[  139.316055]  poll_schedule_timeout.constprop.0+0x4e/0xc0
-[  139.316071]  do_sys_poll+0x50d/0x760
-[  139.316081]  __x64_sys_poll+0x5f/0x210
-[  139.316091]  do_syscall_64+0x5d/0xa0
-[  139.316105]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[1] https://github.com/revyos/thead-kernel
 
-[  139.316125] value changed: 0x00000000 -> 0x00000001
+Changelog:
+v2:
+https://lore.kernel.org/linux-riscv/20230912024914.3769440-1-k.son@samsung.com/
+- wrong patch version
+- yaml file indent
+- missing vendor prefix
+- drop okay
 
-[  139.316143] Reported by Kernel Concurrency Sanitizer on:
-[  139.316153] CPU: 18 PID: 1877 Comm: gdbus Tainted: G             L     6.6.0-rc1-kcsan-00269-ge789286468a9-dirty #3
-[  139.316167] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[  139.316177] ==================================================================
+rfc:
+https://lore.kernel.org/linux-riscv/20230904042559.2322997-1-k.son@samsung.com/
+- dt_binding_check
+- enable reset controller default
 
-The data race appears to be here in poll_schedule_timeout():
+Kwanghoon Son (3):
+  dt-bindings: reset: Document th1520 reset control
+  reset: Add th1520 reset driver support
+  riscv: dts: Add th1520 reset device tree
 
-fs/select.c:
-  237 static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
-  238                           ktime_t *expires, unsigned long slack)
-  239 {
-  240         int rc = -EINTR;
-  241
-  242         set_current_state(state);
-→ 243         if (!pwq->triggered)
-  244                 rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
-  245         __set_current_state(TASK_RUNNING);
-  246
-  247         /*
-  248          * Prepare for the next iteration.
-  249          *
-  250          * The following smp_store_mb() serves two purposes.  First, it's
-  251          * the counterpart rmb of the wmb in pollwake() such that data
-  252          * written before wake up is always visible after wake up.
-  253          * Second, the full barrier guarantees that triggered clearing
-  254          * doesn't pass event check of the next iteration.  Note that
-  255          * this problem doesn't exist for the first iteration as
-  256          * add_wait_queue() has full barrier semantics.
-  257          */
-  258         smp_store_mb(pwq->triggered, 0);
-  259
-  260         return rc;
-  261 }
+ .../bindings/reset/thead,th1520-reset.yaml    |  44 +++++++
+ arch/riscv/boot/dts/thead/th1520.dtsi         |   7 ++
+ drivers/reset/Kconfig                         |  10 ++
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-th1520.c                  | 109 ++++++++++++++++++
+ .../dt-bindings/reset/thead,th1520-reset.h    |   9 ++
+ 6 files changed, 180 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/reset/thead,th1520-reset.yaml
+ create mode 100644 drivers/reset/reset-th1520.c
+ create mode 100644 include/dt-bindings/reset/thead,th1520-reset.h
 
-The problem seems to be fixed by using READ_ONCE() around pwq->triggered, which
-silences the KCSAN warning:
-
-→       if (!READ_ONCE(pwq->triggered))
-                rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
-
-This is a quick fix that removes the symptom, but probably more isses need to be
-observed around the use of pwq->triggered.
-
-Having the value of pwq->triggered changed under one's fingers obviously has the
-effect of the wrong branch in the "if" statement and wrong schedule_hrtimeout_range()
-invocation.
-
-Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Fixes: 5f820f648c92a ("poll: allow f_op->poll to sleep")
-Cc: Tejun Heo <htejun@gmail.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org
-Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
----
-v1:
- the proposed fix (RFC)
-
- fs/select.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/select.c b/fs/select.c
-index 0ee55af1a55c..38e12084daf1 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -240,7 +240,7 @@ static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
- 	int rc = -EINTR;
- 
- 	set_current_state(state);
--	if (!pwq->triggered)
-+	if (!READ_ONCE(pwq->triggered))
- 		rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
- 	__set_current_state(TASK_RUNNING);
- 
 -- 
 2.34.1
 
