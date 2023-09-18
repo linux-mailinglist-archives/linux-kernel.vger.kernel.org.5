@@ -2,63 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C63267A51BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1959A7A51C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjIRSJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 14:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S229639AbjIRSKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 14:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjIRSJK (ORCPT
+        with ESMTP id S229558AbjIRSKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 14:09:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8533FFD;
-        Mon, 18 Sep 2023 11:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PSl3YIBcOMlI28KGljTBp5+6rpOLjzI4VlDZcO+V47g=; b=v51lvSCHJ27MH9SVEXRHAJB7qA
-        w2bmT2C1j4sY40YT0/lBFqUnUQofZY/n9WBhFCJUODtoIRh1Yhi6dOTCfiid1DAA5T9ItyXXUffq4
-        69/1uJ9eBsRomdm0UojreSlngN5GpIIKlXYZaHSmiyDSTmmkIMIiiVlFRkStsGO2zmdKi1zUQ1h2X
-        UXxxarA3pXN01KQqteWffiqwvCtCnZZm4fyutmKct5sD9jNukJltAcKA6UGwwL/ZKljZR3P/wzI82
-        KePlKSnNqxk7hiuBh+qjfn0mBcRw3fv4ieCqpCkY0JMkZM3bhv4I4UYRAZW/TlYeyKnXA6lPMOB0B
-        2/05ZOPw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qiIg8-00G33u-1d;
-        Mon, 18 Sep 2023 18:09:00 +0000
-Date:   Mon, 18 Sep 2023 11:09:00 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Daniel Gomez <da.gomez@samsung.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "hughd@google.com" <hughd@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 1/6] filemap: make the folio order calculation shareable
-Message-ID: <ZQiSPEKRJSkeh3Fe@bombadil.infradead.org>
-References: <20230915095042.1320180-1-da.gomez@samsung.com>
- <CGME20230915095124eucas1p1eb0e0ef883f6316cf14c349404a51150@eucas1p1.samsung.com>
- <20230915095042.1320180-2-da.gomez@samsung.com>
- <ZQRet4w5VSbvKvKB@casper.infradead.org>
+        Mon, 18 Sep 2023 14:10:11 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFB0106;
+        Mon, 18 Sep 2023 11:10:05 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68fb85afef4so4421930b3a.1;
+        Mon, 18 Sep 2023 11:10:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695060605; x=1695665405; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6maznjEXgWDHtf3uPCnCDUhsx4nCL1qmfuNmzcDHoYs=;
+        b=lKBC25hPAR4xxyS49nD13nFf2jCL9ahimSmLXdsNARPDbmMf671y1PfquXIEYJfY5q
+         ziScMz5TUBTSzk1Azy35SezHGzGPm3kU4KpZxMk2kM9M7xT4HWkk4gXo2scxk2wXyd56
+         2o2VZA9KkKIj1tYAiDFiaZLlDS4jC3pMyDI0Zo6mslbQoVswJTRQRBbDd8Ka8BriR1ja
+         GHJ75CSeO6zn2Pg1MfySIRb/6sO5Zhw7Sh4A33oLMMynVBxlbbjGYWQEHgnh1M1RJ40N
+         ugVc5zNW+bzTuBxMIdEC8fZjDFXnl97q/ySbkQl/Yn78V6sc5/E3OMjHqg/vD5s5p5tU
+         PR0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695060605; x=1695665405;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6maznjEXgWDHtf3uPCnCDUhsx4nCL1qmfuNmzcDHoYs=;
+        b=H4KEY95BYSi49B951OuRu+3vJiMYcFY10IM1lGxbBRoNdYpQ3RFarZMrQT/Z89Z8c2
+         MmY6dA/Jivmu4vm0OVk3Om3rJ6xU6LZnhV3rnuo6UX7FvvH3k3l5gv8uDN9RdksWQuzY
+         eVtJWSEmYjvJMFNpxzYUdIdw/YK1XqK6o5V/WiiShV9gdvo/pUmeU3iobk/+ar5xAper
+         A2wFq+sBrEolDh2rC3W6i+kVDYkdoq6oVXQSIzbmuDU9gZoqKVwFFPynJ84AtUP4/OgT
+         c1Z1x4QG6Y6DXVUMVyCL+tDYxCfcUo+KJBjjnmciaoqkvF7zcALPELH8gKaPcHZtLLyS
+         F5sg==
+X-Gm-Message-State: AOJu0YzMnNoiCnOSzluQ55zLVa1e0tGlc+uXlKlICJA0Jh3LDYSd3GVh
+        wMhAwZQg9vTVPBvoC2zZu4M=
+X-Google-Smtp-Source: AGHT+IHPHNj2H2G7P5W1DsuqTkz5X25XRN2Oiv+LRznZx5p1RsnN4Ts0LllmXBFdo/bKA45M5il7uA==
+X-Received: by 2002:a05:6a21:a103:b0:154:d3ac:2063 with SMTP id aq3-20020a056a21a10300b00154d3ac2063mr7008057pzc.27.1695060604872;
+        Mon, 18 Sep 2023 11:10:04 -0700 (PDT)
+Received: from [10.67.49.139] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c10-20020a62e80a000000b0064fd4a6b306sm7402910pfi.76.2023.09.18.11.10.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 11:10:04 -0700 (PDT)
+Message-ID: <936cf5f4-1025-02a8-6bd2-dff755fa9ed7@gmail.com>
+Date:   Mon, 18 Sep 2023 11:10:02 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQRet4w5VSbvKvKB@casper.infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 5.15 000/511] 5.15.132-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230917191113.831992765@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20230917191113.831992765@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,34 +80,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 02:40:07PM +0100, Matthew Wilcox wrote:
-> On Fri, Sep 15, 2023 at 09:51:23AM +0000, Daniel Gomez wrote:
-> > To make the code that clamps the folio order in the __filemap_get_folio
-> > routine reusable to others, move and merge it to the fgf_set_order
-> > new subroutine (mapping_size_order), so when mapping the size at a
-> > given index, the order calculated is already valid and ready to be
-> > used when order is retrieved from fgp_flags with FGF_GET_ORDER.
-> > 
-> > Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
-> > ---
-> >  fs/iomap/buffered-io.c  |  6 ++++--
-> >  include/linux/pagemap.h | 42 ++++++++++++++++++++++++++++++++++++-----
-> >  mm/filemap.c            |  8 --------
-> >  3 files changed, 41 insertions(+), 15 deletions(-)
+
+
+On 9/17/2023 12:07 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.132 release.
+> There are 511 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> That seems like a lot of extra code to add in order to avoid copying
-> six lines of code and one comment into the shmem code.
+> Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
+> Anything received after that time might be too late.
 > 
-> It's not wrong, but it seems like a bad tradeoff to me.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.132-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-The suggestion to merge came from me, mostly based on later observations
-that in the future we may want to extend this with a min order to ensure
-the index is aligned the the order. This check would only be useful for
-buffred IO for iomap, readahead. It has me wondering if buffer-heads
-support for large order folios come around would we a similar check
-there?
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-So Willy, you would know better if and when a shared piece of code would
-be best with all these things in mind.
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-  Luis
