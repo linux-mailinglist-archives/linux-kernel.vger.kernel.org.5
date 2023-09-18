@@ -2,70 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 424CA7A52E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600297A52E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjIRTUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 15:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43790 "EHLO
+        id S229530AbjIRTWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 15:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjIRTUn (ORCPT
+        with ESMTP id S229379AbjIRTWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 15:20:43 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C66F7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:20:37 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-792623074edso140146939f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695064837; x=1695669637; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b86hQuE0ZsCAliAzznf1aFW63ModJ5OyRH3XXfZOYAw=;
-        b=JLos0u6+Ctp/2yG6ETSGJK88G2nIAccbi2cPyZQXIh8p7a0PEcJA+PF1CJ8MuWz2DJ
-         Zuz6e0bVmmGHqD4dZIIzcbofsY4/pFg74S1zSnRS1muJ0Gr2Ay/Vk8Vawoj0tv7sRYwh
-         VkmFlgLh8o8a1LBxnoR7qcY0th91qN629/aSD6oyKEGZ69CV9FPGYjyUrL9RVfb/OOAe
-         Nwsgtm91UpVJoElHgPibXghmHxxVi4VzC5oyoJ8/8UKY5Upc7d5HOtVA7gzp4fY2+sV+
-         DyyLJlLri5W2SYDwwB641sxFYcteWaC5DWE+pmUvj7pg5mqJzThLR8tkYwd7yc2idT9h
-         SkhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695064837; x=1695669637;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b86hQuE0ZsCAliAzznf1aFW63ModJ5OyRH3XXfZOYAw=;
-        b=kLHsNy62vXPFd5LoBWp/Xx9nDb/PlE4X20SQMlVoSMmEheVtNwp79fvz6imxTawD4h
-         Muy1kQV6ll8VYSiHVoywVC/zkc2Zrzx/TRpS/6xc82wA2xltsrgraBft5ZxVzsrCLdiN
-         BTOHfOYQddlA0xylVndpr/xZUNFCrPJ3IvtLFeyQWEr/oDMqH7gnv/SkzsMbmwD4I3ua
-         LY2Dayz1jz2oWU+sIEYUBP6ScoyKamTlMq7SYBIv16JSnlNzI3kzZ7CNpnwwTZwq2uVj
-         bCuRoJntaOf6DaQVRy29hrQimAGsAbzaf9fLA2e5OIvX+eemKSYCYVzmwlO3PTMqpnnJ
-         x0Cg==
-X-Gm-Message-State: AOJu0Yz4ZUPtq0WoD27NbHUUZPznmLo2DhjIaQDHBjYe1xp6LGD9MqLs
-        nvVxo2ygVCGaBZJl4Bn00PoW/p29A2M=
-X-Google-Smtp-Source: AGHT+IGj3v2dR+x1TD21MoSvJrpzOp21HR2sWZYWJgcDej6ogfKBwiBJ+lIowYbHRaykD5DPaGR2oQ==
-X-Received: by 2002:a05:6e02:1bcf:b0:34f:14e5:5c89 with SMTP id x15-20020a056e021bcf00b0034f14e55c89mr554146ilv.13.1695064837257;
-        Mon, 18 Sep 2023 12:20:37 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y16-20020a02bb10000000b0042b3042ccd8sm2979490jan.13.2023.09.18.12.20.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 12:20:36 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 18 Sep 2023 12:20:35 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 6.6-rc2
-Message-ID: <ca3ac950-db89-426e-b5af-9f8bf5f91658@roeck-us.net>
-References: <CAHk-=whW=fV2tnAreSbtPVpJxq++pyBZa3g+cxX8_V__WSZzCg@mail.gmail.com>
+        Mon, 18 Sep 2023 15:22:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 150D210E
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:21:52 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA14A1FB;
+        Mon, 18 Sep 2023 12:22:28 -0700 (PDT)
+Received: from [10.57.94.165] (unknown [10.57.94.165])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 526413F5A1;
+        Mon, 18 Sep 2023 12:21:50 -0700 (PDT)
+Message-ID: <982143de-ec1e-aff4-e65f-77a38e48cf20@arm.com>
+Date:   Mon, 18 Sep 2023 20:21:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whW=fV2tnAreSbtPVpJxq++pyBZa3g+cxX8_V__WSZzCg@mail.gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 2/7] iommu: Decouple iommu_present() from bus ops
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        baolu.lu@linux.intel.com
+References: <cover.1694693889.git.robin.murphy@arm.com>
+ <b7cd933aa7774ad687c695ebe5e00c17178a7542.1694693889.git.robin.murphy@arm.com>
+ <20230918171216.GK13733@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230918171216.GK13733@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,43 +48,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 02:55:46PM -0700, Linus Torvalds wrote:
-> Another week, another -rc.
+On 2023-09-18 18:12, Jason Gunthorpe wrote:
+> On Fri, Sep 15, 2023 at 05:58:06PM +0100, Robin Murphy wrote:
+>> Much as I'd like to remove iommu_present(), the final remaining users
+>> are proving stubbornly difficult to clean up, so kick that can down
+>> the road and just rework it to preserve the current behaviour without
+>> depending on bus ops.
+>>
+>> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>>
+>> ---
+>>
+>> v3: Tweak to use the ops-based check rather than group-based, to
+>>      properly match the existing behaviour
+>> ---
+>>   drivers/iommu/iommu.c | 17 ++++++++++++++++-
+>>   1 file changed, 16 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 4566d0001cd3..2f29ee9dea64 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -1907,9 +1907,24 @@ int bus_iommu_probe(const struct bus_type *bus)
+>>   	return 0;
+>>   }
+>>   
+>> +static int __iommu_present(struct device *dev, void *unused)
+>> +{
+>> +	return dev_has_iommu(dev);
+>> +}
 > 
-[ ... ]
+> This is not locked right..
+
+Urgh, yes, I suppose technically this walk could run in parallel with 
+the bus_iommu_probe() of another IOMMU instance that our caller here 
+doesn't depend on. I agree that's suboptimal, even if it shouldn't 
+happen in practice for the remaining in-tree callers.
+
+> Rather than perpetuate that, can we fix the two callers instead?
 > 
-> Please go test,
+> Maybe this for mtk:
 > 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> index 93552d76b6e778..e7fe0e6f27de85 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> @@ -500,6 +500,8 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+>                  dev_err(drm->dev, "Need at least one OVL device\n");
+>                  goto err_component_unbind;
+>          }
+> +       if (!device_iommu_mapped(dma_dev))
+> +               return -EPROBE_DEFER;
+>   
+>          for (i = 0; i < private->data->mmsys_dev_num; i++)
+>                  private->all_drm_private[i]->dma_dev = dma_dev;
+> @@ -583,9 +585,6 @@ static int mtk_drm_bind(struct device *dev)
+>          struct drm_device *drm;
+>          int ret, i;
+>   
+> -       if (!iommu_present(&platform_bus_type))
+> -               return -EPROBE_DEFER;
+> -
+>          pdev = of_find_device_by_node(private->mutex_node);
+>          if (!pdev) {
+>                  dev_err(dev, "Waiting for disp-mutex device %pOF\n",
+> 
+> 
+> ? It doesn't seem to use the iommu API so I guess all it is doing is
+> trying to fix some kind of probe ordering issue? Maybe the probe
+> ordering issue is already gone and we can just delete the check?
 
-No significant change / improvement since last week.
+As I've said before, the correct fix for this one is [1]. I've sent it 
+twice now, it just gets ignored :(
 
-Build results:
-	total: 157 pass: 151 fail: 6
-Failed builds:
-	alpha:allmodconfig
-	csky:allmodconfig
-	m68k:allmodconfig
-	openrisc:allmodconfig
-	parisc:allmodconfig
-	s390:allmodconfig
-Qemu test results:
-	total: 530 pass: 530 fail: 0
+> And tegra:
+> 
+> 	if (host1x_drm_wants_iommu(dev) && iommu_present(&platform_bus_type)) {
+> 		tegra->domain = iommu_domain_alloc(&platform_bus_type);
+> 		if (!tegra->domain) {
+> 
+> Lets do the same:
+> 
+> 	if (host1x_drm_wants_iommu(dev) && device_iommu_mapped(dev->dev.parent)) {
+> 
+> ?
 
-Same build errors, same warnings as with 6.6-rc1.
+IIRC the problem here is that the Host1x (or GPU?) wants to allocate a 
+domain for the GPU (or Host1x) to use, even if the former isn't itself 
+associated with the IOMMU, and at this point it doesn't actually have a 
+suitable handle to the latter device.
 
-Well, that is not entirely true. I do see a bunch of warnings in folio
-code, such as
+> Alternatively how about:
+> 
+> bool iommu_present(void)
+> {
+> 	bool ret;
+> 
+> 	spin_lock(&iommu_device_lock);
+> 	ret = !list_empty(&iommu_device_list);
+> 	spin_unlock(&iommu_device_lock);
+> 	return ret;
+> }
+> EXPORT_SYMBOL_GPL(iommu_present);
+> 
+> Since neither of the two users is really needing anything more than that?
 
-WARNING: CPU: 1 PID: 774 at include/linux/backing-dev.h:252 __folio_mark_dirty+0x318/0x350
+Hmm, I guess maybe I did get a bit hung up on the bus notion... Indeed I 
+think this wouldn't really be any more inaccurate than the current 
+behaviour, and might be arguably truer to the intent of the function 
+(whatever that is) since in the new design any instance is effectively 
+present for all relevant buses anyway. I've respun along these lines 
+(but retaining the argument with some token validation) and I don't hate 
+it, so I'll send that as v4.
 
-but that is because I started testing gfs2 which always had that problem.
-I am not sure if it is even worth reporting it. I did send a note to
-the gfs2 mailing list and maintainers, and I won't mention it here again.
+Thanks,
+Robin.
 
-My list of pending fixes includes the following three patches.
-
-LoongArch: Fix lockdep static memory detection
-mfd: cs42l43: Use correct macro for new-style PM runtime ops
-ASoC: wm8960: Fix error handling in probe
-
-Guenter
+[1] 
+https://lore.kernel.org/dri-devel/49bafdabd2263cfc543bb22fb7f1bf32ea6bfd22.1683735862.git.robin.murphy@arm.com/
