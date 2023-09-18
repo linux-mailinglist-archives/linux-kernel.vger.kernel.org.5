@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6767A5352
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAE17A534A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjIRTv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 15:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjIRTvj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229636AbjIRTvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 18 Sep 2023 15:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbjIRTve (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Sep 2023 15:51:34 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8779E10F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:51:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E0810A
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:51:29 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qiKH9-0003og-Uw; Mon, 18 Sep 2023 21:51:19 +0200
+        id 1qiKHA-0003rg-4F; Mon, 18 Sep 2023 21:51:20 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qiKH9-007I8x-GU; Mon, 18 Sep 2023 21:51:19 +0200
+        id 1qiKH9-007I91-Nd; Mon, 18 Sep 2023 21:51:19 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qiKH9-002mCc-5i; Mon, 18 Sep 2023 21:51:19 +0200
+        id 1qiKH9-002mCg-E3; Mon, 18 Sep 2023 21:51:19 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Andrew Lunn <andrew@lunn.ch>,
@@ -36,20 +36,17 @@ Cc:     Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 10/19] net: mdio: mux-bcm-iproc: Convert to platform remove callback returning void
-Date:   Mon, 18 Sep 2023 21:50:53 +0200
-Message-Id: <20230918195102.1302746-11-u.kleine-koenig@pengutronix.de>
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 11/19] net: mdio: mux-bcm6368: Convert to platform remove callback returning void
+Date:   Mon, 18 Sep 2023 21:50:54 +0200
+Message-Id: <20230918195102.1302746-12-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230918195102.1302746-1-u.kleine-koenig@pengutronix.de>
 References: <20230918195102.1302746-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1834; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=M52LgWHkFZ/4d48b6ksHEiG2E1+/CV6YxGBCzg5tYiU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlCKoL1nUgsydk6XQA+RbH/xkc34Zk0EDvzUx2w +VD7AMY/YqJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZQiqCwAKCRCPgPtYfRL+ TiPIB/9kGsTktZ5XGR76AWUBluoKx4ggJTt+L92ib8tyoU82m553O0Ah2JdARGVnCmMaA781hN3 ro4SnJWwnRzKoxVqLiep+XhI4svyu6mXqsTjAihRf4JTdb0KKrPL2B0yemtzs330yJyiW6v7u2Y MH/z9yB/CGM3dzsMuxWMTPVnxdaJraa4cmQBLgsW6ie2LMn9Uhv7QemRA0p1g1TNHXwXhID5Utt SLfuYnqNXEiRr/dftP3gvZaaYGEeC7B+6XsGIRwouJgSDYH81cmy4HerpdYA98XuLUcmYzWdo2i 4HY3GNXxp+lrRO1E7qVdb+qk0To6Oz3EBUTEwI/T6XNlhGV5
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1838; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=6qkpqqWeBAEoQyATr+QvDzRx6/mxbOOENw9LdzhgKdY=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlCKoMyP14QCF/JVsZFet49UGwAoxTv+4aHq13e BILCdjrG0GJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZQiqDAAKCRCPgPtYfRL+ TnJyB/9YXVheidEVmz/ftnWiEuSK7kbHVsjdjVTuW9L7RUY0STLT5MF4/LRaswQoEbX48nUfQUE 0a7mSgsH9LGCS36w1uLPb3uL0DrA2bRX6u7zjryLj3W+forg25D4oiJ2u6YKE+KOXaNLKWznj0Y wHpNGpy+O8JYrCrYPx2LhjMb8ptZMiR/eFYYIsP3mgHBiv1SPuDJlQRPM0HnIFNX1yHcZ1PwwYn WhS34/l+ZAjrSaF40Uaw3hr+1C6jF05vS2VvudyFTBiWz7AxMVGaUobVaIhgwRQnj1mvrTEJkdo S2gVreg/AeSPr2lg6Ja0lWpH+RYLpSFN7RnR/VIh2hsHhyki
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -79,39 +76,38 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/net/mdio/mdio-mux-bcm-iproc.c | 6 ++----
+ drivers/net/mdio/mdio-mux-bcm6368.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/mdio/mdio-mux-bcm-iproc.c b/drivers/net/mdio/mdio-mux-bcm-iproc.c
-index 956d54846b62..a750bd4c77a0 100644
---- a/drivers/net/mdio/mdio-mux-bcm-iproc.c
-+++ b/drivers/net/mdio/mdio-mux-bcm-iproc.c
-@@ -287,15 +287,13 @@ static int mdio_mux_iproc_probe(struct platform_device *pdev)
+diff --git a/drivers/net/mdio/mdio-mux-bcm6368.c b/drivers/net/mdio/mdio-mux-bcm6368.c
+index 8b444a8eb6b5..1b77e0e3e6e1 100644
+--- a/drivers/net/mdio/mdio-mux-bcm6368.c
++++ b/drivers/net/mdio/mdio-mux-bcm6368.c
+@@ -153,14 +153,12 @@ static int bcm6368_mdiomux_probe(struct platform_device *pdev)
  	return rc;
  }
  
--static int mdio_mux_iproc_remove(struct platform_device *pdev)
-+static void mdio_mux_iproc_remove(struct platform_device *pdev)
+-static int bcm6368_mdiomux_remove(struct platform_device *pdev)
++static void bcm6368_mdiomux_remove(struct platform_device *pdev)
  {
- 	struct iproc_mdiomux_desc *md = platform_get_drvdata(pdev);
+ 	struct bcm6368_mdiomux_desc *md = platform_get_drvdata(pdev);
  
  	mdio_mux_uninit(md->mux_handle);
  	mdiobus_unregister(md->mii_bus);
- 	clk_disable_unprepare(md->core_clk);
 -
 -	return 0;
  }
  
- #ifdef CONFIG_PM_SLEEP
-@@ -342,7 +340,7 @@ static struct platform_driver mdiomux_iproc_driver = {
- 		.pm		= &mdio_mux_iproc_pm_ops,
+ static const struct of_device_id bcm6368_mdiomux_ids[] = {
+@@ -175,7 +173,7 @@ static struct platform_driver bcm6368_mdiomux_driver = {
+ 		.of_match_table = bcm6368_mdiomux_ids,
  	},
- 	.probe		= mdio_mux_iproc_probe,
--	.remove		= mdio_mux_iproc_remove,
-+	.remove_new	= mdio_mux_iproc_remove,
+ 	.probe	= bcm6368_mdiomux_probe,
+-	.remove	= bcm6368_mdiomux_remove,
++	.remove_new = bcm6368_mdiomux_remove,
  };
+ module_platform_driver(bcm6368_mdiomux_driver);
  
- module_platform_driver(mdiomux_iproc_driver);
 -- 
 2.40.1
 
