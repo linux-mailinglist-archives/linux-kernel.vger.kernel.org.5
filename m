@@ -2,101 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D877A41B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C637A41B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239965AbjIRHBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32942 "EHLO
+        id S240018AbjIRHEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239967AbjIRHBB (ORCPT
+        with ESMTP id S240079AbjIRHEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:01:01 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FDAE6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:00:47 -0700 (PDT)
-X-UUID: 15420fc655f111eea33bb35ae8d461a2-20230918
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=6zt995w9gkiCM+6T+4GvZlCBzgYVXteX5cMwkXuVk5c=;
-        b=Z+KmyVEfQ3AU8s5orwxEXG/emUX7qrrdITTl0s2ZeRURJEouhMmYBR8a4LgzvR+mk07ACVx9O47zCNPvR2YfpFhvRXjyAjgutJ60Pnf9krs0xl3xOsY5vj/K49KXY466jYq4ejuY7Hsv3a/nl2xHB9OujGnbshG5XFkCAke5V1w=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:698772e3-374c-4fd6-9287-00867b49bf26,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:eeafd1ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 15420fc655f111eea33bb35ae8d461a2-20230918
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
-        (envelope-from <shawn.sung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1923497886; Mon, 18 Sep 2023 15:00:42 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 18 Sep 2023 15:00:42 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 18 Sep 2023 15:00:42 +0800
-From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
-To:     CK Hu <ck.hu@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-CC:     Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Hsiao Chien Sung <shawn.sung@mediatek.com>
-Subject: [PATCH 1/1] drm/mediatek: Add missing plane settings when async update
-Date:   Mon, 18 Sep 2023 15:00:28 +0800
-Message-ID: <20230918070028.17915-2-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230918070028.17915-1-shawn.sung@mediatek.com>
-References: <20230918070028.17915-1-shawn.sung@mediatek.com>
+        Mon, 18 Sep 2023 03:04:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1D9121
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:03:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16DF4C433C7;
+        Mon, 18 Sep 2023 07:03:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695020624;
+        bh=opjulFiGRuWJn3Kbr+JNW9QH6jk0wc+wSlz5wGS+cYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p5Ywz1ZVlBdMvCo2Xj/XXT0VztyffGjTs4GlZ/6PVUk3jCNSZTu/Z8ZLYXNq7PmMA
+         Pzec9PzHCI/f0czfR43ykFT0m8aTYGTjUITwx5N7Mc04RDkaIaXpe2WigxUQIeF6XM
+         BsDgoJWZA64LiCtb6GXp65VCn+AMpbJmQTOjkfTk=
+Date:   Mon, 18 Sep 2023 09:03:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xingxing Luo <xingxing.luo@unisoc.com>
+Cc:     b-liu@ti.com, s.shtylyov@omp.ru, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xingxing0070.luo@gmail.com,
+        Zhiyong.Liu@unisoc.com, Cixi.Geng1@unisoc.com,
+        Orson.Zhai@unisoc.com, zhang.lyra@gmail.com
+Subject: Re: [PATCH V2] usb: musb: Get the musb_qh poniter after musb_giveback
+Message-ID: <2023091824-balancing-drizzly-4921@gregkh>
+References: <20230918061038.30949-1-xingxing.luo@unisoc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918061038.30949-1-xingxing.luo@unisoc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix an issue that plane coordinate was not saved when
-calling async update.
+On Mon, Sep 18, 2023 at 02:10:38PM +0800, Xingxing Luo wrote:
+> When multiple threads are performing USB transmission, musb->lock will be
+> unlocked when musb_giveback is executed. At this time, qh may be released
+> in the dequeue process in other threads, resulting in a wild pointer, so
+> it needs to be here get qh again, and judge whether qh is NULL, and when
+> dequeue, you need to set qh to NULL.
+> 
+> Fixes: dbac5d07d13e ("usb: musb: host: don't start next rx urb if current one failed")
+> Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
+> ---
+>  drivers/usb/musb/musb_host.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/musb/musb_host.c b/drivers/usb/musb/musb_host.c
+> index a02c29216955..bc4507781167 100644
+> --- a/drivers/usb/musb/musb_host.c
+> +++ b/drivers/usb/musb/musb_host.c
+> @@ -321,10 +321,16 @@ static void musb_advance_schedule(struct musb *musb, struct urb *urb,
+>  	musb_giveback(musb, urb, status);
+>  	qh->is_ready = ready;
+>  
+> +	/*
+> +	 * musb->lock had been unlocked in musb_giveback, so qh may
+> +	 * be freed, need to get it again
+> +	 */
+> +	qh = musb_ep_get_qh(hw_ep, is_in);
+> +
+>  	/* reclaim resources (and bandwidth) ASAP; deschedule it, and
+>  	 * invalidate qh as soon as list_empty(&hep->urb_list)
+>  	 */
+> -	if (list_empty(&qh->hep->urb_list)) {
+> +	if (qh && list_empty(&qh->hep->urb_list)) {
+>  		struct list_head	*head;
+>  		struct dma_controller	*dma = musb->dma_controller;
+>  
+> @@ -2398,6 +2404,7 @@ static int musb_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
+>  		 * and its URB list has emptied, recycle this qh.
+>  		 */
+>  		if (ready && list_empty(&qh->hep->urb_list)) {
+> +			musb_ep_set_qh(qh->hw_ep, is_in, NULL);
+>  			qh->hep->hcpriv = NULL;
+>  			list_del(&qh->ring);
+>  			kfree(qh);
+> -- 
+> 2.17.1
+> 
+> 
 
-Fixes: 920fffcc8912 ("drm/mediatek: update cursors by using async atomic update")
+Hi,
 
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_plane.c | 2 ++
- 1 file changed, 2 insertions(+)
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-index db2f70ae060d..58e9f93c38c4 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-@@ -206,6 +206,8 @@ static void mtk_plane_atomic_async_update(struct drm_plane *plane,
- 	plane->state->src_y = new_state->src_y;
- 	plane->state->src_h = new_state->src_h;
- 	plane->state->src_w = new_state->src_w;
-+	plane->state->dst.x1 = new_state->dst.x1;
-+	plane->state->dst.y1 = new_state->dst.y1;
- 	swap(plane->state->fb, new_state->fb);
+You are receiving this message because of the following common error(s)
+as indicated below:
 
- 	mtk_plane_update_new_state(new_state, new_plane_state);
---
-2.18.0
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
 
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documetnation/process/stable-kernel-rules.rst file for how to resolve
+  this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
