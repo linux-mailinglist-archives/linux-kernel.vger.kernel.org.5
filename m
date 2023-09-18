@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 997197A40D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012577A40DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239798AbjIRGCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 02:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        id S239383AbjIRGGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 02:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239697AbjIRGCT (ORCPT
+        with ESMTP id S239829AbjIRGGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 02:02:19 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7F1F9
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:02:11 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3215f19a13aso23554f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:02:11 -0700 (PDT)
+        Mon, 18 Sep 2023 02:06:19 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E3F10A
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:06:13 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59b5484fbe6so44361447b3.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:06:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1695016930; x=1695621730; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=utARk3pA80ZpdJiXILdi626DttxX2nbKMhwhhWazB0w=;
-        b=YMZtx6ZJI0DwEErCSi5w+S3KqPxHMuNG1qG1240fRe2pbUF0QXkKiQmWe2zTWmIQ9Z
-         9ASsS8kZ8134NcRR6unbuxYGTj3fl5JREar+a6wHNtdsWNPnXvoEjkm8T5M0uWKOu6gT
-         m21gZa+MzvdTa39dPBreE+h3E1GXhVtLSKm7cjPsjV5hn6YkrL1gsQuyg86oa7Av3/ml
-         /DNHF0RRdGkrYJniB3ljeCLVak1pGaF68AAmcl0ZEpIoYrzgOa4/Aw1XnpVGtiG4ZXXT
-         BcKuOby6JEJ6us2fDLgHXyEEPUuTO97Rok/xXvAeB379lP4nFItfYR/NJrLI6mZp6IiM
-         1MKg==
+        d=linaro.org; s=google; t=1695017172; x=1695621972; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z8q7Bt+xiXJJWh6C0Z2ZmHz6Wu+8lDfWhrLPtQJ73+U=;
+        b=E45y1PN2Yo9Pj0qbO7N2B93ijEKRDDOAFcIdgTVa8I3V1rvJ1yVvSWKl1VHv0gavGm
+         6sMJ57Xyk84w43Z02FCAh7Bb49knwkKbe/i8/2kbTx2lDLlCU9ABW1RfCsBWG5zCw4Lo
+         iGcM2Kwpi2cxXXdG+jR6l5YPvMhqI2HTGpHmigOkXuWHNQE7dSv6bOR2FJTk8jjonL23
+         aCycU4ioi8wyFqfekeQMTQY8zLs21/P9EdqRd1927pihqXMOj8DkhHRXYaimsGRqNFpu
+         lXLOtRrOYwOvo3hPevy1oXG9aZdWoWUEPToCfxBZ73H7Tvn3enzzql/g381aQbMHOrbT
+         QCcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695016930; x=1695621730;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=utARk3pA80ZpdJiXILdi626DttxX2nbKMhwhhWazB0w=;
-        b=Erls8bLCxg1B6UyB5+xh58N3GufUJOM/6CDdNYxkEaYE7D9OC+7BDRoOgoAlY38elg
-         5M5ELt7gs625SKUjHxsThV2AdBWjbJptwhqNoqppa4Kvi9zJB/92m8+0xcDcFLe8hR0S
-         NDeUFNpaQj4kG2qUwFM8RfV8gWd6Ns0n71Bl+siy7hrLZ7M4Kx85eFarbO/bb/E6XB7R
-         w7kQROWlkt1u1lFG4eZz1U4QiEIklSPiYHYF+xXQ06s2NraYHl6dSzyP9qOcApMchapQ
-         k6Z0CclY7WnowoTlHoTCFYSAe4wlKqR/l41LQAIbFMKKzwV0PXkd682h6pzTGVxmNXdk
-         Br2w==
-X-Gm-Message-State: AOJu0YyXmXTR/tvAPA2JYrj722U5nZf+J/b7k2y4s2ghP54vc/gPg7wf
-        CykkQTvz1Z4iX/PiZG1EAdn4qw==
-X-Google-Smtp-Source: AGHT+IHp0qFS6xGsK25AktAjmIe39Vn37L/gbzfBpt+VNyZTYa3REIePYUyoEE2pqDRgvpG5ShpzkQ==
-X-Received: by 2002:a05:6000:1a44:b0:317:3d6c:5b27 with SMTP id t4-20020a0560001a4400b003173d6c5b27mr6781745wry.46.1695016930169;
-        Sun, 17 Sep 2023 23:02:10 -0700 (PDT)
-Received: from [192.168.32.2] ([82.78.167.145])
-        by smtp.gmail.com with ESMTPSA id j5-20020a5d6045000000b0032008f99216sm4743995wrt.96.2023.09.17.23.02.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 23:02:09 -0700 (PDT)
-Message-ID: <458ac1fb-575b-6ebd-7da0-a8d3abd3d5f8@tuxon.dev>
-Date:   Mon, 18 Sep 2023 09:02:07 +0300
+        d=1e100.net; s=20230601; t=1695017173; x=1695621973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z8q7Bt+xiXJJWh6C0Z2ZmHz6Wu+8lDfWhrLPtQJ73+U=;
+        b=evB+u52vpK178zJwV6qjuYiNqpb+RMgvm12uBQvyxWLA8msRWbZFryh9LqHpI+e8HT
+         7iA8q9dPHGkuwoto6m8NQTDEtu7mtMNLyUtWY1puS1k0pGsjcI+1S8zgzFy22hctMtRz
+         CgiaqyGeIgU4WUAdrfs/jPH32q/Ox8VwfiFKfVy+uXddef0hxSQgnPJCD8UTimw9+FbA
+         cF5OhDLrmYakn3uKsGjUBVRyzEp2NMYk9cq45wLiN2yUxiIrd9LiFtWsv98kf3PaqHB8
+         PPY9FTtrP1v3BETpMxkXVMW2v15DBEQin9BbqAw1QcLs5Ycx+zts2u1+3Mtm2iKqecib
+         o3hg==
+X-Gm-Message-State: AOJu0YwaDB08EF2PrSl4qAE5WJGvAkUzz6XLzymxYkkYzeYHXAbGbsH0
+        Bu5J3gpQQDzS6cDh35W9pr3ipJR5kTYtO1UEgsEQjA==
+X-Google-Smtp-Source: AGHT+IFcWO4BakHTO+j8ugMmEesfwNr0A/vj6TKAEbB/4hZA4CWIs7TCyDnUkRFVGoi+0YCBNkXaCGGO/QSLJdfquNE=
+X-Received: by 2002:a81:9114:0:b0:59b:bd55:8452 with SMTP id
+ i20-20020a819114000000b0059bbd558452mr9479330ywg.36.1695017172771; Sun, 17
+ Sep 2023 23:06:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 33/37] arm64: dts: renesas: rzg3l-smarc-som: add initial
- support for RZ/G3S SMARC Carrier-II SoM
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-34-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdUfwtpe5qLonZ0CZcaRw1j5x7xLLXJpMqpWLX5AzK3xmw@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdUfwtpe5qLonZ0CZcaRw1j5x7xLLXJpMqpWLX5AzK3xmw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+References: <20230915201520.4179115-1-robh@kernel.org>
+In-Reply-To: <20230915201520.4179115-1-robh@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 Sep 2023 08:06:01 +0200
+Message-ID: <CACRpkda9gq7ZqNOMWBysJXunB2Li1xOu=kxtmenYnZuKSPKb1g@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mfd: armltd: Move Arm board syscon's to
+ separate schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,166 +71,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Geert,
+On Fri, Sep 15, 2023 at 10:15=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
+e:
 
-On 15.09.2023 17:28, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> Thanks for your patch!
-> 
-> On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Add initial support for RZ/G3S SMARC Carrier-II SoM. SoM contains the following
->> devices:
->> - RZ/G3S microcontroller: Renesas R9A08G045S33GBG
->> - 9-channel PMIC: Renesas RAA215300
->> - Clock Generator: Renesas 5L35023B
->> - 128M QSPI Flash: Renesas AT25QL128A
->> - 8G LPDDR4 SDRAM: Micron MT53D512M16D1DS-046
-> 
-> That's an 8 Gib part, so 1 GiB?
-> 
->> - 64GB eMMC Flash: Micron MTFC64GBCAQTC
->> - 2x Gigabit Ethernet Transceiver: Microchip KSZ9131RNX
->> - 5x Current Monitors: Renesas ISL28025FR12Z
->>
->> The following interfaces are available on SoM board:
->> - 2 uSD interfaces
->> - 12-pin, 1.0mm pitch connector to the RZ/G3S ADC IO
->> - 4-pin, 1.0mm pitch connector to the RZ/G3S I3C IO
->> - JTAG connector
-> 
-> Please drop the description of parts you are not adding to the DTS yet.
-> 
->> At the moment the 24MHz output of 5L35023B, memory SD ch0 (with all its
->> bits) were described in device tree.
->>
->> SD channel 0 of RZ/G3S is connected to an uSD card interface
->> and an eMMC. The selection b/w them is done though a hardware switch.
->> The DT will select b/w uSD and eMMC though SW_SD0_DEV_SEL build flag.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
->> @@ -0,0 +1,147 @@
->> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +/*
->> + * Device Tree Source for the R9A08G045S33 SMARC Carrier-II's SoM board.
->> + *
->> + * Copyright (C) 2023 Renesas Electronics Corp.
->> + */
->> +
->> +#include <dt-bindings/gpio/gpio.h>
->> +#include <dt-bindings/pinctrl/rzg2l-pinctrl.h>
->> +
->> +/*
->> + * Signals of SW_CONFIG switches:
->> + * @SW_SD0_DEV_SEL:
->> + *     0 - SD0 is connected to eMMC
->> + *     1 - SD0 is connected to uSD0 card
->> + */
->> +#define SW_SD0_DEV_SEL 1
->> +
->> +/ {
->> +       aliases {
->> +               mmc0 = &sdhi0;
->> +       };
->> +
->> +       chosen {
->> +               bootargs = "ignore_loglevel";
->> +               stdout-path = "serial0:115200n8";
->> +       };
->> +
->> +       memory@48000000 {
->> +               device-type = "memory";
->> +               /* First 128MB is reserved for secure area. */
->> +               reg = <0x0 0x48000000 0x0 0x38000000>;
->> +       };
->> +
->> +       reg_3p3v: regulator0 {
->> +               compatible = "regulator-fixed";
->> +               regulator-name = "fixed-3.3V";
->> +               regulator-min-microvolt = <3300000>;
->> +               regulator-max-microvolt = <3300000>;
->> +               regulator-boot-on;
->> +               regulator-always-on;
->> +       };
->> +
->> +#if SW_SD0_DEV_SEL
->> +       vccq_sdhi0: regulator1 {
->> +               compatible = "regulator-gpio";
->> +               regulator-name = "SDHI0 VccQ";
->> +               regulator-min-microvolt = <1800000>;
->> +               regulator-max-microvolt = <3300000>;
->> +               gpios = <&pinctrl RZG2L_GPIO(2, 2) GPIO_ACTIVE_HIGH>;
->> +               gpios-states = <1>;
->> +               states = <3300000 1>, <1800000 0>;
->> +       };
->> +#else
->> +       reg_1p8v: regulator1 {
->> +               compatible = "regulator-fixed";
->> +               regulator-name = "fixed-1.8V";
->> +               regulator-min-microvolt = <1800000>;
->> +               regulator-max-microvolt = <1800000>;
->> +               regulator-boot-on;
->> +               regulator-always-on;
->> +       };
->> +#endif
->> +};
->> +
->> +&extal_clk {
->> +       clock-frequency = <24000000>;
->> +};
->> +
->> +#if SW_SD0_DEV_SEL
->> +/* SD0 slot */
->> +&sdhi0 {
->> +       pinctrl-0 = <&sdhi0_pins>;
->> +       pinctrl-1 = <&sdhi0_uhs_pins>;
->> +       pinctrl-names = "default", "state_uhs";
->> +       vmmc-supply = <&reg_3p3v>;
->> +       vqmmc-supply = <&vccq_sdhi0>;
->> +       bus-width = <4>;
->> +       sd-uhs-sdr50;
->> +       sd-uhs-sdr104;
->> +       max-frequency = <125000000>;
->> +       status = "okay";
->> +};
->> +#else
->> +/* eMMC */
->> +&sdhi0 {
->> +       pinctrl-0 = <&sdhi0_emmc_pins>;
->> +       pinctrl-1 = <&sdhi0_emmc_pins>;
->> +       pinctrl-names = "default", "state_uhs";
->> +       vmmc-supply = <&reg_3p3v>;
->> +       vqmmc-supply = <&reg_1p8v>;
->> +       bus-width = <8>;
->> +       mmc-hs200-1_8v;
->> +       non-removable;
->> +       fixed-emmc-driver-type = <1>;
->> +       max-frequency = <125000000>;
->> +       status = "okay";
->> +};
->> +#endif
->> +
->> +&pinctrl {
->> +       sd0-pwr-en-hog {
->> +               gpio-hog;
->> +               gpios = <RZG2L_GPIO(2, 1) GPIO_ACTIVE_HIGH>;
-> 
-> According to the schematics, P2_1 controls power to the uSD slot.
-> Hence shouldn't reg_3p3v above be modelled using regulator-gpio,
-> with enable-gpios pointing to P2_1?
+> The Arm Ltd board bindings are a bit unusual in that they define child
+> nodes for various syscon's. The schemas are also incomplete as they lack
+> constraints on having additional properties and some properties are
+> missing. As the bindings for the different platforms only vary by
+> compatibles, combine them into a single schema doc.
+>
+> Add the "arm,im-pd1-syscon" compatible which was not documented. Add
+> "ranges", "#address-cells", and "#size-cells properties which were
+> missing.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-That should work. I'll check it, thanks!
+Thanks for cleaning this up. My excuse is that it happened in the
+early days of schemas.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> 
->> +               output-high;
->> +               line-name = "sd0_pwr_en";
->> +       };
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+Yours,
+Linus Walleij
