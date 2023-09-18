@@ -2,717 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D03B7A4010
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5227A4012
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239528AbjIREa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
+        id S231924AbjIREeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 00:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239451AbjIREaW (ORCPT
+        with ESMTP id S239569AbjIREeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:30:22 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B2DC6
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:30:15 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so4873084a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:30:15 -0700 (PDT)
+        Mon, 18 Sep 2023 00:34:02 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF69BE7;
+        Sun, 17 Sep 2023 21:33:56 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c453379020so9115405ad.1;
+        Sun, 17 Sep 2023 21:33:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1695011414; x=1695616214; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fg/aEJ2jNiZ5pcsHBr6RBl6Ae859yBhCxzC2zkFzlMY=;
-        b=nxnyb6DCLtl927/62J/bNJDLVo2wmot1Fm8M5dCPQfUEBT+2OaBpPlaQzKSSdwg12O
-         kVXOLLlbFaSbrjb0lamY2j8J/LF4n2/PLEgVAG4TCHT9mbM6JMZaQ+oTAC1sS0M6GxiQ
-         3L+nzo8tZgxrVwqzLVRvGx91aoLSOkB94fvakyP73sppZ8/b/SzbwgwzOJU1NbjRjayk
-         QBVSuz38qjxutKJDuVdHb0XFRHpTTRJOn6ATA1zyJsgl4v6Ty/360y9lvUBDtDEty92r
-         +verL0PXt+TqnKB0hLb74BFDn/NFDtCAJxGWUH/E8Xj51D/tuwWDRoCCdvOfIKQJOtnU
-         5JLg==
+        d=gmail.com; s=20230601; t=1695011636; x=1695616436; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bTk1MSaSZ6J171Lp0y7vFzpboa0xOh5P3IIZsWDbUIA=;
+        b=X25GoB8jetdXrCQXHp36B2gHAEM+EpeiyG/F9VHEUKgWjOjCi+JXC6ICe281DXfpnv
+         vXQyuKomhhlqTkip3bOWld3G8rJ7KTemOU+T3cJGz9TQ8qAfgc7/a/I/FoNItUpQP8mN
+         gEpFsu81YlkgpfeAG6Es7w0GADJJkWTPKpscCMuKzWd8BJlUwR8i3D8qjTxFVP7PUE9g
+         nUOZV+tRrwRmOZ1Q8RMl7sDOkWGnX2GWjQ2dl6w9CC/LLlNOGkFhtaCgTpFe2O54UqoA
+         QEwxveiZwPeZHeyRYavJoyDgGGDQvVB1Y8vfMqHg+oDMuEuedASZkZtAYSPW+qXzCXY1
+         VuBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695011414; x=1695616214;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fg/aEJ2jNiZ5pcsHBr6RBl6Ae859yBhCxzC2zkFzlMY=;
-        b=EwdTg4kA63d+UG/A9ikDOMS3zCzpxRDOD6RiCakgHF4eQ2cL4JrrlU0gcTRwXc6Jgq
-         BVFUl4oXDYMFoJzJQBCXBc1lY9bXvZKW1BwqXUW8/xBX1Zgy1xnSBE2uYUVhASENqrbz
-         7OXOu8+oNeKvUy6BQUWfbAMXlzKwcCMHVY+R6Ss0rMAk4rOUEw5NSAhTKq9GNSY5Y5NI
-         h7cCk383bH0vfpVsl2HkXbJUu3gzQIOhpWNixzrHa/4TmiP9md6MLMtCAidFXEBacObC
-         +mOLa5tHgjWtX00tm2TVADhUyxlQM87XNeaaN7fGwVFHShy7IP3vjbskGWA6VfF8tLee
-         324w==
-X-Gm-Message-State: AOJu0Yy23BDIAzgnr4b7MDtB6NUKF/ITQ7U1SjwTzrXzZt3kSj/bFY4g
-        zt0iQKg8LbLsZrbib4BYqB/X4Q==
-X-Google-Smtp-Source: AGHT+IGdkrXEWx971gbc/g74gfLz0Zdmm0tXIrKpbzUZYThgGRgTnibEYP9JUw2Y0U1NXhBwjhXJXQ==
-X-Received: by 2002:aa7:c781:0:b0:522:3849:48d8 with SMTP id n1-20020aa7c781000000b00522384948d8mr6611113eds.9.1695011413668;
-        Sun, 17 Sep 2023 21:30:13 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.145])
-        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e8100b00531050807a9sm1271850eda.13.2023.09.17.21.30.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 21:30:13 -0700 (PDT)
-Message-ID: <a349b22e-c76b-f30f-d258-830e9c7b50ba@tuxon.dev>
-Date:   Mon, 18 Sep 2023 07:30:11 +0300
+        d=1e100.net; s=20230601; t=1695011636; x=1695616436;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bTk1MSaSZ6J171Lp0y7vFzpboa0xOh5P3IIZsWDbUIA=;
+        b=Jk7O15I4M4eBLBZhT3gABS1dblLV9mR9Cw0R1cupOWGcT4FC1kX8hzzboYMhggQNiU
+         /uO60FDK9GV/JrzYQ77YdG07jqOKB2/wfCWhuojNY4MZ9KMSU1EfvNJpT7OLZV6BEaTn
+         7UJHNVQBRyL2kj0/itHBoQ2oP6xijn1fiMMhUCQge8pUFflYPrdjR0/c6rHripmmiSB7
+         dKkeaTawx2sJUZiwzbwp2AA8l5Sw7+j2k7Os9OD8dAuFtAVEo4RoWtse5j80kVMzfJUu
+         SdPdSdlrSm1FSgDAHdYV0aLfOZdx8MNTuPYaoZC39sH7++/hZa2OuuEaRNCx/n9v8YKC
+         rZ3w==
+X-Gm-Message-State: AOJu0YzbUOxRIpxDFrB+iRI5yIGdwxlebjgpU9DXECqMAulaNks1J7G5
+        AqMxvfNNo44Z72qfe3nV4Wg=
+X-Google-Smtp-Source: AGHT+IGR0ozaUZ3KJHjohlSc+QcXO9FQWeIFrBwMg6Xwk6/o0QegFQhpZxQhqUjSIjLOlMmaXwRelg==
+X-Received: by 2002:a17:902:728a:b0:1c3:9aa7:66e1 with SMTP id d10-20020a170902728a00b001c39aa766e1mr5909740pll.69.1695011636058;
+        Sun, 17 Sep 2023 21:33:56 -0700 (PDT)
+Received: from localhost.localdomain ([43.132.141.3])
+        by smtp.gmail.com with ESMTPSA id s18-20020a170902b19200b001bb9aadfb04sm7319285plr.220.2023.09.17.21.33.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 21:33:55 -0700 (PDT)
+From:   alexjlzheng@gmail.com
+X-Google-Original-From: alexjlzheng@tencent.com
+To:     david@fromorbit.com
+Cc:     alexjlzheng@gmail.com, alexjlzheng@tencent.com,
+        chandan.babu@oracle.com, djwong@kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2] xfs: remove redundant batch variables for serialization
+Date:   Mon, 18 Sep 2023 12:33:44 +0800
+Message-Id: <20230918043344.890817-1-alexjlzheng@tencent.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <ZQJJasg4eIt99t/0@dread.disaster.area>
+References: <ZQJJasg4eIt99t/0@dread.disaster.area>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 5/8] drm: atmel_hlcdc: Add support for XLCDC in atmel
- LCD driver
-Content-Language: en-US
-To:     Manikandan.M@microchip.com, sam@ravnborg.org,
-        bbrezillon@kernel.org, airlied@gmail.com, daniel@ffwll.ch,
-        Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
-        lee@kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Hari.PrasathGE@microchip.com,
-        Balamanikandan.Gunasundar@microchip.com,
-        Durai.ManickamKR@microchip.com, Nayabbasha.Sayed@microchip.com,
-        Dharma.B@microchip.com, Varshini.Rajendran@microchip.com,
-        Balakrishnan.S@microchip.com
-References: <20230825125444.93222-1-manikandan.m@microchip.com>
- <20230825125444.93222-6-manikandan.m@microchip.com>
- <1a3154b5-e849-dc60-8434-892b38cec87e@tuxon.dev>
- <f8aa53f9-a9e5-baf9-a683-c7c14b924863@microchip.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <f8aa53f9-a9e5-baf9-a683-c7c14b924863@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12.09.2023 13:44, Manikandan.M@microchip.com wrote:
-> On 09/09/23 9:50 pm, claudiu beznea wrote:
->> [You don't often get email from claudiu.beznea@tuxon.dev. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->>
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Hi, Manikandan,
->>
->> On 8/25/23 15:54, Manikandan Muralidharan wrote:
->>> - XLCDC in SAM9X7 has different sets of registers and additional
->>> configuration bits when compared to previous HLCDC IP. Read/write
->>> operation on the controller registers is now separated using the
->>> XLCDC status flag.
->>>        - HEO scaling, window resampling, Alpha blending, YUV-to-RGB
->>> conversion in XLCDC is derived and handled using additional
->>> configuration bits and registers.
->>>        - Writing one to the Enable fields of each layer in LCD_ATTRE
->>> is required to reflect the values set in Configuration, FBA, Enable
->>> registers of each layer
->>>
->>> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
->>> Co-developed-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
->>> Signed-off-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
->>> Co-developed-by: Durai Manickam KR <durai.manickamkr@microchip.com>
->>> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
->>> ---
->>>   .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    |  25 +-
->>>   .../gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c   | 333 +++++++++++++++---
->>>   2 files changed, 299 insertions(+), 59 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
->>> index cc5cf4c2faf7..4b11a1de8af4 100644
->>> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
->>> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
->>> @@ -79,6 +79,7 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
->>>        unsigned int mask = ATMEL_HLCDC_CLKDIV_MASK | ATMEL_HLCDC_CLKPOL;
->>>        unsigned int cfg = 0;
->>>        int div, ret;
->>> +     bool is_xlcdc = crtc->dc->desc->is_xlcdc;
->>>
->>>        /* get encoder from crtc */
->>>        drm_for_each_encoder(en_iter, ddev) {
->>> @@ -164,10 +165,10 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
->>>        state = drm_crtc_state_to_atmel_hlcdc_crtc_state(c->state);
->>>        cfg = state->output_mode << 8;
->>>
->>> -     if (adj->flags & DRM_MODE_FLAG_NVSYNC)
->>> +     if (!is_xlcdc && (adj->flags & DRM_MODE_FLAG_NVSYNC))
->>>                cfg |= ATMEL_HLCDC_VSPOL;
->>>
->>> -     if (adj->flags & DRM_MODE_FLAG_NHSYNC)
->>> +     if (!is_xlcdc && (adj->flags & DRM_MODE_FLAG_NHSYNC))
->>>                cfg |= ATMEL_HLCDC_HSPOL;
->>>
->>>        regmap_update_bits(regmap, ATMEL_HLCDC_CFG(5),
->>> @@ -202,6 +203,16 @@ static void atmel_hlcdc_crtc_atomic_disable(struct drm_crtc *c,
->>>
->>>        pm_runtime_get_sync(dev->dev);
->>>
->>> +     if (crtc->dc->desc->is_xlcdc) {
->>> +             regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_XLCDC_CM);
->>> +             regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
->>> +                                      !(status & ATMEL_XLCDC_CM), 10, 0);
->>
->> You may want to check the return value of regmap_read_poll_timeout().
->> Otherwise your setup may fail.
->>
->> Also, regmap_read_poll_timeout() may sleep, the other settings in this
->> functions are done with bussy looping, is there a reason for that?
->> Hi Claudiu
+On Thu, 14 Sep 2023 09:44:42 +1000, Dave Chinner <david@fromorbit.com> wrote:
+> On Wed, Sep 13, 2023 at 11:41:15AM +0800, alexjlzheng@gmail.com wrote:
+> > On Mon, 11 Sep 2023 07:49:51 +1000, Dave Chinner <david@fromorbit.com> wrote:
+> > > On Sat, Sep 09, 2023 at 03:17:51PM +0800, alexjlzheng@gmail.com wrote:
+> > > > From: Jinliang Zheng <alexjlzheng@tencent.com>
+> > > > 
+> > > > Historically, when generic percpu counters were introduced in xfs for
+> > > > free block counters by commit 0d485ada404b ("xfs: use generic percpu
+> > > > counters for free block counter"), the counters used a custom batch
+> > > > size. In xfs_mod_freecounter(), originally named xfs_mod_fdblocks(),
+> > > > this patch attempted to serialize the program using a smaller batch size
+> > > > as parameter to the addition function as the counter approaches 0.
+> > > > 
+> > > > Commit 8c1903d3081a ("xfs: inode and free block counters need to use
+> > > > __percpu_counter_compare") pointed out the error in commit 0d485ada404b
+> > > > ("xfs: use generic percpu counters for free block counter") mentioned
+> > > > above and said that "Because the counters use a custom batch size, the
+> > > > comparison functions need to be aware of that batch size otherwise the
+> > > > comparison does not work correctly". Then percpu_counter_compare() was
+> > > > replaced with __percpu_counter_compare() with parameter
+> > > > XFS_FDBLOCKS_BATCH.
+> > > > 
+> > > > After commit 8c1903d3081a ("xfs: inode and free block counters need to
+> > > > use __percpu_counter_compare"), the existence of the batch variable is
+> > > > no longer necessary, so this patch is proposed to simplify the code by
+> > > > removing it.
+> > > 
+> > > Hmmmm. Fiddling with percpu counter batch thresholds can expose
+> > > unexpected corner case behaviours.  What testing have you done on
+> > > this change?
+> > 
+> > Hi, Dave,
+> > 
+> > Thank you for your reply.
+> > 
+> > I have tested the patch using _filebench_ and _fio_.
 > 
-> Not sure if a non-zero timeout_us coud be sufficient for this operation, 
-> considering the next power-up and power-down sequence following the 
-> current step.
-> Any suggestion on the value of timeout_us is appreciable.
+> What about all the ENOSPC and shutdown tests in fstests?
 
-Ok, haven't noticed that the timeout is zero.
+Sorry for the late reply.
 
->>> +
->>> +             regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_XLCDC_SD);
->>> +             regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
->>> +                                      status & ATMEL_XLCDC_SD, 10, 0);
->>
->> Same here.
->>
->>> +     }
->>> +
->>>        regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_HLCDC_DISP);
->>>        while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
->>>               (status & ATMEL_HLCDC_DISP))
->>> @@ -256,6 +267,16 @@ static void atmel_hlcdc_crtc_atomic_enable(struct drm_crtc *c,
->>>               !(status & ATMEL_HLCDC_DISP))
->>>                cpu_relax();
->>>
->>> +     if (crtc->dc->desc->is_xlcdc) {
->>> +             regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_XLCDC_CM);
->>> +             regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
->>> +                                      status & ATMEL_XLCDC_CM, 10, 0);
->>> +
->>> +             regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_XLCDC_SD);
->>> +             regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
->>> +                                      !(status & ATMEL_XLCDC_SD), 10, 0);
->>> +     }
->>> +
->>>        pm_runtime_put_sync(dev->dev);
->>>
->>>   }
->>> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
->>> index daa508504f47..26caf4cddfa4 100644
->>> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
->>> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
->>> @@ -330,11 +330,59 @@ static void atmel_hlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
->>>                                                                     yfactor));
->>>   }
->>>
->>> +static void atmel_xlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
->>> +                                        struct atmel_hlcdc_plane_state *state)
->>> +{
->>> +     const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
->>> +     u32 xfactor, yfactor;
->>> +
->>> +     if (!desc->layout.scaler_config)
->>> +             return;
->>> +
->>> +     if (state->crtc_w == state->src_w && state->crtc_h == state->src_h) {
->>> +             atmel_hlcdc_layer_write_cfg(&plane->layer,
->>> +                                         desc->layout.scaler_config, 0);
->>> +             return;
->>> +     }
->>> +
->>> +     /* xfactor = round[(2^20 * XMEMSIZE)/XSIZE)] */
->>> +     xfactor = (u32)(((1 << 20) * state->src_w) / state->crtc_w);
->>
->> Could ((1 << 20) * state->src_w) overflow?
-> It is within the limits, state->src_w will contain a 11bit reg value at max.
->>
->>> +
->>> +     /* yfactor = round[(2^20 * YMEMSIZE)/YSIZE)] */
->>> +     yfactor = (u32)(((1 << 20) * state->src_h) / state->crtc_h);
->>
->> Same here.
->>
->>> +
->>> +     atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config,
->>> +                                 ATMEL_XLCDC_LAYER_VSCALER_LUMA_ENABLE |
->>> +                                 ATMEL_XLCDC_LAYER_VSCALER_CHROMA_ENABLE |
->>> +                                 ATMEL_XLCDC_LAYER_HSCALER_LUMA_ENABLE |
->>> +                                 ATMEL_XLCDC_LAYER_HSCALER_CHROMA_ENABLE);
->>> +
->>> +     atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 1,
->>> +                                 yfactor);
->>> +     atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 3,
->>> +                                 xfactor);
->>> +
->>> +     /* As per YCbCr window resampling configuration */
->>> +     if (state->base.fb->format->format == DRM_FORMAT_YUV420) {
->>> +             atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 2,
->>> +                                         yfactor / 2);
->>> +             atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 4,
->>> +                                         xfactor / 2);
->>> +     } else {
->>> +             /* As per ARGB window resampling configuration */
->>> +             atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 2,
->>> +                                         yfactor);
->>> +             atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 4,
->>> +                                         xfactor);
->>> +     }
->>
->> This can be written as follows:
->> if (state->base.fb->format->format == DRM_FORMAT_YUV420) {
->>          yfactor /= 2);
->>          xfactor /= 2);
->> }
->> atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 2,
->>                              yfactor);
->> atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 4,
->>                              xfactor);
->>
->>
->>
->>> +}
->>> +
->>>   static void
->>>   atmel_hlcdc_plane_update_pos_and_size(struct atmel_hlcdc_plane *plane,
->>>                                      struct atmel_hlcdc_plane_state *state)
->>>   {
->>>        const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
->>> +     struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
->>>
->>>        if (desc->layout.size)
->>>                atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.size,
->>> @@ -352,7 +400,10 @@ atmel_hlcdc_plane_update_pos_and_size(struct atmel_hlcdc_plane *plane,
->>>                                        ATMEL_HLCDC_LAYER_POS(state->crtc_x,
->>>                                                              state->crtc_y));
->>>
->>> -     atmel_hlcdc_plane_setup_scaler(plane, state);
->>> +     if (dc->desc->is_xlcdc)
->>> +             atmel_xlcdc_plane_setup_scaler(plane, state);
->>> +     else
->>> +             atmel_hlcdc_plane_setup_scaler(plane, state);
->>
->> What if you embedd the plane_setup_scaller function in struct
->> atmel_hlcdc_dc_desc and define per lcdc variant the proper function you can
->> have here something like:
->>          dc->desc->plane_setup_scaler();
->>
->> This is valid for other places in this patch (see below).
-> Sure, I will try to incoperate this change.
->>
->>>   }
->>>
->>>   static void
->>> @@ -393,6 +444,40 @@ atmel_hlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
->>>                                    cfg);
->>>   }
->>>
->>> +static void
->>> +atmel_xlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
->>> +                                       struct atmel_hlcdc_plane_state *state)
->>> +{
->>> +     unsigned int cfg;
->>> +     const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
->>> +     const struct drm_format_info *format = state->base.fb->format;
->>> +
->>> +     atmel_hlcdc_layer_write_cfg(&plane->layer, ATMEL_XLCDC_LAYER_DMA_CFG,
->>> +                                 ATMEL_HLCDC_LAYER_DMA_BLEN_INCR16 | state->ahb_id);
->>> +
->>> +     cfg = ATMEL_XLCDC_LAYER_DMA | ATMEL_XLCDC_LAYER_REP;
->>> +
->>> +     if (plane->base.type != DRM_PLANE_TYPE_PRIMARY) {
->>> +             /*
->>> +              * Alpha Blending bits specific to SAM9X7 SoC
->>> +              */
->>> +             cfg |= ATMEL_XLCDC_LAYER_SFACTC_A0_MULT_AS |
->>> +                    ATMEL_XLCDC_LAYER_SFACTA_ONE |
->>> +                    ATMEL_XLCDC_LAYER_DFACTC_M_A0_MULT_AS |
->>> +                    ATMEL_XLCDC_LAYER_DFACTA_ONE;
->>> +             if (format->has_alpha)
->>> +                     cfg |= ATMEL_XLCDC_LAYER_A0(0xff);
->>> +             else
->>> +                     cfg |= ATMEL_XLCDC_LAYER_A0(state->base.alpha);
->>> +     }
->>> +
->>> +     if (state->disc_h && state->disc_w)
->>> +             cfg |= ATMEL_XLCDC_LAYER_DISCEN;
->>> +
->>> +     atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.general_config,
->>> +                                 cfg);
->>> +}
->>> +
->>>   static void atmel_hlcdc_plane_update_format(struct atmel_hlcdc_plane *plane,
->>>                                        struct atmel_hlcdc_plane_state *state)
->>>   {
->>> @@ -437,36 +522,55 @@ static void atmel_hlcdc_plane_update_clut(struct atmel_hlcdc_plane *plane,
->>>        }
->>>   }
->>>
->>> +static void update_hlcdc_buffers(struct atmel_hlcdc_plane *plane,
->>> +                              struct atmel_hlcdc_plane_state *state, u32 sr, int i)
->>> +{
->>> +     atmel_hlcdc_layer_write_reg(&plane->layer,
->>> +                                 ATMEL_HLCDC_LAYER_PLANE_HEAD(i),
->>> +                                 state->dscrs[i]->self);
->>> +
->>> +     if (!(sr & ATMEL_HLCDC_LAYER_EN)) {
->>
->> To avoid extra indenting:
->>          if (sr & ATMEL_HLCDC_LAYER_EN)
->>                  return;
->>
->>> +             atmel_hlcdc_layer_write_reg(&plane->layer,
->>> +                                         ATMEL_HLCDC_LAYER_PLANE_ADDR(i),
->>> +                                         state->dscrs[i]->addr);
->>> +             atmel_hlcdc_layer_write_reg(&plane->layer,
->>> +                                         ATMEL_HLCDC_LAYER_PLANE_CTRL(i),
->>> +                                         state->dscrs[i]->ctrl);
->>> +             atmel_hlcdc_layer_write_reg(&plane->layer,
->>> +                                         ATMEL_HLCDC_LAYER_PLANE_NEXT(i),
->>> +                                         state->dscrs[i]->self);
->>> +     }
->>> +}
->>> +
->>> +static void update_xlcdc_buffers(struct atmel_hlcdc_plane *plane,
->>> +                              struct atmel_hlcdc_plane_state *state, int i)
->>> +{
->>> +     atmel_hlcdc_layer_write_reg(&plane->layer,
->>> +                                 ATMEL_XLCDC_LAYER_PLANE_ADDR(i),
->>> +                                 state->dscrs[i]->addr);
->>> +}
->>> +
->>>   static void atmel_hlcdc_plane_update_buffers(struct atmel_hlcdc_plane *plane,
->>> -                                     struct atmel_hlcdc_plane_state *state)
->>> +                                          struct atmel_hlcdc_plane_state *state)
->>
->> update_hlcdc_buffers() and update_xlcdc_buffers() could also be members in
->> the struct atmel_hlcdc_dc_desc and called accordingly where needed w/o
->> checking is_xlcdc.
->>
->>>   {
->>>        const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
->>> +     struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
->>>        struct drm_framebuffer *fb = state->base.fb;
->>>        u32 sr;
->>>        int i;
->>>
->>> -     sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
->>> +     if (!dc->desc->is_xlcdc)
->>> +             sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
->>>
->>>        for (i = 0; i < state->nplanes; i++) {
->>>                struct drm_gem_dma_object *gem = drm_fb_dma_get_gem_obj(fb, i);
->>>
->>>                state->dscrs[i]->addr = gem->dma_addr + state->offsets[i];
->>>
->>> -             atmel_hlcdc_layer_write_reg(&plane->layer,
->>> -                                         ATMEL_HLCDC_LAYER_PLANE_HEAD(i),
->>> -                                         state->dscrs[i]->self);
->>> -
->>> -             if (!(sr & ATMEL_HLCDC_LAYER_EN)) {
->>> -                     atmel_hlcdc_layer_write_reg(&plane->layer,
->>> -                                     ATMEL_HLCDC_LAYER_PLANE_ADDR(i),
->>> -                                     state->dscrs[i]->addr);
->>> -                     atmel_hlcdc_layer_write_reg(&plane->layer,
->>> -                                     ATMEL_HLCDC_LAYER_PLANE_CTRL(i),
->>> -                                     state->dscrs[i]->ctrl);
->>> -                     atmel_hlcdc_layer_write_reg(&plane->layer,
->>> -                                     ATMEL_HLCDC_LAYER_PLANE_NEXT(i),
->>> -                                     state->dscrs[i]->self);
->>> -             }
->>> +             if (dc->desc->is_xlcdc)
->>> +                     update_xlcdc_buffers(plane, state, i);
->>> +             else
->>> +                     update_hlcdc_buffers(plane, state, sr, i);
->>
->> And here you can have something like:
->>                  dc->desc->update_lcdc_buffers();
->>>
->>>                if (desc->layout.xstride[i])
->>>                        atmel_hlcdc_layer_write_cfg(&plane->layer,
->>> @@ -712,11 +816,8 @@ static int atmel_hlcdc_plane_atomic_check(struct drm_plane *p,
->>>        return 0;
->>>   }
->>>
->>> -static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
->>> -                                          struct drm_atomic_state *state)
->>> +static void hlcdc_atomic_disable(struct atmel_hlcdc_plane *plane)
->>>   {
->>> -     struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
->>> -
->>>        /* Disable interrupts */
->>>        atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IDR,
->>>                                    0xffffffff);
->>> @@ -731,6 +832,72 @@ static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
->>>        atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
->>>   }
->>>
->>> +static void xlcdc_atomic_disable(struct atmel_hlcdc_plane *plane)
->>> +{
->>> +     /* Disable interrupts */
->>> +     atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_IDR,
->>> +                                 0xffffffff);
->>> +
->>> +     /* Disable the layer */
->>> +     atmel_hlcdc_layer_write_reg(&plane->layer,
->>> +                                 ATMEL_XLCDC_LAYER_ENR, 0);
->>> +
->>> +     /* Clear all pending interrupts */
->>> +     atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_XLCDC_LAYER_ISR);
->>> +}
->>> +
->>> +static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
->>> +                                          struct drm_atomic_state *state)
->>> +{
->>> +     struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
->>> +     struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
->>> +
->>> +     if (dc->desc->is_xlcdc)
->>> +             xlcdc_atomic_disable(plane);
->>> +     else
->>> +             hlcdc_atomic_disable(plane);
->>
->>          dc->desc->lcdc_atomic_disable();
->>
->>> +}
->>> +
->>> +static void hlcdc_atomic_update(struct atmel_hlcdc_plane *plane)
->>> +{
->>> +     u32 sr;
->>> +
->>> +     /* Enable the overrun interrupts. */
->>> +     atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IER,
->>> +                                 ATMEL_HLCDC_LAYER_OVR_IRQ(0) |
->>> +                                 ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
->>> +                                 ATMEL_HLCDC_LAYER_OVR_IRQ(2));
->>> +
->>> +     /* Apply the new config at the next SOF event. */
->>> +     sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
->>> +     atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHER,
->>> +                                 ATMEL_HLCDC_LAYER_UPDATE |
->>> +                                 (sr & ATMEL_HLCDC_LAYER_EN ?
->>> +                                 ATMEL_HLCDC_LAYER_A2Q : ATMEL_HLCDC_LAYER_EN));
->>> +}
->>> +
->>> +static void xlcdc_atomic_update(struct atmel_hlcdc_plane *plane,
->>> +                             struct atmel_hlcdc_dc *dc)
->>> +{
->>> +     /* Enable the overrun interrupts. */
->>> +     atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_IER,
->>> +                                 ATMEL_XLCDC_LAYER_OVR_IRQ(0) |
->>> +                                 ATMEL_XLCDC_LAYER_OVR_IRQ(1) |
->>> +                                 ATMEL_XLCDC_LAYER_OVR_IRQ(2));
->>> +
->>> +     atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_ENR,
->>> +                                 ATMEL_XLCDC_LAYER_EN);
->>> +
->>> +     /*
->>> +      * Updating XLCDC_xxxCFGx, XLCDC_xxxFBA and XLCDC_xxxEN,
->>> +      * (where xxx indicates each layer) requires writing one to the
->>> +      * Update Attribute field for each layer in LCDC_ATTRE register for SAM9X7.
->>> +      */
->>> +     regmap_write(dc->hlcdc->regmap, ATMEL_XLCDC_ATTRE, ATMEL_XLCDC_BASE_UPDATE |
->>> +                  ATMEL_XLCDC_OVR1_UPDATE | ATMEL_XLCDC_OVR3_UPDATE |
->>> +                  ATMEL_XLCDC_HEO_UPDATE);
->>> +}
->>> +
->>>   static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
->>>                                            struct drm_atomic_state *state)
->>>   {
->>> @@ -739,7 +906,7 @@ static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
->>>        struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
->>>        struct atmel_hlcdc_plane_state *hstate =
->>>                        drm_plane_state_to_atmel_hlcdc_plane_state(new_s);
->>> -     u32 sr;
->>> +     struct atmel_hlcdc_dc *dc = p->dev->dev_private;
->>>
->>>        if (!new_s->crtc || !new_s->fb)
->>>                return;
->>> @@ -750,29 +917,67 @@ static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
->>>        }
->>>
->>>        atmel_hlcdc_plane_update_pos_and_size(plane, hstate);
->>> -     atmel_hlcdc_plane_update_general_settings(plane, hstate);
->>> +     if (dc->desc->is_xlcdc)
->>> +             atmel_xlcdc_plane_update_general_settings(plane, hstate);
->>> +     else
->>> +             atmel_hlcdc_plane_update_general_settings(plane, hstate);
->>
->>          dc->desc->lcdc_plane_update_general_settigns();
->>
->>>        atmel_hlcdc_plane_update_format(plane, hstate);
->>>        atmel_hlcdc_plane_update_clut(plane, hstate);
->>>        atmel_hlcdc_plane_update_buffers(plane, hstate);
->>>        atmel_hlcdc_plane_update_disc_area(plane, hstate);
->>>
->>> -     /* Enable the overrun interrupts. */
->>> -     atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IER,
->>> -                                 ATMEL_HLCDC_LAYER_OVR_IRQ(0) |
->>> -                                 ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
->>> -                                 ATMEL_HLCDC_LAYER_OVR_IRQ(2));
->>> +     if (dc->desc->is_xlcdc)
->>> +             xlcdc_atomic_update(plane, dc);
->>> +     else
->>> +             hlcdc_atomic_update(plane);
->>
->>          dc->desc->lcdc_atomic_update();
->>
->>> +}
->>>
->>> -     /* Apply the new config at the next SOF event. */
->>> -     sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
->>> -     atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHER,
->>> -                     ATMEL_HLCDC_LAYER_UPDATE |
->>> -                     (sr & ATMEL_HLCDC_LAYER_EN ?
->>> -                      ATMEL_HLCDC_LAYER_A2Q : ATMEL_HLCDC_LAYER_EN));
->>> +u32 hlcdc_csc_coeffs[] = {
->>> +     0x4c900091,
->>> +     0x7a5f5090,
->>> +     0x40040890
->>> +};
->>
->> You can move this in function where it is used and declare it static.
->>
->>> +
->>> +u32 xlcdc_csc_coeffs[] = {
->>> +     0x00000488,
->>> +     0x00000648,
->>> +     0x1EA00480,
->>> +     0x00001D28,
->>> +     0x08100480,
->>> +     0x00000000,
->>> +     0x00000007
->>> +};
->>
->> Same here.
->>
->>> +
->>> +static void hlcdc_csc_init(struct atmel_hlcdc_plane *plane,
->>> +                        const struct atmel_hlcdc_layer_desc *desc)
->>> +{
->>> +     /*
->>> +      * TODO: declare a "yuv-to-rgb-conv-factors" property to let
->>> +      * userspace modify these factors (using a BLOB property ?).
->>> +      */
->>> +     for (int i = 0; i < ARRAY_SIZE(hlcdc_csc_coeffs); i++)
->>
->> { at the end of for statement.
->>
->>> +             atmel_hlcdc_layer_write_cfg(&plane->layer,
->>> +                                         desc->layout.csc + i,
->>> +                                         hlcdc_csc_coeffs[i]);
->>
->> } here
->>
->>> +}
->>> +
->>> +static void xlcdc_csc_init(struct atmel_hlcdc_plane *plane,
->>> +                        const struct atmel_hlcdc_layer_desc *desc)
->>> +{
->>> +     /*
->>> +      * yuv-to-rgb-conv-factors are now defined from LCDC_HEOCFG16 to
->>> +      * LCDC_HEOCFG21 registers in SAM9X7.
->>> +      */
->>> +     for (int i = 0; i < ARRAY_SIZE(xlcdc_csc_coeffs); i++)
->>> +             atmel_hlcdc_layer_write_cfg(&plane->layer,
->>> +                                         desc->layout.csc + i,
->>> +                                         xlcdc_csc_coeffs[i]);
->>
->> Ditto
->>
->>>   }
->>>
->>>   static int atmel_hlcdc_plane_init_properties(struct atmel_hlcdc_plane *plane)
->>>   {
->>>        const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
->>> +     struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
->>>
->>>        if (desc->type == ATMEL_HLCDC_OVERLAY_LAYER ||
->>>            desc->type == ATMEL_HLCDC_CURSOR_LAYER) {
->>> @@ -796,31 +1001,19 @@ static int atmel_hlcdc_plane_init_properties(struct atmel_hlcdc_plane *plane)
->>>                        return ret;
->>>        }
->>>
->>> -     if (desc->layout.csc) {
->>> -             /*
->>> -              * TODO: decare a "yuv-to-rgb-conv-factors" property to let
->>> -              * userspace modify these factors (using a BLOB property ?).
->>> -              */
->>> -             atmel_hlcdc_layer_write_cfg(&plane->layer,
->>> -                                         desc->layout.csc,
->>> -                                         0x4c900091);
->>> -             atmel_hlcdc_layer_write_cfg(&plane->layer,
->>> -                                         desc->layout.csc + 1,
->>> -                                         0x7a5f5090);
->>> -             atmel_hlcdc_layer_write_cfg(&plane->layer,
->>> -                                         desc->layout.csc + 2,
->>> -                                         0x40040890);
->>> -     }
->>> +     if (dc->desc->is_xlcdc && desc->layout.csc)
->>> +             xlcdc_csc_init(plane, desc);
->>> +     else
->>> +             if (desc->layout.csc)
->>> +                     hlcdc_csc_init(plane, desc);
->>
->>          if (desc->layout.csc)
->>                  dc->desc->lcdc_csc_init();
->>
->>>
->>>        return 0;
->>>   }
->>>
->>> -void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
->>> +static void hlcdc_irq_dbg(struct atmel_hlcdc_plane *plane,
->>> +                       const struct atmel_hlcdc_layer_desc *desc)
->>>   {
->>> -     const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
->>> -     u32 isr;
->>> -
->>> -     isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
->>> +     u32 isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
->>>
->>>        /*
->>>         * There's not much we can do in case of overrun except informing
->>> @@ -830,8 +1023,34 @@ void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
->>>        if (isr &
->>>            (ATMEL_HLCDC_LAYER_OVR_IRQ(0) | ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
->>>             ATMEL_HLCDC_LAYER_OVR_IRQ(2)))
->>> -             dev_dbg(plane->base.dev->dev, "overrun on plane %s\n",
->>> -                     desc->name);
->>> +             pr_warn("%s: overrun on plane %s\n", __func__, desc->name);
->>
->> Why changing to pr_warn? why not dev_warn, if any?
->>
->>> +}
->>> +
->>> +static void xlcdc_irq_dbg(struct atmel_hlcdc_plane *plane,
->>> +                       const struct atmel_hlcdc_layer_desc *desc)
->>> +{
->>> +     u32 isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_XLCDC_LAYER_ISR);
->>> +
->>> +     /*
->>> +      * There's not much we can do in case of overrun except informing
->>> +      * the user. However, we are in interrupt context here, hence the
->>> +      * use of dev_dbg().
->>> +      */
->>> +     if (isr &
->>> +         (ATMEL_XLCDC_LAYER_OVR_IRQ(0) | ATMEL_XLCDC_LAYER_OVR_IRQ(1) |
->>> +          ATMEL_XLCDC_LAYER_OVR_IRQ(2)))
->>> +             pr_warn("%s: overrun on plane %s\n", __func__, desc->name);
->>
->> dev_warn() ?
->>
->>> +}
->>> +
->>> +void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
->>> +{
->>> +     const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
->>> +     struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
->>> +
->>> +     if (dc->desc->is_xlcdc)
->>> +             xlcdc_irq_dbg(plane, desc);
->>> +     else
->>> +             hlcdc_irq_dbg(plane, desc);
->>
->>          dc->desc->lcdc_irq_dbg() ?
->>
->>>   }
->>>
->>>   static const struct drm_plane_helper_funcs atmel_hlcdc_layer_plane_helper_funcs = {
+I tested this patch using xfstests last week, and all enospc and shutdown
+related tests passed.
+
 > 
+> If you haven't exercised ENOSPC conditions in your testing, then you
+> haven't actually tested whether the new code can accurately and
+> correctly detect ENOSPC conditions....
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+
+Best regards,
+
+Jinliang Zheng.
