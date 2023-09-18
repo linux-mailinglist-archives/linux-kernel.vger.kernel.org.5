@@ -2,51 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAC87A40E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F577A40E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239753AbjIRGKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 02:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        id S235940AbjIRGM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 02:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235940AbjIRGKc (ORCPT
+        with ESMTP id S239697AbjIRGMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 02:10:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9589FCD
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:10:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 179AEC433CC;
-        Mon, 18 Sep 2023 06:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695017423;
-        bh=faJDfVTZnoXkaUKIebi8ZF6NXz+I7LuFrleI7sNVv+g=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=gkxF72HxLz7PfD16qDdAg95DepUjDf9zUjjPhQfZFpnt8oXcUruzLLKwA7NqhnPHo
-         HZfiB3q7uFVkLS7Pay25tKAuoLXh0f9b24EgSdvcTGjKqUDw1uH2cJDkpxyrHPJ4qK
-         luIVowfQ0IjIkudpdGUTsB4/df1HZM/0HVj4UrUs2a47E3+tIU7iCaSfyfG6cubLXP
-         RmWarXaNHHRZuz0FZMcInl78dUUJFkJP8ZSJ3YsPwCVf2mjoj9rg5acNGSPnsGkxE7
-         EXFAojiiilgqDKfVN5zqluGyJry2DC3MPIT2xbaqI+UKQW5mwTvxWPD9jlldBiB9zQ
-         VETE3Hfq4KQPA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 05572E11F42;
-        Mon, 18 Sep 2023 06:10:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 18 Sep 2023 02:12:19 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A800A123;
+        Sun, 17 Sep 2023 23:12:11 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 38I6BSTj019869;
+        Mon, 18 Sep 2023 14:11:28 +0800 (+08)
+        (envelope-from xingxing.luo@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RpvVQ1FmFz2SCXQ3;
+        Mon, 18 Sep 2023 14:08:14 +0800 (CST)
+Received: from zebjkernups01.spreadtrum.com (10.0.93.153) by
+ shmbx06.spreadtrum.com (10.0.1.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Mon, 18 Sep 2023 14:11:27 +0800
+From:   Xingxing Luo <xingxing.luo@unisoc.com>
+To:     <b-liu@ti.com>, <gregkh@linuxfoundation.org>, <s.shtylyov@omp.ru>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <xingxing0070.luo@gmail.com>, <Zhiyong.Liu@unisoc.com>,
+        <Cixi.Geng1@unisoc.com>, <Orson.Zhai@unisoc.com>,
+        <zhang.lyra@gmail.com>
+Subject: [PATCH V2] usb: musb: Get the musb_qh poniter after musb_giveback
+Date:   Mon, 18 Sep 2023 14:10:38 +0800
+Message-ID: <20230918061038.30949-1-xingxing.luo@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH] octeon_ep: support to fetch firmware info
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169501742301.10972.7267111808150683547.git-patchwork-notify@kernel.org>
-Date:   Mon, 18 Sep 2023 06:10:23 +0000
-References: <20230915081608.2155837-1-srasheed@marvell.com>
-In-Reply-To: <20230915081608.2155837-1-srasheed@marvell.com>
-To:     Shinas Rasheed <srasheed@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hgani@marvell.com, egallen@redhat.com, mschmidt@redhat.com,
-        vimleshk@marvell.com, vburru@marvell.com, sedara@marvell.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain
+X-Originating-IP: [10.0.93.153]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx06.spreadtrum.com (10.0.1.11)
+X-MAIL: SHSQR01.spreadtrum.com 38I6BSTj019869
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,32 +50,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+When multiple threads are performing USB transmission, musb->lock will be
+unlocked when musb_giveback is executed. At this time, qh may be released
+in the dequeue process in other threads, resulting in a wild pointer, so
+it needs to be here get qh again, and judge whether qh is NULL, and when
+dequeue, you need to set qh to NULL.
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Fixes: dbac5d07d13e ("usb: musb: host: don't start next rx urb if current one failed")
+Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
+---
+ drivers/usb/musb/musb_host.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-On Fri, 15 Sep 2023 01:16:07 -0700 you wrote:
-> Add support to fetch firmware info such as heartbeat miss count,
-> heartbeat interval. This shall be used for heartbeat monitor.
-> 
-> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
-> ---
->  .../marvell/octeon_ep/octep_cn9k_pf.c         | 10 +++-----
->  .../ethernet/marvell/octeon_ep/octep_config.h | 22 +++++++++++++----
->  .../marvell/octeon_ep/octep_ctrl_net.c        | 24 ++++++++++++++++++-
->  .../marvell/octeon_ep/octep_ctrl_net.h        | 18 ++++++++++++++
->  .../ethernet/marvell/octeon_ep/octep_main.c   | 16 +++++++++----
->  .../marvell/octeon_ep/octep_regs_cn9k_pf.h    |  4 ++++
->  6 files changed, 77 insertions(+), 17 deletions(-)
-
-Here is the summary with links:
-  - [net-next] octeon_ep: support to fetch firmware info
-    https://git.kernel.org/netdev/net-next/c/8d6198a14e2b
-
-You are awesome, thank you!
+diff --git a/drivers/usb/musb/musb_host.c b/drivers/usb/musb/musb_host.c
+index a02c29216955..bc4507781167 100644
+--- a/drivers/usb/musb/musb_host.c
++++ b/drivers/usb/musb/musb_host.c
+@@ -321,10 +321,16 @@ static void musb_advance_schedule(struct musb *musb, struct urb *urb,
+ 	musb_giveback(musb, urb, status);
+ 	qh->is_ready = ready;
+ 
++	/*
++	 * musb->lock had been unlocked in musb_giveback, so qh may
++	 * be freed, need to get it again
++	 */
++	qh = musb_ep_get_qh(hw_ep, is_in);
++
+ 	/* reclaim resources (and bandwidth) ASAP; deschedule it, and
+ 	 * invalidate qh as soon as list_empty(&hep->urb_list)
+ 	 */
+-	if (list_empty(&qh->hep->urb_list)) {
++	if (qh && list_empty(&qh->hep->urb_list)) {
+ 		struct list_head	*head;
+ 		struct dma_controller	*dma = musb->dma_controller;
+ 
+@@ -2398,6 +2404,7 @@ static int musb_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
+ 		 * and its URB list has emptied, recycle this qh.
+ 		 */
+ 		if (ready && list_empty(&qh->hep->urb_list)) {
++			musb_ep_set_qh(qh->hw_ep, is_in, NULL);
+ 			qh->hep->hcpriv = NULL;
+ 			list_del(&qh->ring);
+ 			kfree(qh);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.17.1
 
