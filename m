@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 011AD7A535D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7977A534E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbjIRTwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 15:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
+        id S229931AbjIRTvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 15:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjIRTwA (ORCPT
+        with ESMTP id S229476AbjIRTvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 15:52:00 -0400
+        Mon, 18 Sep 2023 15:51:36 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC3D1B0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:51:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0FF10A
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:51:31 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qiKHA-0003kM-8w; Mon, 18 Sep 2023 21:51:20 +0200
+        id 1qiKH8-0003kN-PK; Mon, 18 Sep 2023 21:51:18 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qiKH7-007I8Q-Ei; Mon, 18 Sep 2023 21:51:17 +0200
+        id 1qiKH7-007I8T-MK; Mon, 18 Sep 2023 21:51:17 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qiKH7-002mC2-4v; Mon, 18 Sep 2023 21:51:17 +0200
+        id 1qiKH7-002mC6-CQ; Mon, 18 Sep 2023 21:51:17 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Andrew Lunn <andrew@lunn.ch>,
@@ -36,19 +36,20 @@ Cc:     Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 01/19] net: mdio: aspeed: Convert to platform remove callback returning void
-Date:   Mon, 18 Sep 2023 21:50:44 +0200
-Message-Id: <20230918195102.1302746-2-u.kleine-koenig@pengutronix.de>
+        Paolo Abeni <pabeni@redhat.com>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 02/19] net: mdio: bcm-iproc: Convert to platform remove callback returning void
+Date:   Mon, 18 Sep 2023 21:50:45 +0200
+Message-Id: <20230918195102.1302746-3-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230918195102.1302746-1-u.kleine-koenig@pengutronix.de>
 References: <20230918195102.1302746-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1821; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=+rLYLOsUpr8kyy+QFlBR3XWIcdLjwnZ/LnhP5xUSMTQ=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlCKoAeA+IS0yQi6cSoY2pH7ok+WjtIDnAYn1k9 fgK9LXFin6JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZQiqAAAKCRCPgPtYfRL+ Tg6MB/9RzPdhExQILy67IDnTq81/pUsM2T6QgTRxzoOE6vIqMyoKjvG5Ep1oj4jtvqjXcSom28W La0nOZIorIudcmyTU81CVvJt/2uzvLIUbY2DySyTfpVCg6VXUrrvFme+raLXLLm7UVlwBfgwYhr IYhRPmDLyIyamGf02ZQ6D+GvY5cgIj308E4nC7TZpGebXQugLlQAcATzjBG52rnt4kJs+xiOYVy M5KKEELd2Fr1PUJeE2xWJl721EU7OOE8jcR/fp/Mds9v0KaY9X8+qJExQvhwPr8+shvEjYxvP84 adrN5A/M+Bg7wuoCPU36gwxA5XHm8oC8d6QlBrm8aMil5+QA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1713; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=wWOk5ISRV+Cu8beJpj4odlkFSht8tvcCLTItEfQP5kQ=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlCKoBowTF/6mTesdVE3rQTlFpYwkX8+FZIowHa JOgBIu64zGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZQiqAQAKCRCPgPtYfRL+ TmjjB/4lCfQp5h7nyKtACQrfiQ6ZTgSB75P9Q7dNR1kc+jd4DE4cOLP0GKrF1iaocN5wCzQSulb PvNFwvsGP2VtbKCwF/ceWh5EyY6MnGYxoZmYrhJlmUUoXDOvf25qlGhaWL/463JpR1fdqxkwjFo QeE2lTCbPcFVmHZ7W6YveCd+xt4hMTyuHwSn8pCdFPMaEvpXUP7hvr+WmC+ChjKRmMIQhvWIFV/ vBLDP9+OI12BR4g1Wz/C/VvdGXVbgRkjoyiv/7qRu2fhBQ0MxwMnhBIZEgbruIy2l1B7km1H7PO xGlVlpMbAQSekrDtS8NWqWAm5KWxqfgm06RBOZL5FIp9ELvo
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -78,39 +79,38 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/net/mdio/mdio-aspeed.c | 6 ++----
+ drivers/net/mdio/mdio-bcm-iproc.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/mdio/mdio-aspeed.c b/drivers/net/mdio/mdio-aspeed.c
-index c727103c8b05..70edeeb7771e 100644
---- a/drivers/net/mdio/mdio-aspeed.c
-+++ b/drivers/net/mdio/mdio-aspeed.c
-@@ -177,15 +177,13 @@ static int aspeed_mdio_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/net/mdio/mdio-bcm-iproc.c b/drivers/net/mdio/mdio-bcm-iproc.c
+index 77fc970cdfde..5a2d26c6afdc 100644
+--- a/drivers/net/mdio/mdio-bcm-iproc.c
++++ b/drivers/net/mdio/mdio-bcm-iproc.c
+@@ -168,14 +168,12 @@ static int iproc_mdio_probe(struct platform_device *pdev)
+ 	return rc;
  }
  
--static int aspeed_mdio_remove(struct platform_device *pdev)
-+static void aspeed_mdio_remove(struct platform_device *pdev)
+-static int iproc_mdio_remove(struct platform_device *pdev)
++static void iproc_mdio_remove(struct platform_device *pdev)
  {
- 	struct mii_bus *bus = (struct mii_bus *)platform_get_drvdata(pdev);
- 	struct aspeed_mdio *ctx = bus->priv;
+ 	struct iproc_mdio_priv *priv = platform_get_drvdata(pdev);
  
- 	reset_control_assert(ctx->reset);
- 	mdiobus_unregister(bus);
+ 	mdiobus_unregister(priv->mii_bus);
+ 	mdiobus_free(priv->mii_bus);
 -
 -	return 0;
  }
  
- static const struct of_device_id aspeed_mdio_of_match[] = {
-@@ -200,7 +198,7 @@ static struct platform_driver aspeed_mdio_driver = {
- 		.of_match_table = aspeed_mdio_of_match,
+ #ifdef CONFIG_PM_SLEEP
+@@ -210,7 +208,7 @@ static struct platform_driver iproc_mdio_driver = {
+ #endif
  	},
- 	.probe = aspeed_mdio_probe,
--	.remove = aspeed_mdio_remove,
-+	.remove_new = aspeed_mdio_remove,
+ 	.probe = iproc_mdio_probe,
+-	.remove = iproc_mdio_remove,
++	.remove_new = iproc_mdio_remove,
  };
  
- module_platform_driver(aspeed_mdio_driver);
+ module_platform_driver(iproc_mdio_driver);
 -- 
 2.40.1
 
