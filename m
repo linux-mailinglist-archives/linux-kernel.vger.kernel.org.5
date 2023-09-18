@@ -2,156 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF67E7A4804
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4237F7A4805
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236942AbjIRLJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        id S236351AbjIRLLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241462AbjIRLI7 (ORCPT
+        with ESMTP id S241446AbjIRLLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:08:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F8E119;
-        Mon, 18 Sep 2023 04:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695035269; x=1726571269;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aRKzpkjTca0SXK7A2lb362HBVbvXPIZVTJbulPt7FYU=;
-  b=bL1uq7XNPwbBtLcDJiIVKRQKtKp/HZ4q4LNG+hWLVpIaU5maGIp4h21U
-   CUvG1tUJ4gaQg0/e8sxSAovM6R2RmmRZ9V1eby5UphFSgk8bPkhsBbch5
-   3VSxfyKvXVRXaDqjvFf/PwlDDizoVyA6zu7uVV5/l3ttFrpA5JVGJZHKr
-   nCoR9wTVN+wKy7P0KkILBBd9RtSvutUJXXcGU0rgVozFnW6UpTmDIBndT
-   rjLWDePHyFa2dutbRjXGYcNDo6XgmrSGoXSuVD0PD4MqExVCQZeoEOwBq
-   Xb9lF+aEv+QkEid8OX3oArZkVIt9fvkYSP/DTKPpbRHBve6EVK5uIkEDk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="369950109"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="369950109"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 04:07:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="775094447"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="775094447"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga008.jf.intel.com with SMTP; 18 Sep 2023 04:07:45 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 18 Sep 2023 14:07:44 +0300
-Date:   Mon, 18 Sep 2023 14:07:44 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Abdel Alkuor <alkuor@gmail.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
-        abdelalkuor@geotab.com
-Subject: Re: [PATCH v5 03/15] USB: typec: Add patch mode to tps6598x
-Message-ID: <ZQgvgJRLK+ysS30D@kuha.fi.intel.com>
-References: <20230917152639.21443-1-alkuor@gmail.com>
- <20230917152639.21443-4-alkuor@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230917152639.21443-4-alkuor@gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 18 Sep 2023 07:11:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8CC10E
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:10:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6643EC433C7;
+        Mon, 18 Sep 2023 11:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695035428;
+        bh=nI22GzPf38yVW5irsdFYpIrR/SVQVuIbqZOLX6We6Z8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MDXPch+U1V86R6jsI5MRXRdNS08DHTT9f+J4ixiTLCLnBBTZp+oap1Djxu7EnWSCb
+         jxws0XxDF1tIQ59+FW6IexuQcVRxt+8NVHlEsleyJgl+ow3qA2oPf5p0AcqJn8xOCO
+         qcEXq5O9eO+8qeScu5gZS7Xi5G3tqRFLg7//4wej+BBe6mzSGsiFV/K11OZVUQ/cYf
+         clab0hasqHHg4NAJqAMqF5g5WqSN4Ce+QH1v2f/uEdNhihIf3wvY/WPVuUbT35zm0S
+         pWNyvvPBWuYTF09QggZarbXQxia5a0ZC4gMmuKgZZgAG2lUrT4FOu2Empi1yLX/2E1
+         nY9M8aQA6ZZkQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qiC93-00Dw69-On;
+        Mon, 18 Sep 2023 12:10:25 +0100
+Date:   Mon, 18 Sep 2023 12:10:25 +0100
+Message-ID: <865y47enz2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kristina Martsenko <kristina.martsenko@arm.com>
+Cc:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] KVM: arm64: Configure HCRX_EL2 dynamically
+In-Reply-To: <20230915124840.474888-2-kristina.martsenko@arm.com>
+References: <20230915124840.474888-1-kristina.martsenko@arm.com>
+        <20230915124840.474888-2-kristina.martsenko@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kristina.martsenko@arm.com, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, vladimir.murzin@arm.com, coltonlewis@google.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 11:26:27AM -0400, Abdel Alkuor wrote:
-> TPS25750 has a patch mode indicating the device requires
-> a configuration to get the device into operational mode
+Hi Kristina,
+
+On Fri, 15 Sep 2023 13:48:38 +0100,
+Kristina Martsenko <kristina.martsenko@arm.com> wrote:
 > 
-> Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
+> At the moment the HCRX_EL2 system register is always initialized to
+> HCRX_GUEST_FLAGS when running a guest. Instead, choose the configuration
+> at vcpu reset time and save it in the vcpu struct, similarly to how
+> HCR_EL2 is set up. This will be needed in a subsequent change to
+> configure the register based on CPU features detected at runtime.
+> 
+> Signed-off-by: Kristina Martsenko <kristina.martsenko@arm.com>
 > ---
->  drivers/usb/typec/tipd/core.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+>  arch/arm64/include/asm/kvm_emulate.h    | 5 +++++
+>  arch/arm64/include/asm/kvm_host.h       | 1 +
+>  arch/arm64/kvm/arm.c                    | 1 +
+>  arch/arm64/kvm/hyp/include/hyp/switch.h | 2 +-
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c      | 1 +
+>  arch/arm64/kvm/hyp/nvhe/pkvm.c          | 1 +
+>  6 files changed, 10 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index a8aee4e1aeba..6d2151325fbb 100644
-> --- a/drivers/usb/typec/tipd/core.c
-> +++ b/drivers/usb/typec/tipd/core.c
-> @@ -68,6 +68,7 @@ enum {
->  	TPS_MODE_BOOT,
->  	TPS_MODE_BIST,
->  	TPS_MODE_DISC,
-> +	TPS_MODE_PTCH,
->  };
->  
->  static const char *const modes[] = {
-> @@ -75,6 +76,7 @@ static const char *const modes[] = {
->  	[TPS_MODE_BOOT]	= "BOOT",
->  	[TPS_MODE_BIST]	= "BIST",
->  	[TPS_MODE_DISC]	= "DISC",
-> +	[TPS_MODE_PTCH] = "PTCH",
->  };
->  
->  /* Unrecognized commands will be replaced with "!CMD" */
-> @@ -576,7 +578,7 @@ static void tps6598x_poll_work(struct work_struct *work)
->  			   &tps->wq_poll, msecs_to_jiffies(POLL_INTERVAL));
+> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> index 3d6725ff0bf6..64ea27e6deb1 100644
+> --- a/arch/arm64/include/asm/kvm_emulate.h
+> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> @@ -134,6 +134,11 @@ static inline void vcpu_ptrauth_disable(struct kvm_vcpu *vcpu)
+>  	vcpu->arch.hcr_el2 &= ~(HCR_API | HCR_APK);
 >  }
 >  
-> -static int tps6598x_check_mode(struct tps6598x *tps)
-> +static int tps6598x_check_mode(struct tps6598x *tps, u8 *curr_mode)
->  {
->  	char mode[5] = { };
->  	int ret;
-> @@ -585,8 +587,11 @@ static int tps6598x_check_mode(struct tps6598x *tps)
->  	if (ret)
->  		return ret;
->  
-> -	switch (match_string(modes, ARRAY_SIZE(modes), mode)) {
-> +	*curr_mode = match_string(modes, ARRAY_SIZE(modes), mode);
+> +static inline void vcpu_reset_hcrx(struct kvm_vcpu *vcpu)
+> +{
+> +	vcpu->arch.hcrx_el2 = HCRX_GUEST_FLAGS;
+> +}
 > +
-> +	switch (*curr_mode) {
->  	case TPS_MODE_APP:
-> +	case TPS_MODE_PTCH:
-
-This check is OK, but it seems that you are not using that curr_mode
-for anything yet, so don't change the paramaters of this function in
-this patch.
-
-I would also just return the mode. Then this function would be used
-like this:
-
-        ret = tps6598x_check_mode(...)
-        if (ret < 0)
-                return ret;
-
-Now mode = ret.
-
->  		return 0;
->  	case TPS_MODE_BOOT:
->  		dev_warn(tps->dev, "dead-battery condition\n");
-> @@ -715,6 +720,7 @@ static int tps6598x_probe(struct i2c_client *client)
->  	u32 vid;
->  	int ret;
->  	u64 mask1;
-> +	u8 mode;
+>  static inline unsigned long vcpu_get_vsesr(struct kvm_vcpu *vcpu)
+>  {
+>  	return vcpu->arch.vsesr_el2;
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index af06ccb7ee34..2764748756a7 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -487,6 +487,7 @@ struct kvm_vcpu_arch {
 >  
->  	tps = devm_kzalloc(&client->dev, sizeof(*tps), GFP_KERNEL);
->  	if (!tps)
-> @@ -759,7 +765,7 @@ static int tps6598x_probe(struct i2c_client *client)
->  
->  	tps->irq_handler = irq_handler;
->  	/* Make sure the controller has application firmware running */
-> -	ret = tps6598x_check_mode(tps);
-> +	ret = tps6598x_check_mode(tps, &mode);
+>  	/* Values of trap registers for the guest. */
+>  	u64 hcr_el2;
+> +	u64 hcrx_el2;
 
-Actually, if you need to know the mode in here later, then I'm not
-sure tps6592x_check_mode() is useful after that. This is the only
-place it's called. Just read and check the mode in here directly at
-that point.
+Do we really need this extra field? Yes, this is only an extra 64bit,
+but they tend to accumulate...
 
-thanks,
+Looking at patch #3, the change is related to this:
+
+ 	vcpu->arch.hcrx_el2 = HCRX_GUEST_FLAGS;
++
++	if (cpus_have_final_cap(ARM64_HAS_MOPS)) {
++		vcpu->arch.hcrx_el2 |= HCRX_EL2_MSCEn;
++		vcpu->arch.hcrx_el2 |= HCRX_EL2_MCE2;
++	}
+
+meaning that this is a constant value for a given boot of the host.
+
+At this stage, I'd rather you define HCRX_GUEST_FLAGS as:
+
+#define HCRX_GUEST_FLAGS \
+	(HCRX_EL2_SMPME | HCRX_EL2_TCR2En | \
+	 cpus_have_final_cap(ARM64_HAS_MOPS) ? \
+	 (HCRX_EL2_MSCEn | HCRX_EL2_MCE2) : 0)
+
+and drop the new field altogether, until we have something that
+requires dynamic flipping of an HCRX_EL2 field.
+
+Thanks,
+
+	M.
 
 -- 
-heikki
+Without deviation from the norm, progress is not possible.
