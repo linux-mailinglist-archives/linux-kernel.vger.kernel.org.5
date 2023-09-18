@@ -2,91 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD157A490E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952487A469F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241836AbjIRMAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
+        id S236722AbjIRKEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 06:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241895AbjIRL7w (ORCPT
+        with ESMTP id S241122AbjIRKEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:59:52 -0400
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AF412E
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:58:23 -0700 (PDT)
-Received: from eig-obgw-5010a.ext.cloudfilter.net ([10.0.29.199])
-        by cmsmtp with ESMTP
-        id iAuOqj91PyYOwiCtSqE6Wg; Mon, 18 Sep 2023 11:58:22 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id iCtRqjUWMYg1hiCtRqz1LF; Mon, 18 Sep 2023 11:58:22 +0000
-X-Authority-Analysis: v=2.4 cv=KsReZEaN c=1 sm=1 tr=0 ts=65083b5e
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10
- a=x2q-Q_5hSYYoW0-ZbgkA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nvWwqffCij7ZgOtkwNJMjICe7Ibafj2Zgck2ZKCHj+I=; b=OROfyzdbVncz6GG+pMxherI3YC
-        FyXaNi6UWptY28NKBaUVsZanCENsl4ntuarg9A9QIckfzZ2eCBd5YWjSAVU/VM8MYiXDtktf27SiG
-        G2StZZy6FlJZ/VEn/oY2pw+ezmtuvTlHfiF3DjoIwcWZxLVJHg0vWJmsaTqwuz+yr2N+l7GIa4Nv2
-        G56JmDNlXdYMakbrUC3DEuM+53x/gT3AziUxQmAHxq8b7LMtPGmgOx4FzYy9HlqltXrjtNcfvHMdx
-        vw03KcKY1GRfi0E69YfEpMMz7iOLLpY4yPCyahC3Pakfy9xgXGq/+dAHuaSYZYoumwOk7Zl6B/+58
-        Zc86hBAg==;
-Received: from [94.239.20.48] (port=44006 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qiCtQ-000JKv-2L;
-        Mon, 18 Sep 2023 06:58:20 -0500
-Message-ID: <4067fb33-2172-b132-e8c4-0ba21c31b42a@embeddedor.com>
-Date:   Sun, 17 Sep 2023 13:59:26 -0600
+        Mon, 18 Sep 2023 06:04:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB7F12D
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:03:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695031386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KHQ1/UuyBZLpfUL6czplgqv9YFzz7xn0PsYaq4PItgo=;
+        b=Ba1yaAcaroRpJDJYaGfg9tXRcpohLqvasWH451/8/vOdbtqkERGPDX1QJRvFeQa3PFPr8I
+        gZPfvUB32un3ROsE50rKRbN0zIad0WtOGG93Y5h8geGt56B3pz/CeIbBp/vg4ElI7DKWhU
+        j+55PsgKeaBrOg1M6JWx8V3QLVuqRis=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-458-7I-FY3CRN5Wqikm7tOozwQ-1; Mon, 18 Sep 2023 06:03:04 -0400
+X-MC-Unique: 7I-FY3CRN5Wqikm7tOozwQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EC910101A550;
+        Mon, 18 Sep 2023 10:03:03 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A8044C15BB8;
+        Mon, 18 Sep 2023 10:03:02 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <3793723.1694795079@warthog.procyon.org.uk>
+References: <3793723.1694795079@warthog.procyon.org.uk> <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com> <0000000000001c12b30605378ce8@google.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     dhowells@redhat.com,
+        syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2][next] RDMA/core: Use size_{add,mul}() in calls to
- struct_size()
-Content-Language: en-US
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <ZP+if342EMhModzZ@work> <202309142029.D432EEB8C@keescook>
- <2594c7ff-0301-90aa-d48c-6b4d674f850e@embeddedor.com>
- <20230918104938.GD13757@unreal>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230918104938.GD13757@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.239.20.48
-X-Source-L: No
-X-Exim-ID: 1qiCtQ-000JKv-2L
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:44006
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfNXaxzgvaqZ6pf/V6mzfHyGT6SBIU1dtCnUT4pXOFyY9cfmL87fjLzmcVYj5YpvVZsh6C02jakuwOdCS8KA83uTy+8aBXgytr/pZdayM94n6R14d6Hma
- +Z0qlJw9diTCdAV7X6q9qQRBXOhRXo3ranxm5VW8iTe18VF/M0Tg2Nm1ub45S712rImvbN7F5nB4OnHfsHCTLc3lymB7Olt6etstLNNB1qOKoiIGZ23dbuMm
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3905045.1695031382.1@warthog.procyon.org.uk>
+Date:   Mon, 18 Sep 2023 11:03:02 +0100
+Message-ID: <3905046.1695031382@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,32 +68,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+David Howells <dhowells@redhat.com> wrote:
 
+> I think the attached is probably an equivalent cleaned up reproducer.  Note
+> that if the length given to sendfile() is less than 65536, it fails with
+> EINVAL before it gets into __ip6_append_data().
 
-On 9/18/23 04:49, Leon Romanovsky wrote:
-> On Fri, Sep 15, 2023 at 12:06:21PM -0600, Gustavo A. R. Silva wrote:
->>
->>
->> On 9/14/23 21:29, Kees Cook wrote:
->>> On Mon, Sep 11, 2023 at 05:27:59PM -0600, Gustavo A. R. Silva wrote:
->>>> Harden calls to struct_size() with size_add() and size_mul().
->>>
->>> Specifically, make sure that open-coded arithmetic cannot cause an
->>> overflow/wraparound. (i.e. it will stay saturated at SIZE_MAX.)
->>
->> Yep; I have another patch where I explain this in similar terms.
->>
->> I'll send it, shortly.
-> 
-> You missed other places with similar arithmetic.
-> drivers/infiniband/core/device.c:       pdata_rcu = kzalloc(struct_size(pdata_rcu, pdata,
-> drivers/infiniband/core/device.c-                                       rdma_end_port(device) + 1),
-> drivers/infiniband/core/device.c-                           GFP_KERNEL);
-> 
-> drivers/infiniband/core/sa_query.c:     sa_dev = kzalloc(struct_size(sa_dev, port, e - s + 1), GFP_KERNEL);
-> drivers/infiniband/core/user_mad.c:     umad_dev = kzalloc(struct_size(umad_dev, ports, e - s + 1), GFP_KERNEL);
+Actually, it only fails with EINVAL if the size is not a multiple of the block
+size of the source file because it's open O_DIRECT so, say, 65536-512 is fine
+(and works).
 
-I haven't sent all my patches.
+But thinking more on this further, is this even a bug in my code, I wonder?
+The length passed is 65536 - but a UDP packet can't carry that, so it
+shouldn't it have errored out before getting that far?  (which is what it
+seems to do when I try it).
 
---
-Gustavo
+I don't see how we get past the length check in ip6_append_data() with the
+reproducer we're given unless the MTU is somewhat bigger than 65536 (is that
+even possible?)
+
+David
+
