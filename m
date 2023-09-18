@@ -2,185 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2467A4FB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0677A4EA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbjIRQvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
+        id S229802AbjIRQUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjIRQvG (ORCPT
+        with ESMTP id S230241AbjIRQU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:51:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D1683
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:50:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695055813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nnaf/+YZv/hYci2QoG7tyRLioIFXko+bbyYD+KlJj7w=;
-        b=Zog+F6Rx+b1dc3Pdx17YeVyGmDpjJr95U3u38ctwVYtFK0Ae0RkwF0VSaJNxG2byLMiv2x
-        ZxaHCg0euZUzl2ErrqFuePvvisSJRpCHGXJuXJkPUi1/eEwcLgnblNoQY5E7z4W479IzsD
-        dQOq6BFvspy2hpoHEihsCq0yX2eGEPI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-678-WXi8OPpMNaWVQaKM7neKUw-1; Mon, 18 Sep 2023 09:47:04 -0400
-X-MC-Unique: WXi8OPpMNaWVQaKM7neKUw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5D5391C0514C;
-        Mon, 18 Sep 2023 13:47:03 +0000 (UTC)
-Received: from [10.22.9.159] (unknown [10.22.9.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E1F540C6EA8;
-        Mon, 18 Sep 2023 13:47:02 +0000 (UTC)
-Message-ID: <e4e9505d-f55c-5047-5686-40cd49742d45@redhat.com>
-Date:   Mon, 18 Sep 2023 09:47:02 -0400
+        Mon, 18 Sep 2023 12:20:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81497EFB;
+        Mon, 18 Sep 2023 09:17:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60B51C433AB;
+        Mon, 18 Sep 2023 13:49:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695044999;
+        bh=VNgj3ibSIjeoHvbwHyjlxMIDlcI3vpbC0COb4xKHMOo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=nCSQJE0UAVOTe05d26M1mSNVEPEi9P4p2t49urcIeD12JNgqwKoUpRGLqB0q246Oq
+         iUCzop8GzTjWPYLQtRsO45rtdJn2oD493GXgd5uYgVp1J+cSyQlyOZs7+OBBjL502H
+         vqJjyk6COfZvXF6Bu4puBBfxKyy+jjWujRnJ8ZyLplIldy1t2bNSDUrza43FDuTH5v
+         gANAkPA6ClbFh88fhlhpjh8F+QEo1Ri2epiFY8M783Lfgbgwk+HZJrNiKJblvMdMrB
+         wp2YPBLTFA7JNVRn9tLfHNqNWEaIqu4d3q2IubWyPr4ejK1SiQ70ulSchBwktHu5ZE
+         Ha+WTOTY+ZmVg==
+Message-ID: <9deaa260-7a15-502e-0159-2012d06c8d05@kernel.org>
+Date:   Mon, 18 Sep 2023 15:49:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/1] cgroup/cpuset: Rebuild sched domains if isolated
- partition changed
-Content-Language: en-US
-To:     Pierre Gondois <pierre.gondois@arm.com>,
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] tracing/timerlat: Hotplug support for the user-space
+ interface
+To:     kernel test robot <lkp@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     rui.zhang@intel.com, aaron.lu@intel.com,
-        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-References: <20230915154505.363754-1-pierre.gondois@arm.com>
- <20230915154505.363754-2-pierre.gondois@arm.com>
- <5e513c72-7198-a55e-6e2b-a811d5529284@redhat.com>
- <9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+References: <b619d9fd08a3bb47018cf40afa95783844a3c1fd.1694789910.git.bristot@kernel.org>
+ <202309160854.SAw0rIUm-lkp@intel.com>
+Content-Language: en-US, pt-BR, it-IT
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <202309160854.SAw0rIUm-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/23 03:07, Pierre Gondois wrote:
-> Hello Longman,
->
-> On 9/17/23 18:51, Waiman Long wrote:
->> On 9/15/23 11:45, Pierre Gondois wrote:
->>> When an isolated parition is created, the sched domains (sds) are
->>> rebuilt and the sds of the isolated CPUs are detached. This only
->>> happens at the creation of the isolated parition. Updating
->>> the cpuset of the partition doesn't rebuild the sds:
->>>
->>> To reproduce:
->>>     # ls /sys/kernel/debug/sched/domains/cpu0/
->>>     domain0
->>>     # ls /sys/kernel/debug/sched/domains/cpu1/
->>>     domain0
->>>     #
->>>     # mkdir cgroup
->>>     # mount -t cgroup2 none cgroup/
->>>     # mkdir cgroup/A1/
->>>     # echo "+cpuset" > cgroup/cgroup.subtree_control
->>>     # echo 0-3 > cgroup/A1/cpuset.cpus
->>>     # echo isolated > cgroup/A1/cpuset.cpus.partition
->>>     #
->>>     # ls /sys/kernel/debug/sched/domains/cpu0/
->>>     # ls /sys/kernel/debug/sched/domains/cpu1/
->>>     #
->>>     # echo 0 > cgroup/A1/cpuset.cpus
->>>     # ls /sys/kernel/debug/sched/domains/cpu0/
->>>     # ls /sys/kernel/debug/sched/domains/cpu1/
->>>     #
->>>
->>> Here CPU1 should have a sched domain re-attached.
->>>
->>> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
->>> ---
->>>    kernel/cgroup/cpuset.c | 12 ++++++++----
->>>    1 file changed, 8 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>> index 58e6f18f01c1..e3eb27ff9b68 100644
->>> --- a/kernel/cgroup/cpuset.c
->>> +++ b/kernel/cgroup/cpuset.c
->>> @@ -1680,11 +1680,15 @@ static void update_cpumasks_hier(struct 
->>> cpuset *cs, struct tmpmasks *tmp,
->>>             * empty cpuset is changed, we need to rebuild sched 
->>> domains.
->>>             * On default hierarchy, the cpuset needs to be a partition
->>>             * root as well.
->>> +         * Also rebuild sched domains if the cpuset of an isolated
->>> +         * partition changed.
->>>             */
->>> -        if (!cpumask_empty(cp->cpus_allowed) &&
->>> -            is_sched_load_balance(cp) &&
->>> -           (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
->>> -            is_partition_valid(cp)))
->>> +        if ((!cpumask_empty(cp->cpus_allowed) &&
->>> +             is_sched_load_balance(cp) &&
->>> +             (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
->>> +              is_partition_valid(cp))) ||
->>> +            (cp->partition_root_state == PRS_ISOLATED ||
->>> +             cp->partition_root_state == PRS_INVALID_ISOLATED))
->>>                need_rebuild_sched_domains = true;
->>>               rcu_read_lock();
->>
->> Thanks for spotting the problem and sending out a patch to fix it.
->> However, it should be done in the update_cpumask(). The sched_domain
->> rebuild in update_cpumasks_hier() is supposed to be used for impacted
->> descendant cpusets lower down in the hierarchy.
->>
->> Anyway, I believe this problem should have been fixed in commit
->> a86ce68078b2 ("cgroup/cpuset: Extract out CS_CPU_EXCLUSIVE &
->> CS_SCHED_LOAD_BALANCE handling") recently merged into the v6.6 kernel.
->> Would you mind testing the latest upstream kernel to see if this problem
->> is gone or not?
->
-> Yes right, v6.6-rc2 kernel doesn't have this issue. My bad for not 
-> updating
-> it ...
->
-> However I think the second issue described in the cover letter can 
-> still be
-> reproduced on v6.6-rc2. This present patch was not aiming to fix it 
-> though.
->
-> Commands:
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # echo isolated > cgroup/A1/cpuset.cpus.partition
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated invalid (Cpu list in cpuset.cpus not exclusive)
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated invalid (Cpu list in cpuset.cpus not exclusive)
->
-> Cgroup A1 should be a valid isolated partition once its CPUs become
-> exclusive again I believe,
+On 9/16/23 02:21, kernel test robot wrote:
+> Hi Daniel,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on linus/master]
+> [also build test WARNING on v6.6-rc1 next-20230915]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Bristot-de-Oliveira/tracing-timerlat-Hotplug-support-for-the-user-space-interface/20230915-230157
+> base:   linus/master
+> patch link:    https://lore.kernel.org/r/b619d9fd08a3bb47018cf40afa95783844a3c1fd.1694789910.git.bristot%40kernel.org
+> patch subject: [PATCH] tracing/timerlat: Hotplug support for the user-space interface
+> config: um-randconfig-002-20230916 (https://download.01.org/0day-ci/archive/20230916/202309160854.SAw0rIUm-lkp@intel.com/config)
+> 
 
-Yes, the current code doesn't always detect that an invalid partition 
-can be valid again and turn it back on. Will try to fix that. In the 
-mean time, a workaround is to do
+^^ The config has no timerlat and no hotplug...
 
-# echo member > cgroup/A1/cpuset.cpus.partition
-# echo isolated > cgroup/A1/cpuset.cpus.partition
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309160854.SAw0rIUm-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202309160854.SAw0rIUm-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> kernel/trace/trace_osnoise.c:2125:13: warning: 'timerlat_rm_per_cpu_interface' defined but not used [-Wunused-function]
+>     2125 | static void timerlat_rm_per_cpu_interface(long cpu) {};
+>          |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>> kernel/trace/trace_osnoise.c:2124:12: warning: 'timerlat_add_per_cpu_interface' defined but not used [-Wunused-function]
+>     2124 | static int timerlat_add_per_cpu_interface(long cpu) { return 0; };
+>          |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Thanks,
-Longman
+These functions are called when hotplug but no timerlat.... when no hotplug: defined but not used.
 
+> 
+> vim +/timerlat_rm_per_cpu_interface +2125 kernel/trace/trace_osnoise.c
+> 
+>   2112	
+>   2113	static void timerlat_rm_per_cpu_interface(long cpu)
+>   2114	{
+>   2115		struct dentry *cpu_dir = per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root;
+>   2116	
+>   2117		if (cpu_dir) {
+>   2118			tracefs_remove(cpu_dir);
+>   2119			per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root = NULL;
+>   2120			per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->timerlat_fd = NULL;
+>   2121		}
+>   2122	}
+>   2123	#else
+>> 2124	static int timerlat_add_per_cpu_interface(long cpu) { return 0; };
+>> 2125	static void timerlat_rm_per_cpu_interface(long cpu) {};
+>   2126	#endif
+>   2127	
+> 
+
+Fixing it.
+
+-- Daniel
