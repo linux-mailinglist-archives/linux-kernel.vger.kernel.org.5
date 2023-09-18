@@ -2,140 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A587A4880
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D876B7A4883
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241645AbjIRLdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        id S239847AbjIRLfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241749AbjIRLd2 (ORCPT
+        with ESMTP id S241800AbjIRLfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:33:28 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9415DE65
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:32:11 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-4526d872941so394529137.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695036730; x=1695641530; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KJ1hMKB1iB8dAD1LFazBadXx45gs+UjtNDgrBqnCBUo=;
-        b=fYc201JNOm85UhfriW1Li6EKcs+b33GQmN2K+TTw4YoBDfR+JyNfP81F9s8WlnoueX
-         bjLXzIx2KIfqZj5nExtqcnW3TrAWGaEIt8Ick4ips535rDwsJ2gMLFmzPxWT6XdFX9qJ
-         Y7kbmQfkc7El0Soaax2FLnrqyptRlY7Lz7qojZVtqP4Ax4DbOH2P8u4F5WZMd0KrbgcU
-         6ZXtf8ua9gcycjNnt35tMJzl18Jrmi67fIgRxWkqjHgExPmQYqur6Q46ZbMkgOjClj88
-         J7vjO3lTviZvyDJOGBtGGSWbFNrLEyNyBjxGN36dVJkph5omEern5eHYfaeF8T6uFQSE
-         4sxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695036730; x=1695641530;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KJ1hMKB1iB8dAD1LFazBadXx45gs+UjtNDgrBqnCBUo=;
-        b=qNNm5UjjIh47HTqGAZ0KHZmzMQIrsqq6hNmnxExTT+6R/bCm9heyldY4DsTKhw7d1S
-         Ly+j06Td8DLPihUeCBByyRboNGqlvEPtsqwvN+PZEFWvHwLTWSj6OjHSZHbE+KqmlDuc
-         UG7KUkAC/ZmIZww3Ub83j2kELSweP9Pmxi7l4DRaDR5QFe2E0amxUrheE/A0weYYkoQn
-         qb4SB1WZrZE/t0oKDfJuoW5OXDkRkuu0z0Pb36Skg02PUVj6t7ML/CWx9Hh7i99+0a1p
-         Ai9XuxWg08lUt5ZKH04JXUUAD2bOHs/meGSgxotY6ay/MoSozbKYBDVOCCejPIQicbsU
-         svOA==
-X-Gm-Message-State: AOJu0Yx5LqTjyDo1/iakRRyk8GJdKuudX688xqLASl3iQ3mdPDLD0UCF
-        s70Q5sgJzuheekpr9rxbu7f/Y4z0dbIgESra/bCWUbQCNEy80NpMiU0=
-X-Google-Smtp-Source: AGHT+IH6WTWHIBU8iYzdKZOEYuBcimHPITgvbwfNRJESqbvBBkRntYAnIFYou7q9tm+/2Oyoneqn1TTqoBgXOkpzewg=
-X-Received: by 2002:a05:6102:2336:b0:452:60c5:20b with SMTP id
- b22-20020a056102233600b0045260c5020bmr2943809vsa.15.1695036730526; Mon, 18
- Sep 2023 04:32:10 -0700 (PDT)
+        Mon, 18 Sep 2023 07:35:20 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044DC11C;
+        Mon, 18 Sep 2023 04:33:49 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rq2dj1WCLzNncT;
+        Mon, 18 Sep 2023 19:30:01 +0800 (CST)
+Received: from [10.67.109.254] (10.67.109.254) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 18 Sep 2023 19:33:46 +0800
+Message-ID: <ff66d97c-2c87-6513-4ab6-98e03d262a67@huawei.com>
+Date:   Mon, 18 Sep 2023 19:33:45 +0800
 MIME-Version: 1.0
-References: <ceeda269bceee1c805f148bcbc628abc9d42601a.1693721348.git.christophe.jaillet@wanadoo.fr>
- <CAMRc=Meq+1z50=tXXt3MFAexRCmfSQ5rs6hT7311KRGO=q2RHQ@mail.gmail.com> <4f629125-2b62-1284-3311-d95639044764@wanadoo.fr>
-In-Reply-To: <4f629125-2b62-1284-3311-d95639044764@wanadoo.fr>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 18 Sep 2023 13:31:59 +0200
-Message-ID: <CAMRc=MfmOTy6zU0v3gc6-d9zLpuzZaP9ChCajF=POmKhEQ+g_g@mail.gmail.com>
-Subject: Re: [PATCH] gpio: tb10x: Fix an error handling path in tb10x_gpio_probe()
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     linus.walleij@linaro.org, andy@kernel.org, galak@codeaurora.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH v2 1/2] mm/damon/core-test: Fix memory leak in
+ damon_new_region()
+Content-Language: en-US
+To:     SeongJae Park <sj@kernel.org>
+CC:     <akpm@linux-foundation.org>, <brendan.higgins@linux.dev>,
+        <feng.tang@intel.com>, <damon@lists.linux.dev>,
+        <linux-mm@kvack.org>, <kunit-dev@googlegroups.com>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230918110009.78365-1-sj@kernel.org>
+From:   Ruan Jinjie <ruanjinjie@huawei.com>
+In-Reply-To: <20230918110009.78365-1-sj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.254]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 5:10=E2=80=AFPM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> Le 03/09/2023 =C3=A0 19:02, Bartosz Golaszewski a =C3=A9crit :
-> > On Sun, Sep 3, 2023 at 8:13=E2=80=AFAM Christophe JAILLET
-> > <christophe.jaillet@wanadoo.fr> wrote:
-> >>
-> >> If an error occurs after a successful irq_domain_add_linear() call, it
-> >> should be undone by a corresponding irq_domain_remove(), as already do=
-ne
-> >> in the remove function.
-> >>
-> >> Fixes: c6ce2b6bffe5 ("gpio: add TB10x GPIO driver")
-> >> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> >> ---
-> >>   drivers/gpio/gpio-tb10x.c | 6 +++++-
-> >>   1 file changed, 5 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/gpio/gpio-tb10x.c b/drivers/gpio/gpio-tb10x.c
-> >> index 78f8790168ae..f96d260a4a19 100644
-> >> --- a/drivers/gpio/gpio-tb10x.c
-> >> +++ b/drivers/gpio/gpio-tb10x.c
-> >> @@ -195,7 +195,7 @@ static int tb10x_gpio_probe(struct platform_device=
- *pdev)
-> >>                                  handle_edge_irq, IRQ_NOREQUEST, IRQ_N=
-OPROBE,
-> >>                                  IRQ_GC_INIT_MASK_CACHE);
-> >>                  if (ret)
-> >> -                       return ret;
-> >> +                       goto err_remove_domain;
-> >>
-> >>                  gc =3D tb10x_gpio->domain->gc->gc[0];
-> >>                  gc->reg_base                         =3D tb10x_gpio->=
-base;
-> >> @@ -209,6 +209,10 @@ static int tb10x_gpio_probe(struct platform_devic=
-e *pdev)
-> >>          }
-> >>
-> >>          return 0;
-> >> +
-> >> +err_remove_domain:
-> >> +       irq_domain_remove(tb10x_gpio->domain);
-> >> +       return ret;
-> >>   }
-> >>
-> >>   static int tb10x_gpio_remove(struct platform_device *pdev)
-> >> --
-> >> 2.34.1
-> >>
-> >
-> > That's not enough, you also need to dispose of all remaining mappings.
-> > Please see drivers/gpio/gpiolib.c and how it handles the gpio_irq_chip
-> > domain.
->
-> Hi,
->
-> you'll have to give me more explanation because I've not been able to
-> find anything useful to me.
->
 
-I should have expressed myself clearer. Your patch is correct and I
-will queue it. But in your remove callback, you'll need to go through
-the existing irq mappings and dispose of them before returning. Please
-see gpiochip_irqchip_remove()[1]. You can send it as a follow-up.
 
-Bart
+On 2023/9/18 19:00, SeongJae Park wrote:
+> Hi Jinjie,
+> 
+> On Mon, 18 Sep 2023 15:47:58 +0800 Jinjie Ruan <ruanjinjie@huawei.com> wrote:
+> 
+>> When CONFIG_DAMON_KUNIT_TEST=y and making CONFIG_DEBUG_KMEMLEAK=y
+>> and CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y, the below memory leak is detected.
+>>
+>> The damon_region which is allocated by kmem_cache_alloc() in
+>> damon_new_region() in damon_test_regions() and
+>> damon_test_update_monitoring_result() are not freed. So use
+>> damon_free_region() to free it.
+> 
+> Nit.  This patch is not directly adding use of damon_free_region() but replaces
+> damon_del_region() call with damon_destroy_region(), so that it calls both
+> damon_del_region() and damon_free_region().
+> 
+> I think this part might better to be re-written?
 
-[1] https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#L=
-1725
+OK. Thank you!
+
+> 
+>> After applying this patch, the following
+>> memory leak is never detected.
+>>
+>>     unreferenced object 0xffff2b49c3edc000 (size 56):
+>>       comm "kunit_try_catch", pid 338, jiffies 4294895280 (age 557.084s)
+>>       hex dump (first 32 bytes):
+>>         01 00 00 00 00 00 00 00 02 00 00 00 00 00 00 00  ................
+>>         00 00 00 00 00 00 00 00 00 00 00 00 49 2b ff ff  ............I+..
+>>       backtrace:
+>>         [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
+>>         [<00000000b528f67c>] kmem_cache_alloc+0x168/0x284
+>>         [<000000008603f022>] damon_new_region+0x28/0x54
+>>         [<00000000a3b8c64e>] damon_test_regions+0x38/0x270
+>>         [<00000000559c4801>] kunit_try_run_case+0x50/0xac
+>>         [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
+>>         [<000000003c3e9211>] kthread+0x124/0x130
+>>         [<0000000028f85bdd>] ret_from_fork+0x10/0x20
+>>     unreferenced object 0xffff2b49c5b20000 (size 56):
+>>       comm "kunit_try_catch", pid 354, jiffies 4294895304 (age 556.988s)
+>>       hex dump (first 32 bytes):
+>>         03 00 00 00 00 00 00 00 07 00 00 00 00 00 00 00  ................
+>>         00 00 00 00 00 00 00 00 96 00 00 00 49 2b ff ff  ............I+..
+>>       backtrace:
+>>         [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
+>>         [<00000000b528f67c>] kmem_cache_alloc+0x168/0x284
+>>         [<000000008603f022>] damon_new_region+0x28/0x54
+>>         [<00000000ca019f80>] damon_test_update_monitoring_result+0x18/0x34
+>>         [<00000000559c4801>] kunit_try_run_case+0x50/0xac
+>>         [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
+>>         [<000000003c3e9211>] kthread+0x124/0x130
+>>         [<0000000028f85bdd>] ret_from_fork+0x10/0x20
+>>
+>> Fixes: 17ccae8bb5c9 ("mm/damon: add kunit tests")
+>> Fixes: f4c978b6594b ("mm/damon/core-test: add a test for damon_update_monitoring_results()")
+>> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+> 
+> Other than the above trivial nit,
+> 
+> Reviewed-by: SeongJae Park <sj@kernel.org>
+> 
+>> ---
+>> v2:
+>> - Replace the damon_del_region() with damon_destroy_region() rather than
+>>   calling damon_free_region().
+>> - Update the commit message.
+> 
+> And thank you for making the changes.
+> 
+> 
+> Thanks,
+> SJ
+> 
+>> ---
+>>  mm/damon/core-test.h | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
+>> index 79f1f12e0dd5..3959be35b901 100644
+>> --- a/mm/damon/core-test.h
+>> +++ b/mm/damon/core-test.h
+>> @@ -30,7 +30,7 @@ static void damon_test_regions(struct kunit *test)
+>>  	damon_add_region(r, t);
+>>  	KUNIT_EXPECT_EQ(test, 1u, damon_nr_regions(t));
+>>  
+>> -	damon_del_region(r, t);
+>> +	damon_destroy_region(r, t);
+>>  	KUNIT_EXPECT_EQ(test, 0u, damon_nr_regions(t));
+>>  
+>>  	damon_free_target(t);
+>> @@ -321,6 +321,8 @@ static void damon_test_update_monitoring_result(struct kunit *test)
+>>  	damon_update_monitoring_result(r, &old_attrs, &new_attrs);
+>>  	KUNIT_EXPECT_EQ(test, r->nr_accesses, 150);
+>>  	KUNIT_EXPECT_EQ(test, r->age, 20);
+>> +
+>> +	damon_free_region(r);
+>>  }
+>>  
+>>  static void damon_test_set_attrs(struct kunit *test)
+>> -- 
+>> 2.34.1
+>>
+>>
