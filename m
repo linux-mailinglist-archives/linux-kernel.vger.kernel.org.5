@@ -2,141 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2770C7A4580
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0249D7A4583
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239140AbjIRJGp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Sep 2023 05:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
+        id S240866AbjIRJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239007AbjIRJGQ (ORCPT
+        with ESMTP id S240963AbjIRJGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:06:16 -0400
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0064E4;
-        Mon, 18 Sep 2023 02:06:10 -0700 (PDT)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5925e580f12so44811767b3.3;
-        Mon, 18 Sep 2023 02:06:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695027970; x=1695632770;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qs7t8EoP8pSAMvY7e5Wa3knWe5J4fpmFbkl13nOAw0w=;
-        b=ASangAAReqz49pGrqOLafaQ+idBC5ru4rG4pgZ4zrZUaLZxpw1HH9XWu9G+6GD8o2M
-         CGBjDlGh+HZE3+mjABpREpn3t5H9oUcsGOAXRtmm5bQpWU+ZofmPCXN+tVogt+1ssbR6
-         k5Y3pkmOFhi+P86Bt5D0KL2WNilUkG6DFxa7yx0sOIRgD9ekQ0fknjcmUSekXnKJ7e9h
-         UYZHEo3XgmQvRTzS82NBVa3gPkuqNrjgKiYBIfClGV4I53WxmofdC+EU3J6P+zN5aGPD
-         ouRvU2FfBfqfiOw9vENCa3zVfaW+zTZQcG50Gul5R/DqUfwrKdiigx5xDhkzOoeTMzwL
-         U+qg==
-X-Gm-Message-State: AOJu0YwIZWW+Ncov1ytfciomsbcN122aNQ8zOQKtMAQalJMZ6EHDNfVF
-        1rtXr/ffIFgfqESie4FO5zFzoR0ZE51jWg==
-X-Google-Smtp-Source: AGHT+IHxEsyCSZcp0FIYgpyJsnDdOPWWLqZL/uowIeYryzrawSO/p1JRaqP1PdmNwfX05tOnKgO/AA==
-X-Received: by 2002:a81:6256:0:b0:58c:6121:48e8 with SMTP id w83-20020a816256000000b0058c612148e8mr9483173ywb.33.1695027969928;
-        Mon, 18 Sep 2023 02:06:09 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id m131-20020a817189000000b00589dbcf16cbsm2430341ywc.35.2023.09.18.02.06.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 02:06:09 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59bcd927b45so44819007b3.1;
-        Mon, 18 Sep 2023 02:06:09 -0700 (PDT)
-X-Received: by 2002:a81:5e84:0:b0:589:c065:b419 with SMTP id
- s126-20020a815e84000000b00589c065b419mr10493285ywb.34.1695027969581; Mon, 18
- Sep 2023 02:06:09 -0700 (PDT)
+        Mon, 18 Sep 2023 05:06:39 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECC9102;
+        Mon, 18 Sep 2023 02:06:28 -0700 (PDT)
+Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id BABE580274;
+        Mon, 18 Sep 2023 11:06:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1695027986;
+        bh=9cj5r2iDVR9dQMi7AsSJAdpzOyExQqvdECqIQVMXI64=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UKZreKQsgoV36ulY/UZpeYLvL8biFmb9x4ieBRztjO80T3278chxly1b8J1X9/8Kv
+         /8i5oSgnx/M3hCxF1WCaBQVKcQ3bJbeWXscT9JYN9PXu/ljIA6RQ59d8ZK4a7Fmw3r
+         Nt2TnhrWtNkj211h9b3Yw3krswa26FlQVH5KG1e3PlYeyw6rH9Q7G5L1eWrAnfmeT6
+         TFtKyOJGDnGJPnK4eAh4VCCb1R5TlCN49OrO0A3qAGhD46aWYIM9rmsieM/ufopSvo
+         izOQ33863oLhu1SzXG/gutqc/y/mj++nvsixh+2wxEnDl+D8/ip5bRU0vRuYyq5b20
+         WeAtEiBc5y3iw==
+Date:   Mon, 18 Sep 2023 11:06:18 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Tristram.Ha@microchip.com,
+        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
+ offloading for KSZ9477
+Message-ID: <20230918110618.406192aa@wsk>
+In-Reply-To: <20230915142255.dcosmtrh25nbw5x7@skbuf>
+References: <20230912160326.188e1d13@wsk>
+        <20230912142644.u4sdkveei3e5hwaf@skbuf>
+        <20230912170641.5bfc3cfe@wsk>
+        <20230912215523.as4puqamj65dikip@skbuf>
+        <20230913102219.773e38f8@wsk>
+        <20230913105806.g5p3wck675gbw5fo@skbuf>
+        <20230913141548.70658940@wsk>
+        <20230913135102.hoyl4tifyf77kdo2@skbuf>
+        <20230913184206.6dmfw4weoomjqwfp@skbuf>
+        <20230914231831.0f406585@wsk>
+        <20230915142255.dcosmtrh25nbw5x7@skbuf>
+Organization: denx.de
+X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-23-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdUCpbPA3cDjNAq1irvr6z4Jux-5-tVDBuyr6nx_qOQGpg@mail.gmail.com> <701ee3bd-5d16-6b5f-2d34-4a4919c4c532@tuxon.dev>
-In-Reply-To: <701ee3bd-5d16-6b5f-2d34-4a4919c4c532@tuxon.dev>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 Sep 2023 11:05:57 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW1ikV_AZXM24_a1YT_mUV_Qyvi+rpzGJxVSAwBMPyE+w@mail.gmail.com>
-Message-ID: <CAMuHMdW1ikV_AZXM24_a1YT_mUV_Qyvi+rpzGJxVSAwBMPyE+w@mail.gmail.com>
-Subject: Re: [PATCH 22/37] clk: renesas: add minimal boot support for RZ/G3S SoC
-To:     claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/A9KPOZJlzYqXN8kBEc2=SvE";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+--Sig_/A9KPOZJlzYqXN8kBEc2=SvE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 18, 2023 at 9:50 AM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
-> On 15.09.2023 15:52, Geert Uytterhoeven wrote:
-> > On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> >> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >>
-> >> Add minimal clock and reset support for RZ/G3S SoC to be able to boot
-> >> Linux from SD Card/eMMC. This includes necessary core clocks for booting
-> >> and GIC, SCIF, GPIO, SD0 mod clocks and resets.
-> >>
-> >> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >
-> > Thanks for your patch!
-> >
->
-> [ ... ]
->
-> >> +       CLK_PLL3_DIV2_4,
-> >> +       CLK_PLL3_DIV2_8,
-> >> +       CLK_PLL3_DIV6,
-> >> +       CLK_PLL4,
-> >> +       CLK_PLL6,
-> >> +       CLK_PLL6_DIV2,
-> >> +       CLK_SEL_SDHI0,
-> >> +       CLK_SEL_PLL4,
-> >> +       CLK_P1_DIV2,
-> >> +       CLK_P3_DIV2,
-> >
-> > Do you need CLK_P1_DIV2 and CLK_P3_DIV2?
-> > I don't see them in Figure 7.3 ("Clock System Diagram (2)").
->
-> P1_DIV2 is clock source for MHU_PCLK or OTFDE_DDR_PCLK.
-> P3_DIV2 is clock source for DMAC_PCLK, OTFDE_SPI_PCLK.
-> These are expressed in clock list document
-> (RZG3S_clock_list_r1.00_20230602.xlsx).
->
-> It is true the functionality could be preserved even w/o these 2 clocks but
-> I kept them here as I saw them as core clocks even though they are not
-> present in the Clock System Diagram from HW manual.
+Hi Vladimir,
 
-I don't think you can, as the module clock abstraction does not support
-specifying a divider.  Hence you do need an internal core clock between
-P1 and the module clock, to take care of the divider.
+> On Thu, Sep 14, 2023 at 11:18:31PM +0200, Lukasz Majewski wrote:
+> > As fair as I understood from the commit message - some part of this
+> > patch needs to be applied before HSR offloading v4.
+> >=20
+> > Hence I will wait for it to be posted and upstreamed.
+> >=20
+> > Only then some of this patch code would be squashed to v5 of hsr
+> > support. =20
+>=20
+> No, this isn't how this is going to work. I can't post my patches and
+> then you post yours, because that would mean some functionality is
+> introduced without a user (ds->ops->port_set_mac_address), and we
+> don't accept that, because you may or may not resubmit your HSR
+> patches as a first user of the new infra.
 
-> With these, would you prefer to keep these clocks or just remove them?
+Ok. Thanks for the clarification.
 
-Yes, as I expect that at least the DMAC_PCLK will be added, eventually.
+>=20
+> So, what needs to happen is you need to post all the patches as an
+> all-or-nothing series. Somewhere in Documentation/process/ it is
+> probably explained in more detail what to pay attention to, when
+> reposting what is partly others' work. But the basic idea is that you
+> need to keep the Author: and Signed-off-by: fields if you aren't
+> making major changes, but you must also add your own Signed-off-by:
+> at the end. You also have responsibility for the patches that you
+> post, and have to respond to review feedback, even if they aren't
+> authored for you. You are obviously free to make changes to patches
+> until they pass your own criteria.
+>=20
+> The most that I can do to help you is to split that squashed patch and
+> put the result on a branch:
+> https://github.com/vladimiroltean/linux/commits/lukma-ksz-hsr-rfc-v4
+>=20
+> But it's up to you to take it from there, rebase it on net-next,
+> review the result, test it, make sure that the changes are something
+> that you can justify when submitting, etc. You won't be alone if you
+> need help, of course, but the point is that you're not 100% passive
+> to this activity.
 
-Gr{oetje,eeting}s,
+No problem. I will test it for a while and then send them for review.
 
-                        Geert
+Many thanks for help.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/A9KPOZJlzYqXN8kBEc2=SvE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmUIEwoACgkQAR8vZIA0
+zr3iVwf/Yo0c6PviMOAbhRsIiHe3qHKqLImGlTfqUZaUhiwNQncaURH1+Y74Qfnp
+jvwTWNrfys2SFO+E+vhSwEowcfdIwV4oaJVyibA9dbHWNxkjpMwB/OcxR6CHdm4F
+L8pe3pZLh0cC5ENeOClKXmSyBufh8hyeMJ6tQZBSmP39evvuOxzGbtyqlmgwuBcM
+bJo1S6tJNN18bCiIijAGkxUUjji3VZgJwY1uPhNRsqOfZjU1PGXVS3NoXFQ5kvkz
+BrsFZu2Qu0/BLXW7YfxGsVuB6DNUz+pnjXtOq+vuCdfiF5LTzxX4cDnwpaYE/cwS
+q9Uc0VQPuPjQVMtsiBI+TWdPymB6jw==
+=DNew
+-----END PGP SIGNATURE-----
+
+--Sig_/A9KPOZJlzYqXN8kBEc2=SvE--
