@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD65A7A469B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F3D7A469C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234767AbjIRKEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 06:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
+        id S238628AbjIRKEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 06:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241109AbjIRKD5 (ORCPT
+        with ESMTP id S241158AbjIRKEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:03:57 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 68B6F187;
-        Mon, 18 Sep 2023 03:03:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 589551FB;
-        Mon, 18 Sep 2023 03:03:56 -0700 (PDT)
-Received: from [10.57.64.210] (unknown [10.57.64.210])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 70ADB3F67D;
-        Mon, 18 Sep 2023 03:03:15 -0700 (PDT)
-Message-ID: <3785093c-0237-05fa-3c96-2239ce2417b3@arm.com>
-Date:   Mon, 18 Sep 2023 11:03:16 +0100
+        Mon, 18 Sep 2023 06:04:06 -0400
+Received: from out-214.mta0.migadu.com (out-214.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20101B5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:03:27 -0700 (PDT)
+Message-ID: <63f877b6-1142-82ac-a723-5dc276137283@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695031406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I7CCUtzpFyVJe8OYH3sV6PVFJjf3eVrAFsKZXKvWBQs=;
+        b=FuCVJodPWMzfz9YkUl9Zi6jjOAjS5DVNBa70Yer3aVnRhDly6/83fNJelMLEzsVVAHpFlx
+        xwZBKN1qEGxIlMw46t58pyPZIEDaQqYEX8FF0dEzGu8RYp7mmXzo4pqF9M50UOhtR0ehgh
+        9YI937b16fUv3hIq2xBQ5q1zPiOn5/c=
+Date:   Mon, 18 Sep 2023 11:03:22 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v5 6/6] drm/drm-file: Show finer-grained BO sizes in
- drm_show_memory_stats
-Content-Language: en-GB
-To:     =?UTF-8?Q?Adri=c3=a1n_Larumbe?= <adrian.larumbe@collabora.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        healych@amazon.com, kernel@collabora.com
-References: <20230914223928.2374933-1-adrian.larumbe@collabora.com>
- <20230914223928.2374933-7-adrian.larumbe@collabora.com>
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <20230914223928.2374933-7-adrian.larumbe@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 2/2] Documentation: dpll: wrap DPLL_CMD_PIN_GET output in
+ a code block
+Content-Language: en-US
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>
+References: <20230918093240.29824-1-bagasdotme@gmail.com>
+ <20230918093240.29824-3-bagasdotme@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20230918093240.29824-3-bagasdotme@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 23:38, Adrián Larumbe wrote:
-> The current implementation will try to pick the highest available size
-> display unit as soon as the BO size exceeds that of the previous
-> multiplier. That can lead to loss of precision in contexts of low memory
-> usage.
+On 18/09/2023 10:32, Bagas Sanjaya wrote:
+> DPLL_CMD_PIN_GET netlink command output for mux-type pins looks ugly
+> with normal paragraph formatting. Format it as a code block instead.
 > 
-> The new selection criteria try to preserve precision, whilst also
-> increasing the display unit selection threshold to render more accurate
-> values.
-> 
-> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-I have to admit I find it odd to be "pretty printing" this value in the
-first place. But this is clearly an improvement.
-
-Reviewed-by: Steven Price <steven.price@arm.com>
+Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 
 > ---
->  drivers/gpu/drm/drm_file.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>   Documentation/driver-api/dpll.rst | 24 ++++++++++++------------
+>   1 file changed, 12 insertions(+), 12 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-> index 762965e3d503..34cfa128ffe5 100644
-> --- a/drivers/gpu/drm/drm_file.c
-> +++ b/drivers/gpu/drm/drm_file.c
-> @@ -872,6 +872,8 @@ void drm_send_event(struct drm_device *dev, struct drm_pending_event *e)
->  }
->  EXPORT_SYMBOL(drm_send_event);
->  
-> +#define UPPER_UNIT_THRESHOLD 100
-> +
->  static void print_size(struct drm_printer *p, const char *stat,
->  		       const char *region, u64 sz)
->  {
-> @@ -879,7 +881,8 @@ static void print_size(struct drm_printer *p, const char *stat,
->  	unsigned u;
->  
->  	for (u = 0; u < ARRAY_SIZE(units) - 1; u++) {
-> -		if (sz < SZ_1K)
-> +		if ((sz & (SZ_1K - 1)) &&
-> +		    sz < UPPER_UNIT_THRESHOLD * SZ_1K)
->  			break;
->  		sz = div_u64(sz, SZ_1K);
->  	}
+> diff --git a/Documentation/driver-api/dpll.rst b/Documentation/driver-api/dpll.rst
+> index 01eb4de867036f..69670deb8c4e09 100644
+> --- a/Documentation/driver-api/dpll.rst
+> +++ b/Documentation/driver-api/dpll.rst
+> @@ -119,19 +119,19 @@ with.
+>   If a pin was registered with multiple parent pins, they behave like a
+>   multiple output multiplexer. In this case output of a
+>   ``DPLL_CMD_PIN_GET`` would contain multiple pin-parent nested
+> -attributes with current state related to each parent, like:
+> +attributes with current state related to each parent, like::
+>   
+> -'pin': [{{
+> -  'clock-id': 282574471561216,
+> -  'module-name': 'ice',
+> -  'capabilities': 4,
+> -  'id': 13,
+> -  'parent-pin': [
+> -  {'parent-id': 2, 'state': 'connected'},
+> -  {'parent-id': 3, 'state': 'disconnected'}
+> -  ],
+> -  'type': 'synce-eth-port'
+> -  }}]
+> +        'pin': [{{
+> +          'clock-id': 282574471561216,
+> +          'module-name': 'ice',
+> +          'capabilities': 4,
+> +          'id': 13,
+> +          'parent-pin': [
+> +          {'parent-id': 2, 'state': 'connected'},
+> +          {'parent-id': 3, 'state': 'disconnected'}
+> +          ],
+> +          'type': 'synce-eth-port'
+> +          }}]
+>   
+>   Only one child pin can provide its signal to the parent MUX-type pin at
+>   a time, the selection is done by requesting change of a child pin state
 
