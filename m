@@ -2,160 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E14B97A3EF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 02:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8A87A3EF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 02:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjIRAS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 20:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        id S232851AbjIRA0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 20:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjIRASj (ORCPT
+        with ESMTP id S232544AbjIRA0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 20:18:39 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9A3114;
-        Sun, 17 Sep 2023 17:18:33 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c572c9c852so1778185ad.2;
-        Sun, 17 Sep 2023 17:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694996313; x=1695601113; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RUPk+p0QAVCnpQhxJ51mj1aAsktRcEm6wqkgKlUt8Ro=;
-        b=Fyd9ObiLQAVsavWN3XDBUZIYFpVVGstVoefRjH7Kbzc88bP1GgvHY0CVb8GsB27HY+
-         G8ly2bSg5hoXe3kJCk3tU8C4vizc0PziNiFkO/UVcwv4x24QQOboeu+zEDw9abnuAs6q
-         GE4HDngVmOziknvWGToicTMNWvUUyHVXzLaY/Fdbvx0sfdo25meLD/xR302tX5jpJUlq
-         Un7iISpPFlkztHksEXxtZfgKlA8ezOLKrEdC5xetSHKtBE0zjdyFtUKgZxx2aVd1qlCu
-         DZpN1Yr6p71oMOfPb5fyYH5eFenzcmoZtcDl2TIWssACn9bjUaRKwTniyghS9jOv6li0
-         Erpw==
+        Sun, 17 Sep 2023 20:26:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A8A126
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 17:25:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694996719;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7XGw7AdgYIk+RoEKFj7VSzvf+HqUpChJVq9bKRl2ets=;
+        b=TkntXe/5AJ6EcuDQjCYYViIbwcnK/MBFNMSSdiCVWUc+bbkdlekPwWfuveoaScnDg8LMvr
+        VUdigkqby0j95ULeF2Fg+FM4WXsGCG/Kbcv1X0wRcXVT4p2ogpaDVqQbArce8poBZ00rMN
+        a2z0nyLq2EVfWfImwJKVPaIrUfS4NAI=
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
+ [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687-NcLhw3YiPu65IJ2kV8t1Eg-1; Sun, 17 Sep 2023 20:25:17 -0400
+X-MC-Unique: NcLhw3YiPu65IJ2kV8t1Eg-1
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-780addd7382so376973539f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 17:25:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694996313; x=1695601113;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RUPk+p0QAVCnpQhxJ51mj1aAsktRcEm6wqkgKlUt8Ro=;
-        b=hmCJswQ7tnPHteoTb683Bg67IbqAznd8kmeFq18oOP7qiATHOi5GKjGmu39cCqq8gI
-         H+wshLOrfo7oTavgIT8Z/wLp77B15VowVIaCg/M0rZxSQRMz+FCyZuJ5rFOZY17fSV4m
-         AVKJy/g7qOnJixRiliBm+dlhl3h62DRh17usfzxJ20jYNtJK+isyURzqLiJjqvzj2Cu2
-         aXtBQbt0829+dP8cW1yEeHbFOZXsKpZsLlikPsirXrSVzvy6Tzcr3Ngb6xzRhjCW5Kd9
-         7cvQU0VRafVX65XzCDNEEPt5r9XD2iBpu8TeAYCPXEHi9czyJ2iFbiobAilKt9joCNMd
-         2m1w==
-X-Gm-Message-State: AOJu0YwmwkvLorjGAMekCs74FqWN03oB9YhLJe728/7pPLmwqGpQq77h
-        HfnA+PtcislsbzUWR3ILVwQ=
-X-Google-Smtp-Source: AGHT+IEWKwK1dEKmbphBbSDaopdfK4ADTEiaqrSqgNoT4Tjxj47WkeJDg+U2SzyAohkw6JZUKRGhsw==
-X-Received: by 2002:a17:903:455:b0:1c2:702:61af with SMTP id iw21-20020a170903045500b001c2070261afmr6121780plb.38.1694996312752;
-        Sun, 17 Sep 2023 17:18:32 -0700 (PDT)
-Received: from [192.168.0.106] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id l7-20020a170903120700b001bd99fd1114sm7148063plh.288.2023.09.17.17.18.29
+        d=1e100.net; s=20230601; t=1694996717; x=1695601517;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7XGw7AdgYIk+RoEKFj7VSzvf+HqUpChJVq9bKRl2ets=;
+        b=p+P4OqgwNT3aQR8DDTEWqlbVXtcK1GwMO+Wk37eGcLbcKBLW1m1hJlxic5VMS7N740
+         /v7SVx/Erfy9WBVXSUrp9kZmQwwN3San/8njprC03BiPwvMCg19M5c+LNcehtegUk0id
+         EvF36CZXq3LkJnnYRR56PlcKt3j6KTXPN+VjUAvedafVwZtcRWl3kUauY9FEpsl7g+Z8
+         YS+GjIahWefoj9Yn4QxI5JEotbYENEBizwF9ZyrqbXR8rjBwG4lTKMwuJRG01gGDX9xt
+         C3FWFt+wdQ/M9GiZanzeJnoMkcSYIOKdUSfdtFjyPwN+3ugwblktgRvn4OrR1oxXAnLq
+         CVPQ==
+X-Gm-Message-State: AOJu0Ywz/7mOGFdeeMJQjuivDrWzjVEzhPSGMCOL/peFvchMkDbaPRe/
+        Mbc6RNwQaJcNfpe1m7hz5U0ql167LU4LzF2Q+Mftlmo8Ubkqbx3RxWpIa71AudCqVUDkOz3neNF
+        k79utv1fBW6pgijFpkLBcJOxT
+X-Received: by 2002:a92:c243:0:b0:34f:f373:ad7e with SMTP id k3-20020a92c243000000b0034ff373ad7emr465804ilo.1.1694996716962;
+        Sun, 17 Sep 2023 17:25:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEgUb4xgzcsF6D3DA7oMGkWPNDOVIlzmfnSfqk/GsC4gkgPnWHPQRcOFDq8+Xz2fcLmLDPI0A==
+X-Received: by 2002:a92:c243:0:b0:34f:f373:ad7e with SMTP id k3-20020a92c243000000b0034ff373ad7emr465795ilo.1.1694996716745;
+        Sun, 17 Sep 2023 17:25:16 -0700 (PDT)
+Received: from [10.72.113.158] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id m23-20020a635817000000b0056606274e54sm4393724pgb.31.2023.09.17.17.25.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 17:18:32 -0700 (PDT)
-Message-ID: <224f10a4-7a6a-48bb-88be-491faf8ecff7@gmail.com>
-Date:   Mon, 18 Sep 2023 07:18:28 +0700
+        Sun, 17 Sep 2023 17:25:16 -0700 (PDT)
+Message-ID: <3c4c7ca8-e1a2-fbb1-bda4-b7000eb9a8d9@redhat.com>
+Date:   Mon, 18 Sep 2023 08:25:10 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ceph: Annotate struct ceph_monmap with __counted_by
 Content-Language: en-US
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Song Liu <song@kernel.org>, Timo Gurr <timo.gurr@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux SCSI <linux-scsi@vger.kernel.org>,
-        Linux IDE and libata <linux-ide@vger.kernel.org>,
-        Linux RAID <linux-raid@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Marvell RAID Controller issues since 6.5.x
-Content-Type: text/plain; charset=UTF-8
+To:     Kees Cook <keescook@chromium.org>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, ceph-devel@vger.kernel.org,
+        netdev@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230915201510.never.365-kees@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <20230915201510.never.365-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+On 9/16/23 04:15, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+>
+> As found with Coccinelle[1], add __counted_by for struct ceph_monmap.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
+>
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+>
+> Cc: Ilya Dryomov <idryomov@gmail.com>
+> Cc: Xiubo Li <xiubli@redhat.com>
+> Cc: Jeff Layton <jlayton@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: ceph-devel@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>   include/linux/ceph/mon_client.h | 2 +-
+>   net/ceph/mon_client.c           | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/ceph/mon_client.h b/include/linux/ceph/mon_client.h
+> index b658961156a0..7a9a40163c0f 100644
+> --- a/include/linux/ceph/mon_client.h
+> +++ b/include/linux/ceph/mon_client.h
+> @@ -19,7 +19,7 @@ struct ceph_monmap {
+>   	struct ceph_fsid fsid;
+>   	u32 epoch;
+>   	u32 num_mon;
+> -	struct ceph_entity_inst mon_inst[];
+> +	struct ceph_entity_inst mon_inst[] __counted_by(num_mon);
+>   };
+>   
+>   struct ceph_mon_client;
+> diff --git a/net/ceph/mon_client.c b/net/ceph/mon_client.c
+> index faabad6603db..f263f7e91a21 100644
+> --- a/net/ceph/mon_client.c
+> +++ b/net/ceph/mon_client.c
+> @@ -1136,6 +1136,7 @@ static int build_initial_monmap(struct ceph_mon_client *monc)
+>   			       GFP_KERNEL);
+>   	if (!monc->monmap)
+>   		return -ENOMEM;
+> +	monc->monmap->num_mon = num_mon;
+>   
+>   	for (i = 0; i < num_mon; i++) {
+>   		struct ceph_entity_inst *inst = &monc->monmap->mon_inst[i];
+> @@ -1147,7 +1148,6 @@ static int build_initial_monmap(struct ceph_mon_client *monc)
+>   		inst->name.type = CEPH_ENTITY_TYPE_MON;
+>   		inst->name.num = cpu_to_le64(i);
+>   	}
+> -	monc->monmap->num_mon = num_mon;
 
-> Hardware is a HPE ProLiant Microserver Gen10 X3216 with
-> 
-> # lspci | grep SATA
-> 00:11.0 SATA controller: Advanced Micro Devices, Inc. [AMD] FCH SATA Controller [AHCI mode] (rev 49)
-> 01:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9230 PCIe 2.0 x2 4-port SATA 6 Gb/s RAID Controller (rev 11)
-> 
-> # dmesg | grep ATA
-> [    0.015106] NODE_DATA(0) allocated [mem 0x1feffc000-0x1feffffff]
-> [    0.569868] ahci 0000:00:11.0: AHCI 0001.0300 32 slots 1 ports 6 Gbps 0x1 impl SATA mode
-> [    0.570560] ata1: SATA max UDMA/133 abar m1024@0xfeb69000 port 0xfeb69100 irq 19
-> [    0.581964] ahci 0000:01:00.0: AHCI 0001.0200 32 slots 8 ports 6 Gbps 0xff impl SATA mode
-> [    0.586488] ata2: SATA max UDMA/133 abar m2048@0xfea40000 port 0xfea40100 irq 28
-> [    0.586554] ata3: SATA max UDMA/133 abar m2048@0xfea40000 port 0xfea40180 irq 28
-> [    0.586617] ata4: SATA max UDMA/133 abar m2048@0xfea40000 port 0xfea40200 irq 28
-> [    0.586681] ata5: SATA max UDMA/133 abar m2048@0xfea40000 port 0xfea40280 irq 28
-> [    0.586742] ata6: SATA max UDMA/133 abar m2048@0xfea40000 port 0xfea40300 irq 28
-> [    0.586804] ata7: SATA max UDMA/133 abar m2048@0xfea40000 port 0xfea40380 irq 28
-> [    0.586866] ata8: SATA max UDMA/133 abar m2048@0xfea40000 port 0xfea40400 irq 28
-> [    0.586927] ata9: SATA max UDMA/133 abar m2048@0xfea40000 port 0xfea40480 irq 28
-> [    0.882680] ata1: SATA link down (SStatus 0 SControl 300)
-> [    0.896665] ata8: SATA link down (SStatus 0 SControl 310)
-> [    0.896979] ata7: SATA link down (SStatus 0 SControl 310)
-> [    0.897660] ata9: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
-> [    0.897986] ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-> [    0.899615] ata6: SATA link down (SStatus 0 SControl 310)
-> [    1.052964] ata3: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-> [    1.312890] ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-> [    1.477997] ata9.00: ATAPI: MARVELL VIRTUAL, 1.09, max UDMA/66
-> [    1.478613] ata3.00: ATA-10: WDC WD40EFZX-68AWUN0, 81.00B81, max UDMA/133
-> [    1.478720] ata4.00: ATA-10: WDC WD40EFZX-68AWUN0, 81.00A81, max UDMA/133
-> [    1.478912] ata2.00: ATA-9: Samsung SSD 840 EVO 120GB, EXT0DB6Q, max UDMA/133
-> [    1.482260] scsi 1:0:0:0: Direct-Access     ATA      Samsung SSD 840  DB6Q PQ: 0 ANSI: 5
-> [    1.483793] scsi 2:0:0:0: Direct-Access     ATA      WDC WD40EFZX-68A 0B81 PQ: 0 ANSI: 5
-> [    1.485746] scsi 3:0:0:0: Direct-Access     ATA      WDC WD40EFZX-68A 0A81 PQ: 0 ANSI: 5
-> [    1.520882] ata5: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-> [    1.521779] ata5.00: ATA-9: WDC WD30EFRX-68EUZN0, 82.00A82, max UDMA/133
-> [    1.523463] scsi 4:0:0:0: Direct-Access     ATA      WDC WD30EFRX-68E 0A82 PQ: 0 ANSI: 
-> 
-> I don't use the RAID features but make use of software RAID instead, on the first port I have a SSD with the operating system and the three others have HDDs plugged in.
-> 
-> These days I noticed extensive load and when looking at dmesg I could see the following lines getting repeated constantly.
-> 
-> [396495.764520] ata9.00: configured for UDMA/66
-> [396496.092239] ata9: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
-> [396496.092584] ata9.00: configured for UDMA/66
-> [396496.420123] ata9: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
-> [396496.420464] ata9.00: configured for UDMA/66
-> [396496.748016] ata9: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
-> [396496.748320] ata9.00: configured for UDMA/66
-> [396497.076285] ata9: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
-> [396497.076609] ata9.00: configured for UDMA/66
-> 
-> First I thought it'a disk issue as I already had some of them dying and replaced, however after leaving only the SSD connected I still recieved the same dmesg spam immediatelly during boot. So my guess was that the SSD is faulty then, so I replaced my long running
-> 
-> [    1.036030] ata2.00: ATA-9: SanDisk SDSSDP064G, 2.0.0, max UDMA/133
-> 
-> with with an older spare one I had lying around (using Clonezilla to clone the drive)
-> 
-> [    1.478912] ata2.00: ATA-9: Samsung SSD 840 EVO 120GB, EXT0DB6Q, max UDMA/133
-> 
-> and still hit the same problem with that one. After thinking about what I changed lately besides distribution package updates it came to my mind that I upgraded from kernel 6.4.x to 6.5.x lately (kernels and their upgrades are manual on my distribution so no package was used). I used an arch linux iso to boot my system which also used a previous kernel and worked fine, compiled a 6.4.x kernel again on the system, specifically the latest 6.4.16 one. Rebootet and everything is up and running fine again so after half a day I'm pretty sure none of my hardware is faulty and it's indeed a kernel issue/regression.
-> 
-> I hope I chose the correct component as I wasn't sure if it should be either SCSI or IO/Storage instead. Please let me know if you need further details. I can't guarantee to be able to do any actual testing like bisecting as I use the system in production.
+BTW, is this change related ?
 
-See Bugzilla for the full thread.
+>   	return 0;
+>   }
+>   
 
-Anyway, I'm adding this regression to be tracked by regzbot:
+Else LGTM.
 
-#regzbot introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217920
-#regzbot title: UDMA configured spam on Marvell RAID controller
+Reviewed-by: Xiubo Li <xiubli@redhat.com>
 
-Thanks.
+Thanks!
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217920
+- Xiubo
 
--- 
-An old man doll... just what I always wanted! - Clara
+
