@@ -2,131 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6AA7A4483
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1072C7A448D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240686AbjIRIWF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Sep 2023 04:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
+        id S238728AbjIRIXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240898AbjIRIVV (ORCPT
+        with ESMTP id S240817AbjIRIX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:21:21 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEF2CC7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:19:58 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-172-93t-vPj9OxG5pe-X3-PqtA-1; Mon, 18 Sep 2023 09:19:36 +0100
-X-MC-Unique: 93t-vPj9OxG5pe-X3-PqtA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 18 Sep
- 2023 09:19:25 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 18 Sep 2023 09:19:25 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-Subject: [PATCH next v4 5/5] minmax: Relax check to allow comparison between
- unsigned arguments and signed constants.
-Thread-Topic: [PATCH next v4 5/5] minmax: Relax check to allow comparison
- between unsigned arguments and signed constants.
-Thread-Index: AdnqCNb2FUeAofLlRBmLe1ahn9Q2Ow==
-Date:   Mon, 18 Sep 2023 08:19:25 +0000
-Message-ID: <633b64e2f39e46bb8234809c5595b8c7@AcuMS.aculab.com>
-References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
-In-Reply-To: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 18 Sep 2023 04:23:29 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220263A8C;
+        Mon, 18 Sep 2023 01:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1695025231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oVlOiVO9dPN994CwJpPCJsTlJCMI2ipu9TpHyfk87js=;
+        b=VhSBQlUktsCNBNQTS6gS/brrV8uMEuSdgWAsK2k4AZ9SKqxTsaRM4Y/NVH93uPVOD0EdMO
+        b9M5kqBj9IbhYlDLVFxdSd7vXq6mW4dWRh4HGNRMvdunxlJQUOmHHSn/S307X95gwQd5JI
+        mfUGls4NaotQAVcgNFRWVa0uHIjvAFo=
+Message-ID: <a31817a460f8ee66c9d460e97aeea62b2bcfbc51.camel@crapouillou.net>
+Subject: Re: [PATCH for-next v2 02/10] PM: Update EXPORT_*_DEV_PM_OPS() to
+ EXPORT_*_RUNTIME_PM_OPS()
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Raag Jadav <raag.jadav@intel.com>, rafael@kernel.org,
+        len.brown@intel.com, pavel@ucw.cz, Jonathan.Cameron@huawei.com,
+        andriy.shevchenko@linux.intel.com, lars@metafoo.de,
+        rmfrfs@gmail.com, jean-baptiste.maneyrol@tdk.com, lee@kernel.org,
+        laurentiu.palcu@oss.nxp.com, l.stach@pengutronix.de,
+        james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        rf@opensource.cirrus.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        patches@opensource.cirrus.com,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Date:   Mon, 18 Sep 2023 10:20:29 +0200
+In-Reply-To: <20230918080951.3615-3-raag.jadav@intel.com>
+References: <20230918080951.3615-1-raag.jadav@intel.com>
+         <20230918080951.3615-3-raag.jadav@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow (for example) min(unsigned_var, 20).
-
-The opposite min(signed_var, 20u) is still errored.
-
-Since a comparison between signed and unsigned never makes the unsigned
-value negative it is only necessary to adjust the __types_ok() test.
-
-Signed-off-by: David Laight <david.laight@aculab.com>
----
-v4: Only allow comparisons of unsigned against signed constants.
-v3: Fix compiler warnings for 'x >= 0' with unsigned/pointer types.
-v2: Add cast to fix min/max with pointer types.
-
- include/linux/minmax.h | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index b636c3c50248..324894b9cc2f 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -9,13 +9,18 @@
- /*
-  * min()/max()/clamp() macros must accomplish three things:
-  *
-- * - avoid multiple evaluations of the arguments (so side-effects like
-+ * - Avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - perform signed v unsigned type-checking (to generate compile
-- *   errors instead of nasty runtime surprises).
-- * - retain result as a constant expressions when called with only
-+ * - Retain result as a constant expressions when called with only
-  *   constant expressions (to avoid tripping VLA warnings in stack
-  *   allocation usage).
-+ * - Perform signed v unsigned type-checking (to generate compile
-+ *   errors instead of nasty runtime surprises).
-+ * - Unsigned char/short are always promoted to signed int and can be
-+ *   compared against signed or unsigned arguments.
-+ * - Unsigned arguments can be compared against non-negative signed constants.
-+ * - Comparison of a signed argument against an unsigned constant fails
-+ *   even if the constant is below __INT_MAX__ and could be cast to int.
-  */
- #define __typecheck(x, y) \
- 	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-@@ -25,9 +30,14 @@
- 	__builtin_choose_expr(__is_constexpr(is_signed_type(typeof(x))),	\
- 		is_signed_type(typeof(x)), 0)
- 
--#define __types_ok(x, y) 			\
--	(__is_signed(x) == __is_signed(y) ||	\
--		__is_signed((x) + 0) == __is_signed((y) + 0))
-+/* True for a non-negative signed int constant */
-+#define __is_noneg_int(x)	\
-+	(__builtin_choose_expr(__is_constexpr(x) && __is_signed(x), x, -1) >= 0)
-+
-+#define __types_ok(x, y) 					\
-+	(__is_signed(x) == __is_signed(y) ||			\
-+		__is_signed((x) + 0) == __is_signed((y) + 0) ||	\
-+		__is_noneg_int(x) || __is_noneg_int(y))
- 
- #define __cmp_op_min <
- #define __cmp_op_max >
--- 
-2.17.1
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+SGkgUmFhZywKCkxlIGx1bmRpIDE4IHNlcHRlbWJyZSAyMDIzIMOgIDEzOjM5ICswNTMwLCBSYWFn
+IEphZGF2IGEgw6ljcml0wqA6Cj4gUmVuYW1lIEVYUE9SVF8qX0RFVl9QTV9PUFMoKSBtYWNyb3Mg
+dG8gRVhQT1JUXypfUlVOVElNRV9QTV9PUFMoKQo+IGFuZCB3aGlsZSBhdCBpdCwgbW92ZSB0aGVt
+IHRvIHBtX3J1bnRpbWUuaC4KPiBUaGlzIGlzIGRvbmUgaW4gY29uanVuY3Rpb24gd2l0aCB0aGUg
+aW50cm9kdWN0aW9uIG9mCj4gRVhQT1JUXypfU0lNUExFX1BNX09QUygpIHNldCBvZiBtYWNyb3Ms
+IHRvIG1ha2UgdGhpbmdzIGxlc3MKPiBjb25mdXNpbmcuCj4gVGhpcyBtYWtlcyBib3RoIF9SVU5U
+SU1FXyBhbmQgX1NJTVBMRV8gdmFyaWFudHMgb2YgZXhwb3J0IG1hY3JvcyBtb3JlCj4gZGlzdGlu
+Z3Vpc2hhYmxlIGFuZCBzZWxmIGV4cGxhbmF0b3J5LgoKV2VsbCBJIGRvbid0IHJlYWxseSBhZ3Jl
+ZSB3aXRoIHRoaXMgb25lLiBUaGUgRVhQT1JUXypfREVWX1BNX09QUygpIGNhbgpiZSB1c2VkIHdp
+dGggYW55IGNhbGxiYWNrIHlvdSBuZWVkLCBub3QganVzdCB0aGUgdHlwaWNhbCBydW50aW1lLVBN
+CmNhbGxiYWNrcy4gVGhleSBhcmUgZ2VuZXJpYyBQTSBtYWNyb3MuCgpDaGVlcnMsCi1QYXVsCgo+
+IAo+IFNpZ25lZC1vZmYtYnk6IFJhYWcgSmFkYXYgPHJhYWcuamFkYXZAaW50ZWwuY29tPgo+IC0t
+LQo+IMKgaW5jbHVkZS9saW51eC9wbS5owqDCoMKgwqDCoMKgwqDCoCB8wqAgNSAtLS0tLQo+IMKg
+aW5jbHVkZS9saW51eC9wbV9ydW50aW1lLmggfCAxMyArKysrKysrKystLS0tCj4gwqAyIGZpbGVz
+IGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0
+IGEvaW5jbHVkZS9saW51eC9wbS5oIGIvaW5jbHVkZS9saW51eC9wbS5oCj4gaW5kZXggNmU3YWI2
+OTUwYWQxLi45YWIwNTFmM2EzNTEgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC9wbS5oCj4g
+KysrIGIvaW5jbHVkZS9saW51eC9wbS5oCj4gQEAgLTM5OCwxMSArMzk4LDYgQEAgY29uc3Qgc3Ry
+dWN0IGRldl9wbV9vcHMgbmFtZSA9IHsgXAo+IMKgI2RlZmluZSBfRVhQT1JUX1NJTVBMRV9QTV9P
+UFMobmFtZSwgbGljZW5zZSwgbnMpwqDCoMKgwqDCoMKgwqBfUE1fT1BTKG5hbWUsCj4gbGljZW5z
+ZSwgbnMpCj4gwqAjZW5kaWYKPiDCoAo+IC0jZGVmaW5lCj4gRVhQT1JUX0RFVl9QTV9PUFMobmFt
+ZSnCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgX0VYUE9SVF9SVU5USU0KPiBFX1BNX09QUyhuYW1lLCAiIiwgIiIpCj4gLSNkZWZp
+bmUKPiBFWFBPUlRfR1BMX0RFVl9QTV9PUFMobmFtZSnCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgX0VYUE9SVF9SVU5USU1FX1BNX09QUwo+IChuYW1lLCAiR1BMIiwgIiIp
+Cj4gLSNkZWZpbmUgRVhQT1JUX05TX0RFVl9QTV9PUFMobmFtZSwKPiBucynCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgX0VYUE9SVF9SVU5USU1FX1BNX09QUyhuYW1lLCAiIiwgI25z
+KQo+IC0jZGVmaW5lIEVYUE9SVF9OU19HUExfREVWX1BNX09QUyhuYW1lLAo+IG5zKcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgX0VYUE9SVF9SVU5USU1FX1BNX09QUyhuYW1lLCAiR1BMIiwgI25z
+KQo+IC0KPiDCoCNkZWZpbmUKPiBFWFBPUlRfU0lNUExFX1BNX09QUyhuYW1lKcKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoF9FWFBPUlRfU0lNUExFX1BNX09QUygKPiBu
+YW1lLCAiIiwgIiIpCj4gwqAjZGVmaW5lCj4gRVhQT1JUX0dQTF9TSU1QTEVfUE1fT1BTKG5hbWUp
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoF9FWFBPUlRfU0lNUExFX1BNX09QUygK
+PiBuYW1lLCAiR1BMIiwgIiIpCj4gwqAjZGVmaW5lIEVYUE9SVF9OU19TSU1QTEVfUE1fT1BTKG5h
+bWUsCj4gbnMpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoF9FWFBPUlRfU0lNUExFX1BNX09Q
+UyhuYW1lLCAiIiwgI25zKQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3BtX3J1bnRpbWUu
+aCBiL2luY2x1ZGUvbGludXgvcG1fcnVudGltZS5oCj4gaW5kZXggN2M5YjM1NDQ4NTYzLi4wYjcz
+YjAwYmQ1OWYgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC9wbV9ydW50aW1lLmgKPiArKysg
+Yi9pbmNsdWRlL2xpbnV4L3BtX3J1bnRpbWUuaAo+IEBAIC0yMiw2ICsyMiwxMSBAQAo+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHVzYWdlX2NvdW50ICovCj4gwqAjZGVmaW5lIFJQTV9B
+VVRPwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgMHgwOMKgwqDCoMKgLyogVXNlIGF1dG9z
+dXNwZW5kX2RlbGF5ICovCj4gwqAKPiArI2RlZmluZQo+IEVYUE9SVF9SVU5USU1FX1BNX09QUyhu
+YW1lKcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBfRVhQT1JUX1JVTlRJ
+TUVfUE1fT1BTCj4gKG5hbWUsICIiLCAiIikKPiArI2RlZmluZQo+IEVYUE9SVF9HUExfUlVOVElN
+RV9QTV9PUFMobmFtZSnCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBfRVhQT1JUX1JVTlRJTQo+IEVfUE1fT1BTKG5hbWUsICJHUEwiLCAiIikKPiArI2RlZmlu
+ZSBFWFBPUlRfTlNfUlVOVElNRV9QTV9PUFMobmFtZSwKPiBucynCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoF9FWFBPUlRfUlVOVElNRV9QTV9PUFMobmFtZSwgIiIsICNucykKPiArI2RlZmluZSBF
+WFBPUlRfTlNfR1BMX1JVTlRJTUVfUE1fT1BTKG5hbWUsCj4gbnMpwqDCoMKgwqDCoMKgwqDCoMKg
+X0VYUE9SVF9SVU5USU1FX1BNX09QUyhuYW1lLCAiR1BMIiwgI25zKQo+ICsKPiDCoC8qCj4gwqAg
+KiBVc2UgdGhpcyBmb3IgZGVmaW5pbmcgYSBzZXQgb2YgUE0gb3BlcmF0aW9ucyB0byBiZSB1c2Vk
+IGluIGFsbAo+IHNpdHVhdGlvbnMKPiDCoCAqIChzeXN0ZW0gc3VzcGVuZCwgaGliZXJuYXRpb24g
+b3IgcnVudGltZSBQTSkuCj4gQEAgLTQwLDE5ICs0NSwxOSBAQAo+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVzdW1lX2ZuLCBpZGxlX2ZuKQo+
+IMKgCj4gwqAjZGVmaW5lIEVYUE9SVF9SVU5USU1FX0RFVl9QTV9PUFMobmFtZSwgc3VzcGVuZF9m
+biwgcmVzdW1lX2ZuLAo+IGlkbGVfZm4pIFwKPiAtwqDCoMKgwqDCoMKgwqBFWFBPUlRfREVWX1BN
+X09QUyhuYW1lKSA9IHsgXAo+ICvCoMKgwqDCoMKgwqDCoEVYUE9SVF9SVU5USU1FX1BNX09QUyhu
+YW1lKSA9IHsgXAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgUlVOVElNRV9QTV9P
+UFMoc3VzcGVuZF9mbiwgcmVzdW1lX2ZuLCBpZGxlX2ZuKSBcCj4gwqDCoMKgwqDCoMKgwqDCoH0K
+PiDCoCNkZWZpbmUgRVhQT1JUX0dQTF9SVU5USU1FX0RFVl9QTV9PUFMobmFtZSwgc3VzcGVuZF9m
+biwgcmVzdW1lX2ZuLAo+IGlkbGVfZm4pIFwKPiAtwqDCoMKgwqDCoMKgwqBFWFBPUlRfR1BMX0RF
+Vl9QTV9PUFMobmFtZSkgPSB7IFwKPiArwqDCoMKgwqDCoMKgwqBFWFBPUlRfR1BMX1JVTlRJTUVf
+UE1fT1BTKG5hbWUpID0geyBcCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBSVU5U
+SU1FX1BNX09QUyhzdXNwZW5kX2ZuLCByZXN1bWVfZm4sIGlkbGVfZm4pIFwKPiDCoMKgwqDCoMKg
+wqDCoMKgfQo+IMKgI2RlZmluZSBFWFBPUlRfTlNfUlVOVElNRV9ERVZfUE1fT1BTKG5hbWUsIHN1
+c3BlbmRfZm4sIHJlc3VtZV9mbiwKPiBpZGxlX2ZuLCBucykgXAo+IC3CoMKgwqDCoMKgwqDCoEVY
+UE9SVF9OU19ERVZfUE1fT1BTKG5hbWUsIG5zKSA9IHsgXAo+ICvCoMKgwqDCoMKgwqDCoEVYUE9S
+VF9OU19SVU5USU1FX1BNX09QUyhuYW1lLCBucykgPSB7IFwKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoFJVTlRJTUVfUE1fT1BTKHN1c3BlbmRfZm4sIHJlc3VtZV9mbiwgaWRsZV9m
+bikgXAo+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqAjZGVmaW5lIEVYUE9SVF9OU19HUExfUlVOVElN
+RV9ERVZfUE1fT1BTKG5hbWUsIHN1c3BlbmRfZm4sCj4gcmVzdW1lX2ZuLCBpZGxlX2ZuLCBucykg
+XAo+IC3CoMKgwqDCoMKgwqDCoEVYUE9SVF9OU19HUExfREVWX1BNX09QUyhuYW1lLCBucykgPSB7
+IFwKPiArwqDCoMKgwqDCoMKgwqBFWFBPUlRfTlNfR1BMX1JVTlRJTUVfUE1fT1BTKG5hbWUsIG5z
+KSA9IHsgXAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgUlVOVElNRV9QTV9PUFMo
+c3VzcGVuZF9mbiwgcmVzdW1lX2ZuLCBpZGxlX2ZuKSBcCj4gwqDCoMKgwqDCoMKgwqDCoH0KPiDC
+oAoK
 
