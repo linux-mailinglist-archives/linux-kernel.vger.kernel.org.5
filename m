@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA7E7A43DB
+	by mail.lfdr.de (Postfix) with ESMTP id 89D5C7A43DA
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240611AbjIRIEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
+        id S239854AbjIRIEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240675AbjIRIA5 (ORCPT
+        with ESMTP id S240785AbjIRIDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:00:57 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B2BCFB;
-        Mon, 18 Sep 2023 00:59:30 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7888E20003;
-        Mon, 18 Sep 2023 07:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1695023968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=A60OSmANdEj1qdlQAPPS0Wy4M2HCzCwvUt3i18ClpfU=;
-        b=WoNKxA2JwenWUdbj4rcD0ooJY/T0jemtRMr1pLi0jbUxp0obE6v/QGaZ25JniMN8dnv4Bm
-        yKcjINMmqKJ0R9bR9UmSie4I1NGz/xvHmzSlvuNVkceS5+O5SlgPkVybsiYVI55mc58NTF
-        A8Td2/fNDiMsSUDfbpDoJ9YHNvXrL6AQGw5JcTuVZ29A/cu+djArUiUBi5I3GRRyX4kBIH
-        VlvaJb1k4aZxm7fOEDAoix1KashvQGL+qDZuaH+KaXN+4TAxtK6oJqIrY+7Bmy9lt/wNm8
-        q8AKShrI4Za+QHqbX5sHPuQitldi3hXGADn/9e5XS7nTvv2jI2SYcmJtb13sVg==
-From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-To:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] mips: dts: ralink: mt7621: rename to GnuBee GB-PC1 and GnuBee GB-PC2
-Date:   Mon, 18 Sep 2023 10:59:15 +0300
-Message-Id: <20230918075915.87029-1-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 18 Sep 2023 04:03:48 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF88010E;
+        Mon, 18 Sep 2023 01:03:20 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf1935f6c2so29574505ad.1;
+        Mon, 18 Sep 2023 01:03:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695024200; x=1695629000; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1h0mfMJN8y2Fpx6TXWBnY89WoQ3bNceAgBMQh6Df+ag=;
+        b=BKGppC06v2V4qMLCVRSGzSDW5CFPqHW6OOBawFOzMQZo4JRb5yfSUUZm9uHDK3xZHb
+         cdM7+6p+h4CG9ODZlU/1ucBsy9VMQeVRYNcXEsmqW1SkHsUnGBHaa3r1ON68U2elT3gd
+         /GD9wHYjHnrYiPOJ3Teh+eOATEM/AJD/RbPSNGUi33jRJkBLOA4iXxtulrL1UtZXjGOv
+         uJ9wfwpDT/TWh3Q/x49ZuxFBmk5BRKyPJ11na1jCNx5LSkh6RhPS+BbldGw8JmT88POe
+         +Sh6nBITR7yvo9WUlR0+meFaYa/2WJjk6yN47iVUg7f6rzdguyh9ZGNpxRDNWcL160bk
+         iGnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695024200; x=1695629000;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1h0mfMJN8y2Fpx6TXWBnY89WoQ3bNceAgBMQh6Df+ag=;
+        b=q0opHk8+efDLhRTqtC92pD/z/KcSbz9+9KA+aFC4N9h7hw+uRIAAvOHTrihrRDFODI
+         cp9N2KR9i+r/zavwmu46CzMRRK6vlt64D1eHpLIXQ2HEN6GRj2oqINwYqd8WAyHMqQUH
+         Gc2/Hf7QcLFNKjztmLkAs6wZYuT4z2lkjSVQUAhiOFuCKDGjeR0ti4Eep+dirqHlbp7C
+         YzfUhiuoYg9DvJME0+n/XIPi8QPJok70JclCb4KiASdfN6mm4PpUJ0nG1WEe5fp60+TF
+         lsk5De0/PiZFO/SSDn5wpz3eHvPS1omj0l+EOakB6kmMkkNkSM1a95OWrrrJTa7ec93g
+         /AfA==
+X-Gm-Message-State: AOJu0YytOmKm8TNTHNlhtC7HAjVbVBlJC9TS9evHyPoc2Jh1MUtQlGWj
+        zcPLUcRU+FZMPngGeOzwgZ2ox54ZPNrYMw==
+X-Google-Smtp-Source: AGHT+IHKtvVlH0zspuk4ofmIKuRksz9pBIv0SaZIRH7QIKbwc54ZE0KsSgm4ClMv3uecaQoIdKjIeA==
+X-Received: by 2002:a17:902:d2c1:b0:1bb:d586:d29a with SMTP id n1-20020a170902d2c100b001bbd586d29amr17077910plc.34.1695024199947;
+        Mon, 18 Sep 2023 01:03:19 -0700 (PDT)
+Received: from localhost.localdomain ([115.96.179.37])
+        by smtp.gmail.com with ESMTPSA id w18-20020a1709029a9200b001bde877a7casm7716161plp.264.2023.09.18.01.03.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 01:03:19 -0700 (PDT)
+From:   Jagath Jog J <jagathjog1996@gmail.com>
+To:     jic23@kernel.org, andriy.shevchenko@linux.intel.com,
+        lars@metafoo.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC 0/2] iio: imu: Add driver and dt-bindings for BMI323
+Date:   Mon, 18 Sep 2023 13:33:12 +0530
+Message-Id: <20230918080314.11959-1-jagathjog1996@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename GB-PC1 to GnuBee GB-PC1, and GB-PC2 to GnuBee GB-PC2 to include
-brand and model name.
+Add dt-bindings and IIO driver for Bosch BMI323 a 6 axis IMU.
 
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts | 2 +-
- arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Jagath Jog J (2):
+  dt-bindings: iio: imu: Add DT binding doc for BMI323
+  iio: imu: Add driver for BMI323 IMU
 
-diff --git a/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts b/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts
-index 129b6710b699..f9c262cc2e96 100644
---- a/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts
-+++ b/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts
-@@ -8,7 +8,7 @@
- 
- / {
- 	compatible = "gnubee,gb-pc1", "mediatek,mt7621-soc";
--	model = "GB-PC1";
-+	model = "GnuBee GB-PC1";
- 
- 	memory@0 {
- 		device_type = "memory";
-diff --git a/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts b/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts
-index f810cd10f4f4..b281e13f22ed 100644
---- a/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts
-+++ b/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts
-@@ -8,7 +8,7 @@
- 
- / {
- 	compatible = "gnubee,gb-pc2", "mediatek,mt7621-soc";
--	model = "GB-PC2";
-+	model = "GnuBee GB-PC2";
- 
- 	memory@0 {
- 		device_type = "memory";
+ .../bindings/iio/imu/bosch,bmi323.yaml        |   81 +
+ MAINTAINERS                                   |    7 +
+ drivers/iio/imu/Kconfig                       |    1 +
+ drivers/iio/imu/Makefile                      |    1 +
+ drivers/iio/imu/bmi323/Kconfig                |   33 +
+ drivers/iio/imu/bmi323/Makefile               |    7 +
+ drivers/iio/imu/bmi323/bmi323.h               |  198 ++
+ drivers/iio/imu/bmi323/bmi323_core.c          | 2260 +++++++++++++++++
+ drivers/iio/imu/bmi323/bmi323_i2c.c           |  115 +
+ drivers/iio/imu/bmi323/bmi323_spi.c           |  106 +
+ 10 files changed, 2809 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bmi323.yaml
+ create mode 100644 drivers/iio/imu/bmi323/Kconfig
+ create mode 100644 drivers/iio/imu/bmi323/Makefile
+ create mode 100644 drivers/iio/imu/bmi323/bmi323.h
+ create mode 100644 drivers/iio/imu/bmi323/bmi323_core.c
+ create mode 100644 drivers/iio/imu/bmi323/bmi323_i2c.c
+ create mode 100644 drivers/iio/imu/bmi323/bmi323_spi.c
+
 -- 
-2.39.2
+2.20.1
 
