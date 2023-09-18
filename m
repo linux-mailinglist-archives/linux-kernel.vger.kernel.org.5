@@ -2,156 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5084B7A4636
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35157A4638
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239133AbjIRJmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 05:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
+        id S240963AbjIRJmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233492AbjIRJlh (ORCPT
+        with ESMTP id S240881AbjIRJmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:41:37 -0400
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABB7CCD;
-        Mon, 18 Sep 2023 02:40:03 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VsKThJJ_1695029998;
-Received: from 30.240.112.49(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VsKThJJ_1695029998)
-          by smtp.aliyun-inc.com;
-          Mon, 18 Sep 2023 17:40:00 +0800
-Message-ID: <e486db16-d36d-9e14-4f10-dc755c0ef97d@linux.alibaba.com>
-Date:   Mon, 18 Sep 2023 17:39:58 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Content-Language: en-US
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-Subject: Questions: Should kernel panic when PCIe fatal error occurs?
-To:     "lenb@kernel.org" <lenb@kernel.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>, mahesh@linux.ibm.com,
-        bhelgaas@google.com,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        gregkh@linuxfoundation.org
-Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Shuai Xue <xueshuai@linux.alibaba.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Mon, 18 Sep 2023 05:42:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5A3E52
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:40:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA1D5C433C8;
+        Mon, 18 Sep 2023 09:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695030021;
+        bh=HVSpFQnmXQ6FFjFm3ben4gsTYRSP8yFtpc7kR540pqk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m01BeqeWOZUF7RuUbLKaq2WW41I4cDu3hC2ZRxHGt7JnErfhOxBgQiuFloTVFr250
+         ftjLpTaMf8jMLQ+b0L/XloOps2FYp4+soBM+2TjgAwbQzhHs9RLmh0kslkPoAkFL6p
+         /mtGNe43CnsROOyJfVxp0lw50t/TXXZ2XvmWLaAoUXwgRtQOdW2YpQXovCg3sbDInv
+         Mfm8XhNovFVuxB2VmaQiSmnvihnNfLXkx5d+GqDTXFyf82QLt5GGNyx/17ZhmetJLv
+         HBIcdwgnf/ShQS38U5xhN0CO6tV4PRfZPi3P6qcYRdOaOtkG3+8Pe69k3zV7EINApL
+         X26nE++7OIAlA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qiAjq-00DuMf-CM;
+        Mon, 18 Sep 2023 10:40:18 +0100
+Date:   Mon, 18 Sep 2023 10:40:17 +0100
+Message-ID: <868r93es5a.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Miguel Luis <miguel.luis@oracle.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+Subject: Re: [PATCH 2/3] arm64/kvm: Fine grain _EL2 system registers list that affect nested virtualization
+In-Reply-To: <20230913185209.32282-3-miguel.luis@oracle.com>
+References: <20230913185209.32282-1-miguel.luis@oracle.com>
+        <20230913185209.32282-3-miguel.luis@oracle.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: miguel.luis@oracle.com, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, all folks,
+Hi Miguel,
 
-Error reporting and recovery are one of the important features of PCIe, and
-the kernel has been supporting them since version 2.6, 17 years ago.
-I am very curious about the expected behavior of the software.
-I first recap the error classification and then list my questions bellow it.
+On Wed, 13 Sep 2023 19:52:07 +0100,
+Miguel Luis <miguel.luis@oracle.com> wrote:
+> 
+> Some _EL1 registers got included in the _EL2 ranges, which are not
+> affected by NV. Remove them and fine grain the ranges to exclusively
+> include the _EL2 ones.
+> 
+> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+> ---
+>  arch/arm64/kvm/emulate-nested.c | 44 ++++++++++++++++++++++++++++-----
+>  1 file changed, 38 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/emulate-nested.c b/arch/arm64/kvm/emulate-nested.c
+> index 9ced1bf0c2b7..9aa1c06abdb7 100644
+> --- a/arch/arm64/kvm/emulate-nested.c
+> +++ b/arch/arm64/kvm/emulate-nested.c
+> @@ -649,14 +649,46 @@ static const struct encoding_to_trap_config encoding_to_cgt[] __initconst = {
+>  	SR_TRAP(SYS_APGAKEYHI_EL1,	CGT_HCR_APK),
+>  	/* All _EL2 registers */
+>  	SR_RANGE_TRAP(sys_reg(3, 4, 0, 0, 0),
+> -		      sys_reg(3, 4, 3, 15, 7), CGT_HCR_NV),
+> +			sys_reg(3, 4, 4, 0, 1), CGT_HCR_NV),
 
-## Recap: Error classification
+It would be good if the commit message explained that you are folding
+SPSR/ELR into the existing range. Also, please keep the two ends of
+the ranges vertically aligned.
 
-- Fatal Errors
+>  	/* Skip the SP_EL1 encoding... */
+> -	SR_TRAP(SYS_SPSR_EL2,		CGT_HCR_NV),
+> -	SR_TRAP(SYS_ELR_EL2,		CGT_HCR_NV),
+> -	SR_RANGE_TRAP(sys_reg(3, 4, 4, 1, 1),
+> -		      sys_reg(3, 4, 10, 15, 7), CGT_HCR_NV),
+> +	SR_RANGE_TRAP(sys_reg(3, 4, 4, 3, 0),
+> +			sys_reg(3, 4, 10, 6, 7), CGT_HCR_NV),
+> +	/* skip MECID_A0_EL2, MECID_A1_EL2, MECID_P0_EL2,
+> +	 *      MECID_P1_EL2, MECIDR_EL2, VMECID_A_EL2,
+> +	 *      VMECID_P_EL2.
+> +	 */
 
-Fatal errors are uncorrectable error conditions which render the particular
-Link and related hardware unreliable. For Fatal errors, a reset of the
-components on the Link may be required to return to reliable operation.
-Platform handling of Fatal errors, and any efforts to limit the effects of
-these errors, is platform implementation specific. (PCIe 6.0.1, sec
-6.2.2.2.1 Fatal Errors).
+Please follow the kernel comment format. Also, why are you skipping
+the MEC registers, but not the MPAM ones? At least indicate a
+rationale for this.
 
-- Non-Fatal Errors
+>  	SR_RANGE_TRAP(sys_reg(3, 4, 12, 0, 0),
+> -		      sys_reg(3, 4, 14, 15, 7), CGT_HCR_NV),
+> +			sys_reg(3, 4, 12, 1, 1), CGT_HCR_NV),
+> +	/* ICH_AP0R<m>_EL2 */
+> +	SR_RANGE_TRAP(SYS_ICH_AP0R0_EL2,
+> +			SYS_ICH_AP0R3_EL2, CGT_HCR_NV),
+> +	/* ICH_AP1R<m>_EL2 */
+> +	SR_RANGE_TRAP(SYS_ICH_AP1R0_EL2,
+> +			SYS_ICH_AP1R3_EL2, CGT_HCR_NV),
+> +	SR_RANGE_TRAP(sys_reg(3, 4, 12, 9, 5),
+> +			sys_reg(3, 4, 12, 11, 7), CGT_HCR_NV),
+> +	/* ICH_LR<m>_EL2 */
+> +	SR_TRAP(SYS_ICH_LR0_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR1_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR2_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR3_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR4_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR5_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR6_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR7_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR8_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR9_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR10_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR11_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR12_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR13_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR14_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_LR15_EL2,	CGT_HCR_NV),
 
-Non-fatal errors are uncorrectable errors which cause a particular
-transaction to be unreliable but the Link is otherwise fully functional.
-Isolating Non-fatal from Fatal errors provides Requester/Receiver logic in
-a device or system management software the opportunity to recover from the
-error without resetting the components on the Link and disturbing other
-transactions in progress. Devices not associated with the transaction in
-error are not impacted by the error.  (PCIe 6.0.1, sec 6.2.2.2.1 Non-Fatal
-Errors).
+You could describe all the LRs a single range.
 
-## What the kernel do?
+> +	SR_RANGE_TRAP(sys_reg(3, 4, 13, 0, 1),
+> +			sys_reg(3, 4, 13, 0, 7), CGT_HCR_NV),
+> +	/* skip AMEVCNTVOFF0<n>_EL2 and AMEVCNTVOFF1<n>_EL2 */
 
-The Linux kernel supports both the OS native and firmware first modes in
-AER and DPC drivers. The error recovery API is defined in `struct
-pci_error_handlers`, and the recovery process is performed in several
-stages in pcie_do_recovery(). One main difference in handling PCIe errors
-is that the kernel only resets the link when a fatal error is detected.
+Why?
 
-## Questions
+> +	SR_RANGE_TRAP(sys_reg(3, 4, 14, 0, 3),
+> +			sys_reg(3, 4, 14, 5, 2), CGT_HCR_NV),
+>  	/* All _EL02, _EL12 registers */
+>  	SR_RANGE_TRAP(sys_reg(3, 5, 0, 0, 0),
+>  		      sys_reg(3, 5, 10, 15, 7), CGT_HCR_NV),
 
-1. Should kernel panic when fatal errors occur without AER recovery?
+Thanks,
 
-IMHO, the answer is NO. The AER driver handles both fatal and non-fatal
-errors, and I have not found any panic changes in the recovery path in OS
-native mode.
+	M.
 
-As far as I know, on many X86 platforms, struct `acpi_hest_generic_status::error_severity`
-is set as CPER_SEV_FATAL in firmware first mode. As a result, kernel will
-panic immediately in ghes_proc() when fatal AER errors occur, and there
-is no chance to handle the error and perform recovery in AER driver.
-
-For fatal and non-fatal errors, struct `acpi_hest_generic_status::error_severity`
-should as CPER_SEV_RECOVERABLE, and struct `acpi_hest_generic_data::error_severity`
-should reflect its real severity. Then, the kernel is equivalent to handling
-PCIe errors in Firmware first mode as it does in OS native mode.
-Please correct me if I am wrong.
-
-However, I have changed my mind on this issue as I encounter a case where
-a error propagation is detected due to fatal DLLP (Data Link Protocol
-Error) error. A DLLP error occurred in the Compute node, causing the
-node to panic because `struct acpi_hest_generic_status::error_severity` was
-set as CPER_SEV_FATAL. However, data corruption was still detected in the
-storage node by CRC.
-
-2. Should kernel panic when AER recovery failed?
-
-This question is actually a TODO that was added when the AER driver was
-first upstreamed 17 years ago, and it is still relevant today. The kernel
-does not proactively panic regardless of the error types occurring in OS
-native mode. The DLLP error propagation case indicates that the kernel
-might should panic when recovery failed?
-
-3. Should DPC be enabled by default to contain fatal and non-fatal error?
-
-According to the PCIe specification, DPC halts PCIe traffic below a
-Downstream Port after an unmasked uncorrectable error is detected at or
-below the Port, avoiding the potential spread of any data corruption.
-
-The kernel configures DPC to be triggered only on ERR_FATAL. Literally
-speaking, only fatal error have the potential spread of any data
-corruption? In addition, the AER Severity is programable by the
-Uncorrectable Error Severity Register (Offset 0Ch in PCIe AER cap). If a
-default fatal error, e.g. DLLP, set as non-fatal, DPC will not be
-triggered.
-
-
-Looking forward to any comments and reply :)
-
-Thank you.
-
-Best Regards,
-Shuai
-
-
-[1] https://github.com/torvalds/linux/commit/6c2b374d74857e892080ee726184ec1d15e7d4e4#diff-fea64904d30501b59d2e948189bbedc476fc270ed4c15e4ae29d7f0efd06771aR438
-
-
-
-
-
-
-
-
-
+-- 
+Without deviation from the norm, progress is not possible.
