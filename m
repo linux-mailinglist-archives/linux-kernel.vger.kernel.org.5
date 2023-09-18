@@ -2,898 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8D67A51DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA97A7A51E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjIRSQF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Sep 2023 14:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        id S229621AbjIRSQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 14:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjIRSQD (ORCPT
+        with ESMTP id S229436AbjIRSQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 14:16:03 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31705DB;
-        Mon, 18 Sep 2023 11:15:56 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-57acd4917f6so152931eaf.1;
-        Mon, 18 Sep 2023 11:15:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695060955; x=1695665755;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2sB0ye4RHCqzuszVeimvycn2jMqmrDjjI0brH6f2kv0=;
-        b=F6t3i5zLB1b49DrjnQlB8ZBqKCWG2vDpvjRIhZjLYkX4jtu+nSTbUJohoo6923VajQ
-         82RTRgkthflH8th9Y8IatEJxJnKSeiltkKDDJfeMTMkBSqzEni+9BCvccHKqxuQ0V/l4
-         vzvqlNdZ+RjDbTYGv8iLL5GOgH5PDvjMS4hZubC4hSvW05p5rRIE3N3vq5uUQbR7nVX8
-         duW3RelAat21afxUuPTMXaNZ5+rM7OS3MFsZTaKRzZgMJw6fxJZS2gj2fXKtodK+Kdh2
-         1g94vZgM84QwLXGtplBwu0WV6K6xauz0uq3E9NcfTCge1LCuwinV0ihZZpzBrZdaTU0Q
-         dWyQ==
-X-Gm-Message-State: AOJu0YxedPldKcDUgb6LnSftEMHiLF30kcQoQ3By6djixvnrBM6NjmQl
-        VKXbzDOQ6n8AXyLu8wR4Je1sMQ2DUj3nK/u5IVQ=
-X-Google-Smtp-Source: AGHT+IE2xvtT9L6roFQ0xoFBDv1iOEBW440LXMCYCm6N7Y8VdvOxcFsbX8a3SBtxgT1gV+VROuQXy60desLQ1erHDuo=
-X-Received: by 2002:a4a:dc93:0:b0:573:4a72:6ec with SMTP id
- g19-20020a4adc93000000b005734a7206ecmr9818188oou.1.1695060955150; Mon, 18 Sep
- 2023 11:15:55 -0700 (PDT)
+        Mon, 18 Sep 2023 14:16:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE19DB;
+        Mon, 18 Sep 2023 11:16:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 444B1C433C7;
+        Mon, 18 Sep 2023 18:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695061006;
+        bh=2Mf/KGXjOsLhdTJn0eQyev4ZjscAq6j6d9GO+qy7b14=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ZFKfOA27gDIN3NHNZ1+QfDEaw+ZsgZWlXgJ0VTQEgYIXysloU1UY26e6yS8EXEAF9
+         JE/b75loLovE5AwV/J0DihYHt3CwzH9uvQwGrsbl2rilK2TJvVu2YmlUkn08IqzEkN
+         6WlW7yiC256+krGc3NwsHLd8P5cyVjoGtbNRe/qOo0yjsi3ON/SCX/S/kGiUQLUHHm
+         yas9aehqyAd9BPH5u7vuBsMB1DOpFs/lWpC9R6DQGvimGDdnRdLi67rgRwAcUk6VaO
+         VFpIS4VWxXTWxFCr3NsaRRrDcnbGDvJ3fQpHfuPFL32Ns93Vf9EW5ulgEkWvyef/Xv
+         gNaCsRGxJHAWQ==
+Date:   Mon, 18 Sep 2023 13:16:44 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shiju Jose <shiju.jose@huawei.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        tanxiaofei <tanxiaofei@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Dave Jiang <dave.jiang@intel.com>
+Subject: Re: [RFC PATCH 1/1] ACPI / APEI: Fix for overwriting aer info when
+ error status data have multiple sections
+Message-ID: <20230918181644.GA197123@bhelgaas>
 MIME-Version: 1.0
-References: <20230831062031.1014799-1-evan.quan@amd.com> <20230831062031.1014799-2-evan.quan@amd.com>
-In-Reply-To: <20230831062031.1014799-2-evan.quan@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 18 Sep 2023 20:15:44 +0200
-Message-ID: <CAJZ5v0gMwfKyskng7HUf7cNGY0QfwtdRivKpXw7Xnu=GimDFGQ@mail.gmail.com>
-Subject: Re: [V11 1/8] ACPI: Add support for AMD ACPI based Wifi band RFI
- mitigation feature
-To:     Evan Quan <evan.quan@amd.com>
-Cc:     lenb@kernel.org, johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        alexander.deucher@amd.com, rafael@kernel.org, Lijo.Lazar@amd.com,
-        mario.limonciello@amd.com, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c1a4d76b89c44437b328fe8a6d3517dc@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 8:21 AM Evan Quan <evan.quan@amd.com> wrote:
->
-> Due to electrical and mechanical constraints in certain platform designs
-> there may be likely interference of relatively high-powered harmonics of
-> the (G-)DDR memory clocks with local radio module frequency bands used
-> by Wifi 6/6e/7.
->
-> To mitigate this, AMD has introduced a mechanism that devices can use to
-> notify active use of particular frequencies so that other devices can make
-> relative internal adjustments as necessary to avoid this resonance.
-
-The changelog is only marginally useful IMV.
-
-It doesn't even mention the role of ACPI in all this, so it is quite
-unclear what the patch is all about, why it does what it does and what
-is actually done in it.
-
-It is also unclear why this code is put into drivers/acpi/, which
-should be explained.
-
-> Signed-off-by: Evan Quan <evan.quan@amd.com>
-> --
-> v10->v11:
->   - fix typo(Simon)
-> ---
->  drivers/acpi/Kconfig          |  17 ++
->  drivers/acpi/Makefile         |   2 +
->  drivers/acpi/amd_wbrf.c       | 414 ++++++++++++++++++++++++++++++++++
->  include/linux/acpi_amd_wbrf.h | 140 ++++++++++++
->  4 files changed, 573 insertions(+)
->  create mode 100644 drivers/acpi/amd_wbrf.c
->  create mode 100644 include/linux/acpi_amd_wbrf.h
->
-> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> index 00dd309b6682..a092ea72d152 100644
-> --- a/drivers/acpi/Kconfig
-> +++ b/drivers/acpi/Kconfig
-> @@ -594,6 +594,23 @@ config ACPI_PRMT
->           substantially increase computational overhead related to the
->           initialization of some server systems.
->
-> +config WBRF_AMD_ACPI
-> +       bool "ACPI based WBRF mechanism introduced by AMD"
-> +       depends on ACPI
-> +       default n
-> +       help
-> +         Wifi band RFI mitigation mechanism allows multiple drivers from
-> +         different domains to notify the frequencies in use so that hardware
-> +         can be reconfigured to avoid harmonic conflicts.
-
-So drivers can notify the platform firmware IIUC, but that is not
-really clear from the above.  I'm not even sure what the phrase
-"notify the frequencies in use" is supposed to mean.
-
-> +
-> +         AMD has introduced an ACPI based mechanism to support WBRF for some
-> +         platforms with AMD dGPU and WLAN. This needs support from BIOS equipped
-> +         with necessary AML implementations and dGPU firmwares.
-> +
-> +         Before enabling this ACPI based mechanism, it is suggested to confirm
-> +         with the hardware designer/provider first whether your platform
-> +         equipped with necessary BIOS and firmwares.
-
-No, this doesn't work.
-
-Say you are a distro and you want to supply all of your users with the
-same binary kernel image.  What are you expected to do to address the
-above?
-
-> +
->  endif  # ACPI
->
->  config X86_PM_TIMER
-> diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-> index eaa09bf52f17..a3d2f259d0a5 100644
-> --- a/drivers/acpi/Makefile
-> +++ b/drivers/acpi/Makefile
-> @@ -132,3 +132,5 @@ obj-$(CONFIG_ARM64)         += arm64/
->  obj-$(CONFIG_ACPI_VIOT)                += viot.o
->
->  obj-$(CONFIG_RISCV)            += riscv/
-> +
-> +obj-$(CONFIG_WBRF_AMD_ACPI)    += amd_wbrf.o
-> diff --git a/drivers/acpi/amd_wbrf.c b/drivers/acpi/amd_wbrf.c
-> new file mode 100644
-> index 000000000000..8ee0e2977a30
-> --- /dev/null
-> +++ b/drivers/acpi/amd_wbrf.c
-> @@ -0,0 +1,414 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Wifi Band Exclusion Interface (AMD ACPI Implementation)
-> + * Copyright (C) 2023 Advanced Micro Devices
-> + *
-
-Please document the code in this file at least basically.
-
-You don't even explain what Wifi Band Exclusion means.
-
-The OS-firmware interface that this code is based on should be
-described here or a link to its description should be provided at the
-very least.
-
-As it is now, one needs to reverse engineer the patch in order to get
-any idea about how this interface is designed.
-
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/acpi_amd_wbrf.h>
-> +
-> +#define ACPI_AMD_WBRF_METHOD   "\\WBRF"
-> +
-> +/*
-> + * Functions bit vector for WBRF method
-> + *
-> + * Bit 0: Supported for any functions other than function 0.
-> + * Bit 1: Function 1 (Add / Remove frequency) is supported.
-> + * Bit 2: Function 2 (Get frequency list) is supported.
-> + */
-
-Without any additional information, the comment above is meaningless.
-
-> +#define WBRF_ENABLED                           0x0
-> +#define WBRF_RECORD                            0x1
-> +#define WBRF_RETRIEVE                          0x2
-> +
-> +/* record actions */
-> +#define WBRF_RECORD_ADD                0x0
-> +#define WBRF_RECORD_REMOVE     0x1
-> +
-> +#define WBRF_REVISION          0x1
-> +
-> +/*
-> + * The data structure used for WBRF_RETRIEVE is not naturally aligned.
-> + * And unfortunately the design has been settled down.
-> + */
-> +struct amd_wbrf_ranges_out {
-> +       u32                     num_of_ranges;
-> +       struct exclusion_range  band_list[MAX_NUM_OF_WBRF_RANGES];
-> +} __packed;
-> +
-> +static const guid_t wifi_acpi_dsm_guid =
-> +       GUID_INIT(0x7b7656cf, 0xdc3d, 0x4c1c,
-> +                 0x83, 0xe9, 0x66, 0xe7, 0x21, 0xde, 0x30, 0x70);
-> +
-> +static BLOCKING_NOTIFIER_HEAD(wbrf_chain_head);
-
-I should have to reverse engineer the code in order to find out what
-this notifier is for.
-
-> +
-> +static int wbrf_dsm(struct acpi_device *adev,
-> +                   u8 fn,
-> +                   union acpi_object *argv4)
-> +{
-> +       union acpi_object *obj;
-> +       int rc;
-> +
-> +       obj = acpi_evaluate_dsm(adev->handle, &wifi_acpi_dsm_guid,
-> +                               WBRF_REVISION, fn, argv4);
-> +       if (!obj)
-> +               return -ENXIO;
-> +
-> +       switch (obj->type) {
-> +       case ACPI_TYPE_INTEGER:
-> +               rc = obj->integer.value ? -EINVAL : 0;
-
-rc = obj->integer.value;
-if (rc)
-        rc = -EINVAL;
-
-And why -EINVAL?
-
-> +               break;
-> +       default:
-> +               rc = -EOPNOTSUPP;
-
-Why -EOPNOTSUPP?
-
-> +       }
-> +
-> +       ACPI_FREE(obj);
-> +
-> +       return rc;
-> +}
-> +
-> +static int wbrf_record(struct acpi_device *adev, uint8_t action,
-> +                      struct wbrf_ranges_in_out *in)
-> +{
-> +       union acpi_object argv4;
-> +       union acpi_object *tmp;
-> +       u32 num_of_ranges = 0;
-> +       u32 num_of_elements;
-> +       u32 arg_idx = 0;
-> +       u32 loop_idx;
-> +       int ret;
-> +
-> +       if (!in)
-> +               return -EINVAL;
-> +
-> +       for (loop_idx = 0; loop_idx < ARRAY_SIZE(in->band_list);
-> +            loop_idx++)
-> +               if (in->band_list[loop_idx].start &&
-> +                   in->band_list[loop_idx].end)
-> +                       num_of_ranges++;
-> +
-> +       /*
-> +        * The valid entry counter does not match with this told.
-> +        * Something must went wrong.
-> +        */
-
-It would be better to say that the num_of_ranges value in the in
-object supplied by the caller is required to be equal to the number of
-entries in the band_list array in there.  And put that comment in
-front of the loop above.
-
-> +       if (num_of_ranges != in->num_of_ranges)
-> +               return -EINVAL;
-> +
-> +       /*
-> +        * Every input frequency band comes with two end points(start/end)
-> +        * and each is accounted as an element. Meanwhile the range count
-> +        * and action type are accounted as an element each.
-> +        * So, the total element count = 2 * num_of_ranges + 1 + 1.
-
-This information belongs to the (missing) description of the
-OS-firmware interface used by this code.
-
-> +        */
-> +       num_of_elements = 2 * num_of_ranges + 1 + 1;
-
-Why not 2 * num_of_ranges + 2?
-
-> +
-> +       tmp = kcalloc(num_of_elements, sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       argv4.package.type = ACPI_TYPE_PACKAGE;
-> +       argv4.package.count = num_of_elements;
-> +       argv4.package.elements = tmp;
-> +
-> +       tmp[arg_idx].integer.type = ACPI_TYPE_INTEGER;
-> +       tmp[arg_idx++].integer.value = num_of_ranges;
-> +       tmp[arg_idx].integer.type = ACPI_TYPE_INTEGER;
-> +       tmp[arg_idx++].integer.value = action;
-
-Why not use 0 and 1 as indices directly above and start arg_idx below at 2?
-
-And why are 2 indices needed in the loop below?  What would be wrong
-with using loop_idx alone and computing arg_idx from it?
-
-> +
-> +       for (loop_idx = 0; loop_idx < ARRAY_SIZE(in->band_list);
-> +            loop_idx++) {
-> +               if (!in->band_list[loop_idx].start ||
-> +                   !in->band_list[loop_idx].end)
-> +                       continue;
-> +
-> +               tmp[arg_idx].integer.type = ACPI_TYPE_INTEGER;
-> +               tmp[arg_idx++].integer.value = in->band_list[loop_idx].start;
-> +               tmp[arg_idx].integer.type = ACPI_TYPE_INTEGER;
-> +               tmp[arg_idx++].integer.value = in->band_list[loop_idx].end;
-> +       }
-> +
-> +       ret = wbrf_dsm(adev, WBRF_RECORD, &argv4);
-
-So this is the only callers of wbrf_dsm() which is a super-simple
-wrapper around acpi_evaluate_dsm().
-
-Could it be folded in here?
-
-> +
-> +       kfree(tmp);
-> +
-> +       return ret;
-> +}
-> +
-> +/**
-> + * acpi_amd_wbrf_add_exclusion - broadcast the frequency band the device
-> + *                               is using
-
-Would it be possible to fit the above into one line of code?
-
-And what does "exclusion" mean here?
-
-Moreover, is the acpi_ prefix really useful?
-
-> + *
-> + * @dev: device pointer
-
-What device does it point to?
-
-> + * @in: input structure containing the frequency band the device is using
-> + *
-> + * Broadcast to other consumers the frequency band the device starts
-> + * to use. Underneath the surface the information is cached into an
-> + * internal buffer first. Then a notification is sent to all those
-> + * registered consumers. So then they can retrieve that buffer to
-> + * know the latest active frequency bands. The benefit with such design
-> + * is for those consumers which have not been registered yet, they can
-> + * still have a chance to retrieve such information later.
-
-This is part of the design description missing from the preamble comment.
-
-Besides, what really happens in this function is that it invokes the
-firmware-provided _DSM to do something and then it calls the
-wbrf_chain_head notifier chain in order to tell the other users of
-this interface about that action.
-
-And it isn't really clear what that action is, because of the missing
-OS-firmware interface description.
-
-> + */
-> +int acpi_amd_wbrf_add_exclusion(struct device *dev,
-> +                               struct wbrf_ranges_in_out *in)
-> +{
-> +       struct acpi_device *adev = ACPI_COMPANION(dev);
-> +       int ret;
-> +
-> +       if (!adev)
-> +               return -ENODEV;
-> +
-> +       ret = wbrf_record(adev, WBRF_RECORD_ADD, in);
-> +       if (ret)
-> +               return ret;
-> +
-> +       blocking_notifier_call_chain(&wbrf_chain_head,
-> +                                    WBRF_CHANGED,
-> +                                    NULL);
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_amd_wbrf_add_exclusion);
-> +
-> +/**
-> + * acpi_amd_wbrf_remove_exclusion - broadcast the frequency band the device
-> + *                                  is no longer using
-> + *
-> + * @dev: device pointer
-> + * @in: input structure containing the frequency band which is not used
-> + *      by the device any more
-> + *
-> + * Broadcast to other consumers the frequency band the device stops
-> + * to use. The stored information paired with this will be dropped
-> + * from the internal buffer. And then a notification is sent to
-> + * all registered consumers.
-> + */
-> +int acpi_amd_wbrf_remove_exclusion(struct device *dev,
-> +                                  struct wbrf_ranges_in_out *in)
-> +{
-> +       struct acpi_device *adev = ACPI_COMPANION(dev);
-> +       int ret;
-> +
-> +       if (!adev)
-> +               return -ENODEV;
-> +
-> +       ret = wbrf_record(adev, WBRF_RECORD_REMOVE, in);
-> +       if (ret)
-> +               return ret;
-> +
-> +       blocking_notifier_call_chain(&wbrf_chain_head,
-> +                                    WBRF_CHANGED,
-> +                                    NULL);
-
-Can you possibly reduce code duplication between this and the previous
-function by combining them into one with an extra "action" argument?
-
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_amd_wbrf_remove_exclusion);
-> +
-> +static bool acpi_amd_wbrf_supported_system(void)
-> +{
-> +       acpi_status status;
-> +       acpi_handle handle;
-> +
-> +       status = acpi_get_handle(NULL, ACPI_AMD_WBRF_METHOD, &handle);
-> +
-> +       return ACPI_SUCCESS(status);
-> +}
-> +
-> +/**
-> + * acpi_amd_wbrf_supported_producer - determine if the WBRF can be enabled
-> + *                                    for the device as a producer
-> + *
-> + * @dev: device pointer
-> + *
-> + * Determine if the platform equipped with necessary implementations to
-
-How does it determine that?
-
-> + * support WBRF for the device as a producer.
-> + */
-> +bool acpi_amd_wbrf_supported_producer(struct device *dev)
-> +{
-> +       struct acpi_device *adev = ACPI_COMPANION(dev);
-> +
-> +       if (!acpi_amd_wbrf_supported_system())
-> +               return false;
-> +
-> +       if (!adev)
-> +               return false;
-> +
-> +       return acpi_check_dsm(adev->handle, &wifi_acpi_dsm_guid,
-> +                             WBRF_REVISION,
-> +                             BIT(WBRF_RECORD));
-
-The WBRF_RECORD _DSM function support is checked here, but what if
-WBRF_RETRIEVE is not supported?
-
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_amd_wbrf_supported_producer);
-> +
-> +static union acpi_object *
-> +acpi_evaluate_wbrf(acpi_handle handle, u64 rev, u64 func)
-> +{
-> +       acpi_status ret;
-> +       struct acpi_buffer buf = {ACPI_ALLOCATE_BUFFER, NULL};
-> +       union acpi_object params[4];
-> +       struct acpi_object_list input = {
-> +               .count = 4,
-> +               .pointer = params,
-> +       };
-> +
-> +       params[0].type = ACPI_TYPE_INTEGER;
-> +       params[0].integer.value = rev;
-> +       params[1].type = ACPI_TYPE_INTEGER;
-> +       params[1].integer.value = func;
-> +       params[2].type = ACPI_TYPE_PACKAGE;
-> +       params[2].package.count = 0;
-> +       params[2].package.elements = NULL;
-> +       params[3].type = ACPI_TYPE_STRING;
-> +       params[3].string.length = 0;
-> +       params[3].string.pointer = NULL;
-> +
-> +       ret = acpi_evaluate_object(handle, "WBRF", &input, &buf);
-
-The WBRF method needs to be described somewhere.
-
-> +       if (ACPI_FAILURE(ret))
-> +               return NULL;
-> +
-> +       return buf.pointer;
-> +}
-> +
-> +static bool check_acpi_wbrf(acpi_handle handle, u64 rev, u64 funcs)
-> +{
-> +       int i;
-> +       u64 mask = 0;
-> +       union acpi_object *obj;
-> +
-> +       if (funcs == 0)
-> +               return false;
-> +
-> +       obj = acpi_evaluate_wbrf(handle, rev, 0);
-> +       if (!obj)
-> +               return false;
-> +
-> +       if (obj->type != ACPI_TYPE_BUFFER)
-> +               return false;
-> +
-> +       /*
-> +        * Bit vector providing supported functions information.
-> +        * Each bit marks support for one specific function of the WBRF method.
-> +        */
-> +       for (i = 0; i < obj->buffer.length && i < 8; i++)
-> +               mask |= (u64)obj->buffer.pointer[i] << i * 8;
-> +
-> +       ACPI_FREE(obj);
-> +
-> +       return mask & BIT(WBRF_ENABLED) && (mask & funcs) == funcs;
-> +}
-> +
-> +/**
-> + * acpi_amd_wbrf_supported_consumer - determine if the WBRF can be enabled
-> + *                                    for the device as a consumer
-> + *
-> + * @dev: device pointer
-> + *
-> + * Determine if the platform equipped with necessary implementations to
-> + * support WBRF for the device as a consumer.
-
-So when is "success" returned?
-
-> + */
-> +bool acpi_amd_wbrf_supported_consumer(struct device *dev)
-> +{
-> +       struct acpi_device *adev = ACPI_COMPANION(dev);
-> +
-> +       if (!acpi_amd_wbrf_supported_system())
-> +               return false;
-> +
-> +       if (!adev)
-> +               return false;
-> +
-> +       return check_acpi_wbrf(adev->handle,
-> +                              WBRF_REVISION,
-> +                              BIT(WBRF_RETRIEVE));
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_amd_wbrf_supported_consumer);
-> +
-> +/**
-> + * acpi_amd_wbrf_retrieve_exclusions - retrieve current active frequency
-> + *                                     bands
-> + *
-> + * @dev: device pointer
-> + * @out: output structure containing all the active frequency bands
-> + *
-> + * Retrieve the current active frequency bands which were broadcasted
-> + * by other producers. The consumer who calls this API should take
-> + * proper actions if any of the frequency band may cause RFI with its
-> + * own frequency band used.
-> + */
-> +int acpi_amd_wbrf_retrieve_exclusions(struct device *dev,
-> +                                     struct wbrf_ranges_in_out *out)
-> +{
-> +       struct acpi_device *adev = ACPI_COMPANION(dev);
-> +       struct amd_wbrf_ranges_out acpi_out = {0};
-> +       union acpi_object *obj;
-> +       int ret = 0;
-> +
-> +       if (!adev)
-> +               return -ENODEV;
-> +
-> +       obj = acpi_evaluate_wbrf(adev->handle,
-> +                                WBRF_REVISION,
-> +                                WBRF_RETRIEVE);
-> +       if (!obj)
-> +               return -EINVAL;
-> +
-> +       /*
-> +        * The return buffer is with variable length and the format below:
-> +        * number_of_entries(1 DWORD):       Number of entries
-> +        * start_freq of 1st entry(1 QWORD): Start frequency of the 1st entry
-> +        * end_freq of 1st entry(1 QWORD):   End frequency of the 1st entry
-> +        * ...
-> +        * ...
-> +        * start_freq of the last entry(1 QWORD)
-> +        * end_freq of the last entry(1 QWORD)
-> +        *
-> +        * Thus the buffer length is determined by the number of entries.
-> +        * - For zero entry scenario, the buffer length will be 4 bytes.
-> +        * - For one entry scenario, the buffer length will be 20 bytes.
-
-This again is part of the (missing) OS-firmware interface description.
-
-> +        */
-> +       if (obj->buffer.length > sizeof(acpi_out) ||
-> +           obj->buffer.length < 4) {
-> +               dev_err(dev, "Wrong sized WBRT information");
-> +               ret = -EINVAL;
-> +               goto out;
-> +       }
-> +       memcpy(&acpi_out, obj->buffer.pointer, obj->buffer.length);
-> +
-> +       out->num_of_ranges = acpi_out.num_of_ranges;
-> +       memcpy(out->band_list, acpi_out.band_list, sizeof(acpi_out.band_list));
-
-I've already asked about this memcpy() which IMO is questionable at least once.
-
-The requirement that the binary format of data in out->band_list be
-the same as the binary format of data in the buffer returned from the
-platform firmware is at best artificial IMO.
-
-> +
-> +out:
-> +       ACPI_FREE(obj);
-> +
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_amd_wbrf_retrieve_exclusions);
-> +
-> +/**
-> + * acpi_amd_wbrf_register_notifier - register for notifications of frequency
-> + *                                   band update
-> + *
-> + * @nb: driver notifier block
-> + *
-> + * The consumer should register itself via this API. So that it can get
-> + * notified timely on the frequency band updates from other producers.
-> + */
-> +int acpi_amd_wbrf_register_notifier(struct notifier_block *nb)
-> +{
-> +       return blocking_notifier_chain_register(&wbrf_chain_head, nb);
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_amd_wbrf_register_notifier);
-> +
-> +/**
-> + * acpi_amd_wbrf_unregister_notifier - unregister for notifications of
-> + *                                     frequency band update
-> + *
-> + * @nb: driver notifier block
-> + *
-> + * The consumer should call this API when it is longer interested with
-> + * the frequency band updates from other producers. Usually, this should
-> + * be performed during driver cleanup.
-> + */
-> +int acpi_amd_wbrf_unregister_notifier(struct notifier_block *nb)
-> +{
-> +       return blocking_notifier_chain_unregister(&wbrf_chain_head, nb);
-> +}
-
-The notifier change needs to be documented.  So far, it is not clear
-who should register to it and why and how they are supposed to respond
-to the notifications.
-
-> +EXPORT_SYMBOL_GPL(acpi_amd_wbrf_unregister_notifier);
-> diff --git a/include/linux/acpi_amd_wbrf.h b/include/linux/acpi_amd_wbrf.h
-> new file mode 100644
-> index 000000000000..c2363d664641
-> --- /dev/null
-> +++ b/include/linux/acpi_amd_wbrf.h
-> @@ -0,0 +1,140 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Wifi Band Exclusion Interface (AMD ACPI Implementation)
-> + * Copyright (C) 2023 Advanced Micro Devices
-> + *
-> + * Due to electrical and mechanical constraints in certain platform designs
-> + * there may be likely interference of relatively high-powered harmonics of
-> + * the (G-)DDR memory clocks with local radio module frequency bands used
-> + * by Wifi 6/6e/7.
-
-And presumably, that interference causes throughput reduction or similar.
-
-> + *
-> + * To mitigate this, AMD has introduced an ACPI based mechanism to support
-> + * WBRF(Wifi Band RFI mitigation Feature) for platforms with AMD dGPU + WLAN.
-> + * This needs support from BIOS equipped with necessary AML implementations
-> + * and dGPU firmwares.
-> + *
-> + * Some general terms:
-> + * Producer: such component who can produce high-powered radio frequency
-
-"such" is unnecessary here and below and I would use "that" instead of "who".
-
-Maybe "Producer: Component that can generate high-frequency radio signal"?
-
-> + * Consumer: such component who can adjust its in-use frequency in
-> + *           response to the radio frequencies of other components to
-> + *           mitigate the possible RFI.
-
-"Consumer: Component that can adjust its radio frequency usage to
-avoid RFI if notified by other components about their RF usage."
-
-> + *
-> + * To make the mechanism function, those producers should notify active use
-> + * of their particular frequencies so that other consumers can make relative
-> + * internal adjustments as necessary to avoid this resonance.
-
-I would say "destructive interference" or similar.
-
-> + */
-> +
-> +#ifndef _ACPI_AMD_WBRF_H
-> +#define _ACPI_AMD_WBRF_H
-> +
-> +#include <linux/device.h>
-> +#include <linux/notifier.h>
-> +
-> +/*
-> + * A wbrf range is defined as a frequency band with start and end
-> + * frequency point specified(in Hz). And a vaild range should have
-> + * its start and end frequency point filled with non-zero values.
-> + * Meanwhile, the maximum number of wbrf ranges is limited as
-> + * `MAX_NUM_OF_WBRF_RANGES`.
-
-I suppose that this means the maximum number of ranges that can be
-used simultaneously in one operation or in one go?
-
-> + */
-> +#define MAX_NUM_OF_WBRF_RANGES         11
-> +
-> +struct exclusion_range {
-> +       u64             start;
-> +       u64             end;
-> +};
-> +
-> +struct wbrf_ranges_in_out {
-> +       u64                     num_of_ranges;
-> +       struct exclusion_range  band_list[MAX_NUM_OF_WBRF_RANGES];
-> +};
-> +
-> +/*
-> + * The notification types for the consumers are defined as below.
-> + * The consumers may need to take different actions in response to
-> + * different notifications.
-
-The above doesn't make sense to me.  There is only one value defined
-below and the action to be carried out upon it is documented below.
-
-Also this means that "WBRF consumers" are expected to register to the
-notifier chain so as to get the notifications telling them to update
-the list of the "active frequency bands" (whatever the last phrase
-means).
-
-> + * WBRF_CHANGED: there was some frequency band updates. The consumers
-> + *               should retrieve the latest active frequency bands.
-> + */
-> +enum wbrf_notifier_actions {
-> +       WBRF_CHANGED,
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_WBRF_AMD_ACPI)
-> +/*
-> + * The expected flow for the producers:
-> + * 1) During probe, call `acpi_amd_wbrf_supported_producer` to check
-> + *    if WBRF can be enabled for the device.
-
-The "During probe" part is redundant here and below.  It obviously
-should be done prior to using any RF, but not necessarily during probe
-AFAICS.
-
-> + * 2) On using some frequency band, call `acpi_amd_wbrf_add_exclusion`
-> + *    to get other consumers properly notified.
-
-What does "other" mean here?
-
-Moreover, this isn't just about consumers IIUC, because the platform
-firmware is involved too.
-
-> + * 3) Or on stopping using some frequency band, call
-> + *    `acpi_amd_wbrf_remove_exclusion` to get other consumers notified.
-> + */
-> +bool acpi_amd_wbrf_supported_producer(struct device *dev);
-> +int acpi_amd_wbrf_remove_exclusion(struct device *dev,
-> +                                  struct wbrf_ranges_in_out *in);
-> +int acpi_amd_wbrf_add_exclusion(struct device *dev,
-> +                               struct wbrf_ranges_in_out *in);
-> +
-> +/*
-> + * The expected flow for the consumers:
-> + * 1) During probe, call `acpi_amd_wbrf_supported_consumer` to check if WBRF
-> + *    can be enabled for the device.
-> + * 2) Call `acpi_amd_wbrf_register_notifier` to register for notification
-> + *    of frequency band change(add or remove) from other producers.
-
-Again, what does "other" mean here?
-
-> + * 3) Call the `acpi_amd_wbrf_retrieve_exclusions` intentionally to retrieve
-
-"intentionally" is redundant.
-
-> + *    current active frequency bands considering some producers may broadcast
-> + *    such information before the consumer is up.
-
-"current active frequency bands in case some producers have registered
-them already".
-
-> + * 4) On receiving a notification for frequency band change, run
-> + *    `acpi_amd_wbrf_retrieve_exclusions` again to retrieve the latest
-> + *    active frequency bands.
-
-"the most recent list of active frequency bands".
-
-> + * 5) During driver cleanup, call `acpi_amd_wbrf_unregister_notifier` to
-> + *    unregister the notifier.
-
-This completely misses the information regarding what the consumers
-are expected to do with the list of "active frequency bands" after
-retrieving it.  Presumably, they are expected to adjust their RF usage
-accordingly, but what if the rate at which that list changes is too
-high for them to react?  Is there any rate limit or similar?
-
-Moreover, does this require any synchronization between different
-producers, for example?  Or is the platform firmware interface
-expected to synchronize them sufficiently?
-
-I can easily imagine a few race condition scenarios with the current
-code in this patch, but I'm not sure if they are really problematic.
-In any case, it would be good to document the mutual exclusion
-requirements here or the lack thereof if none (which should be
-explained).
-
-> + */
-> +bool acpi_amd_wbrf_supported_consumer(struct device *dev);
-> +int acpi_amd_wbrf_retrieve_exclusions(struct device *dev,
-> +                                     struct wbrf_ranges_in_out *out);
-> +int acpi_amd_wbrf_register_notifier(struct notifier_block *nb);
-> +int acpi_amd_wbrf_unregister_notifier(struct notifier_block *nb);
-> +#else
-> +static inline
-> +bool acpi_amd_wbrf_supported_consumer(struct device *dev)
-> +{
-> +       return false;
-> +}
-> +static inline
-> +int acpi_amd_wbrf_remove_exclusion(struct device *dev,
-> +                                  struct wbrf_ranges_in_out *in)
-> +{
-> +       return -ENODEV;
-> +}
-> +static inline
-> +int acpi_amd_wbrf_add_exclusion(struct device *dev,
-> +                               struct wbrf_ranges_in_out *in)
-> +{
-> +       return -ENODEV;
-> +}
-> +static inline
-> +bool acpi_amd_wbrf_supported_producer(struct device *dev)
-> +{
-> +       return false;
-> +}
-> +static inline
-> +int acpi_amd_wbrf_retrieve_exclusions(struct device *dev,
-> +                                     struct wbrf_ranges_in_out *out)
-> +{
-> +       return -ENODEV;
-> +}
-> +static inline
-> +int acpi_amd_wbrf_register_notifier(struct notifier_block *nb)
-> +{
-> +       return -ENODEV;
-> +}
-> +static inline
-> +int acpi_amd_wbrf_unregister_notifier(struct notifier_block *nb)
-> +{
-> +       return -ENODEV;
-> +}
-> +#endif
-> +
-> +#endif /* _ACPI_AMD_WBRF_H */
-> --
-
-Overall, I'm not even sure if drivers/acpi/ is the most suitable place
-for this code.
-
-The fact that it is using an ACPI-based OS-firmware interface by
-itself is not sufficient for that.  x86 platform drivers also use ACPI
-in vendor-specific ways and that by itself doesn't mean that they
-should be located in drivers/acpi/.
+[+to Rafael, probably the logical place to apply this]
+
+On Mon, Sep 18, 2023 at 01:07:45PM +0000, Shiju Jose wrote:
+> >-----Original Message-----
+> >From: Bjorn Helgaas <helgaas@kernel.org>
+> > ...
+
+> >On Sat, Sep 16, 2023 at 01:44:35AM +0800, shiju.jose@huawei.com wrote:
+> >> From: Shiju Jose <shiju.jose@huawei.com>
+> >>
+> >> ghes_handle_aer() lacks synchronization with
+> >> aer_recover_work_func(), so when error status data have multiple
+> >> sections, aer_recover_work_func() may use estatus data for
+> >> aer_capability_regs after it has been overwritten.
+> >>
+> >> The problem statement is here,
+> >> https://lore.kernel.org/all/20230901225755.GA90053@bhelgaas/
+> >>
+> >> In ghes_handle_aer() allocates memory for aer_capability_regs from the
+> >> ghes_estatus_pool and copy data for aer_capability_regs from the
+> >> estatus buffer. Free the memory in aer_recover_work_func() after
+> >> processing the data using the ghes_estatus_pool_region_free() added.
+> >
+> >Thanks for working this up!  I had it on my to-do list, but
+> >obviously had not gotten to it yet.
+> >
+> >> Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> >> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+> >> ---
+> >>  drivers/acpi/apei/ghes.c | 23 ++++++++++++++++++++++-
+> >>  drivers/pci/pcie/aer.c   | 10 ++++++++++
+> >>  include/acpi/ghes.h      |  1 +
+> >>  3 files changed, 33 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c index
+> >> ef59d6ea16da..63ad0541db38 100644
+> >> --- a/drivers/acpi/apei/ghes.c
+> >> +++ b/drivers/acpi/apei/ghes.c
+> >> @@ -209,6 +209,20 @@ int ghes_estatus_pool_init(unsigned int num_ghes)
+> >>  	return -ENOMEM;
+> >>  }
+> >>
+> >> +/**
+> >> + * ghes_estatus_pool_region_free - free previously allocated memory
+> >> + *				   from the ghes_estatus_pool.
+> >> + * @addr: address of memory to free.
+> >> + * @size: size of memory to free.
+> >> + *
+> >> + * Returns none.
+> >> + */
+> >> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size) {
+> >> +	gen_pool_free(ghes_estatus_pool, addr, size); }
+> >> +EXPORT_SYMBOL_GPL(ghes_estatus_pool_region_free);
+> >> +
+> >>  static int map_gen_v2(struct ghes *ghes)  {
+> >>  	return
+> >> apei_map_generic_address(&ghes->generic_v2->read_ack_register);
+> >> @@ -564,6 +578,7 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+> >>  	    pcie_err->validation_bits & CPER_PCIE_VALID_AER_INFO) {
+> >>  		unsigned int devfn;
+> >>  		int aer_severity;
+> >> +		u8 *aer_info;
+> >>
+> >>  		devfn = PCI_DEVFN(pcie_err->device_id.device,
+> >>  				  pcie_err->device_id.function);
+> >> @@ -577,11 +592,17 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+> >>  		if (gdata->flags & CPER_SEC_RESET)
+> >>  			aer_severity = AER_FATAL;
+> >>
+> >> +		aer_info = (void *)gen_pool_alloc(ghes_estatus_pool,
+> >> +						  sizeof(struct aer_capability_regs));
+> >> +		if (!aer_info)
+> >> +			return;
+> >> +		memcpy(aer_info, pcie_err->aer_info, sizeof(struct
+> >> +aer_capability_regs));
+> >
+> >This is a very straightforward approach to fixing this, and it looks pretty
+> >reasonable, although I'd rather not have to pull more GHES stuff into aer.c
+> >(ghes.h and ghes_estatus_pool_region_free()).
+> >
+> >What I had in mind was to put a queue of aer_capability_regs on the PCI side
+> >that could be used by both the APEI path and the native path.
+> >
+> >In the APEI path, platform firmware reads the error information from the
+> >hardware, and it feeds into PCI AER via aer_recover_queue().
+> >
+> >In the native path, Linux should be reading reads the same error information
+> >from the hardware, but it feeds into PCI AER quite differently, via
+> >aer_process_err_devices() and handle_error_source().
+> >
+> >These paths are fundamentally doing the exact same thing, but the data
+> >handling and dmesg logging are needlessly different.  I'd like to see them get a
+> >little more unified, so the native path could someday also feed into
+> >aer_recover_queue().
+> >
+> >Does that make any sense?
+> 
+> Thanks for letting us know.
+> Make sense, solution with in the AER looks better. 
+
+Thanks for considering this.  The AER rework I have in mind is a
+longer-term project, so unless you have time and interest in doing
+that, I think we should apply your patch since it's all ready to go.
+
+You pointed to the problem statement, but I think it would be good to
+include a brief outline directly in the commit log, e.g., something
+like this:
+
+  ghes_handle_aer() passes AER data to the PCI core for logging and
+  recovery by calling aer_recover_queue() with a pointer to struct
+  aer_capability_regs.
+
+  The problem was that aer_recover_queue() queues the pointer directly
+  without copying the aer_capability_regs data.  The pointer was to
+  the ghes->estatus buffer, which could be reused before
+  aer_recover_work_func() reads the data.
+
+  To avoid this problem, allocate a new aer_capability_regs structure
+  from the ghes_estatus_pool, copy the AER data from the ghes->estatus
+  buffer into it, pass a pointer to the new struct to
+  aer_recover_queue(), and free it after aer_recover_work_func() has
+  processed it.
+
+What's your take on this, Rafael?  The biggest change is in
+drivers/acpi, so if you want to take it, feel free to add my:
+
+  Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> >>  		aer_recover_queue(pcie_err->device_id.segment,
+> >>  				  pcie_err->device_id.bus,
+> >>  				  devfn, aer_severity,
+> >>  				  (struct aer_capability_regs *)
+> >> -				  pcie_err->aer_info);
+> >> +				  aer_info);
+> >>  	}
+> >>  #endif
+> >>  }
+> >> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c index
+> >> e85ff946e8c8..388b614c11fd 100644
+> >> --- a/drivers/pci/pcie/aer.c
+> >> +++ b/drivers/pci/pcie/aer.c
+> >> @@ -29,6 +29,7 @@
+> >>  #include <linux/kfifo.h>
+> >>  #include <linux/slab.h>
+> >>  #include <acpi/apei.h>
+> >> +#include <acpi/ghes.h>
+> >>  #include <ras/ras_event.h>
+> >>
+> >>  #include "../pci.h"
+> >> @@ -996,6 +997,15 @@ static void aer_recover_work_func(struct work_struct
+> >*work)
+> >>  			continue;
+> >>  		}
+> >>  		cper_print_aer(pdev, entry.severity, entry.regs);
+> >> +		/*
+> >> +		 * Memory for aer_capability_regs(entry.regs) is being
+> >allocated from the
+> >> +		 * ghes_estatus_pool to protect it from overwriting when
+> >multiple sections
+> >> +		 * are present in the error status. Thus free the same after
+> >processing
+> >> +		 * the data.
+> >> +		 */
+> >> +		ghes_estatus_pool_region_free((unsigned long)entry.regs,
+> >> +					      sizeof(struct aer_capability_regs));
+> >> +
+> >>  		if (entry.severity == AER_NONFATAL)
+> >>  			pcie_do_recovery(pdev, pci_channel_io_normal,
+> >>  					 aer_root_reset);
+> >> diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h index
+> >> 3c8bba9f1114..40d89e161076 100644
+> >> --- a/include/acpi/ghes.h
+> >> +++ b/include/acpi/ghes.h
+> >> @@ -78,6 +78,7 @@ static inline struct list_head
+> >> *ghes_get_devices(void) { return NULL; }  #endif
+> >>
+> >>  int ghes_estatus_pool_init(unsigned int num_ghes);
+> >> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
+> >>
+> >>  static inline int acpi_hest_get_version(struct acpi_hest_generic_data
+> >> *gdata)  {
+> >> --
+> >> 2.34.1
+> >>
+> 
+> Thanks,
+> Shiju
