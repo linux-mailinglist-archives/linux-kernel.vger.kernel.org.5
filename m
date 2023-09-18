@@ -2,201 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 715867A3F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 03:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E46D7A3F4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 03:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236610AbjIRBqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 21:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S237066AbjIRBrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 21:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236526AbjIRBqk (ORCPT
+        with ESMTP id S236526AbjIRBqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 21:46:40 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FBC128
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 18:46:32 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59c2ca01f27so16527047b3.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 18:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695001592; x=1695606392; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GN+ZP7HO00noajf9njN6jgdBrsju6UYYDWypBjncENU=;
-        b=yUJSEtlukS4Fxmd6o4eG1oM8+TdJwX6dHWcaqZaJW7R8nybnrrBCVgu3+3+MjToLno
-         xHpTAti73edNw1W01OATkWCyspBMGOSGcWHkD8HA53lrSdhw9ihgE9H1b1t6/eeD6WHB
-         W8kXD/j8PT1a2nsykKLo6FJrSBownXLfGs78VHitLu3IZhmpHLCjHCx55X1u4QJW8vIk
-         StQPntPO2iTnyzyCHLAg8pLgbb7R3ycj4GompH849L0GB5/Nk7hoHyq41shVr98WqsVq
-         8nyv4L5YC/eW9JkWjTWqMh+ovKtGRgJgjkegM0opxMN/ph/LE6xxY5NkFHu0F+rNwfd1
-         64pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695001592; x=1695606392;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GN+ZP7HO00noajf9njN6jgdBrsju6UYYDWypBjncENU=;
-        b=fTDSCmuGyklNwsjzv+ojRh8MFfp/XyuJpddBEeKxivAbvPrsB+X2dwkysfscFLKtYE
-         WOCUIzG+Bidea0UdK26TGkvToVu0OJKsCd6mQJVXdVpoMQhBUateW2/1vYHCQVT4Ni0s
-         o7pM5WPPSd95FyOrGXohuZscZS44OyFyk7RiSXz34ftA0mcrFsfJE9KZMBYWdJIuqtCf
-         fWpssScq++PfIFhSLCEn8rIgAkjSrdPAJEoQYCgDO676pqQLI35wppsY8KgSwdOrm53x
-         YumS+OEmP3Zg03ruZQNAAJ9WGZCt0qvnI8nZ8NlgivlME8vlZdDPPg0Oem/VABz89JJM
-         yC4A==
-X-Gm-Message-State: AOJu0YzzqML5UPxAwesLhq5+wN0bKtRzV7NZUkV7ff4J1L9Rzfz1L+A5
-        iR02pP6q0o4LbcI1/1KndlIARArddShBJ8CRsXYfug==
-X-Google-Smtp-Source: AGHT+IFyyon2ii0QkHQJw/3KC5VRE/P0uqsTDjykAK8zhw2UPsZAy0HTamPa4+DC6onQOC4lZV/moBMVBprp9PLEc4M=
-X-Received: by 2002:a81:524e:0:b0:59b:fe73:dec1 with SMTP id
- g75-20020a81524e000000b0059bfe73dec1mr7886346ywb.7.1695001591904; Sun, 17 Sep
- 2023 18:46:31 -0700 (PDT)
+        Sun, 17 Sep 2023 21:46:55 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3728A11C;
+        Sun, 17 Sep 2023 18:46:47 -0700 (PDT)
+X-UUID: 0d32ae22f4e74d71922d09c55c7932d4-20230918
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:82219cff-e942-401e-94f1-c94b93bedad2,IP:-5,
+        URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:11
+X-CID-INFO: VERSION:1.1.31,REQID:82219cff-e942-401e-94f1-c94b93bedad2,IP:-5,UR
+        L:0,TC:0,Content:0,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:11
+X-CID-META: VersionHash:0ad78a4,CLOUDID:09a2f1be-14cc-44ca-b657-2d2783296e72,B
+        ulkID:2309180946397W7A7FSK,BulkQuantity:0,Recheck:0,SF:17|19|43|38|24|102,
+        TC:nil,Content:0,EDM:5,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 0d32ae22f4e74d71922d09c55c7932d4-20230918
+X-User: guodongtai@kylinos.cn
+Received: from localhost.localdomain [(39.156.73.14)] by mailgw
+        (envelope-from <guodongtai@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 1701327177; Mon, 18 Sep 2023 09:46:37 +0800
+From:   George Guo <guodongtai@kylinos.cn>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] tcp: enhancing timestamps random algo to address issues arising from NAT mapping
+Date:   Mon, 18 Sep 2023 09:47:52 +0800
+Message-Id: <20230918014752.1791518-1-guodongtai@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230823091757.31311-1-quic_nitirawa@quicinc.com>
- <20230823091757.31311-3-quic_nitirawa@quicinc.com> <24cff590-c71f-4a30-9b80-fa9a0bd27957@linaro.org>
- <c9719d64-33c1-d13e-0ab6-289011282044@quicinc.com> <CAA8EJppYD8Oq_fkOOKf8_x7RdbjBx7XzV_5y4sKE3ZDv_WV9_Q@mail.gmail.com>
- <68e111ba-9a7b-511a-5765-24b491ad201b@quicinc.com>
-In-Reply-To: <68e111ba-9a7b-511a-5765-24b491ad201b@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 18 Sep 2023 04:46:20 +0300
-Message-ID: <CAA8EJpr-E=wASYXnsviLTwYEvkzOCDi-m5Nu8v-yV5=xKP5yEg@mail.gmail.com>
-Subject: Re: [PATCH V3 2/2] phy: qcom-qmp-ufs: Add Phy Configuration support
- for SC7280
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Manish Pandey <quic_mapa@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Sept 2023 at 17:23, Nitin Rawat <quic_nitirawa@quicinc.com> wrote:
->
->
->
-> On 9/16/2023 12:03 AM, Dmitry Baryshkov wrote:
-> > On Fri, 15 Sept 2023 at 19:14, Nitin Rawat <quic_nitirawa@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 9/6/2023 1:34 AM, Dmitry Baryshkov wrote:
-> >>> On 23/08/2023 12:17, Nitin Rawat wrote:
-> >>>> Add SC7280 specific register layout and table configs.
-> >>>>
-> >>>> Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
-> >>>> Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
-> >>>> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> >>>> ---
-> >>>>    drivers/phy/qualcomm/phy-qcom-qmp-ufs.c | 142 ++++++++++++++++++++++++
-> >>>>    1 file changed, 142 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> >>>> b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> >>>> index 3927eba8e468..514fa14df634 100644
-> >>>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> >>>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> >>>
-> >>> [skipped tables programming]
-> >>>
-> >>> 4),
-> >> Sorry I quite didn't get this comment. what exactly is skipped ?Please
-> >> can you help explain?
-> >
-> > I skipped them, as I didn't have comments for them.
-> >
-> >>
-> >>
-> >>>> @@ -888,6 +993,40 @@ static const struct qmp_phy_cfg
-> >>>> sa8775p_ufsphy_cfg = {
-> >>>>        .regs            = ufsphy_v5_regs_layout,
-> >>>>    };
-> >>>>
-> >>>> +static const struct qmp_phy_cfg sc7280_ufsphy_cfg = {
-> >>>> +    .lanes                  = 2,
-> >>>> +
-> >>>> +    .offsets                = &qmp_ufs_offsets,
-> >>>> +
-> >>>> +    .tbls = {
-> >>>> +        .serdes         = sm8150_ufsphy_serdes,
-> >>>> +        .serdes_num     = ARRAY_SIZE(sm8150_ufsphy_serdes),
-> >>>> +        .tx             = sc7280_ufsphy_tx,
-> >>>> +        .tx_num         = ARRAY_SIZE(sc7280_ufsphy_tx),
-> >>>> +        .rx             = sc7280_ufsphy_rx,
-> >>>> +        .rx_num         = ARRAY_SIZE(sc7280_ufsphy_rx),
-> >>>> +        .pcs            = sc7280_ufsphy_pcs,
-> >>>> +        .pcs_num        = ARRAY_SIZE(sc7280_ufsphy_pcs),
-> >>>> +    },
-> >>>> +    .tbls_hs_b = {
-> >>>> +        .serdes         = sm8150_ufsphy_hs_b_serdes,
-> >>>> +        .serdes_num     = ARRAY_SIZE(sm8150_ufsphy_hs_b_serdes),
-> >>>> +    },
-> >>>> +    .tbls_hs_g4 = {
-> >>>> +        .tx             = sm8250_ufsphy_hs_g4_tx,
-> >>>> +        .tx_num         = ARRAY_SIZE(sm8250_ufsphy_hs_g4_tx),
-> >>>> +        .rx             = sc7280_ufsphy_hs_g4_rx,
-> >>>> +        .rx_num         = ARRAY_SIZE(sc7280_ufsphy_hs_g4_rx),
-> >>>> +        .pcs            = sm8150_ufsphy_hs_g4_pcs,
-> >>>> +        .pcs_num        = ARRAY_SIZE(sm8150_ufsphy_hs_g4_pcs),
-> >>>> +    },
-> >>>> +    .clk_list               = sm8450_ufs_phy_clk_l,
-> >>>> +    .num_clks               = ARRAY_SIZE(sm8450_ufs_phy_clk_l),
-> >>>
-> >>> This doesn't correspond to the bindings. This array has 3 enries, while
-> >>> in the bindings you have opted for two clocks for this PHY.
-> >> Sure. I'll update the bindings.
-> >
-> > Are you sure about the third clock? Neither sm8150 nor sm8250 used the
-> > qref clock. Or is that an omission on our side?
-> >
->
-> Hi Dmitry,
->
-> For SC7280 we need all the three clocks for this target. Same is being
-> used in downstream code as well. Hence I would need to update the
-> binding as well.
+Tsval=tsoffset+local_clock, here tsoffset is randomized with saddr and daddr parameters in func
+secure_tcp_ts_off. Most of time it is OK except for NAT mapping to the same port and daddr.
+Consider the following scenario:
+	ns1:                ns2:
+	+-----------+        +-----------+
+	|           |        |           |
+	|           |        |           |
+	|           |        |           |
+	| veth1     |        | vethb     |
+	|192.168.1.1|        |192.168.1.2|
+	+----+------+        +-----+-----+
+	     |                     |
+	     |                     |
+	     | br0:192.168.1.254   |
+	     +----------+----------+
+	 veth0          |     vetha
+	 192.168.1.3    |    192.168.1.4
+	                |
+	               nat(192.168.1.x -->172.30.60.199)
+	                |
+	                V
+	               eth0
+	         172.30.60.199
+	               |
+	               |
+	               +----> ... ...    ---->server: 172.30.60.191
 
-Ack, thanks for the confirmation.
+Let's say ns1 (192.168.1.1) generates a timestamp ts1, and ns2 (192.168.1.2) generates a timestamp
+ts2, with ts1 > ts2.
 
->
-> Thanks,
-> Nitin
->
->
-> >>
-> >>>
-> >>>> +    .vreg_list              = qmp_phy_vreg_l,
-> >>>> +    .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
-> >>>> +    .regs                   = ufsphy_v4_regs_layout,
-> >>>> +};
-> >>>> +
-> >>>>    static const struct qmp_phy_cfg sc8280xp_ufsphy_cfg = {
-> >>>>        .lanes            = 2,
-> >>>>
-> >>>> @@ -1648,6 +1787,9 @@ static const struct of_device_id
-> >>>> qmp_ufs_of_match_table[] = {
-> >>>>        }, {
-> >>>>            .compatible = "qcom,sa8775p-qmp-ufs-phy",
-> >>>>            .data = &sa8775p_ufsphy_cfg,
-> >>>> +    }, {
-> >>>> +        .compatible = "qcom,sc7280-qmp-ufs-phy",
-> >>>> +        .data = &sc7280_ufsphy_cfg,
-> >>>>        }, {
-> >>>>            .compatible = "qcom,sc8180x-qmp-ufs-phy",
-> >>>>            .data = &sm8150_ufsphy_cfg,
-> >>>> --
-> >>>> 2.17.1
-> >>>>
-> >>>
-> >> Thanks,
-> >> Nitin
-> >
-> >
-> >
---
-With best wishes
-Dmitry
+If ns1 initiates a connection to a server, and then the server actively closes the connection,
+entering the TIME_WAIT state, and ns2 attempts to connect to the server while port reuse is in
+progress, due to the presence of NAT, the server sees both connections as originating from the
+same IP address (e.g., 172.30.60.199) and port. However, since ts2 is smaller than ts1, the server
+will respond with the acknowledgment (ACK) for the fourth handshake.
+
+       SERVER                                               	CLIENT
+
+   1.  ESTABLISHED                                          	ESTABLISHED
+
+       (Close)
+   2.  FIN-WAIT-1  --> <SEQ=100><ACK=300><TSval=20><CTL=FIN,ACK>  --> CLOSE-WAIT
+
+   3.  FIN-WAIT-2  <-- <SEQ=300><ACK=101><TSval=40><CTL=ACK>      <-- CLOSE-WAIT
+
+                                                            (Close)
+   4.  TIME-WAIT   <-- <SEQ=300><ACK=101><TSval=41><CTL=FIN,ACK>  <-- LAST-ACK
+
+   5.  TIME-WAIT   --> <SEQ=101><ACK=301><TSval=25><CTL=ACK>      --> CLOSED
+
+  - - - - - - - - - - - - - port reused - - - - - - - - - - - - - - -
+
+   5.1. TIME-WAIT   <-- <SEQ=255><TSval=30><CTL=SYN>             <-- SYN-SENT
+
+   5.2. TIME-WAIT   --> <SEQ=101><ACK=301><TSval=35><CTL=ACK>    --> SYN-SENT
+
+   5.3. CLOSED      <-- <SEQ=301><CTL=RST>             		 <-- SYN-SENT
+
+   6.  SYN-RECV    <-- <SEQ=255><TSval=34><CTL=SYN>              <-- SYN-SENT
+
+   7.  SYN-RECV    --> <SEQ=400><ACK=301><TSval=40><CTL=SYN,ACK> --> ESTABLISHED
+
+   1.  ESTABLISH   <-- <SEQ=301><ACK=401><TSval=55><CTL=ACK>     <-- ESTABLISHED
+
+This enhancement uses sport and daddr rather than saddr and daddr, which keep the timestamp
+monotonically increasing in the situation described above. Then the port reuse is like this:
+
+       SERVER                                               	CLIENT
+
+   1.  ESTABLISHED                                          	ESTABLISHED
+
+       (Close)
+   2.  FIN-WAIT-1  --> <SEQ=100><ACK=300><TSval=20><CTL=FIN,ACK>  --> CLOSE-WAIT
+
+   3.  FIN-WAIT-2  <-- <SEQ=300><ACK=101><TSval=40><CTL=ACK>      <-- CLOSE-WAIT
+
+                                                            (Close)
+   4.  TIME-WAIT   <-- <SEQ=300><ACK=101><TSval=41><CTL=FIN,ACK>  <-- LAST-ACK
+
+   5.  TIME-WAIT   --> <SEQ=101><ACK=301><TSval=25><CTL=ACK>      --> CLOSED
+
+  - - - - - - - - - - - - - port reused - - - - - - - - - - - - - - -
+
+   5.1. TIME-WAIT  <-- <SEQ=300><TSval=50><CTL=SYN>               <-- SYN-SENT
+
+   6.  SYN-RECV    --> <SEQ=400><ACK=301><TSval=40><CTL=SYN,ACK>  --> ESTABLISHED
+
+   1.  ESTABLISH   <-- <SEQ=301><ACK=401><TSval=55><CTL=ACK>      <-- ESTABLISHED
+
+The enhancement lets port reused more efficiently.
+
+Signed-off-by: George Guo <guodongtai@kylinos.cn>
+---
+ include/net/secure_seq.h | 2 +-
+ net/core/secure_seq.c    | 4 ++--
+ net/ipv4/syncookies.c    | 4 ++--
+ net/ipv4/tcp_ipv4.c      | 6 ++++--
+ 4 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/secure_seq.h b/include/net/secure_seq.h
+index 21e7fa2a1813..40fb53520aa4 100644
+--- a/include/net/secure_seq.h
++++ b/include/net/secure_seq.h
+@@ -11,7 +11,7 @@ u64 secure_ipv6_port_ephemeral(const __be32 *saddr, const __be32 *daddr,
+ 			       __be16 dport);
+ u32 secure_tcp_seq(__be32 saddr, __be32 daddr,
+ 		   __be16 sport, __be16 dport);
+-u32 secure_tcp_ts_off(const struct net *net, __be32 saddr, __be32 daddr);
++u32 secure_tcp_ts_off(const struct net *net, __be16 sport, __be32 daddr);
+ u32 secure_tcpv6_seq(const __be32 *saddr, const __be32 *daddr,
+ 		     __be16 sport, __be16 dport);
+ u32 secure_tcpv6_ts_off(const struct net *net,
+diff --git a/net/core/secure_seq.c b/net/core/secure_seq.c
+index b0ff6153be62..575b6afe39a4 100644
+--- a/net/core/secure_seq.c
++++ b/net/core/secure_seq.c
+@@ -118,13 +118,13 @@ EXPORT_SYMBOL(secure_ipv6_port_ephemeral);
+ #endif
+ 
+ #ifdef CONFIG_INET
+-u32 secure_tcp_ts_off(const struct net *net, __be32 saddr, __be32 daddr)
++u32 secure_tcp_ts_off(const struct net *net, __be16 sport, __be32 daddr)
+ {
+ 	if (READ_ONCE(net->ipv4.sysctl_tcp_timestamps) != 1)
+ 		return 0;
+ 
+ 	ts_secret_init();
+-	return siphash_2u32((__force u32)saddr, (__force u32)daddr,
++	return siphash_2u32((__force u32)sport, (__force u32)daddr,
+ 			    &ts_secret);
+ }
+ 
+diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+index dc478a0574cb..df1757ff5956 100644
+--- a/net/ipv4/syncookies.c
++++ b/net/ipv4/syncookies.c
+@@ -360,8 +360,8 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+ 
+ 	if (tcp_opt.saw_tstamp && tcp_opt.rcv_tsecr) {
+ 		tsoff = secure_tcp_ts_off(sock_net(sk),
+-					  ip_hdr(skb)->daddr,
+-					  ip_hdr(skb)->saddr);
++					  th->source,
++					  ip_hdr(skb)->daddr);
+ 		tcp_opt.rcv_tsecr -= tsoff;
+ 	}
+ 
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 27140e5cdc06..acad4b14ecf7 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -104,7 +104,9 @@ static u32 tcp_v4_init_seq(const struct sk_buff *skb)
+ 
+ static u32 tcp_v4_init_ts_off(const struct net *net, const struct sk_buff *skb)
+ {
+-	return secure_tcp_ts_off(net, ip_hdr(skb)->daddr, ip_hdr(skb)->saddr);
++	const struct tcphdr *th = tcp_hdr(skb);
++
++	return secure_tcp_ts_off(net, th->source, ip_hdr(skb)->daddr);
+ }
+ 
+ int tcp_twsk_unique(struct sock *sk, struct sock *sktw, void *twp)
+@@ -309,7 +311,7 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+ 						  inet->inet_sport,
+ 						  usin->sin_port));
+ 		WRITE_ONCE(tp->tsoffset,
+-			   secure_tcp_ts_off(net, inet->inet_saddr,
++			   secure_tcp_ts_off(net, inet->inet_sport,
+ 					     inet->inet_daddr));
+ 	}
+ 
+-- 
+2.34.1
+
