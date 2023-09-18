@@ -2,103 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 181777A522B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BE57A5234
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjIRSkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 14:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
+        id S229746AbjIRSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 14:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjIRSke (ORCPT
+        with ESMTP id S229777AbjIRSlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 14:40:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7DFF7;
-        Mon, 18 Sep 2023 11:40:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F7AC433C9;
-        Mon, 18 Sep 2023 18:40:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695062427;
-        bh=ohRJW2WpMAFgJxA1JBZsN3B28gEviJ+HU0xdzWwTN+o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hwvYjQdtjC+c5KTGzQRn+2rim3mcWRXiI89lVvDYEQQfvxncUA3YIWgBcyKPJOKEM
-         yZDeCufA/vTDVJOPpGvulb3N0LdWMlDgDptvPL4Ou8eMp5b4LIxerpjfZHH4SZksjS
-         zv1qD3GmW0gNstrldOF5I4Zq0QpL7YFEuPIBNJQWdfZH2cL/lP9md1qzLneGr+GY/K
-         RCfI3VBnp5otoEjMfVKRugCvn9NyI0b6W7tpLLRCipeCvEuYkgd855V/X3DKgZOfWv
-         KMAedyFaVL73ZJ/DAGVkR+3U9InmBl5sz9mn/+Uj78kxI9sOjkfJKe/HxYlvIKaItw
-         WIhEzXiMKBpZQ==
-Received: (nullmailer pid 1492209 invoked by uid 1000);
-        Mon, 18 Sep 2023 18:40:16 -0000
-Date:   Mon, 18 Sep 2023 13:40:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        George McCollister <george.mccollister@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Marek Vasut <marex@denx.de>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Crispin <john@phrozen.org>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH net-next v2 08/10] dt-bindings: net: dsa: marvell:
- convert to json-schema
-Message-ID: <20230918184016.GB1464506-robh@kernel.org>
-References: <20230916110902.234273-1-arinc.unal@arinc9.com>
- <20230916110902.234273-9-arinc.unal@arinc9.com>
+        Mon, 18 Sep 2023 14:41:52 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEEC10E
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 11:41:44 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50305abe5f0so3417245e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 11:41:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695062502; x=1695667302; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZQ+q0T8YrB094CXnsCagarFzPUdIifnZ/onZKcaHCnQ=;
+        b=glACbFBOKogNGkaDdj1L/41sjOX8RXDLQe8O+h7xjd2Y7MaywaxC03l1Gnp7593FMI
+         tyd4m4Um1M6RRzg7kQV6v7Oavj/UYRAo+qj3jaxpREsKVryy7Dx+24HnTobZQ59Jak9B
+         rXh3ncf8FhIDgMcSDQ4FrksG0MgdOaUDymWTi55WxDg3DVEAApq2rhExNBLzoiCC7lZE
+         bjQO3uy35Vookei5rg2/IZ+zmXFtDxr8UAscOhheWGgMDN1bLifQl4SZLMl79uw1VLwc
+         49qZU1VRrAvz5uPpQAxCKXEbEKxFfKHyUWqqqI4auMZyJGeZMT3qgkdBly6uVuFppgGY
+         YLRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695062502; x=1695667302;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZQ+q0T8YrB094CXnsCagarFzPUdIifnZ/onZKcaHCnQ=;
+        b=WyfRFQBta3hKzWcR84rvjvboFePrxl4Heih+NVGGQ80/zUJKyQ57ZWT8nZnxTputZy
+         9Cy6KEfa3LKAA85cNpszFuKfvrM9u8uiDhpydAWQ3bzW2RwQPFzhJQfNncbJeB9eZ5Zy
+         iukcTO2dC/8XsXwbp+bcZCwhoxPMtNL5X/2l+IC1gNQX9XqLjU4s5gwrZOr1wo6jeAZH
+         yT7YCMHdD8UCbuslAqQLjQcTonKtn/+BqUQj9SlX7ZmXHOBTJL3t9soqHbD0T0hgtFVp
+         ftVmkW4SSxPM2EUGytKdPNVs1586JUaONq9YqRM4H0yfoQxz/nfyC3B6hxESVxXQnoMX
+         K00Q==
+X-Gm-Message-State: AOJu0YzJDTX1jw954sJ77rMepUul6oTnf8Ufh6k19kh/mdb6fsQZ38CU
+        cbC19eCVuiVDwW6frqFdpAY=
+X-Google-Smtp-Source: AGHT+IHLtiI9VDh5PLrhIug65vRa9BduPqazf9acxvIyB4BB19xYEOugYKMu+oHeEV1GhgdqoFaMug==
+X-Received: by 2002:a19:ca46:0:b0:500:8723:e457 with SMTP id h6-20020a19ca46000000b005008723e457mr7081720lfj.30.1695062501967;
+        Mon, 18 Sep 2023 11:41:41 -0700 (PDT)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id oq8-20020a170906cc8800b0099bc08862b6sm6952075ejb.171.2023.09.18.11.41.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 11:41:41 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [RESEND PATCH v3] locking/lockref/x86: Enable ARCH_USE_CMPXCHG_LOCKREF for X86_CMPXCHG64
+Date:   Mon, 18 Sep 2023 20:40:27 +0200
+Message-ID: <20230918184050.9180-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230916110902.234273-9-arinc.unal@arinc9.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,254 +73,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 02:09:00PM +0300, Arınç ÜNAL wrote:
-> Convert the document for Marvell ethernet switches to json-schema.
-> 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> ---
->  .../devicetree/bindings/net/dsa/marvell.txt   | 109 ----------
->  .../devicetree/bindings/net/dsa/marvell.yaml  | 204 ++++++++++++++++++
->  2 files changed, 204 insertions(+), 109 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/dsa/marvell.txt
->  create mode 100644 Documentation/devicetree/bindings/net/dsa/marvell.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/dsa/marvell.txt b/Documentation/devicetree/bindings/net/dsa/marvell.txt
-> deleted file mode 100644
-> index 6ec0c181b6db..000000000000
-> --- a/Documentation/devicetree/bindings/net/dsa/marvell.txt
-> +++ /dev/null
-> @@ -1,109 +0,0 @@
-> -Marvell DSA Switch Device Tree Bindings
-> ----------------------------------------
-> -
-> -WARNING: This binding is currently unstable. Do not program it into a
-> -FLASH never to be changed again. Once this binding is stable, this
-> -warning will be removed.
-> -
-> -If you need a stable binding, use the old dsa.txt binding.
-> -
-> -Marvell Switches are MDIO devices. The following properties should be
-> -placed as a child node of an mdio device.
-> -
-> -The properties described here are those specific to Marvell devices.
-> -Additional required and optional properties can be found in dsa.txt.
-> -
-> -The compatibility string is used only to find an identification register,
-> -which is at a different MDIO base address in different switch families.
-> -- "marvell,mv88e6085"	: Switch has base address 0x10. Use with models:
-> -			  6085, 6095, 6097, 6123, 6131, 6141, 6161, 6165,
-> -			  6171, 6172, 6175, 6176, 6185, 6240, 6320, 6321,
-> -			  6341, 6350, 6351, 6352
-> -- "marvell,mv88e6190"	: Switch has base address 0x00. Use with models:
-> -			  6190, 6190X, 6191, 6290, 6361, 6390, 6390X
-> -- "marvell,mv88e6250"	: Switch has base address 0x08 or 0x18. Use with model:
-> -			  6220, 6250
-> -
-> -Required properties:
-> -- compatible		: Should be one of "marvell,mv88e6085",
-> -			  "marvell,mv88e6190" or "marvell,mv88e6250" as
-> -			  indicated above
-> -- reg			: Address on the MII bus for the switch.
-> -
-> -Optional properties:
-> -
-> -- reset-gpios		: Should be a gpio specifier for a reset line
-> -- interrupts		: Interrupt from the switch
-> -- interrupt-controller	: Indicates the switch is itself an interrupt
-> -			  controller. This is used for the PHY interrupts.
-> -#interrupt-cells = <2>	: Controller uses two cells, number and flag
-> -- eeprom-length		: Set to the length of an EEPROM connected to the
-> -			  switch. Must be set if the switch can not detect
-> -			  the presence and/or size of a connected EEPROM,
-> -			  otherwise optional.
-> -- mdio			: Container of PHY and devices on the switches MDIO
-> -			  bus.
-> -- mdio?		: Container of PHYs and devices on the external MDIO
-> -			  bus. The node must contains a compatible string of
-> -			  "marvell,mv88e6xxx-mdio-external"
-> -
-> -Example:
-> -
-> -	mdio {
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -		interrupt-parent = <&gpio0>;
-> -		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
-> -		interrupt-controller;
-> -		#interrupt-cells = <2>;
-> -
-> -		switch0: switch@0 {
-> -			compatible = "marvell,mv88e6085";
-> -			reg = <0>;
-> -			reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
-> -
-> -			mdio {
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> -				switch1phy0: switch1phy0@0 {
-> -					reg = <0>;
-> -					interrupt-parent = <&switch0>;
-> -					interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-> -				};
-> -			};
-> -		};
-> -	};
-> -
-> -	mdio {
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -		interrupt-parent = <&gpio0>;
-> -		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
-> -		interrupt-controller;
-> -		#interrupt-cells = <2>;
-> -
-> -		switch0: switch@0 {
-> -			compatible = "marvell,mv88e6190";
-> -			reg = <0>;
-> -			reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
-> -
-> -			mdio {
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> -				switch1phy0: switch1phy0@0 {
-> -					reg = <0>;
-> -					interrupt-parent = <&switch0>;
-> -					interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-> -				};
-> -			};
-> -
-> -			mdio1 {
-> -				compatible = "marvell,mv88e6xxx-mdio-external";
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> -				switch1phy9: switch1phy0@9 {
-> -					reg = <9>;
-> -				};
-> -			};
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/net/dsa/marvell.yaml b/Documentation/devicetree/bindings/net/dsa/marvell.yaml
-> new file mode 100644
-> index 000000000000..45756b8d74d9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/dsa/marvell.yaml
-> @@ -0,0 +1,204 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/dsa/marvell.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Marvell Ethernet Switches
-> +
-> +$ref: dsa.yaml#/$defs/ethernet-ports
-> +
-> +maintainers:
-> +  - Andrew Lunn <andrew@lunn.ch>
-> +  - Arınç ÜNAL <arinc.unal@arinc9.com>
-> +
-> +description:
-> +  Marvell ethernet switches are MDIO devices.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - description: |
-> +          Switch has base address 0x10. Use with models:
-> +          6085, 6095, 6097, 6123, 6131, 6141, 6161, 6165, 6171, 6172, 6175,
-> +          6176, 6185, 6240, 6320, 6321, 6341, 6350, 6351, 6352
-> +        const: marvell,mv88e6085
-> +
-> +      - description: |
-> +          Switch has base address 0x00. Use with models:
-> +          6190, 6190X, 6191, 6290, 6361, 6390, 6390X
-> +        const: marvell,mv88e6190
-> +
-> +      - description: |
-> +          Switch has base address 0x08 or 0x18. Use with models:
-> +          6220, 6250
-> +        const: marvell,mv88e6250
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    description: GPIO to be used to reset the whole device
-> +    maxItems: 1
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +
-> +  interrupt-controller: true
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  eeprom-length:
-> +    description:
-> +      Set to the length of an EEPROM connected to the switch. Must be set if the
-> +      switch can not detect the presence and/or size of a connected EEPROM,
-> +      otherwise optional.
-> +
-> +  mdio:
-> +    description:
-> +      The optional node for the MDIO bus of the switch. The bus will be
-> +      registered non-OF-based if this is not defined.
+Commit bc08b449ee14ace4d869adaa1bb35a44ce68d775 enabled lockless
+reference count updates using cmpxchg() only for x86_64 and
+left x86_32 behind due to inability to detect support for
+cmpxchg8b instruction. Nowadays, we can use CONFIG_X86_CMPXCHG64
+for this purpose. Also, by using try_cmpxchg64() instead of cmpxchg64()
+in CMPXCHG_LOOP macro, the compiler actually produces sane code,
+improving lockref_get_not_zero main loop from:
 
-That's a detail of the OS behavior.
+  eb:	8d 48 01             	lea    0x1(%eax),%ecx
+  ee:	85 c0                	test   %eax,%eax
+  f0:	7e 2f                	jle    121 <lockref_get_not_zero+0x71>
+  f2:	8b 44 24 10          	mov    0x10(%esp),%eax
+  f6:	8b 54 24 14          	mov    0x14(%esp),%edx
+  fa:	8b 74 24 08          	mov    0x8(%esp),%esi
+  fe:	f0 0f c7 0e          	lock cmpxchg8b (%esi)
+ 102:	8b 7c 24 14          	mov    0x14(%esp),%edi
+ 106:	89 c1                	mov    %eax,%ecx
+ 108:	89 c3                	mov    %eax,%ebx
+ 10a:	8b 74 24 10          	mov    0x10(%esp),%esi
+ 10e:	89 d0                	mov    %edx,%eax
+ 110:	31 fa                	xor    %edi,%edx
+ 112:	31 ce                	xor    %ecx,%esi
+ 114:	09 f2                	or     %esi,%edx
+ 116:	75 58                	jne    170 <lockref_get_not_zero+0xc0>
 
-> +    $ref: /schemas/net/mdio.yaml#
+to:
 
-       unevaluatedProperties: false
+ 350:	8d 4f 01             	lea    0x1(%edi),%ecx
+ 353:	85 ff                	test   %edi,%edi
+ 355:	7e 79                	jle    3d0 <lockref_get_not_zero+0xb0>
+ 357:	f0 0f c7 0e          	lock cmpxchg8b (%esi)
+ 35b:	75 53                	jne    3b0 <lockref_get_not_zero+0x90>
 
-> +
-> +  mdio-external:
-> +    description: The externally reachable MDIO bus of the 6390 family switches
-> +    $ref: /schemas/net/mdio.yaml#
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+v3:
+ - Update commit message to refer to lockref_get_not_zero
+   instead of removed lockref_get_or_lock
+v2:
+ - select ARCH_USE_CMPXCHG_LOCKREF for CONFIG_X86_CMPXCHG which
+   is unconditionally defined for X86_64
+---
+ arch/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-       unevaluatedProperties: false
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 66bfabae8814..1379603016fd 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -28,7 +28,6 @@ config X86_64
+ 	select ARCH_HAS_GIGANTIC_PAGE
+ 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
+ 	select ARCH_SUPPORTS_PER_VMA_LOCK
+-	select ARCH_USE_CMPXCHG_LOCKREF
+ 	select HAVE_ARCH_SOFT_DIRTY
+ 	select MODULES_USE_ELF_RELA
+ 	select NEED_DMA_MAP_STATE
+@@ -118,6 +117,7 @@ config X86
+ 	select ARCH_SUPPORTS_LTO_CLANG
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN
+ 	select ARCH_USE_BUILTIN_BSWAP
++	select ARCH_USE_CMPXCHG_LOCKREF		if X86_CMPXCHG64
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+-- 
+2.41.0
 
-> +
-> +    properties:
-> +      compatible:
-> +        const: marvell,mv88e6xxx-mdio-external
-> +
-> +    required:
-> +      - compatible
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - marvell,mv88e6085
-> +            - marvell,mv88e6250
-> +    then:
-> +      properties:
-> +        mdio-external: false
-> +
-> +  - if:
-> +      required: [ mdio ]
-> +    then:
-> +      patternProperties:
-> +        "^(ethernet-)?ports$":
-> +          patternProperties:
-> +            "^(ethernet-)?port@[0-9]+$":
-> +              $ref: /schemas/net/ethernet-controller.yaml#/$defs/phylink
-
-This probably doesn't work right. The problem is every node ultimately 
-needs a single schema with all possible properties in order to not allow 
-undefined properties. This is the reason for the complexity with a $ref 
-at each level in schemas for these nodes.
-
-I'm not sure it is worth the complexity to enforce what you want here. 
-It may be easier to just always allow phylink properties in 
-ethernet-port nodes.  
-
-As this is a switch, it should be referencing ethernet-switch.yaml. 
-
-Rob
