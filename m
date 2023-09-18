@@ -2,114 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E64D87A49DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0DE7A49E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241278AbjIRMkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40138 "EHLO
+        id S241272AbjIRMl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241553AbjIRMkI (ORCPT
+        with ESMTP id S241508AbjIRMlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:40:08 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE40A4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:40:02 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-773b18cf900so105791685a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:40:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695040801; x=1695645601; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zj7R4MqD+4gW8A6fnkAfuuqO+18Hs8aMyw+H+x1HxN8=;
-        b=crUc0EzLroJkQbVFBOsItsYr1HLQD2riaD0qtvyV+7Zqi/pGMSC50Hsfj/KB4WehRQ
-         TaLdd2ipYy3jXqy/atoREGecG7XAQc/SR5W+cycMqkHdKIOWzkMJDFCGNtkktEIWjz0X
-         0xu5Oz08bGvSqDF5KFzD2kUCD0TuNhQiRarz/30jep3Btc3K7LrAuZFGbbglBBiiYU9W
-         z/ltJ5i7TFtPr7AHfW7ucDun9t2jeDONuhxTFmtVDPs9qmtw6W82HuZGFfZprxKsHbWz
-         gYwKaBwlQnqZJaPeJ4GebKDnLTSyc6ACe5QLgvPi4TWPJPm1QLhglIF5YS1FlsqNZzV4
-         Ormg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695040801; x=1695645601;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zj7R4MqD+4gW8A6fnkAfuuqO+18Hs8aMyw+H+x1HxN8=;
-        b=PBiByyIY3kzf/Fg8QITpDBOPIt7FcFxje46Ru4oRJ8kAy1OP/GJd8gn/QDbxKFb8Bw
-         BV6+UIgGr//mUIZxqLQ1dxh2UeS8fghS+QwwfruJMdqqB8zegnPZ+5RKXSlTjVKNTHWy
-         AhmvrNrUZbjmFdNH851XdEWEhrBSFXHe+kMzqSbT+96kTpGL8xj82lHFb+ti804h3kBp
-         phdnkmHvRscKDPyd0BaU0sc+oR+wrlMEGDh+C+1awwaNXZ6SCGezm+GnX+xLxJQ9C52D
-         nQIH8ExXAqT7JP486xKuEqt6ceHZebqbhqsPY3CNe/sZfa0YnEwF0SbrfyI92gqrH1G0
-         osJA==
-X-Gm-Message-State: AOJu0YzrHAlKtxF29hbVgMbnAq3Ndbr6RrI9cxk1bXPowdS2zyOUntne
-        nfaZ1OVp4J3Q7ABuoM2T9LNkgg==
-X-Google-Smtp-Source: AGHT+IEcv0qE4M4jo2rCl851+S9CmbO6Vad2hVtKFtek2cuEzQB+x2yvhvfhgkJNlojCYZZBbQ7Ybg==
-X-Received: by 2002:a05:620a:2944:b0:76f:5b9:3f29 with SMTP id n4-20020a05620a294400b0076f05b93f29mr11358576qkp.2.1695040801514;
-        Mon, 18 Sep 2023 05:40:01 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id v5-20020ae9e305000000b0076d9e298928sm3094857qkf.66.2023.09.18.05.40.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 05:40:01 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qiDXk-0004AT-Au;
-        Mon, 18 Sep 2023 09:40:00 -0300
-Date:   Mon, 18 Sep 2023 09:40:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        oushixiong <oushixiong@kylinos.cn>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vfio/pds: Use proper PF device access helper
-Message-ID: <20230918124000.GB13795@ziepe.ca>
-References: <20230914021332.1929155-1-oushixiong@kylinos.cn>
- <20230915125858.72b75a16.alex.williamson@redhat.com>
- <BN9PR11MB527624CEBA0B039CD62A8F428CF5A@BN9PR11MB5276.namprd11.prod.outlook.com>
+        Mon, 18 Sep 2023 08:41:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842D99F;
+        Mon, 18 Sep 2023 05:40:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 28CDF21AF1;
+        Mon, 18 Sep 2023 12:40:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695040851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8PyckDZtdsyTzA12Zn8yCDPNj9kUjNSxcwu4VJCzOpc=;
+        b=M/nkjFwzlaN3Bx1VXDNquDbMrquQCs7wxBxkQ2sGuZpXyy1FuatKczd+muS1L05n0zsCqh
+        sbzRiRk2TqIE4elQSbTGS473tS+8uEt7ktkSRRvzwssr+CuaCh9EXi4/d5WdXKUInyeshb
+        APstRO74+xgHMc/3/SaS2V55ZHK8fsk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695040851;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8PyckDZtdsyTzA12Zn8yCDPNj9kUjNSxcwu4VJCzOpc=;
+        b=NQ5a8tuetI5wGy9y9UIiwXLrfESWXimg6EkL9op1vGdMcmReuEAPEOj7xTPh+w686IBPHg
+        mahqySc7i5wm0DDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1990A1358A;
+        Mon, 18 Sep 2023 12:40:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nAQ1BlNFCGXhfQAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 12:40:51 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 95866A0759; Mon, 18 Sep 2023 14:40:50 +0200 (CEST)
+Date:   Mon, 18 Sep 2023 14:40:50 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Max Kellermann <max.kellermann@ionos.com>
+Cc:     jack@suse.cz, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amir73il@gmail.com
+Subject: Re: [PATCH 3/4] inotify_user: add system call inotify_add_watch_at()
+Message-ID: <20230918124050.hzbgpci42illkcec@quack3>
+References: <20230918123217.932179-1-max.kellermann@ionos.com>
+ <20230918123217.932179-3-max.kellermann@ionos.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BN9PR11MB527624CEBA0B039CD62A8F428CF5A@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230918123217.932179-3-max.kellermann@ionos.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 09:53:29AM +0000, Tian, Kevin wrote:
-> > From: Alex Williamson <alex.williamson@redhat.com>
-> > Sent: Saturday, September 16, 2023 2:59 AM
-> > 
-> > On Thu, 14 Sep 2023 10:13:32 +0800
-> > oushixiong <oushixiong@kylinos.cn> wrote:
-> > 
-> > > From: Shixiong Ou <oushixiong@kylinos.cn>
-> > >
-> > > The pci_physfn() helper exists to support cases where the physfn
-> > > field may not be compiled into the pci_dev structure. We've
-> > > declared this driver dependent on PCI_IOV to avoid this problem,
-> > > but regardless we should follow the precedent not to access this
-> > > field directly.
-> > >
-> > > Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
-> > > ---
-> > >
-> > > This patch changes the subject line and commit log, and the previous
-> > > patch's links is:
-> > >
-> > 	https://patchwork.kernel.org/project/kvm/patch/20230911080828.6
-> > 35184-1-oushixiong@kylinos.cn/
-> > 
-> > Kevin & Jason,
-> > 
-> > I assume your R-b's apply to this version as well.  Thanks,
-> > 
+On Mon 18-09-23 14:32:16, Max Kellermann wrote:
+> This implements a missing piece in the inotify API: referring to a
+> file by a directory file descriptor and a path name.  This can be
+> solved in userspace currently only by doing something similar to:
 > 
-> yes.
+>   int old = open(".");
+>   fchdir(dfd);
+>   inotify_add_watch(....);
+>   fchdir(old);
+> 
+> Support for LOOKUP_EMPTY is still missing.  We could add another IN_*
+> flag for that (which would clutter the IN_* flags list further) or
+> add a "flags" parameter to the new system call (which would however
+> duplicate features already present via special IN_* flags).
+> 
+> To: Jan Kara <jack@suse.cz>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> To: linux-fsdevel@vger.kernel.org
+> To: linux-kernel@vger.kernel.org
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 
-yes
+Thanks for the patches! But generally we don't add new functionality to the
+inotify API and rather steer users towards fanotify. In this particular
+case fanotify_mark(2) already has the support for dirfd + name. Is there
+any problem with using fanotify for you? Note that since kernel 5.13 you
+don't need CAP_SYS_ADMIN capability for fanotify functionality that is
+more-or-less equivalent to what inotify provides.
+
+								Honza
+
+> ---
+>  fs/notify/inotify/inotify_user.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> index b6e6f6ab21f8..8a9096c5ebb1 100644
+> --- a/fs/notify/inotify/inotify_user.c
+> +++ b/fs/notify/inotify/inotify_user.c
+> @@ -797,6 +797,12 @@ SYSCALL_DEFINE3(inotify_add_watch, int, fd, const char __user *, pathname,
+>  	return do_inotify_add_watch(fd, AT_FDCWD, pathname, mask);
+>  }
+>  
+> +SYSCALL_DEFINE4(inotify_add_watch_at, int, fd, int, dfd, const char __user *, pathname,
+> +		u32, mask)
+> +{
+> +	return do_inotify_add_watch(fd, dfd, pathname, mask);
+> +}
+> +
+>  SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
+>  {
+>  	struct fsnotify_group *group;
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
