@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 704037A532C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1276A7A532E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 21:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbjIRTjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 15:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
+        id S229617AbjIRTjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 15:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjIRTjV (ORCPT
+        with ESMTP id S229477AbjIRTjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 15:39:21 -0400
+        Mon, 18 Sep 2023 15:39:46 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC283109;
-        Mon, 18 Sep 2023 12:39:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D4B4C433C9;
-        Mon, 18 Sep 2023 19:39:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91731101;
+        Mon, 18 Sep 2023 12:39:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13B6C433C9;
+        Mon, 18 Sep 2023 19:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695065955;
-        bh=MYLjauQjUNrziNJesoyG56GkzOngzUfwuVsg4uLhDPI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ldS5Vrqt10ANiv7CRtlv8OWAbxjZAbr2jQoAK1U/2bEAltPy3Ya/7ueilB1o0ORRr
-         lDrFXXPrRwSj/IIjQih8dI3OptEqKRPQXSRiIEnFdNxvkKWDMP+m5VXxgE9EKkWsAw
-         vaWVhkDCG3CtDT4yHexV8pyuu5v8f9+e4XQYlrOa/ur4anhGnb6YiFvrx0NKzuz+RN
-         C2G9DudfC5tNyNlgEPfuYL1bT2ydNTbJxwkHvbbKdAxgiT8gPZuf1N2yC9mPsOa4Bo
-         Sj9wpjI9+604TvjWgU4k8cVt1Ae9o7Sum1jTCEeRtyBTWErpPjmE8lHq3NYwZcDXT0
-         rQVNfDvE+ni3Q==
-Date:   Mon, 18 Sep 2023 14:39:13 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Xi Ruoyao <xry111@xry111.site>
-Cc:     Grant Grundler <grundler@chromium.org>, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mahesh@linux.ibm.com,
-        oohall@gmail.com, rajat.khandelwal@linux.intel.com,
-        rajatja@chromium.org
-Subject: Re: [PATCHv3 pci-next 1/2] PCI/AER: correctable error message as
- KERN_INFO
-Message-ID: <20230918193913.GA203601@bhelgaas>
+        s=k20201202; t=1695065981;
+        bh=hR/nLlP8z29UKnEn3m5fjx9kJXqIXzhgNBoFQGa+RFo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=IQfVRv7jHDsn4cdMac4PvP2FVTTYv8ZRlbnK3UvnbA+lIGAfWaFw5N2aB/0GoZspF
+         a8z5wOhp5uLxQLqyG7jzj3YiKe342Cz8fpJVv37j4D7YT/vtdSZcv0QtObuGbgAYo5
+         RmRXzzSC71HXN5PkIgqJ50uRIlIGxWjSaaLXPMGSp4Kqj/H96L9JAcWB478G43zFTS
+         aiI/41M9M88gpQjqp45WPPhBCGz0WkuYPr5F/SvwthF9FQWIkUYW7CBIWe24+FAHtw
+         O8noAbCM7XCdhLe30I1q5e6MTV86JXtKOZYGXjgfv+hrZYs5w1EUEvy9ZhyEw8rsa+
+         Ga0LAePE+n/+w==
+Message-ID: <e321d3cfaa5facdc8f167d42d9f3cec9246f40e4.camel@kernel.org>
+Subject: Re: [GIT PULL] timestamp fixes
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 18 Sep 2023 15:39:39 -0400
+In-Reply-To: <CAHk-=wiTNktN1k+D-3uJ-jGOMw8nxf45xSHHf8TzpjKj6HaYqQ@mail.gmail.com>
+References: <20230918-hirte-neuzugang-4c2324e7bae3@brauner>
+         <CAHk-=wiTNktN1k+D-3uJ-jGOMw8nxf45xSHHf8TzpjKj6HaYqQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c3f9a2ee7f9effe7cf9d1077652e85de0eae66c.camel@xry111.site>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -51,19 +50,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 07:42:30PM +0800, Xi Ruoyao wrote:
-> ...
+On Mon, 2023-09-18 at 11:24 -0700, Linus Torvalds wrote:
+> On Mon, 18 Sept 2023 at 04:54, Christian Brauner <brauner@kernel.org> wro=
+te:
+> >=20
+> > * Only update the atime if "now" is later than the current value. This
+> >   can happen when the atime gets updated with a fine-grained timestamp
+> >   and then later gets updated using a coarse-grained timestamp.
+>=20
+> I pulled this, and then I unpulled it again.
+>=20
+> I think this is fundamentally wrong.
+>=20
+> If somebody has set the time into the future (for whatever reason -
+> maybe the clocks were wrong at some point), afaik accessing a file
+> should reset it, and very much used to do that.
+>=20
+> Am I missing something? Because this really seems *horribly* broken garba=
+ge.
+>=20
+> Any "go from fine-grained back to coarse-grained" situation needs to
+> explicitly test *that* case.
+>=20
+> Not some kind of completely broken "don't update to past value" like this=
+.
+>=20
 
-> My workstation suffers from too much correctable AER reporting as well
-> (related to Intel's errata "RPL013: Incorrectly Formed PCIe Packets May
-> Generate Correctable Errors" and/or the motherboard design, I guess).
+Fair point.=A0 Now that I've considered it some more, I think that commit
+7df48e7d99a4 (fs: don't update the atime if existing atime is newer than
+"now") is not necessary.
 
-We should rate-limit correctable error reporting so it's not
-overwhelming.
+What prompted this was a bug report from the kernel test robot that
+showed the atime going backward on a STRICTATIME LTP test, but I think
+the root cause of that was the missing ctime initialization after
+allocation that we fixed in 0a22d3ff61b7 (fs: initialize
+inode->__i_ctime to the epoch).
 
-At the same time, I'm *also* interested in the cause of these errors,
-in case there's a Linux defect or a hardware erratum that we can work
-around.  Do you have a bug report with any more details, e.g., a dmesg
-log and "sudo lspci -vv" output?
+In general, we always update the atime with a coarse-grained timestamp,
+since atime and ctime updates are never done together during normal read
+and write operations. As you note, things are a little more murky with
+utimes() updates but I think we should be safe to overwrite the atime
+with a coarse-grained timestamp unconditionally.
 
-Bjorn
+We should be able to just drop that patch from the series. Whether you
+want to pull the rest now or wait for a bit, I'll leave up to you and
+Christian to decide.
+
+Thanks,
+--=20
+Jeff Layton <jlayton@kernel.org>
