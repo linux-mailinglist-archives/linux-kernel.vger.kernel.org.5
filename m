@@ -2,99 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E257A4CC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459697A4CE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbjIRPkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
+        id S229575AbjIRPm7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Sep 2023 11:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjIRPka (ORCPT
+        with ESMTP id S229478AbjIRPm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:40:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED44A10D0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:37:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA87BC433CD;
-        Mon, 18 Sep 2023 13:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695042419;
-        bh=hsho6zwJgdGzMVL4844nsBVJLIQBFgjfSPu5NS4R7o8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mYtySxGMysdHsCIovmnvfHlg2AaCRdxOSMVbY5d92dapcymNtg/kl2qtiuus9BWWP
-         O5xRQVUXhyPqGfR3NU5kIxPupa2m0Hpp1SeCCC1aK3hnqJqUYS/p6IFu2lT2qGFGBz
-         YW0d9AwawXYSSHY61bLTtA4GMOT+UThCQ7b3Vz5AtA15rH7ZpPmGv91UF0UAvH8V19
-         HFKDgIVwF4TB+7Qw79Q22nieQnypZNGrTjB+gEDcVTZiLNNQl5C+jEHIpGcFdJGjwg
-         o4QQU9vPvO2j6M82ZFhGAaJUAmaWXXglLUVf0IzSeHB/1AJZM3ezI5cbQuHY8bPBsh
-         wcTWASdhyv78A==
-Date:   Mon, 18 Sep 2023 14:06:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     wangweidong.a@awinic.com
-Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
-        herve.codina@bootlin.com, shumingf@realtek.com,
-        13916275206@139.com, ryans.lee@analog.com,
-        linus.walleij@linaro.org, ckeepax@opensource.cirrus.com,
-        povik+lin@cutebit.org, arnd@arndb.de,
-        harshit.m.mogalapalli@oracle.com, u.kleine-koenig@pengutronix.de,
-        yang.lee@linux.alibaba.com, liweilei@awinic.com,
-        yijiangtao@awinic.com, trix@redhat.com, colin.i.king@gmail.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 3/5] ASoC: codecs: Add code for bin parsing compatible
- with aw87390
-Message-ID: <b695fab0-1f0e-468c-a6c7-aa1003473c32@sirena.org.uk>
-References: <20230918115255.33171-1-wangweidong.a@awinic.com>
- <20230918115255.33171-4-wangweidong.a@awinic.com>
+        Mon, 18 Sep 2023 11:42:57 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62A210CF;
+        Mon, 18 Sep 2023 08:41:15 -0700 (PDT)
+Received: from lhrpeml500002.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rq4nZ3dp0z6K6VQ;
+        Mon, 18 Sep 2023 21:06:58 +0800 (CST)
+Received: from lhrpeml500006.china.huawei.com (7.191.161.198) by
+ lhrpeml500002.china.huawei.com (7.191.160.78) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 18 Sep 2023 14:07:46 +0100
+Received: from lhrpeml500006.china.huawei.com ([7.191.161.198]) by
+ lhrpeml500006.china.huawei.com ([7.191.161.198]) with mapi id 15.01.2507.031;
+ Mon, 18 Sep 2023 14:07:46 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "Jonathan Cameron" <jonathan.cameron@huawei.com>,
+        tanxiaofei <tanxiaofei@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Dave Jiang <dave.jiang@intel.com>
+Subject: RE: [RFC PATCH 1/1] ACPI / APEI: Fix for overwriting aer info when
+ error status data have multiple sections
+Thread-Topic: [RFC PATCH 1/1] ACPI / APEI: Fix for overwriting aer info when
+ error status data have multiple sections
+Thread-Index: AQHZ5/xlHFbbDa4AFUWselBa5XX/GbAcX9qAgAQE/5A=
+Date:   Mon, 18 Sep 2023 13:07:45 +0000
+Message-ID: <c1a4d76b89c44437b328fe8a6d3517dc@huawei.com>
+References: <20230915174435.779-1-shiju.jose@huawei.com>
+ <20230915220219.GA122811@bhelgaas>
+In-Reply-To: <20230915220219.GA122811@bhelgaas>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.48.156.14]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5z+Fx5DotXtZSz3Z"
-Content-Disposition: inline
-In-Reply-To: <20230918115255.33171-4-wangweidong.a@awinic.com>
-X-Cookie: Never kick a man, unless he's down.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bjorn,
 
---5z+Fx5DotXtZSz3Z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>-----Original Message-----
+>From: Bjorn Helgaas <helgaas@kernel.org>
+>Sent: 15 September 2023 23:02
+>To: Shiju Jose <shiju.jose@huawei.com>
+>Cc: rafael@kernel.org; lenb@kernel.org; tony.luck@intel.com;
+>james.morse@arm.com; bp@alien8.de; ying.huang@intel.com; linux-
+>acpi@vger.kernel.org; linux-pci@vger.kernel.org; linux-kernel@vger.kernel.org;
+>Linuxarm <linuxarm@huawei.com>; Jonathan Cameron
+><jonathan.cameron@huawei.com>; tanxiaofei <tanxiaofei@huawei.com>;
+>Zengtao (B) <prime.zeng@hisilicon.com>; Dave Jiang <dave.jiang@intel.com>
+>Subject: Re: [RFC PATCH 1/1] ACPI / APEI: Fix for overwriting aer info when error
+>status data have multiple sections
+>
+>[+cc Dave, since CXL is also fiddling with aer.c]
+>
+>On Sat, Sep 16, 2023 at 01:44:35AM +0800, shiju.jose@huawei.com wrote:
+>> From: Shiju Jose <shiju.jose@huawei.com>
+>>
+>> ghes_handle_aer() lacks synchronization with aer_recover_work_func(),
+>> so when error status data have multiple sections,
+>> aer_recover_work_func() may use estatus data for aer_capability_regs after it
+>has been overwritten.
+>>
+>> The problem statement is here,
+>> https://lore.kernel.org/all/20230901225755.GA90053@bhelgaas/
+>>
+>> In ghes_handle_aer() allocates memory for aer_capability_regs from the
+>> ghes_estatus_pool and copy data for aer_capability_regs from the
+>> estatus buffer. Free the memory in aer_recover_work_func() after
+>> processing the data using the ghes_estatus_pool_region_free() added.
+>
+>Thanks for working this up!  I had it on my to-do list, but obviously had not gotten
+>to it yet.
+>
+>> Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+>> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+>> ---
+>>  drivers/acpi/apei/ghes.c | 23 ++++++++++++++++++++++-
+>>  drivers/pci/pcie/aer.c   | 10 ++++++++++
+>>  include/acpi/ghes.h      |  1 +
+>>  3 files changed, 33 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c index
+>> ef59d6ea16da..63ad0541db38 100644
+>> --- a/drivers/acpi/apei/ghes.c
+>> +++ b/drivers/acpi/apei/ghes.c
+>> @@ -209,6 +209,20 @@ int ghes_estatus_pool_init(unsigned int num_ghes)
+>>  	return -ENOMEM;
+>>  }
+>>
+>> +/**
+>> + * ghes_estatus_pool_region_free - free previously allocated memory
+>> + *				   from the ghes_estatus_pool.
+>> + * @addr: address of memory to free.
+>> + * @size: size of memory to free.
+>> + *
+>> + * Returns none.
+>> + */
+>> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size) {
+>> +	gen_pool_free(ghes_estatus_pool, addr, size); }
+>> +EXPORT_SYMBOL_GPL(ghes_estatus_pool_region_free);
+>> +
+>>  static int map_gen_v2(struct ghes *ghes)  {
+>>  	return
+>> apei_map_generic_address(&ghes->generic_v2->read_ack_register);
+>> @@ -564,6 +578,7 @@ static void ghes_handle_aer(struct
+>acpi_hest_generic_data *gdata)
+>>  	    pcie_err->validation_bits & CPER_PCIE_VALID_AER_INFO) {
+>>  		unsigned int devfn;
+>>  		int aer_severity;
+>> +		u8 *aer_info;
+>>
+>>  		devfn = PCI_DEVFN(pcie_err->device_id.device,
+>>  				  pcie_err->device_id.function);
+>> @@ -577,11 +592,17 @@ static void ghes_handle_aer(struct
+>acpi_hest_generic_data *gdata)
+>>  		if (gdata->flags & CPER_SEC_RESET)
+>>  			aer_severity = AER_FATAL;
+>>
+>> +		aer_info = (void *)gen_pool_alloc(ghes_estatus_pool,
+>> +						  sizeof(struct
+>aer_capability_regs));
+>> +		if (!aer_info)
+>> +			return;
+>> +		memcpy(aer_info, pcie_err->aer_info, sizeof(struct
+>> +aer_capability_regs));
+>
+>This is a very straightforward approach to fixing this, and it looks pretty
+>reasonable, although I'd rather not have to pull more GHES stuff into aer.c
+>(ghes.h and ghes_estatus_pool_region_free()).
+>
+>What I had in mind was to put a queue of aer_capability_regs on the PCI side
+>that could be used by both the APEI path and the native path.
+>
+>In the APEI path, platform firmware reads the error information from the
+>hardware, and it feeds into PCI AER via aer_recover_queue().
+>
+>In the native path, Linux should be reading reads the same error information
+>from the hardware, but it feeds into PCI AER quite differently, via
+>aer_process_err_devices() and handle_error_source().
+>
+>These paths are fundamentally doing the exact same thing, but the data
+>handling and dmesg logging are needlessly different.  I'd like to see them get a
+>little more unified, so the native path could someday also feed into
+>aer_recover_queue().
+>
+>Does that make any sense?
 
-On Mon, Sep 18, 2023 at 07:52:53PM +0800, wangweidong.a@awinic.com wrote:
+Thanks for letting us know.
+Make sense, solution with in the AER looks better. 
 
-> Add aw87390 compatible code to the aw88395_lib.c file
-> so that it can parse aw87390's bin file
-> Modify function return value
-> Remove the fade-enable property because other properties
-> already implement thi functionality.
-> Modify the transmission method of parameters.
+>
+>>  		aer_recover_queue(pcie_err->device_id.segment,
+>>  				  pcie_err->device_id.bus,
+>>  				  devfn, aer_severity,
+>>  				  (struct aer_capability_regs *)
+>> -				  pcie_err->aer_info);
+>> +				  aer_info);
+>>  	}
+>>  #endif
+>>  }
+>> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c index
+>> e85ff946e8c8..388b614c11fd 100644
+>> --- a/drivers/pci/pcie/aer.c
+>> +++ b/drivers/pci/pcie/aer.c
+>> @@ -29,6 +29,7 @@
+>>  #include <linux/kfifo.h>
+>>  #include <linux/slab.h>
+>>  #include <acpi/apei.h>
+>> +#include <acpi/ghes.h>
+>>  #include <ras/ras_event.h>
+>>
+>>  #include "../pci.h"
+>> @@ -996,6 +997,15 @@ static void aer_recover_work_func(struct work_struct
+>*work)
+>>  			continue;
+>>  		}
+>>  		cper_print_aer(pdev, entry.severity, entry.regs);
+>> +		/*
+>> +		 * Memory for aer_capability_regs(entry.regs) is being
+>allocated from the
+>> +		 * ghes_estatus_pool to protect it from overwriting when
+>multiple sections
+>> +		 * are present in the error status. Thus free the same after
+>processing
+>> +		 * the data.
+>> +		 */
+>> +		ghes_estatus_pool_region_free((unsigned long)entry.regs,
+>> +					      sizeof(struct aer_capability_regs));
+>> +
+>>  		if (entry.severity == AER_NONFATAL)
+>>  			pcie_do_recovery(pdev, pci_channel_io_normal,
+>>  					 aer_root_reset);
+>> diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h index
+>> 3c8bba9f1114..40d89e161076 100644
+>> --- a/include/acpi/ghes.h
+>> +++ b/include/acpi/ghes.h
+>> @@ -78,6 +78,7 @@ static inline struct list_head
+>> *ghes_get_devices(void) { return NULL; }  #endif
+>>
+>>  int ghes_estatus_pool_init(unsigned int num_ghes);
+>> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
+>>
+>>  static inline int acpi_hest_get_version(struct acpi_hest_generic_data
+>> *gdata)  {
+>> --
+>> 2.34.1
+>>
 
-This would be easier to review if it were split up so that the
-refactorings are separate commits, removing fade enable is a separate
-commit and then finally just the changes to add the new CODEC are done.
-That way each individual commit is both smaller and simpler.
-
---5z+Fx5DotXtZSz3Z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUIS2kACgkQJNaLcl1U
-h9Aj0wf/VncxZlHRbBN0E5dNaMspwCt53RF7zzRX8acE4xwwNEi9RATZwZnamY1B
-QHozPKBCqDrLv0QTnW2g/ZsForhKwa/q826C7X3ROhrp3O2aKrt25Nypbtn0Lup/
-4lRZ5r33uo4FOoh6t+Uj7+eCVaRnTENvmoMwn+8pfIWzmNpX8SrjKuB84kY3Ouh7
-8M5qt2/G9TwArVShx8v+ovZUf99Vbm/zQP3PueyLJfH/hJxm1j51zNBHhESEoThT
-tUdelqK0GXX3F3JKSc/o2B/WDmk5unSx/uE7N65Y/hcgn1qZ7FBjuur/jR8uy424
-Et6u5OOpx0tplM8EO5FVl1hZG+pUgA==
-=12+n
------END PGP SIGNATURE-----
-
---5z+Fx5DotXtZSz3Z--
+Thanks,
+Shiju
