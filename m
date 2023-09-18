@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA457A53D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A06E7A53D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjIRUUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S230016AbjIRUUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjIRUT5 (ORCPT
+        with ESMTP id S229899AbjIRUUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:19:57 -0400
+        Mon, 18 Sep 2023 16:20:33 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE008F;
-        Mon, 18 Sep 2023 13:19:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48365C433C8;
-        Mon, 18 Sep 2023 20:19:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6151E8F
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:20:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0A445C433C7;
+        Mon, 18 Sep 2023 20:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695068392;
-        bh=lgKTJttU3vBHsXfAuVjsF6p8uoUUCVqIrWPXUqL2PhU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VhsXJc+fdL3QjF0Vl3Md17K5xmCYwSXa2Po1SZHG8jjc75demx/YE3T/oRG6EPoJB
-         64XofwD39/KUKOcPtd/FD9BhlT4bVBR3d0FMG4gLlCkYjf5JNC71skeNTFkPZcLJ/3
-         NrGLk1Z1DvgbA3Ag64A0Oz4BfYOiaGK+zNTaD5Fz6CnJghwz58XGOkNoHLuNgdMtSc
-         mL7ddF8yggeeBHtEFhKfYaDdVmK4BjOyP4eyfDOSiixoqtgVr7HYKTbHt9i6ca54Y0
-         P56iYbUVDkWoWJ8mZvTai+dUfPgeB+mqdlPXjndxI2yqGPse/7l+WnpWdO2Xjru8rb
-         8alOB8nAFiMpA==
-Received: (nullmailer pid 1711800 invoked by uid 1000);
-        Mon, 18 Sep 2023 20:19:49 -0000
-Date:   Mon, 18 Sep 2023 15:19:49 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     andersson@kernel.org, srinivas.kandagatla@linaro.org,
-        tiwai@suse.com, Thinh.Nguyen@synopsys.com,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        lgirdwood@gmail.com, mathias.nyman@intel.com, robh+dt@kernel.org,
-        gregkh@linuxfoundation.org, krzysztof.kozlowski+dt@linaro.org,
-        perex@perex.cz, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, konrad.dybcio@linaro.org,
-        broonie@kernel.org, agross@kernel.org, conor+dt@kernel.org,
-        bgoswami@quicinc.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 14/33] dt-bindings: usb: xhci: Add num-hc-interrupters
- definition
-Message-ID: <169506838863.1711748.10580032008247397299.robh@kernel.org>
-References: <20230916001026.315-1-quic_wcheng@quicinc.com>
- <20230916001026.315-15-quic_wcheng@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230916001026.315-15-quic_wcheng@quicinc.com>
+        s=k20201202; t=1695068428;
+        bh=Rh99Y745HS8tzJUeVNSTiL1/NQWpRhbaUTZcJgozihg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=flUURrwn7KAPig+aDc7k+IjlMfkTnr3ebyeVa7ArcwU1hwo7cKdbZWq8MVgnC+G7f
+         b57jXwvPQov1/1KzZQTnnSROOu8BPYuc8bpEpJl7RzLO7pWByOo7mSAMDGnurWt+tT
+         1dfuB1uzXODALq9tfm5JrsVEi3RPXPvsQsp95XRwi5Y5Bgh8xU2ib5LQ8OZHjFz3zd
+         rD5d19BOdgN4vRCuEHEm6qOCbUounZcP3OiZbQOyznGsII+ikzlhulbiOxgDFiNosd
+         zbJu0jl7P9SvLF8ngfnAJ2sY7M6LNSrVIOCmKuCNXkMALoI/peWiA/R5ZnUPOSCt8Z
+         UAcIXWjlyN97A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EC1B6E11F40;
+        Mon, 18 Sep 2023 20:20:27 +0000 (UTC)
+Subject: Re: [GIT PULL] gfs2 fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230918143438.2739942-1-agruenba@redhat.com>
+References: <20230918143438.2739942-1-agruenba@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230918143438.2739942-1-agruenba@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v6.6-rc1-fixes
+X-PR-Tracked-Commit-Id: fb95d536080e6c1db099f0023f59cd55adcc5d87
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a49d273e579615ed63d0347f94075dd22b9458a3
+Message-Id: <169506842795.7829.2519583286587165362.pr-tracker-bot@kernel.org>
+Date:   Mon, 18 Sep 2023 20:20:27 +0000
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        gfs2@lists.linux.dev, linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,17 +57,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Mon, 18 Sep 2023 16:34:38 +0200:
 
-On Fri, 15 Sep 2023 17:10:07 -0700, Wesley Cheng wrote:
-> Add the definition for how many interrupts the XHCI host controller should
-> allocate.  XHCI can potentially support up to 1024 interrupters, which
-> implementations may want to limit.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/usb/usb-xhci.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v6.6-rc1-fixes
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a49d273e579615ed63d0347f94075dd22b9458a3
 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
