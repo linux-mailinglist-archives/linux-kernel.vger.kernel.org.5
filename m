@@ -2,153 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BBF7A49D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797477A49D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241167AbjIRMf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
+        id S241387AbjIRMhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241946AbjIRMf4 (ORCPT
+        with ESMTP id S241573AbjIRMgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:35:56 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B468CC7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:35:33 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230918123530euoutp01deecb03ae631b7414b8cd4669791d149~F-mHUoLRQ0358503585euoutp019
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 12:35:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230918123530euoutp01deecb03ae631b7414b8cd4669791d149~F-mHUoLRQ0358503585euoutp019
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1695040530;
-        bh=i8zc9iaYygMGUIBqdtuTE0T+kxO2lOWm6HxzXg91t0A=;
-        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
-        b=f8WxOS+sD490Ku8mAk2RRHaG5OUoSM+QIFzy7fI2MX5a8OmyDBWC7bJVDt0pBsEoR
-         YjrA55Bo2A4BTYdceI14iaGzzGFeE68fcIykblzXJxmG2KcWFoh5vQVXs75HjT2zdl
-         yM22O85vKSiTEd+QcdTfMU4I3nP9gWATykbL8nhE=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230918123530eucas1p1b02dd398e6cc9f91afea96d8d9493af9~F-mG5gCKT1129911299eucas1p1c;
-        Mon, 18 Sep 2023 12:35:30 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 72.9A.42423.21448056; Mon, 18
-        Sep 2023 13:35:30 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20230918123529eucas1p2eff7928119d9f97e7b4e338408db7a16~F-mGbTQOz2707827078eucas1p2W;
-        Mon, 18 Sep 2023 12:35:29 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230918123529eusmtrp1d6a09092578b08891381f7e1215e6077~F-mGYvN8b1928419284eusmtrp1U;
-        Mon, 18 Sep 2023 12:35:29 +0000 (GMT)
-X-AuditID: cbfec7f2-a51ff7000002a5b7-46-65084412f88e
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 21.76.14344.11448056; Mon, 18
-        Sep 2023 13:35:29 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230918123529eusmtip19fdff081bcf68bf4c4329787c4676c3e~F-mGPMTH81256512565eusmtip16;
-        Mon, 18 Sep 2023 12:35:29 +0000 (GMT)
-Received: from [192.168.8.209] (106.210.248.18) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Mon, 18 Sep 2023 13:35:28 +0100
-Message-ID: <4dbdcc6c-6bd1-faf4-7187-cc048acd2125@samsung.com>
-Date:   Mon, 18 Sep 2023 14:35:27 +0200
+        Mon, 18 Sep 2023 08:36:49 -0400
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6E4E6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:36:27 -0700 (PDT)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1d6fdbe39c8so1459565fac.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:36:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695040586; x=1695645386;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qWaU34tE5V3lz+UvO1udinkKJAkf8+DYl+MZokF/z1g=;
+        b=lK3jMFmPxvcaMFUofw+SgZQHaJabA1oXl36AadxfjycqfJseqKyDSU1i/459uCLP7k
+         azLaDITUSf7YsBoDRh5TS8sUamPOcFyVTs5O3lXjh04cjPm+plGhFHESY/oXhFU6ltiO
+         jv5gpETdOizZ//kNbWVbcCoVqH4ugz/M/08n9x5mGgPbXtTmfeG6fBVTIRY8EiFFIJtJ
+         7OAjvp9uZ7h4ujhZvav/qQQScZ/lVGkbIMS+OB/Uqni9RvQcpdyTHuK85Q2IfLdVArrx
+         0a9lifsVi25jbSNf7PTN//B9Or1APWa7TaM+GiToRKAgGAcLJ+R0m9dVpAGH5MUdtXQk
+         8ZLA==
+X-Gm-Message-State: AOJu0Yx2aPZOTMimhKv7e2KezSaB+IhrSFib0CVhPrdKqLIZ6U0UPX/C
+        3HVZkJd/CllTAvcLqsuMCFZjGY3tft79JeZj6XmfGW8nVuOU
+X-Google-Smtp-Source: AGHT+IEYiZu3eA9QEFXdvoJUWMdymKvILGf31PgOwUrktqOHp3HckAqIr7CctAfp7E3UG0ZZCHXZqRqDZClGNqz97MhcA1zNH5HG
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
-        Thunderbird/102.15.1
-Subject: Re: [RFC 00/23] Enable block size > page size in XFS
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Pankaj Raghav <kernel@pankajraghav.com>
-CC:     <linux-xfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <david@fromorbit.com>, <da.gomez@samsung.com>,
-        <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <djwong@kernel.org>, <linux-mm@kvack.org>,
-        <chandan.babu@oracle.com>, <mcgrof@kernel.org>,
-        <gost.dev@samsung.com>
-From:   Pankaj Raghav <p.raghav@samsung.com>
-In-Reply-To: <ZQSnWUF2M1iNzGWM@casper.infradead.org>
+X-Received: by 2002:a05:6870:5b0f:b0:1d6:4344:88ef with SMTP id
+ ds15-20020a0568705b0f00b001d6434488efmr3442593oab.0.1695040586719; Mon, 18
+ Sep 2023 05:36:26 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 05:36:26 -0700
+In-Reply-To: <ZQhDRtWYSJWfHvEM@casper.infradead.org>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000d28b70605a164d6@google.com>
+Subject: Re: [syzbot] [mm?] WARNING in page_add_anon_rmap
+From:   syzbot <syzbot+6e4f59235036c3c2e296@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com, willy@infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [106.210.248.18]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDKsWRmVeSWpSXmKPExsWy7djPc7pCLhypBkuOSFjMWb+GzeLSUTmL
-        LcfuMVpcfsJnceblZxaLPXtPslhc3jWHzeLemv+sFrv+7GC3uDHhKaPF7x9z2By4PU4tkvDY
-        vELLY9OqTjaPTZ8msXucmPGbxePj01ssHmdXOnp83iQXwBHFZZOSmpNZllqkb5fAldE15S5T
-        wUHOihnz5zM2MO5j72Lk5JAQMJF4s2IuI4gtJLCCUWJmv2cXIxeQ/YVRYvmBD2wQzmdGiY/d
-        K+A6uhu3s0AkljNKnN67AqHq5qNmqMwuRom/Z98xdTFycPAK2Ek8eBoK0s0ioCpx8/AsJhCb
-        V0BQ4uTMJywgtqhAtMTMaQvB7hAWsJX4+OkZK4jNLCAucevJfLAxIgLBEq/PmoGMZxZYyiTx
-        4exvFpA4m4CWRGMn2HGcQMf1LO1khmjVlGjd/psdwpaX2P52DjPEA0oSC9vusEHYtRKnttxi
-        ApkpIbCaU+JJ/0qohIvEpm3noGxhiVfHt0B9LyNxenIPC4RdLfH0xm9miOYWRon+nevZQA6S
-        ELCW6DuTA1HjKHF4xXlmiDCfxI23ghD38ElM2jadeQKj6iykkJiF5ONZSF6YheSFBYwsqxjF
-        U0uLc9NTiw3zUsv1ihNzi0vz0vWS83M3MQIT2Ol/xz/tYJz76qPeIUYmDsZDjBIczEoivDMN
-        2VKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ82rbnkwWEkhPLEnNTk0tSC2CyTJxcEo1MJlLLfY8
-        HWCk38EbtU+qT7qkPOfexLVrczh6tkQePjejNmze3CUno67G1//f7jrxv057+NFULzvpyCXJ
-        ZZN1PWQyd/3zF1RZ91RddbeRVYKQyJOZ4gXrJj35EzLJ1TzIV9Hh1sWz59NXOCSZuE+x/lJw
-        XXXGbndu9vzFTF+D/18zDEm28176cvqbL/4HLaZ92zrb62bjAf6KN1827ZQUvDN5Y81nXc/z
-        GgkL8macUr5ntntDqqbqBq9e5QPttaHnsheYtL2+F9F+I/BIqeUWEY6s2Z7MQjtjxCx/V3W9
-        dFbynsvaddYwm2tl8/ElL+bvKvjEXGUw8/yjhiiWdkbHJSmKvJeTnsQW/Vjsy33XR4mlOCPR
-        UIu5qDgRAGFb1UbPAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrIIsWRmVeSWpSXmKPExsVy+t/xu7qCLhypBhN3mljMWb+GzeLSUTmL
-        LcfuMVpcfsJnceblZxaLPXtPslhc3jWHzeLemv+sFrv+7GC3uDHhKaPF7x9z2By4PU4tkvDY
-        vELLY9OqTjaPTZ8msXucmPGbxePj01ssHmdXOnp83iQXwBGlZ1OUX1qSqpCRX1xiqxRtaGGk
-        Z2hpoWdkYqlnaGwea2VkqqRvZ5OSmpNZllqkb5egl9E15S5TwUHOihnz5zM2MO5j72Lk5JAQ
-        MJHobtzO0sXIxSEksJRRYtLql1AJGYmNX66yQtjCEn+udbFBFH1klFh7+i1Uxy5Gie1/bgN1
-        cHDwCthJPHgaCtLAIqAqcfPwLCYQm1dAUOLkzCcsICWiAtESXS+NQcLCArYSHz89A5vPLCAu
-        cevJfCaQEhGBYInXZ81ApjMLLGWS+HD2N9SqPYwSn16tBitiE9CSaOwEu5MT6IGepZ3MEHM0
-        JVq3/2aHsOUltr+dwwxxv5LEwrY7bBB2rcTnv88YJzCKzkJy3SwkZ8xCMmoWklELGFlWMYqk
-        lhbnpucWG+kVJ+YWl+al6yXn525iBMb9tmM/t+xgXPnqo94hRiYOxkOMEhzMSiK8Mw3ZUoV4
-        UxIrq1KL8uOLSnNSiw8xmgKDaCKzlGhyPjDx5JXEG5oZmBqamFkamFqaGSuJ83oWdCQKCaQn
-        lqRmp6YWpBbB9DFxcEo1MC36uuCfcsNOiblvgz/tkLt7peTASu1ZO942fwwp/hT93yjhquHy
-        lvSpBVLFW9y33+xamLWYjz/drSaD9USuF8vXdesuWVTzPrxkN0eNiW/ZNcv2JY5RmzO7yifN
-        CbxSXKgjGOaUtu5//4UuJxNhweaXEqsFfn9Zw3mJ19WyTPDTn+2xEe9yRZczPbVg3bPh8oZ9
-        +97rHFFv+b1r+3UjiZLHDuKZl/xznMUu7pPTylWJWjWz4tOcst5fO+Z6Fl2zkhZlYSlpXpnl
-        /pv91J+Ateb+K34HSWv8fvjhROSdOQ88C8UfzA9LkZ2Vol9z5LbcfJ2SH+/2GC9bf5rJg7VO
-        ONrALkqq80W2z0Gvyl43PiWW4oxEQy3mouJEAELC1IKEAwAA
-X-CMS-MailID: 20230918123529eucas1p2eff7928119d9f97e7b4e338408db7a16
-X-Msg-Generator: CA
-X-RootMTR: 20230915185016eucas1p18b6d44c1b875ef8d87a9575e3ddff8d1
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230915185016eucas1p18b6d44c1b875ef8d87a9575e3ddff8d1
-References: <20230915183848.1018717-1-kernel@pankajraghav.com>
-        <CGME20230915185016eucas1p18b6d44c1b875ef8d87a9575e3ddff8d1@eucas1p1.samsung.com>
-        <ZQSnWUF2M1iNzGWM@casper.infradead.org>
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-15 20:50, Matthew Wilcox wrote:
-> On Fri, Sep 15, 2023 at 08:38:25PM +0200, Pankaj Raghav wrote:
->> Only XFS was enabled and tested as a part of this series as it has
->> supported block sizes up to 64k and sector sizes up to 32k for years.
->> The only thing missing was the page cache magic to enable bs > ps. However any filesystem
->> that doesn't depend on buffer-heads and support larger block sizes
->> already should be able to leverage this effort to also support LBS,
->> bs > ps.
-> 
-> I think you should choose whether you're going to use 'bs > ps' or LBS
-> and stick to it.  They're both pretty inscrutable and using both
-> interchanagbly is worse.
-> 
+Hello,
 
-Got it! Probably I will stick to Large block size and explain what it means
-at the start of the patchset.
+syzbot tried to test the proposed patch but the build/boot failed:
 
-> But I think filesystems which use buffer_heads should be fine to support
-> bs > ps.  The problems with the buffer cache are really when you try to
-> support small block sizes and large folio sizes (eg arrays of bhs on
-> the stack).  Supporting bs == folio_size shouldn't be a problem.
-> 
+failed to apply patch:
+checking file mm/rmap.c
+Hunk #1 FAILED at 1249.
+1 out of 1 hunk FAILED
 
-I remember some patches from you trying to avoid the stack limitation while working
-with bh. Thanks for the clarification!
+
+
+Tested on:
+
+commit:         7fc7222d Add linux-next specific files for 20230918
+git tree:       linux-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e204dda2e58397ec
+dashboard link: https://syzkaller.appspot.com/bug?extid=6e4f59235036c3c2e296
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12af76f8680000
+
