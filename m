@@ -2,118 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0663E7A4058
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAD77A405D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239576AbjIRFML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 01:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
+        id S239602AbjIRFNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 01:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236439AbjIRFL7 (ORCPT
+        with ESMTP id S239838AbjIRFNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 01:11:59 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BE711C;
-        Sun, 17 Sep 2023 22:11:54 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RptC05lLcz15NQX;
-        Mon, 18 Sep 2023 13:09:48 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 18 Sep
- 2023 13:11:51 +0800
-From:   Jinjie Ruan <ruanjinjie@huawei.com>
-To:     <sj@kernel.org>, <akpm@linux-foundation.org>,
-        <brendan.higgins@linux.dev>, <feng.tang@intel.com>,
-        <damon@lists.linux.dev>, <linux-mm@kvack.org>,
-        <kunit-dev@googlegroups.com>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH RESEND 2/2] mm/damon/core-test: Fix memory leak in damon_new_ctx()
-Date:   Mon, 18 Sep 2023 13:10:44 +0800
-Message-ID: <20230918051044.3814018-3-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230918051044.3814018-1-ruanjinjie@huawei.com>
-References: <20230918051044.3814018-1-ruanjinjie@huawei.com>
+        Mon, 18 Sep 2023 01:13:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378A811C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695013937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RvD4w7PAsOCgYRxHcY6j9ap1d1nMri/tShexuoBxwd4=;
+        b=XiXQe0Tq2Q7TzAKV8sGV5Gt4DLnRaGOD+pew9f8/0l/9wA2cJbOERJQY9++spBTaq6/zso
+        cCSSTWbyJ8+YdSeYSQoU9exUcTgI8vra3HkLT9wfZAwSxPGWhJ7tXgvdoHN3P+t4liydbc
+        9W9+6k790ArsLwBBdE1RQTfOYD9XC6Q=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-jWyI4_i5PDiM4BfVFF9vCA-1; Mon, 18 Sep 2023 01:12:15 -0400
+X-MC-Unique: jWyI4_i5PDiM4BfVFF9vCA-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1c43cd8b6cbso17367215ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:12:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695013935; x=1695618735;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RvD4w7PAsOCgYRxHcY6j9ap1d1nMri/tShexuoBxwd4=;
+        b=Pefqj1kWcNA1xs3WvPnx+t1vYrW29crjTxtx5RKh60zVD2buUbhHWlqHoDrBTYb2Vk
+         l95yUMTLLUhNqUyYvBkSI4qrrA/BxFpIwPEau9GsRs/mltzXyodx0xMDl7ugtgFOUqhk
+         Giajifaw6ZB2L/gKCU0UMTgeVQ+KKw3+pGJwdvotL0ae7TyvQkZ5/Pw3UdufnVrx3L3I
+         JLKZBUOl4Fj2yCRPS0nr9L0wkycnb0oGF/wXrfANy78A9XaZXgs3g4fUXw11XsTUOZM5
+         RkNlFMFxqDtq+637HA+hSaBMsbbxZya+BgDzBeH5F5M6SHTZg6BHxOkgTTYYsYkA0Rar
+         h8Fg==
+X-Gm-Message-State: AOJu0YwBq9kj+YdCB+hh2DZemmqJfLKcLcs46/UiLQ8x5A9ypRh6KJzL
+        ojt/UZIUP/Lz7KLF+0aB73zrUwbs2LTs1JIp9uTLxYHU+a0PeMJ3GLxwPfBI7FT+mHdmA5WGIUq
+        pIxaf+L94FC84spX+7JN2vcPi
+X-Received: by 2002:a17:902:eaca:b0:1c4:7c4:b2e9 with SMTP id p10-20020a170902eaca00b001c407c4b2e9mr6684100pld.43.1695013934902;
+        Sun, 17 Sep 2023 22:12:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH/7pnXIEKKH9Y4xbdbZZMMMlJPYbU0PFmQT4cuwBEhJkBJkFtdh/KKkgvjoRXAdFFzPtKhhA==
+X-Received: by 2002:a17:902:eaca:b0:1c4:7c4:b2e9 with SMTP id p10-20020a170902eaca00b001c407c4b2e9mr6684091pld.43.1695013934621;
+        Sun, 17 Sep 2023 22:12:14 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id l3-20020a170903244300b001b80d399730sm3243326pls.242.2023.09.17.22.12.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 22:12:14 -0700 (PDT)
+Message-ID: <82ce8528-49ae-3937-4020-0666fe416c0a@redhat.com>
+Date:   Mon, 18 Sep 2023 15:12:06 +1000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 16/35] ACPI: processor: Register CPUs that are
+ online, but not described in the DSDT
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
+Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-17-james.morse@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230913163823.7880-17-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The damon_ctx which is allocated by kzalloc() in damon_new_ctx() in
-damon_test_ops_registration() and damon_test_set_attrs() are not freed and
-it causes below memory leak. So use damon_destroy_ctx() to free it.
 
-unreferenced object 0xffff2b49c6968800 (size 512):
-  comm "kunit_try_catch", pid 350, jiffies 4294895294 (age 557.028s)
-  hex dump (first 32 bytes):
-    88 13 00 00 00 00 00 00 a0 86 01 00 00 00 00 00  ................
-    00 87 93 03 00 00 00 00 0a 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
-    [<0000000073acab3b>] __kmem_cache_alloc_node+0x174/0x290
-    [<00000000b5f89cef>] kmalloc_trace+0x40/0x164
-    [<00000000eb19e83f>] damon_new_ctx+0x28/0xb4
-    [<00000000daf6227b>] damon_test_ops_registration+0x34/0x328
-    [<00000000559c4801>] kunit_try_run_case+0x50/0xac
-    [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
-    [<000000003c3e9211>] kthread+0x124/0x130
-    [<0000000028f85bdd>] ret_from_fork+0x10/0x20
-unreferenced object 0xffff2b49c1a9cc00 (size 512):
-  comm "kunit_try_catch", pid 356, jiffies 4294895306 (age 557.000s)
-  hex dump (first 32 bytes):
-    88 13 00 00 00 00 00 00 a0 86 01 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 0a 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
-    [<0000000073acab3b>] __kmem_cache_alloc_node+0x174/0x290
-    [<00000000b5f89cef>] kmalloc_trace+0x40/0x164
-    [<00000000eb19e83f>] damon_new_ctx+0x28/0xb4
-    [<00000000058495c4>] damon_test_set_attrs+0x30/0x1a8
-    [<00000000559c4801>] kunit_try_run_case+0x50/0xac
-    [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
-    [<000000003c3e9211>] kthread+0x124/0x130
-    [<0000000028f85bdd>] ret_from_fork+0x10/0x20
 
-Fixes: d1836a3b2a9a ("mm/damon/core-test: initialise context before test in damon_test_set_attrs()")
-Fixes: 4f540f5ab4f2 ("mm/damon/core-test: add a kunit test case for ops registration")
-Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
----
- mm/damon/core-test.h | 4 ++++
- 1 file changed, 4 insertions(+)
+On 9/14/23 02:38, James Morse wrote:
+> ACPI has two descriptions of CPUs, one in the MADT/APIC table, the other
+> in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Processors"
+> says "Each processor in the system must be declared in the ACPI
+> namespace"). Having two descriptions allows firmware authors to get
+> this wrong.
+> 
+> If CPUs are described in the MADT/APIC, they will be brought online
+> early during boot. Once the register_cpu() calls are moved to ACPI,
+> they will be based on the DSDT description of the CPUs. When CPUs are
+> missing from the DSDT description, they will end up online, but not
+> registered.
+> 
+> Add a helper that runs after acpi_init() has completed to register
+> CPUs that are online, but weren't found in the DSDT. Any CPU that
+> is registered by this code triggers a firmware-bug warning and kernel
+> taint.
+> 
+> Qemu TCG only describes the first CPU in the DSDT, unless cpu-hotplug
+> is configured.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>   drivers/acpi/acpi_processor.c | 19 +++++++++++++++++++
+>   1 file changed, 19 insertions(+)
+> 
 
-diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
-index 255f8c925c00..ce86ed30fb47 100644
---- a/mm/damon/core-test.h
-+++ b/mm/damon/core-test.h
-@@ -266,6 +266,8 @@ static void damon_test_ops_registration(struct kunit *test)
- 
- 	/* Check double-registration failure again */
- 	KUNIT_EXPECT_EQ(test, damon_register_ops(&ops), -EINVAL);
-+
-+	damon_destroy_ctx(c);
- }
- 
- static void damon_test_set_regions(struct kunit *test)
-@@ -342,6 +344,8 @@ static void damon_test_set_attrs(struct kunit *test)
- 	invalid_attrs = valid_attrs;
- 	invalid_attrs.aggr_interval = 4999;
- 	KUNIT_EXPECT_EQ(test, damon_set_attrs(c, &invalid_attrs), -EINVAL);
-+
-+	damon_destroy_ctx(c);
- }
- 
- static void damos_test_new_filter(struct kunit *test)
--- 
-2.34.1
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index b4bde78121bb..a01e315aa16a 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -790,6 +790,25 @@ void __init acpi_processor_init(void)
+>   	acpi_pcc_cpufreq_init();
+>   }
+>   
+> +static int __init acpi_processor_register_missing_cpus(void)
+> +{
+> +	int cpu;
+> +
+> +	if (acpi_disabled)
+> +		return 0;
+> +
+> +	for_each_online_cpu(cpu) {
+> +		if (!get_cpu_device(cpu)) {
+> +			pr_err_once(FW_BUG "CPU %u has no ACPI namespace description!\n", cpu);
+> +			add_taint(TAINT_FIRMWARE_WORKAROUND, LOCKDEP_STILL_OK);
+> +			arch_register_cpu(cpu);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +subsys_initcall_sync(acpi_processor_register_missing_cpus);
+> +
+>   #ifdef CONFIG_ACPI_PROCESSOR_CSTATE
+>   /**
+>    * acpi_processor_claim_cst_control - Request _CST control from the platform.
 
