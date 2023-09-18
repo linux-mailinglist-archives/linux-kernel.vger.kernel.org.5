@@ -2,77 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 488B67A5219
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE5D7A521F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 20:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjIRSe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 14:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
+        id S229700AbjIRSgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 14:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjIRSeZ (ORCPT
+        with ESMTP id S229485AbjIRSgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 14:34:25 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A3D10D;
-        Mon, 18 Sep 2023 11:34:20 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-690b85eb2dcso487355b3a.0;
-        Mon, 18 Sep 2023 11:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695062060; x=1695666860; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FklHMNqNjRSEiP2yIY2hQ7L26kuoNsBASX7uOWLkP/A=;
-        b=nUEH49ltPPhjlMSu0pXp3Pztz4c0XsZnyrdHPHm5d/cz80hwMKRZ0KSGaGEB5/xPVo
-         VPH840f8iUbWG6rMNIBjv2TQKxOTQCWw5Zzz2oPeMQA1Fh5/m29yG/HZuDabj7krVIPy
-         jkaGRRi2YNufCMztQGM9Pr7k0urlOWZHnTrcHc5qi6kGDyT2alHBixn1FFbj747C+FQh
-         oth/izvZTtiBD7vD6JTiRuLVScmlb+Ll/YorsO15zs+7ku7z9YdYdRMi476X2e+j4+a+
-         9ovWQLWIaEmLFVh38Y0Da7b2cyNm+6UvCUZF7zsTgUz5lbS7sjc5VFz2U/KjSsj0Quf9
-         vwIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695062060; x=1695666860;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FklHMNqNjRSEiP2yIY2hQ7L26kuoNsBASX7uOWLkP/A=;
-        b=UDDQTRVHq/8WFhbI7dLiuHtSK2RG5Hy1OgEfWt5NRKCe+Sqn9uaQYFNXKWmv3BhR0A
-         EE6eUZoq2TIkjJVHTKTvOY5ifpTj06azRfU8WMgTY9Xnygeo0HutcWRZNlyga6wuNI+0
-         faoeqw/JWrntxxT3BCLI/zu7e8/zJYa5YVYzetqIUir8oFCdqOqdI3PE3ah1+LtPhAdi
-         KyVerZPcsAybBSIouI7+L6mbPeSl2pZD2EHvXZaY7P32vKwAws05wP/fyZgRRRiL9NS1
-         Y51IYxedaLb0aN4en+JR3HDJGRYXEexquBhePvAmSa/RoqMNJBe9HXS54d69pQZ6m71g
-         lNWA==
-X-Gm-Message-State: AOJu0YxF76Fk62zUk6p3nLF9PsqbbgXaUV81xARopmFvj3r8ZJOTv4Zq
-        OV6JpJrdBS+I1rtFBGRURKo=
-X-Google-Smtp-Source: AGHT+IFwXJYVQv7z5guUlBHJTzNuMu1g2FRKkARGo7K/d5Yx3WlGOhxJ8DgFkGmY2CmJxSK9DFz1DQ==
-X-Received: by 2002:a05:6a00:21d5:b0:690:2ecd:a597 with SMTP id t21-20020a056a0021d500b006902ecda597mr12245813pfj.21.1695062060007;
-        Mon, 18 Sep 2023 11:34:20 -0700 (PDT)
-Received: from [10.67.49.139] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id r11-20020a62e40b000000b006879493aca0sm7395460pfh.26.2023.09.18.11.34.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 11:34:19 -0700 (PDT)
-Message-ID: <51d7f8b8-13c8-7350-53eb-1f1e09f1b683@gmail.com>
-Date:   Mon, 18 Sep 2023 11:34:17 -0700
+        Mon, 18 Sep 2023 14:36:13 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388BC10D;
+        Mon, 18 Sep 2023 11:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=83UBXje6sUk9WQn75kJ8b+5PbDOix+4jIDRAqbsZBZI=; b=n4a5FdcOoqT1RgfzLlj/F0VmUC
+        HE5gfUbRZWc7yXpix1tK3ST/7dYyaFvG/1iudJ23+afNDyitWgbo077hJWs39miKja/uUlLW4GbGp
+        TWYGjFv/i86FkNkPXRxpioTGcwWM79JYt19QeXMOUPXvaeNZx4H8YoC8hy2gYsAId5g0slLNiqRD2
+        V0FiOFIaxS04XCiPKKpDWVnaS1kyUT8OTwyJ/swXA7T9wPxKIbowwrfJ0VS9CgErlMhh3ec6nAkCx
+        +Wm2dnsBeHUAcCqSk+2Of1reWaWQvbFnUrHdbn9C7/1emkK7pk2wuOawPk38lPPW48EQEZ3HnfxIM
+        wjDj/1gw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qiJ6I-00G5ix-39;
+        Mon, 18 Sep 2023 18:36:03 +0000
+Date:   Mon, 18 Sep 2023 11:36:02 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Pankaj Raghav <kernel@pankajraghav.com>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, p.raghav@samsung.com,
+        david@fromorbit.com, da.gomez@samsung.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        djwong@kernel.org, linux-mm@kvack.org, chandan.babu@oracle.com,
+        gost.dev@samsung.com
+Subject: Re: [RFC 08/23] filemap: align the index to mapping_min_order in
+ filemap_get_folios_tag()
+Message-ID: <ZQiYkhDDsWS7PNzZ@bombadil.infradead.org>
+References: <20230915183848.1018717-1-kernel@pankajraghav.com>
+ <20230915183848.1018717-9-kernel@pankajraghav.com>
+ <ZQS1o38TOOI+AY5H@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 6.1 000/219] 6.1.54-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230917191040.964416434@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20230917191040.964416434@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQS1o38TOOI+AY5H@casper.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,31 +58,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/17/2023 12:12 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.54 release.
-> There are 219 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Sep 15, 2023 at 08:50:59PM +0100, Matthew Wilcox wrote:
+> On Fri, Sep 15, 2023 at 08:38:33PM +0200, Pankaj Raghav wrote:
+> > From: Luis Chamberlain <mcgrof@kernel.org>
+> > 
+> > Align the index to the mapping_min_order number of pages while setting
+> > the XA_STATE in filemap_get_folios_tag().
 > 
-> Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.54-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> ... because?  It should already search backwards in the page cache,
+> otherwise calling sync_file_range() would skip the start if it landed
+> in a tail page of a folio.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Thanks! Will drop and verify!
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
-
+  Luis
