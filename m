@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABB97A44E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE627A44F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238806AbjIRIiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        id S240687AbjIRIk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240837AbjIRIhr (ORCPT
+        with ESMTP id S240865AbjIRIkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:37:47 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12425EA
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:37:33 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-503178a0d7fso82564e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:37:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695026251; x=1695631051; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l+QC3uvRAP/qwqfmL2VbNl9H9w4JnwrITUvS9mJuYN4=;
-        b=coQE0q1QXizI6/zxln70piCSkLCmAJJE7+aXzVoZtmc43KOeEcMmz4fEFKBJOm0eA/
-         NHvwlVBZNf1YW67Kq0DotflHJLW7AYAWK19beTuDXN0+JFQmjVyRUXf5LGD8nUmZ2r6r
-         rhGLsVXcAO8PV+86QEwlLjdXz42Umn5WIAtfSY/B/IElMQG8Qp+dX3yHZkoa57CnrksN
-         qrOqkf1iQXSdJlBN8KO0MfRBgDqAEq0sYK1vc3zNy6ebyPmOrpyeWm5jYq9UMhhKmP6D
-         gCgxFVmGcYA3uRlcFmwbS/h3orRN2Ezo1bo5njba/rrRucimQ3yG8UpoWv3VBizAd2FT
-         lvbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695026251; x=1695631051;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l+QC3uvRAP/qwqfmL2VbNl9H9w4JnwrITUvS9mJuYN4=;
-        b=TJVSLPeDfWWGcp2aWIix94MRpCBKWWuAi270LPSWezqJbzCSg7a62Pujks482j6Sgq
-         dsB2WoUaZxcNNwDrtLqim2utLtpJrSKC8xD7zLS9FKMjYJFmHkePFLbCr7hqQk0TFVrX
-         vAFtDmcZ5SQOfQ9wgOf6hhLAJTrBVhhY3eOUfBgnpr6Rd15p1dOgoKMyFy4M65cjAtnL
-         cei5dhrDN4pS1G6YRJcgZdYk6KPIBT5yE1TKz9YJxLJWzI4Jozi0YqXlXFQlRPo0iLkd
-         qIoHqZtuUzuBnSZxjcAU+hsyqN6ISsvdzqS+X2iaYhvrcTbfcglEfJD1iIuAEyNbSRFl
-         kf0g==
-X-Gm-Message-State: AOJu0Yzg/hJ9JtfWxtoQiRP0RudTxnz7Ja04y/qxmQrvQPdzXcF9EMYp
-        CeNPux6bIt4RFnEy+PZPVX5HMQ==
-X-Google-Smtp-Source: AGHT+IGqlyUHqGssPW9OItxaQq+8XrdPXTEEGva1/JuVqIRzAHPdyXcTigzqELXnHgp+vzlARJInWA==
-X-Received: by 2002:a19:ca04:0:b0:503:46c:5577 with SMTP id a4-20020a19ca04000000b00503046c5577mr3420792lfg.3.1695026251229;
-        Mon, 18 Sep 2023 01:37:31 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:3e7c:f127:3270:503e? ([2a01:e0a:999:a3a0:3e7c:f127:3270:503e])
-        by smtp.gmail.com with ESMTPSA id j3-20020a056000124300b0031fb91f23e9sm11992220wrx.43.2023.09.18.01.37.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 01:37:30 -0700 (PDT)
-Message-ID: <086307ce-2d0d-4cf7-98c8-66a00ddec2aa@rivosinc.com>
-Date:   Mon, 18 Sep 2023 10:37:29 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
- alignment
-Content-Language: en-US
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mon, 18 Sep 2023 04:40:00 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BE2E4;
+        Mon, 18 Sep 2023 01:39:54 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 38I8dEjO51893931, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 38I8dEjO51893931
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Sep 2023 16:39:14 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Mon, 18 Sep 2023 16:38:32 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 18 Sep 2023 16:38:31 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c]) by
+ RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c%5]) with mapi id
+ 15.01.2375.007; Mon, 18 Sep 2023 16:38:31 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Eric Dumazet <edumazet@google.com>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>
-References: <20230914131102.179100-1-cleger@rivosinc.com>
- <94183afa1fca44d18459da3d12a155d3@AcuMS.aculab.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <94183afa1fca44d18459da3d12a155d3@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "bjorn@mork.no" <bjorn@mork.no>,
+        "pabeni@redhat.com" <pabeni@redhat.com>
+Subject: RE: [PATCH net-next resend 1/2] r8152: remove queuing rx packets in driver
+Thread-Topic: [PATCH net-next resend 1/2] r8152: remove queuing rx packets in
+ driver
+Thread-Index: AQHZ6gOv5dotXJafx06AY5ZZ4fOWz7AfsJgAgACIv9A=
+Date:   Mon, 18 Sep 2023 08:38:31 +0000
+Message-ID: <7235821eb09242adaa651172729f76aa@realtek.com>
+References: <20230918074202.2461-426-nic_swsd@realtek.com>
+ <20230918074202.2461-427-nic_swsd@realtek.com>
+ <CANn89iJmdkyn8_hU4esycRG-XvPa_Djsp6PyaOX5cYP1Obdr4g@mail.gmail.com>
+In-Reply-To: <CANn89iJmdkyn8_hU4esycRG-XvPa_Djsp6PyaOX5cYP1Obdr4g@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.22.228.6]
+x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17/09/2023 23:09, David Laight wrote:
-> From: Clément Léger
->> Sent: 14 September 2023 14:11
->>
->> enabler->uaddr can be aligned on 32 or 64 bits. If aligned on 32 bits,
->> this will result in a misaligned access on 64 bits architectures since
->> set_bit()/clear_bit() are expecting an unsigned long (aligned) pointer.
->> On architecture that do not support misaligned access, this will crash
->> the kernel. Align uaddr on unsigned long size to avoid such behavior.
->> This bug was found while running kselftests on RISC-V.
-> 
-> You don't want to do it on x86-64 either.
-> A locked accesses that crosses a cache line boundary is horrid.
-> So horrid that recent cpu's can be made to fault.
-
-Hi David,
-
-Thanks for the additional information.
-
-> 
-> I'd also doubt that other cpu that can do misaligned transfers
-> can even do locked ones.
-> 
-> For x86 (and LE) the long[] bitmap can be treated as char[]
-> avoiding all the problems.
-> 
-> Perhaps there ought to be bit a bit-array based on char[]
-> (not long[]) that would be endianness independent and
-> use byte-sized atomics.
-
-That would work for a few architectures but I don't think all of them
-have byte "grain" atomics. So I guess Masami solution (long aligned
-set/clear_bit()) remains the best out there.
-
-Clément
-
-> (IIRC that is still an issue on sparc32...)
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+RXJpYyBEdW1hemV0IDxlZHVtYXpldEBnb29nbGUuY29tPg0KPiBTZW50OiBNb25kYXksIFNlcHRl
+bWJlciAxOCwgMjAyMyAzOjU1IFBNDQpbLi4uXQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
+IHVyYi0+YWN0dWFsX2xlbmd0aCA9IDA7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgbGlz
+dF9hZGRfdGFpbCgmYWdnLT5saXN0LCBuZXh0KTsNCj4gPiAgICAgICAgICAgICAgICAgfQ0KPiA+
+ICsNCj4gPiArICAgICAgICAgICAgICAgLyogQnJlYWsgaWYgYnVkZ2V0IGlzIGV4aGF1c3RlZC4g
+Ki8NCj4gDQo+IFsxXSBNb3JlIGNvbnZlbnRpb25hbCB3YXkgdG8gdG8gcHV0IHRoaXMgY29uZGl0
+aW9uIGF0IHRoZSBiZWdpbm5pbmcgb2YNCj4gdGhlIHdoaWxlICgpIGxvb3AsDQo+IGJlY2F1c2Ug
+dGhlIGJ1ZGdldCBjb3VsZCBiZSB6ZXJvLg0KDQpJZiB0aGUgYnVkZ2V0IGlzIHplcm8sIHRoZSBm
+dW5jdGlvbiB3b3VsZG4ndCBiZSBjYWxsZWQuDQphN2I4ZDYwYjM3MjMgKCJyODE1MjogY2hlY2sg
+YnVkZ2V0IGZvciByODE1Ml9wb2xsIikgYXZvaWRzIGl0Lg0KDQo+ID4gKyAgICAgICAgICAgICAg
+IGlmICh3b3JrX2RvbmUgPj0gYnVkZ2V0KQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGJy
+ZWFrOw0KPiA+ICAgICAgICAgfQ0KPiA+DQo+ID4gKyAgICAgICAvKiBTcGxpY2UgdGhlIHJlbWFp
+bmVkIGxpc3QgYmFjayB0byByeF9kb25lICovDQo+ID4gICAgICAgICBpZiAoIWxpc3RfZW1wdHko
+JnJ4X3F1ZXVlKSkgew0KPiA+ICAgICAgICAgICAgICAgICBzcGluX2xvY2tfaXJxc2F2ZSgmdHAt
+PnJ4X2xvY2ssIGZsYWdzKTsNCj4gPiAtICAgICAgICAgICAgICAgbGlzdF9zcGxpY2VfdGFpbCgm
+cnhfcXVldWUsICZ0cC0+cnhfZG9uZSk7DQo+ID4gKyAgICAgICAgICAgICAgIGxpc3Rfc3BsaWNl
+KCZyeF9xdWV1ZSwgJnRwLT5yeF9kb25lKTsNCj4gPiAgICAgICAgICAgICAgICAgc3Bpbl91bmxv
+Y2tfaXJxcmVzdG9yZSgmdHAtPnJ4X2xvY2ssIGZsYWdzKTsNCj4gPiAgICAgICAgIH0NCj4gPg0K
+PiA+ICBvdXQxOg0KPiA+IC0gICAgICAgcmV0dXJuIHdvcmtfZG9uZTsNCj4gPiArICAgICAgIGlm
+ICh3b3JrX2RvbmUgPiBidWRnZXQpDQo+IA0KPiBUaGlzICh3b3JrX2RvbmUgPmJ1ZGdldCkgY29u
+ZGl0aW9uIHdvdWxkIG5ldmVyIGJlIHRydWUgaWYgcG9pbnQgWzFdIGlzDQo+IGFkZHJlc3NlZC4N
+Cg0KQSBidWxrIHRyYW5zZmVyIG1heSBjb250YWluIG1hbnkgcGFja2V0cywgc28gdGhlIHdvcmtf
+ZG9uZSBtYXkgYmUgbW9yZSB0aGFuIGJ1ZGdldC4NClRoYXQgaXMgd2h5IEkgcXVldWUgdGhlIHBh
+Y2tldHMgaW4gdGhlIGRyaXZlciBiZWZvcmUgdGhpcyBwYXRjaC4NCkZvciBleGFtcGxlLCBpZiBh
+IGJ1bGsgdHJhbnNmZXIgY29udGFpbnMgNzAgcGFja2V0IGFuZCBidWRnZXQgaXMgNjQsDQpuYXBp
+X2dyb19yZWNlaXZlIHdvdWxkIGJlIGNhbGxlZCBmb3IgdGhlIGZpcnN0IDY0IHBhY2tldHMgYW5k
+IDYgcGFja2V0cyB3b3VsZA0KYmUgcXVldWVkIGluIGRyaXZlciBmb3IgbmV4dCBzY2hlZHVsZS4g
+QWZ0ZXIgdGhpcyBwYXRjaCwgbmFwaV9ncm9fcmVjZWl2ZSgpIHdvdWxkDQpiZSBjYWxsZWQgZm9y
+IHRoZSA3MCBwYWNrZXRzLCBldmVuIHRoZSBidWRnZXQgaXMgNjQuIEFuZCB0aGUgcmVtYWluZWQg
+YnVsayB0cmFuc2ZlcnMNCndvdWxkIGJlIGhhbmRsZWQgZm9yIG5leHQgc2NoZWR1bGUuDQoNCj4g
+PiArICAgICAgICAgICAgICAgcmV0dXJuIGJ1ZGdldDsNCj4gPiArICAgICAgIGVsc2UNCj4gPiAr
+ICAgICAgICAgICAgICAgcmV0dXJuIHdvcmtfZG9uZTsNCj4gPiAgfQ0KDQpCZXN0IFJlZ2FyZHMs
+DQpIYXllcw0KDQo=
