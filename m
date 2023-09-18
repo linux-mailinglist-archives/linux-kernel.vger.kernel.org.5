@@ -2,143 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 254377A4DA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED367A4DB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjIRP5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
+        id S229818AbjIRP5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjIRP5B (ORCPT
+        with ESMTP id S229761AbjIRP5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:57:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A6E270B;
-        Mon, 18 Sep 2023 08:55:09 -0700 (PDT)
+        Mon, 18 Sep 2023 11:57:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2DD134;
+        Mon, 18 Sep 2023 08:56:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695052509; x=1726588509;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=9mdSjBgak3X7CxWik+JVulIYQIwZzjIpi9uzcf4feQE=;
-  b=De/fi7BxQvmSa9hdvh/ur5YXcXK6NWnTa/xopyFAQnE433NA5REc+x7i
-   bBldD6snaG9rzkruN5nwxImGHk2T6TorLy2ccS7VXH/ph0knaaTn0Cq2Z
-   aIX8b0Oe2EagY3KMfpLhNkDr2YbwntEykCAu4hqHW6EzOOBLT72vdeYUf
-   L7dJs18sQABeZxQIYk5huaq6dewQT72Q0w3+hvaqfTeTqGUzBxHR5vMHL
-   K1gTT6J2MScuO14YWAFohQV43q7kRqPmyP5zPJD9J1H4hw1NIxZJ4urdB
-   4tQgut5UFoKAw0In/nCLh+REAC3X4b2fdjlmfzE8j1sZOe7g3jflpoIxF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="466000301"
+  t=1695052559; x=1726588559;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=x/Gkehkxz6H66m4fYJwVcARK+fcXMAjRR7eSmz5gtPw=;
+  b=CaelJh/qzKinhHGKWi6K8ul8EeQhjwwrfrgeR52Be6B+12SPFAZso9cT
+   GGsQbZR2EhKJoUGn5xRXhvcDeOAqequkV6aCfclIqJfv6CW/bQPsf3e6i
+   8KPKoMzYiP62T7yFCX9yH4zqbg2Zzov8R5RGDXihiR11hzmWAMY7eLSwg
+   U9QjBYQ0HW0r2Tpik0SEnGJOUUpeRXlJ2fvHS87yV316zeJFinLZN8MFF
+   st0ck0SFirm8SveGEsVTcsoPP+S7KBhIUNkaj9OHiXZ0KXuElmomyvGVZ
+   9DrmPdIAmOnqHWX1+osOH2woVdJICetZ8SGbY7i/3imrcbId8G3ppx5Rx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="443727940"
 X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="466000301"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 06:26:46 -0700
+   d="scan'208";a="443727940"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 06:29:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861064597"
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="1076591678"
 X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="861064597"
-Received: from nprotaso-mobl1.ccr.corp.intel.com ([10.252.49.156])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 06:26:43 -0700
-Date:   Mon, 18 Sep 2023 16:26:41 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-cc:     Stephen Boyd <swboyd@chromium.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH v4 2/4] platform/x86: intel_scu_ipc: Check status upon
- timeout in ipc_wait_for_interrupt()
-In-Reply-To: <a0573057-8b93-f6f8-59eb-e8d30ac7035f@redhat.com>
-Message-ID: <f3d06f3d-1dee-54c2-88b9-f33cfb86366@linux.intel.com>
-References: <20230913212723.3055315-1-swboyd@chromium.org> <20230913212723.3055315-3-swboyd@chromium.org> <2bd9b7e2-a558-305b-bfd9-e64c28b6303d@linux.intel.com> <a0573057-8b93-f6f8-59eb-e8d30ac7035f@redhat.com>
+   d="scan'208";a="1076591678"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga005.fm.intel.com with SMTP; 18 Sep 2023 06:29:44 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 18 Sep 2023 16:29:43 +0300
+Date:   Mon, 18 Sep 2023 16:29:43 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Abdel Alkuor <alkuor@gmail.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        abdelalkuor@geotab.com
+Subject: Re: [PATCH v5 15/15] USB: typec: Do not check VID for tps25750
+Message-ID: <ZQhQxzJfJmjbR02B@kuha.fi.intel.com>
+References: <20230917152639.21443-1-alkuor@gmail.com>
+ <20230917152639.21443-16-alkuor@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-543075989-1695043025=:1832"
-Content-ID: <87977fa8-8a4f-18c8-6c6-1c2f8fd622cb@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230917152639.21443-16-alkuor@gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi,
 
---8323329-543075989-1695043025=:1832
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <d1a9ce37-d373-c568-271f-5872936c1b0@linux.intel.com>
-
-On Mon, 18 Sep 2023, Hans de Goede wrote:
-> On 9/15/23 15:49, Ilpo Järvinen wrote:
-> > On Wed, 13 Sep 2023, Stephen Boyd wrote:
-> > 
-> >> It's possible for the completion in ipc_wait_for_interrupt() to timeout,
-> >> simply because the interrupt was delayed in being processed. A timeout
-> >> in itself is not an error. This driver should check the status register
-> >> upon a timeout to ensure that scheduling or interrupt processing delays
-> >> don't affect the outcome of the IPC return value.
-> >>
-> >>  CPU0                                                   SCU
-> >>  ----                                                   ---
-> >>  ipc_wait_for_interrupt()
-> >>   wait_for_completion_timeout(&scu->cmd_complete)
-> >>   [TIMEOUT]                                             status[IPC_STATUS_BUSY]=0
-> >>
-> >> Fix this problem by reading the status bit in all cases, regardless of
-> >> the timeout. If the completion times out, we'll assume the problem was
-> >> that the IPC_STATUS_BUSY bit was still set, but if the status bit is
-> >> cleared in the meantime we know that we hit some scheduling delay and we
-> >> should just check the error bit.
-> > 
-> > Hi,
-> > 
-> > I don't understand the intent here. What prevents IPC_STATUS_BUSY from 
-> > changing right after you've read it in ipc_read_status(scu)? Doesn't that 
-> > end you exactly into the same situation where the returned value is stale 
-> > so I cannot see how this fixes anything, at best it just plays around the 
-> > race window that seems to still be there after this fix?
+On Sun, Sep 17, 2023 at 11:26:39AM -0400, Abdel Alkuor wrote:
+> From: Abdel Alkuor <abdelalkuor@geotab.com>
 > 
-> As I understand it the problem before was that the function would
-> return -ETIMEDOUT; purely based on wait_for_completion_timeout()
-> without ever actually checking the BUSY bit:
+> tps25750 doesn't have VID register, check VID for PD controllers
+> other than tps25750
 > 
-> Old code:
+> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+> ---
+>  drivers/usb/typec/tipd/core.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> 	if (!wait_for_completion_timeout(&scu->cmd_complete, IPC_TIMEOUT))
-> 		return -ETIMEDOUT;
-> 
-> This allows for a scenario where when the IRQ processing got delayed
-> (on say another core) causing the timeout to trigger,
-> ipc_wait_for_interrupt() would return -ETIMEDOUT even though
-> the BUSY flag was already cleared by the SCU.
-> 
-> This patch adds an explicit check for the BUSY flag after
-> the wait_for_completion(), rather then relying on the
-> wait_for_completion() return value which implies things
-> are still busy.
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index 326c23bfa8e6..c1399e12a170 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -1142,10 +1142,6 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	if (IS_ERR(tps->regmap))
+>  		return PTR_ERR(tps->regmap);
+>  
+> -	ret = tps6598x_read32(tps, TPS_REG_VID, &vid);
+> -	if (ret < 0 || !vid)
+> -		return -ENODEV;
+> -
+>  	/*
+>  	 * Checking can the adapter handle SMBus protocol. If it can not, the
+>  	 * driver needs to take care of block reads separately.
+> @@ -1176,6 +1172,12 @@ static int tps6598x_probe(struct i2c_client *client)
+>  
+>  	tps->irq_handler = irq_handler;
+>  
+> +	if (!tps->is_tps25750) {
+> +		ret = tps6598x_read32(tps, TPS_REG_VID, &vid);
+> +		if (ret < 0 || !vid)
+> +			return -ENODEV;
+> +	}
 
-Oh, I see, it's because the code is waiting for the completion rather than
-the actual condition.
+You need to do this at the same time you enable tps25750, so I'm
+guessing in patch 4.
 
-> As for "What prevents IPC_STATUS_BUSY from 
-> changing right after you've read it in ipc_read_status(scu)?"
-> 
-> AFAICT in this code path the bit is only ever supposed to go
-> from being set (busy) to unset (not busy), not the other
-> way around since no new commands can be submitted until
-> this function has completed. So that scenario cannot happen.
+You are also changing the execution order just because of that
+is_tps25750. Instead you need to make sure you have that flag set as
+soon as possible in the first place, so right after "tps" is
+allocated:
 
-This is not what I meant.
+        mutex_init(&tps->lock);
+        tps->dev = &client->dev;
++       tps->is_tps25750 = of_device_is_compatible(np, "ti,tps25750");
+ 
+        tps->regmap = devm_regmap_init_i2c(client, &tps6598x_regmap_config);
+        if (IS_ERR(tps->regmap))
 
-I meant that if the code has decided to return -ETIMEDOUT, the status bit 
-still change at that point which makes the return value to not match. This 
-race is still there and given the changelog was a bit sparse on what race 
-it was fixing I ended up noticing this detail.
 
+thanks,
 
 -- 
- i.
---8323329-543075989-1695043025=:1832--
+heikki
