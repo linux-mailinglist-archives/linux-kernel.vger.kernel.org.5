@@ -2,85 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A811F7A4C08
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2BC7A4DE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbjIRPZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
+        id S229819AbjIRQD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjIRPZR (ORCPT
+        with ESMTP id S229630AbjIRQDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:25:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F101A8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695050425;
+        Mon, 18 Sep 2023 12:03:23 -0400
+X-Greylist: delayed 1457 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Sep 2023 09:01:27 PDT
+Received: from out-211.mta1.migadu.com (out-211.mta1.migadu.com [IPv6:2001:41d0:203:375::d3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59D444A5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:01:27 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=khvoinitsky.org;
+        s=key1; t=1695048674;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LcTISZgyQz7Bvk45tsdOeOYi0IZTcEbOF6L8io0wv6s=;
-        b=cp2Mz3U24Ggcuo9FNS9C3MJiMzIwDFP/K+wN9PzWveuI5Hem808RtgQKlLRdcnk7jIN0IJ
-        oQJg/+v+YVz01P7+HCZ+DZMoNFBJyMMfWz2ynXll0M024iFuv5bUMpEUrb6B3Xy4dx805r
-        H1d/TVR9z4idxJhM4/6Jr3d6iDCo1MY=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-633-RaLnU6OBOembrNK_UM7Lmw-1; Mon, 18 Sep 2023 10:50:11 -0400
-X-MC-Unique: RaLnU6OBOembrNK_UM7Lmw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31aef28315eso3112600f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 07:50:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695048610; x=1695653410;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LcTISZgyQz7Bvk45tsdOeOYi0IZTcEbOF6L8io0wv6s=;
-        b=A+5t1guaU+AjQJ6tx2TUf/UhHwlVCHldOAt/A17MycP6jrNM194DrJzqs5mck/1OqM
-         dDH9oNQeAR8VJ0pTrVJQmDQqDWJwQ9qJmN7y+8lGBLvkba0fRMGwC7MWe+F+y3H+fsF5
-         kYY2h7lQl7rsEvlmNIKVo8PUwgVhBQaRLYkYf8RZ/BmS3zJ8hz/1ag3YlMhzIDiFBsmI
-         XNheZm8apn8NZGPXueVrSMUtZl2kj51+Dmia66q+GN+ltQWjiRCQMpGXdH4ZUZ8hhbBL
-         67a6osoqq5d7X42aMtq9f/i/wLHwEaAUXoj8dcR0IkSbHFaIRy2Yc0m/tuht7cadRqvE
-         104Q==
-X-Gm-Message-State: AOJu0YwuGr+mVziGaPnNgkkRzEib5yFOZ7k4H4BY3/0scsn5X0584M+A
-        c9YOQZNWjYs612gQMIskD6Jc0rrLu3bZL7DiUADGfvJSD3E5qGE5Tey5TmY78AoCV8hBXAmvkHt
-        xVxsHLip4yqpgOJKxxgVzGsF7
-X-Received: by 2002:a5d:4941:0:b0:319:72f8:7249 with SMTP id r1-20020a5d4941000000b0031972f87249mr7183136wrs.66.1695048609813;
-        Mon, 18 Sep 2023 07:50:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGMpvQ2Hg0cP8tmtAOT3D6mlDBNWBlCvpd7g68aXHEpraHiZGH8Wu30Hj0RA2msYaZmefhIrA==
-X-Received: by 2002:a5d:4941:0:b0:319:72f8:7249 with SMTP id r1-20020a5d4941000000b0031972f87249mr7183112wrs.66.1695048609417;
-        Mon, 18 Sep 2023 07:50:09 -0700 (PDT)
-Received: from sgarzare-redhat ([46.222.42.69])
-        by smtp.gmail.com with ESMTPSA id m6-20020adfe946000000b0031980783d78sm12772049wrn.54.2023.09.18.07.50.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 07:50:08 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 16:50:05 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v9 4/4] vsock/virtio: MSG_ZEROCOPY flag support
-Message-ID: <fwv4zdqjfhtwqookpvqqlckoqnxgyiinzhs5mq5pevl7ucefrt@hgd67phghec6>
-References: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
- <20230916130918.4105122-5-avkrasnov@salutedevices.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dfRSoo3qIAJs9yRjFcRKTJjlagEPLA7cOh8uxaHtW9c=;
+        b=Q7EXapfhVZAriNnfVz4CsGwM0MUcqE4o7YL9j1zT/ndAInhOoM29DXTUubkGiS8j4n/fXS
+        HxnNCkC/i1BjFycWMVbQgbcepqqeaQzMqzQkWfp8c8g+XR+GZqm++MZx5LMsvPa40tn/ML
+        5/4aiYEUdWL3Nf5GQ0mHm7H51jA3KTo=
+From:   Mikhail Khvainitski <me@khvoinitsky.org>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mikhail Khvainitski <me@khvoinitsky.org>
+Subject: [PATCH] HID: lenovo: Add middleclick_workaround sysfs knob for cptkbd
+Date:   Mon, 18 Sep 2023 17:50:42 +0300
+Message-ID: <20230918145042.37368-1-me@khvoinitsky.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230916130918.4105122-5-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,100 +47,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 04:09:18PM +0300, Arseniy Krasnov wrote:
->This adds handling of MSG_ZEROCOPY flag on transmission path:
->
->1) If this flag is set and zerocopy transmission is possible (enabled
->   in socket options and transport allows zerocopy), then non-linear
->   skb will be created and filled with the pages of user's buffer.
->   Pages of user's buffer are locked in memory by 'get_user_pages()'.
->2) Replaces way of skb owning: instead of 'skb_set_owner_sk_safe()' it
->   calls 'skb_set_owner_w()'. Reason of this change is that
->   '__zerocopy_sg_from_iter()' increments 'sk_wmem_alloc' of socket, so
->   to decrease this field correctly, proper skb destructor is needed:
->   'sock_wfree()'. This destructor is set by 'skb_set_owner_w()'.
->3) Adds new callback to 'struct virtio_transport': 'can_msgzerocopy'.
->   If this callback is set, then transport needs extra check to be able
->   to send provided number of buffers in zerocopy mode. Currently, the
->   only transport that needs this callback set is virtio, because this
->   transport adds new buffers to the virtio queue and we need to check,
->   that number of these buffers is less than size of the queue (it is
->   required by virtio spec). vhost and loopback transports don't need
->   this check.
->
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> Changelog:
-> v5(big patchset) -> v1:
->  * Refactorings of 'if' conditions.
->  * Remove extra blank line.
->  * Remove 'frag_off' field unneeded init.
->  * Add function 'virtio_transport_fill_skb()' which fills both linear
->    and non-linear skb with provided data.
-> v1 -> v2:
->  * Use original order of last four arguments in 'virtio_transport_alloc_skb()'.
-> v2 -> v3:
->  * Add new transport callback: 'msgzerocopy_check_iov'. It checks that
->    provided 'iov_iter' with data could be sent in a zerocopy mode.
->    If this callback is not set in transport - transport allows to send
->    any 'iov_iter' in zerocopy mode. Otherwise - if callback returns 'true'
->    then zerocopy is allowed. Reason of this callback is that in case of
->    G2H transmission we insert whole skb to the tx virtio queue and such
->    skb must fit to the size of the virtio queue to be sent in a single
->    iteration (may be tx logic in 'virtio_transport.c' could be reworked
->    as in vhost to support partial send of current skb). This callback
->    will be enabled only for G2H path. For details pls see comment
->    'Check that tx queue...' below.
-> v3 -> v4:
->  * 'msgzerocopy_check_iov' moved from 'struct vsock_transport' to
->    'struct virtio_transport' as it is virtio specific callback and
->    never needed in other transports.
-> v4 -> v5:
->  * 'msgzerocopy_check_iov' renamed to 'can_msgzerocopy' and now it
->    uses number of buffers to send as input argument. I think there is
->    no need to pass iov to this callback (at least today, it is used only
->    by guest side of virtio transport), because the only thing that this
->    callback does is comparison of number of buffers to be inserted to
->    the tx queue and size of this queue.
->  * Remove any checks for type of current 'iov_iter' with payload (is it
->    'iovec' or 'ubuf'). These checks left from the earlier versions where I
->    didn't use already implemented kernel API which handles every type of
->    'iov_iter'.
-> v5 -> v6:
->  * Refactor 'virtio_transport_fill_skb()'.
->  * Add 'WARN_ON_ONCE()' and comment on invalid combination of destination
->    socket and payload in 'virtio_transport_alloc_skb()'.
-> v7 -> v8:
->  * Move '+1' addition from 'can_msgzerocopy' callback body to the caller.
->    This addition means packet header.
->  * In 'virtio_transport_can_zcopy()' rename 'max_to_send' argument to
->    'pkt_len'.
->  * Update commit message by adding details about new 'can_msgzerocopy'
->    callback.
->  * In 'virtio_transport_init_hdr()' move 'len' argument directly after
->    'info'.
->  * Add comment about processing last skb in tx loop.
->  * Update comment for 'can_msgzerocopy' callback for more details.
-> v8 -> v9:
->  * Return and update comment for 'virtio_transport_alloc_skb()'.
->  * Pass pointer to transport ops to 'virtio_transport_can_zcopy()',
->    this allows to use it directly without calling virtio_transport_get_ops()'.
->  * Remove redundant call for 'msg_data_left()' in 'virtio_transport_fill_skb()'.
->  * Do not pass 'struct vsock_sock*' to 'virtio_transport_alloc_skb()',
->    use same pointer from already passed 'struct virtio_vsock_pkt_info*'.
->  * Fix setting 'end of message' bit for SOCK_SEQPACKET (add call for
->    'msg_data_left()' == 0).
->  * Add 'zcopy' parameter to packet allocation trace event.
+Built-in firmware of cptkbd handles scrolling by itself (when middle
+button is pressed) but with issues: it does not support horizontal and
+hi-res scrolling and upon middle button release it sends middle button
+click even if there was a scrolling event. Commit 3cb5ff0220e3 ("HID:
+lenovo: Hide middle-button press until release") workarounds last
+issue but it's impossible to workaround scrolling-related issues
+without firmware modification.
 
-Thanks for addressing the comments!
->
-> include/linux/virtio_vsock.h                  |   9 +
-> .../events/vsock_virtio_transport_common.h    |  12 +-
-> net/vmw_vsock/virtio_transport.c              |  32 +++
-> net/vmw_vsock/virtio_transport_common.c       | 250 ++++++++++++++----
-> 4 files changed, 241 insertions(+), 62 deletions(-)
+Likely, Dennis Schneider has reverse engineered the firmware and
+provided an instruction on how to patch it [1]. However,
+aforementioned workaround prevents userspace (libinput) from knowing
+exact moment when middle button has been pressed down and performing
+"On-Button scrolling". This commit makes it possible to disable this
+workaround by sysfs knob.
 
-LGTM!
+Link: https://hohlerde.org/rauch/en/elektronik/projekte/tpkbd-fix/ [1]
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Mikhail Khvainitski <me@khvoinitsky.org>
+---
+ drivers/hid/hid-lenovo.c | 84 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 62 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-lenovo.c
+index 44763c0da444..8993fa1ce66a 100644
+--- a/drivers/hid/hid-lenovo.c
++++ b/drivers/hid/hid-lenovo.c
+@@ -53,6 +53,7 @@ struct lenovo_drvdata {
+ 	int press_speed;
+ 	u8 middlebutton_state; /* 0:Up, 1:Down (undecided), 2:Scrolling */
+ 	bool fn_lock;
++	bool middleclick_workaround_cptkbd;
+ };
+ 
+ #define map_key_clear(c) hid_map_usage_clear(hi, usage, bit, max, EV_KEY, (c))
+@@ -603,6 +604,36 @@ static ssize_t attr_sensitivity_store_cptkbd(struct device *dev,
+ 	return count;
+ }
+ 
++static ssize_t attr_middleclick_workaround_show_cptkbd(struct device *dev,
++		struct device_attribute *attr,
++		char *buf)
++{
++	struct hid_device *hdev = to_hid_device(dev);
++	struct lenovo_drvdata *cptkbd_data = hid_get_drvdata(hdev);
++
++	return snprintf(buf, PAGE_SIZE, "%u\n",
++		cptkbd_data->middleclick_workaround_cptkbd);
++}
++
++static ssize_t attr_middleclick_workaround_store_cptkbd(struct device *dev,
++		struct device_attribute *attr,
++		const char *buf,
++		size_t count)
++{
++	struct hid_device *hdev = to_hid_device(dev);
++	struct lenovo_drvdata *cptkbd_data = hid_get_drvdata(hdev);
++	int value;
++
++	if (kstrtoint(buf, 10, &value))
++		return -EINVAL;
++	if (value < 0 || value > 1)
++		return -EINVAL;
++
++	cptkbd_data->middleclick_workaround_cptkbd = !!value;
++
++	return count;
++}
++
+ 
+ static struct device_attribute dev_attr_fn_lock =
+ 	__ATTR(fn_lock, S_IWUSR | S_IRUGO,
+@@ -614,10 +645,16 @@ static struct device_attribute dev_attr_sensitivity_cptkbd =
+ 			attr_sensitivity_show_cptkbd,
+ 			attr_sensitivity_store_cptkbd);
+ 
++static struct device_attribute dev_attr_middleclick_workaround_cptkbd =
++	__ATTR(middleclick_workaround, S_IWUSR | S_IRUGO,
++			attr_middleclick_workaround_show_cptkbd,
++			attr_middleclick_workaround_store_cptkbd);
++
+ 
+ static struct attribute *lenovo_attributes_cptkbd[] = {
+ 	&dev_attr_fn_lock.attr,
+ 	&dev_attr_sensitivity_cptkbd.attr,
++	&dev_attr_middleclick_workaround_cptkbd.attr,
+ 	NULL
+ };
+ 
+@@ -668,31 +705,33 @@ static int lenovo_event_cptkbd(struct hid_device *hdev,
+ {
+ 	struct lenovo_drvdata *cptkbd_data = hid_get_drvdata(hdev);
+ 
+-	/* "wheel" scroll events */
+-	if (usage->type == EV_REL && (usage->code == REL_WHEEL ||
+-			usage->code == REL_HWHEEL)) {
+-		/* Scroll events disable middle-click event */
+-		cptkbd_data->middlebutton_state = 2;
+-		return 0;
+-	}
++	if (cptkbd_data->middleclick_workaround_cptkbd) {
++		/* "wheel" scroll events */
++		if (usage->type == EV_REL && (usage->code == REL_WHEEL ||
++				usage->code == REL_HWHEEL)) {
++			/* Scroll events disable middle-click event */
++			cptkbd_data->middlebutton_state = 2;
++			return 0;
++		}
+ 
+-	/* Middle click events */
+-	if (usage->type == EV_KEY && usage->code == BTN_MIDDLE) {
+-		if (value == 1) {
+-			cptkbd_data->middlebutton_state = 1;
+-		} else if (value == 0) {
+-			if (cptkbd_data->middlebutton_state == 1) {
+-				/* No scrolling inbetween, send middle-click */
+-				input_event(field->hidinput->input,
+-					EV_KEY, BTN_MIDDLE, 1);
+-				input_sync(field->hidinput->input);
+-				input_event(field->hidinput->input,
+-					EV_KEY, BTN_MIDDLE, 0);
+-				input_sync(field->hidinput->input);
++		/* Middle click events */
++		if (usage->type == EV_KEY && usage->code == BTN_MIDDLE) {
++			if (value == 1) {
++				cptkbd_data->middlebutton_state = 1;
++			} else if (value == 0) {
++				if (cptkbd_data->middlebutton_state == 1) {
++					/* No scrolling inbetween, send middle-click */
++					input_event(field->hidinput->input,
++						EV_KEY, BTN_MIDDLE, 1);
++					input_sync(field->hidinput->input);
++					input_event(field->hidinput->input,
++						EV_KEY, BTN_MIDDLE, 0);
++					input_sync(field->hidinput->input);
++				}
++				cptkbd_data->middlebutton_state = 0;
+ 			}
+-			cptkbd_data->middlebutton_state = 0;
++			return 1;
+ 		}
+-		return 1;
+ 	}
+ 
+ 	if (usage->type == EV_KEY && usage->code == KEY_FN_ESC && value == 1) {
+@@ -1146,6 +1185,7 @@ static int lenovo_probe_cptkbd(struct hid_device *hdev)
+ 	cptkbd_data->middlebutton_state = 0;
+ 	cptkbd_data->fn_lock = true;
+ 	cptkbd_data->sensitivity = 0x05;
++	cptkbd_data->middleclick_workaround_cptkbd = true;
+ 	lenovo_features_set_cptkbd(hdev);
+ 
+ 	ret = sysfs_create_group(&hdev->dev.kobj, &lenovo_attr_group_cptkbd);
+-- 
+2.42.0
 
