@@ -2,189 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 760977A4520
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAF97A451B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbjIRIsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50288 "EHLO
+        id S238936AbjIRIs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 04:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235735AbjIRIsU (ORCPT
+        with ESMTP id S241140AbjIRIsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 04:48:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E02B133
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:46:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695026793;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ne/6wvHEM171/1YnTSavkevXbhaVIZD2o3rmnI4AXAc=;
-        b=ZXOrTBQAWjvwkFi/N+5l5GF1SbzicRXC/navZYSMJOoC11BRzzFr7kULeOHQX6mJked4yz
-        rE1jkJ2tDvEXtFADSZlcmIeChZ0mGLihAA+8vZPwxIBdkMBqCPh22Khcdkh+XVEkaewBZB
-        l0EpjvrpiSiLdvhFxOkuUp3NYN/Ezb0=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-HHzwT9qyPVemum6LlszCRw-1; Mon, 18 Sep 2023 04:46:31 -0400
-X-MC-Unique: HHzwT9qyPVemum6LlszCRw-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50091accc8eso4876796e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:46:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695026789; x=1695631589;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ne/6wvHEM171/1YnTSavkevXbhaVIZD2o3rmnI4AXAc=;
-        b=SUQSp8dkopP9N8FFY5LtSEHKfoiGJJOW1Rqkn5Dsn0tjoGO1W7lii9FhuORfPObqq5
-         ilDVX6wxvULLOfEUAoWT825ThcLdVx1XDyI/qE9qmvFIcJ8DwiSsAU3K8zBPMwITJ1R8
-         24ff1JMgxo2e2Oz/J7sTqQkc81fUgsixTdlN3gac9fn5p2Yq9rYkizq4N2Y3B9QUacpL
-         AOWtxpMiVx/WDcyVIgccYZPMnwgraYp8tUdR4KN+zEDqquIlhlfYBbAmZra/FZ6dAwk2
-         ssolQPab3KfpaCcAKebv+YJq1HNaxqVBLSBa4xm9qn9PgY/XG7KqOVMxsCMo3vyFOPWJ
-         7slg==
-X-Gm-Message-State: AOJu0Yzo1Bh6CJbTR33gJHhnwb0TIDQOjYbKR+K3hGLTlF8iWpnb0pRu
-        ZveGkBVVmCxoHg0QQ1AtZkwiOtcd1kvFwCZ4PVfsZLa6FMK9L5wGGDSTDo9p/wygwD2gdNhBS53
-        dX5t4IlFGjYsLFvsss4qHIxyzGZWJJFBK7V3EBJjO
-X-Received: by 2002:a05:6512:3d27:b0:503:5d8:da33 with SMTP id d39-20020a0565123d2700b0050305d8da33mr5511658lfv.20.1695026789528;
-        Mon, 18 Sep 2023 01:46:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFgMCrTK06HsA1jmrN2m8hmh2JeHg5MHIGzt2YqOFrbMXyCjP3e56ikeAOpp3+Aew9hlguYd0zxzDgNAWMVZ90=
-X-Received: by 2002:a05:6512:3d27:b0:503:5d8:da33 with SMTP id
- d39-20020a0565123d2700b0050305d8da33mr5511649lfv.20.1695026789253; Mon, 18
- Sep 2023 01:46:29 -0700 (PDT)
+        Mon, 18 Sep 2023 04:48:11 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3B910E;
+        Mon, 18 Sep 2023 01:47:57 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4750366071A0;
+        Mon, 18 Sep 2023 09:47:55 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695026875;
+        bh=PQUHws8Z1w+TcF0jCRyePlr50AeNkNWESN1De6xP8dY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=cLEYwxEiW2Z8laabejsz3E+oq39RdP0AVM6njg/u5/bbU+4eLVyrUT9RPaweN01CA
+         Pb7vMLBcp/lm5f0rhZ9kNADin2MewwuuMpDZmRNTmIca4b720JCsbPI3d5D0mRNZan
+         AUGUyZn00oQmQe2i6Dt/ppeU3eu50jjq4klAD85PWwu4+cW5vSg+wK7KVgxQilm+uf
+         LzZ5927BaNwAdV4r6hQbNEB7VtyiSadwF4YHvvS9UL7XElzBhPjD76fa9m50MS9+oA
+         m4tnB2kBGJD/gpspLH8tKOQ5kidqMxVSmaT40X4bhX0zD1RqI+QA3CtKz8KkDGDPz3
+         ggIPipT5GMKcA==
+Message-ID: <9acc8d99-e3db-3df8-4051-21d95450b28d@collabora.com>
+Date:   Mon, 18 Sep 2023 10:47:53 +0200
 MIME-Version: 1.0
-References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-3-lulu@redhat.com>
-In-Reply-To: <20230912030008.3599514-3-lulu@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 18 Sep 2023 16:46:18 +0800
-Message-ID: <CACGkMEuOYWYYGta5VoZaURVxrBFwU+1aNwoh7RyT1woQCNHJtg@mail.gmail.com>
-Subject: Re: [RFC v2 2/4] vduse: Add file operation for mmap
-To:     Cindy Lu <lulu@redhat.com>
-Cc:     mst@redhat.com, maxime.coquelin@redhat.com,
-        xieyongji@bytedance.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 3/3] dt-bindings: hwinfo: Add mtk-socinfo driver
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        William-tw Lin <william-tw.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20230915152607.18116-1-william-tw.lin@mediatek.com>
+ <20230915152607.18116-4-william-tw.lin@mediatek.com>
+ <3e7bc476-ffc7-fb07-8e64-246427da736c@linaro.org>
+Content-Language: en-US
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <3e7bc476-ffc7-fb07-8e64-246427da736c@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 11:00=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote:
->
-> Add the operation for mmap, The user space APP will
-> use this function to map the pages to userspace
->
-> Signed-off-by: Cindy Lu <lulu@redhat.com>
-> ---
->  drivers/vdpa/vdpa_user/vduse_dev.c | 63 ++++++++++++++++++++++++++++++
->  1 file changed, 63 insertions(+)
->
-> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
-vduse_dev.c
-> index 4c256fa31fc4..2c69f4004a6e 100644
-> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> @@ -1388,6 +1388,67 @@ static struct vduse_dev *vduse_dev_get_from_minor(=
-int minor)
->         return dev;
->  }
->
-> +static vm_fault_t vduse_vm_fault(struct vm_fault *vmf)
-> +{
-> +       struct vduse_dev *dev =3D vmf->vma->vm_file->private_data;
-> +       struct vm_area_struct *vma =3D vmf->vma;
-> +       u16 index =3D vma->vm_pgoff;
-> +       struct vduse_virtqueue *vq;
-> +       struct vdpa_reconnect_info *info;
-> +
-> +       if (index =3D=3D 0) {
-> +               info =3D &dev->reconnect_status;
-> +       } else {
-> +               vq =3D &dev->vqs[index - 1];
-> +               info =3D &vq->reconnect_info;
-> +       }
-> +       vma->vm_page_prot =3D pgprot_noncached(vma->vm_page_prot);
-> +       if (remap_pfn_range(vma, vmf->address & PAGE_MASK, PFN_DOWN(info-=
->addr),
-> +                           PAGE_SIZE, vma->vm_page_prot))
-> +               return VM_FAULT_SIGBUS;
-> +       return VM_FAULT_NOPAGE;
-> +}
-> +
-> +static const struct vm_operations_struct vduse_vm_ops =3D {
-> +       .fault =3D vduse_vm_fault,
-> +};
-> +
-> +static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
-> +{
-> +       struct vduse_dev *dev =3D file->private_data;
-> +       struct vdpa_reconnect_info *info;
-> +       unsigned long index =3D vma->vm_pgoff;
-> +       struct vduse_virtqueue *vq;
-> +
-> +       if (vma->vm_end - vma->vm_start !=3D PAGE_SIZE)
-> +               return -EINVAL;
-> +       if ((vma->vm_flags & VM_SHARED) =3D=3D 0)
-> +               return -EINVAL;
-> +
-> +       if (index > 65535)
-> +               return -EINVAL;
-> +
-> +       if (index =3D=3D 0) {
-> +               info =3D &dev->reconnect_status;
-> +       } else {
-> +               vq =3D &dev->vqs[index - 1];
-> +               info =3D &vq->reconnect_info;
-> +       }
-> +
-> +       if (info->index !=3D index)
-> +               return -EINVAL;
+Il 17/09/23 10:26, Krzysztof Kozlowski ha scritto:
+> On 15/09/2023 17:26, William-tw Lin wrote:
+>> dt-binding documentation for mtk-socinfo driver.
+> 
+> Here and in subject, drop driver and instead descrbe hardware.
+> 
+>> mtk-socinfo driver provides SoC-related information.
+>> Such information includes manufacturer information, SoC name,
+>> SoC segment name, and SoC marketing name.
+>>
+>> Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
+>> ---
+>>   .../bindings/hwinfo/mtk-socinfo.yaml          | 48 +++++++++++++++++++
+>>   1 file changed, 48 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+>> new file mode 100644
+>> index 000000000000..74f03f1dc404
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+> 
+> Nothing improved.
+> 
+> This is a friendly reminder during the review process.
+> 
+> It seems my previous comments were not fully addressed. Maybe my
+> feedback got lost between the quotes, maybe you just forgot to apply it.
+> Please go back to the previous discussion and either implement all
+> requested changes or keep discussing them.
+> 
+> Thank you.
+> 
+>> @@ -0,0 +1,48 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/hwinfo/mtk-socinfo.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: MediaTek SoC ChipID
+>> +
+>> +maintainers:
+>> +  - William Lin <william-tw.lin@mediatek.com>
+>> +  - Matthias Brugger <matthias.bgg@gmail.com>
+>> +  - Kevin Hilman <khilman@kernel.org>
+>> +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> +
+>> +description:
+>> +  MediaTek SoCs store various product information in eFuses, including
+>> +  Chip ID and Revision fields, usable to identify the manufacturer,
+>> +  SoC version, plus segment and marketing names.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: mediatek,socinfo
+> 
+> What happened to compatibles? No, this is just wrong and no explained.
+> You ignored other comments as well. Really, that's not the way to go.
+> 
 
-Under which case could we meet this?
+Practically, having different compatibles for each SoC is not needed, as
+the only thing that changes between SoCs is the eFuse(s) that you read to
+get the information - and that's all.
 
-> +
-> +       if (info->addr & (PAGE_SIZE - 1))
-> +               return -EINVAL;
+So ... we either use this driver with devicetree, giving it the right eFuses
+to read from, or we duplicate the mtk-efuse driver, or we statically assign
+the eFuses in the driver itself and we set compatibles like
+"mediatek,mt8195-socinfo" to select that... ideas?
 
-And this?
+Cheers,
+Angelo
 
-> +       if (vma->vm_end - vma->vm_start !=3D info->size)
-> +               return -EOPNOTSUPP;
-> +
-> +       vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTDUMP);
-
-Why do you use VM_IO, VM_PFNMAP and VM_DONTDUMP?
-
-Thanks
-
-> +       vma->vm_ops =3D &vduse_vm_ops;
-> +
-> +       return 0;
-> +}
-> +
->  static int vduse_dev_open(struct inode *inode, struct file *file)
->  {
->         int ret;
-> @@ -1420,6 +1481,8 @@ static const struct file_operations vduse_dev_fops =
-=3D {
->         .unlocked_ioctl =3D vduse_dev_ioctl,
->         .compat_ioctl   =3D compat_ptr_ioctl,
->         .llseek         =3D noop_llseek,
-> +       .mmap           =3D vduse_dev_mmap,
-> +
->  };
->
->  static struct vduse_dev *vduse_dev_create(void)
-> --
-> 2.34.3
->
+> NAK
+> 
+> Best regards,
+> Krzysztof
+> 
 
