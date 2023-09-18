@@ -2,49 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C334D7A407C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06607A4081
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239681AbjIRFd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 01:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        id S239646AbjIRFhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 01:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239604AbjIRFd2 (ORCPT
+        with ESMTP id S239666AbjIRFgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 01:33:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0869F;
-        Sun, 17 Sep 2023 22:33:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 431A9C433C7;
-        Mon, 18 Sep 2023 05:33:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695015203;
-        bh=ZSre9xUXaczWj7SY0m81+m7rnmYcDRo0030/fgV5cdI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TANfFm6fmw4upz/D15/HMmKIdtp3e7oAQqqcn8BfeWoarFhn/LkGWZVe+7snKEyFU
-         cOWWysL8c5SUUGGBnUIv6wmbUULwwtOE9dbAhECEdk8AgmsmnZpToArMXwUdcU8DRc
-         9gVFthnkt2IsWTRE+5XfZH07iVZwe00q3psZPuZC90fCEuabqwzaoTbk5ZxSPlnmQD
-         cyV1Sg+jseVykrqA0XgXx81JSvKC4wGScf93+qIjP1sFgYQtvQlz7+NPbpwLaZ/qrL
-         mjsCOeFWu1w4nnP5tNhQg3LKe801Xg0lJE/BSCrgLPBhx2MBDiJKx7MFSR+jUj2hhG
-         s2g4KjcNWRBVw==
-From:   SeongJae Park <sj@kernel.org>
-To:     Jinjie Ruan <ruanjinjie@huawei.com>
-Cc:     sj@kernel.org, akpm@linux-foundation.org,
-        brendan.higgins@linux.dev, feng.tang@intel.com,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND 1/2] mm/damon/core-test: Fix memory leak in damon_new_region()
-Date:   Mon, 18 Sep 2023 05:33:20 +0000
-Message-Id: <20230918053320.61408-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230918051044.3814018-2-ruanjinjie@huawei.com>
-References: 
+        Mon, 18 Sep 2023 01:36:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C8ED2;
+        Sun, 17 Sep 2023 22:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695015401; x=1726551401;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Xb/dp+do5fxvyOyftlUPUmIspOQcsSZjn7fEnjla9E0=;
+  b=lWbffep6TGu0QrqbGYM5YgwRCdOx2oIEmK/K9NpUauC0ehQUz3nIJ0hy
+   IhAfCIBg/3HTxGrwJUYCi4SFzjVGnsR8OH4DsRzGtluJiPVoIjBnHRPP3
+   OzTYNLYHzYX9M2v7J6yj8j76QswCTD139YgeOGY+C5DF2yzC0A1ub+PhH
+   J7u0OhzCuvrl42Esi8lNkfxLsQGGDkU9Vk7IpkrSTcpJb8vh0Em7AtB7g
+   dREJrinoG5t9/ti/5AawoXohxx1XZQTXvB6s2eNZBFa5kTTdDnabMx93S
+   A8xSdZkcn7EWtUvRFKRgjoZHzOlK03kMZHkT/kebsOJDGQOe1Jo8kh6Ui
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="465914704"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="465914704"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 22:36:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="738994554"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="738994554"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga007.jf.intel.com with ESMTP; 17 Sep 2023 22:36:37 -0700
+Message-ID: <9334dfcd-7749-6ae1-1170-b4952f2b8181@linux.intel.com>
+Date:   Mon, 18 Sep 2023 13:33:31 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Cc:     baolu.lu@linux.intel.com, joro@8bytes.org, jgg@nvidia.com,
+        jean-philippe@linaro.org, apopple@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [PATCH] iommu/arm-smmu-v3: Fix soft lockup triggered by
+ arm_smmu_mm_invalidate_range
+Content-Language: en-US
+To:     Nicolin Chen <nicolinc@nvidia.com>, will@kernel.org,
+        robin.murphy@arm.com
+References: <20230901203904.4073-1-nicolinc@nvidia.com>
+ <ZQQLNmmAOsNmvtDs@Asurada-Nvidia>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZQQLNmmAOsNmvtDs@Asurada-Nvidia>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,97 +69,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jinjie,
-
-
-Thank you for this patchset!
-
-On Mon, 18 Sep 2023 13:10:43 +0800 Jinjie Ruan <ruanjinjie@huawei.com> wrote:
-
-> The damon_region which is allocated by kmem_cache_alloc() in
-> damon_new_region() in damon_test_regions() and
-> damon_test_update_monitoring_result() are not freed and it causes below
-> memory leak. So use damon_free_region() to free it.
+On 9/15/23 3:43 PM, Nicolin Chen wrote:
+> I found this patch cannot be applied to v6.6-rc1 due to conflicts
+> with some new commits that were merged during the previous cycle.
 > 
-> unreferenced object 0xffff2b49c3edc000 (size 56):
->   comm "kunit_try_catch", pid 338, jiffies 4294895280 (age 557.084s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 02 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 49 2b ff ff  ............I+..
->   backtrace:
->     [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
->     [<00000000b528f67c>] kmem_cache_alloc+0x168/0x284
->     [<000000008603f022>] damon_new_region+0x28/0x54
->     [<00000000a3b8c64e>] damon_test_regions+0x38/0x270
->     [<00000000559c4801>] kunit_try_run_case+0x50/0xac
->     [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
->     [<000000003c3e9211>] kthread+0x124/0x130
->     [<0000000028f85bdd>] ret_from_fork+0x10/0x20
-> unreferenced object 0xffff2b49c5b20000 (size 56):
->   comm "kunit_try_catch", pid 354, jiffies 4294895304 (age 556.988s)
->   hex dump (first 32 bytes):
->     03 00 00 00 00 00 00 00 07 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 96 00 00 00 49 2b ff ff  ............I+..
->   backtrace:
->     [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
->     [<00000000b528f67c>] kmem_cache_alloc+0x168/0x284
->     [<000000008603f022>] damon_new_region+0x28/0x54
->     [<00000000ca019f80>] damon_test_update_monitoring_result+0x18/0x34
->     [<00000000559c4801>] kunit_try_run_case+0x50/0xac
->     [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
->     [<000000003c3e9211>] kthread+0x124/0x130
->     [<0000000028f85bdd>] ret_from_fork+0x10/0x20
+> I can redo a version rebasing on the v6.6-rc1, yet the new version
+> won't apply to earlier kernel stable trees. Is there a way to make
+> it happen that both mainline and earlier trees can have this fix?
 
-Nice finding!  Could you please share just a brief more detail about above cool
-output, e.g., just the name of the tool you used, so that others can learn it
-from your awesome commit message?
+Normally, bug fixes should first be submitted to the mainline kernel
+(also known as Linus's tree). If you use the "Fixes" and "CC-stable"
+tags, the patch will be automatically picked up for the appropriate
+stable kernels.
 
-> 
-> Fixes: 17ccae8bb5c9 ("mm/damon: add kunit tests")
-> Fixes: f4c978b6594b ("mm/damon/core-test: add a test for damon_update_monitoring_results()")
-> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
-> ---
->  mm/damon/core-test.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
-> index 6cc8b245586d..255f8c925c00 100644
-> --- a/mm/damon/core-test.h
-> +++ b/mm/damon/core-test.h
-> @@ -34,6 +34,7 @@ static void damon_test_regions(struct kunit *test)
->  	KUNIT_EXPECT_EQ(test, 0u, damon_nr_regions(t));
->  
->  	damon_free_target(t);
-> +	damon_free_region(r);
+If the patch does not apply to any stable kernel that you want it to be
+there, you can then post a back-ported patch to the stable mailing list.
 
-There is damon_destroy_region() function, which simply calls damon_del_region()
-and damon_free_region().  Unless there is needs to access the region before
-removing from the region, doing memory return together via the function is
-recommended.
+When doing so, it's better to include the following information:
 
-And this test code calls damon_del_region() just beofre above
-KUNIT_EXPECT_EQ().  Hence, I think replacing the damon_del_region() call with
-damon_destroy_region() rather than calling damon_free_region() may be simpler
-and shorter.  Could you please do so?
+- The mainline commit ID of the back-ported patch.
+- The versions of the stable kernel(s) to which you want the back-ported
+   patch to be applied.
 
->  }
->  
->  static unsigned int nr_damon_targets(struct damon_ctx *ctx)
-> @@ -316,6 +317,8 @@ static void damon_test_update_monitoring_result(struct kunit *test)
->  	damon_update_monitoring_result(r, &old_attrs, &new_attrs);
->  	KUNIT_EXPECT_EQ(test, r->nr_accesses, 150);
->  	KUNIT_EXPECT_EQ(test, r->age, 20);
-> +
-> +	damon_free_region(r);
+Hope this helps.
 
-This looks nice.  Thank you for fixing this!
-
->  }
->  
->  static void damon_test_set_attrs(struct kunit *test)
-> -- 
-> 2.34.1
-> 
-
-Thanks,
-SJ
+Best regards,
+baolu
