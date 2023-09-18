@@ -2,172 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 254437A4009
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF2C7A400A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239513AbjIRERp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S239496AbjIRETW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 00:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239556AbjIRER2 (ORCPT
+        with ESMTP id S239559AbjIRETO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:17:28 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834FA1B5;
-        Sun, 17 Sep 2023 21:16:11 -0700 (PDT)
-X-UUID: 15f41fa255da11ee8051498923ad61e6-20230918
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=2DmFBdQCJbP1WThR9XAnxRp/dD1egzcvosJnuUzD64g=;
-        b=UsYE4iAm19va2h33CgPlYLN8KMNsAoy2oQHnanVMpAugW46ocHoJwclW0o5h2DqKIcsRRIXlgqSG/zouJZDW3lGW/YYY727K3bo0ZpvY0/A5XYDc9KstekFX70pC21vxQfnY+Gmy8Naj5VrF3aTkqJz9NpXIKIDtAF39lnsnVHE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:31aea067-0f94-49ec-8eb8-52291372a515,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:605924c3-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
-X-UUID: 15f41fa255da11ee8051498923ad61e6-20230918
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 546654801; Mon, 18 Sep 2023 12:16:05 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 18 Sep 2023 12:16:04 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 18 Sep 2023 12:16:04 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DHDIPrSB/oUO8+uGADZf9Hcm8/lkUI2Af68BLLMCHHiUsNcqfJBmdZ4fta+GvAUpODqLZ4ohp73h8kRwgAGcBI/zq8cZ3vP1wm1Z6++y9n9hV7V10Z5QUCV/wK3DouaRsLwIKKgJkqg54GnRAaxldaeimFJlMoBaKghSBfpMCxAK4C23nEXeTlDBNQmgWr9S0WEFpcT+kK4GTEriHA+5f3MhRZUrPOkl/qnOe0bXyK7jns5I9mJiWRh+LQXxKcswfm8bB8c/v0rErpsqVD5nFxC0t+g5AKlfFZyo8GPcAUcbSV5blJS5tR/fuDy+MKx7WgnvenyhilRbi3tnfRBeyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2DmFBdQCJbP1WThR9XAnxRp/dD1egzcvosJnuUzD64g=;
- b=mSlADrya9cmuj49kmRxrSmppSV6lQ9px+o5rubcvovzRW6YRIoKoXWhe6Vdp/cCkQhnVcJB0rGYeG4zXZlHW6xv1rfZwDzNTxsoW8zUL8+AoZ+dDShlQGCDaXSDaSJ0IJ6Pre8grprFmZzKWC4x/TK4KsDiIvhDjFiKrZEJhQ0mYy9i+bnkWI7r/liDUj5i+QYnpPPnBJCBEmTLYWosnOsptZCo+CfqZvdKeNl43KQwNd2d5HK69pfRSYymuKRhmnPp1mGKGsqrOrmrCx/mnnp+Fhyy1o98q1+i7siT7vEnaQco2u0mUFmFRbtJWzsl1jJE4KTUTRtIaMj9RCf5I0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2DmFBdQCJbP1WThR9XAnxRp/dD1egzcvosJnuUzD64g=;
- b=JV91h6QqsR3+DL1sayYtRdjR9EIXoNeNwZlp/fY8fQBN21DdDumH1K5qySqFxLNoydVzxiL14gpoWUY87xBLq5Q9cNVg+q4c2A4RaXrpIJx22UOMKq2j8mvdOOSikdb+y20Dx3Mqcx36Wf6Bb21crC5anjDvNlKCFjcoGcaq+8w=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by SG2PR03MB6399.apcprd03.prod.outlook.com (2603:1096:4:17e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.24; Mon, 18 Sep
- 2023 04:16:00 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984%6]) with mapi id 15.20.6792.022; Mon, 18 Sep 2023
- 04:15:59 +0000
-From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To:     =?utf-8?B?U2h1aWppbmcgTGkgKOadjuawtOmdmSk=?= 
-        <Shuijing.Li@mediatek.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        =?utf-8?B?Sml0YW8gU2hpICjnn7PorrDmtpsp?= <jitao.shi@mediatek.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: Re: [PATCH v6,4/4] drm/mediatek: dp: Add support MT8188 dp/edp
- function
-Thread-Topic: [PATCH v6,4/4] drm/mediatek: dp: Add support MT8188 dp/edp
- function
-Thread-Index: AQHZ1KJCuBhOm53M/UaYvQYb3a396bAgJGOA
-Date:   Mon, 18 Sep 2023 04:15:59 +0000
-Message-ID: <07ac11372f131c65ae2096d8a3fe1783046dc9dc.camel@mediatek.com>
-References: <20230822024155.26670-1-shuijing.li@mediatek.com>
-         <20230822024155.26670-5-shuijing.li@mediatek.com>
-In-Reply-To: <20230822024155.26670-5-shuijing.li@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SG2PR03MB6399:EE_
-x-ms-office365-filtering-correlation-id: ad6322be-83f5-4c82-784a-08dbb7fdf6cd
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ipo+Fio+TRcLN0+6qjCaoVVVEcJezSBUNw/A4Z4gPjzt7At3bSWcXAoNWKsnYqcAxd7nchbM7W0IeCUuPPz1IF1vyoNZnLXuyo2jz/q3GtBBIThiXCov+TcBqCHJLiXSTQCj4yyCmrKESY8jRqNAmCDsw4wnuYToWE2XRMtADbDwDCbk6wKjkD91vxiunU59aeThEwzXedLc34jILGjYAWMVYHRoFqkZ1aBcd6thrJpEdYUFU0amS3qHS6ua3nhDKI04yvf9s2aYa//diRBVtOMDv9FZ9kWOdIMDqLmj8FDAREyU7wr5Dhha6Wy1QPjoX8Yke3U9EZTE7oVAN0pC3RANfFYuvZKuhTrf+ZjbjFeTF2xcj6DVLVvkkaiPHiMVoSx9oh/VN8BSwYOwJZrvdZ7PTg8byy5geb/+vwU5keh5e8S83IOFPDQYhNJCzxMBYYo681VSmhFK3XFe/FryOFU+/0WktBzaH0rPKvvbI93phdL2ciD4aN8KDLUllhtbabxzujQvAvoGadxnw/0nmXSpR2CKVdBVJBcHDA5ZzxHGxdkXp+d4SyQMCmvfqmJYOraBJuwZ/8czM4pdYcpbM8huTVxiGM19jBeFd5x6+8jfASUpQluo2fRdeBEoQLtgdL2PVwipOE4as2+J8PJmOnLz4S8v7CQRYC8Jte/GX2tZrtlJP6r0FcufQ1GzY/XpdUeiRIhDy263ZNgs1n9A1A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(39860400002)(136003)(346002)(451199024)(186009)(1800799009)(2906002)(41300700001)(8676002)(8936002)(107886003)(478600001)(966005)(110136005)(54906003)(64756008)(4326008)(66556008)(66446008)(66476007)(76116006)(66946007)(7416002)(316002)(71200400001)(6486002)(6506007)(6512007)(36756003)(5660300002)(86362001)(2616005)(26005)(38070700005)(85182001)(921005)(38100700002)(122000001)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aFlBSmFWS2p2aWl2cWtkc3dEUjcwdWdPT0ZjeUtTSG5Fall6ekpmWUVxUExa?=
- =?utf-8?B?NXlnRG9QcC9lVko3ZGhlUHo5SjYzVktTR3g5djRqelAwYmFlYjU1TVFHUG1h?=
- =?utf-8?B?bkFvR1pYY1ppQXZZb3dDTHkzN0FueXpDZUtFYS84OWd5OGh1THZmQlRlaGs4?=
- =?utf-8?B?SHFmNXVML1pPU0xNbi9LbW5sdWpNaU9uVW9waDAyeUJzZ1prZXF0aWlubzNS?=
- =?utf-8?B?RUNFVHhtSHpCZEtRbG8zaS9aa2U3VmlHVjdVenIzWWhwVkg3cTV1VVg0K1Zi?=
- =?utf-8?B?b21oU3VBSHNYbjg1Ny85V2VsbE9oSVZwWGw2Y3JaaUZlbmFVbG1oc0NDaHI3?=
- =?utf-8?B?M3hNSlhUa0ZvbWU2S0pTSE9Ub05JQ3hwaXp6UWRTREphNHQ2ZVhVTGJUc2s0?=
- =?utf-8?B?RVRqdG5sUHJjMjgzUmdDRXhFUWp3ZStjSmVGZ3BTUXBrS0pjQlJ5dFJ2RHBU?=
- =?utf-8?B?cHpadEdldmp3bEJoZ2lGMit0a0EzaWZzMXN0N2s3b0hqNE83ZkV1alRnNmFj?=
- =?utf-8?B?MUZnZVMrMkpFa2NXOGVFeFo0SGMzSlYxbXJsSHdSenhvUU1xdDJ2cWpqckl2?=
- =?utf-8?B?T3FOeFlQT1NqNWhPMDBoZmw0R3c3NUZHUDBjaTJ0a29iMStPVEdVNktORnZ0?=
- =?utf-8?B?QXJqSGx1cWc4QmdhcmVuRzlqODBXMWVQWjZxdzRxbkR3SFlFNTl6ZEg4N0Z4?=
- =?utf-8?B?TnkwbUNsblcraGZVeFVBTyt3Nm1wMGxMbUNNSG1lTDBHYk9INGJ3UW1uTGVm?=
- =?utf-8?B?REtNY1BVeitwa0RMOXNvang2TVc0MzFMc1VqVGdkNjVNT0V5cnBDUnVxSHNQ?=
- =?utf-8?B?OFN2ZDJDcjZwWjE1VjdpSGdUcHJUSzNqOUc4eXpoaDdRL2dLTzJBZHpCSE5Q?=
- =?utf-8?B?NVkxVGRXeGNiRG9wM1VJS3lzTnlZQlJTck16SnF4UU9tMlFQRjFpcWZmUTVP?=
- =?utf-8?B?V1laK1loZ0JDL2tZZ25vb0tQd1BGbi9DbFVZYVB6dXpWcmZEVXp5N0gyOWtx?=
- =?utf-8?B?RmxLWUxaRElmUDJDQUdMTjV6eUcwSGdvYWRWNTA3RlZCNmZ3cUU2NFV1bzNx?=
- =?utf-8?B?Qm0yOEhDK2kzQzZWMjRzTW45SC84QVdsUjZpRWRVSllxQlFNUDMzazNMNmNn?=
- =?utf-8?B?MDJHRXh2MDYyeGl4Vk1SWTl0MzBPWFVnMTZsU05JWThHYTU1dWphbmlXWVpD?=
- =?utf-8?B?ekxDYk12MVBublhNbUdIdTNUU3NZeGVYK2RRaUJnSTNmODE2ak16NVcxWE1S?=
- =?utf-8?B?bUppYW5JV2E0cnY1c04xUWRxYUZTWUdPU0xrZzZ2OFgraEdwSkJOMllULzBy?=
- =?utf-8?B?WUVqZ3B6OGJMcUI0ZEUxcktSb0lFNjRiMTZLQlY2dWRmdFlGZFNIUGIvRDRm?=
- =?utf-8?B?QXlOeGpPNDlTaHJsUFVtL2llSTVLY1VXOTd4MkJscUlkVUlWZzBMM0Nwa0N5?=
- =?utf-8?B?UUUybGdQUGFWVnpMWk1iZWhDRnRHREZqQkV6SG13U2JpSG4xU1BBaVIzYUZM?=
- =?utf-8?B?aU9IZFRQc0EyNjVsZ1RMNHFMUzNWM1NJdEgxWmluRE5yL3Mwc09yU1F6S1FZ?=
- =?utf-8?B?emdzSHp3UFBwVGNmRTZSQ25qZ3gwdVlnbmpJZSs2SmJGSmlYd2JEVjd1ZWli?=
- =?utf-8?B?UkVnTk5mOTRCOTZHbEZkQ3pqdUZXRlhtTEsyWFFiMm5rWXBua2Q0RUIxK2dy?=
- =?utf-8?B?a21JR2RDcTVvM0o3ZVdWTU5CdTVJTzlxZmorcExLUjRPcE5ZTHFxQ05Xa05H?=
- =?utf-8?B?em5xY0tFbEFMT3hSSzN0dmlzbS8vMW1BS3ZzSFg1OTdlWlpiZDNLaGI5cUEv?=
- =?utf-8?B?NGozMHIyQ01zZzAvWHBzV0puYU9FN3N3ekdOeDFKaHdZQ0xLUFIra0l5amov?=
- =?utf-8?B?UnFlZkVWS1dzYnBMV1Y4S2hLc3ZQNnZ3NjM0MTNzc0kzYkJXelljV3VGMkdX?=
- =?utf-8?B?MjltSDdwTkFuS0JCZWkyR0ZIQkd5T2xzV2dkaWs0bmZ0VjFkMHRYQVREemxJ?=
- =?utf-8?B?VDhyYXlQV2VVc3ZqWVpuL1pPRjRSUnB6eTNLVFYvZWlVMG45eFN6M2pQRVd3?=
- =?utf-8?B?VGZzTnhnVVo3amJOOXY2OUorTVZLaFpWZHBmV3VwalBPK3VKWDJ0Mjg0aGZ6?=
- =?utf-8?Q?P+jCkUEDuKHmlrRmqptUCHhWi?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1F500226F76F264CA6884921DCE9DBAD@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 18 Sep 2023 00:19:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E6594
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:19:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695010749; x=1726546749;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1t5Op4Y25SCXDzrsl8r7++ESuI8wEM2tXr6DZwd1tR8=;
+  b=FDOik23hMYUcF0F8+wJm5s1MRKiOuUYFQtUg8e3C68a9RNbxVMxMTM+r
+   GaLALuHzxN5cb/YO7hkztBF8VSjtlB2C3Lq08S8hnqr0t1aBdabXwBYBG
+   Qc2Bq5r5ERitMhjdzzYvKcwny9m3qyLkxpea2CnkIDH0M2692LI8o9cQN
+   1yCleZ0FrMiTfKS8wenCLzJGnE5q8maY7CeFn7MhnhpmOcvuWBpKM4N45
+   ivydhAMKBpntjvZguxKK71UczmeMmM4Isq6bDfTunCFMcghjULi0VqHTR
+   B4Uox8vnlwzq+5pjR76EXH6qASLaNz1FdGH03J7xfTuIIbT4F7rq2pm29
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="443637900"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="443637900"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 21:19:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="745666268"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="745666268"
+Received: from ameskel-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.251.13.217])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 21:19:06 -0700
+From:   Kai Huang <kai.huang@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, dave.hansen@intel.com, peterz@infradead.org,
+        kirill.shutemov@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, jpoimboe@kernel.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com
+Subject: [PATCH v2] x86/tdx: Fix __noreturn build warning around __tdx_hypercall_failed()
+Date:   Mon, 18 Sep 2023 16:18:58 +1200
+Message-ID: <20230918041858.331234-1-kai.huang@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad6322be-83f5-4c82-784a-08dbb7fdf6cd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2023 04:15:59.8263
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: boGOSMo3W6UMjnheggWxxiEi703r9FU0BexgxQSBT3m+XIPy9ry6XgdcYNgM2ha2mgum/hibWTfzJgZ+UHOUpw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR03MB6399
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -175,60 +61,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFNodWlqaW5nOg0KDQpPbiBUdWUsIDIwMjMtMDgtMjIgYXQgMTA6NDEgKzA4MDAsIFNodWlq
-aW5nIExpIHdyb3RlOg0KPiBBZGQgc3VwcG9ydCBNVDgxODggZHAvZWRwIGZ1bmN0aW9uDQoNClJl
-dmlld2VkLWJ5OiBDSyBIdSA8Y2suaHVAbWVkaWF0ZWsuY29tPg0KDQo+IA0KPiBTaWduZWQtb2Zm
-LWJ5OiBTaHVpamluZyBMaSA8c2h1aWppbmcubGlAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gQ2hh
-bmdlcyBpbiB2NjoNCj4gTW92ZSBhdWRpbyBmdW5jdGlvbiB0byBwYXRjaCBbMi80XS4NCj4gcGVy
-IHN1Z2dlc3Rpb24gZnJvbSB0aGUgcHJldmlvdXMgdGhyZWFkOg0KPiANCmh0dHBzOi8vbG9yZS5r
-ZXJuZWwub3JnL2FsbC8xZDQxNzQ3MDYwYzYxM2NhMGFlOGUzYjYzOTVjYzMzYmZhNGQ5MDU2LmNh
-bWVsQG1lZGlhdGVrLmNvbS8NCj4gQ2hhbmdlcyBpbiB2NToNCj4gU2VwYXJhdGUgbXQ4MTg4IHJl
-bGF0ZWQgY29kZSBpbnRvIG10a19kcF9kYXRhIHN0cnVjdHVyZSBhbmQgbXQ4MTg4DQo+IGRwL2Vk
-cCBmdW5jdGlvbg0KPiBwZXIgc3VnZ2VzdGlvbiBmcm9tIHRoZSBwcmV2aW91cyB0aHJlYWQ6DQo+
-IA0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC9jMWM4NDYxNmYzZGE4M2E4YTJiYzI0NWIw
-ZDNjNzY5NzE1M2NkODFhLmNhbWVsQG1lZGlhdGVrLmNvbS8NCj4gLS0tDQo+ICBkcml2ZXJzL2dw
-dS9kcm0vbWVkaWF0ZWsvbXRrX2RwLmMgICAgIHwgMTcgKysrKysrKysrKysrKysrKysNCj4gIGRy
-aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHBfcmVnLmggfCAgNiArKysrKysNCj4gIDIgZmls
-ZXMgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Z3B1L2RybS9tZWRpYXRlay9tdGtfZHAuYw0KPiBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9t
-dGtfZHAuYw0KPiBpbmRleCAwYmE5YTRmZGY4MzkuLjY3OTg2ZGQ3YzlkNyAxMDA2NDQNCj4gLS0t
-IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcC5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1
-L2RybS9tZWRpYXRlay9tdGtfZHAuYw0KPiBAQCAtMjYzMSw2ICsyNjMxLDE1IEBAIHN0YXRpYyBp
-bnQgbXRrX2RwX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ICANCj4gIHN0YXRpYyBTSU1Q
-TEVfREVWX1BNX09QUyhtdGtfZHBfcG1fb3BzLCBtdGtfZHBfc3VzcGVuZCwNCj4gbXRrX2RwX3Jl
-c3VtZSk7DQo+ICANCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2RwX2RhdGEgbXQ4MTg4X2Rw
-X2RhdGEgPSB7DQo+ICsJLmJyaWRnZV90eXBlID0gRFJNX01PREVfQ09OTkVDVE9SX0Rpc3BsYXlQ
-b3J0LA0KPiArCS5zbWNfY21kID0gTVRLX0RQX1NJUF9BVEZfVklERU9fVU5NVVRFLA0KPiArCS5l
-ZnVzZV9mbXQgPSBtdDgxOTVfZHBfZWZ1c2VfZm10LA0KPiArCS5hdWRpb19zdXBwb3J0ZWQgPSB0
-cnVlLA0KPiArCS5hdWRpb19wa3RfaW5faGJsYW5rX2FyZWEgPSB0cnVlLA0KPiArCS5hdWRpb19t
-X2RpdjJfYml0ID0NCj4gTVQ4MTg4X0FVRElPX01fQ09ERV9NVUxUX0RJVl9TRUxfRFBfRU5DMF9Q
-MF9ESVZfMiwNCj4gK307DQo+ICsNCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2RwX2RhdGEg
-bXQ4MTk1X2VkcF9kYXRhID0gew0KPiAgCS5icmlkZ2VfdHlwZSA9IERSTV9NT0RFX0NPTk5FQ1RP
-Ul9lRFAsDQo+ICAJLnNtY19jbWQgPSBNVEtfRFBfU0lQX0FURl9FRFBfVklERU9fVU5NVVRFLA0K
-PiBAQCAtMjY0OCw2ICsyNjU3LDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2RwX2RhdGEg
-bXQ4MTk1X2RwX2RhdGENCj4gPSB7DQo+ICB9Ow0KPiAgDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0
-IG9mX2RldmljZV9pZCBtdGtfZHBfb2ZfbWF0Y2hbXSA9IHsNCj4gKwl7DQo+ICsJCS5jb21wYXRp
-YmxlID0gIm1lZGlhdGVrLG10ODE4OC1lZHAtdHgiLA0KPiArCQkuZGF0YSA9ICZtdDgxOTVfZWRw
-X2RhdGEsDQo+ICsJfSwNCj4gKwl7DQo+ICsJCS5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4
-OC1kcC10eCIsDQo+ICsJCS5kYXRhID0gJm10ODE4OF9kcF9kYXRhLA0KPiArCX0sDQo+ICAJew0K
-PiAgCQkuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTUtZWRwLXR4IiwNCj4gIAkJLmRhdGEg
-PSAmbXQ4MTk1X2VkcF9kYXRhLA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlh
-dGVrL210a19kcF9yZWcuaA0KPiBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHBfcmVn
-LmgNCj4gaW5kZXggYjk4NTllZjA2N2NlLi43MDliNzk0ODA2OTMgMTAwNjQ0DQo+IC0tLSBhL2Ry
-aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHBfcmVnLmgNCj4gKysrIGIvZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19kcF9yZWcuaA0KPiBAQCAtMTY1LDYgKzE2NSwxMiBAQA0KPiAgI2Rl
-ZmluZSBNVDgxOTVfQVVESU9fTV9DT0RFX01VTFRfRElWX1NFTF9EUF9FTkMwX1AwX0RJVl8yCSg1
-IDw8DQo+IDgpDQo+ICAjZGVmaW5lIE1UODE5NV9BVURJT19NX0NPREVfTVVMVF9ESVZfU0VMX0RQ
-X0VOQzBfUDBfRElWXzQJKDYgPDwNCj4gOCkNCj4gICNkZWZpbmUgTVQ4MTk1X0FVRElPX01fQ09E
-RV9NVUxUX0RJVl9TRUxfRFBfRU5DMF9QMF9ESVZfOAkoNyA8PA0KPiA4KQ0KPiArI2RlZmluZSBN
-VDgxODhfQVVESU9fTV9DT0RFX01VTFRfRElWX1NFTF9EUF9FTkMwX1AwX01VTF8yCSgxIDw8DQo+
-IDgpDQo+ICsjZGVmaW5lIE1UODE4OF9BVURJT19NX0NPREVfTVVMVF9ESVZfU0VMX0RQX0VOQzBf
-UDBfTVVMXzQJKDIgPDwNCj4gOCkNCj4gKyNkZWZpbmUgTVQ4MTg4X0FVRElPX01fQ09ERV9NVUxU
-X0RJVl9TRUxfRFBfRU5DMF9QMF9NVUxfOAkoMyA8PA0KPiA4KQ0KPiArI2RlZmluZSBNVDgxODhf
-QVVESU9fTV9DT0RFX01VTFRfRElWX1NFTF9EUF9FTkMwX1AwX0RJVl8yCSg0IDw8DQo+IDgpDQo+
-ICsjZGVmaW5lIE1UODE4OF9BVURJT19NX0NPREVfTVVMVF9ESVZfU0VMX0RQX0VOQzBfUDBfRElW
-XzQJKDUgPDwNCj4gOCkNCj4gKyNkZWZpbmUgTVQ4MTg4X0FVRElPX01fQ09ERV9NVUxUX0RJVl9T
-RUxfRFBfRU5DMF9QMF9ESVZfOAkoNyA8PA0KPiA4KQ0KPiAgI2RlZmluZSBNVEtfRFBfRU5DMF9Q
-MF8zMEQ4CQkJMHgzMGQ4DQo+ICAjZGVmaW5lIE1US19EUF9FTkMwX1AwXzMxMkMJCQkweDMxMmMN
-Cj4gICNkZWZpbmUgQVNQX0hCMl9EUF9FTkMwX1AwX01BU0sJCQkJR0VOTUFTSw0KPiAoNywgMCkN
-Cg==
+LKP reported below build warning:
+
+  vmlinux.o: warning: objtool: __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn annotation
+
+The __tdx_hypercall_failed() function definition already has __noreturn
+annotation, but it turns out the __noreturn must be annotated to the
+function declaration.
+
+Quoted from PeterZ:
+
+---
+FWIW, the reason being that...
+
+The point of noreturn is that the caller should know to stop generating
+code. For that the declaration needs the attribute, because call sites
+typically do not have access to the function definition in C.
+---
+
+Add __noreturn annotation to the declaration of __tdx_hypercall_failed()
+to fix.  It's not a bad idea to document the __noreturn nature at the
+definition site either, so keep the annotation at the definition.
+
+Note <asm/shared/tdx.h> is also included by TDX related assembly files.
+Include <linux/compiler_attributes.h> only in case of !__ASSEMBLY__
+otherwise compiling assembly file would trigger build error.
+
+Also, following the objtool documentation, add __tdx_hypercall_failed()
+to "tools/objtool/noreturns.h".
+
+Fixes: c641cfb5c157 ("x86/tdx: Make TDX_HYPERCALL asm similar to TDX_MODULE_CALL")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309140828.9RdmlH2Z-lkp@intel.com/
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+---
+
+v1 -> v2:
+  - Keep __noreturn annotation in the __tdx_hypercall_failed()
+    definition. -Ingo
+  - Update changelog to reflect this change.
+
+---
+ arch/x86/include/asm/shared/tdx.h | 4 +++-
+ tools/objtool/noreturns.h         | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+index b69886ee1c63..f74695dea217 100644
+--- a/arch/x86/include/asm/shared/tdx.h
++++ b/arch/x86/include/asm/shared/tdx.h
+@@ -56,6 +56,8 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
++#include <linux/compiler_attributes.h>
++
+ /*
+  * Used in __tdcall*() to gather the input/output registers' values of the
+  * TDCALL instruction when requesting services from the TDX module. This is a
+@@ -108,7 +110,7 @@ static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
+ 
+ 
+ /* Called from __tdx_hypercall() for unrecoverable failure */
+-void __tdx_hypercall_failed(void);
++void __noreturn __tdx_hypercall_failed(void);
+ 
+ bool tdx_accept_memory(phys_addr_t start, phys_addr_t end);
+ 
+diff --git a/tools/objtool/noreturns.h b/tools/objtool/noreturns.h
+index e45c7cb1d5bc..875f8827aa33 100644
+--- a/tools/objtool/noreturns.h
++++ b/tools/objtool/noreturns.h
+@@ -11,6 +11,7 @@ NORETURN(__kunit_abort)
+ NORETURN(__module_put_and_kthread_exit)
+ NORETURN(__reiserfs_panic)
+ NORETURN(__stack_chk_fail)
++NORETURN(__tdx_hypercall_failed)
+ NORETURN(__ubsan_handle_builtin_unreachable)
+ NORETURN(arch_call_rest_init)
+ NORETURN(arch_cpu_idle_dead)
+
+base-commit: 7b804135d4d1f0a2b9dda69c6303d3f2dcbe9d37
+-- 
+2.41.0
+
