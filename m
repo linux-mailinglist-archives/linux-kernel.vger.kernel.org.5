@@ -2,118 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0DF7A4033
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8859F7A4046
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 07:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239584AbjIREv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        id S239472AbjIRFB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 01:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239544AbjIREvr (ORCPT
+        with ESMTP id S233195AbjIRFAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:51:47 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05FA11C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:51:40 -0700 (PDT)
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230918045136epoutp03574c10826e8e82aa98c7936a749c49d3~F5REkzKSA2816628166epoutp03D
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:51:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230918045136epoutp03574c10826e8e82aa98c7936a749c49d3~F5REkzKSA2816628166epoutp03D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1695012696;
-        bh=/m086ylcvUs8tqHsQS1HIUYanaph0yHgdpARIuUHjoo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CWr3eZWYIls96bRTa3zvLaIiuUCW5IZIh/bBk25WAgD8xsq3xUHmsGmiISgX7tuPg
-         oXYdx5ZZC7l7hTuwKBQuEboajxKP8FqhfV2b+qH42PAw1tDxw3j7MI5DJEEz916avT
-         2kiLo1Cm7GQ0egj9/FvMfPBTmlnk/f/b+M4dMkzA=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230918045135epcas1p17ddb745a0bf02b783cb3b86e16694307~F5RD91edg0101201012epcas1p1V;
-        Mon, 18 Sep 2023 04:51:35 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.36.134]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Rpsny6Dkjz4x9QF; Mon, 18 Sep
-        2023 04:51:34 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DA.E3.09646.657D7056; Mon, 18 Sep 2023 13:51:34 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20230918045134epcas1p3263e6d4124a0d37faadb3cb97bf7cd0b~F5RCpY53A0495704957epcas1p3v;
-        Mon, 18 Sep 2023 04:51:34 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230918045134epsmtrp12b51a8155bf7a3f266118d900b6e3417~F5RCok4bO1930419304epsmtrp1X;
-        Mon, 18 Sep 2023 04:51:34 +0000 (GMT)
-X-AuditID: b6c32a37-b23ff700000025ae-c0-6507d756dc3c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F5.65.18916.657D7056; Mon, 18 Sep 2023 13:51:34 +0900 (KST)
-Received: from mediaserver.. (unknown [10.113.111.131]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230918045134epsmtip14278f579639705e41854fbb2cb3b367d~F5RCTA6TB1476614766epsmtip1g;
-        Mon, 18 Sep 2023 04:51:34 +0000 (GMT)
-From:   Kwanghoon Son <k.son@samsung.com>
-To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jszhang@kernel.org, guoren@kernel.org, wefu@redhat.com,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, inki.dae@samsung.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH v3 3/3] riscv: dts: Add th1520 reset device tree
-Date:   Mon, 18 Sep 2023 04:51:25 +0000
-Message-Id: <20230918045125.4000083-4-k.son@samsung.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230918045125.4000083-1-k.son@samsung.com>
+        Mon, 18 Sep 2023 01:00:55 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23BFAC;
+        Sun, 17 Sep 2023 22:00:49 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-274c05edb69so473997a91.2;
+        Sun, 17 Sep 2023 22:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695013249; x=1695618049; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UVNF5sAoH2+S/vs1X3i/qSh9lM2MoEqXJhGdzFOpd3Y=;
+        b=EIplKW9LURVX+E4g1KdCgDxlQUbVjAoQvLJ14xk4IhauKfPzBhFkirWd/5U/TQ+XAi
+         4Z1LEvrKTFbPq+3D7oWm2aFrAhzdRxufE4DFcQbfdK5FoMs29TCWxfxH6c9aDzN1Z3mL
+         LMv9TtoqRX/8d6SRC98eW9aMxvtaA9Fvq2UsVLLMTNcfAABBt75uNElHz677b220dE3c
+         NVaEZX13drF7hnLkBRFmgvedvaFXk9k0N+UOm7Qy5pzzIsUZ7tPMei8DtWNK5hmaXX6c
+         kGT/ZY+rp8iuAftv2S6zcXM/5WvdrUVjxiS1jo+UOYxhLLtQ4IQ32WqNBUPC10vongHz
+         57bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695013249; x=1695618049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UVNF5sAoH2+S/vs1X3i/qSh9lM2MoEqXJhGdzFOpd3Y=;
+        b=O/PMFFsH+zIIdXmjffJMFbYL5m2xeMbmD2p1EX/oIwwUzw/VkKMFSGle6BV640K+K7
+         N/vOL+aM+fd6+N7T8MQavbOqw2BlqGcSU6q8qHdgsJVWsGyZu4+1z95Z6mOeQ9SNfjdb
+         dFjzFNWt1VItNHEtFOrj9qZjBpIAm/wb905l9Qk4FhUeoh5LUXO8ZrNHUrc7+EbEk2Tu
+         uDEQBsELFWVM76XXvo1lH89VcxN3NPWks0DetjxxSGHjW47jl3qpFG0pMXAD+H1/qk3C
+         d/6A475dqzsWT74Cb1qgG4YJmyaxrhML4+VlNYG6zcByMxQhIMw8AFTKz9xjQPBiJUWW
+         J+fw==
+X-Gm-Message-State: AOJu0Yx0sUN8R9XQKg+ORL3kSgYZfz/UX830lcDl2LOLgiONfP/7+owJ
+        F5FU6wdJ+nWgTvc09sP18sKOGxzq5T5JNY/zEJk=
+X-Google-Smtp-Source: AGHT+IFI+iihCDqE8YIc6IjinrCImEQ/bsS70zAv7j9bLn5alZdsPVXi1Rds61BqWssOaMz8RfFx/UcWxVyd/5Ob+VE=
+X-Received: by 2002:a17:90a:3ea5:b0:276:6b9d:7503 with SMTP id
+ k34-20020a17090a3ea500b002766b9d7503mr995967pjc.28.1695013249158; Sun, 17 Sep
+ 2023 22:00:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKJsWRmVeSWpSXmKPExsWy7bCmgW7YdfZUg8W/DC22/p7FbrFm7zkm
-        i/lHzrFavNjbyGIx6f4EFovmY+vZLPpePGS2uLxrDpvFts8tbBZ3751gsXh5uYfZom0Wv0Xr
-        3iPsFi37p7A48Hm8efmSxeNwxxd2j02rOtk87lzbw+axeUm9R/9fA4/3+66yefRtWcXocan5
-        OrvH501yAVxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6
-        bpk5QPcrKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgpMC/SKE3OLS/PS9fJSS6wM
-        DQyMTIEKE7IzTq3cwFbwlq1i4sz9bA2M51i7GDk5JARMJA7++MkMYgsJ7GCU+P04pYuRC8j+
-        xCixbP0fdjhnzap1LDAdG+YfhkrsZJS48fMvlPOGUeLcrh/sIFVsAuoSS9rWgiVEBP4zSrz5
-        08oEkmAWiJc4ce0c2EJhAQeJvbsmgo1lEVCVWDl3Blgzr4CFxP4HJxgh1slL7D94FqyeU8BS
-        4vytnYwQNYISJ2c+YYGYKS/RvHU2M8gyCYEdHBK/10EskxBwkTh67A+ULSzx6vgWdghbSuJl
-        fxuUnS1x9ONeNgi7ROL6rEXQkDGW2L90MlAvB9ACTYn1u/QhwooSO3/PZYTYyyfx7msPK0iJ
-        hACvREebEIQpL3GrsxyiWlTizNOPUMM9JB69/AINqx5GiVefFzJPYFSYheSbWUi+mYWweAEj
-        8ypGsdSC4tz01GLDAmN4DCfn525iBKdnLfMdjNPeftA7xMjEwXiIUYKDWUmEd6YhW6oQb0pi
-        ZVVqUX58UWlOavEhRlNgWE9klhJNzgdmiLySeEMTSwMTMyNjEwtDM0Mlcd5bz3pThATSE0tS
-        s1NTC1KLYPqYODilGphqVps02AX+686K1E5mWMsW9Mg9zLtQj6mEb+ItIQb7RwH91V+kVerY
-        Gqvi4ld5X5233HjPjP6gWU6Gj05ualU6MvONi45U8Iuj+R4nFytG3T9688MepV8XdSxqGBZZ
-        mpz/FyxnvmpNS9/0Vqmp2xZluznPlS3JsC24u8eNS7xHQYYh2730ndHa2/fun8sW+30tdv23
-        R+u6F0Qd+dTs/2OnQWC8GVdCkZvLIi+nuUrVax/sFHzHsHrmJMdTbO8+f9hTOn3HGZFbWWv9
-        E/5ON5028+umo+zK6jHRJ1eekll4+eHnX1+/PTRNvlwQ+E5J2IdPZcE/6TPPTYLMPmu2uWXM
-        WsR97+CqqO/xH7fUHvFUYinOSDTUYi4qTgQAcGokuFgEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDLMWRmVeSWpSXmKPExsWy7bCSnG7YdfZUg3s7RS22/p7FbrFm7zkm
-        i/lHzrFavNjbyGIx6f4EFovmY+vZLPpePGS2uLxrDpvFts8tbBZ3751gsXh5uYfZom0Wv0Xr
-        3iPsFi37p7A48Hm8efmSxeNwxxd2j02rOtk87lzbw+axeUm9R/9fA4/3+66yefRtWcXocan5
-        OrvH501yAVxRXDYpqTmZZalF+nYJXBmnVm5gK3jLVjFx5n62BsZzrF2MnBwSAiYSG+YfZu9i
-        5OIQEtjOKHFn20QWiISoRMflRsYuRg4gW1ji8OFiiJpXjBL7zjWyg9SwCahLLGlbC9YsItDL
-        JPHh4xImkASzQKLElq+vmUFsYQEHib27IIayCKhKrJw7A6yZV8BCYv+DE4wQy+Ql9h88C1bP
-        KWApcf7WTrC4EFBN74dXjBD1ghInZz5hgZgvL9G8dTbzBEaBWUhSs5CkFjAyrWIUTS0ozk3P
-        TS4w1CtOzC0uzUvXS87P3cQIjiCtoB2My9b/1TvEyMTBeIhRgoNZSYR3piFbqhBvSmJlVWpR
-        fnxRaU5q8SFGaQ4WJXFe5ZzOFCGB9MSS1OzU1ILUIpgsEwenVAMTg+ymWT0Pev3W/VCba1Tf
-        kXtRNPPkHp98K4alvyYJZNvwbJyxOcRA2XHbtYtqFpsFBEU2VAq6eM+zmG4u6t0sc2VVbdZG
-        9z0M76uO/IituFrp82ORR0z327dR1w+kds/a9shyvooCQ5Htvktcwot/TosQeDxZWdfS1d/u
-        /2W3wuf8SsGtu3nzlnCfu5WVzD/ZplQxc/PvT32izYqn81bXz3izXsYr67Dk4m7Vwxmb56V9
-        8FzL6+d6uDh6zcGZF2dtav17ZcL37eeZGBJ71ncdVd5bzK0p+P9o0bP2rAABrT+NKx4vNTyT
-        fGhn7+vK3ICfLrkzsm47T8k36mtsM74g373cUFzaWPxFsNcaxhNKLMUZiYZazEXFiQDB2bDl
-        DwMAAA==
-X-CMS-MailID: 20230918045134epcas1p3263e6d4124a0d37faadb3cb97bf7cd0b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230918045134epcas1p3263e6d4124a0d37faadb3cb97bf7cd0b
-References: <20230918045125.4000083-1-k.son@samsung.com>
-        <CGME20230918045134epcas1p3263e6d4124a0d37faadb3cb97bf7cd0b@epcas1p3.samsung.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+References: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
+In-Reply-To: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sun, 17 Sep 2023 22:00:37 -0700
+Message-ID: <CAHCN7xJ8KrBd-532=gDE+82xo1ZNtoDT7pZsYwy9-9WiJvmkvw@mail.gmail.com>
+Subject: Re: [PATCH 00/13] imx8mp: first clock propagation attempt (for LVDS)
+To:     Benjamin Bara <bbara93@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Frank Oltmanns <frank@oltmanns.dev>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -121,37 +85,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add reset device tree for th1520 SoC
+On Sun, Sep 17, 2023 at 3:40=E2=80=AFPM Benjamin Bara <bbara93@gmail.com> w=
+rote:
+>
+> Hi!
+>
+> Target of this series is to dynamically set the rate of video_pll1 to
+> the required LVDS clock rate(s), which are configured by the panel, and
+> the lvds-bridge respectively.
+>
+> Some background:
+> The LVDS panel requires two clocks: the crtc clock and the lvds clock.
+> The lvds rate is always 7x the crtc rate. On the imx8mp, these are
+> assigned to media_disp2_pix and media_ldb, which are both
+> clk-composite-8m. The rates are set by drm_client_modeset_commit() (and
+> later by fsl_ldb_atomic_enable()), and the fsl-ldb driver, first crtc,
+> then lvds. The parent is typically assigned to video_pll1, which is a
+> clk-pll14xx (pll1443x).
+>
+> The main problem:
+> As the clk-composite-8m currently doesn't support CLK_SET_RATE_PARENT,
+> the crtc rate is not propagated to video_pll1, and therefore must be
+> assigned in the device-tree manually.
+>
+> The idea:
+> Enable CLK_SET_RATE_PARENT, at least for media_disp2_pix and media_ldb.
+> When this is done, ensure that the pll1443x can be re-configured,
+> meaning it ensures that an already configured rate (crtc rate) is still
+> supported when a second child requires a different rate (lvds rate). As
 
-Signed-off-by: Kwanghoon Son <k.son@samsung.com>
----
- arch/riscv/boot/dts/thead/th1520.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+Have you tested with the DSI as well?  If memory servers, the DSI
+clock and the LVDS clock are both clocked from the same video_pll.  At
+one time, I had done some experimentation with trying the DSI
+connected to an HDMI bridge chip connected to a monitor and the LVDS
+was connected to a display panel with a static resolution and refresh
+rate.  For my LVDS display, it needs 30MHz to display properly, but
+various HDMI resolutions needed values that were not evenly divisible
+by 30MHz which appeared to cause display sync issues when trying to
+share a clock that was trying to dynamically adjust for two different
+displays especially when trying to change the resoltuion of the HDMI
+display to various values for different resolutions.
 
-diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-index ce708183b6f6..210f234839c3 100644
---- a/arch/riscv/boot/dts/thead/th1520.dtsi
-+++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-@@ -5,6 +5,7 @@
-  */
- 
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/reset/thead,th1520-reset.h>
- 
- / {
- 	compatible = "thead,th1520";
-@@ -418,5 +419,11 @@ portf: gpio-controller@0 {
- 				interrupts = <55 IRQ_TYPE_LEVEL_HIGH>;
- 			};
- 		};
-+
-+		rst: reset-controller@ffef014000 {
-+			compatible = "thead,th1520-reset", "syscon";
-+			reg = <0xff 0xef014000 0x0 0x1000>;
-+			#reset-cells = <1>;
-+		};
- 	};
- };
--- 
-2.34.1
-
+> the children have divider, the current approach is straight forward by
+> calculating the LCM of the required rates. During the rate change of the
+> PLL, it must ensure that all children still have the configured rate at
+> the end (and maybe also bypass the clock while doing so?). This is done
+> by implementing a notifier function for the clk-composite-8m. The tricky
+> part is now to find out if the rate change was intentional or not. This
+> is done by adding the "change trigger" to the notify data. In our case,
+> we now can infer if we aren't the change trigger, we need to keep the
+> existing rate after the PLL's rate change. We keep the existing rate by
+> modifying the new_rate of the clock's core, as we are quite late in an
+> already ongoing clock change process.
+>
+> Future work:
+> The re-configuration of the PLL can definitely be improved for other use
+> cases where the children have more fancy inter-dependencies. That's one
+> of the main reasons I currently only touched the mentioned clocks.
+> Additionally, it might make sense to automatically re-parent if a
+> different possible parent suits better.
+> For the core part, I thought about extending my "unintentional change
+> check" so that the core ensures that the children keep the configured
+> rate, which might not be easy as the parent could be allowed to "round",
+> but it's not clear (at least to me yet) how much rounding is allowed. I
+> found a similar discussion posted here[1], therefore added Frank and
+> Maxime.
+>
+> Thanks & regards,
+> Benjamin
+>
+> [1] https://lore.kernel.org/lkml/20230825-pll-mipi_keep_rate-v1-0-35bc435=
+70730@oltmanns.dev/
+>
+> ---
+> Benjamin Bara (13):
+>       arm64: dts: imx8mp: lvds_bridge: use root instead of composite
+>       arm64: dts: imx8mp: re-parent IMX8MP_CLK_MEDIA_MIPI_PHY1_REF
+>       clk: implement clk_hw_set_rate()
+>       clk: print debug message if parent change is ignored
+>       clk: keep track of the trigger of an ongoing clk_set_rate
+>       clk: keep track if a clock is explicitly configured
+>       clk: detect unintended rate changes
+>       clk: divider: stop early if an optimal divider is found
+>       clk: imx: pll14xx: consider active rate for re-config
+>       clk: imx: composite-8m: convert compute_dividers to void
+>       clk: imx: composite-8m: implement CLK_SET_RATE_PARENT
+>       clk: imx: imx8mp: allow LVDS clocks to set parent rate
+>       arm64: dts: imx8mp: remove assigned-clock-rate of IMX8MP_VIDEO_PLL1
+>
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi |  14 +--
+>  drivers/clk/clk-divider.c                 |   9 ++
+>  drivers/clk/clk.c                         | 146 ++++++++++++++++++++++++=
++++++-
+>  drivers/clk/imx/clk-composite-8m.c        |  89 +++++++++++++++---
+>  drivers/clk/imx/clk-imx8mp.c              |   4 +-
+>  drivers/clk/imx/clk-pll14xx.c             |  20 ++++
+>  drivers/clk/imx/clk.h                     |   4 +
+>  include/linux/clk-provider.h              |   2 +
+>  include/linux/clk.h                       |   2 +
+>  9 files changed, 261 insertions(+), 29 deletions(-)
+> ---
+> base-commit: e143016b56ecb0fcda5bb6026b0a25fe55274f56
+> change-id: 20230913-imx8mp-dtsi-7c6e25907e0e
+>
+> Best regards,
+> --
+> Benjamin Bara <benjamin.bara@skidata.com>
+>
