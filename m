@@ -2,120 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215BF7A46D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A627D7A46D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241086AbjIRKVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 06:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
+        id S241082AbjIRKWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 06:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239570AbjIRKUm (ORCPT
+        with ESMTP id S241109AbjIRKVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:20:42 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAA3AD;
-        Mon, 18 Sep 2023 03:20:33 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IA8gC2030043;
-        Mon, 18 Sep 2023 10:20:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=2Zg8gA925yQ/p+JDB+pZFZfdvzHgwV2x+8QSkYSk+BA=;
- b=kjUgQgHrE3WNBqJkMh3q83907YoQB1C+3XVjgxej//ZvQ/s1N3AirudiMMgytL9V8Cmr
- xy5rpF31I7vPA/y2/BhbmhAeElhU7v48gHl72LAPZokDNhE9sfy9nfyVb8eG8q6rYkDS
- USvxwdjPvmhpVCf9T25U/obpAyNK0jAjL/rE8/8lP4DVpMt1zvchz1eOh1pPv+3JvVGd
- 6+BfeEffNhI/tAsRypC4XrcJAxV2M8WRVriQ/B1auLC/T7ZT5HXdrnxmOFAUHGcbdSJT
- mQFtHiC1PxniTo/jxKMkri/Xzz6wN/pV+0k9oRsyPzp90rkF9o5UdaWDCqfMsfk3oVXs Jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t6jxgabps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 10:20:27 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38IA9O75000481;
-        Mon, 18 Sep 2023 10:20:27 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t6jxgabpg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 10:20:27 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38I9S95Z005564;
-        Mon, 18 Sep 2023 10:20:26 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t5q2ya014-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 10:20:26 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38IAKOIw42795280
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Sep 2023 10:20:24 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 07A222006C;
-        Mon, 18 Sep 2023 10:20:24 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AB4322004E;
-        Mon, 18 Sep 2023 10:20:19 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.103.37])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Mon, 18 Sep 2023 10:20:18 +0000 (GMT)
-Date:   Mon, 18 Sep 2023 15:50:13 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] ext4: Mark buffer new if it is unwritten to avoid
- stale data exposure
-Message-ID: <ZQgkXWy2UTgDf2gU@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1694860198.git.ojaswin@linux.ibm.com>
- <2fe0c7461d7a49eec46a1c83667ae678825d8b76.1694860198.git.ojaswin@linux.ibm.com>
- <20230918072609.teegybfhht23gzzc@quack3>
+        Mon, 18 Sep 2023 06:21:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18047CD
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695032456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yU55zmy+tifjpDLUpfSCylMp4XR9haoWnULzlns5xls=;
+        b=MurVU8+4Z8s+Q3xe4MUZviebgLj4z+XkZBjVoHtT+yrFzLukOqY6hRs6ArcAQ0IRplHFr4
+        fT5Gay35I/TtLS0MazWUFefNjgURxVA92RU5mG/LIa8bw3H1JM5Ua7pPStjsBtgJdOjbwG
+        QwR5Irp0aEacpT4XrsQyWxuQoEEIlWM=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-531-_yPWnvrcO927DGIiAELsyg-1; Mon, 18 Sep 2023 06:20:55 -0400
+X-MC-Unique: _yPWnvrcO927DGIiAELsyg-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-274b736cae3so1140719a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:20:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695032454; x=1695637254;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yU55zmy+tifjpDLUpfSCylMp4XR9haoWnULzlns5xls=;
+        b=go9pRUaq8iJmjMWYGdARwEXoGynqTa3Q5z8kTQ2q+nxPGiQP2JGlzuravx3fYPGsBu
+         TudBe96/xf3AdEjg8s3iFVgiNAqb0YLcLVORYkrxPbcKKAV0hVV2iv5VSJ4T2ezyZ1UQ
+         RigAVx2OCHzSlnBS+USNeqLLe4azuSvkvxvlvUKBYwB4s2mIAYFSC9SUyWf5wNH9SnJ4
+         lLbUDkHFsSigQhI6SnzRZfOqXOzFMy1f8rZ+D63sin9zz3scC/Ohrp/VW31zODYPv0w7
+         50CkNhHOQzf0TdTLeNxPE2Tpz4LbYGlYKyEiHh2i4TnEYlcyWHbu/C520j5cOnh0eugp
+         1hJQ==
+X-Gm-Message-State: AOJu0YyWQshz2XHbXQ6Jk29/EEWPiEpKXFOaiA9juMykCMbI6G0JaVGp
+        11ALKlPfTpVSX+vww+WpBKsbffgycU/V1t3qqxhdLoxx03TYLshIdmOZlRPx92f7/idUKXoy+SV
+        RpNcEQ64PXNSVRtoeIQDBeX/0RY2tANBNJSiL5bWr
+X-Received: by 2002:a17:90b:23c4:b0:259:466:940f with SMTP id md4-20020a17090b23c400b002590466940fmr5945978pjb.22.1695032454027;
+        Mon, 18 Sep 2023 03:20:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGEtH10NqI0T9ljzjjgrVprcPWZuTNpuV3VTBMkk2Q5qVxQsg5e+/Uzg2XIHnu21aI/ILioVf9Pa2At0kqn5VI=
+X-Received: by 2002:a17:90b:23c4:b0:259:466:940f with SMTP id
+ md4-20020a17090b23c400b002590466940fmr5945960pjb.22.1695032453718; Mon, 18
+ Sep 2023 03:20:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918072609.teegybfhht23gzzc@quack3>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 810UHDBZIyhQG215-njLSOd5HhwGq512
-X-Proofpoint-ORIG-GUID: 2YVxHUeAgwDTzx5nyHGb861eHMJEiIZi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-18_02,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 suspectscore=0 bulkscore=0
- mlxlogscore=764 mlxscore=0 spamscore=0 phishscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309180088
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <ZOWFtqA2om0w5Vmz@fedora> <20230823-kuppe-lassen-bc81a20dd831@brauner>
+ <CAFj5m9KiBDzNHCsTjwUevZh3E3RRda2ypj9+QcRrqEsJnf9rXQ@mail.gmail.com>
+ <CAHj4cs_MqqWYy+pKrNrLqTb=eoSOXcZdjPXy44x-aA1WvdVv0w@mail.gmail.com>
+ <89d049ed-6bbf-bba7-80d4-06c060e65e5b@huawei.com> <20230917091031.GA1543@noisy.programming.kicks-ass.net>
+ <9efe2f14-c3d9-e526-d561-b6a0aca6c491@huawei.com>
+In-Reply-To: <9efe2f14-c3d9-e526-d561-b6a0aca6c491@huawei.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Mon, 18 Sep 2023 18:20:41 +0800
+Message-ID: <CAHj4cs-6M+fORJOGOxH3sO5BytBwi4y9hcnS+xQ3wLZO20UXWg@mail.gmail.com>
+Subject: Re: [czhong@redhat.com: [bug report] WARNING: CPU: 121 PID: 93233 at
+ fs/dcache.c:365 __dentry_kill+0x214/0x278]
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>, mark.rutland@arm.com,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Changhui Zhong <czhong@redhat.com>,
+        yangerkun <yangerkun@huawei.com>,
+        "zhangyi (F)" <yi.zhang@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        chengzhihao <chengzhihao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan,
+On Mon, Sep 18, 2023 at 9:10=E2=80=AFAM Baokun Li <libaokun1@huawei.com> wr=
+ote:
+>
+> On 2023/9/17 17:10, Peter Zijlstra wrote:
+> > On Sat, Sep 16, 2023 at 02:55:47PM +0800, Baokun Li wrote:
+> >> On 2023/9/13 16:59, Yi Zhang wrote:
+> >>> The issue still can be reproduced on the latest linux tree[2].
+> >>> To reproduce I need to run about 1000 times blktests block/001, and
+> >>> bisect shows it was introduced with commit[1], as it was not 100%
+> >>> reproduced, not sure if it's the culprit?
+> >>>
+> >>>
+> >>> [1] 9257959a6e5b locking/atomic: scripts: restructure fallback ifdeff=
+ery
+> >> Hello, everyone=EF=BC=81
+> >>
+> >> We have confirmed that the merge-in of this patch caused hlist_bl_lock
+> >> (aka, bit_spin_lock) to fail, which in turn triggered the issue above.
+> >> [root@localhost ~]# insmod mymod.ko
+> >> [   37.994787][  T621] >>> a =3D 725, b =3D 724
+> >> [   37.995313][  T621] ------------[ cut here ]------------
+> >> [   37.995951][  T621] kernel BUG at fs/mymod/mymod.c:42!
+> >> [r[  oo 3t7@.l996o4c61al]h[o s T6t21] ~ ]#Int ernal error: Oops - BUG:
+> >> 00000000f2000800 [#1] SMP
+> >> [   37.997420][  T621] Modules linked in: mymod(E)
+> >> [   37.997891][  T621] CPU: 9 PID: 621 Comm: bl_lock_thread2 Tainted:
+> >> G            E      6.4.0-rc2-00034-g9257959a6e5b-dirty #117
+> >> [   37.999038][  T621] Hardware name: linux,dummy-virt (DT)
+> >> [   37.999571][  T621] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT=
+ -SSBS
+> >> BTYPE=3D--)
+> >> [   38.000344][  T621] pc : increase_ab+0xcc/0xe70 [mymod]
+> >> [   38.000882][  T621] lr : increase_ab+0xcc/0xe70 [mymod]
+> >> [   38.001416][  T621] sp : ffff800008b4be40
+> >> [   38.001822][  T621] x29: ffff800008b4be40 x28: 0000000000000000 x27=
+:
+> >> 0000000000000000
+> >> [   38.002605][  T621] x26: 0000000000000000 x25: 0000000000000000 x24=
+:
+> >> 0000000000000000
+> >> [   38.003385][  T621] x23: ffffd9930c698190 x22: ffff800008a0ba38 x21=
+:
+> >> 0000000000000001
+> >> [   38.004174][  T621] x20: ffffffffffffefff x19: ffffd9930c69a580 x18=
+:
+> >> 0000000000000000
+> >> [   38.004955][  T621] x17: 0000000000000000 x16: ffffd9933011bd38 x15=
+:
+> >> ffffffffffffffff
+> >> [   38.005754][  T621] x14: 0000000000000000 x13: 205d313236542020 x12=
+:
+> >> ffffd99332175b80
+> >> [   38.006538][  T621] x11: 0000000000000003 x10: 0000000000000001 x9 =
+:
+> >> ffffd9933022a9d8
+> >> [   38.007325][  T621] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 =
+:
+> >> ffffd993320b5b40
+> >> [   38.008124][  T621] x5 : ffff0001f7d1c708 x4 : 0000000000000000 x3 =
+:
+> >> 0000000000000000
+> >> [   38.008912][  T621] x2 : 0000000000000000 x1 : 0000000000000000 x0 =
+:
+> >> 0000000000000015
+> >> [   38.009709][  T621] Call trace:
+> >> [   38.010035][  T621]  increase_ab+0xcc/0xe70 [mymod]
+> >> [   38.010539][  T621]  kthread+0xdc/0xf0
+> >> [   38.010927][  T621]  ret_from_fork+0x10/0x20
+> >> [   38.011370][  T621] Code: 17ffffe0 90000020 91044000 9400000d (d421=
+0000)
+> >> [   38.012067][  T621] ---[ end trace 0000000000000000 ]---
+> > Is this arm64 or something? You seem to have forgotten to mention what
+> > platform you're using.
+> >
+> Sorry for the late reply.
+> We tested both x86 and arm64, and the problem is only encountered under
+> arm64.
 
-Thanks for the review!
+Yeah, my reproduced environment is also aarch64.
 
-On Mon, Sep 18, 2023 at 09:26:09AM +0200, Jan Kara wrote:
-> On Sat 16-09-23 16:12:13, Ojaswin Mujoo wrote:
-> > ** Short Version **
-> > 
-> > In ext4 with dioread_nolock, we could have a scenario where the bh returned by
-> > get_blocks (ext4_get_block_unwritten()) in __block_write_begin_int() has
-> > UNWRITTEN and MAPPED flag set. Since such a bh does not have NEW flag set we
-> > never zero out the range of bh that is not under write, causing whatever stale
-> > data is present in the folio at that time to be written out to disk. To fix this
-> > mark the buffer as new in ext4_get_block_unwritten(), in case it is unwritten.
-> > 
-> > -----
-> 
-> I'm not sure if this separator isn't going to confuse some tools processing
-> patches ;)
 
-Oh no, my bad :/ Let me quickly send a v3 to fix this. Thanks for
-pointing it out.
 
-Regards,
-ojaswin
+>
+> --
+> With Best Regards,
+> Baokun Li
+> .
+>
+
+
+--=20
+Best Regards,
+  Yi Zhang
+
