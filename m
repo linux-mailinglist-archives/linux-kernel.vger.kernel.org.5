@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98367A50BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0666B7A50BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjIRRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
+        id S231296AbjIRROV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbjIRRNk (ORCPT
+        with ESMTP id S229712AbjIRROS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:13:40 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5EC83
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:13:35 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4047c6ec21dso4425e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:13:34 -0700 (PDT)
+        Mon, 18 Sep 2023 13:14:18 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E838E
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:14:13 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-79d1bf17505so31155839f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:14:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695057213; x=1695662013; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8NCRoQtasHBhaxbBJof29twbnK3J3FpNXqEPensTrQU=;
-        b=k+xVY/UYy34DW9Sij4WkPswS8rzDpog6MBsUzSw+XHVXVDUQ4ShslsRo3NJ1owRpYU
-         eA1EcvRvvr+rj/yCy93Zs+rmnI3BzXxb0GEHUmgDOSMd8n3tTXvGOdpF6xEIugIzlCMV
-         FFCEpZp8dHFCliICJKDp7RmWRNPJ6SWke7WGY8EXu9q/sV/lsBqtHQLB5y2xRp6Vb83M
-         kTzV4O1im60vHLHICOnak8HTMrp0PhOeOBJrKoR+Ufm4knAOkk7D6a3hbMNW7YxWxy+C
-         q1XNixjC3/XlEOaKtPXiiMGhSlTXrBtqEZB+6RZMWUMZ4gi9g2NLUJuxRmNbLEeLGzfL
-         V1fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695057213; x=1695662013;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=linuxfoundation.org; s=google; t=1695057253; x=1695662053; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8NCRoQtasHBhaxbBJof29twbnK3J3FpNXqEPensTrQU=;
-        b=CF4REPmT6Vpo+yCez0qK00eJunx6M+d3xicSub3dUxhuGFcYthM3R5ExRvM9TSkfWS
-         mpfEP/b8hYsGccP7XPvE4nKoG6BxSaRZbCGYOYeDvpusP92K8xdeyhkddgHkN0dkAHnM
-         2b4r7dk2NC73QLGVnZ38Vy2mhWqWOy6mFf9pygMubA2T11xqnHgglDjQ7K/s0SphKLn4
-         8ZiND/7d61ZwHSwDjWZUClN6/rlK4aJbA6ZSAt9jkdk8+zeGxWhKSYU/v1c4Lo0ryxK1
-         r8asAyPoHYfRiepz+Wng4/bwlQGTuKaVGor0KCWDWsUyh3nKfm9vWMRyBGpVzlPVmoKp
-         KaYQ==
-X-Gm-Message-State: AOJu0YzCeYN8dFdFO1VJGGOztHZ5F6omjhalR3398nUTNg/4xtQpWXNx
-        cXEMPzD0WUh7ASNby65qbarehkny/6X/dzGV0Kj0+czBwdVXpTHgDoKLDw==
-X-Google-Smtp-Source: AGHT+IEkRFchjpZqPNvI+IkS94xt8vvX5NVo36F/WMbxfNTZHxp7itGvCJT+AIT8wUnE3U2ITQL++aALeT4I/3XmYoI=
-X-Received: by 2002:a05:600c:3acd:b0:400:c6de:6a20 with SMTP id
- d13-20020a05600c3acd00b00400c6de6a20mr181501wms.3.1695057213310; Mon, 18 Sep
- 2023 10:13:33 -0700 (PDT)
+        bh=ie4OPVJg6VkbmJGC/wWGQH6IojD/zRo6+BSb7Fsy9JI=;
+        b=DNl+DzVkGgl4TJkwuJ9c4+5wGWNvbM2InDF1SNefKskc8l6AD0liH3lWzupbRCaOJn
+         v5jd4+DMSz/nq/X9WKS8SWRlqgGn0yvZzMygyL3s8IFhILMwXoi8nK17pknxBD7E85+a
+         jKViiTDI4nsUYP843NuTF3b6mNpkiv7p738A8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695057253; x=1695662053;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ie4OPVJg6VkbmJGC/wWGQH6IojD/zRo6+BSb7Fsy9JI=;
+        b=RInhCcEGENZRgw375UYk4oRj4Pn0tQREsHK3sMx+Um2RADMf8Bc1I6/gRJM4YNDJIK
+         y0LwA5qTexsewU+Z4QabnvjpGk+ZsHWmxy5qmbfb1e2FSsJG/ZlNHTrW5dxqEYIyCrxi
+         NoYLXfNKRl/2oUG1IYoQVG8gWel0DDa+1xJJ7zr5phd/dnmTnUwnnVSJYQCXWwPVBDkj
+         Lb8RU5qnAtl4q9dXqzikwx0R+Eepg+SWjAOIpYZ9NYz6OD8SJnG0OlkyFCWuiyJRHfZ8
+         t0DcjyBaS+jU2urfOeVhoIEQSdd2i02OUXcsjxet5Sna50L2lAf4CK1vdf1QTRPYlaDf
+         stIQ==
+X-Gm-Message-State: AOJu0YxNXtPsOwQF7Hq5ll6E4zbyxQ/ldd44I4DcN1ppQAhdlI4xLtRb
+        RHv+XldNjeFqb1eBBVxp4WDHpO2w77dEgT+bnpo=
+X-Google-Smtp-Source: AGHT+IG2V3CJARBNRxPKJKeXyTh9r0NpUgCO8mWIrC0bsn2cdb/nmfGR+IUEAWSd4X2yjN18/40B7g==
+X-Received: by 2002:a05:6602:2cd1:b0:794:cbb8:725e with SMTP id j17-20020a0566022cd100b00794cbb8725emr13416129iow.2.1695057252743;
+        Mon, 18 Sep 2023 10:14:12 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id x13-20020a5e830d000000b0077e3566a801sm2872515iom.29.2023.09.18.10.14.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 10:14:12 -0700 (PDT)
+Message-ID: <3a279a31-7a3b-fed9-e50f-b0d86f4de4f6@linuxfoundation.org>
+Date:   Mon, 18 Sep 2023 11:14:11 -0600
 MIME-Version: 1.0
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 18 Sep 2023 19:12:56 +0200
-Message-ID: <CAG48ez0YBOUGnj+N_MBp2WCvp0BLk1o7n6uSH2nrj1z-qgf+0A@mail.gmail.com>
-Subject: KVM nonblocking MMU notifier with KVM_GUEST_USES_PFN looks racy [but
- is currently unused]
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] selftests: uevent filtering: fix return on error in
+ uevent_listener
+Content-Language: en-US
+To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230916-topic-self_uevent_filtering-v1-1-26ede507d454@gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230916-topic-self_uevent_filtering-v1-1-26ede507d454@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,104 +74,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 9/16/23 10:11, Javier Carrasco wrote:
+> Assign the error value to the real returned variable fret. The ret
+> variable is used to check function return values and assigning values to
+> it on error has no effect as it is an unused value.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> ---
+>   tools/testing/selftests/uevent/uevent_filtering.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/uevent/uevent_filtering.c b/tools/testing/selftests/uevent/uevent_filtering.c
+> index 5cebfb356345..e191b6d69f8c 100644
+> --- a/tools/testing/selftests/uevent/uevent_filtering.c
+> +++ b/tools/testing/selftests/uevent/uevent_filtering.c
+> @@ -158,7 +158,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
+>   		r = recvmsg(sk_fd, &hdr, 0);
+>   		if (r <= 0) {
+>   			fprintf(stderr, "%s - Failed to receive uevent\n", strerror(errno));
+> -			ret = -1;
+> +			fret = -1;
+>   			break;
+>   		}
+>   
+> @@ -172,7 +172,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
+>   
+>   		if (!expect_uevent) {
+>   			fprintf(stderr, "Received unexpected uevent:\n");
+> -			ret = -1;
+> +			fret = -1;
+>   		}
+>   
+>   		if (TH_LOG_ENABLED) {
+> 
 
-I haven't tested this and might be missing something, but I think that
-the MMU notifier for KVM_GUEST_USES_PFN pfncache is currently a bit
-broken. Except that nothing seems to actually use KVM_GUEST_USES_PFN,
-so currently it's not actually a problem?
+Thank you for the find. Please simplify these leg and use just one
+variable for failures, ret or fret and not both to avoid future
+coding errors like this one you are fixing.
 
-gfn_to_pfn_cache_invalidate_start() contains the following:
+thanks,
+-- Shuah
 
-    /*
-     * If the OOM reaper is active, then all vCPUs should have
-     * been stopped already, so perform the request without
-     * KVM_REQUEST_WAIT and be sad if any needed to be IPI'd.
-     */
-    if (!may_block)
-      req &= ~KVM_REQUEST_WAIT;
-
-    called = kvm_make_vcpus_request_mask(kvm, req, vcpu_bitmap);
-
-    WARN_ON_ONCE(called && !may_block);
-
-The comment explains that we rely on OOM reaping only happening when a
-process is sufficiently far into being stopped that it is no longer
-executing vCPUs, but from what I can tell, that's not what the caller
-actually guarantees. Especially on the path from the
-process_mrelease() syscall (if we're dealing with a process whose mm
-is not shared with other processes), we only check that the target
-process has SIGNAL_GROUP_EXIT set. From what I can tell, that does
-imply that delivery of a fatal signal has begun, but doesn't even
-imply that the CPU running the target process has been IPI'd, let
-alone that the target process has died or anything like that.
-
-But I also don't see any reason why
-gfn_to_pfn_cache_invalidate_start() actually has to do anything
-special for non-blocking invalidation - from what I can tell, nothing
-in there can block, basically everything runs with preemption
-disabled. The first half of the function holds a spinlock; the second
-half is basically a call to kvm_make_vcpus_request_mask(), which
-disables preemption across the whole function with
-get_cpu()/put_cpu(). A synchronous IPI spins until the IPI has been
-acked but that doesn't count as sleeping. (And the rest of the OOM
-reaping code will do stuff like synchronous IPIs for its TLB flushes,
-too.)
-
-So maybe you/I can just rip out the special-casing of nonblocking mode
-from gfn_to_pfn_cache_invalidate_start() to fix this?
-
-Relevant call paths for the theoretical race:
-
-sys_kill
-  prepare_kill_siginfo
-  kill_something_info
-    kill_proc_info
-      rcu_read_lock
-      kill_pid_info
-        rcu_read_lock
-        group_send_sig_info [PIDTYPE_TGID]
-          do_send_sig_info
-            lock_task_sighand [task->sighand->siglock]
-            send_signal_locked
-              __send_signal_locked
-                prepare_signal
-                legacy_queue
-                signalfd_notify
-                sigaddset(&pending->signal, sig)
-                complete_signal
-                  signal->flags = SIGNAL_GROUP_EXIT [mrelease will
-work starting here]
-                  for each thread:
-                    sigaddset(&t->pending.signal, SIGKILL)
-                    signal_wake_up [IPI happens here]
-            unlock_task_sighand [task->sighand->siglock]
-        rcu_read_unlock
-      rcu_read_unlock
-
-sys_process_mrelease
-  find_lock_task_mm
-    spin_lock(&p->alloc_lock)
-  task_will_free_mem
-    SIGNAL_GROUP_EXIT suffices
-    PF_EXITING suffices if singlethreaded?
-  task_unlock
-  mmap_read_lock_killable
-  __oom_reap_task_mm
-    for each private non-PFNMAP/MIXED VMA:
-      tlb_gather_mmu
-      mmu_notifier_invalidate_range_start_nonblock
-        __mmu_notifier_invalidate_range_start
-          mn_hlist_invalidate_range_start
-            kvm_mmu_notifier_invalidate_range_start [as
-ops->invalidate_range_start]
-              gfn_to_pfn_cache_invalidate_start
-                [loop over gfn_to_pfn_cache instances]
-                  if overlap and KVM_GUEST_USES_PFN [UNUSED]: evict_vcpus=true
-                [if evict_vcpus]
-                  kvm_make_vcpus_request_mask
-              __kvm_handle_hva_range
-      unmap_page_range
-      mmu_notifier_invalidate_range_end
-      tlb_finish_mmu
-  mmap_read_unlock
