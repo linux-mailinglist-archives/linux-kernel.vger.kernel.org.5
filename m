@@ -2,223 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CAA7A477E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDA47A4784
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241184AbjIRKrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 06:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
+        id S241220AbjIRKrd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Sep 2023 06:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241220AbjIRKqi (ORCPT
+        with ESMTP id S241196AbjIRKrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:46:38 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9031A2;
-        Mon, 18 Sep 2023 03:46:29 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IAbjLR002153;
-        Mon, 18 Sep 2023 10:46:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=VDKC0IgCtueKNyujpoZMuLZLOeOtYSFtTCp33XEvMbQ=;
- b=ndUBAxmZzSSO5fJPfKvfp428YzhVQO2nlhMHzCR20zdUEty4+sD5FGBsO/Q/scBtRw1i
- aKHS97alJEB/kAixgMOnmLn3qg13EC/MjQi8dn7fwH6BSzR+YWHa077/LnsRyaC0mb+q
- CDI4oWPcTU0zeiVypFzFBNO7YHa3hrX7mksU0zbIPt4suvh/tZEKw0u+A050sSsWlZcP
- S/RE52wjBrpzhZh897MmhzOJ7JnShZOzP/xfSsENGHo2sSllJNL3ocZ7D1pEHy1fQhuL
- KINXH13aNBKQkl+jRSj0jThDd6RVKqiOJtlE6MAcUbKQemrzOWsvF71MDg54waYDX0Dj Hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t6mqhrj49-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 10:46:25 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38IAbt7Q003407;
-        Mon, 18 Sep 2023 10:46:24 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t6mqhrj44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 10:46:24 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38I9FfR1016455;
-        Mon, 18 Sep 2023 10:46:23 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t5sd1hbup-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 10:46:23 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38IAkMtK63635934
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Sep 2023 10:46:22 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1A8D42004B;
-        Mon, 18 Sep 2023 10:46:22 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B7F920043;
-        Mon, 18 Sep 2023 10:46:13 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.43.103.37])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 18 Sep 2023 10:46:12 +0000 (GMT)
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: [PATCH v3 1/1] ext4: Mark buffer new if it is unwritten to avoid stale data exposure
-Date:   Mon, 18 Sep 2023 16:15:50 +0530
-Message-Id: <d0ed09d70a9733fbb5349c5c7b125caac186ecdf.1695033645.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <cover.1695033645.git.ojaswin@linux.ibm.com>
-References: <cover.1695033645.git.ojaswin@linux.ibm.com>
+        Mon, 18 Sep 2023 06:47:09 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EE9B6;
+        Mon, 18 Sep 2023 03:47:04 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-573128cd77dso586292eaf.0;
+        Mon, 18 Sep 2023 03:47:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695034023; x=1695638823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VLR2rl0tJf4TvoCKE2Und3t7JkpsVQnKUyFiNGKDeXU=;
+        b=KrVeQBohPWV1FrMOftNvmZySK5EKF3IGfenMSrq+54mN4ZbFhvzaIlnMtrsw5fduXf
+         a+aPfyeIsr6AaCzmG7t/OTqJshQToAahbOUelqWEoWvYe3PCUfWQCjCqxGh8MxGoGAjG
+         n4eSnaLtEFP6w09ILpDLPDRgLN9tG3SN9fvBY7ijLJurbD9rOoZIPB7r2+aChGW3uNYq
+         NuwAu9D1AeoLadRDhcNJfaRi+9yu+LOdgQJl13oeKy/leghuFjCJoNK7okydmVr56JUo
+         rTG2q3MxHZI8iBkL8jIoJ7EuznAAx3e29wrenGNSQIuC2tgQoNAa6KXLRVS3kRbH4Glo
+         VGYQ==
+X-Gm-Message-State: AOJu0YwELEWeK1AvnPaE9tSMgqhPfpYypx3KfcK0Ab1XixH71VIuUdfL
+        nc3Dw2hnad2MPGH3+NmWD44Qm0409tubD7/9Jag=
+X-Google-Smtp-Source: AGHT+IH32KNlt0aehU1kUyg6pQve4X57p60IvGk8JgWlQoxXocjrsbvQ83pxb4qEfaAqIcLuuLK+zOlQC/gpPSro0sE=
+X-Received: by 2002:a4a:de83:0:b0:56e:94ed:c098 with SMTP id
+ v3-20020a4ade83000000b0056e94edc098mr7737511oou.0.1695034023204; Mon, 18 Sep
+ 2023 03:47:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jzQaErfWEcJamkHNs8YUyaO-4GHM4Mm6
-X-Proofpoint-GUID: LIezmvTrat85M1iO0KxBRGJrTWMfJ6VW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-18_02,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- impostorscore=0 suspectscore=0 malwarescore=0 phishscore=0 spamscore=0
- adultscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- mlxlogscore=980 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309180092
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230915202511.1452091-1-quic_poza@quicinc.com>
+In-Reply-To: <20230915202511.1452091-1-quic_poza@quicinc.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 18 Sep 2023 12:46:52 +0200
+Message-ID: <CAJZ5v0h8bD-Cuk+wXiS3F4jm5GdH7yX4jgEqE3-9ho7A27HWzw@mail.gmail.com>
+Subject: Re: [PATCH v7] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
+To:     Oza Pawandeep <quic_poza@quicinc.com>
+Cc:     sudeep.holla@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        rafael@kernel.org, lenb@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-** Short Version **
+On Fri, Sep 15, 2023 at 10:25 PM Oza Pawandeep <quic_poza@quicinc.com> wrote:
+>
+> Arm® Functional Fixed Hardware Specification defines LPI states,
+> which provide an architectural context loss flags field that can
+> be used to describe the context that might be lost when an LPI
+> state is entered.
+>
+> - Core context Lost
+>         - General purpose registers.
+>         - Floating point and SIMD registers.
+>         - System registers, include the System register based
+>         - generic timer for the core.
+>         - Debug register in the core power domain.
+>         - PMU registers in the core power domain.
+>         - Trace register in the core power domain.
+> - Trace context loss
+> - GICR
+> - GICD
+>
+> Qualcomm's custom CPUs preserves the architectural state,
+> including keeping the power domain for local timers active.
+> when core is power gated, the local timers are sufficient to
+> wake the core up without needing broadcast timer.
+>
+> The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+> broadcast timer if core context lost is defined in ACPI LPI.
+>
+> Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
+> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
 
-In ext4 with dioread_nolock, we could have a scenario where the bh returned by
-get_blocks (ext4_get_block_unwritten()) in __block_write_begin_int() has
-UNWRITTEN and MAPPED flag set. Since such a bh does not have NEW flag set we
-never zero out the range of bh that is not under write, causing whatever stale
-data is present in the folio at that time to be written out to disk. To fix this
-mark the buffer as new, in case it is unwritten, in ext4_get_block_unwritten().
+I think that I've already ACKed it and I said that I would prefer it
+to be routed via ARM64, because it essentially is all about ARM64.
 
-** Long Version **
-
-The issue mentioned above was resulting in two different bugs:
-
-1. On block size < page size case in ext4, generic/269 was reliably
-failing with dioread_nolock. The state of the write was as follows:
-
-  * The write was extending i_size.
-  * The last block of the file was fallocated and had an unwritten extent
-  * We were near ENOSPC and hence we were switching to non-delayed alloc
-    allocation.
-
-In this case, the back trace that triggers the bug is as follows:
-
-  ext4_da_write_begin()
-    /* switch to nodelalloc due to low space */
-    ext4_write_begin()
-      ext4_should_dioread_nolock() // true since mount flags still have delalloc
-      __block_write_begin(..., ext4_get_block_unwritten)
-        __block_write_begin_int()
-          for(each buffer head in page) {
-            /* first iteration, this is bh1 which contains i_size */
-            if (!buffer_mapped)
-              get_block() /* returns bh with only UNWRITTEN and MAPPED */
-            /* second iteration, bh2 */
-              if (!buffer_mapped)
-                get_block() /* we fail here, could be ENOSPC */
-          }
-          if (err)
-            /*
-             * this would zero out all new buffers and mark them uptodate.
-             * Since bh1 was never marked new, we skip it here which causes
-             * the bug later.
-             */
-            folio_zero_new_buffers();
-      /* ext4_wrte_begin() error handling */
-      ext4_truncate_failed_write()
-        ext4_truncate()
-          ext4_block_truncate_page()
-            __ext4_block_zero_page_range()
-              if(!buffer_uptodate())
-                ext4_read_bh_lock()
-                  ext4_read_bh() -> ... ext4_submit_bh_wbc()
-                    BUG_ON(buffer_unwritten(bh)); /* !!! */
-
-2. The second issue is stale data exposure with page size >= blocksize
-with dioread_nolock. The conditions needed for it to happen are same as
-the previous issue ie dioread_nolock around ENOSPC condition. The issue
-is also similar where in __block_write_begin_int() when we call
-ext4_get_block_unwritten() on the buffer_head and the underlying extent
-is unwritten, we get an unwritten and mapped buffer head. Since it is
-not new, we never zero out the partial range which is not under write,
-thus writing stale data to disk. This can be easily observed with the
-following reproducer:
-
- fallocate -l 4k testfile
- xfs_io -c "pwrite 2k 2k" testfile
- # hexdump output will have stale data in from byte 0 to 2k in testfile
- hexdump -C testfile
-
-NOTE: To trigger this, we need dioread_nolock enabled and write happening via
-ext4_write_begin(), which is usually used when we have -o nodealloc. Since
-dioread_nolock is disabled with nodelalloc, the only alternate way to call
-ext4_write_begin() is to ensure that delayed alloc switches to nodelalloc ie
-ext4_da_write_begin() calls ext4_write_begin(). This will usually happen when
-ext4 is almost full like the way generic/269 was triggering it in Issue 1 above.
-This might make the issue harder to hit. Hence, for reliable replication, I used
-the below patch to temporarily allow dioread_nolock with nodelalloc and then
-mount the disk with -o nodealloc,dioread_nolock. With this you can hit the stale
-data issue 100% of times:
-
-@@ -508,8 +508,8 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
-  if (ext4_should_journal_data(inode))
-    return 0;
-  /* temporary fix to prevent generic/422 test failures */
-- if (!test_opt(inode->i_sb, DELALLOC))
--   return 0;
-+ // if (!test_opt(inode->i_sb, DELALLOC))
-+ //  return 0;
-  return 1;
- }
-
-After applying this patch to mark buffer as NEW, both the above issues are
-fixed.
-
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 6c490f05e2ba..8b286a800193 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -789,10 +789,22 @@ int ext4_get_block(struct inode *inode, sector_t iblock,
- int ext4_get_block_unwritten(struct inode *inode, sector_t iblock,
- 			     struct buffer_head *bh_result, int create)
- {
-+	int ret = 0;
-+
- 	ext4_debug("ext4_get_block_unwritten: inode %lu, create flag %d\n",
- 		   inode->i_ino, create);
--	return _ext4_get_block(inode, iblock, bh_result,
-+	ret = _ext4_get_block(inode, iblock, bh_result,
- 			       EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT);
-+
-+	/*
-+	 * If the buffer is marked unwritten, mark it as new to make sure it is
-+	 * zeroed out correctly in case of partial writes. Otherwise, there is
-+	 * a chance of stale data getting exposed.
-+	 */
-+	if (ret == 0 && buffer_unwritten(bh_result))
-+		set_buffer_new(bh_result);
-+
-+	return ret;
- }
- 
- /* Maximum number of blocks we map for direct IO at once. */
--- 
-2.39.3
-
+> ---
+>
+> Notes:
+>     Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
+>
+> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> index 4d537d56eb84..269d21209723 100644
+> --- a/arch/arm64/include/asm/acpi.h
+> +++ b/arch/arm64/include/asm/acpi.h
+> @@ -9,6 +9,7 @@
+>  #ifndef _ASM_ACPI_H
+>  #define _ASM_ACPI_H
+>
+> +#include <linux/cpuidle.h>
+>  #include <linux/efi.h>
+>  #include <linux/memblock.h>
+>  #include <linux/psci.h>
+> @@ -44,6 +45,23 @@
+>
+>  #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
+>         trbe_interrupt) + sizeof(u16))
+> +/*
+> + * Arm® Functional Fixed Hardware Specification Version 1.2.
+> + * Table 2: Arm Architecture context loss flags
+> + */
+> +#define CPUIDLE_CORE_CTXT              BIT(0) /* Core context Lost */
+> +
+> +static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
+> +                                                       unsigned int *sflags)
+> +{
+> +       if (arch_flags & CPUIDLE_CORE_CTXT)
+> +               *sflags |= CPUIDLE_FLAG_TIMER_STOP;
+> +}
+> +#define arch_update_idle_state_flags _arch_update_idle_state_flags
+> +
+> +#define CPUIDLE_TRACE_CTXT             BIT(1) /* Trace context loss */
+> +#define CPUIDLE_GICR_CTXT              BIT(2) /* GICR */
+> +#define CPUIDLE_GICD_CTXT              BIT(3) /* GICD */
+>
+>  /* Basic configuration for ACPI */
+>  #ifdef CONFIG_ACPI
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index dc615ef6550a..5c1d13eecdd1 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+>                 strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+>                 state->exit_latency = lpi->wake_latency;
+>                 state->target_residency = lpi->min_residency;
+> -               if (lpi->arch_flags)
+> -                       state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+> +               arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
+>                 if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+>                         state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+>                 state->enter = acpi_idle_lpi_enter;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index a73246c3c35e..07a825c76bab 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1480,6 +1480,12 @@ static inline int lpit_read_residency_count_address(u64 *address)
+>  }
+>  #endif
+>
+> +#ifdef CONFIG_ACPI_PROCESSOR_IDLE
+> +#ifndef arch_update_idle_state_flags
+> +#define arch_update_idle_state_flags(af, sf)   do {} while (0)
+> +#endif
+> +#endif /* CONFIG_ACPI_PROCESSOR_IDLE */
+> +
+>  #ifdef CONFIG_ACPI_PPTT
+>  int acpi_pptt_cpu_is_thread(unsigned int cpu);
+>  int find_acpi_cpu_topology(unsigned int cpu, int level);
+> --
+> 2.25.1
+>
