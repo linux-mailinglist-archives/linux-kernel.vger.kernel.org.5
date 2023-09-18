@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F376B7A439E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CFD7A4390
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240386AbjIRHyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
+        id S240316AbjIRHyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240642AbjIRHy0 (ORCPT
+        with ESMTP id S240615AbjIRHx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:54:26 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08CF3AB6;
-        Mon, 18 Sep 2023 00:53:03 -0700 (PDT)
-Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rpxmx6XHKz15NRB;
-        Mon, 18 Sep 2023 15:50:57 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 18 Sep 2023 15:53:00 +0800
-From:   Jijie Shao <shaojijie@huawei.com>
-To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>
-CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-        <liuyonglong@huawei.com>, <shaojijie@huawei.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 net 5/5] net: hns3: add 5ms delay before clear firmware reset irq source
-Date:   Mon, 18 Sep 2023 15:48:40 +0800
-Message-ID: <20230918074840.2650978-6-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230918074840.2650978-1-shaojijie@huawei.com>
-References: <20230918074840.2650978-1-shaojijie@huawei.com>
+        Mon, 18 Sep 2023 03:53:29 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12E11BD0;
+        Mon, 18 Sep 2023 00:49:27 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 192671C0010;
+        Mon, 18 Sep 2023 07:49:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1695023364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rq92VItbpebpi+AAk+tulF6SdXTqL6RjdDfqVeDE5xo=;
+        b=bKzpDWqL4wy2lgA4oF72ODGz2HbwhnGQ1MHg89SIqXO7C3XMOP5fcypy9OYJIiOXUHsb5p
+        b2zZT+/ydnplhw8ng2fhW/q0fazvMIZWGZYS7qC5sclzYVVRnAj/sD4rlWReNMrDelxP9/
+        O0r9pe799hmI0Qsq8ISYaFjcHAVPzkL8XlWv75+Gv7/LVaSA2bJfiDSimchGhtKK83n0lv
+        tZ8T+QrsO3q2zh5akIaJqMPz7gxPfXwwN+1GRuFO8ap2uLt+yRCgmpRO+1rB908nWufkEl
+        esTIJsuZ5+AO+HdzGYxiJ8HKeCoQZPqNgYyM6md7bddOZK1/taiGNAxCxatrlA==
+Date:   Mon, 18 Sep 2023 09:49:19 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Conor Dooley <conor@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 25/31] dt-bindings: net: Add the Lantiq PEF2256
+ E1/T1/J1 framer
+Message-ID: <20230918094919.03835d40@bootlin.com>
+In-Reply-To: <992a2b31-e21f-eee3-8bfc-a65b69fe5bd7@csgroup.eu>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
+        <20230912101444.225809-1-herve.codina@bootlin.com>
+        <20230912-overplay-donated-080eb97803d6@spud>
+        <992a2b31-e21f-eee3-8bfc-a65b69fe5bd7@csgroup.eu>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600007.china.huawei.com (7.193.23.208)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jie Wang <wangjie125@huawei.com>
+Hi Christophe,
 
-Currently the reset process in hns3 and firmware watchdog init process is
-asynchronous. we think firmware watchdog initialization is completed
-before hns3 clear the firmware interrupt source. However, firmware
-initialization may not complete early.
+On Tue, 12 Sep 2023 18:49:26 +0000
+Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
 
-so we add delay before hns3 clear firmware interrupt source and 5 ms delay
-is enough to avoid second firmware reset interrupt.
+> Le 12/09/2023 à 20:13, Conor Dooley a écrit :
+> > Yo,
+> > 
+> > I'm not au fait enough with this to leave particularly meaningful
+> > comments, so just some minor ones for you.
+> > 
+> > On Tue, Sep 12, 2023 at 12:14:44PM +0200, Herve Codina wrote:  
+> >> The Lantiq PEF2256 is a framer and line interface component designed to
+> >> fulfill all required interfacing between an analog E1/T1/J1 line and the
+> >> digital PCM system highway/H.100 bus.
+> >>
+> >> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>  
+> > 
+> > Missing a co-developed-by?  
+> 
+> No, I guess it's a left-over of version v4 that I sent-out while Hervé 
+> was AFK.
+> 
+> If a v6 is sent I think this line can be removed.
 
-Fixes: c1a81619d73a ("net: hns3: Add mailbox interrupt handling to PF driver")
-Signed-off-by: Jie Wang <wangjie125@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 5 +++++
- 1 file changed, 5 insertions(+)
+May I move to reviewed-by ?
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 2bd77871f3bf..c42574e29747 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -3564,9 +3564,14 @@ static u32 hclge_check_event_cause(struct hclge_dev *hdev, u32 *clearval)
- static void hclge_clear_event_cause(struct hclge_dev *hdev, u32 event_type,
- 				    u32 regclr)
- {
-+#define HCLGE_IMP_RESET_DELAY		5
-+
- 	switch (event_type) {
- 	case HCLGE_VECTOR0_EVENT_PTP:
- 	case HCLGE_VECTOR0_EVENT_RST:
-+		if (regclr == BIT(HCLGE_VECTOR0_IMPRESET_INT_B))
-+			mdelay(HCLGE_IMP_RESET_DELAY);
-+
- 		hclge_write_dev(&hdev->hw, HCLGE_MISC_RESET_STS_REG, regclr);
- 		break;
- 	case HCLGE_VECTOR0_EVENT_MBX:
+> 
+> Christophe
+
+
+
 -- 
-2.30.0
-
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
