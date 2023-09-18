@@ -2,115 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D8D7A4337
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F757A4300
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbjIRHny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
+        id S240058AbjIRHlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240434AbjIRHna (ORCPT
+        with ESMTP id S240076AbjIRHkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:43:30 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6923B10D5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:41:12 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so5289453a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 00:41:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695022870; x=1695627670; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0ZHZZX2awisr882TDRE7yqEqi53EXQ6avmbEwdMqX9s=;
-        b=NFBWrBWEUJzgExS+sD2gsB3h6enf+75j+0z2GkSnQ5qUHDT7UJTQIGWfJkJ3jYt7Iv
-         oAQtdP6A5x7BA2vdGS94j3Xjr5SssZ4PCI7enARI+a3KTiV+naStuoYw5hlwByIWpiZO
-         2FZGHNMrh/Wzx7dnTQeDKbeQYumSPyJyWwC9Onl65KrjQsH+P571zRXt3Jp5Y8sHHr9q
-         5Bgi/khX6zuqXSEd5FGuFDyx+aiSC0973j458tXTpK8LPCHuSE1V5hEE4aCR6nHkKrEh
-         lLEzYrB8LCcZw3X5CNqI7lu49xEQCxBkxYk1+CLVRmpDsr7P6gzzDYozydMizyfT6c2L
-         Lkgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695022870; x=1695627670;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0ZHZZX2awisr882TDRE7yqEqi53EXQ6avmbEwdMqX9s=;
-        b=psvH0wHQ3iJQmbwdDZl6I0/uy3BEObvaiGQKxrjs+2sdxnlAJnu/m9VJH1eCqZi1+c
-         MNga6oQeNpq7vywmuYB++OHLDqry+U/GbXJcaNwY5PEyKEPk1653bHnylLSaQ9YOD3C6
-         pgQgIzwV1UGe2hsUMenbdDYC5Ye61zgGj3qg42PQra/HH7nQyIAjlYghwkYJPV3gdsCz
-         imp/wkN23n7dBqEjaQsf4jQ/sHEPfJ4sUQu8Fp2GnGhJ75MSWidtliRoaPLUBC/6qqgP
-         qpG12OszMnKrc3L1LWbt91hFDaLMElQKAgueXSLKKSb1GqKKecaA1SgDA0tp8pBBLk83
-         +htw==
-X-Gm-Message-State: AOJu0YwlTVv97vYPAUuk5ANn7V7RtI3uxhw8T4Sj8jhdp+tdqjybSduF
-        megd5DZzUuMdX4ReLEQi1UgG8e1OAHA=
-X-Google-Smtp-Source: AGHT+IFaoUVQqyjQWuqkZT4VXInIKqT8gQTri7bRVUw3Z38fAe1T4fXEHlCaZlEZzxJaBQD+60CpiQ==
-X-Received: by 2002:a05:6512:3096:b0:4fe:1681:9377 with SMTP id z22-20020a056512309600b004fe16819377mr7580562lfd.44.1695022522580;
-        Mon, 18 Sep 2023 00:35:22 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id 26-20020a05600c229a00b003fe17901fcdsm14424890wmf.32.2023.09.18.00.35.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 00:35:21 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 18 Sep 2023 09:35:19 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Brendan Jackman <jackmanb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org,
-        laijs@linux.alibaba.com, yosryahmed@google.com, reijiw@google.com,
-        oweisse@google.com
-Subject: Re: [PATCH RESEND] x86/entry: Don't write to CR3 when restoring to
- kernel CR3
-Message-ID: <ZQf9twm6n5vNmwbB@gmail.com>
-References: <20230817121513.1382800-1-jackmanb@google.com>
+        Mon, 18 Sep 2023 03:40:31 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AA61708;
+        Mon, 18 Sep 2023 00:38:05 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38I7SOD0030988;
+        Mon, 18 Sep 2023 07:37:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=r2hWKlEpKe/JKJubx7igl+rfCDrfvf22cMzTlHAy4t8=;
+ b=XiZhIz1xqNMtaNAHZTmPN3N11LA57HogMY2oYOkI+ApYuLrvc7ZoP4cCVjrFHSCr/smM
+ vZLtLppQoXrMsDNJnGSEwM9HHYwLQu9JwG61qOXeTkPaPONBfRstGE47IwIXImSpfjZw
+ w/8XvdBORFna5qkHpQ7u2T47PpbhxFCY0nx80gQZ063TpeAjYUN0PXe2pLsgtRxcJnSt
+ S6P0mw6OGWhpT8e8x8BWIJwwBNK8DdcmDm2imRcJ7Eulc4zAoytNJt1+qFbKGRzcSttB
+ wqAcSDmR+LEzC1wLd7o6hT6RqbHZFdESpwf0WLGP1VAZ99f+X6DZeoJRscYDsB70XMhz xw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t53ayaqb1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 07:37:56 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38I7btsL009318
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Sep 2023 07:37:55 GMT
+Received: from [10.216.25.71] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 18 Sep
+ 2023 00:37:52 -0700
+Message-ID: <a890ac60-0562-48c3-9aa1-eb06ec21c69d@quicinc.com>
+Date:   Mon, 18 Sep 2023 13:07:26 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817121513.1382800-1-jackmanb@google.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] usb: gadget: ncm: Handle decoding of multiple NTB's in
+ unwrap call
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Linyu Yuan <quic_linyyuan@quicinc.com>,
+        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>, <stable@vger.kernel.org>
+References: <20230915061001.18884-1-quic_kriskura@quicinc.com>
+ <2023091743-tightly-drivable-4360@gregkh>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <2023091743-tightly-drivable-4360@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: A_gBGT8CUmtoqORQV7dXy2fqtBhJWHR6
+X-Proofpoint-ORIG-GUID: A_gBGT8CUmtoqORQV7dXy2fqtBhJWHR6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 impostorscore=0 malwarescore=0 bulkscore=0
+ clxscore=1015 priorityscore=1501 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309180066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Brendan Jackman <jackmanb@google.com> wrote:
 
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On 9/17/2023 1:34 PM, Greg Kroah-Hartman wrote:
+>> Cc: stable@vger.kernel.org
 > 
-> Skip resuming KERNEL pages since it is already KERNEL CR3
+> What commit id does this fix?
 > 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
-> 
-> While staring at paranoid_exit I was confused about why we had this CR3
-> write, avoiding it seems like a free optimisation. The original commit
-> 21e94459110252 ("x86/mm: Optimize RESTORE_CR3") says "Most NMI/paranoid
-> exceptions will not in fact change pagetables" but I didn't't understand
-> what the "most" was referring to. I then discovered this patch on the
-> mailing list, Andy said[1] that it looks correct so maybe now is the
-> time to merge it?
-> 
-> Note there's another patch in [1] as well, the benefit of that one is
-> not obvious to me though.
-> 
-> We've tested an equivalent patch in our internal kernel.
-> 
-> [1] https://lore.kernel.org/lkml/20200526043507.51977-3-laijs@linux.alibaba.com/
-> -- >8 --
->  arch/x86/entry/calling.h | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
 
-I concur that this is a good change, but it would be really nice to get an 
-ack from Andy or Thomas as well.
+Hi Greg,
 
-Thanks,
+This fixes the initial patch that added the driver:
+9f6ce4240a2bf456402c15c06768059e5973f28c
 
-	Ingo
+>> Reviewed-by: Maciej Żenczykowski <maze@google.com>
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>>   drivers/usb/gadget/function/f_ncm.c | 26 +++++++++++++++++++-------
+>>   1 file changed, 19 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+>> index feccf4c8cc4f..f00f051438ec 100644
+>> --- a/drivers/usb/gadget/function/f_ncm.c
+>> +++ b/drivers/usb/gadget/function/f_ncm.c
+>> @@ -1156,7 +1156,8 @@ static int ncm_unwrap_ntb(struct gether *port,
+>>   			  struct sk_buff_head *list)
+>>   {
+>>   	struct f_ncm	*ncm = func_to_ncm(&port->func);
+>> -	__le16		*tmp = (void *) skb->data;
+>> +	unsigned char	*ntb_ptr = (void *) skb->data;
+> 
+> Why persist with the extra ' ', didn't checkpatch complain about this?
+> 
+> And why the cast at all?
+> 
+My bad. I ran the checkpatch and got the following result:
+
+kriskura@hu-kriskura-hyd:/local/mnt/workspace/krishna/510/testncm/kernel$ 
+./scripts/checkpatch.pl --strict 
+0001-usb-gadget-ncm-Handle-decoding-of-multiple-NTB-s-in-.patch
+WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit 
+description?)
+#12:
+unwraps the obtained request data assuming only one NTB is present, we loose
+
+CHECK: No space is necessary after a cast
+#34: FILE: drivers/usb/gadget/function/f_ncm.c:1159:
++       unsigned char   *ntb_ptr = (void *) skb->data;
+
+CHECK: No space is necessary after a cast
+#46: FILE: drivers/usb/gadget/function/f_ncm.c:1176:
++       tmp = (void *) ntb_ptr;
+
+CHECK: No space is necessary after a cast
+#93: FILE: drivers/usb/gadget/function/f_ncm.c:1329:
++               ntb_ptr = (unsigned char *) (ntb_ptr + block_len);
+
+total: 0 errors, 1 warnings, 3 checks, 67 lines checked
+
+
+I ignored the checks and saw only that errors are 0. Seems like I missed 
+fixing the commit text wrapping to 75 chars (On line 12 it has 76 
+chars). Will fix it up in v3.
+
+As per the cast, I initially didn't add any cast and saw that the code 
+was not able to parse the dwSignature of the NTH and decoding of all 
+packets was failing. Only when I added the cast, was the function able 
+to decode all packets properly.
+
+>> +	__le16		*tmp;
+>>   	unsigned	index, index2;
+>>   	int		ndp_index;
+>>   	unsigned	dg_len, dg_len2;
+>> @@ -1169,6 +1170,10 @@ static int ncm_unwrap_ntb(struct gether *port,
+>>   	const struct ndp_parser_opts *opts = ncm->parser_opts;
+>>   	unsigned	crc_len = ncm->is_crc ? sizeof(uint32_t) : 0;
+>>   	int		dgram_counter;
+>> +	int		to_process = skb->len;
+>> +
+>> +parse_ntb:
+>> +	tmp = (void *) ntb_ptr;
+> 
+> Again, no blank space please.
+> 
+> And why the cast?
+> 
+the second cast here was just to be in sync with the original code;
+__le16		*tmp = (void *) skb->data;
+
+I didn't try removing this and running the test. Will check if the 
+second one is required or if decoding is proper without it or not.
+
+Regards,
+Krishna,
