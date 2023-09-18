@@ -2,187 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C58547A50DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447837A50E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbjIRRWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
+        id S229940AbjIRRYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjIRRWv (ORCPT
+        with ESMTP id S229561AbjIRRYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:22:51 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D633DB
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:22:45 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-414ba610766so22531cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695057764; x=1695662564; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xvvJYFIiUxdYFTdPHEaO0CeIjpRLTphScVUwzbxkZK0=;
-        b=wndlOZ7zcAzDQaFfix5uVbtaIVLy3pxjyxzT0S+erwGtCKgO7JR5HMn0Lh2iV545k6
-         R1psIzr8Vy04SxEEFUZwM6KF+oc5KEQwzP66wHJKKWNGGEQJM5HIRdmz5RZxXHfOvyfZ
-         z6LAXfIyTgOfGVHIqaBNu5QMEx0v/mPTvvcNw/TMO0k/M2rVc4X1Y/SFmbWuKI9GxnYc
-         MTMzvuhUxUBu3KpQ6lBZTf6TJM/JFLxR/HJnlyblSrKWVX74uEOEbLIwP1yDHT0GohV0
-         IyxKbIdsFg5f0v1Okg8uyUKwTz1k3+LmiWpsMWghvwGzjQ8FyApQUGBN6enhMICzDZ/n
-         Qkug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695057764; x=1695662564;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xvvJYFIiUxdYFTdPHEaO0CeIjpRLTphScVUwzbxkZK0=;
-        b=JNUkSpYf/HdyT1EcY09vseTPUQQyasd5BUZQJbU5gFF8oEi8iHJ0NOM3DYDwXyCv6v
-         Ecwozsp+hL8vsi6dVX4r4kttYYp8vQ6/xYTAbXoICRM7inwte4O1TAljgE+cb0RjVXGi
-         WC1Y6uCcaksK5uCmwFsriOUUcKTV0Dm/gIAg5CgS5WmreTnxW17PH9xTK23mY6HUDgLc
-         Umw6EmTdYbglglOJcl+8tcc5TgB05poP99RDG//F0uRQhLHg9fggSToOlVhRmT8ed39d
-         njbjAE8QMKQKXhCmAgz/pxv8KBSj1Fd3SS5IrNJiwXsf5iN6HbKa/7X/5DDFaeMF2nBW
-         DFug==
-X-Gm-Message-State: AOJu0YwyoiQQ8ts6/Zam0uvz5NFnMUxe5EhI6Y7j4NtVNTyKBH9C9U2I
-        MDgLk40jJ+v85BK72jSkKBGSNAh87z57Dd6y6kCDNg==
-X-Google-Smtp-Source: AGHT+IHAUHQ/AMU/gJEDTtvG0y4/dOXnZypfx1XktwC4AQ0OOJH50KDr2c6hw6wINJLIcAGQ28aoPbcDfjjgNSFkLq4=
-X-Received: by 2002:a05:622a:1049:b0:410:9855:ac6 with SMTP id
- f9-20020a05622a104900b0041098550ac6mr5770qte.14.1695057764287; Mon, 18 Sep
- 2023 10:22:44 -0700 (PDT)
+        Mon, 18 Sep 2023 13:24:53 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050:0:465::202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C47DB;
+        Mon, 18 Sep 2023 10:24:47 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RqBVy2295z9sVw;
+        Mon, 18 Sep 2023 19:24:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
+        s=MBO0001; t=1695057882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+4yHZzrHJjqPq7LBrt01/QAbJUKdFCg/AHjFPUYawGM=;
+        b=FNUSQaK7LApdoP5g+mITwld4G9hToDRz95VaB47X6UkIF4AXHWaH097ukp/autFcL6DmU8
+        uyXDLwDHuCAOVXTnm28zLYj1tQWwlGkMrJyuOWXbJlPUWyB4UsmSSE431UJQduy/LeH6o/
+        +hhTnswkKDH6nnkzhPca9FglyNr9lFm88xC8we0pR+6/JWQtKd4KaGpt0nHCmdc/lz4tay
+        Jsa6Y2EqX96ESgoyGzzqPulK76XFtliJEhgJYNZtTxordHMW0KRWa6ESnLu+lwLBB71N1L
+        g58hb9jE3HEMFvs6Zn+onrZ8EKm/1QCDo6rC1C70ylqDxLH9rOGGkMWGEvzYXg==
+References: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
+From:   Frank Oltmanns <frank@oltmanns.dev>
+To:     Benjamin Bara <bbara93@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        Adam Ford <aford173@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH 00/13] imx8mp: first clock propagation attempt (for LVDS)
+In-reply-to: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
+Date:   Mon, 18 Sep 2023 19:24:08 +0200
+Message-ID: <87fs3bbdjb.fsf@oltmanns.dev>
 MIME-Version: 1.0
-References: <20230817003029.3073210-1-rananta@google.com> <20230817003029.3073210-9-rananta@google.com>
- <ZQTEN664F/5PzyId@linux.dev> <ZQTSffkkI1x5lWIG@linux.dev> <CAJHc60y+xwV3oYk7-YxE1WiOfnSNFzroM419UDJwTeb=MCJdkA@mail.gmail.com>
-In-Reply-To: <CAJHc60y+xwV3oYk7-YxE1WiOfnSNFzroM419UDJwTeb=MCJdkA@mail.gmail.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 18 Sep 2023 10:22:32 -0700
-Message-ID: <CAJHc60xT61+o2SY45X9m=ffypo9L3k_wMAU9FTCDay9w1RwM5g@mail.gmail.com>
-Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
- PMCR_EL0.N for the guest
-To:     Oliver Upton <oliver.upton@linux.dev>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+Hi Benjamin!
 
-On Mon, Sep 18, 2023 at 10:11=E2=80=AFAM Raghavendra Rao Ananta
-<rananta@google.com> wrote:
+On 2023-09-18 at 00:39:56 +0200, Benjamin Bara <bbara93@gmail.com> wrote:
+> Hi!
 >
-> On Fri, Sep 15, 2023 at 2:54=E2=80=AFPM Oliver Upton <oliver.upton@linux.=
-dev> wrote:
-> >
-> > On Fri, Sep 15, 2023 at 08:53:16PM +0000, Oliver Upton wrote:
-> > > Hi Raghu,
-> > >
-> > > On Thu, Aug 17, 2023 at 12:30:25AM +0000, Raghavendra Rao Ananta wrot=
-e:
-> > > > From: Reiji Watanabe <reijiw@google.com>
-> > > >
-> > > > KVM does not yet support userspace modifying PMCR_EL0.N (With
-> > > > the previous patch, KVM ignores what is written by upserspace).
-> > >
-> > > typo: userspace
-> > >
-> > > > diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-> > > > index ce7de6bbdc967..39ad56a71ad20 100644
-> > > > --- a/arch/arm64/kvm/pmu-emul.c
-> > > > +++ b/arch/arm64/kvm/pmu-emul.c
-> > > > @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct =
-arm_pmu *arm_pmu)
-> > > >      * while the latter does not.
-> > > >      */
-> > > >     kvm->arch.pmcr_n =3D arm_pmu->num_events - 1;
-> > > > +   kvm->arch.pmcr_n_limit =3D arm_pmu->num_events - 1;
-> > >
-> > > Can't we just get at this through the arm_pmu instance rather than
-> > > copying it into kvm_arch?
-> > >
-> > > >     return 0;
-> > > >  }
-> > > > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> > > > index 2075901356c5b..c01d62afa7db4 100644
-> > > > --- a/arch/arm64/kvm/sys_regs.c
-> > > > +++ b/arch/arm64/kvm/sys_regs.c
-> > > > @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, c=
-onst struct sys_reg_desc *r,
-> > > >     return 0;
-> > > >  }
-> > > >
-> > > > +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_de=
-sc *r,
-> > > > +               u64 val)
-> > > > +{
-> > > > +   struct kvm *kvm =3D vcpu->kvm;
-> > > > +   u64 new_n, mutable_mask;
-> > > > +   int ret =3D 0;
-> > > > +
-> > > > +   new_n =3D FIELD_GET(ARMV8_PMU_PMCR_N, val);
-> > > > +
-> > > > +   mutex_lock(&kvm->arch.config_lock);
-> > > > +   if (unlikely(new_n !=3D kvm->arch.pmcr_n)) {
-> > > > +           /*
-> > > > +            * The vCPU can't have more counters than the PMU
-> > > > +            * hardware implements.
-> > > > +            */
-> > > > +           if (new_n <=3D kvm->arch.pmcr_n_limit)
-> > > > +                   kvm->arch.pmcr_n =3D new_n;
-> > > > +           else
-> > > > +                   ret =3D -EINVAL;
-> > > > +   }
-> > >
-> > > Hmm, I'm not so sure about returning an error here. ABI has it that
-> > > userspace can write any value to PMCR_EL0 successfully. Can we just
-> > > ignore writes that attempt to set PMCR_EL0.N to something higher than
-> > > supported by hardware? Our general stance should be that system regis=
-ter
-> > > fields responsible for feature identification are immutable after the=
- VM
-> > > has started.
-> >
-> > I hacked up my reply and dropped some context; this doesn't read right.
-> > Shaoqin made the point about preventing changes to PMCR_EL0.N after the
-> > VM has started and I firmly agree. The behavior should be:
-> >
-> >  - Writes to PMCR always succeed
-> >
-> >  - PMCR_EL0.N values greater than what's supported by hardware are
-> >    ignored
-> >
-> >  - Changes to N after the VM has started are ignored.
-> >
-> Reiji and I were wondering if we should proceed with this as this
-> would change userspace expectation. BTW, when you said "ignored", does
-> that mean we silently return to userspace with a success or with EBUSY
-> (changing the expectations)?
+> Target of this series is to dynamically set the rate of video_pll1 to
+> the required LVDS clock rate(s), which are configured by the panel, and
+> the lvds-bridge respectively.
 >
-Sorry, I just read your earlier comment (one before you detailed the
-behavior), from which I'm guessing "ignore" means simply disregard the
-change and return success to userspace. But wouldn't that cause issues
-in debugging?
+> Some background:
+> The LVDS panel requires two clocks: the crtc clock and the lvds clock.
+> The lvds rate is always 7x the crtc rate. On the imx8mp, these are
+> assigned to media_disp2_pix and media_ldb, which are both
+> clk-composite-8m. The rates are set by drm_client_modeset_commit() (and
+> later by fsl_ldb_atomic_enable()), and the fsl-ldb driver, first crtc,
+> then lvds. The parent is typically assigned to video_pll1, which is a
+> clk-pll14xx (pll1443x).
+>
+> The main problem:
+> As the clk-composite-8m currently doesn't support CLK_SET_RATE_PARENT,
+> the crtc rate is not propagated to video_pll1, and therefore must be
+> assigned in the device-tree manually.
+>
+> The idea:
+> Enable CLK_SET_RATE_PARENT, at least for media_disp2_pix and media_ldb.
+> When this is done, ensure that the pll1443x can be re-configured,
+> meaning it ensures that an already configured rate (crtc rate) is still
+> supported when a second child requires a different rate (lvds rate). As
+> the children have divider, the current approach is straight forward by
+> calculating the LCM of the required rates. During the rate change of the
+> PLL, it must ensure that all children still have the configured rate at
+> the end (and maybe also bypass the clock while doing so?). This is done
+> by implementing a notifier function for the clk-composite-8m. The tricky
+> part is now to find out if the rate change was intentional or not. This
+> is done by adding the "change trigger" to the notify data. In our case,
+> we now can infer if we aren't the change trigger, we need to keep the
+> existing rate after the PLL's rate change. We keep the existing rate by
+> modifying the new_rate of the clock's core, as we are quite late in an
+> already ongoing clock change process.
+>
+> Future work:
+> The re-configuration of the PLL can definitely be improved for other use
+> cases where the children have more fancy inter-dependencies. That's one
+> of the main reasons I currently only touched the mentioned clocks.
+> Additionally, it might make sense to automatically re-parent if a
+> different possible parent suits better.
+> For the core part, I thought about extending my "unintentional change
+> check" so that the core ensures that the children keep the configured
+> rate, which might not be easy as the parent could be allowed to "round",
+> but it's not clear (at least to me yet) how much rounding is allowed. I
+> found a similar discussion posted here[1], therefore added Frank and
+> Maxime.
 
-Thank you.
-Raghavendra
-> Thank you.
-> Raghavendra
-> > --
-> > Thanks,
-> > Oliver
+Thank you very much for including me in the discussion. If I understood
+Maxime correctly, your proposal is close to what he was suggesting in
+the discussion you referenced. Unfortunately, it doesn't cover the
+rounding aspect (which you also mentioned in your cover letter and the
+description for clk_detect_unintended_rate_changes in patch 7. I've been
+pondering the last three weeks how to find a good solution to this
+problem, but so far haven't found any.
+
+Hopefully, your suggestion spurs some new thoughts.
+
+Thanks,
+  Frank
+
+>
+> Thanks & regards,
+> Benjamin
+>
+> [1] https://lore.kernel.org/lkml/20230825-pll-mipi_keep_rate-v1-0-35bc43570730@oltmanns.dev/
+>
+> ---
+> Benjamin Bara (13):
+>       arm64: dts: imx8mp: lvds_bridge: use root instead of composite
+>       arm64: dts: imx8mp: re-parent IMX8MP_CLK_MEDIA_MIPI_PHY1_REF
+>       clk: implement clk_hw_set_rate()
+>       clk: print debug message if parent change is ignored
+>       clk: keep track of the trigger of an ongoing clk_set_rate
+>       clk: keep track if a clock is explicitly configured
+>       clk: detect unintended rate changes
+>       clk: divider: stop early if an optimal divider is found
+>       clk: imx: pll14xx: consider active rate for re-config
+>       clk: imx: composite-8m: convert compute_dividers to void
+>       clk: imx: composite-8m: implement CLK_SET_RATE_PARENT
+>       clk: imx: imx8mp: allow LVDS clocks to set parent rate
+>       arm64: dts: imx8mp: remove assigned-clock-rate of IMX8MP_VIDEO_PLL1
+>
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi |  14 +--
+>  drivers/clk/clk-divider.c                 |   9 ++
+>  drivers/clk/clk.c                         | 146 +++++++++++++++++++++++++++++-
+>  drivers/clk/imx/clk-composite-8m.c        |  89 +++++++++++++++---
+>  drivers/clk/imx/clk-imx8mp.c              |   4 +-
+>  drivers/clk/imx/clk-pll14xx.c             |  20 ++++
+>  drivers/clk/imx/clk.h                     |   4 +
+>  include/linux/clk-provider.h              |   2 +
+>  include/linux/clk.h                       |   2 +
+>  9 files changed, 261 insertions(+), 29 deletions(-)
+> ---
+> base-commit: e143016b56ecb0fcda5bb6026b0a25fe55274f56
+> change-id: 20230913-imx8mp-dtsi-7c6e25907e0e
+>
+> Best regards,
