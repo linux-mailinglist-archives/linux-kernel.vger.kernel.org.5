@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECADD7A5016
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB677A5021
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbjIRQ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
+        id S231288AbjIRRAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231387AbjIRQ6v (ORCPT
+        with ESMTP id S231228AbjIRRAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:58:51 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA49F185
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:58:43 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-34fa117f92bso2415ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695056323; x=1695661123; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=knRagvKuCPzhCIYhCOjRCh44VjecKJtrl8eHwZBErg4=;
-        b=0ru6f5T3Isq+RB3EWYvBlX+hnugBdW6UtTSaogmPXLEWWqijFNwxdzyVkg+uO4EN0m
-         8K/IkdJ8wvDl8vxhpbB3gW6YTYFBbw8diAsbTUs271KqiiPieoWOpM4wiCoAaUO6yyYW
-         RK0IWCgm8XmuubaM7FX2sVNML0fysv/+Q2LXOWpq1GMOHu0fe5n6nLjRS4NFlwJ3FgLo
-         poZBImG3T7wVXeQziDPrVc/Hm8v4DtUVAzLUHkgm4ay4vVy5hD+Bgz1prV2E6XIqruXN
-         Zthv32XmTtWmfl2ZKzOIuxktGxtQ7INzwM3trKdp6GzlPTTNkLls0p5Nfx/CAV9J7tgh
-         ZYIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695056323; x=1695661123;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=knRagvKuCPzhCIYhCOjRCh44VjecKJtrl8eHwZBErg4=;
-        b=OD887zkz9kc14r8HYIwMOislEBSsCUN0GgLm3x/xYGqzoPJUsqAnF23nSmXjxw4FHK
-         ZmTouT9jhBlLqM5xUZvlFYXBKKlahTeUy4OI33exLkNHZ5ELNIis2iQEUc2Hty/GfHH2
-         x+mFsWilSv+PIjHF7VwuWEpGHdlRO3/kji+MZk/PfJGVCdHKDOIlUpOURKIHM5QzQ/DZ
-         +UVxmc8VQkVSXTrsIZ/rqxo33udMU8Ebg2kjiJQOkwBxdOq5PrlCW02w0xiLidEJ/g6C
-         68oGa9Oq9QiynykAojixOmavktlIYqY37g73M2ocHyRNOLguK1dTf7TyOrf7tQXRX83Y
-         R7Hg==
-X-Gm-Message-State: AOJu0YxGq97kDhRjGFlTS/KIq13oy+nPps/PFq03IcQYG5pSWx3kXNGS
-        fJ4Eg/XO8xOzGqW6Dol2ufpSsBiLRqLt4Zm4ksozBg==
-X-Google-Smtp-Source: AGHT+IFv1Ps0KGN+3uXX0L5vlmsQqy+WtzDDn/VsgDwBehY5y6fNEdqefWeJzC7fg+gcv+GeSBBp0dzvFA3WkKepQm0=
-X-Received: by 2002:a05:6e02:19c5:b0:34f:71b0:e72b with SMTP id
- r5-20020a056e0219c500b0034f71b0e72bmr553193ill.27.1695056322944; Mon, 18 Sep
- 2023 09:58:42 -0700 (PDT)
+        Mon, 18 Sep 2023 13:00:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7AA83;
+        Mon, 18 Sep 2023 10:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695056402; x=1726592402;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lT9p5hv31UMkD34LHrMrkfWLaA5eBFXeiFssGZsvkAw=;
+  b=bQ4hX1/Fkyy1omgKjs9kLKQy8z1fs5pzx9TAyLSNQSbJPrT9bVhYNwzv
+   hRm+tNH9+mbbTCSGteYSZBvlFcK3PLKvPEB6+Y9mTXimv64DwRBzrDZpp
+   FiI/LapHRdhp2K3W0iKz1UkMbxsjHHi/ei+53DDSSjsmgbju1uUrUPJWz
+   xLw+iEX3FFoBhhattox/lqY+ZWg6g+GK2K9H6tf2MW+m8TExcT+9+bUNd
+   txYs6spX8x4rWked3GU9g5PmaNj+qQdhh9tcgKvRCSLOHD0/TdSs2tKxR
+   o9wF8XMOZ5080C8bDz5vcAYN0IqWvu8E6piXcverbN1bBaVFlJUxwEJb2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="378624359"
+X-IronPort-AV: E=Sophos;i="6.02,157,1688454000"; 
+   d="scan'208";a="378624359"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 10:00:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="889142855"
+X-IronPort-AV: E=Sophos;i="6.02,157,1688454000"; 
+   d="scan'208";a="889142855"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 09:59:15 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qiHbH-0000000FUwZ-2I37;
+        Mon, 18 Sep 2023 19:59:55 +0300
+Date:   Mon, 18 Sep 2023 19:59:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Saravana Kannan <saravanak@google.com>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v1 1/1] device property: Clarify usage scope of some
+ struct fwnode_handle members
+Message-ID: <ZQiCC9xoCzwc/nEd@smile.fi.intel.com>
+References: <20230904104046.1682875-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20230817003029.3073210-1-rananta@google.com> <20230817003029.3073210-3-rananta@google.com>
- <ZQSxgWWZ3YdNgeiC@linux.dev> <CAJHc60ytL7T73wwabD8C2+RkVgN3OQsNuBwdQKz+Qen9b_hq9A@mail.gmail.com>
- <ZQh/H5aMoqpYgVZg@linux.dev>
-In-Reply-To: <ZQh/H5aMoqpYgVZg@linux.dev>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 18 Sep 2023 09:58:31 -0700
-Message-ID: <CAJHc60wnYYxkav7+Lu3b0iPmyujz-cW-py5Ksg2+098fh5BtVQ@mail.gmail.com>
-Subject: Re: [PATCH v5 02/12] KVM: arm64: PMU: Set the default PMU for the
- guest on vCPU reset
-To:     Oliver Upton <oliver.upton@linux.dev>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230904104046.1682875-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 9:47=E2=80=AFAM Oliver Upton <oliver.upton@linux.de=
-v> wrote:
->
-> On Mon, Sep 18, 2023 at 09:41:02AM -0700, Raghavendra Rao Ananta wrote:
-> > On Fri, Sep 15, 2023 at 12:33=E2=80=AFPM Oliver Upton <oliver.upton@lin=
-ux.dev> wrote:
->
-> [...]
->
-> > > This would eliminate the possibility of returning ENODEV to userspace
-> > > where we shouldn't.
-> > >
-> > I understand that we'll be breaking the API contract and userspace may
-> > have to adapt to this change, but is it not acceptable to document and
-> > return ENODEV, since ENODEV may offer more clarity to userspace as to
-> > why the ioctl failed? In general, do we never extend the APIs?
->
-> Yes, we extend the existing interfaces all the time, but we almost
-> always require user opt in for user-visible changes in behavior. Look at
-> the way arm64_check_features() is handled -- we hide the 'detailed'
-> error and return EINVAL due to UAPI.
->
-Got it. Let's return EINVAL then. Thanks!
+On Mon, Sep 04, 2023 at 01:40:46PM +0300, Andy Shevchenko wrote:
+> Most of the struct fwnode_handle members are for exclusive use with
+> device links framework. Clarify this by adding a respective comment.
 
-- Raghavendra
-> --
-> Thanks,
-> Oliver
+Thank you, folks, for the review. Rafael, Greg, who can apply this?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
