@@ -2,174 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D9E7A497D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1529E7A497C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241915AbjIRMXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48246 "EHLO
+        id S241842AbjIRMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241423AbjIRMXL (ORCPT
+        with ESMTP id S241993AbjIRMXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:23:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B50BA0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:22:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695039742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZJHCjeshTod0mBtUAlW/a8kmwzZB3bOBG+U2CpfWvjM=;
-        b=Ysi2lrAI56m+64okCocfwVDXjg+2CrFMwkn0qV/QYyTE+ZhnhKDsLhEbknM1HN/JDlTCVp
-        bD0NSTCWN7dYzJEmgiEUAcg2E4/uVJ9Www9KZoZHUIxhSMVnjj176mwAnUrqcNbtp3FsF8
-        t2m0kZ8GXMSHbbakcMDlR7/uiUfaiY4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-541-OYAdsIBvMiWsgAvpgYUXSg-1; Mon, 18 Sep 2023 08:22:21 -0400
-X-MC-Unique: OYAdsIBvMiWsgAvpgYUXSg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-30932d15a30so2951404f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:22:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695039740; x=1695644540;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZJHCjeshTod0mBtUAlW/a8kmwzZB3bOBG+U2CpfWvjM=;
-        b=e8sfRdWHFldJA7I7GPK/jEGvxi/bXPFaGUKRgEv1B2bKmHkSJqoFGI8hOaKWmMMcVo
-         XJXgO37UHx1B+W5Wm0a52rT2FqzrUdHeL+9q1bIDtcANi1l1kkmY9fymasoYWLebWQPH
-         ANmTSb30vCXSQWX4+Yc0TV5xN1wCTD1/jr6YYVfVbx1TTiTAdgdZKzYDLP9FWXMbCyJ3
-         uQzQLZi7EoXdXJ4oEYGNavenJFoHCHtBxBAuzqgoGx2dI5u4l0w14eH4fSP/laAQizHC
-         k/8vZqQXj5ke18F/2fzAsgcKxDleOQKIQlP2NBRENJJ+TgyEfja/GY7p76wZQsyaWhrx
-         mIkg==
-X-Gm-Message-State: AOJu0Ywk/BBEB7RvVI1t3JcYt4KGmYOAgec0+wwXQi6orTjyTNu3vdX2
-        l87Qo2uCwtICxBvHZDp9exEb2/MA/vpaRftVjS4TB6mBgASGxMMIHJT08SFAwXS++G+sfDJhMIw
-        IUJYzSQbbt7m6KoeG6W2mQKfv
-X-Received: by 2002:a5d:4a50:0:b0:317:6175:95fd with SMTP id v16-20020a5d4a50000000b00317617595fdmr6802157wrs.43.1695039739845;
-        Mon, 18 Sep 2023 05:22:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFJhpmJ38m8RKDJrG8Pabddv8tBjaD+dmtUhuyWEuM1UhdpBXuZ6K+XdRqKtojUWAkoaJr5Vg==
-X-Received: by 2002:a5d:4a50:0:b0:317:6175:95fd with SMTP id v16-20020a5d4a50000000b00317617595fdmr6802141wrs.43.1695039739495;
-        Mon, 18 Sep 2023 05:22:19 -0700 (PDT)
-Received: from vschneid.remote.csb (anice-256-1-26-111.w86-203.abo.wanadoo.fr. [86.203.135.111])
-        by smtp.gmail.com with ESMTPSA id q11-20020adff50b000000b0031c71693449sm12572024wro.1.2023.09.18.05.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 05:22:18 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, quentin.perret@arm.com,
-        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
-        mingo@kernel.org, pierre.gondois@arm.com, yu.c.chen@intel.com,
-        tim.c.chen@linux.intel.com, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org
-Subject: Re: [PATCH v3] sched/topology: remove sysctl_sched_energy_aware
- depending on the architecture
-In-Reply-To: <bd8a3c47-80f5-61f3-b884-85a7ee92767d@linux.vnet.ibm.com>
-References: <20230913114807.665094-1-sshegde@linux.vnet.ibm.com>
- <xhsmhil8cvi7s.mognet@vschneid.remote.csb>
- <7c6dd2ec-b9a9-b364-5a29-05336127e519@linux.vnet.ibm.com>
- <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
- <bd8a3c47-80f5-61f3-b884-85a7ee92767d@linux.vnet.ibm.com>
-Date:   Mon, 18 Sep 2023 14:22:17 +0200
-Message-ID: <xhsmha5tjvfgm.mognet@vschneid.remote.csb>
+        Mon, 18 Sep 2023 08:23:03 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2043.outbound.protection.outlook.com [40.107.104.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14578C7;
+        Mon, 18 Sep 2023 05:22:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mTQXNDMwvDbJ2k8lGU55VcEriNk/H38Ep9JtagXSb0VeRzV9bdUbR4MFxd49IYygWImaUIDHHE7oozpXc/J1ci5ufL82eosz8zVrJbOzm3a5LT0jv+0WIFweGDKs+7+DzQRzUvIw4yZlXiLoOQr8MTeGEnSK4LvpPySQsq8TNR7oCffCaZddq8p9tjSDbCaJdj+077idxJYRKKBjoM6ZDWg1YStIoMkoV77FcGEFkCQTflp1oLtdeMOZyrv67oK80mbhH8xIkvipO6bkPrNMS/gaZMIl1JH2NQMa1H6RuRncHviQ9c8NRwwSgQpvjTZHXiVNRAFcBAiiRvqBeHx6xA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eT5TLfbod9WNxDAkzKu/viKH5r15oYqM7J6YirYKn0o=;
+ b=SaA+XBT2ins15hUErZ5kc3o0ApnnWzQ2AH2MddD8SVG+SaHo/QVL9eOLrNI0jJTZwjNfN156O02F/Zc4tkxNfeQFDDsUKgJTl34jYYBz/ycTUPJ2JXs+siuj8lPWW3CjdndNzan4SkglKV2VpnyILvfoYcCAet2X/NlyXadOmnmij4KdHCwsGPAdkdsouHAerYbRPyVnv6ZpBrFM0idqYwmVCUtQJ6/obrXU27oqrkzoy8QGBBCNYQC5NHJQd7PGsTbKuPzDUWFOeqQDM06gREe5ieABUO7q5qVNpNF9WMOVIa2H/cKc3Q9a+TEXfGOSA4bhd5AwGhVke5fi/q40Wg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eT5TLfbod9WNxDAkzKu/viKH5r15oYqM7J6YirYKn0o=;
+ b=orJLgGTnAvlWV6B+MUJisKxMQ/58WPMb3zt84sgnbhErA59tLOZCMZh3eCBEioGIBf1mwHfCEwwegYeGQwKOruBLqrvDsiOh2x40bApPQKdGnrVs0iCZc+qKB0FEZW3bk+TeFShNRMLYrAG13glwDEhWN9l0ht6ALg4eGuMIYPU=
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:273::14) by AM0PR01MB6306.eurprd01.prod.exchangelabs.com
+ (2603:10a6:20b:16a::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.15; Mon, 18 Sep
+ 2023 12:22:51 +0000
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::11d:15c1:fca6:e077]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::11d:15c1:fca6:e077%7]) with mapi id 15.20.6813.013; Mon, 18 Sep 2023
+ 12:22:51 +0000
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Topic: [PATCH v2 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Index: AQHZ592r0UV0+OQAK0qc65NPyGpwxrAcB2yAgAR937A=
+Date:   Mon, 18 Sep 2023 12:22:51 +0000
+Message-ID: <DU2PR01MB80342BFB3FC5C5B49EDA3E73F9FBA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+References: <20230915140516.1294925-1-f.suligoi@asem.it>
+ <20230915-sinuous-domestic-80cd8775ecb0@spud>
+In-Reply-To: <20230915-sinuous-domestic-80cd8775ecb0@spud>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=asem.it;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|AM0PR01MB6306:EE_
+x-ms-office365-filtering-correlation-id: c0c416de-d132-4ce0-e0fb-08dbb841fa51
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4Y9hoUwdn1TIPmCqI1lg4BiR/xlGQK6oTXZYDRUmgf2u7vLDq4rzXp/vK3eVh09fYHHxj+hYuKzRcbLNqxc7eC8uJNGjmCFEJq9AFbI0Mu9mq54crpNYkNDZCNArIv/Xafxb+o5b7fcnvJp5wk4cfYYEvEvxVd9q2AtvnLb/GhV4V9UORz6bfmIT2BqB0Ys8o5UBNnsneuOvVGx2D2KTuaDlp4xpDq97jsG4bd6Ze8KRUeu+kUsiapiAXtVTeA7fOTr+jNWicXg0TVRIKq+yhwQW1XCR3rkeKeYkPSBFBE8cYzyMafkOrGNvtTGGUdccb9ufYoXD1gM4wq8f6aZAMPIj76HLPUgXnc8rGG5aXTbubG+BiCUNcUCG0EgkJ/bT73gtgk+lzoinUaKI17FiYz2C/sJ2ECPtP3Rq/Y24nF+81C+zVeF4MbDRRyEaXwkV59Wq9fW1eWWfwf7Z55clR/CygqZp92A7HtlLv0DYKaUFlk/j5dotYs1585OuGAaqBYg/ZMmL2ZmIhAWFAp7BiFuo+DBcB9XRNcnwCQmmn1RxcmSJW/BDI7J8ixv4rLIGvaxOqBi2kTFhXauG/JzGCCbVls2Fsjc/aOsrLhAGJbY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39850400004)(366004)(136003)(396003)(1800799009)(186009)(451199024)(7696005)(6506007)(966005)(71200400001)(9686003)(478600001)(26005)(2906002)(7416002)(66446008)(76116006)(66946007)(64756008)(54906003)(316002)(66476007)(6916009)(66556008)(4326008)(8676002)(52536014)(5660300002)(8936002)(41300700001)(55016003)(86362001)(33656002)(38070700005)(38100700002)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?K0Dq9iQwmr9z99yDPMpNKDjPoa26xybdJtTCbJv4CuvhcZySyba119RWa2ir?=
+ =?us-ascii?Q?iwu3qehmodGpFtGGa45OZAch36nsKJzY6MX+m3a3xKHVKZ9OM2cmqRaJBokP?=
+ =?us-ascii?Q?suFDCOTiNs2ofhpa+tbvASoOB/4NMmKrRV+Qm/IV/ruXSPYCYsjtJDOBnbK1?=
+ =?us-ascii?Q?FwhP+nx23nNaYvqvWHBnlLIQmRT7en+HCguZOIWKQk5LAa9zcyRzwK/cm62H?=
+ =?us-ascii?Q?u+BrhAOaR6hAVYwEYnlCtD2VxMyYJrVhynGue9ruz6LBSg5zjkVvjWmXTAjz?=
+ =?us-ascii?Q?vAJZQXXp7AAVWNENh9AFuXGvTnmAtKe6XffJqPvnf3BybH12m8VAT+fjOQOl?=
+ =?us-ascii?Q?SSbBTlfmTFkyM6OgvPdF55JRyyNLJPa/ThAiCvnPZYT5sMK7jZHV/oQiojuG?=
+ =?us-ascii?Q?X4ZCw9OccAt0xGRbo0Cojsj2hAeiM2ZU1KxypDrDjo301BjV8TVacnLrXdku?=
+ =?us-ascii?Q?gdOiAwukQCAa1r6BbHukTPzmzfpDPJ4JNaAxsCb+zrghO0O9mMBZuhjn2/un?=
+ =?us-ascii?Q?6I3EyLyv5DXyFAcoAPxQYScjfUQfcr2a31Tsu2Y5yCw7AuTADFpuJdBOYMhj?=
+ =?us-ascii?Q?cRvC/L+4xP3kWpFcKKSV1X026u9NZCNs0Q59Zu3RupuniJnngtHURg2ROi3q?=
+ =?us-ascii?Q?GNWRJd9KPaYnqwybvVNpgOFV6n8Gs0nfCGkLwqr9MrAMf0ZrnuaHp29/m01g?=
+ =?us-ascii?Q?x1LFJat/2yaP/6n0SRot6SuxCra0qgPtE1XNm6AjYPfBt+UY6R6RLEZNWfJJ?=
+ =?us-ascii?Q?lAxJ1+kTy6lldh9gENyrImzY1r7YUwGUnPqat2670Wd2WC+z5/ZThOG2Ur/p?=
+ =?us-ascii?Q?AvB/5eQtCHvLX6FOraI7BlBQVCQi3AQ8F3UtiIZXd9wLO+YQ3UpBqLYYbT/2?=
+ =?us-ascii?Q?wkjl8qIiY2H6kTMmu3Ok4ostc1n3nVsZ/qm8SKEQsnSNhzIIEvK0ouEGFJE+?=
+ =?us-ascii?Q?dyd7tbR/cCeqR/8Rriz3pcFIsEpwd/varAlxN03fB4ej6csWSvoFQlbw0Abj?=
+ =?us-ascii?Q?Hbwgo2TGqldpCkeo2/JIJcaDbGAO397ylHvZ8B+5Dr2aSuSwlvphnJ4QNGfV?=
+ =?us-ascii?Q?pOqhx5li+I6yuGbU0N4ib6DYwA6DXV2VJrBm8g4UVCVW67Fi6C26ReAEEy7A?=
+ =?us-ascii?Q?6OmtC9JBW0Mq14SCX5c3y2DAz8f159Cw0wD0DIN/oTQhXAet4wZIw5nmXcQw?=
+ =?us-ascii?Q?1GTQORtH0JBTUuZ8qxE35QAKEq23xmFm/pSKw3yCfadBjvjIx3z/SXDiE1Mz?=
+ =?us-ascii?Q?iRHKDB4JoC+Y4kfx/ohd6ue7qG7GG2bGRVn3jkFHdDLw/OeJwYWuCr1ehh+S?=
+ =?us-ascii?Q?5TLmdv7ONPQlbyt5F3s1fN2o1yBo8159W3mKempIARAXEzZm9OV0PhktIrXs?=
+ =?us-ascii?Q?ZRpLkTojof5xae9iGPImfPMR+HKrwcQS8GyE3UCxfIRJH8dHuDqhncDPtpPr?=
+ =?us-ascii?Q?/V5HxOtlosklFZlCvMYXdP0bJ0EBEvs0nmCpMhUAz7nuDLyaDGRluTxjiIGD?=
+ =?us-ascii?Q?r6MteH7wXG0D98xBdL6HWU1lkxgwo5TZjBf1NRuHFEIBiE3SsjKZEPOPp5h2?=
+ =?us-ascii?Q?vBY9FtBydag2gCgtnLc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0c416de-d132-4ce0-e0fb-08dbb841fa51
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2023 12:22:51.4684
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OSaHs4GhYzWneQIuE0DP6QknkbJsnwmFfj1Ib04J2uXtRbHQmB14USRpmGGSMgwKQ/L4IGZ+sUhsK6BNAKR+Mw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR01MB6306
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/23 23:40, Shrikanth Hegde wrote:
-> On 9/15/23 5:30 PM, Valentin Schneider wrote:
->> On 14/09/23 23:26, Shrikanth Hegde wrote:
->>> On 9/14/23 9:51 PM, Valentin Schneider wrote:
->>>> On 13/09/23 17:18, Shrikanth Hegde wrote:
->>>>> sysctl_sched_energy_aware is available for the admin to disable/enable
->>>>> energy aware scheduling(EAS). EAS is enabled only if few conditions are
->>>>> met by the platform. They are, asymmetric CPU capacity, no SMT,
->>>>> valid cpufreq policy, frequency invariant load tracking. It is possible
->>>>> platform when booting may not have EAS capability, but can do that after.
->>>>> For example, changing/registering the cpufreq policy.
->>>>>
->>>>> At present, though platform doesn't support EAS, this sysctl is still
->>>>> present and it ends up calling rebuild of sched domain on write to 1 and
->>>>> NOP when writing to 0. That is confusing and un-necessary.
->>>>>
->>>>
->>>
->>> Hi Valentin, Thanks for taking a look at this patch.
->>>
->>>> But why would you write to it in the first place? Or do you mean to use
->>>> this as an indicator for userspace that EAS is supported?
->>>>
->>>
->>> Since this sysctl is present and its value being 1, it gives the
->>> impression to the user that EAS is supported when it is not.
->>> So its an attempt to correct that part.
->>>
->> 
->> Ah, I see. Then how about just making the sysctl return 0 when EAS isn't
->> supported? And on top of it, prevent all writes when EAS isn't supported
->> (perf domains cannot be built, so there would be no point in forcing a
->> rebuild that will do nothing).
->
-> Yes. That's another way. Thats what I had as possible approach in 
-> https://lore.kernel.org/lkml/d2c945d6-c4f0-a096-0623-731b11484f51@linux.vnet.ibm.com/
->
+Hi Conor,
 
-Thanks for the link; and apologies for bringing up topics that have been
-discussed already.
+...
 
->
->
->> 
->> I can never remember how to properly use the sysctl API, so that's a very
->> crude implementation, but something like so?
->> 
->> ---
->> 
->> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
->> index 05a5bc678c089..dadfc5afc4121 100644
->> --- a/kernel/sched/topology.c
->> +++ b/kernel/sched/topology.c
->> @@ -230,9 +230,28 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
->>  	if (write && !capable(CAP_SYS_ADMIN))
->>  		return -EPERM;
->> 
->> +	if (!sched_energy_enabled()) {
->
-> Use of sched_energy_enabled won't work as Pierre has indicated. 
->
-> Instead this can be done by adding those checks in a helper function to
-> do similar checks as done build_perf_domains. 
->
-> I can send v4 with this approach if it makes more sense. Please let me know.
->
 
-So what I'm thinking is the standard approach seems to be to keep the knobs
-visible, but change how reads/writes to them are handled.
+> On Fri, Sep 15, 2023 at 04:05:15PM +0200, Flavio Suligoi wrote:
+> > The Monolithic Power (MPS) MP3309C is a WLED step-up converter,
+> > featuring a programmable switching frequency to optimize efficiency.
+> > The brightness can be controlled either by I2C commands (called "analog=
+"
+> > mode) or by a PWM input signal (PWM mode).
+> > This driver supports both modes.
+> >
+> > For device driver details, please refer to:
+> > - drivers/video/backlight/mp3309c_bl.c
+> >
+> > The datasheet is available at:
+> > - https://www.monolithicpower.com/en/mp3309c.html
+> >
+> > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> > ---
+> >
+> > v2:
+> >  - remove useless properties (dimming-mode, pinctrl-names, pinctrl-0,
+> >    switch-on-delay-ms, switch-off-delay-ms, reset-gpios, reset-on-delay=
+-ms,
+> >    reset-on-length-ms)
+> >  - add common.yaml#
+> >  - remove already included properties (default-brightness,
+> > max-brightness)
+> >  - substitute three boolean properties, used for the overvoltage-protec=
+tion
+> >    values, with a single enum property
+> >  - remove some conditional definitions
+> >  - remove the 2nd example
+> > v1:
+> >  - first version
+> >
+> >  .../bindings/leds/backlight/mps,mp3309c.yaml  | 73
+> > +++++++++++++++++++
+> >  1 file changed, 73 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > new file mode 100644
+> > index 000000000000..99ccdba2c08f
+> > --- /dev/null
+> > +++
+> b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yam
+> > +++ l
+> > @@ -0,0 +1,73 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) %YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/leds/backlight/mps,mp3309c.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MPS MP3309C backlight
+> > +
+> > +maintainers:
+> > +  - Flavio Suligoi <f.suligoi@asem.it>
 
-For instance, SMT support has
+...
 
-  /sys/devices/system/cpu/smt
-    /control
-    /active
+> > +  mps,overvoltage-protection-microvolt:
+> > +    description: Overvoltage protection (13.5V, 24V or 35.5V). If miss=
+ing, the
+> > +      hardware default of 35.5V is used.
+> > +    enum: [ 13500000, 24000000, 35500000 ]
+> You can add "default: 35500000" and drop the free form default as text in=
+ the
+> description.
 
-And a system with CONFIG_HOTPLUG_SMT=y but no actual hardware SMT will
-have:
+Ok, thanks.
 
-    /control = notsupported
-    /active  = 0
+>=20
+> Cheers,
+> Conor.
+>=20
+> > +
+> > +  mps,no-sync-mode:
+> > +    description: disable synchronous rectification mode
+> > +    type: boolean
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - max-brightness
+> > +  - default-brightness
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    i2c {
+> > +        #address-cells =3D <1>;
+> > +        #size-cells =3D <0>;
+> > +
+> > +        /* Backlight with PWM control */
+> > +        backlight_pwm: backlight@17 {
+> > +            compatible =3D "mps,mp3309c-backlight";
+>=20
+> As the bot pointed out, the compatible doesn't contain "backlight".
 
-So IMO it would make sense to keep sched_energy_aware around, but make it
-read 0 and prevent writes for systems that have the software support
-compiled but don't have the actual hardware support.
+Right, fixed!
 
-In a pinch it also helps to know if CONFIG_ENERGY_MODEL was selected,
-though that's obvious enough with CONFIG_SCHED_DEBUG=y.
-
+Thanks and regards,
+Flavio
