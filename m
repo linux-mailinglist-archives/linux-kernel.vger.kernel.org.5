@@ -2,144 +2,491 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA90C7A3F43
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 03:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949B27A3F47
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 03:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbjIRBkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 21:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
+        id S236282AbjIRBqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 21:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235866AbjIRBkF (ORCPT
+        with ESMTP id S237014AbjIRBp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 21:40:05 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C3011C;
-        Sun, 17 Sep 2023 18:40:00 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38I1dsoJ012864;
-        Mon, 18 Sep 2023 01:39:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=fektZLu9V9H5UJ+0rOKIBNhaOjy+v1AhJEJMQgo9JkI=;
- b=IC6piAl0AVJVCWL+0cWa/IvS67M9eAIc0qje6aZL3b1gUr6PxokrUrmkaLCrCFsxSkMW
- i4dtPpWk/NxUJGImHD17LYF+jUuoe/5Jowu+YfrCymvoAql+RNDhcxx29SIpI0uaYGhe
- YizuKdYgOSyz12Zcxq6chhyCi7rzcEwPDO61BbTQSOBdczqfa62FHe5869kk69ytDj9K
- NOa9qeeJXjLgmbSQ+CqFTSUZVFnz0XcNOltuVWTxyj5sUmMgkZ2v6WDcwe8+BBRovsTN
- Wf+BB4mqHBuY4oTaMM/X7uMYIQ/WEVbeRzE79c8kaHkebPacXvc/1TCcC5qyQRfHJFn8 1Q== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t554pj2y1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 01:39:54 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38I1dree024140
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 01:39:53 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 17 Sep
- 2023 18:39:46 -0700
-Message-ID: <6e31d07f-133e-4abe-8225-45c822429bae@quicinc.com>
-Date:   Mon, 18 Sep 2023 09:39:43 +0800
+        Sun, 17 Sep 2023 21:45:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CB2129;
+        Sun, 17 Sep 2023 18:45:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 379F5C43397;
+        Mon, 18 Sep 2023 01:45:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695001550;
+        bh=n9RWB+w1yUv+aubJPUmNrRQ9Q7pGMIVPoPy3qtsJqJ8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qiTPXuhsYr9tFBZSOL22BIQlFYdLVELH+nzuRtGvFM2Lp+OEr3SWla7mJaFWFQutX
+         UhClWGmKGoeGVAb/11f9R3kXdEStnFdU0uZTsgv/VfE+7g2AXY7jQosJ8PkLzip59w
+         3R3dClO3o8QMxq/ocjOnM4pIYEJH4UA98tem2G4S29ctlFEuIcrSAmfxUJH/sDjJ0a
+         eZ23eUJsLs5cPKCfnQ4Zl73hHTumnUp0ENk/zXp9EjRAtE2N3nYlmp1Pkf3RLrGQ2G
+         dcDOMoR2n+hD+8BX6Rn0e4MU5b29ysIooY49oethLxaeaPPguibIKEEGfm16IoL4IJ
+         nFNMhnQMmkrNA==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-52bcb8b199aso4840010a12.3;
+        Sun, 17 Sep 2023 18:45:50 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxRQLUuZjDCshsmr7X5A7epExzkonknOTUusAd59NJdoIgGynS7
+        uUalRgNNWMMfPY+25fz1C1a/1N+Cx1gAw4uIEok=
+X-Google-Smtp-Source: AGHT+IFurRP0n7IvZ3d8/Hc+9MEJ1BHlmM2XEPGMQOwkTV8J4GFgH7OnZjf8L20gQ2W+VrJ/QgJybtQ1lfc+jruklbc=
+X-Received: by 2002:aa7:c513:0:b0:523:102f:3cdd with SMTP id
+ o19-20020aa7c513000000b00523102f3cddmr6360414edq.19.1695001548572; Sun, 17
+ Sep 2023 18:45:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: qcom: Add SM4450 pinctrl
-To:     Rob Herring <robh@kernel.org>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
-        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
-        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
-        <kernel@quicinc.com>
-References: <20230915015808.18296-1-quic_tengfan@quicinc.com>
- <20230915015808.18296-2-quic_tengfan@quicinc.com>
- <6f40ee72-b763-c58d-44df-ea40d1309820@linaro.org>
- <35371580-8e5a-4f72-aec2-951268c296a3@quicinc.com>
- <20230915145947.GA3716246-robh@kernel.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <20230915145947.GA3716246-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: MWke8LkhVPybNMe8Z95GKq2FrQujruRu
-X-Proofpoint-ORIG-GUID: MWke8LkhVPybNMe8Z95GKq2FrQujruRu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 suspectscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0 mlxscore=0
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309180014
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230915014949.1222777-1-zhaotianrui@loongson.cn>
+ <20230915014949.1222777-3-zhaotianrui@loongson.cn> <CAAhV-H5ti7L+QXJ=boK8aKNwt74Pvn1-vm71B9Bymi+2zXXzHw@mail.gmail.com>
+ <525aa9e2-1ebc-6c49-55ef-9f3c7d18d3e0@loongson.cn>
+In-Reply-To: <525aa9e2-1ebc-6c49-55ef-9f3c7d18d3e0@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Mon, 18 Sep 2023 09:45:36 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7wB_N0nFm1JMhKJR=8NAuDR3XNC6NfeZis0VhDECAUjg@mail.gmail.com>
+Message-ID: <CAAhV-H7wB_N0nFm1JMhKJR=8NAuDR3XNC6NfeZis0VhDECAUjg@mail.gmail.com>
+Subject: Re: [PATCH v21 02/29] LoongArch: KVM: Implement kvm module related interface
+To:     zhaotianrui <zhaotianrui@loongson.cn>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
+        Xi Ruoyao <xry111@xry111.site>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 18, 2023 at 9:21=E2=80=AFAM zhaotianrui <zhaotianrui@loongson.c=
+n> wrote:
+>
+>
+> =E5=9C=A8 2023/9/16 =E4=B8=8B=E5=8D=884:51, Huacai Chen =E5=86=99=E9=81=
+=93:
+> > Hi, Tianrui,
+> >
+> > On Fri, Sep 15, 2023 at 9:50=E2=80=AFAM Tianrui Zhao <zhaotianrui@loong=
+son.cn> wrote:
+> >> Implement LoongArch kvm module init, module exit interface,
+> >> using kvm context to save the vpid info and vcpu world switch
+> >> interface pointer.
+> >>
+> >> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+> >> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> >> ---
+> >>   arch/loongarch/kvm/main.c | 367 ++++++++++++++++++++++++++++++++++++=
+++
+> >>   1 file changed, 367 insertions(+)
+> >>   create mode 100644 arch/loongarch/kvm/main.c
+> >>
+> >> diff --git a/arch/loongarch/kvm/main.c b/arch/loongarch/kvm/main.c
+> >> new file mode 100644
+> >> index 0000000000..0deb9273d8
+> >> --- /dev/null
+> >> +++ b/arch/loongarch/kvm/main.c
+> >> @@ -0,0 +1,367 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
+> >> + */
+> >> +
+> >> +#include <linux/err.h>
+> >> +#include <linux/module.h>
+> >> +#include <linux/kvm_host.h>
+> >> +#include <asm/cacheflush.h>
+> >> +#include <asm/cpufeature.h>
+> >> +#include <asm/kvm_csr.h>
+> >> +#include "trace.h"
+> >> +
+> >> +static struct kvm_context __percpu *vmcs;
+> >> +struct kvm_world_switch *kvm_loongarch_ops;
+> >> +unsigned long vpid_mask;
+> >> +static int gcsr_flag[CSR_MAX_NUMS];
+> >> +
+> >> +int get_gcsr_flag(int csr)
+> >> +{
+> >> +       if (csr < CSR_MAX_NUMS)
+> >> +               return gcsr_flag[csr];
+> >> +
+> >> +       return INVALID_GCSR;
+> >> +}
+> >> +
+> >> +static inline void set_gcsr_sw_flag(int csr)
+> >> +{
+> >> +       if (csr < CSR_MAX_NUMS)
+> >> +               gcsr_flag[csr] |=3D SW_GCSR;
+> >> +}
+> >> +
+> >> +static inline void set_gcsr_hw_flag(int csr)
+> >> +{
+> >> +       if (csr < CSR_MAX_NUMS)
+> >> +               gcsr_flag[csr] |=3D HW_GCSR;
+> >> +}
+> >> +
+> >> +/*
+> >> + * The default value of gcsr_flag[CSR] is 0, and we use this
+> >> + * function to set the flag to 1(SW_GCSR) or 2(HW_GCSR) if the
+> >> + * gcsr is software or hardware. It will be used by get/set_gcsr,
+> >> + * if gcsr_flag is HW we should use gcsrrd/gcsrwr to access it,
+> >> + * else use sw csr to emulate it.
+> >> + */
+> >> +static void kvm_init_gcsr_flag(void)
+> >> +{
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_CRMD);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRMD);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_EUEN);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_MISC);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_ECFG);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_ESTAT);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_ERA);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_BADV);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_BADI);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_EENTRY);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBIDX);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBEHI);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBELO0);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBELO1);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_ASID);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_PGDL);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_PGDH);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_PWCTL0);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_PWCTL1);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_STLBPGSIZE);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_RVACFG);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_CPUID);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG1);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG2);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG3);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS0);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS1);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS2);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS3);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS4);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS5);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS6);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS7);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TMID);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TCFG);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TVAL);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_CNTC);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_LLBCTL);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRENTRY);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRBADV);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRERA);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRSAVE);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRELO0);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRELO1);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBREHI);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRPRMD);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN0);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN1);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN2);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN3);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_MWPS);
+> >> +       set_gcsr_hw_flag(LOONGARCH_CSR_FWPS);
+> >> +
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IMPCTL1);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IMPCTL2);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRCTL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRINFO1);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRINFO2);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRENTRY);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRERA);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRSAVE);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_CTAG);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DEBUG);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DERA);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DESAVE);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG1);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG2);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG3);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PGD);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_TINTCLR);
+> >> +
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_FWPS);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_FWPC);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_MWPS);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_MWPC);
+> > FWPS and MWPS are both HW CSR and SW CSR?
+> >
+> > Huacai
+> The FWPC and MWPC should be SW GCSR, FWPS and MWPS should be HW GCSR, it
+> is my mistake.
+But in user manual vol 3, section 1.5, FWPC/FWPS/MWPC/MWPS are all HW
+GCSR, while DBxxxx and IBxxxx are SW GCSR.
 
+Huacai
 
-在 9/15/2023 10:59 PM, Rob Herring 写道:
-> On Fri, Sep 15, 2023 at 03:30:16PM +0800, Tengfei Fan wrote:
->>
->>
->> 在 9/15/2023 3:04 PM, Krzysztof Kozlowski 写道:
->>> On 15/09/2023 03:58, Tengfei Fan wrote:
->>>> Add device tree binding Documentation details for Qualcomm SM4450
->>>> TLMM device.
->>>>
->>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>>
->>> ...
->>>
->>>> +
->>>> +patternProperties:
->>>> +  "-state$":
->>>> +    oneOf:
->>>> +      - $ref: "#/$defs/qcom-sm4450-tlmm-state"
->>>> +      - patternProperties:
->>>> +          "-pins$":
->>>> +            $ref: "#/$defs/qcom-sm4450-tlmm-state"
->>>> +        additionalProperties: false
->>>> +
->>>> +$defs:
->>>> +  qcom-sm4450-tlmm-state:
->>>> +    type: object
->>>> +    description:
->>>> +      Pinctrl node's client devices use subnodes for desired pin configuration.
->>>> +      Client device subnodes use below standard properties.
->>>> +    $ref: qcom,tlmm-common.yaml#/$defs/qcom-tlmm-state
->>>> +    unevaluatedProperties: false
->>>> +
->>>> +    properties:
->>>> +      pins:
->>>> +        description:
->>>> +          List of gpio pins affected by the properties specified in this
->>>> +          subnode.
->>>> +        items:
->>>> +          oneOf:
->>>> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-9][0-9])$"
->>>
->>> This is still wrong. How many GPIOs do you have? Please open existing
->>> bindings for recent device (e.g. sm8550) and look how it is done there.
->> yes, will update to "^gpio([0-9]|[1-9][0-9]|1[0-2][0-5])$".
-> 
-> What about 106, 116, etc.?
-> 
-> Rob
-understand more, need "^gpio([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-5])$".
-
--- 
-Thx and BRs,
-Tengfei Fan
+>
+> Thanks
+> Tianrui Zhao
+> >
+> >> +
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7ASID);
+> >> +
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6ASID);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7ADDR);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7MASK);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7CTRL);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7ASID);
+> >> +
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL0);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR0);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL1);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR1);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL2);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR2);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL3);
+> >> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR3);
+> >> +}
+> >> +
+> >> +static void kvm_update_vpid(struct kvm_vcpu *vcpu, int cpu)
+> >> +{
+> >> +       struct kvm_context *context;
+> >> +       unsigned long vpid;
+> >> +
+> >> +       context =3D per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
+> >> +       vpid =3D context->vpid_cache + 1;
+> >> +       if (!(vpid & vpid_mask)) {
+> >> +               /* finish round of 64 bit loop */
+> >> +               if (unlikely(!vpid))
+> >> +                       vpid =3D vpid_mask + 1;
+> >> +
+> >> +               /* vpid 0 reserved for root */
+> >> +               ++vpid;
+> >> +
+> >> +               /* start new vpid cycle */
+> >> +               kvm_flush_tlb_all();
+> >> +       }
+> >> +
+> >> +       context->vpid_cache =3D vpid;
+> >> +       vcpu->arch.vpid =3D vpid;
+> >> +}
+> >> +
+> >> +void kvm_check_vpid(struct kvm_vcpu *vcpu)
+> >> +{
+> >> +       struct kvm_context *context;
+> >> +       bool migrated;
+> >> +       unsigned long ver, old, vpid;
+> >> +       int cpu;
+> >> +
+> >> +       cpu =3D smp_processor_id();
+> >> +       /*
+> >> +        * Are we entering guest context on a different CPU to last ti=
+me?
+> >> +        * If so, the vCPU's guest TLB state on this CPU may be stale.
+> >> +        */
+> >> +       context =3D per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
+> >> +       migrated =3D (vcpu->cpu !=3D cpu);
+> >> +
+> >> +       /*
+> >> +        * Check if our vpid is of an older version
+> >> +        *
+> >> +        * We also discard the stored vpid if we've executed on
+> >> +        * another CPU, as the guest mappings may have changed without
+> >> +        * hypervisor knowledge.
+> >> +        */
+> >> +       ver =3D vcpu->arch.vpid & ~vpid_mask;
+> >> +       old =3D context->vpid_cache  & ~vpid_mask;
+> >> +       if (migrated || (ver !=3D old)) {
+> >> +               kvm_update_vpid(vcpu, cpu);
+> >> +               trace_kvm_vpid_change(vcpu, vcpu->arch.vpid);
+> >> +               vcpu->cpu =3D cpu;
+> >> +       }
+> >> +
+> >> +       /* Restore GSTAT(0x50).vpid */
+> >> +       vpid =3D (vcpu->arch.vpid & vpid_mask) << CSR_GSTAT_GID_SHIFT;
+> >> +       change_csr_gstat(vpid_mask << CSR_GSTAT_GID_SHIFT, vpid);
+> >> +}
+> >> +
+> >> +static int kvm_loongarch_env_init(void)
+> >> +{
+> >> +       struct kvm_context *context;
+> >> +       int cpu, order;
+> >> +       void *addr;
+> >> +
+> >> +       vmcs =3D alloc_percpu(struct kvm_context);
+> >> +       if (!vmcs) {
+> >> +               pr_err("kvm: failed to allocate percpu kvm_context\n")=
+;
+> >> +               return -ENOMEM;
+> >> +       }
+> >> +
+> >> +       kvm_loongarch_ops =3D kzalloc(sizeof(*kvm_loongarch_ops), GFP_=
+KERNEL);
+> >> +       if (!kvm_loongarch_ops) {
+> >> +               free_percpu(vmcs);
+> >> +               vmcs =3D NULL;
+> >> +               return -ENOMEM;
+> >> +       }
+> >> +       /*
+> >> +        * There will be problem in world switch code if there
+> >> +        * is page fault reenter, since pgd register is shared
+> >> +        * between root kernel and kvm hypervisor. World switch
+> >> +        * entry need be unmapped area, cannot be tlb mapped area.
+> >> +        * In future if hw pagetable walking is supported, or there
+> >> +        * is separate pgd registers between root kernel and kvm
+> >> +        * hypervisor, copying about world switch code will not be use=
+d.
+> >> +        */
+> >> +
+> >> +       order =3D get_order(kvm_vector_size + kvm_enter_guest_size);
+> >> +       addr =3D (void *)__get_free_pages(GFP_KERNEL, order);
+> >> +       if (!addr) {
+> >> +               free_percpu(vmcs);
+> >> +               vmcs =3D NULL;
+> >> +               kfree(kvm_loongarch_ops);
+> >> +               kvm_loongarch_ops =3D NULL;
+> >> +               return -ENOMEM;
+> >> +       }
+> >> +
+> >> +       memcpy(addr, kvm_vector_entry, kvm_vector_size);
+> >> +       memcpy(addr + kvm_vector_size, kvm_enter_guest, kvm_enter_gues=
+t_size);
+> >> +       flush_icache_range((unsigned long)addr, (unsigned long)addr +
+> >> +                               kvm_vector_size + kvm_enter_guest_size=
+);
+> >> +       kvm_loongarch_ops->guest_eentry =3D addr;
+> >> +       kvm_loongarch_ops->enter_guest =3D addr + kvm_vector_size;
+> >> +       kvm_loongarch_ops->page_order =3D order;
+> >> +
+> >> +       vpid_mask =3D read_csr_gstat();
+> >> +       vpid_mask =3D (vpid_mask & CSR_GSTAT_GIDBIT) >> CSR_GSTAT_GIDB=
+IT_SHIFT;
+> >> +       if (vpid_mask)
+> >> +               vpid_mask =3D GENMASK(vpid_mask - 1, 0);
+> >> +
+> >> +       for_each_possible_cpu(cpu) {
+> >> +               context =3D per_cpu_ptr(vmcs, cpu);
+> >> +               context->vpid_cache =3D vpid_mask + 1;
+> >> +               context->last_vcpu =3D NULL;
+> >> +       }
+> >> +
+> >> +       kvm_init_fault();
+> >> +       kvm_init_gcsr_flag();
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static void kvm_loongarch_env_exit(void)
+> >> +{
+> >> +       unsigned long addr;
+> >> +
+> >> +       if (vmcs)
+> >> +               free_percpu(vmcs);
+> >> +
+> >> +       if (kvm_loongarch_ops) {
+> >> +               if (kvm_loongarch_ops->guest_eentry) {
+> >> +                       addr =3D (unsigned long)kvm_loongarch_ops->gue=
+st_eentry;
+> >> +                       free_pages(addr, kvm_loongarch_ops->page_order=
+);
+> >> +               }
+> >> +               kfree(kvm_loongarch_ops);
+> >> +       }
+> >> +}
+> >> +
+> >> +static int kvm_loongarch_init(void)
+> >> +{
+> >> +       int r;
+> >> +
+> >> +       if (!cpu_has_lvz) {
+> >> +               kvm_info("hardware virtualization not available\n");
+> >> +               return -ENODEV;
+> >> +       }
+> >> +       r =3D kvm_loongarch_env_init();
+> >> +       if (r)
+> >> +               return r;
+> >> +
+> >> +       return kvm_init(sizeof(struct kvm_vcpu), 0, THIS_MODULE);
+> >> +}
+> >> +
+> >> +static void kvm_loongarch_exit(void)
+> >> +{
+> >> +       kvm_exit();
+> >> +       kvm_loongarch_env_exit();
+> >> +}
+> >> +
+> >> +module_init(kvm_loongarch_init);
+> >> +module_exit(kvm_loongarch_exit);
+> >> +
+> >> +#ifdef MODULE
+> >> +static const struct cpu_feature loongarch_kvm_feature[] =3D {
+> >> +       { .feature =3D cpu_feature(LOONGARCH_LVZ) },
+> >> +       {},
+> >> +};
+> >> +MODULE_DEVICE_TABLE(cpu, loongarch_kvm_feature);
+> >> +#endif
+> >> --
+> >> 2.39.1
+> >>
+>
+>
