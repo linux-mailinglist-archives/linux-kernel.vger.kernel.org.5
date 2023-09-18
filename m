@@ -2,52 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E82C27A4CC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E257A4CC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjIRPkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
+        id S229451AbjIRPkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjIRPkQ (ORCPT
+        with ESMTP id S229686AbjIRPka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:40:16 -0400
+        Mon, 18 Sep 2023 11:40:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93CF1700;
-        Mon, 18 Sep 2023 08:36:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C39DC433CB;
-        Mon, 18 Sep 2023 13:06:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED44A10D0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:37:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA87BC433CD;
+        Mon, 18 Sep 2023 13:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695042391;
-        bh=uELFxgg6luhZsQ6sujsfEcWItHVAhzczR4NVsG10qcU=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=KBnlnyYaK1LdRDeFtgwXGZc/qRIf6Y+2rDelLlO2EbGIrkbPJUNLdyEWV0x96odTf
-         nx2m4KU9g2rFZNIjdGkEXkvkYpOjXQB37/tw3R2wj3MDLallfnorT6S6TzNazK/2yz
-         10bW9gxs/HV50u4nyA8EgvKw2T4dcbUei4GpHcl1s+62zm7DOEO2MENlQpzNXa3FCK
-         mn4QPaDf7KsTwxfNxQM2wDC0DOLfrMh/YzsiTvaicp7WZnNon/a42hyUSYsLeGi+nG
-         UFOxpCL2TaQ1xoCAinezCzAc7vYIM5SiJ2YhL8PYLUF/2Nt+sMpgACej+TLZuaz/I1
-         +Z9Fox8jmuEWA==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Matthew Wang <matthewmwang@chromium.org>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Pin-yen Lin <treapking@chromium.org>,
-        linux-wireless@vger.kernel.org,
-        Polaris Pi <pinkperfect2021@gmail.com>,
+        s=k20201202; t=1695042419;
+        bh=hsho6zwJgdGzMVL4844nsBVJLIQBFgjfSPu5NS4R7o8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mYtySxGMysdHsCIovmnvfHlg2AaCRdxOSMVbY5d92dapcymNtg/kl2qtiuus9BWWP
+         O5xRQVUXhyPqGfR3NU5kIxPupa2m0Hpp1SeCCC1aK3hnqJqUYS/p6IFu2lT2qGFGBz
+         YW0d9AwawXYSSHY61bLTtA4GMOT+UThCQ7b3Vz5AtA15rH7ZpPmGv91UF0UAvH8V19
+         HFKDgIVwF4TB+7Qw79Q22nieQnypZNGrTjB+gEDcVTZiLNNQl5C+jEHIpGcFdJGjwg
+         o4QQU9vPvO2j6M82ZFhGAaJUAmaWXXglLUVf0IzSeHB/1AJZM3ezI5cbQuHY8bPBsh
+         wcTWASdhyv78A==
+Date:   Mon, 18 Sep 2023 14:06:50 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     wangweidong.a@awinic.com
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
+        herve.codina@bootlin.com, shumingf@realtek.com,
+        13916275206@139.com, ryans.lee@analog.com,
+        linus.walleij@linaro.org, ckeepax@opensource.cirrus.com,
+        povik+lin@cutebit.org, arnd@arndb.de,
+        harshit.m.mogalapalli@oracle.com, u.kleine-koenig@pengutronix.de,
+        yang.lee@linux.alibaba.com, liweilei@awinic.com,
+        yijiangtao@awinic.com, trix@redhat.com, colin.i.king@gmail.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] wifi: mwifiex: Fix oob check condition in
- mwifiex_process_rx_packet
-References: <20230908104308.1546501-1-treapking@chromium.org>
-        <ZQIcDWKrmgoPkwlN@google.com>
-        <CAEXTbpc=QC6wC-W2VZCaRCp6rSpyNSsq5M6cxNcqAQxciNj0vg@mail.gmail.com>
-        <ZQOZZZgHP2EeDNix@google.com>
-        <CABRiz0ph56X48Y0VjS1yDEUW3=kihE4+WSHPuFVQv-CCdR=0cw@mail.gmail.com>
-Date:   Mon, 18 Sep 2023 16:06:27 +0300
-In-Reply-To: <CABRiz0ph56X48Y0VjS1yDEUW3=kihE4+WSHPuFVQv-CCdR=0cw@mail.gmail.com>
-        (Matthew Wang's message of "Mon, 18 Sep 2023 09:50:37 +0200")
-Message-ID: <8734zbd418.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+Subject: Re: [PATCH V3 3/5] ASoC: codecs: Add code for bin parsing compatible
+ with aw87390
+Message-ID: <b695fab0-1f0e-468c-a6c7-aa1003473c32@sirena.org.uk>
+References: <20230918115255.33171-1-wangweidong.a@awinic.com>
+ <20230918115255.33171-4-wangweidong.a@awinic.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5z+Fx5DotXtZSz3Z"
+Content-Disposition: inline
+In-Reply-To: <20230918115255.33171-4-wangweidong.a@awinic.com>
+X-Cookie: Never kick a man, unless he's down.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,18 +63,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wang <matthewmwang@chromium.org> writes:
 
-> lgtm
->
-> Reviewed-by: Matthew Wang <matthewmwang@chromium.org>
+--5z+Fx5DotXtZSz3Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Please don't top post, it's just bad in so many levels. This has been
-discussed and explained in our docs so many times that I'm not going to
-repeat those anymore. If you are too busy to edit your quotes and reply
-properly then it's better not to reply at all.
+On Mon, Sep 18, 2023 at 07:52:53PM +0800, wangweidong.a@awinic.com wrote:
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+> Add aw87390 compatible code to the aw88395_lib.c file
+> so that it can parse aw87390's bin file
+> Modify function return value
+> Remove the fade-enable property because other properties
+> already implement thi functionality.
+> Modify the transmission method of parameters.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+This would be easier to review if it were split up so that the
+refactorings are separate commits, removing fade enable is a separate
+commit and then finally just the changes to add the new CODEC are done.
+That way each individual commit is both smaller and simpler.
+
+--5z+Fx5DotXtZSz3Z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUIS2kACgkQJNaLcl1U
+h9Aj0wf/VncxZlHRbBN0E5dNaMspwCt53RF7zzRX8acE4xwwNEi9RATZwZnamY1B
+QHozPKBCqDrLv0QTnW2g/ZsForhKwa/q826C7X3ROhrp3O2aKrt25Nypbtn0Lup/
+4lRZ5r33uo4FOoh6t+Uj7+eCVaRnTENvmoMwn+8pfIWzmNpX8SrjKuB84kY3Ouh7
+8M5qt2/G9TwArVShx8v+ovZUf99Vbm/zQP3PueyLJfH/hJxm1j51zNBHhESEoThT
+tUdelqK0GXX3F3JKSc/o2B/WDmk5unSx/uE7N65Y/hcgn1qZ7FBjuur/jR8uy424
+Et6u5OOpx0tplM8EO5FVl1hZG+pUgA==
+=12+n
+-----END PGP SIGNATURE-----
+
+--5z+Fx5DotXtZSz3Z--
