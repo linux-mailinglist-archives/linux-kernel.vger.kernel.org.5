@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4332C7A3FDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70827A3FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 06:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238294AbjIREIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 00:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
+        id S238931AbjIREIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 00:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230360AbjIREHc (ORCPT
+        with ESMTP id S239414AbjIREIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 00:07:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF8F116
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:06:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695010001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RyEnCFT5C38bhUURLkGzvUajSXRR1/fSXXPcrqWJ/i0=;
-        b=LwdVkMPnlBKCXg4FMg9VrDqBR7wr6kSj7A0SE+1eY0cXvztUB6b9f+OE8r6g8e361zID8n
-        PBXxJQda3vx9zcUxcXCgi46i6OLdNfT1qT6YlZi8ROXipesbPD4MR+O9BgRdMk9j+mp8Cx
-        j5fNGvB2I7lar2hUhu/kfh2fRiQ53ss=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-665-cCtDEGxUM1qALjiaRjXBpQ-1; Mon, 18 Sep 2023 00:06:38 -0400
-X-MC-Unique: cCtDEGxUM1qALjiaRjXBpQ-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1c387a09de4so32202435ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:06:37 -0700 (PDT)
+        Mon, 18 Sep 2023 00:08:19 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C292EC6
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:08:13 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-403012f27e3so46194645e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 21:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1695010092; x=1695614892; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ez612mLc6i/GdCgxr8aU9W0YYLQrGi5wZNJ79KpTovo=;
+        b=E0Ee4xOhxJN7qDyhcZtNpGUmxkciCU30Aj+H3/C3xL1ZxCIP1pmanqIQHIPdR3Towu
+         x8b9S44EFEpVom2yaLlBPeXV8ejVusuF/tiKSuDwY5oc4o4rsXhdpdZU6jzePDJNCvNw
+         1eyTSO9/APquyka/QfrzwmVGaggWPe6ovasO3ofQ/lx8KCQFkqxubQtXEzXlTJq5wDDw
+         y0hjsoz0H6/5YEG80Xygw5Q9+Dw6x8GkqNAu/I0INeJSMRBSUtU8czWXm4pKYqQOvKVZ
+         +VmIrcW4hdBiwc99JUFpLz0VCS0nsbHBFavEoUW0BwYb+70ZNHlLnWN9H/yUdhDMrSMm
+         uXPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695009997; x=1695614797;
+        d=1e100.net; s=20230601; t=1695010092; x=1695614892;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RyEnCFT5C38bhUURLkGzvUajSXRR1/fSXXPcrqWJ/i0=;
-        b=mr6Qiev3hy2skWpVN+pWPTBmSRi3dmCIkDNxgp9drFdsXIBlJSb0ruJicZyNC5yqjn
-         im4YIJ04TZkj3AqUzFFbrl7hibBOazdHDSeFBkyvUs3KfjUpSRhRFgBwPrk82htsa2qJ
-         Ojy7gomntbx2/M1++UAtPuDtX26l9gTdBcMmkWp37wKiE74kZoo9yMXMwhoR3Y8PZvOP
-         IBXWkqiPlm+ZkI93wsTmiun08heyROfMpXAL2VM1iXTztzA6wBcd904VY6fp7cUVxqTQ
-         q90W80GbcOQCbYSkTxnmTi+rF9VHgUTGDtm082YlOUEK9EIpJJSnMqiWQOcCva+kJHxa
-         OBjA==
-X-Gm-Message-State: AOJu0YwyFFJCGUKkSdrFSDmjeryTWhWH+8FNymrbi6PWQ3i5xkplu21U
-        tKrZHA9IpIR8kdWjE67wX3ff7fjVAOkQ/Iu68mR48I8mA6PSmwER/e9EdSFqV8mWj2IG7nNz0X8
-        1ZJ7In3X6MZBNUkM8sHs5MGd7
-X-Received: by 2002:a17:902:ed13:b0:1c4:2639:fcac with SMTP id b19-20020a170902ed1300b001c42639fcacmr6826548pld.44.1695009997182;
-        Sun, 17 Sep 2023 21:06:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEF065/Z94SfXDjWgy8eNRhRV8ONjtcc1kg9eJW1xxYmQI4hKUxuHGFuBMDdEioAhl0IB04WA==
-X-Received: by 2002:a17:902:ed13:b0:1c4:2639:fcac with SMTP id b19-20020a170902ed1300b001c42639fcacmr6826541pld.44.1695009996903;
-        Sun, 17 Sep 2023 21:06:36 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id ju3-20020a170903428300b001bdb8c0b578sm5892366plb.192.2023.09.17.21.06.31
+        bh=ez612mLc6i/GdCgxr8aU9W0YYLQrGi5wZNJ79KpTovo=;
+        b=Fx3TtYU36NcCMBj60mjK3bn6wBV2+/bGrHjdt7xcwmSMPDP07SRb/gNzAQerScaNAJ
+         EVuR18FNTJN70ckRf1+mqEehY/d/6ik2W2NGd5MmbflFTtSMNY12aebOREawhNTqWW/S
+         F3dRuZCheVfRN72Pn/z95BLHSEiYtY+BZGDh/yZufceNzi8eKBbzOE52UdABgcqhigRt
+         CCJbQxOymiwNMplfBMoKhG41i36BDrLqQ5mBcIe5Xb6WQGEYtG6IZsLYTcYn7Yz9HGHC
+         fNihs7OnYpCwA9JzvfKkAJbzsJPDyE6WqTSkvona6mHBbyQLTK7aK4Cb6XitkUrxjtBs
+         VZjQ==
+X-Gm-Message-State: AOJu0YxFQyLUqcAx9foyyG+sGh06iaZkckJDbUbvhcJFhmOQ70NuWTHs
+        3z/KmiPm1yFcz2ARh6TB7ViWIA==
+X-Google-Smtp-Source: AGHT+IGZar+PiSUcNuJ1lLQ9xuEptIIG5nA5eGx3IXYeILOsG9JLq1k54ufDfQiz2Ug3wmZ1PShVpQ==
+X-Received: by 2002:a1c:f717:0:b0:403:b86:f624 with SMTP id v23-20020a1cf717000000b004030b86f624mr6477577wmh.23.1695010092274;
+        Sun, 17 Sep 2023 21:08:12 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.145])
+        by smtp.gmail.com with ESMTPSA id z20-20020a7bc7d4000000b003feae747ff2sm14040321wmk.35.2023.09.17.21.08.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 21:06:36 -0700 (PDT)
-Message-ID: <4e5aaed1-bf7d-18a8-0f77-8f29bb2e43bc@redhat.com>
-Date:   Mon, 18 Sep 2023 14:06:28 +1000
+        Sun, 17 Sep 2023 21:08:11 -0700 (PDT)
+Message-ID: <7d1b2f5d-cbbb-810f-b511-84d6d4682fa1@tuxon.dev>
+Date:   Mon, 18 Sep 2023 07:08:10 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [RFC PATCH v2 12/35] ACPI: Use the acpi_device_is_present()
- helper in more places
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] ARM: dts: at91/trivial: fix typo in crypto DT naming
 Content-Language: en-US
-To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
-Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-13-james.morse@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20230913163823.7880-13-james.morse@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     nicolas.ferre@microchip.com,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        devicetree@vger.kernel.org
+References: <20230906135838.59247-1-nicolas.ferre@microchip.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20230906135838.59247-1-nicolas.ferre@microchip.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -91,41 +81,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/14/23 02:38, James Morse wrote:
-> acpi_device_is_present() checks the present or functional bits
-> from the cached copy of _STA.
+On 06.09.2023 16:58, nicolas.ferre@microchip.com wrote:
+> From: Nicolas Ferre <nicolas.ferre@microchip.com>
 > 
-> A few places open-code this check. Use the helper instead to
-> improve readability.
+> Fix typo in DT name for TDES node.
 > 
-> Signed-off-by: James Morse <james.morse@arm.com>
+> Fixes: 4b6140b96dfe ("ARM: dts: at91: Use the generic "crypto" node name for the crypto IPs")
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+
+Applied, thanks!
+
+Hi, Nicolas,
+
+Also, I've removed the fixes tag as the node is not referenced anywhere by
+its name thus no need for fixes in this case. Let me know if you consider
+differently.
+
+Thank you,
+Claudiu Beznea
 > ---
->   drivers/acpi/scan.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>  arch/arm/boot/dts/microchip/sama5d4.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index 691d4b7686ee..ed01e19514ef 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
->   	int error;
->   
->   	acpi_bus_get_status(adev);
-> -	if (adev->status.present || adev->status.functional) {
-> +	if (acpi_device_is_present(adev)) {
->   		/*
->   		 * This function is only called for device objects for which
->   		 * matching scan handlers exist.  The only situation in which
-> @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
->   	int error;
->   
->   	acpi_bus_get_status(adev);
-> -	if (!(adev->status.present || adev->status.functional)) {
-> +	if (!acpi_device_is_present(adev)) {
->   		acpi_scan_device_not_present(adev);
->   		return 0;
->   	}
-
+> diff --git a/arch/arm/boot/dts/microchip/sama5d4.dtsi b/arch/arm/boot/dts/microchip/sama5d4.dtsi
+> index 41284e013f53..cbfc60fed37c 100644
+> --- a/arch/arm/boot/dts/microchip/sama5d4.dtsi
+> +++ b/arch/arm/boot/dts/microchip/sama5d4.dtsi
+> @@ -694,7 +694,7 @@ aes: crypto@fc044000 {
+>  				clock-names = "aes_clk";
+>  			};
+>  
+> -			tdes: crpyto@fc04c000 {
+> +			tdes: crypto@fc04c000 {
+>  				compatible = "atmel,at91sam9g46-tdes";
+>  				reg = <0xfc04c000 0x100>;
+>  				interrupts = <14 IRQ_TYPE_LEVEL_HIGH 0>;
