@@ -2,231 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D3A7A49B3
+	by mail.lfdr.de (Postfix) with ESMTP id 09B387A49B2
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240254AbjIRMbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        id S240176AbjIRMbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241477AbjIRMba (ORCPT
+        with ESMTP id S241465AbjIRMb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:31:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E752E7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695040232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qhf/uP3BzaKliN1JjTAzysRLJ1VfLUvoN2dZE1cRqW8=;
-        b=Tijy0zydyy8oLlHtyLnYgAus3Er19UqinZqUR2BXtgYJt4AFGrNbgk0UDh5LVezb80PgeC
-        4VjydNCZRljs1uQo1fJQpWmN9pdshW8R4EUD4/yTrBcc+sGu2yhp09XgDbjkLvJBFJsZcq
-        IK4tOmEMkUbGXRur8IiVE6431LrdPuo=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-571-t2DXFbl4NO-QRgLTVPLgDg-1; Mon, 18 Sep 2023 08:30:30 -0400
-X-MC-Unique: t2DXFbl4NO-QRgLTVPLgDg-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a1cf3e6c04so328156166b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:30:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695040230; x=1695645030;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qhf/uP3BzaKliN1JjTAzysRLJ1VfLUvoN2dZE1cRqW8=;
-        b=g7mBMA8mqBcSzY5E3NQIYmIKOFIxlbsLknmTpuYJzPVhv6S1o4Y0dXZbImQWA4vJmX
-         vaWq2EEf1soQpaVzGS+b7qMScxOyfj13m557PGT2hXYhb0SQT67raIcgTpWVk9wkCt3w
-         zFds3vc42aeH0AkmFsUd+7ymZRcYryrvvEoBQLPQEIENgIjLdeFpCP0gezygyPLtK593
-         bDFDu7SCeAytjrollu+MA0K+/VnfgXwbNAZTBFMbiJbAwOfPjLyJtz4XVYOS+yFmGA14
-         TrOT/2zTzlMhSdFYt6fkK5jMn/72Ocq6sHEybfcXUVa13Ze3/9uy4xg8vTD+viHWDJUG
-         gH/A==
-X-Gm-Message-State: AOJu0Yx/G9uNwS80QOFxI9RmHrPfvSVO1ZFSFeMvKB8UwhPyvuBIZG1B
-        kXijEoW/V1o6xZDbpr3Un0+biZKaE7lXbgvfMSk0oeVMNF7jvl98VdJnDpcsQKMjltYiNllB15n
-        sCA05uPiiCNhp+Z3cJL8XQ6hJ
-X-Received: by 2002:a17:906:21a:b0:9ad:e317:33de with SMTP id 26-20020a170906021a00b009ade31733demr6616160ejd.17.1695040229856;
-        Mon, 18 Sep 2023 05:30:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGu7R3LskG/9HGn8kp3Rk/Nku4TSOXELaWHFwXeIMz9sSGlOoCWdjRY8YTTEq1GkrX6JsjWug==
-X-Received: by 2002:a17:906:21a:b0:9ad:e317:33de with SMTP id 26-20020a170906021a00b009ade31733demr6616142ejd.17.1695040229567;
-        Mon, 18 Sep 2023 05:30:29 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id se17-20020a170907a39100b009adc86b75d5sm5127516ejc.189.2023.09.18.05.30.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 05:30:28 -0700 (PDT)
-Message-ID: <77bde3cf-ca94-1cdb-53d8-39df22f8c551@redhat.com>
-Date:   Mon, 18 Sep 2023 14:30:28 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 1/2] platform/x86: think-lmi: Replace kstrdup() +
- strreplace() with kstrdup_and_replace()
+        Mon, 18 Sep 2023 08:31:28 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2075.outbound.protection.outlook.com [40.107.22.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E7C187;
+        Mon, 18 Sep 2023 05:30:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AfI/AAH6jP/qdtxhIEsF6DfP9W3QsBHywBAE2gNOAbCpoQ5MkBGa6r3RPYOupU2/3KyzfyRvve1eppBZeCrrcwsLVKMCgpxFFC4NQWohHaC68iFx6rzWpjs+sW6oFHuDFGG0qtLrLrKmvOckh1AanooQeWV+8voQTd8aL8QSWev6zwDTOSS7konxDoFyhCNl9o6AZVMkcrInyX/5h7rl9Iar25wUUMlRXHYy3xd9vI4+p+UeOW5A/QOSLXFu+4KDR2YljE/h1M3jiY+y1/laxtGhtQbjLRDuOYL7xLRBYFpSMnEfcmCp3I/v0ttO7xvwfJjF1TedPVZp1Pa8N4bp3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=simwv9Z13cpvqGyvF3EecEfKZD5u4ypRhiJMDTXPUPw=;
+ b=NwAH2qTz+9S3ntb7CwR+r7FnCVrELiXSoo7X13RRbWSlXt5n6xFObmPsX0xgpf107defQr/x1XCFHxUmiKf51NG7Mo9GQ9wIzyo+7niHWFiTU20U1wTbaThGNylMsRPMzbSfZ5nmRBoHaWCzFuRStGVdvC12z7oCZI2PERyDRgc8dITMQo/qGHiWAJkEnwG0AOKxNvzK3+BU+PZ9LrvjciXXHYNdzoccNuMFaHIG1my8o0kc0lgFuPHinxu2kLESvPz2CX4HNyIOWF5EgCFYZCVbC/m35qM5DCbZuA48kHOAY/X4U0+umdMxgfYAp8H11G+Uzvrfav8/KpY2QrOfDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=simwv9Z13cpvqGyvF3EecEfKZD5u4ypRhiJMDTXPUPw=;
+ b=K8aA0Rpa5drxITo76i9RIU9RfmuFdBJImWWaapl9vovEibIfPY7psbwkE5+osh2IWycVlKtqxbaUgcgYXByTNkJG0oXBXG5kClWL+dCp09+8agjlBUkKL+SV8/jlXm4k7YV+/9dQ7ofBJO+DTHSRtdhNuTUgqPrcTSOteHwdmcY=
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:273::14) by DB9PR01MB7321.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:1f9::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.13; Mon, 18 Sep
+ 2023 12:30:51 +0000
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::11d:15c1:fca6:e077]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::11d:15c1:fca6:e077%7]) with mapi id 15.20.6813.013; Mon, 18 Sep 2023
+ 12:30:51 +0000
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Rob Herring <robh@kernel.org>
+CC:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Topic: [PATCH v2 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Index: AQHZ592r0UV0+OQAK0qc65NPyGpwxrAcCHeAgAR9mDA=
+Date:   Mon, 18 Sep 2023 12:30:51 +0000
+Message-ID: <DU2PR01MB80345CA8F7FD429BCDF126A2F9FBA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+References: <20230915140516.1294925-1-f.suligoi@asem.it>
+ <20230915154841.GA3776155-robh@kernel.org>
+In-Reply-To: <20230915154841.GA3776155-robh@kernel.org>
+Accept-Language: it-IT, en-US
 Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Pearson <mpearson-lenovo@squebb.ca>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mark Pearson <markpearson@lenovo.com>,
-        Mark Gross <markgross@kernel.org>
-References: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=asem.it;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|DB9PR01MB7321:EE_
+x-ms-office365-filtering-correlation-id: 1c5fdce0-dd94-4c59-5f4e-08dbb8431844
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GkPIQts+Y5UNnWEutP+RXsK83O2G2jbjX6cGxSX3HQGH63+aTe/KSU2i6FjH0kd98S0/6o1r/491JFC0wEdmXVRhTQr1s2+LsNU0okg+JdkM6yTdJp/MJRMRrKAFX+g/F6A8YiMWscbF7S3y7dYkkfhqmDIyH53X4MxsfSWefgNru4IMRebWhmTNYLHREx2bO7Z92JC1fwGBfj2BTxuGPGQdlIA+yJoOzN6B+T8UtpQP7beMXU9w2kLB6VT2+jflwn1MYeAAfDn9W+GoHvShMLatYHTGqH7+uyXZS1So/H7l30SGt0YYgLo1AIAApXBSoLJItH6rr8szAY39lbLdvtoedwHW+JefUiayowmz/bFLSjmv5Obtj7xELzl+Xx8yG4fMELWzYt4uzv6xid7HnFiBan183vt+kOEyyhFAhAEACJ2eEdKFJSvRnCx3Q9By0m+6MeKXrUk8a4OLpA6B1xXN0gLT6HlaqMNWeAiDGTVrhrEPpkL8dI8KwdS+ijOrq245TB5Pmhu0nR3ZJYoawArjSPHWfzGuWgjcJJUuMB4n7N2kjMStjXLoobc5taPmKNEXaTG2FS1HYcfmUSB6y7T4zyZGU6qqs3LEXsQ5llFAuaK2pr1gVTGtviigsWGB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39850400004)(396003)(366004)(451199024)(1800799009)(186009)(55016003)(86362001)(33656002)(122000001)(6506007)(26005)(6916009)(2906002)(7696005)(9686003)(66556008)(66476007)(66446008)(478600001)(316002)(54906003)(64756008)(71200400001)(66946007)(76116006)(7416002)(5660300002)(38100700002)(38070700005)(4744005)(4326008)(52536014)(8676002)(41300700001)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TH+1buKsDFoLis1ogKWdByf1RV61r3vHBdxkDZVdT9OLqhX+HWauXFOsheK7?=
+ =?us-ascii?Q?Zgt4DDYeJxzjO1IWuEONhNfygYfaVoEeAvRXHcOGhH82k2hDB9CufOv/o8ta?=
+ =?us-ascii?Q?R8RqkbPcgbKanFk1ukJQ7B7J+eAaZ4CgNVz/oniR0366PZPrDeAS76D1W7e+?=
+ =?us-ascii?Q?DolOW3I5Dpmky8Jx0lZcKetUyATZpFV+P6F+jI58fkVVIflytrLfQZDVho8L?=
+ =?us-ascii?Q?dKsZvmQXSlNEnLRkGLfhiqVBwmxq0HPiDtDzp5W0ls61dsj3HlMKK/ZkhQO1?=
+ =?us-ascii?Q?Kcqv0xe/ydlsT7+JTRn4djjmURBknNGwpt9DtpbJot8eN7zNqYUK/QwGzJTi?=
+ =?us-ascii?Q?ryXoBCa5FT+gXTczaOO2EPBonBACdaBDRMXeW9SaRBkuXOpDoFmS1yW35Jk4?=
+ =?us-ascii?Q?+fWvsEW/k6az5e/FJ7rm3L+0dcAFn/khL0SO80+Gb5+tZug2EIR5nGV7P4PO?=
+ =?us-ascii?Q?db0JuHJXyHMqajDLsZClzTkhHyRtL9tEyL4X8+M4zk3xO6sltv/+EgYwwtN7?=
+ =?us-ascii?Q?NblMGeQNx7yUk1FpK2lwDpARMJfxNl3VKNXRkHx4NgiYAoq13z1glyLQX9HC?=
+ =?us-ascii?Q?xjhk36CgI5u7vwP+uPNIXySXlVvl0WBNcjXtOEThGhb/3P+WqUiOE++qfEoG?=
+ =?us-ascii?Q?gDsrpAHx7/2IpaC+BjagfEqeWFNA3jMR4o7BHNFEk5p41Se2Hz1VBGLLXcS2?=
+ =?us-ascii?Q?ap4WhqJUm0YYdmAgSwvm1I2zldnVCI6BE6ezK+WHarDBU9IqAZHko/ZZMW5+?=
+ =?us-ascii?Q?LEPSJr08SWuK5lruXIRsZ4OJSi+q22NvlAyZirvnR5Hro8rVrKj/ltRqOZrB?=
+ =?us-ascii?Q?C46ll033au+tATrqNB+p2XHMySGTlBYDIhdrcctNTbJIffZfikeW2Gbp13dA?=
+ =?us-ascii?Q?QFM9LEUbmvUU6mlk2L9+LMJhIy4nVi/kN2LMAQUSkdMKWmmb7TCIPNWXqFD3?=
+ =?us-ascii?Q?nq2hq3cp4xaUZdKhG13WUKuyRIajhfxA9J2+bHv5Z5y8Hl0Idn6GqvaZaBbV?=
+ =?us-ascii?Q?ngsG+/rcMwQx+NpBrFKhTGWPrDZr/Al3DUOlGzOT7gZej66/A6Q2FXvapvZw?=
+ =?us-ascii?Q?gv29A9REygewnvCt3PdtNUYqbyZQ+SfuPBf2JktLqlKg5cGz9XDWJgK3K2fd?=
+ =?us-ascii?Q?QApwtEutWPTlMgrymhBYjFRfzX88MbauRiZcZu3pGkZChBTEP+yecIS917Ub?=
+ =?us-ascii?Q?OWwNaMD4lG5S7UGUnp9qWdzZWtHRal+RuPdnwp4bEuc4N2JAG7ca2DFq5OyW?=
+ =?us-ascii?Q?tVslhlcUC/H2iB5AV8Ea4CgYZwrnP+QLXoEBXdUrqQAX1GgXrkuet6Va5n9e?=
+ =?us-ascii?Q?XPS3YshLnvp1pXtPLa9mFxVzXiuVd2VGIw4iahl97tWqfA0iKG0IYnGiBpnQ?=
+ =?us-ascii?Q?ZomIPGtn30Z6Q5t1g6QArdsRuuuHOzm4qOwlC2SGrd5vUYYzo6Zvq1N6Cp00?=
+ =?us-ascii?Q?CLwuRWetEHjHxfzevas5J/wvqyQFKPA3fxdgj7je9dKtgNST0KPelCzgsSid?=
+ =?us-ascii?Q?I3BNVOyolMXNkiYGw7V0qlyQ7Zipj6zjMtbndOhwtGGfpBOeFRI6FVM/bmjV?=
+ =?us-ascii?Q?wiGWINwY6dOZ+ef8mAY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c5fdce0-dd94-4c59-5f4e-08dbb8431844
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2023 12:30:51.2434
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gXEDU6wPZFGtmdgxjxXhGJZK4HQKdMANJF1Zb7e1E7yrKh6KFUQ780fK05juJn+zGYPMpgRJY4qLbh9+Ipb0IQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR01MB7321
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+HI Rob,
 
-On 9/13/23 11:27, Andy Shevchenko wrote:
-> Replace open coded functionalify of kstrdup_and_replace() with a call.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+...
 
-Thank you for the patches, but this one does not apply
-cleanly.
+> Subject: Re: [PATCH v2 1/2] dt-bindings: backlight: Add MPS MP3309C
+>=20
 
-Can you please rebase the series on top of my latest review-hans branch ?
+...
 
-Regards,
+> > +
+> > +  mps,overvoltage-protection-microvolt:
+> > +    description: Overvoltage protection (13.5V, 24V or 35.5V). If miss=
+ing, the
+> > +      hardware default of 35.5V is used.
+>=20
+> default: 35500000
+>=20
+> instead of prose saying the same thing.
+>=20
+> With that,
+>=20
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Hans
+Ok, right, I'll fix it in my next version.
 
+I prefer to wait a few days before sending the next version,
+to wait if there are other comments on the device driver file as well.
 
+Just a question about the procedure: in my next version, I have to add the =
+sentence:
 
-> ---
->  drivers/platform/x86/think-lmi.c | 43 +++++++++++---------------------
->  1 file changed, 15 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
-> index 79346881cadb..94a3c7a74bc4 100644
-> --- a/drivers/platform/x86/think-lmi.c
-> +++ b/drivers/platform/x86/think-lmi.c
-> @@ -15,7 +15,7 @@
->  #include <linux/errno.h>
->  #include <linux/fs.h>
->  #include <linux/mutex.h>
-> -#include <linux/string.h>
-> +#include <linux/string_helpers.h>
->  #include <linux/types.h>
->  #include <linux/dmi.h>
->  #include <linux/wmi.h>
-> @@ -432,13 +432,11 @@ static ssize_t new_password_store(struct kobject *kobj,
->  	if (!tlmi_priv.can_set_bios_password)
->  		return -EOPNOTSUPP;
->  
-> -	new_pwd = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present, setting password won't work if it is present */
-> +	new_pwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_pwd)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present, setting password won't work if it is present */
-> -	strip_cr(new_pwd);
-> -
->  	/* Use lock in case multiple WMI operations needed */
->  	mutex_lock(&tlmi_mutex);
->  
-> @@ -709,13 +707,11 @@ static ssize_t cert_to_password_store(struct kobject *kobj,
->  	if (!setting->signature || !setting->signature[0])
->  		return -EACCES;
->  
-> -	passwd = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	passwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!passwd)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(passwd);
-> -
->  	/* Format: 'Password,Signature' */
->  	auth_str = kasprintf(GFP_KERNEL, "%s,%s", passwd, setting->signature);
->  	if (!auth_str) {
-> @@ -765,11 +761,10 @@ static ssize_t certificate_store(struct kobject *kobj,
->  		return ret ?: count;
->  	}
->  
-> -	new_cert = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_cert = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_cert)
->  		return -ENOMEM;
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_cert);
->  
->  	if (setting->cert_installed) {
->  		/* Certificate is installed so this is an update */
-> @@ -817,13 +812,11 @@ static ssize_t signature_store(struct kobject *kobj,
->  	if (!tlmi_priv.certificate_support)
->  		return -EOPNOTSUPP;
->  
-> -	new_signature = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_signature)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_signature);
-> -
->  	/* Free any previous signature */
->  	kfree(setting->signature);
->  	setting->signature = new_signature;
-> @@ -846,13 +839,11 @@ static ssize_t save_signature_store(struct kobject *kobj,
->  	if (!tlmi_priv.certificate_support)
->  		return -EOPNOTSUPP;
->  
-> -	new_signature = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_signature)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_signature);
-> -
->  	/* Free any previous signature */
->  	kfree(setting->save_signature);
->  	setting->save_signature = new_signature;
-> @@ -985,13 +976,11 @@ static ssize_t current_value_store(struct kobject *kobj,
->  	if (!tlmi_priv.can_set_bios_settings)
->  		return -EOPNOTSUPP;
->  
-> -	new_setting = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_setting)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_setting);
-> -
->  	/* Use lock in case multiple WMI operations needed */
->  	mutex_lock(&tlmi_mutex);
->  
-> @@ -1163,13 +1152,11 @@ static ssize_t debug_cmd_store(struct kobject *kobj, struct kobj_attribute *attr
->  	if (!tlmi_priv.can_debug_cmd)
->  		return -EOPNOTSUPP;
->  
-> -	new_setting = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_setting)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_setting);
-> -
->  	if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
->  		auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
->  				tlmi_priv.pwd_admin->password,
+"Reviewed-by: Rob Herring <robh@kernel.org>"
 
+in my commit or it will be added again by you?
+
+Thanks for your help,
+Flavio=20
