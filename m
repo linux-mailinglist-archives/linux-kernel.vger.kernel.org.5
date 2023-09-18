@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7897A3F28
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 03:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1B17A3F2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 03:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbjIRBR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 21:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
+        id S232544AbjIRBVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 21:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbjIRBRZ (ORCPT
+        with ESMTP id S236190AbjIRBVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 21:17:25 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DC1127
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 18:17:17 -0700 (PDT)
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1F48C3F314
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1694999836;
-        bh=eaTKx3J1vilBDf/S3SS7BBAAYhcj6+Y8iTvJpOcU5qQ=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=uZav1LKfzMuIYyW9zmBs5rx1GHnWjTItYxeZt/XgaN4r7qIH6/ZlUV5T1ciTJ+pwS
-         2tJowHUfZN5o3M8GBV0zh31WtRGGULjU4egg4DA4aeWrrbuSOom3g73mtaPWkYf0Gr
-         06yDzWaZufAGxpSOoNItFC2kNUHuByhlh7IwPHzRo2V+RLRqXR/xNKf0lxEgduTVRm
-         q9UwB7uXAfS0MhsBVncwaBCQwQq1Ts7h0IwwLnVM0R5jhOITHCVZ4f6RwKeqj4UNaC
-         ww7qsxwjq5/O+1yE7i1FnvQYhnHWrZK5/0L2lUtFgGg6rFPXYLPAGmqI2Jiqs1yJdc
-         Ig4LEfM7iyyEA==
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5784671b7ebso825366a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 18:17:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694999834; x=1695604634;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eaTKx3J1vilBDf/S3SS7BBAAYhcj6+Y8iTvJpOcU5qQ=;
-        b=hjOeJvomqVyYcrJa5uGF499k4VWe/fHOQDaBTll0rD7AVmJyh7dCOpso4xSFJU3pnA
-         q2NSyEl2DLvFzU/Fj5eGN5nXKaEoQLVwW8qEY3IdU9VMTmfVw02uYaMT15xrx58stvBT
-         VEmNirV7Ppy/aZw23TpNc9jxfy1N/hBnTlGoQUIoL7c8KJW8+BPK+v/7B3R9m2iUxcz2
-         MkL62oTCPNueIFkE2afGXXmZiULGpMV992Cmu9xbnw42NdyUG3x9+7aoIoXMl58QI0Mo
-         9QXC2S1ut7/IOkJEUw/LP1TjyaTWXR/DNAt3QOZAXtkSIWjvbECRMxfiN9cUmFhJom1t
-         ZQhA==
-X-Gm-Message-State: AOJu0Yxy/zbN3bKbD48D++jTrVOuARbzJZK2kylAYM16uynJAWOwnLPJ
-        eItsb7CdkFaVyV6JQp8xaE3adxaBeQiaYqR4/U9BW/aIOCvaKRiE4ZsTLHG1diISs4UA0OVR1L5
-        HdJuHJA8lm3yz5O1YlQ5ucSbXYK/L8GMm9GvPzewLydMPg3D3Hl4BPMM5bQ==
-X-Received: by 2002:a05:6a20:7f99:b0:14e:3daf:bef9 with SMTP id d25-20020a056a207f9900b0014e3dafbef9mr8305792pzj.16.1694999834052;
-        Sun, 17 Sep 2023 18:17:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG9XdnkKx4bRdB+wJ/4jlxrMVittz8T67e6iHCVYSUjzE7q+Us1NpG9ZIlMtjSLihoG46Ki9C3MWeIx/gSTNQA=
-X-Received: by 2002:a05:6a20:7f99:b0:14e:3daf:bef9 with SMTP id
- d25-20020a056a207f9900b0014e3dafbef9mr8305771pzj.16.1694999833732; Sun, 17
- Sep 2023 18:17:13 -0700 (PDT)
+        Sun, 17 Sep 2023 21:21:23 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8CA8310A;
+        Sun, 17 Sep 2023 18:21:15 -0700 (PDT)
+Received: from loongson.cn (unknown [10.40.46.158])
+        by gateway (Coremail) with SMTP id _____8AxJugKpgdlPXcpAA--.20543S3;
+        Mon, 18 Sep 2023 09:21:14 +0800 (CST)
+Received: from [192.168.124.126] (unknown [10.40.46.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7y8GpgdlhPcJAA--.19240S3;
+        Mon, 18 Sep 2023 09:21:13 +0800 (CST)
+Subject: Re: [PATCH v21 02/29] LoongArch: KVM: Implement kvm module related
+ interface
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
+        Xi Ruoyao <xry111@xry111.site>
+References: <20230915014949.1222777-1-zhaotianrui@loongson.cn>
+ <20230915014949.1222777-3-zhaotianrui@loongson.cn>
+ <CAAhV-H5ti7L+QXJ=boK8aKNwt74Pvn1-vm71B9Bymi+2zXXzHw@mail.gmail.com>
+From:   zhaotianrui <zhaotianrui@loongson.cn>
+Message-ID: <525aa9e2-1ebc-6c49-55ef-9f3c7d18d3e0@loongson.cn>
+Date:   Mon, 18 Sep 2023 09:21:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20230914041806.816741-1-kai.heng.feng@canonical.com>
- <7b45ac2ed091497b4e21a6a5c19956161175ba16.camel@linux.intel.com>
- <SN6PR11MB26245C44E84C37C1B551260EF4F6A@SN6PR11MB2624.namprd11.prod.outlook.com>
- <CAAd53p5ywMVKWzhn0nYzvBnW_Bc=sntgBttJdcVUuf_a4AnX5w@mail.gmail.com>
- <SN6PR11MB262473E2BF4057F4D285A613F4F6A@SN6PR11MB2624.namprd11.prod.outlook.com>
- <DM6PR11MB26184A8A3F955589F5FC6836F4FBA@DM6PR11MB2618.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB26184A8A3F955589F5FC6836F4FBA@DM6PR11MB2618.namprd11.prod.outlook.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Mon, 18 Sep 2023 09:17:00 +0800
-Message-ID: <CAAd53p4o1pB-yzpvUCYsvuYEvQQK0my=u-ogrByRCx_Lvns=hw@mail.gmail.com>
-Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
-To:     "Xu, Even" <even.xu@intel.com>
-Cc:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "jikos@kernel.org" <jikos@kernel.org>,
-        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "Lee, Jian Hui" <jianhui.lee@canonical.com>,
-        "Zhang, Lixu" <lixu.zhang@intel.com>,
-        "Ba, Najumon" <najumon.ba@intel.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+In-Reply-To: <CAAhV-H5ti7L+QXJ=boK8aKNwt74Pvn1-vm71B9Bymi+2zXXzHw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf8Cx7y8GpgdlhPcJAA--.19240S3
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9fXoWfJrWfXF1kJry7Cw48ZryktFc_yoW8Gw4xKo
+        WrKF4rGF1UAr12yrZxW34qqaykWr1rGa9ava17Zw1ftw1qy3WFgrZ8Ca1UArsxXr1UCa4U
+        GanFgF1j9ayxKr13l-sFpf9Il3svdjkaLaAFLSUrUUUU0b8apTn2vfkv8UJUUUU8wcxFpf
+        9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
+        UjIYCTnIWjp_UUUO17kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
+        8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+        Y2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8JVW8Jr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dl1DUUUU
+        U==
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,230 +75,405 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Even,
 
-On Mon, Sep 18, 2023 at 8:33=E2=80=AFAM Xu, Even <even.xu@intel.com> wrote:
+在 2023/9/16 下午4:51, Huacai Chen 写道:
+> Hi, Tianrui,
 >
-> Hi, Kai-Heng,
+> On Fri, Sep 15, 2023 at 9:50 AM Tianrui Zhao <zhaotianrui@loongson.cn> wrote:
+>> Implement LoongArch kvm module init, module exit interface,
+>> using kvm context to save the vpid info and vcpu world switch
+>> interface pointer.
+>>
+>> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+>> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+>> ---
+>>   arch/loongarch/kvm/main.c | 367 ++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 367 insertions(+)
+>>   create mode 100644 arch/loongarch/kvm/main.c
+>>
+>> diff --git a/arch/loongarch/kvm/main.c b/arch/loongarch/kvm/main.c
+>> new file mode 100644
+>> index 0000000000..0deb9273d8
+>> --- /dev/null
+>> +++ b/arch/loongarch/kvm/main.c
+>> @@ -0,0 +1,367 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
+>> + */
+>> +
+>> +#include <linux/err.h>
+>> +#include <linux/module.h>
+>> +#include <linux/kvm_host.h>
+>> +#include <asm/cacheflush.h>
+>> +#include <asm/cpufeature.h>
+>> +#include <asm/kvm_csr.h>
+>> +#include "trace.h"
+>> +
+>> +static struct kvm_context __percpu *vmcs;
+>> +struct kvm_world_switch *kvm_loongarch_ops;
+>> +unsigned long vpid_mask;
+>> +static int gcsr_flag[CSR_MAX_NUMS];
+>> +
+>> +int get_gcsr_flag(int csr)
+>> +{
+>> +       if (csr < CSR_MAX_NUMS)
+>> +               return gcsr_flag[csr];
+>> +
+>> +       return INVALID_GCSR;
+>> +}
+>> +
+>> +static inline void set_gcsr_sw_flag(int csr)
+>> +{
+>> +       if (csr < CSR_MAX_NUMS)
+>> +               gcsr_flag[csr] |= SW_GCSR;
+>> +}
+>> +
+>> +static inline void set_gcsr_hw_flag(int csr)
+>> +{
+>> +       if (csr < CSR_MAX_NUMS)
+>> +               gcsr_flag[csr] |= HW_GCSR;
+>> +}
+>> +
+>> +/*
+>> + * The default value of gcsr_flag[CSR] is 0, and we use this
+>> + * function to set the flag to 1(SW_GCSR) or 2(HW_GCSR) if the
+>> + * gcsr is software or hardware. It will be used by get/set_gcsr,
+>> + * if gcsr_flag is HW we should use gcsrrd/gcsrwr to access it,
+>> + * else use sw csr to emulate it.
+>> + */
+>> +static void kvm_init_gcsr_flag(void)
+>> +{
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_CRMD);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRMD);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_EUEN);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_MISC);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_ECFG);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_ESTAT);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_ERA);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_BADV);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_BADI);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_EENTRY);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBIDX);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBEHI);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBELO0);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBELO1);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_ASID);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_PGDL);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_PGDH);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_PWCTL0);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_PWCTL1);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_STLBPGSIZE);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_RVACFG);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_CPUID);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG1);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG2);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG3);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS0);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS1);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS2);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS3);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS4);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS5);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS6);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS7);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TMID);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TCFG);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TVAL);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_CNTC);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_LLBCTL);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRENTRY);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRBADV);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRERA);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRSAVE);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRELO0);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRELO1);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBREHI);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRPRMD);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN0);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN1);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN2);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN3);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_MWPS);
+>> +       set_gcsr_hw_flag(LOONGARCH_CSR_FWPS);
+>> +
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IMPCTL1);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IMPCTL2);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRCTL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRINFO1);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRINFO2);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRENTRY);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRERA);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRSAVE);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_CTAG);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DEBUG);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DERA);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DESAVE);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG1);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG2);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG3);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PGD);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_TINTCLR);
+>> +
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_FWPS);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_FWPC);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_MWPS);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_MWPC);
+> FWPS and MWPS are both HW CSR and SW CSR?
 >
-> I just got feedback, for testing EHL S5 wakeup feature, you need several =
-steps to setup and access  "https://portal.devicewise.com/things/browse" to=
- trigger wake.
-> But currently, our test account of this website are all out of data.
-> So maybe you need double check with the team who required you preparing t=
-he patch for the verification.
+> Huacai
+The FWPC and MWPC should be SW GCSR, FWPS and MWPS should be HW GCSR, it 
+is my mistake.
 
-The patch is to solve the GPE refcount overflow, while maintaining S5
-wakeup. I don't have any mean to test S5 wake.
+Thanks
+Tianrui Zhao
+>
+>> +
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7ASID);
+>> +
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6ASID);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7ADDR);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7MASK);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7CTRL);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7ASID);
+>> +
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL0);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR0);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL1);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR1);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL2);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR2);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL3);
+>> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR3);
+>> +}
+>> +
+>> +static void kvm_update_vpid(struct kvm_vcpu *vcpu, int cpu)
+>> +{
+>> +       struct kvm_context *context;
+>> +       unsigned long vpid;
+>> +
+>> +       context = per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
+>> +       vpid = context->vpid_cache + 1;
+>> +       if (!(vpid & vpid_mask)) {
+>> +               /* finish round of 64 bit loop */
+>> +               if (unlikely(!vpid))
+>> +                       vpid = vpid_mask + 1;
+>> +
+>> +               /* vpid 0 reserved for root */
+>> +               ++vpid;
+>> +
+>> +               /* start new vpid cycle */
+>> +               kvm_flush_tlb_all();
+>> +       }
+>> +
+>> +       context->vpid_cache = vpid;
+>> +       vcpu->arch.vpid = vpid;
+>> +}
+>> +
+>> +void kvm_check_vpid(struct kvm_vcpu *vcpu)
+>> +{
+>> +       struct kvm_context *context;
+>> +       bool migrated;
+>> +       unsigned long ver, old, vpid;
+>> +       int cpu;
+>> +
+>> +       cpu = smp_processor_id();
+>> +       /*
+>> +        * Are we entering guest context on a different CPU to last time?
+>> +        * If so, the vCPU's guest TLB state on this CPU may be stale.
+>> +        */
+>> +       context = per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
+>> +       migrated = (vcpu->cpu != cpu);
+>> +
+>> +       /*
+>> +        * Check if our vpid is of an older version
+>> +        *
+>> +        * We also discard the stored vpid if we've executed on
+>> +        * another CPU, as the guest mappings may have changed without
+>> +        * hypervisor knowledge.
+>> +        */
+>> +       ver = vcpu->arch.vpid & ~vpid_mask;
+>> +       old = context->vpid_cache  & ~vpid_mask;
+>> +       if (migrated || (ver != old)) {
+>> +               kvm_update_vpid(vcpu, cpu);
+>> +               trace_kvm_vpid_change(vcpu, vcpu->arch.vpid);
+>> +               vcpu->cpu = cpu;
+>> +       }
+>> +
+>> +       /* Restore GSTAT(0x50).vpid */
+>> +       vpid = (vcpu->arch.vpid & vpid_mask) << CSR_GSTAT_GID_SHIFT;
+>> +       change_csr_gstat(vpid_mask << CSR_GSTAT_GID_SHIFT, vpid);
+>> +}
+>> +
+>> +static int kvm_loongarch_env_init(void)
+>> +{
+>> +       struct kvm_context *context;
+>> +       int cpu, order;
+>> +       void *addr;
+>> +
+>> +       vmcs = alloc_percpu(struct kvm_context);
+>> +       if (!vmcs) {
+>> +               pr_err("kvm: failed to allocate percpu kvm_context\n");
+>> +               return -ENOMEM;
+>> +       }
+>> +
+>> +       kvm_loongarch_ops = kzalloc(sizeof(*kvm_loongarch_ops), GFP_KERNEL);
+>> +       if (!kvm_loongarch_ops) {
+>> +               free_percpu(vmcs);
+>> +               vmcs = NULL;
+>> +               return -ENOMEM;
+>> +       }
+>> +       /*
+>> +        * There will be problem in world switch code if there
+>> +        * is page fault reenter, since pgd register is shared
+>> +        * between root kernel and kvm hypervisor. World switch
+>> +        * entry need be unmapped area, cannot be tlb mapped area.
+>> +        * In future if hw pagetable walking is supported, or there
+>> +        * is separate pgd registers between root kernel and kvm
+>> +        * hypervisor, copying about world switch code will not be used.
+>> +        */
+>> +
+>> +       order = get_order(kvm_vector_size + kvm_enter_guest_size);
+>> +       addr = (void *)__get_free_pages(GFP_KERNEL, order);
+>> +       if (!addr) {
+>> +               free_percpu(vmcs);
+>> +               vmcs = NULL;
+>> +               kfree(kvm_loongarch_ops);
+>> +               kvm_loongarch_ops = NULL;
+>> +               return -ENOMEM;
+>> +       }
+>> +
+>> +       memcpy(addr, kvm_vector_entry, kvm_vector_size);
+>> +       memcpy(addr + kvm_vector_size, kvm_enter_guest, kvm_enter_guest_size);
+>> +       flush_icache_range((unsigned long)addr, (unsigned long)addr +
+>> +                               kvm_vector_size + kvm_enter_guest_size);
+>> +       kvm_loongarch_ops->guest_eentry = addr;
+>> +       kvm_loongarch_ops->enter_guest = addr + kvm_vector_size;
+>> +       kvm_loongarch_ops->page_order = order;
+>> +
+>> +       vpid_mask = read_csr_gstat();
+>> +       vpid_mask = (vpid_mask & CSR_GSTAT_GIDBIT) >> CSR_GSTAT_GIDBIT_SHIFT;
+>> +       if (vpid_mask)
+>> +               vpid_mask = GENMASK(vpid_mask - 1, 0);
+>> +
+>> +       for_each_possible_cpu(cpu) {
+>> +               context = per_cpu_ptr(vmcs, cpu);
+>> +               context->vpid_cache = vpid_mask + 1;
+>> +               context->last_vcpu = NULL;
+>> +       }
+>> +
+>> +       kvm_init_fault();
+>> +       kvm_init_gcsr_flag();
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static void kvm_loongarch_env_exit(void)
+>> +{
+>> +       unsigned long addr;
+>> +
+>> +       if (vmcs)
+>> +               free_percpu(vmcs);
+>> +
+>> +       if (kvm_loongarch_ops) {
+>> +               if (kvm_loongarch_ops->guest_eentry) {
+>> +                       addr = (unsigned long)kvm_loongarch_ops->guest_eentry;
+>> +                       free_pages(addr, kvm_loongarch_ops->page_order);
+>> +               }
+>> +               kfree(kvm_loongarch_ops);
+>> +       }
+>> +}
+>> +
+>> +static int kvm_loongarch_init(void)
+>> +{
+>> +       int r;
+>> +
+>> +       if (!cpu_has_lvz) {
+>> +               kvm_info("hardware virtualization not available\n");
+>> +               return -ENODEV;
+>> +       }
+>> +       r = kvm_loongarch_env_init();
+>> +       if (r)
+>> +               return r;
+>> +
+>> +       return kvm_init(sizeof(struct kvm_vcpu), 0, THIS_MODULE);
+>> +}
+>> +
+>> +static void kvm_loongarch_exit(void)
+>> +{
+>> +       kvm_exit();
+>> +       kvm_loongarch_env_exit();
+>> +}
+>> +
+>> +module_init(kvm_loongarch_init);
+>> +module_exit(kvm_loongarch_exit);
+>> +
+>> +#ifdef MODULE
+>> +static const struct cpu_feature loongarch_kvm_feature[] = {
+>> +       { .feature = cpu_feature(LOONGARCH_LVZ) },
+>> +       {},
+>> +};
+>> +MODULE_DEVICE_TABLE(cpu, loongarch_kvm_feature);
+>> +#endif
+>> --
+>> 2.39.1
+>>
 
-So if you also don't have ways to verify S5 wake functionality, maybe
-we can simply revert 2e23a70edabe  ("HID: intel-ish-hid: ipc: finish
-power flow for EHL OOB") as alternative?
-
-Kai-Heng
-
-> Thanks!
->
-> Best Regards,
-> Even Xu
->
-> -----Original Message-----
-> From: Xu, Even
-> Sent: Friday, September 15, 2023 3:27 PM
-> To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Cc: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>; jikos@kern=
-el.org; benjamin.tissoires@redhat.com; linux-pm@vger.kernel.org; linux-pci@=
-vger.kernel.org; Lee, Jian Hui <jianhui.lee@canonical.com>; Zhang, Lixu <Li=
-xu.Zhang@intel.com>; Ba, Najumon <najumon.ba@intel.com>; linux-input@vger.k=
-ernel.org; linux-kernel@vger.kernel.org
-> Subject: RE: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
->
-> Hi, Kai-Heng,
->
-> I am also not familiar with this S5 wakeup test case.
-> I already sent out mails to ask for help on it.
-> Will come back to you once I get feedback.
-> Thanks!
->
-> Best Regards,
-> Even Xu
->
-> -----Original Message-----
-> From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Sent: Friday, September 15, 2023 2:01 PM
-> To: Xu, Even <even.xu@intel.com>
-> Cc: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>; jikos@kern=
-el.org; benjamin.tissoires@redhat.com; linux-pm@vger.kernel.org; linux-pci@=
-vger.kernel.org; Lee, Jian Hui <jianhui.lee@canonical.com>; Zhang, Lixu <li=
-xu.zhang@intel.com>; Ba, Najumon <najumon.ba@intel.com>; linux-input@vger.k=
-ernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
->
-> Hi Even,
->
-> On Fri, Sep 15, 2023 at 1:31=E2=80=AFPM Xu, Even <even.xu@intel.com> wrot=
-e:
-> >
-> > Hi, Srinivas,
-> >
-> > Sure, I will test it.
-> > As long term not working on EHL, I doesn't have EHL board on hand right=
- now, I can test this patch on other ISH related platforms.
-> > From the patch, it's focus on EHL platform, I assume Kai-Heng already v=
-erified the function on EHL board.
->
-> I only made sure the GPE overflow issue is fixed by the patch, but I didn=
-'t test the S5 wakeup.
-> That's because I don't know how to test it on the EHL system I have.
-> I'll test it if you can let me know how to test the S5 wakeup.
->
-> Kai-Heng
->
-> > I don't think it will take effect on other platforms, anyway, I will te=
-st it on the platforms I have to provide cross platform verification.
-> >
-> > Thanks!
-> >
-> > Best Regards,
-> > Even Xu
-> >
-> > -----Original Message-----
-> > From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-> > Sent: Friday, September 15, 2023 12:11 AM
-> > To: Kai-Heng Feng <kai.heng.feng@canonical.com>; jikos@kernel.org;
-> > benjamin.tissoires@redhat.com
-> > Cc: linux-pm@vger.kernel.org; linux-pci@vger.kernel.org; Lee, Jian Hui
-> > <jianhui.lee@canonical.com>; Xu, Even <even.xu@intel.com>; Zhang, Lixu
-> > <lixu.zhang@intel.com>; Ba, Najumon <najumon.ba@intel.com>;
-> > linux-input@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
-> >
-> > Hi Even,
-> >
-> > On Thu, 2023-09-14 at 12:18 +0800, Kai-Heng Feng wrote:
-> > > System cannot suspend more than 255 times because the driver doesn't
-> > > have corresponding acpi_disable_gpe() for acpi_enable_gpe(), so the
-> > > GPE refcount overflows.
-> > >
-> > > Since PCI core and ACPI core already handles PCI PME wake and GPE
-> > > wake when the device has wakeup capability, use device_init_wakeup()
-> > > to let them do the wakeup setting work.
-> > >
-> > > Also add a shutdown callback which uses pci_prepare_to_sleep() to
-> > > let PCI and ACPI set OOB wakeup for S5.
-> > >
-> > Please test this change.
-> >
-> > Thanks,
-> > Srinivas
-> >
-> > > Fixes: 2e23a70edabe ("HID: intel-ish-hid: ipc: finish power flow for
-> > > EHL OOB")
-> > > Cc: Jian Hui Lee <jianhui.lee@canonical.com>
-> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > ---
-> > >  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 59
-> > > +++++++----------------
-> > > --
-> > >  1 file changed, 15 insertions(+), 44 deletions(-)
-> > >
-> > > diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> > > b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> > > index 55cb25038e63..65e7eeb2fa64 100644
-> > > --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> > > +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> > > @@ -119,42 +119,6 @@ static inline bool ish_should_leave_d0i3(struct
-> > > pci_dev *pdev)
-> > >         return !pm_resume_via_firmware() || pdev->device =3D=3D
-> > > CHV_DEVICE_ID;  }
-> > >
-> > > -static int enable_gpe(struct device *dev) -{ -#ifdef CONFIG_ACPI
-> > > -       acpi_status acpi_sts;
-> > > -       struct acpi_device *adev;
-> > > -       struct acpi_device_wakeup *wakeup;
-> > > -
-> > > -       adev =3D ACPI_COMPANION(dev);
-> > > -       if (!adev) {
-> > > -               dev_err(dev, "get acpi handle failed\n");
-> > > -               return -ENODEV;
-> > > -       }
-> > > -       wakeup =3D &adev->wakeup;
-> > > -
-> > > -       acpi_sts =3D acpi_enable_gpe(wakeup->gpe_device, wakeup-
-> > > >gpe_number);
-> > > -       if (ACPI_FAILURE(acpi_sts)) {
-> > > -               dev_err(dev, "enable ose_gpe failed\n");
-> > > -               return -EIO;
-> > > -       }
-> > > -
-> > > -       return 0;
-> > > -#else
-> > > -       return -ENODEV;
-> > > -#endif
-> > > -}
-> > > -
-> > > -static void enable_pme_wake(struct pci_dev *pdev) -{
-> > > -       if ((pci_pme_capable(pdev, PCI_D0) ||
-> > > -            pci_pme_capable(pdev, PCI_D3hot) ||
-> > > -            pci_pme_capable(pdev, PCI_D3cold)) && !enable_gpe(&pdev-
-> > > >dev)) {
-> > > -               pci_pme_active(pdev, true);
-> > > -               dev_dbg(&pdev->dev, "ish ipc driver pme wake
-> > > enabled\n");
-> > > -       }
-> > > -}
-> > > -
-> > >  /**
-> > >   * ish_probe() - PCI driver probe callback
-> > >   * @pdev:      pci device
-> > > @@ -225,7 +189,7 @@ static int ish_probe(struct pci_dev *pdev, const
-> > > struct pci_device_id *ent)
-> > >
-> > >         /* Enable PME for EHL */
-> > >         if (pdev->device =3D=3D EHL_Ax_DEVICE_ID)
-> > > -               enable_pme_wake(pdev);
-> > > +               device_init_wakeup(dev, true);
-> > >
-> > >         ret =3D ish_init(ishtp);
-> > >         if (ret)
-> > > @@ -248,6 +212,19 @@ static void ish_remove(struct pci_dev *pdev)
-> > >         ish_device_disable(ishtp_dev);  }
-> > >
-> > > +
-> > > +/**
-> > > + * ish_shutdown() - PCI driver shutdown callback
-> > > + * @pdev:      pci device
-> > > + *
-> > > + * This function sets up wakeup for S5  */ static void
-> > > +ish_shutdown(struct pci_dev *pdev) {
-> > > +       if (pdev->device =3D=3D EHL_Ax_DEVICE_ID)
-> > > +               pci_prepare_to_sleep(pdev); }
-> > > +
-> > >  static struct device __maybe_unused *ish_resume_device;
-> > >
-> > >  /* 50ms to get resume response */
-> > > @@ -370,13 +347,6 @@ static int __maybe_unused ish_resume(struct
-> > > device *device)
-> > >         struct pci_dev *pdev =3D to_pci_dev(device);
-> > >         struct ishtp_device *dev =3D pci_get_drvdata(pdev);
-> > >
-> > > -       /* add this to finish power flow for EHL */
-> > > -       if (dev->pdev->device =3D=3D EHL_Ax_DEVICE_ID) {
-> > > -               pci_set_power_state(pdev, PCI_D0);
-> > > -               enable_pme_wake(pdev);
-> > > -               dev_dbg(dev->devc, "set power state to D0 for ehl\n")=
-;
-> > > -       }
-> > > -
-> > >         ish_resume_device =3D device;
-> > >         dev->resume_flag =3D 1;
-> > >
-> > > @@ -392,6 +362,7 @@ static struct pci_driver ish_driver =3D {
-> > >         .id_table =3D ish_pci_tbl,
-> > >         .probe =3D ish_probe,
-> > >         .remove =3D ish_remove,
-> > > +       .shutdown =3D ish_shutdown,
-> > >         .driver.pm =3D &ish_pm_ops,
-> > >  };
-> > >
-> >
