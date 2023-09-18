@@ -2,155 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1562B7A4527
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B1E7A4524
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 10:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238867AbjIRIua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 04:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238266AbjIRIt5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237182AbjIRIt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 18 Sep 2023 04:49:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00DD10A
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695026945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XjrLFNKkiROohp1YQUFUAWvCAJRc18i6LWfUqVeHSNg=;
-        b=bDdp5CEZbVauUXjOX1O7JtjLZlU71hvHnnIGiPPqn0l4V/wmsNWY2AtSV9MACqZloGF3J0
-        Pr0GxwphfyKLnL8wDpUYA/Bfib+9skyD+2QlmnEHaPPnnbpXUxytw8GYnzj09anw9FST1r
-        x0aXAby2yrHzg5pDRXFCaDnK4ZxQMeQ=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-BVU3v-E-Olqf2m9ZJzGQ5g-1; Mon, 18 Sep 2023 04:49:01 -0400
-X-MC-Unique: BVU3v-E-Olqf2m9ZJzGQ5g-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5007f3d3255so3208933e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 01:49:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695026940; x=1695631740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XjrLFNKkiROohp1YQUFUAWvCAJRc18i6LWfUqVeHSNg=;
-        b=VBKw+34zkMuK5EB/AAdw1u6ymDs6K9Js1RtXfHPJoxWjB1hNMYXDgJoMAW9lnOrH8H
-         u6GSBr04fMsYdXbOxCvWMyoEwNooG/8WqdjAWR/X8YKvpBGCyM2JNhqq0JALwkNQQrYI
-         obgOI2F3hezFLu213NWz3Nv6EjGOZmiGoNmCjmps2CD9aFAdsvDoppNZxBaG/WYET/Ex
-         0PQ5LQ7lzutrzXlDvEM6Sf9HodSsq2t539isjhFr6wMICpBKH6pMtNgrgI5eB3iemixk
-         QAz6T7F5BzGva2uRWAGWUeTsKmoRfch//J95YiKgcu9h1PtIIVptwLndEKBgz/NSQMsL
-         Asfg==
-X-Gm-Message-State: AOJu0Yyp38T8kBWtq1bzBDhimcsRyJmi314FR8A8Uc8EkSZh4fpctecz
-        zQljqr6uj+l1gOZ3TND8xgC30i/1F1bKAAL9ollOYnd/zDVctKMzzQFbKHvVT3TyCeQdk9qEikD
-        XfUnVfvp/gXhbOAEPYvt1u0odfQL21eF7Nusv1HHi
-X-Received: by 2002:a05:6512:454:b0:500:9a45:63b with SMTP id y20-20020a056512045400b005009a45063bmr6257571lfk.13.1695026940424;
-        Mon, 18 Sep 2023 01:49:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEcNhH5iIOphVoYXcP9ThVDZ+q8P4m1obQ5qx04ejzkKLACIx/Lt0O6PKx0zAhN2vKlafazLnuEdoCmJbrjonc=
-X-Received: by 2002:a05:6512:454:b0:500:9a45:63b with SMTP id
- y20-20020a056512045400b005009a45063bmr6257546lfk.13.1695026940132; Mon, 18
- Sep 2023 01:49:00 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240866AbjIRItm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Sep 2023 04:49:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF31E9B;
+        Mon, 18 Sep 2023 01:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695026977; x=1726562977;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=2YUUS/Nrfwe4zxrCrHdl4H8tP/8zB6mvDXjfShJFfIE=;
+  b=Cm4KyVpwa331JuP/bolAu28XW2SyoeKxBcCK8FMwTrpoS3z9i7MZCGDH
+   PmAGHFiEZb+ezsgrxEwnOAMG9/9SPVuzIthA2VK3lc1yHzXYz/o1vDC7D
+   YFvLVElPCtl/5i1rZX6XmK5UMw7S8v2Nz2FObdW/lF6UkngOBwXa5RHL0
+   scHds4e9xZOLqPYx47RdGnBothR500q6SPRXJo3TuSz823pAmPV3+iaG0
+   eSj8TXkXb/YC/9lpiZqUU8Cf5AuqhWWXndVc7CVJj/ElqrYYAUZ+v5wgR
+   bfCZ2XCTr81ThLebs7tHOUhTVbNTuEgAaEbeU93eHk2PSUMmh1XBrfvSH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="364643555"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="364643555"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:49:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="835944512"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="835944512"
+Received: from nprotaso-mobl1.ccr.corp.intel.com ([10.252.49.156])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 01:49:32 -0700
+Date:   Mon, 18 Sep 2023 11:49:26 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Joseph, Jithu" <jithu.joseph@intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        rostedt@goodmis.org, ashok.raj@intel.com, tony.luck@intel.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
+        ravi.v.shankar@intel.com, pengfei.xu@intel.com
+Subject: Re: [PATCH 03/10] platform/x86/intel/ifs: Image loading for new
+ generations
+In-Reply-To: <e084652a-91a0-0c16-7acb-d51a3d2f7ed5@intel.com>
+Message-ID: <10fe57c-c926-9de4-be84-21a0f8abab6d@linux.intel.com>
+References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230913183348.1349409-4-jithu.joseph@intel.com> <ba753b39-1819-35ff-1248-6ce2c2824ae9@linux.intel.com> <e084652a-91a0-0c16-7acb-d51a3d2f7ed5@intel.com>
 MIME-Version: 1.0
-References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-5-lulu@redhat.com>
-In-Reply-To: <20230912030008.3599514-5-lulu@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 18 Sep 2023 16:48:49 +0800
-Message-ID: <CACGkMEtCYG8-Pt+V-OOwUV7fYFp_cnxU68Moisfxju9veJ-=qw@mail.gmail.com>
-Subject: Re: [RFC v2 4/4] vduse: Add new ioctl VDUSE_GET_RECONNECT_INFO
-To:     Cindy Lu <lulu@redhat.com>
-Cc:     mst@redhat.com, maxime.coquelin@redhat.com,
-        xieyongji@bytedance.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-1901495400-1695026647=:1832"
+Content-ID: <871ef1de-2fef-353b-b85c-d89c1a5cbdba@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 11:01=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote:
->
-> In VDUSE_GET_RECONNECT_INFO, the Userspace App can get the map size
-> and The number of mapping memory pages from the kernel. The userspace
-> App can use this information to map the pages.
->
-> Signed-off-by: Cindy Lu <lulu@redhat.com>
-> ---
->  drivers/vdpa/vdpa_user/vduse_dev.c | 15 +++++++++++++++
->  include/uapi/linux/vduse.h         | 15 +++++++++++++++
->  2 files changed, 30 insertions(+)
->
-> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
-vduse_dev.c
-> index 680b23dbdde2..c99f99892b5c 100644
-> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> @@ -1368,6 +1368,21 @@ static long vduse_dev_ioctl(struct file *file, uns=
-igned int cmd,
->                 ret =3D 0;
->                 break;
->         }
-> +       case VDUSE_GET_RECONNECT_INFO: {
-> +               struct vduse_reconnect_mmap_info info;
-> +
-> +               ret =3D -EFAULT;
-> +               if (copy_from_user(&info, argp, sizeof(info)))
-> +                       break;
-> +
-> +               info.size =3D PAGE_SIZE;
-> +               info.max_index =3D dev->vq_num + 1;
-> +
-> +               if (copy_to_user(argp, &info, sizeof(info)))
-> +                       break;
-> +               ret =3D 0;
-> +               break;
-> +       }
->         default:
->                 ret =3D -ENOIOCTLCMD;
->                 break;
-> diff --git a/include/uapi/linux/vduse.h b/include/uapi/linux/vduse.h
-> index d585425803fd..ce55e34f63d7 100644
-> --- a/include/uapi/linux/vduse.h
-> +++ b/include/uapi/linux/vduse.h
-> @@ -356,4 +356,19 @@ struct vhost_reconnect_vring {
->         _Bool avail_wrap_counter;
->  };
->
-> +/**
-> + * struct vduse_reconnect_mmap_info
-> + * @size: mapping memory size, always page_size here
-> + * @max_index: the number of pages allocated in kernel,just
-> + * use for check
-> + */
-> +
-> +struct vduse_reconnect_mmap_info {
-> +       __u32 size;
-> +       __u32 max_index;
-> +};
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-One thing I didn't understand is that, aren't the things we used to
-store connection info belong to uAPI? If not, how can we make sure the
-connections work across different vendors/implementations. If yes,
-where?
+--8323329-1901495400-1695026647=:1832
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <546965c1-b17-8942-fff1-fb6f7a96532@linux.intel.com>
 
-Thanks
+On Fri, 15 Sep 2023, Joseph, Jithu wrote:
+> On 9/15/2023 9:46 AM, Ilpo Järvinen wrote:
+> > On Wed, 13 Sep 2023, Jithu Joseph wrote:
+> > 
+> >> Scan image loading flow for newer IFS generations (1 and 2) are slightly
+> >> different from that of current generation (0). In newer schemes,
+> >> loading need not be done once for each socket as was done in gen0.
+> >>
+> >> Also the width of CHUNK related bitfields in SCAN_HASHES_STATUS MSR has
+> >> increased from 8 -> 16 bits. Similarly there are width differences
+> >> for CHUNK_AUTHENTICATION_STATUS too.
+> >>
+> >> Further the parameter to AUTHENTICATE_AND_COPY_CHUNK is passed
+> >> differently in newer generations.
+> >>
+> >> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+> >> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> >> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+> >> ---
+> >>  drivers/platform/x86/intel/ifs/ifs.h  |  27 ++++++
+> >>  drivers/platform/x86/intel/ifs/load.c | 113 +++++++++++++++++++++++++-
+> >>  2 files changed, 138 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
+> >> index d666aeed20fc..886dc74de57d 100644
+> >> --- a/drivers/platform/x86/intel/ifs/ifs.h
+> >> +++ b/drivers/platform/x86/intel/ifs/ifs.h
+> >> @@ -137,6 +137,8 @@
+> >>  #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
+> >>  #define MSR_ACTIVATE_SCAN			0x000002c6
+> >>  #define MSR_SCAN_STATUS				0x000002c7
+> >> +#define MSR_SAF_CTRL				0x000004f0
+> >> +
+> >>  #define SCAN_NOT_TESTED				0
+> >>  #define SCAN_TEST_PASS				1
+> >>  #define SCAN_TEST_FAIL				2
+> >> @@ -158,6 +160,19 @@ union ifs_scan_hashes_status {
+> >>  	};
+> >>  };
+> >>  
+> >> +union ifs_scan_hashes_status_gen2 {
+> >> +	u64	data;
+> >> +	struct {
+> >> +		u16	chunk_size;
+> >> +		u16	num_chunks;
+> >> +		u8	error_code;
+> >> +		u32	chunks_in_stride :9;
+> >> +		u32	rsvd		:2;
+> >> +		u32	max_core_limit	:12;
+> >> +		u32	valid		:1;
+> > 
+> > This doesn't look it would be guaranteed to provide the alignment you seem 
+> > to want for the fields.
+> 
+> To Quote Tony from an earlier response to a similar query[1]
+> 
+> "This driver is X86_64 specific (and it seems
+> incredibly unlikely that some other architecture will copy this h/w
+> interface so closely that they want to re-use this driver. There's an x86_64
+> ABI that says how bitfields in C are allocated."
+> 
+> 
+> 
+> [1] https://lore.kernel.org/lkml/SJ1PR11MB6083EBD2D2826E0A247AF242FCD19@SJ1PR11MB6083.namprd11.prod.outlook.com/
 
-> +
-> +#define VDUSE_GET_RECONNECT_INFO \
-> +       _IOWR(VDUSE_BASE, 0x1b, struct vduse_reconnect_mmap_info)
-> +
->  #endif /* _UAPI_VDUSE_H_ */
-> --
-> 2.34.3
->
+Hi,
 
+I was actually not that worried about this from portability perspective
+but from placing u32 bitfield after u8 which according to some info I read 
+about this topic way back would not get the alignment you're after. As I 
+could not find anything concrete which "says" (does somebody have some 
+reference for something which actually documents this?) something about 
+x86_64 I ended up using pahole and checked that gcc did not leave hole 
+there so it seems to be fine after all.
+
+I think Tony's "proof" is pretty invalid. He doesn't differentiate
+HW interface related bitfields from those which are not HW interface 
+related (to the extent that in fact most of those bitfields likely are not 
+HW interface related).
+
+-- 
+ i.
+--8323329-1901495400-1695026647=:1832--
