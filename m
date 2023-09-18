@@ -2,171 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F757A4300
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C367A4302
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240058AbjIRHlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
+        id S240099AbjIRHlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240076AbjIRHkb (ORCPT
+        with ESMTP id S240344AbjIRHkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:40:31 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AA61708;
-        Mon, 18 Sep 2023 00:38:05 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38I7SOD0030988;
-        Mon, 18 Sep 2023 07:37:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=r2hWKlEpKe/JKJubx7igl+rfCDrfvf22cMzTlHAy4t8=;
- b=XiZhIz1xqNMtaNAHZTmPN3N11LA57HogMY2oYOkI+ApYuLrvc7ZoP4cCVjrFHSCr/smM
- vZLtLppQoXrMsDNJnGSEwM9HHYwLQu9JwG61qOXeTkPaPONBfRstGE47IwIXImSpfjZw
- w/8XvdBORFna5qkHpQ7u2T47PpbhxFCY0nx80gQZ063TpeAjYUN0PXe2pLsgtRxcJnSt
- S6P0mw6OGWhpT8e8x8BWIJwwBNK8DdcmDm2imRcJ7Eulc4zAoytNJt1+qFbKGRzcSttB
- wqAcSDmR+LEzC1wLd7o6hT6RqbHZFdESpwf0WLGP1VAZ99f+X6DZeoJRscYDsB70XMhz xw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t53ayaqb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 07:37:56 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38I7btsL009318
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Sep 2023 07:37:55 GMT
-Received: from [10.216.25.71] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 18 Sep
- 2023 00:37:52 -0700
-Message-ID: <a890ac60-0562-48c3-9aa1-eb06ec21c69d@quicinc.com>
-Date:   Mon, 18 Sep 2023 13:07:26 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] usb: gadget: ncm: Handle decoding of multiple NTB's in
- unwrap call
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Linyu Yuan <quic_linyyuan@quicinc.com>,
-        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <quic_jackp@quicinc.com>, <stable@vger.kernel.org>
-References: <20230915061001.18884-1-quic_kriskura@quicinc.com>
- <2023091743-tightly-drivable-4360@gregkh>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <2023091743-tightly-drivable-4360@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: A_gBGT8CUmtoqORQV7dXy2fqtBhJWHR6
-X-Proofpoint-ORIG-GUID: A_gBGT8CUmtoqORQV7dXy2fqtBhJWHR6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- spamscore=0 mlxscore=0 impostorscore=0 malwarescore=0 bulkscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309180066
+        Mon, 18 Sep 2023 03:40:45 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB1F1713;
+        Mon, 18 Sep 2023 00:38:16 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 8B276320092C;
+        Mon, 18 Sep 2023 03:38:15 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute6.internal (MEProxy); Mon, 18 Sep 2023 03:38:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=readahead.eu; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695022695; x=1695109095; bh=mz
+        jY251qQhhC38PIPkqsYuoZfhugwdU5Aanf/NUjZMA=; b=9dZCYBj5Z4w0C9//JP
+        vB3j7sYybiuEA/YtcLv0AhTtutckycWp5kHzidkvpLqG10pcQb2jrzvNBiFpduSu
+        uCus77hf9gyHUNlQMcVyZPyz4IAvWaZPK91rmiDk6otiXmsJnukmGdap7eFzrQ7e
+        C0qh8eauLDPlTaHKF3wb43KeeTjsb0ouC6CZJ4MziuNkmZrS/ssZ935tRayi0lLr
+        luTQKxwZTiS5FKRMeSfSQproJSpE+HoEGxH6Ai9IjMR9YiDXPV+AS53Q2Jb1mQVS
+        CkazXJmwwz/Lsy8NhlO8kzLr0coi/OHWTsRFn9HlxtdWNyzAbKg2cNo9jc+MJZ2z
+        6LUg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695022695; x=1695109095; bh=mzjY251qQhhC3
+        8PIPkqsYuoZfhugwdU5Aanf/NUjZMA=; b=C2ZNl+a4id8r4/2AF6binaQOMlK8G
+        2e37UBF6naQkJIqauc/c8svaiaMPWxvPWuFIvzLStfgLoSnLBU45dKGOXFZl55Sp
+        PBAjR21OWf8ZWWRlquwVKNc/akSEPkkVZ1dfODbDuB45ewx7zux40Oj7Olav4C6y
+        TUXYVVuyImoIue2LIHxLq0ned+LoHqSItEBROhOYn0Gq9/hcs3qPpCTT2jUETG3Z
+        Zmk6Q0HAMo2tPa2u1WZEcdly1v2BioZt3c6L2HeUSW3+xUDnRzU6n5ITsSDrdS0D
+        uLOhDNCQn5VVgSPSf8wzgNd8npHmmYCZ+xVEy2YINHrHR5qFTow+ZRkeg==
+X-ME-Sender: <xms:Zv4HZeIk9iTnjvOIFb49UEsyjMMOnu6bwgj5mAKs_p8o-qsEu1Cd9w>
+    <xme:Zv4HZWLcPiYFYkzx0-QcA0cqWMzp6m_E92cwxlSaSUMT0J5JO20dVwc8wRA11hrqN
+    VTP3SnibJeCgfX1rBg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejjedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdff
+    rghvihguucfthhgvihhnshgsvghrghdfuceouggrvhhiugesrhgvrggurghhvggrugdrvg
+    huqeenucggtffrrghtthgvrhhnpeekkedvffetudduhffhfeefveethfejjeevuefhleef
+    ieeigfefieekgeegvdekgeenucffohhmrghinheptghrvggrthgvvddrnhgrmhgvnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggrvhhiuges
+    rhgvrggurghhvggrugdrvghu
+X-ME-Proxy: <xmx:Zv4HZes5fOAA9D-2nWUsv22WUFDDUCp4dkVBx8DGN9OW8Ddw223Utw>
+    <xmx:Zv4HZTY3daSCzMhbWR2zPtuJ5Sc2AWBGoCeYrcrcfu3fReJvz6IxEA>
+    <xmx:Zv4HZVbKjktcWsC2NQsSpVR292gjCjycsOGAifObyZ3AIdEP1DqWZg>
+    <xmx:Z_4HZYzispTMLqmtoYlbWA5GiqzMred1VMW-3fppCavHbIsBGNQPPQ>
+Feedback-ID: id2994666:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8499B1700089; Mon, 18 Sep 2023 03:38:14 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <72b7c13a-5f82-498b-84a3-b6e9b61c0e3a@app.fastmail.com>
+In-Reply-To: <202309151342.DFA6CA5C7@keescook>
+References: <20230914-strncpy-drivers-hid-uhid-c-v1-1-18a190060d8d@google.com>
+ <202309142206.60836CE@keescook>
+ <98d981a1-4e4c-4173-b8eb-09b4245bca60@app.fastmail.com>
+ <202309151342.DFA6CA5C7@keescook>
+Date:   Mon, 18 Sep 2023 09:37:53 +0200
+From:   "David Rheinsberg" <david@readahead.eu>
+To:     "Kees Cook" <keescook@chromium.org>
+Cc:     "Justin Stitt" <justinstitt@google.com>,
+        "Jiri Kosina" <jikos@kernel.org>,
+        "Benjamin Tissoires" <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        "David Herrmann" <dh.herrmann@gmail.com>
+Subject: Re: [PATCH] HID: uhid: refactor deprecated strncpy
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,T_SPF_TEMPERROR
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey
 
+On Fri, Sep 15, 2023, at 10:48 PM, Kees Cook wrote:
+> On Fri, Sep 15, 2023 at 09:36:23AM +0200, David Rheinsberg wrote:
+>> Hi
+>> 
+>> On Fri, Sep 15, 2023, at 7:13 AM, Kees Cook wrote:
+>> >> -	/* @hid is zero-initialized, strncpy() is correct, strlcpy() not */
+>> >> -	len = min(sizeof(hid->name), sizeof(ev->u.create2.name)) - 1;
+>> >> -	strncpy(hid->name, ev->u.create2.name, len);
+>> >> -	len = min(sizeof(hid->phys), sizeof(ev->u.create2.phys)) - 1;
+>> >> -	strncpy(hid->phys, ev->u.create2.phys, len);
+>> >> -	len = min(sizeof(hid->uniq), sizeof(ev->u.create2.uniq)) - 1;
+>> >> -	strncpy(hid->uniq, ev->u.create2.uniq, len);
+>> >
+>> > ev->u.create2 is:
+>> > struct uhid_create2_req {
+>> >         __u8 name[128];
+>> >         __u8 phys[64];
+>> >         __u8 uniq[64];
+>> > 	...
+>> >
+>> > hid is:
+>> > struct hid_device { /* device report descriptor */
+>> > 	...
+>> >         char name[128]; /* Device name */
+>> >         char phys[64]; /* Device physical location */
+>> >         char uniq[64]; /* Device unique identifier (serial #) */
+>> >
+>> > So these "min" calls are redundant -- it wants to copy at most 1 less so
+>> > it can be %NUL terminated. Which is what strscpy() already does. And
+>> > source and dest are the same size, so we can't over-read source if it
+>> > weren't terminated (since strscpy won't overread like strlcpy).
+>> 
+>> I *really* think we should keep the `min` calls. The compiler
+>> should already optimize them away, as both arguments are compile-time
+>> constants. There is no inherent reason why source and target are equal in
+>> size. Yes, it is unlikely to change, but I don't understand why we would
+>> want to implicitly rely on it, rather than make the compiler verify it for
+>> us. And `struct hid_device` is very much allowed to change in the future.
+>> 
+>> As an alternative, you can use BUILD_BUG_ON() and verify both are equal in length.
+>
+> If we can't depend on ev->u.create2.name/phys/uniq being %NUL-terminated,
+> we've already done the "min" calculations, and we've already got the
+> dest zeroed, then I suspect the thing to do is just use memcpy instead
+> of strncpy (or strscpy).
 
-On 9/17/2023 1:34 PM, Greg Kroah-Hartman wrote:
->> Cc: stable@vger.kernel.org
-> 
-> What commit id does this fix?
-> 
+If you use memcpy, you might copy garbage trailing the terminating zero. This is not particularly wrong, but also not really nice if user-space relies on the kernel to treat it as a string. You don't know whether a query of the string returns trailing bytes, and thus might expose data that user-space did not intend to share.
 
-Hi Greg,
+I mean, this is why the code uses strncpy().
 
-This fixes the initial patch that added the driver:
-9f6ce4240a2bf456402c15c06768059e5973f28c
-
->> Reviewed-by: Maciej Żenczykowski <maze@google.com>
->> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->> ---
->>   drivers/usb/gadget/function/f_ncm.c | 26 +++++++++++++++++++-------
->>   1 file changed, 19 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
->> index feccf4c8cc4f..f00f051438ec 100644
->> --- a/drivers/usb/gadget/function/f_ncm.c
->> +++ b/drivers/usb/gadget/function/f_ncm.c
->> @@ -1156,7 +1156,8 @@ static int ncm_unwrap_ntb(struct gether *port,
->>   			  struct sk_buff_head *list)
->>   {
->>   	struct f_ncm	*ncm = func_to_ncm(&port->func);
->> -	__le16		*tmp = (void *) skb->data;
->> +	unsigned char	*ntb_ptr = (void *) skb->data;
-> 
-> Why persist with the extra ' ', didn't checkpatch complain about this?
-> 
-> And why the cast at all?
-> 
-My bad. I ran the checkpatch and got the following result:
-
-kriskura@hu-kriskura-hyd:/local/mnt/workspace/krishna/510/testncm/kernel$ 
-./scripts/checkpatch.pl --strict 
-0001-usb-gadget-ncm-Handle-decoding-of-multiple-NTB-s-in-.patch
-WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit 
-description?)
-#12:
-unwraps the obtained request data assuming only one NTB is present, we loose
-
-CHECK: No space is necessary after a cast
-#34: FILE: drivers/usb/gadget/function/f_ncm.c:1159:
-+       unsigned char   *ntb_ptr = (void *) skb->data;
-
-CHECK: No space is necessary after a cast
-#46: FILE: drivers/usb/gadget/function/f_ncm.c:1176:
-+       tmp = (void *) ntb_ptr;
-
-CHECK: No space is necessary after a cast
-#93: FILE: drivers/usb/gadget/function/f_ncm.c:1329:
-+               ntb_ptr = (unsigned char *) (ntb_ptr + block_len);
-
-total: 0 errors, 1 warnings, 3 checks, 67 lines checked
-
-
-I ignored the checks and saw only that errors are 0. Seems like I missed 
-fixing the commit text wrapping to 75 chars (On line 12 it has 76 
-chars). Will fix it up in v3.
-
-As per the cast, I initially didn't add any cast and saw that the code 
-was not able to parse the dwSignature of the NTH and decoding of all 
-packets was failing. Only when I added the cast, was the function able 
-to decode all packets properly.
-
->> +	__le16		*tmp;
->>   	unsigned	index, index2;
->>   	int		ndp_index;
->>   	unsigned	dg_len, dg_len2;
->> @@ -1169,6 +1170,10 @@ static int ncm_unwrap_ntb(struct gether *port,
->>   	const struct ndp_parser_opts *opts = ncm->parser_opts;
->>   	unsigned	crc_len = ncm->is_crc ? sizeof(uint32_t) : 0;
->>   	int		dgram_counter;
->> +	int		to_process = skb->len;
->> +
->> +parse_ntb:
->> +	tmp = (void *) ntb_ptr;
-> 
-> Again, no blank space please.
-> 
-> And why the cast?
-> 
-the second cast here was just to be in sync with the original code;
-__le16		*tmp = (void *) skb->data;
-
-I didn't try removing this and running the test. Will check if the 
-second one is required or if decoding is proper without it or not.
-
-Regards,
-Krishna,
+Thanks
+David
