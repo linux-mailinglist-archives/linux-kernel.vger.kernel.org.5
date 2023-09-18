@@ -2,56 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A0D7A4721
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0BA7A4728
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 12:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241296AbjIRKdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 06:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
+        id S241305AbjIRKdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 06:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241376AbjIRKcw (ORCPT
+        with ESMTP id S241327AbjIRKdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:32:52 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F22C191;
-        Mon, 18 Sep 2023 03:32:29 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2001:b07:646b:e2:e4be:399f:af39:e0db])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: laura.nao)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9038D6607079;
-        Mon, 18 Sep 2023 11:32:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695033148;
-        bh=Uc7V1QnED3jqO7q91bCXab1gBM9VqY9HU30Ul0mVYpA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JzoSEqsNwon3ssPk59x0nv4g1mS0wowA87TrL3zpgUt5sR/z4pW+qKcP3YEAQ2N9B
-         oLPelEgZ/EonnxadFgXEwzAoS/sCA1C3sT+vpR/mgqB/FyjsNHA9M3XOH8WiEaOu+H
-         pwBA7rc7hDe8CKTTqloT2LUtAP59Mc1EEzncYp3tkSP0IH34ttzLDFOyo7nrNUf+ir
-         8nAToLSw9zfHPQ+Lr3cn2rrEBHzohp0KeIqwtGHhLjrlWvyQzrZMcZPAKJZzJHGbgo
-         +JLWocaKSPU7V1h52+BxdugDC8bw8WJ+MTEQEGem2v5A3yDWGaEMD33q57oOIMYYW7
-         K6xx4Hb5u4sEw==
-From:   Laura Nao <laura.nao@collabora.com>
-To:     mathieu.poirier@linaro.org
-Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
-        andersson@kernel.org, angelogioacchino.delregno@collabora.com,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, matthias.bgg@gmail.com,
-        robh+dt@kernel.org, tinghan.shen@mediatek.com, kernel@collabora.com
-Subject: Re: [PATCH v17 00/14] Add support for MT8195 SCP 2nd core
-Date:   Mon, 18 Sep 2023 12:31:41 +0200
-Message-Id: <20230918103141.126271-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <ZQH2dG+l/dONUsyi@p14s>
-References: <ZQH2dG+l/dONUsyi@p14s>
+        Mon, 18 Sep 2023 06:33:13 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8429121
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 03:32:48 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rq1JH2n8mzVkyT;
+        Mon, 18 Sep 2023 18:29:51 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 18 Sep 2023 18:32:45 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <ying.huang@intel.com>,
+        <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH 0/6] mm: convert numa balancing functions to use a folio
+Date:   Mon, 18 Sep 2023 18:32:07 +0800
+Message-ID: <20230918103213.4166210-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,27 +49,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Other than patch 2 and 14, I have applied this set.  The remaining patches will
-> have to be resent to Matthias.
+The do_numa_pages only handle non-compound page, and only PMD-mapped THP
+is handled in do_huge_pmd_numa_page(), but large, PTE-mapped folio will
+be supported, let's convert more numa balancing functions to use/take a
+folio in preparation for that, no functional change intended for now.
 
-> Thanks,
-> Mathieu
+Kefeng Wang (6):
+  sched/numa, mm: make numa migrate functions to take a folio
+  mm: mempolicy: make mpol_misplaced() to take a folio
+  mm: memory: make numa_migrate_prep() to take a folio
+  mm: memory: use a folio in do_numa_page()
+  mm: memory: add vm_normal_pmd_folio()
+  mm: huge_memory: use a folio in do_huge_pmd_numa_page()
 
-Hello,
+ include/linux/mempolicy.h            |  4 +--
+ include/linux/mm.h                   |  2 ++
+ include/linux/sched/numa_balancing.h |  4 +--
+ kernel/sched/fair.c                  | 12 +++----
+ mm/huge_memory.c                     | 28 ++++++++--------
+ mm/internal.h                        |  2 +-
+ mm/memory.c                          | 49 ++++++++++++++++------------
+ mm/mempolicy.c                       | 20 ++++++------
+ 8 files changed, 65 insertions(+), 56 deletions(-)
 
-With patch 2 missing, the SCP is not probed correctly anymore on asurada (MT8192) and kukui (MT8183). The mtk-scp driver relies on the existence of the `cros-ec-rpmsg` node in the dt to determine if the SCP is single or multicore. Without patch 2 the driver wrongly assumes the SCP on MT8192 and MT8183 are multicore, leading to the following errors during initialization:   
-
-10696 04:33:59.126671  <3>[   15.465714] platform 10500000.scp:cros-ec: invalid resource (null)
-10697 04:33:59.142855  <3>[   15.478560] platform 10500000.scp:cros-ec: Failed to parse and map sram memory
-10698 04:33:59.149650  <3>[   15.486121] mtk-scp 10500000.scp: Failed to initialize core 0 rproc
-
-The issue was caught by KernelCI, complete logs can be found here:
-- asurada: https://storage.kernelci.org/next/master/next-20230914/arm64/defconfig+arm64-chromebook+videodec/gcc-10/lab-collabora/baseline-nfs-mt8192-asurada-spherion-r0.html
-- kukui: https://storage.kernelci.org/next/master/next-20230914/arm64/defconfig+arm64-chromebook+videodec/gcc-10/lab-collabora/baseline-nfs-mt8183-kukui-jacuzzi-juniper-sku16.html
-
-Reporting the issue so that patch 2 and 14 can be resent and merged soon.
-
-Best,
-
-Laura
+-- 
+2.27.0
 
