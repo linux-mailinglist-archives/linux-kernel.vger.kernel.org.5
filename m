@@ -2,48 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF46E7A47B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066B67A47C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbjIRLA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
+        id S236035AbjIRLDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237673AbjIRLAS (ORCPT
+        with ESMTP id S233284AbjIRLDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:00:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A518F;
-        Mon, 18 Sep 2023 04:00:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5A57C433C7;
-        Mon, 18 Sep 2023 11:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695034811;
-        bh=mUP6+EOkqcXwwHbp/HXe6HO9SgJ+ru7fakc6rUq1+Cc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JRcMHnFI1H4CVwaI8yhCmtOPdp+FzuUGK1NYH1ESGOZO88hXQArQ9JBPK0zrjBcM/
-         SVKzKoQsepWlY0yExn8n7Ktxh8iH6SMKq8HwLfEgZKThDRR58TZfmcmJBX3wCz+QRI
-         1yTCoU05IGB50cuGOB3BbwoozrxtM6BByqKgN9V9ibyaLCTvwOf8e7SMuHj1toAI2Z
-         F80Ak+P2/ZW89YQkuFbzt2KiHl5+SIf6CFdZcBUJdxdFRESd4C2pevyskRCW8nXDSq
-         97X1VirI6/6iAIoTX7GTjXfu0vGeDgvaiXdpfrgzk007VZTiIpwgcST8HgVxgjQAa7
-         PHdi2af/UUV+g==
-From:   SeongJae Park <sj@kernel.org>
-To:     Jinjie Ruan <ruanjinjie@huawei.com>
-Cc:     sj@kernel.org, akpm@linux-foundation.org,
-        brendan.higgins@linux.dev, feng.tang@intel.com,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mm/damon/core-test: Fix memory leak in damon_new_region()
-Date:   Mon, 18 Sep 2023 11:00:09 +0000
-Message-Id: <20230918110009.78365-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230918074759.3895339-2-ruanjinjie@huawei.com>
-References: 
+        Mon, 18 Sep 2023 07:03:13 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC0B94;
+        Mon, 18 Sep 2023 04:03:07 -0700 (PDT)
+Received: from [192.168.0.125] (unknown [82.76.24.202])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ehristev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B0D066607095;
+        Mon, 18 Sep 2023 12:03:05 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695034986;
+        bh=v0kfhus51k2k8c4hQ+BgUzlZKVruHcTbgFeT81afp2Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EQHULyuHA0LylSZe+l9E5vhmHEV0eiOEBOwd4RvOqtSXhf+ypG9pX2jt7zV2XH6i2
+         H+3e5lEl4QfL+a6U+V/betDz/X/1da2OnMDdGFdOQmIoPAY8Ma7UTWF9K+ZbNUtDDI
+         9JwG02rbV4zYWQlCMTNbG6xytC5i2bTH+/Uw75N/eh4wL67Js3npy+yJy8fwZ6QB2q
+         NXT8/HAPBlTsVc+kUMBToqCoYqzH5ih2BpRujU8Yn9g52o5L3ulOYw3A/b80rcQheo
+         fLCKsIeQb2ZoG9aMoMPTtzhXoGmDxQpLqQ788qyforyhSRDyovVULw0Dd5GJBcxrKC
+         qOmq0G/1guQ/g==
+Message-ID: <55e85f31-fab6-07f9-0ffe-8ebcd2a56489@collabora.com>
+Date:   Mon, 18 Sep 2023 14:03:02 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI
+ MICROCHIP DRIVERS
+Content-Language: en-US
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        aubin.constans@microchip.com, Ludovic.Desroches@microchip.com
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hari.PrasathGE@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@tuxon.dev
+References: <20230911153246.137148-1-aubin.constans@microchip.com>
+ <fd02d42e-7b24-4f50-849e-b0c752d1f011@microchip.com>
+ <CAPDyKFpYzgwPvrWntgDQCZo97OZr2qd2FaVXpi7OnNc7i_gYtw@mail.gmail.com>
+ <c4f43487-da93-4e67-0389-e31dde550d40@microchip.com>
+From:   Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <c4f43487-da93-4e67-0389-e31dde550d40@microchip.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,103 +65,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jinjie,
-
-On Mon, 18 Sep 2023 15:47:58 +0800 Jinjie Ruan <ruanjinjie@huawei.com> wrote:
-
-> When CONFIG_DAMON_KUNIT_TEST=y and making CONFIG_DEBUG_KMEMLEAK=y
-> and CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y, the below memory leak is detected.
+On 9/14/23 20:01, Nicolas Ferre wrote:
+> On 14/09/2023 at 16:21, Ulf Hansson wrote:
+>> On Tue, 12 Sept 2023 at 07:21, <Ludovic.Desroches@microchip.com> wrote:
+>>>
+>>> On 9/11/23 17:32, Aubin Constans wrote:
+>>>> On the one hand Eugen has taken responsibilities outside Microchip,
+>>>> on the other hand I have some experience with the Microchip SDMMC
+>>>> SDHCI controller.
+>>>> Change Eugen as reviewer and take over maintainership of the SDHCI
+>>>> MICROCHIP DRIVER.
+>>>> Also, take over maintainership of its predecessor, that is the MCI
+>>>> MICROCHIP DRIVER.
+>>>>
+>>>> Cc: Eugen Hristev <eugen.hristev@collabora.com>
+>>>> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+>>>> Signed-off-by: Aubin Constans <aubin.constans@microchip.com>
+>>>
+>>> For atmel-mci:
+>>> Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+>>
+>> Sounds like the patch could be split up, as there is an agreement on
+>> the atmel-mci part.
+>>
+>> Aubin, can you make a separate patch for the atmel-mci part and add
+>> Ludovic's ack to it?
+>>
+>> In regards to the sdhci driver, I suggest you just add yourself as a
+>> maintainer too, along with Eugen.
 > 
-> The damon_region which is allocated by kmem_cache_alloc() in
-> damon_new_region() in damon_test_regions() and
-> damon_test_update_monitoring_result() are not freed. So use
-> damon_free_region() to free it.
-
-Nit.  This patch is not directly adding use of damon_free_region() but replaces
-damon_del_region() call with damon_destroy_region(), so that it calls both
-damon_del_region() and damon_free_region().
-
-I think this part might better to be re-written?
-
-> After applying this patch, the following
-> memory leak is never detected.
+> For adding more background to this patch, in fact it was created in 
+> coordination with Eugen. We can wait a bit for him to catch-up with 
+> emails, no hurry there as Aubin won't have access to emails for a few 
+> days anyway.
 > 
->     unreferenced object 0xffff2b49c3edc000 (size 56):
->       comm "kunit_try_catch", pid 338, jiffies 4294895280 (age 557.084s)
->       hex dump (first 32 bytes):
->         01 00 00 00 00 00 00 00 02 00 00 00 00 00 00 00  ................
->         00 00 00 00 00 00 00 00 00 00 00 00 49 2b ff ff  ............I+..
->       backtrace:
->         [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
->         [<00000000b528f67c>] kmem_cache_alloc+0x168/0x284
->         [<000000008603f022>] damon_new_region+0x28/0x54
->         [<00000000a3b8c64e>] damon_test_regions+0x38/0x270
->         [<00000000559c4801>] kunit_try_run_case+0x50/0xac
->         [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
->         [<000000003c3e9211>] kthread+0x124/0x130
->         [<0000000028f85bdd>] ret_from_fork+0x10/0x20
->     unreferenced object 0xffff2b49c5b20000 (size 56):
->       comm "kunit_try_catch", pid 354, jiffies 4294895304 (age 556.988s)
->       hex dump (first 32 bytes):
->         03 00 00 00 00 00 00 00 07 00 00 00 00 00 00 00  ................
->         00 00 00 00 00 00 00 00 96 00 00 00 49 2b ff ff  ............I+..
->       backtrace:
->         [<0000000088e71769>] slab_post_alloc_hook+0xb8/0x368
->         [<00000000b528f67c>] kmem_cache_alloc+0x168/0x284
->         [<000000008603f022>] damon_new_region+0x28/0x54
->         [<00000000ca019f80>] damon_test_update_monitoring_result+0x18/0x34
->         [<00000000559c4801>] kunit_try_run_case+0x50/0xac
->         [<000000003932ed49>] kunit_generic_run_threadfn_adapter+0x20/0x2c
->         [<000000003c3e9211>] kthread+0x124/0x130
->         [<0000000028f85bdd>] ret_from_fork+0x10/0x20
+> If it has an interest you can add my:
+> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> But definitively, no problem to delay this change.
+
+Hi,
+
+I am fine with this change, as Nicolas has already discussed this with me.
+
+Acked-by: Eugen Hristev <eugen.hristev@collabora.com>
+
+P.S. I have a mailmap entry for the new e-mail so the change is not 
+compulsory, you can change as you see fit.
+
+Eugen
+
 > 
-> Fixes: 17ccae8bb5c9 ("mm/damon: add kunit tests")
-> Fixes: f4c978b6594b ("mm/damon/core-test: add a test for damon_update_monitoring_results()")
-> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
-
-Other than the above trivial nit,
-
-Reviewed-by: SeongJae Park <sj@kernel.org>
-
-> ---
-> v2:
-> - Replace the damon_del_region() with damon_destroy_region() rather than
->   calling damon_free_region().
-> - Update the commit message.
-
-And thank you for making the changes.
-
-
-Thanks,
-SJ
-
-> ---
->  mm/damon/core-test.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Thanks for your understanding. Best regards,
+>    Nicolas
 > 
-> diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
-> index 79f1f12e0dd5..3959be35b901 100644
-> --- a/mm/damon/core-test.h
-> +++ b/mm/damon/core-test.h
-> @@ -30,7 +30,7 @@ static void damon_test_regions(struct kunit *test)
->  	damon_add_region(r, t);
->  	KUNIT_EXPECT_EQ(test, 1u, damon_nr_regions(t));
->  
-> -	damon_del_region(r, t);
-> +	damon_destroy_region(r, t);
->  	KUNIT_EXPECT_EQ(test, 0u, damon_nr_regions(t));
->  
->  	damon_free_target(t);
-> @@ -321,6 +321,8 @@ static void damon_test_update_monitoring_result(struct kunit *test)
->  	damon_update_monitoring_result(r, &old_attrs, &new_attrs);
->  	KUNIT_EXPECT_EQ(test, r->nr_accesses, 150);
->  	KUNIT_EXPECT_EQ(test, r->age, 20);
-> +
-> +	damon_free_region(r);
->  }
->  
->  static void damon_test_set_attrs(struct kunit *test)
-> -- 
-> 2.34.1
+>>>> ---
+>>>>    MAINTAINERS | 5 +++--
+>>>>    1 file changed, 3 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>> index 2833e2da63e0..52beaf4f7fbb 100644
+>>>> --- a/MAINTAINERS
+>>>> +++ b/MAINTAINERS
+>>>> @@ -14022,7 +14022,7 @@ F:    
+>>>> Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
+>>>>    F:  drivers/iio/adc/mcp3911.c
+>>>>
+>>>>    MICROCHIP MMC/SD/SDIO MCI DRIVER
+>>>> -M:   Ludovic Desroches <ludovic.desroches@microchip.com>
+>>>> +M:   Aubin Constans <aubin.constans@microchip.com>
+>>>>    S:  Maintained
+>>>>    F:  drivers/mmc/host/atmel-mci.c
+>>>>
+>>>> @@ -19235,7 +19235,8 @@ F:    
+>>>> Documentation/devicetree/bindings/mmc/sdhci-common.yaml
+>>>>    F:  drivers/mmc/host/sdhci*
+>>>>
+>>>>    SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
+>>>> -M:   Eugen Hristev <eugen.hristev@microchip.com>
+>>>> +M:   Aubin Constans <aubin.constans@microchip.com>
+>>>> +R:   Eugen Hristev <eugen.hristev@collabora.com>
+>>>>    L:  linux-mmc@vger.kernel.org
+>>>>    S:  Supported
+>>>>    F:  drivers/mmc/host/sdhci-of-at91.c
+>>>
 > 
-> 
+
