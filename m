@@ -2,57 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D3D7A539E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF7E7A5393
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 22:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjIRUPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 16:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
+        id S229687AbjIRUOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 16:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjIRUPN (ORCPT
+        with ESMTP id S229472AbjIRUOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 16:15:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11428112
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:15:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695068108; x=1726604108;
-  h=date:from:to:cc:subject:message-id;
-  bh=DQtrAtgKQgEcOLbGDGlWMUb5LDX/i9dMO3WG2Ra//Yk=;
-  b=i7xZhGFlJaG3aAsV4IEoT7uR4HH7Lv6dcmZVqvaqprhw+BEnZO+7MWmF
-   t7SEHbMz61OZ19KovAJf7DP/FV5Jxn73guGSdOGCrKnuHolGmMv32J5OA
-   X6Vs8x9EoxebTradGhUi1D5V0uQ9Z4FrZ4iU4SZzUr+pY+NNl5E29E/+q
-   685HydsojCzKWh7GksdysxBNhxWLE1VI97ws3sKFqQbcJxJAV8CCgtG0w
-   7MpOGbm8hCNpflpe8Fg5ew+grNmAkEk2D44KAW2ccIQ2usuKUBnAW0qw0
-   W3L1TlFSe2HQCTmoRj40IcWJ2b9d5RJKbPy53LFWk0PoVuvfMfO1XmESp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="359173908"
-X-IronPort-AV: E=Sophos;i="6.02,157,1688454000"; 
-   d="scan'208";a="359173908"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 13:15:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="739311505"
-X-IronPort-AV: E=Sophos;i="6.02,157,1688454000"; 
-   d="scan'208";a="739311505"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 18 Sep 2023 13:15:06 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiKdT-0006Qq-2m;
-        Mon, 18 Sep 2023 20:14:39 +0000
-Date:   Tue, 19 Sep 2023 04:14:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 7ad0354d18ae05e9c8885251e234cbcf141f8972
-Message-ID: <202309190410.F6SreWek-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Mon, 18 Sep 2023 16:14:54 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96531B6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:14:48 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bffd6c1460so29834891fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695068087; x=1695672887; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=foir4CYi7UwePbsanUl7EqFTPVU+gOMJyfvtDpuR/qE=;
+        b=ES/kj03omgUBweTWniF9JePXJdplALuWIpGyAJZPQIYSX/R7aS4wIIb05OxcM98I8D
+         Oa6qeB/Z1qc2Yk+KWOVqRdSzzKgEwJ77Yf7YEBrnk0o4ts3raoaHq6/V7nLDJDPK9eVI
+         WxOSV0151SAm2DAZj7RAldPdYaLhameaVbVXJAR8KU/OS4mCYkqqIVcN6PD/czfx8od1
+         DwK1KhVFvoj0ZTqOQehBKqAWHi3w8zCPMt6TEZUdLEDELCQQIz6YGE2vS2hPly/jBZcY
+         FcLqHw8OP1BDHZ2SzfLymYwUvJGoQ3uO2raDAvKTHw8FSF9PSidl/4FLvHgXzEeZ5nSN
+         yKcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695068087; x=1695672887;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=foir4CYi7UwePbsanUl7EqFTPVU+gOMJyfvtDpuR/qE=;
+        b=XYN32+Iwp2qw5pb5EAomYXo+r65oIZTsaaijnnUEiFskDX0uxadI95o4yWxOF6wSyF
+         bhn77HZMu6yXE7Rp1pvw1/btI76i5KfqhMFZM3CIB5diYxXozibCQkCjSTAJTqV2P7xx
+         DzHw55tWIHKkKfmifJvbtNXUNNCpzKJ+1yBy0l12KjbSSSQNfwc6pbwE9hpkm4F1OTVB
+         DtiCDnSTD2SaisnAdVTPfXwgpgJ7UN0MOO6X2AOF9Gs908h1j46evb2xN2z1yRU+fYOc
+         AVuLTBMLci4PsQSch0y2R3TJn8gU1TDS5l4JX63InVXQ0F1VeK2dej5ZJtz1QBpo7Rpr
+         loAw==
+X-Gm-Message-State: AOJu0YxXxWa7GF1QBrd+ij/EEnd0TFXPs0UBsHEQGDJcY+RWF6dBFrTc
+        T/DUHuYTW155LCrLd9gkE7g+Xw==
+X-Google-Smtp-Source: AGHT+IESNYwKw/yvTzkMUYIbu+kKT964yTO8C2nh7iIsPR3ZHyrUuYIec+59pv6vLgQaJn81wkR3SQ==
+X-Received: by 2002:a2e:86c2:0:b0:2b9:daa4:f4b6 with SMTP id n2-20020a2e86c2000000b002b9daa4f4b6mr9066399ljj.45.1695068086835;
+        Mon, 18 Sep 2023 13:14:46 -0700 (PDT)
+Received: from [172.25.80.114] ([217.67.225.27])
+        by smtp.gmail.com with ESMTPSA id sd5-20020a170906ce2500b00992a8a54f32sm6792638ejb.139.2023.09.18.13.14.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 13:14:46 -0700 (PDT)
+Message-ID: <7f5021c9-49a8-ad06-5a48-1d531dbda12e@linaro.org>
+Date:   Mon, 18 Sep 2023 22:14:44 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v12 6/7] dt-bindings: media: wave5: add yaml devicetree
+ bindings
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Sebastian Fricke <sebastian.fricke@collabora.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Robert Beckett <bob.beckett@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
+ <20230915-wave5_v12_on_media_master-v12-6-92fc66cd685d@collabora.com>
+ <30384744-94d7-2675-63ad-d8531e3156d1@linaro.org>
+ <20230918064954.iuomunsckduawiay@basti-XPS-13-9310>
+ <6d87034e-6727-09fd-60fc-10f8ca47f85b@linaro.org>
+ <7412a756ee4c83c62b3dc866b5a351e1bc4afa33.camel@collabora.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <7412a756ee4c83c62b3dc866b5a351e1bc4afa33.camel@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,190 +97,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 7ad0354d18ae05e9c8885251e234cbcf141f8972  sched/headers: Remove duplicated includes in kernel/sched/sched.h
+On 18/09/2023 21:16, Nicolas Dufresne wrote:
+>>>>
+>>>> A nit, subject: drop second/last, redundant "yaml devicetree indings".
+>>>> The "dt-bindings" prefix is already stating that these are bindings.
+>>>> Basically three words bringing zero information.
+>>>
+>>> Okay so:
+>>> `dt-bindings: media: wave5: add devicetree`
+>>
+>> Still not, because devicetree is duplicating "dt". It's redundant.
+>>
+>> Instead should be (with correct order of prefixes):
+>>
+>> media: dt-bindings: wave5: add AzureWaveFooBar XYL ABC10 (whatever
+>> company and full product name it is)
+> 
+> So maybe this one ?
+> 
+>   media: dt-bindings: wave5: add Chips&Media 521c codec IP support
 
-elapsed time: 735m
+Sure, sounds good for me.
 
-configs tested: 171
-configs skipped: 2
+Best regards,
+Krzysztof
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                   randconfig-001-20230918   gcc  
-arc                   randconfig-001-20230919   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         assabet_defconfig   gcc  
-arm                        clps711x_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          exynos_defconfig   gcc  
-arm                      footbridge_defconfig   gcc  
-arm                   randconfig-001-20230918   gcc  
-arm                   randconfig-001-20230919   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230919   gcc  
-i386         buildonly-randconfig-002-20230919   gcc  
-i386         buildonly-randconfig-003-20230919   gcc  
-i386         buildonly-randconfig-004-20230919   gcc  
-i386         buildonly-randconfig-005-20230919   gcc  
-i386         buildonly-randconfig-006-20230918   gcc  
-i386         buildonly-randconfig-006-20230919   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230918   gcc  
-i386                  randconfig-001-20230919   gcc  
-i386                  randconfig-002-20230918   gcc  
-i386                  randconfig-002-20230919   gcc  
-i386                  randconfig-003-20230918   gcc  
-i386                  randconfig-003-20230919   gcc  
-i386                  randconfig-004-20230918   gcc  
-i386                  randconfig-004-20230919   gcc  
-i386                  randconfig-005-20230918   gcc  
-i386                  randconfig-005-20230919   gcc  
-i386                  randconfig-006-20230918   gcc  
-i386                  randconfig-006-20230919   gcc  
-i386                  randconfig-011-20230918   gcc  
-i386                  randconfig-011-20230919   gcc  
-i386                  randconfig-012-20230919   gcc  
-i386                  randconfig-013-20230918   gcc  
-i386                  randconfig-013-20230919   gcc  
-i386                  randconfig-014-20230919   gcc  
-i386                  randconfig-015-20230919   gcc  
-i386                  randconfig-016-20230919   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230918   gcc  
-loongarch             randconfig-001-20230919   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                      bamboo_defconfig   gcc  
-powerpc                 mpc834x_itx_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230918   gcc  
-riscv                 randconfig-001-20230919   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230918   gcc  
-s390                  randconfig-001-20230919   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                           se7751_defconfig   gcc  
-sh                     sh7710voipgw_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230918   gcc  
-sparc                 randconfig-001-20230919   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           alldefconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230918   gcc  
-x86_64       buildonly-randconfig-001-20230919   gcc  
-x86_64       buildonly-randconfig-002-20230919   gcc  
-x86_64       buildonly-randconfig-003-20230918   gcc  
-x86_64       buildonly-randconfig-003-20230919   gcc  
-x86_64       buildonly-randconfig-004-20230918   gcc  
-x86_64       buildonly-randconfig-004-20230919   gcc  
-x86_64       buildonly-randconfig-005-20230918   gcc  
-x86_64       buildonly-randconfig-005-20230919   gcc  
-x86_64       buildonly-randconfig-006-20230918   gcc  
-x86_64       buildonly-randconfig-006-20230919   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20230919   gcc  
-x86_64                randconfig-002-20230919   gcc  
-x86_64                randconfig-003-20230919   gcc  
-x86_64                randconfig-004-20230919   gcc  
-x86_64                randconfig-005-20230919   gcc  
-x86_64                randconfig-006-20230919   gcc  
-x86_64                randconfig-016-20230918   gcc  
-x86_64                randconfig-071-20230919   gcc  
-x86_64                randconfig-072-20230919   gcc  
-x86_64                randconfig-073-20230919   gcc  
-x86_64                randconfig-074-20230919   gcc  
-x86_64                randconfig-075-20230919   gcc  
-x86_64                randconfig-076-20230918   gcc  
-x86_64                randconfig-076-20230919   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                  audio_kc705_defconfig   gcc  
-xtensa                generic_kc705_defconfig   gcc  
-xtensa                         virt_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
