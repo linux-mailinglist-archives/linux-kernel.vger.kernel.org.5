@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 797477A49D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF29D7A49D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241387AbjIRMhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
+        id S241302AbjIRMiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241573AbjIRMgt (ORCPT
+        with ESMTP id S241625AbjIRMhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:36:49 -0400
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6E4E6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:36:27 -0700 (PDT)
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1d6fdbe39c8so1459565fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:36:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695040586; x=1695645386;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qWaU34tE5V3lz+UvO1udinkKJAkf8+DYl+MZokF/z1g=;
-        b=lK3jMFmPxvcaMFUofw+SgZQHaJabA1oXl36AadxfjycqfJseqKyDSU1i/459uCLP7k
-         azLaDITUSf7YsBoDRh5TS8sUamPOcFyVTs5O3lXjh04cjPm+plGhFHESY/oXhFU6ltiO
-         jv5gpETdOizZ//kNbWVbcCoVqH4ugz/M/08n9x5mGgPbXtTmfeG6fBVTIRY8EiFFIJtJ
-         7OAjvp9uZ7h4ujhZvav/qQQScZ/lVGkbIMS+OB/Uqni9RvQcpdyTHuK85Q2IfLdVArrx
-         0a9lifsVi25jbSNf7PTN//B9Or1APWa7TaM+GiToRKAgGAcLJ+R0m9dVpAGH5MUdtXQk
-         8ZLA==
-X-Gm-Message-State: AOJu0Yx2aPZOTMimhKv7e2KezSaB+IhrSFib0CVhPrdKqLIZ6U0UPX/C
-        3HVZkJd/CllTAvcLqsuMCFZjGY3tft79JeZj6XmfGW8nVuOU
-X-Google-Smtp-Source: AGHT+IEYiZu3eA9QEFXdvoJUWMdymKvILGf31PgOwUrktqOHp3HckAqIr7CctAfp7E3UG0ZZCHXZqRqDZClGNqz97MhcA1zNH5HG
+        Mon, 18 Sep 2023 08:37:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA77B8;
+        Mon, 18 Sep 2023 05:37:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B282BC433C7;
+        Mon, 18 Sep 2023 12:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695040634;
+        bh=ZMcEacDejeroowu+VFd3PMtfUMfrBbAw/v4F7FbrE1k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iZJ0YPRVQnqfjR6C7g0X/Weng//P0pSKnfANXdTMiENNOMhNlLpvMCPITSiswdn6O
+         27uGVXHcHzFVTlu4h0qb5iK89fDD4B0wLOAe9fzeaJYN9jeR9v7OscVn8bkXL5uHU+
+         7mRkm2R7jlKkoerHD9PJh6vDnEFCc5/uyTbACZUb9OsGUB6f9ObZDrdRtAsLL9X559
+         aypS3x29zU/nf/oBtMMixJbSQFCiQ8wX5nvF8ALzQEdh9+C2ZTGqPY00e4A7zbwp7J
+         cWYGePnQPpeABWAZ5N27tFk2BdViRjSsxCxC/EgS9aAR+xICID5kue2oN42k/J3hfN
+         BbA9m+D5QpqAA==
+Date:   Mon, 18 Sep 2023 15:37:10 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Li Zhijian <lizhijian@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com, jgg@ziepe.ca,
+        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
+        Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: Re: [PATCH for-next v3 2/2] RDMA/rxe: Call rxe_set_mtu after
+ rxe_register_device
+Message-ID: <20230918123710.GD103601@unreal>
+References: <20230918020543.473472-1-lizhijian@fujitsu.com>
+ <20230918020543.473472-2-lizhijian@fujitsu.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:5b0f:b0:1d6:4344:88ef with SMTP id
- ds15-20020a0568705b0f00b001d6434488efmr3442593oab.0.1695040586719; Mon, 18
- Sep 2023 05:36:26 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 05:36:26 -0700
-In-Reply-To: <ZQhDRtWYSJWfHvEM@casper.infradead.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000d28b70605a164d6@google.com>
-Subject: Re: [syzbot] [mm?] WARNING in page_add_anon_rmap
-From:   syzbot <syzbot+6e4f59235036c3c2e296@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918020543.473472-2-lizhijian@fujitsu.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Sep 18, 2023 at 10:05:43AM +0800, Li Zhijian wrote:
+> rxe_set_mtu() will call rxe_info_dev() to print message, and
+> rxe_info_dev() expects dev_name(rxe->ib_dev->dev) has been assigned.
+> 
+> Previously since dev_name() is not set, when a new rxe link is being
+> added, 'null' will be used as the dev_name like:
+> 
+> "(null): rxe_set_mtu: Set mtu to 1024"
+> 
+> Move rxe_register_device() earlier to assign the correct dev_name
+> so that it can be read by rxe_set_mtu() later.
 
-syzbot tried to test the proposed patch but the build/boot failed:
+I would expect removal of that print line instead of moving
+rxe_register_device().
 
-failed to apply patch:
-checking file mm/rmap.c
-Hunk #1 FAILED at 1249.
-1 out of 1 hunk FAILED
+Thanks
 
-
-
-Tested on:
-
-commit:         7fc7222d Add linux-next specific files for 20230918
-git tree:       linux-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e204dda2e58397ec
-dashboard link: https://syzkaller.appspot.com/bug?extid=6e4f59235036c3c2e296
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12af76f8680000
-
+> 
+> And it's safe to do such change since mtu will not be used during the
+> rxe_register_device()
+> 
+> After this change, the message becomes:
+> "rxe_eth0: rxe_set_mtu: Set mtu to 4096"
+> 
+> Fixes: 9ac01f434a1e ("RDMA/rxe: Extend dbg log messages to err and info")
+> Reviewed-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+> index a086d588e159..8a43c0c4f8d8 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.c
+> +++ b/drivers/infiniband/sw/rxe/rxe.c
+> @@ -169,10 +169,13 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
+>   */
+>  int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name)
+>  {
+> +	int ret;
+> +
+>  	rxe_init(rxe);
+> +	ret = rxe_register_device(rxe, ibdev_name);
+>  	rxe_set_mtu(rxe, mtu);
+>  
+> -	return rxe_register_device(rxe, ibdev_name);
+> +	return ret;
+>  }
+>  
+>  static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+> -- 
+> 2.29.2
+> 
