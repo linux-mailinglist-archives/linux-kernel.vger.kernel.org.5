@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EB57A4298
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E237A429B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 09:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240049AbjIRHcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 03:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43030 "EHLO
+        id S238562AbjIRHcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 03:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240252AbjIRHbh (ORCPT
+        with ESMTP id S240330AbjIRHbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:31:37 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA03212C;
-        Mon, 18 Sep 2023 00:31:11 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40472c3faadso40589055e9.2;
-        Mon, 18 Sep 2023 00:31:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695022270; x=1695627070; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W/9MjO3R8I5ALb/BaTl3sTvaDPPou8ZUyKXxeS+MJr8=;
-        b=GCIMc5HJKsgSczGIs+Zasp12t87vqfEq/uspPaNJvHSGSCuHnrHQYOaiMqfrQ7v2Kr
-         CvsDU+IGUu3BLyKMMzY6r2jm0AqCZOFvmXX/QDMAoNLv6Jbb4cgzrqSUlwE6HNOumy4j
-         6+N7+5zq9mgwIN8o13pdl5wvkzbAwrkQEjr3d3qAUtoHpzqYcBTHJ1tdBWR75J2Ozi1m
-         j0DPpBKOlVKaDRV+UMPHXFldOUAmwZ/Rg360tVYLQl/HgmmsoEpMC9VaP+rK/ETatFwK
-         u4tGyr5S+2Q5RGULOeapTtVKTHQb4zgOxaSoEGy3uGoNaEKG8+xbD7u6IUN+eQp5V0zF
-         +ebA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695022270; x=1695627070;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W/9MjO3R8I5ALb/BaTl3sTvaDPPou8ZUyKXxeS+MJr8=;
-        b=HbNOJH2oSa6Y9UbfOUlxLqjaeDFvb4V5JnEASGnwMT+bXyRtjTIpZMV9XYdwC9kxtP
-         Uf6jZ2uGHlEpqyytt1oSQGweUsMlXIbc2dpuQLsiaYGDTCEhhWEnMF9n9qh0Tr8/9jiS
-         4XAmcJLW6IDaBqWgGNHyiKmPTfsWctG2M9r+qAk/Z+kcP7X+wpFeVSUZuaB4WmMJsMvW
-         T5CMqfI28nR1ve6J6+ZMojOr3xGhrqKHG2+2HjAfkhIrWKvS5Slk1HKMvcR2xSXXgwAe
-         bNfrb5VK44BQwDZ9HG//v5J0jBx0l4m+9TLdMxuYhd1b7JULqfB7J1N/3Zatg4z0mESz
-         tqfw==
-X-Gm-Message-State: AOJu0Yyo1dtKNYJD63YM5CbvwUWrHZ5UV2gF4pEHK6WXEYiizvAwrSsD
-        PCRsU5lup2HG/xRfK+y2TTHwewck9O8=
-X-Google-Smtp-Source: AGHT+IFunwts3zDprHoCiXSrDd6TYFaUZHQrgvp3PKpzYYBESQlbqLxbMv0Prg7W5pj5KnWX2o0xXQ==
-X-Received: by 2002:a5d:6dcd:0:b0:313:e971:53af with SMTP id d13-20020a5d6dcd000000b00313e97153afmr5971377wrz.32.1695022269970;
-        Mon, 18 Sep 2023 00:31:09 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id e25-20020a5d5959000000b003143c9beeaesm11861797wri.44.2023.09.18.00.31.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 00:31:09 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 18 Sep 2023 09:31:07 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [tip: x86/asm] x86/percpu: Define
- {raw,this}_cpu_try_cmpxchg{64,128}
-Message-ID: <ZQf8u327SUDag/zd@gmail.com>
-References: <20230906185941.53527-1-ubizjak@gmail.com>
- <169477710252.27769.14094735545135203449.tip-bot2@tip-bot2>
- <CAHk-=wiOH-VK8XLUBU-=kzPij9X=m7HwnviXF-o8X54Z=Ey_xw@mail.gmail.com>
- <CAFULd4YLzRWmXG2DHeRHYY33FrX+wNOVfQFyms5Mki1mmn0VZA@mail.gmail.com>
- <CAFULd4baw7wC7hemfqcGirkFVHihcnG+_a9RRQGga+CatpEagA@mail.gmail.com>
+        Mon, 18 Sep 2023 03:31:43 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E5A197;
+        Mon, 18 Sep 2023 00:31:28 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9D4C65C0152;
+        Mon, 18 Sep 2023 03:31:27 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 18 Sep 2023 03:31:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695022287; x=1695108687; bh=YTcyWiGsDcH3h
+        DR+6efIJUv0XVuW7F54zGUEX+HekeE=; b=XeFZt4k3yxxKIxg7+9pecr1XxHAdB
+        uoruOhrzc1asSfE4JphaRxshTnvuTSond3JWHvfRLEH+nN+XJ8RaXfzE/Iz7UaNH
+        srdBS5GfO5VonagRvQVR++8rCrm1mTGw5GHKiHjqHuuhAoKspd38YveDTbF1sE3e
+        41wNcJ1s3ejc2SSJgTEM8TIxmYYe2BoNu5puI2zoU0WAt2tseXa5IogAMUc3M8rZ
+        Rs3IREi4eWiqYD4HLxyZOUF+ssc+Jo2IyZ5maOiQUjg/n/fzMaUrHiSUceCPzZhR
+        HWpoCqbu+9c3QqOE+jba1Ce+zzJU1bDWZo7ZK6WeRR0MvrRoqXgq98qHw==
+X-ME-Sender: <xms:z_wHZdiqpsmq6FbcYpWTc350Oo2xIXJG0ajGWxdeYJKvvox-B-HGHQ>
+    <xme:z_wHZSDqirBuP4o_lDLr-Z30pQ-osGbstWCoa3_eqTBBzAeyt51gMhtZwVDvAPeE7
+    U_yH5fRPgAj-rk>
+X-ME-Received: <xmr:z_wHZdHHXobL1zAwrqfNfQFityIhTfi42c8-toBPOX-zhQV3oKCxBYMvvlF8ZHB_Ga_VadPE7J5J2feLAClHfk0bhk3MQw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejjedguddvfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkugho
+    ucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrg
+    htthgvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefgleekheegleegjeej
+    geeghfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:z_wHZSRGcBV8QG7J_ccEk-4r5J-onpFW11kqVmxu0S_K-fDPcQB0yg>
+    <xmx:z_wHZaz5RR1g392IzmS-fkOW25IN8zWSr5zWyxAeMu4CVm-9MD0n7A>
+    <xmx:z_wHZY5ykig_eLZ9sOdBJT7NEzpgEiw0mrZn43yZjvDYAIZyT6HVZA>
+    <xmx:z_wHZZlGA_49A5j-D3VFJ371f3FatlZZeXjleRORcxdrYVw9mWQkRw>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Sep 2023 03:31:26 -0400 (EDT)
+Date:   Mon, 18 Sep 2023 10:31:23 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] mlxsw: Use size_mul() in call to struct_size()
+Message-ID: <ZQf8y6RVobiGUyzZ@shredder>
+References: <ZQSqA80YyLQsnd1L@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFULd4baw7wC7hemfqcGirkFVHihcnG+_a9RRQGga+CatpEagA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZQSqA80YyLQsnd1L@work>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Uros Bizjak <ubizjak@gmail.com> wrote:
-
-> Now also with the patch attached.
+On Fri, Sep 15, 2023 at 01:01:23PM -0600, Gustavo A. R. Silva wrote:
+> If, for any reason, the open-coded arithmetic causes a wraparound, the
+> protection that `struct_size()` adds against potential integer overflows
+> is defeated. Fix this by hardening call to `struct_size()` with `size_mul()`.
 > 
-> Uros.
+> Fixes: 2285ec872d9d ("mlxsw: spectrum_acl_bloom_filter: use struct_size() in kzalloc()")
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-> index a87db6140fe2..331a9d4dce82 100644
-> --- a/arch/x86/include/asm/percpu.h
-> +++ b/arch/x86/include/asm/percpu.h
-
-Assuming it boots & works, mind sending a fully changelogged patch with a 
-SOB and a 'Suggested-by: Linus' tag or so? Looks like a nice v6.7 addition.
-
-Thanks,
-
-	Ingo
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
