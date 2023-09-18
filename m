@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EC27A45B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5807A45BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 11:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238811AbjIRJQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 05:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
+        id S239119AbjIRJTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 05:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240956AbjIRJQM (ORCPT
+        with ESMTP id S239199AbjIRJSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 05:16:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3EA115;
-        Mon, 18 Sep 2023 02:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695028560; x=1726564560;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HODBa9dvinX682mpZpv2Ai5XBCfJ9WWcaCt3+KCr9MA=;
-  b=IP/9MHh1rjBlQRZIaHpSyD/hlfzkk7ULJGQwmPiYj4M3beR1z78F0KqW
-   YqgAOTpSqqcFofsnwCC3/PLYaBjzJo486zaleoPcWZsSapDmJSWorelMQ
-   C5NXnZmeGUNgbR42yuZqxTj5ufroE7Y4wP37/nrBjQRhsq1mviFCv6CUH
-   5aNCViR4RtvFEKymtldl4Y2DOpKFdcO1tUIWvQMonDnsrcQc9HrnklfyX
-   /2QLioDZ58evPyxyNlfJhnzRGcLZLsinzd1hukJ7dF7kV44n7hGeJtqSz
-   YJC+d5BlIN2ICYKQjbwyoJ7s8x8pg4qWZcZSpZj+iP3jdpw+M8VxX6C6n
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="382350896"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="382350896"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 02:15:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="695455798"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="695455798"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 18 Sep 2023 02:15:56 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 584F118E; Mon, 18 Sep 2023 12:15:55 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] gpiolib: cdev: Annotate struct linereq with __counted_by()
-Date:   Mon, 18 Sep 2023 12:15:53 +0300
-Message-Id: <20230918091553.1103567-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Mon, 18 Sep 2023 05:18:54 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD2DD3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:18:49 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-573c62b3cd2so3066048a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 02:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695028729; x=1695633529; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vOUwR0XSojYK9VIcC7RqvIxqVzThb1ey2EOADSQHi5U=;
+        b=iz1chiLMSLwAvBbEOgLudeydZSGd1tZ5lXfmlGFN/mP4FpKtvsMTnapJh648Q6k057
+         E/2USmfLlZZ5XVrSPJTkGzzCOr4qnKYrf8YGe344rrDHgdWNU7whWBwYVv/XERSP11NB
+         fiyKB5wVT63LpMWYL+yPA2HwJT1lWLHHc4l56R35KxV3Wx+vhiBDYX35TqFEA8DQLkMk
+         JTHTAmSDU7Lv3HjyvedViYRp3AiPoNjNQvVhVGKBe3Pw3Az6epzHAjJXPTb1ydENUsh/
+         Y135YOcGjdGCkrNUX9UjatsL6T7YcPwmx5vow0VfuGbCX+UYyED7ejI8+B72hvnDO55Q
+         q/mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695028729; x=1695633529;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vOUwR0XSojYK9VIcC7RqvIxqVzThb1ey2EOADSQHi5U=;
+        b=ROkV07sVxP2aAbKjVhpKGkXEYPL8VQjJTR7vYHwjK4NuYpjmGt32Ge2faOS9Kjl08M
+         YTHE/SrgeFn+NHN1G5Udn1SUWDfpPabSV9zHrqRbWjTgPyc2mDnKt9F2wWvehId7VpDa
+         xx909NySskzONl7hH7lzi9cP+xLRjDXnwpPcndHx5A+0yBMAPC4LmbctiPRBwe+s0MDS
+         tG0JVo1qc8Z9e4jymzGYRQmGCwYQFADloYOCEKoTQ+9GTwIEjfu86o50M4t0DyuHX4ol
+         Ym6kro+/Sgl3DMM1gJcKDaQHCPb4HjAE+21tnfoWiLGi08rXizMNrJ62pVmvGQO1DVZ2
+         BAdA==
+X-Gm-Message-State: AOJu0Yx6Y7H4q3z/Xu/rMFF4Aaw+IRtA68u5ngEY8wrICgQW1q02OyoE
+        V3lM73xzxWfv8VR6CQoI0+FHsMjYb7lyQjJmSxmfXAmDasY=
+X-Google-Smtp-Source: AGHT+IHYmOj1X07KtLp8tNWJ3E/2n0eDcH4uln5QlKVfHuIdh/+Cx+DAZFxUYiqxOabbJer64DGbbreasiAzCf1kwsc=
+X-Received: by 2002:a17:90b:3142:b0:274:7b6a:4358 with SMTP id
+ ip2-20020a17090b314200b002747b6a4358mr5984127pjb.6.1695028729136; Mon, 18 Sep
+ 2023 02:18:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+References: <20230902115026.13460-1-qiang.zhang1211@gmail.com>
+ <ZPd4yKqbvBNGV7cL@slm.duckdns.org> <CALm+0cVf+E_Y41AdEwLjm2gZAjzeKaZev1Tu1hUS-VpYH0eEHQ@mail.gmail.com>
+ <ZPiwaaZaDPVexezn@slm.duckdns.org> <CALm+0cUytR3-0mcW3t24gcyP27UW3rpP5_+vpLVC3w70+0n6oQ@mail.gmail.com>
+In-Reply-To: <CALm+0cUytR3-0mcW3t24gcyP27UW3rpP5_+vpLVC3w70+0n6oQ@mail.gmail.com>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Mon, 18 Sep 2023 17:18:37 +0800
+Message-ID: <CALm+0cUyC-g7NewCWhvK0wR8ZWm_vT0pHnM+GFixJf35=HxXMg@mail.gmail.com>
+Subject: Re: [PATCH] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
+To:     Tejun Heo <tj@kernel.org>
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,29 +68,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family                                         functions).
+>
+> >
+> > On Wed, Sep 06, 2023 at 10:12:34AM +0800, Z qiang wrote:
+> > > Flush the pwq_release_worker is insufficient, the call_rcu() is
+> > > invoked to release wq
+> > > in pwq_release_workfn(), this is also asynchronous.
+> >
+> > But rcu_free_pwq() doesn't access wq or anything. The last access is from
+> > the work function.
+>
+> The rcu_free_wq() will access wq->cpu_pwq or unbound_attrs,
+> but  at this time, the kfree(wq) may have been called in alloc_workqueue().
+>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpio/gpiolib-cdev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Friendly ping.
 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index a5bbbd44531f..e23f06f58234 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -572,7 +572,7 @@ struct linereq {
- 	DECLARE_KFIFO_PTR(events, struct gpio_v2_line_event);
- 	atomic_t seqno;
- 	struct mutex config_mutex;
--	struct line lines[];
-+	struct line lines[] __counted_by(num_lines);
- };
- 
- #define GPIO_V2_LINE_BIAS_FLAGS \
--- 
-2.40.0.1.gaa8946217a0b
+Thanks
+Zqiang
 
+> Thanks
+> Zqiang
+>
+>
+> >
+> > Thanks.
+> >
+> > --
+> > tejun
