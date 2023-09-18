@@ -2,140 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DBC7A4CD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B887A4D08
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjIRPlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
+        id S229716AbjIRPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjIRPlu (ORCPT
+        with ESMTP id S229473AbjIRPpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:41:50 -0400
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70666E4D;
-        Mon, 18 Sep 2023 08:40:21 -0700 (PDT)
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1c43166b7e5so29452705ad.3;
-        Mon, 18 Sep 2023 08:40:11 -0700 (PDT)
+        Mon, 18 Sep 2023 11:45:53 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A874710EB
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:44:32 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bffe2840adso24458371fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1695051579; x=1695656379; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pnZOaaX9WnOq4XyS/JjlYL/avJUHH7HaI21NKLakfeo=;
+        b=j2GRKG1OrY8I2YM8MQSp7QaPVHyfcJ1cxWabVqejxTFe/rumngpv2Xh5GJEM4qlOqp
+         AGaTzcEoKarx7J+8GklEgXEicZLy1bM1gwfq/7rHqUS06BN1pTKYs1SNEpk1heWVDkah
+         7//RA224XGoGJXOLRtre6RmNw//FN3cmAfSm8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695051385; x=1695656185;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6cD+cmIkq/0xe1bl+vQZsxyzlQSlIBNKWB/nPmFWtiM=;
-        b=VgnYRtgtEY4P8rHQVoQoWxW4+wVIftOauhOF572nXZgKA3Ny5fq6EXDNI5t73lkkty
-         1hyYwTrAimQ0EC0G4lMddweexCi3TlmQPiyv1jbx3ZkAY9VmrmAzUTDVauyd3ASnNjod
-         W6v1JRGGSWfY+VBxCQaQODmfY8wx3RFPzu5+baKyBVtAnU0C8d5UCrjPiRyOPQJX5/HA
-         xvfjJy63ol88Emxs6p5kCiHrf79oDNcFPGHv16EeFKjt4ZmIA8UuxIyhkL6zK8+zXBFt
-         zQ3asvsAv1BNrAItTRRuhgmKYOBXjNP0rS4fHKnoVVK3cDvyDXdeVe7CDO8D/DpOc1GO
-         aokA==
-X-Gm-Message-State: AOJu0YxAWh7tQ2NmU0YobMVE6hJas7waFzoS8kk1zt+6iI802G4CwpJ0
-        oWTXFXRYR2EmuT52vP/EQ24=
-X-Google-Smtp-Source: AGHT+IGR184+HRuFV3B3NfFTF4LThXA2jwJxkhQ6O8Hu6lLmMW70MpsX8E267KMD6Pk87zk9rLPvEQ==
-X-Received: by 2002:a17:903:32cd:b0:1c4:1343:8329 with SMTP id i13-20020a17090332cd00b001c413438329mr11852832plr.27.1695051385239;
-        Mon, 18 Sep 2023 08:36:25 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:33e7:1437:5d00:8e3b? ([2620:15c:211:201:33e7:1437:5d00:8e3b])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001b9d95945afsm8464160plf.155.2023.09.18.08.36.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 08:36:23 -0700 (PDT)
-Message-ID: <de7e76f8-5ed6-4de0-8084-24e220deb4b3@acm.org>
-Date:   Mon, 18 Sep 2023 08:36:21 -0700
+        d=1e100.net; s=20230601; t=1695051579; x=1695656379;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pnZOaaX9WnOq4XyS/JjlYL/avJUHH7HaI21NKLakfeo=;
+        b=hsTIjS+EWfGp5AMzhJLU/XB/fuRxcI2gjEIMh8saiUg4cm+pe5en2gJKxtzypz/ryh
+         hFatSLgDNHy7NdFThpQT/CsKkLzjxLZKjD6Cq8uvVdtOmZ3aVHL/Ve8vwuDz+qPK/bpv
+         kPRQrKi+xCNarXkPSfBKyNxQEhofMOuMWSDalLtlABang08TZkmranCstNBGqwS6uRy/
+         TBp5ub1IIH4Cg43nVLYMXdZbQNLMemnzQcEoXVayn1Wch1ZZOX7JJNJtYCqM20IaLNMY
+         PrtVj+Nc5es2F+lQE6lTGtLPEbM6C/rQizYsBY281Mjzyz68IPY5Wq4olXFnn9mXLOiK
+         rLdA==
+X-Gm-Message-State: AOJu0YxtJV8BdiEHE7vu6Xjr7LDUs2M8T7YxIR79NE78cN1Q6m0cYclz
+        ADnn1I4N5iGCOtRzToOGMA96t/xij3c355VrQu7B5w==
+X-Google-Smtp-Source: AGHT+IEX3jWGmr70VHerLgs6yoJuT4x4No/6ZV9HiQJ69deItIn2LBGC4+/JWaXUJDPQe4rYusp8sYIm7bRZFyKgHH0=
+X-Received: by 2002:a2e:8751:0:b0:2bd:1f81:fc47 with SMTP id
+ q17-20020a2e8751000000b002bd1f81fc47mr8984284ljj.22.1695051579729; Mon, 18
+ Sep 2023 08:39:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/6] scsi: ufs: ufs-sysfs: Introduce UFS power info sysfs
- nodes
-Content-Language: en-US
-To:     Can Guo <quic_cang@quicinc.com>, mani@kernel.org,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, Bean Huo <beanhuo@micron.com>,
-        Lu Hongfei <luhongfei@vivo.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
- <1694411968-14413-7-git-send-email-quic_cang@quicinc.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1694411968-14413-7-git-send-email-quic_cang@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
+ <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
+ <20230914-lockmittel-verknallen-d1a18d76ba44@brauner> <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com>
+ <20230918-grafik-zutreffen-995b321017ae@brauner> <CAOssrKfS79=+F0h=XPzJX2E6taxAPmEJEYPi4VBNQjgRR5ujqw@mail.gmail.com>
+ <20230918-hierbei-erhielten-ba5ef74a5b52@brauner> <CAJfpegtaGXoZkMWLnk3PcibAvp7kv-4Yobo=UJj943L6v3ctJQ@mail.gmail.com>
+ <20230918-stuhl-spannend-9904d4addc93@brauner> <CAJfpegvxNhty2xZW+4MM9Gepotii3CD1p0fyvLDQB82hCYzfLQ@mail.gmail.com>
+ <20230918-bestialisch-brutkasten-1fb34abdc33c@brauner>
+In-Reply-To: <20230918-bestialisch-brutkasten-1fb34abdc33c@brauner>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 18 Sep 2023 17:39:28 +0200
+Message-ID: <CAJfpegvTiK=RM+0y07h-2vT6Zk2GCu6F98c=_CNx8B1ytFtO-g@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/23 22:59, Can Guo wrote:
-> Having UFS power info available in sysfs makes it easier to tell the state
-> of the link during runtime considering we have a bounch of power saving
-> features and various combinations for backward compatiblity.
+On Mon, 18 Sept 2023 at 17:22, Christian Brauner <brauner@kernel.org> wrote:
+>
+> > So to be clear about your proposal: .mnt_root and .mountpoint are
+> > initialized by the caller to buffers that the kernel can copy paths
+> > into?
+>
+> Yeah, u64 pointer to a buffer and a size (see e.g., @set_tid and
+> @set_tid_size for struct clone_args, @log_buf and @log_size and other
+> args in there).
+>
+> >
+> > If there's an overflow (one of the buffers was too small) the syscall
+> > returns -EOVERFLOW?
+>
+> Yeah, I mean we have to make some things their problem.
+>
+> To me that is an acceptable compromise.
 
-bounch -> bunch
-compatiblity -> compatibility
+Okay, so there are now (at least) two buffers, and on overflow the
+caller cannot know which one got overflown.  It can resize both, but
+that doesn't make the caller any simpler to implement.
 
-Additionally, please combine this patch with patch 5/6 into a single patch.
+Also the interface is kind of weird in that some struct members are
+out, some are in (the pointers and the lengths).
 
-> -What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_sum
-> -What:		/sys/bus/platform/devices/*.ufs/monitor/write_req_latency_sum
-> -Date:		January 2021
-
-Has the above information perhaps been removed by accident?
-
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/gear
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/gear
-> +Date:		September 2023
->   Contact:	Can Guo <quic_cang@quicinc.com>
-> -Description:	This file shows the total latency (in micro seconds) of write
-> -		requests after monitor gets started.
-> +Description:	This file shows the gear of UFS link.
-> +
-> +		The file is read only.
-
-Please explain what "gear" means and also what the unit is of the 
-numbers reported via this sysfs attribute.
-
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/mode
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/mode
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the power mode of UFS link.
-> +
-> +		The file is read only.
-
-Please document the meaning of the numbers reported via this sysfs 
-attribute.
-
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/rate
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/rate
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the high speed rate of UFS link.
-> +
-> +		The file is read only.
-
-Please document the unit of the numbers reported via this sysfs attribute.
-
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/dev_pm
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/dev_pm
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the UFS device power mode, i.e., the power mode
-> +		set to UFS device via the Start Stop Unit command.
-
-Please document the meaning of the numbers reported through this sysfs 
-attribute.
-
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/link_state
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/link_state
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the the state of the UFS link.
-
-Please document the meaning of the numbers reported through this sysfs 
-attribute.
+I'd prefer the single buffer interface, which has none of the above issues.
 
 Thanks,
-
-Bart.
+Miklos
