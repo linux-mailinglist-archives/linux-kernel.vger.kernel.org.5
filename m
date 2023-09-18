@@ -2,326 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDD47A502D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2923B7A4F62
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbjIRRA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        id S230358AbjIRQlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231414AbjIRRAn (ORCPT
+        with ESMTP id S230332AbjIRQk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:00:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92273C05;
-        Mon, 18 Sep 2023 09:35:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51EBCC433CB;
-        Mon, 18 Sep 2023 16:35:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695054943;
-        bh=uBg0YwMFSNtf20J3F2FF6kMJ6k/t9J1KNWcs8W4I5o8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uZqcUn6fqIsV6acXBorvM40I2y5nOoXsq0RstNC6b8rLOvTTmZBRCxdxrRneA4nug
-         qrySrpUfmmF0o6+yQs/rPDHvLErLg/yNAry1Q8UpU1sOb0YaGkQEelADBYf5GuvC6V
-         owQBZb1B6n2e+zYUOuQw3dr6vbhJcUrXwnKmUg1cvYY6660cKT187dlK7gCqUNaWrE
-         QrPMrjhZ4vAtMq0hgRrITikTir9iJzq3mi+uQpIGmjypRgaGU2wudVl5ONVPO5Kp2z
-         7rGviHjMrbrKG/2/4WBFUJmyEcf4B2wExJbq+n9DzUinmta3N2gUGzz4e/KhfW8Me3
-         ijL9OWQIs94Sg==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1qiHE2-0002xw-2i;
-        Mon, 18 Sep 2023 18:35:54 +0200
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH RESEND] HID: i2c-hid: fix handling of unpopulated devices
-Date:   Mon, 18 Sep 2023 18:35:35 +0200
-Message-ID: <20230918163535.11388-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <CAD=FV=Wfwvp-SbGrdO5VJcjG42njkApJPB7wnY-YYa1_-O0JWQ@mail.gmail.com>
-References: <CAD=FV=Wfwvp-SbGrdO5VJcjG42njkApJPB7wnY-YYa1_-O0JWQ@mail.gmail.com>
+        Mon, 18 Sep 2023 12:40:56 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FE990;
+        Mon, 18 Sep 2023 09:37:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eu2RQKimjXlXW7W9cE+unZHe7lMxN724HXxOLWbhq0SWPNbOK5nnCkFu/t3OOrdPWjNcLSep/lwXYu2CiZ+7oF8en7zQNf5gkfFebShPO+uA7uY02CH/ibkQNM65aN7l3Tz84f0MIYvloiWzMn9xTNgvAzQYWS/FmAgg3texq3lVg+YB6YywO8nffffn8cdUFB9cKf4KE3lzF0ckvJOXlWZWwJ9PONy0j7YS9KxKG5eJiKJipOgI5RoRXEwDw/sEQwJkmfc0oPTM4pwJkRfyv/kjS/25l++YENPN3HZR/qfaY9+L7gcIWjCLNfJyD+FDoaeqAz+lPNs86SB6t3j9mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jyzmYcLV+sptuG5IDyfXVowshZf+33f9QlVSHiv27bA=;
+ b=TrEAXZtGTAW9okbDr0jzgUxyPkg6ADla8SlxNh0Dq9CFtXP3A6MjUxu8oBsR8oEJ7ejBu1vIrDDplPochZhV0kXH7Iqs3W1HLa/mWwSeU1rbk5DQnNgxp8S5SPmqaBS2S5k76aSi18Y3EoMsniW044XCSvgYg58pJ8bYrxf/NUsDIn75cgMdGq6QFmm2QzGnex6QNIosH1nOVDgCgzESk1IDNZ+FHPNxbSfaGmlf57i0j5kVBQKv/eKINhHHpFB6e7JMrGD89NrbmuQ0XscC83M9Qm38IMNHpAXiCYk4wZumJNq0s5J/zCrp4iLo/NqFEGKYjR7xlNC1bVysKQGUpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jyzmYcLV+sptuG5IDyfXVowshZf+33f9QlVSHiv27bA=;
+ b=wovO6PVLfH+XOvbKxZzF44pw7e/8zDeQedjg2pIOcEgAw3zkcg799SvqAph1oRX2v2fuL5hUvgaI878XikR4pOae11ICUFm9a6wPvWLKvkLkk0oAouoxcIlimllisDM0TOH2IsXW5ny6qFf4lx6WvXGl1GI8huDh2xObWCT5fCM=
+Received: from CY5PR15CA0060.namprd15.prod.outlook.com (2603:10b6:930:1b::6)
+ by PH8PR12MB6820.namprd12.prod.outlook.com (2603:10b6:510:1cb::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.24; Mon, 18 Sep
+ 2023 16:37:05 +0000
+Received: from CY4PEPF0000EE31.namprd05.prod.outlook.com
+ (2603:10b6:930:1b:cafe::4e) by CY5PR15CA0060.outlook.office365.com
+ (2603:10b6:930:1b::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27 via Frontend
+ Transport; Mon, 18 Sep 2023 16:37:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE31.mail.protection.outlook.com (10.167.242.37) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6792.20 via Frontend Transport; Mon, 18 Sep 2023 16:37:04 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 18 Sep
+ 2023 11:37:04 -0500
+Date:   Mon, 18 Sep 2023 11:36:47 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Sean Christopherson <seanjc@google.com>
+CC:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, <kvm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <linux-mips@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <kvm-riscv@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC PATCH v12 14/33] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl()
+ for guest-specific backing memory
+Message-ID: <20230918163647.m6bjgwusc7ww5tyu@amd.com>
+References: <20230914015531.1419405-1-seanjc@google.com>
+ <20230914015531.1419405-15-seanjc@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230914015531.1419405-15-seanjc@google.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE31:EE_|PH8PR12MB6820:EE_
+X-MS-Office365-Filtering-Correlation-Id: 312b407d-0494-4860-7bea-08dbb8657e1e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Hf//+xF5X+HV33ANfZQIRomTlciR8+GA0BiVUWGu5B+F91TEL3LTJYqKqauYTW2CWFMAxpwIwjJGv+qSrZ0PPP0MBW5O1quxWbBo6OPKR7BdgHTT1fXM2hCgLqyOvn3zRuMkPByquecngUqCBCsHpOLzysOCDrQ6Pwx87Ge87D9mWg+VY+cTBansVNl6TrO0/qWypNLlzh74pJVWj4hgPOtFa6pqwYRGE58jL0VQpdxPZBNfE9mDOi62QUsbWgh/IWSiuU8UtK5z9woKU6PdR0jK1oc1kAHB3QNCmzMB0ETc7gaJR1sDjD/agQP4B6wddykv4CgE3/8OkUy6juVoVTBEdIbSJINERAmaGz87uEZ63HOmzvxktHELEbV+iXtGJjzIhMqc8dWSYuxtYZvOpFCH8wvEFoKUvxiGUY4HoFjZnfj52+8ABI2L8mKOAQRNvxw19Wh+V19pnoFe28qJ9l8WuieIdabWkgKezdpCAYkwGSN/tcsxiOEIq39xPsWg/O1/nYmH8yc11k02trlse7XBCYVH568XabbjBJikmhb27UDC5+a5gAf18rhMmXGYmuL6pXK0qrp2aJDUiUlY/0XQYlcP4lPlMjQspwiyaDbZsZYrxSWuHU7RKkc9OafZYkfcplyfdUYsytt6h+fW5ylA5TiARBx96xAaO15pR26vbouxBloAO2PlxRu5zdyOAwYmNEHk3EFM4eBQ9q2V4oyv38Gib1hNd2TPJErB/wNDhTAu5eZnyHFJyf/144wGWtQm8DWgspiXjKDKVESgvQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(39860400002)(136003)(396003)(186009)(1800799009)(82310400011)(451199024)(40470700004)(46966006)(36840700001)(26005)(5660300002)(16526019)(1076003)(8936002)(4326008)(8676002)(40460700003)(36860700001)(2616005)(2906002)(7406005)(7416002)(86362001)(82740400003)(81166007)(356005)(36756003)(47076005)(83380400001)(336012)(426003)(40480700001)(70586007)(70206006)(54906003)(44832011)(6666004)(478600001)(41300700001)(316002)(6916009)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 16:37:04.9098
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 312b407d-0494-4860-7bea-08dbb8657e1e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE31.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6820
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent commit reordered probe so that the interrupt line is now
-requested before making sure that the device exists.
+On Wed, Sep 13, 2023 at 06:55:12PM -0700, Sean Christopherson wrote:
+> TODO
+> 
+> Cc: Fuad Tabba <tabba@google.com>
+> Cc: Vishal Annapurve <vannapurve@google.com>
+> Cc: Ackerley Tng <ackerleytng@google.com>
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Maciej Szmigiero <mail@maciej.szmigiero.name>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Quentin Perret <qperret@google.com>
+> Cc: Michael Roth <michael.roth@amd.com>
+> Cc: Wang <wei.w.wang@intel.com>
+> Cc: Liam Merwick <liam.merwick@oracle.com>
+> Cc: Isaku Yamahata <isaku.yamahata@gmail.com>
+> Co-developed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Co-developed-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Co-developed-by: Chao Peng <chao.p.peng@linux.intel.com>
+> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> Co-developed-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  include/linux/kvm_host.h   |  48 +++
+>  include/uapi/linux/kvm.h   |  15 +-
+>  include/uapi/linux/magic.h |   1 +
+>  virt/kvm/Kconfig           |   4 +
+>  virt/kvm/Makefile.kvm      |   1 +
+>  virt/kvm/guest_mem.c       | 593 +++++++++++++++++++++++++++++++++++++
+>  virt/kvm/kvm_main.c        |  61 +++-
+>  virt/kvm/kvm_mm.h          |  38 +++
+>  8 files changed, 756 insertions(+), 5 deletions(-)
+>  create mode 100644 virt/kvm/guest_mem.c
+> 
 
-This breaks machines like the Lenovo ThinkPad X13s which rely on the
-HID driver to probe second-source devices and only register the variant
-that is actually populated. Specifically, the interrupt line may now
-already be (temporarily) claimed when doing asynchronous probing of the
-touchpad:
+<snip>
 
-	genirq: Flags mismatch irq 191. 00082008 (hid-over-i2c) vs. 00082008 (hid-over-i2c)
-	i2c_hid_of 21-0015: Could not register for hid-over-i2c interrupt, irq = 191, ret = -16
-	i2c_hid_of: probe of 21-0015 failed with error -16
+> +static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+> +{
+> +	struct list_head *gmem_list = &inode->i_mapping->private_list;
+> +	pgoff_t start = offset >> PAGE_SHIFT;
+> +	pgoff_t end = (offset + len) >> PAGE_SHIFT;
+> +	struct kvm_gmem *gmem;
+> +
+> +	/*
+> +	 * Bindings must stable across invalidation to ensure the start+end
+> +	 * are balanced.
+> +	 */
+> +	filemap_invalidate_lock(inode->i_mapping);
+> +
+> +	list_for_each_entry(gmem, gmem_list, entry) {
+> +		kvm_gmem_invalidate_begin(gmem, start, end);
 
-Fix this by restoring the old behaviour of first making sure the device
-exists before requesting the interrupt line.
+In v11 we used to call truncate_inode_pages_range() here to drop filemap's
+reference on the folio. AFAICT the folios are only getting free'd upon
+guest shutdown without this. Was this on purpose?
 
-Note that something like this should probably be implemented also for
-"panel followers", whose actual probe is currently effectively deferred
-until the DRM panel is probed (e.g. by powering down the device after
-making sure it exists and only then register it as a follower).
+> +		kvm_gmem_invalidate_end(gmem, start, end);
+> +	}
+> +
+> +	filemap_invalidate_unlock(inode->i_mapping);
+> +
+> +	return 0;
+> +}
+> +
+> +static long kvm_gmem_allocate(struct inode *inode, loff_t offset, loff_t len)
+> +{
+> +	struct address_space *mapping = inode->i_mapping;
+> +	pgoff_t start, index, end;
+> +	int r;
+> +
+> +	/* Dedicated guest is immutable by default. */
+> +	if (offset + len > i_size_read(inode))
+> +		return -EINVAL;
+> +
+> +	filemap_invalidate_lock_shared(mapping);
 
-Fixes: 675cd877c952 ("HID: i2c-hid: Rearrange probe() to power things up later")
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
+We take the filemap lock here, but not for
+kvm_gmem_get_pfn()->kvm_gmem_get_folio(). Is it needed there as well?
 
-This one still hasn't shown up in lore so resending as a reply to Doug's
-reply for completeness.
+> +
+> +	start = offset >> PAGE_SHIFT;
+> +	end = (offset + len) >> PAGE_SHIFT;
+> +
+> +	r = 0;
+> +	for (index = start; index < end; ) {
+> +		struct folio *folio;
+> +
+> +		if (signal_pending(current)) {
+> +			r = -EINTR;
+> +			break;
+> +		}
+> +
+> +		folio = kvm_gmem_get_folio(inode, index);
+> +		if (!folio) {
+> +			r = -ENOMEM;
+> +			break;
+> +		}
+> +
+> +		index = folio_next_index(folio);
+> +
+> +		folio_unlock(folio);
+> +		folio_put(folio);
+> +
+> +		/* 64-bit only, wrapping the index should be impossible. */
+> +		if (WARN_ON_ONCE(!index))
+> +			break;
+> +
+> +		cond_resched();
+> +	}
+> +
+> +	filemap_invalidate_unlock_shared(mapping);
+> +
+> +	return r;
+> +}
+> +
 
-Johan
+<snip>
 
+> +static int __kvm_gmem_create(struct kvm *kvm, loff_t size, struct vfsmount *mnt)
+> +{
+> +	const char *anon_name = "[kvm-gmem]";
+> +	const struct qstr qname = QSTR_INIT(anon_name, strlen(anon_name));
+> +	struct kvm_gmem *gmem;
+> +	struct inode *inode;
+> +	struct file *file;
+> +	int fd, err;
+> +
+> +	inode = alloc_anon_inode(mnt->mnt_sb);
+> +	if (IS_ERR(inode))
+> +		return PTR_ERR(inode);
+> +
+> +	err = security_inode_init_security_anon(inode, &qname, NULL);
+> +	if (err)
+> +		goto err_inode;
+> +
+> +	inode->i_private = (void *)(unsigned long)flags;
 
- drivers/hid/i2c-hid/i2c-hid-core.c | 142 ++++++++++++++++-------------
- 1 file changed, 80 insertions(+), 62 deletions(-)
+The 'flags' argument isn't added until the subsequent patch that adds THP
+support.
 
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 9601c0605fd9..e66c058a4b00 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -998,45 +998,29 @@ static int i2c_hid_core_resume(struct i2c_hid *ihid)
- 	return hid_driver_reset_resume(hid);
- }
- 
--/**
-- * __do_i2c_hid_core_initial_power_up() - First time power up of the i2c-hid device.
-- * @ihid: The ihid object created during probe.
-- *
-- * This function is called at probe time.
-- *
-- * The initial power on is where we do some basic validation that the device
-- * exists, where we fetch the HID descriptor, and where we create the actual
-- * HID devices.
-- *
-- * Return: 0 or error code.
-+/*
-+ * Check that the device exists and parse the HID descriptor.
-  */
--static int __do_i2c_hid_core_initial_power_up(struct i2c_hid *ihid)
-+static int __i2c_hid_core_probe(struct i2c_hid *ihid)
- {
- 	struct i2c_client *client = ihid->client;
- 	struct hid_device *hid = ihid->hid;
- 	int ret;
- 
--	ret = i2c_hid_core_power_up(ihid);
--	if (ret)
--		return ret;
--
- 	/* Make sure there is something at this address */
- 	ret = i2c_smbus_read_byte(client);
- 	if (ret < 0) {
- 		i2c_hid_dbg(ihid, "nothing at this address: %d\n", ret);
--		ret = -ENXIO;
--		goto err;
-+		return -ENXIO;
- 	}
- 
- 	ret = i2c_hid_fetch_hid_descriptor(ihid);
- 	if (ret < 0) {
- 		dev_err(&client->dev,
- 			"Failed to fetch the HID Descriptor\n");
--		goto err;
-+		return ret;
- 	}
- 
--	enable_irq(client->irq);
--
- 	hid->version = le16_to_cpu(ihid->hdesc.bcdVersion);
- 	hid->vendor = le16_to_cpu(ihid->hdesc.wVendorID);
- 	hid->product = le16_to_cpu(ihid->hdesc.wProductID);
-@@ -1050,17 +1034,49 @@ static int __do_i2c_hid_core_initial_power_up(struct i2c_hid *ihid)
- 
- 	ihid->quirks = i2c_hid_lookup_quirk(hid->vendor, hid->product);
- 
-+	return 0;
-+}
-+
-+static int i2c_hid_core_register_hid(struct i2c_hid *ihid)
-+{
-+	struct i2c_client *client = ihid->client;
-+	struct hid_device *hid = ihid->hid;
-+	int ret;
-+
-+	enable_irq(client->irq);
-+
- 	ret = hid_add_device(hid);
- 	if (ret) {
- 		if (ret != -ENODEV)
- 			hid_err(client, "can't add hid device: %d\n", ret);
--		goto err;
-+		disable_irq(client->irq);
-+		return ret;
- 	}
- 
- 	return 0;
-+}
-+
-+static int i2c_hid_core_probe_panel_follower(struct i2c_hid *ihid)
-+{
-+	int ret;
- 
--err:
-+	ret = i2c_hid_core_power_up(ihid);
-+	if (ret)
-+		return ret;
-+
-+	ret = __i2c_hid_core_probe(ihid);
-+	if (ret)
-+		goto err_power_down;
-+
-+	ret = i2c_hid_core_register_hid(ihid);
-+	if (ret)
-+		goto err_power_down;
-+
-+	return 0;
-+
-+err_power_down:
- 	i2c_hid_core_power_down(ihid);
-+
- 	return ret;
- }
- 
-@@ -1077,7 +1093,7 @@ static void ihid_core_panel_prepare_work(struct work_struct *work)
- 	 * steps.
- 	 */
- 	if (!hid->version)
--		ret = __do_i2c_hid_core_initial_power_up(ihid);
-+		ret = i2c_hid_core_probe_panel_follower(ihid);
- 	else
- 		ret = i2c_hid_core_resume(ihid);
- 
-@@ -1156,30 +1172,6 @@ static int i2c_hid_core_register_panel_follower(struct i2c_hid *ihid)
- 	return 0;
- }
- 
--static int i2c_hid_core_initial_power_up(struct i2c_hid *ihid)
--{
--	/*
--	 * If we're a panel follower, we'll register and do our initial power
--	 * up when the panel turns on; otherwise we do it right away.
--	 */
--	if (drm_is_panel_follower(&ihid->client->dev))
--		return i2c_hid_core_register_panel_follower(ihid);
--	else
--		return __do_i2c_hid_core_initial_power_up(ihid);
--}
--
--static void i2c_hid_core_final_power_down(struct i2c_hid *ihid)
--{
--	/*
--	 * If we're a follower, the act of unfollowing will cause us to be
--	 * powered down. Otherwise we need to manually do it.
--	 */
--	if (ihid->is_panel_follower)
--		drm_panel_remove_follower(&ihid->panel_follower);
--	else
--		i2c_hid_core_suspend(ihid, true);
--}
--
- int i2c_hid_core_probe(struct i2c_client *client, struct i2chid_ops *ops,
- 		       u16 hid_descriptor_address, u32 quirks)
- {
-@@ -1224,14 +1216,10 @@ int i2c_hid_core_probe(struct i2c_client *client, struct i2chid_ops *ops,
- 		return ret;
- 	device_enable_async_suspend(&client->dev);
- 
--	ret = i2c_hid_init_irq(client);
--	if (ret < 0)
--		goto err_buffers_allocated;
--
- 	hid = hid_allocate_device();
- 	if (IS_ERR(hid)) {
- 		ret = PTR_ERR(hid);
--		goto err_irq;
-+		goto err_free_buffers;
- 	}
- 
- 	ihid->hid = hid;
-@@ -1242,19 +1230,42 @@ int i2c_hid_core_probe(struct i2c_client *client, struct i2chid_ops *ops,
- 	hid->bus = BUS_I2C;
- 	hid->initial_quirks = quirks;
- 
--	ret = i2c_hid_core_initial_power_up(ihid);
-+	/* Power on and probe unless device is a panel follower. */
-+	if (!drm_is_panel_follower(&ihid->client->dev)) {
-+		ret = i2c_hid_core_power_up(ihid);
-+		if (ret < 0)
-+			goto err_destroy_device;
-+
-+		ret = __i2c_hid_core_probe(ihid);
-+		if (ret < 0)
-+			goto err_power_down;
-+	}
-+
-+	ret = i2c_hid_init_irq(client);
-+	if (ret < 0)
-+		goto err_power_down;
-+
-+	/*
-+	 * If we're a panel follower, we'll register when the panel turns on;
-+	 * otherwise we do it right away.
-+	 */
-+	if (drm_is_panel_follower(&ihid->client->dev))
-+		ret = i2c_hid_core_register_panel_follower(ihid);
-+	else
-+		ret = i2c_hid_core_register_hid(ihid);
- 	if (ret)
--		goto err_mem_free;
-+		goto err_free_irq;
- 
- 	return 0;
- 
--err_mem_free:
--	hid_destroy_device(hid);
--
--err_irq:
-+err_free_irq:
- 	free_irq(client->irq, ihid);
--
--err_buffers_allocated:
-+err_power_down:
-+	if (!drm_is_panel_follower(&ihid->client->dev))
-+		i2c_hid_core_power_down(ihid);
-+err_destroy_device:
-+	hid_destroy_device(hid);
-+err_free_buffers:
- 	i2c_hid_free_buffers(ihid);
- 
- 	return ret;
-@@ -1266,7 +1277,14 @@ void i2c_hid_core_remove(struct i2c_client *client)
- 	struct i2c_hid *ihid = i2c_get_clientdata(client);
- 	struct hid_device *hid;
- 
--	i2c_hid_core_final_power_down(ihid);
-+	/*
-+	 * If we're a follower, the act of unfollowing will cause us to be
-+	 * powered down. Otherwise we need to manually do it.
-+	 */
-+	if (ihid->is_panel_follower)
-+		drm_panel_remove_follower(&ihid->panel_follower);
-+	else
-+		i2c_hid_core_suspend(ihid, true);
- 
- 	hid = ihid->hid;
- 	hid_destroy_device(hid);
--- 
-2.41.0
+<snip>
 
+> +static bool kvm_gmem_is_valid_size(loff_t size, u64 flags)
+> +{
+> +	if (size < 0 || !PAGE_ALIGNED(size))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
+> +{
+> +	loff_t size = args->size;
+> +	u64 flags = args->flags;
+> +	u64 valid_flags = 0;
+> +
+> +	if (flags & ~valid_flags)
+> +		return -EINVAL;
+> +
+> +	if (!kvm_gmem_is_valid_size(size, flags))
+> +		return -EINVAL;
+> +
+> +	return __kvm_gmem_create(kvm, size, flags, kvm_gmem_mnt);
+> +}
+> +
+> +int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
+> +		  unsigned int fd, loff_t offset)
+> +{
+> +	loff_t size = slot->npages << PAGE_SHIFT;
+> +	unsigned long start, end, flags;
+> +	struct kvm_gmem *gmem;
+> +	struct inode *inode;
+> +	struct file *file;
+> +
+> +	BUILD_BUG_ON(sizeof(gfn_t) != sizeof(slot->gmem.pgoff));
+> +
+> +	file = fget(fd);
+> +	if (!file)
+> +		return -EBADF;
+> +
+> +	if (file->f_op != &kvm_gmem_fops)
+> +		goto err;
+> +
+> +	gmem = file->private_data;
+> +	if (gmem->kvm != kvm)
+> +		goto err;
+> +
+> +	inode = file_inode(file);
+> +	flags = (unsigned long)inode->i_private;
+> +
+> +	/*
+> +	 * For simplicity, require the offset into the file and the size of the
+> +	 * memslot to be aligned to the largest possible page size used to back
+> +	 * the file (same as the size of the file itself).
+> +	 */
+> +	if (!kvm_gmem_is_valid_size(offset, flags) ||
+> +	    !kvm_gmem_is_valid_size(size, flags))
+> +		goto err;
+
+I needed to relax this check for SNP. KVM_GUEST_MEMFD_ALLOW_HUGEPAGE
+applies to entire gmem inode, so it makes sense for userspace to enable
+hugepages if start/end are hugepage-aligned, but QEMU will do things
+like map overlapping regions for ROMs and other things on top of the
+GPA range that the gmem inode was originally allocated for. For
+instance:
+
+  692500@1689108688.696338:kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x4 gpa=0x0 size=0x80000000 ua=0x7fbf5be00000 ret=0 restricted_fd=19 restricted_offset=0x0
+  692500@1689108688.699802:kvm_set_user_memory AddrSpace#0 Slot#1 flags=0x4 gpa=0x100000000 size=0x380000000 ua=0x7fbfdbe00000 ret=0 restricted_fd=19 restricted_offset=0x80000000
+  692500@1689108688.795412:kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x0 gpa=0x0 size=0x0 ua=0x7fbf5be00000 ret=0 restricted_fd=19 restricted_offset=0x0
+  692500@1689108688.795550:kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x4 gpa=0x0 size=0xc0000 ua=0x7fbf5be00000 ret=0 restricted_fd=19 restricted_offset=0x0
+  692500@1689108688.796227:kvm_set_user_memory AddrSpace#0 Slot#6 flags=0x4 gpa=0x100000 size=0x7ff00000 ua=0x7fbf5bf00000 ret=0 restricted_fd=19 restricted_offset=0x100000
+
+Because of that the KVM_SET_USER_MEMORY_REGIONs for non-THP-aligned GPAs
+will fail. Maybe instead it should be allowed, and kvm_gmem_get_folio()
+should handle the alignment checks on a case-by-case and simply force 4k
+for offsets corresponding to unaligned bindings?
+
+-Mike
