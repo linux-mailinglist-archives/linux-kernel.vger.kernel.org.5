@@ -2,241 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A057A50CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF647A50D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 19:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbjIRRSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 13:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
+        id S229959AbjIRRUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 13:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjIRRSE (ORCPT
+        with ESMTP id S229904AbjIRRUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 13:18:04 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4707DDB
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:17:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PuV+3fT/XG1jGcb3Cd2bDc6vyAbxT618bQUvoLbqyr10tHapFtErx0cFyV2OBmC9Eq1UlOZdfiAUocooTv5ha+4eihzlchMY4e34d/BBrozUpI8Mj7+iRQehuhJJwRlT4gEmemdspCtQdJt2YI4Izf4pMIfGSUiwFTjLvMvsb35DG9JXwbVmdvB57xt3kqNi9Q+i9v9rM2P5HKsEv7BCiD7tnCADQVOMpwQYoeZNWc5ZQ6cfwxKWkQY2aJ2WoNbbht/SNHlL6sv6fs0MO65mn+833u7xxWuHVE+CaHt9vrj4SO7E2Vng6v01StUvarHAyBoF1GwyrjQOzDVRyrJjuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AWsZBtLO6h8nNhggurK4oZkii5DiHYSCbRp42/V8dQQ=;
- b=T1bFVO0+frYDcJilbYX7UM1EmTVpUAOAn48B/+s3LiDfDIK48oIFefNubPMIkJuQJjVuMuOWOsj/ftRqvJDGPAqBrf6OSa1OfzcoGbWS/vjzCh+sW6V5lKmlDUDZy3Zzbk3rs9v6WMssDKYGwDvsoZ5IHF2B7DnMQDVT2TjQ+YXObpUryU+bSINcg1T2SS8RWKb+3fc7KsDeplODgjaBl/tPfcN4FQvIQRzysiWWRIXLuFnAJlzLbJeeVi+0XAYMmKF9jis+4VhWCNbm4w9aCe1zvr0XrYa7G8yI41N/o/Zs3WnI8+cICnvWxwOYkhe1VodeC8SH2vgI5mfSUNegNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AWsZBtLO6h8nNhggurK4oZkii5DiHYSCbRp42/V8dQQ=;
- b=FCktYorMo1dinhdKWwUt0OsXCGGPthf3VhpokZMrVQ0wvQJyN1RcpiTRzjl3NpRtbepdMGxq32ru1BNSIpIQMKd9DKUYJd22E9ZwuWSZLMV6QmyxPRr5y+xPhgwvXE2PQfGTvRcRbpDK4yqM1J4wAnJ+94TDYTsQmpC3QXgtgCkTHr1tnPkhUkdaciP1kIjIfDqp20UWWzRbwNz3STxnAxpDMYa5EH1PYeySqD3fzD00cvIljwTnCiwa8XdZuTK4Ameurlgq+AyD0kb/+L7W5g1iLDqVkPsIbGzuoCQRohOSefinuzVOvhxB4Xbm20CHbEy2E9rE4JYQJraDXEx4tQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- CY5PR12MB6228.namprd12.prod.outlook.com (2603:10b6:930:20::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.27; Mon, 18 Sep 2023 17:17:56 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::4b09:197c:609a:1013]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::4b09:197c:609a:1013%7]) with mapi id 15.20.6792.020; Mon, 18 Sep 2023
- 17:17:56 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        "\"Yin, Fengwei\"" <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rohan Puri <rohan.puri15@gmail.com>,
-        Mcgrof Chamberlain <mcgrof@kernel.org>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 4/4] mm/compaction: enable compacting >0 order folios.
-Date:   Mon, 18 Sep 2023 13:17:52 -0400
-X-Mailer: MailMate (1.14r5984)
-Message-ID: <31320BED-0B77-4962-B155-AA09FA3D1E95@nvidia.com>
-In-Reply-To: <d9a0d268-3547-a976-d88e-4120dd36f4de@linux.alibaba.com>
-References: <20230912162815.440749-1-zi.yan@sent.com>
- <20230912162815.440749-5-zi.yan@sent.com>
- <d9a0d268-3547-a976-d88e-4120dd36f4de@linux.alibaba.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_DA6783EB-83AD-4FA1-A3A2-A403DFC46416_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL0PR05CA0008.namprd05.prod.outlook.com
- (2603:10b6:208:91::18) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+        Mon, 18 Sep 2023 13:20:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F51FB
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695057594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vQQC91VltdlMOTpbyQ+i0gY0RiUkw1BySlhN5WRTu2Q=;
+        b=fP6JdmvTwArfLWWGaGVX+/ssSLB1YlHGZ0Nv0AF39GDIhbeO9n7SL4grMj4I6W9l8TQG0x
+        jv1fY8k3gBYw1AxRtUfgaFxjBI+RuDD9GTrxcAgy3FmHpLCJ5KbZWchE9e+5ZyVDHtQxct
+        3AxwN85a/1m2b0oawonbK/KgVL9O2lQ=
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
+ [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-479-fwXSZFBzPG6WnKXLdRsvKQ-1; Mon, 18 Sep 2023 13:19:53 -0400
+X-MC-Unique: fwXSZFBzPG6WnKXLdRsvKQ-1
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-797f3f27badso435976839f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 10:19:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695057592; x=1695662392;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vQQC91VltdlMOTpbyQ+i0gY0RiUkw1BySlhN5WRTu2Q=;
+        b=aNWWGeSyPz18xZaQ+LQTmn/canYrI/k721P4cmlbM61/YNTC6zBeNfo6jDjW6xgoa7
+         Cvdj4BBTGfzJB6m9nBHjgRh+TwSzBARXzMPfWiQuvYlJqPEDx4KahRpFxaVNJidf+nco
+         vrIIbPQkiqQ1SKpJ+5ow/H8ulC3+0vfUzryydXCmLBq8hkdQoMPyBr1sPkVwfvg7KF0x
+         8MYtUJN2yZeFkjJSFcIX7HoN0XGoyEn3Aqn6GOHc7iHJSUGYlOz+Zbf6GWAcNxjAN0Q0
+         Icq61POCJpIUvGMrcabr31+ADzAdb69kv2KZlwNYjE68nx377vSsUqc87ED1o3detzAQ
+         Tgdw==
+X-Gm-Message-State: AOJu0YzgGvZhaKSAmcPBVWrgwzP4q45xI/Com4tiSmLOpql0UrdIW0fX
+        jXsoKG2EhH1Uo4Smy2znHKrb+L630iI13bkGDrV/betu82fWsQZlk1/gmo+rz9jAyz36PgwgX3P
+        byWu2+JI7whiQSCsQSRBeuQiL
+X-Received: by 2002:a6b:7214:0:b0:794:da97:d194 with SMTP id n20-20020a6b7214000000b00794da97d194mr11776802ioc.19.1695057592179;
+        Mon, 18 Sep 2023 10:19:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHOcO3fsbSz5uuh/nTCv/tQHoEWOhVPfMaLNnAcsgD6WfTl98pZSF6PbJCsO+iThmd/EsVZjw==
+X-Received: by 2002:a6b:7214:0:b0:794:da97:d194 with SMTP id n20-20020a6b7214000000b00794da97d194mr11776775ioc.19.1695057591886;
+        Mon, 18 Sep 2023 10:19:51 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id em10-20020a0566384daa00b0041cd626ea0csm2943087jab.147.2023.09.18.10.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 10:19:51 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 11:19:49 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     ankita@nvidia.com, yishaih@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        anuaggarwal@nvidia.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20230918111949.1d6c8482.alex.williamson@redhat.com>
+In-Reply-To: <20230918144923.GH13733@nvidia.com>
+References: <20230915025415.6762-1-ankita@nvidia.com>
+        <20230915082430.11096aa3.alex.williamson@redhat.com>
+        <20230918130256.GE13733@nvidia.com>
+        <20230918082748.631e9fd9.alex.williamson@redhat.com>
+        <20230918144923.GH13733@nvidia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|CY5PR12MB6228:EE_
-X-MS-Office365-Filtering-Correlation-Id: c88c0b60-0b90-465d-674c-08dbb86b3316
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +lI5uZz6DCMeXYXFj6dKf2/cYHnOYJUkBms4AiiQ4ksYFkCFRGGzg2d832Jpzybao8JUM2mcQEh1abNzHZLsU5igoc4HpstAaiDFzLhRlpeIDPg4x4o23DLE6LXVQts74y+l0K86+EipiU+rVhJVpH/P5Mt8havMt8rofpxEAxuBF5ANPpONuoP2ZzBb2JyryocGRKY4eTBn7xLWo31gh760HZg1a24vx22DqiXG7yQEkZ1kTyP+q0hIvHlwJ+cy9u4PkFmwFaAVI+wdaZfb3QRxw71+t7mpDo8PR88LH3Cr7Py8fB9XutMFC3GSbPhr3zunmgwduaSdiFna5cdSEvEprYTwjsqyJgnTcGjopRp+1odtzNBiR053xuHFGpuXU/gK2Agq3ehouLizYu+zPdloslP3k893JU1/zVqlYQj0F1ACcB5iTcS7oTOuu2GQEG/iAPZ+gJ4Vt2EstcviBS75pN85DLItNQwx8Uf5ibLXvjyrjk8Yr21PpwTgCvLujNrdwcwCrnc0TWs2WhqlWrmwx0pQJaI1FPiOQnhh4knjdLL7BlSopxK1Qnx32vScJ8Njg7sDZlM5TH59lXEbb76i4gZT5mi/ZP2mes3ZVUPVUvsUohSesuBxzFtHLPci
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(396003)(136003)(366004)(1800799009)(186009)(451199024)(53546011)(6506007)(6486002)(6666004)(6512007)(478600001)(83380400001)(26005)(107886003)(2616005)(2906002)(7416002)(235185007)(66556008)(66476007)(316002)(54906003)(66946007)(6916009)(4326008)(5660300002)(8676002)(8936002)(41300700001)(33656002)(36756003)(38100700002)(86362001)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PEt5Ss4BWOyR8k0/wn6ucHbNgO3sla8hHgGLvTahjpsVrjZeHOFQuKHnwj0C?=
- =?us-ascii?Q?RSIPWvY28kMvHQTaqfqlnNw0GU1WW/nupyxfUG+SWvkCez9nwdHomsJB4pTq?=
- =?us-ascii?Q?72jy+FexO3zVCeE52xpK/sIte9w5wsmf2rcpdvrtLKVVd5VN0XdSwztAv14B?=
- =?us-ascii?Q?mepaRMyfLL3oOuUXkdDcoTYPrGuA9a9RGhGMYmAF3PM70MzsZ8KB9oXt0zky?=
- =?us-ascii?Q?EZUS7T1HKl63ZzoschblZ/Y/fnLvnG6QmWKMR+/hQZChDpkEdWkWmadEiSnZ?=
- =?us-ascii?Q?PCGZqOEfA4Fw/tAWGaVeEUaBl0YS7Rxlydpxf8GjUQu99iss3Ek9cy1bK3NQ?=
- =?us-ascii?Q?agVZ9YQhNCfZfZ6tbA3ukW8y0YhE5X4lExgE3RJIjW4S0rg/VjAVAj7Dqx3L?=
- =?us-ascii?Q?AUCE0WilZM5Qv33M7NW77TLo+Kan0EhWWl+ltOBrrla99V8qA2dZLKSIRVUd?=
- =?us-ascii?Q?YKYJw/9lMAYGTzs/o8Q/z/iE9y8ImXr4Km7CjfTyICpf8giS+vCql0GrWgSH?=
- =?us-ascii?Q?z3xI4jIYL3i3pdxjcmLzWYa8XtgE5udwx1JNYkFrbOBt/NHWaeZAsxwH4z5s?=
- =?us-ascii?Q?XNvIaM+4+g/1j3y7F+WYI/dqM9EIqVyxvYbeMB7/2QfC73QmIzF03uvJqA0Z?=
- =?us-ascii?Q?+JgDT/DQ9AfYSK3h9aAAuI23wkQUfwOgYIpycxdZC9zk5BuwpRL+Dd46DUMw?=
- =?us-ascii?Q?9p+axWM984Jr1YlwE2iFxhxDluu70CGXVsLJtone2C0u1Jhg0zaaXcFrs2se?=
- =?us-ascii?Q?ypiCt2IrC0XleOgugPnIlPrEZhiZgncrAKKQU1X4tPHNzdl6H4v/utaXxLb+?=
- =?us-ascii?Q?S90xkgRXyy0oMIX2iJvSyZW5wUVzKJZH/po/3bCM0dAcF1rLGRjehNoSBTXJ?=
- =?us-ascii?Q?bWNN8uziuGFhhp4WjEs6K6ahSpPgntEZ7S/09s5bwDF2qlRZitv9feq9FGuS?=
- =?us-ascii?Q?+N0fbMO1uMU5MSZh7B4kYgULQQKMK/sefG+G8XyCTO1wf/wr/ki+9IbYmJJe?=
- =?us-ascii?Q?B0oo9RCZnqwtRZeyAHPdVzQVaYVUMWkV0hZBDbQVWGLV144KjjWO3QLphiAn?=
- =?us-ascii?Q?aG0cY7+jCIB7DW4+wT2PDx0LKD+06gxs1lSnoRDEK410jSuh0IQktmy/cauV?=
- =?us-ascii?Q?M5XqTk2lrSnkGQ7kkakm7rq1b5DopmOxCpRuo0nvRufEaW1tkEouhbbBkuxk?=
- =?us-ascii?Q?tNeOJO/YWyGMAmrU6Yu/wxEZKIIrmfEMrckDhXoIW/fp58Da2TPUPxGqm0mC?=
- =?us-ascii?Q?qknnCjh24tDfZZkvVHdVyzv4IYfoFQOe3a3dEt768T4+TtV7QAaLmQS6+pR2?=
- =?us-ascii?Q?leDBh+jdLlbsNC1j2d37Xby3TgYvdpm9pyODphKU4QwhcT0CUgrxLwrXPdUW?=
- =?us-ascii?Q?BH7+7Oymylsbz3U8j2JupjSU2Sh1Qc7LexI+eVf0S8feOGzEDgTELwYyjIWJ?=
- =?us-ascii?Q?lBSm4+HQgzz5Uv5fvcAzTEwnkKmEh2zD4u5m4VlqpqPSqbAsGsvGUhYbFxNW?=
- =?us-ascii?Q?vBKWUS8iGQoL7L0h2BCJN4OBsYIX7xcvYie65+VdwKSTVngTbQL7TFDHN/3M?=
- =?us-ascii?Q?6xau053IhMazsa4BVs8=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c88c0b60-0b90-465d-674c-08dbb86b3316
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 17:17:56.2858
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: de8IUNZaGdlE9jpSbJXAMP6ODZGY92ZrQothNEICiboWDn3AIc2Yd/D3WyJ/IFY+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6228
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_DA6783EB-83AD-4FA1-A3A2-A403DFC46416_=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Mon, 18 Sep 2023 11:49:23 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-On 15 Sep 2023, at 5:41, Baolin Wang wrote:
+> On Mon, Sep 18, 2023 at 08:27:48AM -0600, Alex Williamson wrote:
+> 
+> > > > This looks like a giant red flag that this approach of masquerading the
+> > > > coherent memory as a PCI BAR is the wrong way to go.  If the VMM needs
+> > > > to know about this coherent memory, it needs to get that information
+> > > > in-band.     
+> > > 
+> > > The VMM part doesn't need this flag, nor does the VM. The
+> > > orchestration needs to know when to setup the pxm stuff.  
+> > 
+> > Subject: [PATCH v1 1/4] vfio: new command line params for device memory NUMA nodes
+> > --- a/hw/vfio/pci.c
+> > +++ b/hw/vfio/pci.c
+> > ...
+> > +static bool vfio_pci_read_cohmem_support_sysfs(VFIODevice *vdev)
+> > +{
+> > +    gchar *contents = NULL;
+> > +    gsize length;
+> > +    char *path;
+> > +    bool ret = false;
+> > +    uint32_t supported;
+> > +
+> > +    path = g_strdup_printf("%s/coherent_mem", vdev->sysfsdev);
+> > +    if (g_file_get_contents(path, &contents, &length, NULL) && length > 0) {
+> > +        if ((sscanf(contents, "%u", &supported) == 1) && supported) {
+> > +            ret = true;
+> > +        }
+> > +    }  
+> 
+> Yes, but it drives the ACPI pxm auto configuration stuff, not really
+> vfio stuff.
+> 
+> > > I think we should drop the sysfs for now until the qemu thread about
+> > > the pxm stuff settles into an idea.
+> > > 
+> > > When the qemu API is clear we can have a discussion on what component
+> > > should detect this driver and setup the pxm things, then answer the
+> > > how should the detection work from the kernel side.
+> > >   
+> > > > be reaching out to arbitrary sysfs attributes.  Minimally this
+> > > > information should be provided via a capability on the region info
+> > > > chain,     
+> > > 
+> > > That definitely isn't suitable, eg libvirt won't have access to inband
+> > > information if it turns out libvirt is supposed to setup the pxm qemu
+> > > arguments?  
+> > 
+> > Why would libvirt look for a "coherent_mem" attribute in sysfs when it
+> > can just look at the driver used by the device.    
+> 
+> Sure, if that is consensus. Also I think coherent_mem is a terrible
+> sysfs name for this, it should be more like 'num_pxm_nodes' or
+> something.
+> 
+> > Part of the QEMU series is also trying to invoke the VM
+> > configuration based only on this
+> > device being attached to avoid libvirt orchestration changes:  
+> 
+> Right, that is where it gets confusing - it mixes the vfio world in
+> qemu with the pxm world. That should be cleaned up somehow.
+> 
+> > > > A "coherent_mem" attribute on the device provides a very weak
+> > > > association to the memory region it's trying to describe.    
+> > > 
+> > > That's because it's use has nothing to do with the memory region :)  
+> > 
+> > So we're creating a very generic sysfs attribute, which is meant to be
+> > used by orchestration to invoke device specific configuration, but is
+> > currently only proposed for use by the VMM.  The orchestration problem
+> > doesn't really exist, libvirt could know simply by the driver name that
+> > the device requires this configuration.    
+> 
+> Yep
+> 
+> > And the VMM usage is self inflicted because we insist on
+> > masquerading the coherent memory as a nondescript PCI BAR rather
+> > than providing a device specific region to enlighten the VMM to this
+> > unique feature.  
+> 
+> I see it as two completely seperate things.
+> 
+> 1) VFIO and qemu creating a vPCI device. Here we don't need this
+>    information.
+> 
+> 2) This ACPI pxm stuff to emulate the bare metal FW.
+>    Including a proposal for auto-detection what kind of bare metal FW
+>    is being used.
+> 
+> This being a poor idea for #2 doesn't jump to problems with #1, it
+> just says more work is needed on the ACPI PXM stuff.
 
-> On 9/13/2023 12:28 AM, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> Since compaction code can compact >0 order folios, enable it during th=
-e
->> process.
->>
->> Signed-off-by: Zi Yan <ziy@nvidia.com>
->> ---
->>   mm/compaction.c | 25 ++++++++++---------------
->>   1 file changed, 10 insertions(+), 15 deletions(-)
->>
->> diff --git a/mm/compaction.c b/mm/compaction.c
->> index 4300d877b824..f72af74094de 100644
->> --- a/mm/compaction.c
->> +++ b/mm/compaction.c
->> @@ -1087,11 +1087,17 @@ isolate_migratepages_block(struct compact_cont=
-rol *cc, unsigned long low_pfn,
->>   		if (PageCompound(page) && !cc->alloc_contig) {
->>   			const unsigned int order =3D compound_order(page);
->>  -			if (likely(order <=3D MAX_ORDER)) {
->> -				low_pfn +=3D (1UL << order) - 1;
->> -				nr_scanned +=3D (1UL << order) - 1;
->> +			/*
->> +			 * Compacting > pageblock_order pages does not improve
->> +			 * memory fragmentation. Also skip hugetlbfs pages.
->> +			 */
->> +			if (likely(order >=3D pageblock_order) || PageHuge(page)) {
->
-> IMO, if the compound page order is larger than the requested cc->order,=
- we should also fail the isolation, cause it also does not improve fragme=
-ntation, right?
->
+But I don't think we've justified why it's a good idea for #1.  Does
+the composed vPCI device with coherent memory masqueraded as BAR2 have
+a stand alone use case without #2?
 
-Probably yes. I think the reasoning should be since compaction is asking =
-for cc->order,
-we should not compacting folios with orders larger than or equal to that,=
- since
-cc->order tells us the max free page order is smaller than it, otherwise =
-the
-allocation would happen already. I will add this condition in the next ve=
-rsion.
+My understanding based on these series is that the guest driver somehow
+carves up the coherent memory among a set of memory-less NUMA nodes
+(how to know how many?) created by the VMM and reported via the _DSD for
+the device.  If this sort of configuration is a requirement for making
+use of the coherent memory, then what exactly becomes easier by the fact
+that it's exposed as a PCI BAR?
 
->> +				if (order <=3D MAX_ORDER) {
->> +					low_pfn +=3D (1UL << order) - 1;
->> +					nr_scanned +=3D (1UL << order) - 1;
->> +				}
->> +				goto isolate_fail;
->>   			}
->> -			goto isolate_fail;
->>   		}
->>    		/*
->> @@ -1214,17 +1220,6 @@ isolate_migratepages_block(struct compact_contr=
-ol *cc, unsigned long low_pfn,
->>   					goto isolate_abort;
->>   				}
->>   			}
->> -
->> -			/*
->> -			 * folio become large since the non-locked check,
->> -			 * and it's on LRU.
->> -			 */
->> -			if (unlikely(folio_test_large(folio) && !cc->alloc_contig))  > -		=
-		low_pfn +=3D folio_nr_pages(folio) - 1;
->> -				nr_scanned +=3D folio_nr_pages(folio) - 1;
->> -				folio_set_lru(folio);
->> -				goto isolate_fail_put;
->> -			}
->
-> I do not think you can remove this validation, since previous validatio=
-n is lockless. So under the lock, we need re-check if the compound page o=
-rder is larger than pageblock_order or cc->order, that need fail to isola=
-te.
+In fact, if it weren't a BAR I'd probably suggest that the whole
+configuration of this device should be centered around a new
+nvidia-gpu-mem object.  That object could reference the ID of a
+vfio-pci device providing the coherent memory via a device specific
+region and be provided with a range of memory-less nodes created for
+its use.  The object would insert the coherent memory range into the VM
+address space and provide the device properties to make use of it in
+the same way as done on bare metal.
 
-This check should go away, but a new order check for large folios should =
-be
-added. Will add it. Thanks.
+It seems to me that the PCI BAR representation of coherent memory is
+largely just a shortcut to getting it into the VM address space, but
+it's also leading us down these paths where the "pxm stuff" is invoked
+based on the device attached to the VM, which is getting a lot of
+resistance.  Thanks,
 
---
-Best Regards,
-Yan, Zi
+Alex
 
---=_MailMate_DA6783EB-83AD-4FA1-A3A2-A403DFC46416_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmUIhkAPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUv20P/iGUaI0Chn3mfJNu0hlrkPX59Ld+0pDWG5bN
-ZrNFi05Q426Z/QcBAMRFPCu+WMIlQlMOXRZUm07dGPqx9OQE2Qt6My4VtFTLsgae
-4pCtpISi5nHde2IzmKwO2PV79UZaMSY7SHd5KI8FcA9fhQZSzSz0/WSSwcl68rgQ
-XeaATdhBmLb8kRqD9hGjtoa++KojCDllocij3FZl7SZB+QtMMxFvq108IB3eEzHo
-k0MLbcYqzZqntNko7f6cErG+GXSTxdokf7KUqtcLG6DFErDM7wrvd9oEBwwMCb/3
-OeoPTH/lBPMOl072CjQ/goDD+ixSr26q3zSEWi4suj3YqwUmuM+T8FT1NlWEBaSd
-SJSw2JroiEZ2SOfDMHgqet04xEurV61kS9h79iFVaMn5WYorG8xD12CoOWNZEWs2
-ui+n5cLpIEGWWUlAdVOXhvwbP58pOoRMRPWE79uXGs4ReOjkXlJHjM2XkDWybpGh
-Mef4ScZYuHI5Wdxet0qpFr3HEPvmHKPB+7Fb+EqUe2TdzeNwbz9q2PTKZptVgZe1
-CPSuLJmUWenNjqB8RfcwRcWfSA2YnK+hYNNHdcG1FFx8Xk9QpR3dHBBGfaBgvqAl
-mq5B+qLczhPItSdOkY9nZPRlCjdlDJtwsjwqfEbrrBZIAuFrHMHfQyJ833rZTS9d
-dBLw8hFC
-=n+KH
------END PGP SIGNATURE-----
-
---=_MailMate_DA6783EB-83AD-4FA1-A3A2-A403DFC46416_=--
