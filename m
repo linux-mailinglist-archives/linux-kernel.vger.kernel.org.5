@@ -2,176 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4D67A4EA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87337A4ED9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbjIRQUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50926 "EHLO
+        id S230150AbjIRQ2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 12:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjIRQU2 (ORCPT
+        with ESMTP id S229784AbjIRQ1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:20:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66115FC5;
-        Mon, 18 Sep 2023 09:17:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25AEDC433B7;
-        Mon, 18 Sep 2023 13:51:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695045108;
-        bh=jiGrt6majxDR+XMOL+qVbyDBwKKU2Pb4JTzAJ6GQJEE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RPrbpHUafnMPvp4lSfOS5DEN4hjXnwPwKAXM3Z0zwmTzIP5zeJkn8U9NzB38B5Tex
-         k+2tyA6hrOslXumLkwMjHPpZ+WQGvkjfeS20C0Cb/KbV4p6/Nx3KaY2BBxdDjRA2Oq
-         M/QPer3Z0Zmp1vFxzR5roQfGsteyheBghYUFbMTrWg2o5WdqAXXMmIsWFjhIjiknoz
-         Zs6at91WlL6saoO8M1axs/BCMJYjR9XA+8Vkk7NV2ROdgImshQLMo4QYe5rOkYWkXf
-         uc1BPYi5/reup0U7DOzjaPaXJkuWVmscixL/VAo9Mh+/vbb5SfoahdBXnAiqqYxuQZ
-         b8kgNMNS0Ke2g==
-Date:   Mon, 18 Sep 2023 15:51:42 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>
-Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
-Message-ID: <20230918-grafik-zutreffen-995b321017ae@brauner>
-References: <20230913152238.905247-1-mszeredi@redhat.com>
- <20230913152238.905247-3-mszeredi@redhat.com>
- <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
- <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
- <20230914-lockmittel-verknallen-d1a18d76ba44@brauner>
- <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com>
+        Mon, 18 Sep 2023 12:27:36 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3E821AFF
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 09:22:02 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230918135330euoutp0184067df039964d1e152fe0c3126ca6e7~GAqNRVzf12680026800euoutp01_
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 13:53:30 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230918135330euoutp0184067df039964d1e152fe0c3126ca6e7~GAqNRVzf12680026800euoutp01_
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695045210;
+        bh=QyNZbmlzUImJ8eQcsA69RltUbDRiaT2o3+FeSg3Y62Y=;
+        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
+        b=ux4PBtW+vPLpSvtvyZ+k6G6ltkshoBkob5GFLcWZXVoOwKUL/Ixq3lwaIx093ze2l
+         oFn7XwbGo2tJUKHyOBJfc2hlWVyMUiuqOp7R2g/b8OrSqEav3E2xaaVpdD9VX0zEsp
+         f9oXygCCIgGTbGYSrlSMlsXc5xsXfZGVHlKt3/FU=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230918135330eucas1p1e79551a21c02b30e9bd116ee91d0ef91~GAqNGY9KZ2626026260eucas1p1l;
+        Mon, 18 Sep 2023 13:53:30 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 43.AE.42423.95658056; Mon, 18
+        Sep 2023 14:53:29 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230918135329eucas1p1ed1ae2c216d203cfba0eac428a5f2369~GAqMwkZEW2416024160eucas1p1n;
+        Mon, 18 Sep 2023 13:53:29 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230918135329eusmtrp10b02e680b0c7f9addad7c1afca0ad76c~GAqMv33DM0074500745eusmtrp15;
+        Mon, 18 Sep 2023 13:53:29 +0000 (GMT)
+X-AuditID: cbfec7f2-a3bff7000002a5b7-97-650856597651
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id A4.36.14344.95658056; Mon, 18
+        Sep 2023 14:53:29 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230918135329eusmtip1a11e796d64da38e379c132d7a42f41e1~GAqMixrzn2844828448eusmtip1_;
+        Mon, 18 Sep 2023 13:53:29 +0000 (GMT)
+Received: from [192.168.8.209] (106.210.248.18) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Mon, 18 Sep 2023 14:53:28 +0100
+Message-ID: <ef88e8e4-c94d-9ad3-a130-8cd6b3f722c9@samsung.com>
+Date:   Mon, 18 Sep 2023 15:53:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+        Thunderbird/102.15.1
+Subject: Re: [PATCH 0/5] Improve zram writeback performance
+Content-Language: en-US
+To:     <minchan@kernel.org>, <senozhatsky@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <axboe@kernel.dk>,
+        <linux-block@vger.kernel.org>, <gost.dev@samsung.com>,
+        Pankaj Raghav <kernel@pankajraghav.com>
+From:   Pankaj Raghav <p.raghav@samsung.com>
+In-Reply-To: <20230911133430.1824564-1-kernel@pankajraghav.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [106.210.248.18]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGKsWRmVeSWpSXmKPExsWy7djPc7qRYRypBuvvWFmsvtvPZnHm5WcW
+        i723tC0u75rDZrHs63t2i90bF7E5sHnMbrjI4nH5bKnHplWdbB5nVzp6fN4kF8AaxWWTkpqT
+        WZZapG+XwJWx4fJkpoKFshVH2k+yNDDOEO9i5OSQEDCR2PjhLWMXIxeHkMAKRomXpw8xQThf
+        GCUe/vzGCuF8ZpToX/iYEaZl4pavLCC2kMByRonX35zgipZNe8AIkdjFKLF/m2UXIwcHr4Cd
+        xK3bISBhFgFVicam20wgNq+AoMTJmU/A5ogKREvMnLYQrFVYwFpi1YlmZhCbWUBc4taT+WD1
+        IkB7V/+9AnYqs8BMRomTv2YxgsxnE9CSaOxkB6nhFLCXeDHlHQtEr6ZE6/bf7BC2vMT2t3OY
+        Ie5XkljYdocNwq6VOLXlFtjHEgL/OSSmXjzKApFwkWjb3w5lC0u8Or6FHcKWkTg9uQcqXi3x
+        9MZvZojmFmAI7VzPBnKQBNAHfWdyIGocJf42zmeGCPNJ3HgrCHEPn8SkbdOZJzCqzkIKillI
+        Xp6F5IVZSF5YwMiyilE8tbQ4Nz212DAvtVyvODG3uDQvXS85P3cTIzDpnP53/NMOxrmvPuod
+        YmTiYDzEKMHBrCTCO9OQLVWINyWxsiq1KD++qDQntfgQozQHi5I4r7btyWQhgfTEktTs1NSC
+        1CKYLBMHp1QDU6JfjoBuyecmt6bK6srzF+WMGERbDjUtCHF1eq84a1HaEWMbzWclgiVTxXhv
+        bjn5lvvOeenU/oLrD+tvc2VJ9vj2LrTumrZ5Wd/j6FWce7N3GH69sP/WafFl1dzz2KWcZnxp
+        uHOovzj1V//zFqbchobp/nOFwjWEWRbWcRcd/83ceVj+qPXOFfsE71mfW/x0+ZlAfdkd+QwR
+        JtbBpz58FXitYcC03XntGzbR2e7MS7Y8bKvwWLzqa3tj0W67ZoHDnzetZu7snaYWzsjOefbJ
+        ZuVXoT6v8j1l9z9f8LjDT2GJVmL94c3ae2/9teJ8umPyZ78j3FMPa8X83XbzpfPE7Q5/dV+z
+        qv7ye7XM3I4rQImlOCPRUIu5qDgRAEcrJj+pAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDIsWRmVeSWpSXmKPExsVy+t/xu7qRYRypBuumKlqsvtvPZnHm5WcW
+        i723tC0u75rDZrHs63t2i90bF7E5sHnMbrjI4nH5bKnHplWdbB5nVzp6fN4kF8AapWdTlF9a
+        kqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJex4fJkpoKFshVH
+        2k+yNDDOEO9i5OSQEDCRmLjlK0sXIxeHkMBSRokDv36yQSRkJDZ+ucoKYQtL/LnWxQZR9JFR
+        YtuF06wQzi5GiZUb/zN2MXJw8ArYSdy6HQLSwCKgKtHYdJsJxOYVEJQ4OfMJC0iJqEC0RNdL
+        Y5CwsIC1xKoTzcwgNrOAuMStJ/PBykWADlr99wojyHhmgZmMEid/zWKE2DWJUeLIs8nsIIPY
+        BLQkGjvZQRo4BewlXkx5xwIxSFOidftvdghbXmL72znMEA8oSSxsuwP1WK3E57/PGCcwis5C
+        ct4sJHfMQjJqFpJRCxhZVjGKpJYW56bnFhvpFSfmFpfmpesl5+duYgRG67ZjP7fsYFz56qPe
+        IUYmDsZDjBIczEoivDMN2VKFeFMSK6tSi/Lji0pzUosPMZoCw2gis5Rocj4wXeSVxBuaGZga
+        mphZGphamhkrifN6FnQkCgmkJ5akZqemFqQWwfQxcXBKNTBNU3tWplDx/us8zzsvdOcaljOK
+        9p5bn1fcz9O9Q+yia7OZYO7PqlzOxalvtzBJl82d/ujyl/kPRVIbU954CW6ecKJf5OU9yY2/
+        7pYFyEaYWap8jdzhpt0tkeymPS8lZPK09rurdSLTLBlup1i1s0Q939IRF10wcyUL14Eq7t2L
+        5L1vTvvnNGfb71c3PrzqZFRrvxm43ytTWb6k0dNV3Pt3B+tJTkE9ee9nLTJrwls83+V92cA9
+        hZUj7Bjf7qWS+xct2ZV29iPfrrANUfOENnhWf3e9VMbEFLzUzl33mlfrB/vrJt6iHrNXHTsm
+        NuNPdKz1m6xKgw3nQ/bt/rN/5om22Qw1V/iEZcX/7FrbIaHEUpyRaKjFXFScCABMZjJnXwMA
+        AA==
+X-CMS-MailID: 20230918135329eucas1p1ed1ae2c216d203cfba0eac428a5f2369
+X-Msg-Generator: CA
+X-RootMTR: 20230911133442eucas1p2f773a475e0a6dc1a448c63884d58c8d3
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230911133442eucas1p2f773a475e0a6dc1a448c63884d58c8d3
+References: <CGME20230911133442eucas1p2f773a475e0a6dc1a448c63884d58c8d3@eucas1p2.samsung.com>
+        <20230911133430.1824564-1-kernel@pankajraghav.com>
+X-Spam-Status: No, score=-6.7 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Atomicity of getting a snapshot of the current mount tree with all of
-> its attributes was never guaranteed, although reading
-> /proc/self/mountinfo into a sufficiently large buffer would work that
-> way.   However, I don't see why mount trees would require stronger
-> guarantees than dentry trees (for which we have basically none).
+Gentle ping Minchan and Sergey.
 
-So atomicity was never put forward as a requirement. In that
-session/recording I explicitly state that we won't guarantee atomicity.
-And systemd agreed with this. So I think we're all on the same page.
+Regards,
+Pankaj
 
-> Even more type clean interface:
+On 2023-09-11 15:34, Pankaj Raghav wrote:
+> ZRAM can have a backing device that could be used as a writeback device
+> for the pages in RAM. The current writeback code (writeback_store()) does
+> a synchronous single page size IO to the backing device.
 > 
-> struct statmnt *statmnt(u64 mnt_id, u64 mask, void *buf, size_t
-> bufsize, unsigned int flags);
+> This series implements IO batching while doing a writeback to a backing
+> device. The code still does synchronous IOs but with larger IO sizes
+> whenever possible. This crosses off one of the TODO that was there as a part
+> of writeback_store() function:
+> A single page IO would be inefficient for write...
 > 
-> Kernel would return a fully initialized struct with the numeric as
-> well as string fields filled.  That part is trivial for userspace to
-> deal with.
-
-I really would prefer a properly typed struct and that's what everyone
-was happy with in the session as well. So I would not like to change the
-main parameters.
-
-> > Plus, the format for how to return arbitrary filesystem mount options
-> > warrants a separate discussion imho as that's not really vfs level
-> > information.
+> The idea is to batch the IOs to a certain limit before the data is flushed
+> to the backing device. The batch limit is initially chosen based on the
+> bdi->io_pages value with an upper limit of 32 pages (128k on x86).
 > 
-> Okay.   Let's take fs options out of this.
-
-Thanks.
-
+> Batching reduces the time of writeback of 4G data to a nvme backing device
+> from 68 secs to 15 secs (more than **4x improvement**).
 > 
-> That leaves:
+> The first 3 patches are prep. 4th patch implements the main logic for IO
+> batching and the last patch is another cleanup.
 > 
->  - fs type and optionally subtype
-
-So since subtype is FUSE specific it might be better to move this to
-filesystem specific options imho.
-
->  - root of mount within fs
->  - mountpoint path
+> Perf:
 > 
-> The type and subtype are naturally limited to sane sizes, those are
-> not an issue.
-
-What's the limit for fstype actually? I don't think there is one.
-There's one by chance but not by design afaict?
-
-Maybe crazy idea:
-That magic number thing that we do in include/uapi/linux/magic.h
-is there a good reason for this or why don't we just add a proper,
-simple enum:
-
-enum {
-        FS_TYPE_ADFS        1
-        FS_TYPE_AFFS        2
-        FS_TYPE_AFS         3
-        FS_TYPE_AUTOFS      4
-	FS_TYPE_EXT2	    5
-	FS_TYPE_EXT3	    6
-	FS_TYPE_EXT4	    7
-	.
-	.
-	.
-	FS_TYPE_MAX
-}
-
-that we start returning from statmount(). We can still return both the
-old and the new fstype? It always felt a bit odd that fs developers to
-just select a magic number.
-
+> $ modprobe zram num_devices=1
+> $ echo "/dev/nvme0n1" > /sys/block/zram0/backing_dev
+> $ echo 6G > /sys/block/zram0/disksize
+> $ fio -iodepth=16 -rw=randwrite -ioengine=io_uring -bs=4k -numjobs=1 -size=4G -filename=/dev/zram0 -name=io_uring_1 > /dev/null
+> $ echo all > /sys/block/zram0/idle
 > 
-> For paths the evolution of the relevant system/library calls was:
+> Without changes:
+> $ time echo idle > /sys/block/zram0/writeback
+> real    1m8.648s         (68 secs)
+> user    0m0.000s
+> sys     0m24.899s
+> $ cat /sys/block/zram0/bd_stat
+> 1048576        0  1048576
 > 
->   char *getwd(char buf[PATH_MAX]);
->   char *getcwd(char *buf, size_t size);
->   char *get_current_dir_name(void);
+> With changes:
+> $ time echo idle > /sys/block/zram0/writeback
+> real    0m15.496s       (15 secs)
+> user    0m0.000s
+> sys     0m7.789s
+> $ cat /sys/block/zram0/bd_stat
+> 1048576        0  1048576
 > 
-> It started out using a fixed size buffer, then a variable sized
-> buffer, then an automatically allocated buffer by the library, hiding
-> the need to resize on overflow.
+> Testing:
 > 
-> The latest style is suitable for the statmnt() call as well, if we
-> worry about pleasantness of the API.
-
-So, can we then do the following struct:
-
-struct statmnt {
-        __u64 mask;             /* What results were written [uncond] */
-        __u32 sb_dev_major;     /* Device ID */
-        __u32 sb_dev_minor;
-        __u64 sb_magic;         /* ..._SUPER_MAGIC */
-        __u32 sb_flags;         /* MS_{RDONLY,SYNCHRONOUS,DIRSYNC,LAZYTIME} */
-        __u32 __spare1;
-        __u64 mnt_id;           /* Unique ID of mount */
-        __u64 mnt_parent_id;    /* Unique ID of parent (for root == mnt_id) */
-        __u32 mnt_id_old;       /* Reused IDs used in proc/.../mountinfo */
-        __u32 mnt_parent_id_old;
-        __u64 mnt_attr;         /* MOUNT_ATTR_... */
-        __u64 mnt_propagation;  /* MS_{SHARED,SLAVE,PRIVATE,UNBINDABLE} */
-        __u64 mnt_peer_group;   /* ID of shared peer group */
-        __u64 mnt_master;       /* Mount receives propagation from this ID */
-        __u64 propagate_from;   /* Propagation from in current namespace */
-	__aligned_u64 mountpoint;
-	__u32 mountpoint_len;
-	__aligned_u64 mountroot;
-	__u32 mountroot_len;
-        __u64 __spare[20];
-};
-
-Userspace knows already how to deal with that because of bpf and other
-structs (e.g., both systemd and LXC have ptr_to_u64() helpers and so
-on). Libmount and glibc can hide this away internally as well.
+> A basic End-End testing (based on Sergey's test flow [1]):
+> 1) configure zram0 and add a nvme device as a writeback device
+> 2) Get the sha256sum of a tarball
+> 3) mkfs.ext4 on zram0, cp tarball
+> 4) idle writeback
+> 5) cp tarball from zram0 to another device (reread writeback pages) and
+>    compare the sha256sum again
+> The sha before and after are verified to be the same.
+> 
+> Writeback limit testing:
+> 
+> 1) configure zram0 and add a nvme device as a writeback device
+> 2) Set writeback limit and enable
+> 3) Do a fio that crosses the writeback limit
+> 4) idle writeback
+> 5) Verify the writeback is limited to the set writeback limit value
+> 
+> $ modprobe zram num_devices=1
+> $ echo "/dev/nvme0n1" > /sys/block/zram0/backing_dev
+> $ echo 4G > /sys/block/zram0/disksize
+> $ echo 1 > /sys/block/zram0/writeback_limit_enable
+> $ echo 1002 > /sys/block/zram0/writeback_limit
+> 
+> $ fio -iodepth=16 -rw=write -ioengine=io_uring -bs=4k -numjobs=1 -size=10M -filename=/dev/zram0 -name=io_uring_1
+> 
+> $ echo all > /sys/block/zram0/idle
+> $ echo idle > /sys/block/zram0/writeback
+> $ cat /sys/block/zram0/bd_stat
+> 1002        0     1002
+> 
+> writeback is limited to the set value.
+> 
+> [1] https://lore.kernel.org/lkml/20230806071601.GB907732@google.com/
+> 
+> Pankaj Raghav (5):
+>   zram: move index preparation to a separate function in writeback_store
+>   zram: encapsulate writeback to the backing bdev in a function
+>   zram: add alloc_block_bdev_range() and free_block_bdev_range()
+>   zram: batch IOs during writeback to improve performance
+>   zram: don't overload blk_idx variable in writeback_store()
+> 
+>  drivers/block/zram/zram_drv.c | 318 ++++++++++++++++++++++------------
+>  1 file changed, 210 insertions(+), 108 deletions(-)
+> 
+> 
+> base-commit: 7bc675554773f09d88101bf1ccfc8537dc7c0be9
