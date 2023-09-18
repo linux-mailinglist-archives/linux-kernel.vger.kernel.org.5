@@ -2,251 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA7B7A48B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8277A48BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 13:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241270AbjIRLpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 07:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S240269AbjIRLtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 07:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241663AbjIRLpO (ORCPT
+        with ESMTP id S241769AbjIRLtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 07:45:14 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B80C135
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:44:43 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-403012f276dso47525305e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 04:44:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695037482; x=1695642282; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J9LKagSYj3VXzo23cIw2NyLGMGWC6MKJWv7lMBAhis8=;
-        b=cRHLWRadnfIrI0N89LBji4xx7I96USj2BfVmnpTqe0pnCAR1gVXGr0Dmx5f7AarLp4
-         ys3sUFu46qAo3KhPq1tZBBOXpcXChBD77HcH2+ASL1uUvR/gkLFRGDTap5WzsewQ6Ww4
-         /kQCmbcFFr9KGtMxaTbwJR1/paPxnllbUZi620HtdnwpWuma1lzO4qSaBlAIrISf8B/z
-         X55Y1/Omyc+ECp61TUsfBinDVxltOVuIvaCs53spEANVYSbRZ2IuUIy/Kw04APFKpxvO
-         I5NL4N7x7dcnpIykxNM1W0kpWBU4wD0QDbNKJcZc6DRrOMRM616nk6n/vdLmft7PO8B3
-         ImOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695037482; x=1695642282;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J9LKagSYj3VXzo23cIw2NyLGMGWC6MKJWv7lMBAhis8=;
-        b=oFUbVl5/guWds2u/xHR09QEfy247cmQi6gJtnneytt/kxoxGGawmS43PIuDSB36Loy
-         WP31JVfQlOqn6K7Jnk38vbSb1TBqCfmSkk0xFzSGJDYLx7k1qE3w0l8ouYiwzE3ZgvOo
-         a0aSanzyHZUAtSIbqZc/aC9gCBbCvfOD4Qk/3xYZRSZnv8gLb6WkIOwUOjXRaiIDSjfy
-         nayGik3vHDNHP7pQnUCjbmNUghhVyXj7mygNnkfGF6XGdVfAyh8kgRmfK8XobKJ5AA2k
-         tzLw2SItPnJKg4XYHaCR9P50u2serzSK1ZwGDYHeiF1xeKSwOUm4Ol1sbcOUgzSH9qg/
-         Ta3Q==
-X-Gm-Message-State: AOJu0YxPmsirV250/uV70pSYCH6kiLdHWktMEML7Uz0kiGokYcsxI77E
-        ifEMWY0V4Owp4lnwuDWmqjNThKkue4jYyD3RftrbXbm67ST8egnwj1w=
-X-Google-Smtp-Source: AGHT+IEgIJY3ySAfU6d0W3ZbtC04cP1HmCyhVGGvQRhnmTyHV3/lGO845QQXBc/CQN03glLBcEyiNSq8CtH2STiedvo=
-X-Received: by 2002:a05:600c:3645:b0:402:ea83:45cf with SMTP id
- y5-20020a05600c364500b00402ea8345cfmr8109170wmq.2.1695037481494; Mon, 18 Sep
- 2023 04:44:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <ed59c1b9-6c5c-4774-a871-a24564f3a270@alu.unizg.hr>
- <CANn89iJv8VRPwQBAE=5-oKHGMs9JVCvCiCBwL+3QW9sJDxo5cQ@mail.gmail.com>
- <3e306b0a-24b8-60d4-c516-1db738d79e92@alu.unizg.hr> <CANn89iKyLdvSF11aHvg-Ytr+HbnHb4QXMie2N5GpZhxSHx-XtA@mail.gmail.com>
-In-Reply-To: <CANn89iKyLdvSF11aHvg-Ytr+HbnHb4QXMie2N5GpZhxSHx-XtA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 18 Sep 2023 13:44:02 +0200
-Message-ID: <CANpmjNNYGax0BfjA98ViGsM4rVrcaNx_SKdetgt+-SzFqB-7zg@mail.gmail.com>
-Subject: Re: BUG: KCSAN: data-race in rtl8169_poll
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        nic_swsd@realtek.com, Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        Mon, 18 Sep 2023 07:49:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EA5E3;
+        Mon, 18 Sep 2023 04:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+Zla40yBeTjqO403RnbEECOA9lbJYqdXZE9AJUrnj7o=; b=E5Favm2RX6bIdAAyvY5mnOC94f
+        /lLpilx1IR1CeLuPXaj9UyA2MUPtkPyfCZuRLSg70Trits2uAfmNJJVbVcrNxtUgwXHSmab23eUbX
+        fhlNuwPK+TZKgOxjf3ANzUDTLLMlee2zHVYZ3QwbyWudB7yPKDV0s2exhRSywojM1xy5VuuyAOtnz
+        claZx1R1Ydc/nVALP7mK7+yUp2GPGSVDTxAw7pNJAVjRYGCnbrHJ/co4nrijgFkd+foMcMIOQ/kMW
+        z6+hb6PRq4sFTdGJ5a2WufWGmtp4s95FwH9amsfpCT7+jygGnC7rzUxxKnrujnwCOd1Gs8EWn345N
+        YfE6WiMw==;
+Received: from [2001:8b0:10b:5:cea0:d147:7c2e:9e61] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qiCl5-00AorF-5E; Mon, 18 Sep 2023 11:49:43 +0000
+Message-ID: <51027eb7552cac992f4c856ea2344f7d35c0185d.camel@infradead.org>
+Subject: Re: [PATCH v2 08/12] KVM: xen: automatically use the vcpu_info
+ embedded in shared_info
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Date:   Mon, 18 Sep 2023 12:49:42 +0100
+In-Reply-To: <20230918112148.28855-9-paul@xen.org>
+References: <20230918112148.28855-1-paul@xen.org>
+         <20230918112148.28855-9-paul@xen.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-NvTxCzm21jgrjqvdo3RP"
+User-Agent: Evolution 3.44.4-0ubuntu2 
+MIME-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Sept 2023 at 12:39, Eric Dumazet <edumazet@google.com> wrote:
->
-> On Mon, Sep 18, 2023 at 11:43=E2=80=AFAM Mirsad Todorovac
-> <mirsad.todorovac@alu.unizg.hr> wrote:
-> >
-> > On 9/18/23 09:41, Eric Dumazet wrote:
-> > > On Mon, Sep 18, 2023 at 8:15=E2=80=AFAM Mirsad Todorovac
-> > > <mirsad.todorovac@alu.unizg.hr> wrote:
-> > >>
-> > >> Hi all,
-> > >>
-> > >> In the vanilla torvalds tree kernel on Ubuntu 22.04, commit 6.6.0-rc=
-1-kcsan-00269-ge789286468a9,
-> > >> KCSAN discovered a data-race in rtl8169_poll():
-> > >>
-> > >> [ 9591.740976] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >> [ 9591.740990] BUG: KCSAN: data-race in rtl8169_poll (drivers/net/et=
-hernet/realtek/r8169_main.c:4430 drivers/net/ethernet/realtek/r8169_main.c:=
-4583) r8169
-> > >>
-> > >> [ 9591.741060] race at unknown origin, with read to 0xffff8881097731=
-30 of 4 bytes by interrupt on cpu 21:
-> > >> [ 9591.741073] rtl8169_poll (drivers/net/ethernet/realtek/r8169_main=
-.c:4430 drivers/net/ethernet/realtek/r8169_main.c:4583) r8169
-> > >> [ 9591.741135] __napi_poll (net/core/dev.c:6527)
-> > >> [ 9591.741149] net_rx_action (net/core/dev.c:6596 net/core/dev.c:672=
-7)
-> > >> [ 9591.741161] __do_softirq (kernel/softirq.c:553)
-> > >> [ 9591.741175] __irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c=
-:632)
-> > >> [ 9591.741185] irq_exit_rcu (kernel/softirq.c:647)
-> > >> [ 9591.741194] common_interrupt (arch/x86/kernel/irq.c:247 (discrimi=
-nator 14))
-> > >> [ 9591.741206] asm_common_interrupt (./arch/x86/include/asm/idtentry=
-.h:636)
-> > >> [ 9591.741217] cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
-> > >> [ 9591.741227] cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
-> > >> [ 9591.741237] call_cpuidle (kernel/sched/idle.c:135)
-> > >> [ 9591.741249] do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:=
-282)
-> > >> [ 9591.741259] cpu_startup_entry (kernel/sched/idle.c:378 (discrimin=
-ator 1))
-> > >> [ 9591.741268] start_secondary (arch/x86/kernel/smpboot.c:210 arch/x=
-86/kernel/smpboot.c:294)
-> > >> [ 9591.741281] secondary_startup_64_no_verify (arch/x86/kernel/head_=
-64.S:433)
-> > >>
-> > >> [ 9591.741300] value changed: 0x80003fff -> 0x34044510
-> > >>
-> > >> [ 9591.741314] Reported by Kernel Concurrency Sanitizer on:
-> > >> [ 9591.741322] CPU: 21 PID: 0 Comm: swapper/21 Tainted: G           =
-  L     6.6.0-rc1-kcsan-00269-ge789286468a9-dirty #4
-> > >> [ 9591.741334] Hardware name: ASRock X670E PG Lightning/X670E PG Lig=
-htning, BIOS 1.21 04/26/2023
-> > >> [ 9591.741343] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >>
-> > >> (The taint is not from the proprietary module, but triggered from th=
-e previous reported and unfixed bug.)
-> > >>
-> > >> Apparently, it is this code:
-> > >>
-> > >> static int rtl8169_poll(struct napi_struct *napi, int budget)
-> > >> {
-> > >>          struct rtl8169_private *tp =3D container_of(napi, struct rt=
-l8169_private, napi);
-> > >>          struct net_device *dev =3D tp->dev;
-> > >>          int work_done;
-> > >>
-> > >>          rtl_tx(dev, tp, budget);
-> > >>
-> > >> =E2=86=92       work_done =3D rtl_rx(dev, tp, budget);
-> > >>
-> > >>          if (work_done < budget && napi_complete_done(napi, work_don=
-e))
-> > >>                  rtl_irq_enable(tp);
-> > >>
-> > >>          return work_done;
-> > >> }
-> > >>
-> > >> and
-> > >>
-> > >> static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp=
-, int budget)
-> > >> {
-> > >>          struct device *d =3D tp_to_dev(tp);
-> > >>          int count;
-> > >>
-> > >>          for (count =3D 0; count < budget; count++, tp->cur_rx++) {
-> > >>                  unsigned int pkt_size, entry =3D tp->cur_rx % NUM_R=
-X_DESC;
-> > >>                  struct RxDesc *desc =3D tp->RxDescArray + entry;
-> > >>                  struct sk_buff *skb;
-> > >>                  const void *rx_buf;
-> > >>                  dma_addr_t addr;
-> > >>                  u32 status;
-> > >>
-> > >> =E2=86=92               status =3D le32_to_cpu(desc->opts1);
-> > >>                  if (status & DescOwn)
-> > >>                          break;
-> > >>
-> > >>                  /* This barrier is needed to keep us from reading
-> > >>                   * any other fields out of the Rx descriptor until
-> > >>                   * we know the status of DescOwn
-> > >>                   */
-> > >>                  dma_rmb();
-> > >>
-> > >>                  if (unlikely(status & RxRES)) {
-> > >> .
-> > >> .
-> > >> .
-> > >>
-> > >> The reason isn't obvious, so it might be interesting if this is a va=
-lid report and whether it caused spurious corruption
-> > >> of the network data on Realtek 8169 compatible cards ...
-> > >>
-> > >
-> > > I think this is pretty much expected.
-> > >
-> > > Driver reads a piece of memory that the hardware can modify.
-> > >
-> > > Adding data_race() annotations could avoid these false positives.
-> > >
-> > >> Hope this helps.
-> > >>
-> > >> Best regards,
-> > >> Mirsad Todorovac
-> >
-> > Well, another approach was this quick fix that eliminated all those rtl=
-8169_poll() KCSAN warnings.
-> >
-> > If READ_ONCE(desc->opts1) fixed it, then maybe there is more to this th=
-an meets the eye?
-> >
-> > -------------------------------------------------
-> >   drivers/net/ethernet/realtek/r8169_main.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/et=
-hernet/realtek/r8169_main.c
-> > index 6351a2dc13bc..051551ee2a15 100644
-> > --- a/drivers/net/ethernet/realtek/r8169_main.c
-> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> > @@ -4427,7 +4427,7 @@ static int rtl_rx(struct net_device *dev, struct =
-rtl8169_private *tp, int budget
-> >                  dma_addr_t addr;
-> >                  u32 status;
-> >
-> > -               status =3D le32_to_cpu(desc->opts1);
-> > +               status =3D le32_to_cpu(READ_ONCE(desc->opts1));
-> >                  if (status & DescOwn)
-> >                          break;
-> >
->
-> This is also working, but in this case we already have barriers (
-> dma_rmb() here)
-> to synchronize host side and hardware (when flipping DescOwn) bit.
 
-READ_ONCE() does not imply any (strong) barriers (it does imply
-address-dependency barriers, i.e. ordering dependent reads/writes, but
-if that can be relied upon if the concurrent writer is a device and
-not CPU I don't know).
+--=-NvTxCzm21jgrjqvdo3RP
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-So in this case pairing READ_ONCE() with dma_rmb() is perfectly
-reasonable: writes to desc->opts1 can happen concurrently, and the
-READ_ONCE() ensures the compiler doesn't mess up that access; later
-reads must be ordered by dma_rmb().
+On Mon, 2023-09-18 at 11:21 +0000, Paul Durrant wrote:
+> -                                              This is because KVM may
+> -=C2=A0 not be aware of the Xen CPU id which is used as the index into th=
+e
+> -=C2=A0 vcpu_info[] array, so may know the correct default location.
 
-The data race here is a consequence of a concurrent write with the
-read of desc->opts1. The dma_rmb() does not prevent that from
-happening, and therefore we still have to mark the racing access.
+Hm, that *was* true at the time of writing, but we did end up teaching
+KVM about the Xen vcpu_id so that we can handle timers. (We required
+userspace to provide the APIC ID for all the other event channel stuff,
+but timer hypercalls come straight from the guest).
+
+But I think the *only* thing we use vcpu->arch.xen.vcpu_id for right
+now is acceleration of the timer hypercalls that are restricted to the
+vCPU that they're called from, e.g.:
+
+	case VCPUOP_set_singleshot_timer:
+		if (vcpu->arch.xen.vcpu_id !=3D vcpu_id) {
+			*r =3D -EINVAL;
+
+So it's never mattered much before now if the Xen vcpu_id changes at
+runtime.
+
+Maybe you now want to invalidate the vcpu_info pfncache for a vCPU if
+its Xen vcpu_id changes? Or just *forbid* such a change after the
+shinfo page has been set up? What locking prevents the xen.vcpu_id
+changing in the middle of your new get_vcpu_info_cache() function?
+
+--=-NvTxCzm21jgrjqvdo3RP
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTE4MTE0OTQyWjAvBgkqhkiG9w0BCQQxIgQg65b3KUT8
+DzNbIPQI3YgPh0c9hF/9CrYr8Qr+ism0zdcwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBCRJRrbMYx4k/XWpxe9KPJw8RbUfAzxNtI
+TIA8ocINuQj5NmQ0tvrRwH27dFVZOiThhijmmk+PcDe+mcw5U19bTgVWfkxjTLEdKpnUWu8hSUbT
+2uZzNTXSNjlNtchUEUke9PGm1E5TwhSBP6YDT8Aw+408PGHxQO5yUMyhHwJINWbp/gRuzoO6rAQq
+vzAG0JvvJtDNiRQlqeYBAPT7TK48wwG0Gk5pWuAK/9XPc3UMZclx7W2FOfG+MRJda4TWYKlLT0Dh
+sBaNoYAW0sW3SITY3pBpKOMynvdS+tf7A3B1GqmLwpx1+txINebgNd+1MujvT6MlNYbOdVBj8Vyq
+47jud+SiCcer1N9WrybGKj6xDr6uIqgxo25hXBhn73uwPAOJ+0HEQHjT6sVneb+LRiZ2O80T5KFr
+T1HOA+N949tM3UngfyS4Mk4ZShGLoaI2aoQEYp6EA53THeo40CQMv9l88DUaNmSUVI4u9CFDhLxZ
+Jx4qxJ/nyMK2rBedxXc5mTE0uWV58BF9+zPpGqcit9uSFCtVc/CZ5eHMM5nlyA7oA74TtkwY6wij
+ClkkR6I9o4Cr7GKd3iil07hdzw5YqmXuxwHMSpDp5QML55MOkxqm7ebom9uiVpdUSvdMMKFw+oMM
+5Yc5jBvndmxSzz8J1TpEFaw/jjIbrgu3ZhM9JBu0zgAAAAAAAA==
+
+
+--=-NvTxCzm21jgrjqvdo3RP--
