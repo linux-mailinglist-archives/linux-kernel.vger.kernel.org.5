@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D06F57A4958
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BC17A495A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 14:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241951AbjIRMMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 08:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        id S241913AbjIRMMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 08:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241971AbjIRMLs (ORCPT
+        with ESMTP id S241966AbjIRMME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 08:11:48 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F69EBA
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:11:10 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9338e4695so70407641fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 05:11:10 -0700 (PDT)
+        Mon, 18 Sep 2023 08:12:04 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838A6109;
+        Mon, 18 Sep 2023 05:11:56 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-402d0eda361so48334335e9.0;
+        Mon, 18 Sep 2023 05:11:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695039069; x=1695643869; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nNg5sBvXpTkFIEXWpv9DgGZCDJnmvTQX83kuJA0NYGE=;
-        b=yf5Kz7a+hEt86reAJzJ/LCYDawqQPqdqCXfg2oCNSfM/IRLT9xK8VVYVpNxvCCmDp1
-         yx0dkzEgjC8glOYGzgd1CKAdTzD1Vof+B69Lq3/YQdggA2Z/0p9PNgYQ4QSyY8DFTzi+
-         LUmeXR9ivoguBpvWj0zwMxg28IVw3nMcWhCWJIxm4QiwDLQ3PAWO+4QwkKlz9G+sCH4M
-         3aB89/1jac81Oe2uADkZUkxwh24DhZEWzoJlBaUswKip1I7bEpvhOGp50sw0a+mGgdkh
-         zaYt7eHa2NA9mfohGsERP8bGNTBRGe8Zgv8Pe0smLoehJHo1krZwcI+NwE56bONJFv+6
-         vfLA==
+        d=gmail.com; s=20230601; t=1695039115; x=1695643915; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nk6sK+L98Z0Oqp/nQXgUvAOvctfkomMX7KeuEQexiso=;
+        b=C7/cgGXhdrWtcn+afZAPCzV39sl96nX6Qv4MCUbgE3hCQX8i7GxG0NxZlKhSZXBSy0
+         Uy1QzsKgKvgq9GuagkB/0++rthE+mlwdCUguw2TE3F0uyGB7nRpoGa7JNqlAGYU6cgDS
+         KUmCB3v6cz0Xm5jGCtCk68horwsFreGXvhTSASTtEl3r3WrSRzcWODSXSnddb8psQYHT
+         MVJP4vrJr0QOOq2t+NiwGbnKrp7++tfZBdw1yskCgudqxSqm+flriaCSa4KJGp4qgss9
+         kN5S9SCZYavrlGDVCcd+8Nm+gtU7e+udlfB1fhGF3bcEgN8xYcUXjQq3+rVAetNbkZeT
+         lQkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695039069; x=1695643869;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNg5sBvXpTkFIEXWpv9DgGZCDJnmvTQX83kuJA0NYGE=;
-        b=eY6xPrwgY8mbwx2TWffT58OGs2DrfwhcegEAxwjmakpavXZthHwltqySGGL5YAyujt
-         +c3+O4W0YR1xHscpKCRe6qrubqK3ObVVYYIyKbyFlI6LmH/3o0H43B35KCKfw0WWH22E
-         xab9H10S1hdbMkQvsxw2jgMAYc2de+NjRRSGpasP5E0AHVnT5pXsgYD1TAmlEZNpVQ1S
-         ck15HOPbVU9b8RZezmPNVBSBp+ce5R24ILE8SUuSyax2Gv65dRCmHmybcbhOco/n4uxS
-         Z6nUdhjpZY7AQjg2CBxg8VAFavwBG4VEf8yvK+rrhSP5G7ut73dh3jKmQJbUY307GJw8
-         WEUw==
-X-Gm-Message-State: AOJu0YynIR+MLtO69VhUxX3KuV1T/eZfdoNa9Tehdf+TWTucAes/ENVT
-        ivbQ97d/FyCi7T4XlE56IoD9xw==
-X-Google-Smtp-Source: AGHT+IFwerwMQ9p0BqOOgGf8TfiZGafrKqJF/xTtLKwKD07Ub3Rfj01f0aVJZ19zwA3dnMtXaMRXaA==
-X-Received: by 2002:a05:651c:2115:b0:2bf:df8c:4e56 with SMTP id a21-20020a05651c211500b002bfdf8c4e56mr8540093ljq.39.1695039068635;
-        Mon, 18 Sep 2023 05:11:08 -0700 (PDT)
-Received: from [172.25.80.114] ([217.67.225.27])
-        by smtp.gmail.com with ESMTPSA id rp9-20020a170906d96900b0099e05fb8f95sm6346237ejb.137.2023.09.18.05.11.07
+        d=1e100.net; s=20230601; t=1695039115; x=1695643915;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nk6sK+L98Z0Oqp/nQXgUvAOvctfkomMX7KeuEQexiso=;
+        b=By3zPsgAgo99b0U3dwrTq+7bW1J8ADbmmhVj9blOGgY8ghkDHuiXJp3HD4LVBRQGXu
+         tH6bo0uIGyx0X0cjOfdmWRuZ7RkhQcKjLlPYIOTG8Vi4BJrAqTCtAmhPEZaXoyfqyW57
+         8A+z57ook+M0ekK8BCIaViygpuGYTCHM65qK8GNt3+XdJR1HtLB4u+0tGfgEQi09i/wV
+         tLfz25AWUnSWhSeqqsqPF1ENAr2h8bTCRsT14T7zBJmwlsUtgUGYcIrPJmnXPu6C+hXq
+         Kvj3jldJ/tx5zGY4+KKW9cxL1qhh3EZZzszEjwGJzJbIjxdoVg70L4VOWqB6YNKJSGdz
+         t5hw==
+X-Gm-Message-State: AOJu0Yy7MUVqsLbiq2bHVEtaf31/N8ach21AmbadZKnZ3OY9d+fbqkF7
+        s8FOzpDdM0ctpPUEO5AkS8CwwW+AngSEtIsD
+X-Google-Smtp-Source: AGHT+IEqLV8hsB03yHLXw+Cq3V5jwj6IAWDD/c9Y7nuaCJs4/WixifxU6P91e6lueQleY5d+eTi26g==
+X-Received: by 2002:a1c:7c0e:0:b0:403:cab3:b763 with SMTP id x14-20020a1c7c0e000000b00403cab3b763mr7651013wmc.33.1695039114627;
+        Mon, 18 Sep 2023 05:11:54 -0700 (PDT)
+Received: from [192.168.7.59] (54-240-197-228.amazon.com. [54.240.197.228])
+        by smtp.gmail.com with ESMTPSA id y14-20020a7bcd8e000000b004030e8ff964sm15244651wmj.34.2023.09.18.05.11.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 05:11:08 -0700 (PDT)
-Message-ID: <ed222918-68ca-cb57-15b8-57f45cdb5a5b@linaro.org>
-Date:   Mon, 18 Sep 2023 14:11:07 +0200
+        Mon, 18 Sep 2023 05:11:54 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <3cf7adca-aa69-4ac8-ca92-f10b1bd2e163@xen.org>
+Date:   Mon, 18 Sep 2023 13:11:53 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: Add Richtek rtq9128 audio
- amplifier
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v2 05/12] KVM: pfncache: allow a cache to be activated
+ with a fixed (userspace) HVA
 Content-Language: en-US
-To:     cy_huang@richtek.com, Mark Brown <broonie@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Allen Lin <allen_lin@richtek.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1695030341-20711-1-git-send-email-cy_huang@richtek.com>
- <1695030341-20711-2-git-send-email-cy_huang@richtek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1695030341-20711-2-git-send-email-cy_huang@richtek.com>
-Content-Type: text/plain; charset=UTF-8
+To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <20230918112148.28855-1-paul@xen.org>
+ <20230918112148.28855-6-paul@xen.org>
+ <e4ac95d3370b997c17ce6924425d693a7e856c7e.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <e4ac95d3370b997c17ce6924425d693a7e856c7e.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,72 +83,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 11:45, cy_huang@richtek.com wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
+On 18/09/2023 12:34, David Woodhouse wrote:
+> On Mon, 2023-09-18 at 11:21 +0000, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
+>>
+>> Some cached pages may actually be overlays on guest memory that have a
+>> fixed HVA within the VMM. It's pointless to invalidate such cached
+>> mappings if the overlay is moved so allow a cache to be activated directly
+>> with the HVA to cater for such cases. A subsequent patch will make use
+>> of this facility.
+>>
+>> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
 > 
-> Create richtek,rtq9128.yaml for rtq9128 amplifier.
+> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
->  .../bindings/sound/richtek,rtq9128.yaml       | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml b/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
-> new file mode 100644
-> index 000000000000..a79694c2b169
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: GPL-2.0
+> Btw, I think you have falsified some Reviewed-by: tags on the rest of
+> the series. Remember, if they aren't literally cut and pasted, the
+> magic gets lost. Just the same as Signed-off-by: tags. Never type them
+> for someone else.
 
-Dual license is needed. Just like checkpatch is asking for.
+Indeed. They were all copied and pasted.
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/richtek,rtq9128.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Richtek RTQ9128 Automative Audio Power Amplifier
-> +
-> +maintainers:
-> +  - ChiYuan Huang <cy_huang@richtek.com>
-> +
-> +description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +  The RTQ9128 is a ultra-low output noise, high-efficiency, four-channel
-> +  class-D audio power amplifier and delivering 4x75W into 4OHm at 10%
-> +  THD+N from a 25V supply in automotive applications.
-> +
-
-Missing ref to dai common.
-
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - richtek,rtq9128
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  enable-gpios:
-> +    maxItems: 1
-> +
-> +  '#sound-dai-cells':
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#sound-dai-cells'
-> +
-> +unevaluatedProperties: false
-
-This goes with mentioned $ref. Alone would not be correct.
-
-
-Best regards,
-Krzysztof
+   Paul
 
