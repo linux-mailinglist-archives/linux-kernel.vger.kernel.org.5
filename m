@@ -2,178 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0A37A6633
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374597A664A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbjISOKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S232653AbjISOPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbjISOKT (ORCPT
+        with ESMTP id S232666AbjISOPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:10:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F6183;
-        Tue, 19 Sep 2023 07:10:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18227C433C7;
-        Tue, 19 Sep 2023 14:10:09 +0000 (UTC)
-Message-ID: <b459dc32-7eba-481e-8c52-99bba5a5db4d@xs4all.nl>
-Date:   Tue, 19 Sep 2023 16:10:08 +0200
+        Tue, 19 Sep 2023 10:15:43 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4699C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:15:36 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RqkGD16ndz4f3kjw
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:15:32 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.103.91])
+        by APP4 (Coremail) with SMTP id gCh0CgAnvdwErQllkNB7Aw--.46916S4;
+        Tue, 19 Sep 2023 22:15:32 +0800 (CST)
+From:   Xie XiuQi <xiexiuqi@huaweicloud.com>
+To:     masahiroy@kernel.org, mcgrof@kernel.org, joe@perches.com,
+        ojeda@kernel.org, ndesaulniers@gooogle.com,
+        linux-kernel@vger.kernel.org
+Cc:     xiexiuqi@huawei.com
+Subject: [PATCH 0/3] scripts/export_report.pl: some bugfix for exported symbols checking
+Date:   Tue, 19 Sep 2023 22:11:18 +0800
+Message-Id: <20230919141121.711084-1-xiexiuqi@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 34/49] media: ti: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
- <20230914133323.198857-35-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230914133323.198857-35-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAnvdwErQllkNB7Aw--.46916S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr45ZF4kKFyDXryxWrWruFg_yoW8AryDpF
+        Z3K3y0y3ykAFyrt3WrJrWkCryYyFW3Zry8Wry5Kw15XwsrArZrJ3Za9r15WFWUZw4ktFZ2
+        yFnFk3sFyFs0qwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr
+        1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsG
+        vfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
+X-CM-SenderInfo: x0lh5xhxtlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 15:33, Benjamin Gaignard wrote:
-> Use vb2_get_num_buffers() to avoid using queue num_buffer field directly.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  drivers/media/platform/ti/am437x/am437x-vpfe.c   | 5 +++--
->  drivers/media/platform/ti/cal/cal-video.c        | 5 +++--
->  drivers/media/platform/ti/davinci/vpif_capture.c | 5 +++--
->  drivers/media/platform/ti/davinci/vpif_display.c | 5 +++--
->  drivers/media/platform/ti/omap/omap_vout.c       | 5 +++--
->  5 files changed, 15 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/media/platform/ti/am437x/am437x-vpfe.c b/drivers/media/platform/ti/am437x/am437x-vpfe.c
-> index 63092013d476..3b1e5dfecdbc 100644
-> --- a/drivers/media/platform/ti/am437x/am437x-vpfe.c
-> +++ b/drivers/media/platform/ti/am437x/am437x-vpfe.c
-> @@ -1774,10 +1774,11 @@ static int vpfe_queue_setup(struct vb2_queue *vq,
->  			    unsigned int sizes[], struct device *alloc_devs[])
->  {
->  	struct vpfe_device *vpfe = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	unsigned size = vpfe->fmt.fmt.pix.sizeimage;
->  
-> -	if (vq->num_buffers + *nbuffers < 3)
-> -		*nbuffers = 3 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 3)
-> +		*nbuffers = 3 - q_num_bufs;
+From: Xie XiuQi <xiexiuqi@huawei.com>
 
-Drop this, instead update min_buffers_needed from 1 to 3.
+'make export_report' with CONFIG_MODVERSIONS enabled, but we get this warning
+message and empty export-symbol-usage SECTION.
 
->  
->  	if (*nplanes) {
->  		if (sizes[0] < size)
-> diff --git a/drivers/media/platform/ti/cal/cal-video.c b/drivers/media/platform/ti/cal/cal-video.c
-> index a8abcd0fee17..5dfe40ca47fc 100644
-> --- a/drivers/media/platform/ti/cal/cal-video.c
-> +++ b/drivers/media/platform/ti/cal/cal-video.c
-> @@ -602,10 +602,11 @@ static int cal_queue_setup(struct vb2_queue *vq,
->  			   unsigned int sizes[], struct device *alloc_devs[])
->  {
->  	struct cal_ctx *ctx = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	unsigned int size = ctx->v_fmt.fmt.pix.sizeimage;
->  
-> -	if (vq->num_buffers + *nbuffers < 3)
-> -		*nbuffers = 3 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 3)
-> +		*nbuffers = 3 - q_num_bufs;
+  $ make export_report
+  ...
+  WARNING:fs/efivarfs/efivarfs.o is not built with CONFIG_MODVERSIONS enabled
+  WARNING:drivers/thermal/intel/x86_pkg_temp_thermal.o is not built with CONFIG_MODVERSIONS enabled
+  WARNING:net/netfilter/nf_log_syslog.o is not built with CONFIG_MODVERSIONS enabled
+  WARNING:net/netfilter/xt_mark.o is not built with CONFIG_MODVERSIONS enabled
+  WARNING:net/netfilter/xt_nat.o is not built with CONFIG_MODVERSIONS enabled
+  WARNING:net/netfilter/xt_LOG.o is not built with CONFIG_MODVERSIONS enabled
+  WARNING:net/netfilter/xt_MASQUERADE.o is not built with CONFIG_MODVERSIONS enabled
+  WARNING:net/netfilter/xt_addrtype.o is not built with CONFIG_MODVERSIONS enabled
+  WARNING:net/ipv4/netfilter/iptable_nat.o is not built with CONFIG_MODVERSIONS enabled
+  ...
+  
+  SECTION 2:
+          This section reports export-symbol-usage of in-kernel
+  modules. Each module lists the modules, and the symbols from that module that
+  it uses.  Each listed symbol reports the number of modules using it
+  
+  NOTE: Got 9 CONFIG_MODVERSIONS warnings
 
-Drop this check, min_buffers_needed is already 3.
+The causes of the problem is that the formats of modules.order and .mod.c are
+changed, but the modification for export_report.pl is missing. So, fix them.
 
->  
->  	if (*nplanes) {
->  		if (sizes[0] < size)
-> diff --git a/drivers/media/platform/ti/davinci/vpif_capture.c b/drivers/media/platform/ti/davinci/vpif_capture.c
-> index 99fae8830c41..fc42b4bc37e6 100644
-> --- a/drivers/media/platform/ti/davinci/vpif_capture.c
-> +++ b/drivers/media/platform/ti/davinci/vpif_capture.c
-> @@ -113,6 +113,7 @@ static int vpif_buffer_queue_setup(struct vb2_queue *vq,
->  	struct channel_obj *ch = vb2_get_drv_priv(vq);
->  	struct common_obj *common = &ch->common[VPIF_VIDEO_INDEX];
->  	unsigned size = common->fmt.fmt.pix.sizeimage;
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  
->  	vpif_dbg(2, debug, "vpif_buffer_setup\n");
->  
-> @@ -122,8 +123,8 @@ static int vpif_buffer_queue_setup(struct vb2_queue *vq,
->  		size = sizes[0];
->  	}
->  
-> -	if (vq->num_buffers + *nbuffers < 3)
-> -		*nbuffers = 3 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 3)
-> +		*nbuffers = 3 - q_num_bufs;
+Xie XiuQi (3):
+  scripts/export_report.pl: fix the path suffix of module
+  scripts/export_report.pl: use the module name in warning message
+  scripts/export_report.pl: fix modversion checking
 
-Drop, and update min_buffers_needed to 3.
+ scripts/export_report.pl | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
->  
->  	*nplanes = 1;
->  	sizes[0] = size;
-> diff --git a/drivers/media/platform/ti/davinci/vpif_display.c b/drivers/media/platform/ti/davinci/vpif_display.c
-> index f8ec2991c667..9dbab1003c1d 100644
-> --- a/drivers/media/platform/ti/davinci/vpif_display.c
-> +++ b/drivers/media/platform/ti/davinci/vpif_display.c
-> @@ -115,6 +115,7 @@ static int vpif_buffer_queue_setup(struct vb2_queue *vq,
->  	struct channel_obj *ch = vb2_get_drv_priv(vq);
->  	struct common_obj *common = &ch->common[VPIF_VIDEO_INDEX];
->  	unsigned size = common->fmt.fmt.pix.sizeimage;
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  
->  	if (*nplanes) {
->  		if (sizes[0] < size)
-> @@ -122,8 +123,8 @@ static int vpif_buffer_queue_setup(struct vb2_queue *vq,
->  		size = sizes[0];
->  	}
->  
-> -	if (vq->num_buffers + *nbuffers < 3)
-> -		*nbuffers = 3 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 3)
-> +		*nbuffers = 3 - q_num_bufs;
+-- 
+2.25.1
 
-Ditto.
-
->  
->  	*nplanes = 1;
->  	sizes[0] = size;
-> diff --git a/drivers/media/platform/ti/omap/omap_vout.c b/drivers/media/platform/ti/omap/omap_vout.c
-> index 4143274089c3..72ce903717d3 100644
-> --- a/drivers/media/platform/ti/omap/omap_vout.c
-> +++ b/drivers/media/platform/ti/omap/omap_vout.c
-> @@ -944,10 +944,11 @@ static int omap_vout_vb2_queue_setup(struct vb2_queue *vq,
->  				     struct device *alloc_devs[])
->  {
->  	struct omap_vout_device *vout = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	int size = vout->pix.sizeimage;
->  
-> -	if (is_rotation_enabled(vout) && vq->num_buffers + *nbufs > VRFB_NUM_BUFS) {
-> -		*nbufs = VRFB_NUM_BUFS - vq->num_buffers;
-> +	if (is_rotation_enabled(vout) && q_num_bufs + *nbufs > VRFB_NUM_BUFS) {
-> +		*nbufs = VRFB_NUM_BUFS - q_num_bufs;
->  		if (*nbufs == 0)
->  			return -EINVAL;
->  	}
-
-Regards,
-
-	Hans
