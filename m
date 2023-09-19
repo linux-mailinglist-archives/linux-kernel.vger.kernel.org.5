@@ -2,250 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C8E7A64C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5E17A64C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbjISNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
+        id S232345AbjISNWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjISNVy (ORCPT
+        with ESMTP id S232280AbjISNVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Sep 2023 09:21:54 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1B0F9;
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2085.outbound.protection.outlook.com [40.107.223.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC384FB;
         Tue, 19 Sep 2023 06:21:47 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 714F986A63;
-        Tue, 19 Sep 2023 15:21:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1695129705;
-        bh=HakaOJT9Ay+e2U9NkAP5DQlXMu7UmHCgYHGIGfiN5lw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aV6M9f1yQYiTfTfVXp1hfaf/SJMNC1Oul2LykKwnfI5cx0mVZUWGKQnEU+Yn09LS7
-         OTjyIC+8s8rRpYZBvWjs6ix+H5QtjYdEdha/AlL6yNwskLU4eGon2gamBQmr8LPrqW
-         I3lR9RkYA2F/xJDw4Us2iT7qu/HNa1Z12YzISuBpIfJadVdsYdYGyC/gpUPfafj6AT
-         VBfPplKibnLyd16f/C0nEas7hCkorqz2xCGv0y2XwNvTmsLm/XB9zg1Jj9SXNsJYPJ
-         Ci2+OAoffkgVEE5Dm8vJe5NWXUBPTp+UtgyFQ0Sbw6lBTMBszoa+JtiG4Vr9ea6lS9
-         PliEXxzwo8oAw==
-Date:   Tue, 19 Sep 2023 15:21:37 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     <Parthiban.Veerasooran@microchip.com>
-Cc:     <andrew@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <corbet@lwn.net>, <Steen.Hegelund@microchip.com>,
-        <rdunlap@infradead.org>, <horms@kernel.org>,
-        <casper.casan@gmail.com>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <Horatiu.Vultur@microchip.com>,
-        <Woojung.Huh@microchip.com>, <Nicolas.Ferre@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <Thorsten.Kummermehr@microchip.com>
-Subject: Re: [RFC PATCH net-next 2/6] net: ethernet: add mac-phy interrupt
- support with reset complete handling
-Message-ID: <20230919152137.2d1cfb5c@wsk>
-In-Reply-To: <852a61a5-8c15-1b5a-bea0-2f0d936722df@microchip.com>
-References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
-        <20230908142919.14849-3-Parthiban.Veerasooran@microchip.com>
-        <027d8f7b-6932-4d9d-b2f9-5369806a79a3@lunn.ch>
-        <852a61a5-8c15-1b5a-bea0-2f0d936722df@microchip.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jzPT97EaRmRATA7xk7t5Tjb5JRxH7kwWmzBmCuR57ahZSPtt8XOIoGh7cYw+WeGSlZPK4iqOv2PafBdPDUqgUiSuSt4O+aa3JYd4NAOJQCMVx4enwXpAXR0szTEzj01fbU8zN18ubpbBmvBDMc2GdCdsj9nS6pXJ3OQGnz3X4E66+AfqfeL3+bda8OAbCvEgtd++AOls9LGtbKd5ZtRoIGQhjHJbS027bse7sfCBAHXCyLq/CKtyzwpPZxny83irP8m9NdWaneglmotQv0ym28ygUKedMtV8BgzKzWh6AYzBytxyBH+V2qDk+FEC915fLv6fpKF5wgVIsWXA8CJ8QQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MGL/HUdqNqR7I43DY/ApVVkTEs775mLeYNKHuLgBa0o=;
+ b=SrnaG6KDEPuUeBytPYba3Lgkn2UmqMftUJXWHvizAmOj0g6jGyrpA9L4EOsOywqNRX0Yt2QeRIVZqGBTdFXaGv5AIHg0QuaHdc+CnE/sNmM269lJ1T0LX+0dBM5lyyy2Q/oZXlZtjmR6Y7v1F9AtJKk0BhPMXzGo44TKzZLVi631MVri3dr7WNW08vWN/ngRzj3WMwSAppawV8doza0ywKGQVW4/EgQWT2noZty4fe9q0uIWCevV6HOpyMaqQUSVkK/CTBAVNx756mQLlpjdiyI3pNJVj8I7nd10jDWGzt9wO980uxPNAmf2XGmsk40O+4SzdACean86Ta+mOqUGcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MGL/HUdqNqR7I43DY/ApVVkTEs775mLeYNKHuLgBa0o=;
+ b=jdlIhs81wTsdK+9UCQZcrzaPu0jU05PM7DBSiIFSIUbRKFJcV4MQzt/VQbFSEIvHKLmNWESrc71vokWf/3WuHkcPlZbxtKBcnZrHTaEbEXiLMdimXzuVHJlu/0trGCfW+2wbvI2fnvK6Tl8AEBr0s0qhWqTADHGwA60TSkgWCao=
+Received: from SN7PR12MB7201.namprd12.prod.outlook.com (2603:10b6:806:2a8::22)
+ by DM6PR12MB4156.namprd12.prod.outlook.com (2603:10b6:5:218::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Tue, 19 Sep
+ 2023 13:21:44 +0000
+Received: from SN7PR12MB7201.namprd12.prod.outlook.com
+ ([fe80::167:7f5a:82a1:e2b9]) by SN7PR12MB7201.namprd12.prod.outlook.com
+ ([fe80::167:7f5a:82a1:e2b9%3]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 13:21:44 +0000
+From:   "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>
+Subject: RE: [PATCH v7 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port driver
+Thread-Topic: [PATCH v7 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port
+ driver
+Thread-Index: AQHZ2yFzmgP1DqzAKkibvVhsFiULHbAOF90AgBQp44A=
+Date:   Tue, 19 Sep 2023 13:21:44 +0000
+Message-ID: <SN7PR12MB720159F33F53B40453111D128BFAA@SN7PR12MB7201.namprd12.prod.outlook.com>
+References: <20230830090707.278136-4-thippeswamy.havalige@amd.com>
+ <20230906172500.GA231799@bhelgaas>
+In-Reply-To: <20230906172500.GA231799@bhelgaas>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR12MB7201:EE_|DM6PR12MB4156:EE_
+x-ms-office365-filtering-correlation-id: 21672961-ea5b-4bb7-2973-08dbb9135e67
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pw5utAEkIOnulOSr59JHZ4ulF04DGIkbps8QkcYMl6pBCpL4YQL1zFW4j4X7ANvE7QiBz9uiSoq7oLHnSXvD9hquR2ZWzmSjexHKILfdIBBey7FaNenieq4nHdFPBXgUxiMq9BAxoTd9kgIiVmA8ai5r94wfkK2RSsJa9n1BHSR8LTb3US89pF84dqFd0UwpTfMKV2SqHoOQOCgaZE4S8VxTBVUyuhKutqgH6D1xvjq5m3T+zeMkHRp68IoZoJIjQLK77yAgC31fuBr26SfmTmLsifHzeWLmse1erp5dCI4kKsdxcfTBNg9jdP7jNb+iGkvXExxbndm80+6/F+Ly49+D1B7jegZVxuhW5S9+wPFJ2+LrUzSrkc9pdcCT9q67UVvrad1PrxaQHRQqTVpnSYnRQEbJUMtV5R5/s2NQTKFnrgogI3i/QpfVzJVTcDXGFpzDj04zcMZfzOKiMmpWu8SMNqjVrwFOMpQJs5BnzVVKCGnVLmn8pl2heI9inA+ZcAP+iOiSNS/6q3ojs1Zs+RumIw2oJcrNKWtoK7XBRUvREmlYZtws95EMi7CqLLMPDy8BJyNwW6H5TZdSfu96M1ngjgkuaz3RJgikfjwfRgjTJvhAx1tk+Ym984R/mwl8
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB7201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(366004)(396003)(376002)(1800799009)(186009)(451199024)(55016003)(83380400001)(9686003)(71200400001)(122000001)(53546011)(6506007)(7696005)(41300700001)(2906002)(66946007)(76116006)(66556008)(66476007)(66446008)(316002)(54906003)(64756008)(6916009)(5660300002)(52536014)(4326008)(8676002)(8936002)(7416002)(38100700002)(38070700005)(478600001)(33656002)(86362001)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?neeA9+g5XvXV0xInR/naQPdivkl4IXB5nbZvzXt6SsuPH4TNeFDAFNQMuYeZ?=
+ =?us-ascii?Q?BozeuWqoGaF4J3EnJ/mOE68N6vGvaqPPyMQhKjFUlTUjxFO1UsgqgJeGpigv?=
+ =?us-ascii?Q?D9nShIX6NJpksVe2RMzGhWyKur66rUypKp4Fnzw/rB/DsmBTSEeeb5dPH5tw?=
+ =?us-ascii?Q?2G+RfiEvhihWkZF+97Cc1adGeemIPuOwAI9cnUxOXga59NxYJj+zbfPk2Ina?=
+ =?us-ascii?Q?/CERAgp+lbRfuBuILWGC1HaK2SwPbWXlfSz3eB+TBf6qjfavcirSAL1m3L3X?=
+ =?us-ascii?Q?flgn6ky/z4Rn14Fbs2qCukA9BFjsWNwRcENlRoB9Qf6KC67WiQZxVzXt6Un3?=
+ =?us-ascii?Q?wlOjqWFB5/+57MUWsu7eawO48wqDobaluff1LD7PUcfDCVgilyOyi07dmhwr?=
+ =?us-ascii?Q?zyrqPjFxC1+fCIX8Wxnc+KpBH+Qbb6Jofe1Spyna9MZI02ex+gISxXtnnELP?=
+ =?us-ascii?Q?JQnh2sTH/3BvtqO6Gyu3RY6tdaIqDqqgSRtzyY88EkmQ4lbswpeM0cGL2wCS?=
+ =?us-ascii?Q?mXFI6NimSNKlLWes03Nc+ZPuke3KO27KrlYEB5keRAqxbfOAtpWiE3NFmbQ+?=
+ =?us-ascii?Q?r1qj09tw7x8vjS7mtHwJ0kWRlmAlz5xUssMvydYiLo0twwVkiw77E12cV8sG?=
+ =?us-ascii?Q?/4Xl8jpHuDBUQCN7tNOTHBVuylHFl7flWwEhrMMxG9eK9AN+/Gew4YIcVPK5?=
+ =?us-ascii?Q?9SV+vsOuYG8c1BaiZsWzWFOhlHGRAGAasECmhg85SxPxF4SOvLLC5KoMzWLh?=
+ =?us-ascii?Q?WrdO9ndkzlQDfRpDpK6xSUIWfpMgTzcEHHa1arhKDsghm2rE7Slcx8IOJvpy?=
+ =?us-ascii?Q?k0RX2oKjO92NipWRjSyhfvgzQxfP5F2XnsHmR4041eDyCUNxa6e+ZHfim07E?=
+ =?us-ascii?Q?tLG8vXFrc9C8ej5W7jVXOy8E7WfU4lyXbqukKDSl6lVdEqRbYdEqWs2amD1Z?=
+ =?us-ascii?Q?RF/yT/2eNA3vJ866ZRRY0F7Ma6iVLLN+YXtUy5Rax3S2f48WH8Z5BZD12N7u?=
+ =?us-ascii?Q?3SAsJKwXx0zwh5xRBTkh8T1XUg7vd1saoisEKuV+gY5TGsLF0ZmZI/P4Oqzm?=
+ =?us-ascii?Q?KYBkysa7IJ169THidPBUpZsOYUmjkYKZxMRA6kHb9etHSFLtfijtiqQQK+Hj?=
+ =?us-ascii?Q?Cec3FWyBgRIeSj6gTT1m6Hb0kw/L+kH6QWUv6PYAQbfmdfnZmtyg7nZ1U+bY?=
+ =?us-ascii?Q?+bD24ZWa8Ir9C8KPLRCFC9lYXNcgeHvIIMq9Sy5Yx2C9zKmKGDkwbqhAH0gk?=
+ =?us-ascii?Q?YTFRuCzX6iCgtivzA1+vx1eCUEeXO4KHG0CWPk7NXkWvYsJBGOharySjBWSC?=
+ =?us-ascii?Q?R59PXlnNH4sGW2cXyBAS8qiT3QnTHoW0dtBebmKF7q54f7NC4YhHIqa8Vq8B?=
+ =?us-ascii?Q?fPnFGIG/+qiikO9tQIOWhxWwgI3aZEo11y/b1iFaZU+sMis8Mr5I6CuvQAeA?=
+ =?us-ascii?Q?xmAt+yg5EV2DT71UbOPsKedQQueiv+kMwgtOQlVhn1iL4BOgjcYQ68g3Jwy2?=
+ =?us-ascii?Q?4QX1qaYw+JMnJjIOvwKnRwVDNR+CUqwwt95n9HFt4LJVCgFZJB+seWs2rD63?=
+ =?us-ascii?Q?5ANZcUufQrQFELcq4IA=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qQnP1voX2Z88kBlC9I3wV7k";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB7201.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21672961-ea5b-4bb7-2973-08dbb9135e67
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2023 13:21:44.2233
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aM+JaTvqMMufF+G1YCkIhPyoT2AI4BUIyHNXDcP4pdJGiNie2R3W6CN7Zi90Y5ay9UkV5xjdB52yxG5kxRD7QA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4156
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qQnP1voX2Z88kBlC9I3wV7k
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Bjorn/ Lorenzo/Krzysztof,
 
-Hi Parthiban,
+Can you please provide any update on this patch series.
 
-> On 13/09/23 8:09 am, Andrew Lunn wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > know the content is safe=20
-> >> +static int oa_tc6_sw_reset(struct oa_tc6 *tc6)
-> >> +{
-> >> +     long timeleft;
-> >> +     u32 regval;
-> >> +     int ret;
-> >> +
-> >> +     /* Perform software reset with both protected and
-> >> unprotected control
-> >> +      * commands because the driver doesn't know the current
-> >> status of the
-> >> +      * MAC-PHY.
-> >> +      */
-> >> +     regval =3D SW_RESET;
-> >> +     reinit_completion(&tc6->rst_complete);
-> >> +     ret =3D oa_tc6_perform_ctrl(tc6, OA_TC6_RESET, &regval, 1,
-> >> true, false);
-> >> +     if (ret) {
-> >> +             dev_err(&tc6->spi->dev, "RESET register write
-> >> failed\n");
-> >> +             return ret;
-> >> +     }
-> >> +
-> >> +     ret =3D oa_tc6_perform_ctrl(tc6, OA_TC6_RESET, &regval, 1,
-> >> true, true);
-> >> +     if (ret) {
-> >> +             dev_err(&tc6->spi->dev, "RESET register write
-> >> failed\n");
-> >> +             return ret;
-> >> +     }
-> >> +     timeleft =3D
-> >> wait_for_completion_interruptible_timeout(&tc6->rst_complete,
-> >> +
-> >> msecs_to_jiffies(1));
-> >> +     if (timeleft <=3D 0) {
-> >> +             dev_err(&tc6->spi->dev, "MAC-PHY reset failed\n");
-> >> +             return -ENODEV;
-> >> +     } =20
-> >=20
-> > This seems a bit messy and complex. I assume reset is performed once
-> > during probe, and never again? So i wonder if it would be cleaner to
-> > actually just poll for the reset to complete? You can then remove
-> > all this completion code, and the interrupt handler gets simpler? =20
-> Ok the spec says the below, that's why I implemented like this.
+Regards,
+Thippeswamy H
+
+> -----Original Message-----
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: Wednesday, September 6, 2023 10:55 PM
+> To: Havalige, Thippeswamy <thippeswamy.havalige@amd.com>
+> Cc: linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+> bhelgaas@google.com; krzysztof.kozlowski+dt@linaro.org;
+> devicetree@vger.kernel.org; linux-pci@vger.kernel.org; lpieralisi@kernel.=
+org;
+> robh@kernel.org; conor+dt@kernel.org; Simek, Michal
+> <michal.simek@amd.com>; Gogada, Bharat Kumar
+> <bharat.kumar.gogada@amd.com>
+> Subject: Re: [PATCH v7 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port d=
+river
 >=20
-> 9.2.8.8 RESETC
-> Reset Complete. This bit is set when the MAC-PHY reset is complete
-> and ready for configuration. When it is set, it will generate a
-> non-maskable interrupt assertion on IRQn to alert the SPI host.
-> Additionally, setting of the RESETC bit shall also set EXST =3D 1 in
-> the receive data footer until this bit is cleared by action of the
-> SPI host writing a =E2=80=981=E2=80=99.
-
-If you don't mind - I would like to ask some extra questions:
-
-1. Could you share which silicon revision of LAN8651 (rev 1 =3D B0 or rev
-2 =3D B1) are your using?
-
-2. Do you use 10k Ohm pull up resistor between VDD and the IRQ_N line?
-
-3. Are you using any standard development board with LAN865x device?
-Could you share how do you connect reset and irq lines and which CPU do
-you use?
-
-Thanks in advance for your help.
-
-
-
+> On Wed, Aug 30, 2023 at 02:37:07PM +0530, Thippeswamy Havalige wrote:
+> > Add support for Xilinx XDMA Soft IP core as Root Port.
+> >
+> > The Zynq UltraScale+ MPSoCs devices support XDMA soft IP module in
+> > programmable logic.
+> >
+> > The integrated XDMA soft IP block has integrated bridge function that
+> > can act as PCIe Root Port.
 >=20
-> Yes, I agree that the reset is performed once in the beginning. So I=20
-> will poll for the completion and remove this block in the next
-> revision.
-> >  =20
-> >> +     /* Register MAC-PHY interrupt service routine */
-> >> +     ret =3D devm_request_irq(&spi->dev, spi->irq, macphy_irq, 0,
-> >> "macphy int",
-> >> +                            tc6);
-> >> +     if ((ret !=3D -ENOTCONN) && ret < 0) {
-> >> +             dev_err(&spi->dev, "Error attaching macphy irq
-> >> %d\n", ret);
-> >> +             goto err_macphy_irq;
-> >> +     } =20
-> >=20
-> > Why is -ENOTCONN special? A comment would be good here. =20
-> Ah, it is a mistake. I supposed to use,
+> > +	if (!pci_is_root_bus(bus)) {
+> > +		/* Checking whether the link is up is the last line of
+> > +		 * defense, and this check is inherently racy by definition.
+> > +		 * Sending a PIO request to a downstream device when the
+> link is
+> > +		 * down causes an unrecoverable error, and a reset of the
+> entire
+> > +		 * PCIe controller will be needed. We can reduce the
+> likelihood
+> > +		 * of that unrecoverable error by checking whether the link is
+> > +		 * up, but we can't completely prevent it because the link may
+> > +		 * go down between the link-up check and the PIO request.
+> > +		 */
 >=20
-> if (ret)
+> Looks fine to me.  If Lorenzo or Krzysztof thinks this is ready to go, ma=
+ybe they
+> will tidy the comment above, i.e.,
 >=20
-> I will correct it in the next version.
-> >  =20
-> >> -void oa_tc6_deinit(struct oa_tc6 *tc6)
-> >> +int oa_tc6_deinit(struct oa_tc6 *tc6)
-> >>   {
-> >> -     kfree(tc6);
-> >> +     int ret;
-> >> +
-> >> +     devm_free_irq(&tc6->spi->dev, tc6->spi->irq, tc6);
-> >> +     ret =3D kthread_stop(tc6->tc6_task);
-> >> +     if (!ret)
-> >> +             kfree(tc6);
-> >> +     return ret;
-> >>   } =20
-> >=20
-> > What is the MAC driver supposed to do if this fails?
-> >=20
-> > But this problem probably goes away once you use a threaded
-> > interrupt handler. =20
-> Yes, I agree. Will do that.
-> >  =20
-> > w> +/* Open Alliance TC6 Standard Control and Status Registers */
-> >> +#define OA_TC6_RESET 0x0003          /* Reset Control and Status
-> >> Register */ +#define OA_TC6_STS0  0x0008          /* Status
-> >> Register #0 */ =20
-> >=20
-> > Please use the same name as the standard. It use STATUS0, so
-> > OA_TC6_STATUS0. Please make sure all your defines follow the
-> > standard. =20
-> Yes sure.
-> >  =20
-> >> +
-> >> +/* RESET register field */
-> >> +#define SW_RESET     BIT(0)          /* Software Reset */ =20
-> >=20
-> > It is pretty normal to put #defines for a register members after the
-> > #define for the register itself:
-> >=20
-> > #define OA_TC6_RESET    0x0003          /* Reset Control and Status
-> > Register */ #define OA_TC6_RESET_SWRESET    BIT(0)
-> >=20
-> > #define OA_TC6_STATUS0  0x0008          /* Status Register #0 */
-> > #define OA_TC6_STATUS0_RESETC           BIT(6)          /* Reset
-> > Complete */
-> >=20
-> > The naming like this also helps avoid mixups. =20
-> Ok, I will follow this in the next version.
->=20
-> Best Regards,
-> Parthiban V
-> >=20
-> >      Andrew
-> >  =20
->=20
-
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/qQnP1voX2Z88kBlC9I3wV7k
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmUJoGEACgkQAR8vZIA0
-zr0uQAgA0xMyrDzGa5fGdxadtqyUyfG5sBGsBmqm44N0+h+lg/DcdsUrn+nhRum3
-52rIg9c2BYJ7AclrBc+cECjeaYyJPt1ZOnTMaSvSgJCWtlwsS5NkE766nmb1I9C2
-+3PS3CzlKhZLYsnHouoTI5/edJoD1bJDSFggKuk2cfaqMkA6BUnvInefFMdO59wA
-ySoS+wNfhbMWhvN4w7Nfn/fT3beqRt2Lj+mG8I5q4ax8WqApVNjT7CuGJTgL8z69
-rVsZMHeeXsbl+FQJlcSyWICFAYZ4Z+8A1StNqatNFAIGkQ0bbYalmM91O57Gxl3d
-am40I8ceuyUsO7lfHrPaUREhp2Xn3w==
-=C025
------END PGP SIGNATURE-----
-
---Sig_/qQnP1voX2Z88kBlC9I3wV7k--
+>   /*
+>    * Checking whether ...
