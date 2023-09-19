@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFB67A6592
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC717A658D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbjISNn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S232508AbjISNnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232568AbjISNnm (ORCPT
+        with ESMTP id S232566AbjISNnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:43:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627741BE6;
-        Tue, 19 Sep 2023 06:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xF9/8QKvWWkbeOJr21JLbJCynp3yqjzThzTACYbxHTg=; b=haZzJuTZBCZsOTNcMz6ga4dc9s
-        gPbmwmK5daZnt7lwf0QPIOwrHm1HLUNltZ5eyE7kwaAHo437epvLvvbzCxKSKbClSjly0J6iO9U3b
-        2kE1iDoDjDVteIas0Hrdvw+mKegt5l3ahQOD8ROwy0dNBYdx5nyfI2MgkQbm1ywCSrKpMQQOJ03ry
-        fMO9W8zUlfaxtXOtSOifpGhKXDQC78ttaD5wvdJrMOlfoZ6h4lc4Ci+ktx1zVTf3yZSfsmPXvx846
-        2ADzJq0jb+18JXgy/PoeRUfMkREC/wv/U6mZE4obztCo1xpba1RDNlGOmFJ0zI1uUNmc+WjwUgXaS
-        YwmBv/0Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qiazZ-00De9q-3B;
-        Tue, 19 Sep 2023 13:42:19 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 18E1E300585; Tue, 19 Sep 2023 15:42:19 +0200 (CEST)
-Date:   Tue, 19 Sep 2023 15:42:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Subject: Re: Arches that don't support PREEMPT
-Message-ID: <20230919134218.GA39281@noisy.programming.kicks-ass.net>
-References: <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx>
- <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
+        Tue, 19 Sep 2023 09:43:04 -0400
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362631718;
+        Tue, 19 Sep 2023 06:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1695130953; x=1726666953;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LIiuvlEVoOet9vLgXao/ZPcDivQLZo5gFmYPlTZNxJs=;
+  b=GgttyW37o5FMspK0IG1bWyzuQaIH4OpVLD4XVpEUcp/NXWYuxxrcLoof
+   GBMWJtt85jMfcmenYOKlGcLDhgz1+IUlG3mL7AnDLhxGYn2i2CMpV7Rgf
+   O+2sJOG/BAO50oA6ca+EOxRkFpvqOe3K6H0CFVsZztaH5BgqLO8Jg8iGf
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.02,159,1688428800"; 
+   d="scan'208";a="239593278"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-94edd59b.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 13:42:28 +0000
+Received: from EX19MTAUEC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2c-m6i4x-94edd59b.us-west-2.amazon.com (Postfix) with ESMTPS id ECD2540D54;
+        Tue, 19 Sep 2023 13:42:27 +0000 (UTC)
+Received: from EX19D028UEC003.ant.amazon.com (10.252.137.159) by
+ EX19MTAUEC001.ant.amazon.com (10.252.135.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 19 Sep 2023 13:42:27 +0000
+Received: from [192.168.5.95] (10.106.179.18) by EX19D028UEC003.ant.amazon.com
+ (10.252.137.159) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 19 Sep
+ 2023 13:42:25 +0000
+Message-ID: <55e64e7a-5783-94ce-a9fc-1979587c755f@amazon.com>
+Date:   Tue, 19 Sep 2023 09:42:21 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATH v2] cgroup: add cgroup_favordynmods= command-line option
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>
+CC:     <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <longman@redhat.com>, <lcapitulino@gmail.com>
+References: <20230906005712.66461-1-luizcap@amazon.com>
+ <29bdb453-c6e3-a047-1f27-e9656da92301@amazon.com>
+ <ZQiNIWQe7spOwjil@slm.duckdns.org>
+ <7zv7lqkondaacjhmc7oscyqzwugguxvjw2yhdhkv4axhhkts7a@upoxgl3qpunt>
+From:   Luiz Capitulino <luizcap@amazon.com>
+In-Reply-To: <7zv7lqkondaacjhmc7oscyqzwugguxvjw2yhdhkv4axhhkts7a@upoxgl3qpunt>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.106.179.18]
+X-ClientProxiedBy: EX19D042UWB003.ant.amazon.com (10.13.139.135) To
+ EX19D028UEC003.ant.amazon.com (10.252.137.159)
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,21 +73,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 03:37:24PM +0200, John Paul Adrian Glaubitz wrote:
-> On Tue, 2023-09-19 at 14:00 +0100, Matthew Wilcox wrote:
-> > On Tue, Sep 19, 2023 at 02:30:59PM +0200, Thomas Gleixner wrote:
-> > > Though it just occured to me that there are dragons lurking:
-> > > 
-> > > arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
-> > > arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
-> > > arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
-> > > arch/um/Kconfig:        select ARCH_NO_PREEMPT
-> > 
-> > Sounds like three-and-a-half architectures which could be queued up for
-> > removal right behind ia64 ...
-> 
-> The agreement to kill off ia64 wasn't an invitation to kill off other stuff
-> that people are still working on! Can we please not do this?
 
-If you're working on one of them, then surely it's a simple matter of
-working on adding CONFIG_PREEMPT support :-)
+
+On 2023-09-19 07:00, Michal Koutný wrote:
+> On Mon, Sep 18, 2023 at 07:47:13AM -1000, Tejun Heo <tj@kernel.org> wrote:
+>> Michal raised some valid concerns. I don't really mind that it's not great
+>> on the edges tho. Michal, what do you think?
+> 
+> I'd have a few suggestions:
+> - reset to have_dynmods value instead of false in cgroup_destroy_root()
+>    (to the benefing of the users of this option, not the common default
+>    users) or not touch the value in cgroup_destroy_root() at all
+> - s/CONFIG_FAVOR_DYNMODS/CONFIG_CGROUP_FAVOR_DYNMODS/ in commit message
+
+Thank you for the detailed suggestions, Michal. I'll on this for v3.
+
+- Luiz
