@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 224047A65F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF297A65FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbjISN6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32904 "EHLO
+        id S232700AbjISN6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbjISN57 (ORCPT
+        with ESMTP id S232706AbjISN6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:57:59 -0400
+        Tue, 19 Sep 2023 09:58:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC53719B;
-        Tue, 19 Sep 2023 06:57:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D95BDC433C9;
-        Tue, 19 Sep 2023 13:57:30 +0000 (UTC)
-Message-ID: <f33399d2-9a80-43b9-bf32-9d26f0efa4fb@xs4all.nl>
-Date:   Tue, 19 Sep 2023 15:57:30 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD28186;
+        Tue, 19 Sep 2023 06:58:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 754A1C433C8;
+        Tue, 19 Sep 2023 13:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695131881;
+        bh=1hnmtLmSPESlL3J6WZJjA7gdaFcvCrqnG9auuGtZMCw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OpcQU2f/13xk6X8X4A8tmv4hsesR9ihUOli01LZCJFvAHL74zTzIVlb4mrK7jYtat
+         sd45GHSHkrNcQ1BT7go+f/pm4y1wC5mM/6D2SfHBPtvUwq/qALYHIuT9cyD03WZAUF
+         6YWRCD+nXK2Q8ANW11ywTOQma9UOkT33egiCz78H7xhTaPqIvAqyZFt9TSwtt0GGxM
+         RLP1L9J9w6NS0YsIJxGXSVR/cyIhe+HxvgkSSiWSJmAmgdAH9vxuz/mDWpwTDJt000
+         sa7TvgDYTuFUGOk5iWuy8SyUYsBQ9wa0HN8Sex7l97UbX8z2S07d1Z6YpzCZtB2deV
+         aBXpn0JMCJzDw==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Max Kellermann <max.kellermann@ionos.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] fs/pipe: remove duplicate "offset" initializer
+Date:   Tue, 19 Sep 2023 15:57:51 +0200
+Message-Id: <20230919-valide-filmverleih-17f6648943e5@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230919074045.1066796-1-max.kellermann@ionos.com>
+References: <20230919074045.1066796-1-max.kellermann@ionos.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 27/49] media: pci: tw686x: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
- <20230914133323.198857-28-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230914133323.198857-28-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1045; i=brauner@kernel.org; h=from:subject:message-id; bh=1hnmtLmSPESlL3J6WZJjA7gdaFcvCrqnG9auuGtZMCw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRyrrj2YXqOxlP+Q5dPtDa9Lgu3nvHxsyu/eH3ZxQPX9xuX VOr87ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZhIrywjw7ryGfVv9R6/S7D3XznlYN HftJdbxU36WjSi5C98rNs/ZxIjwzJr43mTrDjqc77/C1G9+m6LiWDLsrj/Jxmzg3dxJnNNZQMA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 15:33, Benjamin Gaignard wrote:
-> Use vb2_get_num_buffers() to avoid using queue num_buffer field directly.
+On Tue, 19 Sep 2023 09:40:44 +0200, Max Kellermann wrote:
+> This code duplication was introduced by commit a194dfe6e6f6 ("pipe:
+> Rearrange sequence in pipe_write() to preallocate slot"), but since
+> the pipe's mutex is locked, nobody else can modify the value
+> meanwhile.
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  drivers/media/pci/tw686x/tw686x-video.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/media/pci/tw686x/tw686x-video.c b/drivers/media/pci/tw686x/tw686x-video.c
-> index 3ebf7a2c95f0..6bc6d143d18c 100644
-> --- a/drivers/media/pci/tw686x/tw686x-video.c
-> +++ b/drivers/media/pci/tw686x/tw686x-video.c
-> @@ -423,6 +423,7 @@ static int tw686x_queue_setup(struct vb2_queue *vq,
->  			      unsigned int sizes[], struct device *alloc_devs[])
->  {
->  	struct tw686x_video_channel *vc = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	unsigned int szimage =
->  		(vc->width * vc->height * vc->format->depth) >> 3;
->  
-> @@ -430,8 +431,8 @@ static int tw686x_queue_setup(struct vb2_queue *vq,
->  	 * Let's request at least three buffers: two for the
->  	 * DMA engine and one for userspace.
->  	 */
-> -	if (vq->num_buffers + *nbuffers < 3)
-> -		*nbuffers = 3 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 3)
-> +		*nbuffers = 3 - q_num_bufs;
 
-Drop this check, and instead update min_buffers_needed from 2 to 3.
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-Regards,
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-	Hans
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
->  
->  	if (*nplanes) {
->  		if (*nplanes != 1 || sizes[0] < szimage)
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] fs/pipe: remove duplicate "offset" initializer
+      https://git.kernel.org/vfs/vfs/c/adbb6dc7bfbd
