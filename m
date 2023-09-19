@@ -2,132 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A39C07A6555
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0297A654C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbjISNgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
+        id S232389AbjISNgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbjISNgt (ORCPT
+        with ESMTP id S231960AbjISNgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:36:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384B7100
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:36:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695130561;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQmRjXCmgAQl3a6tpa/J+d//osgH4H/G1TUy2TGbM10=;
-        b=enFmpdmPnDJUjCGdFo2A+7ljU6lVl06QBRf4XfQhtrxaUVwKsHRoWSV+7i9iVDfpwhyY6i
-        29utuKROz4Fz2xuWWGsdyX6yx2zoVL6xdDqJVQEUMrtY1OQ1Ssrv+2Xd/dSNnH+nTIGzaS
-        LHj14iahnvgWIw7pomcemw5UDyvxLxM=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-634-XPW0FuXdM3GPyV9ki5XbQw-1; Tue, 19 Sep 2023 09:35:59 -0400
-X-MC-Unique: XPW0FuXdM3GPyV9ki5XbQw-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-773c03f2bdaso374236185a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:35:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695130559; x=1695735359;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BQmRjXCmgAQl3a6tpa/J+d//osgH4H/G1TUy2TGbM10=;
-        b=fu4+fR0xbyWJTet4HKFP3rpKBxyh0pGnrgTc1zXMRnBShQoDf22azYEDtOP2xLFsHM
-         /Wdz59lmAUTDlQu+rHosLiQjoUFTB2CbLTpgewodX7Qg2Uod5k5rlBlkkjsD4vrSP2lZ
-         9jHzbdfTTwofWUBgoH7sOyvKhs+DPB+oZ7/mvyW649owSZwgxVSfS4VFXsmmaTkEM4dc
-         0O8bCmKxi6Dg82++Gi55Zreir5k7iC4iRw5beqYXAXeEXS0R9NfTIt/vdIdv0rfLOhaF
-         eVVefIV9CxugcZIQKyA5UO4Qzy0Xho5Du7xS7O7OAVokX/LipgK1g++MriChE6j9/Ei0
-         y2QA==
-X-Gm-Message-State: AOJu0YzhPC1s96HpgkBDLeeErhSDuZ/yzRN1670BEB9ocYXkfnBln9g5
-        V8RHg33bvGxFH1DQgtpmOPr14g4UPGuoUpQ4C+IwIEmlQr6HQQdX5K0DVeVROYDL6IDhY+cJBmx
-        qoBfVBG9FE7LbEag5rszmEKYn
-X-Received: by 2002:a0c:f001:0:b0:656:4a25:2080 with SMTP id z1-20020a0cf001000000b006564a252080mr7874554qvk.14.1695130559370;
-        Tue, 19 Sep 2023 06:35:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IELog22rYA2MEE9wvtU9k2iQ0qP5GVCV4XB9+NFnOEeZMlYRp+cnMnNZiRhNH7IqEct7Tt4FA==
-X-Received: by 2002:a0c:f001:0:b0:656:4a25:2080 with SMTP id z1-20020a0cf001000000b006564a252080mr7874542qvk.14.1695130559155;
-        Tue, 19 Sep 2023 06:35:59 -0700 (PDT)
-Received: from sgarzare-redhat ([46.222.165.38])
-        by smtp.gmail.com with ESMTPSA id g28-20020a0caadc000000b0064d6a81e4d4sm1773184qvb.113.2023.09.19.06.35.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 06:35:58 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 15:35:51 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Arseniy Krasnov <avkrasnov@salutedevices.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v9 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
- preparations
-Message-ID: <hq67e2b3ljfjikvbaneczdve3fzg3dl5ziyc7xtujyqesp6dzm@fh5nqkptpb4n>
-References: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
- <b5873e36-fe8c-85e8-e11b-4ccec386c015@salutedevices.com>
- <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
- <a5b25ee07245125fac4bbdc3b3604758251907d2.camel@redhat.com>
+        Tue, 19 Sep 2023 09:36:14 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478D6F5;
+        Tue, 19 Sep 2023 06:36:06 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 3587C60157;
+        Tue, 19 Sep 2023 15:36:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.hr; s=mail;
+        t=1695130564; bh=8632NUMsCw1YBeVxUGKl9XmColmXPFnLeY4eFFa3i1w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=E6J9j5sfSpMPySEJB9LfTDlsg3m3TC6mx8/eChC1Z6Z9vNf8V0SzQs9eOfGQt2xcc
+         zWZCVXVY2NJfKc+BmRY4TIvky5DWpiYu880gABk2STIURTjaA2nzmd66n9HsudFybm
+         2vxdfqajrko2gYT6QLy8SibxufhXyqoPPnEs124bhPkmSSCL7bwZfPi30v2DPu7H6L
+         HYyHh1WMdSHACOOOoe770s4nAg+D9x7bXq9KAiyEavQfJZokGa5Q6KZcFvibj335ME
+         zQDA09kQsJS7AqNGqsCoCZCm2Tjy0TdmhxeKll2vTkAFpotNEqKNnY+R7oK7Z0whHS
+         e3Wmmcdb5F5EA==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fsEjALMZnwWS; Tue, 19 Sep 2023 15:36:01 +0200 (CEST)
+Received: from [IPV6:2001:b68:2:2600:847a:a5b8:fda0:5de5] (unknown [IPv6:2001:b68:2:2600:847a:a5b8:fda0:5de5])
+        by domac.alu.hr (Postfix) with ESMTPSA id 513D860152;
+        Tue, 19 Sep 2023 15:36:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695130561; bh=8632NUMsCw1YBeVxUGKl9XmColmXPFnLeY4eFFa3i1w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=U80bhw3dZsz9ZRsVPjPpgUOa/Hb4sxrL2puwXwzhEkL6X8dWA/WpxowFfDLF+DqVx
+         qFKC+xzbxUl5b8giFCk3ZpTYjpgu8NbaoG6YxIJ760ojQbKnczNh9lUeSXDl8ORvIH
+         aQoj1QJ+t//NIFBn2V/Uni7aMWMq6ZrgWABGxLTzafMG+vzy7ZfqH/bnkeoAdBOU5s
+         /+sio/eX8wcXPug+PtOge5VHqWdya7R1RoR+4AB2eahqpDHC7EN+kgKWD3QPAZJrH6
+         0lel8Vnb8Me+GorIfoIB5XzCnxcBrZmozCicqYD3zuvX46zh7X5+6OMIt82ff3CRsJ
+         Li0FjO2OSNoiQ==
+Message-ID: <ef71936d-8385-4fe6-bdfe-c1ad7a38ca9c@alu.unizg.hr>
+Date:   Tue, 19 Sep 2023 15:36:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <a5b25ee07245125fac4bbdc3b3604758251907d2.camel@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <4ca1f264-eebb-608e-617e-7aec743ccc90@alu.unizg.hr>
+ <ZQmTUWywzpIk5kMW@casper.infradead.org>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.hr>
+In-Reply-To: <ZQmTUWywzpIk5kMW@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 03:19:54PM +0200, Paolo Abeni wrote:
->On Tue, 2023-09-19 at 09:54 +0200, Stefano Garzarella wrote:
->> On Mon, Sep 18, 2023 at 07:56:00PM +0300, Arseniy Krasnov wrote:
->> > Hi Stefano,
->> >
->> > thanks for review! So when this patchset will be merged to net-next,
->> > I'll start sending next part of MSG_ZEROCOPY patchset, e.g. AF_VSOCK +
->> > Documentation/ patches.
+
+
+On 9/19/2023 2:25 PM, Matthew Wilcox wrote:
+> On Tue, Sep 19, 2023 at 08:24:02AM +0200, Mirsad Todorovac wrote:
+>> Hi,
 >>
->> Ack, if it is not a very big series, maybe better to include also the
->> tests so we can run them before merge the feature.
->
->I understand that at least 2 follow-up series are waiting for this, one
->of them targeting net-next and the bigger one targeting the virtio
->tree. Am I correct?
+>> The usual setup: vanilla torvalds tree kernel 6.6-rc2, Ubuntu 22.04 LTS.
+>>
+>> KCSAN had found a number of data-races in the btrfs implementation.
+> 
+> This isn't btrfs; it's the same as the race reported on August 18th.
+> https://lore.kernel.org/linux-mm/06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr/
 
-IIUC the next series will touch only the vsock core
-(net/vmw_vsock/af_vsock.c), tests, and documentation.
+Hi,
 
-The virtio part should be fully covered by this series.
+Thank you for your insight.
 
-@Arseniy feel free to correct me!
+Yes, I see that it is the old report ... Mea culpa. But now I had more 
+instances and perhaps they can give more insight?
 
->
->DaveM suggests this should go via the virtio tree, too. Any different
->opinion?
+I must admit that I am a bit perplexed with the KCSAN reports data races 
+in hundreds.
 
-For this series should be fine, I'm not sure about the next series.
-Merging this with the virtio tree, then it forces us to do it for
-followup as well right?
+Most of them were connected with the find_*_bit() family of functions 
+and ACPI. Eliminating those races might fix like 80% of the KCSAN 
+reported bugs.
 
-In theory followup is more on the core, so better with net-next, but
-it's also true that for now only virtio transports support it, so it
-might be okay to continue with virtio.
+Best regards,
+Mirsad Todorovac
 
-@Michael WDYT?
-
-Thanks,
-Stefano
-
+>> It is not clear whether this can lead to the corruption of data on the storage media.
+>>
+>> Please find the complete KCSAN dmesg report attached.
+>>
+>> Best regards,
+>> Mirsad Todorovac
+>>
+>>   2149.512903] ==================================================================
+>> [ 2149.512933] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+>>
+>> [ 2149.512967] write to 0xffff8881ab9d2468 of 8 bytes by interrupt on cpu 27:
+>> [ 2149.512984] xas_clear_mark (/home/marvin/linux/kernel/torvalds2/./arch/x86/include/asm/bitops.h:178 /home/marvin/linux/kernel/torvalds2/./include/asm-generic/bitops/instrumented-non-atomic.h:115 /home/marvin/linux/kernel/torvalds2/lib/xarray.c:102 /home/marvin/linux/kernel/torvalds2/lib/xarray.c:914)
+>> [ 2149.513002] __xa_clear_mark (/home/marvin/linux/kernel/torvalds2/lib/xarray.c:1929)
+>> [ 2149.513019] __folio_end_writeback (/home/marvin/linux/kernel/torvalds2/mm/page-writeback.c:2960)
+>> [ 2149.513039] folio_end_writeback (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:1613)
+>> [ 2149.513053] end_page_writeback (/home/marvin/linux/kernel/torvalds2/mm/folio-compat.c:28)
+>> [ 2149.513073] btrfs_page_clear_writeback (/home/marvin/linux/kernel/torvalds2/fs/btrfs/subpage.c:646) btrfs
+>> [ 2149.513829] end_bio_extent_writepage (/home/marvin/linux/kernel/torvalds2/./include/linux/bio.h:84 /home/marvin/linux/kernel/torvalds2/fs/btrfs/extent_io.c:468) btrfs
+>> [ 2149.514481] __btrfs_bio_end_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:117 /home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:112) btrfs
+>> [ 2149.515130] btrfs_orig_bbio_end_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:164) btrfs
+>> [ 2149.515777] btrfs_simple_end_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:380) btrfs
+>> [ 2149.516425] bio_endio (/home/marvin/linux/kernel/torvalds2/block/bio.c:1603)
+>> [ 2149.516436] blk_mq_end_request_batch (/home/marvin/linux/kernel/torvalds2/block/blk-mq.c:851 /home/marvin/linux/kernel/torvalds2/block/blk-mq.c:1089)
+>> [ 2149.516449] nvme_pci_complete_batch (/home/marvin/linux/kernel/torvalds2/drivers/nvme/host/pci.c:986) nvme
+>> [ 2149.516494] nvme_irq (/home/marvin/linux/kernel/torvalds2/drivers/nvme/host/pci.c:1086) nvme
+>> [ 2149.516538] __handle_irq_event_percpu (/home/marvin/linux/kernel/torvalds2/kernel/irq/handle.c:158)
+>> [ 2149.516553] handle_irq_event (/home/marvin/linux/kernel/torvalds2/kernel/irq/handle.c:195 /home/marvin/linux/kernel/torvalds2/kernel/irq/handle.c:210)
+>> [ 2149.516566] handle_edge_irq (/home/marvin/linux/kernel/torvalds2/kernel/irq/chip.c:833)
+>> [ 2149.516578] __common_interrupt (/home/marvin/linux/kernel/torvalds2/./include/linux/irqdesc.h:161 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/irq.c:238 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/irq.c:257)
+>> [ 2149.516589] common_interrupt (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/irq.c:247 (discriminator 14))
+>> [ 2149.516601] asm_common_interrupt (/home/marvin/linux/kernel/torvalds2/./arch/x86/include/asm/idtentry.h:636)
+>> [ 2149.516612] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:291)
+>> [ 2149.516623] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+>> [ 2149.516633] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+>> [ 2149.516646] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+>> [ 2149.516655] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+>> [ 2149.516664] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+>> [ 2149.516677] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>>
+>> [ 2149.516697] read to 0xffff8881ab9d2468 of 8 bytes by task 4603 on cpu 25:
+>> [ 2149.516708] xas_find_marked (/home/marvin/linux/kernel/torvalds2/./include/linux/find.h:63 /home/marvin/linux/kernel/torvalds2/./include/linux/xarray.h:1722 /home/marvin/linux/kernel/torvalds2/lib/xarray.c:1354)
+>> [ 2149.516719] filemap_get_folios_tag (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:1978 /home/marvin/linux/kernel/torvalds2/mm/filemap.c:2266)
+>> [ 2149.516729] __filemap_fdatawait_range (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:516)
+>> [ 2149.516739] filemap_fdatawait_range (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:553)
+>> [ 2149.516749] btrfs_wait_ordered_range (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:841) btrfs
+>> [ 2149.517405] btrfs_sync_file (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file.c:1844) btrfs
+>> [ 2149.518059] vfs_fsync_range (/home/marvin/linux/kernel/torvalds2/fs/sync.c:188)
+>> [ 2149.518071] __x64_sys_fsync (/home/marvin/linux/kernel/torvalds2/./include/linux/file.h:45 /home/marvin/linux/kernel/torvalds2/fs/sync.c:213 /home/marvin/linux/kernel/torvalds2/fs/sync.c:220 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218)
+>> [ 2149.518081] do_syscall_64 (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:50 /home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:80)
+>> [ 2149.518095] entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:120)
+>>
+>> [ 2149.518111] value changed: 0xffffff8000000000 -> 0x0000000000000000
+>>
+>> [ 2149.518126] Reported by Kernel Concurrency Sanitizer on:
+>> [ 2149.518133] CPU: 25 PID: 4603 Comm: mozStorage #1 Tainted: G             L     6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+>> [ 2149.518146] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+>> [ 2149.518153] ==================================================================
+> 
