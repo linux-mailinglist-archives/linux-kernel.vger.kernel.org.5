@@ -2,132 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 680117A56D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 03:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75EC7A56D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 03:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjISBKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 21:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        id S230389AbjISBMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 21:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjISBKm (ORCPT
+        with ESMTP id S229508AbjISBMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 21:10:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8498E
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 18:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695085780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5xhYDTylANariynyECyDawRfZxSRk3P2GMXADURjfrY=;
-        b=g5gvk9Cbldzwgf1whkpv1bhkeCidpWMGTQkiHzikYV0NVbdBS1aIs/VRwtCX6tEFH/wuRz
-        iTN6ISnycsk01kDlCaUiLKxQFNmOzupCQcDAjbHQgG/yE0nQkLF2hUGNYJMh9rLl9Fp2Yq
-        XHRv1G6U4v1beJPrgRuM+xpXGkSDI/k=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-425-o6tRmt3zP3qo7D5SR0rLmw-1; Mon, 18 Sep 2023 21:09:39 -0400
-X-MC-Unique: o6tRmt3zP3qo7D5SR0rLmw-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-690c1423627so399342b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 18:09:39 -0700 (PDT)
+        Mon, 18 Sep 2023 21:12:03 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452D810D;
+        Mon, 18 Sep 2023 18:11:57 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bf5bf33bcdso86083371fa.0;
+        Mon, 18 Sep 2023 18:11:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695085915; x=1695690715; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GvoF1Qw+q6TvKf1SE6Dx7dnaeUaKsSadPs/P09r1WUw=;
+        b=EOnCfRPuUBBDAtrx9wkCBWGpYhRjsjTc79mutokM/NrKxSEW92nqnHzDNwItmUSbGo
+         fousiVPkp4DFKEfCvewpNx5ep7FLAXi5BnNdVYVcFr+gQ47HHUyYt0Xd8CiKhfqliv8b
+         ygmm0PF3EP39CNeL6kcjsuXg0ZFr6Vhsi352/G5HZ+t3m9Ee1u6sQUW3jNpkhI3Qlal3
+         xFondGhH+tnnzlCVDHH4t45CJy5+9qh4pcRIK7TBO0xz69t5qQO1VFrkVDT9ufHmRAvO
+         YmltGYvBovji6e5ODoItXAs/7EYgCKQfoAQbCouKxafNa9Hu6Ovj84ZQ8Y44Sv7QW+q/
+         yViw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695085778; x=1695690578;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5xhYDTylANariynyECyDawRfZxSRk3P2GMXADURjfrY=;
-        b=YeBtoU36LHRuYo2ZfoLvUmmSiypbaQuht4jhYgrG3ojXI0iHMLWeZKqE7IwskCZ9PD
-         d8Wn6MAvWmAEHHzqvHHBnbuvX58zTh1ehA8yauAmIx8Uy5KAksEc/RNIjfPTdAy27/hy
-         1X6WDTKNRdyJQK/Bqp+9CbtBVV8ZJX77U9FwIJ7jJ+RFgFGrnB8a26t0Mjjw/VRLn9NV
-         3KXvNCrJbMV6i1+iO3X/r02ar6dOyTK4teLMFiWBW0eK1Wcc82L7h5TsvuBrJwaVPKya
-         9OYZ5KioZI5Q6V1vPpkCxer3zjViOL8uJBwmA6Hll+xzckhh+Hi0UYHstSO9tbu9DQYY
-         Ljiw==
-X-Gm-Message-State: AOJu0YyQ4eqT4+CWfbeQkdFlDT1oEwGIkcV7Upz486b3nr6LYriKC9mG
-        afht3TPi9TD/xJwx0OCcAAr5HmX//Sv+47OfAA6Y/5jI33/OrzmPUsFQf2GYNdYwGKGe/yH9gKu
-        bg0o6yTLquORoU99Zqu0j8qxJ
-X-Received: by 2002:a05:6a20:7faa:b0:140:324c:124c with SMTP id d42-20020a056a207faa00b00140324c124cmr10255878pzj.62.1695085778231;
-        Mon, 18 Sep 2023 18:09:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFdG9bCpdvmZ3ZQXnGhuch/qDkbh0mPQBnni4kkBKZ4ohjirIgnh97Jnx/y/Pt40AJLReKTog==
-X-Received: by 2002:a05:6a20:7faa:b0:140:324c:124c with SMTP id d42-20020a056a207faa00b00140324c124cmr10255863pzj.62.1695085777865;
-        Mon, 18 Sep 2023 18:09:37 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id bh3-20020a170902a98300b001c55d591f07sm3082096plb.260.2023.09.18.18.09.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 18:09:37 -0700 (PDT)
-Message-ID: <23ed10ee-b88f-8681-35a4-cefc2e3a7800@redhat.com>
-Date:   Tue, 19 Sep 2023 11:09:30 +1000
+        d=1e100.net; s=20230601; t=1695085915; x=1695690715;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GvoF1Qw+q6TvKf1SE6Dx7dnaeUaKsSadPs/P09r1WUw=;
+        b=P2k+e/8mYsR+GDxC2irGweWRIFQ+nW3nOUqLE68uvC9Dzne6oQVEATmVi9ahzn05Xh
+         nCG0QzaxJnQ/weUlQzl9uIvK1Q6+6FCId5EkAC4xJDJu73qSq2rqFf5S701yAZIdtUqH
+         KapCZgCNPdOrZhhG8r3V3PihNbhTCcRCtYchydls5ziX3oNhGgxsFsmi+Q3aMwgvZMOY
+         b8HoEiXFXg9+iktI1NChSG6qVR1Ynwfyiwi/gOAJU55pb+6MonRY576Tp07fX9LuruCw
+         MyySgyJTqlDgXs0yU+nt8dlKUEI710ga8WL9hbodAjWjlRLTGWPbiReBNWNSKJyZV/80
+         GXIA==
+X-Gm-Message-State: AOJu0YxMU6utCEISlVH1Gw1qjBfnnGbwCm5lxF9bD1DxrAK+YtLJQvHW
+        5F76ZONA4qwZeF3aXWG3APqKGXgzRcRhCVsAcA4=
+X-Google-Smtp-Source: AGHT+IFcfEmlWpgpUmeXJo6mrzzzv1IOhX2CMxAkKGsbnfG+XC8gCH86lUAzbuQmmLv3QVZ3TuX5dqUao0LBXF0Flts=
+X-Received: by 2002:a2e:94c9:0:b0:2bf:7dac:a41 with SMTP id
+ r9-20020a2e94c9000000b002bf7dac0a41mr8955176ljh.13.1695085915251; Mon, 18 Sep
+ 2023 18:11:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [RFC PATCH v2 25/35] LoongArch: Use the __weak version of
- arch_unregister_cpu()
-Content-Language: en-US
-To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
-Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-26-james.morse@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20230913163823.7880-26-james.morse@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918020543.473472-1-lizhijian@fujitsu.com>
+ <20230918020543.473472-2-lizhijian@fujitsu.com> <20230918123710.GD103601@unreal>
+ <4dce179f-f808-0a18-7e9e-9877964d67e4@fujitsu.com>
+In-Reply-To: <4dce179f-f808-0a18-7e9e-9877964d67e4@fujitsu.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Tue, 19 Sep 2023 09:11:43 +0800
+Message-ID: <CAD=hENfcbgNQxb2N1qXJa0pYkF_AYB2aua0smadwkgHtYXfeAw@mail.gmail.com>
+Subject: Re: [PATCH for-next v3 2/2] RDMA/rxe: Call rxe_set_mtu after rxe_register_device
+To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        Zhu Yanjun <yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 02:38, James Morse wrote:
-> LoongArch provides its own arch_unregister_cpu(). This clears the
-> hotpluggable flag, then unregisters the CPU.
-> 
-> It isn't necessary to clear the hotpluggable flag when unregistering
-> a cpu. unregister_cpu() writes NULL to the percpu cpu_sys_devices
-> pointer, meaning cpu_is_hotpluggable() will return false, as
-> get_cpu_device() has returned NULL.
-> 
-> Remove arch_unregister_cpu() and use the __weak version.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->   arch/loongarch/kernel/topology.c | 9 ---------
->   1 file changed, 9 deletions(-)
-> 
-I think arch/x86/kernel/topology.c::arch_unregister_cpu() can be dropped either.
+On Tue, Sep 19, 2023 at 8:57=E2=80=AFAM Zhijian Li (Fujitsu)
+<lizhijian@fujitsu.com> wrote:
+>
+>
+>
+> On 18/09/2023 20:37, Leon Romanovsky wrote:
+> > On Mon, Sep 18, 2023 at 10:05:43AM +0800, Li Zhijian wrote:
+> >> rxe_set_mtu() will call rxe_info_dev() to print message, and
+> >> rxe_info_dev() expects dev_name(rxe->ib_dev->dev) has been assigned.
+> >>
+> >> Previously since dev_name() is not set, when a new rxe link is being
+> >> added, 'null' will be used as the dev_name like:
+> >>
+> >> "(null): rxe_set_mtu: Set mtu to 1024"
+> >>
+> >> Move rxe_register_device() earlier to assign the correct dev_name
+> >> so that it can be read by rxe_set_mtu() later.
+> >
+> > I would expect removal of that print line instead of moving
+> > rxe_register_device().
+>
+>
+> I also struggled with this point. The last option is keep it as it is.
+> Once rxe is registered, this print will work fine.
 
-Reviewed-by: Gavin Shan <gshan@redhat.com>
+I delved into the source code. About moving rxe_register_device, I
+could not find any harm to the driver.
+So I think this is also a solution to this problem.
 
-> diff --git a/arch/loongarch/kernel/topology.c b/arch/loongarch/kernel/topology.c
-> index 8e4441c1ff39..5a75e2cc0848 100644
-> --- a/arch/loongarch/kernel/topology.c
-> +++ b/arch/loongarch/kernel/topology.c
-> @@ -16,13 +16,4 @@ int arch_register_cpu(int cpu)
->   	return register_cpu(c, cpu);
->   }
->   EXPORT_SYMBOL(arch_register_cpu);
-> -
-> -void arch_unregister_cpu(int cpu)
-> -{
-> -	struct cpu *c = &per_cpu(cpu_devices, cpu);
-> -
-> -	c->hotpluggable = 0;
-> -	unregister_cpu(c);
-> -}
-> -EXPORT_SYMBOL(arch_unregister_cpu);
->   #endif
+Zhu Yanjun
 
-Thanks,
-Gavin
-
+>
+> Thanks
+> Zhijian
+>
+>
+> >
+> > Thanks
+> >
+> >>
+> >> And it's safe to do such change since mtu will not be used during the
+> >> rxe_register_device()
+> >>
+> >> After this change, the message becomes:
+> >> "rxe_eth0: rxe_set_mtu: Set mtu to 4096"
+> >>
+> >> Fixes: 9ac01f434a1e ("RDMA/rxe: Extend dbg log messages to err and inf=
+o")
+> >> Reviewed-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+> >> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> >> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> >> ---
+> >>   drivers/infiniband/sw/rxe/rxe.c | 5 ++++-
+> >>   1 file changed, 4 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/r=
+xe/rxe.c
+> >> index a086d588e159..8a43c0c4f8d8 100644
+> >> --- a/drivers/infiniband/sw/rxe/rxe.c
+> >> +++ b/drivers/infiniband/sw/rxe/rxe.c
+> >> @@ -169,10 +169,13 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned i=
+nt ndev_mtu)
+> >>    */
+> >>   int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev=
+_name)
+> >>   {
+> >> +    int ret;
+> >> +
+> >>      rxe_init(rxe);
+> >> +    ret =3D rxe_register_device(rxe, ibdev_name);
+> >>      rxe_set_mtu(rxe, mtu);
+> >>
+> >> -    return rxe_register_device(rxe, ibdev_name);
+> >> +    return ret;
+> >>   }
+> >>
+> >>   static int rxe_newlink(const char *ibdev_name, struct net_device *nd=
+ev)
+> >> --
+> >> 2.29.2
+> >>
