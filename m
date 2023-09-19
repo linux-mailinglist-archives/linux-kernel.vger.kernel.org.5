@@ -2,134 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D763C7A5672
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 02:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894CA7A5678
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 02:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbjISAEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 20:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        id S230319AbjISAIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 20:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjISAEu (ORCPT
+        with ESMTP id S229522AbjISAIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 20:04:50 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062C990
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 17:04:44 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31c5a2e8501so4845694f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 17:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1695081882; x=1695686682; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lKmKB9vKf9hesrksaYYza5X75bJdTltwCKlh53iy6pA=;
-        b=VJTGOIhWTC+utVlvWwChb3XnHhljXNxCtg/Fs4DE19GxRyeSE3lVfXQhhGIpe6L/88
-         +MUywgwIpePapZJngHhPkwM2M9JT1oVD54T2CoPdNtURDuB4DK1WOy0kAr4Ebkvk5zHD
-         TILNbuFhe4SoKh/MOT/98Xio8ZyZMu8IJozakR8n1QOFLCEEZaYPUZMsX9UGwDf6biI7
-         ZzE0A7gPBu7DaskGEe3+zD1c2V/T8NGLK4SJZhT6JhTUtzwWPvyuaXRQQ0H6f6m3NZJE
-         pl0HD1FDL3qvxWTTgVQkenBQREHs2iB7SFzgApxEDqtMuySWviuwECAEvOguKu8Ys74W
-         bdsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695081882; x=1695686682;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lKmKB9vKf9hesrksaYYza5X75bJdTltwCKlh53iy6pA=;
-        b=dmV9zEWpJ7p3PCD4A48bg3E60rSlkj6S4l+sjowFm9UpTIJZE5fxi/qDBKjYIfZF5x
-         Ik725FE2Z2ee8HSaESJNovnfdre7ae9zE/QI8qZ6hLKoGklFB2cQXNjBEQ4cJZYSFUM+
-         VS96LUG5+lzXGIA1wcV1xO+p6WMg5rZ1dMlBvWsBLgyAMc5pm/HyXM6FoJ9nsmnE6X96
-         Hga4bQXa7BngLyYaPetBfeYIETLdIyytQCjItot/w+R9tZZM80FVTbyMKbfh17sRt0nZ
-         2SjAmeNL0d7Amf6dmVJgp8Hhjm4ZyJQDoZPyq14qcURkMu2vkP/dbem1H3KDK9pYHHYP
-         0NOQ==
-X-Gm-Message-State: AOJu0YyN3D96E3fXCmvXUhuqiyT1exExewE38GWkB38VyECeGgowv6+L
-        MvbbzY+WOmDmTjVjOZDmXHRhng==
-X-Google-Smtp-Source: AGHT+IFFNKYAqa2w2v6F9Nsoh+8X0Rmm4dO2+giDMVqp6b0lA5AFGb6pjPhsq9KnLzYuiV/4dGOdfA==
-X-Received: by 2002:a5d:4591:0:b0:31f:e418:223d with SMTP id p17-20020a5d4591000000b0031fe418223dmr7716962wrq.7.1695081881961;
-        Mon, 18 Sep 2023 17:04:41 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id r2-20020adfe682000000b0031fe0576460sm4223971wrm.11.2023.09.18.17.04.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 17:04:41 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 01:04:40 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Kajetan Puchalski <kajetan.puchalski@arm.com>
-Cc:     rafael@kernel.org, daniel.lezcano@linaro.org, lukasz.luba@arm.com,
-        Dietmar.Eggemann@arm.com, dsmythies@telus.net,
-        yu.chen.surf@gmail.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v6 2/2] cpuidle: teo: Introduce util-awareness
-Message-ID: <20230919000440.fq5nyttc4mgpou7x@airbuntu>
-References: <20230105145159.1089531-1-kajetan.puchalski@arm.com>
- <20230105145159.1089531-3-kajetan.puchalski@arm.com>
- <20230711175814.zfavcn7xn3ia5va4@airbuntu>
- <ZLZ/btJw5LNVxVy8@e126311.manchester.arm.com>
- <20230718132432.w5xoxbqm54jmu6n5@airbuntu>
- <20230917010516.54dgcmms44wyfrvx@airbuntu>
- <ZQg3eKYNe7hjFTds@e126311.manchester.arm.com>
+        Mon, 18 Sep 2023 20:08:39 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2066.outbound.protection.outlook.com [40.107.212.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED5A97
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 17:08:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ALVUcjxOalaQs4kGTOxxDuDDlAF6oH4RkZXTf1CKJ5uWkzoK64IQ4HssKc6NfPYPNIRMu5xyGprXIjES5L5mdMEgeRrFD6W+gcE0GEEv/SaJ+A8huEiv4rEeESjHunla9J3+p1NemhQJkFmasWqX4CQn3CdKa9aIeyFqSDzv3lwH1WhAmn+VJahYGYi4R75WctTSRd8dVimYxwz4VU8byjQQHzAPxgAJNk/25YO12LFsF/MadYCXovUpaApalS7E+3ZXFMSz7hLMIeoi30dpBmqAPHoYfg83MOasUZ79WocPfirZcK1/seMZhUhEjn+6Es2y3XnlYBNlj/Cd3gRG6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=z76VT7Bwh25VIejD0KpHvyOUCHRHrXH1Kj2hF2ENGc0=;
+ b=AAGoDGsXo4Le/kgVJbtxbzmVDilepEhFr8wWPd+MaIRWIbZThpccWP1G+BeLb+vz+E2ny/dIih0o+mdWWpy+L1Mb0rNG2GRsk8uSLTDIVQ64ymfjGdyZR2XmKO/liBBGcqxfnSLFvaMGXxT48fSN7aaZ9BUqMi+qVlWok1Rgh8Yg5Zz1dzN+eMeboXy4PG/xqiw+FWzb6JCExjRLQ9Ndtay7R+RibartZK2lp2YT7YBZGzjA8z9tyqQE5uzA7FesJzdpMA5ZZghdGLZGsFTuw5mSbEcNKdryLnDpRgQHzMv8w6PNE/hAmQgQtY8i2V6mLy/sVvxwcVdFCmF/VNI8GQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z76VT7Bwh25VIejD0KpHvyOUCHRHrXH1Kj2hF2ENGc0=;
+ b=U+DYFuYZZ+EQQmgN9b3VrNa2qfg3IoufO33lX3+K5fMVUuqujCgZEKGhsOO6M3vD4dcg1qnKMkrJ1btwHeXKrZQ8R84H+eLD4ts8D/83DuLJpbXnchB7fh/4HyZ4U6T58QbmbDpi29da+5b1VPSKrkH6uskpHJ3kUVtGROsw68O9LRpnn6xGd3zPgEldKIrk/AQKxByB5mvQgGCvkoT/gc+o5oHBFM5QRXAs528XHwaUrLGFaXi3Wy2aY0ZotHeB/Rf1bXZO8zqb++bGIPqmshY5YkaxA+6BweKJCbs6p4x2gzQurcNvPGqcbUgg8UjBXE7RnKvhWd9Sq6m0nOJIoA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by BY5PR12MB4212.namprd12.prod.outlook.com (2603:10b6:a03:202::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
+ 2023 00:08:31 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::2490:a17e:1d63:7505]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::2490:a17e:1d63:7505%7]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 00:08:31 +0000
+References: <20230918201832.265108-1-jannh@google.com>
+User-agent: mu4e 1.8.13; emacs 28.2
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mm: document
+ mmu_notifier_invalidate_range_start_nonblock()
+Date:   Tue, 19 Sep 2023 10:08:06 +1000
+In-reply-to: <20230918201832.265108-1-jannh@google.com>
+Message-ID: <87bkdz58jq.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SYBPR01CA0116.ausprd01.prod.outlook.com
+ (2603:10c6:10:1::32) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZQg3eKYNe7hjFTds@e126311.manchester.arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|BY5PR12MB4212:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8f27ae1e-2e31-4855-d3d4-08dbb8a48eb3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6i8/SM7dsZeHH/WMBpd9VV87vWzAEbIrYF21mwKVS1AeVLSqPetnBFQoVJEt73+HIiBa/v/NiC6TFTLh9Nj0n3xsmHP1Kt+sufvAaz/Npa1mA8ivn1zcTDubPujWJMaEEWMI+AtmL9I9vYjxsZV7NDb5+ohdM5bHOVRomu3jg8Lc6WYI9ajxNuAgm4uKoKeORCtHqle/KfJmsF6MCA2J1oiArircKbnl2Gz3Lnc9/R7qr8APt8NV4Z33+yHStzxIGbhufRFDPaXRF14/QoePLvf4eYIO36KDKDpj1s5cxVV65WZkGstSnL5aGuAAYaHRoASqrCmm3DFpPmkFGZYCy28ZaX1EOOGCgESGnSEOxvRFHGKiqayMgUEZ9z3L5sUXa44uQrAG3+5Rb/JYuutGyTd9uFKUN6qelzcGEWK9tu5TpnxFYA1vF3uQNDErN1Tuahf08/Q3sGHttGyXegZlQb2YuNcgQ/JEqEiI2CdvM2QcDOzAm5IDuB0ksGjJq2uDcgi/nf/YNkNSX1+zqZsAE31iGU3hhYg3vu3Aek/W80axRaCM6PzMjWEqzRgsvgEL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39860400002)(376002)(136003)(186009)(1800799009)(451199024)(8676002)(8936002)(316002)(6916009)(41300700001)(26005)(2906002)(478600001)(66946007)(66556008)(66476007)(54906003)(4326008)(5660300002)(6506007)(6486002)(9686003)(6512007)(83380400001)(6666004)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iyktlHHnm/Yq3C9PCCBYd+2lpBYb7NLV2702yPAlwwgGZKGiNRHcbCO974ZK?=
+ =?us-ascii?Q?5tyUiV3WJkdSCsAVQ+6yUujZ+PfBlQSlthajJ4ToFd+pGMCbRuomwCjZ0jKl?=
+ =?us-ascii?Q?+ZU0u4hak20+EzLhXaa5ZWMrDWkU3e7Ifia4YxcM7sEGMmOGR6MQ8OxQlBsK?=
+ =?us-ascii?Q?qiOIlcOYCqKFondwlMqdc4cxb76hje3XrEbZnpG7hxqRWfcBTUHUICI8MyDz?=
+ =?us-ascii?Q?muGYrWx7NiI7tjhrhxJcOh2YBjtLjYmoiJbptqFiRCaow+z4EBlxUBhEZMJg?=
+ =?us-ascii?Q?D6Gt0ZXGTN6HGg8nrRXGSt2njGu1EEhCC4AT4RHBkWAlzWwzfUJBFtHc2KQU?=
+ =?us-ascii?Q?hVBNZTuXpcmjNrLTA/hELNaAjfLBpQidobzbMVS4phByTiQMYYckj0o7MUli?=
+ =?us-ascii?Q?Gg1oAPvW19HK2oyWLlDuwwn+FJ4PrACKrnQFXZ0SM1JsRpTNloupmUG3VYYC?=
+ =?us-ascii?Q?tlnU2XcuTwpq+6ZwI7REskP3TGqfj0TyCKIPJrmMa/nbW44VxQE1AVANaS5D?=
+ =?us-ascii?Q?wmqujJCEHKCencLm3TRAkrzhC+xUfIUGSsaOnIL429KEqOJC8rj5iU7dEm08?=
+ =?us-ascii?Q?0WSgbdxH52+rA17R5VGmWP49AmtVCRECwzDDbYXPh/713UnOG3fkZlvmQIj2?=
+ =?us-ascii?Q?uSAbb3HjYQacpMI/nrpuZPKstQO2jXniDwQlyIz9TnsjSaB3J0Or3+jU/cYy?=
+ =?us-ascii?Q?dVtiM4odalmyYIskI3GrL0sKmh1fM86vkbHxWUJTcCCY7oQlwvJ0v0oJ9lQy?=
+ =?us-ascii?Q?dmPNY9A2hNGlvNVMKT0u3PNBgbMIsjlZnfn5Ji2tvWve61FVoecZAqzDmgmR?=
+ =?us-ascii?Q?ayP8O/fis/pZo+UQu7kdTxs+Ydteky91E4LDpbLj8ZrHET4BdURCH3iVXtXv?=
+ =?us-ascii?Q?Favxwydc0YTIp0gU9W+ryaQAuMScM9d023DqmTDUR5rcdfBRvjmW27dAS+Jo?=
+ =?us-ascii?Q?AivsKmvTZVvBn/p9qQWQ95Qtlb4KfFntDOH+o6ky0D64Cyfg3jcbDYCk+57v?=
+ =?us-ascii?Q?E+FUed19kdyQ7zah1Hy1lsIb238mhRp85JUACR7XvguGghddyZT57tgegP6+?=
+ =?us-ascii?Q?vchlBQNANdhWxewcmmv448zd2WWmsK/GPLhD6xtCAk/VTTZdfH57InNo+L6Q?=
+ =?us-ascii?Q?hKHbPnqrMfv7SHlmgcuc4h9hu276xnr62pq7lgA5mcG6piRpqV5e1xFL0OQe?=
+ =?us-ascii?Q?mmeVni/guDtGVbbct+xlAj+JK30CAZOUgmhbZMK7f2ziXTd4iSbkK7rSJXK3?=
+ =?us-ascii?Q?cZmLeFMfB1Aph0ex/3QQwQHl6PKenCG2jO6eyNhHaO0JRYQH2cM85ByUV4Qw?=
+ =?us-ascii?Q?54c5ZAkZV/pHhGXoSLrtxow378rlwMZ2jYCMWOo6dkGYkbtWfboZ8iOPvxww?=
+ =?us-ascii?Q?Q6sq2UYQPEaB/vvFpPM7MU+vZLBEMy1e6O6JYyOH2n5jj805v6RPzUGKid3h?=
+ =?us-ascii?Q?cqlO5UV2QNI2G+0J/Dd576+khIXd/wgKRF0dAEJJrIK1w/QLY1OzGWO/lgab?=
+ =?us-ascii?Q?dJ+5+dzyydegL2NPZZlFZj+DkUZcdp/XEtR8QyC4UpYLcti8Yil8iHEA2d0o?=
+ =?us-ascii?Q?JUSkmP+U9+XhnYvoY0KK8S8zhA6takOXPRtM/rTu?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f27ae1e-2e31-4855-d3d4-08dbb8a48eb3
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 00:08:31.2770
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BO+2xzMLMS4Lvo4k6ErkCC2L3NMXs8SlgVNNoKN0lrge6QWMrAVSIUCqjQe3VNPbx9HWP92YvcdR3g4a9XjcWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4212
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/18/23 12:41, Kajetan Puchalski wrote:
 
-> Yes very much agreed on this part, they definitely can be improved. I'm
-> currently exploring some other approaches to this issue as well but
-> that's more of a long-term thing so it'll likely take a couple of months
-> to see whether they're workable or not.
+Looks good, thanks.
 
-Sounds good :)
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
 
-> The role I think the util bits are supposed to play here is mainly to
-> give us a view from a bit higher up than the metrics themselves do
-> because of how quickly those decay. Another way to do it would be some
-> way to make the threshold self-adjusting in the same way the metrics
-> are, e.g. increase the threshold if we're suddenly hitting too many too
-> shallow sleeps and decrease when we're hitting too many deep sleeps as a
-> result of the util checks. This would take care of the edge cases
-> currently falling through the cracks of their util being right around the
-> threshold, the mechanism would adjust within a few seconds of a workload
-> like video playback running. Could be a step in the right direction at least.
+Jann Horn <jannh@google.com> writes:
 
-I'm not keen on the 'too many' part personally. It does feel finger in the air
-to me. But maybe it can work.
+> Document what mmu_notifier_invalidate_range_start_nonblock() is for.
+> Also add a __must_check annotation to signal that callers must bail out if
+> a notifier vetoes the operation.
+>
+> Signed-off-by: Jann Horn <jannh@google.com>
+> ---
+>  include/linux/mmu_notifier.h | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+> index 6e3c857606f1..f349e08a9dfe 100644
+> --- a/include/linux/mmu_notifier.h
+> +++ b/include/linux/mmu_notifier.h
+> @@ -459,7 +459,14 @@ mmu_notifier_invalidate_range_start(struct mmu_notifier_range *range)
+>  	lock_map_release(&__mmu_notifier_invalidate_range_start_map);
+>  }
+>  
+> -static inline int
+> +/*
+> + * This version of mmu_notifier_invalidate_range_start() avoids blocking, but it
+> + * can return an error if a notifier can't proceed without blocking, in which
+> + * case you're not allowed to modify PTEs in the specified range.
+> + *
+> + * This is mainly intended for OOM handling.
+> + */
+> +static inline int __must_check
+>  mmu_notifier_invalidate_range_start_nonblock(struct mmu_notifier_range *range)
+>  {
+>  	int ret = 0;
+>
+> base-commit: 6704c78e2963a5682b4ac3c0e609d36f2405cf17
 
-Beside timers, tasks wake up on synchronization mechanisms and IPC, we can
-potentially gather more info from there. For example, if a task is blocked on
-a kernel lock, then chances its in kernel contention and it supposed to wake up
-soon for the kernel to finish servicing the operation (ie: finish the syscall
-and return to user mode).
-
-Android has the notion of cpus being in deeper idle states in EAS. I think we
-could benefit from such thing in upstream too. Not all idle cpus are equal when
-idle states are taken into account, for both power and latency reasons. So
-there's room to improve on the wake up side to help keep CPUs in deeper idle
-states too.
-
-Load balancer state can give indications too. It'll try to spread to idle CPUs
-first. Its activity is a good indication on the demand for an idle CPU to be
-ready to run something soon.
-
-Generally maybe scheduler and idle governor can coordinate better to
-provide/request some low latency idle CPUs, but allow the rest to go into
-deeper idle states, per TEO's rule of course.
-
-On HMP systems this will be trickier for us as not all CPUs are equal. And
-cluster idle can complicate things further. So the nomination of a low latency
-CPU needs to consider more things into account compared to other systems
-(except NUMA maybe) where any idle CPU is as good as any other.
-
-
-Thanks!
-
---
-Qais Yousef
