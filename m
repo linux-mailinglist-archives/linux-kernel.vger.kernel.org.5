@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDE07A5ACB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B917A5AD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbjISHXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
+        id S231700AbjISH0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231678AbjISHXQ (ORCPT
+        with ESMTP id S229960AbjISH0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:23:16 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAE5114;
-        Tue, 19 Sep 2023 00:23:11 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38J5TApo011746;
-        Tue, 19 Sep 2023 07:23:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=1axQKYzgGNibBdr5sOU/LQTgOxZZBZlrX9xQ+g6prr0=;
- b=lYxw6qcn1EzxQ0LRQtpBv0NjrVwFunrTpcPjtPVjUDsTL1Y+HtxFEICtaMAys6bJVfsJ
- 5M6sG6tqWBjn6YY3zqEkjYXSgb3c58Q3AMkn0TZalVvl0mmbWyllVx6btf3/NpF+vMa3
- r/ncwwYABiZCa/qhqRw/Az1Qujf/tqN+mu8i/0SuizQwlmLwXmCSstFqSoaL4yH2X8XJ
- V33yPw1Wf3+X8K9DNIVtQ5+BHFwJL3BigaBSjj87OdXQsoaU09hYjzTmy9gCGGrPZ9yx
- +uo7vOoK9xb4vmQgGAqApMVWULo7vNTXIl0dNyR/DXHKg6D2ETCmUZjiuWgOGnrokyO0 WA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6trqh9bk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 07:23:06 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38J7N5da031608
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 07:23:05 GMT
-Received: from [10.201.203.60] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 19 Sep
- 2023 00:23:00 -0700
-Message-ID: <1f09339e-b3b5-874c-4874-199e8c7ae890@quicinc.com>
-Date:   Tue, 19 Sep 2023 12:52:56 +0530
+        Tue, 19 Sep 2023 03:26:05 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77461FC;
+        Tue, 19 Sep 2023 00:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695108353;
+        bh=BXA+1Kw/6obE3VF4wSJBx7IOy9FiYg0aqGCKSySeKIY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mVNQfPoP0InAQJvX/TjwplFu7e1SK12FdFHxLSD4agdk0SblOKcarmPLquEtZZ1BM
+         SLdOtW6LbwCMQ43jPUlnjZLdz9IH+sMmiLLDU92qEx0gtyOUFxHbJuwhryBnWjb9A6
+         6S4p2qyoW3fu8A2GRHQZKyAQi63dMGZZpnDm4N1dWfNtTAoMey5umPQIN1ppd/ooEU
+         ter1KtEObPCII+QgZsv9+7E7+1IaThC4pgnJkTtAA+prnJAaY04tRFmkF/qAivQP3P
+         bflh1nOXgF/4sZPoGOWThNO7Q6uPKUCD8M39pSFUD+l68W25oCgQg5VMV5mumKCHls
+         L9AbGLIQFKd4w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RqY9Y2qZdz4xNq;
+        Tue, 19 Sep 2023 17:25:53 +1000 (AEST)
+Date:   Tue, 19 Sep 2023 17:25:49 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        David Chinner <david@fromorbit.com>,
+        <linux-xfs@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the xfs tree
+Message-ID: <20230919172549.5daa24d9@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH V2 1/4] dt-bindings: thermal: qcom-tsens: Add ipq5018
- compatible
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <srinivas.kandagatla@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <thara.gopinath@gmail.com>,
-        <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <dmitry.baryshkov@linaro.org>
-References: <20230915121504.806672-1-quic_srichara@quicinc.com>
- <20230915121504.806672-2-quic_srichara@quicinc.com>
- <03b0cafa-49c7-8838-b116-927c9649cbd3@linaro.org>
- <f5aee51d-0345-1294-a85b-ea96ed937685@linaro.org>
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <f5aee51d-0345-1294-a85b-ea96ed937685@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: HAT-kVeSbg6KpHgw7vELdsYJF40YIKBI
-X-Proofpoint-ORIG-GUID: HAT-kVeSbg6KpHgw7vELdsYJF40YIKBI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_01,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- impostorscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0
- mlxlogscore=537 priorityscore=1501 phishscore=0 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309190060
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/u_tJ0ZZJSxm79sbK/i1Q9mj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/u_tJ0ZZJSxm79sbK/i1Q9mj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 9/15/2023 6:15 PM, Krzysztof Kozlowski wrote:
-> On 15/09/2023 14:43, Krzysztof Kozlowski wrote:
->> On 15/09/2023 14:15, Sricharan Ramabadhran wrote:
->>> IPQ5018 has tsens v1.0 block with 4 sensors and 1 interrupt.
->>>
->>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->>> ---
->>>   [v2] Sorted the compatible and removed example
->>>
->>
->> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> No, unreviewed. Your driver says it is not compatible with
-> qcom,tsens-v1. This does not look right :/
-> 
+In commit
 
-  Yes it is V1 IP, but since there is no RPM, to enable the IP/SENSORS
-  have to do those steps after calling init_common. Similar reason
-  added a new feat as well in patch #2 as well. Hence for this,
-  new compatible was required.
+  74ad4693b647 ("xfs: fix log recovery when unknown rocompat bits are set")
 
-Regards,
-  Sricharan
+Fixes tag
+
+  Fixes: 9e037cb7972f ("xfs: check for unknown v5 feature bits in superbloc=
+k write verifier"
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/u_tJ0ZZJSxm79sbK/i1Q9mj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUJTP0ACgkQAVBC80lX
+0GybbAf8DVHxuSysAz4Hk4gS2DgE3nz/Y6aA8TzonDpsVUEmuqdGPGgaOkSNpxhp
+Yj3eQfHy836C+0X/XOpJPtSseCfQDZCnT9g2MfvhN7B/nY6KG0BbYEhEYpe8fAtb
+flA5a4dfH1pgjxpR4H5jaNtjL0A9n4Aqh9kfd5fHKsUeV5n67TC6hIsJgCpVJeUM
+qyR2cl7bhuak5xglRZ5jdBPiekPXxHm6H6Skfu5sSJNNVJjbCRn0ukN6v6pmfc2V
+IKdEOGfy9LdcwQ3S0wEJMfXtZZFi2D4sxSKvFtL8RYA+hTs/wwq6MxxwnjJWDfSa
+eJEGq6XnSrWsySC83AOeVW663U5Psw==
+=A81u
+-----END PGP SIGNATURE-----
+
+--Sig_/u_tJ0ZZJSxm79sbK/i1Q9mj--
