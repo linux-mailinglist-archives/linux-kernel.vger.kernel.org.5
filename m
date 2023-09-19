@@ -2,326 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A767A6E84
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 00:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0DE7A6EA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 00:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbjISWQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 18:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
+        id S233501AbjISW2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 18:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjISWQY (ORCPT
+        with ESMTP id S230370AbjISW2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 18:16:24 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F87E6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:16:12 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34fa117f92bso19695ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:16:12 -0700 (PDT)
+        Tue, 19 Sep 2023 18:28:42 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F13BF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:28:36 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c21b2c6868so3606984a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695161771; x=1695766571; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695162516; x=1695767316; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qx6X0xE/S4amLJCM7NtzEUWnlj33ZBkwhJLGl58E30c=;
-        b=HZ630ZmEX+22F3LjchOtzuB9xi6f+TB//pWtQbYis/gOUlil765R9CYh50J9vHjvbZ
-         Ozpb2i29aMFqlHdWTt4VrfcHs74DvlN9+E57DvfuFst4Sab6FF9ZLfVIPAzqQmQQPVXF
-         qEiDQ6AjG1nvKVWZ07Q5PhDZs5hPkH0zm0kvcxv7Jc6PjMVi6FC6sN78XBh6/n7EavBQ
-         41u+jCQ6ghigqupWX/Tvy8O6p2SNqg047W53sbVWLUaL3MIqggjskSYGStgZz3Je4B0d
-         ZIxWYNAzL4/091Ps8TYIk39kvdLV1FUU6I+NSQGLx5Ev4Is0tA32kttNJlWWR38Kem6i
-         t4fA==
+        bh=g8IYApqsSB/CXga5Sm1wUBM6vdIibPiaa50vL3BIxdQ=;
+        b=MRJJH/2TYgATx7gBhSX5PbQnRXdm8Nl/5+b7phBRKBf+tME9DTsV74ZroRYVCY5Hju
+         JD9BrICUvQpA0/VhXbKF0zpKKmIaZ3GBfVopowlJJPWBPImSugc1YkLHI2gB/l78gUlF
+         8Ktr448esI3hGUM/3wXM85D5QS0cjGShGSE/naAVkf4cdgPn6FK3LVRNrgy1wzHyGeau
+         2PEGQcTvLu4NirtLteejfhN+dnqULcXOR34xsRn2ybYKQCY+UrnAM4cci6q+MMZi1gGh
+         QtPX4X8HDTIJwsgCIBRoac7S7ZdKiA20bDs27nmGgTqiw9UI07Dpr4z1iMYpCUbP7bZu
+         34qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695161771; x=1695766571;
+        d=1e100.net; s=20230601; t=1695162516; x=1695767316;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qx6X0xE/S4amLJCM7NtzEUWnlj33ZBkwhJLGl58E30c=;
-        b=eOOjVCAjsGdcz5ODp8h/zXBDbMqFd6f8KJ+xIpe4/JUrgkp6d1W5weYJYxn0tbZWfJ
-         nMUsMJYJdoX0NecHgCnYHbhxZ279nEHMy6tB72WkxszBEPGRcDb6mONLNjU7+9TMypLc
-         A4sWfI7HMrKpWJFTwwsBlxMj7WN+D/rVLp5i2RnIHXcM+Fv7eLRskjbnq9Q2/jCB6JH+
-         CsVnTb5PVa5QswomOppjtxxEyIoMxALYWeSlxr+4zafXWz2FUgXRZAWt4oZ6kn7ew4bF
-         IpmGRu605BUTPAEoyVRONbajbgZlaGzouA3W+KB6m+tUe7inOBKcLv0F3OWPxI+74qYB
-         B6Lw==
-X-Gm-Message-State: AOJu0Ywj3FIVyAM1HTHbs6gQGXW4qKnnBgCLlR+NcmwpNcSRMK9tbgHl
-        h1+1o76YTDd0jtd05+SeFj3W8d/SBnuUu3xRmeFy
-X-Google-Smtp-Source: AGHT+IFu656+dV482iOm4cZxrrexPRdD0DlnR8zGkINMB46WE10oFo6V8aYZJV2oIbzlETIcCyiXYFcp0DlRO0Dyrxg=
-X-Received: by 2002:a05:6e02:b21:b0:34f:ec9f:dd75 with SMTP id
- e1-20020a056e020b2100b0034fec9fdd75mr90136ilu.28.1695161770968; Tue, 19 Sep
- 2023 15:16:10 -0700 (PDT)
+        bh=g8IYApqsSB/CXga5Sm1wUBM6vdIibPiaa50vL3BIxdQ=;
+        b=J/JDhF/ADn++Bz/n3di4tB0VW5Ww1puf+cndLmZen7TcbV+HswHCvlDiAkGmTSsVsh
+         HDsSKTFKWknJgVIRAJ+opdnTg5QRIgFoMuSFv9cU7IeXomjFvV43v2JYUZIyWlhEGdBf
+         0OeeEL+HiEWr/zWC+yehm9qDqzTQYejpICH4ApHqLk0T4ZeUDEMgjO1a/KiEn9TZhFil
+         G/gRolwRkEdtxzrAlXgMwJ+QteA/el9ipH3nRLSQs79WVU1GH1yWdvaXnYXoofIRE3ug
+         v/goB/YTgS3+gwb2RAvGdx+pgs3d7od4/iC4aK7P5NI+BB0K7ZE98FcnqzUr4nMYQeop
+         zzNg==
+X-Gm-Message-State: AOJu0Yz9/ZR6zfwGdRPXSAbS2XcMGPXwD14PjO/QRM/hEyCRvpbEz97k
+        Y+iQXwwYmsc/Op/FRSKBIHJcPsG2+fO9N5cBYGqsFg==
+X-Google-Smtp-Source: AGHT+IE9zc6MpYcpPI/9+oxm4bXEuylvEh/WLbTLVVPxVoxV9WzgfH7OgqyfCfSkzDiDEuX9nU/MuzEh+lvyjDqaT7Y=
+X-Received: by 2002:a05:6358:724a:b0:143:63ae:cc76 with SMTP id
+ i10-20020a056358724a00b0014363aecc76mr1397023rwa.11.1695162515847; Tue, 19
+ Sep 2023 15:28:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230911023038.30649-1-yong.wu@mediatek.com> <20230911023038.30649-9-yong.wu@mediatek.com>
- <20230911154448.GA1279317-robh@kernel.org> <c2f1df12cc2dc25b342029e49c6d3f120d380b47.camel@mediatek.com>
- <c62a7ed8-d80a-3a82-040a-d4c74a71285a@linaro.org> <95f9dd3b-1f33-4af5-8757-a97e8b9bb216@arm.com>
- <20230912155338.GA842444-robh@kernel.org> <a63ab61fbf4d2bdadeb68441050ff5187c93ba96.camel@mediatek.com>
-In-Reply-To: <a63ab61fbf4d2bdadeb68441050ff5187c93ba96.camel@mediatek.com>
-From:   Jeffrey Kardatzke <jkardatzke@google.com>
-Date:   Tue, 19 Sep 2023 15:15:59 -0700
-Message-ID: <CA+ddPcPFFpDA2qtxMg6BNztsXi3mVFRghBwe6556mAL54jB06g@mail.gmail.com>
-Subject: Re: [PATCH 8/9] dt-bindings: reserved-memory: MediaTek: Add reserved
- memory for SVP
-To:     =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>
-Cc:     "robh@kernel.org" <robh@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "jstultz@google.com" <jstultz@google.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
-        <Jianjiao.Zeng@mediatek.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
-        <kuohong.wang@mediatek.com>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "krzysztof.kozlow.ski+dt@linaro.org" 
-        <krzysztof.kozlow.ski+dt@linaro.org>,
-        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
-        "tjmercier@google.com" <tjmercier@google.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
+References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
+ <1694411968-14413-3-git-send-email-quic_cang@quicinc.com> <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
+ <6225a132-4b7f-bbb4-e863-4e62b99dd79d@quicinc.com> <31823dc4-6f50-435b-9a20-66471209ec31@linaro.org>
+ <d34242f8-6e21-1549-b87d-3db2e825b7d5@quicinc.com> <1413119B-8B9C-4DE4-A086-476B2BAA60AD@linaro.org>
+ <20230919120829.GB4732@thinkpad>
+In-Reply-To: <20230919120829.GB4732@thinkpad>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 20 Sep 2023 01:27:59 +0300
+Message-ID: <CAA8EJppwjzNDsPHZqUdmgQy3fAbP+AFnOo4+FTDCdpBEZp5S_w@mail.gmail.com>
+Subject: Re: [PATCH 2/6] scsi: ufs: ufs-qcom: Add support for UFS device
+ version detection
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Can Guo <quic_cang@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 3:47=E2=80=AFAM Yong Wu (=E5=90=B4=E5=8B=87) <Yong.=
-Wu@mediatek.com> wrote:
+On Tue, 19 Sept 2023 at 15:08, Manivannan Sadhasivam <mani@kernel.org> wrot=
+e:
 >
-> On Tue, 2023-09-12 at 10:53 -0500, Rob Herring wrote:
-> >
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  On Tue, Sep 12, 2023 at 11:13:50AM +0100, Robin Murphy wrote:
-> > > On 12/09/2023 9:28 am, Krzysztof Kozlowski wrote:
-> > > > On 12/09/2023 08:16, Yong Wu (=E5=90=B4=E5=8B=87) wrote:
-> > > > > Hi Rob,
-> > > > >
-> > > > > Thanks for your review.
-> > > > >
-> > > > > On Mon, 2023-09-11 at 10:44 -0500, Rob Herring wrote:
-> > > > > >
-> > > > > > External email : Please do not click links or open
-> > attachments until
-> > > > > > you have verified the sender or the content.
-> > > > > >   On Mon, Sep 11, 2023 at 10:30:37AM +0800, Yong Wu wrote:
-> > > > > > > This adds the binding for describing a CMA memory for
-> > MediaTek
-> > > > > > SVP(Secure
-> > > > > > > Video Path).
-> > > > > >
-> > > > > > CMA is a Linux thing. How is this related to CMA?
-> > > > >
-> > > > > > >
-> > > > > > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > > > > > > ---
-> > > > > > >   .../mediatek,secure_cma_chunkmem.yaml         | 42
-> > > > > > +++++++++++++++++++
-> > > > > > >   1 file changed, 42 insertions(+)
-> > > > > > >   create mode 100644
-> > Documentation/devicetree/bindings/reserved-
-> > > > > > memory/mediatek,secure_cma_chunkmem.yaml
-> > > > > > >
-> > > > > > > diff --git a/Documentation/devicetree/bindings/reserved-
-> > > > > > memory/mediatek,secure_cma_chunkmem.yaml
-> > > > > > b/Documentation/devicetree/bindings/reserved-
-> > > > > > memory/mediatek,secure_cma_chunkmem.yaml
-> > > > > > > new file mode 100644
-> > > > > > > index 000000000000..cc10e00d35c4
-> > > > > > > --- /dev/null
-> > > > > > > +++ b/Documentation/devicetree/bindings/reserved-
-> > > > > > memory/mediatek,secure_cma_chunkmem.yaml
-> > > > > > > @@ -0,0 +1,42 @@
-> > > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > > > +%YAML 1.2
-> > > > > > > +---
-> > > > > > > +$id:
-> > > > > >
-> > http://devicetree.org/schemas/reserved-memory/mediatek,secure_cma_chunk=
-mem.yaml#
-> > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > > > +
-> > > > > > > +title: MediaTek Secure Video Path Reserved Memory
-> > > > > >
-> > > > > > What makes this specific to Mediatek? Secure video path is
-> > fairly
-> > > > > > common, right?
-> > > > >
-> > > > > Here we just reserve a buffer and would like to create a dma-
-> > buf secure
-> > > > > heap for SVP, then the secure engines(Vcodec and DRM) could
-> > prepare
-> > > > > secure buffer through it.
-> > > > > But the heap driver is pure SW driver, it is not platform
-> > device and
-> > > >
-> > > > All drivers are pure SW.
-> > > >
-> > > > > we don't have a corresponding HW unit for it. Thus I don't
-> > think I
-> > > > > could create a platform dtsi node and use "memory-region"
-> > pointer to
-> > > > > the region. I used RESERVEDMEM_OF_DECLARE currently(The code is
-> > in
-> > > > > [9/9]). Sorry if this is not right.
-> > > >
-> > > > If this is not for any hardware and you already understand this
-> > (since
-> > > > you cannot use other bindings) then you cannot have custom
-> > bindings for
-> > > > it either.
-> > > >
-> > > > >
-> > > > > Then in our usage case, is there some similar method to do
-> > this? or
-> > > > > any other suggestion?
-> > > >
-> > > > Don't stuff software into DTS.
+> On Fri, Sep 15, 2023 at 05:31:45AM +0300, Dmitry Baryshkov wrote:
+> > On 11 September 2023 13:02:50 GMT+03:00, Can Guo <quic_cang@quicinc.com=
+> wrote:
 > > >
-> > > Aren't most reserved-memory bindings just software policy if you
-> > look at it
-> > > that way, though? IIUC this is a pool of memory that is visible and
-> > > available to the Non-Secure OS, but is fundamentally owned by the
-> > Secure
-> > > TEE, and pages that the TEE allocates from it will become
-> > physically
-> > > inaccessible to the OS. Thus the platform does impose constraints
-> > on how the
-> > > Non-Secure OS may use it, and per the rest of the reserved-memory
-> > bindings,
-> > > describing it as a "reusable" reservation seems entirely
-> > appropriate. If
-> > > anything that's *more* platform-related and so DT-relevant than
-> > typical
-> > > arbitrary reservations which just represent "save some memory to
-> > dedicate to
-> > > a particular driver" and don't actually bear any relationship to
-> > firmware or
-> > > hardware at all.
+> > >On 9/11/2023 5:46 PM, Konrad Dybcio wrote:
+> > >> On 11.09.2023 11:42, Can Guo wrote:
+> > >>> Hi Konrad,
+> > >>>
+> > >>> On 9/11/2023 5:17 PM, Konrad Dybcio wrote:
+> > >>>> On 11.09.2023 07:59, Can Guo wrote:
+> > >>>>> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
+> > >>>>>
+> > >>>>> Retrieve UFS device version from UFS host controller's spare regi=
+ster
+> > >>>>> which is populated by bootloader, and use the UFS device version =
+together
+> > >>>>> with host controller's HW version to decide the proper power mode=
+s which
+> > >>>>> should be used to configure the UFS PHY.
+> > >>>> That sounds a bit fishy.. is there no bootloader-independent
+> > >>>> solution to that? Can't we bring in the code that the bootloader
+> > >>>> uses to determine these values?
+> > >>>>
+> > >>>> Konrad
+> > >>>
+> > >>> Agree, it is.
+> > >>>
+> > >>>
+> > >>> All these complexities come from one request from PHY design team -=
+ power saving.
+> > >>>
+> > >>> And to achieve power saving, Qualcomm UFS developers are requested =
+to use the
+> > >>>
+> > >>> lowest hanging PHY settings which can sustain the Max agreed HS Gea=
+r (btw host
+> > >>>
+> > >>> and UFS device) during UFS's lifecycle in High Level OS,  whereas t=
+he power saving
+> > >>>
+> > >>> request does not apply to bootloader, which works for only a few se=
+conds during
+> > >>>
+> > >>> bootup. Hence, there is no such version detect code in bootloader -=
+  it just uses the
+> > >>>
+> > >>> highest PHY settings to configure PHY, boot up UFS and put UFS devi=
+ce version in this
+> > >>>
+> > >>> register.
+> > >> First of all, your email client seems to be inserting 2 newlines
+> > >> instead of 1. If you're using thunderbird, you may want to edit:
+> > >>
+> > >> mail.identity.(default or your mail identity idx).default.compose_ht=
+ml
+> > >>
+> > >> to `false`
+> > >>
+> > >> and add that to your internal wiki page, as I see many @quic folks h=
+aving
+> > >> this issue.
+> > >>
+> > >>
+> > >> Going back to the main topic, I don't think we understood each other=
+.
+> > >> The commit message states:
+> > >>
+> > >>
+> > >> "Retrieve UFS device version from UFS host controller's spare regist=
+er
+> > >> which is populated by bootloader"
+> > >>
+> > >>
+> > >> Which means the bootloader is able to somehow determine the value
+> > >> that's in the spare register and write it there.
+> > >>
+> > >> I'm asking whether we can take the logic behind this value and
+> > >> move it to Linux so that we don't depend on the bootloader to
+> > >> guarantee it (e.g. Chrome or some other devices with more exotic
+> > >> fw may not work this way).
+> > >>
+> > >>
+> > >> Konrad
+> > >
+> > >
+> > >There is no logic behind this value at all in bootloader, as I explain=
+ed, after bootloader
+> > >
+> > >initializes UFS, bootloader simply reads UFS's device version (the val=
+ue you are referring)
+> > >
+> > >and write it to the register. But in Linux kernel, we need (or want to=
+ know) this value
+> > >
+> > >BEFORE we initialize UFS host controller (and UFS device).
 > >
-> > Yes, a memory range defined by hardware or firmware is within scope
-> > of
-> > DT. (CMA at aribitrary address was questionable.)
+> > Depending on the bootloader behaviour is not an option. For example the=
+ kernel might be started via kexec. Or via u-boot. Or grub. Or any other bo=
+otloader. So please duplicate the logic to read the UFS version instead.
+> >
 >
+> As Can said, there is no logic in the bootloader. What it does it, after =
+doing
+> the UFS initialization, it writes the agreed gear (between host and the d=
+evice)
+> to this register. And in linux, we use that value to initialize the devic=
+e
+> (i.e., not doing init based on the min gear).
+>
+> But the important factor here is that, we use this gear value to program =
+the PHY
+> init sequence. So if there is no hint from the bootloader, linux will pro=
+gram
+> the min phy sequence (G3/G4) and then once the gear scaling happens, it w=
+ill
+> program the max phy sequence (G4/G5).
+>
+> Now on recent platforms, the init sequences are not compatible with each =
+other
+> i.e., once the min seq. is programmed, then before programming max seq. t=
+he
+> registers not common to both seq. should be programmed to default value. =
+In
+> other words, min seq. specific registers should be reset to the default v=
+alue.
+> Otherwise, there will be stability issues in the PHY.
 
-Before I reply, my context is that I'm using these patches from
-Mediatek on ChromeOS to implement secure video playback.
+I see nothing wrong with adding 'default' register programming to the
+gear tables. If we have to reset them to the default values to switch
+the PHY settings, these writes must be a part of the corresponding
+tables.
 
-> I guess the memory range is not "defined" by HW in our case, but this
-> reserve buffer is indeed prepared for and used by HW.
 >
-The memory range is defined in the firmware. The TEE is configured
-with the same address/size that is being set in this DT node. (so
-based on comments already, this is appropriate to put in the DT).
+> So to avoid that, if we get the hint from bootloader (always the max supp=
+orted
+> gear between host and device), then only one seq. will be programmed.
+>
+> Other way to solve this issue is to reset the non common registers in the=
+ init
+> seq. to default value. But that will be an additional overhead.
+>
+> But... if the bootloader doesn't populate this register (if the boot devi=
+ce is
+> not UFS, like in compute platforms), then this whole logic won't work. Th=
+is
+> should also be taken into consideration.
 
-> If this is a normal reserved buffer for some device, we could define a
-> reserved-memory with "shared-dma-pool", then the device use it via
-> "memory-region" property, is this right?
+Yep, that's the dependency on the bootloader. Which we should avoid.
+
 >
-> Here it is a secure buffer case and this usage relationship is
-> indirect. We create a new heap for this new secure type memory, other
-> users such as VCODEC and DRM allocate secure memory through the new
-> heap.
->
-> About the aribitrary address is because we have HW register for it. As
-> long as this is a legal dram address, it is fine. When this address is
-> passed into TEE, it will be protected by HW.
+> - Mani
 >
 > >
-> > My issue here is more that 'secure video memory' is not any way
-> > Mediatek
-> > specific.
+> > P.S. you have been asked to fix your email client. Please do so. Or, if=
+ you are inserting these linebreaks manually, please stop.
+> >
+> > >Thanks,
+> > >
+> > >Can Guo.
+> > >
+> >
 >
-> Sorry, I don't know if there already is an SVP case in the current
-> kernel. If so, could you help share it?
+> --
+> =E0=AE=AE=E0=AE=A3=E0=AE=BF=E0=AE=B5=E0=AE=A3=E0=AF=8D=E0=AE=A3=E0=AE=A9=
+=E0=AF=8D =E0=AE=9A=E0=AE=A4=E0=AE=BE=E0=AE=9A=E0=AE=BF=E0=AE=B5=E0=AE=AE=
+=E0=AF=8D
 
-I don't think there is any SVP (Secure Video Path) case in the current
-kernel. I agree this shouldn't be a Mediatek specific setting, as this
-could be usable to other SVP implementations.
 
-I do think this should have 'cma' in the DT description, as it does
-relate to what the driver is going to do with this memory region. It
-will establish it as a CMA region in Linux. The reason it needs to be
-a CMA region is that the entire memory region will need to transition
-between secure (i.e. TEE owned) and non-secure (i.e. kernel owned).
-Some chipsets have the ability to change memory states between secure
-& non-secure at page level granularity, and in these cases you don't
-need to worry about having a CMA region like this. That is not the
-case on the Mediatek chips where there is a limit to how many regions
-you can mark as secure. In order to deal with that limitation, once a
-secure allocation needs to be performed, the kernel driver allocates
-the entire CMA region so nothing else will use it. Then it marks that
-whole region secure and the TEE can do its own allocations from that
-region. When all those allocations are freed, it can mark that region
-as non-secure again, drop the whole CMA allocation and the kernel can
-make use of that CMA region again.  (there is the other dma-heap in
-their patches, which is for a smaller region that can always be
-secure...but that one is a permanent carveout, the CMA region is
-available to the kernel while not in use for secure memory)
 
-So maybe something like:
-
-+title:Secure Reserved CMA Region
-+
-+description:
-+  This binding describes a CMA region that can dynamically transition
-between secure and non-secure states that a TEE can allocate memory
-from.
-+
-+maintainers:
-+  - Yong Wu <yong.wu@mediatek.com>
-+
-+allOf:
-+  - $ref: reserved-memory.yaml
-+
-+properties:
-+  compatible:
-+    const: secure_cma_region
-+
-+required:
-+  - compatible
-+  - reg
-+  - reusable
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+
-+    reserved-memory {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <1>;
-+        ranges;
-+
-+        reserved-memory@80000000 {
-+            compatible =3D "secure_cma_region";
-+            reusable;
-+            reg =3D <0x80000000 0x18000000>;
-+        };
-+    };
 --=20
-
-
->
-> Regarding our special, the new heap driver may be different, and other
-> HWs share this reserve buffer and manage it through this pure SW heap.
->
-> >  AIUI, it's a requirement from certain content providers for
-> > video playback to work. So why the Mediatek specific binding?
-> >
-> > Rob
+With best wishes
+Dmitry
