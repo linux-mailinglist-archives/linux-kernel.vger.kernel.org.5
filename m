@@ -2,118 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB3B7A5CA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2687A5CB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbjISIes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
+        id S230496AbjISIgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjISIee (ORCPT
+        with ESMTP id S229772AbjISIgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:34:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAA711A;
-        Tue, 19 Sep 2023 01:34:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C7EEC433C8;
-        Tue, 19 Sep 2023 08:34:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695112467;
-        bh=Gd2j5BZkeceRCAPRB3Ed88hy2OH7X0D2yLIWo8KBQt4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uqPF0RdFSUuPHVS9uiiuFZK/NONs5bMVKha5RE3q0SLUU0w+qAvrDIqMjUqQmdzL8
-         ar/7hr5tE7F5RNzFvjqx6ZOR7L/5gylxJ0cfFf3Q6G80TxwfRUtxdK4l3EINQ46+Qx
-         ykMh6tdZLaO+7192I177MDjhLtRLRVHG7TzZwV1G62tRsii/GzaeNhjPSfnobNIGGR
-         nihUFbhJTPDE8cwus1Y+9hAXGbdBngDLPA96rsZCF/OfxyZvWe+8FK1MQUNVNRO0p9
-         nOxm2ywFG4b8rCaotz49XsGAs+b1EoeOHErYMvbFRAsxLqMJ5pw125LEnRdzIN69am
-         a0hvgybCE0j5g==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1qiWBs-0006tO-2x;
-        Tue, 19 Sep 2023 10:34:40 +0200
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Michal Simek <michal.simek@amd.com>, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Subject: [PATCH RESEND] spi: zynqmp-gqspi: fix clock imbalance on probe failure
-Date:   Tue, 19 Sep 2023 10:34:01 +0200
-Message-ID: <20230919083401.26454-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        Tue, 19 Sep 2023 04:36:00 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E79114;
+        Tue, 19 Sep 2023 01:35:54 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3216b83c208so19047f8f.1;
+        Tue, 19 Sep 2023 01:35:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695112553; x=1695717353; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dV2G+63a3oMH14KZWQWuB/v9m43DyF6GjQGhHD+mfFg=;
+        b=B+B33f8Kne4c3g/2PKU/9nzD5s6BjIr1ZLhL14kanVox2+hwMI7rsLAaQywWZxcdoU
+         tadJ65o18m91/udOeEcwnuQjUvtKg60GDv49AlhnRkFbZyPgK98FjswrTACtSoXUi0CY
+         LcEqK1GULXKd5J5yftZhnL6DTy0rJ650ROhSPq1oyuzFgcIhZDZ0bubL5d6yPNd3/cBp
+         Q7hLqkp2n4SNXjphotGMn08OCJj9sWUJPM4lb6Y3Q5wxpPHLWoNKZyB5TBznaDV9Fi8L
+         KWsyrzRprEn3C40zZRL64l8OdP5+xjW/OrDD5KiARe1TendhrbXsN+vy4FfaLl15MLvS
+         X/LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695112553; x=1695717353;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dV2G+63a3oMH14KZWQWuB/v9m43DyF6GjQGhHD+mfFg=;
+        b=ELNhKajho5X2uCVfoBR01NAS80ZKNjJHsoUWKoa0ANzjx5dJscMfrn4rRPy68Iv4zS
+         uL+fm7kT2nRqrFIUdZm0iwY7O4Mk/2+OCLP7qf0fXMTTtPFAVmN+EIdXupOk+2QhjUR8
+         OT7BdxyC4UthMguD/E4HKh43wi4wFOVrv+fuYRCa+BM40+XU3WynSAZASeCWZ9dgwIWr
+         Zg3D9e0dUtkm8zXu+58oMBv97NY8KExn8dxuN9JzXmqcJdm1XgCgv8V9JoCN+x3ywwoT
+         FTNXLd0ld0RdEiy2l+kMEjwVW5Be3N36ieQVb4gCU/MIewEMxn2JSYVuoKZgp8T5wXOy
+         qQXQ==
+X-Gm-Message-State: AOJu0YyG7pmIoitDGmWqgTenAQSKKtfYRJpmLmpKF1H+a2dxr7ALIRYP
+        AoDotEY9FQLr9jLI/Vm8NHU=
+X-Google-Smtp-Source: AGHT+IHRNxRaJMpDbUET4qhMBAD4AyqktKwC1xzq6pRb+1P6VTrg6DgiBtGa+9/fJ+fj/1iRhCn9/w==
+X-Received: by 2002:a5d:43c3:0:b0:31f:84c9:d75f with SMTP id v3-20020a5d43c3000000b0031f84c9d75fmr8965796wrr.4.1695112552745;
+        Tue, 19 Sep 2023 01:35:52 -0700 (PDT)
+Received: from [10.0.0.26] ([178.160.241.68])
+        by smtp.gmail.com with ESMTPSA id k15-20020a5d628f000000b0031f729d883asm14843546wru.42.2023.09.19.01.35.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 01:35:52 -0700 (PDT)
+Message-ID: <8e39a894-e921-51e6-c9bf-b007a08b10fb@gmail.com>
+Date:   Tue, 19 Sep 2023 12:35:45 +0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/2] ALSA: Add new driver for Marian M2 sound card
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     perex@perex.cz, tiwai@suse.com, corbet@lwn.net,
+        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+References: <20230918181044.7257-1-ivan.orlov0322@gmail.com>
+ <20230918181044.7257-2-ivan.orlov0322@gmail.com>
+ <87y1h2y4tr.wl-tiwai@suse.de>
+Content-Language: en-US
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <87y1h2y4tr.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that the device is not runtime suspended before explicitly
-disabling the clocks on probe failure and on driver unbind to avoid a
-clock enable-count imbalance.
+On 9/19/23 11:56, Takashi Iwai wrote:
+> On Mon, 18 Sep 2023 20:10:44 +0200,
+> Ivan Orlov wrote:
+>>
+>> +#include <sound/core.h>
+>> +#include <sound/control.h>
+>> +#include <sound/pcm.h>
+>> +#include <sound/pcm_params.h>
+>> +#include <sound/core.h>
+>> +#include <sound/pcm.h>
+>> +#include <sound/initval.h>
+>> +#include <sound/info.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/module.h>
+>> +#include <linux/pci.h>
+>> +#include <linux/interrupt.h>
+> 
+> We usually include linux/* at first, followed by sound/*.
+> 
+> 
+>> +#define DEBUG
+> 
+> Any need to define this for the production system?
+> 
+> 
+>> +struct marian_card_descriptor;
+>> +struct marian_card;
+>> +
+>> +struct marian_card_descriptor {
+>> +	char *name;
+>> +	char *port_names;
+>> +	unsigned int speedmode_max;
+>> +	unsigned int ch_in;
+>> +	unsigned int ch_out;
+>> +	unsigned int midi_in;
+>> +	unsigned int midi_out;
+>> +	unsigned int serial_in;
+>> +	unsigned int serial_out;
+>> +	unsigned int wck_in;
+>> +	unsigned int wck_out;
+>> +
+>> +	unsigned int dma_bufsize;
+>> +
+>> +	void (*hw_constraints_func)(struct marian_card *marian,
+>> +				    struct snd_pcm_substream *substream,
+>> +				    struct snd_pcm_hw_params *params);
+>> +	/* custom function to set up ALSA controls */
+>> +	void (*create_controls)(struct marian_card *marian);
+>> +	/* init is called after probing the card */
+>> +	int (*init_card)(struct marian_card *marian);
+>> +	void (*free_card)(struct marian_card *marian);
+>> +	/* prepare is called when ALSA is opening the card */
+>> +	void (*prepare)(struct marian_card *marian);
+>> +	void (*set_speedmode)(struct marian_card *marian, unsigned int speedmode);
+>> +	void (*proc_status)(struct marian_card *marian, struct snd_info_buffer *buffer);
+>> +	void (*proc_ports)(struct marian_card *marian, struct snd_info_buffer *buffer,
+>> +			   unsigned int type);
+>> +
+>> +	struct snd_pcm_hardware info_playback;
+>> +	struct snd_pcm_hardware info_capture;
+> 
+> Do we need this kind of abstraction inside the driver?
+> As far as I see, the driver supports only a single model, hence there
+> is no real merit of abstracted / indirect function calls.
+> 
+> So I stop reading at this point.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-Fixes: 9e3a000362ae ("spi: zynqmp: Add pm runtime support")
-Cc: stable@vger.kernel.org	# 4.19
-Cc: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
+Hi Takashi,
 
-Hi Mark,
+Thank you for the review! I will send the next version after removing 
+all indirections and cleaning the code again.
 
-This patch ended up sitting in your for-next and for-6.4 branches for a
-few releases but was never sent on to Linus as I reported here:
-
-	https://lore.kernel.org/lkml/ZOy0l6sXyYib59ej@finisterre.sirena.org.uk/
-
-Now it appears to have been dropped from linux-next so resending.
-
-Johan
-
-
- drivers/spi/spi-zynqmp-gqspi.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index 94d9a33d9af5..9a46b2478f4e 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -1340,9 +1340,9 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 	return 0;
- 
- clk_dis_all:
--	pm_runtime_put_sync(&pdev->dev);
--	pm_runtime_set_suspended(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- 	clk_disable_unprepare(xqspi->refclk);
- clk_dis_pclk:
- 	clk_disable_unprepare(xqspi->pclk);
-@@ -1366,11 +1366,15 @@ static void zynqmp_qspi_remove(struct platform_device *pdev)
- {
- 	struct zynqmp_qspi *xqspi = platform_get_drvdata(pdev);
- 
-+	pm_runtime_get_sync(&pdev->dev);
-+
- 	zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, 0x0);
-+
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- 	clk_disable_unprepare(xqspi->refclk);
- 	clk_disable_unprepare(xqspi->pclk);
--	pm_runtime_set_suspended(&pdev->dev);
--	pm_runtime_disable(&pdev->dev);
- }
- 
- MODULE_DEVICE_TABLE(of, zynqmp_qspi_of_match);
--- 
-2.41.0
-
+--
+Kind regards,
+Ivan Orlov
