@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B29537A5693
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 02:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D477A5695
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 02:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjISAbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 20:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
+        id S230257AbjISAcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 20:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjISAbK (ORCPT
+        with ESMTP id S229508AbjISAcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 20:31:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAB710D;
-        Mon, 18 Sep 2023 17:31:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695083452; x=1695688252; i=quwenruo.btrfs@gmx.com;
- bh=MHPq8qo9npPhpYugDittIcKIzactLJBBUJ4cBZhJd8c=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=qvph1/CTXOba9WQtzi6TdpCV3NvycVTPAYbp9UleDs4A/va8UpVWRkL7kfClEhf0i9cEUVqCbz6
- /WqT7EKpCSYagZSWwbMjql1Fd6VYDRbwTD/hyk19XDzI5EPTFbJ8GTiNFusk13gtCpQuYz28+XTm0
- qko9tea4QzmcDH9PHsn0F9TOlusizcz1AjnyoKDAGX+CRDxQhA8Lars0riv02EBtWF9brrO54gkeN
- pKynf+t/Vd0V0X3xUdFh46q2AIwfaVinG8dI7zYzRWRBHJfzj+BMV6Hv0cb0bEtJHQIV+0qdNPITs
- Xry0wMKmZZ59xmj5JDGASRk21l6dldtaF7eQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McH9i-1rGLsV2yqK-00cglU; Tue, 19
- Sep 2023 02:30:52 +0200
-Message-ID: <a0ea125f-7d1c-43f4-bf05-7b43853138c5@gmx.com>
-Date:   Tue, 19 Sep 2023 10:00:46 +0930
+        Mon, 18 Sep 2023 20:32:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F81107
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 17:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695083491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yt0ViDpjZ+25N6JQm0qkxgqk3PInKbbOQPzyPguJLGE=;
+        b=eaB5qE0ucbLXshj9Qj5Cd6Hm1CjAvIfjbaULnWdwrHA9vOVKaJAOvY88+REF4/yz6HMIC5
+        NkqOOwMCTcPsiT4wwRnda1C6jvvTr7axK6AXS3HfPPlHFDelN6H/GomYjyx7Ct53PPK4Wb
+        bAsTfBn3WJWmD/EFdfVz+cRoM6/bEuk=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-413-2DRe2kyLMQCZnKfF4jrsow-1; Mon, 18 Sep 2023 20:31:27 -0400
+X-MC-Unique: 2DRe2kyLMQCZnKfF4jrsow-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2748ef8b3c7so2788333a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 17:31:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695083486; x=1695688286;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yt0ViDpjZ+25N6JQm0qkxgqk3PInKbbOQPzyPguJLGE=;
+        b=phDuAwmg9V3ru8ab+W3TcOg4dGbQVdu9SZna1UfhUO12mZ0hRbowPx+DvoEZBNcdLs
+         erY5NHqJm9OfDFkE4mbYWxj3U5Xy72I6KdwaOnh1XCd7IBMTU5pBZdDp99ZzP6vfBDPD
+         GcqxSEbXRXmARBgTVVhvWIGK4Mmih2pEbV++3/VihxBIV3cp2FuB/1HmBZfTnx+4+xsU
+         K+y7i+HlRpmyVitKsMd9seGiIm/nLsek/QVYT5TIJRC4q48BvaAOXBCKZmhgFY2239pk
+         zkmJZ1k03LeK1syKj2NEhSmoa/9LX4iX2IP4V/vA6tZgRJisxDXfE4r+1kGuiZ2oEiYB
+         6OIA==
+X-Gm-Message-State: AOJu0Yw0nt/gvJ6GAUoT1P97kKsSesJHIk6h5hHA4ICdvQp39ISpFNFm
+        T9uP0LA7uMGraokw7/EOGkecBvpXpk0MY/rcUOuKRDkSgobNWkEnmBi7YGrsy97hHbb1hO1PgFf
+        P2J0u0WInM1FNyLeIm4h2MOhZ
+X-Received: by 2002:a17:90a:f3d4:b0:274:6cd3:a533 with SMTP id ha20-20020a17090af3d400b002746cd3a533mr7710096pjb.20.1695083486654;
+        Mon, 18 Sep 2023 17:31:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEuRHNEswx8Y3CK9vB5Y6rtmqv1Vi3ahJ5e3s63VHLKH86N5qFHbQvQv+6fmLjVPhUNR76WEw==
+X-Received: by 2002:a17:90a:f3d4:b0:274:6cd3:a533 with SMTP id ha20-20020a17090af3d400b002746cd3a533mr7710080pjb.20.1695083486322;
+        Mon, 18 Sep 2023 17:31:26 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id f93-20020a17090a706600b0026fa1931f66sm8310527pjk.9.2023.09.18.17.31.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 17:31:25 -0700 (PDT)
+Message-ID: <c3ef8123-1fcc-7289-c475-c753de44d564@redhat.com>
+Date:   Tue, 19 Sep 2023 10:31:17 +1000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] btrfs: add tree-checker for RAID-stripe-tree
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenru <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
- <20230918-rst-updates-v1-4-17686dc06859@wdc.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 21/35] ACPI: Add post_eject to struct
+ acpi_scan_handler for cpu hotplug
 Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230918-rst-updates-v1-4-17686dc06859@wdc.com>
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
+Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-22-james.morse@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230913163823.7880-22-james.morse@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:g6bYWNdMfKvCTqkZtQwKKqBND4Y9t/29A2bhSo83BTyeQTuYVv2
- f5TbTu6Li8eUBf95kmclO+PdG+r9lFXCPxx7WGQia0EERcfJI1qxrLSMia5+MY7907YFiM4
- +6aQ/YRN4k9HHanw0Nn203MHif8GPtNsnT8n8P4ooBCvkHdbyFKv80rTIu7ZmW18uqs+RN1
- uZBWPbfq0IaAyTTYQoPQw==
-UI-OutboundReport: notjunk:1;M01:P0:5bp+MoIxxHs=;5DshjgHutg/cbKh0HQrOAbxeyvR
- gaRehHfGmDemgufUa+wMmeYAcM++41HDSmRTdP40+Up0ctmlqULr34YKS1WyxYoXcJ/01eK0S
- gra2kLx+oeIkYjWf7oQ/ahtFUWlqCbqZdgtlv8Llx+ZBzhwmeCcm2vs8k6fAmQV78QcQ2Dgxe
- /PZuwSSBaT+bAx8k+tNOjzbqOh2Y3UYJmrUA4qOvGXaYr9f6CZ/eIIN/0FLXmTq4grHdiwPw9
- 7RdYqnJUIkVD5tdU1ZTepB4FofPQhYs9NYPQGG8iu/N1ddr2jvtJirag0TtOUF4+bQmuC0z6Y
- 1j+34+eDX8RTd1dBAI6+ZX63utuPxaGcLMUDNydv5w6es67MwZYITIrO2Y0LiXTRstwhAtz6E
- 8zoEmKyhUPFg/xNc2vRdyaNKx86KngOZtJnTVrv/fN/IKkCHZTAjVHSyeufMwT9Q/L433fqiM
- tR/tzUHQAcaGwJVeRdAYRU34qsHy4rUp9fxOh31g9b9Rzzopdg47xDKTW8eoktc3skquzdawx
- yZVC/DlQzmEsw/+VCfrz6rYkNb38csc4IedsL2FFhqwn0Wmybw1GwwBT+2AiNpBoALqqDqdh0
- IQPE6Bh8OUCQblhook2bizEHdR8ZL38aRiJEvvkMMZ6hCLAjfpiXtv8iG+0VcON8vtlHunW4a
- POBKVsL1Do4WoRKqN8Y/AYIyp5rtdr4oP4SczZoPwqFV6541ZV5rYJ8vpHsUBlSIM+47LlHxH
- 6FkSYCq1+S+LN3DVfhW94529SSMekd+dPPS6H0UHeGlo4L/o5i2hK4laJ6fGHBWwiErF/BjvM
- W/qTfxI5U/FkBPdcBBfBjjkKkB0LDGb6Ep7gHVskELr5PlxTFw5Ud1D7NHlKQ1QAkn0V4by7a
- Y9BkGkSZiTJGG6uIk/ru72ER7LGioLiZE5mPDkak4nW63exo0kKyI2nqmyyH/NdhshIBcnYHr
- PCfTcF5qfYT2Ce103RUc8SvdksA=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -100,89 +91,180 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023/9/18 23:44, Johannes Thumshirn wrote:
-> Add a tree checker for RAID stripe tree items.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On 9/14/23 02:38, James Morse wrote:
+> struct acpi_scan_handler has a detach callback that is used to remove
+> a driver when a bus is changed. When interacting with an eject-request,
+> the detach callback is called before _EJ0.
+> 
+> This means the ACPI processor driver can't use _STA to determine if a
+> CPU has been made not-present, or some of the other _STA bits have been
+> changed. acpi_processor_remove() needs to know the value of _STA after
+> _EJ0 has been called.
+> 
+
+It's helpful to mention which ACPI processor driver needs to use _STA
+to determine the status here. I guess the ACPI processor driver will
+behave differently depending on the status.
+
+> Add a post_eject callback to struct acpi_scan_handler. This is called
+> after acpi_scan_hot_remove() has successfully called _EJ0. Because
+> acpi_bus_trim_one() also clears the handler pointer, it needs to be
+> told if the caller will go on to call acpi_bus_post_eject(), so
+> that acpi_device_clear_enumerated() and clearing the handler pointer
+> can be deferred. The existing not-used pointer is used for this.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
 > ---
->   fs/btrfs/tree-checker.c | 42 +++++++++++++++++++++++++++++++++++++++++=
-+
->   1 file changed, 42 insertions(+)
->
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 01bba79165e7..ea84ca2767e9 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -30,6 +30,7 @@
->   #include "file-item.h"
->   #include "inode-item.h"
->   #include "dir-item.h"
-> +#include "raid-stripe-tree.h"
->
->   /*
->    * Error message should follow the following format:
-> @@ -1635,6 +1636,44 @@ static int check_inode_ref(struct extent_buffer *=
-leaf,
+>   drivers/acpi/acpi_processor.c |  4 +--
+>   drivers/acpi/scan.c           | 52 ++++++++++++++++++++++++++++++-----
+>   include/acpi/acpi_bus.h       |  1 +
+>   3 files changed, 48 insertions(+), 9 deletions(-)
+> 
+
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index 22a15a614f95..00dcc23d49a8 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -459,7 +459,7 @@ static int acpi_processor_add(struct acpi_device *device,
+>   
+>   #ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+>   /* Removal */
+> -static void acpi_processor_remove(struct acpi_device *device)
+> +static void acpi_processor_post_eject(struct acpi_device *device)
+>   {
+>   	struct acpi_processor *pr;
+>   
+> @@ -627,7 +627,7 @@ static struct acpi_scan_handler processor_handler = {
+>   	.ids = processor_device_ids,
+>   	.attach = acpi_processor_add,
+>   #ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+> -	.detach = acpi_processor_remove,
+> +	.post_eject = acpi_processor_post_eject,
+>   #endif
+>   	.hotplug = {
+>   		.enabled = true,
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index a675333618ae..b6d2f01640a9 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -244,18 +244,28 @@ static int acpi_scan_try_to_offline(struct acpi_device *device)
 >   	return 0;
 >   }
->
-> +static int check_raid_stripe_extent(struct extent_buffer *leaf,
-> +				    struct btrfs_key *key, int slot)
+>   
+> -static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
+> +/**
+> + * acpi_bus_trim_one() - Detach scan handlers and drivers from ACPI device
+> + *                       objects.
+> + * @adev:       Root of the ACPI namespace scope to walk.
+> + * @eject:      Pointer to a bool that indicates if this was due to an
+> + *              eject-request.
+> + *
+> + * Must be called under acpi_scan_lock.
+> + * If @eject points to true, clearing the device enumeration is deferred until
+> + * acpi_bus_post_eject() is called.
+> + */
+> +static int acpi_bus_trim_one(struct acpi_device *adev, void *eject)
+>   {
+>   	struct acpi_scan_handler *handler = adev->handler;
+> +	bool is_eject = *(bool *)eject;
+>   
+> -	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
+> +	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, eject);
+>   
+>   	adev->flags.match_driver = false;
+>   	if (handler) {
+>   		if (handler->detach)
+>   			handler->detach(adev);
+> -
+> -		adev->handler = NULL;
+>   	} else {
+>   		device_release_driver(&adev->dev);
+>   	}
+> @@ -265,7 +275,12 @@ static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
+>   	 */
+>   	acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
+>   	adev->flags.initialized = false;
+> -	acpi_device_clear_enumerated(adev);
+> +
+> +	/* For eject this is deferred to acpi_bus_post_eject() */
+> +	if (!is_eject) {
+> +		adev->handler = NULL;
+> +		acpi_device_clear_enumerated(adev);
+> +	}
+>   
+>   	return 0;
+>   }
+> @@ -278,15 +293,36 @@ static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
+>    */
+>   void acpi_bus_trim(struct acpi_device *adev)
+>   {
+> -	acpi_bus_trim_one(adev, NULL);
+> +	bool eject = false;
+> +
+> +	acpi_bus_trim_one(adev, &eject);
+>   }
+>   EXPORT_SYMBOL_GPL(acpi_bus_trim);
+>   
+> +static int acpi_bus_post_eject(struct acpi_device *adev, void *not_used)
 > +{
-> +	struct btrfs_stripe_extent *stripe_extent =3D
-> +		btrfs_item_ptr(leaf, slot, struct btrfs_stripe_extent);
+> +	struct acpi_scan_handler *handler = adev->handler;
 > +
-> +	if (unlikely(!IS_ALIGNED(key->objectid, leaf->fs_info->sectorsize))) {
-> +		generic_err(leaf, slot,
-> +"invalid key objectid for raid stripe extent, have %llu expect aligned =
-to %u",
-> +			    key->objectid, leaf->fs_info->sectorsize);
-> +		return -EUCLEAN;
+> +	acpi_dev_for_each_child_reverse(adev, acpi_bus_post_eject, NULL);
+> +
+> +	if (handler) {
+> +		if (handler->post_eject)
+> +			handler->post_eject(adev);
+> +
+> +		adev->handler = NULL;
 > +	}
 > +
-> +	if (unlikely(!btrfs_fs_incompat(leaf->fs_info, RAID_STRIPE_TREE))) {
-> +		generic_err(leaf, slot,
-> +	"RAID_STRIPE_EXTENT present but RAID_STRIPE_TREE incompat bit unset");
-> +		return -EUCLEAN;
-> +	}
-> +
-> +	switch (btrfs_stripe_extent_encoding(leaf, stripe_extent)) {
-> +	case BTRFS_STRIPE_RAID0:
-> +	case BTRFS_STRIPE_RAID1:
-> +	case BTRFS_STRIPE_DUP:
-> +	case BTRFS_STRIPE_RAID10:
-> +	case BTRFS_STRIPE_RAID5:
-> +	case BTRFS_STRIPE_RAID6:
-> +	case BTRFS_STRIPE_RAID1C3:
-> +	case BTRFS_STRIPE_RAID1C4:
-> +		break;
-> +	default:
-> +		generic_err(leaf, slot, "invalid raid stripe encoding %u",
-> +			    btrfs_stripe_extent_encoding(leaf, stripe_extent));
-> +		return -EUCLEAN;
-> +	}
-
-Another thing we can check is the item size, the item size should be
-aligned to a single record, or we can get garbage reading the last record.
-
-Thanks,
-Qu
+> +	acpi_device_clear_enumerated(adev);
 > +
 > +	return 0;
 > +}
 > +
->   /*
->    * Common point to switch the item-specific validation.
->    */
-> @@ -1689,6 +1728,9 @@ static enum btrfs_tree_block_status check_leaf_ite=
-m(struct extent_buffer *leaf,
->   	case BTRFS_EXTENT_DATA_REF_KEY:
->   		ret =3D check_extent_data_ref(leaf, key, slot);
->   		break;
-> +	case BTRFS_RAID_STRIPE_KEY:
-> +		ret =3D check_raid_stripe_extent(leaf, key, slot);
-> +		break;
+>   static int acpi_scan_hot_remove(struct acpi_device *device)
+>   {
+>   	acpi_handle handle = device->handle;
+>   	unsigned long long sta;
+>   	acpi_status status;
+> +	bool eject = true;
+>   
+>   	if (device->handler && device->handler->hotplug.demand_offline) {
+>   		if (!acpi_scan_is_offline(device, true))
+> @@ -299,7 +335,7 @@ static int acpi_scan_hot_remove(struct acpi_device *device)
+>   
+>   	acpi_handle_debug(handle, "Ejecting\n");
+>   
+> -	acpi_bus_trim(device);
+> +	acpi_bus_trim_one(device, &eject);
+>   
+>   	acpi_evaluate_lck(handle, 0);
+>   	/*
+> @@ -322,6 +358,8 @@ static int acpi_scan_hot_remove(struct acpi_device *device)
+>   	} else if (sta & ACPI_STA_DEVICE_ENABLED) {
+>   		acpi_handle_warn(handle,
+>   			"Eject incomplete - status 0x%llx\n", sta);
+> +	} else {
+> +		acpi_bus_post_eject(device, NULL);
 >   	}
->
->   	if (ret)
->
+>   
+>   	return 0;
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 254685085c82..1b7e1acf925b 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -127,6 +127,7 @@ struct acpi_scan_handler {
+>   	bool (*match)(const char *idstr, const struct acpi_device_id **matchid);
+>   	int (*attach)(struct acpi_device *dev, const struct acpi_device_id *id);
+>   	void (*detach)(struct acpi_device *dev);
+> +	void (*post_eject)(struct acpi_device *dev);
+>   	void (*bind)(struct device *phys_dev);
+>   	void (*unbind)(struct device *phys_dev);
+>   	struct acpi_hotplug_profile hotplug;
+
+Thanks,
+Gavin
+
