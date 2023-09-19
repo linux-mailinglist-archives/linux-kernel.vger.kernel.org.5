@@ -2,189 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D73037A5D93
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484037A5D9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbjISJRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        id S231282AbjISJSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:18:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjISJRP (ORCPT
+        with ESMTP id S231267AbjISJS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:17:15 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9796BDA;
-        Tue, 19 Sep 2023 02:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695115030; x=1726651030;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=RXZnVy9qTKiAdKqhq9D0anZsKhPGWiv072xSkoUwPmo=;
-  b=ZN8sanRdNnVtTRq2A5e6Zk+EakYBtd5CyO01oo3mm/+8XpgjV4IP9454
-   2afEGJqQNb+wKWxPJu7tFULxMeSbeXBgv4CllxSVx82J3O69opIxOyTgz
-   TGN8bIzBpUX5Ggg4Seq0c/BDesub8f968Qmyrb1QNJ/o1u2mWIgNJ4I8m
-   H2ai1kRFTT3TDwk1Qv+0AupZPxQUnNu70016RkImMiHvcxBQpS6XzAY4m
-   MJtsKNefq4WQEVYusEkpeENFpG5N8wBdNJi9vqzmZ91yjb/JYA2Vl1yxK
-   l7dcUkosHkwUPtnfWQxzUgVsa9YQM/4V4TOb9NcRXkRYPTG/HvV2U05s+
-   g==;
-X-CSE-ConnectionGUID: AkaCJQRQRDm43rXS0iI9Fw==
-X-CSE-MsgGUID: icolL1u7Q92PVqAvnbzj0A==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="5394256"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Sep 2023 02:17:10 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 19 Sep 2023 02:16:53 -0700
-Received: from microchip1-OptiPlex-9020.microchip.com (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Tue, 19 Sep 2023 02:16:51 -0700
-From:   shravan kumar <shravan.chippa@microchip.com>
-To:     <paul.j.murphy@intel.com>, <daniele.alessandrelli@intel.com>,
-        <mchehab@kernel.org>
-CC:     <sakari.ailus@iki.fi>, <linux-media@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Shravan Chippa <shravan.chippa@microchip.com>
-Subject: [PATCH v3] media: i2c: imx334: add support for test pattern generator
-Date:   Tue, 19 Sep 2023 14:47:40 +0530
-Message-ID: <20230919091740.1821543-1-shravan.chippa@microchip.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 19 Sep 2023 05:18:27 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BEA100
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:18:20 -0700 (PDT)
+Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qiWrw-0008AB-7P; Tue, 19 Sep 2023 11:18:08 +0200
+Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qiWru-009c0Q-E5; Tue, 19 Sep 2023 11:18:06 +0200
+Date:   Tue, 19 Sep 2023 11:18:06 +0200
+From:   Michael Grzeschik <mgr@pengutronix.de>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Jeff Vanhoof <jdv1029@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Vacura <w36195@motorola.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Daniel Scally <dan.scally@ideasonboard.com>,
+        Jeff Vanhoof <qjv001@motorola.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Message-ID: <ZQlnTsLriLGvZPfo@pengutronix.de>
+References: <20221018215044.765044-1-w36195@motorola.com>
+ <20221018215044.765044-3-w36195@motorola.com>
+ <Y1PUjO99fcgaN0tc@kroah.com>
+ <20221022133541.GA26431@qjv001-XeonWs>
+ <20221024224748.3aao6cox5y4ptmob@synopsys.com>
+ <ZQlln94I7MPlX0ff@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sr2zawqPPoJoClMC"
+Content-Disposition: inline
+In-Reply-To: <ZQlln94I7MPlX0ff@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:2:b01:1d::c5
+X-SA-Exim-Mail-From: mgr@pengutronix.de
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
+Subject: Re: [PATCH v4 2/6] usb: dwc3: gadget: cancel requests instead of
+ release after missed isoc
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on metis.whiteo.stw.pengutronix.de)
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shravan Chippa <shravan.chippa@microchip.com>
 
-Add support for the imx334's test pattern generator.
-By default the test pattern generator is disabled, so add support for
-enabling and disabling horizontal and vertical colour bars.
+--sr2zawqPPoJoClMC
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
----
+On Tue, Sep 19, 2023 at 11:10:55AM +0200, Michael Grzeschik wrote:
+>On Mon, Oct 24, 2022 at 10:47:53PM +0000, Thinh Nguyen wrote:
+>>On Sat, Oct 22, 2022, Jeff Vanhoof wrote:
+>>>Hi Greg,
+>>>
+>>>On Sat, Oct 22, 2022 at 01:31:24PM +0200, Greg Kroah-Hartman wrote:
+>>>> On Tue, Oct 18, 2022 at 04:50:38PM -0500, Dan Vacura wrote:
+>>>> > From: Jeff Vanhoof <qjv001@motorola.com>
+>>>> >
+>>>> > arm-smmu related crashes seen after a Missed ISOC interrupt when
+>>>> > no_interrupt=3D1 is used. This can happen if the hardware is still u=
+sing
+>>>> > the data associated with a TRB after the usb_request's ->complete ca=
+ll
+>>>> > has been made.  Instead of immediately releasing a request when a Mi=
+ssed
+>>>> > ISOC interrupt has occurred, this change will add logic to cancel the
+>>>> > request instead where it will eventually be released when the
+>>>> > END_TRANSFER command has completed. This logic is similar to some of=
+ the
+>>>> > cleanup done in dwc3_gadget_ep_dequeue.
+>>>> >
+>>>> > Fixes: 6d8a019614f3 ("usb: dwc3: gadget: check for Missed Isoc from =
+event status")
+>>>> > Cc: <stable@vger.kernel.org>
+>>>> > Signed-off-by: Jeff Vanhoof <qjv001@motorola.com>
+>>>> > Co-developed-by: Dan Vacura <w36195@motorola.com>
+>>>> > Signed-off-by: Dan Vacura <w36195@motorola.com>
+>>>> > ---
+>>>> > V1 -> V3:
+>>>> > - no change, new patch in series
+>>>> > V3 -> V4:
+>>>> > - no change
+>>>>
+>>>> I need an ack from the dwc3 maintainer before I can take this one.
+>>>>
+>>>> thanks,
+>>>>
+>>>> greg k-h
+>>>
+>>>Thinh has rejected this version of the patch. He has provided an alterna=
+tive
+>>>implementation which has been testing well for us so far. Either Thinh o=
+r Dan
+>>>will formalize this patch within the next few days.
+>>>The latest proposed changes are:
+>>>
+>>>diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>>index dfaf9ac24c4f..50287437d6de 100644
+>>>--- a/drivers/usb/dwc3/gadget.c
+>>>+++ b/drivers/usb/dwc3/gadget.c
+>>>@@ -3195,6 +3195,9 @@ static int dwc3_gadget_ep_reclaim_completed_trb(st=
+ruct dwc3_ep *dep,
+>>>        if (event->status & DEPEVT_STATUS_SHORT && !chain)
+>>>                return 1;
+>>>
+>>>+       if (DWC3_TRB_SIZE_TRBSTS(trb->size) =3D=3D DWC3_TRBSTS_MISSED_IS=
+OC && !chain)
+>>>+               return 1;
+>>>+
+>>>        if ((trb->ctrl & DWC3_TRB_CTRL_IOC) ||
+>>>            (trb->ctrl & DWC3_TRB_CTRL_LST))
+>>>                return 1;
+>>>@@ -3211,6 +3214,7 @@ static int dwc3_gadget_ep_reclaim_trb_sg(struct dw=
+c3_ep *dep,
+>>>        struct scatterlist *s;
+>>>        unsigned int num_queued =3D req->num_queued_sgs;
+>>>        unsigned int i;
+>>>+       bool missed_isoc =3D false;
+>>>        int ret =3D 0;
+>>>
+>>>        for_each_sg(sg, s, num_queued, i) {
+>>>@@ -3219,12 +3223,18 @@ static int dwc3_gadget_ep_reclaim_trb_sg(struct =
+dwc3_ep *dep,
+>>>                req->sg =3D sg_next(s);
+>>>                req->num_queued_sgs--;
+>>>
+>>>+               if (DWC3_TRB_SIZE_TRBSTS(trb->size) =3D=3D DWC3_TRBSTS_M=
+ISSED_ISOC)
+>>>+                       missed_isoc =3D true;
+>>>+
+>>>                ret =3D dwc3_gadget_ep_reclaim_completed_trb(dep, req,
+>>>                                trb, event, status, true);
+>>>                if (ret)
+>>>                        break;
+>>>        }
+>>>
+>>>+       if (missed_isoc)
+>>>+               ret =3D 1;
+>>>+
+>>>        return ret;
+>>> }
+>>>
+>>>
+>>
+>>That's just a debug patch. I'll send out proper fix patches.
+>
+>Ping!
+>
+>While digging out this thread, I did not find any followup patch
+>for this suggestion. Did it hit the mailinglist anywhere?
+>
+>If not, will you send one?
 
-V2 -> V3
-Added "Acked-by: Daniele Alessandrelli"
+Nevermind, I think I found the hunk in a variated version in this series.
 
+https://lore.kernel.org/linux-usb/cover.1666735451.git.Thinh.Nguyen@synopsy=
+s.com/
 
-V1 -> V2
-Rename command from 
-	"Color Bars Ver"  -->  "Vertical Color Bars"
-	"Color Bars Hor"  --> "Horizontal Color Bars".
+Michael
 
----
- drivers/media/i2c/imx334.c | 57 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 56 insertions(+), 1 deletion(-)
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
-diff --git a/drivers/media/i2c/imx334.c b/drivers/media/i2c/imx334.c
-index d722c9b7cd31..91c79af70734 100644
---- a/drivers/media/i2c/imx334.c
-+++ b/drivers/media/i2c/imx334.c
-@@ -56,6 +56,24 @@
- #define IMX334_REG_MIN		0x00
- #define IMX334_REG_MAX		0xfffff
- 
-+/* Test Pattern Control */
-+#define IMX334_REG_TP		0x329e
-+#define IMX334_TP_COLOR_HBARS	0xA
-+#define IMX334_TP_COLOR_VBARS	0xB
-+
-+#define IMX334_TPG_EN_DOUT	0x329c
-+#define IMX334_TP_ENABLE	0x1
-+#define IMX334_TP_DISABLE	0x0
-+
-+#define IMX334_TPG_COLORW	0x32a0
-+#define IMX334_TPG_COLORW_120P	0x13
-+
-+#define IMX334_TP_CLK_EN	0x3148
-+#define IMX334_TP_CLK_EN_VAL	0x10
-+#define IMX334_TP_CLK_DIS_VAL	0x0
-+
-+#define IMX334_DIG_CLP_MODE	0x3280
-+
- /**
-  * struct imx334_reg - imx334 sensor register
-  * @address: Register address
-@@ -430,6 +448,18 @@ static const struct imx334_reg mode_3840x2160_regs[] = {
- 	{0x3a29, 0x00},
- };
- 
-+static const char * const imx334_test_pattern_menu[] = {
-+	"Disabled",
-+	"Vertical Color Bars",
-+	"Horizontal Color Bars",
-+};
-+
-+static const int imx334_test_pattern_val[] = {
-+	IMX334_TP_DISABLE,
-+	IMX334_TP_COLOR_HBARS,
-+	IMX334_TP_COLOR_VBARS,
-+};
-+
- static const struct imx334_reg raw10_framefmt_regs[] = {
- 	{0x3050, 0x00},
- 	{0x319d, 0x00},
-@@ -716,6 +746,26 @@ static int imx334_set_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_HBLANK:
- 		ret = 0;
- 		break;
-+	case V4L2_CID_TEST_PATTERN:
-+		if (ctrl->val) {
-+			imx334_write_reg(imx334, IMX334_TP_CLK_EN, 1,
-+					 IMX334_TP_CLK_EN_VAL);
-+			imx334_write_reg(imx334, IMX334_DIG_CLP_MODE, 1, 0x0);
-+			imx334_write_reg(imx334, IMX334_TPG_COLORW, 1,
-+					 IMX334_TPG_COLORW_120P);
-+			imx334_write_reg(imx334, IMX334_REG_TP, 1,
-+					 imx334_test_pattern_val[ctrl->val]);
-+			imx334_write_reg(imx334, IMX334_TPG_EN_DOUT, 1,
-+					 IMX334_TP_ENABLE);
-+		} else {
-+			imx334_write_reg(imx334, IMX334_DIG_CLP_MODE, 1, 0x1);
-+			imx334_write_reg(imx334, IMX334_TP_CLK_EN, 1,
-+					 IMX334_TP_CLK_DIS_VAL);
-+			imx334_write_reg(imx334, IMX334_TPG_EN_DOUT, 1,
-+					 IMX334_TP_DISABLE);
-+		}
-+		ret = 0;
-+		break;
- 	default:
- 		dev_err(imx334->dev, "Invalid control %d", ctrl->id);
- 		ret = -EINVAL;
-@@ -1222,7 +1272,7 @@ static int imx334_init_controls(struct imx334 *imx334)
- 	u32 lpfr;
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 6);
-+	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
- 	if (ret)
- 		return ret;
- 
-@@ -1282,6 +1332,11 @@ static int imx334_init_controls(struct imx334 *imx334)
- 	if (imx334->hblank_ctrl)
- 		imx334->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
- 
-+	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &imx334_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(imx334_test_pattern_menu) - 1,
-+				     0, 0, imx334_test_pattern_menu);
-+
- 	if (ctrl_hdlr->error) {
- 		dev_err(imx334->dev, "control init failed: %d",
- 			ctrl_hdlr->error);
--- 
-2.34.1
+--sr2zawqPPoJoClMC
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmUJZ0gACgkQC+njFXoe
+LGSIIBAAhZlRUqMeCB683Wh9mhpH9TldcDgLVwYvLrbgjA369sDRvnp0Bq/UHunS
+Y6GxMg6NU2hZCF21Fo5KT7KOJcaBzU5oKmMsuaEGIpPEKekdglBmhtzNzWwZ6b3w
+kC+D+AaG3dF1QZDc1Wr2FK7uV2y4qHRqecTXFfKNJYAl/hRNSzz/lsNsbiW3Rcu/
+8j5C7FnlW8AB1SB6MNrQkYhMlJpS54pcnvJGSTj66Unotet1Qjc5VALiDnJlvBlw
+M0BdZy+vhOXyjpNshOe+vwujXKwIYz3gLcg8F4SyCY2p22BoiWGMrq/b5oviBuwT
+CwfjO0R/W0V5A11TEHeqd480M/3EUHhiwPVzepxHCBeplCSL8xMAmvPc/aaWdlov
+F3YbEeEe7m1WRGbiyiFvJyZQJrsLHwJEdcGwNrbjCgYBQlAlIpG8rH0VLgxavDg+
+8/8vOgCxbU1wFXy8z5gL3j1bilnuYH80DrBC/x8+/Or5NpmjiRCLGl1OpRtlS04l
+sgb9HJBn1poXrhrT7/gheQba7NszcUVlZlhMolo5KJ6xdceAYESsGw0rUo8r2DfG
+UxId9xPb9FlPbsV9e78Rukiri3Zzj5n27okY24RmcLOLR5m2a+Ha0D0qH7sbcbrR
+tqqH3uRag5Z02JPbNzOUTqPQpt/5ezXdygoAZi49IrZSajPQUA4=
+=bEGO
+-----END PGP SIGNATURE-----
+
+--sr2zawqPPoJoClMC--
