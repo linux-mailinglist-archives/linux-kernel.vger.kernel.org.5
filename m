@@ -2,148 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFE07A6CBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676147A6CBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbjISVJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 17:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        id S233336AbjISVKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 17:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233252AbjISVJC (ORCPT
+        with ESMTP id S233252AbjISVKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 17:09:02 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA9BB3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:08:56 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so66342525e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:08:56 -0700 (PDT)
+        Tue, 19 Sep 2023 17:10:01 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BED1BD
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:09:56 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-27489f78e52so3750869a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:09:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1695157735; x=1695762535; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WzhzxUE4RjhFx1lU22v0y5b/j7ECD6xkYnOHdX2+flM=;
-        b=xLiQzX93y8idYfXafZl2yo8MeBzUGg6z59lwrgEVg+zahpnPIrgi0N0vPrb5p2aD92
-         m0yOjrdGuhh5i0bLnrNRYyndsjuWcww19p6CVCxWU0tZTI7b3ZIeUyYqqoa3e2LdhUF/
-         15kgGtDcMQfDFygvyeL2K7SHcWYLoNt7vbgc4n89TrCQwDpjISwV+fGtS+Tkui2OBm5C
-         gJb9Ei62PKHmFOGyT/D3bW48N8i7nfG8lkPzJPBYV0iNG+w9RIAD67xgeDNVEhiC4M7Q
-         9jd2hjKoGqsWkmGwuyQTvMcaUnkF8WJg3IS/UILRA9d+M0wPjNeJnsXqCdsJQh2nedCH
-         fIgA==
+        d=gmail.com; s=20230601; t=1695157795; x=1695762595; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvIEfiigHClNF0zDtmOt3K3WnUjsJmS7BEsVemoJ0UI=;
+        b=AKZrh+Cy5uVqaenOdnafPoUp4zECxc1ihqu5cBs1+UnR21b5DWIcNr+6JKv55nFyqB
+         eLZaCn/jSPWol2xrjwJsH55vP8w/x8TjNjm/0KUICyIGzkjbI3sq7ft8fyYusxqJkN5d
+         hunXCE9RU2Gp642dpVMjfDsuOhT3yKdtRvE6pvfDUOJwoIkTo7+BPzgXwSWMzLKOBEYc
+         P26nuh97DLKuuhnArzKSaAHVnVBgy48W432e05W8xGZTWRQErY32XNq5v2xzflwoixet
+         U0MRXut8OiAcfKYTOIyKiq40xQqRQfXEiVu6KV4VIU/dXQfLRJTB729fJu06mlG2V04z
+         Y5oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695157735; x=1695762535;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WzhzxUE4RjhFx1lU22v0y5b/j7ECD6xkYnOHdX2+flM=;
-        b=J+Cpl9qUFFD+jRbns1m3R6DUjdOTqFCRSrZkwW0Qp5uZJGLgBeq/bp6BDZnyt8neUW
-         xsntWcTUfsZya/UbEXZxoOjY79a/1KTDsU+u5tVEDjYV80RkkA2zZ0/BNMKCYCEHnxlj
-         mGjspQbMmnUAnChSPBbuuGuy8EzKGU0MqbwsNQrDE9VV3MHWDFs7p92LhI+EKCjKHkzL
-         I/Sl9mb2HSa3++/0AmEfETJTZ2aWV9E5Byax1Napl9HubytdPKHPelid8qr0tUSuoiPs
-         lhzqsbMbpYHPLHAdY6Z9eZi0GMKR3aekkjB3Em5TboQiKYJG6qqSQyIK9V1EyQ4W04XR
-         BQXw==
-X-Gm-Message-State: AOJu0Yze9paEn3gtPwuHvYG2s7Rd0KC7akYPrMBH7MRHAwn5BtJggWRX
-        XKTUqjiClAPWUIzyLySndAGpmA==
-X-Google-Smtp-Source: AGHT+IHq23x1W8CfzN2NbuUp+POBAVp2R0hM1C7qiQ3MoBoIsRf2PzzY8pts2B/3V0YKkNqZt/T0Qw==
-X-Received: by 2002:a05:600c:ad6:b0:401:b1c6:97d8 with SMTP id c22-20020a05600c0ad600b00401b1c697d8mr726600wmr.35.1695157734256;
-        Tue, 19 Sep 2023 14:08:54 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id m25-20020a7bcb99000000b003fee8793911sm60037wmi.44.2023.09.19.14.08.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 14:08:53 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 22:08:51 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, vincent.guittot@linaro.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, corbet@lwn.net, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org,
-        tglx@linutronix.de, daniel.m.jordan@oracle.com
-Subject: Re: [PATCH 0/2] sched/eevdf: sched_attr::sched_runtime slice hint
-Message-ID: <20230919210851.ktzi7ogxs3punger@airbuntu>
-References: <20230915124354.416936110@noisy.programming.kicks-ass.net>
- <20230916213316.p36nhgnibsidoggt@airbuntu>
- <5bec3f08b4251c770545b59ede8fc4820c8d685b.camel@gmx.de>
+        d=1e100.net; s=20230601; t=1695157795; x=1695762595;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uvIEfiigHClNF0zDtmOt3K3WnUjsJmS7BEsVemoJ0UI=;
+        b=OHku9DAcXlO9iUEJVmGXTf7xJfs+byoOlOOwknCshM3qHo0rZQnUNEwN6xa+ap13nu
+         VeC1jFUTp+Z7CSl3TEaoiritmpWDwJgtxadnxveu6YvNqxBS9sNBeKfd7iEzQNXh1eOm
+         sUHUcVrEU5TVSnB2dFmqW3WkUWchaxxc7fDw/5bGk8kjvIj9i1d6goh+vux4s1XeIcJV
+         YHD/TNs8T/SHzebVrMAqmG6RQ+k3aUhUaO9FA36yZKW4seN3zXJ3o+A0aw1u8lW+coVt
+         nH+ds4HW6kxFURFo8QWch5XrgQvbUlrr00Bns/hSZPNWIdbYHr1Pg2s6TIkuf7nJCDSO
+         OzHw==
+X-Gm-Message-State: AOJu0Yy7aoLv9QhpUF2ThskRyFawi8DetTN+PdNwNQXPUiq0YqGB4ucP
+        eG2+FOB/sbBIyzhbTexZbpQ9vV57WjMss7M0oeI=
+X-Google-Smtp-Source: AGHT+IGNfJwxXxR2k0CiS0SuKc89Kp3NfhqIFIY69wej3IBe2VVWG4GgZ5VymqqXKmbW4lGu7cGc26mxi8sfUzErFKM=
+X-Received: by 2002:a17:90b:60f:b0:271:9237:a07f with SMTP id
+ gb15-20020a17090b060f00b002719237a07fmr889618pjb.32.1695157795347; Tue, 19
+ Sep 2023 14:09:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5bec3f08b4251c770545b59ede8fc4820c8d685b.camel@gmx.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230918211608.3580629-1-surenb@google.com> <ZQlhaO1C5kf8zGjf@dhcp22.suse.cz>
+In-Reply-To: <ZQlhaO1C5kf8zGjf@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 19 Sep 2023 14:09:43 -0700
+Message-ID: <CAHbLzkpV8+0Bn_mpGODDbRsAOmDexG_JofUKQEVW-tGPJB-iyw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: lock VMAs skipped by a failed queue_pages_range()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        willy@infradead.org, hughd@google.com, vbabka@suse.cz,
+        syzkaller-bugs@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/18/23 05:43, Mike Galbraith wrote:
-> On Sat, 2023-09-16 at 22:33 +0100, Qais Yousef wrote:
+On Tue, Sep 19, 2023 at 1:53=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Mon 18-09-23 14:16:08, Suren Baghdasaryan wrote:
+> > When queue_pages_range() encounters an unmovable page, it terminates
+> > its page walk. This walk, among other things, locks the VMAs in the ran=
+ge.
+> > This termination might result in some VMAs being left unlock after
+> > queue_pages_range() completes. Since do_mbind() continues to operate on
+> > these VMAs despite the failure from queue_pages_range(), it will encoun=
+ter
+> > an unlocked VMA.
+> > This mbind() behavior has been modified several times before and might
+> > need some changes to either finish the page walk even in the presence
+> > of unmovable pages or to error out immediately after the failure to
+> > queue_pages_range(). However that requires more discussions, so to
+> > fix the immediate issue, explicitly lock the VMAs in the range if
+> > queue_pages_range() failed. The added condition does not save much
+> > but is added for documentation purposes to understand when this extra
+> > locking is needed.
+>
+> The semantic of the walk in this case is really clear as mud. I was
+> trying to reconstruct the whole picture and it really hurts... Then I
+> found http://lkml.kernel.org/r/CAHbLzkrmTaqBRmHVdE2kyW57Uoghqd_E+jAXC9cB5=
+ofkhL-uvw@mail.gmail.com
+> and that helped a lot. Let's keep it a reference at least in the email
+> thread here for future.
+
+FYI, I'm working on a fix for the regression mentioned in that series,
+and Hugh has some clean up and enhancement for that too.
+
+>
+> > Fixes: 49b0638502da ("mm: enable page walking API to lock vmas during t=
+he walk")
+> > Reported-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/all/000000000000f392a60604a65085@google=
+.com/
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>
+> I cannot say I like the patch (it looks like a potential double locking
+> unless you realize this lock is special) but considering this might be ju=
+st
+> temporal I do not mind.
+>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+>
+> Thanks!
+>
+> > ---
+> >  mm/mempolicy.c | 3 +++
+> >  1 file changed, 3 insertions(+)
 > >
-> > Example of conflicting requirements that come across frequently:
-> >
-> >         1. Improve wake up latency without for SCHED_OTHER. Many tasks
-> >            end up using SCHED_FIFO/SCHED_RR to compensate for this
-> >            shortcoming. RT tasks lack power management and fairness and
-> >            can be hard and error prone to use correctly and portably.
-> 
-> This bit appears to be dealt with about as nicely as it can be in a
-> fair class by the latency nice patch set, and deals with both
-> individual tasks and groups thereof, ie has cgroups support.
-
-AFAIU the latency_nice is no longer going forward. But I could be mistaken.
-
-> Its trade slice for latency fits EEVDF nicely IMHO.  As its name
-> implies, the trade agreement language is relative niceness, which I
-> find more appropriate than time units, use of which would put the deal
-> squarely into the realm of RT, thus have no place in a fair class.
-
-Nice (or latency nice) have global indication that can make sense within the
-specific context tested on. Like RT priorities.
-
-Abstract notion is fine if you have a better suggestion, but being global
-relative is a problem IMO. The intended consumers are application writers; who
-have no prior knowledge about the system they'll be running on. I think that
-was the main point against latency_nice IIUC.
-
-> I don't yet know how effective it is.  I dinged up schedtool to play
-> with both it and $subject, but have yet to target any pet piglets or
-> measured impact of shiny new lipstick cannon.
-> 
-> >         2. Prefer spreading vs prefer packing on wake up for a group of
-> >            tasks. Geekbench-like workloads would benefit from
-> >            parallelising on different CPUs. hackbench type of workloads
-> >            can benefit from waking on up same CPUs or a CPU that is
-> >            closer in the cache hierarchy.
-> >
-> >         3. Nice values for SCHED_OTHER are system wide and require
-> >            privileges. Many workloads would like a way to set relative
-> >            nice value so they can preempt each others, but not be
-> >            impact or be impacted by other tasks belong to different
-> >            workloads on the system.
-> >
-> >         4. Provide a way to tag some tasks as 'background' to keep them
-> >            out of the way. SCHED_IDLE is too strong for some of these
-> >            tasks but yet they can be computationally heavy. Example
-> >            tasks are garbage collectors. Their work is both important
-> >            and not important.
-> 
-> All three of those make my eyebrows twitch mightily even in their not
-> well defined form: any notion of applying badges to identify groups of
-> tasks would constitute creation of yet another cgroups.
-
-cgroups require root privilege. And it is intended for sysadmins to split
-system resources between apps. It doesn't help an app to describe the
-relationship between its tasks. Nor any requirements for them to do their job
-properly. But rather impose something on them regardless of what they want.
-
-
-Cheers
-
---
-Qais Yousef
+> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> > index 42b5567e3773..cbc584e9b6ca 100644
+> > --- a/mm/mempolicy.c
+> > +++ b/mm/mempolicy.c
+> > @@ -1342,6 +1342,9 @@ static long do_mbind(unsigned long start, unsigne=
+d long len,
+> >       vma_iter_init(&vmi, mm, start);
+> >       prev =3D vma_prev(&vmi);
+> >       for_each_vma_range(vmi, vma, end) {
+> > +             /* If queue_pages_range failed then not all VMAs might be=
+ locked */
+> > +             if (ret)
+> > +                     vma_start_write(vma);
+> >               err =3D mbind_range(&vmi, vma, &prev, start, end, new);
+> >               if (err)
+> >                       break;
+> > --
+> > 2.42.0.459.ge4e396fd5e-goog
+>
+> --
+> Michal Hocko
+> SUSE Labs
