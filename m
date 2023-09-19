@@ -2,97 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EF57A5924
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDB27A592B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjISFED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 01:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
+        id S231229AbjISFHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 01:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjISFEA (ORCPT
+        with ESMTP id S231165AbjISFHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 01:04:00 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A5DFC;
-        Mon, 18 Sep 2023 22:03:54 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38J53ilr033417;
-        Tue, 19 Sep 2023 00:03:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695099824;
-        bh=Qxte3NSWyXwQKUnE4uwx5fv70zsk2G/8xvszmCXZ6lI=;
-        h=From:To:CC:Subject:Date;
-        b=tlW2CQGrFP91DlqnsV35cMcdBcgWE7cW+QW5bbfXywlNCzk7G7ysl8G1IEi1+qvpi
-         /J3640BbAP/DMdxUbHRuTBD1kwImg4md5dlDJ+LF6wbpEXfgg4xoA28ytVP9qe18aB
-         7A+8dJfWhhjaw4WDVPNWvp9rZyoCwt4n9kNN6dMA=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38J53i2i067738
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 Sep 2023 00:03:44 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
- Sep 2023 00:03:44 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 19 Sep 2023 00:03:44 -0500
-Received: from uda0500640.dal.design.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38J53ecD081238;
-        Tue, 19 Sep 2023 00:03:41 -0500
-From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>
-CC:     <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <r-gunasekaran@ti.com>
-Subject: [PATCH] arm64: dts: ti: k3-am654-base-board: Add I2C I/O expander
-Date:   Tue, 19 Sep 2023 10:33:40 +0530
-Message-ID: <20230919050340.16156-1-r-gunasekaran@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 19 Sep 2023 01:07:46 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC35FF
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:07:39 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-500bbe3ef0eso6181392e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:07:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695100057; x=1695704857; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3q8O8tWvnLQBFm13Z0K7FvFC/W1hQRUqZ5JIYPkfrQ4=;
+        b=dV91rxTw/MLnB+Ine8ZmNXwK/oeYUIEZye/fSGnee46HIURUKElX/qZzwFtgWAEtc3
+         b/L6bnCSMgPTLgIEgrGitLqvoHzf1WZ7yyFN4lhfw2sbCe7vYiLwugUEjSYtkS5gFWgu
+         xVm39ur227FrjLx4HaNSKFrFCTfmkvsUoxox0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695100057; x=1695704857;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3q8O8tWvnLQBFm13Z0K7FvFC/W1hQRUqZ5JIYPkfrQ4=;
+        b=Bx2aG2jTtvfu2xzpMoRHcxTCJ+qNtk1xwKBiK0+Cl5SoYjWCimEtlCF0GJX1yqvD2/
+         jutixqs/7lKKxSClrSvUIkbtyXLd1hk3a5WOuXvkEU94r6B7xYIp6bGQBxwkQ6+Ozz80
+         cFC0W5CoVLy6KDqKORL2ieygkwb/mp2MouAs+gy13ebu4OAB7188dF2RxfSqF/vD6SWY
+         HhQoAGFBI9J1bab6DNui+eLW4/vAmZOifrQWTYIyEbZSFSv/+GVt8zJdq+M2a627fTiE
+         2UhxrFB+ksy+jXUC6SEU2RMVagKhsI+afDG7SYnFPKgjBO8nRjC/fZ4H+pqVbResuh23
+         i4MQ==
+X-Gm-Message-State: AOJu0Yyhzj4BAFe/1IgwQvWNoLPCvPu1QvARweBB8XaI02FIyHN0Qp8E
+        VghxxzE8HE8ttYPoZF9UhHRTVJzdiDKfxeZwaTjFgQ==
+X-Google-Smtp-Source: AGHT+IG7rNmlTgr6mtc+pEDDwj3hVW1OJN/J2y44JelHkWF7gUusMiA1KDRGT3JZU/TTjFtk7VjNvQSjnr+5NJPaqPw=
+X-Received: by 2002:a05:6512:3b06:b0:4fe:8ba8:1a8b with SMTP id
+ f6-20020a0565123b0600b004fe8ba81a8bmr650772lfv.7.1695100057325; Mon, 18 Sep
+ 2023 22:07:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <ZQH2dG+l/dONUsyi@p14s> <20230918103141.126271-1-laura.nao@collabora.com>
+ <CAGXv+5Esi=G0xgkP=+Bhf39Xs3gMN1PBzarxKBKduOjgwDijAA@mail.gmail.com> <ZQj2lSl47qZQv8fX@p14s>
+In-Reply-To: <ZQj2lSl47qZQv8fX@p14s>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 19 Sep 2023 13:07:26 +0800
+Message-ID: <CAGXv+5Gj5rERcX6uxVUUq8beM4k4ogXnuh_86piyGw1oVrbyvg@mail.gmail.com>
+Subject: Re: [PATCH v17 00/14] Add support for MT8195 SCP 2nd core
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Laura Nao <laura.nao@collabora.com>, tinghan.shen@mediatek.com,
+        angelogioacchino.delregno@collabora.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        andersson@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-remoteproc@vger.kernel.org, matthias.bgg@gmail.com,
+        robh+dt@kernel.org, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM654 baseboard has two TCA9554 I/O expander on the WKUP_I2C0 bus.
-The expander at address 0x38 is used to detect daughter cards.
-Add a node for this I/O expander.
+On Tue, Sep 19, 2023 at 9:17=E2=80=AFAM Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> On Mon, Sep 18, 2023 at 06:44:25PM +0800, Chen-Yu Tsai wrote:
+> > On Mon, Sep 18, 2023 at 6:32=E2=80=AFPM Laura Nao <laura.nao@collabora.=
+com> wrote:
+> > >
+> > > > Other than patch 2 and 14, I have applied this set.  The remaining =
+patches will
+> > > > have to be resent to Matthias.
+> > >
+> > > > Thanks,
+> > > > Mathieu
+> > >
+> > > Hello,
+> > >
+> > > With patch 2 missing, the SCP is not probed correctly anymore on asur=
+ada (MT8192) and kukui (MT8183). The mtk-scp driver relies on the existence=
+ of the `cros-ec-rpmsg` node in the dt to determine if the SCP is single or=
+ multicore. Without patch 2 the driver wrongly assumes the SCP on MT8192 an=
+d MT8183 are multicore, leading to the following errors during initializati=
+on:
+> > >
+> > > 10696 04:33:59.126671  <3>[   15.465714] platform 10500000.scp:cros-e=
+c: invalid resource (null)
+> > > 10697 04:33:59.142855  <3>[   15.478560] platform 10500000.scp:cros-e=
+c: Failed to parse and map sram memory
+> > > 10698 04:33:59.149650  <3>[   15.486121] mtk-scp 10500000.scp: Failed=
+ to initialize core 0 rproc
+> > >
+> > > The issue was caught by KernelCI, complete logs can be found here:
+> > > - asurada: https://storage.kernelci.org/next/master/next-20230914/arm=
+64/defconfig+arm64-chromebook+videodec/gcc-10/lab-collabora/baseline-nfs-mt=
+8192-asurada-spherion-r0.html
+> > > - kukui: https://storage.kernelci.org/next/master/next-20230914/arm64=
+/defconfig+arm64-chromebook+videodec/gcc-10/lab-collabora/baseline-nfs-mt81=
+83-kukui-jacuzzi-juniper-sku16.html
+> > >
+> > > Reporting the issue so that patch 2 and 14 can be resent and merged s=
+oon.
+> >
+> > This being a backward incompatible DT binding change, maybe we should r=
+evert
+> > the node name change. Or, the driver could simply count the number of c=
+hild
+> > nodes that have the "mediatek,rpmsg-name" property, which is required.
+> >
+>
+> You have a point.  Can someone send a patch that makes this patchset back=
+ward
+> compatible?  Please do so as quickly as possible to that it can go in the=
+ next
+> merge window with the rest of this feature.  Otherwize I'll have to back =
+out the
+> whole thing.
 
-Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+I sent out a patch [1] implementing my proposed change.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-index f5c26e9fba98..035b20386ef3 100644
---- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-@@ -381,6 +381,13 @@
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
- 	};
-+
-+	pca9554_1: gpio@38 {
-+		compatible = "nxp,pca9554";
-+		reg = <0x38>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
- };
- 
- &mcu_i2c0 {
+ChenYu
 
-base-commit: dfa449a58323de195773cf928d99db4130702bf7
--- 
-2.17.1
-
+[1] https://lore.kernel.org/linux-remoteproc/20230919050305.3817347-1-wenst=
+@chromium.org/
