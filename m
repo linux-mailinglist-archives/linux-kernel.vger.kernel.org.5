@@ -2,78 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 259507A693D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF747A6941
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbjISQzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 12:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
+        id S231863AbjISQ4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 12:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbjISQz3 (ORCPT
+        with ESMTP id S230162AbjISQ4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:55:29 -0400
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDF4D6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 09:55:22 -0700 (PDT)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 018B811D3;
-        Tue, 19 Sep 2023 18:55:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 018B811D3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1695142519; bh=5LNczy2+dyEHAXUylvE30St6GuD+e3uy+gkBfmJ4xzg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=g6Uew+A+HTxwJjlNBwqgEs/e8N6xOdlJQ5wxzPvcT2w/EAIp1/S8qEedhv+CiX3hr
-         5KrkeKXQJCGE/CypLEbmyW6enidBBYsz7ofaXol8RrMV9cKv8XrpRNkDMCmDEqE4yp
-         5Gzvu+qoYS7RpzD3yjUqVBnNRuUmE0UFfa3n4d4s=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 19 Sep 2023 12:56:32 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050:0:465::201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA818E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 09:56:23 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Tue, 19 Sep 2023 18:55:10 +0200 (CEST)
-Message-ID: <eeade51e-e293-ce94-1699-c9aefdc804f3@perex.cz>
-Date:   Tue, 19 Sep 2023 18:55:09 +0200
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Rqnql53xvz9sqL;
+        Tue, 19 Sep 2023 18:56:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1695142579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VMi5+7ZvzTwfMWgziI09KuaClzuCuTi5rZ6FResnfjI=;
+        b=BJxxuTuiJOMSiYUeDmM3bjDc489nXarPKkX2R3CfQvSfuBtti8g2LUBfG15NgiI4Lqtbyg
+        Cj/x79QYZJkSYUyDLJiTaflRpB05kvMqxPApVKK15MdhtqJxQ5JgqiUcUTpvEQ81DgHjEN
+        m46Sr4Y+uRvFYmkuMoIHR2dV6opa8ifzmFpW8CjlntMuy1HrUQ2yK/U9fzS4+EWmWPP3UI
+        mkG92UG6s+e9d7jnRA8fU+u1ZI2EFefQ0JyLgbGMD6vWsWIcD4aBnOE8B8qVYwlgA2jLzN
+        WMRRMCu/NCzGmXDkncE5IJTPrYdI6zNBiFPbfvSejZxaGdwYBka5RLcCHr0bCg==
+Message-ID: <c64d38db-cb55-a511-3f19-0cf2ee2c7557@mailbox.org>
+Date:   Tue, 19 Sep 2023 18:56:17 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] kselftest/alsa: pcm-test: Report cards declared in config
- but missing
-Content-Language: en-US
-To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>, Takashi Iwai <tiwai@suse.com>
-Cc:     kernel@collabora.com, Mark Brown <broonie@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230919152702.100617-1-nfraprado@collabora.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20230919152702.100617-1-nfraprado@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] drm/atomic-helper: prevent uaf in wait_for_vblanks
+Content-Language: en-CA
+To:     =?UTF-8?Q?Jos=c3=a9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        skhan@linuxfoundation.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230918165340.2330-1-jose.pekkarinen@foxhound.fi>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <20230918165340.2330-1-jose.pekkarinen@foxhound.fi>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MBO-RS-ID: df75b5c6e5d5e56e260
+X-MBO-RS-META: k337c4z4wicfa4jjcbc7kusitecbk4nb
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19. 09. 23 17:26, Nícolas F. R. A. Prado wrote:
-> When parsing the configs, keep track of card configurations that match
-> the current system but haven't matched any card, and report those as
-> test failures as they represent that a card which was expected to be
-> present on the system is missing. This allows the configuration files to
-> not only be used to detect missing PCM devices (which is currently
-> possible) but also that the soundcard hasn't been registered at all.
+On 9/18/23 18:53, José Pekkarinen wrote:
+> Kasan reported the following in my system:
 > 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> [ 3935.321003] ==================================================================
+> [ 3935.321022] BUG: KASAN: slab-use-after-free in drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+> [ 3935.321124] Read of size 1 at addr ffff88818a6f8009 by task kworker/u16:3/5268
+> 
+> [ 3935.321124] CPU: 7 PID: 5268 Comm: kworker/u16:3 Not tainted 6.6.0-rc2+ #1
+> [ 3935.321124] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+> [ 3935.321124] Workqueue: events_unbound commit_work [drm_kms_helper]
+> [ 3935.321124] Call Trace:
+> [ 3935.321124]  <TASK>
+> [ 3935.321124]  dump_stack_lvl+0x43/0x60
+> [ 3935.321124]  print_report+0xcf/0x660
+> [ 3935.321124]  ? remove_entity_load_avg+0xdc/0x100
+> [ 3935.321124]  ? __virt_addr_valid+0xd9/0x160
+> [ 3935.321124]  ? drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+> [ 3935.321124]  kasan_report+0xda/0x110
+> [ 3935.321124]  ? drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+> [ 3935.321124]  drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+> [ 3935.321124]  ? __pfx_drm_atomic_helper_wait_for_vblanks.part.0+0x10/0x10 [drm_kms_helper]
+> [ 3935.321124]  ? complete_all+0x48/0x100
+> [ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x19/0x40
+> [ 3935.321124]  ? preempt_count_sub+0x14/0xc0
+> [ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x23/0x40
+> [ 3935.321124]  ? drm_atomic_helper_commit_hw_done+0x1ac/0x240 [drm_kms_helper]
+> [ 3935.321124]  drm_atomic_helper_commit_tail+0x82/0x90 [drm_kms_helper]
+> [ 3935.321124]  commit_tail+0x15c/0x1d0 [drm_kms_helper]
+> [ 3935.323185]  process_one_work+0x31a/0x610
+> [ 3935.323185]  worker_thread+0x38e/0x5f0
+> [ 3935.323185]  ? __pfx_worker_thread+0x10/0x10
+> [ 3935.323185]  kthread+0x184/0x1c0
+> [ 3935.323185]  ? __pfx_kthread+0x10/0x10
+> [ 3935.323185]  ret_from_fork+0x30/0x50
+> [ 3935.323185]  ? __pfx_kthread+0x10/0x10
+> [ 3935.323185]  ret_from_fork_asm+0x1b/0x30
+> [ 3935.323185]  </TASK>
+> 
+> [ 3935.323185] Allocated by task 3751:
+> [ 3935.323185]  kasan_save_stack+0x2f/0x50
+> [ 3935.323185]  kasan_set_track+0x21/0x30
+> [ 3935.323185]  __kasan_kmalloc+0xa6/0xb0
+> [ 3935.323185]  drm_atomic_helper_crtc_duplicate_state+0x42/0x70 [drm_kms_helper]
+> [ 3935.323185]  drm_atomic_get_crtc_state+0xc3/0x1e0 [drm]
+> [ 3935.323185]  page_flip_common+0x42/0x160 [drm_kms_helper]
+> [ 3935.323185]  drm_atomic_helper_page_flip+0x6b/0xf0 [drm_kms_helper]
+> [ 3935.323185]  drm_mode_page_flip_ioctl+0x8ad/0x900 [drm]
+> [ 3935.323185]  drm_ioctl_kernel+0x169/0x240 [drm]
+> [ 3935.323185]  drm_ioctl+0x399/0x6b0 [drm]
+> [ 3935.324772]  __x64_sys_ioctl+0xc5/0x100
+> [ 3935.324772]  do_syscall_64+0x5b/0xc0
+> [ 3935.324772]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> 
+> [ 3935.324772] Freed by task 3751:
+> [ 3935.324772]  kasan_save_stack+0x2f/0x50
+> [ 3935.324772]  kasan_set_track+0x21/0x30
+> [ 3935.324772]  kasan_save_free_info+0x27/0x40
+> [ 3935.324772]  ____kasan_slab_free+0x166/0x1c0
+> [ 3935.324772]  slab_free_freelist_hook+0x9f/0x1e0
+> [ 3935.324772]  __kmem_cache_free+0x187/0x2d0
+> [ 3935.324772]  drm_atomic_state_default_clear+0x226/0x5e0 [drm]
+> [ 3935.324772]  __drm_atomic_state_free+0xc8/0x130 [drm]
+> [ 3935.324772]  drm_atomic_helper_update_plane+0x17d/0x1b0 [drm_kms_helper]
+> [ 3935.324772]  drm_mode_cursor_universal+0x2a4/0x4d0 [drm]
+> [ 3935.324772]  drm_mode_cursor_common+0x1cf/0x430 [drm]
+> [ 3935.324772]  drm_mode_cursor_ioctl+0xc6/0x100 [drm]
+> [ 3935.326167]  drm_ioctl_kernel+0x169/0x240 [drm]
+> [ 3935.326167]  drm_ioctl+0x399/0x6b0 [drm]
+> [ 3935.326614]  __x64_sys_ioctl+0xc5/0x100
+> [ 3935.326614]  do_syscall_64+0x5b/0xc0
+> [ 3935.326614]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> 
+> [ 3935.326614] The buggy address belongs to the object at ffff88818a6f8000
+>                 which belongs to the cache kmalloc-512 of size 512
+> [ 3935.326614] The buggy address is located 9 bytes inside of
+>                 freed 512-byte region [ffff88818a6f8000, ffff88818a6f8200)
+> 
+> [ 3935.326614] The buggy address belongs to the physical page:
+> [ 3935.326614] page:00000000b0fb0816 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x18a6f8
+> [ 3935.326614] head:00000000b0fb0816 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+> [ 3935.326614] anon flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> [ 3935.326614] page_type: 0xffffffff()
+> [ 3935.326614] raw: 0017ffffc0000840 ffff888100042c80 0000000000000000 dead000000000001
+> [ 3935.326614] raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+> [ 3935.326614] page dumped because: kasan: bad access detected
+> 
+> [ 3935.326614] Memory state around the buggy address:
+> [ 3935.326614]  ffff88818a6f7f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [ 3935.326614]  ffff88818a6f7f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [ 3935.326614] >ffff88818a6f8000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> [ 3935.326772]                       ^
+> [ 3935.326772]  ffff88818a6f8080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> [ 3935.326772]  ffff88818a6f8100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> [ 3935.326772] ==================================================================
+> 
+> This suggest there may be some situation where a
+> struct drm_crtc_state is referenced after already
+> being freed by drm_atomic_state_default_clear. This
+> patch will check the new_crtc_state is not null before
+> using it.
+> 
+> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+> ---
+>  drivers/gpu/drm/drm_atomic_helper.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> index 292e38eb6218..cc75d387a542 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -1647,7 +1647,7 @@ drm_atomic_helper_wait_for_vblanks(struct drm_device *dev,
+>  		return;
+>  
+>  	for_each_oldnew_crtc_in_state(old_state, crtc, old_crtc_state, new_crtc_state, i) {
+> -		if (!new_crtc_state->active)
+> +		if (new_crtc_state && !new_crtc_state->active)
+>  			continue;
+>  
+>  		ret = drm_crtc_vblank_get(crtc);
 
-Thanks,
+I'm not quite seeing the connection between this change and the KASAN report.
 
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+If new_crtc_state was NULL, I would have expected a normal NULL pointer dereference oops, not a KASAN report.
+
+The KASAN report instead indicates that new_crtc_state isn't NULL, but points to memory which has already been freed. This could be e.g. due to incorrect reference counting somewhere else.
+
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
 
