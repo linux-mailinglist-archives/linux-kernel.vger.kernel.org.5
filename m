@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7E37A679D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97307A67A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjISPKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33252 "EHLO
+        id S233088AbjISPKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbjISPKB (ORCPT
+        with ESMTP id S233071AbjISPKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:10:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEC294;
-        Tue, 19 Sep 2023 08:09:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2014C433C8;
-        Tue, 19 Sep 2023 15:09:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695136196;
-        bh=lzPcxfCap55Dxo+6HC5drOWps2iDeLT2c0Yt2wUaUyE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XyIoIYQw5QkJmMJ3CfKfg5P2JB3FtwWC7umWODkwtVO11Ya2bqYxzOt3vfcRJtZdd
-         ONOEqK2jpzooHLUO7wRK+HGL0isQuQ6tF08A9u3pdweXiEUCGUdUAFoiINlxDCstlY
-         BHScbVF2ij1bMlL0mFC+Vp7H5WX6Q++SoGeQiXSiYBRvSfTWAGRMQZ81Su9EAxTHFC
-         Zq/Xjv6xxaIgx4OS4B1WD4a9S/nlJnb3oSkuWYX2x/xn6XfFyI39tS5PXr3xKTpX6P
-         8IEJFvm4dXs0hM/k05SiGWjEHyAvNThQPM5acLaQFcfeasPlpQhp2IncxkRo9ChQet
-         9Pk9xW1ZYiLSw==
-Date:   Tue, 19 Sep 2023 11:09:54 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>, agross@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.5 30/36] arm64: dts: qcom: sc8280xp-x13s: Add
- camera activity LED
-Message-ID: <ZQm5woD5zwRIG9cf@sashalap>
-References: <20230908192848.3462476-1-sashal@kernel.org>
- <20230908192848.3462476-30-sashal@kernel.org>
- <ZP60ngCV3hhNZiX5@hovoldconsulting.com>
- <ZQjEEt7sB2M5EO53@sashalap>
- <ZQk8aJx268Soy4yH@hovoldconsulting.com>
- <ZQmc7hznPpIh6iwP@sashalap>
- <ZQmh-DaBTwMuOLHe@hovoldconsulting.com>
+        Tue, 19 Sep 2023 11:10:31 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6227C6;
+        Tue, 19 Sep 2023 08:10:24 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8AFF51FB;
+        Tue, 19 Sep 2023 08:11:01 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.185])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CACC3F59C;
+        Tue, 19 Sep 2023 08:10:22 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 16:10:14 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Yi Zhang <yi.zhang@redhat.com>, Ming Lei <ming.lei@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Changhui Zhong <czhong@redhat.com>,
+        yangerkun <yangerkun@huawei.com>,
+        "zhangyi (F)" <yi.zhang@huawei.com>, peterz@infradead.org,
+        Kees Cook <keescook@chromium.org>,
+        chengzhihao <chengzhihao1@huawei.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [czhong@redhat.com: [bug report] WARNING: CPU: 121 PID: 93233 at
+ fs/dcache.c:365 __dentry_kill+0x214/0x278]
+Message-ID: <ZQmwcagwXBQCTpUY@FVFF77S0Q05N.cambridge.arm.com>
+References: <ZOWFtqA2om0w5Vmz@fedora>
+ <20230823-kuppe-lassen-bc81a20dd831@brauner>
+ <CAFj5m9KiBDzNHCsTjwUevZh3E3RRda2ypj9+QcRrqEsJnf9rXQ@mail.gmail.com>
+ <CAHj4cs_MqqWYy+pKrNrLqTb=eoSOXcZdjPXy44x-aA1WvdVv0w@mail.gmail.com>
+ <89d049ed-6bbf-bba7-80d4-06c060e65e5b@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZQmh-DaBTwMuOLHe@hovoldconsulting.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <89d049ed-6bbf-bba7-80d4-06c060e65e5b@huawei.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 03:28:24PM +0200, Johan Hovold wrote:
->On Tue, Sep 19, 2023 at 09:06:54AM -0400, Sasha Levin wrote:
->> On Tue, Sep 19, 2023 at 08:15:04AM +0200, Johan Hovold wrote:
->> >On Mon, Sep 18, 2023 at 05:41:38PM -0400, Sasha Levin wrote:
->> >> On Mon, Sep 11, 2023 at 08:33:02AM +0200, Johan Hovold wrote:
->> >> >On Fri, Sep 08, 2023 at 03:28:41PM -0400, Sasha Levin wrote:
->> >> >> From: Konrad Dybcio <konrad.dybcio@linaro.org>
->> >> >>
->> >> >> [ Upstream commit 1c63dd1c5fdafa8854526d7d60d2b741c813678d ]
->> >> >>
->> >> >> Disappointigly, the camera activity LED is implemented in software.
->> >> >> Hook it up as a gpio-led and (until we have camera *and* a "camera on"
->> >> >> LED trigger) configure it as a panic indicator.
->> >> >>
->> >> >> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> >> >> Link: https://lore.kernel.org/r/20230805-topic-x13s_cam_led-v1-1-443d752158c4@linaro.org
->> >> >> Signed-off-by: Bjorn Andersson <andersson@kernel.org>
->> >> >> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> >> >
->> >> >This is a new feature if anything, not a fix. Please drop from all
->> >> >autosel queues.
->> >>
->> >> Not a feature, but hardware enablement.
->> >
->> >Call it what you will, but please drop it. Otherwise by that logic you'd
->> >need to backport all devicetree patches (as well as most driver changes)
->> >since they ultimately aim at enabling hardware.
->>
->> Not all, only ones that re-use existing kernel driver but enable it for
->> new hardware (i.e. adding a new pci-id/usb-id/dts entries).
->
->Again, that's basically all our device-tree patches. And that can break
->in all sorts of ways. So again, please drop. This does not belong in
->stable.
+On Sat, Sep 16, 2023 at 02:55:47PM +0800, Baokun Li wrote:
+> On 2023/9/13 16:59, Yi Zhang wrote:
+> > The issue still can be reproduced on the latest linux tree[2].
+> > To reproduce I need to run about 1000 times blktests block/001, and
+> > bisect shows it was introduced with commit[1], as it was not 100%
+> > reproduced, not sure if it's the culprit?
+> > 
+> > 
+> > [1] 9257959a6e5b locking/atomic: scripts: restructure fallback ifdeffery
+> Hello, everyone！
+> 
+> We have confirmed that the merge-in of this patch caused hlist_bl_lock
+> (aka, bit_spin_lock) to fail, which in turn triggered the issue above.
 
-This is part of the criteria we use to select patches, yes? If you have
-an objection around this particular patch then please let me know, or if
-you have an objection around hardware enablement patches in stable then
-we can have a bigger discussion around that one.
+Thanks for this!
 
-However, just dropping this one for no particular reasonisn't the right
-approach: we've been using this selection criteria for quite a few years
-now.
+I believe I know what the issue is.
 
--- 
+I took a look at the generated assembly for hlist_bl_lock() and
+hlist_bl_unlock(), and for the latter I see a plain store rather than a
+store-release as was intended.
+
+I believe that in 9257959a6e5b, I messed up the fallback logic for
+atomic*_set_release():
+
+| static __always_inline void 
+| raw_atomic64_set_release(atomic64_t *v, s64 i)
+| {
+| #if defined(arch_atomic64_set_release)
+|         arch_atomic64_set_release(v, i);
+| #elif defined(arch_atomic64_set)
+|         arch_atomic64_set(v, i);
+| #else
+|         if (__native_word(atomic64_t)) {
+|                 smp_store_release(&(v)->counter, i);
+|         } else {
+|                 __atomic_release_fence();
+|                 raw_atomic64_set(v, i);
+|         }    
+| #endif
+| }
+
+On arm64 we want to use smp_store_release(), and don't provide
+arch_atomic64_set_release(). Unfortunately we *do* provide arch_atomic64_set(),
+and the ifdeffery above will choose that in preference.
+
+Prior to that commit, the ifdeffery would do what we want:
+
+| #ifndef arch_atomic64_set_release
+| static __always_inline void
+| arch_atomic64_set_release(atomic64_t *v, s64 i)
+| {
+|         if (__native_word(atomic64_t)) {
+|                 smp_store_release(&(v)->counter, i);
+|         } else {
+|                 __atomic_release_fence();
+|                 arch_atomic64_set(v, i);
+|         }
+| }
+| #define arch_atomic64_set_release arch_atomic64_set_release
+| #endif
+
+That explains the lock going wrong -- we lose the RELEASE semantic on
+hlist_bl_unlock(), and so loads and stores within the critical section aren't
+guaranteed to be visible to the next hlist_bl_lock(). On x86 this happens to
+work becauase of TSO.
+
+I'm working on fixing that now; I'll try to have a patch shortly.
+
 Thanks,
-Sasha
+Mark.
