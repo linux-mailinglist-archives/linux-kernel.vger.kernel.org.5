@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 298DF7A5B37
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5202F7A5B4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbjISHiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
+        id S231847AbjISHig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbjISHhx (ORCPT
+        with ESMTP id S231812AbjISHiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:37:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4100C116;
-        Tue, 19 Sep 2023 00:37:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4926FC433CA;
-        Tue, 19 Sep 2023 07:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695109061;
-        bh=NJEdOhSplERf4qx+MZnaddtdGxjwkTj9FA70yGwEl/I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=toJGkyN//X1dq/GlVmSCP5BAImC4qNkx0+qvdGNKwgIg4nWdrMsNY3PSR0LhC8ey6
-         C6+w/YZpgqJtNnUImwuowlzhbwSJg/GDc2ONrxID0oKvtqayMHYIXYRPPiyamykENZ
-         e+TARbge08QSDBvNJQDO9cN672fNX0dzU/CHe43RvDVGoeQZ4OXCCDjW+SJ0byGQil
-         9fh2QIkA9HgWdNZTNqZEZ3VwNWKobCNo9MBFNopyWfkRdPQMtRpCRKq+aDqYbywaeD
-         Ps9K6b7AMDHjKLH1jXSd3fAGprFS2WLFcz+O4Ec//le6qhvGvAvknDoCYivh3lVr2x
-         otIj5mwBAL7eQ==
-Date:   Tue, 19 Sep 2023 09:37:38 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Benjamin Bara <bbara93@gmail.com>
-Cc:     Adam Ford <aford173@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Frank Oltmanns <frank@oltmanns.dev>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [PATCH 00/13] imx8mp: first clock propagation attempt (for LVDS)
-Message-ID: <fzu4iwxh7tak65twym35p7oik2nt4ke6khmmamzz7q2uopu736@cimranz73wvt>
-References: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
- <CAHCN7xJ8KrBd-532=gDE+82xo1ZNtoDT7pZsYwy9-9WiJvmkvw@mail.gmail.com>
- <CAJpcXm6OWNODOz5gEWVhOJjKTazwzE7XV6ZR1H06zpECrivZig@mail.gmail.com>
+        Tue, 19 Sep 2023 03:38:15 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309DD13A
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:38:08 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502e6d632b6so8257522e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:38:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1695109087; x=1695713887; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TYhAeXJ6n0p1NLvV6l5GcJ19JSLs3+6aIPIDGI6CfRk=;
+        b=Yps8gmkeTmp9JUZIsf1OHZOR5CVvG3FM9iwqX/oT2nQFL1/5tUX0m05MNvJox0Qzm1
+         xbeRaRvq9pJeHQEOmQSt70InTnK20NjKouJmjluTYVXFV4988iHPky+1cBfL5i8OQxvB
+         /8TkroWxHiRJgQdvaEGbVCZf+Y9GS6zI4irb0efd26czhZnJdMEVZ6TjY6ZqUouIskR8
+         Tbyzbf45ACYDvxZNiJoo3+uv/y2blGxLbJ/PJ7U/QJYQ6Tw+PxrMjxB2QAHYyqyb5uqa
+         83UF6b+8GqYDwJVQl8Kpstb/ljJN33a6QpWWM3FWcgbrnmOCvFhcGc+gg7FQnHfHMYhE
+         DgEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695109087; x=1695713887;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TYhAeXJ6n0p1NLvV6l5GcJ19JSLs3+6aIPIDGI6CfRk=;
+        b=dtVa51RQuTYPNRnVe1rhzf1bwe3ftXQLiaQEFkw8qu9P2NAAFAQq8aVznMFdwiaeHE
+         s6mskHd0H6/2nQf7tBCHHrPTMe0pgY9GA9K+YL5k6aMTAFD2dHN+u20ZiJVX9RITmb77
+         dXtPVq1sFeJk9rKR4L8vwJwnlpIjI9ZdOgjMPAqBsGLC6ZCNJUHMoqnJVh6QCaFGdJ58
+         QAT61A6dQk1MqmgAFYiO7DS1nxkJWy90OpRNmZMABMtJEDckfumMTKojIBb8PK+HyuOW
+         z+S1U03oEWbfwIgGVbQBfzpgwgXHLvYvDXnjLS1Kar6B3Vq5vO0yv7nQMkjkFF84ZXta
+         fdmQ==
+X-Gm-Message-State: AOJu0Yy7VGpEkUWgRCtF1Lt8Jrm9nukt/p5wQWILj58WAyCSeaIKnxjx
+        ecd1iEB2j+FTFhC42I96VbbCrw==
+X-Google-Smtp-Source: AGHT+IEy4V776q3dOVrHfVXYIIbgCPjMiR68Dh28Ik0ewLQPT/Azb7+uWm//NNL3crh6azWctXVQ+w==
+X-Received: by 2002:ac2:4285:0:b0:503:19d9:4b6f with SMTP id m5-20020ac24285000000b0050319d94b6fmr3374875lfh.0.1695109086944;
+        Tue, 19 Sep 2023 00:38:06 -0700 (PDT)
+Received: from heron.intern.cm-ag (p200300dc6f209c00529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f20:9c00:529a:4cff:fe3d:d983])
+        by smtp.gmail.com with ESMTPSA id v4-20020aa7d644000000b0052567e6586bsm7049439edr.38.2023.09.19.00.38.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 00:38:06 -0700 (PDT)
+From:   Max Kellermann <max.kellermann@ionos.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Max Kellermann <max.kellermann@ionos.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/char/mem: implement splice() for /dev/zero, /dev/full
+Date:   Tue, 19 Sep 2023 09:37:42 +0200
+Message-Id: <20230919073743.1066313-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zkw33pnzrz7sbey3"
-Content-Disposition: inline
-In-Reply-To: <CAJpcXm6OWNODOz5gEWVhOJjKTazwzE7XV6ZR1H06zpECrivZig@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This allows splicing zeroed pages into a pipe, and allows discarding
+pages from a pipe by splicing them to /dev/zero.  Writing to /dev/zero
+should have the same effect as writing to /dev/null, and a
+"splice_write" implementation exists only for /dev/null.
 
---zkw33pnzrz7sbey3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+(The /dev/zero splice_read implementation could be optimized by
+pushing references to the global zero page to the pipe, but that's an
+optimization for another day.)
 
-On Mon, Sep 18, 2023 at 07:59:16PM +0200, Benjamin Bara wrote:
-> Hi Adam!
->=20
-> On Mon, 18 Sept 2023 at 07:00, Adam Ford <aford173@gmail.com> wrote:
-> > On Sun, Sep 17, 2023 at 3:40=E2=80=AFPM Benjamin Bara <bbara93@gmail.co=
-m> wrote:
-> > > The idea:
-> > > Enable CLK_SET_RATE_PARENT, at least for media_disp2_pix and media_ld=
-b.
-> > > When this is done, ensure that the pll1443x can be re-configured,
-> > > meaning it ensures that an already configured rate (crtc rate) is sti=
-ll
-> > > supported when a second child requires a different rate (lvds rate). =
-As
-> >
-> > Have you tested with the DSI as well?  If memory servers, the DSI
-> > clock and the LVDS clock are both clocked from the same video_pll.  At
-> > one time, I had done some experimentation with trying the DSI
-> > connected to an HDMI bridge chip connected to a monitor and the LVDS
-> > was connected to a display panel with a static resolution and refresh
-> > rate.  For my LVDS display, it needs 30MHz to display properly, but
-> > various HDMI resolutions needed values that were not evenly divisible
-> > by 30MHz which appeared to cause display sync issues when trying to
-> > share a clock that was trying to dynamically adjust for two different
-> > displays especially when trying to change the resoltuion of the HDMI
-> > display to various values for different resolutions.
->=20
-> Unfortunately I haven't. I think if you have the use case to support
-> different "run-time-dynamic" (HDMI) rates in parallel with a static
-> (LVDS) rate
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+---
+ drivers/char/mem.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-If anything, LVDS is harder to deal with than HDMI. HDMI only has a
-handful of clock rates (74.250, 148.5, 297 and 594MHz mostly) while LVDS
-is more freeform.
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 1052b0f2d4cf..263c19cd6fb9 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -640,6 +640,7 @@ static int open_port(struct inode *inode, struct file *filp)
+ #define full_lseek      null_lseek
+ #define write_zero	write_null
+ #define write_iter_zero	write_iter_null
++#define splice_write_zero	splice_write_null
+ #define open_mem	open_port
+ 
+ static const struct file_operations __maybe_unused mem_fops = {
+@@ -677,6 +678,8 @@ static const struct file_operations zero_fops = {
+ 	.read_iter	= read_iter_zero,
+ 	.read		= read_zero,
+ 	.write_iter	= write_iter_zero,
++	.splice_read	= copy_splice_read,
++	.splice_write	= splice_write_zero,
+ 	.mmap		= mmap_zero,
+ 	.get_unmapped_area = get_unmapped_area_zero,
+ #ifndef CONFIG_MMU
+@@ -688,6 +691,7 @@ static const struct file_operations full_fops = {
+ 	.llseek		= full_lseek,
+ 	.read_iter	= read_iter_zero,
+ 	.write		= write_full,
++	.splice_read	= copy_splice_read,
+ };
+ 
+ static const struct memdev {
+-- 
+2.39.2
 
-We are more likely to change the rate on an HDMI device though, but a
-rate change from 1080p to 720p would only require a divide by two (from
-148.5 to 74.250) so fairly easy to do.
-
-Maxime
-
---zkw33pnzrz7sbey3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZQlPwgAKCRDj7w1vZxhR
-xQXZAP0X9+g7TAJgG9bUbGB3HDyh4TifaZt/f4MAA2x26s9IQQD/YvP1E9Pg3wEZ
-aHBt6URFPtaaQv1p3sB+/iouDuI0mgU=
-=L9fk
------END PGP SIGNATURE-----
-
---zkw33pnzrz7sbey3--
