@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6C67A6976
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE267A6980
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbjISRPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
+        id S231952AbjISRTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 13:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjISRPf (ORCPT
+        with ESMTP id S229969AbjISRTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 13:15:35 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616F0DC;
-        Tue, 19 Sep 2023 10:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1695143727;
-        bh=ZECM0iIszLRK6JxiliXqM6gNdR0WNCsq3C/p8MYEDtA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NA4gmUrCEKYQddDUZXd/IG9YM0AXgGNaSlKLK8/w1YkDZQXw7fwfCaizBBStqeue9
-         +pKLBUwYqivwKCj9Hya/nMDUr3pbnQHKyLF2jZN7aqP9DTEYIMUrOzllYY3ZF/IyBa
-         gSJ7L2VFysnmXQsdb9w1p+xHK69oaOsWhwFO+I+Q=
-Date:   Tue, 19 Sep 2023 19:15:25 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Douglas Gilbert <dgilbert@interlog.com>
-Subject: Re: [PATCH] hwmon: powerz: add support for ChargerLAB KM002C
-Message-ID: <5fb278c7-df91-4f02-ab5f-baa47d27507f@t-8ch.de>
-References: <20230911-powerz-km002c-v1-1-898bd79b9bae@weissschuh.net>
- <6e5eff10-949c-4f17-a3f3-347b85b89e11@roeck-us.net>
+        Tue, 19 Sep 2023 13:19:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9DEA6;
+        Tue, 19 Sep 2023 10:19:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4FF1C433C8;
+        Tue, 19 Sep 2023 17:19:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695143972;
+        bh=0FzohlduMMKtgDdiJ9ExxJvjBavWbhnZ0AuCWrDjN+w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=nuY/o1OyGCMXR9OIR6jCcLNIYS6JF7AMiw9dwXcWYrqFlUUiRAfCsGPV31bElxvSd
+         tw0pUR1LK49PmCn40U0ITagB5IkWTR215i6ve09R6qATJRC1YJfX4dnIBhLVTLmHV5
+         QBYsHv1unE0uy+4eZwLtYxN4jEe43MDBrR/VXzqndRwVfQeNC9EhXRxAZCe/8ZD6ja
+         q5vOGQ4zlN+y7ImENkcdLdkdC4vv9OWqaZBqRfm5wppXs6uzN9U07DIzl0fwFJqtxQ
+         aeVGP9rl6Msc5Hltj1iRUskRGoDAWd+KgKTH0PRQBfzLh+6r9xzADjKmwh7xM53Hn+
+         kr7UHLWw6zqsA==
+Message-ID: <18e21ab0-fcd3-590f-af89-95e1b141acb3@kernel.org>
+Date:   Tue, 19 Sep 2023 10:19:30 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6e5eff10-949c-4f17-a3f3-347b85b89e11@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH] dt-bindings: ata: pata-common: Add missing
+ additionalProperties on child nodes
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230915201626.4180606-1-robh@kernel.org>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230915201626.4180606-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-18 12:05:19-0700, Guenter Roeck wrote:
-> On Mon, Sep 11, 2023 at 07:44:42AM +0200, Thomas Weißschuh wrote:
-> > The KM002C is similar to the KM003C and seems to use the same
-> > protocol and firmware.
-> > 
-> > Reported-by: Douglas Gilbert <dgilbert@interlog.com>
-> > Closes: https://lore.kernel.org/lkml/290ebce4-54f0-8ac1-2a13-cbc806d80d64@interlog.com/
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> > ---
-> > 
-> > This patch is based on hwmon-next,
-> > commit 80369d9e1f2f ("hwmon: (sch5627) Document behaviour of limit registers").
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+On 2023/09/15 13:16, Rob Herring wrote:
+> The PATA child node schema is missing constraints to prevent unknown
+> properties. As none of the users of this common binding extend the child
+> nodes with additional properties, adding "additionalProperties: false"
+> here is sufficient.
 > 
-> Applied, but please be more careful with your comments and Signed-off-by:
-> tags. There should only be one '---', and one signature. 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Thanks,
+Applied to for-6.6-fixes. Thanks !
 
-the duplicate Signed-off-by is indeed an oversight which I'll
-try to avoid in the future.
+> ---
+>  Documentation/devicetree/bindings/ata/pata-common.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/ata/pata-common.yaml b/Documentation/devicetree/bindings/ata/pata-common.yaml
+> index 337ddf1113c4..4e867dd4d402 100644
+> --- a/Documentation/devicetree/bindings/ata/pata-common.yaml
+> +++ b/Documentation/devicetree/bindings/ata/pata-common.yaml
+> @@ -38,6 +38,7 @@ patternProperties:
+>        ID number 0 and the slave drive will have ID number 1. The PATA port
+>        nodes will be named "ide-port".
+>      type: object
+> +    additionalProperties: false
+>  
+>      properties:
+>        reg:
 
-As for the '---':
+-- 
+Damien Le Moal
+Western Digital Research
 
-Two of them are generated by the 'b4' tool and I added one manually with
-the hwmon-next information.
-For other subsystems this wasn't an issue so far.
-
-Are these duplicate sections a problem for your personal tooling or is
-it affecting something more widespread?
-
-I can try to avoid these issues when sending patches to you specifically
-or maybe changes in b4 in general are the correct solution.
-
-Thomas
-
-> > ---
-> >  drivers/hwmon/powerz.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > 
-> > ---
-> > base-commit: 80369d9e1f2f16993ae6d148553c37bf65a209e4
-> > change-id: 20230911-powerz-km002c-94afb4d3d645
-> > 
-> > Best regards,
-> > 
-> > diff --git a/drivers/hwmon/powerz.c b/drivers/hwmon/powerz.c
-> > index 2b9693aee6f6..cfb635f94d66 100644
-> > --- a/drivers/hwmon/powerz.c
-> > +++ b/drivers/hwmon/powerz.c
-> > @@ -254,6 +254,7 @@ static void powerz_disconnect(struct usb_interface *intf)
-> >  }
-> >  
-> >  static const struct usb_device_id powerz_id_table[] = {
-> > +	{ USB_DEVICE_INTERFACE_NUMBER(0x5FC9, 0x0061, 0x00) },	/* ChargerLAB POWER-Z KM002C */
-> >  	{ USB_DEVICE_INTERFACE_NUMBER(0x5FC9, 0x0063, 0x00) },	/* ChargerLAB POWER-Z KM003C */
-> >  	{ }
-> >  };
