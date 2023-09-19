@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D986D7A5E91
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAB77A5E96
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbjISJuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43254 "EHLO
+        id S231345AbjISJwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbjISJu3 (ORCPT
+        with ESMTP id S229674AbjISJwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:50:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525D7F0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:50:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DA440C433C9;
-        Tue, 19 Sep 2023 09:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695117022;
-        bh=KqFckHRW1wemRtJKOBzu5za3YKLNJkw8oPNLBCYuEZE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GLEGCyd2BmZYiL3qzQ/quWB8FUs0WW7m8DUEccQsns7zXAnisBCnRZKEPQ0WkXer5
-         SEVjkFX951BHnn/3QXR/X6aW9wdlPty9DuveRai0DP0Sx6O6+B+4KIxrMSXdkf2cfe
-         wOH6qGFEtniT4Kb/+poONSfvWbcUZwjB9aSSqNIk+KE7ZepQCbH4LuFIqRb44bbtZX
-         UI2eJRPk0MRpWYM5O91R7rW3sPPVfediaTlA3vsnu9k4PzCam25ceEmPsnrGuNUjP8
-         rYBml52xy9OgErAPkGpid4SZCmxsriRYxekcLA+wTOSYeGqEiTIezk722Qf4gGuPRR
-         z4+9UsTFhMKhw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C01E1E11F41;
-        Tue, 19 Sep 2023 09:50:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 19 Sep 2023 05:52:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5CB3CEA;
+        Tue, 19 Sep 2023 02:51:57 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 718FE1FB;
+        Tue, 19 Sep 2023 02:52:34 -0700 (PDT)
+Received: from e127643.broadband (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8A9193F67D;
+        Tue, 19 Sep 2023 02:51:55 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org
+Cc:     James Clark <james.clark@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Zaid Al-Bassam <zalbassam@google.com>,
+        Marc Zyngier <maz@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] arm64: perf: Add support for event counting threshold
+Date:   Tue, 19 Sep 2023 10:51:27 +0100
+Message-Id: <20230919095137.360963-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH] octeon_ep: restructured interrupt handlers
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169511702277.19851.5148115335209264246.git-patchwork-notify@kernel.org>
-Date:   Tue, 19 Sep 2023 09:50:22 +0000
-References: <20230918065621.2165449-1-srasheed@marvell.com>
-In-Reply-To: <20230918065621.2165449-1-srasheed@marvell.com>
-To:     Shinas Rasheed <srasheed@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hgani@marvell.com, egallen@redhat.com, mschmidt@redhat.com,
-        vimleshk@marvell.com, vburru@marvell.com, sedara@marvell.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+FEAT_PMUv3_TH (Armv8.8) is a new feature that allows conditional
+counting of PMU events depending on how much the event increments on
+a single cycle. Two new config fields for perf_event_open have been
+added, and a PMU cap file for reading the max_threshold. See the first
+commit message and the docs in the second commit for more details.
 
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+The change has been validated on the Arm FVP model:
 
-On Sun, 17 Sep 2023 23:56:21 -0700 you wrote:
-> Separated queue specific interrupts to register to individual msix-vectors
-> instead of using a single generic interrupt handler on a single
-> msix-vector.
-> 
-> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
-> ---
->  .../marvell/octeon_ep/octep_cn9k_pf.c         | 158 ++++++++++----
->  .../ethernet/marvell/octeon_ep/octep_main.c   | 197 +++++++++++++++++-
->  .../ethernet/marvell/octeon_ep/octep_main.h   |  13 +-
->  3 files changed, 323 insertions(+), 45 deletions(-)
+  # Zero values, works as expected (as before).
+  $ perf stat -e dtlb_walk/threshold=0,threshold_control=0/ -- true
 
-Here is the summary with links:
-  - [net-next] octeon_ep: restructured interrupt handlers
-    https://git.kernel.org/netdev/net-next/c/0b8ef824eede
+    5962      dtlb_walk/threshold=0,threshold_control=0/
 
-You are awesome, thank you!
+  # Threshold >= 255 causes count to be 0 because dtlb_walk doesn't
+  # increase by more than 1 per cycle.
+  $ perf stat -e dtlb_walk/threshold=255,threshold_control=5/ -- true
+
+    0      dtlb_walk/threshold=255,threshold_control=5/
+  
+  # Keeping comparison as >= but lowering the threshold to 1 makes the
+  # count return.
+  $ perf stat -e dtlb_walk/threshold=1,threshold_control=5/ -- true
+
+    6329      dtlb_walk/threshold=1,threshold_control=5/
+
+James Clark (2):
+  arm64: perf: Add support for event counting threshold
+  Documentation: arm64: Document the PMU event counting threshold
+    feature
+
+ Documentation/arch/arm64/perf.rst | 58 ++++++++++++++++++++++++++++++
+ drivers/perf/arm_pmuv3.c          | 59 ++++++++++++++++++++++++++++++-
+ include/linux/perf/arm_pmuv3.h    |  7 +++-
+ 3 files changed, 122 insertions(+), 2 deletions(-)
+
+
+base-commit: 21b61fe48c2fc43d98ebb67a1f3832e0478fa523
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
