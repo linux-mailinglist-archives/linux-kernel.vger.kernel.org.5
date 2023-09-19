@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFE07A6BEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 21:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DDE7A6BED
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbjIST6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 15:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
+        id S232981AbjISUAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 16:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232400AbjIST6f (ORCPT
+        with ESMTP id S232088AbjISUAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 15:58:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9263AF0;
-        Tue, 19 Sep 2023 12:58:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A36ADC433C7;
-        Tue, 19 Sep 2023 19:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695153509;
-        bh=u5J60Ej28pkPmBREqk2gvlRHjHeyOQZbOqVKESDiB38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nPK4IEa+cHBjYn+8qMhyyX9boPLxquwqbGt5MMT6vE1lF23feceMSYAlIaxgjheBW
-         dkmzu/tDku+jgNs8XUX6Bl+wKUaCy14qoMUPpxbqJ8Vd8Lgbep+zNdo+XUT71MzVJm
-         9wjM0yAkcrOX5mTV+7XViirdryXol77c0xfYRAYqWS9M0YrnU4DkYmBG0sLtRceNoX
-         ++ymTbFgMv10j434XPxYi1vdTOXl6Og+9MhiIjoHkF+vVHpaaODISwYI02GHkI0Zjp
-         jM4URh/vSoflyeeCSPhuCPPFuQxfKReG5NbFbc7/0WNrq3XULa0kcfhUiKvtm89mYT
-         tqE55FP1h/WEg==
-Date:   Tue, 19 Sep 2023 21:58:26 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Yann Sionneau <ysionneau@kalray.eu>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Julian Vetter <jvetter@kalrayinc.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Borne <jborne@kalray.eu>
-Subject: Re: [PATCH v4] i2c: designware: fix __i2c_dw_disable() in case
- master is holding SCL low
-Message-ID: <ZQn9YtgWKQpUM4od@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Yann Sionneau <ysionneau@kalray.eu>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
-        Julian Vetter <jvetter@kalrayinc.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jonathan Borne <jborne@kalray.eu>
-References: <20230911140749.32386-1-ysionneau@kalray.eu>
+        Tue, 19 Sep 2023 16:00:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461E49C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695153598; x=1726689598;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3Y/kPWfHSLMXWuuYRqGMpSEQwEy1zNDIFt8sUJBQjYY=;
+  b=MyQ0u2BWRpETldU4f5xoNF2iuVIjK7hBM2l9yKaeV/2pQnstZBscU4Eq
+   6w7jOBnj2sCuk9peNQhm58N1sy2UHC+lDefawirafEYMBjvOT5R1J19Mo
+   P85Bs+j9RgFwVePeRxA+vCM6loiW30zjVj+A57IdrGKAPQk0ezeZIlDY6
+   z+kj85kmuZxV27/mh/c0pw0PGRqZBAHpp2Jo6Yfn9CI56dRH/uSXDWbKW
+   2YIgCTuGvW1O+qZu0b/7xq7+ru9N53IbAM10dIU8Gpd9QEhmviUG9GnSx
+   IfWiwPn6PdpG3x1LBQz1X3ym8RsDoLwLcdyQ5bxi6rD2SGcRtCrqhjCoJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="444126019"
+X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
+   d="scan'208";a="444126019"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 12:59:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="816573077"
+X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
+   d="scan'208";a="816573077"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 12:59:56 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qigsz-0000000Eulh-1EwC;
+        Tue, 19 Sep 2023 22:59:53 +0300
+Date:   Tue, 19 Sep 2023 22:59:53 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v1 1/1] irqdomain: Check virq for 0 before use in
+ irq_dispose_mapping()
+Message-ID: <ZQn9uR0o8QHXjN69@smile.fi.intel.com>
+References: <20230822135136.2138380-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="szkZFZrLxc3RDUOO"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230911140749.32386-1-ysionneau@kalray.eu>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230822135136.2138380-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 22, 2023 at 04:51:36PM +0300, Andy Shevchenko wrote:
+> It's a bit hard to read the logic since we use virq before checking
+> it for 0. Rearrange the code to make it better to understand.
+> 
+> This, in particular, should clearly answer the question whether caller
+> need to perform this check or not, and we have plenty places for both
+> variants, confirming a confusion.
+> 
+> Fun fact that the new code is shorter:
+> 
+>   Function                                     old     new   delta
+>   irq_dispose_mapping                          278     271      -7
+>   Total: Before=11625, After=11618, chg -0.06%
+> 
+> when compiled by GCC on Debian for x86_64.
 
---szkZFZrLxc3RDUOO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Any comment on this?
 
-On Mon, Sep 11, 2023 at 04:07:49PM +0200, Yann Sionneau wrote:
-> The DesignWare IP can be synthesized with the IC_EMPTYFIFO_HOLD_MASTER_EN
-> parameter.
-> In this case, when the TX FIFO gets empty and the last command didn't have
-> the STOP bit (IC_DATA_CMD[9]), the controller will hold SCL low until
-> a new command is pushed into the TX FIFO or the transfer is aborted.
->=20
-> When the controller is holding SCL low, it cannot be disabled.
-> The transfer must first be aborted.
-> Also, the bus recovery won't work because SCL is held low by the master.
->=20
-> Check if the master is holding SCL low in __i2c_dw_disable() before trying
-> to disable the controller. If SCL is held low, an abort is initiated.
-> When the abort is done, then proceed with disabling the controller.
->=20
-> This whole situation can happen for instance during SMBus read data block
-> if the slave just responds with "byte count =3D=3D 0".
-> This puts the driver in an unrecoverable state, because the controller is
-> holding SCL low and the current __i2c_dw_disable() procedure is not
-> working. In this situation only a SoC reset can fix the i2c bus.
->=20
-> Co-developed-by: Jonathan Borne <jborne@kalray.eu>
-> Signed-off-by: Jonathan Borne <jborne@kalray.eu>
-> Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
-
-Applied to for-current, thanks!
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---szkZFZrLxc3RDUOO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUJ/WEACgkQFA3kzBSg
-KbY3DQ/8CVPVpHGcdgEAUE9igmoNvHYnDkPsuowZoT3tvE/iGYd80gU63jiUzL7v
-nG1XWLhDQPUho+HJHVPNAAbxM/CDZLtEnhTrsyqeZWmI1zsIffb2hDN+wpyHGOCZ
-am5S8M78n3IilV+83zvX5TVxHvkIYqS8xDebPXQgBfO1bZ/0MkKI3XF3FsObj/Wc
-RC7UjZsHNrlsnFDK7+xImFzXHXjLnK6BZYzt4urGgE2gffkyUKMfVaydztyZGeeC
-SCox2f+jBMso3XnYprMamK5QlszvsyUgZ6OZJ0SI6BPJJbfFdlSXkOdgxOQWacBn
-aYpa/gtUIv0vOFwdV/bIIxUfzEXsUua5OTu1L3jdJjlnhyzQX6a4U/IKWuKrTUqC
-v8blCTXa7HcCvDrAe8ZNKPIaph+LZii9zPj4c20DWVaXDMQOvBEPr+mK/OLkst0s
-tS2qdZ0kAljCBkNaYwrAqQXYnf5pF+DlpW7WB+zxLUew11K+mUsKR4Ewe0HcpnQa
-0LRG68Hlm0h2YwbLiOMC2wJeweexOKwIMIt7Gxu01u9ZfvRV4gI2LdENZ0q0mNhR
-yQdu4hboFZRDL5k3TEoy95031+O/3BGB1UWubAKJV82jdJ9aC6SfdeExYiyxqZlo
-juHJ95PkHUX2zOcMrZzBg7p7l6WOwJ+4xKtlXKRp87uTUycSHSY=
-=trD0
------END PGP SIGNATURE-----
-
---szkZFZrLxc3RDUOO--
