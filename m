@@ -2,130 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B907A6ABB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4357A6AC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbjISScA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
+        id S232161AbjISSeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjISSb6 (ORCPT
+        with ESMTP id S230272AbjISSeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:31:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE05997;
-        Tue, 19 Sep 2023 11:31:52 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695148311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mKyOmmSSJD2Ws4VR+XqPS/XNP5VPNOwNw6yDdf2ZDQU=;
-        b=xXqJqYUZla9VpgC4S4ShTGkMIL3gkkhNvGjlWhi5L1gkuz5icUdocjTZfEjeUV9x1XfF1d
-        9gCf9onnbE0u4V9GNNs47U9xjPBMw2DWytTSoQsodttKIzqkL+7HlaYEWW4FSVqwFkxP9b
-        m3N7cld1jgwk+v3jf2F2vowyOYzbp0oeTYfBdyMg3skppXJK7mZs9rhgY8B0yUaEjzj5rv
-        eNPjV+ty7EkQisVX1wCgp5HdgxQTcki84SeKDSqMlKMRQ4Dwk5yJNMqTIIkjzdPuUEmZXw
-        ZLXZiD6XCNIDxdM95XJgYydUDvKFSGuDWDp3q+ZqWzDj1uSibW0RuXplJpLfmA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695148311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mKyOmmSSJD2Ws4VR+XqPS/XNP5VPNOwNw6yDdf2ZDQU=;
-        b=HSw+FE/2ECBsn8P+jBW//lrHd8c9W9Bxp5rJpQcF0U/qlJOFxqfRtQIDeqJGdvK2cG7ELT
-        v2DdyOFXFBXeLSDg==
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Subject: Re: Arches that don't support PREEMPT
-In-Reply-To: <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
-References: <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
- <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
-Date:   Tue, 19 Sep 2023 20:31:50 +0200
-Message-ID: <87pm2eui95.ffs@tglx>
+        Tue, 19 Sep 2023 14:34:08 -0400
+Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD859E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:34:02 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id ifXsqtgzsBLWLifXsqurP3; Tue, 19 Sep 2023 20:34:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695148440;
+        bh=NX2r/u8WzOv2BoVre7uNYRZIJFKowdY5u4O/mbOCuJM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=WGm7uWVin9r4Wna0PwE4ZIC5PTxl5PjyJx35FAqiQJuAgi4DXA21jaMCcrZVILZ4C
+         d8jcJA97sEeTxJBdA/xN0faODkPqyE/iebUfTH5OExfGtekUam6s2U+neQO9kv17Nn
+         jAc2jOclTZYgtu/SA6LmJzks2IcqI348DqsDhtSabESh7YVuETU2MIDlBzbF2nqjl/
+         lydDI4dOmPfssMNUs3mztSBW5bejhBnGgUBh25yiwpZ6px/kVxkyOa1y8rBTWd/gZP
+         yeSF4t+xSNXp8hdN+4S6D46aw9N6qj54mstAHBN3ywzZVC1ez5sJFz5jgVt9pI9fTh
+         ysH7iySBrUYgw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 19 Sep 2023 20:34:00 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <2931c006-d987-2261-1c39-5c41a4b17f75@wanadoo.fr>
+Date:   Tue, 19 Sep 2023 20:34:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] bcachefs: Avoid a potential memory over-allocation in
+ bch2_printbuf_make_room()
+Content-Language: fr, en-US
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+References: <2e6a82a83d0ddd9ce7f36ea889dd7ffc30f5fbc9.1694853900.git.christophe.jaillet@wanadoo.fr>
+ <ZQmfpzxX+qjLtJjm@bfoster>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <ZQmfpzxX+qjLtJjm@bfoster>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19 2023 at 10:25, Linus Torvalds wrote:
-> On Tue, 19 Sept 2023 at 06:48, John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
+Le 19/09/2023 à 15:18, Brian Foster a écrit :
+> On Sat, Sep 16, 2023 at 10:45:23AM +0200, Christophe JAILLET wrote:
+>> kmalloc() and co. don't always allocate a power of 2 number of bytes.
+>> There are some special handling for 64<n<=96 and 128<n<=192 cases.
 >>
->> As Geert poined out, I'm not seeing anything particular problematic with the
->> architectures lacking CONFIG_PREEMPT at the moment. This seems to be more
->> something about organizing KConfig files.
->
-> It can definitely be problematic.
->
-> Not the Kconfig file part, and not the preempt count part itself.
->
-> But the fact that it has never been used and tested means that there
-> might be tons of "this architecture code knows it's not preemptible,
-> because this architecture doesn't support preemption".
->
-> So you may have basic architecture code that simply doesn't have the
-> "preempt_disable()/enable()" pairs that it needs.
->
-> PeterZ mentioned the generic entry code, which does this for the entry
-> path. But it actually goes much deeper: just do a
->
->     git grep preempt_disable arch/x86/kernel
->
-> and then do the same for some other architectures.
->
-> Looking at alpha, for example, there *are* hits for it, so at least
-> some of the code there clearly *tries* to do it. But does it cover all
-> the required parts? If it's never been tested, I'd be surprised if
-> it's all just ready to go.
->
-> I do think we'd need to basically continue to support ARCH_NO_PREEMPT
-> - and such architectures migth end up with the worst-cast latencies of
-> only scheduling at return to user space.
+> 
+> It's not immediately clear to me what you mean by "special handling."
+> Taking a quick look at slabinfo, it looks like what you mean is that
+> slab rounding is a bit more granular than power of two, particularly in
+> these ranges. Is that right? If so, JFYI it would be helpful to describe
+> that more explicitly in the commit log.
 
-The only thing these architectures should gain is the preempt counter
-itself, but yes the extra preemption points are not mandatory to
-have, i.e. we simply do not enable them for the nostalgia club.
+That's what I tried to do with my 2 phrases.
+Sound good and clear to the French speaking man I am :)
 
-The removal of cond_resched() might cause latencies, but then I doubt
-that these museus pieces are used for real work :)
+Would you mind updating the phrasing yourself?
+A trial and error method about wording with a non native English 
+speaking person can be somewhat a long and boring experience to me.
 
-Thanks,
+All what I could propose, with the help of google translate, is:
 
-        tglx
+"
+kmalloc() does not necessarily allocate a number of bytes equal to a 
+power of two. There are special cases for sizes between 65 and 96 and 
+between 129 and 192. In these cases, 96 and 192 bytes are allocated 
+respectively.
+
+So, instead of forcing an allocation always equal to a power of two, it 
+may be interesting to use the same rounding rules as kmalloc(). This 
+helps avoid over-allocating some memory.
+
+Use kmalloc_size_roundup() instead of roundup_pow_of_two().
+"
+
+If this is fine to you I can send a v2 with this wording, otherwise, 
+either tweak it to what sounds good to you, or just ignore this patch.
+
+CJ
+
+> 
+>> So trust kmalloc() algorithm instead of forcing a power of 2 allocation.
+>> This can saves a few bytes of memory and still make use of all the
+>> memory allocated.
+>>
+>> On the other side, it may require an additional realloc() in some cases.
+>>
+> 
+> Well, I feel like this isn't the only place I've seen the power of two
+> buffer size realloc algorithm thing, but in thinking about it this seems
+> fairly harmless and reasonable for printbufs. FWIW:
+> 
+> Reviewed-by: Brian Foster <bfoster@redhat.com>
+> 
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   fs/bcachefs/printbuf.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/bcachefs/printbuf.c b/fs/bcachefs/printbuf.c
+>> index 77bee9060bfe..34527407e950 100644
+>> --- a/fs/bcachefs/printbuf.c
+>> +++ b/fs/bcachefs/printbuf.c
+>> @@ -28,7 +28,7 @@ int bch2_printbuf_make_room(struct printbuf *out, unsigned extra)
+>>   	if (out->pos + extra < out->size)
+>>   		return 0;
+>>   
+>> -	new_size = roundup_pow_of_two(out->size + extra);
+>> +	new_size = kmalloc_size_roundup(out->size + extra);
+>>   
+>>   	/*
+>>   	 * Note: output buffer must be freeable with kfree(), it's not required
+>> -- 
+>> 2.34.1
+>>
+> 
+> 
+
