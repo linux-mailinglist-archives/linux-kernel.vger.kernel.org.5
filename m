@@ -2,53 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D95E7A65FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C522B7A660E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbjISN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
+        id S232733AbjISOAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjISN6q (ORCPT
+        with ESMTP id S232689AbjISOAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:58:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A1018D
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:58:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B9B3C433C8;
-        Tue, 19 Sep 2023 13:58:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695131920;
-        bh=UxRhnS3JOGCE8g/RmJvIG0qBsms7b8zFihoa5FSbe5k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H/niI/ZuPA5qXnFOhzy4YuWeoPzIBAGbOErwF8Uf67D/+nOnsruJeKdVJdBahW4Kl
-         aMP9+crL7b0fMBs4XrVA3o2UrVuJ1cC8FAcRclwHggJ6gyNcTdIDqYsZFVvghl09J7
-         UP9m0eTGZ9j4esZ4LP0KPQtcTG/q5S0hRmZM9vyrYrC5/Zu9M/0PISNpeN4FQrz1rO
-         AdjVawEXPawPDUeZIfTyxFiVUGZrsGp4aLV6oV6LtS0xp78+kRiXB15vIU4hdEj50W
-         f6Oh6h3J2l4/6hoiB5ByQUT99tGjMMQN+hxelvx/URIo3ntuRKceqPYq0EjUI2LESR
-         D9F1H7Iqd9BwA==
-Date:   Tue, 19 Sep 2023 14:58:35 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH for-v6.6] mfd: cs42l43: Use correct macro for new-style
- PM runtime ops
-Message-ID: <20230919135835.GT13143@google.com>
-References: <20230919110320.1388527-1-u.kleine-koenig@pengutronix.de>
+        Tue, 19 Sep 2023 10:00:48 -0400
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE371A3;
+        Tue, 19 Sep 2023 07:00:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695132024; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=FZqTG4VYfgqkTH5611jzV7y9J8uOJ9/0MrVA0K+SLhf62J5l4/kuOcVgjkvrdJ+mQ0+2AatQjFuun/usAKvus3o6D0f+eG8i5Zb6pPJRCkSMd8AnIHCqzZ/w818TjiwqY6y5wT67H6TFezh/vxksfJsYxy0+PLHYZWTSdF8YPcs=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1695132024; h=Content-Type:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=0IAP0s+RT7GZFRPLNdV3G0ElvDn5rBd3toR6u/oZ7UE=; 
+        b=YUxdrO97nKa7lB3RSUn65Ycwn3gYHoPaArILgUEAUG3PgC526AM1GeJmUfv2Sv2AhU7jDEBs3aqKNkM4D3mYDnZM6walco3bz6B7jHbBneea21nDcyJ+vL604nTh3IKiRtFWUI+j4SiFvGxfcZvt8cT/lDrm0TeVJ2RRJGt3I7Y=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=marliere.net;
+        spf=pass  smtp.mailfrom=ricardo@marliere.net;
+        dmarc=pass header.from=<ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1695132024;
+        s=zmail; d=marliere.net; i=ricardo@marliere.net;
+        h=Date:Date:From:From:To:To:Cc:Cc:Subject:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To:Message-Id:Reply-To;
+        bh=0IAP0s+RT7GZFRPLNdV3G0ElvDn5rBd3toR6u/oZ7UE=;
+        b=NCIO2ubKx5x0uiMOVQpC9iTwOZGoOAk+fZSDM755d2dNXl53qqCiQRp4gBpuYm7+
+        N517mTJuj+0AAgH0Q6Jn5KUZQehiLOJEasqaDhY9uBT93ytCpTQL+MJVcEx14aUPj1X
+        +YP+iX0mK5xNenRNIVljCB4Eo7xbiyRdpIVsZ5Xo=
+Received: from localhost (177.104.93.54 [177.104.93.54]) by mx.zohomail.com
+        with SMTPS id 1695132022954320.1355663481704; Tue, 19 Sep 2023 07:00:22 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 11:00:32 -0300
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+To:     syzbot <syzbot+1fa947e7f09e136925b8@syzkaller.appspotmail.com>
+Cc:     david@fromorbit.com, djwong@kernel.org, hch@lst.de,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nogikh@google.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block] INFO: task hung in clean_bdev_aliases
+Message-ID: <rxoippwvqkrtspegmgujhceebhatfowhoce2oqaagdlen2opv2@g7gl5mypcsea>
+References: <000000000000e534bb0604959011@google.com>
+ <00000000000012f99f06058fc5fa@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230919110320.1388527-1-u.kleine-koenig@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <00000000000012f99f06058fc5fa@google.com>
+X-ZohoMailClient: External
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,62 +61,4 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023, Uwe Kleine-König wrote:
-
-> From: Charles Keepax <ckeepax@opensource.cirrus.com>
-> 
-> The code was accidentally mixing new and old style macros, update the
-> macros used to remove an unused function warning whilst building with
-> no PM enabled in the config.
-> 
-> Fixes: ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> Link: https://lore.kernel.org/all/20230822114914.340359-1-ckeepax@opensource.cirrus.com/
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Lee Jones <lee@kernel.org>
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello Linus,
-> 
-> this patch was submitted on August 22 already, but -rc2 is still
-> unfixed. This makes allmodconfig builds on (at least) s390 and m68k
-> fail.
-> 
-> Lee who should normally send this fix to you seems to be swamped in
-> other work and asked: "If anyone wants to submit this directly to Linus
-> before -rc1, please, be my guest."
-> 
-> Voilà, I'm Lee's guest now :-)
-
-Thanks Uwe.
-
-> Thanks for considering to take this patch this way,
-> Uwe
-> 
->  drivers/mfd/cs42l43.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-> index 37b23e9bae82..7b6d07cbe6fc 100644
-> --- a/drivers/mfd/cs42l43.c
-> +++ b/drivers/mfd/cs42l43.c
-> @@ -1178,8 +1178,8 @@ static int cs42l43_runtime_resume(struct device *dev)
->  }
->  
->  EXPORT_NS_GPL_DEV_PM_OPS(cs42l43_pm_ops, MFD_CS42L43) = {
-> -	SET_SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
-> -	SET_RUNTIME_PM_OPS(cs42l43_runtime_suspend, cs42l43_runtime_resume, NULL)
-> +	SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
-> +	RUNTIME_PM_OPS(cs42l43_runtime_suspend, cs42l43_runtime_resume, NULL)
->  };
->  
->  MODULE_DESCRIPTION("CS42L43 Core Driver");
-> 
-> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-> -- 
-> 2.40.1
-> 
-
--- 
-Lee Jones [李琼斯]
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git next-20230919
