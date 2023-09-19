@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 934A67A6855
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40F27A685A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbjISPtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
+        id S231945AbjISPvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233178AbjISPtC (ORCPT
+        with ESMTP id S230010AbjISPve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:49:02 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493AD9D
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:48:56 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-65643a83758so19466656d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695138535; x=1695743335; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FUFBX34Vi8T0jyulMhlIaJzOiGzxRBHm/K7XuTUIix8=;
-        b=2C5Kk5jBdwO+wUlff1qDFpyRMIcxfsXG0zhn/m974GNZGjX0pAGZ6eSmSFEL0OW4bt
-         +8T3IDEao5L9LIn8uOR2xPdvTjkQgjJaPrIXIPdO1SxL/wjgm8xAs0Ooydb03PEG5sF6
-         dI43xBKUG72kujk/cfWdrPhLq3azvQM5I6g0zJFNtxJzUVD+QbsR8Zwe7lLQOKUZ7DEd
-         KKsqvH6IBzbttJHVieNhDfxhqZHTpzVmEtQ/yKALHmq659qZNdJX8ZA2AU9SfO0lta+1
-         fYwoN8+tVm+97N72m2yF+c3z67fWIF6fa+VxKaZmNbzHHdCeNuaM46rHrk0m0I5aQEvZ
-         98EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695138535; x=1695743335;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FUFBX34Vi8T0jyulMhlIaJzOiGzxRBHm/K7XuTUIix8=;
-        b=GeuGhDTCdueuY2nzIfGj51lM7AKSllok/zIExmE8sX62Tnl/KeTx5AP4NXkpb1oOeD
-         Udjl8mPjjMKe1O/5pIzjkTOeFRzs6H60R5IMwKCjw3sSwMWBRXzhs721BNzAn7Ox9wjk
-         6VYvoUBa7OBM1Na4aTBy6lc7LCWmDIq93gsrQSVjckmneKiyvGeGWvz7JuxSw6R8axy5
-         LFTWgxJOIZuzY5mGUOBwm1sFMLC5MQRlHmoEJtowd2CuDpavrGkIszIUi1zBvlTvHadU
-         aYSdDBEelsY6vNyf2cK3I/RARHjBhnnp+LP+hcPU9UlWGZV+OUCK57d4xlfz8p9v/59r
-         Tjzw==
-X-Gm-Message-State: AOJu0YzltuiADF8h0SN2rG3ORuyAh6oBW39J41xaKtjMXJuF5/N642sn
-        xLrfA5NmD2VkdndNuF4CaStkaSxpxkS4Ib6IrA6szw==
-X-Google-Smtp-Source: AGHT+IE3bOOMkBS+atNtSPIXMOTa2Ld22Qs9HTCkKcTaipggWake8IjLOlnyddu6BbylehDROBRn01dZ36CiD5ewpnY=
-X-Received: by 2002:a05:6214:5d0e:b0:658:2d42:75e4 with SMTP id
- me14-20020a0562145d0e00b006582d4275e4mr4698272qvb.47.1695138535174; Tue, 19
- Sep 2023 08:48:55 -0700 (PDT)
+        Tue, 19 Sep 2023 11:51:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6CB93
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:51:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695138688; x=1726674688;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0K9EHyvRjvCf+K2LA48v9sIcYCTbDCh/cmOauiIFX8w=;
+  b=d+xXMDWesBMTLBWzxiRtNBf/sQHG9XJrtiUM5qvcCm2cqvqukPzMq8YQ
+   f8UNxs9l0eTsMGhUytV58RnD2YK9eS+MCCdRB8YTCgX+Nu12/YuDLW/nR
+   29CsvbhANMs72Q+M+S+wccmbNwCRKTRA95sX5qupHSsS5sfziBQcIzFwS
+   5lKg6LuCaJr2gmmsgW7rjolmkHOA+RFj7V4clXcdcsUHs+asZpAuPQ3R/
+   WZAftbqIz4xSHMNGAHZ/uJst4/n1oho5V3vlDjI1oK8VTXPvhFatOY7ny
+   6JJ0gc8Yu0BTGrJH8UV6eCKIT1xXm20YhknkIbh6OML4PbP7aeLClXLLs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="377291642"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="377291642"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 08:51:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="836481884"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="836481884"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Sep 2023 08:51:27 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qid0W-0007a6-2z;
+        Tue, 19 Sep 2023 15:51:24 +0000
+Date:   Tue, 19 Sep 2023 23:50:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jeykumar Sankaran <quic_jeykumar@quicinc.com>
+Subject: include/drm/drm_print.h:524:49: warning: '%4.4s' directive argument
+ is null
+Message-ID: <202309192301.fMQKWYsm-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230915105933.495735-1-matteorizzo@google.com>
- <7a4f5128-28fd-3c5f-34c2-1c34f4448174@intel.com> <1d7573c0-ebbc-6ed2-f152-1045eb0542f9@os.amperecomputing.com>
- <CAHKB1w+rVyww0UrHhzeGfPA7FM482Z-7ApzXvekVqLHvTDAV3Q@mail.gmail.com>
- <ZQiLX0W2Tcr+wdJT@gmail.com> <CAHk-=wgGzB4u-WZsDpdgjwX1w5=9CLE0gorhaNFD09P1FUGeuQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wgGzB4u-WZsDpdgjwX1w5=9CLE0gorhaNFD09P1FUGeuQ@mail.gmail.com>
-From:   Matteo Rizzo <matteorizzo@google.com>
-Date:   Tue, 19 Sep 2023 17:48:42 +0200
-Message-ID: <CAHKB1w+9GgY_e6J+rZ4zDaXrPZab5xteTuDEH0Z2hWe6x-pT5g@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/14] Prevent cross-cache attacks in the SLUB allocator
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        "Lameter, Christopher" <cl@os.amperecomputing.com>,
-        Dave Hansen <dave.hansen@intel.com>, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-hardening@vger.kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, corbet@lwn.net, luto@kernel.org,
-        peterz@infradead.org, jannh@google.com, evn@google.com,
-        poprdi@google.com, jordyzomer@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,38 +63,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Sept 2023 at 20:05, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> ... and equally importantly, what about DMA?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2cf0f715623872823a72e451243bbf555d10d032
+commit: 48b3207e4ed9e5140c69e229b697373f233419c8 drm/msm/dpu: simplify CDP programming
+date:   4 months ago
+config: sparc-randconfig-r014-20230610 (https://download.01.org/0day-ci/archive/20230919/202309192301.fMQKWYsm-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309192301.fMQKWYsm-lkp@intel.com/reproduce)
 
-I'm not exactly sure what you mean by this, I don't think this should
-affect the performance of DMA.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309192301.fMQKWYsm-lkp@intel.com/
 
-> Or what about the fixed-size slabs (aka kmalloc?) What's the point of
-> "never re-use the same address for a different slab", when the *same*
-> slab will contain different kinds of allocations anyway?
+All warnings (new ones prefixed by >>):
 
-There are a number of patches out there (for example the random_kmalloc
-series which recently got merged into v6.6) which attempt to segregate
-kmalloc'd objects into different caches to make exploitation harder.
-Another thing that we would like to have in the future is to segregate
-objects by type (like XNU's kalloc_type
-https://security.apple.com/blog/towards-the-next-generation-of-xnu-memory-safety/)
-which makes exploiting use-after-free by type confusion much harder or
-impossible.
+   In file included from include/drm/drm_mm.h:51,
+                    from include/drm/drm_vma_manager.h:26,
+                    from include/drm/drm_gem.h:40,
+                    from drivers/gpu/drm/msm/msm_drv.h:34,
+                    from drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:20:
+   In function '_dpu_plane_set_qos_lut',
+       inlined from 'dpu_plane_sspp_update_pipe' at drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:1126:2:
+>> include/drm/drm_print.h:524:49: warning: '%4.4s' directive argument is null [-Wformat-overflow=]
+     524 | #define __drm_dbg(cat, fmt, ...)                ___drm_dbg(NULL, cat, fmt, ##__VA_ARGS__)
+         |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/drm/drm_print.h:582:9: note: in expansion of macro '__drm_dbg'
+     582 |         __drm_dbg(DRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
+         |         ^~~~~~~~~
+   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:29:39: note: in expansion of macro 'DRM_DEBUG_ATOMIC'
+      29 | #define DPU_DEBUG_PLANE(pl, fmt, ...) DRM_DEBUG_ATOMIC("plane%d " fmt,\
+         |                                       ^~~~~~~~~~~~~~~~
+   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c:291:9: note: in expansion of macro 'DPU_DEBUG_PLANE'
+     291 |         DPU_DEBUG_PLANE(pdpu, "pnum:%d fmt: %4.4s rt:%d fl:%u lut:0x%llx\n",
+         |         ^~~~~~~~~~~~~~~
 
-All of these mitigations can be bypassed very easily if the attacker can
-mount a cross-cache attack, which is what this series attempts to prevent.
-This is not only theoretical, we've seen attackers use this all the time in
-kCTF/kernelCTF submissions (for example
-https://ruia-ruia.github.io/2022/08/05/CVE-2022-29582-io-uring/).
 
-> I think the whole "make it one single compile-time option" model is
-> completely and fundamentally broken.
+vim +524 include/drm/drm_print.h
 
-Wouldn't making this toggleable at boot time or runtime make performance
-even worse?
+3bf149bd3fe12a Jani Nikula 2019-10-28  522  
+84ec67288c10fb Jim Cromie  2022-09-11  523  #if !defined(CONFIG_DRM_USE_DYNAMIC_DEBUG)
+d987150b539271 Wayne Lin   2022-12-23 @524  #define __drm_dbg(cat, fmt, ...)		___drm_dbg(NULL, cat, fmt, ##__VA_ARGS__)
+84ec67288c10fb Jim Cromie  2022-09-11  525  #else
+84ec67288c10fb Jim Cromie  2022-09-11  526  #define __drm_dbg(cat, fmt, ...)					\
+16deeb8e18cafd Jim Cromie  2022-09-11  527  	_dynamic_func_call_cls(cat, fmt, ___drm_dbg,			\
+84ec67288c10fb Jim Cromie  2022-09-11  528  			       cat, fmt, ##__VA_ARGS__)
+84ec67288c10fb Jim Cromie  2022-09-11  529  #endif
+e820f52577b14c Jim Cromie  2022-09-11  530  
 
---
-Matteo
+:::::: The code at line 524 was first introduced by commit
+:::::: d987150b539271b0394f24c1c648d2846662adb4 drm/drm_print: correct format problem
+
+:::::: TO: Wayne Lin <Wayne.Lin@amd.com>
+:::::: CC: Alex Deucher <alexander.deucher@amd.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
