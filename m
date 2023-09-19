@@ -2,205 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 169867A699A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13B87A69A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbjISR1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
+        id S230137AbjISR2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 13:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231968AbjISR1M (ORCPT
+        with ESMTP id S230272AbjISR2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 13:27:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682EE9F;
-        Tue, 19 Sep 2023 10:27:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695144426; x=1726680426;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/GfKecIDbouGTE7n4315amFnYOI3c0tRqeNu43t9cFw=;
-  b=Cm9dyKwXGdwFPawE+t8KoqNWXi4KrTIsqC8eGmVjqET3QPgOPTHlRJ6B
-   8bfMK1Wzkq+kXKBT8kH+7Wu/JaKH1JrsJvBlUsWqOnI+Nza/dUMrOw0qH
-   70k4m0cgeu3+GNJ/AEeZwDIZFtSClHYsuUfqlyfn/0psoS2KnZTYddQk/
-   KwEi+omLlWFLyNVLu4wx2Xjvt3EjEVtihylxD7Uv/pz0S5LfN1SO2jtc8
-   XEkRvDdZvj1ZWT6mgGUphr450FEMD0WhXpjQmyP6bmvn5ZsRdJynhfPkM
-   +rHCa6i+8RcWxNN+1ZAyDfT3qoONsB3z5/s4lS1POAlsGrrSJCrtGpgwC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="410936065"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="410936065"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 10:27:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="746316089"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="746316089"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 19 Sep 2023 10:27:00 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qieV0-0007jz-15;
-        Tue, 19 Sep 2023 17:26:58 +0000
-Date:   Wed, 20 Sep 2023 01:26:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, quic_pkondeti@quicinc.com,
-        quic_ppratap@quicinc.com, quic_jackp@quicinc.com,
-        ahalaney@redhat.com, quic_shazhuss@quicinc.com,
-        Harsh Agarwal <quic_harshq@quicinc.com>,
-        Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: Re: [PATCH v11 06/13] usb: dwc3: core: Refactor PHY logic to support
- Multiport Controller
-Message-ID: <202309200156.CxQ3yaLY-lkp@intel.com>
-References: <20230828133033.11988-7-quic_kriskura@quicinc.com>
+        Tue, 19 Sep 2023 13:28:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE52DD7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 10:27:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B012C433C8;
+        Tue, 19 Sep 2023 17:27:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695144477;
+        bh=BTQ9ApbNuELAKqt3aylT6wPCjJ8mrSIVhWeR1eQjr58=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CdvL+pqjvEYBL5VUn+1VfI7EWQdnHoqVuvfErqGenSSOataiOsN2wJ/NszIQE8FEC
+         S0TYZ7h8PRbLgzjZXVTuq2jCzoea89/KF3X31hEn3vbD2d8Iwfso5sNltWvuu349V4
+         6AVWPmTIYzEQVrKyCd4Cn9u7xlFkf8aaZpsfCyXa7zDrBlXxdj3uylro9JQwdu58EO
+         Fol5g1Reis7BBKSerzt8Bm8CkQYnLRTe3b5MBehCNJTT4auhpcdtUnyN55N/5kcB7W
+         fhqjc7Vy3G8hTZPfHsldwEyehzr3JOUTfgvDrEDesV72bErtlbTxQkPA08jnwsunsz
+         xvifctWcSvj5w==
+Date:   Tue, 19 Sep 2023 10:27:56 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        david@fromorbit.com, kent.overstreet@linux.dev,
+        libaokun1@huawei.com, linux-arm-kernel@lists.infradead.org,
+        ming.lei@redhat.com, will@kernel.org, yi.zhang@redhat.com
+Subject: Re: [PATCH] locking/atomic: scripts: fix fallback ifdeffery
+Message-ID: <20230919172756.GE348037@frogsfrogsfrogs>
+References: <20230919171430.2697727-1-mark.rutland@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230828133033.11988-7-quic_kriskura@quicinc.com>
+In-Reply-To: <20230919171430.2697727-1-mark.rutland@arm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+On Tue, Sep 19, 2023 at 06:14:29PM +0100, Mark Rutland wrote:
+> Since commit:
+> 
+>   9257959a6e5b4fca ("locking/atomic: scripts: restructure fallback ifdeffery")
+> 
+> The ordering fallbacks for atomic*_read_acquire() and
+> atomic*_set_release() erroneously fall back to the implictly relaxed
+> atomic*_read() and atomic*_set() variants respectively, without any
+> additional barriers. This loses the ACQUIRE and RELEASE ordering
+> semantics, which can result in a wide variety of problems, even on
+> strongly-ordered architectures where the implementation of
+> atomic*_read() and/or atomic*_set() allows the compiler to reorder those
+> relative to other accesses.
+> 
+> In practice this has been observed to break bit spinlocks on arm64,
+> resulting in dentry cache corruption.
+> 
+> The fallback logic was intended to allow ACQUIRE/RELEASE/RELAXED ops to
+> be defined in terms of FULL ops, but where an op had RELAXED ordering by
+> default, this unintentionally permitted the ACQUIRE/RELEASE ops to be
+> defined in terms of the implicitly RELAXED default.
+> 
+> This patch corrects the logic to avoid falling back to implicitly
+> RELAXED ops, resulting in the same behaviour as prior to commit
+> 9257959a6e5b4fca.
+> 
+> I've verified the resulting assembly on arm64 by generating outlined
+> wrappers of the atomics. Prior to this patch the compiler generates
+> sequences using relaxed load (LDR) and store (STR) instructions, e.g.
+> 
+> | <outlined_atomic64_read_acquire>:
+> |         ldr     x0, [x0]
+> |         ret
+> |
+> | <outlined_atomic64_set_release>:
+> |         str     x1, [x0]
+> |         ret
+> 
+> With this patch applied the compiler generates sequences using the
+> intended load-acquire (LDAR) and store-release (STLR) instructions, e.g.
+> 
+> | <outlined_atomic64_read_acquire>:
+> |         ldar    x0, [x0]
+> |         ret
+> |
+> | <outlined_atomic64_set_release>:
+> |         stlr    x1, [x0]
+> |         ret
+> 
+> To make sure that there were no other victims of the ifdeffery rewrite,
+> I generated outlined copies of all of the {atomic,atomic64,atomic_long}
+> atomic operations before and after commit 9257959a6e5b4fca. A diff of
+> the generated assembly on arm64 shows that only the read_acquire() and
+> set_release() operations were changed, and only lost their intended
+> ordering:
+> 
+> | [mark@lakrids:~/src/linux]% diff -u \
+> | 	<(aarch64-linux-gnu-objdump -d before-9257959a6e5b4fca.o)
+> | 	<(aarch64-linux-gnu-objdump -d after-9257959a6e5b4fca.o)
+> | --- /proc/self/fd/11    2023-09-19 16:51:51.114779415 +0100
+> | +++ /proc/self/fd/16    2023-09-19 16:51:51.114779415 +0100
+> | @@ -1,5 +1,5 @@
+> |
+> | -before-9257959a6e5b4fca.o:     file format elf64-littleaarch64
+> | +after-9257959a6e5b4fca.o:     file format elf64-littleaarch64
+> |
+> |
+> |  Disassembly of section .text:
+> | @@ -9,7 +9,7 @@
+> |         4:      d65f03c0        ret
+> |
+> |  0000000000000008 <outlined_atomic_read_acquire>:
+> | -       8:      88dffc00        ldar    w0, [x0]
+> | +       8:      b9400000        ldr     w0, [x0]
+> |         c:      d65f03c0        ret
+> |
+> |  0000000000000010 <outlined_atomic_set>:
+> | @@ -17,7 +17,7 @@
+> |        14:      d65f03c0        ret
+> |
+> |  0000000000000018 <outlined_atomic_set_release>:
+> | -      18:      889ffc01        stlr    w1, [x0]
+> | +      18:      b9000001        str     w1, [x0]
+> |        1c:      d65f03c0        ret
+> |
+> |  0000000000000020 <outlined_atomic_add>:
+> | @@ -1230,7 +1230,7 @@
+> |      1070:      d65f03c0        ret
+> |
+> |  0000000000001074 <outlined_atomic64_read_acquire>:
+> | -    1074:      c8dffc00        ldar    x0, [x0]
+> | +    1074:      f9400000        ldr     x0, [x0]
+> |      1078:      d65f03c0        ret
+> |
+> |  000000000000107c <outlined_atomic64_set>:
+> | @@ -1238,7 +1238,7 @@
+> |      1080:      d65f03c0        ret
+> |
+> |  0000000000001084 <outlined_atomic64_set_release>:
+> | -    1084:      c89ffc01        stlr    x1, [x0]
+> | +    1084:      f9000001        str     x1, [x0]
+> |      1088:      d65f03c0        ret
+> |
+> |  000000000000108c <outlined_atomic64_add>:
+> | @@ -2427,7 +2427,7 @@
+> |      207c:      d65f03c0        ret
+> |
+> |  0000000000002080 <outlined_atomic_long_read_acquire>:
+> | -    2080:      c8dffc00        ldar    x0, [x0]
+> | +    2080:      f9400000        ldr     x0, [x0]
+> |      2084:      d65f03c0        ret
+> |
+> |  0000000000002088 <outlined_atomic_long_set>:
+> | @@ -2435,7 +2435,7 @@
+> |      208c:      d65f03c0        ret
+> |
+> |  0000000000002090 <outlined_atomic_long_set_release>:
+> | -    2090:      c89ffc01        stlr    x1, [x0]
+> | +    2090:      f9000001        str     x1, [x0]
+> |      2094:      d65f03c0        ret
+> |
+> |  0000000000002098 <outlined_atomic_long_add>:
+> 
+> I've build tested this with a variety of configs for alpha, arm, arm64,
+> csky, i386, m68k, microblaze, mips, nios2, openrisc, powerpc, riscv,
+> s390, sh, sparc, x86_64, and xtensa, for which I've seen no issues. I
+> was unable to build test for ia64 and parisc due to existing build
+> breakage in v6.6-rc2.
+> 
+> Fixes: 9257959a6e5b4fca ("locking/atomic: scripts: restructure fallback ifdeffery")
+> Reported-by: Ming Lei <ming.lei@redhat.com>
+> Link: https://lore.kernel.org/all/ZOWFtqA2om0w5Vmz@fedora/
+> Reported-by: Darrick J. Wong <djwong@kernel.org>
+> Link: https://lore.kernel.org/linux-fsdevel/20230912173026.GA3389127@frogsfrogsfrogs/
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Baokun Li <libaokun1@huawei.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Darrick J. Wong <djwong@kernel.org>
+> Cc: Dave Chinner <david@fromorbit.com>
+> Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Ming Lei <ming.lei@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Yi Zhang <yi.zhang@redhat.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> ---
+>  include/linux/atomic/atomic-arch-fallback.h | 10 +---------
+>  scripts/atomic/gen-atomic-fallback.sh       |  2 +-
+>  2 files changed, 2 insertions(+), 10 deletions(-)
+> 
+> Peter, are you happy to queue this in the tip tree? It's a pretty nasty
+> regresssion in v6.5, and I'd like to get this in as a fix for v6.6 ASAP.
 
-kernel test robot noticed the following build warnings:
+I'll send this out to the arm64 fstestscloud fleet shortly and report
+back when it's done.  Thank you for the quick response. :)
 
-[auto build test WARNING on usb/usb-testing]
-[also build test WARNING on usb/usb-next usb/usb-linus robh/for-next pza/reset/next linus/master v6.6-rc2 next-20230919]
-[cannot apply to pza/imx-drm/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+--D
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-Kurapati/dt-bindings-usb-qcom-dwc3-Add-bindings-for-SC8280-Multiport/20230828-214326
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20230828133033.11988-7-quic_kriskura%40quicinc.com
-patch subject: [PATCH v11 06/13] usb: dwc3: core: Refactor PHY logic to support Multiport Controller
-config: x86_64-randconfig-011-20230902 (https://download.01.org/0day-ci/archive/20230920/202309200156.CxQ3yaLY-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309200156.CxQ3yaLY-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309200156.CxQ3yaLY-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/usb/dwc3/core.c: In function 'dwc3_core_get_phy':
->> drivers/usb/dwc3/core.c:1375:53: warning: '%d' directive writing between 1 and 3 bytes into a region of size 2 [-Wformat-overflow=]
-    1375 |                         sprintf(phy_name, "usb2-port%d", i);
-         |                                                     ^~
-   drivers/usb/dwc3/core.c:1375:43: note: directive argument in the range [0, 254]
-    1375 |                         sprintf(phy_name, "usb2-port%d", i);
-         |                                           ^~~~~~~~~~~~~
-   drivers/usb/dwc3/core.c:1375:25: note: 'sprintf' output between 11 and 13 bytes into a destination of size 11
-    1375 |                         sprintf(phy_name, "usb2-port%d", i);
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/usb/dwc3/core.c:1390:53: warning: '%d' directive writing between 1 and 3 bytes into a region of size 2 [-Wformat-overflow=]
-    1390 |                         sprintf(phy_name, "usb3-port%d", i);
-         |                                                     ^~
-   drivers/usb/dwc3/core.c:1390:43: note: directive argument in the range [0, 254]
-    1390 |                         sprintf(phy_name, "usb3-port%d", i);
-         |                                           ^~~~~~~~~~~~~
-   drivers/usb/dwc3/core.c:1390:25: note: 'sprintf' output between 11 and 13 bytes into a destination of size 11
-    1390 |                         sprintf(phy_name, "usb3-port%d", i);
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +1375 drivers/usb/dwc3/core.c
-
-  1338	
-  1339	static int dwc3_core_get_phy(struct dwc3 *dwc)
-  1340	{
-  1341		struct device		*dev = dwc->dev;
-  1342		struct device_node	*node = dev->of_node;
-  1343		char phy_name[11];
-  1344		int ret;
-  1345		int i;
-  1346	
-  1347		if (node) {
-  1348			dwc->usb2_phy = devm_usb_get_phy_by_phandle(dev, "usb-phy", 0);
-  1349			dwc->usb3_phy = devm_usb_get_phy_by_phandle(dev, "usb-phy", 1);
-  1350		} else {
-  1351			dwc->usb2_phy = devm_usb_get_phy(dev, USB_PHY_TYPE_USB2);
-  1352			dwc->usb3_phy = devm_usb_get_phy(dev, USB_PHY_TYPE_USB3);
-  1353		}
-  1354	
-  1355		if (IS_ERR(dwc->usb2_phy)) {
-  1356			ret = PTR_ERR(dwc->usb2_phy);
-  1357			if (ret == -ENXIO || ret == -ENODEV)
-  1358				dwc->usb2_phy = NULL;
-  1359			else
-  1360				return dev_err_probe(dev, ret, "no usb2 phy configured\n");
-  1361		}
-  1362	
-  1363		if (IS_ERR(dwc->usb3_phy)) {
-  1364			ret = PTR_ERR(dwc->usb3_phy);
-  1365			if (ret == -ENXIO || ret == -ENODEV)
-  1366				dwc->usb3_phy = NULL;
-  1367			else
-  1368				return dev_err_probe(dev, ret, "no usb3 phy configured\n");
-  1369		}
-  1370	
-  1371		for (i = 0; i < dwc->num_usb2_ports; i++) {
-  1372			if (dwc->num_usb2_ports == 1)
-  1373				sprintf(phy_name, "usb2-phy");
-  1374			else
-> 1375				sprintf(phy_name, "usb2-port%d", i);
-  1376	
-  1377			dwc->usb2_generic_phy[i] = devm_phy_get(dev, phy_name);
-  1378			if (IS_ERR(dwc->usb2_generic_phy[i])) {
-  1379				ret = PTR_ERR(dwc->usb2_generic_phy[i]);
-  1380				if (ret == -ENOSYS || ret == -ENODEV)
-  1381					dwc->usb2_generic_phy[i] = NULL;
-  1382				else
-  1383					return dev_err_probe(dev, ret,
-  1384						"failed to lookup phy %s\n", phy_name);
-  1385			}
-  1386	
-  1387			if (dwc->num_usb2_ports == 1)
-  1388				sprintf(phy_name, "usb3-phy");
-  1389			else
-  1390				sprintf(phy_name, "usb3-port%d", i);
-  1391	
-  1392			dwc->usb3_generic_phy[i] = devm_phy_get(dev, phy_name);
-  1393			if (IS_ERR(dwc->usb3_generic_phy[i])) {
-  1394				ret = PTR_ERR(dwc->usb3_generic_phy[i]);
-  1395				if (ret == -ENOSYS || ret == -ENODEV)
-  1396					dwc->usb3_generic_phy[i] = NULL;
-  1397				else
-  1398					return dev_err_probe(dev, ret,
-  1399						"failed to lookup phy %s\n", phy_name);
-  1400			}
-  1401		}
-  1402	
-  1403		return 0;
-  1404	}
-  1405	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Thanks,
+> Mark.
+> 
+> diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
+> index 18f5744dfb5d8..b83ef19da13de 100644
+> --- a/include/linux/atomic/atomic-arch-fallback.h
+> +++ b/include/linux/atomic/atomic-arch-fallback.h
+> @@ -459,8 +459,6 @@ raw_atomic_read_acquire(const atomic_t *v)
+>  {
+>  #if defined(arch_atomic_read_acquire)
+>  	return arch_atomic_read_acquire(v);
+> -#elif defined(arch_atomic_read)
+> -	return arch_atomic_read(v);
+>  #else
+>  	int ret;
+>  
+> @@ -508,8 +506,6 @@ raw_atomic_set_release(atomic_t *v, int i)
+>  {
+>  #if defined(arch_atomic_set_release)
+>  	arch_atomic_set_release(v, i);
+> -#elif defined(arch_atomic_set)
+> -	arch_atomic_set(v, i);
+>  #else
+>  	if (__native_word(atomic_t)) {
+>  		smp_store_release(&(v)->counter, i);
+> @@ -2575,8 +2571,6 @@ raw_atomic64_read_acquire(const atomic64_t *v)
+>  {
+>  #if defined(arch_atomic64_read_acquire)
+>  	return arch_atomic64_read_acquire(v);
+> -#elif defined(arch_atomic64_read)
+> -	return arch_atomic64_read(v);
+>  #else
+>  	s64 ret;
+>  
+> @@ -2624,8 +2618,6 @@ raw_atomic64_set_release(atomic64_t *v, s64 i)
+>  {
+>  #if defined(arch_atomic64_set_release)
+>  	arch_atomic64_set_release(v, i);
+> -#elif defined(arch_atomic64_set)
+> -	arch_atomic64_set(v, i);
+>  #else
+>  	if (__native_word(atomic64_t)) {
+>  		smp_store_release(&(v)->counter, i);
+> @@ -4657,4 +4649,4 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
+>  }
+>  
+>  #endif /* _LINUX_ATOMIC_FALLBACK_H */
+> -// 202b45c7db600ce36198eb1f1fc2c2d5268ace2d
+> +// 2fdd6702823fa842f9cea57a002e6e4476ae780c
+> diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
+> index c0c8a85d7c81b..a45154cefa487 100755
+> --- a/scripts/atomic/gen-atomic-fallback.sh
+> +++ b/scripts/atomic/gen-atomic-fallback.sh
+> @@ -102,7 +102,7 @@ gen_proto_order_variant()
+>  	fi
+>  
+>  	# Allow ACQUIRE/RELEASE/RELAXED ops to be defined in terms of FULL ops
+> -	if [ ! -z "${order}" ]; then
+> +	if [ ! -z "${order}" ] && ! meta_is_implicitly_relaxed "${meta}"; then
+>  		printf "#elif defined(arch_${basename})\n"
+>  		printf "\t${retstmt}arch_${basename}(${args});\n"
+>  	fi
+> -- 
+> 2.30.2
+> 
