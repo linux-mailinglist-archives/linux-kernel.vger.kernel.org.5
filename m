@@ -2,63 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 581477A5AF1
+	by mail.lfdr.de (Postfix) with ESMTP id A1E787A5AF2
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbjISHbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbjISHbq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231750AbjISHbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 19 Sep 2023 03:31:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FF211A;
-        Tue, 19 Sep 2023 00:31:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6539C433C8;
-        Tue, 19 Sep 2023 07:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695108699;
-        bh=c8Jda3J+RhTWA4ijuCRZYSHme2R9CMRcX025MvqhKWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UWKb7fqgAsdPyITs/ng3rd6kRyzAEvbEg0CsfVTkaem2KV+R8S+vnc5Pw1SmiaXxV
-         IckberZW3K1GtRiC+8vAsQ81c6T2vmVkVIbMcN0POV024F2AOQ+8I1XS+sbRdZoE7Y
-         1G5vwtR10gIpigpW0BvThdnGBCbrD4ywTgDmK5awI93ZQVZSh+Qm0vSB8Sy/Hue6JU
-         byoGujV8JGMBIPS2uy221+6Vrv2KjHrutiYo4rg/bye/5qjeS0mYTdxiFh0CH71e5R
-         QIsUJyCh3UzdF151UJSrKbwBapmj5pAI7LORymIxi3Wf5Vhhzotw2YHJdFJN4smXEu
-         KfXcMaHVz1b2w==
-Date:   Tue, 19 Sep 2023 09:31:36 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Benjamin Bara <bbara93@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Frank Oltmanns <frank@oltmanns.dev>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        Adam Ford <aford173@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [PATCH 00/13] imx8mp: first clock propagation attempt (for LVDS)
-Message-ID: <7at35ykai5lyeaci3xvklrfk4xg4hn3jnw4fz3egqobjvnglbz@cv45l3mrhtct>
-References: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231742AbjISHbo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Sep 2023 03:31:44 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BF4115
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:31:38 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4936b401599so2315945e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:31:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695108697; x=1695713497; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:mime-version
+         :in-reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=6m1yPUFpcEkGw98CCawBkJ/hpcU96hyVw6LqH50N6SU=;
+        b=b1U1of78ekmqq2UgO+T0mw1qPpdqvBtFHpZ+YXEJaROw0nyhqVZ00U+HPtmEXvlqnR
+         J1ggYdq7LP8rEHW4Z+yWTyM6bSEU8+X8nhUQY2VQGnSWKzslosp47uW68D1mYqFY+WF6
+         DaLb5DANeZ7tEsoku9ucxMrdhynIYnatNY5U9UkBKwNzBFjNayED5OcBWfck+3S5hISD
+         EBKLOnWQJiKapyZQlDwGWvLHj4NtgcxBV4/LjLsWkeOA/lztxRWskluitBdztTrYeab0
+         ULS8H5DX4WxbDjH+w/bbi3IXM8OEzqLcW04m0FLVWLslJrRnhojevjN833TILkiGKhJA
+         Ta9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695108697; x=1695713497;
+        h=cc:to:subject:message-id:date:from:references:mime-version
+         :in-reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6m1yPUFpcEkGw98CCawBkJ/hpcU96hyVw6LqH50N6SU=;
+        b=LInOdJgKQZ37fJNUy3DTSZ2YI2HYBYkrTYrl3lr+/jsnatEtIGcHWtDqOGWDi8X/jh
+         kI3uhD2nLy7ZjMsvBDOaZfABfTk1EsgECrLIBVdQ5d3/24WihtMrtF7LgTdlKuWItb0h
+         bwgSVxJ3AZAd2bgx6FDNiCYoPreBvGmTtGBApXTXqVKNHbdQniSoXMVMqvXkvDhnrfmm
+         uAhEbqgF5s+og/Huzh4e8EZ1DCHrtfj2Evc+PfC3G6ObzK0b8Mvv+BsKOlyX4vSWC41v
+         xNByfzP51ewp0XNJomxqsI6ZKFfNEYRvdfec7EWE396HTM1/R5IJni6w0YxhcVXClynq
+         f5/Q==
+X-Gm-Message-State: AOJu0YzuLsoGEZe8BacUQeoqoF7FhZ3nW76/mj5T1IQUcYPcZ7zSeN+J
+        Y89YrifeXgfcUVWKxKqEf+l6gsC33e1TUHsPcee3oaOyYq5//hNunuI=
+X-Google-Smtp-Source: AGHT+IE8rCjQtlKc2if8YTV0enAa6Kk/BOsvnWpXprMCci8kFRLmjOh9/ECOm4fMAFQE3jXc05VutnuagD2i/Vq1fQI=
+X-Received: by 2002:a1f:e3c6:0:b0:48d:1b20:268e with SMTP id
+ a189-20020a1fe3c6000000b0048d1b20268emr8878654vkh.10.1695108697311; Tue, 19
+ Sep 2023 00:31:37 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 19 Sep 2023 00:31:36 -0700
+In-Reply-To: <ZQhtWNaCiHVu5yzL@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rra6xzzb3zzwrtqx"
-Content-Disposition: inline
-In-Reply-To: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230918145533.14642-1-brgl@bgdev.pl> <ZQhtWNaCiHVu5yzL@smile.fi.intel.com>
+From:   brgl@bgdev.pl
+Date:   Tue, 19 Sep 2023 00:31:36 -0700
+Message-ID: <CAMRc=MfkzdFgwEuNGJYgxyCA_b__Ds-jA4S+jVT1ULJ9DTRhOw@mail.gmail.com>
+Subject: Re: [PATCH v4] gpio: sim: fix an invalid __free() usage
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        akpm@linux-foundation.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,74 +75,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 18 Sep 2023 17:31:36 +0200, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> said:
+> On Mon, Sep 18, 2023 at 04:55:33PM +0200, Bartosz Golaszewski wrote:
+>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>
+>> gpio_sim_make_line_names() returns NULL or ERR_PTR() so we must not use
+>> __free(kfree) on the returned address. Split this function into two, one
+>> that determines the size of the "gpio-line-names" array to allocate and
+>> one that actually sets the names at correct offsets. The allocation and
+>> assignment of the managed pointer happens in between.
+>
+> ...
+>
+>> +	unsigned int size = 0;
+>>
+>>  	list_for_each_entry(line, &bank->line_list, siblings) {
+>> +		if (!line->name || (line->offset >= bank->num_lines))
+>>  			continue;
+>>
+>> +		size = line->offset + 1;
+>>  	}
+>>
+>> +	return size;
+>
+> So, now the function iterates over all lines and returns the size of the last
+> match, correct?
+>
+> Why not
+>
+> 	list_for_each_entry_reversed() {
+> 		if (line->name && ())
+> 			break;
+> 	}
+>
+> 	return size;
+>
+> ?
 
---rra6xzzb3zzwrtqx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Because the line objects are not sorted by offset. They are added at the end
+of the list in the order the user creates their corresponding configfs groups.
 
-Hi,
+>
+> ...
+>
+>> +static void
+>> +gpio_sim_set_line_names(struct gpio_sim_bank *bank, char **line_names)
+>> +{
+>> +	struct gpio_sim_line *line;
+>>
+>>  	list_for_each_entry(line, &bank->line_list, siblings) {
+>> -		if (line->offset >= bank->num_lines)
+>> +		if (!line->name || (line->offset >= bank->num_lines))
+>>  			continue;
+>>
+>> -		if (line->name && (line->offset <= max_offset))
+>> -			line_names[line->offset] = line->name;
+>> +		line_names[line->offset] = line->name;
+>>  	}
+>> -
+>> -	return line_names;
+>>  }
+>
+> Can be done in the similar (I see the difference) way for the consistency with
+> above.
+>
+> ...
+>
+>> +	line_names_size = gpio_sim_get_line_names_size(bank);
+>
+>> +	if (line_names_size) {
+>
+> Of course this can be replace with...
+>
+>> +		line_names = kcalloc(line_names_size, sizeof(*line_names),
+>> +				     GFP_KERNEL);
+>
+>> +		if (!line_names)
+>
+> ZERO_OR_NULL_PTR() check here, but I assume we discourage use of it.
 
-On Mon, Sep 18, 2023 at 12:39:56AM +0200, Benjamin Bara wrote:
-> Target of this series is to dynamically set the rate of video_pll1 to
-> the required LVDS clock rate(s), which are configured by the panel, and
-> the lvds-bridge respectively.
->=20
-> Some background:
-> The LVDS panel requires two clocks: the crtc clock and the lvds clock.
-> The lvds rate is always 7x the crtc rate. On the imx8mp, these are
-> assigned to media_disp2_pix and media_ldb, which are both
-> clk-composite-8m. The rates are set by drm_client_modeset_commit() (and
-> later by fsl_ldb_atomic_enable()), and the fsl-ldb driver, first crtc,
-> then lvds. The parent is typically assigned to video_pll1, which is a
-> clk-pll14xx (pll1443x).
->=20
-> The main problem:
-> As the clk-composite-8m currently doesn't support CLK_SET_RATE_PARENT,
-> the crtc rate is not propagated to video_pll1, and therefore must be
-> assigned in the device-tree manually.
->=20
-> The idea:
-> Enable CLK_SET_RATE_PARENT, at least for media_disp2_pix and media_ldb.
-> When this is done, ensure that the pll1443x can be re-configured,
-> meaning it ensures that an already configured rate (crtc rate) is still
-> supported when a second child requires a different rate (lvds rate). As
-> the children have divider, the current approach is straight forward by
-> calculating the LCM of the required rates. During the rate change of the
-> PLL, it must ensure that all children still have the configured rate at
-> the end (and maybe also bypass the clock while doing so?). This is done
-> by implementing a notifier function for the clk-composite-8m. The tricky
-> part is now to find out if the rate change was intentional or not. This
-> is done by adding the "change trigger" to the notify data. In our case,
-> we now can infer if we aren't the change trigger, we need to keep the
-> existing rate after the PLL's rate change. We keep the existing rate by
-> modifying the new_rate of the clock's core, as we are quite late in an
-> already ongoing clock change process.
+Why? There are less than 40 instances of using it in the kernel. kmalloc()
+returns NULL on failure.
 
-So just like the discussion we had on the Allwinner stuff, I don't think
-you can cover it completely within the framework. If we take a step
-backward, I guess what you want is that you have multiple clocks,
-feeding multiple displays at varying clock rates depending on the
-resolution, and the parent needs to accomodate all of them, right?
+Bart
 
-Could you share the clock tree and the capability of each clocks (range
-of the multipliers / dividers mostly)?
-
-I'm wondering if we couldn't set the parent clock to a fairly high rate
-that would be high enough for each child to reach whatever rate it needs
-to have without the need for CLK_SET_RATE_PARENT.
-
-Maxime
-
---rra6xzzb3zzwrtqx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZQlOWAAKCRDj7w1vZxhR
-xeBiAP4jttHKIfgVxUcdg4EmJxBQdy3Fu1rxc1KHBNTMdjPJaAEA9bFwNcsUbV6n
-+2VSHcZbhMSCH+91fdbGdVwx08U2rAo=
-=VMgi
------END PGP SIGNATURE-----
-
---rra6xzzb3zzwrtqx--
+>
+>> +			return ERR_PTR(-ENOMEM);
+>> +
+>> +		gpio_sim_set_line_names(bank, line_names);
+>>
+>> -	if (line_names)
+>>  		properties[prop_idx++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
+>>  						"gpio-line-names",
+>>  						line_names, line_names_size);
+>> +	}
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
+>
