@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 626E77A626A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E3E7A6620
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbjISMQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
+        id S232577AbjISOE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbjISMQV (ORCPT
+        with ESMTP id S232716AbjISOEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:16:21 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8598E3;
-        Tue, 19 Sep 2023 05:16:14 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RqgcV43Knz4f400Y;
-        Tue, 19 Sep 2023 20:16:10 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgAnOA0DkQllO8FpAw--.40065S14;
-        Tue, 19 Sep 2023 20:16:11 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com
-Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 12/12] ext4: run mballoc test with different layouts setting
-Date:   Wed, 20 Sep 2023 04:15:32 +0800
-Message-Id: <20230919201532.310085-13-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230919201532.310085-1-shikemeng@huaweicloud.com>
-References: <20230919201532.310085-1-shikemeng@huaweicloud.com>
+        Tue, 19 Sep 2023 10:04:54 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6442F83;
+        Tue, 19 Sep 2023 07:04:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 078F31FF1F;
+        Tue, 19 Sep 2023 14:04:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695132287;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5/Q5PWifz4L+U7lvQD7OTExB3tkW0piz1J3T5yg4+RA=;
+        b=QzFjOF5bfCS9bvkLIuGN+jfUzvcoEc7qo+d4w+iz7BG0pKLlOtrqk5ZE2Be95idVDpXwou
+        tIxm+AAGU7tODbc1QlBnaFBzCxFVc6DyLCtkFKZqn3SKKiT2Fs2xaBh6w988XUoHSiNR4k
+        VKLcFmmTtTY0sHmwdZR+yNZRRgmig9g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695132287;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5/Q5PWifz4L+U7lvQD7OTExB3tkW0piz1J3T5yg4+RA=;
+        b=7dIODHM8tb0hLyKYkxtTcfp3yTg6/G2EwZtbL9LQviXX2QouzF83AgC68zuuq3pVoXU1w8
+        DnmMdX4ub9PBhgBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BCEB0134F3;
+        Tue, 19 Sep 2023 14:04:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id PipJLX6qCWW8SQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 19 Sep 2023 14:04:46 +0000
+Date:   Tue, 19 Sep 2023 15:58:10 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] btrfs: fix 64bit division in
+ btrfs_insert_striped_mirrored_raid_extents
+Message-ID: <20230919135810.GT2747@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
+ <20230918-rst-updates-v1-1-17686dc06859@wdc.com>
+ <CAMuHMdWM3_cj4Nb96pZQfErx7n+0Cd7RUQZV+bpvr1Tz5T3sgw@mail.gmail.com>
+ <e12a171e-d3b8-401e-b01a-9440f5c75293@wdc.com>
+ <20230918162448.GI2747@suse.cz>
+ <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAnOA0DkQllO8FpAw--.40065S14
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF4xZrWkCryrGw4rXrWrKrg_yoW5Xryfpa
-        nIkF1Fkr15WFsF93W3K3s7Zw1agw1kur18Jry7W34FyFn7Aws7JFsrtryYya40qrWkXFn0
-        vFn09r17C3y8Cw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-        8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
-        FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJw
-        A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
-        3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
-        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
-        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0TqcUUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use KUNIT_CASE_PARAM to run mballoc test with different layouts setting.
+On Tue, Sep 19, 2023 at 10:07:00AM +0930, Qu Wenruo wrote:
+> On 2023/9/19 01:54, David Sterba wrote:
+> > On Mon, Sep 18, 2023 at 03:03:10PM +0000, Johannes Thumshirn wrote:
+> >> On 18.09.23 16:19, Geert Uytterhoeven wrote:
+> >>> Hi Johannes,
+> >>>
+> >>> On Mon, Sep 18, 2023 at 4:14 PM Johannes Thumshirn
+> >>> <johannes.thumshirn@wdc.com> wrote:
+> >>>> Fix modpost error due to 64bit division on 32bit systems in
+> >>>> btrfs_insert_striped_mirrored_raid_extents.
+> >>>>
+> >>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> >>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> >>>
+> >>> Thanks for your patch!
+> >>>
+> >>>> --- a/fs/btrfs/raid-stripe-tree.c
+> >>>> +++ b/fs/btrfs/raid-stripe-tree.c
+> >>>> @@ -148,10 +148,10 @@ static int btrfs_insert_striped_mirrored_raid_extents(
+> >>>>    {
+> >>>>           struct btrfs_io_context *bioc;
+> >>>>           struct btrfs_io_context *rbioc;
+> >>>> -       const int nstripes = list_count_nodes(&ordered->bioc_list);
+> >>>> -       const int index = btrfs_bg_flags_to_raid_index(map_type);
+> >>>> -       const int substripes = btrfs_raid_array[index].sub_stripes;
+> >>>> -       const int max_stripes = trans->fs_info->fs_devices->rw_devices / substripes;
+> >>>> +       const size_t nstripes = list_count_nodes(&ordered->bioc_list);
+> >>>> +       const enum btrfs_raid_types index = btrfs_bg_flags_to_raid_index(map_type);
+> >>>> +       const u8 substripes = btrfs_raid_array[index].sub_stripes;
+> >>>> +       const int max_stripes = div_u64(trans->fs_info->fs_devices->rw_devices, substripes);
+> >>>
+> >>> What if the quotient does not fit in a signed 32-bit value?
+> >>
+> >> Then you've bought a lot of HDDs ;-)
+> >>
+> >> Jokes aside, yes this is theoretically correct. Dave can you fix
+> >> max_stripes up to be u64 when applying?
+> >
+> > I think we can keep it int, or unsigned int if needed, we can't hit such
+> > huge values for rw_devices. The 'theoretically' would fit for a machine
+> > with infinite resources, otherwise the maximum number of devices I'd
+> > expect is a few thousand.
+> 
+> In fact, we already have an check in btrfs_validate_super(), if the
+> num_devices is over 1<<31, we would reject the fs.
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- fs/ext4/mballoc-test.c | 52 ++++++++++++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 14 deletions(-)
+No, it's just a warning in that case.
 
-diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-index 120c4944d2e1..f94901fd3835 100644
---- a/fs/ext4/mballoc-test.c
-+++ b/fs/ext4/mballoc-test.c
-@@ -199,21 +199,11 @@ ext4_mb_mark_context_stub(handle_t *handle, struct super_block *sb, bool state,
- 	return 0;
- }
- 
--#define TEST_BLOCKSIZE_BITS 10
--#define TEST_CLUSTER_BITS 3
--#define TEST_BLOCKS_PER_GROUP 8192
--#define TEST_GROUP_COUNT 4
--#define TEST_DESC_SIZE 64
- #define TEST_GOAL_GROUP 1
- static int mbt_kunit_init(struct kunit *test)
- {
--	struct mbt_ext4_block_layout layout = {
--		.blocksize_bits = TEST_BLOCKSIZE_BITS,
--		.cluster_bits = TEST_CLUSTER_BITS,
--		.blocks_per_group = TEST_BLOCKS_PER_GROUP,
--		.group_count = TEST_GROUP_COUNT,
--		.desc_size = TEST_DESC_SIZE,
--	};
-+	struct mbt_ext4_block_layout *layout =
-+		(struct mbt_ext4_block_layout *)(test->param_value);
- 	struct super_block *sb;
- 	int ret;
- 
-@@ -221,7 +211,7 @@ static int mbt_kunit_init(struct kunit *test)
- 	if (sb == NULL)
- 		return -ENOMEM;
- 
--	mbt_init_sb_layout(sb, &layout);
-+	mbt_init_sb_layout(sb, layout);
- 
- 	ret = mbt_ctx_init(sb);
- 	if (ret != 0) {
-@@ -307,9 +297,43 @@ static void test_new_blocks_simple(struct kunit *test)
- 		"unexpectedly get block when no block is available");
- }
- 
-+static const struct mbt_ext4_block_layout mbt_test_layouts[] = {
-+	{
-+		.blocksize_bits = 10,
-+		.cluster_bits = 3,
-+		.blocks_per_group = 8192,
-+		.group_count = 4,
-+		.desc_size = 64,
-+	},
-+	{
-+		.blocksize_bits = 12,
-+		.cluster_bits = 3,
-+		.blocks_per_group = 8192,
-+		.group_count = 4,
-+		.desc_size = 64,
-+	},
-+	{
-+		.blocksize_bits = 16,
-+		.cluster_bits = 3,
-+		.blocks_per_group = 8192,
-+		.group_count = 4,
-+		.desc_size = 64,
-+	},
-+};
-+
-+static void mbt_show_layout(const struct mbt_ext4_block_layout *layout,
-+			    char *desc)
-+{
-+	snprintf(desc, KUNIT_PARAM_DESC_SIZE, "block_bits=%d cluster_bits=%d "
-+		 "blocks_per_group=%d group_count=%d desc_size=%d\n",
-+		 layout->blocksize_bits, layout->cluster_bits,
-+		 layout->blocks_per_group, layout->group_count,
-+		 layout->desc_size);
-+}
-+KUNIT_ARRAY_PARAM(mbt_layouts, mbt_test_layouts, mbt_show_layout);
- 
- static struct kunit_case mbt_test_cases[] = {
--	KUNIT_CASE(test_new_blocks_simple),
-+	KUNIT_CASE_PARAM(test_new_blocks_simple, mbt_layouts_gen_params),
- 	{}
- };
- 
--- 
-2.30.0
+> I think we should be safe to further reduce the threshold.
+> 
+> U16_MAX sounds a valid and sane value to me.
+> If no rejection I can send out a patch for this.
+> 
+> And later change internal rw_devices/num_devices to u16.
 
+U16 does not make sense here, it's not a native int type on many
+architectures and generates awkward assembly code. We use it in
+justified cases where it's saving space in structures that are allocated
+thousand times. The arbitrary limit 65536 is probably sane but not
+much different than 1<<31, practically not hit and was useful to
+note fuzzed superblocks.
