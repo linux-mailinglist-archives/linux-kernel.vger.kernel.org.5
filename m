@@ -2,181 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D087A622D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C727A6231
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbjISMKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
+        id S231499AbjISMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbjISMJ4 (ORCPT
+        with ESMTP id S231480AbjISMK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:09:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11989F2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695125390; x=1726661390;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=S8i8itQGJqKpxJliklCeAW0NKlbEdeRcl9HzsESsjrQ=;
-  b=DAyMlnE1WJ5X9P5xgoT6S0T2q42lr7myAXVTyQJBNdF9k64KRgmj+j/s
-   SBGs04OJMVFEbc4dg8sqUP1QcnYsRc9Bp8nmQOJsvF462HPSF9AjJ2K3o
-   jYuPO2ncliPY1Y1KF7GX9Wy0ut6hgfzRlBvnsMDblEnv78w0FrAganxTo
-   LJjn7rHGWe+KQzHmvp31nXQwNXuk6pw5IZSh5f3jv/Y8aOMt6Z8Po251o
-   tw45HN9nAI3d/9jpfqK7Zx6pramX30oHyzmGYI/czSKnZ7HoY+SYn2l3Y
-   IgqYEeAydIA3N92msXX6PwHNbBcUucwVfrSUe7igmV9z9U+lLqe6ex8II
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="379825874"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="379825874"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 05:09:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861519279"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="861519279"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Sep 2023 05:09:47 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiZXz-0007Kb-38;
-        Tue, 19 Sep 2023 12:09:44 +0000
-Date:   Tue, 19 Sep 2023 20:09:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: arch/m68k/include/asm/raw_io.h:91:13: warning: array subscript 0 is
- outside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned
- int[]'}
-Message-ID: <202309192013.vI4DKHmw-lkp@intel.com>
+        Tue, 19 Sep 2023 08:10:29 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34065F9;
+        Tue, 19 Sep 2023 05:10:23 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7a86f1befb3so2225167241.1;
+        Tue, 19 Sep 2023 05:10:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695125422; x=1695730222; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=otH2l7DgYxaFQnjXnKhV0+9aJ0UN2k5pI6WFG4Jn/ls=;
+        b=lqM5GLMF1tplLXAYGb4I9q6dSrOXQNEWh272VlhK+epWaHfR+GxhEh2ExePr3qFaQj
+         dEGIq8uYjq9wzHm6I+4A/fWqpjt3dHT+nURU8+flA8tYNGAuLYL49g+s573KqO4O8iOU
+         C3l3e6zpv3AWLNdxPHaNuZGcJeBwjqmvwDeyVLGKbICWMJWezc0w14sdu7pK7X12Uw08
+         jemSYl/EuIIXNzAHe/mXmZmleUMutqDcJLbdKxR/sfGVyNu1V1VXCEAxrJ4/Tjf9QUqG
+         CPrOYmn1gWBtQS1HyFMo09eO1N6M26PdoaUU7kfzyA1gxCKKXOhm1hVoqvkqLLSCNyRf
+         IPvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695125422; x=1695730222;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=otH2l7DgYxaFQnjXnKhV0+9aJ0UN2k5pI6WFG4Jn/ls=;
+        b=JidoMSSJK+TX0snJcXkiAzdtMKsMzJ7eCFDSlb59cUEGOwf2QuRcKq4TYgyJhqTnpM
+         NgXEPKKjdelNDP5AwT7LWrNNSbKvwtJnf6N2FQ3e/Th+U1tlSJKR35o0W0+4B7UjZbdR
+         eDeXZyniCkpc26hZx1R0MmPwjYnHO4DUN2DUoVjAhwX73POnx+HGvWouKjQHLg0u+eD0
+         si5wVtcsrwwatseucz2WkUlgWYutozqFgsfmjni/KHtEWUgfo0miuMWVqNF/1UhY+4Q5
+         4xG63egUKHWakrJbXbz4Y8QgiSnb3m2m/foCd83pJykqbDQb+j7FBp9xvkgWKWzgIWw7
+         03Ew==
+X-Gm-Message-State: AOJu0YwcTuv2DTgum1cXzIoSd+M17SPDylylThQV9IANWl74pVWZp6Xk
+        Y83207Y0zZ/aBoOB1YgJvbVHxt8TYh/7HgtsoHk=
+X-Google-Smtp-Source: AGHT+IFUoRUYdeh3aal3s8ZGxXglp4Zw/7X1D+5aoErFjGOGnaS1NN/Gz7027xrOyGCLYjU43a35Fj6he61azzqvzWY=
+X-Received: by 2002:a1f:c942:0:b0:496:248e:43fc with SMTP id
+ z63-20020a1fc942000000b00496248e43fcmr8950298vkf.8.1695125422241; Tue, 19 Sep
+ 2023 05:10:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230911131224.61924-1-alexghiti@rivosinc.com> <20230911131224.61924-5-alexghiti@rivosinc.com>
+In-Reply-To: <20230911131224.61924-5-alexghiti@rivosinc.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 19 Sep 2023 13:09:56 +0100
+Message-ID: <CA+V-a8tJUry9G=k-TgPTEFdVJKhhLzfhFO-MSNRRWDb5L3pdHg@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] riscv: Improve flush_tlb_kernel_range()
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+        Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2cf0f715623872823a72e451243bbf555d10d032
-commit: f1a43aadb5a690e141a3b6700e2a40c1d4dbe088 watchdog: Enable COMPILE_TEST for more drivers
-date:   5 weeks ago
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230919/202309192013.vI4DKHmw-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309192013.vI4DKHmw-lkp@intel.com/reproduce)
+On Mon, Sep 11, 2023 at 2:16=E2=80=AFPM Alexandre Ghiti <alexghiti@rivosinc=
+.com> wrote:
+>
+> This function used to simply flush the whole tlb of all harts, be more
+> subtile and try to only flush the range.
+>
+> The problem is that we can only use PAGE_SIZE as stride since we don't kn=
+ow
+> the size of the underlying mapping and then this function will be improve=
+d
+> only if the size of the region to flush is < threshold * PAGE_SIZE.
+>
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> ---
+>  arch/riscv/include/asm/tlbflush.h | 11 ++++++-----
+>  arch/riscv/mm/tlbflush.c          | 33 ++++++++++++++++++++++---------
+>  2 files changed, 30 insertions(+), 14 deletions(-)
+>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> #
+On RZ/Five SMARC
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309192013.vI4DKHmw-lkp@intel.com/
+Cheers,
+Prabhakar
 
-All warnings (new ones prefixed by >>):
-
-   In file included from arch/m68k/include/asm/io_mm.h:25,
-                    from arch/m68k/include/asm/io.h:8,
-                    from include/linux/io.h:13,
-                    from drivers/watchdog/machzwd.c:39:
-   In function 'zf_set_timer',
-       inlined from 'zf_timer_on' at drivers/watchdog/machzwd.c:218:2:
->> arch/m68k/include/asm/raw_io.h:91:13: warning: array subscript 0 is outside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned int[]'} [-Warray-bounds=]
-      91 |         __w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v >> 8)<<1)))); \
-         |         ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/io_mm.h:228:20: note: in expansion of macro 'rom_out_le16'
-     228 |                  : rom_out_le16(isa_itw(port), (val)))
-         |                    ^~~~~~~~~~~~
-   arch/m68k/include/asm/io_mm.h:356:42: note: in expansion of macro 'isa_rom_outw'
-     356 | #define outw(val, port) ((port) < 1024 ? isa_rom_outw((val), (port)) : out_le16((port), (val)))
-         |                                          ^~~~~~~~~~~~
-   drivers/watchdog/machzwd.c:74:53: note: in expansion of macro 'outw'
-      74 | #define zf_writew(port, data)  { outb(port, INDEX); outw(data, DATA_W); }
-         |                                                     ^~~~
-   drivers/watchdog/machzwd.c:173:17: note: in expansion of macro 'zf_writew'
-     173 |                 zf_writew(COUNTER_1, new);
-         |                 ^~~~~~~~~
-   In function 'zf_timer_on':
-   cc1: note: source object is likely at address zero
-   In function 'zf_set_timer',
-       inlined from 'zf_timer_on' at drivers/watchdog/machzwd.c:218:2:
-   arch/m68k/include/asm/raw_io.h:87:13: warning: array subscript 0 is outside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned int[]'} [-Warray-bounds=]
-      87 |         __w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
-         |         ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/io_mm.h:227:20: note: in expansion of macro 'rom_out_be16'
-     227 |         (ISA_SEX ? rom_out_be16(isa_itw(port), (val))   \
-         |                    ^~~~~~~~~~~~
-   arch/m68k/include/asm/io_mm.h:356:42: note: in expansion of macro 'isa_rom_outw'
-     356 | #define outw(val, port) ((port) < 1024 ? isa_rom_outw((val), (port)) : out_le16((port), (val)))
-         |                                          ^~~~~~~~~~~~
-   drivers/watchdog/machzwd.c:74:53: note: in expansion of macro 'outw'
-      74 | #define zf_writew(port, data)  { outb(port, INDEX); outw(data, DATA_W); }
-         |                                                     ^~~~
-   drivers/watchdog/machzwd.c:173:17: note: in expansion of macro 'zf_writew'
-     173 |                 zf_writew(COUNTER_1, new);
-         |                 ^~~~~~~~~
-   In function 'zf_timer_on':
-   cc1: note: source object is likely at address zero
-
-
-vim +91 arch/m68k/include/asm/raw_io.h
-
-^1da177e4c3f41 include/asm-m68k/raw_io.h      Linus Torvalds     2005-04-16  49  
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  50  /*
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  51   * Atari ROM port (cartridge port) ISA adapter, used for the EtherNEC NE2000
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  52   * network card driver.
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  53   * The ISA adapter connects address lines A9-A13 to ISA address lines A0-A4,
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  54   * and hardwires the rest of the ISA addresses for a base address of 0x300.
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  55   *
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  56   * Data lines D8-D15 are connected to ISA data lines D0-D7 for reading.
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  57   * For writes, address lines A1-A8 are latched to ISA data lines D0-D7
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  58   * (meaning the bit pattern on A1-A8 can be read back as byte).
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  59   *
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  60   * Read and write operations are distinguished by the base address used:
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  61   * reads are from the ROM A side range, writes are through the B side range
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  62   * addresses (A side base + 0x10000).
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  63   *
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  64   * Reads and writes are byte only.
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  65   *
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  66   * 16 bit reads and writes are necessary for the NetUSBee adapter's USB
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  67   * chipset - 16 bit words are read straight off the ROM port while 16 bit
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  68   * reads are split into two byte writes. The low byte is latched to the
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  69   * NetUSBee buffer by a read from the _read_ window (with the data pattern
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  70   * asserted as A1-A8 address pattern). The high byte is then written to the
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  71   * write range as usual, completing the write cycle.
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  72   */
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  73  
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  74  #if defined(CONFIG_ATARI_ROM_ISA)
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  75  #define rom_in_8(addr) \
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  76  	({ u16 __v = (*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  77  #define rom_in_be16(addr) \
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  78  	({ u16 __v = (*(__force volatile u16 *) (addr)); __v; })
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  79  #define rom_in_le16(addr) \
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  80  	({ u16 __v = le16_to_cpu(*(__force volatile u16 *) (addr)); __v; })
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  81  
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  82  #define rom_out_8(addr, b)	\
-30b5e6ef4a32ea arch/m68k/include/asm/raw_io.h Geert Uytterhoeven 2022-05-20  83  	(void)({u8 __maybe_unused __w, __v = (b);  u32 _addr = ((u32) (addr)); \
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  84  	__w = ((*(__force volatile u8 *)  ((_addr | 0x10000) + (__v<<1)))); })
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  85  #define rom_out_be16(addr, w)	\
-30b5e6ef4a32ea arch/m68k/include/asm/raw_io.h Geert Uytterhoeven 2022-05-20  86  	(void)({u16 __maybe_unused __w, __v = (w); u32 _addr = ((u32) (addr)); \
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  87  	__w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  88  	__w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v >> 8)<<1)))); })
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  89  #define rom_out_le16(addr, w)	\
-30b5e6ef4a32ea arch/m68k/include/asm/raw_io.h Geert Uytterhoeven 2022-05-20  90  	(void)({u16 __maybe_unused __w, __v = (w); u32 _addr = ((u32) (addr)); \
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06 @91  	__w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v >> 8)<<1)))); \
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  92  	__w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v & 0xFF)<<1)))); })
-84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  93  
-
-:::::: The code at line 91 was first introduced by commit
-:::::: 84b16b7b0d5c818fadc731a69965dc76dce0c91e m68k/atari: ROM port ISA adapter support
-
-:::::: TO: Michael Schmitz <schmitz@opal.biophys.uni-duesseldorf.de>
-:::::: CC: Geert Uytterhoeven <geert@linux-m68k.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/t=
+lbflush.h
+> index 170a49c531c6..8f3418c5f172 100644
+> --- a/arch/riscv/include/asm/tlbflush.h
+> +++ b/arch/riscv/include/asm/tlbflush.h
+> @@ -40,6 +40,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigned =
+long start,
+>  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+>  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>                      unsigned long end);
+> +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+>  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
+,
+> @@ -56,15 +57,15 @@ static inline void flush_tlb_range(struct vm_area_str=
+uct *vma,
+>         local_flush_tlb_all();
+>  }
+>
+> -#define flush_tlb_mm(mm) flush_tlb_all()
+> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> -
+>  /* Flush a range of kernel pages */
+>  static inline void flush_tlb_kernel_range(unsigned long start,
+>         unsigned long end)
+>  {
+> -       flush_tlb_all();
+> +       local_flush_tlb_all();
+>  }
+>
+> +#define flush_tlb_mm(mm) flush_tlb_all()
+> +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> +#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> +
+>  #endif /* _ASM_RISCV_TLBFLUSH_H */
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 2c1136d73411..28cd8539b575 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -97,19 +97,27 @@ static void __flush_tlb_range(struct mm_struct *mm, u=
+nsigned long start,
+>                               unsigned long size, unsigned long stride)
+>  {
+>         struct flush_tlb_range_data ftd;
+> -       struct cpumask *cmask =3D mm_cpumask(mm);
+> +       struct cpumask *cmask, full_cmask;
+>         unsigned long asid =3D FLUSH_TLB_NO_ASID;
+> -       unsigned int cpuid;
+>         bool broadcast;
+>
+> -       if (cpumask_empty(cmask))
+> -               return;
+> +       if (mm) {
+> +               unsigned int cpuid;
+> +
+> +               cmask =3D mm_cpumask(mm);
+> +               if (cpumask_empty(cmask))
+> +                       return;
+>
+> -       cpuid =3D get_cpu();
+> -       /* check if the tlbflush needs to be sent to other CPUs */
+> -       broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
+> +               cpuid =3D get_cpu();
+> +               /* check if the tlbflush needs to be sent to other CPUs *=
+/
+> +               broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
+> +       } else {
+> +               cpumask_setall(&full_cmask);
+> +               cmask =3D &full_cmask;
+> +               broadcast =3D true;
+> +       }
+>
+> -       if (static_branch_unlikely(&use_asid_allocator))
+> +       if (static_branch_unlikely(&use_asid_allocator) && mm)
+>                 asid =3D atomic_long_read(&mm->context.id) & asid_mask;
+>
+>         if (broadcast) {
+> @@ -128,7 +136,8 @@ static void __flush_tlb_range(struct mm_struct *mm, u=
+nsigned long start,
+>                 local_flush_tlb_range_asid(start, size, stride, asid);
+>         }
+>
+> -       put_cpu();
+> +       if (mm)
+> +               put_cpu();
+>  }
+>
+>  void flush_tlb_mm(struct mm_struct *mm)
+> @@ -189,6 +198,12 @@ void flush_tlb_range(struct vm_area_struct *vma, uns=
+igned long start,
+>
+>         __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
+>  }
+> +
+> +void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+> +{
+> +       __flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
+> +}
+> +
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
+,
+>                         unsigned long end)
+> --
+> 2.39.2
+>
