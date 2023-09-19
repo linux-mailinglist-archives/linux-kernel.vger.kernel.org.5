@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 960337A5BC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3192E7A5B9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjISH51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
+        id S231250AbjISHvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbjISH5Y (ORCPT
+        with ESMTP id S229771AbjISHvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:57:24 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C318116;
-        Tue, 19 Sep 2023 00:57:16 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 7AB37100005;
-        Tue, 19 Sep 2023 10:57:13 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7AB37100005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1695110233;
-        bh=WRk8Lm7a+B5/KRqG2Yr4KTaf47JVrXFHqYh+l/kVTaU=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=Xf1QrZp15SP/sk29/2YfEG6tgBE2FhEdD7sNXkIqL8KA1qtQ6AZpTh8ISsOwiyS9R
-         Va69K4QUBAtGnF2u2sLZKceykaAJ/qpCDpHmZABbJfKCailFu5kq8D+ByHV+hvizYj
-         wq4ymeKnraT+fuhnpc9AbhbdGohjjrQC4anaFU6X0kEDvkb9OzA4tIbhrq/yVwjV93
-         H/C9MrX8O2nwkQAsH3F6TtpLPPzNzCriE6OoPlHXrowiIfDA+R0Fkr3Qg3D3sHGQNy
-         1CVbz8fqz14Ith9YQwcCld+LyfsldlrQOqPK1U/OlL9QeiCztZpC9KagJV+AXt09H1
-         OVbaVaCBj3fZQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 19 Sep 2023 10:57:13 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 19 Sep 2023 10:57:13 +0300
-Message-ID: <2669a6a5-8ee6-8ac0-5673-2c9dd9ca4f99@salutedevices.com>
-Date:   Tue, 19 Sep 2023 10:50:24 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v9 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
- preparations
-Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Tue, 19 Sep 2023 03:51:48 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6247116
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:51:41 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-502934c88b7so8858203e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695109900; x=1695714700; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jJJ+ExGDq2qJY2oh7GX6hGXNvvX2A2vHJTOyygLjZbc=;
+        b=M3F1MfW96O3rq3x6pfz6sCwZx7Vl2xhdMt5/5NSbtpg99rHi0yjmGK7SuaIWQqigth
+         YxbOt+/RAEfwYKbcOwF6X+12+FesDYARCKB+NmCov47lvdgJnPHi9guRl+Izfmqy4cKe
+         kdBNjUMFEF73d7y5IpxW5nYUGvmsCUNAyrwg9y3sEhQTUlYfNoc1eEJlKKxzp8gQyfjp
+         qdm9lJwd3qCJeDUtnLD088Vo82ScrAHEnKNc9zx+skGU72AABXCOoQEZQQqNZEhJu19Q
+         7qAiOO2GXdhWuqb3PaVWe0b1Qdr8XAuGx+K7IAcIBWCipPF1FVyJfphOSFv3EMK9vPbO
+         B7rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695109900; x=1695714700;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jJJ+ExGDq2qJY2oh7GX6hGXNvvX2A2vHJTOyygLjZbc=;
+        b=aY7xK1JS6YKaZxs3zczEjtWWI1BtO63eDd0biP1MjBI/W8aQSYbJ4N6vwKkhBzY5oa
+         y8W3IwEisUnhqnOAWaJuPs3ug/UgUc59NjrI9Sb671bEyCzEyfS2mHMEtX5P24buxZSL
+         ohqdPnOGE4eE2EiNSXbp/pdjZY/NE8wlm+dBGAVZaUFOXAMfOyzyhFgRtIRChStIXcxj
+         tYEQsjmIk/WrZ3yJdf/+BDut+fPaFwT7pAZ/2I7AT1QfUs36Aq4oEtJO8CUQioVfX4vz
+         veUk/VTKsWr0Rf7OgeZ3/dC7ajZgGCUm4Hm/rBwXzwsIf9pAheUKMdLnIg/xhVKbbtXL
+         aPpw==
+X-Gm-Message-State: AOJu0YyFPDYQHmmWP+3YdGqKWIULRuJKBPRIrnEt+ytEhjeTTe8Yf5+c
+        88uJYM9/G7Hsb/uoL0BN+Ahj4g==
+X-Google-Smtp-Source: AGHT+IGlC4djVRlztv+UBXuAX08zNkXqe9RsFK4tYVhjdRu422bJuqs+VAB3LAmUEnlTXVQgcDLZ3A==
+X-Received: by 2002:ac2:4d8b:0:b0:502:ab7b:e477 with SMTP id g11-20020ac24d8b000000b00502ab7be477mr9978897lfe.53.1695109899530;
+        Tue, 19 Sep 2023 00:51:39 -0700 (PDT)
+Received: from blmsp ([2001:4091:a246:8222:dbda:9cd9:39cc:f174])
+        by smtp.gmail.com with ESMTPSA id e20-20020a056402149400b0052e1783ab25sm7061842edv.70.2023.09.19.00.51.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 00:51:38 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 09:51:35 +0200
+From:   Markus Schneider-Pargmann <msp@baylibre.com>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
- <b5873e36-fe8c-85e8-e11b-4ccec386c015@salutedevices.com>
- <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179942 [Sep 19 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_arrow_text}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/19 04:37:00 #21921740
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Conor Dooley <conor+dt@kernel.org>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Vivek Yadav <vivek.2311@samsung.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH v3 5/6] can: tcan4x5x: Add support for tcan4552/4553
+Message-ID: <20230919075135.7xim2yjwt5jna4sy@blmsp>
+References: <20230721135009.1120562-1-msp@baylibre.com>
+ <20230721135009.1120562-6-msp@baylibre.com>
+ <a94e6fc8-4f08-7877-2ba0-29b9c2780136@seco.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a94e6fc8-4f08-7877-2ba0-29b9c2780136@seco.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,25 +85,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sean,
 
-
-On 19.09.2023 10:54, Stefano Garzarella wrote:
-> On Mon, Sep 18, 2023 at 07:56:00PM +0300, Arseniy Krasnov wrote:
->> Hi Stefano,
->>
->> thanks for review! So when this patchset will be merged to net-next,
->> I'll start sending next part of MSG_ZEROCOPY patchset, e.g. AF_VSOCK +
->> Documentation/ patches.
+On Fri, Sep 15, 2023 at 11:36:49AM -0400, Sean Anderson wrote:
+> On 7/21/23 09:50, Markus Schneider-Pargmann wrote:
+> > +static const struct tcan4x5x_version_info tcan4x5x_versions[] = {
+> > +	[TCAN4552] = {
+> > +		.name = "4552",
+> > +		.id2_register = 0x32353534,
+> > +	},
+> > +	[TCAN4553] = {
+> > +		.name = "4553",
+> > +		.id2_register = 0x32353534,
 > 
-> Ack, if it is not a very big series, maybe better to include also the
-> tests so we can run them before merge the feature.
-> 
-> WDYT?
+> Should this be 0x33353534?
 
-Yes, ok! AF_VSOCK part is smaller than virtio part.
+Thank you for noticing! Yes. Probably slipped through in the last
+refactoring. I will send a fix.
 
-Thanks, Arseniy
-
-> 
-> Stefano
-> 
+Best,
+Markus
