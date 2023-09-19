@@ -2,126 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A76497A5F8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23E67A5F91
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbjISKan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 06:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
+        id S231765AbjISKb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 06:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbjISKak (ORCPT
+        with ESMTP id S229988AbjISKb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 06:30:40 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F96E8;
-        Tue, 19 Sep 2023 03:30:35 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38J3wpiX010036;
-        Tue, 19 Sep 2023 10:30:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=J4hOINlXke9uREob4JWDzUId/9wjHUUxaSUVg5YcoIM=;
- b=Ba/uSBhA5GPVKW2xU6y+vkppV/ZxqEe9gaOV7c+ZS+PuuncYajMujbUDdQwr5m7fNMLL
- wBx9nbhuCI9cb05hX6w5s4xG6Vv4rl9iSINpFmBD207vLZAnp3ggKf1Q0pMzm5VSdBoH
- 6yzRKnEniDr62lZhnf3xHlgZZJE5f5FYxhCQIyzaY56XAJYD4y/iBZ0cEgy4mvN/xNEq
- Uj3YgPniqt/OYWk8GNp5yvurcoPY3Xvv35B4XmXYYFH2QcYjeC17jyaDpPP7/buTfnhN
- fSY6b7eJabq274+EURFUp0xPw515+JdUETPFMAB23YVRPh0s//3VtD+jwLtC8f9fz4dX dg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6pmq2b0n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 10:30:12 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38JAUBq8009078
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 10:30:11 GMT
-Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 19 Sep 2023 03:30:06 -0700
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh@kernel.org>, <mani@kernel.org>,
-        <lpieralisi@kernel.org>, <bhelgaas@google.com>, <kw@linux.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-        <dmitry.baryshkov@linaro.org>, <stable@vger.kernel.org>,
-        <robimarko@gmail.com>, <quic_srichara@quicinc.com>
-CC:     <Stable@vger.kernel.org>
-Subject: [PATCH V6] PCI: qcom: Fix broken pcie enumeration for 2_3_3 configs ops
-Date:   Tue, 19 Sep 2023 15:59:48 +0530
-Message-ID: <20230919102948.1844909-1-quic_srichara@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 19 Sep 2023 06:31:27 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF173F0;
+        Tue, 19 Sep 2023 03:31:20 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68fe39555a0so5051751b3a.3;
+        Tue, 19 Sep 2023 03:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695119480; x=1695724280; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=poXRhJkAK9WV5aSXIh3udSLaQthmauT46bnS65tSwgw=;
+        b=YNZMADUxu0CUjSp688w4vp4ua1p45IVsPP8DGRjU/BQLUWgvE+zo2FTtaFjPkEIc1e
+         tQPFBxPPktfGpw9vvePjO1chA8I/NOC1Q5ZFEkvo8NY7vJoxn153su98PQ7o6XEpHOAS
+         HybkKFRa1y3kUx/O/hp3GtksUfyvVsnARelqLEFoOLAKtXwsOKYl6QI/HQ3iccRy2m5a
+         2t7zzhr9vDLg2R2hjcmG9eHCKPuCZCCyr1+cQDmc+tB9aHmVfm/ONetidkiQXqA1rq38
+         hRVoYN+jUUzaf3zqL3lJvTU8/wVYw90HADZSynqhFdaFnUE9YnCbZcOPEHWdSWc+guQE
+         jRbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695119480; x=1695724280;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=poXRhJkAK9WV5aSXIh3udSLaQthmauT46bnS65tSwgw=;
+        b=wzRfq70RWF+b0sLGrlrFre3FZ6xFevmMOolRWaOU1b1KevacaCYHJGuYzdcSjTNTUY
+         9rObsnZ3lnp+T2eealF2874FOiS8cjZPFv2kGLSa9rqmEDtYeUckAL6RN9bm1esiSpIF
+         ngO2ArjqQt9T6Bsaj7Vb1DEkecmIWfgrrSanNEpfLE9uUdFfM3eZbyv/qhrNbAeqi+cc
+         HRm5Zy8EceeG1bTWipN0V6jLl5BJgWh9ILLckQkonbUCG01qIf5/DwsI/WvBd8l7fRZ6
+         nl9cJqXtXFCPLwtrmIUCV8CPyvGR6Vh0i9EK2Cd3ufPJnx14VwKbzMTEkZ9Ytcsm9HK5
+         ZYHw==
+X-Gm-Message-State: AOJu0YwP1C3c70JpYcVAGfqa+37gpIXSIYjUbzaXPycIFGHbIP3AWf3f
+        xotoh5eE9oS9roDtUoIwpvwoxecX8IMY4wGtXWM=
+X-Google-Smtp-Source: AGHT+IF2IrXOt2RYELwf5x84VPabpFw4QGMztiaMU7bExwDdHhtZrXyi6RfYOP2G3QKtRk4KmBIA4VwK+hfHlEDEo9c=
+X-Received: by 2002:a05:6a00:1516:b0:68f:c6f8:1451 with SMTP id
+ q22-20020a056a00151600b0068fc6f81451mr14271558pfu.16.1695119480225; Tue, 19
+ Sep 2023 03:31:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: f00P1RcoxC1xV01SXBnn0XiJmT3ATX3I
-X-Proofpoint-ORIG-GUID: f00P1RcoxC1xV01SXBnn0XiJmT3ATX3I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_05,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 mlxscore=0 phishscore=0
- clxscore=1011 lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309190089
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <1694670845-17070-1-git-send-email-shengjiu.wang@nxp.com>
+ <1694670845-17070-7-git-send-email-shengjiu.wang@nxp.com> <ZQLdxMaqFYUukt4J@valkosipuli.retiisi.eu>
+In-Reply-To: <ZQLdxMaqFYUukt4J@valkosipuli.retiisi.eu>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Tue, 19 Sep 2023 18:31:09 +0800
+Message-ID: <CAA+D8AMB1zxSs_RgeoeUKxzWsNuEb0xANUZ0KxLX9UsQR8D=9Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 6/9] media: v4l2: Add audio capture and output support
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PARF_SLV_ADDR_SPACE_SIZE_2_3_3 macro is used for qcom_pcie_post_init_2_3_3.
-PCIe slave address space size register offset is 0x358, but was wrongly
-changed to 0x16c as a part of commit 39171b33f652 ("PCI: qcom: Remove
-PCIE20_ prefix from register definitions"). Fixing it, by using the right
-macro and remove the unused PARF_SLV_ADDR_SPACE_SIZE_2_3_3.
+On Thu, Sep 14, 2023 at 6:17=E2=80=AFPM Sakari Ailus <sakari.ailus@iki.fi> =
+wrote:
+>
+> Hi Shenjiu,
+>
+> Thanks for the update.
+>
+> On Thu, Sep 14, 2023 at 01:54:02PM +0800, Shengjiu Wang wrote:
+> > Audio signal processing has the requirement for memory to
+> > memory similar as Video.
+> >
+> > This patch is to add this support in v4l2 framework, defined
+> > new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
+> > V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
+> > for audio case usage.
+> >
+> > Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+>
+> This would be nicer as a separate patch. Also see the related comments
+> below.
 
-Without this access to the registers of slave addr space like iATU etc
-are broken leading to PCIe enumeration failure on IPQ8074.
+OK,  will separate it.
 
-Fixes: 39171b33f652 ("PCI: qcom: Remove PCIE20_ prefix from register definitions")
-Cc: <Stable@vger.kernel.org>
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Tested-by: Robert Marko <robimarko@gmail.com>
-Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
----
- [V6] Fixed subject and commit text as per Bjorn Helgaas
+>
+> >
+> > Defined V4L2_CAP_AUDIO_M2M capability type for audio memory
+> > to memory case.
+> >
+> > The created audio device is named "/dev/v4l-audioX".
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  .../userspace-api/media/v4l/audio-formats.rst | 15 +++++
+> >  .../userspace-api/media/v4l/buffer.rst        |  6 ++
+> >  .../userspace-api/media/v4l/dev-audio.rst     | 63 +++++++++++++++++++
+> >  .../userspace-api/media/v4l/devices.rst       |  1 +
+> >  .../media/v4l/pixfmt-aud-lpcm.rst             | 31 +++++++++
+> >  .../userspace-api/media/v4l/pixfmt.rst        |  1 +
+> >  .../media/v4l/vidioc-enum-fmt.rst             |  2 +
+> >  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |  4 ++
+> >  .../media/v4l/vidioc-querycap.rst             |  3 +
+> >  .../media/videodev2.h.rst.exceptions          |  2 +
+> >  .../media/common/videobuf2/videobuf2-v4l2.c   |  4 ++
+> >  drivers/media/v4l2-core/v4l2-dev.c            | 17 +++++
+> >  drivers/media/v4l2-core/v4l2-ioctl.c          | 53 ++++++++++++++++
+> >  include/media/v4l2-dev.h                      |  2 +
+> >  include/media/v4l2-ioctl.h                    | 34 ++++++++++
+> >  include/uapi/linux/videodev2.h                | 25 ++++++++
+> >  16 files changed, 263 insertions(+)
+> >  create mode 100644 Documentation/userspace-api/media/v4l/audio-formats=
+.rst
+> >  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio.rst
+> >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-aud-lp=
+cm.rst
+> >
+> > diff --git a/Documentation/userspace-api/media/v4l/audio-formats.rst b/=
+Documentation/userspace-api/media/v4l/audio-formats.rst
+> > new file mode 100644
+> > index 000000000000..bc52712d20d3
+> > --- /dev/null
+> > +++ b/Documentation/userspace-api/media/v4l/audio-formats.rst
+> > @@ -0,0 +1,15 @@
+> > +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> > +
+> > +.. _audio-formats:
+> > +
+> > +*************
+> > +Audio Formats
+> > +*************
+> > +
+> > +These formats are used for :ref:`audio` interface only.
+> > +
+> > +
+> > +.. toctree::
+> > +    :maxdepth: 1
+> > +
+> > +    pixfmt-aud-lpcm
+> > diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documen=
+tation/userspace-api/media/v4l/buffer.rst
+> > index 04dec3e570ed..80cf2cb20dfe 100644
+> > --- a/Documentation/userspace-api/media/v4l/buffer.rst
+> > +++ b/Documentation/userspace-api/media/v4l/buffer.rst
+> > @@ -438,6 +438,12 @@ enum v4l2_buf_type
+> >      * - ``V4L2_BUF_TYPE_META_OUTPUT``
+> >        - 14
+> >        - Buffer for metadata output, see :ref:`metadata`.
+> > +    * - ``V4L2_BUF_TYPE_AUDIO_CAPTURE``
+> > +      - 15
+> > +      - Buffer for audio capture, see :ref:`audio`.
+> > +    * - ``V4L2_BUF_TYPE_AUDIO_OUTPUT``
+> > +      - 16
+> > +      - Buffer for audio output, see :ref:`audio`.
+> >
+> >
+> >  .. _buffer-flags:
+> > diff --git a/Documentation/userspace-api/media/v4l/dev-audio.rst b/Docu=
+mentation/userspace-api/media/v4l/dev-audio.rst
+> > new file mode 100644
+> > index 000000000000..f9bcf0c7b056
+> > --- /dev/null
+> > +++ b/Documentation/userspace-api/media/v4l/dev-audio.rst
+> > @@ -0,0 +1,63 @@
+> > +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> > +
+> > +.. _audiodev:
+> > +
+> > +******************
+> > +audio Interface
+>
+> Capital "A"?
 
- drivers/pci/controller/dwc/pcie-qcom.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+OK,  will modify it.
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index e2f29404c84e..64420ecc24d1 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -43,7 +43,6 @@
- #define PARF_PHY_REFCLK				0x4c
- #define PARF_CONFIG_BITS			0x50
- #define PARF_DBI_BASE_ADDR			0x168
--#define PARF_SLV_ADDR_SPACE_SIZE_2_3_3		0x16c /* Register offset specific to IP ver 2.3.3 */
- #define PARF_MHI_CLOCK_RESET_CTRL		0x174
- #define PARF_AXI_MSTR_WR_ADDR_HALT		0x178
- #define PARF_AXI_MSTR_WR_ADDR_HALT_V2		0x1a8
-@@ -797,8 +796,7 @@ static int qcom_pcie_post_init_2_3_3(struct qcom_pcie *pcie)
- 	u16 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
- 	u32 val;
- 
--	writel(SLV_ADDR_SPACE_SZ,
--		pcie->parf + PARF_SLV_ADDR_SPACE_SIZE_2_3_3);
-+	writel(SLV_ADDR_SPACE_SZ, pcie->parf + PARF_SLV_ADDR_SPACE_SIZE);
- 
- 	val = readl(pcie->parf + PARF_PHY_CTRL);
- 	val &= ~PHY_TEST_PWR_DOWN;
--- 
-2.34.1
+>
+> > +******************
+>
+> Too many asterisks (same a few lines above, too).
 
+ok, will update it.
+
+>
+> > +
+> > +The audio interface is implemented on audio device nodes. The audio de=
+vice
+> > +which uses application software for modulation or demodulation. This
+> > +interface is intended for controlling and data streaming of such devic=
+es
+> > +
+> > +Audio devices are accessed through character device special files name=
+d
+> > +``/dev/v4l-audio``
+> > +
+> > +Querying Capabilities
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +Device nodes supporting the audio capture and output interface set the
+> > +``V4L2_CAP_AUDIO_M2M`` flag in the ``device_caps`` field of the
+> > +:c:type:`v4l2_capability` structure returned by the :c:func:`VIDIOC_QU=
+ERYCAP`
+> > +ioctl.
+> > +
+> > +At least one of the read/write or streaming I/O methods must be suppor=
+ted.
+> > +
+> > +
+> > +Data Format Negotiation
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +The audio device uses the :ref:`format` ioctls to select the capture f=
+ormat.
+> > +The audio buffer content format is bound to that selected format. In a=
+ddition
+> > +to the basic :ref:`format` ioctls, the :c:func:`VIDIOC_ENUM_FMT` ioctl=
+ must be
+> > +supported as well.
+> > +
+> > +To use the :ref:`format` ioctls applications set the ``type`` field of=
+ the
+> > +:c:type:`v4l2_format` structure to ``V4L2_BUF_TYPE_AUDIO_CAPTURE`` or =
+to
+> > +``V4L2_BUF_TYPE_AUDIO_OUTPUT``. Both drivers and applications must set=
+ the
+> > +remainder of the :c:type:`v4l2_format` structure to 0.
+> > +
+> > +.. c:type:: v4l2_audio_format
+> > +
+> > +.. tabularcolumns:: |p{1.4cm}|p{2.4cm}|p{13.5cm}|
+> > +
+> > +.. flat-table:: struct v4l2_audio_format
+> > +    :header-rows:  0
+> > +    :stub-columns: 0
+> > +    :widths:       1 1 2
+> > +
+> > +    * - __u32
+> > +      - ``rate``
+> > +      - The sample rate, set by the application. The range is [5512, 7=
+68000].
+> > +    * - __u32
+> > +      - ``format``
+> > +      - The sample format, set by the application. format is defined a=
+s
+> > +        SNDRV_PCM_FORMAT_S8, SNDRV_PCM_FORMAT_U8, ...,
+> > +    * - __u32
+> > +      - ``channels``
+> > +      - The channel number, set by the application. channel number ran=
+ge is
+> > +        [1, 32].
+> > +    * - __u32
+> > +      - ``buffersize``
+> > +      - Maximum buffer size in bytes required for data. The value is s=
+et by the
+> > +        driver.
+> > diff --git a/Documentation/userspace-api/media/v4l/devices.rst b/Docume=
+ntation/userspace-api/media/v4l/devices.rst
+> > index 8bfbad65a9d4..8261f3468489 100644
+> > --- a/Documentation/userspace-api/media/v4l/devices.rst
+> > +++ b/Documentation/userspace-api/media/v4l/devices.rst
+> > @@ -24,3 +24,4 @@ Interfaces
+> >      dev-event
+> >      dev-subdev
+> >      dev-meta
+> > +    dev-audio
+> > diff --git a/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst =
+b/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
+> > new file mode 100644
+> > index 000000000000..f9ebe2a05f69
+> > --- /dev/null
+> > +++ b/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
+> > @@ -0,0 +1,31 @@
+> > +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> > +
+> > +.. _v4l2-aud-fmt-lpcm:
+> > +
+> > +*************************
+> > +V4L2_AUDIO_FMT_LPCM ('LPCM')
+> > +*************************
+> > +
+> > +Linear Pulse-Code Modulation (LPCM)
+> > +
+> > +
+> > +Description
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +This describes audio format used by the audio memory to memory driver.
+> > +
+> > +It contains the following fields:
+> > +
+> > +.. flat-table::
+> > +    :widths: 1 4
+> > +    :header-rows:  1
+> > +    :stub-columns: 0
+> > +
+> > +    * - Field
+> > +      - Description
+> > +    * - u32 samplerate;
+> > +      - which is the number of times per second that samples are taken=
+.
+> > +    * - u32 sampleformat;
+> > +      - which determines the number of possible digital values that ca=
+n be used to represent each sample
+>
+> 80 characters (or less) per line, please.
+
+Ok, will change it.
+
+>
+> Which values could this field have and what do they signify?
+
+The values are SNDRV_PCM_FORMAT_S8, SNDRV_PCM_FORMAT_U8...
+which are the PCM format, defined in ALSA.
+
+>
+> > +    * - u32 channels;
+> > +      - channel number for each sample.
+>
+> I suppose the rest of the buffer would be samples? This should be
+> documented. I think there are also different ways the data could be
+> arrangeed and this needs to be documented, too.
+
+All data in the buffer are the samples,  the 'samplerate', 'sampleformat'
+'channels'  I list here is try to describe the samples.
+I was confused how to write this document, so I list the characters.
+
+Best regards
+Wang Shengjiu
