@@ -2,49 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 838D67A57EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 05:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B6C7A57EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 05:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjISDdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 23:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
+        id S231331AbjISDev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 23:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbjISDdm (ORCPT
+        with ESMTP id S231279AbjISDer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 23:33:42 -0400
+        Mon, 18 Sep 2023 23:34:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06DF10E;
-        Mon, 18 Sep 2023 20:33:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 430B5C433C8;
-        Tue, 19 Sep 2023 03:33:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6863710E;
+        Mon, 18 Sep 2023 20:34:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95659C433CB;
+        Tue, 19 Sep 2023 03:34:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695094416;
-        bh=LkrAcMJkX+W+jGridPGhkAI5FW5BVjJBEN9dcf/Fig4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W1hVAGdu2qLo0P9RPYKkFP8jChK4MSTSSpoB/JxYAeQSLZgJTGS++fH/u/ckxeqj3
-         ZTDL9PGVULj6rXshO84Y7OKZDDzMjlNJNpqF22mpAlxsVyjD83T2LYFE6HidnOyhiy
-         pKY8lqeHgHbi2/mW9+lSGtHdqNgl8yPtxKXFuhbXTIWTpf5UvIews0PBGmFKf0a+Qg
-         U+ViU3Qsfsdljsj/VsXUuctkL8qZW+cv2dU5662UVa/UAaxiZbARtOFn3LRluOPl4K
-         5QHNI0tC+R2/pp6tFOAYEZVQdkCb8c4GScTpB/neb8cu+/0H/qVSW/xonn/slXN21w
-         x488CwAZ1Eejg==
-Date:   Mon, 18 Sep 2023 20:33:35 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     cheng.lin130@zte.com.cn, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiang.yong5@zte.com.cn,
-        wang.liang82@zte.com.cn, liu.dong3@zte.com.cn
-Subject: Re: [PATCH v3] xfs: introduce protection for drop nlink
-Message-ID: <20230919033335.GF348018@frogsfrogsfrogs>
-References: <ZQeBY3kmww8qAjfP@dread.disaster.area>
- <202309181144537682244@zte.com.cn>
- <ZQfktqPJ5Qzs7unT@dread.disaster.area>
+        s=k20201202; t=1695094481;
+        bh=Ug61tlaIf3jVwA+vuMnvL9oytVI52HzVDJSVhgg7OYE=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=Qaw8yAVj8cLkKsMPLP7fny4VqkAg5grjFnB9YpWoRcNPxzYKoAQ5MJJx4F69Jfsb5
+         6FyFm/uEgwZePXB7N9WguLUw7BEzn0zVJa3xCLhrakOPQwQFgF9aCfcjWLIUCgMTmL
+         v9U31aPmq7YvUGwX0kcm76/k4lW0wAUrXnA8F8xd1lYI+/wBCDl/+6JQF5y23uzvwd
+         JoX5KBsgic+cvfSbxxLZAQzWEJZ5wGvggZ0X+2tD5sCuZTINUgg7CU7n98m6XPVNY7
+         a8FKIBGnqXukjujv3s+62Qj1AjEXQgQjN6nlgg4st+k9PBqeN3XRtKjsclXGAoqfEu
+         ZAMK/6a21jL0g==
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 7C30D27C005A;
+        Mon, 18 Sep 2023 23:34:39 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute3.internal (MEProxy); Mon, 18 Sep 2023 23:34:39 -0400
+X-ME-Sender: <xms:zhYJZbtRN3P0YpzdZN2PAhUKSqW2llZg8auqyWkazTyWat4G7ZoFvA>
+    <xme:zhYJZcfqVYwNZwMlpWG3h_kPQTGOns4qorKI-zZRrjJnFcD6WyiQe2xIX3YFtZltG
+    iLVxmz2Q8ayEIDC1UA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejledgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpeduveffvdegvdefhfegjeejlefgtdffueekudfgkeduvdetvddu
+    ieeluefgjeeggfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
+    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
+    hugidrlhhuthhordhush
+X-ME-Proxy: <xmx:zhYJZewYWOrvV3YSwyPJzaN7sTaWYkUncX1xQE30PLn28Of6UBCMDg>
+    <xmx:zhYJZaMQWtTZunZtfYafBiwSPHE2J2I3bPCmBq6jiPCG4t0oZCL89Q>
+    <xmx:zhYJZb9L00FaJeaHDNwAHc1w4gg7AccRkI2PHihGUXcQLmbxVZ8nQg>
+    <xmx:zxYJZRdyxh_EWLvd-3hzhKteA9DSO7hunxG5zEYS6gloHfJ12GUMpg>
+Feedback-ID: ieff94742:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 41EA631A0064; Mon, 18 Sep 2023 23:34:38 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQfktqPJ5Qzs7unT@dread.disaster.area>
+Message-Id: <42d97bb4-fa0c-4ecc-8a1b-337b40dca930@app.fastmail.com>
+In-Reply-To: <ZP2tYY00/q9ElFQn@memverge.com>
+References: <20230907075453.350554-1-gregory.price@memverge.com>
+ <20230907075453.350554-4-gregory.price@memverge.com>
+ <878r9dzrxj.fsf@meer.lwn.net> <ZP2tYY00/q9ElFQn@memverge.com>
+Date:   Mon, 18 Sep 2023 20:34:16 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Gregory Price" <gregory.price@memverge.com>,
+        "Jonathan Corbet" <corbet@lwn.net>
+Cc:     "Gregory Price" <gourry.memverge@gmail.com>,
+        linux-mm@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        "Linux API" <linux-api@vger.kernel.org>, linux-cxl@vger.kernel.org,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "Arnd Bergmann" <arnd@arndb.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Subject: Re: [RFC PATCH 3/3] mm/migrate: Create move_phys_pages syscall
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,116 +88,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 03:48:38PM +1000, Dave Chinner wrote:
-> On Mon, Sep 18, 2023 at 11:44:53AM +0800, cheng.lin130@zte.com.cn wrote:
-> > > On Fri, Sep 15, 2023 at 05:50:56PM +0800, cheng.lin130@zte.com.cn wrote:
-> > > > > On Wed, Sep 13, 2023 at 05:44:45PM +0800, cheng.lin130@zte.com.cn wrote:
-> > > > > > From: Cheng Lin <cheng.lin130@zte.com.cn>
-> > > > > >
-> > > > > > When abnormal drop_nlink are detected on the inode,
-> > > > > > shutdown filesystem, to avoid corruption propagation.
-> > > > > >
-> > > > > > Signed-off-by: Cheng Lin <cheng.lin130@zte.com.cn>
-> > > > > > ---
-> > > > > >  fs/xfs/xfs_inode.c | 9 +++++++++
-> > > > > >  1 file changed, 9 insertions(+)
-> > > > > >
-> > > > > > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> > > > > > index 9e62cc500..40cc106ae 100644
-> > > > > > --- a/fs/xfs/xfs_inode.c
-> > > > > > +++ b/fs/xfs/xfs_inode.c
-> > > > > > @@ -919,6 +919,15 @@ xfs_droplink(
-> > > > > >      xfs_trans_t *tp,
-> > > > > >      xfs_inode_t *ip)
-> > > > > >  {
-> > > > > > +
-> > > > > > +    if (VFS_I(ip)->i_nlink == 0) {
-> > > > > > +        xfs_alert(ip->i_mount,
-> > > > > > +              "%s: Deleting inode %llu with no links.",
-> > > > > > +              __func__, ip->i_ino);
-> > > > > > +        tp->t_flags |= XFS_TRANS_DIRTY;
-> > > > > Marking the transaction dirty is not necessary.
-> > > > > Otherwise this seems fine.
-> > > > Another strategy:
-> > > > Set nlink to an invalid value(like XFS_NLINK_PINNED), and
-> > > > Complete this transaction before shutdown fs. To make sure
-> > > > nlink not be zero. If the nlink of a directory are zero, it may
-> > > > be cleaned up.
-> > > > Is that appropriate?
-> > > No, all I'm asking you to do is drop dirtying of the transaction
-> > > from this patch because it is a) unnecessary and b) a layering
-> > > violation.
-> > > It is unnecessary because the transaction will almost always be
-> > > dirty before we get to xfs_droplink(). In the cases where it isn't
-> > > dirty (e.g. xfs_remove() on a directory) we explicitly check that
-> > > nlink == 2 before proceeding to call xfs_droplink(). Hence we can't
-> > > actually get to xfs_droplink() with a clean transaction, and so
-> > If the corrupted inode is a parent directory, when remove its
-> > subdirectory, the parent's nlink will be decreased to 0.  But the
-> > transaction of subdirectory removing is not dirty (There are not
-> > check about the parent directory). In this situation, the transaction
-> > will be failed and the filesystem will be alive.
-> 
-> Yes, and that's perfectly fine. The transaction cancelling code has
-> worked this way for the past 20 years or so...
-> 
-> Indeed, you said your customer wants the system to stay alive if possible,
-> right? Well, so do we.
-> 
-> If the parent directory has a bogus nlink count, and that prevents
-> us from removing items from the directory, then as long as we
-> haven't dirtied anything and we can return a -EFSCORRUPTED error to
-> userspace to say the unlink failed and we don't have to shut the
-> filesystem down. All we now have is a directory that has objects in
-> it that can't be removed....
-> 
-> For a higher level perspective, we only need to shut the filesystem
-> down if we cannot safely back out of the modification operation that
-> was requested. Whilst the transaction is clean, we can safely return
-> errors to userspace and continue operation because everything in
-> memory and on disk is still consistent, even if we have found a
-> corruption in non-crtical the metadata. Just returning an error to
-> userspace can't make the problem any worse.
-> 
-> This also is how we treat corruption that is found during read
-> operations - we return -EFSCORRUPTED to userspace because something in
-> the directory or inode we were trying to read from was corrupted. We
-> do not need to shut down the filesystem because there is
-> no risk of making things worse or the in-memory filesystem state
-> getting out of sync with the on-disk state.
-> 
-> It is only when we are trying to modify something that corruption
-> becomes a problem with fatal consequences. Once we've made a
-> modification, the in-memory state is different to the on-disk state
-> and whilst we are in that state any corruption we discover becomes
-> fatal. That is because there is no way to reconcile the changes
-> we've already made in memory with what is on-disk - we don't know
-> that the in-memory changes are good because we tripped over
-> corruption, and so we must not propagate bad in-memory state and
-> metadata to disk over the top of what may be still be uncorrupted
-> metadata on disk.
 
-It'd be a massive effort, but wouldn't it be fun if one could attach
-defer ops to a transaction that updated incore state on commit but
-otherwise never appeared on disk?
 
-Let me cogitate on that during part 2 of vacation...
+On Sun, Sep 10, 2023, at 4:49 AM, Gregory Price wrote:
+> On Sun, Sep 10, 2023 at 02:36:40PM -0600, Jonathan Corbet wrote:
+>> Gregory Price <gourry.memverge@gmail.com> writes:
+>>=20
+>> > Similar to the move_pages system call, instead of taking a pid and
+>> > list of virtual addresses, this system call takes a list of physical
+>> > addresses.
+>> >
+>> > Because there is no task to validate the memory policy against, each
+>> > page needs to be interrogated to determine whether the migration is
+>> > valid, and all tasks that map it need to be interrogated.
+>> >
+>> > This is accomplished via an rmap_walk on the folio containing
+>> > the page, and interrogating all tasks that map the page.
+>> >
+>> > Each page must be interrogated individually, which should be
+>> > considered when using this to migrate shared regions.
+>> >
+>> > The remaining logic is the same as the move_pages syscall. One
+>> > change to do_pages_move is made (to check whether an mm_struct is
+>> > passed) in order to re-use the existing migration code.
+>> >
+>> > Signed-off-by: Gregory Price <gregory.price@memverge.com>
+>> > ---
+>> >  arch/x86/entry/syscalls/syscall_32.tbl  |   1 +
+>> >  arch/x86/entry/syscalls/syscall_64.tbl  |   1 +
+>> >  include/linux/syscalls.h                |   5 +
+>> >  include/uapi/asm-generic/unistd.h       |   8 +-
+>> >  kernel/sys_ni.c                         |   1 +
+>> >  mm/migrate.c                            | 178 ++++++++++++++++++++=
++++-
+>> >  tools/include/uapi/asm-generic/unistd.h |   8 +-
+>> >  7 files changed, 197 insertions(+), 5 deletions(-)
+>>=20
+>> So this is probably a silly question, but just to be sure ... what is
+>> the permission model for this system call?  As far as I can tell, the
+>> ability to move pages is entirely unrestricted, with the exception of
+>> pages that would need MPOL_MF_MOVE_ALL.  If so, that seems undesirabl=
+e,
+>> but probably I'm just missing something ... ?
+>>=20
+>> Thanks,
+>>=20
+>> jon
+>
+> Not silly, looks like when U dropped the CAP_SYS_NICE check (no task to
+> check against), check i neglected to add a CAP_SYS_ADMIN check.
 
---D
+Global, I presume?
 
-> This "in memory matches on disk" state is effectively what the dirty
-> flag in the transaction tracks, and it's done as part of the normal
-> running of a transaction as items are tagged for logging. Marking a
-> transaction dirty that has nothign tagged for logging is actually an
-> incorrect state; we may handle it correctly, but it should never
-> actually occur and we should definitely not be open coding dirtying
-> of transactions to create this state.
-> 
-> IOWs, the transaction modification error handling paths already do
-> the right thing according to the state carried by the transaction at
-> the time the error was encountered.
-> 
-> -Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+I have to admit that I don=E2=80=99t think this patch set makes sense at=
+ all.
+
+As I understand it, there are two kinds of physical memory resource in C=
+XL: those that live on a device and those that live in host memory.
+
+Device memory doesn=E2=80=99t migrate as such: if a page is on an accele=
+rator, it=E2=80=99s on that accelerator. (If someone makes an accelerato=
+r with *two* PCIe targets and connects each target to a different node, =
+that=E2=80=99s a different story.)
+
+Host memory is host memory. CXL may access it, and the CXL access from a=
+ given device may be faster if that device is connected closer to the me=
+mory. And the device may or may not know the virtual address and PASID o=
+f the memory.
+
+I fully believe that there=E2=80=99s some use for migrating host memory =
+to a node that's closer to a device.  But I don't think this API is the =
+right way.  First, something needs to figure out that the host memory sh=
+ould be migrated.  Doing this presumably involves identifying which (log=
+ical!) memory is being accessed and deciding to move it.  Maybe new APIs=
+ are needed to enable this.
+
+But this API is IMO rather silly.  Just as a trivial observation, if you=
+ migrate a page you identify by physical address, *that physical address=
+ changes*.  So the only way it possibly works is that whatever heuristic=
+ is using the API knows to invalidate itself after calling the API, but =
+of course it also needs to invalidate itself if the kernel becomes intel=
+ligent enough to migrate the page on its own or the owner of the logical=
+ page triggers migration, etc.
+
+Put differently, the operation "migrate physical page 0xABCD000 to node =
+3" makes no sense.  That physical address belongs to whatever node its o=
+n, and without some magic hardware support that does not currently exist=
+, it's not going anywhere at runtime.
+
+I just don't see it this code working well, never mind the security issu=
+es.
