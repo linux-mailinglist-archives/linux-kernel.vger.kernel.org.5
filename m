@@ -2,104 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61CB7A6697
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FB97A6694
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232833AbjISOZK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 10:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
+        id S232777AbjISOY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232801AbjISOZF (ORCPT
+        with ESMTP id S232705AbjISOY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:25:05 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2912EEA;
-        Tue, 19 Sep 2023 07:24:56 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qibek-001CsS-ED; Tue, 19 Sep 2023 16:24:50 +0200
-Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qibek-0024rB-4a; Tue, 19 Sep 2023 16:24:50 +0200
-Message-ID: <a428516ebeae71e33635edc83052c972ce40c85d.camel@physik.fu-berlin.de>
-Subject: Re: Arches that don't support PREEMPT
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+        Tue, 19 Sep 2023 10:24:56 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D97AD;
+        Tue, 19 Sep 2023 07:24:50 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BB82E1FF1D;
+        Tue, 19 Sep 2023 14:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695133488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EN9onM0BUTlMJdHe2/ryT6BwqQBjIKXe4LSsDr/eSBk=;
+        b=IaYCWTc+MRDbYLygYZIG7kfgsuGWDVzUI3QHpVxRvEE77gdyJcWAa5M0W9jP5dARUxbRi7
+        uallohGNriE2pG9cYu5AWTOoTf1SPJIgu5jT9G76LNIBtFxjpvyuVsjJxnDK/Bf6LzsKYt
+        Jf2YjvloxZPbnlW7gdE2y8T43LJgxjc=
+Received: from suse.cz (dhcp219.suse.cz [10.100.51.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 93CCC2C142;
+        Tue, 19 Sep 2023 14:24:48 +0000 (UTC)
 Date:   Tue, 19 Sep 2023 16:24:48 +0200
-In-Reply-To: <20230919141627.GB39281@noisy.programming.kicks-ass.net>
-References: <20230911150410.GC9098@noisy.programming.kicks-ass.net>
-         <87h6o01w1a.fsf@oracle.com>
-         <20230912082606.GB35261@noisy.programming.kicks-ass.net>
-         <87cyyfxd4k.ffs@tglx>
-         <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
-         <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
-         <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
-         <20230919134218.GA39281@noisy.programming.kicks-ass.net>
-         <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
-         <20230919141627.GB39281@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH tty v1 01/74] serial: core: Provide port lock wrappers
+Message-ID: <ZQmvMMRvnUxh1NJn@alley>
+References: <20230914183831.587273-1-john.ogness@linutronix.de>
+ <20230914183831.587273-2-john.ogness@linutronix.de>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.164.10
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914183831.587273-2-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-19 at 16:16 +0200, Peter Zijlstra wrote:
-> > I find it a bit unfair that maintainers of architectures that have huge companies
-> > behind them use their manpower to urge less popular architectures for removal just
-> > because they don't have 150 people working on the port so they can keep up with
-> > design changes quickly.
+On Thu 2023-09-14 20:43:18, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> PREEMPT isn't something new. Also, I don't think the arch part for
-> actually supporting it is particularly hard, mostly it is sticking the
-> preempt_schedule_irq() call in return from interrupt code path.
+> When a serial port is used for kernel console output, then all
+> modifications to the UART registers which are done from other contexts,
+> e.g. getty, termios, are interference points for the kernel console.
 > 
-> If you convert the arch to generic-entry (a much larger undertaking)
-> then you get this for free.
+> So far this has been ignored and the printk output is based on the
+> principle of hope. The rework of the console infrastructure which aims to
+> support threaded and atomic consoles, requires to mark sections which
+> modify the UART registers as unsafe. This allows the atomic write function
+> to make informed decisions and eventually to restore operational state. It
+> also allows to prevent the regular UART code from modifying UART registers
+> while printk output is in progress.
+> 
+> All modifications of UART registers are guarded by the UART port lock,
+> which provides an obvious synchronization point with the console
+> infrastructure.
+> 
+> Provide wrapper functions for spin_[un]lock*(port->lock) invocations so
+> that the console mechanics can be applied later on at a single place and
+> does not require to copy the same logic all over the drivers.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  include/linux/serial_core.h | 79 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+> 
+> diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+> index bb6f073bc159..f1d5c0d1568c 100644
+> --- a/include/linux/serial_core.h
+> +++ b/include/linux/serial_core.h
+> +/**
+> + * uart_port_lock_irqsave - Lock the UART port, save and disable interrupts
+> + * @up:		Pointer to UART port structure
+> + * @flags:	Pointer to interrupt flags storage
+> + */
+> +static inline void uart_port_lock_irqsave(struct uart_port *up, unsigned long *flags)
+> +{
+> +	spin_lock_irqsave(&up->lock, *flags);
+> +}
 
-If the conversion isn't hard, why is the first reflex the urge to remove an architecture
-instead of offering advise how to get the conversion done?
+IMHO, it would have been better to pass the flags variable directly
+via a macro as it is done in most *_lock_*_irqsafe() APIs. I mean
+something like:
 
-Adrian
+/**
+ * uart_port_trylock_irqsave - Try to lock the UART port, save and disable interrupts
+ * @up:		Pointer to UART port structure
+ * @flags:	Interrupt flags storage
+ *
+ * Returns: True if lock was acquired, false otherwise
+ */
+#define uart_port_lock_irqsave(up, flags)		\
+({							\
+	local_irq_save(flags);				\
+	uart_port_lock(lock)				\
+})
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> +
+> +/**
+> + * uart_port_trylock - Try to lock the UART port
+> + * @up:		Pointer to UART port structure
+> + *
+> + * Returns: True if lock was acquired, false otherwise
+> + */
+> +static inline bool uart_port_trylock(struct uart_port *up)
+> +{
+> +	return spin_trylock(&up->lock);
+> +}
+> +
+> +/**
+> + * uart_port_trylock_irqsave - Try to lock the UART port, save and disable interrupts
+> + * @up:		Pointer to UART port structure
+> + * @flags:	Pointer to interrupt flags storage
+> + *
+> + * Returns: True if lock was acquired, false otherwise
+> + */
+> +static inline bool uart_port_trylock_irqsave(struct uart_port *up, unsigned long *flags)
+> +{
+> +	return spin_trylock_irqsave(&up->lock, *flags);
+> +}
+
+Similar here:
+
+/**
+ * uart_port_trylock_irqsave - Try to lock the UART port, save and disable interrupts
+ * @up:		Pointer to UART port structure
+ * @flags:	Interrupt flags storage
+ *
+ * Returns: True if lock was acquired, false otherwise
+ */
+#define uart_port_trylock_irqsave(up, flags)			\
+({								\
+	bool __ret;						\
+								\
+	local_irq_save(flags);					\
+	__ret = uart_port_trylock(lock)				\
+	if (!__ret)						\
+		local_irq_restore(flags);			\
+	__ret;							\
+})
+
+I do not resist on this rather cosmetic change. The current code seems
+to be doing what is expected. Feel free to keep it and use:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
+
+PS: I am sorry for the late review. I have made a quick look on Monday
+    and it looked straightforward. I have got this idea today when
+    having a closer look.
