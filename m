@@ -2,166 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 279917A5B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E817A5B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjISHtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
+        id S230237AbjISHq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjISHtQ (ORCPT
+        with ESMTP id S229510AbjISHqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:49:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FE0100;
-        Tue, 19 Sep 2023 00:49:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695109750; x=1726645750;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DOwKPK2ZKm9AIg5bJUx80+sSzuoUpgRbbL5MT+RoMqY=;
-  b=WY3pkREBIBJIoyxc6lqnIlf8FXS2Z7plwCtvzDb5M08N8ChiTxnYyOig
-   7YxRbwz2ue5zhqNiOBmp6HJvs+suhZ2dARxof9SjcK5gMEDQz73zVKg1i
-   ecALcJMeGJBytnX6f2eiUzaDxrSQRCRj8vjUsNecrRs+99/WdQC/dEXnp
-   opU5x4SfUJwzvh0lFeAg0Oa8Nr4eyXV7Yx+3QWokxHAU7zX4pQK/LfpkR
-   phThf7TjEWtTshDJ9Ysn13Ydw/jUxZjta/Tyk/fX3jbGaSFTYseFsAtRJ
-   Q0kiJUHPCk4/1Cftx1BbZNqa3DuXv+merh0rYyRt8VChNHG5E7S1+raIS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="466207116"
-X-IronPort-AV: E=Sophos;i="6.02,158,1688454000"; 
-   d="scan'208";a="466207116"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 00:49:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="775449486"
-X-IronPort-AV: E=Sophos;i="6.02,158,1688454000"; 
-   d="scan'208";a="775449486"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 19 Sep 2023 00:49:05 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiVTh-00074k-2W;
-        Tue, 19 Sep 2023 07:49:01 +0000
-Date:   Tue, 19 Sep 2023 15:45:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tomer Maimon <tmaimon77@gmail.com>, peter.chen@kernel.org,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, xu.yang_2@nxp.com,
-        peng.fan@nxp.com, avifishman70@gmail.com, tali.perry1@gmail.com,
-        joel@jms.id.au, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, j.neuschaefer@gmx.net
-Cc:     oe-kbuild-all@lists.linux.dev, openbmc@lists.ozlabs.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Tomer Maimon <tmaimon77@gmail.com>
-Subject: Re: [PATCH v1 2/2] usb: chipidea: Add support for NPCM
-Message-ID: <202309191545.dZXS2Y2p-lkp@intel.com>
-References: <20230918165958.2659-3-tmaimon77@gmail.com>
+        Tue, 19 Sep 2023 03:46:25 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD78B100
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:46:15 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-4936b401599so2319683e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:46:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695109575; x=1695714375; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:mime-version
+         :in-reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=eECcdVLjmiHO6NMjf87/09ax+Y64fQCIr6VvZR8S1/c=;
+        b=YvYI6b6FGtbNVgNACUCc9Y0q9yPDh7SB1HoTWQzo/l4F0LyYq2PQlSiY+tUgkKzagU
+         aWSR8uRecGOEjll4O82h/TkflfH7sidaieoaYTNONDwNobdG8aKRk6JLsLkuXeqmVz4z
+         3TWwQqnQ5Q7QV3FuTCpJR9u02LViOEbj5vlbh/hGD0JkNCoJO7IwJjsT5qIAm4a8icnF
+         FCkWiUoj424MY8qVK3y+P155jlLaJg7ddwoIfk3rCeA5JOxkaXilhnPRjEBxuivwyqfO
+         2VADr0CDuK0CryKYeTBUIMKsfeYfbmU15hR8v4OW863DO+Eged9oj9Ot+TzAnk/fh9uX
+         yGaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695109575; x=1695714375;
+        h=cc:to:subject:message-id:date:from:references:mime-version
+         :in-reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eECcdVLjmiHO6NMjf87/09ax+Y64fQCIr6VvZR8S1/c=;
+        b=CJlXCr1XniRwShHkKC62EcLQcauOBtMBFJWpq5UVvSYGyBjRUC5D/4aX7WwJVLy3ag
+         t3B/CLM/3JYLTdvq/UFv2cRiHXdwKnKfR0bRPEsmPbBzfXN38qH5QVFqIFIAjChE9YpH
+         XPxRT0/HeNwWlFN+CAUy6g5EUfY/bugkEHEskYjlXCZ8alk36XqWo20IVTlaMV2wFv3F
+         tR1pSgjNQMnAHsjgmwpBcaPhgoZ876aJyEgnKwPvpfeTeq9hD3NQpgMEkVxm1VdLV/Jo
+         r7QfhxIb24L9LA1FWmvqqM19olRL8dIokvJcgDY/AYZKPEYmhCn5vMS8lcraNd0dZ3jV
+         2S9A==
+X-Gm-Message-State: AOJu0Yz9HCq1/T0HAhFk7/AyPnyUGOY2SDscilz1nJdDVxO/+OQANq2V
+        6a9mlZE03xI0q7Yku0rWkfGcGWX68Yage4OUGUVoB4D8jfUsmuK+mHI=
+X-Google-Smtp-Source: AGHT+IF5Fz7RhZi2YY14vj8x220gc24lvhX+cS73uHVGaMrtE0TjWn8n2wN++r5GQE4d4iTNVvhyanfqr5OBqEDD6PU=
+X-Received: by 2002:a1f:e082:0:b0:495:cace:d59c with SMTP id
+ x124-20020a1fe082000000b00495caced59cmr8660034vkg.0.1695109574896; Tue, 19
+ Sep 2023 00:46:14 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 19 Sep 2023 00:46:14 -0700
+In-Reply-To: <ZQlPre4nnydZyDAm@sol>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918165958.2659-3-tmaimon77@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230918145533.14642-1-brgl@bgdev.pl> <ZQhtWNaCiHVu5yzL@smile.fi.intel.com>
+ <CAMRc=MfkzdFgwEuNGJYgxyCA_b__Ds-jA4S+jVT1ULJ9DTRhOw@mail.gmail.com> <ZQlPre4nnydZyDAm@sol>
+From:   brgl@bgdev.pl
+Date:   Tue, 19 Sep 2023 00:46:14 -0700
+Message-ID: <CAMRc=McamALbJ2jtpeek9L3k2pX8rkpsqhMfgsBqaygG58-cTw@mail.gmail.com>
+Subject: Re: [PATCH v4] gpio: sim: fix an invalid __free() usage
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        akpm@linux-foundation.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        brgl@bgdev.pl
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomer,
+On Tue, 19 Sep 2023 09:37:17 +0200, Kent Gibson <warthog618@gmail.com> said:
+> On Tue, Sep 19, 2023 at 12:31:36AM -0700, brgl@bgdev.pl wrote:
+>> On Mon, 18 Sep 2023 17:31:36 +0200, Andy Shevchenko
+>> <andriy.shevchenko@linux.intel.com> said:
+>> > On Mon, Sep 18, 2023 at 04:55:33PM +0200, Bartosz Golaszewski wrote:
+>> >> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>> >>
+>> >> gpio_sim_make_line_names() returns NULL or ERR_PTR() so we must not use
+>> >> __free(kfree) on the returned address. Split this function into two, one
+>> >> that determines the size of the "gpio-line-names" array to allocate and
+>> >> one that actually sets the names at correct offsets. The allocation and
+>> >> assignment of the managed pointer happens in between.
+>> >
+>> > ...
+>> >
+>> >> +	unsigned int size = 0;
+>> >>
+>> >>  	list_for_each_entry(line, &bank->line_list, siblings) {
+>> >> +		if (!line->name || (line->offset >= bank->num_lines))
+>> >>  			continue;
+>> >>
+>> >> +		size = line->offset + 1;
+>> >>  	}
+>> >>
+>> >> +	return size;
+>> >
+>> > So, now the function iterates over all lines and returns the size of the last
+>> > match, correct?
+>> >
+>> > Why not
+>> >
+>> > 	list_for_each_entry_reversed() {
+>> > 		if (line->name && ())
+>> > 			break;
+>> > 	}
+>> >
+>> > 	return size;
+>> >
+>> > ?
+>>
+>> Because the line objects are not sorted by offset. They are added at the end
+>> of the list in the order the user creates their corresponding configfs groups.
+>>
+>
+> Then your patch is also broken as it uses the last named entry,
+> not the named entry with the greatest offset??
+>
+> Cheers,
+> Kent.
+>
 
-kernel test robot noticed the following build errors:
+Yes, of course it is. Ironically v3 was at least correct in this part.
 
-[auto build test ERROR on usb/usb-testing]
-[also build test ERROR on usb/usb-next usb/usb-linus linus/master v6.6-rc2 next-20230918]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Tomer-Maimon/dt-binding-usb-ci-hdrc-usb2-document-Nuvoton-NPCM-supprt/20230919-010147
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20230918165958.2659-3-tmaimon77%40gmail.com
-patch subject: [PATCH v1 2/2] usb: chipidea: Add support for NPCM
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230919/202309191545.dZXS2Y2p-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309191545.dZXS2Y2p-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309191545.dZXS2Y2p-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/usb/chipidea/ci_hdrc_npcm.c: In function 'npcm_udc_probe':
->> drivers/usb/chipidea/ci_hdrc_npcm.c:68:17: error: 'CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS' undeclared (first use in this function)
-      68 |                 CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS;
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/usb/chipidea/ci_hdrc_npcm.c:68:17: note: each undeclared identifier is reported only once for each function it appears in
-
-
-vim +/CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS +68 drivers/usb/chipidea/ci_hdrc_npcm.c
-
-    39	
-    40	static int npcm_udc_probe(struct platform_device *pdev)
-    41	{
-    42		int ret;
-    43		unsigned int args[3];
-    44		struct regmap *gcr_regmap;
-    45		struct npcm_udc_data *ci;
-    46		struct platform_device *plat_ci;
-    47		struct device *dev = &pdev->dev;
-    48		struct device_node *np = dev->of_node;
-    49	
-    50		ci = devm_kzalloc(&pdev->dev, sizeof(*ci), GFP_KERNEL);
-    51		if (!ci)
-    52			return -ENOMEM;
-    53		platform_set_drvdata(pdev, ci);
-    54	
-    55		ci->core_clk = devm_clk_get_optional(dev, NULL);
-    56		if (IS_ERR(ci->core_clk))
-    57			return PTR_ERR(ci->core_clk);
-    58	
-    59		ret = clk_prepare_enable(ci->core_clk);
-    60		if (ret) {
-    61			dev_err(dev, "failed to enable the clock: %d\n", ret);
-    62			return ret;
-    63		}
-    64	
-    65		ci->pdata.name = dev_name(dev);
-    66		ci->pdata.capoffset = DEF_CAPOFFSET;
-    67		ci->pdata.flags	= CI_HDRC_REQUIRES_ALIGNED_DMA |
-  > 68			CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS;
-    69		ci->pdata.phy_mode = USBPHY_INTERFACE_MODE_UTMI;
-    70		ci->pdata.notify_event = npcm_udc_notify_event;
-    71	
-    72		gcr_regmap = syscon_regmap_lookup_by_phandle_args(np, "nuvoton,sysgcr",
-    73								  3, args);
-    74		if (!IS_ERR(gcr_regmap))
-    75			regmap_update_bits(gcr_regmap, args[0], args[1], args[2]);
-    76	
-    77		plat_ci = ci_hdrc_add_device(dev, pdev->resource, pdev->num_resources,
-    78					     &ci->pdata);
-    79		if (IS_ERR(plat_ci)) {
-    80			ret = PTR_ERR(plat_ci);
-    81			dev_err(dev, "failed to register HDRC NPCM device: %d\n", ret);
-    82			goto clk_err;
-    83		}
-    84	
-    85		pm_runtime_no_callbacks(dev);
-    86		pm_runtime_enable(dev);
-    87	
-    88		return 0;
-    89	
-    90	clk_err:
-    91		clk_disable_unprepare(ci->core_clk);
-    92		return ret;
-    93	}
-    94	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
+Bart
