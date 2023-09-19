@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E56727A5EC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12CD7A5ED0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbjISJyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
+        id S231954AbjISJyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjISJxV (ORCPT
+        with ESMTP id S231493AbjISJxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:53:21 -0400
+        Tue, 19 Sep 2023 05:53:22 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DD1CD2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4578ED;
         Tue, 19 Sep 2023 02:53:15 -0700 (PDT)
 Date:   Tue, 19 Sep 2023 09:53:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695117193;
+        s=2020; t=1695117194;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xBMH5cY+WWuS+ewEgw1SpLF0Nkjac+v6iZCL+I4aQrY=;
-        b=UUqm9DvtN4FRP1tTT0uHJcRcMgsuXnITchPKLHWT5a7tav4EaRIyKwJORk8zrb/4IHKnYt
-        T15UFph3L255P69DvlWaAVXz4PZHinLPxZb4T+yToDeeU2Sj62qFZzUl+N2lcmeWvnPV/f
-        zWHrmPvAGU5oZIXhFQirA6t+kIFFkigD7RHzGvvPEIZ0tu946aPdcKaCGDkj2fcTISUmFi
-        n00G053/N6k3FSD5+a95CLse3lb7WLA7atFfhbDSBTSr5klQrlceDit8uqD0sUib7jZ14i
-        tTshSthhvHYfC0T1pAkusUK8eqYwykpqguY12TRqbnELqBMC55bO8C7jmaFfmA==
+        bh=62U85OzB1CB4mEWbrSqf/8rEaKu3U/OfzCLtNWgOg+I=;
+        b=WI4yM4kfsGVXsBnbFxgCVtOQrIKQpv4QJ2LQusLZ8z0UC7uT0WFX/PPgP12xgBYC0XusSy
+        YsaeKNRTNOBfOQbMsXxOV9nMgPujXNqjtt7CC+zpPKtHTUBcexuYAZ+nzRS5dfj2k7VOIX
+        HD2d+Re0hY2sg9uQGrFwkSpFm84UpO0VkYDdK97cv9bQrAFHrsZR++T/466IgxSoNkf4rT
+        FGbi8v0GNguNJCaE+ULVCcflKtFhD761Rl4wjj5Bs+1qHgg81X72iwQ4nlrEo9bgfT3ORU
+        RvJagy94tCTx/qbO+xlFmoaq3GWyV66Jrd1Ko64DSUAnes4xnAaxfw9j3A4avg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695117193;
+        s=2020e; t=1695117194;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xBMH5cY+WWuS+ewEgw1SpLF0Nkjac+v6iZCL+I4aQrY=;
-        b=uLKt8kXzFYyh5hNFWX7O1/2ciL+SFDzgus089txAI0Alcqu3o4hKxjd1WHmHHtrdhEBiPb
-        KwVjCe2urGR+TiCQ==
+        bh=62U85OzB1CB4mEWbrSqf/8rEaKu3U/OfzCLtNWgOg+I=;
+        b=txPLIy4nZ+AQFvQGRQNYd5dHNdJ/VIFlwYk8xoSEEgPLmqCzgdN2PLGlvTj8u5Z8EAhAc9
+        mfN2PCD2ggfX4OAA==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/alternatives: Remove faulty optimization
+Subject: [tip: x86/bugs] x86/srso: Fix unret validation dependencies
 Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <16d19d2249d4485d8380fb215ffaae81e6b8119e.1693889988.git.jpoimboe@kernel.org>
-References: <16d19d2249d4485d8380fb215ffaae81e6b8119e.1693889988.git.jpoimboe@kernel.org>
+In-Reply-To: <299fb7740174d0f2335e91c58af0e9c242b4bac1.1693889988.git.jpoimboe@kernel.org>
+References: <299fb7740174d0f2335e91c58af0e9c242b4bac1.1693889988.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169511719305.27769.14807367532070919458.tip-bot2@tip-bot2>
+Message-ID: <169511719353.27769.15297917900172168528.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,52 +67,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     eae1a2bb7dd350195c18f1788f5d687684d8d92d
-Gitweb:        https://git.kernel.org/tip/eae1a2bb7dd350195c18f1788f5d687684d8d92d
+Commit-ID:     adc5517ec8157084ba978b25241fc398207d05dd
+Gitweb:        https://git.kernel.org/tip/adc5517ec8157084ba978b25241fc398207d05dd
 Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 04 Sep 2023 22:04:54 -07:00
+AuthorDate:    Mon, 04 Sep 2023 22:04:53 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Tue, 19 Sep 2023 11:42:47 +02:00
 
-x86/alternatives: Remove faulty optimization
+x86/srso: Fix unret validation dependencies
 
-The following commit
+CONFIG_CPU_SRSO isn't dependent on CONFIG_CPU_UNRET_ENTRY (AMD
+Retbleed), so the two features are independently configurable.  Fix
+several issues for the (presumably rare) case where CONFIG_CPU_SRSO is
+enabled but CONFIG_CPU_UNRET_ENTRY isn't.
 
-  095b8303f383 ("x86/alternative: Make custom return thunk unconditional")
-
-made '__x86_return_thunk' a placeholder value.  All code setting
-X86_FEATURE_RETHUNK also changes the value of 'x86_return_thunk'.  So
-the optimization at the beginning of apply_returns() is dead code.
-
-Also, before the above-mentioned commit, the optimization actually had a
-bug It bypassed __static_call_fixup(), causing some raw returns to
-remain unpatched in static call trampolines.  Thus the 'Fixes' tag.
-
-Fixes: d2408e043e72 ("x86/alternative: Optimize returns patching")
+Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/16d19d2249d4485d8380fb215ffaae81e6b8119e.1693889988.git.jpoimboe@kernel.org
+Link: https://lore.kernel.org/r/299fb7740174d0f2335e91c58af0e9c242b4bac1.1693889988.git.jpoimboe@kernel.org
 ---
- arch/x86/kernel/alternative.c | 8 --------
- 1 file changed, 8 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 4 ++--
+ include/linux/objtool.h              | 3 ++-
+ scripts/Makefile.vmlinux_o           | 3 ++-
+ 3 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index a5ead6a..c850f5a 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -720,14 +720,6 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
- {
- 	s32 *s;
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index c55cc24..197ff4f 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -271,7 +271,7 @@
+ .Lskip_rsb_\@:
+ .endm
  
--	/*
--	 * Do not patch out the default return thunks if those needed are the
--	 * ones generated by the compiler.
--	 */
--	if (cpu_feature_enabled(X86_FEATURE_RETHUNK) &&
--	    (x86_return_thunk == __x86_return_thunk))
--		return;
--
- 	for (s = start; s < end; s++) {
- 		void *dest = NULL, *addr = (void *)s + *s;
- 		struct insn insn;
+-#ifdef CONFIG_CPU_UNRET_ENTRY
++#if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO)
+ #define CALL_UNTRAIN_RET	"call entry_untrain_ret"
+ #else
+ #define CALL_UNTRAIN_RET	""
+@@ -312,7 +312,7 @@
+ 
+ .macro UNTRAIN_RET_FROM_CALL
+ #if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_IBPB_ENTRY) || \
+-	defined(CONFIG_CALL_DEPTH_TRACKING)
++	defined(CONFIG_CALL_DEPTH_TRACKING) || defined(CONFIG_CPU_SRSO)
+ 	VALIDATE_UNRET_END
+ 	ALTERNATIVE_3 "",						\
+ 		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
+diff --git a/include/linux/objtool.h b/include/linux/objtool.h
+index 03f82c2..b5440e7 100644
+--- a/include/linux/objtool.h
++++ b/include/linux/objtool.h
+@@ -130,7 +130,8 @@
+  * it will be ignored.
+  */
+ .macro VALIDATE_UNRET_BEGIN
+-#if defined(CONFIG_NOINSTR_VALIDATION) && defined(CONFIG_CPU_UNRET_ENTRY)
++#if defined(CONFIG_NOINSTR_VALIDATION) && \
++	(defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO))
+ .Lhere_\@:
+ 	.pushsection .discard.validate_unret
+ 	.long	.Lhere_\@ - .
+diff --git a/scripts/Makefile.vmlinux_o b/scripts/Makefile.vmlinux_o
+index 0edfdb4..25b3b58 100644
+--- a/scripts/Makefile.vmlinux_o
++++ b/scripts/Makefile.vmlinux_o
+@@ -37,7 +37,8 @@ objtool-enabled := $(or $(delay-objtool),$(CONFIG_NOINSTR_VALIDATION))
+ 
+ vmlinux-objtool-args-$(delay-objtool)			+= $(objtool-args-y)
+ vmlinux-objtool-args-$(CONFIG_GCOV_KERNEL)		+= --no-unreachable
+-vmlinux-objtool-args-$(CONFIG_NOINSTR_VALIDATION)	+= --noinstr $(if $(CONFIG_CPU_UNRET_ENTRY), --unret)
++vmlinux-objtool-args-$(CONFIG_NOINSTR_VALIDATION)	+= --noinstr \
++							   $(if $(or $(CONFIG_CPU_UNRET_ENTRY),$(CONFIG_CPU_SRSO)), --unret)
+ 
+ objtool-args = $(vmlinux-objtool-args-y) --link
+ 
