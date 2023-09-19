@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F1F7A6788
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A2D7A678F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbjISPCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
+        id S232788AbjISPGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbjISPCK (ORCPT
+        with ESMTP id S232649AbjISPGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:02:10 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EEAF0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=Z0cS
-        dtdCQ00W7uzzuBGbsOFl4pgCUIFxScbps3z/eAE=; b=QNR/9h4PaTCvEnoE5rw3
-        avA714OFhfvIUz+2eHPeQWP64qLAtwHYIcBs7wvTjG/Dxj7UdF0I28ofpW3KUcyG
-        0l0UhcFHuNyzl9SR+PCfX+QJe/M492ff7bohQm7wyVL6Kbfoi84EwxuuuhVimX1V
-        Vf2mEX7/KIua5KLQNwB5XUeOCVzCLCrFjiZ75MDEc21X2yROigAcLqKLlNmqBh09
-        +wor/2eoX7I3/mH1NlH+Qq3u3b/UWgirpKjT7NVOwCH9gFbzurZfuWrUo5Y4L/Tk
-        PbIoroOlj5NYEYJ/W83+7ZmiHcNT2dUH8QUuVYEdJXV3LbOe1MZUJgrPRoNNP9kI
-        JQ==
-Received: (qmail 251185 invoked from network); 19 Sep 2023 17:02:02 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 19 Sep 2023 17:02:02 +0200
-X-UD-Smtp-Session: l3s3148p1@vTSKircF9xIucrQg
-Date:   Tue, 19 Sep 2023 17:02:01 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        Tue, 19 Sep 2023 11:06:15 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70C1BE
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:06:05 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c3d8bd4aa5so43416175ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:06:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695135965; x=1695740765; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OY4gwD8K8C7sjWTf2a9MwqVDFc4JR9EZBcKVWZ3nYk8=;
+        b=g7KYOo0tttgTEdRcWr2WDzud0GDtSjQ6rm/jizJ4A6CF36jDq77rDodijDy752/jrf
+         /PJy1v17t1ci4KlrKzDqNv4V46WNlqLINgac+dMqz3kCg168DLguR7lFpKA7XxRO4+wg
+         CxYjqfkfAMg2rkt/mc6+mwyyr/yx7jpBthm1Lu91FN/9ZT4uAZ7MrjL8PMuZ3tnRtU4Y
+         nMhrGJr4IcQYQcWVjFLVLDMhbLPBS2wsOzBPjEwDEKnap3t/ubhMJ240woXPoOZeeEGe
+         cwytS9+7TWLRaaeHnp/+3IcUohWJo4vyDuQY2kaERq1e9NHal7jTdpnsPcoIsZgXWqYX
+         g2uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695135965; x=1695740765;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OY4gwD8K8C7sjWTf2a9MwqVDFc4JR9EZBcKVWZ3nYk8=;
+        b=psz9VZt8NtmJF8rxR53K2pcDTQz6Q5HQMrCng1ABjGFXrwqVbCu0bSqHDfvY07+3jM
+         oOi8L62k4jp4vJc/Wi3gkhTP2otiI11V0StTN18OX+Ea+yyzMwNyXOVV0QHG6rdxyjYr
+         PQN8XHFggUpwjATS/XWCzNKBBVuhzYc6hmyHxa5IEPLLnl9WgUu6YwXnLTT9GbeFPqlf
+         Ff1smbdTODMqgkjs3AKgVmNROlNQ/KfipXmzQtLtEXosAHJn9Mh741jSofjbtaEpqM7a
+         +dk6BTcTRlX0Wg+l4YFZmcqvOFPB6nZUoDM6NWn+MXkDiPrJu7ylReVBAXYLIxKZicfq
+         5n3Q==
+X-Gm-Message-State: AOJu0Yxe2fDF2GSt9ANkdJKx3qnWxs1J4Q/xmaMU0hhzgHUFUrKnouMM
+        o3Nnu+YFB/ndNel/XlU0WybXIycuH80=
+X-Google-Smtp-Source: AGHT+IEELizuG/1J1rCQpMyfr99oNZFw4XTRLkR/Kqn0kP3fpjSk5TekLXW/TEJ7kUiSTlpJHb5M/jz6oQ4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:23c4:b0:1c3:d556:4f9e with SMTP id
+ o4-20020a17090323c400b001c3d5564f9emr63017plh.0.1695135965373; Tue, 19 Sep
+ 2023 08:06:05 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 08:06:03 -0700
+In-Reply-To: <CAPm50aKVDLhZo_3kkKyC9AUN0BGrYnPTo9hGqRg1M3TsUQQMSw@mail.gmail.com>
+Mime-Version: 1.0
+References: <CAPm50aKVDLhZo_3kkKyC9AUN0BGrYnPTo9hGqRg1M3TsUQQMSw@mail.gmail.com>
+Message-ID: <ZQm425xPc/8wHXup@google.com>
+Subject: Re: [PATCH] KVM: X86: Use octal for file permission
+From:   Sean Christopherson <seanjc@google.com>
+To:     Hao Peng <flyingpenghao@gmail.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] i2c: rcar: add FastMode+ support for Gen4
-Message-ID: <ZQm36a4IhPL9kN+g@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-renesas-soc@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230913203242.31505-1-wsa+renesas@sang-engineering.com>
- <20230913203242.31505-3-wsa+renesas@sang-engineering.com>
- <CAMuHMdWrb2je4tgEO_OmXhHtFiRb8JfUzBJdUp4KFf574GmoVA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vVCqwtsTzpx3t2Sh"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWrb2je4tgEO_OmXhHtFiRb8JfUzBJdUp4KFf574GmoVA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+KVM: x86: (don't capitalize the 'x')
 
---vVCqwtsTzpx3t2Sh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Sep 19, 2023, Hao Peng wrote:
+> From: Peng Hao <flyingpeng@tencent.com>
+> 
+> Improve code readability and checkpatch warnings:
+>   WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider
+> using octal permissions '0444'.
+> 
+> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+> ---
+>  arch/x86/kvm/x86.c | 18 +++++++++---------
 
+If we're going to do this, let's do all of x86/kvm in one patch, i.e. clean up
+VMX and SVM too.
 
-> > +               /* FM+ needs lower SMD and no filters */
-> > +               priv->smd /=3D 2;
-> > +               cdf =3D 0;
->=20
-> Is this documented somewhere in the R-Car Gen4 docs?
+I generally don't like checkpatch-initiated cleanups, but I vote to go ahead with
+this one.  I look at the params just often enough that not having to parse the
+#defines would add real value for me.
 
-Sadly, there are no recommended values for FM+ in the docs. With cdf=3D6,
-I got speeds around 800kHz. After seeing the BSP also uses cdf=3D0, I got
-speeds close to 1MHz. There is a note in Gen3 and later docs for ICCCR2
-saying that cdf=3D0 is recommended for devices with a data hold time less
-than 100ns. I don't have the PMIC docs here to verify if that is the
-case here.
-
-However, I recalled there are some generic filter bindings for I2C. I
-will check if we can make use of them here.
-
-
---vVCqwtsTzpx3t2Sh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUJt+kACgkQFA3kzBSg
-KbbD6xAAsU8C+txBnNyPnyuIDx6ppzSmC+V+hfzW2+2Ke7nbqQIhwOQwerj9Ysg1
-xEsetQ/KNQhK6pX7ueWVsi0YcnOYdzHzcTeYy9XfL9GuHcSr8UFFu31K1U4+WI6l
-DQBRPGlOEfGvJb/nICt06r0WYBbFR73HF9z6sjfJH+lCADk85qiiL4Wt5gyzPW5X
-QBowLweliHUszj5g9SGTy5qBDE92fi+u05wbpuCNMXeFZNry5el6fHLrc0y/J+Ex
-6Kcckld/vy9KqVZ13d7irgbU5cxPaoR3zcYHSGurCZXg2r129RII/HCwmbJIObP2
-zLPVkgSCP+xaZNz7VSsU9ii5OzFDPDWaoeMtK+mYGKkgxfT4PSk42RWF9oAkHTGr
-0bh47pdqo1Nfdj1QEXcPHv8Z2CRbnt4j0lqne2e3ND15JsCLOxDPRebOthkgY8c6
-Mz8o5mubMEZha2uNRGrMKy+NdkC1i59ibY7CV0PyYmAA+eYwa+ww+gmV2BOnrMB8
-EL++7DT1sgT8niFss4sd1J+B8LYYwUj4aYTRTU0gAdNTghZk4KaNAgfozo8PHoIR
-6i5I/8bRMnRT0QIgwAxvRPOiyrfpBRhYK0rPF3lwpYOnM8ckAagUQTxDVwKr0UYp
-fHJRA82b7wc4bJWs7xjRCOuLqgx/2eJbiNVlYQ1av4wtyA2FI4A=
-=J32p
------END PGP SIGNATURE-----
-
---vVCqwtsTzpx3t2Sh--
+Any objections?
