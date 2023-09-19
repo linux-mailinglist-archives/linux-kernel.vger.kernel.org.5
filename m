@@ -2,49 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2607A6F0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDEB7A6F07
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233492AbjISXDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
+        id S233586AbjISXDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233326AbjISXDr (ORCPT
+        with ESMTP id S233356AbjISXDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 19:03:47 -0400
+        Tue, 19 Sep 2023 19:03:49 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC66C5;
-        Tue, 19 Sep 2023 16:03:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA70BC433C8;
-        Tue, 19 Sep 2023 23:03:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4341C0;
+        Tue, 19 Sep 2023 16:03:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18C80C43395;
+        Tue, 19 Sep 2023 23:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695164621;
-        bh=nnYY7JEJ7bFSMtO/wZJytTWM6LCJzG6A9H+PGbDlH84=;
+        s=k20201202; t=1695164623;
+        bh=ivEhs/zpi0JLldx/NRni4lu2jJS2PyalHVCowMrgpWU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dka5hH4kX9w5iZs5TKRfVjW9O8Fl+15LcYDCF5x+oiHQbbmVRUFKiYpQVIaHtV/MA
-         KcGPQhKahtC4Yf378ZMZa5PQl3IJytw7o/g5wY+TJBEHeW4w+Ty917kMKGl+6lqPHH
-         hfS9wxzjvIfFuxxrXCkDFEwoGewJ5JoFL+gMDT1eYmIP4I1pUXPQFSlk6sKOg111ib
-         JFcqSi4EgSH6iSPgb88bQ72DjIXQyTPR1W9+DRP0kEK00btR/4EHmqr7yoZDQEncx3
-         YxxyNLpX4LmbLFTHHyPsDXbvrljNuRiE0OkqmIn8qxL2NecFXfJRQK/vHTczkDIV87
-         hI8wNaIT9vXGw==
+        b=jLactDbzMUkpRGeo3wUh/yX6l3F1Z+OP9F0+eHgseBYs4+6x3+3h5S1kIgo++/u+R
+         aBBugArR4+j+/jFhbNpxf8w5voA1wySejdOqewHie3ZElY15etSd1RYyf2nBHozgNj
+         DQyw24Km7pMwszPD54CgijbfsnHF1Cnapdk3yR7QcRJA4Fr0UQfwsSRv/Z5zk2Qv+R
+         gsOceD1Tkypi4GNFr9GXOSbV/vCMW8TLyr1oWeXGQ/uUWHYiBioQ49HT7ahNOivmH6
+         nWNlA09r714Axoezixs3n9B1SxXvH5quKfRT/wvNiIO5XHIFSS/m086nZqXjYSbhpO
+         mSvAAHUTclQ7g==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
+To:     Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFT] arm64: dts: qcom: sc7280: Add missing LMH interrupts
-Date:   Tue, 19 Sep 2023 16:07:32 -0700
-Message-ID: <169516486002.787935.10123239154326346450.b4-ty@kernel.org>
+        Konrad Dybcio <konradybcio@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH v2 0/3] SM6115 LPASS TLMM
+Date:   Tue, 19 Sep 2023 16:07:33 -0700
+Message-ID: <169516485994.787935.15338594127555472104.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230811-topic-7280_lmhirq-v1-1-c262b6a25c8f@linaro.org>
-References: <20230811-topic-7280_lmhirq-v1-1-c262b6a25c8f@linaro.org>
+In-Reply-To: <20230722-topic-6115_lpasstlmm-v2-0-d4883831a858@linaro.org>
+References: <20230722-topic-6115_lpasstlmm-v2-0-d4883831a858@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -58,16 +62,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 11 Aug 2023 22:58:22 +0200, Konrad Dybcio wrote:
-> Hook up the interrupts that signal the Limits Management Hardware has
-> started some sort of throttling action.
+On Mon, 24 Jul 2023 13:39:55 +0200, Konrad Dybcio wrote:
+> This series introduces the bindings and driver for SM6115's LPI TLMM
+> block and enables it as a module in the arm64 defconfig.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: sc7280: Add missing LMH interrupts
-      commit: 3f93d119c9d6e1744d55cd48af764160a1a3aca3
+[3/3] arm64: defconfig: enable Qualcomm SM6115 LPASS pinctrl
+      commit: 2f98ed431b77cbaefd75f9690a671c5fe3c9c479
 
 Best regards,
 -- 
