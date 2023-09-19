@@ -2,133 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6777A5FDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CD27A5FE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbjISKnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 06:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        id S231795AbjISKnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 06:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbjISKnL (ORCPT
+        with ESMTP id S230145AbjISKnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 06:43:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2767BE8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 03:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695120185; x=1726656185;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=HweMeV3StQaTObldLMr5619inUbeHhG0ufZI8LmTruE=;
-  b=YRAWd9YPovFU3oXMAPK36IVyVEBO5IqCGiEbjHE+6tJ8cIUlqsxiJNz1
-   +zqlkTOX4hmlRDv3xyD/rK3PhDo8saSEDkPjWF3oyURk2uPUC2GXEwHJm
-   LI4xc7NkqzfFpvgnVCPBUJKULJuvdJeFqAgJVElNRiryR9j5TrsS2CF7F
-   3PiAeFUcAZxttAfYQpGcqpE4JjZiBsQdObwA77YLA2EOgRzuWEYrqqna9
-   Qqs4qb0feDrJ1L+mYbcrKeygBCvi9aD/1EIY89Kd8iuFMXKf3zgQvZ6S3
-   IFxszfM1kj35Fh8GGY+xyOD7lKdgONtl2d02R16Z7J88fr/Dvi90gdpO4
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="379810572"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="379810572"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 03:43:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="739637974"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="739637974"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 19 Sep 2023 03:43:02 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiYC4-0007EC-1r;
-        Tue, 19 Sep 2023 10:43:00 +0000
-Date:   Tue, 19 Sep 2023 18:42:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexander Larsson <alexl@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: arch/alpha/include/asm/rwonce.h:25:35: warning: array subscript 0 is
- outside array bounds of 'struct inode[11885788707287082]'
-Message-ID: <202309191848.cMwd2D4d-lkp@intel.com>
+        Tue, 19 Sep 2023 06:43:37 -0400
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26489E8;
+        Tue, 19 Sep 2023 03:43:32 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so6788098a12.0;
+        Tue, 19 Sep 2023 03:43:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695120210; x=1695725010;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zdW50JbYMGVmAkR6hR21IrnSGk1zOR4htJIZW/zGdB4=;
+        b=CcZYqHOJYG2VbxRimG5iSrfmWnvn19Plru3+z+1v5Atxx/tm3YLdiN9/3bgwl4hbBU
+         nOfvZjZQOD3fjUAWavxTkbC4meReh8bgcwiSmGNJDReiV9OISL8uwokeCmFtpEZn+Av5
+         xa3DlRyFqjls4r7IUtYxAL92bIRThtVjYIhzQyVX1SMjryQapTyKTRvrkRzqgjtT2iUv
+         UqG6j1hNyZgShYadWm9OtCqws5LHNuJuXOXIAN1TIQ8XSM4wpFuFGMBtSTGw7axHMPke
+         61aVoax7a5P7OTkneItimZQNeFjc2JSWSFagTahkABhOoYrhc5YztG4h3XXAUKYjqvVf
+         qFJQ==
+X-Gm-Message-State: AOJu0YxXxhKZD/SARI9f5qUEFg6wplwF7KE1xgttg8jR1J2igZOchxcd
+        /J3xNqFQTowOfGMlgpbnYp4Niw3HjBU=
+X-Google-Smtp-Source: AGHT+IFuwEHbKa7/YIl/XWbDpkNkaHPqldjJ7O15CVvO3XlO8Fk4Cxg5LveNfTg9+yvZ2jt5EUPxvg==
+X-Received: by 2002:a05:6402:1159:b0:523:3fff:5ce2 with SMTP id g25-20020a056402115900b005233fff5ce2mr9499149edw.41.1695120210001;
+        Tue, 19 Sep 2023 03:43:30 -0700 (PDT)
+Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id v21-20020aa7dbd5000000b005256771db39sm7202979edt.58.2023.09.19.03.43.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 03:43:28 -0700 (PDT)
+Message-ID: <0fea333a-8ac5-4235-97c5-3d0c202e7e05@kernel.org>
+Date:   Tue, 19 Sep 2023 12:43:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/15] tty: n_tty: invert the condition in
+ copy_from_read_buf()
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230919085156.1578-1-jirislaby@kernel.org>
+ <20230919085156.1578-5-jirislaby@kernel.org>
+ <2f8f7e-d0bd-b8c3-a8b8-d14fd0221e4d@linux.intel.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <2f8f7e-d0bd-b8c3-a8b8-d14fd0221e4d@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2cf0f715623872823a72e451243bbf555d10d032
-commit: 0af950f57fefabab628f1963af881e6b9bfe7f38 ovl: move ovl_entry into ovl_inode
-date:   3 months ago
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230919/202309191848.cMwd2D4d-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309191848.cMwd2D4d-lkp@intel.com/reproduce)
+On 19. 09. 23, 11:54, Ilpo Järvinen wrote:
+> On Tue, 19 Sep 2023, Jiri Slaby (SUSE) wrote:
+> 
+>> Make "no numbers available" a fast quit from the function. And do the
+> 
+> Did you really intend to write "numbers" and not e.g. characters?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309191848.cMwd2D4d-lkp@intel.com/
+What was I thinking? "n must be numbers", apparently. But I definitely 
+meant "characters". Funny, that I missed it now, while re-reading and 
+preparing the commit logs for submission.
 
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/compiler.h:246,
-                    from include/linux/build_bug.h:5,
-                    from include/linux/container_of.h:5,
-                    from include/linux/list.h:5,
-                    from include/linux/wait.h:7,
-                    from include/linux/wait_bit.h:8,
-                    from include/linux/fs.h:6,
-                    from fs/overlayfs/util.c:7:
-   In function 'ovl_upperdentry_dereference',
-       inlined from 'ovl_dentry_upper' at fs/overlayfs/util.c:266:9,
-       inlined from 'ovl_path_type' at fs/overlayfs/util.c:184:6:
->> arch/alpha/include/asm/rwonce.h:25:35: warning: array subscript 0 is outside array bounds of 'struct inode[11885788707287082]' [-Warray-bounds=]
-      25 |         __unqual_scalar_typeof(x) __x =                                 \
-         |                                   ^~~
-   include/asm-generic/rwonce.h:50:9: note: in expansion of macro '__READ_ONCE'
-      50 |         __READ_ONCE(x);                                                 \
-         |         ^~~~~~~~~~~
-   fs/overlayfs/ovl_entry.h:163:16: note: in expansion of macro 'READ_ONCE'
-     163 |         return READ_ONCE(oi->__upperdentry);
-         |                ^~~~~~~~~
-
-
-vim +25 arch/alpha/include/asm/rwonce.h
-
-d6462858851549 Will Deacon 2019-10-30  11  
-d6462858851549 Will Deacon 2019-10-30  12  /*
-d6462858851549 Will Deacon 2019-10-30  13   * Alpha is apparently daft enough to reorder address-dependent loads
-d6462858851549 Will Deacon 2019-10-30  14   * on some CPU implementations. Knock some common sense into it with
-d6462858851549 Will Deacon 2019-10-30  15   * a memory barrier in READ_ONCE().
-d6462858851549 Will Deacon 2019-10-30  16   *
-d6462858851549 Will Deacon 2019-10-30  17   * For the curious, more information about this unusual reordering is
-d6462858851549 Will Deacon 2019-10-30  18   * available in chapter 15 of the "perfbook":
-d6462858851549 Will Deacon 2019-10-30  19   *
-d6462858851549 Will Deacon 2019-10-30  20   *  https://kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html
-d6462858851549 Will Deacon 2019-10-30  21   *
-d6462858851549 Will Deacon 2019-10-30  22   */
-d6462858851549 Will Deacon 2019-10-30  23  #define __READ_ONCE(x)							\
-d6462858851549 Will Deacon 2019-10-30  24  ({									\
-d6462858851549 Will Deacon 2019-10-30 @25  	__unqual_scalar_typeof(x) __x =					\
-d6462858851549 Will Deacon 2019-10-30  26  		(*(volatile typeof(__x) *)(&(x)));			\
-d6462858851549 Will Deacon 2019-10-30  27  	mb();								\
-d6462858851549 Will Deacon 2019-10-30  28  	(typeof(x))__x;							\
-d6462858851549 Will Deacon 2019-10-30  29  })
-d6462858851549 Will Deacon 2019-10-30  30  
-
-:::::: The code at line 25 was first introduced by commit
-:::::: d6462858851549c62d73eaa14b31132b0f32d6b6 alpha: Override READ_ONCE() with barriered implementation
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
+thanks,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+js
+suse labs
+
