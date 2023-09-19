@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9357A5EA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B980C7A5E9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbjISJwX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 05:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbjISJwT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231626AbjISJwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 19 Sep 2023 05:52:19 -0400
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F257100;
-        Tue, 19 Sep 2023 02:52:13 -0700 (PDT)
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3add37de892so1166957b6e.1;
-        Tue, 19 Sep 2023 02:52:13 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231488AbjISJwO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Sep 2023 05:52:14 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2278F1;
+        Tue, 19 Sep 2023 02:52:08 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31fe3426a61so4484106f8f.1;
+        Tue, 19 Sep 2023 02:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695117127; x=1695721927; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i9GTFmeV/EvnfETMNwPDcGK8R8Ka2xMUzQavnbL/9JU=;
+        b=FuMsnxRRP/EEVypsxJxsP6lUWTSCp4NqTiQJ2nfj65eWMMh2i4rfQyVQAqYBWPNSIr
+         rL0z5wxU2dBoGmVIN+bki+Sov0EengJVhOqnkpSXTzn5yc7cG/tteVzghIBlAtGdg8Vn
+         qx2sUuseeait4HoEcqex5Wq96TjA0YVI8BVO9CNsQnt13MKjz6zwmoxjis3GWzx/Pnwq
+         eyposhUbg3K8hjpExR/B1uO54qImTmpSxUGjJMHPuix0Utynbh0/QyTy+xS/Ih7NYO+E
+         fkOe3xgtIRlQJQTIoDz24OWrVPIloD40ReOFoSTcUScAT7t9vrxLp/xwB5amadqq7emA
+         f2zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695117132; x=1695721932;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9qayjheRLHKR7GVcadhU2v14TOfXbeuxwhPweaZcyTI=;
-        b=Nc8tVnegW0ZnRw6AXihmZhlPLdXL2WkcMyUzKa6gyKjM7c0py2/6bX38huMJCIEXLo
-         elr/tPsqbs0g9wA3IXqcbOAnFr4SvaFFp9ndmleRv07JlFXOwkDHG2mhzELibdOc4ZEB
-         CoCjIRcqQyQyZ3Vtcdu8phYI1h+DvNq/zNry96nNLPREc9WcUgIUaGFVyHlF/nVJZA2t
-         iIAB0OncDmdcsEHf4MAT3i3wuP7BwlsXXyYKQuZ1r2J7V0XgUguBQvkfV1As2IBxInWQ
-         1xIEDhx3OvqWGVeHT48/mukfagS3JYtq+2qLlYbEAJiMyfPttttg+D6H8wx2EhnGUzrH
-         sS4g==
-X-Gm-Message-State: AOJu0YzgN0nUrGJqdJh8QPY43XAqEg19QE/j2EM6ovlGZ1Pw7cJrTg7I
-        WpvbUYeVe2yasfF6T83h61359NsXrS19lg==
-X-Google-Smtp-Source: AGHT+IH0l9gQzz90ANoJ8XSaJt3fT5+xL+oQyRT6aVHy7PiZz0J9QJI2MWAnBITmwB0Myg9qrEu9yw==
-X-Received: by 2002:aca:1209:0:b0:3a7:1bd8:4eb6 with SMTP id 9-20020aca1209000000b003a71bd84eb6mr10038088ois.44.1695117131855;
-        Tue, 19 Sep 2023 02:52:11 -0700 (PDT)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id df19-20020a05690c0f9300b0057087e7691bsm1926609ywb.56.2023.09.19.02.52.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 02:52:11 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59be6bcf408so54135677b3.2;
-        Tue, 19 Sep 2023 02:52:11 -0700 (PDT)
-X-Received: by 2002:a0d:ee83:0:b0:573:bb84:737c with SMTP id
- x125-20020a0dee83000000b00573bb84737cmr11437079ywe.26.1695117130983; Tue, 19
- Sep 2023 02:52:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695117127; x=1695721927;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i9GTFmeV/EvnfETMNwPDcGK8R8Ka2xMUzQavnbL/9JU=;
+        b=Th8FEnqjyLjFev+bCXwoC2gGHNdAuNsdgXj0PX7xAYUgVpoteD+vXhZVyJDPXRWLbg
+         hGvkdF0CwRYrK6Nf8kPUizwOeRQsHDM5GoT8CgJidM+5pOI3XDA1JiLV8wQMkPufP153
+         MIcKDm4Yk46gx2eG7rHpttNjrYUW7cXikFJTqGStPYW0gkB75mgdu31/lpU/nCDmvrX2
+         N4C9RcFQWWm1vbdUppSs5ZASKaMvTDztxhh27ztttnZ/AvpERY/JA+iOsex71J4Az3PG
+         hgfp+C/Gwhd7K6sRVXbDLBwED7JzCX7B4lmlGRZANvRy3Q8tLVlhxxGkDB6DOMryG/RK
+         Ng8Q==
+X-Gm-Message-State: AOJu0Yxug0uIRG+Cmdip7MBL4jQQAsgHreZUwmaicbEOAXVO9qwGhCdx
+        OPq7r0js7oQXw05ic9a0VgidbVVc/XsMphjZ
+X-Google-Smtp-Source: AGHT+IE1EeLCPjpp+AXIFpbF/nRxGjd1pR3+gE3AJcM2Glipz4CkCgE5tGRL+MdphG6QCcqPday1FQ==
+X-Received: by 2002:a5d:678f:0:b0:31c:6697:6947 with SMTP id v15-20020a5d678f000000b0031c66976947mr10470011wru.69.1695117126737;
+        Tue, 19 Sep 2023 02:52:06 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id h18-20020a5d5052000000b0031ad5470f89sm10335659wrt.18.2023.09.19.02.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 02:52:06 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] wifi: cfg80211: make read-only array centers_80mhz static const
+Date:   Tue, 19 Sep 2023 10:52:05 +0100
+Message-Id: <20230919095205.24949-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230913203242.31505-1-wsa+renesas@sang-engineering.com> <20230913203242.31505-3-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20230913203242.31505-3-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 19 Sep 2023 11:51:59 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWrb2je4tgEO_OmXhHtFiRb8JfUzBJdUp4KFf574GmoVA@mail.gmail.com>
-Message-ID: <CAMuHMdWrb2je4tgEO_OmXhHtFiRb8JfUzBJdUp4KFf574GmoVA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] i2c: rcar: add FastMode+ support for Gen4
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+Don't populate the read-only array lanes on the stack, instead make
+it static const.
 
-On Thu, Sep 14, 2023 at 1:16 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> To support FM+, we mainly need to turn the SMD constant into a parameter
-> and set it accordingly. Then, activating the enable bit for FM+ is all
-> we need to do. Tested with a Renesas Falcon board using R-Car V3U.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ net/mac80211/tdls.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for your patch!
-
-> --- a/drivers/i2c/busses/i2c-rcar.c
-> +++ b/drivers/i2c/busses/i2c-rcar.c
-> @@ -297,11 +307,18 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
->          * clkp : peripheral_clk
->          * F[]  : integer up-valuation
->          */
-> -       rate = clk_get_rate(priv->clk);
-> -       cdf = rate / 20000000;
-> -       cdf_width = (priv->devtype == I2C_RCAR_GEN1) ? 2 : 3;
-> -       if (cdf >= 1U << cdf_width)
-> -               goto err_no_val;
-> +       if (t.bus_freq_hz > I2C_MAX_FAST_MODE_FREQ && priv->devtype >= I2C_RCAR_GEN4) {
-> +               priv->flags |= ID_P_FMPLUS;
-> +               /* FM+ needs lower SMD and no filters */
-> +               priv->smd /= 2;
-> +               cdf = 0;
-
-Is this documented somewhere in the R-Car Gen4 docs?
-Assumed this is true, the rest LGTM, modulo the few fixes that should be
-moved to "[PATCH RFT 2/2] i2c: rcar: improve accuracy for R-Car Gen3+".
-
-> +       } else {
-> +               priv->flags &= ~ID_P_FMPLUS;
-> +               cdf = rate / 20000000;
-> +               cdf_width = (priv->devtype == I2C_RCAR_GEN1) ? 2 : 3;
-> +               if (cdf >= 1U << cdf_width)
-> +                       goto err_no_val;
-> +       }
->
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/net/mac80211/tdls.c b/net/mac80211/tdls.c
+index ba14f570cda7..f3fd66d30b84 100644
+--- a/net/mac80211/tdls.c
++++ b/net/mac80211/tdls.c
+@@ -309,7 +309,7 @@ ieee80211_tdls_chandef_vht_upgrade(struct ieee80211_sub_if_data *sdata,
+ 				   struct sta_info *sta)
+ {
+ 	/* IEEE802.11ac-2013 Table E-4 */
+-	u16 centers_80mhz[] = { 5210, 5290, 5530, 5610, 5690, 5775 };
++	static const u16 centers_80mhz[] = { 5210, 5290, 5530, 5610, 5690, 5775 };
+ 	struct cfg80211_chan_def uc = sta->tdls_chandef;
+ 	enum nl80211_chan_width max_width =
+ 		ieee80211_sta_cap_chan_bw(&sta->deflink);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.39.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
