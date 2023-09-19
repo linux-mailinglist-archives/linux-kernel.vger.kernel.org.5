@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B30EA7A5D5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E627A5D5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbjISJFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
+        id S230417AbjISJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjISJFR (ORCPT
+        with ESMTP id S230029AbjISJGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:05:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A63114;
-        Tue, 19 Sep 2023 02:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9Um9xivfZIzOpGAbhiiXrCDCVB724N5qIHjbsLgt4Ac=; b=iZvMDqxgfVG849kaE5gtwfVFMM
-        YNYWJLuio+/Rs8inIPe/YyI7Rr6GVuUwmlpiqnStl1uQDFzxqdmU2p6+HsopumMBvl/UZYqGzDhoC
-        EQJIEePHbzuHZKCM0DIT/5+E8x8UD6OhQxJRy4A0O77fQ+ej6MIEHr3Q2jSg/WjpDWqdlhG6J/aqq
-        q+w8YLveHwMZF8wwmkMRp2cOLKzd8et2daNDzFZT1U9AxOAVfwh+lUE6hsHfdue0cbkfDuPOTc9NE
-        1K6YV47tOLe+BdI2tVe0FFQPK/l+GXJqi7PRKo2sqe32njJAfdrpA7lx1hbcpxaJldo0Y5ONJlkNm
-        sIQVfavQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qiWf1-00GKUe-4M; Tue, 19 Sep 2023 09:04:47 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C60CF30042E; Tue, 19 Sep 2023 11:04:46 +0200 (CEST)
-Date:   Tue, 19 Sep 2023 11:04:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexander Graf <graf@amazon.de>
-Cc:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@amazon.es>,
-        "Griffoul, Fred" <fgriffo@amazon.com>
-Subject: Re: [RFC] KVM: x86: Allow userspace exit on HLT and MWAIT, else
- yield on MWAIT
-Message-ID: <20230919090446.GC21729@noisy.programming.kicks-ass.net>
-References: <1b52b557beb6606007f7ec5672eab0adf1606a34.camel@infradead.org>
- <63b382bf-d1fb-464f-ab06-4185f796a85f@amazon.de>
- <b3c1a64daa6d265b295aedd6176daa8ab95e273f.camel@infradead.org>
- <db756c13-eee5-414a-a28d-2ce08e7b77d9@amazon.de>
+        Tue, 19 Sep 2023 05:06:32 -0400
+Received: from out28-218.mail.aliyun.com (out28-218.mail.aliyun.com [115.124.28.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCCFDA;
+        Tue, 19 Sep 2023 02:06:26 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2303904|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00369381-0.000118264-0.996188;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=michael@allwinnertech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.UixELv._1695114383;
+Received: from SunxiBot.allwinnertech.com(mailfrom:michael@allwinnertech.com fp:SMTPD_---.UixELv._1695114383)
+          by smtp.aliyun-inc.com;
+          Tue, 19 Sep 2023 17:06:24 +0800
+From:   Michael Wu <michael@allwinnertech.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] usb:typec:tcpm:support double Rp to Vbus cable as sink
+Date:   Tue, 19 Sep 2023 17:06:32 +0800
+Message-Id: <20230919090632.42517-1-michael@allwinnertech.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <db756c13-eee5-414a-a28d-2ce08e7b77d9@amazon.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 01:59:50PM +0200, Alexander Graf wrote:
-> The problem with MWAIT is that you don't really know when it's done.
+The USB Type-C Cable and Connector Specification defines the wire
+connections for the USB Type-C to USB 2.0 Standard-A cable assembly
+(Release 2.2, Chapter 3.5.2).
+The Notes says that Pin A5 (CC) of the USB Type-C plug shall be connected
+to Vbus through a resister Rp.
+However, there is a large amount of such double Rp connected to Vbus
+non-standard cables which produced by UGREEN circulating on the market, and
+it can affects the normal operations of the state machine easily,
+especially to CC1 and CC2 be pulled up at the same time.
+In fact, we can regard those cables as sink to avoid abnormal state.
 
-This isn't really a problem. MWAIT is allowed (expected even) to return
-early.
+Message as follow:
+[   58.900212] VBUS on
+[   59.265433] CC1: 0 -> 3, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
+[   62.623308] CC1: 3 -> 0, CC2: 3 -> 0 [state TOGGLING, polarity 0, disconnected]
+[   62.625006] VBUS off
+[   62.625012] VBUS VSAFE0V
 
-REP;NOP is a valid implementation of MWAIT.
+Signed-off-by: Michael Wu <michael@allwinnertech.com>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-MWAIT must not delay waking (much) after either:
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index d962f67c95ae6..6e843c511b856 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -517,9 +517,9 @@ static const char * const pd_rev[] = {
+ 	((cc) == TYPEC_CC_RP_DEF || (cc) == TYPEC_CC_RP_1_5 || \
+ 	 (cc) == TYPEC_CC_RP_3_0)
+ 
++/* As long as cc is pulled up, we can consider it as sink. */
+ #define tcpm_port_is_sink(port) \
+-	((tcpm_cc_is_sink((port)->cc1) && !tcpm_cc_is_sink((port)->cc2)) || \
+-	 (tcpm_cc_is_sink((port)->cc2) && !tcpm_cc_is_sink((port)->cc1)))
++	(tcpm_cc_is_sink((port)->cc1) || tcpm_cc_is_sink((port)->cc2))
+ 
+ #define tcpm_cc_is_source(cc) ((cc) == TYPEC_CC_RD)
+ #define tcpm_cc_is_audio(cc) ((cc) == TYPEC_CC_RA)
+-- 
+2.29.0
 
- - write to monitored address
- - interrupt pending
-
-But it doesn't say anything about not waking up sooner.
-
-Now, obviously on real hardware you prefer if MWAIT were to also do the
-whole C-state thing and safe your some actual power, but this is virt,
-real hardware is not a concern and wakeup-timeliness also not much.
-
-
-IIRC the ARM64 WFE thing has a 10khz timer or something it wakes from if
-nothing else. So I suppose what I'm saying is that: nanosleep(100000)
-might be a suitable MWAIT implementation.
-
-It's virt, it sucks anyway :-)
