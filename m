@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EB27A63CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A8F7A63D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbjISMw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
+        id S232241AbjISMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232093AbjISMwZ (ORCPT
+        with ESMTP id S232207AbjISMw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:52:25 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E2B99
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:52:20 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A866340E01A3;
-        Tue, 19 Sep 2023 12:52:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id X0d7fvwakMJd; Tue, 19 Sep 2023 12:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695127935; bh=jy0UdsREx8z7iHUf+9XYtzwY6VCcMdrow/j2heB+Jzc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zgjw3GcI4wqyPgM1nmZJBGktqclA7cLbPB5UtGm+c1mRbr1kFbM7PNONduM5eRlEt
-         e81nkzzbf3BjVVeLLjrqUyEkj+cqUVyseRXSeerjoZHHLGF0YvHD+f3pPJ8CyU8AeK
-         +hqizqgl4pK+2w6MvHZLf8vENUosIkyLPOo6ENdFd8TmR9dWNypxPUQztkPaJZCuhB
-         JHMvB5+hebgKcSEeoLp1tahy99JfJePaLlPZ7c46ZebitHYMy8Dv4++cWYLXZLak/N
-         jIbda9RGm9jqX2BfBKLTKYUD1RpLuKwCxvAfdVheWTXrF3ZpKwa5Iu68KbWgMOY4XQ
-         sGpki6gbg+8pQln4gRGiS47tu/Fh7kjoC2wegHaI6i75i7nw9Sa1MFRrx5//pWqnGI
-         leiSbMY2aBUp1wkOtXTQDFaVxsZJHwcFFxrwYHj3pe7zPXHR+k5gWkuc1/eL+++8P+
-         DzzkCRqTwANLaL7GsUP222F5eeWHEmK9XcMJ84ljOcMoBhunwrz8Y7QUP+p2Ii2Qfp
-         ZoyY7ZLE3I96qu43IMl3qQgBp16RRXGdiGOix+rDsGEUhRM3EgbJG5f75wjNC+S3zW
-         j7tbOJE4QsxkQxJ2asmaheAk84OItv8fgOX4asE1zhd8bDZsTV2XLvyAg7Nj/Dyx7b
-         44Sgbz1rVEfwq+NSU3dFBl1A=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EDC6B40E00F4;
-        Tue, 19 Sep 2023 12:52:08 +0000 (UTC)
-Date:   Tue, 19 Sep 2023 14:52:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 04/30] x86/microcode/intel: Simplify scan_microcode()
-Message-ID: <20230919125203.GBZQmZc5C9m24/vEop@fat_crate.local>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065501.009527288@linutronix.de>
+        Tue, 19 Sep 2023 08:52:28 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7477F7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:52:21 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50325ce89e9so2283707e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:52:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695127940; x=1695732740; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fmzWRuCT+m+LWqYYQplgffz18WcPmF/Ig8ywf8K1oZ8=;
+        b=m/GNHnG/LSGEG41yV75HIXcS08ci77rAkgzPV5Rm3ik5Je4gTdrtIs7o15o40hWa6n
+         5WYfFR1CO6TejIUqV3RRzIoyji6dXpJQHSg2usiDpwkg3WfWLd4RoxWLYQLtIEpV2Tb4
+         BpajzYkV4HA4yVxqJlLLMkQJQ1INvYKcXnDxaq6ZaD4K+EWdSuvTvqpo+HBq3aMrbk/o
+         fxsqERq1qM2TwLa1Jhu92POiHR5hu8dTaNXTOdETAen/qYd5JuNAZnxrO1Gzsia1EuQm
+         HmIAMzAuOr1ZD0NrvsP15dktVGHvDILjhxOGvPTaItYRIohe8fHndeVdOG0ESZiItwb1
+         8PPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695127940; x=1695732740;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fmzWRuCT+m+LWqYYQplgffz18WcPmF/Ig8ywf8K1oZ8=;
+        b=nSpkC7rhECdJbxqSnZ0xljLDront893dlyrDOXqpIZ6WQtyvr+fDnwugomFi510FKG
+         Ce34qG6B9NGzRXLa0it892lMi3m3NXAqmT0TY7GW+dMsWqObO7E+RFTz9AY8XbrilMlq
+         KWo/AA8sa8Gs3N5sOrCfZqxGZ7LOCC5311ISP8LH67IpHFb8yfoxZgl+tA8cH2rs/7sU
+         WNYIOG3+iqPOZ2zJ/pDa/thfrV++5o2qIxyoWp9zUjNJh71Im63bCFDRIPKtRrfKC+9L
+         EHoyFLD2JxSu5cPlZ1MjC/GLuGDUu/KTnd+v9XGRDei/L82/D5zLqTbOGftwReuSaCnz
+         yy8g==
+X-Gm-Message-State: AOJu0YyaEsZZBlmlY+je6UdjHbP5i+OUYWwjWWN9tv8cugXAfhZNjAYG
+        Hi8bOxnqcMJIr/ITIeFI37Z+pw==
+X-Google-Smtp-Source: AGHT+IHCRGOlyWuymcJNQu7Zu1nUSlAHabhsw1d18xf4FV8RNbegwav5clmTZ2Th6UQOHT6Avo4YRA==
+X-Received: by 2002:a05:6512:54b:b0:500:a2d3:3e65 with SMTP id h11-20020a056512054b00b00500a2d33e65mr10779762lfl.23.1695127939940;
+        Tue, 19 Sep 2023 05:52:19 -0700 (PDT)
+Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id dn22-20020a05640222f600b00532c1dfe8ecsm642597edb.66.2023.09.19.05.52.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 05:52:19 -0700 (PDT)
+Message-ID: <80f9a0df-bef0-e827-9323-4eb12db956c6@linaro.org>
+Date:   Tue, 19 Sep 2023 14:52:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230912065501.009527288@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 3/7] arm64: dts: qcom: pm7250b: make SID configurable
+Content-Language: en-US
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20230919-fp5-initial-v2-0-14bb7cedadf5@fairphone.com>
+ <20230919-fp5-initial-v2-3-14bb7cedadf5@fairphone.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230919-fp5-initial-v2-3-14bb7cedadf5@fairphone.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:57:49AM +0200, Thomas Gleixner wrote:
-> Make it readable and comprehensible.
+On 19/09/2023 14:45, Luca Weiss wrote:
+> Like other Qualcomm PMICs the PM7250B can be used on different addresses
+> on the SPMI bus. Use similar defines like the PMK8350 to make this
+> possible but skip the ifndef based on maintainer feedback.
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 > ---
->  arch/x86/kernel/cpu/microcode/intel.c |   30 ++++++++----------------------
->  1 file changed, 8 insertions(+), 22 deletions(-)
-> 
-> --- a/arch/x86/kernel/cpu/microcode/intel.c
-> +++ b/arch/x86/kernel/cpu/microcode/intel.c
-> @@ -265,25 +265,19 @@ static void save_microcode_patch(void *d
->  		return;
->  
->  	/* Save for early loading */
-> -	intel_ucode_patch = (struct microcode_intel *)p;
-> +		intel_ucode_patch = (struct microcode_intel *)p;
 
-This got committed by mistake.
+Matches our discussion offline today. Looks good, thank you!
 
-> -/*
-> - * Get microcode matching with BSP's model. Only CPUs with the same model as
-> - * BSP can stay in the platform.
-> - */
-> -static struct microcode_intel *
-> -scan_microcode(void *data, size_t size, struct ucode_cpu_info *uci, bool save)
-> +/* Scan CPIO for microcode matching the boot CPUs family, model, stepping */
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-"... the boot CPU's... " or simply the "BSP's".
+Best regards,
+Krzysztof
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
