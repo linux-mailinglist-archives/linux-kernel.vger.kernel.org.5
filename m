@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3F47A6395
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CEED7A638F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbjISMrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
+        id S232331AbjISMqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232251AbjISMq7 (ORCPT
+        with ESMTP id S232272AbjISMqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:46:59 -0400
+        Tue, 19 Sep 2023 08:46:35 -0400
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB18CF0;
-        Tue, 19 Sep 2023 05:46:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957C919A;
+        Tue, 19 Sep 2023 05:46:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695127601; x=1726663601;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=483saZjIsYa7t2DWzXWa5SAeA8TL33vCYTU4gUJYP6k=;
-  b=1ZEnPW9zftTTdbmESIA1Ls/upRPZWbGnKryoZScPf1ipLpiCyHP29oI/
-   NW3X2he8k6TmuJkrtJVz0/LzD1PwTHGo31cSCv02cvwXc3KYwB3Qj8Lmc
-   BsGTlOtGXD8F9N5uP0hRenHJMhr3iL2NhxZ6IlF6G9dKHjkJincsCYwEP
-   22GIvmfKru0qmra4L6mLabYL/kbT29QiNwJwfmh1j5Onn663Fj2rxjlXY
-   u3zh2WGvXj+RP+dh0QUp0FBOZhxpzrZ6Ge7WYdAJDlM9DKyZmMIATkqVy
-   aOTjhUFWer9/SuIITElDMZxiBj0aE71vAGb4+/5XJowTuwgBP6xUIJJpk
-   Q==;
-X-CSE-ConnectionGUID: ZkAba0ZkQpmXoi8BBfgMaQ==
-X-CSE-MsgGUID: 58j6pbuBSa+w7qHUnypsiw==
+  t=1695127584; x=1726663584;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=lOKXOWXpA0dFi3Me+J/143SlCxDleHXz5jbHcYgITZI=;
+  b=BkjBRSWkIAq66xjeUfs9ukBZ6MJgyRXylySYqitMJfJ99WJhAj1WhIoA
+   Eq4d+c9V1Bjyf54CB/QWqzLKBlyswL1TTplbHbnWrVA9nSKE6nuSyp+n/
+   +1zaylOkRAQe/OxEZVApKfT+gJ1ykGNwBYsBpsqHsS8Qt92A7tytNhfKW
+   /Jk7m5mAbNoRSqwb6QYeQaxfZxUO2e7b8XykVjB2nDqcnAbOLk5/qCwyV
+   u2PD8QMcX+gcEwTyt1EqsXW/gbFDOBv27R33bP9dleN7to3G/U5Jg1QQg
+   d8giVsk7+l9b9tT+DqlZ9QbZkD/w07zHIcA42wRDIPsdkgkFXcsjlKGTk
+   A==;
+X-CSE-ConnectionGUID: DgGj6kGSTqidKmkwxkBWsA==
+X-CSE-MsgGUID: qrrs/xMHQ6aG8UTe6V4CuA==
 X-ThreatScanner-Verdict: Negative
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="5599481"
+   d="scan'208";a="5425155"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Sep 2023 05:46:22 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Sep 2023 05:46:23 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 19 Sep 2023 05:46:18 -0700
+ 15.1.2507.21; Tue, 19 Sep 2023 05:46:22 -0700
 Received: from virtualbox.microchip.com (10.10.85.11) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Tue, 19 Sep 2023 05:46:15 -0700
+ 15.1.2507.21 via Frontend Transport; Tue, 19 Sep 2023 05:46:19 -0700
 From:   Mihai Sain <mihai.sain@microchip.com>
 To:     <claudiu.beznea@tuxon.dev>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
@@ -52,11 +52,14 @@ To:     <claudiu.beznea@tuxon.dev>, <robh+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <andrei.simion@microchip.com>,
-        Mihai Sain <mihai.sain@microchip.com>
-Subject: [PATCH v4 0/2] Add initial support for SAMA5D29-Curiosity board
-Date:   Tue, 19 Sep 2023 15:46:03 +0300
-Message-ID: <20230919124606.26898-1-mihai.sain@microchip.com>
+        Mihai Sain <mihai.sain@microchip.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v4 1/2] dt-bindings: ARM: at91: Document Microchip SAMA5D29 Curiosity
+Date:   Tue, 19 Sep 2023 15:46:04 +0300
+Message-ID: <20230919124606.26898-2-mihai.sain@microchip.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230919124606.26898-1-mihai.sain@microchip.com>
+References: <20230919124606.26898-1-mihai.sain@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -70,45 +73,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document device tree binding of SAMA5D29-Curiosity board.
-Add initial device tree file for SAMA5D29-Curiosity board.
+From: Andrei Simion <andrei.simion@microchip.com>
 
-Changes in v4:
---------------
+Document device tree binding of SAMA5D29 Curiosity, from Microchip.
 
-* revert dt-bindings patch
-* fix the warnings from dtbs_check
+Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
+Reviewed-by: Mihai Sain <mihai.sain@microchip.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ Documentation/devicetree/bindings/arm/atmel-at91.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Changes in v3:
---------------
-
-* remove i2s0 node and its pinctrl
-
-Changes in v2:
---------------
-
-* drop dt-bindings patch
-* remove vdd_1v8 regulator
-* fix flx4 node to use 1 spi node and pinctrl
-* add i2s0 node and pinctrl
-* remove macb0 node and pinctrl
-* remove unused pinctrl
-* sort in alphabetical order all nodes and pinctrl
-* replace "_" with "-" in node names
-
-Andrei Simion (1):
-  dt-bindings: ARM: at91: Document Microchip SAMA5D29 Curiosity
-
-Mihai Sain (1):
-  ARM: dts: at91: sama5d29_curiosity: Add device tree for
-    sama5d29_curiosity board
-
- .../devicetree/bindings/arm/atmel-at91.yaml   |   7 +
- arch/arm/boot/dts/microchip/Makefile          |   2 +
- .../dts/microchip/at91-sama5d29_curiosity.dts | 600 ++++++++++++++++++
- 3 files changed, 609 insertions(+)
- create mode 100644 arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/atmel-at91.yaml b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+index dfb8fd089197..89d75fbb1de4 100644
+--- a/Documentation/devicetree/bindings/arm/atmel-at91.yaml
++++ b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+@@ -79,6 +79,13 @@ properties:
+           - const: atmel,sama5d2
+           - const: atmel,sama5
+ 
++      - description: Microchip SAMA5D29 Curiosity
++        items:
++          - const: microchip,sama5d29-curiosity
++          - const: atmel,sama5d29
++          - const: atmel,sama5d2
++          - const: atmel,sama5
++
+       - items:
+           - const: atmel,sama5d27
+           - const: atmel,sama5d2
 -- 
 2.42.0
 
