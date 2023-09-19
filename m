@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4A87A6F2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9B87A6F30
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233297AbjISXJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
+        id S233294AbjISXJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233399AbjISXJU (ORCPT
+        with ESMTP id S233381AbjISXJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Sep 2023 19:09:20 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC62C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:09:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABD1C4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:09:13 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695164950;
+        s=2020; t=1695164951;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RXYljq1O5mwfZU+NDYT3eBF6WGuYpS+t9+Qc7DTVOZs=;
-        b=0n9rSWKKgFMMM8oe7OxgVm25UuFUBlbW3YAo2v2icNrgjeHRizUJRTeSvdYT/eGtVcIKJp
-        vjFkpAkv6JhdILbdaNar/Oq0AUKclYJykk+XE3DwtMKMr8FEc7H+1SaJH25CtVSuHK98ez
-        WwHcrluKf3t95h8bAz12tGmzMFDSf6+/jogu926ViKIIYtUAF+G1Tz8vx++q9tfw/Pj2o4
-        xounm7rjfOk6MvfeuxnCZ0PLv6l9SSFbqTHZQ5rbFR8jD+dXYcV+AhvyPeM6DKLRG4tBMs
-        yIllyCVpEpRJEjNbm+qMif91wyzGcF33SOvNDJvM0qn2yVJvqmo/tDDJh/bNZg==
+        bh=2k78cqDo2n7jFkD6ttaAHGW5bS6OdfJnhB22UhQNM+I=;
+        b=wWn2bTaDLV85/e0NSwumigrW7EOYaHluwC1GA+TskQsBYIcgwTfiQTT1XIGsc4e7Lolo/J
+        8bfGthQvsDUkyYJHSpwZZRachIyaYxbumFVeA9NmNJHH/CwAWXf4w5AL0YU5147hNqZWMs
+        cwXkq9TzbOcZ4M/fL9C8Alrocb9w10J/rM2a/kTH67o+rfbeo417CYM13QSNtkNqncxTvA
+        8uvDQ31BqcYhvRsKc6borUdAN5uZfCq3XKVP2c97K3K2gSlMitvIcoiNJHDkF+kaBawyd8
+        KYgteUKbOiAH+X4OLMG7cjGMHlRSXbXe10CxRsccwqCYVPs7hbvfiniuIJZoiw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695164950;
+        s=2020e; t=1695164951;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RXYljq1O5mwfZU+NDYT3eBF6WGuYpS+t9+Qc7DTVOZs=;
-        b=SF2ALktfgmDTzBDMjoVe+9Uw9oVXGPK8VIxJwdu/Otl/ztdreIl9fLaUgdg5d9EvAO66IX
-        8+xRq32MGQwOnXBQ==
+        bh=2k78cqDo2n7jFkD6ttaAHGW5bS6OdfJnhB22UhQNM+I=;
+        b=OXehBxL7RFUdwevTFoCOQzppzyc04cD606hS5sOvQwxbLMn0eblxrkUeq0gSede7p1JRcf
+        lr4ReQILCVn5jiBQ==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH printk v2 04/11] printk: nbcon: Provide functions to mark atomic write sections
-Date:   Wed, 20 Sep 2023 01:14:49 +0206
-Message-Id: <20230919230856.661435-5-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH printk v2 05/11] printk: nbcon: Provide function for atomic flushing
+Date:   Wed, 20 Sep 2023 01:14:50 +0206
+Message-Id: <20230919230856.661435-6-john.ogness@linutronix.de>
 In-Reply-To: <20230919230856.661435-1-john.ogness@linutronix.de>
 References: <20230919230856.661435-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -62,146 +61,177 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-WARN/OOPS/PANIC require printing out immediately since the
-regular printing method (and in the future, the printing
-threads) might not be able to run.
+Provide nbcon_atomic_flush() to perform atomic write flushing
+of all registered nbcon consoles. Like with legacy consoles,
+the nbcon consoles are flushed one record per console. This
+allows all nbcon consoles to generate pseudo-simultaneously,
+rather than one console waiting for the full ringbuffer to
+dump to another console before printing anything.
 
-Add per-CPU state to denote the priority/urgency of the output
-and provide functions to mark the beginning and end of sections
-where the urgent messages are generated.
-
-Note that when a CPU is in a priority elevated state, flushing
-only occurs when dropping back to a lower priority. This allows
-the full set of printk records (WARN/OOPS/PANIC output) to be
-stored in the ringbuffer before beginning to flush the backlog.
+Note that if the current CPU is in a nested elevated priority
+state (EMERGENCY/PANIC), nbcon_atomic_flush() does nothing.
+This is in case the printing itself generates urgent messages
+(OOPS/WARN/PANIC), that those messages are fully stored into
+the ringbuffer before any printing resumes.
 
 Co-developed-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
 ---
- include/linux/console.h |  4 ++
- kernel/printk/nbcon.c   | 89 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 93 insertions(+)
+ include/linux/printk.h |   6 +++
+ kernel/printk/nbcon.c  | 101 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 105 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/console.h b/include/linux/console.h
-index e4fc6f7c1496..25a3ddd39083 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -452,10 +452,14 @@ static inline bool console_is_registered(const struct console *con)
- 	hlist_for_each_entry(con, &console_list, node)
- 
- #ifdef CONFIG_PRINTK
-+extern enum nbcon_prio nbcon_atomic_enter(enum nbcon_prio prio);
-+extern void nbcon_atomic_exit(enum nbcon_prio prio, enum nbcon_prio prev_prio);
- extern bool nbcon_can_proceed(struct nbcon_write_context *wctxt);
- extern bool nbcon_enter_unsafe(struct nbcon_write_context *wctxt);
- extern bool nbcon_exit_unsafe(struct nbcon_write_context *wctxt);
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 8ef499ab3c1e..58e5f34d6df1 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -192,6 +192,7 @@ void show_regs_print_info(const char *log_lvl);
+ extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
+ extern asmlinkage void dump_stack(void) __cold;
+ void printk_trigger_flush(void);
++extern void nbcon_atomic_flush_all(void);
  #else
-+static inline enum nbcon_prio nbcon_atomic_enter(enum nbcon_prio prio) { return NBCON_PRIO_NONE; }
-+static inline void nbcon_atomic_exit(enum nbcon_prio prio, enum nbcon_prio prev_prio) { }
- static inline bool nbcon_can_proceed(struct nbcon_write_context *wctxt) { return false; }
- static inline bool nbcon_enter_unsafe(struct nbcon_write_context *wctxt) { return false; }
- static inline bool nbcon_exit_unsafe(struct nbcon_write_context *wctxt) { return false; }
+ static inline __printf(1, 0)
+ int vprintk(const char *s, va_list args)
+@@ -271,6 +272,11 @@ static inline void dump_stack(void)
+ static inline void printk_trigger_flush(void)
+ {
+ }
++
++static inline void nbcon_atomic_flush_all(void)
++{
++}
++
+ #endif
+ 
+ #ifdef CONFIG_SMP
 diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
-index b96077152f49..9359906b575b 100644
+index 9359906b575b..2a9ff18fc78c 100644
 --- a/kernel/printk/nbcon.c
 +++ b/kernel/printk/nbcon.c
-@@ -961,6 +961,95 @@ static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt)
- 	return nbcon_context_exit_unsafe(ctxt);
+@@ -571,7 +571,6 @@ static struct printk_buffers panic_nbcon_pbufs;
+  * in an unsafe state. Otherwise, on success the caller may assume
+  * the console is not in an unsafe state.
+  */
+-__maybe_unused
+ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
+ {
+ 	unsigned int cpu = smp_processor_id();
+@@ -873,7 +872,6 @@ EXPORT_SYMBOL_GPL(nbcon_exit_unsafe);
+  * When true is returned, @wctxt->ctxt.backlog indicates whether there are
+  * still records pending in the ringbuffer,
+  */
+-__maybe_unused
+ static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt)
+ {
+ 	struct nbcon_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
+@@ -988,6 +986,105 @@ static __ref struct nbcon_cpu_state *nbcon_get_cpu_state(void)
+ 	return this_cpu_ptr(&nbcon_pcpu_state);
  }
  
 +/**
-+ * struct nbcon_cpu_state - Per CPU printk context state
-+ * @prio:	The current context priority level
-+ * @nesting:	Per priority nest counter
-+ */
-+struct nbcon_cpu_state {
-+	enum nbcon_prio		prio;
-+	int			nesting[NBCON_PRIO_MAX];
-+};
-+
-+static DEFINE_PER_CPU(struct nbcon_cpu_state, nbcon_pcpu_state);
-+static struct nbcon_cpu_state early_nbcon_pcpu_state __initdata;
-+
-+/**
-+ * nbcon_get_cpu_state - Get the per CPU console state pointer
++ * nbcon_atomic_emit_one - Print one record for a console in atomic mode
++ * @wctxt:			An initialized write context struct to use
++ *				for this context
 + *
-+ * Returns either a pointer to the per CPU state of the current CPU or to
-+ * the init data state during early boot.
-+ */
-+static __ref struct nbcon_cpu_state *nbcon_get_cpu_state(void)
-+{
-+	if (!printk_percpu_data_ready())
-+		return &early_nbcon_pcpu_state;
-+
-+	return this_cpu_ptr(&nbcon_pcpu_state);
-+}
-+
-+/**
-+ * nbcon_atomic_enter - Enter a context that enforces atomic printing
-+ * @prio:	Priority of the context
++ * Returns false if the given console could not print a record or there are
++ * no more records to print, otherwise true.
 + *
-+ * Return:	The previous priority that needs to be fed into
-+ *		the corresponding nbcon_atomic_exit()
-+ * Context:	Any context. Disables migration.
++ * This is an internal helper to handle the locking of the console before
++ * calling nbcon_emit_next_record().
 + */
-+enum nbcon_prio nbcon_atomic_enter(enum nbcon_prio prio)
++static bool nbcon_atomic_emit_one(struct nbcon_write_context *wctxt)
 +{
-+	struct nbcon_cpu_state *cpu_state;
-+	enum nbcon_prio prev_prio;
++	struct nbcon_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
 +
-+	migrate_disable();
-+
-+	cpu_state = nbcon_get_cpu_state();
-+
-+	prev_prio = cpu_state->prio;
-+	if (prio > prev_prio)
-+		cpu_state->prio = prio;
++	if (!nbcon_context_try_acquire(ctxt))
++		return false;
 +
 +	/*
-+	 * Increment the nesting on @cpu_state->prio (instead of
-+	 * @prio) so that a WARN() nested within a panic printout
-+	 * does not attempt to scribble state.
++	 * nbcon_emit_next_record() returns false when the console was
++	 * handed over or taken over. In both cases the context is no
++	 * longer valid.
 +	 */
-+	cpu_state->nesting[cpu_state->prio]++;
++	if (!nbcon_emit_next_record(wctxt))
++		return false;
 +
-+	return prev_prio;
++	nbcon_context_release(ctxt);
++
++	return prb_read_valid(prb, ctxt->seq, NULL);
 +}
 +
 +/**
-+ * nbcon_atomic_exit - Exit a context that enforces atomic printing
-+ * @prio:	Priority of the context to leave
-+ * @prev_prio:	Priority of the previous context for restore
-+ *
-+ * Context:	Any context. Enables migration.
-+ *
-+ * @prev_prio is the priority returned by the corresponding
-+ * nbcon_atomic_enter().
++ * __nbcon_atomic_flush_all - Flush all nbcon consoles in atomic mode
++ * @allow_unsafe_takeover:	True, to allow unsafe hostile takeovers
 + */
-+void nbcon_atomic_exit(enum nbcon_prio prio, enum nbcon_prio prev_prio)
++static void __nbcon_atomic_flush_all(bool allow_unsafe_takeover)
 +{
++	struct nbcon_write_context wctxt = { };
++	struct nbcon_context *ctxt = &ACCESS_PRIVATE(&wctxt, ctxt);
 +	struct nbcon_cpu_state *cpu_state;
++	struct console *con;
++	bool any_progress;
++	int cookie;
 +
 +	cpu_state = nbcon_get_cpu_state();
 +
 +	/*
-+	 * Undo the nesting of nbcon_atomic_enter() at the CPU state
-+	 * priority.
++	 * Let the outermost flush of this priority print. This avoids
++	 * nasty hackery for nested WARN() where the printing itself
++	 * generates one and ensures such nested messages are stored to
++	 * the ringbuffer before any printing resumes.
++	 *
++	 * cpu_state->prio <= NBCON_PRIO_NORMAL is not subject to nesting
++	 * and can proceed in order to allow any atomic printing for
++	 * regular kernel messages.
 +	 */
-+	cpu_state->nesting[cpu_state->prio]--;
++	if (cpu_state->prio > NBCON_PRIO_NORMAL &&
++	    cpu_state->nesting[cpu_state->prio] != 1)
++		return;
 +
-+	/*
-+	 * Restore the previous priority, which was returned by
-+	 * nbcon_atomic_enter().
-+	 */
-+	cpu_state->prio = prev_prio;
++	do {
++		any_progress = false;
 +
-+	migrate_enable();
++		cookie = console_srcu_read_lock();
++		for_each_console_srcu(con) {
++			short flags = console_srcu_read_flags(con);
++			bool progress;
++
++			if (!(flags & CON_NBCON))
++				continue;
++
++			if (!console_is_usable(con, flags))
++				continue;
++
++			memset(ctxt, 0, sizeof(*ctxt));
++			ctxt->console			= con;
++			ctxt->spinwait_max_us		= 2000;
++			ctxt->prio			= cpu_state->prio;
++			ctxt->allow_unsafe_takeover	= allow_unsafe_takeover;
++
++			progress = nbcon_atomic_emit_one(&wctxt);
++			if (!progress)
++				continue;
++			any_progress = true;
++		}
++		console_srcu_read_unlock(cookie);
++	} while (any_progress);
++}
++
++/**
++ * nbcon_atomic_flush_all - Flush all nbcon consoles in atomic mode
++ *
++ * Context:	Any context where migration is disabled.
++ */
++void nbcon_atomic_flush_all(void)
++{
++	__nbcon_atomic_flush_all(false);
 +}
 +
  /**
-  * nbcon_alloc - Allocate buffers needed by the nbcon console
-  * @con:	Console to allocate buffers for
+  * nbcon_atomic_enter - Enter a context that enforces atomic printing
+  * @prio:	Priority of the context
 -- 
 2.39.2
 
