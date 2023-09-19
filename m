@@ -2,244 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 830DB7A674A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A5F7A6757
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbjISOu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
+        id S232973AbjISOyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbjISOuZ (ORCPT
+        with ESMTP id S232925AbjISOyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:50:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DC1BC;
-        Tue, 19 Sep 2023 07:50:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AD8C433C8;
-        Tue, 19 Sep 2023 14:50:14 +0000 (UTC)
-Message-ID: <bc908b9e-00a8-4e62-8391-36da7b401d3d@xs4all.nl>
-Date:   Tue, 19 Sep 2023 16:50:12 +0200
+        Tue, 19 Sep 2023 10:54:39 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001D7BC;
+        Tue, 19 Sep 2023 07:54:33 -0700 (PDT)
+Received: from [127.0.0.1] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38JEoefQ2134063
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 19 Sep 2023 07:50:41 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38JEoefQ2134063
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1695135044;
+        bh=tUr/tHfO1etLyJ5iEsuuEqfdyv68/fcilJS639sYECk=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=rKxd+En5VITJVOEGiLmUKlIHqjSXGvGPVilskDP5cDHYQFDKWK93NnuXqpVPm85sg
+         IQ8mukavFvwyuQ2+LZQx/SFeLAJwt3NRGCnufaQHbyTI8yWPctJU8mvsKC8ydIURew
+         TWPjynPQFVYSogaCk173v4hcW64i46jcQU9Kvle5dlPXtXvcQsapqcrc0+JX4lPkGr
+         sf4WDdKOaq1+eQt1DQ0rhsH9vVqYCi8L00mlI3ZyOafcEgEQnuvBKUCD1TlG5Gwolf
+         v/ICNSdydZcPDXpEjwZCuJJ1aG9hOBj/BpI/RLMLoqn1ibICPlO3SW2Zd9eA3bsF4x
+         ffTTSTGuqyWmA==
+Date:   Tue, 19 Sep 2023 07:50:36 -0700
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
+        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
+        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
+        linux-hexagon@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Subject: Re: Arches that don't support PREEMPT
+User-Agent: K-9 Mail for Android
+In-Reply-To: <877comw8m7.ffs@tglx>
+References: <87zg1u1h5t.fsf@oracle.com> <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com> <20230911150410.GC9098@noisy.programming.kicks-ass.net> <87h6o01w1a.fsf@oracle.com> <20230912082606.GB35261@noisy.programming.kicks-ass.net> <87cyyfxd4k.ffs@tglx> <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com> <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org> <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de> <20230919134218.GA39281@noisy.programming.kicks-ass.net> <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de> <877comw8m7.ffs@tglx>
+Message-ID: <7EB81196-3A32-4638-A076-0C0CFF722996@zytor.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 20/49] media: core: Rework how create_buf index
- returned value is computed
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
- <20230914133323.198857-21-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230914133323.198857-21-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 15:32, Benjamin Gaignard wrote:
-> When DELETE_BUFS will be introduced holes could created in bufs array.
+On September 19, 2023 7:17:04 AM PDT, Thomas Gleixner <tglx@linutronix=2Ede=
+> wrote:
+>On Tue, Sep 19 2023 at 15:48, John Paul Adrian Glaubitz wrote:
+>> On Tue, 2023-09-19 at 15:42 +0200, Peter Zijlstra wrote:
+>>> > The agreement to kill off ia64 wasn't an invitation to kill off othe=
+r stuff
+>>> > that people are still working on! Can we please not do this?
+>>>=20
+>>> If you're working on one of them, then surely it's a simple matter of
+>>> working on adding CONFIG_PREEMPT support :-)
+>>
+>> As Geert poined out, I'm not seeing anything particular problematic wit=
+h the
+>> architectures lacking CONFIG_PREEMPT at the moment=2E This seems to be =
+more
+>> something about organizing KConfig files=2E
+>>
+>> I find it a bit unfair that maintainers of architectures that have huge=
+ companies
+>> behind them use their manpower to urge less popular architectures for r=
+emoval just
+>> because they don't have 150 people working on the port so they can keep=
+ up with
+>> design changes quickly=2E
+>
+>I don't urge for removal=2E I just noticed that these four architectures
+>lack PREEMPT support=2E The only thing which is missing is the actual
+>preemption point in the return to kernel code path=2E
+>
+>But otherwise it should just work, which I obviously can't confirm :)
+>
+>Even without that preemption point it should build and boot=2E There migh=
+t
+>be some minor latency issues when that preemption point is not there,
+>but adding it is not rocket science either=2E It's probably about 10 line=
+s
+>of ASM code, if at all=2E
+>
+>Though not adding that might cause a blocking issue for the rework of
+>the whole preemption logic in order to remove the sprinkled around
+>cond_resched() muck or force us to maintain some nasty workaround just
+>for the benefit of a few stranglers=2E
+>
+>So I can make the same argument the other way around, that it's
+>unjustified that some architectures which are just supported for
+>nostalgia throw roadblocks into kernel developemnt=2E
+>
+>If my ALPHA foo wouldn't be very close to zero, I'd write that ASM hack
+>myself, but that's going to cost more of my and your time than it's
+>worth the trouble,
+>
+>Hmm=2E I could delegate that to Linus, he might still remember :)
+>
+>Thanks,
+>
+>        tglx
 
-could -> can be
-
-> To be able to reuse these unused indices reworking how create->index
-> is set is mandatory.
-> Let __vb2_queue_alloc() decide which first index is correct and
-> forward this to the caller.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../media/common/videobuf2/videobuf2-core.c   | 24 +++++++++++++------
->  .../media/common/videobuf2/videobuf2-v4l2.c   | 17 +++++++------
->  include/media/videobuf2-core.h                |  4 +++-
->  3 files changed, 30 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 70b6b8f8c390..a4c2fae8705d 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -443,15 +443,24 @@ static void vb2_queue_remove_buffer(struct vb2_queue *q, struct vb2_buffer *vb)
->   */
->  static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->  			     unsigned int num_buffers, unsigned int num_planes,
-> -			     const unsigned plane_sizes[VB2_MAX_PLANES])
-> +			     const unsigned plane_sizes[VB2_MAX_PLANES],
-> +			     unsigned int *first)
-
-I would rename 'first' to 'first_index',
-
->  {
->  	unsigned int buffer, plane;
->  	struct vb2_buffer *vb;
-> +	unsigned long first_index;
-
-and this to just plain 'index'.
-
->  	int ret;
->  
->  	/* Ensure that q->num_buffers+num_buffers is below q->max_allowed_buffers */
->  	num_buffers = min_t(unsigned int, num_buffers,
-> -			    q->max_allowed_buffers - q->num_buffers);
-> +			    q->max_allowed_buffers - vb2_get_num_buffers(q));
-> +
-> +	first_index = vb2_get_num_buffers(q);
-> +
-> +	if (first_index >= q->max_allowed_buffers)
-> +		return 0;
-
-I don't think this can ever happen, drop this check.
-
-> +
-> +	*first = first_index;
->  
->  	for (buffer = 0; buffer < num_buffers; ++buffer) {
->  		/* Allocate vb2 buffer structures */
-> @@ -472,7 +481,7 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->  		}
->  		call_void_bufop(q, init_buffer, vb);
->  
-> -		if (!vb2_queue_add_buffer(q, vb, q->num_buffers + buffer)) {
-> +		if (!vb2_queue_add_buffer(q, vb, first_index++)) {
-
-The reason for renaming is that seeing 'first_index++' here is really weird.
-But 'index++' makes sense.
-
->  			dprintk(q, 1, "failed adding buffer %d to queue\n", buffer);
->  			kfree(vb);
->  			break;
-> @@ -832,7 +841,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->  	unsigned int q_num_bufs = vb2_get_num_buffers(q);
->  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
->  	bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
-> -	unsigned int i;
-> +	unsigned int i, first;
-
-Rename to first_index as well.
-
->  	int ret = 0;
->  
->  	if (q->streaming) {
-> @@ -919,7 +928,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->  
->  	/* Finally, allocate buffers and video memory */
->  	allocated_buffers =
-> -		__vb2_queue_alloc(q, memory, num_buffers, num_planes, plane_sizes);
-> +		__vb2_queue_alloc(q, memory, num_buffers, num_planes, plane_sizes, &first);
->  	if (allocated_buffers == 0) {
->  		dprintk(q, 1, "memory allocation failed\n");
->  		ret = -ENOMEM;
-> @@ -993,7 +1002,8 @@ EXPORT_SYMBOL_GPL(vb2_core_reqbufs);
->  int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  			 unsigned int flags, unsigned int *count,
->  			 unsigned int requested_planes,
-> -			 const unsigned int requested_sizes[])
-> +			 const unsigned int requested_sizes[],
-> +			 unsigned int *first)
-
-first_index
-
->  {
->  	unsigned int num_planes = 0, num_buffers, allocated_buffers;
->  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
-> @@ -1055,7 +1065,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  
->  	/* Finally, allocate buffers and video memory */
->  	allocated_buffers = __vb2_queue_alloc(q, memory, num_buffers,
-> -				num_planes, plane_sizes);
-> +				num_planes, plane_sizes, first);
->  	if (allocated_buffers == 0) {
->  		dprintk(q, 1, "memory allocation failed\n");
->  		ret = -ENOMEM;
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index 3eb707abc26b..a88abcea2921 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -762,7 +762,6 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->  
->  	fill_buf_caps(q, &create->capabilities);
->  	validate_memory_flags(q, create->memory, &create->flags);
-> -	create->index = q->num_buffers;
-
-I don't think this can be dropped. If create->count == 0, then this should
-be the current number of created buffers according to the spec.
-
->  	if (create->count == 0)
->  		return ret != -EBUSY ? ret : 0;
->  
-> @@ -804,11 +803,16 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->  	for (i = 0; i < requested_planes; i++)
->  		if (requested_sizes[i] == 0)
->  			return -EINVAL;
-> -	return ret ? ret : vb2_core_create_bufs(q, create->memory,
-> -						create->flags,
-> -						&create->count,
-> -						requested_planes,
-> -						requested_sizes);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = vb2_core_create_bufs(q, create->memory,
-> +				   create->flags,
-> +				   &create->count,
-> +				   requested_planes,
-> +				   requested_sizes,
-> +				   &create->index);
-> +	return ret;
->  }
->  EXPORT_SYMBOL_GPL(vb2_create_bufs);
->  
-> @@ -1036,7 +1040,6 @@ int vb2_ioctl_create_bufs(struct file *file, void *priv,
->  	int res = vb2_verify_memory_type(vdev->queue, p->memory,
->  			p->format.type);
->  
-> -	p->index = vdev->queue->num_buffers;
-
-Ditto.
-
->  	fill_buf_caps(vdev->queue, &p->capabilities);
->  	validate_memory_flags(vdev->queue, p->memory, &p->flags);
->  	/*
-> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-> index 1ecaf4b5a76f..19c93d8eb7c8 100644
-> --- a/include/media/videobuf2-core.h
-> +++ b/include/media/videobuf2-core.h
-> @@ -803,6 +803,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->   * @count: requested buffer count.
->   * @requested_planes: number of planes requested.
->   * @requested_sizes: array with the size of the planes.
-> + * @first: index of the first created buffer
-
-Not quite true: it is the index of the first created buffer, and
-all allocated buffers have indices in the range [first..first+count)
-
-Or something along those lines.
-
->   *
->   * Videobuf2 core helper to implement VIDIOC_CREATE_BUFS() operation. It is
->   * called internally by VB2 by an API-specific handler, like
-> @@ -819,7 +820,8 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->  int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  			 unsigned int flags, unsigned int *count,
->  			 unsigned int requested_planes,
-> -			 const unsigned int requested_sizes[]);
-> +			 const unsigned int requested_sizes[],
-> +			 unsigned int *first);
->  
->  /**
->   * vb2_core_prepare_buf() - Pass ownership of a buffer from userspace
-
-Regards,
-
-	Hans
+Does *anyone* actually run Alpha at this point?
