@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFCA7A5765
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E849A7A5769
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbjISC12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 22:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S230484AbjISCbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 22:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjISC12 (ORCPT
+        with ESMTP id S229661AbjISCba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 22:27:28 -0400
-Received: from out-212.mta1.migadu.com (out-212.mta1.migadu.com [IPv6:2001:41d0:203:375::d4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8F410A
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:27:21 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695090440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GldjsjLN9+yIG261E0aNo5eTT0aAfea0jQrrQue5u00=;
-        b=mkZMkq7B3bUpxEPYmu2MMcafJg4hXDsOyrfwPXWWPuo23kQP5p5h2a7nbOPpddUEXUDmhf
-        3/dEV+SIuCGVpJMz0JvI/8VFF/lfB5lkXgdH/kllhkpg9ctUeoKO0voCtwe8OJ0D4beMvl
-        QehRcZutZVMEFLVcDtA8HLkEmZ4GjXA=
-From:   Cai Huoqing <cai.huoqing@linux.dev>
-To:     vadim.fedorenko@linux.dev
-Cc:     Cai Huoqing <cai.huoqing@linux.dev>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net: hinic: Fix warning-hinic_set_vlan_fliter() warn: variable dereferenced before check 'hwdev'
-Date:   Tue, 19 Sep 2023 10:27:15 +0800
-Message-Id: <20230919022715.6424-1-cai.huoqing@linux.dev>
+        Mon, 18 Sep 2023 22:31:30 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A9E10E;
+        Mon, 18 Sep 2023 19:31:22 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 38J2UwiI002758;
+        Tue, 19 Sep 2023 10:30:58 +0800 (+08)
+        (envelope-from Kaiwei.Liu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx07.spreadtrum.com [10.0.1.12])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RqQYV4qxlz2SFh0k;
+        Tue, 19 Sep 2023 10:27:42 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx07.spreadtrum.com
+ (10.0.1.12) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 19 Sep
+ 2023 10:30:57 +0800
+From:   Kaiwei Liu <kaiwei.liu@unisoc.com>
+To:     Vinod Koul <vkoul@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        kaiwei liu <liukaiwei086@gmail.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: [PATCH V2] dmaengine: sprd: add dma mask interface in probe
+Date:   Tue, 19 Sep 2023 10:30:50 +0800
+Message-ID: <20230919023050.3777-1-kaiwei.liu@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx07.spreadtrum.com (10.0.1.12)
+X-MAIL: SHSQR01.spreadtrum.com 38J2UwiI002758
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'hwdev' is checked too late and hwdev will not be NULL, so remove the check
+In the probe of DMA, the default addressing range is 32 bits,
+while the actual DMA hardware addressing range used is 36 bits.
+So add dma_set_mask_and_coherent function to match DMA
+addressing range.
 
-Fixes: 2acf960e3be6 ("net: hinic: Add support for configuration of rx-vlan-filter by ethtool")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/r/202309112354.pikZCmyk-lkp@intel.com/
-Signed-off-by: Cai Huoqing <cai.huoqing@linux.dev>
+Signed-off-by: Kaiwei Liu <kaiwei.liu@unisoc.com>
 ---
-v1->v2: Remove 'hwdev' check directly 
-v1 link: https://lore.kernel.org/lkml/20230918123401.6951-1-cai.huoqing@linux.dev/
+Change in V2:
+-Change subject line.
+-Modify error message to make it more readable.
+---
+ drivers/dma/sprd-dma.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
- drivers/net/ethernet/huawei/hinic/hinic_port.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-index 9406237c461e..f81a43d2cdfc 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-@@ -456,9 +456,6 @@ int hinic_set_vlan_fliter(struct hinic_dev *nic_dev, u32 en)
- 	u16 out_size = sizeof(vlan_filter);
- 	int err;
+diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+index 20c3cb1ef2f5..0e146550dfbb 100644
+--- a/drivers/dma/sprd-dma.c
++++ b/drivers/dma/sprd-dma.c
+@@ -1115,6 +1115,15 @@ static int sprd_dma_probe(struct platform_device *pdev)
+ 	u32 chn_count;
+ 	int ret, i;
  
--	if (!hwdev)
--		return -EINVAL;
--
- 	vlan_filter.func_idx = HINIC_HWIF_FUNC_IDX(hwif);
- 	vlan_filter.enable = en;
- 
++	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36));
++	if (ret) {
++		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
++		if (ret) {
++			dev_err(&pdev->dev, "dma_set_mask_and_coherent failed\n");
++			return ret;
++		}
++	}
++
+ 	/* Parse new and deprecated dma-channels properties */
+ 	ret = device_property_read_u32(&pdev->dev, "dma-channels", &chn_count);
+ 	if (ret)
 -- 
-2.34.1
+2.17.1
 
