@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A57F7A6627
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D4E7A6626
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232638AbjISOG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
+        id S232611AbjISOGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbjISOG0 (ORCPT
+        with ESMTP id S232621AbjISOGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:06:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD11A83
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:06:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695132380; x=1726668380;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=9+GvekgfENrYzVidm0lyZ2c5l8kTNlJD6Wn5zKhHpM8=;
-  b=BrJMvHIStoA2f1tpICxEycCYTu5tJ9tRyQDnOrFXpofYFHYmU5VM1uHr
-   NwSnKom1QTWkwiI62ar3AkWN1oo9tFKaGmjcT4LVvJbc4pxlCOl3rGiPD
-   7tvyvo4+02PPqqK/FSMWU7S/xky63P7STLpJmqOsAFtHQdS8+1rZKHETj
-   xcTHcEMKWyvX7I5iCSUoM2OtHbOApopWYjIO6qSUpPj2i8hOUa9XYrDpI
-   BsS2ZRRI/GF0r2N8/0nM7iUwstM26xQ1qxCT3GOZWyI25bIayfH75IB2h
-   vUP9SgREJXxKQSVVHr8z1bjn+ucFRzjfLFIVyefyBP2otLpn/PYHwap0C
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="370265675"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="370265675"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 07:06:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="889510962"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="889510962"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Sep 2023 07:05:31 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qibMk-0007Qa-2F;
-        Tue, 19 Sep 2023 14:06:14 +0000
-Date:   Tue, 19 Sep 2023 22:05:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nick Terrell <terrelln@fb.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: ERROR: modpost: "__ld_r13_to_r21_ret" [lib/zstd/zstd_decompress.ko]
- undefined!
-Message-ID: <202309192139.AknLkasI-lkp@intel.com>
+        Tue, 19 Sep 2023 10:06:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD78AF5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:06:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79ED2C433C7;
+        Tue, 19 Sep 2023 14:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695132362;
+        bh=Au0tYJFBzY+b2GsyFowbgzsLK8RD3H1TYDFRNcAe8aQ=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=bb3RpRnosGQRe7O+/hqhAtRwc3ryWG0yyv9fCDNvGyZqpJEDQQnJ54MoYQMEHzGcr
+         pfk6NxUheGN4cjj879cpOw8jd+88SzE9gXAm6NwV1/5+Gww/N5jbylOh7aLl/v4Swm
+         87yn1PLi1dVzREyCiPWVQ/q7jZ5VLA4nVQP8wRpnOLpAZXwbfNl7RQzJMV6TS8zaNr
+         qlCNDm+Lj+qdshB/bOrr4b4whaAua03RHRDpGNSSCDYkyUfzRZZv2m0ZBl7O7X9rUa
+         KKRU0PYKErNrtsm1CPQePeY9ZMxX5rcPIphRJsDBeW/+VJYB0ftxpbGZvl9cSFuixp
+         T3hReSUIhNO1w==
+From:   Lee Jones <lee@kernel.org>
+To:     Lee Jones <lee@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Woody Zhang <woodylab@foxmail.com>
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <tencent_E54C7156F583E15FFE320E576E3389C39A08@qq.com>
+References: <tencent_E54C7156F583E15FFE320E576E3389C39A08@qq.com>
+Subject: Re: (subset) [PATCH] mfd: cs42l43: Fix Kconfig dependency
+Message-Id: <169513236122.3230275.16216498057995173457.b4-ty@kernel.org>
+Date:   Tue, 19 Sep 2023 15:06:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.2
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+On Tue, 05 Sep 2023 19:41:00 +0800, Woody Zhang wrote:
+> MFD_CS42L43 depends on REGMAP_IRQ as it uses devm_regmap_add_irq_chip.
+> Otherwise the build may fail with following log.
+> 
+>   AR      drivers/built-in.a
+>   AR      built-in.a
+>   AR      vmlinux.a
+>   LD      vmlinux.o
+>   OBJCOPY modules.builtin.modinfo
+>   GEN     modules.builtin
+>   MODPOST Module.symvers
+> ERROR: modpost: "devm_regmap_add_irq_chip" [drivers/mfd/cs42l43.ko] undefined!
+> 
+> [...]
 
-First bad commit (maybe != root cause):
+Applied, thanks!
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2cf0f715623872823a72e451243bbf555d10d032
-commit: 2aa14b1ab2c41a4fe41efae80d58bb77da91f19f zstd: import usptream v1.5.2
-date:   11 months ago
-config: arc-buildonly-randconfig-r005-20230119 (https://download.01.org/0day-ci/archive/20230919/202309192139.AknLkasI-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309192139.AknLkasI-lkp@intel.com/reproduce)
+[1/1] mfd: cs42l43: Fix Kconfig dependency
+      commit: 9ef4dc24eb85f9e95ef183d09ae622b8efc34783
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309192139.AknLkasI-lkp@intel.com/
+--
+Lee Jones [李琼斯]
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
-ERROR: modpost: "__st_r13_to_r22" [lib/zstd/zstd_decompress.ko] undefined!
-ERROR: modpost: "__st_r13_to_r17" [lib/zstd/zstd_decompress.ko] undefined!
->> ERROR: modpost: "__ld_r13_to_r21_ret" [lib/zstd/zstd_decompress.ko] undefined!
->> ERROR: modpost: "__ld_r13_to_r19_ret" [lib/zstd/zstd_decompress.ko] undefined!
-ERROR: modpost: "__ld_r13_to_r22_ret" [lib/zstd/zstd_decompress.ko] undefined!
-ERROR: modpost: "__st_r13_to_r25" [lib/zstd/zstd_decompress.ko] undefined!
-ERROR: modpost: "__st_r13_to_r24" [lib/zstd/zstd_decompress.ko] undefined!
-ERROR: modpost: "__ld_r13_to_r17_ret" [lib/zstd/zstd_decompress.ko] undefined!
->> ERROR: modpost: "__st_r13_to_r21" [lib/zstd/zstd_decompress.ko] undefined!
->> ERROR: modpost: "__st_r13_to_r19" [lib/zstd/zstd_decompress.ko] undefined!
-WARNING: modpost: suppressed 6 unresolved symbol warnings because there were too many)
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
