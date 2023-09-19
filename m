@@ -2,137 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3047A6ACA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2E47A6AD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbjISSkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
+        id S232384AbjISSpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjISSkp (ORCPT
+        with ESMTP id S229552AbjISSpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:40:45 -0400
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4299D
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:40:39 -0700 (PDT)
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-5712ca7aba8so144406eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:40:39 -0700 (PDT)
+        Tue, 19 Sep 2023 14:45:05 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08BABD
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:44:58 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-27489f78e52so3646208a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:44:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695149098; x=1695753898; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2uA2AKw5TRuWkTphPeTSud1oyV6iHPUIlWEjGcPkhvI=;
+        b=ygcczdBodNaTKVzFwxIcsmZsm1h02TlyGNKHsPyRLUKTfpRRw0LKq3G3WWPB7KJ5aG
+         EKHqgQXGn0N8Lo32ezKoUW73t8ByxUHUVLlKUEU3eW2CPBUZv6zsqSq2/EPUJUJYvB70
+         grs+X7erBCW+Cc6Wb3e6383TSUhG8Qk4tmhE4j0vpeYxBdDvKORXYw+SDRHF9Y08Rp7q
+         +aCdpI20832Fwu5Os+ktUxRzn5MOJ1QoB0MaKxQD9ceknlDM9gQXneLV5yNcTAO6eDf9
+         q20HnVHmdCnBXgvxrhpR2KoOhl0m4s55Jj+RXt77zARrH19jonj2mIFKxjONNEE8sc38
+         Y5VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695148838; x=1695753638;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IaIoKNYeLS5sH/XJ+eUU4nVbsgYjjg2oMliRDd8I4aE=;
-        b=SoawsuA/KMFZxNpNP7vxjsmXWbi86fWSC2frWLEmGtWXUlQvfmV1JcSe1i4sGo4fzy
-         XyMCT/rFy8px/9hdlt2JT4rfIc0aS/H8WO2MUIVub5BFPeOXiXFXZ0QGXOt33VKQoDQg
-         NDCH5jkcfxS3mBwmCaSX0SKfbV6oo+TMM0rp8CQAo1VZ8krzMqNLhvqgg2KWwmeKyAfm
-         670pourrHtD3gT8yFG/Ly9kDM2KF+fxH9fg9YoEp4xF1nEjHtsYvltLhSBky3Sg5D+RU
-         4bocs3rJEbMbzNZkUSrEStKLPgivGj7IBeJA5MTs9LdEG0mzgPUcEE0njWS22HMDdH9I
-         p2MA==
-X-Gm-Message-State: AOJu0YxrjohMPf2xqyx6QTdCk1g0RWkwWMDbailn/9hAaWEit/0WBQ+N
-        C6dAFUsKjsHlZdu78kJe/HbSNA1Cs6F9ufDxZm0RhMvUkZ4GfLc=
-X-Google-Smtp-Source: AGHT+IHElozDWZ4ARLzJqH8kpR1ziTXW32liJCwAjlNBPb4ayKMDwuq534Hzpig5uKKXP2Mma1N03Ttr0TNb3hY7/9F5v9jPC8ap
+        d=1e100.net; s=20230601; t=1695149098; x=1695753898;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2uA2AKw5TRuWkTphPeTSud1oyV6iHPUIlWEjGcPkhvI=;
+        b=LsCbBtmLayAuUj6gteVG8w6cgd1yrbAer9Y7b7VoWPDswAqL/A2vHmBnlr+EDbf6BK
+         boTWELhjjV+/zEFbX1VS223SBcvbNh4Rbh8loulQyUXsiX0B16Vw3QTMkSaman9qDr9t
+         Kv5P6gqDclgCNtcvOPmYyQeUrYGe7IrWZSZGMqFyv4lGUEC2HMoX3WbmuNKH7MwpXtjw
+         Kz0UOxNWBY6egrAuNDCyzyQrBGysoszGmBeys4+YbBsyzqm/9MmjYkuu1S8rV/u4/I0q
+         cWHFMhTc5st08E9u3EXcwnQCvB61fDDOE2XjXGWQ7c6dyWDZb25LaNPkM5X3jS2mMoih
+         rD2A==
+X-Gm-Message-State: AOJu0Yy/jZ6kFCQLGHcadkGWfh2cvuWNI0/Z4suKUWH7tfO2qIQCQtAj
+        HAAFIAA/hzEZxLPknGpiQZdcvg==
+X-Google-Smtp-Source: AGHT+IHQse60GH+RLIRvJ6EeiBAwEVE5yYVcnEb1+9ssEr7AXWIByI8HcDuGdJ6V4rNHibbFVK8OGQ==
+X-Received: by 2002:a17:90a:e2ce:b0:26b:5ba4:4948 with SMTP id fr14-20020a17090ae2ce00b0026b5ba44948mr534507pjb.12.1695149098229;
+        Tue, 19 Sep 2023 11:44:58 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id m5-20020a17090b068500b0026309d57724sm3876846pjz.39.2023.09.19.11.44.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 11:44:57 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v7 0/4] riscv: Add fine-tuned checksum functions
+Date:   Tue, 19 Sep 2023 11:44:29 -0700
+Message-Id: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:30a1:b0:3a7:361:f50 with SMTP id
- bl33-20020a05680830a100b003a703610f50mr1523003oib.3.1695148838485; Tue, 19
- Sep 2023 11:40:38 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 11:40:38 -0700
-In-Reply-To: <albu6mqbrom746yngcfgtuhn6ydpf4ewapqj6wk6etlkw7qda4@tzlqwq6u5s54>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005c048a0605ba98f0@google.com>
-Subject: Re: [syzbot] [media?] [usb?] KASAN: slab-out-of-bounds Read in imon_probe
-From:   syzbot <syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org, mchehab@kernel.org,
-        ricardo@marliere.net, sean@mess.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAA3sCWUC/23QTWrDMBAF4KsEresijf6z6j1KKNJIqUWxFaxEt
+ A2+e+VQqClavoH5Znh3UuKSYiHHw50ssaaS8tyCfjoQHN38HocUWiZAgVNDxZAv1zSl7/iGY8S
+ PcpuG4JmQYIxDYKTtXZZ4Tp8P8/XU8pjKNS9fjxOVbdNfDVRHq2ygg+VaUuYbC+5lSTWXNOMz5
+ olsYIU/xFLZQ6AhiEFJE7wW3HcQvkd0D+EbIikELoINmncQsUMY6yGiIVojggs2NqWDyD3Sa7j
+ K7RMrvQEHWurYQdQe6XaiGsKEU3hWDBUz/5B1XX8A5VvcmA4CAAA=
+To:     Charlie Jenkins <charlie@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Laight <david.laight@aculab.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Each architecture generally implements fine-tuned checksum functions to
+leverage the instruction set. This patch adds the main checksum
+functions that are used in networking.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in imon_probe
+Vector support is included in this patch to start a discussion on that,
+it can probably be optimized more. The vector patches still need some
+work as they rely on GCC vector intrinsics types which cannot work in
+the kernel since it requires C vector support rather than just assembler
+support. I have tested the vector patches as standalone algorithms in QEMU.
 
-WARNING: CPU: 0 PID: 1384 at kernel/locking/mutex.c:582 __mutex_lock_common kernel/locking/mutex.c:582 [inline]
-WARNING: CPU: 0 PID: 1384 at kernel/locking/mutex.c:582 __mutex_lock+0x63e/0xa56 kernel/locking/mutex.c:747
-Modules linked in:
-CPU: 0 PID: 1384 Comm: kworker/0:2 Not tainted 6.6.0-rc2-next-20230919-syzkaller-g29e400e3ea48 #0
-Hardware name: riscv-virtio,qemu (DT)
-Workqueue: usb_hub_wq hub_event
-epc : __mutex_lock_common kernel/locking/mutex.c:582 [inline]
-epc : __mutex_lock+0x63e/0xa56 kernel/locking/mutex.c:747
- ra : __mutex_lock_common kernel/locking/mutex.c:582 [inline]
- ra : __mutex_lock+0x63e/0xa56 kernel/locking/mutex.c:747
-epc : ffffffff8362613e ra : ffffffff8362613e sp : ff200000040e6bc0
- gp : ffffffff861a8a20 tp : ff60000013168000 t0 : ffffffff852a92a0
- t1 : 00000000000f0000 t2 : 2d2d2d2d2d2d2d2d s0 : ff200000040e6d40
- s1 : ff600000223f69a8 a0 : 0000000000000001 a1 : 00000000000f0000
- a2 : ffffffff80077fb0 a3 : 0000000000000002 a4 : 0000000000000000
- a5 : 0000000000000000 a6 : 0000000000000003 a7 : 0000000000000000
- s2 : ff200000040e6cc0 s3 : 0000000000000000 s4 : ff200000040e6c50
- s5 : ffffffff861d5880 s6 : 0000000000000002 s7 : 0000000000000000
- s8 : 1fe400000081cd80 s9 : ff60000022f6b000 s10: 0000000000000001
- s11: ffffffffffffffed t3 : ffffffff80158656 t4 : ffebffff0f9ac56a
- t5 : ffebffff0f9ac56b t6 : ff200000040e6778
-status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
-[<ffffffff8362613e>] __mutex_lock_common kernel/locking/mutex.c:582 [inline]
-[<ffffffff8362613e>] __mutex_lock+0x63e/0xa56 kernel/locking/mutex.c:747
-[<ffffffff8362656a>] mutex_lock_nested+0x14/0x1c kernel/locking/mutex.c:799
-[<ffffffff82205abc>] imon_init_intf1 drivers/media/rc/imon.c:2321 [inline]
-[<ffffffff82205abc>] imon_probe+0x128/0x1ab2 drivers/media/rc/imon.c:2449
-[<ffffffff81d8ec8c>] usb_probe_interface+0x208/0x552 drivers/usb/core/driver.c:396
-[<ffffffff816837fa>] call_driver_probe drivers/base/dd.c:579 [inline]
-[<ffffffff816837fa>] really_probe+0x1c8/0x7c6 drivers/base/dd.c:658
-[<ffffffff81683f36>] __driver_probe_device+0x13e/0x2ae drivers/base/dd.c:800
-[<ffffffff81684106>] driver_probe_device+0x60/0x1a6 drivers/base/dd.c:830
-[<ffffffff816843b4>] __device_attach_driver+0x168/0x218 drivers/base/dd.c:958
-[<ffffffff8167f734>] bus_for_each_drv+0x12c/0x1ae drivers/base/bus.c:457
-[<ffffffff81684c30>] __device_attach+0x184/0x390 drivers/base/dd.c:1030
-[<ffffffff81685146>] device_initial_probe+0x1c/0x26 drivers/base/dd.c:1079
-[<ffffffff816817f8>] bus_probe_device+0x120/0x122 drivers/base/bus.c:532
-[<ffffffff8167c302>] device_add+0xce6/0x105c drivers/base/core.c:3624
-[<ffffffff81d8acba>] usb_set_configuration+0xb48/0xfb6 drivers/usb/core/message.c:2207
-[<ffffffff81da5b7a>] usb_generic_driver_probe+0xb2/0x124 drivers/usb/core/generic.c:238
-[<ffffffff81d8e09e>] usb_probe_device+0x9e/0x1fc drivers/usb/core/driver.c:293
-[<ffffffff816837fa>] call_driver_probe drivers/base/dd.c:579 [inline]
-[<ffffffff816837fa>] really_probe+0x1c8/0x7c6 drivers/base/dd.c:658
-[<ffffffff81683f36>] __driver_probe_device+0x13e/0x2ae drivers/base/dd.c:800
-[<ffffffff81684106>] driver_probe_device+0x60/0x1a6 drivers/base/dd.c:830
-[<ffffffff816843b4>] __device_attach_driver+0x168/0x218 drivers/base/dd.c:958
-[<ffffffff8167f734>] bus_for_each_drv+0x12c/0x1ae drivers/base/bus.c:457
-[<ffffffff81684c30>] __device_attach+0x184/0x390 drivers/base/dd.c:1030
-[<ffffffff81685146>] device_initial_probe+0x1c/0x26 drivers/base/dd.c:1079
-[<ffffffff816817f8>] bus_probe_device+0x120/0x122 drivers/base/bus.c:532
-[<ffffffff8167c302>] device_add+0xce6/0x105c drivers/base/core.c:3624
-[<ffffffff81d73702>] usb_new_device+0x5c8/0xd38 drivers/usb/core/hub.c:2589
-[<ffffffff81d77fdc>] hub_port_connect drivers/usb/core/hub.c:5440 [inline]
-[<ffffffff81d77fdc>] hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
-[<ffffffff81d77fdc>] port_event drivers/usb/core/hub.c:5740 [inline]
-[<ffffffff81d77fdc>] hub_event+0x2016/0x30aa drivers/usb/core/hub.c:5822
-[<ffffffff800c4484>] process_one_work+0x54c/0xd66 kernel/workqueue.c:2630
-[<ffffffff800c51a4>] process_scheduled_works kernel/workqueue.c:2703 [inline]
-[<ffffffff800c51a4>] worker_thread+0x506/0x980 kernel/workqueue.c:2784
-[<ffffffff800db770>] kthread+0x1bc/0x22c kernel/kthread.c:388
-[<ffffffff80005d5a>] ret_from_fork+0xa/0x1c arch/riscv/kernel/entry.S:264
+This patch takes heavy use of the Zbb extension using alternatives
+patching.
 
+To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT
+and RISCV_CHECKSUM_KUNIT.
 
-Tested on:
+I have attempted to make these functions as optimal as possible, but I
+have not ran anything on actual riscv hardware. My performance testing
+has been limited to inspecting the assembly, running the algorithms on
+x86 hardware, and running in QEMU.
 
-commit:         29e400e3 Add linux-next specific files for 20230919
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git next-20230919
-console output: https://syzkaller.appspot.com/x/log.txt?x=15aa5754680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cb7d3cfa08298a9
-dashboard link: https://syzkaller.appspot.com/bug?extid=59875ffef5cb9c9b29e9
-compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: riscv64
+ip_fast_csum is a relatively small function so even though it is
+possible to read 64 bits at a time on compatible hardware, the
+bottleneck becomes the clean up and setup code so loading 32 bits at a
+time is actually faster.
 
-Note: no patches were applied.
+---
+    
+The algorithm proposed to replace the default csum_fold can be seen to
+compute the same result by running all 2^32 possible inputs.
+    
+static inline unsigned int ror32(unsigned int word, unsigned int shift)
+{
+	return (word >> (shift & 31)) | (word << ((-shift) & 31));
+}
+
+unsigned short csum_fold(unsigned int csum)
+{
+	unsigned int sum = csum;
+	sum = (sum & 0xffff) + (sum >> 16);
+	sum = (sum & 0xffff) + (sum >> 16);
+	return ~sum;
+}
+
+unsigned short csum_fold_arc(unsigned int csum)
+{
+	return ((~csum - ror32(csum, 16)) >> 16);
+}
+
+int main()
+{
+	unsigned int start = 0x0;
+	do {
+		if (csum_fold(start) != csum_fold_arc(start)) {
+			printf("Not the same %u\n", start);
+			return -1;
+		}
+		start += 1;
+	} while(start != 0x0);
+	printf("The same\n");
+	return 0;
+}
+
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+To: Charlie Jenkins <charlie@rivosinc.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+To: Conor Dooley <conor@kernel.org>
+To: Samuel Holland <samuel.holland@sifive.com>
+To: David Laight <David.Laight@aculab.com>
+To: linux-riscv@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+
+---
+Changes in v7:
+- Included linux/bitops.h in asm-generic/checksum.h to use ror (Conor)
+- Optimized loop in do_csum (David)
+- Used ror instead of shifting (David)
+- Unfortunately had to reintroduce ifdefs because gcc is not smart
+  enough to not throw warnings on code that will never execute
+- Use ifdef instead of IS_ENABLED on __LITTLE_ENDIAN because IS_ENABLED
+  does not work on that
+- Only optimize for zbb when alternatives is enabled in do_csum
+- Link to v6: https://lore.kernel.org/r/20230915-optimize_checksum-v6-0-14a6cf61c618@rivosinc.com
+
+Changes in v6:
+- Fix accuracy of commit message for csum_fold
+- Fix indentation
+- Link to v5: https://lore.kernel.org/r/20230914-optimize_checksum-v5-0-c95b82a2757e@rivosinc.com
+
+Changes in v5:
+- Drop vector patches
+- Check ZBB enabled before doing any ZBB code (Conor)
+- Check endianness in IS_ENABLED
+- Revert to the simpler non-tree based version of ipv6_csum_magic since
+  David pointed out that the tree based version is not better.
+- Link to v4: https://lore.kernel.org/r/20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com
+
+Changes in v4:
+- Suggestion by David Laight to use an improved checksum used in
+  arch/arc.
+- Eliminates zero-extension on rv32, but not on rv64.
+- Reduces data dependency which should improve execution speed on
+  rv32 and rv64
+- Still passes CHECKSUM_KUNIT and RISCV_CHECKSUM_KUNIT on rv32 and
+  rv64 with and without zbb.
+- Link to v3: https://lore.kernel.org/r/20230907-optimize_checksum-v3-0-c502d34d9d73@rivosinc.com
+
+Changes in v3:
+- Use riscv_has_extension_likely and has_vector where possible (Conor)
+- Reduce ifdefs by using IS_ENABLED where possible (Conor)
+- Use kernel_vector_begin in the vector code (Samuel)
+- Link to v2: https://lore.kernel.org/r/20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com
+
+Changes in v2:
+- After more benchmarking, rework functions to improve performance.
+- Remove tests that overlapped with the already existing checksum
+  tests and make tests more extensive.
+- Use alternatives to activate code with Zbb and vector extensions
+- Link to v1: https://lore.kernel.org/r/20230826-optimize_checksum-v1-0-937501b4522a@rivosinc.com
+
+---
+Charlie Jenkins (4):
+      asm-generic: Improve csum_fold
+      riscv: Checksum header
+      riscv: Add checksum library
+      riscv: Test checksum functions
+
+ arch/riscv/Kconfig.debug              |   1 +
+ arch/riscv/include/asm/checksum.h     |  91 ++++++++++
+ arch/riscv/lib/Kconfig.debug          |  31 ++++
+ arch/riscv/lib/Makefile               |   3 +
+ arch/riscv/lib/csum.c                 | 217 ++++++++++++++++++++++
+ arch/riscv/lib/riscv_checksum_kunit.c | 330 ++++++++++++++++++++++++++++++++++
+ include/asm-generic/checksum.h        |   6 +-
+ 7 files changed, 676 insertions(+), 3 deletions(-)
+---
+base-commit: da5f5b0f1b813dafe9ce81b70fed01b0d103d556
+change-id: 20230804-optimize_checksum-db145288ac21
+-- 
+- Charlie
+
