@@ -2,160 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B267A6C01
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F1A7A6C1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbjISUGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 16:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
+        id S233026AbjISUJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 16:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjISUGN (ORCPT
+        with ESMTP id S232036AbjISUJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 16:06:13 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1996BAB
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:06:08 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-65643a83758so20802036d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:06:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695153967; x=1695758767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kQnPY0z4taKHApL77Ffx1d50jLqp8wyhR11FZPBq+qk=;
-        b=Q2QGNXeDEo1JGCIR/XTkVXSMJ5zrG2y68S9uvc3X+n3kKa+z1VXuoOzTf1Dyu0q2dF
-         BNtAAenk9HOoWMQsjmdxLUCxOMuhez6g24dR0FOX1IV81y7geKrOIO35S/rjlPueLowh
-         yQtjt9EPcxV4WNCDql+uhzquXSZ3O/n+kCbJbLBtValLfsuIWhN0udN+1vTLilklMOFl
-         aO2L0Jm48h0ae2dl+cQoIY/1klB5fqn5WqpkYIJV8k9nde9pEqIpLDlsdr/l3F5uaIuy
-         GDCFVzGpFA42R61GodXpl+NhdGrjIOaFBrm6oGwoR/+Iqz+N4IqooKUyyDJDcPHmpm7C
-         UoVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695153967; x=1695758767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kQnPY0z4taKHApL77Ffx1d50jLqp8wyhR11FZPBq+qk=;
-        b=fJ1EON4yIIeB6ECdBA3ApJ9VM3P+m4T96ldRe3ZacPWgC5jJoZXQuFnrtYGKvV07PB
-         24H3n9HHA3XMtPLpnfn/jDBx4OD2o4JSJbE0wCAKdWpubasbKL4il0KTaVOZiYonGVWF
-         Q48pIE6h9SPfBSGsefAAGqJGTv3YqU5d4Jozcdo0ZeRlj+YaRzLovxA2Udf5eoC0zN8p
-         rERBDtLAyaV/PIvzcB5dp8EPJ4v7CUFPUbdNmfwwojCnyL/MsVz4QZnvnKcGzc9Eo7zM
-         0RTJo/X/UWslXcQgqS8bc4LuJddNXV7z1izoizUhB78rcyh36vi9auI/4fZ2nrXp3G0p
-         CH4Q==
-X-Gm-Message-State: AOJu0Yy4cDJfjHGwOCvUZJw+rghbQbP3BwkoiJhCdGMXr88S8xFrh65m
-        f0OQKzduKwQec4ilkt586hZbGvjoCMmMs0PlUIAWgg==
-X-Google-Smtp-Source: AGHT+IGwcqVkGXd3Zf3N82ll6JyqL1rHSLbA5bxgmmbMggRlybY8gxv4W57FTpofp4S8SxPCW/NJEqRwqbRLF7XD53I=
-X-Received: by 2002:a0c:e304:0:b0:658:4cae:b43a with SMTP id
- s4-20020a0ce304000000b006584caeb43amr217436qvl.4.1695153967060; Tue, 19 Sep
- 2023 13:06:07 -0700 (PDT)
+        Tue, 19 Sep 2023 16:09:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F106B6;
+        Tue, 19 Sep 2023 13:09:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD448C433C7;
+        Tue, 19 Sep 2023 20:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695154178;
+        bh=FNVxPQJYr8MGjYiR3OTqCQUWjoyGVbh3+o5wbD/5/Oo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kW/cXRy/ERILUTE2Xlx40q8HHGOjpKWXtl5rWAofkxPPzWTNeG7Abs8zffXM1voUH
+         vjh3HQnJvcBhXgy+q06ykvdvhUzZ7uEAtCGbyMsFoAj3hS3/dLrqHv8z5kB+3fwZ0l
+         hgHkg3yTwcxG+L8QkJ8Mcn4aD1VwdWTIW64oNNABxXz2nc308yT9vGCEnTwUqd3Fj2
+         Q4D6rMUp4wT3uWr21PGp1Tbwp9k4Ut0Ubbo6Nn7JG6UR/j8TCDspgaUKnElLph9zpl
+         Ayt+l5VDStCugUnoJExYEgf6midsmtOHMoYS0VIqflS+y4JP/k1+c4qPsvv3PczsVt
+         ZsNbucvytR3lg==
+Received: (nullmailer pid 137500 invoked by uid 1000);
+        Tue, 19 Sep 2023 20:09:35 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: mfd: armltd: Move Arm board syscon's to separate schema
+Date:   Tue, 19 Sep 2023 15:09:21 -0500
+Message-Id: <20230919200930.137164-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <202309192257.IAbw1lnx-lkp@intel.com> <ZQm2W9r2a+cgeaEM@rli9-mobl>
-In-Reply-To: <ZQm2W9r2a+cgeaEM@rli9-mobl>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 19 Sep 2023 13:05:52 -0700
-Message-ID: <CAKwvOdmUmLRMP0OUOJkPSKucn3NJTxz7uJGWfn83LX=gbZ-5Zw@mail.gmail.com>
-Subject: Re: warning: unknown warning option '-Wrestrict'
-To:     Philip Li <philip.li@intel.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 7:56=E2=80=AFAM Philip Li <philip.li@intel.com> wro=
-te:
->
-> On Tue, Sep 19, 2023 at 10:40:57PM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
-git master
-> > head:   2cf0f715623872823a72e451243bbf555d10d032
-> > commit: feb843a469fb0ab00d2d23cfb9bcc379791011bb kbuild: add $(CLANG_FL=
-AGS) to KBUILD_CPPFLAGS
-> > date:   4 months ago
-> > config: um-allnoconfig (https://download.01.org/0day-ci/archive/2023091=
-9/202309192257.IAbw1lnx-lkp@intel.com/config)
-> > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.gi=
-t 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-> > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/arc=
-hive/20230919/202309192257.IAbw1lnx-lkp@intel.com/reproduce)
-> >
-> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
-rsion of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202309192257.IAbw1lnx-l=
-kp@intel.com/
-> >
-> > All warnings (new ones prefixed by >>):
->
-> Sorry for the false report. Kindly ignore this.
+The Arm Ltd board bindings are a bit unusual in that they define child
+nodes for various syscon's. The schemas are also incomplete as they lack
+constraints on having additional properties and some properties are
+missing. As the bindings for the different platforms only vary by
+compatibles, combine them into a single schema doc.
 
-No worries, I just checked `make LLVM=3D1 arch=3Dum -j128 allnoconfig all`
-and had no issue.
+Add the "arm,im-pd1-syscon" compatible which was not documented. Add
+"ranges", "#address-cells", and "#size-cells properties which were
+missing.
 
->
-> >
-> > >> warning: unknown warning option '-Wrestrict' [-Wunknown-warning-opti=
-on]
-> > >> warning: unknown warning option '-Wformat-overflow'; did you mean '-=
-Wshift-overflow'? [-Wunknown-warning-option]
-> > >> warning: unknown warning option '-Wformat-truncation' [-Wunknown-war=
-ning-option]
-> > >> warning: unknown warning option '-Wstringop-overflow'; did you mean =
-'-Wshift-overflow'? [-Wunknown-warning-option]
-> >    arch/x86/um/user-offsets.c:17:6: warning: no previous prototype for =
-function 'foo' [-Wmissing-prototypes]
-> >       17 | void foo(void)
-> >          |      ^
-> >    arch/x86/um/user-offsets.c:17:1: note: declare 'static' if the funct=
-ion is not intended to be used outside of this translation unit
-> >       17 | void foo(void)
-> >          | ^
-> >          | static
-> >    5 warnings generated.
-> >    error: unknown warning option '-Wrestrict' [-Werror,-Wunknown-warnin=
-g-option]
-> >    error: unknown warning option '-Wformat-overflow'; did you mean '-Ws=
-hift-overflow'? [-Werror,-Wunknown-warning-option]
-> >    error: unknown warning option '-Wformat-truncation' [-Werror,-Wunkno=
-wn-warning-option]
-> >    error: unknown warning option '-Wstringop-overflow'; did you mean '-=
-Wshift-overflow'? [-Werror,-Wunknown-warning-option]
-> >    make[2]: *** [scripts/Makefile.build:252: scripts/mod/empty.o] Error=
- 1
-> >    error: unknown warning option '-Wrestrict' [-Werror,-Wunknown-warnin=
-g-option]
-> >    error: unknown warning option '-Wformat-overflow'; did you mean '-Ws=
-hift-overflow'? [-Werror,-Wunknown-warning-option]
-> >    error: unknown warning option '-Wformat-truncation' [-Werror,-Wunkno=
-wn-warning-option]
-> >    error: unknown warning option '-Wstringop-overflow'; did you mean '-=
-Wshift-overflow'? [-Werror,-Wunknown-warning-option]
-> >    make[2]: *** [scripts/Makefile.build:114: scripts/mod/devicetable-of=
-fsets.s] Error 1
-> >    make[2]: Target 'scripts/mod/' not remade because of errors.
-> >    make[1]: *** [Makefile:1286: prepare0] Error 2
-> >    make[1]: Target 'prepare' not remade because of errors.
-> >    make: *** [Makefile:226: __sub-make] Error 2
-> >    make: Target 'prepare' not remade because of errors.
-> >
-> > --
-> > 0-DAY CI Kernel Test Service
-> > https://github.com/intel/lkp-tests/wiki
-> >
->
+With this, fix the error exposed in the register-bit-led binding.
 
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/arm/arm,integrator.yaml          | 39 -----------
+ .../devicetree/bindings/arm/arm,realview.yaml | 37 ----------
+ .../bindings/arm/arm,versatile.yaml           | 40 +++--------
+ .../bindings/leds/register-bit-led.yaml       |  2 +-
+ .../mfd/arm,dev-platforms-syscon.yaml         | 67 +++++++++++++++++++
+ 5 files changed, 76 insertions(+), 109 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/arm,dev-platforms-syscon.yaml
 
---=20
-Thanks,
-~Nick Desaulniers
+diff --git a/Documentation/devicetree/bindings/arm/arm,integrator.yaml b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
+index 98ff5698ae1f..1bdbd1b7ee38 100644
+--- a/Documentation/devicetree/bindings/arm/arm,integrator.yaml
++++ b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
+@@ -40,45 +40,6 @@ properties:
+         items:
+           - const: arm,integrator-sp
+ 
+-  core-module@10000000:
+-    type: object
+-    description: the root node in the Integrator platforms must contain
+-      a core module child node. They are always at physical address
+-      0x10000000 in all the Integrator variants.
+-    properties:
+-      compatible:
+-        items:
+-          - const: arm,core-module-integrator
+-          - const: syscon
+-          - const: simple-mfd
+-      reg:
+-        maxItems: 1
+-
+-    required:
+-      - compatible
+-      - reg
+-
+-patternProperties:
+-  "^syscon@[0-9a-f]+$":
+-    description: All Integrator boards must provide a system controller as a
+-      node in the root of the device tree.
+-    type: object
+-    properties:
+-      compatible:
+-        items:
+-          - enum:
+-              - arm,integrator-ap-syscon
+-              - arm,integrator-cp-syscon
+-              - arm,integrator-sp-syscon
+-          - const: syscon
+-      reg:
+-        maxItems: 1
+-
+-    required:
+-      - compatible
+-      - reg
+-
+-
+ required:
+   - compatible
+   - core-module@10000000
+diff --git a/Documentation/devicetree/bindings/arm/arm,realview.yaml b/Documentation/devicetree/bindings/arm/arm,realview.yaml
+index 8d3ed2e4ed31..d1bdee98f9af 100644
+--- a/Documentation/devicetree/bindings/arm/arm,realview.yaml
++++ b/Documentation/devicetree/bindings/arm/arm,realview.yaml
+@@ -75,43 +75,6 @@ properties:
+         type: object
+         description: All RealView boards must provide a syscon system controller
+           node inside the soc node.
+-        properties:
+-          compatible:
+-            oneOf:
+-              - items:
+-                  - const: arm,realview-eb11mp-revb-syscon
+-                  - const: arm,realview-eb-syscon
+-                  - const: syscon
+-                  - const: simple-mfd
+-              - items:
+-                  - const: arm,realview-eb11mp-revc-syscon
+-                  - const: arm,realview-eb-syscon
+-                  - const: syscon
+-                  - const: simple-mfd
+-              - items:
+-                  - const: arm,realview-eb-syscon
+-                  - const: syscon
+-                  - const: simple-mfd
+-              - items:
+-                  - const: arm,realview-pb1176-syscon
+-                  - const: syscon
+-                  - const: simple-mfd
+-              - items:
+-                  - const: arm,realview-pb11mp-syscon
+-                  - const: syscon
+-                  - const: simple-mfd
+-              - items:
+-                  - const: arm,realview-pba8-syscon
+-                  - const: syscon
+-                  - const: simple-mfd
+-              - items:
+-                  - const: arm,realview-pbx-syscon
+-                  - const: syscon
+-                  - const: simple-mfd
+-
+-        required:
+-          - compatible
+-          - reg
+ 
+     required:
+       - compatible
+diff --git a/Documentation/devicetree/bindings/arm/arm,versatile.yaml b/Documentation/devicetree/bindings/arm/arm,versatile.yaml
+index 13e52ba92060..7a3caf6af200 100644
+--- a/Documentation/devicetree/bindings/arm/arm,versatile.yaml
++++ b/Documentation/devicetree/bindings/arm/arm,versatile.yaml
+@@ -14,6 +14,14 @@ description: |+
+   with various pluggable interface boards, in essence the Versatile PB version
+   is a superset of the Versatile AB version.
+ 
++  The root node in the Versatile platforms must contain a core module child
++  node. They are always at physical address 0x10000000 in all the Versatile
++  variants.
++
++  When fitted with the IB2 Interface Board, the Versatile AB will present an
++  optional system controller node which controls the extra peripherals on the
++  interface board.
++
+ properties:
+   $nodename:
+     const: '/'
+@@ -32,38 +40,6 @@ properties:
+         items:
+           - const: arm,versatile-pb
+ 
+-  core-module@10000000:
+-    type: object
+-    description: the root node in the Versatile platforms must contain
+-      a core module child node. They are always at physical address
+-      0x10000000 in all the Versatile variants.
+-    properties:
+-      compatible:
+-        items:
+-          - const: arm,core-module-versatile
+-          - const: syscon
+-          - const: simple-mfd
+-      reg:
+-        maxItems: 1
+-
+-    required:
+-      - compatible
+-      - reg
+-
+-patternProperties:
+-  "^syscon@[0-9a-f]+$":
+-    type: object
+-    description: When fitted with the IB2 Interface Board, the Versatile
+-      AB will present an optional system controller node which controls the
+-      extra peripherals on the interface board.
+-    properties:
+-      compatible:
+-        contains:
+-          const: arm,versatile-ib2-syscon
+-    required:
+-      - compatible
+-      - reg
+-
+ required:
+   - compatible
+   - core-module@10000000
+diff --git a/Documentation/devicetree/bindings/leds/register-bit-led.yaml b/Documentation/devicetree/bindings/leds/register-bit-led.yaml
+index ed26ec19ecbd..20930d327ae9 100644
+--- a/Documentation/devicetree/bindings/leds/register-bit-led.yaml
++++ b/Documentation/devicetree/bindings/leds/register-bit-led.yaml
+@@ -60,7 +60,7 @@ examples:
+   - |
+ 
+     syscon@10000000 {
+-        compatible = "arm,realview-pb1176-syscon", "syscon";
++        compatible = "arm,realview-pb1176-syscon", "syscon", "simple-mfd";
+         reg = <0x10000000 0x1000>;
+         #address-cells = <1>;
+         #size-cells = <1>;
+diff --git a/Documentation/devicetree/bindings/mfd/arm,dev-platforms-syscon.yaml b/Documentation/devicetree/bindings/mfd/arm,dev-platforms-syscon.yaml
+new file mode 100644
+index 000000000000..46b164ae0831
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/arm,dev-platforms-syscon.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/arm,dev-platforms-syscon.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Arm Ltd Developer Platforms System Controllers
++
++maintainers:
++  - Linus Walleij <linus.walleij@linaro.org>
++
++description:
++  The Arm Ltd Integrator, Realview, and Versatile families of developer
++  platforms are contain various system controller blocks. Often these blocks
++  are part of a daughterboard or motherboard module.
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - arm,integrator-ap-syscon
++              - arm,integrator-cp-syscon
++              - arm,integrator-sp-syscon
++              - arm,im-pd1-syscon
++          - const: syscon
++      - items:
++          - enum:
++              - arm,core-module-integrator
++              - arm,integrator-ap-syscon
++              - arm,integrator-cp-syscon
++              - arm,integrator-sp-syscon
++              - arm,realview-eb-syscon
++              - arm,realview-pb1176-syscon
++              - arm,realview-pb11mp-syscon
++              - arm,realview-pba8-syscon
++              - arm,realview-pbx-syscon
++              - arm,versatile-ib2-syscon
++          - const: syscon
++          - const: simple-mfd
++      - items:
++          - enum:
++              - arm,realview-eb11mp-revb-syscon
++              - arm,realview-eb11mp-revc-syscon
++          - const: arm,realview-eb-syscon
++          - const: syscon
++          - const: simple-mfd
++
++  reg:
++    maxItems: 1
++
++  ranges: true
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties:
++  type: object
++
++...
+-- 
+2.40.1
+
