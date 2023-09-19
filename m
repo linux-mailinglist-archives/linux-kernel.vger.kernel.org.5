@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A327A6BFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B267A6C01
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbjISUDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 16:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
+        id S232490AbjISUGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 16:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbjISUDH (ORCPT
+        with ESMTP id S229853AbjISUGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 16:03:07 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B278F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:03:01 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-773a5bb6fb6so331107885a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:03:01 -0700 (PDT)
+        Tue, 19 Sep 2023 16:06:13 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1996BAB
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:06:08 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-65643a83758so20802036d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695153780; x=1695758580; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695153967; x=1695758767; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+l4uEd0cg+MK1zLuMTcTMLF2fu+76E8W8FTaKs4YQfM=;
-        b=pEM5lbOD0gL3PxI5i7i3zQpeJMr8WxD9QgkyW8ay96xWhiiAdDj7Pw7UcHAbvrzg1w
-         uS1HJLCpvkCYT7uiC4kMFKNG0ZmXjCbRgHKvGmFb1J+zkYmeQlavPJr5CvCuEF3AJt6g
-         SMYQQGV+e4YMOhjAqAANbKp9b5p8uhVwaBcrJpq+OPMrOHlh0JvbG25vKOCmxEb22IQ+
-         u3Sy8zD6jDfFDijAYjutAZ+kTqs1fQj1wPllcoOhkLoZumwLSdpLgX/of5bA8zyHb+qX
-         87CZeLbmdSyVii/0gmi2zj6XQ/GHWfM7L1TbDOdEYPHK2d61YJDqrjsvfOChwg4vBelH
-         MGmA==
+        bh=kQnPY0z4taKHApL77Ffx1d50jLqp8wyhR11FZPBq+qk=;
+        b=Q2QGNXeDEo1JGCIR/XTkVXSMJ5zrG2y68S9uvc3X+n3kKa+z1VXuoOzTf1Dyu0q2dF
+         BNtAAenk9HOoWMQsjmdxLUCxOMuhez6g24dR0FOX1IV81y7geKrOIO35S/rjlPueLowh
+         yQtjt9EPcxV4WNCDql+uhzquXSZ3O/n+kCbJbLBtValLfsuIWhN0udN+1vTLilklMOFl
+         aO2L0Jm48h0ae2dl+cQoIY/1klB5fqn5WqpkYIJV8k9nde9pEqIpLDlsdr/l3F5uaIuy
+         GDCFVzGpFA42R61GodXpl+NhdGrjIOaFBrm6oGwoR/+Iqz+N4IqooKUyyDJDcPHmpm7C
+         UoVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695153780; x=1695758580;
+        d=1e100.net; s=20230601; t=1695153967; x=1695758767;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+l4uEd0cg+MK1zLuMTcTMLF2fu+76E8W8FTaKs4YQfM=;
-        b=CXeneOlZETjuvI8fgYSqlTIJO6Gksv0xI2kARA1+qc4kgYRi34xmU+i+kwxWdj8gTM
-         LWfnFJWKK/trbrMtI8BrGrX5zpT17FhHcyZNGphwjT8ExUAlhdYjsVcAa1WD95fcDSQ3
-         6gMbshwu7vccJg4hwNxwKiEJiOAxLZAy44JGGVZ3MOMuC2JOuU1EWD12Yt97XgLcR/yC
-         kH795FxsRae2DWRcAv/a+59Sv50p73YvbMTuoo+FmBLCdXHgkcO1lGJaW+X85U4qDDra
-         qHOdBqdwK02oQ0ra9jeUCmR4Gr9ckt8XsPSR0Nf1jeswpZwRPePnXk/2mRI7CK69W7n2
-         utig==
-X-Gm-Message-State: AOJu0Ywsr89IKCfD2jse1gYNw/w1jyViEPQcmHuPivn7OMbWVuea8ndW
-        3U410lioQ8WlqR96ZnEZoxvYJC8CbYwsA7EleWeZqQ==
-X-Google-Smtp-Source: AGHT+IEg4YYJXSRCJjiZztWRLMA06g93UiRXI+JvX82ar2KRzox8IysEDd0GPASOHXXhqXoVCo+bagkSzIQDpfu/hfI=
-X-Received: by 2002:a0c:e448:0:b0:64f:69a3:af3f with SMTP id
- d8-20020a0ce448000000b0064f69a3af3fmr358512qvm.39.1695153780151; Tue, 19 Sep
- 2023 13:03:00 -0700 (PDT)
+        bh=kQnPY0z4taKHApL77Ffx1d50jLqp8wyhR11FZPBq+qk=;
+        b=fJ1EON4yIIeB6ECdBA3ApJ9VM3P+m4T96ldRe3ZacPWgC5jJoZXQuFnrtYGKvV07PB
+         24H3n9HHA3XMtPLpnfn/jDBx4OD2o4JSJbE0wCAKdWpubasbKL4il0KTaVOZiYonGVWF
+         Q48pIE6h9SPfBSGsefAAGqJGTv3YqU5d4Jozcdo0ZeRlj+YaRzLovxA2Udf5eoC0zN8p
+         rERBDtLAyaV/PIvzcB5dp8EPJ4v7CUFPUbdNmfwwojCnyL/MsVz4QZnvnKcGzc9Eo7zM
+         0RTJo/X/UWslXcQgqS8bc4LuJddNXV7z1izoizUhB78rcyh36vi9auI/4fZ2nrXp3G0p
+         CH4Q==
+X-Gm-Message-State: AOJu0Yy4cDJfjHGwOCvUZJw+rghbQbP3BwkoiJhCdGMXr88S8xFrh65m
+        f0OQKzduKwQec4ilkt586hZbGvjoCMmMs0PlUIAWgg==
+X-Google-Smtp-Source: AGHT+IGwcqVkGXd3Zf3N82ll6JyqL1rHSLbA5bxgmmbMggRlybY8gxv4W57FTpofp4S8SxPCW/NJEqRwqbRLF7XD53I=
+X-Received: by 2002:a0c:e304:0:b0:658:4cae:b43a with SMTP id
+ s4-20020a0ce304000000b006584caeb43amr217436qvl.4.1695153967060; Tue, 19 Sep
+ 2023 13:06:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230918234412.363087-2-mmaurer@google.com> <CAKwvOdmsNwszu4Vk1K7e39hencNcjEmjr5q7EbTJCjdY5TDsFA@mail.gmail.com>
-In-Reply-To: <CAKwvOdmsNwszu4Vk1K7e39hencNcjEmjr5q7EbTJCjdY5TDsFA@mail.gmail.com>
+References: <202309192257.IAbw1lnx-lkp@intel.com> <ZQm2W9r2a+cgeaEM@rli9-mobl>
+In-Reply-To: <ZQm2W9r2a+cgeaEM@rli9-mobl>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 19 Sep 2023 13:02:45 -0700
-Message-ID: <CAKwvOdmanTTOmmwSMn2rQa5Ri_TpTTp7XMXZQfVh_GA694VvAA@mail.gmail.com>
-Subject: Re: [PATCH v2] rust: Respect HOSTCC when linking for host
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
+Date:   Tue, 19 Sep 2023 13:05:52 -0700
+Message-ID: <CAKwvOdmUmLRMP0OUOJkPSKucn3NJTxz7uJGWfn83LX=gbZ-5Zw@mail.gmail.com>
+Subject: Re: warning: unknown warning option '-Wrestrict'
+To:     Philip Li <philip.li@intel.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,115 +72,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 12:44=E2=80=AFPM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Tue, Sep 19, 2023 at 7:56=E2=80=AFAM Philip Li <philip.li@intel.com> wro=
+te:
 >
-> On Mon, Sep 18, 2023 at 4:44=E2=80=AFPM Matthew Maurer <mmaurer@google.co=
-m> wrote:
+> On Tue, Sep 19, 2023 at 10:40:57PM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git master
+> > head:   2cf0f715623872823a72e451243bbf555d10d032
+> > commit: feb843a469fb0ab00d2d23cfb9bcc379791011bb kbuild: add $(CLANG_FL=
+AGS) to KBUILD_CPPFLAGS
+> > date:   4 months ago
+> > config: um-allnoconfig (https://download.01.org/0day-ci/archive/2023091=
+9/202309192257.IAbw1lnx-lkp@intel.com/config)
+> > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.gi=
+t 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/arc=
+hive/20230919/202309192257.IAbw1lnx-lkp@intel.com/reproduce)
 > >
-> > Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined=
-,
-> > resulting in build failures in hermetic environments where `cc` does no=
-t
-> > exist. This includes both hostprogs and proc-macros.
+> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
+rsion of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202309192257.IAbw1lnx-l=
+kp@intel.com/
 > >
-> > Since we are setting the linker to `HOSTCC`, we set the linker flavor t=
-o
-> > `gcc` explicitly.
-> >
-> > Signed-off-by: Matthew Maurer <mmaurer@google.com>
-> > ---
-> >
-> > Updated the patch to reflect Nick's comment that KBUILD_HOSTLDFLAGS
-> > should be respected as well.
-> >
-> > I did not switch it to use HOSTLD for two reasons:
-> > * That variable is not globally defined - it is only available in two
-> >   subdirectories of tools/
-> > * C host scripts are linked by HOSTCC as well, even when linking a
-> >   collection of object files. It *prints* HOSTLD, but invokes HOSTCC.
-> >   See scripts/Makefile.host cmd_host-cmulti for an example.
+> > All warnings (new ones prefixed by >>):
 >
-> Sure, that makes sense to me, thanks for pointing that out.
->
-> >
-> >  rust/Makefile         | 4 ++++
-> >  scripts/Makefile.host | 4 ++++
-> >  2 files changed, 8 insertions(+)
-> >
-> > diff --git a/rust/Makefile b/rust/Makefile
-> > index 87958e864be0..b60b7eb8c5a0 100644
-> > --- a/rust/Makefile
-> > +++ b/rust/Makefile
-> > @@ -380,9 +380,13 @@ $(obj)/exports_bindings_generated.h: $(obj)/bindin=
-gs.o FORCE
-> >  $(obj)/exports_kernel_generated.h: $(obj)/kernel.o FORCE
-> >         $(call if_changed,exports)
-> >
-> > +KBUILD_HOSTLDFLAGS_SQ =3D '$(subst ','\'',$(KBUILD_HOSTLDFLAGS))'
->
-> I don't think we need to do this kind of escaping. If a linker flag is
-> passed to the linker directly as the driver has spaces such as `-z
-> relro`, if it is instead passed to the compiler as the driver will not
-> contain spaces (`-Wl,-z,relro`). As such, I don't think we need this
-> escaping (famous last words).  Mind submitting a v3 without it?
+> Sorry for the false report. Kindly ignore this.
 
-Thanks for clarifying off list that:
-```
-It's not escaping the spaces, it's escaping any quotes
-example: -Clink-args=3D'-Wl,-z,relro -Wl,-linker-plugin-lto'
-Without the quote, the second one would go to rustc rather than the linker
-```
-
-Sorry for misunderstanding what exactly we were escaping here and why;
-thanks for implementing my suggestion of passing along
-KBUILD_HOSTLDFLAGS though.  That will avoid issues for Android
-downstream.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+No worries, I just checked `make LLVM=3D1 arch=3Dum -j128 allnoconfig all`
+and had no issue.
 
 >
-> > +
-> >  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
-> >        cmd_rustc_procmacro =3D \
-> >         $(RUSTC_OR_CLIPPY) $(rust_common_flags) \
-> > +               -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
-> > +               -Clink-args=3D$(KBUILD_HOSTLDFLAGS_SQ) \
-> >                 --emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --ext=
-ern proc_macro \
-> >                 --crate-type proc-macro \
-> >                 --crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
-> > diff --git a/scripts/Makefile.host b/scripts/Makefile.host
-> > index 8f7f842b54f9..dc0410cae5ca 100644
-> > --- a/scripts/Makefile.host
-> > +++ b/scripts/Makefile.host
-> > @@ -87,10 +87,14 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
-> >                   $(KBUILD_HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS) \
-> >                   $(HOSTCXXFLAGS_$(target-stem).o)
 > >
-> > +KBUILD_HOSTLDFLAGS_SQ =3D '$(subst ','\'',$(KBUILD_HOSTLDFLAGS))'
-> > +
-> >  # `--out-dir` is required to avoid temporaries being created by `rustc=
-` in the
-> >  # current working directory, which may be not accessible in the out-of=
--tree
-> >  # modules case.
-> >  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile) =
-\
-> > +                -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
-> > +                -Clink-args=3D$(KBUILD_HOSTLDFLAGS_SQ) \
-> >                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
-> >                   $(HOSTRUSTFLAGS_$(target-stem))
+> > >> warning: unknown warning option '-Wrestrict' [-Wunknown-warning-opti=
+on]
+> > >> warning: unknown warning option '-Wformat-overflow'; did you mean '-=
+Wshift-overflow'? [-Wunknown-warning-option]
+> > >> warning: unknown warning option '-Wformat-truncation' [-Wunknown-war=
+ning-option]
+> > >> warning: unknown warning option '-Wstringop-overflow'; did you mean =
+'-Wshift-overflow'? [-Wunknown-warning-option]
+> >    arch/x86/um/user-offsets.c:17:6: warning: no previous prototype for =
+function 'foo' [-Wmissing-prototypes]
+> >       17 | void foo(void)
+> >          |      ^
+> >    arch/x86/um/user-offsets.c:17:1: note: declare 'static' if the funct=
+ion is not intended to be used outside of this translation unit
+> >       17 | void foo(void)
+> >          | ^
+> >          | static
+> >    5 warnings generated.
+> >    error: unknown warning option '-Wrestrict' [-Werror,-Wunknown-warnin=
+g-option]
+> >    error: unknown warning option '-Wformat-overflow'; did you mean '-Ws=
+hift-overflow'? [-Werror,-Wunknown-warning-option]
+> >    error: unknown warning option '-Wformat-truncation' [-Werror,-Wunkno=
+wn-warning-option]
+> >    error: unknown warning option '-Wstringop-overflow'; did you mean '-=
+Wshift-overflow'? [-Werror,-Wunknown-warning-option]
+> >    make[2]: *** [scripts/Makefile.build:252: scripts/mod/empty.o] Error=
+ 1
+> >    error: unknown warning option '-Wrestrict' [-Werror,-Wunknown-warnin=
+g-option]
+> >    error: unknown warning option '-Wformat-overflow'; did you mean '-Ws=
+hift-overflow'? [-Werror,-Wunknown-warning-option]
+> >    error: unknown warning option '-Wformat-truncation' [-Werror,-Wunkno=
+wn-warning-option]
+> >    error: unknown warning option '-Wstringop-overflow'; did you mean '-=
+Wshift-overflow'? [-Werror,-Wunknown-warning-option]
+> >    make[2]: *** [scripts/Makefile.build:114: scripts/mod/devicetable-of=
+fsets.s] Error 1
+> >    make[2]: Target 'scripts/mod/' not remade because of errors.
+> >    make[1]: *** [Makefile:1286: prepare0] Error 2
+> >    make[1]: Target 'prepare' not remade because of errors.
+> >    make: *** [Makefile:226: __sub-make] Error 2
+> >    make: Target 'prepare' not remade because of errors.
 > >
 > > --
-> > 2.42.0.459.ge4e396fd5e-goog
+> > 0-DAY CI Kernel Test Service
+> > https://github.com/intel/lkp-tests/wiki
 > >
 >
->
-> --
-> Thanks,
-> ~Nick Desaulniers
-
 
 
 --=20
