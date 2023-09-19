@@ -2,273 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6CC7A671F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF4C7A66FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbjISOoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S232908AbjISOm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbjISOnk (ORCPT
+        with ESMTP id S232883AbjISOmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:43:40 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F37BE64;
-        Tue, 19 Sep 2023 07:43:19 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VsRqcDd_1695134591;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VsRqcDd_1695134591)
-          by smtp.aliyun-inc.com;
-          Tue, 19 Sep 2023 22:43:13 +0800
-From:   Wen Gu <guwen@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 18/18] net/smc: add interface implementation of loopback device
-Date:   Tue, 19 Sep 2023 22:42:02 +0800
-Message-Id: <1695134522-126655-19-git-send-email-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1695134522-126655-1-git-send-email-guwen@linux.alibaba.com>
-References: <1695134522-126655-1-git-send-email-guwen@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 10:42:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3EFBF;
+        Tue, 19 Sep 2023 07:42:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD51C433C7;
+        Tue, 19 Sep 2023 14:42:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695134563;
+        bh=fmKNdqxH/zIrstzQjIfs2t2FuaneBJfrzBO5jxEXwSY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jKYRaU+qfxDXg1U8c//7smnB0RNxrxJmpD9coY5m7xJHruNYe52KjBM2ZiJlqhweQ
+         qQl3XPx+66dm1Tv2Y7wh87C6PMsMtHraJ4URg4uAdeYTiQ9VXqyoAN/gtXcYBtyzZq
+         +LlGsQBmnwNOp4mXUvwKc7CRvxuSqzgMjeU1IE7hTxP7i75mrnUuy4yAI3ZtxAJL5i
+         5NxnQZQKIjof25ECWx8Jcjd1Wob1ZRA9qRztcD9ueeNUEZnPw4qrnEeNBkCXzsg4HA
+         xou5zs74RIYTsbtMCw50/FZK7Ex2fBfG7or0ytYg5mgXpx93CqsBRlzah8Gb8Q8Vd3
+         92Enp+Km5AY9w==
+Date:   Tue, 19 Sep 2023 16:42:38 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Trond Myklebust <trondmy@gmail.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "J . Bruce Fields" <bfields@redhat.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Max Kellermann <max.kellermann@ionos.com>
+Subject: Re: [PATCH] linux/fs.h: fix umask on NFS with CONFIG_FS_POSIX_ACL=n
+Message-ID: <20230919-tabuisieren-vernommen-81997dd7f6b6@brauner>
+References: <20230919081837.1096695-1-max.kellermann@ionos.com>
+ <20230919-altbekannt-musisch-35ac924166cf@brauner>
+ <a955495733e55f4fecad42b252c0360a210988ff.camel@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a955495733e55f4fecad42b252c0360a210988ff.camel@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch completes the specific implementation of loopback device
-for the newly added SMC-D DMB-related interface.
+On Tue, Sep 19, 2023 at 10:26:38AM -0400, Jeff Layton wrote:
+> On Tue, 2023-09-19 at 15:02 +0200, Christian Brauner wrote:
+> > On Tue, Sep 19, 2023 at 10:18:36AM +0200, Max Kellermann wrote:
+> > > Make IS_POSIXACL() return false if POSIX ACL support is disabled and
+> > > ignore SB_POSIXACL/MS_POSIXACL.
+> > > 
+> > > Never skip applying the umask in namei.c and never bother to do any
+> > > ACL specific checks if the filesystem falsely indicates it has ACLs
+> > > enabled when the feature is completely disabled in the kernel.
+> > > 
+> > > This fixes a problem where the umask is always ignored in the NFS
+> > > client when compiled without CONFIG_FS_POSIX_ACL.  This is a 4 year
+> > > old regression caused by commit 013cdf1088d723 which itself was not
+> > > completely wrong, but failed to consider all the side effects by
+> > > misdesigned VFS code.
+> > > 
+> > > Prior to that commit, there were two places where the umask could be
+> > > applied, for example when creating a directory:
+> > > 
+> > >  1. in the VFS layer in SYSCALL_DEFINE3(mkdirat), but only if
+> > >     !IS_POSIXACL()
+> > > 
+> > >  2. again (unconditionally) in nfs3_proc_mkdir()
+> > > 
+> > > The first one does not apply, because even without
+> > > CONFIG_FS_POSIX_ACL, the NFS client sets MS_POSIXACL in
+> > > nfs_fill_super().
+> > 
+> > Jeff, in light of the recent SB_NOUMASK work for nfs4 to always skip
+> > applying the umask how would this patch fit into the picture? Would be
+> > good to have your review here.
+> > 
+> > > 
+> > > After that commit, (2.) was replaced by:
+> > > 
+> > >  2b. in posix_acl_create(), called by nfs3_proc_mkdir()
+> > > 
+> > > There's one branch in posix_acl_create() which applies the umask;
+> > > however, without CONFIG_FS_POSIX_ACL, posix_acl_create() is an empty
+> > > dummy function which does not apply the umask.
+> > > 
+> > > The approach chosen by this patch is to make IS_POSIXACL() always
+> > > return false when POSIX ACL support is disabled, so the umask always
+> > > gets applied by the VFS layer.  This is consistent with the (regular)
+> > > behavior of posix_acl_create(): that function returns early if
+> > > IS_POSIXACL() is false, before applying the umask.
+> > > 
+> > > Therefore, posix_acl_create() is responsible for applying the umask if
+> > > there is ACL support enabled in the file system (SB_POSIXACL), and the
+> > > VFS layer is responsible for all other cases (no SB_POSIXACL or no
+> > > CONFIG_FS_POSIX_ACL).
+> > > 
+> > > Reviewed-by: J. Bruce Fields <bfields@redhat.com>
+> > > Reviewed-by: Jan Kara <jack@suse.cz>
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> > > ---
+> > >  include/linux/fs.h | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > > index 4aeb3fa11927..c1a4bc5c2e95 100644
+> > > --- a/include/linux/fs.h
+> > > +++ b/include/linux/fs.h
+> > > @@ -2110,7 +2110,12 @@ static inline bool sb_rdonly(const struct super_block *sb) { return sb->s_flags
+> > >  #define IS_NOQUOTA(inode)	((inode)->i_flags & S_NOQUOTA)
+> > >  #define IS_APPEND(inode)	((inode)->i_flags & S_APPEND)
+> > >  #define IS_IMMUTABLE(inode)	((inode)->i_flags & S_IMMUTABLE)
+> > > +
+> > > +#ifdef CONFIG_FS_POSIX_ACL
+> > >  #define IS_POSIXACL(inode)	__IS_FLG(inode, SB_POSIXACL)
+> > > +#else
+> > > +#define IS_POSIXACL(inode)	0
+> > > +#endif
+> > >  
+> > >  #define IS_DEADDIR(inode)	((inode)->i_flags & S_DEAD)
+> > >  #define IS_NOCMTIME(inode)	((inode)->i_flags & S_NOCMTIME)
+> > > -- 
+> > > 2.39.2
+> > > 
+> 
+> (cc'ing Trond and Anna)
+> 
+> To be clear, Christian is talking about this patch that I sent last
+> week:
+> 
+> https://lore.kernel.org/linux-fsdevel/20230911-acl-fix-v3-1-b25315333f6c@kernel.org/
+> 
+> At first glance, I don't see a problem with Max's patch.
+> 
+> If anything the patch in the lore link above should keep NFSv4 working
+> as expected if we take Max's patch. You might also need to add
 
-The loopback device always provides mappable DMB because the device
-users are in the same OS instance.
+No, it wouldn't, I think.
 
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
----
- net/smc/smc_loopback.c | 105 ++++++++++++++++++++++++++++++++++++++++++++-----
- net/smc/smc_loopback.h |   5 +++
- 2 files changed, 100 insertions(+), 10 deletions(-)
+If I understood your correctly last week then NFS always raised
+SB_POSIXACL in nfs_fill_super() to prevent the VFS from applying umasks
+in the VFS and in fact to not apply umask at all (at least for nfs4).
 
-diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
-index 650561b..611998b 100644
---- a/net/smc/smc_loopback.c
-+++ b/net/smc/smc_loopback.c
-@@ -105,6 +105,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	}
- 	dmb_node->len = dmb->dmb_len;
- 	dmb_node->dma_addr = (dma_addr_t)dmb_node->cpu_addr;
-+	refcount_set(&dmb_node->refcnt, 1);
- 
- again:
- 	/* add new dmb into hash table */
-@@ -118,6 +119,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	}
- 	hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
- 	write_unlock(&ldev->dmb_ht_lock);
-+	atomic_inc(&ldev->dmb_cnt);
- 
- 	dmb->sba_idx = dmb_node->sba_idx;
- 	dmb->dmb_tok = dmb_node->token;
-@@ -139,28 +141,98 @@ static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- 	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
- 
--	/* remove dmb from hash table */
--	write_lock(&ldev->dmb_ht_lock);
-+	/* find dmb from hash table */
-+	read_lock(&ldev->dmb_ht_lock);
- 	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
- 		if (tmp_node->token == dmb->dmb_tok) {
- 			dmb_node = tmp_node;
-+			dmb_node->freeing = 1;
- 			break;
- 		}
- 	}
- 	if (!dmb_node) {
--		write_unlock(&ldev->dmb_ht_lock);
-+		read_unlock(&ldev->dmb_ht_lock);
- 		return -EINVAL;
- 	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	/* wait for dmb refcnt to be 0 */
-+	if (!refcount_dec_and_test(&dmb_node->refcnt))
-+		wait_event(ldev->dmbs_release, !refcount_read(&dmb_node->refcnt));
-+
-+	/* remove dmb from hash table */
-+	write_lock(&ldev->dmb_ht_lock);
- 	hash_del(&dmb_node->list);
- 	write_unlock(&ldev->dmb_ht_lock);
- 
- 	clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
-+
- 	kfree(dmb_node->cpu_addr);
- 	kfree(dmb_node);
- 
-+	if (atomic_dec_and_test(&ldev->dmb_cnt))
-+		wake_up(&ldev->ldev_release);
-+	return 0;
-+}
-+
-+static int smc_lo_attach_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
-+{
-+	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	/* find dmb_node according to dmb->dmb_tok */
-+	read_lock(&ldev->dmb_ht_lock);
-+	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
-+		if (tmp_node->token == dmb->dmb_tok && !tmp_node->freeing) {
-+			dmb_node = tmp_node;
-+			break;
-+		}
-+	}
-+	if (!dmb_node) {
-+		read_unlock(&ldev->dmb_ht_lock);
-+		return -EINVAL;
-+	}
-+	refcount_inc(&dmb_node->refcnt);
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	/* provide dmb information */
-+	dmb->sba_idx = dmb_node->sba_idx;
-+	dmb->dmb_tok = dmb_node->token;
-+	dmb->cpu_addr = dmb_node->cpu_addr;
-+	dmb->dma_addr = dmb_node->dma_addr;
-+	dmb->dmb_len = dmb_node->len;
- 	return 0;
- }
- 
-+static int smc_lo_detach_dmb(struct smcd_dev *smcd, u64 token)
-+{
-+	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	/* find dmb_node according to dmb->dmb_tok */
-+	read_lock(&ldev->dmb_ht_lock);
-+	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, token) {
-+		if (tmp_node->token == token) {
-+			dmb_node = tmp_node;
-+			break;
-+		}
-+	}
-+	if (!dmb_node) {
-+		read_unlock(&ldev->dmb_ht_lock);
-+		return -EINVAL;
-+	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	if (refcount_dec_and_test(&dmb_node->refcnt))
-+		wake_up_all(&ldev->dmbs_release);
-+	return 0;
-+}
-+
-+static int smc_lo_get_dev_attr(struct smcd_dev *smcd)
-+{
-+	return BIT(ISM_ATTR_DMB_MAP);
-+}
-+
- static int smc_lo_add_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
- {
- 	return -EOPNOTSUPP;
-@@ -193,7 +265,15 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok, unsigned int idx
- {
- 	struct smc_lo_dmb_node *rmb_node = NULL, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
--
-+	struct smc_connection *conn;
-+
-+	if (!sf) {
-+		/* local sndbuf shares the same physical memory with
-+		 * peer RMB, so no need to copy data from local sndbuf
-+		 * to peer RMB.
-+		 */
-+		return 0;
-+	}
- 	read_lock(&ldev->dmb_ht_lock);
- 	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_tok) {
- 		if (tmp_node->token == dmb_tok) {
-@@ -209,13 +289,10 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok, unsigned int idx
- 
- 	memcpy((char *)rmb_node->cpu_addr + offset, data, size);
- 
--	if (sf) {
--		struct smc_connection *conn =
--			smcd->conn[rmb_node->sba_idx];
-+	conn = smcd->conn[rmb_node->sba_idx];
-+	if (conn && !conn->killed)
-+		smcd_cdc_rx_handler(conn);
- 
--		if (conn && !conn->killed)
--			smcd_cdc_rx_handler(conn);
--	}
- 	return 0;
- }
- 
-@@ -252,6 +329,8 @@ static struct device *smc_lo_get_dev(struct smcd_dev *smcd)
- 	.query_remote_gid = smc_lo_query_rgid,
- 	.register_dmb = smc_lo_register_dmb,
- 	.unregister_dmb = smc_lo_unregister_dmb,
-+	.attach_dmb = smc_lo_attach_dmb,
-+	.detach_dmb = smc_lo_detach_dmb,
- 	.add_vlan_id = smc_lo_add_vlan_id,
- 	.del_vlan_id = smc_lo_del_vlan_id,
- 	.set_vlan_required = smc_lo_set_vlan_required,
-@@ -263,6 +342,7 @@ static struct device *smc_lo_get_dev(struct smcd_dev *smcd)
- 	.get_local_gid = smc_lo_get_local_gid,
- 	.get_chid = smc_lo_get_chid,
- 	.get_dev = smc_lo_get_dev,
-+	.get_dev_attr = smc_lo_get_dev_attr,
- };
- 
- static struct smcd_dev *smcd_lo_alloc_dev(const struct smcd_ops *ops,
-@@ -342,6 +422,9 @@ static int smc_lo_dev_init(struct smc_lo_dev *ldev)
- 	smc_lo_generate_id(ldev);
- 	rwlock_init(&ldev->dmb_ht_lock);
- 	hash_init(ldev->dmb_ht);
-+	atomic_set(&ldev->dmb_cnt, 0);
-+	init_waitqueue_head(&ldev->dmbs_release);
-+	init_waitqueue_head(&ldev->ldev_release);
- 
- 	return smcd_lo_register_dev(ldev);
- }
-@@ -375,6 +458,8 @@ static int smc_lo_dev_probe(void)
- static void smc_lo_dev_exit(struct smc_lo_dev *ldev)
- {
- 	smcd_lo_unregister_dev(ldev);
-+	if (atomic_read(&ldev->dmb_cnt))
-+		wait_event(ldev->ldev_release, !atomic_read(&ldev->dmb_cnt));
- }
- 
- static void smc_lo_dev_remove(void)
-diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
-index 943424f..506e524 100644
---- a/net/smc/smc_loopback.h
-+++ b/net/smc/smc_loopback.h
-@@ -29,6 +29,8 @@ struct smc_lo_dmb_node {
- 	u32 sba_idx;
- 	void *cpu_addr;
- 	dma_addr_t dma_addr;
-+	refcount_t refcnt;
-+	u8 freeing : 1;
- };
- 
- struct smc_lo_dev {
-@@ -39,6 +41,9 @@ struct smc_lo_dev {
- 	DECLARE_BITMAP(sba_idx_mask, SMC_LODEV_MAX_DMBS);
- 	rwlock_t dmb_ht_lock;
- 	DECLARE_HASHTABLE(dmb_ht, SMC_LODEV_DMBS_HASH_BITS);
-+	atomic_t dmb_cnt;
-+	wait_queue_head_t dmbs_release;
-+	wait_queue_head_t ldev_release;
- };
- 
- int smc_loopback_init(void);
--- 
-1.8.3.1
-
+If that's the case then accepting this patch would mean that the VFS
+wouldn't see this SB_POSIXACL flag anymore and would strip the umask in
+the VFS causing a regression for you.
