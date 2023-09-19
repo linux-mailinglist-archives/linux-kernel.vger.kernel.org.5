@@ -2,125 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7A37A5E0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C207A5E03
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbjISJec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        id S231176AbjISJdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbjISJe3 (ORCPT
+        with ESMTP id S229449AbjISJdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:34:29 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F99E135
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:34:20 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c4194f7635so34481335ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695116059; x=1695720859; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QVf5D/+j5N+ia+SFzQBn7+4Q88aksoEeF9OLLDBHLuM=;
-        b=hI7doWYbrcLaqitrDz3Dpv945ukDeEo5/eFyfF8ck6mcSMG9IdaKqAnwreOiXEvXrm
-         RzCMQFrFQ9BCI0PDeklFkbIhOFij6DzkNCGeyzqfWq0+Em2IL4iWHct8US6C/p6dXiER
-         zcZt4gBLy86HdM17nBOfpRbR8saV8wCcnUZUU+i0YiWhBSk8Atj2kvB/eUvl5A5U2pMc
-         wsW4Rlm3R+e4R+ZavWzWk409mN4Z0R+9MGWHbvR9wwnj7UbqD2noeU06gJKtAN4FiXaZ
-         uSAvC5dKWjn/rXF2qPMdSVgYa1p9JuRZfKg4p5FBs2QarETrJitMHRkd/XOoyYS98BKK
-         9vQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695116059; x=1695720859;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QVf5D/+j5N+ia+SFzQBn7+4Q88aksoEeF9OLLDBHLuM=;
-        b=Sm3Vp4OEaxnnZLHfkSaaGL96DZVaU+FPWzrSWFJeAceJO2HJ+51cwVLqamf2Fzh4+C
-         JiKdTE5GKMcCkt4VierkOgSXqRr0jc5QSSf2ln7iNRIoyRby8pklbwA9gr7PgcvUNDvU
-         CkQd1HATCiAw75J7HyLjQkF9Se+GCcocKUbDdlHhbcEPyaf2RRAinTJan3I9L/EnB+vb
-         TR9bsSa6O6n0e5lhGk2bM+UGuHmw+dcv2/LwmOzf9rlTve+vez3dlBpmLEcRXVbmFNTi
-         AKWJpzYwCJNU3+H1wS5V2X5KD8opt/Lzq361c+2VgX7QDg7e6lRipWRHyUwW2Lr2+QRm
-         mvXA==
-X-Gm-Message-State: AOJu0YxHg5gRqNDLrNLlPPZlT9WJfVrgAffLoDM/GQFU1pnmSinv+xM3
-        Q+PEBfCKB60n0jYAUGXW/bAIBhzdtSo2gO/N
-X-Google-Smtp-Source: AGHT+IFEM34YO2uN1IhUDPCwqvzRc2cQqob4GZnt3NU716uhhFhKM1D0NXBeVCyJWYwKQ2stjepyvQ==
-X-Received: by 2002:a17:902:d507:b0:1c1:d5d1:a364 with SMTP id b7-20020a170902d50700b001c1d5d1a364mr2849526plg.33.1695116059209;
-        Tue, 19 Sep 2023 02:34:19 -0700 (PDT)
-Received: from swarup-virtual-machine.localdomain ([171.76.87.78])
-        by smtp.gmail.com with ESMTPSA id ji1-20020a170903324100b001c44489ee55sm6487608plb.273.2023.09.19.02.34.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 02:34:18 -0700 (PDT)
-From:   Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-To:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        swarupkotikalapudi@gmail.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] gpu: drm: amd: display: fix kernel-doc warnings
-Date:   Tue, 19 Sep 2023 15:03:11 +0530
-Message-Id: <20230919093318.16407-1-swarupkotikalapudi@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 19 Sep 2023 05:33:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF21EC;
+        Tue, 19 Sep 2023 02:33:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA97EC433C8;
+        Tue, 19 Sep 2023 09:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695116023;
+        bh=avUzQ65GcPX7paR7cIIF/tntqPhqLmf4/xu1oPsGAeA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rvpy6WWTErgqnvURFZ7gC9+YNK0xDeaGDAd4Rk71KSBrd/2tha6bs0TJrF4pAHTjs
+         cfDAkqzl8Y7wQvFgmt5rJ5cgIiakkGFbSfrmko8LbDv3MBeUphZ1GkKmQkn/TVrU16
+         o9tuNLc1VtYH+G4jH2OEaq1eqJh6+a10TYkhdMBZ1CErahj3xdPsxw1NA2i8/+E6rB
+         YHQs5IW7ixMh0RtMUFTslwT/0n5Jg1WO/OMohaZPhfSd9SZYR1S2AJt+d+Zj8fsBAG
+         qak1FiVG/ALXiRfzShX8NnlCJHusqfFEMRLy81Lp01vV8TiRIc1ZBGDTXNkt9a3RGi
+         1q2ntTusF2uYQ==
+Date:   Tue, 19 Sep 2023 11:33:40 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        dri-devel@lists.freedesktop.org, airlied@gmail.com,
+        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [RFT PATCH 03/15] drm/ingenic: Call drm_atomic_helper_shutdown()
+ at shutdown time
+Message-ID: <i25dbp63khr35wmdjltttbmhoc37ejzulzzkqj6xosptde44mg@ijga2qee4vby>
+References: <20230901234202.566951-1-dianders@chromium.org>
+ <20230901164111.RFT.3.Iea742f06d8bec41598aa40378fc625fbd7e8a3d6@changeid>
+ <288af70dafc5e73d0fdfac71a33449385d4d6bd3.camel@crapouillou.net>
+ <CAD=FV=VuJe7ACFw3pt1z=EAh14_Z4iTOc5VKJt24CGwZYjRpeQ@mail.gmail.com>
+ <3prgpsxxnf3hzeqcpjs5r37nfojbkuwk4ezizrwfrcthm666k6@t2q2qcpnfkiu>
+ <CAD=FV=VSTP2g1RttMu_9+AGQbMK87MzQO+tw1cZBEJ3g-jAmYg@mail.gmail.com>
+ <vkdjbjda23fwofsbt23wtjgiya3uhelby7evwtvteqkpwb4dr4@ybla63hqndic>
+ <CAD=FV=VWF8tP2aykNW7+4tkqQExdoja71OqtiDFGZs+c7Gjttw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hk3mjln4nblbmh47"
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=VWF8tP2aykNW7+4tkqQExdoja71OqtiDFGZs+c7Gjttw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warnings discovered in AMD gpu display driver.
-Fixes these warnings:
-./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110: warning:
-Function parameter or member 'overlap_only'
-not described in 'mpcc_blnd_cfg'.
 
-./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110: warning:
-Function parameter or member 'bottom_gain_mode'
-not described in 'mpcc_blnd_cfg'.
+--hk3mjln4nblbmh47
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110: warning:
-Function parameter or member 'background_color_bpc'
-not described in 'mpcc_blnd_cfg'.
+On Thu, Sep 14, 2023 at 03:29:16PM -0700, Doug Anderson wrote:
+> Hi,
+>=20
+> On Thu, Sep 14, 2023 at 1:14=E2=80=AFAM Maxime Ripard <mripard@kernel.org=
+> wrote:
+> >
+> > > > So it doesn't have any relationship with the unbind/remove timing, =
+and
+> > > > for all we know it can be there indefinitely, while the application
+> > > > continues to interact with the driver.
+> > >
+> > > I spent some time thinking about similar issues recently and, assuming
+> > > my understanding is correct, I'd at least partially disagree.
+> > >
+> > > Specifically, I _think_ the only thing that's truly required to remain
+> > > valid until userspace closes the last open "fd" is the memory for the
+> > > "struct drm_device" itself, right? My understanding is that this is
+> > > similar to how "struct device" works. The memory backing a "struct
+> > > device" has to live until the last client releases a reference to it
+> > > even if everything else about a device has gone away. So if it was all
+> > > working perfectly then if the Linux driver backing the "struct
+> > > drm_device" goes away then we'd release resources and NULL out a bunch
+> > > of stuff in the "struct drm_device" but still keep the actual "struct
+> > > drm_device" around since userspace still has a reference. Pretty much
+> > > all userspace calls would fail, but at least they wouldn't crash. Is
+> > > that roughly the gist?
+> >
+> > Yes, but also, no.
+> >
+> > In the spirit, you're right. However, there's three things interfering
+> > here:
+> >
+> >   - You don't always have a match between device and KMS entity. Display
+> >     pipelines are usually multiple devices working together, and while
+> >     you probably have a 1:1 relationship with bridges and panels (and to
+> >     some extent encoders/connectors), the planes and framebuffers for
+> >     example are a mess :) So, if the device backing the planes is to be
+> >     removed, what are you removing exactly? All of the planes and
+> >     framebuffers? Do you free the buffers allocated by the userspace
+> >     (that it might still use?)?
+> >
+> >   - In addition to that, KMS doesn't deal with individual entities being
+> >     hotplugged so neither the subsystem nor the application expect to
+> >     have a connector being removed.
+> >
+> >   - ioctl's aren't filtered once the device is starting to get removed
+> >     on most drivers.
+> >
+> > So due to 1 and 2, we can't really partially remove components unless
+> > the application is aware of it, and it doesn't expect to. And most
+> > drivers still allow (probably unwillingly though) the application to
+> > call ioctls once the DRM device has lost at least one of its backing
+> > devices.
+>=20
+> We "can't", but we "can", right? Userspace can freely unbind a driver.
+> Unless you want to dig into if the community would allow a driver to
+> block "unbind" then we have to, at the very least, not crash the
+> kernel when userspace does this. Ideally we'd have something more
+> elegant than just "don't crash the kernel", but at least we shouldn't
+> crash.
 
-./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110:
-warning: Function parameter or member 'top_gain'
-not described in 'mpcc_blnd_cfg'.
+I'm not sure what you mean here, sorry
 
-./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110:
-warning: Function parameter or member 'bottom_inside_gain'
-not described in 'mpcc_blnd_cfg'.
+> > > Assuming that's correct, then _most_ of the resource acquiring /
+> > > memory allocation can still happen in the device probe() routine and
+> > > can still use devm as long as we do something to ensure that any
+> > > resources released are no longer pointed to by anything in the "struct
+> > > drm_device".
+> > >
+> > > To make it concrete, I think we want this (feel free to correct). For
+> > > simplicity, I'm assuming a driver that _doesn't_ use the component
+> > > framework:
+> > >
+> > > a) Linux driver probe() happens. The "struct drm_device" is allocated
+> > > in probe() by devm_drm_dev_alloc(). This takes a reference to the
+> > > "struct drm_device". The device also acquires resources / allocates
+> > > memory.
+> >
+> > You need to differentiate resources and allocations there. Resources can
+> > be expected to go away at the same time than the device, so using devm
+> > is fine. Allocations are largely disconnected from the device lifetime,
+> > and using devm leads to UAF.
+>=20
+> Right. I think my original point was looking at "ingenic-drm-drv.c".
+> Much of the "devm" stuff there is resources and those specific things
+> could be moved to probe() instead of bind(), right?
 
-./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110:
-warning: Function parameter or member 'bottom_outside_gain'
-not described in 'mpcc_blnd_cfg'.
+It depends. The registers, clock, regmap allocations are fine. The panel
+isn't for example.
 
-Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
----
- drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+> For allocations, I think you'd have to look at each allocation. If the
+> allocation needed to live as long as the "struct drm_device" then devm
+> is clearly the wrong choice. ...but not every allocation needs to live
+> that long.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h b/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
-index 8d86159d9de0..61a2406dcc53 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
-@@ -91,6 +91,12 @@ enum mpcc_alpha_blend_mode {
-  * @global_gain: used when blend mode considers both pixel alpha and plane
-  * alpha value and assumes the global alpha value.
-  * @global_alpha: plane alpha value
-+ * @overlap_only: whether overlapping of different planes is allowed
-+ * @bottom_gain_mode: blend mode for bottom gain setting
-+ * @background_color_bpc: background color for bpc
-+ * @top_gain: top gain setting
-+ * @bottom_inside_gain: blend mode for bottom inside
-+ * @bottom_outside_gain:  blend mode for bottom outside
-  */
- struct mpcc_blnd_cfg {
- 	struct tg_color black_color;	/* background color */
--- 
-2.34.1
+Most of the allocations are in a KMS driver though? At least all the
+structures that store either planes, crtcs, encoders, connectors, panels
+or bridges (plus their state) need to be allocated through drmm.
 
+> Also, even if in the "simple" case allocations need to live as long as
+> a "struct drm_device", it's possible that there are some cases where
+> there's only an indirect reference to the memory. In that case, you
+> could NULL out the indirect reference and then free it. Obviously
+> someone would need to take care here.
+
+I guess we could, but it would be fairly hard to do since if we clear a
+connector, we would need to clear that particular allocation, but also
+=66rom all the states that reference it, and the entities that store a
+pointer to it somehow (some of them possibly in drivers). It's not super
+valuable anyway since the current expectation is that it's all or
+nothing, if you remove one connector you are expected to remove the
+whole KMS driver.
+
+> > > b) Userspace acquires a reference to the "struct drm_device". Refcount
+> > > is now 2 (one from userspace, one from the Linux driver).
+> > >
+> > > c) The Linux driver unbinds, presumably because userspace requested
+> > > it. From earlier I think we decided that we can't (by design) block
+> > > unbind. Once unbind happens then we shouldn't try to keep operating
+> > > the device
+> >
+> > That part is correct, because the resources aren't there anymore.
+> >
+> > > the driver should stop running.
+> >
+> > But for the reasons above, the driver needs to still operate (in a
+> > degraded mode).
+>=20
+> So I think here is where the disconnect is from our viewpoints. IMO
+> when a Linux driver is unbound then it makes no sense to try to
+> operate the device in "a degraded mode". When a Linux driver is
+> unbound then it should be releasing all of the resources from the
+> device (iomaps, IRQs, regulators, GPIOs, etc). That's just what
+> unbinding a driver is supposed to do.
+
+I guess we agree on that part.
+
+> I understand what you're saying above about display pipelines being
+> multiple Linux drivers working together and that it doesn't make lots
+> of sense to just unbind a random Linux device driver in the middle of
+> things.
+
+That's not what I'm saying though. What I'm saying is that if we remove
+one, everything must go. And that's what ingenic is doing btw. But all
+the allocations still need to stay until the last fd is closed.
+
+> ...and I don't really have a simple/great answer for how to do
+> something super elegant if userspace tries to just randomly unbind one
+> of the many drivers in an active display pipeline.
+
+That's not a concern. I know vc4 handles that just fine, probably others
+too.
+
+> > > As part of the unbind, the remove() is called and also "devm"
+> > > resources are deallocated. If any of the things freed are pointed to
+> > > by the "struct drm_device" then the code needs to NULL them out at
+> > > this time.
+> >
+> > Right, we also need to make sure we don't access any of the resources
+> > that got freed. This is typically done by protecting all the accesses
+> > with drm_dev_enter/drm_dev_exit.
+> >
+> > > Also we should make sure that any callback functions that userspace
+> > > could cause to be invoked return errors.
+> >
+> > That would prevent any new ioctl from occuring after the device has been
+> > removed, but that doesn't fix the race condition if it's removed while
+> > there's a commit happening. This is further complicated by the fact that
+> > commits can be queued (so you would have multiple submitted already) or
+> > made asynchronous.
+>=20
+> I guess I would have expected that the remove() callback in the device
+> would prevent new commits from starting and then block waiting until
+> any in-progress commits were finished? ...kinda like how drivers call
+> del_timer_sync() in their remove functions...
+>=20
+>=20
+> > > Our code could go away at any point here since userspace could "rmmod"
+> > > our module.
+> >
+> > Yeah, we probably have a bug there. Boris also reported something like
+> > that recently where if you add an action with drmm_add_action, and then
+> > remove the module, the function would have been free'd by the time it
+> > executes.
+>=20
+> I'm fairly certain that you can prevent a module from being unloaded
+> by just grabbing a refcount to it. However, I'm not sure that's the
+> right solution. If we're trying to run driver code after a driver has
+> been unbound then, IMO, that's the bug.
+
+init, exit and probe run while the device in unbound.
+
+> > > However, it's not a panacea for everything. Specifically once
+> > > the Linux driver unbind finishes then the device isn't functional
+> > > anymore.
+> >
+> > What's wrong with it then?
+>=20
+> I'm mostly just saying don't just search-and-replace "devm" with
+> "drmm" in your driver and call it done. You need to think carefully
+> about which things are which lifetime.
+
+Sure, where did I say anything different? For vc4, it took me a ~60
+patches to do the conversion, so yeah, it's not just a sed call.
+
+> Ironically, while digging into this I'm tempted to take back my
+> original request. Despite the kernel docs I pointed at [1], it
+> actually looks like it might be fine to use "devm" within a
+> component's bind() function. In try_to_bring_up_aggregate_device() it
+> seems like the code is opening up a nested "devres" group specifically
+> to allow this to work. A little bit of testing that I did with this
+> shows that, indeed, the nesting seems to be working. Am I missing
+> something here?
+
+I don't think we're on the same page, because I also don't know why
+that's relevant in that particular context?
+
+Sure, you can use devm in a component framework driver. The limitations
+I'm talking about have nothing to do with the component framework but
+rather between devm and KMS. So all the issues I brought up are still
+very much relevant for a single device doing devm_ allocations at probe.
+
+Maxime
+
+--hk3mjln4nblbmh47
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZQlq9AAKCRDj7w1vZxhR
+xd21AQCvWBuoYKCHRtoJkg2ixDhpE58+7aOV2cBNc0tqLf6krQD/aEJAm2jYK/aw
+ZbSRpzivtFRNhcNVJwo69UROHMKH6QE=
+=uZlq
+-----END PGP SIGNATURE-----
+
+--hk3mjln4nblbmh47--
