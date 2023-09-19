@@ -2,77 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CE07A64CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504047A64D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbjISNXa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 09:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
+        id S232317AbjISNX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231960AbjISNX1 (ORCPT
+        with ESMTP id S231960AbjISNX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:23:27 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1802F5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:23:20 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-53-kQOjcUm9Mdygv-A1vaw1tA-1; Tue, 19 Sep 2023 14:23:13 +0100
-X-MC-Unique: kQOjcUm9Mdygv-A1vaw1tA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 19 Sep
- 2023 14:23:08 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 19 Sep 2023 14:23:08 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        Greg Ungerer <gregungerer@westnet.com.au>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "Nicholas Piggin" <npiggin@gmail.com>
-Subject: RE: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
-Thread-Topic: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
-Thread-Index: AQHZ6Kr+hLdybFnA00ugx5L/MFgM8bAiJxPQ
-Date:   Tue, 19 Sep 2023 13:23:08 +0000
-Message-ID: <e1fb697714ac408e85c4e3dc573cd7d5@AcuMS.aculab.com>
-References: <20230915183707.2707298-1-willy@infradead.org>
- <20230915183707.2707298-10-willy@infradead.org>
- <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
- <ZQW849TfSCK6u2f8@casper.infradead.org>
-In-Reply-To: <ZQW849TfSCK6u2f8@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 19 Sep 2023 09:23:56 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C94EC
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:23:48 -0700 (PDT)
+Received: from spock.localnet (unknown [94.142.239.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 7E91D1505BC0;
+        Tue, 19 Sep 2023 15:23:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1695129822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tq3JgcNh99UaG2q9/1V/2rlmDp+hgSkFOwAuTwify40=;
+        b=EFQn3dLIjGw2NfMY0Mw+zSYng4/2xEivklVs1aPyZtufAL0Lq4Nqiyi6HpVhdS7itx/CEb
+        yGDsRTNNyQYfqfPlXZMoj8OyQJa/NAyjd66+SF4pLuPq6x1A6I4tBCO2EoTGAuKCesF2dv
+        O+DFMhteDnsG9m5MrIY6EwOyoYqC7nA=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     linux-kernel@vger.kernel.org
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Aravind Iddamsetty <aravind.iddamsetty@intel.com>,
+        Fei Yang <fei.yang@intel.com>,
+        Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: [REGRESSION] [BISECTED] Panic in gen8_ggtt_insert_entries() with v6.5
+Date:   Tue, 19 Sep 2023 15:23:28 +0200
+Message-ID: <2612319.ElGaqSPkdT@natalenko.name>
+In-Reply-To: <6287208.lOV4Wx5bFT@natalenko.name>
+References: <4857570.31r3eYUQgx@natalenko.name> <6287208.lOV4Wx5bFT@natalenko.name>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="nextPart5147933.GXAFRqVoOG";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Well, that sucks.  What do you suggest for Coldfire?
+--nextPart5147933.GXAFRqVoOG
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Date: Tue, 19 Sep 2023 15:23:28 +0200
+Message-ID: <2612319.ElGaqSPkdT@natalenko.name>
+In-Reply-To: <6287208.lOV4Wx5bFT@natalenko.name>
+MIME-Version: 1.0
 
-Can you just do a 32bit xor ?
-Unless you've got smp m68k I'd presume it is ok?
-(And assuming you aren't falling off a page.)
+/cc Bagas as well (see below).
 
-	David
+On =C3=BAter=C3=BD 19. z=C3=A1=C5=99=C3=AD 2023 10:26:42 CEST Oleksandr Nat=
+alenko wrote:
+> /cc Matthew Wilcox and Andrew Morton because of folios (please see below).
+>=20
+> On sobota 2. z=C3=A1=C5=99=C3=AD 2023 18:14:12 CEST Oleksandr Natalenko w=
+rote:
+> > Hello.
+> >=20
+> > Since v6.5 kernel the following HW:
+> >=20
+> > * Lenovo T460s laptop with Skylake GT2 [HD Graphics 520] (rev 07)
+> > * Lenovo T490s laptop with WhiskeyLake-U GT2 [UHD Graphics 620] (rev 02)
+> >=20
+> > is affected by the following crash once KDE on either X11 or Wayland is=
+ started:
+> >=20
+> > i915 0000:00:02.0: enabling device (0006 -> 0007)
+> > i915 0000:00:02.0: vgaarb: deactivate vga console
+> > i915 0000:00:02.0: vgaarb: changed VGA decodes: olddecodes=3Dio+mem,dec=
+odes=3Dio+mem:owns=3Dmem
+> > i915 0000:00:02.0: [drm] Finished loading DMC firmware i915/skl_dmc_ver=
+1_27.bin (v1.27)
+> > [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 on minor 1
+> > fbcon: i915drmfb (fb0) is primary device
+> > i915 0000:00:02.0: [drm] fb0: i915drmfb frame buffer device
+> > =E2=80=A6
+> > memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=3D674 'kwin_wa=
+yland'
+> > BUG: unable to handle page fault for address: ffffb422c2800000
+> > #PF: supervisor write access in kernel mode
+> > #PF: error_code(0x0002) - not-present page
+> > PGD 100000067 P4D 100000067 PUD 1001df067 PMD 10d1cf067 PTE 0
+> > Oops: 0002 [#1] PREEMPT SMP PTI
+> > CPU: 1 PID: 674 Comm: kwin_wayland Not tainted 6.5.0-pf1 #1 a6c58ff41a7=
+b8bb16a19f5af9e0e9bce20f9f38d
+> > Hardware name: LENOVO 20FAS2BM0F/20FAS2BM0F, BIOS N1CET90W (1.58 ) 11/1=
+5/2022
+> > RIP: 0010:gen8_ggtt_insert_entries+0xc2/0x140 [i915]
+> > =E2=80=A6
+> > Call Trace:
+> >  <TASK>
+> >  intel_ggtt_bind_vma+0x3e/0x60 [i915 a83fdc6539431252dba13053979a8b680a=
+f86836]
+> >  i915_vma_bind+0x216/0x4b0 [i915 a83fdc6539431252dba13053979a8b680af868=
+36]
+> >  i915_vma_pin_ww+0x405/0xa80 [i915 a83fdc6539431252dba13053979a8b680af8=
+6836]
+> >  __i915_ggtt_pin+0x5a/0x130 [i915 a83fdc6539431252dba13053979a8b680af86=
+836]
+> >  i915_ggtt_pin+0x78/0x1f0 [i915 a83fdc6539431252dba13053979a8b680af8683=
+6]
+> >  __intel_context_do_pin_ww+0x312/0x700 [i915 a83fdc6539431252dba1305397=
+9a8b680af86836]
+> >  i915_gem_do_execbuffer+0xfc6/0x2720 [i915 a83fdc6539431252dba13053979a=
+8b680af86836]
+> >  i915_gem_execbuffer2_ioctl+0x111/0x260 [i915 a83fdc6539431252dba130539=
+79a8b680af86836]
+> >  drm_ioctl_kernel+0xca/0x170
+> >  drm_ioctl+0x30f/0x580
+> >  __x64_sys_ioctl+0x94/0xd0
+> >  do_syscall_64+0x5d/0x90
+> >  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> > =E2=80=A6
+> > note: kwin_wayland[674] exited with irqs disabled
+> >=20
+> > RIP seems to translate into this:
+> >=20
+> > $ scripts/faddr2line drivers/gpu/drm/i915/gt/intel_ggtt.o gen8_ggtt_ins=
+ert_entries+0xc2
+> > gen8_ggtt_insert_entries+0xc2/0x150:
+> > writeq at /home/pf/work/devel/own/pf-kernel/linux/./arch/x86/include/as=
+m/io.h:99
+> > (inlined by) gen8_set_pte at /home/pf/work/devel/own/pf-kernel/linux/dr=
+ivers/gpu/drm/i915/gt/intel_ggtt.c:257
+> > (inlined by) gen8_ggtt_insert_entries at /home/pf/work/devel/own/pf-ker=
+nel/linux/drivers/gpu/drm/i915/gt/intel_ggtt.c:300
+> >=20
+> > Probably, recent PTE-related changes are relevant:
+> >=20
+> > $ git log --oneline --no-merges v6.4..v6.5 -- drivers/gpu/drm/i915/gt/i=
+ntel_ggtt.c
+> > 3532e75dfadcf drm/i915/uc: perma-pin firmwares
+> > 4722e2ebe6f21 drm/i915/gt: Fix second parameter type of pre-gen8 pte_en=
+code callbacks
+> > 9275277d53248 drm/i915: use pat_index instead of cache_level
+> > 5e352e32aec23 drm/i915: preparation for using PAT index
+> > 341ad0e8e2542 drm/i915/mtl: Add PTE encode function
+> >=20
+> > Also note Lenovo T14s laptop with TigerLake-LP GT2 [Iris Xe Graphics] (=
+rev 01) is not affected by this issue.
+> >=20
+> > Full dmesg with DRM debug enabled is available in the bugreport I've re=
+ported earlier [1]. I'm sending this email to make the issue more visible.
+> >=20
+> > Please help.
+> >=20
+> > Thanks.
+> >=20
+> > [1] https://gitlab.freedesktop.org/drm/intel/-/issues/9256
+>=20
+> Matthew,
+>=20
+> Andrzej asked me to try to revert commits 0b62af28f249, e0b72c14d8dc and =
+1e0877d58b1e, and reverting those fixed the i915 crash for me. The e0b72c14=
+d8dc and 1e0877d58b1e commits look like just prerequisites, so I assume 0b6=
+2af28f249 ("i915: convert shmem_sg_free_table() to use a folio_batch") is t=
+he culprit here.
+>=20
+> Could you please check this?
+>=20
+> Our conversation with Andrzej is available at drm-intel GitLab [1].
+>=20
+> Thanks.
+>=20
+> [1] https://gitlab.freedesktop.org/drm/intel/-/issues/9256
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Bagas,
+
+would you mind adding this to the regression tracker please?
+
+Thanks.
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart5147933.GXAFRqVoOG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmUJoNAACgkQil/iNcg8
+M0vh4xAAt1VYPW8Fr0UHrGvXeZmvGqtxzOHB2BsshvL666iQn9vyVPPz0DyOPLa+
+MlrXGBuvObmjsTyYF/bPlfFACWcP0Sx3AVFD8BSJ9spDNL7DdUPEpYLcY2Q0UZTr
+JFJ/BcASjOr7LIUIG5hsOJY7cWIj1l796QtsSjRXr5QqEOzoqm0c24B4VTPbNyDI
+TEsqg3sy52OvDqvcn6EcSwltn3hrxxIUCF6bxgxselWwwmUs6NosvoC4g+rQRCaX
+wGB5d8DTDTt8TBK3Ye/p4l1WgnCjoWexETPOF9j46ZdsxVDYZHP7ZzFlMuZ4SeEu
+M3mew5MFlvCxJkVCeIzn7M35PiAr2fkHCpHpEdH0xdhNSufGk01NtCBBBeNlqYi4
+xBM9cYtNGT1lUw+74XAYnkiHwlYQVYVgAV9uW2Op80zX2NYmEpt9afQfL3nmqxk/
+1S/1+x7eszn7PDW8jxzSsvZSCVYEglUHbfOT5/fp81VKh0Q9eLWrU6wOM8CHcDSe
+ff3hXUH8MsTHTIgYX7nzhmsiVLu5K4j3S/xIJMFWyg2G8Gs8irdfkEPQw2P0f8+5
+1zAG7WMsb3CDhTOAdfmWQ5GtmxKjExbt850Ujoei5mXtG55kxLztzHEylsw5UH5p
+rBmQK2ApIWTLUZF7yV2Md0pT7iKZ9Y2dBseeuW0EH19nkcmEy3E=
+=GhwR
+-----END PGP SIGNATURE-----
+
+--nextPart5147933.GXAFRqVoOG--
+
+
 
