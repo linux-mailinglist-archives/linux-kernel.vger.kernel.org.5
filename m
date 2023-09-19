@@ -2,424 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A66437A67C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F267A67C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbjISPO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
+        id S233109AbjISPPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjISPO0 (ORCPT
+        with ESMTP id S233092AbjISPO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:14:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6ACEA;
-        Tue, 19 Sep 2023 08:14:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7577CC433C8;
-        Tue, 19 Sep 2023 15:14:16 +0000 (UTC)
-Message-ID: <016056b1-81b3-4435-8f6a-21bbdd7194c4@xs4all.nl>
-Date:   Tue, 19 Sep 2023 17:14:14 +0200
+        Tue, 19 Sep 2023 11:14:57 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2089.outbound.protection.outlook.com [40.107.6.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E44EA;
+        Tue, 19 Sep 2023 08:14:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EdrVIdu21rnGYo8g5qd2KmjKtpGWlixa92ahxFj33jNYBxcU8DibKx7a1/OlovW1G6zbBL76kX29588DgBQVyvvkKsXbLyiCVg6rYfZ3H8wLgVfgX6JISKdYNnBTKKOW2NMo+j4syVUoyhy1Slg5GdBgMPAD62ERrhy4nPZ6xQUVVJdgON+0XsEtzrvXnJq+1ZK75iIxhEXWYwbJS5xUnOv5+mMGLgtgsyt0FKH7fI8EAVdBpJZtG1Hp/SWIBs72BUvftg/jvwEdClHLAYN8bEqbXjk3JXLRqluL4pDtMAj/xvqyMgiMa1Bi8j1lYEDh07YSz6km57/t+0jN6XGsUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PIj/8lMdi3AihxzEkrx82HQCCHbMv8G96ybKBbI7jNM=;
+ b=Y0akuUBOMPestA3LkXKyhHkt6Kot8SUiBspWu02FXPjBDH/kOdK0a6mVcMoyKMINgcL9SYboX8mXeacTT/lQ9RV8HjzUGhjoJA2eSkDfe+mDqDv+ByTgutCdAPjJVZXA3a5nlbeCl1Cuu/DqgIbdhiaMMdi/dr8roh0Q725Swb9OfmI1c6hXnY7eP5/rbuNXaY9TWDSLeVF48i81D02k9HW8c1FsN4YbDGzc0triQN2pTNfARpwGYDi70s1elHP3eAX5TS43suUtEB9OEimWjaZ/w52mkEfr5IUPHANXd4VO0gycNBOFP0Tq1GlKssQ+o+NgdxJrgFNFq/UeKuinJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PIj/8lMdi3AihxzEkrx82HQCCHbMv8G96ybKBbI7jNM=;
+ b=Wx4Sl+nRy9BcLGH3ZBOHgCHYAde4Nv2YG7jrtn/kVPbvORI5N3G3pPlGqAVmOWu7R5NdM78F3dmvAss+Pzle5HwZ34Xc2HUv/yHed6BqL74zHkwZiUoIOWx8cWomhisAIUgmC4E/jpHzA1ki/juwrHJlWGpf/CE/O1zhZDS57ko=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by PAXPR04MB8457.eurprd04.prod.outlook.com (2603:10a6:102:1d8::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
+ 2023 15:14:49 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 15:14:49 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     vkoul@kernel.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, imx@lists.linux.dev
+Subject: [PATCH v2 0/2] dmaengine: fsl_edma: add trace and debugfs support
+Date:   Tue, 19 Sep 2023 11:14:28 -0400
+Message-Id: <20230919151430.2919042-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ2PR07CA0020.namprd07.prod.outlook.com
+ (2603:10b6:a03:505::19) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 47/49] media: v4l2: Add DELETE_BUFS ioctl
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
- <20230914133323.198857-48-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230914133323.198857-48-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB8457:EE_
+X-MS-Office365-Filtering-Correlation-Id: a3fa1259-9190-4368-0a45-08dbb9232a71
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VVmFAfnrERPXn9/rFdTFa818Z2i35jiQ9NJ9gijG3CFKH6KvSPelaJjnQiaD/RQgd2KMLf8Rm48eDUPPZfKQSLjuPItpgnXNUC7zTyWtl1Myx2eUbLuRHbUlCw10MYe9tV2Ks+3oTEx2Tg8SndD8aEv0Yg6EsxF2HW/siuqa66fwE2BeIpbZhpSM8Zcy/ySQK37JKzUWvHaZ+/0CYfTmCvdM6jcCOu26Je/dSwAnRiTrfb5f0reIIU0d/tKe+ouZBd5oUjV2JgaHp/73oIHTdpyo3ONU025T1xp6PwW0u3oitSrtUW+BdXLsXbsGSNaNaJcBferrzX/gPXBtukfafOghUWzU763R+wNnFc3KRV/E/C0+4prT359xJg4tnhV3Vd1Fe+ozqTwe6dL1WPkOZIg7cxm1ZB+J5ZhKDZ+/PO1VDIEQp2tQXpxPoebkXIwm81bAUkP/U1bJXXDUIPqv7iElHgd0GfpIynaamdI9CweKuuwvn2Phh2lmxPkGiE9V+f1iPtiOb83U+jEqQZJU+2DY8f3E3yiOQR93VO916sgX892D5pgXvoCJCx2mYo2nOSM+4pRk+010YJ5kXz/f/jWpI60s8nLAcHS0I3Gg5MiSeaHNnGsiyIog0q1qfL/l
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(39860400002)(396003)(451199024)(186009)(1800799009)(2906002)(5660300002)(8676002)(8936002)(1076003)(41300700001)(316002)(66556008)(66476007)(66946007)(478600001)(6666004)(52116002)(6506007)(6486002)(2616005)(26005)(83380400001)(6512007)(38350700002)(38100700002)(36756003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WmsYYlw//FoJNwAxTM44+A4dSbF5w1kfjsvAATSIhXtpFAxILOfELRNPeQwM?=
+ =?us-ascii?Q?Su02Ede0xwErXG27YFt/5+pbgmy07M17uJ/UWHavYN8O/+artkGtgV+QEjuY?=
+ =?us-ascii?Q?H1Ocv3BxFECJPbf+ss62igMQNuE0fYtuhwwuswIMlaXd3I3uzs0WKN727yNt?=
+ =?us-ascii?Q?ImU7vnijV8HEVEwBN33mz+LvZKOE8isNEq6fLBo8X41pM9L3YJ848f+0FNw0?=
+ =?us-ascii?Q?6U1tJbevdkbqSolGMNcwKpDafa/rGs/48cboXgGqQpx4NjgdUPElRn49Dn7M?=
+ =?us-ascii?Q?5jdyUmlZZsVZ04ZogJb6nube1XcTrcv1vYiwOVUGWRdnve6PEm1Lgn0pvDL3?=
+ =?us-ascii?Q?Ywq2Lo4rxf1xoVkSl6lgqGJxn9ams5x9thuCHg2uMOAz1dQGcMin/70jP26L?=
+ =?us-ascii?Q?etAONLUApaEExX3jH89DiZ3jGI2QK9jw5A96QIcaP6KiaE3ExWwEVduThsoT?=
+ =?us-ascii?Q?lF9a9c2K2epjG95IEHjwDpWEYrsjmRtTJl9/l+mdVE+XeMYn3g/54KDXNiKq?=
+ =?us-ascii?Q?KgfhQ0aYB12WZC9ecY3sMXyrtsqrvMXWghvTBAOHcZBRPECBpI6nfnUFhnW9?=
+ =?us-ascii?Q?XG5hfbb6XcP9c1ix/3RtIilGNAlHkAk1tU/WUmRzVUMrJwCrbRgwvFIqrLtD?=
+ =?us-ascii?Q?nkzbbjCFpArgwaIx833SWqxf3UC/WVysKo/xScyRjc6zuYeJUqGGPIZRA1Ii?=
+ =?us-ascii?Q?RVxms2RvDgJ/ngG+EE01bK2Reo653y0nsaR59goqZAP5RQJHSLGK1OTLsJ4l?=
+ =?us-ascii?Q?cw6XuXSOi0ODFVXfFrVf4ATUaaSeVs2OtJSc6RgeIKIKlsXF0YNnXlW+UXBu?=
+ =?us-ascii?Q?yM0IDqq6Jaky8jOQsLafgQpYne2CcnVZDCwo4ZtyC8LE8HRV5CIbwuJUKhQA?=
+ =?us-ascii?Q?xiPf2yf9YF7Zlt0tKpJAwV8zCxD2j0uJQWSeh0lN6q6sjfLchSIzS08P52x9?=
+ =?us-ascii?Q?X3VH3gsKwlw4MhpXbeSigVKn9fpv3R3YDoGU7vmLMi/itGq8idH4EipKxFMO?=
+ =?us-ascii?Q?p/JVsjsweiPPfJbK/EboNt8/PebXQYT4yWgHwacBPyMo8ii6eX7XWlXspf9c?=
+ =?us-ascii?Q?8yfuVhbZz2p6/2N9dwvpdPSsvJAz+3S0dr/fw0verLOrKS7jQxe4b/vSfX0u?=
+ =?us-ascii?Q?FhTSP5PjkyuomNYVlyOZ3QQlsDaUIRW3yOZL1c/J7BoFWVvNVpg3C7Jd/zmQ?=
+ =?us-ascii?Q?v/7pLwehigJBdCKXoXU22seuqyLFflTCJJYfsn7GRvHcXUsi0jygYTNfoDhH?=
+ =?us-ascii?Q?yUo4jxHupvrRP7PILBtUXXWcLEHlrpIKKwsMwswFf7E8R6I5OxakyhIK9yIo?=
+ =?us-ascii?Q?cyDG0Va672daigbgO3rWqugdKwe5XkaOXEBvV7iIQ0FXQGcbFkUuhKN/2drc?=
+ =?us-ascii?Q?Gr03AospWqcGTSmx+GLDn6ZuNmktVKcOoKGA97IDqFvX+VSD/uBRFtBsS77l?=
+ =?us-ascii?Q?pcnlphi3i6wIg1Y+FiHqPt6WCdLVBOd4Yqe9ajzsJ6aHIq934cKBxK9k4Ftk?=
+ =?us-ascii?Q?HgPQAPGRUo8R68Xl/LoUU+84W/gFF65T83wGmbVJKxVYksQ0ar25URDft1cw?=
+ =?us-ascii?Q?8Bt3yYd+TEwAhZfq56c=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3fa1259-9190-4368-0a45-08dbb9232a71
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 15:14:49.1779
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TJ166YtK8R6DbvSaj7s9loldny1nu43ffKVjZ3xz6qi87s6bOjYNBPiSWS+xZTc8EdInyX/uNBaSjpgkvKwS+A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8457
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 15:33, Benjamin Gaignard wrote:
-> VIDIOC_DELETE_BUFS ioctl allows to delete buffers from a queue.
-> The number of buffers to delete in given by count field of
-> struct v4l2_delete_buffers and the range start at the index
-> specified in the same structure.
+Change from v1 to v2
+Fixed tcd trace issue, data need be saved firstly.
 
-High level note: the CREATE_BUFS documentation also needs to be updated:
-the index field will mean something a little bit different for drivers
-that support this DELETE_BUFS ioctl.
+=== Trace ===
 
-That change can be done in a separate patch.
+echo 1 >/sys/kernel/debug/tracing/tracing_on
+echo 1 >/sys/kernel/debug/tracing/events/fsl_edma/enable
 
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../userspace-api/media/v4l/user-func.rst     |  1 +
->  .../media/v4l/vidioc-delete-bufs.rst          | 77 +++++++++++++++++++
->  .../media/common/videobuf2/videobuf2-core.c   | 30 ++++++++
->  .../media/common/videobuf2/videobuf2-v4l2.c   | 20 ++++-
->  drivers/media/v4l2-core/v4l2-dev.c            |  1 +
->  drivers/media/v4l2-core/v4l2-ioctl.c          | 17 ++++
->  include/media/v4l2-ioctl.h                    |  4 +
->  include/media/videobuf2-core.h                | 10 +++
->  include/media/videobuf2-v4l2.h                | 13 ++++
->  include/uapi/linux/videodev2.h                | 16 ++++
->  10 files changed, 188 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Documentation/userspace-api/media/v4l/user-func.rst
-> index 15ff0bf7bbe6..3fd567695477 100644
-> --- a/Documentation/userspace-api/media/v4l/user-func.rst
-> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
-> @@ -17,6 +17,7 @@ Function Reference
->      vidioc-dbg-g-chip-info
->      vidioc-dbg-g-register
->      vidioc-decoder-cmd
-> +    vidioc-delete-bufs
->      vidioc-dqevent
->      vidioc-dv-timings-cap
->      vidioc-encoder-cmd
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
-> new file mode 100644
-> index 000000000000..99cd03ee298c
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
-> @@ -0,0 +1,77 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +.. c:namespace:: V4L
-> +
-> +.. _VIDIOC_DELETE_BUFS:
-> +
-> +************************
-> +ioctl VIDIOC_DELETE_BUFS
-> +************************
-> +
-> +Name
-> +====
-> +
-> +VIDIOC_DELETE_BUFS - Deletes buffers from a queue
-> +
-> +Synopsis
-> +========
-> +
-> +.. c:macro:: VIDIOC_DELETE_BUFs
-> +
-> +``int ioctl(int fd, VIDIOC_DELETE_BUFs, struct v4l2_delete_buffers *argp)``
-> +
-> +Arguments
-> +=========
-> +
-> +``fd``
-> +    File descriptor returned by :c:func:`open()`.
-> +
-> +``argp``
-> +    Pointer to struct :c:type:`v4l2_delete_buffers`.
-> +
-> +Description
-> +===========
-> +
-> +Applications can optionally call the :ref:`VIDIOC_DELETE_BUFS` ioctl to
-> +delete buffers from a queue.
-> +
-> +.. c:type:: v4l2_delete_buffers
-> +
-> +.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.5cm}|
-> +
-> +.. flat-table:: struct v4l2_delete_buffers
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - __u32
-> +      - ``index``
-> +      - The starting buffer index to delete.
-> +    * - __u32
-> +      - ``count``
-> +      - The number of buffers to be deleted with indices 'index' until 'index + count - 1'.
-> +        All buffers in this range must be valid and in DEQUEUED state.
-> +        In error case errno is set to ``EINVAL`` error code and index returns the index of
-> +        the invalid buffer.
-> +        If count and index are set to 0 :ref:`VIDIOC_DELETE_BUFS` will return 0.
-> +    * - __u32
-> +      - ``type``
-> +      - Type of the stream or buffers, this is the same as the struct
-> +	:c:type:`v4l2_format` ``type`` field. See
-> +	:c:type:`v4l2_buf_type` for valid values.
-> +    * - __u32
-> +      - ``reserved``\ [13]
-> +      - A place holder for future extensions. Drivers and applications
-> +	must set the array to zero.
-> +
-> +Return Value
-> +============
-> +
-> +On success 0 is returned, on error -1 and the ``errno`` variable is set
-> +appropriately. The generic error codes are described at the
-> +:ref:`Generic Error Codes <gen-errors>` chapter.
-> +
-> +EBUSY
-> +    File I/O is in progress.
-> +
-> +EINVAL
-> +    The buffer ``index`` doesn't exist in the queue.
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 88cdf4dcb07c..465c2d7fccfa 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -1701,6 +1701,36 @@ int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb)
->  }
->  EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
->  
-> +int vb2_core_delete_bufs(struct vb2_queue *q, unsigned int start, unsigned int count)
-> +{
-> +	unsigned int i, ret = 0;
-> +
-> +	if (start == 0 && count == 0)
-> +		return 0;
-> +
-> +	mutex_lock(&q->mmap_lock);
-> +
-> +	for (i = start; i < start + count && i < q->max_allowed_buffers; i++) {
-> +		struct vb2_buffer *vb = vb2_get_buffer(q, i);
-> +
-> +		if (!vb) {
-> +			ret = -EINVAL;
-> +			goto unlock;
-> +		}
-> +		if (vb->state != VB2_BUF_STATE_DEQUEUED) {
-> +			ret = -EINVAL;
-> +			goto unlock;
-> +		}
-> +	}
-> +	__vb2_queue_free(q, start, count);
-> +	dprintk(q, 2, "buffers deleted\n");
-> +
-> +unlock:
-> +	mutex_unlock(&q->mmap_lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(vb2_core_delete_bufs);
-> +
->  /*
->   * vb2_start_streaming() - Attempt to start streaming.
->   * @q:		videobuf2 queue
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index a88abcea2921..9f90f01e5414 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -380,7 +380,7 @@ static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *md
->  
->  	vb = vb2_get_buffer(q, b->index);
->  	if (!vb) {
-> -		dprintk(q, 1, "%s: buffer is NULL\n", opname);
-> +		dprintk(q, 1, "%s: buffer %u was deleted\n", opname, b->index);
->  		return -EINVAL;
->  	}
->  
-> @@ -752,6 +752,12 @@ int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
->  }
->  EXPORT_SYMBOL_GPL(vb2_prepare_buf);
->  
-> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d)
-> +{
-> +	return vb2_core_delete_bufs(q, d->index, d->count);
-> +}
-> +EXPORT_SYMBOL_GPL(vb2_delete_bufs);
-> +
->  int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->  {
->  	unsigned requested_planes = 1;
-> @@ -1010,6 +1016,18 @@ EXPORT_SYMBOL_GPL(vb2_poll);
->  
->  /* vb2 ioctl helpers */
->  
-> +int vb2_ioctl_delete_bufs(struct file *file, void *priv,
-> +			  struct v4l2_delete_buffers *p)
-> +{
-> +	struct video_device *vdev = video_devdata(file);
-> +
-> +	if (vb2_queue_is_busy(vdev->queue, file))
-> +		return -EBUSY;
-> +
-> +	return vb2_delete_bufs(vdev->queue, p);
-> +}
-> +EXPORT_SYMBOL_GPL(vb2_ioctl_delete_bufs);
-> +
->  int vb2_ioctl_reqbufs(struct file *file, void *priv,
->  			  struct v4l2_requestbuffers *p)
->  {
-> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
-> index f81279492682..215654fd6581 100644
-> --- a/drivers/media/v4l2-core/v4l2-dev.c
-> +++ b/drivers/media/v4l2-core/v4l2-dev.c
-> @@ -720,6 +720,7 @@ static void determine_valid_ioctls(struct video_device *vdev)
->  		SET_VALID_IOCTL(ops, VIDIOC_PREPARE_BUF, vidioc_prepare_buf);
->  		SET_VALID_IOCTL(ops, VIDIOC_STREAMON, vidioc_streamon);
->  		SET_VALID_IOCTL(ops, VIDIOC_STREAMOFF, vidioc_streamoff);
-> +		SET_VALID_IOCTL(ops, VIDIOC_DELETE_BUFS, vidioc_delete_bufs);
->  	}
->  
->  	if (is_vid || is_vbi || is_meta) {
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index f4d9d6279094..46710228ecc8 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -489,6 +489,13 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
->  	v4l_print_format(&p->format, write_only);
->  }
->  
-> +static void v4l_print_delete_buffers(const void *arg, bool write_only)
-> +{
-> +	const struct v4l2_delete_buffers *p = arg;
-> +
-> +	pr_cont("index=%u, count=%u\n", p->index, p->count);
-> +}
-> +
->  static void v4l_print_streamparm(const void *arg, bool write_only)
->  {
->  	const struct v4l2_streamparm *p = arg;
-> @@ -2160,6 +2167,15 @@ static int v4l_prepare_buf(const struct v4l2_ioctl_ops *ops,
->  	return ret ? ret : ops->vidioc_prepare_buf(file, fh, b);
->  }
->  
-> +static int v4l_delete_bufs(const struct v4l2_ioctl_ops *ops,
-> +			   struct file *file, void *fh, void *arg)
-> +{
-> +	struct v4l2_delete_buffers *delete = arg;
-> +	int ret = check_fmt(file, delete->type);
-> +
-> +	return ret ? ret : ops->vidioc_delete_bufs(file, fh, delete);
-> +}
-> +
->  static int v4l_g_parm(const struct v4l2_ioctl_ops *ops,
->  				struct file *file, void *fh, void *arg)
->  {
-> @@ -2909,6 +2925,7 @@ static const struct v4l2_ioctl_info v4l2_ioctls[] = {
->  	IOCTL_INFO(VIDIOC_ENUM_FREQ_BANDS, v4l_enum_freq_bands, v4l_print_freq_band, 0),
->  	IOCTL_INFO(VIDIOC_DBG_G_CHIP_INFO, v4l_dbg_g_chip_info, v4l_print_dbg_chip_info, INFO_FL_CLEAR(v4l2_dbg_chip_info, match)),
->  	IOCTL_INFO(VIDIOC_QUERY_EXT_CTRL, v4l_query_ext_ctrl, v4l_print_query_ext_ctrl, INFO_FL_CTRL | INFO_FL_CLEAR(v4l2_query_ext_ctrl, id)),
-> +	IOCTL_INFO(VIDIOC_DELETE_BUFS, v4l_delete_bufs, v4l_print_delete_buffers, INFO_FL_PRIO | INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_delete_buffers, type)),
->  };
->  #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
->  
-> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
-> index edb733f21604..55afbde54211 100644
-> --- a/include/media/v4l2-ioctl.h
-> +++ b/include/media/v4l2-ioctl.h
-> @@ -163,6 +163,8 @@ struct v4l2_fh;
->   *	:ref:`VIDIOC_CREATE_BUFS <vidioc_create_bufs>` ioctl
->   * @vidioc_prepare_buf: pointer to the function that implements
->   *	:ref:`VIDIOC_PREPARE_BUF <vidioc_prepare_buf>` ioctl
-> + * @vidioc_delete_bufs: pointer to the function that implements
-> + *	:ref:`VIDIOC_DELETE_BUFS <vidioc_delete_bufs>` ioctl
->   * @vidioc_overlay: pointer to the function that implements
->   *	:ref:`VIDIOC_OVERLAY <vidioc_overlay>` ioctl
->   * @vidioc_g_fbuf: pointer to the function that implements
-> @@ -422,6 +424,8 @@ struct v4l2_ioctl_ops {
->  				  struct v4l2_create_buffers *b);
->  	int (*vidioc_prepare_buf)(struct file *file, void *fh,
->  				  struct v4l2_buffer *b);
-> +	int (*vidioc_delete_bufs)(struct file *file, void *fh,
-> +				  struct v4l2_delete_buffers *d);
->  
->  	int (*vidioc_overlay)(struct file *file, void *fh, unsigned int i);
->  	int (*vidioc_g_fbuf)(struct file *file, void *fh,
-> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-> index 734437236cc4..9b3dd96017c2 100644
-> --- a/include/media/videobuf2-core.h
-> +++ b/include/media/videobuf2-core.h
-> @@ -845,6 +845,16 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->   */
->  int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb);
->  
-> +/**
-> + * vb2_core_delete_bufs() -
-> + * @q:		pointer to &struct vb2_queue with videobuf2 queue.
-> + * @start:	first index of the range of buffers to delete.
-> + * @count:	number of buffers to delete.
-> + *
-> + *  Return: returns zero on success; an error code otherwise.
-> + */
-> +int vb2_core_delete_bufs(struct vb2_queue *q, unsigned int start, unsigned int count);
-> +
->  /**
->   * vb2_core_qbuf() - Queue a buffer from userspace
->   *
-> diff --git a/include/media/videobuf2-v4l2.h b/include/media/videobuf2-v4l2.h
-> index 5a845887850b..79cea8459f52 100644
-> --- a/include/media/videobuf2-v4l2.h
-> +++ b/include/media/videobuf2-v4l2.h
-> @@ -118,6 +118,17 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create);
->   */
->  int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
->  		    struct v4l2_buffer *b);
-> +/**
-> + * vb2_delete_bufs() - Delete buffers from the queue
-> + *
-> + * @q:		pointer to &struct vb2_queue with videobuf2 queue.
-> + * @d:		delete parameter, passed from userspace to
-> + *		&v4l2_ioctl_ops->vidioc_delete_bufs handler in driver
-> + *
-> + * The return values from this function are intended to be directly returned
-> + * from &v4l2_ioctl_ops->vidioc_delete_bufs handler in driver.
-> + */
-> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d);
->  
->  /**
->   * vb2_qbuf() - Queue a buffer from userspace
-> @@ -334,6 +345,8 @@ int vb2_ioctl_streamon(struct file *file, void *priv, enum v4l2_buf_type i);
->  int vb2_ioctl_streamoff(struct file *file, void *priv, enum v4l2_buf_type i);
->  int vb2_ioctl_expbuf(struct file *file, void *priv,
->  	struct v4l2_exportbuffer *p);
-> +int vb2_ioctl_delete_bufs(struct file *file, void *priv,
-> +			  struct v4l2_delete_buffers *p);
->  
->  /* struct v4l2_file_operations helpers */
->  
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 78260e5d9985..9cc7f570d995 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -2616,6 +2616,20 @@ struct v4l2_create_buffers {
->  	__u32			reserved[6];
->  };
->  
-> +/**
-> + * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
-> + * @index:	the first buffer to be deleted
-> + * @count:	number of buffers to delete
-> + * @type:	enum v4l2_buf_type
-> + * @reserved:	future extensions
-> + */
-> +struct v4l2_delete_buffers {
-> +	__u32			index;
-> +	__u32			count;
-> +	__u32			type;
-> +	__u32			reserved[13];
-> +};
-> +
->  /*
->   *	I O C T L   C O D E S   F O R   V I D E O   D E V I C E S
->   *
-> @@ -2715,6 +2729,8 @@ struct v4l2_create_buffers {
->  #define VIDIOC_DBG_G_CHIP_INFO  _IOWR('V', 102, struct v4l2_dbg_chip_info)
->  
->  #define VIDIOC_QUERY_EXT_CTRL	_IOWR('V', 103, struct v4l2_query_ext_ctrl)
-> +#define VIDIOC_DELETE_BUFS	_IOWR('V', 104, struct v4l2_delete_buffers)
-> +
->  
->  /* Reminder: when adding new ioctls please add support for them to
->     drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+Run any dma test
+...
 
-Regards,
+cat /sys/kernel/debug/tracing/trace
 
-	Hans
+ uart_testapp_11-448     [000] d..1.    69.185019: edma_fill_tcd:
+==== TCD =====
+  saddr:  0x831ee020
+  soff:       0x8000
+  attr:       0xffff
+  nbytes: 0xfba40000
+  slast:  0x00000000
+  daddr:  0x8aaa4800
+  doff:       0x0001
+  citer:      0x0800
+  dlast:  0xfba40020
+  csr:        0x0052
+  biter:      0x0800
+
+ uart_testapp_11-448     [000] d..2.    69.185022: edma_writew: offset 0001803c: value 00000000
+ uart_testapp_11-448     [000] d..2.    69.185023: edma_writel: offset 00018020: value 4259001c
+ uart_testapp_11-448     [000] d..2.    69.185024: edma_writel: offset 00018030: value 8aaa4000
+
+=== DebugFS ===
+
+cat /sys/kernel/debug/dmaengine/42000000.dma-controller/42000000.dma-controller-CH00/ch_sbr
+0x00208003
+
+Frank Li (2):
+  dmaengine: fsl-emda: add debugfs support
+  dmaengine: fsl-edma: add trace event support
+
+ drivers/dma/Makefile           |   7 +-
+ drivers/dma/fsl-edma-common.c  |   2 +
+ drivers/dma/fsl-edma-common.h  |  37 ++++++++-
+ drivers/dma/fsl-edma-debugfs.c | 116 ++++++++++++++++++++++++++++
+ drivers/dma/fsl-edma-main.c    |   2 +
+ drivers/dma/fsl-edma-trace.c   |   4 +
+ drivers/dma/fsl-edma-trace.h   | 134 +++++++++++++++++++++++++++++++++
+ 7 files changed, 296 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/dma/fsl-edma-debugfs.c
+ create mode 100644 drivers/dma/fsl-edma-trace.c
+ create mode 100644 drivers/dma/fsl-edma-trace.h
+
+-- 
+2.34.1
+
