@@ -2,47 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFAE7A6EEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C877A6EF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbjISXDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
+        id S233331AbjISXDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232649AbjISXDo (ORCPT
+        with ESMTP id S232804AbjISXDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Sep 2023 19:03:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427ABC6;
-        Tue, 19 Sep 2023 16:03:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F064FC433C9;
-        Tue, 19 Sep 2023 23:03:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9ACC0;
+        Tue, 19 Sep 2023 16:03:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FAF6C433CD;
+        Tue, 19 Sep 2023 23:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695164616;
-        bh=/Dcw7zKC8BcBHNTeIR44kvNUH+eJPDiCfQUsI4Z5I54=;
+        s=k20201202; t=1695164618;
+        bh=AVm/wivqgdaYPeb2TV3gnjnCGczTQW2Knav2WIIU+3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rCclC7fIhDJmgNDXlHqsdnjDeyHaEABcJWcMB2oy6ta2zyQ7K3TIfp0Xi/73mq5ti
-         NrCTFJGnwrvfkkl0vbIfeogl+eXNyzWiuPbXgyQpJg3TiCm/JzCCt9QlQFn6O3NOnZ
-         8rkVxX/NzgEZZtkIuG7iaJ47hnaWpksnrbaL0cS1j5ybgyfncJAgtC9Dgf5e8qImOT
-         sns4X861QhvvPXJNiuJw1wpKIu8vpAws8wilxkQ1fy0ATZZKtRNv1fWpjS2gOtHOzL
-         CEVgoXV60Fms9j8TVrogasL1Se4NGh0b8LhP3TcCM4Mtl5x97q9QJd6riCQtE6w++0
-         OOTC4kW7xY1uA==
+        b=pHeNS/agG4PS6WxON62G7QizekGP+u5vmPP2ipBG9P8uwxjXW73vH9UdVrn6WwsUX
+         6vj/DYrQ14u7MCBDHmt/PNYf/5QogI4s9Q2qDAIQ8RjmUqJGtZMa+/HHPdILKcUTqv
+         rKRZ+FtjEEs4ZwWdnVA0nEaS/9sZE8ZHWaoqlI8ODh5wUUZvmQqni6a58P8HUUhy/m
+         A/0zyE9i5u1D34c4aqUkTYtJoSDelOi2ug+TUJ7Ekydhbq0qGuJataqmS+wOvtY+9Q
+         SJrCq78hKb8rM0ph9DeRyYaYa0fbPU9Vm7NbbIdjoUYfBUFW3Z+o2Yzm9O7aftsWMG
+         BdLPieoZMA90g==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3] arm64: dts: qcom: sdm630: Add support for modem remoteproc
-Date:   Tue, 19 Sep 2023 16:07:28 -0700
-Message-ID: <169516485985.787935.13554174726198807178.b4-ty@kernel.org>
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        yangcong5@huaqin.corp-partner.google.com,
+        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        hsinyi@google.com, Chris Morgan <macroalpha82@gmail.com>,
+        linux-input@vger.kernel.org, cros-qcom-dts-watchers@chromium.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: (subset) [PATCH v4 00/11] drm/panel and i2c-hid: Allow panels and touchscreens to power sequence together
+Date:   Tue, 19 Sep 2023 16:07:29 -0700
+Message-ID: <169516486001.787935.12322857337806445764.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230719093458.2668842-1-alexeymin@postmarketos.org>
-References: <20230719093458.2668842-1-alexeymin@postmarketos.org>
+In-Reply-To: <20230727171750.633410-1-dianders@chromium.org>
+References: <20230727171750.633410-1-dianders@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -56,16 +67,21 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 19 Jul 2023 12:34:58 +0300, Alexey Minnekhanov wrote:
-> Modem subsystem in SDM630/660 is similar to MSM8998 and
-> device tree node for it is based on the one from msm8998.dtsi.
+On Thu, 27 Jul 2023 10:16:27 -0700, Douglas Anderson wrote:
+> The big motivation for this patch series is mostly described in the patch
+> ("drm/panel: Add a way for other devices to follow panel state"), but to
+> quickly summarize here: for touchscreens that are connected to a panel we
+> need the ability to power sequence the two device together. This is not a
+> new need, but so far we've managed to get by through a combination of
+> inefficiency, added costs, or perhaps just a little bit of brokenness.
+> It's time to do better. This patch series allows us to do better.
 > 
-> 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: sdm630: Add support for modem remoteproc
-      commit: 09f1642eca6eb6d25a630214098350dc02917954
+[11/11] arm64: dts: qcom: sc7180: Link trogdor touchscreens to the panels
+        commit: 989aac9dea7fcfc33b5eedc4ae44abbf71460a4d
 
 Best regards,
 -- 
