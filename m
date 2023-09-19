@@ -2,162 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 844637A5FED
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED0D7A5FF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbjISKpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 06:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
+        id S231278AbjISKqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 06:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbjISKpa (ORCPT
+        with ESMTP id S230145AbjISKql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 06:45:30 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5814AE8;
-        Tue, 19 Sep 2023 03:45:24 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-9a9d82d73f9so691837466b.3;
-        Tue, 19 Sep 2023 03:45:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695120323; x=1695725123;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RVfayBrkG3MmTlRAQhH7GKJ43BUvCSqSov1VbKijaiQ=;
-        b=KPma/3nX84EtdDH0yjN1GKa2H42MQ1/9U1t8jNuz/dZrjVdLHTKC/MFCjhiwo5YeOt
-         XjqB7lLAuvVYSgw0y6Qkc+a70dqkybsb3rez9tHDDieTG04X5LsPgiKYjI0ArkgjRmcj
-         fqsI9NrA05wl4ogE/gSSserf7C3n1VWzegac9aMQubwvCI6frV1YM9YuDgbX+6mk/yMJ
-         26FtVYwahnIhNyA9mVx7c22QVnm4zQ+SF+Cwxd+LNc0FVOHanO7Kyrr6bsmKin19AeLH
-         FO6yZxqk/lZys+Lq/9plFJmLMJJXiiHpscMS9fK9qwNlSmTMoZkNRVmE13FkecDPrPNT
-         rS9g==
-X-Gm-Message-State: AOJu0Yw0l3bjz4DBDKBiL0KSm4BIQkIFk8ZPL34opjDTvW7S/SW95FgL
-        88Y4B5eOwp05HVcHMhQY2aE=
-X-Google-Smtp-Source: AGHT+IEkiUT7X9tkcJdcKb11NtbiKxnFrjh1FEnfrim6ziAGkLVZcb9sZizOoY84LNhzlt0QjnZLOw==
-X-Received: by 2002:a17:907:a07a:b0:99e:5d8:a6f9 with SMTP id ia26-20020a170907a07a00b0099e05d8a6f9mr9166806ejc.66.1695120322344;
-        Tue, 19 Sep 2023 03:45:22 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id gv23-20020a170906f11700b0098ec690e6d7sm7614689ejb.73.2023.09.19.03.45.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 03:45:22 -0700 (PDT)
-Message-ID: <ae486636-c075-41d9-9304-b0cfb07c132c@kernel.org>
-Date:   Tue, 19 Sep 2023 12:45:21 +0200
+        Tue, 19 Sep 2023 06:46:41 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2067.outbound.protection.outlook.com [40.107.212.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4B6F2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 03:46:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fhTfM9lMrJqWHCY1HGfwKqxRGRngufCU79iuQ1LRaowDszgwbOWDaLsDlSVQVoRClStYEUirBsIOsgTi7U7fQS7+C5k3G8pTsdWAo67myK1qJLqM5/Jd01nGUVrTBVbioJhl1mRrmI/z6BfONzQjrhK9hVRwZqz9o/TXNNdVcY63C1sAZJQaNEDIyeYP7M5I4bmEzIdRBoKfYO65F7KHs+EiPFQUwfrpMQBeHcGFf0lcglWVbAtDVYmoqrQ8y9xR2e2MIBNKGY/LVaMV82RaAfTy6yTySnTN0TAkyrQoYbP10OUhVhsK4BDeUUg2LQGKTmD5qWYHksBK15C/f36wkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Dbrq31DOxa0dqnY7G1Ado317jeyJgJ9DXovYoz1/V4g=;
+ b=LbTfKd7PT46HaLe2k0/G20qD7yWxoN9McM3rynytgKezhZCMfesw1L8GLcuS92RPU63tpBOdI0oUaEdepbt3WwMxXxM8d3hqD0sQVwOckACt1PwNfzIioHk7Vxz4u92yQZPOBoN/bTfuWHnuh2l8+yBFjMnvwxtMVjPJrhczZuQoT/D6kIKib6bKR1R9B5IrV2s4tfGm6QhpRcmwb5XxWeBv2aCZU7uLXpDAvEsuEpm0OswSgzEAqe9F5yQmIuP0/tFBlOxiHN7zX1VT+B+fAz0ODTu6J9UwZCmeztAxab9S/uIuGGYCd/yjd/Eltg4LMAYdonwaFvTXIZrMhhb8Tw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Dbrq31DOxa0dqnY7G1Ado317jeyJgJ9DXovYoz1/V4g=;
+ b=e/PIAJ9zdkNZRSoJiaG8G5aup0MgnBaR4Y69QSi1CEYZ0YDUKydeyrD6VBwAXFNz8s2bR83OigC2TWW6uyQ76mOnXOK5+YuWxtI/s37BNCpDB0nGOFc7IQqfk6aLJoXDS1TPsFSyDjL4KZa3oBgqFJkSNQwAmyxT5FX0EZ2y9k0=
+Received: from MN2PR06CA0012.namprd06.prod.outlook.com (2603:10b6:208:23d::17)
+ by DM4PR12MB7576.namprd12.prod.outlook.com (2603:10b6:8:10c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.24; Tue, 19 Sep
+ 2023 10:46:31 +0000
+Received: from BL02EPF0001A0FD.namprd03.prod.outlook.com
+ (2603:10b6:208:23d:cafe::bb) by MN2PR06CA0012.outlook.office365.com
+ (2603:10b6:208:23d::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28 via Frontend
+ Transport; Tue, 19 Sep 2023 10:46:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A0FD.mail.protection.outlook.com (10.167.242.104) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6792.20 via Frontend Transport; Tue, 19 Sep 2023 10:46:31 +0000
+Received: from cjq-desktop.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 19 Sep
+ 2023 05:46:25 -0500
+From:   Jiqian Chen <Jiqian.Chen@amd.com>
+To:     Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        David Airlie <airlied@redhat.com>,
+        "Gurchetan Singh" <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@gmail.com>,
+        "Robert Beckett" <bob.beckett@collabora.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     <qemu-devel@nongnu.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Alex Deucher <Alexander.Deucher@amd.com>,
+        "Christian Koenig" <Christian.Koenig@amd.com>,
+        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        Honglei Huang <Honglei1.Huang@amd.com>,
+        Julia Zhang <Julia.Zhang@amd.com>,
+        Huang Rui <Ray.Huang@amd.com>,
+        Jiqian Chen <Jiqian.Chen@amd.com>
+Subject: [LINUX KERNEL PATCH v5 0/1] add freeze_mode for virtio_pci and add S3 support for virtgpu
+Date:   Tue, 19 Sep 2023 18:46:05 +0800
+Message-ID: <20230919104607.2282248-1-Jiqian.Chen@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/15] tty: fix kernel-doc for functions in tty.h
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230919085156.1578-1-jirislaby@kernel.org>
- <20230919085156.1578-10-jirislaby@kernel.org>
- <6033668f-71cc-b21-a034-a1ff31d7279@linux.intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <6033668f-71cc-b21-a034-a1ff31d7279@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FD:EE_|DM4PR12MB7576:EE_
+X-MS-Office365-Filtering-Correlation-Id: 720366ff-8609-44a6-4722-08dbb8fdaf51
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vswx3yn+Ldwp72t01LvMSnSNf7ScXBloCPj0OydQNrDt7AK1XK6HNFCuMuFniWML8tcJN4zvul2zQRRfpXiligXzBQ9NW193hAbEOZLbTv6e9ht6PQ+qtpwy+0a0v1yIFG2YKUTCwYP/Y263QHLrqwsBNfyKbCQSSf5DpYvqr3T23l2I2VG6raCxzrW8G7T5WDoslhkpX8WtfvworPaij2MrPol1Vr1PVqtw90gbSHimtIfPdUtLm+S8YNhlIU/WacuJXq+Iyt8gdkIIuyLe2dri++7ZUhggwHLQkOidfKq7i7S/ZSdBmScdkQ+PYkJP4yb8GFfEKiYsmfowQPBBUKqR0h418AkxN7tNwsKpW04Q5uI4uXkpMVJ7yV37xcE0FdjaxJnQ8+ugAEoLqiGpvCcx/5DlxeSmRcP/QPLnmmxT58aMxmK4vOIS0KcPaW5+OTR3/mTSWsl519xhx2gr5nFzSOe/1j+HKJAeEYNH9lbnUGtt4QyvtGEHqk62zmUXIXRudFwpU8JupGusaj1pBbOXWaiOkrOXtvkYFGj2HXXZUhywCUjPGMgi0PsoxVNgmaaCtHSf2He8RhzZyF+X+/9h4obqHn83mJZceW+tk+QHp5STItuU1OHQM61NWhko0oRgjW41TaeipwTGzURK+Hb2SL85+vIpCOfKTpEuf9STVnDIhw2XVElMpqLnODw/90RuM8Jf+d8VHUwPg+LqNlmyjJ9JiwgRELB6+KFCYMULA8hYnirymdJJ04ye/93OYwlQp1pec56LkV9NL/fstpgJGStXNE4wCHXVlVVxkspg0q7wdrsdHmnqZu76ReVI
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(346002)(376002)(39860400002)(186009)(451199024)(82310400011)(1800799009)(40470700004)(36840700001)(46966006)(82740400003)(40460700003)(426003)(36860700001)(70586007)(921005)(316002)(47076005)(81166007)(356005)(4326008)(70206006)(41300700001)(110136005)(478600001)(7696005)(6666004)(966005)(7416002)(83380400001)(16526019)(336012)(26005)(1076003)(8936002)(2906002)(8676002)(86362001)(2616005)(5660300002)(36756003)(40480700001)(54906003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 10:46:31.0164
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 720366ff-8609-44a6-4722-08dbb8fdaf51
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7576
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19. 09. 23, 12:07, Ilpo Järvinen wrote:
-> On Tue, 19 Sep 2023, Jiri Slaby (SUSE) wrote:
-> 
->> tty_kref_get() is already included in Documentation, but is not properly
->> formatted. Fix this.
->>
->> tty_get_baud_rate() is neither properly formatted, nor is included. Fix
->> both.
->>
->> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
->> ---
->>   Documentation/driver-api/tty/tty_ioctl.rst |  3 +++
->>   include/linux/tty.h                        | 21 +++++++++------------
->>   2 files changed, 12 insertions(+), 12 deletions(-)
->>
->> diff --git a/Documentation/driver-api/tty/tty_ioctl.rst b/Documentation/driver-api/tty/tty_ioctl.rst
->> index 9b0be79fc15e..3ff1ac5e07f1 100644
->> --- a/Documentation/driver-api/tty/tty_ioctl.rst
->> +++ b/Documentation/driver-api/tty/tty_ioctl.rst
->> @@ -5,3 +5,6 @@ TTY IOCTL Helpers
->>   =================
->>   
->>   .. kernel-doc:: drivers/tty/tty_ioctl.c
->> +
->> +.. kernel-doc:: include/linux/tty.h
->> +   :identifiers: tty_get_baud_rate
->> diff --git a/include/linux/tty.h b/include/linux/tty.h
->> index 59d675f345e9..4b6340ac2af2 100644
->> --- a/include/linux/tty.h
->> +++ b/include/linux/tty.h
->> @@ -390,14 +390,12 @@ int vcs_init(void);
->>   extern const struct class tty_class;
->>   
->>   /**
->> - *	tty_kref_get		-	get a tty reference
->> - *	@tty: tty device
->> + * tty_kref_get - get a tty reference
->> + * @tty: tty device
->>    *
->> - *	Return a new reference to a tty object. The caller must hold
->> - *	sufficient locks/counts to ensure that their existing reference cannot
->> - *	go away
->> + * Returns: a new reference to a tty object. The caller must hold sufficient
->> + * locks/counts to ensure that their existing reference cannot go away
-> 
-> Shouldn't this have also Locking: entry instead of hiding the details into
-> Return?
+Hi all,
+This is the v5 of kernel patches and v5 makes below changes:
+* Since this series patches add a new mechanism that let virtgpu and Qemu can negotiate
+  their reset behavior, and other guys hope me can improve this mechanism to virtio pci
+  level, so that other virtio devices can also benefit from it. So instead of adding
+  new feature flag VIRTIO_GPU_F_FREEZE_S3 only serves for virtgpu, v5 add a new parameter
+  named freeze_mode to virtio_pci_common_cfg, when guest begin suspending, set freeze_mode
+  to FREEZE_S3, and then all virtio devices can get this status, and change their reset
+  behavior according freeze_mode. See the new commit "virtio_pci: Add freeze_mode for
+  virtio_pci_common_cfg"
+* The second commit "virtgpu: Add freeze and restore func to reinit vqs" is the same as
+  before, it delete virtqueus in freeze() and re-initialize virtqueus in restore().
 
-/me left to fix both in a separate patch.
+The link to trace this issue:
+https://gitlab.com/qemu-project/qemu/-/issues/1860
 
-thanks,
+Best regards,
+Jiqian Chen
+
+v4:
+Link:
+no v4 of kernel patch.
+V4 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230720120816.8751-1-Jiqian.Chen@amd.com/
+
+
+v3:
+makes below changes:
+* Use enum for freeze mode, so this can be extended with more
+  modes in the future.
+* Rename functions and paratemers with "_S3" postfix.
+And no functional changes.
+Link:
+https://lore.kernel.org/lkml/20230720115805.8206-1-Jiqian.Chen@amd.com/T/#t
+V3 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230719074726.1613088-1-Jiqian.Chen@amd.com/T/#t
+
+
+v2:
+makes below changes:
+* Change VIRTIO_CPU_CMD_STATUS_FREEZING to 0x0400 (<0x1000)
+* Add a new feature flag VIRTIO_GPU_F_FREEZING, so that guest and
+  host can negotiate whenever freezing is supported or not.
+Link:
+https://lore.kernel.org/lkml/20230630073448.842767-1-Jiqian.Chen@amd.com/T/#t
+V2 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230630070016.841459-1-Jiqian.Chen@amd.com/T/#t
+
+
+v1:
+Hi all,
+I am working to implement virtgpu S3 function on Xen.
+
+Currently on Xen, if we start a guest who enables virtgpu, and then run "echo mem > 
+/sys/power/state" to suspend guest. And run "sudo xl trigger <guest id> s3resume"
+to resume guest. We can find that the guest kernel comes back, but the display doesn't.
+It just shows a black screen.
+
+In response to the above phenomenon, I have found two problems.
+
+First, if we move mouse on the black screen, guest kernel still sends a cursor request
+to Qemu, but Qemu doesn't response. Because when guest is suspending, it calls
+device_suspend, and then call into Qemu to call virtio_reset->__virtio_queue_reset. In
+__virtio_queue_reset, it clears all virtqueue information on Qemu end. So, after guest
+resumes, Qemu can't get message from virtqueue.
+
+Second, the reason why display can't come back is that when guest is suspending, it calls
+into Qemu to call virtio_reset->virtio_gpu_gl_reset. In virtio_gpu_gl_reset, it destroys
+all resources and resets renderer, which are used for display. So after guest resumes,
+the display can't come back to the status when guest is suspended.
+
+This patch initializes virtqueue when guest is resuming to solve first problem. And it
+notifies Qemu that guest is suspending to prevent Qemu destroying resources, this is to
+solve second problem. And then, I can bring the display back, and everything continues
+their actions after guest resumes.
+Link:
+https://lore.kernel.org/lkml/20230608063857.1677973-1-Jiqian.Chen@amd.com/
+V1 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230608025655.1674357-2-Jiqian.Chen@amd.com/
+
+
+Jiqian Chen (2):
+  virtio_pci: Add freeze_mode for virtio_pci_common_cfg
+  virtgpu: Add freeze and restore func to reinit vqs
+
+ drivers/gpu/drm/virtio/virtgpu_drv.c   | 23 ++++++++++++++++++++
+ drivers/gpu/drm/virtio/virtgpu_drv.h   |  1 +
+ drivers/gpu/drm/virtio/virtgpu_kms.c   | 30 ++++++++++++++++++--------
+ drivers/virtio/virtio.c                | 13 +++++++++++
+ drivers/virtio/virtio_pci_modern.c     |  9 ++++++++
+ drivers/virtio/virtio_pci_modern_dev.c | 16 ++++++++++++++
+ include/linux/virtio_config.h          |  1 +
+ include/linux/virtio_pci_modern.h      |  2 ++
+ include/uapi/linux/virtio_pci.h        | 16 ++++++++++++--
+ 9 files changed, 100 insertions(+), 11 deletions(-)
+
 -- 
-js
-suse labs
+2.34.1
 
