@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CCF7A574C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CFD7A5749
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbjISCPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 22:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
+        id S230486AbjISCPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 22:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbjISCPi (ORCPT
+        with ESMTP id S230393AbjISCPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 22:15:38 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Sep 2023 19:15:27 PDT
-Received: from unicom146.biz-email.net (unicom146.biz-email.net [210.51.26.146])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C681D126
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:15:27 -0700 (PDT)
-Received: from unicom146.biz-email.net
-        by unicom146.biz-email.net ((D)) with ASMTP (SSL) id OBH00018;
-        Tue, 19 Sep 2023 10:14:18 +0800
-Received: from localhost.localdomain (10.73.42.196) by
- Jtjnmail201615.home.langchao.com (10.100.2.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 19 Sep 2023 10:14:18 +0800
-From:   Tom Yang <yangqixiao@inspur.com>
-To:     <dhowells@redhat.com>, <marc.dionne@auristor.com>
-CC:     <linux-afs@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Tom Yang <yangqixiao@inspur.com>
-Subject: [PATCH] fs: afs: two "the"
-Date:   Tue, 19 Sep 2023 10:14:16 +0800
-Message-ID: <20230919021416.49535-1-yangqixiao@inspur.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 18 Sep 2023 22:15:10 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF9610E
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:15:03 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-573e67cc6eeso3967912a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695089703; x=1695694503; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=l+Qrr9nRQADHQsZ3OsEHTe652qqYXAsbmlLNRv+gr00=;
+        b=gQ08xovsPjzn7PSYF+799wsqokMKUMl9tYmd4tkiBLVpXquWp8E92uP08PVILQaaPj
+         Wdxqux66DHV8POCNL8s1WKDTltWhqqgKuVt0WZtOU4mlFcsumKBoYZ2qJEr1vBZ+rgZq
+         fuXjtvBCUyTNeWCh1wptwCWyfi7AMAb4hRwLIUjau6sEyXQUTodnmXfMYC3p+bJqrpY+
+         qrbz5v0kenyZQyDdTAgVT905r7z/coGb3PUsWKHNw3IhGwNXxrnSL8znNwkNx9Ima+XV
+         oElcQ6P72b26IvdzyBRCUr8YVwax4T0Y/+wxDSuMl3DTyqNefB5cTx6il0GAaBwmYxHt
+         cHqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695089703; x=1695694503;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l+Qrr9nRQADHQsZ3OsEHTe652qqYXAsbmlLNRv+gr00=;
+        b=o0XtXRNCqCqGsxmp26UrjxyTIq9idaVg/kQBhBIU/lkBa7lQsWCcJUxIUqhhXiBkbN
+         9J2Z4Mrza2oqI+Jj74OCYvwJnZVMkXYI8kAf1ktngdjkxuh6EDlMhDgTlUhwuVizyehN
+         xsZ1eoVYtkHipy9H/kEqOQQQ/p/+X4A/hEodO9kNjmasCDVidJvYjO42Gt7K2LXKKaaw
+         q+/u6ULqzscEs8dkn+p1rB6qtfnefsKuB9Mwo4uIsbF5cxp0jRgncTfCsDOA4qiWLTE4
+         Vzi5TRcni9CszdacTJ6VD6xRCTIU1M3WJZ9/Kb3xoT7UA4tkDTKQL27EKebDqe3kzeYJ
+         qyYQ==
+X-Gm-Message-State: AOJu0YwT0vzJYDdikjnFM/KgQJtCMeDoiPdWNpAcVZ5DxyISHWkmr4Et
+        i+zIJqW2auI1Wrxdwee7qMgsCeJl67YJgx4knqZHftE/4Yg=
+X-Google-Smtp-Source: AGHT+IF8O2Q02W5yRvGACiSq2YgO0uitH8QGKGXaO0/87fapwwdTL+4KJOGLGSHOmWjOs9R0kPe1E8Kw1rhsTjRSEcQ=
+X-Received: by 2002:a17:90a:9485:b0:263:9e9b:5586 with SMTP id
+ s5-20020a17090a948500b002639e9b5586mr8193125pjo.44.1695089702947; Mon, 18 Sep
+ 2023 19:15:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.73.42.196]
-X-ClientProxiedBy: Jtjnmail201618.home.langchao.com (10.100.2.18) To
- Jtjnmail201615.home.langchao.com (10.100.2.15)
-tUid:   20239191014187a8cb11340690db51dc6d7702bcd5a48
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230902115026.13460-1-qiang.zhang1211@gmail.com>
+ <ZPd4yKqbvBNGV7cL@slm.duckdns.org> <CALm+0cVf+E_Y41AdEwLjm2gZAjzeKaZev1Tu1hUS-VpYH0eEHQ@mail.gmail.com>
+ <ZPiwaaZaDPVexezn@slm.duckdns.org> <CALm+0cUytR3-0mcW3t24gcyP27UW3rpP5_+vpLVC3w70+0n6oQ@mail.gmail.com>
+ <ZQiRncEYCK3RYXA7@slm.duckdns.org>
+In-Reply-To: <ZQiRncEYCK3RYXA7@slm.duckdns.org>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Tue, 19 Sep 2023 10:14:51 +0800
+Message-ID: <CALm+0cU9W2P46cKnijeQRQFKzpqUyZUykQ-UFt28f4b4ueyAZg@mail.gmail.com>
+Subject: Re: [PATCH] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
+To:     Tejun Heo <tj@kernel.org>
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two "the" in this commentingy.
+>
+> On Thu, Sep 07, 2023 at 10:13:23AM +0800, Z qiang wrote:
+> > >
+> > > On Wed, Sep 06, 2023 at 10:12:34AM +0800, Z qiang wrote:
+> > > > Flush the pwq_release_worker is insufficient, the call_rcu() is
+> > > > invoked to release wq
+> > > > in pwq_release_workfn(), this is also asynchronous.
+> > >
+> > > But rcu_free_pwq() doesn't access wq or anything. The last access is from
+> > > the work function.
+> >
+> > The rcu_free_wq() will access wq->cpu_pwq or unbound_attrs,
+> > but  at this time, the kfree(wq) may have been called in alloc_workqueue().
+>
+> I'm not following. The only way alloc_and_link fails is if
+> apply_wqattrs_prepare() fails and if prepare fails, none of the pwq's are
+> installed and pwq_unbound_release_workfn() won't try to free the wq as the
+> pwq's don't have any reference on it. So, if you flush the pwq release work
+> items, there can be no rcu_free_wq() in flight. Can you please try to see
+> whether the problem is reproducible with flushing?
+>
 
-Signed-off-by: Tom Yang <yangqixiao@inspur.com>
----
- fs/afs/flock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+you are right .  sorry,  I ignore if apply_wqattrs_prepare() fails,
+none of the pwq is installed,
+the install_unbound_pwq() is not invoked. I will resend v2 and test.
 
-diff --git a/fs/afs/flock.c b/fs/afs/flock.c
-index 9c6dea3139f5..a2332d7b15d4 100644
---- a/fs/afs/flock.c
-+++ b/fs/afs/flock.c
-@@ -152,7 +152,7 @@ static void afs_next_locker(struct afs_vnode *vnode, int error)
- }
- 
- /*
-- * Kill off all waiters in the the pending lock queue due to the vnode being
-+ * Kill off all waiters in the pending lock queue due to the vnode being
-  * deleted.
-  */
- static void afs_kill_lockers_enoent(struct afs_vnode *vnode)
--- 
-2.31.1
+Thanks
+Zqiang
 
+>
+> Thanks.
+>
+> --
+> tejun
