@@ -2,69 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AD67A6D19
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF327A6D1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbjISVrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 17:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        id S233384AbjISVrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 17:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjISVrL (ORCPT
+        with ESMTP id S229690AbjISVrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 17:47:11 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F9FB3;
-        Tue, 19 Sep 2023 14:47:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-        bh=OfltgZCqgs8MKY2Ik0pJznlTGh3QDwezyPAsC9bskLQ=; b=xsrTNQVmaeNsIPIzTh1iJZjUz7
-        KSqGhVEa2eNcD844y8hm2Z3XmYuAkDfXQWVQzeGLrJw557n4LSqw20j3ZrFmns8vy08xNfzVB0+Vi
-        BkWPLTuncAFG9kaViqJsh8FZJakIObIs4wghKYHz7ivOO2WxkNCo/9uScME0+/lIsjZimhmX5TrUJ
-        jByErSGcdhV5yKGRqn1zT6UcKmeo5rDg5hrLXhJ27G+5DCdio/JZkz/qbHlXImp5ElHChquGZRFgc
-        pSLaR1CYouOPBcIKM5UA2zI4MOH3G4XtjbthpMoJLTFFdLyHcTeF21Ey4xH/3PZ1i9gpcoDu6qIOM
-        ROzU472A==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qiiYa-001JIQ-0d;
-        Tue, 19 Sep 2023 21:46:56 +0000
-Date:   Tue, 19 Sep 2023 14:46:56 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Daniel Gomez <da.gomez@samsung.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "hughd@google.com" <hughd@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 6/6] shmem: add large folios support to the write path
-Message-ID: <ZQoW0MVh/esJkU6H@bombadil.infradead.org>
-References: <CGME20230915095133eucas1p267bade2888b7fcd2e1ea8e13e21c495f@eucas1p2.samsung.com>
- <20230915095042.1320180-1-da.gomez@samsung.com>
- <20230915095042.1320180-7-da.gomez@samsung.com>
- <CAJD7tkbU20tyGxtdL-cqJxrjf38ObG_dUttZdLstH3O2sUTKzw@mail.gmail.com>
- <20230918075758.vlufrhq22es2dhuu@sarkhan>
- <CAJD7tkZSST8Kc6duUWt6a9igrsn=ucUPSVPWWGDWEUxBs3b4bg@mail.gmail.com>
- <20230919132633.v2mvuaxp2w76zoed@sarkhan>
- <CAJD7tkaELyZXsUP+c=DKg9k-FeFTTRS+_9diK5fyTNdfDAykmQ@mail.gmail.com>
+        Tue, 19 Sep 2023 17:47:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FDFB3;
+        Tue, 19 Sep 2023 14:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695160060; x=1726696060;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WS9L3QFPXiqwWBLJkP/BjE61p/kydfJWxwHndNJas9s=;
+  b=PkrdtUc8bl+L24UOdnCJYD+6DnpSho3+ojNI0eRJ24z0o7oX6/oELLHr
+   rUuLzMZlc7GFTn7n8ut8Ad5XjrOp+82ierdnkiVtMXQ8UkDSyomuqL0ML
+   BQVjKta5BE5L6+geDa3QXXGEaDHvUrWAZtwSPrQ5E3GCZn9iTXEkBEHQi
+   Ou2mU40QcfliYsaKAt0g9u09zP0DDv3BIhjh5RrccqBMIOBhdP9f+UH6+
+   T6ygEaHfrw6TSuGV57VQVj0jn09+kWkd60Wt3GAKjuXYgQxYF1iBPe6sP
+   crHULQP2GM1zeZhNtZpTYVjAjWP6bOzdbiaNs6+edQ2qMMjG7B0ZudWF9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="360315086"
+X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
+   d="scan'208";a="360315086"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 14:47:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="993320987"
+X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
+   d="scan'208";a="993320987"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 19 Sep 2023 14:47:38 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qiiZE-0007xU-08;
+        Tue, 19 Sep 2023 21:47:36 +0000
+Date:   Wed, 20 Sep 2023 05:47:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Frank Li <Frank.Li@nxp.com>, vkoul@kernel.org,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+        imx@lists.linux.dev
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v2 2/2] dmaengine: fsl-edma: add trace event support
+Message-ID: <202309200524.QTINjSsC-lkp@intel.com>
+References: <20230919151430.2919042-3-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkaELyZXsUP+c=DKg9k-FeFTTRS+_9diK5fyTNdfDAykmQ@mail.gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+In-Reply-To: <20230919151430.2919042-3-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,99 +66,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:00:16AM -0700, Yosry Ahmed wrote:
-> On Tue, Sep 19, 2023 at 6:27 AM Daniel Gomez <da.gomez@samsung.com> wrote:
-> >
-> > On Mon, Sep 18, 2023 at 11:55:34AM -0700, Yosry Ahmed wrote:
-> > > On Mon, Sep 18, 2023 at 1:00 AM Daniel Gomez <da.gomez@samsung.com> wrote:
-> > > >
-> > > > On Fri, Sep 15, 2023 at 11:26:37AM -0700, Yosry Ahmed wrote:
-> > > > > On Fri, Sep 15, 2023 at 2:51 AM Daniel Gomez <da.gomez@samsung.com> wrote:
-> > > > > >
-> > > > > > Add large folio support for shmem write path matching the same high
-> > > > > > order preference mechanism used for iomap buffered IO path as used in
-> > > > > > __filemap_get_folio().
-> > > > > >
-> > > > > > Use the __folio_get_max_order to get a hint for the order of the folio
-> > > > > > based on file size which takes care of the mapping requirements.
-> > > > > >
-> > > > > > Swap does not support high order folios for now, so make it order 0 in
-> > > > > > case swap is enabled.
-> > > > >
-> > > > > I didn't take a close look at the series, but I am not sure I
-> > > > > understand the rationale here. Reclaim will split high order shmem
-> > > > > folios anyway, right?
-> > > >
-> > > > For context, this is part of the enablement of large block sizes (LBS)
-> > > > effort [1][2][3], so the assumption here is that the kernel will
-> > > > reclaim memory with the same (large) block sizes that were written to
-> > > > the device.
-> > > >
-> > > > I'll add more context in the V2.
-> > > >
-> > > > [1] https://protect2.fireeye.com/v1/url?k=a80aab33-c981be05-a80b207c-000babff9b5d-b656d8860b04562f&q=1&e=46666acf-d70d-4e8d-8d00-b027808ae400&u=https%3A%2F%2Fkernelnewbies.org%2FKernelProjects%2Flarge-block-size
-> > > > [2] https://protect2.fireeye.com/v1/url?k=3f753ca2-5efe2994-3f74b7ed-000babff9b5d-e678f885471555e3&q=1&e=46666acf-d70d-4e8d-8d00-b027808ae400&u=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2Fe%2F2PACX-1vS7sQfw90S00l2rfOKm83Jlg0px8KxMQE4HHp_DKRGbAGcAV-xu6LITHBEc4xzVh9wLH6WM2lR0cZS8%2Fpubhtml%23
-> > > > [3] https://lore.kernel.org/all/ZQfbHloBUpDh+zCg@dread.disaster.area/
-> > > > >
-> > > > > It seems like we only enable high order folios if the "noswap" mount
-> > > > > option is used, which is fairly recent. I doubt it is widely used.
-> > > >
-> > > > For now, I skipped the swap path as it currently lacks support for
-> > > > high order folios. But I'm currently looking into it as part of the LBS
-> > > > effort (please check spreadsheet at [2] for that).
-> > >
-> > > Thanks for the context, but I am not sure I understand.
-> > >
-> > > IIUC we are skipping allocating large folios in shmem if swap is
-> > > enabled in this patch. Swap does not support swapping out large folios
-> > > as a whole (except THPs), but page reclaim will split those large
-> > > folios and swap them out as order-0 pages anyway. So I am not sure I
-> > > understand why we need to skip allocating large folios if swap is
-> > > enabled.
-> >
-> > I lifted noswap condition and retested it again on top of 230918 and
-> > there is some regression. So, based on the results I guess the initial
-> > requirement may be the way to go. But what do you think?
-> >
-> > Here the logs:
-> > * shmem-large-folios-swap: https://gitlab.com/-/snippets/3600360
-> > * shmem-baseline-swap : https://gitlab.com/-/snippets/3600362
-> >
-> > -Failures: generic/080 generic/126 generic/193 generic/633 generic/689
-> > -Failed 5 of 730 tests
-> > \ No newline at end of file
-> > +Failures: generic/080 generic/103 generic/126 generic/193 generic/285 generic/436 generic/619 generic/633 generic/689
-> > +Failed 9 of 730 tests
-> > \ No newline at end of file
-> > >
-> 
-> I am not really familiar with these tests so I cannot really tell
-> what's going on. I can see "swapfiles are not supported" in the logs
-> though, so it seems like we are seeing extra failures by just lifting
-> "noswap" even without actually swapping. I am curious if this is just
-> hiding a different issue, I would at least try to understand what's
-> happening.
-> 
-> Anyway, I don't have enough context here to be useful. I was just
-> making an observation about reclaim splitting shmem folios to swap
-> them out as order-0 pages, and asking why this is needed based on
-> that. I will leave it up to you and the reviewers to decide if there's
-> anything interesting here.
+Hi Frank,
 
-The tests which are failing seem be related to permissions, I could not
-immediate decipher why, because as you suggest we'd just be doing the
-silly thing of splitting large folios on writepage.
+kernel test robot noticed the following build warnings:
 
-I'd prefer we don't require swap until those regressions would be fixed.
+[auto build test WARNING on vkoul-dmaengine/next]
+[also build test WARNING on linus/master v6.6-rc2 next-20230919]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Note that part of the rationale to enable this work is to eventually
-also extend swap code to support large order folios, so it is not like
-this would be left as-is. It is just that it may take time to resolve
-the kinks with swap.
+url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/dmaengine-fsl-emda-add-debugfs-support/20230920-010257
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git next
+patch link:    https://lore.kernel.org/r/20230919151430.2919042-3-Frank.Li%40nxp.com
+patch subject: [PATCH v2 2/2] dmaengine: fsl-edma: add trace event support
+config: arc-randconfig-001-20230920 (https://download.01.org/0day-ci/archive/20230920/202309200524.QTINjSsC-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309200524.QTINjSsC-lkp@intel.com/reproduce)
 
-So I'd stick to nowap for now.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309200524.QTINjSsC-lkp@intel.com/
 
-The above tests also don't stress swap too, and if we do that I would
-imagine we might see some other undesirable failures.
+All warnings (new ones prefixed by >>):
 
- Luis
+   In file included from include/trace/define_trace.h:102,
+                    from drivers/dma/fsl-edma-trace.h:134,
+                    from drivers/dma/fsl-edma-common.h:238,
+                    from drivers/dma/fsl-edma-trace.c:4:
+   drivers/dma/./fsl-edma-trace.h: In function 'trace_raw_output_edma_log_io':
+>> drivers/dma/./fsl-edma-trace.h:28:19: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'int' [-Wformat=]
+      28 |         TP_printk("offset %08lx: value %08x",
+         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_EVENT_CLASS'
+     203 |         trace_event_printf(iter, print);                                \
+         |                                  ^~~~~
+   drivers/dma/./fsl-edma-trace.h:28:9: note: in expansion of macro 'TP_printk'
+      28 |         TP_printk("offset %08lx: value %08x",
+         |         ^~~~~~~~~
+   In file included from include/trace/trace_events.h:237:
+   drivers/dma/./fsl-edma-trace.h:28:31: note: format string is defined here
+      28 |         TP_printk("offset %08lx: value %08x",
+         |                           ~~~~^
+         |                               |
+         |                               long unsigned int
+         |                           %08x
+
+
+vim +28 drivers/dma/./fsl-edma-trace.h
+
+    14	
+    15	DECLARE_EVENT_CLASS(edma_log_io,
+    16		TP_PROTO(struct fsl_edma_engine *edma, void __iomem *addr, u32 value),
+    17		TP_ARGS(edma, addr, value),
+    18		TP_STRUCT__entry(
+    19			__field(struct fsl_edma_engine *, edma)
+    20			__field(void __iomem *, addr)
+    21			__field(u32, value)
+    22		),
+    23		TP_fast_assign(
+    24			__entry->edma = edma;
+    25			__entry->addr = addr;
+    26			__entry->value = value;
+    27		),
+  > 28		TP_printk("offset %08lx: value %08x",
+    29			__entry->addr - __entry->edma->membase, __entry->value)
+    30	);
+    31	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
