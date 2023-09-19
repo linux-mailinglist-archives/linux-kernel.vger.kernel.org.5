@@ -2,58 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D0B7A5A8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFB77A5A90
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbjISHJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39184 "EHLO
+        id S231642AbjISHKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjISHJd (ORCPT
+        with ESMTP id S231558AbjISHKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:09:33 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA70B118
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:09:26 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 847C8FA2;
-        Tue, 19 Sep 2023 09:07:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1695107269;
-        bh=1mn0ySDXUgk/nzOh16Ww6lZfnBYBB/YyUmgjtm6Vro8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TAiU38ddH5DnwNaTDuK0Vfpkob+UnVlCddC5V875FkcekMoPLITOqPUPTlddvhEyl
-         81To1hCOz2og7IpAv5MliZDfUya7Fv3zJHrfLrPgP2pRW+e2vrD6J187rl9JrfahPx
-         /gqRjqQTv8pnQzwxrxh3YZgG++RmxLl3Tjroy824=
-Message-ID: <91956712-0bdf-c932-5f8f-e7bb911f8d9f@ideasonboard.com>
-Date:   Tue, 19 Sep 2023 10:09:20 +0300
+        Tue, 19 Sep 2023 03:10:20 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DB1100;
+        Tue, 19 Sep 2023 00:10:13 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-4526d872941so881002137.1;
+        Tue, 19 Sep 2023 00:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695107413; x=1695712213; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rsdOtANdLKgirpqcXbxY/f816A3d1ngutR7psqK0OAQ=;
+        b=NeRdSNorAbp++rug+GaiBVgRkzpbAMu89m1pK9azuGAS1vcvHa0MeHnymY0vzn0msJ
+         ScHyoDvsUjuuBKlfKUP8IEGKag6amCPK9wafCfORvnreFvZc2nq1fn8GVfp4wpqPiI5y
+         +qiqf3a++acRVJ2sjgB6IpXyzkk5aHZsEshokBYl9c3ST50JsRsFVuxUfLb3Uod56RWq
+         ph5pQBAD4hr6xSB7J3G3iF8CKwq97mGlUNvgUTEQC4ZqqeRGrxDC1vIPJN3/eovudq9a
+         WUUqUgffo/k2PCn+kXDqnUb/rnhVvKXj0UgAut9O7pz1zpcrzaa2defKMX97sF9xBGwg
+         +svw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695107413; x=1695712213;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rsdOtANdLKgirpqcXbxY/f816A3d1ngutR7psqK0OAQ=;
+        b=B1xK1ZGhdltpLg+upnH925kmWbwF5karMqO2OEUEbQMfM2X3YpwHuZgsn9WA5CaGKy
+         v2vittxqgaYWvUMsnOmtk6n0AljLaxKDxpa1Nt/zHcz9bvzhOREY/pVwkjWS5PF1V2vi
+         O6Nt2acrIDqq7DJmcH44gAUHvn1+0M9Mx+DIRczPqCyHl1/ClpZn0F0/A1FshtcutG89
+         95UzX6uTfxHicDnFdUfd/8Au7qCoPTdoOOg2blXH+L1Byz0RopayCdWsx3MZwGI2S+0Z
+         KyJAJvVq5bN7sEBNk4bkQDkK65xmfSgxL4pJ53cJ8Mu74VWBFjx/RAX+cMGCE187I6+B
+         b/ng==
+X-Gm-Message-State: AOJu0YwGamJm+9KBoIC9KwVSXluK4oTOFbyIqW3RlfqcThzs4xOldK3I
+        RquZksAR9ZOUjxkdbue+NBQtWH4jSM1Yy9rXD3w=
+X-Google-Smtp-Source: AGHT+IHO3ZLJIvmjuoRlEb2a7rzwmjUq7whrADeTjzpIA4drZTgVnieFvUO8ivNffqkzmdai6BjyAv1riBSWra6V450=
+X-Received: by 2002:a67:ce0d:0:b0:44d:626b:94da with SMTP id
+ s13-20020a67ce0d000000b0044d626b94damr10005440vsl.32.1695107412821; Tue, 19
+ Sep 2023 00:10:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFT PATCH 5/6] drm: Call drm_atomic_helper_shutdown() at
- shutdown/remove time for misc drivers
-Content-Language: en-US
-To:     Douglas Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Cc:     airlied@gmail.com, airlied@redhat.com,
-        alexandre.torgue@foss.st.com, andrew@aj.id.au, daniel@ffwll.ch,
-        emma@anholt.net, hdegoede@redhat.com, jfalempe@redhat.com,
-        joel@jms.id.au, jyri.sarha@iki.fi, linus.walleij@linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        mcoquelin.stm32@gmail.com, philippe.cornu@foss.st.com,
-        raphael.gallais-pou@foss.st.com, tzimmermann@suse.de,
-        yannick.fertre@foss.st.com
-References: <20230901234015.566018-1-dianders@chromium.org>
- <20230901163944.RFT.5.I771eb4bd03d8772b19e7dcfaef3e2c167bce5846@changeid>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230901163944.RFT.5.I771eb4bd03d8772b19e7dcfaef3e2c167bce5846@changeid>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230918103055.5471-1-victorshihgli@gmail.com> <CAAd53p4qhf+3j=zMs_RXSpLQzn6RGD9yUNcSA12V5aACswgeeQ@mail.gmail.com>
+In-Reply-To: <CAAd53p4qhf+3j=zMs_RXSpLQzn6RGD9yUNcSA12V5aACswgeeQ@mail.gmail.com>
+From:   Victor Shih <victorshihgli@gmail.com>
+Date:   Tue, 19 Sep 2023 15:10:01 +0800
+Message-ID: <CAK00qKDnG1o6ZxzY=pGs0J7o_RYYsr1XHxJKirRKeghsp6QOBg@mail.gmail.com>
+Subject: Re: [PATCH V1] mmc: sdhci-pci-gli: GL975[05]: Mask the replay timer
+ timeout of AER
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
+        Greg.tu@genesyslogic.com.tw, kangzhen.lou@dell.com,
+        Victor Shih <victor.shih@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,295 +73,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/09/2023 02:39, Douglas Anderson wrote:
-> Based on grepping through the source code these drivers appear to be
-> missing a call to drm_atomic_helper_shutdown() at system shutdown time
-> and at driver remove (or unbind) time. Among other things, this means
-> that if a panel is in use that it won't be cleanly powered off at
-> system shutdown time.
-> 
-> The fact that we should call drm_atomic_helper_shutdown() in the case
-> of OS shutdown/restart and at driver remove (or unbind) time comes
-> straight out of the kernel doc "driver instance overview" in
-> drm_drv.c.
+On Tue, Sep 19, 2023 at 12:24=E2=80=AFPM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> Hi Victor,
+>
+> On Mon, Sep 18, 2023 at 6:31=E2=80=AFPM Victor Shih <victorshihgli@gmail.=
+com> wrote:
+> >
+> > From: Victor Shih <victor.shih@genesyslogic.com.tw>
+> >
+> > Due to a flaw in the hardware design, the GL975x replay timer frequentl=
+y
+> > times out when ASPM is enabled. As a result, the system will resume
+> > immediately when it enters suspend. Therefore, the replay timer
+> > timeout must be masked.
+>
+> This patch solves AER error when its PCI config gets accessed, but the
+> AER still happens at system suspend:
+>
+> [ 1100.103603] ACPI: EC: interrupt blocked
+> [ 1100.268244] ACPI: EC: interrupt unblocked
+> [ 1100.326960] pcieport 0000:00:1c.0: AER: Corrected error received:
+> 0000:00:1c.0
+> [ 1100.326991] pcieport 0000:00:1c.0: PCIe Bus Error:
+> severity=3DCorrected, type=3DData Link Layer, (Transmitter ID)
+> [ 1100.326993] pcieport 0000:00:1c.0:   device [8086:7ab9] error
+> status/mask=3D00001000/00002000
+> [ 1100.326996] pcieport 0000:00:1c.0:    [12] Timeout
+>
+> Kai-Heng
+>
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Hi, Kai-Heng
 
-and tested on Beagle Bone Black (tilcdc):
+Could you try applying the patch and re-testing again after restarting
+the system?
+Because I applied the patch and restarted the system and it didn't happen.
+The system can enter suspend normally.
 
-Tested-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com> # tilcdc
+If you still have the issue after following the above instructions,
+please provide me with your environment and I will verify it again.
 
-  Tomi
+Thanks, Victor Shih
 
-> 
-> A few notes about these fixes:
-> - I confirmed that these drivers were all DRIVER_MODESET type drivers,
->    which I believe makes this relevant.
-> - I confirmed that these drivers were all DRIVER_ATOMIC.
-> - When adding drm_atomic_helper_shutdown() to the remove/unbind path,
->    I added it after drm_kms_helper_poll_fini() when the driver had
->    it. This seemed to be what other drivers did. If
->    drm_kms_helper_poll_fini() wasn't there I added it straight after
->    drm_dev_unregister().
-> - This patch deals with drivers using the component model in similar
->    ways as the patch ("drm: Call drm_atomic_helper_shutdown() at
->    shutdown time for misc drivers")
-> - These fixes rely on the patch ("drm/atomic-helper:
->    drm_atomic_helper_shutdown(NULL) should be a noop") to simplify
->    shutdown.
-> 
-> Suggested-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
->   drivers/gpu/drm/aspeed/aspeed_gfx_drv.c |  7 +++++++
->   drivers/gpu/drm/mgag200/mgag200_drv.c   |  8 ++++++++
->   drivers/gpu/drm/pl111/pl111_drv.c       |  7 +++++++
->   drivers/gpu/drm/stm/drv.c               |  7 +++++++
->   drivers/gpu/drm/tilcdc/tilcdc_drv.c     | 11 ++++++++++-
->   drivers/gpu/drm/tve200/tve200_drv.c     |  7 +++++++
->   drivers/gpu/drm/vboxvideo/vbox_drv.c    | 10 ++++++++++
->   7 files changed, 56 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-> index d207b03f8357..78122b35a0cb 100644
-> --- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-> +++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-> @@ -358,11 +358,18 @@ static void aspeed_gfx_remove(struct platform_device *pdev)
->   	sysfs_remove_group(&pdev->dev.kobj, &aspeed_sysfs_attr_group);
->   	drm_dev_unregister(drm);
->   	aspeed_gfx_unload(drm);
-> +	drm_atomic_helper_shutdown(drm);
-> +}
-> +
-> +static void aspeed_gfx_shutdown(struct platform_device *pdev)
-> +{
-> +	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
->   }
->   
->   static struct platform_driver aspeed_gfx_platform_driver = {
->   	.probe		= aspeed_gfx_probe,
->   	.remove_new	= aspeed_gfx_remove,
-> +	.shutdown	= aspeed_gfx_shutdown,
->   	.driver = {
->   		.name = "aspeed_gfx",
->   		.of_match_table = aspeed_gfx_match,
-> diff --git a/drivers/gpu/drm/mgag200/mgag200_drv.c b/drivers/gpu/drm/mgag200/mgag200_drv.c
-> index abddf37f0ea1..2fb18b782b05 100644
-> --- a/drivers/gpu/drm/mgag200/mgag200_drv.c
-> +++ b/drivers/gpu/drm/mgag200/mgag200_drv.c
-> @@ -10,6 +10,7 @@
->   #include <linux/pci.h>
->   
->   #include <drm/drm_aperture.h>
-> +#include <drm/drm_atomic_helper.h>
->   #include <drm/drm_drv.h>
->   #include <drm/drm_fbdev_generic.h>
->   #include <drm/drm_file.h>
-> @@ -278,6 +279,12 @@ static void mgag200_pci_remove(struct pci_dev *pdev)
->   	struct drm_device *dev = pci_get_drvdata(pdev);
->   
->   	drm_dev_unregister(dev);
-> +	drm_atomic_helper_shutdown(dev);
-> +}
-> +
-> +static void mgag200_pci_shutdown(struct pci_dev *pdev)
-> +{
-> +	drm_atomic_helper_shutdown(pci_get_drvdata(pdev));
->   }
->   
->   static struct pci_driver mgag200_pci_driver = {
-> @@ -285,6 +292,7 @@ static struct pci_driver mgag200_pci_driver = {
->   	.id_table = mgag200_pciidlist,
->   	.probe = mgag200_pci_probe,
->   	.remove = mgag200_pci_remove,
-> +	.shutdown = mgag200_pci_shutdown,
->   };
->   
->   drm_module_pci_driver_if_modeset(mgag200_pci_driver, mgag200_modeset);
-> diff --git a/drivers/gpu/drm/pl111/pl111_drv.c b/drivers/gpu/drm/pl111/pl111_drv.c
-> index ba3b5b5f0cdf..02e6b74d5016 100644
-> --- a/drivers/gpu/drm/pl111/pl111_drv.c
-> +++ b/drivers/gpu/drm/pl111/pl111_drv.c
-> @@ -323,12 +323,18 @@ static void pl111_amba_remove(struct amba_device *amba_dev)
->   	struct pl111_drm_dev_private *priv = drm->dev_private;
->   
->   	drm_dev_unregister(drm);
-> +	drm_atomic_helper_shutdown(drm);
->   	if (priv->panel)
->   		drm_panel_bridge_remove(priv->bridge);
->   	drm_dev_put(drm);
->   	of_reserved_mem_device_release(dev);
->   }
->   
-> +static void pl111_amba_shutdown(struct amba_device *amba_dev)
-> +{
-> +	drm_atomic_helper_shutdown(amba_get_drvdata(amba_dev));
-> +}
-> +
->   /*
->    * This early variant lacks the 565 and 444 pixel formats.
->    */
-> @@ -431,6 +437,7 @@ static struct amba_driver pl111_amba_driver __maybe_unused = {
->   	},
->   	.probe = pl111_amba_probe,
->   	.remove = pl111_amba_remove,
-> +	.shutdown = pl111_amba_shutdown,
->   	.id_table = pl111_id_table,
->   };
->   
-> diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-> index c68c831136c9..e8523abef27a 100644
-> --- a/drivers/gpu/drm/stm/drv.c
-> +++ b/drivers/gpu/drm/stm/drv.c
-> @@ -114,6 +114,7 @@ static void drv_unload(struct drm_device *ddev)
->   	DRM_DEBUG("%s\n", __func__);
->   
->   	drm_kms_helper_poll_fini(ddev);
-> +	drm_atomic_helper_shutdown(ddev);
->   	ltdc_unload(ddev);
->   }
->   
-> @@ -225,6 +226,11 @@ static void stm_drm_platform_remove(struct platform_device *pdev)
->   	drm_dev_put(ddev);
->   }
->   
-> +static void stm_drm_platform_shutdown(struct platform_device *pdev)
-> +{
-> +	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
-> +}
-> +
->   static const struct of_device_id drv_dt_ids[] = {
->   	{ .compatible = "st,stm32-ltdc"},
->   	{ /* end node */ },
-> @@ -234,6 +240,7 @@ MODULE_DEVICE_TABLE(of, drv_dt_ids);
->   static struct platform_driver stm_drm_platform_driver = {
->   	.probe = stm_drm_platform_probe,
->   	.remove_new = stm_drm_platform_remove,
-> +	.shutdown = stm_drm_platform_shutdown,
->   	.driver = {
->   		.name = "stm32-display",
->   		.of_match_table = drv_dt_ids,
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> index fe56beea3e93..8ebd7134ee21 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> @@ -175,6 +175,7 @@ static void tilcdc_fini(struct drm_device *dev)
->   		drm_dev_unregister(dev);
->   
->   	drm_kms_helper_poll_fini(dev);
-> +	drm_atomic_helper_shutdown(dev);
->   	tilcdc_irq_uninstall(dev);
->   	drm_mode_config_cleanup(dev);
->   
-> @@ -389,6 +390,7 @@ static int tilcdc_init(const struct drm_driver *ddrv, struct device *dev)
->   
->   init_failed:
->   	tilcdc_fini(ddev);
-> +	platform_set_drvdata(pdev, NULL);
->   
->   	return ret;
->   }
-> @@ -537,7 +539,8 @@ static void tilcdc_unbind(struct device *dev)
->   	if (!ddev->dev_private)
->   		return;
->   
-> -	tilcdc_fini(dev_get_drvdata(dev));
-> +	tilcdc_fini(ddev);
-> +	dev_set_drvdata(dev, NULL);
->   }
->   
->   static const struct component_master_ops tilcdc_comp_ops = {
-> @@ -582,6 +585,11 @@ static int tilcdc_pdev_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> +static void tilcdc_pdev_shutdown(struct platform_device *pdev)
-> +{
-> +	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
-> +}
-> +
->   static const struct of_device_id tilcdc_of_match[] = {
->   		{ .compatible = "ti,am33xx-tilcdc", },
->   		{ .compatible = "ti,da850-tilcdc", },
-> @@ -592,6 +600,7 @@ MODULE_DEVICE_TABLE(of, tilcdc_of_match);
->   static struct platform_driver tilcdc_platform_driver = {
->   	.probe      = tilcdc_pdev_probe,
->   	.remove     = tilcdc_pdev_remove,
-> +	.shutdown   = tilcdc_pdev_shutdown,
->   	.driver     = {
->   		.name   = "tilcdc",
->   		.pm     = pm_sleep_ptr(&tilcdc_pm_ops),
-> diff --git a/drivers/gpu/drm/tve200/tve200_drv.c b/drivers/gpu/drm/tve200/tve200_drv.c
-> index 0bb56d063536..acce210e2554 100644
-> --- a/drivers/gpu/drm/tve200/tve200_drv.c
-> +++ b/drivers/gpu/drm/tve200/tve200_drv.c
-> @@ -242,6 +242,7 @@ static void tve200_remove(struct platform_device *pdev)
->   	struct tve200_drm_dev_private *priv = drm->dev_private;
->   
->   	drm_dev_unregister(drm);
-> +	drm_atomic_helper_shutdown(drm);
->   	if (priv->panel)
->   		drm_panel_bridge_remove(priv->bridge);
->   	drm_mode_config_cleanup(drm);
-> @@ -249,6 +250,11 @@ static void tve200_remove(struct platform_device *pdev)
->   	drm_dev_put(drm);
->   }
->   
-> +static void tve200_shutdown(struct platform_device *pdev)
-> +{
-> +	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
-> +}
-> +
->   static const struct of_device_id tve200_of_match[] = {
->   	{
->   		.compatible = "faraday,tve200",
-> @@ -263,6 +269,7 @@ static struct platform_driver tve200_driver = {
->   	},
->   	.probe = tve200_probe,
->   	.remove_new = tve200_remove,
-> +	.shutdown = tve200_shutdown,
->   };
->   drm_module_platform_driver(tve200_driver);
->   
-> diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-> index 4fee15c97c34..047b95812334 100644
-> --- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
-> +++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-> @@ -12,6 +12,7 @@
->   #include <linux/vt_kern.h>
->   
->   #include <drm/drm_aperture.h>
-> +#include <drm/drm_atomic_helper.h>
->   #include <drm/drm_drv.h>
->   #include <drm/drm_fbdev_generic.h>
->   #include <drm/drm_file.h>
-> @@ -97,11 +98,19 @@ static void vbox_pci_remove(struct pci_dev *pdev)
->   	struct vbox_private *vbox = pci_get_drvdata(pdev);
->   
->   	drm_dev_unregister(&vbox->ddev);
-> +	drm_atomic_helper_shutdown(&vbox->ddev);
->   	vbox_irq_fini(vbox);
->   	vbox_mode_fini(vbox);
->   	vbox_hw_fini(vbox);
->   }
->   
-> +static void vbox_pci_shutdown(struct pci_dev *pdev)
-> +{
-> +	struct vbox_private *vbox = pci_get_drvdata(pdev);
-> +
-> +	drm_atomic_helper_shutdown(&vbox->ddev);
-> +}
-> +
->   static int vbox_pm_suspend(struct device *dev)
->   {
->   	struct vbox_private *vbox = dev_get_drvdata(dev);
-> @@ -165,6 +174,7 @@ static struct pci_driver vbox_pci_driver = {
->   	.id_table = pciidlist,
->   	.probe = vbox_pci_probe,
->   	.remove = vbox_pci_remove,
-> +	.shutdown = vbox_pci_shutdown,
->   	.driver.pm = pm_sleep_ptr(&vbox_pm_ops),
->   };
->   
-
+> >
+> > Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+> > ---
+> >  drivers/mmc/host/sdhci-pci-gli.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-=
+pci-gli.c
+> > index d83261e857a5..d8a991b349a8 100644
+> > --- a/drivers/mmc/host/sdhci-pci-gli.c
+> > +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> > @@ -28,6 +28,9 @@
+> >  #define PCI_GLI_9750_PM_CTRL   0xFC
+> >  #define   PCI_GLI_9750_PM_STATE          GENMASK(1, 0)
+> >
+> > +#define PCI_GLI_9750_CORRERR_MASK                              0x214
+> > +#define   PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT         BIT(1=
+2)
+> > +
+> >  #define SDHCI_GLI_9750_CFG2          0x848
+> >  #define   SDHCI_GLI_9750_CFG2_L1DLY    GENMASK(28, 24)
+> >  #define   GLI_9750_CFG2_L1DLY_VALUE    0x1F
+> > @@ -152,6 +155,9 @@
+> >  #define PCI_GLI_9755_PM_CTRL     0xFC
+> >  #define   PCI_GLI_9755_PM_STATE    GENMASK(1, 0)
+> >
+> > +#define PCI_GLI_9755_CORRERR_MASK                              0x214
+> > +#define   PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT         BIT(1=
+2)
+> > +
+> >  #define SDHCI_GLI_9767_GM_BURST_SIZE                   0x510
+> >  #define   SDHCI_GLI_9767_GM_BURST_SIZE_AXI_ALWAYS_SET    BIT(8)
+> >
+> > @@ -561,6 +567,11 @@ static void gl9750_hw_setting(struct sdhci_host *h=
+ost)
+> >         value &=3D ~PCI_GLI_9750_PM_STATE;
+> >         pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, value);
+> >
+> > +       /* mask the replay timer timeout of AER */
+> > +       pci_read_config_dword(pdev, PCI_GLI_9750_CORRERR_MASK, &value);
+> > +       value |=3D PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
+> > +       pci_write_config_dword(pdev, PCI_GLI_9750_CORRERR_MASK, value);
+> > +
+> >         gl9750_wt_off(host);
+> >  }
+> >
+> > @@ -770,6 +781,11 @@ static void gl9755_hw_setting(struct sdhci_pci_slo=
+t *slot)
+> >         value &=3D ~PCI_GLI_9755_PM_STATE;
+> >         pci_write_config_dword(pdev, PCI_GLI_9755_PM_CTRL, value);
+> >
+> > +       /* mask the replay timer timeout of AER */
+> > +       pci_read_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, &value);
+> > +       value |=3D PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
+> > +       pci_write_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, value);
+> > +
+> >         gl9755_wt_off(pdev);
+> >  }
+> >
+> > --
+> > 2.25.1
+> >
