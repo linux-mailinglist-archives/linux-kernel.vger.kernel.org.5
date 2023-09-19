@@ -2,229 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F997A5EAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8AC7A5EB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbjISJx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        id S231856AbjISJxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjISJxP (ORCPT
+        with ESMTP id S231792AbjISJxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:53:15 -0400
-Received: from out-221.mta0.migadu.com (out-221.mta0.migadu.com [91.218.175.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE7818E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:53:06 -0700 (PDT)
-Message-ID: <b9d03e01-7582-8ec9-d219-941184166835@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695117181;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 19 Sep 2023 05:53:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8CD198;
+        Tue, 19 Sep 2023 02:53:10 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 09:53:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695117188;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=P53viX11QuF1Pmhi29hnQ9FK4klbDYMkSngdnTDu+Tw=;
-        b=KCbYo8yW7rQfrMIVGjHNLoAMbeikhCoKvfH6WFDib/cGpedYn2+QE0dQNm7A3aEmRjm1I/
-        7e6wYP0p2h2wnq5IrqTv3tXiYmK9TYqQQQGU88ZKzctr8FGPP4Rl3l4MjxhP33EbrlKi0O
-        ze9+aNwwKYZ22my5QZEGUCfIw5dc28E=
-Date:   Tue, 19 Sep 2023 17:52:51 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v4 4/8] hugetlb: perform vmemmap restoration on a list of
- pages
-To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        bh=ZzgA9F8IwwfNo7xjrqDlG248CoeZfGOO7kNYjMLnXRo=;
+        b=gBe2BZmrnTAitWIhmuAglpi7IW7t9ffhaA0E5GYV+C48R4VVB/idFanyMjI2qLGo5Oeg/7
+        V0EWH7d5ngj2d1oEo7ZXyk6s0CwQgMLYNUUlF4+XgN4XxhPL9ZVkpLs26qhtfRTMUvwRNM
+        YHYWJz4Q3OTmrd/wwnl5PCGm5O2Kdp14mzX1fefGL2IOUUgMqeFwa+53CAJTUXCu8bFfCZ
+        yS+3jKRoxQNOADJI6VITMHcVDUpdym9izlV905WcEVpQX4UcSulShl0voUqS7jGUOtc4/z
+        EpTdvpsB77kB8BPIw8za0gVa+ciAU7qGDHQg5kdwPKEjFzso0LnxAubz9WKkzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695117188;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZzgA9F8IwwfNo7xjrqDlG248CoeZfGOO7kNYjMLnXRo=;
+        b=XVRxcuYJX3i92obM/6IHAnWHTUrGLxoTppR9JbZwdMbITrKy4sZMeQEbA9qaszs6D+lxfy
+        k6K0uUADD/8fbEDA==
+From:   "tip-bot2 for Jo Van Bulck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/bugs] x86/pti: Fix kernel warnings for pti= and nopti
+ cmdline options
+Cc:     Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20230918230202.254631-1-mike.kravetz@oracle.com>
- <20230918230202.254631-5-mike.kravetz@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230918230202.254631-5-mike.kravetz@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20230819080921.5324-2-jo.vanbulck@cs.kuleuven.be>
+References: <20230819080921.5324-2-jo.vanbulck@cs.kuleuven.be>
+MIME-Version: 1.0
+Message-ID: <169511718771.27769.15019317036773813903.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/bugs branch of tip:
 
+Commit-ID:     f75a0e70ed379019b209cdb591ffbfe2fbf4342f
+Gitweb:        https://git.kernel.org/tip/f75a0e70ed379019b209cdb591ffbfe2fbf4342f
+Author:        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+AuthorDate:    Sat, 19 Aug 2023 10:09:21 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 19 Sep 2023 11:42:48 +02:00
 
-On 2023/9/19 07:01, Mike Kravetz wrote:
-> The routine update_and_free_pages_bulk already performs vmemmap
-> restoration on the list of hugetlb pages in a separate step.  In
-> preparation for more functionality to be added in this step, create a
-> new routine hugetlb_vmemmap_restore_folios() that will restore
-> vmemmap for a list of folios.
->
-> This new routine must provide sufficient feedback about errors and
-> actual restoration performed so that update_and_free_pages_bulk can
-> perform optimally.
->
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->   mm/hugetlb.c         | 36 ++++++++++++++++++------------------
->   mm/hugetlb_vmemmap.c | 37 +++++++++++++++++++++++++++++++++++++
->   mm/hugetlb_vmemmap.h | 11 +++++++++++
->   3 files changed, 66 insertions(+), 18 deletions(-)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index d6f3db3c1313..814bb1982274 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1836,36 +1836,36 @@ static void update_and_free_hugetlb_folio(struct hstate *h, struct folio *folio,
->   
->   static void update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
->   {
-> +	int ret;
-> +	unsigned long restored;
->   	struct folio *folio, *t_folio;
-> -	bool clear_dtor = false;
->   
->   	/*
-> -	 * First allocate required vmemmmap (if necessary) for all folios on
-> -	 * list.  If vmemmap can not be allocated, we can not free folio to
-> -	 * lower level allocator, so add back as hugetlb surplus page.
-> -	 * add_hugetlb_folio() removes the page from THIS list.
-> -	 * Use clear_dtor to note if vmemmap was successfully allocated for
-> -	 * ANY page on the list.
-> +	 * First allocate required vmemmmap (if necessary) for all folios.
->   	 */
-> -	list_for_each_entry_safe(folio, t_folio, list, lru) {
-> -		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
-> -			if (hugetlb_vmemmap_restore(h, &folio->page)) {
-> -				spin_lock_irq(&hugetlb_lock);
-> +	ret = hugetlb_vmemmap_restore_folios(h, list, &restored);
-> +
-> +	/*
-> +	 * If there was an error restoring vmemmap for ANY folios on the list,
-> +	 * add them back as surplus hugetlb pages.  add_hugetlb_folio() removes
-> +	 * the folio from THIS list.
-> +	 */
-> +	if (ret < 0) {
-> +		spin_lock_irq(&hugetlb_lock);
-> +		list_for_each_entry_safe(folio, t_folio, list, lru)
-> +			if (folio_test_hugetlb_vmemmap_optimized(folio))
->   				add_hugetlb_folio(h, folio, true);
-> -				spin_unlock_irq(&hugetlb_lock);
-> -			} else
-> -				clear_dtor = true;
-> -		}
-> +		spin_unlock_irq(&hugetlb_lock);
->   	}
->   
->   	/*
-> -	 * If vmemmmap allocation was performed on any folio above, take lock
-> -	 * to clear destructor of all folios on list.  This avoids the need to
-> +	 * If vmemmmap allocation was performed on ANY folio , take lock to
-> +	 * clear destructor of all folios on list.  This avoids the need to
->   	 * lock/unlock for each individual folio.
->   	 * The assumption is vmemmap allocation was performed on all or none
->   	 * of the folios on the list.  This is true expect in VERY rare cases.
->   	 */
-> -	if (clear_dtor) {
-> +	if (restored) {
->   		spin_lock_irq(&hugetlb_lock);
->   		list_for_each_entry(folio, list, lru)
->   			__clear_hugetlb_destructor(h, folio);
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 4558b814ffab..463a4037ec6e 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -480,6 +480,43 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
->   	return ret;
->   }
->   
-> +/**
-> + * hugetlb_vmemmap_restore_folios - restore vmemmap for every folio on the list.
-> + * @h:		struct hstate.
-> + * @folio_list:	list of folios.
-> + * @restored:	Set to number of folios for which vmemmap was restored
-> + *		successfully if caller passes a non-NULL pointer.
-> + *
-> + * Return: %0 if vmemmap exists for all folios on the list.  If an error is
-> + *		encountered restoring vmemmap for ANY folio, an error code
-> + *		will be returned to the caller.  It is then the responsibility
-> + *		of the caller to check the hugetlb vmemmap optimized flag of
-> + *		each folio to determine if vmemmap was actually restored.
-> + */
-> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
-> +					struct list_head *folio_list,
-> +					unsigned long *restored)
-> +{
-> +	unsigned long num_restored;
-> +	struct folio *folio;
-> +	int ret = 0, t_ret;
-> +
-> +	num_restored = 0;
-> +	list_for_each_entry(folio, folio_list, lru) {
-> +		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
-> +			t_ret = hugetlb_vmemmap_restore(h, &folio->page);
+x86/pti: Fix kernel warnings for pti= and nopti cmdline options
 
-I still think we should free a non-optimized HugeTLB page if we
-encounter an OOM situation instead of continue to restore
-vemmmap pages. Restoring vmemmmap pages will only aggravate
-the OOM situation. The suitable appraoch is to free a non-optimized
-HugeTLB page to satisfy our allocation of vmemmap pages, what's
-your opinion, Mike?
+Parse the pti= and nopti cmdline options using early_param to fix 'Unknown
+kernel command line parameters "nopti", will be passed to user space'
+warnings in the kernel log when nopti or pti= are passed to the kernel
+cmdline on x86 platforms.
 
-Thanks.
+Additionally allow the kernel to warn for malformed pti= options.
 
-> +			if (t_ret)
-> +				ret = t_ret;
-> +			else
-> +				num_restored++;
-> +		}
-> +	}
-> +
-> +	if (*restored)
-> +		*restored = num_restored;
-> +	return ret;
-> +}
-> +
->   /* Return true iff a HugeTLB whose vmemmap should and can be optimized. */
->   static bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
->   {
-> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> index c512e388dbb4..bb58453c3cc0 100644
-> --- a/mm/hugetlb_vmemmap.h
-> +++ b/mm/hugetlb_vmemmap.h
-> @@ -19,6 +19,8 @@
->   
->   #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
->   int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head);
-> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
-> +			struct list_head *folio_list, unsigned long *restored);
->   void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head);
->   void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list);
->   
-> @@ -45,6 +47,15 @@ static inline int hugetlb_vmemmap_restore(const struct hstate *h, struct page *h
->   	return 0;
->   }
->   
-> +static inline int hugetlb_vmemmap_restore_folios(const struct hstate *h,
-> +					struct list_head *folio_list,
-> +					unsigned long *restored)
-> +{
-> +	if (restored)
-> +		*restored = 0;
-> +	return 0;
-> +}
-> +
->   static inline void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
->   {
->   }
+Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+Link: https://lore.kernel.org/r/20230819080921.5324-2-jo.vanbulck@cs.kuleuven.be
+---
+ arch/x86/mm/pti.c | 58 +++++++++++++++++++++++-----------------------
+ 1 file changed, 29 insertions(+), 29 deletions(-)
 
+diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
+index 78414c6..5dd7339 100644
+--- a/arch/x86/mm/pti.c
++++ b/arch/x86/mm/pti.c
+@@ -69,6 +69,7 @@ static void __init pti_print_if_secure(const char *reason)
+ 		pr_info("%s\n", reason);
+ }
+ 
++/* Assume mode is auto unless overridden via cmdline below. */
+ static enum pti_mode {
+ 	PTI_AUTO = 0,
+ 	PTI_FORCE_OFF,
+@@ -77,50 +78,49 @@ static enum pti_mode {
+ 
+ void __init pti_check_boottime_disable(void)
+ {
+-	char arg[5];
+-	int ret;
+-
+-	/* Assume mode is auto unless overridden. */
+-	pti_mode = PTI_AUTO;
+-
+ 	if (hypervisor_is_type(X86_HYPER_XEN_PV)) {
+ 		pti_mode = PTI_FORCE_OFF;
+ 		pti_print_if_insecure("disabled on XEN PV.");
+ 		return;
+ 	}
+ 
+-	ret = cmdline_find_option(boot_command_line, "pti", arg, sizeof(arg));
+-	if (ret > 0)  {
+-		if (ret == 3 && !strncmp(arg, "off", 3)) {
+-			pti_mode = PTI_FORCE_OFF;
+-			pti_print_if_insecure("disabled on command line.");
+-			return;
+-		}
+-		if (ret == 2 && !strncmp(arg, "on", 2)) {
+-			pti_mode = PTI_FORCE_ON;
+-			pti_print_if_secure("force enabled on command line.");
+-			goto enable;
+-		}
+-		if (ret == 4 && !strncmp(arg, "auto", 4)) {
+-			pti_mode = PTI_AUTO;
+-			goto autosel;
+-		}
+-	}
+-
+-	if (cmdline_find_option_bool(boot_command_line, "nopti") ||
+-	    cpu_mitigations_off()) {
++	if (cpu_mitigations_off())
+ 		pti_mode = PTI_FORCE_OFF;
++	if (pti_mode == PTI_FORCE_OFF) {
+ 		pti_print_if_insecure("disabled on command line.");
+ 		return;
+ 	}
+ 
+-autosel:
+-	if (!boot_cpu_has_bug(X86_BUG_CPU_MELTDOWN))
++	if (pti_mode == PTI_FORCE_ON)
++		pti_print_if_secure("force enabled on command line.");
++
++	if (pti_mode == PTI_AUTO && !boot_cpu_has_bug(X86_BUG_CPU_MELTDOWN))
+ 		return;
+-enable:
++
+ 	setup_force_cpu_cap(X86_FEATURE_PTI);
+ }
+ 
++static int __init pti_parse_cmdline(char *arg)
++{
++	if (!strcmp(arg, "off"))
++		pti_mode = PTI_FORCE_OFF;
++	else if (!strcmp(arg, "on"))
++		pti_mode = PTI_FORCE_ON;
++	else if (!strcmp(arg, "auto"))
++		pti_mode = PTI_AUTO;
++	else
++		return -EINVAL;
++	return 0;
++}
++early_param("pti", pti_parse_cmdline);
++
++static int __init pti_parse_cmdline_nopti(char *arg)
++{
++	pti_mode = PTI_FORCE_OFF;
++	return 0;
++}
++early_param("nopti", pti_parse_cmdline_nopti);
++
+ pgd_t __pti_set_user_pgtbl(pgd_t *pgdp, pgd_t pgd)
+ {
+ 	/*
