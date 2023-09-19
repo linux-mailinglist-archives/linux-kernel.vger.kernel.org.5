@@ -2,162 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D577A5E7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEC27A5E88
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbjISJqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        id S231503AbjISJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbjISJqN (ORCPT
+        with ESMTP id S231320AbjISJs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:46:13 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BFB2F1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:46:07 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59bfb0825efso47994917b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695116766; x=1695721566; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5QwnMEr9g+UV2zSClp4LdEyAkoPr5XRWwAzh3mE4dxo=;
-        b=mBvslSxQphJKG9udkoY1d+G6n/bMqlZjYqXJvpx03D6+YEqRJGGWO2CbkQABTlLpCc
-         cg7e/7DMALHfA/zI5/L98My1CmB4ORJOxkx73FoKKYeIxPDbd2YYF2P0w3+Zq10+trIn
-         CbRSRKh1H+g1xeZwQCkiGTfnCY3kF/Qs6BIXsEA8azCu+hhDYicozQrOXHS/38yBB7VC
-         Pw7fm8IUILwV2w0kAMIcqpG1asegS1vl2Vj+8yn/Tv5P+WpQHUiHl2UUPbz/JT2kDw0A
-         UhSPRcvdHjqVRzY7lYi1qivplECh9BiRxZrAglsrQ9zuKvvbWGvSBIXZIYKnIQZ4bgHK
-         lrRw==
+        Tue, 19 Sep 2023 05:48:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695CBE8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:47:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695116854;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PkAmog8kPURPdwC6/7i2WeWfLhkTcmYXq3osNRaDjMc=;
+        b=ZsSB11gmx5I8OFO92EODAuAUKvvaZuTWrQX0V46pgw+2fEa0NfBTbUGQOcpGc8s6iGOn+D
+        zsn2YOG0INZICqGLhSiPLwzT2K4ckmXCRmyvNrXZdtnfmlPiOeRIYVxNZc5VrALb7IcAyG
+        JuFkcPyO21nsocMZhxV2GHL+08txtXI=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-568-iEe3u7oWMguXbpuCztmU8w-1; Tue, 19 Sep 2023 05:47:33 -0400
+X-MC-Unique: iEe3u7oWMguXbpuCztmU8w-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-530a085c62dso604858a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:47:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695116766; x=1695721566;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5QwnMEr9g+UV2zSClp4LdEyAkoPr5XRWwAzh3mE4dxo=;
-        b=gKUoMzrUc8Or4M7B+rxWLom4c5qXA9fB4AG9LF8JRgAnwKyF44pYrHXNi9ZgtZ1SqV
-         rdMQi+yS+97+/x3IeI3SnlcC9HUlUZf2ZqILuMxZGK2evlLCnnpv4AXie0qlrt+ncSvw
-         TYREB9QdNcqA0xgQ9mEdepCfKQWrK3dJw4dhHxMSaY8PENWxksbtlcnaIXGKTpNaBsfL
-         eJxJEzMJAcBENy6mJypskoM53rV00Rkp47Cj5HIf6AFWmH5uLdDLhBxZ5qj661gnupwe
-         kot6ci9iEsZ2P9roPn6qitMCojnrD61mKMRvpfk5bpxnkUpNfPVAB+LhZGjjEDXl1W1M
-         3UWA==
-X-Gm-Message-State: AOJu0Yw/V5kh2emzc9zes7FwokdvPmoDOeA9Xv6MlP0x6mX5EqDBWLGU
-        deyWTY6i6lk/l/zdHmCwsmGw0pFtjbPtgeaHV2fVqg==
-X-Google-Smtp-Source: AGHT+IEPLhKcEQ8VnPqTGkwZWPQeCGEa8pbJIGsJUn9x4bl87n6z2UlZ8WodvmGmXYRjZe6EBVmQQgOm6zqwAoRaqB8=
-X-Received: by 2002:a81:a208:0:b0:583:d722:9ae9 with SMTP id
- w8-20020a81a208000000b00583d7229ae9mr12169719ywg.41.1695116766554; Tue, 19
- Sep 2023 02:46:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
- <1694813901-26952-4-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJprG8HuhDHV9k5_4+vkejnYmwmg61isZXT7EsBCbGP0pJA@mail.gmail.com> <f855b3db-2754-5f66-9fc2-061a517814ef@quicinc.com>
-In-Reply-To: <f855b3db-2754-5f66-9fc2-061a517814ef@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 19 Sep 2023 12:45:55 +0300
-Message-ID: <CAA8EJpof+dp_d_5-oADuA7RNU7ut=TKLY5Fw12EjxaSa2S+=rg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] drm/msm/dp: use drm_bridge_hpd_notify() to report
- HPD status changes
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
-        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
-        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
-        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+        d=1e100.net; s=20230601; t=1695116852; x=1695721652;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PkAmog8kPURPdwC6/7i2WeWfLhkTcmYXq3osNRaDjMc=;
+        b=O50IUaHBD2nFTvM5wLXYLvuDa9F9TpTNOohcbMGLTzJwXVYUOqG/HBD2MmEgLFzuU/
+         9OPanlLSbUJP1yRRMHB60kyhEdk04JeauHCfZKl3XEYOl8ueBdjr0XX+Gj/qBw110dWY
+         U5nvF8HLHogx+3ajEXd536p8ZIG3rZI/YzzQyVxODcv4PhzIbZw7AtpdqQkK9eSH8Ssx
+         RkAjwcyeHQMaPJh7F5mNSl1l/hdCUGkWl5z+86wgN5x2/dmojnGudb7zqn9NlJ7tlxE/
+         CnFfzPT6FXeznCNsHPqzeAVc1quum4j3XV8GrFvoTjKPm5ya5zHReobhbBpbX+cgVc9H
+         Y2Rg==
+X-Gm-Message-State: AOJu0YxlGITLypPTMG/GRvektXNQLPht1RY0G1VSZfti1yx0dtEX4fXL
+        mNRTzXvFCAfWbV6XmBvBmhQETwKHfj23ZzCFBGgcs1GwL2BoPIQfpKWpCZDkTAl0Mnn2Qcvusr1
+        4G/fDeSIA0OlQc2+seZH/m6pK
+X-Received: by 2002:a05:6402:1909:b0:52f:bedf:8ef1 with SMTP id e9-20020a056402190900b0052fbedf8ef1mr10972064edz.3.1695116852156;
+        Tue, 19 Sep 2023 02:47:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEdyvAkbPqoRHbFUkr3X4vyY71M+jXmRtg9LjpdFeCk47m2ui+Zr9bOc1plBfUmhqktSYoOhA==
+X-Received: by 2002:a05:6402:1909:b0:52f:bedf:8ef1 with SMTP id e9-20020a056402190900b0052fbedf8ef1mr10972040edz.3.1695116851880;
+        Tue, 19 Sep 2023 02:47:31 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-241-221.dyn.eolo.it. [146.241.241.221])
+        by smtp.gmail.com with ESMTPSA id t13-20020aa7d70d000000b0052328d4268asm7013685edq.81.2023.09.19.02.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 02:47:31 -0700 (PDT)
+Message-ID: <3f79b0d4b9409a223f03c0b36b3544ce1389a500.camel@redhat.com>
+Subject: Re: [PATCH 4/4] net/onsemi: Add NCN26010 driver
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Jay Monkman <jtm@lopingdog.com>, Andrew Lunn <andrew@lunn.ch>
+Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+        Arndt Schuebel <Arndt.Schuebel@onsemi.com>,
+        Parthiban.Veerasooran@microchip.com
+Date:   Tue, 19 Sep 2023 11:47:30 +0200
+In-Reply-To: <ZQkNfAOYgsBIhBRW@lopingdog.com>
+References: <ZQf1QwNzK5jjOWk9@lopingdog.com>
+         <6e19020f-10ff-429b-8df3-cad5e5624e01@lunn.ch>
+         <ZQkNfAOYgsBIhBRW@lopingdog.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Sept 2023 at 23:16, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->
->
-> On 9/15/2023 5:41 PM, Dmitry Baryshkov wrote:
-> > On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
-> >> Currently DP driver use drm_helper_hpd_irq_event(), bypassing drm bridge
-> >> framework, to report HPD status changes to user space frame work.
-> >> Replace it with drm_bridge_hpd_notify() since DP driver is part of drm
-> >> bridge.
-> >>
-> >> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >
-> > Also see the comment below.
-> >
-> >> ---
-> >>   drivers/gpu/drm/msm/dp/dp_display.c | 20 ++------------------
-> >>   1 file changed, 2 insertions(+), 18 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> >> index 18d16c7..59f9d85 100644
-> >> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> >> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> >> @@ -356,26 +356,10 @@ static bool dp_display_is_sink_count_zero(struct dp_display_private *dp)
-> >>                  (dp->link->sink_count == 0);
-> >>   }
-> >>
-> >> -static void dp_display_send_hpd_event(struct msm_dp *dp_display)
-> >> -{
-> >> -       struct dp_display_private *dp;
-> >> -       struct drm_connector *connector;
-> >> -
-> >> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
-> >> -
-> >> -       connector = dp->dp_display.connector;
-> >> -       drm_helper_hpd_irq_event(connector->dev);
-> >> -}
-> >> -
-> >>   static int dp_display_send_hpd_notification(struct dp_display_private *dp,
-> >>                                              bool hpd)
-> >>   {
-> >> -       if ((hpd && dp->dp_display.link_ready) ||
-> >> -                       (!hpd && !dp->dp_display.link_ready)) {
-> >> -               drm_dbg_dp(dp->drm_dev, "HPD already %s\n",
-> >> -                               (hpd ? "on" : "off"));
-> >> -               return 0;
-> >> -       }
-> >> +       struct drm_bridge *bridge = dp->dp_display.bridge;
-> >>
-> >>          /* reset video pattern flag on disconnect */
-> >>          if (!hpd)
-> > Note, this part (resetting the video_test and setting of is_connected)
-> > should be moved to the dp_bridge_hpd_notify() too. Please ignore this
-> > comment if this is handled later in the series.
->
-> I think keep them here is better since eDP does not populate hpd_enable,
-> hpd_disable and hpd_notify at edp_bridge_ops at drm_bridge_attach().
->
-> Keep them here will work for both eDP and DP.
+On Mon, 2023-09-18 at 21:54 -0500, Jay Monkman wrote:
+> On Mon, Sep 18, 2023 at 06:00:37PM +0200, Andrew Lunn wrote:
+> > Is this an OA TC6 device?  At a quick look it does appear to
+> > be. Please make use of the framework Microchip is developing:
+> >=20
+> > https://lore.kernel.org/netdev/20230908142919.14849-4-Parthiban.Veeraso=
+oran@microchip.com/T/
+>=20
+> Yes it is. I wasn't aware of Microchip's work. Thanks for pointing it out=
+.
 
-Having them here doesn't work for DP-with-external-bridges, which will
-not use dp_display_send_hpd_notification.
+I guess this patch is going to change a lot in future revisions...
 
->
->
-> >
-> >
-> >> @@ -385,7 +369,7 @@ static int dp_display_send_hpd_notification(struct dp_display_private *dp,
-> >>
-> >>          drm_dbg_dp(dp->drm_dev, "type=%d hpd=%d\n",
-> >>                          dp->dp_display.connector_type, hpd);
-> >> -       dp_display_send_hpd_event(&dp->dp_display);
-> >> +       drm_bridge_hpd_notify(bridge, dp->dp_display.link_ready);
-> >>
-> >>          return 0;
-> >>   }
-> >> --
-> >> 2.7.4
-> >>
-> >
+Please double check the code with checkpatch before the next
+submission, there are a few things that could be improved.
 
+Specifically, avoid c++ style comments, and avoid using multiple label
+names to jump into the same location - selecting the label name as the
+target action will make the code more clear.
 
+Thanks,
 
--- 
-With best wishes
-Dmitry
+Paolo
+
