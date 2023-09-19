@@ -2,104 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AB47A5D4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B807A5D57
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbjISJER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        id S230129AbjISJFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbjISJEQ (ORCPT
+        with ESMTP id S230325AbjISJFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:04:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE192E6;
-        Tue, 19 Sep 2023 02:04:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE739C433C8;
-        Tue, 19 Sep 2023 09:04:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695114250;
-        bh=0HoaoIryoMNBjclA4E9p8j1l8zhUoytllUXAdhNwV5M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b/l9gCQ0T8EvqzJqFrQ5of1NAyiceRmdIutxOzP5nFXj3+C2NovgXilDrksFhbwvr
-         O2trT4x5qScyykTeTddgKkJ2NlqZDVkjd4SgU/cCUlaqymPUgEUXTPUFeKvGo8lScP
-         GZhlgg0D2BhDqV/cJGjDZ57+o1v4sJPpkJzlTD6KFHl2Kfor2bSkNVksRaj0EyRNbe
-         DMS8CrGEZx1spG8Biu/A6bqshM5iuBDdWbOcp6xHWhWRKbCSO+vcn7DRXbGaa/XVxi
-         I2qgLNA3dlYfDkC8y/XoLajqwQBijGz6LRnyVp9+yljnrCyDegNBSYRkf9ASlkdT9h
-         imjCEN7Pb+nzA==
-Date:   Tue, 19 Sep 2023 10:04:04 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v3 4/6] gpio: vf610: add i.MX8ULP of_device_id entry
-Message-ID: <20230919-501837c1104366ba793b0c62@fedora>
-References: <20230918-vf610-gpio-v3-0-ada82a17adc5@nxp.com>
- <20230918-vf610-gpio-v3-4-ada82a17adc5@nxp.com>
+        Tue, 19 Sep 2023 05:05:01 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493C012B
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:04:55 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-415155b2796so246041cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695114294; x=1695719094; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7/oi4X3L5BnW+K69jB8Ov4ZNb09lPvvTlldUKOwOkGU=;
+        b=qgBDb41YlX7gYTIa2/cCXpfPdeFrEAK5C5hCflV6DC4KATJtZzqbCHiv+puVcxgRG/
+         vmSite9CfaS8sDRVmY/pODPnNFmJ/1HMBjBYHcn3x1GDe9ZfR4TjTujqyt+FyrGnB4we
+         PFpLmfreZsvHz+12IGCh1J2sUp/u7EnuGROW2snYoT5yor3oZe3awscm3KWR1Q9XVuQN
+         6s5lK5uEjJkXE8H5/JGUb8GM44BktBuz7WT54Lw3K0Y+YqHHmdwKz6whwQj4VCkY+8ZT
+         zrMNKMDRmMmIQIYLag1R83YLoFeN2TuxFILrr8KOn1z1q1ou+B7ppMbxOOSnluXDLQmw
+         ievA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695114294; x=1695719094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7/oi4X3L5BnW+K69jB8Ov4ZNb09lPvvTlldUKOwOkGU=;
+        b=RRjpZfb5guE3QvJtQ+DTOpemVla/Q4BBfhoai9wJ2ApZ3RLOVwRSH1yEmBcmJA3nmF
+         T8pHgALh+Bxl8c1FQI6YTjUAKwHoJAx1ude0ivEepKooA8Kx/aGh+lnxJ5uqocsDSUtE
+         MKreP8TAaUxqkG6V1rlYHsoF8KL9lE/EbRWv/a3eZvLP5zmuTvD6Zw0c3e/hWZ8luCLh
+         PfuGs3SNfV/zOqPig8KuWo6tnuu2/nUjtFtwZjz8Y2RAf1aDHGVPElkrfxMiw07RyF0g
+         pKcfHGNBDtMU8exUgsxtdp7HKNIgVde5suwa9ftxmsSP/oqWXtQnT/6nFRjQLlKPxOlH
+         qINg==
+X-Gm-Message-State: AOJu0Yzi57uCexFxbkjXtXcLHPwkB8isLgHuX/MwEK6wcpP6PvTk5Oiw
+        2HT3AwWQ40pQhRsRgZnyGRd4gcjAZm20u/I8Dnhzdw==
+X-Google-Smtp-Source: AGHT+IEF/GNkZ5xnMa3iueZI1Q6OKylsLCUnyxGRIeKe1FBhTSCtbhnhch5SgaARlyTbVwPzdupZ5KECFNAMxBs/ls0=
+X-Received: by 2002:a05:622a:251:b0:40f:d3db:f328 with SMTP id
+ c17-20020a05622a025100b0040fd3dbf328mr179702qtx.2.1695114294212; Tue, 19 Sep
+ 2023 02:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5zdzlSUyqQ668/XK"
-Content-Disposition: inline
-In-Reply-To: <20230918-vf610-gpio-v3-4-ada82a17adc5@nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <3793723.1694795079@warthog.procyon.org.uk> <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com>
+ <0000000000001c12b30605378ce8@google.com> <3905046.1695031382@warthog.procyon.org.uk>
+ <65085768c17da_898cd294ae@willemb.c.googlers.com.notmuch> <CANn89iJ39Hguu6bRm2am6J_u0pSnm++ORa_UVpC0+8-mxORFfw@mail.gmail.com>
+ <ZQlbYVCjCyuPotdX@katalix.com>
+In-Reply-To: <ZQlbYVCjCyuPotdX@katalix.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 19 Sep 2023 11:04:41 +0200
+Message-ID: <CANn89i+fPjwonpWAXOCzrCG+hYH4kwMgJidwZf0CQaoCPOffXA@mail.gmail.com>
+Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
+To:     Tom Parkin <tparkin@katalix.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 19, 2023 at 10:27=E2=80=AFAM Tom Parkin <tparkin@katalix.com> w=
+rote:
+>
+> On  Mon, Sep 18, 2023 at 16:04:49 +0200, Eric Dumazet wrote:
+> > On Mon, Sep 18, 2023 at 3:58=E2=80=AFPM Willem de Bruijn
+> > <willemdebruijn.kernel@gmail.com> wrote:
+> > >
+> > > David Howells wrote:
+> > > > David Howells <dhowells@redhat.com> wrote:
+> > > >
+> > > > > I think the attached is probably an equivalent cleaned up reprodu=
+cer.  Note
+> > > > > that if the length given to sendfile() is less than 65536, it fai=
+ls with
+> > > > > EINVAL before it gets into __ip6_append_data().
+> > > >
+> > > > Actually, it only fails with EINVAL if the size is not a multiple o=
+f the block
+> > > > size of the source file because it's open O_DIRECT so, say, 65536-5=
+12 is fine
+> > > > (and works).
+> > > >
+> > > > But thinking more on this further, is this even a bug in my code, I=
+ wonder?
+> > > > The length passed is 65536 - but a UDP packet can't carry that, so =
+it
+> > > > shouldn't it have errored out before getting that far?  (which is w=
+hat it
+> > > > seems to do when I try it).
+> > > >
+> > > > I don't see how we get past the length check in ip6_append_data() w=
+ith the
+> > > > reproducer we're given unless the MTU is somewhat bigger than 65536=
+ (is that
+> > > > even possible?)
+> > >
+> > > An ipv6 packet can carry 64KB of payload, so maxnonfragsize of 65535 =
++ 40
+> > > sounds correct. But payload length passed of 65536 is not (ignoring i=
+pv6
+> > > jumbograms). So that should probably trigger an EINVAL -- if that is =
+indeed
+> > > what the repro does.
+> >
+> > l2tp_ip6_sendmsg() claims ip6_append_data() can make better checks,
+> > but what about simply replacing INT_MAX by 65535 ?
+>
+> Slightly OT but I think the l2tp_ip6.c approach was probably cribbed
+> from net/ipv6/udp.c's udpv6_sendmsg originally:
+>
+>
+>     /* Rough check on arithmetic overflow,
+>        better check is made in ip6_append_data().
+>        */
+>     if (len > INT_MAX - sizeof(struct udphdr))
+>         return -EMSGSIZE;
+>
+>
+> Should the udp code be modified similarly?
+>
 
---5zdzlSUyqQ668/XK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Unfortunately both l2tp and udp support CORK (MSG_MORE),
+so a modified check like that will not be enough to prevent syzbot reports.
 
-On Mon, Sep 18, 2023 at 04:16:08PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> i.MX8ULP GPIO supports similar feature as i.MX7ULP GPIO, but i.MX8ULP is
-> not compatible with i.MX7ULP per binding doc. i.MX8ULP only has one
-> register base, not two base.
+Better than nothing, of course.
 
-"per binding doc" is a poor justification IMO, as you literally just
-changed it earlier in this series. I think the commit message here
-should re-explain the problem so that the rationale here is clear in
-isolation.
-
-> Add a new of_device_id entry for i.MX8ULP. But to make the driver could
-> also support old bindings, check the compatible string first, before
-> check the device data.
-
-Sweet, seems like you have addressed the backwards compatibility stuff
-for the old binding :)
-
-Thanks,
-Conor.
-
---5zdzlSUyqQ668/XK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQlkAQAKCRB4tDGHoIJi
-0rb8AP993AO2r6CSvVZx8F5s5DBodTKq3cEDVHeH6mdCJSOgpwD/Xiq7LXIzgBfZ
-6S8r4rMkPZAmZwZvNhTjZVidIH6ZYwg=
-=PSDM
------END PGP SIGNATURE-----
-
---5zdzlSUyqQ668/XK--
+I also note that ipv4 size of l2tp does not have any check,
+an overflow seems possible with carefully chosen size.
