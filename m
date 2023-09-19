@@ -2,221 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1657A60AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584C07A60B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbjISLH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
+        id S232140AbjISLH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbjISLHI (ORCPT
+        with ESMTP id S232120AbjISLHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:07:08 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780351733
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:06:28 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-578cc95db68so3234a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695121587; x=1695726387; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+z6CWyEuDsHy6cJM7H1wCDvrxtpnfWLUKRjtBTGVGLo=;
-        b=VhK12LbDhyE8s04x2ovGGPEeHntPRtCDComffpgx/8wdsZfGE1yjVZfrqpHZFMmMp7
-         mNJTThFMIaHikbbIoOGFK5lXyA6pk4QsKwtnksIaWrHh7YhPYF1zcmdNSgwdbTzN4nEN
-         T0mML78dllb4UUP7E8d5fOGtrvvx3ocFDNRjm/cO/MhUB0hykXZZYIgIaePcsq4MCdqt
-         vuKiSrB6hPl72I0ljAo0sClJlBIFpahpJhAejHnTrQy497J/wL/6UG+kJp2a8K6fJp+C
-         MvhluEAYNdGiV9ph7B2unwj/YOzpJVoSNZ5PItzmKJA+HfqoQhOTR+Dv5vIiTzjGULwY
-         qWAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695121587; x=1695726387;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+z6CWyEuDsHy6cJM7H1wCDvrxtpnfWLUKRjtBTGVGLo=;
-        b=uo6rH4JuO+Ed2/iEaDEbAJ1steuIQvl6MoYzzMLILgTHJTyW8210ppLt9/1aG5NKWD
-         CgTEDpcQtMnjT4Kyu16ksg/GY0/pIdN9tul6siaCZ7LL1KcfICR4oBEVBl05rh48Ssxf
-         v70bECaRyW86GU3tuBY4OgWkQ8m+KnoO+jMLZoi6uB58hdxSZnhMUIkE7B0wDID4XPLt
-         AbztJxbxO+NC//o7Q1a8XNnBqrXFcwEsCl1Nu6R4RrQb7HDxzPCcgx+7gbTwSpAsZlGj
-         ZgooYzE4TZxrz3x+qHbK+nXu0Ac99cxLbFPqcd2a3YuoPyWRU/5c28eIAXfmQ/fB0Hsz
-         u1sg==
-X-Gm-Message-State: AOJu0Yygga2P6RDH51iJc+ofMqpjtL7Ewj9198AzJzczZgDK1DexG7iy
-        MHzavh7tI3fTmCiE/nDPEmNKBqQ+Y5SAApXypJaxCQ==
-X-Google-Smtp-Source: AGHT+IG2D7JZA1DWvRmxU9hlS5CJknY/LEjAfyXMotOyYZKJglhQwJdsYGoGUFNM0tWY90fcJpgQLV48QRwPH1MuI2o=
-X-Received: by 2002:a17:90a:ba88:b0:276:7683:70f6 with SMTP id
- t8-20020a17090aba8800b00276768370f6mr3893003pjr.33.1695121587429; Tue, 19 Sep
- 2023 04:06:27 -0700 (PDT)
+        Tue, 19 Sep 2023 07:07:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AD4E7F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695121628; x=1726657628;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=5kZItU4QIcdjDQRcui76dXHwtannf/DU6tqOo8ATvcA=;
+  b=PAoZpnGPNLFG/cNyTZtvd+ImM8x80/dUEIbQ4dTZHJ1OzMXSs9xb4YB+
+   0T2w4ACHuhLFESEaS9j1VQL/l62gar945UsXVMxhCfFLTBFyI0Pwyaekh
+   871bbXhsUaN7XSVhiPCyCuWUE5IMdZJoPw/164F3lXVtEd62bT5rGEiKa
+   cxIAflEznT+FUN4nYv8H2eGdbFW6BpmkfOv9Kp/MXC98nrW1gBSb46A0T
+   NL0dQzy3UOYbm7MOuJLWYDxYm0uKbu5+X1+HNLSrzWtNbOskB+L5fTXvl
+   dtkxrsuJBRDpbWKtZn+ybGdtztBEgJnk8Iyr2ZuUR5r8A/QJ9bKN7gmWX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="446384873"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="446384873"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 04:07:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="836394700"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="836394700"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Sep 2023 04:07:06 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qiYZL-0007Fs-2h;
+        Tue, 19 Sep 2023 11:07:03 +0000
+Date:   Tue, 19 Sep 2023 19:06:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: sound/core/ump.c:676:25: warning: array subscript 'struct
+ snd_ump_block_info[0]' is partly outside array bounds of 'char[20]'
+Message-ID: <202309191806.9xysweCr-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230915093649.435163-1-anshuman.khandual@arm.com> <20230915093649.435163-2-anshuman.khandual@arm.com>
-In-Reply-To: <20230915093649.435163-2-anshuman.khandual@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 19 Sep 2023 12:06:16 +0100
-Message-ID: <CAJ9a7VghAjdKU90NoR4VfAr+dr2GmzrwNCT23jzKMpdiwNzd-Q@mail.gmail.com>
-Subject: Re: [PATCH V5 - RESEND 1/3] coresight: etm: Override TRCIDR3.CCITMIN
- on errata affected cpus
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 10:37, Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
->
-> This work arounds errata 1490853 on Cortex-A76, and Neoverse-N1, errata
-> 1491015 on Cortex-A77, errata 1502854 on Cortex-X1, and errata 1619801 on
-> Neoverse-V1, based affected cpus, where software read for TRCIDR3.CCITMIN
-> field in ETM gets an wrong value.
->
-> If software uses the value returned by the TRCIDR3.CCITMIN register field,
-> then it will limit the range which could be used for programming the ETM.
-> In reality, the ETM could be programmed with a much smaller value than what
-> is indicated by the TRCIDR3.CCITMIN field and still function correctly.
->
-> If software reads the TRCIDR3.CCITMIN register field, corresponding to the
-> instruction trace counting minimum threshold, observe the value 0x100 or a
-> minimum cycle count threshold of 256. The correct value should be 0x4 or a
-> minimum cycle count threshold of 4.
->
-> This work arounds the problem via storing 4 in drvdata->ccitmin on affected
-> systems where the TRCIDR3.CCITMIN has been 256, thus preserving cycle count
-> threshold granularity.
->
-> These errata information has been updated in arch/arm64/silicon-errata.rst,
-> but without their corresponding configs because these have been implemented
-> directly in the driver.
->
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  Documentation/arch/arm64/silicon-errata.rst   | 10 ++++++
->  .../coresight/coresight-etm4x-core.c          | 36 +++++++++++++++++++
->  2 files changed, 46 insertions(+)
->
-> diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
-> index e96f057ea2a0..8f1be5da68b7 100644
-> --- a/Documentation/arch/arm64/silicon-errata.rst
-> +++ b/Documentation/arch/arm64/silicon-errata.rst
-> @@ -115,6 +115,10 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-A76      | #1463225        | ARM64_ERRATUM_1463225       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Cortex-A76      | #1490853        | N/A                         |
-> ++----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Cortex-A77      | #1491015        | N/A                         |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-A77      | #1508412        | ARM64_ERRATUM_1508412       |
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
-> @@ -125,6 +129,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-A715     | #2645198        | ARM64_ERRATUM_2645198       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Cortex-X1       | #1502854        | N/A                         |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-X2       | #2119858        | ARM64_ERRATUM_2119858       |
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-X2       | #2224489        | ARM64_ERRATUM_2224489       |
-> @@ -133,6 +139,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N1     | #1349291        | N/A                         |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Neoverse-N1     | #1490853        | N/A                         |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N1     | #1542419        | ARM64_ERRATUM_1542419       |
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
-> @@ -141,6 +149,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N2     | #2253138        | ARM64_ERRATUM_2253138       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Neoverse-V1     | #1619801        | N/A                         |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | MMU-500         | #841119,826419  | N/A                         |
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | MMU-600         | #1076982,1209401| N/A                         |
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 77b0271ce6eb..c01455bb1caf 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1150,6 +1150,39 @@ static void cpu_detect_trace_filtering(struct etmv4_drvdata *drvdata)
->         drvdata->trfcr = trfcr;
->  }
->
-> +/*
-> + * The following errata on applicable cpu ranges, affect the CCITMIN filed
-> + * in TCRIDR3 register. Software read for the field returns 0x100 limiting
-> + * the cycle threshold granularity, whereas the right value should have
-> + * been 0x4, which is well supported in the hardware.
-> + */
-> +static struct midr_range etm_wrong_ccitmin_cpus[] = {
-> +       /* Erratum #1490853 - Cortex-A76 */
-> +       MIDR_RANGE(MIDR_CORTEX_A76, 0, 0, 4, 0),
-> +       /* Erratum #1490853 - Neoverse-N1 */
-> +       MIDR_RANGE(MIDR_NEOVERSE_N1, 0, 0, 4, 0),
-> +       /* Erratum #1491015 - Cortex-A77 */
-> +       MIDR_RANGE(MIDR_CORTEX_A77, 0, 0, 1, 0),
-> +       /* Erratum #1502854 - Cortex-X1 */
-> +       MIDR_REV(MIDR_CORTEX_X1, 0, 0),
-> +       /* Erratum #1619801 - Neoverse-V1 */
-> +       MIDR_REV(MIDR_NEOVERSE_V1, 0, 0),
-> +       {},
-> +};
-> +
-> +static bool etm4_core_reads_wrong_ccitmin(struct etmv4_drvdata *drvdata)
-> +{
-> +       /*
-> +        * Erratum affected cpus will read 256 as the minimum
-> +        * instruction trace cycle counting threshold whereas
-> +        * the correct value should be 4 instead. Override the
-> +        * recorded value for 'drvdata->ccitmin' to workaround
-> +        * this problem.
-> +        */
-> +       return is_midr_in_range_list(read_cpuid_id(), etm_wrong_ccitmin_cpus) &&
-> +              (drvdata->ccitmin == 256);
-> +}
-> +
->  static void etm4_init_arch_data(void *info)
->  {
->         u32 etmidr0;
-> @@ -1214,6 +1247,9 @@ static void etm4_init_arch_data(void *info)
->         etmidr3 = etm4x_relaxed_read32(csa, TRCIDR3);
->         /* CCITMIN, bits[11:0] minimum threshold value that can be programmed */
->         drvdata->ccitmin = FIELD_GET(TRCIDR3_CCITMIN_MASK, etmidr3);
-> +       if (etm4_core_reads_wrong_ccitmin(drvdata))
-> +               drvdata->ccitmin = 4;
-> +
->         /* EXLEVEL_S, bits[19:16] Secure state instruction tracing */
->         drvdata->s_ex_level = FIELD_GET(TRCIDR3_EXLEVEL_S_MASK, etmidr3);
->         drvdata->config.s_ex_level = drvdata->s_ex_level;
-> --
-> 2.25.1
->
-Reviewed by: Mike Leach <mike.leach@linaro.org>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2cf0f715623872823a72e451243bbf555d10d032
+commit: 4a16a3af05712e7fd5a205f34e2908055bd9fb5e ALSA: seq: ump: Handle FB info update
+date:   3 months ago
+config: x86_64-randconfig-004-20230919 (https://download.01.org/0day-ci/archive/20230919/202309191806.9xysweCr-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309191806.9xysweCr-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309191806.9xysweCr-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In function 'fill_fb_info',
+       inlined from 'is_fb_info_updated.constprop' at sound/core/ump.c:699:2:
+>> sound/core/ump.c:676:25: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+     676 |         info->direction = buf->fb_info.direction;
+         |         ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+   sound/core/ump.c: In function 'is_fb_info_updated.constprop':
+   sound/core/ump.c:696:14: note: object 'tmpbuf' of size 20
+     696 |         char tmpbuf[offsetof(struct snd_ump_block_info, name)];
+         |              ^~~~~~
+   In function 'fill_fb_info',
+       inlined from 'is_fb_info_updated.constprop' at sound/core/ump.c:699:2:
+   sound/core/ump.c:677:23: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+     677 |         info->ui_hint = buf->fb_info.ui_hint;
+         |         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   sound/core/ump.c: In function 'is_fb_info_updated.constprop':
+   sound/core/ump.c:696:14: note: object 'tmpbuf' of size 20
+     696 |         char tmpbuf[offsetof(struct snd_ump_block_info, name)];
+         |              ^~~~~~
+   In function 'fill_fb_info',
+       inlined from 'is_fb_info_updated.constprop' at sound/core/ump.c:699:2:
+   sound/core/ump.c:678:27: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+     678 |         info->first_group = buf->fb_info.first_group;
+         |         ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/core/ump.c: In function 'is_fb_info_updated.constprop':
+   sound/core/ump.c:696:14: note: object 'tmpbuf' of size 20
+     696 |         char tmpbuf[offsetof(struct snd_ump_block_info, name)];
+         |              ^~~~~~
+   In function 'fill_fb_info',
+       inlined from 'is_fb_info_updated.constprop' at sound/core/ump.c:699:2:
+   sound/core/ump.c:679:26: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+     679 |         info->num_groups = buf->fb_info.num_groups;
+         |         ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/core/ump.c: In function 'is_fb_info_updated.constprop':
+   sound/core/ump.c:696:14: note: object 'tmpbuf' of size 20
+     696 |         char tmpbuf[offsetof(struct snd_ump_block_info, name)];
+         |              ^~~~~~
+   In function 'fill_fb_info',
+       inlined from 'is_fb_info_updated.constprop' at sound/core/ump.c:699:2:
+   sound/core/ump.c:680:21: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+     680 |         info->flags = buf->fb_info.midi_10;
+         |         ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   sound/core/ump.c: In function 'is_fb_info_updated.constprop':
+   sound/core/ump.c:696:14: note: object 'tmpbuf' of size 20
+     696 |         char tmpbuf[offsetof(struct snd_ump_block_info, name)];
+         |              ^~~~~~
+   In function 'fill_fb_info',
+       inlined from 'is_fb_info_updated.constprop' at sound/core/ump.c:699:2:
+   sound/core/ump.c:681:22: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+     681 |         info->active = buf->fb_info.active;
+         |         ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+   sound/core/ump.c: In function 'is_fb_info_updated.constprop':
+   sound/core/ump.c:696:14: note: object 'tmpbuf' of size 20
+     696 |         char tmpbuf[offsetof(struct snd_ump_block_info, name)];
+         |              ^~~~~~
+   In function 'fill_fb_info',
+       inlined from 'is_fb_info_updated.constprop' at sound/core/ump.c:699:2:
+   sound/core/ump.c:682:31: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+     682 |         info->midi_ci_version = buf->fb_info.midi_ci_version;
+         |         ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/core/ump.c: In function 'is_fb_info_updated.constprop':
+   sound/core/ump.c:696:14: note: object 'tmpbuf' of size 20
+     696 |         char tmpbuf[offsetof(struct snd_ump_block_info, name)];
+         |              ^~~~~~
+   In function 'fill_fb_info',
+       inlined from 'is_fb_info_updated.constprop' at sound/core/ump.c:699:2:
+   sound/core/ump.c:683:30: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+     683 |         info->sysex8_streams = buf->fb_info.sysex8_streams;
+         |         ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/core/ump.c: In function 'is_fb_info_updated.constprop':
+   sound/core/ump.c:696:14: note: object 'tmpbuf' of size 20
+     696 |         char tmpbuf[offsetof(struct snd_ump_block_info, name)];
+         |              ^~~~~~
+
+
+vim +676 sound/core/ump.c
+
+37e0e14128e068 Takashi Iwai 2023-06-12  670  
+37e0e14128e068 Takashi Iwai 2023-06-12  671  /* Extract Function Block info from UMP packet */
+37e0e14128e068 Takashi Iwai 2023-06-12  672  static void fill_fb_info(struct snd_ump_endpoint *ump,
+37e0e14128e068 Takashi Iwai 2023-06-12  673  			 struct snd_ump_block_info *info,
+37e0e14128e068 Takashi Iwai 2023-06-12  674  			 const union snd_ump_stream_msg *buf)
+37e0e14128e068 Takashi Iwai 2023-06-12  675  {
+37e0e14128e068 Takashi Iwai 2023-06-12 @676  	info->direction = buf->fb_info.direction;
+37e0e14128e068 Takashi Iwai 2023-06-12  677  	info->ui_hint = buf->fb_info.ui_hint;
+37e0e14128e068 Takashi Iwai 2023-06-12  678  	info->first_group = buf->fb_info.first_group;
+37e0e14128e068 Takashi Iwai 2023-06-12  679  	info->num_groups = buf->fb_info.num_groups;
+37e0e14128e068 Takashi Iwai 2023-06-12  680  	info->flags = buf->fb_info.midi_10;
+37e0e14128e068 Takashi Iwai 2023-06-12  681  	info->active = buf->fb_info.active;
+37e0e14128e068 Takashi Iwai 2023-06-12  682  	info->midi_ci_version = buf->fb_info.midi_ci_version;
+37e0e14128e068 Takashi Iwai 2023-06-12  683  	info->sysex8_streams = buf->fb_info.sysex8_streams;
+37e0e14128e068 Takashi Iwai 2023-06-12  684  
+37e0e14128e068 Takashi Iwai 2023-06-12  685  	ump_dbg(ump, "FB %d: dir=%d, active=%d, first_gp=%d, num_gp=%d, midici=%d, sysex8=%d, flags=0x%x\n",
+37e0e14128e068 Takashi Iwai 2023-06-12  686  		info->block_id, info->direction, info->active,
+37e0e14128e068 Takashi Iwai 2023-06-12  687  		info->first_group, info->num_groups, info->midi_ci_version,
+37e0e14128e068 Takashi Iwai 2023-06-12  688  		info->sysex8_streams, info->flags);
+37e0e14128e068 Takashi Iwai 2023-06-12  689  }
+37e0e14128e068 Takashi Iwai 2023-06-12  690  
+
+:::::: The code at line 676 was first introduced by commit
+:::::: 37e0e14128e0685267dc5c037bf655421a6ce2ea ALSA: ump: Support UMP Endpoint and Function Block parsing
+
+:::::: TO: Takashi Iwai <tiwai@suse.de>
+:::::: CC: Takashi Iwai <tiwai@suse.de>
 
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
