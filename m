@@ -2,239 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B5D7A5778
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4047A577E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbjISCqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 22:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
+        id S231160AbjISCuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 22:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjISCqu (ORCPT
+        with ESMTP id S230445AbjISCt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 22:46:50 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF6D95
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:46:44 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c5a223520dso26775ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:46:44 -0700 (PDT)
+        Mon, 18 Sep 2023 22:49:59 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8649210E
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:49:52 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-53fa455cd94so3743106a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:49:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695091604; x=1695696404; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CVaCKafr7rXOhFLTAtlQmk5QekExsnPlB/mflEUNsHY=;
-        b=KyMPIhRFlszHdMchGeQtq5dqNsfidbq1/VwDFAmJ//H1NALl3WfMvsc0P70vuQ382r
-         7TQiR79EAKa3i8BvQnJwc3lmfju+jEGDN8MF/LLhkCKW0brtHmEstyU80o2Y/mlv8w4y
-         TNOXqJzqPmQWH+bVLKHO6xC8yLjVh2NR+/cYER6lKdZWscS7vyG4DRSEpWnsbU8DhxWj
-         D+LNCVahCZsfDeBp9gLuY+TpmzGvJyRKC4AMdGiVFaFx3bOUw6JwRS8+IvaT3T0D1Zop
-         A2TtwbrH/pky16PpNYgCBDgr5ru/enCIoEwrWzQ8XL2q0Zf38WIZ2cTSghinuvC24SJw
-         rpNQ==
+        d=himax-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1695091792; x=1695696592; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rqN2HMjM0arpS4+cyp85IZSqS0Lo2csQX+Tp/DLTXs=;
+        b=LUYf+0UQATZ0GSRgO2Zfwnp672Uup0o7dUftqYhJxRGOLWy0y7287iPCfcHvMs5upj
+         fGJOP3aue2RdqHFPAyXB3kADI/VlkKJPt82S76Je4GGDUgQNncm3U4fT7rS6b7BYaJPu
+         D2JImWhl+RsmKJuwmDvrE+8hf1+NKryF+x3k91+h3QYWEFr0P7lC0VXxOupekYAHuLcT
+         kuMmz91wZS04PT9liaJdrT/4LNSPWN9YQh9sDN3CfsGPHG1AZNBXPsiSfcjd/lR1bW/8
+         RsaTu/rQPjgSbC0yYa85uu0U8Rw7Vy49oAZV08Cu/T+838bgRnBNKG2PyUrK0V3dW4hu
+         3onw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695091604; x=1695696404;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CVaCKafr7rXOhFLTAtlQmk5QekExsnPlB/mflEUNsHY=;
-        b=QP4RcT/T5FIQa8VX1209mY7XarJH4D8PDtrliU+Q/TZEnxcEqo9vHspF1nyUrbWK1e
-         7p/1NVoh87a4KRmxRQZX++CS3OMIhNRa5wjqhyQNsq5O45naFkoAIoDNtwnUH5kbuzRX
-         T1AAuK/i6xA0WEw9yAz393Y8KDWt8l4VQeLHO7JymbDDgbmZEeTSUjmByS0elIcGIhkO
-         uDa19ZFW8xDz3ymCrtyaiB1kP87W3U/eszSWiK/5/kMIeaPJjEdRfyLKj3anbGAUkq5Z
-         B3jR65PEc3L68hebFZ4Iw13AbYCpCcMtkm9C436FwNnHxvs08jTXZSfgIfgJRAWXsh+g
-         zh2g==
-X-Gm-Message-State: AOJu0YxTn7FaM5osDYuTTpR0renhRv+e0JN+tiPSFzn98q39HGaXLhgn
-        IcxXIyikZFQQ2xm5cCkxte4efA==
-X-Google-Smtp-Source: AGHT+IG5mbJOtnUV7RTj73z+udKG4UFeAJTSFAjJzR+Q8pglWJacUFjOvahYn+5uh9/MdY3h+cfFWA==
-X-Received: by 2002:a17:902:e744:b0:1b8:aded:524c with SMTP id p4-20020a170902e74400b001b8aded524cmr12897364plf.1.1695091604093;
-        Mon, 18 Sep 2023 19:46:44 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id m1-20020a170902d18100b001b7f40a8959sm8884198plb.76.2023.09.18.19.46.37
+        d=1e100.net; s=20230601; t=1695091792; x=1695696592;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/rqN2HMjM0arpS4+cyp85IZSqS0Lo2csQX+Tp/DLTXs=;
+        b=wyYtz9oyAY0sNve/MvPQdUXzbJXusQI26D74VhYIZ+aL14iRsDlt5rGvRqffAOMP9w
+         d7oUiIRjfucR6f7KijtEHFevPgYsIGU/SA3jsTUWeoqmFWo/81gNaWhuDY2C291ijE89
+         ZEqUpA7vl+qWpLmSL+3gL/hznCuCWsfnTL6/hfX0wSayPdyCPqeSndyi79/3eoZWjS/r
+         qzFAOqQa97JqoqZhcv0KLp8N70S/Kp8VXrUhN0/sq4KttreZLxwvuYUQPRW31JocWaZJ
+         CSGAJ6UQl2UeAIWg8nAfulpk9eqZWaEVBuYgpaR9QC6O4aF6qgHi7pVrvu5Q1Vng1R7Y
+         4Bkw==
+X-Gm-Message-State: AOJu0Yz/fNmo8zjYaQbP9QlFSOKc2ccm5Vhzl6PsD3buSvrHtp0W4ysa
+        JVvAK5HnSTd2wMTL7y4Z9AI+QQ==
+X-Google-Smtp-Source: AGHT+IHsd66D/hjY9C/k/IG4k+/81ufimcddG8Ku8iLvS65pKmGsJyZRV5X2F3hatnOX2HboOzXQDg==
+X-Received: by 2002:a05:6a21:a582:b0:14c:6a05:dfbf with SMTP id gd2-20020a056a21a58200b0014c6a05dfbfmr12134761pzc.60.1695091791981;
+        Mon, 18 Sep 2023 19:49:51 -0700 (PDT)
+Received: from tylor-mini-server.net ([101.8.12.165])
+        by smtp.gmail.com with ESMTPSA id i21-20020aa79095000000b0068fb8e18971sm7613042pfa.130.2023.09.18.19.49.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 19:46:43 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     akpm@linux-foundation.org, muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: shrinker: some cleanup
-Date:   Tue, 19 Sep 2023 10:46:07 +0800
-Message-Id: <20230919024607.65463-1-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230911094444.68966-2-zhengqi.arch@bytedance.com>
-References: <20230911094444.68966-2-zhengqi.arch@bytedance.com>
+        Mon, 18 Sep 2023 19:49:51 -0700 (PDT)
+From:   Tylor Yang <tylor_yang@himax.corp-partner.google.com>
+To:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     poyuan_chang@himax.corp-partner.google.com, jingliang@chromium.org,
+        hbarnor@chromium.org,
+        Tylor Yang <tylor_yang@himax.corp-partner.google.com>
+Subject: [PATCH V2 0/2] HID: touchscreen: add himax hid-over-spi driver
+Date:   Tue, 19 Sep 2023 10:49:41 +0800
+Message-Id: <20230919024943.3088916-1-tylor_yang@himax.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
----
-Hi Andrew, this is a cleanup patch for [PATCH v6 01/45], there will be a
-small conflict with [PATCH v6 41/45].
+Hello,
 
- include/linux/shrinker.h | 14 ++++++++------
- mm/internal.h            | 17 ++++++++++++++---
- mm/shrinker.c            | 20 ++++++++++++--------
- mm/shrinker_debug.c      | 16 ----------------
- 4 files changed, 34 insertions(+), 33 deletions(-)
+This patch series adds the driver for Himax HID-over-SPI touchscreen ICs.
+This driver takes a position in [1], it intends to take advantage of SPI
+transfer speed and HID interface. The userspace program [2] can use ioctl
+through general hidraw interface provided by kernel HID sub-system to
+control touch IC without creating special file nodes.
 
-diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-index 3f3fd9974ce5..f4a5249f00b2 100644
---- a/include/linux/shrinker.h
-+++ b/include/linux/shrinker.h
-@@ -88,16 +88,18 @@ struct shrinker {
- };
- #define DEFAULT_SEEKS 2 /* A good number if you don't know better. */
- 
--/* Flags */
--#define SHRINKER_REGISTERED	(1 << 0)
--#define SHRINKER_NUMA_AWARE	(1 << 1)
--#define SHRINKER_MEMCG_AWARE	(1 << 2)
-+/* Internal flags */
-+#define SHRINKER_REGISTERED	BIT(0)
-+#define SHRINKER_ALLOCATED	BIT(1)
-+
-+/* Flags for users to use */
-+#define SHRINKER_NUMA_AWARE	BIT(2)
-+#define SHRINKER_MEMCG_AWARE	BIT(3)
- /*
-  * It just makes sense when the shrinker is also MEMCG_AWARE for now,
-  * non-MEMCG_AWARE shrinker should not have this flag set.
-  */
--#define SHRINKER_NONSLAB	(1 << 3)
--#define SHRINKER_ALLOCATED	(1 << 4)
-+#define SHRINKER_NONSLAB	BIT(4)
- 
- struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
- void shrinker_register(struct shrinker *shrinker);
-diff --git a/mm/internal.h b/mm/internal.h
-index b9a116dce28e..0f418a11c7a8 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1161,10 +1161,21 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
- 			  int priority);
- 
- #ifdef CONFIG_SHRINKER_DEBUG
-+static inline int shrinker_debugfs_name_alloc(struct shrinker *shrinker,
-+					      const char *fmt, va_list ap)
-+{
-+	shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
-+
-+	return shrinker->name ? 0 : -ENOMEM;
-+}
-+
-+static inline void shrinker_debugfs_name_free(struct shrinker *shrinker)
-+{
-+	kfree_const(shrinker->name);
-+	shrinker->name = NULL;
-+}
-+
- extern int shrinker_debugfs_add(struct shrinker *shrinker);
--extern int shrinker_debugfs_name_alloc(struct shrinker *shrinker,
--				       const char *fmt, va_list ap);
--extern void shrinker_debugfs_name_free(struct shrinker *shrinker);
- extern struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
- 					      int *debugfs_id);
- extern void shrinker_debugfs_remove(struct dentry *debugfs_entry,
-diff --git a/mm/shrinker.c b/mm/shrinker.c
-index 201211a67827..d1032a4d5684 100644
---- a/mm/shrinker.c
-+++ b/mm/shrinker.c
-@@ -572,18 +572,23 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...)
- 
- 	if (flags & SHRINKER_MEMCG_AWARE) {
- 		err = prealloc_memcg_shrinker(shrinker);
--		if (err == -ENOSYS)
-+		if (err == -ENOSYS) {
-+			/* Memcg is not supported, fallback to non-memcg-aware shrinker. */
- 			shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
--		else if (err == 0)
--			goto done;
--		else
-+			goto non_memcg;
-+		}
-+
-+		if (err)
- 			goto err_flags;
-+
-+		return shrinker;
- 	}
- 
-+non_memcg:
- 	/*
- 	 * The nr_deferred is available on per memcg level for memcg aware
- 	 * shrinkers, so only allocate nr_deferred in the following cases:
--	 *  - non memcg aware shrinkers
-+	 *  - non-memcg-aware shrinkers
- 	 *  - !CONFIG_MEMCG
- 	 *  - memcg is disabled by kernel command line
- 	 */
-@@ -595,7 +600,6 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...)
- 	if (!shrinker->nr_deferred)
- 		goto err_flags;
- 
--done:
- 	return shrinker;
- 
- err_flags:
-@@ -634,10 +638,10 @@ void shrinker_free(struct shrinker *shrinker)
- 		list_del(&shrinker->list);
- 		debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
- 		shrinker->flags &= ~SHRINKER_REGISTERED;
--	} else {
--		shrinker_debugfs_name_free(shrinker);
- 	}
- 
-+	shrinker_debugfs_name_free(shrinker);
-+
- 	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
- 		unregister_memcg_shrinker(shrinker);
- 	up_write(&shrinker_rwsem);
-diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
-index 38452f539f40..24aebe7c24cc 100644
---- a/mm/shrinker_debug.c
-+++ b/mm/shrinker_debug.c
-@@ -193,20 +193,6 @@ int shrinker_debugfs_add(struct shrinker *shrinker)
- 	return 0;
- }
- 
--int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const char *fmt,
--				va_list ap)
--{
--	shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
--
--	return shrinker->name ? 0 : -ENOMEM;
--}
--
--void shrinker_debugfs_name_free(struct shrinker *shrinker)
--{
--	kfree_const(shrinker->name);
--	shrinker->name = NULL;
--}
--
- int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
- {
- 	struct dentry *entry;
-@@ -255,8 +241,6 @@ struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
- 
- 	lockdep_assert_held(&shrinker_rwsem);
- 
--	shrinker_debugfs_name_free(shrinker);
--
- 	*debugfs_id = entry ? shrinker->debugfs_id : -1;
- 	shrinker->debugfs_entry = NULL;
- 
+Patch 1 adds the Maintainer and devicetree bindings document for driver.
+
+Patch 2 adds the driver itself, Kconfig and Makefiles.
+
+[1] Overview:
++--------------------------------+
+| himax hid-over-spi TPIC driver |
++--------------------------------+
+| +-----------+  +-----------+   |      +-----------+  +-----------+
+| | Device #1 |  | Device #i |   |      | Device #j |  | Device #k |
+| +-----------+  +-----------+   |      +-----------+  +-----------+
+|          \\      //            |               \\      //
+|        +------------+          |             +------------+
+|        | I/O Driver |          |             | I/O Driver |
+|        +------------+          |             +------------+
+|              ||                |                   ||
+|     +------------------+       |          +------------------+
+|     | Transport Driver |       |          | Transport Driver |
+|     +------------------+       |          +------------------+
+|                      \___      |         ___/
++--------------------------------+       /
+                            \           /
+                          +----------------+
+                          |    HID Core    |
+                          +----------------+
+                           /  |        |  \
+                          /   |        |   \
+             ____________/    |        |    \_________________
+            /                 |        |                      \
+           /                  |        |                       \
+ +----------------+  +-----------+  +------------------+  +------------------+
+ | Generic Driver |  | MT Driver |  | Custom Driver #1 |  | Custom Driver #2 |
+ +----------------+  +-----------+  +------------------+  +------------------+
+
+[2] https://github.com/HimaxSoftware/hx_hid_util/tree/hid_func
+
+version 2 changes
+-rename bindings name from himax,hid-over-hx-spi to himax,hid-over-spi
+-remove "himax,fw_size", "himax,heatmap_16bits", "himax,fw_in_flash", "himax,pid"
+ and "himax,boot_time_fw_upgrade" items from dt-bindings and related code
+-add "himax,id-gpios" for user to specify hardware id pins
+-rename "himax,ic_det_delay" to "himax,ic-det-delay-ms" and
+ "himax,ic_resume_delay" to "himax,ic-resume-delay-ms"
+-MAINTAINER position adjust: move info to the position by letter order
+-Kconfig add HX_HID_HAS_FLASH option to replace "himax,fw_in_flash"
+-HIMAX_DRIVER_VER upadte from 0.0.10 to 0.0.11
+-remove unused includes and description in hx_hid.c
+-add code to map id-gpios value to PID
+-correct variable naming style and misspellings in hx_ic_core.c/h
+-remove unnecessary global varaible debug_flag
+
+Tylor Yang (2):
+  dt-bindings: input: Introduce Himax HID-over-SPI device
+  HID: touchscreen: Add initial support for Himax HID-over-SPI
+
+ .../bindings/input/himax,hid-over-spi.yaml    |  109 +
+ MAINTAINERS                                   |    7 +
+ drivers/hid/Kconfig                           |    2 +
+ drivers/hid/Makefile                          |    2 +
+ drivers/hid/hx-hid/Kconfig                    |   55 +
+ drivers/hid/hx-hid/Makefile                   |   35 +
+ drivers/hid/hx-hid/hx_acpi.c                  |   96 +
+ drivers/hid/hx-hid/hx_core.c                  | 1626 ++++++++
+ drivers/hid/hx-hid/hx_core.h                  |  487 +++
+ drivers/hid/hx-hid/hx_hid.c                   |  757 ++++
+ drivers/hid/hx-hid/hx_hid.h                   |   96 +
+ drivers/hid/hx-hid/hx_ic_83102j.c             |  345 ++
+ drivers/hid/hx-hid/hx_ic_83102j.h             |   42 +
+ drivers/hid/hx-hid/hx_ic_core.c               | 3260 +++++++++++++++++
+ drivers/hid/hx-hid/hx_ic_core.h               |  792 ++++
+ drivers/hid/hx-hid/hx_inspect.c               |  652 ++++
+ drivers/hid/hx-hid/hx_inspect.h               |  104 +
+ drivers/hid/hx-hid/hx_of.c                    |  171 +
+ drivers/hid/hx-hid/hx_plat.c                  |  480 +++
+ drivers/hid/hx-hid/hx_plat.h                  |   30 +
+ 20 files changed, 9148 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/himax,hid-over-spi.yaml
+ create mode 100644 drivers/hid/hx-hid/Kconfig
+ create mode 100644 drivers/hid/hx-hid/Makefile
+ create mode 100644 drivers/hid/hx-hid/hx_acpi.c
+ create mode 100644 drivers/hid/hx-hid/hx_core.c
+ create mode 100644 drivers/hid/hx-hid/hx_core.h
+ create mode 100644 drivers/hid/hx-hid/hx_hid.c
+ create mode 100644 drivers/hid/hx-hid/hx_hid.h
+ create mode 100644 drivers/hid/hx-hid/hx_ic_83102j.c
+ create mode 100644 drivers/hid/hx-hid/hx_ic_83102j.h
+ create mode 100644 drivers/hid/hx-hid/hx_ic_core.c
+ create mode 100644 drivers/hid/hx-hid/hx_ic_core.h
+ create mode 100644 drivers/hid/hx-hid/hx_inspect.c
+ create mode 100644 drivers/hid/hx-hid/hx_inspect.h
+ create mode 100644 drivers/hid/hx-hid/hx_of.c
+ create mode 100644 drivers/hid/hx-hid/hx_plat.c
+ create mode 100644 drivers/hid/hx-hid/hx_plat.h
+
 -- 
-2.30.2
+2.25.1
 
