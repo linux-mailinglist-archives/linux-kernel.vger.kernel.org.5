@@ -2,66 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 206237A6416
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBE67A6415
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbjISM6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34112 "EHLO
+        id S232416AbjISM61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbjISM6R (ORCPT
+        with ESMTP id S232369AbjISM6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:58:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E871AB;
-        Tue, 19 Sep 2023 05:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695128281; x=1726664281;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=wybvJEwkKu9h7qtl+C0LlmYtIk8v3lXqyQYeuG0CfZU=;
-  b=eEYsWEHt9Do6GBf/16Gq4r8MZMz34VTVNvOJlsIcmr4qmkqRNdUWN6BN
-   /Pp3ZGJTbhVS2KWnVfCw27UM5PHTvBjnDINF7/iZVIvcAYZxS27MMsncm
-   snrDbMickYQ8lOkd1LY+p6gvLOjuv013EK+DUNu4LUzNctQnzihxDOu37
-   AB7g7VfBrFotS/jqBDzXZHBBDgWCXywIqOBKPlTMzQ5A17VxE9aDZWWuH
-   ZOWjjjYdASDkqhb0wowGyCjOiCWP/ajY3lZpRNtnb9hii+d6eUcjtdUuc
-   qdcqGMZq41JV/AlprzKAr5KTL+rBm4J+IRSpYRPOALLyXJblySWDl1TZs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="359324748"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="359324748"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 05:57:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="746228994"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="746228994"
-Received: from vdesserx-mobl1.ger.corp.intel.com (HELO localhost.localdomain) ([10.249.32.31])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 05:57:40 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v3 8/8] e1000e: Use pcie_capability_read_word() for reading LNKSTA
-Date:   Tue, 19 Sep 2023 15:56:48 +0300
-Message-Id: <20230919125648.1920-9-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230919125648.1920-1-ilpo.jarvinen@linux.intel.com>
-References: <20230919125648.1920-1-ilpo.jarvinen@linux.intel.com>
+        Tue, 19 Sep 2023 08:58:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83577E6E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HMqgMw86VN9AXiB3htOitViaUrrotMkJ245EFer28SY=; b=mawo7EK+2Pjf4WxRO4RbhkFI8c
+        yMSToWrasRr12XmQzKfvdo4xoxmeDvfPmQSKbMfNCeDsNjONzkL4PBiQvOBmrTvj3ZlBZBCWHlgDY
+        bvZ310envEpHOrl8At40xyy1MTHtlSdFV/A0Ji5mujQHG/njFHwz/uZr5lYb8RZuZX7vyLha4BhLZ
+        4WP7camp2qhbILMXSsFvApe6qtfkvoZt46vhwhXHRwXJhjKgSefuFMv4BThYb7iKbq4ShTeBW5/ae
+        wtX299whZpiqKNTv+yOsIgmZJqELzfntuABfPzfLcCqQdLKM9GMxvycQgS8vHpwLMBWk1PtZpfT6M
+        LjmtC7xw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qiaIZ-00DcNU-2K;
+        Tue, 19 Sep 2023 12:57:53 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C87B0300585; Tue, 19 Sep 2023 14:57:52 +0200 (CEST)
+Date:   Tue, 19 Sep 2023 14:57:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        akpm@linux-foundation.org
+Subject: Re: Buggy __free(kfree) usage pattern already in tree
+Message-ID: <20230919125752.GA39346@noisy.programming.kicks-ass.net>
+References: <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
+ <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
+ <CACMJSevZQgik7S-62fz9H7+Mib+W0CgYMV4GyWjYV7N_E6iHVQ@mail.gmail.com>
+ <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
+ <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com>
+ <20230915210851.GA23174@noisy.programming.kicks-ass.net>
+ <CAHk-=whvOGL3aNhtps0YksGtzvaob_bvZpbaTcVEqGwNMxB6xg@mail.gmail.com>
+ <20230915213231.GB23174@noisy.programming.kicks-ass.net>
+ <CAHk-=wi08ZUguV_n88h=bP6X01-tah29RtB0t9TmXtyuEJev-Q@mail.gmail.com>
+ <20230915221332.GC23174@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915221332.GC23174@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,56 +64,229 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pcie_capability_read_word() for reading LNKSTA and remove the
-custom define that matches to PCI_EXP_LNKSTA.
+On Sat, Sep 16, 2023 at 12:13:32AM +0200, Peter Zijlstra wrote:
 
-As only single user for cap_offset remains, replace it with a call to
-pci_pcie_cap(). Instead of e1000_adapter, make local variable out of
-pci_dev because both users are interested in it.
+> I think I can make it work, I'll go have a play, but perhaps not now,
+> it's past midnight ;-)
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+So I have been playing about with this a bit and it keeps falling short
+of 'nice' :/
+
+What I ended up with is the below. The simple scoped_guard () extension
+is useful, albeit slightly awkward (I'll reply with another patch making
+use of it). But the basic problem is that it will have to have the form:
+
+	scoped_guard (mutex_intr, &task->signal->cred_guard_mutex) {
+		...
+		return 0;
+	}
+	return -EINTR;
+
+That is; the guard body must terminate such that after the body is the
+'fail' case. This is not always convenient.
+
+Additionally, this did not help with my case where I need to hold the
+lock conditionally (when I have a task) but need to execute the body
+unconditionally. Then the above form just doesn't work.
+
+For that, I ended up with:
+
+	cond_guard(name, stmt, args...)
+
+Which can be used like:
+
+
+	do {
+		cond_guard(rwsem_down_intr, if (task) return -EINTR,
+			   task ? task->signal->exec_update_lock : NULL);
+
+		... do stuff that is conditionally guarded by @exec_update_lock ...
+
+	} while (0);
+
+
+I'll continue poking for a bit,.. see if there's something better.
+
+
 ---
- drivers/net/ethernet/intel/e1000e/defines.h |  1 -
- drivers/net/ethernet/intel/e1000e/mac.c     | 11 ++++-------
- 2 files changed, 4 insertions(+), 8 deletions(-)
+Subject: cleanup: Add conditional guard support
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Sun Sep 17 13:22:17 CEST 2023
 
-diff --git a/drivers/net/ethernet/intel/e1000e/defines.h b/drivers/net/ethernet/intel/e1000e/defines.h
-index a4d29c9e03a6..23a58cada43a 100644
---- a/drivers/net/ethernet/intel/e1000e/defines.h
-+++ b/drivers/net/ethernet/intel/e1000e/defines.h
-@@ -678,7 +678,6 @@
- 
- /* PCI/PCI-X/PCI-EX Config space */
- #define PCI_HEADER_TYPE_REGISTER     0x0E
--#define PCIE_LINK_STATUS             0x12
- 
- #define PCI_HEADER_TYPE_MULTIFUNC    0x80
- 
-diff --git a/drivers/net/ethernet/intel/e1000e/mac.c b/drivers/net/ethernet/intel/e1000e/mac.c
-index 5340cf73778d..694a779e718d 100644
---- a/drivers/net/ethernet/intel/e1000e/mac.c
-+++ b/drivers/net/ethernet/intel/e1000e/mac.c
-@@ -17,16 +17,13 @@ s32 e1000e_get_bus_info_pcie(struct e1000_hw *hw)
- {
- 	struct e1000_mac_info *mac = &hw->mac;
- 	struct e1000_bus_info *bus = &hw->bus;
--	struct e1000_adapter *adapter = hw->adapter;
--	u16 pcie_link_status, cap_offset;
-+	struct pci_dev *pdev = hw->adapter->pdev;
-+	u16 pcie_link_status;
- 
--	cap_offset = adapter->pdev->pcie_cap;
--	if (!cap_offset) {
-+	if (!pci_pcie_cap(pdev)) {
- 		bus->width = e1000_bus_width_unknown;
- 	} else {
--		pci_read_config_word(adapter->pdev,
--				     cap_offset + PCIE_LINK_STATUS,
--				     &pcie_link_status);
-+		pcie_capability_read_word(pdev, PCI_EXP_LNKSTA, &pcie_link_status);
- 		bus->width = (enum e1000_bus_width)FIELD_GET(PCI_EXP_LNKSTA_NLW,
- 							     pcie_link_status);
- 	}
--- 
-2.30.2
+Adds:
 
+ - DEFINE_GUARD_COND() / DEFINE_LOCK_GUARD_1_COND() to extend existing
+   guards with conditional lock primitives, eg. mutex_trylock(),
+   mutex_lock_interruptible().
+
+   nb. both primitives allow NULL 'locks', which cause the lock to
+       fail (obviously).
+
+ - extends scoped_guard() to not take the body when the the
+   conditional guard 'fails'. eg.
+
+     scoped_guard (mutex_intr, &task->signal_cred_guard_mutex) {
+	...
+     }
+
+   will only execute the body when the mutex is held.
+
+ - provides cond_guard(name, stmt, args...); which extends guard()
+   to execute @stmt when the lock fails.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+Index: linux-2.6/include/linux/cleanup.h
+===================================================================
+--- linux-2.6.orig/include/linux/cleanup.h
++++ linux-2.6/include/linux/cleanup.h
+@@ -136,14 +136,36 @@ static inline class_##_name##_t class_##
+  */
+ 
+ #define DEFINE_GUARD(_name, _type, _lock, _unlock) \
+-	DEFINE_CLASS(_name, _type, _unlock, ({ _lock; _T; }), _type _T)
++	DEFINE_CLASS(_name, _type, if (_T) { _unlock; }, ({ _lock; _T; }), _type _T); \
++	static inline void * class_##_name##_lock_ptr(class_##_name##_t *_T) \
++	{ return *_T; }
++
++#define DEFINE_GUARD_COND(_name, _ext, _condlock) \
++	EXTEND_CLASS(_name, _ext, \
++		     ({ void *_t = _T; if (_T && !(_condlock)) _t = NULL; _t; }), \
++		     class_##_name##_t _T) \
++	static inline void * class_##_name##_ext##_lock_ptr(class_##_name##_t *_T) \
++	{ return class_##_name##_lock_ptr(_T); }
++
++#define _guard(_name, var)						\
++	class_##_name##_t var __cleanup(class_##_name##_destructor) =	\
++		class_##_name##_constructor
+ 
+ #define guard(_name) \
+-	CLASS(_name, __UNIQUE_ID(guard))
++	_guard(_name, __UNIQUE_ID(guard))
++
++#define __guard_ptr(_name) class_##_name##_lock_ptr
+ 
+ #define scoped_guard(_name, args...)					\
+ 	for (CLASS(_name, scope)(args),					\
+-	     *done = NULL; !done; done = (void *)1)
++	     *done = NULL; __guard_ptr(_name)(&scope) && !done; done = (void *)1)
++
++#define _cond_guard(_name, _var, _stmt, args...) \
++	_guard(_name, _var)(args); \
++	if (!__guard_ptr(_name)(&_var)) _stmt
++
++#define cond_guard(_name, _stmt, args...) \
++	_cond_guard(_name, __UNIQUE_ID(guard), _stmt, args)
+ 
+ /*
+  * Additional helper macros for generating lock guards with types, either for
+@@ -173,6 +195,11 @@ typedef struct {							\
+ static inline void class_##_name##_destructor(class_##_name##_t *_T)	\
+ {									\
+ 	if (_T->lock) { _unlock; }					\
++}									\
++									\
++static inline void *class_##_name##_lock_ptr(class_##_name##_t *_T)	\
++{									\
++	return _T->lock;						\
+ }
+ 
+ 
+@@ -201,4 +228,14 @@ __DEFINE_LOCK_GUARD_1(_name, _type, _loc
+ __DEFINE_UNLOCK_GUARD(_name, void, _unlock, __VA_ARGS__)		\
+ __DEFINE_LOCK_GUARD_0(_name, _lock)
+ 
++#define DEFINE_LOCK_GUARD_1_COND(_name, _ext, _condlock)		\
++	EXTEND_CLASS(_name, _ext,					\
++		     ({ class_##_name##_t _t = { .lock = l }, *_T = &_t;\
++		        if (_T->lock && !(_condlock)) _T->lock = NULL;	\
++			_t; }),						\
++		     typeof_member(class_##_name##_t, lock) l)		\
++	static inline void * class_##_name##_ext##_lock_ptr(class_##_name##_t *_T) \
++	{ return class_##_name##_lock_ptr(_T); }
++
++
+ #endif /* __LINUX_GUARDS_H */
+Index: linux-2.6/include/linux/mutex.h
+===================================================================
+--- linux-2.6.orig/include/linux/mutex.h
++++ linux-2.6/include/linux/mutex.h
+@@ -221,6 +221,7 @@ extern void mutex_unlock(struct mutex *l
+ extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
+ 
+ DEFINE_GUARD(mutex, struct mutex *, mutex_lock(_T), mutex_unlock(_T))
+-DEFINE_FREE(mutex, struct mutex *, if (_T) mutex_unlock(_T))
++DEFINE_GUARD_COND(mutex, _try, mutex_trylock(_T))
++DEFINE_GUARD_COND(mutex, _intr, mutex_lock_interruptible(_T) == 0)
+ 
+ #endif /* __LINUX_MUTEX_H */
+Index: linux-2.6/include/linux/spinlock.h
+===================================================================
+--- linux-2.6.orig/include/linux/spinlock.h
++++ linux-2.6/include/linux/spinlock.h
+@@ -507,6 +507,8 @@ DEFINE_LOCK_GUARD_1(raw_spinlock, raw_sp
+ 		    raw_spin_lock(_T->lock),
+ 		    raw_spin_unlock(_T->lock))
+ 
++DEFINE_LOCK_GUARD_1_COND(raw_spinlock, _try, raw_spin_trylock(_T->lock))
++
+ DEFINE_LOCK_GUARD_1(raw_spinlock_nested, raw_spinlock_t,
+ 		    raw_spin_lock_nested(_T->lock, SINGLE_DEPTH_NESTING),
+ 		    raw_spin_unlock(_T->lock))
+@@ -515,23 +517,36 @@ DEFINE_LOCK_GUARD_1(raw_spinlock_irq, ra
+ 		    raw_spin_lock_irq(_T->lock),
+ 		    raw_spin_unlock_irq(_T->lock))
+ 
++DEFINE_LOCK_GUARD_1_COND(raw_spinlock_irq, _try, raw_spin_trylock_irq(_T->lock))
++
+ DEFINE_LOCK_GUARD_1(raw_spinlock_irqsave, raw_spinlock_t,
+ 		    raw_spin_lock_irqsave(_T->lock, _T->flags),
+ 		    raw_spin_unlock_irqrestore(_T->lock, _T->flags),
+ 		    unsigned long flags)
+ 
++DEFINE_LOCK_GUARD_1_COND(raw_spinlock_irqsave, _try,
++			 raw_spin_trylock_irqsave(_T->lock, _T->flags))
++
+ DEFINE_LOCK_GUARD_1(spinlock, spinlock_t,
+ 		    spin_lock(_T->lock),
+ 		    spin_unlock(_T->lock))
+ 
++DEFINE_LOCK_GUARD_1_COND(spinlock, _try, spin_trylock(_T->lock))
++
+ DEFINE_LOCK_GUARD_1(spinlock_irq, spinlock_t,
+ 		    spin_lock_irq(_T->lock),
+ 		    spin_unlock_irq(_T->lock))
+ 
++DEFINE_LOCK_GUARD_1_COND(spinlock_irq, _try,
++			 spin_trylock_irq(_T->lock))
++
+ DEFINE_LOCK_GUARD_1(spinlock_irqsave, spinlock_t,
+ 		    spin_lock_irqsave(_T->lock, _T->flags),
+ 		    spin_unlock_irqrestore(_T->lock, _T->flags),
+ 		    unsigned long flags)
+ 
++DEFINE_LOCK_GUARD_1_COND(spinlock_irqsave, _try,
++			 spin_trylock_irqsave(_T->lock, _T->flags))
++
+ #undef __LINUX_INSIDE_SPINLOCK_H
+ #endif /* __LINUX_SPINLOCK_H */
+Index: linux-2.6/include/linux/rwsem.h
+===================================================================
+--- linux-2.6.orig/include/linux/rwsem.h
++++ linux-2.6/include/linux/rwsem.h
+@@ -203,11 +203,11 @@ extern void up_read(struct rw_semaphore
+ extern void up_write(struct rw_semaphore *sem);
+ 
+ DEFINE_GUARD(rwsem_read, struct rw_semaphore *, down_read(_T), up_read(_T))
+-DEFINE_GUARD(rwsem_write, struct rw_semaphore *, down_write(_T), up_write(_T))
+-
+-DEFINE_FREE(up_read, struct rw_semaphore *, if (_T) up_read(_T))
+-DEFINE_FREE(up_write, struct rw_semaphore *, if (_T) up_write(_T))
++DEFINE_GUARD_COND(rwsem_read, _try, down_read_trylock(_T))
++DEFINE_GUARD_COND(rwsem_read, _intr, down_read_interruptible(_T) == 0)
+ 
++DEFINE_GUARD(rwsem_write, struct rw_semaphore *, down_write(_T), up_write(_T))
++DEFINE_GUARD_COND(rwsem_write, _try, down_write_trylock(_T))
+ 
+ /*
+  * downgrade write lock to read lock
