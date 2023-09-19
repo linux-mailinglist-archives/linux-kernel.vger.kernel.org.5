@@ -2,403 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BC07A622C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D087A622D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbjISMJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        id S231376AbjISMKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbjISMJw (ORCPT
+        with ESMTP id S231459AbjISMJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:09:52 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0F2A9;
-        Tue, 19 Sep 2023 05:09:46 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-495c10cec8aso2066481e0c.1;
-        Tue, 19 Sep 2023 05:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695125385; x=1695730185; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F2TeDM1ujR0ck1FRETeocvVKHFWipuxs4eJXy3roKNQ=;
-        b=Io0J27YRZbEVVsQKP42oCzuZhZ5cWZDqfMRFW276k88L2onNab0JSRz/e7JxAA4Hpm
-         DZMMb8AFCavrgYGFIx6NWlNYp6cQlqoqbllH4Mi1hVjbK/yvZLtg6Cgd7c886XgUzgtB
-         fT1ULH4KjMjA8NKPQUmpobZeHmK27P+e5dUpUNgVQmIvQRHekrxEaYfyJkT7qGm0kV5D
-         sN+BMjlB78Ov47t3Cvq1Tr7wB5wg3BEGDBxAY0RqfybcZis8FZoAM3azHvjH8R/FpMpb
-         AA5JJDLRhgn3a1/9PqhnF2foux8lQmghlIW3G0Vkc5cDdSRoR29cLEtRExgwkX1iceXB
-         dZwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695125385; x=1695730185;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F2TeDM1ujR0ck1FRETeocvVKHFWipuxs4eJXy3roKNQ=;
-        b=GJ1suWLcu9TEeGSqs85K6mmschj/nO66/QncYtLr1GiEhGIBsnk/3hAliT4igWdy6L
-         Sh8OmLPk+OYQ6w2XLLCmO2g39u76CqxKXMxoNYr6bYzn3kl46iWt+Dmt9VFRV3GL4c1A
-         dP/zDM4qdcQZeForYdSYVv7lFSERJcYvnOrliqc0uw+VcAoSHXoS3QweSTOD7Yh/wGIq
-         fMxhYl0wRnG8Z+lW3S++O7H6uePYf64MpIpq5gcNqYTkYPURMOmUg5PeVu7lOmf5rCO2
-         fCTVdd5IGwBV6vOu4it2yT1L1NlSVmfg+31zGWhj05v7wQL9vHXyOMIjiYknM+0hlMm0
-         6gEg==
-X-Gm-Message-State: AOJu0Yythu/F5Xr+D22Z2yzMmftV9KGWfMUUAeLVTpA0Ff/ruykYi3mA
-        G51kOArlyWqAnogWGrlxN0Yqjd8i2MsZKF1dXSc=
-X-Google-Smtp-Source: AGHT+IGjusJlmZ8fxVb1jKIdwHgKaKEeXTFuXxEJK4Dlz9gvhqLsIJR2q40lRaaX1DXsIoz8gnKXZ6ZL6gGJpVoMC8Y=
-X-Received: by 2002:a1f:4a47:0:b0:48f:280a:1d58 with SMTP id
- x68-20020a1f4a47000000b0048f280a1d58mr9241951vka.5.1695125385356; Tue, 19 Sep
- 2023 05:09:45 -0700 (PDT)
+        Tue, 19 Sep 2023 08:09:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11989F2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695125390; x=1726661390;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=S8i8itQGJqKpxJliklCeAW0NKlbEdeRcl9HzsESsjrQ=;
+  b=DAyMlnE1WJ5X9P5xgoT6S0T2q42lr7myAXVTyQJBNdF9k64KRgmj+j/s
+   SBGs04OJMVFEbc4dg8sqUP1QcnYsRc9Bp8nmQOJsvF462HPSF9AjJ2K3o
+   jYuPO2ncliPY1Y1KF7GX9Wy0ut6hgfzRlBvnsMDblEnv78w0FrAganxTo
+   LJjn7rHGWe+KQzHmvp31nXQwNXuk6pw5IZSh5f3jv/Y8aOMt6Z8Po251o
+   tw45HN9nAI3d/9jpfqK7Zx6pramX30oHyzmGYI/czSKnZ7HoY+SYn2l3Y
+   IgqYEeAydIA3N92msXX6PwHNbBcUucwVfrSUe7igmV9z9U+lLqe6ex8II
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="379825874"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="379825874"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 05:09:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861519279"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="861519279"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Sep 2023 05:09:47 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qiZXz-0007Kb-38;
+        Tue, 19 Sep 2023 12:09:44 +0000
+Date:   Tue, 19 Sep 2023 20:09:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: arch/m68k/include/asm/raw_io.h:91:13: warning: array subscript 0 is
+ outside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned
+ int[]'}
+Message-ID: <202309192013.vI4DKHmw-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230911131224.61924-1-alexghiti@rivosinc.com> <20230911131224.61924-4-alexghiti@rivosinc.com>
-In-Reply-To: <20230911131224.61924-4-alexghiti@rivosinc.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 19 Sep 2023 13:09:18 +0100
-Message-ID: <CA+V-a8vJRdgq0zYZL7w2cDYfChr=L+ogF7GzRtD5Xp88NuEU2Q@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] riscv: Make __flush_tlb_range() loop over pte
- instead of flushing the whole tlb
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 2:15=E2=80=AFPM Alexandre Ghiti <alexghiti@rivosinc=
-.com> wrote:
->
-> Currently, when the range to flush covers more than one page (a 4K page o=
-r
-> a hugepage), __flush_tlb_range() flushes the whole tlb. Flushing the whol=
-e
-> tlb comes with a greater cost than flushing a single entry so we should
-> flush single entries up to a certain threshold so that:
-> threshold * cost of flushing a single entry < cost of flushing the whole
-> tlb.
->
-> Co-developed-by: Mayuresh Chitale <mchitale@ventanamicro.com>
-> Signed-off-by: Mayuresh Chitale <mchitale@ventanamicro.com>
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/sbi.h      |   3 -
->  arch/riscv/include/asm/tlbflush.h |   3 +
->  arch/riscv/kernel/sbi.c           |  32 +++------
->  arch/riscv/mm/tlbflush.c          | 115 +++++++++++++++---------------
->  4 files changed, 72 insertions(+), 81 deletions(-)
->
-Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> #
-On RZ/Five SMARC
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2cf0f715623872823a72e451243bbf555d10d032
+commit: f1a43aadb5a690e141a3b6700e2a40c1d4dbe088 watchdog: Enable COMPILE_TEST for more drivers
+date:   5 weeks ago
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230919/202309192013.vI4DKHmw-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309192013.vI4DKHmw-lkp@intel.com/reproduce)
 
-Cheers,
-Prabhakar
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309192013.vI4DKHmw-lkp@intel.com/
 
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 5b4a1bf5f439..b79d0228144f 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -273,9 +273,6 @@ void sbi_set_timer(uint64_t stime_value);
->  void sbi_shutdown(void);
->  void sbi_send_ipi(unsigned int cpu);
->  int sbi_remote_fence_i(const struct cpumask *cpu_mask);
-> -int sbi_remote_sfence_vma(const struct cpumask *cpu_mask,
-> -                          unsigned long start,
-> -                          unsigned long size);
->
->  int sbi_remote_sfence_vma_asid(const struct cpumask *cpu_mask,
->                                 unsigned long start,
-> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/t=
-lbflush.h
-> index f5c4fb0ae642..170a49c531c6 100644
-> --- a/arch/riscv/include/asm/tlbflush.h
-> +++ b/arch/riscv/include/asm/tlbflush.h
-> @@ -11,6 +11,9 @@
->  #include <asm/smp.h>
->  #include <asm/errata_list.h>
->
-> +#define FLUSH_TLB_MAX_SIZE      ((unsigned long)-1)
-> +#define FLUSH_TLB_NO_ASID       ((unsigned long)-1)
-> +
->  #ifdef CONFIG_MMU
->  extern unsigned long asid_mask;
->
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index c672c8ba9a2a..5a62ed1da453 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -11,6 +11,7 @@
->  #include <linux/reboot.h>
->  #include <asm/sbi.h>
->  #include <asm/smp.h>
-> +#include <asm/tlbflush.h>
->
->  /* default SBI version is 0.1 */
->  unsigned long sbi_spec_version __ro_after_init =3D SBI_SPEC_VERSION_DEFA=
-ULT;
-> @@ -376,32 +377,15 @@ int sbi_remote_fence_i(const struct cpumask *cpu_ma=
-sk)
->  }
->  EXPORT_SYMBOL(sbi_remote_fence_i);
->
-> -/**
-> - * sbi_remote_sfence_vma() - Execute SFENCE.VMA instructions on given re=
-mote
-> - *                          harts for the specified virtual address rang=
-e.
-> - * @cpu_mask: A cpu mask containing all the target harts.
-> - * @start: Start of the virtual address
-> - * @size: Total size of the virtual address range.
-> - *
-> - * Return: 0 on success, appropriate linux error code otherwise.
-> - */
-> -int sbi_remote_sfence_vma(const struct cpumask *cpu_mask,
-> -                          unsigned long start,
-> -                          unsigned long size)
-> -{
-> -       return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
-> -                           cpu_mask, start, size, 0, 0);
-> -}
-> -EXPORT_SYMBOL(sbi_remote_sfence_vma);
-> -
->  /**
->   * sbi_remote_sfence_vma_asid() - Execute SFENCE.VMA instructions on giv=
-en
-> - * remote harts for a virtual address range belonging to a specific ASID=
-.
-> + * remote harts for a virtual address range belonging to a specific ASID=
- or not.
->   *
->   * @cpu_mask: A cpu mask containing all the target harts.
->   * @start: Start of the virtual address
->   * @size: Total size of the virtual address range.
-> - * @asid: The value of address space identifier (ASID).
-> + * @asid: The value of address space identifier (ASID), or FLUSH_TLB_NO_=
-ASID
-> + * for flushing all address spaces.
->   *
->   * Return: 0 on success, appropriate linux error code otherwise.
->   */
-> @@ -410,8 +394,12 @@ int sbi_remote_sfence_vma_asid(const struct cpumask =
-*cpu_mask,
->                                 unsigned long size,
->                                 unsigned long asid)
->  {
-> -       return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
-> -                           cpu_mask, start, size, asid, 0);
-> +       if (asid =3D=3D FLUSH_TLB_NO_ASID)
-> +               return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
-> +                                   cpu_mask, start, size, 0, 0);
-> +       else
-> +               return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID=
-,
-> +                                   cpu_mask, start, size, asid, 0);
->  }
->  EXPORT_SYMBOL(sbi_remote_sfence_vma_asid);
->
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 5bda6d4fed90..2c1136d73411 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -9,28 +9,50 @@
->
->  static inline void local_flush_tlb_all_asid(unsigned long asid)
->  {
-> -       __asm__ __volatile__ ("sfence.vma x0, %0"
-> -                       :
-> -                       : "r" (asid)
-> -                       : "memory");
-> +       if (asid !=3D FLUSH_TLB_NO_ASID)
-> +               __asm__ __volatile__ ("sfence.vma x0, %0"
-> +                               :
-> +                               : "r" (asid)
-> +                               : "memory");
-> +       else
-> +               local_flush_tlb_all();
->  }
->
->  static inline void local_flush_tlb_page_asid(unsigned long addr,
->                 unsigned long asid)
->  {
-> -       __asm__ __volatile__ ("sfence.vma %0, %1"
-> -                       :
-> -                       : "r" (addr), "r" (asid)
-> -                       : "memory");
-> +       if (asid !=3D FLUSH_TLB_NO_ASID)
-> +               __asm__ __volatile__ ("sfence.vma %0, %1"
-> +                               :
-> +                               : "r" (addr), "r" (asid)
-> +                               : "memory");
-> +       else
-> +               local_flush_tlb_page(addr);
->  }
->
-> -static inline void local_flush_tlb_range(unsigned long start,
-> -               unsigned long size, unsigned long stride)
-> +/*
-> + * Flush entire TLB if number of entries to be flushed is greater
-> + * than the threshold below.
-> + */
-> +static unsigned long tlb_flush_all_threshold __read_mostly =3D 64;
-> +
-> +static void local_flush_tlb_range_threshold_asid(unsigned long start,
-> +                                                unsigned long size,
-> +                                                unsigned long stride,
-> +                                                unsigned long asid)
->  {
-> -       if (size <=3D stride)
-> -               local_flush_tlb_page(start);
-> -       else
-> -               local_flush_tlb_all();
-> +       u16 nr_ptes_in_range =3D DIV_ROUND_UP(size, stride);
-> +       int i;
-> +
-> +       if (nr_ptes_in_range > tlb_flush_all_threshold) {
-> +               local_flush_tlb_all_asid(asid);
-> +               return;
-> +       }
-> +
-> +       for (i =3D 0; i < nr_ptes_in_range; ++i) {
-> +               local_flush_tlb_page_asid(start, asid);
-> +               start +=3D stride;
-> +       }
->  }
->
->  static inline void local_flush_tlb_range_asid(unsigned long start,
-> @@ -38,8 +60,10 @@ static inline void local_flush_tlb_range_asid(unsigned=
- long start,
->  {
->         if (size <=3D stride)
->                 local_flush_tlb_page_asid(start, asid);
-> -       else
-> +       else if (size =3D=3D FLUSH_TLB_MAX_SIZE)
->                 local_flush_tlb_all_asid(asid);
-> +       else
-> +               local_flush_tlb_range_threshold_asid(start, size, stride,=
- asid);
->  }
->
->  static void __ipi_flush_tlb_all(void *info)
-> @@ -52,7 +76,7 @@ void flush_tlb_all(void)
->         if (riscv_use_ipi_for_rfence())
->                 on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
->         else
-> -               sbi_remote_sfence_vma(NULL, 0, -1);
-> +               sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, F=
-LUSH_TLB_NO_ASID);
->  }
->
->  struct flush_tlb_range_data {
-> @@ -69,18 +93,12 @@ static void __ipi_flush_tlb_range_asid(void *info)
->         local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid)=
-;
->  }
->
-> -static void __ipi_flush_tlb_range(void *info)
-> -{
-> -       struct flush_tlb_range_data *d =3D info;
-> -
-> -       local_flush_tlb_range(d->start, d->size, d->stride);
-> -}
-> -
->  static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
->                               unsigned long size, unsigned long stride)
->  {
->         struct flush_tlb_range_data ftd;
->         struct cpumask *cmask =3D mm_cpumask(mm);
-> +       unsigned long asid =3D FLUSH_TLB_NO_ASID;
->         unsigned int cpuid;
->         bool broadcast;
->
-> @@ -90,39 +108,24 @@ static void __flush_tlb_range(struct mm_struct *mm, =
-unsigned long start,
->         cpuid =3D get_cpu();
->         /* check if the tlbflush needs to be sent to other CPUs */
->         broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> -       if (static_branch_unlikely(&use_asid_allocator)) {
-> -               unsigned long asid =3D atomic_long_read(&mm->context.id) =
-& asid_mask;
-> -
-> -               if (broadcast) {
-> -                       if (riscv_use_ipi_for_rfence()) {
-> -                               ftd.asid =3D asid;
-> -                               ftd.start =3D start;
-> -                               ftd.size =3D size;
-> -                               ftd.stride =3D stride;
-> -                               on_each_cpu_mask(cmask,
-> -                                                __ipi_flush_tlb_range_as=
-id,
-> -                                                &ftd, 1);
-> -                       } else
-> -                               sbi_remote_sfence_vma_asid(cmask,
-> -                                                          start, size, a=
-sid);
-> -               } else {
-> -                       local_flush_tlb_range_asid(start, size, stride, a=
-sid);
-> -               }
-> +
-> +       if (static_branch_unlikely(&use_asid_allocator))
-> +               asid =3D atomic_long_read(&mm->context.id) & asid_mask;
-> +
-> +       if (broadcast) {
-> +               if (riscv_use_ipi_for_rfence()) {
-> +                       ftd.asid =3D asid;
-> +                       ftd.start =3D start;
-> +                       ftd.size =3D size;
-> +                       ftd.stride =3D stride;
-> +                       on_each_cpu_mask(cmask,
-> +                                        __ipi_flush_tlb_range_asid,
-> +                                        &ftd, 1);
-> +               } else
-> +                       sbi_remote_sfence_vma_asid(cmask,
-> +                                                  start, size, asid);
->         } else {
-> -               if (broadcast) {
-> -                       if (riscv_use_ipi_for_rfence()) {
-> -                               ftd.asid =3D 0;
-> -                               ftd.start =3D start;
-> -                               ftd.size =3D size;
-> -                               ftd.stride =3D stride;
-> -                               on_each_cpu_mask(cmask,
-> -                                                __ipi_flush_tlb_range,
-> -                                                &ftd, 1);
-> -                       } else
-> -                               sbi_remote_sfence_vma(cmask, start, size)=
-;
-> -               } else {
-> -                       local_flush_tlb_range(start, size, stride);
-> -               }
-> +               local_flush_tlb_range_asid(start, size, stride, asid);
->         }
->
->         put_cpu();
-> @@ -130,7 +133,7 @@ static void __flush_tlb_range(struct mm_struct *mm, u=
-nsigned long start,
->
->  void flush_tlb_mm(struct mm_struct *mm)
->  {
-> -       __flush_tlb_range(mm, 0, -1, PAGE_SIZE);
-> +       __flush_tlb_range(mm, 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
->  }
->
->  void flush_tlb_mm_range(struct mm_struct *mm,
-> --
-> 2.39.2
->
+All warnings (new ones prefixed by >>):
+
+   In file included from arch/m68k/include/asm/io_mm.h:25,
+                    from arch/m68k/include/asm/io.h:8,
+                    from include/linux/io.h:13,
+                    from drivers/watchdog/machzwd.c:39:
+   In function 'zf_set_timer',
+       inlined from 'zf_timer_on' at drivers/watchdog/machzwd.c:218:2:
+>> arch/m68k/include/asm/raw_io.h:91:13: warning: array subscript 0 is outside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned int[]'} [-Warray-bounds=]
+      91 |         __w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v >> 8)<<1)))); \
+         |         ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/m68k/include/asm/io_mm.h:228:20: note: in expansion of macro 'rom_out_le16'
+     228 |                  : rom_out_le16(isa_itw(port), (val)))
+         |                    ^~~~~~~~~~~~
+   arch/m68k/include/asm/io_mm.h:356:42: note: in expansion of macro 'isa_rom_outw'
+     356 | #define outw(val, port) ((port) < 1024 ? isa_rom_outw((val), (port)) : out_le16((port), (val)))
+         |                                          ^~~~~~~~~~~~
+   drivers/watchdog/machzwd.c:74:53: note: in expansion of macro 'outw'
+      74 | #define zf_writew(port, data)  { outb(port, INDEX); outw(data, DATA_W); }
+         |                                                     ^~~~
+   drivers/watchdog/machzwd.c:173:17: note: in expansion of macro 'zf_writew'
+     173 |                 zf_writew(COUNTER_1, new);
+         |                 ^~~~~~~~~
+   In function 'zf_timer_on':
+   cc1: note: source object is likely at address zero
+   In function 'zf_set_timer',
+       inlined from 'zf_timer_on' at drivers/watchdog/machzwd.c:218:2:
+   arch/m68k/include/asm/raw_io.h:87:13: warning: array subscript 0 is outside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned int[]'} [-Warray-bounds=]
+      87 |         __w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
+         |         ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/m68k/include/asm/io_mm.h:227:20: note: in expansion of macro 'rom_out_be16'
+     227 |         (ISA_SEX ? rom_out_be16(isa_itw(port), (val))   \
+         |                    ^~~~~~~~~~~~
+   arch/m68k/include/asm/io_mm.h:356:42: note: in expansion of macro 'isa_rom_outw'
+     356 | #define outw(val, port) ((port) < 1024 ? isa_rom_outw((val), (port)) : out_le16((port), (val)))
+         |                                          ^~~~~~~~~~~~
+   drivers/watchdog/machzwd.c:74:53: note: in expansion of macro 'outw'
+      74 | #define zf_writew(port, data)  { outb(port, INDEX); outw(data, DATA_W); }
+         |                                                     ^~~~
+   drivers/watchdog/machzwd.c:173:17: note: in expansion of macro 'zf_writew'
+     173 |                 zf_writew(COUNTER_1, new);
+         |                 ^~~~~~~~~
+   In function 'zf_timer_on':
+   cc1: note: source object is likely at address zero
+
+
+vim +91 arch/m68k/include/asm/raw_io.h
+
+^1da177e4c3f41 include/asm-m68k/raw_io.h      Linus Torvalds     2005-04-16  49  
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  50  /*
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  51   * Atari ROM port (cartridge port) ISA adapter, used for the EtherNEC NE2000
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  52   * network card driver.
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  53   * The ISA adapter connects address lines A9-A13 to ISA address lines A0-A4,
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  54   * and hardwires the rest of the ISA addresses for a base address of 0x300.
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  55   *
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  56   * Data lines D8-D15 are connected to ISA data lines D0-D7 for reading.
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  57   * For writes, address lines A1-A8 are latched to ISA data lines D0-D7
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  58   * (meaning the bit pattern on A1-A8 can be read back as byte).
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  59   *
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  60   * Read and write operations are distinguished by the base address used:
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  61   * reads are from the ROM A side range, writes are through the B side range
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  62   * addresses (A side base + 0x10000).
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  63   *
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  64   * Reads and writes are byte only.
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  65   *
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  66   * 16 bit reads and writes are necessary for the NetUSBee adapter's USB
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  67   * chipset - 16 bit words are read straight off the ROM port while 16 bit
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  68   * reads are split into two byte writes. The low byte is latched to the
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  69   * NetUSBee buffer by a read from the _read_ window (with the data pattern
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  70   * asserted as A1-A8 address pattern). The high byte is then written to the
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  71   * write range as usual, completing the write cycle.
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  72   */
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  73  
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  74  #if defined(CONFIG_ATARI_ROM_ISA)
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  75  #define rom_in_8(addr) \
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  76  	({ u16 __v = (*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  77  #define rom_in_be16(addr) \
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  78  	({ u16 __v = (*(__force volatile u16 *) (addr)); __v; })
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  79  #define rom_in_le16(addr) \
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  80  	({ u16 __v = le16_to_cpu(*(__force volatile u16 *) (addr)); __v; })
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  81  
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  82  #define rom_out_8(addr, b)	\
+30b5e6ef4a32ea arch/m68k/include/asm/raw_io.h Geert Uytterhoeven 2022-05-20  83  	(void)({u8 __maybe_unused __w, __v = (b);  u32 _addr = ((u32) (addr)); \
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  84  	__w = ((*(__force volatile u8 *)  ((_addr | 0x10000) + (__v<<1)))); })
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  85  #define rom_out_be16(addr, w)	\
+30b5e6ef4a32ea arch/m68k/include/asm/raw_io.h Geert Uytterhoeven 2022-05-20  86  	(void)({u16 __maybe_unused __w, __v = (w); u32 _addr = ((u32) (addr)); \
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  87  	__w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  88  	__w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v >> 8)<<1)))); })
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  89  #define rom_out_le16(addr, w)	\
+30b5e6ef4a32ea arch/m68k/include/asm/raw_io.h Geert Uytterhoeven 2022-05-20  90  	(void)({u16 __maybe_unused __w, __v = (w); u32 _addr = ((u32) (addr)); \
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06 @91  	__w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v >> 8)<<1)))); \
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  92  	__w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v & 0xFF)<<1)))); })
+84b16b7b0d5c81 arch/m68k/include/asm/raw_io.h Michael Schmitz    2013-04-06  93  
+
+:::::: The code at line 91 was first introduced by commit
+:::::: 84b16b7b0d5c818fadc731a69965dc76dce0c91e m68k/atari: ROM port ISA adapter support
+
+:::::: TO: Michael Schmitz <schmitz@opal.biophys.uni-duesseldorf.de>
+:::::: CC: Geert Uytterhoeven <geert@linux-m68k.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
