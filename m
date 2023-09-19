@@ -2,57 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C617A647C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D35D7A6483
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbjISNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
+        id S231984AbjISNLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231980AbjISNLF (ORCPT
+        with ESMTP id S231994AbjISNLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:11:05 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B5891F4;
-        Tue, 19 Sep 2023 06:10:59 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C873D1FB;
-        Tue, 19 Sep 2023 06:11:36 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E002F3F59C;
-        Tue, 19 Sep 2023 06:10:57 -0700 (PDT)
-Message-ID: <55a57c4c-e846-1f94-9067-75f03b3618e7@arm.com>
-Date:   Tue, 19 Sep 2023 14:10:57 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [EXT] Re: [RFC PATCH v3 0/8] Coresight for Kernel panic and
- watchdog reset
+        Tue, 19 Sep 2023 09:11:42 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2120.outbound.protection.outlook.com [40.107.244.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82842F4;
+        Tue, 19 Sep 2023 06:11:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mbYZ4bjm9UY3gzIXyQMsWcMNILoxzmRUYjnDY462+czMEMU4OoK4jp5QraraWRyyjWwpEi5lQNyawnvBO4QBf96kC8/TVKjORIs87lboCTCHDAEo2OZgtyhTHy+QEwRfWZk+tuAVMiU6IwCyg0aeUT91N8+pNUvyoxdAXJnnX95EIU1Df1tUOecm5v3BbEFyrOnxXEMIeewWrdS6fmMfMAIUuSRwJHEUjIY1mFhb/qUMGnekFBiewrEQN1j6nHmscxMgqn2wDhTbzP7U2SanB7gGOE/sv6m9DGxn2uVWc72iuogfMvvFHeY3NGYgsWIuUpKSe6by17+fhmFqfSpHKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rtBZkabdS3xUF0vOnQ6ZRg+4B1ZjlpwaL/vkLZM0lpk=;
+ b=PvQAgkrRSvfcYnKEC6uN0UxQ7jLR/nhN1gGK/vxY+bveqyMCVfcaRc96vaNPVRZ1e+kLwfUa4cmmVFLK8NfoTEDXv6d7dDd3IUwDSCTH/3jrV0dscy0fdseLGksNqfoqFBt5gFSFqLbNuIEUAkrmwU3GGVGgHYKy+xJdOE5MOnOnWIZNdKL/UfUb6n3udGk08GJ3f4yMrhezFdEQ2MI+QNbER8TRwRw+olhouky6Inae9LcoHtHbaWk/MN1czxcpVY0zrKSwhKZ+TNOZ+sGj0HRru8oD/vP8dCldeQaAk6C5qoWoN9YsL1aPICiu3eJCtoShU69dzSoUzZA5/b0/+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rtBZkabdS3xUF0vOnQ6ZRg+4B1ZjlpwaL/vkLZM0lpk=;
+ b=RjPATQiQYa+/qGJoxedVQXe16sERIMmJasK7ZgMZYCs1TYZFF7ZGGG+rn5D4Hg9fzfcq3AV2pmmiqgqJWwsBEHgx63RD4gdPs358eA+AJTwSZrt2OAYm/rB2pMoO5KTtsTM2719M4iR8tf/nuU8GRB/5Ua80NoHBkb07oEALlQL7lbxgcDcrXtKcPcCwqBTJa3V8N1oyPJJ9L38An0FeRF3ZPtxgSnqG5jk4xGffyAixQg6PvfgZ44FhZrmkMHSQiKY8KBOO0AsXqOfh8TR1tcxaScCq5jUswh6a8vt9k/mwnFlyPWwknThHmknnVlis7WyoYx20IHSP/Rd+3i0gWw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
+Received: from BL0PR01MB4131.prod.exchangelabs.com (2603:10b6:208:42::20) by
+ SJ0PR01MB7495.prod.exchangelabs.com (2603:10b6:a03:3db::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6792.27; Tue, 19 Sep 2023 13:11:30 +0000
+Received: from BL0PR01MB4131.prod.exchangelabs.com
+ ([fe80::386c:b0e1:bf68:cf1]) by BL0PR01MB4131.prod.exchangelabs.com
+ ([fe80::386c:b0e1:bf68:cf1%6]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 13:11:30 +0000
+Message-ID: <c7870702-dc6c-4673-ac5c-04c81c463bbf@cornelisnetworks.com>
+Date:   Tue, 19 Sep 2023 08:11:27 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/8] RDMA/hfi1: Use FIELD_GET() to extract Link Width
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230919125648.1920-1-ilpo.jarvinen@linux.intel.com>
+ <20230919125648.1920-2-ilpo.jarvinen@linux.intel.com>
 Content-Language: en-US
-To:     Linu Cherian <lcherian@marvell.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "mike.leach@linaro.org" <mike.leach@linaro.org>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        George Cherian <gcherian@marvell.com>
-References: <20230904050548.28047-1-lcherian@marvell.com>
- <fafd728b-1489-4856-ced3-6759fbda2c6f@arm.com>
- <PH0PR18MB50021C74B2EC3C8795715ADBCEFAA@PH0PR18MB5002.namprd18.prod.outlook.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <PH0PR18MB50021C74B2EC3C8795715ADBCEFAA@PH0PR18MB5002.namprd18.prod.outlook.com>
+From:   Dean Luick <dean.luick@cornelisnetworks.com>
+In-Reply-To: <20230919125648.1920-2-ilpo.jarvinen@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: DS7PR06CA0047.namprd06.prod.outlook.com
+ (2603:10b6:8:54::27) To BL0PR01MB4131.prod.exchangelabs.com
+ (2603:10b6:208:42::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR01MB4131:EE_|SJ0PR01MB7495:EE_
+X-MS-Office365-Filtering-Correlation-Id: 97bf9bfd-724a-4b52-24a4-08dbb911f083
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Hgx3bUmWHthNg/sxdLlEy6bWdMF/4V/+QzJt8rOlxVykd0AUJXbefeoQMrafCNn888hMvjpn/Qzpvjy4i+fXP3lom2KfclKVVa7WnO2POtyKd2Tppng0vs0xGCjq3ecejr1Bw+9evyCATsZWpLDpHYCyzW8uZ7fBC9yBdZxT70IUgzLzFYlZRkUoQCwnx8i8Yvc0jRBdDe44JvkfFRcOAddTVCZ8MkHYsbTHSDl0ayqc7yiJ2YiJlU2r3H2Zy/YaUuh2McrDU+plZfFG6DzeQl6z7A43VGSz7Wo264iSEnbHBjX1638awWk+JucXAkjTMqWoMcS5ILeHOHL8rRIESjuZV8Ajlu24liR/xKquneS2erTolNDrbGqDOv9nTkGR5zjipDkZspZkvxhOOMJcm7RJ6MlNp2WqF8H4/Gn4O1ktOfMfswbVp9zqCwD+Crc4sF2WptoewF4RNgiL5kzJsp9NLosH6SoBbrEiqBJqeAyUwF/fq3g3Pt03eqdcky8YTa+AwYGBAqMcq1wL1TwJUYS9rr7xlGz0eohWqwrnkN5LCmmrIfvYcJs/4hOKRwctv6+a3O/v4skc48e05YGFB8Bl3xxd+7dXBiMykrs6OANo1mN/UDoRZmUUxxmxU/K0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR01MB4131.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(376002)(396003)(39850400004)(1800799009)(186009)(451199024)(86362001)(36756003)(31696002)(31686004)(478600001)(5660300002)(6666004)(6512007)(6506007)(6486002)(110136005)(53546011)(44832011)(8936002)(316002)(8676002)(41300700001)(2616005)(66946007)(26005)(66476007)(66556008)(4744005)(2906002)(38100700002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WXc5dTBxMXlYNjBtTVJpRnlJYTkxa0d4djdWeFQ1VWI2S3JBb2hheWJlSkQ1?=
+ =?utf-8?B?Q2xsMkFJcWdrZkRKQ3c2dm16Y2QwTlgrVXJMclBzTjFad1FtMXFwQ2JVQ1h1?=
+ =?utf-8?B?UXdvYzJic0kxdEhVTWtyZW40OFVDRzF0QkRhZ3NZZ2FZNVdkVGtqNllOU1BR?=
+ =?utf-8?B?Y0I2d21hZnEyV3ZXaFh5YnNIUCtJdU16QVNhY08wbmFkTm5TOFR1M1dUZ1RK?=
+ =?utf-8?B?dXgrOHdXYzhENzhQZVc2c2YxL2l2ckpTVHhGOWJtZ1ZtV2hNV1VDci9GUUJQ?=
+ =?utf-8?B?anhRWVNzV0NJRHZnRmZ1dHd3L1F0cEhXOEx3ZVd2ME8wL2xaZCs5U2RGMGFP?=
+ =?utf-8?B?Z29ORTE4ckpPUi9HaHQwaHI1QnJDRWlUdmtsaFVtMzZuakNoVEhRSWo2K0ZL?=
+ =?utf-8?B?ME5JMDhuRE54cytvQ2R5eVBrNkQ3cWVFNHoyVkdOVG1vc3kzNC9SWDVIa1pI?=
+ =?utf-8?B?MDkralVuSHY0MHVMNUZreHdhb2VKUnZPZ3AxdVViNmdXTmV1cEJzc2h1K0ti?=
+ =?utf-8?B?ejdRczVPc2FKVTdvNktZR3RoWVhudTNpNVQybjh4MTI2NFNxSXBoa1kyazdh?=
+ =?utf-8?B?SGUwa1VwbzJjbWlObmNMUUNidVlPdFBOZlo3NlFlR21lQ1hoajJST0dvczNq?=
+ =?utf-8?B?N01Sc20xODY5ajVWMGd2ZjdRWUFTT3lCbGpIQ0ViaC9Wc2JxRjdGY09Vbmli?=
+ =?utf-8?B?d1JLL01yTWZTRUx1T3d0dVc3UGU4RGVVOTNuQ0pxVzU3WWU4ckV5RHJTYTNN?=
+ =?utf-8?B?Vm1CR3Rra0VSdnloQlppbW9OelFyWWdlcjRJV0xDR2VKVm0xYzZaRC9LSzQx?=
+ =?utf-8?B?cFVVajhmTnpzdEVMd21mSGVRbEVUNkJCNG5rZndBa1NnR3dMOTJHa0M0QkFK?=
+ =?utf-8?B?VjdJaGVvV0YwRmFyQUQ0NWduc2xaRDRnZ2NrcWVoUVgxS2xaMzFTRUJxMExH?=
+ =?utf-8?B?bGh6VjZxZUZhdjI4MzV2a2FvMDI2czRsWmZvME8zQUtLU21OTU1kT3hIZTZW?=
+ =?utf-8?B?TElZdWV6ZDRpMlVHLyt0bmFJdTd5OHBrN254a3N4Sk1GRzVEd2s3cDNHc0lO?=
+ =?utf-8?B?QzhaQ1FlWm14TElJMFFNSDhiTTkxOEhySER6L0NJRjhQSmV3ZUNXaVdHM2VD?=
+ =?utf-8?B?WWRFbnJrT1FBMUlUUUdhMjZ1WFZNT0IyOGlVVmN3M0xxNTVmcktMTXdsR3Q0?=
+ =?utf-8?B?WVNrdGM5NVdLa29MVzg0cWsvYmVwVDRTbXlNTlNhcVdlaVVqSENyVEJnQ2Ex?=
+ =?utf-8?B?bkQ1ZWlSUmN4STE3MlZwYWgyNWx5T1o2c2dkdDdxMG80NE5tWTRMbG5UMm1D?=
+ =?utf-8?B?RWNVWk9EZUcrUW90WTU1dHZwK1ZETlMxNDhBL2VjUWtJMEc0VFZWNzFJMktM?=
+ =?utf-8?B?V3luZ2VUK0xNNnBuSnAzS0R6djhXQllNN2ZkeWpGbTdvSkR0L0R1N0h1MDlw?=
+ =?utf-8?B?REFhTURnZk9oemxNVCtRemRqVC9IWDFvZHRIZ0ZhU05iWjNBOTN3bExBTVVy?=
+ =?utf-8?B?NDRpOUFQUG03MHMvVEY0aXVaMitFVGxJN2EyU2RWQlM5cndoR2E4ems2dVZX?=
+ =?utf-8?B?TktMOXp4akkxekp2V3M4ajloNkRMMEhCL0p3MkM3dlRNeHhiclhWNGZWaGV6?=
+ =?utf-8?B?UGFIUWlIUmhJRUVyY0NwRkY0bVJZdjhYbnBIbzRORHdxdmdKT2pTczdsbUIz?=
+ =?utf-8?B?SXRUVHlhQkFOWWcvN0xldDM3WTFYUFhTTVhGbGdEeFRqZUN4YTNxbkZvWHAr?=
+ =?utf-8?B?V1JvQlk0T1VpM0drZUFYem5abEZkRXliSFlqZ082ZUF2VEU5ZnlHdk9JMjMy?=
+ =?utf-8?B?NVlxTytkNzluMlQ2MmRKNk1sR09TbTFQTSsyMFh6dlRNKy9SWEtsT0twZGRE?=
+ =?utf-8?B?U0tiYWw3ajFPdndhV2FrSHc0RlJhbDZ4UGQ2dnZsbFRESFR5ZmhiZFg3OGd4?=
+ =?utf-8?B?Y3FQR0pUVFBEQ2NmenFwNnBlc2xjWDN6OThQZTBFSUJXNmNuOWRDU1hNdkhp?=
+ =?utf-8?B?UFFvSmJNaWxzdWp2eDBrVVpMMjgwa2l4TnIveDVIQ1oreGp2dGxMekNyb2g3?=
+ =?utf-8?B?NWxkMTltcHFIdHhNdFFtcVV3RUVLVG9zbTZ2U05RR1hkc2VmQWpGZnVNWGZm?=
+ =?utf-8?B?bFJjYTJnLzVRVXVXSWhmcTg1cWRkYkpoNGovVXBjVE9vaGdMZ3NtQUw4cEY2?=
+ =?utf-8?B?VkE9PQ==?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97bf9bfd-724a-4b52-24a4-08dbb911f083
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR01MB4131.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 13:11:30.5144
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L9nJ37vFKZvuc5n479djOItpSNBU3ywgRAoOvMq21M7C/Z3CoZpcrxGxjhQ315JYhEDy/yPirNWfG1pGgslRtQLb6YQFFlJWmDaDmfqZvrA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR01MB7495
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,149 +131,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 19/09/2023 12:39, Linu Cherian wrote:
-> Hi James,
-> 
->> -----Original Message-----
->> From: James Clark <james.clark@arm.com>
->> Sent: Friday, September 15, 2023 7:20 PM
->> To: Linu Cherian <lcherian@marvell.com>; suzuki.poulose@arm.com;
->> mike.leach@linaro.org; leo.yan@linaro.org
->> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org; linux-
->> kernel@vger.kernel.org; robh+dt@kernel.org;
->> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
->> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>
->> Subject: [EXT] Re: [RFC PATCH v3 0/8] Coresight for Kernel panic and
->> watchdog reset
->>
->> External Email
->>
->> ----------------------------------------------------------------------
->>
->>
->> On 04/09/2023 06:05, Linu Cherian wrote:
->>> This RFC v3 patch series is rebased on v6.5-rc7 and is dependent on
->>> the below two patches.
->> [...]
->>>
->>> Steps for reading trace data captured in previous boot
->>> ++++++++++++++++++++++++++++++++++++++++++++++++++++++
->>> 1. cd /sys/bus/coresight/devices/tmc_etrXX/
->>>
->>> 2. Change to special mode called, read_prevboot.
->>>
->>>    #echo 1 > read_prevboot
->>>
->>> 3. Dump trace buffer data to a file,
->>>
->>>    #dd if=/dev/tmc_etrXX of=~/cstrace.bin
->>
->> Hi Linu,
->>
->> I left this comment on V2, but I tested it again and get the same result.
->> Instead of linking it I'll just re-paste it here:
->>
->> I made a reserved region, but when I run this command I get "Unable to
->> handle kernel paging request at virtual address 001f1921ed10ffae".
->>
->> Is there an extra step involved if there was no trace captured from a previous
->> panic? I thought I'd just be able to read out uninitialised data. Or is it the
->> uninitialised metadata that's causing this issue?
->>
->> Also that's without KASAN or lockdep turned on. If I have a kernel with either
->> of those things I get a different warning for each one. I expect the lockdep
->> one would happen even in the working scenario though?
-> 
-> Somehow I missed this comment on V2.
-> 
-> I retried the above steps on my board and I do not see issues either with KASAN OR lockdep enabled configs.
-> Please see logs below. 
-> 
-> a. Lockdep enabled config
-> ~# cd /sys/bus/coresight/devices/tmc_etr0
-> tmc_etr0# echo 1 > read_prevboot
-> tmc_etr0# dd if=/dev/tmc_etr0 of=~/cstrace.bin
-> 12324+1 records in
-> 12324+1 records out
-> 6310032 bytes (6.3 MB, 6.0 MiB) copied, 0.122883 s, 51.3 MB/s
-> 
-> # zcat /proc/config.gz | grep LOCKDEP
-> CONFIG_LOCKDEP_SUPPORT=y
-> CONFIG_LOCKDEP=y
-> CONFIG_LOCKDEP_BITS=15
-> CONFIG_LOCKDEP_CHAINS_BITS=16
-> CONFIG_LOCKDEP_STACK_TRACE_BITS=19
-> CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
-> CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
-> # CONFIG_DEBUG_LOCKDEP is not set
-> 
-> b. KASAN enabled config
-> # cd /sys/bus/coresight/devices/tmc_etr0/
-> tmc_etr0# ls
-> buf_mode_preferred   connections  power          trigger_cntr
-> buf_modes_available  enable_sink  read_prevboot  uevent
-> buffer_size          mgmt         subsystem      waiting_for_supplier
-> tmc_etr0# echo 1 > read_prevboot
-> tmc_etr0# dd if=/dev/tmc_etr0 of=~/cstrace.bin
-> 12324+1 records in
-> 12324+1 records out
-> 6310032 bytes (6.3 MB, 6.0 MiB) copied, 0.0940671 s, 67.1 MB/s
-> 
-> ~# zcat /proc/config.gz | grep -i kasan
-> CONFIG_KASAN_SHADOW_OFFSET=0xdfff800000000000
-> CONFIG_HAVE_ARCH_KASAN=y
-> CONFIG_HAVE_ARCH_KASAN_SW_TAGS=y
-> CONFIG_HAVE_ARCH_KASAN_HW_TAGS=y
-> CONFIG_HAVE_ARCH_KASAN_VMALLOC=y
-> CONFIG_CC_HAS_KASAN_GENERIC=y
-> CONFIG_CC_HAS_KASAN_SW_TAGS=y
-> CONFIG_KASAN=y
-> CONFIG_KASAN_GENERIC=y
-> # CONFIG_KASAN_SW_TAGS is not set
-> # CONFIG_KASAN_HW_TAGS is not set
-> CONFIG_KASAN_OUTLINE=y
-> # CONFIG_KASAN_INLINE is not set
-> CONFIG_KASAN_STACK=y
-> CONFIG_KASAN_VMALLOC=y
-> # CONFIG_KASAN_MODULE_TEST is not set
-> 
-> 
-> But then I am able to trigger kernel crash with bad metadata(corrupted rwp and rrp) with below stack trace.
-> 
-> [  107.442991]  __arch_copy_to_user+0x180/0x240
-> [  107.447254]  vfs_read+0xc8/0x2a8
-> [  107.450476]  ksys_read+0x74/0x110
-> [  107.453783]  __arm64_sys_read+0x24/0x38
-> [  107.457611]  invoke_syscall.constprop.0+0x58/0xf8
-> [  107.462309]  do_el0_svc+0x6c/0x158
-> [  107.465704]  el0_svc+0x54/0x1c0
-> [  107.468839]  el0t_64_sync_handler+0x100/0x130
-> [  107.473188]  el0t_64_sync+0x190/0x198
-> [  107.476843] Code: d503201f d503201f d503201f d503201f (a8c12027)
-> 
-> Does your stack trace looks similar ? Then its very likely due to bad metadata.
-> If not, kindly please share yours.
-> 
-> For example, if we have bad values for rwp and rrp, offset can get messed up resulting in above crash.
-> Will add more validation checks while setting up the prevboot buffer,  so as to avoid processing with bogus metadata values
-> in the next patch version.
-> 
-> Thanks James for trying this out.
-> 
+On 9/19/2023 7:56 AM, Ilpo J=C3=A4rvinen wrote:
+> Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+> custom masking and shifting, and remove extract_width() which only
+> wraps that FIELD_GET().
 >
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+>  drivers/infiniband/hw/hfi1/pcie.c | 9 ++-------
 
-I think it must be bad metadata because I didn't try it with a previous
-crash saved yet. I suppose we do need some kind of validation then if
-it's possible for bad metadata to cause a crash.
+Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
 
-I will try after filling in the metadata and see if that was the issue.
-> 
->>
->>>
->>> 4. Reset back to normal mode
->>>
->>>    #echo 0 > read_prevboot
->>>
+
+External recipient
