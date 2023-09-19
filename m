@@ -2,351 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FE37A60B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152F17A611C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjISLJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
+        id S229821AbjISLZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjISLJZ (ORCPT
+        with ESMTP id S229497AbjISLZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:09:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECCAB8;
-        Tue, 19 Sep 2023 04:09:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93E1CC433C7;
-        Tue, 19 Sep 2023 11:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695121759;
-        bh=DzI+RDUO22bcs7FJ9u5LUITO8dijTvNa+EqysJiAUvc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lOx7kiQynxIVdqtM7Dd5TgU4xVa8a5forX6Nl3CB1tJLZeeZyvkJNBWBUVOYqJfGX
-         MhgTWHu+2iB33xSd2JTNydY8zhkl7Sm/AaB5+thGE2bHiU1AVmLcoAyXMDBrZB1vgU
-         +mzivljNmERBTo0tsI/4h4Xdl/+G1i+3+wwFFA7LRFXs+3GpTuiFWtJXDVSFoY1lpj
-         VHYKrWcinZLfI9bz57ArA5s8VkWm8xWruccF3Co+377qvHUNQ1+01dT/lgzja+Ap+P
-         1UTyniiHyqVpEO63QrBV4VvDo9BIjkpDCZysMJyUiWFccg7ZFW33FijiPXXioh+3p/
-         PK2cDUIvvrfcA==
-Date:   Tue, 19 Sep 2023 12:09:13 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     yang tylor <tylor_yang@himax.corp-partner.google.com>
-Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        poyuan_chang@himax.corp-partner.google.com, jingliang@chromium.org,
-        hbarnor@chromium.org
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI
- device
-Message-ID: <20230919-cc4646dbfb953bd34e05658c@fedora>
-References: <20230919024943.3088916-1-tylor_yang@himax.corp-partner.google.com>
- <20230919024943.3088916-2-tylor_yang@himax.corp-partner.google.com>
- <20230919-70b2f1e368a8face73468dfa@fedora>
- <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
+        Tue, 19 Sep 2023 07:25:19 -0400
+X-Greylist: delayed 21517 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Sep 2023 04:25:12 PDT
+Received: from 2.mo560.mail-out.ovh.net (2.mo560.mail-out.ovh.net [188.165.53.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997DFE5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:25:12 -0700 (PDT)
+Received: from director10.ghost.mail-out.ovh.net (unknown [10.109.138.76])
+        by mo560.mail-out.ovh.net (Postfix) with ESMTP id D626E205C8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:10:08 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-wzkzt (unknown [10.110.171.1])
+        by director10.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 4B1CD1FD0F;
+        Tue, 19 Sep 2023 11:10:08 +0000 (UTC)
+Received: from RCM-web1.webmail.mail.ovh.net ([176.31.238.120])
+        by ghost-submission-6684bf9d7b-wzkzt with ESMTPSA
+        id gVmPCJCBCWWi9wAAm4UmiA
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 19 Sep 2023 11:10:08 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mGSUTedGx3oXLB+X"
-Content-Disposition: inline
-In-Reply-To: <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Date:   Tue, 19 Sep 2023 14:10:07 +0300
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        skhan@linuxfoundation.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2] drm/atomic-helper: prevent uaf in wait_for_vblanks
+In-Reply-To: <20230919052617.4242-1-jose.pekkarinen@foxhound.fi>
+References: <20230919052617.4242-1-jose.pekkarinen@foxhound.fi>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <52a47fc2bcd2fa26b562f989f5927e35@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 185.220.102.251
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 9335962030330652326
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekuddgtdejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeggfffhvfevufgjfhgfkfigohhitgfgsehtkehjtddtreejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepkefhgeduudefgedvleegtddvffeghedvtdekveekjeevvdegiedtfeelhedtiedtnecukfhppeduvdejrddtrddtrddupddukeehrddvvddtrddutddvrddvhedupddujeeirdefuddrvdefkedruddvtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeitddpmhhouggvpehsmhhtphhouhht
+X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-09-19 08:26, José Pekkarinen wrote:
+> Kasan reported the following in my system:
+> 
+> [ 3935.321003]
+> ==================================================================
+> [ 3935.321022] BUG: KASAN: slab-use-after-free in
+> drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+> [ 3935.321124] Read of size 1 at addr ffff88818a6f8009 by task
+> kworker/u16:3/5268
+> 
+> [ 3935.321124] CPU: 7 PID: 5268 Comm: kworker/u16:3 Not tainted 
+> 6.6.0-rc2+ #1
+> [ 3935.321124] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+> BIOS 0.0.0 02/06/2015
+> [ 3935.321124] Workqueue: events_unbound commit_work [drm_kms_helper]
+> [ 3935.321124] Call Trace:
+> [ 3935.321124]  <TASK>
+> [ 3935.321124]  dump_stack_lvl+0x43/0x60
+> [ 3935.321124]  print_report+0xcf/0x660
+> [ 3935.321124]  ? remove_entity_load_avg+0xdc/0x100
+> [ 3935.321124]  ? __virt_addr_valid+0xd9/0x160
+> [ 3935.321124]  ?
+> drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+> [ 3935.321124]  kasan_report+0xda/0x110
+> [ 3935.321124]  ?
+> drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+> [ 3935.321124]  drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450
+> [drm_kms_helper]
+> [ 3935.321124]  ?
+> __pfx_drm_atomic_helper_wait_for_vblanks.part.0+0x10/0x10
+> [drm_kms_helper]
+> [ 3935.321124]  ? complete_all+0x48/0x100
+> [ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x19/0x40
+> [ 3935.321124]  ? preempt_count_sub+0x14/0xc0
+> [ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x23/0x40
+> [ 3935.321124]  ? drm_atomic_helper_commit_hw_done+0x1ac/0x240 
+> [drm_kms_helper]
+> [ 3935.321124]  drm_atomic_helper_commit_tail+0x82/0x90 
+> [drm_kms_helper]
+> [ 3935.321124]  commit_tail+0x15c/0x1d0 [drm_kms_helper]
+> [ 3935.323185]  process_one_work+0x31a/0x610
+> [ 3935.323185]  worker_thread+0x38e/0x5f0
+> [ 3935.323185]  ? __pfx_worker_thread+0x10/0x10
+> [ 3935.323185]  kthread+0x184/0x1c0
+> [ 3935.323185]  ? __pfx_kthread+0x10/0x10
+> [ 3935.323185]  ret_from_fork+0x30/0x50
+> [ 3935.323185]  ? __pfx_kthread+0x10/0x10
+> [ 3935.323185]  ret_from_fork_asm+0x1b/0x30
+> [ 3935.323185]  </TASK>
+> 
+> [ 3935.323185] Allocated by task 3751:
+> [ 3935.323185]  kasan_save_stack+0x2f/0x50
+> [ 3935.323185]  kasan_set_track+0x21/0x30
+> [ 3935.323185]  __kasan_kmalloc+0xa6/0xb0
+> [ 3935.323185]  drm_atomic_helper_crtc_duplicate_state+0x42/0x70
+> [drm_kms_helper]
+> [ 3935.323185]  drm_atomic_get_crtc_state+0xc3/0x1e0 [drm]
+> [ 3935.323185]  page_flip_common+0x42/0x160 [drm_kms_helper]
+> [ 3935.323185]  drm_atomic_helper_page_flip+0x6b/0xf0 [drm_kms_helper]
+> [ 3935.323185]  drm_mode_page_flip_ioctl+0x8ad/0x900 [drm]
+> [ 3935.323185]  drm_ioctl_kernel+0x169/0x240 [drm]
+> [ 3935.323185]  drm_ioctl+0x399/0x6b0 [drm]
+> [ 3935.324772]  __x64_sys_ioctl+0xc5/0x100
+> [ 3935.324772]  do_syscall_64+0x5b/0xc0
+> [ 3935.324772]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> 
+> [ 3935.324772] Freed by task 3751:
+> [ 3935.324772]  kasan_save_stack+0x2f/0x50
+> [ 3935.324772]  kasan_set_track+0x21/0x30
+> [ 3935.324772]  kasan_save_free_info+0x27/0x40
+> [ 3935.324772]  ____kasan_slab_free+0x166/0x1c0
+> [ 3935.324772]  slab_free_freelist_hook+0x9f/0x1e0
+> [ 3935.324772]  __kmem_cache_free+0x187/0x2d0
+> [ 3935.324772]  drm_atomic_state_default_clear+0x226/0x5e0 [drm]
+> [ 3935.324772]  __drm_atomic_state_free+0xc8/0x130 [drm]
+> [ 3935.324772]  drm_atomic_helper_update_plane+0x17d/0x1b0 
+> [drm_kms_helper]
+> [ 3935.324772]  drm_mode_cursor_universal+0x2a4/0x4d0 [drm]
+> [ 3935.324772]  drm_mode_cursor_common+0x1cf/0x430 [drm]
+> [ 3935.324772]  drm_mode_cursor_ioctl+0xc6/0x100 [drm]
+> [ 3935.326167]  drm_ioctl_kernel+0x169/0x240 [drm]
+> [ 3935.326167]  drm_ioctl+0x399/0x6b0 [drm]
+> [ 3935.326614]  __x64_sys_ioctl+0xc5/0x100
+> [ 3935.326614]  do_syscall_64+0x5b/0xc0
+> [ 3935.326614]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> 
+> [ 3935.326614] The buggy address belongs to the object at 
+> ffff88818a6f8000
+>                 which belongs to the cache kmalloc-512 of size 512
+> [ 3935.326614] The buggy address is located 9 bytes inside of
+>                 freed 512-byte region [ffff88818a6f8000, 
+> ffff88818a6f8200)
+> 
+> [ 3935.326614] The buggy address belongs to the physical page:
+> [ 3935.326614] page:00000000b0fb0816 refcount:1 mapcount:0
+> mapping:0000000000000000 index:0x0 pfn:0x18a6f8
+> [ 3935.326614] head:00000000b0fb0816 order:3 entire_mapcount:0
+> nr_pages_mapped:0 pincount:0
+> [ 3935.326614] anon flags:
+> 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> [ 3935.326614] page_type: 0xffffffff()
+> [ 3935.326614] raw: 0017ffffc0000840 ffff888100042c80 0000000000000000
+> dead000000000001
+> [ 3935.326614] raw: 0000000000000000 0000000080200020 00000001ffffffff
+> 0000000000000000
+> [ 3935.326614] page dumped because: kasan: bad access detected
+> 
+> [ 3935.326614] Memory state around the buggy address:
+> [ 3935.326614]  ffff88818a6f7f00: fc fc fc fc fc fc fc fc fc fc fc fc
+> fc fc fc fc
+> [ 3935.326614]  ffff88818a6f7f80: fc fc fc fc fc fc fc fc fc fc fc fc
+> fc fc fc fc
+> [ 3935.326614] >ffff88818a6f8000: fa fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+> [ 3935.326772]                       ^
+> [ 3935.326772]  ffff88818a6f8080: fb fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+> [ 3935.326772]  ffff88818a6f8100: fb fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+> [ 3935.326772]
+> ==================================================================
+> 
+> This suggest there may be some situation where a
+> struct drm_crtc_state is referenced after already
+> being freed by drm_atomic_state_default_clear. This
+> patch will check the new_crtc_state is not null before
+> using it.
+> 
+> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+> ---
+> [v1->v2] continue loop if new_crtc_state is null
+> 
+>  drivers/gpu/drm/drm_atomic_helper.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c
+> b/drivers/gpu/drm/drm_atomic_helper.c
+> index 292e38eb6218..0f17b3b406bb 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -1647,7 +1647,7 @@ drm_atomic_helper_wait_for_vblanks(struct 
+> drm_device *dev,
+>  		return;
+> 
+>  	for_each_oldnew_crtc_in_state(old_state, crtc, old_crtc_state,
+> new_crtc_state, i) {
+> -		if (!new_crtc_state->active)
+> +		if (!new_crtc_state || !new_crtc_state->active)
+>  			continue;
+> 
+>  		ret = drm_crtc_vblank_get(crtc);
 
---mGSUTedGx3oXLB+X
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+     I went back to patch v1 because I managed to reproduce
+the uaf with this patch, though to me it makes more sense,
+perhaps someone more experienced in the drm can tell why the
+first one does better.
 
-On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wrote:
-> Hi Conor,
->=20
-> > > Additional optional arguments:
-> > > ic-det-delay-ms and ic-resume-delay-ms are using to solve runtime
-> > > conditions.
->=20
-> > Runtime conditions? Aren't th=D1=94se properties of the panel & therefo=
-re
-> > fixed? If they were runtime conditions, then setting them statically in
-> > your DT is not going to work, right?
->=20
-> Because each platform's display driver ready time is different. TP part
-> need to avoid this timing by measuring the waveform of LCD reset pin
-> low period and TP probe timing. For example, if LCD rst pin low from
-> timestamp 100 to 800, TP driver probe at 600. TP probe will fail. Then
-> user should set ic-det-delay-ms bigger than 200, to avoid LCD rst low
-> timing. As you can see, the timing needs to be measured at runtime to
-> decide how long it should be. Then, if the condition is not changed, the
-> value could keep the same.
-
-That sounds to me like something you would test once for a given
-platform and then the values are static. If you are actually changing it
-at *runtime*, how is doing it through DT suitable? Does your firmware do
-the tests & then set the values in DT dynamically?
-
->=20
-> > It looks like you deleted all of the properties from the previous
-> > submission of these changes. I don't really understand that, it kinda
-> > feels just like appeasement, as you must have needed those properties
-> > to do the firmware loading etc. How are you filling the gap those
-> > properties have left, when you still only have a single compatible
-> > string in th=E3=84=9Fs binding? Is there a way to do runtime detection =
-of which
-> > chip you're dealing with that you are now using?
->=20
-> After reviewing, I found the properties could go to IC driver settings :
-> "himax,heatmap_16bits" because it depends on IC's ability;
-
-How do you detect the IC's abilities?
-
-> Some
-> could remove and use default values: "himax,fw_size",
-> "himax,boot_time_fw_upgrade". "himax,fw_size" has a default value in
-> IC settings, and likely won't change in this IC.
-
-Okay.
-
-> The behavior of "himax,boot_time_fw_upgrade" seems not stable and
-> should be removed. "himax,fw_in_flash", I use the kernel config for
-> user to select.
-
-That seems like a bad idea, we want to be able to build one kernel that
-works for all hardware at the same time.
-
-> "himax,pid" could be remove and use default firmware name
-> "himax_i2chid.bin" to load. It was added because users may desire to
-> choose a special name like "himax_i2chid_{pid}.bin" instead of the default
-> one.
-> It also could be replaced with newly added "himax",id-gpios" which is sti=
-ll
-> experimental.
-
-Also, pleae don't top post, but instead reply in-line with my comments,
-as I have done here.
-
-> Btw, I encounter an error of patch [2/2], which says:
-> BOUNCE linux-input@vger.kernel.org: Message too long (>100000 chars)
-> and the patch didn't appear at patchwork.kernel.org. What should I do to
-> deal with this problem?
-
-No idea. Maybe try to split it into multiple patches?
-The other option is to also cc patches@lists.linux.dev as that has some
-higher capacities, but that's not going to be a silver bullet.
-
-Thanks,
-Conor.
->=20
->=20
-> Thanks,
-> Tylor
->=20
->=20
-> On Tue, Sep 19, 2023 at 4:41=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
->=20
-> > Hey,
-> >
-> >
-> > On Tue, Sep 19, 2023 at 10:49:42AM +0800, Tylor Yang wrote:
-> > > The Himax HID-over-SPI framework support for Himax touchscreen ICs
-> > > that report HID packet through SPI bus. The driver core need reset
-> > >  pin to meet reset timing spec. of IC. An interrupt pin to disable
-> > > and enable interrupt when suspend/resume. An optional power control
-> > > pin if target board needed. Panel id pins for identify panel is also
-> > > an option.
-> > >
-> > > Additional optional arguments:
-> > > ic-det-delay-ms and ic-resume-delay-ms are using to solve runtime
-> > > conditions.
-> >
-> > Runtime conditions? Aren't th=D1=94se properties of the panel & therefo=
-re
-> > fixed? If they were runtime conditions, then setting them statically in
-> > your DT is not going to work, right?
-> >
-> > >
-> > > This patch also add maintainer of this driver.
-> > >
-> > > Signed-off-by: Tylor Yang <tylor_yang@himax.corp-partner.google.com>
-> >
-> > It looks like you deleted all of the properties from the previous
-> > submission of these changes. I don't really understand that, it kinda
-> > feels just like appeasement, as you must have needed those properties
-> > to do the firmware loading etc. How are you filling the gap those
-> > properties have left, when you still only have a single compatible
-> > string in th=E3=84=9Fs binding? Is there a way to do runtime detection =
-of which
-> > chip you're dealing with that you are now using?
-> >
-> > Confused,
-> > Conor.
-> >
-> > > ---
-> > >  .../bindings/input/himax,hid-over-spi.yaml    | 109 ++++++++++++++++=
-++
-> > >  MAINTAINERS                                   |   6 +
-> > >  2 files changed, 115 insertions(+)
-> > >  create mode 100644
-> > Documentation/devicetree/bindings/input/himax,hid-over-spi.yaml
-> > >
-> > > diff --git
-> > a/Documentation/devicetree/bindings/input/himax,hid-over-spi.yaml
-> > b/Documentation/devicetree/bindings/input/himax,hid-over-spi.yaml
-> > > new file mode 100644
-> > > index 000000000000..3ee3a89842ac
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/input/himax,hid-over-spi.yaml
-> > > @@ -0,0 +1,109 @@
-> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/input/himax,hid-over-spi.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Himax TDDI devices using SPI to send HID packets
-> > > +
-> > > +maintainers:
-> > > +  - Tylor Yang <tylor_yang@himax.corp-partner.google.com>
-> > > +
-> > > +description: |
-> > > +  Support the Himax TDDI devices which using SPI interface to acquire
-> > > +  HID packets from the device. The device needs to be initialized us=
-ing
-> > > +  Himax protocol before it start sending HID packets.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: himax,hid-over-spi
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  '#address-cells':
-> > > +    const: 1
-> > > +
-> > > +  '#size-cells':
-> > > +    const: 0
-> > > +
-> > > +  interrupts:
-> > > +    maxItems: 1
-> > > +
-> > > +  himax,rst-gpio:
-> > > +    maxItems: 1
-> > > +    description: Reset device, active low signal.
-> > > +
-> > > +  himax,irq-gpio:
-> > > +    maxItems: 1
-> > > +    description: Interrupt request, active low signal.
-> > > +
-> > > +  himax,3v3-gpio:
-> > > +    maxItems: 1
-> > > +    description: GPIO to control 3.3V power supply.
-> > > +
-> > > +  himax,id-gpios:
-> > > +    maxItems: 8
-> > > +    description: GPIOs to read physical Panel ID. Optional.
-> > > +
-> > > +  spi-cpha: true
-> > > +  spi-cpol: true
-> > > +
-> > > +  himax,ic-det-delay-ms:
-> > > +    description:
-> > > +      Due to TDDI properties, the TPIC detection timing must after t=
-he
-> > > +      display panel initialized. This property is used to specify the
-> > > +      delay time when TPIC detection and display panel initialization
-> > > +      timing are overlapped. How much milliseconds to delay before T=
-PIC
-> > > +      detection start.
-> > > +
-> > > +  himax,ic-resume-delay-ms:
-> > > +    description:
-> > > +      Due to TDDI properties, the TPIC resume timing must after the
-> > > +      display panel resumed. This property is used to specify the
-> > > +      delay time when TPIC resume and display panel resume
-> > > +      timing are overlapped. How much milliseconds to delay before T=
-PIC
-> > > +      resume start.
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - interrupts
-> > > +  - himax,rst-gpio
-> > > +  - himax,irq-gpio
-> > > +
-> > > +unevaluatedProperties: false
-> > > +
-> > > +allOf:
-> > > +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > > +    #include <dt-bindings/gpio/gpio.h>
-> > > +
-> > > +    spi {
-> > > +        #address-cells =3D <1>;
-> > > +        #size-cells =3D <0>;
-> > > +
-> > > +        touchscreen@0 {
-> > > +            compatible =3D "himax,hid-over-spi";
-> > > +            #address-cells =3D <1>;
-> > > +            #size-cells =3D <0>;
-> > > +            reg =3D <0x0>;
-> > > +            interrupt-parent =3D <&gpio1>;
-> > > +            interrupts =3D <7 IRQ_TYPE_LEVEL_LOW>;
-> > > +            pinctrl-0 =3D <&touch_pins>;
-> > > +            pinctrl-names =3D "default";
-> > > +
-> > > +            spi-max-frequency =3D <12500000>;
-> > > +            spi-cpha;
-> > > +            spi-cpol;
-> > > +
-> > > +            himax,rst-gpio =3D <&gpio1 8 GPIO_ACTIVE_LOW>;
-> > > +            himax,irq-gpio =3D <&gpio1 7 GPIO_ACTIVE_LOW>;
-> > > +            himax,3v3-gpio =3D <&gpio1 6 GPIO_ACTIVE_HIGH>;
-> > > +            himax,ic-det-delay-ms =3D <500>;
-> > > +            himax,ic-resume-delay-ms =3D <100>;
-> > > +        };
-> > > +    };
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index bf0f54c24f81..452701261bec 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -9323,6 +9323,12 @@ L:     linux-kernel@vger.kernel.org
-> > >  S:   Maintained
-> > >  F:   drivers/misc/hisi_hikey_usb.c
-> > >
-> > > +HIMAX HID OVER SPI TOUCHSCREEN SUPPORT
-> > > +M:   Tylor Yang <tylor_yang@himax.corp-partner.google.com>
-> > > +L:   linux-input@vger.kernel.org
-> > > +S:   Supported
-> > > +F:   Documentation/devicetree/bindings/input/himax,hid-over-spi.yaml
-> > > +
-> > >  HIMAX HX83112B TOUCHSCREEN SUPPORT
-> > >  M:   Job Noorman <job@noorman.info>
-> > >  L:   linux-input@vger.kernel.org
-> > > --
-> > > 2.25.1
-> > >
-> >
-
---mGSUTedGx3oXLB+X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQmBVgAKCRB4tDGHoIJi
-0rn5AQDRibrglmMoz8/uRgj0h4r/kCkTWkrAGD414U3qKp6A6QD/RVO3uWiOlSop
-sDln48YqSbDYIRdromOLhK6PvsZ0sAU=
-=wDQ7
------END PGP SIGNATURE-----
-
---mGSUTedGx3oXLB+X--
+     José.
