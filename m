@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDD67A5EC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42A17A5ED4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbjISJx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
+        id S231716AbjISJyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjISJxU (ORCPT
+        with ESMTP id S231795AbjISJxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:53:20 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2124.outbound.protection.outlook.com [40.107.255.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2951E1B2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:53:12 -0700 (PDT)
+        Tue, 19 Sep 2023 05:53:36 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2102.outbound.protection.outlook.com [40.107.255.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E9E119
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:53:28 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N3K7/gBvFj6wtgHu/E33aLKKT6/WPYhGfKCHgpX/MLRPwKyfBA8B2oRiwmpj4wM4gByuYbR5rJMVVEMjwLITUTMAH3zJNbcBuaZg9bSQOjyZRac5a9xw4OXGi6inzfAWvt5YI7hgVttRrhp+UDoteYutsHbMtLs/dL63MHts884rGhLc9oFI2JbBDb4FDgun5Unv5vQSrdjmvz2b2qwS5bzI3Gj1zGYIOikGJnQxvtarxCRiixSxPHTJFBwJb3ba/6VpmNLEoyUMK+oZiMOUM8S++qCJe4EAVb51kct0t1NTP/MEDdUhDtfzF+lPNJ8Ng2fQZ9S/Fx6qwlzPikSTNQ==
+ b=CQEUYX8FCPAcDOj8gwHrqV3oXwWG0OT0Y7a/g3SIjeWdGRcIYRDCo4SCm9Wdi1pFq19t1ui43SDzeyFXe6pJiWCHdJ7bSeYiUfL/HDz3bxeSLVFzmgOeSEvKUr8zX/zi00riUDRXqDi2UGkuinaa5ZdfMoFhBElxwg/+ni4BENe5iOlktvCB9OkYCGnYbpyHojQXqQlyPWP69Uay0pieo7maM5ECqsRvRA9qCnO8w4FXHMC2292SGt1DCRB1d8UKs7tug6CsKF+QIB4zrYeG0G6CCo5n4JxlT9ozjgxDIqus507dSeSvLxqRFo3INkPys1JRDSxJ3Db7vs+2RCB21A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y3LE/55I82eILXxLyiQt1PFXjevKzFe0iPNNK+GMHa0=;
- b=jMsUWITaoOTX9CLpX9gipLkx0VzBB5Wi44TF6xt+DmXHFmMpiEeGg5RHqeJfn3ORRMKeY3TP69qHaw9m00X2NsFKkJgQn4mcN55JLy9QO5q8OmKTDwyQcAadtGytYxgi/p2dKxiMApUh9Z3gkEn/h6/efBsm8qtPX09VwvZTHgVbPVn6g1Egmg641hHDmX+OYqWLO+yZ7chXZteq+1+OAeh5J9IsyXza9Kkp3gbIh+WFkZN8zw1FCoDy6lPI/rK6dUCTdbbPvIUdeU+Y5jZdjHrShpVQw/G2R2/4oB5hNISeo2T1Vk/Hn2u235zJNe3pzuoqV3cRZ/ShHfufT5ZwWA==
+ bh=Jx9WTUZiqUt0CjqcK2hwmvIj8D257d25wRI58f+0wyk=;
+ b=E92YNQ80+yU6qQQas2UZBHE7Y4hKxs2N78+c4PJ4+MIhEHJAYQnQEEX5itNzLvjaMf/Ip6HBEPg4zOmh7qF0qYHpSE0bnzkd3w9Yvua8aQsCKrZzeGfAf+Cl3VGETqFdOPwoXaTlZZyxBA99wP3pe+xv8MFXP4kpfPhi+bMKULwT2wihsVmUpYcpNS++TFB5BIFDj3JBeG/AcUFfLUF+bq30CIYXjYUnefzoB7u8gnUQpM6wi2mmdlrhugsEH+hN/ns6iQ391PPa/4RikO3LOkyspyPR24mEFJUspiPmlN/iD1iZDUuqX3UwdSdHz+9dO4fOyLS7S5FoyH907Nqe2w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y3LE/55I82eILXxLyiQt1PFXjevKzFe0iPNNK+GMHa0=;
- b=hKjzNrybsVtdDL9nUn6FC/gq14pLsnLQgZbqhaldcryUDvJreq7bbsVXsa6RqRwAQIXLG6lfewY3iomX15LR4VjIehSA+wB5ZXAko5diD1Tnd3vTsQOFW03D+yHPpDQApV8qM84yB6H9LwRsR/uyHVy0rm0fgwWwO/S9cVDBOkjDSHTlx+4+FPQR6vXJubYEPel/ltrgSuGbWM+kFdoq6srowDvIdlDt2dMEtTOjjGHinh5FIKNg9JwLucTfuY/MmfSZqAW8h8J25Ssm53Q0hD0NfcBrRod3VzRGxbIqFPOOw1Ef2h3UE6WRlmUcpsrLquxU3RE529fFhGM0FszKYg==
+ bh=Jx9WTUZiqUt0CjqcK2hwmvIj8D257d25wRI58f+0wyk=;
+ b=BPd8bXtYUGjCErvn8rK5GYcPaG2gEea9oT8OvK+U96aaMxDfUFS6gXDk9doQ1kqPpdcfRI5ToHaULhTubskBn0CJgzmDBYlPRTLBvePiYybxmharBc3hkjbKlYSgeCUhH8rRkttBOwc1nMXtG5kql/aCWiL5x2+4X0oulltVTH75NWYncjIZPO3yy25C/NzzPu5c42xSbrlKgeuZBGNZyR7BQjnaSUU5AnFIjqfMm4i8O7pMQy9gwpwP64ZNdPCLUl66WC39IGDJUgeE+TXq9uYAD7QnM9SAN/S3UP6R9DGJrCyL2/fWTTEGuoUvE37HWMpja9h47yRFhEwoAnqEXQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
 Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
  by SEYPR06MB6982.apcprd06.prod.outlook.com (2603:1096:101:1e2::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
- 2023 09:53:09 +0000
+ 2023 09:53:13 +0000
 Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
  ([fe80::64c1:bd7f:ced7:7d02]) by PUZPR06MB5676.apcprd06.prod.outlook.com
  ([fe80::64c1:bd7f:ced7:7d02%4]) with mapi id 15.20.6792.020; Tue, 19 Sep 2023
- 09:53:09 +0000
+ 09:53:13 +0000
 From:   Huan Yang <link@vivo.com>
 To:     SeongJae Park <sj@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -47,9 +47,9 @@ To:     SeongJae Park <sj@kernel.org>,
         damon@lists.linux.dev (open list:DATA ACCESS MONITOR),
         linux-mm@kvack.org (open list:DATA ACCESS MONITOR)
 Cc:     opensource.kernel@vivo.com, Huan Yang <link@vivo.com>
-Subject: [RFC 1/2] mm/damos/filter: Add workingset page filter
-Date:   Tue, 19 Sep 2023 17:52:34 +0800
-Message-Id: <20230919095237.26613-2-link@vivo.com>
+Subject: [RFC 2/2] mm/damos/filter: Damos filter cleanup
+Date:   Tue, 19 Sep 2023 17:52:35 +0800
+Message-Id: <20230919095237.26613-3-link@vivo.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230919095237.26613-1-link@vivo.com>
 References: <20230919095237.26613-1-link@vivo.com>
@@ -61,50 +61,50 @@ X-ClientProxiedBy: TYCP286CA0003.JPNP286.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|SEYPR06MB6982:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18eccd68-fc61-49f5-a951-08dbb8f63aab
+X-MS-Office365-Filtering-Correlation-Id: 50394122-3ebc-42e5-19c8-08dbb8f63d66
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e96jzMI9iprI7XXNXNYFSCpcQc9/uzUucCHUqkL4J8TZ5XdZy/dXXRExqASO1L8eeY+DX5Ek8QmcrVImiErfXSPbr9mLaXSrSAltulqCQC8tgIBTY2Ety8VNnrnfkshK9Q0G67rsvbb0Jsu12X9gCHhOkPLsT6Ohf/YfhhDVCcxLc0/7Nf1LYdQpSrH6HX1PwWSH4DJxPwR8bA6/glqooQRrZK8MA2IZ5HylN6OwmpoFWyILMlt9lEDBYwq46OcAh6m4ZlZDiJVX7iFb4m+Dm1mrDwNqjhF1Esy05E5vzEtuaUOOhrqnyWnqEAj7qVos4qXb130Knce+kgwrtxSfEixF0t6lFoUW9fKr+EOKhNUF448kgfn63gSzXyO0+dHtw8N7VIAMuKTQynl92xVw9XYemKXeBOSiT2KPMz/V1PHSt82ssq2Y7rAUqNJF2MUU1sPFLtrTa+enkahr11j3BhcQ3XXkhiwF49rTEs+0GTYWBbcS3rHWDowc7TZYHPJOs44r750udZOR9MYhw+M1ldCkWuIjiRfeTbtkrAdK6sZhCnJOWf8Jn+N7RE4DU+J8bn6eldisOqKbhEYUysWKiVrSBmXyQbHHIGSJ92ouCF4i/7AzzNWwv8iziuAqSWFI
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(366004)(39860400002)(396003)(186009)(1800799009)(451199024)(4326008)(5660300002)(6506007)(6486002)(52116002)(8676002)(8936002)(316002)(41300700001)(66946007)(66556008)(478600001)(66476007)(6666004)(2906002)(110136005)(6512007)(83380400001)(1076003)(26005)(107886003)(2616005)(38100700002)(36756003)(38350700002)(86362001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: B+zMk75QJ65qWbeuWtr+CB91Ku3BiJ1kC//DbvThBiJNN3m332BiNnYmIAl/uOr8VmrCo4e4ECgpr4qCLBrgldoan+sbnbGgWtcgszFwQ/cZqoCTLhaW+s+8734a2c85PhkQ8Zs/3Y5RQjftp7mbtsxcPRVg/jgdQ2yul0POY8mWSOTHeUU6Q7Rn3EiDuKgjcdHbwQQLFBxFddABkCy0+cUFOJ82I0J4wEHoaDCTT0aHSrtn5OCvMl2sTiGKp6OH1iWErdax9pJVXeYvDsjjD2HTEu/zNSaV2SfOxz2Lxb515hlVYbQRXpqY5WXX7IHy+YevJ9yxxOjMOvYwFQ22qWU+A+WOdEF1eCGQfcubiWAo2Vi8IE1yS/o7JL8Sjzzry9fY/yrAU4Y8t5X1csm17KgsPrR+iNW0RztJkla5wuSsjctjfyu+Wriun8cToZr+oE8cxngPirwbyKWZquplC4Y9iE35J9NmUTN0+WbCcZjyCY+3/7oUR/8ENsCZlRdAaC5fsh8QF9oR5kxzSR/prKrfdtfT7TGJ+GlSI1ABjzRtfaGTTGvl+JY0xQJoXnnkjkF2a55xZEucb6YdEYl6CAzr9l954B1ODyz9MYua4Uik2xEVQZu94bq3UNYAwQeG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(366004)(39860400002)(396003)(186009)(1800799009)(451199024)(4326008)(5660300002)(6506007)(6486002)(52116002)(8676002)(8936002)(316002)(41300700001)(66946007)(66556008)(478600001)(66476007)(6666004)(30864003)(2906002)(110136005)(6512007)(83380400001)(1076003)(26005)(107886003)(2616005)(38100700002)(36756003)(38350700002)(86362001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Fj1xWew2/iEDUDY382b8Co2MaYuuIMf1iH377AW2axgZKvdDCW3LwDE4FzSt?=
- =?us-ascii?Q?4wRCeUEIwk+Pfjk3sfvvxsrBX9Q8RHNb3txe113lZTwWK2EaubR7k1gDeupR?=
- =?us-ascii?Q?hYgJIg7fqYO2qLfQspwZhfxJeFYW2X2Jq8rsBYVFUWsXZvpGIl9jdOPBIwGr?=
- =?us-ascii?Q?RLGIPjpXI2SwGiIhP7sSRcvD3HSGkGQ0n2iDi5zb7+slfjbtRi/RAHwlDzUt?=
- =?us-ascii?Q?saW3VWhf2FmIR0yVljGhMxrQPKGkfpo60C+eBRB5iJBRJVW0lbByVRBhaIv6?=
- =?us-ascii?Q?749FLS2dqWGZ2BRGRg6dzZe9eaBqxl7rRE5BhVearsbiXJtQ+RGRIxdn/Nwz?=
- =?us-ascii?Q?HXpdni1phYXMgmmFjmnsGvzC3qsxcWYbmpvXyZIrYhzp6v3hpo33I4EfMw/N?=
- =?us-ascii?Q?fGkkcZNJ0CmXdb/zKozfF3Rf6fiTj6dEdymcdWS+6w47DLM2zHF8R19waLFl?=
- =?us-ascii?Q?vCe/FX4SuAXkayLl3xoPXcSp6ZKYt0wWZB3FpBr3jLGnYISHATA9YnA/i4d1?=
- =?us-ascii?Q?ekETAIjX1Nrps5Z/SNwzDcq8EtNBXyorufPq6kdbAM6/mGm3RBDx1/XK0I7E?=
- =?us-ascii?Q?R6AlZh8Pki6iZcqcbiMJW4vgxixW/zfrhapecroIFoSQybUtqEPI2pIULnY8?=
- =?us-ascii?Q?x+FbH5H4ySNnKVA5RHULjLlaIFltq+B97x0T/kgBFWSDntSS0tghiMbQmveU?=
- =?us-ascii?Q?HrYNbpQBJplr8qEfIMzDFttAtWtE03nJT9XSujZQJGJhlKuC7x4HipUNpTlA?=
- =?us-ascii?Q?0swtbR9v7K3En3omDeCSOYhf9vo3GpAdMwpelW9XlrzB42aBwcInNPCPFHcm?=
- =?us-ascii?Q?f8UgiguzJizvmVVLyJt6/aNRQZUOajwbt11LU6RAb7J/j0bC70U8fxIPYhJg?=
- =?us-ascii?Q?ECse4sazWplIplvcrrMICmhv0Dizzkp8BpWKtPKcrvdXme1HMc8Goemlzmli?=
- =?us-ascii?Q?wywpdeTKkQrsHR1wn7a9qk+x4XOgKfnRtqFU71hgeX5r7q45vigY1aZscW4i?=
- =?us-ascii?Q?t7tgObQhFAh3PxUl3W5JgtW/OdAbMuBYWQh1nLhs21I1HpknjEFZHvvrjVA4?=
- =?us-ascii?Q?swfWudmWbEr63G4NnBa6atc0WJdJqLAFrnoNfChVVVx3yDrZJpBRy4pR4nWw?=
- =?us-ascii?Q?YgshJ2ujZlAAe++vL/DOO0hNyzLGyMRmYC/ffbo2Fl1RWm+FtV6HpXLU4ivL?=
- =?us-ascii?Q?u7+DCG4yjo2YHdKOVuCvJFpVCI9+IoHhJELLXYDgUO5r+5iz7HIGgY+z6oHd?=
- =?us-ascii?Q?5LMCdmFY1zsIyDQkQxuGs86Z07TAk6FRG1dIE13fa3MPCBOfB4yddCyRDxKs?=
- =?us-ascii?Q?OeDoTWliSAYzHjghaCaRTo9UCnhHj4EHsojLjqMYgI5azwyRTDwbB24oPPOi?=
- =?us-ascii?Q?VOYMSJ4nyM9bpyQWPlt0EwmivYelZfFP7BUkeW9TsTvvswmImL6RKm0bEcfe?=
- =?us-ascii?Q?3KY7FZb/VO6aUUs+XYi3bCj1DCNg1+Z0cwjUrr6noYW7uLLqru8w+uudF9y7?=
- =?us-ascii?Q?c32iz90NhrQo1yTvT61l029gykDiY3gOCU8fVMuMVFYBjuTP09mSV2r4CAut?=
- =?us-ascii?Q?shth8M13j+QFBog4urm9kzDTL3s3n183bK8EyM8d?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?f0V7b6sCfwJzCwQ6bVLam0tWonhbNq/U7CAp4I30B0XX42lisjyAX2s5cOWO?=
+ =?us-ascii?Q?ZsADDL0zBLfySnX6mZxcZtRTI3M9dLkTzhX8Lu2xxL+7r/StepkkD9dDt3x8?=
+ =?us-ascii?Q?lq5qtL1adQuzKRWPiS3tcVcEJLIy2gRxH/AKeTDa6YZTJ/4h7NN/sMPoZQtd?=
+ =?us-ascii?Q?fiTQbJrOEryzgkrDC7k2ifeIvBwHz797Kl8AXRMIsdEtoCUsWhU3eQUYLhWq?=
+ =?us-ascii?Q?fkx+l4rRw2GTSSqxS1XSibYguRNWgEwK95VDwkXDoV2KZ3/3vKwEBIq/juIG?=
+ =?us-ascii?Q?4VibVyJD/9NSA+RTuGUaRGFRmhJLTxcYkH09Us57O3PIM6d6p2sBmS6g08Ix?=
+ =?us-ascii?Q?JRyPshGmFgF/VpRr7ZuMkcZNCFkfZm/sAcBT9z/KjPWHj31XnRyqRITBhEHv?=
+ =?us-ascii?Q?D/zgbBkqoHt0vibZgbwwFkbv9BevAqPWnuizKNpNzdJUray3gFAhd3eUXosD?=
+ =?us-ascii?Q?DIDSq+9J7m9KbFQlgnfiQWKwbsTK+pRKkvBuWf/mmDVv2IvDW6zyduT5DLbJ?=
+ =?us-ascii?Q?m0Ijfj/YwrBgcwlhf0VdpJnIkx52Zy5u+Cc4sziawl2h4zbytDbXJjQSNmUo?=
+ =?us-ascii?Q?6eHnAcxxsmT9WdNON9pFgG3PBRinEIWMItE5OQi1zcOTJnes7BOxkSEfEDHQ?=
+ =?us-ascii?Q?YWrmtpWJIPjhLQ9GRrL8146C+farGhzJRw2eCNT7jmJTNrj8214/dTMGiIKZ?=
+ =?us-ascii?Q?kq9BGkJnd/nXKU5a++PDmANyLEDKoAkHjY9BAFMlVzJ/UfWJ5yas9ScOSI1A?=
+ =?us-ascii?Q?zZg0Oio1rnbX8xHMvv2XnsUs3uhE89UtSgTNWOQ/GorUCDtOVWQ3oYyhzPSA?=
+ =?us-ascii?Q?xzKAYBHCHg5WEBaekPO4bLtYZ9UL2saCgYnQfKVy64o2+T9VJ5toDcsFXuDr?=
+ =?us-ascii?Q?wCqhd1YnFFveu3SSqdQwocJeXK5Crkof9B+1SZziffghVIZRH+ziXSOYc/x7?=
+ =?us-ascii?Q?1x/7G2byw2tGKmZWkQw6n4i3D+7QwyLmc58tAKSwwfkCEQD3KYTYBI14l4ad?=
+ =?us-ascii?Q?pHsbDQD5hQSUH3tO+GjhqOTXzO3ZmQMy7IbxXBAhkyIk5ymEM6UBGd5UkDCw?=
+ =?us-ascii?Q?VuwYmPazIjZmlDfXDmoE3YgnHXINBVyurG+WsbDD4vqeTLwrBwKjuka/fU9H?=
+ =?us-ascii?Q?VBPyZUOqBT9qLm0S3++wb+RBT+kEnbhQKlOk+hsS//Cbsirggvam+9XFfrGo?=
+ =?us-ascii?Q?kYufQF/cFRjh2ZZ/7eTz8oVm93/gqgDdL7sT17fH1O8/N9Xkxy+EUwg6PSfp?=
+ =?us-ascii?Q?F7heUmiW2h3V8DbTxGnwFuTc+voDlhKZHPmLb70iuDSVSAOZ6l2xWpTD1q4+?=
+ =?us-ascii?Q?QcKWn8KSjrTCt5/Lwcm4M53Ghx+/XRBvbTE/W4SGOqxgaxBkK8Zmep4xULeK?=
+ =?us-ascii?Q?6LdvIWvTk5KSKatgkAF1Wp06negjBduWWUxbwS5kKf3dIbjAad0tdTMM0/m7?=
+ =?us-ascii?Q?1EItfzVOBKp2llWAOaSPPCi6l3gzEgaWFaMsDQsQYV+DhIA1RJkf/e6v5MM7?=
+ =?us-ascii?Q?Fa5tlGiPQS17epGdMIIFLfNsem4LnO1QhqZTq99xwwGO/MK74BhAYIvXP96Z?=
+ =?us-ascii?Q?O88xrDswpyDZQv3SFEkzAjGGe7NM9vm2CRwGDUYw?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18eccd68-fc61-49f5-a951-08dbb8f63aab
+X-MS-Exchange-CrossTenant-Network-Message-Id: 50394122-3ebc-42e5-19c8-08dbb8f63d66
 X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 09:53:09.0354
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 09:53:13.6911
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Wkp5VNq9fImUqPdezvxygNIt3uAX4Zi/v/bZBKCQAYqYZnyJCCcVNTstFDVPoWIdTfqqQMJQ1/BNOcnzWzO3wQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: L8uwDVJrBCl0qkcQhSscUvKqZlpOmj8/gsUHr/oIBIc0iDRFmxBpq6Rcee8pIrPoNvao59w38dhA/kkFA8I1/Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6982
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -116,176 +116,606 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some page if marked as workingset, we'd better not touch it.
-So, for damon pa scheme, this patch just add an new filter
-DAMOS_FILTER_TYPE_WORKINGSET, which will filter page if it
-marked as workingset.
+Now damos support filter contains two type.
+The first is scheme filter which will invoke each scheme apply,
+second is scheme action filter, which will filter out unwanted action.
 
-Like skip anon, add a control skip_workingset.
+But this implement is scattered in different implementations and hard
+to reuse or extend.
 
-To make code clean, fold reclaim's filter create logic into
-__damon_reclaim_create_filters.
+This patch clean up those filter code, move into filter.c and add header
+to expose filter func.
+
+Each filter implement register itself into filter_fn array, and user
+can invoke this by there inited type in filter.
 
 Signed-off-by: Huan Yang <link@vivo.com>
 ---
- include/linux/damon.h | 17 +++++++++-------
- mm/damon/core-test.h  |  7 +++++++
- mm/damon/paddr.c      |  4 ++++
- mm/damon/reclaim.c    | 47 ++++++++++++++++++++++++++++++++++---------
- 4 files changed, 58 insertions(+), 17 deletions(-)
+ include/linux/damon.h    |  65 +------------------
+ mm/damon/Makefile        |   2 +-
+ mm/damon/core.c          |  93 ++++-----------------------
+ mm/damon/filter.c        | 135 +++++++++++++++++++++++++++++++++++++++
+ mm/damon/filter.h        | 119 ++++++++++++++++++++++++++++++++++
+ mm/damon/paddr.c         |  31 +++------
+ mm/damon/reclaim.c       |   1 +
+ mm/damon/sysfs-schemes.c |   1 +
+ 8 files changed, 280 insertions(+), 167 deletions(-)
+ create mode 100644 mm/damon/filter.c
+ create mode 100644 mm/damon/filter.h
 
 diff --git a/include/linux/damon.h b/include/linux/damon.h
-index ae2664d1d5f1..8e8f35df6a5e 100644
+index 8e8f35df6a5e..03c718b30bfe 100644
 --- a/include/linux/damon.h
 +++ b/include/linux/damon.h
-@@ -228,22 +228,25 @@ struct damos_stat {
-  * @DAMOS_FILTER_TYPE_MEMCG:	Specific memcg's pages.
-  * @DAMOS_FILTER_TYPE_ADDR:	Address range.
-  * @DAMOS_FILTER_TYPE_TARGET:	Data Access Monitoring target.
+@@ -222,63 +222,6 @@ struct damos_stat {
+ 	unsigned long qt_exceeds;
+ };
+ 
+-/**
+- * enum damos_filter_type - Type of memory for &struct damos_filter
+- * @DAMOS_FILTER_TYPE_ANON:	Anonymous pages.
+- * @DAMOS_FILTER_TYPE_MEMCG:	Specific memcg's pages.
+- * @DAMOS_FILTER_TYPE_ADDR:	Address range.
+- * @DAMOS_FILTER_TYPE_TARGET:	Data Access Monitoring target.
+- * @DAMOS_FILTER_TYPE_WORKINGSET: Workingset pages, need protect.
+- * @NR_DAMOS_FILTER_TYPES:	Number of filter types.
+- *
+- * The anon pages type, memcg type, workingset page type filters are handled
+- * by underlying &struct damon_operations as a part of scheme action trying,
+- * and therefore accounted as 'tried'.  In contrast, other types are handled
+- * by core layer before trying of the action and therefore not accounted as
+- * 'tried'.
+- *
+- * The support of the filters that handled by &struct damon_operations depend
+- * on the running &struct damon_operations.
+- * &enum DAMON_OPS_PADDR supports both anon pages type, memcg type and
+- * workingset page type filters, while &enum DAMON_OPS_VADDR and &enum
+- * DAMON_OPS_FVADDR don't support any of the two types.
+- */
+-enum damos_filter_type {
+-	DAMOS_FILTER_TYPE_ANON,
+-	DAMOS_FILTER_TYPE_MEMCG,
+-	DAMOS_FILTER_TYPE_WORKINGSET,
+-	DAMOS_FILTER_TYPE_ADDR,
+-	DAMOS_FILTER_TYPE_TARGET,
+-	NR_DAMOS_FILTER_TYPES,
+-};
+-
+-/**
+- * struct damos_filter - DAMOS action target memory filter.
+- * @type:	Type of the page.
+- * @matching:	If the matching page should filtered out or in.
+- * @memcg_id:	Memcg id of the question if @type is DAMOS_FILTER_MEMCG.
+- * @addr_range:	Address range if @type is DAMOS_FILTER_TYPE_ADDR.
+- * @target_idx:	Index of the &struct damon_target of
+- *		&damon_ctx->adaptive_targets if @type is
+- *		DAMOS_FILTER_TYPE_TARGET.
+- * @list:	List head for siblings.
+- *
+- * Before applying the &damos->action to a memory region, DAMOS checks if each
+- * page of the region matches to this and avoid applying the action if so.
+- * Support of each filter type depends on the running &struct damon_operations
+- * and the type.  Refer to &enum damos_filter_type for more detai.
+- */
+-struct damos_filter {
+-	enum damos_filter_type type;
+-	bool matching;
+-	union {
+-		unsigned short memcg_id;
+-		struct damon_addr_range addr_range;
+-		int target_idx;
+-	};
+-	struct list_head list;
+-};
+-
+ /**
+  * struct damos_access_pattern - Target access pattern of the given scheme.
+  * @min_sz_region:	Minimum size of target regions.
+@@ -607,16 +550,14 @@ static inline void damon_insert_region(struct damon_region *r,
+ 	t->nr_regions++;
+ }
+ 
++void damon_split_region_at(struct damon_target *t,
++				  struct damon_region *r, unsigned long sz_r);
++
+ void damon_add_region(struct damon_region *r, struct damon_target *t);
+ void damon_destroy_region(struct damon_region *r, struct damon_target *t);
+ int damon_set_regions(struct damon_target *t, struct damon_addr_range *ranges,
+ 		unsigned int nr_ranges);
+ 
+-struct damos_filter *damos_new_filter(enum damos_filter_type type,
+-		bool matching);
+-void damos_add_filter(struct damos *s, struct damos_filter *f);
+-void damos_destroy_filter(struct damos_filter *f);
+-
+ struct damos *damon_new_scheme(struct damos_access_pattern *pattern,
+ 			enum damos_action action, struct damos_quota *quota,
+ 			struct damos_watermarks *wmarks);
+diff --git a/mm/damon/Makefile b/mm/damon/Makefile
+index f7add3f4aa79..789ab0a9d9c9 100644
+--- a/mm/damon/Makefile
++++ b/mm/damon/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-obj-y				:= core.o
++obj-y				:= core.o filter.o
+ obj-$(CONFIG_DAMON_VADDR)	+= ops-common.o vaddr.o
+ obj-$(CONFIG_DAMON_PADDR)	+= ops-common.o paddr.o
+ obj-$(CONFIG_DAMON_SYSFS)	+= sysfs-common.o sysfs-schemes.o sysfs.o
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index bcd2bd9d6c10..a74932fcdb11 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -22,6 +22,8 @@
+ #define DAMON_MIN_REGION 1
+ #endif
+ 
++#include "filter.h"
++
+ static DEFINE_MUTEX(damon_lock);
+ static int nr_running_ctxs;
+ static bool running_exclusive_ctxs;
+@@ -263,41 +265,6 @@ int damon_set_regions(struct damon_target *t, struct damon_addr_range *ranges,
+ 	return 0;
+ }
+ 
+-struct damos_filter *damos_new_filter(enum damos_filter_type type,
+-		bool matching)
+-{
+-	struct damos_filter *filter;
+-
+-	filter = kmalloc(sizeof(*filter), GFP_KERNEL);
+-	if (!filter)
+-		return NULL;
+-	filter->type = type;
+-	filter->matching = matching;
+-	INIT_LIST_HEAD(&filter->list);
+-	return filter;
+-}
+-
+-void damos_add_filter(struct damos *s, struct damos_filter *f)
+-{
+-	list_add_tail(&f->list, &s->filters);
+-}
+-
+-static void damos_del_filter(struct damos_filter *f)
+-{
+-	list_del(&f->list);
+-}
+-
+-static void damos_free_filter(struct damos_filter *f)
+-{
+-	kfree(f);
+-}
+-
+-void damos_destroy_filter(struct damos_filter *f)
+-{
+-	damos_del_filter(f);
+-	damos_free_filter(f);
+-}
+-
+ /* initialize private fields of damos_quota and return the pointer */
+ static struct damos_quota *damos_quota_init_priv(struct damos_quota *quota)
+ {
+@@ -780,9 +747,6 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 	}
+ }
+ 
+-static void damon_split_region_at(struct damon_target *t,
+-				  struct damon_region *r, unsigned long sz_r);
+-
+ static bool __damos_valid_target(struct damon_region *r, struct damos *s)
+ {
+ 	unsigned long sz;
+@@ -881,49 +845,16 @@ static void damos_update_stat(struct damos *s,
+ static bool __damos_filter_out(struct damon_ctx *ctx, struct damon_target *t,
+ 		struct damon_region *r, struct damos_filter *filter)
+ {
+-	bool matched = false;
+-	struct damon_target *ti;
+-	int target_idx = 0;
+-	unsigned long start, end;
+-
+-	switch (filter->type) {
+-	case DAMOS_FILTER_TYPE_TARGET:
+-		damon_for_each_target(ti, ctx) {
+-			if (ti == t)
+-				break;
+-			target_idx++;
+-		}
+-		matched = target_idx == filter->target_idx;
+-		break;
+-	case DAMOS_FILTER_TYPE_ADDR:
+-		start = ALIGN_DOWN(filter->addr_range.start, DAMON_MIN_REGION);
+-		end = ALIGN_DOWN(filter->addr_range.end, DAMON_MIN_REGION);
+-
+-		/* inside the range */
+-		if (start <= r->ar.start && r->ar.end <= end) {
+-			matched = true;
+-			break;
+-		}
+-		/* outside of the range */
+-		if (r->ar.end <= start || end <= r->ar.start) {
+-			matched = false;
+-			break;
+-		}
+-		/* start before the range and overlap */
+-		if (r->ar.start < start) {
+-			damon_split_region_at(t, r, start - r->ar.start);
+-			matched = false;
+-			break;
+-		}
+-		/* start inside the range */
+-		damon_split_region_at(t, r, end - r->ar.start);
+-		matched = true;
+-		break;
+-	default:
+-		break;
+-	}
++	struct damos_filter_ctx dfctx = {
++		.scheme = {
++			.ctx = ctx,
++			.target = t,
++			.region = r,
++		},
++		.filter = filter,
++	};
+ 
+-	return matched == filter->matching;
++	return damon_filter_invoke(&dfctx);
+ }
+ 
+ static bool damos_filter_out(struct damon_ctx *ctx, struct damon_target *t,
+@@ -1161,7 +1092,7 @@ static void kdamond_merge_regions(struct damon_ctx *c, unsigned int threshold,
+  * r		the region to be split
+  * sz_r		size of the first sub-region that will be made
+  */
+-static void damon_split_region_at(struct damon_target *t,
++void damon_split_region_at(struct damon_target *t,
+ 				  struct damon_region *r, unsigned long sz_r)
+ {
+ 	struct damon_region *new;
+diff --git a/mm/damon/filter.c b/mm/damon/filter.c
+new file mode 100644
+index 000000000000..a451d5428fe2
+--- /dev/null
++++ b/mm/damon/filter.c
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Data Access Monitor Filter
++ *
++ * This filter contains the scheme filter, which will be called
++ * for each scheme apply check. action filter will be called when
++ * scheme action invoke.
++ *
++ * Author: Huan Yang <link@vivo.com>
++ */
++#include <linux/damon.h>
++
++#include "filter.h"
++
++typedef bool (*DAMON_FILTER_FN) (struct damos_filter_ctx *dfctx);
++
++/* Scheme action filter */
++
++static bool damos_anon_filter(struct damos_filter_ctx *dfctx)
++{
++	return folio_test_anon(dfctx->action.folio) == dfctx->filter->matching;
++}
++
++static bool damos_memcg_filter(struct damos_filter_ctx *dfctx)
++{
++	struct damos_filter *filter = dfctx->filter;
++	struct mem_cgroup *memcg;
++	bool matched;
++
++	rcu_read_lock();
++	memcg = folio_memcg_check(dfctx->action.folio);
++	if (!memcg)
++		matched = false;
++	else
++		matched = filter->memcg_id == mem_cgroup_id(memcg);
++	rcu_read_unlock();
++
++	return matched == filter->matching;
++}
++
++static bool damos_workingset_filter(struct damos_filter_ctx *dfctx)
++{
++	return folio_test_workingset(dfctx->action.folio) ==
++	       dfctx->filter->matching;
++}
++
++/* Scheme filter */
++
++static bool damos_addr_filter(struct damos_filter_ctx *dfctx)
++{
++	bool matched = false;
++	struct damos_filter *filter = dfctx->filter;
++	struct damon_target *t = dfctx->scheme.target;
++	struct damon_region *r = dfctx->scheme.region;
++	unsigned long start, end;
++
++	start = ALIGN_DOWN(filter->addr_range.start, DAMON_MIN_REGION);
++	end = ALIGN_DOWN(filter->addr_range.end, DAMON_MIN_REGION);
++
++	/* inside the range */
++	if (start <= r->ar.start && r->ar.end <= end) {
++		matched = true;
++		goto got_result;
++	}
++	/* outside of the range */
++	if (r->ar.end <= start || end <= r->ar.start) {
++		matched = false;
++		goto got_result;
++	}
++	/* start before the range and overlap */
++	if (r->ar.start < start) {
++		damon_split_region_at(t, r, start - r->ar.start);
++		matched = false;
++		goto got_result;
++	}
++	/* start inside the range */
++	damon_split_region_at(t, r, end - r->ar.start);
++	matched = true;
++
++got_result:
++	return matched == filter->matching;
++}
++
++static bool damos_target_filter(struct damos_filter_ctx *dfctx)
++{
++	bool matched = false;
++	struct damon_target *ti, *t = dfctx->scheme.target;
++	struct damon_ctx *ctx = dfctx->scheme.ctx;
++	struct damos_filter *filter = dfctx->filter;
++	int target_idx = 0;
++
++	damon_for_each_target(ti, ctx) {
++		if (ti == t)
++			break;
++		target_idx++;
++	}
++	matched = target_idx == filter->target_idx;
++	return matched == filter->matching;
++}
++
++static DAMON_FILTER_FN filter_fn[NR_DAMOS_FILTER_TYPES] = {
++	/* Damos scheme action filter */
++	damos_anon_filter,
++	damos_memcg_filter,
++	damos_workingset_filter,
++	/* Damos scheme filter */
++	damos_addr_filter,
++	damos_target_filter,
++};
++
++
++bool damon_filter_invoke(struct damos_filter_ctx *dfctx)
++{
++	return filter_fn[dfctx->filter->type](dfctx);
++}
++
++struct damos_filter *damos_new_filter(enum damos_filter_type type,
++		bool matching)
++{
++	struct damos_filter *filter;
++
++	filter = kmalloc(sizeof(*filter), GFP_KERNEL);
++	if (!filter)
++		return NULL;
++	filter->type = type;
++	filter->matching = matching;
++	INIT_LIST_HEAD(&filter->list);
++	return filter;
++}
++
++void damos_destroy_filter(struct damos_filter *f)
++{
++	damos_del_filter(f);
++	damos_free_filter(f);
++}
+diff --git a/mm/damon/filter.h b/mm/damon/filter.h
+new file mode 100644
+index 000000000000..5d724e8276fc
+--- /dev/null
++++ b/mm/damon/filter.h
+@@ -0,0 +1,119 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Data Access Monitor Filter
++ *
++ * Author: Huan Yang <link@vivo.com>
++ */
++#ifndef __DAMON_FILTER_H__
++#define __DAMON_FILTER_H__
++
++/**
++ * enum damos_filter_type - Type of memory for &struct damos_filter
++ * @DAMOS_FILTER_TYPE_ANON:	Anonymous pages.
++ * @DAMOS_FILTER_TYPE_MEMCG:	Specific memcg's pages.
++ * @DAMOS_FILTER_TYPE_ADDR:	Address range.
++ * @DAMOS_FILTER_TYPE_TARGET:	Data Access Monitoring target.
 + * @DAMOS_FILTER_TYPE_WORKINGSET: Workingset pages, need protect.
-  * @NR_DAMOS_FILTER_TYPES:	Number of filter types.
-  *
-- * The anon pages type and memcg type filters are handled by underlying
-- * &struct damon_operations as a part of scheme action trying, and therefore
-- * accounted as 'tried'.  In contrast, other types are handled by core layer
-- * before trying of the action and therefore not accounted as 'tried'.
++ * @NR_DAMOS_FILTER_TYPES:	Number of filter types.
++ *
 + * The anon pages type, memcg type, workingset page type filters are handled
 + * by underlying &struct damon_operations as a part of scheme action trying,
 + * and therefore accounted as 'tried'.  In contrast, other types are handled
 + * by core layer before trying of the action and therefore not accounted as
 + * 'tried'.
-  *
-  * The support of the filters that handled by &struct damon_operations depend
-  * on the running &struct damon_operations.
-- * &enum DAMON_OPS_PADDR supports both anon pages type and memcg type filters,
-- * while &enum DAMON_OPS_VADDR and &enum DAMON_OPS_FVADDR don't support any of
-- * the two types.
++ *
++ * The support of the filters that handled by &struct damon_operations depend
++ * on the running &struct damon_operations.
 + * &enum DAMON_OPS_PADDR supports both anon pages type, memcg type and
 + * workingset page type filters, while &enum DAMON_OPS_VADDR and &enum
 + * DAMON_OPS_FVADDR don't support any of the two types.
-  */
- enum damos_filter_type {
- 	DAMOS_FILTER_TYPE_ANON,
- 	DAMOS_FILTER_TYPE_MEMCG,
++ */
++enum damos_filter_type {
++	/* Damos action filter, tried */
++	DAMOS_FILTER_TYPE_ANON,
++	DAMOS_FILTER_TYPE_MEMCG,
 +	DAMOS_FILTER_TYPE_WORKINGSET,
- 	DAMOS_FILTER_TYPE_ADDR,
- 	DAMOS_FILTER_TYPE_TARGET,
- 	NR_DAMOS_FILTER_TYPES,
-diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
-index 6cc8b245586d..c752e6e3cf3e 100644
---- a/mm/damon/core-test.h
-+++ b/mm/damon/core-test.h
-@@ -351,6 +351,13 @@ static void damos_test_new_filter(struct kunit *test)
- 	KUNIT_EXPECT_PTR_EQ(test, filter->list.prev, &filter->list);
- 	KUNIT_EXPECT_PTR_EQ(test, filter->list.next, &filter->list);
- 	damos_destroy_filter(filter);
++	/* Damos scheme filter */
++	DAMOS_FILTER_TYPE_ADDR,
++	DAMOS_FILTER_TYPE_TARGET,
++	NR_DAMOS_FILTER_TYPES,
++};
 +
-+	filter = damos_new_filter(DAMOS_FILTER_TYPE_WORKINGSET, true);
-+	KUNIT_EXPECT_EQ(test, filter->type, DAMOS_FILTER_TYPE_WORKINGSET);
-+	KUNIT_EXPECT_EQ(test, filter->matching, true);
-+	KUNIT_EXPECT_PTR_EQ(test, filter->list.prev, &filter->list);
-+	KUNIT_EXPECT_PTR_EQ(test, filter->list.next, &filter->list);
-+	damos_destroy_filter(filter);
- }
- 
- static void damos_test_filter_out(struct kunit *test)
++/**
++ * struct damos_filter - DAMOS action target memory filter.
++ * @type:	Type of the page.
++ * @matching:	If the matching page should filtered out or in.
++ * @memcg_id:	Memcg id of the question if @type is DAMOS_FILTER_MEMCG.
++ * @addr_range:	Address range if @type is DAMOS_FILTER_TYPE_ADDR.
++ * @target_idx:	Index of the &struct damon_target of
++ *		&damon_ctx->adaptive_targets if @type is
++ *		DAMOS_FILTER_TYPE_TARGET.
++ * @list:	List head for siblings.
++ *
++ * Before applying the &damos->action to a memory region, DAMOS checks if each
++ * page of the region matches to this and avoid applying the action if so.
++ * Support of each filter type depends on the running &struct damon_operations
++ * and the type.  Refer to &enum damos_filter_type for more detai.
++ */
++struct damos_filter {
++	enum damos_filter_type type;
++	bool matching;
++	union {
++		unsigned short memcg_id;
++		struct damon_addr_range addr_range;
++		int target_idx;
++	};
++	struct list_head list;
++};
++
++/**
++ * struct damos_filter_ctx - Represents a context for each filter
++ * @scheme:     Each scheme filter context
++ * @action:     Each scheme action filter context
++ * @filter:     DAMOS action target memory filter instance
++ *
++ * User need pass this for each invoke filter, and each filter
++ * will invoke a specified filter function by filter type which
++ * user already target it when register filter.
++ */
++struct damos_filter_ctx {
++	union {
++		/* Use by scheme filter */
++		struct {
++			struct damon_ctx *ctx;
++			struct damon_target *target;
++			struct damon_region *region;
++		} scheme;
++
++		/* Use by action filter */
++		struct {
++			struct folio *folio;
++		} action;
++	};
++
++	struct damos_filter *filter;
++};
++
++bool damon_filter_invoke(struct damos_filter_ctx *dfctx);
++
++struct damos_filter *damos_new_filter(enum damos_filter_type type,
++				      bool matching);
++
++static inline void damos_add_filter(struct damos *s, struct damos_filter *f)
++{
++	list_add_tail(&f->list, &s->filters);
++}
++
++static inline void damos_del_filter(struct damos_filter *f)
++{
++	list_del(&f->list);
++}
++
++static inline void damos_free_filter(struct damos_filter *f)
++{
++	kfree(f);
++}
++
++void damos_destroy_filter(struct damos_filter *f);
++
++#endif //__DAMON_FILTER_H__
 diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index 909db25efb35..8a690505e033 100644
+index 8a690505e033..748300655ba4 100644
 --- a/mm/damon/paddr.c
 +++ b/mm/damon/paddr.c
-@@ -12,6 +12,7 @@
- #include <linux/pagemap.h>
- #include <linux/rmap.h>
- #include <linux/swap.h>
-+#include <linux/mm_inline.h>
+@@ -16,6 +16,7 @@
  
  #include "../internal.h"
  #include "ops-common.h"
-@@ -204,6 +205,9 @@ static bool __damos_pa_filter_out(struct damos_filter *filter,
- 			matched = filter->memcg_id == mem_cgroup_id(memcg);
- 		rcu_read_unlock();
- 		break;
-+	case DAMOS_FILTER_TYPE_WORKINGSET:
-+		matched = folio_test_workingset(folio);
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/mm/damon/reclaim.c b/mm/damon/reclaim.c
-index 648d2a85523a..26ae8fa5d088 100644
---- a/mm/damon/reclaim.c
-+++ b/mm/damon/reclaim.c
-@@ -107,6 +107,15 @@ module_param(monitor_region_end, ulong, 0600);
- static bool skip_anon __read_mostly;
- module_param(skip_anon, bool, 0600);
++#include "filter.h"
  
-+/*
-+ * Skip workingset pages reclamation.
-+ *
-+ * If this parameter is set as ``Y``, DAMON_RECLAIM does not reclaim workingset
-+ * pages.  By default, ``N``.
-+ */
-+static bool skip_workingset __read_mostly;
-+module_param(skip_workingset, bool, 0600);
-+
- /*
-  * PID of the DAMON thread
-  *
-@@ -148,10 +157,25 @@ static struct damos *damon_reclaim_new_scheme(void)
- 			&damon_reclaim_wmarks);
+ static bool __damon_pa_mkold(struct folio *folio, struct vm_area_struct *vma,
+ 		unsigned long addr, void *arg)
+@@ -189,30 +190,14 @@ static unsigned int damon_pa_check_accesses(struct damon_ctx *ctx)
+ static bool __damos_pa_filter_out(struct damos_filter *filter,
+ 		struct folio *folio)
+ {
+-	bool matched = false;
+-	struct mem_cgroup *memcg;
+-
+-	switch (filter->type) {
+-	case DAMOS_FILTER_TYPE_ANON:
+-		matched = folio_test_anon(folio);
+-		break;
+-	case DAMOS_FILTER_TYPE_MEMCG:
+-		rcu_read_lock();
+-		memcg = folio_memcg_check(folio);
+-		if (!memcg)
+-			matched = false;
+-		else
+-			matched = filter->memcg_id == mem_cgroup_id(memcg);
+-		rcu_read_unlock();
+-		break;
+-	case DAMOS_FILTER_TYPE_WORKINGSET:
+-		matched = folio_test_workingset(folio);
+-		break;
+-	default:
+-		break;
+-	}
++	struct damos_filter_ctx dfctx = {
++		.action = {
++			.folio = folio,
++		},
++		.filter = filter,
++	};
+ 
+-	return matched == filter->matching;
++	return damon_filter_invoke(&dfctx);
  }
  
-+static int __damon_reclaim_create_filters(struct damos *scheme,
-+					  enum damos_filter_type type,
-+					  bool matching)
-+{
-+	struct damos_filter *filter = damos_new_filter(type, matching);
-+
-+	if (unlikely(!filter)) {
-+		/* Will be freed by next 'damon_set_schemes()' below */
-+		damon_destroy_scheme(scheme);
-+		return -ENOMEM;
-+	}
-+
-+	damos_add_filter(scheme, filter);
-+	return 0;
-+}
-+
- static int damon_reclaim_apply_parameters(void)
- {
- 	struct damos *scheme;
--	struct damos_filter *filter;
- 	int err = 0;
+ /*
+diff --git a/mm/damon/reclaim.c b/mm/damon/reclaim.c
+index 26ae8fa5d088..1fdd55c03f1f 100644
+--- a/mm/damon/reclaim.c
++++ b/mm/damon/reclaim.c
+@@ -12,6 +12,7 @@
+ #include <linux/module.h>
  
- 	err = damon_set_attrs(ctx, &damon_reclaim_mon_attrs);
-@@ -162,15 +186,18 @@ static int damon_reclaim_apply_parameters(void)
- 	scheme = damon_reclaim_new_scheme();
- 	if (!scheme)
- 		return -ENOMEM;
--	if (skip_anon) {
--		filter = damos_new_filter(DAMOS_FILTER_TYPE_ANON, true);
--		if (!filter) {
--			/* Will be freed by next 'damon_set_schemes()' below */
--			damon_destroy_scheme(scheme);
--			return -ENOMEM;
--		}
--		damos_add_filter(scheme, filter);
--	}
-+
-+	err = skip_anon && __damon_reclaim_create_filters(
-+				   scheme, DAMOS_FILTER_TYPE_ANON, true);
-+	if (err)
-+		return err;
-+
-+	err = skip_workingset &&
-+	      __damon_reclaim_create_filters(
-+		      scheme, DAMOS_FILTER_TYPE_WORKINGSET, true);
-+	if (err)
-+		return err;
-+
- 	damon_set_schemes(ctx, &scheme, 1);
+ #include "modules-common.h"
++#include "filter.h"
  
- 	return damon_set_region_biggest_system_ram_default(target,
+ #ifdef MODULE_PARAM_PREFIX
+ #undef MODULE_PARAM_PREFIX
+diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
+index 527e7d17eb3b..98cd93b28b21 100644
+--- a/mm/damon/sysfs-schemes.c
++++ b/mm/damon/sysfs-schemes.c
+@@ -8,6 +8,7 @@
+ #include <linux/slab.h>
+ 
+ #include "sysfs-common.h"
++#include "filter.h"
+ 
+ /*
+  * scheme region directory
 -- 
 2.34.1
 
