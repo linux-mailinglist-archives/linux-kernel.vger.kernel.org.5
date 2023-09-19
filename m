@@ -2,82 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B78647A6BD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 21:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1ED7A6BDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 21:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbjISTxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 15:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
+        id S232943AbjISTyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 15:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbjISTxP (ORCPT
+        with ESMTP id S232088AbjISTyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 15:53:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53028EA;
-        Tue, 19 Sep 2023 12:53:09 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695153187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z6MR2qg7K68Ikjp5YKoXbgk+KfdFV5OyH5X+XZI8Hys=;
-        b=mOb/eNZUdC0Wj3l6CxvHBXP8mwAJuYFnOVgDDGyXCVGfE9qGC/lTBJMdjrY5OSdh22ztlP
-        0pmpPVdeREqTDHGNAEeNvS1DieP+VUS9naCyvjQLxXHFNIP7ZMrmMpAb/G7OBUsq8HkoXh
-        Cf2s4EE0LCAMh9WCn8yLJcvMdWe4fgVs+RUHjyvJHQe1wc5lXIfPpDuHsf3M3vaqIXgsMB
-        c1zOM7RIRJi9+pTWs8ld1rHuTaEkuhd5s6SL99eLVBOi2BmjT9kDN+s+XFm70ynEg0DH68
-        vw1rGuAKizG2OM9QTS2IvcNs1PTtQ9WH7K2vOYlgdiHCWVPYnna48qBKdgNrMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695153187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z6MR2qg7K68Ikjp5YKoXbgk+KfdFV5OyH5X+XZI8Hys=;
-        b=L3qg/U5CuhkLaMEQDfDZJ0Bp292wap1ObMBS0Fd+vVbQEdDuD8p1gEYpDfgtKABKvVsKv+
-        70jMfd8FpBl2jmDQ==
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Subject: Re: Arches that don't support PREEMPT
-In-Reply-To: <CAHk-=wizB-G40OxALNnz3-uNxuEAPf95H9hubAPeG2r2mrhwHA@mail.gmail.com>
-References: <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
- <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
- <87pm2eui95.ffs@tglx> <20230919143816.1741760a@gandalf.local.home>
- <CAHk-=wizB-G40OxALNnz3-uNxuEAPf95H9hubAPeG2r2mrhwHA@mail.gmail.com>
-Date:   Tue, 19 Sep 2023 21:53:07 +0200
-Message-ID: <87jzsmueho.ffs@tglx>
+        Tue, 19 Sep 2023 15:54:51 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D865F9C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:54:45 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso9906530e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:54:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google; t=1695153284; x=1695758084; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HjrdE60++TcwatJpXQy7OuWtzjqtwzDOP4HlaCMD688=;
+        b=sRu16KAOkVD0agT9pdQCQeM8bB1TjVRVnK5JwdoDH07GsZD92zQ+g+Id0bjhm5mEy/
+         gmVPHQ3ADTrUphmtraeXoguL/snemaBJnAz5BY3hycpPufCq3yW8cw/ucCed53DjC9K1
+         8wZbbg3ImSfHvoUi4VHA+dZG2NHEM2dtHdooE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695153284; x=1695758084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HjrdE60++TcwatJpXQy7OuWtzjqtwzDOP4HlaCMD688=;
+        b=Li1Tv/9ioAICKCgVZrsT27N+7e9Xfo+oAaX1ro6CIh93UPdj+ts0YiCzGy0AApjkgM
+         SVVDg1jpgr0AwMN8hDwzlDzUQ1Gou9lXoAXkIxWOIpaNPXYhsc5hOw7jKTWwBsDD8k3q
+         3MG866vtEdtZc7AwMo1OG/VqFTni0y/L8wvgFMYlXYaObEVFh0CH0yKwjnOCGzVrPEJf
+         bAC1E/8Bh2pLwDivmEVBCaLEKKpHJoZiWFVlSfY6bh2zlYq+dt9zLdfJzxkyTmfAzqw/
+         4sBcKArZgWx0ZPZXq5D+AtC91GqX1oXjRJPZyLYqgZPpd4YJWIXm/x21f3VMchoiyQp1
+         rluQ==
+X-Gm-Message-State: AOJu0Yyv3uYo/SHssW2ccfpPLp99RTTkDvru2DAgjHnfH1odkGQ7WzZK
+        0MxgAojjcmbMvHdL1DOwdpG98YByvXruJeHYeFLo
+X-Google-Smtp-Source: AGHT+IGCP2sHSYQZgQISUa9EgUk/8O464Rrr/vqidV5rzxfkX7nm0h42VEh5K+cIZmfXJ4mpo7ccdy+WLMgXrV6wO8E=
+X-Received: by 2002:a05:6512:475:b0:4fe:8c4:44fb with SMTP id
+ x21-20020a056512047500b004fe08c444fbmr546266lfd.38.1695153283961; Tue, 19 Sep
+ 2023 12:54:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20230918180646.1398384-1-apatel@ventanamicro.com> <20230918180646.1398384-4-apatel@ventanamicro.com>
+In-Reply-To: <20230918180646.1398384-4-apatel@ventanamicro.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 19 Sep 2023 12:54:32 -0700
+Message-ID: <CAOnJCUJYDHtbYS4js7PSAeLqT4sL5zi7DT5xeSww+5Nvs2UhcA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] KVM: riscv: selftests: Fix ISA_EXT register handling
+ in get-reg-list
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -87,19 +70,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19 2023 at 11:52, Linus Torvalds wrote:
-> On Tue, 19 Sept 2023 at 11:37, Steven Rostedt <rostedt@goodmis.org> wrote:
->>
->> We could simply leave the cond_resched() around but defined as nops for
->> everything but the "nostalgia club" to keep them from having any regressions.
+On Mon, Sep 18, 2023 at 11:07=E2=80=AFAM Anup Patel <apatel@ventanamicro.co=
+m> wrote:
 >
-> I doubt the nostalgia club cares about some latencies (that are
-> usually only noticeable under extreme loads anyway).
+> Same set of ISA_EXT registers are not present on all host because
+> ISA_EXT registers are visible to the KVM user space based on the
+> ISA extensions available on the host. Also, disabling an ISA
+> extension using corresponding ISA_EXT register does not affect
+> the visibility of the ISA_EXT register itself.
 >
-> And if they do, maybe that would make somebody sit down and look into
-> doing it right.
+> Based on the above, we should filter-out all ISA_EXT registers.
 >
-> So I think keeping it around would actually be both useless and
-> counter-productive.
 
-Amen to that.
+In that case, we don't need the switch case any more. Just a
+conditional check with KVM_RISCV_ISA_EXT_MAX should be sufficient.
+
+> Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  .../selftests/kvm/riscv/get-reg-list.c        | 35 +++++++++++--------
+>  1 file changed, 21 insertions(+), 14 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/tes=
+ting/selftests/kvm/riscv/get-reg-list.c
+> index d8ecacd03ecf..76c0ad11e423 100644
+> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> @@ -14,17 +14,33 @@
+>
+>  bool filter_reg(__u64 reg)
+>  {
+> +       switch (reg & ~REG_MASK) {
+>         /*
+> -        * Some ISA extensions are optional and not present on all host,
+> -        * but they can't be disabled through ISA_EXT registers when pres=
+ent.
+> -        * So, to make life easy, just filtering out these kind of regist=
+ers.
+> +        * Same set of ISA_EXT registers are not present on all host beca=
+use
+> +        * ISA_EXT registers are visible to the KVM user space based on t=
+he
+> +        * ISA extensions available on the host. Also, disabling an ISA
+> +        * extension using corresponding ISA_EXT register does not affect
+> +        * the visibility of the ISA_EXT register itself.
+> +        *
+> +        * Based on above, we should filter-out all ISA_EXT registers.
+>          */
+> -       switch (reg & ~REG_MASK) {
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_A:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_C:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_D:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_F:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_H:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_I:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_M:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVPBMT:
+>         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSTC:
+>         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVINVAL:
+>         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHINTPAUSE:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOM:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOZ:
+>         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBB:
+>         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSAIA:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_V:
+> +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVNAPOT:
+>         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBA:
+>         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBS:
+>         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICNTR:
+> @@ -50,12 +66,7 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu,=
+ int ext)
+>         unsigned long value;
+>
+>         ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> -       if (ret) {
+> -               printf("Failed to get ext %d", ext);
+> -               return false;
+> -       }
+> -
+> -       return !!value;
+> +       return (ret) ? false : !!value;
+>  }
+>
+>  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
+> @@ -506,10 +517,6 @@ static __u64 base_regs[] =3D {
+>         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_=
+RISCV_TIMER_REG(time),
+>         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_=
+RISCV_TIMER_REG(compare),
+>         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_=
+RISCV_TIMER_REG(state),
+> -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_=
+RISCV_ISA_EXT_A,
+> -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_=
+RISCV_ISA_EXT_C,
+> -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_=
+RISCV_ISA_EXT_I,
+> -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_=
+RISCV_ISA_EXT_M,
+>         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | KVM_=
+REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_V01,
+>         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | KVM_=
+REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_TIME,
+>         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | KVM_=
+REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_IPI,
+> --
+> 2.34.1
+>
+
+
+--=20
+Regards,
+Atish
