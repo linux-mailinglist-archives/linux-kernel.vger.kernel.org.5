@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101E37A6650
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1813F7A664D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbjISOPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
+        id S232654AbjISOPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbjISOPm (ORCPT
+        with ESMTP id S232667AbjISOPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:15:42 -0400
+        Tue, 19 Sep 2023 10:15:43 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508889F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01A5AD
         for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:15:36 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RqkGC51q2z4f3nKK
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:15:31 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RqkGD0HBsz4f3nJs
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:15:32 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.103.91])
-        by APP4 (Coremail) with SMTP id gCh0CgAnvdwErQllkNB7Aw--.46916S6;
+        by APP4 (Coremail) with SMTP id gCh0CgAnvdwErQllkNB7Aw--.46916S7;
         Tue, 19 Sep 2023 22:15:33 +0800 (CST)
 From:   Xie XiuQi <xiexiuqi@huaweicloud.com>
 To:     masahiroy@kernel.org, mcgrof@kernel.org, joe@perches.com,
         ojeda@kernel.org, ndesaulniers@gooogle.com,
         linux-kernel@vger.kernel.org
 Cc:     xiexiuqi@huawei.com
-Subject: [PATCH 2/3] scripts/export_report.pl: improve warning message
-Date:   Tue, 19 Sep 2023 22:11:20 +0800
-Message-Id: <20230919141121.711084-3-xiexiuqi@huaweicloud.com>
+Subject: [PATCH 3/3] scripts/export_report.pl: fix modversion checking
+Date:   Tue, 19 Sep 2023 22:11:21 +0800
+Message-Id: <20230919141121.711084-4-xiexiuqi@huaweicloud.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230919141121.711084-1-xiexiuqi@huaweicloud.com>
 References: <20230919141121.711084-1-xiexiuqi@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnvdwErQllkNB7Aw--.46916S6
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF4DKry8Ar45Cw4DGr1rJFb_yoW3WwbE9a
-        1Iqw1fuwsIqayqyrW5Jwn0qFnY93W7tFs8Jr18tF95WF1jkFZ7tan3Jwn5WrWagr4Dua1r
-        Xa4qq34UuFW8tjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbsAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r15M2
-        8IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
-        021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F
-        4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0
-        oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7V
-        C0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j
-        6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7IU85CztUUUUU==
+X-CM-TRANSID: gCh0CgAnvdwErQllkNB7Aw--.46916S7
+X-Coremail-Antispam: 1UD129KBjvJXoW7JF4ktryrJFy8WrW5tr1xGrg_yoW8Jr1kpa
+        yvk3yDGrWDtr1kAa4kJrn29347KwsI9r48Wr17Gr15WFy5XFs2kF9Ikr90grWY9rWIyay2
+        g3Wvy398tF1UCrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Cb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+        0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+        JVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+        14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+        IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
+        x2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI
+        0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQZ2-UUUUU=
 X-CM-SenderInfo: x0lh5xhxtlqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -64,32 +64,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Xie XiuQi <xiexiuqi@huawei.com>
 
-In this warning message, it's better to use the module name instead of .mod.c.
+The definition of the "__versions" section has changed, so use the
+newest format. Otherwise, the list of export-symbol-usage is empty.
 
-Before:
-  'WARNING:fs/efivarfs/efivarfs.mod.c is not built with CONFIG_MODVERSIONS enabled'
+  $ make export_report
+  ...
+  SECTION 2:
+          This section reports export-symbol-usage of in-kernel
+  modules. Each module lists the modules, and the symbols from that module that
+  it uses.  Each listed symbol reports the number of modules using it
+  
+  NOTE: Got 9 CONFIG_MODVERSIONS warnings
 
-After:
-  'WARNING:fs/efivarfs/efivarfs.ko is not built with CONFIG_MODVERSIONS enabled'
-
+Fixes: a3d0cb04f7df ("modpost: use __section in the output to *.mod.c"),
+Fixes: 33def8498fdd ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
 Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
 ---
- scripts/export_report.pl | 2 ++
- 1 file changed, 2 insertions(+)
+ scripts/export_report.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/export_report.pl b/scripts/export_report.pl
-index fa3e47ac7c3b..eda570224a2d 100755
+index eda570224a2d..54132a6a78ba 100755
 --- a/scripts/export_report.pl
 +++ b/scripts/export_report.pl
-@@ -112,6 +112,8 @@ foreach my $thismod (@allcfiles) {
- 		next;
- 	}
- 
-+	$thismod =~ s/\.mod\.c/.ko/;
-+
- 	my $state=0;
- 	while ( <$module> ) {
- 		chomp;
+@@ -122,7 +122,7 @@ foreach my $thismod (@allcfiles) {
+ 			next;
+ 		}
+ 		if ($state == 1) {
+-			$state = 2 if ($_ =~ /__attribute__\(\(section\("__versions"\)\)\)/);
++			$state = 2 if ($_ =~ /__used __section\(\"__versions\"\)/);
+ 			next;
+ 		}
+ 		if ($state == 2) {
 -- 
 2.25.1
 
