@@ -2,65 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A25AB7A5CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E837A5CC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbjISIhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38686 "EHLO
+        id S230472AbjISIkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjISIg6 (ORCPT
+        with ESMTP id S229641AbjISIk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:36:58 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E89102
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:36:53 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c4194f769fso38405875ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695112613; x=1695717413; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AFgJ89zcFrRudWbk8kdaUIQLDil/i3wCbCwtmAyU7YI=;
-        b=im6qbHu+ssbrtA4uYEaEV2pz40GiuDaR8fB1qyEYRDpZEfqsq564ss/RYHeRVzsuxU
-         tcuWzJpwCJKUS2uHCk2Y2nRiwMTMUSfvHU6tEbzfC8COu0KWP6PhETg51Zr9ZB8S3G5a
-         8yFOzrJRpR/jEP09PDe6XMXNGnp/AGwweaX58=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695112613; x=1695717413;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AFgJ89zcFrRudWbk8kdaUIQLDil/i3wCbCwtmAyU7YI=;
-        b=ryq8qUcgr18NqqaI87GbjGjzMWQPlEDKDE40QS4m4BwosRIOka9vNaa22IB8bKPtFM
-         zhDuBwA3MKR9k/YJ/5A2+WkALr4tOiYYipv84Jp0ANF9JJRd+4AcIuIGelZ7WMRF1Ngm
-         tRy/UylBYKJufMsu6opTzulI5eceLKCFRMf0J8jfmc97F1LYjYyEkINonGrPiG9SM5+7
-         x4+SHASHqfZcj0QKk+ARk1619sjCbuuLRZnKULpKglrYdNOdLMzdrE8tkk3cJeoQDDgF
-         79bIIh+VbDgdUupiYOVtCitkBAKl6/bRAA129f07t514tanJWBTuIGIrZpySfM7HHVNZ
-         Dm7A==
-X-Gm-Message-State: AOJu0Yxgp8k+N9U1VAvyy6e6DhUeBacFPP6rkfjs/J9i4uII5aBPkGDL
-        BiI5p02vxSmJiQOlIaV0p/qhbwZI36+Hx5E8kUo=
-X-Google-Smtp-Source: AGHT+IGUM8ymdxjj4POLq8H28T5j0ptbAtl7ppCRBLRUAtI5mr/Ss0hb0+yr4ezvyyOGjEHgf0CnDw==
-X-Received: by 2002:a17:90a:e547:b0:268:1355:b03e with SMTP id ei7-20020a17090ae54700b002681355b03emr9292692pjb.38.1695112612649;
-        Tue, 19 Sep 2023 01:36:52 -0700 (PDT)
-Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:40a:900d:e731:5a43])
-        by smtp.gmail.com with ESMTPSA id n20-20020a17090ade9400b00274b018489asm5508204pjv.1.2023.09.19.01.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 01:36:52 -0700 (PDT)
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] regulator: mt6358: return error for get/set mode op on linear range LDO
-Date:   Tue, 19 Sep 2023 16:36:46 +0800
-Message-ID: <20230919083647.3909889-1-wenst@chromium.org>
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+        Tue, 19 Sep 2023 04:40:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE547E6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:40:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 55EA9C433CA;
+        Tue, 19 Sep 2023 08:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695112822;
+        bh=Omy2LUg3uWH1pkOVY4vjdkn5QW6igyJTSPgKd0JcqqA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NabwgZalixdVnMCJQGMY5fHyowm94ENXgA9GQpnn0eqYrBXHp6meiXaFdiCMtU6RL
+         hawFjKZelXREnGLpBm4SZbXxfUQ2sMN6hUzm6VrVSLkhCTwAszul/hkmO1KbwZzuYj
+         N1ElyvnGX0zBi5rKztKHmx84J+zdfVp7QtMPCuhxEInF7eREv0BIiKNXND1q4aWFrG
+         1glOcYf/PvfxBSATEKH5el1w/fF5aWx/FIx47KIFLo4MBY/h43dQrmP/J08KFdOlRt
+         3TT/pcuia0tmo4gvhDinLFfTAi9ZKKv1VYthquugVRHFLce5HLQjMz6cohfSdzvEk3
+         cKrY0d1Omp21w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3955FE11F4A;
+        Tue, 19 Sep 2023 08:40:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: stmmac: fix incorrect rxq|txq_stats reference
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169511282223.26432.8274174696059034896.git-patchwork-notify@kernel.org>
+Date:   Tue, 19 Sep 2023 08:40:22 +0000
+References: <20230917165328.3403-1-jszhang@kernel.org>
+In-Reply-To: <20230917165328.3403-1-jszhang@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, mcoquelin.stm32@gmail.com,
+        wens@csie.org, jernej.skrabec@gmail.com, samuel@sholland.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-stm32@st-md-mailman.stormreply.com,
+        johannes@sipsolutions.net, u.kleine-koenig@pengutronix.de
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,46 +58,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The buck and linear range (VSRAM_*) regulators share one set of ops.
-This set includes support for get/set mode. However this only makes
-sense for buck regulators, not LDOs. The callbacks were not checking
-whether the register offset and/or mask for mode setting was valid or
-not. This ends up making the kernel report "normal" mode operation for
-the LDOs.
+Hello:
 
-Instead, make the callbacks return -EINVAL if the mode register mask is
-not set, signaling that it is not supported.
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Fixes: f67ff1bd58f0 ("regulator: mt6358: Add support for MT6358 regulator")
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
----
- drivers/regulator/mt6358-regulator.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Mon, 18 Sep 2023 00:53:28 +0800 you wrote:
+> commit 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics
+> where necessary") caused one regression as found by Uwe, the backtrace
+> looks like:
+> 
+> 	INFO: trying to register non-static key.
+> 	The code is fine but needs lockdep annotation, or maybe
+> 	you didn't initialize this object before use?
+> 	turning off the locking correctness validator.
+> 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc1-00449-g133466c3bbe1-dirty #21
+> 	Hardware name: STM32 (Device Tree Support)
+> 	 unwind_backtrace from show_stack+0x18/0x1c
+> 	 show_stack from dump_stack_lvl+0x60/0x90
+> 	 dump_stack_lvl from register_lock_class+0x98c/0x99c
+> 	 register_lock_class from __lock_acquire+0x74/0x293c
+> 	 __lock_acquire from lock_acquire+0x134/0x398
+> 	 lock_acquire from stmmac_get_stats64+0x2ac/0x2fc
+> 	 stmmac_get_stats64 from dev_get_stats+0x44/0x130
+> 	 dev_get_stats from rtnl_fill_stats+0x38/0x120
+> 	 rtnl_fill_stats from rtnl_fill_ifinfo+0x834/0x17f4
+> 	 rtnl_fill_ifinfo from rtmsg_ifinfo_build_skb+0xc0/0x144
+> 	 rtmsg_ifinfo_build_skb from rtmsg_ifinfo+0x50/0x88
+> 	 rtmsg_ifinfo from __dev_notify_flags+0xc0/0xec
+> 	 __dev_notify_flags from dev_change_flags+0x50/0x5c
+> 	 dev_change_flags from ip_auto_config+0x2f4/0x1260
+> 	 ip_auto_config from do_one_initcall+0x70/0x35c
+> 	 do_one_initcall from kernel_init_freeable+0x2ac/0x308
+> 	 kernel_init_freeable from kernel_init+0x1c/0x138
+> 	 kernel_init from ret_from_fork+0x14/0x2c
+> 
+> [...]
 
-diff --git a/drivers/regulator/mt6358-regulator.c b/drivers/regulator/mt6358-regulator.c
-index b9cda2210c33..120c60d40ed4 100644
---- a/drivers/regulator/mt6358-regulator.c
-+++ b/drivers/regulator/mt6358-regulator.c
-@@ -408,6 +408,9 @@ static int mt6358_regulator_set_mode(struct regulator_dev *rdev,
- 	const struct mt6358_regulator_info *info = to_regulator_info(rdev->desc);
- 	int val;
- 
-+	if (!info->modeset_mask)
-+		return -EINVAL;
-+
- 	switch (mode) {
- 	case REGULATOR_MODE_FAST:
- 		val = MT6358_BUCK_MODE_FORCE_PWM;
-@@ -433,6 +436,9 @@ static unsigned int mt6358_regulator_get_mode(struct regulator_dev *rdev)
- 	const struct mt6358_regulator_info *info = to_regulator_info(rdev->desc);
- 	int ret, regval;
- 
-+	if (!info->modeset_mask)
-+		return -EINVAL;
-+
- 	ret = regmap_read(rdev->regmap, info->modeset_reg, &regval);
- 	if (ret != 0) {
- 		dev_err(&rdev->dev,
+Here is the summary with links:
+  - [v2] net: stmmac: fix incorrect rxq|txq_stats reference
+    https://git.kernel.org/netdev/net/c/8070274b472e
+
+You are awesome, thank you!
 -- 
-2.42.0.459.ge4e396fd5e-goog
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
