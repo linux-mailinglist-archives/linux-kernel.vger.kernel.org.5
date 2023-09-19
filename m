@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 563F67A5DE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C3F7A5DAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbjISJ2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
+        id S229714AbjISJXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjISJ2d (ORCPT
+        with ESMTP id S229472AbjISJXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:28:33 -0400
-X-Greylist: delayed 237 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Sep 2023 02:28:24 PDT
-Received: from tretyak2.mcst.ru (tretyak2.mcst.ru [212.5.119.215])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DA3F2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:28:24 -0700 (PDT)
-Received: from tretyak2.mcst.ru (localhost [127.0.0.1])
-        by tretyak2.mcst.ru (Postfix) with ESMTP id B3EDF102395;
-        Tue, 19 Sep 2023 12:24:23 +0300 (MSK)
-Received: from frog.lab.sun.mcst.ru (frog.lab.sun.mcst.ru [176.16.4.50])
-        by tretyak2.mcst.ru (Postfix) with ESMTP id AEC1D101775;
-        Tue, 19 Sep 2023 12:23:47 +0300 (MSK)
-Received: from artemiev-i.lab.sun.mcst.ru (avior-1 [192.168.63.223])
-        by frog.lab.sun.mcst.ru (8.13.4/8.12.11) with ESMTP id 38J9NkLq017473;
-        Tue, 19 Sep 2023 12:23:47 +0300
-From:   Igor Artemiev <Igor.A.Artemiev@mcst.ru>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Igor Artemiev <Igor.A.Artemiev@mcst.ru>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [lvc-project] [PATCH] staging: rtl8712: fix buffer overflow in r8712_xmitframe_complete()
-Date:   Tue, 19 Sep 2023 12:23:18 +0300
-Message-Id: <20230919092318.14837-1-Igor.A.Artemiev@mcst.ru>
-X-Mailer: git-send-email 2.39.0.152.ga5737674b6
+        Tue, 19 Sep 2023 05:23:51 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AF3DA;
+        Tue, 19 Sep 2023 02:23:45 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 81B0F6607033;
+        Tue, 19 Sep 2023 10:23:43 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695115424;
+        bh=zr0JHbMPGnoB7W9Ga+/W4aCptT35gdUdHKTnbXaS1ao=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gNu8uZ5h9bSSKMbkyuwIc++hFOXW8AthBtEaGp3olqat7QhHQQV1yuUtznTL1opyi
+         6q0B7NFlvHsusyAPXPORN3XaXbLKZmXO1j/E7uzxgJ2V0GE8Nz1yvy9gnMnbc3NvFG
+         Vtb2kKQLtGwLlFiBELpiW94r74dHWzR3WxMfZy6Qc99xsrT8lshAUErJPPF56y+stf
+         qTMarH6dNKpDv/yrvG0m9i/VvI0N7+bDPI3c0FtZFOr0wACFERn/tqjFW+ftkSoO4R
+         ZSAMMZ/Si1RGBHYK9sSf+/u0r5MxmIW2kfsqDOuXESccspqQ3uyAUdkMI7KaYbODCz
+         0fEralOeKOMnQ==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     mathieu.poirier@linaro.org
+Cc:     andersson@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, tinghan.shen@mediatek.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wenst@chromium.org,
+        kernel@collabora.com
+Subject: [PATCH] remoteproc: mediatek: Refactor single core check and fix retrocompatibility
+Date:   Tue, 19 Sep 2023 11:23:36 +0200
+Message-ID: <20230919092336.51007-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
-         bases: 20111107 #2745587, check: 20230919 notchecked
-X-AV-Checked: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value of pxmitframe->attrib.priority in r8712_issue_addbareq_cmd(),
-which dump_xframe() calls, is used to calculate the index for accessing 
-an array of size 16. The value of pxmitframe->attrib.priority can be 
-greater than 15, because the r8712_update_attrib() function can write 
-a value up to 31 to attrib.priority, and r8712_xmitframe_complete() 
-checks that pxmitframe->attrib.priority is less than 16 before 
-calling r8712_xmitframe_coalesce().
+In older devicetrees we had the ChromeOS EC in a node called "cros-ec"
+instead of the newer "cros-ec-rpmsg", but this driver is now checking
+only for the latter, breaking compatibility with those.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Besides, we can check if the SCP is single or dual core by simply
+walking through the children of the main SCP node and checking if
+if there's more than one "mediatek,scp-core" compatible node.
 
-Signed-off-by: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
+Fixes: 1fdbf0cdde98 ("remoteproc: mediatek: Probe SCP cluster on multi-core SCP")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/staging/rtl8712/rtl8712_xmit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/remoteproc/mtk_scp.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/staging/rtl8712/rtl8712_xmit.c b/drivers/staging/rtl8712/rtl8712_xmit.c
-index 4cb01f590673..8a39a3c8cfcb 100644
---- a/drivers/staging/rtl8712/rtl8712_xmit.c
-+++ b/drivers/staging/rtl8712/rtl8712_xmit.c
-@@ -669,7 +669,7 @@ int r8712_xmitframe_complete(struct _adapter *padapter,
- 			 */
- 			r8712_xmit_complete(padapter, pxmitframe);
- 		}
--		if (res == _SUCCESS)
-+		if (res == _SUCCESS && pxmitframe->attrib.priority <= 15)
- 			dump_xframe(padapter, pxmitframe);
- 		else
- 			r8712_free_xmitframe_ex(pxmitpriv, pxmitframe);
+diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+index ea227b566c54..a35409eda0cf 100644
+--- a/drivers/remoteproc/mtk_scp.c
++++ b/drivers/remoteproc/mtk_scp.c
+@@ -1144,29 +1144,25 @@ static int scp_add_multi_core(struct platform_device *pdev,
+ 	return ret;
+ }
+ 
+-static int scp_is_single_core(struct platform_device *pdev)
++static bool scp_is_single_core(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev_of_node(dev);
+ 	struct device_node *child;
++	int num_cores = 0;
+ 
+-	child = of_get_next_available_child(np, NULL);
+-	if (!child)
+-		return dev_err_probe(dev, -ENODEV, "No child node\n");
++	for_each_child_of_node(np, child)
++		if (of_device_is_compatible(child, "mediatek,scp-core"))
++			num_cores++;
+ 
+-	of_node_put(child);
+-	return of_node_name_eq(child, "cros-ec-rpmsg");
++	return num_cores < 2;
+ }
+ 
+ static int scp_cluster_init(struct platform_device *pdev, struct mtk_scp_of_cluster *scp_cluster)
+ {
+ 	int ret;
+ 
+-	ret = scp_is_single_core(pdev);
+-	if (ret < 0)
+-		return ret;
+-
+-	if (ret)
++	if (scp_is_single_core(pdev))
+ 		ret = scp_add_single_core(pdev, scp_cluster);
+ 	else
+ 		ret = scp_add_multi_core(pdev, scp_cluster);
 -- 
-2.30.2
+2.42.0
 
