@@ -2,129 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC107A5A96
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960737A5A98
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbjISHNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S231655AbjISHNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjISHNG (ORCPT
+        with ESMTP id S231653AbjISHNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:13:06 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB77F100;
-        Tue, 19 Sep 2023 00:12:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695107558; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=K0c/lNwc43QqEhZKJwRz0BrqpjojcgSUAFw1CyeQhsuE8JQ19W38hGgHI+RRkyRnxg
-    7wUBhyx1l0m7syMlG3Io7akUS1YYYWLAR0xhmf80LQTJ7CRD6qWfZwJu0PCmKTG0iVYn
-    cTQtjm9vRSBxBbuo+APkf2dSZb1Dgc4koEnfztSJNVbbpW4VNqtBiDUaJFzMR10RmgIJ
-    GXsznZk61JBD/hhPnDYB7vGKnpJNYgpoC8RaEMINWOR6QVqOx/t1907+IUkD4lh1SunL
-    IlfX3J0m4K56DYDutnoyQolSCQDeuxVuetOZi45CPfAcLAH1VZBusDvL0J97gDRukOOw
-    ew/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695107558;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=a/DrHazCbj9Q5p9zsv4+bBm6slb+Z/9JBTM/XT0CJVk=;
-    b=NcPVI0hVGE3onG0Uqn0X9RmqJ787VrU8onKhmuiMkrnAgfzspW3RAUtIEQCiZoK6Jo
-    9VuULLlikb4wvaockLdx75MEOgXPl2gbyxyGbYWE07wXuJlMfc32nfNwPLyBWosXxvaV
-    Aq3hgnoggN0V0wt7HfXwty+q9Av9AAYAmKFAeMXU5DupFCxw3obLvI5AkKCcWiHJOuql
-    M8ux6uly1QXhaoU22ISPNrTX5NGmT2mECoTpmuIMUODPT80fSYQDAoSsRekOAncQAH5G
-    mwW6D8nreSqVwtt6/RYuYpk/tpfl3BRLmrDneaocXuR3zZz3OZOJE8nmO2dL/gAANxQi
-    7a3Q==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695107558;
-    s=strato-dkim-0002; d=aepfle.de;
-    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=a/DrHazCbj9Q5p9zsv4+bBm6slb+Z/9JBTM/XT0CJVk=;
-    b=Ae8RQWVFdstV+miBrEspij+YnFvYaDi+0zP5K5Vtveo4lC3OKYrFHOzIKCSY32MA2X
-    NU1I83HUCDQhXkwXtboTGXy/WwU0e03FpveJ3eCb/mSNQVY9pi9nsommT4BhWLOlOC0C
-    8/3nvx98dBavZm8vGGPIsZKFeaJM4wznjouVIrLOQcgR14GhHDBgjUiv3791yVlIaljE
-    tqEpynMU3EettweBdmr602iV4JlMYodxIkPtAGyK+j8NChv3QYdsQv7MpfeAjJq0+ZQR
-    PgBdgAk6n8aUwqAWjrda6hlsZNTMMaaj/7wEAwccLb3ojlcN2xXkMrhAOufcJYMMNCpd
-    opsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695107558;
-    s=strato-dkim-0003; d=aepfle.de;
-    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=a/DrHazCbj9Q5p9zsv4+bBm6slb+Z/9JBTM/XT0CJVk=;
-    b=9T+0BUJLjpfdJ+5BKhMXUudVKGraafrNrqkB1SJ98V766ZWdb3g4dWscKS/MXiKmSo
-    WY76fJx4tI6HuPrKuYCA==
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QLpd5ylWvMDX3y/OuD5rXVisR4UBKIaBnsoyDI13OnZfZG1B1f38QQZMl4Xud1qQ=="
-Received: from sender
-    by smtp.strato.de (RZmta 49.8.2 AUTH)
-    with ESMTPSA id C041b2z8J7Cc0Aa
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 19 Sep 2023 09:12:38 +0200 (CEST)
-Date:   Tue, 19 Sep 2023 09:12:30 +0200
-From:   Olaf Hering <olaf@aepfle.de>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v1] hyperv: reduce size of ms_hyperv_info
-Message-ID: <20230919091230.160f1ca1.olaf@aepfle.de>
-In-Reply-To: <SA1PR21MB133593AABC414CB427B84FABBFFAA@SA1PR21MB1335.namprd21.prod.outlook.com>
-References: <20230918160141.23465-1-olaf@aepfle.de>
-        <SA1PR21MB133593AABC414CB427B84FABBFFAA@SA1PR21MB1335.namprd21.prod.outlook.com>
-X-Mailer: Claws Mail 20230817T113819.a897c59c hat ein Softwareproblem, kann man nichts machen.
+        Tue, 19 Sep 2023 03:13:18 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6277F11A
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:13:12 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9A1631257;
+        Tue, 19 Sep 2023 09:11:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1695107495;
+        bh=xZVjIvalSzQChhfXM3j4TPEPuazse+0jkiMMdkmQ7Pk=;
+        h=From:Date:Subject:To:Cc:From;
+        b=KkBoDGIgk38Co4MW4PgTzVY9bz0vl7XF2Ww19fked3AnfLzZfqonUAD/+ofJOScqZ
+         TdcZrTRanp+2ef5hInKzQWpZXpjyByFolFKmWxkf7vQjzBz0RQKQis3NVLn5Y5Yvuc
+         6JiHncCB1qY0vieyZZJhOckJG7rA/L5rk9ZdSPNY=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Date:   Tue, 19 Sep 2023 10:12:50 +0300
+Subject: [PATCH] drm/tilcdc: Fix irq free on unload
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/t+efZ5sQKEsZEPRz4bLArlZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20230919-lcdc-v1-1-ba60da7421e1@ideasonboard.com>
+X-B4-Tracking: v=1; b=H4sIAPJJCWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDS0NL3ZzklGRdy1QDy1RLkzSTVEtjJaDSgqLUtMwKsDHRsbW1AMs3i6Z
+ WAAAA
+To:     Jyri Sarha <jyri.sarha@iki.fi>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1151;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=xZVjIvalSzQChhfXM3j4TPEPuazse+0jkiMMdkmQ7Pk=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlCUoFClz12Kf0TeatkDF632nSj6atk0CLo4eYi
+ ojwO7tDmLyJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZQlKBQAKCRD6PaqMvJYe
+ 9eYWD/9DdFAzLQKYPEOpgXfOvjSz5wq8S4H1BjOBYiTM391/1QqLLuKta8ZsR0km0HmeayeTKkf
+ UYN4/bpKomWgInJbdz7lFfcSVzwOB3lSTdSBltwVxFvqdMEmwv4qKJe93jfV1OBxYzaYM5DZiEr
+ bO+Vq9KvfcDBi3O10LLfhAQ+ivEzIR+L666IU6jcxEt/0LJBX6V2cT8iEbr0CZvBIW4VBXycLhz
+ BYjZxOjdvDAWCL/XyJGnNExuGR4xIBg4Tq+/jTjU1QuBvdBLopDz2k+DdogyWTffTlb9AQaU7jI
+ O8zHVPZJw/pRtMCighR4UBDbgl6a5vQGxQH5rOnktRKe7RyBXEdnj54xLSkJtbujf4x0Yuu7HR+
+ zFhMBIowUaToZ6TeKPmlMGivYwZKeX+sUgJPVWesz4+bRsVZr2oN3Utg4t3ysXGxM2oMw8Ia4cb
+ /Oi7XcMVhj/1fbgF7rB0iDAVXn1sElHp9/bIUHhc/rUvBDIwbyF3paro/zMmoGzilN013RG6DST
+ 8MVbB8NKFBWUc6SYCcTwaYIuSgCfJL6IPT8sUZpXuK+rdOT5mKTxFoEwsyllq9fiCIWWYYKKj7E
+ LcqTFbR0ueQHA8gZW5UPPbaeabDmf069NiQm+g7YTzOtkW+wuOXexUPtTN+IVybxZUycjrNvMd6
+ pJP1YijEgNTYUQQ==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/t+efZ5sQKEsZEPRz4bLArlZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The driver only frees the reserved irq if priv->irq_enabled is set to
+true. However, the driver mistakenly sets priv->irq_enabled to false,
+instead of true, in tilcdc_irq_install(), and thus the driver never
+frees the irq, causing issues on loading the driver a second time.
 
-Tue, 19 Sep 2023 06:18:53 +0000 Dexuan Cui <decui@microsoft.com>:
+Fixes: b6366814fa77 ("drm/tilcdc: Convert to Linux IRQ interfaces")
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+ drivers/gpu/drm/tilcdc/tilcdc_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> How about moving the 'vtl' field to an even earlier place:
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+index fe56beea3e93..83233bdc0526 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+@@ -138,7 +138,7 @@ static int tilcdc_irq_install(struct drm_device *dev, unsigned int irq)
+ 	if (ret)
+ 		return ret;
+ 
+-	priv->irq_enabled = false;
++	priv->irq_enabled = true;
+ 
+ 	return 0;
+ }
 
-I have not tried it, but I think this would just move the hole up.
-The end result will likely be the same, pahole -E vmlinux will show it.
+---
+base-commit: 0663e1da5ba8e6459e3555ac12c62741668c0d30
+change-id: 20230919-lcdc-9e09e94f4e93
 
+Best regards,
+-- 
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-Olaf
-
---Sig_/t+efZ5sQKEsZEPRz4bLArlZ
-Content-Type: application/pgp-signature
-Content-Description: Digitale Signatur von OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAmUJSd4ACgkQ86SN7mm1
-DoBDdw/+KPJXuPQ3wtJG5EkNT9WedJb6RyI5U79vDD5wQ8bLpsTe/eIpCcSk2JWK
-Yp2TMqAJAHhPVjKM2wluyLLQIjPm7CZBJySC2ApzVTsOt1zdUhtbw5G7tMcRrAK3
-x/TxT9Sy6gPoVoOxREF2iXcI9IH/QsZmbdxuOFl7eKBzTqSZ93fsRaZiXve73qz4
-IH23phz8bE4tS89ODNJEWf5wBLWmEZrKOrv74MmUiGPyk3Dw+0VRLBohUeQiKM/A
-d0OEyUjlU+pfj632q+/fr2kmevRaBIiuddzHXX1QkMD1IHvWB9Nyq7swTqyIU8b8
-/RpTandtsjIplVfabCHOjF4ZrCmPwVhtNd3rkthwDGAtVyWA13W9tlRgVLy7Xeib
-8UPNn86IIUrH8hSM7VvdfHG0xcVG7CTcSTWr9LICoguiAhHcp8g9PLDo/WwrUZ0f
-FHCbHWEjZJX3CHhp4Y9v7zmb6qcv4/wQDy6NL4qWLgjou4bt1xwU1wE7uAKWyGUF
-9CTCuIgKNfIQnUxYOyGohtlk/ih2Spu56aWmiyfEHN6/NkrjJDhWkiiJoAr64CW5
-iafQrs0uIQGNyeBcc2peLeVI9cIx8YNNEdgPnQ8IU6MJ8qbFVvHpsVyygFgsYxub
-MdNa9wmA/11Bkq+JvRNlfkVFSFM2LmM7Er0ABb1tEUvAmMEVyJM=
-=AMRP
------END PGP SIGNATURE-----
-
---Sig_/t+efZ5sQKEsZEPRz4bLArlZ--
