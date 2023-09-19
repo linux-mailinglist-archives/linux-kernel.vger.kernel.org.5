@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401087A69AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA65C7A69B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbjISRfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
+        id S232157AbjISRjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 13:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbjISRfa (ORCPT
+        with ESMTP id S232012AbjISRjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 13:35:30 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10948D7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 10:35:24 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695144922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ep6P+kC61GSAMlGCWc9dKATlsMMFrwbwQ9dmRUHihJ0=;
-        b=HQdcMcB/p/2G9z6frvETjilEw47A/Gxx6U+j/mSh5bkgYD99xcFOv5WAxvjjOq0ZKZUbqH
-        4eLjKrpk/g4eufz46II9a9KfAcC38OqBRVsYfHq4asf7jFN4GPB2/5TzORvIgwTDBvEPHb
-        8ODg735Tl9/0byVAFu+yaq7b2b930znId7VNHhCrjpOBVPQo2oYaDQjf/6FO5cvn6ORCtV
-        10G0XwBr2woZYnl9IXkvqT11CiMrVoFnF6vVwOyb23vCED/oCqyMS4VWRK45utCmYtwE3b
-        z1mVvwk7iQBwHcs3tfwonNYokaMantKf/Xz81bCLHnoTwzdlDgliBqJj0jCZkA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695144922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ep6P+kC61GSAMlGCWc9dKATlsMMFrwbwQ9dmRUHihJ0=;
-        b=b5T7r4c9bbTDBiSyGNADFvi/9XH7dIQUY+mqcMGXgkfEo9AVW6ePiU+TFwALcwS4su0jrp
-        PCGmSBsLWBsyuGAg==
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 07/30] x86/microcode/intel: Simplify early loading
-In-Reply-To: <871qeuw6q5.ffs@tglx>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065501.208060138@linutronix.de>
- <20230919143230.GDZQmw/kLc5nyu9CZV@fat_crate.local> <871qeuw6q5.ffs@tglx>
-Date:   Tue, 19 Sep 2023 19:35:22 +0200
-Message-ID: <87sf7aukv9.ffs@tglx>
+        Tue, 19 Sep 2023 13:39:22 -0400
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C64FAD;
+        Tue, 19 Sep 2023 10:39:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695145152; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=QdHbBLLn+tiPHsQULmPbOn6OBooc6H5vxiZWz4W+fqWZbICjaF7DpzJ3/fwYKcTpg/WvJGOKQEcx84b4nWHSbdu1Ep2gM386gMibr6oGLVOUjntgHWffvD/DY22aiHv5kulMIjrlgrIQWI2G65/41XwKrcFc32uQESDDobNSmMk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1695145152; h=Content-Type:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=0IAP0s+RT7GZFRPLNdV3G0ElvDn5rBd3toR6u/oZ7UE=; 
+        b=M9/PhhM9I7hqsewz3/VPoYPdvlGQ62QHkA/jZMBHm4d2ProZzQz47XwB93NQFGvxtnaFUvaQzyQabelHtz7TLZStDuuIp+PGrdVy6o+ha1yvZOFX9wcRxePJUUjKCSbA8O4r70PP43bXVlmbH0jWcFbVDuHb8F63f0Bkbz0rLtY=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=marliere.net;
+        spf=pass  smtp.mailfrom=ricardo@marliere.net;
+        dmarc=pass header.from=<ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1695145152;
+        s=zmail; d=marliere.net; i=ricardo@marliere.net;
+        h=Date:Date:From:From:To:To:Cc:Cc:Subject:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To:Message-Id:Reply-To;
+        bh=0IAP0s+RT7GZFRPLNdV3G0ElvDn5rBd3toR6u/oZ7UE=;
+        b=F9+wr7Fc3a7fOb1iB0k4UxWASWuxg4D6d8suw5fFRNKcoRFt58ufFSOjDeGPaifO
+        qkMjVzB4r0AV09tIYz5e/d2D8xrUPDKL/rFL5dPjT0vMYqfpieJWPwjaimvsKBDgyqH
+        fofwXfdkWQ/LkSXCybkyjnq2lVspOjv66aliatNI=
+Received: from localhost (177.104.93.54 [177.104.93.54]) by mx.zohomail.com
+        with SMTPS id 1695145150671314.9472263153632; Tue, 19 Sep 2023 10:39:10 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 14:39:20 -0300
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+To:     syzbot <syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, sean@mess.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [media?] [usb?] KASAN: slab-out-of-bounds Read in
+ imon_probe
+Message-ID: <albu6mqbrom746yngcfgtuhn6ydpf4ewapqj6wk6etlkw7qda4@tzlqwq6u5s54>
+References: <000000000000a838aa0603cc74d6@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000a838aa0603cc74d6@google.com>
+X-ZohoMailClient: External
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19 2023 at 16:57, Thomas Gleixner wrote:
-> On Tue, Sep 19 2023 at 16:32, Borislav Petkov wrote:
->> On Tue, Sep 12, 2023 at 09:57:54AM +0200, Thomas Gleixner wrote:
->>> +/* Load microcode on BSP from CPIO */
->>
->> Yeah, no need to say "from CPIO" everywhere. We load it from somewhere,
->> it can be cpio but it can be builtin too.
->
-> Makes sense.
->
->> But I can fix up too when applying.
->
-> Thanks a lot!
-
-Let me fix that up and repost as the removal of the early argument
-in patch 1/N causes a metric ton of conflicts all over the series.
-
-Thanks,
-
-        tglx
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git next-20230919
