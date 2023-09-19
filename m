@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AE57A5E38
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8E47A5E3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjISJhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
+        id S231271AbjISJjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbjISJhm (ORCPT
+        with ESMTP id S229484AbjISJjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:37:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E92F2;
-        Tue, 19 Sep 2023 02:37:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20125C433C8;
-        Tue, 19 Sep 2023 09:37:31 +0000 (UTC)
-Message-ID: <22346801-8d09-4f9e-8f5a-1f0bad192476@xs4all.nl>
-Date:   Tue, 19 Sep 2023 11:37:30 +0200
+        Tue, 19 Sep 2023 05:39:39 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970939E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:39:33 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9a65f9147ccso719392766b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695116372; x=1695721172; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dhbUlueLwG/r1Ec1jRuM74oRQ8GVWOc98/czczQGIIE=;
+        b=OfQWAaYWMxZnlIDeLP75B2kDBGSPljGeKzbgvrgoVeUCqVSAPalLy2LYR/jE7oroBB
+         oWignSvQuISrWiywnh5mxD8gnqnAX450nxzZ1Afp4zBcWBaMhoTLLwqJgiYQB26hCcuS
+         tYlQKtB2QAw9c7WOPGZqspoBdHXLoewu0tREVacupSMAqpk389MBMuI3P6teF31qDvGl
+         zj/kupAeJYTAuXR1PU4oUF+OfrKYPYTSOGaR02jJ5f7Q1gFlSc+f9tEoVPHR0K0ucKKx
+         YiEM3ZoZUh6LWjNJ126hZnVmSRtIotYk4801BPzE0czs9hJdsB3XR7/g0W1SCP6n3Kpi
+         a4NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695116372; x=1695721172;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dhbUlueLwG/r1Ec1jRuM74oRQ8GVWOc98/czczQGIIE=;
+        b=otL7Bpbq/jExKuQtAkMa8Vgl0GNZEA4H3E4ffYCbgL8ilODpNNsmpBKRbVHTUCuUO/
+         zyJ6v+yvgoVKIzcsgQisSLFqAyXq+yed7pOTHgKip2QAhvQQ59g0QgnY5RjMdjc8C558
+         Czcwzy6P25MqGgGPPA3e9qUzBfg+3ev1FbCLaoQLX9REB27of9DHjzgpucXCWz3P42xw
+         UdzaOYDmlvE70fdWcEN3UcLfEm+2Xsmrd/NLkAu27K6ki0cLnn6JZZFiFA2pX38MCRpQ
+         Gbgd52gDLKj0ZtkENnmFc8jmilms+ckdbb3lMo2ffIIlMUb/yGixcAurHigvbV5O2CXG
+         b86g==
+X-Gm-Message-State: AOJu0Yzwc3UqHnPNdtPEUQDBOjgvbYaBX1nnGugwbCvKxv3gz8annMId
+        td112VXHaQvzmy9xWvyc3hOdOA==
+X-Google-Smtp-Source: AGHT+IEloqdlvufW6mI6LmUIXNtWYxF9AGR9eR0sjhvD9WKKkHWY8/+nTQOaU4W8KPXLI/2FvFrX6g==
+X-Received: by 2002:a17:907:6087:b0:9a5:cf6f:3efc with SMTP id ht7-20020a170907608700b009a5cf6f3efcmr8477878ejc.77.1695116371999;
+        Tue, 19 Sep 2023 02:39:31 -0700 (PDT)
+Received: from [172.20.101.114] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id rp26-20020a170906d97a00b009ad829ed144sm7490622ejb.130.2023.09.19.02.39.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 02:39:31 -0700 (PDT)
+Message-ID: <11380d64-09dd-352a-a6bf-3b8be332ec1c@linaro.org>
+Date:   Tue, 19 Sep 2023 12:39:30 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 06/49] media: mediatek: vdec: Use vb2_get_buffer()
- instead of directly access to buffers array
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
- <20230914133323.198857-7-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230914133323.198857-7-benjamin.gaignard@collabora.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 00/41] mtd: spi-nor: clean the flash_info database up
+Content-Language: en-US
+To:     Michael Walle <mwalle@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 15:32, Benjamin Gaignard wrote:
-> Use vb2_get_buffer() instead of directly access to vb2_buffer buffer array.
-> This could allow to change the type bufs[] field of vb2_buffer structure if
-> needed.
-> After each call to vb2_get_buffer() we need to be sure that we get
-> a valid pointer so check the return value of all of them.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> index e393e3e668f8..3d2ae0e1b5b6 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> @@ -1696,7 +1696,7 @@ static int vdec_vp9_slice_setup_core_buffer(struct vdec_vp9_slice_instance *inst
->  
->  	/* update internal buffer's width/height */
->  	for (i = 0; i < vq->num_buffers; i++) {
-> -		if (vb == vq->bufs[i]) {
-> +		if (vb == vb2_get_buffer(vq, i)) {
 
-The original code here is silly...
 
->  			instance->dpb[i].width = w;
->  			instance->dpb[i].height = h;
->  			break;
+On 08.09.2023 13:16, Michael Walle wrote:
+>  - w25q32dw/layerscape spi
+>  - w25q32dw (with empty size and empty no_sfdp_flags)/layerscape spi
+>  - w25q16dw/mediatek spi
 
-...This can just be changed to:
+all looks good, Michael, thanks for specifying the tests done.
+I'll queue the patches with or without the small comments addressed,
+just waiting for a couple of hours to get a response from you.
 
-	instance->dpb[vb->index].width = w;
-	instance->dpb[vb->index].height = h;
-
-No need to loop.
-
-Regards,
-
-	Hans
+Cheers,
+ta
