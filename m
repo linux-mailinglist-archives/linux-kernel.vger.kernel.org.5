@@ -2,175 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3217A5D74
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFFB7A5D7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbjISJKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
+        id S231137AbjISJL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjISJKU (ORCPT
+        with ESMTP id S230349AbjISJLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:10:20 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89465BA;
-        Tue, 19 Sep 2023 02:10:13 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38J99vl2085147;
-        Tue, 19 Sep 2023 04:09:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695114598;
-        bh=WfMtPVs1WjAmTu1h1StzNblcDZB2CRhuJbtwH+WeC4s=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=GLWOCA/6PKSr1AfbMzwGx84FiFzmEClpeLm5GtxWQHrEVmsdr6lUj2fLwGuYuWai+
-         ZihzWfVRcgCdaYl2vcr9qytRUL+ReHm2LL/PcsI0A6BjFCCvSyV39RmkUag8m85sVI
-         GLzHBrOqT9ejayxI7Esk37xeBHOSD3Rtc4szbeEM=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38J99vv5005334
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 Sep 2023 04:09:57 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
- Sep 2023 04:09:56 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 19 Sep 2023 04:09:56 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38J99tq3025271;
-        Tue, 19 Sep 2023 04:09:56 -0500
-Date:   Tue, 19 Sep 2023 14:39:55 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2 16/17] pmdomain: ti: Move and add Kconfig options to
- the pmdomain subsystem
-Message-ID: <20230919090955.hu5mrzq2br4o7zd5@dhruva>
-References: <20230915092003.658361-1-ulf.hansson@linaro.org>
- <20230915092003.658361-17-ulf.hansson@linaro.org>
+        Tue, 19 Sep 2023 05:11:24 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D255ABA
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:11:17 -0700 (PDT)
+Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qiWkz-0005cz-Do; Tue, 19 Sep 2023 11:10:58 +0200
+Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qiWkx-009bvA-FK; Tue, 19 Sep 2023 11:10:55 +0200
+Date:   Tue, 19 Sep 2023 11:10:55 +0200
+From:   Michael Grzeschik <mgr@pengutronix.de>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Jeff Vanhoof <jdv1029@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Vacura <w36195@motorola.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Daniel Scally <dan.scally@ideasonboard.com>,
+        Jeff Vanhoof <qjv001@motorola.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Message-ID: <ZQlln94I7MPlX0ff@pengutronix.de>
+References: <20221018215044.765044-1-w36195@motorola.com>
+ <20221018215044.765044-3-w36195@motorola.com>
+ <Y1PUjO99fcgaN0tc@kroah.com>
+ <20221022133541.GA26431@qjv001-XeonWs>
+ <20221024224748.3aao6cox5y4ptmob@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bRXcAQdk//FytMnP"
 Content-Disposition: inline
-In-Reply-To: <20230915092003.658361-17-ulf.hansson@linaro.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221024224748.3aao6cox5y4ptmob@synopsys.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:2:b01:1d::c5
+X-SA-Exim-Mail-From: mgr@pengutronix.de
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
+Subject: Re: [PATCH v4 2/6] usb: dwc3: gadget: cancel requests instead of
+ release after missed isoc
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on metis.whiteo.stw.pengutronix.de)
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 15, 2023 at 11:20:02 +0200, Ulf Hansson wrote:
-> The TI_SCI_PM_DOMAINS Kconfig option belongs closer to its corresponding
-> implementation, hence let's move it from the soc subsystem to the pmdomain
-> subsystem.
-> 
-> While at it, let's also add a Kconfig option the omap_prm driver, rather
-> than using ARCH_OMAP2PLUS directly.
 
-OK
+--bRXcAQdk//FytMnP
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Cc: Nishanth Menon <nm@ti.com>
-> Cc: Santosh Shilimkar <ssantosh@kernel.org>
-> Cc: Tero Kristo <kristo@kernel.org>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->  drivers/pmdomain/Kconfig     |  1 +
->  drivers/pmdomain/ti/Kconfig  | 22 ++++++++++++++++++++++
->  drivers/pmdomain/ti/Makefile |  2 +-
->  drivers/soc/ti/Kconfig       | 12 ------------
->  4 files changed, 24 insertions(+), 13 deletions(-)
->  create mode 100644 drivers/pmdomain/ti/Kconfig
-> 
-> diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
-> index 98e04589bef4..33bfec9c4f7a 100644
-> --- a/drivers/pmdomain/Kconfig
-> +++ b/drivers/pmdomain/Kconfig
-> @@ -15,5 +15,6 @@ source "drivers/pmdomain/st/Kconfig"
->  source "drivers/pmdomain/starfive/Kconfig"
->  source "drivers/pmdomain/sunxi/Kconfig"
->  source "drivers/pmdomain/tegra/Kconfig"
-> +source "drivers/pmdomain/ti/Kconfig"
->  
->  endmenu
-> diff --git a/drivers/pmdomain/ti/Kconfig b/drivers/pmdomain/ti/Kconfig
-> new file mode 100644
-> index 000000000000..67c608bf7ed0
-> --- /dev/null
-> +++ b/drivers/pmdomain/ti/Kconfig
-> @@ -0,0 +1,22 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +config OMAP2PLUS_PRM
-> +	bool
-> +	depends on ARCH_OMAP2PLUS
-> +	default ARCH_OMAP2PLUS
-> +
-> +if SOC_TI
-> +
-> +config TI_SCI_PM_DOMAINS
-> +	tristate "TI SCI PM Domains Driver"
-> +	depends on TI_SCI_PROTOCOL
-> +	depends on PM_GENERIC_DOMAINS
-> +	help
-> +	  Generic power domain implementation for TI device implementing
-> +	  the TI SCI protocol.
-> +
-> +	  To compile this as a module, choose M here. The module will be
-> +	  called ti_sci_pm_domains. Note this is needed early in boot before
-> +	  rootfs may be available.
-> +
-> +endif
-> diff --git a/drivers/pmdomain/ti/Makefile b/drivers/pmdomain/ti/Makefile
-> index 69580afbb436..af6cd056c158 100644
-> --- a/drivers/pmdomain/ti/Makefile
-> +++ b/drivers/pmdomain/ti/Makefile
-> @@ -1,3 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -obj-$(CONFIG_ARCH_OMAP2PLUS)		+= omap_prm.o
-> +obj-$(CONFIG_OMAP2PLUS_PRM)		+= omap_prm.o
->  obj-$(CONFIG_TI_SCI_PM_DOMAINS)		+= ti_sci_pm_domains.o
-> diff --git a/drivers/soc/ti/Kconfig b/drivers/soc/ti/Kconfig
-> index 2cae17b65fd9..1a93001c9e36 100644
-> --- a/drivers/soc/ti/Kconfig
-> +++ b/drivers/soc/ti/Kconfig
-> @@ -50,18 +50,6 @@ config WKUP_M3_IPC
->  	  to communicate and use the Wakeup M3 for PM features like suspend
->  	  resume and boots it using wkup_m3_rproc driver.
->  
-> -config TI_SCI_PM_DOMAINS
-> -	tristate "TI SCI PM Domains Driver"
-> -	depends on TI_SCI_PROTOCOL
-> -	depends on PM_GENERIC_DOMAINS
-> -	help
-> -	  Generic power domain implementation for TI device implementing
-> -	  the TI SCI protocol.
-> -
-> -	  To compile this as a module, choose M here. The module will be
-> -	  called ti_sci_pm_domains. Note this is needed early in boot before
-> -	  rootfs may be available.
-> -
->  config TI_K3_RINGACC
->  	tristate "K3 Ring accelerator Sub System"
->  	depends on ARCH_K3 || COMPILE_TEST
-> -- 
-> 2.34.1
-> 
+Hi Thinh,
 
-The changes are fine by me,
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+On Mon, Oct 24, 2022 at 10:47:53PM +0000, Thinh Nguyen wrote:
+>On Sat, Oct 22, 2022, Jeff Vanhoof wrote:
+>> Hi Greg,
+>>
+>> On Sat, Oct 22, 2022 at 01:31:24PM +0200, Greg Kroah-Hartman wrote:
+>> > On Tue, Oct 18, 2022 at 04:50:38PM -0500, Dan Vacura wrote:
+>> > > From: Jeff Vanhoof <qjv001@motorola.com>
+>> > >
+>> > > arm-smmu related crashes seen after a Missed ISOC interrupt when
+>> > > no_interrupt=3D1 is used. This can happen if the hardware is still u=
+sing
+>> > > the data associated with a TRB after the usb_request's ->complete ca=
+ll
+>> > > has been made.  Instead of immediately releasing a request when a Mi=
+ssed
+>> > > ISOC interrupt has occurred, this change will add logic to cancel the
+>> > > request instead where it will eventually be released when the
+>> > > END_TRANSFER command has completed. This logic is similar to some of=
+ the
+>> > > cleanup done in dwc3_gadget_ep_dequeue.
+>> > >
+>> > > Fixes: 6d8a019614f3 ("usb: dwc3: gadget: check for Missed Isoc from =
+event status")
+>> > > Cc: <stable@vger.kernel.org>
+>> > > Signed-off-by: Jeff Vanhoof <qjv001@motorola.com>
+>> > > Co-developed-by: Dan Vacura <w36195@motorola.com>
+>> > > Signed-off-by: Dan Vacura <w36195@motorola.com>
+>> > > ---
+>> > > V1 -> V3:
+>> > > - no change, new patch in series
+>> > > V3 -> V4:
+>> > > - no change
+>> >
+>> > I need an ack from the dwc3 maintainer before I can take this one.
+>> >
+>> > thanks,
+>> >
+>> > greg k-h
+>>
+>> Thinh has rejected this version of the patch. He has provided an alterna=
+tive
+>> implementation which has been testing well for us so far. Either Thinh o=
+r Dan
+>> will formalize this patch within the next few days.
+>> The latest proposed changes are:
+>>
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index dfaf9ac24c4f..50287437d6de 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -3195,6 +3195,9 @@ static int dwc3_gadget_ep_reclaim_completed_trb(st=
+ruct dwc3_ep *dep,
+>>         if (event->status & DEPEVT_STATUS_SHORT && !chain)
+>>                 return 1;
+>>
+>> +       if (DWC3_TRB_SIZE_TRBSTS(trb->size) =3D=3D DWC3_TRBSTS_MISSED_IS=
+OC && !chain)
+>> +               return 1;
+>> +
+>>         if ((trb->ctrl & DWC3_TRB_CTRL_IOC) ||
+>>             (trb->ctrl & DWC3_TRB_CTRL_LST))
+>>                 return 1;
+>> @@ -3211,6 +3214,7 @@ static int dwc3_gadget_ep_reclaim_trb_sg(struct dw=
+c3_ep *dep,
+>>         struct scatterlist *s;
+>>         unsigned int num_queued =3D req->num_queued_sgs;
+>>         unsigned int i;
+>> +       bool missed_isoc =3D false;
+>>         int ret =3D 0;
+>>
+>>         for_each_sg(sg, s, num_queued, i) {
+>> @@ -3219,12 +3223,18 @@ static int dwc3_gadget_ep_reclaim_trb_sg(struct =
+dwc3_ep *dep,
+>>                 req->sg =3D sg_next(s);
+>>                 req->num_queued_sgs--;
+>>
+>> +               if (DWC3_TRB_SIZE_TRBSTS(trb->size) =3D=3D DWC3_TRBSTS_M=
+ISSED_ISOC)
+>> +                       missed_isoc =3D true;
+>> +
+>>                 ret =3D dwc3_gadget_ep_reclaim_completed_trb(dep, req,
+>>                                 trb, event, status, true);
+>>                 if (ret)
+>>                         break;
+>>         }
+>>
+>> +       if (missed_isoc)
+>> +               ret =3D 1;
+>> +
+>>         return ret;
+>>  }
+>>
+>>
+>
+>That's just a debug patch. I'll send out proper fix patches.
 
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+Ping!
+
+While digging out this thread, I did not find any followup patch
+for this suggestion. Did it hit the mailinglist anywhere?
+
+If not, will you send one?
+
+Regards,
+Michael
+
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--bRXcAQdk//FytMnP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmUJZZwACgkQC+njFXoe
+LGQ7Ig/9GozjAnT6NFjzYyTGvlTT7H0jEst0JphQh/9L5PKmA7UAUOdEGeV3WIss
+YtiyMhLdz/StZzXnLzhwk2DfO5pSMCoY+l5X8LnMj4zI7X+QHj/yxxdv+2sJ+tPV
+SJhHU2TRb+JI0tQ1Ec0rPOTIr+Ci41guOirc5xVnVYds26xsUJ8sHHw6fY4i5kNZ
+GRAI7yj4a/Fj8qWxVHOsAtlbTp3Zz+AW27qTbaupwVoLjEM59Mmi6JdxOjrIJEoL
+KyzlbsDgK99Lm3ghV/GebrCwv7U/qxVLVp5nxzQDzGv4g49u4VfXKUDG0deFG1bk
+H81vx2Z0KHbbwRX1lFb/xXDX/42mqmUOE25gZnZYfIzr7kPq4+pRiMi9DlL9fwBi
+zle2mfLbfEeCs2yofWeZKMPxaJMmBL2ylMXtGoODRf06IVTprM8uXNdadgJ/ahQA
+7Vecv4L73p+ghQF5vWwY0hubGfijy7zrarheR7FLvxKDxdXUjTtaEfVF+vBgm+Zx
+SEUh9x2O9a5fTo2bQ4RFopMYV/DWfddlzIaup8OA6jsyyvZHEQ2YDCEPJOXvoTir
+6/bpEaAnia5D+QPYiU5uBjsyZ0jFSfdr0qxhTtOxXge1/81ECsBT8LNaRVaHdtCv
+Ay8EQ+gjPMoaqESuRQXqY53wQ3RwApUdS8fF1PgpPtwTM4SpuGk=
+=PJ/C
+-----END PGP SIGNATURE-----
+
+--bRXcAQdk//FytMnP--
