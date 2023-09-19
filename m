@@ -2,117 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C787A592C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42277A5930
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbjISFIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 01:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S231193AbjISFIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 01:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbjISFIF (ORCPT
+        with ESMTP id S230459AbjISFIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 01:08:05 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E4B130
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:07:57 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d814105dc2cso5889599276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695100076; x=1695704876; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4oTsRSgwJtZLa+M83Y1yWR55/2t80oAcXHVnltbxXw8=;
-        b=MdkDS/DpRm2IX1lscdC+KprOcZen/xiKsCehm0ncKUGp2zzoQMvA4q+YGARRBNTvdr
-         TrQho4gVurgwzPK0e7vaK38IY5awbtrVMLcDXS+FsjLSXlI/KuAAdgJvIaryltijc3Ze
-         nkf84sjlEaoVgE7R8KVn4u5dGy2sVhoiUWSxqG+er6BWyKJEq7bInHdINHDAfrH31Xpf
-         sAYVEgiXID1ioBv5ZkqBoXURko7fzlfC9U36l8A5ij/Fe2Ipchvq0y2cmWlO3il8khf6
-         oOHl8mc7TTT6NBfSYNbrRl+W+eAagXA15r+Ea3+ECzit0NWo0U0JilSuO/Y6QIIV3gen
-         1sZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695100076; x=1695704876;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4oTsRSgwJtZLa+M83Y1yWR55/2t80oAcXHVnltbxXw8=;
-        b=nVah4jPIVPZhakj9eA6Ihz1BUJQlveKv/hTmwRCfS7PKw+U2mpFGLsxIf/TtBGR5XT
-         dUlBRZ6ujyrKMYAZKHaiu432stwMj3z+KHoGRlrVnz4NaqotOv4a9aFgr5BZR84PLkZe
-         etEKzCziS5jsMSsoaUcR53D1WyunDg9YpgniQHJyqD5LsmmWCeNGZ4tEIJK2kONt1klY
-         YVELJiwCRxix/f/ir17wUJIUmkqN5/+MmHSyYSDAdYb5P4aXYgr3NFdHFw97L0sxNIxh
-         OskKUFUP2Q+U3uZvzkDTFLxX59i354TZmyqhWJbmgrdp3hpoMRCmm2UVUXnCmXfvwc5W
-         n5lQ==
-X-Gm-Message-State: AOJu0YwuVFXXhzzeuwfGKP/ko2IIIByePBKRi9eQg6JPuC7zBTViB/bF
-        JVwyILBVQTG9YbRrYUw2CYn+T+/fC2vmS3aQzg==
-X-Google-Smtp-Source: AGHT+IHgpdy40SXoJZs8x8Y4QEC2s+vjPTRr0VVLfIHsdj+ODF/YWJhdnuTQigcgAmLTqleeB0ARpcklz9o8GiGVgQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:254:0:b0:d63:8364:328 with SMTP id
- 81-20020a250254000000b00d6383640328mr221186ybc.5.1695100076655; Mon, 18 Sep
- 2023 22:07:56 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 05:07:55 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAKosCWUC/53NQQ6DIBCF4as0rDsNoEbpqvdojLE4KEkFMhisM
- d691CN0+b/F+3YWkSxGdr/sjDDZaL3LIa8XpqfejQh2yM0klwVXooS4kNNhg4FsQoowrbN30Ot
- gu+BXpG7GBQk0aGXk0PCqeKFh+S4QGvs5qWebe7Jx8bSdchK/9Q8kCRCgeCVVXdbKYPMYvR/fe NN+Zu1xHF9hZvJM4QAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695100075; l=1462;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=D6HTLPFYfWZS31qXNBGXxqODI77MOGRmlaVNX/fxtHc=; b=D6DC0vgDrZzaJzQDLWiKywgRxB5iAFc/QksLGR+tSu6mt9uzXKVKMNW2nu+M6UmN7tlvBElSF
- oJhKhaQS5nlD0HudNvcFHlGqsrWQGMvC0+d6jLD36ypMnbyggbbga8S
-X-Mailer: b4 0.12.3
-Message-ID: <20230919-strncpy-drivers-hwmon-acpi_power_meter-c-v2-1-8348432d6442@google.com>
-Subject: [PATCH v2] hwmon: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
+        Tue, 19 Sep 2023 01:08:46 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471D0FD
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:08:40 -0700 (PDT)
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230919050836epoutp011d0164fff5fefc6208cb272c6735ca58~GNJMyMo-e0270402704epoutp01j
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:08:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230919050836epoutp011d0164fff5fefc6208cb272c6735ca58~GNJMyMo-e0270402704epoutp01j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695100116;
+        bh=MOWzOcLyGe3ASu3GVGlOZqaHzTzcWNGNyO93peZAlvo=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=uL8WZvHE6OgTum7k/RGhu97K6VR+ehXMVRdt2U+vQBJTMNx+a5HPKhO63aTaS3u2L
+         j6xjKeNlvDU+gJv61eLXgxs9fcFF8n7ZqGyg4bL5KkuyGNen1ahgQedqfY+iiXwBfE
+         LA7EpapMxL4dBuE3nBr+2wCigmJzP/ux1xfS2uE4=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20230919050835epcas1p3b32b45a0d2ebdbdb1ee492ab0b72de68~GNJL8wfZT1572715727epcas1p3c;
+        Tue, 19 Sep 2023 05:08:35 +0000 (GMT)
+Received: from epsmgec1p1.samsung.com (unknown [182.195.36.133]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4RqV7624lcz4x9Q1; Tue, 19 Sep
+        2023 05:08:34 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1A.95.08657.2DC29056; Tue, 19 Sep 2023 14:08:34 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230919050833epcas1p4b5ea1035d03df587f072f45233663261~GNJKKKS9E2757527575epcas1p4r;
+        Tue, 19 Sep 2023 05:08:33 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230919050833epsmtrp1be15abd8ed4a45de199d0c83a0fb9dee~GNJKJa4Gr0049500495epsmtrp1k;
+        Tue, 19 Sep 2023 05:08:33 +0000 (GMT)
+X-AuditID: b6c32a33-4e9ff700000021d1-a2-65092cd23513
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6A.EA.08788.1DC29056; Tue, 19 Sep 2023 14:08:33 +0900 (KST)
+Received: from kson001 (unknown [10.102.7.58]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230919050833epsmtip1100c84b749de8162a481ba74f101605c~GNJJ2DC-21075910759epsmtip1T;
+        Tue, 19 Sep 2023 05:08:33 +0000 (GMT)
+From:   "Kwanghoon Son" <k.son@samsung.com>
+To:     "'Conor Dooley'" <conor@kernel.org>
+Cc:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <jszhang@kernel.org>, <guoren@kernel.org>, <wefu@redhat.com>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <inki.dae@samsung.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>
+In-Reply-To: 
+Subject: RE: [PATCH v3 1/3] dt-bindings: reset: Document th1520 reset
+ control
+Date:   Tue, 19 Sep 2023 14:08:32 +0900
+Message-ID: <005301d9eab7$5688c920$039a5b60$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: ko
+Thread-Index: AQGA88MHphYB2H/uDBHue9ViU8X2awGBaA+GAbT+P64CTt+43rCnIi0wgAA4BwA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Te1BUZRztu/fu3bvUym1d6wsZXa44DhSwK7vLXYSkhFxxNczRppqRbnDd
+        RfY1e5ce9gcyCAMMuWhpsouDWC1BDQwrD1MWpxUIpagBih5UlpCsEMSrUVFql4vFf+f85pz5
+        nfM9CFQyiIcROWY7azMzRgoPwVqvRMXG9D8lYuXvjIrplgWnkP7U24fQdSfrcbq6s09Aj3kL
+        MPrErxUYXdjdiNPHxn5D6YGLVTjdOnsUp3/+pQej/QPlKF3sDKWLvJ1C+ujl97CUUO2E349p
+        r5TMCbWe+lJcO/xdO649/2G+1nFfrp3q+BbXHmuuB9r+wiGhdtazLiPk5dwkA8tkszYZa86y
+        ZOeY9cnUzr2Z2zJVarkiRqGhEyiZmTGxyVSqLiPmuRxjoAQle50x5gVGGQzHUXFPJ9kseXZW
+        ZrBw9mSKtWYbrSprLMeYuDyzPtbM2hMVcvlmVUD4aq6hfdyFW+cFb9bW1uJHgBsrAyICkko4
+        23FfWAZCCAl5AcDi3904T2YAvDRYiQZVEvJvAMtc+ANHR/m1ZYcXwAa3H+HJDQA9x4NEROBk
+        FKzpWwBBLCU3wWHfOBoUoeRdBF6qagrYCUJEimHF4pagZjX5PGw5PS4IYozcCOd95UteMamB
+        85/zWcXko/Bq5cgSRsn1sO3PKpRPJIN3Rt0Cfi6FrtJilN+7G3aOdIDgXkjeJqDjGxfgDamw
+        qb5ZwOPV8NYXzUIeh0G/o3gZ58Kuae9yZTsccp5b1sfDyx+9iwTzo4GSjRfj+HEE/GzhDOAz
+        rIKT8+WCoAQGKpYUS3i4Hv5Y+gavXgO/HJ3GKwDlXFHMuaKYc0UZ5/+7zgKsHjzGWjmTns1S
+        WBX/3XWWxeQBS887Ov4CGKhejPUBhAA+AAmUkoorFTgrEWczbx1mbZZMW56R5XxAFTjq42jY
+        mixL4H+Y7ZkKpUauVG+OV9IKtYJ6XBxR4cqWkHrGzuayrJW1PfAhhCjsCCIP16UgPQOr9oOz
+        WPNCw75n/wmbPrU13ii47ol+21rQ7ulOsJ8qj7yO7BmCU+yGxj0TXcPrXhkoiI275d4rYrxr
+        dz6kSxp3hCe/Xy1tek1XtDFux9BPIelsyu2p1gPYB73eQw3CnvTIJ8XbinQ1fxw8sT/pk8SI
+        me+Vz4TWpUyX3NStVb7wtVOzY+s9R2TCSGdcr7ntDvQMh284M1nD9d5Ln1Dnz4193HKTelF9
+        cnK366WZfrTNcJeQ1k7vqig8p/mLmsk9PIjOp6q6VPiB7VL84U1zW64t3sAio75KS8upbkhr
+        rPN370Ke+MH0yL6DCdE+uyVRNbnQcEhlSryamq8XnKcwzsAoolEbx/wLGYlwaWcEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHIsWRmVeSWpSXmKPExsWy7bCSnO5FHc5Ug7vHNS22/p7FbrFm7zkm
+        i5VTV7FZzD9yjtXixd5GFotJ9yewWDQfW89m0ffiIbPF5V1z2Cy2fW5hs7h77wSLxcvLPcwW
+        bbP4LVr3HmG3aNk/hcWB3+PNy5csHoc7vrB7bFrVyeZx59oeNo/NS+o9+v8aeLzfd5XNo2/L
+        KkaPS83X2T0+b5IL4IrisklJzcksSy3St0vgytjzejZbwVfWiuXLl7M1MC5j6WLk5JAQMJHY
+        13OKvYuRi0NIYDejxP23H1khEqISHZcbGbsYOYBsYYnDh4shah4ySnw+tQ+smU1AU2Lhud+M
+        ILaIgLrEnUOvmUGKmAW6mCV2vNzBBJIQEnjMKLG+RQ9kEKcAr8SEf9YgYWEBX4kNl48xg9gs
+        AqoSXw/1gM3hFbCU+HoQ4jheAUGJkzOfsIC0MgvoSbRtBCthFpCX2P52DjPEmQoSP58uY4WI
+        i0jM7mxjhjjHT+LIk32MExiFZyGZNAth0iwkk2Yh6V7AyLKKUTK1oDg3PbfYsMAoL7Vcrzgx
+        t7g0L10vOT93EyM4irW0djDuWfVB7xAjEwfjIUYJDmYlEd6ZhmypQrwpiZVVqUX58UWlOanF
+        hxilOViUxHm/ve5NERJITyxJzU5NLUgtgskycXBKNTC1sT2dbGbyTdNxR0r08qjrdhPbfvWI
+        PZdJ9UosVd4fM/lCpckbH87M32HZdscX7S7xDOYMPR+wxizw98FAlp9nL27fsuAQk8bMeRM+
+        Zb1PqbBd/042lf+bwvZ80SgPwz2bo7v5zJ5WbDjLkrKtclqqbkKnwhf/2epLbYPPucXyqG+9
+        HqJ9p/beMi8zThOVCPUPzHNkl5zziBfceUvvzll72dTjfku2P9M7vNfkvNmtBa9DY/ZUS+XZ
+        Ln5xnD9yTazI5xhf3pS2GY+4b5kKrrBu1GG111/zRHbV1ZeT1xgwbpfJvPRx+9OEPoevzQcm
+        sHy7w/lI4ta1D9oLHvWppJv/fJqbGKx/NqZ3C5/NOjslluKMREMt5qLiRACIP9urUQMAAA==
+X-CMS-MailID: 20230919050833epcas1p4b5ea1035d03df587f072f45233663261
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230918045134epcas1p1b80b338b66512a976c3783cd0e51da50
+References: <20230918045125.4000083-1-k.son@samsung.com>
+        <CGME20230918045134epcas1p1b80b338b66512a976c3783cd0e51da50@epcas1p1.samsung.com>
+        <20230918045125.4000083-2-k.son@samsung.com>
+        <20230918-4ef7f52da269f3a7e4023bb3@fedora> 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> > > +      - const: thead,th1520-reset
+> > > +      - const: syscon
+> >
+> > iDumb question perhaps, but why is this a syscon?
+> 
+> This is good point.
+> In fact, I took it from the vendor kernel, and I tried to keep it as same as I could.
+> Vendor also followed drivers/reset/reset-imx7.c
+> As Rob said, if don't need it, I'll change it.
+> 
+> Regards,
+> Kwang.
+> 
+I have investigated vendor kernels, but it is still not sure reset information.
+I thought this is about sys_reg, but without datasheet, can't tell.
+Therefore, should be stopped patch for a while until knows better comes out.
 
-A trailing zero is already handled by the kcalloc
-|	*str = kcalloc(element->string.length + 1, sizeof(u8), GFP_KERNEL);
-... which makes memcpy() a suitable replacement to strncpy.
+Kwang.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- use memcpy over strscpy (thanks Kees)
-- Link to v1: https://lore.kernel.org/r/20230914-strncpy-drivers-hwmon-acpi_power_meter-c-v1-1-905297479fe8@google.com
----
- drivers/hwmon/acpi_power_meter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > Cheers,
+> > Conor.
+> >
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  '#reset-cells':
+> > > +    const: 1
 
-diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power_meter.c
-index fa28d447f0df..82e99aec4a33 100644
---- a/drivers/hwmon/acpi_power_meter.c
-+++ b/drivers/hwmon/acpi_power_meter.c
-@@ -803,7 +803,7 @@ static int read_capabilities(struct acpi_power_meter_resource *resource)
- 			goto error;
- 		}
- 
--		strncpy(*str, element->string.pointer, element->string.length);
-+		memcpy(*str, element->string.pointer, element->string.length);
- 		str++;
- 	}
- 
-
----
-base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
-change-id: 20230914-strncpy-drivers-hwmon-acpi_power_meter-c-c9f2d8053bef
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
 
