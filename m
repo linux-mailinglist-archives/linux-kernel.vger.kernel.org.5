@@ -2,146 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FB07A6F6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4477A6F72
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbjISXbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
+        id S233454AbjISXec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjISXbr (ORCPT
+        with ESMTP id S229521AbjISXea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 19:31:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F94983
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695166299; x=1726702299;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pwViZbguo4nhMEu1V2aOKGTLkgUT5jRe0pi7fjSQmm0=;
-  b=S4nrYfk0HJr6DW4KCa4MNnnYAe4lyoCAg+YhCXLIMDU/NW53ExHAzV1c
-   VTD2R+wBT8/Kf8cRkW0AYGD523zEuX1nAaY/IJu/eerCEqco69ywMDJVa
-   WKpglI9HcETwE+o4IKVwb4Jcs57NElQ0OFgXVT+PhpoIGxGJW/Dbz6Npo
-   6M/gFyq+st7QTrjpScwAB5mymZm21sTRDwZLWxOT7HNYiFD14dxwfukWA
-   NUZ3wG8y8nRdG7Mji8vQ6MX60m4hziKUQLELcaQnpFKRdhqbMiWTfwImO
-   cfpwqokZGu7/gHVBhgE8kclJxv3lbQkNFfcNk8KiHR6mMfDUsohC0MY7A
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="446554159"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="446554159"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 16:31:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="781481810"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="781481810"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 19 Sep 2023 16:31:32 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qikBm-000848-0x;
-        Tue, 19 Sep 2023 23:31:30 +0000
-Date:   Wed, 20 Sep 2023 07:30:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yicong Yang <yangyicong@huawei.com>, catalin.marinas@arm.com,
-        will@kernel.org, sudeep.holla@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Cc:     oe-kbuild-all@lists.linux.dev, gregkh@linuxfoundation.org,
-        rafael@kernel.org, jonathan.cameron@huawei.com,
-        prime.zeng@hisilicon.com, linuxarm@huawei.com,
-        yangyicong@hisilicon.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch_topology: Support SMT control on arm64
-Message-ID: <202309200727.CtYl75aH-lkp@intel.com>
-References: <20230919123319.23785-1-yangyicong@huawei.com>
+        Tue, 19 Sep 2023 19:34:30 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF03C4;
+        Tue, 19 Sep 2023 16:34:22 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id E916460157;
+        Wed, 20 Sep 2023 01:34:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695166449; bh=zaMLddCalyQnI1zjdeSAxREZqo19txmGC6/R4+XOaUY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZVFVWdlZmCCHvCNhq27Htp9JVHD8RO3ejZHWuhnmkXEH3LNNkFuSZUO58zgmKaRZO
+         aTQMSKPF36m+F0OQlZLFt+x1/2Sdss+N1yYPRfkgKZtyASgqd397QLXOt+OghmtGlB
+         /2kKaDMYR1Qd1UjrI8KK3vMkJ2JaDoDysKQAfQJotaCDb+nmafU/KgtIGuoWqtiO75
+         DKB1YCM81iYig4ir5zBg6ZNzgnpQUaMKMQgHVcPBMwqomMLd9DL8PD32qLQPXNrgsq
+         P5c0cZe873lyfFq3QcDnPxZ9xLel4bgYFGIeFICWUtOAOa6tlRvnVOn9AKOrryAzNC
+         5zIm5qwCmVMTQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id eMLC9_jQgw-G; Wed, 20 Sep 2023 01:34:07 +0200 (CEST)
+Received: from defiant.home (78-0-136-157.adsl.net.t-com.hr [78.0.136.157])
+        by domac.alu.hr (Postfix) with ESMTPSA id 2A3E460152;
+        Wed, 20 Sep 2023 01:34:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695166447; bh=zaMLddCalyQnI1zjdeSAxREZqo19txmGC6/R4+XOaUY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CZ66NEpRZc72ipqhL6eK/bKEOkxq8BYOvBkzgzxZVKGRxdiuGUKZEns84WitxJjkh
+         ZNsAWcKhwktBUlCAhJuMqcnxQ0l8V5As9KZ34KnKjsZbXFvlhxC4dWYaux2kEVWdkd
+         Bs0+hMjdUB2FKu7TMgzOHTrAy1W0pX+E12XMso3VInSQRJy6H6KCDCRgztOtwWwzSa
+         qzkj6ZA7K3oYwqzSheVXtgyshm1j3uNPFHXU/Xc4zEHVuIfGQux07jxDINyfYyktba
+         qeCvfK4qOgluH3cGe2yK/h8hpWT8dKcTxcRKdcgLKb+pD8JR8hlX1V78HXKxTCpppp
+         1o4AYNj9nVXIQ==
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@FreeBSD.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Subject: [PATCH v1 1/1] acpica: use spinlocks to fix the data-races reported by the KCSAN
+Date:   Wed, 20 Sep 2023 01:33:17 +0200
+Message-Id: <20230919233316.11420-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919123319.23785-1-yangyicong@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yicong,
+KCSAN reported hundreds of instances of data-races in ACPICA like this one:
 
-kernel test robot noticed the following build errors:
+[    6.994149] ==================================================================
+[    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
 
-[auto build test ERROR on arm64/for-next/core]
-[also build test ERROR on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.6-rc2 next-20230919]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
+[    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
+[    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
+[    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+[    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+[    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+[    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+[    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+[    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+[    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+[    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+[    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+[    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+[    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yicong-Yang/arch_topology-Support-SMT-control-on-arm64/20230919-223458
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-patch link:    https://lore.kernel.org/r/20230919123319.23785-1-yangyicong%40huawei.com
-patch subject: [PATCH] arch_topology: Support SMT control on arm64
-config: arm64-allnoconfig (https://download.01.org/0day-ci/archive/20230920/202309200727.CtYl75aH-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309200727.CtYl75aH-lkp@intel.com/reproduce)
+[    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
+[    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
+[    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
+[    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
+[    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
+[    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
+[    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+[    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+[    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+[    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+[    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+[    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+[    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+[    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+[    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+[    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+[    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309200727.CtYl75aH-lkp@intel.com/
+[    6.995476] value changed: 0x00000004 -> 0x00000002
 
-All errors (new ones prefixed by >>):
+[    6.995629] Reported by Kernel Concurrency Sanitizer on:
+[    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+[    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[    6.995765] ==================================================================
 
-   kernel/cpu.c: In function 'cpuhp_get_primary_thread_mask':
-   kernel/cpu.c:660:16: error: 'cpu_primary_thread_mask' undeclared (first use in this function); did you mean 'cpuhp_get_primary_thread_mask'?
-     660 |         return cpu_primary_thread_mask;
-         |                ^~~~~~~~~~~~~~~~~~~~~~~
-         |                cpuhp_get_primary_thread_mask
-   kernel/cpu.c:660:16: note: each undeclared identifier is reported only once for each function it appears in
-   kernel/cpu.c: In function 'cpuhp_smt_disable':
->> kernel/cpu.c:2629:23: error: implicit declaration of function 'cpu_down_maps_locked' [-Werror=implicit-function-declaration]
-    2629 |                 ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
-         |                       ^~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
 
+A number of unprotected increments:
 
-vim +/cpu_down_maps_locked +2629 kernel/cpu.c
+        acpi_gbl_nesting_level++;
 
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2620  
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2621  int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2622  {
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2623  	int cpu, ret = 0;
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2624  
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2625  	cpu_maps_update_begin();
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2626  	for_each_online_cpu(cpu) {
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2627  		if (topology_is_primary_thread(cpu))
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2628  			continue;
-dc8d37ed304eee Arnd Bergmann 2019-12-10 @2629  		ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2630  		if (ret)
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2631  			break;
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2632  		/*
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2633  		 * As this needs to hold the cpu maps lock it's impossible
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2634  		 * to call device_offline() because that ends up calling
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2635  		 * cpu_down() which takes cpu maps lock. cpu maps lock
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2636  		 * needs to be held as this might race against in kernel
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2637  		 * abusers of the hotplug machinery (thermal management).
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2638  		 *
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2639  		 * So nothing would update device:offline state. That would
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2640  		 * leave the sysfs entry stale and prevent onlining after
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2641  		 * smt control has been changed to 'off' again. This is
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2642  		 * called under the sysfs hotplug lock, so it is properly
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2643  		 * serialized against the regular offline usage.
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2644  		 */
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2645  		cpuhp_offline_cpu_device(cpu);
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2646  	}
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2647  	if (!ret)
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2648  		cpu_smt_control = ctrlval;
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2649  	cpu_maps_update_done();
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2650  	return ret;
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2651  }
-dc8d37ed304eee Arnd Bergmann 2019-12-10  2652  
+and conditional statements:
 
+        if (acpi_gbl_nesting_level) {
+                acpi_gbl_nesting_level--;
+        }
+
+no longer work in SMP environment.
+
+Proper locking like
+
+        spin_lock(&acpi_utdebug_lock);
+        acpi_gbl_nesting_level++;
+        spin_unlock(&acpi_utdebug_lock);
+
+and
+
+        spin_lock(&acpi_utdebug_lock);
+        if (acpi_gbl_nesting_level) {
+                acpi_gbl_nesting_level--;
+        }
+        spin_unlock(&acpi_utdebug_lock);
+
+makes these data-races go away.
+
+Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
+acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
+stuff the optmisers do.
+
+The patch eliminates KCSAN BUG warnings.
+
+Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
+Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
+Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
+Fixes: ^1da177e4c3f4 ("Initial git repository build.")
+Cc: Jung-uk Kim <jkim@FreeBSD.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Erik Kaneda <erik.kaneda@intel.com>
+Cc: Bob Moore <robert.moore@intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org
+Cc: acpica-devel@lists.linuxfoundation.org
+Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+---
+v1:
+ RFC for the patch.
+
+ drivers/acpi/acpica/utdebug.c | 40 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
+index c5f6c85a3a09..148f2b820c88 100644
+--- a/drivers/acpi/acpica/utdebug.c
++++ b/drivers/acpi/acpica/utdebug.c
+@@ -16,6 +16,8 @@
+ #define _COMPONENT          ACPI_UTILITIES
+ ACPI_MODULE_NAME("utdebug")
+ 
++static DEFINE_SPINLOCK(acpi_utdebug_lock);
++
+ #ifdef ACPI_DEBUG_OUTPUT
+ static acpi_thread_id acpi_gbl_previous_thread_id = (acpi_thread_id) 0xFFFFFFFF;
+ static const char *acpi_gbl_function_entry_prefix = "----Entry";
+@@ -60,13 +62,16 @@ void acpi_ut_init_stack_ptr_trace(void)
+ void acpi_ut_track_stack_ptr(void)
+ {
+ 	acpi_size current_sp;
++	u32 nesting_level;
+ 
+ 	if (&current_sp < acpi_gbl_lowest_stack_pointer) {
+ 		acpi_gbl_lowest_stack_pointer = &current_sp;
+ 	}
+ 
+-	if (acpi_gbl_nesting_level > acpi_gbl_deepest_nesting) {
+-		acpi_gbl_deepest_nesting = acpi_gbl_nesting_level;
++	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
++
++	if (nesting_level > acpi_gbl_deepest_nesting) {
++		acpi_gbl_deepest_nesting = nesting_level;
+ 	}
+ }
+ 
+@@ -137,6 +142,7 @@ acpi_debug_print(u32 requested_debug_level,
+ #ifdef ACPI_APPLICATION
+ 	int fill_count;
+ #endif
++	u32 nesting_level;
+ 
+ 	/* Check if debug output enabled */
+ 
+@@ -156,7 +162,7 @@ acpi_debug_print(u32 requested_debug_level,
+ 		}
+ 
+ 		acpi_gbl_previous_thread_id = thread_id;
+-		acpi_gbl_nesting_level = 0;
++		WRITE_ONCE(acpi_gbl_nesting_level, 0);
+ 	}
+ 
+ 	/*
+@@ -176,14 +182,16 @@ acpi_debug_print(u32 requested_debug_level,
+ 		acpi_os_printf("[%u] ", (u32)thread_id);
+ 	}
+ 
+-	fill_count = 48 - acpi_gbl_nesting_level -
++	fill_count = 48 - READ_ONCE(acpi_gbl_nesting_level) -
+ 	    strlen(acpi_ut_trim_function_name(function_name));
+ 	if (fill_count < 0) {
+ 		fill_count = 0;
+ 	}
+ 
++	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
++
+ 	acpi_os_printf("[%02d] %*s",
+-		       acpi_gbl_nesting_level, acpi_gbl_nesting_level + 1, " ");
++		       nesting_level, nesting_level + 1, " ");
+ 	acpi_os_printf("%s%*s: ",
+ 		       acpi_ut_trim_function_name(function_name), fill_count,
+ 		       " ");
+@@ -260,7 +268,10 @@ acpi_ut_trace(u32 line_number,
+ 	      const char *module_name, u32 component_id)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -298,7 +309,10 @@ acpi_ut_trace_ptr(u32 line_number,
+ 		  u32 component_id, const void *pointer)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -334,7 +348,10 @@ acpi_ut_trace_str(u32 line_number,
+ 		  const char *module_name, u32 component_id, const char *string)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -370,7 +387,10 @@ acpi_ut_trace_u32(u32 line_number,
+ 		  const char *module_name, u32 component_id, u32 integer)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -414,9 +434,11 @@ acpi_ut_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix);
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ ACPI_EXPORT_SYMBOL(acpi_ut_exit)
+@@ -463,9 +485,11 @@ acpi_ut_status_exit(u32 line_number,
+ 		}
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
+@@ -502,9 +526,11 @@ acpi_ut_value_exit(u32 line_number,
+ 				 ACPI_FORMAT_UINT64(value));
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
+@@ -540,9 +566,11 @@ acpi_ut_ptr_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix, ptr);
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ /*******************************************************************************
+@@ -577,9 +605,11 @@ acpi_ut_str_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix, string);
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ /*******************************************************************************
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
