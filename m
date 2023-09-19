@@ -2,60 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A817A5DB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677727A5DB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbjISJYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34800 "EHLO
+        id S230173AbjISJY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbjISJY3 (ORCPT
+        with ESMTP id S229804AbjISJYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:24:29 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33EF7116
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:24:20 -0700 (PDT)
-Received: from loongson.cn (unknown [111.9.175.10])
-        by gateway (Coremail) with SMTP id _____8CxLOvDaAllPN8pAA--.9412S3;
-        Tue, 19 Sep 2023 17:24:19 +0800 (CST)
-Received: from [10.136.12.26] (unknown [111.9.175.10])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx7tzBaAlluGkLAA--.22960S3;
-        Tue, 19 Sep 2023 17:24:19 +0800 (CST)
-Subject: Re: [PATCH v1] LoongArch: Remove dead code in relocate_new_kernel
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <1695114428-20308-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <7aa1e5a0-c161-08d6-a2fc-0d4f65148b01@loongson.cn>
-Date:   Tue, 19 Sep 2023 17:24:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 19 Sep 2023 05:24:53 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCAADA
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:24:47 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a9cd066db5so720836066b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:24:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695115486; x=1695720286; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7d8Xb7RH+w6lTYh+PSIBWRE9fbeStGy72q3FCoG4Xc8=;
+        b=DSdo9+ZPSOaHYCYx39Edpnfoa/q97SiHVCFNnU9TYkrX43rucwr2DI73niXGVry9/N
+         yt05Z/aAhkLSXo2IgmgQXgkuDjch7JSlcySAl3VKTdcDU+Lc8wmIVDZA1gOv+PnZOZJJ
+         fTPEEXSqV/ggFUQFPTkh5YV5Tmsja/CAwytbBPuTHL/rEiRF8XDi/UV5bzp+ABp8p0wI
+         4u0YoC12X4cCkAPL3MMgSwyyMP1uxg1jVTcueiPyutZ0YmOgWyAXUghZR9u309yzSar5
+         zSjxT62w9nBUo1+WwSMhRuANaT5Jr8QWKRMFMKy9pUolEw2zCeIlgXI4iiqh4ONYcvcq
+         7AIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695115486; x=1695720286;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7d8Xb7RH+w6lTYh+PSIBWRE9fbeStGy72q3FCoG4Xc8=;
+        b=V1ZbE0ji6NfXrNZB2U4+KqJKf1XNeXcjQD19jYP6HwrJ34GeyYJjhLKKYX+h0Q+hLV
+         V/Jn7DjktezUyvLdjOcHFAR9tfwGXLzhNramYcSLdV9xdhaaGE7iCVvrC+jDamIHC1cy
+         kOM5X7wpVFTnnzeZC3dMdAyqJSAd6cRVeD0PWayjbxHYJqJ/hxEUq0IqrXTxC2W1d3oS
+         0Q9nAXrwoWkduN2OtuCsOHGziolUZeCIZdQupMKPCz1cP2vuD/JE1s/Ui23oyuuU5GIj
+         eaoykyIki+crga0tZqvLUhm0c8iFJMetFhQJdadQ1LvP/kieaLWm//S8hixs17QOo+UW
+         ZWrw==
+X-Gm-Message-State: AOJu0Yy4CyAmqxRktOr5AjMGQk7Ow6M1wA2qDSjLtkbFsASnixu0gUYy
+        uJuXpUdq4e6XiKCU1zOfovxUeA==
+X-Google-Smtp-Source: AGHT+IEEJ8M4Fz+7fZ7oKh7ralJ6TcdfTuoJoPInhorn/OrVtstyhXo33f1GoCzhsCBgdVnWV0aUCQ==
+X-Received: by 2002:a17:907:2cef:b0:9a6:7fee:8258 with SMTP id hz15-20020a1709072cef00b009a67fee8258mr10674208ejc.19.1695115486169;
+        Tue, 19 Sep 2023 02:24:46 -0700 (PDT)
+Received: from [172.20.101.114] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id z9-20020a1709064e0900b0099bd8c1f67esm7535962eju.109.2023.09.19.02.24.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 02:24:45 -0700 (PDT)
+Message-ID: <647d3775-a71d-a880-6d4d-3eb5a89ec9d6@linaro.org>
+Date:   Tue, 19 Sep 2023 12:24:45 +0300
 MIME-Version: 1.0
-In-Reply-To: <1695114428-20308-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 20/41] mtd: spi-nor: everspin: convert flash_info to
+ new format
 Content-Language: en-US
-X-CM-TRANSID: AQAAf8Bx7tzBaAlluGkLAA--.22960S3
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7GFy7ury3AF1ktFWUGF4ftFc_yoWkKwb_JF
-        17tw1kGr48Jr4jy3Z0gw4Sqr1Fg34FyayrCanrXw47t3Way342yrnxJ3Wruwn0gr4kWrs8
-        Z395JFsIyr18tosvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbI8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE
-        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
-        AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
-        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
-        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
-        67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-        0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU25Ef
-        UUUUU
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+To:     Michael Walle <mwalle@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v3-20-e60548861b10@kernel.org>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-20-e60548861b10@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,39 +79,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not need my tag. Youling found that before, and simply talked about it 
-to me.
-
-Thanks.
 
 
-On 2023-09-19 17:07, Tiezhu Yang wrote:
-> The initial aim is to silence the following objtool warning:
->
-> arch/loongarch/kernel/relocate_kernel.o: warning: objtool: relocate_new_kernel+0x74: unreachable instruction
->
-> There are two adjacent "b" instructions, the second one is unreachable,
-> it is dead code, just remove it.
->
-> Co-developed-by: Jinyang He <hejinyang@loongson.cn>
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> Co-developed-by: Youling Tang <tangyouling@loongson.cn>
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+On 08.09.2023 13:16, Michael Walle wrote:
+> The INFOx() macros are going away. Convert the flash_info database to
+> the new format.
+> 
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
 > ---
->   arch/loongarch/kernel/relocate_kernel.S | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/arch/loongarch/kernel/relocate_kernel.S b/arch/loongarch/kernel/relocate_kernel.S
-> index d132525..f49f6b0 100644
-> --- a/arch/loongarch/kernel/relocate_kernel.S
-> +++ b/arch/loongarch/kernel/relocate_kernel.S
-> @@ -72,7 +72,6 @@ copy_word:
->   	LONG_ADDI	s5, s5, -1
->   	beqz		s5, process_entry
->   	b		copy_word
-> -	b		process_entry
->   
->   done:
->   	ibar		0
+>  drivers/mtd/spi-nor/everspin.c | 33 +++++++++++++++++++++++++++++----
+>  1 file changed, 29 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspin.c
+> index d02c32f2f7ad..46776bc10b27 100644
+> --- a/drivers/mtd/spi-nor/everspin.c
+> +++ b/drivers/mtd/spi-nor/everspin.c
+> @@ -9,10 +9,35 @@
+>  #include "core.h"
+>  
+>  static const struct flash_info everspin_nor_parts[] = {
+> -	{ "mr25h128", CAT25_INFO(16 * 1024, 1, 256, 2) },
+> -	{ "mr25h256", CAT25_INFO(32 * 1024, 1, 256, 2) },
+> -	{ "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3) },
+> -	{ "mr25h40",  CAT25_INFO(512 * 1024, 1, 256, 3) },
+> +	{
+> +		.name = "mr25h128",
+> +		.size = SZ_16K,
+> +		.sector_size = SZ_16K,
+> +		.page_size = 256,
 
+page size defaults to 256, isn't it? Can we get rid of the page_size
+assignments?
+
+> +		.addr_nbytes = 2,
+> +		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +	}, {
+> +		.name = "mr25h256",
+> +		.size = SZ_32K,
+> +		.sector_size = SZ_32K,
+> +		.page_size = 256,
+> +		.addr_nbytes = 2,
+> +		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +	}, {
+> +		.name = "mr25h10",
+> +		.size = SZ_128K,
+> +		.sector_size = SZ_128K,
+> +		.page_size = 256,
+> +		.addr_nbytes = 3,
+> +		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +	}, {
+> +		.name = "mr25h40",
+> +		.size = SZ_512K,
+> +		.sector_size = SZ_512K,
+> +		.page_size = 256,
+> +		.addr_nbytes = 3,
+> +		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +	}
+>  };
+>  
+>  const struct spi_nor_manufacturer spi_nor_everspin = {
+> 
