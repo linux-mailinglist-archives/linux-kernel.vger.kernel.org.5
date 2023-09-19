@@ -2,132 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E657A5A9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA2E7A5AAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbjISHN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        id S231560AbjISHPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231629AbjISHNx (ORCPT
+        with ESMTP id S231558AbjISHPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:13:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FC1100;
-        Tue, 19 Sep 2023 00:13:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 610B9C433C7;
-        Tue, 19 Sep 2023 07:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695107627;
-        bh=wb2+b/UJ6JMib1m6bJ2CWIMdJn37CvkgZAjJlUHbdC0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qxnshcEyD68LkG5eo3qqao2eZ+huPFgvwUpTVO3ynzNkjnoJpxVyHCYOcdydW7p0O
-         87qmYg7A3g5neW5Nr9XfYXFxo1sMZtEx+nm1bDgGHjs4IaMxxduy57CmeQ7xjNLw93
-         YUgjW99YSrDTRekU5aIBGOxmleLPzPrXHv/xgfFg=
-Date:   Tue, 19 Sep 2023 09:13:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Ingo Molnar <mingo@elte.hu>, kernel@collabora.com,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3] tty/sysrq: replace smp_processor_id() with get_cpu()
-Message-ID: <2023091957-roundish-epilepsy-9686@gregkh>
-References: <20230822102606.2821311-1-usama.anjum@collabora.com>
- <2023091835-quill-congress-b691@gregkh>
- <d0406751-829d-4892-9939-0e8873be3318@kernel.org>
+        Tue, 19 Sep 2023 03:15:22 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E463419A
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:15:15 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502defbb0c3so8923479e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695107714; x=1695712514; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FWdryEK98eIB3OwrZ7gXoSG69IfBkDIYZQBa+WiHnls=;
+        b=hRtiN/jNY7aLfvhuTcOP3Llm9Wj6N6d7Uh9lpCKfKe5ohHDf/5n847H5vkGrlrRCRY
+         zhVIeuko3jm5kjUt8W709PHsW3Ms5Y0xai8VBXor4PSzlCLcc5O7gMNxtPg0O0DZXCt2
+         STurbkwvjfu5/2q8TwyneUkHV4ZF4THbEaXsck3Q053xoW55+DhjQVzAIPK1HXCNriTA
+         leSS2dxAHN905papzjcPgwLJ4397DQUj8FJKpxTX0S36QxXCnmxZrINEieI8ZQQlOJ0s
+         oGn19hBCbZ17AX85ptqvzaxX5qGD6qt4YPZ48Ese4JcgL3+y+Hh2plYnB58YjUZzZDXb
+         tmGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695107714; x=1695712514;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FWdryEK98eIB3OwrZ7gXoSG69IfBkDIYZQBa+WiHnls=;
+        b=amecEzL/gBxkEZN9OVRy0LHD2lKEZPZNAjsuutRRTgKNzyff3D9IS3vp8PIGlFFF4p
+         uaHQtDMIkcSFokLxSLmfiJtOsq9E2K5x0V7iCll2lF1KCYBIeEVdmxRtsHgU/we6ZhwI
+         IypzhdAIYlEqC07lecvdnGJbZH/cqwnN5I6401Rn6URAZUmGpwxroen1QMO5CVQUg6me
+         JJ9YG+nTxq2YetV+Y/jmTfbs4v+6bH22ftpDY0lOpFpJtAhW3pRIAyecUtjih1v7FKux
+         IY6onOf+R/DYECm85e32XQde4s38/XkqyWVQIe0UgL7vhlvGFcXU8Sn9o04wfnJGxPQN
+         kqCw==
+X-Gm-Message-State: AOJu0YywDAFLtEd5M/I5ITd7Mpcs/V/vbOFPO13szdJPKRkj0N8lHpFB
+        S7ATE9QeZQwNUT6A0NCimiCP/Db+1Ec=
+X-Google-Smtp-Source: AGHT+IGQBcc/FuyYzkwtcJF2vCH6/U+pm48uZ8fj/45jFexnqaFWVicb2b9cWjpaapwnTKdmbHwFlg==
+X-Received: by 2002:ac2:442e:0:b0:503:26bd:7f58 with SMTP id w14-20020ac2442e000000b0050326bd7f58mr1657297lfl.41.1695107713570;
+        Tue, 19 Sep 2023 00:15:13 -0700 (PDT)
+Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
+        by smtp.gmail.com with ESMTPSA id x7-20020a05600c2d0700b00404719b05b5sm13863325wmf.27.2023.09.19.00.15.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 00:15:12 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 19 Sep 2023 09:15:10 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Raghavendra K T <raghavendra.kt@amd.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>, rppt@kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bharata B Rao <bharata@amd.com>,
+        Aithal Srikanth <sraithal@amd.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        Sapkal Swapnil <Swapnil.Sapkal@amd.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [RFC PATCH V1 0/6] sched/numa: Enhance disjoint VMA scanning
+Message-ID: <ZQlKfgk8Wvcd1Kbr@gmail.com>
+References: <cover.1693287931.git.raghavendra.kt@amd.com>
+ <719f0729-d28f-d12f-cff4-ab8115861d30@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d0406751-829d-4892-9939-0e8873be3318@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <719f0729-d28f-d12f-cff4-ab8115861d30@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 07:52:42AM +0200, Jiri Slaby wrote:
-> On 18. 09. 23, 10:10, Greg Kroah-Hartman wrote:
-> > On Tue, Aug 22, 2023 at 03:26:06PM +0500, Muhammad Usama Anjum wrote:
-> > > The smp_processor_id() shouldn't be called from preemptible code.
-> > > Instead use get_cpu() and put_cpu() which disables preemption in
-> > > addition to getting the processor id. This fixes the following bug:
-> > > 
-> > > [  119.143590] sysrq: Show backtrace of all active CPUs
-> > > [  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
-> > > [  119.144586] caller is debug_smp_processor_id+0x20/0x30
-> > > [  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
-> > > [  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
-> > > [  119.145053] Call trace:
-> > > [  119.145093]  dump_backtrace+0x0/0x1a0
-> > > [  119.145122]  show_stack+0x18/0x70
-> > > [  119.145141]  dump_stack+0xc4/0x11c
-> > > [  119.145159]  check_preemption_disabled+0x100/0x110
-> > > [  119.145175]  debug_smp_processor_id+0x20/0x30
-> > > [  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
-> > > [  119.145211]  __handle_sysrq+0x8c/0x1a0
-> > > [  119.145227]  write_sysrq_trigger+0x94/0x12c
-> > > [  119.145247]  proc_reg_write+0xa8/0xe4
-> > > [  119.145266]  vfs_write+0xec/0x280
-> > > [  119.145282]  ksys_write+0x6c/0x100
-> > > [  119.145298]  __arm64_sys_write+0x20/0x30
-> > > [  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
-> > > [  119.145332]  do_el0_svc+0x24/0x8c
-> > > [  119.145348]  el0_svc+0x10/0x20
-> > > [  119.145364]  el0_sync_handler+0x134/0x140
-> > > [  119.145381]  el0_sync+0x180/0x1c0
-> > > 
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
-> > > Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> > > ---
-> > > Changes since v2:
-> > > - Add changelog and resend
-> > > 
-> > > Changes since v1:
-> > > - Add "Cc: stable@vger.kernel.org" tag
-> > > ---
-> > >   drivers/tty/sysrq.c | 3 ++-
-> > >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-> > > index 23198e3f1461a..6b4a28bcf2f5f 100644
-> > > --- a/drivers/tty/sysrq.c
-> > > +++ b/drivers/tty/sysrq.c
-> > > @@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
-> > >   		if (in_hardirq())
-> > >   			regs = get_irq_regs();
-> > > -		pr_info("CPU%d:\n", smp_processor_id());
-> > > +		pr_info("CPU%d:\n", get_cpu());
+
+* Raghavendra K T <raghavendra.kt@amd.com> wrote:
+
+> On 8/29/2023 11:36 AM, Raghavendra K T wrote:
+> > Since commit fc137c0ddab2 ("sched/numa: enhance vma scanning logic") [1]
+> > VMA scanning is allowed if:
+> > 1) The task had accessed the VMA.
+> >   Rationale: Reduce overhead for the tasks that had not
+> > touched VMA. Also filter out unnecessary scanning.
 > > 
-> > Why not call put_cpu() right here?
+> > 2) Early phase of the VMA scan where mm->numa_scan_seq is less than 2.
+> >   Rationale: Understanding initial characteristics of VMAs and also
+> >   prevent VMA scanning unfairness.
 > > 
-> > >   		if (regs)
-> > >   			show_regs(regs);
-> > >   		else
-> > >   			show_stack(NULL, NULL, KERN_INFO);
-> > >   		schedule_work(&sysrq_showallcpus);
-> > > +		put_cpu();
+> > While that works for most of the times to reduce scanning overhead,
+> >   there are some corner cases associated with it.
 > > 
-> > Why wait so long here after you have scheduled work?  Please drop the
-> > cpu reference right away, you don't need to hold it for this length of
-> > time, right?
+> > This was found in an internal LKP run and also reported by [2]. There was
+> > an attempt to fix.
+> > 
+> > Link: https://lore.kernel.org/linux-mm/cover.1685506205.git.raghavendra.kt@amd.com/T/
+> > 
+> > This is a fully different series after Mel's feedback to address the issue
+> >   and also a continuation of enhancing VMA scanning for NUMA balancing.
+> > 
+> > Problem statement (Disjoint VMA set):
+> > ======================================
+> > Let's look at some of the corner cases with a below example of tasks and their
+> > access pattern.
+> > 
+> > Consider N tasks (threads) of a process.
+> > Set1 tasks accessing vma_x (group of VMAs)
+> > Set2 tasks accessing vma_y (group of VMAs)
+> > 
+> >               Set1                      Set2
+> >          -------------------         --------------------
+> >          | task_1..task_n/2 |       | task_n/2+1..task_n |
+> >          -------------------         --------------------	
+> >                   |                             |
+> >                   V                             V
+> >          -------------------         --------------------
+> >          |     vma_x       |         |     vma_y         |
+> >          -------------------         --------------------	
+> > 
+> > Corner cases:
+> > (a) Out of N tasks, not all of them gets fair opportunity to scan. (PeterZ).
+> > suppose Set1 tasks gets more opportunity to scan (May be because of the
+> > activity pattern of tasks or other reasons in current design) in the above
+> > example, then vma_x gets scanned more number of times than vma_y.
+> > 
+> > some experiment is also done here which illustrates this unfairness:
+> > Link: https://lore.kernel.org/lkml/c730dee0-a711-8a8e-3eb1-1bfdd21e6add@amd.com/
+> > 
+> > (b) Sizes of vmas can differ.
+> > Suppose size of vma_y is far greater than the size of vma_x, then a bigger
+> > portion of vma_y can potentially be left unscanned since scanning is bounded
+> > by scan_size of 256MB (default) for each iteration.
+> > 
+> > (c) Highly active threads trap a few VMAs frequently, and some of the VMAs not
+> > accessed for long time can potentially get starved of scanning indefinitely
+> > (Mel). There is a possibility of lack of enough hints/details about VMAs if it
+> > is needed later for migration.
+> > 
+> > (d) Allocation of memory in some specific manner (Mel).
+> > One example could be, Suppose a main thread allocates memory and it is not
+> > active. When other threads tries to act upon it, they may not have much
+> > hints about it, if the corresponding VMA was not scanned.
+> > 
+> > (e) VMAs that are created after two full scans of mm (mm->numa_scan_seq > 2)
+> > will never get scanned. (Observed rarely but very much possible depending on
+> > workload behaviour).
+> > 
+> > Above this, a combination of some of the above (e.g., (a) and (b)) can
+> > potentially amplifyi/worsen the side effect.
+> > 
+> > This patchset, tries to address the above issues by enhancing unconditional
+> > VMA scanning logic.
+> > 
+> > High level ideas:
+> > =================
+> > Idea-1) Depending on vma_size, populate a per vma_scan_select value, decrement it
+> > and when it hits zero do force scan (Mel).
+> > vma_scan_select value is again repopulated when it hits zero.
+> > 
+> > This is how VMA scanning phases looks like after implementation:
+> > 
+> > |<---p1--->|<-----p2----->|<-----p2----->|...
+> > 
+> > Algorithm:
+> > p1: New VMA, initial phase do not scan till scan_delay.
+> > 
+> > p2: Allow scanning if the task has accessed VMA or vma_scan_select hit zero.
+> > 
+> > Reinitialize vma_scan_select and repeat p2.
+> > 
+> > pros/cons:
+> > +  : Ratelimiting is inbuilt to the approach
+> > +  : vma_size is taken into account for scanning
+> > +/-: Scanning continues forever
+> > -  : Changes in vma size is taken care after force scan. i.e.,
+> >     vma_scan_select is repopulated only after vma_scan_select hits zero.
+> > 
+> > Idea-1 can potentially cover all the issues mentioned above.
+> > 
+> > Idea-2) Take bitmask_weight of latest access_pids value (suggested by Bharata).
+> > If number of tasks accessing vma is >= 1, unconditionally allow scanning.
+> > 
+> > Idea-3 ) Take bitmask_weight of access_pid history of VMA. If number of tasks
+> > accessing VMA is > THRESHOLD (=3), unconditionally allow scanning.
+> > 
+> > Rationale (Idea-2,3): Do not miss out scanning of critical VMAs.
+> > 
+> > Idea-4) Have a per vma_scan_seq. allow the unconditional scan till vma_scan_seq
+> > reaches a value proportional (or equal) to vma_size/scan_size.
+> > This a complimentary to Idea-1.
+> > 
+> > this is how VMA scanning phases looks like after implementation:
+> > 
+> > |<--p1--->|<-----p2----->|<-----p3----->|<-----p4----->...||<-----p2----->|<-----p3----->|<-----p4-----> ...||
+> >                                                          RESET                                               RESET
+> > Algorithm:
+> > p1: New VMA, initial phase do not scan till scan_delay.
+> > 
+> > p2: Allow scanning if task has accessed VMA or vma_scan_seq has reached till
+> >   f(vma_size)/scan_size) for e.g., f = 1/2 * vma_size/scan_size.
+> > 
+> > p3: Allow scanning if task has accessed VMA or vma_scan_seq has reached till
+> >   f(vma_size)/scan_size in a rate limited manner. This is an optional phase.
+> > 
+> > p4: Allow scanning iff task has accessed VMA.
+> > 
+> > Reset after p4 (optional).
+> > 
+> > Repeat p2, p3 p4
+> > 
+> > Motivation: Allow agressive scanning in the beginning followed by a rate
+> > limited scanning. And then completely disallow scanning to avoid unnecessary
+> > scanning. Reset time could be a function of scan_delay and chosen long enough
+> > to aid long running task to forget history and start afresh.
+> > 
+> > +  : Ratelimiting need to be taken care separately if needed.
+> > +/-: Scanning continues only if RESET of vma_scan_seq is implemented.
+> > +  : changes in vma size is taken care in every scan.
+> > 
+> >   Current patch series implements Ideas 1, 2, 3 + extension of access PID history
+> > idea from PeterZ.
+> > 
+> > Results:
+> > ======
+> > Base: 6.5.0-rc6+ (4853c74bd7ab)
+> > SUT: Milan w/ 2 numa nodes 256 cpus
+> > 
+> > mmtest		numa01_THREAD_ALLOC manual run:
+> > 
+> > 		base		patched
+> > real		1m22.758s	1m9.200s
+> > user		249m49.540s	229m30.039s
+> > sys		0m25.040s	3m10.451s
+> > 	
+> > numa_pte_updates 	6985	1573363
+> > numa_hint_faults 	2705	1022623
+> > numa_hint_faults_local 	2279	389633
+> > numa_pages_migrated 	426	632990
+> > 
+> > kernbench
+> > 			base			patched
+> > Amean     user-256    21989.09 (   0.00%)    21677.36 *   1.42%*
+> > Amean     syst-256    10171.34 (   0.00%)    10818.28 *  -6.36%*
+> > Amean     elsp-256      166.81 (   0.00%)      168.40 *  -0.95%*
+> > 
+> > Duration User       65973.18    65038.00
+> > Duration System     30538.92    32478.59
+> > Duration Elapsed      529.52      533.09
+> > 
+> > Ops NUMA PTE updates                  976844.00      962680.00
+> > Ops NUMA hint faults                  226763.00      245620.00
+> > Ops NUMA pages migrated               220146.00      207025.00
+> > Ops AutoNUMA cost                       1144.84        1238.77
+> > 
+> > Improvements in other benchmarks I have tested.
+> > Time based:
+> > Hashjoin	4.21%
+> > Btree	 	2.04%
+> > XSbench		0.36%
+> > 
+> > Throughput based:
+> > Graph500 	-3.62%
+> > Nas.bt		3.69%
+> > Nas.ft		21.91%
+> > 
+> > Note: VMA scanning improvements [1] has refined scanning so much that
+> > system overhead we re-introduce with additional scan look glaringly
+> > high. But If we consider the difference between before [1] and current
+> > series, overall scanning overhead is considerably reduced.
+> > 
+> > 1. Link: https://lore.kernel.org/lkml/cover.1677672277.git.raghavendra.kt@amd.com/T/#t
+> > 2. Link: https://lore.kernel.org/lkml/cover.1683033105.git.raghavendra.kt@amd.com/
+> > 
+> > Note: Patch description is again repeated in some patches to avoid any
+> > need to copy from cover letter again.
+> > 
+> > Peter Zijlstra (1):
+> >    sched/numa: Increase tasks' access history
+> > 
+> > Raghavendra K T (5):
+> >    sched/numa: Move up the access pid reset logic
+> >    sched/numa: Add disjoint vma unconditional scan logic
+> >    sched/numa: Remove unconditional scan logic using mm numa_scan_seq
+> >    sched/numa: Allow recently accessed VMAs to be scanned
+> >    sched/numa: Allow scanning of shared VMAs
+> > 
+> >   include/linux/mm.h       |  12 +++--
+> >   include/linux/mm_types.h |   5 +-
+> >   kernel/sched/fair.c      | 109 ++++++++++++++++++++++++++++++++-------
+> >   3 files changed, 102 insertions(+), 24 deletions(-)
+> > 
 > 
-> As I understand it, this way, schedule_work() will queue the work on the
-> "gotten" (current) CPU. So sysrq_showregs_othercpus() will really dump other
-> than the "gotten" cpu.
+> Hello Andrew,
+> 
+> I am Resending patch rebasing to mm-unstable, adding results from Oliver
+> and Swapnil.
 
-Ok, that makes a bit more sense, but that's not what the code does
-today, have people seen the regs dumped from the wrong cpu in the past?
+Just for the record, a final version of this series should be submitted via 
+the scheduler tree, not -mm.
 
-> If that is the case, it indeed should have been described in the commit log.
+Thanks,
 
-Agreed.
-
-thanks for the review,
-
-greg k-h
+	Ingo
