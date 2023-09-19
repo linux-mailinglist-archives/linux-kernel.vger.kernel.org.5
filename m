@@ -2,116 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25937A6307
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5139F7A6318
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbjISMcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        id S231428AbjISMgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjISMcR (ORCPT
+        with ESMTP id S229891AbjISMgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:32:17 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429F5FB
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:32:11 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c02e232c48so7218831fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695126729; x=1695731529; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XZCTRZKVBnR2YvNg1LyLeXAm38TzOjpP7llM/IPFqls=;
-        b=jAWvBMcFfHTVGseK9wCfyvhcrut5Dsz4bwLAIw3VMcubDFh5uVxW/At16DMn0fSOc/
-         8wi9zQNyV6pffsRR2tSFX2x0jgH8o8N34Ir2BYPrOTON9ZcfB4ZoOflRx7y1lPGZvXyq
-         XhBp/9UYZQNSQ9jQo1wd1v1BcmEEdhu8ZGXlMSlD+3b3enGBse4bNHsGki2Zo3H32v6p
-         4JvuFD5Q9uqZ3pX/M6heTeM9KAkFLUpkTMNGB5G62/qVtXcLrvIE8U9UDSeGk0cu80FH
-         x8m9w8Rqw53Zc9wNwg7OtlJlMY+z1ZQ06IaF6BUtL2zAgStuONcV4LE0HUcBc1+mZg5d
-         T8Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695126729; x=1695731529;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XZCTRZKVBnR2YvNg1LyLeXAm38TzOjpP7llM/IPFqls=;
-        b=Ic6sbS6JhnLaHa5BXe5VqCWmx4GgXlTh8IvUpAhNNbz/yYLTv6YwmZame9MKm2ghF0
-         9rn0G4Kd1hRt7BMHZWlt9vx3/e04pHXoWtRsnpjzuPoG5g5uuOowJRXhFAbXAs4pNgJT
-         FvGbljFIHGsB5I4iQORi3q9MVqYjUcUMe0rS5NQi5AvCIsHvXFYSfPwoLQgNf7IEqHR+
-         EbqHrTsuyUfLPDuWrTyjUf3R6tRkuZdrSDNhlZupJFu2CTvInZ2haF4tCIxyPj3EKR8Y
-         OZ8cObkvDde4Ferkds+JtgpQsGmuPeSKXw9sxNo0Bewf0w/wL1/7MSjOSCPBSJvq6NBu
-         bzMw==
-X-Gm-Message-State: AOJu0YzwQ1RfB6YEw2lvZYCxWYS3GWwjjMivbr6oCQrVgc3njaHJ3GDX
-        QGC7RgU9YbXcvZjLdVA2mxb5IQ==
-X-Google-Smtp-Source: AGHT+IEMvNDUAog01rs4CwdBpxpoQSIRanKceTDHHAqosvyR1dwGOfCcPWL5cZ8GFNVP5mNVQ3B+kQ==
-X-Received: by 2002:a05:6512:31d0:b0:503:102c:7a05 with SMTP id j16-20020a05651231d000b00503102c7a05mr6997285lfe.58.1695126729291;
-        Tue, 19 Sep 2023 05:32:09 -0700 (PDT)
-Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id cx15-20020a05640222af00b005313c60165asm1811488edb.77.2023.09.19.05.32.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 05:32:08 -0700 (PDT)
-Message-ID: <ee19e076-8f9c-c5b2-3e25-2832dbdab25b@linaro.org>
-Date:   Tue, 19 Sep 2023 14:32:07 +0200
+        Tue, 19 Sep 2023 08:36:19 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB07FB8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:36:12 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rqgz34dJWzJsYW;
+        Tue, 19 Sep 2023 20:32:15 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 19 Sep 2023 20:36:01 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <sudeep.holla@arm.com>, <linux-arm-kernel@lists.infradead.org>
+CC:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>,
+        <linuxarm@huawei.com>, <yangyicong@hisilicon.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] arch_topology: Support SMT control on arm64
+Date:   Tue, 19 Sep 2023 20:33:19 +0800
+Message-ID: <20230919123319.23785-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2 1/4] dt-bindings: thermal: qcom-tsens: Add ipq5018
- compatible
-Content-Language: en-US
-To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        thara.gopinath@gmail.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dmitry.baryshkov@linaro.org
-References: <20230915121504.806672-1-quic_srichara@quicinc.com>
- <20230915121504.806672-2-quic_srichara@quicinc.com>
- <03b0cafa-49c7-8838-b116-927c9649cbd3@linaro.org>
- <f5aee51d-0345-1294-a85b-ea96ed937685@linaro.org>
- <1f09339e-b3b5-874c-4874-199e8c7ae890@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1f09339e-b3b5-874c-4874-199e8c7ae890@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/09/2023 09:22, Sricharan Ramabadhran wrote:
-> 
-> 
-> On 9/15/2023 6:15 PM, Krzysztof Kozlowski wrote:
->> On 15/09/2023 14:43, Krzysztof Kozlowski wrote:
->>> On 15/09/2023 14:15, Sricharan Ramabadhran wrote:
->>>> IPQ5018 has tsens v1.0 block with 4 sensors and 1 interrupt.
->>>>
->>>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->>>> ---
->>>>   [v2] Sorted the compatible and removed example
->>>>
->>>
->>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>
->> No, unreviewed. Your driver says it is not compatible with
->> qcom,tsens-v1. This does not look right :/
->>
-> 
->   Yes it is V1 IP, but since there is no RPM, to enable the IP/SENSORS
->   have to do those steps after calling init_common. Similar reason
->   added a new feat as well in patch #2 as well. Hence for this,
->   new compatible was required.
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-I dud not write about new or old compatible ("compatible" as noun). I
-wrote that it is not compatible ("compatible" as adjective) with v1.
+The core CPU control framework supports runtime SMT control which
+is not yet supported on arm64. Besides the general vulnerabilities
+concerns we want this runtime control on our arm64 server for:
 
-Best regards,
-Krzysztof
+- better single CPU performance in some cases
+- saving overall power consumption
+
+This patch implements it in the following aspects:
+
+- implement the callbacks of the core
+- update the SMT status after the topology enumerated on arm64
+- select HOTPLUG_SMT for arm64
+
+For disabling SMT we'll offline all the secondary threads and
+only leave the primary thread. Since we don't have restriction
+for primary thread selection, the first thread is chosen as the
+primary thread in this implementation.
+
+Tests has been done on our ACPI based arm64 server and on
+ACPI/OF based QEMU VMs.
+
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+ arch/arm64/Kconfig            |  1 +
+ drivers/base/arch_topology.c  | 63 +++++++++++++++++++++++++++++++++++
+ include/linux/arch_topology.h | 11 ++++++
+ 3 files changed, 75 insertions(+)
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index b10515c0200b..531a71c7f499 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -233,6 +233,7 @@ config ARM64
+ 	select HAVE_KRETPROBES
+ 	select HAVE_GENERIC_VDSO
+ 	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
++	select HOTPLUG_SMT if SMP
+ 	select IRQ_DOMAIN
+ 	select IRQ_FORCED_THREADING
+ 	select KASAN_VMALLOC if KASAN
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index b741b5ba82bd..75a693834fff 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -729,6 +729,63 @@ const struct cpumask *cpu_clustergroup_mask(int cpu)
+ 	return &cpu_topology[cpu].cluster_sibling;
+ }
+ 
++#ifdef CONFIG_HOTPLUG_SMT
++static int topology_smt_num_threads = 1;
++
++void __init topology_smt_set_num_threads(void)
++{
++	int cpu, sibling, threads;
++
++	/*
++	 * Walk all the CPUs to find the largest thread number, in case we're
++	 * on a heterogeneous platform with only part of the CPU cores support
++	 * SMT.
++	 *
++	 * Get the thread number by checking the CPUs with same core id
++	 * rather than checking the topology_sibling_cpumask(), since the
++	 * sibling mask will not cover all the CPUs if there's CPU offline.
++	 */
++	for_each_possible_cpu(cpu) {
++		threads = 1;
++
++		/* Invalid thread id, this CPU is not in a SMT core */
++		if (cpu_topology[cpu].thread_id == -1)
++			continue;
++
++		for_each_possible_cpu(sibling) {
++			if (sibling == cpu || cpu_topology[sibling].thread_id == -1)
++				continue;
++
++			if (cpu_topology[cpu].core_id == cpu_topology[sibling].core_id)
++				threads++;
++		}
++
++		if (threads > topology_smt_num_threads)
++			topology_smt_num_threads = threads;
++	}
++
++	/*
++	 * We don't support CONFIG_SMT_NUM_THREADS_DYNAMIC so make the
++	 * max_threads == num_threads.
++	 */
++	cpu_smt_set_num_threads(topology_smt_num_threads, topology_smt_num_threads);
++}
++
++/*
++ * On SMT Hotplug the primary thread of the SMT won't be disabled. For x86 they
++ * seem to have a primary thread for special purpose. For other arthitectures
++ * like arm64 there's no such restriction for a primary thread, so make the
++ * first thread in the SMT as the primary thread.
++ */
++bool topology_is_primary_thread(unsigned int cpu)
++{
++	if (cpu == cpumask_first(topology_sibling_cpumask(cpu)))
++		return true;
++
++	return false;
++}
++#endif
++
+ void update_siblings_masks(unsigned int cpuid)
+ {
+ 	struct cpu_topology *cpu_topo, *cpuid_topo = &cpu_topology[cpuid];
+@@ -841,6 +898,12 @@ void __init init_cpu_topology(void)
+ 		reset_cpu_topology();
+ 	}
+ 
++	/*
++	 * By this stage we get to know whether we support SMT or not, update
++	 * the information for the core.
++	 */
++	topology_smt_set_num_threads();
++
+ 	for_each_possible_cpu(cpu) {
+ 		ret = fetch_cache_info(cpu);
+ 		if (!ret)
+diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+index a07b510e7dc5..cf605a576e7b 100644
+--- a/include/linux/arch_topology.h
++++ b/include/linux/arch_topology.h
+@@ -92,6 +92,17 @@ void update_siblings_masks(unsigned int cpu);
+ void remove_cpu_topology(unsigned int cpuid);
+ void reset_cpu_topology(void);
+ int parse_acpi_topology(void);
++
++#ifdef CONFIG_HOTPLUG_SMT
++bool topology_smt_supported(void);
++bool topology_is_primary_thread(unsigned int cpu);
++void topology_smt_set_num_threads(void);
++#else
++static inline bool topology_smt_supported(void) { return false; }
++static inline bool topology_is_primary_thread(unsigned int cpu) { return false; }
++static inline void topology_smt_set_num_threads(void) { }
++#endif
++
+ #endif
+ 
+ #endif /* _LINUX_ARCH_TOPOLOGY_H_ */
+-- 
+2.24.0
 
