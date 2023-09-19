@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E893E7A611E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E557A611F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbjISL00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
+        id S230458AbjISL0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjISL0X (ORCPT
+        with ESMTP id S230349AbjISL03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:26:23 -0400
+        Tue, 19 Sep 2023 07:26:29 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C62B9ED
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:26:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 251B399;
+        Tue, 19 Sep 2023 04:26:23 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CECA51FB;
-        Tue, 19 Sep 2023 04:26:54 -0700 (PDT)
-Received: from [10.1.36.155] (e126864.cambridge.arm.com [10.1.36.155])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E62923F67D;
-        Tue, 19 Sep 2023 04:26:14 -0700 (PDT)
-Message-ID: <e892be93-6b5a-940c-c07f-7164646d5aca@arm.com>
-Date:   Tue, 19 Sep 2023 12:26:06 +0100
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B162C15;
+        Tue, 19 Sep 2023 04:27:00 -0700 (PDT)
+Received: from [10.1.25.36] (FVFF763DQ05P.cambridge.arm.com [10.1.25.36])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75AE13F67D;
+        Tue, 19 Sep 2023 04:26:21 -0700 (PDT)
+Message-ID: <3cd57606-5a82-8978-b057-8b3cfea8c62d@arm.com>
+Date:   Tue, 19 Sep 2023 12:26:20 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/3] KVM: arm64: Configure HCRX_EL2 dynamically
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH V5 - RESEND 1/3] coresight: etm: Override TRCIDR3.CCITMIN
+ on errata affected cpus
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Colton Lewis <coltonlewis@google.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
         linux-kernel@vger.kernel.org
-References: <20230915124840.474888-1-kristina.martsenko@arm.com>
- <20230915124840.474888-2-kristina.martsenko@arm.com>
- <865y47enz2.wl-maz@kernel.org>
-From:   Kristina Martsenko <kristina.martsenko@arm.com>
-In-Reply-To: <865y47enz2.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+References: <20230915093649.435163-1-anshuman.khandual@arm.com>
+ <20230915093649.435163-2-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20230915093649.435163-2-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -55,82 +52,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2023 12:10, Marc Zyngier wrote:
-> Hi Kristina,
+Hi Anshuman
 
-Hi Marc,
+On 15/09/2023 10:36, Anshuman Khandual wrote:
+> This work arounds errata 1490853 on Cortex-A76, and Neoverse-N1, errata
+> 1491015 on Cortex-A77, errata 1502854 on Cortex-X1, and errata 1619801 on
+> Neoverse-V1, based affected cpus, where software read for TRCIDR3.CCITMIN
+> field in ETM gets an wrong value.
+> 
+> If software uses the value returned by the TRCIDR3.CCITMIN register field,
+> then it will limit the range which could be used for programming the ETM.
+> In reality, the ETM could be programmed with a much smaller value than what
+> is indicated by the TRCIDR3.CCITMIN field and still function correctly.
+> 
+> If software reads the TRCIDR3.CCITMIN register field, corresponding to the
+> instruction trace counting minimum threshold, observe the value 0x100 or a
+> minimum cycle count threshold of 256. The correct value should be 0x4 or a
+> minimum cycle count threshold of 4.
+> 
+> This work arounds the problem via storing 4 in drvdata->ccitmin on affected
+> systems where the TRCIDR3.CCITMIN has been 256, thus preserving cycle count
+> threshold granularity.
+> 
 
-> On Fri, 15 Sep 2023 13:48:38 +0100,
-> Kristina Martsenko <kristina.martsenko@arm.com> wrote:
->>
->> At the moment the HCRX_EL2 system register is always initialized to
->> HCRX_GUEST_FLAGS when running a guest. Instead, choose the configuration
->> at vcpu reset time and save it in the vcpu struct, similarly to how
->> HCR_EL2 is set up. This will be needed in a subsequent change to
->> configure the register based on CPU features detected at runtime.
->>
->> Signed-off-by: Kristina Martsenko <kristina.martsenko@arm.com>
->> ---
->>  arch/arm64/include/asm/kvm_emulate.h    | 5 +++++
->>  arch/arm64/include/asm/kvm_host.h       | 1 +
->>  arch/arm64/kvm/arm.c                    | 1 +
->>  arch/arm64/kvm/hyp/include/hyp/switch.h | 2 +-
->>  arch/arm64/kvm/hyp/nvhe/hyp-main.c      | 1 +
->>  arch/arm64/kvm/hyp/nvhe/pkvm.c          | 1 +
->>  6 files changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
->> index 3d6725ff0bf6..64ea27e6deb1 100644
->> --- a/arch/arm64/include/asm/kvm_emulate.h
->> +++ b/arch/arm64/include/asm/kvm_emulate.h
->> @@ -134,6 +134,11 @@ static inline void vcpu_ptrauth_disable(struct kvm_vcpu *vcpu)
->>  	vcpu->arch.hcr_el2 &= ~(HCR_API | HCR_APK);
->>  }
->>  
->> +static inline void vcpu_reset_hcrx(struct kvm_vcpu *vcpu)
->> +{
->> +	vcpu->arch.hcrx_el2 = HCRX_GUEST_FLAGS;
->> +}
->> +
->>  static inline unsigned long vcpu_get_vsesr(struct kvm_vcpu *vcpu)
->>  {
->>  	return vcpu->arch.vsesr_el2;
->> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
->> index af06ccb7ee34..2764748756a7 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -487,6 +487,7 @@ struct kvm_vcpu_arch {
->>  
->>  	/* Values of trap registers for the guest. */
->>  	u64 hcr_el2;
->> +	u64 hcrx_el2;
+The patch looks good to me, please find a minor change below.
+
+> These errata information has been updated in arch/arm64/silicon-errata.rst,
+> but without their corresponding configs because these have been implemented
+> directly in the driver.
 > 
-> Do we really need this extra field? Yes, this is only an extra 64bit,
-> but they tend to accumulate...
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: James Clark <james.clark@arm.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Cc: coresight@lists.linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   Documentation/arch/arm64/silicon-errata.rst   | 10 ++++++
+>   .../coresight/coresight-etm4x-core.c          | 36 +++++++++++++++++++
+>   2 files changed, 46 insertions(+)
 > 
-> Looking at patch #3, the change is related to this:
-> 
->  	vcpu->arch.hcrx_el2 = HCRX_GUEST_FLAGS;
+> diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
+> index e96f057ea2a0..8f1be5da68b7 100644
+> --- a/Documentation/arch/arm64/silicon-errata.rst
+> +++ b/Documentation/arch/arm64/silicon-errata.rst
+> @@ -115,6 +115,10 @@ stable kernels.
+>   +----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Cortex-A76      | #1463225        | ARM64_ERRATUM_1463225       |
+>   +----------------+-----------------+-----------------+-----------------------------+
+> +| ARM            | Cortex-A76      | #1490853        | N/A                         |
+> ++----------------+-----------------+-----------------+-----------------------------+
+> +| ARM            | Cortex-A77      | #1491015        | N/A                         |
+> ++----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Cortex-A77      | #1508412        | ARM64_ERRATUM_1508412       |
+>   +----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
+> @@ -125,6 +129,8 @@ stable kernels.
+>   +----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Cortex-A715     | #2645198        | ARM64_ERRATUM_2645198       |
+>   +----------------+-----------------+-----------------+-----------------------------+
+> +| ARM            | Cortex-X1       | #1502854        | N/A                         |
+> ++----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Cortex-X2       | #2119858        | ARM64_ERRATUM_2119858       |
+>   +----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Cortex-X2       | #2224489        | ARM64_ERRATUM_2224489       |
+> @@ -133,6 +139,8 @@ stable kernels.
+>   +----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Neoverse-N1     | #1349291        | N/A                         |
+>   +----------------+-----------------+-----------------+-----------------------------+
+> +| ARM            | Neoverse-N1     | #1490853        | N/A                         |
+> ++----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Neoverse-N1     | #1542419        | ARM64_ERRATUM_1542419       |
+>   +----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
+> @@ -141,6 +149,8 @@ stable kernels.
+>   +----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | Neoverse-N2     | #2253138        | ARM64_ERRATUM_2253138       |
+>   +----------------+-----------------+-----------------+-----------------------------+
+> +| ARM            | Neoverse-V1     | #1619801        | N/A                         |
+> ++----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | MMU-500         | #841119,826419  | N/A                         |
+>   +----------------+-----------------+-----------------+-----------------------------+
+>   | ARM            | MMU-600         | #1076982,1209401| N/A                         |
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 77b0271ce6eb..c01455bb1caf 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -1150,6 +1150,39 @@ static void cpu_detect_trace_filtering(struct etmv4_drvdata *drvdata)
+>   	drvdata->trfcr = trfcr;
+>   }
+>   
+> +/*
+> + * The following errata on applicable cpu ranges, affect the CCITMIN filed
+> + * in TCRIDR3 register. Software read for the field returns 0x100 limiting
+> + * the cycle threshold granularity, whereas the right value should have
+> + * been 0x4, which is well supported in the hardware.
+> + */
+> +static struct midr_range etm_wrong_ccitmin_cpus[] = {
+> +	/* Erratum #1490853 - Cortex-A76 */
+> +	MIDR_RANGE(MIDR_CORTEX_A76, 0, 0, 4, 0),
+> +	/* Erratum #1490853 - Neoverse-N1 */
+> +	MIDR_RANGE(MIDR_NEOVERSE_N1, 0, 0, 4, 0),
+> +	/* Erratum #1491015 - Cortex-A77 */
+> +	MIDR_RANGE(MIDR_CORTEX_A77, 0, 0, 1, 0),
+> +	/* Erratum #1502854 - Cortex-X1 */
+> +	MIDR_REV(MIDR_CORTEX_X1, 0, 0),
+> +	/* Erratum #1619801 - Neoverse-V1 */
+> +	MIDR_REV(MIDR_NEOVERSE_V1, 0, 0),
+> +	{},
+> +};
 > +
-> +	if (cpus_have_final_cap(ARM64_HAS_MOPS)) {
-> +		vcpu->arch.hcrx_el2 |= HCRX_EL2_MSCEn;
-> +		vcpu->arch.hcrx_el2 |= HCRX_EL2_MCE2;
-> +	}
-> 
-> meaning that this is a constant value for a given boot of the host.
-> 
-> At this stage, I'd rather you define HCRX_GUEST_FLAGS as:
-> 
-> #define HCRX_GUEST_FLAGS \
-> 	(HCRX_EL2_SMPME | HCRX_EL2_TCR2En | \
-> 	 cpus_have_final_cap(ARM64_HAS_MOPS) ? \
-> 	 (HCRX_EL2_MSCEn | HCRX_EL2_MCE2) : 0)
-> 
-> and drop the new field altogether, until we have something that
-> requires dynamic flipping of an HCRX_EL2 field.
+> +static bool etm4_core_reads_wrong_ccitmin(struct etmv4_drvdata *drvdata)
+> +{
+> +	/*
+> +	 * Erratum affected cpus will read 256 as the minimum
+> +	 * instruction trace cycle counting threshold whereas
+> +	 * the correct value should be 4 instead. Override the
+> +	 * recorded value for 'drvdata->ccitmin' to workaround
+> +	 * this problem.
+> +	 */
+> +	return is_midr_in_range_list(read_cpuid_id(), etm_wrong_ccitmin_cpus) &&
+> +	       (drvdata->ccitmin == 256);
 
-Makes sense, the field isn't strictly required yet, I'll drop it in v2.
+minor nit: Having looked at this, it feels like, fixing the ccitmin
+value to 4, could be moved into this function. Otherwise,  we have all
+the required information about the erratum and the real application of
+work around is left in the caller, which kind of feels disconnected.
 
-Thanks,
-Kristina
+So, please could we rename the above function to:
+
+static void etm4_fixup_wrong_ccitmin(str..)
+{
+   /* Comment as above */
+    if (....)
+	drvdata->ccitmin = 4;
+}
+
+
+Rest looks fine to me.
+
+Suzuki
+
+
+> +}
+> +
+>   static void etm4_init_arch_data(void *info)
+>   {
+>   	u32 etmidr0;
+> @@ -1214,6 +1247,9 @@ static void etm4_init_arch_data(void *info)
+>   	etmidr3 = etm4x_relaxed_read32(csa, TRCIDR3);
+>   	/* CCITMIN, bits[11:0] minimum threshold value that can be programmed */
+>   	drvdata->ccitmin = FIELD_GET(TRCIDR3_CCITMIN_MASK, etmidr3);
+> +	if (etm4_core_reads_wrong_ccitmin(drvdata))
+> +		drvdata->ccitmin = 4;
+> +
+>   	/* EXLEVEL_S, bits[19:16] Secure state instruction tracing */
+>   	drvdata->s_ex_level = FIELD_GET(TRCIDR3_EXLEVEL_S_MASK, etmidr3);
+>   	drvdata->config.s_ex_level = drvdata->s_ex_level;
 
