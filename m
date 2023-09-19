@@ -2,181 +2,433 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CA47A6935
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFF27A6939
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbjISQxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 12:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        id S231208AbjISQyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 12:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbjISQxC (ORCPT
+        with ESMTP id S229552AbjISQyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:53:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8418D7;
-        Tue, 19 Sep 2023 09:52:55 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 16:52:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695142374;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=m+AZzA3esFSruRGBDJpj3n7WdACPkg/+kQPdyo3yLWI=;
-        b=hqrGCukhgfLloI0rpevc7zVN+rM37ZcJeIZOH3Di5JH+HzjnbmMtBKBUtG8MT/BM+F/in8
-        GyhlyTArBUXiwI8rJUg2gKSAtVSvZFxRnD+BiR8tiqK1MlPiUcOuhPYB3CD1obi4Lwbp7V
-        84b8DEDQpAYOG1+uwTRKvgG4sx8LkOvNkVOdQjOeJHphD7MXpqaIXt+E3rBrZiZm3B7BwL
-        ziH8g+BRq+9eVfJ2yPzwnszGGMdZlk7rq2qdHDUDZuxZsmFGeQuApZzc2rIRYpd0hq1Mq6
-        6ZzI0Bn8sqTV8obEoTD89f/h6R9jF6bnDfjyy3ZuBx1ZiNBTDTcO2nosFQn+7Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695142374;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=m+AZzA3esFSruRGBDJpj3n7WdACPkg/+kQPdyo3yLWI=;
-        b=r+FA/KNtvo18Tzra1Jq2Ar1ck9hpe65Dnku8RZXoYF7i9mewzMdF/7Md3UayQ3+BKT5Olo
-        7vKYKN+HGHGNoKAA==
-From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/shstk: Handle vfork clone failure correctly
-Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Tue, 19 Sep 2023 12:54:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73315AD;
+        Tue, 19 Sep 2023 09:54:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695142484; x=1726678484;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=+6xtP9UUM0huUnkoQoVqG+rtYNumzsl1UjCqCjUrlDk=;
+  b=MYEYx/bAwOPS0pvhWRje1uy5/l6tUvbYMqNq0GPxAfoLS7n7kfibEWkL
+   o+QKiW7tZB+k0Z42xlunrKrbhd2DPnGJ3coq3LvlyxbYX0x3/i5TokElJ
+   pbUthDIHoJ4ab0Gtqx6ULckAqUFZvBXkdH/Kz68yF6+OaPz8YqVDOEINY
+   aa/9bTbiKhnDo0F55qPtFGFss9i3+qgBhnzGHZLxL6VsjvIOD2hD6D5IN
+   Uk3ubDj6d/VBYeKgPfflOBlEtuiuPSsVBeZd8xWbWCKHHw+YqCFaBdZR9
+   dVU6XJuLrPRNQAuGBZBTN03DmSStnVLgIhhCW3d6oUmM+/7ZQ4wOfcZaU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="382752435"
+X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
+   d="scan'208";a="382752435"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 09:54:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="816516422"
+X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
+   d="scan'208";a="816516422"
+Received: from spandruv-desk1.amr.corp.intel.com ([10.209.80.116])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 09:54:42 -0700
+Message-ID: <67c85f083201ed2cda2cab198b40141ad21912a2.camel@linux.intel.com>
+Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "Xu, Even" <even.xu@intel.com>,
+        "jikos@kernel.org" <jikos@kernel.org>,
+        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "Lee, Jian Hui" <jianhui.lee@canonical.com>,
+        "Zhang, Lixu" <lixu.zhang@intel.com>,
+        "Ba, Najumon" <najumon.ba@intel.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 19 Sep 2023 09:54:41 -0700
+In-Reply-To: <CAAd53p6MA9YLbcXxpC8=YEtbO6frFJk1LQ1BNUgPk=r1_uR8iw@mail.gmail.com>
+References: <20230914041806.816741-1-kai.heng.feng@canonical.com>
+         <7b45ac2ed091497b4e21a6a5c19956161175ba16.camel@linux.intel.com>
+         <SN6PR11MB26245C44E84C37C1B551260EF4F6A@SN6PR11MB2624.namprd11.prod.outlook.com>
+         <CAAd53p5ywMVKWzhn0nYzvBnW_Bc=sntgBttJdcVUuf_a4AnX5w@mail.gmail.com>
+         <SN6PR11MB262473E2BF4057F4D285A613F4F6A@SN6PR11MB2624.namprd11.prod.outlook.com>
+         <DM6PR11MB26184A8A3F955589F5FC6836F4FBA@DM6PR11MB2618.namprd11.prod.outlook.com>
+         <CAAd53p4o1pB-yzpvUCYsvuYEvQQK0my=u-ogrByRCx_Lvns=hw@mail.gmail.com>
+         <bbbf36724d63f7532696a960a9d56d7ccd5a5bee.camel@linux.intel.com>
+         <CAAd53p6MA9YLbcXxpC8=YEtbO6frFJk1LQ1BNUgPk=r1_uR8iw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Message-ID: <169514237375.27769.13557625283763910359.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Tue, 2023-09-19 at 15:36 +0800, Kai-Heng Feng wrote:
+> On Mon, Sep 18, 2023 at 11:57=E2=80=AFPM srinivas pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> >=20
+> > Hi Kai-Heng,
+> > On Mon, 2023-09-18 at 09:17 +0800, Kai-Heng Feng wrote:
+> > > Hi Even,
+> > >=20
+> > > On Mon, Sep 18, 2023 at 8:33=E2=80=AFAM Xu, Even <even.xu@intel.com>
+> > > wrote:
+> > > >=20
+> > > > Hi, Kai-Heng,
+> > > >=20
+> > > > I just got feedback, for testing EHL S5 wakeup feature, you
+> > > > need
+> > > > several steps to setup and access
+> > > > "https://portal.devicewise.com/things/browse" to trigger wake.
+> > > > But currently, our test account of this website are all out of
+> > > > data.
+> > > > So maybe you need double check with the team who required you
+> > > > preparing the patch for the verification.
+> > >=20
+> > > The patch is to solve the GPE refcount overflow, while
+> > > maintaining S5
+> > > wakeup. I don't have any mean to test S5 wake.
+> > >=20
+> > The issue is not calling acpi_disable_gpe(). To reduce the scope of
+> > change can we just add that instead of a adding new callbacks. This
+> > way
+> > scope is reduced.
+>=20
+> This patch does exactly the same thing by letting PCI and ACPI handle
+> the PME and GPE.
+> Though the change seems to be bigger, it actually reduces the duped
+> code, while keep the S5 wakeup ability intact.
+It may be doing the same. But with long chain of calls without
+verification, I am not comfortable.
+This can be another patch by itself to use the framework.=20
 
-Commit-ID:     331955600ddf55a2c6d92a00f95b0865f1c74fc3
-Gitweb:        https://git.kernel.org/tip/331955600ddf55a2c6d92a00f95b0865f1c74fc3
-Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Fri, 08 Sep 2023 13:36:53 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Tue, 19 Sep 2023 09:18:34 -07:00
+But you are targeting a fix for overflow issue, which is separate from
+the use of PCI/ACPI framework.
 
-x86/shstk: Handle vfork clone failure correctly
+Thanks,
+Srinivas
 
-Shadow stacks are allocated automatically and freed on exit, depending
-on the clone flags. The two cases where new shadow stacks are not
-allocated are !CLONE_VM (fork()) and CLONE_VFORK (vfork()). For
-!CLONE_VM, although a new stack is not allocated, it can be freed normally
-because it will happen in the child's copy of the VM.
+>=20
+> Kai-Heng
+>=20
+> >=20
+> > Something like the attached
+> >=20
+> > Thanks,
+> > Srinivas
+> >=20
+> >=20
+> >=20
+> >=20
+> >=20
+> >=20
+> > > So if you also don't have ways to verify S5 wake functionality,
+> > > maybe
+> > > we can simply revert 2e23a70edabe=C2=A0 ("HID: intel-ish-hid: ipc:
+> > > finish
+> > > power flow for EHL OOB") as alternative?
+> > >=20
+> > > Kai-Heng
+> > >=20
+> > > > Thanks!
+> > > >=20
+> > > > Best Regards,
+> > > > Even Xu
+> > > >=20
+> > > > -----Original Message-----
+> > > > From: Xu, Even
+> > > > Sent: Friday, September 15, 2023 3:27 PM
+> > > > To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > > Cc: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>;
+> > > > jikos@kernel.org; benjamin.tissoires@redhat.com;
+> > > > linux-pm@vger.kernel.org; linux-pci@vger.kernel.org; Lee, Jian
+> > > > Hui
+> > > > <jianhui.lee@canonical.com>; Zhang, Lixu
+> > > > <Lixu.Zhang@intel.com>;
+> > > > Ba, Najumon <najumon.ba@intel.com>;
+> > > > linux-input@vger.kernel.org;
+> > > > linux-kernel@vger.kernel.org
+> > > > Subject: RE: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB
+> > > > wakeup
+> > > >=20
+> > > > Hi, Kai-Heng,
+> > > >=20
+> > > > I am also not familiar with this S5 wakeup test case.
+> > > > I already sent out mails to ask for help on it.
+> > > > Will come back to you once I get feedback.
+> > > > Thanks!
+> > > >=20
+> > > > Best Regards,
+> > > > Even Xu
+> > > >=20
+> > > > -----Original Message-----
+> > > > From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > > Sent: Friday, September 15, 2023 2:01 PM
+> > > > To: Xu, Even <even.xu@intel.com>
+> > > > Cc: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>;
+> > > > jikos@kernel.org; benjamin.tissoires@redhat.com;
+> > > > linux-pm@vger.kernel.org; linux-pci@vger.kernel.org; Lee, Jian
+> > > > Hui
+> > > > <jianhui.lee@canonical.com>; Zhang, Lixu
+> > > > <lixu.zhang@intel.com>;
+> > > > Ba, Najumon <najumon.ba@intel.com>;
+> > > > linux-input@vger.kernel.org;
+> > > > linux-kernel@vger.kernel.org
+> > > > Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB
+> > > > wakeup
+> > > >=20
+> > > > Hi Even,
+> > > >=20
+> > > > On Fri, Sep 15, 2023 at 1:31=E2=80=AFPM Xu, Even <even.xu@intel.com=
+>
+> > > > wrote:
+> > > > >=20
+> > > > > Hi, Srinivas,
+> > > > >=20
+> > > > > Sure, I will test it.
+> > > > > As long term not working on EHL, I doesn't have EHL board on
+> > > > > hand
+> > > > > right now, I can test this patch on other ISH related
+> > > > > platforms.
+> > > > > From the patch, it's focus on EHL platform, I assume Kai-Heng
+> > > > > already verified the function on EHL board.
+> > > >=20
+> > > > I only made sure the GPE overflow issue is fixed by the patch,
+> > > > but
+> > > > I didn't test the S5 wakeup.
+> > > > That's because I don't know how to test it on the EHL system I
+> > > > have.
+> > > > I'll test it if you can let me know how to test the S5 wakeup.
+> > > >=20
+> > > > Kai-Heng
+> > > >=20
+> > > > > I don't think it will take effect on other platforms, anyway,
+> > > > > I
+> > > > > will test it on the platforms I have to provide cross
+> > > > > platform
+> > > > > verification.
+> > > > >=20
+> > > > > Thanks!
+> > > > >=20
+> > > > > Best Regards,
+> > > > > Even Xu
+> > > > >=20
+> > > > > -----Original Message-----
+> > > > > From: srinivas pandruvada
+> > > > > <srinivas.pandruvada@linux.intel.com>
+> > > > > Sent: Friday, September 15, 2023 12:11 AM
+> > > > > To: Kai-Heng Feng <kai.heng.feng@canonical.com>;
+> > > > > jikos@kernel.org;
+> > > > > benjamin.tissoires@redhat.com
+> > > > > Cc: linux-pm@vger.kernel.org; linux-pci@vger.kernel.org; Lee,
+> > > > > Jian Hui
+> > > > > <jianhui.lee@canonical.com>; Xu, Even <even.xu@intel.com>;
+> > > > > Zhang,
+> > > > > Lixu
+> > > > > <lixu.zhang@intel.com>; Ba, Najumon <najumon.ba@intel.com>;
+> > > > > linux-input@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > > > Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB
+> > > > > wakeup
+> > > > >=20
+> > > > > Hi Even,
+> > > > >=20
+> > > > > On Thu, 2023-09-14 at 12:18 +0800, Kai-Heng Feng wrote:
+> > > > > > System cannot suspend more than 255 times because the
+> > > > > > driver
+> > > > > > doesn't
+> > > > > > have corresponding acpi_disable_gpe() for
+> > > > > > acpi_enable_gpe(), so
+> > > > > > the
+> > > > > > GPE refcount overflows.
+> > > > > >=20
+> > > > > > Since PCI core and ACPI core already handles PCI PME wake
+> > > > > > and
+> > > > > > GPE
+> > > > > > wake when the device has wakeup capability, use
+> > > > > > device_init_wakeup()
+> > > > > > to let them do the wakeup setting work.
+> > > > > >=20
+> > > > > > Also add a shutdown callback which uses
+> > > > > > pci_prepare_to_sleep()
+> > > > > > to
+> > > > > > let PCI and ACPI set OOB wakeup for S5.
+> > > > > >=20
+> > > > > Please test this change.
+> > > > >=20
+> > > > > Thanks,
+> > > > > Srinivas
+> > > > >=20
+> > > > > > Fixes: 2e23a70edabe ("HID: intel-ish-hid: ipc: finish power
+> > > > > > flow for
+> > > > > > EHL OOB")
+> > > > > > Cc: Jian Hui Lee <jianhui.lee@canonical.com>
+> > > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > > > > ---
+> > > > > > =C2=A0drivers/hid/intel-ish-hid/ipc/pci-ish.c | 59
+> > > > > > +++++++----------------
+> > > > > > --
+> > > > > > =C2=A01 file changed, 15 insertions(+), 44 deletions(-)
+> > > > > >=20
+> > > > > > diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> > > > > > b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> > > > > > index 55cb25038e63..65e7eeb2fa64 100644
+> > > > > > --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> > > > > > +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> > > > > > @@ -119,42 +119,6 @@ static inline bool
+> > > > > > ish_should_leave_d0i3(struct
+> > > > > > pci_dev *pdev)
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return !pm_resume_vi=
+a_firmware() || pdev->device =3D=3D
+> > > > > > CHV_DEVICE_ID;=C2=A0 }
+> > > > > >=20
+> > > > > > -static int enable_gpe(struct device *dev) -{ -#ifdef
+> > > > > > CONFIG_ACPI
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 acpi_status acpi_sts;
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct acpi_device *adev;
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct acpi_device_wakeup=
+ *wakeup;
+> > > > > > -
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 adev =3D ACPI_COMPANION(d=
+ev);
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!adev) {
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 dev_err(dev, "get acpi handle failed\n");
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 return -ENODEV;
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wakeup =3D &adev->wakeup;
+> > > > > > -
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 acpi_sts =3D acpi_enable_=
+gpe(wakeup->gpe_device,
+> > > > > > wakeup-
+> > > > > > > gpe_number);
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ACPI_FAILURE(acpi_sts=
+)) {
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 dev_err(dev, "enable ose_gpe failed\n");
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 return -EIO;
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > > > > -
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+> > > > > > -#else
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENODEV;
+> > > > > > -#endif
+> > > > > > -}
+> > > > > > -
+> > > > > > -static void enable_pme_wake(struct pci_dev *pdev) -{
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((pci_pme_capable(pdev=
+, PCI_D0) ||
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 pci_pme_capable(pdev, PCI_D3hot) ||
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 pci_pme_capable(pdev, PCI_D3cold)) &&
+> > > > > > !enable_gpe(&pdev-
+> > > > > > > dev)) {
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 pci_pme_active(pdev, true);
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 dev_dbg(&pdev->dev, "ish ipc driver pme
+> > > > > > wake
+> > > > > > enabled\n");
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > > > > -}
+> > > > > > -
+> > > > > > =C2=A0/**
+> > > > > > =C2=A0 * ish_probe() - PCI driver probe callback
+> > > > > > =C2=A0 * @pdev:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci device
+> > > > > > @@ -225,7 +189,7 @@ static int ish_probe(struct pci_dev
+> > > > > > *pdev,
+> > > > > > const
+> > > > > > struct pci_device_id *ent)
+> > > > > >=20
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Enable PME for EH=
+L */
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (pdev->device =3D=
+=3D EHL_Ax_DEVICE_ID)
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 enable_pme_wake(pdev);
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 device_init_wakeup(dev, true);
+> > > > > >=20
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D ish_init(ish=
+tp);
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
+> > > > > > @@ -248,6 +212,19 @@ static void ish_remove(struct pci_dev
+> > > > > > *pdev)
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ish_device_disable(i=
+shtp_dev);=C2=A0 }
+> > > > > >=20
+> > > > > > +
+> > > > > > +/**
+> > > > > > + * ish_shutdown() - PCI driver shutdown callback
+> > > > > > + * @pdev:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci device
+> > > > > > + *
+> > > > > > + * This function sets up wakeup for S5=C2=A0 */ static void
+> > > > > > +ish_shutdown(struct pci_dev *pdev) {
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (pdev->device =3D=3D E=
+HL_Ax_DEVICE_ID)
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 pci_prepare_to_sleep(pdev); }
+> > > > > > +
+> > > > > > =C2=A0static struct device __maybe_unused *ish_resume_device;
+> > > > > >=20
+> > > > > > =C2=A0/* 50ms to get resume response */
+> > > > > > @@ -370,13 +347,6 @@ static int __maybe_unused
+> > > > > > ish_resume(struct
+> > > > > > device *device)
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pci_dev *pdev=
+ =3D to_pci_dev(device);
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ishtp_device =
+*dev =3D pci_get_drvdata(pdev);
+> > > > > >=20
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* add this to finish pow=
+er flow for EHL */
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (dev->pdev->device =3D=
+=3D EHL_Ax_DEVICE_ID) {
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 pci_set_power_state(pdev, PCI_D0);
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 enable_pme_wake(pdev);
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 dev_dbg(dev->devc, "set power state to D0
+> > > > > > for
+> > > > > > ehl\n");
+> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > > > > -
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ish_resume_device =
+=3D device;
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->resume_flag =3D=
+ 1;
+> > > > > >=20
+> > > > > > @@ -392,6 +362,7 @@ static struct pci_driver ish_driver =3D {
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .id_table =3D ish_pc=
+i_tbl,
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .probe =3D ish_probe=
+,
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .remove =3D ish_remo=
+ve,
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .shutdown =3D ish_shutdow=
+n,
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .driver.pm =3D &ish_=
+pm_ops,
+> > > > > > =C2=A0};
+> > > > > >=20
+> > > > >=20
+> >=20
 
-However, for CLONE_VFORK the parent and the child are actually using the
-same shadow stack. So the kernel doesn't need to allocate *or* free a
-shadow stack for a CLONE_VFORK child. CLONE_VFORK children already need
-special tracking to avoid returning to userspace until the child exits or
-execs. Shadow stack uses this same tracking to avoid freeing CLONE_VFORK
-shadow stacks.
-
-However, the tracking is not setup until the clone has succeeded
-(internally). Which means, if a CLONE_VFORK fails, the existing logic will
-not know it is a CLONE_VFORK and proceed to unmap the parents shadow stack.
-This error handling cleanup logic runs via exit_thread() in the
-bad_fork_cleanup_thread label in copy_process(). The issue was seen in
-the glibc test "posix/tst-spawn3-pidfd" while running with shadow stack
-using currently out-of-tree glibc patches.
-
-Fix it by not unmapping the vfork shadow stack in the error case as well.
-Since clone is implemented in core code, it is not ideal to pass the clone
-flags along the error path in order to have shadow stack code have
-symmetric logic in the freeing half of the thread shadow stack handling.
-
-Instead use the existing state for thread shadow stacks to track whether
-the thread is managing its own shadow stack. For CLONE_VFORK, simply set
-shstk->base and shstk->size to 0, and have it mean the thread is not
-managing a shadow stack and so should skip cleanup work. Implement this
-by breaking up the CLONE_VFORK and !CLONE_VM cases in
-shstk_alloc_thread_stack() to separate conditionals since, the logic is
-now different between them. In the case of CLONE_VFORK && !CLONE_VM, the
-existing behavior is to not clean up the shadow stack in the child (which
-should go away quickly with either be exit or exec), so maintain that
-behavior by handling the CLONE_VFORK case first in the allocation path.
-
-This new logioc cleanly handles the case of normal, successful
-CLONE_VFORK's skipping cleaning up their shadow stack's on exit as well.
-So remove the existing, vfork shadow stack freeing logic. This is in
-deactivate_mm() where vfork_done is used to tell if it is a vfork child
-that can skip cleaning up the thread shadow stack.
-
-Fixes: b2926a36b97a ("x86/shstk: Handle thread shadow stack")
-Reported-by: H.J. Lu <hjl.tools@gmail.com>
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Tested-by: H.J. Lu <hjl.tools@gmail.com>
-Link: https://lore.kernel.org/all/20230908203655.543765-2-rick.p.edgecombe%40intel.com
----
- arch/x86/include/asm/mmu_context.h |  3 +--
- arch/x86/kernel/shstk.c            | 22 ++++++++++++++++++++--
- 2 files changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/include/asm/mmu_context.h b/arch/x86/include/asm/mmu_context.h
-index 416901d..8dac45a 100644
---- a/arch/x86/include/asm/mmu_context.h
-+++ b/arch/x86/include/asm/mmu_context.h
-@@ -186,8 +186,7 @@ do {						\
- #else
- #define deactivate_mm(tsk, mm)			\
- do {						\
--	if (!tsk->vfork_done)			\
--		shstk_free(tsk);		\
-+	shstk_free(tsk);			\
- 	load_gs_index(0);			\
- 	loadsegment(fs, 0);			\
- } while (0)
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index fd68992..ad63252 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -205,10 +205,21 @@ unsigned long shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long cl
- 		return 0;
- 
- 	/*
--	 * For CLONE_VM, except vfork, the child needs a separate shadow
-+	 * For CLONE_VFORK the child will share the parents shadow stack.
-+	 * Make sure to clear the internal tracking of the thread shadow
-+	 * stack so the freeing logic run for child knows to leave it alone.
-+	 */
-+	if (clone_flags & CLONE_VFORK) {
-+		shstk->base = 0;
-+		shstk->size = 0;
-+		return 0;
-+	}
-+
-+	/*
-+	 * For !CLONE_VM the child will use a copy of the parents shadow
- 	 * stack.
- 	 */
--	if ((clone_flags & (CLONE_VFORK | CLONE_VM)) != CLONE_VM)
-+	if (!(clone_flags & CLONE_VM))
- 		return 0;
- 
- 	size = adjust_shstk_size(stack_size);
-@@ -408,6 +419,13 @@ void shstk_free(struct task_struct *tsk)
- 	if (!tsk->mm || tsk->mm != current->mm)
- 		return;
- 
-+	/*
-+	 * If shstk->base is NULL, then this task is not managing its
-+	 * own shadow stack (CLONE_VFORK). So skip freeing it.
-+	 */
-+	if (!shstk->base)
-+		return;
-+
- 	unmap_shadow_stack(shstk->base, shstk->size);
- }
- 
