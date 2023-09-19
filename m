@@ -2,171 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD527A676A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258957A6767
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbjISO5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
+        id S232965AbjISO5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232971AbjISO5n (ORCPT
+        with ESMTP id S232132AbjISO5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:57:43 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE60BC;
-        Tue, 19 Sep 2023 07:57:37 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d815a5eee40so5245792276.2;
-        Tue, 19 Sep 2023 07:57:37 -0700 (PDT)
+        Tue, 19 Sep 2023 10:57:39 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42363DF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:57:33 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34e1757fe8fso4229165ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695135456; x=1695740256; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/mIaJyUn8RI0FK5RTul2K30K/J4q1nZarbiEpq/gFEs=;
-        b=mwNfggrNKm1prvFtB50FpKh6dZF10052gPlUlT48UhS2oAwF2wCVwT2eK6GhsrbIkZ
-         rpnWun2cRKQgH0BQOhjccWypYvBtjYEOE4/XeERPSVGKcz4phamgq5o+UkndAeUcsF3K
-         AnajZI6YOsz1qAmNb8jrpgwvY8sL/ZAIsPfrmnqOFxTQH+x5cVA4c0jOp9CjH361DGWj
-         kl012Lebqu9o0mmBXYXmhSjruc4M9+MyzWhJ2Lad4AokFeRuttsgDAwlSN6R16fK6TaR
-         F3W6buQqMsjZ9DuTfiQXNaX843241CXQz5l6xquL1Va0rOQkp0ny0+Sti7O0bgEBw5cW
-         gf0w==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695135452; x=1695740252; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4CskXmoiXW9hnAcfKU6exBcbR/GVhZTyuXSQTnBlnrc=;
+        b=J3Q4UeInizupUUgtJP6kaORNH5+Wpq1ulhd7sFqthUK+svYMNWVG3jOvkUSLtxrk1T
+         JRm3TQ+EqNPRQ4Z3CHW2bS2uZrookiwvyLeUCiyhADMWVO0gOJz9EcOHWuMcw5l56J/D
+         3ogFwXHlJ1Ns89aHi8ioOHhiPft2tg4Y+lgvVXGzZI8eifecY/WcEcGcjii7Ise2yaYT
+         azQhpLNGINHcVzZkulS1luo0T1/I7d5c6JQTs0bh5/5nr7f7FMcnpmV4attb0gX5q/bJ
+         HaSUX9e2fDdIdDiBAy7fBBH18rX2UZlz6b93lQXvkbvmrQx/o2GUr/yCWOwHzVjck8xn
+         mAZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695135456; x=1695740256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/mIaJyUn8RI0FK5RTul2K30K/J4q1nZarbiEpq/gFEs=;
-        b=EuoCACrCI5lNifWezOmX7pERPPjYSsVdDoQrreR7d5oh3uUUayTMcogRGXEkPS/FCl
-         LkciVJDf1ROT1cZyc99S0SvX0xioRy9vrTvY2y5lkiazzAmws5cHdj8KQLX0qN/zkAXR
-         DKgWTPAU7JWDcYeg+9U7+0VopKVhn6zTI/05zB2ZMwGFAj1J4kQVYTgSkTw9xbLx18M5
-         n6PryVT1BWbMCd1U2hofdUiGpPB6vhgxUzRUq6tld1VMHy8o1e3TVnCEy5MNxTXGjp4c
-         RM1lXF8mZ2LJVIc1h2B8ixZ9JZM2wLReiTMGBzc5aM0C0Mvk0QtCcpfTB7Y0xOLCA2r4
-         Hjsg==
-X-Gm-Message-State: AOJu0YwEs7qXJjuCkKtoWps07E5e0KQ2lVBtj/w0JHZr/bmrlcjC08Cz
-        cIhnxtbarbB3Eanu1GYSdJ9zN0N/qkaLhiUE1C+lGOrglgmObw==
-X-Google-Smtp-Source: AGHT+IGcBGsVxn25jswNs80R/yoKy6qzKyJOnTD3BOHxaRGMJ0JXIB34kFzqj6wy6lqaw/mBs9oZ3uCr7ZvPWzMti6E=
-X-Received: by 2002:a25:76c9:0:b0:d12:ab1:d88a with SMTP id
- r192-20020a2576c9000000b00d120ab1d88amr12466931ybc.40.1695135456312; Tue, 19
- Sep 2023 07:57:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695135452; x=1695740252;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4CskXmoiXW9hnAcfKU6exBcbR/GVhZTyuXSQTnBlnrc=;
+        b=eBlmYo/vJF60bkBcOaksjvy0QSy/VSimZqWMhIu9mQpjg/IuhU02nyCZ4+m1Yy898n
+         RWxN0rTrJJn++mKyUnhDZPtFHeU46O/swhhfRRqfRDXYVG0b9/SuO4W2juIyTMP73Dz6
+         03roRNxtZIIfXYqTTpG8MIj/aCWA7maNyKaL1HUhdxroYuJaSbFYrEb5f2KPsWgymU9m
+         2GPj9AdwYR3g/KhSCPicQ8ODQy8WfZz/K1UkALPhUA42ttcxAoRT+IUWFfs1e0lkCLv+
+         WdJuAnTXCp/hyCqJxLcpe3NNKftjLlq79JVHk2QPg7AjXneqYYClA3Dgm3CWzY0bm2sj
+         SQFQ==
+X-Gm-Message-State: AOJu0Yx/wEP17uwcfNFd+BJVBo+Qn5b18w86uGUg619ccdR2VTomJxY+
+        +wq1x3hLsm/yH87WtwWTsJE8QXByN28bHY7jF+NtMA==
+X-Google-Smtp-Source: AGHT+IFoU1xSrpN8T9NZbbiPFq4PJmz45e4oyk6jf9b76ts6icpFO/GTzkmUAgFmG91OIm+/KYtk9g==
+X-Received: by 2002:a92:d5ce:0:b0:34f:b824:5844 with SMTP id d14-20020a92d5ce000000b0034fb8245844mr20914ilq.3.1695135452568;
+        Tue, 19 Sep 2023 07:57:32 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id o16-20020a92dad0000000b0034ff5fd4ffesm1053313ilq.71.2023.09.19.07.57.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 07:57:31 -0700 (PDT)
+Message-ID: <c20d61f4-0e4f-49a8-804f-d827ff705dcf@kernel.dk>
+Date:   Tue, 19 Sep 2023 08:57:30 -0600
 MIME-Version: 1.0
-References: <87zg1u1h5t.fsf@oracle.com> <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net> <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net> <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net> <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
- <877comw8m7.ffs@tglx> <7EB81196-3A32-4638-A076-0C0CFF722996@zytor.com>
-In-Reply-To: <7EB81196-3A32-4638-A076-0C0CFF722996@zytor.com>
-From:   Matt Turner <mattst88@gmail.com>
-Date:   Tue, 19 Sep 2023 10:57:24 -0400
-Message-ID: <CAEdQ38H8QZvnwTMJ+-y56je7--Z2Ru-4kmPo7zcW3X8mxfXv1Q@mail.gmail.com>
-Subject: Re: Arches that don't support PREEMPT
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-alpha@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHSET v4 0/5] Add io_uring support for waitid
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de, asml.silence@gmail.com
+References: <20230909151124.1229695-1-axboe@kernel.dk>
+ <26ddc629-e685-49b9-9786-73c0f89854d8@kernel.dk>
+ <20230919-beinen-fernab-dbc587acb08d@brauner>
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230919-beinen-fernab-dbc587acb08d@brauner>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 10:51=E2=80=AFAM H. Peter Anvin <hpa@zytor.com> wro=
-te:
->
-> On September 19, 2023 7:17:04 AM PDT, Thomas Gleixner <tglx@linutronix.de=
-> wrote:
-> >On Tue, Sep 19 2023 at 15:48, John Paul Adrian Glaubitz wrote:
-> >> On Tue, 2023-09-19 at 15:42 +0200, Peter Zijlstra wrote:
-> >>> > The agreement to kill off ia64 wasn't an invitation to kill off oth=
-er stuff
-> >>> > that people are still working on! Can we please not do this?
-> >>>
-> >>> If you're working on one of them, then surely it's a simple matter of
-> >>> working on adding CONFIG_PREEMPT support :-)
-> >>
-> >> As Geert poined out, I'm not seeing anything particular problematic wi=
-th the
-> >> architectures lacking CONFIG_PREEMPT at the moment. This seems to be m=
-ore
-> >> something about organizing KConfig files.
-> >>
-> >> I find it a bit unfair that maintainers of architectures that have hug=
-e companies
-> >> behind them use their manpower to urge less popular architectures for =
-removal just
-> >> because they don't have 150 people working on the port so they can kee=
-p up with
-> >> design changes quickly.
-> >
-> >I don't urge for removal. I just noticed that these four architectures
-> >lack PREEMPT support. The only thing which is missing is the actual
-> >preemption point in the return to kernel code path.
-> >
-> >But otherwise it should just work, which I obviously can't confirm :)
-> >
-> >Even without that preemption point it should build and boot. There might
-> >be some minor latency issues when that preemption point is not there,
-> >but adding it is not rocket science either. It's probably about 10 lines
-> >of ASM code, if at all.
-> >
-> >Though not adding that might cause a blocking issue for the rework of
-> >the whole preemption logic in order to remove the sprinkled around
-> >cond_resched() muck or force us to maintain some nasty workaround just
-> >for the benefit of a few stranglers.
-> >
-> >So I can make the same argument the other way around, that it's
-> >unjustified that some architectures which are just supported for
-> >nostalgia throw roadblocks into kernel developemnt.
-> >
-> >If my ALPHA foo wouldn't be very close to zero, I'd write that ASM hack
-> >myself, but that's going to cost more of my and your time than it's
-> >worth the trouble,
-> >
-> >Hmm. I could delegate that to Linus, he might still remember :)
-> >
-> >Thanks,
-> >
-> >        tglx
->
-> Does *anyone* actually run Alpha at this point?
+On 9/19/23 8:45 AM, Christian Brauner wrote:
+> On Tue, Sep 12, 2023 at 11:06:39AM -0600, Jens Axboe wrote:
+>> On 9/9/23 9:11 AM, Jens Axboe wrote:
+>>> Hi,
+>>>
+>>> This adds support for IORING_OP_WAITID, which is an async variant of
+>>> the waitid(2) syscall. Rather than have a parent need to block waiting
+>>> on a child task state change, it can now simply get an async notication
+>>> when the requested state change has occured.
+>>>
+>>> Patches 1..4 are purely prep patches, and should not have functional
+>>> changes. They split out parts of do_wait() into __do_wait(), so that
+>>> the prepare-to-wait and sleep parts are contained within do_wait().
+>>>
+>>> Patch 5 adds io_uring support.
+>>>
+>>> I wrote a few basic tests for this, which can be found in the
+>>> 'waitid' branch of liburing:
+>>>
+>>> https://git.kernel.dk/cgit/liburing/log/?h=waitid
+>>>
+>>> Also spun a custom kernel for someone to test it, and no issues reported
+>>> so far.
+>>
+>> Forget to mention that I also ran all the ltp testcases for any wait*
+>> syscall test, and everything still passes just fine.
+> 
+> I think the struct that this ends up exposing to io_uring is pretty ugly
+> and it would warrant a larger cleanup. I wouldn't be surprised if you
+> get some people complain about this.
+> 
+> Other than that I don't have any complaints about the series.
 
-I do, as part of maintaining the Gentoo distribution for Alpha.
+io_uring only really needs child_wait and wo_pid on the wait_opts side,
+for waitid_info it needs all of it. I'm assuming your worry is about the
+former rather than the latter.
 
-I'm listed in MAINTAINERS, but really only so I can collect patches
-send them to Linus after testing. I don't have copious amounts of free
-time to be proactive in kernel development and it's also not really my
-area of expertise so I'm nowhere near effective at it.
+I think we could only make this smaller if we had a separate entry point
+for io_uring, which would then make the code reuse a lot smaller. Right
+now we just have __do_wait() abstracted out, and if we added a third
+struct that has child_wait/wo_pid and exposed just that, we could not
+share this infrastructure.
 
-I would be happy to test any patches sent my way (but I acknowledge
-that writing these patches wouldn't be high on anyone's priority list,
-etc)
+So as far as I can tell, there's no way to make the sharing less than it
+is, at least not without adding cost of more code and less reuse.
 
-(A video my friend Ian and I made about a particularly large
-AlphaServer I have in my basement, in case anyone is interested:
-https://www.youtube.com/watch?v=3Dz658a8Js5qg)
+Shrug?
+
+-- 
+Jens Axboe
+
