@@ -2,81 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F10E47A5C8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CF27A5CAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbjISI3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        id S231696AbjISIeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbjISI24 (ORCPT
+        with ESMTP id S231614AbjISIea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:28:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7989D13E;
-        Tue, 19 Sep 2023 01:28:50 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695112128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/J3RiWKdg8c3IzdjWmLh9zLCv7VF76fYepXRQtkHb0=;
-        b=U3ecSGCa3F2gvLLwz1Ij5s049fnE+mB8KhUG/kINpG9gVGfyTRvYvyyxoFnM0is9mqZ0Um
-        RSFc8r37Ueg5axCqiQW0rdvc8RErKGb7CCXtfrEA+F38yE/AwhQCiw6v622RKTttoTvTCz
-        RTJsf6jx1UlOXNAoqOTC/hQxrmZqNEgjEcZByd3DjNjh5CD9r/CIe13PTRRCK31Q+Tjkgd
-        HZeL25W9eVSai+S77A3weyQcehuhDyUfqHcTht0GIWMmWmyLC8mi+I7+W8KgGxNCqcw46D
-        Q1jY8vAZtTR3H02IWJgTCCmosSGbuL+SzPWJ3XPqStgVHKCRxUiHTGzMUMrnUA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695112128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/J3RiWKdg8c3IzdjWmLh9zLCv7VF76fYepXRQtkHb0=;
-        b=Sl2Ncxcrp84n8qOLd17+QPVSsnJWwjTJhHEW5C5C3dyLrVSuoCsaT/WfyM/4UuDdWtvOxm
-        EdqWbhFdtlEDc9Bg==
-To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
-        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        andrew.cooper3@citrix.com, jiangshanlai@gmail.com
-Subject: Re: [PATCH v10 36/38] x86/fred: Add fred_syscall_init()
-In-Reply-To: <20230914044805.301390-37-xin3.li@intel.com>
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-37-xin3.li@intel.com>
-Date:   Tue, 19 Sep 2023 10:28:47 +0200
-Message-ID: <87v8c6woqo.ffs@tglx>
+        Tue, 19 Sep 2023 04:34:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D0E11C;
+        Tue, 19 Sep 2023 01:34:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DD7EC433BB;
+        Tue, 19 Sep 2023 08:34:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695112462;
+        bh=v6C3Kv6sJefn6hl+Ywp4TwA5HQWieFzbjla5S20Jk3c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WMj9st1OEM7HmnN+05vosvwSmvE79S0TbOnXgaZRa1txEZLAh8GLVYJzBNhtRRFIM
+         +o8hj0iuB4zgs2Fcy83+2fC824AlB0xVGy6HD2yHvhHdaGOD8j9BXYpiDfT8Cp7e/w
+         JtepQ/HfLFWvv4DZzT5NT19hYrnqCL9H2jAWz9VY=
+Date:   Tue, 19 Sep 2023 10:29:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Edward AD <twuufnxlz@gmail.com>
+Cc:     eadavis@sina.com, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] tty: fix memory leak in gsm_activate_mux
+Message-ID: <2023091922-unplug-flask-f2e5@gregkh>
+References: <2023091954-algebra-hastiness-3bb8@gregkh>
+ <20230919080207.3654671-2-twuufnxlz@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919080207.3654671-2-twuufnxlz@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13 2023 at 21:48, Xin Li wrote:
-> +static inline void fred_syscall_init(void)
-> +{
-> +	/*
-> +	 * Per FRED spec 5.0, FRED uses the ring 3 FRED entrypoint for SYSCALL
-> +	 * and SYSENTER, and ERETU is the only legit instruction to return to
-> +	 * ring 3, as a result there is _no_ need to setup the SYSCALL and
-> +	 * SYSENTER MSRs.
-> +	 *
-> +	 * Note, both sysexit and sysret cause #UD when FRED is enabled.
-> +	 */
-> +	wrmsrl(MSR_LSTAR, 0ULL);
-> +	wrmsrl_cstar(0ULL);
+On Tue, Sep 19, 2023 at 04:02:08PM +0800, Edward AD wrote:
+> When the call to gsm_register_devices() fails, we need to reclaim the memory
+> requested in gsm_dlci_alloc().
+> 
+> Fixes: 01aecd917114 ("tty: n_gsm: fix tty registration before control channel open")
+> Reported-and-tested-by: syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com
+> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
 
-That write is pointless. See the comment in wrmsrl_cstar().
+Please use your company name/email address, and then just set a manual
+"From:" line as the first line in the changelog as the documentation
+asks.  That's how developers work around their broken corporate email
+systems (but really, you should go and poke your IT group to fix it.)
 
-Thanks,
+thanks,
 
-        tglx
+greg k-h
