@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 504047A64D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C8A7A64D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbjISNX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36934 "EHLO
+        id S232263AbjISNZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231960AbjISNX4 (ORCPT
+        with ESMTP id S231849AbjISNZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:23:56 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C94EC
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:23:48 -0700 (PDT)
-Received: from spock.localnet (unknown [94.142.239.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 7E91D1505BC0;
-        Tue, 19 Sep 2023 15:23:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1695129822;
+        Tue, 19 Sep 2023 09:25:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BA4EC
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:25:22 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695129920;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Tq3JgcNh99UaG2q9/1V/2rlmDp+hgSkFOwAuTwify40=;
-        b=EFQn3dLIjGw2NfMY0Mw+zSYng4/2xEivklVs1aPyZtufAL0Lq4Nqiyi6HpVhdS7itx/CEb
-        yGDsRTNNyQYfqfPlXZMoj8OyQJa/NAyjd66+SF4pLuPq6x1A6I4tBCO2EoTGAuKCesF2dv
-        O+DFMhteDnsG9m5MrIY6EwOyoYqC7nA=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-kernel@vger.kernel.org
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Aravind Iddamsetty <aravind.iddamsetty@intel.com>,
-        Fei Yang <fei.yang@intel.com>,
-        Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: [REGRESSION] [BISECTED] Panic in gen8_ggtt_insert_entries() with v6.5
-Date:   Tue, 19 Sep 2023 15:23:28 +0200
-Message-ID: <2612319.ElGaqSPkdT@natalenko.name>
-In-Reply-To: <6287208.lOV4Wx5bFT@natalenko.name>
-References: <4857570.31r3eYUQgx@natalenko.name> <6287208.lOV4Wx5bFT@natalenko.name>
+        bh=tBxxm4ru3/VDC+4Jdk17s0visMQQa1pK33oOFPmvJJ4=;
+        b=wzxUu24gogAAAj4c9kQnjebK37Y9s99q7EQDwun6AAnJ1T6yZo4QZ32YKt9XxBlw9Ujh5m
+        UgmeY6XjPOWljLTVz8hascxWgGje/hhJ9pcZw/QfnJo6GaDht7S3kGbk8oLMOyGJWeitwR
+        +eeV33aqvXx/xMj2vJa6inCUcfkDkLURf8Hwh/j6dGWaxfmJqI74cI5IsBpsH9ED0lr9H7
+        3orm9hhmWotGOhpsSFdfFShrHn3p5oO7/U6A8I7OQ4rL8ksSw17Zb2W5tRrh3yINkaZk/7
+        MvVeeIagYaHu0S7oRe4aFZkp8Ov5kI+mEo+sgBGEM+Vz+Tfw62RAnFzrlaZpcA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695129920;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tBxxm4ru3/VDC+4Jdk17s0visMQQa1pK33oOFPmvJJ4=;
+        b=Jc8zgpLP8A7UB29/YZIxhWwatrV4iyHXB1ZeDZr7CsNwIiuNl3xpqXT0OHBUKb/yBblClE
+        +l9HZQ76ox1GVnDg==
+To:     Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+In-Reply-To: <ZQlV5l4pbKunQJug@gmail.com>
+References: <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+ <87edj64rj1.fsf@oracle.com>
+ <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+ <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+ <87cyyfxd4k.ffs@tglx>
+ <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+ <ZQlV5l4pbKunQJug@gmail.com>
+Date:   Tue, 19 Sep 2023 15:25:19 +0200
+Message-ID: <87il86wb0g.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart5147933.GXAFRqVoOG";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,165 +73,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart5147933.GXAFRqVoOG
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-kernel@vger.kernel.org
-Date: Tue, 19 Sep 2023 15:23:28 +0200
-Message-ID: <2612319.ElGaqSPkdT@natalenko.name>
-In-Reply-To: <6287208.lOV4Wx5bFT@natalenko.name>
-MIME-Version: 1.0
+Ingo!
 
-/cc Bagas as well (see below).
+On Tue, Sep 19 2023 at 10:03, Ingo Molnar wrote:
+> * Linus Torvalds <torvalds@linux-foundation.org> wrote:
+>> Then the question becomes whether we'd want to introduce a *new* concept, 
+>> which is a "if you are going to schedule, do it now rather than later, 
+>> because I'm taking a lock, and while it's a preemptible lock, I'd rather 
+>> not sleep while holding this resource".
+>
+> Something close to this concept is naturally available on PREEMPT_RT 
+> kernels, which only use a single central lock primitive (rt_mutex), but it 
+> would have be added explicitly for regular kernels.
+>
+> We could do the following intermediate step:
+>
+>  - Remove all the random cond_resched() points such as might_sleep()
+>  - Turn all explicit cond_resched() points into 'ideal point to reschedule'.
+>
+>  - Maybe even rename it from cond_resched() to resched_point(), to signal 
+>    the somewhat different role.
+>
+> While cond_resched() and resched_point() are not 100% matches, they are 
+> close enough, as most existing cond_resched() points were added to places 
+> that cause the least amount of disruption with held resources.
+>
+> But I think it would be better to add resched_point() as a new API, and add 
+> it to places where there's a performance benefit. Clean slate, 
+> documentation, and all that.
 
-On =C3=BAter=C3=BD 19. z=C3=A1=C5=99=C3=AD 2023 10:26:42 CEST Oleksandr Nat=
-alenko wrote:
-> /cc Matthew Wilcox and Andrew Morton because of folios (please see below).
->=20
-> On sobota 2. z=C3=A1=C5=99=C3=AD 2023 18:14:12 CEST Oleksandr Natalenko w=
-rote:
-> > Hello.
-> >=20
-> > Since v6.5 kernel the following HW:
-> >=20
-> > * Lenovo T460s laptop with Skylake GT2 [HD Graphics 520] (rev 07)
-> > * Lenovo T490s laptop with WhiskeyLake-U GT2 [UHD Graphics 620] (rev 02)
-> >=20
-> > is affected by the following crash once KDE on either X11 or Wayland is=
- started:
-> >=20
-> > i915 0000:00:02.0: enabling device (0006 -> 0007)
-> > i915 0000:00:02.0: vgaarb: deactivate vga console
-> > i915 0000:00:02.0: vgaarb: changed VGA decodes: olddecodes=3Dio+mem,dec=
-odes=3Dio+mem:owns=3Dmem
-> > i915 0000:00:02.0: [drm] Finished loading DMC firmware i915/skl_dmc_ver=
-1_27.bin (v1.27)
-> > [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 on minor 1
-> > fbcon: i915drmfb (fb0) is primary device
-> > i915 0000:00:02.0: [drm] fb0: i915drmfb frame buffer device
-> > =E2=80=A6
-> > memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=3D674 'kwin_wa=
-yland'
-> > BUG: unable to handle page fault for address: ffffb422c2800000
-> > #PF: supervisor write access in kernel mode
-> > #PF: error_code(0x0002) - not-present page
-> > PGD 100000067 P4D 100000067 PUD 1001df067 PMD 10d1cf067 PTE 0
-> > Oops: 0002 [#1] PREEMPT SMP PTI
-> > CPU: 1 PID: 674 Comm: kwin_wayland Not tainted 6.5.0-pf1 #1 a6c58ff41a7=
-b8bb16a19f5af9e0e9bce20f9f38d
-> > Hardware name: LENOVO 20FAS2BM0F/20FAS2BM0F, BIOS N1CET90W (1.58 ) 11/1=
-5/2022
-> > RIP: 0010:gen8_ggtt_insert_entries+0xc2/0x140 [i915]
-> > =E2=80=A6
-> > Call Trace:
-> >  <TASK>
-> >  intel_ggtt_bind_vma+0x3e/0x60 [i915 a83fdc6539431252dba13053979a8b680a=
-f86836]
-> >  i915_vma_bind+0x216/0x4b0 [i915 a83fdc6539431252dba13053979a8b680af868=
-36]
-> >  i915_vma_pin_ww+0x405/0xa80 [i915 a83fdc6539431252dba13053979a8b680af8=
-6836]
-> >  __i915_ggtt_pin+0x5a/0x130 [i915 a83fdc6539431252dba13053979a8b680af86=
-836]
-> >  i915_ggtt_pin+0x78/0x1f0 [i915 a83fdc6539431252dba13053979a8b680af8683=
-6]
-> >  __intel_context_do_pin_ww+0x312/0x700 [i915 a83fdc6539431252dba1305397=
-9a8b680af86836]
-> >  i915_gem_do_execbuffer+0xfc6/0x2720 [i915 a83fdc6539431252dba13053979a=
-8b680af86836]
-> >  i915_gem_execbuffer2_ioctl+0x111/0x260 [i915 a83fdc6539431252dba130539=
-79a8b680af86836]
-> >  drm_ioctl_kernel+0xca/0x170
-> >  drm_ioctl+0x30f/0x580
-> >  __x64_sys_ioctl+0x94/0xd0
-> >  do_syscall_64+0x5d/0x90
-> >  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > =E2=80=A6
-> > note: kwin_wayland[674] exited with irqs disabled
-> >=20
-> > RIP seems to translate into this:
-> >=20
-> > $ scripts/faddr2line drivers/gpu/drm/i915/gt/intel_ggtt.o gen8_ggtt_ins=
-ert_entries+0xc2
-> > gen8_ggtt_insert_entries+0xc2/0x150:
-> > writeq at /home/pf/work/devel/own/pf-kernel/linux/./arch/x86/include/as=
-m/io.h:99
-> > (inlined by) gen8_set_pte at /home/pf/work/devel/own/pf-kernel/linux/dr=
-ivers/gpu/drm/i915/gt/intel_ggtt.c:257
-> > (inlined by) gen8_ggtt_insert_entries at /home/pf/work/devel/own/pf-ker=
-nel/linux/drivers/gpu/drm/i915/gt/intel_ggtt.c:300
-> >=20
-> > Probably, recent PTE-related changes are relevant:
-> >=20
-> > $ git log --oneline --no-merges v6.4..v6.5 -- drivers/gpu/drm/i915/gt/i=
-ntel_ggtt.c
-> > 3532e75dfadcf drm/i915/uc: perma-pin firmwares
-> > 4722e2ebe6f21 drm/i915/gt: Fix second parameter type of pre-gen8 pte_en=
-code callbacks
-> > 9275277d53248 drm/i915: use pat_index instead of cache_level
-> > 5e352e32aec23 drm/i915: preparation for using PAT index
-> > 341ad0e8e2542 drm/i915/mtl: Add PTE encode function
-> >=20
-> > Also note Lenovo T14s laptop with TigerLake-LP GT2 [Iris Xe Graphics] (=
-rev 01) is not affected by this issue.
-> >=20
-> > Full dmesg with DRM debug enabled is available in the bugreport I've re=
-ported earlier [1]. I'm sending this email to make the issue more visible.
-> >=20
-> > Please help.
-> >=20
-> > Thanks.
-> >=20
-> > [1] https://gitlab.freedesktop.org/drm/intel/-/issues/9256
->=20
-> Matthew,
->=20
-> Andrzej asked me to try to revert commits 0b62af28f249, e0b72c14d8dc and =
-1e0877d58b1e, and reverting those fixed the i915 crash for me. The e0b72c14=
-d8dc and 1e0877d58b1e commits look like just prerequisites, so I assume 0b6=
-2af28f249 ("i915: convert shmem_sg_free_table() to use a folio_batch") is t=
-he culprit here.
->=20
-> Could you please check this?
->=20
-> Our conversation with Andrzej is available at drm-intel GitLab [1].
->=20
-> Thanks.
->=20
-> [1] https://gitlab.freedesktop.org/drm/intel/-/issues/9256
+Lets not go there. You just replace one magic mushroom with a different
+flavour. We want to get rid of them completely.
 
-Bagas,
+The whole point is to let the scheduler decide and give it enough
+information to make informed decisions.
 
-would you mind adding this to the regression tracker please?
+So with the LAZY scheme in effect, there is no real reason to have these
+extra points and I rather add task::sleepable_locks_held and do that
+accounting in the relevant lock/unlock paths. Based on that the
+scheduler can decide whether it grants a time slice expansion or just
+says no.
 
-Thanks.
+That's extremly cheap and well defined.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
---nextPart5147933.GXAFRqVoOG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+You can document the hell out of resched_point(), but it won't be any
+different from the existing ones and always subject to personal
+preference and goals and its going to be sprinkled all over the place
+just like the existing ones. So where is the gain?
 
------BEGIN PGP SIGNATURE-----
+Thanks,
 
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmUJoNAACgkQil/iNcg8
-M0vh4xAAt1VYPW8Fr0UHrGvXeZmvGqtxzOHB2BsshvL666iQn9vyVPPz0DyOPLa+
-MlrXGBuvObmjsTyYF/bPlfFACWcP0Sx3AVFD8BSJ9spDNL7DdUPEpYLcY2Q0UZTr
-JFJ/BcASjOr7LIUIG5hsOJY7cWIj1l796QtsSjRXr5QqEOzoqm0c24B4VTPbNyDI
-TEsqg3sy52OvDqvcn6EcSwltn3hrxxIUCF6bxgxselWwwmUs6NosvoC4g+rQRCaX
-wGB5d8DTDTt8TBK3Ye/p4l1WgnCjoWexETPOF9j46ZdsxVDYZHP7ZzFlMuZ4SeEu
-M3mew5MFlvCxJkVCeIzn7M35PiAr2fkHCpHpEdH0xdhNSufGk01NtCBBBeNlqYi4
-xBM9cYtNGT1lUw+74XAYnkiHwlYQVYVgAV9uW2Op80zX2NYmEpt9afQfL3nmqxk/
-1S/1+x7eszn7PDW8jxzSsvZSCVYEglUHbfOT5/fp81VKh0Q9eLWrU6wOM8CHcDSe
-ff3hXUH8MsTHTIgYX7nzhmsiVLu5K4j3S/xIJMFWyg2G8Gs8irdfkEPQw2P0f8+5
-1zAG7WMsb3CDhTOAdfmWQ5GtmxKjExbt850Ujoei5mXtG55kxLztzHEylsw5UH5p
-rBmQK2ApIWTLUZF7yV2Md0pT7iKZ9Y2dBseeuW0EH19nkcmEy3E=
-=GhwR
------END PGP SIGNATURE-----
+        tglx
 
---nextPart5147933.GXAFRqVoOG--
 
 
 
