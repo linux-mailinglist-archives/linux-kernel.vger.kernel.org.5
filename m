@@ -2,232 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B659A7A5BF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7AC7A5BE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbjISIH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        id S230308AbjISIFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbjISIH0 (ORCPT
+        with ESMTP id S229671AbjISIFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:07:26 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F6411F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:07:20 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3216ba1b01eso108920f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:07:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695110838; x=1695715638; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KauzblMbtoKORsMsCBmvlq8Rtah+B4qEiz+EyZ86dq4=;
-        b=aej/MT05aBbrF4vhKurpilvHhgOxK4KLrHLpKyGXRu2Od0zs4a2PyIlWtaTCeWnRe7
-         JfAuqV3t/poDtcpGSQCQOvINRQRgYNrldOEhB2OIhJH5Y7vRXTNUpih5FIyEsVbe54oW
-         LP307ovbi6GBUh40mqueuP+AUwYMQMESaOIuaiz0y0Tu4M/fkUxm/8x8jEPacUvzofx9
-         cwJqDllm1wqZmSiTHvSDrHltxLSZZ/BC+8ejWgloK+UNMoZzl6U3inV+lQb1f8TL9cPH
-         pHOQ8wrefJDnjSo8QbEMiNX6wLfnFb6InIZaBbW1fVYLAMXwGwBWzvXix0G7VzzPM9HB
-         mPzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695110838; x=1695715638;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KauzblMbtoKORsMsCBmvlq8Rtah+B4qEiz+EyZ86dq4=;
-        b=dBZ/xGPhCI6pk2M3yluJ7HlxD0f+uybBOQP22nAz5YyfWDQLXjM3hxq0zy36CM/5fN
-         crMod3eDbC3kBMm0p/WVwg+72sKeGeCDEgRDhDR8OVZcyw9Kj/B7pRW+aMFcI7wgSr1S
-         lqxuq9KL9GAGuQipI/g4M6lI0SyvmqBq4t77YnwB9XbbOzLgC7SBPDLAM+aLfd3aNjXn
-         M4pRr1U/QOn6qksYpnGbZ0CPl76Nqc/KCFg3LgAVFkhToa6QiVsPx+WI8mv7cepG3dMG
-         AcWwS29yMkZpBAFlrs3+9vBG1vl5cUdjbGjhMCjpaoxJIkgp3N4GTzi5stJNzlY5zlrh
-         vlew==
-X-Gm-Message-State: AOJu0Yzu53o0Kt5mQx8lHCPC+sJF3i8+vrBJkCFkBNJ+okzJrhSY7hxS
-        Q8yUSztuNJv5F9xjg+V0/Ndclg==
-X-Google-Smtp-Source: AGHT+IE8qi+dsghdzDbTiwa+G9WSy2YkcwrfbpN6ruotbQOOULLulDuGSAZEVLhxEsDuDDNXa2JYcA==
-X-Received: by 2002:a5d:58e1:0:b0:319:79bb:980c with SMTP id f1-20020a5d58e1000000b0031979bb980cmr8726188wrd.64.1695110838407;
-        Tue, 19 Sep 2023 01:07:18 -0700 (PDT)
-Received: from heron.intern.cm-ag (p200300dc6f209c00529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f20:9c00:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id z8-20020a056000110800b0031f3ad17b2csm14772096wrw.52.2023.09.19.01.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 01:07:17 -0700 (PDT)
-From:   Max Kellermann <max.kellermann@ionos.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] pipe_fs_i.h: add pipe_buf_init()
-Date:   Tue, 19 Sep 2023 10:07:06 +0200
-Message-Id: <20230919080707.1077426-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
+        Tue, 19 Sep 2023 04:05:00 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2047.outbound.protection.outlook.com [40.107.21.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E98100;
+        Tue, 19 Sep 2023 01:04:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TXIAj2gD+9/f2GBaawqEmiSWIsjrC+LbrL5gYOfWYhwHRUKN6nQ0ujjxGQzJh306jwTpdlCHlh38JQXAPDnw9GVGbLuRNd0fvt4qOiLm0DqsfVSIH9muprdmhPbEjMGJoJgpjDGEWr5nGyqdFUU2bIEDOfkBotRJiPSGikpTpYG7IYQUu2ErmY4Z/niZM+wNnuwTFRNvvudmAhQmm5SY0wQ0d3X0RePXMzRg2MKwjj3VcrNqi1P8NcXO4gXTUjJXUhYBwz9LE66XLa3CHAs+LYO9d5qWuLLTem+HQM07Lu0is5Iyh7F7Pk4/ZWpxRPMLtNko+hJUVetgQ8oj2slOTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FxhEgIgyV3L2F30HYyOnJZyO7eYfNR81TlxUv0LrLkg=;
+ b=S/3Srgz9buyKgncvTVSfxifLVT4/fHu2AzyWXX5uZ0vFKnZcI939HuZny+sDu/7HpKLaMdnVkH0aJXTC7H6tcoDITEUGFMNjvj9YSEdmxF6awtKzLDZhAZtQ6FCZbglXBfCNoORCSXWFZLUPWBxqZRg4yLhtysCzd2gVxmpO+Bwdl6bMb90qlV9scYwLYzdCFN3hh+WJfYFxrkbrsJrADdbx3YhBUVjzJGTgyHsT+qasWib2o0zLECekHrhy/kOgcCQkzkDU+oDIIjYjZBMiwNPuDwgx7i6dqfIPaMWZimD8G+66CFReiysswSql3q+2ZHvXL6wTbA3l0RrsSGiBjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FxhEgIgyV3L2F30HYyOnJZyO7eYfNR81TlxUv0LrLkg=;
+ b=q6uliTaC6La/KIok26/PgXFlOaL/yIi3yh9HuyVI86NO+KC5VzlykcdyvzevpHcGnEJgeOdVTJz+ba4kKbcm2MR2mHnekx1FdFNUzrgcYtjaKMCilzgPd4xr4y5v0zEGh6q5HZISwxDKY3luioFrQHcOklT810WdzxLE3D0oIQE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB7PR04MB4505.eurprd04.prod.outlook.com (2603:10a6:5:39::26) by
+ DU0PR04MB9394.eurprd04.prod.outlook.com (2603:10a6:10:359::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6792.26; Tue, 19 Sep 2023 08:04:51 +0000
+Received: from DB7PR04MB4505.eurprd04.prod.outlook.com
+ ([fe80::6444:e07a:e7f7:3923]) by DB7PR04MB4505.eurprd04.prod.outlook.com
+ ([fe80::6444:e07a:e7f7:3923%7]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 08:04:51 +0000
+From:   Xu Yang <xu.yang_2@nxp.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xu.yang_2@nxp.com
+Subject: [PATCH] perf jevents: fix no member named 'entries' issue
+Date:   Tue, 19 Sep 2023 16:09:29 +0800
+Message-Id: <20230919080929.3807123-1-xu.yang_2@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR06CA0219.apcprd06.prod.outlook.com
+ (2603:1096:4:68::27) To DB7PR04MB4505.eurprd04.prod.outlook.com
+ (2603:10a6:5:39::26)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4505:EE_|DU0PR04MB9394:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4943999-db5e-44b1-29f1-08dbb8e71989
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G8AF1GM5al4yxZEN8gDEU2MHbJd7xbv9eq+3DpFJrIsCbbsRP2aol16nv37QkusMdVZsySpZUw4vhOmO9A96Z9qvxWwM8XGLwGUCuj6hizuULklOPK0xUp4n134P4ccjv+vdOYynw1S6Gz9cGHJAooVUOLqem592o9wWYxhBt/xSVoCmLpfdzOiEf/gWvcF90++6pQyUAPPJe3bLhd0eZ++HOChSxrF0t5OdQ6pG03ev8GVkra3PUciIq2FrT122z5a5EopK9jH8D/LHdUzRNK0l+U9+YKJS1nl9qZv82Xw5Pjd+4sKA8Jg1Kay8+mtH6jLTUw3/mP50Djm44qAQpvz5+xRmEJuEvJZDkGp+V6Zj3Mt5ps5PtjUKIcqvIAGW80TNJj0Re/zDIwYZqSiSAMJV3656SS/+iWCsLsGZc67Pvhhf3P9+Mf41WkJBcXjR6qauGxRm/HvT2NUnA2Qh7ikE1ITfTDywL2WOb3KtP1N7VjdjpKdectycpH9O727DAh+P2kJhNwQGPTCtqhqrRSpJm2Rst+MN8wARam+hhKl78TFIRblPFQTHUa5luHs2nALGpDnkpF3KKvtg5QFJpUCdTtyZT/csDoo7pBbrxKkl9WCI/84H/T5DU4zT5VfB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB4505.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(396003)(366004)(346002)(451199024)(186009)(1800799009)(6666004)(6486002)(52116002)(36756003)(6506007)(86362001)(38350700002)(38100700002)(2616005)(1076003)(26005)(2906002)(6512007)(478600001)(8676002)(83380400001)(5660300002)(4326008)(8936002)(41300700001)(66556008)(7416002)(66946007)(66476007)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SGtIakdZbzBCZUVGNEFtTnBvZktCKzBvUkMrbDVwejI3NFRDY1Exd1llREJR?=
+ =?utf-8?B?cmpqbkhCYjhOUytHbW5ZMmo5SzV3UnRrV2hFK0Z6YWpaWGg5Y24rUDBzMkZ0?=
+ =?utf-8?B?WkhVamtKYmVDNnpUUVNJeUhQM3BOWUdQbTcwQ3FVR2FxN0lySU1rZUw5RmNV?=
+ =?utf-8?B?bDh0eC85QUhtM1dOV0E2YUtnM1lPcFNJY1U2WXkzalR6Y3RiMUY2WVdyaUdX?=
+ =?utf-8?B?Tzc5MllZTWxhV1dKTmljN1dTc0lSWDdJRUYraFF2RnZHMklabEVHWlQxNWRG?=
+ =?utf-8?B?OFp3OFprQlJXRTNtRE5lYXpWOXRBcGs5SE9IeVlrdGRUNStYdjdLbmRlRnBL?=
+ =?utf-8?B?Vy9BRnBpZW9pMU54MXRIM2tHb2tkSnFSZCtFdmIxNGk0YXc0dU00QUpXNmVF?=
+ =?utf-8?B?ak15bDV6QkRvUHJ1Vnl5Wk9yZm41YmlaQlJWWGtEVWNuSDNuK2FSQk9pcjFq?=
+ =?utf-8?B?QW5ldCtWbEZ6TXBxVlVjcGgxSVRMNGwxMDZ0WDVSbGdieXVEQnovVzRmOEhq?=
+ =?utf-8?B?VmVFVGNYdXA0ZnAyNkRnTG8rNXhTNG9LUWNETGFhTGNtbWsvV0FnVk4wU1J3?=
+ =?utf-8?B?UUtlcVVhYnBWWkJuUzBLcnd6cXJlOFd1WFZadFBsbFptdXBvMDVpMG04d3A5?=
+ =?utf-8?B?UGo2K29FL2hFWnhVTmYwMVhwZGhHR0hRd29XRmNET3h0N1hVd0R5THBUWkVv?=
+ =?utf-8?B?bFVmeXBNZVN1a0o5bmpLNXpxQ0JodjZKUUp1UllPR3J0b3BwVmQrS3crMDhX?=
+ =?utf-8?B?N1RUQTVpWm9yU2lwM251dHNFbVR0Rnh5M3gzMEpxaUNLcGxJWlZDMU9HNnc4?=
+ =?utf-8?B?dWIybERFMk5BVWFnWlpIZkdlK3dGMzJBbWhjZHhGYUI4L3VWQi84aGhBLzVK?=
+ =?utf-8?B?dzBrWk5iaUI1cnZrTERTbzd6Mm1lOGJRRWNacmNNM3hRZDU4ZUZXQzZmR1Ba?=
+ =?utf-8?B?V00yaEF4VzlmVy9wL3NDQTZaL1Z1cnVwaHNPN1kzZnhmNzM0dlN4eU5lOEVM?=
+ =?utf-8?B?c2pzS2YvbGpsQ0xycDVncnp2L2daWk1hbzRqZlFvY3FUV2NPWnZVdW9FU0kw?=
+ =?utf-8?B?blBsUjI5VUxwVHBERUUwTTNzbmhGQWFZa05iTVlJdTFraHRSbjBObHRLckhi?=
+ =?utf-8?B?eWlBZmNuL3lwSSsyNWx1d2w3Mk9iUUR0NCsyblZOK2RsZFA2V3I1czZ3Rlht?=
+ =?utf-8?B?NWNUc3ZqeDVjSy9mZ2ZKSkJLQTRaS0lxY3pKd2QxR2Y0MmVxbE1mTkI1YjEw?=
+ =?utf-8?B?N2RXTWxOWndDRXptcWFpQUYxREN0VERybXJ3NVNwVUdwVEp1M3kwUUNmRXlX?=
+ =?utf-8?B?UzloUHpxTnZZNGFoQklXT0xNRU04TUFWaFQwRUZ6N05pNnNzcHVzVEF1NFVB?=
+ =?utf-8?B?T0w3eVZ0djVwUjArV1k2Mmc5ZnIwajhLMGRxcVBrMFJxTktQeUgyZklMNml1?=
+ =?utf-8?B?OTJJTUM0L0J4YU9ndmJRbmdJWERwTUtQZWFyK0NFemI3Z2plVzU3cGlwZmlz?=
+ =?utf-8?B?MDMzOVBuU0g3RGFzN2c4cEVxT2RwMkdLUmh2VXNKQUM5cElXRWtIcU5YY0RB?=
+ =?utf-8?B?S05HTVlvZS9JYnROR2wzcHhuamtweHlteXFNeENEeUhVcXpkVi9EVjNmYWFW?=
+ =?utf-8?B?NlNVSTFXNm1ZbUhVRjhLV0cxNy9BT2k2L3J1NVdXNzNGbDM1N21CMVJZTlNn?=
+ =?utf-8?B?N1MwMTVEdS9oVW1vN2VBUjhnNndOOTBwOTBSSUVpRkhXS3AySHpxTTlGOENE?=
+ =?utf-8?B?R0RWa2lUU0JiWDlNR05idDJaNFVHUkkzcmVYbmdKR1FBbWUrQmJWeFhmbkZH?=
+ =?utf-8?B?aWd3N1A4cUZTYVk2ZG5Uazd2YTVKS1RUL3p1VlYzdGJkV0pVTlcwY0VkVzJV?=
+ =?utf-8?B?bHdPT1hQSjEyV0Q2QTkwMndrS2dtVVlxT1ZMYzZLemZwOFVVMTZDRjZ6OHVk?=
+ =?utf-8?B?YkNkWk9mcUt2V080eFZ1eUQ4T2UyVmNwR2tKdzFYVWJXYXZWaUhWWnkwb2hR?=
+ =?utf-8?B?dC8rdVhOMUdGa3p0RFpKTzJNOFNnUUk5OE9QU1djZU9IZk1KM3E4Z3czSVBD?=
+ =?utf-8?B?Umo3TFljUkdaMmhNcWNXeExLOThJZ1hJSTBFTWRzZ08zcWM0WDBnVVJDM0Nr?=
+ =?utf-8?Q?mCmBgdxoHiNMWC4TZtWUnwNIE?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4943999-db5e-44b1-29f1-08dbb8e71989
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB4505.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 08:04:51.1255
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PGUr0efceQJ7txdF5stWsQFRoyNVelMPZvhhSxibXcAgppP9/WztNe70S0I0uNl6Z4hmxE+hYXWCjlTdj2MwlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9394
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds one central function which shall be used to initialize a newly
-allocated struct pipe_buffer.  This shall make the pipe code more
-robust for the next time the pipe_buffer struct gets modified, to
-avoid leaving new members uninitialized.  Instead, adding new members
-should also add a new pipe_buf_init() parameter, which causes
-compile-time errors in call sites that were not adapted.
+The struct "pmu_events_table" has been changed after commit
+2e255b4f9f41 (perf jevents: Group events by PMU, 2023-08-23).
+So there doesn't exist 'entries' in pmu_events_table anymore.
+This will align the members with that commit. Othewise, below
+errors will be printed when run jevent.py:
 
-This commit doesn't refactor fs/fuse/dev.c because this code looks
-obscure to me; it initializes pipe_buffers incrementally through a
-variety of functions, too complicated for me to understand.
+pmu-events/pmu-events.c:5485:26: error: ‘struct pmu_metrics_table’ has no member named ‘entries’
+ 5485 |                         .entries = pmu_metrics__freescale_imx8dxl_sys,
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
 ---
- fs/pipe.c                 |  9 +++------
- fs/splice.c               |  9 ++++-----
- include/linux/pipe_fs_i.h | 20 ++++++++++++++++++++
- kernel/watch_queue.c      |  8 +++-----
- mm/filemap.c              |  8 ++------
- mm/shmem.c                |  9 +++------
- 6 files changed, 35 insertions(+), 28 deletions(-)
+ tools/perf/pmu-events/jevents.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/pipe.c b/fs/pipe.c
-index 6c1a9b1db907..edba8c666c95 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -520,14 +520,11 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 
- 			/* Insert it into the buffer array */
- 			buf = &pipe->bufs[head & mask];
--			buf->page = page;
--			buf->ops = &anon_pipe_buf_ops;
--			buf->offset = 0;
--			buf->len = 0;
-+			pipe_buf_init(buf, page, 0, 0,
-+				      &anon_pipe_buf_ops,
-+				      PIPE_BUF_FLAG_CAN_MERGE);
- 			if (is_packetized(filp))
- 				buf->flags = PIPE_BUF_FLAG_PACKET;
--			else
--				buf->flags = PIPE_BUF_FLAG_CAN_MERGE;
- 			pipe->tmp_page = NULL;
- 
- 			copied = copy_page_from_iter(page, 0, PAGE_SIZE, from);
-diff --git a/fs/splice.c b/fs/splice.c
-index d983d375ff11..277bc4812164 100644
---- a/fs/splice.c
-+++ b/fs/splice.c
-@@ -215,12 +215,11 @@ ssize_t splice_to_pipe(struct pipe_inode_info *pipe,
- 	while (!pipe_full(head, tail, pipe->max_usage)) {
- 		struct pipe_buffer *buf = &pipe->bufs[head & mask];
- 
--		buf->page = spd->pages[page_nr];
--		buf->offset = spd->partial[page_nr].offset;
--		buf->len = spd->partial[page_nr].len;
-+		pipe_buf_init(buf, spd->pages[page_nr],
-+			      spd->partial[page_nr].offset,
-+			      spd->partial[page_nr].len,
-+			      spd->ops, 0);
- 		buf->private = spd->partial[page_nr].private;
--		buf->ops = spd->ops;
--		buf->flags = 0;
- 
- 		head++;
- 		pipe->head = head;
-diff --git a/include/linux/pipe_fs_i.h b/include/linux/pipe_fs_i.h
-index 608a9eb86bff..2ef2bb218641 100644
---- a/include/linux/pipe_fs_i.h
-+++ b/include/linux/pipe_fs_i.h
-@@ -176,6 +176,26 @@ static inline struct pipe_buffer *pipe_head_buf(const struct pipe_inode_info *pi
- 	return pipe_buf(pipe, pipe->head);
- }
- 
-+/**
-+ * Initialize a struct pipe_buffer.
-+ */
-+static inline void pipe_buf_init(struct pipe_buffer *buf,
-+				 struct page *page,
-+				 unsigned int offset, unsigned int len,
-+				 const struct pipe_buf_operations *ops,
-+				 unsigned int flags)
-+{
-+	buf->page = page;
-+	buf->offset = offset;
-+	buf->len = len;
-+	buf->ops = ops;
-+	buf->flags = flags;
-+
-+	/* not initializing the "private" member because it is only
-+	   used by pipe_buf_operations which inject it via struct
-+	   partial_page / struct splice_pipe_desc */
-+}
-+
- /**
-  * pipe_buf_get - get a reference to a pipe_buffer
-  * @pipe:	the pipe that the buffer belongs to
-diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
-index d0b6b390ee42..187ad7ca38b0 100644
---- a/kernel/watch_queue.c
-+++ b/kernel/watch_queue.c
-@@ -125,12 +125,10 @@ static bool post_one_notification(struct watch_queue *wqueue,
- 	kunmap_atomic(p);
- 
- 	buf = &pipe->bufs[head & mask];
--	buf->page = page;
-+	pipe_buf_init(buf, page, offset, len,
-+		      &watch_queue_pipe_buf_ops,
-+		      PIPE_BUF_FLAG_WHOLE);
- 	buf->private = (unsigned long)wqueue;
--	buf->ops = &watch_queue_pipe_buf_ops;
--	buf->offset = offset;
--	buf->len = len;
--	buf->flags = PIPE_BUF_FLAG_WHOLE;
- 	smp_store_release(&pipe->head, head + 1); /* vs pipe_read() */
- 
- 	if (!test_and_clear_bit(note, wqueue->notes_bitmap)) {
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 582f5317ff71..74532e0cb8d7 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2850,12 +2850,8 @@ size_t splice_folio_into_pipe(struct pipe_inode_info *pipe,
- 		struct pipe_buffer *buf = pipe_head_buf(pipe);
- 		size_t part = min_t(size_t, PAGE_SIZE - offset, size - spliced);
- 
--		*buf = (struct pipe_buffer) {
--			.ops	= &page_cache_pipe_buf_ops,
--			.page	= page,
--			.offset	= offset,
--			.len	= part,
--		};
-+		pipe_buf_init(buf, page, offset, part,
-+			      &page_cache_pipe_buf_ops, 0);
- 		folio_get(folio);
- 		pipe->head++;
- 		page++;
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 02e62fccc80d..75d39653b028 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2901,12 +2901,9 @@ static size_t splice_zeropage_into_pipe(struct pipe_inode_info *pipe,
- 	if (!pipe_full(pipe->head, pipe->tail, pipe->max_usage)) {
- 		struct pipe_buffer *buf = pipe_head_buf(pipe);
- 
--		*buf = (struct pipe_buffer) {
--			.ops	= &zero_pipe_buf_ops,
--			.page	= ZERO_PAGE(0),
--			.offset	= offset,
--			.len	= size,
--		};
-+		pipe_buf_init(buf, ZERO_PAGE(0),
-+			      offset, size,
-+			      &zero_pipe_buf_ops, 0);
- 		pipe->head++;
- 	}
- 
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index a7e88332276d..af15fa2cadbd 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -764,8 +764,8 @@ static const struct pmu_sys_events pmu_sys_event_tables[] = {
+       continue
+     _args.output_file.write(f"""\t{{
+ \t\t.metric_table = {{
+-\t\t\t.entries = {tblname},
+-\t\t\t.length = ARRAY_SIZE({tblname})
++\t\t\t.pmus = {tblname},
++\t\t\t.num_pmus = ARRAY_SIZE({tblname})
+ \t\t}},
+ \t\t.name = \"{tblname}\",
+ \t}},
 -- 
-2.39.2
+2.34.1
 
