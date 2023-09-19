@@ -2,125 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E1B7A6181
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9687A618B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbjISLlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43112 "EHLO
+        id S231285AbjISLnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjISLlP (ORCPT
+        with ESMTP id S229497AbjISLnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:41:15 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9474BBA
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:41:09 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JBau1Y009162;
-        Tue, 19 Sep 2023 11:40:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=0CjLTwvQt2avDiPPhOs+5gCjFArR4GRZZxmHyoi/VIM=;
- b=edJ5YQvbeOzTAr9JLjdJ/YKxdb21fB1m2H5UHMNM/GSDRHWX9OpOuVguUijhwyDsBqdF
- B989CkMiFdaND6/R9ExmuY2jDdr3PsNILsi6dKRfpq4ax8oHQDJMUGCNiWYLFgT8INSy
- 4xV9hezp1ynS61VolI2HRtmHIsfJ6i+PX5Cqq2L9Ne7aOEcbXLV65++dqrlpVXy/7WY4
- ei64sgkCMU0d/kp+hnzGB5hoxkbE1UMt15qrxK2y2tlQLigHjKcAZdYjjohm/40PqPp9
- 6tX6fcdeJ4RZL1TCA+JHUCxqDNkImwIZkI5sRCu72+Cxt6oOs4AWUEovO6LcsOUV80w+ XQ== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t7454smc1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 11:40:58 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38JBR4Rr018130;
-        Tue, 19 Sep 2023 11:40:56 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t5ppsmaef-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 11:40:56 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38JBeswZ21955276
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Sep 2023 11:40:54 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD0642004B;
-        Tue, 19 Sep 2023 11:40:54 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4C9AF20043;
-        Tue, 19 Sep 2023 11:40:54 +0000 (GMT)
-Received: from [9.171.62.55] (unknown [9.171.62.55])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Sep 2023 11:40:54 +0000 (GMT)
-Message-ID: <75212b6925df202fb75357e2e4f4a59d138b7375.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 13/13] comedi: add HAS_IOPORT dependencies again
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 19 Sep 2023 13:40:53 +0200
-In-Reply-To: <20230913170712.111719-14-abbotti@mev.co.uk>
-References: <20230913164013.107520-1-abbotti@mev.co.uk>
-         <20230913170712.111719-1-abbotti@mev.co.uk>
-         <20230913170712.111719-14-abbotti@mev.co.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 19 Sep 2023 07:43:14 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2051.outbound.protection.outlook.com [40.107.244.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA65F5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:43:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IHlkwvVp6ucoc7Jsmgx5Y2vTiY6vPMrd6XsPQsPNaKqlerddNhOVM7EDHI9eJk92m3NoeV3bI271MmhrfIy2BoSphubsUrKUkIoPoFRuHF5/2Cif5UriiXIyyg5jbx7EP4SXeKIiCBomnfR47W2jTPFKm9SieKcByy1xAlF62H6+W7guEkJDnhib4UrgwcjuJUGJw44s+ki2W94C//Ury+goLs4GuTHIE7O/7NgLkMPqGMPAJq7z9IsYjfJUQABHLhnhtInV3xzw+upRWmZYDtVlDIuO63tMhqxDZGDrL/sN91SgxW7MxhTU3un+KDuP/JpCX6Wh1tKBKjO8peTL2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Au5O3qF/D2W3vL35NSd42JBaWy2FzJt7RhjS4tbLWVo=;
+ b=APdqWI/DAOLIn7IoTR7gPAbd6kDnp48v+qiDBWlRbnfQAi1yWRzK1PysL8mNwcOVDjLssw2dNL0wF/lEZitY0LtTuGWovhtQ4JAn8dtMDWsbDlmhc9Z9/gMnxJsnBbxrypri8ZvGofVW15DBdMZmv8hU3niRZfAvncHjiTck+NtqhY582Ysao1x0b3GVugXju/kKj55j3+9D9Fmv9W2xJ2tcUsN12ogw2m70a1I1yoBkzPS0JsX4S3X7ObkQKsYuOGTx08PGBmu4JeBqmd8HtXYPAkq+QUGHbR6NbkfC2gDDROqXg8s9BtbY9Q2JtZAyrFyy1rOXgeAuKBTceBh6oQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Au5O3qF/D2W3vL35NSd42JBaWy2FzJt7RhjS4tbLWVo=;
+ b=VPgKpcSr/A6I9CP7099JYJlfgJHtOtrT0Sus6rWuZ0JE837d6texVu3+L46MjRgJQSBL9s1xLicGVY0X+ghJogke49nnNolgrKIJO88VZWuONQ8VZfdXJCu0kaSKGCSLSiVDCo2LziHd5ZH9CaHdyUhuNkVdQGry8OfDHoa2Wzk=
+Received: from CH2PR14CA0028.namprd14.prod.outlook.com (2603:10b6:610:60::38)
+ by DS0PR12MB8573.namprd12.prod.outlook.com (2603:10b6:8:162::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Tue, 19 Sep
+ 2023 11:43:03 +0000
+Received: from DS2PEPF00003439.namprd02.prod.outlook.com
+ (2603:10b6:610:60:cafe::d2) by CH2PR14CA0028.outlook.office365.com
+ (2603:10b6:610:60::38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28 via Frontend
+ Transport; Tue, 19 Sep 2023 11:43:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF00003439.mail.protection.outlook.com (10.167.18.36) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6792.11 via Frontend Transport; Tue, 19 Sep 2023 11:43:03 +0000
+Received: from cjq-desktop.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 19 Sep
+ 2023 06:42:57 -0500
+From:   Jiqian Chen <Jiqian.Chen@amd.com>
+To:     Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        David Airlie <airlied@redhat.com>,
+        "Gurchetan Singh" <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@gmail.com>,
+        "Robert Beckett" <bob.beckett@collabora.com>,
+        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
+        Parav Pandit <parav@nvidia.com>,
+        <virtio-comment@lists.oasis-open.org>,
+        <virtio-dev@lists.oasis-open.org>
+CC:     <qemu-devel@nongnu.org>, <linux-kernel@vger.kernel.org>,
+        "Stefano Stabellini" <sstabellini@kernel.org>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Alex Deucher <Alexander.Deucher@amd.com>,
+        "Christian Koenig" <Christian.Koenig@amd.com>,
+        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        Honglei Huang <Honglei1.Huang@amd.com>,
+        Julia Zhang <Julia.Zhang@amd.com>,
+        Huang Rui <Ray.Huang@amd.com>,
+        Jiqian Chen <Jiqian.Chen@amd.com>
+Subject: [VIRTIO PCI PATCH v5 0/1] Add freeze_mode to virtio_pci_common_cfg
+Date:   Tue, 19 Sep 2023 19:42:41 +0800
+Message-ID: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: e-dxNO_9L-FA1tnXxsnAHA4UqA1maCL1
-X-Proofpoint-ORIG-GUID: e-dxNO_9L-FA1tnXxsnAHA4UqA1maCL1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_06,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- mlxscore=0 phishscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 suspectscore=0 clxscore=1015 mlxlogscore=515
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309190098
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003439:EE_|DS0PR12MB8573:EE_
+X-MS-Office365-Filtering-Correlation-Id: 36c7d1c0-dc32-47dd-6393-08dbb905958a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w18isxmLh4uds0TuMTFySlMPHefR9OMiV6OifUQgY2uWoPoDeuL0dEch2X7w4im0NV/5bYIDDfZ507aHogvyIzn4+Dl5QmkF7lg/4oyf32rSy+sep4E7CoOxV+C9EUBQ3JLeIEaDNl+Re0acTwS6lNonxHEb6kPw9Mjq7vbh4ub5i6UmbqGV33qOt7dAf+gHPOeUD0hi8eKDowg9n+RW1Pui6a+bEWrOB25HoXsupldrfsDQelPfq3Xvo6cgKgfze27/4QZqfpGiYJ8uk6b5RmNmF413AloOATw8FGLuGOsspVF7Ohma2kuL+GUY+3Ci83llIVm55s8zzEo21FbRZxQJjz/RWvajMssXaY8VI5lY5cDJXW0dzv8WZz8pulIrN8uzzPyLxylx6g9KMiPdB84JCh6TJ9PT+N+iyR70lo/+xE60lreciTbIrloqWX5FJ+HJAPVPqlMrB2YQMuztrOUl3Xznt2CCz4VH8bV6QsAcBbDupS5LVIrV9KAZnbagSxBWebfCGZdaHRzK1XUoG6KBURosY1cvBhyUxNo7A/DLK9/lLEiAkZ57axmi7/CdNV7IfXQMtdiDVB+NfIrGLhCbNeqCE1EV8wxYLYw7o35QKNyn5xYIxfFzRBvUVrvIyrDT8+X1BqNUkik1sOxYuDwzPwLJapFSbLAd8sfIYJP0hQ+uKGu/d0NC3qfAc8fSWhBFcDrUtiPKkcNwbckHtJ6GCf+lZOn7GRn165NskCZjFzZb/5DTOm05M4fNlZyRpSPtikf+FMZziw/1fAeXOQSZbqNg7W1KnhWkKpGrC9JQPA/RtcJ0NmRwehk/bmRa
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(396003)(39860400002)(1800799009)(82310400011)(186009)(451199024)(46966006)(36840700001)(40470700004)(5660300002)(26005)(16526019)(1076003)(8936002)(4326008)(8676002)(40460700003)(2616005)(47076005)(2906002)(7416002)(86362001)(356005)(921005)(81166007)(36860700001)(82740400003)(83380400001)(336012)(36756003)(426003)(40480700001)(7696005)(966005)(70586007)(70206006)(54906003)(110136005)(6666004)(478600001)(41300700001)(316002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 11:43:03.6188
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36c7d1c0-dc32-47dd-6393-08dbb905958a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003439.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8573
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-13 at 18:07 +0100, Ian Abbott wrote:
-> In a future patch HAS_IOPORT=3Dn will result in inb()/outb() and friends
-> not being declared. We thus need to add HAS_IOPORT as dependency for
-> those drivers using them.
->=20
-> This was previously done in commit b5c75b68b7de ("comedi: add HAS_IOPORT
-> dependencies"), but that has been reverted because it made it impossible
-> to select configuration options for several comedi drivers.  This is a
-> do-over that avoids that.
->=20
-> Since the original patch, modifications have been made to various comedi
-> modules so that they can still be built even if the port I/O functions
-> have not been declared, so the configuration options for building those
-> modules no longer need to depend on HAS_IOPORT.
->=20
-> Make the COMEDI_ISA_DRIVERS menu option (which allows configuration
-> options for ISA and PC/104 drivers to be selected) depend on HAS_IOPORT,
-> and also depend on ISA || ISA_BUS || PC104.
->=20
-> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-> Co-developed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> Cc: Arnd Bergmann <arnd@kernel.org>
-> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-> Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-> ---
-> v2: N/A.
-> v3: N/A.
+Hi all,
+This is the v5 patches and makes below changes:
+* Since this series patches add a new mechanism that let virtgpu and Qemu can negotiate
+  their reset behavior, and other guys hope me can improve this mechanism to virtio pci
+  level, so that other virtio devices can also benefit from it. So instead of adding
+  new feature flag VIRTIO_GPU_F_FREEZE_S3 only serves for virtgpu, v5 add a new parameter
+  named freeze_mode to struct virtio_pci_common_cfg, when guest begin suspending, set
+  freeze_mode to VIRTIO_PCI_FREEZE_MODE_FREEZE_S3, and then all virtio devices can get
+  this status, and notice that guest is suspending, then they can change their reset
+  behavior.
 
-I just gave this another try with the rest of my series including the
-disablement of the I/O port accessors. I tried both allmodconfig and
-allyesconfig on s390x and both seem fine. Also definitely see the
-comedi driver's without HAS_IOPORT dependeny being built.
+V5 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230919110225.2282914-1-Jiqian.Chen@amd.com/T/#t
+V5 of kernel patch:
+https://lore.kernel.org/lkml/20230919104607.2282248-1-Jiqian.Chen@amd.com/T/#t
 
-Thanks,
-Niklas
+The link to trace this issue:
+https://gitlab.com/qemu-project/qemu/-/issues/1860
+
+Best regards,
+Jiqian Chen
+
+v4:
+no v4 patches.
+V4 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230719074726.1613088-1-Jiqian.Chen@amd.com/T/#t
+No v4 of kernel patch
+
+
+v3:
+makes below changes:
+* Use enum for freeze mode, so this can be extended with more
+  modes in the future.
+* Rename functions and paratemers with "_S3" postfix.
+* Explain in more detail
+Link:
+https://lists.oasis-open.org/archives/virtio-comment/202307/msg00209.html
+V3 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230720120816.8751-1-Jiqian.Chen@amd.com
+V3 of Kernel patch: https://lore.kernel.org/lkml/20230720115805.8206-1-Jiqian.Chen@amd.com/T/#t
+
+
+v2:
+makes below changes:
+* Elaborate on the types of resources.
+* Add some descriptions for S3 and S4.
+Link:
+https://lists.oasis-open.org/archives/virtio-comment/202307/msg00160.html
+V2 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230630070016.841459-1-Jiqian.Chen@amd.com/T/#t
+V2 of Kernel patch:
+https://lore.kernel.org/lkml/20230630073448.842767-1-Jiqian.Chen@amd.com/T/#t
+
+
+v1:
+Hi all,
+I am working to implement virtgpu S3 function on Xen.
+
+Currently on Xen, if we start a guest through Qemu with enabling virtgpu, and then suspend and
+s3resume guest. We can find that the guest kernel comes back, but the display doesn't. It just
+shown a black screen.
+
+That is because when guest was during suspending, it called into Qemu and Qemu destroyed all
+resources and reset renderer. This made the display gone after guest resumed.
+
+So, I add a mechanism that when guest is suspending, it will notify Qemu, and then Qemu will
+not destroy resources. That can help guest's display come back.
+
+As discussed and suggested by Robert Beckett and Gerd Hoffmann on v1 qemu's mailing list.
+Due to that mechanism needs cooperation between guest and host. What's more, as virtio drivers
+by design paravirt drivers, it is reasonable for guest to accept some cooperation with host to
+manage suspend/resume. So I request to add a new feature flag, so that guest and host can
+negotiate whenever freezing is supported or not.
+Link:
+https://lists.oasis-open.org/archives/virtio-comment/202306/msg00595.html
+V1 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230608025655.1674357-2-Jiqian.Chen@amd.com/
+V1 of Kernel patch:
+https://lore.kernel.org/lkml/20230608063857.1677973-1-Jiqian.Chen@amd.com/
+
+
+Jiqian Chen (1):
+  transport-pci: Add freeze_mode to virtio_pci_common_cfg
+
+ transport-pci.tex | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+-- 
+2.34.1
+
