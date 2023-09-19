@@ -2,64 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4BC7A685C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71A47A6860
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbjISPvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        id S233204AbjISPxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbjISPvf (ORCPT
+        with ESMTP id S233179AbjISPxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:51:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3559C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695138689; x=1726674689;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZEsqVicoBTqU5ZL8zjCDbAACxgSal00DMWcaQoZYMmI=;
-  b=YeAqQmBa1zezLJ+hmHdiKxS969KaGjOiLgqJrzAaPrvymVVHo4pTvXzp
-   UsMhNA3KzI/VM2f8V6IIr0I/skUYj0ylNXZ4xErSQ1VGmOJP+1xQ9cdh7
-   Anc8WoZKN5HcbfIy8Gb6q4zaoh03Y1Q1cXEwJZPxdrd0kQsNYb+ryJNS3
-   3Po/Og7smecYtYw5dh8SsUQQTjCDOEzmkJgarbH7sH5O/LTiNbZon6qvg
-   bUBWJ44wMOaA4jYKUKtUBzj1c3BTkxCMvaiiIduBoEA3ty22Q1vstQSXt
-   ObdiW2guW7X2tPPwgjFrCIXhrzOzoegwnb87s8luN0ddIn76X9BtUrbX7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="377291645"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="377291645"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 08:51:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="836481883"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="836481883"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 19 Sep 2023 08:51:27 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qid0W-0007a4-2v;
-        Tue, 19 Sep 2023 15:51:24 +0000
-Date:   Tue, 19 Sep 2023 23:50:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Naresh Solanki <naresh.solanki@9elements.com>, broonie@kernel.org,
-        zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: userspace-consumer: Retrieve supplies from DT
-Message-ID: <202309192318.EFnp91Rd-lkp@intel.com>
-References: <20230919061755.3412016-1-naresh.solanki@9elements.com>
+        Tue, 19 Sep 2023 11:53:07 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE79EA1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:53:00 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-41761e9181eso428521cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695138780; x=1695743580; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8nsBUVYDFNOxgJdETsIwWFClz7Q5uuGgP6zIRpvMQ70=;
+        b=jFXMigqQz/YyR1YirujrfayK2k7wilalOv4NcbDgj62FCDamTU2O8yCBI5Ik2/cPKJ
+         +lDGc4R6F6CmwCwngnZx0p00RgvT3FE5s5yAdPTFJSUmaFZk0tGmTYjNlhRL4HiDjRfM
+         gI52j0dgvyKQ6xMwDBjc1cwNPWSvDJG+uCe1BvaY60/dfmwu0AyXfUVko4Tu4J9nIFKd
+         bJrR7f1IAxXKdRVEQwwImArXOjbx3DlwM4RfK2BaaFvcs6WsRtk1s1MDzK9621LNVmRm
+         c873088/GGWH8EV9IclYdNi3H1Fe8ineVbbxomQqmsG8a5LVlE9d/TOMXfm0TOdWHfdA
+         ljCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695138780; x=1695743580;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8nsBUVYDFNOxgJdETsIwWFClz7Q5uuGgP6zIRpvMQ70=;
+        b=W50DCCmWVnln+eEKdLJ2oC8eZXzC+yWyRvzX+6d62gaqn3vpXAQjxmh9BRyIaC9Mpb
+         yQKuGNvPDtnQfTrXXqHX0BUPhWhoN2WMw/M2KtI3rDDCJaCuRG0W2BGuBpKaFw6zCN9h
+         EnGSji2dxYUxr/TY9+fsX2o+ZSm5ssK7GNGsDR7Aik2/fBs45uf47br0OHa13pMU3hRL
+         Cj83vXVU82uMCM2QbW5HBOpyZgFtBMaL9NaexD7f1QK/mwRvspXH1Ixhd8WI6ZvshSmx
+         N1o344ptC5SHn5zbkb8RmqAJ7pfoB4abtFy0ZGz4UpeFQ/QoTJm8hIYMVDDulix0Tx+m
+         YXZA==
+X-Gm-Message-State: AOJu0Ywvi4txASB26FGmg5vEB6q9m+tFU2cRa+wxAWqJd//xcuZW4rr7
+        6Z/sZ03p3fBJiz75sxHQ6N/f0iJHvtQytjLEdS8q1w==
+X-Google-Smtp-Source: AGHT+IFlMvLJGZKXJoc7RUu3qT8PIIJ7oTPxBXbyAB45pOagXviu3Nn6H2lhJ+/IWQtixCbS9riI0KpsSSfFnqS6k4I=
+X-Received: by 2002:ac8:4e4b:0:b0:417:9144:9567 with SMTP id
+ e11-20020ac84e4b000000b0041791449567mr324953qtw.0.1695138779698; Tue, 19 Sep
+ 2023 08:52:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919061755.3412016-1-naresh.solanki@9elements.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230919080929.3807123-1-xu.yang_2@nxp.com>
+In-Reply-To: <20230919080929.3807123-1-xu.yang_2@nxp.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 19 Sep 2023 08:52:47 -0700
+Message-ID: <CAP-5=fX46xYdE2bheU+LhW2Joce+De42=d-XqBuFS9F-CPsQsg@mail.gmail.com>
+Subject: Re: [PATCH] perf jevents: fix no member named 'entries' issue
+To:     Xu Yang <xu.yang_2@nxp.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,71 +72,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naresh,
+On Tue, Sep 19, 2023 at 1:04=E2=80=AFAM Xu Yang <xu.yang_2@nxp.com> wrote:
+>
+> The struct "pmu_events_table" has been changed after commit
+> 2e255b4f9f41 (perf jevents: Group events by PMU, 2023-08-23).
+> So there doesn't exist 'entries' in pmu_events_table anymore.
+> This will align the members with that commit. Othewise, below
+> errors will be printed when run jevent.py:
+>
+> pmu-events/pmu-events.c:5485:26: error: =E2=80=98struct pmu_metrics_table=
+=E2=80=99 has no member named =E2=80=98entries=E2=80=99
+>  5485 |                         .entries =3D pmu_metrics__freescale_imx8d=
+xl_sys,
+>
+> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
 
-kernel test robot noticed the following build warnings:
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-[auto build test WARNING on 451e85e29c9d6f20639d4cfcff4b9dea280178cc]
+Thanks Xu! I wasn't able to repeat the failure but the fix looks good
+to me. Is the failure caused by adding new imx8dxl metrics? I'd like
+to make sure we have testing coverage so this doesn't happen again.
+I'm trying:
+$ make -C tools/perf O=3D/tmp/perf JEVENTS_ARCH=3Dall
+Could you confirm that this make command was broken without your fix
+plus the metric changes you've done?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Naresh-Solanki/regulator-userspace-consumer-Retrieve-supplies-from-DT/20230919-141840
-base:   451e85e29c9d6f20639d4cfcff4b9dea280178cc
-patch link:    https://lore.kernel.org/r/20230919061755.3412016-1-naresh.solanki%409elements.com
-patch subject: [PATCH] regulator: userspace-consumer: Retrieve supplies from DT
-config: i386-randconfig-014-20230919 (https://download.01.org/0day-ci/archive/20230919/202309192318.EFnp91Rd-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309192318.EFnp91Rd-lkp@intel.com/reproduce)
+Thanks,
+Ian
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309192318.EFnp91Rd-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/regulator/userspace-consumer.c: In function 'get_num_supplies':
-   drivers/regulator/userspace-consumer.c:126:9: error: implicit declaration of function 'for_each_property_of_node'; did you mean 'for_each_child_of_node'? [-Werror=implicit-function-declaration]
-     126 |         for_each_property_of_node(pdev->dev.of_node, prop) {
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-         |         for_each_child_of_node
-   drivers/regulator/userspace-consumer.c:126:59: error: expected ';' before '{' token
-     126 |         for_each_property_of_node(pdev->dev.of_node, prop) {
-         |                                                           ^~
-         |                                                           ;
->> drivers/regulator/userspace-consumer.c:124:13: warning: unused variable 'num_supplies' [-Wunused-variable]
-     124 |         int num_supplies = 0;
-         |             ^~~~~~~~~~~~
-   drivers/regulator/userspace-consumer.c:136:1: error: no return statement in function returning non-void [-Werror=return-type]
-     136 | }
-         | ^
-   drivers/regulator/userspace-consumer.c: In function 'regulator_userspace_consumer_probe':
-   drivers/regulator/userspace-consumer.c:162:67: error: expected ';' before '{' token
-     162 |                 for_each_property_of_node(pdev->dev.of_node, prop) {
-         |                                                                   ^~
-         |                                                                   ;
-   cc1: some warnings being treated as errors
-
-
-vim +/num_supplies +124 drivers/regulator/userspace-consumer.c
-
-   120	
-   121	static int get_num_supplies(struct platform_device *pdev)
-   122	{
-   123		struct  property *prop;
- > 124		int num_supplies = 0;
-   125	
-   126		for_each_property_of_node(pdev->dev.of_node, prop) {
-   127			const char *prop_name = prop->name;
-   128			int len = strlen(prop_name);
-   129	
-   130			if (len > SUPPLY_SUFFIX_LEN &&
-   131			    strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0) {
-   132				num_supplies++;
-   133			}
-   134		}
-   135		return num_supplies;
-   136	}
-   137	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  tools/perf/pmu-events/jevents.py | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jev=
+ents.py
+> index a7e88332276d..af15fa2cadbd 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -764,8 +764,8 @@ static const struct pmu_sys_events pmu_sys_event_tabl=
+es[] =3D {
+>        continue
+>      _args.output_file.write(f"""\t{{
+>  \t\t.metric_table =3D {{
+> -\t\t\t.entries =3D {tblname},
+> -\t\t\t.length =3D ARRAY_SIZE({tblname})
+> +\t\t\t.pmus =3D {tblname},
+> +\t\t\t.num_pmus =3D ARRAY_SIZE({tblname})
+>  \t\t}},
+>  \t\t.name =3D \"{tblname}\",
+>  \t}},
+> --
+> 2.34.1
+>
