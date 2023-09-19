@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C047A5AE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5812C7A5AEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbjISH2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
+        id S231728AbjISHbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbjISH2v (ORCPT
+        with ESMTP id S231561AbjISHbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:28:51 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC8D116;
-        Tue, 19 Sep 2023 00:28:45 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38J6Anl1007820;
-        Tue, 19 Sep 2023 07:28:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Z1930RYNMY8QCWBZ8oDZEVFEgbvg9qin0zy01lwYogE=;
- b=HrW1lxRPWnqDOrUUHo9OQDiPSNwb/z23YVx3EkQwBgKwHoZulxl1mtDzEVVgqqfnQem+
- 8GQuMsu4YBUIZ53AIvqgGBPFEnTrQ4vKtZ4GM4C248Eo32BjToYGnFQPDHBFtFSpWp6L
- FR0y1DPx+fIxtI29QvH2UZy00CvGiWF4HPb5Q9DbTHXYx2dVmZG4nSgpxi+JMynWwTX/
- UAOv6+egqblf7ALqGfQHDtbzVpVlWl1Nsz/fYkIO4/vOFKUuYNwItVBnppp9vfYQdqBs
- /9T2NJRWuL359AbrRTWVoXaMwqZcsnUeZFsIdRqbg9HY5guSpOSE8n0h4+3aHGfhRizj iA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t746g09p6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 07:28:41 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38J7SeY8024765
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 07:28:40 GMT
-Received: from [10.201.203.60] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 19 Sep
- 2023 00:28:35 -0700
-Message-ID: <b40c6439-ab73-d796-589e-ffee21cedfc9@quicinc.com>
-Date:   Tue, 19 Sep 2023 12:58:32 +0530
+        Tue, 19 Sep 2023 03:31:19 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09462FC;
+        Tue, 19 Sep 2023 00:31:13 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 57854FA2;
+        Tue, 19 Sep 2023 09:29:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1695108574;
+        bh=DQnS4aIKIh13ovdc7BzfWH9E6TxBe1gPiyTE4ZjyNYY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BOesDxxoV/01VlAhluf7YLPC/1LY5v6DUSAmbryylQA/UVNncmcoPm89AX/9XYQ6d
+         nW4D4fbSVh5QAPCRVAPFeL6NrYodQDHDg4hKu5ZyPB9+abblvv6BOZXW80KLAK5An8
+         zKVe1L0FDrNX/uErlZKXCnkz1zj3Og7O87huezYg=
+Message-ID: <06ac6d3b-e82e-dd25-ab21-90db76f3a5fd@ideasonboard.com>
+Date:   Tue, 19 Sep 2023 10:31:05 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH V2 4/4] arm64: dts: qcom: ipq5018: Add tsens node
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFT PATCH 2/6] drm: Call drm_atomic_helper_shutdown() at
+ shutdown time for misc drivers
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <srinivas.kandagatla@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <thara.gopinath@gmail.com>,
-        <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <dmitry.baryshkov@linaro.org>
-References: <20230915121504.806672-1-quic_srichara@quicinc.com>
- <20230915121504.806672-5-quic_srichara@quicinc.com>
- <b0fe17e4-e4d8-02af-4e09-06b3930b38fe@linaro.org>
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <b0fe17e4-e4d8-02af-4e09-06b3930b38fe@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
+Cc:     airlied@gmail.com, airlied@redhat.com, alain.volmat@foss.st.com,
+        alexander.deucher@amd.com, alexandre.belloni@bootlin.com,
+        alison.wang@nxp.com, bbrezillon@kernel.org,
+        christian.koenig@amd.com, claudiu.beznea@microchip.com,
+        daniel@ffwll.ch, drawat.floss@gmail.com, javierm@redhat.com,
+        jernej.skrabec@gmail.com, jfalempe@redhat.com, jstultz@google.com,
+        kong.kongxinwei@hisilicon.com, kraxel@redhat.com,
+        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, liviu.dudau@arm.com,
+        nicolas.ferre@microchip.com, paul.kocialkowski@bootlin.com,
+        sam@ravnborg.org, samuel@sholland.org,
+        spice-devel@lists.freedesktop.org, stefan@agner.ch,
+        suijingfeng@loongson.cn, sumit.semwal@linaro.org,
+        tiantao6@hisilicon.com, tzimmermann@suse.de,
+        virtualization@lists.linux-foundation.org, wens@csie.org,
+        xinliang.liu@linaro.org, yongqin.liu@linaro.org, zackr@vmware.com
+References: <20230901234015.566018-1-dianders@chromium.org>
+ <20230901163944.RFT.2.I9115e5d094a43e687978b0699cc1fe9f2a3452ea@changeid>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <20230901163944.RFT.2.I9115e5d094a43e687978b0699cc1fe9f2a3452ea@changeid>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4dS0KCBHHqGuPoBNX3_ebDk0AdslBfDu
-X-Proofpoint-GUID: 4dS0KCBHHqGuPoBNX3_ebDk0AdslBfDu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_01,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- spamscore=0 mlxlogscore=999 impostorscore=0 adultscore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309190061
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,48 +68,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/15/2023 6:16 PM, Krzysztof Kozlowski wrote:
-> On 15/09/2023 14:15, Sricharan Ramabadhran wrote:
->> IPQ5018 has tsens V1.0 IP with 4 sensors.
->> There is no RPM, so tsens has to be manually enabled. Adding the tsens
->> and nvmem node and IPQ5018 has 4 thermal sensors (zones). With the
->> critical temperature being 120'C and action is to reboot. Adding all
->> the 4 zones here.
->>
->> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> ---
->>   [v2] Fixed node names, order and added qfprom cells for points
->>        seperately to use the calibrate_common and squashed thermal_zone
->>        nodes here
->>
->>   arch/arm64/boot/dts/qcom/ipq5018.dtsi | 169 ++++++++++++++++++++++++++
->>   1 file changed, 169 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> index 9f13d2dcdfd5..d53aea5342e2 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> @@ -93,6 +93,117 @@ soc: soc@0 {
->>   		#size-cells = <1>;
->>   		ranges = <0 0 0 0xffffffff>;
->>   
->> +		qfprom: qfprom@a0000 {
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +			compatible = "qcom,ipq5018-qfprom", "qcom,qfprom";
+On 02/09/2023 02:39, Douglas Anderson wrote:
+> Based on grepping through the source code these drivers appear to be
+> missing a call to drm_atomic_helper_shutdown() at system shutdown
+> time. Among other things, this means that if a panel is in use that it
+> won't be cleanly powered off at system shutdown time.
 > 
-> This is a friendly reminder during the review process.
+> The fact that we should call drm_atomic_helper_shutdown() in the case
+> of OS shutdown/restart comes straight out of the kernel doc "driver
+> instance overview" in drm_drv.c.
 > 
-> It seems my previous comments were not fully addressed. Maybe my
-> feedback got lost between the quotes, maybe you just forgot to apply it.
-> Please go back to the previous discussion and either implement all
-> requested changes or keep discussing them.
+> All of the drivers in this patch were fairly straightforward to fix
+> since they already had a call to drm_atomic_helper_shutdown() at
+> remove/unbind time but were just lacking one at system shutdown. The
+> only hitch is that some of these drivers use the component model to
+> register/unregister their DRM devices. The shutdown callback is part
+> of the original device. The typical solution here, based on how other
+> DRM drivers do this, is to keep track of whether the device is bound
+> based on drvdata. In most cases the drvdata is the drm_device, so we
+> can just make sure it is NULL when the device is not bound. In some
+> drivers, this required minor code changes. To make things simpler,
+> drm_atomic_helper_shutdown() has been modified to consider a NULL
+> drm_device as a noop in the patch ("drm/atomic-helper:
+> drm_atomic_helper_shutdown(NULL) should be a noop").
 > 
+> Suggested-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-  oops, moved the compatible to first, but missed it on posting version.
-  Will fix it in V3.
+For omapdrm:
 
-Regards,
-  Sricharan
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Tested-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
+  Tomi
+
