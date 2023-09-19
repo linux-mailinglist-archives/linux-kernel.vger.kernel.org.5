@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030AD7A5F03
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EA07A5F06
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjISKGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 06:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S231146AbjISKGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 06:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbjISKFw (ORCPT
+        with ESMTP id S229641AbjISKGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 06:05:52 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A9AEA;
-        Tue, 19 Sep 2023 03:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1695117942;
-        bh=qnEPlg47MH9dE/ib7+sBEVpstd8KaTfTXJ6XGs34D+8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=DcXPXZ8RevrVci8TzkhlGkgvXdCrEBGdTI2ecUCjD+lo37dLcg/XalDi/y6ZSG3e0
-         ZfEzOeTrwD4zUqaZkYMLKWxU04OEzjxLQDC3oyiUnT4jIYpx7i/x1SBjc8jkZH5ZuF
-         cVZ1q7BPhuYhUjawCqSBGXNdIqZqKyhCCqVjn9RWYMp8fBWJuxYnqI5RyU+loysU60
-         R60cgwWXRUkFdLL1zXe+Q3zjl8pQpNIoUWLtNqMX4O71AUgnk8VqxHI3hGED+d3Skm
-         CV7dsCNdJcOtIGs720eP25IE4XlnGlkEUMzuUl3lhLv8dYuwFzPI60JiRRP7dHAAfq
-         sHJslzYoFLf2A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rqcjx2f8tz4xNj;
-        Tue, 19 Sep 2023 20:05:41 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
-        linux-spdx@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] powerpc: Replace GPL 2.0+ README.legal
- boilerplate with SPDX
-In-Reply-To: <CAMuHMdW6=wnOjT7qG4tHvc5X4JAJkkHMnVDsQ-dKM6i3FKyWWw@mail.gmail.com>
-References: <cover.1695031668.git.geert@linux-m68k.org>
- <d91725ff1ed5d4b6ba42474e2ebfeebe711cba23.1695031668.git.geert@linux-m68k.org>
- <87h6nqlxli.fsf@mail.lhotse>
- <CAMuHMdW6=wnOjT7qG4tHvc5X4JAJkkHMnVDsQ-dKM6i3FKyWWw@mail.gmail.com>
-Date:   Tue, 19 Sep 2023 20:05:35 +1000
-Message-ID: <87o7hytr4g.fsf@mail.lhotse>
+        Tue, 19 Sep 2023 06:06:42 -0400
+Received: from out-230.mta1.migadu.com (out-230.mta1.migadu.com [IPv6:2001:41d0:203:375::e6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9290BE8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 03:06:36 -0700 (PDT)
+Message-ID: <8d8f2aee-ce64-166d-b13d-9791e8d47036@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695117994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z13/olEq8GyW2EUlZpY3hnsJroKO32II25IDBVJXOTs=;
+        b=ed9hcfrJ7JmwZfShPsWjCFY5zQAzN1IPjlyXGSNFlfp1CQGWD6e780HtKR64q1UBkPHSrE
+        GM8q+2axy/e2IFaabfNVTkInuF8evswQ/LfkWwBoWmwPIbwP2n9Pf5cp6b91Tg2B1Zdoln
+        V0GcDwmDpEh+2T9NIFLDq1XFRH3nxO4=
+Date:   Tue, 19 Sep 2023 11:06:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] net: hinic: Fix warning-hinic_set_vlan_fliter() warn:
+ variable dereferenced before check 'hwdev'
+Content-Language: en-US
+To:     Cai Huoqing <cai.huoqing@linux.dev>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230919022715.6424-1-cai.huoqing@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20230919022715.6424-1-cai.huoqing@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
-> Hi Michael,
->
-> On Tue, Sep 19, 2023 at 4:13=E2=80=AFAM Michael Ellerman <mpe@ellerman.id=
-.au> wrote:
->> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> > Upstream Linux never had a "README.legal" file, but it was present
->> > in early source releases of Linux/m68k.  It contained a simple copyrig=
-ht
->> > notice and a link to a version of the "COPYING" file that predated the
->> > addition of the "only valid GPL version is v2" clause.
->> >
->> > Get rid of the references to non-existent files by replacing the
->> > boilerplate with SPDX license identifiers.
->> >
->> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->> LGTM.
->>
->> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
->
-> Can you please take it through the PPC tree?
+On 19/09/2023 03:27, Cai Huoqing wrote:
+> 'hwdev' is checked too late and hwdev will not be NULL, so remove the check
+> 
+> Fixes: 2acf960e3be6 ("net: hinic: Add support for configuration of rx-vlan-filter by ethtool")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/r/202309112354.pikZCmyk-lkp@intel.com/
+> Signed-off-by: Cai Huoqing <cai.huoqing@linux.dev>
+> ---
+> v1->v2: Remove 'hwdev' check directly
+> v1 link: https://lore.kernel.org/lkml/20230918123401.6951-1-cai.huoqing@linux.dev/
+> 
+>   drivers/net/ethernet/huawei/hinic/hinic_port.c | 3 ---
+>   1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
+> index 9406237c461e..f81a43d2cdfc 100644
+> --- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
+> +++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
+> @@ -456,9 +456,6 @@ int hinic_set_vlan_fliter(struct hinic_dev *nic_dev, u32 en)
+>   	u16 out_size = sizeof(vlan_filter);
+>   	int err;
+>   
+> -	if (!hwdev)
+> -		return -EINVAL;
+> -
+>   	vlan_filter.func_idx = HINIC_HWIF_FUNC_IDX(hwif);
+>   	vlan_filter.enable = en;
+>   
 
-Sure thing.
-
-cheers
+Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
