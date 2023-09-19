@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABDD7A6AAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B907A6ABB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbjISS0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
+        id S232014AbjISScA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbjISSZ5 (ORCPT
+        with ESMTP id S229853AbjISSb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:25:57 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFE79E;
-        Tue, 19 Sep 2023 11:25:51 -0700 (PDT)
-Received: from [192.168.2.59] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B09AE660319E;
-        Tue, 19 Sep 2023 19:25:49 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695147950;
-        bh=Y03o1iTpNXjxrNlIz4kiT40Tw5yePhhDd5i17lzN0Kw=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=GRnH7PhbECO0rLL158hqddE6ZOaUKo/ng/abZs9H48AHSNmeK40gf5ez6gx1xw041
-         nqp+KRz6DqSOTsqHpUDUxgTKBLyeTiGRSgz9gzKDDRUuJNshZ3AyQyze5F/zAF8q0x
-         ZS6s4i3RcHcfe1kr9lZMTANKCRcd5Bubg312JW8CYtpeXBaoTxp7PrscI8UxsVyEU9
-         e+LvnicvOCdtFUE8V0aYFeEJjcJe2X2l46TceO+/dVyKX4eFCu2IfFsuuZIsHcqR7n
-         bRNEPW1Q1kw5NE5iZsrtvKxETAhQVf7s114oogG9OC0JUNq2b7tvDqI+KhO7cbEINF
-         6UFAGNAIsSMpQ==
-Message-ID: <9b47d551-991b-5a60-39cf-3d47fbf68ea4@collabora.com>
-Date:   Tue, 19 Sep 2023 21:25:47 +0300
+        Tue, 19 Sep 2023 14:31:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE05997;
+        Tue, 19 Sep 2023 11:31:52 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695148311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mKyOmmSSJD2Ws4VR+XqPS/XNP5VPNOwNw6yDdf2ZDQU=;
+        b=xXqJqYUZla9VpgC4S4ShTGkMIL3gkkhNvGjlWhi5L1gkuz5icUdocjTZfEjeUV9x1XfF1d
+        9gCf9onnbE0u4V9GNNs47U9xjPBMw2DWytTSoQsodttKIzqkL+7HlaYEWW4FSVqwFkxP9b
+        m3N7cld1jgwk+v3jf2F2vowyOYzbp0oeTYfBdyMg3skppXJK7mZs9rhgY8B0yUaEjzj5rv
+        eNPjV+ty7EkQisVX1wCgp5HdgxQTcki84SeKDSqMlKMRQ4Dwk5yJNMqTIIkjzdPuUEmZXw
+        ZLXZiD6XCNIDxdM95XJgYydUDvKFSGuDWDp3q+ZqWzDj1uSibW0RuXplJpLfmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695148311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mKyOmmSSJD2Ws4VR+XqPS/XNP5VPNOwNw6yDdf2ZDQU=;
+        b=HSw+FE/2ECBsn8P+jBW//lrHd8c9W9Bxp5rJpQcF0U/qlJOFxqfRtQIDeqJGdvK2cG7ELT
+        v2DdyOFXFBXeLSDg==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
+        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
+        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
+        linux-hexagon@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Subject: Re: Arches that don't support PREEMPT
+In-Reply-To: <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+References: <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+ <87cyyfxd4k.ffs@tglx>
+ <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+ <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
+ <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
+ <20230919134218.GA39281@noisy.programming.kicks-ass.net>
+ <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
+ <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+Date:   Tue, 19 Sep 2023 20:31:50 +0200
+Message-ID: <87pm2eui95.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
- uncanceled work
-Content-Language: en-US
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     Zheng Hacker <hackerzheng666@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Zheng Wang <zyytlz.wz@163.com>, Kyrie.Wu@mediatek.com,
-        bin.liu@mediatek.com, mchehab@kernel.org, matthias.bgg@gmail.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
-        security@kernel.org, 1395428693sheep@gmail.com,
-        alex000young@gmail.com, Collabora Kernel ML <kernel@collabora.com>
-References: <20230707092414.866760-1-zyytlz.wz@163.com>
- <8c8bd3ec-a5a4-32e4-45b5-ee16eeeac246@collabora.com>
- <CAJedcCxPG1mKtgB7AcJSwaQB_qvODObwq3gz6eM_1w777b2PfQ@mail.gmail.com>
- <54b14ebe-b51b-2744-328d-2adcdaaf6d0e@collabora.com>
- <CAJedcCyn+VHxcSXH+HqP3yiXX8L0wjNao+suti5GgyQzYORcYA@mail.gmail.com>
- <4d533beb-f416-1b22-6d9d-cee7f3cfdad1@collabora.com>
-In-Reply-To: <4d533beb-f416-1b22-6d9d-cee7f3cfdad1@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/23 21:24, Dmitry Osipenko wrote:
-> On 8/31/23 11:18, Zheng Hacker wrote:
->>> The v4l2_m2m_ctx_release() already should wait for the job_timeout_work
->>> completion or for the interrupt fire. Apparently it doesn't work in
->>> yours case. You'll need to debug why v4l job or job_timeout_work is
->>> running after v4l2_m2m_ctx_release(), it shouldn't happen.
->>>
->> Yes, v4l2_m2m_cancel_job waits for m2m_ctx->job_flags to be  ~TRANS_RUNNING,
->> the mtk_jpeg_job_timeout_work will finally invoke v4l2_m2m_job_finish
->> to trigger that.
+On Tue, Sep 19 2023 at 10:25, Linus Torvalds wrote:
+> On Tue, 19 Sept 2023 at 06:48, John Paul Adrian Glaubitz
+> <glaubitz@physik.fu-berlin.de> wrote:
 >>
->> However, this is not the only path to call v4l2_m2m_job_finish. Here
->> is a invoking chain:
->> v4l_streamon
->>   ->v4l2_m2m_ioctl_streamon
->>     ->v4l2_m2m_streamon
->>       ->v4l2_m2m_try_schedule
->>         ->v4l2_m2m_try_run
->>           ->mtk_jpeg_dec_device_run
->>             ->schedule_delayed_work(&jpeg->job_timeout_work...
->>             ->error path goto dec_end
->>             ->v4l2_m2m_job_finish
->>
->> In some specific situation, it starts the worker and also calls
->> v4l2_m2m_job_finish, which might
->> make v4l2_m2m_cancel_job continues.
-> 
-> Then the error path should cancel the job_timeout_work, or better job
+>> As Geert poined out, I'm not seeing anything particular problematic with the
+>> architectures lacking CONFIG_PREEMPT at the moment. This seems to be more
+>> something about organizing KConfig files.
+>
+> It can definitely be problematic.
+>
+> Not the Kconfig file part, and not the preempt count part itself.
+>
+> But the fact that it has never been used and tested means that there
+> might be tons of "this architecture code knows it's not preemptible,
+> because this architecture doesn't support preemption".
+>
+> So you may have basic architecture code that simply doesn't have the
+> "preempt_disable()/enable()" pairs that it needs.
+>
+> PeterZ mentioned the generic entry code, which does this for the entry
+> path. But it actually goes much deeper: just do a
+>
+>     git grep preempt_disable arch/x86/kernel
+>
+> and then do the same for some other architectures.
+>
+> Looking at alpha, for example, there *are* hits for it, so at least
+> some of the code there clearly *tries* to do it. But does it cover all
+> the required parts? If it's never been tested, I'd be surprised if
+> it's all just ready to go.
+>
+> I do think we'd need to basically continue to support ARCH_NO_PREEMPT
+> - and such architectures migth end up with the worst-cast latencies of
+> only scheduling at return to user space.
 
-s/job/timeout work/
+The only thing these architectures should gain is the preempt counter
+itself, but yes the extra preemption points are not mandatory to
+have, i.e. we simply do not enable them for the nostalgia club.
 
-> needs to be run after the dec/enc has been started and not before.
-> 
-> Looking further at the code, I'm confused by this hunk:
-> 
-> 	mtk_jpeg_dec_start(comp_jpeg[hw_id]->reg_base);
-> 	v4l2_m2m_job_finish(jpeg->m2m_dev, ctx->fh.m2m_ctx);
-> 
-> The job should be marked as finished when h/w has finished processing
-> the job and not right after the job has been started. So the job is
-> always completed and mtk_jpeg_job_timeout_work() doesn't work as
-> expected, am I missing something?
-> 
+The removal of cond_resched() might cause latencies, but then I doubt
+that these museus pieces are used for real work :)
 
--- 
-Best regards,
-Dmitry
+Thanks,
 
+        tglx
