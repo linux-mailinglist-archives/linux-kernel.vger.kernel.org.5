@@ -2,104 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 319A67A5BD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1727A7A5BDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjISICV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
+        id S230113AbjISICl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjISICT (ORCPT
+        with ESMTP id S230186AbjISICi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:02:19 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D053114;
-        Tue, 19 Sep 2023 01:02:14 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2767378ae15so1117206a91.1;
-        Tue, 19 Sep 2023 01:02:14 -0700 (PDT)
+        Tue, 19 Sep 2023 04:02:38 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D88B11A
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:02:30 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c00b37ad84so29711441fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:02:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695110534; x=1695715334; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jnkum48/IhCb89iyYA5Sse0XApschq1dMT88JK5SabI=;
-        b=SzpP7mc5pf8q325SdcUyv7eLy7SJELLrEF3wxwgF3W6NHDifguSdik5NZkKIiV+UrD
-         P8SMcwcpFay1kONGFDgF91iwptNYL9HY1vmXeBwlpUZi6Xd2WAS03EPHzoUNhYHAqTkZ
-         poDjuduGsQfoRXuEL3L6m9J6sbCjb5R7SPZzuU6l5miqkLNNFLNNe0D4Jiz4bzDbZkSH
-         cEK6Clnte1kFvz8bZd6AEdArfm9yehOK3cVajx3tK22dhRYM6iyAsWktDXTIyjpCKtGi
-         ZRbnZAXhUCbkvZRLOXA0HGqTWVX/WF0L6+NbLFqi8p3F3395rsrPUMGNtNIrZMCydgSy
-         NQ8g==
+        d=szeredi.hu; s=google; t=1695110549; x=1695715349; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWwOBXcgP9QHb+ZwLC4z/fad6HDujTXM9X3AXgFefao=;
+        b=F3pgzF80ybykApF9N2exJ0huxmKEj/JwYyG9wZoIC+wUdSJA/bRF6YpfJc/mg/szkA
+         OsImu0uqYiBUmx53o4mPonCr5nLtlyInVMv7EjTlXZBV/OW+jgLtaIHKQWItQCF9ulRs
+         M+qXKlMomeIukmh0UgualD1oUS+FSCc1iTE1A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695110534; x=1695715334;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jnkum48/IhCb89iyYA5Sse0XApschq1dMT88JK5SabI=;
-        b=TWjSOOss7t4TNPJ9bEMHNso9dFCSRt5O05GqdwX07DSxUQ+Y5Vd127ucK9NIo4azTk
-         tC7I10Vtb8EPOgHIFfYEoYqXVcpqmEcou9ICa0LhwJJOzBfRRGmPt66MChwuv/qv+Wyi
-         bk/WjeM4q9AjPEP2D6itZ54TSQ/uYFC4BgxBVb6CJzzddtGfXRDBMDwvQ+mbpfMO0OWc
-         qth2kxwAGUqXcY5DlJlofTSxPXvQ8NbsS8tPcHVNqqQzfON8tqvRZR2bZGe5SS1RyOnT
-         knKhvMhhwLfxcU+0+YR3GN7kLluMXTb5iDb9LEQL0IEzbTPBnL4187jogeoTNV1vVeJH
-         +GJw==
-X-Gm-Message-State: AOJu0YxhvRJDkmv1dZSuLBvbHKbTUV/ZBASG+TbRzf3VvBWYFoqkTeiI
-        xLYRxDjfcoi+71csI6Z2F1A=
-X-Google-Smtp-Source: AGHT+IG33mFQGDzHGsPywCxRJVtcP8QtComo7I15mvnW/mCsvoKU6HLsQtjza7LFyyBu4bVAIngpZA==
-X-Received: by 2002:a17:90a:6482:b0:26b:4ce1:9705 with SMTP id h2-20020a17090a648200b0026b4ce19705mr9160012pjj.38.1695110534024;
-        Tue, 19 Sep 2023 01:02:14 -0700 (PDT)
-Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
-        by smtp.gmail.com with ESMTPSA id mu13-20020a17090b388d00b0026596b8f33asm9899649pjb.40.2023.09.19.01.02.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 01:02:13 -0700 (PDT)
-From:   Edward AD <twuufnxlz@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     eadavis@sina.com, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: [PATCH] tty: fix memory leak in gsm_activate_mux
-Date:   Tue, 19 Sep 2023 16:02:08 +0800
-Message-ID: <20230919080207.3654671-2-twuufnxlz@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <2023091954-algebra-hastiness-3bb8@gregkh>
-References: <2023091954-algebra-hastiness-3bb8@gregkh>
+        d=1e100.net; s=20230601; t=1695110549; x=1695715349;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nWwOBXcgP9QHb+ZwLC4z/fad6HDujTXM9X3AXgFefao=;
+        b=pDh2K2D/dZTQbj2xwdBKqi9vPd2xNWyZYxTKQtEeYB5cet76g8mtoGdcElvfOH0Hs3
+         LiPmiZXannoGUG8fL5UnELlRMx2KURRTT7wkz7vzaGFaxw+nak52ExF6d5Xr8TzCuNou
+         eFcQ/iAK+E5CiGShw6xhF39sX+SK2PuSl2IO1v5Z1AftC2OftLmwJeNvLs9y12mtG3nt
+         p1vo62nQj/0vqftyHVhp5ZgQhejbfawUvX1ZziXTQLTIzswgELLyFqDf2AnPPF1Z/wIV
+         LVR9v4BvdRnMI75Q0hcZ+onOrtGUY7INvnSrQc2/YW+kIUCnS4b68QNwLlsJwop8hW8H
+         O1Cg==
+X-Gm-Message-State: AOJu0YwhKQ5AAlc2Uzdn3Lg5xIjj0IjkAaRHoXTQM5nkry7z+BJLjNKg
+        50TyVgdIXINKEi7a48V4F8fvZx/IvDwkJLumWs9/UQ==
+X-Google-Smtp-Source: AGHT+IF39NIDgeU/oOTNvV5zRchTf9jdNdxeIj1xURpUADWsrOYnhsqNCpFqVeqIom7TB0F8lXRC41YrHzXHEQ7vZTE=
+X-Received: by 2002:a2e:9f0a:0:b0:2bc:be3c:9080 with SMTP id
+ u10-20020a2e9f0a000000b002bcbe3c9080mr9595518ljk.27.1695110548691; Tue, 19
+ Sep 2023 01:02:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
+ <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
+ <20230914-lockmittel-verknallen-d1a18d76ba44@brauner> <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com>
+ <20230918-grafik-zutreffen-995b321017ae@brauner> <CAOssrKfS79=+F0h=XPzJX2E6taxAPmEJEYPi4VBNQjgRR5ujqw@mail.gmail.com>
+ <20230918-hierbei-erhielten-ba5ef74a5b52@brauner> <CAJfpegtaGXoZkMWLnk3PcibAvp7kv-4Yobo=UJj943L6v3ctJQ@mail.gmail.com>
+ <20230918-stuhl-spannend-9904d4addc93@brauner> <CAJfpegvxNhty2xZW+4MM9Gepotii3CD1p0fyvLDQB82hCYzfLQ@mail.gmail.com>
+ <20230918-bestialisch-brutkasten-1fb34abdc33c@brauner> <CAJfpegvTiK=RM+0y07h-2vT6Zk2GCu6F98c=_CNx8B1ytFtO-g@mail.gmail.com>
+ <20230919003800.93141-1-mattlloydhouse@gmail.com>
+In-Reply-To: <20230919003800.93141-1-mattlloydhouse@gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 19 Sep 2023 10:02:17 +0200
+Message-ID: <CAJfpegs6g8JQDtaHsECA_12ss_8KXOHVRH9gwwPf5WamzxXOWQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+To:     Matthew House <mattlloydhouse@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the call to gsm_register_devices() fails, we need to reclaim the memory
-requested in gsm_dlci_alloc().
+On Tue, 19 Sept 2023 at 02:38, Matthew House <mattlloydhouse@gmail.com> wrote:
 
-Fixes: 01aecd917114 ("tty: n_gsm: fix tty registration before control channel open")
-Reported-and-tested-by: syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com
-Signed-off-by: Edward AD <twuufnxlz@gmail.com>
----
- drivers/tty/n_gsm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> One natural solution is to set either of the two lengths to the expected
+> size if the provided buffer are too small. That way, the caller learns both
+> which of the buffers is too small, and how large they need to be. Replacing
+> a provided size with an expected size in this way already has precedent in
+> existing syscalls:
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index b3550ff9c494..df9bb87652b0 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -3136,8 +3136,10 @@ static int gsm_activate_mux(struct gsm_mux *gsm)
- 		gsm->receive = gsm1_receive;
- 
- 	ret = gsm_register_devices(gsm_tty_driver, gsm->num);
--	if (ret)
-+	if (ret) {
-+		gsm_dlci_free(&dlci->port);
- 		return ret;
-+	}
- 
- 	gsm->has_devices = true;
- 	gsm->dead = false;		/* Tty opens are now permissible */
--- 
-2.25.1
+This is where the thread started.  Knowing the size of the buffer is
+no good, since the needed buffer could change between calls.
 
+We are trying to create a simple interface, no?  My proposal would
+need a helper like this:
+
+struct statmnt *statmount(uint64_t mnt_id, uint64_t mask, unsigned int flags)
+{
+        size_t bufsize = 1 << 15;
+        void *buf;
+        int ret;
+
+        for (;;) {
+                buf = malloc(bufsize <<= 1);
+                if (!buf)
+                        return NULL;
+                ret = syscall(__NR_statmnt, mnt_id, mask, buf, bufsize, flags);
+                if (!ret)
+                        return buf;
+                free(buf);
+                if (errno != EOVERFLOW)
+                        return NULL;
+        }
+}
+
+Christian's would be (ignoring .fs_type for now):
+
+int statmount(uint64_t mnt_id, uint64_t mask, struct statmnt *st,
+unsigned int flags)
+{
+        int ret;
+
+        st->mnt_root_size = 1 << 15;
+        st->mountpoint_size = 1 << 15;
+        for (;;) {
+                st->mnt_root = malloc(st->mnt_root_size <<= 1);
+                st->mountpoint = malloc(st->mountpoint <<= 1);
+                if (!st->mnt_root || !st->mountpoint) {
+                        free(st->mnt_root);
+                        free(st->mountpoint);
+                        return -1;
+                }
+                ret = syscall(__NR_statmnt, mnt_id, mask, st,
+sizeof(*st), flags);
+                if (!ret || errno != EOVERFLOW)
+                        return ret;
+                free(st->mnt_root);
+                free(st->mountpoint);
+        }
+}
+
+It's not hugely more complex, but more complex nonetheless.
+
+Also having the helper allocate buffers inside the struct could easily
+result in leaks since it's not obvious what the caller needs to free,
+while in the first example it is.
+
+Note that I'm not against having the prototype on the kernel interface
+take a typed pointer.  If strings are not needed, both interfaces
+would work in exactly the same way.
+
+Thanks,
+Miklos
