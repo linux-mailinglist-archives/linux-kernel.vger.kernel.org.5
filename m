@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2DB7A6F84
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A097A6F8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbjISXgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
+        id S233639AbjISXgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjISXgN (ORCPT
+        with ESMTP id S233061AbjISXgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Sep 2023 19:36:13 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7753ACA;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB93CE;
         Tue, 19 Sep 2023 16:36:07 -0700 (PDT)
 Received: from localhost.localdomain (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: alarumbe)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E86106607079;
-        Wed, 20 Sep 2023 00:36:05 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 34ADE6607083;
+        Wed, 20 Sep 2023 00:36:06 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1695166566;
-        bh=u9zb2652JL2f6qmKUKmSUATbYmPOsPigfj5Mh3FzMbo=;
+        bh=WfmVqHp4HoJXfVeYE4CYy4eKkMUnawX/XEzu8rruf8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oDbGaUAYiTDxRbvOUDHTWaY6QujAh4lWkHllVe07qJV/6c1V/WinkUb7oHNa7UtP5
-         bY8ZjmcdYcKnyeThqrhVoCQSoOV4g7L5ptwAmMEgMxv+Pu8r0LHp1H2La0pv8F9pH+
-         QyM2U1h8fo2iM3EHsdMC9a7A7TyaWL7xzv1NLXeuFycvVpiyLG7iHEuftxFe4koZBR
-         oe5PtEiJNAeHGEofWM/ucAY6ftRfctmW3fnzDflWFB9/apPG95zunvlI0B2ooTEFBl
-         SP6T76Bt8yQjW2Ivf0Xs9zflo1yQOaEwknaS2rcooWTP35KelwKA5eE59Pt/iCOUhO
-         qDzqYtvsz7sSQ==
+        b=M5CB5UvA5bECx5iHWKHHROxLc3ssUZ7NVNy2A6FCxMFv9Mw9/nfsItnoj7fMdcrnc
+         QJ9p7so/hyytmlx+/JmFvlBUT5ncB7u9kuN8YHVPhcTJ9yFJnLm2/xY5a3VfuyDj9I
+         m63jg2JFP6eCw6QqgPc995qVwseFtiO9NeXUs44r30NHe4Q1hzOly0hGG8fjWnm0ev
+         VwpRGcASccjmvsPZKiSWeffEE2A868udfqBsiPRMSTfVoYqIhvSOTlni8Fzm4pO6Lo
+         dmWxnP81ZOfxSuUJXbJyCsWc8FSzo7DK6m/xVV+/aM6Hyg4bm09M0sOWpGOVkaCYKR
+         RcTwDmepl/6uA==
 From:   =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
 To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
         tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
@@ -44,9 +44,9 @@ Cc:     adrian.larumbe@collabora.com, dri-devel@lists.freedesktop.org,
         freedreno@lists.freedesktop.org, healych@amazon.com,
         kernel@collabora.com,
         Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v6 3/6] drm/panfrost: Add fdinfo support for memory stats
-Date:   Wed, 20 Sep 2023 00:34:51 +0100
-Message-ID: <20230919233556.1458793-4-adrian.larumbe@collabora.com>
+Subject: [PATCH v6 4/6] drm/drm_file: Add DRM obj's RSS reporting function for fdinfo
+Date:   Wed, 20 Sep 2023 00:34:52 +0100
+Message-ID: <20230919233556.1458793-5-adrian.larumbe@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230919233556.1458793-1-adrian.larumbe@collabora.com>
 References: <20230919233556.1458793-1-adrian.larumbe@collabora.com>
@@ -62,67 +62,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new DRM GEM object function is added so that drm_show_memory_stats can
-provide more accurate memory usage numbers.
+Some BO's might be mapped onto physical memory chunkwise and on demand,
+like Panfrost's tiler heap. In this case, even though the
+drm_gem_shmem_object page array might already be allocated, only a very
+small fraction of the BO is currently backed by system memory, but
+drm_show_memory_stats will then proceed to add its entire virtual size to
+the file's total resident size regardless.
 
-Ideally, in panfrost_gem_status, the BO's purgeable flag would be checked
-after locking the driver's shrinker mutex, but drm_show_memory_stats takes
-over the drm file's object handle database spinlock, so there's potential
-for a race condition here.
+This led to very unrealistic RSS sizes being reckoned for Panfrost, where
+said tiler heap buffer is initially allocated with a virtual size of 128
+MiB, but only a small part of it will eventually be backed by system memory
+after successive GPU page faults.
+
+Provide a new DRM object generic function that would allow drivers to
+return a more accurate RSS size for their BOs.
 
 Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 Reviewed-by: Steven Price <steven.price@arm.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_drv.c |  2 ++
- drivers/gpu/drm/panfrost/panfrost_gem.c | 14 ++++++++++++++
- 2 files changed, 16 insertions(+)
+ drivers/gpu/drm/drm_file.c | 5 ++++-
+ include/drm/drm_gem.h      | 9 +++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index 3c93a11deab1..8cd9331ac4b8 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -567,6 +567,8 @@ static void panfrost_show_fdinfo(struct drm_printer *p, struct drm_file *file)
- 	struct panfrost_device *pfdev = dev->dev_private;
+diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+index 883d83bc0e3d..762965e3d503 100644
+--- a/drivers/gpu/drm/drm_file.c
++++ b/drivers/gpu/drm/drm_file.c
+@@ -944,7 +944,10 @@ void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)
+ 		}
  
- 	panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
-+
-+	drm_show_memory_stats(p, file);
- }
+ 		if (s & DRM_GEM_OBJECT_RESIDENT) {
+-			status.resident += obj->size;
++			if (obj->funcs && obj->funcs->rss)
++				status.resident += obj->funcs->rss(obj);
++			else
++				status.resident += obj->size;
+ 		} else {
+ 			/* If already purged or not yet backed by pages, don't
+ 			 * count it as purgeable:
+diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+index bc9f6aa2f3fe..16364487fde9 100644
+--- a/include/drm/drm_gem.h
++++ b/include/drm/drm_gem.h
+@@ -208,6 +208,15 @@ struct drm_gem_object_funcs {
+ 	 */
+ 	enum drm_gem_object_status (*status)(struct drm_gem_object *obj);
  
- static const struct file_operations panfrost_drm_driver_fops = {
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
-index 3c812fbd126f..7d8f83d20539 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-@@ -195,6 +195,19 @@ static int panfrost_gem_pin(struct drm_gem_object *obj)
- 	return drm_gem_shmem_pin(&bo->base);
- }
- 
-+static enum drm_gem_object_status panfrost_gem_status(struct drm_gem_object *obj)
-+{
-+	struct panfrost_gem_object *bo = to_panfrost_bo(obj);
-+	enum drm_gem_object_status res = 0;
++	/**
++	 * @rss:
++	 *
++	 * Return resident size of the object in physical memory.
++	 *
++	 * Called by drm_show_memory_stats().
++	 */
++	size_t (*rss)(struct drm_gem_object *obj);
 +
-+	res |= (bo->base.madv == PANFROST_MADV_DONTNEED) ?
-+		DRM_GEM_OBJECT_PURGEABLE : 0;
-+
-+	res |= (bo->base.pages) ? DRM_GEM_OBJECT_RESIDENT : 0;
-+
-+	return res;
-+}
-+
- static const struct drm_gem_object_funcs panfrost_gem_funcs = {
- 	.free = panfrost_gem_free_object,
- 	.open = panfrost_gem_open,
-@@ -206,6 +219,7 @@ static const struct drm_gem_object_funcs panfrost_gem_funcs = {
- 	.vmap = drm_gem_shmem_object_vmap,
- 	.vunmap = drm_gem_shmem_object_vunmap,
- 	.mmap = drm_gem_shmem_object_mmap,
-+	.status = panfrost_gem_status,
- 	.vm_ops = &drm_gem_shmem_vm_ops,
- };
- 
+ 	/**
+ 	 * @vm_ops:
+ 	 *
 -- 
 2.42.0
 
