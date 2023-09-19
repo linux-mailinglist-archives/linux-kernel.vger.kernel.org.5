@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB137A6870
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84EB57A6877
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbjISP6E convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 11:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
+        id S233220AbjISP67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233218AbjISP6A (ORCPT
+        with ESMTP id S233218AbjISP66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:58:00 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3FF9F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:57:54 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-232-by0VL1p0PYKojar-QhGBLQ-1; Tue, 19 Sep 2023 16:57:41 +0100
-X-MC-Unique: by0VL1p0PYKojar-QhGBLQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 19 Sep
- 2023 16:57:36 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 19 Sep 2023 16:57:36 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>
-CC:     Greg Ungerer <gregungerer@westnet.com.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: RE: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
-Thread-Topic: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
-Thread-Index: AQHZ6Kr+hLdybFnA00ugx5L/MFgM8bAiJxPQgAABTgCAABHZMP//+8IAgAARftD///eTgIAAEctA
-Date:   Tue, 19 Sep 2023 15:57:36 +0000
-Message-ID: <bfbf4d9ae5674d5dbe8c509abf5b0f84@AcuMS.aculab.com>
-References: <20230915183707.2707298-1-willy@infradead.org>
- <20230915183707.2707298-10-willy@infradead.org>
- <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
- <ZQW849TfSCK6u2f8@casper.infradead.org>
- <e1fb697714ac408e85c4e3dc573cd7d5@AcuMS.aculab.com>
- <ZQmvhC+pGWNs9R23@casper.infradead.org>
- <cffc2a427ae74f62b07345ec9348e43e@AcuMS.aculab.com>
- <ZQm67lGOBBdC2Dl9@casper.infradead.org>
- <c61a58a1f5a34f2b96c6043840635197@AcuMS.aculab.com>
- <ZQnCiZuMbFnwbEUt@casper.infradead.org>
-In-Reply-To: <ZQnCiZuMbFnwbEUt@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 19 Sep 2023 11:58:58 -0400
+Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0752A91;
+        Tue, 19 Sep 2023 08:58:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
+        s=protonmail2; t=1695139129; x=1695398329;
+        bh=iQ70sqOuWy3+EASwFa0/309PrDQXmYm3GtUvJiKCnbc=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=JLWZQZuHawh1kmZgERsEMV6LqT29GcKLho21jKqkgPF1sD5uLFx8MbQaN34J1I4p7
+         m4P68h8x4rYi2/a7K1ML+IcH+b1egMO9vVMZujHDO931fFajAvsXbs1p61rP5VH2aU
+         lfrbBRzXdoQl6hLJE/IyC7na/C0Px9G2LsB6odzXoj4TX4AGzH9v8z/HrpIcLfJ+Bn
+         77XAFrVcZvKoHBnmYVNTIfvfyWjli4k4Dr3fcc67nkjaKIoVsn029amWaWUYG2mke/
+         lcqdwSK9XpRY//BoHx1XHXdR9A3Ld7auTD+jhwsmMkmewEIWzNcmdzujAE444Ounxy
+         2CVfqDCByas5Q==
+Date:   Tue, 19 Sep 2023 15:58:41 +0000
+To:     segher@kernel.crashing.org
+From:   Peter Lafreniere <peter@n8pjl.ca>
+Cc:     anton.ivanov@cambridgegreys.com, geert@linux-m68k.org,
+        ink@jurassic.park.msu.ru, jack@suse.cz, johannes@sipsolutions.net,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux@armlinux.org.uk,
+        linuxppc-dev@lists.ozlabs.org, peter@n8pjl.ca,
+        reiserfs-devel@vger.kernel.org, richard.henderson@linaro.org,
+        richard@nod.at, tsbogend@alpha.franken.de
+Subject: Re: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
+Message-ID: <20230919155832.4179-1-peter@n8pjl.ca>
+In-Reply-To: <20230919151630.GO19790@gate.crashing.org>
+References: <20230918175529.19011-1-peter@n8pjl.ca> <20230918234108.GN19790@gate.crashing.org> <20230919000026.7409-1-peter@n8pjl.ca> <20230919151630.GO19790@gate.crashing.org>
+Feedback-ID: 53133685:user:proton
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox
-> Sent: 19 September 2023 16:47
-> 
-> On Tue, Sep 19, 2023 at 03:22:25PM +0000, David Laight wrote:
-> > > Anyway, that's not the brief.  We're looking to (eg) clear bit 0
-> > > and test whether bit 7 was set.  So it's the sign bit of the byte,
-> > > not the sign bit of the int.
-> >
-> > Use the address of the byte as an int and xor with 1u<<24.
-> > The xor will do a rmw on the three bytes following, but I
-> > doubt that matters.
-> 
-> Bet you a shiny penny that Coldfire takes an unaligned access trap ...
+On Tue, Sep 19, 2023 at 11:16, Segher Boessenkool wrote:
+>=20
+> On Tue, Sep 19, 2023 at 12:00:34AM +0000, Peter Lafreniere wrote:
+>=20
+> > On Monday, September 18th, 2023 at 19:41, Segher Boessenkool segher@ker=
+nel.crashing.org wrote:
+> >=20
+> > > On Mon, Sep 18, 2023 at 05:56:09PM +0000, Peter Lafreniere wrote:
+> > >=20
+> > > > ReiserFS has been considered deprecated for 19 months since commit
+> > > > eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
+> > > > several architectures that still build it into their defconfig kern=
+els.
+> > > >=20
+> > > > As ReiserFS will be removed in 2025, delete all ReiserFS-related op=
+tions
+> > > > from defconfig files before the filesystem's removal.
+> > >=20
+> > > This is essentially equivalent to deleting the filesystem now. Why do
+> > > this? Is there such a hurry?
+> >=20
+> > This is not equivalent to deleting the filesystem. The filesystem can s=
+till
+> > be configured into kernels, and few distros use a defconfig kernel anyw=
+ay.
+>=20
+>=20
+> Most people who compile kernels use defconfigs though. Distros are a
+> tiny minority if you look at builds.
+>=20
+> Again: why do you want this?
+>=20
 
-and then the 'firmware' silently fixed it up for you a few 1000
-clocks later...
+Because the filesystem is deprecated and rarely used. Those who do use Reis=
+erFS
+should migrate away from it or get ready to stop upgrading their kernels so=
+on.
 
-> and besides, this is done on _every_ call to unlock_page().  That might
-> cross not only a cacheline boundary but also a page boundary.  I cannot
-> believe that would be a high-performing solution.  It might be just fine
-> on m68000 but I bet even by the 030 it's lower performing.
+This removal from defconfig:
 
-I do remember managing to use 'cas2' to add an item to a linked list.
-But it is so painful so setup it was better just to disable interrupts.
-For non-smp that is almost certainly ok.
-(Unless the instructions are slow because of synchronisation.)
-Otherwise you need to use 'cas' on the aligned word.
-Assuming coldfire even has cas.
+ 1) Serves as a reminder to those that use the fs that they should take the
+    above actions, but with the filesystem staying available should they ne=
+ed
+    it.
 
-	David
+ 2) Stops building an obsolete and largely-unused filesystem unnecessarily.
+    Some hobbyist targets like m68k and alpha may prefer to keep all filesy=
+stems
+    available until total removal, but others like arm and UML have no need=
+ for
+    ReiserFS to be built unless specifically configured.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ 3) Arguably simplifies the removal of the filesystem when that takes place=
+.
+    This point is admittedly quite weak.
+
+ 4) Has to happen someday, unless someone steps up and volunteers to mainta=
+in
+    the fs. I don't find it worthwhile, but you can if you'd like. Perhaps =
+work
+    towards removal will cause a user to step forward and keep their belove=
+d
+    filesystem around?
+
+ 5) Doesn't actually remove support for the filesystem whatsoever. I can't
+    emphasize this enough: users who build their own kernel and maintain a
+    niche filesystem like ReiserFS should know how to flip a Kconfig switch=
+.
+
+>=20
+> Segher
+
+Cheers,
+Peter
 
