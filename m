@@ -2,720 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E42A17A5ED4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2EF7A5EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbjISJyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
+        id S231517AbjISJxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231795AbjISJxg (ORCPT
+        with ESMTP id S231671AbjISJw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:53:36 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2102.outbound.protection.outlook.com [40.107.255.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E9E119
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:53:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CQEUYX8FCPAcDOj8gwHrqV3oXwWG0OT0Y7a/g3SIjeWdGRcIYRDCo4SCm9Wdi1pFq19t1ui43SDzeyFXe6pJiWCHdJ7bSeYiUfL/HDz3bxeSLVFzmgOeSEvKUr8zX/zi00riUDRXqDi2UGkuinaa5ZdfMoFhBElxwg/+ni4BENe5iOlktvCB9OkYCGnYbpyHojQXqQlyPWP69Uay0pieo7maM5ECqsRvRA9qCnO8w4FXHMC2292SGt1DCRB1d8UKs7tug6CsKF+QIB4zrYeG0G6CCo5n4JxlT9ozjgxDIqus507dSeSvLxqRFo3INkPys1JRDSxJ3Db7vs+2RCB21A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jx9WTUZiqUt0CjqcK2hwmvIj8D257d25wRI58f+0wyk=;
- b=E92YNQ80+yU6qQQas2UZBHE7Y4hKxs2N78+c4PJ4+MIhEHJAYQnQEEX5itNzLvjaMf/Ip6HBEPg4zOmh7qF0qYHpSE0bnzkd3w9Yvua8aQsCKrZzeGfAf+Cl3VGETqFdOPwoXaTlZZyxBA99wP3pe+xv8MFXP4kpfPhi+bMKULwT2wihsVmUpYcpNS++TFB5BIFDj3JBeG/AcUFfLUF+bq30CIYXjYUnefzoB7u8gnUQpM6wi2mmdlrhugsEH+hN/ns6iQ391PPa/4RikO3LOkyspyPR24mEFJUspiPmlN/iD1iZDUuqX3UwdSdHz+9dO4fOyLS7S5FoyH907Nqe2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jx9WTUZiqUt0CjqcK2hwmvIj8D257d25wRI58f+0wyk=;
- b=BPd8bXtYUGjCErvn8rK5GYcPaG2gEea9oT8OvK+U96aaMxDfUFS6gXDk9doQ1kqPpdcfRI5ToHaULhTubskBn0CJgzmDBYlPRTLBvePiYybxmharBc3hkjbKlYSgeCUhH8rRkttBOwc1nMXtG5kql/aCWiL5x2+4X0oulltVTH75NWYncjIZPO3yy25C/NzzPu5c42xSbrlKgeuZBGNZyR7BQjnaSUU5AnFIjqfMm4i8O7pMQy9gwpwP64ZNdPCLUl66WC39IGDJUgeE+TXq9uYAD7QnM9SAN/S3UP6R9DGJrCyL2/fWTTEGuoUvE37HWMpja9h47yRFhEwoAnqEXQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by SEYPR06MB6982.apcprd06.prod.outlook.com (2603:1096:101:1e2::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
- 2023 09:53:13 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::64c1:bd7f:ced7:7d02]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::64c1:bd7f:ced7:7d02%4]) with mapi id 15.20.6792.020; Tue, 19 Sep 2023
- 09:53:13 +0000
-From:   Huan Yang <link@vivo.com>
-To:     SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org (open list),
-        damon@lists.linux.dev (open list:DATA ACCESS MONITOR),
-        linux-mm@kvack.org (open list:DATA ACCESS MONITOR)
-Cc:     opensource.kernel@vivo.com, Huan Yang <link@vivo.com>
-Subject: [RFC 2/2] mm/damos/filter: Damos filter cleanup
-Date:   Tue, 19 Sep 2023 17:52:35 +0800
-Message-Id: <20230919095237.26613-3-link@vivo.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230919095237.26613-1-link@vivo.com>
-References: <20230919095237.26613-1-link@vivo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYCP286CA0003.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:26c::10) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+        Tue, 19 Sep 2023 05:52:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DE1F5;
+        Tue, 19 Sep 2023 02:52:52 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 09:52:50 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695117171;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=cmbxedhjULxQ5f/9ToQ2wKpfQ2l8/2rPZBD9k7fMJ04=;
+        b=AfXz9Z9j3LigFYq8+rFm390pUPdhgPszRHnOlTWpkqhJE22qQKP13FxW0ToC+EeohW0SeH
+        cpo5sQPTKkQDK+4NAKUTO8WAk/hDvlGUCaCGfVXksrjtonJ66RdMDWGJGTlTCijkvcnpEv
+        UbYyddAqZjTKFF2FR3E4T51Sji2y83H4QzL5DBTqjQ6QQw9gYzGdPR3M9eZFrsnRogJIDt
+        zaIt+RjQKcqdcmnNENZ4PB7TpU0NgVtH/1OTRDo9oVUtZR6MFxlV0DdEaIWO1VpB9Ty1Jz
+        kGgt98uKkXCnR+i7kHobR4z7GkUJ0XmvjYIGpMFJPdAlcA6s+sSjRFNsq1omHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695117171;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=cmbxedhjULxQ5f/9ToQ2wKpfQ2l8/2rPZBD9k7fMJ04=;
+        b=LBqwFSmwo37bURuahNGUsXU9HQ0BkFU/K0fLGRu6s3Wuu4M1mEpkD42CluxmBJHzjn4IGu
+        l37nLRmv97ZrE8Cg==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Rename check_preempt_curr() to wakeup_preempt()
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|SEYPR06MB6982:EE_
-X-MS-Office365-Filtering-Correlation-Id: 50394122-3ebc-42e5-19c8-08dbb8f63d66
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B+zMk75QJ65qWbeuWtr+CB91Ku3BiJ1kC//DbvThBiJNN3m332BiNnYmIAl/uOr8VmrCo4e4ECgpr4qCLBrgldoan+sbnbGgWtcgszFwQ/cZqoCTLhaW+s+8734a2c85PhkQ8Zs/3Y5RQjftp7mbtsxcPRVg/jgdQ2yul0POY8mWSOTHeUU6Q7Rn3EiDuKgjcdHbwQQLFBxFddABkCy0+cUFOJ82I0J4wEHoaDCTT0aHSrtn5OCvMl2sTiGKp6OH1iWErdax9pJVXeYvDsjjD2HTEu/zNSaV2SfOxz2Lxb515hlVYbQRXpqY5WXX7IHy+YevJ9yxxOjMOvYwFQ22qWU+A+WOdEF1eCGQfcubiWAo2Vi8IE1yS/o7JL8Sjzzry9fY/yrAU4Y8t5X1csm17KgsPrR+iNW0RztJkla5wuSsjctjfyu+Wriun8cToZr+oE8cxngPirwbyKWZquplC4Y9iE35J9NmUTN0+WbCcZjyCY+3/7oUR/8ENsCZlRdAaC5fsh8QF9oR5kxzSR/prKrfdtfT7TGJ+GlSI1ABjzRtfaGTTGvl+JY0xQJoXnnkjkF2a55xZEucb6YdEYl6CAzr9l954B1ODyz9MYua4Uik2xEVQZu94bq3UNYAwQeG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(366004)(39860400002)(396003)(186009)(1800799009)(451199024)(4326008)(5660300002)(6506007)(6486002)(52116002)(8676002)(8936002)(316002)(41300700001)(66946007)(66556008)(478600001)(66476007)(6666004)(30864003)(2906002)(110136005)(6512007)(83380400001)(1076003)(26005)(107886003)(2616005)(38100700002)(36756003)(38350700002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?f0V7b6sCfwJzCwQ6bVLam0tWonhbNq/U7CAp4I30B0XX42lisjyAX2s5cOWO?=
- =?us-ascii?Q?ZsADDL0zBLfySnX6mZxcZtRTI3M9dLkTzhX8Lu2xxL+7r/StepkkD9dDt3x8?=
- =?us-ascii?Q?lq5qtL1adQuzKRWPiS3tcVcEJLIy2gRxH/AKeTDa6YZTJ/4h7NN/sMPoZQtd?=
- =?us-ascii?Q?fiTQbJrOEryzgkrDC7k2ifeIvBwHz797Kl8AXRMIsdEtoCUsWhU3eQUYLhWq?=
- =?us-ascii?Q?fkx+l4rRw2GTSSqxS1XSibYguRNWgEwK95VDwkXDoV2KZ3/3vKwEBIq/juIG?=
- =?us-ascii?Q?4VibVyJD/9NSA+RTuGUaRGFRmhJLTxcYkH09Us57O3PIM6d6p2sBmS6g08Ix?=
- =?us-ascii?Q?JRyPshGmFgF/VpRr7ZuMkcZNCFkfZm/sAcBT9z/KjPWHj31XnRyqRITBhEHv?=
- =?us-ascii?Q?D/zgbBkqoHt0vibZgbwwFkbv9BevAqPWnuizKNpNzdJUray3gFAhd3eUXosD?=
- =?us-ascii?Q?DIDSq+9J7m9KbFQlgnfiQWKwbsTK+pRKkvBuWf/mmDVv2IvDW6zyduT5DLbJ?=
- =?us-ascii?Q?m0Ijfj/YwrBgcwlhf0VdpJnIkx52Zy5u+Cc4sziawl2h4zbytDbXJjQSNmUo?=
- =?us-ascii?Q?6eHnAcxxsmT9WdNON9pFgG3PBRinEIWMItE5OQi1zcOTJnes7BOxkSEfEDHQ?=
- =?us-ascii?Q?YWrmtpWJIPjhLQ9GRrL8146C+farGhzJRw2eCNT7jmJTNrj8214/dTMGiIKZ?=
- =?us-ascii?Q?kq9BGkJnd/nXKU5a++PDmANyLEDKoAkHjY9BAFMlVzJ/UfWJ5yas9ScOSI1A?=
- =?us-ascii?Q?zZg0Oio1rnbX8xHMvv2XnsUs3uhE89UtSgTNWOQ/GorUCDtOVWQ3oYyhzPSA?=
- =?us-ascii?Q?xzKAYBHCHg5WEBaekPO4bLtYZ9UL2saCgYnQfKVy64o2+T9VJ5toDcsFXuDr?=
- =?us-ascii?Q?wCqhd1YnFFveu3SSqdQwocJeXK5Crkof9B+1SZziffghVIZRH+ziXSOYc/x7?=
- =?us-ascii?Q?1x/7G2byw2tGKmZWkQw6n4i3D+7QwyLmc58tAKSwwfkCEQD3KYTYBI14l4ad?=
- =?us-ascii?Q?pHsbDQD5hQSUH3tO+GjhqOTXzO3ZmQMy7IbxXBAhkyIk5ymEM6UBGd5UkDCw?=
- =?us-ascii?Q?VuwYmPazIjZmlDfXDmoE3YgnHXINBVyurG+WsbDD4vqeTLwrBwKjuka/fU9H?=
- =?us-ascii?Q?VBPyZUOqBT9qLm0S3++wb+RBT+kEnbhQKlOk+hsS//Cbsirggvam+9XFfrGo?=
- =?us-ascii?Q?kYufQF/cFRjh2ZZ/7eTz8oVm93/gqgDdL7sT17fH1O8/N9Xkxy+EUwg6PSfp?=
- =?us-ascii?Q?F7heUmiW2h3V8DbTxGnwFuTc+voDlhKZHPmLb70iuDSVSAOZ6l2xWpTD1q4+?=
- =?us-ascii?Q?QcKWn8KSjrTCt5/Lwcm4M53Ghx+/XRBvbTE/W4SGOqxgaxBkK8Zmep4xULeK?=
- =?us-ascii?Q?6LdvIWvTk5KSKatgkAF1Wp06negjBduWWUxbwS5kKf3dIbjAad0tdTMM0/m7?=
- =?us-ascii?Q?1EItfzVOBKp2llWAOaSPPCi6l3gzEgaWFaMsDQsQYV+DhIA1RJkf/e6v5MM7?=
- =?us-ascii?Q?Fa5tlGiPQS17epGdMIIFLfNsem4LnO1QhqZTq99xwwGO/MK74BhAYIvXP96Z?=
- =?us-ascii?Q?O88xrDswpyDZQv3SFEkzAjGGe7NM9vm2CRwGDUYw?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50394122-3ebc-42e5-19c8-08dbb8f63d66
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 09:53:13.6911
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: L8uwDVJrBCl0qkcQhSscUvKqZlpOmj8/gsUHr/oIBIc0iDRFmxBpq6Rcee8pIrPoNvao59w38dhA/kkFA8I1/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6982
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169511717054.27769.5426777929140245485.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now damos support filter contains two type.
-The first is scheme filter which will invoke each scheme apply,
-second is scheme action filter, which will filter out unwanted action.
+The following commit has been merged into the sched/core branch of tip:
 
-But this implement is scattered in different implementations and hard
-to reuse or extend.
+Commit-ID:     e23edc86b09df655bf8963bbcb16647adc787395
+Gitweb:        https://git.kernel.org/tip/e23edc86b09df655bf8963bbcb16647adc787395
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Tue, 19 Sep 2023 10:38:21 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 19 Sep 2023 10:40:10 +02:00
 
-This patch clean up those filter code, move into filter.c and add header
-to expose filter func.
+sched/fair: Rename check_preempt_curr() to wakeup_preempt()
 
-Each filter implement register itself into filter_fn array, and user
-can invoke this by there inited type in filter.
+The name is a bit opaque - make it clear that this is about wakeup
+preemption.
 
-Signed-off-by: Huan Yang <link@vivo.com>
+Also rename the ->check_preempt_curr() methods similarly.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/damon.h    |  65 +------------------
- mm/damon/Makefile        |   2 +-
- mm/damon/core.c          |  93 ++++-----------------------
- mm/damon/filter.c        | 135 +++++++++++++++++++++++++++++++++++++++
- mm/damon/filter.h        | 119 ++++++++++++++++++++++++++++++++++
- mm/damon/paddr.c         |  31 +++------
- mm/damon/reclaim.c       |   1 +
- mm/damon/sysfs-schemes.c |   1 +
- 8 files changed, 280 insertions(+), 167 deletions(-)
- create mode 100644 mm/damon/filter.c
- create mode 100644 mm/damon/filter.h
+ kernel/sched/core.c      | 14 +++++++-------
+ kernel/sched/deadline.c  | 10 +++++-----
+ kernel/sched/fair.c      | 10 +++++-----
+ kernel/sched/idle.c      |  4 ++--
+ kernel/sched/rt.c        |  6 +++---
+ kernel/sched/sched.h     |  4 ++--
+ kernel/sched/stop_task.c |  4 ++--
+ 7 files changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 8e8f35df6a5e..03c718b30bfe 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -222,63 +222,6 @@ struct damos_stat {
- 	unsigned long qt_exceeds;
- };
- 
--/**
-- * enum damos_filter_type - Type of memory for &struct damos_filter
-- * @DAMOS_FILTER_TYPE_ANON:	Anonymous pages.
-- * @DAMOS_FILTER_TYPE_MEMCG:	Specific memcg's pages.
-- * @DAMOS_FILTER_TYPE_ADDR:	Address range.
-- * @DAMOS_FILTER_TYPE_TARGET:	Data Access Monitoring target.
-- * @DAMOS_FILTER_TYPE_WORKINGSET: Workingset pages, need protect.
-- * @NR_DAMOS_FILTER_TYPES:	Number of filter types.
-- *
-- * The anon pages type, memcg type, workingset page type filters are handled
-- * by underlying &struct damon_operations as a part of scheme action trying,
-- * and therefore accounted as 'tried'.  In contrast, other types are handled
-- * by core layer before trying of the action and therefore not accounted as
-- * 'tried'.
-- *
-- * The support of the filters that handled by &struct damon_operations depend
-- * on the running &struct damon_operations.
-- * &enum DAMON_OPS_PADDR supports both anon pages type, memcg type and
-- * workingset page type filters, while &enum DAMON_OPS_VADDR and &enum
-- * DAMON_OPS_FVADDR don't support any of the two types.
-- */
--enum damos_filter_type {
--	DAMOS_FILTER_TYPE_ANON,
--	DAMOS_FILTER_TYPE_MEMCG,
--	DAMOS_FILTER_TYPE_WORKINGSET,
--	DAMOS_FILTER_TYPE_ADDR,
--	DAMOS_FILTER_TYPE_TARGET,
--	NR_DAMOS_FILTER_TYPES,
--};
--
--/**
-- * struct damos_filter - DAMOS action target memory filter.
-- * @type:	Type of the page.
-- * @matching:	If the matching page should filtered out or in.
-- * @memcg_id:	Memcg id of the question if @type is DAMOS_FILTER_MEMCG.
-- * @addr_range:	Address range if @type is DAMOS_FILTER_TYPE_ADDR.
-- * @target_idx:	Index of the &struct damon_target of
-- *		&damon_ctx->adaptive_targets if @type is
-- *		DAMOS_FILTER_TYPE_TARGET.
-- * @list:	List head for siblings.
-- *
-- * Before applying the &damos->action to a memory region, DAMOS checks if each
-- * page of the region matches to this and avoid applying the action if so.
-- * Support of each filter type depends on the running &struct damon_operations
-- * and the type.  Refer to &enum damos_filter_type for more detai.
-- */
--struct damos_filter {
--	enum damos_filter_type type;
--	bool matching;
--	union {
--		unsigned short memcg_id;
--		struct damon_addr_range addr_range;
--		int target_idx;
--	};
--	struct list_head list;
--};
--
- /**
-  * struct damos_access_pattern - Target access pattern of the given scheme.
-  * @min_sz_region:	Minimum size of target regions.
-@@ -607,16 +550,14 @@ static inline void damon_insert_region(struct damon_region *r,
- 	t->nr_regions++;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5a50c4e..52ceb85 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2211,10 +2211,10 @@ static inline void check_class_changed(struct rq *rq, struct task_struct *p,
+ 		p->sched_class->prio_changed(rq, p, oldprio);
  }
  
-+void damon_split_region_at(struct damon_target *t,
-+				  struct damon_region *r, unsigned long sz_r);
-+
- void damon_add_region(struct damon_region *r, struct damon_target *t);
- void damon_destroy_region(struct damon_region *r, struct damon_target *t);
- int damon_set_regions(struct damon_target *t, struct damon_addr_range *ranges,
- 		unsigned int nr_ranges);
- 
--struct damos_filter *damos_new_filter(enum damos_filter_type type,
--		bool matching);
--void damos_add_filter(struct damos *s, struct damos_filter *f);
--void damos_destroy_filter(struct damos_filter *f);
--
- struct damos *damon_new_scheme(struct damos_access_pattern *pattern,
- 			enum damos_action action, struct damos_quota *quota,
- 			struct damos_watermarks *wmarks);
-diff --git a/mm/damon/Makefile b/mm/damon/Makefile
-index f7add3f4aa79..789ab0a9d9c9 100644
---- a/mm/damon/Makefile
-+++ b/mm/damon/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--obj-y				:= core.o
-+obj-y				:= core.o filter.o
- obj-$(CONFIG_DAMON_VADDR)	+= ops-common.o vaddr.o
- obj-$(CONFIG_DAMON_PADDR)	+= ops-common.o paddr.o
- obj-$(CONFIG_DAMON_SYSFS)	+= sysfs-common.o sysfs-schemes.o sysfs.o
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index bcd2bd9d6c10..a74932fcdb11 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -22,6 +22,8 @@
- #define DAMON_MIN_REGION 1
- #endif
- 
-+#include "filter.h"
-+
- static DEFINE_MUTEX(damon_lock);
- static int nr_running_ctxs;
- static bool running_exclusive_ctxs;
-@@ -263,41 +265,6 @@ int damon_set_regions(struct damon_target *t, struct damon_addr_range *ranges,
- 	return 0;
- }
- 
--struct damos_filter *damos_new_filter(enum damos_filter_type type,
--		bool matching)
--{
--	struct damos_filter *filter;
--
--	filter = kmalloc(sizeof(*filter), GFP_KERNEL);
--	if (!filter)
--		return NULL;
--	filter->type = type;
--	filter->matching = matching;
--	INIT_LIST_HEAD(&filter->list);
--	return filter;
--}
--
--void damos_add_filter(struct damos *s, struct damos_filter *f)
--{
--	list_add_tail(&f->list, &s->filters);
--}
--
--static void damos_del_filter(struct damos_filter *f)
--{
--	list_del(&f->list);
--}
--
--static void damos_free_filter(struct damos_filter *f)
--{
--	kfree(f);
--}
--
--void damos_destroy_filter(struct damos_filter *f)
--{
--	damos_del_filter(f);
--	damos_free_filter(f);
--}
--
- /* initialize private fields of damos_quota and return the pointer */
- static struct damos_quota *damos_quota_init_priv(struct damos_quota *quota)
+-void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
++void wakeup_preempt(struct rq *rq, struct task_struct *p, int flags)
  {
-@@ -780,9 +747,6 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 	if (p->sched_class == rq->curr->sched_class)
+-		rq->curr->sched_class->check_preempt_curr(rq, p, flags);
++		rq->curr->sched_class->wakeup_preempt(rq, p, flags);
+ 	else if (sched_class_above(p->sched_class, rq->curr->sched_class))
+ 		resched_curr(rq);
+ 
+@@ -2508,7 +2508,7 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
+ 	rq_lock(rq, rf);
+ 	WARN_ON_ONCE(task_cpu(p) != new_cpu);
+ 	activate_task(rq, p, 0);
+-	check_preempt_curr(rq, p, 0);
++	wakeup_preempt(rq, p, 0);
+ 
+ 	return rq;
+ }
+@@ -3390,7 +3390,7 @@ static void __migrate_swap_task(struct task_struct *p, int cpu)
+ 		deactivate_task(src_rq, p, 0);
+ 		set_task_cpu(p, cpu);
+ 		activate_task(dst_rq, p, 0);
+-		check_preempt_curr(dst_rq, p, 0);
++		wakeup_preempt(dst_rq, p, 0);
+ 
+ 		rq_unpin_lock(dst_rq, &drf);
+ 		rq_unpin_lock(src_rq, &srf);
+@@ -3764,7 +3764,7 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+ 	}
+ 
+ 	activate_task(rq, p, en_flags);
+-	check_preempt_curr(rq, p, wake_flags);
++	wakeup_preempt(rq, p, wake_flags);
+ 
+ 	ttwu_do_wakeup(p);
+ 
+@@ -3835,7 +3835,7 @@ static int ttwu_runnable(struct task_struct *p, int wake_flags)
+ 			 * it should preempt the task that is current now.
+ 			 */
+ 			update_rq_clock(rq);
+-			check_preempt_curr(rq, p, wake_flags);
++			wakeup_preempt(rq, p, wake_flags);
+ 		}
+ 		ttwu_do_wakeup(p);
+ 		ret = 1;
+@@ -4854,7 +4854,7 @@ void wake_up_new_task(struct task_struct *p)
+ 
+ 	activate_task(rq, p, ENQUEUE_NOCLOCK);
+ 	trace_sched_wakeup_new(p);
+-	check_preempt_curr(rq, p, WF_FORK);
++	wakeup_preempt(rq, p, WF_FORK);
+ #ifdef CONFIG_SMP
+ 	if (p->sched_class->task_woken) {
+ 		/*
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 58b542b..fb1996a 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -763,7 +763,7 @@ static inline void deadline_queue_pull_task(struct rq *rq)
+ 
+ static void enqueue_task_dl(struct rq *rq, struct task_struct *p, int flags);
+ static void __dequeue_task_dl(struct rq *rq, struct task_struct *p, int flags);
+-static void check_preempt_curr_dl(struct rq *rq, struct task_struct *p, int flags);
++static void wakeup_preempt_dl(struct rq *rq, struct task_struct *p, int flags);
+ 
+ static inline void replenish_dl_new_period(struct sched_dl_entity *dl_se,
+ 					    struct rq *rq)
+@@ -1175,7 +1175,7 @@ static enum hrtimer_restart dl_task_timer(struct hrtimer *timer)
+ 
+ 	enqueue_task_dl(rq, p, ENQUEUE_REPLENISH);
+ 	if (dl_task(rq->curr))
+-		check_preempt_curr_dl(rq, p, 0);
++		wakeup_preempt_dl(rq, p, 0);
+ 	else
+ 		resched_curr(rq);
+ 
+@@ -1939,7 +1939,7 @@ static int balance_dl(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
+  * Only called when both the current and waking task are -deadline
+  * tasks.
+  */
+-static void check_preempt_curr_dl(struct rq *rq, struct task_struct *p,
++static void wakeup_preempt_dl(struct rq *rq, struct task_struct *p,
+ 				  int flags)
+ {
+ 	if (dl_entity_preempt(&p->dl, &rq->curr->dl)) {
+@@ -2652,7 +2652,7 @@ static void switched_to_dl(struct rq *rq, struct task_struct *p)
+ 			deadline_queue_push_tasks(rq);
+ #endif
+ 		if (dl_task(rq->curr))
+-			check_preempt_curr_dl(rq, p, 0);
++			wakeup_preempt_dl(rq, p, 0);
+ 		else
+ 			resched_curr(rq);
+ 	} else {
+@@ -2721,7 +2721,7 @@ DEFINE_SCHED_CLASS(dl) = {
+ 	.dequeue_task		= dequeue_task_dl,
+ 	.yield_task		= yield_task_dl,
+ 
+-	.check_preempt_curr	= check_preempt_curr_dl,
++	.wakeup_preempt		= wakeup_preempt_dl,
+ 
+ 	.pick_next_task		= pick_next_task_dl,
+ 	.put_prev_task		= put_prev_task_dl,
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index aeaf31e..fcf0c5b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8007,7 +8007,7 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int 
+ 
+ 	/*
+ 	 * This is possible from callers such as attach_tasks(), in which we
+-	 * unconditionally check_preempt_curr() after an enqueue (which may have
++	 * unconditionally wakeup_preempt() after an enqueue (which may have
+ 	 * lead to a throttle).  This both saves work and prevents false
+ 	 * next-buddy nomination below.
+ 	 */
+@@ -8914,7 +8914,7 @@ static void attach_task(struct rq *rq, struct task_struct *p)
+ 
+ 	WARN_ON_ONCE(task_rq(p) != rq);
+ 	activate_task(rq, p, ENQUEUE_NOCLOCK);
+-	check_preempt_curr(rq, p, 0);
++	wakeup_preempt(rq, p, 0);
+ }
+ 
+ /*
+@@ -12369,7 +12369,7 @@ prio_changed_fair(struct rq *rq, struct task_struct *p, int oldprio)
+ 		if (p->prio > oldprio)
+ 			resched_curr(rq);
+ 	} else
+-		check_preempt_curr(rq, p, 0);
++		wakeup_preempt(rq, p, 0);
+ }
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+@@ -12471,7 +12471,7 @@ static void switched_to_fair(struct rq *rq, struct task_struct *p)
+ 		if (task_current(rq, p))
+ 			resched_curr(rq);
+ 		else
+-			check_preempt_curr(rq, p, 0);
++			wakeup_preempt(rq, p, 0);
  	}
  }
  
--static void damon_split_region_at(struct damon_target *t,
--				  struct damon_region *r, unsigned long sz_r);
--
- static bool __damos_valid_target(struct damon_region *r, struct damos *s)
- {
- 	unsigned long sz;
-@@ -881,49 +845,16 @@ static void damos_update_stat(struct damos *s,
- static bool __damos_filter_out(struct damon_ctx *ctx, struct damon_target *t,
- 		struct damon_region *r, struct damos_filter *filter)
- {
--	bool matched = false;
--	struct damon_target *ti;
--	int target_idx = 0;
--	unsigned long start, end;
--
--	switch (filter->type) {
--	case DAMOS_FILTER_TYPE_TARGET:
--		damon_for_each_target(ti, ctx) {
--			if (ti == t)
--				break;
--			target_idx++;
--		}
--		matched = target_idx == filter->target_idx;
--		break;
--	case DAMOS_FILTER_TYPE_ADDR:
--		start = ALIGN_DOWN(filter->addr_range.start, DAMON_MIN_REGION);
--		end = ALIGN_DOWN(filter->addr_range.end, DAMON_MIN_REGION);
--
--		/* inside the range */
--		if (start <= r->ar.start && r->ar.end <= end) {
--			matched = true;
--			break;
--		}
--		/* outside of the range */
--		if (r->ar.end <= start || end <= r->ar.start) {
--			matched = false;
--			break;
--		}
--		/* start before the range and overlap */
--		if (r->ar.start < start) {
--			damon_split_region_at(t, r, start - r->ar.start);
--			matched = false;
--			break;
--		}
--		/* start inside the range */
--		damon_split_region_at(t, r, end - r->ar.start);
--		matched = true;
--		break;
--	default:
--		break;
--	}
-+	struct damos_filter_ctx dfctx = {
-+		.scheme = {
-+			.ctx = ctx,
-+			.target = t,
-+			.region = r,
-+		},
-+		.filter = filter,
-+	};
+@@ -12830,7 +12830,7 @@ DEFINE_SCHED_CLASS(fair) = {
+ 	.yield_task		= yield_task_fair,
+ 	.yield_to_task		= yield_to_task_fair,
  
--	return matched == filter->matching;
-+	return damon_filter_invoke(&dfctx);
- }
+-	.check_preempt_curr	= check_preempt_wakeup_fair,
++	.wakeup_preempt		= check_preempt_wakeup_fair,
  
- static bool damos_filter_out(struct damon_ctx *ctx, struct damon_target *t,
-@@ -1161,7 +1092,7 @@ static void kdamond_merge_regions(struct damon_ctx *c, unsigned int threshold,
-  * r		the region to be split
-  * sz_r		size of the first sub-region that will be made
+ 	.pick_next_task		= __pick_next_task_fair,
+ 	.put_prev_task		= put_prev_task_fair,
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 342f58a..26f7140 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -400,7 +400,7 @@ balance_idle(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ /*
+  * Idle tasks are unconditionally rescheduled:
   */
--static void damon_split_region_at(struct damon_target *t,
-+void damon_split_region_at(struct damon_target *t,
- 				  struct damon_region *r, unsigned long sz_r)
+-static void check_preempt_curr_idle(struct rq *rq, struct task_struct *p, int flags)
++static void wakeup_preempt_idle(struct rq *rq, struct task_struct *p, int flags)
  {
- 	struct damon_region *new;
-diff --git a/mm/damon/filter.c b/mm/damon/filter.c
-new file mode 100644
-index 000000000000..a451d5428fe2
---- /dev/null
-+++ b/mm/damon/filter.c
-@@ -0,0 +1,135 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Data Access Monitor Filter
-+ *
-+ * This filter contains the scheme filter, which will be called
-+ * for each scheme apply check. action filter will be called when
-+ * scheme action invoke.
-+ *
-+ * Author: Huan Yang <link@vivo.com>
-+ */
-+#include <linux/damon.h>
-+
-+#include "filter.h"
-+
-+typedef bool (*DAMON_FILTER_FN) (struct damos_filter_ctx *dfctx);
-+
-+/* Scheme action filter */
-+
-+static bool damos_anon_filter(struct damos_filter_ctx *dfctx)
-+{
-+	return folio_test_anon(dfctx->action.folio) == dfctx->filter->matching;
-+}
-+
-+static bool damos_memcg_filter(struct damos_filter_ctx *dfctx)
-+{
-+	struct damos_filter *filter = dfctx->filter;
-+	struct mem_cgroup *memcg;
-+	bool matched;
-+
-+	rcu_read_lock();
-+	memcg = folio_memcg_check(dfctx->action.folio);
-+	if (!memcg)
-+		matched = false;
-+	else
-+		matched = filter->memcg_id == mem_cgroup_id(memcg);
-+	rcu_read_unlock();
-+
-+	return matched == filter->matching;
-+}
-+
-+static bool damos_workingset_filter(struct damos_filter_ctx *dfctx)
-+{
-+	return folio_test_workingset(dfctx->action.folio) ==
-+	       dfctx->filter->matching;
-+}
-+
-+/* Scheme filter */
-+
-+static bool damos_addr_filter(struct damos_filter_ctx *dfctx)
-+{
-+	bool matched = false;
-+	struct damos_filter *filter = dfctx->filter;
-+	struct damon_target *t = dfctx->scheme.target;
-+	struct damon_region *r = dfctx->scheme.region;
-+	unsigned long start, end;
-+
-+	start = ALIGN_DOWN(filter->addr_range.start, DAMON_MIN_REGION);
-+	end = ALIGN_DOWN(filter->addr_range.end, DAMON_MIN_REGION);
-+
-+	/* inside the range */
-+	if (start <= r->ar.start && r->ar.end <= end) {
-+		matched = true;
-+		goto got_result;
-+	}
-+	/* outside of the range */
-+	if (r->ar.end <= start || end <= r->ar.start) {
-+		matched = false;
-+		goto got_result;
-+	}
-+	/* start before the range and overlap */
-+	if (r->ar.start < start) {
-+		damon_split_region_at(t, r, start - r->ar.start);
-+		matched = false;
-+		goto got_result;
-+	}
-+	/* start inside the range */
-+	damon_split_region_at(t, r, end - r->ar.start);
-+	matched = true;
-+
-+got_result:
-+	return matched == filter->matching;
-+}
-+
-+static bool damos_target_filter(struct damos_filter_ctx *dfctx)
-+{
-+	bool matched = false;
-+	struct damon_target *ti, *t = dfctx->scheme.target;
-+	struct damon_ctx *ctx = dfctx->scheme.ctx;
-+	struct damos_filter *filter = dfctx->filter;
-+	int target_idx = 0;
-+
-+	damon_for_each_target(ti, ctx) {
-+		if (ti == t)
-+			break;
-+		target_idx++;
-+	}
-+	matched = target_idx == filter->target_idx;
-+	return matched == filter->matching;
-+}
-+
-+static DAMON_FILTER_FN filter_fn[NR_DAMOS_FILTER_TYPES] = {
-+	/* Damos scheme action filter */
-+	damos_anon_filter,
-+	damos_memcg_filter,
-+	damos_workingset_filter,
-+	/* Damos scheme filter */
-+	damos_addr_filter,
-+	damos_target_filter,
-+};
-+
-+
-+bool damon_filter_invoke(struct damos_filter_ctx *dfctx)
-+{
-+	return filter_fn[dfctx->filter->type](dfctx);
-+}
-+
-+struct damos_filter *damos_new_filter(enum damos_filter_type type,
-+		bool matching)
-+{
-+	struct damos_filter *filter;
-+
-+	filter = kmalloc(sizeof(*filter), GFP_KERNEL);
-+	if (!filter)
-+		return NULL;
-+	filter->type = type;
-+	filter->matching = matching;
-+	INIT_LIST_HEAD(&filter->list);
-+	return filter;
-+}
-+
-+void damos_destroy_filter(struct damos_filter *f)
-+{
-+	damos_del_filter(f);
-+	damos_free_filter(f);
-+}
-diff --git a/mm/damon/filter.h b/mm/damon/filter.h
-new file mode 100644
-index 000000000000..5d724e8276fc
---- /dev/null
-+++ b/mm/damon/filter.h
-@@ -0,0 +1,119 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Data Access Monitor Filter
-+ *
-+ * Author: Huan Yang <link@vivo.com>
-+ */
-+#ifndef __DAMON_FILTER_H__
-+#define __DAMON_FILTER_H__
-+
-+/**
-+ * enum damos_filter_type - Type of memory for &struct damos_filter
-+ * @DAMOS_FILTER_TYPE_ANON:	Anonymous pages.
-+ * @DAMOS_FILTER_TYPE_MEMCG:	Specific memcg's pages.
-+ * @DAMOS_FILTER_TYPE_ADDR:	Address range.
-+ * @DAMOS_FILTER_TYPE_TARGET:	Data Access Monitoring target.
-+ * @DAMOS_FILTER_TYPE_WORKINGSET: Workingset pages, need protect.
-+ * @NR_DAMOS_FILTER_TYPES:	Number of filter types.
-+ *
-+ * The anon pages type, memcg type, workingset page type filters are handled
-+ * by underlying &struct damon_operations as a part of scheme action trying,
-+ * and therefore accounted as 'tried'.  In contrast, other types are handled
-+ * by core layer before trying of the action and therefore not accounted as
-+ * 'tried'.
-+ *
-+ * The support of the filters that handled by &struct damon_operations depend
-+ * on the running &struct damon_operations.
-+ * &enum DAMON_OPS_PADDR supports both anon pages type, memcg type and
-+ * workingset page type filters, while &enum DAMON_OPS_VADDR and &enum
-+ * DAMON_OPS_FVADDR don't support any of the two types.
-+ */
-+enum damos_filter_type {
-+	/* Damos action filter, tried */
-+	DAMOS_FILTER_TYPE_ANON,
-+	DAMOS_FILTER_TYPE_MEMCG,
-+	DAMOS_FILTER_TYPE_WORKINGSET,
-+	/* Damos scheme filter */
-+	DAMOS_FILTER_TYPE_ADDR,
-+	DAMOS_FILTER_TYPE_TARGET,
-+	NR_DAMOS_FILTER_TYPES,
-+};
-+
-+/**
-+ * struct damos_filter - DAMOS action target memory filter.
-+ * @type:	Type of the page.
-+ * @matching:	If the matching page should filtered out or in.
-+ * @memcg_id:	Memcg id of the question if @type is DAMOS_FILTER_MEMCG.
-+ * @addr_range:	Address range if @type is DAMOS_FILTER_TYPE_ADDR.
-+ * @target_idx:	Index of the &struct damon_target of
-+ *		&damon_ctx->adaptive_targets if @type is
-+ *		DAMOS_FILTER_TYPE_TARGET.
-+ * @list:	List head for siblings.
-+ *
-+ * Before applying the &damos->action to a memory region, DAMOS checks if each
-+ * page of the region matches to this and avoid applying the action if so.
-+ * Support of each filter type depends on the running &struct damon_operations
-+ * and the type.  Refer to &enum damos_filter_type for more detai.
-+ */
-+struct damos_filter {
-+	enum damos_filter_type type;
-+	bool matching;
-+	union {
-+		unsigned short memcg_id;
-+		struct damon_addr_range addr_range;
-+		int target_idx;
-+	};
-+	struct list_head list;
-+};
-+
-+/**
-+ * struct damos_filter_ctx - Represents a context for each filter
-+ * @scheme:     Each scheme filter context
-+ * @action:     Each scheme action filter context
-+ * @filter:     DAMOS action target memory filter instance
-+ *
-+ * User need pass this for each invoke filter, and each filter
-+ * will invoke a specified filter function by filter type which
-+ * user already target it when register filter.
-+ */
-+struct damos_filter_ctx {
-+	union {
-+		/* Use by scheme filter */
-+		struct {
-+			struct damon_ctx *ctx;
-+			struct damon_target *target;
-+			struct damon_region *region;
-+		} scheme;
-+
-+		/* Use by action filter */
-+		struct {
-+			struct folio *folio;
-+		} action;
-+	};
-+
-+	struct damos_filter *filter;
-+};
-+
-+bool damon_filter_invoke(struct damos_filter_ctx *dfctx);
-+
-+struct damos_filter *damos_new_filter(enum damos_filter_type type,
-+				      bool matching);
-+
-+static inline void damos_add_filter(struct damos *s, struct damos_filter *f)
-+{
-+	list_add_tail(&f->list, &s->filters);
-+}
-+
-+static inline void damos_del_filter(struct damos_filter *f)
-+{
-+	list_del(&f->list);
-+}
-+
-+static inline void damos_free_filter(struct damos_filter *f)
-+{
-+	kfree(f);
-+}
-+
-+void damos_destroy_filter(struct damos_filter *f);
-+
-+#endif //__DAMON_FILTER_H__
-diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index 8a690505e033..748300655ba4 100644
---- a/mm/damon/paddr.c
-+++ b/mm/damon/paddr.c
-@@ -16,6 +16,7 @@
- 
- #include "../internal.h"
- #include "ops-common.h"
-+#include "filter.h"
- 
- static bool __damon_pa_mkold(struct folio *folio, struct vm_area_struct *vma,
- 		unsigned long addr, void *arg)
-@@ -189,30 +190,14 @@ static unsigned int damon_pa_check_accesses(struct damon_ctx *ctx)
- static bool __damos_pa_filter_out(struct damos_filter *filter,
- 		struct folio *folio)
- {
--	bool matched = false;
--	struct mem_cgroup *memcg;
--
--	switch (filter->type) {
--	case DAMOS_FILTER_TYPE_ANON:
--		matched = folio_test_anon(folio);
--		break;
--	case DAMOS_FILTER_TYPE_MEMCG:
--		rcu_read_lock();
--		memcg = folio_memcg_check(folio);
--		if (!memcg)
--			matched = false;
--		else
--			matched = filter->memcg_id == mem_cgroup_id(memcg);
--		rcu_read_unlock();
--		break;
--	case DAMOS_FILTER_TYPE_WORKINGSET:
--		matched = folio_test_workingset(folio);
--		break;
--	default:
--		break;
--	}
-+	struct damos_filter_ctx dfctx = {
-+		.action = {
-+			.folio = folio,
-+		},
-+		.filter = filter,
-+	};
- 
--	return matched == filter->matching;
-+	return damon_filter_invoke(&dfctx);
+ 	resched_curr(rq);
  }
+@@ -481,7 +481,7 @@ DEFINE_SCHED_CLASS(idle) = {
+ 	/* dequeue is not valid, we print a debug message there: */
+ 	.dequeue_task		= dequeue_task_idle,
  
+-	.check_preempt_curr	= check_preempt_curr_idle,
++	.wakeup_preempt		= wakeup_preempt_idle,
+ 
+ 	.pick_next_task		= pick_next_task_idle,
+ 	.put_prev_task		= put_prev_task_idle,
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 0597ba0..3e442fa 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -953,7 +953,7 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
+ 
+ 				/*
+ 				 * When we're idle and a woken (rt) task is
+-				 * throttled check_preempt_curr() will set
++				 * throttled wakeup_preempt() will set
+ 				 * skip_update and the time between the wakeup
+ 				 * and this unthrottle will get accounted as
+ 				 * 'runtime'.
+@@ -1715,7 +1715,7 @@ static int balance_rt(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
  /*
-diff --git a/mm/damon/reclaim.c b/mm/damon/reclaim.c
-index 26ae8fa5d088..1fdd55c03f1f 100644
---- a/mm/damon/reclaim.c
-+++ b/mm/damon/reclaim.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
+  * Preempt the current task with a newly woken task if needed:
+  */
+-static void check_preempt_curr_rt(struct rq *rq, struct task_struct *p, int flags)
++static void wakeup_preempt_rt(struct rq *rq, struct task_struct *p, int flags)
+ {
+ 	if (p->prio < rq->curr->prio) {
+ 		resched_curr(rq);
+@@ -2702,7 +2702,7 @@ DEFINE_SCHED_CLASS(rt) = {
+ 	.dequeue_task		= dequeue_task_rt,
+ 	.yield_task		= yield_task_rt,
  
- #include "modules-common.h"
-+#include "filter.h"
+-	.check_preempt_curr	= check_preempt_curr_rt,
++	.wakeup_preempt		= wakeup_preempt_rt,
  
- #ifdef MODULE_PARAM_PREFIX
- #undef MODULE_PARAM_PREFIX
-diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
-index 527e7d17eb3b..98cd93b28b21 100644
---- a/mm/damon/sysfs-schemes.c
-+++ b/mm/damon/sysfs-schemes.c
-@@ -8,6 +8,7 @@
- #include <linux/slab.h>
+ 	.pick_next_task		= pick_next_task_rt,
+ 	.put_prev_task		= put_prev_task_rt,
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 5f217b1..7e070dc 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2236,7 +2236,7 @@ struct sched_class {
+ 	void (*yield_task)   (struct rq *rq);
+ 	bool (*yield_to_task)(struct rq *rq, struct task_struct *p);
  
- #include "sysfs-common.h"
-+#include "filter.h"
+-	void (*check_preempt_curr)(struct rq *rq, struct task_struct *p, int flags);
++	void (*wakeup_preempt)(struct rq *rq, struct task_struct *p, int flags);
  
- /*
-  * scheme region directory
--- 
-2.34.1
-
+ 	struct task_struct *(*pick_next_task)(struct rq *rq);
+ 
+@@ -2510,7 +2510,7 @@ static inline void sub_nr_running(struct rq *rq, unsigned count)
+ extern void activate_task(struct rq *rq, struct task_struct *p, int flags);
+ extern void deactivate_task(struct rq *rq, struct task_struct *p, int flags);
+ 
+-extern void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags);
++extern void wakeup_preempt(struct rq *rq, struct task_struct *p, int flags);
+ 
+ #ifdef CONFIG_PREEMPT_RT
+ #define SCHED_NR_MIGRATE_BREAK 8
+diff --git a/kernel/sched/stop_task.c b/kernel/sched/stop_task.c
+index 8559059..6cf7304 100644
+--- a/kernel/sched/stop_task.c
++++ b/kernel/sched/stop_task.c
+@@ -23,7 +23,7 @@ balance_stop(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ #endif /* CONFIG_SMP */
+ 
+ static void
+-check_preempt_curr_stop(struct rq *rq, struct task_struct *p, int flags)
++wakeup_preempt_stop(struct rq *rq, struct task_struct *p, int flags)
+ {
+ 	/* we're never preempted */
+ }
+@@ -120,7 +120,7 @@ DEFINE_SCHED_CLASS(stop) = {
+ 	.dequeue_task		= dequeue_task_stop,
+ 	.yield_task		= yield_task_stop,
+ 
+-	.check_preempt_curr	= check_preempt_curr_stop,
++	.wakeup_preempt		= wakeup_preempt_stop,
+ 
+ 	.pick_next_task		= pick_next_task_stop,
+ 	.put_prev_task		= put_prev_task_stop,
