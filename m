@@ -2,71 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC717A658D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661647A658F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbjISNnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        id S232659AbjISNng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbjISNnE (ORCPT
+        with ESMTP id S232527AbjISNnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:43:04 -0400
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362631718;
-        Tue, 19 Sep 2023 06:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1695130953; x=1726666953;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=LIiuvlEVoOet9vLgXao/ZPcDivQLZo5gFmYPlTZNxJs=;
-  b=GgttyW37o5FMspK0IG1bWyzuQaIH4OpVLD4XVpEUcp/NXWYuxxrcLoof
-   GBMWJtt85jMfcmenYOKlGcLDhgz1+IUlG3mL7AnDLhxGYn2i2CMpV7Rgf
-   O+2sJOG/BAO50oA6ca+EOxRkFpvqOe3K6H0CFVsZztaH5BgqLO8Jg8iGf
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.02,159,1688428800"; 
-   d="scan'208";a="239593278"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-94edd59b.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 13:42:28 +0000
-Received: from EX19MTAUEC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2c-m6i4x-94edd59b.us-west-2.amazon.com (Postfix) with ESMTPS id ECD2540D54;
-        Tue, 19 Sep 2023 13:42:27 +0000 (UTC)
-Received: from EX19D028UEC003.ant.amazon.com (10.252.137.159) by
- EX19MTAUEC001.ant.amazon.com (10.252.135.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 19 Sep 2023 13:42:27 +0000
-Received: from [192.168.5.95] (10.106.179.18) by EX19D028UEC003.ant.amazon.com
- (10.252.137.159) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 19 Sep
- 2023 13:42:25 +0000
-Message-ID: <55e64e7a-5783-94ce-a9fc-1979587c755f@amazon.com>
-Date:   Tue, 19 Sep 2023 09:42:21 -0400
+        Tue, 19 Sep 2023 09:43:17 -0400
+Received: from out-218.mta1.migadu.com (out-218.mta1.migadu.com [95.215.58.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592F11994
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:42:39 -0700 (PDT)
+Message-ID: <56c85b72-469c-bd46-dd5e-90ec58c6b49b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695130954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wau7r121oi8sFKnsDCsEXiKt4WU+fPwFKIXc4btmkmg=;
+        b=oxytBCV7wznk8P5i2Lw4bVqPiT+IQdETh+nyNMWLJZwNL7kNAzazSmlJJ74DrRy+VOPB18
+        DuR0wetU79lLaFLUCyGZD042AFEZYIFBkk4VQl6j/+VOmYJgjRDgaUAFmLJpKnp9UZ21zU
+        KiQ/gdZ5r5sEbDeJhAPytdPPBmNmB8M=
+Date:   Tue, 19 Sep 2023 21:42:23 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATH v2] cgroup: add cgroup_favordynmods= command-line option
+Subject: Re: [PATCH net-next v4] net/core: Introduce netdev_core_stats_inc()
+ for trace
 Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>
-CC:     <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <longman@redhat.com>, <lcapitulino@gmail.com>
-References: <20230906005712.66461-1-luizcap@amazon.com>
- <29bdb453-c6e3-a047-1f27-e9656da92301@amazon.com>
- <ZQiNIWQe7spOwjil@slm.duckdns.org>
- <7zv7lqkondaacjhmc7oscyqzwugguxvjw2yhdhkv4axhhkts7a@upoxgl3qpunt>
-From:   Luiz Capitulino <luizcap@amazon.com>
-In-Reply-To: <7zv7lqkondaacjhmc7oscyqzwugguxvjw2yhdhkv4axhhkts7a@upoxgl3qpunt>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.106.179.18]
-X-ClientProxiedBy: EX19D042UWB003.ant.amazon.com (10.13.139.135) To
- EX19D028UEC003.ant.amazon.com (10.252.137.159)
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+References: <20230918024055.221900-1-yajun.deng@linux.dev>
+ <37c2c3163c053138da40be6713914c8bb103dada.camel@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <37c2c3163c053138da40be6713914c8bb103dada.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,18 +53,118 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 2023-09-19 07:00, Michal Koutný wrote:
-> On Mon, Sep 18, 2023 at 07:47:13AM -1000, Tejun Heo <tj@kernel.org> wrote:
->> Michal raised some valid concerns. I don't really mind that it's not great
->> on the edges tho. Michal, what do you think?
-> 
-> I'd have a few suggestions:
-> - reset to have_dynmods value instead of false in cgroup_destroy_root()
->    (to the benefing of the users of this option, not the common default
->    users) or not touch the value in cgroup_destroy_root() at all
-> - s/CONFIG_FAVOR_DYNMODS/CONFIG_CGROUP_FAVOR_DYNMODS/ in commit message
-
-Thank you for the detailed suggestions, Michal. I'll on this for v3.
-
-- Luiz
+On 2023/9/19 17:10, Paolo Abeni wrote:
+> On Mon, 2023-09-18 at 10:40 +0800, Yajun Deng wrote:
+>> Although there is a kfree_skb_reason() helper function that can be used to
+>> find the reason why this skb is dropped, but most callers didn't increase
+>> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
+>>
+>> For the users, people are more concerned about why the dropped in ip
+>> is increasing.
+>>
+>> Introduce netdev_core_stats_inc() for trace. Also, move dev_core_stats()
+>> and netdev_core_stats_alloc() to dev.c, as they are not called externally.
+>>
+>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+>> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+>> ---
+>> v4: Introduce netdev_core_stats_inc() instead of export dev_core_stats_*_inc()
+>> v3: __cold should be added to the netdev_core_stats_alloc().
+>> v2: use __cold instead of inline in dev_core_stats().
+>> v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng@linux.dev/
+>> ---
+>>   include/linux/netdevice.h | 21 ++++-----------------
+>>   net/core/dev.c            | 26 ++++++++++++++++++++++++--
+>>   2 files changed, 28 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>> index 0896aaa91dd7..cddd4873b5b0 100644
+>> --- a/include/linux/netdevice.h
+>> +++ b/include/linux/netdevice.h
+>> @@ -3980,32 +3980,19 @@ static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
+>>   	return false;
+>>   }
+>>   
+>> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev);
+>> -
+>> -static inline struct net_device_core_stats __percpu *dev_core_stats(struct net_device *dev)
+>> -{
+>> -	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
+>> -	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
+>> -
+>> -	if (likely(p))
+>> -		return p;
+>> -
+>> -	return netdev_core_stats_alloc(dev);
+>> -}
+>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset);
+>>   
+>>   #define DEV_CORE_STATS_INC(FIELD)						\
+>>   static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev)		\
+>>   {										\
+>> -	struct net_device_core_stats __percpu *p;				\
+>> -										\
+>> -	p = dev_core_stats(dev);						\
+>> -	if (p)									\
+>> -		this_cpu_inc(p->FIELD);						\
+>> +	netdev_core_stats_inc(dev,						\
+>> +			offsetof(struct net_device_core_stats, FIELD));		\
+>>   }
+>>   DEV_CORE_STATS_INC(rx_dropped)
+>>   DEV_CORE_STATS_INC(tx_dropped)
+>>   DEV_CORE_STATS_INC(rx_nohandler)
+>>   DEV_CORE_STATS_INC(rx_otherhost_dropped)
+>> +#undef DEV_CORE_STATS_INC
+>>   
+>>   static __always_inline int ____dev_forward_skb(struct net_device *dev,
+>>   					       struct sk_buff *skb,
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index ccff2b6ef958..f4cccdf05450 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -10475,7 +10475,8 @@ void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
+>>   }
+>>   EXPORT_SYMBOL(netdev_stats_to_stats64);
+>>   
+>> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev)
+>> +static __cold struct net_device_core_stats __percpu *netdev_core_stats_alloc(
+>> +		struct net_device *dev)
+>>   {
+>>   	struct net_device_core_stats __percpu *p;
+>>   
+>> @@ -10488,7 +10489,28 @@ struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device
+>>   	/* This READ_ONCE() pairs with the cmpxchg() above */
+>>   	return READ_ONCE(dev->core_stats);
+>>   }
+>> -EXPORT_SYMBOL(netdev_core_stats_alloc);
+>> +
+>> +static inline struct net_device_core_stats __percpu *netdev_core_stats(
+>> +		struct net_device *dev)
+>> +{
+>> +	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
+>> +	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
+>> +
+>> +	if (likely(p))
+>> +		return p;
+>> +
+>> +	return netdev_core_stats_alloc(dev);
+>> +}
+>> +
+>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
+>> +{
+>> +	struct net_device_core_stats __percpu *p;
+>> +
+>> +	p = netdev_core_stats(dev);
+>> +	if (p)
+>> +		this_cpu_inc(*(unsigned long *)((void *)p + offset));
+> The above is causing a lot of compile warning, as it's discarding the
+> (required) __percpu annotation.
+>
+> You need to first access the per cpu pointer and then reach for the
+> relevant offset.
+Indeed, thanks.
+>
+> Cheers,
+>
+> Paolo
+>
