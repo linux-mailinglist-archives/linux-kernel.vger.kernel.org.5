@@ -2,155 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9F37A5BBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2955B7A5BCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbjISH4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
+        id S229777AbjISH6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjISH4k (ORCPT
+        with ESMTP id S229436AbjISH6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:56:40 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20811100;
-        Tue, 19 Sep 2023 00:56:35 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4EC9E2CF;
-        Tue, 19 Sep 2023 09:54:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1695110097;
-        bh=s3DFbRHL5Uw5SFTtFMVJ56NX7qIx57dK2xMZGJgyHb8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ciPVGy8W/ShWTxFYQVWOTALkChnpfVn/JcxOEXrsHuCp+4QNKmpvxdIHjLNHwe6ud
-         f64D86jTv9RRg/zNsQMy+oIjZmd/YVXjWPeZatjf0oJQm4Uytk2GkCAh76RL6gAUfV
-         z9rgK1o9k2Ez2n1rjEnr8StRhnQthel00SwwKKb8=
-Date:   Tue, 19 Sep 2023 10:56:46 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Michal Simek <michal.simek@amd.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com,
-        Ashok Reddy Soma <ashok.reddy.soma@xilinx.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
-        Parth Gajjar <parth.gajjar@amd.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tanmay Shah <tanmay.shah@amd.com>,
-        Vishal Sagar <vishal.sagar@amd.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/6] arm64: xilinx: Do not use '_' in DT node names
-Message-ID: <20230919075646.GB27722@pendragon.ideasonboard.com>
-References: <cover.1695040866.git.michal.simek@amd.com>
- <5137958580c85a35cf6aadd1c33a2f6bcf81a9e5.1695040866.git.michal.simek@amd.com>
- <20230918145616.GA16823@pendragon.ideasonboard.com>
- <3a11c2e6-2086-4b06-9b8c-177cfba06034@amd.com>
+        Tue, 19 Sep 2023 03:58:41 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC08114
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:58:32 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38J6SBqR025501;
+        Tue, 19 Sep 2023 07:58:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=QOE5YurvJsknE+ouPLqzdWgzjo3CKbr3HdNmb4Jt2tA=;
+ b=R+SZilUm6koSSfDeZU8mPszoHNn66SAb5Y+csSm8DhIsjHVlK0bCXduu7clHeZ12cr6M
+ HvhM75DML0D9C/AL1XgyCl9RnbTVSWMtLbx1SLjTjZJJQEBQTuljzCamHJW17ig0sOI2
+ jO1uwAHYORHXwLngETumweGCCN/8sFWCOM2Mc7Dc5bfGcAZGHp20d+EVCk53Lx5bSByM
+ +ymtoEqBwd3MTDVkV2ryc807+N9Wv+/U2tdkiBU7PiQZna7mgy8vel5YA7do/Dnrte8t
+ DS1mmiWipLWEYio1/7p0v9fjxorN5wYLGX9HhoMxsTcoP5OwGAm0YaBdB5nn7zESw0zQ kQ== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6nh7a73x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Sep 2023 07:58:25 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38J7wOPQ006649
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Sep 2023 07:58:24 GMT
+Received: from [10.216.24.136] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 19 Sep
+ 2023 00:58:19 -0700
+Message-ID: <5f4255d1-51e9-8888-c32d-723a6a7afb5d@quicinc.com>
+Date:   Tue, 19 Sep 2023 13:27:05 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3a11c2e6-2086-4b06-9b8c-177cfba06034@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] firmware_loader: Add reboot_in_progress for user helper
+ path
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <mcgrof@kernel.org>, <russell.h.weight@intel.com>,
+        <rafael@kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1694773288-15755-1-git-send-email-quic_mojha@quicinc.com>
+ <2023091727-clever-schilling-3814@gregkh>
+Content-Language: en-US
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <2023091727-clever-schilling-3814@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: atdbQ2jCl3cO2QUahH68D2cX-LIQuXRL
+X-Proofpoint-GUID: atdbQ2jCl3cO2QUahH68D2cX-LIQuXRL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-19_02,2023-09-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ adultscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309190065
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:47:52AM +0200, Michal Simek wrote:
-> 
-> 
-> On 9/18/23 16:56, Laurent Pinchart wrote:
-> > Hi Michal,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Mon, Sep 18, 2023 at 02:41:12PM +0200, Michal Simek wrote:
-> >> Character '_' not recommended in node name. Use '-' instead.
-> >> Pretty much run seds below for node names.
-> >> s/zynqmp_ipi/zynqmp-ipi/
-> >> s/nvmem_firmware/nvmem-firmware/
-> >> s/soc_revision/soc-revision/
-> >> s/si5335_/si5335-/
-> >>
-> >> Signed-off-by: Michal Simek <michal.simek@amd.com>
-> > 
-> > The si5335 nodes may be better named after the clock name instead of the
-> > component type, but that's nitpicking.
-> 
-> I don't know what's the guidance on this. fixed-clock.yaml is using generic 
-> "clock" name. I have no problem to do it if this is recommended way to go.
-> 
-> 
-> >> ---
-> >>
-> >>   arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts | 4 ++--
-> >>   arch/arm64/boot/dts/xilinx/zynqmp.dtsi            | 6 +++---
-> >>   2 files changed, 5 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-> >> index d0091d3cb764..52f998c22538 100644
-> >> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-> >> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-> >> @@ -123,13 +123,13 @@ ina226 {
-> >>   		io-channels = <&u35 0>, <&u35 1>, <&u35 2>, <&u35 3>;
-> >>   	};
-> >>   
-> >> -	si5335_0: si5335_0 { /* clk0_usb - u23 */
-> >> +	si5335_0: si5335-0 { /* clk0_usb - u23 */
-> >>   		compatible = "fixed-clock";
-> >>   		#clock-cells = <0>;
-> >>   		clock-frequency = <26000000>;
-> >>   	};
-> >>   
-> >> -	si5335_1: si5335_1 { /* clk1_dp - u23 */
-> >> +	si5335_1: si5335-1 { /* clk1_dp - u23 */
-> >>   		compatible = "fixed-clock";
-> >>   		#clock-cells = <0>;
-> >>   		clock-frequency = <27000000>;
-> >> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> >> index b61fc99cd911..e50e95cbe817 100644
-> >> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> >> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> >> @@ -129,7 +129,7 @@ rproc_1_fw_image: memory@3ef00000 {
-> >>   		};
-> >>   	};
-> >>   
-> >> -	zynqmp_ipi: zynqmp_ipi {
-> >> +	zynqmp_ipi: zynqmp-ipi {
-> >>   		bootph-all;
-> >>   		compatible = "xlnx,zynqmp-ipi-mailbox";
-> >>   		interrupt-parent = <&gic>;
-> >> @@ -194,12 +194,12 @@ zynqmp_power: zynqmp-power {
-> >>   				mbox-names = "tx", "rx";
-> >>   			};
-> >>   
-> >> -			nvmem_firmware {
-> >> +			nvmem-firmware {
-> >>   				compatible = "xlnx,zynqmp-nvmem-fw";
-> >>   				#address-cells = <1>;
-> >>   				#size-cells = <1>;
-> >>   
-> >> -				soc_revision: soc_revision@0 {
-> >> +				soc_revision: soc-revision@0 {
-> > 
-> > Unless I'm mistaken, this will change the userspace API, as it changes
-> > the nvmem cell name. Is it an issue ?
-> 
-> Based on
-> https://docs.kernel.org/driver-api/nvmem.html#userspace-binary-interface
-> 
-> The only interface to user space is via nvmem file which has all of them 
-> together. And reference to this node is the same if used inside kernel itself.
-> That's why I think there is no change in connection to user space API from nvmem 
-> side. Of course entry is listed differently if you parse DT names.
 
-Ah my bad. It should be fine then, as long as nobody in the kernel calls
-nvmem_cell_get("soc_revision"), which I didn't find any occurrence of.
 
--- 
-Regards,
+On 9/17/2023 3:42 PM, Greg KH wrote:
+> On Fri, Sep 15, 2023 at 03:51:28PM +0530, Mukesh Ojha wrote:
+>> There could be following scenario where there is a ongoing reboot
+>> is going from processA which tries to call all the reboot notifier
+>> callback and one of them is firmware reboot call which tries to
+>> abort all the ongoing firmware userspace request under fw_lock
+>> but there could be another processB which tries to do request
+>> firmware, which came just after abort done from ProcessA and
+>> ask for userspace to load the firmware and this can stop the
+>> ongoing reboot ProcessA to stall for next 60s(default timeout)
+>> which may be expected behaviour everyone like to see, instead
+>> we should abort every request which came after once firmware
+>> marks reboot notification.
+>>
+>>        ProcessA                             ProcessB
+>>
+>> kernel_restart_prepare
+>>    blocking_notifier_call_chain
+>>     fw_shutdown_notify
+>>       kill_pending_fw_fallback_reqs
+>>        __fw_load_abort
+>>         fw_state_aborted	              request_firmware
+>>           __fw_state_set                   firmware_fallback_sysfs
+>> ...                                        fw_load_from_user_helper
+>> ..                                         ...
+>> .                                          ..
+>>                                              usermodehelper_read_trylock
+>>                                               fw_load_sysfs_fallback
+>>                                                fw_sysfs_wait_timeout
+>> usermodehelper_disable
+>>   __usermodehelper_disable
+>>    down_write()
+>>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> ---
+>>   drivers/base/firmware_loader/fallback.c | 2 +-
+>>   drivers/base/firmware_loader/firmware.h | 1 +
+>>   drivers/base/firmware_loader/main.c     | 2 ++
+>>   3 files changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+>> index bf68e3947814..a5546aeea91f 100644
+>> --- a/drivers/base/firmware_loader/fallback.c
+>> +++ b/drivers/base/firmware_loader/fallback.c
+>> @@ -86,7 +86,7 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
+>>   	}
+>>   
+>>   	mutex_lock(&fw_lock);
+>> -	if (fw_state_is_aborted(fw_priv)) {
+>> +	if (reboot_in_progress || fw_state_is_aborted(fw_priv)) {
+>>   		mutex_unlock(&fw_lock);
+>>   		retval = -EINTR;
+>>   		goto out;
+> 
+> What prevents reboot_in_progress to change right after you check it
+> here?
 
-Laurent Pinchart
+e.g, reboot_in_progress was false, it gets added to the pending list
+under fw_lock
+
+  list_add(&fw_priv->pending_list, &pending_fw_head);
+
+reboot_in_progress = true, when all the outstanding fw request
+are aborted during from reboot thread from below path. However,
+I realize my mistake, reboot_in_progress should be modified
+under fw_lock, will fix in v2.
+
+ >>     fw_shutdown_notify
+ >>       kill_pending_fw_fallback_reqs
+
+So, idea is to revoke any fw request once firmware knows about ongoing
+reboot and not delay the reboot process further for next default
+60s .
+
+> 
+> And what kernel driver is trying to call the reboot notifier that gets
+> mixed up in this?  Why not fix that driver to not need the reboot
+> notifier at all (hint, I really doubt it needs it...)
+
+'drivers/base/firmware_loader/main.c' has reboot notifier which aborts
+the ongoing firmware requests and but can race with other parallel
+ongoing request which are not yet added to pending list.
+
+fw_load_sysfs_fallback-> stuck waiting for fw_lock which was held by
+
+kill_pending_fw_fallback_reqs=>
+mutex_lock(&fw_lock);
+  __fw_load_abort
+
+
+> 
+>> --- a/drivers/base/firmware_loader/main.c
+>> +++ b/drivers/base/firmware_loader/main.c
+>> @@ -93,6 +93,7 @@ static inline struct fw_priv *to_fw_priv(struct kref *ref)
+>>   DEFINE_MUTEX(fw_lock);
+>>   
+>>   struct firmware_cache fw_cache;
+>> +bool reboot_in_progress;
+> 
+> Bad global name for a variable in the firmware_loader core.
+
+bool abort_fw_load_req ??
+
+-Mukesh
+> 
+> thanks,
+> 
+> greg k-h
