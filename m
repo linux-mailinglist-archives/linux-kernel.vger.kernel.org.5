@@ -2,46 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1397A5D8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73037A5D93
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbjISJQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38690 "EHLO
+        id S231239AbjISJRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjISJQF (ORCPT
+        with ESMTP id S229714AbjISJRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:16:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE382DA;
-        Tue, 19 Sep 2023 02:15:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10CC2C433C8;
-        Tue, 19 Sep 2023 09:15:55 +0000 (UTC)
-Message-ID: <280e45a0-6707-4288-882c-3378cbd53370@xs4all.nl>
-Date:   Tue, 19 Sep 2023 11:15:54 +0200
+        Tue, 19 Sep 2023 05:17:15 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9796BDA;
+        Tue, 19 Sep 2023 02:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695115030; x=1726651030;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RXZnVy9qTKiAdKqhq9D0anZsKhPGWiv072xSkoUwPmo=;
+  b=ZN8sanRdNnVtTRq2A5e6Zk+EakYBtd5CyO01oo3mm/+8XpgjV4IP9454
+   2afEGJqQNb+wKWxPJu7tFULxMeSbeXBgv4CllxSVx82J3O69opIxOyTgz
+   TGN8bIzBpUX5Ggg4Seq0c/BDesub8f968Qmyrb1QNJ/o1u2mWIgNJ4I8m
+   H2ai1kRFTT3TDwk1Qv+0AupZPxQUnNu70016RkImMiHvcxBQpS6XzAY4m
+   MJtsKNefq4WQEVYusEkpeENFpG5N8wBdNJi9vqzmZ91yjb/JYA2Vl1yxK
+   l7dcUkosHkwUPtnfWQxzUgVsa9YQM/4V4TOb9NcRXkRYPTG/HvV2U05s+
+   g==;
+X-CSE-ConnectionGUID: AkaCJQRQRDm43rXS0iI9Fw==
+X-CSE-MsgGUID: icolL1u7Q92PVqAvnbzj0A==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="5394256"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Sep 2023 02:17:10 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 19 Sep 2023 02:16:53 -0700
+Received: from microchip1-OptiPlex-9020.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Tue, 19 Sep 2023 02:16:51 -0700
+From:   shravan kumar <shravan.chippa@microchip.com>
+To:     <paul.j.murphy@intel.com>, <daniele.alessandrelli@intel.com>,
+        <mchehab@kernel.org>
+CC:     <sakari.ailus@iki.fi>, <linux-media@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Shravan Chippa <shravan.chippa@microchip.com>
+Subject: [PATCH v3] media: i2c: imx334: add support for test pattern generator
+Date:   Tue, 19 Sep 2023 14:47:40 +0530
+Message-ID: <20230919091740.1821543-1-shravan.chippa@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 01/49] media: videobuf2: Rework offset 'cookie'
- encoding pattern
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
- <20230914133323.198857-2-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230914133323.198857-2-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,130 +66,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 15:32, Benjamin Gaignard wrote:
-> Change how offset 'cookie' field value is computed to make possible
-> to use more buffers (up to 0x7fff)
-> With this encoding pattern we know the maximum number that a queue
-> could store so we can check ing at queue init time.
-> It also make easier and faster to find buffer and plane from using
-> the offset field.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../media/common/videobuf2/videobuf2-core.c   | 48 +++++++++----------
->  1 file changed, 24 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index cf6727d9c81f..cf3b9f5b69b7 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -31,6 +31,10 @@
->  
->  #include <trace/events/vb2.h>
->  
-> +#define PLANE_INDEX_SHIFT	(PAGE_SHIFT + 3)
-> +#define PLANE_INDEX_MASK	0x7
-> +#define BUFFER_INDEX_MASK	0x7fff
+From: Shravan Chippa <shravan.chippa@microchip.com>
 
-It's a bit paranoid, but I would like to add a check for PAGE_SHIFT here:
+Add support for the imx334's test pattern generator.
+By default the test pattern generator is disabled, so add support for
+enabling and disabling horizontal and vertical colour bars.
 
-#if PAGE_SHIFT != 12
-#error Expected PAGE_SHIFT to be 12
-#endif
+Acked-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
+---
 
-Things will go very wrong if this value ever changes...
+V2 -> V3
+Added "Acked-by: Daniele Alessandrelli"
 
-> +
->  static int debug;
->  module_param(debug, int, 0644);
->  
-> @@ -358,21 +362,23 @@ static void __setup_offsets(struct vb2_buffer *vb)
->  	unsigned int plane;
->  	unsigned long off = 0;
->  
-> -	if (vb->index) {
-> -		struct vb2_buffer *prev = q->bufs[vb->index - 1];
-> -		struct vb2_plane *p = &prev->planes[prev->num_planes - 1];
-> -
-> -		off = PAGE_ALIGN(p->m.offset + p->length);
-> -	}
-> +	/*
-> +	 * Offsets cookies value have the following constraints:
-> +	 * - a buffer could have up to 8 planes.
-> +	 * - v4l2 mem2mem use bit 30 to distinguish between source and destination buffers.
-> +	 * - must be page aligned
-> +	 * That led to this bit mapping:
-> +	 * |30                |29        15|14       12|11 0|
-> +	 * |DST_QUEUE_OFF_BASE|buffer index|plane index| 0  |
-> +	 * where there is 15 bits to store buffer index.
 
-typo: is -> are
+V1 -> V2
+Rename command from 
+	"Color Bars Ver"  -->  "Vertical Color Bars"
+	"Color Bars Hor"  --> "Horizontal Color Bars".
 
-> +	 */
-> +	off = vb->index << (PLANE_INDEX_SHIFT);
+---
+ drivers/media/i2c/imx334.c | 57 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 56 insertions(+), 1 deletion(-)
 
-No need for ().
+diff --git a/drivers/media/i2c/imx334.c b/drivers/media/i2c/imx334.c
+index d722c9b7cd31..91c79af70734 100644
+--- a/drivers/media/i2c/imx334.c
++++ b/drivers/media/i2c/imx334.c
+@@ -56,6 +56,24 @@
+ #define IMX334_REG_MIN		0x00
+ #define IMX334_REG_MAX		0xfffff
+ 
++/* Test Pattern Control */
++#define IMX334_REG_TP		0x329e
++#define IMX334_TP_COLOR_HBARS	0xA
++#define IMX334_TP_COLOR_VBARS	0xB
++
++#define IMX334_TPG_EN_DOUT	0x329c
++#define IMX334_TP_ENABLE	0x1
++#define IMX334_TP_DISABLE	0x0
++
++#define IMX334_TPG_COLORW	0x32a0
++#define IMX334_TPG_COLORW_120P	0x13
++
++#define IMX334_TP_CLK_EN	0x3148
++#define IMX334_TP_CLK_EN_VAL	0x10
++#define IMX334_TP_CLK_DIS_VAL	0x0
++
++#define IMX334_DIG_CLP_MODE	0x3280
++
+ /**
+  * struct imx334_reg - imx334 sensor register
+  * @address: Register address
+@@ -430,6 +448,18 @@ static const struct imx334_reg mode_3840x2160_regs[] = {
+ 	{0x3a29, 0x00},
+ };
+ 
++static const char * const imx334_test_pattern_menu[] = {
++	"Disabled",
++	"Vertical Color Bars",
++	"Horizontal Color Bars",
++};
++
++static const int imx334_test_pattern_val[] = {
++	IMX334_TP_DISABLE,
++	IMX334_TP_COLOR_HBARS,
++	IMX334_TP_COLOR_VBARS,
++};
++
+ static const struct imx334_reg raw10_framefmt_regs[] = {
+ 	{0x3050, 0x00},
+ 	{0x319d, 0x00},
+@@ -716,6 +746,26 @@ static int imx334_set_ctrl(struct v4l2_ctrl *ctrl)
+ 	case V4L2_CID_HBLANK:
+ 		ret = 0;
+ 		break;
++	case V4L2_CID_TEST_PATTERN:
++		if (ctrl->val) {
++			imx334_write_reg(imx334, IMX334_TP_CLK_EN, 1,
++					 IMX334_TP_CLK_EN_VAL);
++			imx334_write_reg(imx334, IMX334_DIG_CLP_MODE, 1, 0x0);
++			imx334_write_reg(imx334, IMX334_TPG_COLORW, 1,
++					 IMX334_TPG_COLORW_120P);
++			imx334_write_reg(imx334, IMX334_REG_TP, 1,
++					 imx334_test_pattern_val[ctrl->val]);
++			imx334_write_reg(imx334, IMX334_TPG_EN_DOUT, 1,
++					 IMX334_TP_ENABLE);
++		} else {
++			imx334_write_reg(imx334, IMX334_DIG_CLP_MODE, 1, 0x1);
++			imx334_write_reg(imx334, IMX334_TP_CLK_EN, 1,
++					 IMX334_TP_CLK_DIS_VAL);
++			imx334_write_reg(imx334, IMX334_TPG_EN_DOUT, 1,
++					 IMX334_TP_DISABLE);
++		}
++		ret = 0;
++		break;
+ 	default:
+ 		dev_err(imx334->dev, "Invalid control %d", ctrl->id);
+ 		ret = -EINVAL;
+@@ -1222,7 +1272,7 @@ static int imx334_init_controls(struct imx334 *imx334)
+ 	u32 lpfr;
+ 	int ret;
+ 
+-	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 6);
++	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1282,6 +1332,11 @@ static int imx334_init_controls(struct imx334 *imx334)
+ 	if (imx334->hblank_ctrl)
+ 		imx334->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+ 
++	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &imx334_ctrl_ops,
++				     V4L2_CID_TEST_PATTERN,
++				     ARRAY_SIZE(imx334_test_pattern_menu) - 1,
++				     0, 0, imx334_test_pattern_menu);
++
+ 	if (ctrl_hdlr->error) {
+ 		dev_err(imx334->dev, "control init failed: %d",
+ 			ctrl_hdlr->error);
+-- 
+2.34.1
 
->  
->  	for (plane = 0; plane < vb->num_planes; ++plane) {
-> -		vb->planes[plane].m.offset = off;
-> +		vb->planes[plane].m.offset = off + (plane << PAGE_SHIFT);
->  
->  		dprintk(q, 3, "buffer %d, plane %d offset 0x%08lx\n",
->  				vb->index, plane, off);
-> -
-> -		off += vb->planes[plane].length;
-> -		off = PAGE_ALIGN(off);
->  	}
->  }
->  
-> @@ -2209,21 +2215,15 @@ static int __find_plane_by_offset(struct vb2_queue *q, unsigned long off,
->  		return -EBUSY;
->  	}
->  
-> -	/*
-> -	 * Go over all buffers and their planes, comparing the given offset
-> -	 * with an offset assigned to each plane. If a match is found,
-> -	 * return its buffer and plane numbers.
-> -	 */
-> -	for (buffer = 0; buffer < q->num_buffers; ++buffer) {
-> -		vb = q->bufs[buffer];
-> +	/* Get buffer and plane from the offset */
-> +	buffer = (off >> PLANE_INDEX_SHIFT) & BUFFER_INDEX_MASK;
-> +	plane = (off >> PAGE_SHIFT) & PLANE_INDEX_MASK;
->  
-> -		for (plane = 0; plane < vb->num_planes; ++plane) {
-> -			if (vb->planes[plane].m.offset == off) {
-> -				*_buffer = buffer;
-> -				*_plane = plane;
-> -				return 0;
-> -			}
-> -		}
-> +	vb = q->bufs[buffer];
-
-Hmm, shouldn't there be a sanity check for the buffer value?
-
-> +	if (vb->planes[plane].m.offset == off) {
-
-Does this check make sense?
-
-> +		*_buffer = buffer;
-> +		*_plane = plane;
-> +		return 0;
->  	}
->  
->  	return -EINVAL;
-
-How about this:
-
-	/* Get buffer and plane from the offset */
-	*buffer = (off >> PLANE_INDEX_SHIFT) & BUFFER_INDEX_MASK;
-	*plane = (off >> PAGE_SHIFT) & PLANE_INDEX_MASK;
-
-	if (*buffer >= q->num_buffers || *plane >= q->bufs[buffer]->num_planes)
-		return -EINVAL;
-	return 0;
-
-Regards,
-
-	Hans
