@@ -2,140 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2B77A68D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7147A68D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbjISQ0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 12:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60810 "EHLO
+        id S230351AbjISQ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 12:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjISQ0h (ORCPT
+        with ESMTP id S229552AbjISQ2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:26:37 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39BEA9;
-        Tue, 19 Sep 2023 09:26:31 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JBu2AU004360;
-        Tue, 19 Sep 2023 16:26:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=gCIY04ta2zwSB0oAu5savGSfd8+mF+dsGqBagg5pEfA=;
- b=YXb6RtvWq4pWLNeeALgralSOvLNoXDIHhn1gG7h6XedHjids4/mxFTouVGh1UmbVu7q9
- FyP52dC05vtrEUoKOanu2dpcN/OuoVfaBmeIyEOvdjN0s7dtG7Vzy4ZhLBS+yzYBzxS3
- QxqejNUaiEwjXEfVg6gZuBskE//5QSm5PZUQVNGbuyKsMUePqpGH3KdS6m6iWa+n6VjA
- 5EJ7CmcfXE/Lmjt2av1vR/8vbv2BoU0VFXrYGiMUSBY8afR2hs+SHFC/7afFGTRLjjS5
- RHhDKrCY2Zs662QgV/4QoJaC/aB5I+oOMh1oEfyAJq60vJrueTSyW6yEuCwuiI+Dl6UE cg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t79180ya5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 16:26:22 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38JGQLG6015333
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 16:26:21 GMT
-Received: from [10.216.36.122] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 19 Sep
- 2023 09:26:16 -0700
-Message-ID: <9c3d1857-5053-cd8f-75d5-d2691139dfc9@quicinc.com>
-Date:   Tue, 19 Sep 2023 21:56:12 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH V2 1/4] dt-bindings: thermal: qcom-tsens: Add ipq5018
- compatible
+        Tue, 19 Sep 2023 12:28:21 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE02AC
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 09:28:13 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230919162809euoutp015c3be3488a19ee46a5328c0617e031db~GWahebHRc0367803678euoutp01f
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:28:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230919162809euoutp015c3be3488a19ee46a5328c0617e031db~GWahebHRc0367803678euoutp01f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695140889;
+        bh=X9Vh3xSdS13+TvaqDkbe6m4bnluDyBDtHOnoCxrZwGo=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=Mz4pQBv8pTu2ekGs/PNcrj6YTtsiJgRZGHxJUR6NJ4cXM3rPtyuEyutQx9scsVBzk
+         MHqyIkeyCLdRbNRSFqIS7UJcWJtfr5FcC7G6v4eXq7gj5xyw8b+Ugexd2yF6o1AdEh
+         vUQMOd4RXraUs1tZNHNMu1OwJaU2zb50PSqyvMJY=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230919162809eucas1p19a3e25971dc7ec568f69d95ab66e5116~GWahODslI0969909699eucas1p1A;
+        Tue, 19 Sep 2023 16:28:09 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 85.2B.11320.91CC9056; Tue, 19
+        Sep 2023 17:28:09 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230919162808eucas1p2d773186479b84364e8adf1a286a92af0~GWag42J7U1672016720eucas1p2t;
+        Tue, 19 Sep 2023 16:28:08 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230919162808eusmtrp2c556456594d71a1a2b7bef03884aee32~GWag4PRUk1247812478eusmtrp2s;
+        Tue, 19 Sep 2023 16:28:08 +0000 (GMT)
+X-AuditID: cbfec7f4-97dff70000022c38-4d-6509cc19bd3d
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 79.7A.14344.81CC9056; Tue, 19
+        Sep 2023 17:28:08 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230919162808eusmtip1b2416a662eb13677c901f2a87854b0ca~GWagpvZDz0507805078eusmtip17;
+        Tue, 19 Sep 2023 16:28:08 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
+        Server (TLS) id 15.0.1497.2; Tue, 19 Sep 2023 17:28:07 +0100
+Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
+        ([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Tue, 19 Sep
+        2023 17:28:07 +0100
+From:   Daniel Gomez <da.gomez@samsung.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     "minchan@kernel.org" <minchan@kernel.org>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH v2 6/6] shmem: add large folios support to the write
+ path
+Thread-Topic: [PATCH v2 6/6] shmem: add large folios support to the write
+        path
+Thread-Index: AQHZ6wEBFE+DTgi9xUu5khR159FX3LAiLYSAgAAYPoA=
+Date:   Tue, 19 Sep 2023 16:28:07 +0000
+Message-ID: <20230919162805.m6hbrmwq4gm4iiv5@sarkhan>
+In-Reply-To: <ZQm3vywitP+UdIHF@casper.infradead.org>
+Accept-Language: en-US, en-GB
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <srinivas.kandagatla@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <thara.gopinath@gmail.com>,
-        <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <dmitry.baryshkov@linaro.org>
-References: <20230915121504.806672-1-quic_srichara@quicinc.com>
- <20230915121504.806672-2-quic_srichara@quicinc.com>
- <03b0cafa-49c7-8838-b116-927c9649cbd3@linaro.org>
- <f5aee51d-0345-1294-a85b-ea96ed937685@linaro.org>
- <1f09339e-b3b5-874c-4874-199e8c7ae890@quicinc.com>
- <ee19e076-8f9c-c5b2-3e25-2832dbdab25b@linaro.org>
- <affb1f63-c1ed-f0cc-ea79-887ae61b9b90@quicinc.com>
- <156f4705-ca1a-f82e-9282-534a22183f37@linaro.org>
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <156f4705-ca1a-f82e-9282-534a22183f37@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: w5D_J84Rb0vKzZ_2XoTkvdS3B7OxDg_5
-X-Proofpoint-GUID: w5D_J84Rb0vKzZ_2XoTkvdS3B7OxDg_5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_07,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 adultscore=0 clxscore=1015 lowpriorityscore=0
- spamscore=0 bulkscore=0 impostorscore=0 suspectscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=645 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309190142
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [106.110.32.103]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <A4B5720378D78244931EB5E1F49DD8DC@scsc.local>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEKsWRmVeSWpSXmKPExsWy7djP87qSZzhTDeY+ZLGYs34Nm8Xqu/1s
+        Fpef8Fk8/dTHYrH3lrbFnr0nWSwu75rDZnFvzX9Wi11/drBb3JjwlNFi2df37Ba7Ny5is/j9
+        Yw6bA6/H7IaLLB4LNpV6bF6h5XH5bKnHplWdbB6bPk1i9zgx4zeLx+dNcgEcUVw2Kak5mWWp
+        Rfp2CVwZE07/Zi14KV7x+uRC5gbG4/xdjJwcEgImEnc+fGbsYuTiEBJYwSjx/fw/NgjnC6PE
+        hIs32CGcz4wSG54tZINpWdm6ACqxnFFi4ukXbHBVO1edZwWpEhI4wyhxvF8SIrGSUeLv1GPs
+        IAk2AU2JfSc3AdkcHCICGhJvthiB1DALHGWVWLJ2EwtIjbCAv8Tyg2/B6kUEAiTa+q8wQdhW
+        Ei0n5zKD2CwCqhJ9s24wg8zhFTCVWNZZAmJyAl238asTSAWjgKzEo5W/wKYwC4hL3Hoynwni
+        AUGJRbP3MEPYYhL/dj2EekxH4uz1J4wQtoHE1qX7WCBsJYk/HQsZIeboSCzY/YkNwraUWLFs
+        BpStLbFs4WuwmbxA80/OfALVO5NL4tIvO5DTJARcJJq+ZECEhSVeHd/CPoFRZxaS62Yh2TAL
+        yYZZSDbMQrJhASPrKkbx1NLi3PTUYqO81HK94sTc4tK8dL3k/NxNjMBkd/rf8S87GJe/+qh3
+        iJGJg/EQowQHs5II70xDtlQh3pTEyqrUovz4otKc1OJDjNIcLErivNq2J5OFBNITS1KzU1ML
+        UotgskwcnFINTG2pn2bKRXx4tVP/5sKDBvc+qz6SFTAufdncpmlpde2YfGHT/Sv+J26qlm4z
+        3cexTvPsv22T9qyRO6HrVh9rEvvvQ0VuFL/Qr2s3fk99Wrp6f3sf5yeziS5Xf9+xemMU5/u5
+        RWBH+l9O+2Me89Rf33a7MDfiVXVJvz/fcef4N1xzD0od21f4R+CVYYuvr5uU+g49fe3Dnpsa
+        IhK/ZTB0nX9r6vB5z747E7JeTVrLFnx737x7hftYFicu99t7miN/+cv1tkevl9zYFPef4az3
+        uTWxq7OzFO+K/V59+m1KlNmSPzbXOGdI3g80kpmjU5VYu03V3fhEydqKq8ZvU57ULTow88Uy
+        uZ+TYh64374u+S9EiaU4I9FQi7moOBEAwXhDjeUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNKsWRmVeSWpSXmKPExsVy+t/xu7oSZzhTDTYv0rKYs34Nm8Xqu/1s
+        Fpef8Fk8/dTHYrH3lrbFnr0nWSwu75rDZnFvzX9Wi11/drBb3JjwlNFi2df37Ba7Ny5is/j9
+        Yw6bA6/H7IaLLB4LNpV6bF6h5XH5bKnHplWdbB6bPk1i9zgx4zeLx+dNcgEcUXo2RfmlJakK
+        GfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZE07/Zi14KV7x+uRC
+        5gbG4/xdjJwcEgImEitbF7B3MXJxCAksZZTY/2cuE0RCRmLjl6usELawxJ9rXWwQRR8ZJU5+
+        O8oE4ZxhlPj/7BYjSJWQwEpGiZXH5EFsNgFNiX0nNwGN5eAQEdCQeLPFCKSeWeAoq8SStZtY
+        QGqEBXwl7k3qAtsgIuAn8fPRTSjbSqLl5FxmEJtFQFWib9YNZpA5vAKmEss6SyBWvWaU6J7o
+        DRLmBPpg41cnkDCjgKzEo5W/2EFsZgFxiVtP5kP9IiCxZM95ZghbVOLl439Qf+lInL3+hBHC
+        NpDYunQfC4StJPGnYyEjxBwdiQW7P7FB2JYSK5bNgLK1JZYtfA02k1dAUOLkzCcsExhlZiFZ
+        PQtJ+ywk7bOQtM9C0r6AkXUVo0hqaXFuem6xkV5xYm5xaV66XnJ+7iZGYCrbduznlh2MK199
+        1DvEyMTBeIhRgoNZSYR3piFbqhBvSmJlVWpRfnxRaU5q8SFGU2DITWSWEk3OBybTvJJ4QzMD
+        U0MTM0sDU0szYyVxXs+CjkQhgfTEktTs1NSC1CKYPiYOTqkGpv49/REhfTdlxG99YdA6pvj6
+        1+quDLfN4jMm3dZY8Gl10oKzO/Rr+h9dyfk0fesCa2dv0703etc+OvPYoO74TbbCCqmtOQWm
+        EVzLphbyP5tV+zsp6/eGrWwn5znPn7Jy4q/JvT5/yzUZWrn/TjQROPaScZI5oxGbxvt+1jlv
+        194QfXssJzRj38uTi+Zn7myLc3k+Y4b0xuLFBUrxHcX18oV/BUPy63n1rhyNi/+qfqxfNeKY
+        HfesGaph04xUpixXtvnfvv+m4KR133ac2rZn2fHPwkHc3f3eeX3lYiIVt/wW7hb97WPDwHHl
+        2Le3PwsLb03O6P5j9Dnu2rRZJfbPFi1rKVllYcv8gUl8YelW/ltKLMUZiYZazEXFiQCeQcBG
+        7gMAAA==
+X-CMS-MailID: 20230919162808eucas1p2d773186479b84364e8adf1a286a92af0
+X-Msg-Generator: CA
+X-RootMTR: 20230919135556eucas1p19920c52d4af0809499eac6bbf4466117
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230919135556eucas1p19920c52d4af0809499eac6bbf4466117
+References: <20230919135536.2165715-1-da.gomez@samsung.com>
+        <CGME20230919135556eucas1p19920c52d4af0809499eac6bbf4466117@eucas1p1.samsung.com>
+        <20230919135536.2165715-7-da.gomez@samsung.com>
+        <ZQm3vywitP+UdIHF@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 19, 2023 at 04:01:19PM +0100, Matthew Wilcox wrote:
+> On Tue, Sep 19, 2023 at 01:55:54PM +0000, Daniel Gomez wrote:
+> > Add large folio support for shmem write path matching the same high
+> > order preference mechanism used for iomap buffered IO path as used in
+> > __filemap_get_folio() with a difference on the max order permitted
+> > (being PMD_ORDER-1) to respect the huge mount option when large folio
+> > is supported.
+>
+> I'm strongly opposed to "respecting the huge mount option".  We're
+> determining the best order to use for the folios.  Artificially limiting
+> the size because the sysadmin read an article from 2005 that said to
+> use this option is STUPID.
 
+Then, I would still have the conflict on what to do when the order is
+same as huge. I guess huge does not make sense in this new scenario?
+unless we add large folios controls as proposal in linux-MM meeting
+notes [1]. But I'm missing a bit of context so it's not clear to me
+what to do next.
 
-On 9/19/2023 6:26 PM, Krzysztof Kozlowski wrote:
-> On 19/09/2023 14:48, Sricharan Ramabadhran wrote:
->>
->>
->> On 9/19/2023 6:02 PM, Krzysztof Kozlowski wrote:
->>> On 19/09/2023 09:22, Sricharan Ramabadhran wrote:
->>>>
->>>>
->>>> On 9/15/2023 6:15 PM, Krzysztof Kozlowski wrote:
->>>>> On 15/09/2023 14:43, Krzysztof Kozlowski wrote:
->>>>>> On 15/09/2023 14:15, Sricharan Ramabadhran wrote:
->>>>>>> IPQ5018 has tsens v1.0 block with 4 sensors and 1 interrupt.
->>>>>>>
->>>>>>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->>>>>>> ---
->>>>>>>     [v2] Sorted the compatible and removed example
->>>>>>>
->>>>>>
->>>>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>>>
->>>>> No, unreviewed. Your driver says it is not compatible with
->>>>> qcom,tsens-v1. This does not look right :/
->>>>>
->>>>
->>>>     Yes it is V1 IP, but since there is no RPM, to enable the IP/SENSORS
->>>>     have to do those steps after calling init_common. Similar reason
->>>>     added a new feat as well in patch #2 as well. Hence for this,
->>>>     new compatible was required.
->>>
->>> I dud not write about new or old compatible ("compatible" as noun). I
->>> wrote that it is not compatible ("compatible" as adjective) with v1.
->>>
->>
->>    Ho, in that case, yes it is not compatible with V1 init and features
->>    because of 'no rpm'. So in that case, should this be documented
->>    as a separate version of 'V1 without rpm' ?
-> 
-> It should not be mixed with regular v1, just as new entry there. I don't
-> think fallback is needed - just use SoC specific compatible.
-> 
-  ok, sure, will add in V3.
+[1] https://lore.kernel.org/all/4966f496-9f71-460c-b2ab-8661384ce626@arm.co=
+m/T/#u
 
-Regards,
-  Sricharan
+In that sense, I wanted to have a big picture of what was this new
+strategy implying in terms of folio order when adding to page cache,
+so I added tracing for it (same as in readahead). With bpftrace I
+can see the following (notes added to explain each field) after running
+fsx up to 119M:
+
+@c: 363049108  /* total folio order being traced */
+@order[8]: 2 /* order 8 being used 2 times (add_to_page_cache) */
+@order[5]: 3249587 */ order 5 being used 3249587 times
+(add_to_page_cache) */
+@order[4]: 5972205
+@order[3]: 8890418
+@order[2]: 10380055
+@order[0]: 334556841
+@order_2: /* linear histogram of folio order */
+[0, 1)          334556841 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=
+@@@@|
+[1, 2)                 0  |                                                =
+    |
+[2, 3)          10380055  |@                                               =
+    |
+[3, 4)           8890418  |@                                               =
+    |
+[4, 5)           5972205  |                                                =
+    |
+[5, 6)           3249587  |                                                =
+    |
+[6, 7)                 0  |                                                =
+    |
+[7, 8)                 0  |                                                =
+    |
+[8, 9)                 2  |                                                =
+    |
+
+I guess that's not te best workload to see this but would tracing be also
+interesting to add to the series?
+>
+> >  	else
+> > -		folio =3D shmem_alloc_folio(gfp, info, index, *order);
+> > +		folio =3D shmem_alloc_folio(gfp, info, index, order);
+>
+> Why did you introduce it as *order, only to change it back to order
+> in this patch?  It feels like you just fixed up patch 6 rather than
+> percolating the changes all the way back to where they should have
+> been done.  This makes the reviewer's life hard.
+>
+
+Sorry about that. I missed it in my changes.=
