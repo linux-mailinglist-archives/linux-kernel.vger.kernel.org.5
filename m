@@ -2,118 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0ABE7A6AE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6017A6AEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbjISSwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
+        id S232366AbjISSw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232362AbjISSwr (ORCPT
+        with ESMTP id S232547AbjISSw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:52:47 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC98BD
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:52:41 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5033918c09eso404492e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695149560; x=1695754360; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qoumeRTE+qtQQI/kZW10ezE5GjBnHd3+HNtP5YPVTpo=;
-        b=arpuIMn7vCmDj8p/w0bzkpy+Q50dZJ2llmtsXSvLfYCnyYMJqEaT1+rulS1MD5snYl
-         VtTQZuF9K6O/iJsFLZ7eQ3eQUBhAwtjKu8zLZ7H6H4kiKLIBKi+lIbZTGnteMto7k3+J
-         lV0QefUDpGJ6KFZv39XmxgpKHR9IB+CTamy8M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695149560; x=1695754360;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qoumeRTE+qtQQI/kZW10ezE5GjBnHd3+HNtP5YPVTpo=;
-        b=AJ00upn+CgztRomG5JXHta+HpCogWM4YBO+oPWCYgAIfMSyyRoFleEAva/Ec/zSif2
-         XX8fGjnNccd5fCK09OGLNSxjY/e+ULMD8TgxCDDy/NmHwlI52kKw9MZfGZFou4XZ410t
-         NcCWBzHumhzrFtbnpcE3kHkX1U/TFG7M37nWc28PMUFjpjBGFfrSjNgjW5R2Jx6D++Z1
-         eIiftQaF30E4KPX9PPz8nM3iKTX2VoAcX6CxXL6PZVIPw9lz2RMP6qHeWxIHWS3brs3X
-         tawKzoeDgZD2ZQvBtzMn6B+AOs+xWAH6kecBKaiSL8ooDSFf/ZpM7B9YmWSHPe/yBSdQ
-         BklA==
-X-Gm-Message-State: AOJu0YyczVjOA1jw0FOTH+jXo0MiBQp4mrI3xH3c3uCQq2poErCv6PNP
-        MtBa4BcFKpNvvI88AHFJYaEbWOv2f388lwzAvFHKqM8L
-X-Google-Smtp-Source: AGHT+IH6FB8MiVi/PZW7lWtdhdjbUxKYE4qzk62FRsq8yQQS+ISl0tjtnhzBLjv0HVHVs+OeEAe7eg==
-X-Received: by 2002:a19:6903:0:b0:4fe:2d93:2b50 with SMTP id e3-20020a196903000000b004fe2d932b50mr367202lfc.31.1695149559856;
-        Tue, 19 Sep 2023 11:52:39 -0700 (PDT)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id h25-20020aa7c619000000b0052fdc837d93sm7788779edq.47.2023.09.19.11.52.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 11:52:39 -0700 (PDT)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so7610791a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:52:39 -0700 (PDT)
-X-Received: by 2002:a50:fc0e:0:b0:532:e71b:5ead with SMTP id
- i14-20020a50fc0e000000b00532e71b5eadmr258934edr.32.1695149559235; Tue, 19 Sep
- 2023 11:52:39 -0700 (PDT)
+        Tue, 19 Sep 2023 14:52:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5553BE
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:52:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D475BC433CC;
+        Tue, 19 Sep 2023 18:52:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695149569;
+        bh=iBy2r1Ppb7+LblxwetjPZTCM0xkhLmGsPtEb6rgyHpE=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=IT4JlwF0Dq8D0KQoqO5NhUVaofEV6Z8R3Pl3JuDU3nL5Vm8YYjgLvExupodGFIU/e
+         Bkczf0k5kW+FwKy8rRRSiOCYIwJZZYjV021ckZZ8ZZYScyibaPTD42HIWrdgg7hK2T
+         I/i4ZThhM0w95nYBZU/q5h4Wit28P4y1OboR02wQSEhjvhnaCRPYYuyIOvSJsPFYsv
+         TX4SV/bOfAWemh5Bk2K2l6VL5OvCqzoM2GcTzX3W2PLwJ48hTFiZPIu753enMGDGpX
+         R9b+d5IKnRnBtgtoDw7SZT5lttzKi18P5edAm61XTD/6axSFGsYM1W2DhuxtfBsnDz
+         M/KwBWWAbpDzA==
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id CF0AC27C0069;
+        Tue, 19 Sep 2023 14:52:47 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute3.internal (MEProxy); Tue, 19 Sep 2023 14:52:47 -0400
+X-ME-Sender: <xms:_-0JZRJL7I3mgpeI3-Y6zuO02uYza5n6UOdij-aD9L5A5vutLT8VYg>
+    <xme:_-0JZdI-nNGc8eTw6kaaItvNFDDgjcu0cu7DEJNsxaz8nDOom5Lb2XagUkw5FgYYQ
+    TgSqzASE8xscHIoaMg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekuddguddttdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehnugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqne
+    cuggftrfgrthhtvghrnhepudevffdvgedvfefhgeejjeelgfdtffeukedugfekuddvtedv
+    udeileeugfejgefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudei
+    udekheeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlih
+    hnuhigrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:_-0JZZvD75yTMOf7Irofp0KNMyMqlNtlWW4wLjm2ItLJXKMtmaAisQ>
+    <xmx:_-0JZSb3mj3IFmGz1Bc8du4JTslWg03aJ6hX018Rkc1vj7lWLZgDMg>
+    <xmx:_-0JZYYjU3wPiK72Fz35-4Ufq9VLChmRHCcWfXW9fpW4bDmsOdO0Og>
+    <xmx:_-0JZYqwkvZwsoX_ifE5nOL8DZrNwWG-K3zUqC239B2uBxCius-hqw>
+Feedback-ID: ieff94742:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 47DEF31A0064; Tue, 19 Sep 2023 14:52:47 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
 MIME-Version: 1.0
-References: <87zg1u1h5t.fsf@oracle.com> <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net> <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net> <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net> <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
- <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
- <87pm2eui95.ffs@tglx> <20230919143816.1741760a@gandalf.local.home>
-In-Reply-To: <20230919143816.1741760a@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 19 Sep 2023 11:52:22 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wizB-G40OxALNnz3-uNxuEAPf95H9hubAPeG2r2mrhwHA@mail.gmail.com>
-Message-ID: <CAHk-=wizB-G40OxALNnz3-uNxuEAPf95H9hubAPeG2r2mrhwHA@mail.gmail.com>
-Subject: Re: Arches that don't support PREEMPT
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Message-Id: <1b7ea860-55e2-48fb-86ba-ff3f9f6d8904@app.fastmail.com>
+In-Reply-To: <ZQnmVI0Q/Al5UKgQ@memverge.com>
+References: <20230907075453.350554-1-gregory.price@memverge.com>
+ <20230907075453.350554-4-gregory.price@memverge.com>
+ <878r9dzrxj.fsf@meer.lwn.net> <ZP2tYY00/q9ElFQn@memverge.com>
+ <42d97bb4-fa0c-4ecc-8a1b-337b40dca930@app.fastmail.com>
+ <ZQnMzD26VI3C/ivf@memverge.com>
+ <0a7e3ccc-db66-428e-8c09-66e67bfded51@app.fastmail.com>
+ <ZQnmVI0Q/Al5UKgQ@memverge.com>
+Date:   Tue, 19 Sep 2023 11:52:27 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Gregory Price" <gregory.price@memverge.com>
+Cc:     "Jonathan Corbet" <corbet@lwn.net>,
+        "Gregory Price" <gourry.memverge@gmail.com>,
+        linux-mm@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        "Linux API" <linux-api@vger.kernel.org>, linux-cxl@vger.kernel.org,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "Arnd Bergmann" <arnd@arndb.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Subject: Re: [RFC PATCH 3/3] mm/migrate: Create move_phys_pages syscall
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sept 2023 at 11:37, Steven Rostedt <rostedt@goodmis.org> wrote:
+
+
+On Tue, Sep 19, 2023, at 11:20 AM, Gregory Price wrote:
+> On Tue, Sep 19, 2023 at 10:59:33AM -0700, Andy Lutomirski wrote:
+>>=20
+>> I'm not complaining about the name.  I'm objecting about the semantic=
+s.
+>>=20
+>> Apparently you have a system to collect usage statistics of physical =
+addresses, but you have no idea what those pages map do (without crawlin=
+g /proc or /sys, anyway).  But that means you have no idea when the logi=
+cal contents of those pages *changes*.  So you fundamentally have a nast=
+y race: anything else that swaps or migrates those pages will mess up yo=
+ur statistics, and you'll start trying to migrate the wrong thing.
 >
-> We could simply leave the cond_resched() around but defined as nops for
-> everything but the "nostalgia club" to keep them from having any regressions.
+> How does this change if I use virtual address based migration?
+>
+> I could do sampling based on virtual address (page faults, IBS/PEBs,
+> whatever), and by the time I make a decision, the kernel could have
+> migrated the data or even my task from Node A to Node B.  The sample I
+> took is now stale, and I could make a poor migration decision.
 
-I doubt the nostalgia club cares about some latencies (that are
-usually only noticeable under extreme loads anyway).
+The window is a lot narrower. If you=E2=80=99re sampling by VA, you coll=
+ect stats and associate them with the logical page (the tuple (mapping, =
+VA), for example).  The kernel can do this without races from page fault=
+s handlers.  If you sample based on PA, you fundamentally race against a=
+nything that does migration.
 
-And if they do, maybe that would make somebody sit down and look into
-doing it right.
+>
+> If I do move_pages(pid, some_virt_addr, some_node) and it migrates the
+> page from NodeA to NodeB, then the device-side collection is likewise
+> no longer valid.  This problem doesn't change because I used virtual
+> address compared to physical address.
 
-So I think keeping it around would actually be both useless and
-counter-productive.
+Sure it does, as long as you collect those samples when you migrate. And=
+ I think the kernel migrating to or from device memory (or more generall=
+y allocating and freeing device memory and possibly even regular memory)=
+ *should* be aware of whatever hotness statistics are in use.
 
-              Linus
+>
+> But if i have a 512GB memory device, and i can see a wide swath of that
+> 512GB is hot, while a good chunk of my local DRAM is not - then I
+> probably don't care *what* gets migrated up to DRAM, i just care that a
+> vast majority of that hot data does.
+>
+> The goal here isn't 100% precision, you will never get there. The goal
+> here is broad-scope performance enhancements of the overall system
+> while minimizing the cost to compute the migration actions to be taken.
+>
+> I don't think the contents of the page are always relevant.  The entire
+> concept here is to enable migration without caring about what programs
+> are using the memory for - just so long as the memcg's and zoning is
+> respected.
+>
+
+At the very least I think you need to be aware of page *size*.  And if y=
+ou want to avoid excessive fragmentation, you probably also want to be a=
+ware of the boundaries of a logical allocation.
+
+I think that doing this entire process by PA, blind, from userspace will=
+ end up stuck in a not-so-good solution, and the ABI will be set in ston=
+e, and it will not be a great situation for long term maintainability or=
+ performance.
