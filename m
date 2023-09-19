@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B95FA7A60AA
+	by mail.lfdr.de (Postfix) with ESMTP id 6F40C7A60A9
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbjISLGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
+        id S232134AbjISLGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbjISLFn (ORCPT
+        with ESMTP id S232183AbjISLFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:05:43 -0400
-Received: from out28-149.mail.aliyun.com (out28-149.mail.aliyun.com [115.124.28.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DB11B8;
-        Tue, 19 Sep 2023 03:58:08 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06718782|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00716367-0.000217502-0.992619;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.Uj4ESB5_1695121077;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.Uj4ESB5_1695121077)
+        Tue, 19 Sep 2023 07:05:46 -0400
+Received: from out28-169.mail.aliyun.com (out28-169.mail.aliyun.com [115.124.28.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BFC7CD3;
+        Tue, 19 Sep 2023 03:58:16 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08387548|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0174443-0.000300907-0.982255;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.Uj4ESJm_1695121085;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.Uj4ESJm_1695121085)
           by smtp.aliyun-inc.com;
-          Tue, 19 Sep 2023 18:58:04 +0800
+          Tue, 19 Sep 2023 18:58:12 +0800
 From:   wangweidong.a@awinic.com
 To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -32,9 +32,9 @@ To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         colin.i.king@gmail.com, trix@redhat.com,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V4 4/7] ASoC: codecs: Add code for bin parsing compatible with aw87390
-Date:   Tue, 19 Sep 2023 18:57:21 +0800
-Message-ID: <20230919105724.105624-5-wangweidong.a@awinic.com>
+Subject: [PATCH V4 5/7] ASoC: codecs: Modify i2c name and parameter transmission methodls
+Date:   Tue, 19 Sep 2023 18:57:22 +0800
+Message-ID: <20230919105724.105624-6-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230919105724.105624-1-wangweidong.a@awinic.com>
 References: <20230919105724.105624-1-wangweidong.a@awinic.com>
@@ -52,108 +52,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-Add aw87390 compatible code to the aw88395_lib.c file
-so that it can parse aw87390's bin file
-Modify the function return value
+Modify aw888395_smartpa to aw88395 in order to
+align with the awinic,aw88395.yaml file
+Modify the transmission method of parameters.
 
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
 ---
- sound/soc/codecs/aw88395/aw88395_lib.c | 25 ++++++++++++++++---------
- sound/soc/codecs/aw88395/aw88395_reg.h |  1 +
- 2 files changed, 17 insertions(+), 9 deletions(-)
+ sound/soc/codecs/aw88395/aw88395.c | 9 ++++-----
+ sound/soc/codecs/aw88395/aw88395.h | 2 +-
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/aw88395/aw88395_lib.c b/sound/soc/codecs/aw88395/aw88395_lib.c
-index 8ee1baa03269..a0a429ca9768 100644
---- a/sound/soc/codecs/aw88395/aw88395_lib.c
-+++ b/sound/soc/codecs/aw88395/aw88395_lib.c
-@@ -452,12 +452,16 @@ static int aw_dev_parse_reg_bin_with_hdr(struct aw_device *aw_dev,
- 	if ((aw_bin->all_bin_parse_num != 1) ||
- 		(aw_bin->header_info[0].bin_data_type != DATA_TYPE_REGISTER)) {
- 		dev_err(aw_dev->dev, "bin num or type error");
-+		ret = -EINVAL;
- 		goto parse_bin_failed;
- 	}
- 
--	if (aw_bin->header_info[0].valid_data_len % 4) {
--		dev_err(aw_dev->dev, "bin data len get error!");
--		goto parse_bin_failed;
-+	if (aw_dev->chip_id == AW88261_CHIP_ID) {
-+		if (aw_bin->header_info[0].valid_data_len % 4) {
-+			dev_err(aw_dev->dev, "bin data len get error!");
-+			ret = -EINVAL;
-+			goto parse_bin_failed;
-+		}
- 	}
- 
- 	prof_desc->sec_desc[AW88395_DATA_TYPE_REG].data =
-@@ -579,9 +583,9 @@ static int aw_dev_parse_dev_default_type(struct aw_device *aw_dev,
- }
- 
- static int aw88261_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
--				struct aw_all_prof_info all_prof_info)
-+				struct aw_all_prof_info *all_prof_info)
+diff --git a/sound/soc/codecs/aw88395/aw88395.c b/sound/soc/codecs/aw88395/aw88395.c
+index 9dcd75dd799a..77227c8f01f6 100644
+--- a/sound/soc/codecs/aw88395/aw88395.c
++++ b/sound/soc/codecs/aw88395/aw88395.c
+@@ -175,9 +175,8 @@ static int aw88395_profile_info(struct snd_kcontrol *kcontrol,
  {
--	struct aw_prof_desc *prof_desc = all_prof_info.prof_desc;
-+	struct aw_prof_desc *prof_desc = all_prof_info->prof_desc;
- 	struct aw_prof_info *prof_info = &aw_dev->prof_info;
- 	int num = 0;
- 	int i;
-@@ -621,9 +625,9 @@ static int aw88261_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
- }
+ 	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
+ 	struct aw88395 *aw88395 = snd_soc_component_get_drvdata(codec);
+-	const char *prof_name;
+-	char *name;
+-	int count;
++	char *prof_name, *name;
++	int count, ret;
  
- static int aw88395_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
--				struct aw_all_prof_info all_prof_info)
-+				struct aw_all_prof_info *all_prof_info)
- {
--	struct aw_prof_desc *prof_desc = all_prof_info.prof_desc;
-+	struct aw_prof_desc *prof_desc = all_prof_info->prof_desc;
- 	struct aw_prof_info *prof_info = &aw_dev->prof_info;
- 	struct aw_sec_data_desc *sec_desc;
- 	int num = 0;
-@@ -701,12 +705,13 @@ static int aw_dev_load_cfg_by_hdr(struct aw_device *aw_dev,
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
+@@ -196,8 +195,8 @@ static int aw88395_profile_info(struct snd_kcontrol *kcontrol,
+ 	name = uinfo->value.enumerated.name;
+ 	count = uinfo->value.enumerated.item;
  
- 	switch (aw_dev->chip_id) {
- 	case AW88395_CHIP_ID:
--		ret = aw88395_dev_cfg_get_valid_prof(aw_dev, *all_prof_info);
-+		ret = aw88395_dev_cfg_get_valid_prof(aw_dev, all_prof_info);
- 		if (ret < 0)
- 			goto exit;
- 		break;
- 	case AW88261_CHIP_ID:
--		ret = aw88261_dev_cfg_get_valid_prof(aw_dev, *all_prof_info);
-+	case AW87390_CHIP_ID:
-+		ret = aw88261_dev_cfg_get_valid_prof(aw_dev, all_prof_info);
- 		if (ret < 0)
- 			goto exit;
- 		break;
-@@ -799,6 +804,7 @@ static int aw_get_dev_scene_count_v1(struct aw_device *aw_dev, struct aw_contain
- 		ret = 0;
- 		break;
- 	case AW88261_CHIP_ID:
-+	case AW87390_CHIP_ID:
- 		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
- 			if (((cfg_dde[i].data_type == ACF_SEC_TYPE_REG) ||
- 			     (cfg_dde[i].data_type == ACF_SEC_TYPE_HDR_REG)) &&
-@@ -839,6 +845,7 @@ static int aw_get_default_scene_count_v1(struct aw_device *aw_dev,
- 		ret = 0;
- 		break;
- 	case AW88261_CHIP_ID:
-+	case AW87390_CHIP_ID:
- 		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
- 			if (((cfg_dde[i].data_type == ACF_SEC_TYPE_REG) ||
- 			     (cfg_dde[i].data_type == ACF_SEC_TYPE_HDR_REG)) &&
-diff --git a/sound/soc/codecs/aw88395/aw88395_reg.h b/sound/soc/codecs/aw88395/aw88395_reg.h
-index e7a7c02efaf3..d0a273387313 100644
---- a/sound/soc/codecs/aw88395/aw88395_reg.h
-+++ b/sound/soc/codecs/aw88395/aw88395_reg.h
-@@ -97,6 +97,7 @@
- enum aw88395_id {
- 	AW88395_CHIP_ID = 0x2049,
- 	AW88261_CHIP_ID = 0x2113,
-+	AW87390_CHIP_ID = 0x76,
- };
+-	prof_name = aw88395_dev_get_prof_name(aw88395->aw_pa, count);
+-	if (!prof_name) {
++	ret = aw88395_dev_get_prof_name(aw88395->aw_pa, count, &prof_name);
++	if (ret) {
+ 		strscpy(uinfo->value.enumerated.name, "null",
+ 						strlen("null") + 1);
+ 		return 0;
+diff --git a/sound/soc/codecs/aw88395/aw88395.h b/sound/soc/codecs/aw88395/aw88395.h
+index 8036ba27f68d..c2a4f0cb8cd5 100644
+--- a/sound/soc/codecs/aw88395/aw88395.h
++++ b/sound/soc/codecs/aw88395/aw88395.h
+@@ -16,7 +16,7 @@
  
- #define AW88395_REG_MAX		(0x7D)
+ #define AW88395_DSP_16_DATA_MASK		(0x0000ffff)
+ 
+-#define AW88395_I2C_NAME			"aw88395_smartpa"
++#define AW88395_I2C_NAME			"aw88395"
+ 
+ #define AW88395_RATES (SNDRV_PCM_RATE_8000_48000 | \
+ 			SNDRV_PCM_RATE_96000)
 -- 
 2.41.0
 
