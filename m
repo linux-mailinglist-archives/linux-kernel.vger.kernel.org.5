@@ -2,106 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1F57A62B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BA57A62B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbjISMWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
+        id S231833AbjISMV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbjISMWB (ORCPT
+        with ESMTP id S231778AbjISMVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:22:01 -0400
+        Tue, 19 Sep 2023 08:21:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7432AE3;
-        Tue, 19 Sep 2023 05:21:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16145C43395;
-        Tue, 19 Sep 2023 12:21:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695126115;
-        bh=Xr77RdjoeN0z20L00thV/A7rQAaSN7R1FHU4N7VjYYQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hj8hYfkAAndJs8H22CHLVDNHy1zD6xB6w3uANPxPprU0qLeHyjw6DSLsEJ9KSaaBx
-         jq9z0gjpChuLF3L1SjmbjZIAQ14su7/S8qxmtt3n9UmZNg3nqDivH7mUxX+54h89fA
-         E88A+xwaXh+78LyaGxDLimmulMnPgZI2rpuelygDehr7UMOqpQblZFIOlBI2sGH0GE
-         7mWp5pZFiChwKP1ochLJSCqBFbdBpodJlMl2OF4z7uFIllARBDW4/23B4sn4eiF8Dn
-         Uuh7hOlOXkRHox+mGHWmhMr1MEbPJ/c/A6QC2WZvQwRXeQ8Eg+GhTHJQpQyIAiKYGZ
-         zAbzyB6UeKWeQ==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-502defbb0c3so9399049e87.0;
-        Tue, 19 Sep 2023 05:21:54 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz97GgSSdb9M38+yJMLOPLrVyq+nke84j37IECzVR1JXVrBkglF
-        eQUI2Cy4nv7eXBp+xmXzIHD4BfxtdBS1tL0m0A==
-X-Google-Smtp-Source: AGHT+IGZ+q/CZ8ihPU+3vszfUTb3H1YpoJmvFyKP14El1bVcrpQgc78dAL/8ANG/qARJU9k7Bj0b4xbMgk+oHxzCckI=
-X-Received: by 2002:a05:6512:3a8b:b0:500:b88c:ea79 with SMTP id
- q11-20020a0565123a8b00b00500b88cea79mr11710980lfu.54.1695126113262; Tue, 19
- Sep 2023 05:21:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEB2F7;
+        Tue, 19 Sep 2023 05:21:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA738C433C7;
+        Tue, 19 Sep 2023 12:21:43 +0000 (UTC)
+Message-ID: <90ee9c16-f023-483c-8cc8-f4a15a29ea48@xs4all.nl>
+Date:   Tue, 19 Sep 2023 14:21:41 +0200
 MIME-Version: 1.0
-References: <20230912121120.380420-1-robh@kernel.org> <20230912121120.380420-2-robh@kernel.org>
- <20230918100102.GA17472@willie-the-truck>
-In-Reply-To: <20230918100102.GA17472@willie-the-truck>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 19 Sep 2023 07:21:40 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLZTHsUuET0=MEF+1RC_+YqzcY5Ba9ztKJ3jX7K9hmcMw@mail.gmail.com>
-Message-ID: <CAL_JsqLZTHsUuET0=MEF+1RC_+YqzcY5Ba9ztKJ3jX7K9hmcMw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: errata: Add Cortex-A520 speculative
- unprivileged load workaround
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 18/49] media: Remove duplicated index vs q->num_buffers
+ check
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
+ <20230914133323.198857-19-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230914133323.198857-19-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 5:01=E2=80=AFAM Will Deacon <will@kernel.org> wrote=
-:
->
-> On Tue, Sep 12, 2023 at 07:11:15AM -0500, Rob Herring wrote:
-> > Implement the workaround for ARM Cortex-A520 erratum 2966298. On an
-> > affected Cortex-A520 core, a speculatively executed unprivileged load
-> > might leak data from a privileged level via a cache side channel.
-> >
-> > The workaround is to execute a TLBI before returning to EL0. A
-> > non-shareable TLBI to any address is sufficient.
->
-> Can you elaborate at all on how this works, please?
+On 14/09/2023 15:32, Benjamin Gaignard wrote:
+> vb2_get_buffer() already check if the requested index is valid.
 
-Here's the write-up if you haven't read that already:
+typo: check -> checks
 
-https://developer.arm.com/documentation/SDEN-2444153/0500/?lang=3Den
+> Stop duplicating this kind of check everywhere.
 
-> A TLBI addressing a
-> cache side channel feels weird (or is "cache" referring to some TLB
-> structures rather than e.g. the data cache here?).
+Also mention you moved it from the header to videobuf2-core.c.
 
-AIUI, the TLBI is simply enough to ensure the permission check happens
-on the speculative load. It has nothing to do with actual TLB
-contents.
+Although I am not sure if it belongs in this patch, it is not
+needed for this. I think it is better to move it either into a
+separate patch, or move it to the patch where it is really needed.
 
-This core has FEAT_E0PD and FEAT_CSV3 which should mitigate this
-scenario, but this case is a narrow uarch condition which bypasses
-those checks.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  drivers/media/common/videobuf2/videobuf2-core.c |  8 ++++++++
+>  drivers/media/common/videobuf2/videobuf2-v4l2.c | 13 -------------
+>  include/media/videobuf2-core.h                  |  8 +-------
+>  3 files changed, 9 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index ee4df7c68397..2add7a6795e7 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -660,6 +660,14 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+>  	}
+>  }
+>  
+> +struct vb2_buffer *vb2_get_buffer(struct vb2_queue *q, unsigned int index)
+> +{
+> +	if (index < q->num_buffers)
+> +		return q->bufs[index];
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(vb2_get_buffer);
+> +
+>  bool vb2_buffer_in_use(struct vb2_queue *q, struct vb2_buffer *vb)
+>  {
+>  	unsigned int plane;
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index 87c2d5916960..f10b70d8e66a 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -378,11 +378,6 @@ static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *md
+>  		return -EINVAL;
+>  	}
+>  
+> -	if (b->index >= q->num_buffers) {
+> -		dprintk(q, 1, "%s: buffer index out of range\n", opname);
+> -		return -EINVAL;
+> -	}
+> -
+>  	vb = vb2_get_buffer(q, b->index);
+>  	if (!vb) {
+>  		dprintk(q, 1, "%s: buffer is NULL\n", opname);
+> @@ -829,10 +824,6 @@ int vb2_qbuf(struct vb2_queue *q, struct media_device *mdev,
+>  		return -EBUSY;
+>  	}
+>  
+> -	if (b->index >= q->num_buffers) {
+> -		dprintk(q, 1, "buffer index out of range\n");
+> -		return -EINVAL;
+> -	}
+>  	vb = vb2_get_buffer(q, b->index);
+>  	if (!vb) {
+>  		dprintk(q, 1, "can't find the requested buffer\n");
+> @@ -904,10 +895,6 @@ int vb2_expbuf(struct vb2_queue *q, struct v4l2_exportbuffer *eb)
+>  {
+>  	struct vb2_buffer *vb;
+>  
+> -	if (eb->index >= q->num_buffers) {
+> -		dprintk(q, 1, "buffer index out of range\n");
+> -		return -EINVAL;
+> -	}
+>  	vb = vb2_get_buffer(q, eb->index);
+>  	if (!vb) {
+>  		dprintk(q, 1, "can't find the requested buffer\n");
 
-> Assuming there's some vulnerable window between the speculative
-> unprivileged load and the completion of the TLBI, what prevents another
-> CPU from observing the side-channel during that time?
+This patch should be folded into 11/49. It is 11/49 that introduced these
+duplicate messages, and it should have removed those directly.
 
-The cache hit is private to the core. How would another core observe that?
+Regards,
 
-> Also, does the
-> TLBI need to be using the same ASID as the unprivileged load? If so, then
-> a context-switch could widen the vulnerable window quite significantly.
+	Hans
 
-No, the TLBI can be any context and/or address including unused addresses.
+> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> index 97153c69583f..25ca395616a7 100644
+> --- a/include/media/videobuf2-core.h
+> +++ b/include/media/videobuf2-core.h
+> @@ -1238,13 +1238,7 @@ static inline void vb2_clear_last_buffer_dequeued(struct vb2_queue *q)
+>   * operation, so the buffer lifetime should be taken into
+>   * consideration.
+>   */
+> -static inline struct vb2_buffer *vb2_get_buffer(struct vb2_queue *q,
+> -						unsigned int index)
+> -{
+> -	if (index < q->num_buffers)
+> -		return q->bufs[index];
+> -	return NULL;
+> -}
+> +struct vb2_buffer *vb2_get_buffer(struct vb2_queue *q, unsigned int index);
+>  
+>  /*
+>   * The following functions are not part of the vb2 core API, but are useful
 
-Rob
