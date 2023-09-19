@@ -2,187 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 326EA7A599B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8567A599C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjISFw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 01:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
+        id S231451AbjISFzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 01:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbjISFwv (ORCPT
+        with ESMTP id S230513AbjISFzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 01:52:51 -0400
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A611114;
-        Mon, 18 Sep 2023 22:52:46 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53136a13cd4so1628826a12.1;
-        Mon, 18 Sep 2023 22:52:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695102764; x=1695707564;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JOcQqm5T2l7FnqzIqZfGQiR6q/pI6ROhu9GBQdAWfvo=;
-        b=GtW8wyqTpFJLAoB8rt12TiETqgKCFy/cNTCngTVqcC/uGJw8ITNQLskPxf6c0ggfK+
-         c+ZmS+y7DKtIkbQ9UlS19IbX//DgbyZrq3FDVfZ9/C0PzhIin/wZNLQ22vNV0PL+1jNA
-         PKkfEEaOvNj3jNL3T8s5D4bgwGguxt0YsxaDSQj+cgOSCZIHWCoWAbG42eVdT4hHItNw
-         1IplCgWfTCvN5wdtZv3BnlE7QEIfxVLYd/ohOtV57jYYBThlC2LQdyVOKcU8KZ/3ku74
-         XWWVXBWhyk64x12Cv0afjoTHe2MzRnB7FBBYmLVfz6KbS++wGWcfaH27Tq6Gh5R3kFOK
-         q7IQ==
-X-Gm-Message-State: AOJu0Yw7xyAmTQaO/OF+pawGT52mvQ/ok3rbmXIroJq2Hp8SOANGg1Ne
-        4fXqQyEBYdbVYjaCvMDRe6s=
-X-Google-Smtp-Source: AGHT+IFDojkH8mbhi3nGxmR/46Ua2sUlAaT2McBPmJHqfb5qbcQ+woAXm5/fdtF2TKJmc+PAxQzDPg==
-X-Received: by 2002:a17:906:2921:b0:992:7295:61c9 with SMTP id v1-20020a170906292100b00992729561c9mr9021336ejd.69.1695102763492;
-        Mon, 18 Sep 2023 22:52:43 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id i23-20020a170906851700b00977eec7b7e8sm7326588ejx.68.2023.09.18.22.52.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 22:52:43 -0700 (PDT)
-Message-ID: <d0406751-829d-4892-9939-0e8873be3318@kernel.org>
-Date:   Tue, 19 Sep 2023 07:52:42 +0200
+        Tue, 19 Sep 2023 01:55:45 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F045C10F;
+        Mon, 18 Sep 2023 22:55:38 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 894AA22839;
+        Tue, 19 Sep 2023 05:55:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695102937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=NqK2AzLjcSSziUXv/bRsgo92hGjv4vqcHTVq9z+bJUs=;
+        b=S6RFLxGsdYKiAAZnCMFAgl0LoF6l1MPDh02afDmCYyAqR5IKsyjHRk7gAUXnIKvT+86FI6
+        VFvPtLmxdA7N8e6a0Pfer6jYLuWlPszyR2YBjtnXwKcrqcQgLK0WmXP5U5Lb4zlO+R5FcW
+        hapJJwAu6vpuqRkUTq2pf57Ei0T+Os8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3293D13458;
+        Tue, 19 Sep 2023 05:55:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zoLyCtk3CWVPQwAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 19 Sep 2023 05:55:37 +0000
+Message-ID: <6ca5e35a-515e-4205-a8f2-13c0176f93cd@suse.com>
+Date:   Tue, 19 Sep 2023 07:55:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] tty/sysrq: replace smp_processor_id() with get_cpu()
+Subject: Re: [PATCH] xen/efi: refactor deprecated strncpy
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Ingo Molnar <mingo@elte.hu>, kernel@collabora.com,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20230822102606.2821311-1-usama.anjum@collabora.com>
- <2023091835-quill-congress-b691@gregkh>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <2023091835-quill-congress-b691@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+To:     Justin Stitt <justinstitt@google.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <20230911-strncpy-arch-x86-xen-efi-c-v1-1-96ab2bba2feb@google.com>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20230911-strncpy-arch-x86-xen-efi-c-v1-1-96ab2bba2feb@google.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------JLHfp2JVY4v5vNtIURUkIWuZ"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18. 09. 23, 10:10, Greg Kroah-Hartman wrote:
-> On Tue, Aug 22, 2023 at 03:26:06PM +0500, Muhammad Usama Anjum wrote:
->> The smp_processor_id() shouldn't be called from preemptible code.
->> Instead use get_cpu() and put_cpu() which disables preemption in
->> addition to getting the processor id. This fixes the following bug:
->>
->> [  119.143590] sysrq: Show backtrace of all active CPUs
->> [  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
->> [  119.144586] caller is debug_smp_processor_id+0x20/0x30
->> [  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
->> [  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
->> [  119.145053] Call trace:
->> [  119.145093]  dump_backtrace+0x0/0x1a0
->> [  119.145122]  show_stack+0x18/0x70
->> [  119.145141]  dump_stack+0xc4/0x11c
->> [  119.145159]  check_preemption_disabled+0x100/0x110
->> [  119.145175]  debug_smp_processor_id+0x20/0x30
->> [  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
->> [  119.145211]  __handle_sysrq+0x8c/0x1a0
->> [  119.145227]  write_sysrq_trigger+0x94/0x12c
->> [  119.145247]  proc_reg_write+0xa8/0xe4
->> [  119.145266]  vfs_write+0xec/0x280
->> [  119.145282]  ksys_write+0x6c/0x100
->> [  119.145298]  __arm64_sys_write+0x20/0x30
->> [  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
->> [  119.145332]  do_el0_svc+0x24/0x8c
->> [  119.145348]  el0_svc+0x10/0x20
->> [  119.145364]  el0_sync_handler+0x134/0x140
->> [  119.145381]  el0_sync+0x180/0x1c0
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->> Changes since v2:
->> - Add changelog and resend
->>
->> Changes since v1:
->> - Add "Cc: stable@vger.kernel.org" tag
->> ---
->>   drivers/tty/sysrq.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
->> index 23198e3f1461a..6b4a28bcf2f5f 100644
->> --- a/drivers/tty/sysrq.c
->> +++ b/drivers/tty/sysrq.c
->> @@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
->>   		if (in_hardirq())
->>   			regs = get_irq_regs();
->>   
->> -		pr_info("CPU%d:\n", smp_processor_id());
->> +		pr_info("CPU%d:\n", get_cpu());
-> 
-> Why not call put_cpu() right here?
-> 
->>   		if (regs)
->>   			show_regs(regs);
->>   		else
->>   			show_stack(NULL, NULL, KERN_INFO);
->>   
->>   		schedule_work(&sysrq_showallcpus);
->> +		put_cpu();
-> 
-> Why wait so long here after you have scheduled work?  Please drop the
-> cpu reference right away, you don't need to hold it for this length of
-> time, right?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------JLHfp2JVY4v5vNtIURUkIWuZ
+Content-Type: multipart/mixed; boundary="------------vs6263xuQCyPAXuihv3xaRux";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Justin Stitt <justinstitt@google.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Message-ID: <6ca5e35a-515e-4205-a8f2-13c0176f93cd@suse.com>
+Subject: Re: [PATCH] xen/efi: refactor deprecated strncpy
+References: <20230911-strncpy-arch-x86-xen-efi-c-v1-1-96ab2bba2feb@google.com>
+In-Reply-To: <20230911-strncpy-arch-x86-xen-efi-c-v1-1-96ab2bba2feb@google.com>
 
-As I understand it, this way, schedule_work() will queue the work on the 
-"gotten" (current) CPU. So sysrq_showregs_othercpus() will really dump 
-other than the "gotten" cpu.
+--------------vs6263xuQCyPAXuihv3xaRux
+Content-Type: multipart/mixed; boundary="------------P6Yp5JLuOoYDSWVGOGON5fDh"
 
-If that is the case, it indeed should have been described in the commit log.
+--------------P6Yp5JLuOoYDSWVGOGON5fDh
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-regards,
--- 
-js
-suse labs
+T24gMTEuMDkuMjMgMjA6NTksIEp1c3RpbiBTdGl0dCB3cm90ZToNCj4gYHN0cm5jcHlgIGlz
+IGRlcHJlY2F0ZWQgZm9yIHVzZSBvbiBOVUwtdGVybWluYXRlZCBkZXN0aW5hdGlvbiBzdHJp
+bmdzIFsxXS4NCj4gDQo+IGBlZmlfbG9hZGVyX3NpZ25hdHVyZWAgaGFzIHNwYWNlIGZvciA0
+IGJ5dGVzLiBXZSBhcmUgY29weWluZyAiWGVuIiAoMyBieXRlcykNCj4gcGx1cyBhIE5VTC1i
+eXRlIHdoaWNoIG1ha2VzIDQgdG90YWwgYnl0ZXMuIFdpdGggdGhhdCBiZWluZyBzYWlkLCB0
+aGVyZSBpcw0KPiBjdXJyZW50bHkgbm90IGEgYnVnIHdpdGggdGhlIGN1cnJlbnQgYHN0cm5j
+cHkoKWAgaW1wbGVtZW50YXRpb24gaW4gdGVybXMgb2YNCj4gYnVmZmVyIG92ZXJyZWFkcyBi
+dXQgd2Ugc2hvdWxkIGZhdm9yIGEgbW9yZSByb2J1c3Qgc3RyaW5nIGludGVyZmFjZQ0KPiBl
+aXRoZXIgd2F5Lg0KPiANCj4gQSBzdWl0YWJsZSByZXBsYWNlbWVudCBpcyBgc3Ryc2NweWAg
+WzJdIGR1ZSB0byB0aGUgZmFjdCB0aGF0IGl0IGd1YXJhbnRlZXMNCj4gTlVMLXRlcm1pbmF0
+aW9uIG9uIHRoZSBkZXN0aW5hdGlvbiBidWZmZXIgd2hpbGUgYmVpbmcgZnVuY3Rpb25hbGx5
+IHRoZQ0KPiBzYW1lIGluIHRoaXMgY2FzZS4NCj4gDQo+IExpbms6IHd3dy5rZXJuZWwub3Jn
+L2RvYy9odG1sL2xhdGVzdC9wcm9jZXNzL2RlcHJlY2F0ZWQuaHRtbCNzdHJuY3B5LW9uLW51
+bC10ZXJtaW5hdGVkLXN0cmluZ3NbMV0NCj4gTGluazogaHR0cHM6Ly9tYW5wYWdlcy5kZWJp
+YW4ub3JnL3Rlc3RpbmcvbGludXgtbWFudWFsLTQuOC9zdHJzY3B5LjkuZW4uaHRtbCBbMl0N
+Cj4gTGluazogaHR0cHM6Ly9naXRodWIuY29tL0tTUFAvbGludXgvaXNzdWVzLzkwDQo+IENj
+OiBsaW51eC1oYXJkZW5pbmdAdmdlci5rZXJuZWwub3JnDQo+IENjOiBLZWVzIENvb2sgPGtl
+ZXNjb29rQGNocm9taXVtLm9yZz4NCj4gU2lnbmVkLW9mZi1ieTogSnVzdGluIFN0aXR0IDxq
+dXN0aW5zdGl0dEBnb29nbGUuY29tPg0KDQpQdXNoZWQgdG8geGVuL3RpcC5naXQgZm9yLWxp
+bnVzLTYuNmENCg0KDQpKdWVyZ2VuDQoNCg==
+--------------P6Yp5JLuOoYDSWVGOGON5fDh
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------P6Yp5JLuOoYDSWVGOGON5fDh--
+
+--------------vs6263xuQCyPAXuihv3xaRux--
+
+--------------JLHfp2JVY4v5vNtIURUkIWuZ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmUJN9gFAwAAAAAACgkQsN6d1ii/Ey9b
+Bgf8CTf585RCh50vukpF14vtoVOLQzRwI5l+KakkqgIo2ZZnsFuAx7/VDacR6DEZFv/09CLD349E
++6v1grvdGCORORr8CzFuD5u4Ou1Vmuosze6qwkq7Mmuez738yFLOyMU8XXm+vB1a8FwgpwGyNiq7
+sc1rZ2VdNGCqT93m1ykuF2YJjvjsHEQqQ8twmg8FoKh83U8JWQoFphxw3aKcXSZge1rpz/9/4kY+
+jVcmKg1QU9M+9HmhrRnz4tnxqMs/sARqxTUd0JqWwiEmf8jn3o5tpYdGcVOujVeN60U/rTLsMYyP
+60G1Zhv6TiL+q+Au4qdYW7YdGQRv8Ca6buyUWIS/hg==
+=NvJy
+-----END PGP SIGNATURE-----
+
+--------------JLHfp2JVY4v5vNtIURUkIWuZ--
