@@ -2,279 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0837A6907
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CEE7A690D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbjISQeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 12:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42762 "EHLO
+        id S231683AbjISQhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 12:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjISQeK (ORCPT
+        with ESMTP id S229552AbjISQhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:34:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE15CFD
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 09:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695141242; x=1726677242;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=H03Jf9FFMNf6FaC979uZV3ZvEnmQtg+O5M6lBEFqbz8=;
-  b=EXFp+u+YNjCK+f/GNBKdTVXgbPaOD4fZKlQw+WSJzHT/PwY3HNprmwIA
-   F0z/XmNMKBpRnZ5AhcKJcACqzxtPCoz3vQETDjYFm/cQ8dFn/CE2Ip+JI
-   1m0+IEfHgrLmuw2de5TsouxwNX46qSWT36xC61ttHApKnbb32mXxzsOAE
-   pmcXB8hIQpzg4vvXF1zGDbv9MPbBtvrwuTu1Vet+CJd5O7QWy5VANIl46
-   l/DPUOklmtSvvthh/tPIWDWvVGrDkprofA+GKLRzhTK1IZYc2FdCMngaI
-   y7hfZPQpLQ+AjdJog2S0a0+cSNE5eHuAV/sV7LMziTT98VashVmBPl9Go
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="410920628"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="410920628"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 09:34:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="870024856"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="870024856"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 19 Sep 2023 09:33:59 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qidfh-0007f8-0k;
-        Tue, 19 Sep 2023 16:33:57 +0000
-Date:   Wed, 20 Sep 2023 00:33:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Abhishek Naik <abhishek.naik@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Johannes Berg <johannes.berg@intel.com>,
-        Gregory Greenman <gregory.greenman@intel.com>
-Subject: drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c:819:16: warning:
- '%s' directive argument is null
-Message-ID: <202309200054.oMYrtDGK-lkp@intel.com>
-MIME-Version: 1.0
+        Tue, 19 Sep 2023 12:37:47 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2074.outbound.protection.outlook.com [40.107.93.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007EFD6;
+        Tue, 19 Sep 2023 09:37:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Byw+xTTD1fQDPMzb83cx1XyCiuAAPJ2/9cfhjimUqjfApK+T6viMzvpUb9v40jGF2V4br8R3ajb6As25K7/dTB9Z0tRjWmmjKXS75K2AKx5AIbdDNfOn9GT1skDGawO+eMB3u8ARIodWHyrCQrh6vs9f0KdWJlHTzlYusa7KsZgFWs0YCW+mocrJqS2A98gj9YQCffSnS+BHXVfMDpwCPkgA0/qIosvzqhi/G3Dave3fFkJNDGll0iBcB7f09zBCtf0TEUUjGU7BfHEmFsHIgLQM027HAdRWqvokqhWQBRI6bMOO+HAu4hnjQj8yZNmVpoOLjQmS1Nk/avqqCmL7og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kxw5CHuE1f8kyY2OQsryIBnjTaxpPJzuY7/6oWRamPU=;
+ b=gvllguju0ONPPQsHlg6291kWDnibWGqUP86+wd/AClQ+3mxOHtbpSX/KWE3iZzUU/q7l+8sT09vxtCyJoYWTSDFN7YIdH4SOfh4mGDnlCA/1af1QY/gSf+E+s5hbIEo3IQsrQojhNHvB4Jitcb1rwxSB9n/nYVGQy8KqZd/h0lTq1i9yGO42+LFLA/S0oEx+eSj9SQvCtxbpZKdRecTaqIDNs9Zmc7tT9wmFhQxjXkLPVvgH2SemH6W8GOTCfaVwlxCcL5UhmG8MjkPl885FV4nHtrs0NCL/Om7FwiA2gqP0p2CYBI4m1DjPPjMhLi8gBG7whzPPNO8xtDRqEReeYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kxw5CHuE1f8kyY2OQsryIBnjTaxpPJzuY7/6oWRamPU=;
+ b=O+bEdwwhWVe8ZciHxy22UEx5EBF9UfS1z2nLdMiGTmlefqXjol1lt53XHUMX/Dm0SHdIkBhOSjr/IX5cFXaXlvPTLyQ2IZy8NEw8tDKl/qTNG0oxaDI4qKjCZRGAkdjNji7vwFsGZ2nNx0KYuKEwgl1ssb/747KGsgP69BbmVyo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by MW4PR17MB4857.namprd17.prod.outlook.com (2603:10b6:303:10a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Tue, 19 Sep
+ 2023 16:37:39 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::f4e8:df0d:9be8:88cc]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::f4e8:df0d:9be8:88cc%6]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 16:37:39 +0000
+Date:   Tue, 19 Sep 2023 12:37:35 -0400
+From:   Gregory Price <gregory.price@memverge.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Gregory Price <gourry.memverge@gmail.com>,
+        linux-mm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-cxl@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        arnd@arndb.de, akpm@linux-foundation.org, x86@kernel.org
+Subject: Re: [RFC PATCH 3/3] mm/migrate: Create move_phys_pages syscall
+Message-ID: <ZQnOTzm6l8RSQquH@memverge.com>
+References: <20230907075453.350554-1-gregory.price@memverge.com>
+ <20230907075453.350554-4-gregory.price@memverge.com>
+ <877conxbhw.ffs@tglx>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <877conxbhw.ffs@tglx>
+X-ClientProxiedBy: SJ0PR13CA0208.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::33) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|MW4PR17MB4857:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4bfd29df-0e95-4196-6065-08dbb92ebd05
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gRO0wjhP8JTlhCRyB9suf0KWttUG/NN3PP1dPn8xpb6QWKWEXRQ9dap9unVYbJ6D3LA/txAHn4kZsJ6/3i4HitCeEVK2MLGTkAABX1WnOlS5Uc89zSXp5IKin4FVa+k9T8mUXjNqfLqW7jW9RimDP8gO5E26Sl4bIK0rekW5W1Ou5yOhvZM5JuhkFK2bWxstyLeglMBOai+hWIIbH24/stPRoHD/QpQxmkUHrzptr9wbI6Q3pzYeiGtSWGy1vIC8gSriH4qDLA16x0dcZ7Eh5nPtsIkM/OZWEwijJ25Vw03TTYU/AVwa3fG4Od7mvPvIrHGbqzXM+JNIe3+wvUvEQd5NNCj0bIze3ZbCXjo+uqwuu+3o+7B4P+kC3xKwSkL2ulkUj9aATlCXf14w2kvBPg4n+9veXxaPNg76ltZy1sJCUrVH34O4Z+9DKKPJhP0pulsKwLXDzqbGaMyS++cZ1Ebd+L4fqlri1dWG6Xb9DQeSXtjJoLE2GXUoW50kBDBwf9+gbFfyFDSDcjcN1ZXotCVCQieBP7gT2iwuU+qTctYPd973iwvnI6cjfAQ008iE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(376002)(39840400004)(451199024)(186009)(1800799009)(41300700001)(8936002)(2616005)(8676002)(4326008)(38100700002)(66946007)(66556008)(66476007)(6916009)(316002)(6512007)(478600001)(44832011)(5660300002)(26005)(6486002)(6506007)(6666004)(2906002)(7416002)(86362001)(4744005)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mXBKVqyrk0gbNnQNNLzmL8uesIyqHeRvK/ypXjWsAUX1N6UCh9/LpAvhPbh5?=
+ =?us-ascii?Q?rNI032rq7XWJ015crWya3TNxunqzBRkJHV6mhSQoaONveSCgHG42w4VwxgHk?=
+ =?us-ascii?Q?RF+tbUv932VCmY7dF1NnDwjUTCfdlOUzXFdW6Z4hFaWFKYTDMJxjD+gjABv7?=
+ =?us-ascii?Q?vKEEC4LJG2a+9qpp7i2kCJyVCS6zk5mjJrDy1TzwG6V5QXz/kuLj3C0YNuQ1?=
+ =?us-ascii?Q?TomPK1+oxnJadwTa1GXiWEJx0b43CLmgm4prMFItz6qm+d0sPaeOqy/9cMJY?=
+ =?us-ascii?Q?snxJpb23MzinaRUOqEQZkGKhYW2p06CflBVHFcLxzReVraSlp1LF+rDcjD2k?=
+ =?us-ascii?Q?DPfFF1WbTRGwghcja2HX4YijoJI99zP+U2TJLGPSCkwFfTB4juPzycEkZWrs?=
+ =?us-ascii?Q?rYh98tssu2i3lGwI30OISbHWScOdedDEciqgLU7R3TQnhrOfHxi6vFaSGK0X?=
+ =?us-ascii?Q?VgvbUjPwAAiw5O3K6SStRbAa4W4iqCLs/eIR76m9R3jk4djKPr4iNgg0l4ro?=
+ =?us-ascii?Q?YCAqmUfHij1z25ZSgpGM6JFMAau1U9HsZEEm5+zlz5SWVxSqNuOF1LTcr64b?=
+ =?us-ascii?Q?43szTRlb/YWaik7j/aguycHj041wPR/gBwgagUjNjKojyo1xOYvfpxgB/v2M?=
+ =?us-ascii?Q?EKjNljISoMKDVlVeT3zZGhE0zpk8qYPOnGW5rRTYhXe57feyHAU7AMorIX9I?=
+ =?us-ascii?Q?F6WUkSiFl3VVk7+TY5RI/5uCamTawEy7ZNXWMgSkbwPc8FT/4sf716yaa/Eq?=
+ =?us-ascii?Q?UmZjiU5pZiMUAAQEG7KTrV9cxJoi5KrOQhPD/9T0AE9FgdiWsg/dnkETh9Z7?=
+ =?us-ascii?Q?SQ4/Fntzh5XuV8SYdKCfhKB6yoKInhG6QovXxbU9ALLHc1jibILm8Ul/U7RT?=
+ =?us-ascii?Q?sKSh1KG+w7XL91cflZ8lR4rKEA0nIDjUuV4j1HmBiF6SeJHBKHcX7FdCzKvK?=
+ =?us-ascii?Q?RBfPLiopx485JrDN8ThQ2MoDx0PhSd4fQ2n0In8fOJ3P/zB17hyNJGwCX5ti?=
+ =?us-ascii?Q?zdhjlNUAX/1ST+9ujoiqyLzn9Uk2vl5+dTQAKl7GMSZOEF8fHZkYaSPuafVP?=
+ =?us-ascii?Q?TEZODal9GNtKSgsc8fcVymDKN6fkCYK3/plVkXElgr3jGaEk929Z0bKOz1pZ?=
+ =?us-ascii?Q?UScabAAx8rv6POLI7aidJt7kea8H8GzBl5pz+GHPMCz9hQe2+aI1TMNrJA0b?=
+ =?us-ascii?Q?kD02GNlJ6tVfMiymN0uMkLXPzFxiPQG/tY3i3nfinV1qteyRsYk0qgzxqW07?=
+ =?us-ascii?Q?LMr88N2G/70sa7zFRvaJ5ZpTf2HY9QF0K5hEtlLYCqzDdbqzcveIOdaAdch7?=
+ =?us-ascii?Q?lknOoxY0coyvgcErVw/548rz52WC1QGHnsG2akj+hUMr27uCXxRwx7L9Nof5?=
+ =?us-ascii?Q?o5DVZdeV+PfCCmhBeSLd8cML1CkmaEDFNrWjLJlXKNwezu8d5vA05TAknVqi?=
+ =?us-ascii?Q?AUAH42G3UsbioF1h5D+jGQagYBWxWeexT+qkZkzQMqj6QgS0ypNe0eUefJkZ?=
+ =?us-ascii?Q?/9AMLuA56NWy0FB/6VAktTY4X9uwVg4EXSsfCZ0+D70F5ZMugyRJPJuwL4G3?=
+ =?us-ascii?Q?abvk4PMeLm6MNHbzzLlz3L6vODTin5TFPbSydxBcWkN0oJ1AOfI36I2zZ1/E?=
+ =?us-ascii?Q?mg=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4bfd29df-0e95-4196-6065-08dbb92ebd05
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 16:37:39.5119
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nFntczb89G0snSJ0KqRxTdBWtvd9i7geGV/ihVR2NnHMy2kMKfW7VcK+Zf7wLqpZf6FHjWDmf9a2EktJBea9a/un0GhMxAZC3d7BdMabcqc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR17MB4857
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2cf0f715623872823a72e451243bbf555d10d032
-commit: 9457077df49e2a637a1f1c3be42c14af604fa920 wifi: iwlwifi: mvm: Add debugfs to get TAS status
-date:   6 months ago
-config: sparc64-allyesconfig (https://download.01.org/0day-ci/archive/20230920/202309200054.oMYrtDGK-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309200054.oMYrtDGK-lkp@intel.com/reproduce)
+On Tue, Sep 19, 2023 at 02:17:15AM +0200, Thomas Gleixner wrote:
+> On Thu, Sep 07 2023 at 03:54, Gregory Price wrote:
+> > +	/* All tasks mapping each page is checked in phys_page_migratable */
+> > +	nodes_setall(target_nodes);
+> 
+> How is the comment related to nodes_setall() and why is nodes_setall()
+> unconditional when target_nodes is only used in the @nodes != NULL case?
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309200054.oMYrtDGK-lkp@intel.com/
+Short follow up, sorry for the spam.  I realized there is a better way
+to do this by simply bypassing the task node check in do_pages_moves if
+the mm_struct is NULL.  This removes the need for this struct
+all-together.
 
-All warnings (new ones prefixed by >>):
+Will simplify down for a v2 and add comments to do_pages_move
+accordingly.
 
-   drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c: In function 'iwl_dbgfs_tas_get_status_read':
->> drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c:819:16: warning: '%s' directive argument is null [-Wformat-overflow=]
-     819 |         pos += scnprintf(pos, endpos - pos, "\nOEM name: %s\n",
-         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     820 |                          dmi_get_system_info(DMI_SYS_VENDOR));
-         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +819 drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
-
-   718	
-   719	static ssize_t iwl_dbgfs_tas_get_status_read(struct file *file,
-   720						     char __user *user_buf,
-   721						     size_t count, loff_t *ppos)
-   722	{
-   723		struct iwl_mvm *mvm = file->private_data;
-   724		struct iwl_mvm_tas_status_resp tas_rsp;
-   725		struct iwl_mvm_tas_status_resp *rsp = &tas_rsp;
-   726		static const size_t bufsz = 1024;
-   727		char *buff, *pos, *endpos;
-   728		const char * const tas_dis_reason[TAS_DISABLED_REASON_MAX] = {
-   729			[TAS_DISABLED_DUE_TO_BIOS] =
-   730				"Due To BIOS",
-   731			[TAS_DISABLED_DUE_TO_SAR_6DBM] =
-   732				"Due To SAR Limit Less Than 6 dBm",
-   733			[TAS_DISABLED_REASON_INVALID] =
-   734				"N/A",
-   735		};
-   736		const char * const tas_current_status[TAS_DYNA_STATUS_MAX] = {
-   737			[TAS_DYNA_INACTIVE] = "INACTIVE",
-   738			[TAS_DYNA_INACTIVE_MVM_MODE] =
-   739				"inactive due to mvm mode",
-   740			[TAS_DYNA_INACTIVE_TRIGGER_MODE] =
-   741				"inactive due to trigger mode",
-   742			[TAS_DYNA_INACTIVE_BLOCK_LISTED] =
-   743				"inactive due to block listed",
-   744			[TAS_DYNA_INACTIVE_UHB_NON_US] =
-   745				"inactive due to uhb non US",
-   746			[TAS_DYNA_ACTIVE] = "ACTIVE",
-   747		};
-   748		struct iwl_host_cmd hcmd = {
-   749			.id = WIDE_ID(DEBUG_GROUP, GET_TAS_STATUS),
-   750			.flags = CMD_WANT_SKB,
-   751			.len = { 0, },
-   752			.data = { NULL, },
-   753		};
-   754		int ret, i, tmp;
-   755		bool tas_enabled = false;
-   756		unsigned long dyn_status;
-   757	
-   758		if (!iwl_mvm_firmware_running(mvm))
-   759			return -ENODEV;
-   760	
-   761		mutex_lock(&mvm->mutex);
-   762		ret = iwl_mvm_send_cmd(mvm, &hcmd);
-   763		mutex_unlock(&mvm->mutex);
-   764		if (ret < 0)
-   765			return ret;
-   766	
-   767		buff = kzalloc(bufsz, GFP_KERNEL);
-   768		if (!buff)
-   769			return -ENOMEM;
-   770		pos = buff;
-   771		endpos = pos + bufsz;
-   772	
-   773		rsp = (void *)hcmd.resp_pkt->data;
-   774	
-   775		pos += scnprintf(pos, endpos - pos, "TAS Conclusion:\n");
-   776		for (i = 0; i < rsp->in_dual_radio + 1; i++) {
-   777			if (rsp->tas_status_mac[i].band != TAS_LMAC_BAND_INVALID &&
-   778			    rsp->tas_status_mac[i].dynamic_status & BIT(TAS_DYNA_ACTIVE)) {
-   779				pos += scnprintf(pos, endpos - pos, "\tON for ");
-   780				switch (rsp->tas_status_mac[i].band) {
-   781				case TAS_LMAC_BAND_HB:
-   782					pos += scnprintf(pos, endpos - pos, "HB\n");
-   783					break;
-   784				case TAS_LMAC_BAND_LB:
-   785					pos += scnprintf(pos, endpos - pos, "LB\n");
-   786					break;
-   787				case TAS_LMAC_BAND_UHB:
-   788					pos += scnprintf(pos, endpos - pos, "UHB\n");
-   789					break;
-   790				case TAS_LMAC_BAND_INVALID:
-   791					pos += scnprintf(pos, endpos - pos,
-   792							 "INVALID BAND\n");
-   793					break;
-   794				default:
-   795					pos += scnprintf(pos, endpos - pos,
-   796							 "Unsupported band (%d)\n",
-   797							 rsp->tas_status_mac[i].band);
-   798					goto out;
-   799				}
-   800				tas_enabled = true;
-   801			}
-   802		}
-   803		if (!tas_enabled)
-   804			pos += scnprintf(pos, endpos - pos, "\tOFF\n");
-   805	
-   806		pos += scnprintf(pos, endpos - pos, "TAS Report\n");
-   807		pos += scnprintf(pos, endpos - pos, "TAS FW version: %d\n",
-   808				 rsp->tas_fw_version);
-   809		pos += scnprintf(pos, endpos - pos, "Is UHB enabled for USA?: %s\n",
-   810				 rsp->is_uhb_for_usa_enable ? "True" : "False");
-   811		pos += scnprintf(pos, endpos - pos, "Current MCC: 0x%x\n",
-   812				 le16_to_cpu(rsp->curr_mcc));
-   813	
-   814		pos += scnprintf(pos, endpos - pos, "Block list entries:");
-   815		for (i = 0; i < APCI_WTAS_BLACK_LIST_MAX; i++)
-   816			pos += scnprintf(pos, endpos - pos, " 0x%x",
-   817					 le16_to_cpu(rsp->block_list[i]));
-   818	
- > 819		pos += scnprintf(pos, endpos - pos, "\nOEM name: %s\n",
-   820				 dmi_get_system_info(DMI_SYS_VENDOR));
-   821		pos += scnprintf(pos, endpos - pos, "\tVendor In Approved List: %s\n",
-   822				 iwl_mvm_is_vendor_in_approved_list() ? "YES" : "NO");
-   823		pos += scnprintf(pos, endpos - pos,
-   824				 "\tDo TAS Support Dual Radio?: %s\n",
-   825				 rsp->in_dual_radio ? "TRUE" : "FALSE");
-   826	
-   827		for (i = 0; i < rsp->in_dual_radio + 1; i++) {
-   828			if (rsp->tas_status_mac[i].static_status == 0) {
-   829				pos += scnprintf(pos, endpos - pos,
-   830						 "Static status: disabled\n");
-   831				pos += scnprintf(pos, endpos - pos,
-   832						 "Static disabled reason: %s (0)\n",
-   833						 tas_dis_reason[0]);
-   834				goto out;
-   835			}
-   836	
-   837			pos += scnprintf(pos, endpos - pos, "TAS status for ");
-   838			switch (rsp->tas_status_mac[i].band) {
-   839			case TAS_LMAC_BAND_HB:
-   840				pos += scnprintf(pos, endpos - pos, "High band\n");
-   841				break;
-   842			case TAS_LMAC_BAND_LB:
-   843				pos += scnprintf(pos, endpos - pos, "Low band\n");
-   844				break;
-   845			case TAS_LMAC_BAND_UHB:
-   846				pos += scnprintf(pos, endpos - pos,
-   847						 "Ultra high band\n");
-   848				break;
-   849			case TAS_LMAC_BAND_INVALID:
-   850				pos += scnprintf(pos, endpos - pos,
-   851						 "INVALID band\n");
-   852				break;
-   853			default:
-   854				pos += scnprintf(pos, endpos - pos,
-   855						 "Unsupported band (%d)\n",
-   856						 rsp->tas_status_mac[i].band);
-   857				goto out;
-   858			}
-   859			pos += scnprintf(pos, endpos - pos, "Static status: %sabled\n",
-   860					 rsp->tas_status_mac[i].static_status ?
-   861					 "En" : "Dis");
-   862			pos += scnprintf(pos, endpos - pos,
-   863					 "\tStatic Disabled Reason: ");
-   864			if (rsp->tas_status_mac[i].static_dis_reason < TAS_DISABLED_REASON_MAX)
-   865				pos += scnprintf(pos, endpos - pos, "%s (%d)\n",
-   866						 tas_dis_reason[rsp->tas_status_mac[i].static_dis_reason],
-   867						 rsp->tas_status_mac[i].static_dis_reason);
-   868			else
-   869				pos += scnprintf(pos, endpos - pos,
-   870						 "unsupported value (%d)\n",
-   871						 rsp->tas_status_mac[i].static_dis_reason);
-   872	
-   873			pos += scnprintf(pos, endpos - pos, "Dynamic status:\n");
-   874			dyn_status = (rsp->tas_status_mac[i].dynamic_status);
-   875			for_each_set_bit(tmp, &dyn_status, sizeof(dyn_status)) {
-   876				if (tmp >= 0 && tmp < TAS_DYNA_STATUS_MAX)
-   877					pos += scnprintf(pos, endpos - pos,
-   878							 "\t%s (%d)\n",
-   879							 tas_current_status[tmp], tmp);
-   880			}
-   881	
-   882			pos += scnprintf(pos, endpos - pos,
-   883					 "Is near disconnection?: %s\n",
-   884					 rsp->tas_status_mac[i].near_disconnection ?
-   885					 "True" : "False");
-   886			tmp = le16_to_cpu(rsp->tas_status_mac[i].max_reg_pwr_limit);
-   887			pos += scnprintf(pos, endpos - pos,
-   888					 "Max. regulatory pwr limit (dBm): %d.%03d\n",
-   889					 tmp / 8, 125 * (tmp % 8));
-   890			tmp = le16_to_cpu(rsp->tas_status_mac[i].sar_limit);
-   891			pos += scnprintf(pos, endpos - pos,
-   892					 "SAR limit (dBm): %d.%03d\n",
-   893					 tmp / 8, 125 * (tmp % 8));
-   894		}
-   895	
-   896	out:
-   897		ret = simple_read_from_buffer(user_buf, count, ppos, buff, pos - buff);
-   898		kfree(buff);
-   899		iwl_free_resp(&hcmd);
-   900		return ret;
-   901	}
-   902	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+~Gregory
