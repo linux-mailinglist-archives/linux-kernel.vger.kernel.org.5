@@ -2,161 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1427A6922
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25BE7A6929
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbjISQq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 12:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
+        id S231846AbjISQrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 12:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbjISQq1 (ORCPT
+        with ESMTP id S231703AbjISQrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:46:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E2990
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 09:46:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E16DC433C7;
-        Tue, 19 Sep 2023 16:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695141982;
-        bh=oQBTHZEBTOvXdSVkdIA/zgv1qFEEOofNEvBKr5+eM1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rZd3z/e6yMneQVmt+zvjNYwc+UJ8MIJ4tDk8BYAe9zSSN9LBCTuj7Rf3LNE1AHqJk
-         Ur3cXcNEEqb/+izOs428MAfFoL3gK9Q1+4bQxiJpgRFpHUdl18Bol8Qj9J8o1BCG0J
-         eQSIZFntIb+E4JaknXOSCkpB6FR4vFAaNpLc0uBgw+kiRSZsFlkt/n0sP4vXY0kivJ
-         5BcO22Uy5kuOBURNDs5dbe77F+vCPPGLN7Nya9z/bWJi8DCxt8YVk2f8+/1AVtaP2L
-         F9GOzuKEH18NvdhkJQVs9JY+WvDIDztVjrl6Fglok1E8k+GSn9DfGtWXFJZPAuFNrD
-         PlBoDcpNrD4kQ==
-Received: (nullmailer pid 4078623 invoked by uid 1000);
-        Tue, 19 Sep 2023 16:46:14 -0000
-Date:   Tue, 19 Sep 2023 11:46:14 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Elvis Wang <Elvis.Wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH 01/15] dt-bindings: mailbox: Add property for CMDQ secure
- driver
-Message-ID: <20230919164614.GA4059766-robh@kernel.org>
-References: <20230918192204.32263-1-jason-jh.lin@mediatek.com>
- <20230918192204.32263-2-jason-jh.lin@mediatek.com>
+        Tue, 19 Sep 2023 12:47:39 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510B7C6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 09:47:32 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d84c24a810dso2585510276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 09:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1695142051; x=1695746851; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b0a58sjbAG0A2Db53/Y8qtKDwxJA4NQiN/zlKOHGSV8=;
+        b=TM5ZUjOAzUYh87fKhiMIZzbDLLxZSC9g19dR6Q+EqAjA3RUbVL08w5sQA0i/jRpJwF
+         tPoFJz7i1Iw8+NicI8zzMJtfE/IxN9SOqt0mwSVX9BgcAg3MYT5ASg9mIGBOhD1xe2Nh
+         e+u6g+Y+raaSc8Rlza9rqVA7+VfU0JoGmVGmONTXc7BHTjLfGFHdDteXVXiaeamEhaX8
+         HG5Z1H4PLT5JrUycpXIiKN679HLoI8QnvpWbEfFUl2SwzVhZofsDtNQqAnE/N6NPlfm6
+         oK10qiklJ9CXHOAZqLbx7SajBzbMwAelNZO2AOckBqL0L6yDHb+QrDHEyAr0zbseh6BA
+         PbdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695142051; x=1695746851;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b0a58sjbAG0A2Db53/Y8qtKDwxJA4NQiN/zlKOHGSV8=;
+        b=OG+h3WCA3Q+ZRLVw+pVMMEJgbS7fl2afBKmeqAn1mPaWkmCBcWNADkCAFGfd9pRaXN
+         KEEksdT9uEP9AtnKFwEstoBo2q0RjcEfsMLdJNOCVRaLqJltcEjPkOG24oy2QL2QfsTv
+         a/GyEmlAvjmXKbPLhcmIcfUcsJbL/Z/I+s6NkJzTO/rBDN6vo0MzcmR6eiT6ePhdBxEi
+         AzbC4ImLJ/ff0L3VTB7I70VBH/1SOhHxBQ82CGtZIJ9QpZpahw6TXoDWHDlaIJnqOO5c
+         8nuSvduvlU2CkCz1ugI9pjCvYAczgpS1jeC6FNMSZh004Wi4xT/Ad/I52RCsjobPbvOt
+         /CYA==
+X-Gm-Message-State: AOJu0YztLHj9tSHskO1d2nz/bDfvP3vXDSQ7CDwDWnydIQq2iJ7Whdn4
+        prt2is/OvoO9sNZn3T+YRxcvZTcXjxwLkxbYblRE
+X-Google-Smtp-Source: AGHT+IHQGZRJnMfzYeI6Lr+HTWzOiuLwrjHGYMEEG1yEiRl6RXbYpezvkhRILNjas2h7ziHxZ5/E1l2+WRXKacc09uc=
+X-Received: by 2002:a5b:8d2:0:b0:d5d:4df9:b6e2 with SMTP id
+ w18-20020a5b08d2000000b00d5d4df9b6e2mr105144ybq.46.1695142051445; Tue, 19 Sep
+ 2023 09:47:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918192204.32263-2-jason-jh.lin@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-4-mszeredi@redhat.com>
+ <20230917005419.397938-1-mattlloydhouse@gmail.com> <CAOssrKcECS_CvifP1vMM8YOyMW7dkGXTDTKY2CRr-fPrJk76ZA@mail.gmail.com>
+ <20230918-einblick-klaut-0a010e0abc70@brauner>
+In-Reply-To: <20230918-einblick-klaut-0a010e0abc70@brauner>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 19 Sep 2023 12:47:20 -0400
+Message-ID: <CAHC9VhQsChQO9aaY+NTtmvJgXBodvXO6rUN3d7ZyHGqitLBABw@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/3] add listmnt(2) syscall
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 03:21:50AM +0800, Jason-JH.Lin wrote:
-> Add mboxes to define a GCE loopping thread as a secure irq handler.
-> Add mediatek,event to define a GCE software event siganl as a secure
-> irq.
-> 
-> These 2 properties are required for CMDQ secure driver.
-> 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->  .../mailbox/mediatek,gce-mailbox.yaml         | 30 +++++++++++++++----
->  1 file changed, 24 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mailbox/mediatek,gce-mailbox.yaml b/Documentation/devicetree/bindings/mailbox/mediatek,gce-mailbox.yaml
-> index cef9d7601398..5c9aebe83d2d 100644
-> --- a/Documentation/devicetree/bindings/mailbox/mediatek,gce-mailbox.yaml
-> +++ b/Documentation/devicetree/bindings/mailbox/mediatek,gce-mailbox.yaml
-> @@ -49,6 +49,21 @@ properties:
->      items:
->        - const: gce
->  
-> +  mboxes:
-> +    description:
-> +      A mailbox channel used as a secure irq handler in normal world.
-> +      Using mailbox to communicate with GCE to setup looping thread,
-> +      it should have this property and a phandle, mailbox specifiers.
+On Mon, Sep 18, 2023 at 12:52=E2=80=AFPM Christian Brauner <brauner@kernel.=
+org> wrote:
+> On Sun, Sep 17, 2023 at 04:32:04PM +0200, Miklos Szeredi wrote:
+> > On Sun, Sep 17, 2023 at 2:54=E2=80=AFAM Matthew House <mattlloydhouse@g=
+mail.com> wrote:
+> >
+> > > > +       list_for_each_entry(r, &m->mnt_mounts, mnt_child) {
+> > > > +               if (!capable(CAP_SYS_ADMIN) &&
+>
+>
+> > Good point.  That issue was nagging at the back of my mind.  Having an
+> > explicit flag nicely solves the issue.
+>
+> Ideally we avoid multiple capable(CAP_SYS_ADMIN) calls by only doing it
+> once and saving the return value. capable() call's aren't that cheap.
 
-All cases of 'mboxes' have a phandle and specifiers. No need to repeat 
-that here.
+Agreed.  The capability check doesn't do any subject/object
+comparisons so calling it for each mount is overkill.  However, I
+would think we would want the LSM hook called from inside the loop as
+that could involve a subject (@current) and object (individual mount
+point) comparison.
 
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> Plus, we should decide whether this should trigger an audit event or
+> not: capable(CAP_SYS_ADMIN) triggers an audit event,
+> ns_capable_noaudit(&init_user_ns, CAP_SYS_ADMIN) wouldn't.
 
-Already has a type definition too. You need to define how many entries 
-and what each entry is if more than one. IOW, the same thing as clocks, 
-resets, interrupts, etc.
+Why would we not want to audit the capable() call?
 
-> +
-> +  mediatek,gce-events:
-
-This is used all over. It really needs a single definition which is then 
-referenced by the users.
-
-> +    description:
-> +      The event id which is mapping to a software event signal to gce.
-> +      It is used as a secure irq for every secure gce threads.
-> +      The event id is defined in the gce header
-> +      include/dt-bindings/mailbox/mediatek,<chip>-gce.h of each chips.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +
->  required:
->    - compatible
->    - "#mbox-cells"
-> @@ -71,20 +86,23 @@ additionalProperties: false
->  
->  examples:
->    - |
-> -    #include <dt-bindings/clock/mt8173-clk.h>
-> +    #include <dt-bindings/clock/mediatek,mt8188-clk.h>
->      #include <dt-bindings/interrupt-controller/arm-gic.h>
->      #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/mailbox/mediatek,mt8188-gce.h>
->  
->      soc {
->          #address-cells = <2>;
->          #size-cells = <2>;
->  
-> -        gce: mailbox@10212000 {
-> -            compatible = "mediatek,mt8173-gce";
-> -            reg = <0 0x10212000 0 0x1000>;
-> -            interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_LOW>;
-> +        gce0: mailbox@10320000 {
-> +            compatible = "mediatek,mt8188-gce";
-
-Are these new properties only for mt8188? If so, then you need a schema 
-saying that. If not, then this is an unnecessary change to the example.
-
-> +            reg = <0 0x10320000 0 0x4000>;
-> +            interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH 0>;
->              #mbox-cells = <2>;
-> -            clocks = <&infracfg CLK_INFRA_GCE>;
-> +            clocks = <&infracfg_ao CLK_INFRA_AO_GCE>;
->              clock-names = "gce";
-> +            mboxes = <&gce0 15 CMDQ_THR_PRIO_1>;
-
-The provider is also a consumer?
-
-> +            mediatek,gce-events = <CMDQ_SYNC_TOKEN_SECURE_THR_EOF>;
->          };
->      };
-> -- 
-> 2.18.0
-> 
+--=20
+paul-moore.com
