@@ -2,171 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9842E7A6EDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 00:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DCA7A6F0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbjISWxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 18:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
+        id S233540AbjISXD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjISWxn (ORCPT
+        with ESMTP id S233464AbjISXDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 18:53:43 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904CBBA
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:53:37 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JLOoaq007293;
-        Tue, 19 Sep 2023 22:53:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=yFvkAN2U77GZQzYs3I/vg/aVIL6xZ9s/4RXI0DI68lo=;
- b=WPCKnLsYZhN6BwmrysIUYUlg90n9pWY/zcmazsA2k1asDuyTBSfdqCB2T0CoCdonBLTt
- oVydH4SMZxnL5NzSStxs272Uz14shqozZ1YDHXvMRi8p0hS97mzxydYps5p/Q8IMphNZ
- DXMNDAQyAgH/mXY7KaklugF9Jw6ddo0xNzEKc/pGb5f1RL53IkdOYCZlU6RY3Qje4FVZ
- 3XnwUS9bAYHtOI+y4tpNV1ng7t3mHEzm41nsaDT+LPeVnW/a5RKSdVi6XXknUA61ie1p
- g6I/SsGHTPO6/jbjOX1VGDROTNmktoqo0jjWip63Vv/6IaWZTEXrQsYiEw0smy3rp9Nm vw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6pmq3upq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 22:53:18 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38JMrHU5027195
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 22:53:17 GMT
-Received: from [10.71.111.102] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 19 Sep
- 2023 15:53:16 -0700
-Message-ID: <24afa449-afe5-fdf4-0ad4-f2174e412569@quicinc.com>
-Date:   Tue, 19 Sep 2023 15:53:16 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm: remove drm_bridge_hpd_disable() from
- drm_bridge_connector_destroy()
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
+        Tue, 19 Sep 2023 19:03:51 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7E1C5;
+        Tue, 19 Sep 2023 16:03:44 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::580])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nicolas)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4B490660309E;
+        Wed, 20 Sep 2023 00:03:41 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695164622;
+        bh=Xxy97lFlX/7Dd1li7uFsrn53XyhyXn4n+AjBMkTwkQI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ijBUCpt75neuOwpoHLDBudInKS3zi9vHPLbIrdWZVzcnXK/OoPwOfuJvGbCu+99tI
+         JUkAz3e+IHYEpU2fF22p57+wwUtE6jEwQ5zSGel2S/7P483sK/JcAsXI6UsxVMWg7u
+         7LVnCLCve3NYRJm4wbnCLByJP52+C/jwDeHxOuxdFY1O6L/WZmlrBwn2EJ9pp85iy9
+         ESMzOC7IAE6b6o2d/8xqinuDNcwqhEpLK9lSwN8n1N2mOAgx6gLtQA4TiN+A333wBl
+         SIt90E5URXXw0zF3101nZo8bYq0GzhWr1gs2FsPDIJ+HlRo6ffN4INv0yVSZYq6mxr
+         0tjQjvbZmpP6w==
+Message-ID: <1d19be1f21d579b529231882d761554d758db5b4.camel@collabora.com>
+Subject: Re: [PATCH 11/14] media: medkatek: vcodec: covert secure fd to
+ secure handle
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Jeffrey Kardatzke <jkardatzke@google.com>
+Cc:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        =?ISO-8859-1?Q?N=EDcolas?= "F . R . A . Prado" 
+        <nfraprado@collabora.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
         Daniel Vetter <daniel@ffwll.ch>,
-        <freedreno@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <andersson@kernel.org>,
-        <jani.nikula@linux.intel.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230919174813.26958-1-quic_abhinavk@quicinc.com>
- <20230919181246.GA24325@pendragon.ideasonboard.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20230919181246.GA24325@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -C_-drNL20fqcxiFF3LbtRn6farci87o
-X-Proofpoint-ORIG-GUID: -C_-drNL20fqcxiFF3LbtRn6farci87o
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_12,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=813 mlxscore=0 phishscore=0
- clxscore=1015 lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309190195
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Date:   Tue, 19 Sep 2023 19:03:31 -0400
+In-Reply-To: <CA+ddPcOFksu6JzXZf0QOFeRDAyX=m0k+t8zwg2DbVmAkweobyg@mail.gmail.com>
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+         <20230911125936.10648-12-yunfei.dong@mediatek.com>
+         <d02953725e7ae17e75bff235acfd30327d0fe9ac.camel@collabora.com>
+         <CA+ddPcOFksu6JzXZf0QOFeRDAyX=m0k+t8zwg2DbVmAkweobyg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+Le mardi 19 septembre 2023 =C3=A0 15:38 -0700, Jeffrey Kardatzke a =C3=A9cr=
+it=C2=A0:
+> On Tue, Sep 19, 2023 at 12:43=E2=80=AFPM Nicolas Dufresne
+> <nicolas.dufresne@collabora.com> wrote:
+> >=20
+> > Le lundi 11 septembre 2023 =C3=A0 20:59 +0800, Yunfei Dong a =C3=A9crit=
+ :
+> > > User driver will fill or parse data in optee-os with secure handle,
+> > > need to covert secure fd to secure handle in kernel.
+> > >=20
+> > > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> > > ---
+> > >  .../vcodec/decoder/mtk_vcodec_dec_drv.c       |  1 +
+> > >  .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 54 +++++++++++++++++=
++-
+> > >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  5 ++
+> > >  include/uapi/linux/v4l2-controls.h            |  4 ++
+> > >  4 files changed, 62 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcode=
+c_dec_drv.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec=
+_drv.c
+> > > index 0a89ce452ac3..64e006820f43 100644
+> > > --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_d=
+rv.c
+> > > +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_d=
+rv.c
+> > > @@ -571,3 +571,4 @@ module_platform_driver(mtk_vcodec_dec_driver);
+> > >=20
+> > >  MODULE_LICENSE("GPL v2");
+> > >  MODULE_DESCRIPTION("Mediatek video codec V4L2 decoder driver");
+> > > +MODULE_IMPORT_NS(DMA_BUF);
+> > > diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcode=
+c_dec_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcod=
+ec_dec_stateless.c
+> > > index 2ea517883a86..d2b09ce9f1cf 100644
+> > > --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_s=
+tateless.c
+> > > +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_s=
+tateless.c
+> > > @@ -426,6 +426,46 @@ static int mtk_vcodec_get_pic_info(struct mtk_vc=
+odec_dec_ctx *ctx)
+> > >       return ret;
+> > >  }
+> > >=20
+> > > +static int mtk_dma_contig_get_secure_handle(struct mtk_vcodec_dec_ct=
+x *ctx, int fd)
+> > > +{
+> > > +     int secure_handle =3D 0;
+> > > +     struct dma_buf *buf;
+> > > +     struct dma_buf_attachment *dba;
+> > > +     struct sg_table *sgt;
+> > > +     struct device *dev =3D &ctx->dev->plat_dev->dev;
+> > > +
+> > > +     buf =3D dma_buf_get(fd);
+> > > +     if (IS_ERR(buf)) {
+> > > +             mtk_v4l2_vdec_err(ctx, "dma_buf_get fail fd:%d", fd);
+> > > +             return 0;
+> > > +     }
+> > > +
+> > > +     dba =3D dma_buf_attach(buf, dev);
+> > > +     if (IS_ERR(dba)) {
+> > > +             mtk_v4l2_vdec_err(ctx, "dma_buf_attach fail fd:%d", fd)=
+;
+> > > +             goto err_attach;
+> > > +     }
+> > > +
+> > > +     sgt =3D dma_buf_map_attachment(dba, DMA_BIDIRECTIONAL);
+> > > +     if (IS_ERR(sgt)) {
+> > > +             mtk_v4l2_vdec_err(ctx, "dma_buf_map_attachment fail fd:=
+%d", fd);
+> > > +             goto err_map;
+> > > +     }
+> > > +     secure_handle =3D sg_dma_address(sgt->sgl);
+> >=20
+> > Does it mean if your secure dmabuf is passed to a driver that didn't kn=
+ow it was
+> > secure it will pick the handle as a memory address and program the HW w=
+ith it ?
+> > That seems unsafe, the handle should be stored in a dedicated place and=
+ mapping
+> > should either fail, or provide a dummy buffer.
+>=20
+> Since the secure dmabufs don't support any mmap/cpu access to them and
+> return -EPERM in those cases; wouldn't that prevent misuse of them in
+> other places? (so the mmap operation and CPU access will fail, but
+> getting the SG list from the dmabuf succeeds)
 
-On 9/19/2023 11:12 AM, Laurent Pinchart wrote:
-> Hi Abhinav,
-> 
-> Thank you for the patch.
-> 
-> On Tue, Sep 19, 2023 at 10:48:12AM -0700, Abhinav Kumar wrote:
->> drm_bridge_hpd_enable()/drm_bridge_hpd_disable() callbacks call into
->> the respective driver's hpd_enable()/hpd_disable() ops. These ops control
->> the HPD enable/disable logic which in some cases like MSM can be a
->> dedicate hardware block to control the HPD.
->>
->> During probe_defer cases, a connector can be initialized and then later
->> destroyed till the probe is retried. During connector destroy in these
->> cases, the hpd_disable() callback gets called without a corresponding
->> hpd_enable() leading to an unbalanced state potentially causing even
->> a crash.
->>
->> This can be avoided by the respective drivers maintaining their own
->> state logic to ensure that a hpd_disable() without a corresponding
->> hpd_enable() just returns without doing anything.
->>
->> However, to have a generic fix it would be better to avoid the
->> hpd_disable() callback from the connector destroy path and let
->> the hpd_enable() / hpd_disable() balance be maintained by the
->> corresponding drm_bridge_connector_enable_hpd() /
->> drm_bridge_connector_disable_hpd() APIs which should get called by
->> drm_kms_helper_disable_hpd().
-> 
-> The change makes sense to me, but I'm a bit worried this could introduce
-> a regression by leaving HPD enabled in some cases.
-> 
-> I agree that bridges shouldn't track the HPD state, it should be tracked
-> by the core and the .enable_hpd() and .disable_hpd() operations should
-> be balanced. Their documentation, however, doesn't clearly state this,
-> and the documentation of the callers of these operations is also fairly
-> unclear.
-> 
-> Could you perhaps try to improve the documentation ? With that,
-> 
+My impression is that if userspace can pass this FD to a driver without tel=
+ling
+the driver it is secure memory, the driver may potentially crash trying to =
+use
+the handle as an memory address.
 
-Yes, sure, Let me upload another patch to improve the documentation of 
-.enable_hpd(), .disable_hpd() and its callers.
+In my opinion, sg_dma_address() should return addresses, like its name stat=
+e. If
+you want to get something else, you should find another way to obtain it.
 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> for this patch.
-> 
+Nicolas
 
-Thanks
+>=20
+> >=20
+> > > +
+> > > +     dma_buf_unmap_attachment(dba, sgt, DMA_BIDIRECTIONAL);
+> > > +     dma_buf_detach(buf, dba);
+> > > +     dma_buf_put(buf);
+> > > +
+> > > +     return secure_handle;
+> > > +err_map:
+> > > +     dma_buf_detach(buf, dba);
+> > > +err_attach:
+> > > +     dma_buf_put(buf);
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > >  static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctrl)
+> > >  {
+> > >       struct mtk_vcodec_dec_ctx *ctx =3D ctrl_to_dec_ctx(ctrl);
+> > > @@ -436,7 +476,7 @@ static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctrl=
+)
+> > >       struct v4l2_ctrl *hdr_ctrl;
+> > >       const struct mtk_vcodec_dec_pdata *dec_pdata =3D ctx->dev->vdec=
+_pdata;
+> > >       const struct mtk_video_fmt *fmt;
+> > > -     int i =3D 0, ret =3D 0;
+> > > +     int i =3D 0, ret =3D 0, sec_fd;
+> > >=20
+> > >       hdr_ctrl =3D ctrl;
+> > >       if (!hdr_ctrl || !hdr_ctrl->p_new.p)
+> > > @@ -489,6 +529,12 @@ static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctr=
+l)
+> > >                       return -EINVAL;
+> > >               }
+> > >               break;
+> > > +     case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:
+> > > +             sec_fd =3D ctrl->val;
+> > > +
+> > > +             ctrl->val =3D mtk_dma_contig_get_secure_handle(ctx, ctr=
+l->val);
+> > > +             mtk_v4l2_vdec_dbg(3, ctx, "get secure handle: %d =3D> 0=
+x%x", sec_fd, ctrl->val);
+> > > +             break;
+> > >       default:
+> > >               mtk_v4l2_vdec_dbg(3, ctx, "Not supported to set ctrl id=
+: 0x%x\n", hdr_ctrl->id);
+> > >               return ret;
+> > > @@ -525,8 +571,9 @@ static const struct v4l2_ctrl_ops mtk_vcodec_dec_=
+ctrl_ops =3D {
+> > >  static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcodec_dec_ctx *ctx=
+)
+> > >  {
+> > >       unsigned int i;
+> > > +     struct v4l2_ctrl *ctrl;
+> > >=20
+> > > -     v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS);
+> > > +     v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS + 1);
+> > >       if (ctx->ctrl_hdl.error) {
+> > >               mtk_v4l2_vdec_err(ctx, "v4l2_ctrl_handler_init failed\n=
+");
+> > >               return ctx->ctrl_hdl.error;
+> > > @@ -543,6 +590,9 @@ static int mtk_vcodec_dec_ctrls_setup(struct mtk_=
+vcodec_dec_ctx *ctx)
+> > >               }
+> > >       }
+> > >=20
+> > > +     ctrl =3D v4l2_ctrl_new_std(&ctx->ctrl_hdl, &mtk_vcodec_dec_ctrl=
+_ops,
+> > > +                              V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE, 0=
+, 65535, 1, 0);
+> > > +
+> > >       v4l2_ctrl_handler_setup(&ctx->ctrl_hdl);
+> > >=20
+> > >       return 0;
+> > > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/medi=
+a/v4l2-core/v4l2-ctrls-defs.c
+> > > index 8696eb1cdd61..d8cf01f76aab 100644
+> > > --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > > +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > > @@ -1041,6 +1041,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+> > >       case V4L2_CID_MPEG_VIDEO_HEVC_SIZE_OF_LENGTH_FIELD:     return =
+"HEVC Size of Length Field";
+> > >       case V4L2_CID_MPEG_VIDEO_REF_NUMBER_FOR_PFRAMES:        return =
+"Reference Frames for a P-Frame";
+> > >       case V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR:         return =
+"Prepend SPS and PPS to IDR";
+> > > +     case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:               return =
+"MediaTek Decoder get secure handle";
+> > >=20
+> > >       /* AV1 controls */
+> > >       case V4L2_CID_MPEG_VIDEO_AV1_PROFILE:                   return =
+"AV1 Profile";
+> > > @@ -1437,6 +1438,10 @@ void v4l2_ctrl_fill(u32 id, const char **name,=
+ enum v4l2_ctrl_type *type,
+> > >       case V4L2_CID_MPEG_VIDEO_VPX_NUM_REF_FRAMES:
+> > >               *type =3D V4L2_CTRL_TYPE_INTEGER_MENU;
+> > >               break;
+> > > +     case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:
+> > > +             *type =3D V4L2_CTRL_TYPE_INTEGER;
+> > > +             *flags |=3D V4L2_CTRL_FLAG_WRITE_ONLY;
+> > > +             break;
+> > >       case V4L2_CID_USER_CLASS:
+> > >       case V4L2_CID_CAMERA_CLASS:
+> > >       case V4L2_CID_CODEC_CLASS:
+> > > diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/=
+v4l2-controls.h
+> > > index c3604a0a3e30..7b3694985366 100644
+> > > --- a/include/uapi/linux/v4l2-controls.h
+> > > +++ b/include/uapi/linux/v4l2-controls.h
+> > > @@ -954,6 +954,10 @@ enum v4l2_mpeg_mfc51_video_force_frame_type {
+> > >  #define V4L2_CID_MPEG_MFC51_VIDEO_H264_ADAPTIVE_RC_STATIC           =
+ (V4L2_CID_CODEC_MFC51_BASE+53)
+> > >  #define V4L2_CID_MPEG_MFC51_VIDEO_H264_NUM_REF_PIC_FOR_P            =
+ (V4L2_CID_CODEC_MFC51_BASE+54)
+> > >=20
+> > > +/*  MPEG-class control IDs specific to the MediaTek Decoder driver a=
+s defined by V4L2 */
+> > > +#define V4L2_CID_MPEG_MTK_BASE                       (V4L2_CTRL_CLAS=
+S_CODEC | 0x2000)
+> > > +#define V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE  (V4L2_CID_MPEG_MTK_BASE=
++8)
+> > > +
+> > >  /*  Camera class control IDs */
+> > >=20
+> > >  #define V4L2_CID_CAMERA_CLASS_BASE   (V4L2_CTRL_CLASS_CAMERA | 0x900=
+)
+> >=20
 
-Abhinav
-
->> changes in v2:
->> 	- minor change in commit text (Dmitry)
->>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> ---
->>   drivers/gpu/drm/drm_bridge_connector.c | 6 ------
->>   1 file changed, 6 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
->> index 1da93d5a1f61..c4dba39acfd8 100644
->> --- a/drivers/gpu/drm/drm_bridge_connector.c
->> +++ b/drivers/gpu/drm/drm_bridge_connector.c
->> @@ -187,12 +187,6 @@ static void drm_bridge_connector_destroy(struct drm_connector *connector)
->>   	struct drm_bridge_connector *bridge_connector =
->>   		to_drm_bridge_connector(connector);
->>   
->> -	if (bridge_connector->bridge_hpd) {
->> -		struct drm_bridge *hpd = bridge_connector->bridge_hpd;
->> -
->> -		drm_bridge_hpd_disable(hpd);
->> -	}
->> -
->>   	drm_connector_unregister(connector);
->>   	drm_connector_cleanup(connector);
->>   
-> 
