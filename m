@@ -2,93 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C247A5CD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C31D7A5CD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjISIqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        id S230423AbjISIqY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 04:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbjISIp7 (ORCPT
+        with ESMTP id S230462AbjISIqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:45:59 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C6EE6;
-        Tue, 19 Sep 2023 01:45:53 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2001:b07:646b:e2:e4be:399f:af39:e0db])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: laura.nao)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6BA5B66057B6;
-        Tue, 19 Sep 2023 09:45:51 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695113152;
-        bh=I9ktfih0sa6jgd7LQe4oO4cl3jZWiRbZxvF64WAFJ64=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RnSgsG0+DeUNMB3HhUK/2fjxJJ/to9uV0+mEMUbGxMgn5t2b+Jh3bS9wdQkSguM8l
-         ohclYn0BDKntkCsksU5VNp/OCyBcOUlJ2MPDv7MBUMD16oIKBPwNrILw+uvt444RH3
-         XQRnP47sg5J8VHIFkFttZycmSSIpx72Y8evt9ijx6gU3lg7EKxSXWKIFzNDCtYe+H1
-         ehb8qIyrmYO+LdfigxTeLaMFEHmVtBfmwx/TOx2mT66QKZ9depLeU79TUt7TqYkJ46
-         652Es9yZyca6ibAYkQSY6Gl/QyqyDdv/QUxJne9hUM77KVxC1o36VWQjpW7e/VvZmK
-         qMZJ1H6JNd23g==
-From:   Laura Nao <laura.nao@collabora.com>
-To:     mathieu.poirier@linaro.org
-Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
-        andersson@kernel.org, angelogioacchino.delregno@collabora.com,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        kernel@collabora.com, krzysztof.kozlowski+dt@linaro.org,
-        laura.nao@collabora.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, matthias.bgg@gmail.com,
-        robh+dt@kernel.org, tinghan.shen@mediatek.com
-Subject: Re: [PATCH v17 00/14] Add support for MT8195 SCP 2nd core
-Date:   Tue, 19 Sep 2023 10:45:52 +0200
-Message-Id: <20230919084552.260918-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <ZQj16b1NvkDlij+H@p14s>
-References: <ZQj16b1NvkDlij+H@p14s>
+        Tue, 19 Sep 2023 04:46:20 -0400
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADDA12C;
+        Tue, 19 Sep 2023 01:46:14 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59be9a09c23so54054057b3.1;
+        Tue, 19 Sep 2023 01:46:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695113173; x=1695717973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W9gDLlTbkTy+GJtIonlGZoKgcN5Rc/QMrBSOswFOmJU=;
+        b=XtIiEBbNKhdQ5ePIcmksgm90zXGg0r/8ACyUAIPL/zLYEbOHALIjicOpBAp4VHp3+1
+         gqjxROTVFeHPhfEd9XtggB05hc8EfSddAnMp0hRFsveR4h0iJFHziaWDVBjPxZUQo08c
+         NyUxIs+lZwXQHftun1HQFdUVLHTtv0tK4l4FbafJ47EQc2behF2qG9vmRxX+TCI0SyKt
+         cJWr+6cmfu6Lv7FL/Ve8Mxups28lyEzu0yWnxEHor2YwE6Yf2FqpLzvmH1sZTiVtoG0i
+         m2GSJZzIAfQvj0oTSOKvIq/H1a55y89wgfTIPsvCeY54w5UcKlKIamTC5Js64FLme2cd
+         w6Lw==
+X-Gm-Message-State: AOJu0Yzb9xvO7r7RrQGNzTNtEusJQ/JDgmx0wa/+9HcUuNgQna5QIveD
+        xFu+3khACLjfVFxPGgXhZeqQVjTQsYpQNg==
+X-Google-Smtp-Source: AGHT+IFHw9C+Hc2uB35nJw64YBBhY+Pn+Qggfd1kl2yeSZge063uQlCQ9XDe+RLzSxgpXdKjY+Mbqw==
+X-Received: by 2002:a0d:df09:0:b0:55a:3ce9:dc3d with SMTP id i9-20020a0ddf09000000b0055a3ce9dc3dmr11625643ywe.13.1695113173002;
+        Tue, 19 Sep 2023 01:46:13 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id z185-20020a8189c2000000b0059af9f2ee68sm3058131ywf.66.2023.09.19.01.46.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 01:46:12 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d7b79a4899bso4930129276.2;
+        Tue, 19 Sep 2023 01:46:12 -0700 (PDT)
+X-Received: by 2002:a5b:70b:0:b0:d0c:110b:2f17 with SMTP id
+ g11-20020a5b070b000000b00d0c110b2f17mr10594697ybq.53.1695113172381; Tue, 19
+ Sep 2023 01:46:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230913062950.4968-1-wsa+renesas@sang-engineering.com> <20230913062950.4968-2-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20230913062950.4968-2-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 Sep 2023 10:46:00 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX8Ug6sQX97_CyFbpAN1Emp7d891wJAWg8pLpnM3q+ysQ@mail.gmail.com>
+Message-ID: <CAMuHMdX8Ug6sQX97_CyFbpAN1Emp7d891wJAWg8pLpnM3q+ysQ@mail.gmail.com>
+Subject: Re: [PATCH RFT 1/2] i2c: rcar: reset controller is mandatory for Gen3+
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/23 03:14, Mathieu Poirier wrote:
-> On Mon, Sep 18, 2023 at 12:31:41PM +0200, Laura Nao wrote:
->>> Other than patch 2 and 14, I have applied this set.  The remaining patches will
->>> have to be resent to Matthias.
->>
->>> Thanks,
->>> Mathieu
->>
->> Hello,
->>
->> With patch 2 missing, the SCP is not probed correctly anymore on asurada (MT8192) and kukui (MT8183). The mtk-scp driver relies on the existence of the `cros-ec-rpmsg` node in the dt to determine if the SCP is single or multicore. Without patch 2 the driver wrongly assumes the SCP on MT8192 and MT8183 are multicore, leading to the following errors during initialization:
->>
->> 10696 04:33:59.126671  <3>[   15.465714] platform 10500000.scp:cros-ec: invalid resource (null)
->> 10697 04:33:59.142855  <3>[   15.478560] platform 10500000.scp:cros-ec: Failed to parse and map sram memory
->> 10698 04:33:59.149650  <3>[   15.486121] mtk-scp 10500000.scp: Failed to initialize core 0 rproc
->>
->> The issue was caught by KernelCI, complete logs can be found here:
->> - asurada: https://storage.kernelci.org/next/master/next-20230914/arm64/defconfig+arm64-chromebook+videodec/gcc-10/lab-collabora/baseline-nfs-mt8192-asurada-spherion-r0.html
->> - kukui: https://storage.kernelci.org/next/master/next-20230914/arm64/defconfig+arm64-chromebook+videodec/gcc-10/lab-collabora/baseline-nfs-mt8183-kukui-jacuzzi-juniper-sku16.html
->>
->> Reporting the issue so that patch 2 and 14 can be resent and merged soon.
->>
-> 
-> Apologies for the trouble here, the error is mine.
-> 
-> I have applied and pushed patch 02 - please confirm that things are working as
-> expected now.  Matthias will need to either ack patch 14 or pick it up himself.
-> 
-> 
+Hi Wolfram,
 
-I confirm SCP is probed correctly on MT8192 (spherion) and MT8183 (juniper) on the remoteproc tree (for-next branch) now.
-Thank you!
+Thanks for your patch!
+On Wed, Sep 13, 2023 at 8:41 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Initially, we only needed a reset controller to make sure RXDMA works at
+> least once per transfer. Meanwhile, documentation has been updated. It
+> now says that a reset has to be performed prior every transaction, also
+> if it is non-DMA. So, make the reset controller a requirement instead of
+> being optional.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+> --- a/drivers/i2c/busses/i2c-rcar.c
+> +++ b/drivers/i2c/busses/i2c-rcar.c
+> @@ -838,12 +838,10 @@ static int rcar_i2c_master_xfer(struct i2c_adapter *adap,
+>
+>         /* Gen3 needs a reset before allowing RXDMA once */
+>         if (priv->devtype == I2C_RCAR_GEN3) {
+> -               priv->flags |= ID_P_NO_RXDMA;
+> -               if (!IS_ERR(priv->rstc)) {
+> -                       ret = rcar_i2c_do_reset(priv);
+> -                       if (ret == 0)
+> -                               priv->flags &= ~ID_P_NO_RXDMA;
+> -               }
+> +               priv->flags &= ~ID_P_NO_RXDMA;
+> +               ret = rcar_i2c_do_reset(priv);
+> +               if (ret)
+> +                       priv->flags |= ID_P_NO_RXDMA;
+
+This is pre-existing, but if rcar_i2c_do_reset() returns an error,
+that means the I2C block couldn't get out of reset.  Are we sure we
+can still do PIO transfers in that case, or should this be considered
+a fatal error?
+
+>         }
+>
+>         rcar_i2c_init(priv);
+> @@ -1096,11 +1094,13 @@ static int rcar_i2c_probe(struct platform_device *pdev)
+>
+>         if (priv->devtype == I2C_RCAR_GEN3) {
+>                 priv->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> -               if (!IS_ERR(priv->rstc)) {
+> -                       ret = reset_control_status(priv->rstc);
+> -                       if (ret < 0)
+> -                               priv->rstc = ERR_PTR(-ENOTSUPP);
+> -               }
+> +               if (IS_ERR(priv->rstc))
+> +                       return dev_err_probe(&pdev->dev, PTR_ERR(priv->rstc),
+> +                                            "couldn't get reset");
+> +
+> +               ret = reset_control_status(priv->rstc);
+> +               if (ret < 0)
+> +                       return ret;
+
+This is a pre-existing check, but do you really need it?
+This condition will be true if the reset is still asserted, which
+could happen due to some glitch, or force-booting into a new kernel
+using kexec.  And AFAIUI, that should be resolved by the call to
+rcar_i2c_do_reset() above.
+
+>         }
+>
+>         /* Stay always active when multi-master to keep arbitration working */
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
