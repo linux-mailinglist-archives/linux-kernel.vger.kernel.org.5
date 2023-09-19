@@ -2,153 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4477A5AB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF947A5ABB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjISHTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
+        id S231705AbjISHUQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 03:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjISHTE (ORCPT
+        with ESMTP id S231561AbjISHUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:19:04 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D20FFC;
-        Tue, 19 Sep 2023 00:18:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
- t=1695107928; x=1695712728; i=j.neuschaefer@gmx.net;
- bh=cIwrf8PK+ocRFzcS25K23eodAtcQ1T8KqPnqzM86UEU=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
- b=FepJUQ2MwOMMckterzF8Wt3TXEgGRkydNOK/N81X2tQ9zLt3hBzWhVMF+x7p1k2N8oOHuDairb7
- WDSTFxYN5R1TfsQxV18lffTTW3cg+KMF1Gs8UdxKoDeIgO8Nwcu4WS5IMiLtX+3KUpBjhdKIC7LJN
- Dn/pqjpiVjdjVGJMINsTcmXPIC+oVUUmpdSXccIenFY9pGHDvztfG0z4Wb/NLlEFDLzKHTQMhpn8T
- iwb2OnMglMlUu82Eo2pEW0CXtG0Nz64R/eGD+KoUJU82PwlOwvqtPB71LwdDbs0rYjkg2tlGGURwf
- dkUJtvLeVxwuMUDSv4tbZo/ZGaqtT9BXFm0Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([89.0.47.152]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MY68T-1rBtpN0HoT-00YNST; Tue, 19
- Sep 2023 09:18:48 +0200
-Date:   Tue, 19 Sep 2023 09:17:49 +0200
-From:   =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     peter.chen@kernel.org, gregkh@linuxfoundation.org,
-        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        j.neuschaefer@gmx.net, openbmc@lists.ozlabs.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] usb: chipidea: add CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS
- flag
-Message-ID: <ZQlLHZhhOArxv86Y@probook>
-References: <20230918161028.264650-1-tmaimon77@gmail.com>
+        Tue, 19 Sep 2023 03:20:15 -0400
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826F7102;
+        Tue, 19 Sep 2023 00:20:09 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-59ec6d7bb89so10536687b3.2;
+        Tue, 19 Sep 2023 00:20:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695108008; x=1695712808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Oo6GeNFpLlGOQI2skflDC69t+uMur/RFCpLqTRniHYk=;
+        b=TyGGjzmSGJZEldzjehK54K/s8hzTrWAPt+d4jVGaWDh72hx84pyS+GgRbl7DdIhchp
+         ZvDFVk5SmGy9HhNoGY7Riz0P2sktiIM4c+q3z6rP2XynxEVYUiK8Ti6i4tHP3fOtVkGj
+         UNHIWbFYhUKB/Wp/zjIyigkqP2aOQhMuOUWXijtidKh+Fl2fy+wWNctbKAXlIpYJns1W
+         zojJa0asrSqcQihHsk9XatgJU20kFOZY7vtctX2LtfKg6McEBRRAVYd/aC5RE3txxod2
+         0yivDbaXEKBYoNJ9gbKt9ZoTreSa1DjuFbG6D6V9BhfCHcCkLzrGGvVY8XiCNcWG+FHy
+         Hvpw==
+X-Gm-Message-State: AOJu0YxPVpojtEnpjYq6lZjH5dh0uVy26vbchi+u0ISDkEBpCDI2DQF3
+        INfN18qgGWyEloxCSVddZ1nIsxDS0nZCEw==
+X-Google-Smtp-Source: AGHT+IGr3jxIj37/Mu4rv7iXYA2sJBS9RCoxRtz3Y3n/qoElqL6+yqJVOSi28j1UqGOVjpbbAJ2CUg==
+X-Received: by 2002:a81:df06:0:b0:599:b570:2db7 with SMTP id c6-20020a81df06000000b00599b5702db7mr10420183ywn.30.1695108008315;
+        Tue, 19 Sep 2023 00:20:08 -0700 (PDT)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id j124-20020a0dc782000000b0059af121d0b8sm3080319ywd.52.2023.09.19.00.20.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 00:20:08 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-59e8d963adbso22485717b3.0;
+        Tue, 19 Sep 2023 00:20:08 -0700 (PDT)
+X-Received: by 2002:a0d:db50:0:b0:59b:cda7:893e with SMTP id
+ d77-20020a0ddb50000000b0059bcda7893emr11229694ywe.15.1695108008002; Tue, 19
+ Sep 2023 00:20:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7ASlWA0wcfuE6F4R"
-Content-Disposition: inline
-In-Reply-To: <20230918161028.264650-1-tmaimon77@gmail.com>
-X-Provags-ID: V03:K1:CvtbL7DUzgKgkI4fOdWC/VsX8RNW3wGo7wfLveTxy7DaewyVMQQ
- QYC/prk3TgHv8LSKGoTBQ9FDfFy3CcyZAl8MdcHLi/PPw3zBAbjEk4ppC2r2QOcKf3yZ9NH
- 7toLmtIk/9Rg1igQKGT2e7DeKE4NDkCdJjHVUSPzbycO19uY6KIfV7Hgehl1IOaiM9NlGDt
- eFRWjUvbXOGGsoDAlEdsQ==
-UI-OutboundReport: notjunk:1;M01:P0:jjPDC3gWukI=;9fjL/uf06xoF1BziWt1P06ALEMX
- rH7jkgJPHdSv2qnqgXqUyhF5tZikgCNuN5rpTX9AHjDsXEO4OXVlPeBNzAOMxet0hXcy3mRq0
- di7Ew5uSP/g635RrB/PyWunRyuR8H33jzyRkEfA+bvPVHF6XH2CKweiv/LnoY+b09zfZ22cQP
- a5oddapPhKjKwhvO/Mh0RNxv9WBCyEBKpnMu9Cw9ErsZJw6203ZfKzOWZy3+wKj4wRUrrWVbm
- JgjWiY5JmdGryqhQdb49dl8MheOW1gveiaf5aESqUtD4qaOijaWs4+pL1neFOFRM/is0hhqHj
- kWJrrZCrUGRFTrRtCaI4IJZ/H5VAyjk7n1Uuk6p09NKUwDcEqAa6CqoqfjW7QmLp1q/nxdDif
- xcQ5ZMz/UgYtAD8R9N8a8bx6alfWnU90GwDHdU/tb91drmV1dzl0xN930nM8xCh4Z2TKt+JUb
- VnXYiCrXkgqTPfg1xWGzUFoZM8GOfFqO3KPJwa2SORYeLkUrcd3w7EnStHar1tEbmM/W8SqWu
- 2S2Q+qyy09cIDTelJ6B32s/ZO0CohxbmzX9og3Ehtz9MmA6BY1wYF6d+UZEX5LP1q7fEkRc2G
- Nrds2LOuan3xlcDdaE561ekqAsyqsfBkD4jU5g8J8kLfg+nO1ANkmDBMV4wdUpamUckJ95Zv5
- fIW23D+o0GAHjYlwm+CvNXsbwM6hGlHQPV1vdE2K5iO+q0jbbqVyreTpK5menrUoweU2KOgae
- 3EEOIfWyGdmbLzIHBusoB268y4y/GgRxm33AKrF0Bp9BfdgZGwuqAov91j9OeRRrIcJAtZ9eN
- xJ9dKXnRz8WTkJplOVC74KfXHOV9feVHrePvIFVyyg8kxysmm0g419UZeVrazvrEtQ3OMbDmH
- 2sg6/EFxuc/EoUStEv5uFXpJh7JMNP9EeM9+cwGLcsVZg1Plc6IlYThYWoy4moEOM042p8+Ms
- Tp8sFuRXrKsLa+QZq2XYnb3JkuU=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918175529.19011-1-peter@n8pjl.ca> <20230918175529.19011-6-peter@n8pjl.ca>
+In-Reply-To: <20230918175529.19011-6-peter@n8pjl.ca>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 Sep 2023 09:19:56 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVQaBBZgSsgZyNR2HxMsck2fWNjG6fK93eBFFeyDz0Hkw@mail.gmail.com>
+Message-ID: <CAMuHMdVQaBBZgSsgZyNR2HxMsck2fWNjG6fK93eBFFeyDz0Hkw@mail.gmail.com>
+Subject: Re: [PATCH 5/7] arch: m68k: remove ReiserFS from defconfig
+To:     Peter Lafreniere <peter@n8pjl.ca>
+Cc:     linux-m68k@lists.linux-m68k.org, jack@suse.cz,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter,
 
---7ASlWA0wcfuE6F4R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 18, 2023 at 7:57 PM Peter Lafreniere <peter@n8pjl.ca> wrote:
+> ReiserFS has been deprecated for a year and a half, yet is still built
+> as part of a defconfig kernel.
+>
+> According to commit eb103a51640e ("reiserfs: Deprecate reiserfs"), the
+> filesystem is slated to be removed in 2025. Remove it from the defconfig
+> profiles now, as part of its deprecation process.
+>
+> Signed-off-by: Peter Lafreniere <peter@n8pjl.ca>
 
-On Mon, Sep 18, 2023 at 07:10:28PM +0300, Tomer Maimon wrote:
-> Adding CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS flag to modify the vbus_active
-> parameter to active in case the ChipIdea USB IP role is device-only and
-> there is no otgsc register.
->=20
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+Thanks for your patch!
 
-I think it would make sense to include this patch as part of the
-patchset that uses the functionality to enable NPCM support, so that
-reviewers would immediately see the context in which it is used.
+Given these defconfigs enable ReiserFS as a module (not built-in),
+and that ReiserFS is still available upstream, and enabled by distros
+like Debian, I would like to keep it that way.
+The m68k defconfigs will be updated after the removal of ReiserFS,
+as part of the regular defconfig resync.
 
-Jonathan
+Gr{oetje,eeting}s,
 
-> ---
->  drivers/usb/chipidea/otg.c   | 5 ++++-
->  include/linux/usb/chipidea.h | 1 +
->  2 files changed, 5 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/usb/chipidea/otg.c b/drivers/usb/chipidea/otg.c
-> index f5490f2a5b6b..647e98f4e351 100644
-> --- a/drivers/usb/chipidea/otg.c
-> +++ b/drivers/usb/chipidea/otg.c
-> @@ -130,8 +130,11 @@ enum ci_role ci_otg_role(struct ci_hdrc *ci)
-> =20
->  void ci_handle_vbus_change(struct ci_hdrc *ci)
->  {
-> -	if (!ci->is_otg)
-> +	if (!ci->is_otg) {
-> +		if (ci->platdata->flags & CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS)
-> +			usb_gadget_vbus_connect(&ci->gadget);
->  		return;
-> +	}
-> =20
->  	if (hw_read_otgsc(ci, OTGSC_BSV) && !ci->vbus_active)
->  		usb_gadget_vbus_connect(&ci->gadget);
-> diff --git a/include/linux/usb/chipidea.h b/include/linux/usb/chipidea.h
-> index 0b4f2d5faa08..5a7f96684ea2 100644
-> --- a/include/linux/usb/chipidea.h
-> +++ b/include/linux/usb/chipidea.h
-> @@ -64,6 +64,7 @@ struct ci_hdrc_platform_data {
->  #define CI_HDRC_PMQOS			BIT(15)
->  #define CI_HDRC_PHY_VBUS_CONTROL	BIT(16)
->  #define CI_HDRC_HAS_PORTSC_PEC_MISSED	BIT(17)
-> +#define CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS	BIT(18)
->  	enum usb_dr_mode	dr_mode;
->  #define CI_HDRC_CONTROLLER_RESET_EVENT		0
->  #define CI_HDRC_CONTROLLER_STOPPED_EVENT	1
-> --=20
-> 2.33.0
->=20
+                        Geert
 
---7ASlWA0wcfuE6F4R
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmUJSw4ACgkQCDBEmo7z
-X9uWGQ/+LoYXIX9PIaYqKaNoz/rCtUw5oNTD0PPK3Ffaj3zmncRCSIfZ6Wc9hG9P
-XkP4kCT5Giq8d2Xh54e78wUf3qfA8NKU9Aq9CfNMRzlVrOEwYlYl2x+Ixv6o17aw
-DWENVhk/AK69kSVqXGnsC2o9P5P6Q1iT/7i8XlyTgAPnOMkyGJIZQKlRLrA5xtjl
-XxEm43xGUQBKuz5WWA4g9aiHBCFwj9x2r0c0B7NZHARGAd3NC0kVBZ2HXbLZkaSU
-FXgyvvBjEZUdiTtR3H5AERf/xfOC86qzdERQrZ5GqBW+NcfO2bNRkiysKnZJ/W88
-ptTGE5iUH5yI/nySrjOYEC2SWbJkHom1Wc8flb9k6ByX5Px25DxTjLoJroAgY0aM
-A8qzj4crXU1XriQZHu+BS0FyZrhLWP+Zp5AEumVX0iRRB/6RR1MyJQd9irPoVIkA
-awbaniEQkQktym5Q4GtWUycpYZpRIpvyGIqKmmYFfo6nhMAE5bwAGAidHVg9Xd8s
-Znu6dmEZVX+jKA0ZS2m/EyQQF6+hi2j2oJQ0l6Ygpj4xS88YwaxgL3yGa1hSSDw0
-ejRKC1Ir0LBsowMH31xJ717/9VRiG/t0TYoLPdbIz1l7ImIl5uW5zR/oP3V4MK8P
-XVSI5UBuWfIdfvoNfJWbrVkN7wq7RYWjdV1mCcwOauR5vsKBlsY=
-=VBfR
------END PGP SIGNATURE-----
-
---7ASlWA0wcfuE6F4R--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
