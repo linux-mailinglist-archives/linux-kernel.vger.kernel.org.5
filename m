@@ -2,124 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CD27A5FE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FC07A5FFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbjISKnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 06:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
+        id S231309AbjISKrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 06:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbjISKnh (ORCPT
+        with ESMTP id S231861AbjISKra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 06:43:37 -0400
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26489E8;
-        Tue, 19 Sep 2023 03:43:32 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so6788098a12.0;
-        Tue, 19 Sep 2023 03:43:32 -0700 (PDT)
+        Tue, 19 Sep 2023 06:47:30 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4671A132
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 03:47:24 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c44c7dbaf9so29529465ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 03:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695120443; x=1695725243; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KWGm7rEFBvHLc7sisUwhAvmPpqKlBaLPdqOGIMWnd7E=;
+        b=GPuzohc9sFRM0MUxJUoItB0ckY/DcakzLlLj+CC9tzDL25jshfTEGEJcFKR5KogljP
+         RovGyY5un9eRd5itglcshCFnZXVWSeF+67yfM2SVhK1yHZJV0DXZyR1R3Kn/huHsEEZ1
+         Fq8hiK3tUzOTxGYCp8FMntoUhNxiWhRrCULGE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695120210; x=1695725010;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zdW50JbYMGVmAkR6hR21IrnSGk1zOR4htJIZW/zGdB4=;
-        b=CcZYqHOJYG2VbxRimG5iSrfmWnvn19Plru3+z+1v5Atxx/tm3YLdiN9/3bgwl4hbBU
-         nOfvZjZQOD3fjUAWavxTkbC4meReh8bgcwiSmGNJDReiV9OISL8uwokeCmFtpEZn+Av5
-         xa3DlRyFqjls4r7IUtYxAL92bIRThtVjYIhzQyVX1SMjryQapTyKTRvrkRzqgjtT2iUv
-         UqG6j1hNyZgShYadWm9OtCqws5LHNuJuXOXIAN1TIQ8XSM4wpFuFGMBtSTGw7axHMPke
-         61aVoax7a5P7OTkneItimZQNeFjc2JSWSFagTahkABhOoYrhc5YztG4h3XXAUKYjqvVf
-         qFJQ==
-X-Gm-Message-State: AOJu0YxXxhKZD/SARI9f5qUEFg6wplwF7KE1xgttg8jR1J2igZOchxcd
-        /J3xNqFQTowOfGMlgpbnYp4Niw3HjBU=
-X-Google-Smtp-Source: AGHT+IFuwEHbKa7/YIl/XWbDpkNkaHPqldjJ7O15CVvO3XlO8Fk4Cxg5LveNfTg9+yvZ2jt5EUPxvg==
-X-Received: by 2002:a05:6402:1159:b0:523:3fff:5ce2 with SMTP id g25-20020a056402115900b005233fff5ce2mr9499149edw.41.1695120210001;
-        Tue, 19 Sep 2023 03:43:30 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id v21-20020aa7dbd5000000b005256771db39sm7202979edt.58.2023.09.19.03.43.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 03:43:28 -0700 (PDT)
-Message-ID: <0fea333a-8ac5-4235-97c5-3d0c202e7e05@kernel.org>
-Date:   Tue, 19 Sep 2023 12:43:28 +0200
+        d=1e100.net; s=20230601; t=1695120443; x=1695725243;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KWGm7rEFBvHLc7sisUwhAvmPpqKlBaLPdqOGIMWnd7E=;
+        b=mP5ZJ5NoAk+4LrBBb0zk+I804x+t7aSBzpZXeQb3FCb0vtGQcXbNz1bPgvOHqCa/P8
+         jQ7pua13NVmpi0FXI5fTdNBfkZMFsvCsWZ5BrwoiP3v54dKHuDwdD0i0vGM9tFNDCH0h
+         CNfwZ//qpJBVRMrFBS8jqooeb4rHxZ1SkZBTDJrI6pFWE4NRS53+ReN628tH3Li6hsl4
+         LrNAivdBpc0467mln5MQSAvWHe2y6TwJBh0FQDC9BgTUCTxfAoBfi5XlbdPl4uaXtezg
+         6HvUEDCk17KtARVvBOjIg8D0vz4IQAfUyGSIFvb3jhpXN1bN9kbkBBqLlMWrksogMGjn
+         RRGA==
+X-Gm-Message-State: AOJu0YwqDcoxJ1ZmV8BWtjN4X0i1NrY79lcCOnk0N6/Ioi94Q9n11fD3
+        +pbTOVGsa+Z4wkLdJwDMd4Ne5A==
+X-Google-Smtp-Source: AGHT+IGi1Aeqtw4GFcstj89ewGDN7GqUr/PGJ3DhkAfwr8aE99yDTv1Dd8EIte2UBmPkwW10M7f49g==
+X-Received: by 2002:a17:903:1103:b0:1b9:e241:ad26 with SMTP id n3-20020a170903110300b001b9e241ad26mr14863164plh.9.1695120443688;
+        Tue, 19 Sep 2023 03:47:23 -0700 (PDT)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:40a:900d:e731:5a43])
+        by smtp.gmail.com with ESMTPSA id c10-20020a170902d48a00b001bc445e249asm6719578plg.124.2023.09.19.03.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 03:47:23 -0700 (PDT)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v3 00/12] regulator: mt6366: Split out of MT6358 and cleanup
+Date:   Tue, 19 Sep 2023 18:43:43 +0800
+Message-ID: <20230919104357.3971512-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/15] tty: n_tty: invert the condition in
- copy_from_read_buf()
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230919085156.1578-1-jirislaby@kernel.org>
- <20230919085156.1578-5-jirislaby@kernel.org>
- <2f8f7e-d0bd-b8c3-a8b8-d14fd0221e4d@linux.intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <2f8f7e-d0bd-b8c3-a8b8-d14fd0221e4d@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19. 09. 23, 11:54, Ilpo Järvinen wrote:
-> On Tue, 19 Sep 2023, Jiri Slaby (SUSE) wrote:
-> 
->> Make "no numbers available" a fast quit from the function. And do the
-> 
-> Did you really intend to write "numbers" and not e.g. characters?
+Hi everyone,
 
-What was I thinking? "n must be numbers", apparently. But I definitely 
-meant "characters". Funny, that I missed it now, while re-reading and 
-preparing the commit logs for submission.
+This is v3 of my MT6366 PMIC split-out-of-MT6358 cleanup series. The two
+PMICs are mostly identical, except for the regulator bits. The MT6366 is
+missing the VCAM* (camera related) LDOs, but in their place has a few
+other ones. This thus requires a separate compatible to handle the
+differences.
 
-thanks,
+Changes since v2:
+- Merged "mfd: mt6358: Add registers for MT6366 specific regulators"
+  into "regulator: mt6358: Add missing regulators for MT6366", as
+  suggested by Krzysztof.
+- Reworked the bindings so that all the regulators are commonly defined,
+  then filtered out by compatible, like every other binding does.
+- Added some missing end-of-string matches to the LDO patterns
+- Added patches to reuse the MT6397 regulator binding macros
+  - regulator: dt-bindings: mt6358: Add regulator-allowed-modes property
+  - regulator: mt6358: Use mt6397-regulator.h binding header for buck mode macros
+- Dropped "regulator-coupled-with" and "regulator-coupled-max-spread"
+  properties from the DT binding example. They don't make much sense
+  without the coupled regulator.
+- Fixed up selector values in pickable linear ranges
+
+Changes since v1:
+- Switched to using MT6358 compatible as fallback compatible
+  Differences are detected through chip ID register
+- MT6366 regulator binding merged with MT6358 one instead of having two
+  separate ones
+- Added patches
+  - regulator: dt-bindings: mt6358: Convert to DT schema     
+  - regulator: dt-bindings: mt6358: Add regulator supplies   
+  - regulator: mt6358: Add supply names for MT6358 regulators
+  - arm64: dts: mediatek: mt8183-kukui: Add PMIC regulator supplies
+  These bring MT6358 regulators to the same completeness level as MT6366
+- Dropped patch "mfd: mt6397: Split MediaTek MT6366 PMIC out of MT6358"
+- Dropped patch "soc: mediatek: pwrap: add support for MT6366 PMIC"
+
+This depends on my previous "regulator: mt6358: Remove bogus regulators
+and improvements" series [1] and patch "regulator: mt6358: return error
+for get/set mode op on linear range LDO" [2] patch. These are still in
+flight, but I think posting this earlier would help get reviews underway.
+
+Patch 1 add a compatible string for the MT6366 PMIC, with a fallback to
+the MT6358 one. This should go through the MFD tree. There are no build
+time dependencies.
+
+Patch 2 converts the existing MT6358 regulator DT binding to DT schema.
+
+Patch 3 adds the "regulator-allowed-mode" property to the MT6358
+regulator binding.
+
+Patch 4 adds regulator supply properties to the MT6358 regulator
+binding.
+
+Patch 5 adds MT6366 regulators to the MT6358 regulator binding. This was
+previously done by Zhiyong Tao [3] from MediaTek as a separate binding
+file. I cleaned up the patch based on previous review comments, simplified
+the regulator names, and added regulator supplies. Bogus regulators were
+also dropped, like what was done for the MT6358 [1]. In v2 this was
+merged with the MT6358 binding, now converted to DT schema.
+
+Patch 6 makes the MT6358 regulator driver use the mt6397-regulator.h
+binding header for the operating mode macros.
+
+Patch 7 adds support for the regulator supplies to the MT6358 regulator
+driver.
+
+Patch 8 simplifies the MT6366 regulator names to match the new names
+specified in the binding.
+
+Patch 9 makes the MT6366 VCN18 LDO regulator configurable. This is one
+of the differences between the MT6358 and MT6366.
+
+Patch 10 adds regulators that were missing from the originally proposed
+binding and driver. This includes MFD header changes and needs an ack
+from Lee.
+
+Patch 11 adds regulator supply names to the MT6366 regulators
+
+Patch 12 adds regulator supplies to MT8183 Kukui boards.
+
+Patch 1 should go through the mfd tree. Patches 3 through 11 should go
+through the regulator tree after Lee acks patch 10. Patch 12 should go
+through the MediaTek tree.
+
+[1] https://lore.kernel.org/linux-arm-kernel/20230913082919.1631287-1-wenst@chromium.org/
+[2] https://lore.kernel.org/linux-arm-kernel/20230919083647.3909889-1-wenst@chromium.org/
+[3] https://lore.kernel.org/linux-arm-kernel/20220823123745.14061-1-zhiyong.tao@mediatek.com/
+
+Chen-Yu Tsai (11):
+  dt-bindings: mfd: mt6397: Split out compatible for MediaTek MT6366
+    PMIC
+  regulator: dt-bindings: mt6358: Convert to DT schema
+  regulator: dt-bindings: mt6358: Add regulator-allowed-modes property
+  regulator: dt-bindings: mt6358: Add regulator supplies
+  regulator: mt6358: Use mt6397-regulator.h binding header for buck mode
+    macros
+  regulator: mt6358: Add supply names for MT6358 regulators
+  regulator: mt6358: fix and drop type prefix in MT6366 regulator node
+    names
+  regulator: mt6358: Make MT6366 vcn18 LDO configurable
+  regulator: mt6358: Add missing regulators for MT6366
+  regulator: mt6358: Add supply names for MT6366 regulators
+  arm64: dts: mediatek: mt8183-kukui: Add PMIC regulator supplies
+
+Zhiyong Tao (1):
+  regulator: dt-bindings: mt6358: Add MT6366 PMIC
+
+ .../devicetree/bindings/mfd/mt6397.txt        |   4 +-
+ .../regulator/mediatek,mt6358-regulator.yaml  | 247 ++++++++++++
+ .../bindings/regulator/mt6358-regulator.txt   | 350 ------------------
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |  28 ++
+ drivers/regulator/mt6358-regulator.c          | 250 +++++++------
+ include/linux/mfd/mt6358/registers.h          |  17 +
+ include/linux/regulator/mt6358-regulator.h    |   3 +
+ 7 files changed, 440 insertions(+), 459 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/mt6358-regulator.txt
+
 -- 
-js
-suse labs
+2.42.0.459.ge4e396fd5e-goog
 
