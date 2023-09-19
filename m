@@ -2,259 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C04007A696A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BD87A696E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbjISROp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43718 "EHLO
+        id S232011AbjISRO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 13:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbjISROn (ORCPT
+        with ESMTP id S230203AbjISROy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 13:14:43 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50E3ADC
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 10:14:37 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52FF21FB;
-        Tue, 19 Sep 2023 10:15:14 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5CE2F3F5A1;
-        Tue, 19 Sep 2023 10:14:35 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     boqun.feng@gmail.com, david@fromorbit.com, djwong@kernel.org,
-        kent.overstreet@linux.dev, libaokun1@huawei.com,
-        linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
-        ming.lei@redhat.com, will@kernel.org, yi.zhang@redhat.com
-Subject: [PATCH] locking/atomic: scripts: fix fallback ifdeffery
-Date:   Tue, 19 Sep 2023 18:14:29 +0100
-Message-Id: <20230919171430.2697727-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 19 Sep 2023 13:14:54 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B270DDC;
+        Tue, 19 Sep 2023 10:14:48 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-690d2e13074so407675b3a.1;
+        Tue, 19 Sep 2023 10:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695143688; x=1695748488; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Va9ct3om+RUZ45gwrdFa1vNPGMkYE9KP43+unVd5xH8=;
+        b=YbqAIZ2XvBpacIxOXb/34q1DD5JXDy4fT0RVThhCMoNJovljplytU8uG5O3ZaQiBAA
+         h0rmWDCxLiBEfXugKLKppx7DzSaieb7xyeqbqJmyO2tBVc7tjlTM3jfEQhH6Pyej4v1H
+         r+kfuefss6duWfUWfb8FRRYanp2S1SIHNDixeI+ALIwSsHwt3X9LzYc+WV95wXjBatHQ
+         +VqiS36iF6856x8gcHxIiCJBvHN18GU85nbQfQaCmVnmHwn9qp78QzXZQkhgcbYej6Fy
+         bmWtpumONRQRl+N+zAcYqTGUBr0azcnY/C3txNFZRl57PxbyRuEiTRLZ2DGnZNNHgBqS
+         ORHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695143688; x=1695748488;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Va9ct3om+RUZ45gwrdFa1vNPGMkYE9KP43+unVd5xH8=;
+        b=HGqTmp/YIDQnC+I/rPRW4uoMpN21THBPGYol348cdjnzZ4vmphbx4I+1eLPWTZEopl
+         aTjhmPUB4Ab1f/3D5Fa3mV7ewV2n7XwnCM7KhX9PF8JFBvr3WTUv8NOoJB6AW0ZX7Gm5
+         8OFYjeE/kim9rVBMuQ6FdOXnj5GOS4HHCtlHg61OHj27lfhnYSE6QiWIb/k24RmLdqnT
+         +GG4latBRDKrnXt0XQZ6JXKj6vTpxPcbGA6O95QjM9ilyHJP4QbpDjHjMhW/ZH484GSO
+         uBEGqHy7Yu0wz6jlFDWABKXPrp356wmv7Mb2GrJCthb2lQktGWbyV6dCu2GBYTiKQasu
+         r94Q==
+X-Gm-Message-State: AOJu0YwnRtfHRT710VimFLoVwrtb5o1WtbkxYj4cFRS9tHGWUPZJRfYw
+        b9a6X7d2GkrXsk5pn/5tY9E=
+X-Google-Smtp-Source: AGHT+IG2PgnEQbQKlMZX3kplRTiPT30A7w6wESPlIGK1vXmPLPorShdYz0qk6ThmL+4QKPjDW/QSYA==
+X-Received: by 2002:a05:6a21:3d8b:b0:137:3c67:85d7 with SMTP id bj11-20020a056a213d8b00b001373c6785d7mr196099pzc.16.1695143687894;
+        Tue, 19 Sep 2023 10:14:47 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-119.fbsv.net. [2a03:2880:ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c24d00b001bb988ac243sm10248337plg.297.2023.09.19.10.14.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 10:14:47 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH v2 0/2] workload-specific and memory pressure-driven zswap writeback
+Date:   Tue, 19 Sep 2023 10:14:45 -0700
+Message-Id: <20230919171447.2712746-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit:
+Changelog:
+v2:
+   * Fix loongarch compiler errors
+   * Use pool stats instead of memcg stats when !CONFIG_MEMCG_KEM
 
-  9257959a6e5b4fca ("locking/atomic: scripts: restructure fallback ifdeffery")
+There are currently several issues with zswap writeback:
 
-The ordering fallbacks for atomic*_read_acquire() and
-atomic*_set_release() erroneously fall back to the implictly relaxed
-atomic*_read() and atomic*_set() variants respectively, without any
-additional barriers. This loses the ACQUIRE and RELEASE ordering
-semantics, which can result in a wide variety of problems, even on
-strongly-ordered architectures where the implementation of
-atomic*_read() and/or atomic*_set() allows the compiler to reorder those
-relative to other accesses.
+1. There is only a single global LRU for zswap. This makes it impossible
+   to perform worload-specific shrinking - an memcg under memory
+   pressure cannot determine which pages in the pool it owns, and often
+   ends up writing pages from other memcgs. This issue has been
+   previously observed in practice and mitigated by simply disabling
+   memcg-initiated shrinking:
 
-In practice this has been observed to break bit spinlocks on arm64,
-resulting in dentry cache corruption.
+   https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
 
-The fallback logic was intended to allow ACQUIRE/RELEASE/RELAXED ops to
-be defined in terms of FULL ops, but where an op had RELAXED ordering by
-default, this unintentionally permitted the ACQUIRE/RELEASE ops to be
-defined in terms of the implicitly RELAXED default.
+   But this solution leaves a lot to be desired, as we still do not have an
+   avenue for an memcg to free up its own memory locked up in zswap.
 
-This patch corrects the logic to avoid falling back to implicitly
-RELAXED ops, resulting in the same behaviour as prior to commit
-9257959a6e5b4fca.
+2. We only shrink the zswap pool when the user-defined limit is hit.
+   This means that if we set the limit too high, cold data that are
+   unlikely to be used again will reside in the pool, wasting precious
+   memory. It is hard to predict how much zswap space will be needed
+   ahead of time, as this depends on the workload (specifically, on
+   factors such as memory access patterns and compressibility of the
+   memory pages).
 
-I've verified the resulting assembly on arm64 by generating outlined
-wrappers of the atomics. Prior to this patch the compiler generates
-sequences using relaxed load (LDR) and store (STR) instructions, e.g.
+This patch series solves these issues by separating the global zswap
+LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
+(i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
+new shrinker does not have any parameter that must be tuned by the
+user, and can be opted in or out on a per-memcg basis.
 
-| <outlined_atomic64_read_acquire>:
-|         ldr     x0, [x0]
-|         ret
-|
-| <outlined_atomic64_set_release>:
-|         str     x1, [x0]
-|         ret
+On a benchmark that we have run:
 
-With this patch applied the compiler generates sequences using the
-intended load-acquire (LDAR) and store-release (STLR) instructions, e.g.
+(without the shrinker)
+real -- mean: 153.27s, median: 153.199s
+sys -- mean: 541.652s, median: 541.903s
+user -- mean: 4384.9673999999995s, median: 4385.471s
 
-| <outlined_atomic64_read_acquire>:
-|         ldar    x0, [x0]
-|         ret
-|
-| <outlined_atomic64_set_release>:
-|         stlr    x1, [x0]
-|         ret
+(with the shrinker)
+real -- mean: 151.4956s, median: 151.456s
+sys -- mean: 461.14639999999997s, median: 465.656s
+user -- mean: 4384.7118s, median: 4384.675s
 
-To make sure that there were no other victims of the ifdeffery rewrite,
-I generated outlined copies of all of the {atomic,atomic64,atomic_long}
-atomic operations before and after commit 9257959a6e5b4fca. A diff of
-the generated assembly on arm64 shows that only the read_acquire() and
-set_release() operations were changed, and only lost their intended
-ordering:
+We observed a 14-15% reduction in kernel CPU time, which translated to
+over 1% reduction in real time.
 
-| [mark@lakrids:~/src/linux]% diff -u \
-| 	<(aarch64-linux-gnu-objdump -d before-9257959a6e5b4fca.o)
-| 	<(aarch64-linux-gnu-objdump -d after-9257959a6e5b4fca.o)
-| --- /proc/self/fd/11    2023-09-19 16:51:51.114779415 +0100
-| +++ /proc/self/fd/16    2023-09-19 16:51:51.114779415 +0100
-| @@ -1,5 +1,5 @@
-|
-| -before-9257959a6e5b4fca.o:     file format elf64-littleaarch64
-| +after-9257959a6e5b4fca.o:     file format elf64-littleaarch64
-|
-|
-|  Disassembly of section .text:
-| @@ -9,7 +9,7 @@
-|         4:      d65f03c0        ret
-|
-|  0000000000000008 <outlined_atomic_read_acquire>:
-| -       8:      88dffc00        ldar    w0, [x0]
-| +       8:      b9400000        ldr     w0, [x0]
-|         c:      d65f03c0        ret
-|
-|  0000000000000010 <outlined_atomic_set>:
-| @@ -17,7 +17,7 @@
-|        14:      d65f03c0        ret
-|
-|  0000000000000018 <outlined_atomic_set_release>:
-| -      18:      889ffc01        stlr    w1, [x0]
-| +      18:      b9000001        str     w1, [x0]
-|        1c:      d65f03c0        ret
-|
-|  0000000000000020 <outlined_atomic_add>:
-| @@ -1230,7 +1230,7 @@
-|      1070:      d65f03c0        ret
-|
-|  0000000000001074 <outlined_atomic64_read_acquire>:
-| -    1074:      c8dffc00        ldar    x0, [x0]
-| +    1074:      f9400000        ldr     x0, [x0]
-|      1078:      d65f03c0        ret
-|
-|  000000000000107c <outlined_atomic64_set>:
-| @@ -1238,7 +1238,7 @@
-|      1080:      d65f03c0        ret
-|
-|  0000000000001084 <outlined_atomic64_set_release>:
-| -    1084:      c89ffc01        stlr    x1, [x0]
-| +    1084:      f9000001        str     x1, [x0]
-|      1088:      d65f03c0        ret
-|
-|  000000000000108c <outlined_atomic64_add>:
-| @@ -2427,7 +2427,7 @@
-|      207c:      d65f03c0        ret
-|
-|  0000000000002080 <outlined_atomic_long_read_acquire>:
-| -    2080:      c8dffc00        ldar    x0, [x0]
-| +    2080:      f9400000        ldr     x0, [x0]
-|      2084:      d65f03c0        ret
-|
-|  0000000000002088 <outlined_atomic_long_set>:
-| @@ -2435,7 +2435,7 @@
-|      208c:      d65f03c0        ret
-|
-|  0000000000002090 <outlined_atomic_long_set_release>:
-| -    2090:      c89ffc01        stlr    x1, [x0]
-| +    2090:      f9000001        str     x1, [x0]
-|      2094:      d65f03c0        ret
-|
-|  0000000000002098 <outlined_atomic_long_add>:
+On another benchmark, where there was a lot more cold memory residing in
+zswap, we observed even more pronounced gains:
 
-I've build tested this with a variety of configs for alpha, arm, arm64,
-csky, i386, m68k, microblaze, mips, nios2, openrisc, powerpc, riscv,
-s390, sh, sparc, x86_64, and xtensa, for which I've seen no issues. I
-was unable to build test for ia64 and parisc due to existing build
-breakage in v6.6-rc2.
+(without the shrinker)
+real -- mean: 157.52519999999998s, median: 157.281s
+sys -- mean: 769.3082s, median: 780.545s
+user -- mean: 4378.1622s, median: 4378.286s
 
-Fixes: 9257959a6e5b4fca ("locking/atomic: scripts: restructure fallback ifdeffery")
-Reported-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/all/ZOWFtqA2om0w5Vmz@fedora/
-Reported-by: Darrick J. Wong <djwong@kernel.org>
-Link: https://lore.kernel.org/linux-fsdevel/20230912173026.GA3389127@frogsfrogsfrogs/
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Baokun Li <libaokun1@huawei.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: Dave Chinner <david@fromorbit.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Yi Zhang <yi.zhang@redhat.com>
-Cc: linux-arm-kernel@lists.infradead.org
----
- include/linux/atomic/atomic-arch-fallback.h | 10 +---------
- scripts/atomic/gen-atomic-fallback.sh       |  2 +-
- 2 files changed, 2 insertions(+), 10 deletions(-)
+(with the shrinker)
+real -- mean: 152.9608s, median: 152.845s
+sys -- mean: 517.4446s, median: 506.749s
+user -- mean: 4387.694s, median: 4387.935s
 
-Peter, are you happy to queue this in the tip tree? It's a pretty nasty
-regresssion in v6.5, and I'd like to get this in as a fix for v6.6 ASAP.
+Here, we saw around 32-35% reduction in kernel CPU time, which
+translated to 2.8% reduction in real time. These results confirm our
+hypothesis that the shrinker is more helpful the more cold memory we
+have.
 
-Thanks,
-Mark.
+Domenico Cerasuolo (1):
+  zswap: make shrinking memcg-aware
 
-diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
-index 18f5744dfb5d8..b83ef19da13de 100644
---- a/include/linux/atomic/atomic-arch-fallback.h
-+++ b/include/linux/atomic/atomic-arch-fallback.h
-@@ -459,8 +459,6 @@ raw_atomic_read_acquire(const atomic_t *v)
- {
- #if defined(arch_atomic_read_acquire)
- 	return arch_atomic_read_acquire(v);
--#elif defined(arch_atomic_read)
--	return arch_atomic_read(v);
- #else
- 	int ret;
- 
-@@ -508,8 +506,6 @@ raw_atomic_set_release(atomic_t *v, int i)
- {
- #if defined(arch_atomic_set_release)
- 	arch_atomic_set_release(v, i);
--#elif defined(arch_atomic_set)
--	arch_atomic_set(v, i);
- #else
- 	if (__native_word(atomic_t)) {
- 		smp_store_release(&(v)->counter, i);
-@@ -2575,8 +2571,6 @@ raw_atomic64_read_acquire(const atomic64_t *v)
- {
- #if defined(arch_atomic64_read_acquire)
- 	return arch_atomic64_read_acquire(v);
--#elif defined(arch_atomic64_read)
--	return arch_atomic64_read(v);
- #else
- 	s64 ret;
- 
-@@ -2624,8 +2618,6 @@ raw_atomic64_set_release(atomic64_t *v, s64 i)
- {
- #if defined(arch_atomic64_set_release)
- 	arch_atomic64_set_release(v, i);
--#elif defined(arch_atomic64_set)
--	arch_atomic64_set(v, i);
- #else
- 	if (__native_word(atomic64_t)) {
- 		smp_store_release(&(v)->counter, i);
-@@ -4657,4 +4649,4 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
- }
- 
- #endif /* _LINUX_ATOMIC_FALLBACK_H */
--// 202b45c7db600ce36198eb1f1fc2c2d5268ace2d
-+// 2fdd6702823fa842f9cea57a002e6e4476ae780c
-diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
-index c0c8a85d7c81b..a45154cefa487 100755
---- a/scripts/atomic/gen-atomic-fallback.sh
-+++ b/scripts/atomic/gen-atomic-fallback.sh
-@@ -102,7 +102,7 @@ gen_proto_order_variant()
- 	fi
- 
- 	# Allow ACQUIRE/RELEASE/RELAXED ops to be defined in terms of FULL ops
--	if [ ! -z "${order}" ]; then
-+	if [ ! -z "${order}" ] && ! meta_is_implicitly_relaxed "${meta}"; then
- 		printf "#elif defined(arch_${basename})\n"
- 		printf "\t${retstmt}arch_${basename}(${args});\n"
- 	fi
+Nhat Pham (1):
+  zswap: shrinks zswap pool based on memory pressure
+
+ Documentation/admin-guide/mm/zswap.rst |  12 +
+ include/linux/list_lru.h               |  39 +++
+ include/linux/memcontrol.h             |   6 +
+ include/linux/mmzone.h                 |  14 +
+ include/linux/zswap.h                  |   9 +
+ mm/list_lru.c                          |  46 ++-
+ mm/memcontrol.c                        |  33 ++
+ mm/swap_state.c                        |  50 +++-
+ mm/zswap.c                             | 397 ++++++++++++++++++++++---
+ 9 files changed, 548 insertions(+), 58 deletions(-)
+
 -- 
-2.30.2
-
+2.34.1
