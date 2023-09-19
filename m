@@ -2,111 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEE97A5BB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2622D7A5BBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjISHzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
+        id S230120AbjISH4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbjISHzQ (ORCPT
+        with ESMTP id S229932AbjISH4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:55:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9F312F;
-        Tue, 19 Sep 2023 00:55:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BCD3C433C7;
-        Tue, 19 Sep 2023 07:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695110110;
-        bh=NxpJYkRRMKcYH1DrE4WcpNHNOZjOskdv/B3fMk90j1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IwU709TYd4H43Xymnx2gXSUYOblXr/N/AwcpXTe8GbUUCobTdZFmu1SLxSiEUlmd6
-         GCoy3mLEIlPFja1uYTOdbTqTYEkfjQr+PgClyaxHdEnfgcciKAOEz/qbFQdQg9IvRi
-         qgZY1RMG4snDcJEoHRGhS6T4kEYMNogqzJ5IbbFA=
-Date:   Tue, 19 Sep 2023 09:55:06 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jon Hunter <jonathanh@nvidia.com>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Sameer Pujar <spujar@nvidia.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 6.5 000/285] 6.5.4-rc1 review
-Message-ID: <2023091956-harmonica-stingy-21f8@gregkh>
-References: <20230917191051.639202302@linuxfoundation.org>
- <dfe78c1a-8322-413b-f1b7-3a6a307a831c@nvidia.com>
- <2023091846-cabbage-imagines-3fde@gregkh>
- <bae1a61f-ab9d-2560-9c70-e09092363467@roeck-us.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bae1a61f-ab9d-2560-9c70-e09092363467@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 03:56:12 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245BB100;
+        Tue, 19 Sep 2023 00:56:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A7BCE1FE09;
+        Tue, 19 Sep 2023 07:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695110161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CFaGFhIaTzpbZC4A9IwfPNn/AnZpNzT/vtySOR34fG8=;
+        b=mQwQtjKdLG9NCVrXx66GnkR6xyZ1eLSfswc/ztDLE2Xy5UBtBpInHjSgUG0Kn9KMpgaXxb
+        NSIJsInCQ0at1qJqF8KNH6S7jMryeHguIlyALXneqJW2uJ99w1bZjfH6R8IS+sKCEDeueK
+        zWxc6bBt/egQBB/A2VN79qvV64g0Q/s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695110161;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CFaGFhIaTzpbZC4A9IwfPNn/AnZpNzT/vtySOR34fG8=;
+        b=+CMRTs0O4Z5kJUVbYpXCNfWOze9kIThOHpQVT6O6/2PVARStWVM8gzWTO3b9Yc5isOp4Vv
+        XNGdRU3dudrKvpDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EA0113458;
+        Tue, 19 Sep 2023 07:56:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zvARGhFUCWU1ewAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 19 Sep 2023 07:56:01 +0000
+Date:   Tue, 19 Sep 2023 09:56:00 +0200
+Message-ID: <87y1h2y4tr.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, corbet@lwn.net,
+        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 2/2] ALSA: Add new driver for Marian M2 sound card
+In-Reply-To: <20230918181044.7257-2-ivan.orlov0322@gmail.com>
+References: <20230918181044.7257-1-ivan.orlov0322@gmail.com>
+        <20230918181044.7257-2-ivan.orlov0322@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 08:17:43AM -0700, Guenter Roeck wrote:
-> On 9/18/23 05:56, Greg Kroah-Hartman wrote:
-> > On Mon, Sep 18, 2023 at 01:52:10PM +0100, Jon Hunter wrote:
-> > > Hi Greg,
-> > > 
-> > > On 17/09/2023 20:10, Greg Kroah-Hartman wrote:
-> > > > This is the start of the stable review cycle for the 6.5.4 release.
-> > > > There are 285 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > > 
-> > > > Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
-> > > > Anything received after that time might be too late.
-> > > > 
-> > > > The whole patch series can be found in one patch at:
-> > > > 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.4-rc1.gz
-> > > > or in the git tree and branch at:
-> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> > > > and the diffstat can be found below.
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > > 
-> > > > -------------
-> > > > Pseudo-Shortlog of commits:
-> > > 
-> > > ...
-> > > 
-> > > > Sameer Pujar <spujar@nvidia.com>
-> > > >       arm64: tegra: Update AHUB clock parent and rate
-> > > 
-> > > 
-> > > Unfortunately, the above change is causing a regression in one of our audio
-> > > tests and we are looking into why this is.
-> > > 
-> > > Can we drop this from stable for now?
-> > 
-> > Is it also a problem in Linus's tree?  Keeping bug-compatible is always
-> > good :)
-> > 
+On Mon, 18 Sep 2023 20:10:44 +0200,
+Ivan Orlov wrote:
 > 
-> Sorry, no, it isn't, especially in the context of at the same time suggesting
-> that everyone should start using the most recent stable release immediately
-> (instead of, say, selectively picking security patches).
-> 
-> I don't think Tegra users would be happy if their audio stopped working,
-> and it seems unlikely that they would accept the argument that they should
-> be happy to be bug-compatible with the latest upstream kernel - even more so
-> if that latest upstream kernel is a release candidate and the problem was
-> introduced in the commit window.
+> +#include <sound/core.h>
+> +#include <sound/control.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/initval.h>
+> +#include <sound/info.h>
+> +#include <linux/delay.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/interrupt.h>
 
-Very good point, I've now dropped it.
+We usually include linux/* at first, followed by sound/*.
 
-greg k-h
+
+> +#define DEBUG
+
+Any need to define this for the production system?
+
+
+> +struct marian_card_descriptor;
+> +struct marian_card;
+> +
+> +struct marian_card_descriptor {
+> +	char *name;
+> +	char *port_names;
+> +	unsigned int speedmode_max;
+> +	unsigned int ch_in;
+> +	unsigned int ch_out;
+> +	unsigned int midi_in;
+> +	unsigned int midi_out;
+> +	unsigned int serial_in;
+> +	unsigned int serial_out;
+> +	unsigned int wck_in;
+> +	unsigned int wck_out;
+> +
+> +	unsigned int dma_bufsize;
+> +
+> +	void (*hw_constraints_func)(struct marian_card *marian,
+> +				    struct snd_pcm_substream *substream,
+> +				    struct snd_pcm_hw_params *params);
+> +	/* custom function to set up ALSA controls */
+> +	void (*create_controls)(struct marian_card *marian);
+> +	/* init is called after probing the card */
+> +	int (*init_card)(struct marian_card *marian);
+> +	void (*free_card)(struct marian_card *marian);
+> +	/* prepare is called when ALSA is opening the card */
+> +	void (*prepare)(struct marian_card *marian);
+> +	void (*set_speedmode)(struct marian_card *marian, unsigned int speedmode);
+> +	void (*proc_status)(struct marian_card *marian, struct snd_info_buffer *buffer);
+> +	void (*proc_ports)(struct marian_card *marian, struct snd_info_buffer *buffer,
+> +			   unsigned int type);
+> +
+> +	struct snd_pcm_hardware info_playback;
+> +	struct snd_pcm_hardware info_capture;
+
+Do we need this kind of abstraction inside the driver?
+As far as I see, the driver supports only a single model, hence there
+is no real merit of abstracted / indirect function calls.
+
+So I stop reading at this point.
+
+
+thanks,
+
+Takashi
