@@ -2,139 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF327A6D1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FD27A6D5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbjISVrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 17:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
+        id S233279AbjISVvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 17:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjISVrp (ORCPT
+        with ESMTP id S229690AbjISVvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 17:47:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FDFB3;
-        Tue, 19 Sep 2023 14:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695160060; x=1726696060;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WS9L3QFPXiqwWBLJkP/BjE61p/kydfJWxwHndNJas9s=;
-  b=PkrdtUc8bl+L24UOdnCJYD+6DnpSho3+ojNI0eRJ24z0o7oX6/oELLHr
-   rUuLzMZlc7GFTn7n8ut8Ad5XjrOp+82ierdnkiVtMXQ8UkDSyomuqL0ML
-   BQVjKta5BE5L6+geDa3QXXGEaDHvUrWAZtwSPrQ5E3GCZn9iTXEkBEHQi
-   Ou2mU40QcfliYsaKAt0g9u09zP0DDv3BIhjh5RrccqBMIOBhdP9f+UH6+
-   T6ygEaHfrw6TSuGV57VQVj0jn09+kWkd60Wt3GAKjuXYgQxYF1iBPe6sP
-   crHULQP2GM1zeZhNtZpTYVjAjWP6bOzdbiaNs6+edQ2qMMjG7B0ZudWF9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="360315086"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="360315086"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 14:47:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="993320987"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="993320987"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 19 Sep 2023 14:47:38 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiiZE-0007xU-08;
-        Tue, 19 Sep 2023 21:47:36 +0000
-Date:   Wed, 20 Sep 2023 05:47:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>, vkoul@kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        imx@lists.linux.dev
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v2 2/2] dmaengine: fsl-edma: add trace event support
-Message-ID: <202309200524.QTINjSsC-lkp@intel.com>
-References: <20230919151430.2919042-3-Frank.Li@nxp.com>
+        Tue, 19 Sep 2023 17:51:23 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C1FBD;
+        Tue, 19 Sep 2023 14:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1695160256; x=1695765056; i=quwenruo.btrfs@gmx.com;
+ bh=PsCGZ/T8xmLzRdlXzocORqNkiwMoQvmWK8mCJE4vLsI=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=Cn4ud0uvfoFjXnqOIxSgJJ4o88Wm2TtcMu3i2WsZj2OWvpMUY/Z4Hgt52mJdtWlBYg22dYWzV5V
+ 5u21dRDWcw7eyI598BKVz2AWfm3IsqClZMzu9/iFqQlkGJ63Jkrk6d8Q5kNkZob7mc3vtMChtrwB0
+ khiWTHHiW/jRIORjgEH+EGiYcKyRr5oIWp11cw/oN9koEAZm2TcCckk2e8cfpHZkyIFmWr5xfAVnp
+ CAhZD8ySPyCdONV4uBPZs+zYDJLlVfPNugNjLz6/JH9SuxjYwv5qG8GFR21JmMBlFauhQ4AsU0u+q
+ KZxYsoxuH3pD23OCiKgjU7PJkT8Hk0ZjH6hw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6lpM-1qlSAT3UBK-008LT5; Tue, 19
+ Sep 2023 23:50:56 +0200
+Message-ID: <a364f344-b718-48ff-9e2a-484c5ded6e7f@gmx.com>
+Date:   Wed, 20 Sep 2023 07:20:49 +0930
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919151430.2919042-3-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] btrfs: fix 64bit division in
+ btrfs_insert_striped_mirrored_raid_extents
+To:     dsterba@suse.cz
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
+ <20230918-rst-updates-v1-1-17686dc06859@wdc.com>
+ <CAMuHMdWM3_cj4Nb96pZQfErx7n+0Cd7RUQZV+bpvr1Tz5T3sgw@mail.gmail.com>
+ <e12a171e-d3b8-401e-b01a-9440f5c75293@wdc.com>
+ <20230918162448.GI2747@suse.cz>
+ <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
+ <20230919135810.GT2747@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20230919135810.GT2747@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zmGi369qwQvSdVaxP1uO76xVj82gXJKp3l/ubSryUUBREuPsdks
+ rrobnypNpnu0o0DBf0SvPUkMtWnKc+1Ntn+UBPNnvbqsFqqRa0KmMRo0A4Kz/uC1gRXU5G9
+ N0XzyYeN+rjXUhlGWBgkhDxZwbBZXlKPSec0GbmfYb/DhYlWl5MQOSwdcTdtuZYNcadJqo6
+ NQz8PPbpue8DZG2Wq99YA==
+UI-OutboundReport: notjunk:1;M01:P0:Xe7D27dGaVg=;P8QDX1wyPkWCu64NBzyHrk64UYY
+ xgTAUZKwE76HVmAB8Nx1VHUDRIXHrEcHqeNj6FqZlAClrvdXXsepk0/3lq2BkMaWJvN31y+uS
+ iyvQ8nKYnYo4+RvCI+8J0TRwBbDZ+XJuuIhRSkO++dZaLElSwxm4+Rv8R369oY3cnZ2VcRkBo
+ 3gXwYPROB9sBLaFb1Wtpn2yx1xFBNsC9poXuJDtVqXlQNE6UlbmXOdjksYMxTVIx7e0+S7MLV
+ dQRkc1/0vuLtQRvap+1Z/0ELRR43Njb+FQb8aLQD8/4r75hZF20xKYypbkSXs6yGQhPU4TIu5
+ w5FMtHukRU0QCYC7qxu6Tv9TFZ5FSXXjpQpkqWUVwtch59setz756YuGS4MtqyMIqcpoW2/kL
+ dCugTTM8vIQ4LfJzmOiYb/VUxyHuLH/UrAorS76cPIqHNlcaB/WBukdT5Vhqg3jaRCo57ZPmM
+ 0l9no6SZcKt1bAkjm1Lh5CU8jNmiTE95L5cSottyBqYxTEq0a/ozFX95Usj3/45LjFx7+FhWL
+ GezqgVfvba/rvRuuF7k5hw53PrnmuIQiQUV81eWE5T1EQjEhIsOky+9qlw33cR0aoVCAcqHzL
+ RjZv1GW3dfFo5OJg5vtwb2xArx7GwBCmOE06YmoRL/4+JcUunCfSkt5XqksubsriCUJIiGzfi
+ yFgnk86FilKzcU8gCNsNIV4qaPqhV8t2crPBc0bvReAjaVAj7xPALSg8z+/Ex5+kmc3oQYCRV
+ 1DnfJ7ZPw+ay2tPa9K5ArOrl3Zv2/lMvP9qyGubCKU3wHFxSAvWqsWYgQlQ+OxTlvGzn5kuxh
+ s1JcID3eZo8RHO6r9k10AUaHdnAgo+W1aRr9p/r22tOwItZB8OYMYm5G0qncKqYvbJQ/R6Jjs
+ xyFMEWI1JT5flvXdGt5YCzLRK/Z3qhvvfqQHj+KnoTMq2AHfz0lzDrznciw44HTtVXOgnNI50
+ fO7wAA==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on vkoul-dmaengine/next]
-[also build test WARNING on linus/master v6.6-rc2 next-20230919]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/dmaengine-fsl-emda-add-debugfs-support/20230920-010257
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git next
-patch link:    https://lore.kernel.org/r/20230919151430.2919042-3-Frank.Li%40nxp.com
-patch subject: [PATCH v2 2/2] dmaengine: fsl-edma: add trace event support
-config: arc-randconfig-001-20230920 (https://download.01.org/0day-ci/archive/20230920/202309200524.QTINjSsC-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309200524.QTINjSsC-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309200524.QTINjSsC-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/trace/define_trace.h:102,
-                    from drivers/dma/fsl-edma-trace.h:134,
-                    from drivers/dma/fsl-edma-common.h:238,
-                    from drivers/dma/fsl-edma-trace.c:4:
-   drivers/dma/./fsl-edma-trace.h: In function 'trace_raw_output_edma_log_io':
->> drivers/dma/./fsl-edma-trace.h:28:19: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'int' [-Wformat=]
-      28 |         TP_printk("offset %08lx: value %08x",
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_EVENT_CLASS'
-     203 |         trace_event_printf(iter, print);                                \
-         |                                  ^~~~~
-   drivers/dma/./fsl-edma-trace.h:28:9: note: in expansion of macro 'TP_printk'
-      28 |         TP_printk("offset %08lx: value %08x",
-         |         ^~~~~~~~~
-   In file included from include/trace/trace_events.h:237:
-   drivers/dma/./fsl-edma-trace.h:28:31: note: format string is defined here
-      28 |         TP_printk("offset %08lx: value %08x",
-         |                           ~~~~^
-         |                               |
-         |                               long unsigned int
-         |                           %08x
 
 
-vim +28 drivers/dma/./fsl-edma-trace.h
+On 2023/9/19 23:28, David Sterba wrote:
+> On Tue, Sep 19, 2023 at 10:07:00AM +0930, Qu Wenruo wrote:
+>> On 2023/9/19 01:54, David Sterba wrote:
+>>> On Mon, Sep 18, 2023 at 03:03:10PM +0000, Johannes Thumshirn wrote:
+>>>> On 18.09.23 16:19, Geert Uytterhoeven wrote:
+>>>>> Hi Johannes,
+>>>>>
+>>>>> On Mon, Sep 18, 2023 at 4:14=E2=80=AFPM Johannes Thumshirn
+>>>>> <johannes.thumshirn@wdc.com> wrote:
+>>>>>> Fix modpost error due to 64bit division on 32bit systems in
+>>>>>> btrfs_insert_striped_mirrored_raid_extents.
+>>>>>>
+>>>>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>>>>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>>>>>
+>>>>> Thanks for your patch!
+>>>>>
+>>>>>> --- a/fs/btrfs/raid-stripe-tree.c
+>>>>>> +++ b/fs/btrfs/raid-stripe-tree.c
+>>>>>> @@ -148,10 +148,10 @@ static int btrfs_insert_striped_mirrored_raid=
+_extents(
+>>>>>>     {
+>>>>>>            struct btrfs_io_context *bioc;
+>>>>>>            struct btrfs_io_context *rbioc;
+>>>>>> -       const int nstripes =3D list_count_nodes(&ordered->bioc_list=
+);
+>>>>>> -       const int index =3D btrfs_bg_flags_to_raid_index(map_type);
+>>>>>> -       const int substripes =3D btrfs_raid_array[index].sub_stripe=
+s;
+>>>>>> -       const int max_stripes =3D trans->fs_info->fs_devices->rw_de=
+vices / substripes;
+>>>>>> +       const size_t nstripes =3D list_count_nodes(&ordered->bioc_l=
+ist);
+>>>>>> +       const enum btrfs_raid_types index =3D btrfs_bg_flags_to_rai=
+d_index(map_type);
+>>>>>> +       const u8 substripes =3D btrfs_raid_array[index].sub_stripes=
+;
+>>>>>> +       const int max_stripes =3D div_u64(trans->fs_info->fs_device=
+s->rw_devices, substripes);
+>>>>>
+>>>>> What if the quotient does not fit in a signed 32-bit value?
+>>>>
+>>>> Then you've bought a lot of HDDs ;-)
+>>>>
+>>>> Jokes aside, yes this is theoretically correct. Dave can you fix
+>>>> max_stripes up to be u64 when applying?
+>>>
+>>> I think we can keep it int, or unsigned int if needed, we can't hit su=
+ch
+>>> huge values for rw_devices. The 'theoretically' would fit for a machin=
+e
+>>> with infinite resources, otherwise the maximum number of devices I'd
+>>> expect is a few thousand.
+>>
+>> In fact, we already have an check in btrfs_validate_super(), if the
+>> num_devices is over 1<<31, we would reject the fs.
+>
+> No, it's just a warning in that case.
 
-    14	
-    15	DECLARE_EVENT_CLASS(edma_log_io,
-    16		TP_PROTO(struct fsl_edma_engine *edma, void __iomem *addr, u32 value),
-    17		TP_ARGS(edma, addr, value),
-    18		TP_STRUCT__entry(
-    19			__field(struct fsl_edma_engine *, edma)
-    20			__field(void __iomem *, addr)
-    21			__field(u32, value)
-    22		),
-    23		TP_fast_assign(
-    24			__entry->edma = edma;
-    25			__entry->addr = addr;
-    26			__entry->value = value;
-    27		),
-  > 28		TP_printk("offset %08lx: value %08x",
-    29			__entry->addr - __entry->edma->membase, __entry->value)
-    30	);
-    31	
+We can make it a proper reject.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+>> I think we should be safe to further reduce the threshold.
+>>
+>> U16_MAX sounds a valid and sane value to me.
+>> If no rejection I can send out a patch for this.
+>>
+>> And later change internal rw_devices/num_devices to u16.
+>
+> U16 does not make sense here, it's not a native int type on many
+> architectures and generates awkward assembly code. We use it in
+> justified cases where it's saving space in structures that are allocated
+> thousand times. The arbitrary limit 65536 is probably sane but not
+> much different than 1<<31, practically not hit and was useful to
+> note fuzzed superblocks.
+
+OK, we can make it unsigned int (mostly u32) for fs_info::*_devices, but
+still do extra limits on things like device add to limit it to U16_MAX.
+
+Would this be a better solution?
+At least it would still half the width while keep it native to most (if
+not all) archs.
+
+Thanks,
+Qu
