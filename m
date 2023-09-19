@@ -2,200 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFAE7A607B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4A67A607C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbjISLAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
+        id S231942AbjISLAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231877AbjISLAm (ORCPT
+        with ESMTP id S231923AbjISLAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:00:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457EB114;
-        Tue, 19 Sep 2023 04:00:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 917D4C433C8;
-        Tue, 19 Sep 2023 11:00:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695121235;
-        bh=ozaaNy4A2j0mALWUaebh6QEMAgfZg8sTwwxTOEiQSmg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pgRh1Q2aQOq7MkEWZtc6silnhIXVu7ssk1lrCtjWGpOId4D15+051Hs3CCNp6B5dJ
-         6rULnREK+E9yR50coftq4rcIfbH+Z8G/yN094LrU6ZswWL5i50UJOdNZI8+g/fG8EA
-         F4tLJfJpr1wD9KVw9/gLot3EbTYRvFaGOm6B3I/GjOqYFYPqMyEP90DSrIMorYqoF0
-         ADJu1688mVobT6eH3ZbXIjj3u7XmTMj4DcfNNU+KHnn+odTMko6ZHsKsDB+6053q39
-         x7w7X+MZIB/XbNHODn7DuLQOaZmYlqjmBPGXuGfPlSXgD4HtqMowGWBs+Q+x/8cpdh
-         I7CnvXsPLBQEQ==
-Date:   Tue, 19 Sep 2023 12:00:30 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Daniel Matyas <daniel.matyas@analog.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 3/7] dt-bindings: hwmon: Add possible new properties
- to max31827 bindings
-Message-ID: <20230919-f2858c937249f5c6746d416b@fedora>
-References: <20230919093456.10592-1-daniel.matyas@analog.com>
- <20230919093456.10592-3-daniel.matyas@analog.com>
+        Tue, 19 Sep 2023 07:00:44 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55233E3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:00:38 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C3CD46606F85;
+        Tue, 19 Sep 2023 12:00:35 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695121236;
+        bh=pGABrkdMPNOId/UpOvVX0W6yAEUBMmgWgmu2kx8oQPo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=D+5/LSvlB2WPeQftHfgNSnq2s/t/wiLMXq3IYleEi5nSsebq+TVVlVYhPYRmOOvZy
+         9g37nQyJIkciCMjcHc+SN9DSZku7zx4GgHAkmtiNhF0t65tSRJ862EA/+KK9WQn/vl
+         5uQucyNIYElMbOT0OFyuLRboluvrnwBahVjvkb2bji7d/2ZJEQKShW3v7qPx01MYX2
+         lYz5BYuSXVKkOimtCEAV8p6Tw1GhfA44Z3Yq1byPkGLC8X8THB11gepUx2aAh5gO9I
+         MMOKFiGGF8fvc8i4mCrMfBMa0+7mUoJGV02Huv19EBZ3sXDX2btCXQetvjPyrAyb20
+         aUnIJkRXH/okA==
+Message-ID: <75bcb583-a3c8-661c-d520-affc46c8f6e5@collabora.com>
+Date:   Tue, 19 Sep 2023 13:00:33 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+bnDgX8rN5Rak+ZZ"
-Content-Disposition: inline
-In-Reply-To: <20230919093456.10592-3-daniel.matyas@analog.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] drm/mediatek: Add spinlock for setting vblank event in
+ atomic_begin
+Content-Language: en-US
+To:     =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        "fshao@chromium.org" <fshao@chromium.org>
+Cc:     "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
+        <Singo.Chang@mediatek.com>,
+        =?UTF-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= 
+        <Johnson.Wang@mediatek.com>,
+        =?UTF-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?= 
+        <Jason-ch.Chen@mediatek.com>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        "eugen.hristev@collabora.com" <eugen.hristev@collabora.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "amergnat@baylibre.com" <amergnat@baylibre.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230822132646.9811-1-jason-jh.lin@mediatek.com>
+ <5a4a0d12-d16a-0836-f6c5-6e6c2f3a9097@collabora.com>
+ <CAC=S1ng8033sSGNFYr1vYfYfHbdG0Dk_0xai08=uomGO-EN66A@mail.gmail.com>
+ <9a7b56ec641f79fc14ecd83faff61bfed05b12a5.camel@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <9a7b56ec641f79fc14ecd83faff61bfed05b12a5.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il 19/09/23 09:37, Jason-JH Lin (林睿祥) ha scritto:
+> Hi Angelo
+> 
+> Thanks for the reviews.
+> 
+> Hi Fei,
+> 
+> Thanks for the testing.
+> 
+> On Mon, 2023-09-18 at 18:47 +0800, Fei Shao wrote:
+>>   	
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>   Hi Angelo,
+>>
+>> On Wed, Sep 13, 2023 at 4:35 PM AngeloGioacchino Del Regno
+>> <angelogioacchino.delregno@collabora.com> wrote:
+>>>
+>>> Il 22/08/23 15:26, Jason-JH.Lin ha scritto:
+>>>> Add spinlock protection to avoid race condition on vblank event
+>>>> between mtk_drm_crtc_atomic_begin() and
+>> mtk_drm_finish_page_flip().
+>>>>
+>>>
+>>> Hello Jason,
+>>>
+>>> Can you please provide more information about this race condition?
+>>> (check below)
+>>>
+>>>> Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek
+>> SoC MT8173.")
+>>>> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+>>>> ---
+>>>>    drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 5 +++++
+>>>>    1 file changed, 5 insertions(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+>> b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+>>>> index d40142842f85..128a672fe3c9 100644
+>>>> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+>>>> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+>>>> @@ -746,6 +746,9 @@ static void mtk_drm_crtc_atomic_begin(struct
+>> drm_crtc *crtc,
+>>>
+>>>                                                                     
+>>       crtc);
+>>>>        struct mtk_crtc_state *mtk_crtc_state =
+>> to_mtk_crtc_state(crtc_state);
+>>>>        struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
+>>>> +     unsigned long flags;
+>>>> +
+>>>> +     spin_lock_irqsave(&crtc->dev->event_lock, flags);
+>>>>
+>>>>        if (mtk_crtc->event && mtk_crtc_state->base.event)
+>>>>                DRM_ERROR("new event while there is still a pending
+>> event\n");
+>>>> @@ -756,6 +759,8 @@ static void mtk_drm_crtc_atomic_begin(struct
+>> drm_crtc *crtc,
+>>>
+>>> ...because my suspect is that what creates the race condition in
+>> this function is
+>>> the unlocked *assignment* to mtk_crtc->event, not the rest.
+>>>
+>>> If I'm right, you don't need to unconditionally spinlock at the
+>> beginning of this
+>>> function hence ever-so-slightly improving performance compared to
+>> this version.
+>>>
+>>> Can you please try this one and check if this *also* solves the
+>> issue?
+>>>
+>>>          if (mtk_crtc_state->base.event) {
+>>>                  mtk_crtc_state->base.event->pipe =
+>> drm_crtc_index(crtc);
+>>>                  WARN_ON(drm_crtc_vblank_get(crtc) != 0);
+>>>
+>>>                  spin_lock_irqsave(&crtc->dev->event_lock, flags);
+>>>                  mtk_crtc->event = mtk_crtc_state->base.event;
+>>>                  spin_lock_irqrestore(&crtc->dev->event_lock,
+>> flags);
+>>>
+>>>                  mtk_crtc_state->base.event = NULL;
+>>>          }
+>>>
+>>> P.S.: I'd try that myself, but I can't seem to reproduce the issue.
+>>
+> I can't reproduce the system hang issue reported from customer by
+> toggling the night light mode in UI panel either.
+> But I can see the error message "new event while there is still a
+> pending event" when I was reproducing the issue.
+> 
+> Here is the debug info from "Wei-Shun <weishunc@google.com>":
+> 
+>  From the kernel tracing:
+> 99342.377173: mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 99342.377226:
+> drm_crtc_send_vblank_event <-mtk_crtc_ddp_irq
+> 99342.393831:
+> mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 99342.393887:
+> drm_crtc_send_vblank_event <-mtk_crtc_ddp_irq
+> 99342.410469:
+> mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 99342.410519:
+> drm_crtc_send_vblank_event <-mtk_crtc_ddp_irq
+> 99342.427094:
+> mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 99342.443831:
+> mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 99342.460495:
+> mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 99342.477157:
+> mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 99342.493841:
+> mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 99342.510453:
+> mtk_crtc_ddp_irq <-mtk_disp_ovl_irq_handler
+> 
+> Every mtk_crtc_ddp_irq should come with a drm_crtc_send_vblank_event.
+> However, when the issue happens, the mtk_crtc_ddp_irq keeps firing but
+> no drm_crtc_send_vblank_event. I suspect this is the main reason
+> causing flip_done timeout.
+> 
+> In mtk_drm_crtc.c, mtk_crtc->config_updating and mtk_crtc-
+>> pending_needs_vblank are the conditions that may impact the vblank
+> event.
+> 
+> static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+> {
+>      struct drm_crtc *crtc = &mtk_crtc->base;
+>      unsigned long flags;
+> 
+>      drm_crtc_handle_vblank(&mtk_crtc->base);
+> 
+>      spin_lock_irqsave(&crtc->dev->event_lock, flags);
+> ==> if (!mtk_crtc->config_updating && mtk_crtc->pending_needs_vblank) {
+>           mtk_drm_crtc_finish_page_flip(mtk_crtc);
+>           mtk_crtc->pending_needs_vblank = false;
+>      }
+>      spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
+> }
+> 
+> 
+> There are 3 lines are called in mtk_drm_crtc_finish_page_flip():
+> drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
+> drm_crtc_vblank_put(crtc);
+> mtk_crtc->event = NULL;
+> 
+> So I want to protect these 3 things to avoid them encountering race
+> conditions:
+> mtk_crtc_state->base.event //will be provided on atomic_commit complete
+> drm_crtc_vblank_get(crtc)
+> mtk_crtc->event
+> 
+> 
+> I have tried to protect this line only:
+> 
+> spin_lock_irqsave(&crtc->dev->event_lock, flags);
+> mtk_crtc->event = mtk_crtc_state->base.event;
+> spin_lock_irqrestore(&crtc->dev->event_lock,flags);
+> 
+> I can still see the error message "new event while there is still a
+> pending event" when I toggled the night light mode.
+> 
+> Maybe that is mtk_crtc->event here:
+> if (mtk_crtc->event && mtk_crtc_state->base.event)
+> haven't set to NULL by mtk_drm_crtc_finish_page_flip().
+> 
+> But that not a problem because we will protect mtk_crtc->event here:
+> mtk_crtc->event = mtk_crtc_state->base.event;
+> 
+> 
+> So should we remove that error message since it doesn't help and may
+> cause the confuse after we fix this issue?
+> 
+> 
+>> I'm still able to reproduce it so I gave it a try, and this approach
+>> also seems to fix the issue.  :)
+>> FWIW, the way I reproduce that is to toggle the night light mode on
+>> and off repeatedly through the UI panel while playing YouTube videos
+>> on my device.
+>>
+>> Jason, can you post a new version with Angelo's suggestion?
+>>
+> 
+> OK, I can take Angelo's suggestion. Thanks!
+> But I am wondering if we should remove this log?
+> DRM_ERROR("new event while there is still a pending event\n");
+> 
 
---+bnDgX8rN5Rak+ZZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the analysis.
 
-Hey,
+Please don't remove that line, this indicates that there might be another issue
+somewhere else, and someone will tackle that later.
 
-On Tue, Sep 19, 2023 at 12:34:51PM +0300, Daniel Matyas wrote:
-> These modify the corresponding bits in the configuration register.
->=20
-> adi,comp-int is a hardware property, because it affects the behavior
-> of the interrupt signal and whatever it is connected to.
->=20
-> adi,timeout-enable is a hardware property, because it affects i2c
-> bus operation.
->=20
-> Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
+Regards,
+Angelo
 
-Thanks for the updates. This looks okay to me now.
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> 
+> Regards,
+> Jason-JH.Lin
+> 
+>> Regards,
+>> Fei
+>>
+>>>
+>>> Regards,
+>>> Angelo
+>>>
+>>
 
-Thanks,
-Conor.
-
-> ---
->=20
-> v3 -> v4: Changed property names (adi,flt-q =3D adi,fault-q; adi,alrm-pol
-> =3D adi,alarm-pol). Expressed default values in binding.
->=20
-> v2 -> v3: Changed commit subject and message
->=20
-> v1 -> v2: Added adi,timeout-enable property to binding. Fixed
-> dt_binding_check errors.
->=20
->  .../bindings/hwmon/adi,max31827.yaml          | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml b/=
-Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> index 2dc8b07b4d3b..f60e06ab7d0a 100644
-> --- a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> +++ b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> @@ -32,6 +32,68 @@ properties:
->        Must have values in the interval (1.6V; 3.6V) in order for the dev=
-ice to
->        function correctly.
-> =20
-> +  adi,comp-int:
-> +    description:
-> +      If present interrupt mode is used. If not present comparator mode =
-is used
-> +      (default).
-> +    type: boolean
-> +
-> +  adi,alarm-pol:
-> +    description:
-> +      Sets the alarms active state.
-> +            - 0 =3D active low
-> +            - 1 =3D active high
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1]
-> +
-> +  adi,fault-q:
-> +    description:
-> +      Select how many consecutive temperature faults must occur before
-> +      overtemperature or undertemperature faults are indicated in the
-> +      corresponding status bits.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [1, 2, 4, 8]
-> +
-> +  adi,timeout-enable:
-> +    description:
-> +      Enables timeout. Bus timeout resets the I2C-compatible interface w=
-hen SCL
-> +      is low for more than 30ms (nominal).
-> +    type: boolean
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: adi,max31829
-> +
-> +    then:
-> +      properties:
-> +        adi,alarm-pol:
-> +          default: 1
-> +
-> +    else:
-> +      properties:
-> +        adi,alarm-pol:
-> +          default: 0
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: adi,max31827
-> +
-> +    then:
-> +      properties:
-> +        adi,fault-q:
-> +          default: 1
-> +
-> +    else:
-> +      properties:
-> +        adi,fault-q:
-> +          default: 4
-> +
-> +
->  required:
->    - compatible
->    - reg
-> @@ -49,6 +111,10 @@ examples:
->              compatible =3D "adi,max31827";
->              reg =3D <0x42>;
->              vref-supply =3D <&reg_vdd>;
-> +            adi,comp-int;
-> +            adi,alarm-pol =3D <0>;
-> +            adi,fault-q =3D <1>;
-> +            adi,timeout-enable;
->          };
->      };
->  ...
-> --=20
-> 2.34.1
->=20
-
---+bnDgX8rN5Rak+ZZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQl/SwAKCRB4tDGHoIJi
-0lIhAQDC5V+WeEqVcdnL49Hgv0BWfJn95IGYtTsh6LaOMhVwqgEA/vjkH07s3R7P
-N+WNivHH24dE+u4jHH20ugjnxuDoegY=
-=JfNV
------END PGP SIGNATURE-----
-
---+bnDgX8rN5Rak+ZZ--
