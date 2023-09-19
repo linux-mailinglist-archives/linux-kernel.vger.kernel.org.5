@@ -2,165 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F16F7A569F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 02:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CDE7A56A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 02:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbjISAh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 20:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
+        id S230291AbjISAiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 20:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjISAhY (ORCPT
+        with ESMTP id S229508AbjISAix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 20:37:24 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AD98E;
-        Mon, 18 Sep 2023 17:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695083826; x=1695688626; i=quwenruo.btrfs@gmx.com;
- bh=Vsshq0J5dMVAnGNx93Po1CDB8savgZn4lYGAa8RnC3M=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=TfEO55ZudSqHvAlSCHo1iDTpq+Us6R53lArvR9/btjK7Mr5emwC4VWPSp1XHhwDc+An3Us5UtTC
- ROFMh1eIDWkFPT8srN6kicG9F4+KgvgGudRM30wio2J8QRyWwBOCDg5YMhvRDjL7fg6zO33szAMEU
- XRlig5u2bL6RjBzNEau8jWNBhqFFjeg6Fv0g4SMs95AoMJevHOOJRJAL6HsehtDsSmgwZSskfhtl0
- rtfdSLcFzb6VtgV1ueek1hEBvM4l64VW3OAchCoSd6mgs6unx3jf4t3OBv0D6G+vrq0Gd6qFM0jCV
- fZydILUDs9LRW/JHC36TfTtCSd7cyOsmfO0A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbRk3-1rFWZ63laj-00btlu; Tue, 19
- Sep 2023 02:37:06 +0200
-Message-ID: <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
-Date:   Tue, 19 Sep 2023 10:07:00 +0930
+        Mon, 18 Sep 2023 20:38:53 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEDF107;
+        Mon, 18 Sep 2023 17:38:47 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d8162698f0dso4971673276.0;
+        Mon, 18 Sep 2023 17:38:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695083926; x=1695688726; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+BrAIiEZWlqz7+FDnE8u9tarMF/2bVwunjQA4h3kz1Q=;
+        b=QddILysf93vSyhJrIEchOtmhoVZJKsxhMBiZ3qV1aJfTgrzmMj4eRpnJWrcGeNc2P8
+         rV7jU/DHIU215EUzwjRWKtXDE9d2XHUE3qU00EuAn4WrET8angbWR365z4HLRLR/Amnv
+         fFfkDgcrejplWi4ei+4FXHm1wBqzWUhezrWZGnn7JNf87kzOrUs1i9GWK1yGe3okbPbP
+         pMpG+3u+2+e4rGJPsnuueX6z1DK+AQBHsox5Ikz0VxEUFpaWNK3P7kILhL0m9lMF+qdz
+         4o237Kz3CQiNG+T15ciUlmfAs0r9qTdkDdl+w/8QTdII41t/OvFM2JAfgFDAC0ZJ9wmc
+         +yKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695083926; x=1695688726;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+BrAIiEZWlqz7+FDnE8u9tarMF/2bVwunjQA4h3kz1Q=;
+        b=gItMRnoCI5W9ldp1c/gXcs9dWPlzD6ZVJUrk+v78mG/5C+ywXcH3bXrJzuDaOjiVbX
+         eO54bVuwSVwep17Vx+tY6mr+ILJYkABXWp6WrCGf6IvJtfqZt2DJ3pbyxlIbb08ufVia
+         tDplrwSGIjcWNd0IuXlXsEGA96YErDh6dX59MmVBZ5sPz/kccT++hDDmg52A62JMSbPN
+         ECdaK366W26yRNACtVqvcEvGqHGvRPLBRAlKPXGarIdAZgOxbc+I56Sa+hmazXrTUEDa
+         cqtOOhn/Jdz9+gqZD2j3Tqul5+zROBHY6L7EITCCrVaed/HgIERdQOZKqlOmN2rkWrpL
+         Dyeg==
+X-Gm-Message-State: AOJu0YzT+Br8y3sShLrspl6HZN4zAaY7BNB8/WBKjGzTVAtAB9iqrft4
+        EW+Zhd6/Riv/9pi4gX56O10=
+X-Google-Smtp-Source: AGHT+IF3HR+pL2xsoZYsXtpvyi+BXF+Ub8xKeYeQ15PAk4FgZND2gP6wDx5pfhfNl49Gtr505BxuQw==
+X-Received: by 2002:a25:25d3:0:b0:d81:8c74:8f88 with SMTP id l202-20020a2525d3000000b00d818c748f88mr9876563ybl.25.1695083926552;
+        Mon, 18 Sep 2023 17:38:46 -0700 (PDT)
+Received: from firmament.. (h198-137-20-64.xnet.uga.edu. [198.137.20.64])
+        by smtp.gmail.com with ESMTPSA id b13-20020a25340d000000b00d81c86f121esm2121537yba.11.2023.09.18.17.38.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 17:38:46 -0700 (PDT)
+From:   Matthew House <mattlloydhouse@gmail.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+Date:   Mon, 18 Sep 2023 20:37:42 -0400
+Message-ID: <20230919003800.93141-1-mattlloydhouse@gmail.com>
+In-Reply-To: <CAJfpegvTiK=RM+0y07h-2vT6Zk2GCu6F98c=_CNx8B1ytFtO-g@mail.gmail.com>
+References: <20230914-salzig-manifest-f6c3adb1b7b4@brauner> <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com> <20230914-lockmittel-verknallen-d1a18d76ba44@brauner> <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com> <20230918-grafik-zutreffen-995b321017ae@brauner> <CAOssrKfS79=+F0h=XPzJX2E6taxAPmEJEYPi4VBNQjgRR5ujqw@mail.gmail.com> <20230918-hierbei-erhielten-ba5ef74a5b52@brauner> <CAJfpegtaGXoZkMWLnk3PcibAvp7kv-4Yobo=UJj943L6v3ctJQ@mail.gmail.com> <20230918-stuhl-spannend-9904d4addc93@brauner> <CAJfpegvxNhty2xZW+4MM9Gepotii3CD1p0fyvLDQB82hCYzfLQ@mail.gmail.com> <20230918-bestialisch-brutkasten-1fb34abdc33c@brauner> <CAJfpegvTiK=RM+0y07h-2vT6Zk2GCu6F98c=_CNx8B1ytFtO-g@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] btrfs: fix 64bit division in
- btrfs_insert_striped_mirrored_raid_extents
-Content-Language: en-US
-To:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
- <20230918-rst-updates-v1-1-17686dc06859@wdc.com>
- <CAMuHMdWM3_cj4Nb96pZQfErx7n+0Cd7RUQZV+bpvr1Tz5T3sgw@mail.gmail.com>
- <e12a171e-d3b8-401e-b01a-9440f5c75293@wdc.com>
- <20230918162448.GI2747@suse.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230918162448.GI2747@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:g6wU1E3eS03p7ukyt5DQ8Th6LKa0MjsAkw+cckrqx+z84LW+Cf9
- W2sqJ1phYSxbJgtjD69fX4/mTxE9fgGUHVEPCaj3bMh+JOWCbFXgl9GhFMpmBiNMVmvGnRV
- D70/OIA6FTHRMyM3BZrHHLWNgNB+QSWwYB3ysYpMkQ84MOkYPwuE5iIhm7oPY2YXOekHUt1
- oKaxaMua3aceD+i6+m1MA==
-UI-OutboundReport: notjunk:1;M01:P0:K3fp69p0tcc=;Xmdc9S+tM46YMzT2cyKrbc0vB3E
- 0eLjhZpNqcoi/nCWNmFT3aqvfblCSBCfYc3KK/DK8iGDSPRd7eA7Dcsc8ufAzBu0tpvU0tY79
- UtI7MHWn7lWQCfL1fkQm/nGubWYwGgpWrtlhqD9WJcVgBee/jyd6a0COHHYjMBW2TXUeH06mn
- 2AlINejkLfWP/zZ+V6KYsrcIDXqKVK7HbV5Zc3UQseGRWkxk/S4rJDiep1QB63vttUfKjbPkp
- BsTFOlnQQ3+rO+GQC3+NTm2P2gDX0JIaFefJTPvdCvDMBrF00wCxmgmSNDa2I+g75X5IGby/2
- LKsGYHXzUoFWPwMpvjgvARgc9oTVqVIyDkj/BMyz2JpbgL4RFUHLPof1asFt9Rr0zvDFqvJDJ
- 83ah2ZxEO/bqYievVp2Emus6nnnH1c+oOTXuH+hqKihlZeoplzfk7rRp7xSyvoWn9PhrADl1n
- 4RObNPaf5YXWwKmYgJ1kVqbUQFosB+B1PMb2aOk7Y2iy/s7wM+v0KVxIWzaav2C+sIL56ln8c
- 3WsDqOsq2hsW/1J5oLEyPugHaYfkwAT7IP9HkHxoR+aXYVxw6Gy33GCCPLIrc4CgEdLz8NYhE
- XyirNGLuRKZbY/9mUinjJ1S3eoQXk4x50f+lhrgziL0gwvOk7q/PJ3ZygwzCQVTDq+ZrtPhJS
- aWCzoGiSnqLCx+u1RCh+TqxFRt/XrZRzAgIrIgoyo2dW1G4C2nJFla7RDDTmhy+g/54OeHmVZ
- mv0ecA1lc9ZAXrjn8Jm97B8ZaCxcpJmvPYyNh4+h/RURvkwKS+InEY/Opj/4oJh8BgfKJ5hqe
- 8AphwxZlWX2WtWLHWGEwbSviIz6V3WjQ4EqlWYd4+21DaH2ST7ZVgHStFeqKcEdFUc6weaqIj
- QSOkQohTi5bXa0wChD4nd3WVJjxOegXOp/eDRc1GXtg1k9xeaOFXFC0elOSqbqAHDh6sviyOU
- KbV12jbH98qiiyP9j988i0GlgC8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/19 01:54, David Sterba wrote:
-> On Mon, Sep 18, 2023 at 03:03:10PM +0000, Johannes Thumshirn wrote:
->> On 18.09.23 16:19, Geert Uytterhoeven wrote:
->>> Hi Johannes,
->>>
->>> On Mon, Sep 18, 2023 at 4:14=E2=80=AFPM Johannes Thumshirn
->>> <johannes.thumshirn@wdc.com> wrote:
->>>> Fix modpost error due to 64bit division on 32bit systems in
->>>> btrfs_insert_striped_mirrored_raid_extents.
->>>>
->>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->>>
->>> Thanks for your patch!
->>>
->>>> --- a/fs/btrfs/raid-stripe-tree.c
->>>> +++ b/fs/btrfs/raid-stripe-tree.c
->>>> @@ -148,10 +148,10 @@ static int btrfs_insert_striped_mirrored_raid_e=
-xtents(
->>>>    {
->>>>           struct btrfs_io_context *bioc;
->>>>           struct btrfs_io_context *rbioc;
->>>> -       const int nstripes =3D list_count_nodes(&ordered->bioc_list);
->>>> -       const int index =3D btrfs_bg_flags_to_raid_index(map_type);
->>>> -       const int substripes =3D btrfs_raid_array[index].sub_stripes;
->>>> -       const int max_stripes =3D trans->fs_info->fs_devices->rw_devi=
-ces / substripes;
->>>> +       const size_t nstripes =3D list_count_nodes(&ordered->bioc_lis=
-t);
->>>> +       const enum btrfs_raid_types index =3D btrfs_bg_flags_to_raid_=
-index(map_type);
->>>> +       const u8 substripes =3D btrfs_raid_array[index].sub_stripes;
->>>> +       const int max_stripes =3D div_u64(trans->fs_info->fs_devices-=
->rw_devices, substripes);
->>>
->>> What if the quotient does not fit in a signed 32-bit value?
->>
->> Then you've bought a lot of HDDs ;-)
->>
->> Jokes aside, yes this is theoretically correct. Dave can you fix
->> max_stripes up to be u64 when applying?
+On Mon, Sep 18, 2023 at 11:39 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+> Okay, so there are now (at least) two buffers, and on overflow the
+> caller cannot know which one got overflown.  It can resize both, but
+> that doesn't make the caller any simpler to implement.
 >
-> I think we can keep it int, or unsigned int if needed, we can't hit such
-> huge values for rw_devices. The 'theoretically' would fit for a machine
-> with infinite resources, otherwise the maximum number of devices I'd
-> expect is a few thousand.
+> Also the interface is kind of weird in that some struct members are
+> out, some are in (the pointers and the lengths).
+>
+> I'd prefer the single buffer interface, which has none of the above issue=
+s.
+>
+> Thanks,
+> Miklos
 
-In fact, we already have an check in btrfs_validate_super(), if the
-num_devices is over 1<<31, we would reject the fs.
+One natural solution is to set either of the two lengths to the expected
+size if the provided buffer are too small. That way, the caller learns both
+which of the buffers is too small, and how large they need to be. Replacing
+a provided size with an expected size in this way already has precedent in
+existing syscalls:
 
-I think we should be safe to further reduce the threshold.
+recvmsg(2):
+    The msg argument points to an in/out struct msghdr, and msg->msg_name
+    points to an optional buffer which receives the source address. If
+    msg->msg_namelen is less than the actual size of the source address,
+    the function truncates the address to that length before storing it in
+    msg->msg_name; otherwise, it stores the full address. In either case,
+    it sets msg->msg_namelen to the full size of the source address before
+    returning.
 
-U16_MAX sounds a valid and sane value to me.
-If no rejection I can send out a patch for this.
+(An address buffer size is similarly provided directly as an in/out pointer
+in accept(2), accept4(2), getpeername(2), getsockname(2), and recvfrom(2).)
 
-And later change internal rw_devices/num_devices to u16.
+name_to_handle_at(2):
+    The handle argument points to an in/out struct file_handle, followed by
+    a variable-length char array. If handle->handle_bytes is too small to
+    store the opaque handle, the function returns -EOVERFLOW; otherwise,
+    it succeeds. In either case, it sets handle->handle_bytes to the size
+    of the opaque handle before returning.
 
-Thanks,
-Qu
+perf_event_open(2):
+    The attr argument points to an in/out struct perf_event_attr. If
+    attr->size is not a valid size for the struct, the function sets it to
+    the latest size and returns -E2BIG.
+
+sched_setattr(2):
+    The attr argument points to an in/out struct sched_attr. If attr->size
+    is not a valid size for the struct, the function sets it to the latest
+    size and returns -E2BIG.
+
+The specific pattern of returning the actual size of the strings both on
+success and on failure, as with recvmsg(2) and name_to_handle_at(2), is
+beneficial for callers that want to copy the strings elsewhere without
+having to scan for the null byte. (Also, it would work well if we ever
+wanted to return variable-size binary data, such as arrays of structs.)
+
+Indeed, if we returned the actual size of the string, we could even take a
+more radical approach of never setting a null byte after the data, leaving
+the caller to append its own null byte if it really wants one. But perhaps
+that would be taking it a bit too far; I just don't want this API to end up
+in an awful situation like strncpy(3) or struct sockaddr_un, where the
+buffer is always null-terminated except in one particular edge case. Also,
+if we include a null byte in the returned size, it could invite off-by-one
+errors in callers that just expect it to be the length of the string.
+
+Meanwhile, if this solution of in/out size fields were adopted, then
+there'd still be the question of what to do when a provided size is too
+small: should the returned string be truncated (indicating the issue only
+by the returned size being greater than the provided size), or should the
+entire call fail with an -EOVERFLOW? IMO, the former is strictly more
+flexible, since the caller can set a limit on how big a buffer it's willing
+to dedicate to any particular string, and it can still retrieve the
+remaining data if that buffer isn't quite big enough. But the latter might
+be considered a bit more foolproof against callers who don't properly test
+for truncation.
+
+Thank you,
+Matthew House
