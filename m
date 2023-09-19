@@ -2,151 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A797F7A62C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B16A7A62CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbjISMXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        id S231834AbjISMZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbjISMXn (ORCPT
+        with ESMTP id S231501AbjISMY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:23:43 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2114.outbound.protection.outlook.com [40.107.114.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF27F4;
-        Tue, 19 Sep 2023 05:23:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fHdBDoPBieGW5/+3qzqPUXv1ZJDuqejMgZHEwGEa3j8B1PdCceAHnlLZ8uMwCnoODtzSUsWD52qm4fXI8gVAPmKXe1j18aDluACNQKz6PMX6sI0TXiuOlVv89WUeYMlJ3JNBX4xWuEmOCT10aCU7bCKVDmKO855B+JUulMzXo99X4dCnPcwPspJJG/H1dNiin0yAa7iOKCImzp7/TYs5IFTUJLtUUl450UgRIdxmAPMb8IalKsNQW+HaZswtABTS5Hg/9WDrq2VEpNx0os0Z8hUVmwiF1v9UiTFIjPJMjLGYbz8pGmIvFC76q15c09dXfqiNXeAOVkRKs7g9rKVbRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=96gpNW+Xk001zfzd2/kg0fBLDzVtO4BvvSmZMcx7/d8=;
- b=TrM4oWOqlE6kkm96dLUyn2N+HT0sq2Ih59xyhR0ME4uhrlGXJgt3GOVva3mxxcbFOb8F0PbsApOwCLyB1x/ipdeHoJ+pfsi52fkY2hxgTn5w0fW/kCQ5VJzySAiaj9IHprYm20UbmG9jS/fbyxKMpvqom33N+XfOBYZTelzP5pQidkbI5P8FARbSFXs8qUscurLYnpMMS9SgHylwIpMrQ48y1K8z8S2H0HnPG2dk1F1Zz4gWjalodXAMiXE0q8MlqhWosZdQh3od39WRVE7dxHzLw6fBd2jvxIcDQkWfiAIQoDR9JoM+5YBcltDh/cx+xk9TQGyCr0hTjhFmfHRW3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=96gpNW+Xk001zfzd2/kg0fBLDzVtO4BvvSmZMcx7/d8=;
- b=Z6n8016WPJzTvwTrUydpGBpBt0KlyAiFIDIrXlznX8By1ZDiwTZEA7OKtEj+UQiAhQq3HF00PJAiwev9pvgdUkJhxAQ5BgpCYYJxQAPdhgO9+B/ckHg4cHEDRp18NkV7H4aoAYExwZEcajOB3BNZsfPfQbrSQeN8PsoePcvrJAI=
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- (2603:1096:404:8028::13) by TY3PR01MB11592.jpnprd01.prod.outlook.com
- (2603:1096:400:371::5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
- 2023 12:23:33 +0000
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::e5cd:66a0:248f:1d30]) by TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::e5cd:66a0:248f:1d30%4]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
- 12:23:33 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-Subject: RE: [PATCH 0/2] i2c: rcar: add support for Gen4 devices
-Thread-Topic: [PATCH 0/2] i2c: rcar: add support for Gen4 devices
-Thread-Index: AQHZ5oF5i48p1M7vK0upwV1KcaqiH7AaSXiwgAMO64CABMHbwA==
-Date:   Tue, 19 Sep 2023 12:23:32 +0000
-Message-ID: <TYBPR01MB5341132B818922E7C01A915FD8FAA@TYBPR01MB5341.jpnprd01.prod.outlook.com>
-References: <20230913203242.31505-1-wsa+renesas@sang-engineering.com>
- <TYBPR01MB5341A56291AFCB54E4918167D8F7A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
- <ZQWUWwi7pR7/negW@shikoro>
-In-Reply-To: <ZQWUWwi7pR7/negW@shikoro>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYBPR01MB5341:EE_|TY3PR01MB11592:EE_
-x-ms-office365-filtering-correlation-id: 97e37858-44a6-4d04-3da9-08dbb90b3d7c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ooPxGFZ6htrJ9QDn3hYEfctC4Ui+QfyZXhEu5sJu1Cnjaeg4++b/9m+DrcL9Q8OJ3RtsegojDww04B2Wkz6YmRJ/qAdFwYh/6bGq/ink2CfnRUZO9tXgXGnsPjADhDAia0Sqlmyylbhrupch3EIPMv0D+Ou2tp3QKyF9uhcR76EtV34pbKGu0YzZo/9h4pCgv0Ec/PSYTEIdCOEwdHz4JF5TmJzbJPS/fLQi/e0jGg/drVGR4vDDYeoG5mgQkI/nsMSJi3FKl7l9wOuLdGyGFPUa3QJ5nDG3IVGdc2rMlmAVRPKRU5r4hcLPoU8jh7yjwMbinrFEhjGUMXavH0VRftUV9lYXWqkgxvAkni8AoO++h1rSQDirHyvk7rWjCywyvoh3UmUTR3BAGLca1Nq/nD4j8BeOBFjg7fIFUcBmJEbTJLgGgMlR4czxaN88osaciqYsnpraSuz5JrdSRKK3aZn12DVf6tEtPEwsa0obVudt5AC1ZcuuMj8X1cRD46pFtxrf0qRcMSWtpKOGayShn/izMEMOkz7zWq1UHvWU/TreWEB+48jphxojxG1hcyES37oaa2AwDj5j8gVOvmeJRvpdb0UnkBlRQqgP4T/0oYX6B9DcNq/7CvCzeK/6eETA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYBPR01MB5341.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(396003)(346002)(39860400002)(186009)(451199024)(1800799009)(38070700005)(38100700002)(55016003)(26005)(9686003)(71200400001)(66899024)(122000001)(83380400001)(66446008)(64756008)(66476007)(66946007)(54906003)(76116006)(4744005)(2906002)(86362001)(4326008)(41300700001)(52536014)(5660300002)(33656002)(316002)(8936002)(8676002)(66556008)(6506007)(7696005)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FohRgjsMCquSguQi2E/9N4wX0/NQAWgqh2CJzrkGWOz4mXpmDQg+U2t9axd7?=
- =?us-ascii?Q?tZvkXMrNdHzjtaHfK78VJlqyfuwNvzkmNQbOSDc1B7Hkx6wtDNZJ5fff+uqa?=
- =?us-ascii?Q?oslz+nQjWcdGnn6G3zUgtK8H7IyPL/vNX0QZGOBgAbl5OGqUlQm2hStz5so/?=
- =?us-ascii?Q?s2MsmY4YW6vLgEWr64rrjtc10yDBFVJAZo3rCvvnbmHO8I3r9pa1jzH/9VDM?=
- =?us-ascii?Q?HCWa9SzfykWuvB+5CIkiRElyJsep9tOdrjDlziCZmO5qj+5wzEV4RlSK9k1w?=
- =?us-ascii?Q?UfFphaBa/p37m/fG0idmWzkmep5Ly2bAVe4S8RjqjUVMGMN0JOKob9vx8uSF?=
- =?us-ascii?Q?15GISnyGAWrLrJnzWzcJHZyjErdREFSo3F6dGZgjMWrdiEiALb/CnBA+D+LT?=
- =?us-ascii?Q?vODAmwwlUmDJSHj6os4D39opNmmmIhH72bFdwaTz1Yh6xMjU/R4BWmvI573J?=
- =?us-ascii?Q?+TqK0DAaJS4NmKeGlAZkzaRFP7muyHfunbbTWGmILbyTFj8fHWlCxGPoBeHG?=
- =?us-ascii?Q?k4AbuzZ6foP2l0Z3IFwZXwXltI3GpnIIDcKcJW8rKqWCOEORsoGhQ87YbJ9v?=
- =?us-ascii?Q?LzEFFDzy/OW8D7wNrn4LxcJnErkrk/OTOsh1yiL7Bh9hiX04RV+nObe0SMK7?=
- =?us-ascii?Q?q2ShIR8FqoQmrJ16a9IgWLJaoGrwNMtSF5YDNXQcwkVAHEqxt+8Rm8i/HtmQ?=
- =?us-ascii?Q?zooyzH692dPIXWbi7TO3t20H8xF4paIchBRxx4L6osIwIeVmj9w58+pcBFOt?=
- =?us-ascii?Q?x+GQhagMdXxhv9QGXn2vF3pX5GzwJDtJ0OcDFgEhAauYZ2SM4gNat9WBaSH9?=
- =?us-ascii?Q?K6lkS5YqgsIjm8BtbsQONBWHM7brrUR1kY7oqxWz6vu8ZY6x4Ol68smK9XVJ?=
- =?us-ascii?Q?QGzSQSnck184tv6FklGxylkJ/c7DwR5IwSH2khCS8Jg7PhFwhH+aihT4d4lP?=
- =?us-ascii?Q?EuOAjISYEUmWBngSh1IO0AqRS5CIvdyKPbLd1f7Vq1bd+09eKs8qvpYUa/mB?=
- =?us-ascii?Q?ibapVhmRGjbv8r0UiDJGYCD7sjyY79Fe0sBYKGevUcICJ5p4Ji/qht+7i8qc?=
- =?us-ascii?Q?31ejIQQqdsrjEIdSoVn/I2RtanqhOalqixLLAchxpYsEsGcLXAuTG+T9jr6N?=
- =?us-ascii?Q?GQBL4pYSU8wvFru75XjubyQIyna5C47Yc4epQ/8Elo0dgaFuXVjE57FNgdyx?=
- =?us-ascii?Q?H7KV9DvxqbaydOrWgaXbb4/S9qKiOXmLj6ZoNanBEeAkJYvuBgWMY+d6Q7UF?=
- =?us-ascii?Q?6kc2G4NamOvh0nJ2CLG7h4GJ62eJ37u3wQ63k1xQfv+wm0MXEbXSvfSbH2E+?=
- =?us-ascii?Q?i+y3NPuNRyjjFMcrX2kphE3dk/drE3sZtg6MIam9+945c15xY9hpZSmVS3HE?=
- =?us-ascii?Q?QZbEE5JIKr2E3paWMaYNoKzPl0tTHwQRyibNv6Q1aZIei5LZIEj9viedzjtI?=
- =?us-ascii?Q?5Kjfzu4HWgEbNIMFJvsIzSPLw/LAxrlLriMstUjh4KmG1YsHy7hMzD8DqzSZ?=
- =?us-ascii?Q?q1+m8fFEUiWqSBwsYIzCCV9dv8S0SE988gKlbQPNxm4GLdn4EgNcwhC9wdPh?=
- =?us-ascii?Q?n+s0dR0CodDcJoZz/OcsbLAr0fEAkURFX+KoFheHxmIL4s36GJ2FqSm3Px5M?=
- =?us-ascii?Q?IQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 19 Sep 2023 08:24:58 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C48EF2;
+        Tue, 19 Sep 2023 05:24:51 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rqgm75Wvkz6HJjD;
+        Tue, 19 Sep 2023 20:22:47 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 19 Sep
+ 2023 13:24:47 +0100
+Date:   Tue, 19 Sep 2023 13:24:46 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     <alisadariana@gmail.com>
+CC:     Alisa-Dariana Roman <alisa.roman@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] iio: adc: ad7192: Use bitfield access macros
+Message-ID: <20230919132440.00000380@Huawei.com>
+In-Reply-To: <20230918214854.252781-2-alisadariana@gmail.com>
+References: <20230918214854.252781-1-alisadariana@gmail.com>
+        <20230918214854.252781-2-alisadariana@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYBPR01MB5341.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97e37858-44a6-4d04-3da9-08dbb90b3d7c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2023 12:23:32.9791
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wevy8tV4Iqlgz1dcmygbCafSWyIPbQ5po3M4EoXTr+6Nm+msKJGjswPDvwLJ7Kyu5gBXiQIGQR+FTFXypAJNwZkhDCvhY2xMiCkzuG9hZxS68MdeFZlcXapx//+v2UJG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB11592
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram-san,
+On Tue, 19 Sep 2023 00:48:52 +0300
+alisadariana@gmail.com wrote:
 
-> From: Wolfram Sang, Sent: Saturday, September 16, 2023 8:41 PM
->=20
-> Hi Shimoda-san,
->=20
-> I had a look now with Kieran's Spider and could reproduce your findings.
-> It is not a problem, though, because the system behaves the same with
-> plain v6.6-rc1. The only difference with my branch is that DEBUG is
-> enabled for the I2C driver, so we see all the messages regarding
-> EPROBE_DEFER with DMA. If you add DEBUG to plain v6.6-rc1, then you see
-> the same messages. But still, the busses get probed and they also get
-> DMA channels after some time when the DMA driver is finally loaded. So,
-> this really has nothing to do with the patches themselves, only with the
-> additions for debugging. Phew!
+> From: Alisa-Dariana Roman <alisadariana@gmail.com>
+> 
+> Include bitfield.h and update driver to use bitfield access macros
+> GENMASK, FIELD_PREP and FIELD_GET.
+> 
+> Also simplify AD7192_CONF_GAIN(-1) to AD7192_CONF_GAIN_MASK and
+> AD7192_MODE_RATE(-1) to AD7192_MODE_RATE_MASK.
+> 
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+> ---
+>  drivers/iio/adc/ad7192.c | 50 +++++++++++++++++++++++++---------------
+>  1 file changed, 32 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> index 69d1103b9508..e83fecb63c1d 100644
+> --- a/drivers/iio/adc/ad7192.c
+> +++ b/drivers/iio/adc/ad7192.c
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <linux/interrupt.h>
+> +#include <linux/bitfield.h>
+>  #include <linux/clk.h>
+>  #include <linux/device.h>
+>  #include <linux/kernel.h>
+> @@ -43,7 +44,9 @@
+>  #define AD7192_COMM_WEN		BIT(7) /* Write Enable */
+>  #define AD7192_COMM_WRITE	0 /* Write Operation */
+>  #define AD7192_COMM_READ	BIT(6) /* Read Operation */
+> -#define AD7192_COMM_ADDR(x)	(((x) & 0x7) << 3) /* Register Address */
+> +#define AD7192_COMM_ADDR_MASK	GENMASK(5, 3) /* Register Address Mask */
+> +#define AD7192_COMM_ADDR(x)	FIELD_PREP(AD7192_COMM_ADDR_MASK, x)
+> +				  /* Register Address */
+>  #define AD7192_COMM_CREAD	BIT(2) /* Continuous Read of Data Register */
+>  
+>  /* Status Register Bit Designations (AD7192_REG_STAT) */
+> @@ -56,17 +59,24 @@
+>  #define AD7192_STAT_CH1		BIT(0) /* Channel 1 */
+>  
+>  /* Mode Register Bit Designations (AD7192_REG_MODE) */
+> -#define AD7192_MODE_SEL(x)	(((x) & 0x7) << 21) /* Operation Mode Select */
+> -#define AD7192_MODE_SEL_MASK	(0x7 << 21) /* Operation Mode Select Mask */
+> -#define AD7192_MODE_STA(x)	(((x) & 0x1) << 20) /* Status Register transmission */
+> +#define AD7192_MODE_SEL_MASK	GENMASK(23, 21) /* Operation Mode Select Mask */
+> +#define AD7192_MODE_SEL(x)	FIELD_PREP(AD7192_MODE_SEL_MASK, x)
 
-Thank you for the investigation! I also confirmed that reverting the "DEBUG=
-"
-commit resolved the issue about the EPROBE_DEFER.
+Hi  Alisa-Dariana,
 
-> Thank you for reporting and testing, still!
+Whilst it is a bigger change, I'd ideally like all these XXX(x) calls to be replaced
+inline with the FIELD_PREP(). It is just as clear to read and in many cases better
+because you get patterns that go form
 
-You're welcome!
+st->mode &= ~AD7192_MODE_SEL_MASK;
+st->mode |= AD7192_MODE_SEL(mode);
 
-Best regards,
-Yoshihiro Shimoda
+which becomes the more visible and obvious
+st->mode &= ~AD7192_MODE_SEL_MASK;
+st->mode |= FIELD_PREP(AD7192_MODE_SEL_MASK, mode);
+where you can clearly see the same bits were removed from st->mode, then
+filled in with the new field value.
 
->    Wolfram
+That's obscured with the additional macro.
+
+Jonathan
+
+
+> +				  /* Operation Mode Select */
+>  #define AD7192_MODE_STA_MASK	BIT(20) /* Status Register transmission Mask */
+> -#define AD7192_MODE_CLKSRC(x)	(((x) & 0x3) << 18) /* Clock Source Select */
+> +#define AD7192_MODE_STA(x)	FIELD_PREP(AD7192_MODE_STA_MASK, x)
+> +				  /* Status Register transmission */
+> +#define AD7192_MODE_CLKSRC_MASK	GENMASK(19, 18) /* Clock Source Select Mask */
+> +#define AD7192_MODE_CLKSRC(x)	FIELD_PREP(AD7192_MODE_CLKSRC_MASK, x)
+> +				  /* Clock Source Select */
+>  #define AD7192_MODE_SINC3	BIT(15) /* SINC3 Filter Select */
+>  #define AD7192_MODE_ENPAR	BIT(13) /* Parity Enable */
+>  #define AD7192_MODE_CLKDIV	BIT(12) /* Clock divide by 2 (AD7190/2 only)*/
+>  #define AD7192_MODE_SCYCLE	BIT(11) /* Single cycle conversion */
+>  #define AD7192_MODE_REJ60	BIT(10) /* 50/60Hz notch filter */
+> -#define AD7192_MODE_RATE(x)	((x) & 0x3FF) /* Filter Update Rate Select */
+> +#define AD7192_MODE_RATE_MASK	GENMASK(9, 0)
+> +				  /* Filter Update Rate Select Mask */
+> +#define AD7192_MODE_RATE(x)	FIELD_PREP(AD7192_MODE_RATE_MASK, x)
+> +				  /* Filter Update Rate Select */
+>  
+>  /* Mode Register: AD7192_MODE_SEL options */
+>  #define AD7192_MODE_CONT		0 /* Continuous Conversion Mode */
+> @@ -92,13 +102,16 @@
+>  #define AD7192_CONF_CHOP	BIT(23) /* CHOP enable */
+>  #define AD7192_CONF_ACX		BIT(22) /* AC excitation enable(AD7195 only) */
+>  #define AD7192_CONF_REFSEL	BIT(20) /* REFIN1/REFIN2 Reference Select */
+> -#define AD7192_CONF_CHAN(x)	((x) << 8) /* Channel select */
+> -#define AD7192_CONF_CHAN_MASK	(0x7FF << 8) /* Channel select mask */
+> +#define AD7192_CONF_CHAN_MASK	GENMASK(18, 8) /* Channel select mask */
+> +#define AD7192_CONF_CHAN(x)	FIELD_PREP(AD7192_CONF_CHAN_MASK, x)
+> +				  /* Channel select */
+>  #define AD7192_CONF_BURN	BIT(7) /* Burnout current enable */
+>  #define AD7192_CONF_REFDET	BIT(6) /* Reference detect enable */
+>  #define AD7192_CONF_BUF		BIT(4) /* Buffered Mode Enable */
+>  #define AD7192_CONF_UNIPOLAR	BIT(3) /* Unipolar/Bipolar Enable */
+> -#define AD7192_CONF_GAIN(x)	((x) & 0x7) /* Gain Select */
+> +#define AD7192_CONF_GAIN_MASK	GENMASK(2, 0) /* Gain Select */
+> +#define AD7192_CONF_GAIN(x)	FIELD_PREP(AD7192_CONF_GAIN_MASK, x)
+> +				  /* Gain Select */
+>  
+>  #define AD7192_CH_AIN1P_AIN2M	BIT(0) /* AIN1(+) - AIN2(-) */
+>  #define AD7192_CH_AIN3P_AIN4M	BIT(1) /* AIN3(+) - AIN4(-) */
+> @@ -130,7 +143,7 @@
+>  #define CHIPID_AD7192		0x0
+>  #define CHIPID_AD7193		0x2
+>  #define CHIPID_AD7195		0x6
+> -#define AD7192_ID_MASK		0x0F
+> +#define AD7192_ID_MASK		GENMASK(3, 0)
+>  
+>  /* GPOCON Register Bit Designations (AD7192_REG_GPOCON) */
+>  #define AD7192_GPOCON_BPDSW	BIT(6) /* Bridge power-down switch enable */
+> @@ -399,7 +412,7 @@ static int ad7192_setup(struct iio_dev *indio_dev, struct device_node *np)
+>  	if (ret)
+>  		return ret;
+>  
+> -	id &= AD7192_ID_MASK;
+> +	id = FIELD_GET(AD7192_ID_MASK, id);
+>  
+>  	if (id != st->chip_info->chip_id)
+>  		dev_warn(&st->sd.spi->dev, "device ID query failed (0x%X != 0x%X)\n",
+> @@ -472,7 +485,7 @@ static ssize_t ad7192_show_ac_excitation(struct device *dev,
+>  	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>  	struct ad7192_state *st = iio_priv(indio_dev);
+>  
+> -	return sysfs_emit(buf, "%d\n", !!(st->conf & AD7192_CONF_ACX));
+> +	return sysfs_emit(buf, "%d\n", !!FIELD_GET(AD7192_CONF_ACX, st->conf));
+>  }
+>  
+>  static ssize_t ad7192_show_bridge_switch(struct device *dev,
+> @@ -482,7 +495,8 @@ static ssize_t ad7192_show_bridge_switch(struct device *dev,
+>  	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>  	struct ad7192_state *st = iio_priv(indio_dev);
+>  
+> -	return sysfs_emit(buf, "%d\n", !!(st->gpocon & AD7192_GPOCON_BPDSW));
+> +	return sysfs_emit(buf, "%d\n",
+> +			  !!FIELD_GET(AD7192_GPOCON_BPDSW, st->gpocon));
+>  }
+>  
+>  static ssize_t ad7192_set(struct device *dev,
+> @@ -667,9 +681,9 @@ static int ad7192_get_3db_filter_freq(struct ad7192_state *st)
+>  	fadc = DIV_ROUND_CLOSEST(st->fclk,
+>  				 st->f_order * AD7192_MODE_RATE(st->mode));
+>  
+> -	if (st->conf & AD7192_CONF_CHOP)
+> +	if (FIELD_GET(AD7192_CONF_CHOP, st->conf))
+>  		return DIV_ROUND_CLOSEST(fadc * 240, 1024);
+> -	if (st->mode & AD7192_MODE_SINC3)
+> +	if (FIELD_GET(AD7192_MODE_SINC3, st->mode))
+>  		return DIV_ROUND_CLOSEST(fadc * 272, 1024);
+>  	else
+>  		return DIV_ROUND_CLOSEST(fadc * 230, 1024);
+> @@ -682,7 +696,7 @@ static int ad7192_read_raw(struct iio_dev *indio_dev,
+>  			   long m)
+>  {
+>  	struct ad7192_state *st = iio_priv(indio_dev);
+> -	bool unipolar = !!(st->conf & AD7192_CONF_UNIPOLAR);
+> +	bool unipolar = !!FIELD_GET(AD7192_CONF_UNIPOLAR, st->conf);
+>  
+>  	switch (m) {
+>  	case IIO_CHAN_INFO_RAW:
+> @@ -746,7 +760,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
+>  			if (val2 == st->scale_avail[i][1]) {
+>  				ret = 0;
+>  				tmp = st->conf;
+> -				st->conf &= ~AD7192_CONF_GAIN(-1);
+> +				st->conf &= ~AD7192_CONF_GAIN_MASK;
+>  				st->conf |= AD7192_CONF_GAIN(i);
+>  				if (tmp == st->conf)
+>  					break;
+> @@ -769,7 +783,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
+>  			break;
+>  		}
+>  
+> -		st->mode &= ~AD7192_MODE_RATE(-1);
+> +		st->mode &= ~AD7192_MODE_RATE_MASK;
+>  		st->mode |= AD7192_MODE_RATE(div);
+>  		ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
+>  		break;
 
