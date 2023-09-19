@@ -2,711 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1247A6391
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C5E7A639B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbjISMrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        id S232230AbjISMrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbjISMq4 (ORCPT
+        with ESMTP id S232120AbjISMrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:46:56 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277F9181;
-        Tue, 19 Sep 2023 05:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695127594; x=1726663594;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Y2UuY2VJYxhmOhlmg3jLWigE7n2Uq9xmXn3g8xzqfYE=;
-  b=al5IWZu7voMvxmdseXAPtmsj9qwarl4l4ivMbzrjFJLeooRoAi4IWBdb
-   gSWND0XCzRW+ggK89WPLlbPXFxcHKmepuXWiBpUsDwZegsIxvkxp5K+ML
-   Qydaiya6Cvx95dKZzKSCZqUpSnqwEgPZNccZMjZIG9LjgcAZSyaNdqL2L
-   iw3zR5wkWZvsdkGbTVOav3jfaVhiRvOW/ueRVUtY5VQDG9WJ32bxDqp3t
-   WSvmvceODRTbzlTQnEkxCSsluBIasF33EzZzgPbFYFrF0ge6v8SN392Te
-   PJnxGdHWY6fDs2CCKiSunXk3zNKM2aQ4ymDDf2/uKKpOjxNbanHowqaWM
-   w==;
-X-CSE-ConnectionGUID: hhj4fQFDRIWzql0Mbek80Q==
-X-CSE-MsgGUID: ZTuyIVPMSoWdrCxwX9Pe6A==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="235961908"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Sep 2023 05:46:33 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 19 Sep 2023 05:46:25 -0700
-Received: from virtualbox.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Tue, 19 Sep 2023 05:46:22 -0700
-From:   Mihai Sain <mihai.sain@microchip.com>
-To:     <claudiu.beznea@tuxon.dev>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <nicolas.ferre@microchip.com>, <cristian.birsan@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <andre.przywara@arm.com>,
-        <jerry.ray@microchip.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <andrei.simion@microchip.com>,
-        Mihai Sain <mihai.sain@microchip.com>
-Subject: [PATCH v4 2/2] ARM: dts: at91: sama5d29_curiosity: Add device tree for sama5d29_curiosity board
-Date:   Tue, 19 Sep 2023 15:46:05 +0300
-Message-ID: <20230919124606.26898-3-mihai.sain@microchip.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230919124606.26898-1-mihai.sain@microchip.com>
-References: <20230919124606.26898-1-mihai.sain@microchip.com>
+        Tue, 19 Sep 2023 08:47:40 -0400
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2051.outbound.protection.outlook.com [40.107.247.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21961CF9;
+        Tue, 19 Sep 2023 05:47:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PmRlHt3NllmAHNzuseIFElhJFPYVKmyqYnJ5zCbu0IYuedNv7MeNER0YlGFjOUhk5XMfYw1470O9imxHd773qFG2I23fgN2OoowacmGAuflcRcDSLgPSuBF9s6wAUavFoEnGFlbaS9iuKfO36xDPfuuRopxcYurhUMuHxuU7mEKVVz3LvjCqGL96LCx3uf60xCMGnkWKhpR/9RfSur2uKLTuzOVxdvFz2miiSgj/MUxfao8ksogy0StyEnnBJv8ELKdL7u217qSdfXbWE4/icnZUk+A7XZkNhq7bemYsalWzh9APER8QQWWARfQLBmcvTbvp/rzUaLFrUl9ErS/KZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=smeA2wDTaCCy3NGf38JklHexNDaM0LTI95SzsCywREk=;
+ b=gu3dniGULJBXbhZgcXKz4n4QRrri9Nuwet1topLsYgD/3V3LYPvsGWa7TjvNKFZCQWi+JQTGiGP7PIwZK/FVlYKAG6HaCDfROrDNV++8mXnoxHR8+bzXZrSmInSl0ac1Mosd/WyJm+/eRI69P7wm15Ag9a0uG8FPOxoyBi8QHmTO3OYn8u0/EaEp6lupxAfg490S68JUz4RTQEcVGPSeiJgknJbcgDofkDsZZBmNltHkET6ScV4S9AihrT61G295LIBNBF5Od57AJ9mR5jx+0COWKDr8/EoORWFur82JNfcE6HoXBcsJ+otFpRA9UOK5RDu5OGchKfEoJXQ3YEi29w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=smeA2wDTaCCy3NGf38JklHexNDaM0LTI95SzsCywREk=;
+ b=lP7xgXQi/FAFxvY8xDSRaNXf29zljT8LK48bYFVLGu1NHNGBKeFQGbRGBHnkNjroQxML8TRRQP2kFtqjiif6M8AXZQogEtrF8whuf+bAubIsMtGpLjCXxH0NmtLl9boAeeTx4p/hs7/H2MvtI7yA9M6RxgCsKXuG+EPAMUz85/0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by DBBPR04MB7964.eurprd04.prod.outlook.com (2603:10a6:10:1e9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
+ 2023 12:47:08 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 12:47:08 +0000
+Date:   Tue, 19 Sep 2023 15:47:03 +0300
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, horms@kernel.org, s-vadapalli@ti.com,
+        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rogerq@kernel.rog
+Subject: Re: [PATCH v2] net: ethernet: ti: am65-cpsw: add mqprio qdisc
+ offload in channel mode
+Message-ID: <20230919124703.hj2bvqeogfhv36qy@skbuf>
+References: <20230918075358.5878-1-rogerq@kernel.org>
+ <20230918075358.5878-1-rogerq@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918075358.5878-1-rogerq@kernel.org>
+ <20230918075358.5878-1-rogerq@kernel.org>
+X-ClientProxiedBy: AM0PR04CA0001.eurprd04.prod.outlook.com
+ (2603:10a6:208:122::14) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DBBPR04MB7964:EE_
+X-MS-Office365-Filtering-Correlation-Id: d07b6f0b-23d7-46fa-806e-08dbb90e88b0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l2qo2ACcujx6Gxo/PKOnqtUp3i47+eHMn5t7agQ2KMwNyfh98jXTJEvmHBKUSTvKq8O9KkQ/nbDTgpxuuJ6Okh4L23s+jOlswyCz/geXhVvf1dhPXwbSyR5aRQEMV2t033LDg06km2evchVuv+2w1hgQI1dvQh8MFXJTON1pXjtW2GKdRa/Xhymb+xb+oLkk9EBafAtZrzxca0QV9DC523CQd6ILMFEeyLYh94x353VHMK1zXM2aFUL32MWEsi3YuvbXlJiHVEXLf1oMKM3V6bkxykp/muFw6SStj0+C70h0wSz23hSuvLpkIOCLN1YhJ5SKEdGmZP2KAb7gRuKekvdtxI4gm82bMD44EIMo7kL42HBHSbTTJHtykTf/EgZRVoUsBF/cwq/8OGFZafFmMXzYkywcTsGH+hVPUfiu1rsHQsQQl0zenBlbLVKnHSsXEjlOkPhOl5Ui3XGEXmGubsdXDQ/mQ7jCbqt091UYQtoDDTHkYDnJPvXWxxbNtfnNH16h1dRzmsgGlY5GYVVTcI1UVwu6fJcv4iQsY5AvXIk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(366004)(396003)(376002)(39860400002)(1800799009)(186009)(451199024)(6512007)(9686003)(6486002)(6506007)(6666004)(33716001)(83380400001)(86362001)(38100700002)(1076003)(26005)(6916009)(316002)(66476007)(66946007)(41300700001)(66556008)(7416002)(2906002)(44832011)(5660300002)(4326008)(8676002)(8936002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R9ehzD44wmDyWt8j7zLvAVO4iYc/NfnMLgX0FsjUqNxXKdxOF+Tz6LeQftNb?=
+ =?us-ascii?Q?5strc+EVAGoM6wc+dPggNfeJEv8g4MtX6QYEHypxplL5uklM2Lp9e7w44UdZ?=
+ =?us-ascii?Q?3hNxlIOa7q/+eSGYsYPCol2087vY9p0jKUmPO0en4odZzb6uoTcz8hlSVY8F?=
+ =?us-ascii?Q?dwQPRj/6zWUEH/K2JEWZAL+qY2bjK62uHfTQBPmd5BwRYXmKnrRbTC5OVng2?=
+ =?us-ascii?Q?Uh9p+IB61VH9Zf2E40CQJJYmEXXwWUTU4+wbd31R6dkG7IRHyAx0d18p7AhF?=
+ =?us-ascii?Q?aAyFfU3/9cBXXfX8qBQzfobolRd6NOa95c3aPb+xyU9INdvO4bxvRKVu+qWX?=
+ =?us-ascii?Q?GVQUQ3QvQeAV5zJDt+U1KpSIZEMuYRbY9uxPi/7V82juQSmT/ep2DBBI/l7Z?=
+ =?us-ascii?Q?++kB7H/rVacOKMFxTR5JqKyewq8B4o9bH0Ltyp8Wx3rk6/knZNK4LJEcOLeB?=
+ =?us-ascii?Q?CCM1XV6VgYIcDwvcKEA/dR/YWsChfKWLgSxiOmFXYCmOQXZTb8O/Yn2iawUl?=
+ =?us-ascii?Q?gNEfTuRYKXDvlqZTtsDEqmYwAsOR0NbDPyRDWy8D1SgId/og/ocS7jzsog+y?=
+ =?us-ascii?Q?hT5heM5BGk/FOt63tlsThhP+vc5vjSTFNf6MR+flzOPlDvxFkBZOjsLmsp8R?=
+ =?us-ascii?Q?7nCsWvmE5vsNU7SIax3+rnbkP66zkYRF7ZEZ88QRtG7HfxiHtkY8MGtXWXec?=
+ =?us-ascii?Q?61iQjBJjVdRMX0uLB5F7RGxvPOQsPpaRGmeG369kPGoPRzOMfiNPc1kqvo2Q?=
+ =?us-ascii?Q?KYnsZhQBfZqBoQ5ZzZS0N33f0X7VC3WxEkblPX4EQUBgO9gRzB/ESnYdBAoj?=
+ =?us-ascii?Q?iOe/jfzBXXMofpn0t57KkRRmynGsoedr9QZNLvtsG+Vm+dEQi0Ja2l8yQsxX?=
+ =?us-ascii?Q?+/5x666W/zQJcKu15+uEYxJhXnKI0iMrbE0+r14BXDxUtVwN/ZXfNH9wPOE8?=
+ =?us-ascii?Q?q69m+1jIWyN+9DHGLkwkAup9xV/tkmPMYhQq/Tl7ve7qkWbLkncM6rkio6hl?=
+ =?us-ascii?Q?9av6iw8QQv7BVCF7Wuw6eyx5bZYwejCc9XSgtOXDjx7tXgU7KPxRRIVNo7RO?=
+ =?us-ascii?Q?1fLEMwyDwAaZwjYtTLqBJm9mbRSnZIAqxerYe0LeGCuzWX0CsdKk0BXl2OjO?=
+ =?us-ascii?Q?yrqtLuyYYQ3TJG9pJbzPHq/T/DtDsm0WeLpoAYQ3K2ND7Aq1IqJdKeTIOZCm?=
+ =?us-ascii?Q?M3lwULJvgEG3hmJ0rh3pKXP3D3vYzqfR8iUKv2waOUXinigNTS2zwyQeuSmK?=
+ =?us-ascii?Q?YgYft7VWKKbYYP5zH3EdvesXqChL10SCdkaeUTOaghZT0AJLFVAnNKoJ5S50?=
+ =?us-ascii?Q?ZO9R/fCmdd2vx4QqAbIeb9xihVGiMAF1iYaCn/JNEstsrNNNfIV6MYxf80HB?=
+ =?us-ascii?Q?qYY6t8Li6CyMqVTWc7lqkqAAPkO4dO5L5Snrf5Kwy+X3+cY0GwH6EDj/+KIp?=
+ =?us-ascii?Q?XV+/P/0SO8x05Bnw7GIYQuV/0m4NRJ+VTGVNWYuOzNv5Krmg4RfU6gHKHdmm?=
+ =?us-ascii?Q?4VKNSjve8kAz2bC9ZXKDBqnEpGZu2ayUzw4v54OLf/rkBUXoJwZl3WIqjqns?=
+ =?us-ascii?Q?g+XhVrUOdIuVYNmAjaGIAUaeR4+J6mMrdY2B4Ou+1YjwXe/EvY1c7BeIbjMH?=
+ =?us-ascii?Q?zQ=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d07b6f0b-23d7-46fa-806e-08dbb90e88b0
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 12:47:08.0316
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dedyi7fhl3rITyaZUCeCFap+w4QxEEEMViaHDiNl1yr7XG4GLpItAEw5JIU6fRoiasfxOF2BW7nePXSjkl/v5g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7964
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial device tree file for sama5d29_curiosity board.
+Hi Roger,
 
-Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
----
- arch/arm/boot/dts/microchip/Makefile          |   2 +
- .../dts/microchip/at91-sama5d29_curiosity.dts | 600 ++++++++++++++++++
- 2 files changed, 602 insertions(+)
- create mode 100644 arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts
+On Mon, Sep 18, 2023 at 10:53:58AM +0300, Roger Quadros wrote:
+> -int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+> -			       void *type_data)
+> -{
+> -	switch (type) {
+> -	case TC_QUERY_CAPS:
+> -		return am65_cpsw_tc_query_caps(ndev, type_data);
+> -	case TC_SETUP_QDISC_TAPRIO:
+> -		return am65_cpsw_setup_taprio(ndev, type_data);
+> -	case TC_SETUP_BLOCK:
+> -		return am65_cpsw_qos_setup_tc_block(ndev, type_data);
+> -	default:
+> -		return -EOPNOTSUPP;
+> -	}
+> -}
+> -
+> -void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed)
+> -{
+> -	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+> -
+> -	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
+> -		return;
+> -
+> -	am65_cpsw_est_link_up(ndev, link_speed);
+> -	port->qos.link_down_time = 0;
+> -}
+> -
+> -void am65_cpsw_qos_link_down(struct net_device *ndev)
+> -{
+> -	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+> -
+> -	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
+> -		return;
+> -
+> -	if (!port->qos.link_down_time)
+> -		port->qos.link_down_time = ktime_get();
+> -
+> -	port->qos.link_speed = SPEED_UNKNOWN;
+> -}
+> -
 
-diff --git a/arch/arm/boot/dts/microchip/Makefile b/arch/arm/boot/dts/microchip/Makefile
-index 31e03747cdf4..efde9546c8f4 100644
---- a/arch/arm/boot/dts/microchip/Makefile
-+++ b/arch/arm/boot/dts/microchip/Makefile
-@@ -4,6 +4,7 @@ DTC_FLAGS_at91-sam9x60_curiosity := -@
- DTC_FLAGS_at91-sam9x60ek := -@
- DTC_FLAGS_at91-sama5d27_som1_ek := -@
- DTC_FLAGS_at91-sama5d27_wlsom1_ek := -@
-+DTC_FLAGS_at91-sama5d29_curiosity := -@
- DTC_FLAGS_at91-sama5d2_icp := -@
- DTC_FLAGS_at91-sama5d2_ptc_ek := -@
- DTC_FLAGS_at91-sama5d2_xplained := -@
-@@ -64,6 +65,7 @@ dtb-$(CONFIG_SOC_SAM_V7) += \
- 	at91-nattis-2-natte-2.dtb \
- 	at91-sama5d27_som1_ek.dtb \
- 	at91-sama5d27_wlsom1_ek.dtb \
-+	at91-sama5d29_curiosity.dtb \
- 	at91-sama5d2_icp.dtb \
- 	at91-sama5d2_ptc_ek.dtb \
- 	at91-sama5d2_xplained.dtb \
-diff --git a/arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts
-new file mode 100644
-index 000000000000..6b02b7bcfd49
---- /dev/null
-+++ b/arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts
-@@ -0,0 +1,600 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * at91-sama5d29_curiosity.dts - Device Tree file for SAMA5D29 Curiosity board
-+ *
-+ * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
-+ *
-+ * Author: Mihai Sain <mihai.sain@microchip.com>
-+ *
-+ */
-+/dts-v1/;
-+#include "sama5d29.dtsi"
-+#include "sama5d2-pinfunc.h"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/mfd/atmel-flexcom.h>
-+
-+/ {
-+	model = "Microchip SAMA5D29 Curiosity";
-+	compatible = "microchip,sama5d29-curiosity", "atmel,sama5d29", "atmel,sama5d2", "atmel,sama5";
-+
-+	aliases {
-+		serial0 = &uart0;	// debug
-+		serial1 = &uart1;	// RPi
-+		serial2 = &uart3;	// mikro BUS 2
-+		serial3 = &uart4;	// mikro BUS 1
-+		serial4 = &uart6;	// flx1 Bluetooth
-+		i2c0 = &i2c0;
-+		i2c1 = &i2c1;
-+	};
-+
-+	chosen {
-+		bootargs = "console=ttyS0,115200 root=/dev/mmcblk0p2 rw rootwait";
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	clocks {
-+		slow_xtal {
-+			clock-frequency = <32768>;
-+		};
-+
-+		main_xtal {
-+			clock-frequency = <24000000>;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_key_gpio_default>;
-+
-+		button-1 {
-+			label = "USER BUTTON";
-+			gpios = <&pioA PIN_PA17 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_PROG1>;
-+			wakeup-source;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_led_gpio_default>;
-+		status = "okay";
-+
-+		led-red {
-+			label = "red";
-+			gpios = <&pioA PIN_PA7 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-green {
-+			label = "green";
-+			gpios = <&pioA PIN_PA8 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-blue {
-+			label = "blue";
-+			gpios = <&pioA PIN_PA9 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+
-+	memory@20000000 {
-+		device_type = "memory";
-+		reg = <0x20000000 0x20000000>;
-+	};
-+};
-+
-+&adc {
-+	vddana-supply = <&vdd_3v3>;
-+	vref-supply = <&vdd_3v3>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc_default &pinctrl_adtrg_default>;
-+	status = "okay";
-+};
-+
-+&can0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can0_default>;
-+	status = "okay";
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1_default>;
-+	status = "okay";
-+};
-+
-+&flx1 {
-+	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
-+	status = "okay";
-+
-+	uart6: serial@200 {
-+		pinctrl-0 = <&pinctrl_flx1_default>;
-+		pinctrl-names = "default";
-+		atmel,use-dma-rx;
-+		atmel,use-dma-tx;
-+		status = "okay";
-+	};
-+};
-+
-+&flx4 {
-+	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
-+	status = "okay";
-+
-+	spi6: spi@400 {
-+		dmas = <0>, <0>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_rpi_spi>;
-+		status = "okay";
-+	};
-+};
-+
-+&i2c0 {
-+	dmas = <0>, <0>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c0_default>;
-+	pinctrl-1 = <&pinctrl_i2c0_gpio>;
-+	sda-gpios = <&pioA PIN_PB31 GPIO_ACTIVE_HIGH>;
-+	scl-gpios = <&pioA PIN_PC0 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	i2c-sda-hold-time-ns = <350>;
-+	status = "okay";
-+
-+	mcp16502@5b {
-+		compatible = "microchip,mcp16502";
-+		reg = <0x5b>;
-+		status = "okay";
-+		lpm-gpios = <&pioBU 0 GPIO_ACTIVE_LOW>;
-+
-+		regulators {
-+			vdd_3v3: VDD_IO {
-+				regulator-name = "VDD_IO";
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-initial-mode = <2>;
-+				regulator-allowed-modes = <2>, <4>;
-+				regulator-always-on;
-+
-+				regulator-state-standby {
-+					regulator-on-in-suspend;
-+					regulator-mode = <4>;
-+				};
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-mode = <4>;
-+				};
-+			};
-+
-+			vddio_ddr: VDD_DDR {
-+				regulator-name = "VDD_DDR";
-+				regulator-min-microvolt = <1200000>;
-+				regulator-max-microvolt = <1200000>;
-+				regulator-initial-mode = <2>;
-+				regulator-allowed-modes = <2>, <4>;
-+				regulator-always-on;
-+
-+				regulator-state-standby {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1200000>;
-+					regulator-changeable-in-suspend;
-+					regulator-mode = <4>;
-+				};
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1200000>;
-+					regulator-changeable-in-suspend;
-+					regulator-mode = <4>;
-+				};
-+			};
-+
-+			vdd_core: VDD_CORE {
-+				regulator-name = "VDD_CORE";
-+				regulator-min-microvolt = <1250000>;
-+				regulator-max-microvolt = <1250000>;
-+				regulator-initial-mode = <2>;
-+				regulator-allowed-modes = <2>, <4>;
-+				regulator-always-on;
-+
-+				regulator-state-standby {
-+					regulator-on-in-suspend;
-+					regulator-mode = <4>;
-+				};
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-mode = <4>;
-+				};
-+			};
-+
-+			vdd_ddr: VDD_OTHER {
-+				regulator-name = "VDD_OTHER";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-initial-mode = <2>;
-+				regulator-allowed-modes = <2>, <4>;
-+				regulator-always-on;
-+
-+				regulator-state-standby {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+					regulator-changeable-in-suspend;
-+					regulator-mode = <4>;
-+				};
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+					regulator-changeable-in-suspend;
-+					regulator-mode = <4>;
-+				};
-+			};
-+
-+			LDO1 {
-+				regulator-name = "LDO1";
-+				regulator-min-microvolt = <2500000>;
-+				regulator-max-microvolt = <2500000>;
-+				regulator-always-on;
-+
-+				regulator-state-standby {
-+					regulator-on-in-suspend;
-+				};
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			LDO2 {
-+				regulator-name = "LDO2";
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+
-+				regulator-state-standby {
-+					regulator-on-in-suspend;
-+				};
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	dmas = <0>, <0>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c1_default>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	i2c-analog-filter;
-+	i2c-digital-filter;
-+	i2c-digital-filter-width-ns = <35>;
-+	sda-gpios = <&pioA PIN_PD4 GPIO_ACTIVE_HIGH>;
-+	scl-gpios = <&pioA PIN_PD5 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	status = "okay";
-+};
-+
-+&pioA {
-+	pinctrl_adc_default: adc-default {
-+		pinmux = <PIN_PD25__GPIO>,
-+			 <PIN_PD26__GPIO>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_adtrg_default: adtrg-default {
-+		pinmux = <PIN_PD31__ADTRG>;
-+		bias-pull-up;
-+	};
-+
-+	pinctrl_can0_default: can0-default {
-+		pinmux = <PIN_PC10__CANTX0>,
-+			 <PIN_PC11__CANRX0>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_can1_default: can1-default {
-+		pinmux = <PIN_PC26__CANTX1>,
-+			 <PIN_PC27__CANRX1>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_debug_uart: debug-uart {
-+		pinmux = <PIN_PB26__URXD0>,
-+			 <PIN_PB27__UTXD0>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_flx1_default: flx1-default {
-+		pinmux = <PIN_PA24__FLEXCOM1_IO0>,
-+			 <PIN_PA23__FLEXCOM1_IO1>,
-+			 <PIN_PA25__FLEXCOM1_IO3>,
-+			 <PIN_PA26__FLEXCOM1_IO4>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_i2c0_default: i2c0-default {
-+		pinmux = <PIN_PB31__TWD0>,
-+			 <PIN_PC0__TWCK0>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_i2c0_gpio: i2c0-gpio-default {
-+		pinmux = <PIN_PB31__GPIO>,
-+			 <PIN_PC0__GPIO>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_i2c1_default: i2c1-default {
-+		pinmux = <PIN_PD4__TWD1>,
-+			 <PIN_PD5__TWCK1>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_i2c1_gpio: i2c1-gpio-default {
-+		pinmux = <PIN_PD4__GPIO>,
-+			 <PIN_PD5__GPIO>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_key_gpio_default: key-gpio-default {
-+		pinmux = <PIN_PA17__GPIO>;
-+		bias-pull-up;
-+	};
-+
-+	pinctrl_led_gpio_default: led-gpio-default {
-+		pinmux = <PIN_PA7__GPIO>,
-+			 <PIN_PA8__GPIO>,
-+			 <PIN_PA9__GPIO>;
-+		bias-pull-up;
-+	};
-+
-+	pinctrl_mikrobus1_pwm: mikrobus1-pwm {
-+		pinmux = <PIN_PA31__PWML0>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_mikrobus2_pwm: mikrobus2-pwm {
-+		pinmux = <PIN_PB0__PWMH1>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_mikrobus1_uart: mikrobus1-uart {
-+		pinmux = <PIN_PB3__URXD4>,
-+			 <PIN_PB4__UTXD4>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_mikrobus2_uart: mikrobus2-uart {
-+		pinmux = <PIN_PB11__URXD3>,
-+			 <PIN_PB12__UTXD3>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_qspi1_default: qspi1-default {
-+		pinmux = <PIN_PB5__QSPI1_SCK>,
-+			 <PIN_PB6__QSPI1_CS>,
-+			 <PIN_PB7__QSPI1_IO0>,
-+			 <PIN_PB8__QSPI1_IO1>,
-+			 <PIN_PB9__QSPI1_IO2>,
-+			 <PIN_PB10__QSPI1_IO3>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_rpi_spi: rpi-spi {
-+		pinmux = <PIN_PD12__FLEXCOM4_IO0>,
-+			 <PIN_PD13__FLEXCOM4_IO1>,
-+			 <PIN_PD14__FLEXCOM4_IO2>,
-+			 <PIN_PD15__FLEXCOM4_IO3>,
-+			 <PIN_PD16__FLEXCOM4_IO4>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_rpi_uart: rpi-uart {
-+		pinmux = <PIN_PD2__URXD1>,
-+			 <PIN_PD3__UTXD1>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_sdmmc0_default: sdmmc0-default {
-+		pinmux = <PIN_PA0__SDMMC0_CK>,
-+			 <PIN_PA1__SDMMC0_CMD>,
-+			 <PIN_PA2__SDMMC0_DAT0>,
-+			 <PIN_PA3__SDMMC0_DAT1>,
-+			 <PIN_PA4__SDMMC0_DAT2>,
-+			 <PIN_PA5__SDMMC0_DAT3>,
-+			 <PIN_PA11__SDMMC0_VDDSEL>,
-+			 <PIN_PA13__SDMMC0_CD>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_sdmmc1_default: sdmmc1-default {
-+		pinmux = <PIN_PA18__SDMMC1_DAT0>,
-+			 <PIN_PA19__SDMMC1_DAT1>,
-+			 <PIN_PA20__SDMMC1_DAT2>,
-+			 <PIN_PA21__SDMMC1_DAT3>,
-+			 <PIN_PA22__SDMMC1_CK>,
-+			 <PIN_PA28__SDMMC1_CMD>,
-+			 <PIN_PA30__SDMMC1_CD>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_spi1_default: spi1-default {
-+		pinmux = <PIN_PC1__SPI1_SPCK>,
-+			 <PIN_PC2__SPI1_MOSI>,
-+			 <PIN_PC3__SPI1_MISO>,
-+			 <PIN_PC4__SPI1_NPCS0>,
-+			 <PIN_PC5__SPI1_NPCS1>,
-+			 <PIN_PC6__SPI1_NPCS2>,
-+			 <PIN_PC7__SPI1_NPCS3>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_usb_default: usb-default {
-+		pinmux = <PIN_PA6__GPIO>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_usba_vbus: usba-vbus {
-+		pinmux = <PIN_PB13__GPIO>;
-+		bias-disable;
-+	};
-+};
-+
-+&pwm0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_mikrobus1_pwm &pinctrl_mikrobus2_pwm>;
-+	status = "okay";
-+};
-+
-+&qspi1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_qspi1_default>;
-+	status = "okay";
-+
-+	flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <80000000>;
-+		spi-tx-bus-width = <4>;
-+		spi-rx-bus-width = <4>;
-+		m25p,fast-read;
-+		label = "atmel_qspi1";
-+		status = "okay";
-+
-+		at91bootstrap@0 {
-+			label = "at91bootstrap";
-+			reg = <0x0 0x40000>;
-+		};
-+
-+		bootloader@40000 {
-+			label = "bootloader";
-+			reg = <0x40000 0xc0000>;
-+		};
-+
-+		bootloaderenvred@100000 {
-+			label = "bootloader env redundant";
-+			reg = <0x100000 0x40000>;
-+		};
-+
-+		bootloaderenv@140000 {
-+			label = "bootloader env";
-+			reg = <0x140000 0x40000>;
-+		};
-+
-+		dtb@180000 {
-+			label = "device tree";
-+			reg = <0x180000 0x80000>;
-+		};
-+
-+		kernel@200000 {
-+			label = "kernel";
-+			reg = <0x200000 0x600000>;
-+		};
-+	};
-+};
-+
-+&sdmmc0 {
-+	bus-width = <4>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sdmmc0_default>;
-+	disable-wp;
-+	status = "okay";
-+};
-+
-+&sdmmc1 {
-+	bus-width = <4>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sdmmc1_default>;
-+	disable-wp;
-+	status = "okay";
-+};
-+
-+&shutdown_controller {
-+	debounce-delay-us = <976>;
-+	atmel,wakeup-rtc-timer;
-+
-+	input@0 {
-+		reg = <0>;
-+	};
-+};
-+
-+&spi1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+	status = "okay";
-+};
-+
-+&tcb0 {
-+	timer0: timer@0 {
-+		compatible = "atmel,tcb-timer";
-+		reg = <0>;
-+	};
-+
-+	timer1: timer@1 {
-+		compatible = "atmel,tcb-timer";
-+		reg = <1>;
-+	};
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_debug_uart>;
-+	atmel,use-dma-rx;
-+	atmel,use-dma-tx;
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rpi_uart>;
-+	atmel,use-dma-rx;
-+	atmel,use-dma-tx;
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_mikrobus2_uart>;
-+	atmel,use-dma-rx;
-+	atmel,use-dma-tx;
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_mikrobus1_uart>;
-+	atmel,use-dma-rx;
-+	atmel,use-dma-tx;
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	atmel,vbus-gpio = <&pioA PIN_PB13 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usba_vbus>;
-+	status = "okay";
-+};
-+
-+&usb1 {
-+	num-ports = <3>;
-+	atmel,vbus-gpio = <0
-+			   &pioA PIN_PA6 GPIO_ACTIVE_HIGH
-+			   0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usb_default>;
-+	status = "okay";
-+};
-+
-+&usb2 {
-+	status = "okay";
-+};
-+
-+&watchdog {
-+	status = "okay";
-+};
--- 
-2.42.0
+Could you split the code movement to a separate change?
 
+> +	if (port->qos.link_speed != SPEED_UNKNOWN) {
+> +		if (min_rate_total > port->qos.link_speed) {
+> +			NL_SET_ERR_MSG_FMT_MOD(extack, "TX rate min %llu exceeds link speed %d\n",
+> +					       min_rate_total, port->qos.link_speed);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (max_rate_total > port->qos.link_speed) {
+> +			NL_SET_ERR_MSG_FMT_MOD(extack, "TX rate max %llu exceeds link speed %d\n",
+> +					       max_rate_total, port->qos.link_speed);
+> +			return -EINVAL;
+> +		}
+> +	}
+
+Link speeds can be renegotiated, and the mqprio offload can be installed
+while the link is down. So this restriction, while honorable, has limited
+usefulness.
+
+> +
+> +	p_mqprio->shaper_en = 1;
+
+s/1/true/
+
+> +	p_mqprio->max_rate_total = max_t(u64, min_rate_total, max_rate_total);
+> +
+> +	return 0;
+> +}
+> +
+> +static void am65_cpsw_reset_tc_mqprio(struct net_device *ndev)
+> +{
+> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
+> +	struct am65_cpsw_common *common = port->common;
+> +
+> +	p_mqprio->shaper_en = 0;
+
+s/0/false/
+
+> +	p_mqprio->max_rate_total = 0;
+> +
+> +	am65_cpsw_tx_pn_shaper_reset(port);
+> +	netdev_reset_tc(ndev);
+> +	netif_set_real_num_tx_queues(ndev, common->tx_ch_num);
+> +
+> +	/* Reset all Queue priorities to 0 */
+> +	writel(0,
+> +	       port->port_base + AM65_CPSW_PN_REG_TX_PRI_MAP);
+
+What exactly needs pm_runtime_get_sync()? This writel() doesn't?
+
+> +}
+> +
+> +static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data)
+> +{
+> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
+> +	struct tc_mqprio_qopt_offload *mqprio = type_data;
+> +	struct am65_cpsw_common *common = port->common;
+> +	struct tc_mqprio_qopt *qopt = &mqprio->qopt;
+> +	int tc, offset, count, ret, prio;
+> +	u8 num_tc = qopt->num_tc;
+> +	u32 tx_prio_map = 0;
+> +	int i;
+> +
+> +	memcpy(&p_mqprio->mqprio_hw, mqprio, sizeof(*mqprio));
+> +
+> +	if (!num_tc) {
+> +		am65_cpsw_reset_tc_mqprio(ndev);
+> +		return 0;
+> +	}
+> +
+> +	ret = pm_runtime_get_sync(common->dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(common->dev);
+> +		return ret;
+> +	}
