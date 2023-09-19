@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAAB7A6990
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ED17A698D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbjISRYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbjISRX5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230203AbjISRX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 19 Sep 2023 13:23:57 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFD9AD;
-        Tue, 19 Sep 2023 10:23:51 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59bebd5bdadso61362617b3.0;
-        Tue, 19 Sep 2023 10:23:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695144230; x=1695749030; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ke+rhIpc8Yj4RHSOIcCUf04IBals1/6zBz6t3mWbRfs=;
-        b=lqDp+sTrbpvsk/gj6cxQsxnsxilv2449oWmf02MP18Xn0eLh9Ct5RDlUus59A/bA+A
-         VPdAMIkGw0N9hXn+CgxCvdsxmDAsmaL+TbGJqGbG/0S17YmIjdl1vL5u5MSCcUfwQhXS
-         2aV7utyejtOUbS2yOyCrIRuVDgF0lBQaWdya1unG0yOcWF7KP7IqlwSSxvPRAfP7f1XZ
-         xwtQgvkjqzOCvXgLjUvxSeJ/BgMf6x1kKBgmJYVsGORk4205Czkr4/sjjtAveTBj6Y7l
-         TETp1prWNaoa/Zfkuej9pngYXjS1mPLK7MdNG0EPR/GzMuQYqasp1RZxBsU3cLUFkgin
-         nSjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695144230; x=1695749030;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ke+rhIpc8Yj4RHSOIcCUf04IBals1/6zBz6t3mWbRfs=;
-        b=eXNKAyuZXXYTsYKaTQmTQ0BGR1x2e3Qv6p5pYQoESJFnSIxeBCANoHBTM/tMF3e+qK
-         aY8QK/3iSmdRS31vtt69X0jLUluSMwxUk2AHsfOsbi4fF4JKTZMOKBA0WTh5zrwlrDrR
-         3ocGmWtVa6+WEUQWIQ7Nwwsk0o6dlsFNmNZ4kPDQWL+xc/DJOg2Igzja53AdVvHAP8Fc
-         A+/AErOMetq9Mix3rBntsvsXEi0MYoUTCHdQvTRM4tSMOWj8veVPqOvOb4uZHhNkkplY
-         b95KR+o9rO2ymAM8dCGAqcTW7pc/flyhpa8h+/4mqLshdy0DnHtapSzMnnUs4OV7eaFZ
-         jRaQ==
-X-Gm-Message-State: AOJu0Yye14ZDNq0Qc4m3G++8Hf0u3teiDlJGnjBI6ttUMAVpOVMR+Mor
-        XsnFSiszHTOcW1NZiu5es+0=
-X-Google-Smtp-Source: AGHT+IFYba94/tWKEV5d0wk1Ylg0gSJJMGYXAHDrHy5oPNZruwSqpKZ/9cU/3wLGaHbcTR7JOuKvlQ==
-X-Received: by 2002:a81:4810:0:b0:586:9c4e:a9a4 with SMTP id v16-20020a814810000000b005869c4ea9a4mr145786ywa.5.1695144230386;
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbjISRX4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Sep 2023 13:23:56 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC78A6;
         Tue, 19 Sep 2023 10:23:50 -0700 (PDT)
-Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
-        by smtp.gmail.com with ESMTPSA id u127-20020a0dd285000000b0059bce30a498sm3316842ywd.139.2023.09.19.10.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 10:23:49 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 10:23:46 -0700
-From:   Vishal Moola <vishal.moola@gmail.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, will@kernel.org,
-        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
-        peterz@infradead.org, catalin.marinas@arm.com,
-        chenhuacai@kernel.org, tsbogend@alpha.franken.de,
-        dave.hansen@linux.intel.com, luto@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, arnd@arndb.de, willy@infradead.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org
-Subject: Re: [PATCH] mm: add statistics for PUD level pagetable
-Message-ID: <ZQnZIkOfY0btsd8A@unknowna0e70b2ca394.attlocal.net>
-References: <876c71c03a7e69c17722a690e3225a4f7b172fb2.1695017383.git.baolin.wang@linux.alibaba.com>
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-405101a02bcso6148925e9.1;
+        Tue, 19 Sep 2023 10:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695144229; x=1695749029; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Uv9oI1kx1D03B9nZ62QaXDHAZdBJSbt6nu5tpkEgEhM=;
+        b=gNT9ULkT0DJ5xYNWnBn6HFNceoZW5pkWBE1azCbtP6xTyqb8HZk7GspiGYK5fbS7Zw
+         2I3nEtAU1MstbsOtOt+wTDh1bPHueG4NkWu7sywb9OE1k522McbSaVjLGjUf/cVlX7hc
+         64GRtbglbllDDMz1CSLV+2VCuxfeOvf23EuFm4OR+QI6Q6ASDSTk9gbJ6m7QAK9lUVy/
+         D0eLSiaomesoS1LnB40uV82J//bw4UFf3UDElGQffyiqE/DybaNTZwNFM4ElM4m7DmYX
+         IDuYlvWzxuvbhd+bydPC7axWyExxX36OcUuUjggt2GI3LQrhvDOWgEE9h2eL+i/W1Y0R
+         AExw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695144229; x=1695749029;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uv9oI1kx1D03B9nZ62QaXDHAZdBJSbt6nu5tpkEgEhM=;
+        b=DbXU6YrmdIVuG7GLyFE6HowwoOFt8w/4fT1jPGFFgVc7jFlo3xvzSULdGF+nxOTFhb
+         xMmKqmFthbs7F24iNxgV6GX70vf+EdTDY2ujSVnPH2YUvxwTSGvc/a42YOfNnrjGTY3n
+         CO38pNJPy9Ul6rEccDaqAioaj609NUer6uaUA0gm7FStQWoNmavdTsqFoEnaF+Hv2Jwd
+         Qd+Qc7+2eKYJZYCE/BnhMdE/RPaYMYjqxe0uDubJh5/1s/NkCAjCqbZXdvvON5O8UFyh
+         6sdEjrUnROW4B6etwE+FLaRWW1CeYB4xmZf9kvLCPQzDvlT4BLNYfHGb8wlU1mLu7GL5
+         cSHg==
+X-Gm-Message-State: AOJu0Yyex7hMZZUpj3NSza9IZuvL1WDlQ4lpl1embkgQbneSn7Hjv7dP
+        Wy2gsvb4DeX59DeqPIJ5aZg=
+X-Google-Smtp-Source: AGHT+IFbuYLnQDU+g1YuQ0nUvdT/9Kj7fr+QDbe9EoyulaT930lf1yy5Za03DAYAyZkDFaBPLs0v4A==
+X-Received: by 2002:a05:600c:4f12:b0:404:72f9:d59a with SMTP id l18-20020a05600c4f1200b0040472f9d59amr412653wmq.0.1695144228965;
+        Tue, 19 Sep 2023 10:23:48 -0700 (PDT)
+Received: from [10.0.0.25] ([178.160.241.68])
+        by smtp.gmail.com with ESMTPSA id x13-20020a05600c21cd00b00402ff8d6086sm15748972wmj.18.2023.09.19.10.23.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 10:23:48 -0700 (PDT)
+Message-ID: <5e729667-f08b-d358-eff7-65c5d88e4352@gmail.com>
+Date:   Tue, 19 Sep 2023 21:23:46 +0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <876c71c03a7e69c17722a690e3225a4f7b172fb2.1695017383.git.baolin.wang@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/2] ALSA: Add new driver for Marian M2 sound card
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     perex@perex.cz, tiwai@suse.com, corbet@lwn.net,
+        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230918181044.7257-1-ivan.orlov0322@gmail.com>
+ <20230918181044.7257-2-ivan.orlov0322@gmail.com>
+ <2023091955-dried-popsicle-f3d8@gregkh>
+ <56a4a085-6b1d-19c6-4160-4513c8c41e57@gmail.com>
+ <2023091917-zippy-alienate-3efc@gregkh>
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <2023091917-zippy-alienate-3efc@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 02:31:42PM +0800, Baolin Wang wrote:
-> Recently, we found that cross-die access to pagetable pages on ARM64
-> machines can cause performance fluctuations in our business. Currently,
-> there are no PMU events available to track this situation on our ARM64
-> machines, so an accurate pagetable accounting can help to analyze this
-> issue, but now the PUD level pagetable accounting is missed.
+On 9/19/23 12:53, Greg KH wrote:
+> On Tue, Sep 19, 2023 at 12:46:34PM +0400, Ivan Orlov wrote:
+>> By the way, is there any way to detect such issues automatically? I've seen
+>> that the kernel test robot detects a lot of similar stuff, perhaps there is
+>> any tools/linters which can be set up locally?
 > 
-> So introducing pagetable_pud_ctor/dtor() to help to get an accurate
-> PUD pagetable accounting, as well as converting the architectures with
-> using generic PUD pagatable allocation to add corresponding PUD pagetable
-> accounting. Moreover this patch will also mark the PUD level pagetable
-> with PG_table flag, which will help to do sanity validation in unpoison_memory().
+> Not that I know of, sorry, I rely on the kernel test robot for lots of
+> these things :)
 > 
-> On my testing machine, I can see more pagetables statistics after the patch
-> with page-types tool:
+> But, the robot is running all open tests, so dig into the public repo of
+> it to see what it is using and perhaps run those tests locally?  Lots of
+> them are just different build options and running sparse.
 > 
-> Before patch:
->         flags           page-count      MB  symbolic-flags                     long-symbolic-flags
-> 0x0000000004000000           27326      106  __________________________g_________________       pgtable
-> After patch:
-> 0x0000000004000000           27541      107  __________________________g_________________       pgtable
-> 
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-Acked-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+Alright, I will take a look on the sources. Thank you for the advice! :)
+
