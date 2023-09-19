@@ -2,391 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9537A628E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9473C7A61FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbjISMSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
+        id S231194AbjISMEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbjISMRa (ORCPT
+        with ESMTP id S230428AbjISMEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:17:30 -0400
-Received: from mail.avm.de (mail.avm.de [212.42.244.94])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0814E3;
-        Tue, 19 Sep 2023 05:16:44 -0700 (PDT)
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-        by mail.avm.de (Postfix) with ESMTPS;
-        Tue, 19 Sep 2023 14:16:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-        t=1695125795; bh=1Pn1Mj5B9BK9G6xRh+VXmW7e+DczI+9uJJqpPrAiqOA=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=M+XuX7K00vctJxIPrf1FQDGQdyJWQVco7pMmtmaGPUVYmHGhE2ANt7WGaXd1GFpWI
-         sTuq6gICoVsbC4Q1xW15L4TecDWhmBTrqo56zFQHNWLIGAusW5Lvx7Xe2dquMLQU1k
-         QG2qtj2NusTAgxYBfh4hUrKWNWuK0t1WuoYiAR5s=
-Received: from localhost (unknown [172.17.88.63])
-        by mail-auth.avm.de (Postfix) with ESMTPSA id D5AC682000;
-        Tue, 19 Sep 2023 14:16:34 +0200 (CEST)
-From:   Johannes Nixdorf <jnixdorf-oss@avm.de>
-Date:   Tue, 19 Sep 2023 10:12:53 +0200
-Subject: [PATCH net-next v4 6/6] selftests: forwarding:
- bridge_fdb_learning_limit: Add a new selftest
+        Tue, 19 Sep 2023 08:04:41 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28CDF3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:04:12 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-690bd8f89baso894403b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:04:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1695125052; x=1695729852; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EV4P0PSru4UH0ozpkdrOaK/8aWGZrWYEEtd5JODaw80=;
+        b=Zpcz45FtKplDwQTe+kSyWwU7SOETQwlPIvWVOShAITiAihxv9fP6SXrLKUQUqziBHk
+         oJ49KdiieVssDi/VF51EdWSgJBb3k95B27tVrHuxuWbD8Yj3TiWSfWBwrTYW5ip+AGOe
+         pHTXlyZ448csqLCdlYywbKirHV+DumCBbxCyRyYZkTXFTUvrqejJR63O89hIQyPHaMbd
+         wuzSSqpC6Y2AEioXAIUU8FCmoQ/qwHof/RmZ88bE2cPwcQgPSmHGUGCIIfUV9viFI2vM
+         Mk6gT/I54w6QVP5mWcTy9XbtsEw4Vv9VfRAPYDB7GSP9Un8Myk2CY1udXYxvo0A5aRSW
+         FYNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695125052; x=1695729852;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EV4P0PSru4UH0ozpkdrOaK/8aWGZrWYEEtd5JODaw80=;
+        b=YTua1Vu7OC7ZG8VWuqWYkaTxcY/lqobKVog5Gj2BaiBmOo71MLq8C/oJK4WT0rjeC4
+         C94xRQW0wZBZLuNmdJGTUC5u5/j0WCMPhXgEVWm9CVSramRVZblHDG8pOLXKYpyLpfoI
+         OSR4joOFcOAQWHYeSBAiFax2cVjDzjmp/mcsiezBAwRztBVVxum6LGtzG1d/hYORrIvy
+         vXBrTj0HUMLDu6TsK/rHK8OG6unwMAzx6c7FEYfg2oIJKZZW5hTlU92byH0fyR2QgC7M
+         D2uqXTwFhIAmJXtKY4G6o8MfQArCfcB9rIkHx4K0cnlQryos8uXLvzs5zHB9D2m484is
+         dm7A==
+X-Gm-Message-State: AOJu0Yx3YxkPa0yceOWlsyA40NPWncWZuMj7c72zy3RJoPAT2QdnlKHy
+        xJDdveBM6s1oZ5Xwn9smH18tzA==
+X-Google-Smtp-Source: AGHT+IEkiPegAbY0xMGT5Vhlpoxfden1WRFEh8Yps+ddWo+NzQcAFlFPrZFYwKYziezSXfaMk4zpFQ==
+X-Received: by 2002:a17:90a:bb98:b0:26d:3458:7a61 with SMTP id v24-20020a17090abb9800b0026d34587a61mr9014596pjr.5.1695125052290;
+        Tue, 19 Sep 2023 05:04:12 -0700 (PDT)
+Received: from PF2LML5M-SMJ.bytedance.net ([203.208.189.7])
+        by smtp.gmail.com with ESMTPSA id gv4-20020a17090b11c400b00273f65fa424sm8494694pjb.8.2023.09.19.05.04.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 05:04:11 -0700 (PDT)
+From:   Jinhui Guo <guojinhui.liam@bytedance.com>
+To:     rafael@kernel.org, lenb@kernel.org, gregkh@linuxfoundation.org
+Cc:     lizefan.x@bytedance.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jinhui Guo <guojinhui.liam@bytedance.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH v7] driver core: platform: set numa_node before platform_device_add()
+Date:   Tue, 19 Sep 2023 20:03:41 +0800
+Message-Id: <20230919120341.533-1-guojinhui.liam@bytedance.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230919-fdb_limit-v4-6-39f0293807b8@avm.de>
-References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
-In-Reply-To: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Johannes Nixdorf <jnixdorf-oss@avm.de>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695111167; l=7286;
- i=jnixdorf-oss@avm.de; s=20230906; h=from:subject:message-id;
- bh=1Pn1Mj5B9BK9G6xRh+VXmW7e+DczI+9uJJqpPrAiqOA=;
- b=ZSgDZskCJzluT9nSnnXD2U5tXzeWhEqArbAtQ1bb9jVX8f9JbxWL9ssQ0ZSe5OroeeKh3G4Ck
- 1MHUzy2/ZwZDCMw5QOzDHvmilgHtKhAmtFrHV4eBea87U1un1lvT6Dr
-X-Developer-Key: i=jnixdorf-oss@avm.de; a=ed25519;
- pk=KMraV4q7ANHRrwjf9EVhvU346JsqGGNSbPKeNILOQfo=
-X-purgate-ID: 149429::1695125795-4DE39EEA-8F192E7E/0/0
-X-purgate-type: clean
-X-purgate-size: 7288
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a suite covering the fdb_n_learned and fdb_max_learned bridge
-features, touching all special cases in accounting at least once.
+Setting the devices' numa_node needs to be done in
+platform_device_register_full(), because that's where the
+platform device object is allocated.
 
-Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
+Fixes: 4a60406d3592 ("driver core: platform: expose numa_node to users in sysfs")
+Cc: stable@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309122309.mbxAnAIe-lkp@intel.com/
+Signed-off-by: Jinhui Guo <guojinhui.liam@bytedance.com>
 ---
- tools/testing/selftests/net/forwarding/Makefile    |   3 +-
- .../net/forwarding/bridge_fdb_learning_limit.sh    | 283 +++++++++++++++++++++
- 2 files changed, 285 insertions(+), 1 deletion(-)
+V6 -> V7
+  1. Fix bug directly by adding numa_node to struct
+     platform_device_info (suggested by Rafael J. Wysocki).
+  2. Remove reviewer name.
 
-diff --git a/tools/testing/selftests/net/forwarding/Makefile b/tools/testing/selftests/net/forwarding/Makefile
-index 74e754e266c3..df593b7b3e6b 100644
---- a/tools/testing/selftests/net/forwarding/Makefile
-+++ b/tools/testing/selftests/net/forwarding/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0+ OR MIT
+V5 -> V6:
+  1. Update subject to correct function name platform_device_add().
+  2. Provide a more clear and accurate description of the changes
+     made in commit (suggested by Rafael J. Wysocki).
+  3. Add reviewer name.
+
+V4 -> V5:
+  Add Cc: stable line and changes from the previous submited patches.
+
+V3 -> V4:
+  Refactor code to be an ACPI function call (suggested by Greg Kroah-Hartman).
+
+V2 -> V3:
+  Fix Signed-off name.
+
+V1 -> V2:
+  Fix compile error without enabling CONFIG_ACPI.
+---
+
+ drivers/acpi/acpi_platform.c    |  5 ++---
+ drivers/base/platform.c         |  4 ++++
+ include/linux/platform_device.h | 26 ++++++++++++++++++++++++++
+ 3 files changed, 32 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
+index 48d15dd785f6..1ae7449f70dc 100644
+--- a/drivers/acpi/acpi_platform.c
++++ b/drivers/acpi/acpi_platform.c
+@@ -168,6 +168,7 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+ 	pdevinfo.num_res = count;
+ 	pdevinfo.fwnode = acpi_fwnode_handle(adev);
+ 	pdevinfo.properties = properties;
++	platform_devinfo_set_node(&pdevinfo, acpi_get_node(adev->handle));
  
--TEST_PROGS = bridge_igmp.sh \
-+TEST_PROGS = bridge_fdb_learning_limit.sh \
-+	bridge_igmp.sh \
- 	bridge_locked_port.sh \
- 	bridge_mdb.sh \
- 	bridge_mdb_host.sh \
-diff --git a/tools/testing/selftests/net/forwarding/bridge_fdb_learning_limit.sh b/tools/testing/selftests/net/forwarding/bridge_fdb_learning_limit.sh
-new file mode 100755
-index 000000000000..0760a34b7114
---- /dev/null
-+++ b/tools/testing/selftests/net/forwarding/bridge_fdb_learning_limit.sh
-@@ -0,0 +1,283 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
+ 	if (acpi_dma_supported(adev))
+ 		pdevinfo.dma_mask = DMA_BIT_MASK(32);
+@@ -178,11 +179,9 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+ 	if (IS_ERR(pdev))
+ 		dev_err(&adev->dev, "platform device creation failed: %ld\n",
+ 			PTR_ERR(pdev));
+-	else {
+-		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
++	else
+ 		dev_dbg(&adev->dev, "created platform device %s\n",
+ 			dev_name(&pdev->dev));
+-	}
+ 
+ 	kfree(resources);
+ 
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 76bfcba25003..c733bfb26149 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -808,6 +808,7 @@ struct platform_device *platform_device_register_full(
+ {
+ 	int ret;
+ 	struct platform_device *pdev;
++	int numa_node = platform_devinfo_get_node(pdevinfo);
+ 
+ 	pdev = platform_device_alloc(pdevinfo->name, pdevinfo->id);
+ 	if (!pdev)
+@@ -841,6 +842,9 @@ struct platform_device *platform_device_register_full(
+ 			goto err;
+ 	}
+ 
++	if (numa_node >= 0)
++		set_dev_node(&pdev->dev, numa_node);
 +
-+# ShellCheck incorrectly believes that most of the code here is unreachable
-+# because it's invoked by variable name following ALL_TESTS.
-+#
-+# shellcheck disable=SC2317
+ 	ret = platform_device_add(pdev);
+ 	if (ret) {
+ err:
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index 7a41c72c1959..78e11b79f1af 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -132,10 +132,36 @@ struct platform_device_info {
+ 		u64 dma_mask;
+ 
+ 		const struct property_entry *properties;
 +
-+ALL_TESTS="check_accounting check_limit"
-+NUM_NETIFS=6
-+source lib.sh
-+
-+TEST_MAC_BASE=de:ad:be:ef:42:
-+
-+NUM_PKTS=16
-+FDB_LIMIT=8
-+
-+FDB_TYPES=(
-+	# name		is counted?	overrides learned?
-+	'learned	1		0'
-+	'static		0		1'
-+	'user		0		1'
-+	'extern_learn	0		1'
-+	'local		0		1'
-+)
-+
-+mac()
++#ifdef CONFIG_NUMA
++		int numa_node;	/* NUMA node this platform device is close to plus 1 */
++#endif
+ };
+ extern struct platform_device *platform_device_register_full(
+ 		const struct platform_device_info *pdevinfo);
+ 
++#ifdef CONFIG_NUMA
++static inline int platform_devinfo_get_node(const struct platform_device_info *pdevinfo)
 +{
-+	printf "${TEST_MAC_BASE}%02x" "$1"
++	return pdevinfo ? pdevinfo->numa_node - 1 : NUMA_NO_NODE;
 +}
 +
-+H1_DEFAULT_MAC=$(mac 42)
-+
-+switch_create()
++static inline void platform_devinfo_set_node(struct platform_device_info *pdevinfo,
++					     int node)
 +{
-+	ip link add dev br0 type bridge
-+
-+	ip link set dev "$swp1" master br0
-+	ip link set dev "$swp2" master br0
-+	# swp3 is used to add local MACs, so do not add it to the bridge yet.
-+
-+	# swp2 is only used for replying when learning on swp1, its MAC should not be learned.
-+	ip link set dev "$swp2" type bridge_slave learning off
-+
-+	ip link set dev br0 up
-+
-+	ip link set dev "$swp1" up
-+	ip link set dev "$swp2" up
-+	ip link set dev "$swp3" up
++	pdevinfo->numa_node = node + 1;
++}
++#else
++static inline int platform_devinfo_get_node(const struct platform_device_info *pdevinfo)
++{
++	return NUMA_NO_NODE;
 +}
 +
-+switch_destroy()
-+{
-+	ip link set dev "$swp3" down
-+	ip link set dev "$swp2" down
-+	ip link set dev "$swp1" down
++static inline void platform_devinfo_set_node(struct platform_device_info *pdevinfo,
++					     int node)
++{}
++#endif
 +
-+	ip link del dev br0
-+}
-+
-+h_create()
-+{
-+	ip link set "$h1" addr "$H1_DEFAULT_MAC"
-+
-+	simple_if_init "$h1" 192.0.2.1/24
-+	simple_if_init "$h2" 192.0.2.2/24
-+}
-+
-+h_destroy()
-+{
-+	simple_if_fini "$h1" 192.0.2.1/24
-+	simple_if_fini "$h2" 192.0.2.2/24
-+}
-+
-+setup_prepare()
-+{
-+	h1=${NETIFS[p1]}
-+	swp1=${NETIFS[p2]}
-+
-+	h2=${NETIFS[p3]}
-+	swp2=${NETIFS[p4]}
-+
-+	swp3=${NETIFS[p6]}
-+
-+	vrf_prepare
-+
-+	h_create
-+
-+	switch_create
-+}
-+
-+cleanup()
-+{
-+	pre_cleanup
-+
-+	switch_destroy
-+
-+	h_destroy
-+
-+	vrf_cleanup
-+}
-+
-+fdb_get_n_learned()
-+{
-+	ip -d -j link show dev br0 type bridge | \
-+		jq '.[]["linkinfo"]["info_data"]["fdb_n_learned"]'
-+}
-+
-+fdb_get_n_mac()
-+{
-+	local mac=${1}
-+
-+	bridge -j fdb show br br0 | \
-+		jq "map(select(.mac == \"${mac}\" and (has(\"vlan\") | not))) | length"
-+}
-+
-+fdb_fill_learned()
-+{
-+	local i
-+
-+	for i in $(seq 1 "$NUM_PKTS"); do
-+		fdb_add learned "$(mac "$i")"
-+	done
-+}
-+
-+fdb_reset()
-+{
-+	bridge fdb flush dev br0
-+
-+	# Keep the default MAC address of h1 in the table. We set it to a different one when
-+	# testing dynamic learning.
-+	bridge fdb add "$H1_DEFAULT_MAC" dev "$swp1" master static use
-+}
-+
-+fdb_add()
-+{
-+	local type=$1 mac=$2
-+
-+	case "$type" in
-+		learned)
-+			ip link set "$h1" addr "$mac"
-+			# Wait for a reply so we implicitly wait until after the forwarding
-+			# code finished and the FDB entry was created.
-+			PING_COUNT=1 ping_do "$h1" 192.0.2.2
-+			check_err $? "Failed to ping another bridge port"
-+			ip link set "$h1" addr "$H1_DEFAULT_MAC"
-+			;;
-+		local)
-+			ip link set dev "$swp3" addr "$mac" && ip link set "$swp3" master br0
-+			;;
-+		static)
-+			bridge fdb replace "$mac" dev "$swp1" master static
-+			;;
-+		user)
-+			bridge fdb replace "$mac" dev "$swp1" master static use
-+			;;
-+		extern_learn)
-+			bridge fdb replace "$mac" dev "$swp1" master extern_learn
-+			;;
-+	esac
-+
-+	check_err $? "Failed to add a FDB entry of type ${type}"
-+}
-+
-+fdb_del()
-+{
-+	local type=$1 mac=$2
-+
-+	case "$type" in
-+		local)
-+			ip link set "$swp3" nomaster
-+			;;
-+		*)
-+			bridge fdb del "$mac" dev "$swp1" master
-+			;;
-+	esac
-+
-+	check_err $? "Failed to remove a FDB entry of type ${type}"
-+}
-+
-+check_accounting_one_type()
-+{
-+	local type=$1 is_counted=$2 overrides_learned=$3
-+	shift 3
-+	RET=0
-+
-+	fdb_reset
-+	fdb_add "$type" "$(mac 0)"
-+	learned=$(fdb_get_n_learned)
-+	[ "$learned" -ne "$is_counted" ]
-+	check_fail $? "Inserted FDB type ${type}: Expected the count ${is_counted}, but got ${learned}"
-+
-+	fdb_del "$type" "$(mac 0)"
-+	learned=$(fdb_get_n_learned)
-+	[ "$learned" -ne 0 ]
-+	check_fail $? "Removed FDB type ${type}: Expected the count 0, but got ${learned}"
-+
-+	if [ "$overrides_learned" -eq 1 ]; then
-+		fdb_reset
-+		fdb_add learned "$(mac 0)"
-+		fdb_add "$type" "$(mac 0)"
-+		learned=$(fdb_get_n_learned)
-+		[ "$learned" -ne "$is_counted" ]
-+		check_fail $? "Set a learned entry to FDB type ${type}: Expected the count ${is_counted}, but got ${learned}"
-+		fdb_del "$type" "$(mac 0)"
-+	fi
-+
-+	log_test "FDB accounting interacting with FDB type ${type}"
-+}
-+
-+check_accounting()
-+{
-+	local type_args learned
-+	RET=0
-+
-+	fdb_reset
-+	learned=$(fdb_get_n_learned)
-+	[ "$learned" -ne 0 ]
-+	check_fail $? "Flushed the FDB table: Expected the count 0, but got ${learned}"
-+
-+	fdb_fill_learned
-+	sleep 1
-+
-+	learned=$(fdb_get_n_learned)
-+	[ "$learned" -ne "$NUM_PKTS" ]
-+	check_fail $? "Filled the FDB table: Expected the count ${NUM_PKTS}, but got ${learned}"
-+
-+	log_test "FDB accounting"
-+
-+	for type_args in "${FDB_TYPES[@]}"; do
-+		# This is intentional use of word splitting.
-+		# shellcheck disable=SC2086
-+		check_accounting_one_type $type_args
-+	done
-+}
-+
-+check_limit_one_type()
-+{
-+	local type=$1 is_counted=$2
-+	local n_mac expected=$((1 - is_counted))
-+	RET=0
-+
-+	fdb_reset
-+	fdb_fill_learned
-+
-+	fdb_add "$type" "$(mac 0)"
-+	n_mac=$(fdb_get_n_mac "$(mac 0)")
-+	[ "$n_mac" -ne "$expected" ]
-+	check_fail $? "Inserted FDB type ${type} at limit: Expected the count ${expected}, but got ${n_mac}"
-+
-+	log_test "FDB limits interacting with FDB type ${type}"
-+}
-+
-+check_limit()
-+{
-+	local learned
-+	RET=0
-+
-+	ip link set br0 type bridge fdb_max_learned "$FDB_LIMIT"
-+
-+	fdb_reset
-+	fdb_fill_learned
-+
-+	learned=$(fdb_get_n_learned)
-+	[ "$learned" -ne "$FDB_LIMIT" ]
-+	check_fail $? "Filled the limited FDB table: Expected the count ${FDB_LIMIT}, but got ${learned}"
-+
-+	log_test "FDB limits"
-+
-+	for type_args in "${FDB_TYPES[@]}"; do
-+		# This is intentional use of word splitting.
-+		# shellcheck disable=SC2086
-+		check_limit_one_type $type_args
-+	done
-+}
-+
-+trap cleanup EXIT
-+
-+setup_prepare
-+
-+tests_run
-+
-+exit $EXIT_STATUS
-
+ /**
+  * platform_device_register_resndata - add a platform-level device with
+  * resources and platform-specific data
 -- 
-2.42.0
+2.20.1
 
