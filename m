@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA58F7A5D0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2707A5D0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjISIxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        id S231421AbjISIxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbjISIwb (ORCPT
+        with ESMTP id S231360AbjISIwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:52:31 -0400
+        Tue, 19 Sep 2023 04:52:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAB9CC1;
-        Tue, 19 Sep 2023 01:52:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C10AC433C7;
-        Tue, 19 Sep 2023 08:52:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB114CD4;
+        Tue, 19 Sep 2023 01:52:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F4EC433CA;
+        Tue, 19 Sep 2023 08:52:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695113537;
-        bh=jiyKASpXi6MYcdCnNOZJbf6KGqt7M6RZbaUycBdsb4A=;
+        s=k20201202; t=1695113539;
+        bh=sBYy4MCg26JYrXy0gwZ0Nr1JdsECrLQpru6I38p6zcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fuz9riijm9i2tr9t/zbMSGKMyNRmUuZXGe12qbYLf/5NZ3CSKZo7CPAcl09oGiEgn
-         ggylnD2lTgc1o2umsq1e9ogvZIPuGVWVDLF0S7R1E11DRsX/9uh9LA5jEChRaV/rJ2
-         uRDGeLlFlYk/KRy9iyRA4FaWtmsHIWzoeQLo9yHaqgdHy62V6u5HltyE8QnpFojqO2
-         RXN4dYPodKMwnFRrWw2bmZhPZrh0xJeH5XNcCI19YRhwy1087TeCa5bKYKJAmi2i2w
-         qrEy23AkD+n8bu8AezBncMhDnhabL5YgroLBlesFgiJ0xMOfNXx/D+awwOUGFdIJnX
-         mAu2M7tS57mIQ==
+        b=LYkkm6up1ylExFiI7/fEXdVEtiLaRZAtvTfHMM0jUnd54djsYGgh/j0kY71BgBuM+
+         CufdJShWc8N/K0MQgl1iJPbZ02JXEE7Dc/r35sUQdAfIIcFdSjyfWM6do/yUUGlt+8
+         nh6xYujPTbU36RYph2odRjjhlIuU67bR4WmzVOfVo+Uzc50r0OpS2fme3JCn/7pTA4
+         d1vzjRb3yIbdN7BfRdhT+oNYYNlT24PN3BTvt1x8vqFc3ncTaL6tmD1cfc99eYXVHf
+         zAj+YvGrMje156QwQv5vW8wDPJDvZC3DaGmVSsmSSicrotN6BnlAzC5m/Tf9s9+7j8
+         C2aCGHM3Vb+dA==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 12/15] tty: convert THROTTLE constants into enum
-Date:   Tue, 19 Sep 2023 10:51:53 +0200
-Message-ID: <20230919085156.1578-13-jirislaby@kernel.org>
+Subject: [PATCH 13/15] tty: early return from send_break() on TTY_DRIVER_HARDWARE_BREAK
+Date:   Tue, 19 Sep 2023 10:51:54 +0200
+Message-ID: <20230919085156.1578-14-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230919085156.1578-1-jirislaby@kernel.org>
 References: <20230919085156.1578-1-jirislaby@kernel.org>
@@ -49,60 +49,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-And make an explicit constant for zero too. This allows for easier type
-checking of the parameter.
+If the driver sets TTY_DRIVER_HARDWARE_BREAK, we leave ops->break_ctl()
+to the driver and return from send_break(). But we do it using a local
+variable and keep the code flowing through the end of the function.
+Instead, do 'return' immediately with the ops->break_ctl()'s return
+value.
 
-Note: tty_struct::flow_change is kept as int because include/tty.h
-(tty_struct) doesn't see tty/tty.h (this enum).
+This way, we don't have to stuff the 'else' branch of the 'if' with the
+software break handling. And we can re-indent the function too.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/tty.h       | 13 +++++++++----
- drivers/tty/tty_ioctl.c |  2 +-
- 2 files changed, 10 insertions(+), 5 deletions(-)
+ drivers/tty/tty_io.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/tty/tty.h b/drivers/tty/tty.h
-index 50862f98273e..93cf5ef1e857 100644
---- a/drivers/tty/tty.h
-+++ b/drivers/tty/tty.h
-@@ -41,15 +41,20 @@ enum {
- };
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 2ed12ca7c832..87bb5094e0bb 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2475,22 +2475,24 @@ static int send_break(struct tty_struct *tty, unsigned int duration)
+ 		return 0;
  
- /* Values for tty->flow_change */
--#define TTY_THROTTLE_SAFE	1
--#define TTY_UNTHROTTLE_SAFE	2
-+enum tty_flow_change {
-+	TTY_FLOW_NO_CHANGE,
-+	TTY_THROTTLE_SAFE,
-+	TTY_UNTHROTTLE_SAFE,
-+};
- 
--static inline void __tty_set_flow_change(struct tty_struct *tty, int val)
-+static inline void __tty_set_flow_change(struct tty_struct *tty,
-+					 enum tty_flow_change val)
- {
- 	tty->flow_change = val;
+ 	if (tty->driver->flags & TTY_DRIVER_HARDWARE_BREAK)
+-		retval = tty->ops->break_ctl(tty, duration);
+-	else {
+-		/* Do the work ourselves */
+-		if (tty_write_lock(tty, false) < 0)
+-			return -EINTR;
+-		retval = tty->ops->break_ctl(tty, -1);
+-		if (retval)
+-			goto out;
+-		if (!signal_pending(current))
+-			msleep_interruptible(duration);
+-		retval = tty->ops->break_ctl(tty, 0);
++		return tty->ops->break_ctl(tty, duration);
++
++	/* Do the work ourselves */
++	if (tty_write_lock(tty, false) < 0)
++		return -EINTR;
++
++	retval = tty->ops->break_ctl(tty, -1);
++	if (retval)
++		goto out;
++	if (!signal_pending(current))
++		msleep_interruptible(duration);
++	retval = tty->ops->break_ctl(tty, 0);
+ out:
+-		tty_write_unlock(tty);
+-		if (signal_pending(current))
+-			retval = -EINTR;
+-	}
++	tty_write_unlock(tty);
++
++	if (signal_pending(current))
++		retval = -EINTR;
++
+ 	return retval;
  }
  
--static inline void tty_set_flow_change(struct tty_struct *tty, int val)
-+static inline void tty_set_flow_change(struct tty_struct *tty,
-+				       enum tty_flow_change val)
- {
- 	tty->flow_change = val;
- 	smp_mb();
-diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-index 42c793e9d131..4b499301a3db 100644
---- a/drivers/tty/tty_ioctl.c
-+++ b/drivers/tty/tty_ioctl.c
-@@ -104,7 +104,7 @@ void tty_unthrottle(struct tty_struct *tty)
- 	if (test_and_clear_bit(TTY_THROTTLED, &tty->flags) &&
- 	    tty->ops->unthrottle)
- 		tty->ops->unthrottle(tty);
--	tty->flow_change = 0;
-+	tty->flow_change = TTY_FLOW_NO_CHANGE;
- 	up_write(&tty->termios_rwsem);
- }
- EXPORT_SYMBOL(tty_unthrottle);
 -- 
 2.42.0
 
