@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CF27A5CAA
+	by mail.lfdr.de (Postfix) with ESMTP id E1B1F7A5CAB
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbjISIeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39106 "EHLO
+        id S231646AbjISIev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbjISIea (ORCPT
+        with ESMTP id S231640AbjISIee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:34:30 -0400
+        Tue, 19 Sep 2023 04:34:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D0E11C;
-        Tue, 19 Sep 2023 01:34:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DD7EC433BB;
-        Tue, 19 Sep 2023 08:34:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6FD125
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:34:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B93B5C433CC;
+        Tue, 19 Sep 2023 08:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695112462;
-        bh=v6C3Kv6sJefn6hl+Ywp4TwA5HQWieFzbjla5S20Jk3c=;
+        s=korg; t=1695112468;
+        bh=Rkx4DECD6m48ZZAFf7O2RdRfTlvmBElc9OF73G6+SxU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WMj9st1OEM7HmnN+05vosvwSmvE79S0TbOnXgaZRa1txEZLAh8GLVYJzBNhtRRFIM
-         +o8hj0iuB4zgs2Fcy83+2fC824AlB0xVGy6HD2yHvhHdaGOD8j9BXYpiDfT8Cp7e/w
-         JtepQ/HfLFWvv4DZzT5NT19hYrnqCL9H2jAWz9VY=
-Date:   Tue, 19 Sep 2023 10:29:08 +0200
+        b=LYzXJcn1cTuuHOFSB6shJNJQNQha+64MLKjF/iQ3iYcChM0i1xJntutB+T36DBT9K
+         ZfT142D0/21J6DOpPr926O9I/VGLCrdOuWCstHUxThQipjOoCO5nEbVruRNKHcippn
+         Wy+u/LSxGllkVfqem6Nmh97TCrOczL0KYYfwTkhg=
+Date:   Tue, 19 Sep 2023 10:31:30 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Edward AD <twuufnxlz@gmail.com>
-Cc:     eadavis@sina.com, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] tty: fix memory leak in gsm_activate_mux
-Message-ID: <2023091922-unplug-flask-f2e5@gregkh>
-References: <2023091954-algebra-hastiness-3bb8@gregkh>
- <20230919080207.3654671-2-twuufnxlz@gmail.com>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     mcgrof@kernel.org, russell.h.weight@intel.com, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware_loader: Add reboot_in_progress for user helper
+ path
+Message-ID: <2023091952-amends-animosity-4760@gregkh>
+References: <1694773288-15755-1-git-send-email-quic_mojha@quicinc.com>
+ <2023091727-clever-schilling-3814@gregkh>
+ <5f4255d1-51e9-8888-c32d-723a6a7afb5d@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230919080207.3654671-2-twuufnxlz@gmail.com>
+In-Reply-To: <5f4255d1-51e9-8888-c32d-723a6a7afb5d@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 04:02:08PM +0800, Edward AD wrote:
-> When the call to gsm_register_devices() fails, we need to reclaim the memory
-> requested in gsm_dlci_alloc().
+On Tue, Sep 19, 2023 at 01:27:05PM +0530, Mukesh Ojha wrote:
+> > > +bool reboot_in_progress;
+> > 
+> > Bad global name for a variable in the firmware_loader core.
 > 
-> Fixes: 01aecd917114 ("tty: n_gsm: fix tty registration before control channel open")
-> Reported-and-tested-by: syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com
-> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
+> bool abort_fw_load_req ??
 
-Please use your company name/email address, and then just set a manual
-"From:" line as the first line in the changelog as the documentation
-asks.  That's how developers work around their broken corporate email
-systems (but really, you should go and poke your IT group to fix it.)
+Use "noun_verb" please for global symbols so it's more obvious where the
+symbol is, and it's a bit easier to manage the namespace.
 
 thanks,
 
