@@ -2,126 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A409E7A587B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 06:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9717A5880
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 06:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbjISEpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 00:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
+        id S231423AbjISEr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 00:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbjISEpi (ORCPT
+        with ESMTP id S231421AbjISErY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 00:45:38 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2C28F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 21:45:32 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d817775453dso5369097276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 21:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695098732; x=1695703532; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IH7UIUO8ZPh8JCHOo7ZA6yz3Au2q4EsS6YyTIw9aKQM=;
-        b=qLaTQh8H2sjpmLNdDklu83pZOfLGUCpAjLNzsvFUIp/hjqc4PL6vQ7Kl1XfmJPeOcw
-         d4VH/2ttIO7RXiDOr22iCKAbwrUOpmVhWqyQbDwZrlZzCFrns9FyAqmLbKR+dYySXPuy
-         dj3UAt7cfDSwy8F94twloiRUnFPH4xG4MH/8xTlztKgkUvlHSWmv0AELscwrOVQe2fB1
-         pnOnPcN4BtCY6zgn/avNxf/AiPa2zVgFMCJZSnBAcPB8/NskuB648xgVhc3GgG+8pEP0
-         XsGS9fBqC7Wqh0LxVI87QRQHA7osW3vn9Cx/Fo3C7P/G1zzEPg2uFa3qzqkl3n8jEnyH
-         hJMw==
+        Tue, 19 Sep 2023 00:47:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C65FD
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 21:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695098794;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0md79eddiFVt37093ccE7iiQ7K8nZkLOgQESfCPy8Vw=;
+        b=ABBcJbCglt1qxSif2IH5J3qgXYyXsxJaWfF3gBRp1dPh6ss73WMMOWAbl+ey1zKq2ZQVUs
+        uLFgztIA8qetI/t/H6tYs1zxuUXVPiCDw6S12ftz0f8EI3VpWgl1tYFVayboLVpoORjp2E
+        I3Ro9znR8eHFbfC3m2M6w7pXHJHP1EY=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-80-uE0NNJ7XNyiRmaughR3feA-1; Tue, 19 Sep 2023 00:46:32 -0400
+X-MC-Unique: uE0NNJ7XNyiRmaughR3feA-1
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-5732d8a9c3cso7152874eaf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 21:46:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695098732; x=1695703532;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IH7UIUO8ZPh8JCHOo7ZA6yz3Au2q4EsS6YyTIw9aKQM=;
-        b=FiRQJHNE9vpE35+6N0zUo781Q7Z2h9Y8Kat8hEFxyqh9VcER9ZEHY7pb85D0jKGICl
-         U1dF0WFkv3oEOcjVDL+2Dj3lyF8uBA39IdnrqoPrGo9wjK5ABgE87QjdlT8kKM3hZD9k
-         1d/MS2zBGACUqj47WHFa6FaVMyN+sSWCXpNzt54JtGsAWgN09yGsf+nakvMGAX3D6tUN
-         /sUvVZJby2CavO0Pj4ofLzitjb0XRrMlnTWeCXoGC6pJh/n8CWK4rxuISqKDoiZKQZNl
-         yg7p/Qc8WF7hWGyoxW5XaD7SE24/GOQRmp0e16ine1WcvDwlgK6udELSyIb1J86r6v8f
-         NIMQ==
-X-Gm-Message-State: AOJu0YzWp4V/pRsTZi164/rR+skpLA3Tq3a9QBLOH9s0zpgJ/5lRLeUL
-        0lw7CPQZtilTkIX99HKPS1XNG1NymHzq5cdF3w==
-X-Google-Smtp-Source: AGHT+IHgcK/N83YQ2mNdvYNGNQ3V9bMbqdSZuQLWzK+X7XDxRHWEcfL/+F8t4NeNL6PFrFoRAaYVuWOSmy3X6XLJNw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:4cf:b0:d7b:92d7:5629 with
- SMTP id v15-20020a05690204cf00b00d7b92d75629mr255983ybs.8.1695098732152; Mon,
- 18 Sep 2023 21:45:32 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 04:45:31 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGonCWUC/62OQQ6CMBBFr0K6dgwtmFBX3sMQY4ahNNKWdGoDI
- dzd6hnc/fcX7/9dMEVLLK7VLiJlyzb4AupUCZye3hDYobBQtWpqLVvgFD0uGwzRZooMZnmX7MB
- qeQFDDpjmMREnBhfw9cDgE60JEHRXY0eIxaJE8S+RRrv+tu994clyCnH7Xcny2/5jNUuQgM2o1 TDqVlF9MyGYmc4YnOiP4/gA0XNhdwMBAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695098731; l=1817;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=dI5rbVcmWedpnF/X5f5wXCMNbP0y4Fo65/6bHnEkkxs=; b=BLWueVk++F3LH/WYjvrqTYV8xX1dOK4/fe3O/DQC75Af+g3syikmsn7FwpllYX2rkC8Q/Wvv2
- 9roNWKMlLldDU48PuASAjnlrScRPVNPmFQ8IAPjpB3Kw1zSg3O0+Uh9
-X-Mailer: b4 0.12.3
-Message-ID: <20230919-strncpy-drivers-gpu-drm-i915-gem-selftests-mock_context-c-v2-1-0b5778423bd7@google.com>
-Subject: [PATCH v2] drm/i915: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695098791; x=1695703591;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0md79eddiFVt37093ccE7iiQ7K8nZkLOgQESfCPy8Vw=;
+        b=nWPMV3/7rxWHo+vozm2Iqxi+0r4URzNld3FfeFdhCfQ/fJ16cpymlOPs2iMiVI4Jdl
+         hIPbvWjbjvED8ZcHFb2UB4fuwLZhLSHPjCaS6fxFfAN0+LFwkNKgzabf17mPrBOoejBb
+         01WIrvGS7NtLHS6IBPXIck9NsUUQpwSjBXeBF/pPSwl29deTSgGT+Wqkpp/lAJUBg1PB
+         B1NqC8u0Dmd2wWTwe+MgoS14fY9WT1Nc6UC5lAJok4rRMOngJtyGMlOwxuFI+uK1VDml
+         dCmB8LNSf1gGvIrZzvJCw5Y6u21toicKfy1HfDocKpVXYTzsRm9qMAszIF28PsnSziLQ
+         odcw==
+X-Gm-Message-State: AOJu0YxauKBcVLzqfYUNvabFbgdJI/5ztfROS6PAsJ7l+igvs5iWCmQT
+        8q1Nt5reN73+frnpQArgXh5gE+uetCOsvo9WXv//rnSavEFgfb+8KVZytJMAE5b0LONWhYYOaIs
+        IGogEH0HJ8y9I3fFBur8NUdf/
+X-Received: by 2002:a05:6358:249d:b0:134:e603:116e with SMTP id m29-20020a056358249d00b00134e603116emr9678032rwc.6.1695098791616;
+        Mon, 18 Sep 2023 21:46:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFKkoLP87+mw9T8TQ8bjb6RIWKH/vCCTjI0tHPFOvwV8K6Ynikd7+Ff2EaTqVQJl8SE4ves7A==
+X-Received: by 2002:a05:6358:249d:b0:134:e603:116e with SMTP id m29-20020a056358249d00b00134e603116emr9678018rwc.6.1695098791296;
+        Mon, 18 Sep 2023 21:46:31 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id d3-20020a633603000000b0057749dc8d3asm196597pga.47.2023.09.18.21.46.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 21:46:30 -0700 (PDT)
+Message-ID: <ad068df5-d5b1-030a-af25-723cd5c3b854@redhat.com>
+Date:   Tue, 19 Sep 2023 14:46:22 +1000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 32/35] ACPI: add support to register CPUs based on
+ the _STA enabled bit
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
+Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-33-james.morse@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230913163823.7880-33-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-We should prefer more robust and less ambiguous string interfaces.
+On 9/14/23 02:38, James Morse wrote:
+> acpi_processor_get_info() registers all present CPUs. Registering a
+> CPU is what creates the sysfs entries and triggers the udev
+> notifications.
+> 
+> arm64 virtual machines that support 'virtual cpu hotplug' use the
+> enabled bit to indicate whether the CPU can be brought online, as
+> the existing ACPI tables require all hardware to be described and
+> present.
+> 
+> If firmware describes a CPU as present, but disabled, skip the
+> registration. Such CPUs are present, but can't be brought online for
+> whatever reason. (e.g. firmware/hypervisor policy).
+> 
+> Once firmware sets the enabled bit, the CPU can be registered and
+> brought online by user-space. Online CPUs, or CPUs that are missing
+> an _STA method must always be registered.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>   drivers/acpi/acpi_processor.c | 31 ++++++++++++++++++++++++++++++-
+>   1 file changed, 30 insertions(+), 1 deletion(-)
+> 
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on the destination buffer without
-unnecessarily NUL-padding. `ctx` is zero allocated and as such strncpy's
-NUL-padding behavior was strictly a performance hit which is now
-resolved.
+With below nits addressed:
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- drop the `... - 1` (thanks Kees)
-- Link to v1: https://lore.kernel.org/r/20230914-strncpy-drivers-gpu-drm-i915-gem-selftests-mock_context-c-v1-1-c3f92df942e0@google.com
----
- drivers/gpu/drm/i915/gem/selftests/mock_context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-diff --git a/drivers/gpu/drm/i915/gem/selftests/mock_context.c b/drivers/gpu/drm/i915/gem/selftests/mock_context.c
-index 8ac6726ec16b..e199d7dbb876 100644
---- a/drivers/gpu/drm/i915/gem/selftests/mock_context.c
-+++ b/drivers/gpu/drm/i915/gem/selftests/mock_context.c
-@@ -36,7 +36,7 @@ mock_context(struct drm_i915_private *i915,
- 	if (name) {
- 		struct i915_ppgtt *ppgtt;
- 
--		strncpy(ctx->name, name, sizeof(ctx->name) - 1);
-+		strscpy(ctx->name, name, sizeof(ctx->name));
- 
- 		ppgtt = mock_ppgtt(i915, name);
- 		if (!ppgtt)
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index b67616079751..b49859eab01a 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -227,6 +227,32 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
+>   	return ret;
+>   }
+>   
+> +static int acpi_processor_make_enabled(struct acpi_processor *pr)
+> +{
+> +	unsigned long long sta;
+> +	acpi_status status;
+> +	bool present, enabled;
+> +
+> +	if (!acpi_has_method(pr->handle, "_STA"))
+> +		return arch_register_cpu(pr->id);
+> +
+> +	status = acpi_evaluate_integer(pr->handle, "_STA", NULL, &sta);
+> +	if (ACPI_FAILURE(status))
+> +		return -ENODEV;
+> +
+> +	present = sta & ACPI_STA_DEVICE_PRESENT;
+> +	enabled = sta & ACPI_STA_DEVICE_ENABLED;
+> +
+> +	if (cpu_online(pr->id) && (!present || !enabled)) {
+> +		pr_err_once(FW_BUG "CPU %u is online, but described as not present or disabled!\n", pr->id);
+> +		add_taint(TAINT_FIRMWARE_WORKAROUND, LOCKDEP_STILL_OK);
+> +	} else if (!present || !enabled) {
+> +		return -ENODEV;
+> +	}
+> +
+> +	return arch_register_cpu(pr->id);
+> +}
+> +
 
----
-base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
-change-id: 20230914-strncpy-drivers-gpu-drm-i915-gem-selftests-mock_context-c-980c8ecc9142
+The message needs to be split up into multiple lines to make ./scripts/checkpatch.pl
+happy:
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+	pr_err_once(FW_BUG "CPU %u is online, but described "
+			   "as not present or disabled!\n", pr->id);
+
+>   static int acpi_processor_get_info(struct acpi_device *device)
+>   {
+>   	union acpi_object object = { 0 };
+> @@ -318,7 +344,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>   	 */
+>   	if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
+>   	    !get_cpu_device(pr->id)) {
+> -		int ret = arch_register_cpu(pr->id);
+> +		int ret = acpi_processor_make_enabled(pr);
+>   
+>   		if (ret)
+>   			return ret;
+> @@ -526,6 +552,9 @@ static void acpi_processor_post_eject(struct acpi_device *device)
+>   		acpi_processor_make_not_present(device);
+>   		return;
+>   	}
+> +
+> +	if (cpu_present(pr->id) && !(sta & ACPI_STA_DEVICE_ENABLED))
+> +		arch_unregister_cpu(pr->id);
+>   }
+>   
+>   #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
+
+Thanks,
+Gavin
 
