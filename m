@@ -2,109 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61D87A5CCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501267A5CCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbjISImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
+        id S231653AbjISImd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjISImS (ORCPT
+        with ESMTP id S230151AbjISImc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:42:18 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEA0E6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:41:50 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c571029a36so1995415ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695112910; x=1695717710; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ggAs6Jvrg7jU8HHW9+5HqI0MNBzi15nZzeXnKWoG/oI=;
-        b=Ht39K05h/iJKBbR9NojOtjPLgLEoKNVLEEGSTSl/5jHD2o7xCmVqKi2S6XNts3/SDx
-         cA/gllPQ5ZTkbJTOVjh3zJQpOCo6QL1MvPF4xEmTxieeXTZV5qIRajf0KCwMxzynh9OG
-         pUGFEtlfy3BmEXLveECrBX+LmRgVd/Ki7+Z4AR/uyhLiH6jpY0YwO1F8GnnEFfhjBYj4
-         0JG4d5fxr1ypkpvIw97hjhsHNmgSET8lqEKl7rCyCFtvNcQ1+r/gf00zL4EHjfcr3D3B
-         KxNsak9G/ZnHxV1dlNqGieZYX4fDoVc3W2hyAO6t9iUllOQD5kStdq1aOddgG/x0QupX
-         iXtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695112910; x=1695717710;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ggAs6Jvrg7jU8HHW9+5HqI0MNBzi15nZzeXnKWoG/oI=;
-        b=e/16fl2iL76e385Ca2gyUTF133hndBK0fjGGqEG5KTkMIlQIVpRmKcOLEmDAnTBltB
-         l8mm6Zxd4+RMMoEkM7Az33JBFQjUiuO8TDI8Jqen/ZnPy+1jp8syit9aS6yeVQSAPcne
-         GYBqc+e6inYL2bGq6/8sl+sBLk6S2TdbNlvnnIM0lsQwc4lbu+7m2nHcPAOzOtJzreo/
-         uT+VCOelekWefeg0HkUyBKIDoDd4NzhE81YrSBeSpz4Z9PHB6wK+Bo9JAM8JVL1qhp4T
-         lAvSjEy5JExNHLYchOr97Xz7elHLNZEGt56OSsrhqKuqHyNXdt7uYMBxadY05Rjjg8DB
-         hGDw==
-X-Gm-Message-State: AOJu0YzBFVMmTwkGhEG8MPMnxnw7+KtjW6o/vDQwnaS5UebgJctzcQns
-        oco563CC7psYG2BG4wa1+w41kg==
-X-Google-Smtp-Source: AGHT+IFeKBHpGu+FNgHJxwAzj0C8DCtc24wynefQJapGswFQmiRq7dfwK8DJKrHzW2eWDYH9DCRz4Q==
-X-Received: by 2002:a17:90a:1787:b0:26d:412d:9ce8 with SMTP id q7-20020a17090a178700b0026d412d9ce8mr10457879pja.0.1695112910342;
-        Tue, 19 Sep 2023 01:41:50 -0700 (PDT)
-Received: from [10.84.155.178] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id 12-20020a17090a1a0c00b0026b0b4ed7b1sm10909229pjk.15.2023.09.19.01.41.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 01:41:49 -0700 (PDT)
-Message-ID: <91d5e4e4-89e5-818e-8239-b7558f6349c4@bytedance.com>
-Date:   Tue, 19 Sep 2023 16:41:41 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] mm: shrinker: some cleanup
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     akpm@linux-foundation.org, muchun.song@linux.dev,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, Muchun Song <songmuchun@bytedance.com>
-References: <20230911094444.68966-2-zhengqi.arch@bytedance.com>
- <20230919024607.65463-1-zhengqi.arch@bytedance.com>
- <2023091937-claw-denote-8945@gregkh>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <2023091937-claw-denote-8945@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 04:42:32 -0400
+Received: from out-220.mta0.migadu.com (out-220.mta0.migadu.com [IPv6:2001:41d0:1004:224b::dc])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B14511A
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:42:26 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695112944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ls2ZZMvVwgmjUtmPi6DuO17VMZDQ7A1qHqqRp8+oGbE=;
+        b=ld+aoIfWLjD4jtVFQ4ikiJay9wseeCxjYZHaqQ8XD/OGLmM8NOEXT+HtsvYMMSXzl9dPUX
+        dAKMAT1manK1lnjGIaGm4D/ikqQjzkONzmB67Y8BO4V/MW6/yPEXcRLxWcZluc/9D572Ue
+        MGQ3KFqOWRillrdCHe4k/C703VzMnHs=
+Mime-Version: 1.0
+Subject: Re: [PATCH v4 6/8] hugetlb: batch PMD split for bulk vmemmap dedup
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <d8ca9ff5-3160-49a1-947a-de4998887dce@oracle.com>
+Date:   Tue, 19 Sep 2023 16:41:44 +0800
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <07192BE2-C66E-4F74-8F76-05F57777C6B7@linux.dev>
+References: <20230918230202.254631-1-mike.kravetz@oracle.com>
+ <20230918230202.254631-7-mike.kravetz@oracle.com>
+ <9c627733-e6a2-833b-b0f9-d59552f6ab0d@linux.dev>
+ <d8ca9ff5-3160-49a1-947a-de4998887dce@oracle.com>
+To:     Joao Martins <joao.m.martins@oracle.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On 2023/9/19 16:04, Greg KH wrote:
-> On Tue, Sep 19, 2023 at 10:46:07AM +0800, Qi Zheng wrote:
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
->> ---
->> Hi Andrew, this is a cleanup patch for [PATCH v6 01/45], there will be a
->> small conflict with [PATCH v6 41/45].
-> 
-> I know I can't take patches without any changelog text, but maybe other
-> maintainers are more lax.
 
-This patch will be folded into one patch with [PATCH v6 01/45] and will
-not enter the mainline as a separate patch, so I was too lazy to write
-the commit message.
+> On Sep 19, 2023, at 16:26, Joao Martins <joao.m.martins@oracle.com> =
+wrote:
+>=20
+> On 19/09/2023 07:42, Muchun Song wrote:
+>> On 2023/9/19 07:01, Mike Kravetz wrote:
+>>> From: Joao Martins <joao.m.martins@oracle.com>
+>>>=20
+>>> In an effort to minimize amount of TLB flushes, batch all PMD splits
+>>> belonging to a range of pages in order to perform only 1 (global) =
+TLB
+>>> flush.
+>>>=20
+>>> Add a flags field to the walker and pass whether it's a bulk =
+allocation
+>>> or just a single page to decide to remap. First value
+>>> (VMEMMAP_SPLIT_NO_TLB_FLUSH) designates the request to not do the =
+TLB
+>>> flush when we split the PMD.
+>>>=20
+>>> Rebased and updated by Mike Kravetz
+>>>=20
+>>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>> ---
+>>>  mm/hugetlb_vmemmap.c | 79 =
++++++++++++++++++++++++++++++++++++++++++---
+>>>  1 file changed, 75 insertions(+), 4 deletions(-)
+>>>=20
+>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>> index 147ed15bcae4..e8bc2f7567db 100644
+>>> --- a/mm/hugetlb_vmemmap.c
+>>> +++ b/mm/hugetlb_vmemmap.c
+>>> @@ -27,6 +27,7 @@
+>>>   * @reuse_addr:        the virtual address of the @reuse_page page.
+>>>   * @vmemmap_pages:    the list head of the vmemmap pages that can =
+be freed
+>>>   *            or is mapped from.
+>>> + * @flags:        used to modify behavior in bulk operations
+>>=20
+>> Better to describe it as "used to modify behavior in vmemmap page =
+table walking
+>> operations"
+>>=20
+> OK
+>=20
+>>>  void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct =
+list_head
+>>> *folio_list)
+>>>  {
+>>>      struct folio *folio;
+>>>      LIST_HEAD(vmemmap_pages);
+>>>  +    list_for_each_entry(folio, folio_list, lru)
+>>> +        hugetlb_vmemmap_split(h, &folio->page);
+>>> +
+>>> +    flush_tlb_all();
+>>> +
+>>>      list_for_each_entry(folio, folio_list, lru) {
+>>>          int ret =3D __hugetlb_vmemmap_optimize(h, &folio->page,
+>>>                                  &vmemmap_pages);
+>>=20
+>> This is unlikely to be failed since the page table allocation
+>> is moved to the above=20
+>=20
+>> (Note that the head vmemmap page allocation
+>> is not mandatory).=20
+>=20
+> Good point that I almost forgot
+>=20
+>> So we should handle the error case in the above
+>> splitting operation.
+>=20
+> But back to the previous discussion in v2... the thinking was that =
+/some/ PMDs
+> got split, and say could allow some PTE remapping to occur and free =
+some pages
+> back (each page allows 6 more splits worst case). Then the next
+> __hugetlb_vmemmap_optimize() will have to split PMD pages again for =
+those
+> hugepages that failed the batch PMD split (as we only defer the PTE =
+remap tlb
+> flush in this stage).
 
-Anyway, I'll keep your words in mind next time.
+Oh, yes. Maybe we could break the above traversal as early as possible
+once we enter an ENOMEM?
 
-Thanks,
-Qi
+>=20
+> Unless this isn't something worth handling
+>=20
+> Joao
 
-> 
-> thanks,
-> 
-> greg k-h
+
