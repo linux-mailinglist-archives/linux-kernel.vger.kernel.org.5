@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1388E7A6AAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABDD7A6AAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbjISSZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
+        id S232295AbjISS0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbjISSZw (ORCPT
+        with ESMTP id S232237AbjISSZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:25:52 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0F1BC;
-        Tue, 19 Sep 2023 11:25:46 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b974031aeaso98782121fa.0;
-        Tue, 19 Sep 2023 11:25:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695147945; x=1695752745; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ohVVUXRSTVuwmwAI3dwryx4B5iagEHAMRt/He7o75f4=;
-        b=jp0GFkljx52gWiKUgBj/a11EURcrOvQSgg3Ix4W0DnsxRQNJpPDjRwN9R3LhpdH8CN
-         elAcK6HIqwwXxU/1tY2ZWSDUQAUrNbnf8fsXmdX1V/2bj25ccJZnq6zcCjguUQu1onHH
-         eHjtaDO+Ze23sBSv64Dt0oO/n7o7FhjtnYO3CILIUP/iorXBpPrvhKNHFzFdg+isczXE
-         UKo+Roo7otsQ7MCPD63OtqIBiqHA5s0Od+BA6JoEFDa8rBygmnd9RPj9UM/87lBn3Xop
-         gEYuxo2d0nObkSfUGoDN6Lds/DJ/u/sqf+uh6OXAapl+ICx08H8jfow94k4Gk+fprvEU
-         r9OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695147945; x=1695752745;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ohVVUXRSTVuwmwAI3dwryx4B5iagEHAMRt/He7o75f4=;
-        b=RL/7jsHIoG1xQIgYFOrGAG4nZTtvwflxi9L5x+g8VuIZlaR5BZlH70NCxcNjt8+1pH
-         2xmtKRsIyqxQsV1Brr+JG2Za8+q9SHB8gWWn4zNfAnB7e+YGnXHyk78O+aJ5WOXpyiyO
-         y3KOJGVui2HK20u2B5URkNE0xoI7btXiXplDJaPrAK+8ahWT3kkWyHJZ8Ryx58jU9y0e
-         z1WQ2MYz+YP9jWf20KBvpX+/WZhiaXeiorRhaWyN6S0vOmRqMFRGnxd4R8F03FtAjTLd
-         kXDASnYi00ZcGFUE8GkR7vjo0GfaYVWU8CROROwaDo74MUSGzci8LvPKuEFUdzWJb8fn
-         /UcA==
-X-Gm-Message-State: AOJu0Yy5Qo9puFD+T5RD5lbnBLRlKD7IAZOl9wj6RBTWa/kIg2LpWX04
-        j8aBEGLlxk4TikOOmQHF7saYRU/dTbXujXaZ
-X-Google-Smtp-Source: AGHT+IHS2kHXLsSi9+Qc6kPfDaaUR2ud2Y+VIWJcZzSIwgpvpy69kUc/3cPfs//vca3zpn1ZEjnE9A==
-X-Received: by 2002:a05:6512:3da7:b0:502:fd1a:9fa0 with SMTP id k39-20020a0565123da700b00502fd1a9fa0mr515169lfv.53.1695147944529;
-        Tue, 19 Sep 2023 11:25:44 -0700 (PDT)
-Received: from [10.0.0.42] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
-        by smtp.gmail.com with ESMTPSA id m30-20020a056512015e00b004fbad09317csm2370415lfo.189.2023.09.19.11.25.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 11:25:44 -0700 (PDT)
-Message-ID: <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
-Date:   Tue, 19 Sep 2023 21:25:42 +0300
+        Tue, 19 Sep 2023 14:25:57 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFE79E;
+        Tue, 19 Sep 2023 11:25:51 -0700 (PDT)
+Received: from [192.168.2.59] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B09AE660319E;
+        Tue, 19 Sep 2023 19:25:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695147950;
+        bh=Y03o1iTpNXjxrNlIz4kiT40Tw5yePhhDd5i17lzN0Kw=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=GRnH7PhbECO0rLL158hqddE6ZOaUKo/ng/abZs9H48AHSNmeK40gf5ez6gx1xw041
+         nqp+KRz6DqSOTsqHpUDUxgTKBLyeTiGRSgz9gzKDDRUuJNshZ3AyQyze5F/zAF8q0x
+         ZS6s4i3RcHcfe1kr9lZMTANKCRcd5Bubg312JW8CYtpeXBaoTxp7PrscI8UxsVyEU9
+         e+LvnicvOCdtFUE8V0aYFeEJjcJe2X2l46TceO+/dVyKX4eFCu2IfFsuuZIsHcqR7n
+         bRNEPW1Q1kw5NE5iZsrtvKxETAhQVf7s114oogG9OC0JUNq2b7tvDqI+KhO7cbEINF
+         6UFAGNAIsSMpQ==
+Message-ID: <9b47d551-991b-5a60-39cf-3d47fbf68ea4@collabora.com>
+Date:   Tue, 19 Sep 2023 21:25:47 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
- fck_src
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
+ uncanceled work
 Content-Language: en-US
-To:     Andreas Kemnade <andreas@kemnade.info>, bcousson@baylibre.com,
-        tony@atomide.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, jarkko.nikula@bitmer.com,
-        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <20230705190324.355282-1-andreas@kemnade.info>
- <20230705190324.355282-2-andreas@kemnade.info>
-From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20230705190324.355282-2-andreas@kemnade.info>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+To:     Zheng Hacker <hackerzheng666@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Zheng Wang <zyytlz.wz@163.com>, Kyrie.Wu@mediatek.com,
+        bin.liu@mediatek.com, mchehab@kernel.org, matthias.bgg@gmail.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
+        security@kernel.org, 1395428693sheep@gmail.com,
+        alex000young@gmail.com, Collabora Kernel ML <kernel@collabora.com>
+References: <20230707092414.866760-1-zyytlz.wz@163.com>
+ <8c8bd3ec-a5a4-32e4-45b5-ee16eeeac246@collabora.com>
+ <CAJedcCxPG1mKtgB7AcJSwaQB_qvODObwq3gz6eM_1w777b2PfQ@mail.gmail.com>
+ <54b14ebe-b51b-2744-328d-2adcdaaf6d0e@collabora.com>
+ <CAJedcCyn+VHxcSXH+HqP3yiXX8L0wjNao+suti5GgyQzYORcYA@mail.gmail.com>
+ <4d533beb-f416-1b22-6d9d-cee7f3cfdad1@collabora.com>
+In-Reply-To: <4d533beb-f416-1b22-6d9d-cee7f3cfdad1@collabora.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,58 +70,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/5/23 22:03, Andreas Kemnade wrote:
-> Commit 349355ce3a05 ("ARM: OMAP2+: Drop legacy platform data for omap4 mcbsp")
-> dropped prcm_fck for omap4,
-
-it also dropped the pad_fck for that matter.
-
-> so the clk_src might not be >available making the
-> clk_get(src) fail.
-
-Wow, so OMAP4 audio is pretty broken if would ever need to select FCLK?
-By default we don't on OMAP4, but this is astonishing.
-
-> In such cases, rely on the devicetree to assign
-> the correct parent.
-
-You cannot rely on DT to dynamically select the FCLK parent for
-different use cases.
-The dai_set_dai_sysclk() cannot select between internal or external
-source of the reference clock and DT cannot handle this.
-If one sampling frequency is available with pad_fck while other is only
-possible with internal clock then this is no longer possible.
-
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
->  sound/soc/ti/omap-mcbsp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On 9/19/23 21:24, Dmitry Osipenko wrote:
+> On 8/31/23 11:18, Zheng Hacker wrote:
+>>> The v4l2_m2m_ctx_release() already should wait for the job_timeout_work
+>>> completion or for the interrupt fire. Apparently it doesn't work in
+>>> yours case. You'll need to debug why v4l job or job_timeout_work is
+>>> running after v4l2_m2m_ctx_release(), it shouldn't happen.
+>>>
+>> Yes, v4l2_m2m_cancel_job waits for m2m_ctx->job_flags to be  ~TRANS_RUNNING,
+>> the mtk_jpeg_job_timeout_work will finally invoke v4l2_m2m_job_finish
+>> to trigger that.
+>>
+>> However, this is not the only path to call v4l2_m2m_job_finish. Here
+>> is a invoking chain:
+>> v4l_streamon
+>>   ->v4l2_m2m_ioctl_streamon
+>>     ->v4l2_m2m_streamon
+>>       ->v4l2_m2m_try_schedule
+>>         ->v4l2_m2m_try_run
+>>           ->mtk_jpeg_dec_device_run
+>>             ->schedule_delayed_work(&jpeg->job_timeout_work...
+>>             ->error path goto dec_end
+>>             ->v4l2_m2m_job_finish
+>>
+>> In some specific situation, it starts the worker and also calls
+>> v4l2_m2m_job_finish, which might
+>> make v4l2_m2m_cancel_job continues.
 > 
-> diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-> index 21fa7b9787997..f9fe96b61852b 100644
-> --- a/sound/soc/ti/omap-mcbsp.c
-> +++ b/sound/soc/ti/omap-mcbsp.c
-> @@ -70,8 +70,8 @@ static int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
->  
->  	fck_src = clk_get(mcbsp->dev, src);
->  	if (IS_ERR(fck_src)) {
-> -		dev_err(mcbsp->dev, "CLKS: could not clk_get() %s\n", src);
-> -		return -EINVAL;
-> +		dev_info(mcbsp->dev, "CLKS: could not clk_get() %s\n", src);
-> +		return 0;
+> Then the error path should cancel the job_timeout_work, or better job
 
-I would rather have some clock alias for OMAP4/5 to provide the clocks
-that we need for the fclk.
-If we did not got the clock we needed to select we cannot say that all
-is good, carry on.
-Normally the machine driver does this and it thinks that we switched
-clocks while we did not and the clocking is all wrong now.
+s/job/timeout work/
 
->  	}
->  
->  	pm_runtime_put_sync(mcbsp->dev);
+> needs to be run after the dec/enc has been started and not before.
+> 
+> Looking further at the code, I'm confused by this hunk:
+> 
+> 	mtk_jpeg_dec_start(comp_jpeg[hw_id]->reg_base);
+> 	v4l2_m2m_job_finish(jpeg->m2m_dev, ctx->fh.m2m_ctx);
+> 
+> The job should be marked as finished when h/w has finished processing
+> the job and not right after the job has been started. So the job is
+> always completed and mtk_jpeg_job_timeout_work() doesn't work as
+> expected, am I missing something?
+> 
 
 -- 
-Péter
+Best regards,
+Dmitry
+
