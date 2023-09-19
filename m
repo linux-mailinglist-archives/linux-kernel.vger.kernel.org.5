@@ -2,241 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C5E7A639B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741247A639C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbjISMrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        id S232193AbjISMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbjISMrk (ORCPT
+        with ESMTP id S232207AbjISMro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:47:40 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2051.outbound.protection.outlook.com [40.107.247.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21961CF9;
-        Tue, 19 Sep 2023 05:47:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PmRlHt3NllmAHNzuseIFElhJFPYVKmyqYnJ5zCbu0IYuedNv7MeNER0YlGFjOUhk5XMfYw1470O9imxHd773qFG2I23fgN2OoowacmGAuflcRcDSLgPSuBF9s6wAUavFoEnGFlbaS9iuKfO36xDPfuuRopxcYurhUMuHxuU7mEKVVz3LvjCqGL96LCx3uf60xCMGnkWKhpR/9RfSur2uKLTuzOVxdvFz2miiSgj/MUxfao8ksogy0StyEnnBJv8ELKdL7u217qSdfXbWE4/icnZUk+A7XZkNhq7bemYsalWzh9APER8QQWWARfQLBmcvTbvp/rzUaLFrUl9ErS/KZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=smeA2wDTaCCy3NGf38JklHexNDaM0LTI95SzsCywREk=;
- b=gu3dniGULJBXbhZgcXKz4n4QRrri9Nuwet1topLsYgD/3V3LYPvsGWa7TjvNKFZCQWi+JQTGiGP7PIwZK/FVlYKAG6HaCDfROrDNV++8mXnoxHR8+bzXZrSmInSl0ac1Mosd/WyJm+/eRI69P7wm15Ag9a0uG8FPOxoyBi8QHmTO3OYn8u0/EaEp6lupxAfg490S68JUz4RTQEcVGPSeiJgknJbcgDofkDsZZBmNltHkET6ScV4S9AihrT61G295LIBNBF5Od57AJ9mR5jx+0COWKDr8/EoORWFur82JNfcE6HoXBcsJ+otFpRA9UOK5RDu5OGchKfEoJXQ3YEi29w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=smeA2wDTaCCy3NGf38JklHexNDaM0LTI95SzsCywREk=;
- b=lP7xgXQi/FAFxvY8xDSRaNXf29zljT8LK48bYFVLGu1NHNGBKeFQGbRGBHnkNjroQxML8TRRQP2kFtqjiif6M8AXZQogEtrF8whuf+bAubIsMtGpLjCXxH0NmtLl9boAeeTx4p/hs7/H2MvtI7yA9M6RxgCsKXuG+EPAMUz85/0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by DBBPR04MB7964.eurprd04.prod.outlook.com (2603:10a6:10:1e9::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
- 2023 12:47:08 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
- 12:47:08 +0000
-Date:   Tue, 19 Sep 2023 15:47:03 +0300
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, horms@kernel.org, s-vadapalli@ti.com,
-        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rogerq@kernel.rog
-Subject: Re: [PATCH v2] net: ethernet: ti: am65-cpsw: add mqprio qdisc
- offload in channel mode
-Message-ID: <20230919124703.hj2bvqeogfhv36qy@skbuf>
-References: <20230918075358.5878-1-rogerq@kernel.org>
- <20230918075358.5878-1-rogerq@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918075358.5878-1-rogerq@kernel.org>
- <20230918075358.5878-1-rogerq@kernel.org>
-X-ClientProxiedBy: AM0PR04CA0001.eurprd04.prod.outlook.com
- (2603:10a6:208:122::14) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Tue, 19 Sep 2023 08:47:44 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27149E40;
+        Tue, 19 Sep 2023 05:47:12 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RqhFq3kSyzrSxq;
+        Tue, 19 Sep 2023 20:45:03 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 19 Sep
+ 2023 20:47:08 +0800
+Subject: Re: [PATCH net-next v8 2/6] page_pool: unify frag_count handling in
+ page_pool_is_last_frag()
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     Paolo Abeni <pabeni@redhat.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>
+References: <20230912083126.65484-1-linyunsheng@huawei.com>
+ <20230912083126.65484-3-linyunsheng@huawei.com>
+ <9e53ca46be34f3c393861b7a645bb25f0b03f1d2.camel@redhat.com>
+ <e7f2d1b1-49fe-cf8d-eb96-c5ddf52903a0@huawei.com>
+Message-ID: <bf2591f8-7b3c-4480-bb2c-31dc9da1d6ac@huawei.com>
+Date:   Tue, 19 Sep 2023 20:47:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DBBPR04MB7964:EE_
-X-MS-Office365-Filtering-Correlation-Id: d07b6f0b-23d7-46fa-806e-08dbb90e88b0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l2qo2ACcujx6Gxo/PKOnqtUp3i47+eHMn5t7agQ2KMwNyfh98jXTJEvmHBKUSTvKq8O9KkQ/nbDTgpxuuJ6Okh4L23s+jOlswyCz/geXhVvf1dhPXwbSyR5aRQEMV2t033LDg06km2evchVuv+2w1hgQI1dvQh8MFXJTON1pXjtW2GKdRa/Xhymb+xb+oLkk9EBafAtZrzxca0QV9DC523CQd6ILMFEeyLYh94x353VHMK1zXM2aFUL32MWEsi3YuvbXlJiHVEXLf1oMKM3V6bkxykp/muFw6SStj0+C70h0wSz23hSuvLpkIOCLN1YhJ5SKEdGmZP2KAb7gRuKekvdtxI4gm82bMD44EIMo7kL42HBHSbTTJHtykTf/EgZRVoUsBF/cwq/8OGFZafFmMXzYkywcTsGH+hVPUfiu1rsHQsQQl0zenBlbLVKnHSsXEjlOkPhOl5Ui3XGEXmGubsdXDQ/mQ7jCbqt091UYQtoDDTHkYDnJPvXWxxbNtfnNH16h1dRzmsgGlY5GYVVTcI1UVwu6fJcv4iQsY5AvXIk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(366004)(396003)(376002)(39860400002)(1800799009)(186009)(451199024)(6512007)(9686003)(6486002)(6506007)(6666004)(33716001)(83380400001)(86362001)(38100700002)(1076003)(26005)(6916009)(316002)(66476007)(66946007)(41300700001)(66556008)(7416002)(2906002)(44832011)(5660300002)(4326008)(8676002)(8936002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R9ehzD44wmDyWt8j7zLvAVO4iYc/NfnMLgX0FsjUqNxXKdxOF+Tz6LeQftNb?=
- =?us-ascii?Q?5strc+EVAGoM6wc+dPggNfeJEv8g4MtX6QYEHypxplL5uklM2Lp9e7w44UdZ?=
- =?us-ascii?Q?3hNxlIOa7q/+eSGYsYPCol2087vY9p0jKUmPO0en4odZzb6uoTcz8hlSVY8F?=
- =?us-ascii?Q?dwQPRj/6zWUEH/K2JEWZAL+qY2bjK62uHfTQBPmd5BwRYXmKnrRbTC5OVng2?=
- =?us-ascii?Q?Uh9p+IB61VH9Zf2E40CQJJYmEXXwWUTU4+wbd31R6dkG7IRHyAx0d18p7AhF?=
- =?us-ascii?Q?aAyFfU3/9cBXXfX8qBQzfobolRd6NOa95c3aPb+xyU9INdvO4bxvRKVu+qWX?=
- =?us-ascii?Q?GVQUQ3QvQeAV5zJDt+U1KpSIZEMuYRbY9uxPi/7V82juQSmT/ep2DBBI/l7Z?=
- =?us-ascii?Q?++kB7H/rVacOKMFxTR5JqKyewq8B4o9bH0Ltyp8Wx3rk6/knZNK4LJEcOLeB?=
- =?us-ascii?Q?CCM1XV6VgYIcDwvcKEA/dR/YWsChfKWLgSxiOmFXYCmOQXZTb8O/Yn2iawUl?=
- =?us-ascii?Q?gNEfTuRYKXDvlqZTtsDEqmYwAsOR0NbDPyRDWy8D1SgId/og/ocS7jzsog+y?=
- =?us-ascii?Q?hT5heM5BGk/FOt63tlsThhP+vc5vjSTFNf6MR+flzOPlDvxFkBZOjsLmsp8R?=
- =?us-ascii?Q?7nCsWvmE5vsNU7SIax3+rnbkP66zkYRF7ZEZ88QRtG7HfxiHtkY8MGtXWXec?=
- =?us-ascii?Q?61iQjBJjVdRMX0uLB5F7RGxvPOQsPpaRGmeG369kPGoPRzOMfiNPc1kqvo2Q?=
- =?us-ascii?Q?KYnsZhQBfZqBoQ5ZzZS0N33f0X7VC3WxEkblPX4EQUBgO9gRzB/ESnYdBAoj?=
- =?us-ascii?Q?iOe/jfzBXXMofpn0t57KkRRmynGsoedr9QZNLvtsG+Vm+dEQi0Ja2l8yQsxX?=
- =?us-ascii?Q?+/5x666W/zQJcKu15+uEYxJhXnKI0iMrbE0+r14BXDxUtVwN/ZXfNH9wPOE8?=
- =?us-ascii?Q?q69m+1jIWyN+9DHGLkwkAup9xV/tkmPMYhQq/Tl7ve7qkWbLkncM6rkio6hl?=
- =?us-ascii?Q?9av6iw8QQv7BVCF7Wuw6eyx5bZYwejCc9XSgtOXDjx7tXgU7KPxRRIVNo7RO?=
- =?us-ascii?Q?1fLEMwyDwAaZwjYtTLqBJm9mbRSnZIAqxerYe0LeGCuzWX0CsdKk0BXl2OjO?=
- =?us-ascii?Q?yrqtLuyYYQ3TJG9pJbzPHq/T/DtDsm0WeLpoAYQ3K2ND7Aq1IqJdKeTIOZCm?=
- =?us-ascii?Q?M3lwULJvgEG3hmJ0rh3pKXP3D3vYzqfR8iUKv2waOUXinigNTS2zwyQeuSmK?=
- =?us-ascii?Q?YgYft7VWKKbYYP5zH3EdvesXqChL10SCdkaeUTOaghZT0AJLFVAnNKoJ5S50?=
- =?us-ascii?Q?ZO9R/fCmdd2vx4QqAbIeb9xihVGiMAF1iYaCn/JNEstsrNNNfIV6MYxf80HB?=
- =?us-ascii?Q?qYY6t8Li6CyMqVTWc7lqkqAAPkO4dO5L5Snrf5Kwy+X3+cY0GwH6EDj/+KIp?=
- =?us-ascii?Q?XV+/P/0SO8x05Bnw7GIYQuV/0m4NRJ+VTGVNWYuOzNv5Krmg4RfU6gHKHdmm?=
- =?us-ascii?Q?4VKNSjve8kAz2bC9ZXKDBqnEpGZu2ayUzw4v54OLf/rkBUXoJwZl3WIqjqns?=
- =?us-ascii?Q?g+XhVrUOdIuVYNmAjaGIAUaeR4+J6mMrdY2B4Ou+1YjwXe/EvY1c7BeIbjMH?=
- =?us-ascii?Q?zQ=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d07b6f0b-23d7-46fa-806e-08dbb90e88b0
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 12:47:08.0316
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dedyi7fhl3rITyaZUCeCFap+w4QxEEEMViaHDiNl1yr7XG4GLpItAEw5JIU6fRoiasfxOF2BW7nePXSjkl/v5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7964
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <e7f2d1b1-49fe-cf8d-eb96-c5ddf52903a0@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roger,
+On 2023/9/18 19:15, Yunsheng Lin wrote:
+> On 2023/9/14 23:17, Paolo Abeni wrote:
+>>> --- a/net/core/page_pool.c
+>>> +++ b/net/core/page_pool.c
+>>> @@ -376,6 +376,14 @@ static void page_pool_set_pp_info(struct page_pool *pool,
+>>>  {
+>>>  	page->pp = pool;
+>>>  	page->pp_magic |= PP_SIGNATURE;
+>>> +
+>>> +	/* Ensuring all pages have been split into one big frag initially:
+>>> +	 * page_pool_set_pp_info() is only called once for every page when it
+>>> +	 * is allocated from the page allocator and page_pool_fragment_page()
+>>> +	 * is dirtying the same cache line as the page->pp_magic above, so
+>>> +	 * the overhead is negligible.
+>>> +	 */
+>>> +	page_pool_fragment_page(page, 1);
+>>>  	if (pool->p.init_callback)
+>>>  		pool->p.init_callback(page, pool->p.init_arg);
+>>>  }
+>>
+>> I think it would be nice backing the above claim with some benchmarks.
+>> (possibly even just a micro-benchmark around the relevant APIs)
+>> and include such info into the changelog message.
+> 
+> Sure, will adjust Jesper's below micro-benchmark to test it:
+> https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_simple.c
+> 
+> Please let me know if there is other better idea to do the
+> micro-benchmark in your mind, thanks.
 
-On Mon, Sep 18, 2023 at 10:53:58AM +0300, Roger Quadros wrote:
-> -int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
-> -			       void *type_data)
-> -{
-> -	switch (type) {
-> -	case TC_QUERY_CAPS:
-> -		return am65_cpsw_tc_query_caps(ndev, type_data);
-> -	case TC_SETUP_QDISC_TAPRIO:
-> -		return am65_cpsw_setup_taprio(ndev, type_data);
-> -	case TC_SETUP_BLOCK:
-> -		return am65_cpsw_qos_setup_tc_block(ndev, type_data);
-> -	default:
-> -		return -EOPNOTSUPP;
-> -	}
-> -}
-> -
-> -void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed)
-> -{
-> -	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-> -
-> -	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
-> -		return;
-> -
-> -	am65_cpsw_est_link_up(ndev, link_speed);
-> -	port->qos.link_down_time = 0;
-> -}
-> -
-> -void am65_cpsw_qos_link_down(struct net_device *ndev)
-> -{
-> -	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-> -
-> -	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
-> -		return;
-> -
-> -	if (!port->qos.link_down_time)
-> -		port->qos.link_down_time = ktime_get();
-> -
-> -	port->qos.link_speed = SPEED_UNKNOWN;
-> -}
-> -
+As I am testing in arm64, and Jesper's micro-benchmark is only
+work on x86, so I adjust some functions in time_bench.h, mainly
+use get_cycles() instead hard-coded asm in tsc_start_clock()/
+tsc_stop_clock(), and return 0 in p_rdpmc()/pmc_clk().
 
-Could you split the code movement to a separate change?
+using the below cmd:
+taskset -c 0 insmod ./bench_page_pool_simple.ko
 
-> +	if (port->qos.link_speed != SPEED_UNKNOWN) {
-> +		if (min_rate_total > port->qos.link_speed) {
-> +			NL_SET_ERR_MSG_FMT_MOD(extack, "TX rate min %llu exceeds link speed %d\n",
-> +					       min_rate_total, port->qos.link_speed);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (max_rate_total > port->qos.link_speed) {
-> +			NL_SET_ERR_MSG_FMT_MOD(extack, "TX rate max %llu exceeds link speed %d\n",
-> +					       max_rate_total, port->qos.link_speed);
-> +			return -EINVAL;
-> +		}
-> +	}
+For tasklet_page_pool01_fast_path before this patchset:
+3 cycles(tsc) 31.171 ns
+3 cycles(tsc) 31.171 ns
+3 cycles(tsc) 31.172 ns
 
-Link speeds can be renegotiated, and the mqprio offload can be installed
-while the link is down. So this restriction, while honorable, has limited
-usefulness.
+For tasklet_page_pool01_fast_path after this patchset:
+2 cycles(tsc) 27.496 ns
+2 cycles(tsc) 27.484 ns
+2 cycles(tsc) 27.514 ns
 
-> +
-> +	p_mqprio->shaper_en = 1;
+It seem above difference is within the standard deviation,
+see more raw performance data in [1] & [2].
 
-s/1/true/
+I also tested how much time it takes to use frag API to allocate
+a whole page for tasklet_page_pool01_fast_path:
+7 cycles(tsc) 71.179 ns
+7 cycles(tsc) 75.987 ns
+7 cycles(tsc) 75.795 ns
 
-> +	p_mqprio->max_rate_total = max_t(u64, min_rate_total, max_rate_total);
-> +
-> +	return 0;
-> +}
-> +
-> +static void am65_cpsw_reset_tc_mqprio(struct net_device *ndev)
-> +{
-> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
-> +	struct am65_cpsw_common *common = port->common;
-> +
-> +	p_mqprio->shaper_en = 0;
+It seems make sense to unify frag_count handling so that the driver
+can both use frag API and non-frag API with least memory utilization
+and performance penalty if the driver doesn't know the size of memory
+it need beforehand.
 
-s/0/false/
+Please let me know if there is any other testing that needed.
 
-> +	p_mqprio->max_rate_total = 0;
-> +
-> +	am65_cpsw_tx_pn_shaper_reset(port);
-> +	netdev_reset_tc(ndev);
-> +	netif_set_real_num_tx_queues(ndev, common->tx_ch_num);
-> +
-> +	/* Reset all Queue priorities to 0 */
-> +	writel(0,
-> +	       port->port_base + AM65_CPSW_PN_REG_TX_PRI_MAP);
+1. raw performance data before this patchset
 
-What exactly needs pm_runtime_get_sync()? This writel() doesn't?
+root@(none)$ taskset -c 0 insmod ./bench_page_pool_simple.ko
+[   70.650364] bench_page_pool_simple: Loaded
+[   70.692958] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.384 ns (step:0) - (measurement period time:0.038495410 sec time_interval:38495410) - (invoke count:100000000 tsc_interval:3849532)
+[   71.287361] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577120890 sec time_interval:577120890) - (invoke count:100000000 tsc_interval:57712083)
+[   71.451202] time_bench: Type:lock Per elem: 1 cycles(tsc) 14.621 ns (step:0) - (measurement period time:0.146210990 sec time_interval:146210990) - (invoke count:10000000 tsc_interval:14621094)
+[   71.468329] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[   72.050743] time_bench: Type:no-softirq-page_pool01 Per elem: 5 cycles(tsc) 57.310 ns (step:0) - (measurement period time:0.573106430 sec time_interval:573106430) - (invoke count:10000000 tsc_interval:57310638)
+[   72.069422] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[   72.648953] time_bench: Type:no-softirq-page_pool02 Per elem: 5 cycles(tsc) 57.031 ns (step:0) - (measurement period time:0.570316730 sec time_interval:570316730) - (invoke count:10000000 tsc_interval:57031667)
+[   72.667630] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[   74.362804] time_bench: Type:no-softirq-page_pool03 Per elem: 16 cycles(tsc) 168.631 ns (step:0) - (measurement period time:1.686315810 sec time_interval:1686315810) - (invoke count:10000000 tsc_interval:168631576)
+[   74.381828] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[   74.389739] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[   74.710586] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 3 cycles(tsc) 31.172 ns (step:0) - (measurement period time:0.311721410 sec time_interval:311721410) - (invoke count:10000000 tsc_interval:31172132)
+[   74.729869] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[   75.257671] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 5 cycles(tsc) 51.876 ns (step:0) - (measurement period time:0.518763020 sec time_interval:518763020) - (invoke count:10000000 tsc_interval:51876297)
+[   75.276867] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[   77.005755] time_bench: Type:tasklet_page_pool03_slow Per elem: 17 cycles(tsc) 172.020 ns (step:0) - (measurement period time:1.720203240 sec time_interval:1720203240) - (invoke count:10000000 tsc_interval:172020318)
 
-> +}
-> +
-> +static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data)
-> +{
-> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
-> +	struct tc_mqprio_qopt_offload *mqprio = type_data;
-> +	struct am65_cpsw_common *common = port->common;
-> +	struct tc_mqprio_qopt *qopt = &mqprio->qopt;
-> +	int tc, offset, count, ret, prio;
-> +	u8 num_tc = qopt->num_tc;
-> +	u32 tx_prio_map = 0;
-> +	int i;
-> +
-> +	memcpy(&p_mqprio->mqprio_hw, mqprio, sizeof(*mqprio));
-> +
-> +	if (!num_tc) {
-> +		am65_cpsw_reset_tc_mqprio(ndev);
-> +		return 0;
-> +	}
-> +
-> +	ret = pm_runtime_get_sync(common->dev);
-> +	if (ret < 0) {
-> +		pm_runtime_put_noidle(common->dev);
-> +		return ret;
-> +	}
+root@(none)$ taskset -c 0 insmod ./bench_page_pool_simple.ko
+[  136.690195] bench_page_pool_simple: Loaded
+[  136.732787] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.384 ns (step:0) - (measurement period time:0.038494310 sec time_interval:38494310) - (invoke count:100000000 tsc_interval:3849423)
+[  137.327204] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577134850 sec time_interval:577134850) - (invoke count:100000000 tsc_interval:57713479)
+[  137.491072] time_bench: Type:lock Per elem: 1 cycles(tsc) 14.624 ns (step:0) - (measurement period time:0.146240840 sec time_interval:146240840) - (invoke count:10000000 tsc_interval:14624079)
+[  137.508195] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[  138.089672] time_bench: Type:no-softirq-page_pool01 Per elem: 5 cycles(tsc) 57.217 ns (step:0) - (measurement period time:0.572173750 sec time_interval:572173750) - (invoke count:10000000 tsc_interval:57217369)
+[  138.108348] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[  138.689834] time_bench: Type:no-softirq-page_pool02 Per elem: 5 cycles(tsc) 57.227 ns (step:0) - (measurement period time:0.572271320 sec time_interval:572271320) - (invoke count:10000000 tsc_interval:57227127)
+[  138.708511] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[  140.405334] time_bench: Type:no-softirq-page_pool03 Per elem: 16 cycles(tsc) 168.796 ns (step:0) - (measurement period time:1.687964470 sec time_interval:1687964470) - (invoke count:10000000 tsc_interval:168796441)
+[  140.428060] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[  140.435970] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[  140.756813] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 3 cycles(tsc) 31.171 ns (step:0) - (measurement period time:0.311719350 sec time_interval:311719350) - (invoke count:10000000 tsc_interval:31171926)
+[  140.776096] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[  141.300653] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 5 cycles(tsc) 51.551 ns (step:0) - (measurement period time:0.515517680 sec time_interval:515517680) - (invoke count:10000000 tsc_interval:51551762)
+[  141.319853] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[  143.009275] time_bench: Type:tasklet_page_pool03_slow Per elem: 16 cycles(tsc) 168.073 ns (step:0) - (measurement period time:1.680733640 sec time_interval:1680733640) - (invoke count:10000000 tsc_interval:168073359)
+
+root@(none)$ taskset -c 0 insmod ./bench_page_pool_simple.ko
+[  174.946152] bench_page_pool_simple: Loaded
+[  174.988745] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.384 ns (step:0) - (measurement period time:0.038495340 sec time_interval:38495340) - (invoke count:100000000 tsc_interval:3849520)
+[  175.583180] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577154420 sec time_interval:577154420) - (invoke count:100000000 tsc_interval:57715437)
+[  175.747009] time_bench: Type:lock Per elem: 1 cycles(tsc) 14.620 ns (step:0) - (measurement period time:0.146200740 sec time_interval:146200740) - (invoke count:10000000 tsc_interval:14620070)
+[  175.764131] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[  176.345767] time_bench: Type:no-softirq-page_pool01 Per elem: 5 cycles(tsc) 57.233 ns (step:0) - (measurement period time:0.572333700 sec time_interval:572333700) - (invoke count:10000000 tsc_interval:57233364)
+[  176.364446] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[  176.944547] time_bench: Type:no-softirq-page_pool02 Per elem: 5 cycles(tsc) 57.088 ns (step:0) - (measurement period time:0.570887110 sec time_interval:570887110) - (invoke count:10000000 tsc_interval:57088706)
+[  176.963225] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[  178.656473] time_bench: Type:no-softirq-page_pool03 Per elem: 16 cycles(tsc) 168.438 ns (step:0) - (measurement period time:1.684389720 sec time_interval:1684389720) - (invoke count:10000000 tsc_interval:168438965)
+[  178.675492] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[  178.683405] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[  179.004242] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 3 cycles(tsc) 31.171 ns (step:0) - (measurement period time:0.311712990 sec time_interval:311712990) - (invoke count:10000000 tsc_interval:31171291)
+[  179.023526] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[  179.550221] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 5 cycles(tsc) 51.765 ns (step:0) - (measurement period time:0.517655870 sec time_interval:517655870) - (invoke count:10000000 tsc_interval:51765580)
+[  179.569417] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[  181.292780] time_bench: Type:tasklet_page_pool03_slow Per elem: 17 cycles(tsc) 171.467 ns (step:0) - (measurement period time:1.714677840 sec time_interval:1714677840) - (invoke count:10000000 tsc_interval:171467778)
+
+2. raw performance data after this patchset
+
+root@(none)$ taskset -c 0 insmod ./bench_page_pool_simple.ko
+[   92.210702] bench_page_pool_simple: Loaded
+[   92.253767] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.389 ns (step:0) - (measurement period time:0.038968350 sec time_interval:38968350) - (invoke count:100000000 tsc_interval:3896825)
+[   92.848206] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577158660 sec time_interval:577158660) - (invoke count:100000000 tsc_interval:57715860)
+[   93.015899] time_bench: Type:lock Per elem: 1 cycles(tsc) 15.006 ns (step:0) - (measurement period time:0.150063860 sec time_interval:150063860) - (invoke count:10000000 tsc_interval:15006381)
+[   93.033022] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[   93.596905] time_bench: Type:no-softirq-page_pool01 Per elem: 5 cycles(tsc) 55.458 ns (step:0) - (measurement period time:0.554580560 sec time_interval:554580560) - (invoke count:10000000 tsc_interval:55458050)
+[   93.615583] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[   94.207234] time_bench: Type:no-softirq-page_pool02 Per elem: 5 cycles(tsc) 58.243 ns (step:0) - (measurement period time:0.582437650 sec time_interval:582437650) - (invoke count:10000000 tsc_interval:58243758)
+[   94.225912] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[   95.860315] time_bench: Type:no-softirq-page_pool03 Per elem: 16 cycles(tsc) 162.554 ns (step:0) - (measurement period time:1.625544130 sec time_interval:1625544130) - (invoke count:10000000 tsc_interval:162554407)
+[   95.879337] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[   95.887249] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[   96.171343] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 2 cycles(tsc) 27.496 ns (step:0) - (measurement period time:0.274969220 sec time_interval:274969220) - (invoke count:10000000 tsc_interval:27496914)
+[   96.190627] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[   96.713599] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 5 cycles(tsc) 51.393 ns (step:0) - (measurement period time:0.513932220 sec time_interval:513932220) - (invoke count:10000000 tsc_interval:51393217)
+[   96.732796] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[   98.456894] time_bench: Type:tasklet_page_pool03_slow Per elem: 17 cycles(tsc) 171.541 ns (step:0) - (measurement period time:1.715412930 sec time_interval:1715412930) - (invoke count:10000000 tsc_interval:171541286)
+
+root@(none)$ taskset -c 0 insmod ./bench_page_pool_simple.ko
+[  163.266630] bench_page_pool_simple: Loaded
+[  163.309219] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.384 ns (step:0) - (measurement period time:0.038494410 sec time_interval:38494410) - (invoke count:100000000 tsc_interval:3849426)
+[  163.903651] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577150320 sec time_interval:577150320) - (invoke count:100000000 tsc_interval:57715025)
+[  164.071342] time_bench: Type:lock Per elem: 1 cycles(tsc) 15.006 ns (step:0) - (measurement period time:0.150062900 sec time_interval:150062900) - (invoke count:10000000 tsc_interval:15006285)
+[  164.088461] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[  164.652649] time_bench: Type:no-softirq-page_pool01 Per elem: 5 cycles(tsc) 55.488 ns (step:0) - (measurement period time:0.554886720 sec time_interval:554886720) - (invoke count:10000000 tsc_interval:55488665)
+[  164.671327] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[  165.263541] time_bench: Type:no-softirq-page_pool02 Per elem: 5 cycles(tsc) 58.299 ns (step:0) - (measurement period time:0.582999800 sec time_interval:582999800) - (invoke count:10000000 tsc_interval:58299973)
+[  165.282218] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[  166.917289] time_bench: Type:no-softirq-page_pool03 Per elem: 16 cycles(tsc) 162.621 ns (step:0) - (measurement period time:1.626211550 sec time_interval:1626211550) - (invoke count:10000000 tsc_interval:162621149)
+[  166.936545] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[  166.944456] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[  167.228428] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 2 cycles(tsc) 27.484 ns (step:0) - (measurement period time:0.274847160 sec time_interval:274847160) - (invoke count:10000000 tsc_interval:27484709)
+[  167.247711] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[  167.771686] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 5 cycles(tsc) 51.493 ns (step:0) - (measurement period time:0.514934110 sec time_interval:514934110) - (invoke count:10000000 tsc_interval:51493406)
+[  167.790883] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[  169.517320] time_bench: Type:tasklet_page_pool03_slow Per elem: 17 cycles(tsc) 171.775 ns (step:0) - (measurement period time:1.717751440 sec time_interval:1717751440) - (invoke count:10000000 tsc_interval:171775139)
+
+taskset -c 0 insmod ./bench_page_pool_simple.ko
+[  203.494623] bench_page_pool_simple: Loaded
+[  203.537239] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.384 ns (step:0) - (measurement period time:0.038493730 sec time_interval:38493730) - (invoke count:100000000 tsc_interval:3849355)
+[  204.131650] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577129200 sec time_interval:577129200) - (invoke count:100000000 tsc_interval:57712915)
+[  204.299329] time_bench: Type:lock Per elem: 1 cycles(tsc) 15.005 ns (step:0) - (measurement period time:0.150052320 sec time_interval:150052320) - (invoke count:10000000 tsc_interval:15005228)
+[  204.316447] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[  204.843709] time_bench: Type:no-softirq-page_pool01 Per elem: 5 cycles(tsc) 51.796 ns (step:0) - (measurement period time:0.517960340 sec time_interval:517960340) - (invoke count:10000000 tsc_interval:51796028)
+[  204.862388] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[  205.456260] time_bench: Type:no-softirq-page_pool02 Per elem: 5 cycles(tsc) 58.465 ns (step:0) - (measurement period time:0.584658150 sec time_interval:584658150) - (invoke count:10000000 tsc_interval:58465807)
+[  205.474940] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[  207.109889] time_bench: Type:no-softirq-page_pool03 Per elem: 16 cycles(tsc) 162.609 ns (step:0) - (measurement period time:1.626090490 sec time_interval:1626090490) - (invoke count:10000000 tsc_interval:162609042)
+[  207.132545] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[  207.140457] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[  207.424723] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 2 cycles(tsc) 27.514 ns (step:0) - (measurement period time:0.275141610 sec time_interval:275141610) - (invoke count:10000000 tsc_interval:27514155)
+[  207.444006] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[  207.967963] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 5 cycles(tsc) 51.491 ns (step:0) - (measurement period time:0.514916640 sec time_interval:514916640) - (invoke count:10000000 tsc_interval:51491659)
+[  207.987160] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[  209.712648] time_bench: Type:tasklet_page_pool03_slow Per elem: 17 cycles(tsc) 171.680 ns (step:0) - (measurement period time:1.716802930 sec time_interval:1716802930) - (invoke count:10000000 tsc_interval:171680285)
+
+3. raw performance data for frag API after this patchset
+root@(none)$ taskset -c 0 insmod ./bench_page_pool_frag.ko
+[ 5981.070839] bench_page_pool_frag: Loaded
+[ 5981.113253] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.384 ns (step:0) - (measurement period time:0.038492620 sec time_interval:38492620) - (invoke count:100000000 tsc_interval:3849248)
+[ 5981.707686] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577150800 sec time_interval:577150800) - (invoke count:100000000 tsc_interval:57715075)
+[ 5981.875360] time_bench: Type:lock Per elem: 1 cycles(tsc) 15.004 ns (step:0) - (measurement period time:0.150047290 sec time_interval:150047290) - (invoke count:10000000 tsc_interval:15004725)
+[ 5981.892479] bench_page_pool_frag: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[ 5983.030870] time_bench: Type:no-softirq-page_pool01 Per elem: 11 cycles(tsc) 112.926 ns (step:0) - (measurement period time:1.129261630 sec time_interval:1129261630) - (invoke count:10000000 tsc_interval:112926158)
+[ 5983.049896] bench_page_pool_frag: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[ 5984.085723] time_bench: Type:no-softirq-page_pool02 Per elem: 10 cycles(tsc) 102.678 ns (step:0) - (measurement period time:1.026786610 sec time_interval:1026786610) - (invoke count:10000000 tsc_interval:102678656)
+[ 5984.104749] bench_page_pool_frag: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[ 5986.210648] time_bench: Type:no-softirq-page_pool03 Per elem: 20 cycles(tsc) 209.721 ns (step:0) - (measurement period time:2.097213570 sec time_interval:2097213570) - (invoke count:10000000 tsc_interval:209721350)
+[ 5986.229668] bench_page_pool_frag: pp_tasklet_handler(): in_serving_softirq fast-path
+[ 5986.237406] bench_page_pool_frag: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[ 5986.958155] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 7 cycles(tsc) 71.179 ns (step:0) - (measurement period time:0.711798570 sec time_interval:711798570) - (invoke count:10000000 tsc_interval:71179850)
+[ 5986.977439] bench_page_pool_frag: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[ 5987.947411] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 9 cycles(tsc) 96.110 ns (step:0) - (measurement period time:0.961105800 sec time_interval:961105800) - (invoke count:10000000 tsc_interval:96110574)
+[ 5987.966608] bench_page_pool_frag: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[ 5990.018801] time_bench: Type:tasklet_page_pool03_slow Per elem: 20 cycles(tsc) 204.368 ns (step:0) - (measurement period time:2.043681900 sec time_interval:2043681900) - (invoke count:10000000 tsc_interval:204368185)
+
+root@(none)$ taskset -c 0 insmod ./bench_page_pool_frag.ko
+[10101.778903] bench_page_pool_frag: Loaded
+[10101.821317] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.384 ns (step:0) - (measurement period time:0.038491670 sec time_interval:38491670) - (invoke count:100000000 tsc_interval:3849157)
+[10102.415720] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577120320 sec time_interval:577120320) - (invoke count:100000000 tsc_interval:57712027)
+[10102.583401] time_bench: Type:lock Per elem: 1 cycles(tsc) 15.005 ns (step:0) - (measurement period time:0.150052570 sec time_interval:150052570) - (invoke count:10000000 tsc_interval:15005251)
+[10102.600521] bench_page_pool_frag: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[10103.780027] time_bench: Type:no-softirq-page_pool01 Per elem: 11 cycles(tsc) 117.037 ns (step:0) - (measurement period time:1.170377390 sec time_interval:1170377390) - (invoke count:10000000 tsc_interval:117037734)
+[10103.799052] bench_page_pool_frag: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[10104.879716] time_bench: Type:no-softirq-page_pool02 Per elem: 10 cycles(tsc) 107.162 ns (step:0) - (measurement period time:1.071623350 sec time_interval:1071623350) - (invoke count:10000000 tsc_interval:107162329)
+[10104.898741] bench_page_pool_frag: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[10107.050254] time_bench: Type:no-softirq-page_pool03 Per elem: 21 cycles(tsc) 214.282 ns (step:0) - (measurement period time:2.142827400 sec time_interval:2142827400) - (invoke count:10000000 tsc_interval:214282734)
+[10107.072799] bench_page_pool_frag: pp_tasklet_handler(): in_serving_softirq fast-path
+[10107.080540] bench_page_pool_frag: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[10107.849370] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 7 cycles(tsc) 75.987 ns (step:0) - (measurement period time:0.759878270 sec time_interval:759878270) - (invoke count:10000000 tsc_interval:75987820)
+[10107.868653] bench_page_pool_frag: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[10108.884336] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 10 cycles(tsc) 100.681 ns (step:0) - (measurement period time:1.006815920 sec time_interval:1006815920) - (invoke count:10000000 tsc_interval:100681587)
+[10108.903880] bench_page_pool_frag: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[10111.002467] time_bench: Type:tasklet_page_pool03_slow Per elem: 20 cycles(tsc) 209.007 ns (step:0) - (measurement period time:2.090076740 sec time_interval:2090076740) - (invoke count:10000000 tsc_interval:209007670)
+
+root@(none)$ taskset -c 0 insmod ./bench_page_pool_frag.ko
+[10135.250815] bench_page_pool_frag: Loaded
+[10135.293228] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.384 ns (step:0) - (measurement period time:0.038491560 sec time_interval:38491560) - (invoke count:100000000 tsc_interval:3849145)
+[10135.887668] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577159960 sec time_interval:577159960) - (invoke count:100000000 tsc_interval:57715991)
+[10136.055343] time_bench: Type:lock Per elem: 1 cycles(tsc) 15.004 ns (step:0) - (measurement period time:0.150047050 sec time_interval:150047050) - (invoke count:10000000 tsc_interval:15004701)
+[10136.072462] bench_page_pool_frag: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[10137.255828] time_bench: Type:no-softirq-page_pool01 Per elem: 11 cycles(tsc) 117.423 ns (step:0) - (measurement period time:1.174238030 sec time_interval:1174238030) - (invoke count:10000000 tsc_interval:117423797)
+[10137.274854] bench_page_pool_frag: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[10138.356896] time_bench: Type:no-softirq-page_pool02 Per elem: 10 cycles(tsc) 107.300 ns (step:0) - (measurement period time:1.073001550 sec time_interval:1073001550) - (invoke count:10000000 tsc_interval:107300149)
+[10138.375920] bench_page_pool_frag: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[10140.534446] time_bench: Type:no-softirq-page_pool03 Per elem: 21 cycles(tsc) 214.984 ns (step:0) - (measurement period time:2.149840170 sec time_interval:2149840170) - (invoke count:10000000 tsc_interval:214984011)
+[10140.553464] bench_page_pool_frag: pp_tasklet_handler(): in_serving_softirq fast-path
+[10140.561202] bench_page_pool_frag: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[10141.328108] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 7 cycles(tsc) 75.795 ns (step:0) - (measurement period time:0.757955870 sec time_interval:757955870) - (invoke count:10000000 tsc_interval:75795580)
+[10141.347392] bench_page_pool_frag: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[10142.362664] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 10 cycles(tsc) 100.640 ns (step:0) - (measurement period time:1.006406390 sec time_interval:1006406390) - (invoke count:10000000 tsc_interval:100640634)
+[10142.382208] bench_page_pool_frag: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[10144.479816] time_bench: Type:tasklet_page_pool03_slow Per elem: 20 cycles(tsc) 208.909 ns (step:0) - (measurement period time:2.089097170 sec time_interval:2089097170) - (invoke count:10000000 tsc_interval:208909713
+
+> 
+>>
+>> Cheers,
+>>
+>> Paolo
+>>
+>> .
+>>
+> 
+> 
+> .
+> 
