@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D57597A6F13
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3207A6EFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233707AbjISXEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37862 "EHLO
+        id S233659AbjISXES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjISXD5 (ORCPT
+        with ESMTP id S233490AbjISXD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Sep 2023 19:03:57 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C44D9;
-        Tue, 19 Sep 2023 16:03:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C1FC43391;
-        Tue, 19 Sep 2023 23:03:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475CB122;
+        Tue, 19 Sep 2023 16:03:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 921E5C4339A;
+        Tue, 19 Sep 2023 23:03:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695164629;
-        bh=Cvf1kg5rPSVb3dgmOVgVEB6Gg/q96WLqe4JnbgiLtR8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=I7xnCwYowl8JzVC340VQm+ijrk1nyICKoNxX1oHQ2NFLxJJeJ1yb8ZacBGov4OY8a
-         RJ13x0kWeT6s2F6vK954Ikov+yUcW+P6t25w3uZXvEtRlPMc4FmfALjCmxyh+cZEyn
-         nHIyH2trVCFPnArah5lDZRIkY7Owf642+3EM3vvnU9xk4gRG91N42svu3XYgiPuWD9
-         tF9yO+31rDYuQeRP4bmVHkwjgTuU3gepdu9uF/FEx0+v9hl7YBKxHlTLDokAjWmQww
-         mPYFo8m4XVmAlToP0jPmsMlYwA0g4gmHBdhZDWOpcQzVcNnX+kbLADehfHq/5LQ06u
-         VQ3Et6xDpEIsA==
+        s=k20201202; t=1695164630;
+        bh=Fkuj2wWZmMnPShQV/ULhqGln8Ca5xiurzcw3wVvpsGI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=D4QmMc9SBynpqOTarnupu5xaA4eHNG/4uPm/vu2d7GbqG1uqiJkF4FcsCMScJLhME
+         dJynJvO7J5fCGyRF1u5WbvVsfUxhCla1FOhJuS0RNf4utFMbh4z5HVNYFRou+tGAHJ
+         A6F2bRa7eF0VT2N29mxpPmby2KXp0WwGXwCy8MXCLRfznf2rTkhOTUV8KdmVTetF/y
+         6SRgoinWnf6QNSYOh8Y48tEfkfUJ/gApVFIcwetQqNrxqMQl5TJuIITXFCqDdX2OPK
+         vgkyxlmM65zvt5BMkoA2Gtdei4Ys5XEE1PA/n86TADR8TzX61oZ5fbEp8+HcqyAymN
+         IpJiZRIyfG4xw==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [RESEND PATCH 1/2] arm64: dts: qcom: msm8994: fix duplicated @6c00000 reserved memory
-Date:   Tue, 19 Sep 2023 16:07:38 -0700
-Message-ID: <169516485987.787935.2863146104390557606.b4-ty@kernel.org>
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lu Hongfei <luhongfei@vivo.com>
+Cc:     opensource.kernel@vivo.com
+Subject: Re: [PATCH v3] soc: qcom: pmic: Fix resource leaks in a device_for_each_child_node() loop
+Date:   Tue, 19 Sep 2023 16:07:39 -0700
+Message-ID: <169516485977.787935.14775411918002556697.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230720072048.10093-1-krzysztof.kozlowski@linaro.org>
-References: <20230720072048.10093-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230612133452.47315-1-luhongfei@vivo.com>
+References: <20230612133452.47315-1-luhongfei@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,20 +52,18 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 20 Jul 2023 09:20:47 +0200, Krzysztof Kozlowski wrote:
-> Reserved memory @6c00000 is defined in MSM8994 DTSI and few boards:
+On Mon, 12 Jun 2023 21:34:52 +0800, Lu Hongfei wrote:
+> The device_for_each_child_node loop should call fwnode_handle_put()
+> before return in some error cases, which could avoid resource leaks.
 > 
->   Warning (unique_unit_address_if_enabled): /reserved-memory/reserved@6c00000: duplicate unit-address (also used in node /reserved-memory/hole2@6c00000)
->   Warning (unique_unit_address_if_enabled): /reserved-memory/reserved@6c00000: duplicate unit-address (also used in node /reserved-memory/memory@6c00000)
+> Let's fix this bug in pmic_glink_altmode_probe.
 > 
 > 
 
 Applied, thanks!
 
-[1/2] arm64: dts: qcom: msm8994: fix duplicated @6c00000 reserved memory
-      commit: bf80e606ca8db08c840d1ad394ec75eaabba717b
-[2/2] arm64: dts: qcom: msm8992-libra: drop duplicated reserved memory
-      commit: f32096602c19e68fb9bf04b494d13f1190602554
+[1/1] soc: qcom: pmic: Fix resource leaks in a device_for_each_child_node() loop
+      commit: 5692aeea5bcb9331e956628c3bc8fc9afcc9765d
 
 Best regards,
 -- 
