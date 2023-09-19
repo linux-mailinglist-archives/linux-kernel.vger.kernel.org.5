@@ -2,187 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B0D7A67FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0C07A6801
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbjISPY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
+        id S233148AbjISPZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbjISPYZ (ORCPT
+        with ESMTP id S232823AbjISPZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:24:25 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1AEE60;
-        Tue, 19 Sep 2023 08:24:17 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A7479B53;
-        Tue, 19 Sep 2023 17:22:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1695136959;
-        bh=9vIyKWF61Oki0ViP0MM9OtlYNdPRel3PPjwYgBK9PgM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fxBxJ7GxeYlxsv1O+e8OcB0xbaq3uqYvHMy6CJ+TAxNH9W/dGWlrG+m/XoCY3m6z6
-         QH/kgnB92SDfVDlD79tXdPCTTTNCgerQ8jVda95uBOVKtQVkPsKmtQuPAwhTeAbQXP
-         BBt/QdZG/1mxqJrUUV1gCD1fW4Gj21NPLG2qfhvI=
-Date:   Tue, 19 Sep 2023 18:24:28 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tue, 19 Sep 2023 11:25:07 -0400
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2109.outbound.protection.outlook.com [40.107.113.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0D2E6B;
+        Tue, 19 Sep 2023 08:25:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jDLuUaP3339RpZ+9a4HHddhzf11oY04g4t4klnpBKUubv11PeoAfc78eMHd2geO5il/e0Hmj+lj4ylyHcELH+r7O3Qt4BJeaPSMXzXGVXl3QX7iQVNbiyVBaqZI+wuXCQCKnkDoFn0b+s08G40/ksWZbIqtfxsVwzSGKjbGOlHglx313jPaj2t/ns6xPcN6yjk5GCRpNklyZkSV9Z5L5Ig+IRCXg2pdt3AgMHhqRGvOFER3rmcn+RYz5QRj1+HrSpfogfxuVu7avt+jplDmSXrodse2qFCrRCcAPWDJH47HT8vMPPeS8Vjd4znbrr8vvr1i+ejAP8b6OuXSOZET4hQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/T8XS2Ui9mMPydYeKixs9wsR3zl0oPfxtqjgSiM2RKc=;
+ b=PBsj11RQLW4/KZbBnhBN+Aiiq2DyZEvQM/ATSsmR86wHCY3jkyH2qZX33eXLSVoB/qU88NHU9J19lWoOrrWBStzZDbGnynFtx4WOGHcVOExT+qcLlIeiU/3xxPm55U876SsFk07TONhzo3M9W9/akTJs8NcWuxdyERkcq++0nd9cn4hpWx68FBVBn+nzCdw7thV+rHHTWBFVu05+ad8iA6ghGoNKue0+U8fiezunZ4IaPrK/ko+UF5mTX/iW9uo3c3/CfGQC6QSygKa6g/JL+PTYIJmE9Qm9/kJaZlYGL2DDsfyMxunu2PT85UQ4CvvAZ6VmWi/CmDvXd5XcywcSZQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/T8XS2Ui9mMPydYeKixs9wsR3zl0oPfxtqjgSiM2RKc=;
+ b=FXs/UPwc3aiMHa8RjUBssGbCIK985A9aA3huTNkmK0H81yj+StbO8XpFKFg5nxzKfubSavOXyEbJZscQ04hQLyp5JwWKbdV7W2nKWA2+5z4jVMfSvkB9gL9BvxHorlipuMK21RHMXP1QXcETtqPEf7Hw5ECqlPBqU5zjMSEogm0=
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
+ by TYCPR01MB10333.jpnprd01.prod.outlook.com (2603:1096:400:241::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
+ 2023 15:24:57 +0000
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 15:24:53 +0000
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Subject: Re: [GIT PULL] drm: renesas: shmobile: Atomic conversion + DT
- support (was: Re: [PATCH v4 00/41] drm: renesas: shmobile: Atomic conversion
- + DT support)
-Message-ID: <20230919152428.GB18426@pendragon.ideasonboard.com>
-References: <cover.1694767208.git.geert+renesas@glider.be>
- <CAMuHMdWfBTKdXvZutg4LvWqBjuz-X=ZjzX0LKPqD=JxYuLoPRw@mail.gmail.com>
+        Biju Das <biju.das.au@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: RE: [PATCH 3/3] irqchip: renesas-rzg2l: Fix irq storm with edge
+ trigger detection for TINT
+Thread-Topic: [PATCH 3/3] irqchip: renesas-rzg2l: Fix irq storm with edge
+ trigger detection for TINT
+Thread-Index: AQHZ6isSnZZc/iqk1kePfAP8iH4mBLAiOWYAgAALsBA=
+Date:   Tue, 19 Sep 2023 15:24:53 +0000
+Message-ID: <OS0PR01MB5922748F489467BE2539AA1886FAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <20230918122411.237635-1-biju.das.jz@bp.renesas.com>
+        <20230918122411.237635-4-biju.das.jz@bp.renesas.com>
+ <86y1h2cjpb.wl-maz@kernel.org>
+In-Reply-To: <86y1h2cjpb.wl-maz@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYCPR01MB10333:EE_
+x-ms-office365-filtering-correlation-id: e5831a11-e63e-46bb-7f82-08dbb92492ee
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2cq3ugoSITNw7bF9+xGeomn+hkQ5O8lYLiWKo2u158L+8fXS525NQF0C63X44TV8ZRCq/mfzCly6CiEaV2dGk8B2QuuYL0p3hU/SbJbbfGg9VaxpBuOHh5lyPJee/wNPCxqilv5FC+RX7m+FNjKQr7jlQLyGVQ5WdBl3uhRoIdcTJMcIEhYHmlYqLsgap+TDw7kDMTd0Nf/Y6h4XJ7/en++f7LpX0SIon+Xn0DVpeMjFVP5uqnS/ENha402Ddah63ftsBwSrG91QYWxud/D2cLStH4w/pisVGudDRqYLQrOaQ5u/AzIwYhQGJOc0/hbRe61Uv1iyShVf2vH+rkrBsZAMsDr/9ayCt8d/8tGGD/FVKEKgBaAHPWQoP70/TxBiI9cljOZaVPqKC+Lq8yEtQMaoWxx7wWt/OngP/yuWIXMfWyE4LSPGMwo0EsKHZqXbKGX3fXcknd00sELLlNY8feJFCjQoZGJl8n2Z9+zV2R5Sli/6inKfwjx03rigLxTL36Q0P2wYnzvgdD4uCbhooelj8mKiAGI9ZhYXymrehzCGGaaaFa0CXmkUvSmJ8WecpXdY3YXYSq0Ll4E2V3WZteopnjB+68HcJe/JP17ahp67oJucwapMdUTCcR7uBgjs
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(39860400002)(366004)(376002)(451199024)(1800799009)(186009)(6506007)(478600001)(5660300002)(71200400001)(55016003)(26005)(316002)(83380400001)(52536014)(86362001)(2906002)(7696005)(122000001)(54906003)(64756008)(66446008)(9686003)(76116006)(41300700001)(6916009)(66946007)(38100700002)(66476007)(66556008)(4326008)(38070700005)(8676002)(8936002)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?1HwhDSQvBbD7yZIPJZ5ZIBdfXnj4pNSn5pF5Q0bl6sIHU1YfWmZuHiMIJueN?=
+ =?us-ascii?Q?ZlhaE96IUJ97yfSdYPTSF6SpdA6P+Hwt1357GIHN1ZOZ5MFbf7ObubUXlGjT?=
+ =?us-ascii?Q?xPTm3O6WdNb1ioLnPaFTdcvOEsbpSAmU3ZaltqSjO/CsNrMBjDOWd8VG0LlR?=
+ =?us-ascii?Q?TE1aghc53v1nllr+6WLhOMBDfIBisQcWuuIG/5uJLQ/5UzQHUhSk4Xx+ckIj?=
+ =?us-ascii?Q?lasogruqWNe6j3KZak1cl0wOipbfQIDS8yR6G21pwHxVpANEsl925nbmnnCi?=
+ =?us-ascii?Q?7E18gAIRM/DJBeVKxdchyEb6YapgVwmZ8brHBOfP6Ooi6nqExwTldE8nVATB?=
+ =?us-ascii?Q?q8rNYm1b1RwD6Ml0JyiE+1RfJpz6dAHGwb69VPwX5yjWuSntNn+xMjRriUSy?=
+ =?us-ascii?Q?/nM09P7MIQN1hAoPZhs3AdtwPw2FjIOjFBdUFwWoQ8SdmOIK67lRMg2XL1bP?=
+ =?us-ascii?Q?bO8W+RcC5MMUuTkyqi8C1irmuIDqUsfLdvdWqXsv5TczibfMUvl0KPueOy9X?=
+ =?us-ascii?Q?sJ8raRAq9IugKQ7T1tkvdWB2peio2G3qESTuGltUnIiXPLxxSEk/yeiMn0mQ?=
+ =?us-ascii?Q?Xh9g/OT4uJ0j6lCyBHa/j9S28TSVVbEAfPZUbZdr+yBhn9Ge9HgpKYOo9lvR?=
+ =?us-ascii?Q?YaYgpxo0OpZIyoltNxeYxY/w74vzQY2PtJ49CKj157cM+uQ57hjGOXorgqPu?=
+ =?us-ascii?Q?N/BaSSLd1PPF0b8uJ+ohybAwo27uErEcvGy3m3+xCkX5fG+mddoKHueh1fHB?=
+ =?us-ascii?Q?0rwaJfcB3veU9kpvSZuJkIN7GrrVLFiG9J+919OEI99i7NiF0UBavG8S65Xi?=
+ =?us-ascii?Q?obuNoenM/D2a/hSABpjzPEHzc5+0EPYcvEdIQqDW+PX7JrP3vvAbSjC3XGT+?=
+ =?us-ascii?Q?8vPd1HgCQW3BY97ybhoEo9lQ1XnBo4uW5vHIOhv9ue70X3Mr0CHDT1dxpuzb?=
+ =?us-ascii?Q?jREQlI/N5gpQFUt64MPqKXS237ebU6kwLiOc24f9CoGPgwr084ZIXWOc9nGX?=
+ =?us-ascii?Q?cY7NujH13TPHENcSClYHoU3k1Momw6D7nNaMH69EPPC94nbdC9hlm6LdKlFr?=
+ =?us-ascii?Q?dZxHLPZUJUdBXzpdYnK6bKz2ol8TAcbeqnvWxgqJp3JuJsHEViU902V1DPuL?=
+ =?us-ascii?Q?qnGYlY+/QLPH4XyQYbPQOY9spe0HFVFvjWFQB5PPbpP1sJWDmZkCdItCdZzB?=
+ =?us-ascii?Q?TNFhUBjFG5XPDPi0uUsBYlMguGnzoKoOqRAfKUBsyWetFPlOyMfLScx6eg5U?=
+ =?us-ascii?Q?9BCbEuuRcf4FUcV2XYuVTTFNgk0g7O8BJOVMhNXCunusUWBBmAqeBOc6hgT0?=
+ =?us-ascii?Q?ZSECAv9s/TYyBLGZsJm6SAl6hgbjCKV5SLaD+P3AjLAk4y2ivcaL3F5i6nkq?=
+ =?us-ascii?Q?QiY779gqazrTjLew0mHNztycp8hF3iYf9StXBb7CVneQLZ9bKxe+S8MPeudL?=
+ =?us-ascii?Q?U2n2i2qvB0SILqq9Mrj5G435NzUN+R0RntFvC8CKHqtptXsnkwdX1sqazd35?=
+ =?us-ascii?Q?BjWbkB1WcrzIUA64n5ZVLvy36jBvM/EwaLzM4o5Bj4OZ3Kda2nn9uU1Ts4WQ?=
+ =?us-ascii?Q?isclBmym4fskI/J0pOkcLBWF0KMNZ0EzJQ2PAHwsYM7Q/vyjpegzc3tBQ69F?=
+ =?us-ascii?Q?gA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWfBTKdXvZutg4LvWqBjuz-X=ZjzX0LKPqD=JxYuLoPRw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5831a11-e63e-46bb-7f82-08dbb92492ee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2023 15:24:53.7832
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PgjD2Es93vjGuDFUjv5PxNmbobBgylglj0VCgunQ6vtoNkPMdrxWGQVOsVOXPwMoqoYQEidle9f0M/32FdbRn/o1uPtt9GkpK0BKWbFHv+Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB10333
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 04:28:40PM +0200, Geert Uytterhoeven wrote:
-> Hi David, Daniel,
-> 
-> The following changes since commit 0663e1da5ba8e6459e3555ac12c62741668c0d30:
-> 
->   drm/dp_mst: Tune down error message during payload addition
-> (2023-09-18 16:38:21 +0300)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
-> tags/shmob-drm-atomic-dt-tag1
-> 
-> for you to fetch changes up to bfea0fa9052aa8d235b24957eb84d9ff20cb87b7:
-> 
->   drm: renesas: shmobile: Add DT support (2023-09-19 15:58:04 +0200)
-> 
-> ----------------------------------------------------------------
-> drm: renesas: shmobile: Atomic conversion + DT support
-> 
-> Currently, there are two drivers for the LCD controller on Renesas
-> SuperH-based and ARM-based SH-Mobile and R-Mobile SoCs:
->   1. sh_mobile_lcdcfb, using the fbdev framework,
->   2. shmob_drm, using the DRM framework.
-> However, only the former driver is used, as all platform support
-> integrates the former.  None of these drivers support DT-based systems.
-> 
-> Convert the SH-Mobile DRM driver to atomic modesetting, and add DT
-> support, complemented by the customary set of fixes and improvements.
-> 
-> Link: https://lore.kernel.org/r/cover.1694767208.git.geert+renesas@glider.be/
-> 
-> This PR is based on today's drm-misc/for-linux-next, to avoid a
-> conflict with commit 775b0669e19f2e4a ("drm/shmobile: Convert to
-> platform remove callback returning void") in drm-misc/for-linux-next
-> .
-> Thanks for pulling!
-> ----------------------------------------------------------------
-> Geert Uytterhoeven (36):
->       MAINTAINER: Create entry for Renesas SH-Mobile DRM drivers
+Hi Marc Zyngier,
 
-I'm technically listed as the maintainer for this driver until Geert
-takes over, so for this pull request,
+Thanks for the feedback.
 
-Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Subject: Re: [PATCH 3/3] irqchip: renesas-rzg2l: Fix irq storm with edge
+> trigger detection for TINT
+>=20
+> On Mon, 18 Sep 2023 13:24:11 +0100,
+> Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> >
+> > In case of edge trigger detection, enabling the TINT source causes a
+> > phantum interrupt that leads to irq storm. So clear the phantum
+> > interrupt in rzg2l_irqc_irq_enable().
+> >
+> > This issue is observed when the irq handler disables the interrupts
+> > using
+> > disable_irq_nosync() and scheduling a work queue and in the work
+> > queue, re-enabling the interrupt with enable_irq().
+> >
+> > Fixes: 3fed09559cd8 ("irqchip: Add RZ/G2L IA55 Interrupt Controller
+> > driver")
+> > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> > ---
+> >  drivers/irqchip/irq-renesas-rzg2l.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/irqchip/irq-renesas-rzg2l.c
+> > b/drivers/irqchip/irq-renesas-rzg2l.c
+> > index 33a22bafedcd..78a9e90512a6 100644
+> > --- a/drivers/irqchip/irq-renesas-rzg2l.c
+> > +++ b/drivers/irqchip/irq-renesas-rzg2l.c
+> > @@ -144,6 +144,12 @@ static void rzg2l_irqc_irq_enable(struct irq_data
+> *d)
+> >  		reg =3D readl_relaxed(priv->base + TSSR(tssr_index));
+> >  		reg |=3D (TIEN | tint) << TSSEL_SHIFT(tssr_offset);
+> >  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
+> > +		/*
+> > +		 * In case of edge trigger detection, enabling the TINT source
+> > +		 * cause a phantum interrupt that leads to irq storm. So clear
+> > +		 * the phantum interrupt.
+> > +		 */
+> > +		rzg2l_tint_eoi(d);
+>=20
+> This looks incredibly unsafe. disable_irq()+enable_irq() with an interrup=
+t
+> being made pending in the middle, and you've lost that interrupt.
 
-And after that, shmobile won't need my ack to merge further changes :-)
+In this driver that will never happen as it clears the TINT source
+during disable(), so there won't be any TINT source for interrupt detection=
+ after disable().
 
-This is very nice work Geert. I'm looking forward to dropping the
-sh_mobile_lcdcfb driver.
+Cheers,
+Biju
 
->       dt-bindings: display: Add Renesas SH-Mobile LCDC bindings
->       media: uapi: Add MEDIA_BUS_FMT_RGB666_2X9_BE format
->       drm: renesas: shmobile: Fix overlay plane disable
->       drm: renesas: shmobile: Fix ARGB32 overlay format typo
->       drm: renesas: shmobile: Correct encoder/connector types
->       drm: renesas: shmobile: Add support for Runtime PM
->       drm: renesas: shmobile: Restore indentation of shmob_drm_setup_clocks()
->       drm: renesas: shmobile: Use %p4cc to print fourcc code
->       drm: renesas: shmobile: Add missing YCbCr formats
->       drm: renesas: shmobile: Improve shmob_drm_format_info table
->       drm: renesas: shmobile: Improve error handling
->       drm: renesas: shmobile: Convert to use devm_request_irq()
->       drm: renesas: shmobile: Remove custom plane destroy callback
->       drm: renesas: shmobile: Use drmm_universal_plane_alloc()
->       drm: renesas: shmobile: Embed drm_device in shmob_drm_device
->       drm: renesas: shmobile: Convert container helpers to static inline functions
->       drm: renesas: shmobile: Replace .dev_private with container_of()
->       drm: renesas: shmobile: Use media bus formats in platform data
->       drm: renesas: shmobile: Move interface handling to connector setup
->       drm: renesas: shmobile: Unify plane allocation
->       drm: renesas: shmobile: Rename shmob_drm_crtc.crtc
->       drm: renesas: shmobile: Rename shmob_drm_connector.connector
->       drm: renesas: shmobile: Rename shmob_drm_plane.plane
->       drm: renesas: shmobile: Use drm_crtc_handle_vblank()
->       drm: renesas: shmobile: Move shmob_drm_crtc_finish_page_flip()
->       drm: renesas: shmobile: Wait for page flip when turning CRTC off
->       drm: renesas: shmobile: Turn vblank on/off when enabling/disabling CRTC
->       drm: renesas: shmobile: Shutdown the display on remove
->       drm: renesas: shmobile: Cleanup encoder
->       drm: renesas: shmobile: Atomic conversion part 1
->       drm: renesas: shmobile: Atomic conversion part 2
->       drm: renesas: shmobile: Use suspend/resume helpers
->       drm: renesas: shmobile: Remove internal CRTC state tracking
->       drm: renesas: shmobile: Atomic conversion part 3
->       drm: renesas: shmobile: Add DT support
-> 
-> Laurent Pinchart (5):
->       drm: renesas: shmobile: Remove backlight support
->       drm: renesas: shmobile: Don't set display info width and height twice
->       drm: renesas: shmobile: Rename input clocks
->       drm: renesas: shmobile: Remove support for SYS panels
->       drm: renesas: shmobile: Use struct videomode in platform data
-> 
->  .../bindings/display/renesas,shmobile-lcdc.yaml    | 130 +++++
->  .../userspace-api/media/v4l/subdev-formats.rst     |  72 +++
->  MAINTAINERS                                        |  13 +-
->  drivers/gpu/drm/renesas/shmobile/Kconfig           |   3 +-
->  drivers/gpu/drm/renesas/shmobile/Makefile          |   3 +-
->  .../gpu/drm/renesas/shmobile/shmob_drm_backlight.c |  82 ---
->  .../gpu/drm/renesas/shmobile/shmob_drm_backlight.h |  19 -
->  drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c  | 650 +++++++++------------
->  drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h  |  27 +-
->  drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c   | 179 +++---
->  drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h   |  18 +-
->  drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.c   |  77 ++-
->  drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.h   |   9 +-
->  drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c | 326 ++++++-----
->  drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.h |   5 +-
->  include/linux/platform_data/shmob_drm.h            |  57 +-
->  include/uapi/linux/media-bus-format.h              |   3 +-
->  17 files changed, 860 insertions(+), 813 deletions(-)
->  create mode 100644
-> Documentation/devicetree/bindings/display/renesas,shmobile-lcdc.yaml
->  delete mode 100644 drivers/gpu/drm/renesas/shmobile/shmob_drm_backlight.c
->  delete mode 100644 drivers/gpu/drm/renesas/shmobile/shmob_drm_backlight.h
-
--- 
-Regards,
-
-Laurent Pinchart
+> What prevents this scenario?
