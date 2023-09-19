@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5557A6C9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0257A6CAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbjISVCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 17:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S233301AbjISVEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 17:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233252AbjISVCN (ORCPT
+        with ESMTP id S233332AbjISVEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 17:02:13 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49257BD
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:02:04 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-773eee0152cso23631685a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695157323; x=1695762123; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lVX+Hnhh2l6DmLPA8VTV6OqmMl0pnzem5EJJPR6Mhqs=;
-        b=bjgN6kTVbTyiSjyJBPPu89Bejkh2gD21aeI3uyn+ekwqLMsBQxHQaKgi37zXykNQEb
-         eLLOAA8Odxj18VxWxK4ytL095X0r5OUniYBAhQj6ngi7xe+sIJKahkmGuIaMWmVOxe3/
-         xZirQQkniNSHcEuiZpN8Y5yL4GcjLAnZoqkeJtKzK+tAUnIVuvGgMpze/ZRRr8pPGCxK
-         7wVLGUW/8Enh2pOoWAm5ENjeW2E9w2msRti8YaUIj630hT6bLCt9lnjZYu+dAV7DqYXs
-         hdjz1RVnBHPLgtZ3ONL+649Jll+rMuy1nASGugjh+BwWCp9NjIoiFkXEeW7RrlUCmV99
-         or9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695157323; x=1695762123;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lVX+Hnhh2l6DmLPA8VTV6OqmMl0pnzem5EJJPR6Mhqs=;
-        b=DlIxqAVbNeuaov8xV774zewvabyBHZVR/9WrB7y/pZdtZEIYBk/NlQZb+XthQ4Cgeo
-         L9oDRhPJhu6hxrlzRm3z8HcP9VjuY6EAvkGGmcPZDanXMJrPdbPxqqAqqmBnFn1dcGiv
-         zL0F4Mq8o2CXvBImN3sP7B68yH4bsMW6AhJFGYG/TJBxnUPxTeoJj2Iw9lSzu7m4ITbV
-         83FDqYHIVsKEEht1RSuoNekiQiy/UIvgver/4HK5LIItO9uPNFQr7oM+4RIubrHt5cka
-         l3Wa/zNPmlnV36GagNfZmQtkFsre+e61AVw0eXd8e7YnlzH9BnLiZcYFTd/VKF+bcr7M
-         oscg==
-X-Gm-Message-State: AOJu0YyC9g+sQfZsB1qvZn+/M6iMNA+kDIfDQfu3R1ZyupXG7WnZeS3d
-        0bEoUUGSVw49rHAmWCpkjvv+tHSfCZozRFH14EzgXl5MuYNpmiDX4/3DlQ==
-X-Google-Smtp-Source: AGHT+IEF2ThYM/mz7S/1qqdc26uccov5d1h2ccEPnZjX3XDy4DhRHHjf40u/n7W6FxrxUjiYIrdncY7If4XUxU9Syjs=
-X-Received: by 2002:a0c:b2ce:0:b0:656:5176:c53e with SMTP id
- d14-20020a0cb2ce000000b006565176c53emr737526qvf.6.1695157323272; Tue, 19 Sep
- 2023 14:02:03 -0700 (PDT)
+        Tue, 19 Sep 2023 17:04:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0778FBD
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:03:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695157426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SQ2jSb2HniT/9ZxZOqq4fZsdcqlotGNawe8KlI6XEwk=;
+        b=aNwF24+fherV2NSMsf8v/sZHfEUS1clpawFv07BFvLUhpQ7ZK4FlQ5OOR0K6Ore+z66L68
+        KEZylSloSHke4rjwg9qChW5qWBeFh9k+f9Y2liRMBJWV2J4ypUTQRo88Jix2aY7wwy+PUM
+        IccrJUJGOWjXMuFdAcStHwTRgDPb2lk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-493-eIRUBykjMwCw6pvVHAiSTw-1; Tue, 19 Sep 2023 17:03:42 -0400
+X-MC-Unique: eIRUBykjMwCw6pvVHAiSTw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 31963185A790;
+        Tue, 19 Sep 2023 21:03:42 +0000 (UTC)
+Received: from rh (unknown [10.64.138.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D042C492C37;
+        Tue, 19 Sep 2023 21:03:41 +0000 (UTC)
+Received: from localhost ([::1] helo=rh)
+        by rh with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <dchinner@redhat.com>)
+        id 1qihsg-001H19-1L;
+        Wed, 20 Sep 2023 07:03:38 +1000
+Date:   Wed, 20 Sep 2023 07:03:36 +1000
+From:   Dave Chinner <dchinner@redhat.com>
+To:     Charles Han <hanchunchao@inspur.com>
+Cc:     corbet@lwn.net, djwong@kernel.org, allison.henderson@oracle.com,
+        bhelgaas@google.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] Documentation: xfs: Remove repeated word in comments
+Message-ID: <ZQoMqI/QGPWEpkEi@rh>
+References: <20230918071905.296081-1-hanchunchao@inspur.com>
 MIME-Version: 1.0
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 19 Sep 2023 14:01:48 -0700
-Message-ID: <CAKwvOdkShCL8MAE+rJzSeAf54=UeHRnuWkHkfMKDeC4A0KoEEg@mail.gmail.com>
-Subject: -Wuninitialized in drivers/accel/habanalabs/common/memory.c
- introduced by aa7b6367186e
-To:     Tomer Tayar <ttayar@habana.ai>
-Cc:     Oded Gabbay <ogabbay@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918071905.296081-1-hanchunchao@inspur.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit aa7b6367186e ("accel/habanalabs: tiny refactor of hl_map_dmabuf()")
+[cc linux-xfs@vger.kernel.org]
 
-introduced a warning that's breaking the build in linux-next.
+Hi Charles,
 
-drivers/accel/habanalabs/common/memory.c:1735:11: error: variable
-'hdev' is uninitialized when used here [-Werror,-Wuninitialized]
-317 1735 | dev_dbg(hdev->dev, "Failed to map dmabuf because p2p is disabled\n");
-318 | ^~~~
-319/builds/linux/include/linux/dev_printk.h:155:18: note: expanded
-from macro 'dev_dbg'
-320 155 | dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
-321 | ^~~
-322/builds/linux/include/linux/dynamic_debug.h:274:7: note: expanded
-from macro 'dynamic_dev_dbg'
-323 274 | dev, fmt, ##__VA_ARGS__)
-324 | ^~~
-325/builds/linux/include/linux/dynamic_debug.h:250:59: note: expanded
-from macro '_dynamic_func_call'
-326 250 | _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
-327 | ^~~~~~~~~~~
-328/builds/linux/include/linux/dynamic_debug.h:248:65: note: expanded
-from macro '_dynamic_func_call_cls'
-329 248 | __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func,
-##__VA_ARGS__)
-330 | ^~~~~~~~~~~
-331/builds/linux/include/linux/dynamic_debug.h:224:15: note: expanded
-from macro '__dynamic_func_call_cls'
-332 224 | func(&id, ##__VA_ARGS__); \
-333 | ^~~~~~~~~~~
-334/builds/linux/drivers/accel/habanalabs/common/memory.c:1731:24:
-note: initialize the variable 'hdev' to silence this warning
-335 1731 | struct hl_device *hdev;
-336 | ^
-337 | = NULL
+For future reference, can you CC the XFS list on XFS documentation
+changes please?  That's much preferable to sending patches to random
+developers and hoping they notice it....
 
+On Mon, Sep 18, 2023 at 03:19:05PM +0800, Charles Han wrote:
+> Remove the repeated word "the" in comments.
+> 
+> Signed-off-by: Charles Han <hanchunchao@inspur.com>
+> ---
+>  Documentation/filesystems/xfs-online-fsck-design.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/filesystems/xfs-online-fsck-design.rst b/Documentation/filesystems/xfs-online-fsck-design.rst
+> index 1625d1131093..a0678101a7d0 100644
+> --- a/Documentation/filesystems/xfs-online-fsck-design.rst
+> +++ b/Documentation/filesystems/xfs-online-fsck-design.rst
+> @@ -1585,7 +1585,7 @@ The transaction sequence looks like this:
+>  2. The second transaction contains a physical update to the free space btrees
+>     of AG 3 to release the former BMBT block and a second physical update to the
+>     free space btrees of AG 7 to release the unmapped file space.
+> -   Observe that the the physical updates are resequenced in the correct order
+> +   Observe that the physical updates are resequenced in the correct order
 
-Please fix. Also, please post your patches to LKML so people can post
-info like this in response directly to your patch.  I could not find
-aa7b6367186e on lore.
---
-Thanks,
-~Nick Desaulniers
+Change looks fine, though.
+
+Reviewed: Dave Chinner <dchinner@redhat.com>
+
+-- 
+Dave Chinner
+dchinner@redhat.com
+
