@@ -2,57 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A6D7A6ECF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 00:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9842E7A6EDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 00:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbjISWrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 18:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
+        id S233278AbjISWxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 18:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjISWrP (ORCPT
+        with ESMTP id S229887AbjISWxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 18:47:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6951EBF;
-        Tue, 19 Sep 2023 15:47:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6970CC433C8;
-        Tue, 19 Sep 2023 22:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695163628;
-        bh=Zz55Rzz0ip2wh5I/XTQWnZtdEa5fny//y92DvP3sTKc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q/MlhSvv21ZgsuWDJddvDo3okpD2ESxhiWA4KP6uCQrXFhFeM1z6i/y/8YgD2JDlx
-         Dlg2ZF2NQ02VFG12UeUtc8KNuyPIgCIu3HR28cNUHw+kPBHFMK5vYQpvL9r/nxOJmb
-         1l8mxY5n5KPIPvWsr+wd59z1+MZ88qnI1EQbqBqP+yThkpxz4khj1BIpQLjxbYU0dv
-         moYuyJMSJWVPr29lKbBJ6CkAeahaArs1xfHGW2sac1FBgnhnjGz0F8xdeDt7u+O6HU
-         +JTdFVGhU9gfglulQ/+tfq3yM1tO7JJCbFYS+Lv74t9P85QhyPkCiZeKL6MmoNM7yY
-         xkgxZWDQ7dpQw==
-Date:   Tue, 19 Sep 2023 15:51:16 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Walter Broemeling <wallebroem@gmail.com>,
-        Joe Mason <buddyjojo06@outlook.com>,
-        Siddharth Manthan <siddharth.manthan@gmail.com>,
-        Gareth Peoples <mail@gpeopl.es>
-Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: msm8916-samsung-fortuna: Add
- initial device trees
-Message-ID: <lpoghxjh3nid67iv6r3sqfd7ol3ut73fzm2zpb2w5eca4rbeiw@irmzrhnj3mia>
-References: <20230801111745.4629-1-linmengbo0689@protonmail.com>
- <20230801112123.4672-1-linmengbo0689@protonmail.com>
+        Tue, 19 Sep 2023 18:53:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904CBBA
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:53:37 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JLOoaq007293;
+        Tue, 19 Sep 2023 22:53:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yFvkAN2U77GZQzYs3I/vg/aVIL6xZ9s/4RXI0DI68lo=;
+ b=WPCKnLsYZhN6BwmrysIUYUlg90n9pWY/zcmazsA2k1asDuyTBSfdqCB2T0CoCdonBLTt
+ oVydH4SMZxnL5NzSStxs272Uz14shqozZ1YDHXvMRi8p0hS97mzxydYps5p/Q8IMphNZ
+ DXMNDAQyAgH/mXY7KaklugF9Jw6ddo0xNzEKc/pGb5f1RL53IkdOYCZlU6RY3Qje4FVZ
+ 3XnwUS9bAYHtOI+y4tpNV1ng7t3mHEzm41nsaDT+LPeVnW/a5RKSdVi6XXknUA61ie1p
+ g6I/SsGHTPO6/jbjOX1VGDROTNmktoqo0jjWip63Vv/6IaWZTEXrQsYiEw0smy3rp9Nm vw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6pmq3upq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Sep 2023 22:53:18 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38JMrHU5027195
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Sep 2023 22:53:17 GMT
+Received: from [10.71.111.102] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 19 Sep
+ 2023 15:53:16 -0700
+Message-ID: <24afa449-afe5-fdf4-0ad4-f2174e412569@quicinc.com>
+Date:   Tue, 19 Sep 2023 15:53:16 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801112123.4672-1-linmengbo0689@protonmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm: remove drm_bridge_hpd_disable() from
+ drm_bridge_connector_destroy()
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <freedreno@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
+        <quic_parellan@quicinc.com>, <andersson@kernel.org>,
+        <jani.nikula@linux.intel.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230919174813.26958-1-quic_abhinavk@quicinc.com>
+ <20230919181246.GA24325@pendragon.ideasonboard.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20230919181246.GA24325@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -C_-drNL20fqcxiFF3LbtRn6farci87o
+X-Proofpoint-ORIG-GUID: -C_-drNL20fqcxiFF3LbtRn6farci87o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-19_12,2023-09-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=813 mlxscore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309190195
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,114 +89,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 11:22:47AM +0000, Lin, Meng-Bo wrote:
-> From: Walter Broemeling <wallebroem@gmail.com>
+Hi Laurent
+
+On 9/19/2023 11:12 AM, Laurent Pinchart wrote:
+> Hi Abhinav,
 > 
-> Samsung Galaxy Core Prime, Grand Prime and Ace 4 are phones based on
-> MSM8916. They are similar to the other Samsung devices based on MSM8916
-> with only a few minor differences.
+> Thank you for the patch.
 > 
-> This initial commit adds support for:
->  - fortuna3g (SM-G530H)
->  - fortunaltezt (SM-G530Y)
->  - gprimeltecan (SM-G530W)
->  - grandprimelte (SM-G530FZ)
->  - heatqlte (SM-G357FZ)
->  - rossa (SM-G360G)
+> On Tue, Sep 19, 2023 at 10:48:12AM -0700, Abhinav Kumar wrote:
+>> drm_bridge_hpd_enable()/drm_bridge_hpd_disable() callbacks call into
+>> the respective driver's hpd_enable()/hpd_disable() ops. These ops control
+>> the HPD enable/disable logic which in some cases like MSM can be a
+>> dedicate hardware block to control the HPD.
+>>
+>> During probe_defer cases, a connector can be initialized and then later
+>> destroyed till the probe is retried. During connector destroy in these
+>> cases, the hpd_disable() callback gets called without a corresponding
+>> hpd_enable() leading to an unbalanced state potentially causing even
+>> a crash.
+>>
+>> This can be avoided by the respective drivers maintaining their own
+>> state logic to ensure that a hpd_disable() without a corresponding
+>> hpd_enable() just returns without doing anything.
+>>
+>> However, to have a generic fix it would be better to avoid the
+>> hpd_disable() callback from the connector destroy path and let
+>> the hpd_enable() / hpd_disable() balance be maintained by the
+>> corresponding drm_bridge_connector_enable_hpd() /
+>> drm_bridge_connector_disable_hpd() APIs which should get called by
+>> drm_kms_helper_disable_hpd().
 > 
-> The device trees contain initial support with:
->  - GPIO keys
->  - Regulator haptic
->  - SDHCI (internal and external storage)
->  - USB Device Mode
->  - UART (on USB connector via the SM5502/SM5504 MUIC)
->  - WCNSS (WiFi/BT)
->  - Regulators
+> The change makes sense to me, but I'm a bit worried this could introduce
+> a regression by leaving HPD enabled in some cases.
 > 
-> There are different variants of Grand Prime, with some differences
-> in accelerometer, NFC and panel.
-> Core Prime and Grand Prime are similar, with some differences in MUIC,
-> panel and touchscreen.
-> Ace 4 and Core Prime are similar, with some differences in panel and
-> touchscreen.
+> I agree that bridges shouldn't track the HPD state, it should be tracked
+> by the core and the .enable_hpd() and .disable_hpd() operations should
+> be balanced. Their documentation, however, doesn't clearly state this,
+> and the documentation of the callers of these operations is also fairly
+> unclear.
 > 
-> The common parts are shared in
-> msm8916-samsung-fortuna-common.dtsi and msm8916-samsung-rossa-common.dtsi
-> to reduce duplication.
-> 
-> Unfortunately, SM-G357FZ and SM-G530Y were released with outdated 32-bit
-> only firmware and never received any update from Samsung. Since the 32-bit
-> TrustZone firmware is signed there seems to be no way currently to
-> actually boot this device tree on arm64 Linux at the moment.
-> 
-> However, it is possible to use this device tree by compiling an ARM32
-> kernel instead. The device tree can be easily built on ARM32 with
-> an #include and it works really well there. To avoid confusion for others
-> it is still better to add this device tree on arm64. Otherwise it's easy
-> to forget to update this one when making some changes that affect all
-> MSM8916 devices.
-> 
-> Maybe someone finds a way to boot ARM64 Linux on this device at some
-> point. In this case I expect that this device tree can be simply used
-> as-is.
+> Could you perhaps try to improve the documentation ? With that,
 > 
 
-Can you please help me understand the development flow of this patch?
+Yes, sure, Let me upload another patch to improve the documentation of 
+.enable_hpd(), .disable_hpd() and its callers.
 
-> Signed-off-by: Walter Broemeling <wallebroem@gmail.com>
-> Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> for this patch.
+> 
 
-Walter and Stephan wrote the initial patch, right?
+Thanks
 
-> [Add fortuna-common.dtsi, buttons, and WiFi]
-> Co-developed-by: Joe Mason <buddyjojo06@outlook.com>
-> Signed-off-by: Joe Mason <buddyjojo06@outlook.com>
+Abhinav
 
-Then Joe added fortuna-common, buttons and Wifi.
-
-If so, then Joe shouldn't be "Co-developed-by", the [note] and
-Signed-off-by is sufficient here.
-
-But it is customary to prefix the "changes note" with ones first name,
-such as:
-
-[joe: Add fortuna-common.dtsi, buttons, and WiFi]
-
-> [Add fortuna3g]
-> Co-developed-by: Siddharth Manthan <siddharth.manthan@gmail.com>
-> Signed-off-by: Siddharth Manthan <siddharth.manthan@gmail.com>
-
-Then Siddharth picked it up, ad added fortuna3g. Again, it looks like he
-did this step alone, and as such no Co-developed-by, please.
-
-> [Add heatqlte]
-> Co-developed-by: Gareth Peoples <mail@gpeopl.es>
-> Signed-off-by: Gareth Peoples <mail@gpeopl.es>
-
-Again, no Co-developed-by, and please prefix the change note with
-"Gareth:", or "gareth:".
-
-> [Add grandprimelte and fortunaltezt]
-> [Use msm8916-samsung-rossa-common.dtsi and reword the commit]
-
-Why two different notes? Is this one note split over two separate
-entries? Please just comma-separate them, possible line wrap within the
-[].
-
-> Co-developed-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
-> Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
-
-You should be alone here.
-
-
-Alternatively, if y'all all contributed to this one patch through the
-entire flow, please drop the change notes and just list out each
-contributor with the Co-developed-by and Signed-off-by.
-
-
-PS. Could you please drop the ',' from your name. When I tried to apply
-this everything after the ',' disappeared.
-
-Regards,
-Bjorn
+>> changes in v2:
+>> 	- minor change in commit text (Dmitry)
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> ---
+>>   drivers/gpu/drm/drm_bridge_connector.c | 6 ------
+>>   1 file changed, 6 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
+>> index 1da93d5a1f61..c4dba39acfd8 100644
+>> --- a/drivers/gpu/drm/drm_bridge_connector.c
+>> +++ b/drivers/gpu/drm/drm_bridge_connector.c
+>> @@ -187,12 +187,6 @@ static void drm_bridge_connector_destroy(struct drm_connector *connector)
+>>   	struct drm_bridge_connector *bridge_connector =
+>>   		to_drm_bridge_connector(connector);
+>>   
+>> -	if (bridge_connector->bridge_hpd) {
+>> -		struct drm_bridge *hpd = bridge_connector->bridge_hpd;
+>> -
+>> -		drm_bridge_hpd_disable(hpd);
+>> -	}
+>> -
+>>   	drm_connector_unregister(connector);
+>>   	drm_connector_cleanup(connector);
+>>   
+> 
