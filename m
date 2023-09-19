@@ -2,102 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAF17A5EDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F057A5EDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbjISJzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
+        id S231748AbjISJ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231827AbjISJzR (ORCPT
+        with ESMTP id S231733AbjISJzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:55:17 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD21319B6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:54:12 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-98377c5d53eso700821766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695117251; x=1695722051; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OmXgnmvOiVfooj4M23wQXodnaTVsRKoq6QYvvY7fqHM=;
-        b=RgQyoqUm11pRry9dUDKqKUxVvTI2uVecQ2JniY1b3jBaAKIkQB3UZb6B3YcCKXUXaf
-         OT6KuGJuX0mDfVrGdMKsYB5ZyO5oY5/Q5Q2iTNdm5LZZeGW67c2fNvtmlJIWeUncBlyq
-         XLua7I+5+CQ1K9KC9Z3e9kxqYf/zhl0vsIVU2iZkxLgACELaFfggRdSzq9JVj5gFTDpM
-         yLPJUltHgzM49H2mY4Mkp8aSHbWg/E5UvU0QB30jTg1u2p/+oaaILpIG8rHGNBZFVj9K
-         FCaXn1/F3e73NHlCXn4a7TX0RG9iapgjtGEyL4xlh225FEKIei0klikQj+UN1Pjambrr
-         9YaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695117251; x=1695722051;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OmXgnmvOiVfooj4M23wQXodnaTVsRKoq6QYvvY7fqHM=;
-        b=iy/ZXu315+0TNKW4y4FOvikSQiJwLxumUrwMqtjbBzXJxdIPa81CHGXfd4UmtBJIoL
-         bbORuNXQAr3xaFN9Jz8n8eKarpUBLkqRLREF5ASV62D0ToO8EOA9sV3jIOesx8aktWHo
-         2OiW+4yLs0b0ET1aYmgwWuIgvPFRVdutWDrR6jtQnpjkumQ7enprQBNpTyI8iLsNA25L
-         F/zmItA5lz776mmIRjBBRXXdKHrO3YObqE+TkaxcL/9aPL27cS21V9mSBqYvsuYZEGER
-         b+Wbjfvt0+3mcx8Ia7lE4ZA+V/OizZEROdps7AIFal2mmx0wNDxIeRcFGEo69qgIAr1W
-         3yrA==
-X-Gm-Message-State: AOJu0YwQig2TL8O2mhJX9OI1gj0+EqigFfbGB63y4d7Y+nn/AhzVAlED
-        Cdh4dfn1OUfChYmvRZTnCI7r/A==
-X-Google-Smtp-Source: AGHT+IFD+/JR8bBXkKzRaOn6uW69Q1H71e3hBw6gpkPpcO6ABZxmcJoEcS7N9t36yAyaScr+LBt+gA==
-X-Received: by 2002:a17:907:a07c:b0:992:bc8:58e4 with SMTP id ia28-20020a170907a07c00b009920bc858e4mr6491327ejc.20.1695117250517;
-        Tue, 19 Sep 2023 02:54:10 -0700 (PDT)
-Received: from blmsp.fritz.box ([2001:4091:a246:8222:dbda:9cd9:39cc:f174])
-        by smtp.gmail.com with ESMTPSA id g11-20020a170906198b00b009926928d486sm7521855ejd.35.2023.09.19.02.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 02:54:09 -0700 (PDT)
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sean Anderson <sean.anderson@seco.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH] can: tcan4x5x: Fix id2_register for tcan4553
-Date:   Tue, 19 Sep 2023 11:54:01 +0200
-Message-Id: <20230919095401.1312259-1-msp@baylibre.com>
-X-Mailer: git-send-email 2.40.1
+        Tue, 19 Sep 2023 05:55:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021E1E8;
+        Tue, 19 Sep 2023 02:54:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695117275; x=1726653275;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=oZY5PqJtGsR5HLvU2+7WLtxKxYPxhkEGf7BAAURrFH0=;
+  b=Xm3aMPFVfoRlSDM4kr06NamoTuGpbBUhwsL2PPzU12NnpUyaaMscpHT+
+   TOayRc10uxBUuuicoZ/WYo+PVsagFiiEl3XGgGpnj8LD0gnrYN0BgaZVH
+   b8aSS/K9QxqlTCWH4+82t9DqaSt8GWntIPfR3QOrrCRYNRkrlTgwVzpQp
+   GV3bZizP1nEsDP+1a07Q+ptiXhzw9Yrrg2u7cQFda/JI+Segxd9dUEUWf
+   kUnUC+qHJSbRdmdcc4B7nRFSYvtrH4WGytiTV6jW7nqw2j2tnTPk2KB4N
+   g6SPlsBCu4Zz1ylWp/MwRUKa3JKJVn+iCaaffHItgHnCxTugonVPbd/mS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="382651720"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="382651720"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 02:54:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="836378075"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
+   d="scan'208";a="836378075"
+Received: from laichele-mobl1.ger.corp.intel.com ([10.252.38.7])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 02:54:32 -0700
+Date:   Tue, 19 Sep 2023 12:54:31 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/15] tty: n_tty: invert the condition in
+ copy_from_read_buf()
+In-Reply-To: <20230919085156.1578-5-jirislaby@kernel.org>
+Message-ID: <2f8f7e-d0bd-b8c3-a8b8-d14fd0221e4d@linux.intel.com>
+References: <20230919085156.1578-1-jirislaby@kernel.org> <20230919085156.1578-5-jirislaby@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-1147994577-1695117248=:1920"
+Content-ID: <38ab972a-d4c6-b9dc-d589-998d4d42451e@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix id2_register content for tcan4553. This slipped through my testing.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Reported-by: Sean Anderson <sean.anderson@seco.com>
-Closes: https://lore.kernel.org/lkml/a94e6fc8-4f08-7877-2ba0-29b9c2780136@seco.com/
-Fixes: 142c6dc6d9d7 ("can: tcan4x5x: Add support for tcan4552/4553")
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
----
- drivers/net/can/m_can/tcan4x5x-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--8323329-1147994577-1695117248=:1920
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <911640b0-635e-e7bf-2f3d-667cb0d328e9@linux.intel.com>
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index 8a4143809d33..ae8c42f5debd 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -125,7 +125,7 @@ static const struct tcan4x5x_version_info tcan4x5x_versions[] = {
- 	},
- 	[TCAN4553] = {
- 		.name = "4553",
--		.id2_register = 0x32353534,
-+		.id2_register = 0x33353534,
- 	},
- 	/* generic version with no id2_register at the end */
- 	[TCAN4X5X] = {
+On Tue, 19 Sep 2023, Jiri Slaby (SUSE) wrote:
+
+> Make "no numbers available" a fast quit from the function. And do the
+
+Did you really intend to write "numbers" and not e.g. characters?
+
+The change itself looks good,
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
 -- 
-2.40.1
+ i.
 
+> heavy work outside the 'if'. This makes the code more understandable and
+> conforming to the common kernel coding style.
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> ---
+>  drivers/tty/n_tty.c | 38 ++++++++++++++++++++------------------
+>  1 file changed, 20 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+> index 6a112910c058..922fb61b587a 100644
+> --- a/drivers/tty/n_tty.c
+> +++ b/drivers/tty/n_tty.c
+> @@ -1966,24 +1966,26 @@ static bool copy_from_read_buf(const struct tty_struct *tty, u8 **kbp,
+>  	size_t tail = MASK(ldata->read_tail);
+>  
+>  	n = min3(head - ldata->read_tail, N_TTY_BUF_SIZE - tail, *nr);
+> -	if (n) {
+> -		u8 *from = read_buf_addr(ldata, tail);
+> -		memcpy(*kbp, from, n);
+> -		is_eof = n == 1 && *from == EOF_CHAR(tty);
+> -		tty_audit_add_data(tty, from, n);
+> -		zero_buffer(tty, from, n);
+> -		smp_store_release(&ldata->read_tail, ldata->read_tail + n);
+> -		/* Turn single EOF into zero-length read */
+> -		if (L_EXTPROC(tty) && ldata->icanon && is_eof &&
+> -		    (head == ldata->read_tail))
+> -			return false;
+> -		*kbp += n;
+> -		*nr -= n;
+> -
+> -		/* If we have more to copy, let the caller know */
+> -		return head != ldata->read_tail;
+> -	}
+> -	return false;
+> +	if (!n)
+> +		return false;
+> +
+> +	u8 *from = read_buf_addr(ldata, tail);
+> +	memcpy(*kbp, from, n);
+> +	is_eof = n == 1 && *from == EOF_CHAR(tty);
+> +	tty_audit_add_data(tty, from, n);
+> +	zero_buffer(tty, from, n);
+> +	smp_store_release(&ldata->read_tail, ldata->read_tail + n);
+> +
+> +	/* Turn single EOF into zero-length read */
+> +	if (L_EXTPROC(tty) && ldata->icanon && is_eof &&
+> +	    head == ldata->read_tail)
+> +		return false;
+> +
+> +	*kbp += n;
+> +	*nr -= n;
+> +
+> +	/* If we have more to copy, let the caller know */
+> +	return head != ldata->read_tail;
+>  }
+>  
+>  /**
+> 
+--8323329-1147994577-1695117248=:1920--
