@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E657A6846
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E58A7A6847
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbjISPnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
+        id S233190AbjISPn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbjISPnk (ORCPT
+        with ESMTP id S233186AbjISPn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:43:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDB9C0;
-        Tue, 19 Sep 2023 08:43:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34702C433C7;
-        Tue, 19 Sep 2023 15:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695138215;
-        bh=GcdtwIA3CujNqnqgYnHn7vxC4/E5o49bT3JihnbJ/+U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NTA8mPE3QgGvcr0+J7KxEWa3ndltLPGbrC+ljy3+7xKxnFHZK4smDOuT4+ouyOtb4
-         PcjP1YQCHtftevMi8R58eGUbio/1XEeBioLLu9TRIb0EV5aHD34kEPxNd5GqOoUw2c
-         2XsJbXM2nI/WKQRL+huyu4cbpg2DbJBeCNUZP/En4Zz4+ctHH/4pcGapwHtfeslhH6
-         6zGzSA+PYhqW4F0n9pJUPKxA4Tz1Fj00UxMghMEy+hHq0qjcNDspplF/p74f2tXE6G
-         uTj3f0PpM4xOCkGyNPu9mMsuQMqKKaH/zfx127+cihCyzW6bjyoe5OVAG/LDVZFcdx
-         /7PoUo1Scuw7w==
-Date:   Tue, 19 Sep 2023 08:43:34 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the vfs-brauner tree
-Message-ID: <20230919154334.GD348037@frogsfrogsfrogs>
-References: <20230915093953.310503ee@canb.auug.org.au>
- <20230918205206.GA348037@frogsfrogsfrogs>
- <20230919-zensieren-plakat-05a044361e57@brauner>
+        Tue, 19 Sep 2023 11:43:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71740C6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:43:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=K4XOxDjoQc0tDKul2sAFg8dPE5RBNC5v+ER7EvKWlro=; b=NUUqRKI9eBera0KC3gXkeqZtkM
+        /GFKMZSxhT/N4WSHKiJ/LnKARML8J4fVRmJAK6vS+sngTB3qVVyL5CZ7+aYjPzEBzodj/t51kyRLt
+        +lC5J68P8dYuCckGOdMcFiLmJTQjK6XnyMKf+KwyMI7oVjFXRLoLzSfMEgkQla6fltpCc33xk0tTD
+        jkWzrEOofVLacRE1OsH9DD0Y3UrJuKKDfV9dv6ARDpn1HVgbpIj1e8+kk7CJygrv6/VjTWV4BPRkl
+        RwV6MSNc1q6jXJklBhtoCEN0yr3A6DbNe1h+LuJ/9Kx0mqQ2fnY4HswW1WJ8xjBYMRuhM1tY0rMmS
+        FoqlIc6w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qict2-000Qnd-Tt; Tue, 19 Sep 2023 15:43:40 +0000
+Date:   Tue, 19 Sep 2023 16:43:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Aravind Iddamsetty <aravind.iddamsetty@intel.com>,
+        Fei Yang <fei.yang@intel.com>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: Re: [REGRESSION] [BISECTED] Panic in gen8_ggtt_insert_entries() with
+ v6.5
+Message-ID: <ZQnBrLCPnZfG0A1s@casper.infradead.org>
+References: <4857570.31r3eYUQgx@natalenko.name>
+ <6287208.lOV4Wx5bFT@natalenko.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230919-zensieren-plakat-05a044361e57@brauner>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <6287208.lOV4Wx5bFT@natalenko.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 02:34:01PM +0200, Christian Brauner wrote:
-> On Mon, Sep 18, 2023 at 01:52:06PM -0700, Darrick J. Wong wrote:
-> > On Fri, Sep 15, 2023 at 09:39:53AM +1000, Stephen Rothwell wrote:
-> > > Hi all,
-> > > 
-> > > The following commit is also in the iomap tree as a different commit
-> > > (but the same patch):
-> > > 
-> > >   de5b0b257ee3 ("iomap: handle error conditions more gracefully in iomap_to_bh")
-> > > 
-> > > This is commit
-> > > 
-> > >   4aa8cdd5e523 ("iomap: handle error conditions more gracefully in iomap_to_bh")
-> > > 
-> > > in the iomap tree.
-> > 
-> > Christian, do you want to push this to Linus instead of me?  I've a
-> > couple more fixes that I'm about to send out to fsdevel and could just
-> > roll all the iomap stuff into a single branch... but if you were about
-> > to this to Linus I don't mind letting that happen.
+On Tue, Sep 19, 2023 at 10:26:42AM +0200, Oleksandr Natalenko wrote:
+> Andrzej asked me to try to revert commits 0b62af28f249, e0b72c14d8dc and 1e0877d58b1e, and reverting those fixed the i915 crash for me. The e0b72c14d8dc and 1e0877d58b1e commits look like just prerequisites, so I assume 0b62af28f249 ("i915: convert shmem_sg_free_table() to use a folio_batch") is the culprit here.
 > 
-> So I was about to send a pull request tomorrow. I thought I was supposed
-> to pick up iomap stuff. Let me know what you prefer. I can easily drop
-> this patch. :)
+> Could you please check this?
+> 
+> Our conversation with Andrzej is available at drm-intel GitLab [1].
+> 
+> Thanks.
+> 
+> [1] https://gitlab.freedesktop.org/drm/intel/-/issues/9256
 
-I'll push that patch, then.
+Wow, that is some great debugging.  Thanks for all the time & effort
+you and others have invested.  Sorry for breaking your system.
 
-In general, you can fling any non-trivial iomap patches at me, since I
-will likely want to run them through my testing cloud anyway.
+You're almost right about the "prerequisites", but it's in the other
+direction; 0b62af28f249 is a prerequisite for the later two cleanups,
+so reverting all three is necessary to test 0b62af28f249.
 
-(And just to be clear: I don't mind if you push things like trivial api
-cleanups that are part of another series through your main vfs tree.)
+It seems to me that you've isolated the problem to constructing overly
+long sg lists.  I didn't realise that was going to be a problem, so
+that's my fault.
 
---D
+Could I ask you to try this patch?  I'll follow up with another patch
+later because I think I made another assumption that may not be valid.
+
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shmem.c b/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
+index 8f1633c3fb93..73a4a4eb29e0 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
+@@ -100,6 +100,7 @@ int shmem_sg_alloc_table(struct drm_i915_private *i915, struct sg_table *st,
+ 	st->nents = 0;
+ 	for (i = 0; i < page_count; i++) {
+ 		struct folio *folio;
++		unsigned long nr_pages;
+ 		const unsigned int shrink[] = {
+ 			I915_SHRINK_BOUND | I915_SHRINK_UNBOUND,
+ 			0,
+@@ -150,6 +151,8 @@ int shmem_sg_alloc_table(struct drm_i915_private *i915, struct sg_table *st,
+ 			}
+ 		} while (1);
+ 
++		nr_pages = min_t(unsigned long,
++				folio_nr_pages(folio), page_count - i);
+ 		if (!i ||
+ 		    sg->length >= max_segment ||
+ 		    folio_pfn(folio) != next_pfn) {
+@@ -157,13 +160,13 @@ int shmem_sg_alloc_table(struct drm_i915_private *i915, struct sg_table *st,
+ 				sg = sg_next(sg);
+ 
+ 			st->nents++;
+-			sg_set_folio(sg, folio, folio_size(folio), 0);
++			sg_set_folio(sg, folio, nr_pages * PAGE_SIZE, 0);
+ 		} else {
+ 			/* XXX: could overflow? */
+-			sg->length += folio_size(folio);
++			sg->length += nr_pages * PAGE_SIZE;
+ 		}
+-		next_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+-		i += folio_nr_pages(folio) - 1;
++		next_pfn = folio_pfn(folio) + nr_pages;
++		i += nr_pages - 1;
+ 
+ 		/* Check that the i965g/gm workaround works. */
+ 		GEM_BUG_ON(gfp & __GFP_DMA32 && next_pfn >= 0x00100000UL);
