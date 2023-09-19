@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB497A618A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBE47A6193
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbjISLnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S230494AbjISLoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjISLnG (ORCPT
+        with ESMTP id S229497AbjISLog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:43:06 -0400
-Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4297FE3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:43:00 -0700 (PDT)
-Received: by mail-ed1-x54a.google.com with SMTP id 4fb4d7f45d1cf-51d8823eb01so4216271a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695123778; x=1695728578; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VORsIBA6ERRbmXg4ay2hLf4pQdtqXphfyyZQk55vs4k=;
-        b=rfDfqe4PSe/mOmjg4Caf2BppgxFb/tZMc/w1J1lqV/8s3H+cA9asu8YydNCKJ4Zdw6
-         gmLKcVqrJ9h96JopiIV15u8I/HmS5KCD0GMIzrZXkDiCInrN7B39IjIKOrTEkmX9D5os
-         YwliKF3vbohJrRU4JnytcL6UAuqqXCtbg29Dw2XOXxOmydWDjg8vT8b/grF1/R8cir70
-         j0biUsZt4pgQs9Q9lnwsJN5GXFwD9e5YZgg/huMp9fTJ8Nsqm9vfigeEeywDCdtiOfUx
-         pf4ZIFaEUYerMtjHh/8mURxFUUiCBlsAmX7ZC7/+Dyhru5mEIiq7V3g4OmcYuezRF4/p
-         6LsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695123778; x=1695728578;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VORsIBA6ERRbmXg4ay2hLf4pQdtqXphfyyZQk55vs4k=;
-        b=I2SyyA65nWrMKJXhuKJVQyMka8WsbhHfrSeS/QJUQU7dTC3LKTPkDGUJrRdc1cXwHD
-         qsTy+kpf5Q+AGUdl4RSPF6iZVoBX9+Q8uGn4jGzkOOgZ1mkE6tO0la6wujerELwDBkXP
-         cI1ziQIaO+BUuiGvvuN0IkEVNUeoEBMnTHIdDgycrvt1ORcmocsm7xTA/9bcqEJdAogW
-         yCIRtSeHmlrDFtbAktybbs67T1DpaSnXQaMV22I9WRB8fVz/8vaMtP8Lbg39sTWRP9hB
-         VRQwWU3XP5bHcyiKtO2qzxtipPCTlxq3vBlxYZtSh61YSqwa3T5GoEyTWtC5QLnGftK5
-         GGJg==
-X-Gm-Message-State: AOJu0YxIlGDVTlIkOch9W5Oq6aA2W0yRrfmXbPwAJ0A9rixwi0+Okd7V
-        juxjBahxMoQ9uuxb4TUPAjc1qUFbSwgg3oc=
-X-Google-Smtp-Source: AGHT+IEm+YxUcPeYB6Kt0dFMWqeKuHXC1RLS5dyaoZp1XOTdcVigyiCFLfUEyWumENUYPxJA5D9W21fVdaOc8/c=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a17:907:1595:b0:9a6:6c56:c3df with SMTP
- id cf21-20020a170907159500b009a66c56c3dfmr77664ejc.6.1695123778692; Tue, 19
- Sep 2023 04:42:58 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 11:42:56 +0000
-In-Reply-To: <20230906204857.85619-1-manmshuk@gmail.com>
-Mime-Version: 1.0
-References: <20230906204857.85619-1-manmshuk@gmail.com>
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230919114256.333055-1-aliceryhl@google.com>
-Subject: Re: [PATCH] rust: error: Markdown style nit
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     manmshuk@gmail.com
-Cc:     linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 07:44:36 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565B2E3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:44:30 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 1337D60173;
+        Tue, 19 Sep 2023 13:44:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.hr; s=mail;
+        t=1695123867; bh=R4zE8eMPjuUOaCwfRsjqIdOLLocNdjk0b1Esnw4mmJw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ttKmYOTJgHktlhgxKta2KcZh9iJjhVSjpzLtxh8EukggzFpxluS3QIGxlCCuT47ds
+         6RILjdZmc1qg4v3TOEtSYacMv1jCJrQ5tWlFTlKhO1YsrsHaeojjZpCKnUF6HtgDly
+         FSYQHDMHrslEW3z5XIIYWKFlZhNEgXdW7Wkc0cUyiLJ/MAezxwr4eAyvzsrZGXWte4
+         wKEwNvT0ZRxjHvuEYBabbs9Oa2lHicp0Z/YVxHGkdo9OZwq5a1epjhRc0oNviliZoJ
+         TjJTvWN3ppVikygvpnT7FALboJyD8OYxIfKTVN9RZVPWFzHzMB/K7zhCSC6AQriaYf
+         NQcWHXgaGLJ9A==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0StH1V1M6SlU; Tue, 19 Sep 2023 13:44:24 +0200 (CEST)
+Received: from [IPV6:2001:b68:2:2600:847a:a5b8:fda0:5de5] (unknown [IPv6:2001:b68:2:2600:847a:a5b8:fda0:5de5])
+        by domac.alu.hr (Postfix) with ESMTPSA id B351360157;
+        Tue, 19 Sep 2023 13:44:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695123864; bh=R4zE8eMPjuUOaCwfRsjqIdOLLocNdjk0b1Esnw4mmJw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=djvULSYtqp+qfPMTus3D0NCsJubztH9dXVR0Z7tnEuXgeurWiIfCFO5TtNaAxHQaM
+         iuwmMmoTV8Wn0/OgiRXDR04hgpnxVmxI8zxJiglXuF61QbleHIBK6wfFZs8b9T4aku
+         1es9Jd4x0DPUlvyp2FhjXlUq9fI+tc+C67HyytP3FDRzXvkPMPvtS4WPceO0dYBdh1
+         584LPdCawzpxGCSFGkjToxw0TjsFoDWhpqqaQCDrIX4h7p9KuQKhrI90LIi2vhbQUO
+         zHOTYUR3XLBxv6UVz0nZ+UDW9KwpIsxFYyMw1dexe17Q/lnArYDg3ARchPa+tp8dRh
+         PK40T2ZOfzELA==
+Message-ID: <5716ec93-e6c6-4286-ad7d-9fe6faa68c7e@alu.unizg.hr>
+Date:   Tue, 19 Sep 2023 13:44:22 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: BUG: KCSAN: data-race in folio_batch_move_lru / mpage_read_end_io
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org
+References: <cbb9d596-43ac-bad4-b6f6-8c13f95d244e@alu.unizg.hr>
+ <ZPCpQQVTtlB0FA5A@casper.infradead.org>
+ <ZPs8+sLv5oaubrKj@casper.infradead.org>
+ <22a42774-ebe1-081a-c9b9-e11f4d74bc3a@alu.unizg.hr>
+ <ZQhkfIqwcuTrKxK+@casper.infradead.org>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.hr>
+In-Reply-To: <ZQhkfIqwcuTrKxK+@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This patch fixes a trivial markdown style nit in the `SAFETY` comment.
-> 
-> Signed-off-by: Manmohan Shukla <manmshuk@gmail.com>
-> ---
->  rust/kernel/error.rs | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
-> index 05fcab6abfe6..6233021daa8a 100644
-> --- a/rust/kernel/error.rs
-> +++ b/rust/kernel/error.rs
-> @@ -133,7 +133,7 @@ pub fn to_errno(self) -> core::ffi::c_int {
->      /// Returns the error encoded as a pointer.
->      #[allow(dead_code)]
->      pub(crate) fn to_ptr<T>(self) -> *mut T {
-> -        // SAFETY: self.0 is a valid error due to its invariant.
-> +        // SAFETY: `self.0` is a valid error due to its invariant.
->          unsafe { bindings::ERR_PTR(self.0.into()) as *mut _ }
->      }
->  
-> -- 
-> 2.34.1
- 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+On 9/18/2023 4:53 PM, Matthew Wilcox wrote:
+
+> On Mon, Sep 18, 2023 at 02:15:05PM +0200, Mirsad Todorovac wrote:
+>>> This is what I'm currently running with, and it doesn't trigger.
+>>> I'd expect it to if we were going to hit the KCSAN bug.
+>>>
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index 0c5be12f9336..d22e8798c326 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -4439,6 +4439,7 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
+>>>    	page = __alloc_pages_slowpath(alloc_gfp, order, &ac);
+>>>    out:
+>>> +	VM_BUG_ON_PAGE(page && (page->flags & (PAGE_FLAGS_CHECK_AT_PREP &~ (1 << PG_head))), page);
+>>>    	if (memcg_kmem_online() && (gfp & __GFP_ACCOUNT) && page &&
+>>>    	    unlikely(__memcg_kmem_charge_page(page, gfp, order) != 0)) {
+>>>    		__free_pages(page, order);
+>> Hi,
+>>
+>> Caught another instance of this bug involving folio_batch_move_lru: I don't seem that I can make it
+>> happen reliably by the nature of the data racing conditions if I understood them well.
+> Were you running with this patch at the time, or was this actually
+> vanilla?  The problem is that, if my diagnosis is correct, both of the
+> tasks mentioned are victims; we have a prematurely freed page.  While
+> btrfs is clearly a user, it may not be btrfs's fault that the
+> page was also allocated as an anon page.
+>
+> I'm trying to gather more data, and running with this patch will give
+> us more -- because it'll dump the entire struct page instead of just
+> the page->flags, like KCSAN is currently doing.
+
+Hi, Mr. Matthew,
+
+Yes, I am using "vanilla with your VM_BUG_ON_PAGE()" patch all the time, 
+as it seems non-disruptive and I am hoping to catch this spurious page 
+alloc.
+
+Best regards, Mirsad Todorovac
 
