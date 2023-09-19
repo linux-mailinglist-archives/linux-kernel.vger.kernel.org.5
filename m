@@ -2,213 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFFB7A5D7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89E17A5D7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbjISJL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
+        id S231232AbjISJLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbjISJLY (ORCPT
+        with ESMTP id S230145AbjISJLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:11:24 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D255ABA
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:11:17 -0700 (PDT)
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qiWkz-0005cz-Do; Tue, 19 Sep 2023 11:10:58 +0200
-Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qiWkx-009bvA-FK; Tue, 19 Sep 2023 11:10:55 +0200
-Date:   Tue, 19 Sep 2023 11:10:55 +0200
-From:   Michael Grzeschik <mgr@pengutronix.de>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Jeff Vanhoof <jdv1029@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Vacura <w36195@motorola.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Daniel Scally <dan.scally@ideasonboard.com>,
-        Jeff Vanhoof <qjv001@motorola.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Message-ID: <ZQlln94I7MPlX0ff@pengutronix.de>
-References: <20221018215044.765044-1-w36195@motorola.com>
- <20221018215044.765044-3-w36195@motorola.com>
- <Y1PUjO99fcgaN0tc@kroah.com>
- <20221022133541.GA26431@qjv001-XeonWs>
- <20221024224748.3aao6cox5y4ptmob@synopsys.com>
+        Tue, 19 Sep 2023 05:11:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A30E6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695114661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fcHdjnvsZl7BjaN6uuW5yFHe3gIRLmoYmXk7ZuAeIGM=;
+        b=DJGyWRHbbic97mLpI1gy1P0MC7+jYeWJ2khPvVkRFMYfnLxujqIU3IZgB1Q2kr6CPNDDSm
+        HB5aym4SoxOTuIRACbspnZzX0HxHzsir6lr83KHRcwipVx5sbFWP538FdsEeqmVkKdeVjD
+        jvZtxRmyqIGYd1HeipEPBVYcpvC/BaA=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-568-1HTzO1IjPCmjem-Rnq7s6Q-1; Tue, 19 Sep 2023 05:10:59 -0400
+X-MC-Unique: 1HTzO1IjPCmjem-Rnq7s6Q-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2a7a6393ba6so8740721fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:10:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695114658; x=1695719458;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fcHdjnvsZl7BjaN6uuW5yFHe3gIRLmoYmXk7ZuAeIGM=;
+        b=SWVbBE2OPuXhf0PNd4G1JCtO6agWGC6byMpcDih/gx8D39Tn3bLZEw78qcOUskOVnP
+         70+XGkkmNejeoA/HqSU4ieyMArhow8tSQPEH/dcZmR5LYYHN+8/hI5N/W1tTQGNT+tEu
+         kv8y+fpoaT+P2GQUxgGGHJQI59CoYG9/7upPlQrvk4YTfpg1+NMuLPgyW2ydz0ID3u1A
+         6R+XFqIRxh/lQfSnO0kfHs1wYFowY8rfp2TysA6XFuT4bx0w6rrM5O9qgaE/Rfq6RvCj
+         FefAuUnYswKa9XyZKPlkF0nf2frpbqegOy63V/Dk15g+c9EDo/Sb0j39TN55gOHiuGAb
+         qCQg==
+X-Gm-Message-State: AOJu0YxmUshobiW8qUImd5Evlq7x56VBNo+0vV2kmdrjcRPmEY/6BFu3
+        IVaG1v9+Tr8ehfrLsD+YRo1S1GMbWmBNXMXjwjBWRRW1NaB9PLXg7y7RbcCg+OVu/LQIYU+fFkY
+        q5RCPIEr48vh0M6TubqeQePY9
+X-Received: by 2002:a2e:9cc1:0:b0:2b6:cd7f:5ea8 with SMTP id g1-20020a2e9cc1000000b002b6cd7f5ea8mr8870057ljj.1.1695114658063;
+        Tue, 19 Sep 2023 02:10:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGzNCtHxx1G8D5dQquuh1yRTdbin+4OnUI2A5JfldJjIBc1M1fbe4bXylu2CK7kCzoyts753Q==
+X-Received: by 2002:a2e:9cc1:0:b0:2b6:cd7f:5ea8 with SMTP id g1-20020a2e9cc1000000b002b6cd7f5ea8mr8870037ljj.1.1695114657663;
+        Tue, 19 Sep 2023 02:10:57 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-241-221.dyn.eolo.it. [146.241.241.221])
+        by smtp.gmail.com with ESMTPSA id g5-20020a170906394500b0099bc038eb2bsm7488645eje.58.2023.09.19.02.10.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 02:10:57 -0700 (PDT)
+Message-ID: <37c2c3163c053138da40be6713914c8bb103dada.camel@redhat.com>
+Subject: Re: [PATCH net-next v4] net/core: Introduce netdev_core_stats_inc()
+ for trace
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+Date:   Tue, 19 Sep 2023 11:10:56 +0200
+In-Reply-To: <20230918024055.221900-1-yajun.deng@linux.dev>
+References: <20230918024055.221900-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bRXcAQdk//FytMnP"
-Content-Disposition: inline
-In-Reply-To: <20221024224748.3aao6cox5y4ptmob@synopsys.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:2:b01:1d::c5
-X-SA-Exim-Mail-From: mgr@pengutronix.de
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
-Subject: Re: [PATCH v4 2/6] usb: dwc3: gadget: cancel requests instead of
- release after missed isoc
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on metis.whiteo.stw.pengutronix.de)
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2023-09-18 at 10:40 +0800, Yajun Deng wrote:
+> Although there is a kfree_skb_reason() helper function that can be used t=
+o
+> find the reason why this skb is dropped, but most callers didn't increase
+> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
+>=20
+> For the users, people are more concerned about why the dropped in ip
+> is increasing.
+>=20
+> Introduce netdev_core_stats_inc() for trace. Also, move dev_core_stats()
+> and netdev_core_stats_alloc() to dev.c, as they are not called externally=
+.
+>=20
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+> v4: Introduce netdev_core_stats_inc() instead of export dev_core_stats_*_=
+inc()
+> v3: __cold should be added to the netdev_core_stats_alloc().
+> v2: use __cold instead of inline in dev_core_stats().
+> v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng@li=
+nux.dev/
+> ---
+>  include/linux/netdevice.h | 21 ++++-----------------
+>  net/core/dev.c            | 26 ++++++++++++++++++++++++--
+>  2 files changed, 28 insertions(+), 19 deletions(-)
+>=20
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 0896aaa91dd7..cddd4873b5b0 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -3980,32 +3980,19 @@ static __always_inline bool __is_skb_forwardable(=
+const struct net_device *dev,
+>  	return false;
+>  }
+> =20
+> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct ne=
+t_device *dev);
+> -
+> -static inline struct net_device_core_stats __percpu *dev_core_stats(stru=
+ct net_device *dev)
+> -{
+> -	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() *=
+/
+> -	struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->core_stats)=
+;
+> -
+> -	if (likely(p))
+> -		return p;
+> -
+> -	return netdev_core_stats_alloc(dev);
+> -}
+> +void netdev_core_stats_inc(struct net_device *dev, u32 offset);
+> =20
+>  #define DEV_CORE_STATS_INC(FIELD)						\
+>  static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev)	=
+	\
+>  {										\
+> -	struct net_device_core_stats __percpu *p;				\
+> -										\
+> -	p =3D dev_core_stats(dev);						\
+> -	if (p)									\
+> -		this_cpu_inc(p->FIELD);						\
+> +	netdev_core_stats_inc(dev,						\
+> +			offsetof(struct net_device_core_stats, FIELD));		\
+>  }
+>  DEV_CORE_STATS_INC(rx_dropped)
+>  DEV_CORE_STATS_INC(tx_dropped)
+>  DEV_CORE_STATS_INC(rx_nohandler)
+>  DEV_CORE_STATS_INC(rx_otherhost_dropped)
+> +#undef DEV_CORE_STATS_INC
+> =20
+>  static __always_inline int ____dev_forward_skb(struct net_device *dev,
+>  					       struct sk_buff *skb,
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index ccff2b6ef958..f4cccdf05450 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -10475,7 +10475,8 @@ void netdev_stats_to_stats64(struct rtnl_link_sta=
+ts64 *stats64,
+>  }
+>  EXPORT_SYMBOL(netdev_stats_to_stats64);
+> =20
+> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct ne=
+t_device *dev)
+> +static __cold struct net_device_core_stats __percpu *netdev_core_stats_a=
+lloc(
+> +		struct net_device *dev)
+>  {
+>  	struct net_device_core_stats __percpu *p;
+> =20
+> @@ -10488,7 +10489,28 @@ struct net_device_core_stats __percpu *netdev_co=
+re_stats_alloc(struct net_device
+>  	/* This READ_ONCE() pairs with the cmpxchg() above */
+>  	return READ_ONCE(dev->core_stats);
+>  }
+> -EXPORT_SYMBOL(netdev_core_stats_alloc);
+> +
+> +static inline struct net_device_core_stats __percpu *netdev_core_stats(
+> +		struct net_device *dev)
+> +{
+> +	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() *=
+/
+> +	struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->core_stats)=
+;
+> +
+> +	if (likely(p))
+> +		return p;
+> +
+> +	return netdev_core_stats_alloc(dev);
+> +}
+> +
+> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
+> +{
+> +	struct net_device_core_stats __percpu *p;
+> +
+> +	p =3D netdev_core_stats(dev);
+> +	if (p)
+> +		this_cpu_inc(*(unsigned long *)((void *)p + offset));
 
---bRXcAQdk//FytMnP
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The above is causing a lot of compile warning, as it's discarding the
+(required) __percpu annotation.
 
-Hi Thinh,
+You need to first access the per cpu pointer and then reach for the
+relevant offset.
 
-On Mon, Oct 24, 2022 at 10:47:53PM +0000, Thinh Nguyen wrote:
->On Sat, Oct 22, 2022, Jeff Vanhoof wrote:
->> Hi Greg,
->>
->> On Sat, Oct 22, 2022 at 01:31:24PM +0200, Greg Kroah-Hartman wrote:
->> > On Tue, Oct 18, 2022 at 04:50:38PM -0500, Dan Vacura wrote:
->> > > From: Jeff Vanhoof <qjv001@motorola.com>
->> > >
->> > > arm-smmu related crashes seen after a Missed ISOC interrupt when
->> > > no_interrupt=3D1 is used. This can happen if the hardware is still u=
-sing
->> > > the data associated with a TRB after the usb_request's ->complete ca=
-ll
->> > > has been made.  Instead of immediately releasing a request when a Mi=
-ssed
->> > > ISOC interrupt has occurred, this change will add logic to cancel the
->> > > request instead where it will eventually be released when the
->> > > END_TRANSFER command has completed. This logic is similar to some of=
- the
->> > > cleanup done in dwc3_gadget_ep_dequeue.
->> > >
->> > > Fixes: 6d8a019614f3 ("usb: dwc3: gadget: check for Missed Isoc from =
-event status")
->> > > Cc: <stable@vger.kernel.org>
->> > > Signed-off-by: Jeff Vanhoof <qjv001@motorola.com>
->> > > Co-developed-by: Dan Vacura <w36195@motorola.com>
->> > > Signed-off-by: Dan Vacura <w36195@motorola.com>
->> > > ---
->> > > V1 -> V3:
->> > > - no change, new patch in series
->> > > V3 -> V4:
->> > > - no change
->> >
->> > I need an ack from the dwc3 maintainer before I can take this one.
->> >
->> > thanks,
->> >
->> > greg k-h
->>
->> Thinh has rejected this version of the patch. He has provided an alterna=
-tive
->> implementation which has been testing well for us so far. Either Thinh o=
-r Dan
->> will formalize this patch within the next few days.
->> The latest proposed changes are:
->>
->> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->> index dfaf9ac24c4f..50287437d6de 100644
->> --- a/drivers/usb/dwc3/gadget.c
->> +++ b/drivers/usb/dwc3/gadget.c
->> @@ -3195,6 +3195,9 @@ static int dwc3_gadget_ep_reclaim_completed_trb(st=
-ruct dwc3_ep *dep,
->>         if (event->status & DEPEVT_STATUS_SHORT && !chain)
->>                 return 1;
->>
->> +       if (DWC3_TRB_SIZE_TRBSTS(trb->size) =3D=3D DWC3_TRBSTS_MISSED_IS=
-OC && !chain)
->> +               return 1;
->> +
->>         if ((trb->ctrl & DWC3_TRB_CTRL_IOC) ||
->>             (trb->ctrl & DWC3_TRB_CTRL_LST))
->>                 return 1;
->> @@ -3211,6 +3214,7 @@ static int dwc3_gadget_ep_reclaim_trb_sg(struct dw=
-c3_ep *dep,
->>         struct scatterlist *s;
->>         unsigned int num_queued =3D req->num_queued_sgs;
->>         unsigned int i;
->> +       bool missed_isoc =3D false;
->>         int ret =3D 0;
->>
->>         for_each_sg(sg, s, num_queued, i) {
->> @@ -3219,12 +3223,18 @@ static int dwc3_gadget_ep_reclaim_trb_sg(struct =
-dwc3_ep *dep,
->>                 req->sg =3D sg_next(s);
->>                 req->num_queued_sgs--;
->>
->> +               if (DWC3_TRB_SIZE_TRBSTS(trb->size) =3D=3D DWC3_TRBSTS_M=
-ISSED_ISOC)
->> +                       missed_isoc =3D true;
->> +
->>                 ret =3D dwc3_gadget_ep_reclaim_completed_trb(dep, req,
->>                                 trb, event, status, true);
->>                 if (ret)
->>                         break;
->>         }
->>
->> +       if (missed_isoc)
->> +               ret =3D 1;
->> +
->>         return ret;
->>  }
->>
->>
->
->That's just a debug patch. I'll send out proper fix patches.
+Cheers,
 
-Ping!
+Paolo
 
-While digging out this thread, I did not find any followup patch
-for this suggestion. Did it hit the mailinglist anywhere?
-
-If not, will you send one?
-
-Regards,
-Michael
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---bRXcAQdk//FytMnP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmUJZZwACgkQC+njFXoe
-LGQ7Ig/9GozjAnT6NFjzYyTGvlTT7H0jEst0JphQh/9L5PKmA7UAUOdEGeV3WIss
-YtiyMhLdz/StZzXnLzhwk2DfO5pSMCoY+l5X8LnMj4zI7X+QHj/yxxdv+2sJ+tPV
-SJhHU2TRb+JI0tQ1Ec0rPOTIr+Ci41guOirc5xVnVYds26xsUJ8sHHw6fY4i5kNZ
-GRAI7yj4a/Fj8qWxVHOsAtlbTp3Zz+AW27qTbaupwVoLjEM59Mmi6JdxOjrIJEoL
-KyzlbsDgK99Lm3ghV/GebrCwv7U/qxVLVp5nxzQDzGv4g49u4VfXKUDG0deFG1bk
-H81vx2Z0KHbbwRX1lFb/xXDX/42mqmUOE25gZnZYfIzr7kPq4+pRiMi9DlL9fwBi
-zle2mfLbfEeCs2yofWeZKMPxaJMmBL2ylMXtGoODRf06IVTprM8uXNdadgJ/ahQA
-7Vecv4L73p+ghQF5vWwY0hubGfijy7zrarheR7FLvxKDxdXUjTtaEfVF+vBgm+Zx
-SEUh9x2O9a5fTo2bQ4RFopMYV/DWfddlzIaup8OA6jsyyvZHEQ2YDCEPJOXvoTir
-6/bpEaAnia5D+QPYiU5uBjsyZ0jFSfdr0qxhTtOxXge1/81ECsBT8LNaRVaHdtCv
-Ay8EQ+gjPMoaqESuRQXqY53wQ3RwApUdS8fF1PgpPtwTM4SpuGk=
-=PJ/C
------END PGP SIGNATURE-----
-
---bRXcAQdk//FytMnP--
