@@ -2,891 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCDF7A6756
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478317A675B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbjISOyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
+        id S232955AbjISOzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbjISOyg (ORCPT
+        with ESMTP id S232942AbjISOzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:54:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51B0BE
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:54:28 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695135266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KtuQ5yFWzztnoDcgMtHMv8KKv/6UIixavM5VS0vETmY=;
-        b=g0IpimFkM3aVhmiYbW+e7Zo/UlE2U8Xq4XkYayZdfsy7aG51qufP/ESV3EAPov/MPEz4xd
-        Oqy9QJWT9J6qc5xi2h3sJkbVIG3SdDBpDRKulRKpMkAi6XywJ5dL4EF39v6KRpWrG4Jfcw
-        iUtk4PXA+fR+R5IkaEchMtGWGtAZUPSIH/MfSm8e9zRIZ8NgC2GBc23vHpvZHKAIdqh4Pt
-        jY23rgUPZWY2vsQTEwJS3pONwhlH1IOMwX/p/2zHty4Y020TR43onWgUMOnCHVhIlJ0HDn
-        9dhAXoYPj0p/FJJRKnMvE6YW8v0Q91W1kVhOIb347oIv5h6MSoEBRDaANZ3l+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695135266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KtuQ5yFWzztnoDcgMtHMv8KKv/6UIixavM5VS0vETmY=;
-        b=fOJjHPp1AXoDhmQp8YOy7Z1ELDw1G0Zu5FsUdG3lNrjgRrLjeEU9vL0a8NLTyW0RLBdGCi
-        6Yt1jDLPRiXwmSAA==
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, Peter Anvin <hpa@zytor.com>
-Subject: [patch V3a 01/30] x86/microcode/32: Move early loading after paging
- enable
-In-Reply-To: <87jzsozk1e.ffs@tglx>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065500.823314239@linutronix.de>
- <1e2ecded-c1f6-462c-f66e-756a9d76c41d@intel.com> <87jzsozk1e.ffs@tglx>
-Date:   Tue, 19 Sep 2023 16:54:25 +0200
-Message-ID: <874jjqw6vy.ffs@tglx>
+        Tue, 19 Sep 2023 10:55:40 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C959C9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:55:32 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JE72KC021974;
+        Tue, 19 Sep 2023 14:55:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=7JWVE0SJB37EReFIl+91rrzRUh3KIFc0G5n2J6zxD3E=;
+ b=Wmujnl122kk+gtc7Rn/uPh3e0XmAe09L9wLhU/Y19Sj7VxfdbzwU0MdqjV36iv+7P9wq
+ t/WqK938EBj6Q/m9A+daILRzGQd4goa7jsQmG23/mC0lezweS02vsm6tBBW+L9ug43wF
+ uGSe2W690hMSdlAfE21FYBp2MAvzKCBv9I5dyKjwXNaKyOMub59WFH4/zAFyLwuNkpjb
+ OnzklsUYXCfke+lI1XA8noqxniN6Ea16JaJpV0qHx+gTQnEWbIsvWRItVdKBdF6vQ0yy
+ B/npnXkfatdPoi3xET7pQNrWP4raHlVk2o8iSqgjev6FEe6i5KmX3swxJk7PFH9UTYZT gQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t52sdw3t8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Sep 2023 14:55:01 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38JERVc4027079;
+        Tue, 19 Sep 2023 14:55:01 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t52t60yu5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Sep 2023 14:55:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PHcgFmj9ILiiQThGBaR1Xo9nCAQ6fEUYFZe6HHNWioEbRkFQHtS+6SCBP3GTWDyOxY/kCiCqVI/2Pj+uR7AwPjw5NteYgpNYYYLtznsyHqWeWDUq4BuoROdBxbK+atL6lbIptGbN3KBsTxz/bQSxpsjw6JcUzdMXFT4j2tLt42pudOfcWnB5DSYrFXRPotuTkqCJsLiz/zuixsHAP52nzdVUshODelXgYjpYc3gioht2Hi9I1WvMIhodK9J84c96wbaUuhM0Xqwhr3rYrwy9iBQUIa0XX3lPS1PEZfvFsTSLm93cjJQ5aRQStthMCYbGwsWgDhP6QAi8wtHTicDaIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7JWVE0SJB37EReFIl+91rrzRUh3KIFc0G5n2J6zxD3E=;
+ b=TgbnSwUE2JujL4QAEbafuZMQLHOS82F4zObRR4BdKD5Hu69BanwT6a2Y9f/lbPCht0WryYRyw0gte96JLMnx8SxdpA+Pxl9znrf8I1+oKE23e1R0QP8S8OoTBI+vo5V1GJ9MRw0Xw6lgjUFY/9VtliQDED1TVqTcPMYTdbI1b1i+m3xMUVza6Lk8rFIPV9aYszot/KMqHiuz0f2WtJDVfNgXIsEQVspM6vCMY29RhLxaWSMMZ8vyt7ZmKfFuqb+b+idLA6/gZIqv0IWvokO0vt9CdECb1SYRDjk8/PgO8TjqsKFqUDf1FovAUkzdoNtTY0/onJQ6x+/HY8is2ucELA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7JWVE0SJB37EReFIl+91rrzRUh3KIFc0G5n2J6zxD3E=;
+ b=g4fHRqtL8GQF8tmUSEALr5eWQAh3QQtohaoCQugd8KDM3ANikDsT16xSYmvahMiQRRaScwBsyleM+dvWicxLiSzvzqrRSKb4oN8/41Xe56nNGL5wWxYEltrqwc44vnm+zL4Xr5YoLfCNgkfuII5s+QBUXYCABelaKiHG4JYNHYs=
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com (2603:10b6:510:e0::9)
+ by PH0PR10MB4406.namprd10.prod.outlook.com (2603:10b6:510:34::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Tue, 19 Sep
+ 2023 14:54:53 +0000
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::76c:cb31:2005:d10c]) by PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::76c:cb31:2005:d10c%5]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 14:54:53 +0000
+From:   Miguel Luis <miguel.luis@oracle.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>
+Subject: Re: [PATCH 2/3] arm64/kvm: Fine grain _EL2 system registers list that
+ affect nested virtualization
+Thread-Topic: [PATCH 2/3] arm64/kvm: Fine grain _EL2 system registers list
+ that affect nested virtualization
+Thread-Index: AQHZ5nOKLkrRCNJH90mY1Gfr1krO1rAgW1yAgAHqLgA=
+Date:   Tue, 19 Sep 2023 14:54:53 +0000
+Message-ID: <00087AB1-3F94-4D3B-8498-3CE3AEDFE6FA@oracle.com>
+References: <20230913185209.32282-1-miguel.luis@oracle.com>
+ <20230913185209.32282-3-miguel.luis@oracle.com>
+ <868r93es5a.wl-maz@kernel.org>
+In-Reply-To: <868r93es5a.wl-maz@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR10MB5433:EE_|PH0PR10MB4406:EE_
+x-ms-office365-filtering-correlation-id: 4451748e-85bc-4537-8fd9-08dbb92061b9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: G/7iRjppNF4KajcwutomSPvF2EtNIx8sHxH1w+fIOfKXqibXw/3wfPwcuBipaNuNCM/GrkbsbUw+e/YjhY/dgkFing+ZwUemVxPNUiczrUiu7ACLbxXobFlXgbW9HvBRMixxLPuQH9/7bLIbnLCN6V9992GLa34p2SwEWt0RocA6spBmoMoto+FwJizgzgE0T45EP5j5TGqvDSLCS6vLtd6xrMu+p+m1uXhER0UZi+inqLSIG58/93lQHnXfHPGqBYRhnENUMdtQnkHf8wJ/IaA7omK0TYE3jkdXm0DzaghE/DyGuZERUJnQcjn9gxUwiHeoKq7q/XZac1dPX4lfWlW3o85Sj1Yc8fU5QuNVctGoYIGhFt5pxlbXOUTzIXCWuFCj9dO4TObOZawYq5TNlAfkTI3TjNOj3tWOmAILMWhRynUodWTHmqGKioqpuxE+b1a8f6qbGeM3SepSNuWzZcCIk+DfcfxdnqOh3cLldSDI+kicyKc8qkHJtl98dBoMF+visd3wzPTukb+mglPM69YjKJUbDkGy+uFgJIEVU7+EgS2jmo2zcZZTjERw7G3ohRNp4gr3tbYoiaZ4RBJPbKVq/MFIYNQK3gJyJ8tZeQMMYWWpRSNkQIG6+5HvV9hT1a343JDH9nO5sIu1g5tZ/Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5433.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(366004)(39860400002)(451199024)(1800799009)(186009)(7416002)(2906002)(5660300002)(44832011)(4326008)(8676002)(8936002)(41300700001)(316002)(6916009)(54906003)(76116006)(66446008)(66946007)(91956017)(66556008)(66476007)(64756008)(478600001)(53546011)(6486002)(71200400001)(6512007)(6506007)(2616005)(83380400001)(36756003)(122000001)(33656002)(86362001)(38070700005)(38100700002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a01IemxtT2IyVk16anJVbkJkSWRESGM4WmlQOVpjYjkrTGllR2VNNW11cW50?=
+ =?utf-8?B?bjgxREw1a2RpQ3JhMm9kMUhVZm04MDViajd2VWhhQk0wMzFkdGh0OG5EOWZ2?=
+ =?utf-8?B?bm5Wd05qNUZ2dzFiK1JUY2pqWmpTbzJGOWRPRHFHV0E3UG1iRStwZ1ppd0JY?=
+ =?utf-8?B?YU9oRTFxQ0JiMnBzTHo1NmpEbm4wK2ZpYkJpWE1nZ0QzQndoU3NZYUtDeFZH?=
+ =?utf-8?B?dHZaVDZwSDVQK1RxQ25uN2lTR2hhSUxCbGpFQ2FOVm9HRDhGZTRjbkJtUHVL?=
+ =?utf-8?B?anlIOTVBRlF5S3lJYjRGSUVxb2NQaml5WFFSNEdzNTdXY0ZtbUtGMjUvTTlK?=
+ =?utf-8?B?QkxkMGNuaUFMVnhjVStoMHhNUjZYd0orWmZvcHZ6RHNFRXdjTCttQUdoTFVV?=
+ =?utf-8?B?ZFNXTUU4QmFMUG02ZHZpUi90MVRoQk9lSnZna2pCclBFQzBOdWhlMjBOanZ6?=
+ =?utf-8?B?ZXZHRHZkVzJsR1JZNzlOZitQNUxjZ1cwRWZjbjZGMmxqbDhmYUZId0JGRHlk?=
+ =?utf-8?B?TGY3VUhlK1E2RmEydy9Ja0diRElxVHpEL2s4MFBoeDZCbXNoNWFTV0hnczcw?=
+ =?utf-8?B?czJKenFtOElaRFl5UVA5MzVQRkd1L21rK2daenRRdnlpbHBYNEc4WEZxbXpY?=
+ =?utf-8?B?eTQ1dGVoTmFCbWwwc054cXhmd0ovamdDZEJVeStPNm9yTjNSdEJZYlFlbFZ6?=
+ =?utf-8?B?Wktpb002US9DL05lY3hrUk81WHJVcEVYSWM3WURVdG9xL2F5WkdhTnJ5ZUlI?=
+ =?utf-8?B?NDZ6QThuVkUxKzY3TDUwbGpiM1F6MnpYYWdua1l2UEo4elp5ejFvWkw4b3VU?=
+ =?utf-8?B?THRQSmk2bGxzbUdwdlF2d3l5K25ta1VBMGxTNFBaRXdiekl1NUQ0V05Jd1Uv?=
+ =?utf-8?B?R2h4MVpzN0JaaElxWlpuN0Z6eUVNK0V3OE83cHlzQXhLQlRGeWlxWjFiVFZ6?=
+ =?utf-8?B?MWRMbWtSdjU0TXBrc3BveU11Tm16Wkc5U2l5SUJqVjBvenNKeEVZY1g3a1FI?=
+ =?utf-8?B?OGtqSVZXYUJVRGVkaVVNc3FVZWZDRTRoM1dTdmt2RWJaUW04emhkSGJvU0Jh?=
+ =?utf-8?B?OTg5RFdkZ3ZwZnZLUHVxMVRJNlR6QTFEV2ZHWFkvdkx4WlNLQi9ONlJjTklP?=
+ =?utf-8?B?MjEzckYrcjBuMG02YjExUTlPYW52Q1I2V1RYbU9HWUtseFNXTkdQSWpYN2Za?=
+ =?utf-8?B?MXA3NjhBM0RNYVd3UzAvQkRUWG9EZnBrSGVTS055aGxhVzBCbWdrakJVVmRq?=
+ =?utf-8?B?VFFmUi9wYUNlS1lLdWt6VlkyRkhpeFozOHY2bWMxZGVPdHpYcXY4QnRTME42?=
+ =?utf-8?B?b0JkRVhFY1JlNWptbXA4MnlFTW1qcWtDSm84U2hnVjlyRTh3enlqWTFFeGdN?=
+ =?utf-8?B?ZWZkb1liTFFWZHJibG8ydkw4TGJOck9oRkVGMXN2aEFCaDNiZDRmdXVESFIz?=
+ =?utf-8?B?NW9LMzdQNkR2Q0ZCQlRZbjNTQ1BHU2kxSkowNDZLQlkxT3NwOTNzdzZrVlFY?=
+ =?utf-8?B?eC9ickNycFIwT3ZFN0lOYkJJbDArQ3VtUHNEdDVyc29rY0ducENTRS9qblor?=
+ =?utf-8?B?dGlSdWhrTU1nN3R3SWswRVVUYTdsN21Mb1VuVWVxTC84VFE1Qi9vRDVkZjF0?=
+ =?utf-8?B?aWlXakVWbzd3cFVGbHpUWkZNVXZ0QUptK2FGZXZhNk9JRCtUMkw2Y1dhRVYr?=
+ =?utf-8?B?dm0yZjM2alNzZXFiL1AyS09LOTNJL2tOOWwzNXhQbXJwcWxZaFF2N283ZUY3?=
+ =?utf-8?B?UE5PZkFURVlwLzZBRE5hWGV2M3Ftd01lV2pWQm1wVGxkL0JDLzAvMUJtVjFQ?=
+ =?utf-8?B?WjBYSFJqZUE2VFdsN0lLeFc0bStmdml5emFOdjNIWG9yOG5PYmNWRzI1YVFR?=
+ =?utf-8?B?UCsvL0VWaHRkOWdqUFREdERIVnN0M1ZlWlBMZWgvK3EwaTl2a0NJQzg1OUE1?=
+ =?utf-8?B?a0MwNU1haW9DV0RSWEVlVmJVVWJzWnlsZ0RyNWZuQUh0Y05JcXlTK3FYSVpp?=
+ =?utf-8?B?eE54ZVJIbGdwVTVoekw0WFdaTkcyOFFFbVN1UWNNSmdaa2djdmFsSWc2T2lw?=
+ =?utf-8?B?YW1NUlE4MXlWd0d2SGJjUkdua2lDQlpqQUp4cEFpazJGSjB4RnZDL1BoRU8z?=
+ =?utf-8?B?STluVmJ2T05LMzdwd3J2Q3p2YUk2V0VVQVk0dng1ZkdYb3U3blN1dUJUQWR4?=
+ =?utf-8?B?b2E2bWY4TjRLMEduMXpIU1c3TDFXaXdWbmJQRGlqbnE1Y2t1YWMzZE0vQmp6?=
+ =?utf-8?B?bmZEdG51VitLNTlTSm14VHZqMXlnPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4659C15FB75AE047BDA1A0B40C22F581@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?NHY0dUJsK1JOUGtES0k0c2JUTGVTRlFzWGFLalBDaFJnWnpkZTBJTHc3aUMw?=
+ =?utf-8?B?N0FNaTRBWTd1TTRDWDg2QVRGRyt2cW1wUDNTUlJCQmQ3NTAySmRsUHYyVHJE?=
+ =?utf-8?B?RnpXRWErK05vVEorc0RpQ2dIZm9RTGhjU2tOUFl0NSt6S3NkWWdxeVc1cUlR?=
+ =?utf-8?B?Q2pNaXRVWFlYZjczTWNtYjdRQkVqSGdLWjBCQzhiNmt4ay9aenBhazNQNVNL?=
+ =?utf-8?B?Znl5NlR2VkRYT2oydk9NQXlIeG5WQUwyNjd3cWxqRHRXY0hjSEtjV1BMNTla?=
+ =?utf-8?B?cnNSOWZSOEhvbE9NZExlTnNyMW9pT1NaU0RCZ05ScWJBODlGVGxyUnRwRDdR?=
+ =?utf-8?B?dTlURVh0MFVJYXFQM2ljeVBBMStwVGVqNGJudVQ5bmg2SkpCRGNQTi9PZ0M0?=
+ =?utf-8?B?a0hFV0h5UkNqQWJaVjl0bmg2OUVodlJUL0FFRENTdlh4R201dXpiSGJ2MXVE?=
+ =?utf-8?B?a05IVjFScFVTUjVucTh0SUM4VHZtTjJJWnl1L3FhZXVRQm04REczUSt5Y0Fh?=
+ =?utf-8?B?VUFWdjBJRDljNTVyWTc2UHd5TUxuaEVQRWFYMmJBdmcwNnAzNVB3YzF0RDlO?=
+ =?utf-8?B?bmQ5emxFK1Y3TUxjY3FLTGk1NjE0YzcxaFY5dDVqQXBIWnFWNy9LRytXd0ZX?=
+ =?utf-8?B?dVpQVmd2dlpJVHllQTNpUTRkWk1BNzhTdml6VXZPQjlNQzN5L2NtdG4zWE9I?=
+ =?utf-8?B?OEt6bGNYakNOcEtNK2dGNjRxMVZCV1NXR1B2LzhBVUNYNFZET0h2Q093U2xv?=
+ =?utf-8?B?R2VzNjVWRVBLblhxMkVXMWZyL0IwbENNRUZRanhML3FGakpBOG5walIrdDBY?=
+ =?utf-8?B?emNRKzd6RmV0bzQ3UTBVbFIyY0tzVHg0TzQ4QS9jbDdqUjNHSFp3RHJlZVZn?=
+ =?utf-8?B?bjZKc1A2aVBUclpFUEUwUXNacnJwK0ZsbHM0QUdRZ2xZUVVaNjNYcmVYN25m?=
+ =?utf-8?B?cFhzR0MycWFGeGdPQlRmUWR6MVI0TytUM0VVTW5YN1c0N2d2d1FTbDFJUVFE?=
+ =?utf-8?B?eTR3UGdNaVN6YnFCRXJQbmJTUVZWaDZPUmJIMHJOWTFPMVFMdmlFc3kvRUNR?=
+ =?utf-8?B?QmZ1TGhtVE12K0NVTGdoMkptS1R0NVVwT1I5RW0rNTg1UVpSK0NLcWYzYStn?=
+ =?utf-8?B?TVA2TVgvVkpZOU56dThyWjVnc0IzcXEwUGhpV0RCb2xLSG9aMU9IT0F6cnUw?=
+ =?utf-8?B?RDZOM3lZTFBLMFM5S3MydzlQVlBmNmJsWmtQNk52ZWYxKzVsbDVYbHQyQmpI?=
+ =?utf-8?B?dHBTeFZSeHFHd1UvT09SZXlvaGtFRUxBWmZJYWdpbnVkSzZpQT09?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5433.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4451748e-85bc-4537-8fd9-08dbb92061b9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2023 14:54:53.2226
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XcBvNB3heEiqMijfq3XmaIeMoPTEnOw4mVW5cS1oWvOlJpVPI02E+t69ijEDGEz/eWDAew9H7KD9IPAiUbFIug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4406
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-19_06,2023-09-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ malwarescore=0 adultscore=0 phishscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309190128
+X-Proofpoint-GUID: x3ZKN8PvvY4nzORmcA4ikCiSrntzHxQg
+X-Proofpoint-ORIG-GUID: x3ZKN8PvvY4nzORmcA4ikCiSrntzHxQg
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-32-bit loads microcode before paging is enabled. The commit which
-introduced that has zero justification in the changelog. The cover letter
-has slightly more content, but it does not give any technical justification
-either:
-
-  "The problem in current microcode loading method is that we load a
-   microcode way, way too late; ideally we should load it before turning
-   paging on.  This may only be practical on 32 bits since we can't get to
-   64-bit mode without paging on, but we should still do it as early as at
-   all possible."
-
-Handwaving word salad with zero technical content.
-
-Someone claimed in an offlist conversation that this is required for curing
-the ATOM erratum AAE44/AAF40/AAG38/AAH41. That erratum requires an
-microcode update in order to make the usage of PSE safe. But during early
-boot PSE is completely irrelevant and it is evaluated way later.
-
-Neither is it relevant for the AP on single core HT enabled CPUs as the
-microcode loading on the AP is not doing anything.
-
-On dual core CPUs there is a theoretical problem if a split of an
-executable large page between enabling paging including PSE and loading the
-microcode happens. But that's only theoretical, it's practically irrelevant
-because the affected dual core CPUs are 64bit enabled and therefore have
-paging and PSE enabled before loading the microcode on the second core. So
-why would it work on 64-bit but not on 32-bit?
-
-The erratum:
-
-  "AAG38 Code Fetch May Occur to Incorrect Address After a Large Page is
-   Split Into 4-Kbyte Pages
-
-   Problem: If software clears the PS (page size) bit in a present PDE
-   (page directory entry), that will cause linear addresses mapped through
-   this PDE to use 4-KByte pages instead of using a large page after old
-   TLB entries are invalidated. Due to this erratum, if a code fetch uses
-   this PDE before the TLB entry for the large page is invalidated then it
-   may fetch from a different physical address than specified by either the
-   old large page translation or the new 4-KByte page translation. This
-   erratum may also cause speculative code fetches from incorrect addresses."
-
-The practical relevance for this is exactly zero because there is no
-splitting of large text pages during early boot-time, i.e. between paging
-enable and microcode loading, and neither during CPU hotplug.
-
-IOW, this load microcode before paging enable is yet another voodoo
-programming solution in search of a problem. What's worse is that it causes
-at least two serious problems:
-
- 1) When stackprotector is enabled then the microcode loader code has the
-    stackprotector mechanics enabled. The read from the per CPU variable
-    __stack_chk_guard is always accessing the virtual address either
-    directly on UP or via FS on SMP. In physical address mode this results
-    in an access to memory above 3GB. So this works by chance as the
-    hardware returns the same value when there is no RAM at this physical
-    address. When there is RAM populated above 3G then the read is by
-    chance the same as nothing changes that memory during the very early
-    boot stage. That's not necessarily true during runtime CPU hotplug.
-
- 2) When function tracing is enabled, then the relevant microcode loader
-    functions and the functions invoked from there will call into the
-    tracing code and evaluate global and per CPU variables in physical
-    address mode. What could potentially go wrong?
-
-Cure this and move the microcode loading after the early paging enable and
-remove the gunk in the microcode loader which is required to handle
-physical address mode.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: Peter Anvin <hpa@zytor.com>
-Link: https://lore.kernel.org/lkml/1356075872-3054-1-git-send-email-fenghua.yu@intel.com
----
-V3a: Remove the early arguments - Chang
-     Fixup the core code - 0day
----
- arch/x86/include/asm/microcode.h         |    5 -
- arch/x86/kernel/cpu/common.c             |   12 ---
- arch/x86/kernel/cpu/microcode/amd.c      |  103 ++++++++-------------------
- arch/x86/kernel/cpu/microcode/core.c     |   73 ++++---------------
- arch/x86/kernel/cpu/microcode/intel.c    |  116 ++++---------------------------
- arch/x86/kernel/cpu/microcode/internal.h |    2 
- arch/x86/kernel/head32.c                 |    3 
- arch/x86/kernel/head_32.S                |   10 --
- arch/x86/kernel/smpboot.c                |   12 +--
- 9 files changed, 71 insertions(+), 265 deletions(-)
-
---- a/arch/x86/include/asm/microcode.h
-+++ b/arch/x86/include/asm/microcode.h
-@@ -68,11 +68,6 @@ static inline u32 intel_get_microcode_re
- 
- 	return rev;
- }
--
--void show_ucode_info_early(void);
--
--#else /* CONFIG_CPU_SUP_INTEL */
--static inline void show_ucode_info_early(void) { }
- #endif /* !CONFIG_CPU_SUP_INTEL */
- 
- #endif /* _ASM_X86_MICROCODE_H */
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -2166,8 +2166,6 @@ static inline void setup_getcpu(int cpu)
- }
- 
- #ifdef CONFIG_X86_64
--static inline void ucode_cpu_init(int cpu) { }
--
- static inline void tss_setup_ist(struct tss_struct *tss)
- {
- 	/* Set up the per-CPU TSS IST stacks */
-@@ -2178,16 +2176,8 @@ static inline void tss_setup_ist(struct
- 	/* Only mapped when SEV-ES is active */
- 	tss->x86_tss.ist[IST_INDEX_VC] = __this_cpu_ist_top_va(VC);
- }
--
- #else /* CONFIG_X86_64 */
--
--static inline void ucode_cpu_init(int cpu)
--{
--	show_ucode_info_early();
--}
--
- static inline void tss_setup_ist(struct tss_struct *tss) { }
--
- #endif /* !CONFIG_X86_64 */
- 
- static inline void tss_setup_io_bitmap(struct tss_struct *tss)
-@@ -2243,8 +2233,6 @@ void cpu_init(void)
- 	struct task_struct *cur = current;
- 	int cpu = raw_smp_processor_id();
- 
--	ucode_cpu_init(cpu);
--
- #ifdef CONFIG_NUMA
- 	if (this_cpu_read(numa_node) == 0 &&
- 	    early_cpu_to_node(cpu) != NUMA_NO_NODE)
---- a/arch/x86/kernel/cpu/microcode/amd.c
-+++ b/arch/x86/kernel/cpu/microcode/amd.c
-@@ -121,24 +121,20 @@ static u16 find_equiv_id(struct equiv_cp
- 
- /*
-  * Check whether there is a valid microcode container file at the beginning
-- * of @buf of size @buf_size. Set @early to use this function in the early path.
-+ * of @buf of size @buf_size.
-  */
--static bool verify_container(const u8 *buf, size_t buf_size, bool early)
-+static bool verify_container(const u8 *buf, size_t buf_size)
- {
- 	u32 cont_magic;
- 
- 	if (buf_size <= CONTAINER_HDR_SZ) {
--		if (!early)
--			pr_debug("Truncated microcode container header.\n");
--
-+		pr_debug("Truncated microcode container header.\n");
- 		return false;
- 	}
- 
- 	cont_magic = *(const u32 *)buf;
- 	if (cont_magic != UCODE_MAGIC) {
--		if (!early)
--			pr_debug("Invalid magic value (0x%08x).\n", cont_magic);
--
-+		pr_debug("Invalid magic value (0x%08x).\n", cont_magic);
- 		return false;
- 	}
- 
-@@ -147,23 +143,20 @@ static bool verify_container(const u8 *b
- 
- /*
-  * Check whether there is a valid, non-truncated CPU equivalence table at the
-- * beginning of @buf of size @buf_size. Set @early to use this function in the
-- * early path.
-+ * beginning of @buf of size @buf_size.
-  */
--static bool verify_equivalence_table(const u8 *buf, size_t buf_size, bool early)
-+static bool verify_equivalence_table(const u8 *buf, size_t buf_size)
- {
- 	const u32 *hdr = (const u32 *)buf;
- 	u32 cont_type, equiv_tbl_len;
- 
--	if (!verify_container(buf, buf_size, early))
-+	if (!verify_container(buf, buf_size))
- 		return false;
- 
- 	cont_type = hdr[1];
- 	if (cont_type != UCODE_EQUIV_CPU_TABLE_TYPE) {
--		if (!early)
--			pr_debug("Wrong microcode container equivalence table type: %u.\n",
--			       cont_type);
--
-+		pr_debug("Wrong microcode container equivalence table type: %u.\n",
-+			 cont_type);
- 		return false;
- 	}
- 
-@@ -172,9 +165,7 @@ static bool verify_equivalence_table(con
- 	equiv_tbl_len = hdr[2];
- 	if (equiv_tbl_len < sizeof(struct equiv_cpu_entry) ||
- 	    buf_size < equiv_tbl_len) {
--		if (!early)
--			pr_debug("Truncated equivalence table.\n");
--
-+		pr_debug("Truncated equivalence table.\n");
- 		return false;
- 	}
- 
-@@ -183,22 +174,19 @@ static bool verify_equivalence_table(con
- 
- /*
-  * Check whether there is a valid, non-truncated microcode patch section at the
-- * beginning of @buf of size @buf_size. Set @early to use this function in the
-- * early path.
-+ * beginning of @buf of size @buf_size.
-  *
-  * On success, @sh_psize returns the patch size according to the section header,
-  * to the caller.
-  */
- static bool
--__verify_patch_section(const u8 *buf, size_t buf_size, u32 *sh_psize, bool early)
-+__verify_patch_section(const u8 *buf, size_t buf_size, u32 *sh_psize)
- {
- 	u32 p_type, p_size;
- 	const u32 *hdr;
- 
- 	if (buf_size < SECTION_HDR_SIZE) {
--		if (!early)
--			pr_debug("Truncated patch section.\n");
--
-+		pr_debug("Truncated patch section.\n");
- 		return false;
- 	}
- 
-@@ -207,17 +195,13 @@ static bool
- 	p_size = hdr[1];
- 
- 	if (p_type != UCODE_UCODE_TYPE) {
--		if (!early)
--			pr_debug("Invalid type field (0x%x) in container file section header.\n",
--				p_type);
--
-+		pr_debug("Invalid type field (0x%x) in container file section header.\n",
-+			 p_type);
- 		return false;
- 	}
- 
- 	if (p_size < sizeof(struct microcode_header_amd)) {
--		if (!early)
--			pr_debug("Patch of size %u too short.\n", p_size);
--
-+		pr_debug("Patch of size %u too short.\n", p_size);
- 		return false;
- 	}
- 
-@@ -269,7 +253,7 @@ static unsigned int __verify_patch_size(
-  * 0: success
-  */
- static int
--verify_patch(u8 family, const u8 *buf, size_t buf_size, u32 *patch_size, bool early)
-+verify_patch(u8 family, const u8 *buf, size_t buf_size, u32 *patch_size)
- {
- 	struct microcode_header_amd *mc_hdr;
- 	unsigned int ret;
-@@ -277,7 +261,7 @@ verify_patch(u8 family, const u8 *buf, s
- 	u16 proc_id;
- 	u8 patch_fam;
- 
--	if (!__verify_patch_section(buf, buf_size, &sh_psize, early))
-+	if (!__verify_patch_section(buf, buf_size, &sh_psize))
- 		return -1;
- 
- 	/*
-@@ -292,16 +276,13 @@ verify_patch(u8 family, const u8 *buf, s
- 	 * size sh_psize, as the section claims.
- 	 */
- 	if (buf_size < sh_psize) {
--		if (!early)
--			pr_debug("Patch of size %u truncated.\n", sh_psize);
--
-+		pr_debug("Patch of size %u truncated.\n", sh_psize);
- 		return -1;
- 	}
- 
- 	ret = __verify_patch_size(family, sh_psize, buf_size);
- 	if (!ret) {
--		if (!early)
--			pr_debug("Per-family patch size mismatch.\n");
-+		pr_debug("Per-family patch size mismatch.\n");
- 		return -1;
- 	}
- 
-@@ -309,8 +290,7 @@ verify_patch(u8 family, const u8 *buf, s
- 
- 	mc_hdr	= (struct microcode_header_amd *)(buf + SECTION_HDR_SIZE);
- 	if (mc_hdr->nb_dev_id || mc_hdr->sb_dev_id) {
--		if (!early)
--			pr_err("Patch-ID 0x%08x: chipset-specific code unsupported.\n", mc_hdr->patch_id);
-+		pr_err("Patch-ID 0x%08x: chipset-specific code unsupported.\n", mc_hdr->patch_id);
- 		return -1;
- 	}
- 
-@@ -337,7 +317,7 @@ static size_t parse_container(u8 *ucode,
- 	u16 eq_id;
- 	u8 *buf;
- 
--	if (!verify_equivalence_table(ucode, size, true))
-+	if (!verify_equivalence_table(ucode, size))
- 		return 0;
- 
- 	buf = ucode;
-@@ -364,7 +344,7 @@ static size_t parse_container(u8 *ucode,
- 		u32 patch_size;
- 		int ret;
- 
--		ret = verify_patch(x86_family(desc->cpuid_1_eax), buf, size, &patch_size, true);
-+		ret = verify_patch(x86_family(desc->cpuid_1_eax), buf, size, &patch_size);
- 		if (ret < 0) {
- 			/*
- 			 * Patch verification failed, skip to the next container, if
-@@ -456,14 +436,8 @@ static bool early_apply_microcode(u32 cp
- {
- 	struct cont_desc desc = { 0 };
- 	struct microcode_amd *mc;
--	u32 rev, dummy, *new_rev;
- 	bool ret = false;
--
--#ifdef CONFIG_X86_32
--	new_rev = (u32 *)__pa_nodebug(&ucode_new_rev);
--#else
--	new_rev = &ucode_new_rev;
--#endif
-+	u32 rev, dummy;
- 
- 	desc.cpuid_1_eax = cpuid_1_eax;
- 
-@@ -484,8 +458,8 @@ static bool early_apply_microcode(u32 cp
- 		return ret;
- 
- 	if (!__apply_microcode_amd(mc)) {
--		*new_rev = mc->hdr.patch_id;
--		ret      = true;
-+		ucode_new_rev = mc->hdr.patch_id;
-+		ret = true;
- 	}
- 
- 	return ret;
-@@ -514,26 +488,13 @@ static bool get_builtin_microcode(struct
- 
- static void find_blobs_in_containers(unsigned int cpuid_1_eax, struct cpio_data *ret)
- {
--	struct ucode_cpu_info *uci;
- 	struct cpio_data cp;
--	const char *path;
--	bool use_pa;
--
--	if (IS_ENABLED(CONFIG_X86_32)) {
--		uci	= (struct ucode_cpu_info *)__pa_nodebug(ucode_cpu_info);
--		path	= (const char *)__pa_nodebug(ucode_path);
--		use_pa	= true;
--	} else {
--		uci     = ucode_cpu_info;
--		path	= ucode_path;
--		use_pa	= false;
--	}
- 
- 	if (!get_builtin_microcode(&cp, x86_family(cpuid_1_eax)))
--		cp = find_microcode_in_initrd(path, use_pa);
-+		cp = find_microcode_in_initrd(ucode_path);
- 
- 	/* Needed in load_microcode_amd() */
--	uci->cpu_sig.sig = cpuid_1_eax;
-+	ucode_cpu_info->cpu_sig.sig = cpuid_1_eax;
- 
- 	*ret = cp;
- }
-@@ -562,7 +523,7 @@ int __init save_microcode_in_initrd_amd(
- 	enum ucode_state ret;
- 	struct cpio_data cp;
- 
--	cp = find_microcode_in_initrd(ucode_path, false);
-+	cp = find_microcode_in_initrd(ucode_path);
- 	if (!(cp.data && cp.size))
- 		return -EINVAL;
- 
-@@ -738,7 +699,7 @@ static size_t install_equiv_cpu_table(co
- 	u32 equiv_tbl_len;
- 	const u32 *hdr;
- 
--	if (!verify_equivalence_table(buf, buf_size, false))
-+	if (!verify_equivalence_table(buf, buf_size))
- 		return 0;
- 
- 	hdr = (const u32 *)buf;
-@@ -784,7 +745,7 @@ static int verify_and_add_patch(u8 famil
- 	u16 proc_id;
- 	int ret;
- 
--	ret = verify_patch(family, fw, leftover, patch_size, false);
-+	ret = verify_patch(family, fw, leftover, patch_size);
- 	if (ret)
- 		return ret;
- 
-@@ -918,7 +879,7 @@ static enum ucode_state request_microcod
- 	}
- 
- 	ret = UCODE_ERROR;
--	if (!verify_container(fw->data, fw->size, false))
-+	if (!verify_container(fw->data, fw->size))
- 		goto fw_release;
- 
- 	ret = load_microcode_amd(c->x86, fw->data, fw->size);
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -90,10 +90,7 @@ static bool amd_check_current_patch_leve
- 
- 	native_rdmsr(MSR_AMD64_PATCH_LEVEL, lvl, dummy);
- 
--	if (IS_ENABLED(CONFIG_X86_32))
--		levels = (u32 *)__pa_nodebug(&final_levels);
--	else
--		levels = final_levels;
-+	levels = final_levels;
- 
- 	for (i = 0; levels[i]; i++) {
- 		if (lvl == levels[i])
-@@ -105,17 +102,8 @@ static bool amd_check_current_patch_leve
- static bool __init check_loader_disabled_bsp(void)
- {
- 	static const char *__dis_opt_str = "dis_ucode_ldr";
--
--#ifdef CONFIG_X86_32
--	const char *cmdline = (const char *)__pa_nodebug(boot_command_line);
--	const char *option  = (const char *)__pa_nodebug(__dis_opt_str);
--	bool *res = (bool *)__pa_nodebug(&dis_ucode_ldr);
--
--#else /* CONFIG_X86_64 */
- 	const char *cmdline = boot_command_line;
- 	const char *option  = __dis_opt_str;
--	bool *res = &dis_ucode_ldr;
--#endif
- 
- 	/*
- 	 * CPUID(1).ECX[31]: reserved for hypervisor use. This is still not
-@@ -123,17 +111,17 @@ static bool __init check_loader_disabled
- 	 * that's good enough as they don't land on the BSP path anyway.
- 	 */
- 	if (native_cpuid_ecx(1) & BIT(31))
--		return *res;
-+		return true;
- 
- 	if (x86_cpuid_vendor() == X86_VENDOR_AMD) {
- 		if (amd_check_current_patch_level())
--			return *res;
-+			return true;
- 	}
- 
- 	if (cmdline_find_option_bool(cmdline, option) <= 0)
--		*res = false;
-+		dis_ucode_ldr = false;
- 
--	return *res;
-+	return dis_ucode_ldr;
- }
- 
- void __init load_ucode_bsp(void)
-@@ -171,20 +159,11 @@ void __init load_ucode_bsp(void)
- 		load_ucode_amd_early(cpuid_1_eax);
- }
- 
--static bool check_loader_disabled_ap(void)
--{
--#ifdef CONFIG_X86_32
--	return *((bool *)__pa_nodebug(&dis_ucode_ldr));
--#else
--	return dis_ucode_ldr;
--#endif
--}
--
- void load_ucode_ap(void)
- {
- 	unsigned int cpuid_1_eax;
- 
--	if (check_loader_disabled_ap())
-+	if (dis_ucode_ldr)
- 		return;
- 
- 	cpuid_1_eax = native_cpuid_eax(1);
-@@ -226,40 +205,31 @@ static int __init save_microcode_in_init
- 	return ret;
- }
- 
--struct cpio_data find_microcode_in_initrd(const char *path, bool use_pa)
-+struct cpio_data find_microcode_in_initrd(const char *path)
- {
- #ifdef CONFIG_BLK_DEV_INITRD
- 	unsigned long start = 0;
- 	size_t size;
- 
- #ifdef CONFIG_X86_32
--	struct boot_params *params;
--
--	if (use_pa)
--		params = (struct boot_params *)__pa_nodebug(&boot_params);
--	else
--		params = &boot_params;
--
--	size = params->hdr.ramdisk_size;
--
-+	size = boot_params.hdr.ramdisk_size;
- 	/*
- 	 * Set start only if we have an initrd image. We cannot use initrd_start
- 	 * because it is not set that early yet.
- 	 */
- 	if (size)
--		start = params->hdr.ramdisk_image;
-+		start = boot_params.hdr.ramdisk_image;
- 
--# else /* CONFIG_X86_64 */
-+#else /* CONFIG_X86_64 */
- 	size  = (unsigned long)boot_params.ext_ramdisk_size << 32;
- 	size |= boot_params.hdr.ramdisk_size;
- 
- 	if (size) {
- 		start  = (unsigned long)boot_params.ext_ramdisk_image << 32;
- 		start |= boot_params.hdr.ramdisk_image;
--
- 		start += PAGE_OFFSET;
- 	}
--# endif
-+#endif
- 
- 	/*
- 	 * Fixup the start address: after reserve_initrd() runs, initrd_start
-@@ -270,23 +240,10 @@ struct cpio_data find_microcode_in_initr
- 	 * initrd_gone is for the hotplug case where we've thrown out initrd
- 	 * already.
- 	 */
--	if (!use_pa) {
--		if (initrd_gone)
--			return (struct cpio_data){ NULL, 0, "" };
--		if (initrd_start)
--			start = initrd_start;
--	} else {
--		/*
--		 * The picture with physical addresses is a bit different: we
--		 * need to get the *physical* address to which the ramdisk was
--		 * relocated, i.e., relocated_ramdisk (not initrd_start) and
--		 * since we're running from physical addresses, we need to access
--		 * relocated_ramdisk through its *physical* address too.
--		 */
--		u64 *rr = (u64 *)__pa_nodebug(&relocated_ramdisk);
--		if (*rr)
--			start = *rr;
--	}
-+	if (initrd_gone)
-+		return (struct cpio_data){ NULL, 0, "" };
-+	if (initrd_start)
-+		start = initrd_start;
- 
- 	return find_cpio_data(path, (void *)start, size, NULL);
- #else /* !CONFIG_BLK_DEV_INITRD */
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -319,15 +319,8 @@ static void save_microcode_patch(struct
- 	if (!intel_find_matching_signature(p->data, uci->cpu_sig.sig, uci->cpu_sig.pf))
- 		return;
- 
--	/*
--	 * Save for early loading. On 32-bit, that needs to be a physical
--	 * address as the APs are running from physical addresses, before
--	 * paging has been enabled.
--	 */
--	if (IS_ENABLED(CONFIG_X86_32))
--		intel_ucode_patch = (struct microcode_intel *)__pa_nodebug(p->data);
--	else
--		intel_ucode_patch = p->data;
-+	/* Save for early loading */
-+	intel_ucode_patch = p->data;
- }
- 
- /*
-@@ -420,66 +413,10 @@ static bool load_builtin_intel_microcode
- 	return false;
- }
- 
--static void print_ucode_info(int old_rev, int new_rev, unsigned int date)
--{
--	pr_info_once("updated early: 0x%x -> 0x%x, date = %04x-%02x-%02x\n",
--		     old_rev,
--		     new_rev,
--		     date & 0xffff,
--		     date >> 24,
--		     (date >> 16) & 0xff);
--}
--
--#ifdef CONFIG_X86_32
--
--static int delay_ucode_info;
--static int current_mc_date;
--static int early_old_rev;
--
--/*
-- * Print early updated ucode info after printk works. This is delayed info dump.
-- */
--void show_ucode_info_early(void)
--{
--	struct ucode_cpu_info uci;
--
--	if (delay_ucode_info) {
--		intel_cpu_collect_info(&uci);
--		print_ucode_info(early_old_rev, uci.cpu_sig.rev, current_mc_date);
--		delay_ucode_info = 0;
--	}
--}
--
--/*
-- * At this point, we can not call printk() yet. Delay printing microcode info in
-- * show_ucode_info_early() until printk() works.
-- */
--static void print_ucode(int old_rev, int new_rev, int date)
--{
--	int *delay_ucode_info_p;
--	int *current_mc_date_p;
--	int *early_old_rev_p;
--
--	delay_ucode_info_p = (int *)__pa_nodebug(&delay_ucode_info);
--	current_mc_date_p = (int *)__pa_nodebug(&current_mc_date);
--	early_old_rev_p = (int *)__pa_nodebug(&early_old_rev);
--
--	*delay_ucode_info_p = 1;
--	*current_mc_date_p = date;
--	*early_old_rev_p = old_rev;
--}
--#else
--
--static inline void print_ucode(int old_rev, int new_rev, int date)
--{
--	print_ucode_info(old_rev, new_rev, date);
--}
--#endif
--
--static int apply_microcode_early(struct ucode_cpu_info *uci, bool early)
-+static int apply_microcode_early(struct ucode_cpu_info *uci)
- {
- 	struct microcode_intel *mc;
--	u32 rev, old_rev;
-+	u32 rev, old_rev, date;
- 
- 	mc = uci->mc;
- 	if (!mc)
-@@ -513,11 +450,9 @@ static int apply_microcode_early(struct
- 
- 	uci->cpu_sig.rev = rev;
- 
--	if (early)
--		print_ucode(old_rev, uci->cpu_sig.rev, mc->hdr.date);
--	else
--		print_ucode_info(old_rev, uci->cpu_sig.rev, mc->hdr.date);
--
-+	date = mc->hdr.date;
-+	pr_info_once("updated early: 0x%x -> 0x%x, date = %04x-%02x-%02x\n",
-+		     old_rev, rev, date & 0xffff, date >> 24, (date >> 16) & 0xff);
- 	return 0;
- }
- 
-@@ -535,7 +470,7 @@ int __init save_microcode_in_initrd_inte
- 	intel_ucode_patch = NULL;
- 
- 	if (!load_builtin_intel_microcode(&cp))
--		cp = find_microcode_in_initrd(ucode_path, false);
-+		cp = find_microcode_in_initrd(ucode_path);
- 
- 	if (!(cp.data && cp.size))
- 		return 0;
-@@ -551,21 +486,11 @@ int __init save_microcode_in_initrd_inte
-  */
- static struct microcode_intel *__load_ucode_intel(struct ucode_cpu_info *uci)
- {
--	static const char *path;
- 	struct cpio_data cp;
--	bool use_pa;
--
--	if (IS_ENABLED(CONFIG_X86_32)) {
--		path	  = (const char *)__pa_nodebug(ucode_path);
--		use_pa	  = true;
--	} else {
--		path	  = ucode_path;
--		use_pa	  = false;
--	}
- 
- 	/* try built-in microcode first */
- 	if (!load_builtin_intel_microcode(&cp))
--		cp = find_microcode_in_initrd(path, use_pa);
-+		cp = find_microcode_in_initrd(ucode_path);
- 
- 	if (!(cp.data && cp.size))
- 		return NULL;
-@@ -586,30 +511,21 @@ void __init load_ucode_intel_bsp(void)
- 
- 	uci.mc = patch;
- 
--	apply_microcode_early(&uci, true);
-+	apply_microcode_early(&uci);
- }
- 
- void load_ucode_intel_ap(void)
- {
--	struct microcode_intel *patch, **iup;
- 	struct ucode_cpu_info uci;
- 
--	if (IS_ENABLED(CONFIG_X86_32))
--		iup = (struct microcode_intel **) __pa_nodebug(&intel_ucode_patch);
--	else
--		iup = &intel_ucode_patch;
--
--	if (!*iup) {
--		patch = __load_ucode_intel(&uci);
--		if (!patch)
-+	if (!intel_ucode_patch) {
-+		intel_ucode_patch = __load_ucode_intel(&uci);
-+		if (!intel_ucode_patch)
- 			return;
--
--		*iup = patch;
- 	}
- 
--	uci.mc = *iup;
--
--	apply_microcode_early(&uci, true);
-+	uci.mc = intel_ucode_patch;
-+	apply_microcode_early(&uci);
- }
- 
- static struct microcode_intel *find_patch(struct ucode_cpu_info *uci)
-@@ -647,7 +563,7 @@ void reload_ucode_intel(void)
- 
- 	uci.mc = p;
- 
--	apply_microcode_early(&uci, false);
-+	apply_microcode_early(&uci);
- }
- 
- static int collect_cpu_info(int cpu_num, struct cpu_signature *csig)
---- a/arch/x86/kernel/cpu/microcode/internal.h
-+++ b/arch/x86/kernel/cpu/microcode/internal.h
-@@ -44,7 +44,7 @@ struct microcode_ops {
- };
- 
- extern struct ucode_cpu_info ucode_cpu_info[];
--struct cpio_data find_microcode_in_initrd(const char *path, bool use_pa);
-+struct cpio_data find_microcode_in_initrd(const char *path);
- 
- #define MAX_UCODE_COUNT 128
- 
---- a/arch/x86/kernel/head32.c
-+++ b/arch/x86/kernel/head32.c
-@@ -19,6 +19,7 @@
- #include <asm/apic.h>
- #include <asm/io_apic.h>
- #include <asm/bios_ebda.h>
-+#include <asm/microcode.h>
- #include <asm/tlbflush.h>
- #include <asm/bootparam_utils.h>
- 
-@@ -34,6 +35,8 @@ asmlinkage __visible void __init __noret
- 	/* Make sure IDT is set up before any exception happens */
- 	idt_setup_early_handler();
- 
-+	load_ucode_bsp();
-+
- 	cr4_init_shadow();
- 
- 	sanitize_boot_params(&boot_params);
---- a/arch/x86/kernel/head_32.S
-+++ b/arch/x86/kernel/head_32.S
-@@ -118,11 +118,6 @@ SYM_CODE_START(startup_32)
- 	movl %eax, pa(olpc_ofw_pgd)
- #endif
- 
--#ifdef CONFIG_MICROCODE
--	/* Early load ucode on BSP. */
--	call load_ucode_bsp
--#endif
--
- 	/* Create early pagetables. */
- 	call  mk_early_pgtbl_32
- 
-@@ -157,11 +152,6 @@ SYM_FUNC_START(startup_32_smp)
- 	movl %eax,%ss
- 	leal -__PAGE_OFFSET(%ecx),%esp
- 
--#ifdef CONFIG_MICROCODE
--	/* Early load ucode on AP. */
--	call load_ucode_ap
--#endif
--
- .Ldefault_entry:
- 	movl $(CR0_STATE & ~X86_CR0_PG),%eax
- 	movl %eax,%cr0
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -258,12 +258,9 @@ static void notrace start_secondary(void
- 	cpu_init_exception_handling();
- 
- 	/*
--	 * 32-bit systems load the microcode from the ASM startup code for
--	 * historical reasons.
--	 *
--	 * On 64-bit systems load it before reaching the AP alive
--	 * synchronization point below so it is not part of the full per
--	 * CPU serialized bringup part when "parallel" bringup is enabled.
-+	 * Load the microcode before reaching the AP alive synchronization
-+	 * point below so it is not part of the full per CPU serialized
-+	 * bringup part when "parallel" bringup is enabled.
- 	 *
- 	 * That's even safe when hyperthreading is enabled in the CPU as
- 	 * the core code starts the primary threads first and leaves the
-@@ -276,8 +273,7 @@ static void notrace start_secondary(void
- 	 * CPUID, MSRs etc. must be strictly serialized to maintain
- 	 * software state correctness.
- 	 */
--	if (IS_ENABLED(CONFIG_X86_64))
--		load_ucode_ap();
-+	load_ucode_ap();
- 
- 	/*
- 	 * Synchronization point with the hotplug core. Sets this CPUs
+SGkgTWFyYywNCg0KPiBPbiAxOCBTZXAgMjAyMywgYXQgMDk6NDAsIE1hcmMgWnluZ2llciA8bWF6
+QGtlcm5lbC5vcmc+IHdyb3RlOg0KPiANCj4gSGkgTWlndWVsLA0KPiANCj4gT24gV2VkLCAxMyBT
+ZXAgMjAyMyAxOTo1MjowNyArMDEwMCwNCj4gTWlndWVsIEx1aXMgPG1pZ3VlbC5sdWlzQG9yYWNs
+ZS5jb20+IHdyb3RlOg0KPj4gDQo+PiBTb21lIF9FTDEgcmVnaXN0ZXJzIGdvdCBpbmNsdWRlZCBp
+biB0aGUgX0VMMiByYW5nZXMsIHdoaWNoIGFyZSBub3QNCj4+IGFmZmVjdGVkIGJ5IE5WLiBSZW1v
+dmUgdGhlbSBhbmQgZmluZSBncmFpbiB0aGUgcmFuZ2VzIHRvIGV4Y2x1c2l2ZWx5DQo+PiBpbmNs
+dWRlIHRoZSBfRUwyIG9uZXMuDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IE1pZ3VlbCBMdWlzIDxt
+aWd1ZWwubHVpc0BvcmFjbGUuY29tPg0KPj4gLS0tDQo+PiBhcmNoL2FybTY0L2t2bS9lbXVsYXRl
+LW5lc3RlZC5jIHwgNDQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tDQo+PiAxIGZp
+bGUgY2hhbmdlZCwgMzggaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkNCj4+IA0KPj4gZGlm
+ZiAtLWdpdCBhL2FyY2gvYXJtNjQva3ZtL2VtdWxhdGUtbmVzdGVkLmMgYi9hcmNoL2FybTY0L2t2
+bS9lbXVsYXRlLW5lc3RlZC5jDQo+PiBpbmRleCA5Y2VkMWJmMGMyYjcuLjlhYTFjMDZhYmRiNyAx
+MDA2NDQNCj4+IC0tLSBhL2FyY2gvYXJtNjQva3ZtL2VtdWxhdGUtbmVzdGVkLmMNCj4+ICsrKyBi
+L2FyY2gvYXJtNjQva3ZtL2VtdWxhdGUtbmVzdGVkLmMNCj4+IEBAIC02NDksMTQgKzY0OSw0NiBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IGVuY29kaW5nX3RvX3RyYXBfY29uZmlnIGVuY29kaW5nX3Rv
+X2NndFtdIF9faW5pdGNvbnN0ID0gew0KPj4gU1JfVFJBUChTWVNfQVBHQUtFWUhJX0VMMSwgQ0dU
+X0hDUl9BUEspLA0KPj4gLyogQWxsIF9FTDIgcmVnaXN0ZXJzICovDQo+PiBTUl9SQU5HRV9UUkFQ
+KHN5c19yZWcoMywgNCwgMCwgMCwgMCksDQo+PiAtICAgICAgIHN5c19yZWcoMywgNCwgMywgMTUs
+IDcpLCBDR1RfSENSX05WKSwNCj4+ICsgc3lzX3JlZygzLCA0LCA0LCAwLCAxKSwgQ0dUX0hDUl9O
+ViksDQo+IA0KPiBJdCB3b3VsZCBiZSBnb29kIGlmIHRoZSBjb21taXQgbWVzc2FnZSBleHBsYWlu
+ZWQgdGhhdCB5b3UgYXJlIGZvbGRpbmcNCj4gU1BTUi9FTFIgaW50byB0aGUgZXhpc3RpbmcgcmFu
+Z2UuIEFsc28sIHBsZWFzZSBrZWVwIHRoZSB0d28gZW5kcyBvZg0KPiB0aGUgcmFuZ2VzIHZlcnRp
+Y2FsbHkgYWxpZ25lZC4NCj4gDQoNCk9LLg0KDQo+PiAvKiBTa2lwIHRoZSBTUF9FTDEgZW5jb2Rp
+bmcuLi4gKi8NCj4+IC0gU1JfVFJBUChTWVNfU1BTUl9FTDIsIENHVF9IQ1JfTlYpLA0KPj4gLSBT
+Ul9UUkFQKFNZU19FTFJfRUwyLCBDR1RfSENSX05WKSwNCj4+IC0gU1JfUkFOR0VfVFJBUChzeXNf
+cmVnKDMsIDQsIDQsIDEsIDEpLA0KPj4gLSAgICAgICBzeXNfcmVnKDMsIDQsIDEwLCAxNSwgNyks
+IENHVF9IQ1JfTlYpLA0KPj4gKyBTUl9SQU5HRV9UUkFQKHN5c19yZWcoMywgNCwgNCwgMywgMCks
+DQo+PiArIHN5c19yZWcoMywgNCwgMTAsIDYsIDcpLCBDR1RfSENSX05WKSwNCj4+ICsgLyogc2tp
+cCBNRUNJRF9BMF9FTDIsIE1FQ0lEX0ExX0VMMiwgTUVDSURfUDBfRUwyLA0KPj4gKyAgKiAgICAg
+IE1FQ0lEX1AxX0VMMiwgTUVDSURSX0VMMiwgVk1FQ0lEX0FfRUwyLA0KPj4gKyAgKiAgICAgIFZN
+RUNJRF9QX0VMMi4NCj4+ICsgICovDQo+IA0KPiBQbGVhc2UgZm9sbG93IHRoZSBrZXJuZWwgY29t
+bWVudCBmb3JtYXQuIEFsc28sIHdoeSBhcmUgeW91IHNraXBwaW5nDQo+IHRoZSBNRUMgcmVnaXN0
+ZXJzLCBidXQgbm90IHRoZSBNUEFNIG9uZXM/IEF0IGxlYXN0IGluZGljYXRlIGENCj4gcmF0aW9u
+YWxlIGZvciB0aGlzLg0KPiANCg0KSeKAmW0gbm90IGF3YXJlIG9mIGFueSBleGNlcHRpb25zIGZv
+ciBNUEFNIHJlZ2lzdGVycywgYWx0aG91Z2ggdGhlcmUgYXJlIGZvciBNRUMNCndoZW4gSENSX0VM
+Mi5OVjIgaXMgMC4NCg0KPj4gU1JfUkFOR0VfVFJBUChzeXNfcmVnKDMsIDQsIDEyLCAwLCAwKSwN
+Cj4+IC0gICAgICAgc3lzX3JlZygzLCA0LCAxNCwgMTUsIDcpLCBDR1RfSENSX05WKSwNCj4+ICsg
+c3lzX3JlZygzLCA0LCAxMiwgMSwgMSksIENHVF9IQ1JfTlYpLA0KPj4gKyAvKiBJQ0hfQVAwUjxt
+Pl9FTDIgKi8NCj4+ICsgU1JfUkFOR0VfVFJBUChTWVNfSUNIX0FQMFIwX0VMMiwNCj4+ICsgU1lT
+X0lDSF9BUDBSM19FTDIsIENHVF9IQ1JfTlYpLA0KPj4gKyAvKiBJQ0hfQVAxUjxtPl9FTDIgKi8N
+Cj4+ICsgU1JfUkFOR0VfVFJBUChTWVNfSUNIX0FQMVIwX0VMMiwNCj4+ICsgU1lTX0lDSF9BUDFS
+M19FTDIsIENHVF9IQ1JfTlYpLA0KPj4gKyBTUl9SQU5HRV9UUkFQKHN5c19yZWcoMywgNCwgMTIs
+IDksIDUpLA0KPj4gKyBzeXNfcmVnKDMsIDQsIDEyLCAxMSwgNyksIENHVF9IQ1JfTlYpLA0KPj4g
+KyAvKiBJQ0hfTFI8bT5fRUwyICovDQo+PiArIFNSX1RSQVAoU1lTX0lDSF9MUjBfRUwyLCBDR1Rf
+SENSX05WKSwNCj4+ICsgU1JfVFJBUChTWVNfSUNIX0xSMV9FTDIsIENHVF9IQ1JfTlYpLA0KPj4g
+KyBTUl9UUkFQKFNZU19JQ0hfTFIyX0VMMiwgQ0dUX0hDUl9OViksDQo+PiArIFNSX1RSQVAoU1lT
+X0lDSF9MUjNfRUwyLCBDR1RfSENSX05WKSwNCj4+ICsgU1JfVFJBUChTWVNfSUNIX0xSNF9FTDIs
+IENHVF9IQ1JfTlYpLA0KPj4gKyBTUl9UUkFQKFNZU19JQ0hfTFI1X0VMMiwgQ0dUX0hDUl9OViks
+DQo+PiArIFNSX1RSQVAoU1lTX0lDSF9MUjZfRUwyLCBDR1RfSENSX05WKSwNCj4+ICsgU1JfVFJB
+UChTWVNfSUNIX0xSN19FTDIsIENHVF9IQ1JfTlYpLA0KPj4gKyBTUl9UUkFQKFNZU19JQ0hfTFI4
+X0VMMiwgQ0dUX0hDUl9OViksDQo+PiArIFNSX1RSQVAoU1lTX0lDSF9MUjlfRUwyLCBDR1RfSENS
+X05WKSwNCj4+ICsgU1JfVFJBUChTWVNfSUNIX0xSMTBfRUwyLCBDR1RfSENSX05WKSwNCj4+ICsg
+U1JfVFJBUChTWVNfSUNIX0xSMTFfRUwyLCBDR1RfSENSX05WKSwNCj4+ICsgU1JfVFJBUChTWVNf
+SUNIX0xSMTJfRUwyLCBDR1RfSENSX05WKSwNCj4+ICsgU1JfVFJBUChTWVNfSUNIX0xSMTNfRUwy
+LCBDR1RfSENSX05WKSwNCj4+ICsgU1JfVFJBUChTWVNfSUNIX0xSMTRfRUwyLCBDR1RfSENSX05W
+KSwNCj4+ICsgU1JfVFJBUChTWVNfSUNIX0xSMTVfRUwyLCBDR1RfSENSX05WKSwNCj4gDQo+IFlv
+dSBjb3VsZCBkZXNjcmliZSBhbGwgdGhlIExScyBhIHNpbmdsZSByYW5nZS4NCj4gDQoNClNob3Vs
+ZCB3ZSBza2lwIHRoZSBnYXAgYmV0d2VlbiBMUjcgLSBMUjggPw0KDQo+PiArIFNSX1JBTkdFX1RS
+QVAoc3lzX3JlZygzLCA0LCAxMywgMCwgMSksDQo+PiArIHN5c19yZWcoMywgNCwgMTMsIDAsIDcp
+LCBDR1RfSENSX05WKSwNCj4+ICsgLyogc2tpcCBBTUVWQ05UVk9GRjA8bj5fRUwyIGFuZCBBTUVW
+Q05UVk9GRjE8bj5fRUwyICovDQo+IA0KPiBXaHk/DQoNCkkgZGlkbuKAmXQgZmluZCBpdHMgZGVm
+aW5pdGlvbiBUQkggYWx0aG91Z2ggdGhlc2UgY291bGQgdXNlIGEgc2luZ2xlIHJhbmdlLg0KDQpU
+aGFua3MsDQoNCk1pZ3VlbA0KDQo+IA0KPj4gKyBTUl9SQU5HRV9UUkFQKHN5c19yZWcoMywgNCwg
+MTQsIDAsIDMpLA0KPj4gKyBzeXNfcmVnKDMsIDQsIDE0LCA1LCAyKSwgQ0dUX0hDUl9OViksDQo+
+PiAvKiBBbGwgX0VMMDIsIF9FTDEyIHJlZ2lzdGVycyAqLw0KPj4gU1JfUkFOR0VfVFJBUChzeXNf
+cmVnKDMsIDUsIDAsIDAsIDApLA0KPj4gICAgICAgc3lzX3JlZygzLCA1LCAxMCwgMTUsIDcpLCBD
+R1RfSENSX05WKSwNCj4gDQo+IFRoYW5rcywNCj4gDQo+IE0uDQo+IA0KPiAtLSANCj4gV2l0aG91
+dCBkZXZpYXRpb24gZnJvbSB0aGUgbm9ybSwgcHJvZ3Jlc3MgaXMgbm90IHBvc3NpYmxlLg0KDQoN
+Cg==
