@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2317A6F9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CBE7A6FA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbjISXl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
+        id S233421AbjISXr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjISXlX (ORCPT
+        with ESMTP id S229521AbjISXr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 19:41:23 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21F3AB
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:41:13 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-579de633419so59978717b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:41:13 -0700 (PDT)
+        Tue, 19 Sep 2023 19:47:26 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EDAA4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:47:19 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34fcc39fae1so53645ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:47:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695166873; x=1695771673; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695167239; x=1695772039; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hFzzEQcg0oCAYp6IDtstgD1417eSwBjinvoSO5GqpVA=;
-        b=xBHjfKxQcEzXJK8JsRFdgqs3bz+HBXGTCWi7/3aezUO3UOPNj0nGdht7CbUoHAPCoz
-         ry3I5ZSa9m/YVZjJ6hhU3PW9VI91oZJIQIOFqeqsm2H50Jt0Sff6CMKwHTItf/bHYN2l
-         JOdeR1FIYUXLpeioCcsQ2GDlWjjyLyTPGgo4oVWDISRYWhSExWEZW/+Iun2kyvbNygO4
-         LlQqceBL3rntU/loPxfAGSP8qzHGbWZFlx1siAuQIH2vv8C5xEzoH7+bjeGVHn0h4Bs4
-         ogTErqm2DeZyUuayguDQEXdUTRlgix8nGQK+efJBEtA4c8FY/24jG0xcY0G3wmcCzBGX
-         nzVQ==
+        bh=7LJF4TQQlvwx4ojH6z1jq1dM6I4h5d3t3AXqcpM3/xU=;
+        b=f6Rby23axHUdQpgZwRHacrjGldF6HN9WriTSNI3oZdAgmVO9Crz7ImhBlaLf+edNYm
+         TscL4rURR3DhlY8QTNjRGXtQ8D0ghwQSiWmJ0m0VUN+/P55tAm3afT34LtV/AVbHzlgA
+         GEl3ne9U9bbEZ/cf8Br0cWVTfxUA3WbKuE5U0/A99GwZE4St4cuBNGF3Pi8T4R3Buk67
+         vf0NWiVM/2NOjb1klF48/bNiVUq4TNjuepfEmO76IK5zpetk8ZqRp2NtQtbqqQz7taY5
+         JrprMCdazMKG+5ByEHdByis840lXnKkZ7v6Pcz0SDYn15x2aulZzr7YOjxahLXjTaSWh
+         jJYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695166873; x=1695771673;
+        d=1e100.net; s=20230601; t=1695167239; x=1695772039;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hFzzEQcg0oCAYp6IDtstgD1417eSwBjinvoSO5GqpVA=;
-        b=qZ8nKWZm1ZPZ1eBKWwMNSsemBoEpPp//VVyRcdJeqlqt6jK412EzfS+1DqaHSiaOHF
-         Nd90IU/HK4uDj6tzEsvfM4rRgKXCmZvi6hCE70CtndRdZQdUM10zc9/xTqzmIfQkokhe
-         8BU+AS2D3IZ9PguGUWfjKa3Bo2/glJXi9XGC6UDEwu8JpXUJPlRsWlYn6oHq0zXBTnn2
-         Set/uNVPM1evm+8jYegRl1p3wFlF7yRP9vPn12omv/XEDC7cWbuM1WEch8L8uxTFRPTN
-         lF/Pk1ngVioW05lMCPOgdbBYBMIP+x5dfcAmU+gAWkE0Q7Sd+DlMjbbFRBGLVEOr4GPv
-         tW9g==
-X-Gm-Message-State: AOJu0YydA8dYH6so1H0wzG+iFEz+8R+Br8JdGtFTczY0hodOryfx18zU
-        UfzrLLNr5Ku/Iv3qYTS57RAawUcSeM3H/ukXFO5wNQ==
-X-Google-Smtp-Source: AGHT+IErPJBCUDoPSQGtcV8GsniSxrr/tJoGUsFEkuf95yge+XDFTPXoPPMZ5hTqcizQdgvnSlSC9zJMCN7n3QYLmQM=
-X-Received: by 2002:a0d:ce44:0:b0:583:741c:5fe6 with SMTP id
- q65-20020a0dce44000000b00583741c5fe6mr754641ywd.52.1695166872587; Tue, 19 Sep
- 2023 16:41:12 -0700 (PDT)
+        bh=7LJF4TQQlvwx4ojH6z1jq1dM6I4h5d3t3AXqcpM3/xU=;
+        b=tbl3U6jRUrPJ+Il0Q1UBgmMMEzoIKqMRUrr6VueVzbILTZCv2/VoCAcDiFiF+se/1H
+         YR9TskFadeT7hMwPxfRhe9gI+2Qkbf/NnXY2hTpz3Sf/d+7jUeLggNoF+K00v+DheKUE
+         tKqlxZodaJU+wrZtxypqFKj0mdrXGTDaRfKIKn1M38t5emxi558r+G8O7q648DLT9SrW
+         gtY279k1Vc67RQAazk69ZJhIrYB3ncsil9v8LUOMc5xWGVDoUXcKDsA4KKetn73hgG/2
+         a34c9TYtYk6aNsHBQb09h61HI7+jHwnkn63EKDggh4/ydPjMveeOD5Pb3rwQ1lWAczfK
+         Xd/Q==
+X-Gm-Message-State: AOJu0YwS08LtHFkwZ9DVz558mHq8BTwwcPZc5Lcq7jN/me9qC/v8kc1c
+        e/e33JwdIwdVkB2/3WlDuBCY//KQlEuqd9TnmV4Y
+X-Google-Smtp-Source: AGHT+IGd+oxQSxw85Bd0zjhKfrnCmqrGPjS7bL32Al57eH/zbnuOVcqZXrWXgoYT+h6WDLt9al1FrU7dkwKZqspXE6Q=
+X-Received: by 2002:a05:6e02:1c4b:b0:349:2d91:e1a2 with SMTP id
+ d11-20020a056e021c4b00b003492d91e1a2mr60657ilg.5.1695167238808; Tue, 19 Sep
+ 2023 16:47:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230914152620.2743033-1-surenb@google.com> <20230914152620.2743033-3-surenb@google.com>
- <CAG48ez0gN_nC8NrMOeq44QmUDT27EpT0bFuNu1ReVKDBt3zy7Q@mail.gmail.com> <CAJuCfpGdbc70aZPu=cNgemK1EFUyvLfZU8ELSjseZtfpSF+EEg@mail.gmail.com>
-In-Reply-To: <CAJuCfpGdbc70aZPu=cNgemK1EFUyvLfZU8ELSjseZtfpSF+EEg@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 19 Sep 2023 16:40:59 -0700
-Message-ID: <CAJuCfpHFOLLDC4z9RWMwJdFr3pkPQYH9_XFK4GNrPX9=dO9VpA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     Jann Horn <jannh@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+ <20230911125936.10648-12-yunfei.dong@mediatek.com> <d02953725e7ae17e75bff235acfd30327d0fe9ac.camel@collabora.com>
+ <CA+ddPcOFksu6JzXZf0QOFeRDAyX=m0k+t8zwg2DbVmAkweobyg@mail.gmail.com> <1d19be1f21d579b529231882d761554d758db5b4.camel@collabora.com>
+In-Reply-To: <1d19be1f21d579b529231882d761554d758db5b4.camel@collabora.com>
+From:   Jeffrey Kardatzke <jkardatzke@google.com>
+Date:   Tue, 19 Sep 2023 16:47:03 -0700
+Message-ID: <CA+ddPcNSa_nW8Gtjck6bdWKHwN6OoASwwEYadR_9Z7eg=Su2rA@mail.gmail.com>
+Subject: Re: [PATCH 11/14] media: medkatek: vcodec: covert secure fd to secure handle
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Cc:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        =?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,599 +86,240 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 4:08=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Thu, Sep 14, 2023 at 7:28=E2=80=AFPM Jann Horn <jannh@google.com> wrot=
-e:
-> >
-> > On Thu, Sep 14, 2023 at 5:26=E2=80=AFPM Suren Baghdasaryan <surenb@goog=
-le.com> wrote:
-> > >
-> > > From: Andrea Arcangeli <aarcange@redhat.com>
-> > >
-> > > This implements the uABI of UFFDIO_REMAP.
-> > >
-> > > Notably one mode bitflag is also forwarded (and in turn known) by the
-> > > lowlevel remap_pages method.
-> > >
-> > > Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > > ---
-> > >  fs/userfaultfd.c                 |  49 +++
-> > >  include/linux/rmap.h             |   5 +
-> > >  include/linux/userfaultfd_k.h    |  17 +
-> > >  include/uapi/linux/userfaultfd.h |  22 ++
-> > >  mm/huge_memory.c                 | 118 +++++++
-> > >  mm/khugepaged.c                  |   3 +
-> > >  mm/userfaultfd.c                 | 586 +++++++++++++++++++++++++++++=
-++
-> > >  7 files changed, 800 insertions(+)
-> > >
-> > > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > > index 56eaae9dac1a..7bf64e7541c1 100644
-> > > --- a/fs/userfaultfd.c
-> > > +++ b/fs/userfaultfd.c
-> > > @@ -2027,6 +2027,52 @@ static inline unsigned int uffd_ctx_features(_=
-_u64 user_features)
-> > >         return (unsigned int)user_features | UFFD_FEATURE_INITIALIZED=
-;
-> > >  }
-> > >
-> > > +static int userfaultfd_remap(struct userfaultfd_ctx *ctx,
-> > > +                            unsigned long arg)
-> > > +{
-> > > +       __s64 ret;
-> > > +       struct uffdio_remap uffdio_remap;
-> > > +       struct uffdio_remap __user *user_uffdio_remap;
-> > > +       struct userfaultfd_wake_range range;
-> > > +
-> > > +       user_uffdio_remap =3D (struct uffdio_remap __user *) arg;
-> > > +
-> > > +       ret =3D -EFAULT;
-> > > +       if (copy_from_user(&uffdio_remap, user_uffdio_remap,
-> > > +                          /* don't copy "remap" last field */
-> > > +                          sizeof(uffdio_remap)-sizeof(__s64)))
-> > > +               goto out;
-> > > +
-> > > +       ret =3D validate_range(ctx->mm, uffdio_remap.dst, uffdio_rema=
-p.len);
-> > > +       if (ret)
-> > > +               goto out;
-> > > +       ret =3D validate_range(current->mm, uffdio_remap.src, uffdio_=
-remap.len);
-> > > +       if (ret)
-> > > +               goto out;
-> > > +       ret =3D -EINVAL;
-> > > +       if (uffdio_remap.mode & ~(UFFDIO_REMAP_MODE_ALLOW_SRC_HOLES|
-> > > +                                 UFFDIO_REMAP_MODE_DONTWAKE))
-> > > +               goto out;
-> >
->
-> Sorry for the delay with the answers...
->
-> > Do you not need mmget_not_zero(ctx->mm) to make sure the MM can't be
-> > concurrently torn down while remap_pages() is running, similar to what
-> > the other userfaultfd ioctl handlers do?
->
-> Yes, I do need that. Will add.
->
->
-> >
-> > > +       ret =3D remap_pages(ctx->mm, current->mm,
-> > > +                         uffdio_remap.dst, uffdio_remap.src,
-> > > +                         uffdio_remap.len, uffdio_remap.mode);
-> > > +       if (unlikely(put_user(ret, &user_uffdio_remap->remap)))
-> > > +               return -EFAULT;
-> > > +       if (ret < 0)
-> > > +               goto out;
-> > > +       /* len =3D=3D 0 would wake all */
-> > > +       BUG_ON(!ret);
-> > > +       range.len =3D ret;
-> > > +       if (!(uffdio_remap.mode & UFFDIO_REMAP_MODE_DONTWAKE)) {
-> > > +               range.start =3D uffdio_remap.dst;
-> > > +               wake_userfault(ctx, &range);
-> > > +       }
-> > > +       ret =3D range.len =3D=3D uffdio_remap.len ? 0 : -EAGAIN;
-> > > +out:
-> > > +       return ret;
-> > > +}
-> > [...]
-> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > > index 064fbd90822b..c7a9880a1f6a 100644
-> > > --- a/mm/huge_memory.c
-> > > +++ b/mm/huge_memory.c
-> > > @@ -1932,6 +1932,124 @@ int change_huge_pmd(struct mmu_gather *tlb, s=
-truct vm_area_struct *vma,
-> > >         return ret;
-> > >  }
-> > >
-> > > +#ifdef CONFIG_USERFAULTFD
-> > > +/*
-> > > + * The PT lock for src_pmd and the mmap_lock for reading are held by
-> > > + * the caller, but it must return after releasing the
-> > > + * page_table_lock. We're guaranteed the src_pmd is a pmd_trans_huge
-> > > + * until the PT lock of the src_pmd is released. Just move the page
-> > > + * from src_pmd to dst_pmd if possible. Return zero if succeeded in
-> > > + * moving the page, -EAGAIN if it needs to be repeated by the caller=
-,
-> > > + * or other errors in case of failure.
-> > > + */
-> > > +int remap_pages_huge_pmd(struct mm_struct *dst_mm,
-> > > +                        struct mm_struct *src_mm,
-> > > +                        pmd_t *dst_pmd, pmd_t *src_pmd,
-> > > +                        pmd_t dst_pmdval,
-> > > +                        struct vm_area_struct *dst_vma,
-> > > +                        struct vm_area_struct *src_vma,
-> > > +                        unsigned long dst_addr,
-> > > +                        unsigned long src_addr)
-> > > +{
-> > > +       pmd_t _dst_pmd, src_pmdval;
-> > > +       struct page *src_page;
-> > > +       struct anon_vma *src_anon_vma, *dst_anon_vma;
-> > > +       spinlock_t *src_ptl, *dst_ptl;
-> > > +       pgtable_t pgtable;
-> > > +       struct mmu_notifier_range range;
-> > > +
-> > > +       src_pmdval =3D *src_pmd;
-> > > +       src_ptl =3D pmd_lockptr(src_mm, src_pmd);
-> > > +
-> > > +       BUG_ON(!pmd_trans_huge(src_pmdval));
-> > > +       BUG_ON(!pmd_none(dst_pmdval));
-> >
-> > Why can we assert that pmd_none(dst_pmdval) is true here? Can we not
-> > have concurrent faults (or userfaultfd operations) populating that
-> > PMD?
->
-> IIUC dst_pmdval is a copy of the value from dst_pmd, so that local
-> copy should not change even if some concurrent operation changes
-> dst_pmd. We can assert that it's pmd_none because we checked for that
-> before calling remap_pages_huge_pmd. Later on we check if dst_pmd
-> changed from under us (see pmd_same(*dst_pmd, dst_pmdval) check) and
-> retry if that happened.
->
-> >
-> > > +       BUG_ON(!spin_is_locked(src_ptl));
-> > > +       mmap_assert_locked(src_mm);
-> > > +       mmap_assert_locked(dst_mm);
-> > > +       BUG_ON(src_addr & ~HPAGE_PMD_MASK);
-> > > +       BUG_ON(dst_addr & ~HPAGE_PMD_MASK);
-> > > +
-> > > +       src_page =3D pmd_page(src_pmdval);
-> > > +       BUG_ON(!PageHead(src_page));
-> > > +       BUG_ON(!PageAnon(src_page));
-> > > +       if (unlikely(page_mapcount(src_page) !=3D 1)) {
-> > > +               spin_unlock(src_ptl);
-> > > +               return -EBUSY;
-> > > +       }
-> > > +
-> > > +       get_page(src_page);
-> > > +       spin_unlock(src_ptl);
-> > > +
-> > > +       mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, src_mm, =
-src_addr,
-> > > +                               src_addr + HPAGE_PMD_SIZE);
-> > > +       mmu_notifier_invalidate_range_start(&range);
-> > > +
-> > > +       /* block all concurrent rmap walks */
-> > > +       lock_page(src_page);
-> > > +
-> > > +       /*
-> > > +        * split_huge_page walks the anon_vma chain without the page
-> > > +        * lock. Serialize against it with the anon_vma lock, the pag=
-e
-> > > +        * lock is not enough.
-> > > +        */
-> > > +       src_anon_vma =3D folio_get_anon_vma(page_folio(src_page));
-> > > +       if (!src_anon_vma) {
-> > > +               unlock_page(src_page);
-> > > +               put_page(src_page);
-> > > +               mmu_notifier_invalidate_range_end(&range);
-> > > +               return -EAGAIN;
-> > > +       }
-> > > +       anon_vma_lock_write(src_anon_vma);
-> > > +
-> > > +       dst_ptl =3D pmd_lockptr(dst_mm, dst_pmd);
-> > > +       double_pt_lock(src_ptl, dst_ptl);
-> > > +       if (unlikely(!pmd_same(*src_pmd, src_pmdval) ||
-> > > +                    !pmd_same(*dst_pmd, dst_pmdval) ||
-> > > +                    page_mapcount(src_page) !=3D 1)) {
-> > > +               double_pt_unlock(src_ptl, dst_ptl);
-> > > +               anon_vma_unlock_write(src_anon_vma);
-> > > +               put_anon_vma(src_anon_vma);
-> > > +               unlock_page(src_page);
-> > > +               put_page(src_page);
-> > > +               mmu_notifier_invalidate_range_end(&range);
-> > > +               return -EAGAIN;
-> > > +       }
-> > > +
-> > > +       BUG_ON(!PageHead(src_page));
-> > > +       BUG_ON(!PageAnon(src_page));
-> > > +       /* the PT lock is enough to keep the page pinned now */
-> > > +       put_page(src_page);
-> > > +
-> > > +       dst_anon_vma =3D (void *) dst_vma->anon_vma + PAGE_MAPPING_AN=
-ON;
-> > > +       WRITE_ONCE(src_page->mapping, (struct address_space *) dst_an=
-on_vma);
-> > > +       WRITE_ONCE(src_page->index, linear_page_index(dst_vma, dst_ad=
-dr));
-> > > +
-> > > +       if (!pmd_same(pmdp_huge_clear_flush(src_vma, src_addr, src_pm=
-d),
-> > > +                     src_pmdval))
-> > > +               BUG_ON(1);
-> >
-> > I'm not sure we can assert that the PMDs are exactly equal; the CPU
-> > might have changed the A/D bits under us?
->
-> Yes. I wonder if I can simply remove the BUG_ON here like this:
->
-> src_pmdval =3D pmdp_huge_clear_flush(src_vma, src_addr, src_pmd);
->
-> Technically we don't use src_pmdval after this but for the possible
-> future use that would keep things correct. If A/D bits changed from
-> under us we will still copy correct values into dst_pmd.
->
-> >
-> > > +       _dst_pmd =3D mk_huge_pmd(src_page, dst_vma->vm_page_prot);
-> > > +       _dst_pmd =3D maybe_pmd_mkwrite(pmd_mkdirty(_dst_pmd), dst_vma=
-);
-> > > +       set_pmd_at(dst_mm, dst_addr, dst_pmd, _dst_pmd);
-> > > +
-> > > +       pgtable =3D pgtable_trans_huge_withdraw(src_mm, src_pmd);
-> > > +       pgtable_trans_huge_deposit(dst_mm, dst_pmd, pgtable);
-> >
-> > Are we allowed to move page tables between mm_structs on all
-> > architectures? The first example I found that looks a bit dodgy,
-> > looking through various architectures' pte_alloc_one(), is s390's
-> > page_table_alloc() which looks like page tables are tied to per-MM
-> > lists sometimes.
-> > If that's not allowed, we might have to allocate a new deposit table
-> > and free the old one or something like that.
->
-> Hmm. Yeah, looks like in the case of !CONFIG_PGSTE the table can be
-> linked to mm->context.pgtable_list, so can't be moved to another mm. I
-> guess I'll have to keep a pgtable allocated, ready to be deposited and
-> free the old one. Maybe it's worth having an arch-specific function
-> indicating whether moving a pgtable between MMs is supported? Or do it
-> separately as an optimization. WDYT?
->
-> >
-> > > +       if (dst_mm !=3D src_mm) {
-> > > +               add_mm_counter(dst_mm, MM_ANONPAGES, HPAGE_PMD_NR);
-> > > +               add_mm_counter(src_mm, MM_ANONPAGES, -HPAGE_PMD_NR);
-> > > +       }
-> > > +       double_pt_unlock(src_ptl, dst_ptl);
-> > > +
-> > > +       anon_vma_unlock_write(src_anon_vma);
-> > > +       put_anon_vma(src_anon_vma);
-> > > +
-> > > +       /* unblock rmap walks */
-> > > +       unlock_page(src_page);
-> > > +
-> > > +       mmu_notifier_invalidate_range_end(&range);
-> > > +       return 0;
-> > > +}
-> > > +#endif /* CONFIG_USERFAULTFD */
-> > > +
-> > >  /*
-> > >   * Returns page table lock pointer if a given pmd maps a thp, NULL o=
-therwise.
-> > >   *
-> > [...]
-> > > diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> > > index 96d9eae5c7cc..0cca60dfa8f8 100644
-> > > --- a/mm/userfaultfd.c
-> > > +++ b/mm/userfaultfd.c
-> > [...]
-> > > +ssize_t remap_pages(struct mm_struct *dst_mm, struct mm_struct *src_=
-mm,
-> > > +                   unsigned long dst_start, unsigned long src_start,
-> > > +                   unsigned long len, __u64 mode)
-> > > +{
-> > [...]
-> > > +
-> > > +       if (pgprot_val(src_vma->vm_page_prot) !=3D
-> > > +           pgprot_val(dst_vma->vm_page_prot))
-> > > +               goto out;
-> >
-> > Does this check intentionally allow moving pages from a
-> > PROT_READ|PROT_WRITE anonymous private VMA into a PROT_READ anonymous
-> > private VMA (on architectures like x86 and arm64 where CoW memory has
-> > the same protection flags as read-only memory), but forbid moving them
-> > from a PROT_READ|PROT_EXEC VMA into a PROT_READ VMA? I think this
-> > check needs at least a comment to explain what's going on here.
->
-> The check is simply to ensure the VMAs have the same access
-> permissions to prevent page copies that should have different
-> permissions. The fact that x86 and arm64 have the same protection bits
-> for R/O and COW memory is a "side-effect" IMHO. I'm not sure what
-> comment would be good here but I'm open to suggestions.
->
-> >
-> > > +       /* only allow remapping if both are mlocked or both aren't */
-> > > +       if ((src_vma->vm_flags & VM_LOCKED) ^ (dst_vma->vm_flags & VM=
-_LOCKED))
-> > > +               goto out;
-> > > +
-> > > +       /*
-> > > +        * Be strict and only allow remap_pages if either the src or
-> > > +        * dst range is registered in the userfaultfd to prevent
-> > > +        * userland errors going unnoticed. As far as the VM
-> > > +        * consistency is concerned, it would be perfectly safe to
-> > > +        * remove this check, but there's no useful usage for
-> > > +        * remap_pages ouside of userfaultfd registered ranges. This
-> > > +        * is after all why it is an ioctl belonging to the
-> > > +        * userfaultfd and not a syscall.
-> > > +        *
-> > > +        * Allow both vmas to be registered in the userfaultfd, just
-> > > +        * in case somebody finds a way to make such a case useful.
-> > > +        * Normally only one of the two vmas would be registered in
-> > > +        * the userfaultfd.
-> > > +        */
-> > > +       if (!dst_vma->vm_userfaultfd_ctx.ctx &&
-> > > +           !src_vma->vm_userfaultfd_ctx.ctx)
-> > > +               goto out;
-> > > +
-> > > +       /*
-> > > +        * FIXME: only allow remapping across anonymous vmas,
-> > > +        * tmpfs should be added.
-> > > +        */
-> > > +       if (src_vma->vm_ops || dst_vma->vm_ops)
-> > > +               goto out;
-> >
-> > I don't think it's okay to check for anonymous VMAs by checking
-> > ->vm_ops. There are some weird drivers whose ->mmap helpers don't set
-> > ->vm_ops and instead just shove all the necessary PTEs into the VMA
-> > right on ->mmap, so I think they end up with ->vm_ops=3D=3DNULL. For
-> > example, kcov_mmap() looks that way. I'm not sure how common this is.
-> >
-> > Though, uuuuuh, I guess if that's true, the existing
-> > vma_is_anonymous() is broken, since that also just checks ->vm_ops?
-> > I'm not sure what the consequences of that would be... Either way,
-> > vma_is_anonymous() might be the better way to check for anonymous VMAs
-> > here, and someone should figure out whether vma_is_anonymous() needs
-> > to be fixed.
->
-> Absolutely, vma_is_anonymous() should have been used here. Will fix it.
->
-> >
-> > > +       /*
-> > > +        * Ensure the dst_vma has a anon_vma or this page
-> > > +        * would get a NULL anon_vma when moved in the
-> > > +        * dst_vma.
-> > > +        */
-> > > +       err =3D -ENOMEM;
-> > > +       if (unlikely(anon_vma_prepare(dst_vma)))
-> > > +               goto out;
-> > > +
-> > > +       for (src_addr =3D src_start, dst_addr =3D dst_start;
-> > > +            src_addr < src_start + len;) {
-> > > +               spinlock_t *ptl;
-> > > +               pmd_t dst_pmdval;
-> > > +
-> > > +               BUG_ON(dst_addr >=3D dst_start + len);
-> > > +               src_pmd =3D mm_find_pmd(src_mm, src_addr);
-> >
-> > (this would blow up pretty badly if we could have transparent huge PUD
-> > in the region but I think that's limited to file VMAs so it's fine as
-> > it currently is)
->
-> Should I add a comment here as a warning if in the future we decide to
-> implement support for file-backed pages?
->
-> >
-> > > +               if (unlikely(!src_pmd)) {
-> > > +                       if (!(mode & UFFDIO_REMAP_MODE_ALLOW_SRC_HOLE=
-S)) {
-> > > +                               err =3D -ENOENT;
-> > > +                               break;
-> > > +                       }
-> > > +                       src_pmd =3D mm_alloc_pmd(src_mm, src_addr);
-> > > +                       if (unlikely(!src_pmd)) {
-> > > +                               err =3D -ENOMEM;
-> > > +                               break;
-> > > +                       }
-> > > +               }
-> > > +               dst_pmd =3D mm_alloc_pmd(dst_mm, dst_addr);
-> > > +               if (unlikely(!dst_pmd)) {
-> > > +                       err =3D -ENOMEM;
-> > > +                       break;
-> > > +               }
-> > > +
-> > > +               dst_pmdval =3D pmdp_get_lockless(dst_pmd);
-> > > +               /*
-> > > +                * If the dst_pmd is mapped as THP don't
-> > > +                * override it and just be strict.
-> > > +                */
-> > > +               if (unlikely(pmd_trans_huge(dst_pmdval))) {
-> > > +                       err =3D -EEXIST;
-> > > +                       break;
-> > > +               }
-> >
-> > This check is racy because the dst_pmd can still change at this point,
-> > from previously pointing to a zeroed PMD to now pointing to a
-> > hugepage, right? And we rely on remap_pages_pte() and
-> > remap_pages_huge_pmd() to recheck for that?
-> > If yes, maybe add a comment noting this and explaining why we want this=
- check.
->
-> Yes, you are right. remap_pages_huge_pmd() does check
-> pmd_same(*dst_pmd, dst_pmdval) after doing double_pt_lock(), so it
-> will retry and exit on this check if dst_pmd got mapped as THP from
-> under us. remap_pages_pte() OTOH simply does
-> BUG_ON(pmd_trans_huge(*dst_pmd)), which is wrong. Instead it should
-> also check if PMD value changed from under us and retry in such a
-> case. I'll fix that and will add a comment here about this racy check
-> and the retry logic.
+I do agree having a cleaner mechanism for this is better. So ideally
+this control is dropped from v4l2 and it becomes another ioctl in
+dma-heap instead so there's a uAPI for it. Then for the driver usages
+of sg_dma_address to get secure handles, those could be converted into
+dma-buf heap kernel APIs so they're not trying to reuse the dma_addr.
 
-Actually, remap_pages_pte() also indirectly handles the case when
-dst_pmd changes from under us with this code:
-
-dst_pte =3D pte_offset_map_nolock(dst_mm, dst_pmd, dst_addr, &dst_ptl);
-/* If an huge pmd materialized from under us fail */
-if (unlikely(!dst_pte)) {
-        err =3D -EFAULT;
-        goto out;
-}
-
-so, it would fail if someone concurrently mapped a THP at that
-location. Seems like this race is handled, so the only thing left here
-is to add a comment clarifying this.
-
+On Tue, Sep 19, 2023 at 4:03=E2=80=AFPM Nicolas Dufresne
+<nicolas.dufresne@collabora.com> wrote:
+>
+> Le mardi 19 septembre 2023 =C3=A0 15:38 -0700, Jeffrey Kardatzke a =C3=A9=
+crit :
+> > On Tue, Sep 19, 2023 at 12:43=E2=80=AFPM Nicolas Dufresne
+> > <nicolas.dufresne@collabora.com> wrote:
+> > >
+> > > Le lundi 11 septembre 2023 =C3=A0 20:59 +0800, Yunfei Dong a =C3=A9cr=
+it :
+> > > > User driver will fill or parse data in optee-os with secure handle,
+> > > > need to covert secure fd to secure handle in kernel.
+> > > >
+> > > > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> > > > ---
+> > > >  .../vcodec/decoder/mtk_vcodec_dec_drv.c       |  1 +
+> > > >  .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 54 +++++++++++++++=
++++-
+> > > >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  5 ++
+> > > >  include/uapi/linux/v4l2-controls.h            |  4 ++
+> > > >  4 files changed, 62 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vco=
+dec_dec_drv.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_d=
+ec_drv.c
+> > > > index 0a89ce452ac3..64e006820f43 100644
+> > > > --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec=
+_drv.c
+> > > > +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec=
+_drv.c
+> > > > @@ -571,3 +571,4 @@ module_platform_driver(mtk_vcodec_dec_driver);
+> > > >
+> > > >  MODULE_LICENSE("GPL v2");
+> > > >  MODULE_DESCRIPTION("Mediatek video codec V4L2 decoder driver");
+> > > > +MODULE_IMPORT_NS(DMA_BUF);
+> > > > diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vco=
+dec_dec_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vc=
+odec_dec_stateless.c
+> > > > index 2ea517883a86..d2b09ce9f1cf 100644
+> > > > --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec=
+_stateless.c
+> > > > +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec=
+_stateless.c
+> > > > @@ -426,6 +426,46 @@ static int mtk_vcodec_get_pic_info(struct mtk_=
+vcodec_dec_ctx *ctx)
+> > > >       return ret;
+> > > >  }
+> > > >
+> > > > +static int mtk_dma_contig_get_secure_handle(struct mtk_vcodec_dec_=
+ctx *ctx, int fd)
+> > > > +{
+> > > > +     int secure_handle =3D 0;
+> > > > +     struct dma_buf *buf;
+> > > > +     struct dma_buf_attachment *dba;
+> > > > +     struct sg_table *sgt;
+> > > > +     struct device *dev =3D &ctx->dev->plat_dev->dev;
+> > > > +
+> > > > +     buf =3D dma_buf_get(fd);
+> > > > +     if (IS_ERR(buf)) {
+> > > > +             mtk_v4l2_vdec_err(ctx, "dma_buf_get fail fd:%d", fd);
+> > > > +             return 0;
+> > > > +     }
+> > > > +
+> > > > +     dba =3D dma_buf_attach(buf, dev);
+> > > > +     if (IS_ERR(dba)) {
+> > > > +             mtk_v4l2_vdec_err(ctx, "dma_buf_attach fail fd:%d", f=
+d);
+> > > > +             goto err_attach;
+> > > > +     }
+> > > > +
+> > > > +     sgt =3D dma_buf_map_attachment(dba, DMA_BIDIRECTIONAL);
+> > > > +     if (IS_ERR(sgt)) {
+> > > > +             mtk_v4l2_vdec_err(ctx, "dma_buf_map_attachment fail f=
+d:%d", fd);
+> > > > +             goto err_map;
+> > > > +     }
+> > > > +     secure_handle =3D sg_dma_address(sgt->sgl);
+> > >
+> > > Does it mean if your secure dmabuf is passed to a driver that didn't =
+know it was
+> > > secure it will pick the handle as a memory address and program the HW=
+ with it ?
+> > > That seems unsafe, the handle should be stored in a dedicated place a=
+nd mapping
+> > > should either fail, or provide a dummy buffer.
+> >
+> > Since the secure dmabufs don't support any mmap/cpu access to them and
+> > return -EPERM in those cases; wouldn't that prevent misuse of them in
+> > other places? (so the mmap operation and CPU access will fail, but
+> > getting the SG list from the dmabuf succeeds)
+>
+> My impression is that if userspace can pass this FD to a driver without t=
+elling
+> the driver it is secure memory, the driver may potentially crash trying t=
+o use
+> the handle as an memory address.
+>
+> In my opinion, sg_dma_address() should return addresses, like its name st=
+ate. If
+> you want to get something else, you should find another way to obtain it.
+>
+> Nicolas
 >
 > >
-> > > +               ptl =3D pmd_trans_huge_lock(src_pmd, src_vma);
-> > > +               if (ptl) {
-> > > +                       /*
-> > > +                        * Check if we can move the pmd without
-> > > +                        * splitting it. First check the address
-> > > +                        * alignment to be the same in src/dst.  Thes=
-e
-> > > +                        * checks don't actually need the PT lock but
-> > > +                        * it's good to do it here to optimize this
-> > > +                        * block away at build time if
-> > > +                        * CONFIG_TRANSPARENT_HUGEPAGE is not set.
-> > > +                        */
-> > > +                       if (thp_aligned =3D=3D -1)
-> > > +                               thp_aligned =3D ((src_addr & ~HPAGE_P=
-MD_MASK) =3D=3D
-> > > +                                              (dst_addr & ~HPAGE_PMD=
-_MASK));
-> > > +                       if (!thp_aligned || (src_addr & ~HPAGE_PMD_MA=
-SK) ||
-> >
-> > This seems overly complicated, the only case when you can move a huge
-> > PMD is if both addresses are hugepage-aligned and you have enough
-> > length for one hugepage:
-> >
-> > (src_addr & ~HPAGE_PMD_MASK) =3D=3D 0 && (dst_addr & ~HPAGE_PMD_MASK) =
-=3D=3D 0
-> > && (src_start + len - src_addr >=3D HPAGE_PMD_SIZE).
+> > >
+> > > > +
+> > > > +     dma_buf_unmap_attachment(dba, sgt, DMA_BIDIRECTIONAL);
+> > > > +     dma_buf_detach(buf, dba);
+> > > > +     dma_buf_put(buf);
+> > > > +
+> > > > +     return secure_handle;
+> > > > +err_map:
+> > > > +     dma_buf_detach(buf, dba);
+> > > > +err_attach:
+> > > > +     dma_buf_put(buf);
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > >  static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctrl)
+> > > >  {
+> > > >       struct mtk_vcodec_dec_ctx *ctx =3D ctrl_to_dec_ctx(ctrl);
+> > > > @@ -436,7 +476,7 @@ static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ct=
+rl)
+> > > >       struct v4l2_ctrl *hdr_ctrl;
+> > > >       const struct mtk_vcodec_dec_pdata *dec_pdata =3D ctx->dev->vd=
+ec_pdata;
+> > > >       const struct mtk_video_fmt *fmt;
+> > > > -     int i =3D 0, ret =3D 0;
+> > > > +     int i =3D 0, ret =3D 0, sec_fd;
+> > > >
+> > > >       hdr_ctrl =3D ctrl;
+> > > >       if (!hdr_ctrl || !hdr_ctrl->p_new.p)
+> > > > @@ -489,6 +529,12 @@ static int mtk_vdec_s_ctrl(struct v4l2_ctrl *c=
+trl)
+> > > >                       return -EINVAL;
+> > > >               }
+> > > >               break;
+> > > > +     case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:
+> > > > +             sec_fd =3D ctrl->val;
+> > > > +
+> > > > +             ctrl->val =3D mtk_dma_contig_get_secure_handle(ctx, c=
+trl->val);
+> > > > +             mtk_v4l2_vdec_dbg(3, ctx, "get secure handle: %d =3D>=
+ 0x%x", sec_fd, ctrl->val);
+> > > > +             break;
+> > > >       default:
+> > > >               mtk_v4l2_vdec_dbg(3, ctx, "Not supported to set ctrl =
+id: 0x%x\n", hdr_ctrl->id);
+> > > >               return ret;
+> > > > @@ -525,8 +571,9 @@ static const struct v4l2_ctrl_ops mtk_vcodec_de=
+c_ctrl_ops =3D {
+> > > >  static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcodec_dec_ctx *c=
+tx)
+> > > >  {
+> > > >       unsigned int i;
+> > > > +     struct v4l2_ctrl *ctrl;
+> > > >
+> > > > -     v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS);
+> > > > +     v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS + 1);
+> > > >       if (ctx->ctrl_hdl.error) {
+> > > >               mtk_v4l2_vdec_err(ctx, "v4l2_ctrl_handler_init failed=
+\n");
+> > > >               return ctx->ctrl_hdl.error;
+> > > > @@ -543,6 +590,9 @@ static int mtk_vcodec_dec_ctrls_setup(struct mt=
+k_vcodec_dec_ctx *ctx)
+> > > >               }
+> > > >       }
+> > > >
+> > > > +     ctrl =3D v4l2_ctrl_new_std(&ctx->ctrl_hdl, &mtk_vcodec_dec_ct=
+rl_ops,
+> > > > +                              V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE,=
+ 0, 65535, 1, 0);
+> > > > +
+> > > >       v4l2_ctrl_handler_setup(&ctx->ctrl_hdl);
+> > > >
+> > > >       return 0;
+> > > > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/me=
+dia/v4l2-core/v4l2-ctrls-defs.c
+> > > > index 8696eb1cdd61..d8cf01f76aab 100644
+> > > > --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > > > +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > > > @@ -1041,6 +1041,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+> > > >       case V4L2_CID_MPEG_VIDEO_HEVC_SIZE_OF_LENGTH_FIELD:     retur=
+n "HEVC Size of Length Field";
+> > > >       case V4L2_CID_MPEG_VIDEO_REF_NUMBER_FOR_PFRAMES:        retur=
+n "Reference Frames for a P-Frame";
+> > > >       case V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR:         retur=
+n "Prepend SPS and PPS to IDR";
+> > > > +     case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:               retur=
+n "MediaTek Decoder get secure handle";
+> > > >
+> > > >       /* AV1 controls */
+> > > >       case V4L2_CID_MPEG_VIDEO_AV1_PROFILE:                   retur=
+n "AV1 Profile";
+> > > > @@ -1437,6 +1438,10 @@ void v4l2_ctrl_fill(u32 id, const char **nam=
+e, enum v4l2_ctrl_type *type,
+> > > >       case V4L2_CID_MPEG_VIDEO_VPX_NUM_REF_FRAMES:
+> > > >               *type =3D V4L2_CTRL_TYPE_INTEGER_MENU;
+> > > >               break;
+> > > > +     case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:
+> > > > +             *type =3D V4L2_CTRL_TYPE_INTEGER;
+> > > > +             *flags |=3D V4L2_CTRL_FLAG_WRITE_ONLY;
+> > > > +             break;
+> > > >       case V4L2_CID_USER_CLASS:
+> > > >       case V4L2_CID_CAMERA_CLASS:
+> > > >       case V4L2_CID_CODEC_CLASS:
+> > > > diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linu=
+x/v4l2-controls.h
+> > > > index c3604a0a3e30..7b3694985366 100644
+> > > > --- a/include/uapi/linux/v4l2-controls.h
+> > > > +++ b/include/uapi/linux/v4l2-controls.h
+> > > > @@ -954,6 +954,10 @@ enum v4l2_mpeg_mfc51_video_force_frame_type {
+> > > >  #define V4L2_CID_MPEG_MFC51_VIDEO_H264_ADAPTIVE_RC_STATIC         =
+   (V4L2_CID_CODEC_MFC51_BASE+53)
+> > > >  #define V4L2_CID_MPEG_MFC51_VIDEO_H264_NUM_REF_PIC_FOR_P          =
+   (V4L2_CID_CODEC_MFC51_BASE+54)
+> > > >
+> > > > +/*  MPEG-class control IDs specific to the MediaTek Decoder driver=
+ as defined by V4L2 */
+> > > > +#define V4L2_CID_MPEG_MTK_BASE                       (V4L2_CTRL_CL=
+ASS_CODEC | 0x2000)
+> > > > +#define V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE  (V4L2_CID_MPEG_MTK_BA=
+SE+8)
+> > > > +
+> > > >  /*  Camera class control IDs */
+> > > >
+> > > >  #define V4L2_CID_CAMERA_CLASS_BASE   (V4L2_CTRL_CLASS_CAMERA | 0x9=
+00)
+> > >
 >
-> Ack.
->
-> >
-> > > +                           !pmd_none(dst_pmdval) ||
-> > > +                           src_start + len - src_addr < HPAGE_PMD_SI=
-ZE) {
-> > > +                               spin_unlock(ptl);
-> > > +                               /* Fall through */
-> > > +                               split_huge_pmd(src_vma, src_pmd, src_=
-addr);
-> > > +                       } else {
-> > > +                               err =3D remap_pages_huge_pmd(dst_mm,
-> > > +                                                          src_mm,
-> > > +                                                          dst_pmd,
-> > > +                                                          src_pmd,
-> > > +                                                          dst_pmdval=
-,
-> > > +                                                          dst_vma,
-> > > +                                                          src_vma,
-> > > +                                                          dst_addr,
-> > > +                                                          src_addr);
-> > > +                               cond_resched();
-> > > +
-> > > +                               if (!err) {
-> > > +                                       dst_addr +=3D HPAGE_PMD_SIZE;
-> > > +                                       src_addr +=3D HPAGE_PMD_SIZE;
-> > > +                                       moved +=3D HPAGE_PMD_SIZE;
-> > > +                               }
-> > > +
-> > > +                               if ((!err || err =3D=3D -EAGAIN) &&
-> > > +                                   fatal_signal_pending(current))
-> > > +                                       err =3D -EINTR;
-> > > +
-> > > +                               if (err && err !=3D -EAGAIN)
-> > > +                                       break;
-> > > +
-> > > +                               continue;
-> > > +                       }
-> > > +               }
-> > > +
-> > > +               if (pmd_none(*src_pmd)) {
-> > > +                       if (!(mode & UFFDIO_REMAP_MODE_ALLOW_SRC_HOLE=
-S)) {
-> > > +                               err =3D -ENOENT;
-> > > +                               break;
-> > > +                       }
-> > > +                       if (unlikely(__pte_alloc(src_mm, src_pmd))) {
-> > > +                               err =3D -ENOMEM;
-> > > +                               break;
-> > > +                       }
-> > > +               }
-> > > +
-> > > +               if (unlikely(pmd_none(dst_pmdval)) &&
-> > > +                   unlikely(__pte_alloc(dst_mm, dst_pmd))) {
-> >
-> > Maybe just use pte_alloc() here?
->
-> Ack.
->
-> >
-> > > +                       err =3D -ENOMEM;
-> > > +                       break;
-> > > +               }
-> > > +
-> > > +               err =3D remap_pages_pte(dst_mm, src_mm,
-> > > +                                     dst_pmd, src_pmd,
-> > > +                                     dst_vma, src_vma,
-> > > +                                     dst_addr, src_addr,
-> > > +                                     mode);
-> > > +
-> > > +               cond_resched();
-> > > +
-> > > +               if (!err) {
-> > > +                       dst_addr +=3D PAGE_SIZE;
-> > > +                       src_addr +=3D PAGE_SIZE;
-> > > +                       moved +=3D PAGE_SIZE;
-> > > +               }
-> > > +
-> > > +               if ((!err || err =3D=3D -EAGAIN) &&
-> > > +                   fatal_signal_pending(current))
-> > > +                       err =3D -EINTR;
-> > > +
-> > > +               if (err && err !=3D -EAGAIN)
-> > > +                       break;
-> > > +       }
-> > > +
-> > > +out:
-> > > +       mmap_read_unlock(dst_mm);
-> > > +       if (dst_mm !=3D src_mm)
-> > > +               mmap_read_unlock(src_mm);
-> > > +       BUG_ON(moved < 0);
-> > > +       BUG_ON(err > 0);
-> > > +       BUG_ON(!moved && !err);
-> > > +       return moved ? moved : err;
-> > > +}
-> >
-> > Maybe you could try whether this function would look simpler with a
-> > shape roughly like:
-> >
-> > for (src_addr =3D ...; src_addr < ...;) {
-> >   unsigned long step_size;
-> >
-> >   if (hugepage case) {
-> >     if (have to split) {
-> >       split it;
-> >       continue;
-> >     }
-> >     step_size =3D HPAGE_PMD_SIZE;
-> >     ...
-> >   } else {
-> >     ... 4k case ...
-> >     step_size =3D PAGE_SIZE;
-> >   }
-> >   ...
-> >   cond_resched();
-> >   if (!err) {
-> >     dst_addr +=3D step_size;
-> >     src_addr +=3D step_size;
-> >     moved +=3D step_size;
-> >   }
->
-> Yeah, that looks simpler. I'll try that, thanks!
->
-> >   ...
-> > }
