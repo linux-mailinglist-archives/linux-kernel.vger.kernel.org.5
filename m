@@ -2,276 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194F57A60AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88ACC7A6058
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbjISLGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
+        id S231879AbjISK5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 06:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232048AbjISLFp (ORCPT
+        with ESMTP id S232022AbjISK5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:05:45 -0400
+        Tue, 19 Sep 2023 06:57:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435EECF4;
-        Tue, 19 Sep 2023 03:55:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87EE8C433C9;
-        Tue, 19 Sep 2023 10:55:22 +0000 (UTC)
-Message-ID: <91fbf033-f02b-4a06-8bf0-0bf5bfca26a0@xs4all.nl>
-Date:   Tue, 19 Sep 2023 12:55:21 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB533CFE
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 03:55:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20B8EC433CB;
+        Tue, 19 Sep 2023 10:55:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695120926;
+        bh=IZ8QHJlzaFVxxzy8OGWmG+Rj9SpjIEfIWOgoiQgccBU=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=JBxY5iduN7o1cY2/4GRVtfKDsiE5Czm1sRnrsmpKbPXFLKag17D1QnWrAp9D6nwC7
+         nhJX8SRi7cThfE0ydIw9yiQk6ibqbtA14P8RTON3iLJa9cmnWhWca1M76LMnHxR3SW
+         EZRqEpT6fj/hGTOgSp5+Z7z41xovqfUIgecZ1q7ls4pIc4z0YtWGNIFdzvCKrN8z1H
+         STN8vbE3QG4ksq62bVDLghmQaIRYaQdgxScC/gNRPhRXZ/1yNCMhuC7hFmbIAZm7gc
+         GSjopSPNrG7MRCWvR53hU3/5fYFTyugoqQfF+GxUnaIaK50USE3zcGVzD5RLT/pW9d
+         Fm3TVxk16BB7w==
+Received: (nullmailer pid 3135077 invoked by uid 1000);
+        Tue, 19 Sep 2023 10:55:23 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 12/49] media: videobuf2: Be more flexible on the number
- of queue stored buffers
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
- <20230914133323.198857-13-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230914133323.198857-13-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+Cc:     alsa-devel@alsa-project.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, conor+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20230919090739.2448-1-bragathemanick0908@gmail.com>
+References: <20230919090739.2448-1-bragathemanick0908@gmail.com>
+Message-Id: <169512092376.3135048.3729589976906559665.robh@kernel.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: tfa9879: Convert to dtschema
+Date:   Tue, 19 Sep 2023 05:55:23 -0500
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 15:32, Benjamin Gaignard wrote:
-> Add 'max_allowed_buffers' field in vb2_queue struct to let drivers decide
-> how many buffers could be stored in a queue.
-> This request 'bufs' array to be allocated at queue init time and freed
 
-I think this is a typo:
-
-request -> requires
-
-> when releasing the queue.
-> By default VB2_MAX_FRAME remains the limit.
+On Tue, 19 Sep 2023 14:37:39 +0530, Bragatheswaran Manickavel wrote:
+> Convert the tfa9879 audio CODEC bindings to DT schema
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
 > ---
->  .../media/common/videobuf2/videobuf2-core.c   | 40 ++++++++++++++-----
->  .../media/common/videobuf2/videobuf2-v4l2.c   |  4 +-
->  include/media/videobuf2-core.h                |  4 +-
->  3 files changed, 35 insertions(+), 13 deletions(-)
+>  .../bindings/sound/nxp,tfa9879.yaml           | 45 +++++++++++++++++++
+>  .../devicetree/bindings/sound/tfa9879.txt     | 23 ----------
+>  2 files changed, 45 insertions(+), 23 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/tfa9879.txt
 > 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index afe76577acc1..ee4df7c68397 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -411,7 +411,7 @@ static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
->   */
->  static bool vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, unsigned int index)
->  {
-> -	if (index < VB2_MAX_FRAME && !q->bufs[index]) {
-> +	if (index < q->max_allowed_buffers && !q->bufs[index]) {
 
-I'm not sure I like the name 'max_allowed_buffers'. How about 'max_num_buffers'?
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Also, as mentioned in a previous patch review, I don't think you should
-need this check at all in this function. It should assume that the index is
-valid, and any checks should happen (and probably already do) in the caller.
+yamllint warnings/errors:
 
->  		q->bufs[index] = vb;
->  		vb->index = index;
->  		vb->vb2_queue = q;
-> @@ -428,7 +428,7 @@ static bool vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, uns
->   */
->  static void vb2_queue_remove_buffer(struct vb2_queue *q, struct vb2_buffer *vb)
->  {
-> -	if (vb->index < VB2_MAX_FRAME) {
-> +	if (vb->index < q->max_allowed_buffers) {
->  		q->bufs[vb->index] = NULL;
->  		vb->vb2_queue = NULL;
->  	}
-> @@ -449,9 +449,9 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->  	struct vb2_buffer *vb;
->  	int ret;
->  
-> -	/* Ensure that q->num_buffers+num_buffers is below VB2_MAX_FRAME */
-> +	/* Ensure that q->num_buffers+num_buffers is below q->max_allowed_buffers */
->  	num_buffers = min_t(unsigned int, num_buffers,
-> -			    VB2_MAX_FRAME - q->num_buffers);
-> +			    q->max_allowed_buffers - q->num_buffers);
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/sound/nxp,tfa9879.example.dts:22.27-40 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/sound/nxp,tfa9879.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
-In this context the name 'max_num_buffers' makes more sense than
-'max_allowed_buffers', IMHO.
+doc reference errors (make refcheckdocs):
+MAINTAINERS: Documentation/devicetree/bindings/sound/tfa9879.txt
 
->  
->  	for (buffer = 0; buffer < num_buffers; ++buffer) {
->  		/* Allocate vb2 buffer structures */
-> @@ -814,7 +814,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
->  	bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
->  	unsigned int i;
-> -	int ret;
-> +	int ret = 0;
->  
->  	if (q->streaming) {
->  		dprintk(q, 1, "streaming active\n");
-> @@ -858,17 +858,23 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->  	/*
->  	 * Make sure the requested values and current defaults are sane.
->  	 */
-> -	WARN_ON(q->min_buffers_needed > VB2_MAX_FRAME);
-> +	WARN_ON(q->min_buffers_needed > q->max_allowed_buffers);
->  	num_buffers = max_t(unsigned int, *count, q->min_buffers_needed);
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230919090739.2448-1-bragathemanick0908@gmail.com
 
-Given the name 'max_num_buffers' it would make sense to rename 'min_buffers_needed'
-to 'min_num_buffers'. It's a bit of a painful change though, so let's leave this
-as-is.
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-> -	num_buffers = min_t(unsigned int, num_buffers, VB2_MAX_FRAME);
-> +	num_buffers = min_t(unsigned int, num_buffers, q->max_allowed_buffers);
->  	memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
->  	/*
->  	 * Set this now to ensure that drivers see the correct q->memory value
->  	 * in the queue_setup op.
->  	 */
->  	mutex_lock(&q->mmap_lock);
-> +	if (!q->bufs)
-> +		q->bufs = kcalloc(q->max_allowed_buffers, sizeof(*q->bufs), GFP_KERNEL);
-> +	if (!q->bufs)
-> +		ret = -ENOMEM;
->  	q->memory = memory;
->  	mutex_unlock(&q->mmap_lock);
-> +	if (ret)
-> +		return ret;
->  	set_queue_coherency(q, non_coherent_mem);
->  
->  	/*
-> @@ -974,9 +980,9 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
->  	bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
->  	bool no_previous_buffers = !q->num_buffers;
-> -	int ret;
-> +	int ret = 0;
->  
-> -	if (q->num_buffers == VB2_MAX_FRAME) {
-> +	if (q->num_buffers == q->max_allowed_buffers) {
->  		dprintk(q, 1, "maximum number of buffers already allocated\n");
->  		return -ENOBUFS;
->  	}
-> @@ -993,7 +999,13 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  		 */
->  		mutex_lock(&q->mmap_lock);
->  		q->memory = memory;
-> +		if (!q->bufs)
-> +			q->bufs = kcalloc(q->max_allowed_buffers, sizeof(*q->bufs), GFP_KERNEL);
-> +		if (!q->bufs)
-> +			ret = -ENOMEM;
->  		mutex_unlock(&q->mmap_lock);
-> +		if (ret)
-> +			return ret;
->  		q->waiting_for_buffers = !q->is_output;
->  		set_queue_coherency(q, non_coherent_mem);
->  	} else {
-> @@ -1005,7 +1017,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  			return -EINVAL;
->  	}
->  
-> -	num_buffers = min(*count, VB2_MAX_FRAME - q->num_buffers);
-> +	num_buffers = min(*count, q->max_allowed_buffers - q->num_buffers);
->  
->  	if (requested_planes && requested_sizes) {
->  		num_planes = requested_planes;
-> @@ -2515,6 +2527,12 @@ int vb2_core_queue_init(struct vb2_queue *q)
->  
->  	q->memory = VB2_MEMORY_UNKNOWN;
->  
-> +	if (!q->max_allowed_buffers)
-> +		q->max_allowed_buffers = VB2_MAX_FRAME;
-> +
-> +	/* The maximum is limited by offset cookie encoding pattern */
-> +	q->max_allowed_buffers = min_t(unsigned int, q->max_allowed_buffers, BUFFER_INDEX_MASK + 1);
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-I think I would prefer this to be added to the sanity checks at the start:
+pip3 install dtschema --upgrade
 
-	WARN_ON(q->max_allowed_buffers > BUFFER_INDEX_MASK + 1)) ||
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
-I think we should also this check:
-
-	if (WARN_ON(q->max_allowed_buffers < VB2_MAX_FRAME) ||
-	    WARN_ON(q->min_buffers_needed > q->max_allowed_buffers))
-		return -EINVAL;
-
-Note that there is a "WARN_ON(q->min_buffers_needed > VB2_MAX_FRAME);" in
-vb2_core_reqbufs. That's really the wrong place, that should be checked here.
-So drop that WARN_ON in vb2_core_reqbufs.
-
-> +
->  	if (q->buf_struct_size == 0)
->  		q->buf_struct_size = sizeof(struct vb2_buffer);
->  
-> @@ -2539,6 +2557,8 @@ void vb2_core_queue_release(struct vb2_queue *q)
->  	__vb2_queue_cancel(q);
->  	mutex_lock(&q->mmap_lock);
->  	__vb2_queue_free(q, q->num_buffers);
-> +	kfree(q->bufs);
-> +	q->bufs = NULL;
->  	mutex_unlock(&q->mmap_lock);
->  }
->  EXPORT_SYMBOL_GPL(vb2_core_queue_release);
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index f460cac560f6..87c2d5916960 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -1156,7 +1156,7 @@ int _vb2_fop_release(struct file *file, struct mutex *lock)
->  
->  	if (lock)
->  		mutex_lock(lock);
-> -	if (file->private_data == vdev->queue->owner) {
-> +	if (!vdev->queue->owner || file->private_data == vdev->queue->owner) {
->  		vb2_queue_release(vdev->queue);
->  		vdev->queue->owner = NULL;
->  	}
-> @@ -1284,7 +1284,7 @@ void vb2_video_unregister_device(struct video_device *vdev)
->  	 */
->  	get_device(&vdev->dev);
->  	video_unregister_device(vdev);
-> -	if (vdev->queue && vdev->queue->owner) {
-> +	if (vdev->queue) {
->  		struct mutex *lock = vdev->queue->lock ?
->  			vdev->queue->lock : vdev->lock;
->  
-> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-> index cd3ff1cd759d..97153c69583f 100644
-> --- a/include/media/videobuf2-core.h
-> +++ b/include/media/videobuf2-core.h
-> @@ -558,6 +558,7 @@ struct vb2_buf_ops {
->   * @dma_dir:	DMA mapping direction.
->   * @bufs:	videobuf2 buffer structures
->   * @num_buffers: number of allocated/used buffers
-> + * @max_allowed_buffers: upper limit of number of allocated/used buffers
->   * @queued_list: list of buffers currently queued from userspace
->   * @queued_count: number of buffers queued and ready for streaming.
->   * @owned_by_drv_count: number of buffers owned by the driver
-> @@ -619,8 +620,9 @@ struct vb2_queue {
->  	struct mutex			mmap_lock;
->  	unsigned int			memory;
->  	enum dma_data_direction		dma_dir;
-> -	struct vb2_buffer		*bufs[VB2_MAX_FRAME];
-> +	struct vb2_buffer		**bufs;
->  	unsigned int			num_buffers;
-> +	unsigned int			max_allowed_buffers;
->  
->  	struct list_head		queued_list;
->  	unsigned int			queued_count;
-
-Regards,
-
-	Hans
