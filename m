@@ -2,332 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A915D7A575E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AC87A575F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbjISCV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 22:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
+        id S231126AbjISCX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 22:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbjISCVx (ORCPT
+        with ESMTP id S229698AbjISCXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 22:21:53 -0400
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAC3111;
-        Mon, 18 Sep 2023 19:21:44 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=35;SR=0;TI=SMTPD_---0VsPUals_1695090098;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VsPUals_1695090098)
-          by smtp.aliyun-inc.com;
-          Tue, 19 Sep 2023 10:21:40 +0800
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     rafael@kernel.org, wangkefeng.wang@huawei.com,
-        tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com,
-        linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com,
-        gregkh@linuxfoundation.org, will@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        stable@vger.kernel.org, x86@kernel.org, xueshuai@linux.alibaba.com,
-        justin.he@arm.com, ardb@kernel.org, ying.huang@intel.com,
-        ashish.kalra@amd.com, baolin.wang@linux.alibaba.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        jarkko@kernel.org, lenb@kernel.org, hpa@zytor.com,
-        robert.moore@intel.com, lvying6@huawei.com, xiexiuqi@huawei.com,
-        zhuo.song@linux.alibaba.com
-Subject: [RESEND PATCH v8 2/2] ACPI: APEI: handle synchronous exceptions in task work
-Date:   Tue, 19 Sep 2023 10:21:27 +0800
-Message-Id: <20230919022127.69732-3-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+        Mon, 18 Sep 2023 22:23:25 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E9E10A;
+        Mon, 18 Sep 2023 19:23:19 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68fe39555a0so4774308b3a.3;
+        Mon, 18 Sep 2023 19:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695090199; x=1695694999; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HPpSRzjJaCaf4D1jgJn/ubxCnO7O3efMaVWn3iI95Gs=;
+        b=nnFfH9audDNUcdPrcXUDYNpfbhvJNhYVavP0bq9V6LN6jwZZKmL5waWFuG/Uz5e491
+         tHtqjaPvF8BE7rDjcbSqhj72LDL0tBytBqAeDFn+ZRYKnqAuULmpYyMEdsWgjpP2r6ea
+         i736TVAnPTVpKzZFRQsg3LZk14VArLHMPb2cpChTwaMuVEqMKvufZPTcnucA333q5yi2
+         +S6qVQUsOh1ZRZUz6Tlv5hqHLfEdwjY+6ltFTz0zsKONZ4oJ+pVw43uEMlPOFDvwosX6
+         cRYN/unSxG1PIAA7DSrRHrcBUON/pIs3o/EDfNVCZUeXSh/vYc10PX+BgzgucEUSu5FP
+         Lhlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695090199; x=1695694999;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HPpSRzjJaCaf4D1jgJn/ubxCnO7O3efMaVWn3iI95Gs=;
+        b=IFNXQoeXstRRIo8IdPA+qD5WhQcKR97FR0nYDaU9a44Y+qS8B9Vin9LqWCUMwxkecg
+         46gV8WJWtj+SO3uDbIvWO0fbWmP3/SASri5bdc9heQKzr1gFmbHQjcyUTrA/dlj7Y3SM
+         4nd60PkrrVCGZU6HvaCCCkL7XymdB7yAsWOSH7qDg2lrDW3RSIoS9VmEKPGo3x0AptS4
+         04MhcrR3e/IZMfyXO4qxfHZ2fZmH3kyvYHkGFBZfJfvg7u6SU8L8P92paLyJh+kN+Oke
+         pw3aqJv+UvRHnUTG0pDNERQ3MC5sdTN76/K8YHY4oJD1H02el4lmcv+jsUHGkQud4n5p
+         Y71Q==
+X-Gm-Message-State: AOJu0YzjuaHvGTVx47l3irH1ldz/1pkcpv5HENZKRW4j1LxtteuumWGA
+        RLosXYBj0MH9uleqkgB2Cvo=
+X-Google-Smtp-Source: AGHT+IHkCaI/3LfzOykTLtUIR5QISDnGk5BtEJ+BJBbENkQzk/RE9BzmMVndAP/AI4EFJ6UOsWvHbQ==
+X-Received: by 2002:a05:6a21:2720:b0:157:609f:6012 with SMTP id rm32-20020a056a21272000b00157609f6012mr10718199pzb.61.1695090199202;
+        Mon, 18 Sep 2023 19:23:19 -0700 (PDT)
+Received: from ?IPV6:2600:8802:b00:4a48:e163:7509:9018:42b6? ([2600:8802:b00:4a48:e163:7509:9018:42b6])
+        by smtp.gmail.com with ESMTPSA id ji3-20020a170903324300b001c446dea2c5sm5662600plb.143.2023.09.18.19.23.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 19:23:18 -0700 (PDT)
+Message-ID: <f9099556-2360-41dc-8388-28a55dd2d588@gmail.com>
+Date:   Mon, 18 Sep 2023 19:23:16 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 3/3] net: axienet: Introduce dmaengine support
+Content-Language: en-US
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        michal.simek@amd.com, linux@armlinux.org.uk
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        git@amd.com
+References: <1695064615-3164315-1-git-send-email-radhey.shyam.pandey@amd.com>
+ <1695064615-3164315-4-git-send-email-radhey.shyam.pandey@amd.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <1695064615-3164315-4-git-send-email-radhey.shyam.pandey@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hardware errors could be signaled by synchronous interrupt, e.g.  when an
-error is detected by a background scrubber, or signaled by synchronous
-exception, e.g. when an uncorrected error is consumed. Both synchronous and
-asynchronous error are queued and handled by a dedicated kthread in
-workqueue.
 
-commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
-synchronous errors") keep track of whether memory_failure() work was
-queued, and make task_work pending to flush out the workqueue so that the
-work for synchronous error is processed before returning to user-space.
-The trick ensures that the corrupted page is unmapped and poisoned. And
-after returning to user-space, the task starts at current instruction which
-triggering a page fault in which kernel will send SIGBUS to current process
-due to VM_FAULT_HWPOISON.
 
-However, the memory failure recovery for hwpoison-aware mechanisms does not
-work as expected. For example, hwpoison-aware user-space processes like
-QEMU register their customized SIGBUS handler and enable early kill mode by
-seting PF_MCE_EARLY at initialization. Then the kernel will directy notify
-the process by sending a SIGBUS signal in memory failure with wrong
-si_code: the actual user-space process accessing the corrupt memory
-location, but its memory failure work is handled in a kthread context, so
-it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
-process instead of BUS_MCEERR_AR in kill_proc().
+On 9/18/2023 12:16 PM, Radhey Shyam Pandey wrote:
+> Add dmaengine framework to communicate with the xilinx DMAengine
+> driver(AXIDMA).
+> 
+> Axi ethernet driver uses separate channels for transmit and receive.
+> Add support for these channels to handle TX and RX with skb and
+> appropriate callbacks. Also add axi ethernet core interrupt for
+> dmaengine framework support.
+> 
+> The dmaengine framework was extended for metadata API support.
+> However it still needs further enhancements to make it well suited for
+> ethernet usecases. The ethernet features i.e ethtool set/get of DMA IP
+> properties, ndo_poll_controller,(mentioned in TODO) are not supported
+> and it requires follow-up discussions.
+> 
+> dmaengine support has a dependency on xilinx_dma as it uses
+> xilinx_vdma_channel_set_config() API to reset the DMA IP
+> which internally reset MAC prior to accessing MDIO.
+> 
+> Benchmark with netperf:
+> 
+> xilinx-zcu102-20232:~$ netperf -H 192.168.10.20 -t TCP_STREAM
+> MIGRATED TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET
+> to 192.168.10.20 () port 0 AF_INET
+> Recv   Send    Send
+> Socket Socket  Message  Elapsed
+> Size   Size    Size     Time     Throughput
+> bytes  bytes   bytes    secs.    10^6bits/sec
+> 
+> 131072  16384  16384    10.03     915.55
+> 
+> xilinx-zcu102-20232:~$ netperf -H 192.168.10.20 -t UDP_STREAM
+> MIGRATED UDP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET
+> to 192.168.10.20 () port 0 AF_INET
+> Socket  Message  Elapsed      Messages
+> Size    Size     Time         Okay Errors   Throughput
+> bytes   bytes    secs            #      #   10^6bits/sec
+> 
+> 212992   65507   10.00       18192      0     953.35
+> 212992           10.00       18192            953.35
+> 
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> ---
+[snip]
 
-To this end, separate synchronous and asynchronous error handling into
-different paths like X86 platform does:
+Nice example of how to integrate an Ethernet driver with dmaengine, BTW.
 
-- valid synchronous errors: queue a task_work to synchronously send SIGBUS
-  before ret_to_user.
-- valid asynchronous errors: queue a work into workqueue to asynchronously
-  handle memory failure.
-- abnormal branches such as invalid PA, unexpected severity, no memory
-  failure config support, invalid GUID section, OOM, etc.
 
-Then for valid synchronous errors, the current context in memory failure is
-exactly belongs to the task consuming poison data and it will send SIBBUS
-with proper si_code.
+> +
+> +	/*Fill up app fields for checksum */
 
-Fixes: 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for synchronous errors")
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-Tested-by: Ma Wupeng <mawupeng1@huawei.com>
-Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- arch/x86/kernel/cpu/mce/core.c |  9 +---
- drivers/acpi/apei/ghes.c       | 84 +++++++++++++++++++++-------------
- include/acpi/ghes.h            |  3 --
- mm/memory-failure.c            | 17 ++-----
- 4 files changed, 56 insertions(+), 57 deletions(-)
+Missing space between * and Fill up, there are a few comments where it 
+is the opposite where you don't add a space at the end before the *.
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 6f35f724cc14..1675ff77033d 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1334,17 +1334,10 @@ static void kill_me_maybe(struct callback_head *cb)
- 		return;
- 	}
- 
--	/*
--	 * -EHWPOISON from memory_failure() means that it already sent SIGBUS
--	 * to the current process with the proper error info,
--	 * -EOPNOTSUPP means hwpoison_filter() filtered the error event,
--	 *
--	 * In both cases, no further processing is required.
--	 */
- 	if (ret == -EHWPOISON || ret == -EOPNOTSUPP)
- 		return;
- 
--	pr_err("Memory error not recovered");
-+	pr_err("Sending SIGBUS to current task due to memory error not recovered");
- 	kill_me_now(cb);
- }
- 
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 88178aa6222d..014401a65ed5 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -450,28 +450,41 @@ static void ghes_clear_estatus(struct ghes *ghes,
- }
- 
- /*
-- * Called as task_work before returning to user-space.
-- * Ensure any queued work has been done before we return to the context that
-- * triggered the notification.
-+ * struct sync_task_work - for synchronous RAS event
-+ *
-+ * @twork:                callback_head for task work
-+ * @pfn:                  page frame number of corrupted page
-+ * @flags:                fine tune action taken
-+ *
-+ * Structure to pass task work to be handled before
-+ * ret_to_user via task_work_add().
-  */
--static void ghes_kick_task_work(struct callback_head *head)
-+struct sync_task_work {
-+	struct callback_head twork;
-+	u64 pfn;
-+	int flags;
-+};
-+
-+static void memory_failure_cb(struct callback_head *twork)
- {
--	struct acpi_hest_generic_status *estatus;
--	struct ghes_estatus_node *estatus_node;
--	u32 node_len;
-+	int ret;
-+	struct sync_task_work *twcb =
-+		container_of(twork, struct sync_task_work, twork);
- 
--	estatus_node = container_of(head, struct ghes_estatus_node, task_work);
--	if (IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
--		memory_failure_queue_kick(estatus_node->task_work_cpu);
-+	ret = memory_failure(twcb->pfn, twcb->flags);
-+	kfree(twcb);
- 
--	estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
--	node_len = GHES_ESTATUS_NODE_LEN(cper_estatus_len(estatus));
--	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
-+	if (!ret || ret == -EHWPOISON || ret == -EOPNOTSUPP)
-+		return;
-+
-+	pr_err("Sending SIGBUS to current task due to memory error not recovered");
-+	force_sig(SIGBUS);
- }
- 
- static bool ghes_do_memory_failure(u64 physical_addr, int flags)
- {
- 	unsigned long pfn;
-+	struct sync_task_work *twcb;
- 
- 	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
- 		return false;
-@@ -484,6 +497,18 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
- 		return false;
- 	}
- 
-+	if (flags == MF_ACTION_REQUIRED && current->mm) {
-+		twcb = kmalloc(sizeof(*twcb), GFP_ATOMIC);
-+		if (!twcb)
-+			return false;
-+
-+		twcb->pfn = pfn;
-+		twcb->flags = flags;
-+		init_task_work(&twcb->twork, memory_failure_cb);
-+		task_work_add(current, &twcb->twork, TWA_RESUME);
-+		return true;
-+	}
-+
- 	memory_failure_queue(pfn, flags);
- 	return true;
- }
-@@ -652,7 +677,7 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
- 	schedule_work(&entry->work);
- }
- 
--static bool ghes_do_proc(struct ghes *ghes,
-+static void ghes_do_proc(struct ghes *ghes,
- 			 const struct acpi_hest_generic_status *estatus)
- {
- 	int sev, sec_sev;
-@@ -696,7 +721,14 @@ static bool ghes_do_proc(struct ghes *ghes,
- 		}
- 	}
- 
--	return queued;
-+	/*
-+	 * If no memory failure work is queued for abnormal synchronous
-+	 * errors, do a force kill.
-+	 */
-+	if (sync && !queued) {
-+		pr_err("Sending SIGBUS to current task due to memory error not recovered");
-+		force_sig(SIGBUS);
-+	}
- }
- 
- static void __ghes_print_estatus(const char *pfx,
-@@ -998,9 +1030,7 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
- 	struct ghes_estatus_node *estatus_node;
- 	struct acpi_hest_generic *generic;
- 	struct acpi_hest_generic_status *estatus;
--	bool task_work_pending;
- 	u32 len, node_len;
--	int ret;
- 
- 	llnode = llist_del_all(&ghes_estatus_llist);
- 	/*
-@@ -1015,25 +1045,16 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
- 		estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
- 		len = cper_estatus_len(estatus);
- 		node_len = GHES_ESTATUS_NODE_LEN(len);
--		task_work_pending = ghes_do_proc(estatus_node->ghes, estatus);
-+
-+		ghes_do_proc(estatus_node->ghes, estatus);
-+
- 		if (!ghes_estatus_cached(estatus)) {
- 			generic = estatus_node->generic;
- 			if (ghes_print_estatus(NULL, generic, estatus))
- 				ghes_estatus_cache_add(generic, estatus);
- 		}
--
--		if (task_work_pending && current->mm) {
--			estatus_node->task_work.func = ghes_kick_task_work;
--			estatus_node->task_work_cpu = smp_processor_id();
--			ret = task_work_add(current, &estatus_node->task_work,
--					    TWA_RESUME);
--			if (ret)
--				estatus_node->task_work.func = NULL;
--		}
--
--		if (!estatus_node->task_work.func)
--			gen_pool_free(ghes_estatus_pool,
--				      (unsigned long)estatus_node, node_len);
-+		gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node,
-+			      node_len);
- 
- 		llnode = next;
- 	}
-@@ -1094,7 +1115,6 @@ static int ghes_in_nmi_queue_one_entry(struct ghes *ghes,
- 
- 	estatus_node->ghes = ghes;
- 	estatus_node->generic = ghes->generic;
--	estatus_node->task_work.func = NULL;
- 	estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
- 
- 	if (__ghes_read_estatus(estatus, buf_paddr, fixmap_idx, len)) {
-diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-index 3c8bba9f1114..e5e0c308d27f 100644
---- a/include/acpi/ghes.h
-+++ b/include/acpi/ghes.h
-@@ -35,9 +35,6 @@ struct ghes_estatus_node {
- 	struct llist_node llnode;
- 	struct acpi_hest_generic *generic;
- 	struct ghes *ghes;
--
--	int task_work_cpu;
--	struct callback_head task_work;
- };
- 
- struct ghes_estatus_cache {
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 4d6e43c88489..80e1ea1cc56d 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -2163,7 +2163,9 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
-  *
-  * Return: 0 for successfully handled the memory error,
-  *         -EOPNOTSUPP for hwpoison_filter() filtered the error event,
-- *         < 0(except -EOPNOTSUPP) on failure.
-+ *         -EHWPOISON for already sent SIGBUS to the current process with
-+ *         the proper error info,
-+ *         other negative error code on failure.
-  */
- int memory_failure(unsigned long pfn, int flags)
- {
-@@ -2445,19 +2447,6 @@ static void memory_failure_work_func(struct work_struct *work)
- 	}
- }
- 
--/*
-- * Process memory_failure work queued on the specified CPU.
-- * Used to avoid return-to-userspace racing with the memory_failure workqueue.
-- */
--void memory_failure_queue_kick(int cpu)
--{
--	struct memory_failure_cpu *mf_cpu;
--
--	mf_cpu = &per_cpu(memory_failure_cpu, cpu);
--	cancel_work_sync(&mf_cpu->work);
--	memory_failure_work_func(&mf_cpu->work);
--}
--
- static int __init memory_failure_init(void)
- {
- 	struct memory_failure_cpu *mf_cpu;
+> +	if (skb->ip_summed == CHECKSUM_PARTIAL) {
+> +		if (lp->features & XAE_FEATURE_FULL_TX_CSUM) {
+> +			/* Tx Full Checksum Offload Enabled */
+> +			app[0] |= 2;
+> +		} else if (lp->features & XAE_FEATURE_PARTIAL_RX_CSUM) {
+
+This is the transmit path here, is this path even taken?
+
+> +			csum_start_off = skb_transport_offset(skb);
+> +			csum_index_off = csum_start_off + skb->csum_offset;
+> +			/* Tx Partial Checksum Offload Enabled */
+> +			app[0] |= 1;
+> +			app[1] = (csum_start_off << 16) | csum_index_off;
+> +		}
+> +	} else if (skb->ip_summed == CHECKSUM_UNNECESSARY) {
+> +		app[0] |= 2; /* Tx Full Checksum Offload Enabled */
+> +	}
+> +
+> +	dma_tx_desc = lp->tx_chan->device->device_prep_slave_sg(lp->tx_chan, skbuf_dma->sgl,
+> +			sg_len, DMA_MEM_TO_DEV,
+> +			DMA_PREP_INTERRUPT, (void *)app);
+> +	if (!dma_tx_desc)
+> +		goto xmit_error_unmap_sg;
+> +
+> +	skbuf_dma->skb = skb;
+> +	skbuf_dma->sg_len = sg_len;
+> +	dma_tx_desc->callback_param = lp;
+> +	dma_tx_desc->callback_result = axienet_dma_tx_cb;
+> +	dmaengine_submit(dma_tx_desc);
+> +	dma_async_issue_pending(lp->tx_chan);
+> +
+> +	return NETDEV_TX_OK;
+> +
+> +xmit_error_unmap_sg:
+> +	dma_unmap_sg(lp->dev, skbuf_dma->sgl, sg_len, DMA_TO_DEVICE);
+> +	return NETDEV_TX_OK;
+> +}
+> +
+>   /**
+>    * axienet_tx_poll - Invoked once a transmit is completed by the
+>    * Axi DMA Tx channel.
+> @@ -911,7 +1036,42 @@ axienet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>   	if (!lp->use_dmaengine)
+>   		return axienet_start_xmit_legacy(skb, ndev);
+>   	else
+> -		return NETDEV_TX_BUSY;
+> +		return axienet_start_xmit_dmaengine(skb, ndev);
+> +}
+> +
+> +/**
+> + * axienet_dma_rx_cb - DMA engine callback for RX channel.
+> + * @data:       Pointer to the skbuf_dma_descriptor structure.
+> + * @result:     error reporting through dmaengine_result.
+> + * This function is called by dmaengine driver for RX channel to notify
+> + * that the packet is received.
+> + */
+> +static void axienet_dma_rx_cb(void *data, const struct dmaengine_result *result)
+> +{
+> +	struct axienet_local *lp = data;
+> +	struct skbuf_dma_descriptor *skbuf_dma;
+> +	size_t meta_len, meta_max_len, rx_len;
+> +	struct sk_buff *skb;
+> +	u32 *app;
+> +
+> +	skbuf_dma = axienet_get_rx_desc(lp, lp->rx_ring_tail++);
+> +	skb = skbuf_dma->skb;
+> +	app = dmaengine_desc_get_metadata_ptr(skbuf_dma->desc, &meta_len, &meta_max_len);
+
+app might not be the best name, I understand this refers to a DMA 
+application, in a broad sense that it is not specific, maybe cookie, or 
+opaque_ptr would work better?
+
+> +	dma_unmap_single(lp->dev, skbuf_dma->dma_address, lp->max_frm_size,
+> +			 DMA_FROM_DEVICE);
+> +	/* TODO: Derive app word index programmatically */
+> +	rx_len = (app[LEN_APP] & 0xFFFF);
+> +	skb_put(skb, rx_len);
+> +	skb->protocol = eth_type_trans(skb, lp->ndev);
+> +	skb->ip_summed = CHECKSUM_NONE;
+> +
+> +	netif_rx(skb);
+
+Could save some cycles and call __netif_rx() here since AFAIR dmaengine 
+uses a tasklet? netif_rx() is fine, just would have to compute need_bh_off.
+
+> +	u64_stats_update_begin(&lp->rx_stat_sync);
+> +	u64_stats_add(&lp->rx_packets, 1);
+> +	u64_stats_add(&lp->rx_bytes, rx_len);
+> +	u64_stats_update_end(&lp->rx_stat_sync);
+> +	axienet_rx_submit_desc(lp->ndev);
+> +	dma_async_issue_pending(lp->rx_chan);
+>   }
+>   
+>   /**
+> @@ -1147,6 +1307,142 @@ static irqreturn_t axienet_eth_irq(int irq, void *_ndev)
+>   
+>   static void axienet_dma_err_handler(struct work_struct *work);
+>   
+> +/**
+> + * axienet_rx_submit_desc - Submit the descriptors with required data
+> + * like call backup API, skb buffer.. etc to dmaengine.
+> + *
+> + * @ndev:	net_device pointer
+> + *
+> + *Return: 0, on success.
+> + *          non-zero error value on failure
+> + */
+> +static int axienet_rx_submit_desc(struct net_device *ndev)
+> +{
+> +	struct dma_async_tx_descriptor *dma_rx_desc = NULL;
+> +	struct axienet_local *lp = netdev_priv(ndev);
+> +	struct skbuf_dma_descriptor *skbuf_dma;
+> +	struct sk_buff *skb;
+> +	dma_addr_t addr;
+> +	int ret;
+> +
+> +	skbuf_dma = axienet_get_rx_desc(lp, lp->rx_ring_head);
+> +	if (!skbuf_dma)
+> +		return -ENOMEM;
+> +	lp->rx_ring_head++;
+> +	skb = netdev_alloc_skb(ndev, lp->max_frm_size);
+> +	if (!skb)
+> +		return -ENOMEM;
+> +
+> +	sg_init_table(skbuf_dma->sgl, 1);
+> +	addr = dma_map_single(lp->dev, skb->data, lp->max_frm_size, DMA_FROM_DEVICE);
+
+Need to check with dma_mapping_error() that the mapping succeeded.
+
+Thanks!
+
+pw-bot: cr
 -- 
-2.39.3
-
+Florian
