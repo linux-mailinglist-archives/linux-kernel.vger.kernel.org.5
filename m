@@ -2,241 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DAF7A6616
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB667A661D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbjISODQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
+        id S232558AbjISOED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbjISODP (ORCPT
+        with ESMTP id S232487AbjISOEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:03:15 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5F183
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:03:09 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bf55a81eeaso42335135ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:03:09 -0700 (PDT)
+        Tue, 19 Sep 2023 10:04:01 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233C69E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:03:34 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d9443c01a7336-1c44c7dbaf9so31366875ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 07:03:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695132188; x=1695736988; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PYn4vYjqybxZ2CzfvZ1C7yMXEKjRphlK8G76dbCmVAc=;
-        b=Wle8JRgHm8ZzLdUxX35upMNSuVvIVm+3PWK0oVfkL8FQjV9ckdfC4gZLDBvwDV2wxl
-         Mwko+/4xRrqhkc9CQWJjBCXJXuFi93gq4MfYLk0a5ePjPd1kVzMTDIa37BmOOS9OWYGV
-         ffB7LH82xjpvvGgyWhP6677We5FixdQNjMF9c8B+UW5fFV7wZ0wGlhu7KKpVt0QW6atD
-         /i5cTF8sTz0T4+4VZZp1iSpUoRCsS9Ps1cJRKZY1pPmTW26phjHFv6B+6TASBRjbhGU+
-         v5fNWnYz6IFyC/GiMo3444shHl5+NxPJ+pLHXC5ZXAciTSJ1C80ljo0UDCZT6ftMBt7p
-         jE+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695132188; x=1695736988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1695132213; x=1695737013; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PYn4vYjqybxZ2CzfvZ1C7yMXEKjRphlK8G76dbCmVAc=;
-        b=OgXNglCQVqO7ap2JD31+C/Ibgx1Oyu9RsLkJ76vnVVkOr+ekSwS3LPm6VN5RP4/UvI
-         pToLozmQjqbLXl4aFFs2piCr1YeEFbpO0Bm2/vj6S2KgMgcMh3/eMmcn8yqAIgX4RkNE
-         M/43ww4dm/ZDwFLqf83Fado3CYQiWe/uppDnxBKnWahiKuOvI+fqcwTZS9ECzvb6oe2M
-         j5KT8zZ99elti8UjNhnod9obbWPialsdnPEMVEFMapNY0/42MhtbwYjG1xyWJgfw2Mg3
-         EFblcGwGm+h/Q8kfUTJ5eG6lIIURMLiycfaYXD05yQTLAmMbiMSzl6JV0fCxfwFh4Uut
-         66Iw==
-X-Gm-Message-State: AOJu0YwufhzFetGCDzS8i8pIVE3Ar/37uoWYCFw/OVhDt/d2JGJSxb8g
-        fZbdbT4imqhBkzAc37xYpa8=
-X-Google-Smtp-Source: AGHT+IGwwKUALeHqOp8CRjZ7BjDjcFcSYhkLiMtNnowNteilCqrInFdFlEZiMXIIUrM2Bcc35bHHPg==
-X-Received: by 2002:a17:902:e5c4:b0:1c5:82bb:223e with SMTP id u4-20020a170902e5c400b001c582bb223emr3883918plf.67.1695132188320;
-        Tue, 19 Sep 2023 07:03:08 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id z12-20020a170903018c00b001beef2c9bffsm10062609plg.85.2023.09.19.07.03.06
+        bh=eGKaBfgAzKyjrsd37PzrpzEGRPcEqD4NHE8jZQ/sN64=;
+        b=dF4gcx/rjUnzsPUCKvK/rBv6vBwUjBNTtp3MAbDlD1QncZ3uIVTojshkI+luGdshWT
+         QXJ/6oL7R0HmtcO/2/Ox1WpJmpLS+j6u4GU/W+ubZryREQWmXURh3HmnRQBgWXUUI2nV
+         +9b2QfxcdRkd7ZolSLWK69C7lFBHP8hUZqiRRuog8BkQmHmwzkIYCS7aCzszRBhFdUM8
+         6SpVYShU+FRz76IXx3K3DdwsPeGIXFqL78Mm5QllzWbgTCP5nfFL8tfLajQDLCDn4+sy
+         ocaaQ+A4zGdelfRuWMND6e2zoX3eoURSfVFias8pfvo2fRmwcLzhywoM996aeyVgXqfJ
+         BHUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695132213; x=1695737013;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eGKaBfgAzKyjrsd37PzrpzEGRPcEqD4NHE8jZQ/sN64=;
+        b=InRWLEt39PDWibRUYtf8f7Jx4kW2OgfQiwgFwJJrsygAemLNER2EVswLTOTEsxbU2t
+         KUfk/Wd+7Mmt2YsCkSMmwxnC39HqlFo+8l99j8xtLQ+XMZhhNJspSavJl4OM4ndmsYAK
+         Ntyu/Ej6Ca1mtewtUsdb603P9hoqKjkc2fhul5lMX1BU4RhIfMqlmhe1LszKYv/9jxeZ
+         QFYN7RAoS9zsR3WtCUAd/Ttd6hM56tl6iWdO//XRJd8OdNVEo5qVS4rMh1QFsJY9BGON
+         bSs/MCGODeEk3BJLGAFs4/q6oHQE5Cj3GHRc6mYyjlbATrCvDdd4sbbSj+tEbm0GClRo
+         D4wg==
+X-Gm-Message-State: AOJu0YzdhTBeS9GiuwBLMZi+u4ee8cMUnXqoOQHMQTUBAYKm2gb4CxqV
+        E0BVSD+WGigLmDZ+TciF9VyD5A==
+X-Google-Smtp-Source: AGHT+IGT7Zs0cLemloqBlKtGqgrUVk9OTYclF54fusyIyKf45/F8+fX3Xp34BoUQLJMPZvDfD4C+LA==
+X-Received: by 2002:a17:903:2352:b0:1c3:aee0:7d27 with SMTP id c18-20020a170903235200b001c3aee07d27mr14931263plh.24.1695132213521;
+        Tue, 19 Sep 2023 07:03:33 -0700 (PDT)
+Received: from PF2LML5M-SMJ.bytedance.net ([203.208.189.14])
+        by smtp.gmail.com with ESMTPSA id l7-20020a170902f68700b001bda30ecaa6sm10090285plg.51.2023.09.19.07.03.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 07:03:07 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id CCEAD81A82C8; Tue, 19 Sep 2023 21:03:03 +0700 (WIB)
-Date:   Tue, 19 Sep 2023 21:03:03 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>, linux-mm@kvack.org,
-        David Airlie <airlied@gmail.com>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Thomas =?utf-8?Q?Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Linux Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [Intel-gfx] [REGRESSION] [BISECTED] Panic in
- gen8_ggtt_insert_entries() with v6.5
-Message-ID: <ZQmqF7oyrZ32Qdhb@debian.me>
-References: <4857570.31r3eYUQgx@natalenko.name>
- <6287208.lOV4Wx5bFT@natalenko.name>
- <2612319.ElGaqSPkdT@natalenko.name>
+        Tue, 19 Sep 2023 07:03:33 -0700 (PDT)
+From:   Jinhui Guo <guojinhui.liam@bytedance.com>
+To:     gregkh@linuxfoundation.org
+Cc:     guojinhui.liam@bytedance.com, lenb@kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lizefan.x@bytedance.com, lkp@intel.com, rafael@kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v7] driver core: platform: set numa_node before platform_device_add()
+Date:   Tue, 19 Sep 2023 22:03:26 +0800
+Message-Id: <20230919140326.597-1-guojinhui.liam@bytedance.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <2023091942-punk-naturist-8028@gregkh>
+References: <2023091942-punk-naturist-8028@gregkh>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qr0otETeDhzUuptw"
-Content-Disposition: inline
-In-Reply-To: <2612319.ElGaqSPkdT@natalenko.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 19 Sep 2023 14:12:20 +0200, Greg KH wrote:
+> On Tue, Sep 19, 2023 at 08:03:41PM +0800, Jinhui Guo wrote:
+> > Setting the devices' numa_node needs to be done in
+> > platform_device_register_full(), because that's where the
+> > platform device object is allocated.
+> > 
+> > Fixes: 4a60406d3592 ("driver core: platform: expose numa_node to users in sysfs")
+> > Cc: stable@vger.kernel.org
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> The test robot did not report the original problem, that was a problem
+> with your potential change.
+> 
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202309122309.mbxAnAIe-lkp@intel.com/
+> 
+> Likewise, this is not a real issue, it was a problem with your previous
+> submission.
+>
 
---qr0otETeDhzUuptw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, I will fix it.
+ 
+> > Signed-off-by: Jinhui Guo <guojinhui.liam@bytedance.com>
+> > ---
+> > V6 -> V7
+> >   1. Fix bug directly by adding numa_node to struct
+> >      platform_device_info (suggested by Rafael J. Wysocki).
+> >   2. Remove reviewer name.
+> > 
+> > V5 -> V6:
+> >   1. Update subject to correct function name platform_device_add().
+> >   2. Provide a more clear and accurate description of the changes
+> >      made in commit (suggested by Rafael J. Wysocki).
+> >   3. Add reviewer name.
+> > 
+> > V4 -> V5:
+> >   Add Cc: stable line and changes from the previous submited patches.
+> > 
+> > V3 -> V4:
+> >   Refactor code to be an ACPI function call (suggested by Greg Kroah-Hartman).
+> > 
+> > V2 -> V3:
+> >   Fix Signed-off name.
+> > 
+> > V1 -> V2:
+> >   Fix compile error without enabling CONFIG_ACPI.
+> > ---
+> > 
+> >  drivers/acpi/acpi_platform.c    |  5 ++---
+> >  drivers/base/platform.c         |  4 ++++
+> >  include/linux/platform_device.h | 26 ++++++++++++++++++++++++++
+> >  3 files changed, 32 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
+> > index 48d15dd785f6..1ae7449f70dc 100644
+> > --- a/drivers/acpi/acpi_platform.c
+> > +++ b/drivers/acpi/acpi_platform.c
+> > @@ -168,6 +168,7 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+> >  	pdevinfo.num_res = count;
+> >  	pdevinfo.fwnode = acpi_fwnode_handle(adev);
+> >  	pdevinfo.properties = properties;
+> > +	platform_devinfo_set_node(&pdevinfo, acpi_get_node(adev->handle));
+> >  
+> >  	if (acpi_dma_supported(adev))
+> >  		pdevinfo.dma_mask = DMA_BIT_MASK(32);
+> > @@ -178,11 +179,9 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+> >  	if (IS_ERR(pdev))
+> >  		dev_err(&adev->dev, "platform device creation failed: %ld\n",
+> >  			PTR_ERR(pdev));
+> > -	else {
+> > -		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
+> > +	else
+> >  		dev_dbg(&adev->dev, "created platform device %s\n",
+> >  			dev_name(&pdev->dev));
+> > -	}
+> >  
+> >  	kfree(resources);
+> >  
+> > diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> > index 76bfcba25003..c733bfb26149 100644
+> > --- a/drivers/base/platform.c
+> > +++ b/drivers/base/platform.c
+> > @@ -808,6 +808,7 @@ struct platform_device *platform_device_register_full(
+> >  {
+> >  	int ret;
+> >  	struct platform_device *pdev;
+> > +	int numa_node = platform_devinfo_get_node(pdevinfo);
+> >  
+> >  	pdev = platform_device_alloc(pdevinfo->name, pdevinfo->id);
+> >  	if (!pdev)
+> > @@ -841,6 +842,9 @@ struct platform_device *platform_device_register_full(
+> >  			goto err;
+> >  	}
+> >  
+> > +	if (numa_node >= 0)
+> > +		set_dev_node(&pdev->dev, numa_node);
+> 
+> Why not just always set it?  Why check?  Would that matter?
+> 
 
-On Tue, Sep 19, 2023 at 03:23:28PM +0200, Oleksandr Natalenko wrote:
-> /cc Bagas as well (see below).
->=20
-> On =C3=BAter=C3=BD 19. z=C3=A1=C5=99=C3=AD 2023 10:26:42 CEST Oleksandr N=
-atalenko wrote:
-> > /cc Matthew Wilcox and Andrew Morton because of folios (please see belo=
-w).
-> >=20
-> > On sobota 2. z=C3=A1=C5=99=C3=AD 2023 18:14:12 CEST Oleksandr Natalenko=
- wrote:
-> > > Hello.
-> > >=20
-> > > Since v6.5 kernel the following HW:
-> > >=20
-> > > * Lenovo T460s laptop with Skylake GT2 [HD Graphics 520] (rev 07)
-> > > * Lenovo T490s laptop with WhiskeyLake-U GT2 [UHD Graphics 620] (rev =
-02)
-> > >=20
-> > > is affected by the following crash once KDE on either X11 or Wayland =
-is started:
-> > >=20
-> > > i915 0000:00:02.0: enabling device (0006 -> 0007)
-> > > i915 0000:00:02.0: vgaarb: deactivate vga console
-> > > i915 0000:00:02.0: vgaarb: changed VGA decodes: olddecodes=3Dio+mem,d=
-ecodes=3Dio+mem:owns=3Dmem
-> > > i915 0000:00:02.0: [drm] Finished loading DMC firmware i915/skl_dmc_v=
-er1_27.bin (v1.27)
-> > > [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 on minor 1
-> > > fbcon: i915drmfb (fb0) is primary device
-> > > i915 0000:00:02.0: [drm] fb0: i915drmfb frame buffer device
-> > > =E2=80=A6
-> > > memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=3D674 'kwin_=
-wayland'
-> > > BUG: unable to handle page fault for address: ffffb422c2800000
-> > > #PF: supervisor write access in kernel mode
-> > > #PF: error_code(0x0002) - not-present page
-> > > PGD 100000067 P4D 100000067 PUD 1001df067 PMD 10d1cf067 PTE 0
-> > > Oops: 0002 [#1] PREEMPT SMP PTI
-> > > CPU: 1 PID: 674 Comm: kwin_wayland Not tainted 6.5.0-pf1 #1 a6c58ff41=
-a7b8bb16a19f5af9e0e9bce20f9f38d
-> > > Hardware name: LENOVO 20FAS2BM0F/20FAS2BM0F, BIOS N1CET90W (1.58 ) 11=
-/15/2022
-> > > RIP: 0010:gen8_ggtt_insert_entries+0xc2/0x140 [i915]
-> > > =E2=80=A6
-> > > Call Trace:
-> > >  <TASK>
-> > >  intel_ggtt_bind_vma+0x3e/0x60 [i915 a83fdc6539431252dba13053979a8b68=
-0af86836]
-> > >  i915_vma_bind+0x216/0x4b0 [i915 a83fdc6539431252dba13053979a8b680af8=
-6836]
-> > >  i915_vma_pin_ww+0x405/0xa80 [i915 a83fdc6539431252dba13053979a8b680a=
-f86836]
-> > >  __i915_ggtt_pin+0x5a/0x130 [i915 a83fdc6539431252dba13053979a8b680af=
-86836]
-> > >  i915_ggtt_pin+0x78/0x1f0 [i915 a83fdc6539431252dba13053979a8b680af86=
-836]
-> > >  __intel_context_do_pin_ww+0x312/0x700 [i915 a83fdc6539431252dba13053=
-979a8b680af86836]
-> > >  i915_gem_do_execbuffer+0xfc6/0x2720 [i915 a83fdc6539431252dba1305397=
-9a8b680af86836]
-> > >  i915_gem_execbuffer2_ioctl+0x111/0x260 [i915 a83fdc6539431252dba1305=
-3979a8b680af86836]
-> > >  drm_ioctl_kernel+0xca/0x170
-> > >  drm_ioctl+0x30f/0x580
-> > >  __x64_sys_ioctl+0x94/0xd0
-> > >  do_syscall_64+0x5d/0x90
-> > >  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > > =E2=80=A6
-> > > note: kwin_wayland[674] exited with irqs disabled
-> > >=20
-> > > RIP seems to translate into this:
-> > >=20
-> > > $ scripts/faddr2line drivers/gpu/drm/i915/gt/intel_ggtt.o gen8_ggtt_i=
-nsert_entries+0xc2
-> > > gen8_ggtt_insert_entries+0xc2/0x150:
-> > > writeq at /home/pf/work/devel/own/pf-kernel/linux/./arch/x86/include/=
-asm/io.h:99
-> > > (inlined by) gen8_set_pte at /home/pf/work/devel/own/pf-kernel/linux/=
-drivers/gpu/drm/i915/gt/intel_ggtt.c:257
-> > > (inlined by) gen8_ggtt_insert_entries at /home/pf/work/devel/own/pf-k=
-ernel/linux/drivers/gpu/drm/i915/gt/intel_ggtt.c:300
-> > >=20
-> > > Probably, recent PTE-related changes are relevant:
-> > >=20
-> > > $ git log --oneline --no-merges v6.4..v6.5 -- drivers/gpu/drm/i915/gt=
-/intel_ggtt.c
-> > > 3532e75dfadcf drm/i915/uc: perma-pin firmwares
-> > > 4722e2ebe6f21 drm/i915/gt: Fix second parameter type of pre-gen8 pte_=
-encode callbacks
-> > > 9275277d53248 drm/i915: use pat_index instead of cache_level
-> > > 5e352e32aec23 drm/i915: preparation for using PAT index
-> > > 341ad0e8e2542 drm/i915/mtl: Add PTE encode function
-> > >=20
-> > > Also note Lenovo T14s laptop with TigerLake-LP GT2 [Iris Xe Graphics]=
- (rev 01) is not affected by this issue.
-> > >=20
-> > > Full dmesg with DRM debug enabled is available in the bugreport I've =
-reported earlier [1]. I'm sending this email to make the issue more visible.
-> > >=20
-> > > Please help.
-> > >=20
-> > > Thanks.
-> > >=20
-> > > [1] https://gitlab.freedesktop.org/drm/intel/-/issues/9256
-> >=20
-> > Matthew,
-> >=20
-> > Andrzej asked me to try to revert commits 0b62af28f249, e0b72c14d8dc an=
-d 1e0877d58b1e, and reverting those fixed the i915 crash for me. The e0b72c=
-14d8dc and 1e0877d58b1e commits look like just prerequisites, so I assume 0=
-b62af28f249 ("i915: convert shmem_sg_free_table() to use a folio_batch") is=
- the culprit here.
-> >=20
-> > Could you please check this?
-> >=20
-> > Our conversation with Andrzej is available at drm-intel GitLab [1].
-> >=20
-> > Thanks.
-> >=20
-> > [1] https://gitlab.freedesktop.org/drm/intel/-/issues/9256
->=20
-> Bagas,
->=20
-> would you mind adding this to the regression tracker please?
->=20
+I think it is better to add a check here, because we cannot be sure that the caller
+will pass the correct parameters. If the caller pass pdevinfo->numa_node == -1, we
+will get -2 here, but many check for numa_node just determine whether it is NUMA_NO_NODE.
 
-Will add shortly, thanks!
+> 
+> > +
+> >  	ret = platform_device_add(pdev);
+> >  	if (ret) {
+> >  err:
+> > diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+> > index 7a41c72c1959..78e11b79f1af 100644
+> > --- a/include/linux/platform_device.h
+> > +++ b/include/linux/platform_device.h
+> > @@ -132,10 +132,36 @@ struct platform_device_info {
+> >  		u64 dma_mask;
+> >  
+> >  		const struct property_entry *properties;
+> > +
+> > +#ifdef CONFIG_NUMA
+> > +		int numa_node;	/* NUMA node this platform device is close to plus 1 */
+> > +#endif
+> 
+> Why #ifdef?
+> 
 
---=20
-An old man doll... just what I always wanted! - Clara
+If CONFIG_NUMA=n, numa_node will be useless.
 
---qr0otETeDhzUuptw
-Content-Type: application/pgp-signature; name="signature.asc"
+> And why an int?
+> 
 
------BEGIN PGP SIGNATURE-----
+Keep the same as it in `struct device`.
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQmqAgAKCRD2uYlJVVFO
-ow2JAP0edcVoa2ibxwmEKL50V95Q+tuCyFU5b9EKHD4pXbLNgQD+PIaHonsixovR
-szsV8iCL4IaV/XCjda0iGXeUtnR3XgM=
-=rxM3
------END PGP SIGNATURE-----
+> And why +1?
+> 
 
---qr0otETeDhzUuptw--
+Because not all the drivers will set numa_node, they just initialize `struct platform_device_info`
+to zero.
+
+> And what do you mean by "close to"?
+> 
+> And why would a platform device care about a numa node?  These are
+> devices that should NEVER care about numa things as they are not on a
+> real bus, or should care about performance things.  If they are, then
+> the device is on the wrong bus, right?
+> 
+> What device are you having numa problems with?  Why would acpi devices
+> care?
+> 
+> The node number in the device itself should be all that you need here,
+> no need to duplicate it, right?
+> 
+
+1. "close to" may be better replaced with "proximity", indicates the proximity numa node of the device.
+
+2. Some platform devices like accelerator in arm, they would be treated as platform devices. If we can
+   get its proximity numa node through sysfs, we can bind its memory access to specify numa node, it
+   will improve the performance for the app.
+
+```
++--------+
+| accel1 |    
++--------+
+   |AXI (interconnect)
++--------+
+| node1  |
++--------+
+```
+
+3. We can get numa node from struct device, but for platform device, it does not expose to userspace.
+   And we just use `struct platform_device_info` to pass the numa node to `struct device`.
+
+> thanks,
+> 
+> greg k-h
+>
+
+thanks,
+
+Jinhui Guo 
