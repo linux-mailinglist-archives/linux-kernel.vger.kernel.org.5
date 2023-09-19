@@ -2,56 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5567C7A5C5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696B77A5C62
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbjISITy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
+        id S230414AbjISIUa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 04:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjISITq (ORCPT
+        with ESMTP id S231390AbjISIUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:19:46 -0400
-Received: from sonata.ens-lyon.org (domu-toccata.ens-lyon.fr [140.77.166.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03A112E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:19:40 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by sonata.ens-lyon.org (Postfix) with ESMTP id 7B6302010E;
-        Tue, 19 Sep 2023 10:19:38 +0200 (CEST)
-Received: from sonata.ens-lyon.org ([127.0.0.1])
-        by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id C0CAruRv-8UU; Tue, 19 Sep 2023 10:19:38 +0200 (CEST)
-Received: from begin (nat-inria-interne-52-gw-01-bso.bordeaux.inria.fr [194.199.1.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sonata.ens-lyon.org (Postfix) with ESMTPSA id 19E1A20108;
-        Tue, 19 Sep 2023 10:19:37 +0200 (CEST)
-Received: from samy by begin with local (Exim 4.96)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1qiVxI-006EZ9-26;
-        Tue, 19 Sep 2023 10:19:36 +0200
-Date:   Tue, 19 Sep 2023 10:19:36 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     huangli05 <huangli05@inspur.com>
-Cc:     w.d.hubbs@gmail.com, chris@the-brannons.com, kirk@reisers.ca,
-        speakup@linux-speakup.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: speakup: modify syntax errors in comments
-Message-ID: <20230919081936.he5ghmgjeiu7264h@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        huangli05 <huangli05@inspur.com>, w.d.hubbs@gmail.com,
-        chris@the-brannons.com, kirk@reisers.ca, speakup@linux-speakup.org,
-        linux-kernel@vger.kernel.org
-References: <20230919074206.36909-1-huangli05@inspur.com>
+        Tue, 19 Sep 2023 04:20:22 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3691E135
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:20:16 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[IPv6:::1])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1qiVxf-0003uN-7N; Tue, 19 Sep 2023 10:19:59 +0200
+Message-ID: <8ce3f7e172a747100366ebd14d3bd74fe549ae10.camel@pengutronix.de>
+Subject: Re: [PATCH] arm64: dts: imx8mp: assign parent clock and rate for
+ audio clocks
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, marex@denx.de,
+        peng.fan@nxp.com, alexander.stein@ew.tq-group.com,
+        laurent.pinchart@ideasonboard.com, aford173@gmail.com,
+        Frank.Li@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com
+Date:   Tue, 19 Sep 2023 10:19:57 +0200
+In-Reply-To: <1695108775-22924-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1695108775-22924-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230919074206.36909-1-huangli05@inspur.com>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,32 +53,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-huangli05, le mar. 19 sept. 2023 15:42:06 +0800, a ecrit:
-> From: “huangli05“ <huangli05@inspur.com>
-> 
-> Change "/* We want to set the the speech synthesis" to "/* We want to set the speech synthesis"
-> 
-> Signed-off-by: “huangli05“ <huangli05@inspur.com>
+Hi Shengjiu,
 
-Reviewed-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Am Dienstag, dem 19.09.2023 um 15:32 +0800 schrieb Shengjiu Wang:
+> Assign parent clock for audio AHB and AXI clocks, and assign
+> clock rate for audio PLL1 and PLL2.
+> 
+Please don't do this. Configuring all those clocks in the clock
+controller is a pain to override if the board uses the PLLs in any
+other way than the reference design.
 
+The audio AXI and AHB clocks are already properly configured with Adams
+patch [1], so there is no need for the changes in this patch.
+
+Please set up the audio PLLs in the board DT in peripheral nodes that
+are actually using those clocks.
+
+Regards,
+Lucas
+
+[1] https://lore.kernel.org/all/20230819105002.132750-1-aford173@gmail.com/
+
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 > ---
->  drivers/accessibility/speakup/speakup_soft.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/accessibility/speakup/speakup_soft.c b/drivers/accessibility/speakup/speakup_soft.c
-> index 6d446824677b..6549bfb96e7f 100644
-> --- a/drivers/accessibility/speakup/speakup_soft.c
-> +++ b/drivers/accessibility/speakup/speakup_soft.c
-> @@ -446,7 +446,7 @@ static int softsynth_adjust(struct spk_synth *synth, struct st_var_header *var)
->  	if (var->var_id != PUNC_LEVEL)
->  		return 0;
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> index 6f2f50e1639c..8a8a2c4aff9f 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> @@ -734,16 +734,26 @@ clk: clock-controller@30380000 {
+>  						  <&clk IMX8MP_CLK_A53_CORE>,
+>  						  <&clk IMX8MP_CLK_NOC>,
+>  						  <&clk IMX8MP_CLK_NOC_IO>,
+> -						  <&clk IMX8MP_CLK_GIC>;
+> +						  <&clk IMX8MP_CLK_GIC>,
+> +						  <&clk IMX8MP_CLK_AUDIO_AHB>,
+> +						  <&clk IMX8MP_CLK_AUDIO_AXI_SRC>,
+> +						  <&clk IMX8MP_AUDIO_PLL1>,
+> +						  <&clk IMX8MP_AUDIO_PLL2>;
+>  				assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_800M>,
+>  							 <&clk IMX8MP_ARM_PLL_OUT>,
+>  							 <&clk IMX8MP_SYS_PLL2_1000M>,
+>  							 <&clk IMX8MP_SYS_PLL1_800M>,
+> -							 <&clk IMX8MP_SYS_PLL2_500M>;
+> +							 <&clk IMX8MP_SYS_PLL2_500M>,
+> +							 <&clk IMX8MP_SYS_PLL1_800M>,
+> +							 <&clk IMX8MP_SYS_PLL1_800M>;
+>  				assigned-clock-rates = <0>, <0>,
+>  						       <1000000000>,
+>  						       <800000000>,
+> -						       <500000000>;
+> +						       <500000000>,
+> +						       <400000000>,
+> +						       <800000000>,
+> +						       <393216000>,
+> +						       <361267200>;
+>  			};
 >  
-> -	/* We want to set the the speech synthesis punctuation level
-> +	/* We want to set the speech synthesis punctuation level
->  	 * accordingly, so it properly tunes speaking A_PUNC characters */
->  	var_data = var->data;
->  	if (!var_data)
-> -- 
-> 2.31.1
-> 
+>  			src: reset-controller@30390000 {
+
