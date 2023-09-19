@@ -2,143 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7939C7A68E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96D47A68F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbjISQbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 12:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        id S231796AbjISQbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 12:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjISQbC (ORCPT
+        with ESMTP id S231757AbjISQbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:31:02 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F19A9;
-        Tue, 19 Sep 2023 09:30:56 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38JCak6Y004702;
-        Tue, 19 Sep 2023 18:30:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=zYvfK74alrh48fiNyFcGgJCqh5Wb2lHksVR/hhospKg=; b=ok
-        1noQ6xa3XqYyMResXNAWzxnbKo/oSe3qQDyX1ZzTfLSsO4GBhi+6oo75IJVteuB2
-        bsikxN2i2ly9LTT25r0C8CMRRfQYmdU+CWF9qi272aSLay2+CdDu/guC+WzKEO+W
-        lsNDB9y673MTYPUpc1W8++SYHm5EPS2iVdA+1jBAblLI5+qW6/D/z10D2fJzz2gw
-        5+U1rBNFybpxrqxk2K5ofkFe+NgJA9wC+k9eStCBOOjZUin1/XM8bF7EDaUkXMRI
-        jxrwTLgny9AA0ryGJPnnVTwKHEIiH5WiBfJXO2T1ph9W3Xc/0PNqru7zKzfkjSPf
-        7NE7YRpGeMDLPQ5snYvg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t5nx0hu68-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 18:30:41 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2B0F3100057;
-        Tue, 19 Sep 2023 18:30:41 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 21C02268467;
-        Tue, 19 Sep 2023 18:30:41 +0200 (CEST)
-Received: from localhost (10.252.1.15) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 19 Sep
- 2023 18:30:40 +0200
-From:   Olivier Moysan <olivier.moysan@foss.st.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Olivier Moysan <olivier.moysan@foss.st.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        Tue, 19 Sep 2023 12:31:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145B7BE
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 09:31:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7114C433C9;
+        Tue, 19 Sep 2023 16:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695141067;
+        bh=5a+elSpKhcGOSKULvNRpmeAVuPK0jEBaAiyUS/Utgg0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XSUaJcOxScCOSgohi0fqmrftMabZq/HFkz+n4molps3vikQJsgrw7cW9grFP9lhrb
+         4i0C1tlI8z4EBERM4kQHjZO88Q8nclyKZBNOZIw+vmji6EogCZryDQxntBBzLORgwS
+         Xed3ufZOP4d9qCi5R9s5twMAkSwoKWLElMOKEzmDOV2b1mbC0RVvGd6SjKh7amGIVc
+         BXCM505VxcKtVPt+9/vVdCCj3IHI/3iReL9EMe/opdXJaEcSdoTsacjZ9MJHd/qCTc
+         GWcO2qTIhLkGyYFOoOIkN2N6/3lQkkurLrxOZszOFhIVRNRZbu5hdYw39t6D59537E
+         Ay/xgyYSYA5Kw==
+Received: from [104.132.45.96] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qidcv-00EOIj-DZ;
+        Tue, 19 Sep 2023 17:31:05 +0100
+Date:   Tue, 19 Sep 2023 17:31:04 +0100
+Message-ID: <87bkdy3z1z.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Miguel Luis <miguel.luis@oracle.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] ARM: dts: stm32: add pins muxing for dfsdm on stm32mp13
-Date:   Tue, 19 Sep 2023 18:30:09 +0200
-Message-ID: <20230919163009.203752-3-olivier.moysan@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230919163009.203752-1-olivier.moysan@foss.st.com>
-References: <20230919163009.203752-1-olivier.moysan@foss.st.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.252.1.15]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_08,2023-09-19_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>
+Subject: Re: [PATCH 2/3] arm64/kvm: Fine grain _EL2 system registers list that affect nested virtualization
+In-Reply-To: <00087AB1-3F94-4D3B-8498-3CE3AEDFE6FA@oracle.com>
+References: <20230913185209.32282-1-miguel.luis@oracle.com>
+        <20230913185209.32282-3-miguel.luis@oracle.com>
+        <868r93es5a.wl-maz@kernel.org>
+        <00087AB1-3F94-4D3B-8498-3CE3AEDFE6FA@oracle.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 104.132.45.96
+X-SA-Exim-Rcpt-To: miguel.luis@oracle.com, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These pins are used for DFSDM on STM32MP13x Disco boards expansion
-connector.
-Pins mapping:
-- EXP_GPIO27	DFSDM1_CKOUT
-- EXP_GPIO22	DFSDM1_DATIN3
-- EXP_GPIO4	 DFSDM1_DATIN1	(shared with TIM3_CH4)
+On Tue, 19 Sep 2023 15:54:53 +0100,
+Miguel Luis <miguel.luis@oracle.com> wrote:
+>=20
+> Hi Marc,
+>=20
+> > On 18 Sep 2023, at 09:40, Marc Zyngier <maz@kernel.org> wrote:
+> >=20
+> > Hi Miguel,
+> >=20
+> > On Wed, 13 Sep 2023 19:52:07 +0100,
+> > Miguel Luis <miguel.luis@oracle.com> wrote:
+> >>=20
+> >> Some _EL1 registers got included in the _EL2 ranges, which are not
+> >> affected by NV. Remove them and fine grain the ranges to exclusively
+> >> include the _EL2 ones.
+> >>=20
+> >> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+> >> ---
+> >> arch/arm64/kvm/emulate-nested.c | 44 ++++++++++++++++++++++++++++-----
+> >> 1 file changed, 38 insertions(+), 6 deletions(-)
+> >>=20
+> >> diff --git a/arch/arm64/kvm/emulate-nested.c b/arch/arm64/kvm/emulate-=
+nested.c
+> >> index 9ced1bf0c2b7..9aa1c06abdb7 100644
+> >> --- a/arch/arm64/kvm/emulate-nested.c
+> >> +++ b/arch/arm64/kvm/emulate-nested.c
+> >> @@ -649,14 +649,46 @@ static const struct encoding_to_trap_config enco=
+ding_to_cgt[] __initconst =3D {
+> >> SR_TRAP(SYS_APGAKEYHI_EL1, CGT_HCR_APK),
+> >> /* All _EL2 registers */
+> >> SR_RANGE_TRAP(sys_reg(3, 4, 0, 0, 0),
+> >> -       sys_reg(3, 4, 3, 15, 7), CGT_HCR_NV),
+> >> + sys_reg(3, 4, 4, 0, 1), CGT_HCR_NV),
+> >=20
+> > It would be good if the commit message explained that you are folding
+> > SPSR/ELR into the existing range. Also, please keep the two ends of
+> > the ranges vertically aligned.
+> >=20
+>=20
+> OK.
+>=20
+> >> /* Skip the SP_EL1 encoding... */
+> >> - SR_TRAP(SYS_SPSR_EL2, CGT_HCR_NV),
+> >> - SR_TRAP(SYS_ELR_EL2, CGT_HCR_NV),
+> >> - SR_RANGE_TRAP(sys_reg(3, 4, 4, 1, 1),
+> >> -       sys_reg(3, 4, 10, 15, 7), CGT_HCR_NV),
+> >> + SR_RANGE_TRAP(sys_reg(3, 4, 4, 3, 0),
+> >> + sys_reg(3, 4, 10, 6, 7), CGT_HCR_NV),
+> >> + /* skip MECID_A0_EL2, MECID_A1_EL2, MECID_P0_EL2,
+> >> +  *      MECID_P1_EL2, MECIDR_EL2, VMECID_A_EL2,
+> >> +  *      VMECID_P_EL2.
+> >> +  */
+> >=20
+> > Please follow the kernel comment format. Also, why are you skipping
+> > the MEC registers, but not the MPAM ones? At least indicate a
+> > rationale for this.
+> >=20
+>=20
+> I=E2=80=99m not aware of any exceptions for MPAM registers, although there
+> are for MEC when HCR_EL2.NV2 is 0.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
----
- arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi | 39 +++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+Then this rationale should probably be captured here.
 
-diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-index 5e3e627ceb54..50490053f03d 100644
---- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-@@ -13,6 +13,45 @@ pins {
- 		};
- 	};
- 
-+	dfsdm_clkout_pins_a: dfsdm-clkout-pins-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('C', 3, AF3)>; /* DFSDM_CKOUT */
-+			bias-disable;
-+			drive-push-pull;
-+			slew-rate = <0>;
-+		};
-+	};
-+
-+	dfsdm_clkout_sleep_pins_a: dfsdm-clkout-sleep-pins-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('C', 3, ANALOG)>; /* DFSDM_CKOUT */
-+		};
-+	};
-+
-+	dfsdm_datin1_pins_a: dfsdm-datin1-pins-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('B', 1, AF6)>; /* DFSDM_DATIN1 */
-+		};
-+	};
-+
-+	dfsdm_datin1_sleep_pins_a: dfsdm-datin1-sleep-pins-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('B', 1, ANALOG)>; /* DFSDM_DATIN1 */
-+		};
-+	};
-+
-+	dfsdm_datin3_pins_a: dfsdm-datin3-pins-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('F', 13, AF6)>; /* DFSDM_DATIN3 */
-+		};
-+	};
-+
-+	dfsdm_datin3_sleep_pins_a: dfsdm-datin3-sleep-pins-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('F', 13, ANALOG)>; /* DFSDM_DATIN3 */
-+		};
-+	};
-+
- 	i2c1_pins_a: i2c1-0 {
- 		pins {
- 			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
--- 
-2.25.1
+>=20
+> >> SR_RANGE_TRAP(sys_reg(3, 4, 12, 0, 0),
+> >> -       sys_reg(3, 4, 14, 15, 7), CGT_HCR_NV),
+> >> + sys_reg(3, 4, 12, 1, 1), CGT_HCR_NV),
+> >> + /* ICH_AP0R<m>_EL2 */
+> >> + SR_RANGE_TRAP(SYS_ICH_AP0R0_EL2,
+> >> + SYS_ICH_AP0R3_EL2, CGT_HCR_NV),
+> >> + /* ICH_AP1R<m>_EL2 */
+> >> + SR_RANGE_TRAP(SYS_ICH_AP1R0_EL2,
+> >> + SYS_ICH_AP1R3_EL2, CGT_HCR_NV),
+> >> + SR_RANGE_TRAP(sys_reg(3, 4, 12, 9, 5),
+> >> + sys_reg(3, 4, 12, 11, 7), CGT_HCR_NV),
+> >> + /* ICH_LR<m>_EL2 */
+> >> + SR_TRAP(SYS_ICH_LR0_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR1_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR2_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR3_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR4_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR5_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR6_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR7_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR8_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR9_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR10_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR11_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR12_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR13_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR14_EL2, CGT_HCR_NV),
+> >> + SR_TRAP(SYS_ICH_LR15_EL2, CGT_HCR_NV),
+> >=20
+> > You could describe all the LRs a single range.
+> >=20
+>=20
+> Should we skip the gap between LR7 - LR8 ?
 
+Which gap? LRn n described by (3,4,12,12,n) when n is in [0-7], and
+(3,4,12,13,n-8) when n is in [8-15]. These two ranges are contiguous.
+
+>=20
+> >> + SR_RANGE_TRAP(sys_reg(3, 4, 13, 0, 1),
+> >> + sys_reg(3, 4, 13, 0, 7), CGT_HCR_NV),
+> >> + /* skip AMEVCNTVOFF0<n>_EL2 and AMEVCNTVOFF1<n>_EL2 */
+> >=20
+> > Why?
+>=20
+> I didn=E2=80=99t find its definition TBH although these could use a singl=
+e range.
+
+D19.6.11 and following?
+
+Thanks,
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
