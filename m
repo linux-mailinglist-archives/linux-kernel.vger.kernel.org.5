@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA567A64B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425167A64C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbjISNUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
+        id S232308AbjISNV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbjISNUw (ORCPT
+        with ESMTP id S232301AbjISNVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:20:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED9EF3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695129599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=htK7pnwIzqRDFi5FwPMaJzCXKtfTe2X9wFdfV0qhhDg=;
-        b=dTbZx3yPdrjyksWEVcMmG9mQvP6WFbfKPi1PXwWmBmSuoNINoF228/lEGwmclizgDPlhay
-        +fLBB8yPUCn16wHvKZ68o4o6bTt03xWAnZhwrTl0o2pTABfngezzmR9QPvk75QMSpaiJXN
-        jsQ3b9KgRoMykULEvIx8uHuZ251fask=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-593-SlQkCZ66NtSadtJ-57H6Pw-1; Tue, 19 Sep 2023 09:19:57 -0400
-X-MC-Unique: SlQkCZ66NtSadtJ-57H6Pw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-320089dad3cso109969f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:19:57 -0700 (PDT)
+        Tue, 19 Sep 2023 09:21:52 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35454F5;
+        Tue, 19 Sep 2023 06:21:47 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b703a0453fso94298211fa.3;
+        Tue, 19 Sep 2023 06:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695129705; x=1695734505; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/4YCtSaeKIOsVXX/9czvJJANn7hd+Dn1kophFmS6+Ck=;
+        b=m6Cd//8KVvylAaB6pQJ48W9XvdquSz1XF8JAdKKxWnV0Id+FDZVbEP1+UtQM2tcQ5V
+         V6wAgMBI1Otp+GKVBREqh0DmlvKzSvYwqybWogzvkpiquRiHtf/PyFC6U7nplu9hNI1Y
+         0KEZ9EjQXT9SuSRTpJf+ckpX5HVaoOWO+Y1clUpKRBXYdanzYWG0cMXKTrCctJLuS5o3
+         Dl3aHfmt1Ysx1kRlZM6dNOpjGeiBOTX2sjmXZAALpAOfUDpGHP/oiiiN2UPRqI1vPtuc
+         dMk5xstdIm5EV6FLiwm5Cf3gwwpNgPS0pqTmBgZKdHk41fK6PpjVxz4YVmknBXhcboZ8
+         aVLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695129596; x=1695734396;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=htK7pnwIzqRDFi5FwPMaJzCXKtfTe2X9wFdfV0qhhDg=;
-        b=lLYcSA5OWoAMYjaozMof5Rch8OVHvcH4FMXYLGuRtPuug7mG1HiVivPbD1c+mUYfOS
-         VmeUo1Xy6gnJRNl/A5vGkDhjxpdCeQXR7nXc/jMDtze+6UO1QY2vEAC7wZQumlvK0JZx
-         HWqGEVaadc52valDpUafJbpsrPZ+qFKZkeN0I8dZ8SemUXTQJ0hK/pZ2+jFLXyMePxTU
-         imiJKN974bC8Fj89/l/b6dqySGIBkIGijdRhhVeL17N/bwgKdiDgbGt+UQSCX9hYQ2rF
-         yzD40I9cOxpKYVSU+sUoijk/TfuoW+hncfB9+1wEMAG5qTT2ckG+q65nBbrGBtKNxUGb
-         3QcA==
-X-Gm-Message-State: AOJu0YxsWqGc7R6meNhTXFYP3Db2QF8SBGi5QiE5zWBRxc4XhfXJZcgM
-        LTFVTodF4ftKIZkpZNdTAVXWh67DzeEXHrvvo6O8GZF7wDfcGoIBO+YOqgjgArdLTfZc8OPxBJh
-        +SqN98pybiZ25efmCAXn4/eoE
-X-Received: by 2002:adf:ecc7:0:b0:31f:899b:a47 with SMTP id s7-20020adfecc7000000b0031f899b0a47mr10072503wro.4.1695129596646;
-        Tue, 19 Sep 2023 06:19:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHvl5GMANKuJZvPgoz3bArRsym+FAKYbCuhPA1oJy7XAET85TTZwn7Qk9G/FVTxfAXX1wyEcg==
-X-Received: by 2002:adf:ecc7:0:b0:31f:899b:a47 with SMTP id s7-20020adfecc7000000b0031f899b0a47mr10072490wro.4.1695129596314;
-        Tue, 19 Sep 2023 06:19:56 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-241-221.dyn.eolo.it. [146.241.241.221])
-        by smtp.gmail.com with ESMTPSA id cf20-20020a170906b2d400b0099bd453357esm7754752ejb.41.2023.09.19.06.19.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 06:19:55 -0700 (PDT)
-Message-ID: <a5b25ee07245125fac4bbdc3b3604758251907d2.camel@redhat.com>
-Subject: Re: [PATCH net-next v9 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
- preparations
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        Arseniy Krasnov <avkrasnov@salutedevices.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Date:   Tue, 19 Sep 2023 15:19:54 +0200
-In-Reply-To: <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
-References: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
-         <b5873e36-fe8c-85e8-e11b-4ccec386c015@salutedevices.com>
-         <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
+        d=1e100.net; s=20230601; t=1695129705; x=1695734505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/4YCtSaeKIOsVXX/9czvJJANn7hd+Dn1kophFmS6+Ck=;
+        b=SWrieq/Vy2aHB3VDuxFMa+lwL3heau8M8Hv2U7DwHt9zpAcVQVy3iAM3lhDpWicY3q
+         f7Y4Ugbl8apgCvIrahSqU90oI9I3Py/czSObztOmBxA50+9E5H7NjT5fsWwy0JunhFts
+         RiWIGeWIhCtaBrcF0xhybV0lpVCr9g8fV/79eq3Ra7Z21yal4s8fvb8VmwuNO+2bM6Ba
+         mGLU2qpe3kOWkYBsrK75NSRftVpdK+theK2WUvTQLKmkdks+a4VwUqQqqot9yau/JXEF
+         rGqc5V5V/ynUn1H4j2Ou+5gi9tBuw0n83NIoloBl2xXm6CW+iFAkYurB8WD71TDBWO+t
+         XHqQ==
+X-Gm-Message-State: AOJu0YzjsCkRmVxFuZscWFM4H2Z/SgN5z+V8fSzmfZx1Od/erLUT03wv
+        55UnbW75D0iNSk2AWBX/nF5ZJOEUz101t0+WKQfqqzIRPvsYVw==
+X-Google-Smtp-Source: AGHT+IGwIDNKxuJMER6QtB2u+JbqXBdDTTB4wiUqOdzU3OsfhtVnBLn852uucjrJzC+13x+ndSD11x+lxWQaMPFY91E=
+X-Received: by 2002:a2e:7308:0:b0:2be:5b09:553b with SMTP id
+ o8-20020a2e7308000000b002be5b09553bmr10527479ljc.8.1695129705150; Tue, 19 Sep
+ 2023 06:21:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
+ <ZPfPfyIoVxw5L6El@debian.me> <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
+ <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
+ <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com> <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
+In-Reply-To: <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
+From:   Brian Pardy <brian.pardy@gmail.com>
+Date:   Tue, 19 Sep 2023 09:21:33 -0400
+Message-ID: <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com>
+Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
+ is mounted (cifsd-cfid-laundromat in"D" state)
+To:     Steve French <smfrench@gmail.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux CIFS <linux-cifs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Paulo Alcantara <pc@manguebit.com>,
+        ronnie sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Bharath S M <bharathsm@microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-19 at 09:54 +0200, Stefano Garzarella wrote:
-> On Mon, Sep 18, 2023 at 07:56:00PM +0300, Arseniy Krasnov wrote:
-> > Hi Stefano,
-> >=20
-> > thanks for review! So when this patchset will be merged to net-next,
-> > I'll start sending next part of MSG_ZEROCOPY patchset, e.g. AF_VSOCK +
-> > Documentation/ patches.
->=20
-> Ack, if it is not a very big series, maybe better to include also the
-> tests so we can run them before merge the feature.
+On Tue, Sep 19, 2023 at 1:36=E2=80=AFAM Steve French <smfrench@gmail.com> w=
+rote:
+>
+> Does the attached patch help in your case?  It avoids starting the
+> laundromat thread for IPC shares (which cuts the number of the threads
+> in half for many cases) and also avoids starting them if the server
+> does not support directory leases (e.g. if Samba server instead of
+> Windows server).
 
-I understand that at least 2 follow-up series are waiting for this, one
-of them targeting net-next and the bigger one targeting the virtio
-tree. Am I correct?
+Hello,
 
-DaveM suggests this should go via the virtio tree, too. Any different
-opinion?
+I applied the 0001-smb3-do-not-start-laundromat-thread-when-dir-leases-.pat=
+ch
+you provided against the 6.5.3 kernel.
 
-Thanks!
+I can confirm that it resolves this issue - no laundromat threads are
+created, and the reported load average is as expected, not falsely
+high.
 
-Paolo
+This appears to fully fix the issue in my case.  Thank you very much!
 
+> On Mon, Sep 18, 2023 at 10:00=E2=80=AFPM Steve French <smfrench@gmail.com=
+> wrote:
+> >
+> > Paulo and I were discussing the laundromat thread at the SMB3.1.1 test
+> > event (at SDC this week) which is now going on - will let you know
+> > what we find.
+> >
+> > One obvious thing is that it probably isn't necessary for cases when
+> > the server does not support directory leases, but we noticed another
+> > problem as well.
