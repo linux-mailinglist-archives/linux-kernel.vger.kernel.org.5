@@ -2,55 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D8C7A5CDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631137A5CE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjISIsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
+        id S230172AbjISIsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbjISIr7 (ORCPT
+        with ESMTP id S229690AbjISIsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:47:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2750116
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:47:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 880ACC433C8;
-        Tue, 19 Sep 2023 08:47:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695113274;
-        bh=luFy040TJwhqSwX6q8NyoQWoiTXkeP9Qqccg14Kb0rA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nAIFlH97A7V8Ycm5uK/xK6ieazUEpI6YXPLvhBAsVWWi/V3P5Cl/gf+bo2KM6XzpY
-         FiD9pjJGvZgLyEPbAXtwZheJ1vghZLACfrHxcmSvosElzIq2o2lq5R9kKMbsS75SAn
-         RYRQVm290QV8qTTKyOZlH4A3dSINv/5Ao7gSizbOLtSmJAzY/44cJRkOcUf0qbsDuH
-         +Bu7I7wNfH2s7qGXk9e8jGslCoa0Lfge1lXBwzyrINlsDGeQvHZQEPShb6uScOGxGx
-         m1GGzvEU1PkEktT16u02UirNKQUM6SKWCoS06MCHogJlny3+FRkAkhCpfcJ7T7j1hy
-         fuRxCsIoi3WoA==
-Date:   Tue, 19 Sep 2023 09:47:48 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Kwanghoon Son <k.son@samsung.com>
-Cc:     p.zabel@pengutronix.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jszhang@kernel.org, guoren@kernel.org, wefu@redhat.com,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, inki.dae@samsung.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] dt-bindings: reset: Document th1520 reset control
-Message-ID: <20230919-42333064be342f6ab125dd75@fedora>
-References: <20230918045125.4000083-1-k.son@samsung.com>
- <CGME20230918045134epcas1p1b80b338b66512a976c3783cd0e51da50@epcas1p1.samsung.com>
- <20230918045125.4000083-2-k.son@samsung.com>
- <20230918-4ef7f52da269f3a7e4023bb3@fedora>
- <005301d9eab7$5688c920$039a5b60$@samsung.com>
+        Tue, 19 Sep 2023 04:48:37 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0D5E6;
+        Tue, 19 Sep 2023 01:48:31 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3200bc30666so2146515f8f.2;
+        Tue, 19 Sep 2023 01:48:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695113310; x=1695718110; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wsOUbToZQ1AdP+t85PWWVZhgYd99YzCsWjDsvb5/YKs=;
+        b=k0BBwEpsCVAZpLkuWGJtr6JljdguGgFXdf4oVzuZkwj6ugDyQ21Z+j5dSeQ+y78p4B
+         sk2qZ0SgQONT9NOFWpt9PTAb/WrSPlVODSiHW/3dvNTHsaVe5AdzUuv5V+/zy1wQdd64
+         h6t68egqjVLgX4z8La7BILlWk8JE6LCuzuu9fgGyoXQSe2RFKliCbvwsdz8syXU+/3rd
+         p5L0uHffBTFJ2e5fju94KDHBm4wo8eSRbcOMoADLG9hEBC0Zsys1QPGzfUSP72ddNGUO
+         XiclTY/MUHQI2ExLPdPGaojOtoye69hp/WfgAdYJJRg1M5MHVreMB34K1jsZ1Gvo6N1p
+         199A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695113310; x=1695718110;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wsOUbToZQ1AdP+t85PWWVZhgYd99YzCsWjDsvb5/YKs=;
+        b=aHKKQagIVzrxiWApDb/jFrAWfQNxstR9l+/NKPl1MAGTB8hUrIX/3DPTTdxo505KJU
+         msCfYkjV14cYMBPj3rfX0uf4gN+5/Mwj0PFpZ8EdhgEBsiggylWBv3zkUtHorL2FaQ08
+         UYwfvc+d+pyzwwmL4XOGQ8NDJCG10pflI3zfV91tPw93zocLdThuVC1zmL3yuBmxF3Wv
+         H1NTeBE8eqs1/r8sQWT5iBCLX5hbnttSMK0dv3/2wNUE1791WolbTy06ZNUhMVVCTKrg
+         AekZPXsY/lRVJ/ewMIxD3lCb0gr36YjibE0xhR4bcrksoDTxWo7qwplLSW1sj89v7b7Z
+         rK2Q==
+X-Gm-Message-State: AOJu0Yzpb7Wo+Nb1hXjNKwuilnb0rtZXfimbSI7uIX7vJlxSsBhLr6yC
+        B3bzCV+p1ZgDR/nTS7mn/2o=
+X-Google-Smtp-Source: AGHT+IG/iqd+XbdFNcO6Y5Z6/czCw+v5RuHHV50uuxp6vnts0OajHIw68akSQSir+vARyEG3+OB3vw==
+X-Received: by 2002:adf:a301:0:b0:321:6833:b930 with SMTP id c1-20020adfa301000000b003216833b930mr894608wrb.16.1695113309897;
+        Tue, 19 Sep 2023 01:48:29 -0700 (PDT)
+Received: from [192.168.4.177] (54-240-197-234.amazon.com. [54.240.197.234])
+        by smtp.gmail.com with ESMTPSA id q11-20020adff50b000000b0031c71693449sm14994344wro.1.2023.09.19.01.48.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 01:48:29 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <196a645c-f41d-8f35-d854-f30b66aff2a6@xen.org>
+Date:   Tue, 19 Sep 2023 09:48:28 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1iibWnnp3IIIl0SS"
-Content-Disposition: inline
-In-Reply-To: <005301d9eab7$5688c920$039a5b60$@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v3 00/13] KVM: xen: update shared_info and vcpu_info
+ handling
+To:     Sean Christopherson <seanjc@google.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Durrant <pdurrant@amazon.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+References: <20230918144111.641369-1-paul@xen.org>
+ <ZQh4Zi5Rj3RP9Niw@google.com>
+ <8527f707315812d9ac32201b37805256fab4a0a1.camel@infradead.org>
+ <ZQiE7SExjbCVffAE@google.com>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <ZQiE7SExjbCVffAE@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,47 +89,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/09/2023 18:12, Sean Christopherson wrote:
+[snip]
+> 
+> Tag them RFC, explain your expectations, goals, and intent in the cover letter,
+> don't copy+paste cover letters verbatim between versions, and summarize the RFC(s)
+> when you get to a point where you're ready for others to jump in.  The cover
+> letter is *identical* from v1=>v2=>v3, how is anyone supposed to understand what
+> on earth is going on unless they happened to be in the same room as ya'll on
+> Friday?
 
---1iibWnnp3IIIl0SS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The cover letter is indeed identical because the purpose of the series 
+has not changed. Each individual patch has a commit comment summarizing 
+what changed from version to version or whether it is new in a 
+perticular version. I thought this would be enough for any reviewer to 
+be able to see what is going on. In future I will also roll these up 
+into the cover letter.
 
-Guo,
+> 
+> Doing rapid-fire, early review on beta-quality patches is totally fine, so long
+> as it's clear that others can effectively ignore the early versions unless they
+> are deeply interested or whatever.
+> 
+> A disclaimer at the top of the cover letter, e.g.
+> 
+>    This series is a first attempt at an idea David had to improve performance
+>    of the pfncache when KVM is emulating Xen.  David and I are still working out
+>    the details, it's probably not necessary for other folks to review this right
+>    now.
+> 
+> along with a summary of previous version and a transition from RFC => non-RFC
+> makes it clear when I and others are expected to get involved.
+> 
+> In other words, use tags and the cover letter to communicate, don't just view the
+> cover letter as a necessary evil to get people to care about your patches.
 
-On Tue, Sep 19, 2023 at 02:08:32PM +0900, Kwanghoon Son wrote:
-> > > > +      - const: thead,th1520-reset
-> > > > +      - const: syscon
-> > >
-> > > iDumb question perhaps, but why is this a syscon?
-> >=20
-> > This is good point.
-> > In fact, I took it from the vendor kernel, and I tried to keep it as sa=
-me as I could.
-> > Vendor also followed drivers/reset/reset-imx7.c
-> > As Rob said, if don't need it, I'll change it.
+That was not the intention at all; I put all the detailed explanation in 
+the commit comments because I thought that would make review *easier*.
 
-> I have investigated vendor kernels, but it is still not sure reset inform=
-ation.
-> I thought this is about sys_reg, but without datasheet, can't tell.
-> Therefore, should be stopped patch for a while until knows better comes o=
-ut.
-
-Is there documentation in English you can provide to these people that
-are trying to add support for your product?
-
-Thanks,
-Conor.
-
---1iibWnnp3IIIl0SS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQlgMQAKCRB4tDGHoIJi
-0vyLAP9HZrpuOPBneDIXfpdgbTVat7I4LUqO20r1ekUdthdEhwD/brQ5aP+rZx8t
-p7nYOH/eyRcDKWMoDlVvvHjOP+5T/ww=
-=/q0V
------END PGP SIGNATURE-----
-
---1iibWnnp3IIIl0SS--
+   Paul
