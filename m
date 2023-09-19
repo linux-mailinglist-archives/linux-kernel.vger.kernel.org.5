@@ -2,85 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B327A68B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F877A68BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbjISQQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 12:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        id S231243AbjISQTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 12:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbjISQQP (ORCPT
+        with ESMTP id S230272AbjISQTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:16:15 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEA5AB;
-        Tue, 19 Sep 2023 09:16:10 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JAphEU023378;
-        Tue, 19 Sep 2023 16:15:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=PHUbtJEzjbMFZuHtcDHBZZbSPs5viejV11pTdFjLUTQ=;
- b=R4IE6g13ZSkfxduyBMWw4rbjl9O/CZTx/K13ki1x7EDG3c1YJR6gMtNzSPWWCJXNeGou
- sD9Kp8Hovrh6fugJJshW8+V5+9yATZfufybr1Tvvh3Y3KJ8FOU46XUueLwzyThu7j+D7
- 6gqib4rP/NuukIEJOmZYyVfLg3dDQgJLsxyf/Ky8guOetYAkx8t0JrjgAZh8SxF78zIv
- 1d3TGRx64DrTc9k87Ib+LrEKvuHPXtpNV49XGy6ltje4D9khGSDcFGRbBBPp7Tqp/lD9
- u1LsYtu/E4goye7ox4LC9jvhvLNsYg+evXDBOehy1wSsR73EZ3kx06vT5VAmVoOORm7M Zw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6mtsbexe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 16:15:59 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38JGFwDf002121
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 16:15:58 GMT
-Received: from [10.216.36.122] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 19 Sep
- 2023 09:15:53 -0700
-Message-ID: <62147eab-aa1b-34c2-b6d2-7e5700a46cb6@quicinc.com>
-Date:   Tue, 19 Sep 2023 21:45:50 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH V2 4/4] arm64: dts: qcom: ipq5018: Add tsens node
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <srinivas.kandagatla@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <thara.gopinath@gmail.com>,
-        <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <dmitry.baryshkov@linaro.org>
-References: <20230915121504.806672-1-quic_srichara@quicinc.com>
- <20230915121504.806672-5-quic_srichara@quicinc.com>
- <b0fe17e4-e4d8-02af-4e09-06b3930b38fe@linaro.org>
- <b40c6439-ab73-d796-589e-ffee21cedfc9@quicinc.com>
- <463923fe-7938-ad1b-fd79-6491329289af@linaro.org>
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <463923fe-7938-ad1b-fd79-6491329289af@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ywFUsbtpKLShfYHjl9BIzYo50TACc1QU
-X-Proofpoint-ORIG-GUID: ywFUsbtpKLShfYHjl9BIzYo50TACc1QU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_07,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 bulkscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309190140
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        Tue, 19 Sep 2023 12:19:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACB3A1;
+        Tue, 19 Sep 2023 09:19:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53599C433C8;
+        Tue, 19 Sep 2023 16:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695140349;
+        bh=8JMiQ5M7/KIEk98IyOcUQVbopzZnILgjqlCPUZv+KTo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nd74LZGBcan2JhY4lwNiP+y/ZbV2GqaFOfVUh5npk8AQyl/PgmtPsCNqDWfpcEN1j
+         3oWaUMoMoTuH7keKvAr9e/KHPDBxEbM9sVgN+XE7XXK0MarIjUGTLDPJKPICpM9c25
+         HaCwKOXcxMmmWM9uK+Ho+hBAbXmJ+d4DrRqtU2STV90XzTEnqm44cJMafFYu/NkYTP
+         wpfwv9O17yYVnCQXqxcvcUkASooeeqwf/KS9pRBdXnmmYYxfuwY0RMr+E2wnfmSQz8
+         Mucm63CCnmE0tzVbGn6QJF+ZJsIzDSZ4NSgj7YHrMowMN4ifFqr480njZGiy9r6PwA
+         STvh5OaE26s7g==
+Received: from [104.132.45.96] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qidRK-00EOAg-TX;
+        Tue, 19 Sep 2023 17:19:07 +0100
+Date:   Tue, 19 Sep 2023 17:19:05 +0100
+Message-ID: <87cyye3zly.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.au@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH 3/3] irqchip: renesas-rzg2l: Fix irq storm with edge trigger detection for TINT
+In-Reply-To: <OS0PR01MB5922748F489467BE2539AA1886FAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <20230918122411.237635-1-biju.das.jz@bp.renesas.com>
+        <20230918122411.237635-4-biju.das.jz@bp.renesas.com>
+        <86y1h2cjpb.wl-maz@kernel.org>
+        <OS0PR01MB5922748F489467BE2539AA1886FAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.96
+X-SA-Exim-Rcpt-To: biju.das.jz@bp.renesas.com, tglx@linutronix.de, prabhakar.mahadev-lad.rj@bp.renesas.com, claudiu.beznea.uj@bp.renesas.com, geert+renesas@glider.be, biju.das.au@gmail.com, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,63 +70,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/19/2023 6:07 PM, Krzysztof Kozlowski wrote:
-> On 19/09/2023 09:28, Sricharan Ramabadhran wrote:
->>
->>
->> On 9/15/2023 6:16 PM, Krzysztof Kozlowski wrote:
->>> On 15/09/2023 14:15, Sricharan Ramabadhran wrote:
->>>> IPQ5018 has tsens V1.0 IP with 4 sensors.
->>>> There is no RPM, so tsens has to be manually enabled. Adding the tsens
->>>> and nvmem node and IPQ5018 has 4 thermal sensors (zones). With the
->>>> critical temperature being 120'C and action is to reboot. Adding all
->>>> the 4 zones here.
->>>>
->>>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->>>> ---
->>>>    [v2] Fixed node names, order and added qfprom cells for points
->>>>         seperately to use the calibrate_common and squashed thermal_zone
->>>>         nodes here
->>>>
->>>>    arch/arm64/boot/dts/qcom/ipq5018.dtsi | 169 ++++++++++++++++++++++++++
->>>>    1 file changed, 169 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->>>> index 9f13d2dcdfd5..d53aea5342e2 100644
->>>> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->>>> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->>>> @@ -93,6 +93,117 @@ soc: soc@0 {
->>>>    		#size-cells = <1>;
->>>>    		ranges = <0 0 0 0xffffffff>;
->>>>    
->>>> +		qfprom: qfprom@a0000 {
->>>> +			#address-cells = <1>;
->>>> +			#size-cells = <1>;
->>>> +			compatible = "qcom,ipq5018-qfprom", "qcom,qfprom";
->>>
->>> This is a friendly reminder during the review process.
->>>
->>> It seems my previous comments were not fully addressed. Maybe my
->>> feedback got lost between the quotes, maybe you just forgot to apply it.
->>> Please go back to the previous discussion and either implement all
->>> requested changes or keep discussing them.
->>>
->>
->>    oops, moved the compatible to first, but missed it on posting version.
->>    Will fix it in V3.
+On Tue, 19 Sep 2023 16:24:53 +0100,
+Biju Das <biju.das.jz@bp.renesas.com> wrote:
 > 
-> What do you mean by "posting version"? If it is not the same as your Git
-> version, then your process is buggy. You must work on mainline tree and
-> send patches from that tree. Not edit patches and edit Git separately...
+> Hi Marc Zyngier,
 > 
-   Working on mainline tree only, just that i had 2 different build
-   servers (one build machine and other local machine). Usually develop
-   all on build server, copy/apply patches to local machine (mainline)
-   and send. This time missed copying to local finally.
+> Thanks for the feedback.
+> 
+> > Subject: Re: [PATCH 3/3] irqchip: renesas-rzg2l: Fix irq storm with edge
+> > trigger detection for TINT
+> > 
+> > On Mon, 18 Sep 2023 13:24:11 +0100,
+> > Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> > >
+> > > In case of edge trigger detection, enabling the TINT source causes a
+> > > phantum interrupt that leads to irq storm. So clear the phantum
+> > > interrupt in rzg2l_irqc_irq_enable().
+> > >
+> > > This issue is observed when the irq handler disables the interrupts
+> > > using
+> > > disable_irq_nosync() and scheduling a work queue and in the work
+> > > queue, re-enabling the interrupt with enable_irq().
+> > >
+> > > Fixes: 3fed09559cd8 ("irqchip: Add RZ/G2L IA55 Interrupt Controller
+> > > driver")
+> > > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> > > ---
+> > >  drivers/irqchip/irq-renesas-rzg2l.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/drivers/irqchip/irq-renesas-rzg2l.c
+> > > b/drivers/irqchip/irq-renesas-rzg2l.c
+> > > index 33a22bafedcd..78a9e90512a6 100644
+> > > --- a/drivers/irqchip/irq-renesas-rzg2l.c
+> > > +++ b/drivers/irqchip/irq-renesas-rzg2l.c
+> > > @@ -144,6 +144,12 @@ static void rzg2l_irqc_irq_enable(struct irq_data
+> > *d)
+> > >  		reg = readl_relaxed(priv->base + TSSR(tssr_index));
+> > >  		reg |= (TIEN | tint) << TSSEL_SHIFT(tssr_offset);
+> > >  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
+> > > +		/*
+> > > +		 * In case of edge trigger detection, enabling the TINT source
+> > > +		 * cause a phantum interrupt that leads to irq storm. So clear
+> > > +		 * the phantum interrupt.
+> > > +		 */
+> > > +		rzg2l_tint_eoi(d);
+> > 
+> > This looks incredibly unsafe. disable_irq()+enable_irq() with an interrupt
+> > being made pending in the middle, and you've lost that interrupt.
+> 
+> In this driver that will never happen as it clears the TINT source
+> during disable(), so there won't be any TINT source for interrupt
+> detection after disable().
 
-Regards,
-  Sricharan
+So you mean that you *already* lose interrupts across a disable
+followed by an enable? I'm slightly puzzled...
 
-   one for
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
