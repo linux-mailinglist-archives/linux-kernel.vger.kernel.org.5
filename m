@@ -2,136 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E567A6129
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCD87A612C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjISL2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
+        id S231261AbjISL2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjISL2h (ORCPT
+        with ESMTP id S230351AbjISL2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:28:37 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2087.outbound.protection.outlook.com [40.107.92.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FC1F5;
+        Tue, 19 Sep 2023 07:28:40 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343C6F0;
+        Tue, 19 Sep 2023 04:28:34 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bfb12b24e5so88564201fa.0;
+        Tue, 19 Sep 2023 04:28:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695122912; x=1695727712; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:references:cc:to:from
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SJtfDjSHeM3hcCE9c1o3c3xw6rFELBnXCLJY5rSxmWs=;
+        b=YgdcTGjUzCp6s/zU6F0ed2gSEUVfUoUo4Dl+mZSzh/lXBHhze5dFLTqLCb/3uoiUu5
+         K08titw8EHRwmApUxXSj5AoGKlU9lGoOXOssK1f7QvK0JzJcjPIyYbqH0sDREEQbaGFD
+         N+50x4+kBx1AqUblPNhj91yq0grluJGS9lHeHaaESkLboEme0yZtLcesRk9/NwoL6EGC
+         idBCgGrUPv3c85xK23y8PtnymDplODF72BO39Hg+LM/y2LJuds3NEwdhnsx4/CGgm2Ch
+         vcm5RU3aUJ7hOHIVCUnnyMK6ftuiCiT/rq4LC62ECztoHyqqzCp/2VmhVAfHY/RtdnJ1
+         2Dtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695122912; x=1695727712;
+        h=content-transfer-encoding:in-reply-to:subject:references:cc:to:from
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SJtfDjSHeM3hcCE9c1o3c3xw6rFELBnXCLJY5rSxmWs=;
+        b=Y/b5h4HvD6+tQ4YAZ/A56nm+ygevSitVgmgBOHYEUikDKJkTnp+5oy7GUoo/RHo4au
+         RMhnhkJXZRZAM72vk6SZTeFRjIm0P850bRG9eqVd/jO/W19T54+iDNrPaY/poeBUq++B
+         OXDfJp6cDeRJh+S035tyoc3o/eKdzZOSEYtrvco9U617YF5XcHGZyCw/sBaDIeC/EgYW
+         PlqALDi+d5fTqIIqcColrqilnWwG1wWCHmRXtpNCfGQ73C7PMm4zEMf/uswbiUrF4E2Q
+         2vTPUC8CUS8RQWRNkWhs55h43qMK8IwGlYEPg/IBoDhW9ccnBptgnIhifIZPSt7cbBhz
+         gaPA==
+X-Gm-Message-State: AOJu0YyKigx63gIrj4OGH3k0AWOjyq4DKS/63BInvkdlEoIraoxm2eKa
+        /zbGKsu4iHq83o2uc0Kn6yU=
+X-Google-Smtp-Source: AGHT+IGZJ2X24wIhJ/gkDcgzvoKlSt5mlJadrEE5wlsGUVXr4z6cU8uAWZ80S9Q6n1QogDI7bLYF6Q==
+X-Received: by 2002:a05:6512:74d:b0:502:9fce:b6db with SMTP id c13-20020a056512074d00b005029fceb6dbmr10532201lfs.1.1695122911676;
         Tue, 19 Sep 2023 04:28:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TCUataMwejxprwjD5ektB+4r5xdsYSrnO8tCwSMz/F4CzKRa5eoHP3uU3gLvabvle7bBN5C/nIX9dxRmiJCVaw9fnTNwjK+kOamU7CuDdaXtLs1OMTZPjgfXjriTx+QQ5TGX+oM+JNTMntqBdWoD89ytnGY/UfS4fFe10Q+Wa7+7+E6J+1VTaWgmSMJ5aRkU0OX7D4qJ+/ikugEKq/83nJbABVicWLg3LEQtD+Jye2T0B3iZGvBS9C6PBrAyq17JNC/kC/KpFTzBfuZlNUXKR8N5aRNLex+Lw/7FlvSpsiGlUzoGESJ3YCV8cPk+IA3PwQR6gIcHB3F03lXdLyEt7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J7R75y0ASBsxBBnlVAMLkLmxf4yRqBy6611LtS4QAl0=;
- b=koeg+ZyceR4jgwnhSLxZcqknJgQijz1SEvIrUifqn3b8NUKmQtBRUZfram4HCXE7NPCrrviDGPICHwJj5F7shksT5T2/lXeAAvfqgQZGqMmNIc9eIYzN09w+8wHiyXf6V7iLGCAKx4kGhv+qYP6060Aw9kcK5yQPwC/8bWBCV8nJe+oKDRz+8TXUtcmeC1kKCQ2HGQSv1ti7T/X9k592cWX9isGpTwakODGc3wxzZ9tceoUfBWe9HvGYHgqB+C9HtROJae2zNhgOhbxk45mlEudq54DTy27rg1fSYO8tS/1eNVAMLZJBm5EcWMSvDwajdcIvL6q//ZxEI5fI/4HpFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J7R75y0ASBsxBBnlVAMLkLmxf4yRqBy6611LtS4QAl0=;
- b=LLhcrE1XCO6MpbN5+eaStDcQ79Q2OeFxiECyfuUnmMOPoxi8XCCFiI+4vEyTrirsS3uLJdP6IBLqcmVsAdGhd0x4DNZ0LkQiVELuwpfCig2NVPUsz30Y+pIfPh4NFS+ATz8p28qJswJUrsnG4a1U6J3xhvp4AuMmMICIj2Na1sK0w/cw1UuDP2/NnQ2LNe7Adkq0gzqO+vye8op63xVz/lRcEdBKjvkP1hF1qxYTvYEIH6Vs/UiHM8sDG8MdpGaCpxsxxpSzUNPMAlJP6aWKUH8xZQUmhoUotqBh3dRhDbVdRJK+vxJyZki5v9HVWEI1/kk9dcpr5xcq5ANQUfQ7bg==
-Received: from MW4PR04CA0375.namprd04.prod.outlook.com (2603:10b6:303:81::20)
- by BL3PR12MB6644.namprd12.prod.outlook.com (2603:10b6:208:3b1::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
- 2023 11:28:29 +0000
-Received: from CO1PEPF000042A7.namprd03.prod.outlook.com
- (2603:10b6:303:81:cafe::b3) by MW4PR04CA0375.outlook.office365.com
- (2603:10b6:303:81::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27 via Frontend
- Transport; Tue, 19 Sep 2023 11:28:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1PEPF000042A7.mail.protection.outlook.com (10.167.243.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.20 via Frontend Transport; Tue, 19 Sep 2023 11:28:28 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 19 Sep
- 2023 04:28:15 -0700
-Received: from [10.41.21.79] (10.126.230.35) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 19 Sep
- 2023 04:28:10 -0700
-Message-ID: <961ffcb4-a9c6-2916-7b90-4a38b0ad465c@nvidia.com>
-Date:   Tue, 19 Sep 2023 16:58:07 +0530
+Received: from ?IPV6:2001:14ba:16f8:1500::3? (dc78bmyyyyyyyyyyyyybt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::3])
+        by smtp.gmail.com with ESMTPSA id y21-20020ac255b5000000b004fe2e94f8fdsm428752lfg.236.2023.09.19.04.28.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 04:28:31 -0700 (PDT)
+Message-ID: <c987f401-81c4-00e5-51a7-88a6a38a2ca2@gmail.com>
+Date:   Tue, 19 Sep 2023 14:28:29 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [Patch v2 0/2] Improvements to the Tegra CPUFREQ driver
-Content-Language: en-US
-To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
-        <amiettinen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
-References: <20230901164113.29139-1-sumitg@nvidia.com>
-From:   Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <20230901164113.29139-1-sumitg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail202.nvidia.com (10.129.68.7)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042A7:EE_|BL3PR12MB6644:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e490d4a-c5f3-4df5-8505-08dbb9038bf5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ubIxyKRk9GjHCs4PJBitRBhxBBlCO8KeY+mNa/90YXrCv81VAVBjE0H6/2J7gk6PMqzZvfyOTxSQGHs3bvvdolWIMHkt64BrFmqEkYi5/scmjzIi+STFORO4qoypu1l0kWUpzFGq/uedN8SVNu/HzrUM+4ixJpavp95zDnfBZyTCoLJDOjdRhSs171IIa9+fzhmGQ+oaUx2RAeW3IE2A7LBKmtqsNbaDTjUkz6COouYax06Hm0lTKT8S5CR0lw9vQuoP0zHmUh/0W5qgWPoAoRjlYAt9fmEPK68a6yqwe0/OWAaT/SS+VEOqZYP3SaHn3B9FaQQaYKDk6qVY3Egf77iROfaHB0hUutqlW2x6UyxkbuNDKUSIasK2nYb2+zUPP83dnDSctaQ+FdsNOIW1QaS+23gtoXPR9UpP4beHgkuED9u3l8FryY++AASAW+TR9GiG3+TzhHTsOUNST4z6pcHYhGJAKxn7YxpOQXwTDP7cEkU7snpK3oaKDxicrO+qoINifxoa+ZC9Tw5+gu5O2VjI5p+RHBy7fIrGSHcxn1SRgO2YTRns/+T3Q6cAImsCIImbrOjKVqJI7/Uvp3M/qRdKkKcumssUTpUJFDmkV2M3cJNxK6zcu8GqYh4387nDDsgqKVGQ5++vSKuoLw4KXyTNsgEF+/Ilc6srkwB83WcJUe0FGGpUaGsoiRn0Ypyl06KsSsQsIvrPSdeMiPnRNy10rKNBYCCZGgml9ZU1vH9pxHdMQ9dHVz7P3VGXagla+6wmjKqEzDVxcfen957aQg==
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(186009)(82310400011)(1800799009)(451199024)(40470700004)(36840700001)(46966006)(40460700003)(16526019)(2616005)(26005)(107886003)(53546011)(36860700001)(47076005)(356005)(82740400003)(86362001)(7636003)(36756003)(31696002)(426003)(336012)(40480700001)(83380400001)(5660300002)(478600001)(4744005)(41300700001)(31686004)(16576012)(70206006)(110136005)(54906003)(4326008)(70586007)(316002)(8676002)(8936002)(6666004)(2906002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 11:28:28.6283
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e490d4a-c5f3-4df5-8505-08dbb9038bf5
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042A7.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6644
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+ Thunderbird/102.13.0
+Content-Language: en-US, en-GB
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Benjamin Bara <bbara93@gmail.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1694760170.git.mazziesaccount@gmail.com>
+ <f378a401cec4fb0b9287b52ab159f00dd77569a6.1694760170.git.mazziesaccount@gmail.com>
+ <20230917113518.7c4bb1a0@jic23-huawei>
+ <a5c19874-32ba-60bf-6e72-9139a2873c7e@gmail.com>
+Subject: Re: [PATCH v2 2/3] iio: pressure: Support ROHM BU1390
+In-Reply-To: <a5c19874-32ba-60bf-6e72-9139a2873c7e@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle Ping.
+On 9/18/23 15:56, Matti Vaittinen wrote:
+> On 9/17/23 13:35, Jonathan Cameron wrote:
+>> On Fri, 15 Sep 2023 09:56:19 +0300
+>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+>>
+>>> Support for the ROHM BM1390 pressure sensor. The BM1390GLV-Z can measure
+>>> pressures ranging from 300 hPa to 1300 hPa with configurable measurement
+>>> averaging and internal FIFO. The sensor does also provide temperature
+>>> measurements.
+>>>
+>>> Sensor does also contain IIR filter implemented in HW. The data-sheet
+>>> says the IIR filter can be configured to be "weak", "middle" or
+>>> "strong". Some RMS noise figures are provided in data sheet but no
+>>> accurate maths for the filter configurations is provided. Hence, the IIR
+>>> filter configuration is not supported by this driver and the filter is
+>>> configured to the "middle" setting (at least not for now).
+>>>
+>>> The FIFO measurement mode is only measuring the pressure and not the
+>>> temperature. The driver measures temperature when FIFO is flushed and
+>>> simply uses the same measured temperature value to all reported
+>>> temperatures. This should not be a problem when temperature is not
+>>> changing very rapidly (several degrees C / second) but allows users to
+>>> get the temperature measurements from sensor without any additional 
+>>> logic.
+>>>
+>>> This driver allows the sensor to be used in two muitually exclusive 
+>>> ways,
+>>>
+>>> 1. With trigger (data-ready IRQ).
+>>> In this case the FIFO is not used as we get data ready for each 
+>>> collected
+>>> sample. Instead, for each data-ready IRQ we read the sample from sensor
+>>> and push it to the IIO buffer.
+>>>
+>>> 2. With hardware FIFO and watermark IRQ.
+>>> In this case the data-ready is not used but we enable watermark IRQ. At
+>>> each watermark IRQ we go and read all samples in FIFO and push them 
+>>> to the
+>>> IIO buffer.
+>>>
+>>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
 
-Thank you,
-Sumit Gupta
+...
 
+>>> +
+>>> +static const unsigned long bm1390_scan_masks[] = {
+>>> +    BIT(BM1390_CHAN_PRESSURE) | BIT(BM1390_CHAN_TEMP), 0
+>> Why?  Doesn't look hard to support just one or the other?
+>> Normally we only do this sort of limitation when there is a heavily
+>> optimized read routine for a set of channels and it is better
+>> to grab them all and throw away the ones we don't care about.
+>> That doesn't seem to be true here. So if the fifo grabbed both
+>> temp and pressure it would makes sense here, but doesn't seem
+>> like it does.
+> 
+> I have a feeling I have misunderstood how this mask works. I have 
+> assumed all the channels with corresponding mask bit _can_ be enabled 
+> simultaneously, but I have not understood they _must_ all be enabled. I 
+> think I must go back studying this, but if all channels really _must_ be 
+> enabled, then you are correct. It actually makes a lot of sense to 
+> support the pressure values alone, as, according to the data-sheet, the 
+> HW is doing a "MEMS temperature compensation" to the pressure values. 
+> So, my assuimption is the temperature data may not be required to be 
+> captured.
+> 
+> This also means I should revise the scan masks for the BU27008, BU27010 
+> and BU27034 light sensors as I don't think all the users want all the 
+> channels enabled. I wonder how I have not noticed any problems when I 
+> tested those things - did I really always enable all the channels...? @_@
+> 
+> Anyways, Thanks.
 
-On 01/09/23 22:11, Sumit Gupta wrote:
-> This patch set adds below improvements to the Tegra194 CPUFREQ driver.
-> They are applicable to all the Tegra SoC's supported by the driver.
+Hi Jonathan,
+
+There's something in IIO scan_masks / buffer demuxing that I don't quite 
+understand. I noticed following things:
+
+1) Strict available scan mask check seems to be in use only for 
+INDIO_BUFFER_HARDWARE stuff.
+
+https://elixir.bootlin.com/linux/v6.6-rc2/source/drivers/iio/industrialio-buffer.c#L881
+
+So, the:
+
+ >>> +static const unsigned long bm1390_scan_masks[] = {
+ >>> +    BIT(BM1390_CHAN_PRESSURE) | BIT(BM1390_CHAN_TEMP), 0
+
+is not exclusive for BM1390 as long as it is not setting the 
+INDIO_BUFFER_HARDWARE.
+
+My test seems to agree with the code:
+
+// Only enable the temperature:
+root@arm:/sys/bus/iio/devices/iio:device0# echo 1 > 
+scan_elements/in_temp_en
+
+// Run the geneeric buffer without -a:
+root@arm:/sys/bus/iio/devices/iio:device0# /iio_generic_buffer -c 20 -N 
+0 -t bm1390data-rdy-dev0
+iio device number being used is 0
+iio trigger number being used is 0
+/sys/bus/iio/devices/iio:device0 bm1390data-rdy-dev0
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+22968.750000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23000.000000
+23031.250000
+23000.000000
+23000.000000
+root@arm:/sys/bus/iio/devices/iio:device0#
+
+In above case the temperature values and only the temperature values 
+were shown. I must admit I did not spend enough time with the 
+iio_generic_buffer.c or IIO demuxing code to really understand all the 
+details (I got headache very quickly ;) ). I still believe the 
+iio_generic_buffer expects to see only the enabled channel data in the 
+buffer - so, it seems to me the kernel is also only adding the enabled 
+channel data to the buffer. Also, judging the values, the demuxing is 
+correctly extracting the temperature data from data the driver pushes here:
+
+iio_push_to_buffers_with_timestamp(idev, &data->buf, data->timestamp);
+
+The bm1390 driver as sent in v2 does not do demuxing but always pushes 
+whole chunk of data and trusts IIO to do demuxing.
+
+2) I noticed the 'available_scan_masks' was marked as an optional field. 
+So, I think that if there is no restrictions to which of the channels 
+can be enabled, then we can omit setting it. This is what I tried.
+
+It appears that when we do not populate the 'available_scan_masks' with the:
+ >>> +static const unsigned long bm1390_scan_masks[] = {
+ >>> +    BIT(BM1390_CHAN_PRESSURE) | BIT(BM1390_CHAN_TEMP), 0
+
+things change. When I tested enabling only temperature and ran the 
+iio_generic_buffer -c 20 -N 0 -t bm1390data-rdy-dev0 - the reported 
+values seemed completely random.
+
+When I initialized the pressure data in driver:
+data->buf.pressure = 1;
+before doing the:
+iio_push_to_buffers_with_timestamp(idev, &data->buf, data->timestamp);
+
+I saw following:
+
+root@arm:/# cd /sys/bus/iio/devices/iio\:device0
+root@arm:/sys/bus/iio/devices/iio:device0# echo 1 > 
+scan_elements/in_temp_en
+root@arm:/sys/bus/iio/devices/iio:device0# /iio_generic_buffer -c 20 -N 
+0 -t bm1390data-rdy-dev0
+iio device number being used is 0
+iio trigger number being used is 0
+/sys/bus/iio/devices/iio:device0 bm1390data-rdy-dev0
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+8000.000000
+root@arm:/sys/bus/iio/devices/iio:device0# cat in_temp_scale
+31.250000
+
+If we calculate 8000/31.250000 we will get value 256. This looks like 
+value '1' in BE16 format.
+
+Based on this experimenting (and headache obtained from reading the 
+demuxing code) - the IIO framework does not do channel demuxing if the 
+'available_scan_masks' is not given? To me this was somewhat unexpected.
+
+Finally, when the watermark IRQ is used, we can't omit reading the 
+pressure data because clearing the WMI is done based on the pressure 
+data in FIFO.
+
+So, I would propose we do:
+
+static const unsigned long bm1390_scan_masks[] = {
+	BIT(BM1390_CHAN_PRESSURE) | BIT(BM1390_CHAN_TEMP),
+	BIT(BM1390_CHAN_PRESSURE), 0
+
+which better reflects what the hardware is capable of - and, unless I am 
+missing something, also allows us to offload the buffer demuxing to the IIO.
+
+Still, as mentioned in 1), the
+
+ >>> +static const unsigned long bm1390_scan_masks[] = {
+ >>> +    BIT(BM1390_CHAN_PRESSURE) | BIT(BM1390_CHAN_TEMP), 0
+
+does not seem to prevent enabling only the temperature channel - so in 
+the driver buffer handler we still must unconditionally read the 
+pressure data regardles the active_scan_mask.
+
+>>
+>>> +     * called as a result of a read operation from userspace and hence
+>>> +     * before the watermark interrupt was triggered, take a timestamp
+>>> +     * now. We can fall anywhere in between two samples so the error 
+>>> in this
+>>> +     * case is at most one sample period.
+>>> +     * We need to have the IRQ disabled or we risk of messing-up
+>>> +     * the timestamps. If we are ran from IRQ, then the
+>>> +     * IRQF_ONESHOT has us covered - but if we are ran by the
+>>> +     * user-space read we need to disable the IRQ to be on a safe
+>>> +     * side. We do this usng synchronous disable so that if the
+>>> +     * IRQ thread is being ran on other CPU we wait for it to be
+>>> +     * finished.
+>>
+>> That irq disable is potentially expensive.
+>> Why not just pass the current timestamp into the __bm1390_fifo_flush >
+>> The locks should prevent other races I think..
 > 
-> 1) Patch 1: Avoid making SMP call on every frequency request to reduce
->     the time for frequency set and get calls.
+> Gah. I hate you Jonathan ;) (Not really!)
 > 
-> 2) Patch 2: Use reference clock count based loop instead of udelay()
->     to improve the accuracy of re-generated CPU frequency.
-> 
-> The patches are not related but have minor conflict. So, need to be
-> applied in order of patch numbers. If 'Patch 2' is to be applied first
-> then will rebase that and send separately.
-> 
-> Sumit Gupta (2):
->    cpufreq: tegra194: save CPU data to avoid repeated SMP calls
->    cpufreq: tegra194: use refclk delta based loop instead of udelay
-> 
->   drivers/cpufreq/tegra194-cpufreq.c | 151 ++++++++++++++++++++---------
->   1 file changed, 106 insertions(+), 45 deletions(-)
-> 
+> Actually, thank you (as always) for pointing this out. I don't instantly 
+> see why it wouldn't work, but going throught the IRQ races is never 
+> trivial (for me). It's work I've learned not to do at afternoon as my 
+> brains work better at the morning :) So, I will still go through this as 
+> a first thing tomorrow when I start my work day...
+
+After staring this for a while, I see no reason why we couldn't do as 
+you suggested. Thanks! It really improves this :)
+
+Yours,
+	-- Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
