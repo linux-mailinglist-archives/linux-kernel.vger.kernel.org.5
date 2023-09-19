@@ -2,156 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6017A6AEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B487A6AEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbjISSw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
+        id S232538AbjISSya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232547AbjISSw4 (ORCPT
+        with ESMTP id S232362AbjISSy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:52:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5553BE
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:52:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D475BC433CC;
-        Tue, 19 Sep 2023 18:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695149569;
-        bh=iBy2r1Ppb7+LblxwetjPZTCM0xkhLmGsPtEb6rgyHpE=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=IT4JlwF0Dq8D0KQoqO5NhUVaofEV6Z8R3Pl3JuDU3nL5Vm8YYjgLvExupodGFIU/e
-         Bkczf0k5kW+FwKy8rRRSiOCYIwJZZYjV021ckZZ8ZZYScyibaPTD42HIWrdgg7hK2T
-         I/i4ZThhM0w95nYBZU/q5h4Wit28P4y1OboR02wQSEhjvhnaCRPYYuyIOvSJsPFYsv
-         TX4SV/bOfAWemh5Bk2K2l6VL5OvCqzoM2GcTzX3W2PLwJ48hTFiZPIu753enMGDGpX
-         R9b+d5IKnRnBtgtoDw7SZT5lttzKi18P5edAm61XTD/6axSFGsYM1W2DhuxtfBsnDz
-         M/KwBWWAbpDzA==
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id CF0AC27C0069;
-        Tue, 19 Sep 2023 14:52:47 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute3.internal (MEProxy); Tue, 19 Sep 2023 14:52:47 -0400
-X-ME-Sender: <xms:_-0JZRJL7I3mgpeI3-Y6zuO02uYza5n6UOdij-aD9L5A5vutLT8VYg>
-    <xme:_-0JZdI-nNGc8eTw6kaaItvNFDDgjcu0cu7DEJNsxaz8nDOom5Lb2XagUkw5FgYYQ
-    TgSqzASE8xscHIoaMg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekuddguddttdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    tehnugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqne
-    cuggftrfgrthhtvghrnhepudevffdvgedvfefhgeejjeelgfdtffeukedugfekuddvtedv
-    udeileeugfejgefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudei
-    udekheeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlih
-    hnuhigrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:_-0JZZvD75yTMOf7Irofp0KNMyMqlNtlWW4wLjm2ItLJXKMtmaAisQ>
-    <xmx:_-0JZSb3mj3IFmGz1Bc8du4JTslWg03aJ6hX018Rkc1vj7lWLZgDMg>
-    <xmx:_-0JZYYjU3wPiK72Fz35-4Ufq9VLChmRHCcWfXW9fpW4bDmsOdO0Og>
-    <xmx:_-0JZYqwkvZwsoX_ifE5nOL8DZrNwWG-K3zUqC239B2uBxCius-hqw>
-Feedback-ID: ieff94742:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 47DEF31A0064; Tue, 19 Sep 2023 14:52:47 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+        Tue, 19 Sep 2023 14:54:28 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2125.outbound.protection.outlook.com [40.107.223.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF5E9D;
+        Tue, 19 Sep 2023 11:54:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K5Sukd6fdW5UKd/DxiqtrbZ5ktCGaTsUAo0OaS208BWPtcwm5TzxxMS9ic47tziSWCwcMg0DHnI8NQL5mOeKdkXhk28Gt5E0skIUSaegtb9qyvE/uux3YKwsY80PyyBcGWi1X2Q7/V+zfi6TVL5smekdepJ2BUg1DtkLviPU1bIKLdaOiWCiJLTji0qhjqx125hEQzh05F0FMJadkR5IhXNJg0yGwpsFfVxql4D+Yggg5tdzmPSd8hK+JabUuh1Cn99KHASCMvTDzcavc4embp+Ec/mTyEynwxjOMnibmnTtZlghtl1V1DKakqmcBEbrx8MXAdJDB22cIiwsO7iysA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RbHVfAUsfONtzHRRpCmVRcaEGL/yaY+08R4+FLQsp0c=;
+ b=bOM8oSphGd8khHWExBlFFxfqRNabXJiMOWVMGL9CwlVHqg4rYBxo5Kaba6H/ThAN+rD1pzu4bkAhHeTvAvwUGVdJjnYtUd67/E+h8P0DCSaOMmYcHg5ZweQEIQpY1VeiyIzy1HH1DEyIF/0ycxG8U5MKKmj1x4lnAiV1g2uRcwqlw3TPlqjMn3Oi3D9wnOjpfpKBewlaN59DU+2fYtRGFV5unXh+fMAjP0YekjQsK2OODcUzenbMraGe7Fz2pApfDwMIg8yllet0OT/lBoyvLNg8IXDhOQfcf68uMWkCbYUxpyndkU0wPGDnauoknYTAThJUqN0/72osHMuGw4b5Nw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RbHVfAUsfONtzHRRpCmVRcaEGL/yaY+08R4+FLQsp0c=;
+ b=ob/FPMuqymWzrrrfZsMs9tUQmI5WBtdWQKAl0XpLMxLJPgc4Nsi98dVIoGbi0ltnkHOOD7azm3jjZ0ybztD0X13ZByWJDhwqmKq/7RiKApvqPeO3Lm21aQPrxadvFhP95BiDxHZNLrkDXYRE4OVuM8mthMzgQXBCNDI+7OkerjE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM6PR01MB4044.prod.exchangelabs.com (2603:10b6:5:2c::17) by
+ CH3PR01MB8313.prod.exchangelabs.com (2603:10b6:610:17c::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6792.27; Tue, 19 Sep 2023 18:54:15 +0000
+Received: from DM6PR01MB4044.prod.exchangelabs.com
+ ([fe80::c00b:cb2e:a349:bcbc]) by DM6PR01MB4044.prod.exchangelabs.com
+ ([fe80::c00b:cb2e:a349:bcbc%4]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
+ 18:54:15 +0000
+Message-ID: <cde7e2fc-2e13-4b82-98b3-3d3a52c4c185@os.amperecomputing.com>
+Date:   Tue, 19 Sep 2023 11:54:10 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
+Content-Language: en-US
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Yann Sionneau <ysionneau@kalrayinc.com>
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Yann Sionneau <yann@sionneau.net>,
+        Will Deacon <will@kernel.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230913232938.420423-1-janb@os.amperecomputing.com>
+ <i6h72feyrvo6pajo67b346masyxt7ycpfj46mvrfp4o7suh4ud@xuv5lu64s75m>
+ <a7a85428-d40d-4adb-8f84-75e1dabe19c9@os.amperecomputing.com>
+ <xxnggfauhkfum63p5bkgxsu3m5odyjda7pnwpb5ocwf4gez7fh@4lu6qyqy6dvh>
+ <37e10c3d-b5ab-75ec-3c96-76e15eb9bef8@sionneau.net>
+ <v4hdblxwhl6ncdfxre5gyrve7bgdsorfqpqj53ib6q4tr7aguy@4kfr6ergb3jn>
+ <9de89e14-35bd-415d-97f1-4b6db1258997@os.amperecomputing.com>
+ <ZQlwC9TCSwWJpuxy@arm.com> <ZQl1zwVkx9n2MPvr@shikoro>
+ <da400d3e-a357-1ae8-cb92-728cc4974b67@kalrayinc.com>
+ <ZQm1UyZ0g7KxRW3a@arm.com>
+From:   Jan Bottorff <janb@os.amperecomputing.com>
+In-Reply-To: <ZQm1UyZ0g7KxRW3a@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH2PR10CA0005.namprd10.prod.outlook.com
+ (2603:10b6:610:4c::15) To DM6PR01MB4044.prod.exchangelabs.com
+ (2603:10b6:5:2c::17)
 MIME-Version: 1.0
-Message-Id: <1b7ea860-55e2-48fb-86ba-ff3f9f6d8904@app.fastmail.com>
-In-Reply-To: <ZQnmVI0Q/Al5UKgQ@memverge.com>
-References: <20230907075453.350554-1-gregory.price@memverge.com>
- <20230907075453.350554-4-gregory.price@memverge.com>
- <878r9dzrxj.fsf@meer.lwn.net> <ZP2tYY00/q9ElFQn@memverge.com>
- <42d97bb4-fa0c-4ecc-8a1b-337b40dca930@app.fastmail.com>
- <ZQnMzD26VI3C/ivf@memverge.com>
- <0a7e3ccc-db66-428e-8c09-66e67bfded51@app.fastmail.com>
- <ZQnmVI0Q/Al5UKgQ@memverge.com>
-Date:   Tue, 19 Sep 2023 11:52:27 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Gregory Price" <gregory.price@memverge.com>
-Cc:     "Jonathan Corbet" <corbet@lwn.net>,
-        "Gregory Price" <gourry.memverge@gmail.com>,
-        linux-mm@vger.kernel.org,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        "Linux API" <linux-api@vger.kernel.org>, linux-cxl@vger.kernel.org,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, "Arnd Bergmann" <arnd@arndb.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Subject: Re: [RFC PATCH 3/3] mm/migrate: Create move_phys_pages syscall
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR01MB4044:EE_|CH3PR01MB8313:EE_
+X-MS-Office365-Filtering-Correlation-Id: 72e2aade-0145-40d4-8153-08dbb941d22f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CVABCn2zA8kauetDrVtlH5YAy3MAK25vz1tdwblKrjeSuioUhv1kx+/T2kRNwfw47a4zJA0XEB62tt5b3Y3UmkZPgpxS8qUJfOr0tINRM2y4KJ0/jk7+OkdmkGGlBz8/xXyJnwcVxa/HzA/M9z114At2OrXtjyHiNJfVZb5YrHIwYWJone7Pg8XJH1STP50qhVh3RnPufbe9yByAwtkocamqIcMSELxxDVHyocmYUU9M/dw+qA5+o5cGxOLYe8SG5bFauCT3Q8buAd/ylr/e/xh3fxSkd5CEXkDZyWkiptaft6J9GRFbfbJ6yAHkurIrfjEvhJGtalkbuQ5KVvxxI/+VisHpHziytizZGQEqXTSeB8U4rhJ7FneG4HqEZLe4kS4x2kXHzVy0f/kUrkObEkNBOpxEEIgT1SlS+en4RQvy8P9o1ZyFpjrQNc5HWbv9zjGw2J//9TiOwoEbMRpEoPlI8P2Xdnshod7J9oHpQVUXfO422K2FcVmlt4Q+WiJZn/paao4dUZKnBlWFDEsS4hEMrgs55Yq0SydLo054+vI9YmBfLLDvJ1z6m/DdjzsUyheMx+4JAf0+iFxWK7kfYNdF+9x064fMi5wWaCH6OQk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB4044.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(136003)(39850400004)(396003)(1800799009)(186009)(451199024)(2906002)(5660300002)(26005)(41300700001)(7416002)(54906003)(66946007)(66476007)(66556008)(316002)(110136005)(966005)(478600001)(8936002)(4326008)(8676002)(31686004)(6486002)(6506007)(53546011)(6512007)(2616005)(38100700002)(6666004)(86362001)(31696002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWJoYTJTNHZtREV1VGprcDVwWm9XYlVUalh6TDIvZ1JRM1QzUzNja2VzYzVj?=
+ =?utf-8?B?V29Ib0hhc250ZHRaYmpZdFJSeTVFZ1RJYldKZndDa05OQXJXQzZxYXRTSUd4?=
+ =?utf-8?B?anJCSVFmeUpsSy8zZWxBUUFKRmdRcVNWSys3ZW9CUWd0ZXhWUVRydjhVL2Fl?=
+ =?utf-8?B?aXhHVDVxQmk3RlhTOFBjNU9ubmZNSHMzWEdjUnhGdGg4WExibXVYdzZDeWdX?=
+ =?utf-8?B?VFhxZFgvN2dNNitINHVONCtlL1JVM3ZoOG52Wmg4N01sWVhpaTJ3MHZhWEo4?=
+ =?utf-8?B?ajZiYndqSlBveGZ6ZnpRMTFGWXRQcm5XWTl0bFhXcnZwVGRpM1VNdmQrbkZt?=
+ =?utf-8?B?MEZHd21vUElHa3FIOUZheXZ6b2k2QTN4YzV5d2NGT0RlS3k0a3N4RzhtUTQ1?=
+ =?utf-8?B?VGhIcmdMY2Nja2YwVkxYN3o2T25OR1BoWFBQdk9kRUxsS2NicWJESkIvNmVD?=
+ =?utf-8?B?U2JwR3B4T0pQZ3dtTVhZYW04UDJOSWtsaGdKVUYxcy9rT1dpTEk1SmtQcWdy?=
+ =?utf-8?B?V3FNMkdGK0FQYUtoQjNWUUZSZGZDY3M2ZktpZS93dStoSXJEQTY5WkRuU0Ix?=
+ =?utf-8?B?RFk5bHlENG0ybTVoNzRsMTQxaVd6WHNqWTVHZmJNL1QxOENNM3NwYXFTRnZ3?=
+ =?utf-8?B?T2RCeU16YkkvcHd1VjladkZVOW5sZndKVENQWmx2ZisvVnJLbCszWWVuZ2ZJ?=
+ =?utf-8?B?ZDd2cUJIeWQ4MkRRVlh5YkdjWWtwbTQ1N0gxSFp0VnBXMDBLWDhZdFdDTUo3?=
+ =?utf-8?B?VWgvYXZkQXZubEkyRXU5bjB4VENkbTdHYVB4Z1ZOUWVDOWprTVBVRFJlZkhO?=
+ =?utf-8?B?L3AxUEVWNHpteWM4dGxtTk4vRW05VGJUWTdXNUdWcWF0Q2RSZitpckFmb0dv?=
+ =?utf-8?B?eDBRZE13czlyM1gyL3FhUmVLZlBOQTFUS3ZYWEQ3MHlZSjJsMTh3NG1ZSFov?=
+ =?utf-8?B?UFl3Y1ZkcEE4ekRac0pIbXQ4cDhSd2JEcWhJZ2VZR2wvajNKOFRSNVNEdkhw?=
+ =?utf-8?B?RGdzb0YyT3ZNTmtOOU4veGdvaEdaNVkwTXE2QXZRYlpFYjc0T2pLZEFveENU?=
+ =?utf-8?B?WWJKRFNvbi9jdkR0ZnlxQVBMZUxwSzFDbmVRTW16TzNvcmk5YVZ5SDgvQkJs?=
+ =?utf-8?B?ZnRiU1ZVVkhqWTJEVEhxaGxOdVBrVCszekNJbFJUT2N3V0Vqb0RzWm1Zc1Fn?=
+ =?utf-8?B?VUpPdHRtUUVzYXlYZzcxUzdwVE41L2YxbG15Wm5zSGZEamZlcENodnJucGlk?=
+ =?utf-8?B?cGhvREhXRmJUT2Rzam4vVHFudnhmbWp4UCs0VURMT1dtQlU0NndIbUIwZXo4?=
+ =?utf-8?B?QWorVHBxUkFLa1g0dlArN3l2alBsTlVYbHNLV0JYWXpDTUZJRHNPZHVRWlB0?=
+ =?utf-8?B?K3VKdFNsVVcvZkZsNGpIcGt4Z2pZQWVpY1dvN0VPMGI1Y1FOemlYVXFGWEg0?=
+ =?utf-8?B?U1EybXVIOHhqS0Jxa2toZ1RLcjJabWpXZzFWYm0zYjZ6MmNsMVFNWmdqWE9Z?=
+ =?utf-8?B?REFYSnhvc3NqbGhZUGZNbzhzVURYNUY5TmlBY2FGSEwxaGNjNVVBK3JYNk40?=
+ =?utf-8?B?Nk95MWdqN2E3N01xMUw3UzcrMlJGWW5nT0xJNDFWSW5EL0wySTBuUnVUREFq?=
+ =?utf-8?B?WmtXbUkrbndSdFVYdWdsekhqdnRMbHpNM3RLTWNBSlZIV3NLRGpyM2VKK1I3?=
+ =?utf-8?B?L1UzMDBRc3VsTWxCOXZkTk9yYzgvR1VvWDhWeUZScCtwV1cxdzN0NmsxVUw0?=
+ =?utf-8?B?Znlwc1FyRWU2cWwxQ2xZenpZMXk5RWlYaGVZRExkcXlZZHpxWno4ZHp1d0Ur?=
+ =?utf-8?B?N21QK1M0TzF1aUZjVnVEd25EZFFjTU1jT3lOZzhpTTQ5OGhJRW1qVjBEMU1X?=
+ =?utf-8?B?NFVpaHE2SjdINU80cUw2R1BQSFNkdXdxclpaazhXRXpTbUxBQXZ5d2R5MXB2?=
+ =?utf-8?B?ZW5XY2Y3Z3VVNVp3QnhqckNIYmhKR3FFVEdDeFhweDk2MzJHZFk0dWJhK1ZV?=
+ =?utf-8?B?aEljcE5FYVltMmFQWFQ4MUtONksrU0R5N1lMcnFpZHRVVGJ3bWZvbnFWSmNt?=
+ =?utf-8?B?alhZOCtUR3lMTUFYVXl5NTBQS3JHbHpHZU1aRlNmWTBZeU0rRDN6MXkyZk5k?=
+ =?utf-8?B?THRpRno1dkxlQnJTMzFnMUJwT25yclJ4T2p0NmtZREpVRkJXbW9JeEJCdnc2?=
+ =?utf-8?Q?HpCVl0ZW1piJvNGShtsHbHg=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72e2aade-0145-40d4-8153-08dbb941d22f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB4044.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 18:54:15.4419
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NtlMrdmDL19cHVrog7XDi2vL0O1P5XOTcvlq8GrGUUCaHgfMRzKIGJeE/gjOjP+SzZnW4HtpIM4zUhY63jGnaFUw54ixYpB25+H6IajUAhU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR01MB8313
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/19/2023 7:51 AM, Catalin Marinas wrote:
+> 
+> While smp_* is ok, it really depends on what the regmap_write() does. Is
+> it a write to a shared peripheral (if not, you may need a DSB)? Does the
+> regmap_write() caller know this? That's why I think having the barrier
+> in dw_reg_write() is better.
+> 
+> If you do want to stick to a fix in i2c_dw_xfer_init(), you could go for
+> dma_wmb(). While this is not strictly DMA, it's sharing data with
+> another coherent agent (a different CPU in this instance). The smp_wmb()
+> is more about communication via memory not involving I/O. But this still
+> assumes that the caller knows regmap_write() ends up with an I/O
+> write*() (potentially relaxed).
+
+If we wanted maximum correctness wouldn't we need something like 
+writel_triggers_interrupt/regmap_write_triggers_interrupt or maybe 
+preinterrupt_wmb?
+
+The ARM docs do have a specific example case where the device write 
+triggers an interrupt, and that example specifically says a DSB barrier 
+is needed.
+
+If I look at the ARM GIC IPI send function gic_ipi_send_mask in 
+https://elixir.bootlin.com/linux/v6.6-rc2/source/drivers/irqchip/irq-gic-v3.c#L1354 
+is says:
+
+         /*
+	 * Ensure that stores to Normal memory are visible to the
+	 * other CPUs before issuing the IPI.
+	 */
+	dsb(ishst);
+
+I would think the IPI send code is very carefully tuned for performance, 
+and would not use a barrier any stronger than required.
+
+I believe dma_wmb maps to DMB on ARM64.
+
+- Jan
 
 
-On Tue, Sep 19, 2023, at 11:20 AM, Gregory Price wrote:
-> On Tue, Sep 19, 2023 at 10:59:33AM -0700, Andy Lutomirski wrote:
->>=20
->> I'm not complaining about the name.  I'm objecting about the semantic=
-s.
->>=20
->> Apparently you have a system to collect usage statistics of physical =
-addresses, but you have no idea what those pages map do (without crawlin=
-g /proc or /sys, anyway).  But that means you have no idea when the logi=
-cal contents of those pages *changes*.  So you fundamentally have a nast=
-y race: anything else that swaps or migrates those pages will mess up yo=
-ur statistics, and you'll start trying to migrate the wrong thing.
->
-> How does this change if I use virtual address based migration?
->
-> I could do sampling based on virtual address (page faults, IBS/PEBs,
-> whatever), and by the time I make a decision, the kernel could have
-> migrated the data or even my task from Node A to Node B.  The sample I
-> took is now stale, and I could make a poor migration decision.
 
-The window is a lot narrower. If you=E2=80=99re sampling by VA, you coll=
-ect stats and associate them with the logical page (the tuple (mapping, =
-VA), for example).  The kernel can do this without races from page fault=
-s handlers.  If you sample based on PA, you fundamentally race against a=
-nything that does migration.
 
->
-> If I do move_pages(pid, some_virt_addr, some_node) and it migrates the
-> page from NodeA to NodeB, then the device-side collection is likewise
-> no longer valid.  This problem doesn't change because I used virtual
-> address compared to physical address.
 
-Sure it does, as long as you collect those samples when you migrate. And=
- I think the kernel migrating to or from device memory (or more generall=
-y allocating and freeing device memory and possibly even regular memory)=
- *should* be aware of whatever hotness statistics are in use.
 
->
-> But if i have a 512GB memory device, and i can see a wide swath of that
-> 512GB is hot, while a good chunk of my local DRAM is not - then I
-> probably don't care *what* gets migrated up to DRAM, i just care that a
-> vast majority of that hot data does.
->
-> The goal here isn't 100% precision, you will never get there. The goal
-> here is broad-scope performance enhancements of the overall system
-> while minimizing the cost to compute the migration actions to be taken.
->
-> I don't think the contents of the page are always relevant.  The entire
-> concept here is to enable migration without caring about what programs
-> are using the memory for - just so long as the memcg's and zoning is
-> respected.
->
-
-At the very least I think you need to be aware of page *size*.  And if y=
-ou want to avoid excessive fragmentation, you probably also want to be a=
-ware of the boundaries of a logical allocation.
-
-I think that doing this entire process by PA, blind, from userspace will=
- end up stuck in a not-so-good solution, and the ABI will be set in ston=
-e, and it will not be a great situation for long term maintainability or=
- performance.
