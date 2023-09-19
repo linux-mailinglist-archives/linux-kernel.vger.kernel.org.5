@@ -2,168 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1397A66B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD06D7A66B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbjISO3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43880 "EHLO
+        id S232791AbjISObT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232727AbjISO3T (ORCPT
+        with ESMTP id S232004AbjISObS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:29:19 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF62BBC;
-        Tue, 19 Sep 2023 07:29:12 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RqkWf14Jnz6HJh1;
-        Tue, 19 Sep 2023 22:27:10 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 19 Sep
- 2023 15:29:09 +0100
-Date:   Tue, 19 Sep 2023 15:29:08 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Wadim Egorov <W.Egorov@phytec.de>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        "mugunthanvnm@ti.com" <mugunthanvnm@ti.com>,
-        "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "upstream@lists.phytec.de" <upstream@lists.phytec.de>,
-        "nm@ti.com" <nm@ti.com>
-Subject: Re: [PATCH] iio: adc: ti_am335x_adc: Make DMAs optional
-Message-ID: <20230919152908.000041be@Huawei.com>
-In-Reply-To: <f2b18c8b-97f9-49c5-a4a1-a3d5c1ae13eb@phytec.de>
-References: <20230914121300.845493-1-w.egorov@phytec.de>
-        <20230917114552.3f5cd081@jic23-huawei>
-        <f2b18c8b-97f9-49c5-a4a1-a3d5c1ae13eb@phytec.de>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 19 Sep 2023 10:31:18 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5516583;
+        Tue, 19 Sep 2023 07:31:12 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-403004a96a4so63625325e9.3;
+        Tue, 19 Sep 2023 07:31:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695133871; x=1695738671; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8Rt9ZRjuh0TBv20Cp+ldIRytJvrsd1UIlNU96DDB3sw=;
+        b=faeZ7rUNRmE2gnqEigSreVhO83202izahqxSsaXtdTqt5nz3l028siJJyYZ/werKf+
+         D0VVtD9FcRvaYdryTHy8KfHlReyl+J1b1oTs77FiZHybrFEhwqoj5uIda52T2P0y4jcf
+         2rmYl0Su5M6t42FQ4fDQ2VIdWdWj2qHLNIzdK4LVisf64N/hXHkuTPiQgmyC81mTo+72
+         jctKxbUQhRFxCawPvf8yLt0k/tZE6ouD1XyYE7EvbECNMfGy3LMSe7PwhSnb1Ykjlu/X
+         P+cgNZNbhuJ7lni58jjwytcBI0yhbDgiJeqP8f0cYK3xKCsYE0ht98bvGyx4D3+w/bY9
+         E9Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695133871; x=1695738671;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8Rt9ZRjuh0TBv20Cp+ldIRytJvrsd1UIlNU96DDB3sw=;
+        b=QCb2gK38B1yMKKn15Nxck2ReVeX6dHPg2VDRuCqpZuLhgBVByM8JA293WR0Gs43yiv
+         czQBIju6GdOge8pSAuXc+OsYYjebv4XXWnAFXO7lcLFoIgOn57sFoMGz4vM20KkrrYLo
+         Ize3mjN3DqRzLRui1kcR3f2L9CvWPidS9oWuRhGITNCwnfWc8de+neV93PeddKZvzIiX
+         6rEQe0610WvgtBmzzpfVZ3fzATiiyDJ87PHm1/3E7gch+YsCye4dgTNka3GPyWgCOjM1
+         czkyKBpDH/vYeLZFs8scdt4esgBriVAOiQXXmQC4t6+61qcBD8/Wx3YG+lyzwnFEKH61
+         dSuA==
+X-Gm-Message-State: AOJu0Yxt7hdrGWhtx/j1XWVXvhU+JF7fr3abW5EYin21IUiTbqHAJcba
+        iqrBzLt0U9TlxIUECUw7EBiuSuRSnMa1G2HQX68=
+X-Google-Smtp-Source: AGHT+IG+nlhQTELmnQrCkzhpxIpV86WGLa0WlEisxadWtwwsRU6NYMkY/ECET26jJJAMdVhrafGvepGxqZWbNO6oJgo=
+X-Received: by 2002:adf:d20a:0:b0:320:896:5ea8 with SMTP id
+ j10-20020adfd20a000000b0032008965ea8mr6730564wrh.19.1695133870443; Tue, 19
+ Sep 2023 07:31:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Hao Peng <flyingpenghao@gmail.com>
+Date:   Tue, 19 Sep 2023 22:30:59 +0800
+Message-ID: <CAPm50aKVDLhZo_3kkKyC9AUN0BGrYnPTo9hGqRg1M3TsUQQMSw@mail.gmail.com>
+Subject: [PATCH] KVM: X86: Use octal for file permission
+To:     pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 10:21:28 +0000
-Wadim Egorov <W.Egorov@phytec.de> wrote:
+From: Peng Hao <flyingpeng@tencent.com>
 
-> Hi Jonathan,
-> 
-> Am 17.09.23 um 12:45 schrieb Jonathan Cameron:
-> > On Thu, 14 Sep 2023 14:13:00 +0200
-> > Wadim Egorov <w.egorov@phytec.de> wrote:
-> >  
-> >> DMAs are optional. Even if the DMA request is unsuccessfully,
-> >> the ADC can still work properly.
-> >> Make tiadc_request_dma() not fail if we do not provide dmas &
-> >> dma-names properties.
-> >>
-> >> This actually fixes the wrong error handling of the tiadc_request_dma()
-> >> result where the probing only failed if -EPROPE_DEFER was returned.
-> >>
-> >> Fixes: f438b9da75eb ("drivers: iio: ti_am335x_adc: add dma support")
-> >>  
-> > No line break here.  Fixes tag is part of the main tag block.  
-> >> Signed-off-by: Wadim Egorov <w.egorov@phytec.de>  
-> >  
-> >> ---
-> >>   drivers/iio/adc/ti_am335x_adc.c | 7 +++++--
-> >>   1 file changed, 5 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/iio/adc/ti_am335x_adc.c b/drivers/iio/adc/ti_am335x_adc.c
-> >> index 8db7a01cb5fb..e14aa9254ab1 100644
-> >> --- a/drivers/iio/adc/ti_am335x_adc.c
-> >> +++ b/drivers/iio/adc/ti_am335x_adc.c
-> >> @@ -543,8 +543,11 @@ static int tiadc_request_dma(struct platform_device *pdev,
-> >>   	if (IS_ERR(dma->chan)) {
-> >>   		int ret = PTR_ERR(dma->chan);
-> >>   
-> >> +		if (ret != -ENODEV)
-> >> +			return dev_err_probe(&pdev->dev, ret,
-> >> +					     "RX DMA channel request failed\n");
-> >>   		dma->chan = NULL;
-> >> -		return ret;
-> >> +		return 0;
-> >>   	}
-> >>   
-> >>   	/* RX buffer */
-> >> @@ -670,7 +673,7 @@ static int tiadc_probe(struct platform_device *pdev)
-> >>   	platform_set_drvdata(pdev, indio_dev);
-> >>   
-> >>   	err = tiadc_request_dma(pdev, adc_dev);
-> >> -	if (err && err == -EPROBE_DEFER)
-> >> +	if (err)  
-> > So this looks like a more subtle change than you are describing.
-> > In the original code, we backed off only if the return was a PROBE_DEFER, otherwise
-> > we carried on.
-> >
-> > Your change seems to make that happen for any non -ENODEV error, including PROBE_DEFER.
-> > That's fine, but it's not what the description implies.
-> >
-> > Whilst tiadc_request_dma will fail today if the dmas etc is not provided, that seems
-> > like correct behavior to me.  A function requesting dma fails if it isn't available.
-> > The handling of whether to carry on the job for the caller.  
-> 
-> That makes sense, yes. But stm32-adc is doing the same in its dma 
-> request function.
-> So I assumed we can do it like that.
-> 
-> >
-> > So I think it should just be
-> > 	if (err && err != -EINVAL)
-> > 		goto err_dma;  
-> 
-> We will end up failing if no dmas are configured because the request 
-> returns -ENODEV.
-> So I think it needs to be a check for non -ENODEV.
+Improve code readability and checkpatch warnings:
+  WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider
+using octal permissions '0444'.
 
-That makes sense. I wonder if a long time back that returned -EINVAL, hence the
-wrong value here. If you can do a bit of checking in the git history that would
-be good as it will change how far we backport this.
+Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+---
+ arch/x86/kvm/x86.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-> 
-> >
-> > and no change in tiadc_request_dma()
-> >
-> > However, the case you describe should have worked find with existing code
-> > as it wasn't -EPROBE_DEFER, so I don't understand why you were looking at this
-> > code block in the first place?  
-> 
-> Providing wrong dmas in the device tree should've made the driver fail 
-> to probe.
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index e3412091505d..8c1190a5d09b 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -145,21 +145,21 @@ EXPORT_STATIC_CALL_GPL(kvm_x86_get_cs_db_l_bits);
+ EXPORT_STATIC_CALL_GPL(kvm_x86_cache_reg);
 
-Agreed,
+ static bool __read_mostly ignore_msrs = 0;
+-module_param(ignore_msrs, bool, S_IRUGO | S_IWUSR);
++module_param(ignore_msrs, bool, 0644);
 
-Thanks,
+ bool __read_mostly report_ignored_msrs = true;
+-module_param(report_ignored_msrs, bool, S_IRUGO | S_IWUSR);
++module_param(report_ignored_msrs, bool, 0644);
+ EXPORT_SYMBOL_GPL(report_ignored_msrs);
 
-Jonathan
+ unsigned int min_timer_period_us = 200;
+-module_param(min_timer_period_us, uint, S_IRUGO | S_IWUSR);
++module_param(min_timer_period_us, uint, 0644);
 
-> 
-> Regards,
-> Wadim
-> 
-> >
-> > Jonathan
-> >
-> >  
-> >>   		goto err_dma;
-> >>   
-> >>   	return 0;  
-> 
-> 
+ static bool __read_mostly kvmclock_periodic_sync = true;
+-module_param(kvmclock_periodic_sync, bool, S_IRUGO);
++module_param(kvmclock_periodic_sync, bool, 0444);
 
+ /* tsc tolerance in parts per million - default to 1/2 of the NTP threshold */
+ static u32 __read_mostly tsc_tolerance_ppm = 250;
+-module_param(tsc_tolerance_ppm, uint, S_IRUGO | S_IWUSR);
++module_param(tsc_tolerance_ppm, uint, 0644);
+
+ /*
+  * lapic timer advance (tscdeadline mode only) in nanoseconds.  '-1' enables
+@@ -168,13 +168,13 @@ module_param(tsc_tolerance_ppm, uint, S_IRUGO | S_IWUSR);
+  * tuning, i.e. allows privileged userspace to set an exact advancement time.
+  */
+ static int __read_mostly lapic_timer_advance_ns = -1;
+-module_param(lapic_timer_advance_ns, int, S_IRUGO | S_IWUSR);
++module_param(lapic_timer_advance_ns, int, 0644);
+
+ static bool __read_mostly vector_hashing = true;
+-module_param(vector_hashing, bool, S_IRUGO);
++module_param(vector_hashing, bool, 0444);
+ bool __read_mostly enable_vmware_backdoor = false;
+-module_param(enable_vmware_backdoor, bool, S_IRUGO);
++module_param(enable_vmware_backdoor, bool, 0444);
+ EXPORT_SYMBOL_GPL(enable_vmware_backdoor);
+
+ /*
+@@ -186,7 +186,7 @@ static int __read_mostly force_emulation_prefix;
+ module_param(force_emulation_prefix, int, 0644);
+
+ int __read_mostly pi_inject_timer = -1;
+-module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
++module_param(pi_inject_timer, bint, 0644);
+
+ /* Enable/disable PMU virtualization */
+ bool __read_mostly enable_pmu = true;
+--
+2.31.1
