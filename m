@@ -2,138 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DE17A69AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5B57A69AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbjISReK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
+        id S232080AbjISRfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 13:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbjISReG (ORCPT
+        with ESMTP id S232041AbjISRfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 13:34:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B82CC6;
-        Tue, 19 Sep 2023 10:34:00 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695144838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q5XoD2rR1P7xfyZ4vS5WECNooPW5RHsWgoNmWq+2hMo=;
-        b=UJuEQFI+fVdHak0lB8fNvstykL9kpTeNJD+gjygB9iKFIoN1n7qL5fa8q1zibRy2IPQ6Qe
-        NyukDnTgIGP7wS4FzYHD5OGCHF62//LTFHZZ8yP9IQToCNuSqQ1GH+7YaaGPaBI/CX6Z8V
-        8Vzbr2wmmB33ZJMWTR30JR513dx/C+zEch08e6QwhmiWdN2hx57bNIhu4sFxTiAQXh1Xn1
-        G7Uqydw7R+LQiZU2Twrng6XRlmrm/mXOIsAXYOgo5eW8rhYLGVEvA9DBjj6ZiIG4ffl66+
-        NOsgtS0rfYpuBXj0rw8P+dSYdXzP2sFea+0Hqq+BkBT6knNGfVPF/+sEjn1HEA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695144838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q5XoD2rR1P7xfyZ4vS5WECNooPW5RHsWgoNmWq+2hMo=;
-        b=FC96a8Jt867By47LPHSnv602OXYh1+2tD7k+Vqqy6gx0P6BeLouKDBbYI0Ubu/ALeBPwSe
-        ofg019sZqzn6gQAQ==
-To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        torvalds <torvalds@linux-foundation.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, x86 <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>, bp <bp@alien8.de>,
-        dave hansen <dave.hansen@linux.intel.com>, hpa <hpa@zytor.com>,
-        mingo <mingo@redhat.com>, juri lelli <juri.lelli@redhat.com>,
-        vincent guittot <vincent.guittot@linaro.org>, mgorman@suse.de,
-        Steven Rostedt <rostedt@goodmis.org>,
-        jon grimm <jon.grimm@amd.com>, bharata@amd.com,
-        raghavendra kt <raghavendra.kt@amd.com>,
-        boris ostrovsky <boris.ostrovsky@oracle.com>,
-        konrad wilk <konrad.wilk@oracle.com>, jgross <jgross@suse.com>,
-        andrew cooper3 <andrew.cooper3@citrix.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        linux-alpha <linux-alpha@vger.kernel.org>
-Subject: Re: Arches that don't support PREEMPT
-In-Reply-To: <de98424d-41f9-90f9-742d-623e2b55c564@cambridgegreys.com>
-References: <87zg1u1h5t.fsf@oracle.com> <87led2wdj0.ffs@tglx>
- <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <bd664a61-4506-bab0-19c3-0011f57005b5@cambridgegreys.com>
- <87y1h2ur98.ffs@tglx>
- <9a5c0856-d542-9912-7494-53d7fe4538a3@cambridgegreys.com>
- <551475267.58816.1695140566849.JavaMail.zimbra@nod.at>
- <de98424d-41f9-90f9-742d-623e2b55c564@cambridgegreys.com>
-Date:   Tue, 19 Sep 2023 19:33:57 +0200
-Message-ID: <87v8c6ukxm.ffs@tglx>
+        Tue, 19 Sep 2023 13:35:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34536A6;
+        Tue, 19 Sep 2023 10:35:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5297CC433C8;
+        Tue, 19 Sep 2023 17:35:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695144914;
+        bh=buIiKDmPcBdHJjlDhXrf/70sfOuxVlPTssagt+Ng5L8=;
+        h=From:Date:Subject:To:Cc:From;
+        b=nU4dg3ppyNiwRzStDv0igVykhehDpZfiC1nCSk+eqGpTzHh2IhPpyaKC4t7+gCtAB
+         NZjTNBbe0ZBDgDY4GNSnMpwOPqGII39GgLCsYt+q2gGEshQsx5OMUcTRn0XYoLFuP2
+         tddIpnq0d+7B9j9h2f3dCWU9+p27FLTrieO3o+piX+d4/iB3XN+a6RPl0VJOdCSTXL
+         TYKRdsD8k2MmIq9FO6nyHeupZlq3hok3zbo51e5BvTZ56wb0gmsKOx3FBepw1bbKvk
+         sbzHCZgY7w8xbVunOyzgmw35coPaPQS7OzdKszfhguCcSbFzxx+NC9qrT4hacRscAb
+         Q67GYTYxAJ81g==
+From:   Jeff Layton <jlayton@kernel.org>
+Date:   Tue, 19 Sep 2023 13:35:11 -0400
+Subject: [PATCH] fs: add bounds checking when updating ctime
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230919-ctime-v1-1-97b3da92f504@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAM7bCWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDS0NL3eSSzNxUXUOTxBQDE0MLS+O0JCWg2oKi1LTMCrA50bG1tQDcfEH
+ uVwAAAA==
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2284; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=buIiKDmPcBdHJjlDhXrf/70sfOuxVlPTssagt+Ng5L8=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlCdvSP2lqIz9HmK1OuN14Ts0NWqv8wkW+XeUY/
+ X0EyrQc+iuJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZQnb0gAKCRAADmhBGVaC
+ FXmDEACA5G1nfl+pr2KRX9lVf5noAgkEZ8s8QCZt6sqWnHCnuA+LCVWFmYezIPAuH9sJAO3zJ2G
+ IAK6L8FuueWQZHeujiqyl2/S/WA/aTh4J3qWgI7aCqiEy9uU3v1ws6/IHvloxYOAXJfyKnfKtVy
+ PlgQafMrPFshObdFU5mjWgjQ1IueOD2+JQzMzc8hCbYInHR7+8gG/mGuqsh+CF2QlKNomBdK1lh
+ wB+4fh4kKmBOFcem1Pnb4htPhE3JCSgGlJLo6DvLKGpxbTzEdaREXQtbf6cIapcDT10N1/2LENZ
+ F4ud38DMguzd+UvkT0C3AUlGsZ7gjT3cJQdxCeqjGBYNVLa+nRTEFKbgQ28FIg6Zf1f3UfNS+Pn
+ z46uKLbluCGqqc9q4Sy2M9X4dhhfQqKg8AkvKIiMk2KjvRvljFiW7i4MON3FBNnG2nbjyKXrKtm
+ N6GivAm2pXyEswuKcPXR1SayTG9engN3xwbF3GWTABnkDbqgNbW4ilSeFdrVf8WKSNmffuH8GjT
+ Eo6O2/1ThnbeXJ76CNkl+mJBxFSmK+PM66aWqDf7Fv5K6xSW5o5kDxKlc9XNxeSlNdS11sRt8v+
+ 02ab1TcAccCRkFoVVB9T9XkPNaEjT28WSPtYYhSK7oSnApvyi7sBBkfjdw3cJuu42FWcX+kv3wf
+ U5sDV0lNKsYLLZw==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19 2023 at 17:41, Anton Ivanov wrote:
-> On 19/09/2023 17:22, Richard Weinberger wrote:
->> ----- Urspr=C3=BCngliche Mail -----
->>> Von: "anton ivanov" <anton.ivanov@cambridgegreys.com>
->>> It's been a while. I remember that I dropped it at the time, but do not=
- remember
->>> the full details.
->>>
->>> There was some stuff related to FP state and a few other issues I ran i=
-nto while
->>> rewriting the interrupt controller. Some of it may be resolved by now a=
-s we are
->>> using host cpu flags, etc.
->>=20
->> I remember also having a hacky but working version almost 10 years ago.
->> It was horrible slow because of the extra scheduler rounds.
+During some discussion around another patch, Linus pointed out that
+we don't want to skip updating the ctime unless the current coarse
+time is in a reasonable range.
 
-Which can be completely avoided as the proposed change will have the
-preemption points, but they are only utilized when preempt FULL is
-enabled (at boot or runtime). So the behaviour can still be like preempt
-NONE, but with a twist to get rid of the cond_resched()/might_resched()
-and other heuristic approaches to prevent starvation by long running
-functions. That twist needs the preemption points.
+When updating the ctime on a multigrain filesystem, only keep the
+current ctime if the coarse time is less than 2 jiffies earlier.
 
-See https://lore.kernel.org/lkml/87cyyfxd4k.ffs@tglx
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+While we're still discussing whether to keep this series in, here's the
+fix for the issue that Linus identified yesterday, basically that a
+large clock jump backward could result in the m/ctime not being updated
+properly.
+---
+ fs/inode.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
->> But yes, if PREEMPT will be a must-have feature we'll have to try again.
->
-> We will need proper fpu primitives for starters that's for
-> sure. fpu_star/end in UML are presently NOOP.
->
-> Some of the default spinlocks and other stuff which we pick up from
-> generic may need to change as well.
->
-> This is off the top of my head and something which we can fix straight
-> away. I will send some patches to the mailing list tomorrow or on Thu.
+diff --git a/fs/inode.c b/fs/inode.c
+index 54237f4242ff..f3d68e4b8df7 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -2571,6 +2571,13 @@ struct timespec64 current_time(struct inode *inode)
+ }
+ EXPORT_SYMBOL(current_time);
+ 
++/*
++ * Coarse timer ticks happen (roughly) every jiffy. If we see a coarse time
++ * more than 2 jiffies earlier than the current ctime, then we need to
++ * update it. This is the max delta allowed (in ns).
++ */
++#define COARSE_TIME_MAX_DELTA (2 / HZ * NSEC_PER_SEC)
++
+ /**
+  * inode_set_ctime_current - set the ctime to current_time
+  * @inode: inode
+@@ -2599,8 +2606,19 @@ struct timespec64 inode_set_ctime_current(struct inode *inode)
+ 		 * existing ctime. Just keep the existing value if so.
+ 		 */
+ 		ctime.tv_sec = inode->__i_ctime.tv_sec;
+-		if (timespec64_compare(&ctime, &now) > 0)
+-			return ctime;
++		if (timespec64_compare(&ctime, &now) > 0) {
++			struct timespec64	limit = now;
++
++			/*
++			 * If the current coarse-grained clock is earlier than
++			 * it should be, then that's an indication that there
++			 * may have been a backward clock jump, and that the
++			 * update should not be skipped.
++			 */
++			timespec64_add_ns(&limit, COARSE_TIME_MAX_DELTA);
++			if (timespec64_compare(&ctime, &limit) < 0)
++				return ctime;
++		}
+ 
+ 		/*
+ 		 * Ctime updates are usually protected by the inode_lock, but
 
-I think it does not have to be perfect. UM is far from perfect in
-mimicing a real kernel. The main point is that it provides the preempt
-counter in the first place and some minimal amount of preemption points
-aside of those which come with the preempt_enable() machinery for free.
+---
+base-commit: 0b4cbb6924ecf459c12b2b5ff4370ae29a276fee
+change-id: 20230919-ctime-14ad041893fb
 
-Thanks,
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-        tglx
