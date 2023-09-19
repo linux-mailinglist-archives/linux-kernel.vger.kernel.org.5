@@ -2,284 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 751F77A6134
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344937A6138
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjISLaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        id S230443AbjISLbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjISLaA (ORCPT
+        with ESMTP id S229497AbjISLbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:30:00 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C266299;
-        Tue, 19 Sep 2023 04:29:53 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-578af21ff50so657612a12.1;
-        Tue, 19 Sep 2023 04:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695122993; x=1695727793; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UD3/IohtpyaFGOAUh2yOZ2pS+SJfWw5GYUQIjPP5bDk=;
-        b=XmN1gfwT2QWQglBGwF/+n0cXYXATZM7JSbcGpqI/TrXdv3xGdn3eKWzMvScElQo35w
-         XkQDzjuXMsaNba6zFC3cUyqRAQ86+FgP91+f0HugFY1PmG5N8kCkRpbiN5o05FZRWk58
-         au6G+PheGP69Z+la4/dOylRoPT/L3TOg5aJSuHac69cWXK7Okesk8/nuA63lxCTBhYuo
-         WpUTggQIuRPm+gvR61lnE04wOt89CC2d6GQMU0aCLAgM89aFiDTrHQKOS7KHUXUDfNCR
-         /DBqtr3JchBwHX8iR+mlmZL+19kq/lL5+NG1EFsvLWglDp7kDuWElVblvJsQibkQqBRP
-         PJtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695122993; x=1695727793;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UD3/IohtpyaFGOAUh2yOZ2pS+SJfWw5GYUQIjPP5bDk=;
-        b=lxS/dNdV1CNwXGP1/clKYJk90fLQoLRGXHtuyOUFBknWAda5FSAMhPWdAyw8MFnH8p
-         42KpRol4CwZdm4tMlBmbWhQNB/97HAUDqvelWGOUc0CgnDvOyeM+MWXVGXesqGlI4f3k
-         LSieeKnCWHCzTgYtjs+ZtZNH7kRPO6aLUbMKWrbY7Tsvqlm6ch9Hxcm/Hfmp2oJyQ7Ri
-         nMW+VZ5cPstjoyu//Zg5vVyyrRXZKtxMMAeW2uw4ikUvjJfWESz/aJ9TcR8EnzoQ61yB
-         JEk51R+3EwdoIWWOsRNBxMKcjVmrXVMllZTTI+CR2gYUb9tfPHBApfUNnjKSrTSEWRUn
-         Afvg==
-X-Gm-Message-State: AOJu0YyNZkpWkpIlq+cVnXC/1wv+azbrFt6zYIFL+fkPaItaybLRx3aW
-        d5Dfg80k8EF/A9VxzewkMPc=
-X-Google-Smtp-Source: AGHT+IEdOMMhhDiBlYMfkH9+DQi2zcrPuyyGyRnpIjXttzWGyvDic8H4miNPtEk6If8EwrloqpD0RA==
-X-Received: by 2002:a05:6a20:2594:b0:154:c959:f157 with SMTP id k20-20020a056a20259400b00154c959f157mr9907003pzd.30.1695122993068;
-        Tue, 19 Sep 2023 04:29:53 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id w11-20020a056a0014cb00b0068bc461b68fsm1453424pfu.204.2023.09.19.04.29.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 04:29:52 -0700 (PDT)
-Message-ID: <fbcbbf94-2050-5243-664a-b65b9529070c@gmail.com>
-Date:   Tue, 19 Sep 2023 19:29:44 +0800
+        Tue, 19 Sep 2023 07:31:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917F8E3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:31:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EFB5C433C8;
+        Tue, 19 Sep 2023 11:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695123074;
+        bh=5ru64uTo5hwHfPq+Yd9EZrxiNaBgze2zLhEfszCpNks=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LAGgnB3BNs4lvtH8Yw6xVsRZpHrBq36ruK9GIGsoX4J4lgqZGh6iZP7HDGjIsBDKm
+         unyQeXKZyBAmYthMTXvUOmeR9S4qPRUcnEduQBNVsCVHHqIum5P22K2qivM2j+Dc2d
+         o9Uv/ebSLQtp1qRnsksRcU2FxEM2UWi1CT6G6srYgY+JvpOij8JfVkHlqWZZvnqEsl
+         kZslLoqs6jiciZ4j+JncoXNuci3gDt8uTPYVemFA24KzX6CiRK4KEmrDdM+/DzCeM4
+         DrGUy8bWZ5pXNs3r145iG/ThXrrJnCU9800t1k58Oh6hvTofuB0mKmUYRezuL90OJu
+         kfyGOd6GFjyUw==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v6] KVM: x86/tsc: Don't sync user-written TSC against
- startup values
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-References: <20230913103729.51194-1-likexu@tencent.com>
- <5367c45df8e4730564ed7a55ed441a6a2d6ab0f9.camel@infradead.org>
- <2eaf612b-1ce3-0dfe-5d2e-2cf29bba7641@gmail.com>
- <ZQHLcs3VGyLUb6wW@google.com>
- <3912b026-7cd2-9981-27eb-e8e37be9bbad@gmail.com>
- <7c2e14e8d5759a59c2d69b057f21d3dca60394cc.camel@infradead.org>
-Content-Language: en-US
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <7c2e14e8d5759a59c2d69b057f21d3dca60394cc.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Tue, 19 Sep 2023 13:31:10 +0200
+From:   Michael Walle <mwalle@kernel.org>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 10/41] mtd: spi-nor: make sector_size optional
+In-Reply-To: <417fb0fa-e774-c744-8641-7618347a8d1a@linaro.org>
+References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v3-10-e60548861b10@kernel.org>
+ <417fb0fa-e774-c744-8641-7618347a8d1a@linaro.org>
+Message-ID: <4ec7192b6bfaf956e1b8e747e5fd07e7@kernel.org>
+X-Sender: mwalle@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/9/2023 3:31 pm, David Woodhouse wrote:
-> On Thu, 2023-09-14 at 11:50 +0800, Like Xu wrote:
->> On 13/9/2023 10:47 pm, Sean Christopherson wrote:
->>> On Wed, Sep 13, 2023, Like Xu wrote:
->>>> I'll wait for a cooling off period to see if the maintainers need me to post v7.
->>>
->>> You should have waiting to post v5, let alone v6.  Resurrecting a thread after a
->>> month and not waiting even 7 hours for others to respond is extremely frustrating.
->>
->> You are right. I don't seem to be keeping up with many of other issues. Sorry
->> for that.
->> Wish there were 48 hours in a day.
->>
->> Back to this issue: for commit message, I'd be more inclined to David's
->> understanding,
+Am 2023-09-19 11:25, schrieb Tudor Ambarus:
+> On 08.09.2023 13:16, Michael Walle wrote:
+>> Most of the (old, non-SFDP) flashes use a sector size of 64k. Make 
+>> that
+>> a default value so it can be optional in the flash_info database.
+>> 
+>> As a preparation for conversion to the new database format, set the
+>> sector size to zero if the default value is used. This way, the actual
+>> change is happening with this patch ant not with a later conversion
+>> patch.
+>> 
+>> Signed-off-by: Michael Walle <mwalle@kernel.org>
+>> ---
+>>  drivers/mtd/spi-nor/core.c | 6 ++++--
+>>  drivers/mtd/spi-nor/core.h | 8 +++++---
+>>  drivers/mtd/spi-nor/swp.c  | 6 +++++-
+>>  3 files changed, 14 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index c84be791341e..368851ff9f40 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -2756,7 +2756,8 @@ static void spi_nor_no_sfdp_init_params(struct 
+>> spi_nor *nor)
+>>  {
+>>  	struct spi_nor_flash_parameter *params = nor->params;
+>>  	struct spi_nor_erase_map *map = &params->erase_map;
+>> -	const u8 no_sfdp_flags = nor->info->no_sfdp_flags;
+>> +	const struct flash_info *info = nor->info;
+>> +	const u8 no_sfdp_flags = info->no_sfdp_flags;
+>>  	u8 i, erase_mask;
+>> 
+>>  	if (no_sfdp_flags & SPI_NOR_DUAL_READ) {
+>> @@ -2810,7 +2811,8 @@ static void spi_nor_no_sfdp_init_params(struct 
+>> spi_nor *nor)
+>>  		i++;
+>>  	}
+>>  	erase_mask |= BIT(i);
+>> -	spi_nor_set_erase_type(&map->erase_type[i], nor->info->sector_size,
+>> +	spi_nor_set_erase_type(&map->erase_type[i],
+>> +			       info->sector_size ?: SPI_NOR_DEFAULT_SECTOR_SIZE,
+>>  			       SPINOR_OP_SE);
 > 
-> The discussion that Sean and I had should probably be reflected in the
-> commit message too. To the end of the commit log you used for v6, after
-> the final 'To that end:…' paragraph, let's add:
-> 
->   Note that userspace can explicitly request a *synchronization* of the
->   TSC by writing zero. For the purpose of this patch, this counts as
->   "setting" the TSC. If userspace then subsequently writes an explicit
->   non-zero value which happens to be within 1 second of the previous
->   value, it will be 'corrected'. For that case, this preserves the prior
->   behaviour of KVM (which always applied the 1-second 'correction'
->   regardless of user vs. kernel).
-> 
->> @@ -2728,27 +2729,45 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu,
->> u64 data)
->>          elapsed = ns - kvm->arch.last_tsc_nsec;
->>
->>          if (vcpu->arch.virtual_tsc_khz) {
->> +               /*
->> +                * Force synchronization when creating or hotplugging a vCPU,
->> +                * i.e. when the TSC value is '0', to help keep clocks stable.
->> +                * If this is NOT a hotplug/creation case, skip synchronization
->> +                * on the first write from userspace so as not to misconstrue
->> +                * state restoration after live migration as an attempt from
->> +                * userspace to synchronize.
->> +                */
-> 
-> You cannot *misconstrue* an attempt from userspace to synchronize. If
-> userspace writes a zero, it's a sync attempt. If it's non-zero it's a
-> TSC value to be set. It's not very subtle :)
-> 
-> I think the 1-second slop thing is sufficiently documented in the 'else
-> if' clause below, so I started writing an alternative 'overall' comment
-> to go here and found it a bit redundant. So maybe let's just drop this
-> comment and add one back in the if (data == 0) case...
-> 
->>                  if (data == 0) {
->> -                       /*
->> -                        * detection of vcpu initialization -- need to sync
->> -                        * with other vCPUs. This particularly helps to keep
->> -                        * kvm_clock stable after CPU hotplug
->> -                        */
-> 
-> 
-> 			 /*
-> 			  * Force synchronization when creating a vCPU, or when
-> 			  * userspace explicitly writes a zero value.
-> 			  */
-> 
->>                          synchronizing = true;
->> -               } else {
->> +               } else if (kvm->arch.user_set_tsc) {
->>                          u64 tsc_exp = kvm->arch.last_tsc_write +
->>                                                  nsec_to_cycles(vcpu, elapsed);
->>                          u64 tsc_hz = vcpu->arch.virtual_tsc_khz * 1000LL;
->>                          /*
->> -                        * Special case: TSC write with a small delta (1 second)
->> -                        * of virtual cycle time against real time is
->> -                        * interpreted as an attempt to synchronize the CPU.
->> +                        * Here lies UAPI baggage: when a user-initiated TSC write has
->> +                        * a small delta (1 second) of virtual cycle time against the
->> +                        * previously set vCPU, we assume that they were intended to be
->> +                        * in sync and the delta was only due to the racy nature of the
->> +                        * legacy API.
->> +                        *
->> +                        * This trick falls down when restoring a guest which genuinely
->> +                        * has been running for less time than the 1 second of imprecision
->> +                        * which we allow for in the legacy API. In this case, the first
->> +                        * value written by userspace (on any vCPU) should not be subject
->> +                        * to this 'correction' to make it sync up with values that only
-> 
-> Missing the word 'come' here too, in '…that only *come* from…',
-> 
->> +                        * from the kernel's default vCPU creation. Make the 1-second slop
->> +                        * hack only trigger if the user_set_tsc flag is already set.
->> +                        *
->> +                        * The correct answer is for the VMM not to use the legacy API.
-> 
-> Maybe we should drop this line, as we don't actually have a sane API
-> yet that VMMs can use instead.
-> 
+> all these info->sector_size checks can be removed if we use
+> params->sector_size. I'll do it after applying the series.
 
-Thanks for your comments, but not sure if Sean has any more concerns to move 
-forward:
+See previous reply, there will be just this check. The one in swp.c
+will go away. I don't have a strong opinion. I just didn't want to
+have redundant information.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 1a4def36d5bb..9a7dfef9d32d 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1324,6 +1324,7 @@ struct kvm_arch {
-  	int nr_vcpus_matched_tsc;
+Speaking of.. there is a check missing in
 
-  	u32 default_tsc_khz;
-+	bool user_set_tsc;
-
-  	seqcount_raw_spinlock_t pvclock_sc;
-  	bool use_master_clock;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 6c9c81e82e65..11fbd2a4a370 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2714,8 +2714,9 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, 
-u64 offset, u64 tsc,
-  	kvm_track_tsc_matching(vcpu);
-  }
-
--static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
-+static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 *user_value)
-  {
-+	u64 data = user_value ? *user_value : 0;
-  	struct kvm *kvm = vcpu->kvm;
-  	u64 offset, ns, elapsed;
-  	unsigned long flags;
-@@ -2730,25 +2731,37 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, 
-u64 data)
-  	if (vcpu->arch.virtual_tsc_khz) {
-  		if (data == 0) {
-  			/*
--			 * detection of vcpu initialization -- need to sync
--			 * with other vCPUs. This particularly helps to keep
--			 * kvm_clock stable after CPU hotplug
-+			 * Force synchronization when creating a vCPU, or when
-+			 * userspace explicitly writes a zero value.
-  			 */
-  			synchronizing = true;
--		} else {
-+		} else if (kvm->arch.user_set_tsc) {
-  			u64 tsc_exp = kvm->arch.last_tsc_write +
-  						nsec_to_cycles(vcpu, elapsed);
-  			u64 tsc_hz = vcpu->arch.virtual_tsc_khz * 1000LL;
-  			/*
--			 * Special case: TSC write with a small delta (1 second)
--			 * of virtual cycle time against real time is
--			 * interpreted as an attempt to synchronize the CPU.
-+			 * Here lies UAPI baggage: when a user-initiated TSC write has
-+			 * a small delta (1 second) of virtual cycle time against the
-+			 * previously set vCPU, we assume that they were intended to be
-+			 * in sync and the delta was only due to the racy nature of the
-+			 * legacy API.
-+			 *
-+			 * This trick falls down when restoring a guest which genuinely
-+			 * has been running for less time than the 1 second of imprecision
-+			 * which we allow for in the legacy API. In this case, the first
-+			 * value written by userspace (on any vCPU) should not be subject
-+			 * to this 'correction' to make it sync up with values that only
-+			 * come from the kernel's default vCPU creation. Make the 1-second
-+			 * slop hack only trigger if the user_set_tsc flag is already set.
-  			 */
-  			synchronizing = data < tsc_exp + tsc_hz &&
-  					data + tsc_hz > tsc_exp;
-  		}
+--snip--
+diff --git a/drivers/mtd/spi-nor/spansion.c 
+b/drivers/mtd/spi-nor/spansion.c
+index fd2652aa6c1e..e4c725000964 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -1053,7 +1053,8 @@ static int spansion_nor_late_init(struct spi_nor 
+*nor)
+  		nor->flags |= SNOR_F_4B_OPCODES;
+  		/* No small sector erase for 4-byte command set */
+  		nor->erase_opcode = SPINOR_OP_SE;
+-		nor->mtd.erasesize = nor->info->sector_size;
++		nor->mtd.erasesize = nor->info->sector_size ?:
++				     SPI_NOR_DEFAULT_SECTOR_SIZE;
   	}
 
-+	if (user_value)
-+		kvm->arch.user_set_tsc = true;
-+
-  	/*
-  	 * For a reliable TSC, we can match TSC offsets, and for an unstable
-  	 * TSC, we add elapsed time in this computation.  We could let the
-@@ -3777,7 +3790,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct 
-msr_data *msr_info)
-  		break;
-  	case MSR_IA32_TSC:
-  		if (msr_info->host_initiated) {
--			kvm_synchronize_tsc(vcpu, data);
-+			kvm_synchronize_tsc(vcpu, &data);
-  		} else {
-  			u64 adj = kvm_compute_l1_tsc_offset(vcpu, data) - vcpu->arch.l1_tsc_offset;
-  			adjust_tsc_offset_guest(vcpu, adj);
-@@ -5536,6 +5549,7 @@ static int kvm_arch_tsc_set_attr(struct kvm_vcpu *vcpu,
-  		tsc = kvm_scale_tsc(rdtsc(), vcpu->arch.l1_tsc_scaling_ratio) + offset;
-  		ns = get_kvmclock_base_ns();
+  	if (mfr_flags & (USE_CLSR | USE_CLPEF)) {
+--snip--
 
-+		kvm->arch.user_set_tsc = true;
-  		__kvm_synchronize_tsc(vcpu, offset, tsc, ns, matched);
-  		raw_spin_unlock_irqrestore(&kvm->arch.tsc_write_lock, flags);
+Is it possible to amend this patch while you apply it? A later patch
+should probably fixup the erase_map instead of setting the erase_opcode
+and erasesize itself.
 
-@@ -11959,7 +11973,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
-  	if (mutex_lock_killable(&vcpu->mutex))
-  		return;
-  	vcpu_load(vcpu);
--	kvm_synchronize_tsc(vcpu, 0);
-+	kvm_synchronize_tsc(vcpu, NULL);
-  	vcpu_put(vcpu);
-
-  	/* poll control enabled by default */
+-michael
