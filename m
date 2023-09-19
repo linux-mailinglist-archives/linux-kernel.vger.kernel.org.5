@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA2E7A5AAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4477A5AB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbjISHPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        id S231686AbjISHTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231558AbjISHPW (ORCPT
+        with ESMTP id S229803AbjISHTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:15:22 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E463419A
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:15:15 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502defbb0c3so8923479e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695107714; x=1695712514; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FWdryEK98eIB3OwrZ7gXoSG69IfBkDIYZQBa+WiHnls=;
-        b=hRtiN/jNY7aLfvhuTcOP3Llm9Wj6N6d7Uh9lpCKfKe5ohHDf/5n847H5vkGrlrRCRY
-         zhVIeuko3jm5kjUt8W709PHsW3Ms5Y0xai8VBXor4PSzlCLcc5O7gMNxtPg0O0DZXCt2
-         STurbkwvjfu5/2q8TwyneUkHV4ZF4THbEaXsck3Q053xoW55+DhjQVzAIPK1HXCNriTA
-         leSS2dxAHN905papzjcPgwLJ4397DQUj8FJKpxTX0S36QxXCnmxZrINEieI8ZQQlOJ0s
-         oGn19hBCbZ17AX85ptqvzaxX5qGD6qt4YPZ48Ese4JcgL3+y+Hh2plYnB58YjUZzZDXb
-         tmGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695107714; x=1695712514;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FWdryEK98eIB3OwrZ7gXoSG69IfBkDIYZQBa+WiHnls=;
-        b=amecEzL/gBxkEZN9OVRy0LHD2lKEZPZNAjsuutRRTgKNzyff3D9IS3vp8PIGlFFF4p
-         uaHQtDMIkcSFokLxSLmfiJtOsq9E2K5x0V7iCll2lF1KCYBIeEVdmxRtsHgU/we6ZhwI
-         IypzhdAIYlEqC07lecvdnGJbZH/cqwnN5I6401Rn6URAZUmGpwxroen1QMO5CVQUg6me
-         JJ9YG+nTxq2YetV+Y/jmTfbs4v+6bH22ftpDY0lOpFpJtAhW3pRIAyecUtjih1v7FKux
-         IY6onOf+R/DYECm85e32XQde4s38/XkqyWVQIe0UgL7vhlvGFcXU8Sn9o04wfnJGxPQN
-         kqCw==
-X-Gm-Message-State: AOJu0YywDAFLtEd5M/I5ITd7Mpcs/V/vbOFPO13szdJPKRkj0N8lHpFB
-        S7ATE9QeZQwNUT6A0NCimiCP/Db+1Ec=
-X-Google-Smtp-Source: AGHT+IGQBcc/FuyYzkwtcJF2vCH6/U+pm48uZ8fj/45jFexnqaFWVicb2b9cWjpaapwnTKdmbHwFlg==
-X-Received: by 2002:ac2:442e:0:b0:503:26bd:7f58 with SMTP id w14-20020ac2442e000000b0050326bd7f58mr1657297lfl.41.1695107713570;
-        Tue, 19 Sep 2023 00:15:13 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id x7-20020a05600c2d0700b00404719b05b5sm13863325wmf.27.2023.09.19.00.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 00:15:12 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 19 Sep 2023 09:15:10 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Raghavendra K T <raghavendra.kt@amd.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>, rppt@kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bharata B Rao <bharata@amd.com>,
-        Aithal Srikanth <sraithal@amd.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Sapkal Swapnil <Swapnil.Sapkal@amd.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [RFC PATCH V1 0/6] sched/numa: Enhance disjoint VMA scanning
-Message-ID: <ZQlKfgk8Wvcd1Kbr@gmail.com>
-References: <cover.1693287931.git.raghavendra.kt@amd.com>
- <719f0729-d28f-d12f-cff4-ab8115861d30@amd.com>
+        Tue, 19 Sep 2023 03:19:04 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D20FFC;
+        Tue, 19 Sep 2023 00:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
+ t=1695107928; x=1695712728; i=j.neuschaefer@gmx.net;
+ bh=cIwrf8PK+ocRFzcS25K23eodAtcQ1T8KqPnqzM86UEU=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=FepJUQ2MwOMMckterzF8Wt3TXEgGRkydNOK/N81X2tQ9zLt3hBzWhVMF+x7p1k2N8oOHuDairb7
+ WDSTFxYN5R1TfsQxV18lffTTW3cg+KMF1Gs8UdxKoDeIgO8Nwcu4WS5IMiLtX+3KUpBjhdKIC7LJN
+ Dn/pqjpiVjdjVGJMINsTcmXPIC+oVUUmpdSXccIenFY9pGHDvztfG0z4Wb/NLlEFDLzKHTQMhpn8T
+ iwb2OnMglMlUu82Eo2pEW0CXtG0Nz64R/eGD+KoUJU82PwlOwvqtPB71LwdDbs0rYjkg2tlGGURwf
+ dkUJtvLeVxwuMUDSv4tbZo/ZGaqtT9BXFm0Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([89.0.47.152]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MY68T-1rBtpN0HoT-00YNST; Tue, 19
+ Sep 2023 09:18:48 +0200
+Date:   Tue, 19 Sep 2023 09:17:49 +0200
+From:   =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     peter.chen@kernel.org, gregkh@linuxfoundation.org,
+        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        j.neuschaefer@gmx.net, openbmc@lists.ozlabs.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] usb: chipidea: add CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS
+ flag
+Message-ID: <ZQlLHZhhOArxv86Y@probook>
+References: <20230918161028.264650-1-tmaimon77@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7ASlWA0wcfuE6F4R"
 Content-Disposition: inline
-In-Reply-To: <719f0729-d28f-d12f-cff4-ab8115861d30@amd.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230918161028.264650-1-tmaimon77@gmail.com>
+X-Provags-ID: V03:K1:CvtbL7DUzgKgkI4fOdWC/VsX8RNW3wGo7wfLveTxy7DaewyVMQQ
+ QYC/prk3TgHv8LSKGoTBQ9FDfFy3CcyZAl8MdcHLi/PPw3zBAbjEk4ppC2r2QOcKf3yZ9NH
+ 7toLmtIk/9Rg1igQKGT2e7DeKE4NDkCdJjHVUSPzbycO19uY6KIfV7Hgehl1IOaiM9NlGDt
+ eFRWjUvbXOGGsoDAlEdsQ==
+UI-OutboundReport: notjunk:1;M01:P0:jjPDC3gWukI=;9fjL/uf06xoF1BziWt1P06ALEMX
+ rH7jkgJPHdSv2qnqgXqUyhF5tZikgCNuN5rpTX9AHjDsXEO4OXVlPeBNzAOMxet0hXcy3mRq0
+ di7Ew5uSP/g635RrB/PyWunRyuR8H33jzyRkEfA+bvPVHF6XH2CKweiv/LnoY+b09zfZ22cQP
+ a5oddapPhKjKwhvO/Mh0RNxv9WBCyEBKpnMu9Cw9ErsZJw6203ZfKzOWZy3+wKj4wRUrrWVbm
+ JgjWiY5JmdGryqhQdb49dl8MheOW1gveiaf5aESqUtD4qaOijaWs4+pL1neFOFRM/is0hhqHj
+ kWJrrZCrUGRFTrRtCaI4IJZ/H5VAyjk7n1Uuk6p09NKUwDcEqAa6CqoqfjW7QmLp1q/nxdDif
+ xcQ5ZMz/UgYtAD8R9N8a8bx6alfWnU90GwDHdU/tb91drmV1dzl0xN930nM8xCh4Z2TKt+JUb
+ VnXYiCrXkgqTPfg1xWGzUFoZM8GOfFqO3KPJwa2SORYeLkUrcd3w7EnStHar1tEbmM/W8SqWu
+ 2S2Q+qyy09cIDTelJ6B32s/ZO0CohxbmzX9og3Ehtz9MmA6BY1wYF6d+UZEX5LP1q7fEkRc2G
+ Nrds2LOuan3xlcDdaE561ekqAsyqsfBkD4jU5g8J8kLfg+nO1ANkmDBMV4wdUpamUckJ95Zv5
+ fIW23D+o0GAHjYlwm+CvNXsbwM6hGlHQPV1vdE2K5iO+q0jbbqVyreTpK5menrUoweU2KOgae
+ 3EEOIfWyGdmbLzIHBusoB268y4y/GgRxm33AKrF0Bp9BfdgZGwuqAov91j9OeRRrIcJAtZ9eN
+ xJ9dKXnRz8WTkJplOVC74KfXHOV9feVHrePvIFVyyg8kxysmm0g419UZeVrazvrEtQ3OMbDmH
+ 2sg6/EFxuc/EoUStEv5uFXpJh7JMNP9EeM9+cwGLcsVZg1Plc6IlYThYWoy4moEOM042p8+Ms
+ Tp8sFuRXrKsLa+QZq2XYnb3JkuU=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,230 +75,80 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Raghavendra K T <raghavendra.kt@amd.com> wrote:
+--7ASlWA0wcfuE6F4R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On 8/29/2023 11:36 AM, Raghavendra K T wrote:
-> > Since commit fc137c0ddab2 ("sched/numa: enhance vma scanning logic") [1]
-> > VMA scanning is allowed if:
-> > 1) The task had accessed the VMA.
-> >   Rationale: Reduce overhead for the tasks that had not
-> > touched VMA. Also filter out unnecessary scanning.
-> > 
-> > 2) Early phase of the VMA scan where mm->numa_scan_seq is less than 2.
-> >   Rationale: Understanding initial characteristics of VMAs and also
-> >   prevent VMA scanning unfairness.
-> > 
-> > While that works for most of the times to reduce scanning overhead,
-> >   there are some corner cases associated with it.
-> > 
-> > This was found in an internal LKP run and also reported by [2]. There was
-> > an attempt to fix.
-> > 
-> > Link: https://lore.kernel.org/linux-mm/cover.1685506205.git.raghavendra.kt@amd.com/T/
-> > 
-> > This is a fully different series after Mel's feedback to address the issue
-> >   and also a continuation of enhancing VMA scanning for NUMA balancing.
-> > 
-> > Problem statement (Disjoint VMA set):
-> > ======================================
-> > Let's look at some of the corner cases with a below example of tasks and their
-> > access pattern.
-> > 
-> > Consider N tasks (threads) of a process.
-> > Set1 tasks accessing vma_x (group of VMAs)
-> > Set2 tasks accessing vma_y (group of VMAs)
-> > 
-> >               Set1                      Set2
-> >          -------------------         --------------------
-> >          | task_1..task_n/2 |       | task_n/2+1..task_n |
-> >          -------------------         --------------------	
-> >                   |                             |
-> >                   V                             V
-> >          -------------------         --------------------
-> >          |     vma_x       |         |     vma_y         |
-> >          -------------------         --------------------	
-> > 
-> > Corner cases:
-> > (a) Out of N tasks, not all of them gets fair opportunity to scan. (PeterZ).
-> > suppose Set1 tasks gets more opportunity to scan (May be because of the
-> > activity pattern of tasks or other reasons in current design) in the above
-> > example, then vma_x gets scanned more number of times than vma_y.
-> > 
-> > some experiment is also done here which illustrates this unfairness:
-> > Link: https://lore.kernel.org/lkml/c730dee0-a711-8a8e-3eb1-1bfdd21e6add@amd.com/
-> > 
-> > (b) Sizes of vmas can differ.
-> > Suppose size of vma_y is far greater than the size of vma_x, then a bigger
-> > portion of vma_y can potentially be left unscanned since scanning is bounded
-> > by scan_size of 256MB (default) for each iteration.
-> > 
-> > (c) Highly active threads trap a few VMAs frequently, and some of the VMAs not
-> > accessed for long time can potentially get starved of scanning indefinitely
-> > (Mel). There is a possibility of lack of enough hints/details about VMAs if it
-> > is needed later for migration.
-> > 
-> > (d) Allocation of memory in some specific manner (Mel).
-> > One example could be, Suppose a main thread allocates memory and it is not
-> > active. When other threads tries to act upon it, they may not have much
-> > hints about it, if the corresponding VMA was not scanned.
-> > 
-> > (e) VMAs that are created after two full scans of mm (mm->numa_scan_seq > 2)
-> > will never get scanned. (Observed rarely but very much possible depending on
-> > workload behaviour).
-> > 
-> > Above this, a combination of some of the above (e.g., (a) and (b)) can
-> > potentially amplifyi/worsen the side effect.
-> > 
-> > This patchset, tries to address the above issues by enhancing unconditional
-> > VMA scanning logic.
-> > 
-> > High level ideas:
-> > =================
-> > Idea-1) Depending on vma_size, populate a per vma_scan_select value, decrement it
-> > and when it hits zero do force scan (Mel).
-> > vma_scan_select value is again repopulated when it hits zero.
-> > 
-> > This is how VMA scanning phases looks like after implementation:
-> > 
-> > |<---p1--->|<-----p2----->|<-----p2----->|...
-> > 
-> > Algorithm:
-> > p1: New VMA, initial phase do not scan till scan_delay.
-> > 
-> > p2: Allow scanning if the task has accessed VMA or vma_scan_select hit zero.
-> > 
-> > Reinitialize vma_scan_select and repeat p2.
-> > 
-> > pros/cons:
-> > +  : Ratelimiting is inbuilt to the approach
-> > +  : vma_size is taken into account for scanning
-> > +/-: Scanning continues forever
-> > -  : Changes in vma size is taken care after force scan. i.e.,
-> >     vma_scan_select is repopulated only after vma_scan_select hits zero.
-> > 
-> > Idea-1 can potentially cover all the issues mentioned above.
-> > 
-> > Idea-2) Take bitmask_weight of latest access_pids value (suggested by Bharata).
-> > If number of tasks accessing vma is >= 1, unconditionally allow scanning.
-> > 
-> > Idea-3 ) Take bitmask_weight of access_pid history of VMA. If number of tasks
-> > accessing VMA is > THRESHOLD (=3), unconditionally allow scanning.
-> > 
-> > Rationale (Idea-2,3): Do not miss out scanning of critical VMAs.
-> > 
-> > Idea-4) Have a per vma_scan_seq. allow the unconditional scan till vma_scan_seq
-> > reaches a value proportional (or equal) to vma_size/scan_size.
-> > This a complimentary to Idea-1.
-> > 
-> > this is how VMA scanning phases looks like after implementation:
-> > 
-> > |<--p1--->|<-----p2----->|<-----p3----->|<-----p4----->...||<-----p2----->|<-----p3----->|<-----p4-----> ...||
-> >                                                          RESET                                               RESET
-> > Algorithm:
-> > p1: New VMA, initial phase do not scan till scan_delay.
-> > 
-> > p2: Allow scanning if task has accessed VMA or vma_scan_seq has reached till
-> >   f(vma_size)/scan_size) for e.g., f = 1/2 * vma_size/scan_size.
-> > 
-> > p3: Allow scanning if task has accessed VMA or vma_scan_seq has reached till
-> >   f(vma_size)/scan_size in a rate limited manner. This is an optional phase.
-> > 
-> > p4: Allow scanning iff task has accessed VMA.
-> > 
-> > Reset after p4 (optional).
-> > 
-> > Repeat p2, p3 p4
-> > 
-> > Motivation: Allow agressive scanning in the beginning followed by a rate
-> > limited scanning. And then completely disallow scanning to avoid unnecessary
-> > scanning. Reset time could be a function of scan_delay and chosen long enough
-> > to aid long running task to forget history and start afresh.
-> > 
-> > +  : Ratelimiting need to be taken care separately if needed.
-> > +/-: Scanning continues only if RESET of vma_scan_seq is implemented.
-> > +  : changes in vma size is taken care in every scan.
-> > 
-> >   Current patch series implements Ideas 1, 2, 3 + extension of access PID history
-> > idea from PeterZ.
-> > 
-> > Results:
-> > ======
-> > Base: 6.5.0-rc6+ (4853c74bd7ab)
-> > SUT: Milan w/ 2 numa nodes 256 cpus
-> > 
-> > mmtest		numa01_THREAD_ALLOC manual run:
-> > 
-> > 		base		patched
-> > real		1m22.758s	1m9.200s
-> > user		249m49.540s	229m30.039s
-> > sys		0m25.040s	3m10.451s
-> > 	
-> > numa_pte_updates 	6985	1573363
-> > numa_hint_faults 	2705	1022623
-> > numa_hint_faults_local 	2279	389633
-> > numa_pages_migrated 	426	632990
-> > 
-> > kernbench
-> > 			base			patched
-> > Amean     user-256    21989.09 (   0.00%)    21677.36 *   1.42%*
-> > Amean     syst-256    10171.34 (   0.00%)    10818.28 *  -6.36%*
-> > Amean     elsp-256      166.81 (   0.00%)      168.40 *  -0.95%*
-> > 
-> > Duration User       65973.18    65038.00
-> > Duration System     30538.92    32478.59
-> > Duration Elapsed      529.52      533.09
-> > 
-> > Ops NUMA PTE updates                  976844.00      962680.00
-> > Ops NUMA hint faults                  226763.00      245620.00
-> > Ops NUMA pages migrated               220146.00      207025.00
-> > Ops AutoNUMA cost                       1144.84        1238.77
-> > 
-> > Improvements in other benchmarks I have tested.
-> > Time based:
-> > Hashjoin	4.21%
-> > Btree	 	2.04%
-> > XSbench		0.36%
-> > 
-> > Throughput based:
-> > Graph500 	-3.62%
-> > Nas.bt		3.69%
-> > Nas.ft		21.91%
-> > 
-> > Note: VMA scanning improvements [1] has refined scanning so much that
-> > system overhead we re-introduce with additional scan look glaringly
-> > high. But If we consider the difference between before [1] and current
-> > series, overall scanning overhead is considerably reduced.
-> > 
-> > 1. Link: https://lore.kernel.org/lkml/cover.1677672277.git.raghavendra.kt@amd.com/T/#t
-> > 2. Link: https://lore.kernel.org/lkml/cover.1683033105.git.raghavendra.kt@amd.com/
-> > 
-> > Note: Patch description is again repeated in some patches to avoid any
-> > need to copy from cover letter again.
-> > 
-> > Peter Zijlstra (1):
-> >    sched/numa: Increase tasks' access history
-> > 
-> > Raghavendra K T (5):
-> >    sched/numa: Move up the access pid reset logic
-> >    sched/numa: Add disjoint vma unconditional scan logic
-> >    sched/numa: Remove unconditional scan logic using mm numa_scan_seq
-> >    sched/numa: Allow recently accessed VMAs to be scanned
-> >    sched/numa: Allow scanning of shared VMAs
-> > 
-> >   include/linux/mm.h       |  12 +++--
-> >   include/linux/mm_types.h |   5 +-
-> >   kernel/sched/fair.c      | 109 ++++++++++++++++++++++++++++++++-------
-> >   3 files changed, 102 insertions(+), 24 deletions(-)
-> > 
-> 
-> Hello Andrew,
-> 
-> I am Resending patch rebasing to mm-unstable, adding results from Oliver
-> and Swapnil.
+On Mon, Sep 18, 2023 at 07:10:28PM +0300, Tomer Maimon wrote:
+> Adding CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS flag to modify the vbus_active
+> parameter to active in case the ChipIdea USB IP role is device-only and
+> there is no otgsc register.
+>=20
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
 
-Just for the record, a final version of this series should be submitted via 
-the scheduler tree, not -mm.
+I think it would make sense to include this patch as part of the
+patchset that uses the functionality to enable NPCM support, so that
+reviewers would immediately see the context in which it is used.
 
-Thanks,
+Jonathan
 
-	Ingo
+> ---
+>  drivers/usb/chipidea/otg.c   | 5 ++++-
+>  include/linux/usb/chipidea.h | 1 +
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/usb/chipidea/otg.c b/drivers/usb/chipidea/otg.c
+> index f5490f2a5b6b..647e98f4e351 100644
+> --- a/drivers/usb/chipidea/otg.c
+> +++ b/drivers/usb/chipidea/otg.c
+> @@ -130,8 +130,11 @@ enum ci_role ci_otg_role(struct ci_hdrc *ci)
+> =20
+>  void ci_handle_vbus_change(struct ci_hdrc *ci)
+>  {
+> -	if (!ci->is_otg)
+> +	if (!ci->is_otg) {
+> +		if (ci->platdata->flags & CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS)
+> +			usb_gadget_vbus_connect(&ci->gadget);
+>  		return;
+> +	}
+> =20
+>  	if (hw_read_otgsc(ci, OTGSC_BSV) && !ci->vbus_active)
+>  		usb_gadget_vbus_connect(&ci->gadget);
+> diff --git a/include/linux/usb/chipidea.h b/include/linux/usb/chipidea.h
+> index 0b4f2d5faa08..5a7f96684ea2 100644
+> --- a/include/linux/usb/chipidea.h
+> +++ b/include/linux/usb/chipidea.h
+> @@ -64,6 +64,7 @@ struct ci_hdrc_platform_data {
+>  #define CI_HDRC_PMQOS			BIT(15)
+>  #define CI_HDRC_PHY_VBUS_CONTROL	BIT(16)
+>  #define CI_HDRC_HAS_PORTSC_PEC_MISSED	BIT(17)
+> +#define CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS	BIT(18)
+>  	enum usb_dr_mode	dr_mode;
+>  #define CI_HDRC_CONTROLLER_RESET_EVENT		0
+>  #define CI_HDRC_CONTROLLER_STOPPED_EVENT	1
+> --=20
+> 2.33.0
+>=20
+
+--7ASlWA0wcfuE6F4R
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmUJSw4ACgkQCDBEmo7z
+X9uWGQ/+LoYXIX9PIaYqKaNoz/rCtUw5oNTD0PPK3Ffaj3zmncRCSIfZ6Wc9hG9P
+XkP4kCT5Giq8d2Xh54e78wUf3qfA8NKU9Aq9CfNMRzlVrOEwYlYl2x+Ixv6o17aw
+DWENVhk/AK69kSVqXGnsC2o9P5P6Q1iT/7i8XlyTgAPnOMkyGJIZQKlRLrA5xtjl
+XxEm43xGUQBKuz5WWA4g9aiHBCFwj9x2r0c0B7NZHARGAd3NC0kVBZ2HXbLZkaSU
+FXgyvvBjEZUdiTtR3H5AERf/xfOC86qzdERQrZ5GqBW+NcfO2bNRkiysKnZJ/W88
+ptTGE5iUH5yI/nySrjOYEC2SWbJkHom1Wc8flb9k6ByX5Px25DxTjLoJroAgY0aM
+A8qzj4crXU1XriQZHu+BS0FyZrhLWP+Zp5AEumVX0iRRB/6RR1MyJQd9irPoVIkA
+awbaniEQkQktym5Q4GtWUycpYZpRIpvyGIqKmmYFfo6nhMAE5bwAGAidHVg9Xd8s
+Znu6dmEZVX+jKA0ZS2m/EyQQF6+hi2j2oJQ0l6Ygpj4xS88YwaxgL3yGa1hSSDw0
+ejRKC1Ir0LBsowMH31xJ717/9VRiG/t0TYoLPdbIz1l7ImIl5uW5zR/oP3V4MK8P
+XVSI5UBuWfIdfvoNfJWbrVkN7wq7RYWjdV1mCcwOauR5vsKBlsY=
+=VBfR
+-----END PGP SIGNATURE-----
+
+--7ASlWA0wcfuE6F4R--
