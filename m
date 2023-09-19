@@ -2,137 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D837A6A63
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7337A6A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbjISSFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
+        id S232041AbjISSF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjISSE7 (ORCPT
+        with ESMTP id S229969AbjISSFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:04:59 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4324B95
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:04:53 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-690d9cda925so48863b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695146692; x=1695751492; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=15nBqosj6WWJOSwWn2FB/oN1SFdvM0QLlK2aSBEvitc=;
-        b=wQEV+xKZafjXjnlwLYpplDcXlrUvvdo9PftzaxGLMNVWiXvH8pAipV6QzTp0t/wd9T
-         eJw5q/qoBNeA+CyvHeNqcUPwvUW3vvuxG5woLdjz4m12evMc7KLNu/tpyS0WiW3WyWkW
-         +4mkNwHfkxeJQAqtJG63+qcCVt0zScPqI03/WnuLpXf5lYRbaVZp3s13LpuSsHg6wZRi
-         AUePJvYLcepVewf/lpikp5D1VrwjMKm91yVtGT3fjh0rE0782hsq4VhaDa4Eh+PS1G2v
-         54kwrkke/MWSIHs+xSeR90vE77mxllLbgsZ0BhvTvmC6Vmh/YfYlQUlIiHCh8L6re9um
-         qJtA==
+        Tue, 19 Sep 2023 14:05:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA77BBF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:05:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695146700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yPQFDee6tmhjQOr4CBnPWVdaics0wkhWkFarLbL/j5Q=;
+        b=c3OF5P6AO2m208ZEHuHXg34IYbU8NTlk+pTgp9wkJOvAfyXseFfRNgw9YEsQr3ZZLkmJYS
+        jzIidaFd9Rmd/geLuLs55/0HurvDuzjxg+l4/MWFdwPDA0LjOxeLB3o/Mm54tf79WSiRW2
+        y/zy3KxaBZhjZP9tTsI4PC4jYt4Xa1I=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-474-WrBLGo3GMrSieLHf9oGGcw-1; Tue, 19 Sep 2023 14:04:59 -0400
+X-MC-Unique: WrBLGo3GMrSieLHf9oGGcw-1
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-34ff0d95d83so13555365ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:04:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695146692; x=1695751492;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=15nBqosj6WWJOSwWn2FB/oN1SFdvM0QLlK2aSBEvitc=;
-        b=suRkaVk5xa3ZgpFTBHQ9zyVrESmXk6mCEAmA7gksQV03zAYXR4Q+WJUYMCUQXD+yjq
-         xzq6blQBj1h9SNt7XokGSiHnmFAOVBCB8rdBq9wmpHLgC01LmFjB1u3oQV7BVOA2cArc
-         vYKJpfcd4lMzYeH6qcPWJXiNoOiwTp4RTvGIn8WagriICXYJVZDe8ptDkT6rjjomVQz5
-         j95yjzhjrUnpjO8BUjW7MLN31veEA0359YqhMGghoeOxwRXBJ6+WvpAcXV5p2vS8AQvL
-         9tn0Q1CcLcjviQvYIrgT6sRa8+lp8S7RmXuTCL2AlSMewfD5DduepMe6M2NF2oKYCZFn
-         +8eQ==
-X-Gm-Message-State: AOJu0YypaWZ4oVFyCsrElLNJx7gsKLiqEWDJN+CSNatdIjd0q9ILlkIV
-        /snWc1V/PWHLaAieNS1sqabSvQ==
-X-Google-Smtp-Source: AGHT+IFn+Y/cGWo27YQI4ilcWAzwa2ujC73b21l2AUPxDC9BANzyouOgE1tnupcGIzbju5oTcBbyWg==
-X-Received: by 2002:a05:6a00:179f:b0:690:1720:aa9a with SMTP id s31-20020a056a00179f00b006901720aa9amr446773pfg.15.1695146692638;
-        Tue, 19 Sep 2023 11:04:52 -0700 (PDT)
-Received: from ghost ([50.168.177.76])
-        by smtp.gmail.com with ESMTPSA id a23-20020a62e217000000b00666e649ca46sm8947951pfi.101.2023.09.19.11.04.50
+        d=1e100.net; s=20230601; t=1695146698; x=1695751498;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yPQFDee6tmhjQOr4CBnPWVdaics0wkhWkFarLbL/j5Q=;
+        b=JpIiuRdiyj5en/I5KWQbPJUPLm5DkYCzIuTXOUZNaq/DEybVCTSkFrGZb8oNhM9PQW
+         6bMmZJlQPmPQMHgRRf857ilo27QjTaPoZhk8aMASKPXSJ1iEZxlGedBtbROEj2Z0D7ZR
+         EZwxaO+2LdoSo4BnWqDGUnOahuQx/BAidoEmsfvGAMqCx1qKz5HL4BSvI5YGcrcdpCYj
+         FrilIl8oJ3xpn2NjnLdF8WLBkI55b4y7I1z1BoVNaBvpU+zlaTYUvn8lq37rLzgWppTL
+         sLvj7op9uGhHmYsqJTexQ6ALFUAhMc46e7rmdG010hafA+yWL5KgAGSqU4sWhsiXoIv7
+         UU9g==
+X-Gm-Message-State: AOJu0Yz4n2/+soW3kVq1bN6xPf6T3I0Hv4dSewaUNRImzcO6MbMufJ1D
+        vsI7MB62t0EPVzVhwDtZNfHVZesynHyMTEZp5QzBJXVR3oPEVQ+HPIQBVGDGRHm1uhN3EwHQchs
+        lCO5hV7g4EKmyX8SotOhjvD4N
+X-Received: by 2002:a92:c10b:0:b0:350:ecf2:8eca with SMTP id p11-20020a92c10b000000b00350ecf28ecamr542597ile.19.1695146697699;
+        Tue, 19 Sep 2023 11:04:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHow4QEWp5PgAICiygV3zUpB9qg2AEwKhayIppVcrOusKPypNKokF3av7XY+kYtGxweePqDSQ==
+X-Received: by 2002:a92:c10b:0:b0:350:ecf2:8eca with SMTP id p11-20020a92c10b000000b00350ecf28ecamr542576ile.19.1695146697461;
+        Tue, 19 Sep 2023 11:04:57 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id q18-20020a02cf12000000b004302760aa6bsm3522374jar.4.2023.09.19.11.04.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 11:04:52 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 14:04:48 -0400
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v6 3/4] riscv: Add checksum library
-Message-ID: <ZQniwNEoYLo52HI7@ghost>
-References: <20230915-optimize_checksum-v6-0-14a6cf61c618@rivosinc.com>
- <20230915-optimize_checksum-v6-3-14a6cf61c618@rivosinc.com>
- <0357e092c05043fba13eccad77ba799f@AcuMS.aculab.com>
- <ZQkOSf1b66lHzjaf@ghost>
- <0fe9694900c7492c96dce6b67710173f@AcuMS.aculab.com>
+        Tue, 19 Sep 2023 11:04:56 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 12:04:56 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Cong Liu <liucong2@kylinos.cn>
+Cc:     jgg@ziepe.ca, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] vfio: Fix uninitialized symbol and potential
+ dereferencing errors in vfio_combine_iova_ranges
+Message-ID: <20230919120456.1a68dc4d.alex.williamson@redhat.com>
+In-Reply-To: <20230914090839.196314-1-liucong2@kylinos.cn>
+References: <ZQGs6F5y3YzlAJaL@ziepe.ca>
+        <20230914090839.196314-1-liucong2@kylinos.cn>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0fe9694900c7492c96dce6b67710173f@AcuMS.aculab.com>
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 08:00:12AM +0000, David Laight wrote:
-> ...
-> > > So ending up with (something like):
-> > > 	end = buff + length;
-> > > 	...
-> > > 	while (++ptr < end) {
-> > > 		csum += data;
-> > > 		carry += csum < data;
-> > > 		data = ptr[-1];
-> > > 	}
-> > > (Although a do-while loop tends to generate better code
-> > > and gcc will pretty much always make that transformation.)
-> > >
-> > > I think that is 4 instructions per word (load, add, cmp+set, add).
-> > > In principle they could be completely pipelined and all
-> > > execute (for different loop iterations) in the same clock.
-> > > (But that is pretty unlikely to happen - even x86 isn't that good.)
-> > > But taking two clocks is quite plausible.
-> > > Plus 2 instructions per loop (inc, cmp+jmp).
-> > > They might execute in parallel, but unrolling once
-> > > may be required.
-> > >
-> > It looks like GCC actually ends up generating 7 total instructions:
-> > ffffffff808d2acc:	97b6                	add	a5,a5,a3
-> > ffffffff808d2ace:	00d7b533          	sltu	a0,a5,a3
-> > ffffffff808d2ad2:	0721                	add	a4,a4,8
-> > ffffffff808d2ad4:	86be                	mv	a3,a5
-> > ffffffff808d2ad6:	962a                	add	a2,a2,a0
-> > ffffffff808d2ad8:	ff873783          	ld	a5,-8(a4)
-> > ffffffff808d2adc:	feb768e3          	bltu	a4,a1,ffffffff808d2acc <do_csum+0x34>
-> > 
-> > This mv instruction could be avoided if the registers were shuffled
-> > around, but perhaps this way reduces some dependency chains.
-> 
-> gcc managed to do 'data += csum' so had add 'csum = data'.
-> If you unroll once that might go away.
-> It might then be 10 instructions for 16 bytes.
-> Although you then need slightly larger alignment code.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-I messed with it a bit and couldn't get the mv to go away. I would expect
-mv to be very cheap so it should be fine, and I would like to avoid adding
-too much to the alignment code since it is already large, and I assume
-that buff will be aligned more often than not.
+On Thu, 14 Sep 2023 17:08:39 +0800
+Cong Liu <liucong2@kylinos.cn> wrote:
 
-Interestingly, the mv does not appear pre gcc 12, and does not appear on clang.
+> when compiling with smatch check, the following errors were encountered:
+> 
+> drivers/vfio/vfio_main.c:957 vfio_combine_iova_ranges() error: uninitialized symbol 'last'.
+> drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_end'.
+> drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_start'.
+> 
+> this patch fix these error.
+> 
+> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
+> ---
+>  drivers/vfio/vfio_main.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+> index 40732e8ed4c6..96d2f3030ebb 100644
+> --- a/drivers/vfio/vfio_main.c
+> +++ b/drivers/vfio/vfio_main.c
+> @@ -938,14 +938,17 @@ static int vfio_ioctl_device_feature_migration(struct vfio_device *device,
+>  void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
+>  			      u32 req_nodes)
+>  {
+> -	struct interval_tree_node *prev, *curr, *comb_start, *comb_end;
+> +	struct interval_tree_node *prev, *curr;
+> +	struct interval_tree_node *comb_start = NULL, *comb_end = NULL;
+>  	unsigned long min_gap, curr_gap;
+>  
+>  	/* Special shortcut when a single range is required */
+>  	if (req_nodes == 1) {
+> -		unsigned long last;
+> +		unsigned long last = 0;
+>  
+>  		comb_start = interval_tree_iter_first(root, 0, ULONG_MAX);
+> +		if (!comb_start)
+> +			return;
+>  		curr = comb_start;
+>  		while (curr) {
+>  			last = curr->last;
 
-- Charlie
+@last no longer requires initialization with the @comb_start test.
+
+However, all of these are testing for invalid parameters, which I think
+we can eliminate if we simply introduce the following at the start of
+the function:
+
+        if (!cur_nodes || cur_nodes <= req_nodes ||
+            WARN_ON(!req_nodes || !root->rb_root.rb_node))
+                return;
+
+At that point we're guaranteed to have any entry for both the above and
+below first entry and there must be at least a second entry (or a
+driver bug telling us there are more entries than actually exist) for
+the next call below.  Thanks,
+
+Alex
+
+
+> @@ -963,6 +966,10 @@ void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
+>  		prev = NULL;
+>  		min_gap = ULONG_MAX;
+>  		curr = interval_tree_iter_first(root, 0, ULONG_MAX);
+> +		if (!curr) {
+> +			/* No more ranges to combine */
+> +			break;
+> +		}
+>  		while (curr) {
+>  			if (prev) {
+>  				curr_gap = curr->start - prev->last;
+> @@ -975,6 +982,10 @@ void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
+>  			prev = curr;
+>  			curr = interval_tree_iter_next(curr, 0, ULONG_MAX);
+>  		}
+> +		if (!comb_start || !comb_end) {
+> +			/* No more ranges to combine */
+> +			break;
+> +		}
+>  		comb_start->last = comb_end->last;
+>  		interval_tree_remove(comb_end, root);
+>  		cur_nodes--;
 
