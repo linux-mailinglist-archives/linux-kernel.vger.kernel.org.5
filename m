@@ -2,243 +2,881 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C41267A6842
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456917A6840
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbjISPlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
+        id S233181AbjISPko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233178AbjISPk7 (ORCPT
+        with ESMTP id S233134AbjISPkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:40:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DE3C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695138052; x=1726674052;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=CFmL6XWZQBKQRwOfFu657L7VxNhRxEfMe8riYW/OQEg=;
-  b=RrzkvhFVW3zpQLx6c5pO0y9eDUalDtlflMRMMqeguEuxv8Hpn+MoXcrK
-   n1ekfncTsCuZkeMTG7xVswL6pMo6MkXXlxZkla9uqdXLlCGLufbPp7HAo
-   lMn+QzabQerwSpZDKIZqS53ANzC+Z4b/B9iYg1FiYP5O7snNIlLuVaC3X
-   xPc1up91E4ey1tOZQZGcQjiWHF+t74I+MLcnBmqV5IGAPJUUFBWRga40j
-   EvZHuQBUqiPOGvSrxd16xYP0XG/cCnUZ8FogygvgZs1Wt9HDtdbsNG/mu
-   BQcJXnA9o2pRUDpxjksK3arj+kX6s1mBvB5Hz0MQt18zlOsPcCRrmqvss
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="378868991"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="378868991"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 08:40:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="889543789"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="889543789"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Sep 2023 08:39:38 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qicpq-0007ZP-2l;
-        Tue, 19 Sep 2023 15:40:22 +0000
-Date:   Tue, 19 Sep 2023 23:40:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: vmlinux.o: warning: objtool: cfi_staa_resume+0x169: cfi_build_cmd()
- is missing a __noreturn annotation
-Message-ID: <202309192309.adQMUolr-lkp@intel.com>
+        Tue, 19 Sep 2023 11:40:42 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4340BE
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:40:31 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-414ba610766so500101cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 08:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695138031; x=1695742831; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J+L4RfMUcaS7n7sCkiVvlHSrXVQoPmLz/+RreqVEVZU=;
+        b=mfF9NQiHUVePrxzH5OPW4jxExezmZXP49wBubdHwcGHoHMIe1YYfIyh7WpCvI5to2r
+         1PuKHenaiHtsjrN5pOY93EIJTUTahybo1jK2/16VrBvmBTqMZ9JaTgli1fZA2S5vg6SW
+         vl7/kjB/m6fClSbnXXLgn3D0lI1uiqyPRkdbnvtLkOD8/tyJybsOjLrMF3BgsSt3Iqts
+         zYJWVQr+goj7KCJrSbReH6dbXD5rATKBkibOFPa+vTTudYvWr2ZNQKbjSESQHRbONg2b
+         Tj8/2HztiZ7dEMiY88YHqCPbzHSuFqSCeFBvNg/Gremkju5ni/oI2FfHkUJJKw+/nDDg
+         WhbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695138031; x=1695742831;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J+L4RfMUcaS7n7sCkiVvlHSrXVQoPmLz/+RreqVEVZU=;
+        b=jd1927AN4HMqYz1VJO9cuvqsrf2FYj2HBn72b1KbjJRnOipxh4uoZUIA/x0R6v2iaD
+         KmIhD9DzrDtc8u08aa0pFFwIGsz/nVbMhZ2BS4fbOh2x/YMPd1xWQL0IkNwYl0SFQFmi
+         2gNVBbwH0jKD3+oDqfWfYhD4cPsd+VciLD85bLFZMQu38BBYUptYP5p/pVV7M1P9nDcz
+         U6Szyi5XFkrOmFnnFjjqE9MDdBwLA2x6v14Mg9Tq1YW2V1+kLcYIgQ2m7dmpz+oT6KLJ
+         Ol8kbt8/lbJlZGwpxqLPwE4+Iabq+pSOlh0Cg2NptXgn6QgBrI2Rlj4fv1EMCFCyiQvP
+         x5Jw==
+X-Gm-Message-State: AOJu0YwG4YOg1oZonLNwzbC4XhrsSHVVB+/DkejqOem3rW+fwygylWIV
+        hq4y7/rRzjkEc5m0CFkCqyQaT5ayxSDnWNMbxz7QvQ==
+X-Google-Smtp-Source: AGHT+IEpVKiYVzKTZ3Fanjdmb++kgfxl8/JUbrJpOJAMOL62mq8USx/jq9jy8BDfZVIzfytNOidka3yKmIQwsNOBke0=
+X-Received: by 2002:a05:622a:4016:b0:410:a4cb:9045 with SMTP id
+ cf22-20020a05622a401600b00410a4cb9045mr303433qtb.18.1695138030517; Tue, 19
+ Sep 2023 08:40:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230914211948.814999-1-irogers@google.com> <CAM9d7cgNbRs3LJh_AjqAnRkJzsTxrGr_yqVK-urtoS-B2k1S=w@mail.gmail.com>
+ <ZQmfOO0tt9FuIkrj@kernel.org>
+In-Reply-To: <ZQmfOO0tt9FuIkrj@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 19 Sep 2023 08:40:16 -0700
+Message-ID: <CAP-5=fXn=5SXqHKxaSAxs3bwQifUTVQWnrQb5A6D=3CHygfHLg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/5] Enable BPF skeletons by default
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Patrice Duroux <patrice.duroux@gmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2cf0f715623872823a72e451243bbf555d10d032
-commit: 719a937b7003933de1298ffa4b881dd6a234e244 iov_iter: Mark copy_iovec_from_user() noclone
-date:   2 months ago
-config: x86_64-randconfig-a013-20220829 (https://download.01.org/0day-ci/archive/20230919/202309192309.adQMUolr-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309192309.adQMUolr-lkp@intel.com/reproduce)
+On Tue, Sep 19, 2023 at 6:16=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Mon, Sep 18, 2023 at 04:40:15PM -0700, Namhyung Kim escreveu:
+> > On Thu, Sep 14, 2023 at 2:20=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > Enable BPF skeletons by default but warn don't fail if they can't be
+> > > supported. This was the intended behavior for Linux 6.4 but it caused
+> > > an issue captured in this thread:
+> > > https://lore.kernel.org/lkml/20230503211801.897735-1-acme@kernel.org/
+> > >
+> > > This issue isn't repeated here as the previous issue related to
+> > > generating vmlinux.h, which is no longer performed by default as a
+> > > checked-in vmlinux.h is used instead.
+> > >
+> > > Unlike with those changes, the BUILD_BPF_SKEL is kept and setting it
+> > > to 0 disables BPF skeletons. Also, rather than fail the build due to =
+a
+> > > missed dependency, dependencies are checked and BPF skeletons disable=
+d
+> > > if they aren't present.
+> > >
+> > > Some related commits:
+> > > b7a2d774c9c5 perf build: Add ability to build with a generated vmlinu=
+x.h
+> > > a887466562b4 perf bpf skels: Stop using vmlinux.h generated from BTF,=
+ use subset of used structs + CO-RE
+> > > a2af0f6b8ef7 perf build: Add system include paths to BPF builds
+> > > 5be6cecda080 perf bpf skels: Make vmlinux.h use bpf.h and perf_event.=
+h in source directory
+> > > 9a2d5178b9d5 Revert "perf build: Make BUILD_BPF_SKEL default, rename =
+to NO_BPF_SKEL"
+> > > a887466562b4 perf bpf skels: Stop using vmlinux.h generated from BTF,=
+ use subset of used structs + CO-RE
+> > > 1d7966547e11 perf build: Add warning for when vmlinux.h generation fa=
+ils
+> > > a980755beb5a perf build: Make BUILD_BPF_SKEL default, rename to NO_BP=
+F_SKEL
+> > >
+> > > Ian Rogers (5):
+> > >   perf version: Add status of bpf skeletons
+> > >   perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
+> > >   perf test: Update build test for changed BPF skeleton defaults
+> > >   perf test: Ensure EXTRA_TESTS is covered in build test
+> > >   perf test: Detect off-cpu support from build options
+> >
+> > Tested-by: Namhyung Kim <namhyung@kernel.org>
+>
+> Is this verbose by default now? Maybe its something on my side, but I
+> noticed a higher level of verbosity, can you check?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309192309.adQMUolr-lkp@intel.com/
+I don't see more verbosity. Logs below.
 
-All warnings (new ones prefixed by >>):
+Thanks,
+Ian
 
->> vmlinux.o: warning: objtool: cfi_staa_resume+0x169: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_write_buffer+0x1d0: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_unlock_oneblock+0x132: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_lock_oneblock+0x132: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_erase_oneblock+0x10b: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_read_onechip+0x118: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: jedec_reset+0x95: cfi_send_gen_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: cfi_jedec_setup+0x3ae: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: jedec_probe_chip+0x2ec: cfi_send_gen_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_erase_oneblock.cold+0x0: unreachable instruction
->> vmlinux.o: warning: objtool: jedec_probe_chip.cold+0x0: unreachable instruction
+$ git fetch --all
+$ git checkout -b ptn-clean ptn/perf-tools-next
+$ b4 am 20230914211948.814999-1-irogers@google.com
+$ git am ./20230914_irogers_enable_bpf_skeletons_by_default.mbx
+$ make -C tools/perf O=3D/tmp/perf clean
+make: Entering directory 'tools/perf'
+ CLEAN   x86
+ CLEAN   libapi
+ CLEAN   libbpf
+ CLEAN   libsubcmd
+ CLEAN   libsymbol
+ CLEAN   libperf
+ CLEAN   fixdep
+ CLEAN   feature-detect
+ CLEAN   python
+ CLEAN   bpf-skel
+ CLEAN   coresight
+ CLEAN   core-objs
+ CLEAN   core-progs
+ CLEAN   core-gen
+ CLEAN   Documentation
+make: Leaving directory 'tools/perf'
+$ make -C tools/perf O=3D/tmp/perf
+make: Entering directory 'tools/perf'
+  BUILD:   Doing 'make -j8' parallel build
+ HOSTCC  /tmp/perf/fixdep.o
+ HOSTLD  /tmp/perf/fixdep-in.o
+ LINK    /tmp/perf/fixdep
+Warning: Kernel ABI header differences:
+ diff -u tools/include/uapi/drm/drm.h include/uapi/drm/drm.h
+ diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
+ diff -u tools/include/uapi/linux/mount.h include/uapi/linux/mount.h
+ diff -u tools/arch/x86/include/asm/disabled-features.h
+arch/x86/include/asm/disabled-features.h
+ diff -u tools/arch/x86/include/asm/cpufeatures.h
+arch/x86/include/asm/cpufeatures.h
+ diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-in=
+dex.h
+ diff -u tools/arch/x86/include/uapi/asm/prctl.h
+arch/x86/include/uapi/asm/prctl.h
+ diff -u tools/arch/arm64/include/uapi/asm/perf_regs.h
+arch/arm64/include/uapi/asm/perf_regs.h
+ diff -u tools/arch/s390/include/uapi/asm/kvm.h arch/s390/include/uapi/asm/=
+kvm.h
+ diff -u tools/include/uapi/asm-generic/unistd.h
+include/uapi/asm-generic/unistd.h
+ diff -u tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+arch/x86/entry/syscalls/syscall_64.tbl
+ diff -u tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+arch/powerpc/kernel/syscalls/syscall.tbl
+ diff -u tools/perf/arch/s390/entry/syscalls/syscall.tbl
+arch/s390/kernel/syscalls/syscall.tbl
+ diff -u tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl
+arch/mips/kernel/syscalls/syscall_n64.tbl
+ diff -u tools/perf/util/hashmap.h tools/lib/bpf/hashmap.h
+Makefile.config:607: No sys/sdt.h found, no SDT events are defined,
+please install systemtap-sdt-devel or systemtap-sdt-dev
+Makefile.config:1009: No libcap found, disables capability support,
+please install libcap-devel/libcap-dev
+Makefile.config:1022: No numa.h found, disables 'perf bench numa mem'
+benchmark, please install numactl-devel/libnuma-devel/libnuma-dev
+Makefile.config:1081: No libbabeltrace found, disables 'perf data' CTF
+format support, please install
+libbabeltrace-dev[el]/libbabeltrace-ctf-dev
 
+Auto-detecting system features:
+...                                   dwarf: [ on  ]
+...                      dwarf_getlocations: [ on  ]
+...                                   glibc: [ on  ]
+...                                  libbfd: [ on  ]
+...                          libbfd-buildid: [ on  ]
+...                                  libcap: [ OFF ]
+...                                  libelf: [ on  ]
+...                                 libnuma: [ OFF ]
+...                  numa_num_possible_cpus: [ OFF ]
+...                                 libperl: [ on  ]
+...                               libpython: [ on  ]
+...                               libcrypto: [ on  ]
+...                               libunwind: [ on  ]
+...                      libdw-dwarf-unwind: [ on  ]
+...                                    zlib: [ on  ]
+...                                    lzma: [ on  ]
+...                               get_cpuid: [ on  ]
+...                                     bpf: [ on  ]
+...                                  libaio: [ on  ]
+...                                 libzstd: [ on  ]
 
-objdump-func vmlinux.o cfi_staa_resume:
-0000 000000000220e220 <cfi_staa_resume>:
-0000  220e220:	f3 0f 1e fa          	endbr64
-0004  220e224:	48 b8 00 00 00 00 00 fc ff df 	movabs $0xdffffc0000000000,%rax
-000e  220e22e:	41 57                	push   %r15
-0010  220e230:	41 56                	push   %r14
-0012  220e232:	41 55                	push   %r13
-0014  220e234:	41 54                	push   %r12
-0016  220e236:	55                   	push   %rbp
-0017  220e237:	53                   	push   %rbx
-0018  220e238:	48 89 fb             	mov    %rdi,%rbx
-001b  220e23b:	48 81 c7 90 01 00 00 	add    $0x190,%rdi
-0022  220e242:	48 89 fa             	mov    %rdi,%rdx
-0025  220e245:	48 c1 ea 03          	shr    $0x3,%rdx
-0029  220e249:	48 83 ec 30          	sub    $0x30,%rsp
-002d  220e24d:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-0031  220e251:	0f 85 f1 01 00 00    	jne    220e448 <cfi_staa_resume+0x228>
-0037  220e257:	48 8b 83 90 01 00 00 	mov    0x190(%rbx),%rax
-003e  220e25e:	48 8d 78 60          	lea    0x60(%rax),%rdi
-0042  220e262:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
-0047  220e267:	48 b8 00 00 00 00 00 fc ff df 	movabs $0xdffffc0000000000,%rax
-0051  220e271:	48 89 fa             	mov    %rdi,%rdx
-0054  220e274:	48 c1 ea 03          	shr    $0x3,%rdx
-0058  220e278:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-005c  220e27c:	0f 85 bc 01 00 00    	jne    220e43e <cfi_staa_resume+0x21e>
-0062  220e282:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
-0067  220e287:	4c 8b 78 60          	mov    0x60(%rax),%r15
-006b  220e28b:	49 8d 47 40          	lea    0x40(%r15),%rax
-006f  220e28f:	48 89 c2             	mov    %rax,%rdx
-0072  220e292:	48 89 04 24          	mov    %rax,(%rsp)
-0076  220e296:	48 b8 00 00 00 00 00 fc ff df 	movabs $0xdffffc0000000000,%rax
-0080  220e2a0:	48 c1 ea 03          	shr    $0x3,%rdx
-0084  220e2a4:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax
-0088  220e2a8:	84 c0                	test   %al,%al
-008a  220e2aa:	74 08                	je     220e2b4 <cfi_staa_resume+0x94>
-008c  220e2ac:	3c 03                	cmp    $0x3,%al
-008e  220e2ae:	0f 8e 57 01 00 00    	jle    220e40b <cfi_staa_resume+0x1eb>
-0094  220e2b4:	41 8b 47 40          	mov    0x40(%r15),%eax
-0098  220e2b8:	31 db                	xor    %ebx,%ebx
-009a  220e2ba:	85 c0                	test   %eax,%eax
-009c  220e2bc:	0f 8e 3a 01 00 00    	jle    220e3fc <cfi_staa_resume+0x1dc>
-00a2  220e2c2:	49 bc 00 00 00 00 00 fc ff df 	movabs $0xdffffc0000000000,%r12
-00ac  220e2cc:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
-00b1  220e2d1:	48 83 c0 18          	add    $0x18,%rax
-00b5  220e2d5:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
-00ba  220e2da:	48 c1 e8 03          	shr    $0x3,%rax
-00be  220e2de:	4c 01 e0             	add    %r12,%rax
-00c1  220e2e1:	48 89 44 24 18       	mov    %rax,0x18(%rsp)
-00c6  220e2e6:	eb 2e                	jmp    220e316 <cfi_staa_resume+0xf6>
-00c8  220e2e8:	48 89 ef             	mov    %rbp,%rdi
-00cb  220e2eb:	83 c3 01             	add    $0x1,%ebx
-00ce  220e2ee:	e8 00 00 00 00       	call   220e2f3 <cfi_staa_resume+0xd3>	220e2ef: R_X86_64_PLT32	mutex_unlock-0x4
-00d3  220e2f3:	48 8b 04 24          	mov    (%rsp),%rax
-00d7  220e2f7:	48 c1 e8 03          	shr    $0x3,%rax
-00db  220e2fb:	42 0f b6 04 20       	movzbl (%rax,%r12,1),%eax
-00e0  220e300:	84 c0                	test   %al,%al
-00e2  220e302:	74 08                	je     220e30c <cfi_staa_resume+0xec>
-00e4  220e304:	3c 03                	cmp    $0x3,%al
-00e6  220e306:	0f 8e 0d 01 00 00    	jle    220e419 <cfi_staa_resume+0x1f9>
-00ec  220e30c:	41 39 5f 40          	cmp    %ebx,0x40(%r15)
-00f0  220e310:	0f 8e e6 00 00 00    	jle    220e3fc <cfi_staa_resume+0x1dc>
-00f6  220e316:	4c 63 eb             	movslq %ebx,%r13
-00f9  220e319:	31 f6                	xor    %esi,%esi
-00fb  220e31b:	4f 8d 44 ad 00       	lea    0x0(%r13,%r13,4),%r8
-0100  220e320:	49 c1 e0 06          	shl    $0x6,%r8
-0104  220e324:	4b 8d ac 07 90 00 00 00 	lea    0x90(%r15,%r8,1),%rbp
-010c  220e32c:	4d 89 c6             	mov    %r8,%r14
-010f  220e32f:	48 89 ef             	mov    %rbp,%rdi
-0112  220e332:	e8 00 00 00 00       	call   220e337 <cfi_staa_resume+0x117>	220e333: R_X86_64_PLT32	mutex_lock_nested-0x4
-0117  220e337:	4f 8d 54 37 74       	lea    0x74(%r15,%r14,1),%r10
-011c  220e33c:	4c 89 d0             	mov    %r10,%rax
-011f  220e33f:	48 c1 e8 03          	shr    $0x3,%rax
-0123  220e343:	42 0f b6 14 20       	movzbl (%rax,%r12,1),%edx
-0128  220e348:	4c 89 d0             	mov    %r10,%rax
-012b  220e34b:	83 e0 07             	and    $0x7,%eax
-012e  220e34e:	83 c0 03             	add    $0x3,%eax
-0131  220e351:	38 d0                	cmp    %dl,%al
-0133  220e353:	7c 08                	jl     220e35d <cfi_staa_resume+0x13d>
-0135  220e355:	84 d2                	test   %dl,%dl
-0137  220e357:	0f 85 ca 00 00 00    	jne    220e427 <cfi_staa_resume+0x207>
-013d  220e35d:	4b 8d 44 ad 00       	lea    0x0(%r13,%r13,4),%rax
-0142  220e362:	48 c1 e0 06          	shl    $0x6,%rax
-0146  220e366:	41 83 7c 07 74 0c    	cmpl   $0xc,0x74(%r15,%rax,1)
-014c  220e36c:	0f 85 76 ff ff ff    	jne    220e2e8 <cfi_staa_resume+0xc8>
-0152  220e372:	48 8b 74 24 08       	mov    0x8(%rsp),%rsi
-0157  220e377:	4c 89 fa             	mov    %r15,%rdx
-015a  220e37a:	bf ff 00 00 00       	mov    $0xff,%edi
-015f  220e37f:	4c 89 54 24 10       	mov    %r10,0x10(%rsp)
-0164  220e384:	e8 00 00 00 00       	call   220e389 <cfi_staa_resume+0x169>	220e385: R_X86_64_PLT32	cfi_build_cmd-0x4
-0169  220e389:	48 8b 4c 24 18       	mov    0x18(%rsp),%rcx
-016e  220e38e:	4c 8b 54 24 10       	mov    0x10(%rsp),%r10
-0173  220e393:	80 39 00             	cmpb   $0x0,(%rcx)
-0176  220e396:	0f 85 c3 00 00 00    	jne    220e45f <cfi_staa_resume+0x23f>
-017c  220e39c:	48 8b 4c 24 08       	mov    0x8(%rsp),%rcx
-0181  220e3a1:	48 8b 51 18          	mov    0x18(%rcx),%rdx
-0185  220e3a5:	48 89 02             	mov    %rax,(%rdx)
-0188  220e3a8:	0f ae f0             	mfence
-018b  220e3ab:	4c 89 d0             	mov    %r10,%rax
-018e  220e3ae:	48 c1 e8 03          	shr    $0x3,%rax
-0192  220e3b2:	42 0f b6 14 20       	movzbl (%rax,%r12,1),%edx
-0197  220e3b7:	4c 89 d0             	mov    %r10,%rax
-019a  220e3ba:	83 e0 07             	and    $0x7,%eax
-019d  220e3bd:	83 c0 03             	add    $0x3,%eax
-01a0  220e3c0:	38 d0                	cmp    %dl,%al
-01a2  220e3c2:	7c 08                	jl     220e3cc <cfi_staa_resume+0x1ac>
-01a4  220e3c4:	84 d2                	test   %dl,%dl
-01a6  220e3c6:	0f 85 86 00 00 00    	jne    220e452 <cfi_staa_resume+0x232>
-01ac  220e3cc:	4b 8d 44 ad 00       	lea    0x0(%r13,%r13,4),%rax
-01b1  220e3d1:	4b 8d bc 37 30 01 00 00 	lea    0x130(%r15,%r14,1),%rdi
-01b9  220e3d9:	31 c9                	xor    %ecx,%ecx
-01bb  220e3db:	ba 01 00 00 00       	mov    $0x1,%edx
-01c0  220e3e0:	48 c1 e0 06          	shl    $0x6,%rax
-01c4  220e3e4:	be 03 00 00 00       	mov    $0x3,%esi
-01c9  220e3e9:	41 c7 44 07 74 00 00 00 00 	movl   $0x0,0x74(%r15,%rax,1)
-01d2  220e3f2:	e8 00 00 00 00       	call   220e3f7 <cfi_staa_resume+0x1d7>	220e3f3: R_X86_64_PLT32	__wake_up-0x4
-01d7  220e3f7:	e9 ec fe ff ff       	jmp    220e2e8 <cfi_staa_resume+0xc8>
-01dc  220e3fc:	48 83 c4 30          	add    $0x30,%rsp
-01e0  220e400:	5b                   	pop    %rbx
-01e1  220e401:	5d                   	pop    %rbp
-01e2  220e402:	41 5c                	pop    %r12
-01e4  220e404:	41 5d                	pop    %r13
-01e6  220e406:	41 5e                	pop    %r14
-01e8  220e408:	41 5f                	pop    %r15
-01ea  220e40a:	c3                   	ret
-01eb  220e40b:	48 8b 3c 24          	mov    (%rsp),%rdi
-01ef  220e40f:	e8 00 00 00 00       	call   220e414 <cfi_staa_resume+0x1f4>	220e410: R_X86_64_PLT32	__asan_report_load4_noabort-0x4
-01f4  220e414:	e9 9b fe ff ff       	jmp    220e2b4 <cfi_staa_resume+0x94>
-01f9  220e419:	48 8b 3c 24          	mov    (%rsp),%rdi
-01fd  220e41d:	e8 00 00 00 00       	call   220e422 <cfi_staa_resume+0x202>	220e41e: R_X86_64_PLT32	__asan_report_load4_noabort-0x4
-0202  220e422:	e9 e5 fe ff ff       	jmp    220e30c <cfi_staa_resume+0xec>
-0207  220e427:	4c 89 d7             	mov    %r10,%rdi
-020a  220e42a:	4c 89 54 24 10       	mov    %r10,0x10(%rsp)
-020f  220e42f:	e8 00 00 00 00       	call   220e434 <cfi_staa_resume+0x214>	220e430: R_X86_64_PLT32	__asan_report_load4_noabort-0x4
-0214  220e434:	4c 8b 54 24 10       	mov    0x10(%rsp),%r10
-0219  220e439:	e9 1f ff ff ff       	jmp    220e35d <cfi_staa_resume+0x13d>
-021e  220e43e:	e8 00 00 00 00       	call   220e443 <cfi_staa_resume+0x223>	220e43f: R_X86_64_PLT32	__asan_report_load8_noabort-0x4
-0223  220e443:	e9 3a fe ff ff       	jmp    220e282 <cfi_staa_resume+0x62>
-0228  220e448:	e8 00 00 00 00       	call   220e44d <cfi_staa_resume+0x22d>	220e449: R_X86_64_PLT32	__asan_report_load8_noabort-0x4
-022d  220e44d:	e9 05 fe ff ff       	jmp    220e257 <cfi_staa_resume+0x37>
-0232  220e452:	4c 89 d7             	mov    %r10,%rdi
-0235  220e455:	e8 00 00 00 00       	call   220e45a <cfi_staa_resume+0x23a>	220e456: R_X86_64_PLT32	__asan_report_store4_noabort-0x4
-023a  220e45a:	e9 6d ff ff ff       	jmp    220e3cc <cfi_staa_resume+0x1ac>
-023f  220e45f:	48 8b 7c 24 20       	mov    0x20(%rsp),%rdi
-0244  220e464:	48 89 44 24 28       	mov    %rax,0x28(%rsp)
-0249  220e469:	e8 00 00 00 00       	call   220e46e <cfi_staa_resume+0x24e>	220e46a: R_X86_64_PLT32	__asan_report_load8_noabort-0x4
-024e  220e46e:	48 8b 44 24 28       	mov    0x28(%rsp),%rax
-0253  220e473:	4c 8b 54 24 10       	mov    0x10(%rsp),%r10
-0258  220e478:	e9 1f ff ff ff       	jmp    220e39c <cfi_staa_resume+0x17c>
-025d  220e47d:	0f 1f 00             	nopl   (%rax)
+ GEN     /tmp/perf/common-cmds.h
+ CC      /tmp/perf/jvmti/libjvmti.o
+ CC      /tmp/perf/dlfilters/dlfilter-test-api-v0.o
+ CC      /tmp/perf/dlfilters/dlfilter-test-api-v2.o
+ CC      /tmp/perf/dlfilters/dlfilter-show-cycles.o
+ CC      /tmp/perf/jvmti/jvmti_agent.o
+ MKDIR   /tmp/perf/libapi/fd/
+ INSTALL /tmp/perf/libapi/include/api/cpu.h
+ CC      /tmp/perf/libapi/fd/array.o
+ INSTALL /tmp/perf/libapi/include/api/debug.h
+ INSTALL /tmp/perf/libapi/include/api/io.h
+ PERF_VERSION =3D 6.6.rc1.gda192f0aaa30
+ CC      /tmp/perf/jvmti/libstring.o
+ CC      /tmp/perf/jvmti/libctype.o
+ LD      /tmp/perf/libapi/fd/libapi-in.o
+ MKDIR   /tmp/perf/libapi/fs/
+ CC      /tmp/perf/libperf/core.o
+ CC      /tmp/perf/libapi/fs/fs.o
+ CC      /tmp/perf/libperf/cpumap.o
+ CC      /tmp/perf/libsubcmd/exec-cmd.o
+ CC      /tmp/perf/libperf/threadmap.o
+ INSTALL /tmp/perf/libperf/include/perf/bpf_perf.h
+ LD      /tmp/perf/jvmti/jvmti-in.o
+ INSTALL /tmp/perf/libperf/include/perf/core.h
+ INSTALL /tmp/perf/libapi/include/api/fd/array.h
+ INSTALL /tmp/perf/libsubcmd/include/subcmd/exec-cmd.h
+ INSTALL /tmp/perf/libapi/include/api/fs/fs.h
+ INSTALL /tmp/perf/libsubcmd/include/subcmd/help.h
+ INSTALL /tmp/perf/libsubcmd/include/subcmd/pager.h
+ INSTALL /tmp/perf/libapi/include/api/fs/tracing_path.h
+ CC      /tmp/perf/libperf/evsel.o
+ CC      /tmp/perf/libperf/evlist.o
+ INSTALL libapi_headers
+ CC      /tmp/perf/libperf/mmap.o
+ CC      /tmp/perf/libperf/zalloc.o
+ CC      /tmp/perf/libsymbol/kallsyms.o
+ CC      /tmp/perf/libperf/xyarray.o
+ CC      /tmp/perf/libperf/lib.o
+ CC      /tmp/perf/libsubcmd/help.o
+ MKDIR   /tmp/perf/libapi/fs/
+ CC      /tmp/perf/libapi/fs/tracing_path.o
+ CC      /tmp/perf/libsubcmd/pager.o
+ INSTALL /tmp/perf/libperf/include/perf/cpumap.h
+ CC      /tmp/perf/libapi/cpu.o
+ INSTALL /tmp/perf/libperf/include/perf/threadmap.h
+ INSTALL /tmp/perf/libperf/include/perf/evlist.h
+ INSTALL /tmp/perf/libperf/include/perf/evsel.h
+ INSTALL /tmp/perf/libperf/include/perf/event.h
+ INSTALL /tmp/perf/libperf/include/perf/mmap.h
+ INSTALL /tmp/perf/libperf/include/internal/cpumap.h
+ INSTALL /tmp/perf/libperf/include/internal/evlist.h
+ INSTALL /tmp/perf/libperf/include/internal/evsel.h
+ LD      /tmp/perf/libsymbol/libsymbol-in.o
+ LD      /tmp/perf/libperf/libperf-in.o
+ INSTALL /tmp/perf/libperf/include/internal/lib.h
+ INSTALL /tmp/perf/libperf/include/internal/mmap.h
+ INSTALL /tmp/perf/libsymbol/include/symbol/kallsyms.h
+ INSTALL /tmp/perf/libsubcmd/include/subcmd/parse-options.h
+ INSTALL /tmp/perf/libperf/include/internal/rc_check.h
+ CC      /tmp/perf/libapi/fs/cgroup.o
+ INSTALL /tmp/perf/libperf/include/internal/threadmap.h
+ INSTALL /tmp/perf/libsubcmd/include/subcmd/run-command.h
+ AR      /tmp/perf/libsymbol/libsymbol.a
+ INSTALL /tmp/perf/libperf/include/internal/xyarray.h
+ INSTALL libsymbol_headers
+ INSTALL libsubcmd_headers
+ LINK    /tmp/perf/libperf-jvmti.so
+ AR      /tmp/perf/libperf/libperf.a
+ GEN     perf-archive
+ GEN     perf-iostat
+ LINK    /tmp/perf/dlfilters/dlfilter-test-api-v0.so
+ CC      /tmp/perf/libsubcmd/parse-options.o
+ LD      /tmp/perf/libapi/fs/libapi-in.o
+ GEN     /tmp/perf/libbpf/bpf_helper_defs.h
+ CC      /tmp/perf/libapi/debug.o
+ LINK    /tmp/perf/dlfilters/dlfilter-test-api-v2.so
+ LINK    /tmp/perf/dlfilters/dlfilter-show-cycles.so
+ INSTALL libperf_headers
+ CC      /tmp/perf/libapi/str_error_r.o
+ INSTALL /tmp/perf/libbpf/include/bpf/bpf.h
+ INSTALL /tmp/perf/libbpf/include/bpf/libbpf.h
+ CC      /tmp/perf/libsubcmd/run-command.o
+ INSTALL /tmp/perf/libbpf/include/bpf/btf.h
+ INSTALL /tmp/perf/libbpf/include/bpf/libbpf_common.h
+ INSTALL /tmp/perf/libbpf/include/bpf/libbpf_legacy.h
+ INSTALL /tmp/perf/libbpf/include/bpf/bpf_helpers.h
+ INSTALL /tmp/perf/libbpf/include/bpf/bpf_tracing.h
+ INSTALL /tmp/perf/libbpf/include/bpf/bpf_endian.h
+ INSTALL /tmp/perf/libbpf/include/bpf/bpf_core_read.h
+ INSTALL /tmp/perf/libbpf/include/bpf/skel_internal.h
+ INSTALL /tmp/perf/libbpf/include/bpf/libbpf_version.h
+ LD      /tmp/perf/libapi/libapi-in.o
+ INSTALL /tmp/perf/libbpf/include/bpf/bpf_helper_defs.h
+ CC      /tmp/perf/libsubcmd/sigchain.o
+ MKDIR   /tmp/perf/libbpf/staticobjs/
+ CC      /tmp/perf/libbpf/staticobjs/libbpf.o
+ AR      /tmp/perf/libapi/libapi.a
+ CC      /tmp/perf/libsubcmd/subcmd-config.o
+ INSTALL /tmp/perf/libbpf/include/bpf/usdt.bpf.h
+ INSTALL libbpf_headers
+ MKDIR   /tmp/perf/libbpf/staticobjs/
+ CC      /tmp/perf/libbpf/staticobjs/bpf.o
+ CC      /tmp/perf/libbpf/staticobjs/nlattr.o
+ CC      /tmp/perf/libbpf/staticobjs/btf.o
+ CC      /tmp/perf/libbpf/staticobjs/libbpf_errno.o
+ CC      /tmp/perf/libbpf/staticobjs/str_error.o
+ CC      /tmp/perf/libbpf/staticobjs/netlink.o
+ CC      /tmp/perf/libbpf/staticobjs/bpf_prog_linfo.o
+ CC      /tmp/perf/libbpf/staticobjs/libbpf_probes.o
+ CC      /tmp/perf/libbpf/staticobjs/hashmap.o
+ LD      /tmp/perf/libsubcmd/libsubcmd-in.o
+ AR      /tmp/perf/libsubcmd/libsubcmd.a
+ CC      /tmp/perf/libbpf/staticobjs/btf_dump.o
+ CC      /tmp/perf/libbpf/staticobjs/ringbuf.o
+ GEN     /tmp/perf/python/perf.cpython-311-x86_64-linux-gnu.so
+ CC      /tmp/perf/libbpf/staticobjs/strset.o
+ CC      /tmp/perf/libbpf/staticobjs/linker.o
+ CC      /tmp/perf/libbpf/staticobjs/gen_loader.o
+ CC      /tmp/perf/libbpf/staticobjs/relo_core.o
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Auto-detecting system features:
+...                         clang-bpf-co-re: [ on  ]
+...                                    llvm: [ OFF ]
+...                                  libcap: [ OFF ]
+...                                  libbfd: [ on  ]
+
+ MKDIR   /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf
+ MKDIR   /tmp/perf/util/bpf_skel/.tmp/bootstrap/
+ MKDIR   /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/hashmap.=
+h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/relo_cor=
+e.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_i=
+nternal.h
+ GEN     /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/bpf_helper_defs.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/btf.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_c=
+ommon.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_l=
+egacy.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_help=
+ers.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_trac=
+ing.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_endi=
+an.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_core=
+_read.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/skel_int=
+ernal.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_v=
+ersion.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/usdt.bpf=
+.h
+ INSTALL /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_help=
+er_defs.h
+ MKDIR   /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf.o
+ CC      /tmp/perf/libbpf/staticobjs/usdt.o
+ CC      /tmp/perf/libbpf/staticobjs/zip.o
+ CC      /tmp/perf/libbpf/staticobjs/elf.o
+ MKDIR   /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/bpf.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/nlattr.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/btf.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf_er=
+rno.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/str_error=
+.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/netlink.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/bpf_prog_=
+linfo.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf_pr=
+obes.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/hashmap.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/btf_dump.=
+o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/ringbuf.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/strset.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/linker.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/gen_loade=
+r.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/relo_core=
+.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/usdt.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/zip.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/elf.o
+ INSTALL libbpf_headers
+ LD      /tmp/perf/libbpf/staticobjs/libbpf-in.o
+ LINK    /tmp/perf/libbpf/libbpf.a
+ LD      /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf-in=
+.o
+ LINK    /tmp/perf/util/bpf_skel/.tmp/bootstrap/libbpf/libbpf.a
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/main.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/common.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/json_writer.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/gen.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/btf.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/xlated_dumper.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/btf_dumper.o
+ CC      /tmp/perf/util/bpf_skel/.tmp/bootstrap/disasm.o
+ LINK    /tmp/perf/util/bpf_skel/.tmp/bootstrap/bpftool
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/bpf_prog_profiler.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/bperf_leader.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/bperf_follower.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/bperf_cgroup.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/func_latency.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/off_cpu.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/lock_contention.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/kwork_trace.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/sample_filter.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/kwork_top.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/bench_uprobe.bpf.o
+ CLANG   /tmp/perf/util/bpf_skel/.tmp/augmented_raw_syscalls.bpf.o
+ GENSKEL /tmp/perf/util/bpf_skel/bpf_prog_profiler.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/bperf_leader.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/bperf_follower.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/bperf_cgroup.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/func_latency.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/off_cpu.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/bench_uprobe.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/lock_contention.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/kwork_top.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/sample_filter.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/augmented_raw_syscalls.skel.h
+ GENSKEL /tmp/perf/util/bpf_skel/kwork_trace.skel.h
+ CC      /tmp/perf/builtin-bench.o
+ CC      /tmp/perf/builtin-annotate.o
+ CC      /tmp/perf/builtin-config.o
+ CC      /tmp/perf/builtin-diff.o
+ CC      /tmp/perf/builtin-evlist.o
+ CC      /tmp/perf/builtin-ftrace.o
+ TEST    /tmp/perf/pmu-events/metric_test.log
+ GEN     /tmp/perf/pmu-events/pmu-events.c
+ CC      /tmp/perf/builtin-help.o
+ CC      /tmp/perf/builtin-buildid-list.o
+ CC      /tmp/perf/builtin-buildid-cache.o
+ CC      /tmp/perf/builtin-kallsyms.o
+ CC      /tmp/perf/builtin-list.o
+ CC      /tmp/perf/builtin-record.o
+ CC      /tmp/perf/builtin-report.o
+ CC      /tmp/perf/builtin-stat.o
+ CC      /tmp/perf/builtin-top.o
+ CC      /tmp/perf/builtin-script.o
+ CC      /tmp/perf/builtin-kvm.o
+ CC      /tmp/perf/builtin-inject.o
+ CC      /tmp/perf/builtin-mem.o
+ CC      /tmp/perf/builtin-data.o
+ CC      /tmp/perf/builtin-version.o
+ CC      /tmp/perf/builtin-c2c.o
+ CC      /tmp/perf/builtin-daemon.o
+ CC      /tmp/perf/builtin-kmem.o
+ CC      /tmp/perf/builtin-kwork.o
+ CC      /tmp/perf/builtin-lock.o
+ CC      /tmp/perf/builtin-sched.o
+ CC      /tmp/perf/builtin-timechart.o
+ CC      /tmp/perf/builtin-trace.o
+ CC      /tmp/perf/trace/beauty/clone.o
+ CC      /tmp/perf/bench/sched-messaging.o
+ CC      /tmp/perf/tests/builtin-test.o
+ CC      /tmp/perf/bench/sched-pipe.o
+ CC      /tmp/perf/bench/sched-seccomp-notify.o
+ CC      /tmp/perf/util/arm64-frame-pointer-unwind-support.o
+ CC      /tmp/perf/trace/beauty/fcntl.o
+ CC      /tmp/perf/bench/syscall.o
+ CC      /tmp/perf/util/addr_location.o
+ CC      /tmp/perf/trace/beauty/flock.o
+ CC      /tmp/perf/bench/mem-functions.o
+ CC      /tmp/perf/util/annotate.o
+ CC      /tmp/perf/tests/builtin-test-list.o
+ CC      /tmp/perf/trace/beauty/fsmount.o
+ CC      /tmp/perf/bench/futex-hash.o
+ CC      /tmp/perf/trace/beauty/fspick.o
+ CC      /tmp/perf/arch/common.o
+ CC      /tmp/perf/arch/x86/util/header.o
+ CC      /tmp/perf/tests/parse-events.o
+ CC      /tmp/perf/trace/beauty/ioctl.o
+ CC      /tmp/perf/bench/futex-wake.o
+ CC      /tmp/perf/arch/x86/util/tsc.o
+ CC      /tmp/perf/trace/beauty/kcmp.o
+ CC      /tmp/perf/bench/futex-wake-parallel.o
+ CC      /tmp/perf/trace/beauty/mount_flags.o
+ CC      /tmp/perf/bench/futex-requeue.o
+ CC      /tmp/perf/arch/x86/util/pmu.o
+ CC      /tmp/perf/trace/beauty/move_mount.o
+ CC      /tmp/perf/trace/beauty/pkey_alloc.o
+ CC      /tmp/perf/arch/x86/util/kvm-stat.o
+ CC      /tmp/perf/bench/futex-lock-pi.o
+ CC      /tmp/perf/trace/beauty/arch_prctl.o
+ CC      /tmp/perf/bench/epoll-wait.o
+ CC      /tmp/perf/trace/beauty/prctl.o
+ CC      /tmp/perf/arch/x86/util/perf_regs.o
+ CC      /tmp/perf/bench/epoll-ctl.o
+ CC      /tmp/perf/pmu-events/pmu-events.o
+ CC      /tmp/perf/trace/beauty/renameat.o
+ CC      /tmp/perf/bench/synthesize.o
+ CC      /tmp/perf/trace/beauty/sockaddr.o
+ CC      /tmp/perf/arch/x86/util/topdown.o
+ CC      /tmp/perf/bench/kallsyms-parse.o
+ CC      /tmp/perf/trace/beauty/socket.o
+ CC      /tmp/perf/arch/x86/util/machine.o
+ CC      /tmp/perf/trace/beauty/statx.o
+ CC      /tmp/perf/bench/find-bit-bench.o
+ CC      /tmp/perf/arch/x86/util/event.o
+ CC      /tmp/perf/bench/inject-buildid.o
+ CC      /tmp/perf/trace/beauty/sync_file_range.o
+ CC      /tmp/perf/bench/evlist-open-close.o
+ CC      /tmp/perf/arch/x86/util/evlist.o
+ CC      /tmp/perf/trace/beauty/timespec.o
+ CC      /tmp/perf/trace/beauty/tracepoints/x86_irq_vectors.o
+ CC      /tmp/perf/trace/beauty/tracepoints/x86_msr.o
+ CC      /tmp/perf/arch/x86/util/mem-events.o
+ CC      /tmp/perf/bench/breakpoint.o
+ LD      /tmp/perf/trace/beauty/tracepoints/perf-in.o
+ LD      /tmp/perf/trace/beauty/perf-in.o
+ CC      /tmp/perf/ui/setup.o
+ CC      /tmp/perf/scripts/perl/Perf-Trace-Util/Context.o
+ CC      /tmp/perf/ui/helpline.o
+ CC      /tmp/perf/arch/x86/util/evsel.o
+ CC      /tmp/perf/util/block-info.o
+ CC      /tmp/perf/ui/progress.o
+ CC      /tmp/perf/ui/util.o
+ CC      /tmp/perf/arch/x86/util/iostat.o
+ CC      /tmp/perf/bench/pmu-scan.o
+ CC      /tmp/perf/ui/hist.o
+ CC      /tmp/perf/tests/dso-data.o
+ CC      /tmp/perf/ui/stdio/hist.o
+ CC      /tmp/perf/bench/uprobe.o
+ LD      /tmp/perf/scripts/perl/Perf-Trace-Util/perf-in.o
+ CC      /tmp/perf/arch/x86/util/env.o
+ CC      /tmp/perf/scripts/python/Perf-Trace-Util/Context.o
+ CC      /tmp/perf/util/block-range.o
+ CC      /tmp/perf/tests/attr.o
+ CC      /tmp/perf/bench/mem-memcpy-x86-64-asm.o
+ CC      /tmp/perf/arch/x86/util/dwarf-regs.o
+ CC      /tmp/perf/bench/mem-memset-x86-64-asm.o
+ LD      /tmp/perf/bench/perf-in.o
+ CC      /tmp/perf/builtin-probe.o
+ CC      /tmp/perf/arch/x86/util/unwind-libunwind.o
+ CC      /tmp/perf/util/build-id.o
+ CC      /tmp/perf/tests/vmlinux-kallsyms.o
+ CC      /tmp/perf/arch/x86/util/auxtrace.o
+ LD      /tmp/perf/scripts/python/Perf-Trace-Util/perf-in.o
+ LD      /tmp/perf/scripts/perf-in.o
+ CC      /tmp/perf/perf.o
+ CC      /tmp/perf/arch/x86/util/archinsn.o
+ CC      /tmp/perf/tests/openat-syscall.o
+ CC      /tmp/perf/arch/x86/util/intel-pt.o
+ CC      /tmp/perf/tests/openat-syscall-all-cpus.o
+ CC      /tmp/perf/tests/openat-syscall-tp-fields.o
+ CC      /tmp/perf/tests/mmap-basic.o
+ CC      /tmp/perf/ui/browser.o
+ CC      /tmp/perf/ui/browsers/annotate.o
+ CC      /tmp/perf/util/cacheline.o
+ CC      /tmp/perf/ui/browsers/hists.o
+ CC      /tmp/perf/util/config.o
+ CC      /tmp/perf/tests/perf-record.o
+ CC      /tmp/perf/tests/evsel-roundtrip-name.o
+ CC      /tmp/perf/arch/x86/util/intel-bts.o
+ CC      /tmp/perf/ui/tui/setup.o
+ CC      /tmp/perf/tests/evsel-tp-sched.o
+ CC      /tmp/perf/ui/tui/util.o
+ CC      /tmp/perf/ui/browsers/map.o
+ CC      /tmp/perf/tests/fdarray.o
+ CC      /tmp/perf/ui/browsers/scripts.o
+ CC      /tmp/perf/ui/browsers/header.o
+ CC      /tmp/perf/ui/tui/helpline.o
+ LD      /tmp/perf/arch/x86/util/perf-in.o
+ CC      /tmp/perf/arch/x86/tests/regs_load.o
+ CC      /tmp/perf/util/copyfile.o
+ CC      /tmp/perf/ui/tui/progress.o
+ CC      /tmp/perf/arch/x86/tests/dwarf-unwind.o
+ CC      /tmp/perf/tests/pmu.o
+ CC      /tmp/perf/ui/browsers/res_sample.o
+ LD      /tmp/perf/ui/tui/perf-in.o
+ CC      /tmp/perf/tests/pmu-events.o
+ CC      /tmp/perf/tests/hists_common.o
+ CC      /tmp/perf/util/ctype.o
+ CC      /tmp/perf/util/db-export.o
+ CC      /tmp/perf/arch/x86/tests/arch-tests.o
+ CC      /tmp/perf/tests/hists_link.o
+ CC      /tmp/perf/arch/x86/tests/sample-parsing.o
+ CC      /tmp/perf/arch/x86/tests/hybrid.o
+ CC      /tmp/perf/tests/hists_filter.o
+ CC      /tmp/perf/arch/x86/tests/intel-pt-test.o
+ CC      /tmp/perf/tests/hists_output.o
+ CC      /tmp/perf/arch/x86/tests/bp-modify.o
+ CC      /tmp/perf/arch/x86/tests/amd-ibs-via-core-pmu.o
+ CC      /tmp/perf/util/env.o
+ CC      /tmp/perf/tests/hists_cumulate.o
+ CC      /tmp/perf/tests/python-use.o
+ LD      /tmp/perf/arch/x86/tests/perf-in.o
+ LD      /tmp/perf/arch/x86/perf-in.o
+ LD      /tmp/perf/pmu-events/pmu-events-in.o
+ CC      /tmp/perf/tests/bp_signal.o
+ CC      /tmp/perf/tests/bp_signal_overflow.o
+ LD      /tmp/perf/arch/perf-in.o
+ CC      /tmp/perf/tests/bp_account.o
+ CC      /tmp/perf/tests/wp.o
+ CC      /tmp/perf/tests/task-exit.o
+ CC      /tmp/perf/tests/sw-clock.o
+ CC      /tmp/perf/tests/mmap-thread-lookup.o
+ CC      /tmp/perf/tests/thread-maps-share.o
+ CC      /tmp/perf/util/event.o
+ CC      /tmp/perf/tests/switch-tracking.o
+ CC      /tmp/perf/tests/keep-tracking.o
+ CC      /tmp/perf/tests/code-reading.o
+ CC      /tmp/perf/tests/sample-parsing.o
+ CC      /tmp/perf/tests/parse-no-sample-id-all.o
+ CC      /tmp/perf/tests/kmod-path.o
+ LD      /tmp/perf/ui/browsers/perf-in.o
+ LD      /tmp/perf/ui/perf-in.o
+ CC      /tmp/perf/tests/thread-map.o
+ CC      /tmp/perf/tests/topology.o
+ CC      /tmp/perf/tests/mem.o
+ CC      /tmp/perf/tests/cpumap.o
+ CC      /tmp/perf/tests/stat.o
+ CC      /tmp/perf/tests/event_update.o
+ CC      /tmp/perf/tests/event-times.o
+ CC      /tmp/perf/tests/expr.o
+ CC      /tmp/perf/tests/backward-ring-buffer.o
+ CC      /tmp/perf/tests/sdt.o
+ CC      /tmp/perf/tests/is_printable_array.o
+ CC      /tmp/perf/tests/bitmap.o
+ CC      /tmp/perf/tests/perf-hooks.o
+ CC      /tmp/perf/util/evlist.o
+ CC      /tmp/perf/tests/unit_number__scnprintf.o
+ CC      /tmp/perf/tests/mem2node.o
+ CC      /tmp/perf/tests/maps.o
+ CC      /tmp/perf/tests/time-utils-test.o
+ CC      /tmp/perf/tests/genelf.o
+ CC      /tmp/perf/tests/api-io.o
+ CC      /tmp/perf/tests/demangle-java-test.o
+ CC      /tmp/perf/tests/demangle-ocaml-test.o
+ CC      /tmp/perf/tests/pfm.o
+ CC      /tmp/perf/tests/parse-metric.o
+ CC      /tmp/perf/tests/pe-file-parsing.o
+ CC      /tmp/perf/tests/expand-cgroup.o
+ CC      /tmp/perf/tests/perf-time-to-tsc.o
+ CC      /tmp/perf/tests/dlfilter-test.o
+ CC      /tmp/perf/tests/sigtrap.o
+ CC      /tmp/perf/tests/event_groups.o
+ CC      /tmp/perf/tests/symbols.o
+ CC      /tmp/perf/tests/util.o
+ CC      /tmp/perf/tests/dwarf-unwind.o
+ CC      /tmp/perf/tests/workloads/noploop.o
+ CC      /tmp/perf/tests/workloads/thloop.o
+ CC      /tmp/perf/tests/workloads/leafloop.o
+ CC      /tmp/perf/tests/workloads/sqrtloop.o
+ CC      /tmp/perf/tests/workloads/brstack.o
+ CC      /tmp/perf/tests/workloads/datasym.o
+ CC      /tmp/perf/util/sideband_evlist.o
+ CC      /tmp/perf/util/evsel.o
+ CC      /tmp/perf/util/evsel_fprintf.o
+ CC      /tmp/perf/util/perf_event_attr_fprintf.o
+ CC      /tmp/perf/util/evswitch.o
+ LD      /tmp/perf/tests/workloads/perf-in.o
+ CC      /tmp/perf/util/find_bit.o
+ LD      /tmp/perf/tests/perf-in.o
+ CC      /tmp/perf/util/get_current_dir_name.o
+ CC      /tmp/perf/util/levenshtein.o
+ CC      /tmp/perf/util/mmap.o
+ CC      /tmp/perf/util/memswap.o
+ BISON   /tmp/perf/util/parse-events-bison.c
+ CC      /tmp/perf/util/print-events.o
+ CC      /tmp/perf/util/tracepoint.o
+ CC      /tmp/perf/util/perf_regs.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_aarch64.o
+ CC      /tmp/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.o
+ CC      /tmp/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_arm.o
+ CC      /tmp/perf/util/hisi-ptt-decoder/hisi-ptt-pkt-decoder.o
+ CC      /tmp/perf/util/scripting-engines/trace-event-perl.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_csky.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_loongarch.o
+ LD      /tmp/perf/util/hisi-ptt-decoder/perf-in.o
+ CC      /tmp/perf/util/path.o
+ CC      /tmp/perf/util/print_binary.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_mips.o
+ CC      /tmp/perf/util/arm-spe-decoder/arm-spe-decoder.o
+ GEN     /tmp/perf/util/intel-pt-decoder/inat-tables.c
+ CC      /tmp/perf/util/intel-pt-decoder/intel-pt-log.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_powerpc.o
+ CC      /tmp/perf/util/rlimit.o
+ CC      /tmp/perf/util/intel-pt-decoder/intel-pt-decoder.o
+ CC      /tmp/perf/util/argv_split.o
+ CC      /tmp/perf/util/rbtree.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_riscv.o
+ LD      /tmp/perf/util/arm-spe-decoder/perf-in.o
+ CC      /tmp/perf/util/libstring.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_s390.o
+ CC      /tmp/perf/util/bitmap.o
+ CC      /tmp/perf/util/perf-regs-arch/perf_regs_x86.o
+ CC      /tmp/perf/util/intel-pt-decoder/intel-pt-insn-decoder.o
+ CC      /tmp/perf/util/hweight.o
+ LD      /tmp/perf/util/perf-regs-arch/perf-in.o
+ CC      /tmp/perf/util/smt.o
+ CC      /tmp/perf/util/strbuf.o
+ CC      /tmp/perf/util/string.o
+ CC      /tmp/perf/util/scripting-engines/trace-event-python.o
+ CC      /tmp/perf/util/strlist.o
+ CC      /tmp/perf/util/strfilter.o
+ CC      /tmp/perf/util/top.o
+ CC      /tmp/perf/util/usage.o
+ CC      /tmp/perf/util/dso.o
+ CC      /tmp/perf/util/dsos.o
+ CC      /tmp/perf/util/symbol.o
+ CC      /tmp/perf/util/symbol_fprintf.o
+ CC      /tmp/perf/util/color.o
+ CC      /tmp/perf/util/color_config.o
+ CC      /tmp/perf/util/metricgroup.o
+ CC      /tmp/perf/util/header.o
+ CC      /tmp/perf/util/callchain.o
+ CC      /tmp/perf/util/values.o
+ CC      /tmp/perf/util/debug.o
+ CC      /tmp/perf/util/fncache.o
+ CC      /tmp/perf/util/machine.o
+ CC      /tmp/perf/util/map.o
+ LD      /tmp/perf/util/intel-pt-decoder/perf-in.o
+ CC      /tmp/perf/util/maps.o
+ LD      /tmp/perf/util/scripting-engines/perf-in.o
+ CC      /tmp/perf/util/pstack.o
+ CC      /tmp/perf/util/session.o
+ CC      /tmp/perf/util/sample-raw.o
+ CC      /tmp/perf/util/s390-sample-raw.o
+ CC      /tmp/perf/util/amd-sample-raw.o
+ CC      /tmp/perf/util/syscalltbl.o
+ CC      /tmp/perf/util/ordered-events.o
+ CC      /tmp/perf/util/namespaces.o
+ CC      /tmp/perf/util/comm.o
+ CC      /tmp/perf/util/thread.o
+ CC      /tmp/perf/util/thread_map.o
+ CC      /tmp/perf/util/parse-events-bison.o
+ BISON   /tmp/perf/util/pmu-bison.c
+ CC      /tmp/perf/util/pmus.o
+ CC      /tmp/perf/util/svghelper.o
+ CC      /tmp/perf/util/trace-event-info.o
+ CC      /tmp/perf/util/trace-event-scripting.o
+ CC      /tmp/perf/util/trace-event.o
+ CC      /tmp/perf/util/trace-event-parse.o
+ CC      /tmp/perf/util/trace-event-read.o
+ CC      /tmp/perf/util/sort.o
+ CC      /tmp/perf/util/hist.o
+ CC      /tmp/perf/util/util.o
+ CC      /tmp/perf/util/cpumap.o
+ CC      /tmp/perf/util/affinity.o
+ CC      /tmp/perf/util/cputopo.o
+ CC      /tmp/perf/util/cgroup.o
+ CC      /tmp/perf/util/target.o
+ CC      /tmp/perf/util/rblist.o
+ CC      /tmp/perf/util/intlist.o
+ CC      /tmp/perf/util/vdso.o
+ CC      /tmp/perf/util/counts.o
+ CC      /tmp/perf/util/stat.o
+ CC      /tmp/perf/util/stat-shadow.o
+ CC      /tmp/perf/util/stat-display.o
+ CC      /tmp/perf/util/perf_api_probe.o
+ CC      /tmp/perf/util/record.o
+ CC      /tmp/perf/util/srcline.o
+ CC      /tmp/perf/util/srccode.o
+ CC      /tmp/perf/util/synthetic-events.o
+ CC      /tmp/perf/util/data.o
+ CC      /tmp/perf/util/tsc.o
+ CC      /tmp/perf/util/cloexec.o
+ CC      /tmp/perf/util/call-path.o
+ CC      /tmp/perf/util/rwsem.o
+ CC      /tmp/perf/util/thread-stack.o
+ CC      /tmp/perf/util/spark.o
+ CC      /tmp/perf/util/topdown.o
+ CC      /tmp/perf/util/iostat.o
+ CC      /tmp/perf/util/stream.o
+ CC      /tmp/perf/util/auxtrace.o
+ CC      /tmp/perf/util/intel-pt.o
+ CC      /tmp/perf/util/intel-bts.o
+ CC      /tmp/perf/util/arm-spe.o
+ CC      /tmp/perf/util/hisi-ptt.o
+ CC      /tmp/perf/util/s390-cpumsf.o
+ CC      /tmp/perf/util/cs-etm-base.o
+ CC      /tmp/perf/util/parse-branch-options.o
+ CC      /tmp/perf/util/dump-insn.o
+ CC      /tmp/perf/util/parse-regs-options.o
+ CC      /tmp/perf/util/parse-sublevel-options.o
+ CC      /tmp/perf/util/term.o
+ CC      /tmp/perf/util/help-unknown-cmd.o
+ CC      /tmp/perf/util/dlfilter.o
+ CC      /tmp/perf/util/mem-events.o
+ CC      /tmp/perf/util/vsprintf.o
+ CC      /tmp/perf/util/units.o
+ CC      /tmp/perf/util/time-utils.o
+ BISON   /tmp/perf/util/expr-bison.c
+ CC      /tmp/perf/util/branch.o
+ CC      /tmp/perf/util/mem2node.o
+ CC      /tmp/perf/util/clockid.o
+ CC      /tmp/perf/util/list_sort.o
+ CC      /tmp/perf/util/mutex.o
+ CC      /tmp/perf/util/sharded_mutex.o
+ CC      /tmp/perf/util/bpf_map.o
+ CC      /tmp/perf/util/bpf_counter.o
+ CC      /tmp/perf/util/bpf_counter_cgroup.o
+ CC      /tmp/perf/util/bpf_ftrace.o
+ CC      /tmp/perf/util/bpf_off_cpu.o
+ BISON   /tmp/perf/util/bpf-filter-bison.c
+ CC      /tmp/perf/util/bpf_lock_contention.o
+ CC      /tmp/perf/util/bpf_kwork.o
+ CC      /tmp/perf/util/bpf_kwork_top.o
+ CC      /tmp/perf/util/symbol-elf.o
+ CC      /tmp/perf/util/probe-file.o
+ CC      /tmp/perf/util/probe-event.o
+ CC      /tmp/perf/util/probe-finder.o
+ CC      /tmp/perf/util/dwarf-aux.o
+ CC      /tmp/perf/util/dwarf-regs.o
+ CC      /tmp/perf/util/unwind-libunwind-local.o
+ CC      /tmp/perf/util/unwind-libunwind.o
+ CC      /tmp/perf/util/data-convert-json.o
+ CC      /tmp/perf/util/zlib.o
+ CC      /tmp/perf/util/lzma.o
+ CC      /tmp/perf/util/zstd.o
+ CXX     /tmp/perf/util/demangle-cxx.o
+ CC      /tmp/perf/util/demangle-ocaml.o
+ CC      /tmp/perf/util/demangle-java.o
+ CC      /tmp/perf/util/demangle-rust.o
+ CC      /tmp/perf/util/jitdump.o
+ CC      /tmp/perf/util/genelf.o
+ CC      /tmp/perf/util/genelf_debug.o
+ CC      /tmp/perf/util/perf-hooks.o
+ CC      /tmp/perf/util/bpf-event.o
+ CC      /tmp/perf/util/bpf-utils.o
+ CC      /tmp/perf/util/pfm.o
+ FLEX    /tmp/perf/util/parse-events-flex.c
+ FLEX    /tmp/perf/util/pmu-flex.c
+ CC      /tmp/perf/util/pmu-bison.o
+ FLEX    /tmp/perf/util/expr-flex.c
+ CC      /tmp/perf/util/expr-bison.o
+ CC      /tmp/perf/util/expr.o
+ FLEX    /tmp/perf/util/bpf-filter-flex.c
+ CC      /tmp/perf/util/bpf-filter-bison.o
+ CC      /tmp/perf/util/parse-events.o
+ CC      /tmp/perf/util/parse-events-flex.o
+ CC      /tmp/perf/util/pmu.o
+ CC      /tmp/perf/util/pmu-flex.o
+ CC      /tmp/perf/util/expr-flex.o
+ CC      /tmp/perf/util/bpf-filter.o
+ CC      /tmp/perf/util/bpf-filter-flex.o
+ LD      /tmp/perf/util/perf-in.o
+ LD      /tmp/perf/perf-in.o
+ LINK    /tmp/perf/perf
