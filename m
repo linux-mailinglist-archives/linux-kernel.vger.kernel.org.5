@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D54127A64AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA567A64B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbjISNTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39212 "EHLO
+        id S232195AbjISNUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbjISNTu (ORCPT
+        with ESMTP id S231739AbjISNUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:19:50 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494FEF1;
-        Tue, 19 Sep 2023 06:19:44 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RqhzN3vg4zrT2T;
-        Tue, 19 Sep 2023 21:17:36 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 19 Sep 2023 21:19:41 +0800
-CC:     <yangyicong@hisilicon.com>, <alexander.shishkin@linux.intel.com>,
-        <helgaas@kernel.org>, <linux-pci@vger.kernel.org>,
-        <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
-        <hejunhao3@huawei.com>
-Subject: Re: [PATCH v2 3/5] hwtracing: hisi_ptt: Optimize the trace data
- committing
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <mathieu.poirier@linaro.org>, <jonathan.cameron@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20230914112223.27165-1-yangyicong@huawei.com>
- <20230914112223.27165-4-yangyicong@huawei.com>
- <03da788f-584b-1be5-2cc3-70a9e57c11ba@arm.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <fd62aa39-78d7-a6c5-7782-8214256ee51b@huawei.com>
-Date:   Tue, 19 Sep 2023 21:19:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 19 Sep 2023 09:20:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED9EF3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695129599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=htK7pnwIzqRDFi5FwPMaJzCXKtfTe2X9wFdfV0qhhDg=;
+        b=dTbZx3yPdrjyksWEVcMmG9mQvP6WFbfKPi1PXwWmBmSuoNINoF228/lEGwmclizgDPlhay
+        +fLBB8yPUCn16wHvKZ68o4o6bTt03xWAnZhwrTl0o2pTABfngezzmR9QPvk75QMSpaiJXN
+        jsQ3b9KgRoMykULEvIx8uHuZ251fask=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-593-SlQkCZ66NtSadtJ-57H6Pw-1; Tue, 19 Sep 2023 09:19:57 -0400
+X-MC-Unique: SlQkCZ66NtSadtJ-57H6Pw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-320089dad3cso109969f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:19:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695129596; x=1695734396;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=htK7pnwIzqRDFi5FwPMaJzCXKtfTe2X9wFdfV0qhhDg=;
+        b=lLYcSA5OWoAMYjaozMof5Rch8OVHvcH4FMXYLGuRtPuug7mG1HiVivPbD1c+mUYfOS
+         VmeUo1Xy6gnJRNl/A5vGkDhjxpdCeQXR7nXc/jMDtze+6UO1QY2vEAC7wZQumlvK0JZx
+         HWqGEVaadc52valDpUafJbpsrPZ+qFKZkeN0I8dZ8SemUXTQJ0hK/pZ2+jFLXyMePxTU
+         imiJKN974bC8Fj89/l/b6dqySGIBkIGijdRhhVeL17N/bwgKdiDgbGt+UQSCX9hYQ2rF
+         yzD40I9cOxpKYVSU+sUoijk/TfuoW+hncfB9+1wEMAG5qTT2ckG+q65nBbrGBtKNxUGb
+         3QcA==
+X-Gm-Message-State: AOJu0YxsWqGc7R6meNhTXFYP3Db2QF8SBGi5QiE5zWBRxc4XhfXJZcgM
+        LTFVTodF4ftKIZkpZNdTAVXWh67DzeEXHrvvo6O8GZF7wDfcGoIBO+YOqgjgArdLTfZc8OPxBJh
+        +SqN98pybiZ25efmCAXn4/eoE
+X-Received: by 2002:adf:ecc7:0:b0:31f:899b:a47 with SMTP id s7-20020adfecc7000000b0031f899b0a47mr10072503wro.4.1695129596646;
+        Tue, 19 Sep 2023 06:19:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHvl5GMANKuJZvPgoz3bArRsym+FAKYbCuhPA1oJy7XAET85TTZwn7Qk9G/FVTxfAXX1wyEcg==
+X-Received: by 2002:adf:ecc7:0:b0:31f:899b:a47 with SMTP id s7-20020adfecc7000000b0031f899b0a47mr10072490wro.4.1695129596314;
+        Tue, 19 Sep 2023 06:19:56 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-241-221.dyn.eolo.it. [146.241.241.221])
+        by smtp.gmail.com with ESMTPSA id cf20-20020a170906b2d400b0099bd453357esm7754752ejb.41.2023.09.19.06.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 06:19:55 -0700 (PDT)
+Message-ID: <a5b25ee07245125fac4bbdc3b3604758251907d2.camel@redhat.com>
+Subject: Re: [PATCH net-next v9 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
+ preparations
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        Arseniy Krasnov <avkrasnov@salutedevices.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Date:   Tue, 19 Sep 2023 15:19:54 +0200
+In-Reply-To: <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
+References: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
+         <b5873e36-fe8c-85e8-e11b-4ccec386c015@salutedevices.com>
+         <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-In-Reply-To: <03da788f-584b-1be5-2cc3-70a9e57c11ba@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.121.177]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/15 22:44, Suzuki K Poulose wrote:
-> On 14/09/2023 12:22, Yicong Yang wrote:
->> From: Yicong Yang <yangyicong@hisilicon.com>
->>
->> Currently during the PTT trace, we'll only commit the data
->> to the perf core when its full, which means after 4 interrupts
->> and totally 16MiB data while the AUX buffer is 16MiB length.
->> Then the userspace gets notified and handle the data. The driver
->> cannot apply a new AUX buffer immediately until the committed data
->> are handled and there's enough room in the buffer again.
->>
->> This patch tries to optimize this by commit the data in every
->> interrupts in a 4MiB granularity. Then the userspace can have
->> enough time to consume the data and there's always enough room
->> in the AUX buffer.
-> 
-> Instead of always committing at 4M, could we not use the existing
-> markers used by the handle->wakeup to decide if we should commit it ?
-> 
+On Tue, 2023-09-19 at 09:54 +0200, Stefano Garzarella wrote:
+> On Mon, Sep 18, 2023 at 07:56:00PM +0300, Arseniy Krasnov wrote:
+> > Hi Stefano,
+> >=20
+> > thanks for review! So when this patchset will be merged to net-next,
+> > I'll start sending next part of MSG_ZEROCOPY patchset, e.g. AF_VSOCK +
+> > Documentation/ patches.
+>=20
+> Ack, if it is not a very big series, maybe better to include also the
+> tests so we can run them before merge the feature.
 
-Is it intended to avoid too much wakeups? I think the core will handle
-the wakeup even if we commit the data in perf_aux_output_end().
-For example, if the userspace buffer is 16MiB and the watermark is 8MiB,
-we'll not wake up userspace after the first 4MiB committing.
+I understand that at least 2 follow-up series are waiting for this, one
+of them targeting net-next and the bigger one targeting the virtio
+tree. Am I correct?
 
-4MiB mentioned in the commit is our current configuration: hardware
-maintains 4 buffers and driver configure each one as 4MiB. Driver will
-get interrupt if one buffer filled and then copy the data to the AUX
-buffer. We restrict the AUX buffer to be at least 16MiB. Previous we'll
-only commit the data if the resident space in the AUX buffer cannot
-contain next 4MiB data, typically after copy 4 buffers to AUX buffer.
-This is suboptimal because after committing there's no space in the
-AUX buffer and driver needs to wait until userspace consumes the data.
-So we optimize it in this patch to always commit the data to AUX
-buffer in time to avoid waiting.
+DaveM suggests this should go via the virtio tree, too. Any different
+opinion?
 
-> 
-> Suzuki
-> 
->>
->> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
->> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->> ---
->>   drivers/hwtracing/ptt/hisi_ptt.c | 15 +++++++--------
->>   1 file changed, 7 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
->> index 3041238a6e54..4f355df8da23 100644
->> --- a/drivers/hwtracing/ptt/hisi_ptt.c
->> +++ b/drivers/hwtracing/ptt/hisi_ptt.c
->> @@ -274,15 +274,14 @@ static int hisi_ptt_update_aux(struct hisi_ptt *hisi_ptt, int index, bool stop)
->>       buf->pos += size;
->>         /*
->> -     * Just commit the traced data if we're going to stop. Otherwise if the
->> -     * resident AUX buffer cannot contain the data of next trace buffer,
->> -     * apply a new one.
->> +     * Always commit the data to the AUX buffer in time to make sure
->> +     * userspace got enough time to consume the data.
->> +     *
->> +     * If we're not going to stop, apply a new one and check whether
->> +     * there's enough room for the next trace.
->>        */
->> -    if (stop) {
->> -        perf_aux_output_end(handle, buf->pos);
->> -    } else if (buf->length - buf->pos < HISI_PTT_TRACE_BUF_SIZE) {
->> -        perf_aux_output_end(handle, buf->pos);
->> -
->> +    perf_aux_output_end(handle, size);
->> +    if (!stop) {
->>           buf = perf_aux_output_begin(handle, event);
->>           if (!buf)
->>               return -EINVAL;
-> 
-> 
-> .
+Thanks!
+
+Paolo
+
