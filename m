@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDB57A5DFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7A37A5E0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbjISJcg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 05:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
+        id S231273AbjISJec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjISJce (ORCPT
+        with ESMTP id S231267AbjISJe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:32:34 -0400
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A79125;
-        Tue, 19 Sep 2023 02:32:26 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59c0a7d54bdso39450297b3.1;
-        Tue, 19 Sep 2023 02:32:26 -0700 (PDT)
+        Tue, 19 Sep 2023 05:34:29 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F99E135
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:34:20 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c4194f7635so34481335ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695116059; x=1695720859; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QVf5D/+j5N+ia+SFzQBn7+4Q88aksoEeF9OLLDBHLuM=;
+        b=hI7doWYbrcLaqitrDz3Dpv945ukDeEo5/eFyfF8ck6mcSMG9IdaKqAnwreOiXEvXrm
+         RzCMQFrFQ9BCI0PDeklFkbIhOFij6DzkNCGeyzqfWq0+Em2IL4iWHct8US6C/p6dXiER
+         zcZt4gBLy86HdM17nBOfpRbR8saV8wCcnUZUU+i0YiWhBSk8Atj2kvB/eUvl5A5U2pMc
+         wsW4Rlm3R+e4R+ZavWzWk409mN4Z0R+9MGWHbvR9wwnj7UbqD2noeU06gJKtAN4FiXaZ
+         uSAvC5dKWjn/rXF2qPMdSVgYa1p9JuRZfKg4p5FBs2QarETrJitMHRkd/XOoyYS98BKK
+         9vQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695115945; x=1695720745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6OvZTkJ3LKHbucMQ1OvFnOA6RajoVPB0g5U1d86yMHU=;
-        b=boWo2BNYmJUTiL7pwxL+3uT+qiNcwb7bnytEnq9UIcXtUXHdUNAfQd1Vj4+XJzwB5s
-         IXtZAFxF5YCTPohB6fd/iUbcKm9XRvHvNNv6LwjMeGiSCV1th8uRP+UeVP+uHWISm4BC
-         7uVfvnQgFbYChje/FumN7qHcpJFxuFBJnYXw6y59j4/kPIKO08Z7vInvPXd017qPtlIF
-         yozWH0EJxXPnWunFGiUaqqVNeHhTJKtIz9yssXFWrTLIW/EVWBWVjWxCrxkqR8gmOXon
-         hwnHmB65zKYEBcFTdDb5dThC1RPjI7yAKAoJyemQbRQ7dtWnMpFrw6rXhhpMGVBn1l8G
-         13DQ==
-X-Gm-Message-State: AOJu0YzuVaZ6tHpSMUr4zpPuWAmZFHYN0DLx89L0w4s+InT9W0VsdbwF
-        Q/kEoC4n8O+IVEpvG+1PJYaYJg9HivfXtQ==
-X-Google-Smtp-Source: AGHT+IFJXV98bfVzqrxpHzyFOiGuYzwpZFgnZteEuF0WL8/eNFJJYcRoSCRI/ypL/PUOXQ9sm0jwpg==
-X-Received: by 2002:a0d:cb0f:0:b0:599:da80:e1e6 with SMTP id n15-20020a0dcb0f000000b00599da80e1e6mr12879472ywd.34.1695115945378;
-        Tue, 19 Sep 2023 02:32:25 -0700 (PDT)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id c127-20020a0df385000000b005463e45458bsm3115974ywf.123.2023.09.19.02.32.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 02:32:25 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59be6bcf408so53954857b3.2;
-        Tue, 19 Sep 2023 02:32:24 -0700 (PDT)
-X-Received: by 2002:a81:5404:0:b0:59b:ec10:9165 with SMTP id
- i4-20020a815404000000b0059bec109165mr10497820ywb.24.1695115944368; Tue, 19
- Sep 2023 02:32:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695116059; x=1695720859;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QVf5D/+j5N+ia+SFzQBn7+4Q88aksoEeF9OLLDBHLuM=;
+        b=Sm3Vp4OEaxnnZLHfkSaaGL96DZVaU+FPWzrSWFJeAceJO2HJ+51cwVLqamf2Fzh4+C
+         JiKdTE5GKMcCkt4VierkOgSXqRr0jc5QSSf2ln7iNRIoyRby8pklbwA9gr7PgcvUNDvU
+         CkQd1HATCiAw75J7HyLjQkF9Se+GCcocKUbDdlHhbcEPyaf2RRAinTJan3I9L/EnB+vb
+         TR9bsSa6O6n0e5lhGk2bM+UGuHmw+dcv2/LwmOzf9rlTve+vez3dlBpmLEcRXVbmFNTi
+         AKWJpzYwCJNU3+H1wS5V2X5KD8opt/Lzq361c+2VgX7QDg7e6lRipWRHyUwW2Lr2+QRm
+         mvXA==
+X-Gm-Message-State: AOJu0YxHg5gRqNDLrNLlPPZlT9WJfVrgAffLoDM/GQFU1pnmSinv+xM3
+        Q+PEBfCKB60n0jYAUGXW/bAIBhzdtSo2gO/N
+X-Google-Smtp-Source: AGHT+IFEM34YO2uN1IhUDPCwqvzRc2cQqob4GZnt3NU716uhhFhKM1D0NXBeVCyJWYwKQ2stjepyvQ==
+X-Received: by 2002:a17:902:d507:b0:1c1:d5d1:a364 with SMTP id b7-20020a170902d50700b001c1d5d1a364mr2849526plg.33.1695116059209;
+        Tue, 19 Sep 2023 02:34:19 -0700 (PDT)
+Received: from swarup-virtual-machine.localdomain ([171.76.87.78])
+        by smtp.gmail.com with ESMTPSA id ji1-20020a170903324100b001c44489ee55sm6487608plb.273.2023.09.19.02.34.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 02:34:18 -0700 (PDT)
+From:   Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+To:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        swarupkotikalapudi@gmail.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] gpu: drm: amd: display: fix kernel-doc warnings
+Date:   Tue, 19 Sep 2023 15:03:11 +0530
+Message-Id: <20230919093318.16407-1-swarupkotikalapudi@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230913062950.4968-1-wsa+renesas@sang-engineering.com>
- <20230913062950.4968-3-wsa+renesas@sang-engineering.com> <CAMuHMdWO2KVpg50Zxak6e_7-5c5Xg6O2PJkPkTfrR=treOtUig@mail.gmail.com>
-In-Reply-To: <CAMuHMdWO2KVpg50Zxak6e_7-5c5Xg6O2PJkPkTfrR=treOtUig@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 19 Sep 2023 11:32:13 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVf-E80dbOuRA0Ogctp=DvGWm92yxzAixb2G=0tx1-ceA@mail.gmail.com>
-Message-ID: <CAMuHMdVf-E80dbOuRA0Ogctp=DvGWm92yxzAixb2G=0tx1-ceA@mail.gmail.com>
-Subject: Re: [PATCH RFT 2/2] i2c: rcar: improve accuracy for R-Car Gen3+
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,100 +73,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+Fix kernel-doc warnings discovered in AMD gpu display driver.
+Fixes these warnings:
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110: warning:
+Function parameter or member 'overlap_only'
+not described in 'mpcc_blnd_cfg'.
 
-On Tue, Sep 19, 2023 at 11:14 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Wed, Sep 13, 2023 at 11:38 AM Wolfram Sang
-> <wsa+renesas@sang-engineering.com> wrote:
-> > With some new registers, SCL can be calculated to be closer to the
-> > desired rate. Apply the new formula for R-Car Gen3 device types.
-> >
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/i2c/busses/i2c-rcar.c
-> > +++ b/drivers/i2c/busses/i2c-rcar.c
-> > @@ -301,24 +316,57 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
-> >         round = DIV_ROUND_CLOSEST(ick, 1000000);
-> >         round = DIV_ROUND_CLOSEST(round * sum, 1000);
-> >
-> > -       /*
-> > -        * SCL  = ick / (20 + 8 * SCGD + F[(ticf + tr + intd) * ick])
-> > -        * 20 + 8 * SCGD + F[...] = ick / SCL
-> > -        * SCGD = ((ick / SCL) - 20 - F[...]) / 8
-> > -        * Result (= SCL) should be less than bus_speed for hardware safety
-> > -        */
-> > -       scgd = DIV_ROUND_UP(ick, t.bus_freq_hz ?: 1);
-> > -       scgd = DIV_ROUND_UP(scgd - 20 - round, 8);
-> > -       scl = ick / (20 + 8 * scgd + round);
-> > +       if (priv->devtype < I2C_RCAR_GEN3) {
-> > +               u32 scgd;
-> > +               /*
-> > +                * SCL  = ick / (20 + 8 * SCGD + F[(ticf + tr + intd) * ick])
-> > +                * 20 + 8 * SCGD + F[...] = ick / SCL
-> > +                * SCGD = ((ick / SCL) - 20 - F[...]) / 8
-> > +                * Result (= SCL) should be less than bus_speed for hardware safety
-> > +                */
-> > +               scgd = DIV_ROUND_UP(ick, t.bus_freq_hz ?: 1);
-> > +               scgd = DIV_ROUND_UP(scgd - 20 - round, 8);
-> > +               scl = ick / (20 + 8 * scgd + round);
-> >
-> > -       if (scgd > 0x3f)
-> > -               goto err_no_val;
-> > +               if (scgd > 0x3f)
-> > +                       goto err_no_val;
-> >
-> > -       dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u, SCGD: %u\n",
-> > -               scl, t.bus_freq_hz, rate, round, cdf, scgd);
-> > +               dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u, SCGD: %u\n",
-> > +                       scl, t.bus_freq_hz, rate, round, cdf, scgd);
-> >
-> > -       /* keep icccr value */
-> > -       priv->icccr = scgd << cdf_width | cdf;
-> > +               priv->icccr = scgd << cdf_width | cdf;
-> > +       } else {
-> > +               u32 x, sum_ratio = RCAR_SCHD_RATIO + RCAR_SCLD_RATIO;
-> > +               /*
-> > +                * SCLD/SCHD ratio and SMD default value are explained above
-> > +                * where they are defined. With these definitions, we can compute
-> > +                * x as a base value for the SCLD/SCHD ratio:
-> > +                *
-> > +                * SCL = clkp / (8 + 2 * SMD + SCLD + SCHD + F[(ticf + tr + intd) * clkp])
-> > +                * SCL = clkp / (8 + 2 * RCAR_DEFAULT_SMD + RCAR_SCLD_RATIO * x
-> > +                *               + RCAR_SCHD_RATIO * x + F[...])
-> > +                *
-> > +                * with: sum_ratio = RCAR_SCLD_RATIO + RCAR_SCHD_RATIO
-> > +                * and:  smd = 2 * RCAR_DEFAULT_SMD
-> > +                *
-> > +                * SCL = clkp / (8 + smd + sum_ratio * x + F[...])
-> > +                * 8 + smd + sum_ratio * x + F[...] = SCL / clkp
-> > +                * x = ((SCL / clkp) - 8 - smd - F[...]) / sum_ratio
-> > +                */
-> > +               x = DIV_ROUND_UP(rate, t.bus_freq_hz ?: 1);
-> > +               x = DIV_ROUND_UP(x - 8 - 2 * RCAR_DEFAULT_SMD - round, sum_ratio);
-> > +               scl = rate / (8 + 2 * RCAR_DEFAULT_SMD + sum_ratio * x + round);
-> > +
-> > +               /* Bail out if values don't fit into 16 bit or SMD became too large */
-> > +               if (x * RCAR_SCLD_RATIO > 0xffff || RCAR_DEFAULT_SMD > x * RCAR_SCHD_RATIO)
->
-> The second part of the check looks wrong to me, as it would reject
-> all the recommended register values for SMD and SCHD in the docs .
->
-> What does "SMD became too large" mean here?
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110: warning:
+Function parameter or member 'bottom_gain_mode'
+not described in 'mpcc_blnd_cfg'.
 
-Nevermind, my mistake.
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110: warning:
+Function parameter or member 'background_color_bpc'
+not described in 'mpcc_blnd_cfg'.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110:
+warning: Function parameter or member 'top_gain'
+not described in 'mpcc_blnd_cfg'.
 
-Gr{oetje,eeting}s,
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110:
+warning: Function parameter or member 'bottom_inside_gain'
+not described in 'mpcc_blnd_cfg'.
 
-                        Geert
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:110:
+warning: Function parameter or member 'bottom_outside_gain'
+not described in 'mpcc_blnd_cfg'.
 
+Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+---
+ drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h b/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
+index 8d86159d9de0..61a2406dcc53 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
+@@ -91,6 +91,12 @@ enum mpcc_alpha_blend_mode {
+  * @global_gain: used when blend mode considers both pixel alpha and plane
+  * alpha value and assumes the global alpha value.
+  * @global_alpha: plane alpha value
++ * @overlap_only: whether overlapping of different planes is allowed
++ * @bottom_gain_mode: blend mode for bottom gain setting
++ * @background_color_bpc: background color for bpc
++ * @top_gain: top gain setting
++ * @bottom_inside_gain: blend mode for bottom inside
++ * @bottom_outside_gain:  blend mode for bottom outside
+  */
+ struct mpcc_blnd_cfg {
+ 	struct tg_color black_color;	/* background color */
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.34.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
