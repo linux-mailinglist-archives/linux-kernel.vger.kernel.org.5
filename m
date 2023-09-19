@@ -2,334 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5C27A5E28
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D7F7A5E2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbjISJgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        id S231838AbjISJgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjISJgL (ORCPT
+        with ESMTP id S231663AbjISJgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:36:11 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABADF9;
-        Tue, 19 Sep 2023 02:35:59 -0700 (PDT)
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38J7eWmn008728;
-        Tue, 19 Sep 2023 05:35:40 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3t5s7kn4ja-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 05:35:40 -0400 (EDT)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 38J9ZdAP007733
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 Sep 2023 05:35:39 -0400
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 19 Sep 2023 05:35:38 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 19 Sep 2023 05:35:38 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 19 Sep 2023 05:35:37 -0400
-Received: from daniel-Precision-5530.ad.analog.com ([10.48.65.230])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 38J9Z1dC030605;
-        Tue, 19 Sep 2023 05:35:28 -0400
-From:   Daniel Matyas <daniel.matyas@analog.com>
-CC:     Daniel Matyas <daniel.matyas@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-Subject: [PATCH v4 7/7] hwmon: max31827: Add custom attribute for resolution
-Date:   Tue, 19 Sep 2023 12:34:55 +0300
-Message-ID: <20230919093456.10592-7-daniel.matyas@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230919093456.10592-1-daniel.matyas@analog.com>
-References: <20230919093456.10592-1-daniel.matyas@analog.com>
+        Tue, 19 Sep 2023 05:36:32 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00C8134;
+        Tue, 19 Sep 2023 02:36:10 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-502984f5018so9094480e87.3;
+        Tue, 19 Sep 2023 02:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695116168; x=1695720968; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7m2efdLB8ktZfybi/MVWKqgiRo/osg2GKKQiDbaXOWg=;
+        b=APqNDH+1IFPvXFqatQ1sCnNv2C8dmUtRJ9RQIDrY+HAS2WS8dbfZ7LLlCh5lttn5vr
+         9tFrYw25N94/iiyJbYR9q84FOl4y0wZ/yyQF6mcX7Qs+0IxoJmsTIqXQ63uN2ddLskwn
+         J9rQtJZ6W7/2odzUpOadvRTNoROkUmpMNdqgF+Qu5b4rUBEgiIKfPovFICI2h6V+e/6j
+         vZ/JPPbJO/HxUofrWmu6AXcNx9oLu/NtyG0NoPhRm1PpOhkmPuWprm9H3jTwqLpgmLo9
+         uYYbtXVQfoTY0Y2nXWctVXatNwAr8n8Pvbk72rGkPYkp6yI9d6s+mrKkuyaR+vUOIHy9
+         DWAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695116168; x=1695720968;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7m2efdLB8ktZfybi/MVWKqgiRo/osg2GKKQiDbaXOWg=;
+        b=YcM6kGfrP5ComCPHYcz0CjEqpxkqmf8ehVZWyc7YamgN7GkE41ZfEvjgGd90LC8Wyj
+         lpRdPcT0zpzx2mHNv8FPBRPXnraeEHZTNjrGVMOmThYB7mbBkP22g59+rRkgmTjxI2gM
+         n983MDBPxw2UEhwMapcOmxGG+jttlTbTelL2gWSEL88vkEMR13D9vqzQpzNaIjWILx1q
+         OjveDE71Jxyz3ai2ThSHsfkm7BmD3CvYz9dpUT+7S0p1DjyCVqHQUS0ZkR4hF8XDV8Y8
+         0Nn866QxBwPrB1DvvDqUHOYWvHzWNmRWi1htZTxYEELKNrNnB2aIshxlU8zLCY2lJCLj
+         hBhw==
+X-Gm-Message-State: AOJu0YzEM578F63x8q2pUPCRV5mEAoUB7gCMvfgxQJ4qYX7D5xeOZWDl
+        ZfMqnVNLEmu4wkWQQjDPMCg=
+X-Google-Smtp-Source: AGHT+IHMbnTqsO0VDrNi2QZqkPFxshm2jbSMpD30w1QcJe4V3yS2zdB2k7/2TwtPX8XbWKDEpgs2RA==
+X-Received: by 2002:a19:4f1a:0:b0:4ff:95c:e158 with SMTP id d26-20020a194f1a000000b004ff095ce158mr9499408lfb.64.1695116167893;
+        Tue, 19 Sep 2023 02:36:07 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id n7-20020a7bcbc7000000b003fef3180e7asm17560133wmi.44.2023.09.19.02.36.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 02:36:07 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH][next] net: dsa: sja1105: make read-only const arrays static
+Date:   Tue, 19 Sep 2023 10:36:06 +0100
+Message-Id: <20230919093606.24446-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: 8VYtBQ9XMnxyQEq9A-NJ5ZzTmxKvA4Hd
-X-Proofpoint-ORIG-GUID: 8VYtBQ9XMnxyQEq9A-NJ5ZzTmxKvA4Hd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_04,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- mlxscore=0 clxscore=1015 bulkscore=0 priorityscore=1501 impostorscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2308100000
- definitions=main-2309190080
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added custom channel-specific (temp1) attribute for resolution. The wait
-time for a conversion in one-shot mode (enable = 0) depends on the
-resolution.
+Don't populate read-only const arrays on the stack, instead make them
+static.
 
-When resolution is 12-bit, the conversion time is 140ms, but the minimum
-update_interval is 125ms. Handled this problem by waiting an additional
-15ms (125ms + 15ms = 140ms).
-
-Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
+ drivers/net/dsa/sja1105/sja1105_clocking.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-v3 -> v4: No change.
-
-v2 -> v3: Fixed indentation problems in .rst.
-
-v1 -> v2: Changed subject. Separated patch. Removed timeout sysfs
-attribute and kept only resolution. Added temp1_ prefix to resolution.
-Changed value of resolution from bits to milli-degrees Celsius. Added
-appropriate documentation.
+diff --git a/drivers/net/dsa/sja1105/sja1105_clocking.c b/drivers/net/dsa/sja1105/sja1105_clocking.c
+index e3699f76f6d7..08a3e7b96254 100644
+--- a/drivers/net/dsa/sja1105/sja1105_clocking.c
++++ b/drivers/net/dsa/sja1105/sja1105_clocking.c
+@@ -153,14 +153,14 @@ static int sja1105_cgu_mii_tx_clk_config(struct sja1105_private *priv,
+ {
+ 	const struct sja1105_regs *regs = priv->info->regs;
+ 	struct sja1105_cgu_mii_ctrl mii_tx_clk;
+-	const int mac_clk_sources[] = {
++	static const int mac_clk_sources[] = {
+ 		CLKSRC_MII0_TX_CLK,
+ 		CLKSRC_MII1_TX_CLK,
+ 		CLKSRC_MII2_TX_CLK,
+ 		CLKSRC_MII3_TX_CLK,
+ 		CLKSRC_MII4_TX_CLK,
+ 	};
+-	const int phy_clk_sources[] = {
++	static const int phy_clk_sources[] = {
+ 		CLKSRC_IDIV0,
+ 		CLKSRC_IDIV1,
+ 		CLKSRC_IDIV2,
+@@ -194,7 +194,7 @@ sja1105_cgu_mii_rx_clk_config(struct sja1105_private *priv, int port)
+ 	const struct sja1105_regs *regs = priv->info->regs;
+ 	struct sja1105_cgu_mii_ctrl mii_rx_clk;
+ 	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+-	const int clk_sources[] = {
++	static const int clk_sources[] = {
+ 		CLKSRC_MII0_RX_CLK,
+ 		CLKSRC_MII1_RX_CLK,
+ 		CLKSRC_MII2_RX_CLK,
+@@ -221,7 +221,7 @@ sja1105_cgu_mii_ext_tx_clk_config(struct sja1105_private *priv, int port)
+ 	const struct sja1105_regs *regs = priv->info->regs;
+ 	struct sja1105_cgu_mii_ctrl mii_ext_tx_clk;
+ 	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+-	const int clk_sources[] = {
++	static const int clk_sources[] = {
+ 		CLKSRC_IDIV0,
+ 		CLKSRC_IDIV1,
+ 		CLKSRC_IDIV2,
+@@ -248,7 +248,7 @@ sja1105_cgu_mii_ext_rx_clk_config(struct sja1105_private *priv, int port)
+ 	const struct sja1105_regs *regs = priv->info->regs;
+ 	struct sja1105_cgu_mii_ctrl mii_ext_rx_clk;
+ 	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+-	const int clk_sources[] = {
++	static const int clk_sources[] = {
+ 		CLKSRC_IDIV0,
+ 		CLKSRC_IDIV1,
+ 		CLKSRC_IDIV2,
+@@ -349,8 +349,13 @@ static int sja1105_cgu_rgmii_tx_clk_config(struct sja1105_private *priv,
+ 	if (speed == priv->info->port_speed[SJA1105_SPEED_1000MBPS]) {
+ 		clksrc = CLKSRC_PLL0;
+ 	} else {
+-		int clk_sources[] = {CLKSRC_IDIV0, CLKSRC_IDIV1, CLKSRC_IDIV2,
+-				     CLKSRC_IDIV3, CLKSRC_IDIV4};
++		static const int clk_sources[] = {
++			CLKSRC_IDIV0,
++			CLKSRC_IDIV1,
++			CLKSRC_IDIV2,
++			CLKSRC_IDIV3,
++			CLKSRC_IDIV4,
++		};
+ 		clksrc = clk_sources[port];
+ 	}
  
- Documentation/hwmon/max31827.rst |  29 ++++++--
- drivers/hwmon/max31827.c         | 121 ++++++++++++++++++++++++++++---
- 2 files changed, 134 insertions(+), 16 deletions(-)
-
-diff --git a/Documentation/hwmon/max31827.rst b/Documentation/hwmon/max31827.rst
-index a8bbfb85dd02..44ab9dc064cb 100644
---- a/Documentation/hwmon/max31827.rst
-+++ b/Documentation/hwmon/max31827.rst
-@@ -90,11 +90,28 @@ the data sheet are:
- 
- Enabling the device when it is already enabled has the side effect of setting
- the conversion frequency to 1 conv/s. The conversion time varies depending on
--the resolution. The conversion time doubles with every bit of increased
--resolution. For 10 bit resolution 35ms are needed, while for 12 bit resolution
--(default) 140ms. When chip is in shutdown mode and a read operation is
--requested, one-shot is triggered, the device waits for 140 (conversion time) ms,
--and only after that is the temperature value register read.
-+the resolution.
-+
-+The conversion time doubles with every bit of increased resolution. The
-+available resolutions are:
-+
-+- 8 bit -> 8.75 ms conversion time
-+- 9 bit -> 17.5 ms conversion time
-+- 10 bit -> 35 ms conversion time
-+- 12 bit (default) -> 140 ms conversion time
-+
-+There is a temp1_resolution attribute which indicates the unit change in the
-+input temperature in milli-degrees C.
-+
-+- 1000 mC -> 8 bit
-+- 500 mC -> 9 bit
-+- 250 mC -> 10 bit
-+- 62 mC -> 12 bit (default) - actually this is 62.5, but the fil returns 62
-+
-+When chip is in shutdown mode and a read operation is requested, one-shot is
-+triggered, the device waits for <conversion time> ms, and only after that is
-+the temperature value register read. Note that the conversion times are rounded
-+up to the nearest possible integer.
- 
- The LSB of the temperature values is 0.0625 degrees Celsius, but the values of
- the temperatures are displayed in milli-degrees. This means, that some data is
-@@ -117,4 +134,4 @@ corresponding status bits.
- Notes
- -----
- 
--PEC and resolution are not implemented.
-+PEC is not implemented.
-diff --git a/drivers/hwmon/max31827.c b/drivers/hwmon/max31827.c
-index 957d898978fb..0c2964cf4ba1 100644
---- a/drivers/hwmon/max31827.c
-+++ b/drivers/hwmon/max31827.c
-@@ -43,6 +43,9 @@
- #define MAX31827_CONFIGURATION_U_TEMP_STAT_MASK BIT(14)
- #define MAX31827_CONFIGURATION_O_TEMP_STAT_MASK BIT(15)
- 
-+#define MAX31827_8_BIT_CNV_TIME		9
-+#define MAX31827_9_BIT_CNV_TIME		18
-+#define MAX31827_10_BIT_CNV_TIME	35
- #define MAX31827_12_BIT_CNV_TIME	140
- 
- #define MAX31827_ALRM_POL_LOW	0x0
-@@ -77,6 +80,27 @@ static const u16 max31827_conversions[] = {
- 	[MAX31827_CNV_8_HZ] = 125,
- };
- 
-+enum max31827_resolution {
-+	MAX31827_RES_8_BIT = 0,
-+	MAX31827_RES_9_BIT,
-+	MAX31827_RES_10_BIT,
-+	MAX31827_RES_12_BIT,
-+};
-+
-+static const u16 max31827_resolutions[] = {
-+	[MAX31827_RES_8_BIT] = 1000,
-+	[MAX31827_RES_9_BIT] = 500,
-+	[MAX31827_RES_10_BIT] = 250,
-+	[MAX31827_RES_12_BIT] = 62,
-+};
-+
-+static const u16 max31827_conv_times[] = {
-+	[MAX31827_RES_8_BIT] = MAX31827_8_BIT_CNV_TIME,
-+	[MAX31827_RES_9_BIT] = MAX31827_9_BIT_CNV_TIME,
-+	[MAX31827_RES_10_BIT] = MAX31827_10_BIT_CNV_TIME,
-+	[MAX31827_RES_12_BIT] = MAX31827_12_BIT_CNV_TIME,
-+};
-+
- struct max31827_state {
- 	/*
- 	 * Prevent simultaneous access to the i2c client.
-@@ -84,6 +108,8 @@ struct max31827_state {
- 	struct mutex lock;
- 	struct regmap *regmap;
- 	bool enable;
-+	unsigned int resolution;
-+	unsigned int update_interval;
- 	struct i2c_client *client;
- };
- 
-@@ -101,9 +127,9 @@ static int shutdown_write(struct max31827_state *st, unsigned int reg,
- 	int ret;
- 
- 	/*
--	 * Before the Temperature Threshold Alarm and Alarm Hysteresis Threshold
--	 * register values are changed over I2C, the part must be in shutdown
--	 * mode.
-+	 * Before the Temperature Threshold Alarm, Alarm Hysteresis Threshold
-+	 * and Resolution bits from Configuration register are changed over I2C,
-+	 * the part must be in shutdown mode.
- 	 *
- 	 * Mutex is used to ensure, that some other process doesn't change the
- 	 * configuration register.
-@@ -221,9 +247,18 @@ static int max31827_read(struct device *dev, enum hwmon_sensor_types type,
- 					mutex_unlock(&st->lock);
- 					return ret;
- 				}
--
--				msleep(MAX31827_12_BIT_CNV_TIME);
-+				msleep(max31827_conv_times[st->resolution]);
- 			}
-+
-+			/*
-+			 * For 12-bit resolution the conversion time is 140 ms,
-+			 * thus an additional 15 ms is needed to complete the
-+			 * conversion: 125 ms + 15 ms = 140 ms
-+			 */
-+			if (max31827_resolutions[st->resolution] == 12 &&
-+			    st->update_interval == 125)
-+				usleep_range(15000, 20000);
-+
- 			ret = regmap_read(st->regmap, MAX31827_T_REG, &uval);
- 
- 			mutex_unlock(&st->lock);
-@@ -381,10 +416,14 @@ static int max31827_write(struct device *dev, enum hwmon_sensor_types type,
- 			res = FIELD_PREP(MAX31827_CONFIGURATION_CNV_RATE_MASK,
- 					 res);
- 
--			return regmap_update_bits(st->regmap,
--						  MAX31827_CONFIGURATION_REG,
--						  MAX31827_CONFIGURATION_CNV_RATE_MASK,
--						  res);
-+			ret = regmap_update_bits(st->regmap,
-+						 MAX31827_CONFIGURATION_REG,
-+						 MAX31827_CONFIGURATION_CNV_RATE_MASK,
-+						 res);
-+			if (ret)
-+				return ret;
-+
-+			st->update_interval = val;
- 		}
- 		break;
- 
-@@ -395,6 +434,68 @@ static int max31827_write(struct device *dev, enum hwmon_sensor_types type,
- 	return -EOPNOTSUPP;
- }
- 
-+static ssize_t temp1_resolution_show(struct device *dev,
-+				     struct device_attribute *devattr,
-+				     char *buf)
-+{
-+	struct max31827_state *st = dev_get_drvdata(dev);
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(st->regmap, MAX31827_CONFIGURATION_REG, &val);
-+	if (ret)
-+		return ret;
-+
-+	val = FIELD_GET(MAX31827_CONFIGURATION_RESOLUTION_MASK, val);
-+
-+	return scnprintf(buf, PAGE_SIZE, "%u\n", max31827_resolutions[val]);
-+}
-+
-+static ssize_t temp1_resolution_store(struct device *dev,
-+				      struct device_attribute *devattr,
-+				      const char *buf, size_t count)
-+{
-+	struct max31827_state *st = dev_get_drvdata(dev);
-+	unsigned int idx = 0;
-+	unsigned int val;
-+	int ret;
-+
-+	ret = kstrtouint(buf, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Convert the desired resolution into register
-+	 * bits. idx is already initialized with 0.
-+	 *
-+	 * This was inspired by lm73 driver.
-+	 */
-+	while (idx < ARRAY_SIZE(max31827_resolutions) &&
-+	       val < max31827_resolutions[idx])
-+		idx++;
-+
-+	if (idx == ARRAY_SIZE(max31827_resolutions) ||
-+	    val != max31827_resolutions[idx])
-+		return -EOPNOTSUPP;
-+
-+	st->resolution = idx;
-+
-+	ret = shutdown_write(st, MAX31827_CONFIGURATION_REG,
-+			     MAX31827_CONFIGURATION_RESOLUTION_MASK,
-+			     FIELD_PREP(MAX31827_CONFIGURATION_RESOLUTION_MASK,
-+					idx));
-+
-+	return (ret) ? ret : count;
-+}
-+
-+static DEVICE_ATTR_RW(temp1_resolution);
-+
-+static struct attribute *max31827_attrs[] = {
-+	&dev_attr_temp1_resolution.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(max31827);
-+
- static const struct i2c_device_id max31827_i2c_ids[] = {
- 	{ "max31827", max31827 },
- 	{ "max31828", max31828 },
-@@ -535,7 +636,7 @@ static int max31827_probe(struct i2c_client *client)
- 
- 	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name, st,
- 							 &max31827_chip_info,
--							 NULL);
-+							 max31827_groups);
- 
- 	return PTR_ERR_OR_ZERO(hwmon_dev);
- }
+@@ -638,7 +643,7 @@ static int sja1105_cgu_rmii_ref_clk_config(struct sja1105_private *priv,
+ 	const struct sja1105_regs *regs = priv->info->regs;
+ 	struct sja1105_cgu_mii_ctrl ref_clk;
+ 	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+-	const int clk_sources[] = {
++	static const int clk_sources[] = {
+ 		CLKSRC_MII0_TX_CLK,
+ 		CLKSRC_MII1_TX_CLK,
+ 		CLKSRC_MII2_TX_CLK,
 -- 
-2.34.1
+2.39.2
 
