@@ -2,135 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0C77A69DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F597A6A46
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbjISRsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
+        id S232730AbjISRyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 13:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbjISRsm (ORCPT
+        with ESMTP id S232748AbjISRyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 13:48:42 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA4299
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 10:48:36 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JHJ8M3001928;
-        Tue, 19 Sep 2023 17:48:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=0zyjwSc7Gp9FW1Ruyc85byvlIpWv6PcC5mSxYwi2VsA=;
- b=CrgtiCoVRj358PBCuKy0cG3LdrFrKBznC3pAuKnsz0Y67j1dkd6NiCwKFRn3U3nHnW3t
- A0mBGQF0PwG67aqXjMSFU3kuy5PH5S19PficrkneMMx5q9js76jtwYOqkKLMtxygRxRH
- AJeMmpjtFiEF/YgwQr0Z4Dtjmke/j7BixHBT/UCPhgJlBSqYD94ciBMPbPgp7ZvrbMt9
- WX8rD7GJkl4Cz8Qf0/nI+hMP6ISH45VZFZ3zLyUKn3noPbjYP23KcIHWG2EASfFF7OGF
- vQr5NtpdOSi3jimoX86Lim0Yq8jU3f3EXVC/1AU55RATO5O7OMR6WWpnPNCXzVeArIv/ AQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6trqjkhq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 17:48:24 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38JHmNTO015473
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 17:48:23 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 19 Sep 2023 10:48:22 -0700
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <dri-devel@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        <freedreno@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <laurent.pinchart@ideasonboard.com>,
-        <andersson@kernel.org>, <jani.nikula@linux.intel.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm: remove drm_bridge_hpd_disable() from drm_bridge_connector_destroy()
-Date:   Tue, 19 Sep 2023 10:48:12 -0700
-Message-ID: <20230919174813.26958-1-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.40.1
+        Tue, 19 Sep 2023 13:54:40 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B7A95
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 10:54:34 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso1004506a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 10:54:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695146073; x=1695750873; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UrOW+rYPNT7AwPYOxWlOLy264eXRGPGUGnZTuq8z3kA=;
+        b=TkYEQI304IwJs3abSCqfEF9S9rGmIU7IesDekgp3iC3L+rDsCSaABBepEJW/UWVIvU
+         fHJRZC2EvNyxkUQbt4PadJk7paL1pmQnx+BRDWTAIPn9ad7gkfsHIcAV0/ZhviwVV1jM
+         cuxnQraVcf9st8FizIOL9YtnGYWpIsRhTt/D7+SiLzx8LrqIiLGRX9hyXbuAPxpS5IMo
+         rA0AWI4Mu/db6iWlpciIqzzns7pDrwCeJlBjhNLw4JGNH6i0uLYviyxZx8BnbiQCKvkD
+         rxzinAgcN0mXnMMDqtMNVu5x7iqbgwHRRoNWn01Bq6fi+KLto2z6Ytg9FyamnyU0SuxL
+         5/uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695146073; x=1695750873;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UrOW+rYPNT7AwPYOxWlOLy264eXRGPGUGnZTuq8z3kA=;
+        b=MqO0dKpy5uDF4fTI1zN9fpiG25OUGMh9kcR4TckuMwueH0vXp2U4jYjr9b8YNDMzvQ
+         kX0a8dSX2MzRBwiOeG1l79PQAAJnVTQPiHXYIX1gLVO1Q5IEiRTDfqByrDHC1MgvkQ+D
+         DRknN8WyIHdFjLznKdY5yT3TzdeRxCLJv2i8T8XynrG7D6oOuUtPhQfnrQfU7CfAGGSe
+         dTI31v9XAJ3RgNSb8pOxIQ3FfeODz16g16IgYn60AjOq6oRA8qaLLzElkCBEhKodeeZf
+         KcxFlqDm6JqRrOGVDMydlr4qTT5RZmQx9z8Hmtmjx9Bdxb0o5mBw9xXmsmeAVLraDfHA
+         QUKA==
+X-Gm-Message-State: AOJu0YzVtDIbVWLrFxmGLpxWxGlZ+Jcuo+oiE1PvtDT3dFfW4yM8+rsB
+        xV7gwkKpPZNr8/nPMlN0J0vr9Wj5gAWK8GYNPAYFdp9l
+X-Google-Smtp-Source: AGHT+IHsszx3G6EVJWzpmBoUYz4qsCqw2oaHDBhbF2gq76o9kH+h0LZAVH1YmsHNHNm8wWmpLmRvpm9EgpZp7tyOs20=
+X-Received: by 2002:a17:906:8a7b:b0:9a5:c5a8:a1a0 with SMTP id
+ hy27-20020a1709068a7b00b009a5c5a8a1a0mr100882ejc.49.1695146073145; Tue, 19
+ Sep 2023 10:54:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Tt0V_lMivdnpfIUFqMTVGbH9nQxcbIYY
-X-Proofpoint-ORIG-GUID: Tt0V_lMivdnpfIUFqMTVGbH9nQxcbIYY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_09,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- impostorscore=0 clxscore=1011 lowpriorityscore=0 malwarescore=0
- mlxlogscore=838 priorityscore=1501 phishscore=0 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309190152
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Michael DiDomenico <mdidomenico4@gmail.com>
+Date:   Tue, 19 Sep 2023 13:54:21 -0400
+Message-ID: <CABOsP2MhyeUKjYUEO9m85cau36oZ_+-gdoAdMZEfvVrvDuZbiA@mail.gmail.com>
+Subject: 
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_bridge_hpd_enable()/drm_bridge_hpd_disable() callbacks call into
-the respective driver's hpd_enable()/hpd_disable() ops. These ops control
-the HPD enable/disable logic which in some cases like MSM can be a
-dedicate hardware block to control the HPD.
-
-During probe_defer cases, a connector can be initialized and then later
-destroyed till the probe is retried. During connector destroy in these
-cases, the hpd_disable() callback gets called without a corresponding
-hpd_enable() leading to an unbalanced state potentially causing even
-a crash.
-
-This can be avoided by the respective drivers maintaining their own
-state logic to ensure that a hpd_disable() without a corresponding
-hpd_enable() just returns without doing anything.
-
-However, to have a generic fix it would be better to avoid the
-hpd_disable() callback from the connector destroy path and let
-the hpd_enable() / hpd_disable() balance be maintained by the
-corresponding drm_bridge_connector_enable_hpd() /
-drm_bridge_connector_disable_hpd() APIs which should get called by
-drm_kms_helper_disable_hpd().
-
-changes in v2:
-	- minor change in commit text (Dmitry)
-
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/gpu/drm/drm_bridge_connector.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
-index 1da93d5a1f61..c4dba39acfd8 100644
---- a/drivers/gpu/drm/drm_bridge_connector.c
-+++ b/drivers/gpu/drm/drm_bridge_connector.c
-@@ -187,12 +187,6 @@ static void drm_bridge_connector_destroy(struct drm_connector *connector)
- 	struct drm_bridge_connector *bridge_connector =
- 		to_drm_bridge_connector(connector);
- 
--	if (bridge_connector->bridge_hpd) {
--		struct drm_bridge *hpd = bridge_connector->bridge_hpd;
--
--		drm_bridge_hpd_disable(hpd);
--	}
--
- 	drm_connector_unregister(connector);
- 	drm_connector_cleanup(connector);
- 
--- 
-2.40.1
-
+subscribe linux-rdma
