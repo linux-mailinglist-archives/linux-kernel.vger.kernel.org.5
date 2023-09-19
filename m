@@ -2,166 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 784F17A5C65
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF267A5C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjISIVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
+        id S230376AbjISIZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjISIVU (ORCPT
+        with ESMTP id S229641AbjISIZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:21:20 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4AD115
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:21:10 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bf55a81eeaso39621915ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695111670; x=1695716470; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4rN1ww9vq1LmR6aSiynf/qj+WFxgaeMiakK6rHCBewo=;
-        b=EqFuJ/7xZCH6SrEw4fdUU7217ojnsQYtMgfY52gQdoj/mk1Ja+oMDGoWu4HpAYy0Dc
-         Q5Qq92amjctp0hMyXIpTgUm2YC1HrXXzCYVMD58ZdBkWMb6t5pjl37vmzmTZqNM2KQRK
-         oRFk+ARjSkY8MAPWx89Lm/njuQ70BpOgl2eQOC9l4SAL0dsyY3YDXZa3Z6V8HyCX5Dk6
-         lv/vstVZxQrOFnAPmqybGVOizvUO7iZ0+8v60p+w0OVHOsF64HbVfizNWYjxarmHLf+T
-         emFLLBoEMrSwD5yNA46OtHmabswjAz7n+Ib99QXPLwzwJSvQheWR9k1y+az/BClbHuUd
-         LQHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695111670; x=1695716470;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4rN1ww9vq1LmR6aSiynf/qj+WFxgaeMiakK6rHCBewo=;
-        b=XelwYYcUM3n+mt4G0ctZExiaPH4KsPWKzD7Gw22f4+LT283qSrIeP5PEih4N7z6vm+
-         CDNNejkT70gwaVin+xswRA34dcY8xjLlbKHHXrnbsA/yMFrnl2feWh+lc2E6hqVpwujU
-         ovCrmgOYCY6l8vJ1Lt+4gmiiLrT/eDybQkeruTH0LxGHipEbDdM3BckrgoyLRi1q4sgD
-         334sCj3x2ogMCM+GDkJaKHQVcij5vczDwMl1+483HvOGRG629bhjCpJdMtjGqDHOq2OC
-         ksyPRwFaydsUY0vClYPLIJVne5m3H8W8zcqLAEppa4plIIto6Vi8PYlNVZceH5m3u+Ng
-         fh6w==
-X-Gm-Message-State: AOJu0YypxuzujLoSGFHohFdXbqfgYOksuGdB+4ZLIB6uCUp3y3Uhnuun
-        zvNgMGjOGoJDkSPSu1BMU5IVkV1v4qw=
-X-Google-Smtp-Source: AGHT+IHhgJHzebDzjxuyJ/EPuzg8UH/caSuDWjBt4ITmN89BpRkmwSMcM9mvr14OPeyuIy3DuVmrxw==
-X-Received: by 2002:a17:902:cecb:b0:1b9:f7dc:b4f6 with SMTP id d11-20020a170902cecb00b001b9f7dcb4f6mr10415392plg.44.1695111669669;
-        Tue, 19 Sep 2023 01:21:09 -0700 (PDT)
-Received: from MSCND1355B05.fareast.nevint.com ([183.242.39.186])
-        by smtp.gmail.com with ESMTPSA id q20-20020a170902e31400b001bdc664ecd3sm6042225plc.307.2023.09.19.01.21.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 01:21:09 -0700 (PDT)
-From:   Zqiang <qiang.zhang1211@gmail.com>
-To:     tj@kernel.org, jiangshanlai@gmail.com,
-        syzkaller-bugs@googlegroups.com, qiang.zhang1211@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
-Date:   Tue, 19 Sep 2023 16:19:58 +0800
-Message-Id: <20230919081958.7071-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 04:25:52 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A417E4;
+        Tue, 19 Sep 2023 01:25:41 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Ax1fADWwllAdwpAA--.14862S3;
+        Tue, 19 Sep 2023 16:25:39 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxO9wCWwllBl4LAA--.22628S2;
+        Tue, 19 Sep 2023 16:25:38 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH bpf-next v1] bpf, docs: Add loongarch64 as arch supporting BPF JIT
+Date:   Tue, 19 Sep 2023 16:25:37 +0800
+Message-Id: <1695111937-19697-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8CxO9wCWwllBl4LAA--.22628S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7WFW8KFy7Xw48GFy7ur4kGrX_yoW8Xw1DpF
+        n09r1Iq345G3WUGa4UJ3y2gF13KF97ur45GF4vg348Xrn8ZwnYgrs5KFnYvF15GFWxuFWF
+        qF43tFy5Z3WqkagCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, for UNBOUND workqueue allocation failure, the
-apply_wqattr_cleanup() will be called and use the pwq_release_worker
-kthread to release resources asynchronously. however, the kfree(wq)
-is invoked directly in failure path of alloc_workqueue(), this leads
-to the following scenario:
+As BPF JIT support for loongarch64 was added about one year ago
+with commit 5dc615520c4d ("LoongArch: Add BPF JIT support"), it
+is appropriate to add loongarch64 as arch supporting BPF JIT in
+bpf and sysctl docs as well.
 
-BUG: KASAN: slab-use-after-free in pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
-Read of size 4 at addr ffff888027b831c0 by task pool_workqueue_/3
-
-CPU: 0 PID: 3 Comm: pool_workqueue_ Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
-Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
- kthread_worker_fn+0x2fc/0xa80 kernel/kthread.c:823
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-
-Allocated by task 5054:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- alloc_workqueue+0x16f/0x1490 kernel/workqueue.c:4684
- kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
- kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
- kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
- kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
- kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
- kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Freed by task 5054:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- alloc_workqueue+0xe76/0x1490 kernel/workqueue.c:4746
- kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
- kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
- kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
- kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
- kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
- kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-This commit therefore flush pwq_release_worker before invoke
-kfree(wq).
-
-Reported-by: syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=60db9f652c92d5bacba4
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- kernel/workqueue.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/admin-guide/sysctl/net.rst | 1 +
+ Documentation/networking/filter.rst      | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index c85825e17df8..70200331a3cf 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4743,6 +4743,8 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
- 	wq_free_lockdep(wq);
- err_free_wq:
- 	free_workqueue_attrs(wq->unbound_attrs);
-+	if (wq->flags & WQ_UNBOUND)
-+		kthread_flush_worker(pwq_release_worker);
- 	kfree(wq);
- 	return NULL;
- err_destroy:
+diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
+index 4877563..c752594 100644
+--- a/Documentation/admin-guide/sysctl/net.rst
++++ b/Documentation/admin-guide/sysctl/net.rst
+@@ -71,6 +71,7 @@ two flavors of JITs, the newer eBPF JIT currently supported on:
+   - s390x
+   - riscv64
+   - riscv32
++  - loongarch64
+ 
+ And the older cBPF JIT supported on the following archs:
+ 
+diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+index f69da50..7d8c538 100644
+--- a/Documentation/networking/filter.rst
++++ b/Documentation/networking/filter.rst
+@@ -650,8 +650,8 @@ before a conversion to the new layout is being done behind the scenes!
+ 
+ Currently, the classic BPF format is being used for JITing on most
+ 32-bit architectures, whereas x86-64, aarch64, s390x, powerpc64,
+-sparc64, arm32, riscv64, riscv32 perform JIT compilation from eBPF
+-instruction set.
++sparc64, arm32, riscv64, riscv32, loongarch64 perform JIT compilation
++from eBPF instruction set.
+ 
+ Testing
+ -------
 -- 
-2.17.1
+2.1.0
 
