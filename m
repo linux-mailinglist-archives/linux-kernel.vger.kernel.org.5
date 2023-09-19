@@ -2,146 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA467A5F66
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECE17A5F69
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 12:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbjISKXP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Sep 2023 06:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49584 "EHLO
+        id S231631AbjISKYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 06:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjISKXM (ORCPT
+        with ESMTP id S231577AbjISKYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 06:23:12 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84595EA
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 03:23:06 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[IPv6:::1])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1qiXsf-0008HL-2b; Tue, 19 Sep 2023 12:22:57 +0200
-Message-ID: <1ea4b72b75f87db5e5ceb0cc88355b44ca2e5884.camel@pengutronix.de>
-Subject: Re: [PATCH] arm64: dts: imx8mp: assign parent clock and rate for
- audio clocks
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     marex@denx.de, devicetree@vger.kernel.org, conor+dt@kernel.org,
-        kernel@pengutronix.de, alexander.stein@ew.tq-group.com,
-        festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Frank.Li@nxp.com, peng.fan@nxp.com, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, linux-imx@nxp.com,
-        krzysztof.kozlowski+dt@linaro.org, aford173@gmail.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org,
-        laurent.pinchart@ideasonboard.com
-Date:   Tue, 19 Sep 2023 12:22:55 +0200
-In-Reply-To: <CAA+D8AM5Lp_vRBVgWXBQ2DFxf1AUG5702rrYrSgvn994GAaFAw@mail.gmail.com>
-References: <1695108775-22924-1-git-send-email-shengjiu.wang@nxp.com>
-         <8ce3f7e172a747100366ebd14d3bd74fe549ae10.camel@pengutronix.de>
-         <CAA+D8AM5Lp_vRBVgWXBQ2DFxf1AUG5702rrYrSgvn994GAaFAw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 19 Sep 2023 06:24:08 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40002F2;
+        Tue, 19 Sep 2023 03:24:02 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 08B4666071A9;
+        Tue, 19 Sep 2023 11:23:59 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695119040;
+        bh=vEd/MlguL02ZXOoi5Lbo0eYYX6tjl/mBmpK3ZZEUtB8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ND8iOwdDEuuZr6o5GFR1BcGk2ITNPnArgMvUGFAJohCweD6qZLyhpVjkG1nFoh04l
+         /XF9yMOyv6CmWws+8IYm9fx/12p2Xq/2k/SV/5w5OFfnI4jFkNGEJcSdYZzAg/+KWN
+         +CK+wHtpexMo1hYbB3fasJsYDmxaBSHTUVj5+6VD6YMb9tX1iCteOb2D5gat/q0Pns
+         klLQPVyPR7lNfMzV0OWv8JqGcMaesyHa1qhhO9IRFycI6rtN96iSu7tgG5rDwlQdkR
+         7hdg9gZNBmNeYmn6TQ0mY7FpB1bO2nzFyzSCQcXbqbzlCnDadDg9klsyOHlp6eZ1D2
+         TjzD/OXqZFCzQ==
+Message-ID: <f1e28c8d-c30f-d80b-3d6f-fbfd3e55a64a@collabora.com>
+Date:   Tue, 19 Sep 2023 12:23:57 +0200
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/2] media: platform: mtk-mdp3: Use devicetree phandle to
+ retrieve SCP
+Content-Language: en-US
+To:     wens@kernel.org
+Cc:     mchehab@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        matthias.bgg@gmail.com, moudy.ho@mediatek.com,
+        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
+        u.kleine-koenig@pengutronix.de, linqiheng@huawei.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com,
+        wenst@chromium.org
+References: <20230919095938.70679-1-angelogioacchino.delregno@collabora.com>
+ <20230919095938.70679-3-angelogioacchino.delregno@collabora.com>
+ <CAGb2v66rEqWBjdMNO3VMZhYj36hhKTxPk+9pborPjnqW0B-=ZA@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CAGb2v66rEqWBjdMNO3VMZhYj36hhKTxPk+9pborPjnqW0B-=ZA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, dem 19.09.2023 um 17:59 +0800 schrieb Shengjiu Wang:
-> On Tue, Sep 19, 2023 at 4:20 PM Lucas Stach <l.stach@pengutronix.de> wrote:
-> > 
-> > Hi Shengjiu,
-> > 
-> > Am Dienstag, dem 19.09.2023 um 15:32 +0800 schrieb Shengjiu Wang:
-> > > Assign parent clock for audio AHB and AXI clocks, and assign
-> > > clock rate for audio PLL1 and PLL2.
-> > > 
-> > Please don't do this. Configuring all those clocks in the clock
-> > controller is a pain to override if the board uses the PLLs in any
-> > other way than the reference design.
-> > 
-> > The audio AXI and AHB clocks are already properly configured with Adams
-> > patch [1], so there is no need for the changes in this patch.
-> > 
-> > Please set up the audio PLLs in the board DT in peripheral nodes that
-> > are actually using those clocks.
-> > 
-> > Regards,
-> > Lucas
-> > 
-> > [1] https://lore.kernel.org/all/20230819105002.132750-1-aford173@gmail.com/
+Il 19/09/23 12:21, Chen-Yu Tsai ha scritto:
+> On Tue, Sep 19, 2023 at 6:00 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+>>
+>> Instead of walking the entire parent node for something that has the
+>> right compatible, use the scp_get() function provided by the MediaTek
+>> SCP remoteproc driver to retrieve a handle to mtk_scp through the
+>> devicetree "mediatek,scp" (phandle) property.
+>>
+>> In case of multi-core SCP, this also allows to select a specific core.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   .../media/platform/mediatek/mdp3/mtk-mdp3-core.c | 16 ++++++++++------
+>>   1 file changed, 10 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+>> index 8677e7fd5083..d93d3833633e 100644
+>> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+>> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+>> @@ -254,13 +254,17 @@ static int mdp_probe(struct platform_device *pdev)
+>>                  goto err_destroy_job_wq;
+>>          }
+>>
+>> -       mm_pdev = __get_pdev_by_id(pdev, NULL, MDP_INFRA_SCP);
+>> -       if (WARN_ON(!mm_pdev)) {
+>> -               dev_err(&pdev->dev, "Could not get scp device\n");
+>> -               ret = -ENODEV;
+>> -               goto err_destroy_clock_wq;
+>> +       mdp->scp = scp_get(pdev);
+>> +       if (!mdp->scp) {
+>> +               mm_pdev = __get_pdev_by_id(pdev, NULL, MDP_INFRA_SCP);
+>> +               if (WARN_ON(!mm_pdev)) {
+>> +                       dev_err(&pdev->dev, "Could not get scp device\n");
+>> +                       ret = -ENODEV;
+>> +                       goto err_destroy_clock_wq;
+>> +               }
+>> +               mdp->scp = platform_get_drvdata(mm_pdev);
 > 
-> For this patch, it changes the AXI clock to 600M.  But the parent clock
-> is 800M,  so the result AXI clock is 400M actually, the 800M can't be divided
-> to 600MHz.
+> You need to keep the original code as a fallback for old device trees.
 > 
-That's right. Please review that patch and suggest changes if you see a
-better option. Adding another conflicting clock setup in the clk
-controller node isn't the solution to this.
 
-One possible solution would be to promote the VPU PLL to be the system
-PLL running at 600MHz, as there are quite a few peripherals which seem
-to need a 600MHz clock for nominal drive mode and we don't need any
-other specific VPU clocks, which couldn't be sourced from the system
-PLLs + VPU PLL running at 600MHz.
+I haven't removed the original code, it *is* there as a fallback :-)
+
+mdp->scp = scp_get() <--- new
+if (!mdp->scp) { fallback }
 
 Regards,
-Lucas
+Angelo
 
-> Best regards
-> Wang shengjiu
+> ChenYu
 > 
-> 
-> 
-> > 
-> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 16 +++++++++++++---
-> > >  1 file changed, 13 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > index 6f2f50e1639c..8a8a2c4aff9f 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > @@ -734,16 +734,26 @@ clk: clock-controller@30380000 {
-> > >                                                 <&clk IMX8MP_CLK_A53_CORE>,
-> > >                                                 <&clk IMX8MP_CLK_NOC>,
-> > >                                                 <&clk IMX8MP_CLK_NOC_IO>,
-> > > -                                               <&clk IMX8MP_CLK_GIC>;
-> > > +                                               <&clk IMX8MP_CLK_GIC>,
-> > > +                                               <&clk IMX8MP_CLK_AUDIO_AHB>,
-> > > +                                               <&clk IMX8MP_CLK_AUDIO_AXI_SRC>,
-> > > +                                               <&clk IMX8MP_AUDIO_PLL1>,
-> > > +                                               <&clk IMX8MP_AUDIO_PLL2>;
-> > >                               assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_800M>,
-> > >                                                        <&clk IMX8MP_ARM_PLL_OUT>,
-> > >                                                        <&clk IMX8MP_SYS_PLL2_1000M>,
-> > >                                                        <&clk IMX8MP_SYS_PLL1_800M>,
-> > > -                                                      <&clk IMX8MP_SYS_PLL2_500M>;
-> > > +                                                      <&clk IMX8MP_SYS_PLL2_500M>,
-> > > +                                                      <&clk IMX8MP_SYS_PLL1_800M>,
-> > > +                                                      <&clk IMX8MP_SYS_PLL1_800M>;
-> > >                               assigned-clock-rates = <0>, <0>,
-> > >                                                      <1000000000>,
-> > >                                                      <800000000>,
-> > > -                                                    <500000000>;
-> > > +                                                    <500000000>,
-> > > +                                                    <400000000>,
-> > > +                                                    <800000000>,
-> > > +                                                    <393216000>,
-> > > +                                                    <361267200>;
-> > >                       };
-> > > 
-> > >                       src: reset-controller@30390000 {
-> > 
-> 
+>>          }
+>> -       mdp->scp = platform_get_drvdata(mm_pdev);
+>> +
+>>          mdp->rproc_handle = scp_get_rproc(mdp->scp);
+>>          dev_dbg(&pdev->dev, "MDP rproc_handle: %pK", mdp->rproc_handle);
+>>
+>> --
+>> 2.42.0
+>>
+> _______________________________________________
+> Kernel mailing list -- kernel@mailman.collabora.com
+> To unsubscribe send an email to kernel-leave@mailman.collabora.com
+
 
