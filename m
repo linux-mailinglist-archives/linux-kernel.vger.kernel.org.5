@@ -2,242 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B16A7A62CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28E17A62D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbjISMZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S231764AbjISM0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjISMY6 (ORCPT
+        with ESMTP id S229988AbjISM0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:24:58 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C48EF2;
-        Tue, 19 Sep 2023 05:24:51 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rqgm75Wvkz6HJjD;
-        Tue, 19 Sep 2023 20:22:47 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 19 Sep
- 2023 13:24:47 +0100
-Date:   Tue, 19 Sep 2023 13:24:46 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     <alisadariana@gmail.com>
-CC:     Alisa-Dariana Roman <alisa.roman@analog.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] iio: adc: ad7192: Use bitfield access macros
-Message-ID: <20230919132440.00000380@Huawei.com>
-In-Reply-To: <20230918214854.252781-2-alisadariana@gmail.com>
-References: <20230918214854.252781-1-alisadariana@gmail.com>
-        <20230918214854.252781-2-alisadariana@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 19 Sep 2023 08:26:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63165E3;
+        Tue, 19 Sep 2023 05:25:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/KFevr7dW0f/5Ti4kgp6vV2k1mBpPBQoqzT0cbEJW+s=; b=jNvNv4azKNlSavqUAGCY+d34lK
+        0wraupFeP5AwBJ9JuMYNU2UJb7SCM3M7TOZKlIZNu8haan0/lmUM+7teJW+pi5BkRz0YcgGYojnui
+        abi/pVcGGv2Rj5toQNE/UD5m3dkK1aupLpT6MLycl1cagvY2dY0rOgQNwxHJJiPTrlf6wG6tyi6RD
+        OJ4mBJDG/E2FNSu4bqaIE9XmRcLyrwKzZCEJnjR197WWvcJFFy2K/EnvrXVgcOGxFspolMomj5eeu
+        3uRkPAnwWdk7sAXOHRLxsu/44d/IvuamtEZw/X8fzrGtmn+9sqCa/09qW7bVqMIO4GjoMY1JWddmJ
+        aKE2LbSQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qiZnd-00HBfS-L0; Tue, 19 Sep 2023 12:25:53 +0000
+Date:   Tue, 19 Sep 2023 13:25:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+Message-ID: <ZQmTUWywzpIk5kMW@casper.infradead.org>
+References: <4ca1f264-eebb-608e-617e-7aec743ccc90@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ca1f264-eebb-608e-617e-7aec743ccc90@alu.unizg.hr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 00:48:52 +0300
-alisadariana@gmail.com wrote:
-
-> From: Alisa-Dariana Roman <alisadariana@gmail.com>
+On Tue, Sep 19, 2023 at 08:24:02AM +0200, Mirsad Todorovac wrote:
+> Hi,
 > 
-> Include bitfield.h and update driver to use bitfield access macros
-> GENMASK, FIELD_PREP and FIELD_GET.
+> The usual setup: vanilla torvalds tree kernel 6.6-rc2, Ubuntu 22.04 LTS.
 > 
-> Also simplify AD7192_CONF_GAIN(-1) to AD7192_CONF_GAIN_MASK and
-> AD7192_MODE_RATE(-1) to AD7192_MODE_RATE_MASK.
+> KCSAN had found a number of data-races in the btrfs implementation.
+
+This isn't btrfs; it's the same as the race reported on August 18th.
+https://lore.kernel.org/linux-mm/06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr/
+
+> It is not clear whether this can lead to the corruption of data on the storage media.
 > 
-> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
-> ---
->  drivers/iio/adc/ad7192.c | 50 +++++++++++++++++++++++++---------------
->  1 file changed, 32 insertions(+), 18 deletions(-)
+> Please find the complete KCSAN dmesg report attached.
 > 
-> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-> index 69d1103b9508..e83fecb63c1d 100644
-> --- a/drivers/iio/adc/ad7192.c
-> +++ b/drivers/iio/adc/ad7192.c
-> @@ -6,6 +6,7 @@
->   */
->  
->  #include <linux/interrupt.h>
-> +#include <linux/bitfield.h>
->  #include <linux/clk.h>
->  #include <linux/device.h>
->  #include <linux/kernel.h>
-> @@ -43,7 +44,9 @@
->  #define AD7192_COMM_WEN		BIT(7) /* Write Enable */
->  #define AD7192_COMM_WRITE	0 /* Write Operation */
->  #define AD7192_COMM_READ	BIT(6) /* Read Operation */
-> -#define AD7192_COMM_ADDR(x)	(((x) & 0x7) << 3) /* Register Address */
-> +#define AD7192_COMM_ADDR_MASK	GENMASK(5, 3) /* Register Address Mask */
-> +#define AD7192_COMM_ADDR(x)	FIELD_PREP(AD7192_COMM_ADDR_MASK, x)
-> +				  /* Register Address */
->  #define AD7192_COMM_CREAD	BIT(2) /* Continuous Read of Data Register */
->  
->  /* Status Register Bit Designations (AD7192_REG_STAT) */
-> @@ -56,17 +59,24 @@
->  #define AD7192_STAT_CH1		BIT(0) /* Channel 1 */
->  
->  /* Mode Register Bit Designations (AD7192_REG_MODE) */
-> -#define AD7192_MODE_SEL(x)	(((x) & 0x7) << 21) /* Operation Mode Select */
-> -#define AD7192_MODE_SEL_MASK	(0x7 << 21) /* Operation Mode Select Mask */
-> -#define AD7192_MODE_STA(x)	(((x) & 0x1) << 20) /* Status Register transmission */
-> +#define AD7192_MODE_SEL_MASK	GENMASK(23, 21) /* Operation Mode Select Mask */
-> +#define AD7192_MODE_SEL(x)	FIELD_PREP(AD7192_MODE_SEL_MASK, x)
+> Best regards,
+> Mirsad Todorovac
+> 
+>  2149.512903] ==================================================================
+> [ 2149.512933] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+> 
+> [ 2149.512967] write to 0xffff8881ab9d2468 of 8 bytes by interrupt on cpu 27:
+> [ 2149.512984] xas_clear_mark (/home/marvin/linux/kernel/torvalds2/./arch/x86/include/asm/bitops.h:178 /home/marvin/linux/kernel/torvalds2/./include/asm-generic/bitops/instrumented-non-atomic.h:115 /home/marvin/linux/kernel/torvalds2/lib/xarray.c:102 /home/marvin/linux/kernel/torvalds2/lib/xarray.c:914)
+> [ 2149.513002] __xa_clear_mark (/home/marvin/linux/kernel/torvalds2/lib/xarray.c:1929)
+> [ 2149.513019] __folio_end_writeback (/home/marvin/linux/kernel/torvalds2/mm/page-writeback.c:2960)
+> [ 2149.513039] folio_end_writeback (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:1613)
+> [ 2149.513053] end_page_writeback (/home/marvin/linux/kernel/torvalds2/mm/folio-compat.c:28)
+> [ 2149.513073] btrfs_page_clear_writeback (/home/marvin/linux/kernel/torvalds2/fs/btrfs/subpage.c:646) btrfs
+> [ 2149.513829] end_bio_extent_writepage (/home/marvin/linux/kernel/torvalds2/./include/linux/bio.h:84 /home/marvin/linux/kernel/torvalds2/fs/btrfs/extent_io.c:468) btrfs
+> [ 2149.514481] __btrfs_bio_end_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:117 /home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:112) btrfs
+> [ 2149.515130] btrfs_orig_bbio_end_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:164) btrfs
+> [ 2149.515777] btrfs_simple_end_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/bio.c:380) btrfs
+> [ 2149.516425] bio_endio (/home/marvin/linux/kernel/torvalds2/block/bio.c:1603)
+> [ 2149.516436] blk_mq_end_request_batch (/home/marvin/linux/kernel/torvalds2/block/blk-mq.c:851 /home/marvin/linux/kernel/torvalds2/block/blk-mq.c:1089)
+> [ 2149.516449] nvme_pci_complete_batch (/home/marvin/linux/kernel/torvalds2/drivers/nvme/host/pci.c:986) nvme
+> [ 2149.516494] nvme_irq (/home/marvin/linux/kernel/torvalds2/drivers/nvme/host/pci.c:1086) nvme
+> [ 2149.516538] __handle_irq_event_percpu (/home/marvin/linux/kernel/torvalds2/kernel/irq/handle.c:158)
+> [ 2149.516553] handle_irq_event (/home/marvin/linux/kernel/torvalds2/kernel/irq/handle.c:195 /home/marvin/linux/kernel/torvalds2/kernel/irq/handle.c:210)
+> [ 2149.516566] handle_edge_irq (/home/marvin/linux/kernel/torvalds2/kernel/irq/chip.c:833)
+> [ 2149.516578] __common_interrupt (/home/marvin/linux/kernel/torvalds2/./include/linux/irqdesc.h:161 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/irq.c:238 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/irq.c:257)
+> [ 2149.516589] common_interrupt (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/irq.c:247 (discriminator 14))
+> [ 2149.516601] asm_common_interrupt (/home/marvin/linux/kernel/torvalds2/./arch/x86/include/asm/idtentry.h:636)
+> [ 2149.516612] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:291)
+> [ 2149.516623] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+> [ 2149.516633] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+> [ 2149.516646] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+> [ 2149.516655] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+> [ 2149.516664] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+> [ 2149.516677] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+> 
+> [ 2149.516697] read to 0xffff8881ab9d2468 of 8 bytes by task 4603 on cpu 25:
+> [ 2149.516708] xas_find_marked (/home/marvin/linux/kernel/torvalds2/./include/linux/find.h:63 /home/marvin/linux/kernel/torvalds2/./include/linux/xarray.h:1722 /home/marvin/linux/kernel/torvalds2/lib/xarray.c:1354)
+> [ 2149.516719] filemap_get_folios_tag (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:1978 /home/marvin/linux/kernel/torvalds2/mm/filemap.c:2266)
+> [ 2149.516729] __filemap_fdatawait_range (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:516)
+> [ 2149.516739] filemap_fdatawait_range (/home/marvin/linux/kernel/torvalds2/mm/filemap.c:553)
+> [ 2149.516749] btrfs_wait_ordered_range (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:841) btrfs
+> [ 2149.517405] btrfs_sync_file (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file.c:1844) btrfs
+> [ 2149.518059] vfs_fsync_range (/home/marvin/linux/kernel/torvalds2/fs/sync.c:188)
+> [ 2149.518071] __x64_sys_fsync (/home/marvin/linux/kernel/torvalds2/./include/linux/file.h:45 /home/marvin/linux/kernel/torvalds2/fs/sync.c:213 /home/marvin/linux/kernel/torvalds2/fs/sync.c:220 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218)
+> [ 2149.518081] do_syscall_64 (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:50 /home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:80)
+> [ 2149.518095] entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:120)
+> 
+> [ 2149.518111] value changed: 0xffffff8000000000 -> 0x0000000000000000
+> 
+> [ 2149.518126] Reported by Kernel Concurrency Sanitizer on:
+> [ 2149.518133] CPU: 25 PID: 4603 Comm: mozStorage #1 Tainted: G             L     6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+> [ 2149.518146] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+> [ 2149.518153] ==================================================================
 
-Hi  Alisa-Dariana,
-
-Whilst it is a bigger change, I'd ideally like all these XXX(x) calls to be replaced
-inline with the FIELD_PREP(). It is just as clear to read and in many cases better
-because you get patterns that go form
-
-st->mode &= ~AD7192_MODE_SEL_MASK;
-st->mode |= AD7192_MODE_SEL(mode);
-
-which becomes the more visible and obvious
-st->mode &= ~AD7192_MODE_SEL_MASK;
-st->mode |= FIELD_PREP(AD7192_MODE_SEL_MASK, mode);
-where you can clearly see the same bits were removed from st->mode, then
-filled in with the new field value.
-
-That's obscured with the additional macro.
-
-Jonathan
-
-
-> +				  /* Operation Mode Select */
->  #define AD7192_MODE_STA_MASK	BIT(20) /* Status Register transmission Mask */
-> -#define AD7192_MODE_CLKSRC(x)	(((x) & 0x3) << 18) /* Clock Source Select */
-> +#define AD7192_MODE_STA(x)	FIELD_PREP(AD7192_MODE_STA_MASK, x)
-> +				  /* Status Register transmission */
-> +#define AD7192_MODE_CLKSRC_MASK	GENMASK(19, 18) /* Clock Source Select Mask */
-> +#define AD7192_MODE_CLKSRC(x)	FIELD_PREP(AD7192_MODE_CLKSRC_MASK, x)
-> +				  /* Clock Source Select */
->  #define AD7192_MODE_SINC3	BIT(15) /* SINC3 Filter Select */
->  #define AD7192_MODE_ENPAR	BIT(13) /* Parity Enable */
->  #define AD7192_MODE_CLKDIV	BIT(12) /* Clock divide by 2 (AD7190/2 only)*/
->  #define AD7192_MODE_SCYCLE	BIT(11) /* Single cycle conversion */
->  #define AD7192_MODE_REJ60	BIT(10) /* 50/60Hz notch filter */
-> -#define AD7192_MODE_RATE(x)	((x) & 0x3FF) /* Filter Update Rate Select */
-> +#define AD7192_MODE_RATE_MASK	GENMASK(9, 0)
-> +				  /* Filter Update Rate Select Mask */
-> +#define AD7192_MODE_RATE(x)	FIELD_PREP(AD7192_MODE_RATE_MASK, x)
-> +				  /* Filter Update Rate Select */
->  
->  /* Mode Register: AD7192_MODE_SEL options */
->  #define AD7192_MODE_CONT		0 /* Continuous Conversion Mode */
-> @@ -92,13 +102,16 @@
->  #define AD7192_CONF_CHOP	BIT(23) /* CHOP enable */
->  #define AD7192_CONF_ACX		BIT(22) /* AC excitation enable(AD7195 only) */
->  #define AD7192_CONF_REFSEL	BIT(20) /* REFIN1/REFIN2 Reference Select */
-> -#define AD7192_CONF_CHAN(x)	((x) << 8) /* Channel select */
-> -#define AD7192_CONF_CHAN_MASK	(0x7FF << 8) /* Channel select mask */
-> +#define AD7192_CONF_CHAN_MASK	GENMASK(18, 8) /* Channel select mask */
-> +#define AD7192_CONF_CHAN(x)	FIELD_PREP(AD7192_CONF_CHAN_MASK, x)
-> +				  /* Channel select */
->  #define AD7192_CONF_BURN	BIT(7) /* Burnout current enable */
->  #define AD7192_CONF_REFDET	BIT(6) /* Reference detect enable */
->  #define AD7192_CONF_BUF		BIT(4) /* Buffered Mode Enable */
->  #define AD7192_CONF_UNIPOLAR	BIT(3) /* Unipolar/Bipolar Enable */
-> -#define AD7192_CONF_GAIN(x)	((x) & 0x7) /* Gain Select */
-> +#define AD7192_CONF_GAIN_MASK	GENMASK(2, 0) /* Gain Select */
-> +#define AD7192_CONF_GAIN(x)	FIELD_PREP(AD7192_CONF_GAIN_MASK, x)
-> +				  /* Gain Select */
->  
->  #define AD7192_CH_AIN1P_AIN2M	BIT(0) /* AIN1(+) - AIN2(-) */
->  #define AD7192_CH_AIN3P_AIN4M	BIT(1) /* AIN3(+) - AIN4(-) */
-> @@ -130,7 +143,7 @@
->  #define CHIPID_AD7192		0x0
->  #define CHIPID_AD7193		0x2
->  #define CHIPID_AD7195		0x6
-> -#define AD7192_ID_MASK		0x0F
-> +#define AD7192_ID_MASK		GENMASK(3, 0)
->  
->  /* GPOCON Register Bit Designations (AD7192_REG_GPOCON) */
->  #define AD7192_GPOCON_BPDSW	BIT(6) /* Bridge power-down switch enable */
-> @@ -399,7 +412,7 @@ static int ad7192_setup(struct iio_dev *indio_dev, struct device_node *np)
->  	if (ret)
->  		return ret;
->  
-> -	id &= AD7192_ID_MASK;
-> +	id = FIELD_GET(AD7192_ID_MASK, id);
->  
->  	if (id != st->chip_info->chip_id)
->  		dev_warn(&st->sd.spi->dev, "device ID query failed (0x%X != 0x%X)\n",
-> @@ -472,7 +485,7 @@ static ssize_t ad7192_show_ac_excitation(struct device *dev,
->  	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->  	struct ad7192_state *st = iio_priv(indio_dev);
->  
-> -	return sysfs_emit(buf, "%d\n", !!(st->conf & AD7192_CONF_ACX));
-> +	return sysfs_emit(buf, "%d\n", !!FIELD_GET(AD7192_CONF_ACX, st->conf));
->  }
->  
->  static ssize_t ad7192_show_bridge_switch(struct device *dev,
-> @@ -482,7 +495,8 @@ static ssize_t ad7192_show_bridge_switch(struct device *dev,
->  	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->  	struct ad7192_state *st = iio_priv(indio_dev);
->  
-> -	return sysfs_emit(buf, "%d\n", !!(st->gpocon & AD7192_GPOCON_BPDSW));
-> +	return sysfs_emit(buf, "%d\n",
-> +			  !!FIELD_GET(AD7192_GPOCON_BPDSW, st->gpocon));
->  }
->  
->  static ssize_t ad7192_set(struct device *dev,
-> @@ -667,9 +681,9 @@ static int ad7192_get_3db_filter_freq(struct ad7192_state *st)
->  	fadc = DIV_ROUND_CLOSEST(st->fclk,
->  				 st->f_order * AD7192_MODE_RATE(st->mode));
->  
-> -	if (st->conf & AD7192_CONF_CHOP)
-> +	if (FIELD_GET(AD7192_CONF_CHOP, st->conf))
->  		return DIV_ROUND_CLOSEST(fadc * 240, 1024);
-> -	if (st->mode & AD7192_MODE_SINC3)
-> +	if (FIELD_GET(AD7192_MODE_SINC3, st->mode))
->  		return DIV_ROUND_CLOSEST(fadc * 272, 1024);
->  	else
->  		return DIV_ROUND_CLOSEST(fadc * 230, 1024);
-> @@ -682,7 +696,7 @@ static int ad7192_read_raw(struct iio_dev *indio_dev,
->  			   long m)
->  {
->  	struct ad7192_state *st = iio_priv(indio_dev);
-> -	bool unipolar = !!(st->conf & AD7192_CONF_UNIPOLAR);
-> +	bool unipolar = !!FIELD_GET(AD7192_CONF_UNIPOLAR, st->conf);
->  
->  	switch (m) {
->  	case IIO_CHAN_INFO_RAW:
-> @@ -746,7 +760,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
->  			if (val2 == st->scale_avail[i][1]) {
->  				ret = 0;
->  				tmp = st->conf;
-> -				st->conf &= ~AD7192_CONF_GAIN(-1);
-> +				st->conf &= ~AD7192_CONF_GAIN_MASK;
->  				st->conf |= AD7192_CONF_GAIN(i);
->  				if (tmp == st->conf)
->  					break;
-> @@ -769,7 +783,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
->  			break;
->  		}
->  
-> -		st->mode &= ~AD7192_MODE_RATE(-1);
-> +		st->mode &= ~AD7192_MODE_RATE_MASK;
->  		st->mode |= AD7192_MODE_RATE(div);
->  		ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
->  		break;
 
