@@ -2,453 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2F17A5910
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 06:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA047A5922
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbjISEy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 00:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
+        id S231437AbjISFDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 01:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbjISExW (ORCPT
+        with ESMTP id S231397AbjISFDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 00:53:22 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 2C62F13A;
-        Mon, 18 Sep 2023 21:52:31 -0700 (PDT)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 02BC1602F96DC;
-        Tue, 19 Sep 2023 12:52:28 +0800 (CST)
-X-MD-Sfrom: yunchuan@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Wu Yunchuan <yunchuan@nfschina.com>
-To:     toke@toke.dk, kvalo@kernel.org, afaerber@suse.de, mani@kernel.org
-Cc:     linux-wireless@vger.kernel.org,
+        Tue, 19 Sep 2023 01:03:17 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C5CFC
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:03:11 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-578b407045bso293665a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695099791; x=1695704591; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=laTm7dnxWOCcW2RIknshlwm/kbQUB6RtmbdVs9LREqk=;
+        b=bh838skYf6q2+kziJFwbN6I9NdK2rrEx14g0w0D7LeYAig8uyCed0K90mzyrD3fn8Q
+         QTUd9N1BoXa5xiuUjcXGWb2VvuolhEftKzoZ0pdM+c0ZGukEZ44C4DunILe37EsH7slz
+         YMLrCQPJfpmA92Ce9fWMeIrdMDwmk7SERw9fA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695099791; x=1695704591;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=laTm7dnxWOCcW2RIknshlwm/kbQUB6RtmbdVs9LREqk=;
+        b=SdKPs/jeb0bwV5altuJ2lLvuxSt0M6OEP+dKJtGhWTnT+IiigAdDmYovuxJ7iSX/UP
+         MyLHXG//+T4qkDBDflncfxWskSeiJdqs1bVcqiXbtoU2I8IpvY550dTmq7kdu+6yWahM
+         Xmklrt+rBc6AMXls/jzdaYdYUonsJBM5WzMzoTD4uWDTBM2Op1HO3vEsSp/rE7kRmD87
+         aATMFNX9WONeUq56pNB0hLYuMCUbJIQD4w//Vf6SLqWQMegaxYa+tQNvr6z5R6FjLpBj
+         Z/1PL9OmHBVxDIRz/c/uyuvIflQ6JsMoyhMT1j3XGMTp1cFtK50QWKy34wAipLxdYuYo
+         cyzg==
+X-Gm-Message-State: AOJu0YwET7L8XpGmGRrhI47o9gEC7PSFRdgwLd0O6IYmYGyCCP3PPfr6
+        nU/mY+WRcumZHVipXJiBJN69mg==
+X-Google-Smtp-Source: AGHT+IGycmQsNFwgoBQwKURop8RFXZn7kdUvjCHaXVun+krQq3OvwV8JGEXJPbCRePSXThTCs6siig==
+X-Received: by 2002:a05:6a20:5611:b0:14e:b4d5:782e with SMTP id ir17-20020a056a20561100b0014eb4d5782emr11869037pzc.29.1695099790851;
+        Mon, 18 Sep 2023 22:03:10 -0700 (PDT)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:40a:900d:e731:5a43])
+        by smtp.gmail.com with ESMTPSA id z13-20020aa785cd000000b00686edf28c22sm313169pfn.87.2023.09.18.22.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 22:03:10 -0700 (PDT)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Tinghan Shen <tinghan.shen@mediatek.com>,
+        linux-remoteproc@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Wu Yunchuan <yunchuan@nfschina.com>
-Subject: [PATCH v2 wireless-next 9/9] wifi: ath9k: Remove unnecessary (void*) conversions
-Date:   Tue, 19 Sep 2023 12:52:26 +0800
-Message-Id: <20230919045226.524544-1-yunchuan@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Laura Nao <laura.nao@collabora.com>
+Subject: [PATCH] remoteproc: mediatek: Detect single/multi core SCP with rpmsg-name property
+Date:   Tue, 19 Sep 2023 13:03:04 +0800
+Message-ID: <20230919050305.3817347-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need cast (void *) to (struct owl_ctx *), (struct ath_hw *),
-(struct cmd_buf *) or other types.
+In the just landed multi-core SCP work, detection of single/multi core
+SCP is done by checking the immediate child node of the SCP complex
+device node. In the original work this was done by matching the child
+node's name. However the name wasn't previously standardized. This
+resulted in breakage on MT8183 and MT8192 Chromebooks while the driver
+side changes were picked up and the device tree changes were not picked
+up.
 
-Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+Instead, match against the "mediatek,rpmsg-name" property, which is
+required to be present in the rpmsg sub-node. This makes the
+aforementioned devices running old device trees working again.
+
+Reported-by: Laura Nao <laura.nao@collabora.com>
+Fixes: 1fdbf0cdde98 ("remoteproc: mediatek: Probe SCP cluster on multi-core SCP")
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 ---
- .../wireless/ath/ath9k/ath9k_pci_owl_loader.c |  2 +-
- drivers/net/wireless/ath/ath9k/common-init.c  |  2 +-
- .../net/wireless/ath/ath9k/common-spectral.c  |  2 +-
- drivers/net/wireless/ath/ath9k/debug.c        |  2 +-
- drivers/net/wireless/ath/ath9k/hif_usb.c      | 10 +++---
- .../net/wireless/ath/ath9k/htc_drv_debug.c    |  2 +-
- drivers/net/wireless/ath/ath9k/htc_drv_init.c | 36 +++++++++----------
- drivers/net/wireless/ath/ath9k/htc_hst.c      |  2 +-
- drivers/net/wireless/ath/ath9k/init.c         | 12 +++----
- drivers/net/wireless/ath/ath9k/link.c         |  2 +-
- drivers/net/wireless/ath/ath9k/pci.c          |  6 ++--
- 11 files changed, 39 insertions(+), 39 deletions(-)
+The patch is based on next-20230918 with a whole bunch of local patches
+stacked on top. None of my local patches are related to remoteproc, so
+it should be fine.
 
-diff --git a/drivers/net/wireless/ath/ath9k/ath9k_pci_owl_loader.c b/drivers/net/wireless/ath/ath9k/ath9k_pci_owl_loader.c
-index 708c8969b503..a5eb43f30320 100644
---- a/drivers/net/wireless/ath/ath9k/ath9k_pci_owl_loader.c
-+++ b/drivers/net/wireless/ath/ath9k/ath9k_pci_owl_loader.c
-@@ -125,7 +125,7 @@ static void owl_rescan(struct pci_dev *pdev)
+I tested on both MT8183 Juniper and MT8192 Hayato and on both systems
+the SCP successfully probed again.
+
+ drivers/remoteproc/mtk_scp.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+index ea227b566c54..ca15d9f382a1 100644
+--- a/drivers/remoteproc/mtk_scp.c
++++ b/drivers/remoteproc/mtk_scp.c
+@@ -1149,13 +1149,23 @@ static int scp_is_single_core(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev_of_node(dev);
+ 	struct device_node *child;
++	bool has_rpmsg;
  
- static void owl_fw_cb(const struct firmware *fw, void *context)
- {
--	struct owl_ctx *ctx = (struct owl_ctx *)context;
-+	struct owl_ctx *ctx = context;
+ 	child = of_get_next_available_child(np, NULL);
+ 	if (!child)
+ 		return dev_err_probe(dev, -ENODEV, "No child node\n");
  
- 	complete(&ctx->eeprom_load);
- 
-diff --git a/drivers/net/wireless/ath/ath9k/common-init.c b/drivers/net/wireless/ath/ath9k/common-init.c
-index 82de0fadbc95..7c13a1deb3ac 100644
---- a/drivers/net/wireless/ath/ath9k/common-init.c
-+++ b/drivers/net/wireless/ath/ath9k/common-init.c
-@@ -124,7 +124,7 @@ static struct ieee80211_rate ath9k_legacy_rates[] = {
- 
- int ath9k_cmn_init_channels_rates(struct ath_common *common)
- {
--	struct ath_hw *ah = (struct ath_hw *)common->ah;
-+	struct ath_hw *ah = common->ah;
- 	void *channels;
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(ath9k_2ghz_chantable) +
-diff --git a/drivers/net/wireless/ath/ath9k/common-spectral.c b/drivers/net/wireless/ath/ath9k/common-spectral.c
-index a5349c72c332..4b27445a5fb8 100644
---- a/drivers/net/wireless/ath/ath9k/common-spectral.c
-+++ b/drivers/net/wireless/ath/ath9k/common-spectral.c
-@@ -471,7 +471,7 @@ int ath_cmn_process_fft(struct ath_spec_scan_priv *spec_priv, struct ieee80211_h
- 	u8 sample_buf[SPECTRAL_SAMPLE_MAX_LEN] = {0};
- 	struct ath_hw *ah = spec_priv->ah;
- 	struct ath_common *common = ath9k_hw_common(spec_priv->ah);
--	struct ath_softc *sc = (struct ath_softc *)common->priv;
-+	struct ath_softc *sc = common->priv;
- 	u8 num_bins, *vdata = (u8 *)hdr;
- 	struct ath_radar_info *radar_info;
- 	int len = rs->rs_datalen;
-diff --git a/drivers/net/wireless/ath/ath9k/debug.c b/drivers/net/wireless/ath/ath9k/debug.c
-index 9bc57c5a89bf..d91f46844d32 100644
---- a/drivers/net/wireless/ath/ath9k/debug.c
-+++ b/drivers/net/wireless/ath/ath9k/debug.c
-@@ -1376,7 +1376,7 @@ void ath9k_deinit_debug(struct ath_softc *sc)
- int ath9k_init_debug(struct ath_hw *ah)
- {
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath_softc *sc = (struct ath_softc *) common->priv;
-+	struct ath_softc *sc = common->priv;
- 
- 	sc->debug.debugfs_phy = debugfs_create_dir("ath9k",
- 						   sc->hw->wiphy->debugfsdir);
-diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
-index e5414435b141..ce79f98738e3 100644
---- a/drivers/net/wireless/ath/ath9k/hif_usb.c
-+++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
-@@ -70,7 +70,7 @@ static int __hif_usb_tx(struct hif_device_usb *hif_dev);
- 
- static void hif_usb_regout_cb(struct urb *urb)
- {
--	struct cmd_buf *cmd = (struct cmd_buf *)urb->context;
-+	struct cmd_buf *cmd = urb->context;
- 
- 	switch (urb->status) {
- 	case 0:
-@@ -134,7 +134,7 @@ static int hif_usb_send_regout(struct hif_device_usb *hif_dev,
- 
- static void hif_usb_mgmt_cb(struct urb *urb)
- {
--	struct cmd_buf *cmd = (struct cmd_buf *)urb->context;
-+	struct cmd_buf *cmd = urb->context;
- 	struct hif_device_usb *hif_dev;
- 	unsigned long flags;
- 	bool txok = true;
-@@ -252,7 +252,7 @@ static inline void ath9k_skb_queue_complete(struct hif_device_usb *hif_dev,
- 
- static void hif_usb_tx_cb(struct urb *urb)
- {
--	struct tx_buf *tx_buf = (struct tx_buf *) urb->context;
-+	struct tx_buf *tx_buf = urb->context;
- 	struct hif_device_usb *hif_dev;
- 	bool txok = true;
- 
-@@ -687,7 +687,7 @@ static void ath9k_hif_usb_rx_stream(struct hif_device_usb *hif_dev,
- 
- static void ath9k_hif_usb_rx_cb(struct urb *urb)
- {
--	struct rx_buf *rx_buf = (struct rx_buf *)urb->context;
-+	struct rx_buf *rx_buf = urb->context;
- 	struct hif_device_usb *hif_dev = rx_buf->hif_dev;
- 	struct sk_buff *skb = rx_buf->skb;
- 	int ret;
-@@ -734,7 +734,7 @@ static void ath9k_hif_usb_rx_cb(struct urb *urb)
- 
- static void ath9k_hif_usb_reg_in_cb(struct urb *urb)
- {
--	struct rx_buf *rx_buf = (struct rx_buf *)urb->context;
-+	struct rx_buf *rx_buf = urb->context;
- 	struct hif_device_usb *hif_dev = rx_buf->hif_dev;
- 	struct sk_buff *skb = rx_buf->skb;
- 	int ret;
-diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c b/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
-index c549ff3abcdc..569792dc4450 100644
---- a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
-@@ -482,7 +482,7 @@ void ath9k_htc_deinit_debug(struct ath9k_htc_priv *priv)
- int ath9k_htc_init_debug(struct ath_hw *ah)
- {
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 
- 	priv->debug.debugfs_phy = debugfs_create_dir(KBUILD_MODNAME,
- 					     priv->hw->wiphy->debugfsdir);
-diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_init.c b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-index dae3d9c7b640..0aa5bdeb44a1 100644
---- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-@@ -63,12 +63,12 @@ static const struct ieee80211_tpt_blink ath9k_htc_tpt_blink[] = {
- 
- static void ath9k_htc_op_ps_wakeup(struct ath_common *common)
- {
--	ath9k_htc_ps_wakeup((struct ath9k_htc_priv *) common->priv);
-+	ath9k_htc_ps_wakeup(common->priv);
++	/*
++	 * On single core SCP systems, the immediate child of the SCP device
++	 * is the rpmsg node; on multi core systems, there's an intermediate
++	 * level node, one describing each core. Instead of matching on the
++	 * node name, which was recently changed in the DT binding in a
++	 * backward incompatible way, match against the "mediatek,rpmsg-name"
++	 * property, which is required in all rpmsg sub-nodes.
++	 */
++	has_rpmsg = of_property_present(child, "mediatek,rpmsg-name");
+ 	of_node_put(child);
+-	return of_node_name_eq(child, "cros-ec-rpmsg");
++	return has_rpmsg;
  }
  
- static void ath9k_htc_op_ps_restore(struct ath_common *common)
- {
--	ath9k_htc_ps_restore((struct ath9k_htc_priv *) common->priv);
-+	ath9k_htc_ps_restore(common->priv);
- }
- 
- static const struct ath_ps_ops ath9k_htc_ps_ops = {
-@@ -235,7 +235,7 @@ static unsigned int ath9k_regread(void *hw_priv, u32 reg_offset)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 	__be32 val, reg = cpu_to_be32(reg_offset);
- 	int r;
- 
-@@ -257,7 +257,7 @@ static void ath9k_multi_regread(void *hw_priv, u32 *addr,
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 	__be32 tmpaddr[8];
- 	__be32 tmpval[8];
- 	int i, ret;
-@@ -282,7 +282,7 @@ static void ath9k_multi_regread(void *hw_priv, u32 *addr,
- 
- static void ath9k_regwrite_multi(struct ath_common *common)
- {
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 	u32 rsp_status;
- 	int r;
- 
-@@ -303,7 +303,7 @@ static void ath9k_regwrite_single(void *hw_priv, u32 val, u32 reg_offset)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 	const __be32 buf[2] = {
- 		cpu_to_be32(reg_offset),
- 		cpu_to_be32(val),
-@@ -324,7 +324,7 @@ static void ath9k_regwrite_buffer(void *hw_priv, u32 val, u32 reg_offset)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 
- 	mutex_lock(&priv->wmi->multi_write_mutex);
- 
-@@ -347,7 +347,7 @@ static void ath9k_regwrite(void *hw_priv, u32 val, u32 reg_offset)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 
- 	if (atomic_read(&priv->wmi->mwrite_cnt))
- 		ath9k_regwrite_buffer(hw_priv, val, reg_offset);
-@@ -359,7 +359,7 @@ static void ath9k_enable_regwrite_buffer(void *hw_priv)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 
- 	atomic_inc(&priv->wmi->mwrite_cnt);
- }
-@@ -368,7 +368,7 @@ static void ath9k_regwrite_flush(void *hw_priv)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 
- 	atomic_dec(&priv->wmi->mwrite_cnt);
- 
-@@ -385,7 +385,7 @@ static void ath9k_reg_rmw_buffer(void *hw_priv,
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 	u32 rsp_status;
- 	int r;
- 
-@@ -423,7 +423,7 @@ static void ath9k_reg_rmw_flush(void *hw_priv)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 	u32 rsp_status;
- 	int r;
- 
-@@ -455,7 +455,7 @@ static void ath9k_enable_rmw_buffer(void *hw_priv)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 
- 	if (test_bit(HTC_FWFLAG_NO_RMW, &priv->fw_flags))
- 		return;
-@@ -468,7 +468,7 @@ static void ath9k_reg_rmw_single(void *hw_priv,
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 	struct register_rmw buf, buf_ret;
- 	int ret;
- 
-@@ -490,7 +490,7 @@ static u32 ath9k_reg_rmw(void *hw_priv, u32 reg_offset, u32 set, u32 clr)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath9k_htc_priv *priv = (struct ath9k_htc_priv *) common->priv;
-+	struct ath9k_htc_priv *priv = common->priv;
- 
- 	if (test_bit(HTC_FWFLAG_NO_RMW, &priv->fw_flags)) {
- 		u32 val;
-@@ -518,7 +518,7 @@ static void ath_usb_read_cachesize(struct ath_common *common, int *csz)
- 
- static bool ath_usb_eeprom_read(struct ath_common *common, u32 off, u16 *data)
- {
--	struct ath_hw *ah = (struct ath_hw *) common->ah;
-+	struct ath_hw *ah = common->ah;
- 
- 	(void)REG_READ(ah, AR5416_EEPROM_OFFSET + (off << AR5416_EEPROM_S));
- 
-@@ -970,7 +970,7 @@ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
- 
- err_init:
- 	ath9k_stop_wmi(priv);
--	hif_dev = (struct hif_device_usb *)htc_handle->hif_dev;
-+	hif_dev = htc_handle->hif_dev;
- 	ath9k_hif_usb_dealloc_urbs(hif_dev);
- 	ath9k_destroy_wmi(priv);
- err_free:
-@@ -988,7 +988,7 @@ void ath9k_htc_disconnect_device(struct htc_target *htc_handle, bool hotunplug)
- 
- 		ath9k_deinit_device(htc_handle->drv_priv);
- 		ath9k_stop_wmi(htc_handle->drv_priv);
--		ath9k_hif_usb_dealloc_urbs((struct hif_device_usb *)htc_handle->hif_dev);
-+		ath9k_hif_usb_dealloc_urbs(htc_handle->hif_dev);
- 		ath9k_destroy_wmi(htc_handle->drv_priv);
- 		ieee80211_free_hw(htc_handle->drv_priv->hw);
- 	}
-diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
-index 99667aba289d..eb631fd3336d 100644
---- a/drivers/net/wireless/ath/ath9k/htc_hst.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
-@@ -89,7 +89,7 @@ static void htc_process_target_rdy(struct htc_target *target,
- 				   void *buf)
- {
- 	struct htc_endpoint *endpoint;
--	struct htc_ready_msg *htc_ready_msg = (struct htc_ready_msg *) buf;
-+	struct htc_ready_msg *htc_ready_msg = buf;
- 
- 	target->credit_size = be16_to_cpu(htc_ready_msg->credit_size);
- 
-diff --git a/drivers/net/wireless/ath/ath9k/init.c b/drivers/net/wireless/ath/ath9k/init.c
-index 4f00400c7ffb..7fad7e75af6a 100644
---- a/drivers/net/wireless/ath/ath9k/init.c
-+++ b/drivers/net/wireless/ath/ath9k/init.c
-@@ -151,12 +151,12 @@ static void ath9k_deinit_softc(struct ath_softc *sc);
- 
- static void ath9k_op_ps_wakeup(struct ath_common *common)
- {
--	ath9k_ps_wakeup((struct ath_softc *) common->priv);
-+	ath9k_ps_wakeup(common->priv);
- }
- 
- static void ath9k_op_ps_restore(struct ath_common *common)
- {
--	ath9k_ps_restore((struct ath_softc *) common->priv);
-+	ath9k_ps_restore(common->priv);
- }
- 
- static const struct ath_ps_ops ath9k_ps_ops = {
-@@ -174,7 +174,7 @@ static void ath9k_iowrite32(void *hw_priv, u32 val, u32 reg_offset)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath_softc *sc = (struct ath_softc *) common->priv;
-+	struct ath_softc *sc = common->priv;
- 
- 	if (NR_CPUS > 1 && ah->config.serialize_regmode == SER_REG_MODE_ON) {
- 		unsigned long flags;
-@@ -189,7 +189,7 @@ static unsigned int ath9k_ioread32(void *hw_priv, u32 reg_offset)
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath_softc *sc = (struct ath_softc *) common->priv;
-+	struct ath_softc *sc = common->priv;
- 	u32 val;
- 
- 	if (NR_CPUS > 1 && ah->config.serialize_regmode == SER_REG_MODE_ON) {
-@@ -229,7 +229,7 @@ static unsigned int ath9k_reg_rmw(void *hw_priv, u32 reg_offset, u32 set, u32 cl
- {
- 	struct ath_hw *ah = hw_priv;
- 	struct ath_common *common = ath9k_hw_common(ah);
--	struct ath_softc *sc = (struct ath_softc *) common->priv;
-+	struct ath_softc *sc = common->priv;
- 	unsigned long flags;
- 	u32 val;
- 
-@@ -608,7 +608,7 @@ static int ath9k_nvmem_request_eeprom(struct ath_softc *sc)
- 	}
- 
- 	/* devres manages the calibration values release on shutdown */
--	ah->nvmem_blob = (u16 *)devm_kmemdup(sc->dev, buf, len, GFP_KERNEL);
-+	ah->nvmem_blob = devm_kmemdup(sc->dev, buf, len, GFP_KERNEL);
- 	kfree(buf);
- 	if (!ah->nvmem_blob)
- 		return -ENOMEM;
-diff --git a/drivers/net/wireless/ath/ath9k/link.c b/drivers/net/wireless/ath/ath9k/link.c
-index 9d84003db800..d1e5767aab3c 100644
---- a/drivers/net/wireless/ath/ath9k/link.c
-+++ b/drivers/net/wireless/ath/ath9k/link.c
-@@ -304,7 +304,7 @@ void ath_paprd_calibrate(struct work_struct *work)
- void ath_ani_calibrate(struct timer_list *t)
- {
- 	struct ath_common *common = from_timer(common, t, ani.timer);
--	struct ath_softc *sc = (struct ath_softc *)common->priv;
-+	struct ath_softc *sc = common->priv;
- 	struct ath_hw *ah = sc->sc_ah;
- 	bool longcal = false;
- 	bool shortcal = false;
-diff --git a/drivers/net/wireless/ath/ath9k/pci.c b/drivers/net/wireless/ath/ath9k/pci.c
-index 0633589b85c2..e655cd8bbf94 100644
---- a/drivers/net/wireless/ath/ath9k/pci.c
-+++ b/drivers/net/wireless/ath/ath9k/pci.c
-@@ -781,7 +781,7 @@ static const struct pci_device_id ath_pci_id_table[] = {
- /* return bus cachesize in 4B word units */
- static void ath_pci_read_cachesize(struct ath_common *common, int *csz)
- {
--	struct ath_softc *sc = (struct ath_softc *) common->priv;
-+	struct ath_softc *sc = common->priv;
- 	u8 u8tmp;
- 
- 	pci_read_config_byte(to_pci_dev(sc->dev), PCI_CACHE_LINE_SIZE, &u8tmp);
-@@ -799,7 +799,7 @@ static void ath_pci_read_cachesize(struct ath_common *common, int *csz)
- 
- static bool ath_pci_eeprom_read(struct ath_common *common, u32 off, u16 *data)
- {
--	struct ath_hw *ah = (struct ath_hw *) common->ah;
-+	struct ath_hw *ah = common->ah;
- 
- 	common->ops->read(ah, AR5416_EEPROM_OFFSET + (off << AR5416_EEPROM_S));
- 
-@@ -820,7 +820,7 @@ static bool ath_pci_eeprom_read(struct ath_common *common, u32 off, u16 *data)
- /* Need to be called after we discover btcoex capabilities */
- static void ath_pci_aspm_init(struct ath_common *common)
- {
--	struct ath_softc *sc = (struct ath_softc *) common->priv;
-+	struct ath_softc *sc = common->priv;
- 	struct ath_hw *ah = sc->sc_ah;
- 	struct pci_dev *pdev = to_pci_dev(sc->dev);
- 	struct pci_dev *parent;
+ static int scp_cluster_init(struct platform_device *pdev, struct mtk_scp_of_cluster *scp_cluster)
 -- 
-2.30.2
+2.42.0.459.ge4e396fd5e-goog
 
