@@ -2,96 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268DD7A5D29
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D858C7A5D2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbjISI6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
+        id S230395AbjISI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbjISI6A (ORCPT
+        with ESMTP id S229690AbjISI7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:58:00 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 590B7120;
-        Tue, 19 Sep 2023 01:57:51 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8BxY_CNYgllb90pAA--.14912S3;
-        Tue, 19 Sep 2023 16:57:49 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxfNyKYgll12MLAA--.22712S4;
-        Tue, 19 Sep 2023 16:57:49 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] docs/zh_CN/LoongArch: Update the links of ABI
-Date:   Tue, 19 Sep 2023 16:57:46 +0800
-Message-Id: <1695113866-20120-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1695113866-20120-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1695113866-20120-1-git-send-email-yangtiezhu@loongson.cn>
+        Tue, 19 Sep 2023 04:59:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E061E6;
+        Tue, 19 Sep 2023 01:59:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E31EC433C8;
+        Tue, 19 Sep 2023 08:59:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695113948;
+        bh=CWGhlnNpdYZK6/95n57OPZujb9EhyX4Y2HoGi6MU12k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iUIGPWASuF+/zoYXOOLaO7vRbum4t/lMpglspQyw7ZzyJnwgitjwpqy1gwHtAnDqN
+         lHfsXMGuYhd1eKKkradXZwya0PjSzvznLGrpMTv65AuXdDsoCRE5ll49c9txlLwD7M
+         pBz0PXkuS4++Gg4y3nna6JMYxc7FR6IUJWoBhUcsQTtyy5wbhnY755lP+UZbWhcwNZ
+         jDR6rjBvU/Xy7FvZTERwdee6s8+GOLhoLnZn3t1LSghbsBWDT9i4Izp43Y0DyRKN1R
+         MK/WQBUAPv3pQbqNWlCQlQENpnu45TSGbsGo0CbCumgqUd336XePqIBMzdVZlnBNNI
+         fsnl9GlWS+0Rw==
+Date:   Tue, 19 Sep 2023 09:59:02 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH v3 2/6] dt-bindings: gpio: vf610: correct i.MX8ULP and
+ i.MX93
+Message-ID: <20230919-b3c77666394588fc74a06d9e@fedora>
+References: <20230918-vf610-gpio-v3-0-ada82a17adc5@nxp.com>
+ <20230918-vf610-gpio-v3-2-ada82a17adc5@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxfNyKYgll12MLAA--.22712S4
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxJrW5Cr1rWFW7uF1fZr4UZFc_yoW8AryUpr
-        WvkrWxKFnrCr1Uu34kKa4UWF409FZ7Wa17GF4Utw1FgFnrZa4vvrWrtr15tF13Z34rAFWI
-        q34Fkw48XF15ZagCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
-        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-        AIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
-        KfnxnUUI43ZEXa7IU8EeHDUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UtNA5wcQdBM6/BQZ"
+Content-Disposition: inline
+In-Reply-To: <20230918-vf610-gpio-v3-2-ada82a17adc5@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current links of ABI can not be found for some time, let us fix
-the broken links.
 
-By the way, the latest and official ABI documentation releases are
-available at https://github.com/loongson/la-abi-specs, but there are
-no Chinese and pdf versions for now, so just do the minimal changes
-to update the links so that they can be found, hope there are stable
-links in the future.
+--UtNA5wcQdBM6/BQZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- Documentation/translations/zh_CN/arch/loongarch/introduction.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, Sep 18, 2023 at 04:16:06PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+>=20
+> i.MX8ULP and i.MX93 actually has two interrupts for each gpio
+> controller, one for Trustzone non-secure world, one for secure world.
+>=20
+> And they has one register based, not two as i.MX7ULP or VF610.
+>=20
+> Although the Linux Kernel driver gpio-vf610.c could work with
+> fsl,imx7ulp-gpio compatible, it is based on some tricks did in
+> device tree with some offset added to base address.
+>=20
+> So actually i.MX8ULP/i.MX93 is not compatible with i.MX7ULP.
+>=20
+> Last, i.MX93 is directly derived from i.MX8ULP, so make i.MX93 GPIO
+> compatible with i.MX8ULP
+>=20
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  .../devicetree/bindings/gpio/gpio-vf610.yaml       | 36 ++++++++++++++++=
++++---
+>  1 file changed, 31 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Doc=
+umentation/devicetree/bindings/gpio/gpio-vf610.yaml
+> index 59427d97adf5..5243b4cf1235 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+> @@ -20,6 +20,7 @@ description: |
+>  properties:
+>    compatible:
+>      oneOf:
+> +      - const: fsl,imx8ulp-gpio
+>        - const: fsl,vf610-gpio
+>        - items:
+>            - const: fsl,imx7ulp-gpio
+> @@ -27,16 +28,17 @@ properties:
+>        - items:
+>            - enum:
+>                - fsl,imx93-gpio
+> -              - fsl,imx8ulp-gpio
+> -          - const: fsl,imx7ulp-gpio
+> +          - const: fsl,imx8ulp-gpio
+> =20
+>    reg:
+> -    description: The first reg tuple represents the PORT module, the sec=
+ond tuple
+> -      represents the GPIO module.
+> +    minItems: 1
+>      maxItems: 2
+> =20
+>    interrupts:
+> -    maxItems: 1
+> +    items:
+> +      - description: GPIO Trustzone non-secure interrupt number
+> +      - description: GPIO Trustzone secure interrupt number
+> +    minItems: 1
+> =20
+>    interrupt-controller: true
+> =20
+> @@ -78,6 +80,30 @@ required:
+>    - "#gpio-cells"
+>    - gpio-controller
+> =20
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - fsl,vf610-gpio
+> +              - fsl,imx7ulp-gpio
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 1
+> +        reg:
+> +          items:
+> +            - description: PORT register base address
+> +            - description: GPIO register base address
+> +    else:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 2
 
-diff --git a/Documentation/translations/zh_CN/arch/loongarch/introduction.rst b/Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-index cba04be..59d6bf3 100644
---- a/Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-@@ -344,9 +344,9 @@ LoongArch指令集架构的文档：
- 
- LoongArch的ELF psABI文档：
- 
--  https://github.com/loongson/LoongArch-Documentation/releases/latest/download/LoongArch-ELF-ABI-v2.00-CN.pdf （中文版）
-+  https://github.com/loongson/LoongArch-Documentation/releases/latest/download/LoongArch-ELF-ABI-v2.01-CN.pdf （中文版）
- 
--  https://github.com/loongson/LoongArch-Documentation/releases/latest/download/LoongArch-ELF-ABI-v2.00-EN.pdf （英文版）
-+  https://github.com/loongson/LoongArch-Documentation/releases/latest/download/LoongArch-ELF-ABI-v2.01-EN.pdf （英文版）
- 
- Loongson与LoongArch的Linux内核源码仓库：
- 
--- 
-2.1.0
+Doesn't this default to 2 because there are 2 items in your list of
+interrupts as things stand?
+Otherwise, this seems fine to me, provided the existing platforms are
+going to be broken as you implement the software side of this change.
 
+Thanks,
+Conor.
+
+> +        reg:
+> +          items:
+> +            - description: GPIO register base address
+> +
+>  additionalProperties: false
+> =20
+>  examples:
+>=20
+> --=20
+> 2.37.1
+>=20
+
+--UtNA5wcQdBM6/BQZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQli0wAKCRB4tDGHoIJi
+0n25AP0X1Ro3o7NvsfSguBocF0urTGZQ/th60KzYYgyt0gdjqAD+O2FJOD7jpJZB
+QH+DYO6MWEHJ9m5ef43Wir7WWb05KQ0=
+=4or1
+-----END PGP SIGNATURE-----
+
+--UtNA5wcQdBM6/BQZ--
