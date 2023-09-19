@@ -2,194 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FD27A6D5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E589C7A6D65
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 23:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbjISVvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 17:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
+        id S233389AbjISVw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 17:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjISVvX (ORCPT
+        with ESMTP id S233233AbjISVw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 17:51:23 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C1FBD;
-        Tue, 19 Sep 2023 14:51:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695160256; x=1695765056; i=quwenruo.btrfs@gmx.com;
- bh=PsCGZ/T8xmLzRdlXzocORqNkiwMoQvmWK8mCJE4vLsI=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=Cn4ud0uvfoFjXnqOIxSgJJ4o88Wm2TtcMu3i2WsZj2OWvpMUY/Z4Hgt52mJdtWlBYg22dYWzV5V
- 5u21dRDWcw7eyI598BKVz2AWfm3IsqClZMzu9/iFqQlkGJ63Jkrk6d8Q5kNkZob7mc3vtMChtrwB0
- khiWTHHiW/jRIORjgEH+EGiYcKyRr5oIWp11cw/oN9koEAZm2TcCckk2e8cfpHZkyIFmWr5xfAVnp
- CAhZD8ySPyCdONV4uBPZs+zYDJLlVfPNugNjLz6/JH9SuxjYwv5qG8GFR21JmMBlFauhQ4AsU0u+q
- KZxYsoxuH3pD23OCiKgjU7PJkT8Hk0ZjH6hw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6lpM-1qlSAT3UBK-008LT5; Tue, 19
- Sep 2023 23:50:56 +0200
-Message-ID: <a364f344-b718-48ff-9e2a-484c5ded6e7f@gmx.com>
-Date:   Wed, 20 Sep 2023 07:20:49 +0930
+        Tue, 19 Sep 2023 17:52:26 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E5DC0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:52:18 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99de884ad25so817787366b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 14:52:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695160337; x=1695765137; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eliXjlnUj0/AODOfq0lfgn0v2M8TIN1LeS+hCeHav/U=;
+        b=OqQcER9JyvuM3qJo1DI8aXd0lwL7//5LwyYR1Yul8THHQFKEDFCK4yMfMN3eJzl0hQ
+         gnt9CSN/ob0M1v6MHpDZAIUK4Alr+RdxRShioyRHONzszT6OFK+gPH0HVhUu6Xm5yNiF
+         SbtadUf9grV2X4kPLM71ljgOuy0lvMo7/DoCOmVW8QRDt0sXBzP2qSiyeOOnEjiJYhPJ
+         itsBMVhncsnYmdY/jixCJ8dTfL93YB2HLoJXJm2tEEtQoYmnuYbXlBlet9TdvrZ8s2o+
+         /kkZnpGWr9NCunsQ5bYZl31NMKKtwIt7aj9U2+TOx4lvGsPLtblPRxZTGZ68MJ/IkhZJ
+         a/jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695160337; x=1695765137;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eliXjlnUj0/AODOfq0lfgn0v2M8TIN1LeS+hCeHav/U=;
+        b=FrFfzdz8hEYDKD7jRQg5YDoVERQ4Oc8Z+bQWi+zjZraP6k/1cWygn9scM4tSYXyORK
+         QQEnHBAz/n3aO0++hYV1r3P9zIOZeeoS8t9QL8Z4r+hZxUVwunp7Qy/xklgO4Ufk2XON
+         pJ0fgf7e+YWgImwTSm4WgXd0G2/9l3dKgQpNCIwkAZURdH5fY0rKajwg6XRv+2quM0Jo
+         Wx1/a8kBO6dL86FAvVskfdIwbk+IsElKbJbOSpXZBZILx6PVeMrPWKhnfGXkZOxhHc3d
+         Ehae7o0/GLdZ8XJIWMX9WsWbPB6apK01qpknn97ux6SSunfrwihFrXU4HA+5MH1OrPJA
+         Dlqw==
+X-Gm-Message-State: AOJu0Yzf52FzVmM/kNmF7bjdpPg8muExmy/1D4NlPwo353TbNDguNw7y
+        hzvqBXXuKzKk/mqjyMIi1i4H+st4kABSdk2OLlsNEA==
+X-Google-Smtp-Source: AGHT+IEOBCWtLBMbM1AT0iqkM9hwo/7Pa2mMpNubzxGfRPNpEhB/75Pmmss4LVXbiittngA9ae8ICig1bNEo/UbeVZM=
+X-Received: by 2002:a17:906:18b1:b0:9a1:f3a6:b906 with SMTP id
+ c17-20020a17090618b100b009a1f3a6b906mr437320ejf.36.1695160337022; Tue, 19 Sep
+ 2023 14:52:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] btrfs: fix 64bit division in
- btrfs_insert_striped_mirrored_raid_extents
-To:     dsterba@suse.cz
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
- <20230918-rst-updates-v1-1-17686dc06859@wdc.com>
- <CAMuHMdWM3_cj4Nb96pZQfErx7n+0Cd7RUQZV+bpvr1Tz5T3sgw@mail.gmail.com>
- <e12a171e-d3b8-401e-b01a-9440f5c75293@wdc.com>
- <20230918162448.GI2747@suse.cz>
- <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
- <20230919135810.GT2747@twin.jikos.cz>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230919135810.GT2747@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <CGME20230915095133eucas1p267bade2888b7fcd2e1ea8e13e21c495f@eucas1p2.samsung.com>
+ <20230915095042.1320180-1-da.gomez@samsung.com> <20230915095042.1320180-7-da.gomez@samsung.com>
+ <CAJD7tkbU20tyGxtdL-cqJxrjf38ObG_dUttZdLstH3O2sUTKzw@mail.gmail.com>
+ <20230918075758.vlufrhq22es2dhuu@sarkhan> <CAJD7tkZSST8Kc6duUWt6a9igrsn=ucUPSVPWWGDWEUxBs3b4bg@mail.gmail.com>
+ <20230919132633.v2mvuaxp2w76zoed@sarkhan> <CAJD7tkaELyZXsUP+c=DKg9k-FeFTTRS+_9diK5fyTNdfDAykmQ@mail.gmail.com>
+ <ZQoW0MVh/esJkU6H@bombadil.infradead.org>
+In-Reply-To: <ZQoW0MVh/esJkU6H@bombadil.infradead.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 19 Sep 2023 14:51:40 -0700
+Message-ID: <CAJD7tkZjpYh=n4UrYmpMUVz2OvBX9PVzK+aP1gKsNoycnkzRag@mail.gmail.com>
+Subject: Re: [PATCH 6/6] shmem: add large folios support to the write path
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Daniel Gomez <da.gomez@samsung.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        Pankaj Raghav <p.raghav@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zmGi369qwQvSdVaxP1uO76xVj82gXJKp3l/ubSryUUBREuPsdks
- rrobnypNpnu0o0DBf0SvPUkMtWnKc+1Ntn+UBPNnvbqsFqqRa0KmMRo0A4Kz/uC1gRXU5G9
- N0XzyYeN+rjXUhlGWBgkhDxZwbBZXlKPSec0GbmfYb/DhYlWl5MQOSwdcTdtuZYNcadJqo6
- NQz8PPbpue8DZG2Wq99YA==
-UI-OutboundReport: notjunk:1;M01:P0:Xe7D27dGaVg=;P8QDX1wyPkWCu64NBzyHrk64UYY
- xgTAUZKwE76HVmAB8Nx1VHUDRIXHrEcHqeNj6FqZlAClrvdXXsepk0/3lq2BkMaWJvN31y+uS
- iyvQ8nKYnYo4+RvCI+8J0TRwBbDZ+XJuuIhRSkO++dZaLElSwxm4+Rv8R369oY3cnZ2VcRkBo
- 3gXwYPROB9sBLaFb1Wtpn2yx1xFBNsC9poXuJDtVqXlQNE6UlbmXOdjksYMxTVIx7e0+S7MLV
- dQRkc1/0vuLtQRvap+1Z/0ELRR43Njb+FQb8aLQD8/4r75hZF20xKYypbkSXs6yGQhPU4TIu5
- w5FMtHukRU0QCYC7qxu6Tv9TFZ5FSXXjpQpkqWUVwtch59setz756YuGS4MtqyMIqcpoW2/kL
- dCugTTM8vIQ4LfJzmOiYb/VUxyHuLH/UrAorS76cPIqHNlcaB/WBukdT5Vhqg3jaRCo57ZPmM
- 0l9no6SZcKt1bAkjm1Lh5CU8jNmiTE95L5cSottyBqYxTEq0a/ozFX95Usj3/45LjFx7+FhWL
- GezqgVfvba/rvRuuF7k5hw53PrnmuIQiQUV81eWE5T1EQjEhIsOky+9qlw33cR0aoVCAcqHzL
- RjZv1GW3dfFo5OJg5vtwb2xArx7GwBCmOE06YmoRL/4+JcUunCfSkt5XqksubsriCUJIiGzfi
- yFgnk86FilKzcU8gCNsNIV4qaPqhV8t2crPBc0bvReAjaVAj7xPALSg8z+/Ex5+kmc3oQYCRV
- 1DnfJ7ZPw+ay2tPa9K5ArOrl3Zv2/lMvP9qyGubCKU3wHFxSAvWqsWYgQlQ+OxTlvGzn5kuxh
- s1JcID3eZo8RHO6r9k10AUaHdnAgo+W1aRr9p/r22tOwItZB8OYMYm5G0qncKqYvbJQ/R6Jjs
- xyFMEWI1JT5flvXdGt5YCzLRK/Z3qhvvfqQHj+KnoTMq2AHfz0lzDrznciw44HTtVXOgnNI50
- fO7wAA==
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/19 23:28, David Sterba wrote:
-> On Tue, Sep 19, 2023 at 10:07:00AM +0930, Qu Wenruo wrote:
->> On 2023/9/19 01:54, David Sterba wrote:
->>> On Mon, Sep 18, 2023 at 03:03:10PM +0000, Johannes Thumshirn wrote:
->>>> On 18.09.23 16:19, Geert Uytterhoeven wrote:
->>>>> Hi Johannes,
->>>>>
->>>>> On Mon, Sep 18, 2023 at 4:14=E2=80=AFPM Johannes Thumshirn
->>>>> <johannes.thumshirn@wdc.com> wrote:
->>>>>> Fix modpost error due to 64bit division on 32bit systems in
->>>>>> btrfs_insert_striped_mirrored_raid_extents.
->>>>>>
->>>>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->>>>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->>>>>
->>>>> Thanks for your patch!
->>>>>
->>>>>> --- a/fs/btrfs/raid-stripe-tree.c
->>>>>> +++ b/fs/btrfs/raid-stripe-tree.c
->>>>>> @@ -148,10 +148,10 @@ static int btrfs_insert_striped_mirrored_raid=
-_extents(
->>>>>>     {
->>>>>>            struct btrfs_io_context *bioc;
->>>>>>            struct btrfs_io_context *rbioc;
->>>>>> -       const int nstripes =3D list_count_nodes(&ordered->bioc_list=
-);
->>>>>> -       const int index =3D btrfs_bg_flags_to_raid_index(map_type);
->>>>>> -       const int substripes =3D btrfs_raid_array[index].sub_stripe=
-s;
->>>>>> -       const int max_stripes =3D trans->fs_info->fs_devices->rw_de=
-vices / substripes;
->>>>>> +       const size_t nstripes =3D list_count_nodes(&ordered->bioc_l=
-ist);
->>>>>> +       const enum btrfs_raid_types index =3D btrfs_bg_flags_to_rai=
-d_index(map_type);
->>>>>> +       const u8 substripes =3D btrfs_raid_array[index].sub_stripes=
-;
->>>>>> +       const int max_stripes =3D div_u64(trans->fs_info->fs_device=
-s->rw_devices, substripes);
->>>>>
->>>>> What if the quotient does not fit in a signed 32-bit value?
->>>>
->>>> Then you've bought a lot of HDDs ;-)
->>>>
->>>> Jokes aside, yes this is theoretically correct. Dave can you fix
->>>> max_stripes up to be u64 when applying?
->>>
->>> I think we can keep it int, or unsigned int if needed, we can't hit su=
-ch
->>> huge values for rw_devices. The 'theoretically' would fit for a machin=
-e
->>> with infinite resources, otherwise the maximum number of devices I'd
->>> expect is a few thousand.
->>
->> In fact, we already have an check in btrfs_validate_super(), if the
->> num_devices is over 1<<31, we would reject the fs.
+On Tue, Sep 19, 2023 at 2:47=E2=80=AFPM Luis Chamberlain <mcgrof@kernel.org=
+> wrote:
 >
-> No, it's just a warning in that case.
-
-We can make it a proper reject.
-
+> On Tue, Sep 19, 2023 at 09:00:16AM -0700, Yosry Ahmed wrote:
+> > On Tue, Sep 19, 2023 at 6:27=E2=80=AFAM Daniel Gomez <da.gomez@samsung.=
+com> wrote:
+> > >
+> > > On Mon, Sep 18, 2023 at 11:55:34AM -0700, Yosry Ahmed wrote:
+> > > > On Mon, Sep 18, 2023 at 1:00=E2=80=AFAM Daniel Gomez <da.gomez@sams=
+ung.com> wrote:
+> > > > >
+> > > > > On Fri, Sep 15, 2023 at 11:26:37AM -0700, Yosry Ahmed wrote:
+> > > > > > On Fri, Sep 15, 2023 at 2:51=E2=80=AFAM Daniel Gomez <da.gomez@=
+samsung.com> wrote:
+> > > > > > >
+> > > > > > > Add large folio support for shmem write path matching the sam=
+e high
+> > > > > > > order preference mechanism used for iomap buffered IO path as=
+ used in
+> > > > > > > __filemap_get_folio().
+> > > > > > >
+> > > > > > > Use the __folio_get_max_order to get a hint for the order of =
+the folio
+> > > > > > > based on file size which takes care of the mapping requiremen=
+ts.
+> > > > > > >
+> > > > > > > Swap does not support high order folios for now, so make it o=
+rder 0 in
+> > > > > > > case swap is enabled.
+> > > > > >
+> > > > > > I didn't take a close look at the series, but I am not sure I
+> > > > > > understand the rationale here. Reclaim will split high order sh=
+mem
+> > > > > > folios anyway, right?
+> > > > >
+> > > > > For context, this is part of the enablement of large block sizes =
+(LBS)
+> > > > > effort [1][2][3], so the assumption here is that the kernel will
+> > > > > reclaim memory with the same (large) block sizes that were writte=
+n to
+> > > > > the device.
+> > > > >
+> > > > > I'll add more context in the V2.
+> > > > >
+> > > > > [1] https://protect2.fireeye.com/v1/url?k=3Da80aab33-c981be05-a80=
+b207c-000babff9b5d-b656d8860b04562f&q=3D1&e=3D46666acf-d70d-4e8d-8d00-b0278=
+08ae400&u=3Dhttps%3A%2F%2Fkernelnewbies.org%2FKernelProjects%2Flarge-block-=
+size
+> > > > > [2] https://protect2.fireeye.com/v1/url?k=3D3f753ca2-5efe2994-3f7=
+4b7ed-000babff9b5d-e678f885471555e3&q=3D1&e=3D46666acf-d70d-4e8d-8d00-b0278=
+08ae400&u=3Dhttps%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2Fe%2F2PACX-1v=
+S7sQfw90S00l2rfOKm83Jlg0px8KxMQE4HHp_DKRGbAGcAV-xu6LITHBEc4xzVh9wLH6WM2lR0c=
+ZS8%2Fpubhtml%23
+> > > > > [3] https://lore.kernel.org/all/ZQfbHloBUpDh+zCg@dread.disaster.a=
+rea/
+> > > > > >
+> > > > > > It seems like we only enable high order folios if the "noswap" =
+mount
+> > > > > > option is used, which is fairly recent. I doubt it is widely us=
+ed.
+> > > > >
+> > > > > For now, I skipped the swap path as it currently lacks support fo=
+r
+> > > > > high order folios. But I'm currently looking into it as part of t=
+he LBS
+> > > > > effort (please check spreadsheet at [2] for that).
+> > > >
+> > > > Thanks for the context, but I am not sure I understand.
+> > > >
+> > > > IIUC we are skipping allocating large folios in shmem if swap is
+> > > > enabled in this patch. Swap does not support swapping out large fol=
+ios
+> > > > as a whole (except THPs), but page reclaim will split those large
+> > > > folios and swap them out as order-0 pages anyway. So I am not sure =
+I
+> > > > understand why we need to skip allocating large folios if swap is
+> > > > enabled.
+> > >
+> > > I lifted noswap condition and retested it again on top of 230918 and
+> > > there is some regression. So, based on the results I guess the initia=
+l
+> > > requirement may be the way to go. But what do you think?
+> > >
+> > > Here the logs:
+> > > * shmem-large-folios-swap: https://gitlab.com/-/snippets/3600360
+> > > * shmem-baseline-swap : https://gitlab.com/-/snippets/3600362
+> > >
+> > > -Failures: generic/080 generic/126 generic/193 generic/633 generic/68=
+9
+> > > -Failed 5 of 730 tests
+> > > \ No newline at end of file
+> > > +Failures: generic/080 generic/103 generic/126 generic/193 generic/28=
+5 generic/436 generic/619 generic/633 generic/689
+> > > +Failed 9 of 730 tests
+> > > \ No newline at end of file
+> > > >
+> >
+> > I am not really familiar with these tests so I cannot really tell
+> > what's going on. I can see "swapfiles are not supported" in the logs
+> > though, so it seems like we are seeing extra failures by just lifting
+> > "noswap" even without actually swapping. I am curious if this is just
+> > hiding a different issue, I would at least try to understand what's
+> > happening.
+> >
+> > Anyway, I don't have enough context here to be useful. I was just
+> > making an observation about reclaim splitting shmem folios to swap
+> > them out as order-0 pages, and asking why this is needed based on
+> > that. I will leave it up to you and the reviewers to decide if there's
+> > anything interesting here.
 >
->> I think we should be safe to further reduce the threshold.
->>
->> U16_MAX sounds a valid and sane value to me.
->> If no rejection I can send out a patch for this.
->>
->> And later change internal rw_devices/num_devices to u16.
+> The tests which are failing seem be related to permissions, I could not
+> immediate decipher why, because as you suggest we'd just be doing the
+> silly thing of splitting large folios on writepage.
 >
-> U16 does not make sense here, it's not a native int type on many
-> architectures and generates awkward assembly code. We use it in
-> justified cases where it's saving space in structures that are allocated
-> thousand times. The arbitrary limit 65536 is probably sane but not
-> much different than 1<<31, practically not hit and was useful to
-> note fuzzed superblocks.
+> I'd prefer we don't require swap until those regressions would be fixed.
+>
+> Note that part of the rationale to enable this work is to eventually
+> also extend swap code to support large order folios, so it is not like
+> this would be left as-is. It is just that it may take time to resolve
+> the kinks with swap.
+>
+> So I'd stick to nowap for now.
+>
+> The above tests also don't stress swap too, and if we do that I would
+> imagine we might see some other undesirable failures.
+>
+>  Luis
 
-OK, we can make it unsigned int (mostly u32) for fs_info::*_devices, but
-still do extra limits on things like device add to limit it to U16_MAX.
-
-Would this be a better solution?
-At least it would still half the width while keep it native to most (if
-not all) archs.
-
-Thanks,
-Qu
+I thought we already have some notion of exercising swap with large
+shmem folios from THPs, so this shouldn't be new, but perhaps I am
+missing something.
