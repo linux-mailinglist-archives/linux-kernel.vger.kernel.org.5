@@ -2,141 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AABD7A6126
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E567A6129
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 13:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbjISL2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 07:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
+        id S231178AbjISL2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 07:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjISL2O (ORCPT
+        with ESMTP id S229658AbjISL2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 07:28:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73A1ED
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 04:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695122888; x=1726658888;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=2dAqJ9+gSlvtFbO5qEpMHNqfi35U2zHu3R+qLEw+ZPk=;
-  b=Tp+AYePFkzj3bG+PWaN9oGlGXJ4scDQjQtRRnZZEkbFPxE0n8QwTtBsX
-   OkZ/cAd9ntNp/rsebqXp8XeMGqsqqhtU0h2PGFuVVZFEDxKXiZ1jsyfSx
-   tYHyEQBWD9P8VKHT9FIFrMxoylOZxLfX1WY9/2wa+5yqOfEz7gJ356vrK
-   1Ej4BLNEG9Colf0vvkZ4elWhgi8/2xNt1ITsbIAHpS5iOgPsx/GIqW+uE
-   7AfAdAB1l62x8r7wLpX2xTv304QpPxOlAHVCN4722UbTVWJulaCSwPJs2
-   I7cN/6YbQXhfnXNfZf4JUEZrf0dnpHjGF5RYi3QqRwg02DcSxGglJmAGN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="410843869"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="410843869"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 04:28:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861502110"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="861502110"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Sep 2023 04:28:07 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiYth-0007He-0T;
-        Tue, 19 Sep 2023 11:28:05 +0000
-Date:   Tue, 19 Sep 2023 19:27:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: include/linux/dma-mapping.h:416:36: warning: array subscript i is
- outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'}
-Message-ID: <202309191958.UBw1cjXk-lkp@intel.com>
+        Tue, 19 Sep 2023 07:28:37 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2087.outbound.protection.outlook.com [40.107.92.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FC1F5;
+        Tue, 19 Sep 2023 04:28:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TCUataMwejxprwjD5ektB+4r5xdsYSrnO8tCwSMz/F4CzKRa5eoHP3uU3gLvabvle7bBN5C/nIX9dxRmiJCVaw9fnTNwjK+kOamU7CuDdaXtLs1OMTZPjgfXjriTx+QQ5TGX+oM+JNTMntqBdWoD89ytnGY/UfS4fFe10Q+Wa7+7+E6J+1VTaWgmSMJ5aRkU0OX7D4qJ+/ikugEKq/83nJbABVicWLg3LEQtD+Jye2T0B3iZGvBS9C6PBrAyq17JNC/kC/KpFTzBfuZlNUXKR8N5aRNLex+Lw/7FlvSpsiGlUzoGESJ3YCV8cPk+IA3PwQR6gIcHB3F03lXdLyEt7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J7R75y0ASBsxBBnlVAMLkLmxf4yRqBy6611LtS4QAl0=;
+ b=koeg+ZyceR4jgwnhSLxZcqknJgQijz1SEvIrUifqn3b8NUKmQtBRUZfram4HCXE7NPCrrviDGPICHwJj5F7shksT5T2/lXeAAvfqgQZGqMmNIc9eIYzN09w+8wHiyXf6V7iLGCAKx4kGhv+qYP6060Aw9kcK5yQPwC/8bWBCV8nJe+oKDRz+8TXUtcmeC1kKCQ2HGQSv1ti7T/X9k592cWX9isGpTwakODGc3wxzZ9tceoUfBWe9HvGYHgqB+C9HtROJae2zNhgOhbxk45mlEudq54DTy27rg1fSYO8tS/1eNVAMLZJBm5EcWMSvDwajdcIvL6q//ZxEI5fI/4HpFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J7R75y0ASBsxBBnlVAMLkLmxf4yRqBy6611LtS4QAl0=;
+ b=LLhcrE1XCO6MpbN5+eaStDcQ79Q2OeFxiECyfuUnmMOPoxi8XCCFiI+4vEyTrirsS3uLJdP6IBLqcmVsAdGhd0x4DNZ0LkQiVELuwpfCig2NVPUsz30Y+pIfPh4NFS+ATz8p28qJswJUrsnG4a1U6J3xhvp4AuMmMICIj2Na1sK0w/cw1UuDP2/NnQ2LNe7Adkq0gzqO+vye8op63xVz/lRcEdBKjvkP1hF1qxYTvYEIH6Vs/UiHM8sDG8MdpGaCpxsxxpSzUNPMAlJP6aWKUH8xZQUmhoUotqBh3dRhDbVdRJK+vxJyZki5v9HVWEI1/kk9dcpr5xcq5ANQUfQ7bg==
+Received: from MW4PR04CA0375.namprd04.prod.outlook.com (2603:10b6:303:81::20)
+ by BL3PR12MB6644.namprd12.prod.outlook.com (2603:10b6:208:3b1::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 19 Sep
+ 2023 11:28:29 +0000
+Received: from CO1PEPF000042A7.namprd03.prod.outlook.com
+ (2603:10b6:303:81:cafe::b3) by MW4PR04CA0375.outlook.office365.com
+ (2603:10b6:303:81::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27 via Frontend
+ Transport; Tue, 19 Sep 2023 11:28:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CO1PEPF000042A7.mail.protection.outlook.com (10.167.243.36) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6792.20 via Frontend Transport; Tue, 19 Sep 2023 11:28:28 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 19 Sep
+ 2023 04:28:15 -0700
+Received: from [10.41.21.79] (10.126.230.35) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 19 Sep
+ 2023 04:28:10 -0700
+Message-ID: <961ffcb4-a9c6-2916-7b90-4a38b0ad465c@nvidia.com>
+Date:   Tue, 19 Sep 2023 16:58:07 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Patch v2 0/2] Improvements to the Tegra CPUFREQ driver
+Content-Language: en-US
+To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
+        <amiettinen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
+References: <20230901164113.29139-1-sumitg@nvidia.com>
+From:   Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <20230901164113.29139-1-sumitg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail202.nvidia.com (10.129.68.7)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042A7:EE_|BL3PR12MB6644:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9e490d4a-c5f3-4df5-8505-08dbb9038bf5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ubIxyKRk9GjHCs4PJBitRBhxBBlCO8KeY+mNa/90YXrCv81VAVBjE0H6/2J7gk6PMqzZvfyOTxSQGHs3bvvdolWIMHkt64BrFmqEkYi5/scmjzIi+STFORO4qoypu1l0kWUpzFGq/uedN8SVNu/HzrUM+4ixJpavp95zDnfBZyTCoLJDOjdRhSs171IIa9+fzhmGQ+oaUx2RAeW3IE2A7LBKmtqsNbaDTjUkz6COouYax06Hm0lTKT8S5CR0lw9vQuoP0zHmUh/0W5qgWPoAoRjlYAt9fmEPK68a6yqwe0/OWAaT/SS+VEOqZYP3SaHn3B9FaQQaYKDk6qVY3Egf77iROfaHB0hUutqlW2x6UyxkbuNDKUSIasK2nYb2+zUPP83dnDSctaQ+FdsNOIW1QaS+23gtoXPR9UpP4beHgkuED9u3l8FryY++AASAW+TR9GiG3+TzhHTsOUNST4z6pcHYhGJAKxn7YxpOQXwTDP7cEkU7snpK3oaKDxicrO+qoINifxoa+ZC9Tw5+gu5O2VjI5p+RHBy7fIrGSHcxn1SRgO2YTRns/+T3Q6cAImsCIImbrOjKVqJI7/Uvp3M/qRdKkKcumssUTpUJFDmkV2M3cJNxK6zcu8GqYh4387nDDsgqKVGQ5++vSKuoLw4KXyTNsgEF+/Ilc6srkwB83WcJUe0FGGpUaGsoiRn0Ypyl06KsSsQsIvrPSdeMiPnRNy10rKNBYCCZGgml9ZU1vH9pxHdMQ9dHVz7P3VGXagla+6wmjKqEzDVxcfen957aQg==
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(186009)(82310400011)(1800799009)(451199024)(40470700004)(36840700001)(46966006)(40460700003)(16526019)(2616005)(26005)(107886003)(53546011)(36860700001)(47076005)(356005)(82740400003)(86362001)(7636003)(36756003)(31696002)(426003)(336012)(40480700001)(83380400001)(5660300002)(478600001)(4744005)(41300700001)(31686004)(16576012)(70206006)(110136005)(54906003)(4326008)(70586007)(316002)(8676002)(8936002)(6666004)(2906002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 11:28:28.6283
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e490d4a-c5f3-4df5-8505-08dbb9038bf5
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042A7.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6644
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2cf0f715623872823a72e451243bbf555d10d032
-commit: df8fc4e934c12b906d08050d7779f292b9c5c6b5 kbuild: Enable -fstrict-flex-arrays=3
-date:   4 months ago
-config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20230919/202309191958.UBw1cjXk-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309191958.UBw1cjXk-lkp@intel.com/reproduce)
+Gentle Ping.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309191958.UBw1cjXk-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/skbuff.h:28,
-                    from include/net/net_namespace.h:43,
-                    from include/linux/netdevice.h:38,
-                    from drivers/net/ethernet/marvell/sky2.c:18:
-   drivers/net/ethernet/marvell/sky2.c: In function 'sky2_rx_unmap_skb':
->> include/linux/dma-mapping.h:416:36: warning: array subscript i is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]
-     416 | #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
-         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/marvell/sky2.c:1257:17: note: in expansion of macro 'dma_unmap_page'
-    1257 |                 dma_unmap_page(&pdev->dev, re->frag_addr[i],
-         |                 ^~~~~~~~~~~~~~
-   In file included from drivers/net/ethernet/marvell/sky2.c:41:
-   drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
-    2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
-         |                         ^~~~~~~~~
-   drivers/net/ethernet/marvell/sky2.c: In function 'sky2_rx_submit':
->> drivers/net/ethernet/marvell/sky2.c:1202:59: warning: array subscript i is outside array bounds of 'const dma_addr_t[0]' {aka 'const long long unsigned int[]'} [-Warray-bounds=]
-    1202 |                 sky2_rx_add(sky2, OP_BUFFER, re->frag_addr[i], PAGE_SIZE);
-         |                                              ~~~~~~~~~~~~~^~~
-   drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
-    2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
-         |                         ^~~~~~~~~
-   drivers/net/ethernet/marvell/sky2.c: In function 'sky2_rx_map_skb':
->> drivers/net/ethernet/marvell/sky2.c:1222:30: warning: array subscript i is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]
-    1222 |                 re->frag_addr[i] = skb_frag_dma_map(&pdev->dev, frag, 0,
-         |                 ~~~~~~~~~~~~~^~~
-   drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
-    2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
-         |                         ^~~~~~~~~
->> include/linux/dma-mapping.h:416:36: warning: array subscript i is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]
-     416 | #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
-         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/marvell/sky2.c:1233:17: note: in expansion of macro 'dma_unmap_page'
-    1233 |                 dma_unmap_page(&pdev->dev, re->frag_addr[i],
-         |                 ^~~~~~~~~~~~~~
-   drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
-    2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
-         |                         ^~~~~~~~~
+Thank you,
+Sumit Gupta
 
 
-vim +416 include/linux/dma-mapping.h
-
-d9d200bcebc1f6 Marek Szyprowski    2020-05-13  410  
-00085f1efa387a Krzysztof Kozlowski 2016-08-03  411  #define dma_map_single(d, a, s, r) dma_map_single_attrs(d, a, s, r, 0)
-00085f1efa387a Krzysztof Kozlowski 2016-08-03  412  #define dma_unmap_single(d, a, s, r) dma_unmap_single_attrs(d, a, s, r, 0)
-00085f1efa387a Krzysztof Kozlowski 2016-08-03  413  #define dma_map_sg(d, s, n, r) dma_map_sg_attrs(d, s, n, r, 0)
-00085f1efa387a Krzysztof Kozlowski 2016-08-03  414  #define dma_unmap_sg(d, s, n, r) dma_unmap_sg_attrs(d, s, n, r, 0)
-0495c3d367944e Alexander Duyck     2016-12-14  415  #define dma_map_page(d, p, o, s, r) dma_map_page_attrs(d, p, o, s, r, 0)
-0495c3d367944e Alexander Duyck     2016-12-14 @416  #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
-ed6ccf10f24bdf Christoph Hellwig   2018-12-26  417  #define dma_get_sgtable(d, t, v, h, s) dma_get_sgtable_attrs(d, t, v, h, s, 0)
-ed6ccf10f24bdf Christoph Hellwig   2018-12-26  418  #define dma_mmap_coherent(d, v, c, h, s) dma_mmap_attrs(d, v, c, h, s, 0)
-c9eb6172c328dd Christoph Hellwig   2017-08-27  419  
-
-:::::: The code at line 416 was first introduced by commit
-:::::: 0495c3d367944e4af053983ff3cdf256b567b053 dma: add calls for dma_map_page_attrs and dma_unmap_page_attrs
-
-:::::: TO: Alexander Duyck <alexander.h.duyck@intel.com>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On 01/09/23 22:11, Sumit Gupta wrote:
+> This patch set adds below improvements to the Tegra194 CPUFREQ driver.
+> They are applicable to all the Tegra SoC's supported by the driver.
+> 
+> 1) Patch 1: Avoid making SMP call on every frequency request to reduce
+>     the time for frequency set and get calls.
+> 
+> 2) Patch 2: Use reference clock count based loop instead of udelay()
+>     to improve the accuracy of re-generated CPU frequency.
+> 
+> The patches are not related but have minor conflict. So, need to be
+> applied in order of patch numbers. If 'Patch 2' is to be applied first
+> then will rebase that and send separately.
+> 
+> Sumit Gupta (2):
+>    cpufreq: tegra194: save CPU data to avoid repeated SMP calls
+>    cpufreq: tegra194: use refclk delta based loop instead of udelay
+> 
+>   drivers/cpufreq/tegra194-cpufreq.c | 151 ++++++++++++++++++++---------
+>   1 file changed, 106 insertions(+), 45 deletions(-)
+> 
