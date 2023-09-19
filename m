@@ -2,83 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D13B7A57D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 05:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FFC7A57D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 05:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbjISDVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 23:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
+        id S231284AbjISDVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 23:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjISDVk (ORCPT
+        with ESMTP id S231276AbjISDVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 23:21:40 -0400
+        Mon, 18 Sep 2023 23:21:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15F095
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 20:21:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E26EEC433CA;
-        Tue, 19 Sep 2023 03:21:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF7710E;
+        Mon, 18 Sep 2023 20:21:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1752AC433C8;
+        Tue, 19 Sep 2023 03:21:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695093694;
-        bh=2LmdUZ93iSSVlvHPq9dbFfq6CmmQx0dj2FhDOilY2EE=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=T9UqLjel250GdB/Fn2eQngGfDU+//WxgXbilQglPIIbh3xV0GsuoisDdzUJ3ox0vN
-         NEb17M//LANRGDt8rLOk5vPOQFLN+WVhr7fPx0707AeU1S4zANOEulyC8nqgyjwUDd
-         EUju5t+k5bmhOWx/ty2qF47/xxbPnWjwDTsLLGAtKdrl9mvv1AOxBUb42LYubuKyLS
-         XA75B6FgrO6+hriGxOoBGm52bi9wROUdC0WkQv3Z4U9V1XQgfP70mqKV9iYfEL9jXP
-         4EpL/POP4nyGe33INfVceyZ75dTGfNoPZ1lY6ux6xLnutnAH3iP10+yd5NaEIATvKh
-         K2IaDfz0LRrQQ==
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id BC0BA27C005B;
-        Mon, 18 Sep 2023 23:21:32 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute3.internal (MEProxy); Mon, 18 Sep 2023 23:21:32 -0400
-X-ME-Sender: <xms:uxMJZZvG9pKEDo2RR6Tt5fn4VchqguznfZk9diXapgRu1rFul4WW_g>
-    <xme:uxMJZSfuWxKrmFToszHsp55fKyOURWro-udqwGw7jXAE2aN5zmb0hEtaDfe7I1Mmz
-    1M1zvjW7QgxqrLGqlg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejledgjedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvdfhuedvtdfhudffhfekkefftefghfeltdelgeffteehueegjeff
-    udehgfetiefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:uxMJZczIb77Gypio7HmaUhbBx08ZZkTEmZJnHVtjPP7Hw7e1dtMfeg>
-    <xmx:uxMJZQMz88waIY_DIFwFznTCs1CeP30glI2lMHFWKsa2P3x_Rn5Uxw>
-    <xmx:uxMJZZ8uaaBhKrGBVqvYJ-4XqbllEU6swLPbgbRKa_rOMGydVe1w8A>
-    <xmx:vBMJZQgbKSl3voaX06UACPZvIrxQfl8XHr4f7CJAJySC1jgOzK1dmQ>
-Feedback-ID: ieff94742:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 35DA131A0064; Mon, 18 Sep 2023 23:21:31 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+        s=k20201202; t=1695093699;
+        bh=ntnvdNgkPFJ/oCD4R+vKB36VPnMr86Fi3aB8nZw/9uQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F5C+B6bJQ7OP0XY2LDoG3a8uJqbs+502QTyDR1rOqTOWY4hDs076kNS4PU8HLxBat
+         XS/Tmtlc5y8qjyUGCh4ibAk0p88Jgqac4S5X/AWZwV7Ja9YvfXMgMn5plncE1JSyjJ
+         pct0CdY+rbnHYlAmytEINhobT1Cw5qXRToNoCSeVkhl/r8lwbyCuztuzoQyZS9NZVk
+         c+sj5COXrRt0U/NDIhJA+zophJvRccqJ0/gzdiAJMS9gwjaKjeNAxXYkwsQ658ECSc
+         P+irap/K7l1jN0+Ni/SE9K0Nd0KljsLjuBkCTljWFKZpDSagf76cpp5ygctP5Ad22i
+         +ihjaYBCdNGEQ==
+Date:   Mon, 18 Sep 2023 20:21:38 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Wang Jianchao <jianchwa@outlook.com>,
+        Chandan Babu R <chandanrlinux@gmail.com>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3] xfs: use roundup_pow_of_two instead of ffs during
+ xlog_find_tail
+Message-ID: <20230919032138.GC348037@frogsfrogsfrogs>
+References: <63b3742c-0efe-c096-c737-a0e0419480bd@outlook.com>
+ <59dd15dd-5b35-871d-6d3a-ec779975b089@outlook.com>
+ <0a72f462-8b8e-4dec-6ce4-f52e33423957@outlook.com>
+ <CY8PR05MB9378441D3F6430D1A414142BCDFAA@CY8PR05MB9378.namprd05.prod.outlook.com>
 MIME-Version: 1.0
-Message-Id: <39998df7-8882-43ae-8c7e-936c24eb4041@app.fastmail.com>
-In-Reply-To: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
-References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
- <20230830184958.2333078-8-ankur.a.arora@oracle.com>
-Date:   Mon, 18 Sep 2023 20:21:11 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Ankur Arora" <ankur.a.arora@oracle.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, "the arch/x86 maintainers" <x86@kernel.org>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Borislav Petkov" <bp@alien8.de>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, "Ingo Molnar" <mingo@redhat.com>,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>, mgorman@suse.de,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Jon Grimm" <jon.grimm@amd.com>, "Bharata B Rao" <bharata@amd.com>,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com,
-        "Linus Torvalds" <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CY8PR05MB9378441D3F6430D1A414142BCDFAA@CY8PR05MB9378.namprd05.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -89,27 +53,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023, at 11:49 AM, Ankur Arora wrote:
-> On preempt_model_none() or preempt_model_voluntary() configurations
-> rescheduling of kernel threads happens only when they allow it, and
-> only at explicit preemption points, via calls to cond_resched() or
-> similar.
->
-> That leaves out contexts where it is not convenient to periodically
-> call cond_resched() -- for instance when executing a potentially long
-> running primitive (such as REP; STOSB.)
->
+On Tue, Sep 19, 2023 at 10:06:56AM +0800, Wang Jianchao wrote:
+> Ping ? Do I need other update on this patch ?
 
-So I said this not too long ago in the context of Xen PV, but maybe it's time to ask it in general:
+Nope, I think this is ok...
 
-Why do we support anything other than full preempt?  I can think of two reasons, neither of which I think is very good:
+> Thanks
+> Jianchao
+> 
+> On 2023/9/13 09:38, Wang Jianchao wrote:
+> > 
+> > In our production environment, we find that mounting a 500M /boot
+> > which is umount cleanly needs ~6s. One cause is that ffs() is
+> > used by xlog_write_log_records() to decide the buffer size. It
+> > can cause a lot of small IO easily when xlog_clear_stale_blocks()
+> > needs to wrap around the end of log area and log head block is
+> > not power of two. Things are similar in xlog_find_verify_cycle().
+> > 
+> > The code is able to handed bigger buffer very well, we can use
+> > roundup_pow_of_two() to replace ffs() directly to avoid small
+> > and sychronous IOs.
+> > 
+> > Reviewed-by: Dave Chinner <dchinner@redhat.com>
+> > Signed-off-by: Wang Jianchao <wangjc136@midea.com>
 
-1. Once upon a time, tracking preempt state was expensive.  But we fixed that.
+...so let's see if the release manager will take this patch.
 
-2. Folklore suggests that there's a latency vs throughput tradeoff, and serious workloads, for some definition of serious, want throughput, so they should run without full preemption.
+Chandan?  Could you pull in the various one-off patches floating around
+on the list that have passed review?  ;)
 
-I think #2 is a bit silly.  If you want throughput, and you're busy waiting for a CPU that wants to run you, but it's not because it's running some low-priority non-preemptible thing (because preempt is set to none or volunary), you're not getting throughput.  If you want to get keep some I/O resource busy to get throughput, but you have excessive latency getting scheduled, you don't get throughput.
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-If the actual problem is that there's a workload that performs better when scheduling is delayed (which preempt=none and preempt=volunary do, essentialy at random), then maybe someone should identify that workload and fix the scheduler.
+PS: If you'd like to send a pull request to push things along, please do
 
-So maybe we should just very strongly encourage everyone to run with full preempt and simplify the kernel?
+--D
+
+> > ---
+> > 
+> > Changes in V2:
+> >  - Move change log below "---"
+> >  - Add reviewed-by Dave Chinner tag
+> > 
+> > Changes in V1:
+> >  - Also replace the ffs in xlog_find_verify_cycle()
+> > 
+> >  fs/xfs/xfs_log_recover.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/xfs/xfs_log_recover.c b/fs/xfs/xfs_log_recover.c
+> > index 82c81d20459d..13b94d2e605b 100644
+> > --- a/fs/xfs/xfs_log_recover.c
+> > +++ b/fs/xfs/xfs_log_recover.c
+> > @@ -329,7 +329,7 @@ xlog_find_verify_cycle(
+> >  	 * try a smaller size.  We need to be able to read at least
+> >  	 * a log sector, or we're out of luck.
+> >  	 */
+> > -	bufblks = 1 << ffs(nbblks);
+> > +	bufblks = roundup_pow_of_two(nbblks);
+> >  	while (bufblks > log->l_logBBsize)
+> >  		bufblks >>= 1;
+> >  	while (!(buffer = xlog_alloc_buffer(log, bufblks))) {
+> > @@ -1528,7 +1528,7 @@ xlog_write_log_records(
+> >  	 * a smaller size.  We need to be able to write at least a
+> >  	 * log sector, or we're out of luck.
+> >  	 */
+> > -	bufblks = 1 << ffs(blocks);
+> > +	bufblks = roundup_pow_of_two(blocks);
+> >  	while (bufblks > log->l_logBBsize)
+> >  		bufblks >>= 1;
+> >  	while (!(buffer = xlog_alloc_buffer(log, bufblks))) {
