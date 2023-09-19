@@ -2,115 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB6B7A6BB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 21:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9881A7A6BB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 21:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbjISToA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 15:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
+        id S232922AbjISTof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 15:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232411AbjISTn7 (ORCPT
+        with ESMTP id S232827AbjISToc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 15:43:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4EEEC
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GUGhcqBPQQtT/m+P4vnc8VtVAbKOjKnB5nSOxes9dp8=; b=OSpQdRvJyfmaggQxQMKEusxaxh
-        PN0aAsmoIHmc+FaFOcBpRu3dJMjLYsrb9NIyr256qw+UVuSO4UmvpyK2c5Hc/Ug0BgCg7hOI2V/vf
-        FA8qlQvb6xcOKkZfGnl0ineHrFTexea6ydTRbtG4LlO3JMGwhzTHu1K/tKEAzogP3dPsPyJGVvuzS
-        lpHAhkrFfHcEgSQHWGDf8x0jtiEakTtM+vFf45jP6TKmF9QWPN4BaSWGZL+snLtIWqe3blmPLFCgO
-        a54SXPYDzET/GDonBHwqyY9xLfXekt0tlY5q+nVZxRBqt07yaNssfJ7GIddfpZMUFS5re554As3Z6
-        u5JpjUtw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qigdE-00DqxM-0Z;
-        Tue, 19 Sep 2023 19:43:39 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4793C300585; Tue, 19 Sep 2023 21:43:37 +0200 (CEST)
-Date:   Tue, 19 Sep 2023 21:43:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dan Raymond <draymond@foxvalley.net>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v1] arch/x86: port I/O tracing on x86
-Message-ID: <20230919194337.GC424@noisy.programming.kicks-ass.net>
-References: <14c27df7-12a3-e432-a741-17672185c092@foxvalley.net>
+        Tue, 19 Sep 2023 15:44:32 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98B89D
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:44:26 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7a512434bc9so117774241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:44:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695152666; x=1695757466; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QiKc36SyKHESSsQhenaXrpw2Mp7z+R70C2lZ6X9q9Pg=;
+        b=c/eClF5eozlmFoLiWQEOaPfhBFu/BJGgBqJAjp6ENFSQHogFLXbBxMFIOaBvsFXutQ
+         YgN1iwYlLg1xGqGkN4BQE45OBUjpZflQvqBGNf1O+7O+35R51Sx/Sszv3pqBwWOcKmfd
+         nwYad5nsg6GcA/O/z6FY3/iEpqoYnpcvGKx1yB3IkWNoSV4aVF9/QYU4XnbQiQDP/Z81
+         cRRWnaWmR/CySN3TcfyaZdCqiFuOyfYjgCQe7TTWJcfbby6PD+rgjgXVdncMhK/MM8nn
+         VWbS7bwQfyq7pAbSMlzmD2k0y4ZiXzUVBBX6Kcrhi5lKrNe7lRuwVo1bfiUi0HqXL2Qm
+         5iyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695152666; x=1695757466;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QiKc36SyKHESSsQhenaXrpw2Mp7z+R70C2lZ6X9q9Pg=;
+        b=q6yH7sVMGreIDrRzfgGZpb3FGvrpDluxzub6fkuffJQonZ1p9pacGpsQ9ddX5zDFRt
+         PehQxH+23P0GMpbWZO4kaoVyIPnCiV6wfIqza2PH02IqZj5PaJKMMgJ3ZhhmGySRVauA
+         hVC1E7wTJVqNM81VeWe9DXVN7f41rr7okb39lmt4PrZ01Fb4wYyudmgf9v3pNVrXHV4T
+         NaGleCHrcZCTYXCCzr/Z8SLJ6UqpjlMyJ2ZE+IXUCT6h6ByLncvEmQLutLjLQYrWoUsQ
+         hjcnqpxMm/g9HGHHrShRsj1Zmr18eGNWOA6zGRH9ocumrAwt8J46HVqCcSCs5yCNhsUt
+         kxeg==
+X-Gm-Message-State: AOJu0Yx1tBR2+ZNMWZDqrTS2x/s+/x9qgdIQEDla3tTsIIYT8tVNExIm
+        xQW3qPAQZ4UqawR8aISOxuRf9haqHBv99YLb50hf0w==
+X-Google-Smtp-Source: AGHT+IGBVHqkqtQlPF8qBlSmXV3/FZ7czBxLNbksB4YaG/ipYuIEVUvfF2iODtAvNpAGbyZoSFERxdqT4Ark6Z02HVk=
+X-Received: by 2002:a05:6102:1522:b0:452:6834:b8f6 with SMTP id
+ f34-20020a056102152200b004526834b8f6mr2060855vsv.3.1695152665688; Tue, 19 Sep
+ 2023 12:44:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14c27df7-12a3-e432-a741-17672185c092@foxvalley.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918234412.363087-2-mmaurer@google.com>
+In-Reply-To: <20230918234412.363087-2-mmaurer@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 19 Sep 2023 12:44:14 -0700
+Message-ID: <CAKwvOdmsNwszu4Vk1K7e39hencNcjEmjr5q7EbTJCjdY5TDsFA@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: Respect HOSTCC when linking for host
+To:     Matthew Maurer <mmaurer@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 11:55:10AM -0600, Dan Raymond wrote:
-> Add support for port I/O tracing on x86.  Memory mapped I/O tracing is
-> available on x86 via CONFIG_MMIOTRACE but that relies on page faults
-> so it doesn't work with port I/O.  This feature uses tracepoints in a
-> similar manner as CONFIG_TRACE_MMIO_ACCESS.
-> 
-> Signed-off-by: Dan Raymond <draymond@foxvalley.net>
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Mon, Sep 18, 2023 at 4:44=E2=80=AFPM Matthew Maurer <mmaurer@google.com>=
+ wrote:
+>
+> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
+> resulting in build failures in hermetic environments where `cc` does not
+> exist. This includes both hostprogs and proc-macros.
+>
+> Since we are setting the linker to `HOSTCC`, we set the linker flavor to
+> `gcc` explicitly.
+>
+> Signed-off-by: Matthew Maurer <mmaurer@google.com>
 > ---
->  arch/x86/include/asm/shared/io.h | 11 +++++++
->  arch/x86/lib/Makefile            |  1 +
->  arch/x86/lib/trace_portio.c      | 18 ++++++++++++
->  include/trace/events/portio.h    | 49 ++++++++++++++++++++++++++++++++
->  4 files changed, 79 insertions(+)
->  create mode 100644 arch/x86/lib/trace_portio.c
->  create mode 100644 include/trace/events/portio.h
-> 
-> diff --git a/arch/x86/include/asm/shared/io.h b/arch/x86/include/asm/shared/io.h
-> index c0ef921c0586..e7ef4212e00b 100644
-> --- a/arch/x86/include/asm/shared/io.h
-> +++ b/arch/x86/include/asm/shared/io.h
-> @@ -2,13 +2,23 @@
->  #ifndef _ASM_X86_SHARED_IO_H
->  #define _ASM_X86_SHARED_IO_H
->  
-> +#include <linux/instruction_pointer.h>
->  #include <linux/types.h>
->  
-> +#if defined(CONFIG_TRACEPOINTS) && !defined(BOOT_COMPRESSED_MISC_H) && !defined(BOOT_BOOT_H)
-> +extern void do_trace_portio_read(u32 value, u16 port, char width, long ip_addr);
-> +extern void do_trace_portio_write(u32 value, u16 port, char width, long ip_addr);
-> +#else
-> +static inline void do_trace_portio_read(u32 value, u16 port, char width, long ip_addr) {}
-> +static inline void do_trace_portio_write(u32 value, u16 port, char width, long ip_addr) {}
-> +#endif
+>
+> Updated the patch to reflect Nick's comment that KBUILD_HOSTLDFLAGS
+> should be respected as well.
+>
+> I did not switch it to use HOSTLD for two reasons:
+> * That variable is not globally defined - it is only available in two
+>   subdirectories of tools/
+> * C host scripts are linked by HOSTCC as well, even when linking a
+>   collection of object files. It *prints* HOSTLD, but invokes HOSTCC.
+>   See scripts/Makefile.host cmd_host-cmulti for an example.
+
+Sure, that makes sense to me, thanks for pointing that out.
+
+>
+>  rust/Makefile         | 4 ++++
+>  scripts/Makefile.host | 4 ++++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/rust/Makefile b/rust/Makefile
+> index 87958e864be0..b60b7eb8c5a0 100644
+> --- a/rust/Makefile
+> +++ b/rust/Makefile
+> @@ -380,9 +380,13 @@ $(obj)/exports_bindings_generated.h: $(obj)/bindings=
+.o FORCE
+>  $(obj)/exports_kernel_generated.h: $(obj)/kernel.o FORCE
+>         $(call if_changed,exports)
+>
+> +KBUILD_HOSTLDFLAGS_SQ =3D '$(subst ','\'',$(KBUILD_HOSTLDFLAGS))'
+
+I don't think we need to do this kind of escaping. If a linker flag is
+passed to the linker directly as the driver has spaces such as `-z
+relro`, if it is instead passed to the compiler as the driver will not
+contain spaces (`-Wl,-z,relro`). As such, I don't think we need this
+escaping (famous last words).  Mind submitting a v3 without it?
+
 > +
->  #define BUILDIO(bwl, bw, type)						\
->  static inline void __out##bwl(type value, u16 port)			\
->  {									\
->  	asm volatile("out" #bwl " %" #bw "0, %w1"			\
->  		     : : "a"(value), "Nd"(port));			\
-> +	do_trace_portio_write(value, port, #bwl[0], _THIS_IP_);		\
->  }									\
->  									\
->  static inline type __in##bwl(u16 port)					\
-> @@ -16,6 +26,7 @@ static inline type __in##bwl(u16 port)					\
->  	type value;							\
->  	asm volatile("in" #bwl " %w1, %" #bw "0"			\
->  		     : "=a"(value) : "Nd"(port));			\
-> +	do_trace_portio_read(value, port, #bwl[0], _THIS_IP_);		\
->  	return value;							\
->  }
+>  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
+>        cmd_rustc_procmacro =3D \
+>         $(RUSTC_OR_CLIPPY) $(rust_common_flags) \
+> +               -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
+> +               -Clink-args=3D$(KBUILD_HOSTLDFLAGS_SQ) \
+>                 --emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --exter=
+n proc_macro \
+>                 --crate-type proc-macro \
+>                 --crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
+> diff --git a/scripts/Makefile.host b/scripts/Makefile.host
+> index 8f7f842b54f9..dc0410cae5ca 100644
+> --- a/scripts/Makefile.host
+> +++ b/scripts/Makefile.host
+> @@ -87,10 +87,14 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
+>                   $(KBUILD_HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS) \
+>                   $(HOSTCXXFLAGS_$(target-stem).o)
+>
+> +KBUILD_HOSTLDFLAGS_SQ =3D '$(subst ','\'',$(KBUILD_HOSTLDFLAGS))'
+> +
+>  # `--out-dir` is required to avoid temporaries being created by `rustc` =
+in the
+>  # current working directory, which may be not accessible in the out-of-t=
+ree
+>  # modules case.
+>  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile) \
+> +                -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
+> +                -Clink-args=3D$(KBUILD_HOSTLDFLAGS_SQ) \
+>                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
+>                   $(HOSTRUSTFLAGS_$(target-stem))
+>
+> --
+> 2.42.0.459.ge4e396fd5e-goog
+>
 
-No, very much no.
 
-This sticks tracing in the very rawest of raw output paths. This means I
-can no longer use early_console->write() to print to my
-early_serial_console.
-
-That is the one and only fully reliably output path we have. You're not
-sticking tracing in it.
+--=20
+Thanks,
+~Nick Desaulniers
