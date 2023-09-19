@@ -2,348 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC6D7A666B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81617A6667
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 16:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbjISOTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 10:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
+        id S232655AbjISOSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 10:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbjISOTC (ORCPT
+        with ESMTP id S232253AbjISOSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 10:19:02 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AAFBE;
-        Tue, 19 Sep 2023 07:18:55 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38JDb4HF026717;
-        Tue, 19 Sep 2023 07:18:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=P5UlX3E1s+XY9LyEfHq8Mz6BYuAJueMM/PbIL+Q0jmA=;
- b=fDVXMCxNTAgj2govAGyClkvN/BcTsDEO2mKMLR+pVtJvFXSZW9asRGBkH56ULUoOdqMZ
- 9BPIjtZo+9DHFgu5sYGvsvQzINaAcY4kxiyJzvmgAA2h5UyLmVurL14YHSa6AhRgyqM0
- YJTvJBWCxEULg1Ir6W8a6tODh3gCh9JvCCK1+hYWQFHkBPVKYQu7lY1y7gh1/0WMWLjA
- AwcGIiTOjMpoZawAhiQPjWBZaiILh/dGDkKvGHEs2HL57Mhyp75i7BgGI2doyP2IasWT
- JXo9mIvHRLdFHS27XTzXCKkRRFpyXTyFSMEwiW6dvRd4uJX0J/28eZgu3U0lQfX6b3Z0 DQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3t5bvkrrb5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 07:18:40 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 19 Sep
- 2023 07:18:37 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 19 Sep 2023 07:18:37 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 25E2A3F709B;
-        Tue, 19 Sep 2023 07:18:33 -0700 (PDT)
-From:   Hariprasad Kelam <hkelam@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <lcherian@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
-        <edumazet@google.com>, <pabeni@redhat.com>
-Subject: [net-net Patchv2] octeontx2-pf: Tc flower offload support for MPLS
-Date:   Tue, 19 Sep 2023 19:48:32 +0530
-Message-ID: <20230919141832.5931-1-hkelam@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 19 Sep 2023 10:18:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0485583;
+        Tue, 19 Sep 2023 07:18:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+rXfj/W4xPaH3DTrJ0cU8p8j5HCQ+NymQZETN5JzNPM=; b=M4lef3ntbVB27MlrEpcj93LYG3
+        O2y+Ze0b8bqFzGQgwHiKyOXsVnHvnL2jUnPykZ0vJI2lEmWOpQawFEjkCtoxLWPFtTdhPK6rL6P/D
+        thSRT2M3NU9ZSUHG6tdB28KQ0ip9sirHUpDWylMAfRdbVIy9t578oTptDSqpGkf6UW30n8FRTpueR
+        yY590QqMWMGNrUpLmFgOkdVMU779RisiVMXNpHPOpjHgnuqZOBfLg8RjbwwyHY/2NhAk6KHPlo0zS
+        kjIrR9zfAG8L3q8bTeryq7G0U4eyXGsksdSw2bS36ssvvGseklALrJliT+gykcw/POGSKfk9NG/wn
+        ohAezWfg==;
+Received: from [2001:8b0:10b:5:db09:b801:9fa2:7293] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qibYm-0003RX-03; Tue, 19 Sep 2023 14:18:40 +0000
+Message-ID: <3d7070d51dd0094e426b420bc5e7d09657dd8d38.camel@infradead.org>
+Subject: Re: [PATCH v4 09/13] KVM: xen: automatically use the vcpu_info
+ embedded in shared_info
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Date:   Tue, 19 Sep 2023 15:18:39 +0100
+In-Reply-To: <20230919134149.6091-10-paul@xen.org>
+References: <20230919134149.6091-1-paul@xen.org>
+         <20230919134149.6091-10-paul@xen.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-q/pjSgw8hDMC1UiJbBC7"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: ga6Sc3IeB3ZuBgF78npX5pKrxRYK0g9e
-X-Proofpoint-ORIG-GUID: ga6Sc3IeB3ZuBgF78npX5pKrxRYK0g9e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_06,2023-09-19_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends flower offload support for MPLS protocol.
-Due to hardware limitation, currently driver supports lse
-depth up to 4.
 
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
-v2 * instead of magic number 0xffffff00 use appropriate mask OTX2_FLOWER_MASK_MPLS_NON_TTL
+--=-q/pjSgw8hDMC1UiJbBC7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
- .../net/ethernet/marvell/octeontx2/af/mbox.h  |  6 ++
- .../net/ethernet/marvell/octeontx2/af/npc.h   |  8 +++
- .../marvell/octeontx2/af/rvu_debugfs.c        | 52 ++++++++++++++++++
- .../marvell/octeontx2/af/rvu_npc_fs.c         | 46 ++++++++++++++++
- .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 55 +++++++++++++++++++
- 5 files changed, 167 insertions(+)
+T24gVHVlLCAyMDIzLTA5LTE5IGF0IDEzOjQxICswMDAwLCBQYXVsIER1cnJhbnQgd3JvdGU6Cj4g
+LS0tIGEvYXJjaC94ODYva3ZtL3hlbi5jCj4gKysrIGIvYXJjaC94ODYva3ZtL3hlbi5jCj4gQEAg
+LTQ5MSw2ICs0OTEsMjEgQEAgc3RhdGljIHZvaWQga3ZtX3hlbl9pbmplY3RfdmNwdV92ZWN0b3Io
+c3RydWN0IGt2bV92Y3B1ICp2KQo+IMKgCj4gwqBzdGF0aWMgc3RydWN0IGdmbl90b19wZm5fY2Fj
+aGUgKmdldF92Y3B1X2luZm9fY2FjaGUoc3RydWN0IGt2bV92Y3B1ICp2LCB1bnNpZ25lZCBsb25n
+ICpvZmZzZXQpCj4gwqB7Cj4gK8KgwqDCoMKgwqDCoMKgaWYgKCF2LT5hcmNoLnhlbi52Y3B1X2lu
+Zm9fY2FjaGUuYWN0aXZlICYmIHYtPmFyY2gueGVuLnZjcHVfaWQgPCBNQVhfVklSVF9DUFVTKSB7
+Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBrdm0gKmt2bSA9IHYtPmt2
+bTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChvZmZzZXQpIHsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChJU19FTkFC
+TEVEKENPTkZJR182NEJJVCkgJiYga3ZtLT5hcmNoLnhlbi5sb25nX21vZGUpCj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgKm9m
+ZnNldCA9IG9mZnNldG9mKHN0cnVjdCBzaGFyZWRfaW5mbywKPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmNwdV9pbmZvW3YtPmFyY2gueGVuLnZjcHVfaWRdKTsK
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGVsc2UKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAqb2Zmc2V0ID0gb2Zmc2V0b2Yoc3RydWN0IGNvbXBhdF9zaGFyZWRfaW5mbywKPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmNwdV9pbmZvW3YtPmFyY2gu
+eGVuLnZjcHVfaWRdKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+ICsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuICZrdm0tPmFyY2gueGVuLnNoaW5m
+b19jYWNoZTsKPiArwqDCoMKgwqDCoMKgwqB9Cj4gKwo+IMKgwqDCoMKgwqDCoMKgwqBpZiAob2Zm
+c2V0KQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgKm9mZnNldCA9IDA7Cj4gwqAK
+PiBAQCAtNzY0LDYgKzc3OSw5MiBAQCBzdGF0aWMgaW50IGt2bV94ZW5fc2V0X3ZjcHVfaWQoc3Ry
+dWN0IGt2bV92Y3B1ICp2Y3B1LCB1bnNpZ25lZCBpbnQgdmNwdV9pZCkKPiDCoMKgwqDCoMKgwqDC
+oMKgcmV0dXJuIDA7Cj4gwqB9Cj4gwqAKPiArc3RhdGljIGludCBrdm1feGVuX3NldF92Y3B1X2lu
+Zm8oc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCBncGFfdCBncGEpCj4gK3sKPiArwqDCoMKgwqDCoMKg
+wqBzdHJ1Y3Qga3ZtICprdm0gPSB2Y3B1LT5rdm07Cj4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IGdm
+bl90b19wZm5fY2FjaGUgKnNpX2dwYyA9ICZrdm0tPmFyY2gueGVuLnNoaW5mb19jYWNoZTsKPiAr
+wqDCoMKgwqDCoMKgwqBzdHJ1Y3QgZ2ZuX3RvX3Bmbl9jYWNoZSAqdmlfZ3BjID0gJnZjcHUtPmFy
+Y2gueGVuLnZjcHVfaW5mb19jYWNoZTsKPiArwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBsb25nIGZs
+YWdzOwo+ICvCoMKgwqDCoMKgwqDCoHVuc2lnbmVkIGxvbmcgb2Zmc2V0Owo+ICvCoMKgwqDCoMKg
+wqDCoGludCByZXQ7Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoGlmIChncGEgPT0gS1ZNX1hFTl9JTlZB
+TElEX0dQQSkgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBrdm1fZ3BjX2RlYWN0
+aXZhdGUodmlfZ3BjKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIDA7
+Cj4gK8KgwqDCoMKgwqDCoMKgfQo+ICsKPiArwqDCoMKgwqDCoMKgwqAvKgo+ICvCoMKgwqDCoMKg
+wqDCoCAqIEluIFhlbiBpdCBpcyBub3QgcG9zc2libGUgZm9yIGFuIGV4cGxpY2l0IHZjcHVfaW5m
+byB0byBiZSBzZXQKPiArwqDCoMKgwqDCoMKgwqAgKiBiZWZvcmUgdGhlIHNoYXJlZF9pbmZvIGV4
+aXN0cyBzaW5jZSB0aGUgZm9ybWVyIGlzIGRvbmUgaW4gcmVzcG9uc2UKPiArwqDCoMKgwqDCoMKg
+wqAgKiB0byBhIGh5cGVyY2FsbCBhbmQgdGhlIGxhdHRlciBpcyBzZXQgdXAgYXMgcGFydCBvZiBk
+b21haW4gY3JlYXRpb24uCj4gK8KgwqDCoMKgwqDCoMKgICogVGhlIGZpcnN0IDMyIHZDUFVzIGhh
+dmUgYSBkZWZhdWx0IHZjcHVfaW5mbyBlbWJlZGRlZCBpbiBzaGFyZWRfaW5mbwo+ICvCoMKgwqDC
+oMKgwqDCoCAqIHRoZSBjb250ZW50IG9mIHdoaWNoIGlzIGNvcGllZCBhY3Jvc3Mgd2hlbiBhbiBl
+eHBsaWNpdCB2Y3B1X2luZm8gaXMKPiArwqDCoMKgwqDCoMKgwqAgKiBzZXQsIHdoaWNoIGNhbiBh
+bHNvIGNsZWFybHkgbm90IGJlIGRvbmUgaWYgd2UgZG9uJ3Qga25vdyB3aGVyZSB0aGUKPiArwqDC
+oMKgwqDCoMKgwqAgKiBzaGFyZWRfaW5mbyBpcy4gSGVuY2Ugd2UgbmVlZCB0byBlbmZvcmNlIHRo
+YXQgdGhlIHNoYXJlZF9pbmZvIGNhY2hlCj4gK8KgwqDCoMKgwqDCoMKgICogaXMgYWN0aXZlIGhl
+cmUuCj4gK8KgwqDCoMKgwqDCoMKgICovCj4gK8KgwqDCoMKgwqDCoMKgaWYgKCFzaV9ncGMtPmFj
+dGl2ZSkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FSU5WQUw7Cj4g
+Kwo+ICvCoMKgwqDCoMKgwqDCoC8qIFNldHRpbmcgYW4gZXhwbGljaXQgdmNwdV9pbmZvIGlzIGEg
+b25lLW9mZiBvcGVyYXRpb24gKi8KPiArwqDCoMKgwqDCoMKgwqBpZiAodmlfZ3BjLT5hY3RpdmUp
+Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRUlOVkFMOwoKSXMgdGhh
+dCB0aGUgZXJybm8gdGhhdCBYZW4gd2lsbCByZXR1cm4gdG8gdGhlIGh5cGVyY2FsbCBpZiBhIGd1
+ZXN0CnRyaWVzIGl0PyBJLmUuIGlmIHRoZSBWTU0gc2ltcGx5IHJldHVybnMgdGhlIGVycm5vIHRo
+YXQgaXQgZ2V0cyBmcm9tCnRoZSBrZXJuZWwsIGlzIHRoYXQgT0s/Cgo+ICvCoMKgwqDCoMKgwqDC
+oHJldCA9IGt2bV9ncGNfYWN0aXZhdGUodmlfZ3BjLCBncGEsIHNpemVvZihzdHJ1Y3QgdmNwdV9p
+bmZvKSk7CgpGcm9tIHRoaXMgbW9tZW50LCBjYW4ndCBpbnRlcnJ1cHRzIGJlIGRlbGl2ZXJlZCB0
+byB0aGUgbmV3IHZjcHVfaW5mbywKZXZlbiB0aG91Z2ggdGhlIG1lbWNweSBoYXNuJ3QgaGFwcGVu
+ZWQgeWV0PwoKSSB0aGluayB3ZSBuZWVkIHRvIGVuc3VyZSB0aGF0IGFueSBrdm1feGVuX3NldF9l
+dnRjaG5fZmFzdCgpIHdoaWNoCmhhcHBlbnMgYXQgdGhpcyBwb2ludCBjYW5ub3QgcHJvY2VlZCwg
+YW5kIGZhbGxzIGJhY2sgdG8gdGhlIHNsb3cgcGF0aC4KCkNhbiB3ZSBzZXQgYSBmbGFnIGJlZm9y
+ZSB3ZSBhY3RpdmF0ZSB0aGUgdmNwdV9pbmZvIGFuZCBjbGVhciBpdCBhZnRlcgp0aGUgbWVtY3B5
+IGlzIGRvbmUsIHRoZW4gbWFrZSBrdm1feGVuX3NldF9ldnRjaG5fZmFzdCgpIHJldHVybgpFV09V
+TERCTE9DSyB3aGVuZXZlciB0aGF0IGZsYWcgaXMgc2V0PwoKVGhlIHNsb3cgcGF0aCBpbiBrdm1f
+eGVuX3NldF9ldnRjaG4oKSB0YWtlcyBrdm0tPmFyY2gueGVuLnhlbl9sb2NrIGFuZApJIHRoaW5r
+IGt2bV94ZW5fdmNwdV9zZXRfYXR0cigpIGhhcyB0YWtlbiB0aGF0IHNhbWUgbG9jayBiZWZvcmUg
+eW91IGdldAp0byB0aGlzIGNvZGUsIHNvIGl0IHdvcmtzIG91dCBuaWNlbHk/CgoKCj4gK8KgwqDC
+oMKgwqDCoMKgaWYgKHJldCkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJu
+IHJldDsKPiArCj4gK8KgwqDCoMKgwqDCoMKgLyogTm90aGluZyBtb3JlIHRvIGRvIGlmIHRoZSB2
+Q1BVIGlzIG5vdCBhbW9uZyB0aGUgZmlyc3QgMzIgKi8KPiArwqDCoMKgwqDCoMKgwqBpZiAodmNw
+dS0+YXJjaC54ZW4udmNwdV9pZCA+PSBNQVhfVklSVF9DUFVTKQo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqByZXR1cm4gMDsKPiArCj4gK8KgwqDCoMKgwqDCoMKgLyoKPiArwqDCoMKg
+wqDCoMKgwqAgKiBJdCdzIHBvc3NpYmxlIHRoYXQgdGhlIHZjcHVfaW5mbyBjYWNoZSBoYXMgYmVl
+biBpbnZhbGlkYXRlZCBzaW5jZQo+ICvCoMKgwqDCoMKgwqDCoCAqIHdlIGFjdGl2YXRlZCBpdCBz
+byB3ZSBuZWVkIHRvIGdvIHRocm91Z2ggdGhlIGNoZWNrLXJlZnJlc2ggZGFuY2UuCj4gK8KgwqDC
+oMKgwqDCoMKgICovCj4gK8KgwqDCoMKgwqDCoMKgcmVhZF9sb2NrX2lycXNhdmUoJnZpX2dwYy0+
+bG9jaywgZmxhZ3MpOwo+ICvCoMKgwqDCoMKgwqDCoHdoaWxlICgha3ZtX2dwY19jaGVjayh2aV9n
+cGMsIHNpemVvZihzdHJ1Y3QgdmNwdV9pbmZvKSkpIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgcmVhZF91bmxvY2tfaXJxcmVzdG9yZSgmdmlfZ3BjLT5sb2NrLCBmbGFncyk7Cj4g
+Kwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXQgPSBrdm1fZ3BjX3JlZnJlc2go
+dmlfZ3BjLCBzaXplb2Yoc3RydWN0IHZjcHVfaW5mbykpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqBpZiAocmV0KSB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBrdm1fZ3BjX2RlYWN0aXZhdGUodmlfZ3BjKTsKPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7Cj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoH0KPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHJlYWRfbG9ja19pcnFzYXZlKCZ2aV9ncGMtPmxvY2ssIGZsYWdzKTsKPiArwqDCoMKgwqDC
+oMKgwqB9Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoC8qIE5vdyBsb2NrIHRoZSBzaGFyZWRfaW5mbyBj
+YWNoZSBzbyB3ZSBjYW4gY29weSB0aGUgdmNwdV9pbmZvICovCj4gK8KgwqDCoMKgwqDCoMKgcmVh
+ZF9sb2NrKCZzaV9ncGMtPmxvY2spOwoKVGhpcyBhZGRzIGEgbmV3IGxvY2sgb3JkZXJpbmcgcnVs
+ZSBvZiB0aGUgdmNwdV9pbmZvIGxvY2socykgYmVmb3JlIHRoZQpzaGFyZWRfaW5mbyBsb2NrLsKg
+SSBkb24ndCBrbm93IHRoYXQgaXQncyAqd3JvbmcqIGJ1dCBpdCBzZWVtcyB3ZWlyZCB0bwptZTsg
+SSBleHBlY3RlZCB0aGUgc2hhcmVkX2luZm8gdG8gY29tZSBmaXJzdD8KCkkgYXZvaWRlZCB0YWtp
+bmcgYm90aCBhdCBvbmNlIGluIGt2bV94ZW5fc2V0X2V2dGNobl9mYXN0KCksIGFsdGhvdWdoCm1h
+eWJlIGlmIHdlIGFyZSBnb2luZyB0byBoYXZlIGEgcnVsZSB0aGF0IGFsbG93cyBib3RoLCB3ZSBj
+b3VsZCByZXZpc2l0CnRoYXQuIFN1c3BlY3QgaXQgaXNuJ3QgbmVlZGVkLgoKRWl0aGVyIHdheSBp
+dCBpcyB3b3J0aCBhIGNsZWFyIGNvbW1lbnQgc29tZXdoZXJlIHRvIGRvY3VtZW50IHRoZSBsb2Nr
+Cm9yZGVyaW5nLCBhbmQgSSdkIGFsc28gbGlrZSB0byBrbm93IHRoaXMgaGFzIGJlZW4gdGVzdGVk
+IHdpdGggbG9ja2RlcCwKd2hpY2ggaXMgb2Z0ZW4gY2xldmVyZXIgdGhhbiBtZS4KCj4gK8KgwqDC
+oMKgwqDCoMKgd2hpbGUgKCFrdm1fZ3BjX2NoZWNrKHNpX2dwYywgUEFHRV9TSVpFKSkgewo+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZWFkX3VubG9jaygmc2lfZ3BjLT5sb2NrKTsK
+PiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IGt2bV9ncGNfcmVmcmVz
+aChzaV9ncGMsIFBBR0VfU0laRSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlm
+IChyZXQpIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oHJlYWRfdW5sb2NrX2lycXJlc3RvcmUoJnZpX2dwYy0+bG9jaywgZmxhZ3MpOwo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKga3ZtX2dwY19kZWFjdGl2YXRl
+KHZpX2dwYyk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqByZXR1cm4gcmV0Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gKwo+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZWFkX2xvY2soJnNpX2dwYy0+bG9jayk7Cj4g
+K8KgwqDCoMKgwqDCoMKgfQo+ICsKPiArwqDCoMKgwqDCoMKgwqBpZiAoSVNfRU5BQkxFRChDT05G
+SUdfNjRCSVQpICYmIGt2bS0+YXJjaC54ZW4ubG9uZ19tb2RlKQo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBvZmZzZXQgPSBvZmZzZXRvZihzdHJ1Y3Qgc2hhcmVkX2luZm8sCj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgdmNwdV9pbmZvW3ZjcHUtPmFyY2gueGVuLnZjcHVfaWRdKTsKPiArwqDCoMKgwqDCoMKg
+wqBlbHNlCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG9mZnNldCA9IG9mZnNldG9m
+KHN0cnVjdCBjb21wYXRfc2hhcmVkX2luZm8sCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmNwdV9pbmZvW3ZjcHUtPmFy
+Y2gueGVuLnZjcHVfaWRdKTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgbWVtY3B5KHZpX2dwYy0+a2h2
+YSwgc2lfZ3BjLT5raHZhICsgb2Zmc2V0LCBzaXplb2Yoc3RydWN0IHZjcHVfaW5mbykpOwo+ICsK
+PiArwqDCoMKgwqDCoMKgwqByZWFkX3VubG9jaygmc2lfZ3BjLT5sb2NrKTsKPiArwqDCoMKgwqDC
+oMKgwqByZWFkX3VubG9ja19pcnFyZXN0b3JlKCZ2aV9ncGMtPmxvY2ssIGZsYWdzKTsKPiArCj4g
+K8KgwqDCoMKgwqDCoMKgcmV0dXJuIDA7Cj4gK30KPiArCj4gwqBpbnQga3ZtX3hlbl92Y3B1X3Nl
+dF9hdHRyKHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwgc3RydWN0IGt2bV94ZW5fdmNwdV9hdHRyICpk
+YXRhKQo+IMKgewo+IMKgwqDCoMKgwqDCoMKgwqBpbnQgaWR4LCByID0gLUVOT0VOVDsKPiBAQCAt
+Nzc5LDE0ICs4ODAsNyBAQCBpbnQga3ZtX3hlbl92Y3B1X3NldF9hdHRyKHN0cnVjdCBrdm1fdmNw
+dSAqdmNwdSwgc3RydWN0IGt2bV94ZW5fdmNwdV9hdHRyICpkYXRhKQo+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgQlVJTERfQlVHX09OKG9mZnNldG9mKHN0cnVjdCB2Y3B1X2luZm8s
+IHRpbWUpICE9Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgb2Zmc2V0b2Yoc3RydWN0IGNvbXBhdF92Y3B1X2luZm8sIHRpbWUpKTsKPiDC
+oAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoZGF0YS0+dS5ncGEgPT0gS1ZN
+X1hFTl9JTlZBTElEX0dQQSkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKga3ZtX2dwY19kZWFjdGl2YXRlKCZ2Y3B1LT5hcmNoLnhlbi52Y3B1X2luZm9f
+Y2FjaGUpOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ciA9IDA7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBi
+cmVhazsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+IC0KPiAtwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgciA9IGt2bV9ncGNfYWN0aXZhdGUoJnZjcHUtPmFyY2gueGVu
+LnZjcHVfaW5mb19jYWNoZSwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkYXRhLT51LmdwYSwgc2l6ZW9mKHN0
+cnVjdCB2Y3B1X2luZm8pKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgciA9IGt2
+bV94ZW5fc2V0X3ZjcHVfaW5mbyh2Y3B1LCBkYXRhLT51LmdwYSk7Cj4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqBpZiAoIXIpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKga3ZtX21ha2VfcmVxdWVzdChLVk1fUkVRX0NMT0NLX1VQREFURSwg
+dmNwdSk7Cj4gwqAKCg==
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index c5bd7747fc0e..6845556581c3 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -1473,6 +1473,12 @@ struct flow_msg {
- 		u8 next_header;
- 	};
- 	__be16 vlan_itci;
-+#define OTX2_FLOWER_MASK_MPLS_LB		GENMASK(31, 12)
-+#define OTX2_FLOWER_MASK_MPLS_TC		GENMASK(11, 9)
-+#define OTX2_FLOWER_MASK_MPLS_BOS		BIT(8)
-+#define OTX2_FLOWER_MASK_MPLS_TTL		GENMASK(7, 0)
-+#define OTX2_FLOWER_MASK_MPLS_NON_TTL		GENMASK(31, 8)
-+	u32 mpls_lse[4];
- };
 
- struct npc_install_flow_req {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-index de9fbd98dfb7..ab3e39eef2eb 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-@@ -206,6 +206,14 @@ enum key_fields {
- 	NPC_SPORT_SCTP,
- 	NPC_DPORT_SCTP,
- 	NPC_IPSEC_SPI,
-+	NPC_MPLS1_LBTCBOS,
-+	NPC_MPLS1_TTL,
-+	NPC_MPLS2_LBTCBOS,
-+	NPC_MPLS2_TTL,
-+	NPC_MPLS3_LBTCBOS,
-+	NPC_MPLS3_TTL,
-+	NPC_MPLS4_LBTCBOS,
-+	NPC_MPLS4_TTL,
- 	NPC_HEADER_FIELDS_MAX,
- 	NPC_CHAN = NPC_HEADER_FIELDS_MAX, /* Valid when Rx */
- 	NPC_PF_FUNC, /* Valid when Tx */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index d30e84803481..e71c3da52cfd 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -2756,6 +2756,26 @@ static int rvu_dbg_npc_rx_miss_stats_display(struct seq_file *filp,
+--=-q/pjSgw8hDMC1UiJbBC7
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
- RVU_DEBUG_SEQ_FOPS(npc_rx_miss_act, npc_rx_miss_stats_display, NULL);
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTE5MTQxODM5WjAvBgkqhkiG9w0BCQQxIgQggouvI9lx
+fL0J31GIsEBoVP4uWBpidHoTHwM15hMAgaAwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBGIpvP68ax2C2b6UOV7noUaAqGEEi2ejUa
+22SMMNcMCrnX3NjZl/Slia4espNvq0yufs1BVHKH75zg09jID5h/6UvZdgKVIMfAJtKCams4DrH+
+Tye3yg0gq7q/9Z2F3D8Qm5UEicCbIxUrDe2YOiNddeE8vMNazMt0y3zSQ+kiLKChgSc4n7xBvH4e
+K+HvkmvAshTqhY6+z/hkB3BGB8KmgtLkXpGmxWhhjp9X+bNEDpClOEZKg0U3JZasPbtAespxCLfP
+aSfuVti9mwAwqeM8ybfRBVmMn7oYB4LyyMS9j9DmbJ3/eENTJovwhgbxJTNtef/aI27T5y4UEoGT
+G6ddC/78JNzTiF8UGlXYImxsWYbNWjTI+/6XgVDjNrkcW/iZFOko8YP9Qi1svyfOHtTBPFq2M2uZ
+lqoecXH5TOmqmd4qEu02/E+j7Xf0UPWawI1zdA9HInKnG3rTg9+sUQiqvlXu4HMi0BenrAwXxMfG
+odLSZecj3wkiVKlOxyMyyTzrxw9ZjGe2O1OAB2QM7UIPilN6e3WixbWAakG3tl2ZwZ8vZm+55L2V
+VYRuNV8aeBswi0m2/xkW+3rFnMGALmofnukEOSZF9SF543v5BqVZ3zgiTVi0rMhXEOgg4ss8Gf1a
+cXSOqHx3Qa36CH7FEBTOrSIH7up18VDPuMdaEx8C6wAAAAAAAA==
 
-+#define RVU_DBG_PRINT_MPLS_TTL(pkt, mask)                                                  \
-+do {											   \
-+	seq_printf(s, "%ld ", FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt));                  \
-+	seq_printf(s, "mask 0x%lx\n", FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask));         \
-+} while (0)                                                                                \
-+
-+#define RVU_DBG_PRINT_MPLS_LBTCBOS(_pkt, _mask)                                            \
-+do {										           \
-+	typeof(_pkt) (pkt) = (_pkt);							   \
-+	typeof(_mask) (mask) = (_mask);                                                    \
-+	seq_printf(s, "%ld %ld %ld\n",                                        \
-+		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_LB, pkt),                               \
-+		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_TC, pkt),                               \
-+		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_BOS, pkt));                             \
-+	seq_printf(s, "\tmask 0x%lx 0x%lx 0x%lx\n",                           \
-+		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_LB, mask),                              \
-+		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_TC, mask),                              \
-+		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_BOS, mask));                            \
-+} while (0)                                                                                \
-+
- static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
- 					struct rvu_npc_mcam_rule *rule)
- {
-@@ -2836,6 +2856,38 @@ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
- 			seq_printf(s, "0x%x ", ntohl(rule->packet.spi));
- 			seq_printf(s, "mask 0x%x\n", ntohl(rule->mask.spi));
- 			break;
-+		case NPC_MPLS1_LBTCBOS:
-+			RVU_DBG_PRINT_MPLS_LBTCBOS(rule->packet.mpls_lse[0],
-+						   rule->mask.mpls_lse[0]);
-+			break;
-+		case NPC_MPLS1_TTL:
-+			RVU_DBG_PRINT_MPLS_TTL(rule->packet.mpls_lse[0],
-+					       rule->mask.mpls_lse[0]);
-+			break;
-+		case NPC_MPLS2_LBTCBOS:
-+			RVU_DBG_PRINT_MPLS_LBTCBOS(rule->packet.mpls_lse[1],
-+						   rule->mask.mpls_lse[1]);
-+			break;
-+		case NPC_MPLS2_TTL:
-+			RVU_DBG_PRINT_MPLS_TTL(rule->packet.mpls_lse[1],
-+					       rule->mask.mpls_lse[1]);
-+			break;
-+		case NPC_MPLS3_LBTCBOS:
-+			RVU_DBG_PRINT_MPLS_LBTCBOS(rule->packet.mpls_lse[2],
-+						   rule->mask.mpls_lse[2]);
-+			break;
-+		case NPC_MPLS3_TTL:
-+			RVU_DBG_PRINT_MPLS_TTL(rule->packet.mpls_lse[2],
-+					       rule->mask.mpls_lse[2]);
-+			break;
-+		case NPC_MPLS4_LBTCBOS:
-+			RVU_DBG_PRINT_MPLS_LBTCBOS(rule->packet.mpls_lse[3],
-+						   rule->mask.mpls_lse[3]);
-+			break;
-+		case NPC_MPLS4_TTL:
-+			RVU_DBG_PRINT_MPLS_TTL(rule->packet.mpls_lse[3],
-+					       rule->mask.mpls_lse[3]);
-+			break;
- 		default:
- 			seq_puts(s, "\n");
- 			break;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-index 237f82082ebe..8c3c1a1e10a6 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-@@ -43,6 +43,14 @@ static const char * const npc_flow_names[] = {
- 	[NPC_DPORT_SCTP] = "sctp destination port",
- 	[NPC_LXMB]	= "Mcast/Bcast header ",
- 	[NPC_IPSEC_SPI] = "SPI ",
-+	[NPC_MPLS1_LBTCBOS] = "lse depth 1 label tc bos",
-+	[NPC_MPLS1_TTL]     = "lse depth 1 ttl",
-+	[NPC_MPLS2_LBTCBOS] = "lse depth 2 label tc bos",
-+	[NPC_MPLS2_TTL]     = "lse depth 2 ttl",
-+	[NPC_MPLS3_LBTCBOS] = "lse depth 3 label tc bos",
-+	[NPC_MPLS3_TTL]     = "lse depth 3 ttl",
-+	[NPC_MPLS4_LBTCBOS] = "lse depth 4 label tc bos",
-+	[NPC_MPLS4_TTL]     = "lse depth 4",
- 	[NPC_UNKNOWN]	= "unknown",
- };
 
-@@ -528,6 +536,14 @@ do {									       \
-
- 	NPC_SCAN_HDR(NPC_IPSEC_SPI, NPC_LID_LD, NPC_LT_LD_AH, 4, 4);
- 	NPC_SCAN_HDR(NPC_IPSEC_SPI, NPC_LID_LE, NPC_LT_LE_ESP, 0, 4);
-+	NPC_SCAN_HDR(NPC_MPLS1_LBTCBOS, NPC_LID_LC, NPC_LT_LC_MPLS, 0, 3);
-+	NPC_SCAN_HDR(NPC_MPLS1_TTL, NPC_LID_LC, NPC_LT_LC_MPLS, 3, 1);
-+	NPC_SCAN_HDR(NPC_MPLS2_LBTCBOS, NPC_LID_LC, NPC_LT_LC_MPLS, 4, 3);
-+	NPC_SCAN_HDR(NPC_MPLS2_TTL, NPC_LID_LC, NPC_LT_LC_MPLS, 7, 1);
-+	NPC_SCAN_HDR(NPC_MPLS3_LBTCBOS, NPC_LID_LC, NPC_LT_LC_MPLS, 8, 3);
-+	NPC_SCAN_HDR(NPC_MPLS3_TTL, NPC_LID_LC, NPC_LT_LC_MPLS, 11, 1);
-+	NPC_SCAN_HDR(NPC_MPLS4_LBTCBOS, NPC_LID_LC, NPC_LT_LC_MPLS, 12, 3);
-+	NPC_SCAN_HDR(NPC_MPLS4_TTL, NPC_LID_LC, NPC_LT_LC_MPLS, 15, 1);
-
- 	/* SMAC follows the DMAC(which is 6 bytes) */
- 	NPC_SCAN_HDR(NPC_SMAC, NPC_LID_LA, la_ltype, la_start + 6, 6);
-@@ -593,6 +609,11 @@ static void npc_set_features(struct rvu *rvu, int blkaddr, u8 intf)
- 	/* for L2M/L2B/L3M/L3B, check if the type is present in the key */
- 	if (npc_check_field(rvu, blkaddr, NPC_LXMB, intf))
- 		*features |= BIT_ULL(NPC_LXMB);
-+
-+	for (hdr = NPC_MPLS1_LBTCBOS; hdr <= NPC_MPLS4_TTL; hdr++) {
-+		if (npc_check_field(rvu, blkaddr, hdr, intf))
-+			*features |= BIT_ULL(hdr);
-+	}
- }
-
- /* Scan key extraction profile and record how fields of our interest
-@@ -959,6 +980,31 @@ do {									      \
- 	NPC_WRITE_FLOW(NPC_INNER_VID, vlan_itci, ntohs(pkt->vlan_itci), 0,
- 		       ntohs(mask->vlan_itci), 0);
-
-+	NPC_WRITE_FLOW(NPC_MPLS1_LBTCBOS, mpls_lse,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, pkt->mpls_lse[0]), 0,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, mask->mpls_lse[0]), 0);
-+	NPC_WRITE_FLOW(NPC_MPLS1_TTL, mpls_lse,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt->mpls_lse[0]), 0,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask->mpls_lse[0]), 0);
-+	NPC_WRITE_FLOW(NPC_MPLS2_LBTCBOS, mpls_lse,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, pkt->mpls_lse[1]), 0,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, mask->mpls_lse[1]), 0);
-+	NPC_WRITE_FLOW(NPC_MPLS2_TTL, mpls_lse,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt->mpls_lse[1]), 0,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask->mpls_lse[1]), 0);
-+	NPC_WRITE_FLOW(NPC_MPLS3_LBTCBOS, mpls_lse,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, pkt->mpls_lse[2]), 0,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, mask->mpls_lse[2]), 0);
-+	NPC_WRITE_FLOW(NPC_MPLS3_TTL, mpls_lse,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt->mpls_lse[2]), 0,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask->mpls_lse[2]), 0);
-+	NPC_WRITE_FLOW(NPC_MPLS4_LBTCBOS, mpls_lse,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, pkt->mpls_lse[3]), 0,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, mask->mpls_lse[3]), 0);
-+	NPC_WRITE_FLOW(NPC_MPLS4_TTL, mpls_lse,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt->mpls_lse[3]), 0,
-+		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask->mpls_lse[3]), 0);
-+
- 	NPC_WRITE_FLOW(NPC_IPFRAG_IPV6, next_header, pkt->next_header, 0,
- 		       mask->next_header, 0);
- 	npc_update_ipv6_flow(rvu, entry, features, pkt, mask, output, intf);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index fab9d85bfb37..95e6a58ba087 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -27,6 +27,8 @@
- #define CN10K_TLX_BURST_MANTISSA	GENMASK_ULL(43, 29)
- #define CN10K_TLX_BURST_EXPONENT	GENMASK_ULL(47, 44)
-
-+#define OTX2_UNSUPP_LSE_DEPTH		GENMASK(6, 4)
-+
- struct otx2_tc_flow_stats {
- 	u64 bytes;
- 	u64 pkts;
-@@ -519,6 +521,7 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV6_ADDRS) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_PORTS) |
- 	      BIT(FLOW_DISSECTOR_KEY_IPSEC) |
-+	      BIT_ULL(FLOW_DISSECTOR_KEY_MPLS) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_IP))))  {
- 		netdev_info(nic->netdev, "unsupported flow used key 0x%llx",
- 			    dissector->used_keys);
-@@ -738,6 +741,58 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 		}
- 	}
-
-+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_MPLS)) {
-+		struct flow_match_mpls match;
-+		u8 bit;
-+
-+		flow_rule_match_mpls(rule, &match);
-+
-+		if (match.mask->used_lses & OTX2_UNSUPP_LSE_DEPTH) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "unsupported LSE depth for MPLS match offload");
-+			return -EOPNOTSUPP;
-+		}
-+
-+		for_each_set_bit(bit, (unsigned long *)&match.mask->used_lses,
-+				 FLOW_DIS_MPLS_MAX)  {
-+			/* check if any of the fields LABEL,TC,BOS are set */
-+			if (*((u32 *)&match.mask->ls[bit]) &
-+			    OTX2_FLOWER_MASK_MPLS_NON_TTL) {
-+				/* Hardware will capture 4 byte MPLS header into two
-+				 * fields NPC_MPLSX_LBTCBOS and NPC_MPLSX_TTL. Derive
-+				 * the associated NPC key based on header index and offset.
-+				 */
-+
-+				req->features |= BIT_ULL(NPC_MPLS1_LBTCBOS + 2 * bit);
-+				flow_spec->mpls_lse[bit] =
-+					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_LB,
-+						   match.key->ls[bit].mpls_label) |
-+					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_TC,
-+						   match.key->ls[bit].mpls_tc) |
-+					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_BOS,
-+						   match.key->ls[bit].mpls_bos);
-+
-+				flow_mask->mpls_lse[bit] =
-+					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_LB,
-+						   match.mask->ls[bit].mpls_label) |
-+					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_TC,
-+						   match.mask->ls[bit].mpls_tc) |
-+					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_BOS,
-+						   match.mask->ls[bit].mpls_bos);
-+			}
-+
-+			if (match.mask->ls[bit].mpls_ttl) {
-+				req->features |= BIT_ULL(NPC_MPLS1_TTL + 2 * bit);
-+				flow_spec->mpls_lse[bit] |=
-+					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_TTL,
-+						   match.key->ls[bit].mpls_ttl);
-+				flow_mask->mpls_lse[bit] |=
-+					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_TTL,
-+						   match.mask->ls[bit].mpls_ttl);
-+			}
-+		}
-+	}
-+
- 	return otx2_tc_parse_actions(nic, &rule->action, req, f, node);
- }
-
---
-2.17.1
+--=-q/pjSgw8hDMC1UiJbBC7--
