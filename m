@@ -2,103 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB227A6541
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639E87A64EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjISNev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        id S232341AbjISNcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232286AbjISNet (ORCPT
+        with ESMTP id S231960AbjISNcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:34:49 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F80F4;
-        Tue, 19 Sep 2023 06:34:43 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RqjM20HRpz4f3xcD;
-        Tue, 19 Sep 2023 21:34:38 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.103.91])
-        by APP4 (Coremail) with SMTP id gCh0CgD3jd1vowll6Gp5Aw--.33633S4;
-        Tue, 19 Sep 2023 21:34:39 +0800 (CST)
-From:   Xie XiuQi <xiexiuqi@huaweicloud.com>
-To:     bristot@kernel.org, rostedt@goodmis.org, corbet@lwn.net,
-        linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     bobo.shaobowang@huawei.com
-Subject: [PATCH] rtla: fix a example in rtla-timerlat-hist.rst
-Date:   Tue, 19 Sep 2023 21:30:28 +0800
-Message-Id: <20230919133028.697144-1-xiexiuqi@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 19 Sep 2023 09:32:15 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70CBF1;
+        Tue, 19 Sep 2023 06:32:09 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bfea381255so53166721fa.3;
+        Tue, 19 Sep 2023 06:32:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695130328; x=1695735128; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WwVxMLRoTi4jmpcZHwksJ5/u+vVpQogOzA/iWOhcTMI=;
+        b=i9BAQ1DZX0UwPvG1Ehm33GL9JoC/+lwxfzLJcZx7K92wigATq3oTuxutJExc4z81/2
+         1KDbsKLOO6X2bRH7HFbuDTCU22CVPtFLrakSmjXfc98q7KcaX/7d/5PexmX1MUedvWaX
+         61LmVNSVo/gHF1wtxGb91tfqfq7EPoysb30vjPcSPknwNWQQySTkSMd0Ez45RgNikZLV
+         10CV0VBcwm21r7DEMPVkHuBfgbcNPyDSPmuziEmif+7O1OVZeZ5YW/D6hDQTJmJCLXD0
+         zqNxKErDELIYf1TCLXg10Wl99gB9KYG36i9MW1jiYxZwMQIopY4ztBROy5s6IG+9E+kl
+         /Jsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695130328; x=1695735128;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WwVxMLRoTi4jmpcZHwksJ5/u+vVpQogOzA/iWOhcTMI=;
+        b=IJ9aNX7Eot3pogeJZPxbuJk87OQmtPfuaT0ZCmbSK4KwNc46mrv1ItViqDkrEB32CU
+         ftI0vOiHHZFWCblVr4d5KglRSEUPlscFpD0bSLOil1gJwQykgvPQFud8gkQscmtE07OW
+         L7/OMf5qT21Yu7M/vJpd/KHtmbAK4Hf+GqpZc+Xb8A9emxPnnBxmhCK8Hc9BgBqSR3OE
+         Nv42kqBs1akXSPQlKLhmCNa9ln/0Njvqjmn77oBSeYh8+dl22fOkD9MUd3J7k+ktclxy
+         WraCRNl2l89DXaQWQYDskvOkKwjM4h7Q3H62WjiDs9pQVI84JTJrhK1Uz3N7b/vPnMXf
+         gPZA==
+X-Gm-Message-State: AOJu0YzFGClp07KiZXpxDWrD2umnjVoq6e00mKWEvA2wPLkNLELIIxWh
+        msoZ9at91OvsaglLllDCjEmpo3LHh0nH2niuWB+O9ym6
+X-Google-Smtp-Source: AGHT+IFsPbd3Z94I5V4mZLsZ0dcHcT44w/wtHVfCTyguyHRWhbnJq6iM8o/Htimw94qJ7HPxPLBgx9cHBwiGaoMkjBc=
+X-Received: by 2002:a05:651c:1a1f:b0:2c0:2a6e:7869 with SMTP id
+ by31-20020a05651c1a1f00b002c02a6e7869mr1667667ljb.44.1695130327566; Tue, 19
+ Sep 2023 06:32:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3jd1vowll6Gp5Aw--.33633S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr45Gw1UAw18AryfZFW8JFb_yoW8Ar48pr
-        Wjqrna9ryDZwnrJan7JwnrXry2ya97XF4UAFs8JF1293W3C3Z5KFn7Kw45AF43uF1xCa9F
-        va1Fv3sxAw1Ik37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
-        c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
-        CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
-        MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr
-        1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsG
-        vfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: x0lh5xhxtlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918165958.2659-1-tmaimon77@gmail.com> <20230918165958.2659-2-tmaimon77@gmail.com>
+ <b7a337f2-a810-d14c-e7cd-15e33a9ecb5d@linaro.org> <CAP6Zq1gSJYsNUuD-bexFW_1VpAUuF_WZkicNzZms6hVdo9LnMQ@mail.gmail.com>
+ <e0d42d13-b307-9915-97c8-948261b39ce1@linaro.org>
+In-Reply-To: <e0d42d13-b307-9915-97c8-948261b39ce1@linaro.org>
+From:   Tomer Maimon <tmaimon77@gmail.com>
+Date:   Tue, 19 Sep 2023 16:31:56 +0300
+Message-ID: <CAP6Zq1g0=-h0PFg2a8bqao+XjdNHoxGMdYSRRPAnfY_6WdemAw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] dt-binding: usb: ci-hdrc-usb2: document Nuvoton
+ NPCM supprt
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     peter.chen@kernel.org, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        xu.yang_2@nxp.com, peng.fan@nxp.com, avifishman70@gmail.com,
+        tali.perry1@gmail.com, joel@jms.id.au, venture@google.com,
+        yuenn@google.com, benjaminfair@google.com, j.neuschaefer@gmx.net,
+        openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie XiuQi <xiexiuqi@huawei.com>
+On Tue, 19 Sept 2023 at 15:39, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 19/09/2023 07:14, Tomer Maimon wrote:
+> >>>            - nvidia,tegra20-ehci
+> >>>            - nvidia,tegra20-udc
+> >>>            - nvidia,tegra30-ehci
+> >>> @@ -325,6 +326,20 @@ properties:
+> >>>      type: boolean
+> >>>      deprecated: true
+> >>>
+> >>> +  nuvoton,sysgcr:
+> >>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> >>> +    items:
+> >>> +      - items:
+> >>> +          - description: phandle to syscon that configures usb phy mux.
+> >>> +          - description: offset of usb phy mux selection.
+> >>> +          - description: mask usb phy mux selection.
+> >>> +          - description: value usb phy mux selection.
+> >>> +    description:
+> >>> +      A phandle to syscon with three arguments that configure usb phy mux.
+> >>> +      The argument one is the offset of usb phy mux selection, the argument two
+> >>> +      is the mask usb phy mux selection, the argument three is the mask usb phy
+> >>> +      mux selection.
+> >>
+> >> Sorry, you miss phy driver. Don't use syscon instead of proper hardware
+> >> devices.
+> > Sorry the role of nuvoton,sysgcr property is to handle a mux between
+> > the different devices and not the handle the phy itself, handle the
+> > mux done in the GCR.
+> > Should we move the nuvoton,sysgcr description to another place in the
+> > ci-hdrc-usb2.yaml
+> > or
+> > Should we use a different driver to handle the mux and call it from
+> > the ci-hdrc-npcm driver, If yes which driver should we use?
+>
+> What is an "usb phy mux"?
+We have USB phy that could be connected to USB host (different driver)
+or it can be connected to the UDC driver(ChipIdea)
+> Best regards,
+> Krzysztof
+>
 
-The following error message is reported when running the example in document.
+Best regards,
 
-  # timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms --no-aa
-  Failed to set timerlat period
-  Could not apply config
-
-The unit of the period is microsecond, '1ms' cannot be accepted.
-
-  usage: [rtla] timerlat hist [-h] [-q] [-d s] [-D] [-n] [-a us] [-p us] [-i us] [-T us] [-s us] ...
-         ...
-	  -p/--period us: timerlat period in us
-         ...
-
-Also fix another minor missleading comment.
-
-Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
----
- Documentation/tools/rtla/rtla-timerlat-hist.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-index 057db78d4095..03b7f3deb069 100644
---- a/Documentation/tools/rtla/rtla-timerlat-hist.rst
-+++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-@@ -36,11 +36,11 @@ EXAMPLE
- In the example below, **rtla timerlat hist** is set to run for *10* minutes,
- in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
- hist** will change the priority of the *timerlat* threads to run under
--*SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
-+*SCHED_DEADLINE* priority, with a *100us* runtime every *1ms* period. The
- *1ms* period is also passed to the *timerlat* tracer. Auto-analysis is disabled
- to reduce overhead ::
- 
--  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms --no-aa
-+  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1000 --no-aa
-   # RTLA timerlat histogram
-   # Time unit is microseconds (us)
-   # Duration:   0 00:10:00
--- 
-2.25.1
-
+Tomer
