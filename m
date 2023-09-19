@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335807A6A78
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D837A6A63
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232020AbjISSLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+        id S231737AbjISSFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjISSLk (ORCPT
+        with ESMTP id S230147AbjISSE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:11:40 -0400
-X-Greylist: delayed 541 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Sep 2023 11:11:31 PDT
-Received: from out-229.mta1.migadu.com (out-229.mta1.migadu.com [IPv6:2001:41d0:203:375::e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5648F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:11:31 -0700 (PDT)
+        Tue, 19 Sep 2023 14:04:59 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4324B95
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:04:53 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-690d9cda925so48863b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:04:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695146692; x=1695751492; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=15nBqosj6WWJOSwWn2FB/oN1SFdvM0QLlK2aSBEvitc=;
+        b=wQEV+xKZafjXjnlwLYpplDcXlrUvvdo9PftzaxGLMNVWiXvH8pAipV6QzTp0t/wd9T
+         eJw5q/qoBNeA+CyvHeNqcUPwvUW3vvuxG5woLdjz4m12evMc7KLNu/tpyS0WiW3WyWkW
+         +4mkNwHfkxeJQAqtJG63+qcCVt0zScPqI03/WnuLpXf5lYRbaVZp3s13LpuSsHg6wZRi
+         AUePJvYLcepVewf/lpikp5D1VrwjMKm91yVtGT3fjh0rE0782hsq4VhaDa4Eh+PS1G2v
+         54kwrkke/MWSIHs+xSeR90vE77mxllLbgsZ0BhvTvmC6Vmh/YfYlQUlIiHCh8L6re9um
+         qJtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695146692; x=1695751492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=15nBqosj6WWJOSwWn2FB/oN1SFdvM0QLlK2aSBEvitc=;
+        b=suRkaVk5xa3ZgpFTBHQ9zyVrESmXk6mCEAmA7gksQV03zAYXR4Q+WJUYMCUQXD+yjq
+         xzq6blQBj1h9SNt7XokGSiHnmFAOVBCB8rdBq9wmpHLgC01LmFjB1u3oQV7BVOA2cArc
+         vYKJpfcd4lMzYeH6qcPWJXiNoOiwTp4RTvGIn8WagriICXYJVZDe8ptDkT6rjjomVQz5
+         j95yjzhjrUnpjO8BUjW7MLN31veEA0359YqhMGghoeOxwRXBJ6+WvpAcXV5p2vS8AQvL
+         9tn0Q1CcLcjviQvYIrgT6sRa8+lp8S7RmXuTCL2AlSMewfD5DduepMe6M2NF2oKYCZFn
+         +8eQ==
+X-Gm-Message-State: AOJu0YypaWZ4oVFyCsrElLNJx7gsKLiqEWDJN+CSNatdIjd0q9ILlkIV
+        /snWc1V/PWHLaAieNS1sqabSvQ==
+X-Google-Smtp-Source: AGHT+IFn+Y/cGWo27YQI4ilcWAzwa2ujC73b21l2AUPxDC9BANzyouOgE1tnupcGIzbju5oTcBbyWg==
+X-Received: by 2002:a05:6a00:179f:b0:690:1720:aa9a with SMTP id s31-20020a056a00179f00b006901720aa9amr446773pfg.15.1695146692638;
+        Tue, 19 Sep 2023 11:04:52 -0700 (PDT)
+Received: from ghost ([50.168.177.76])
+        by smtp.gmail.com with ESMTPSA id a23-20020a62e217000000b00666e649ca46sm8947951pfi.101.2023.09.19.11.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 11:04:52 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 14:04:48 -0400
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v6 3/4] riscv: Add checksum library
+Message-ID: <ZQniwNEoYLo52HI7@ghost>
+References: <20230915-optimize_checksum-v6-0-14a6cf61c618@rivosinc.com>
+ <20230915-optimize_checksum-v6-3-14a6cf61c618@rivosinc.com>
+ <0357e092c05043fba13eccad77ba799f@AcuMS.aculab.com>
+ <ZQkOSf1b66lHzjaf@ghost>
+ <0fe9694900c7492c96dce6b67710173f@AcuMS.aculab.com>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695146547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3T1NkrCByZEH+2CfK+i0EV7zh/RMykXStM3Aau3LS0o=;
-        b=wRrjXa++TbNiIlTBlXUy4C/x8Sthlh+Df481Qf3/RjQ4CZqV8IQj+JmVe3CX8secxy4l+5
-        42E5NJkc/y7yVLNbZzEh4NbEWcAA5URCI5nBvkyYwV1WKKvjTU5SpuorCo7cEw6jIgk4pd
-        E+wfNCYE/E6/AY/w3XgGuzozOzOybQY=
-Date:   Tue, 19 Sep 2023 18:02:26 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   "Konstantin Ryabitsev" <konstantin.ryabitsev@linux.dev>
-Message-ID: <16e1b7632d840c1cc9efa09f0710683039514d83@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] hwmon: powerz: add support for ChargerLAB KM002C
-To:     "=?utf-8?B?VGhvbWFzIFdlacOfc2NodWg=?=" <linux@weissschuh.net>,
-        "Guenter Roeck" <linux@roeck-us.net>
-Cc:     "Jean Delvare" <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Douglas Gilbert" <dgilbert@interlog.com>
-In-Reply-To: <5fb278c7-df91-4f02-ab5f-baa47d27507f@t-8ch.de>
-References: <5fb278c7-df91-4f02-ab5f-baa47d27507f@t-8ch.de>
- <20230911-powerz-km002c-v1-1-898bd79b9bae@weissschuh.net>
- <6e5eff10-949c-4f17-a3f3-347b85b89e11@roeck-us.net>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0fe9694900c7492c96dce6b67710173f@AcuMS.aculab.com>
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-September 19, 2023 at 1:15 PM, "Thomas Wei=C3=9Fschuh" <linux@weissschuh.=
-net> wrote:
-> On 2023-09-18 12:05:19-0700, Guenter Roeck wrote:
->=20
->=20>=20
->=20> On Mon, Sep 11, 2023 at 07:44:42AM +0200, Thomas Wei=C3=9Fschuh wro=
-te:
-> >  The KM002C is similar to the KM003C and seems to use the same
-> >  protocol and firmware.
-> >=20=20
->=20>  Reported-by: Douglas Gilbert <dgilbert@interlog.com>
-> >  Closes: https://lore.kernel.org/lkml/290ebce4-54f0-8ac1-2a13-cbc806d=
-80d64@interlog.com/
-> >  Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-> >  ---
-> >=20=20
->=20>  This patch is based on hwmon-next,
-> >  commit 80369d9e1f2f ("hwmon: (sch5627) Document behaviour of limit r=
-egisters").
-> >=20=20
->=20>  Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-> >=20=20
->=20>  Applied, but please be more careful with your comments and Signed-=
-off-by:
-> >  tags. There should only be one '---', and one signature.
-> >=20
->=20
-> Thanks,
->=20
->=20the duplicate Signed-off-by is indeed an oversight which I'll
-> try to avoid in the future.
->=20
->=20As for the '---':
->=20
->=20Two of them are generated by the 'b4' tool and I added one manually w=
-ith
-> the hwmon-next information.
-> For other subsystems this wasn't an issue so far.
->=20
->=20Are these duplicate sections a problem for your personal tooling or i=
-s
-> it affecting something more widespread?
+On Tue, Sep 19, 2023 at 08:00:12AM +0000, David Laight wrote:
+> ...
+> > > So ending up with (something like):
+> > > 	end = buff + length;
+> > > 	...
+> > > 	while (++ptr < end) {
+> > > 		csum += data;
+> > > 		carry += csum < data;
+> > > 		data = ptr[-1];
+> > > 	}
+> > > (Although a do-while loop tends to generate better code
+> > > and gcc will pretty much always make that transformation.)
+> > >
+> > > I think that is 4 instructions per word (load, add, cmp+set, add).
+> > > In principle they could be completely pipelined and all
+> > > execute (for different loop iterations) in the same clock.
+> > > (But that is pretty unlikely to happen - even x86 isn't that good.)
+> > > But taking two clocks is quite plausible.
+> > > Plus 2 instructions per loop (inc, cmp+jmp).
+> > > They might execute in parallel, but unrolling once
+> > > may be required.
+> > >
+> > It looks like GCC actually ends up generating 7 total instructions:
+> > ffffffff808d2acc:	97b6                	add	a5,a5,a3
+> > ffffffff808d2ace:	00d7b533          	sltu	a0,a5,a3
+> > ffffffff808d2ad2:	0721                	add	a4,a4,8
+> > ffffffff808d2ad4:	86be                	mv	a3,a5
+> > ffffffff808d2ad6:	962a                	add	a2,a2,a0
+> > ffffffff808d2ad8:	ff873783          	ld	a5,-8(a4)
+> > ffffffff808d2adc:	feb768e3          	bltu	a4,a1,ffffffff808d2acc <do_csum+0x34>
+> > 
+> > This mv instruction could be avoided if the registers were shuffled
+> > around, but perhaps this way reduces some dependency chains.
+> 
+> gcc managed to do 'data += csum' so had add 'csum = data'.
+> If you unroll once that might go away.
+> It might then be 10 instructions for 16 bytes.
+> Although you then need slightly larger alignment code.
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
+I messed with it a bit and couldn't get the mv to go away. I would expect
+mv to be very cheap so it should be fine, and I would like to avoid adding
+too much to the alignment code since it is already large, and I assume
+that buff will be aligned more often than not.
 
-There should be no impact on any tooling, to my knowledge. Only the first=
- --- matters for git, any additional ones are ignored.
+Interestingly, the mv does not appear pre gcc 12, and does not appear on clang.
 
--K
+- Charlie
+
