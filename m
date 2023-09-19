@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5FF7A6448
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC647A645D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbjISND1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S231926AbjISNHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjISNDZ (ORCPT
+        with ESMTP id S229552AbjISNHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:03:25 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5464AF3;
-        Tue, 19 Sep 2023 06:03:18 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RqhZh6WJvzMl6D;
-        Tue, 19 Sep 2023 20:59:40 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 19 Sep 2023 21:03:14 +0800
-CC:     <yangyicong@hisilicon.com>, <alexander.shishkin@linux.intel.com>,
-        <helgaas@kernel.org>, <linux-pci@vger.kernel.org>,
-        <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
-        <hejunhao3@huawei.com>
-Subject: Re: [PATCH v2 5/5] hwtracing: hisi_ptt: Add dummy callback
- pmu::read()
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <mathieu.poirier@linaro.org>, <jonathan.cameron@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20230914112223.27165-1-yangyicong@huawei.com>
- <20230914112223.27165-6-yangyicong@huawei.com>
- <73655f9b-9ea4-cb46-d712-20f1c4ac7c95@arm.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <75b93d15-f099-5d17-caa9-94b0390773cf@huawei.com>
-Date:   Tue, 19 Sep 2023 21:03:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 19 Sep 2023 09:07:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4442ED;
+        Tue, 19 Sep 2023 06:06:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48A92C433C7;
+        Tue, 19 Sep 2023 13:06:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695128816;
+        bh=6Qa47r/Zbx9YEPRJ4mkWJb11B2aEBnhEFWx6OEp2SzA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fuLbiLAFSAbqq51ee4Y5Rx3a2PhLZWWVl+QMae4Twlf3+LKoTP834b0n8OFlOW1cV
+         irWRA4Q907wSKtCFzkxz1aoD8jkVDdbhZVtogJRwYoEKB10yZU3Srw4Kn6/SJzo3pM
+         8yZkk//5/h4567BSFLXg3kLUJAkvSBM+MNgN4IX+b8KJuXE8M2XWLQlzwbYFTxRA2Z
+         Y/bWIHNHtgnDxxE/D0qIQ5d8801YcYQS9oWO86QhXeB+W3yfyw3sAaafeX3ICKVFpb
+         ZE2UjONgibkb2/MoXSA0euby2DD00i55Ec6uF7xyxqm9LkwdG3EOJYeodQxAJgbe1b
+         eQa9NpQUq5wgA==
+Date:   Tue, 19 Sep 2023 09:06:54 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>, agross@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.5 30/36] arm64: dts: qcom: sc8280xp-x13s: Add
+ camera activity LED
+Message-ID: <ZQmc7hznPpIh6iwP@sashalap>
+References: <20230908192848.3462476-1-sashal@kernel.org>
+ <20230908192848.3462476-30-sashal@kernel.org>
+ <ZP60ngCV3hhNZiX5@hovoldconsulting.com>
+ <ZQjEEt7sB2M5EO53@sashalap>
+ <ZQk8aJx268Soy4yH@hovoldconsulting.com>
 MIME-Version: 1.0
-In-Reply-To: <73655f9b-9ea4-cb46-d712-20f1c4ac7c95@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.121.177]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <ZQk8aJx268Soy4yH@hovoldconsulting.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/15 20:53, Suzuki K Poulose wrote:
-> On 14/09/2023 12:22, Yicong Yang wrote:
->> From: Junhao He <hejunhao3@huawei.com>
+On Tue, Sep 19, 2023 at 08:15:04AM +0200, Johan Hovold wrote:
+>On Mon, Sep 18, 2023 at 05:41:38PM -0400, Sasha Levin wrote:
+>> On Mon, Sep 11, 2023 at 08:33:02AM +0200, Johan Hovold wrote:
+>> >On Fri, Sep 08, 2023 at 03:28:41PM -0400, Sasha Levin wrote:
+>> >> From: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> >>
+>> >> [ Upstream commit 1c63dd1c5fdafa8854526d7d60d2b741c813678d ]
+>> >>
+>> >> Disappointigly, the camera activity LED is implemented in software.
+>> >> Hook it up as a gpio-led and (until we have camera *and* a "camera on"
+>> >> LED trigger) configure it as a panic indicator.
+>> >>
+>> >> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> >> Link: https://lore.kernel.org/r/20230805-topic-x13s_cam_led-v1-1-443d752158c4@linaro.org
+>> >> Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+>> >> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> >
+>> >This is a new feature if anything, not a fix. Please drop from all
+>> >autosel queues.
 >>
->> When start trace with perf option "-C $cpu" and immediately stop it
->> with SIGTERM or others, the perf core will invoke pmu::read() while
->> the driver doesn't implement it. Add a dummy pmu::read() to avoid
->> any issues.
-> 
-> What issues are we talking about here ? Shouldn't the core perf
-> skip the call, if pmu::read() is not available ?
-> 
+>> Not a feature, but hardware enablement.
+>
+>Call it what you will, but please drop it. Otherwise by that logic you'd
+>need to backport all devicetree patches (as well as most driver changes)
+>since they ultimately aim at enabling hardware.
 
-Actually no, the core doesn't check it. So I think that's why some PMUs
-like SPE implements a dummy pmu::read() callback. Otherwise we'll
-dereference a NULL pointer.
+Not all, only ones that re-use existing kernel driver but enable it for
+new hardware (i.e. adding a new pci-id/usb-id/dts entries).
 
-Currently we only met this on emulated platforms with very slow CPUs,
-follow the instructions in the commit above.
-
-> Suzuki
-> 
->>
->> Signed-off-by: Junhao He <hejunhao3@huawei.com>
->> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
->> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->> ---
->>   drivers/hwtracing/ptt/hisi_ptt.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
->> index 62a444f5228e..c1b5fd2b8974 100644
->> --- a/drivers/hwtracing/ptt/hisi_ptt.c
->> +++ b/drivers/hwtracing/ptt/hisi_ptt.c
->> @@ -1184,6 +1184,10 @@ static void hisi_ptt_pmu_del(struct perf_event *event, int flags)
->>       hisi_ptt_pmu_stop(event, PERF_EF_UPDATE);
->>   }
->>   +static void hisi_ptt_pmu_read(struct perf_event *event)
->> +{
->> +}
->> +
->>   static void hisi_ptt_remove_cpuhp_instance(void *hotplug_node)
->>   {
->>       cpuhp_state_remove_instance_nocalls(hisi_ptt_pmu_online, hotplug_node);
->> @@ -1227,6 +1231,7 @@ static int hisi_ptt_register_pmu(struct hisi_ptt *hisi_ptt)
->>           .stop        = hisi_ptt_pmu_stop,
->>           .add        = hisi_ptt_pmu_add,
->>           .del        = hisi_ptt_pmu_del,
->> +        .read        = hisi_ptt_pmu_read,
->>       };
->>         reg = readl(hisi_ptt->iobase + HISI_PTT_LOCATION);
-> 
-> 
-> .
+-- 
+Thanks,
+Sasha
