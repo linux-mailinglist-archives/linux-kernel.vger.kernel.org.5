@@ -2,248 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 834F87A6B0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 21:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B8A7A6B10
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 21:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjISTBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 15:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
+        id S232103AbjISTCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 15:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjISTBo (ORCPT
+        with ESMTP id S231993AbjISTCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 15:01:44 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5729D
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:01:38 -0700 (PDT)
-Received: from spock.localnet (unknown [94.142.239.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id E6E0B15062BD;
-        Tue, 19 Sep 2023 21:01:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1695150094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dflHOnB94HvldzRUSNy/uSO4mOyWUQlh73gqe+vY1i0=;
-        b=w57266V8BxxEwoEPZ5ZGfXEyFVETx/dIMIMD4TDsL11cKDENUcEhmzzecKdKquyvn7GM92
-        NDCVnaa1VTaf/255g5gUmVo3JbbEjeCDrQHMNi8k21T/v2lVpsThXjPgSG/XIlfYTuQ110
-        gMNwMMLpnjA8KP0FpapcZFs1aQoJI5Y=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>, Meng Li <li.meng@amd.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>, Meng Li <li.meng@amd.com>
-Subject: Re: [PATCH V7 0/7] amd-pstate preferred core
-Date:   Tue, 19 Sep 2023 21:01:20 +0200
-Message-ID: <5973628.lOV4Wx5bFT@natalenko.name>
-In-Reply-To: <20230918081407.756858-1-li.meng@amd.com>
-References: <20230918081407.756858-1-li.meng@amd.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4861953.31r3eYUQgx";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 15:02:20 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE561E1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:02:14 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59e79a36097so2560557b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 12:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695150134; x=1695754934; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w7DMdUamBzEa23P7zE5AZLI90338+bQ4zFLdMCSp3KI=;
+        b=UEof/Mk/O/C49Pj8KbGq21BVQykE6ts2VwIQ60l6cTX6bumvoMRMXddeHNudsBSPRT
+         uTVUrWBXt2t0eeABdQ/8sgjmcxfE9KT/ktyTjDOYJBj6NyxSnYoU/C0NxA0eJRey8xIa
+         O0HAnbvMobjunQaIY4gjGXScAhwxQtWnLItdO32fpHrhnUtO76iAnl83Enjg18abWx1q
+         mcM0DARDzPwJ/IQ8/647uTGuKGAYaMpe8p9qIB7CTwRVgBA6uKHLuVYu9Yf70mKLFNJ4
+         ez8he3MUHcCIAXuKTqzr+8x6QvslnMQxcxOQK6L2LOoRvhuDu2bJ1dB2wbY8U83v6o6I
+         9LqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695150134; x=1695754934;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w7DMdUamBzEa23P7zE5AZLI90338+bQ4zFLdMCSp3KI=;
+        b=hyFnnUnWPcRQSRlyiOm138aZ885s//sNOBO0ok22qUoTh8r2D04YG2pI9+Qkc7LEok
+         le2VgpyetWxBOQ6hSAolEwpkr+gbcAPZXhcivCGJFypcSs/maajm5JPTBhFGPMqhui47
+         AkJvVq9Jqb/IcbmI7nvTz1XrP1BA+jezTaX68cfBoroF4QzD8a2MPPqmqVYPssFXutB6
+         pRsL66ncCpTWI/QWp1J0Xp5IdOniLItSxCkJHuwXRcvMQdfW4fp8QHXkLHhugByH5Tkg
+         40ZfJhPsZV+hHdu1xNuJXxrXg1ebMDoU7pwuCfvOmhDGfez6RqMFnIRYSco75bVWKUxS
+         B08Q==
+X-Gm-Message-State: AOJu0YzYytrWn2K0Z9V1Lz3TuM1ZZC9SVJJD7LpAkZX5cuSE5oRmeLjY
+        F3SUcbo/VrE32lbdZHJAha6FRWkhrQKXfRJzSdYa
+X-Google-Smtp-Source: AGHT+IEO4CioWGeMO0mLBTwXzCTR4DQsMAJTo7jrWLS1l6E5YqJYAIusC287GlrMsgTnCH5DnoLfuDVce0/mKLRwpTZk
+X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:8f5a:6a6a:cafc:a3ad])
+ (user=axelrasmussen job=sendgmr) by 2002:a5b:c83:0:b0:d81:5c03:df99 with SMTP
+ id i3-20020a5b0c83000000b00d815c03df99mr12778ybq.3.1695150133966; Tue, 19 Sep
+ 2023 12:02:13 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 12:01:56 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230919190206.388896-1-axelrasmussen@google.com>
+Subject: [PATCH 00/10] userfaultfd man page updates
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alejandro Colomar <alx@kernel.org>, Peter Xu <peterx@redhat.com>
+Cc:     linux-man@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart4861953.31r3eYUQgx
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-Subject: Re: [PATCH V7 0/7] amd-pstate preferred core
-Date: Tue, 19 Sep 2023 21:01:20 +0200
-Message-ID: <5973628.lOV4Wx5bFT@natalenko.name>
-In-Reply-To: <20230918081407.756858-1-li.meng@amd.com>
-References: <20230918081407.756858-1-li.meng@amd.com>
-MIME-Version: 1.0
+Various updates for userfaultfd man pages. To summarize the changes:
 
-Hello.
+- Correctly / fully describe the two-step feature support handshake process.
+- Describe new UFFDIO_POISON ioctl.
+- Other small improvements (missing ioctls, error codes, etc).
 
-On pond=C4=9Bl=C3=AD 18. z=C3=A1=C5=99=C3=AD 2023 10:14:00 CEST Meng Li wro=
-te:
-> Hi all:
->=20
-> The core frequency is subjected to the process variation in semiconductor=
-s.
-> Not all cores are able to reach the maximum frequency respecting the
-> infrastructure limits. Consequently, AMD has redefined the concept of
-> maximum frequency of a part. This means that a fraction of cores can reach
-> maximum frequency. To find the best process scheduling policy for a given
-> scenario, OS needs to know the core ordering informed by the platform thr=
-ough
-> highest performance capability register of the CPPC interface.
->=20
-> Earlier implementations of amd-pstate preferred core only support a static
-> core ranking and targeted performance. Now it has the ability to dynamica=
-lly
-> change the preferred core based on the workload and platform conditions a=
-nd
-> accounting for thermals and aging.
->=20
-> Amd-pstate driver utilizes the functions and data structures provided by
-> the ITMT architecture to enable the scheduler to favor scheduling on cores
-> which can be get a higher frequency with lower voltage.
-> We call it amd-pstate preferred core.
->=20
-> Here sched_set_itmt_core_prio() is called to set priorities and
-> sched_set_itmt_support() is called to enable ITMT feature.
-> Amd-pstate driver uses the highest performance value to indicate
-> the priority of CPU. The higher value has a higher priority.
->=20
-> Amd-pstate driver will provide an initial core ordering at boot time.
-> It relies on the CPPC interface to communicate the core ranking to the
-> operating system and scheduler to make sure that OS is choosing the cores
-> with highest performance firstly for scheduling the process. When amd-pst=
-ate
-> driver receives a message with the highest performance change, it will
-> update the core ranking.
->=20
-> Changes form V6->V7:
-> - x86:
-> - - Modify kconfig about X86_AMD_PSTATE.
-> - cpufreq: amd-pstate:
-> - - modify incorrect comments about scheduler_work().
-> - - convert highest_perf data type.
-> - - modify preferred core init when cpu init and online.
-> - acpi: cppc:
-> - - modify link of CPPC highest performance.
-> - cpufreq:
-> - - modify link of CPPC highest performance changed.
->=20
-> Changes form V5->V6:
-> - cpufreq: amd-pstate:
-> - - modify the wrong tag order.
-> - - modify warning about hw_prefcore sysfs attribute.
-> - - delete duplicate comments.
-> - - modify the variable name cppc_highest_perf to prefcore_ranking.
-> - - modify judgment conditions for setting highest_perf.
-> - - modify sysfs attribute for CPPC highest perf to pr_debug message.
-> - Documentation: amd-pstate:
-> - - modify warning: title underline too short.
->=20
-> Changes form V4->V5:
-> - cpufreq: amd-pstate:
-> - - modify sysfs attribute for CPPC highest perf.
-> - - modify warning about comments
-> - - rebase linux-next
-> - cpufreq:=20
-> - - Moidfy warning about function declarations.
-> - Documentation: amd-pstate:
-> - - align with ``amd-pstat``
->=20
-> Changes form V3->V4:
-> - Documentation: amd-pstate:
-> - - Modify inappropriate descriptions.
->=20
-> Changes form V2->V3:
-> - x86:
-> - - Modify kconfig and description.
-> - cpufreq: amd-pstate:=20
-> - - Add Co-developed-by tag in commit message.
-> - cpufreq:
-> - - Modify commit message.
-> - Documentation: amd-pstate:
-> - - Modify inappropriate descriptions.
->=20
-> Changes form V1->V2:
-> - acpi: cppc:
-> - - Add reference link.
-> - cpufreq:
-> - - Moidfy link error.
-> - cpufreq: amd-pstate:=20
-> - - Init the priorities of all online CPUs
-> - - Use a single variable to represent the status of preferred core.
-> - Documentation:
-> - - Default enabled preferred core.
-> - Documentation: amd-pstate:=20
-> - - Modify inappropriate descriptions.
-> - - Default enabled preferred core.
-> - - Use a single variable to represent the status of preferred core.
->=20
-> Meng Li (7):
->   x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for the expansion.
->   acpi: cppc: Add get the highest performance cppc control
->   cpufreq: amd-pstate: Enable amd-pstate preferred core supporting.
->   cpufreq: Add a notification message that the highest perf has changed
->   cpufreq: amd-pstate: Update amd-pstate preferred core ranking
->     dynamically
->   Documentation: amd-pstate: introduce amd-pstate preferred core
->   Documentation: introduce amd-pstate preferrd core mode kernel command
->     line options
->=20
->  .../admin-guide/kernel-parameters.txt         |   5 +
->  Documentation/admin-guide/pm/amd-pstate.rst   |  58 +++++-
->  arch/x86/Kconfig                              |   5 +-
->  drivers/acpi/cppc_acpi.c                      |  13 ++
->  drivers/acpi/processor_driver.c               |   6 +
->  drivers/cpufreq/amd-pstate.c                  | 197 ++++++++++++++++--
->  drivers/cpufreq/cpufreq.c                     |  13 ++
->  include/acpi/cppc_acpi.h                      |   5 +
->  include/linux/amd-pstate.h                    |   6 +
->  include/linux/cpufreq.h                       |   5 +
->  10 files changed, 291 insertions(+), 22 deletions(-)
+Axel Rasmussen (10):
+  userfaultfd.2: briefly mention two-step feature handshake process
+  userfaultfd.2: reword to account for new fault resolution ioctls
+  userfaultfd.2: comment on feature detection in the example program
+  ioctl_userfaultfd.2: fix a few trivial mistakes
+  ioctl_userfaultfd.2: describe two-step feature handshake
+  ioctl_userfaultfd.2: describe missing UFFDIO_API feature flags
+  ioctl_userfaultfd.2: correct and update UFFDIO_API ioctl error codes
+  ioctl_userfaultfd.2: clarify the state of the uffdio_api structure on
+    error
+  ioctl_userfaultfd.2: fix / update UFFDIO_REGISTER error code list
+  ioctl_userfaultfd.2: document new UFFDIO_POISON ioctl
 
-When applied on top of v6.5.3 this breaks turbo on my 5950X after suspend/r=
-esume cycle. Please see the scenario description below.
+ man2/ioctl_userfaultfd.2 | 254 ++++++++++++++++++++++++++++++++-------
+ man2/userfaultfd.2       |  15 ++-
+ 2 files changed, 220 insertions(+), 49 deletions(-)
 
-If I boot v6.5.3 + this patchset, then `turbostat` reports ~4.9 GHz on core=
- 0 where `taskset -c 0 dd if=3D/dev/zero of=3D/dev/null` is being run.
-
-After I suspend the machine and then resume it, and run `dd` again, `turbos=
-tat` reports the core to be capped to a stock frequency of ~3.4 GHz. Reboot=
-ing the machine fixes this, and the CPU can boost again.
-
-If this patchset is reverted, then the CPU can turbo after suspend/resume c=
-ycle just fine.
-
-I'm using `amd_pstate=3Dguided`.
-
-Is this behaviour expected?
-
-Thanks.
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
---nextPart4861953.31r3eYUQgx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmUJ8AAACgkQil/iNcg8
-M0ueyxAA56PZrdELCmbVNIVuREAaNkoOkxzDaS9JhELpp1yvetk6gCANs4Y1RYpg
-sqZMY1b/hVh52JwnGoOwnbnJAQWRqeERW4xzhxr78JeKfAwE3jD1IO71rfOfurkA
-6g1Yxou5N34mccFCF1ZiywscJznwvPKpdl0jxGFbGvHWf05hSTCExm/3XWljYEU5
-qUN2/cwd3K3Jd/Q2H7i0mn9LFcuJtmP1vIdeinTxhy6bRxe86y+fireIXPxiYyHm
-dhxCEhCT0OkeEmwVufec/D0G3El4BI3TJDQ98zZUD0vNFHx5dFfIbOoCHVoLfQeD
-lKOl4VhuIoNL8LhZKzZeY9zMMQuRQhFL7aZhldwaS8A7bs6k6UgSOL5xoiR7bRK1
-PV7Km15CY0mxkobbqtEfuRQh1gOPh/OhPCiFUBFHZkTCQnMsL5RHAAclsU+ELb4D
-xRLQpaDP3usou6Gc7M4eFxm+eJ2DFeI6pfL4QHYhUsBCaJicbv+8Q1zy9PCcwAei
-usIgfi5bamxD9ZdRpdvekFPMQMycOJLT+4lqF2aU4AjFk3X8zCoUidTvYOI330Rp
-jx5aQQWh4+iltD6T7j935tUE7AVAiT5EKlcHWoX0+hgfaqqtjjEmGX7zu9c12IQL
-fjR4ikgIGzgkbdtN7i41IYGFt9lTW2B5hShrSSiR7RhDzasg7hI=
-=vH+S
------END PGP SIGNATURE-----
-
---nextPart4861953.31r3eYUQgx--
-
-
+--
+2.42.0.459.ge4e396fd5e-goog
 
