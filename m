@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F4E7A63BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456D27A63C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbjISMvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
+        id S232217AbjISMv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbjISMvE (ORCPT
+        with ESMTP id S232200AbjISMvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:51:04 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D48D125;
-        Tue, 19 Sep 2023 05:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=afVsOPxUQuwVipVDHBVww60gV/G7DP0ocTjI/JcbAvY=; b=eoZrVw8hIptK6eIwOJZsrXb4xA
-        z4swNSl9KJZB2vyfzz1v99biL5m1wHUXV24zojrVfyj71x89GGDtUDQkAlKj/Ubgo/iyQSwTp8yaC
-        1sFWZeYloA0iX5J99zTDRColZ2uR295rsHQY+ei6yFZQBt+Gvg483ndB+AnXiMqgbPOE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qiaBf-006uWQ-NU; Tue, 19 Sep 2023 14:50:43 +0200
-Date:   Tue, 19 Sep 2023 14:50:43 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Parthiban.Veerasooran@microchip.com
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        corbet@lwn.net, Steen.Hegelund@microchip.com,
-        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Horatiu.Vultur@microchip.com, Woojung.Huh@microchip.com,
-        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
-        Thorsten.Kummermehr@microchip.com
-Subject: Re: [RFC PATCH net-next 5/6] microchip: lan865x: add driver support
- for Microchip's LAN865X MACPHY
-Message-ID: <8e9fecd4-f9bc-46d0-b7bf-fbf7ac83cc80@lunn.ch>
-References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
- <20230908142919.14849-6-Parthiban.Veerasooran@microchip.com>
- <d1ffe3b1-d078-4f39-a263-c09dec6c4169@lunn.ch>
- <248dc5fd-f860-507b-6b3e-4be62cd91b2a@microchip.com>
+        Tue, 19 Sep 2023 08:51:23 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02079E3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:51:16 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-770ef334b4fso249965785a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695127875; x=1695732675; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EzfxQdXla0PknaJGcF18mFftRNpFMZC6735h+HuTWrQ=;
+        b=DGnFIhpRnZVYCF5MnBEyMz1pgbHC+qiPae2JMDSnrNl9+8i76Jzaqrjb9xMx5yyTEc
+         j+lVblKP5MjA2ZlbmUpk+OS1y3gPfOUjaQe9Up7cd51w2m6q2Iqx0CVp/2/IqmyLnQqw
+         2s5Jf4wo+A/cDzYiMb0654qZrUXr1Eb/qxid63qU4I1lNYtIukMpwP2dDAGsYi4nnCRI
+         51iBfwAtfi8r2SOQAuHsan8ItZphU6Uiu7y7WSFjNSg6oP1DeZPmYVaGeJuowLXALVNk
+         C7sDzgWLy9J2HXxjuDVpr/M9WMQXpoChv3yjNnrymfwdUe+iChqKIOam8fQLesN9atek
+         XYyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695127875; x=1695732675;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EzfxQdXla0PknaJGcF18mFftRNpFMZC6735h+HuTWrQ=;
+        b=BXVvslBi7oMLCeZn8quYFKxzfAEzdfwh2Gy7lGPe9nEYbpW9A8M6S96G5UyXuE1NAB
+         QL8pgmHE/cWn+sUw5DdEhqskyAN3PD2GPJ36dQvUaAL8vwvQZ8dhYHSa24E3ujWMbvk4
+         44YsRwohnF0dj0h6zdUC1KnNQ6p3qjXPtl27R4xTKjPpZnLy9YciiCLms1hCVDtJU83P
+         C9K9F4yo7Zb6tRE555L+1UFWL8H7KwnSIbWn2IgINdJ8Uzp74inipAZ412nTGpqgP/1w
+         kWjliENBGNzRlaDTmnDSD9JeGXVbS7nr3kEDP6qqulB9L5Rz5eDINY9pnaSXHcRKJLch
+         JKgg==
+X-Gm-Message-State: AOJu0Yz2UGa1o5tV7SLtQGNS3nS0F/HIxlttVCuKfCY6Cay82KyHyGyW
+        9/RLwTtFupM7ou8ZVKQDrBucSskY9XmWJw==
+X-Google-Smtp-Source: AGHT+IFyJyG0RDrT5otqhjeWZBTvAR7xF8M/r8Qpg65I95NA2PM08v0gr7EZLAAA0r6G7ybyMhT20w==
+X-Received: by 2002:a05:620a:46a9:b0:76e:e66c:92f8 with SMTP id bq41-20020a05620a46a900b0076ee66c92f8mr3259115qkb.8.1695127875288;
+        Tue, 19 Sep 2023 05:51:15 -0700 (PDT)
+Received: from localhost.localdomain (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
+        by smtp.gmail.com with ESMTPSA id y7-20020a37e307000000b007676f3859fasm3936508qki.30.2023.09.19.05.51.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 05:51:14 -0700 (PDT)
+From:   Trevor Woerner <twoerner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/1] ARM: defconfig: cleanup orphaned CONFIGs
+Date:   Tue, 19 Sep 2023 08:51:10 -0400
+Message-ID: <20230919125112.15515-1-twoerner@gmail.com>
+X-Mailer: git-send-email 2.41.0.327.gaa9166bcc0ba
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <248dc5fd-f860-507b-6b3e-4be62cd91b2a@microchip.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Sure, I can move this part to oa_tc6 lib. If I understand you correctly 
-> you are talking about the Standard Capabilities Register (0x0002) 
-> defined in the OPEN Alliance 10BASE-T1x MAC-PHY Serial Interface spec 
-> right? If so, the 9th bit of this register tells about Indirect PHY 
-> Register access Capability. Did you mean this bit? If so, this bit 
-> describes the below,
-> 
-> IPRAC - Indirect PHY Register Access Capability. Indicates if PHY 
-> registers are indirectly accessible through the MDIO/MDC registers MDIOACCn.
+Drop CONFIG_ options from defconfigs whose code has been removed.
 
-Yes. If the core relies on any functionality which is optional in the
-standard, it should check if the capability bit is set, and do a
-dev_erro() and return -ENODEV if a device does not actually have
-it. That makes it clear the core needs extending to support a device.
+v4:
+Re-submit the ARM patch (alone) with a better subject line and CC'ing the
+correct people to help ensure it gets picked up. v4 drops the patches for
+mips, powerpc, and loongarch which have already been applied.
 
-If you are only using mandatory parts of the spec, then no test is
-needed.
+v3:
+While reorganizing the patches, I put the wrong commit message with the
+CONFIG_IP_NF_TARGET_CLUSTERIP option.
 
-> > I would expect to see a call to phy_ethtool_ksettings_set()
-> > here. phylib should be able to do some of the validation.
-> Ah ok, doing the below will make the life easier.
-> .set_link_ksettings	= phy_ethtool_set_link_ksettings,
+v2:
+Generate arch-specific patches. In v1 I organized the patches by
+CONFIG_ option which caused some of the patches to cross architectural
+lines. This requires cross-arch consensus before they can be applied.
+Therefore organize the changes by architecture so each one can apply them
+independently (or not).
 
-Please do some testing and check that phy_ethtool_set_link_ksettings
-doe actually reject all invalid setting. I cannot guarantee it does,
-and if it does not, it might actually be a PHY driver bug.
+Trevor Woerner (1):
+  ARM: defconfig: cleanup orphaned CONFIGs
 
-> >> +static int lan865x_net_open(struct net_device *netdev)
-> >> +{
-> >> +     struct lan865x_priv *priv = netdev_priv(netdev);
-> >> +     int ret;
-> >> +
-> >> +     if (!is_valid_ether_addr(netdev->dev_addr)) {
-> >> +             if (netif_msg_ifup(priv))
-> >> +                     netdev_err(netdev, "Invalid MAC address %pm", netdev->dev_addr);
-> >> +             return -EADDRNOTAVAIL;
-> > 
-> > Using a random MAC address is the normal workaround for not having a
-> > valid MAC address via OTP flash etc.
-> Ah ok, you mean to use eth_hw_addr_random(netdev) instead of returning 
-> error.
+ arch/arm/configs/keystone_defconfig  | 1 -
+ arch/arm/configs/multi_v7_defconfig  | 1 -
+ arch/arm/configs/omap2plus_defconfig | 8 --------
+ 3 files changed, 10 deletions(-)
 
-Yes. And this is generally done earlier than open, as part of
-probe. You want to avoid surprising userspace when the MAC address
-suddenly changes at open time.
+-- 
+2.41.0.327.gaa9166bcc0ba
 
-	 Andrew
