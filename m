@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9767A5DAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563F67A5DE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 11:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjISJWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 05:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        id S229921AbjISJ2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 05:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjISJWj (ORCPT
+        with ESMTP id S230262AbjISJ2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 05:22:39 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C867F2;
-        Tue, 19 Sep 2023 02:22:33 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-5733aa10291so3510201eaf.3;
-        Tue, 19 Sep 2023 02:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695115352; x=1695720152; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K7cl88MG2Y1v5NFU8r78g+h9zXI7wnsANxaBl2bLSTs=;
-        b=jlw7oTsZ6qBDh4lEUeYrARy8ODBYLi1nFAAqfDAVHkBTeOMV8+g4cYJU5AXIsiEBx2
-         Zlhk7leVulBydC21U39MXfWhaWIzOk1FZx8vxPAWMWqpQJzlKj7hnfwY7cG2Xo4t0+qd
-         aJv9nFED/dPoSbrtMyMzlTSRKFzy62UjrzQVANeXIpJhS1/QskwjHWdCAqaKAnK0IyYI
-         c4d/yOlA9BTZunZxQBe0lsSrcZHiJzgS+YUl8XhSDC9Tw68D5/qk48L74ohB9wfUWGBi
-         dHEKJN162sMot2jZzKOiSeNoFWJr6dt8uAFWNW+QEhOU0yizpO1V0/pbw9AquuYjMwHR
-         hDlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695115352; x=1695720152;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K7cl88MG2Y1v5NFU8r78g+h9zXI7wnsANxaBl2bLSTs=;
-        b=CSt1x/losjBrrJKZaO5K/ygTcJWKuDmKe/ZDoaXGhUzFJpqygGr2oi4AL7Ztbssnzd
-         5Q3gDEtiUpnxzhjezHJZ5AknID0/vUFpMjGBpOEuwzd937nojBOB8CrkgRKyV0oItKae
-         MKgE/du3IR+yezyUUaoduhRNMqCyfYPhcYTYm+bPkqEckUMqGP4mMJQKk805CBKFSX91
-         dauZhcty20orooYPq0Vxoxy9IEob4OA6EA+d8NGS6kvCIGLb4QUOFUGYCyTazKxxSq8W
-         uZJHLGEw6OIyR+EOGNuR2E4LtX4F8MIPTbYuwEFXcMoimpYRvlCIq/tzbCoIxe4ESgOb
-         R72A==
-X-Gm-Message-State: AOJu0Yyyli7ZR6GY1Guv/IGMUhP0fUbUZOxHoU0JIzY51eHYc3ciTx3z
-        7UtJcsc7ODz7BbRYIAGM5WQ=
-X-Google-Smtp-Source: AGHT+IFWUBZvig2UdoO1fZW/LtSJGwCN7ZDrclibi3mQki3DRLhLXKovo7OY99nt2G7Bbuq/ce46vw==
-X-Received: by 2002:a05:6358:2806:b0:13a:c28f:3cd7 with SMTP id k6-20020a056358280600b0013ac28f3cd7mr13733452rwb.14.1695115352210;
-        Tue, 19 Sep 2023 02:22:32 -0700 (PDT)
-Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
-        by smtp.gmail.com with ESMTPSA id q12-20020a638c4c000000b005637030d00csm7829270pgn.30.2023.09.19.02.22.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 02:22:31 -0700 (PDT)
-From:   Edward AD <twuufnxlz@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     eadavis@sina.com, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, twuufnxlz@gmail.com
-Subject: Re: [PATCH] tty: fix memory leak in gsm_activate_mux
-Date:   Tue, 19 Sep 2023 17:22:26 +0800
-Message-ID: <20230919092225.3732786-2-twuufnxlz@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <2023091922-unplug-flask-f2e5@gregkh>
-References: <2023091922-unplug-flask-f2e5@gregkh>
+        Tue, 19 Sep 2023 05:28:33 -0400
+X-Greylist: delayed 237 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Sep 2023 02:28:24 PDT
+Received: from tretyak2.mcst.ru (tretyak2.mcst.ru [212.5.119.215])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DA3F2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 02:28:24 -0700 (PDT)
+Received: from tretyak2.mcst.ru (localhost [127.0.0.1])
+        by tretyak2.mcst.ru (Postfix) with ESMTP id B3EDF102395;
+        Tue, 19 Sep 2023 12:24:23 +0300 (MSK)
+Received: from frog.lab.sun.mcst.ru (frog.lab.sun.mcst.ru [176.16.4.50])
+        by tretyak2.mcst.ru (Postfix) with ESMTP id AEC1D101775;
+        Tue, 19 Sep 2023 12:23:47 +0300 (MSK)
+Received: from artemiev-i.lab.sun.mcst.ru (avior-1 [192.168.63.223])
+        by frog.lab.sun.mcst.ru (8.13.4/8.12.11) with ESMTP id 38J9NkLq017473;
+        Tue, 19 Sep 2023 12:23:47 +0300
+From:   Igor Artemiev <Igor.A.Artemiev@mcst.ru>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Igor Artemiev <Igor.A.Artemiev@mcst.ru>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: [lvc-project] [PATCH] staging: rtl8712: fix buffer overflow in r8712_xmitframe_complete()
+Date:   Tue, 19 Sep 2023 12:23:18 +0300
+Message-Id: <20230919092318.14837-1-Igor.A.Artemiev@mcst.ru>
+X-Mailer: git-send-email 2.39.0.152.ga5737674b6
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_FILL_THIS_FORM_SHORT autolearn=ham autolearn_force=no version=3.4.6
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20111107 #2745587, check: 20230919 notchecked
+X-AV-Checked: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 10:29:08 +0200 Greg KH wrote:
-> > When the call to gsm_register_devices() fails, we need to reclaim the memory
-> > requested in gsm_dlci_alloc().
-> >
-> > Fixes: 01aecd917114 ("tty: n_gsm: fix tty registration before control channel open")
-> > Reported-and-tested-by: syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com
-> > Signed-off-by: Edward AD <twuufnxlz@gmail.com>
-> 
-> Please use your company name/email address, and then just set a manual
-> "From:" line as the first line in the changelog as the documentation
-> asks.  That's how developers work around their broken corporate email
-> systems (but really, you should go and poke your IT group to fix it.)
-This repair was completed in my personal time. Additionally, there may be a 
-possibility of the company's email being thrown away by 'lore.kernel.org'. 
-If you are not very strict with this, I will continue to use my private email.
+The value of pxmitframe->attrib.priority in r8712_issue_addbareq_cmd(),
+which dump_xframe() calls, is used to calculate the index for accessing 
+an array of size 16. The value of pxmitframe->attrib.priority can be 
+greater than 15, because the r8712_update_attrib() function can write 
+a value up to 31 to attrib.priority, and r8712_xmitframe_complete() 
+checks that pxmitframe->attrib.priority is less than 16 before 
+calling r8712_xmitframe_coalesce().
 
-I will only keep one line starting with 'From:' in the patch.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Thanks,
-edward
+Signed-off-by: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
+---
+ drivers/staging/rtl8712/rtl8712_xmit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8712/rtl8712_xmit.c b/drivers/staging/rtl8712/rtl8712_xmit.c
+index 4cb01f590673..8a39a3c8cfcb 100644
+--- a/drivers/staging/rtl8712/rtl8712_xmit.c
++++ b/drivers/staging/rtl8712/rtl8712_xmit.c
+@@ -669,7 +669,7 @@ int r8712_xmitframe_complete(struct _adapter *padapter,
+ 			 */
+ 			r8712_xmit_complete(padapter, pxmitframe);
+ 		}
+-		if (res == _SUCCESS)
++		if (res == _SUCCESS && pxmitframe->attrib.priority <= 15)
+ 			dump_xframe(padapter, pxmitframe);
+ 		else
+ 			r8712_free_xmitframe_ex(pxmitpriv, pxmitframe);
+-- 
+2.30.2
+
