@@ -2,914 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A197A56CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 03:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680117A56D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 03:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbjISBEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 21:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
+        id S229953AbjISBKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 21:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjISBEf (ORCPT
+        with ESMTP id S229508AbjISBKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 21:04:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D96107;
-        Mon, 18 Sep 2023 18:04:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E850DC433C7;
-        Tue, 19 Sep 2023 01:04:24 +0000 (UTC)
-Date:   Mon, 18 Sep 2023 21:04:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ajay Kaher <akaher@vmware.com>, chinglinyu@google.com,
-        lkp@intel.com, namit@vmware.com, oe-lkp@lists.linux.dev,
-        amakhalov@vmware.com, er.ajay.kaher@gmail.com,
-        srivatsa@csail.mit.edu, tkundu@vmware.com, vsirnapalli@vmware.com
-Subject: Re: [PATCH 1/2 v3] eventfs: Remove eventfs_file and just use
- eventfs_inode
-Message-ID: <20230918210456.3772d4fa@gandalf.local.home>
-In-Reply-To: <20230919000129.be4971c111300d108be97a3f@kernel.org>
-References: <20230914163504.884804272@goodmis.org>
-        <20230914163535.269645249@goodmis.org>
-        <20230919000129.be4971c111300d108be97a3f@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 18 Sep 2023 21:10:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8498E
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 18:09:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695085780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5xhYDTylANariynyECyDawRfZxSRk3P2GMXADURjfrY=;
+        b=g5gvk9Cbldzwgf1whkpv1bhkeCidpWMGTQkiHzikYV0NVbdBS1aIs/VRwtCX6tEFH/wuRz
+        iTN6ISnycsk01kDlCaUiLKxQFNmOzupCQcDAjbHQgG/yE0nQkLF2hUGNYJMh9rLl9Fp2Yq
+        XHRv1G6U4v1beJPrgRuM+xpXGkSDI/k=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-425-o6tRmt3zP3qo7D5SR0rLmw-1; Mon, 18 Sep 2023 21:09:39 -0400
+X-MC-Unique: o6tRmt3zP3qo7D5SR0rLmw-1
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-690c1423627so399342b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 18:09:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695085778; x=1695690578;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5xhYDTylANariynyECyDawRfZxSRk3P2GMXADURjfrY=;
+        b=YeBtoU36LHRuYo2ZfoLvUmmSiypbaQuht4jhYgrG3ojXI0iHMLWeZKqE7IwskCZ9PD
+         d8Wn6MAvWmAEHHzqvHHBnbuvX58zTh1ehA8yauAmIx8Uy5KAksEc/RNIjfPTdAy27/hy
+         1X6WDTKNRdyJQK/Bqp+9CbtBVV8ZJX77U9FwIJ7jJ+RFgFGrnB8a26t0Mjjw/VRLn9NV
+         3KXvNCrJbMV6i1+iO3X/r02ar6dOyTK4teLMFiWBW0eK1Wcc82L7h5TsvuBrJwaVPKya
+         9OYZ5KioZI5Q6V1vPpkCxer3zjViOL8uJBwmA6Hll+xzckhh+Hi0UYHstSO9tbu9DQYY
+         Ljiw==
+X-Gm-Message-State: AOJu0YyQ4eqT4+CWfbeQkdFlDT1oEwGIkcV7Upz486b3nr6LYriKC9mG
+        afht3TPi9TD/xJwx0OCcAAr5HmX//Sv+47OfAA6Y/5jI33/OrzmPUsFQf2GYNdYwGKGe/yH9gKu
+        bg0o6yTLquORoU99Zqu0j8qxJ
+X-Received: by 2002:a05:6a20:7faa:b0:140:324c:124c with SMTP id d42-20020a056a207faa00b00140324c124cmr10255878pzj.62.1695085778231;
+        Mon, 18 Sep 2023 18:09:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFdG9bCpdvmZ3ZQXnGhuch/qDkbh0mPQBnni4kkBKZ4ohjirIgnh97Jnx/y/Pt40AJLReKTog==
+X-Received: by 2002:a05:6a20:7faa:b0:140:324c:124c with SMTP id d42-20020a056a207faa00b00140324c124cmr10255863pzj.62.1695085777865;
+        Mon, 18 Sep 2023 18:09:37 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id bh3-20020a170902a98300b001c55d591f07sm3082096plb.260.2023.09.18.18.09.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 18:09:37 -0700 (PDT)
+Message-ID: <23ed10ee-b88f-8681-35a4-cefc2e3a7800@redhat.com>
+Date:   Tue, 19 Sep 2023 11:09:30 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 25/35] LoongArch: Use the __weak version of
+ arch_unregister_cpu()
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev
+Cc:     x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-26-james.morse@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230913163823.7880-26-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 00:01:29 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-
+On 9/14/23 02:38, James Morse wrote:
+> LoongArch provides its own arch_unregister_cpu(). This clears the
+> hotpluggable flag, then unregisters the CPU.
 > 
-> Thanks for this great work!
-
-Thanks!
-
-> I have some questions below.
-> I tried to understand this, but maybe some of them are pointless.
-
-Sure.
-
+> It isn't necessary to clear the hotpluggable flag when unregistering
+> a cpu. unregister_cpu() writes NULL to the percpu cpu_sys_devices
+> pointer, meaning cpu_is_hotpluggable() will return false, as
+> get_cpu_device() has returned NULL.
 > 
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> >  fs/tracefs/event_inode.c     | 763 ++++++++++++++++++-----------------
-> >  fs/tracefs/event_show.c      |  51 +--
-> >  fs/tracefs/inode.c           |   2 +-
-> >  fs/tracefs/internal.h        |  54 ++-
-> >  include/linux/trace_events.h |   2 +-
-> >  include/linux/tracefs.h      |  29 +-
-> >  kernel/trace/trace.c         |   7 +-
-> >  kernel/trace/trace.h         |   4 +-
-> >  kernel/trace/trace_events.c  | 315 ++++++++++-----
-> >  9 files changed, 685 insertions(+), 542 deletions(-)
-> > 
-> > diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> > index b23bb0957bb4..436250ee7786 100644
-> > --- a/fs/tracefs/event_inode.c
-> > +++ b/fs/tracefs/event_inode.c
-> > @@ -2,8 +2,9 @@
-> >  /*
-> >   *  event_inode.c - part of tracefs, a pseudo file system for activating tracing
-> >   *
-> > - *  Copyright (C) 2020-23 VMware Inc, author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > + *  Copyright (C) 2020-23 VMware Inc, author: Steven Rostedt <rostedt@goodmis.org>
-> >   *  Copyright (C) 2020-23 VMware Inc, author: Ajay Kaher <akaher@vmware.com>
-> > + *  Copyright (C) 2023 Google, author: Steven Rostedt <rostedt@goodmis.org>
-> >   *
-> >   *  eventfs is used to dynamically create inodes and dentries based on the
-> >   *  meta data provided by the tracing system.
-> > @@ -52,16 +53,9 @@ static const struct file_operations eventfs_file_operations = {
-> >   * @data: something that the caller will want to get to later on.
-> >   * @fop: struct file_operations that should be used for this file.
-> >   *
-> > - * This is the basic "create a file" function for tracefs.  It allows for a
-> > - * wide range of flexibility in creating a file.
-> > - *
-> > - * This function will return a pointer to a dentry if it succeeds.  This
-> > - * pointer must be passed to the tracefs_remove() function when the file is
-> > - * to be removed (no automatic cleanup happens if your module is unloaded,
-> > - * you are responsible here.)  If an error occurs, %NULL will be returned.
-> > - *
-> > - * If tracefs is not enabled in the kernel, the value -%ENODEV will be
-> > - * returned.
-> > + * This function creates a dentry that represents a file in the eventsfs_inode
-> > + * directory. The inode.i_private pointer will point to @data in the open()
-> > + * call.
-> >   */
-> >  static struct dentry *create_file(const char *name, umode_t mode,
-> >  				  struct dentry *parent, void *data,
-> > @@ -77,6 +71,7 @@ static struct dentry *create_file(const char *name, umode_t mode,
-> >  	if (WARN_ON_ONCE(!S_ISREG(mode)))
-> >  		return NULL;
-> >  
-> > +	WARN_ON_ONCE(!parent);  
+> Remove arch_unregister_cpu() and use the __weak version.
 > 
-> Don't you returns NULL in !parent too? (as same as above)
-
-Oh, I believe I added that while debugging, but yeah, I could make it
-return NULL too.
-
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>   arch/loongarch/kernel/topology.c | 9 ---------
+>   1 file changed, 9 deletions(-)
 > 
-> >  	dentry = eventfs_start_creating(name, parent);
-> >  
-> >  	if (IS_ERR(dentry))
-> > @@ -101,20 +96,11 @@ static struct dentry *create_file(const char *name, umode_t mode,
-> >   * create_dir - create a dir in the tracefs filesystem
-> >   * @name: the name of the file to create.
-> >   * @parent: parent dentry for this file.
-> > - * @data: something that the caller will want to get to later on.
-> > - *
-> > - * This is the basic "create a dir" function for eventfs.  It allows for a
-> > - * wide range of flexibility in creating a dir.
-> >   *
-> > - * This function will return a pointer to a dentry if it succeeds.  This
-> > - * pointer must be passed to the tracefs_remove() function when the file is
-> > - * to be removed (no automatic cleanup happens if your module is unloaded,
-> > - * you are responsible here.)  If an error occurs, %NULL will be returned.
-> > - *
-> > - * If tracefs is not enabled in the kernel, the value -%ENODEV will be
-> > - * returned.
-> > + * This function will create a dentry for a directory represented by
-> > + * a eventfs_inode.
-> >   */
-> > -static struct dentry *create_dir(const char *name, struct dentry *parent, void *data)
-> > +static struct dentry *create_dir(const char *name, struct dentry *parent)
-> >  {
-> >  	struct tracefs_inode *ti;
-> >  	struct dentry *dentry;
-> > @@ -131,7 +117,6 @@ static struct dentry *create_dir(const char *name, struct dentry *parent, void *
-> >  	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
-> >  	inode->i_op = &eventfs_root_dir_inode_operations;
-> >  	inode->i_fop = &eventfs_file_operations;
-> > -	inode->i_private = data;
-> >  
-> >  	ti = get_tracefs(inode);
-> >  	ti->flags |= TRACEFS_EVENT_INODE;
-> > @@ -144,18 +129,18 @@ static struct dentry *create_dir(const char *name, struct dentry *parent, void *
-> >  }
-> >  
-> >  /**
-> > - * eventfs_set_ef_status_free - set the ef->status to free
-> > + * eventfs_set_ei_status_free - remove the dentry reference from an eventfs_inode
-> >   * @ti: the tracefs_inode of the dentry
-> > - * @dentry: dentry who's status to be freed
-> > + * @dentry: dentry which has the reference to remove.
-> >   *
-> > - * eventfs_set_ef_status_free will be called if no more
-> > - * references remain
-> > + * Remove the association between a dentry from an eventfs_inode.
-> >   */
-> > -void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-> > +void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-> >  {
-> >  	struct tracefs_inode *ti_parent;
-> > +	struct eventfs_inode *ei_child, *tmp;
-> >  	struct eventfs_inode *ei;
-> > -	struct eventfs_file *ef, *tmp;
-> > +	int i;
-> >  
-> >  	/* The top level events directory may be freed by this */
-> >  	if (unlikely(ti->flags & TRACEFS_EVENT_TOP_INODE)) {
-> > @@ -166,9 +151,9 @@ void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-> >  		ei = ti->private;
-> >  
-> >  		/* Record all the top level files */
-> > -		list_for_each_entry_srcu(ef, &ei->e_top_files, list,
-> > +		list_for_each_entry_srcu(ei_child, &ei->children, list,
-> >  					 lockdep_is_held(&eventfs_mutex)) {
-> > -			list_add_tail(&ef->del_list, &ef_del_list);
-> > +			list_add_tail(&ei_child->del_list, &ef_del_list);
-> >  		}  
-> 
-> Do we really need to move all ei::children to ef_del_list (this must be
-> ei_del_list)? Because we removed ei from ti->private under eventfs_mutex
-> is locked, no one can access the ei::childrenn anymore?
+I think arch/x86/kernel/topology.c::arch_unregister_cpu() can be dropped either.
 
-Part of this is paranoia, just like why I set ti->private to NULL again. It
-shouldn't be accessed, but just in case it is, I want to make sure it
-doesn't cause any hard to find bugs. I rather have this than to chase down
-some hard to find bug if this ever becomes not the case.
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-And I wanted to be consistent. As ei->children should only be iterated with
-srcu or eventfs_mutex held. I really don't want to have that list iterated
-without any locking.
+> diff --git a/arch/loongarch/kernel/topology.c b/arch/loongarch/kernel/topology.c
+> index 8e4441c1ff39..5a75e2cc0848 100644
+> --- a/arch/loongarch/kernel/topology.c
+> +++ b/arch/loongarch/kernel/topology.c
+> @@ -16,13 +16,4 @@ int arch_register_cpu(int cpu)
+>   	return register_cpu(c, cpu);
+>   }
+>   EXPORT_SYMBOL(arch_register_cpu);
+> -
+> -void arch_unregister_cpu(int cpu)
+> -{
+> -	struct cpu *c = &per_cpu(cpu_devices, cpu);
+> -
+> -	c->hotpluggable = 0;
+> -	unregister_cpu(c);
+> -}
+> -EXPORT_SYMBOL(arch_unregister_cpu);
+>   #endif
 
-Note, this is a slow path, where it's better to be safe than efficient.
-
-> 
-> >  
-> >  		/* Nothing should access this, but just in case! */
-> > @@ -177,11 +162,13 @@ void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-> >  		mutex_unlock(&eventfs_mutex);
-> >  
-> >  		/* Now safely free the top level files and their children */
-> > -		list_for_each_entry_safe(ef, tmp, &ef_del_list, del_list) {
-> > -			list_del(&ef->del_list);
-> > -			eventfs_remove(ef);
-> > +		list_for_each_entry_safe(ei_child, tmp, &ef_del_list, del_list) {  
-> 
-> I mean now we can safely use ei->children here.
-
-Like I said, I don't want to iterate it without a lock.
-eventfs_remove_dir() grabs the eventfs_lock, so it can't be held during the
-loop.
-
-> 
-> > +			list_del(&ei_child->del_list);
-> > +			eventfs_remove_dir(ei_child);
-> >  		}
-> >  
-> > +		kfree_const(ei->name);
-> > +		kfree(ei->d_children);
-> >  		kfree(ei);
-> >  		return;
-> >  	}
-> > @@ -192,68 +179,162 @@ void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-> >  	if (!ti_parent || !(ti_parent->flags & TRACEFS_EVENT_INODE))
-> >  		goto out;
-> >  
-> > -	ef = dentry->d_fsdata;
-> > -	if (!ef)
-> > +	ei = dentry->d_fsdata;
-> > +	if (!ei)
-> >  		goto out;
-> >  
-> >  	/*
-> > -	 * If ef was freed, then the LSB bit is set for d_fsdata.
-> > +	 * If ei was freed, then the LSB bit is set for d_fsdata.
-> >  	 * But this should not happen, as it should still have a
-> >  	 * ref count that prevents it. Warn in case it does.
-> >  	 */
-> > -	if (WARN_ON_ONCE((unsigned long)ef & 1))
-> > +	if (WARN_ON_ONCE((unsigned long)ei & 1))
-> >  		goto out;
-> >  
-> > +	/* This could belong to one of the files of the ei */
-> > +	if (ei->dentry != dentry) {
-> > +		for (i = 0; i < ei->nr_entries; i++) {
-> > +			if (ei->d_children[i] == dentry)
-> > +				break;
-> > +		}
-> > +		if (WARN_ON_ONCE(i == ei->nr_entries))
-> > +			goto out;
-> > +		ei->d_children[i] = NULL;
-> > +	} else {
-> > +		ei->dentry = NULL;
-> > +	}
-> > +
-> >  	dentry->d_fsdata = NULL;
-> > -	ef->dentry = NULL;
-> > -out:
-> > + out:
-> > +	mutex_unlock(&eventfs_mutex);
-> > +}
-> > +
-
-
-
-> >  /**
-> > - * create_dentry - helper function to create dentry
-> > - * @ef: eventfs_file of file or directory to create
-> > - * @parent: parent dentry
-> > - * @lookup: true if called from lookup routine
-> > + * create_dir_dentry - Create a directory dentry for the eventfs_inode
-> > + * @ei: The eventfs_inode to create the directory for
-> > + * @parent: The dentry of the parent of this directory
-> > + * @lookup: True if this is called by the lookup code
-> >   *
-> > - * Used to create a dentry for file/dir, executes post dentry creation routine
-> > + * This creates and attaches a directory dentry to the eventfs_inode @ei.
-> >   */
-> >  static struct dentry *
-> > -create_dentry(struct eventfs_file *ef, struct dentry *parent, bool lookup)
-> > +create_dir_dentry(struct eventfs_inode *ei, struct dentry *parent, bool lookup)
-> >  {
-> >  	bool invalidate = false;
-> > -	struct dentry *dentry;
-> > +	struct dentry *dentry = NULL;
-> >  
-> >  	mutex_lock(&eventfs_mutex);
-> > -	if (ef->is_freed) {
-> > -		mutex_unlock(&eventfs_mutex);
-> > -		return NULL;
-> > -	}
-> > -	if (ef->dentry) {
-> > -		dentry = ef->dentry;
-> > -		/* On dir open, up the ref count */
-> > +	if (ei->dentry) {
-> > +		/* If the dentry already has a dentry, use it */
-> > +		dentry = ei->dentry;
-> > +		/* lookup does not need to up the ref count */
-> >  		if (!lookup)
-> >  			dget(dentry);
-> >  		mutex_unlock(&eventfs_mutex);
-> > @@ -261,42 +342,50 @@ create_dentry(struct eventfs_file *ef, struct dentry *parent, bool lookup)
-> >  	}
-> >  	mutex_unlock(&eventfs_mutex);
-> >  
-> > +	/* The lookup already has the parent->d_inode locked */
-> >  	if (!lookup)
-> >  		inode_lock(parent->d_inode);
-> >  
-> > -	if (ef->ei)
-> > -		dentry = create_dir(ef->name, parent, ef->data);
-> > -	else
-> > -		dentry = create_file(ef->name, ef->mode, parent,
-> > -				     ef->data, ef->fop);
-> > +	dentry = create_dir(ei->name, parent);
-> >  
-> >  	if (!lookup)
-> >  		inode_unlock(parent->d_inode);
-> >  
-> >  	mutex_lock(&eventfs_mutex);
-> > -	if (IS_ERR_OR_NULL(dentry)) {
-> > -		/* If the ef was already updated get it */
-> > -		dentry = ef->dentry;
-> > +
-> > +	if (IS_ERR_OR_NULL(dentry) && !ei->is_freed) {
-> > +		/*
-> > +		 * When the mutex was released, something else could have
-> > +		 * created the dentry for this e_dentry. In which case
-> > +		 * use that one.
-> > +		 *
-> > +		 * Note, with the mutex held, the e_dentry cannot have content
-> > +		 * and the ei->is_freed be true at the same time.
-> > +		 */
-> > +		dentry = ei->dentry;
-> >  		if (dentry && !lookup)
-> >  			dget(dentry);
-> >  		mutex_unlock(&eventfs_mutex);
-> >  		return dentry;
-> >  	}
-> >  
-> > -	if (!ef->dentry && !ef->is_freed) {
-> > -		ef->dentry = dentry;
-> > -		if (ef->ei)
-> > -			eventfs_post_create_dir(ef);
-> > -		dentry->d_fsdata = ef;
-> > +	if (!ei->dentry && !ei->is_freed) {
-> > +		ei->dentry = dentry;
-> > +		eventfs_post_create_dir(ei);
-> > +		dentry->d_fsdata = ei;
-> >  	} else {
-> > -		/* A race here, should try again (unless freed) */
-> > +		/*
-> > +		 * Should never happen unless we get here due to being freed.
-> > +		 * Otherwise it means two dentries exist with the same name.
-> > +		 */
-> > +		WARN_ON_ONCE(!ei->is_freed);
-> >  		invalidate = true;
-> >  
-> >  		/*
-> >  		 * Should never happen unless we get here due to being freed.
-> >  		 * Otherwise it means two dentries exist with the same name.
-> >  		 */
-> > -		WARN_ON_ONCE(!ef->is_freed);
-> > +		WARN_ON_ONCE(!ei->is_freed);  
-> 
-> Do we need to repeat this same WARN_ON_ONCE() again?
-
-Nope. That probably happened from my many rebases I did no this code.
-
-> 
-> >  	}
-> >  	mutex_unlock(&eventfs_mutex);
-> >  	if (invalidate)
-> > @@ -308,50 +397,70 @@ create_dentry(struct eventfs_file *ef, struct dentry *parent, bool lookup)
-> >  	return invalidate ? NULL : dentry;
-> >  }
-> >  
-> > -static bool match_event_file(struct eventfs_file *ef, const char *name)
-> > -{
-> > -	bool ret;
-> > -
-> > -	mutex_lock(&eventfs_mutex);
-> > -	ret = !ef->is_freed && strcmp(ef->name, name) == 0;
-> > -	mutex_unlock(&eventfs_mutex);
-> > -
-> > -	return ret;
-> > -}
-> > -
-> >  /**
-> >   * eventfs_root_lookup - lookup routine to create file/dir
-> >   * @dir: in which a lookup is being done
-> >   * @dentry: file/dir dentry
-> > - * @flags: to pass as flags parameter to simple lookup
-> > + * @flags: Just passed to simple_lookup()
-> >   *
-> > - * Used to create a dynamic file/dir within @dir. Use the eventfs_inode
-> > - * list of meta data to find the information needed to create the file/dir.
-> > + * Used to create dynamic file/dir with-in @dir, search with-in @ei
-> > + * list, if @dentry found go ahead and create the file/dir
-> >   */
-> > +
-> >  static struct dentry *eventfs_root_lookup(struct inode *dir,
-> >  					  struct dentry *dentry,
-> >  					  unsigned int flags)
-> >  {
-> > +	const struct file_operations *fops;
-> > +	const struct eventfs_entry *entry;
-> > +	struct eventfs_inode *ei_child;
-> >  	struct tracefs_inode *ti;
-> >  	struct eventfs_inode *ei;
-> > -	struct eventfs_file *ef;
-> >  	struct dentry *ret = NULL;
-> > +	const char *name = dentry->d_name.name;
-> > +	bool created = false;
-> > +	umode_t mode;
-> > +	void *data;
-> >  	int idx;
-> > +	int i;
-> > +	int r;
-> >  
-> >  	ti = get_tracefs(dir);
-> >  	if (!(ti->flags & TRACEFS_EVENT_INODE))
-> >  		return NULL;
-> >  
-> >  	ei = ti->private;  
-> 
-> Just for make sure, can we access 'ti->private' safely here, because I saw
-> eventfs_set_ef_status_free() modifies it under eventfs_mutex. 
-> I guess this is called with some inode reference so it is not removed.
-> (but in that case, why we need eventfs_mutex in eventfs_set_ef_status_free()...?)
-
-eventfs_mutex is used to protect modifying the list. srcu is used to
-protect the iteration of the list.
-
-This code is called via the vfs layer. Hmm, maybe I should take the eventfs_mutex() here:
-
-	idx = srcu_read_lock(&eventfs_srcu);
-	mutex_lock(eventfs_mutex);
-	ei = ti->private;
-	mutex_unlock(eventfs_mutex);
-
-	if (!ei)
-		goto out;
-
-Just in case there's a way that ei can be deleted while the list is being walked.
-
-Hmm.
-
-> 
-> > +	data = ei->data;
-> > +
-> >  	idx = srcu_read_lock(&eventfs_srcu);
-> > -	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
-> > +	list_for_each_entry_srcu(ei_child, &ei->children, list,
-> >  				 srcu_read_lock_held(&eventfs_srcu)) {
-> > -		if (!match_event_file(ef, dentry->d_name.name))
-> > +		if (strcmp(ei_child->name, name) != 0)
-> >  			continue;
-> >  		ret = simple_lookup(dir, dentry, flags);
-> > -		create_dentry(ef, ef->d_parent, true);
-> > +		create_dir_dentry(ei_child, ei->dentry, true);
-> > +		created = true;
-> >  		break;
-> >  	}
-> > +
-> > +	if (created)
-> > +		goto out;
-> > +
-> > +	for (i = 0; i < ei->nr_entries; i++) {
-> > +		entry = &ei->entries[i];
-> > +		if (strcmp(name, entry->name) == 0) {
-> > +			void *cdata = data;
-> > +			r = entry->callback(name, &mode, &cdata, &fops);
-> > +			if (r <= 0)
-> > +				continue;
-> > +			ret = simple_lookup(dir, dentry, flags);
-> > +			create_file_dentry(ei, &ei->d_children[i],
-> > +					   ei->dentry, name, mode, cdata,
-> > +					   fops, true);
-> > +			break;
-> > +		}
-> > +	}
-> > + out:
-> >  	srcu_read_unlock(&eventfs_srcu, idx);
-> >  	return ret;
-> >  }
-> > @@ -363,11 +472,12 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
-> >   */
-> >  static int eventfs_release(struct inode *inode, struct file *file)
-> >  {
-> > +	struct eventfs_inode *ei_child;
-> >  	struct tracefs_inode *ti;
-> >  	struct eventfs_inode *ei;
-> > -	struct eventfs_file *ef;
-> >  	struct dentry *dentry;
-> >  	int idx;
-> > +	int i;
-> >  
-> >  	ti = get_tracefs(inode);
-> >  	if (!(ti->flags & TRACEFS_EVENT_INODE))
-> > @@ -375,10 +485,18 @@ static int eventfs_release(struct inode *inode, struct file *file)
-> >  
-> >  	ei = ti->private;
-> >  	idx = srcu_read_lock(&eventfs_srcu);
-> > -	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
-> > +	list_for_each_entry_srcu(ei_child, &ei->children, list,
-> >  				 srcu_read_lock_held(&eventfs_srcu)) {
-> >  		mutex_lock(&eventfs_mutex);
-> > -		dentry = ef->dentry;
-> > +		dentry = ei_child->dentry;
-> > +		mutex_unlock(&eventfs_mutex);  
-> 
-> If someone add a directory via eventfs_create_dir() in parallel, is this
-> local mutex_lock able to protect from that? (usually it may not happen.)
-
-That would require an event being added and created at the same time. Not
-sure that is possible.
-
-We could try it?
-
-> 
-> > +		if (dentry)
-> > +			dput(dentry);
-> > +	}
-> > +
-> > +	for (i = 0; i < ei->nr_entries; i++) {
-> > +		mutex_lock(&eventfs_mutex);
-> > +		dentry = ei->d_children[i];
-> >  		mutex_unlock(&eventfs_mutex);  
-> 
-> Ditto. Maybe I'm misunderstanding how eventfs_mutex is used.
-
-I'll have to go back and look at this part on why I had this. I think it
-was to make sure ei->d_children existed. But it may also need a test too. I
-don't remember. :-/
-
-
-> 
-> >  		if (dentry)
-> >  			dput(dentry);
-> > @@ -390,94 +508,140 @@ static int eventfs_release(struct inode *inode, struct file *file)
-> >  /**
-> >   * dcache_dir_open_wrapper - eventfs open wrapper
-> >   * @inode: not used
-> > - * @file: dir to be opened (to create its child)
-> > + * @file: dir to be opened (to create it's children)
-> >   *
-> > - * Used to dynamically create the file/dir within @file. @file is really a
-> > - * directory and all the files/dirs of the children within @file will be
-> > - * created. If any of the files/dirs have already been created, their
-> > - * reference count will be incremented.
-> > + * Used to dynamic create file/dir with-in @file, all the
-> > + * file/dir will be created. If already created then references
-> > + * will be increased
-> >   */
-> >  static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
-> >  {
-> > +	const struct file_operations *fops;
-> > +	const struct eventfs_entry *entry;
-> > +	struct eventfs_inode *ei_child;
-> >  	struct tracefs_inode *ti;
-> >  	struct eventfs_inode *ei;
-> > -	struct eventfs_file *ef;
-> > -	struct dentry *dentry = file_dentry(file);
-> > +	struct dentry *parent = file_dentry(file);
-> >  	struct inode *f_inode = file_inode(file);
-> > +	const char *name = parent->d_name.name;
-> > +	umode_t mode;
-> > +	void *data;
-> >  	int idx;
-> > +	int i;
-> > +	int r;
-> >  
-> >  	ti = get_tracefs(f_inode);
-> >  	if (!(ti->flags & TRACEFS_EVENT_INODE))
-> >  		return -EINVAL;
-> >  
-> >  	ei = ti->private;
-> > +	data = ei->data;
-> > +
-> >  	idx = srcu_read_lock(&eventfs_srcu);
-> > -	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
-> > +	list_for_each_entry_srcu(ei_child, &ei->children, list,
-> >  				 srcu_read_lock_held(&eventfs_srcu)) {
-> > -		create_dentry(ef, dentry, false);
-> > +		create_dir_dentry(ei_child, parent, false);
-> > +	}
-> > +
-> > +	for (i = 0; i < ei->nr_entries; i++) {
-> > +		void *cdata = data;
-> > +		entry = &ei->entries[i];
-> > +		name = entry->name;
-> > +		r = entry->callback(name, &mode, &cdata, &fops);
-> > +		if (r <= 0)
-> > +			continue;
-> > +		create_file_dentry(ei, &ei->d_children[i],
-> > +				       parent, name, mode, cdata, fops, false);
-> >  	}
-> >  	srcu_read_unlock(&eventfs_srcu, idx);
-> >  	return dcache_dir_open(inode, file);
-> >  }
-> >  
-
-
-> >  /**
-> >   * eventfs_remove - remove eventfs dir or file from list
-> > - * @ef: eventfs_file to be removed.
-> > + * @ei: eventfs_inode to be removed.
-> >   *
-> >   * This function acquire the eventfs_mutex lock and call eventfs_remove_rec()
-> >   */
-> > -void eventfs_remove(struct eventfs_file *ef)
-> > +void eventfs_remove_dir(struct eventfs_inode *ei)
-> >  {
-> > -	struct eventfs_file *tmp;
-> > -	LIST_HEAD(ef_del_list);
-> > +	struct eventfs_inode *tmp;
-> > +	LIST_HEAD(ei_del_list);
-> >  	struct dentry *dentry_list = NULL;
-> >  	struct dentry *dentry;
-> > +	int i;
-> >  
-> > -	if (!ef)
-> > +	if (!ei)
-> >  		return;
-> >  
-> >  	mutex_lock(&eventfs_mutex);
-> > -	eventfs_remove_rec(ef, &ef_del_list, 0);
-> > -	list_for_each_entry_safe(ef, tmp, &ef_del_list, del_list) {
-> > -		if (ef->dentry) {
-> > -			unsigned long ptr = (unsigned long)dentry_list;
-> > -
-> > -			/* Keep the dentry from being freed yet */
-> > -			dget(ef->dentry);
-> > -
-> > -			/*
-> > -			 * Paranoid: The dget() above should prevent the dentry
-> > -			 * from being freed and calling eventfs_set_ef_status_free().
-> > -			 * But just in case, set the link list LSB pointer to 1
-> > -			 * and have eventfs_set_ef_status_free() check that to
-> > -			 * make sure that if it does happen, it will not think
-> > -			 * the d_fsdata is an event_file.
-> > -			 *
-> > -			 * For this to work, no event_file should be allocated
-> > -			 * on a odd space, as the ef should always be allocated
-> > -			 * to be at least word aligned. Check for that too.
-> > -			 */
-> > -			WARN_ON_ONCE(ptr & 1);
-> > -
-> > -			ef->dentry->d_fsdata = (void *)(ptr | 1);
-> > -			dentry_list = ef->dentry;
-> > -			ef->dentry = NULL;
-> > -		}
-> > -		call_srcu(&eventfs_srcu, &ef->rcu, free_ef);
-> > +	eventfs_remove_rec(ei, &ei_del_list, 0);
-> > +
-> > +	list_for_each_entry_safe(ei, tmp, &ei_del_list, del_list) {
-> > +		for (i = 0; i < ei->nr_entries; i++)
-> > +			unhook_dentry(&ei->d_children[i], &dentry_list);
-> > +		unhook_dentry(&ei->dentry, &dentry_list);
-> > +		call_srcu(&eventfs_srcu, &ei->rcu, free_ei);
-> >  	}
-> >  	mutex_unlock(&eventfs_mutex);
-> >  
-> > @@ -783,8 +814,8 @@ void eventfs_remove(struct eventfs_file *ef)
-> >  		mutex_lock(&eventfs_mutex);
-> >  		/* dentry should now have at least a single reference */
-> >  		WARN_ONCE((int)d_count(dentry) < 1,
-> > -			  "dentry %p less than one reference (%d) after invalidate\n",
-> > -			  dentry, d_count(dentry));
-> > +			  "dentry %px (%s) less than one reference (%d) after invalidate\n",
-> > +			  dentry, dentry->d_name.name, d_count(dentry));  
-> 
-> Do we need to check this? Even if someone can access to this dentry, it will
-> use a dput(), so *that dput()* or *the below dput()* will release the dentry,
-> doesn't it?
-
-I triggered this warning a lot in my development, so I'd like to keep it!
-
-> 
-> 
-> >  		mutex_unlock(&eventfs_mutex);
-> >  		dput(dentry);
-> >  	}
-> > diff --git a/fs/tracefs/event_show.c b/fs/tracefs/event_show.c
-> > index 66dece7cc810..35e8f5d805ea 100644
-> > --- a/fs/tracefs/event_show.c
-> > +++ b/fs/tracefs/event_show.c
-> > @@ -25,7 +25,7 @@ static void *e_next(struct seq_file *m, void *v, loff_t *pos)
-> >  	int level = elist->level;
-> >  	struct list_head *head = elist->head[level];
-> >  	struct list_head *next = elist->next[level];
-> > -	struct eventfs_file *ef;
-> > +	struct eventfs_inode *ei;
-> >  
-> >  	(*pos)++;
-> >  
-> > @@ -42,12 +42,12 @@ static void *e_next(struct seq_file *m, void *v, loff_t *pos)
-> >  		elist->next[level] = next;
-> >  	}
-> >  
-> > -	ef = list_entry(next, struct eventfs_file, list);
-> > +	ei = list_entry(next, struct eventfs_inode, list);
-> >  
-> >  	/* For each entry (not at the bottom) do a breadth first search */
-> > -	if (ef->ei && !list_empty(&ef->ei->e_top_files) && level < 2) {
-> > +	if (!list_empty(&ei->children) && level < 2) {
-> >  		elist->level = ++level;
-> > -		head = &ef->ei->e_top_files;
-> > +		head = &ei->children;
-> >  		elist->head[level] = head;
-> >  		next = head;
-> >  		/*
-> > @@ -57,13 +57,13 @@ static void *e_next(struct seq_file *m, void *v, loff_t *pos)
-> >  	}
-> >  
-> >  	elist->next[level] = next->next;
-> > -	return ef;
-> > +	return ei;
-> >  }
-> >  
-> >  static void *e_start(struct seq_file *m, loff_t *pos)
-> >  {
-> >  	struct event_list *elist = m->private;
-> > -	struct eventfs_file *ef = NULL;
-> > +	struct eventfs_inode *ei = NULL;
-> >  	loff_t l;
-> >  
-> >  	mutex_lock(&eventfs_mutex);
-> > @@ -72,25 +72,31 @@ static void *e_start(struct seq_file *m, loff_t *pos)
-> >  	elist->next[0] = elist->head[0]->next;
-> >  
-> >  	for (l = 0; l <= *pos; ) {
-> > -		ef = e_next(m, ef, &l);
-> > -		if (!ef)
-> > +		ei = e_next(m, ei, &l);
-> > +		if (!ei)
-> >  			break;
-> >  	}
-> > -	return ef;
-> > +	return ei;
-> >  }
-> >  
-> >  static int e_show(struct seq_file *m, void *v)
-> >  {
-> > -	struct eventfs_file *ef = v;
-> > +	struct eventfs_inode *ei = v;
-> > +	int i;
-> >  
-> > -	seq_printf(m, "%s", ef->name);
-> > -	if (ef->ei)
-> > -		seq_putc(m, '/');
-> > +	seq_printf(m, "%s", ei->name);
-> >  
-> > -	if (ef->dentry)
-> > -		seq_printf(m, " dentry: (%d)", d_count(ef->dentry));
-> > +	if (ei->dentry)
-> > +		seq_printf(m, " dentry: (%d)", d_count(ei->dentry));
-> >  	seq_putc(m, '\n');
-> >  
-> > +	for (i = 0; i < ei->nr_entries; i++) {
-> > +		struct dentry *dentry = ei->d_children[i];
-> > +		if (dentry) {
-> > +			seq_printf(m, " %s dentry: %px (%d)\n",
-> > +				   ei->entries[i].name, dentry, d_count(dentry));
-> > +		}
-> > +	}
-> >  	return 0;
-> >  }
-> >  
-> > @@ -111,30 +117,25 @@ eventfs_show_dentry_open(struct inode *inode, struct file *file)
-> >  {
-> >  	const struct seq_operations *seq_ops = &eventfs_show_dentry_seq_ops;
-> >  	struct event_list *elist;
-> > -	struct tracefs_inode *ti;
-> >  	struct eventfs_inode *ei;
-> > -	struct dentry *dentry;
-> >  
-> > -	/* The inode private should have the dentry of the "events" directory */
-> > -	dentry = inode->i_private;
-> > -	if (!dentry)
-> > +	/* The inode private should have the eventfs_inode of the "events" directory */
-> > +	ei = inode->i_private;
-> > +	if (!ei)
-> >  		return -EINVAL;
-> >  
-> >  	elist = __seq_open_private(file, seq_ops, sizeof(*elist));
-> >  	if (!elist)
-> >  		return -ENOMEM;
-> >  
-> > -	ti = get_tracefs(dentry->d_inode);
-> > -	ei = ti->private;
-> > -
-> >  	/*
-> >  	 * Start off at level 0 (/sys/kernel/tracing/events)
-> >  	 * Initialize head to the events files and next to the
-> >  	 * first file.
-> >  	 */
-> >  	elist->level = 0;
-> > -	elist->head[0] = &ei->e_top_files;
-> > -	elist->next[0] = ei->e_top_files.next;
-> > +	elist->head[0] = &ei->children;
-> > +	elist->next[0] = ei->children.next;
-> >  
-> >  	return 0;
-> >  }
-> > diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-> > index 891653ba9cf3..34ffb2f8114e 100644
-> > --- a/fs/tracefs/inode.c
-> > +++ b/fs/tracefs/inode.c
-> > @@ -385,7 +385,7 @@ static void tracefs_dentry_iput(struct dentry *dentry, struct inode *inode)
-> >  
-> >  	ti = get_tracefs(inode);
-> >  	if (ti && ti->flags & TRACEFS_EVENT_INODE)
-> > -		eventfs_set_ef_status_free(ti, dentry);
-> > +		eventfs_set_ei_status_free(ti, dentry);
-> >  	iput(inode);
-> >  }
-> >  
-> > diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-> > index 461920f0133f..ea3b01c0971a 100644
-> > --- a/fs/tracefs/internal.h
-> > +++ b/fs/tracefs/internal.h
-> > @@ -9,35 +9,36 @@ enum {
-> >  	TRACEFS_EVENT_TOP_INODE		= BIT(2),
-> >  };
-> >  
-> > -struct eventfs_inode {
-> > -	struct list_head	e_top_files;
-> > +struct tracefs_inode {
-> > +	unsigned long           flags;
-> > +	void                    *private;
-> > +	struct inode            vfs_inode;
-> >  };
-> >  
-> >  /*
-> > - * struct eventfs_file - hold the properties of the eventfs files and
-> > - *                       directories.
-> > - * @name:	the name of the file or directory to create
-> > - * @d_parent:   holds parent's dentry
-> > - * @dentry:     once accessed holds dentry
-> > - * @list:	file or directory to be added to parent directory
-> > - * @ei:		list of files and directories within directory
-> > - * @fop:	file_operations for file or directory
-> > - * @iop:	inode_operations for file or directory
-> > - * @data:	something that the caller will want to get to later on
-> > - * @mode:	the permission that the file or directory should have
-> > + * struct eventfs_inode - hold the properties of the eventfs directories.
-> > + * @list:	link list into the parent directory
-> > + * @entries:	the array of entries representing the files in the directory
-> > + * @name:	the name of the directory to create  
-> 
-> @children:  link list into the child eventfs_inode
-
-Thanks! This got chopped a few times during rebasing.
-
-> 
-> > + * @dentry:     the dentry of the directory
-> > + * @d_parent:   pointer to the parent's dentry
-> > + * @d_children: The array of dentries to represent the files when created
-> > + * @data:	The private data to pass to the callbacks
-> > + * @nr_entries: The number of items in @entries
-> >   */
-> > -struct eventfs_file {
-> > +struct eventfs_inode {
-> > +	struct list_head		list;
-> > +	const struct eventfs_entry	*entries;
-> >  	const char			*name;
-> > -	struct dentry			*d_parent;
-> > +	struct list_head		children;
-> >  	struct dentry			*dentry;
-> > -	struct list_head		list;
-> > -	struct eventfs_inode		*ei;
-> > -	const struct file_operations	*fop;
-> > -	const struct inode_operations	*iop;
-> > +	struct dentry			*d_parent;
-> > +	struct dentry			**d_children;
-> > +	void				*data;
-> >  	/*
-> >  	 * Union - used for deletion
-> > -	 * @del_list:	list of eventfs_file to delete
-> > -	 * @rcu:	eventfs_file to delete in RCU
-> > +	 * @del_list:	list of eventfs_inode to delete
-> > +	 * @rcu:	eventfs_indoe to delete in RCU
-> >  	 * @is_freed:	node is freed if one of the above is set
-> >  	 */
-> >  	union {  
-> 
-> Thank you,
-> 
-
-Thank you for reviewing!
-
-I'll need to send a v2.
-
-I'll have to do that anyway, as Linus nacked the show_eventfs_dentries file :-(
-
--- Steve
-
+Thanks,
+Gavin
 
