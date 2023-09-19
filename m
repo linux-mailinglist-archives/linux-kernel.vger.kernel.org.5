@@ -2,62 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 501267A5CCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18907A5CCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbjISImd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
+        id S231453AbjISInU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjISImc (ORCPT
+        with ESMTP id S229641AbjISInT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:42:32 -0400
-Received: from out-220.mta0.migadu.com (out-220.mta0.migadu.com [IPv6:2001:41d0:1004:224b::dc])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B14511A
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:42:26 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695112944;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ls2ZZMvVwgmjUtmPi6DuO17VMZDQ7A1qHqqRp8+oGbE=;
-        b=ld+aoIfWLjD4jtVFQ4ikiJay9wseeCxjYZHaqQ8XD/OGLmM8NOEXT+HtsvYMMSXzl9dPUX
-        dAKMAT1manK1lnjGIaGm4D/ikqQjzkONzmB67Y8BO4V/MW6/yPEXcRLxWcZluc/9D572Ue
-        MGQ3KFqOWRillrdCHe4k/C703VzMnHs=
-Mime-Version: 1.0
-Subject: Re: [PATCH v4 6/8] hugetlb: batch PMD split for bulk vmemmap dedup
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <d8ca9ff5-3160-49a1-947a-de4998887dce@oracle.com>
-Date:   Tue, 19 Sep 2023 16:41:44 +0800
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <07192BE2-C66E-4F74-8F76-05F57777C6B7@linux.dev>
-References: <20230918230202.254631-1-mike.kravetz@oracle.com>
- <20230918230202.254631-7-mike.kravetz@oracle.com>
- <9c627733-e6a2-833b-b0f9-d59552f6ab0d@linux.dev>
- <d8ca9ff5-3160-49a1-947a-de4998887dce@oracle.com>
-To:     Joao Martins <joao.m.martins@oracle.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 04:43:19 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E88E6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:43:13 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50308217223so4154909e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:43:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695112992; x=1695717792; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3UHR2InkgMMl7Hda2d0jV09VYBGVKmUXlu3if1+WOa8=;
+        b=WJQgneiaRnsONFZMoNgB3RyRS2tj0k0LVQUbHTld8PDzQzB8Q/5uV5jJszxZs9WNcs
+         2kji5U1s7B8Bs2wqtlRSAmHIsp0D5/kjfYevWx3qGRyCGitbDxpT+lELvvQOdTH4EKnh
+         ZyvroMI2c/PIbkvqEelVLe07CgRgRQ82mQY0Cw7KR8J4k/Gpt/mlH5H/KiERtRBg4BB1
+         CxU/IAy+UQ8qwVNW6u/Ludov9V+iM8cM3juDeFpyIawdgUNmgTDlD1K/OWuJm+S3nxET
+         aqglAzZJmBg70YZvS5MbslzqP7zHkzUYY5GmQ0wE1bBRrKv001Ep5RkTuoBD7oh/ii53
+         AQmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695112992; x=1695717792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3UHR2InkgMMl7Hda2d0jV09VYBGVKmUXlu3if1+WOa8=;
+        b=fkfbUisvg+IeWlYVkKA12BIOkELNM2BctJHBMhR9bgqu5CEOjh25hptu24qPztQURZ
+         VbyFXpc0v09apMYRHzU13sS7SPBZp7gNXkVXCT3fQRVsiwwcWF/NkogpIHgNGgqtOtfY
+         4DPT2ZVFgj9v49D1lwewwc/rTkjn1AxMhzJQ1H2MpbLASuYxYnPKc6DCerdCfJOmKPwY
+         d/F7X+OxFaSa9GexNOIIcMvp+M73BZaBPC8Xkvo8gGiiuSvmbASX6P0TNcvlbLoF+y76
+         mhZUmEfKbKDjasNCUrm3iXEgbDu1QeKqIeK7QgREzlXcS34esl+j8IfymasOzQk8Ti35
+         BAgg==
+X-Gm-Message-State: AOJu0YxNyGT+m6eBEaG8mRLFmWXuUhEurs9xLymlWpm7jx29I+bswSmT
+        3nTlp4kTOzC/8543KTvVhHg=
+X-Google-Smtp-Source: AGHT+IHDIYI0ozuHYLl6CdJx+c7nxfQSHLLeQ5+F9gl+D3iOdIMHKn3+g5eZ0l1UKZ1Cdx4PMoIHmQ==
+X-Received: by 2002:a05:6512:110d:b0:503:17d6:7dac with SMTP id l13-20020a056512110d00b0050317d67dacmr5014224lfg.42.1695112991707;
+        Tue, 19 Sep 2023 01:43:11 -0700 (PDT)
+Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
+        by smtp.gmail.com with ESMTPSA id l12-20020a1ced0c000000b003fed4fa0c19sm17344003wmh.5.2023.09.19.01.43.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 01:43:11 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 19 Sep 2023 10:43:08 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <ZQlfHAXFFPZBPFgD@gmail.com>
+References: <87edj64rj1.fsf@oracle.com>
+ <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+ <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+ <87cyyfxd4k.ffs@tglx>
+ <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+ <ZQlV5l4pbKunQJug@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQlV5l4pbKunQJug@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,95 +92,51 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-> On Sep 19, 2023, at 16:26, Joao Martins <joao.m.martins@oracle.com> =
-wrote:
->=20
-> On 19/09/2023 07:42, Muchun Song wrote:
->> On 2023/9/19 07:01, Mike Kravetz wrote:
->>> From: Joao Martins <joao.m.martins@oracle.com>
->>>=20
->>> In an effort to minimize amount of TLB flushes, batch all PMD splits
->>> belonging to a range of pages in order to perform only 1 (global) =
-TLB
->>> flush.
->>>=20
->>> Add a flags field to the walker and pass whether it's a bulk =
-allocation
->>> or just a single page to decide to remap. First value
->>> (VMEMMAP_SPLIT_NO_TLB_FLUSH) designates the request to not do the =
-TLB
->>> flush when we split the PMD.
->>>=20
->>> Rebased and updated by Mike Kravetz
->>>=20
->>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
->>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> ---
->>>  mm/hugetlb_vmemmap.c | 79 =
-+++++++++++++++++++++++++++++++++++++++++---
->>>  1 file changed, 75 insertions(+), 4 deletions(-)
->>>=20
->>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->>> index 147ed15bcae4..e8bc2f7567db 100644
->>> --- a/mm/hugetlb_vmemmap.c
->>> +++ b/mm/hugetlb_vmemmap.c
->>> @@ -27,6 +27,7 @@
->>>   * @reuse_addr:        the virtual address of the @reuse_page page.
->>>   * @vmemmap_pages:    the list head of the vmemmap pages that can =
-be freed
->>>   *            or is mapped from.
->>> + * @flags:        used to modify behavior in bulk operations
->>=20
->> Better to describe it as "used to modify behavior in vmemmap page =
-table walking
->> operations"
->>=20
-> OK
->=20
->>>  void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct =
-list_head
->>> *folio_list)
->>>  {
->>>      struct folio *folio;
->>>      LIST_HEAD(vmemmap_pages);
->>>  +    list_for_each_entry(folio, folio_list, lru)
->>> +        hugetlb_vmemmap_split(h, &folio->page);
->>> +
->>> +    flush_tlb_all();
->>> +
->>>      list_for_each_entry(folio, folio_list, lru) {
->>>          int ret =3D __hugetlb_vmemmap_optimize(h, &folio->page,
->>>                                  &vmemmap_pages);
->>=20
->> This is unlikely to be failed since the page table allocation
->> is moved to the above=20
->=20
->> (Note that the head vmemmap page allocation
->> is not mandatory).=20
->=20
-> Good point that I almost forgot
->=20
->> So we should handle the error case in the above
->> splitting operation.
->=20
-> But back to the previous discussion in v2... the thinking was that =
-/some/ PMDs
-> got split, and say could allow some PTE remapping to occur and free =
-some pages
-> back (each page allows 6 more splits worst case). Then the next
-> __hugetlb_vmemmap_optimize() will have to split PMD pages again for =
-those
-> hugepages that failed the batch PMD split (as we only defer the PTE =
-remap tlb
-> flush in this stage).
+> > Yeah, the fact that we do presumably have PREEMPT_COUNT enabled in most 
+> > distros does speak for just admitting that the PREEMPT_NONE / VOLUNTARY 
+> > approach isn't actually used, and is only causing pain.
+> 
+> The macro-behavior of NONE/VOLUNTARY is still used & relied upon in 
+> server distros - and that's the behavior that enterprise distros truly 
+> cared about.
+> 
+> Micro-overhead of NONE/VOLUNTARY vs. FULL is nonzero but is in the 
+> 'noise' category for all major distros I'd say.
+> 
+> And that's what Thomas's proposal achieves: keep the nicely 
+> execution-batched NONE/VOLUNTARY scheduling behavior for SCHED_OTHER 
+> tasks, while having the latency advantages of fully-preemptible kernel 
+> code for RT and critical tasks.
+> 
+> So I'm fully on board with this. It would reduce the number of preemption 
+> variants to just two: regular kernel and PREEMPT_RT. Yummie!
 
-Oh, yes. Maybe we could break the above traversal as early as possible
-once we enter an ENOMEM?
+As an additional side note: with various changes such as EEVDF the 
+scheduler is a lot less preemption-happy these days, without wrecking 
+latencies & timeslice distribution.
 
->=20
-> Unless this isn't something worth handling
->=20
-> Joao
+So in principle we might not even need the NEED_RESCHED_LAZY extra bit, 
+which -rt uses as a kind of additional layer to make sure they don't change 
+scheduling policy.
 
+Ie. a modern scheduler might have mooted much of this change:
 
+   4542057e18ca ("mm: avoid 'might_sleep()' in get_mmap_lock_carefully()")
+
+... because now we'll only reschedule on timeslice exhaustion, or if a task 
+comes in with a big deadline deficit.
+
+And even the deadline-deficit wakeup preemption can be turned off further 
+with:
+
+    $ echo NO_WAKEUP_PREEMPTION > /debug/sched/features
+
+And we are considering making that the default behavior for same-prio tasks 
+- basically turn same-prio SCHED_OTHER tasks into SCHED_BATCH - which 
+should be quite similar to what NEED_RESCHED_LAZY achieves on -rt.
+
+Thanks,
+
+	Ingo
