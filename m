@@ -2,127 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BCE7A6E70
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 00:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4367A6E59
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 00:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbjISWLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 18:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
+        id S233497AbjISWIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 18:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbjISWLT (ORCPT
+        with ESMTP id S233463AbjISWIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 18:11:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46948192
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695161272;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UgxOGkaBUWbPIYLcmI3sy0E91p2GMrXjntXFP7Ao7mY=;
-        b=GfaGXbL/fiSqf/sJ5vZ7ZnBhiDIY7l4q33vtAaYFhHIJvfMI6ONT26oaKZPCj++u8Hgqer
-        uyyCofwUdP1CuirKqR0A/1xZrbdVscuNKlfobxcizq7zwkvIW2OVA1OfSy4B/Ejk8eRJjg
-        6dHAj+1xlZQheNbvx8QtUIAdaZfVn40=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-156-2L1JG1gQPh2Knj3WzHOyag-1; Tue, 19 Sep 2023 18:07:49 -0400
-X-MC-Unique: 2L1JG1gQPh2Knj3WzHOyag-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3B126801779;
-        Tue, 19 Sep 2023 22:07:49 +0000 (UTC)
-Received: from emerald.lyude.net (unknown [10.22.18.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D5FE240C2064;
-        Tue, 19 Sep 2023 22:07:48 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, Danilo Krummrich <me@dakr.org>,
-        Karol Herbst <kherbst@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 44/44] drm/nouveau/kms/nv50-: disable dcb parsing
-Date:   Tue, 19 Sep 2023 17:56:39 -0400
-Message-ID: <20230919220442.202488-45-lyude@redhat.com>
-In-Reply-To: <20230919220442.202488-1-lyude@redhat.com>
-References: <20230919220442.202488-1-lyude@redhat.com>
+        Tue, 19 Sep 2023 18:08:15 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACCEE6E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:07:25 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-404571cbb8dso65699605e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 15:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1695161231; x=1695766031; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OBWyasyS//mUZkFAg8BJklLjd7VbvkVj1f9q0K/z6IU=;
+        b=qbQxj5JdlVnPWHb8AteFFzIRMYRN4avNoURX9xRC97SWl8BPb2pr9aJ+3kLOsyfPwj
+         zDv+skJ65cjAC7AIXQStBKBAG1ztm2AV9DEX9uSH09KO9JLsqTf0RHYrSrmaXo08rzpv
+         4zGt68umN7CapGo68nrr2TClpIEMacFzsiaiWjMEoqkO9NMtkQd1/267YaUjo9XwlDC5
+         c9VAE1vA9uXax0Q0b/TH8lZ3nBy1TnwNUdzMG2mUuf5oZp4p590Hm9Jfe+LpruzvYc0K
+         /9nONHcdi0BBZHoqMR606m0HDaeAU3crYzlKgreMraTOFrxWKKRpM2f3TyNnFYAjQQhE
+         k4zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695161231; x=1695766031;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OBWyasyS//mUZkFAg8BJklLjd7VbvkVj1f9q0K/z6IU=;
+        b=aSHofwXT9wp4Xg9bpJo54GsWYaPDIsbi4jN4AkIZuXocY9eSekWfxTaqUzHIA5Z41J
+         0q13tcXJHQL1LlMlpZPgjRdJVvBvID55jZig9oEMd3j6wHpFLQeBkO3ABxU6LuOOoj9K
+         QGBnLuQwkVUPvygAM1e7TqNJaoIjlUuJOmt/v8+7/B4zu/E3Iso1Vuz7I3oavbUW8cf7
+         y0mqPGf/+rorwJ/9K/5SaMVhrv3nNe97dMdBebWMcs7S+Y4P6PouV0EcBykNio+Rw8xh
+         L51sYUf/4bZWcQw67uQrMy7be0ddWTSpXskEUpUeWvaV+XnIiPlLEnfVaBe1vuyfIJpg
+         H56Q==
+X-Gm-Message-State: AOJu0YwYDJM7xlzrnMSOYC5z4CHFbzTL2xPeIYeoUtn6qrSAdWUelHJ/
+        XU89mZAfcQ8phDyxA72br3lNXw==
+X-Google-Smtp-Source: AGHT+IH0FJ/B8R83PqaZsEoh7x5qS4tlTWMnMvo1w7wJgo/L8wPe2fwvOoVyA20XLbvxME1vXNPeOg==
+X-Received: by 2002:a7b:ce88:0:b0:401:b53e:6c39 with SMTP id q8-20020a7bce88000000b00401b53e6c39mr924743wmj.6.1695161230949;
+        Tue, 19 Sep 2023 15:07:10 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id 23-20020a05600c025700b004047f3b73f9sm186040wmj.21.2023.09.19.15.07.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 15:07:10 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 23:07:08 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     peterz@infradead.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
+        vincent.guittot@linaro.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
+        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
+        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
+        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
+        yu.c.chen@intel.com, youssefesmat@chromium.org,
+        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de,
+        daniel.m.jordan@oracle.com
+Subject: Re: [PATCH 2/2] sched/eevdf: Use sched_attr::sched_runtime to set
+ request/slice suggestion
+Message-ID: <20230919220708.l2llt2f5xullxzzz@airbuntu>
+References: <20230915124354.416936110@noisy.programming.kicks-ass.net>
+ <20230915124822.956946622@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230915124822.956946622@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+On 09/15/23 14:43, peterz@infradead.org wrote:
+> Allow applications to directly set a suggested request/slice length using
+> sched_attr::sched_runtime.
 
-- nvkm should provide all this info now
-- preparation for GSP-RM
+I'm probably as eternally confused as ever, but is this going to be the latency
+hint too? I find it hard to correlate runtime to latency if it is.
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Acked-by: Danilo Krummrich <me@dakr.org>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_bios.c    | 8 +++++---
- drivers/gpu/drm/nouveau/nouveau_display.c | 8 ++++----
- drivers/gpu/drm/nouveau/nvif/disp.c       | 2 +-
- 3 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> The implementation clamps the value to: 0.1[ms] <= slice <= 100[ms]
+> which is 1/10 the size of HZ=1000 and 10 times the size of HZ=100.
+> 
+> Applications should strive to use their periodic runtime at a high
+> confidence interval (95%+) as the target slice. Using a smaller slice
+> will introduce undue preemptions, while using a larger value will
+> increase latency.
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/nouveau/nouveau_bios.c
-index 189903b65edc9..9e878cdc8e38e 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bios.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
-@@ -2093,9 +2093,11 @@ nouveau_bios_init(struct drm_device *dev)
- 	if (!NVInitVBIOS(dev))
- 		return -ENODEV;
- 
--	ret = parse_dcb_table(dev, bios);
--	if (ret)
--		return ret;
-+	if (drm->client.device.info.family < NV_DEVICE_INFO_V0_TESLA) {
-+		ret = parse_dcb_table(dev, bios);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	if (!bios->major_version)	/* we don't run version 0 bios */
- 		return 0;
-diff --git a/drivers/gpu/drm/nouveau/nouveau_display.c b/drivers/gpu/drm/nouveau/nouveau_display.c
-index 99977e5fe7161..d8c92521226d9 100644
---- a/drivers/gpu/drm/nouveau/nouveau_display.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_display.c
-@@ -724,10 +724,10 @@ nouveau_display_create(struct drm_device *dev)
- 	drm_kms_helper_poll_init(dev);
- 	drm_kms_helper_poll_disable(dev);
- 
--	if (nouveau_modeset != 2 && drm->vbios.dcb.entries) {
--		ret = nvif_disp_ctor(&drm->client.device, "kmsDisp", 0,
--				     &disp->disp);
--		if (ret == 0) {
-+	if (nouveau_modeset != 2) {
-+		ret = nvif_disp_ctor(&drm->client.device, "kmsDisp", 0, &disp->disp);
-+
-+		if (!ret && (disp->disp.outp_mask || drm->vbios.dcb.entries)) {
- 			nouveau_display_create_properties(dev);
- 			if (disp->disp.object.oclass < NV50_DISP) {
- 				dev->mode_config.fb_modifiers_not_supported = true;
-diff --git a/drivers/gpu/drm/nouveau/nvif/disp.c b/drivers/gpu/drm/nouveau/nvif/disp.c
-index 09915f2715afd..097246e10cdb7 100644
---- a/drivers/gpu/drm/nouveau/nvif/disp.c
-+++ b/drivers/gpu/drm/nouveau/nvif/disp.c
-@@ -60,7 +60,7 @@ nvif_disp_ctor(struct nvif_device *device, const char *name, s32 oclass, struct
- 	cid = nvif_sclass(&device->object, disps, oclass);
- 	disp->object.client = NULL;
- 	if (cid < 0) {
--		NVIF_ERRON(cid, &device->object, "[NEW disp%04x] not supported", oclass);
-+		NVIF_DEBUG(&device->object, "[NEW disp%04x] not supported", oclass);
- 		return cid;
- 	}
- 
--- 
-2.41.0
+I can see this being hard to be used in practice. There's portability issue on
+defining a runtime that is universal for all systems. Same workload will run
+faster on some systems, and slower on others. Applications can't just pick
+a value and must do some training to discover the right value for a particular
+system. Add to that the weird impact HMP and DVFS can have on runtime from
+wakeup to wakeup; things get harder. Shared DVFS policies particularly where
+suddenly a task can find itself taking half the runtime because of a busy task
+on another CPU doubling your speed.
 
+(slice is not invariant, right?)
+
+And a 95%+ confidence will be hard. A task might not know for sure what it will
+do all the time before hand. There could be strong correlation for a short
+period of time, but the interactive nature of a lot of workloads make this
+hard to be predicted with such high confidence. And those transitions events
+are what usually the scheduler struggles to handle well. All history is
+suddenly erased and rebuilding it takes time; during which things get messy.
+
+Binder tasks for example can be latency sensitive, but they're not periodic and
+will be run on demand when someone asks for something. They're usually short
+lived.
+
+Actually so far in Android we just had the notion of something being sensitive
+to wake up latency without the need to be specific about it. And if a set of
+tasks got stuck on the same rq, they better run first as much as possible. We
+did find the need to implement something in the load balancer to spread as
+oversubscribe issues are unavoidable. I think the misfit path is the best to
+handle this and I'd be happy to send patches in this effect once we land some
+interface.
+
+Of course you might find variations of this from different vendors with their
+own SDKs for developers.
+
+How do you see the proposed interface fits in this picture? I can't see how to
+use it, but maybe I didn't understand it. Assuming of course this is indeed
+about latency :-)
+
+
+Thanks!
+
+--
+Qais Yousef
