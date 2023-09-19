@@ -2,58 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 429837A6F47
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D987A6F44
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbjISXKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
+        id S233745AbjISXKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233607AbjISXJ2 (ORCPT
+        with ESMTP id S233637AbjISXJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 19:09:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3817F9;
-        Tue, 19 Sep 2023 16:09:19 -0700 (PDT)
+        Tue, 19 Sep 2023 19:09:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F93123
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 16:09:21 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695164957;
+        s=2020; t=1695164958;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ayShZA5Y6+vqpU4ni2cr8EGVcvIF6GWDCtcZG+RumvA=;
-        b=qWi4MpNE17XSTOZC15znu3okHtAskd1+gALDOCzTERnor7ZLmT4BWOTJ3SSSZacqDGfiOR
-        cUYZw1W1x/dKVngg0utCkfIoE2HXz0xvGerwCc1bZkXBztclbspNQFbye0EHFyqn5q9emC
-        DLqD5mEO2SkvCkj1goTYsLV0as0CCSyZ85xlxLCEO9cL6IOR+LMQxJv/M9T7PfhphXQjPS
-        dmFqj/KfCTonrYTNj2gcEpjlHU0TAKebq5Opb9Y4rv+upIs/HzvcyhQ4K4DOJK1zyCSeWK
-        jQLdDV04pCBe6+pHsDre7Bq+V5+/U1ZkkTYjAEMYlqqZL4wwdPGScwGttJdYDw==
+        bh=oTbjh+BCwK3ch0C9I9rGb2UB8TXtu3KoCP4n1cVIXrU=;
+        b=CWBMhviIBeB0aywq9Iy69hMDQxMEDISIoCiLV53lxHkko2TxoIvVObviV3JzALZYuskOuF
+        vLup+KdFFXXpr7hN459KkJ29SwtjuHMyrA3BSs7Ujrhd+abfz1H8ytLUEW+eJeFy6awq36
+        2ENhovyBKC3vJZR4jV+OPnArx2KmR4sNhdzPBp/bzSrqb6EUEFX7E1fy6JAcJJv1yzxeLc
+        A+iqlTdzrdh2m2RlOUFHJJgR68AsOVJpbN1YFDrFAjrkmHPhF2YQSdDMPxIPBZuTUOpH5X
+        DjXVN0Jjlht76MiEJGEcYGxW/h7BnLOThqX2RssAMAXnyydqbgMJK2dhSHOkCA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695164957;
+        s=2020e; t=1695164958;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ayShZA5Y6+vqpU4ni2cr8EGVcvIF6GWDCtcZG+RumvA=;
-        b=1RJuv2+vauyF4pdXRf65q7Di4PvGlO48NYMcr4OCbk3zNzp+SBuVjXBekdVfdWPEbzx6t4
-        +dOdJccxuO8tY1DQ==
+        bh=oTbjh+BCwK3ch0C9I9rGb2UB8TXtu3KoCP4n1cVIXrU=;
+        b=CPLhIrrfnQOJB1t7QDK40++wEqAcYJmu2Ob8akLI6kcwcYqg0zr74n591slHOpJUudXLZ0
+        tBo8+S8PCFkJpEAA==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: [PATCH printk v2 10/11] rcu: Add atomic write enforcement for rcu stalls
-Date:   Wed, 20 Sep 2023 01:14:55 +0206
-Message-Id: <20230919230856.661435-11-john.ogness@linutronix.de>
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH printk v2 11/11] lockdep: Add atomic write enforcement for lockdep splats
+Date:   Wed, 20 Sep 2023 01:14:56 +0206
+Message-Id: <20230919230856.661435-12-john.ogness@linutronix.de>
 In-Reply-To: <20230919230856.661435-1-john.ogness@linutronix.de>
 References: <20230919230856.661435-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -68,8 +63,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Invoke the atomic write enforcement functions for rcu stalls to
-ensure that the information gets out to the consoles.
+Invoke the atomic write enforcement functions for lockdep
+splats to ensure that the information gets out to the consoles.
 
 It is important to note that if there are any legacy consoles
 registered, they will be attempting to directly print from the
@@ -79,47 +74,44 @@ consoles registered.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/rcu/tree_stall.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/locking/lockdep.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 6f06dc12904a..0a58f8b233d8 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -8,6 +8,7 @@
-  */
- 
- #include <linux/kvm_para.h>
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index e85b5ad3e206..5310a94e3efd 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -56,6 +56,7 @@
+ #include <linux/kprobes.h>
+ #include <linux/lockdep.h>
+ #include <linux/context_tracking.h>
 +#include <linux/console.h>
  
- //////////////////////////////////////////////////////////////////////////////
- //
-@@ -582,6 +583,7 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
+ #include <asm/sections.h>
  
- static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+@@ -3967,9 +3968,13 @@ static void
+ print_usage_bug(struct task_struct *curr, struct held_lock *this,
+ 		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
  {
 +	enum nbcon_prio prev_prio;
- 	int cpu;
- 	unsigned long flags;
- 	unsigned long gpa;
-@@ -597,6 +599,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	if (rcu_stall_is_suppressed())
++
+ 	if (!debug_locks_off() || debug_locks_silent)
  		return;
  
 +	prev_prio = nbcon_atomic_enter(NBCON_PRIO_EMERGENCY);
 +
- 	/*
- 	 * OK, time to rat on our buddy...
- 	 * See Documentation/RCU/stallwarn.rst for info on how to debug
-@@ -651,6 +655,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	panic_on_rcu_stall();
+ 	pr_warn("\n");
+ 	pr_warn("================================\n");
+ 	pr_warn("WARNING: inconsistent lock state\n");
+@@ -3998,6 +4003,8 @@ print_usage_bug(struct task_struct *curr, struct held_lock *this,
  
- 	rcu_force_quiescent_state();  /* Kick them all. */
+ 	pr_warn("\nstack backtrace:\n");
+ 	dump_stack();
 +
 +	nbcon_atomic_exit(NBCON_PRIO_EMERGENCY, prev_prio);
  }
  
- static void print_cpu_stall(unsigned long gps)
+ /*
 -- 
 2.39.2
 
