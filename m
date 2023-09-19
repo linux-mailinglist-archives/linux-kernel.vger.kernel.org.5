@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DFF7A6C28
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A157A6C2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbjISUNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 16:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
+        id S233052AbjISURA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 16:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbjISUNH (ORCPT
+        with ESMTP id S229772AbjISUQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 16:13:07 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B21ABA
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:13:00 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-502e6d632b6so9506733e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1695154379; x=1695759179; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p6ch6RWPf/XAfaKMkUuRJLYD6PuDcDg5GNJHK0YM5ng=;
-        b=H6azQLfUcVLGTpySUHDi6XvpCGX2HO9hB5XSzuHOP3RtjKYFone6gtqnDhFzHEIczN
-         WdtyCOBvauJoBFbgSex+/zf7Kf6W9xGvMyUFeM+ezVqJMQ3zOiDN7mPmkIIzVeL4tMza
-         ujyp5w7M5my4mST117KQMABpl3UF/JXeTu9Jk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695154379; x=1695759179;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p6ch6RWPf/XAfaKMkUuRJLYD6PuDcDg5GNJHK0YM5ng=;
-        b=J+jMjoLdK6yMRHobqn9jHEByTRBHeB9dxby/2czXYDi8MsOgvijAT08JiFCGolIjGK
-         6ui3SjXhyYJKts5+roK/6x0E2rnrYznMMv+aFYE20c+0k7SkO1rUKEqfn8CbnbDkB0hC
-         XwR3i+9KPNvJqnnOd5JAJhQ4o/ZCawbZUNFO0ulb2zPT11wxCRZUum6Yau9O+B0aNFTO
-         IBbR1B1zLVI0gV/Fpe04RzsRzJuGmZFZ1e2/WsYcLMH+skHHRkDktYJKJ3EvQ2MQzvtn
-         alPudSGMH8sm2LXOZc9O/xsPccfh2ieZm072XHPkOeD5V1hOxx/mLF3gHG7qIa4gUb36
-         QbLg==
-X-Gm-Message-State: AOJu0YzaYJLgmQDUzFxt1iTyXz0DP4N3j8V8jpJItptwSKTQg8buZ4d1
-        w6icikqp6deFAaf7Dcl7j6zouODbAUesDPjPraqW
-X-Google-Smtp-Source: AGHT+IGQ6hyYgt2XkleZcYChrWn4Hxuo5o+pyUqe/AgSgyUUhTT4q6QNmrd+sMMqXJB1pMLbt8L5TXnmcjoQ1HS1UKQ=
-X-Received: by 2002:ac2:4da7:0:b0:502:9fce:b6cc with SMTP id
- h7-20020ac24da7000000b005029fceb6ccmr589020lfe.11.1695154378656; Tue, 19 Sep
- 2023 13:12:58 -0700 (PDT)
+        Tue, 19 Sep 2023 16:16:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5F9BE;
+        Tue, 19 Sep 2023 13:16:52 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 20:16:50 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695154611;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jlQH9ja3AEV3lasY1kCndebMW6lqw5qt1mFUHrGN+1Y=;
+        b=li6L72f2fQX26rC+LLqd3qQYmvaMQXquaR7HdSc6PSJ6SWvAt/Apk0u3Yq5boRwPxAQKoP
+        Jb+y9ufjY4B1VJ7nGjYK3zVf3DFd0sanhaG6ldJWvu/uGMdNicV0EBs+Qv2OFVPkj+cwYM
+        BZKtaUkkGrTszGUp9kLZN37IU1kn1EgmagwmxEoqGtvZhAC8T7HO+HlRlHFlSStJpmYGSL
+        WK50s/uBXHcd8ExD4+TRM7Ir6nfK9ceUnwJ3AlDN3Ske7TxNsd04lkgMx0waMXU6gVjC2t
+        EHCCm+yyjT1NvcDgMiUOnZ1h7WPa3tqCFEMfO1oH8VipPfe8nA1O1YlzBeayRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695154611;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jlQH9ja3AEV3lasY1kCndebMW6lqw5qt1mFUHrGN+1Y=;
+        b=/rZYYYjIEjYrsntPkT9plYrK0FqUckWiiDUYYkfIywmbC49T3458I1aptGSIWxbGRREdQe
+        /2AwnMpkSDlXREDw==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/core] signal: Don't disable preemption in ptrace_stop() on
+ PREEMPT_RT
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230803100932.325870-3-bigeasy@linutronix.de>
+References: <20230803100932.325870-3-bigeasy@linutronix.de>
 MIME-Version: 1.0
-References: <20230918180646.1398384-1-apatel@ventanamicro.com> <20230918180646.1398384-5-apatel@ventanamicro.com>
-In-Reply-To: <20230918180646.1398384-5-apatel@ventanamicro.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 19 Sep 2023 13:12:47 -0700
-Message-ID: <CAOnJCU+h-Y_i=HkCf194SLWp-7bqzMhRLC31q0xxQDMuLppapA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] KVM: riscv: selftests: Selectively filter-out AIA registers
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <169515461053.27769.8949434164650886984.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,101 +66,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 11:07=E2=80=AFAM Anup Patel <apatel@ventanamicro.co=
-m> wrote:
->
-> Currently the AIA ONE_REG registers are reported by get-reg-list
-> as new registers for various vcpu_reg_list configs whenever Ssaia
-> is available on the host because Ssaia extension can only be
-> disabled by Smstateen extension which is not always available.
->
-> To tackle this, we should filter-out AIA ONE_REG registers only
-> when Ssaia can't be disabled for a VCPU.
->
-> Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  .../selftests/kvm/riscv/get-reg-list.c        | 23 +++++++++++++++++--
->  1 file changed, 21 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/tes=
-ting/selftests/kvm/riscv/get-reg-list.c
-> index 76c0ad11e423..85907c86b835 100644
-> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> @@ -12,6 +12,8 @@
->
->  #define REG_MASK (KVM_REG_ARCH_MASK | KVM_REG_SIZE_MASK)
->
-> +static bool isa_ext_cant_disable[KVM_RISCV_ISA_EXT_MAX];
-> +
->  bool filter_reg(__u64 reg)
->  {
->         switch (reg & ~REG_MASK) {
-> @@ -48,6 +50,15 @@ bool filter_reg(__u64 reg)
->         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
->         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
->                 return true;
-> +       /* AIA registers are always available when Ssaia can't be disable=
-d */
-> +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(siselect):
-> +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(iprio1):
-> +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(iprio2):
-> +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(sieh):
-> +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(siph):
-> +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(iprio1h):
-> +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(iprio2h):
-> +               return isa_ext_cant_disable[KVM_RISCV_ISA_EXT_SSAIA] ? tr=
-ue : false;
+The following commit has been merged into the core/core branch of tip:
 
-Ahh I guess. you do need the switch case for AIA CSRs but for ISA
-extensions can be avoided as it is contiguous.
+Commit-ID:     1aabbc532413ced293952f8e149ad0a607d6e470
+Gitweb:        https://git.kernel.org/tip/1aabbc532413ced293952f8e149ad0a607d6e470
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Thu, 03 Aug 2023 12:09:32 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 19 Sep 2023 22:08:29 +02:00
 
->         default:
->                 break;
->         }
-> @@ -71,14 +82,22 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu=
-, int ext)
->
->  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
->  {
-> +       int rc;
->         struct vcpu_reg_sublist *s;
-> +       unsigned long isa_ext_state[KVM_RISCV_ISA_EXT_MAX] =3D { 0 };
-> +
-> +       for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
-> +               __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(i), &isa_ext_state=
-[i]);
->
->         /*
->          * Disable all extensions which were enabled by default
->          * if they were available in the risc-v host.
->          */
-> -       for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
-> -               __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
-> +       for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++) {
-> +               rc =3D __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
-> +               if (rc && isa_ext_state[i])
-> +                       isa_ext_cant_disable[i] =3D true;
-> +       }
->
->         for_each_sublist(c, s) {
->                 if (!s->feature)
-> --
-> 2.34.1
->
+signal: Don't disable preemption in ptrace_stop() on PREEMPT_RT
 
-Otherwise, LGTM.
+On PREEMPT_RT keeping preemption disabled during the invocation of
+cgroup_enter_frozen() is a problem because the function acquires
+css_set_lock which is a sleeping lock on PREEMPT_RT and must not be
+acquired with disabled preemption.
 
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+The preempt-disabled section is only for performance optimisation reasons
+and can be avoided.
 
---=20
-Regards,
-Atish
+Extend the comment and don't disable preemption before scheduling on
+PREEMPT_RT.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Link: https://lore.kernel.org/r/20230803100932.325870-3-bigeasy@linutronix.de
+
+---
+ kernel/signal.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 3035beb..f2a5578 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2345,11 +2345,22 @@ static int ptrace_stop(int exit_code, int why, unsigned long message,
+ 	 * will be no preemption between unlock and schedule() and so
+ 	 * improving the performance since the ptracer will observe that
+ 	 * the tracee is scheduled out once it gets on the CPU.
++	 *
++	 * On PREEMPT_RT locking tasklist_lock does not disable preemption.
++	 * Therefore the task can be preempted after do_notify_parent_cldstop()
++	 * before unlocking tasklist_lock so there is no benefit in doing this.
++	 *
++	 * In fact disabling preemption is harmful on PREEMPT_RT because
++	 * the spinlock_t in cgroup_enter_frozen() must not be acquired
++	 * with preemption disabled due to the 'sleeping' spinlock
++	 * substitution of RT.
+ 	 */
+-	preempt_disable();
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		preempt_disable();
+ 	read_unlock(&tasklist_lock);
+ 	cgroup_enter_frozen();
+-	preempt_enable_no_resched();
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		preempt_enable_no_resched();
+ 	schedule();
+ 	cgroup_leave_frozen(true);
+ 
