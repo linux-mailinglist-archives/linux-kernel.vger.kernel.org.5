@@ -2,64 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F597A6A46
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F207A6A49
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbjISRyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        id S232821AbjISR4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 13:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjISRyk (ORCPT
+        with ESMTP id S232790AbjISR4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 13:54:40 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B7A95
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 10:54:34 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso1004506a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 10:54:34 -0700 (PDT)
+        Tue, 19 Sep 2023 13:56:10 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3AC9E;
+        Tue, 19 Sep 2023 10:56:03 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68bed2c786eso5162218b3a.0;
+        Tue, 19 Sep 2023 10:56:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695146073; x=1695750873; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UrOW+rYPNT7AwPYOxWlOLy264eXRGPGUGnZTuq8z3kA=;
-        b=TkYEQI304IwJs3abSCqfEF9S9rGmIU7IesDekgp3iC3L+rDsCSaABBepEJW/UWVIvU
-         fHJRZC2EvNyxkUQbt4PadJk7paL1pmQnx+BRDWTAIPn9ad7gkfsHIcAV0/ZhviwVV1jM
-         cuxnQraVcf9st8FizIOL9YtnGYWpIsRhTt/D7+SiLzx8LrqIiLGRX9hyXbuAPxpS5IMo
-         rA0AWI4Mu/db6iWlpciIqzzns7pDrwCeJlBjhNLw4JGNH6i0uLYviyxZx8BnbiQCKvkD
-         rxzinAgcN0mXnMMDqtMNVu5x7iqbgwHRRoNWn01Bq6fi+KLto2z6Ytg9FyamnyU0SuxL
-         5/uw==
+        d=gmail.com; s=20230601; t=1695146163; x=1695750963; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZzonaQ79d7wJ9qs7WU1NKwWXIzHEEFCVZuaiuHwUSFg=;
+        b=DwWhvgQr9IHx/G8f5qKouJuv+45w3EpB2r/ZoougWWpLYR3DMjFcpPr3uTKaXNCTfz
+         OnWWVX9UQtdjzeP8jd7G2Wqeua/JW2IVWROzZ3QD4pwSOZePvrrOZ9OR5Qywm98RRo/t
+         YKmzRtAScEIduAZv56LTdcIyLvs2f5CUCeHUcfDgNPmIZ3gl+WNSXBoVv27lUjVdG5pT
+         4KIM90EcGIGpYkQEqtmsGFWlrFyVwi9bPSoG2FB8xU/Iim05aw7Ei8v9LEwAk6dLwgfV
+         Iai49uzf0w3WBfGP6FZbHZSwhy7EZIh3/p/6iXmL88CLMo57BV6rnCfgtqqz1uIiCr7v
+         6NTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695146073; x=1695750873;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UrOW+rYPNT7AwPYOxWlOLy264eXRGPGUGnZTuq8z3kA=;
-        b=MqO0dKpy5uDF4fTI1zN9fpiG25OUGMh9kcR4TckuMwueH0vXp2U4jYjr9b8YNDMzvQ
-         kX0a8dSX2MzRBwiOeG1l79PQAAJnVTQPiHXYIX1gLVO1Q5IEiRTDfqByrDHC1MgvkQ+D
-         DRknN8WyIHdFjLznKdY5yT3TzdeRxCLJv2i8T8XynrG7D6oOuUtPhQfnrQfU7CfAGGSe
-         dTI31v9XAJ3RgNSb8pOxIQ3FfeODz16g16IgYn60AjOq6oRA8qaLLzElkCBEhKodeeZf
-         KcxFlqDm6JqRrOGVDMydlr4qTT5RZmQx9z8Hmtmjx9Bdxb0o5mBw9xXmsmeAVLraDfHA
-         QUKA==
-X-Gm-Message-State: AOJu0YzVtDIbVWLrFxmGLpxWxGlZ+Jcuo+oiE1PvtDT3dFfW4yM8+rsB
-        xV7gwkKpPZNr8/nPMlN0J0vr9Wj5gAWK8GYNPAYFdp9l
-X-Google-Smtp-Source: AGHT+IHsszx3G6EVJWzpmBoUYz4qsCqw2oaHDBhbF2gq76o9kH+h0LZAVH1YmsHNHNm8wWmpLmRvpm9EgpZp7tyOs20=
-X-Received: by 2002:a17:906:8a7b:b0:9a5:c5a8:a1a0 with SMTP id
- hy27-20020a1709068a7b00b009a5c5a8a1a0mr100882ejc.49.1695146073145; Tue, 19
- Sep 2023 10:54:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695146163; x=1695750963;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZzonaQ79d7wJ9qs7WU1NKwWXIzHEEFCVZuaiuHwUSFg=;
+        b=VsEQT+IqnHAq/mnPGvtoojzLI0xEZUaCiX6jl3OfPwVXSPmnPJDz0Q4juoVVsX2DwU
+         wwfwM0MC4uHsVX4S8bNJ9Pg9cBtztkjvmXf4QEywYBbChgGTeFDuYcIBU2WlSfbg/fLr
+         LGWqkrkR3YlLVuW6u1ukGQVuTNYjS3nvRN8T+urJlX9AA9guogHXjGOiY2B/gZVd4lP8
+         evRDB0BFKYvx7pDdDnyceN/Bw4KJDocdAnj2YfftoRN6bwwMezzREYvdjyIpLULDhlY0
+         dNeHti7YYgD4p6bUh3Rhjo13gSCqZhk6qyXZ+Jho/Tm4RtSGWBm5AfPDALQfTcys4V8f
+         9cWg==
+X-Gm-Message-State: AOJu0Ywc2vDYSJ4hzf00T/o5KTN5ghtxgzmd1DJ4TTo7EwaJQRbuuj9C
+        NzkmO2iCsCoWmof8ssx351M=
+X-Google-Smtp-Source: AGHT+IFSOm++lO4qiGpS1SSP68TVsim82fK5+KFumC+bmZ0Wb1uqJABLU69ifDwKZ3w8Bhmne67umQ==
+X-Received: by 2002:a17:903:228b:b0:1bf:5df2:8e97 with SMTP id b11-20020a170903228b00b001bf5df28e97mr198428plh.4.1695146162885;
+        Tue, 19 Sep 2023 10:56:02 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id e1-20020a17090301c100b001bbbbda70ccsm10247033plh.158.2023.09.19.10.56.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 10:56:02 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 19 Sep 2023 07:56:01 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        torvalds@linux-foundation.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCHSET v4] sched: Implement BPF extensible scheduler class
+Message-ID: <ZQngsfCdj0TJbEUL@slm.duckdns.org>
+References: <20230711011412.100319-1-tj@kernel.org>
+ <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
+ <20230726091752.GA3802077@hirez.programming.kicks-ass.net>
+ <ZMMH1WiYlipR0byf@slm.duckdns.org>
+ <20230817124457.b5dca734zcixqctu@suse.de>
+ <ZOfMNEoqt45Qmo00@slm.duckdns.org>
 MIME-Version: 1.0
-From:   Michael DiDomenico <mdidomenico4@gmail.com>
-Date:   Tue, 19 Sep 2023 13:54:21 -0400
-Message-ID: <CABOsP2MhyeUKjYUEO9m85cau36oZ_+-gdoAdMZEfvVrvDuZbiA@mail.gmail.com>
-Subject: 
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_20,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZOfMNEoqt45Qmo00@slm.duckdns.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-subscribe linux-rdma
+Hello, Mel.
+
+I don't think the discussion has reached a point where the points of
+disagreements are sufficiently laid out from both sides. Do you have any
+further thoughts?
+
+Thanks.
+
+-- 
+tejun
