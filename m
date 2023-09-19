@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A166C7A641B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295CC7A641C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbjISM65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
+        id S232291AbjISM7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbjISM6p (ORCPT
+        with ESMTP id S232207AbjISM7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:58:45 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9413F3;
-        Tue, 19 Sep 2023 05:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=6pJg57Rcm0bmG3CDzyP2i9I6PKCyoCY99pTc1UrpBC8=; b=bZh8QSHyXJjGveMP/Dkg4hr+hR
-        KOM1GS26Sr/9iplc+88NCDHXRHqKbCRO6pbQPLx2EGjjgycmX8CDMoo7Zf9wZ1DDABIu2TeGYOByQ
-        f0JEpxvknIcw6dPbKvpLgPdC0W7+fSGaOZU9X/Jwu/c55ONcBRBSdWyqOb9TciWeZTC8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qiaJB-006uaR-El; Tue, 19 Sep 2023 14:58:29 +0200
-Date:   Tue, 19 Sep 2023 14:58:29 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Parthiban.Veerasooran@microchip.com
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        corbet@lwn.net, Steen.Hegelund@microchip.com,
-        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Horatiu.Vultur@microchip.com, Woojung.Huh@microchip.com,
-        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
-        Thorsten.Kummermehr@microchip.com
-Subject: Re: [RFC PATCH net-next 1/6] net: ethernet: implement OPEN Alliance
- control transaction interface
-Message-ID: <4c1d0d38-c459-4722-bead-7660d85f4925@lunn.ch>
-References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
- <20230908142919.14849-2-Parthiban.Veerasooran@microchip.com>
- <8d53ca8d-bcf6-4673-a8ff-b621d700576e@lunn.ch>
- <9615b403-52c1-f24f-382f-8eea3ddfcf04@microchip.com>
+        Tue, 19 Sep 2023 08:59:22 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F2B100
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:59:16 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4046f7d49a9so16949615e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695128354; x=1695733154; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s30L8Cd9UzT5Qqd3APHlIpNbIqrTMch8rb7FXz6oEhI=;
+        b=GGCuQYbR0sqSN8gMIK1rrmrslsY0AEsdWKMwU2iStsyAHo54B6zKKn4IIdugmar6Ry
+         uAJLPoMU7ZwRrfQEKLrFFjDak6ttB2KZMuGRtwodtvpOpD92iKIKBTAKrV1mSe4V2Bq9
+         evMnkSUlWc8NAQ2KRXYjpUuK75J3avedggEEoro/UuA1OeflWqfY1A+oUWU95PQdPggp
+         V17eYSRP1BPvqYwyxk3UaB48eK/IDviY6xg4vGOm8n6W+E+m8dmMAAAXlnBLDCqXgVaO
+         ppx9y+agImslJeTv5ihR7VYmNgYWeEYbAHqJHzti6AlnkIORXRE6PIXTWbbh7zxY3MVN
+         +ZjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695128354; x=1695733154;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s30L8Cd9UzT5Qqd3APHlIpNbIqrTMch8rb7FXz6oEhI=;
+        b=SCrQNX7Lt8Fpo5qI9VPlNF/XERo/AjcGuMIvAQ0NYVGAgYNTaab654nt1VRBiynFmK
+         94KdbwVj4++DyEzXrIreLSoS6HEzJyvUAGmfbzJ4cofEL6bV0yFoI2u2jSAOvJXv5PJk
+         TdF4gng1NBfoEXMVCEidw7ux6KKzmdGryRH4HCF328VgElK3gWpSmDRVW+cUVwjYMlEJ
+         SM4qSpm1bS7QdXfQbnYf+s4sf0huZvixb2mEGF8N6umi3QjL9+hLIAmhqX+41h79g+nA
+         WE/tQp9eVtaPZd1H3HLOPQsBhVIIJ4o+3qrtZKTb4MKNssBYTsB/c3ra2CtAotMm5wVo
+         gegQ==
+X-Gm-Message-State: AOJu0YwWrDr9yf8bMILuJbRB1ZCwE0eDzjmqD2KPQnKVzn3kZKsQz+t5
+        yq1uWj5pqxnc/XHtysYfXZfPpInLdqthpSP5nWJQuQ==
+X-Google-Smtp-Source: AGHT+IGVQy19vIMTiJYvnoh5+6oLkQCMGnegXStutS/GrrVLDcaqm6TLJny/0NcWOwJmQ2RfX47BZw==
+X-Received: by 2002:a05:600c:1d04:b0:401:c07f:72bd with SMTP id l4-20020a05600c1d0400b00401c07f72bdmr11470022wms.4.1695128354198;
+        Tue, 19 Sep 2023 05:59:14 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:e1a5:a258:2b02:f431? ([2a01:e0a:999:a3a0:e1a5:a258:2b02:f431])
+        by smtp.gmail.com with ESMTPSA id l20-20020a1c7914000000b003fe29dc0ff2sm15353954wme.21.2023.09.19.05.59.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 05:59:13 -0700 (PDT)
+Message-ID: <a736f219-9a38-4f95-a874-93e1561906d5@rivosinc.com>
+Date:   Tue, 19 Sep 2023 14:59:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9615b403-52c1-f24f-382f-8eea3ddfcf04@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
+ alignment
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Beau Belgrave <beaub@linux.microsoft.com>
+References: <20230914131102.179100-1-cleger@rivosinc.com>
+ <20230914131700.0ba3ee80@gandalf.local.home>
+ <20230914132956.569dad45@gandalf.local.home>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20230914132956.569dad45@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 11:13:13AM +0000, Parthiban.Veerasooran@microchip.com wrote:
-> Hi Andrew,
+
+
+On 14/09/2023 19:29, Steven Rostedt wrote:
+> On Thu, 14 Sep 2023 13:17:00 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> On 13/09/23 7:46 am, Andrew Lunn wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> >> +struct oa_tc6 {
-> >> +     struct spi_device *spi;
-> >> +     bool ctrl_prot;
-> >> +};
-> > 
-> > Should this be considered an opaque structure which the MAC driver
-> > should not access the members?
+>> Now lets look at big endian layout:
+>>
+>>  uaddr = 0xbeef0004
+>>  enabler = 1;
+>>
+>>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
+>>                                     ^
+>>                                     addr: 0xbeef0004
+>>
+>> 				(enabler is set )
+>>
+>> 	bitoffset = uaddr & (sizeof(unsigned long) - 1); bitoffset = 4
+>> 	bit_offset *= 8;				 bitoffset = 32
+>> 	uaddr &= ~(sizeof(unsigned long) - 1);		 uaddr = 0xbeef0000
+>>
+>> 	ptr = kaddr + (uaddr & ~PAGE_MASK);
+>>
+>> 	clear_bit(1 + 32, ptr);
+>>
+>>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
+>>                                   ^
+>> 				bit 33 of 0xbeef0000
+>>
+>> I don't think that's what you expected!
+> 
+> I believe the above can be fixed with:
+> 
+> 	bit_offset = uaddr & (sizeof(unsigned long) - 1);
+> 	if (bit_offset) {
+> #ifdef CONFIG_CPU_BIG_ENDIAN
+> 		bit_offest = 0;
+> #else
+> 		bit_offset *= BITS_PER_BYTE;
+> #endif
+> 		uaddr &= ~(sizeof(unsigned long) - 1);
+> 	}
+> 
+> -- Steve
 
-Opaque vs not opaque is an important design decision. If the MAC
-driver is allowed to directly access this structure, you should
-document the locking concept. If the MAC is not supposed to access it
-directly, only uses getters/setters, that also needs documenting, and
-maybe even make it a void * in the MAC driver.
 
-      Andrew
+Actually, after looking more in depth at that, it seems like there are
+actually 2 problems that can happen.
+
+First one is atomic access misalignment due to enable_size == 4 and
+uaddr not being aligned on a (long) boundary on 64 bits architecture.
+This can generate misaligned exceptions on various architectures. This
+can be fixed in a more general way according to Masami snippet.
+
+Second one that I can see is on 64 bits, big endian architectures with
+enable_size == 4. In that case, the bit provided by the userspace won't
+be correctly set since this code kind of assume that the atomic are done
+on 32bits value. Since the kernel assume long sized atomic operation, on
+big endian 64 bits architecture, the updated bit will actually be in the
+next 32 bits word.
+
+Can someone confirm my understanding ?
+
+Clément
