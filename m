@@ -2,92 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 940297A6239
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0D57A623E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbjISMLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        id S231603AbjISMMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbjISML3 (ORCPT
+        with ESMTP id S229552AbjISMM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:11:29 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9B111A
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:11:22 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76dbe786527so339363285a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:11:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695125481; x=1695730281; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aoyU9rzOy2BlH5KRJkQm4RzvdmE5afgsiRMrXPWn1pU=;
-        b=gLpB6zQbJshv3krQTRKex0GrNT3IPA9krHe5nJXqUtt+YFJtVyUc1/cd2loBixvrwg
-         UGj8l9NZ+uSieALoansEOT5DXd4E6pc+WFXRXgc+70U1LO1ubzl7azIhWY0hdiKChbCg
-         ABGXqbX/aevuG9BY+OEgreUKLIjUKLlNjfeRDqI5/5lYkqNbInJLkTbOxOGWyeS6LZfI
-         9p2FUyoVEWd5sLDc5pRgR/ySl1MIJ+gNF3h/7ykY/JO3F0iLEjWK+66Gc8pNhN+ixs3q
-         eE8F/vrW5ZWNe3B2J1oMYGUfhIIY8wSWHoNipt1XbP+WP76ATw9zBaTBeWYgZAmgz4Ci
-         0Z3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695125481; x=1695730281;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aoyU9rzOy2BlH5KRJkQm4RzvdmE5afgsiRMrXPWn1pU=;
-        b=ANfTWX7MgTImEcAmH9yOwpXZASZ51BBIw2uKKziF/u4w2xDQhRp06aziSptIYGtXxx
-         kJuMKLYw3Wr4GnlBtATSK8J9bu/oybQVQVPYHWv1Q70enhm6+cGiXXDUF1vttYy6gRe7
-         H+RFHYmfreJXfj+u+dCllJ+Y53Kkfx3JYrv8h4ZA4hblJqPs9/O2u+Au3NRljYPRjdFD
-         fUJ2bxKhvIVr16qHBy6d6svqfWdZxNZrEF67hsuh7tz0897U1hiw+v/6Gto3E5KNmkn5
-         b2a6qr7SSxPheP2vlc9AIIA6DSCr9brTRJSJswA4vXc4HM86ulxKjiF1bInMwd/yWyYS
-         uDTg==
-X-Gm-Message-State: AOJu0YwFKB9r0pYwmSrMc/+Q27DX1y27MJr7B2drXvL4Pelx8CdaHKEd
-        gxiMJ8tLTLGVLkDkj7+G7ri0Ng==
-X-Google-Smtp-Source: AGHT+IHVTs08d8NaR/JqyVVIELGCXA1MekrWnfCHt/Y23q2QJTj4sfAfOGSXAGhdaB90Vcbx/q+Srw==
-X-Received: by 2002:a05:620a:e07:b0:773:ad9b:4c81 with SMTP id y7-20020a05620a0e0700b00773ad9b4c81mr8836359qkm.23.1695125481742;
-        Tue, 19 Sep 2023 05:11:21 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id g27-20020a05620a13db00b0076cdc3b5beasm3909448qkl.86.2023.09.19.05.11.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 05:11:20 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qiZZW-000EC9-OI;
-        Tue, 19 Sep 2023 09:11:18 -0300
-Date:   Tue, 19 Sep 2023 09:11:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     GuokaiXu <xuguokai@ucas.com.cn>
-Cc:     kevin.tian@intel.com, shuah@kernel.org, iommu@lists.linux.dev,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] tools/testing/selftests/iommu:Fixed spelling errors
- in comments
-Message-ID: <20230919121118.GS13795@ziepe.ca>
-References: <31680D47D9533D91+20230904023236.GA12494@xgk8823>
+        Tue, 19 Sep 2023 08:12:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08A3E3;
+        Tue, 19 Sep 2023 05:12:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD00C433C9;
+        Tue, 19 Sep 2023 12:12:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695125543;
+        bh=AFPLIFGXLWjw+0e/AtMKe0zpKJuMhC228OrlJTVOcQc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gp9KXJK4C9ujRIw+cq2kcj4fiAyk6Wt2bWZex8pIQqKeJc/8Y6j1fny3ip6k00TAb
+         L0XgEGURDvrztnTp1aW9mOvmA7mdp9ut9SeM93uwevpZfUDpRhfPGLKryS1Nr+imm1
+         1QNPk2KkEpIV4ufXanEsSA6zbytT4M6vtIcZs5qo=
+Date:   Tue, 19 Sep 2023 14:12:20 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jinhui Guo <guojinhui.liam@bytedance.com>
+Cc:     rafael@kernel.org, lenb@kernel.org, lizefan.x@bytedance.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v7] driver core: platform: set numa_node before
+ platform_device_add()
+Message-ID: <2023091942-punk-naturist-8028@gregkh>
+References: <20230919120341.533-1-guojinhui.liam@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <31680D47D9533D91+20230904023236.GA12494@xgk8823>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230919120341.533-1-guojinhui.liam@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 10:32:36AM +0800, GuokaiXu wrote:
-> From c4e404036e0a7ffcaedc5760bee234713ccfe4a4 Mon Sep 17 00:00:00 2001
-> From: GuokaiXu <xuguokai@ucas.com.cn>
-> Date: Mon, 4 Sep 2023 10:18:04 +0800
-> Subject: [PATCH 1/1] Fix the spelling errors in comments
+On Tue, Sep 19, 2023 at 08:03:41PM +0800, Jinhui Guo wrote:
+> Setting the devices' numa_node needs to be done in
+> platform_device_register_full(), because that's where the
+> platform device object is allocated.
 > 
-> Signed-off-by: GuokaiXu <xuguokai@ucas.com.cn>
+> Fixes: 4a60406d3592 ("driver core: platform: expose numa_node to users in sysfs")
+> Cc: stable@vger.kernel.org
+> Reported-by: kernel test robot <lkp@intel.com>
+
+The test robot did not report the original problem, that was a problem
+with your potential change.
+
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309122309.mbxAnAIe-lkp@intel.com/
+
+Likewise, this is not a real issue, it was a problem with your previous
+submission.
+
+> Signed-off-by: Jinhui Guo <guojinhui.liam@bytedance.com>
 > ---
->  tools/testing/selftests/iommu/iommufd.c          | 2 +-
->  tools/testing/selftests/iommu/iommufd_fail_nth.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> V6 -> V7
+>   1. Fix bug directly by adding numa_node to struct
+>      platform_device_info (suggested by Rafael J. Wysocki).
+>   2. Remove reviewer name.
+> 
+> V5 -> V6:
+>   1. Update subject to correct function name platform_device_add().
+>   2. Provide a more clear and accurate description of the changes
+>      made in commit (suggested by Rafael J. Wysocki).
+>   3. Add reviewer name.
+> 
+> V4 -> V5:
+>   Add Cc: stable line and changes from the previous submited patches.
+> 
+> V3 -> V4:
+>   Refactor code to be an ACPI function call (suggested by Greg Kroah-Hartman).
+> 
+> V2 -> V3:
+>   Fix Signed-off name.
+> 
+> V1 -> V2:
+>   Fix compile error without enabling CONFIG_ACPI.
+> ---
+> 
+>  drivers/acpi/acpi_platform.c    |  5 ++---
+>  drivers/base/platform.c         |  4 ++++
+>  include/linux/platform_device.h | 26 ++++++++++++++++++++++++++
+>  3 files changed, 32 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
+> index 48d15dd785f6..1ae7449f70dc 100644
+> --- a/drivers/acpi/acpi_platform.c
+> +++ b/drivers/acpi/acpi_platform.c
+> @@ -168,6 +168,7 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+>  	pdevinfo.num_res = count;
+>  	pdevinfo.fwnode = acpi_fwnode_handle(adev);
+>  	pdevinfo.properties = properties;
+> +	platform_devinfo_set_node(&pdevinfo, acpi_get_node(adev->handle));
+>  
+>  	if (acpi_dma_supported(adev))
+>  		pdevinfo.dma_mask = DMA_BIT_MASK(32);
+> @@ -178,11 +179,9 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+>  	if (IS_ERR(pdev))
+>  		dev_err(&adev->dev, "platform device creation failed: %ld\n",
+>  			PTR_ERR(pdev));
+> -	else {
+> -		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
+> +	else
+>  		dev_dbg(&adev->dev, "created platform device %s\n",
+>  			dev_name(&pdev->dev));
+> -	}
+>  
+>  	kfree(resources);
+>  
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index 76bfcba25003..c733bfb26149 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -808,6 +808,7 @@ struct platform_device *platform_device_register_full(
+>  {
+>  	int ret;
+>  	struct platform_device *pdev;
+> +	int numa_node = platform_devinfo_get_node(pdevinfo);
+>  
+>  	pdev = platform_device_alloc(pdevinfo->name, pdevinfo->id);
+>  	if (!pdev)
+> @@ -841,6 +842,9 @@ struct platform_device *platform_device_register_full(
+>  			goto err;
+>  	}
+>  
+> +	if (numa_node >= 0)
+> +		set_dev_node(&pdev->dev, numa_node);
 
-Applied to for-next, thanks
+Why not just always set it?  Why check?  Would that matter?
 
-Jason
+
+> +
+>  	ret = platform_device_add(pdev);
+>  	if (ret) {
+>  err:
+> diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+> index 7a41c72c1959..78e11b79f1af 100644
+> --- a/include/linux/platform_device.h
+> +++ b/include/linux/platform_device.h
+> @@ -132,10 +132,36 @@ struct platform_device_info {
+>  		u64 dma_mask;
+>  
+>  		const struct property_entry *properties;
+> +
+> +#ifdef CONFIG_NUMA
+> +		int numa_node;	/* NUMA node this platform device is close to plus 1 */
+> +#endif
+
+Why #ifdef?
+
+And why an int?
+
+And why +1?
+
+And what do you mean by "close to"?
+
+And why would a platform device care about a numa node?  These are
+devices that should NEVER care about numa things as they are not on a
+real bus, or should care about performance things.  If they are, then
+the device is on the wrong bus, right?
+
+What device are you having numa problems with?  Why would acpi devices
+care?
+
+The node number in the device itself should be all that you need here,
+no need to duplicate it, right?
+
+thanks,
+
+greg k-h
