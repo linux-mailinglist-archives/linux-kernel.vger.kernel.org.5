@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BF67A6431
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69257A643C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbjISNBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
+        id S231786AbjISNCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbjISNBT (ORCPT
+        with ESMTP id S231360AbjISNCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:01:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F5DF3;
-        Tue, 19 Sep 2023 06:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UQqbtC4LU7CWz7n0Qti5YLvSVy7RAt2aZ0CW6vnfgZE=; b=Re/9h8bA2l5R9rS+t5jWP44yYf
-        BD+D17QDievItTZT8XCUjAygltixoCakyWJVYollwPJN+8J4YpztmZA/sMcUv90RlabAnSY9WQ4Q5
-        kljuiW6Cp/gHdVwZuPoajR8jGbsUenSGzi9mEG6tIRVZj0rpmnWEoTdwR4IlnbCmrhYh71f/ffZwD
-        zA71QJEsU16dBg8UTSfZAHBIFPXxlH+0HL85WXEeFNsoDqUzKX5tjdXYgp/4e6wfzSGAKQCk05a4i
-        Klv/roly2FY9BRa21dQGgYeEcWYYb7A4C+ID92Ny/pq8ytpWrLKuBOGrdB94Fc5u0I/Yvk/fJrDb0
-        xGCYQG0g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qiaLW-00HLve-Gs; Tue, 19 Sep 2023 13:00:54 +0000
-Date:   Tue, 19 Sep 2023 14:00:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Subject: Arches that don't support PREEMPT
-Message-ID: <ZQmbhoQIINs8rLHp@casper.infradead.org>
-References: <87edj64rj1.fsf@oracle.com>
- <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
- <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx>
+        Tue, 19 Sep 2023 09:02:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726CFF3;
+        Tue, 19 Sep 2023 06:02:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5174FC433C7;
+        Tue, 19 Sep 2023 13:02:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695128546;
+        bh=ado56bNidPzKZVR2ueEZ6I3D4NjiLbfnVnDP4Tvkvo4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U4PD0xcgInMQR0s0aIedkb2uzowPCY2CbN1o1B+bGp2BjGeOLCuz/1cussljadkby
+         2lT454Vzz0si2ff6tr/UWPTZarSVAv5I4pyDs8zsuA3BmlQ0ZZNcP94uWP/nn4dGQz
+         hSzvwJiHnOI2552FEsfKlIR++4yGUSJYQ67eBS20GM4lms5ZOZg3wBRJykQ4l1kj7o
+         6puPkWnLApdyT12YyxbarNuGQpIZhL5TYp2WI/IML0KsbUxo2gH3sGA9eHPTUwIeqJ
+         du5g0Fx/6xqM93l0h2pHyIYBMJX2o/rCx6GIoyH2tv06tBoNrhD9dWi7SZCV4A6Fgf
+         RnuqNiFTXxIIw==
+Date:   Tue, 19 Sep 2023 15:02:21 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "J . Bruce Fields" <bfields@redhat.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Max Kellermann <max.kellermann@ionos.com>
+Subject: Re: [PATCH] linux/fs.h: fix umask on NFS with CONFIG_FS_POSIX_ACL=n
+Message-ID: <20230919-altbekannt-musisch-35ac924166cf@brauner>
+References: <20230919081837.1096695-1-max.kellermann@ionos.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87led2wdj0.ffs@tglx>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230919081837.1096695-1-max.kellermann@ionos.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 02:30:59PM +0200, Thomas Gleixner wrote:
-> Though it just occured to me that there are dragons lurking:
+On Tue, Sep 19, 2023 at 10:18:36AM +0200, Max Kellermann wrote:
+> Make IS_POSIXACL() return false if POSIX ACL support is disabled and
+> ignore SB_POSIXACL/MS_POSIXACL.
 > 
-> arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
-> arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
-> arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
-> arch/um/Kconfig:        select ARCH_NO_PREEMPT
+> Never skip applying the umask in namei.c and never bother to do any
+> ACL specific checks if the filesystem falsely indicates it has ACLs
+> enabled when the feature is completely disabled in the kernel.
+> 
+> This fixes a problem where the umask is always ignored in the NFS
+> client when compiled without CONFIG_FS_POSIX_ACL.  This is a 4 year
+> old regression caused by commit 013cdf1088d723 which itself was not
+> completely wrong, but failed to consider all the side effects by
+> misdesigned VFS code.
+> 
+> Prior to that commit, there were two places where the umask could be
+> applied, for example when creating a directory:
+> 
+>  1. in the VFS layer in SYSCALL_DEFINE3(mkdirat), but only if
+>     !IS_POSIXACL()
+> 
+>  2. again (unconditionally) in nfs3_proc_mkdir()
+> 
+> The first one does not apply, because even without
+> CONFIG_FS_POSIX_ACL, the NFS client sets MS_POSIXACL in
+> nfs_fill_super().
 
-Sounds like three-and-a-half architectures which could be queued up for
-removal right behind ia64 ...
+Jeff, in light of the recent SB_NOUMASK work for nfs4 to always skip
+applying the umask how would this patch fit into the picture? Would be
+good to have your review here.
 
-I suspect none of these architecture maintainers have any idea there's a
-problem.  Look at commit 87a4c375995e and the discussion in
-https://lore.kernel.org/lkml/20180724175646.3621-1-hch@lst.de/
-
-Let's cc those maintainers so they can remove this and fix whatever
-breaks.
+> 
+> After that commit, (2.) was replaced by:
+> 
+>  2b. in posix_acl_create(), called by nfs3_proc_mkdir()
+> 
+> There's one branch in posix_acl_create() which applies the umask;
+> however, without CONFIG_FS_POSIX_ACL, posix_acl_create() is an empty
+> dummy function which does not apply the umask.
+> 
+> The approach chosen by this patch is to make IS_POSIXACL() always
+> return false when POSIX ACL support is disabled, so the umask always
+> gets applied by the VFS layer.  This is consistent with the (regular)
+> behavior of posix_acl_create(): that function returns early if
+> IS_POSIXACL() is false, before applying the umask.
+> 
+> Therefore, posix_acl_create() is responsible for applying the umask if
+> there is ACL support enabled in the file system (SB_POSIXACL), and the
+> VFS layer is responsible for all other cases (no SB_POSIXACL or no
+> CONFIG_FS_POSIX_ACL).
+> 
+> Reviewed-by: J. Bruce Fields <bfields@redhat.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> ---
+>  include/linux/fs.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 4aeb3fa11927..c1a4bc5c2e95 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2110,7 +2110,12 @@ static inline bool sb_rdonly(const struct super_block *sb) { return sb->s_flags
+>  #define IS_NOQUOTA(inode)	((inode)->i_flags & S_NOQUOTA)
+>  #define IS_APPEND(inode)	((inode)->i_flags & S_APPEND)
+>  #define IS_IMMUTABLE(inode)	((inode)->i_flags & S_IMMUTABLE)
+> +
+> +#ifdef CONFIG_FS_POSIX_ACL
+>  #define IS_POSIXACL(inode)	__IS_FLG(inode, SB_POSIXACL)
+> +#else
+> +#define IS_POSIXACL(inode)	0
+> +#endif
+>  
+>  #define IS_DEADDIR(inode)	((inode)->i_flags & S_DEAD)
+>  #define IS_NOCMTIME(inode)	((inode)->i_flags & S_NOCMTIME)
+> -- 
+> 2.39.2
+> 
