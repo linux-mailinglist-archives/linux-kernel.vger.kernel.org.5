@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0C37A633F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2BB7A6347
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjISMkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
+        id S232086AbjISMlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232085AbjISMkU (ORCPT
+        with ESMTP id S230021AbjISMlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:40:20 -0400
+        Tue, 19 Sep 2023 08:41:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967A2E3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:40:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAD88C433C8;
-        Tue, 19 Sep 2023 12:40:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CF099;
+        Tue, 19 Sep 2023 05:41:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D78A9C433C8;
+        Tue, 19 Sep 2023 12:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695127214;
-        bh=ruaomOsVSPAGgslF/yr7z7NtxZAHZH6/puP8bh0Ggi8=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=JNjCUw/8qkpApUTCB5VzsXkVhtVx0qCu7Tlf0SZKjNdvfhJu1ru700hGzrvA9TXDc
-         LqYti3gGwtrsDXJlDiO+15GqJsBIDQhIjKpoxxmOIsy+kxhIvHEGltCWKbHanU8X3s
-         UWMnLyVCJX260FN+by2l35LTfLGbROOWnofDBUabL+P/E8QNyG5/IlOiiXRDyY1F9o
-         dV7wNtf9ankEPgR/f1Q7DYV1v/iCjKcezSGlW2ob1y9Iig879geHPd9LwH+bvcN+qh
-         j14n49BMl/CNzAnC5yUT16ADitd3tcWpUiY5U5zKdqklrCKFAquQYm/3R1HE8KLTTA
-         yGqwfzGfg7Seg==
-Received: (nullmailer pid 3475446 invoked by uid 1000);
-        Tue, 19 Sep 2023 12:40:11 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1695127296;
+        bh=sdNgLMHUaM9EotsLPKRMXdZdUQrg70sPmYa/XAc0bSk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ftGqKQL4Xpl9ksEbF9kVIdFF6MC45/9W9MV9ZLGrEGLN3RbD12jnPRc54rGSxjK63
+         GNAsWaV+cP6dWUHXZrqwbuhZpsxpPpURNCVhH1DHSKgyNpjCFjUXoI7GwmhaQUbsn5
+         eg3PLHExudRGbYamTZSzZ56fxe8gEIVXloT8armL49S30NLIcooICXsWKt/IJDiBdJ
+         6z4OSXV1TUgouaw7mq+dEZhu2uL9nuj1xRffJd7ZkbChdnqQMrHqJHCgPnsHbDUK9d
+         54+4zvEayOJfLjh0Kdsxv6R2OIlVHmWHHT1lk3U7wKkA0gbvSLBO5Ot8hKZyQmVI8P
+         t8TC7i1SN/eWQ==
+Date:   Tue, 19 Sep 2023 14:41:25 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Matthew House <mattlloydhouse@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+Message-ID: <20230919-hackordnung-asketisch-331907800aa0@brauner>
+References: <20230918-hierbei-erhielten-ba5ef74a5b52@brauner>
+ <CAJfpegtaGXoZkMWLnk3PcibAvp7kv-4Yobo=UJj943L6v3ctJQ@mail.gmail.com>
+ <20230918-stuhl-spannend-9904d4addc93@brauner>
+ <CAJfpegvxNhty2xZW+4MM9Gepotii3CD1p0fyvLDQB82hCYzfLQ@mail.gmail.com>
+ <20230918-bestialisch-brutkasten-1fb34abdc33c@brauner>
+ <CAJfpegvTiK=RM+0y07h-2vT6Zk2GCu6F98c=_CNx8B1ytFtO-g@mail.gmail.com>
+ <20230919003800.93141-1-mattlloydhouse@gmail.com>
+ <CAJfpegs6g8JQDtaHsECA_12ss_8KXOHVRH9gwwPf5WamzxXOWQ@mail.gmail.com>
+ <20230919-abfedern-halfen-c12583ff93ac@brauner>
+ <CAJfpegsjE_G4d-W2hCZc0y+PioRgvK5TxT7kFAVgBqX6zN2dKg@mail.gmail.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        Mark Brown <broonie@kernel.org>, Lee Jones <lee@kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <20230919104357.3971512-3-wenst@chromium.org>
-References: <20230919104357.3971512-1-wenst@chromium.org>
- <20230919104357.3971512-3-wenst@chromium.org>
-Message-Id: <169512721150.3475200.12254070677030713993.robh@kernel.org>
-Subject: Re: [PATCH v3 02/12] regulator: dt-bindings: mt6358: Convert to DT
- schema
-Date:   Tue, 19 Sep 2023 07:40:11 -0500
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJfpegsjE_G4d-W2hCZc0y+PioRgvK5TxT7kFAVgBqX6zN2dKg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -62,61 +67,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 19 Sep 2023 18:43:45 +0800, Chen-Yu Tsai wrote:
-> Convert this from the old style text based binding to the new DT schema
-> style. This will make adding the MT6366 portion easier.
+> >  with __u32 size for mnt_root and mnt_point
 > 
-> The examples have been trimmed down considerably, and the remaining
-> entries now match what is seen in actual device trees, minus some
-> properties that aren't covered by the bindings yet, or don't make
-> sense on their own.
-> 
-> The original submitter seems to have left MediaTek, so instead the
-> submitter and maintainer for the MT6366 binding is listed.
-> 
-> Cc: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
-> Changes since v2:
-> - Added missing end-of-string match to regulator names
-> - regulator-coupled-* properties in example dropped
-> - #include and regulator-allowed-modes moved to new patch
-> 
->  .../regulator/mediatek,mt6358-regulator.yaml  |  97 +++++
->  .../bindings/regulator/mt6358-regulator.txt   | 350 ------------------
->  2 files changed, 97 insertions(+), 350 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml
->  delete mode 100644 Documentation/devicetree/bindings/regulator/mt6358-regulator.txt
-> 
+> Unnecessary if the strings are nul terminated.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml: patternProperties: '^ldo_vxo22$' should not be valid under {'pattern': '^\\^[a-zA-Z0-9,\\-._#]+\\$$'}
-	hint: Fixed strings belong in 'properties', not 'patternProperties'
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml: patternProperties: '^ldo_vusb$' should not be valid under {'pattern': '^\\^[a-zA-Z0-9,\\-._#]+\\$$'}
-	hint: Fixed strings belong in 'properties', not 'patternProperties'
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230919104357.3971512-3-wenst@chromium.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+All ok by me so far but how does the kernel know the size of the buffer
+to copy into? Wouldn't it be better to allow userspace to specify that?
+I'm probably just missing something but I better ask.
