@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C597A6989
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAAB7A6990
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 19:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbjISRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 13:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        id S231939AbjISRYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 13:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbjISRXF (ORCPT
+        with ESMTP id S230137AbjISRX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 13:23:05 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400CDC6;
-        Tue, 19 Sep 2023 10:22:59 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a9f139cd94so813740366b.2;
-        Tue, 19 Sep 2023 10:22:59 -0700 (PDT)
+        Tue, 19 Sep 2023 13:23:57 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFD9AD;
+        Tue, 19 Sep 2023 10:23:51 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59bebd5bdadso61362617b3.0;
+        Tue, 19 Sep 2023 10:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695144178; x=1695748978; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HcXUnksJwhyRAlze+kKPMXIvfRdnYvFyu340idGgApY=;
-        b=mcb7KxwM0kl/LX+7huW+YDEGd7jIXe/qM5z3XzF2ICbLF5Udokt0PFT15htEulhigZ
-         XtaksEjj7KQQvmf0AQDHWmkWVg4cBgTtyvFn17ICp330CreeefUbhEx2lD2wArJrlH6u
-         Vxuj5snNu0JteSzCiwUfFMA5rWeO4AjC987wyvhJDfKXt+BY4Eerz4QeDzPg1zNUPOBm
-         b1GYnoKkbSbo/JSPbjxz/bgIb+l+mWYnj40D6nGDGTCzJ1SJwEe8Jh+K+SwFEgDNtvRu
-         16UQ7EyvR8i66w19dDSmaunlupvCQDgPIUTwtw6x5whXrjnJxPptH/ziT66f7FDAMBrI
-         x1Kg==
+        d=gmail.com; s=20230601; t=1695144230; x=1695749030; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ke+rhIpc8Yj4RHSOIcCUf04IBals1/6zBz6t3mWbRfs=;
+        b=lqDp+sTrbpvsk/gj6cxQsxnsxilv2449oWmf02MP18Xn0eLh9Ct5RDlUus59A/bA+A
+         VPdAMIkGw0N9hXn+CgxCvdsxmDAsmaL+TbGJqGbG/0S17YmIjdl1vL5u5MSCcUfwQhXS
+         2aV7utyejtOUbS2yOyCrIRuVDgF0lBQaWdya1unG0yOcWF7KP7IqlwSSxvPRAfP7f1XZ
+         xwtQgvkjqzOCvXgLjUvxSeJ/BgMf6x1kKBgmJYVsGORk4205Czkr4/sjjtAveTBj6Y7l
+         TETp1prWNaoa/Zfkuej9pngYXjS1mPLK7MdNG0EPR/GzMuQYqasp1RZxBsU3cLUFkgin
+         nSjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695144178; x=1695748978;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HcXUnksJwhyRAlze+kKPMXIvfRdnYvFyu340idGgApY=;
-        b=L4d1frGVqacUEZ0mFbTtvzQEk9BHEN/h2NNMv60L8VJQVOaOJhey1O7VZ7K/Zat69O
-         AX0bCBJbCHzIsNO4cIoaNoKp5ECwkWOLKhrK608vD5seLvJubZpyaL5mWR9njVQsystJ
-         UPi20feYyc8ah7qdPAxaYrMZTTwrSQHZf8xI+49gRty8njBR9Wvz9n6ugCqCG7bDm5mv
-         g5t8UqKU+HFauvOt7G0NnFtGh7UKMJWuXUPtZ8a/MsUlJqrHZ1E4zIUMw7x9geyFoSMI
-         r6Cnbd0BQUK3Uw1aNxqPS/5esZ4cQk0muvt07II7QzSZRcLyur64FJMRL3XonhJkTW1R
-         Ta+w==
-X-Gm-Message-State: AOJu0YxfhUOCFJQHxKp2adnJ7/i3fEWMTp9/h1EagwXDD9vcof9EZQAW
-        9bOQ4Xcg54PQIKEsbCz2YbI=
-X-Google-Smtp-Source: AGHT+IF1Q4adU0rIcBVlI48STfiiF389ivz0W8cymo4KGMc3SHlL5K2MmpfuORVbO6ik0/JbKkDBjw==
-X-Received: by 2002:a17:906:1de:b0:9ae:3f3a:828d with SMTP id 30-20020a17090601de00b009ae3f3a828dmr53646ejj.21.1695144177494;
-        Tue, 19 Sep 2023 10:22:57 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id jp27-20020a170906f75b00b0099bd046170fsm8115171ejb.104.2023.09.19.10.22.56
+        d=1e100.net; s=20230601; t=1695144230; x=1695749030;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ke+rhIpc8Yj4RHSOIcCUf04IBals1/6zBz6t3mWbRfs=;
+        b=eXNKAyuZXXYTsYKaTQmTQ0BGR1x2e3Qv6p5pYQoESJFnSIxeBCANoHBTM/tMF3e+qK
+         aY8QK/3iSmdRS31vtt69X0jLUluSMwxUk2AHsfOsbi4fF4JKTZMOKBA0WTh5zrwlrDrR
+         3ocGmWtVa6+WEUQWIQ7Nwwsk0o6dlsFNmNZ4kPDQWL+xc/DJOg2Igzja53AdVvHAP8Fc
+         A+/AErOMetq9Mix3rBntsvsXEi0MYoUTCHdQvTRM4tSMOWj8veVPqOvOb4uZHhNkkplY
+         b95KR+o9rO2ymAM8dCGAqcTW7pc/flyhpa8h+/4mqLshdy0DnHtapSzMnnUs4OV7eaFZ
+         jRaQ==
+X-Gm-Message-State: AOJu0Yye14ZDNq0Qc4m3G++8Hf0u3teiDlJGnjBI6ttUMAVpOVMR+Mor
+        XsnFSiszHTOcW1NZiu5es+0=
+X-Google-Smtp-Source: AGHT+IFYba94/tWKEV5d0wk1Ylg0gSJJMGYXAHDrHy5oPNZruwSqpKZ/9cU/3wLGaHbcTR7JOuKvlQ==
+X-Received: by 2002:a81:4810:0:b0:586:9c4e:a9a4 with SMTP id v16-20020a814810000000b005869c4ea9a4mr145786ywa.5.1695144230386;
+        Tue, 19 Sep 2023 10:23:50 -0700 (PDT)
+Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
+        by smtp.gmail.com with ESMTPSA id u127-20020a0dd285000000b0059bce30a498sm3316842ywd.139.2023.09.19.10.23.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 10:22:57 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 18/19] net: mdio: sun4i: Convert to platform remove
- callback returning void
-Date:   Tue, 19 Sep 2023 19:22:55 +0200
-Message-ID: <8276262.T7Z3S40VBb@jernej-laptop>
-In-Reply-To: <20230918195102.1302746-19-u.kleine-koenig@pengutronix.de>
-References: <20230918195102.1302746-1-u.kleine-koenig@pengutronix.de>
- <20230918195102.1302746-19-u.kleine-koenig@pengutronix.de>
+        Tue, 19 Sep 2023 10:23:49 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 10:23:46 -0700
+From:   Vishal Moola <vishal.moola@gmail.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, will@kernel.org,
+        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
+        peterz@infradead.org, catalin.marinas@arm.com,
+        chenhuacai@kernel.org, tsbogend@alpha.franken.de,
+        dave.hansen@linux.intel.com, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, arnd@arndb.de, willy@infradead.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org
+Subject: Re: [PATCH] mm: add statistics for PUD level pagetable
+Message-ID: <ZQnZIkOfY0btsd8A@unknowna0e70b2ca394.attlocal.net>
+References: <876c71c03a7e69c17722a690e3225a4f7b172fb2.1695017383.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <876c71c03a7e69c17722a690e3225a4f7b172fb2.1695017383.git.baolin.wang@linux.alibaba.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -83,63 +78,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne ponedeljek, 18. september 2023 ob 21:51:01 CEST je Uwe Kleine-K=F6nig=20
-napisal(a):
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new() which already returns void. Eventually after all drivers
-> are converted, .remove_new() is renamed to .remove().
->=20
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->=20
-> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+On Mon, Sep 18, 2023 at 02:31:42PM +0800, Baolin Wang wrote:
+> Recently, we found that cross-die access to pagetable pages on ARM64
+> machines can cause performance fluctuations in our business. Currently,
+> there are no PMU events available to track this situation on our ARM64
+> machines, so an accurate pagetable accounting can help to analyze this
+> issue, but now the PUD level pagetable accounting is missed.
+> 
+> So introducing pagetable_pud_ctor/dtor() to help to get an accurate
+> PUD pagetable accounting, as well as converting the architectures with
+> using generic PUD pagatable allocation to add corresponding PUD pagetable
+> accounting. Moreover this patch will also mark the PUD level pagetable
+> with PG_table flag, which will help to do sanity validation in unpoison_memory().
+> 
+> On my testing machine, I can see more pagetables statistics after the patch
+> with page-types tool:
+> 
+> Before patch:
+>         flags           page-count      MB  symbolic-flags                     long-symbolic-flags
+> 0x0000000004000000           27326      106  __________________________g_________________       pgtable
+> After patch:
+> 0x0000000004000000           27541      107  __________________________g_________________       pgtable
+> 
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-
-Best regards,
-Jernej
-
-> ---
->  drivers/net/mdio/mdio-sun4i.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/net/mdio/mdio-sun4i.c b/drivers/net/mdio/mdio-sun4i.c
-> index f798de3276dc..4511bcc73b36 100644
-> --- a/drivers/net/mdio/mdio-sun4i.c
-> +++ b/drivers/net/mdio/mdio-sun4i.c
-> @@ -142,7 +142,7 @@ static int sun4i_mdio_probe(struct platform_device
-> *pdev) return ret;
->  }
->=20
-> -static int sun4i_mdio_remove(struct platform_device *pdev)
-> +static void sun4i_mdio_remove(struct platform_device *pdev)
->  {
->  	struct mii_bus *bus =3D platform_get_drvdata(pdev);
->  	struct sun4i_mdio_data *data =3D bus->priv;
-> @@ -151,8 +151,6 @@ static int sun4i_mdio_remove(struct platform_device
-> *pdev) if (data->regulator)
->  		regulator_disable(data->regulator);
->  	mdiobus_free(bus);
-> -
-> -	return 0;
->  }
->=20
->  static const struct of_device_id sun4i_mdio_dt_ids[] =3D {
-> @@ -166,7 +164,7 @@ MODULE_DEVICE_TABLE(of, sun4i_mdio_dt_ids);
->=20
->  static struct platform_driver sun4i_mdio_driver =3D {
->  	.probe =3D sun4i_mdio_probe,
-> -	.remove =3D sun4i_mdio_remove,
-> +	.remove_new =3D sun4i_mdio_remove,
->  	.driver =3D {
->  		.name =3D "sun4i-mdio",
->  		.of_match_table =3D sun4i_mdio_dt_ids,
-
-
-
-
+Acked-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
