@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9107A5A89
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D0B7A5A8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbjISHHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
+        id S231612AbjISHJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbjISHHf (ORCPT
+        with ESMTP id S229803AbjISHJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:07:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FD1116;
-        Tue, 19 Sep 2023 00:07:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5A10C433C8;
-        Tue, 19 Sep 2023 07:07:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695107249;
-        bh=hk6MTSg2w6vRJMTSQbUVxxO4PouQtMWRgz7EPaXFfhY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tByPkdImFal9VUGiAJG0v4DB3+eTkbIARCBO22fNE8S1MiU529opNX4DXDb0heUly
-         Yh1TS4hWzdTuvqhECYgg9KWuDdZg+l6JwaPE9oYe6wknLybJS4VhG89ACI8ueE7bWP
-         tTpsUX0+ur4zhpcRkBeO1IIZ9AuQ+cYfTi64h1qVX+2vFEeaWck178Fp1+9SX9Q/cZ
-         jFVeyxw3/qlWxeP14c/iejtQwFFL8tahguPeaAwwjBvGc3WkDXhYSXJ/YWORlYrkwW
-         8h0EHIbU7MBl0fKmRh2c44YF4o/xnuxOHhhdHweIRtiv659jM/Z+RbDNjWvfdoADgL
-         jiI5H94H1WASQ==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qiUph-0006Wl-3B;
-        Tue, 19 Sep 2023 09:07:42 +0200
-Date:   Tue, 19 Sep 2023 09:07:41 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        LinusW <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH] HID: i2c-hid: fix handling of unpopulated devices
-Message-ID: <ZQlIveJVdvyV2Ygy@hovoldconsulting.com>
-References: <20230918125851.310-1-johan+linaro@kernel.org>
- <CAD=FV=Wfwvp-SbGrdO5VJcjG42njkApJPB7wnY-YYa1_-O0JWQ@mail.gmail.com>
+        Tue, 19 Sep 2023 03:09:33 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA70B118
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:09:26 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 847C8FA2;
+        Tue, 19 Sep 2023 09:07:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1695107269;
+        bh=1mn0ySDXUgk/nzOh16Ww6lZfnBYBB/YyUmgjtm6Vro8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=TAiU38ddH5DnwNaTDuK0Vfpkob+UnVlCddC5V875FkcekMoPLITOqPUPTlddvhEyl
+         81To1hCOz2og7IpAv5MliZDfUya7Fv3zJHrfLrPgP2pRW+e2vrD6J187rl9JrfahPx
+         /gqRjqQTv8pnQzwxrxh3YZgG++RmxLl3Tjroy824=
+Message-ID: <91956712-0bdf-c932-5f8f-e7bb911f8d9f@ideasonboard.com>
+Date:   Tue, 19 Sep 2023 10:09:20 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=Wfwvp-SbGrdO5VJcjG42njkApJPB7wnY-YYa1_-O0JWQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFT PATCH 5/6] drm: Call drm_atomic_helper_shutdown() at
+ shutdown/remove time for misc drivers
+Content-Language: en-US
+To:     Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
+Cc:     airlied@gmail.com, airlied@redhat.com,
+        alexandre.torgue@foss.st.com, andrew@aj.id.au, daniel@ffwll.ch,
+        emma@anholt.net, hdegoede@redhat.com, jfalempe@redhat.com,
+        joel@jms.id.au, jyri.sarha@iki.fi, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        mcoquelin.stm32@gmail.com, philippe.cornu@foss.st.com,
+        raphael.gallais-pou@foss.st.com, tzimmermann@suse.de,
+        yannick.fertre@foss.st.com
+References: <20230901234015.566018-1-dianders@chromium.org>
+ <20230901163944.RFT.5.I771eb4bd03d8772b19e7dcfaef3e2c167bce5846@changeid>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <20230901163944.RFT.5.I771eb4bd03d8772b19e7dcfaef3e2c167bce5846@changeid>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,155 +61,295 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 08:00:15AM -0700, Doug Anderson wrote:
-> On Mon, Sep 18, 2023 at 6:00 AM Johan Hovold <johan+linaro@kernel.org> wrote:
-> > A recent commit reordered probe so that the interrupt line is now
-> > requested before making sure that the device exists.
-> >
-> > This breaks machines like the Lenovo ThinkPad X13s which rely on the
-> > HID driver to probe second-source devices and only register the variant
-> > that is actually populated. Specifically, the interrupt line may now
-> > already be (temporarily) claimed when doing asynchronous probing of the
-> > touchpad:
-> >
-> >         genirq: Flags mismatch irq 191. 00082008 (hid-over-i2c) vs. 00082008 (hid-over-i2c)
-> >         i2c_hid_of 21-0015: Could not register for hid-over-i2c interrupt, irq = 191, ret = -16
-> >         i2c_hid_of: probe of 21-0015 failed with error -16
-> >
-> > Fix this by restoring the old behaviour of first making sure the device
-> > exists before requesting the interrupt line.
-
-> Ugh, sorry for the regression. :( It actually turns out that I've been
-> digging into this same issue on a different device (see
-> mt8173-elm-hana). I hadn't realized that it was a regression caused by
-> my recent change, though.
+On 02/09/2023 02:39, Douglas Anderson wrote:
+> Based on grepping through the source code these drivers appear to be
+> missing a call to drm_atomic_helper_shutdown() at system shutdown time
+> and at driver remove (or unbind) time. Among other things, this means
+> that if a panel is in use that it won't be cleanly powered off at
+> system shutdown time.
 > 
-> I haven't yet reviewed your change in detail, but to me it seems like
-> at most a short term fix. Specifically, I think the way that this has
-> been working has been partially via hacks and partially via luck. Let
-> me explain...
-> 
-> Currently, to make this work the `sc8280xp-lenovo-thinkpad-x13s.dts`
-> file has a hack in it. You can see that the `tpad_default` pinctrl
-> entry has been moved up to the i2c bus level even though it doesn't
-> belong there (it should be in each trackpad). This is because,
-> otherwise, you would have run into similar type problems as the device
-> core would have failed to claim the pin for one of the devices.
+> The fact that we should call drm_atomic_helper_shutdown() in the case
+> of OS shutdown/restart and at driver remove (or unbind) time comes
+> straight out of the kernel doc "driver instance overview" in
+> drm_drv.c.
 
-Ḯ'm well aware of that and it was mentioned in the commit message for
-4367d763698c ("arm64: dts: qcom: sc8280xp-x13s: enable alternate
-touchpad") as well as discussed briefly with Rob here:
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-	https://lore.kernel.org/all/Y3teH14YduOQQkNn@hovoldconsulting.com/
+and tested on Beagle Bone Black (tilcdc):
 
-> Currently, we're getting a bit lucky with
-> `sc8280xp-lenovo-thinkpad-x13s.dts` that there are no other shared
-> resources between the two devices besides the interrupt. Specifically
-> a number of trackpads / touchscreens also have a "reset" GPIO that
-> needs to be power sequenced properly in order to talk to the
-> touchscreen. In this case we'll be stuck again because both instances
-> would need to grab the "reset" GPIO before being able to confirm if
-> the device is there.
+Tested-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com> # tilcdc
 
-Right, this will only work for fairly simple cases, but we do have a few
-of those in tree since some years back.
+  Tomi
 
-> This is an old problem. The first I remember running into it was back
-> in 2015 on rk3288-veryron-minnie. We had a downstream hack to make
-> this work with -EPROBE_DEFER. https://crrev.com/c/266224. By the time
-> we shipped, though, we decided not to do the 2nd sourcing. After that
-> I always NAKed HW designs like this, but I guess that didn't help with
-> Mediatek hardware I wasn't involved with. :( ...and, of course, it
-> didn't help with devices that aren't Chromebooks like the Thinkpad
-> X13S.
 > 
-> FWIW: as a short term solution, we ended up forcing synchronous probe
-> in <https://crrev.com/c/4857566>. This has some pretty serious boot
-> time implications, but it's also very simple.
+> A few notes about these fixes:
+> - I confirmed that these drivers were all DRIVER_MODESET type drivers,
+>    which I believe makes this relevant.
+> - I confirmed that these drivers were all DRIVER_ATOMIC.
+> - When adding drm_atomic_helper_shutdown() to the remove/unbind path,
+>    I added it after drm_kms_helper_poll_fini() when the driver had
+>    it. This seemed to be what other drivers did. If
+>    drm_kms_helper_poll_fini() wasn't there I added it straight after
+>    drm_dev_unregister().
+> - This patch deals with drivers using the component model in similar
+>    ways as the patch ("drm: Call drm_atomic_helper_shutdown() at
+>    shutdown time for misc drivers")
+> - These fixes rely on the patch ("drm/atomic-helper:
+>    drm_atomic_helper_shutdown(NULL) should be a noop") to simplify
+>    shutdown.
 > 
+> Suggested-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 > 
-> I'm actively working on coming up with a better solution here. My
-> current thought is that that maybe we want to do:
+>   drivers/gpu/drm/aspeed/aspeed_gfx_drv.c |  7 +++++++
+>   drivers/gpu/drm/mgag200/mgag200_drv.c   |  8 ++++++++
+>   drivers/gpu/drm/pl111/pl111_drv.c       |  7 +++++++
+>   drivers/gpu/drm/stm/drv.c               |  7 +++++++
+>   drivers/gpu/drm/tilcdc/tilcdc_drv.c     | 11 ++++++++++-
+>   drivers/gpu/drm/tve200/tve200_drv.c     |  7 +++++++
+>   drivers/gpu/drm/vboxvideo/vbox_drv.c    | 10 ++++++++++
+>   7 files changed, 56 insertions(+), 1 deletion(-)
 > 
-> 1. Undo the hack in the device tree and have each "2nd source" have
-> its own pinctrl entry.
-> 
-> 2. In core pinctrl / device probing code detect the pinctrl conflict
-> and only probe one of the devices at a time.
-> 
-> ...that sounds like a nice/elegant solution and I'm trying to make it
-> work, though it does have some downsides. Namely:
-> 
-> a) It requires "dts" changes to work. Namely we've got to undo the
-> hack that pushed the pinctrl up to the controller level (or, in the
-> case of mt8173-elm-hana, that just totally skipped the "pinctrl" entry
-> altogether). Unfortunately those same "dts" changes will actually make
-> things _worse_ if you don't have the code change. :(
-
-Right, a proper solution will likely require an updated DT.
-
-> b) It only handles the case where the resources shared by 2nd sourcing
-> are expressed by pinctrl. In a practical sense this seems to be most
-> cases, but conceivably you could imagine running into this situation
-> with a non-pin-related shared resource.
-
-Indeed.
-
-> c) To solve this in the core, we have to make sure we properly handle
-> (without hanging/failing) multiple partially-conflicting devices and
-> devices that might acquire resources in arbitrary orders.
-> 
-> Though the above solution detecting the pinctrl conflicts sounds
-> appealing and I'm currently working on prototyping it, I'm still not
-> 100% convinced. I'm worried about the above downsides.
-
-Yes, I agree that we'd need to take a broader look at this and not just
-focus on the immediate pinctrl issue.
- 
-> Personally, I feel like we could add information to the device tree
-> that would help us out. The question is: is this an abuse of device
-> tree for something that Linux ought to be able to figure out on its
-> own, or is it OK? To make it concrete, I was thinking about something
-> like this:
-> 
-> / {
->   tp_ex_group: trackpad-exclusion-group {
->     members = <&tp1>, <&tp2>, <&tp3>;
+> diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+> index d207b03f8357..78122b35a0cb 100644
+> --- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+> +++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+> @@ -358,11 +358,18 @@ static void aspeed_gfx_remove(struct platform_device *pdev)
+>   	sysfs_remove_group(&pdev->dev.kobj, &aspeed_sysfs_attr_group);
+>   	drm_dev_unregister(drm);
+>   	aspeed_gfx_unload(drm);
+> +	drm_atomic_helper_shutdown(drm);
+> +}
+> +
+> +static void aspeed_gfx_shutdown(struct platform_device *pdev)
+> +{
+> +	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+>   }
+>   
+>   static struct platform_driver aspeed_gfx_platform_driver = {
+>   	.probe		= aspeed_gfx_probe,
+>   	.remove_new	= aspeed_gfx_remove,
+> +	.shutdown	= aspeed_gfx_shutdown,
+>   	.driver = {
+>   		.name = "aspeed_gfx",
+>   		.of_match_table = aspeed_gfx_match,
+> diff --git a/drivers/gpu/drm/mgag200/mgag200_drv.c b/drivers/gpu/drm/mgag200/mgag200_drv.c
+> index abddf37f0ea1..2fb18b782b05 100644
+> --- a/drivers/gpu/drm/mgag200/mgag200_drv.c
+> +++ b/drivers/gpu/drm/mgag200/mgag200_drv.c
+> @@ -10,6 +10,7 @@
+>   #include <linux/pci.h>
+>   
+>   #include <drm/drm_aperture.h>
+> +#include <drm/drm_atomic_helper.h>
+>   #include <drm/drm_drv.h>
+>   #include <drm/drm_fbdev_generic.h>
+>   #include <drm/drm_file.h>
+> @@ -278,6 +279,12 @@ static void mgag200_pci_remove(struct pci_dev *pdev)
+>   	struct drm_device *dev = pci_get_drvdata(pdev);
+>   
+>   	drm_dev_unregister(dev);
+> +	drm_atomic_helper_shutdown(dev);
+> +}
+> +
+> +static void mgag200_pci_shutdown(struct pci_dev *pdev)
+> +{
+> +	drm_atomic_helper_shutdown(pci_get_drvdata(pdev));
+>   }
+>   
+>   static struct pci_driver mgag200_pci_driver = {
+> @@ -285,6 +292,7 @@ static struct pci_driver mgag200_pci_driver = {
+>   	.id_table = mgag200_pciidlist,
+>   	.probe = mgag200_pci_probe,
+>   	.remove = mgag200_pci_remove,
+> +	.shutdown = mgag200_pci_shutdown,
 >   };
-> };
-> 
-> &i2c_bus {
->   tp1: trackpad@10 {
->     ...
->     mutual-exclusion-group = <&tp_ex_group>;
+>   
+>   drm_module_pci_driver_if_modeset(mgag200_pci_driver, mgag200_modeset);
+> diff --git a/drivers/gpu/drm/pl111/pl111_drv.c b/drivers/gpu/drm/pl111/pl111_drv.c
+> index ba3b5b5f0cdf..02e6b74d5016 100644
+> --- a/drivers/gpu/drm/pl111/pl111_drv.c
+> +++ b/drivers/gpu/drm/pl111/pl111_drv.c
+> @@ -323,12 +323,18 @@ static void pl111_amba_remove(struct amba_device *amba_dev)
+>   	struct pl111_drm_dev_private *priv = drm->dev_private;
+>   
+>   	drm_dev_unregister(drm);
+> +	drm_atomic_helper_shutdown(drm);
+>   	if (priv->panel)
+>   		drm_panel_bridge_remove(priv->bridge);
+>   	drm_dev_put(drm);
+>   	of_reserved_mem_device_release(dev);
+>   }
+>   
+> +static void pl111_amba_shutdown(struct amba_device *amba_dev)
+> +{
+> +	drm_atomic_helper_shutdown(amba_get_drvdata(amba_dev));
+> +}
+> +
+>   /*
+>    * This early variant lacks the 565 and 444 pixel formats.
+>    */
+> @@ -431,6 +437,7 @@ static struct amba_driver pl111_amba_driver __maybe_unused = {
+>   	},
+>   	.probe = pl111_amba_probe,
+>   	.remove = pl111_amba_remove,
+> +	.shutdown = pl111_amba_shutdown,
+>   	.id_table = pl111_id_table,
 >   };
->   tp2: trackpad@20 {
->     ...
->     mutual-exclusion-group = <&tp_ex_group>;
+>   
+> diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+> index c68c831136c9..e8523abef27a 100644
+> --- a/drivers/gpu/drm/stm/drv.c
+> +++ b/drivers/gpu/drm/stm/drv.c
+> @@ -114,6 +114,7 @@ static void drv_unload(struct drm_device *ddev)
+>   	DRM_DEBUG("%s\n", __func__);
+>   
+>   	drm_kms_helper_poll_fini(ddev);
+> +	drm_atomic_helper_shutdown(ddev);
+>   	ltdc_unload(ddev);
+>   }
+>   
+> @@ -225,6 +226,11 @@ static void stm_drm_platform_remove(struct platform_device *pdev)
+>   	drm_dev_put(ddev);
+>   }
+>   
+> +static void stm_drm_platform_shutdown(struct platform_device *pdev)
+> +{
+> +	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+> +}
+> +
+>   static const struct of_device_id drv_dt_ids[] = {
+>   	{ .compatible = "st,stm32-ltdc"},
+>   	{ /* end node */ },
+> @@ -234,6 +240,7 @@ MODULE_DEVICE_TABLE(of, drv_dt_ids);
+>   static struct platform_driver stm_drm_platform_driver = {
+>   	.probe = stm_drm_platform_probe,
+>   	.remove_new = stm_drm_platform_remove,
+> +	.shutdown = stm_drm_platform_shutdown,
+>   	.driver = {
+>   		.name = "stm32-display",
+>   		.of_match_table = drv_dt_ids,
+> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+> index fe56beea3e93..8ebd7134ee21 100644
+> --- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+> +++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+> @@ -175,6 +175,7 @@ static void tilcdc_fini(struct drm_device *dev)
+>   		drm_dev_unregister(dev);
+>   
+>   	drm_kms_helper_poll_fini(dev);
+> +	drm_atomic_helper_shutdown(dev);
+>   	tilcdc_irq_uninstall(dev);
+>   	drm_mode_config_cleanup(dev);
+>   
+> @@ -389,6 +390,7 @@ static int tilcdc_init(const struct drm_driver *ddrv, struct device *dev)
+>   
+>   init_failed:
+>   	tilcdc_fini(ddev);
+> +	platform_set_drvdata(pdev, NULL);
+>   
+>   	return ret;
+>   }
+> @@ -537,7 +539,8 @@ static void tilcdc_unbind(struct device *dev)
+>   	if (!ddev->dev_private)
+>   		return;
+>   
+> -	tilcdc_fini(dev_get_drvdata(dev));
+> +	tilcdc_fini(ddev);
+> +	dev_set_drvdata(dev, NULL);
+>   }
+>   
+>   static const struct component_master_ops tilcdc_comp_ops = {
+> @@ -582,6 +585,11 @@ static int tilcdc_pdev_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> +static void tilcdc_pdev_shutdown(struct platform_device *pdev)
+> +{
+> +	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+> +}
+> +
+>   static const struct of_device_id tilcdc_of_match[] = {
+>   		{ .compatible = "ti,am33xx-tilcdc", },
+>   		{ .compatible = "ti,da850-tilcdc", },
+> @@ -592,6 +600,7 @@ MODULE_DEVICE_TABLE(of, tilcdc_of_match);
+>   static struct platform_driver tilcdc_platform_driver = {
+>   	.probe      = tilcdc_pdev_probe,
+>   	.remove     = tilcdc_pdev_remove,
+> +	.shutdown   = tilcdc_pdev_shutdown,
+>   	.driver     = {
+>   		.name   = "tilcdc",
+>   		.pm     = pm_sleep_ptr(&tilcdc_pm_ops),
+> diff --git a/drivers/gpu/drm/tve200/tve200_drv.c b/drivers/gpu/drm/tve200/tve200_drv.c
+> index 0bb56d063536..acce210e2554 100644
+> --- a/drivers/gpu/drm/tve200/tve200_drv.c
+> +++ b/drivers/gpu/drm/tve200/tve200_drv.c
+> @@ -242,6 +242,7 @@ static void tve200_remove(struct platform_device *pdev)
+>   	struct tve200_drm_dev_private *priv = drm->dev_private;
+>   
+>   	drm_dev_unregister(drm);
+> +	drm_atomic_helper_shutdown(drm);
+>   	if (priv->panel)
+>   		drm_panel_bridge_remove(priv->bridge);
+>   	drm_mode_config_cleanup(drm);
+> @@ -249,6 +250,11 @@ static void tve200_remove(struct platform_device *pdev)
+>   	drm_dev_put(drm);
+>   }
+>   
+> +static void tve200_shutdown(struct platform_device *pdev)
+> +{
+> +	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+> +}
+> +
+>   static const struct of_device_id tve200_of_match[] = {
+>   	{
+>   		.compatible = "faraday,tve200",
+> @@ -263,6 +269,7 @@ static struct platform_driver tve200_driver = {
+>   	},
+>   	.probe = tve200_probe,
+>   	.remove_new = tve200_remove,
+> +	.shutdown = tve200_shutdown,
 >   };
->   tp3: trackpad@30 {
->     ...
->     mutual-exclusion-group = <&tp_ex_group>;
+>   drm_module_platform_driver(tve200_driver);
+>   
+> diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> index 4fee15c97c34..047b95812334 100644
+> --- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> +++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> @@ -12,6 +12,7 @@
+>   #include <linux/vt_kern.h>
+>   
+>   #include <drm/drm_aperture.h>
+> +#include <drm/drm_atomic_helper.h>
+>   #include <drm/drm_drv.h>
+>   #include <drm/drm_fbdev_generic.h>
+>   #include <drm/drm_file.h>
+> @@ -97,11 +98,19 @@ static void vbox_pci_remove(struct pci_dev *pdev)
+>   	struct vbox_private *vbox = pci_get_drvdata(pdev);
+>   
+>   	drm_dev_unregister(&vbox->ddev);
+> +	drm_atomic_helper_shutdown(&vbox->ddev);
+>   	vbox_irq_fini(vbox);
+>   	vbox_mode_fini(vbox);
+>   	vbox_hw_fini(vbox);
+>   }
+>   
+> +static void vbox_pci_shutdown(struct pci_dev *pdev)
+> +{
+> +	struct vbox_private *vbox = pci_get_drvdata(pdev);
+> +
+> +	drm_atomic_helper_shutdown(&vbox->ddev);
+> +}
+> +
+>   static int vbox_pm_suspend(struct device *dev)
+>   {
+>   	struct vbox_private *vbox = dev_get_drvdata(dev);
+> @@ -165,6 +174,7 @@ static struct pci_driver vbox_pci_driver = {
+>   	.id_table = pciidlist,
+>   	.probe = vbox_pci_probe,
+>   	.remove = vbox_pci_remove,
+> +	.shutdown = vbox_pci_shutdown,
+>   	.driver.pm = pm_sleep_ptr(&vbox_pm_ops),
 >   };
-> };
-> 
-> Then the device core would know not to probe devices in the same
-> "mutual-exclusion-group" at the same time.
-> 
-> If DT folks are OK with the "mutual-exclusion-group" idea then I'll
-> probably backburner my attempt to make this work on the pinctrl level
-> and go with that.
+>   
 
-I expressed something along these lines in the thread above:
-
-	It seems we'd need some way to describe the devices as mutually
-	exclusive...
-
-but given that we had prior art for handling simple cases and due to
-lack of time, I left it on the ever-growing todo list.
-
-But regardless of what a long-term proper solution to this may look
-like, we need to fix the regression in 6.6-rc1 by restoring the old
-behaviour.
-
-Johan
