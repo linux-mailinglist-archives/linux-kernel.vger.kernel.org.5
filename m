@@ -2,139 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4357A6AC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794E87A6AC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 20:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbjISSeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 14:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
+        id S232222AbjISShl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 14:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbjISSeI (ORCPT
+        with ESMTP id S231993AbjISShk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 14:34:08 -0400
-Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD859E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:34:02 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id ifXsqtgzsBLWLifXsqurP3; Tue, 19 Sep 2023 20:34:00 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695148440;
-        bh=NX2r/u8WzOv2BoVre7uNYRZIJFKowdY5u4O/mbOCuJM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=WGm7uWVin9r4Wna0PwE4ZIC5PTxl5PjyJx35FAqiQJuAgi4DXA21jaMCcrZVILZ4C
-         d8jcJA97sEeTxJBdA/xN0faODkPqyE/iebUfTH5OExfGtekUam6s2U+neQO9kv17Nn
-         jAc2jOclTZYgtu/SA6LmJzks2IcqI348DqsDhtSabESh7YVuETU2MIDlBzbF2nqjl/
-         lydDI4dOmPfssMNUs3mztSBW5bejhBnGgUBh25yiwpZ6px/kVxkyOa1y8rBTWd/gZP
-         yeSF4t+xSNXp8hdN+4S6D46aw9N6qj54mstAHBN3ywzZVC1ez5sJFz5jgVt9pI9fTh
-         ysH7iySBrUYgw==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 19 Sep 2023 20:34:00 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <2931c006-d987-2261-1c39-5c41a4b17f75@wanadoo.fr>
-Date:   Tue, 19 Sep 2023 20:34:00 +0200
+        Tue, 19 Sep 2023 14:37:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CAF9D
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:37:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A59C2C433CB
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 18:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695148654;
+        bh=SZCi30lXAL9PMLnakDIVwpPGl0ou1Y/fgS+6JaO3cRc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fHtjSs1N/wQoAHhv+DDZMDDIbF4Ui+GrHXGv3C1uITpBsqjUzZi0/U3niDJB4feOt
+         JiTsu2XbQVEkd0zshzTXbbq/3JC2ucKvEXZYtO7hlzJ7aLVLHJorW6JIsxkUGfBW3s
+         qSthUBTpepDcxgtCqApVH9jRaTYGM9+0lR/yrvE5Cs4lDQ4y8/5rxOksO/PM8uoes2
+         IrlnpwsBOsGZeTowJ0ccPiUg0O0F2MREamLuOECFPcCeefYQ3l6soSjYea2VaxEqsL
+         dswpWYGOEu4SFQdUDf8lcacKlNSa/faRHRzgwDIJugwPbl0YMKq8WAMGqNfYfqT3J0
+         Gd3b8zznoFU/g==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so100191321fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 11:37:34 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyVzay4752FuoXJWkXN/Fcj88CtHjccXqcq2/lAt/1iOpAbQQZl
+        thEkE5VtL3BvUYvIg1+j9y35A3nxIOWuC4iwuQ==
+X-Google-Smtp-Source: AGHT+IHh9rud6D/2NK2Oyt7X5iqW0MyRB7qXn8hbmlU0moQeXDHnJl0giXjPyZw3/gbBPsCJBY5EjQAWErARHZgCoBI=
+X-Received: by 2002:a2e:7405:0:b0:2c0:34f9:5a6a with SMTP id
+ p5-20020a2e7405000000b002c034f95a6amr210916ljc.34.1695148652805; Tue, 19 Sep
+ 2023 11:37:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] bcachefs: Avoid a potential memory over-allocation in
- bch2_printbuf_make_room()
-Content-Language: fr, en-US
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-References: <2e6a82a83d0ddd9ce7f36ea889dd7ffc30f5fbc9.1694853900.git.christophe.jaillet@wanadoo.fr>
- <ZQmfpzxX+qjLtJjm@bfoster>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <ZQmfpzxX+qjLtJjm@bfoster>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <202309192013.vI4DKHmw-lkp@intel.com>
+In-Reply-To: <202309192013.vI4DKHmw-lkp@intel.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 19 Sep 2023 13:37:20 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ0BoR7Dan3=oyWPa6HU3YV=eOFTO5fx7u5zz2i=eB-jQ@mail.gmail.com>
+Message-ID: <CAL_JsqJ0BoR7Dan3=oyWPa6HU3YV=eOFTO5fx7u5zz2i=eB-jQ@mail.gmail.com>
+Subject: Re: arch/m68k/include/asm/raw_io.h:91:13: warning: array subscript 0
+ is outside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned int[]'}
+To:     kernel test robot <lkp@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 19/09/2023 à 15:18, Brian Foster a écrit :
-> On Sat, Sep 16, 2023 at 10:45:23AM +0200, Christophe JAILLET wrote:
->> kmalloc() and co. don't always allocate a power of 2 number of bytes.
->> There are some special handling for 64<n<=96 and 128<n<=192 cases.
->>
-> 
-> It's not immediately clear to me what you mean by "special handling."
-> Taking a quick look at slabinfo, it looks like what you mean is that
-> slab rounding is a bit more granular than power of two, particularly in
-> these ranges. Is that right? If so, JFYI it would be helpful to describe
-> that more explicitly in the commit log.
+On Tue, Sep 19, 2023 at 7:09=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   2cf0f715623872823a72e451243bbf555d10d032
+> commit: f1a43aadb5a690e141a3b6700e2a40c1d4dbe088 watchdog: Enable COMPILE=
+_TEST for more drivers
+> date:   5 weeks ago
+> config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/202309=
+19/202309192013.vI4DKHmw-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20230919/202309192013.vI4DKHmw-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202309192013.vI4DKHmw-lkp=
+@intel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+>    In file included from arch/m68k/include/asm/io_mm.h:25,
+>                     from arch/m68k/include/asm/io.h:8,
+>                     from include/linux/io.h:13,
+>                     from drivers/watchdog/machzwd.c:39:
+>    In function 'zf_set_timer',
+>        inlined from 'zf_timer_on' at drivers/watchdog/machzwd.c:218:2:
+> >> arch/m68k/include/asm/raw_io.h:91:13: warning: array subscript 0 is ou=
+tside array bounds of 'volatile u16[0]' {aka 'volatile short unsigned int[]=
+'} [-Warray-bounds=3D]
+>       91 |         __w =3D ((*(__force volatile u16 *) ((_addr & 0xFFFF00=
+00UL) + ((__v >> 8)<<1)))); \
+>          |         ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/m68k/include/asm/io_mm.h:228:20: note: in expansion of macro 'rom=
+_out_le16'
+>      228 |                  : rom_out_le16(isa_itw(port), (val)))
+>          |                    ^~~~~~~~~~~~
+>    arch/m68k/include/asm/io_mm.h:356:42: note: in expansion of macro 'isa=
+_rom_outw'
+>      356 | #define outw(val, port) ((port) < 1024 ? isa_rom_outw((val), (=
+port)) : out_le16((port), (val)))
+>          |                                          ^~~~~~~~~~~~
+>    drivers/watchdog/machzwd.c:74:53: note: in expansion of macro 'outw'
+>       74 | #define zf_writew(port, data)  { outb(port, INDEX); outw(data,=
+ DATA_W); }
+>          |                                                     ^~~~
+>    drivers/watchdog/machzwd.c:173:17: note: in expansion of macro 'zf_wri=
+tew'
+>      173 |                 zf_writew(COUNTER_1, new);
+>          |                 ^~~~~~~~~
+>    In function 'zf_timer_on':
+>    cc1: note: source object is likely at address zero
 
-That's what I tried to do with my 2 phrases.
-Sound good and clear to the French speaking man I am :)
+This seems to be some newish check in gcc which looks for fixed
+pointers below 4KB[1]. The linked issue says more was planned for
+gcc-13, but I haven't found what that is. AFAICT, that shouldn't
+happen with this config because isa_itw() should be variable and the
+compiler shouldn't be able to determine the value of _addr. However, a
+config with CONFIG_Q40=3Dn, CONFIG_AMIGA_PCMCIA=3Dn, and
+CONFIG_ATARI_ROM_ISA=3Dn would have a fixed NULL value and could trigger
+the warning. This should also have warnings everywhere outw() (and
+others) are used with a constant port value.
 
-Would you mind updating the phrasing yourself?
-A trial and error method about wording with a non native English 
-speaking person can be somewhat a long and boring experience to me.
+Rob
 
-All what I could propose, with the help of google translate, is:
-
-"
-kmalloc() does not necessarily allocate a number of bytes equal to a 
-power of two. There are special cases for sizes between 65 and 96 and 
-between 129 and 192. In these cases, 96 and 192 bytes are allocated 
-respectively.
-
-So, instead of forcing an allocation always equal to a power of two, it 
-may be interesting to use the same rounding rules as kmalloc(). This 
-helps avoid over-allocating some memory.
-
-Use kmalloc_size_roundup() instead of roundup_pow_of_two().
-"
-
-If this is fine to you I can send a v2 with this wording, otherwise, 
-either tweak it to what sounds good to you, or just ignore this patch.
-
-CJ
-
-> 
->> So trust kmalloc() algorithm instead of forcing a power of 2 allocation.
->> This can saves a few bytes of memory and still make use of all the
->> memory allocated.
->>
->> On the other side, it may require an additional realloc() in some cases.
->>
-> 
-> Well, I feel like this isn't the only place I've seen the power of two
-> buffer size realloc algorithm thing, but in thinking about it this seems
-> fairly harmless and reasonable for printbufs. FWIW:
-> 
-> Reviewed-by: Brian Foster <bfoster@redhat.com>
-> 
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   fs/bcachefs/printbuf.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/bcachefs/printbuf.c b/fs/bcachefs/printbuf.c
->> index 77bee9060bfe..34527407e950 100644
->> --- a/fs/bcachefs/printbuf.c
->> +++ b/fs/bcachefs/printbuf.c
->> @@ -28,7 +28,7 @@ int bch2_printbuf_make_room(struct printbuf *out, unsigned extra)
->>   	if (out->pos + extra < out->size)
->>   		return 0;
->>   
->> -	new_size = roundup_pow_of_two(out->size + extra);
->> +	new_size = kmalloc_size_roundup(out->size + extra);
->>   
->>   	/*
->>   	 * Note: output buffer must be freeable with kfree(), it's not required
->> -- 
->> 2.34.1
->>
-> 
-> 
-
+[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D99578
