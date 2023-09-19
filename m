@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E817A5B84
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471C87A5B9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 09:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjISHq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 03:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
+        id S231164AbjISHvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 03:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjISHqZ (ORCPT
+        with ESMTP id S230371AbjISHvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:46:25 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD78B100
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:46:15 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-4936b401599so2319683e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 00:46:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695109575; x=1695714375; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:mime-version
-         :in-reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=eECcdVLjmiHO6NMjf87/09ax+Y64fQCIr6VvZR8S1/c=;
-        b=YvYI6b6FGtbNVgNACUCc9Y0q9yPDh7SB1HoTWQzo/l4F0LyYq2PQlSiY+tUgkKzagU
-         aWSR8uRecGOEjll4O82h/TkflfH7sidaieoaYTNONDwNobdG8aKRk6JLsLkuXeqmVz4z
-         3TWwQqnQ5Q7QV3FuTCpJR9u02LViOEbj5vlbh/hGD0JkNCoJO7IwJjsT5qIAm4a8icnF
-         FCkWiUoj424MY8qVK3y+P155jlLaJg7ddwoIfk3rCeA5JOxkaXilhnPRjEBxuivwyqfO
-         2VADr0CDuK0CryKYeTBUIMKsfeYfbmU15hR8v4OW863DO+Eged9oj9Ot+TzAnk/fh9uX
-         yGaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695109575; x=1695714375;
-        h=cc:to:subject:message-id:date:from:references:mime-version
-         :in-reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eECcdVLjmiHO6NMjf87/09ax+Y64fQCIr6VvZR8S1/c=;
-        b=CJlXCr1XniRwShHkKC62EcLQcauOBtMBFJWpq5UVvSYGyBjRUC5D/4aX7WwJVLy3ag
-         t3B/CLM/3JYLTdvq/UFv2cRiHXdwKnKfR0bRPEsmPbBzfXN38qH5QVFqIFIAjChE9YpH
-         XPxRT0/HeNwWlFN+CAUy6g5EUfY/bugkEHEskYjlXCZ8alk36XqWo20IVTlaMV2wFv3F
-         tR1pSgjNQMnAHsjgmwpBcaPhgoZ876aJyEgnKwPvpfeTeq9hD3NQpgMEkVxm1VdLV/Jo
-         r7QfhxIb24L9LA1FWmvqqM19olRL8dIokvJcgDY/AYZKPEYmhCn5vMS8lcraNd0dZ3jV
-         2S9A==
-X-Gm-Message-State: AOJu0Yz9HCq1/T0HAhFk7/AyPnyUGOY2SDscilz1nJdDVxO/+OQANq2V
-        6a9mlZE03xI0q7Yku0rWkfGcGWX68Yage4OUGUVoB4D8jfUsmuK+mHI=
-X-Google-Smtp-Source: AGHT+IF5Fz7RhZi2YY14vj8x220gc24lvhX+cS73uHVGaMrtE0TjWn8n2wN++r5GQE4d4iTNVvhyanfqr5OBqEDD6PU=
-X-Received: by 2002:a1f:e082:0:b0:495:cace:d59c with SMTP id
- x124-20020a1fe082000000b00495caced59cmr8660034vkg.0.1695109574896; Tue, 19
- Sep 2023 00:46:14 -0700 (PDT)
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 19 Sep 2023 00:46:14 -0700
-In-Reply-To: <ZQlPre4nnydZyDAm@sol>
+        Tue, 19 Sep 2023 03:51:21 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CEB10F;
+        Tue, 19 Sep 2023 00:51:15 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38J7p8tc095988;
+        Tue, 19 Sep 2023 02:51:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695109868;
+        bh=91XuODQwmCtWYnSSTBcS0qNvMDSn/h7K7GVyq9zfEiU=;
+        h=From:To:CC:Subject:Date;
+        b=qzW3RWcW3FjrPcM1BJydKl9zeSQ/ogpyni2zDGyhsk6wweqPQPTYI8k8wkN6a4dlo
+         SQDG6c2LNVMjfkyIQds0gTSrkTOw1j1vnptliYROq+LjLcWDoZ5bFjU9rQ/SlXfWzK
+         0/eL4v4zuwGhfjzNeY3oA9wTO2BdL/bDaQ24SrVc=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38J7p8rU127667
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 19 Sep 2023 02:51:08 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
+ Sep 2023 02:51:08 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 19 Sep 2023 02:51:07 -0500
+Received: from dhruva.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38J7p5Sg116649;
+        Tue, 19 Sep 2023 02:51:06 -0500
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dhruva Gole <d-gole@ti.com>, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH V2] spi: spi-cadence-quadspi: Fix missing unwind goto warnings
+Date:   Tue, 19 Sep 2023 13:16:59 +0530
+Message-ID: <20230919074658.41666-1-d-gole@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230918145533.14642-1-brgl@bgdev.pl> <ZQhtWNaCiHVu5yzL@smile.fi.intel.com>
- <CAMRc=MfkzdFgwEuNGJYgxyCA_b__Ds-jA4S+jVT1ULJ9DTRhOw@mail.gmail.com> <ZQlPre4nnydZyDAm@sol>
-From:   brgl@bgdev.pl
-Date:   Tue, 19 Sep 2023 00:46:14 -0700
-Message-ID: <CAMRc=McamALbJ2jtpeek9L3k2pX8rkpsqhMfgsBqaygG58-cTw@mail.gmail.com>
-Subject: Re: [PATCH v4] gpio: sim: fix an invalid __free() usage
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        akpm@linux-foundation.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        brgl@bgdev.pl
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 09:37:17 +0200, Kent Gibson <warthog618@gmail.com> said:
-> On Tue, Sep 19, 2023 at 12:31:36AM -0700, brgl@bgdev.pl wrote:
->> On Mon, 18 Sep 2023 17:31:36 +0200, Andy Shevchenko
->> <andriy.shevchenko@linux.intel.com> said:
->> > On Mon, Sep 18, 2023 at 04:55:33PM +0200, Bartosz Golaszewski wrote:
->> >> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->> >>
->> >> gpio_sim_make_line_names() returns NULL or ERR_PTR() so we must not use
->> >> __free(kfree) on the returned address. Split this function into two, one
->> >> that determines the size of the "gpio-line-names" array to allocate and
->> >> one that actually sets the names at correct offsets. The allocation and
->> >> assignment of the managed pointer happens in between.
->> >
->> > ...
->> >
->> >> +	unsigned int size = 0;
->> >>
->> >>  	list_for_each_entry(line, &bank->line_list, siblings) {
->> >> +		if (!line->name || (line->offset >= bank->num_lines))
->> >>  			continue;
->> >>
->> >> +		size = line->offset + 1;
->> >>  	}
->> >>
->> >> +	return size;
->> >
->> > So, now the function iterates over all lines and returns the size of the last
->> > match, correct?
->> >
->> > Why not
->> >
->> > 	list_for_each_entry_reversed() {
->> > 		if (line->name && ())
->> > 			break;
->> > 	}
->> >
->> > 	return size;
->> >
->> > ?
->>
->> Because the line objects are not sorted by offset. They are added at the end
->> of the list in the order the user creates their corresponding configfs groups.
->>
->
-> Then your patch is also broken as it uses the last named entry,
-> not the named entry with the greatest offset??
->
-> Cheers,
-> Kent.
->
+The following smatch warnings [0] were recently introduced:
 
-Yes, of course it is. Ironically v3 was at least correct in this part.
+drivers/spi/spi-cadence-quadspi.c:1882 cqspi_probe() warn: missing
+unwind goto?
 
-Thanks
-Bart
+Fix these warnings by releasing dma channel and adding a goto fail probe.
+
+[0] https://lore.kernel.org/all/5e21c351-cd08-443e-8509-aecf242a4da9@kadam.mountain/
+
+Fixes: 0578a6dbfe75 ("spi: spi-cadence-quadspi: add runtime pm support")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202309140543.03dMbMM5-lkp@intel.com/
+Signed-off-by: Dhruva Gole <d-gole@ti.com>
+---
+
+Link to V1:
+https://lore.kernel.org/all/20230915123103.2493640-1-d-gole@ti.com/
+
+Changelog:
+* added dma_release_channel
+* added a fixes tag.
+
+ drivers/spi/spi-cadence-quadspi.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 4828da4587c5..3d7bf62da11c 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1878,8 +1878,11 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = devm_pm_runtime_enable(dev);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		if (cqspi->rx_chan)
++			dma_release_channel(cqspi->rx_chan);
++		goto probe_setup_failed;
++	}
+ 
+ 	pm_runtime_set_autosuspend_delay(dev, CQSPI_AUTOSUSPEND_TIMEOUT);
+ 	pm_runtime_use_autosuspend(dev);
+
+base-commit: 21f252cd29f08892d48739fd7513ad79c1cff96a
+-- 
+2.34.1
+
