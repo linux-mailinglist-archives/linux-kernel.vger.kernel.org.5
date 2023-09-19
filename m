@@ -2,57 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0970F7A5CA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB3B7A5CA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbjISIec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S231586AbjISIes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbjISIeY (ORCPT
+        with ESMTP id S231577AbjISIee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:34:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0827102
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 01:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695112457; x=1726648457;
-  h=date:from:to:cc:subject:message-id;
-  bh=sKJzKNfk9UiyiARddr7+nmW1Xrl4YVptpbYhdblNOQo=;
-  b=T66nsky09ZcrL44typqoSYlmDRSXosNi1sFKiGYEXxCeYDvRBdNXRLZK
-   cbdMWEJH/jEL5gOZecozpwU96wEAlGTf5d3mbk3IlYbV2btASsfT5iGzs
-   s4T0BbRVz6H86GweuYAW06TnGxlsqa6H5Mx26fmhc++Gboec1HmETdkvz
-   6aKEG5z6tYxY+Rfy0vFs8w21xSpEvVAXSwAfOFVeyZRJzDlDy68DR8Kcl
-   uopZNa7TQID/kv72wZr+nCFWx5zw2tXoR4egl1CGyFzIAYihXhVHfEcIl
-   qs9xO2NhPVVlbaml3XY8ZunzqVZLcoKXiHQmk5iFZ5xXNTXijSdZWQRtw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377196869"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="377196869"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 01:34:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="919781562"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000"; 
-   d="scan'208";a="919781562"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 19 Sep 2023 01:34:12 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiWBO-00077e-0i;
-        Tue, 19 Sep 2023 08:34:10 +0000
-Date:   Tue, 19 Sep 2023 16:33:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/core] BUILD SUCCESS
- a432b7c0cf420dbf2448c6bda6a6697afbb153d5
-Message-ID: <202309191607.1fElX4hn-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Tue, 19 Sep 2023 04:34:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAA711A;
+        Tue, 19 Sep 2023 01:34:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C7EEC433C8;
+        Tue, 19 Sep 2023 08:34:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695112467;
+        bh=Gd2j5BZkeceRCAPRB3Ed88hy2OH7X0D2yLIWo8KBQt4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uqPF0RdFSUuPHVS9uiiuFZK/NONs5bMVKha5RE3q0SLUU0w+qAvrDIqMjUqQmdzL8
+         ar/7hr5tE7F5RNzFvjqx6ZOR7L/5gylxJ0cfFf3Q6G80TxwfRUtxdK4l3EINQ46+Qx
+         ykMh6tdZLaO+7192I177MDjhLtRLRVHG7TzZwV1G62tRsii/GzaeNhjPSfnobNIGGR
+         nihUFbhJTPDE8cwus1Y+9hAXGbdBngDLPA96rsZCF/OfxyZvWe+8FK1MQUNVNRO0p9
+         nOxm2ywFG4b8rCaotz49XsGAs+b1EoeOHErYMvbFRAsxLqMJ5pw125LEnRdzIN69am
+         a0hvgybCE0j5g==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1qiWBs-0006tO-2x;
+        Tue, 19 Sep 2023 10:34:40 +0200
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Michal Simek <michal.simek@amd.com>, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Subject: [PATCH RESEND] spi: zynqmp-gqspi: fix clock imbalance on probe failure
+Date:   Tue, 19 Sep 2023 10:34:01 +0200
+Message-ID: <20230919083401.26454-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,155 +54,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
-branch HEAD: a432b7c0cf420dbf2448c6bda6a6697afbb153d5  locking/lockref/x86: Enable ARCH_USE_CMPXCHG_LOCKREF for X86_CMPXCHG64
+Make sure that the device is not runtime suspended before explicitly
+disabling the clocks on probe failure and on driver unbind to avoid a
+clock enable-count imbalance.
 
-elapsed time: 722m
+Fixes: 9e3a000362ae ("spi: zynqmp: Add pm runtime support")
+Cc: stable@vger.kernel.org	# 4.19
+Cc: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
 
-configs tested: 136
-configs skipped: 2
+Hi Mark,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This patch ended up sitting in your for-next and for-6.4 branches for a
+few releases but was never sent on to Linus as I reported here:
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230919   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230919   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230919   gcc  
-i386         buildonly-randconfig-002-20230919   gcc  
-i386         buildonly-randconfig-003-20230919   gcc  
-i386         buildonly-randconfig-004-20230919   gcc  
-i386         buildonly-randconfig-005-20230919   gcc  
-i386         buildonly-randconfig-006-20230919   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230919   gcc  
-i386                  randconfig-002-20230919   gcc  
-i386                  randconfig-003-20230919   gcc  
-i386                  randconfig-004-20230919   gcc  
-i386                  randconfig-005-20230919   gcc  
-i386                  randconfig-006-20230919   gcc  
-i386                  randconfig-011-20230919   gcc  
-i386                  randconfig-012-20230919   gcc  
-i386                  randconfig-013-20230919   gcc  
-i386                  randconfig-014-20230919   gcc  
-i386                  randconfig-015-20230919   gcc  
-i386                  randconfig-016-20230919   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230919   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230919   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230919   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230919   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230919   gcc  
-x86_64       buildonly-randconfig-002-20230919   gcc  
-x86_64       buildonly-randconfig-003-20230919   gcc  
-x86_64       buildonly-randconfig-004-20230919   gcc  
-x86_64       buildonly-randconfig-005-20230919   gcc  
-x86_64       buildonly-randconfig-006-20230919   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230919   gcc  
-x86_64                randconfig-002-20230919   gcc  
-x86_64                randconfig-003-20230919   gcc  
-x86_64                randconfig-004-20230919   gcc  
-x86_64                randconfig-005-20230919   gcc  
-x86_64                randconfig-006-20230919   gcc  
-x86_64                randconfig-011-20230919   gcc  
-x86_64                randconfig-012-20230919   gcc  
-x86_64                randconfig-013-20230919   gcc  
-x86_64                randconfig-014-20230919   gcc  
-x86_64                randconfig-015-20230919   gcc  
-x86_64                randconfig-016-20230919   gcc  
-x86_64                randconfig-071-20230919   gcc  
-x86_64                randconfig-072-20230919   gcc  
-x86_64                randconfig-073-20230919   gcc  
-x86_64                randconfig-074-20230919   gcc  
-x86_64                randconfig-075-20230919   gcc  
-x86_64                randconfig-076-20230919   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+	https://lore.kernel.org/lkml/ZOy0l6sXyYib59ej@finisterre.sirena.org.uk/
 
+Now it appears to have been dropped from linux-next so resending.
+
+Johan
+
+
+ drivers/spi/spi-zynqmp-gqspi.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
+index 94d9a33d9af5..9a46b2478f4e 100644
+--- a/drivers/spi/spi-zynqmp-gqspi.c
++++ b/drivers/spi/spi-zynqmp-gqspi.c
+@@ -1340,9 +1340,9 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ clk_dis_all:
+-	pm_runtime_put_sync(&pdev->dev);
+-	pm_runtime_set_suspended(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
++	pm_runtime_put_noidle(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
+ 	clk_disable_unprepare(xqspi->refclk);
+ clk_dis_pclk:
+ 	clk_disable_unprepare(xqspi->pclk);
+@@ -1366,11 +1366,15 @@ static void zynqmp_qspi_remove(struct platform_device *pdev)
+ {
+ 	struct zynqmp_qspi *xqspi = platform_get_drvdata(pdev);
+ 
++	pm_runtime_get_sync(&pdev->dev);
++
+ 	zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, 0x0);
++
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_put_noidle(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
+ 	clk_disable_unprepare(xqspi->refclk);
+ 	clk_disable_unprepare(xqspi->pclk);
+-	pm_runtime_set_suspended(&pdev->dev);
+-	pm_runtime_disable(&pdev->dev);
+ }
+ 
+ MODULE_DEVICE_TABLE(of, zynqmp_qspi_of_match);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
