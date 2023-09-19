@@ -2,204 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B507A571E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 03:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3587A5720
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 03:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbjISBp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 21:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
+        id S230506AbjISBrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 21:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbjISBp4 (ORCPT
+        with ESMTP id S230462AbjISBrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 21:45:56 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2052.outbound.protection.outlook.com [40.107.7.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F6C10A
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 18:45:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V/sqXSAPgr/qdmZclLrUPTpOJ9d6Nn/aXl0eoNXeqF0KRqDuRReJkqEJXWkXBymHFPdxl/Ay1If23Jth3Bn6Mt0mI4kGcQUaqx9PkLB3rCTzAo4jF+mmv3KdGt5xEASk1FVDN/JkUfQe7lGJkjME7nCCgTQWOx+22kz2IzHtr6qb7ikbN1XZ4IHPqivyWZ5ME7eCWFA0zWC1Alr3da8vIuBoUfVGYX44YhG1gB6dNvq4nJ4adA03vzx42PFq+hlHUWOyCCuR9bPwHvuqcjprCPM0mLRBRFTrUclbuvWva1AgJCgws6fAL7kAOXxXQZh5pEHP4BHrJfJIAXYVbloAZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HCDteOujEd/d9k0XooeS/VLA1fV7VyE8cWwaWhwIr1s=;
- b=b0jOmW6pDeDtS+lW20cGyIUjNDUiSPjhDovpQr0irHO+Li52X05nuGlVwgmyq9kBdE9FZCTBmRyzE9fGpT8cdpG2hgQwLV+DuE23Gsph7YZ0sE8qCEvo+yRVa5awDSteANdFvVN2WRPw3uTj/wUSyBKNp9i6vmY5ytT9cBHpTe3lzGzCe2EfC9VSQMPsszNfV1/rW/dZ8ibummfM6DRnfMf3m+UhvM5tP8vY5Ej7AaIAPVgu43W3Uq49KI+KjsUHPSEPf5Zyj14f7knwVQ3cCbj5wz+2A9ZgHJHvs5izSb5ShXj+3/k6xdAkmTsgvkz9Egfpyz6AyFGpHFuAgtBUpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HCDteOujEd/d9k0XooeS/VLA1fV7VyE8cWwaWhwIr1s=;
- b=omlcAY8Q/RO5kkAZ2zUp+VgiTcR7W77cq53Nub9M2/2dKcPLEw7V2tR+bno+dfCoAiHF0cmAwwpXhq/ND2DoZ0FNBGKBxejHCN3Znwp6EE0T0dXX47uwDjlTBqNzxmaumzAmbFrsqkOpGC/MRKyZmk4KTRRKy247f3DMPxh54TA=
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
- by DB9PR04MB8265.eurprd04.prod.outlook.com (2603:10a6:10:24f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Tue, 19 Sep
- 2023 01:45:45 +0000
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::9018:e395:332c:e24b]) by AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::9018:e395:332c:e24b%4]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
- 01:45:45 +0000
-From:   Ying Liu <victor.liu@nxp.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>
-CC:     "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-        "rfoss@kernel.org" <rfoss@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "ehristev@collabora.com" <ehristev@collabora.com>,
-        "wenst@chromium.org" <wenst@chromium.org>
-Subject: RE: [PATCH] drm/bridge: panel: Fix device link for
- DRM_BRIDGE_ATTACH_NO_CONNECTOR
-Thread-Topic: [PATCH] drm/bridge: panel: Fix device link for
- DRM_BRIDGE_ATTACH_NO_CONNECTOR
-Thread-Index: AQHZ6kDy3sEuq/n38UORlSaHmuHxHbAhX96Q
-Date:   Tue, 19 Sep 2023 01:45:45 +0000
-Message-ID: <AM7PR04MB70466D88048831E48EBBBD0898FAA@AM7PR04MB7046.eurprd04.prod.outlook.com>
-References: <20230918150043.403250-1-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230918150043.403250-1-angelogioacchino.delregno@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM7PR04MB7046:EE_|DB9PR04MB8265:EE_
-x-ms-office365-filtering-correlation-id: 8bd2893f-9e0a-4997-28e7-08dbb8b22449
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d9SodA9h8fVgEzDl0SSIXaQiimVQzMvhsQBuaki4UY+MGZtyYopnVoTxbnrCQbAJSgLCn0teBF5P6l4oS5pCn8COMTxO1XzATPE2gI2EPQj+Inw0LqG6UGRcW0SFnoZnvG874qtfw4RQFdMlIJzql8Nbk4hbNZarHsob+shgVtXDSUH/r7WWGvaUHzX5d812MTyLEPySsSH/DxXIrRyAL3j/YP3HBtiDS3c+der+uVMzXS7Et6ZRCUrvA5RBNLr8UYth9sMJiv1pKUFZK4YoHUsfe2X75ZsiPAS3B0BAb7AHQiU58zegULBlFqzCMTf77AOTXfdjNdJKIE8UYMiEXLjrzMdM17q20ktJyI73bQ/vcfILkXy1qQ5w9zEhTJTeKbl9GdMdPH3CFVP7sRQlQYSEr/wp/qMLy+PGQ1qcykAcYfmX35Bvou4WjhJOnnraxQeMu87PdWKqzfR+yuRxOnJS+Hf579R3jiTrmxnVGlgdV8wn1TEHH8/xX/9g/HhoXP3ZUSJYrm6OtuM++zTn0nGkzLdUFSe2UWMfjR47ITVWooKlnEKR1ymCa5QlIqzXqpH6PpLLEstU50cVmWEsSeuSr3GF4RRH9SNlMl/p0u36LU5DVzudWwsdNjVg6cFD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(376002)(396003)(346002)(186009)(1800799009)(451199024)(38070700005)(33656002)(55016003)(38100700002)(122000001)(86362001)(71200400001)(53546011)(7696005)(478600001)(66556008)(52536014)(64756008)(8936002)(76116006)(66946007)(66476007)(54906003)(8676002)(66446008)(2906002)(4326008)(9686003)(83380400001)(6506007)(5660300002)(41300700001)(110136005)(7416002)(316002)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?pl/wtKNPmHKfTXoUSXxuoivww5IOLD/FQBk9XHK4wktvCRkHHddUKxq8lMMl?=
- =?us-ascii?Q?1fzZ/gyikXPMOFXuNscd3nfsyJsVCO39yarrmHUF7ZgY/K71ab52qqJ+H5CA?=
- =?us-ascii?Q?FuUXQgzumsQW7MMnMutjAab3S2hV29UVNrZ8eSVu7q1WV19tZq2VfxBBGQTz?=
- =?us-ascii?Q?jBJSFHZmIPUVu3Tz1XepfCgV4OQS1DlXNL2RSGUbBk1Fmx32JiSqFqYFUj7G?=
- =?us-ascii?Q?YJ2g2ECuXnzRPp55Ju8v3hcn3PSjZi0AMAzWH5+dm7yY+cZqkMdGlM929Y9p?=
- =?us-ascii?Q?uI2LX5YtduLvQjD48F6gg4wxBAWUukAzgLBSY2azXs68NF8ieGC+5vWNuOop?=
- =?us-ascii?Q?Ah+FloTAbPhPmj9IFMqNHkHCnAChuOkCIHZni/jU0EGBNgMWEubTtEV1reTo?=
- =?us-ascii?Q?m9eBug3JRbluvErndNkOrVXq+wkPB6NdnNZ6PwSp7/Uzs6QNkqcnc7bIuj/Y?=
- =?us-ascii?Q?k7rhGJbQnOwPJovraNHLEEUvGADfub1D+XxgQ/7uoAzjcZ+qQRyNUleHfW62?=
- =?us-ascii?Q?QtTc8axqWijtYr2/sw3pkENn4Q7I/kV/CghnWHlo8JpTeG5neiyxjTuQJ0lD?=
- =?us-ascii?Q?ezHeqZGMXEeXIBaVCncQhs8Wv9LWVGX4IYmpcaQmZALrdiQTIYQscsnRfxyV?=
- =?us-ascii?Q?fWjix3iLvVTi5/5M5b0o64+naFuBqDhUIrMEp900v2R1/WxO4we17iQP80aW?=
- =?us-ascii?Q?swhdRhg+Wa8OrbEB7WipvWvZkbce24i2pBvpYP5y/s6Oj6sWEUg+rWMaOJvO?=
- =?us-ascii?Q?aqk7zgIRc+Kr5+TXigAIqFZCD1cQ/hA/MkjmPq0ZlE/rKRxZX65ASSggxdsA?=
- =?us-ascii?Q?998tvHxO7jkPXipGoH5lfuJAwwdpuS6a4BQZXo1FVxzHI8ZvDTIaQuTuB916?=
- =?us-ascii?Q?Fy/4xlaq5OTZ+ENnAwE0yuSkymikjuw1lqNUE3uU3IOqARDWC7dvoSyOSBiO?=
- =?us-ascii?Q?5/a/ns+5P0D+pHAyVPitj2AR19NLr3ArWi0NflHdUAvrzNUiitWdccws3Ev2?=
- =?us-ascii?Q?3iXPcSrPMhiQUOBTksHepQ3cJliIOe59UnxsHJgzMDxY8IzGe/EGEurdNE74?=
- =?us-ascii?Q?vQjle8Hrfsfo77l2mIbQU+ZLRqtkIZZpcwSne+iwO/AGLz7JE0yGNm+Ges4H?=
- =?us-ascii?Q?i3Me2V+Z4i2YjuCBKI5ytpJ2+y/Tl734vXK0Ld4sPVLP7OPq0TYi4/Jr+Alp?=
- =?us-ascii?Q?0Fy4/LA8K6hGkqoJb7EL/+WTGfbjH3VrFsnxL8EsAQpsKHiwUruG5X5x28Kf?=
- =?us-ascii?Q?KR7sjRAfgg8LThBnJwUBl2O2Wr2CfyWbf6ePGXOx6n+nAAS5vbBY6+re5vkj?=
- =?us-ascii?Q?WV8AD4CokhAADIEttvmDWG8mzFG2L+rlIvos7Sv+D4UqJb+lDRSmMfkQFQte?=
- =?us-ascii?Q?djTR0BUSbjWASm1wfJeIUCCwFzDx+Td4DXaog+izdvVQybLbcpW/5DZaPhvD?=
- =?us-ascii?Q?fcMwWHlFOYeyTGm2rBJir1GZ0z+OUXIDNEmx0tGeW4Vzt8cTp+i0nnTSIwsQ?=
- =?us-ascii?Q?pGcaPFNlyQHbps5kP+LZVGp6V7MFckfMHllYfxTq3y0CJeSnIue0hphHRe0q?=
- =?us-ascii?Q?GBDYScQT2vnrDxZIld0=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 18 Sep 2023 21:47:11 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486E094;
+        Mon, 18 Sep 2023 18:47:03 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RqPZQ2t7bzMlf6;
+        Tue, 19 Sep 2023 09:43:26 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 19 Sep 2023 09:46:58 +0800
+Subject: Re: [PATCH v1 0/5] Enable BPF skeletons by default
+To:     Ian Rogers <irogers@google.com>
+References: <20230914211948.814999-1-irogers@google.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Patrice Duroux <patrice.duroux@gmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <llvm@lists.linux.dev>
+Message-ID: <fe8320ab-c03c-c195-c051-0d0c2535e124@huawei.com>
+Date:   Tue, 19 Sep 2023 09:46:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bd2893f-9e0a-4997-28e7-08dbb8b22449
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2023 01:45:45.5401
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SGD8U5tanqi2WTooVL8xKuhYAPd4gUaEf/eUVpxhfBvDNuDI2dwcq4x83e+YU+IKOL4zHFaUBcqNcAoSO0fQXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8265
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230914211948.814999-1-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Angelo,
+Hello,
 
-Thank you for the patch.
+On 2023/9/15 5:19, Ian Rogers wrote:
+> Enable BPF skeletons by default but warn don't fail if they can't be
+> supported. This was the intended behavior for Linux 6.4 but it caused
+> an issue captured in this thread:
+> https://lore.kernel.org/lkml/20230503211801.897735-1-acme@kernel.org/
+> 
+> This issue isn't repeated here as the previous issue related to
+> generating vmlinux.h, which is no longer performed by default as a
+> checked-in vmlinux.h is used instead.
+> 
+> Unlike with those changes, the BUILD_BPF_SKEL is kept and setting it
+> to 0 disables BPF skeletons. Also, rather than fail the build due to a
+> missed dependency, dependencies are checked and BPF skeletons disabled
+> if they aren't present.
+> 
+> Some related commits:
+> b7a2d774c9c5 perf build: Add ability to build with a generated vmlinux.h
+> a887466562b4 perf bpf skels: Stop using vmlinux.h generated from BTF, use subset of used structs + CO-RE
+> a2af0f6b8ef7 perf build: Add system include paths to BPF builds
+> 5be6cecda080 perf bpf skels: Make vmlinux.h use bpf.h and perf_event.h in source directory
+> 9a2d5178b9d5 Revert "perf build: Make BUILD_BPF_SKEL default, rename to NO_BPF_SKEL"
+> a887466562b4 perf bpf skels: Stop using vmlinux.h generated from BTF, use subset of used structs + CO-RE
+> 1d7966547e11 perf build: Add warning for when vmlinux.h generation fails
+> a980755beb5a perf build: Make BUILD_BPF_SKEL default, rename to NO_BPF_SKEL
+> 
+> Ian Rogers (5):
+>    perf version: Add status of bpf skeletons
+>    perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
+>    perf test: Update build test for changed BPF skeleton defaults
+>    perf test: Ensure EXTRA_TESTS is covered in build test
+>    perf test: Detect off-cpu support from build options
+> 
+>   tools/perf/Makefile.config              | 78 ++++++++++++++++---------
+>   tools/perf/Makefile.perf                |  8 +--
+>   tools/perf/builtin-version.c            |  1 +
+>   tools/perf/tests/make                   |  7 ++-
+>   tools/perf/tests/shell/record_offcpu.sh |  2 +-
+>   5 files changed, 59 insertions(+), 37 deletions(-)
+> 
 
-On Monday, September 18, 2023 11:01 PM, AngeloGioacchino Del Regno <angelog=
-ioacchino.delregno@collabora.com> wrote:
-> When external bridges are attached with
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR,
-> the panel bridge may also get the same flag, but in the .attach()
-> callback for the panel bridge a device link is added only when this
-> flag is not present; To make things worse, the .detach() callback
-> tries to delete the device link unconditionally and without checking
-> if it was created in the first place, crashing the kernel with a NULL
-> pointer kernel panic upon calling panel_bridge_detach().
->=20
-> Fix that by moving the device_link_add() call before checking if the
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is present.
->=20
-> Fixes: 199cf07ebd2b ("drm/bridge: panel: Add a device link between drm
-> device and panel device")
-> Signed-off-by: AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com>
-> ---
->  drivers/gpu/drm/bridge/panel.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/bridge/panel.c
-> b/drivers/gpu/drm/bridge/panel.c
-> index e00d2e94c751..8c507dfd589e 100644
-> --- a/drivers/gpu/drm/bridge/panel.c
-> +++ b/drivers/gpu/drm/bridge/panel.c
-> @@ -67,14 +67,6 @@ static int panel_bridge_attach(struct drm_bridge
-> *bridge,
->  	struct drm_device *drm_dev =3D bridge->dev;
->  	int ret;
->=20
-> -	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
-> -		return 0;
-> -
-> -	if (!bridge->encoder) {
-> -		DRM_ERROR("Missing encoder\n");
-> -		return -ENODEV;
-> -	}
-> -
->  	panel_bridge->link =3D device_link_add(drm_dev->dev, panel->dev,
->  					     DL_FLAG_STATELESS);
->  	if (!panel_bridge->link) {
-> @@ -83,6 +75,14 @@ static int panel_bridge_attach(struct drm_bridge
-> *bridge,
->  		return -EINVAL;
->  	}
->=20
-> +	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
-> +		return 0;
-> +
-> +	if (!bridge->encoder) {
-> +		DRM_ERROR("Missing encoder\n");
+Thanks for the patchset. The kwork feature has been tested, as show in 
+link[1].
 
-Shouldn't the device link be deleted in case of error?
+Tested-by: Yang Jihong <yangjihong1@huawei.com>
 
-Regards,
-Liu Ying
+[1]:
+# perf version --build-options
+perf version 6.6.rc1.g33ee1c1436b6
+                  dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
+     dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
+          syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
+                 libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT
+             debuginfod: [ OFF ]  # HAVE_DEBUGINFOD_SUPPORT
+                 libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
+                libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+                libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
+              libpython: [ OFF ]  # HAVE_LIBPYTHON_SUPPORT
+               libslang: [ OFF ]  # HAVE_SLANG_SUPPORT
+              libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
+              libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
+     libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
+                   zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
+                   lzma: [ on  ]  # HAVE_LZMA_SUPPORT
+              get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
+                    bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
+                    aio: [ on  ]  # HAVE_AIO_SUPPORT
+                   zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
+                libpfm4: [ OFF ]  # HAVE_LIBPFM
+          libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
+          bpf_skeletons: [ on  ]  # HAVE_BPF_SKEL
+# perf kwork rep -b
+Starting trace, Hit <Ctrl+C> to stop and report
+^C
+   Kwork Name                     | Cpu  | Total Runtime | Count     | 
+Max runtime   | Max runtime start   | Max runtime end     |
+ 
+--------------------------------------------------------------------------------------------------------------------------------
+   (w)flush_to_ldisc              | 0003 |      2.188 ms |         2 | 
+     1.685 ms |      49451.331861 s |      49451.333546 s |
+   (s)NET_RX:3                    | 0002 |      1.278 ms |         3 | 
+     0.517 ms |      49451.336568 s |      49451.337085 s |
+   (s)SCHED:7                     | 0000 |      1.098 ms |         4 | 
+     0.880 ms |      49451.332413 s |      49451.333293 s |
+   (w)flush_to_ldisc              | 0003 |      1.081 ms |         1 | 
+     1.081 ms |      49452.548841 s |      49452.549922 s |
+   (s)RCU:9                       | 0001 |      0.894 ms |         2 | 
+     0.864 ms |      49451.333580 s |      49451.334443 s |
+   (s)SCHED:7                     | 0002 |      0.803 ms |         3 | 
+     0.606 ms |      49452.551313 s |      49452.551918 s |
+   (s)SCHED:7                     | 0001 |      0.452 ms |         3 | 
+     0.278 ms |      49452.547514 s |      49452.547792 s |
+   eth0:10                        | 0002 |      0.429 ms |         2 | 
+     0.280 ms |      49451.336029 s |      49451.336309 s |
+   (w)vmstat_shepherd             | 0000 |      0.402 ms |         1 | 
+     0.402 ms |      49452.551022 s |      49452.551424 s |
+   (s)TIMER:1                     | 0005 |      0.292 ms |         2 | 
+     0.157 ms |      49452.168443 s |      49452.168600 s |
+   (s)SCHED:7                     | 0005 |      0.175 ms |         2 | 
+     0.098 ms |      49452.168614 s |      49452.168711 s |
+   (s)TIMER:1                     | 0000 |      0.165 ms |         2 | 
+     0.116 ms |      49452.550736 s |      49452.550852 s |
+   (s)RCU:9                       | 0000 |      0.155 ms |         3 | 
+     0.070 ms |      49451.339213 s |      49451.339282 s |
+   (s)TIMER:1                     | 0006 |      0.153 ms |         2 | 
+     0.087 ms |      49451.334483 s |      49451.334570 s |
+   (s)TIMER:1                     | 0002 |      0.149 ms |         1 | 
+     0.149 ms |      49452.546829 s |      49452.546978 s |
+   (s)TIMER:1                     | 0004 |      0.141 ms |         1 | 
+     0.141 ms |      49452.552581 s |      49452.552722 s |
+   (w)vmstat_update               | 0002 |      0.139 ms |         1 | 
+     0.139 ms |      49452.547366 s |      49452.547505 s |
+   (s)RCU:9                       | 0004 |      0.139 ms |         2 | 
+     0.106 ms |      49452.553196 s |      49452.553302 s |
+   virtio0-requests:25            | 0000 |      0.123 ms |         1 | 
+     0.123 ms |      49452.550544 s |      49452.550667 s |
+   (s)RCU:9                       | 0003 |      0.092 ms |         2 | 
+     0.063 ms |      49451.334604 s |      49451.334667 s |
+   (s)SCHED:7                     | 0003 |      0.086 ms |         1 | 
+     0.086 ms |      49452.549525 s |      49452.549611 s |
+   (s)TIMER:1                     | 0001 |      0.081 ms |         1 | 
+     0.081 ms |      49451.544545 s |      49451.544626 s |
+   (s)TIMER:1                     | 0003 |      0.079 ms |         1 | 
+     0.079 ms |      49452.549420 s |      49452.549499 s |
+   (w)vmstat_update               | 0000 |      0.060 ms |         1 | 
+     0.060 ms |      49452.551474 s |      49452.551534 s |
+   (s)RCU:9                       | 0002 |      0.047 ms |         1 | 
+     0.047 ms |      49452.547171 s |      49452.547217 s |
+   (s)RCU:9                       | 0005 |      0.035 ms |         1 | 
+     0.035 ms |      49451.664719 s |      49451.664754 s |
+   (s)RCU:9                       | 0006 |      0.029 ms |         1 | 
+     0.029 ms |      49451.334593 s |      49451.334622 s |
+ 
+--------------------------------------------------------------------------------------------------------------------------------
 
-> +		return -ENODEV;
-> +	}
-> +
->  	drm_connector_helper_add(connector,
->  				 &panel_bridge_connector_helper_funcs);
->=20
-> --
-> 2.42.0
+# perf kwork lat -b
+Starting trace, Hit <Ctrl+C> to stop and report
+^C
+   Kwork Name                     | Cpu  | Avg delay     | Count     | 
+Max delay     | Max delay start     | Max delay end       |
+ 
+--------------------------------------------------------------------------------------------------------------------------------
+   (w)vmstat_update               | 0005 |      1.444 ms |         1 | 
+     1.444 ms |      49459.360837 s |      49459.362281 s |
+   (w)disk_events_workfn          | 0005 |      0.745 ms |         1 | 
+     0.745 ms |      49459.360745 s |      49459.361490 s |
+   (w)e1000_watchdog              | 0002 |      0.745 ms |         1 | 
+     0.745 ms |      49459.360745 s |      49459.361490 s |
+   (w)blk_mq_timeout_work         | 0005 |      0.683 ms |         1 | 
+     0.683 ms |      49457.632872 s |      49457.633555 s |
+   (s)RCU:9                       | 0004 |      0.669 ms |         2 | 
+     0.967 ms |      49457.484382 s |      49457.485349 s |
+   (s)RCU:9                       | 0005 |      0.570 ms |         1 | 
+     0.570 ms |      49457.632575 s |      49457.633146 s |
+   (w)vmstat_update               | 0002 |      0.502 ms |         1 | 
+     0.502 ms |      49459.169103 s |      49459.169605 s |
+   (s)RCU:9                       | 0002 |      0.465 ms |         1 | 
+     0.465 ms |      49459.168860 s |      49459.169325 s |
+   (w)ata_sff_pio_task            | 0005 |      0.435 ms |         1 | 
+     0.435 ms |      49459.361942 s |      49459.362377 s |
+   (s)SCHED:7                     | 0005 |      0.327 ms |         2 | 
+     0.406 ms |      49457.632634 s |      49457.633040 s |
+   (s)SCHED:7                     | 0001 |      0.298 ms |         1 | 
+     0.298 ms |      49457.484366 s |      49457.484664 s |
+   (s)RCU:9                       | 0000 |      0.298 ms |         1 | 
+     0.298 ms |      49459.578203 s |      49459.578501 s |
+   (s)RCU:9                       | 0003 |      0.294 ms |         1 | 
+     0.294 ms |      49459.363345 s |      49459.363638 s |
+   (s)SCHED:7                     | 0002 |      0.277 ms |         2 | 
+     0.339 ms |      49459.168911 s |      49459.169251 s |
+   (w)do_cache_clean              | 0003 |      0.276 ms |         1 | 
+     0.276 ms |      49459.363610 s |      49459.363886 s |
+   (w)vmstat_update               | 0003 |      0.272 ms |         1 | 
+     0.272 ms |      49459.363544 s |      49459.363815 s |
+   (w)blk_mq_requeue_work         | 0002 |      0.233 ms |         3 | 
+     0.376 ms |      49459.172895 s |      49459.173271 s |
+   (s)SCHED:7                     | 0004 |      0.231 ms |         9 | 
+     0.456 ms |      49459.573451 s |      49459.573908 s |
+   (s)TIMER:1                     | 0000 |      0.217 ms |         1 | 
+     0.217 ms |      49459.578169 s |      49459.578386 s |
+   (s)TIMER:1                     | 0005 |      0.206 ms |         2 | 
+     0.234 ms |      49457.632492 s |      49457.632726 s |
+   (s)TIMER:1                     | 0002 |      0.194 ms |         2 | 
+     0.203 ms |      49459.168794 s |      49459.168997 s |
+   (w)flush_to_ldisc              | 0003 |      0.173 ms |         1 | 
+     0.173 ms |      49459.575720 s |      49459.575893 s |
+   (s)TIMER:1                     | 0006 |      0.171 ms |         1 | 
+     0.171 ms |      49457.485465 s |      49457.485636 s |
+   (s)TIMER:1                     | 0004 |      0.167 ms |         6 | 
+     0.212 ms |      49457.696331 s |      49457.696543 s |
+   (s)RCU:9                       | 0006 |      0.148 ms |         1 | 
+     0.148 ms |      49457.485547 s |      49457.485696 s |
+   (s)TIMER:1                     | 0003 |      0.147 ms |         1 | 
+     0.147 ms |      49459.363301 s |      49459.363448 s |
+   (s)RCU:9                       | 0001 |      0.132 ms |         2 | 
+     0.173 ms |      49459.578156 s |      49459.578329 s |
+   (s)NET_RX:3                    | 0002 |      0.117 ms |         4 | 
+     0.225 ms |      49457.485058 s |      49457.485283 s |
+   (s)SCHED:7                     | 0000 |      0.074 ms |         9 | 
+     0.310 ms |      49457.484688 s |      49457.484998 s |
+   (s)BLOCK:4                     | 0003 |      0.072 ms |         1 | 
+     0.072 ms |      49459.362765 s |      49459.362837 s |
+   (s)SCHED:7                     | 0003 |      0.064 ms |         1 | 
+     0.064 ms |      49459.576487 s |      49459.576551 s |
+   (s)BLOCK:4                     | 0002 |      0.057 ms |         4 | 
+     0.107 ms |      49459.172252 s |      49459.172359 s |
+ 
+--------------------------------------------------------------------------------------------------------------------------------
 
+Thanks,
+Yang
