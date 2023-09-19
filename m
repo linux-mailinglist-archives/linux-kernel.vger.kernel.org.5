@@ -2,181 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B32D77A5983
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAFB7A5953
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 07:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbjISFpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 01:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
+        id S230388AbjISF2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 01:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjISFp2 (ORCPT
+        with ESMTP id S230246AbjISF15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 01:45:28 -0400
-X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Sep 2023 22:45:18 PDT
-Received: from 5.mo560.mail-out.ovh.net (5.mo560.mail-out.ovh.net [87.98.181.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A6AFC
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:45:18 -0700 (PDT)
-Received: from director3.ghost.mail-out.ovh.net (unknown [10.108.20.216])
-        by mo560.mail-out.ovh.net (Postfix) with ESMTP id 4108B24776
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 05:26:33 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-vplpw (unknown [10.110.115.108])
-        by director3.ghost.mail-out.ovh.net (Postfix) with ESMTPS id BC0711FDDA;
-        Tue, 19 Sep 2023 05:26:31 +0000 (UTC)
-Received: from foxhound.fi ([37.59.142.108])
-        by ghost-submission-6684bf9d7b-vplpw with ESMTPSA
-        id slhdKQcxCWU2JwAAE4/cmQ
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 19 Sep 2023 05:26:31 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-108S002f5644fc6-c8ef-44a9-9f28-2e18ebae5885,
-                    61319568CE96F564A5D0425DA56CF2A67D3354CD) smtp.auth=jose.pekkarinen@foxhound.fi
-X-OVh-ClientIp: 91.157.109.57
-From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        skhan@linuxfoundation.org
-Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH v2] drm/atomic-helper: prevent uaf in wait_for_vblanks
-Date:   Tue, 19 Sep 2023 08:26:17 +0300
-Message-Id: <20230919052617.4242-1-jose.pekkarinen@foxhound.fi>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 3533355386718758566
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudejledgleejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeeftdelueetieetvdettdetueeivedujeefffdvteefkeelhefhleelfeetteejjeenucfkphepuddvjedrtddrtddruddpledurdduheejrddutdelrdehjedpfeejrdehledrudegvddruddtkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeitddpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 19 Sep 2023 01:27:57 -0400
+Received: from mail-oi1-x249.google.com (mail-oi1-x249.google.com [IPv6:2607:f8b0:4864:20::249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F392102
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:27:52 -0700 (PDT)
+Received: by mail-oi1-x249.google.com with SMTP id 5614622812f47-3acfa8f8df3so6693399b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 22:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695101271; x=1695706071; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fLBIayzA2t/uL9eztp+Xlm1iGqaTM0uD/xEsY5Jfenk=;
+        b=Jf5i8a8Dx0Tli6Gwz+CG1YZxBeckVR0mOyf5pzrHj8j/8+WXVuBiIfNRdr36Wvhlkm
+         N3q0BiEKUmQLMa2JJxCqHMhytzWLgtlWSO42dppOO1+4dpnMTrYCtVBIofSeTaj0VYIM
+         w/OIE8Jygl6IWAJPjY23FcJSWV/U9r4qieP8Fh2+QAG3bYTTkH9G5YAYc+Atcd56Jxlq
+         JBjl1WP6mwp7DoaKir8OiliSGgRx+mMRvGbfvpgDqU8P+1vH8r+x2DPBBbb/MoBu6rPA
+         Diu2F5zNlSDVWdHYXTIVjdjA1vRPycewP0e4Nm7+UTW5TPqlnv2w1+glf1H8bJCQPy6s
+         t/GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695101271; x=1695706071;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fLBIayzA2t/uL9eztp+Xlm1iGqaTM0uD/xEsY5Jfenk=;
+        b=AMHyTBce7+4TXO6fAtVuBn3VM7QKgiOrDezSzhxWSfcxzqGWKSGCcV7q3bEsAJ7pas
+         r4SQJ3zkEwj5ncAeSh+FxMEnxkDUnOmmdOR+8jA1TzWMLqUJxpdnaEdd7opk1UFOhDuZ
+         G0WgHL9y1qf6C5hOCb7nMR5E2z/Ah+hEKV2IF5WnOs8mTToY8EtnWn5Ank+3ymo9CIeq
+         Qn18rBdmhZ+cuExBHgfU796fpZ8GUqoYuiIK/mk7+RQfnKo3vkjEIQ6NX6/Y9Sawvy1d
+         mSzrLysQgfCAmYwaprwhktqdv7bmGXGYMv9GEnlLBRtQMGCjZbbZCWwdiKTmmRN1tJYh
+         28Tw==
+X-Gm-Message-State: AOJu0YxjtV5+JUua0z/KtArzTObrWF7sN1mP3ESVLzpcGG6cco1ZZhO5
+        iAHJf2XqzIqzZOqHd6gr0paKVsE4rAbKOnoxQw==
+X-Google-Smtp-Source: AGHT+IH6FpsfoY3LuGAbwkojpyhbI3p0GHH+ej7UU/GDy6SV4M5mdYIoFu6DkhWFv8/jaKo1TCVzKirWO0cB9kmxqQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:9575:b0:1d1:3ff8:9f80 with
+ SMTP id v53-20020a056870957500b001d13ff89f80mr4312600oal.8.1695101271550;
+ Mon, 18 Sep 2023 22:27:51 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 05:27:45 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAFAxCWUC/5WNQQ6CMBBFr0K6dkxbEIMr72FYQDvARGzJtGkkh
+ LtbuIGLv3h/8d4mAjJhEI9iE4yJAnmXQV8KYabOjQhkMwstdSkbpSBEdmZZwTIl5AD97M0bOo/
+ HHEYwIHVlse9sreRNZNHCOND3jLzazBOF6Hk9m0kd71/6pEBBU1dlDpT3YWieo/fjjFfjP6Ld9 /0HIat21tUAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695101270; l=1984;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=ZndI1+kSvT/7BAM/nwag5C32Mjt5X/Kd4DJZMaoDm0g=; b=dM86F3nCqYDe2T1msZGhGTmrC9w3vUBE6ZHr8wc0bQG7jDB3HysLi73A5xGbYEIqQopS13Kzo
+ uot33iH+WZsBGL/ZHL7MXAOYhi7cq689F5nLZ3HtUR0dJROXMV+mlET
+X-Mailer: b4 0.12.3
+Message-ID: <20230919-strncpy-drivers-block-aoe-aoenet-c-v2-1-3d5d158410e9@google.com>
+Subject: [PATCH v2] aoe: replace strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Justin Sanders <justin@coraid.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Xu Panda <xu.panda@zte.com.cn>,
+        Yang Yang <yang.yang29@zte.com>,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kasan reported the following in my system:
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-[ 3935.321003] ==================================================================
-[ 3935.321022] BUG: KASAN: slab-use-after-free in drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
-[ 3935.321124] Read of size 1 at addr ffff88818a6f8009 by task kworker/u16:3/5268
+`aoe_iflist` is expected to be NUL-terminated which is evident by its
+use with string apis later on like `strspn`:
+| 	p = aoe_iflist + strspn(aoe_iflist, WHITESPACE);
 
-[ 3935.321124] CPU: 7 PID: 5268 Comm: kworker/u16:3 Not tainted 6.6.0-rc2+ #1
-[ 3935.321124] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[ 3935.321124] Workqueue: events_unbound commit_work [drm_kms_helper]
-[ 3935.321124] Call Trace:
-[ 3935.321124]  <TASK>
-[ 3935.321124]  dump_stack_lvl+0x43/0x60
-[ 3935.321124]  print_report+0xcf/0x660
-[ 3935.321124]  ? remove_entity_load_avg+0xdc/0x100
-[ 3935.321124]  ? __virt_addr_valid+0xd9/0x160
-[ 3935.321124]  ? drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
-[ 3935.321124]  kasan_report+0xda/0x110
-[ 3935.321124]  ? drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
-[ 3935.321124]  drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
-[ 3935.321124]  ? __pfx_drm_atomic_helper_wait_for_vblanks.part.0+0x10/0x10 [drm_kms_helper]
-[ 3935.321124]  ? complete_all+0x48/0x100
-[ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x19/0x40
-[ 3935.321124]  ? preempt_count_sub+0x14/0xc0
-[ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x23/0x40
-[ 3935.321124]  ? drm_atomic_helper_commit_hw_done+0x1ac/0x240 [drm_kms_helper]
-[ 3935.321124]  drm_atomic_helper_commit_tail+0x82/0x90 [drm_kms_helper]
-[ 3935.321124]  commit_tail+0x15c/0x1d0 [drm_kms_helper]
-[ 3935.323185]  process_one_work+0x31a/0x610
-[ 3935.323185]  worker_thread+0x38e/0x5f0
-[ 3935.323185]  ? __pfx_worker_thread+0x10/0x10
-[ 3935.323185]  kthread+0x184/0x1c0
-[ 3935.323185]  ? __pfx_kthread+0x10/0x10
-[ 3935.323185]  ret_from_fork+0x30/0x50
-[ 3935.323185]  ? __pfx_kthread+0x10/0x10
-[ 3935.323185]  ret_from_fork_asm+0x1b/0x30
-[ 3935.323185]  </TASK>
+It also seems `aoe_iflist` does not need to be NUL-padded which means
+`strscpy` [2] is a suitable replacement due to the fact that it
+guarantees NUL-termination on the destination buffer while not
+unnecessarily NUL-padding.
 
-[ 3935.323185] Allocated by task 3751:
-[ 3935.323185]  kasan_save_stack+0x2f/0x50
-[ 3935.323185]  kasan_set_track+0x21/0x30
-[ 3935.323185]  __kasan_kmalloc+0xa6/0xb0
-[ 3935.323185]  drm_atomic_helper_crtc_duplicate_state+0x42/0x70 [drm_kms_helper]
-[ 3935.323185]  drm_atomic_get_crtc_state+0xc3/0x1e0 [drm]
-[ 3935.323185]  page_flip_common+0x42/0x160 [drm_kms_helper]
-[ 3935.323185]  drm_atomic_helper_page_flip+0x6b/0xf0 [drm_kms_helper]
-[ 3935.323185]  drm_mode_page_flip_ioctl+0x8ad/0x900 [drm]
-[ 3935.323185]  drm_ioctl_kernel+0x169/0x240 [drm]
-[ 3935.323185]  drm_ioctl+0x399/0x6b0 [drm]
-[ 3935.324772]  __x64_sys_ioctl+0xc5/0x100
-[ 3935.324772]  do_syscall_64+0x5b/0xc0
-[ 3935.324772]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-[ 3935.324772] Freed by task 3751:
-[ 3935.324772]  kasan_save_stack+0x2f/0x50
-[ 3935.324772]  kasan_set_track+0x21/0x30
-[ 3935.324772]  kasan_save_free_info+0x27/0x40
-[ 3935.324772]  ____kasan_slab_free+0x166/0x1c0
-[ 3935.324772]  slab_free_freelist_hook+0x9f/0x1e0
-[ 3935.324772]  __kmem_cache_free+0x187/0x2d0
-[ 3935.324772]  drm_atomic_state_default_clear+0x226/0x5e0 [drm]
-[ 3935.324772]  __drm_atomic_state_free+0xc8/0x130 [drm]
-[ 3935.324772]  drm_atomic_helper_update_plane+0x17d/0x1b0 [drm_kms_helper]
-[ 3935.324772]  drm_mode_cursor_universal+0x2a4/0x4d0 [drm]
-[ 3935.324772]  drm_mode_cursor_common+0x1cf/0x430 [drm]
-[ 3935.324772]  drm_mode_cursor_ioctl+0xc6/0x100 [drm]
-[ 3935.326167]  drm_ioctl_kernel+0x169/0x240 [drm]
-[ 3935.326167]  drm_ioctl+0x399/0x6b0 [drm]
-[ 3935.326614]  __x64_sys_ioctl+0xc5/0x100
-[ 3935.326614]  do_syscall_64+0x5b/0xc0
-[ 3935.326614]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-[ 3935.326614] The buggy address belongs to the object at ffff88818a6f8000
-                which belongs to the cache kmalloc-512 of size 512
-[ 3935.326614] The buggy address is located 9 bytes inside of
-                freed 512-byte region [ffff88818a6f8000, ffff88818a6f8200)
-
-[ 3935.326614] The buggy address belongs to the physical page:
-[ 3935.326614] page:00000000b0fb0816 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x18a6f8
-[ 3935.326614] head:00000000b0fb0816 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-[ 3935.326614] anon flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-[ 3935.326614] page_type: 0xffffffff()
-[ 3935.326614] raw: 0017ffffc0000840 ffff888100042c80 0000000000000000 dead000000000001
-[ 3935.326614] raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
-[ 3935.326614] page dumped because: kasan: bad access detected
-
-[ 3935.326614] Memory state around the buggy address:
-[ 3935.326614]  ffff88818a6f7f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[ 3935.326614]  ffff88818a6f7f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[ 3935.326614] >ffff88818a6f8000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[ 3935.326772]                       ^
-[ 3935.326772]  ffff88818a6f8080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[ 3935.326772]  ffff88818a6f8100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[ 3935.326772] ==================================================================
-
-This suggest there may be some situation where a
-struct drm_crtc_state is referenced after already
-being freed by drm_atomic_state_default_clear. This
-patch will check the new_crtc_state is not null before
-using it.
-
-Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Xu Panda <xu.panda@zte.com.cn>
+Cc: Yang Yang <yang.yang29@zte.com>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
-[v1->v2] continue loop if new_crtc_state is null
+Changes in v2:
+- reword subject line (thanks Jens)
+- rebase onto 3669558bdf35
+- Link to v1: https://lore.kernel.org/r/20230911-strncpy-drivers-block-aoe-aoenet-c-v1-1-9643d6137ff9@google.com
+---
+Note: This exact same patch exists [3] but seemed to die so I'm
+resending.
 
- drivers/gpu/drm/drm_atomic_helper.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[3]: https://lore.kernel.org/all/202212051930256039214@zte.com.cn/
+---
+ drivers/block/aoe/aoenet.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-index 292e38eb6218..0f17b3b406bb 100644
---- a/drivers/gpu/drm/drm_atomic_helper.c
-+++ b/drivers/gpu/drm/drm_atomic_helper.c
-@@ -1647,7 +1647,7 @@ drm_atomic_helper_wait_for_vblanks(struct drm_device *dev,
- 		return;
+diff --git a/drivers/block/aoe/aoenet.c b/drivers/block/aoe/aoenet.c
+index 63773a90581d..c51ea95bc2ce 100644
+--- a/drivers/block/aoe/aoenet.c
++++ b/drivers/block/aoe/aoenet.c
+@@ -39,8 +39,7 @@ static struct ktstate kts;
+ #ifndef MODULE
+ static int __init aoe_iflist_setup(char *str)
+ {
+-	strncpy(aoe_iflist, str, IFLISTSZ);
+-	aoe_iflist[IFLISTSZ - 1] = '\0';
++	strscpy(aoe_iflist, str, IFLISTSZ);
+ 	return 1;
+ }
  
- 	for_each_oldnew_crtc_in_state(old_state, crtc, old_crtc_state, new_crtc_state, i) {
--		if (!new_crtc_state->active)
-+		if (!new_crtc_state || !new_crtc_state->active)
- 			continue;
- 
- 		ret = drm_crtc_vblank_get(crtc);
--- 
-2.39.2
+
+---
+base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+change-id: 20230911-strncpy-drivers-block-aoe-aoenet-c-024debad6105
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
