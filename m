@@ -2,131 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69257A643C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5FF7A6448
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbjISNCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
+        id S231851AbjISND1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjISNCb (ORCPT
+        with ESMTP id S231360AbjISNDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:02:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726CFF3;
-        Tue, 19 Sep 2023 06:02:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5174FC433C7;
-        Tue, 19 Sep 2023 13:02:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695128546;
-        bh=ado56bNidPzKZVR2ueEZ6I3D4NjiLbfnVnDP4Tvkvo4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U4PD0xcgInMQR0s0aIedkb2uzowPCY2CbN1o1B+bGp2BjGeOLCuz/1cussljadkby
-         2lT454Vzz0si2ff6tr/UWPTZarSVAv5I4pyDs8zsuA3BmlQ0ZZNcP94uWP/nn4dGQz
-         hSzvwJiHnOI2552FEsfKlIR++4yGUSJYQ67eBS20GM4lms5ZOZg3wBRJykQ4l1kj7o
-         6puPkWnLApdyT12YyxbarNuGQpIZhL5TYp2WI/IML0KsbUxo2gH3sGA9eHPTUwIeqJ
-         du5g0Fx/6xqM93l0h2pHyIYBMJX2o/rCx6GIoyH2tv06tBoNrhD9dWi7SZCV4A6Fgf
-         RnuqNiFTXxIIw==
-Date:   Tue, 19 Sep 2023 15:02:21 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "J . Bruce Fields" <bfields@redhat.com>, Jan Kara <jack@suse.cz>,
-        stable@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Max Kellermann <max.kellermann@ionos.com>
-Subject: Re: [PATCH] linux/fs.h: fix umask on NFS with CONFIG_FS_POSIX_ACL=n
-Message-ID: <20230919-altbekannt-musisch-35ac924166cf@brauner>
-References: <20230919081837.1096695-1-max.kellermann@ionos.com>
+        Tue, 19 Sep 2023 09:03:25 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5464AF3;
+        Tue, 19 Sep 2023 06:03:18 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RqhZh6WJvzMl6D;
+        Tue, 19 Sep 2023 20:59:40 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 19 Sep 2023 21:03:14 +0800
+CC:     <yangyicong@hisilicon.com>, <alexander.shishkin@linux.intel.com>,
+        <helgaas@kernel.org>, <linux-pci@vger.kernel.org>,
+        <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
+        <hejunhao3@huawei.com>
+Subject: Re: [PATCH v2 5/5] hwtracing: hisi_ptt: Add dummy callback
+ pmu::read()
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <mathieu.poirier@linaro.org>, <jonathan.cameron@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20230914112223.27165-1-yangyicong@huawei.com>
+ <20230914112223.27165-6-yangyicong@huawei.com>
+ <73655f9b-9ea4-cb46-d712-20f1c4ac7c95@arm.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <75b93d15-f099-5d17-caa9-94b0390773cf@huawei.com>
+Date:   Tue, 19 Sep 2023 21:03:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230919081837.1096695-1-max.kellermann@ionos.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <73655f9b-9ea4-cb46-d712-20f1c4ac7c95@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 10:18:36AM +0200, Max Kellermann wrote:
-> Make IS_POSIXACL() return false if POSIX ACL support is disabled and
-> ignore SB_POSIXACL/MS_POSIXACL.
+On 2023/9/15 20:53, Suzuki K Poulose wrote:
+> On 14/09/2023 12:22, Yicong Yang wrote:
+>> From: Junhao He <hejunhao3@huawei.com>
+>>
+>> When start trace with perf option "-C $cpu" and immediately stop it
+>> with SIGTERM or others, the perf core will invoke pmu::read() while
+>> the driver doesn't implement it. Add a dummy pmu::read() to avoid
+>> any issues.
 > 
-> Never skip applying the umask in namei.c and never bother to do any
-> ACL specific checks if the filesystem falsely indicates it has ACLs
-> enabled when the feature is completely disabled in the kernel.
+> What issues are we talking about here ? Shouldn't the core perf
+> skip the call, if pmu::read() is not available ?
 > 
-> This fixes a problem where the umask is always ignored in the NFS
-> client when compiled without CONFIG_FS_POSIX_ACL.  This is a 4 year
-> old regression caused by commit 013cdf1088d723 which itself was not
-> completely wrong, but failed to consider all the side effects by
-> misdesigned VFS code.
-> 
-> Prior to that commit, there were two places where the umask could be
-> applied, for example when creating a directory:
-> 
->  1. in the VFS layer in SYSCALL_DEFINE3(mkdirat), but only if
->     !IS_POSIXACL()
-> 
->  2. again (unconditionally) in nfs3_proc_mkdir()
-> 
-> The first one does not apply, because even without
-> CONFIG_FS_POSIX_ACL, the NFS client sets MS_POSIXACL in
-> nfs_fill_super().
 
-Jeff, in light of the recent SB_NOUMASK work for nfs4 to always skip
-applying the umask how would this patch fit into the picture? Would be
-good to have your review here.
+Actually no, the core doesn't check it. So I think that's why some PMUs
+like SPE implements a dummy pmu::read() callback. Otherwise we'll
+dereference a NULL pointer.
 
+Currently we only met this on emulated platforms with very slow CPUs,
+follow the instructions in the commit above.
+
+> Suzuki
 > 
-> After that commit, (2.) was replaced by:
+>>
+>> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>> ---
+>>   drivers/hwtracing/ptt/hisi_ptt.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
+>> index 62a444f5228e..c1b5fd2b8974 100644
+>> --- a/drivers/hwtracing/ptt/hisi_ptt.c
+>> +++ b/drivers/hwtracing/ptt/hisi_ptt.c
+>> @@ -1184,6 +1184,10 @@ static void hisi_ptt_pmu_del(struct perf_event *event, int flags)
+>>       hisi_ptt_pmu_stop(event, PERF_EF_UPDATE);
+>>   }
+>>   +static void hisi_ptt_pmu_read(struct perf_event *event)
+>> +{
+>> +}
+>> +
+>>   static void hisi_ptt_remove_cpuhp_instance(void *hotplug_node)
+>>   {
+>>       cpuhp_state_remove_instance_nocalls(hisi_ptt_pmu_online, hotplug_node);
+>> @@ -1227,6 +1231,7 @@ static int hisi_ptt_register_pmu(struct hisi_ptt *hisi_ptt)
+>>           .stop        = hisi_ptt_pmu_stop,
+>>           .add        = hisi_ptt_pmu_add,
+>>           .del        = hisi_ptt_pmu_del,
+>> +        .read        = hisi_ptt_pmu_read,
+>>       };
+>>         reg = readl(hisi_ptt->iobase + HISI_PTT_LOCATION);
 > 
->  2b. in posix_acl_create(), called by nfs3_proc_mkdir()
 > 
-> There's one branch in posix_acl_create() which applies the umask;
-> however, without CONFIG_FS_POSIX_ACL, posix_acl_create() is an empty
-> dummy function which does not apply the umask.
-> 
-> The approach chosen by this patch is to make IS_POSIXACL() always
-> return false when POSIX ACL support is disabled, so the umask always
-> gets applied by the VFS layer.  This is consistent with the (regular)
-> behavior of posix_acl_create(): that function returns early if
-> IS_POSIXACL() is false, before applying the umask.
-> 
-> Therefore, posix_acl_create() is responsible for applying the umask if
-> there is ACL support enabled in the file system (SB_POSIXACL), and the
-> VFS layer is responsible for all other cases (no SB_POSIXACL or no
-> CONFIG_FS_POSIX_ACL).
-> 
-> Reviewed-by: J. Bruce Fields <bfields@redhat.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-> ---
->  include/linux/fs.h | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 4aeb3fa11927..c1a4bc5c2e95 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2110,7 +2110,12 @@ static inline bool sb_rdonly(const struct super_block *sb) { return sb->s_flags
->  #define IS_NOQUOTA(inode)	((inode)->i_flags & S_NOQUOTA)
->  #define IS_APPEND(inode)	((inode)->i_flags & S_APPEND)
->  #define IS_IMMUTABLE(inode)	((inode)->i_flags & S_IMMUTABLE)
-> +
-> +#ifdef CONFIG_FS_POSIX_ACL
->  #define IS_POSIXACL(inode)	__IS_FLG(inode, SB_POSIXACL)
-> +#else
-> +#define IS_POSIXACL(inode)	0
-> +#endif
->  
->  #define IS_DEADDIR(inode)	((inode)->i_flags & S_DEAD)
->  #define IS_NOCMTIME(inode)	((inode)->i_flags & S_NOCMTIME)
-> -- 
-> 2.39.2
-> 
+> .
