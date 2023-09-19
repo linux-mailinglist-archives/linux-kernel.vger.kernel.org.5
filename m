@@ -2,193 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FFB7A579C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EDB7A579E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 05:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbjISC70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 22:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
+        id S231175AbjISDBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 23:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbjISC7Y (ORCPT
+        with ESMTP id S231136AbjISDA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 22:59:24 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DE310F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:59:19 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5007abb15e9so8585271e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:59:19 -0700 (PDT)
+        Mon, 18 Sep 2023 23:00:59 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0CC10E;
+        Mon, 18 Sep 2023 20:00:45 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50300e9e75bso4327362e87.1;
+        Mon, 18 Sep 2023 20:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695092357; x=1695697157; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695092443; x=1695697243; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nNGWNN/ATRw4P/f9tgfQnGw5a01oPlZp0FFvjCAOyvA=;
-        b=hlYbUTwWV1cvXX2RgvDBLGod8rMl9L9Ddh4RndQdT7quvOaOg4I4S1PgrYvBVJMthC
-         SLfQrb2DgTW1P4+Ejw4exZUfPmyW8gb1K6k5WFQ0m/45pvMwXFGf1EjflYfnp8UcwW+f
-         CdwDbNb17PvEjqYzrs9LzPrZ7Gkn8jIUDd0S0=
+        bh=fQPsynM6R2ixtC19ozrB1TNJHFIvPl8x0SLoxOWlNjY=;
+        b=kNwHngh38YWGFkLIcLpOVV2+LZTDVMorwdlczm9zsFi/VO01W0WFta+TwfKf8PsWHK
+         hUCv6jgacWw4YIEL/fXUdr7SnGzJQcGW6rmq9A5rykdM+P7yWrMLuDlEkl0hllM6/MM8
+         iN0GZOW6j4VwWuDTg+BIKeN+5T1g/ueUg66akWMrSpXX6gwq3thrIJyzKYRWCnPbmmBj
+         yCG5BwFthUIkR8IX33Lc3EK2m4/ngq6sl6V1WnBLALSYKZtMbRkdhs0NDaaaXkJbkAxX
+         RfCkBASPhKj09mnCkn69l15b1jRAAy0KINb/a8HMJSrEePQ0VezUlqEtfrfXpgF+s6d8
+         NZOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695092357; x=1695697157;
+        d=1e100.net; s=20230601; t=1695092443; x=1695697243;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nNGWNN/ATRw4P/f9tgfQnGw5a01oPlZp0FFvjCAOyvA=;
-        b=tsNgHSQqkdHmQYanUUejKyVyc/1aQIhjqxyOkxlEDwIHoMnC0vsVGMCN0S82ElM+9a
-         EzB/apggmN06lcqqLtPJ/ftez8iKxwqP74HKqaMnOA4ZkAkCox8BDczPZrT5hzrkXLSq
-         I2ZnMcwoZGMOMgNHDF7Dt3DU3wMqqIx52SArpz7InqZ8bdJBdT9CvNjJapWjH1q3NH/y
-         7LuSt/G8gMD1nD+71M5SBwK/9WUnHNmvRDvz2pia4R21Vi5IOCdEqXEdH94zG2ihDcnj
-         +sUz1EWOPq37t0WTbKIjvK5AuiMHdV5R4dnolhkp5LTrHGFuLjkLBD+RC9qvtbFKo3eW
-         qesg==
-X-Gm-Message-State: AOJu0YyR0kZVXqA1lzhldx6Kt/sPPS59juf8ydLoPSE2lvxLzQSVuxz8
-        LhOUehZLjQai6aZxQy6qXWRVhrG36OsORhBXaR7d8Q==
-X-Google-Smtp-Source: AGHT+IGd/5P0BVGrgR2KT5TUob9plCgOghbXldX0sYOpwKWnUfpBt1lb7zXMDhvOSZn62uTU04NBHWYzq1EOUJhuHx4=
-X-Received: by 2002:a05:6512:ea9:b0:503:c51:74df with SMTP id
- bi41-20020a0565120ea900b005030c5174dfmr6415241lfb.48.1695092357319; Mon, 18
- Sep 2023 19:59:17 -0700 (PDT)
+        bh=fQPsynM6R2ixtC19ozrB1TNJHFIvPl8x0SLoxOWlNjY=;
+        b=cDbT7WI1gJrWwNtWkRBNHFT2dM7H5B6INwmEyDBFHui2HGqWhcBGnQilyBdaw52mwW
+         LkFcU4p9eZ5mI7grtzXjwZxWxEu0V1X9G3F9NkqMyJsmKQemP9QgPDRxAQhoZOO10ZmO
+         W8iQRvGpzeOa22ptFKba375+PKCKMIwU4T7Jo8ZoVQDXswVy5Ona4YCeOdGtMMb1+GpR
+         KIdo3OxUuYCI/ul5xm9chcHss2noAY3UtKYYc384I2vdxmvGOd535G5uq+0LIrj/gqBv
+         k9PEP9LB2DnTz3QCjalF9FEwpZKas62JBgK40xTkwhLovKFFcxi9Lv5DYFHcn5Tw37wT
+         kK2w==
+X-Gm-Message-State: AOJu0YwgDTe+vGRQVnCltgc5e/iYBejBLYDT/hers2WgEx5MyEwnCILg
+        40ptKWIonwteVHjla+l8ydGgRnuJin0uvSTb1Bo=
+X-Google-Smtp-Source: AGHT+IGlAOnCxGpp/hLOpHuYyGGKpGYpW05H5HJl9jbhGYgiEZGsLdOS8IPxbCkhQnT0SnZMoNPuLqYa7J3ux6BvvJE=
+X-Received: by 2002:a05:6512:3055:b0:503:1722:9c5a with SMTP id
+ b21-20020a056512305500b0050317229c5amr4187770lfb.3.1695092443021; Mon, 18 Sep
+ 2023 20:00:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230911021637.1941096-1-stevensd@google.com> <20230911021637.1941096-7-stevensd@google.com>
- <14db8c0b-77de-34ec-c847-d7360025a571@collabora.com> <207c8e59-f92a-96c0-bc5e-39b73a840110@collabora.com>
-In-Reply-To: <207c8e59-f92a-96c0-bc5e-39b73a840110@collabora.com>
-From:   David Stevens <stevensd@chromium.org>
-Date:   Tue, 19 Sep 2023 11:59:05 +0900
-Message-ID: <CAD=HUj51M9Eh=5Q=XQjPJ7No4i-z0en-1L3s0G8_fBZp0+NUZw@mail.gmail.com>
-Subject: Re: [PATCH v9 6/6] KVM: x86/mmu: Handle non-refcounted pages
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
+ <ZPfPfyIoVxw5L6El@debian.me> <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
+ <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
+In-Reply-To: <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Mon, 18 Sep 2023 22:00:31 -0500
+Message-ID: <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com>
+Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
+ is mounted (cifsd-cfid-laundromat in"D" state)
+To:     Brian Pardy <brian.pardy@gmail.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux CIFS <linux-cifs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Paulo Alcantara <pc@manguebit.com>,
+        ronnie sahlberg <ronniesahlberg@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 8:19=E2=80=AFPM Dmitry Osipenko
-<dmitry.osipenko@collabora.com> wrote:
+Paulo and I were discussing the laundromat thread at the SMB3.1.1 test
+event (at SDC this week) which is now going on - will let you know
+what we find.
+
+One obvious thing is that it probably isn't necessary for cases when
+the server does not support directory leases, but we noticed another
+problem as well.
+
+
+On Mon, Sep 18, 2023 at 9:20=E2=80=AFPM Brian Pardy <brian.pardy@gmail.com>=
+ wrote:
 >
-> On 9/18/23 12:58, Dmitry Osipenko wrote:
-> > On 9/11/23 05:16, David Stevens wrote:
-> >> From: David Stevens <stevensd@chromium.org>
-> >>
-> >> Handle non-refcounted pages in __kvm_faultin_pfn. This allows the host
-> >> to map memory into the guest that is backed by non-refcounted struct
-> >> pages - for example, the tail pages of higher order non-compound pages
-> >> allocated by the amdgpu driver via ttm_pool_alloc_page.
-> >>
-> >> The bulk of this change is tracking the is_refcounted_page flag so tha=
-t
-> >> non-refcounted pages don't trigger page_count() =3D=3D 0 warnings. Thi=
-s is
-> >> done by storing the flag in an unused bit in the sptes. There are no
-> >> bits available in PAE SPTEs, so non-refcounted pages can only be handl=
-ed
-> >> on TDP and x86-64.
-> >>
-> >> Signed-off-by: David Stevens <stevensd@chromium.org>
-> >> ---
-> >>  arch/x86/kvm/mmu/mmu.c          | 52 +++++++++++++++++++++++---------=
--
-> >>  arch/x86/kvm/mmu/mmu_internal.h |  1 +
-> >>  arch/x86/kvm/mmu/paging_tmpl.h  |  8 +++--
-> >>  arch/x86/kvm/mmu/spte.c         |  4 ++-
-> >>  arch/x86/kvm/mmu/spte.h         | 12 +++++++-
-> >>  arch/x86/kvm/mmu/tdp_mmu.c      | 22 ++++++++------
-> >>  include/linux/kvm_host.h        |  3 ++
-> >>  virt/kvm/kvm_main.c             |  6 ++--
-> >>  8 files changed, 76 insertions(+), 32 deletions(-)
+> [RS removed from CC due to bounce message]
+>
+> On Wed, Sep 6, 2023 at 5:03=E2=80=AFPM Brian Pardy <brian.pardy@gmail.com=
+> wrote:
+> > On Tue, Sep 5, 2023 at 9:01=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.=
+com> wrote:
+> > > Thanks for the regression report. But if you want to get it fixed,
+> > > you have to do your part: perform bisection. See Documentation/admin-=
+guide/bug-bisect.rst in the kernel sources for how to do that.
+> > >
+> > > Anyway, I'm adding it to regzbot:
+> > >
+> > > #regzbot ^introduced: v6.4..v6.5
+> > > #regzbot title: incorrect CPU utilization report (multiplied) when mo=
+unting CIFS
 > >
-> > Could you please tell which kernel tree you used for the base of this
-> > series? This patch #6 doesn't apply cleanly to stable/mainline/next/kvm
+> > Thank you for directing me to the bug-bisect documentation. Results bel=
+ow:
 > >
-> > error: sha1 information is lacking or useless (arch/x86/kvm/mmu/mmu.c).
-> > error: could not build fake ancestor
+> > # git bisect bad
+> > d14de8067e3f9653cdef5a094176d00f3260ab20 is the first bad commit
+> > commit d14de8067e3f9653cdef5a094176d00f3260ab20
+> > Author: Ronnie Sahlberg <lsahlber@redhat.com>
+> > Date:   Thu Jul 6 12:32:24 2023 +1000
+> >
+> >     cifs: Add a laundromat thread for cached directories
+> >
+> >     and drop cached directories after 30 seconds
+> >
+> >     Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+> >     Signed-off-by: Steve French <stfrench@microsoft.com>
+> >
+> >  fs/smb/client/cached_dir.c | 67 ++++++++++++++++++++++++++++++++++++++=
+++++++++
+> >  fs/smb/client/cached_dir.h |  1 +
+> >  2 files changed, 68 insertions(+)
 >
-> I applied the patch manually to v6.5.2 and tested Venus using Intel TGL i=
-GPU, the intel driver is crashing:
+> Is there any further information I can provide to aid in debugging
+> this issue? Should I just expect incorrect load average reporting when
+> a CIFS share is mounted on any kernel >6.5.0?
 >
->    BUG: kernel NULL pointer dereference, address: 0000000000000058
->    #PF: supervisor read access in kernel mode
->    #PF: error_code(0x0000) - not-present page
->    PGD 0 P4D 0
->    Oops: 0000 [#1] PREEMPT SMP
->    CPU: 1 PID: 5926 Comm: qemu-system-x86 Not tainted 6.5.2+ #114
->    Hardware name: LENOVO 20VE/LNVNB161216, BIOS F8CN43WW(V2.06) 08/12/202=
-1
->    RIP: 0010:gen8_ppgtt_insert+0x50b/0x8f0
->    Code: 00 00 f7 c2 00 00 20 00 74 15 f7 c3 ff ff 1f 00 75 0d 41 81 fc f=
-f ff 1f 00 0f 87 0e 02 00 00 48 8b 74 24 08 44 89 c0 45 85 ed <48> 8b 4e 58=
- 48 8b 04 c1 0f 85 0b 02 00 00 81 e2 00 00 01 00 0f 84
->    RSP: 0018:ffffafc085afb820 EFLAGS: 00010246
->    RAX: 0000000000000000 RBX: 00000000e9604000 RCX: 000000000000001b
->    RDX: 0000000000211000 RSI: 0000000000000000 RDI: ffff9513d44c1000
->    RBP: ffff951106f8dfc0 R08: 0000000000000000 R09: 0000000000000003
->    R10: 0000000000000fff R11: 00000000e9800000 R12: 00000000001fc000
->    R13: 0000000000000000 R14: 0000000000001000 R15: 0000ffff00000000
->    FS:  00007f2a5bcced80(0000) GS:ffff951a87a40000(0000) knlGS:0000000000=
-000000
->    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    CR2: 0000000000000058 CR3: 0000000116f16006 CR4: 0000000000772ee0
->    PKRU: 55555554
->    Call Trace:
->     <TASK>
->     ? __die+0x1f/0x60
->     ? page_fault_oops+0x14d/0x420
->     ? exc_page_fault+0x3d7/0x880
->     ? lock_acquire+0xc9/0x290
->     ? asm_exc_page_fault+0x22/0x30
->     ? gen8_ppgtt_insert+0x50b/0x8f0
->     ppgtt_bind_vma+0x4f/0x60
->     fence_work+0x1b/0x70
->     fence_notify+0x8f/0x130
->     __i915_sw_fence_complete+0x58/0x230
->     i915_vma_pin_ww+0x513/0xa80
->     eb_validate_vmas+0x17e/0x9e0
->     ? eb_pin_engine+0x2bb/0x340
->     i915_gem_do_execbuffer+0xc85/0x2bf0
->     ? __lock_acquire+0x3b6/0x21c0
->     i915_gem_execbuffer2_ioctl+0xee/0x240
->     ? i915_gem_do_execbuffer+0x2bf0/0x2bf0
->     drm_ioctl_kernel+0x9d/0x140
->     drm_ioctl+0x1dd/0x410
->     ? i915_gem_do_execbuffer+0x2bf0/0x2bf0
->     ? __fget_files+0xc5/0x170
->     __x64_sys_ioctl+0x8c/0xc0
->     do_syscall_64+0x34/0x80
->     entry_SYSCALL_64_after_hwframe+0x46/0xb0
->    RIP: 0033:0x7f2a60b0c9df
->
->
-> $ ./scripts/faddr2line ./vmlinux gen8_ppgtt_insert+0x50b/0x8f0
-> gen8_ppgtt_insert+0x50b/0x8f0:
-> i915_pt_entry at drivers/gpu/drm/i915/gt/intel_gtt.h:557
-> (inlined by) gen8_ppgtt_insert_huge at drivers/gpu/drm/i915/gt/gen8_ppgtt=
-.c:641
-> (inlined by) gen8_ppgtt_insert at drivers/gpu/drm/i915/gt/gen8_ppgtt.c:74=
-3
->
-> It's likely should be the i915 driver issue that is crashes with the NULL=
- deref, but the origin of the bug should be the kvm page fault handling.
->
-> David, could you please tell what tests you've run and post a link to you=
-rs kernel tree? Maybe I made obscure mistake while applied the patch manual=
-ly.
+> I'm not clear on the value or necessity of this "laundromat thread" -
+> everything worked as expected before it was added - shall I just patch
+> it out of my kernel builds going forward if there is no interest in
+> fixing it? Is a .config option to disable it possible?
 
-For tests, I ran the kvm selftests and then various ChromeOS
-virtualization tests. Two things to note about the ChromeOS
-virtualization tests are that they use crosvm instead of qemu, and
-they use virtio-gpu+virgl for graphics in the guest. I tested on an
-AMD device (since the goal of this series is to fix a compatibility
-issue with the amdgpu driver), and on a TGL device.
 
-I don't have an easy way to share my kernel tree, but it's based on
-v6.5-r3. The series I sent out is rebased onto the kvm next branch,
-but there were only minor conflicts.
 
--David
+--=20
+Thanks,
+
+Steve
