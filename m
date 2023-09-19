@@ -2,47 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E50A7A63B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16FC7A63B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 14:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbjISMuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 08:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
+        id S232148AbjISMuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 08:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbjISMuC (ORCPT
+        with ESMTP id S232132AbjISMuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 08:50:02 -0400
+        Tue, 19 Sep 2023 08:50:04 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFCA99;
-        Tue, 19 Sep 2023 05:49:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63C8CC433C7;
-        Tue, 19 Sep 2023 12:49:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695127797;
-        bh=JUAIkivzZFdjelGUSm1sQTkEx/N2qNbb9nGvT13IC/0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aXwBUh4LoeHqJV4bFo4tzQERSFMfD1BzXyAsNY110PsvvxE856//bXnX0511Lqzxg
-         LvmvOtWQQTF6c0FDLXiF13sw+gJuzoNt6j9iGN386/CP6FVoK8Lin5aYu5crlnnBmu
-         MorFgaDy5AGCryX+g5x1Rfra1o7sKp8r+4zvYpes=
-Date:   Tue, 19 Sep 2023 14:49:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh@kernel.org, lpieralisi@kernel.org, bhelgaas@google.com,
-        kw@linux.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        dmitry.baryshkov@linaro.org, stable@vger.kernel.org,
-        robimarko@gmail.com
-Subject: Re: [PATCH V6] PCI: qcom: Fix broken pcie enumeration for 2_3_3
- configs ops
-Message-ID: <2023091931-undermine-lethargic-e1cd@gregkh>
-References: <20230919102948.1844909-1-quic_srichara@quicinc.com>
- <20230919121909.GF4732@thinkpad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919121909.GF4732@thinkpad>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6029899;
+        Tue, 19 Sep 2023 05:49:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F72C433C8;
+        Tue, 19 Sep 2023 12:49:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695127799;
+        bh=520/TMq8NFW2iQ+ZTcU9+02cqKlryVSnwNhQDKuXV90=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HCkRNCJri6FDrgwwZscrHZ6ykwim+ugIG8iBuQHgkmkFYv/wqpyBueh7E2yEUftKk
+         zAUk6vJP/11tua/GEqIsnAG+tFISI07E+Jp+MbdzliCPt4EgqRhBhLYU1XDrejIflp
+         9BY10MstZ/dF/3f30XDf24fAj2YS3+/3CDpNPC5tQf96ltWrx4ITj8Nm6dOLNG3iJD
+         Fpdlfd08BiGPg+vqXrULM3qy0nPAxgqsxPsU2Jz/jWvKIOa7M+3xuZUmM+KE0N2qO7
+         ocme7tqXdMZrIfHZPI4sqrWBrKcF5BZbRNU4Uv0d3RQNS7+x0tMhz/aPNHbmIx4BbN
+         Inr2sN/5/nu7Q==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qiaAu-00EKwa-F4;
+        Tue, 19 Sep 2023 13:49:56 +0100
+Date:   Tue, 19 Sep 2023 13:49:55 +0100
+Message-ID: <86zg1icop8.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morse <james.morse@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 2/2] arm64: errata: Add Cortex-A520 speculative unprivileged load workaround
+In-Reply-To: <CAL_JsqLXBDaAUKDjRCyiuZeR4khxKzN5Q2_LhUPg34YDGpjmGg@mail.gmail.com>
+References: <20230912121120.380420-1-robh@kernel.org>
+        <20230912121120.380420-2-robh@kernel.org>
+        <20230918100102.GA17472@willie-the-truck>
+        <dcb12b18edc02634be3ac9909fa70602@misterjones.org>
+        <CAL_JsqLXBDaAUKDjRCyiuZeR4khxKzN5Q2_LhUPg34YDGpjmGg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: robh@kernel.org, will@kernel.org, catalin.marinas@arm.com, corbet@lwn.net, james.morse@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -53,20 +70,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 02:19:09PM +0200, Manivannan Sadhasivam wrote:
-> On Tue, Sep 19, 2023 at 03:59:48PM +0530, Sricharan Ramabadhran wrote:
-> > PARF_SLV_ADDR_SPACE_SIZE_2_3_3 macro is used for qcom_pcie_post_init_2_3_3.
-> > PCIe slave address space size register offset is 0x358, but was wrongly
-> > changed to 0x16c as a part of commit 39171b33f652 ("PCI: qcom: Remove
-> > PCIE20_ prefix from register definitions"). Fixing it, by using the right
-> > macro and remove the unused PARF_SLV_ADDR_SPACE_SIZE_2_3_3.
-> > 
-> > Without this access to the registers of slave addr space like iATU etc
-> > are broken leading to PCIe enumeration failure on IPQ8074.
-> > 
-> > Fixes: 39171b33f652 ("PCI: qcom: Remove PCIE20_ prefix from register definitions")
-> > Cc: <Stable@vger.kernel.org>
-> 
-> Please fix the stable list address: stable@vger.kernel.org
+On Tue, 19 Sep 2023 13:29:07 +0100,
+Rob Herring <robh@kernel.org> wrote:
+>=20
+> On Mon, Sep 18, 2023 at 5:18=E2=80=AFAM Marc Zyngier <maz@misterjones.org=
+> wrote:
+> >
+> > On 2023-09-18 11:01, Will Deacon wrote:
+> > > On Tue, Sep 12, 2023 at 07:11:15AM -0500, Rob Herring wrote:
+> > >> Implement the workaround for ARM Cortex-A520 erratum 2966298. On an
+> > >> affected Cortex-A520 core, a speculatively executed unprivileged load
+> > >> might leak data from a privileged level via a cache side channel.
+> > >>
+> > >> The workaround is to execute a TLBI before returning to EL0. A
+> > >> non-shareable TLBI to any address is sufficient.
+> > >
+> > > Can you elaborate at all on how this works, please? A TLBI addressing=
+ a
+> > > cache side channel feels weird (or is "cache" referring to some TLB
+> > > structures rather than e.g. the data cache here?).
+> > >
+> > > Assuming there's some vulnerable window between the speculative
+> > > unprivileged load and the completion of the TLBI, what prevents anoth=
+er
+> > > CPU from observing the side-channel during that time? Also, does the
+> > > TLBI need to be using the same ASID as the unprivileged load? If so,
+> > > then
+> > > a context-switch could widen the vulnerable window quite significantl=
+y.
+> >
+> > Another 'interesting' case is the KVM world switch. If EL0 is
+> > affected, what about EL1? Can such a data leak exist cross-EL1,
+> > or from EL2 to El1? Asking for a friend...
+>=20
+> I'm checking for a definitive answer, but page table isolation also
+> avoids the issue. Wouldn't these scenarios all be similar to page
+> table isolation in that the EL2 or prior EL1 context is unmapped?
 
-Either works!
+No, EL2 is always mapped, and we don't have anything like KPTI there.
+
+Maybe the saving grace is that EL2 and EL2&0 are different translation
+regimes from EL1&0, but there's nothing in the commit message that
+indicates it. As for EL1-to-EL1 leaks, it again completely depends on
+how the TLBs are tagged.
+
+You'd hope that having different VMIDs would save the bacon, but if
+you can leak EL1 translations into EL0, it means that the associated
+permission and/or tags do not contain all the required information...
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
