@@ -2,54 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9607A6F54
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472FE7A6F69
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbjISXSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36144 "EHLO
+        id S233237AbjISX3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 19:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbjISXSs (ORCPT
+        with ESMTP id S229748AbjISX3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 19:18:48 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D3883;
-        Tue, 19 Sep 2023 16:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695165518;
-        bh=xY1RGG+/0gscDLeveLulvpHm4mxxLb1AS3ZtO6C8wPw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=u7IryiMQCWMYh8OgqVTiLRag6b+LKE68Td/Fqt2t8ejVaZYhpSZivUyUCXZfEyUNE
-         KHYL90KSWCsmmFQmSKkU1Gn2t4Hl94ykWXllMSALprpWlo/CsAaQKep5yDwZJR8SNs
-         31VSETOISiQ4DIHaS9I0eBmunvRBq8hRym1IgApCYaGfYEHTDFpdonLS7MMMJYypJH
-         bhoPRtQIvzxG8/wMJxLKiNBQqFxsi8sivCfho6fFSOQqmfCMwDfHINpnwFKlzkObfq
-         s3ws8q7IoAhampFqNxZfHJkdb5E0WEHZZmuA1BkruLzUt38h21e05w1PZPnxb0sDtr
-         aWCVZIDgahaMg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RqyJs0gcBz4x2X;
-        Wed, 20 Sep 2023 09:18:36 +1000 (AEST)
-Date:   Wed, 20 Sep 2023 09:18:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        Mike Rapoport <rppt@kernel.org>, llvm@lists.linux.dev
-Subject: Re: linux-next: Tree for Sep 19 (UML)
-Message-ID: <20230920091714.10053ba5@canb.auug.org.au>
-In-Reply-To: <ZQoQLJnGFxjA8p5E@google.com>
-References: <20230919163728.78432283@canb.auug.org.au>
-        <04b8a6de-2b20-4488-b20f-c8a8f6001fd2@infradead.org>
-        <ZQoQLJnGFxjA8p5E@google.com>
+        Tue, 19 Sep 2023 19:29:01 -0400
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D28BC0;
+        Tue, 19 Sep 2023 16:28:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1695166137; x=1726702137;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=N1uB7lsYbgFhpbI/u6XcPrZ41m9s6L1lr4JQrgc4zA4=;
+  b=IttGPMuYk0rA0dCEAvBfWZJjObh74xuKSiARo+CKwP4bHlZzI6qlQExf
+   754vfwhkAsHQRLvki2qSk+z4lJOdjzy9H3t+gNm8ha3Kt0ohZoBeE4I9n
+   haxYTfSEn0qGpL1IoWNNsJS98rf4JYsofukAoGpB42iJyuNcbcbAf9ULu
+   I=;
+X-IronPort-AV: E=Sophos;i="6.02,160,1688428800"; 
+   d="scan'208";a="239725023"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:28:57 +0000
+Received: from EX19MTAUWB002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com (Postfix) with ESMTPS id 874D7100F14;
+        Tue, 19 Sep 2023 23:28:55 +0000 (UTC)
+Received: from EX19D030UWB002.ant.amazon.com (10.13.139.182) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 19 Sep 2023 23:28:49 +0000
+Received: from u1e958862c3245e.ant.amazon.com (10.88.167.207) by
+ EX19D030UWB002.ant.amazon.com (10.13.139.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 19 Sep 2023 23:28:49 +0000
+From:   Suraj Jitindar Singh <surajjs@amazon.com>
+To:     <stable@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kent.overstreet@gmail.com>, <axboe@kernel.dk>,
+        <sjitindarsingh@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>
+Subject: [PATCH stable 5.10.y] mm/filemap: fix infinite loop in generic_file_buffered_read()
+Date:   Tue, 19 Sep 2023 16:28:15 -0700
+Message-ID: <20230919232815.166772-1-surajjs@amazon.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8qozy5L20AH8hxRIxoLg6wM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.88.167.207]
+X-ClientProxiedBy: EX19D039UWA002.ant.amazon.com (10.13.139.32) To
+ EX19D030UWB002.ant.amazon.com (10.13.139.182)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,68 +67,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8qozy5L20AH8hxRIxoLg6wM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Kent Overstreet <kent.overstreet@gmail.com>
 
-Hi Nick,
+commit 3644e2d2dda78e21edd8f5415b6d7ab03f5f54f3 upstream.
 
-On Tue, 19 Sep 2023 14:18:36 -0700 Nick Desaulniers <ndesaulniers@google.co=
-m> wrote:
->
-> On Tue, Sep 19, 2023 at 08:42:07AM -0700, Randy Dunlap wrote:
-> >=20
-> > on i386 or x86_64:
-> >=20
-> > ../arch/x86/um/../kernel/module.c: In function 'execmem_arch_params':
-> > ../arch/x86/um/../kernel/module.c:54:50: error: implicit declaration of=
- function 'kaslr_enabled'; did you mean 'kasan_enabled'? [-Werror=3Dimplici=
-t-function-declaration]
-> >    54 |         if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_enabled(=
-))
-> >       |                                                  ^~~~~~~~~~~~~
-> >       |                                                  kasan_enabled
-> >=20
-> >=20
-> >=20
-> > git blames this on:
-> >=20
-> > commit 12633d679796
-> > Author: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date:   Tue Sep 19 15:14:03 2023 +1000
-> >=20
-> >     Revert "arch: make execmem setup available regardless of CONFIG_MOD=
-ULES"
-> >    =20
-> >     This reverts commit 3300c3af20090ff5e03e5c4bf2ef2cfaa03d4e9b. =20
->=20
-> Thanks for the report, FWIW, our CI is hitting this, too.
->=20
-> Was 12633d679796 a pure revert, or was it manually modified?
+If iter->count is 0 and iocb->ki_pos is page aligned, this causes
+nr_pages to be 0.
 
-It was a pure revert due to having to revert a previous commit to fix a
-boot warning.  These reverts should not need to be in the next
-linux-next as a patch has been applied to the appropriate included tree
-to fix the boot warning.
+Then in generic_file_buffered_read_get_pages() find_get_pages_contig()
+returns 0 - because we asked for 0 pages, so we call
+generic_file_buffered_read_no_cached_page() which attempts to add a page
+to the page cache, which fails with -EEXIST, and then we loop. Oops...
 
---=20
-Cheers,
-Stephen Rothwell
+Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+Reported-by: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+---
+ mm/filemap.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---Sig_/8qozy5L20AH8hxRIxoLg6wM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 3a983bc1a71c..3b0d8c6dd587 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2203,6 +2203,9 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 
+ 	if (unlikely(*ppos >= inode->i_sb->s_maxbytes))
+ 		return 0;
++	if (unlikely(!iov_iter_count(iter)))
++		return 0;
++
+ 	iov_iter_truncate(iter, inode->i_sb->s_maxbytes);
+ 
+ 	index = *ppos >> PAGE_SHIFT;
+-- 
+2.34.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUKLEQACgkQAVBC80lX
-0GxoOQf/XQ7ER7U9A6iIEj9PX4LP6EQ/HJ58Pci1hVo+3wldY5AcTdhqK6i4QXwa
-xTyJfM/SDomXy+CiVDcLbl6x3Ep6xR1OKq0X1UITnkAFlzxPqpbWjDhVdWpCTNW1
-It3Ollb830saEKbHXeg0yYguhXT7xnBnp18O1qqfHlzkh7RP7ZptTGySM3x/WI+J
-W2ZUnsaMDBdHyApjTWvWJySVah7qzDAPugZ2AVNW0JptXNOOQFxkyOnllLAtTMcf
-LhYQYK0uhbOCzQFxRCSHR9u5+aNmO4c7+ik1+GYccuUYV5jnyKBj9u89W5o48Fyz
-vdzEljIWSpee4gAaGr+exX9mIDQvdg==
-=1tlz
------END PGP SIGNATURE-----
-
---Sig_/8qozy5L20AH8hxRIxoLg6wM--
