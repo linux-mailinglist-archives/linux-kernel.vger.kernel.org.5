@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE8A7A683F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995B27A6844
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 17:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbjISPkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 11:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        id S233182AbjISPmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 11:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjISPkK (ORCPT
+        with ESMTP id S233178AbjISPmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 11:40:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6B593;
-        Tue, 19 Sep 2023 08:40:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CDF3C433C8;
-        Tue, 19 Sep 2023 15:40:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695138004;
-        bh=zVHvJy2Slswg3L45hTjce+NG6qwVPGQ5aOsEUWPT+Ag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gCKOYmlh5SRGBD8lTY2kM8Yt3i9CGsLiDUgfqIjC1nmcBzUSNm3VTUuILIT9w28Vo
-         J/GXYKBGoZOVheZp5bwQVTeuqsF8LLqpT1JsH60W76MdKY8Jc9cg4m9QkX3quhHSt1
-         1cxaR/1+4tPKD4aKEXWjhn1H3+x23vhL7bSar5ZKDIu/UrGKoxJEFOK0D76zXB+xJ9
-         4b88y+JY4lTJugx8RGU2t4t0DbaTJF2hmdQCclTDELEQyqJYyXxeqjiN03Ds0W1J3d
-         CODUVgn4UnViPPDehzmHb2FsMSpFjtVvxyf5BYgJsFT4vO/c6ffXyn8T5c55ONmzLA
-         7nc8PFK4O2bjw==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qicpm-0000wV-1l;
-        Tue, 19 Sep 2023 17:40:18 +0200
-Date:   Tue, 19 Sep 2023 17:40:18 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>, agross@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.5 30/36] arm64: dts: qcom: sc8280xp-x13s: Add
- camera activity LED
-Message-ID: <ZQnA4o7G4A3YC-pe@hovoldconsulting.com>
-References: <20230908192848.3462476-1-sashal@kernel.org>
- <20230908192848.3462476-30-sashal@kernel.org>
- <ZP60ngCV3hhNZiX5@hovoldconsulting.com>
- <ZQjEEt7sB2M5EO53@sashalap>
- <ZQk8aJx268Soy4yH@hovoldconsulting.com>
- <ZQmc7hznPpIh6iwP@sashalap>
- <ZQmh-DaBTwMuOLHe@hovoldconsulting.com>
- <ZQm5woD5zwRIG9cf@sashalap>
+        Tue, 19 Sep 2023 11:42:14 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39F0BE;
+        Tue, 19 Sep 2023 08:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=IACdfNuUYr66Z311YYT0yhMAduB6qAWlbgcROB4ta1g=; b=zHRoIVAIs5n8pYuYR0KDW0wscP
+        lFyIVlmkCumQloWCHty5+XxdLEgCgbkhQN/ueAHlDnXdFZoJgsO+lOPUggdToQ2LDGFtT7nnSyxoX
+        sAiBk3oRiTwQX+7nJBR3e+9DCRx+mRzhFEvhH/bX5h3/ALbO/piXeG1rkcH5P9TrvblmzBiLomgBG
+        FY5Bs6f4b2aoWul8id8utAzUFJ3WoG3O3fliC/qkyWu0MWcW+LZ9P+4n/EzdEduVQq4ABgIzxgUIx
+        YiKbiJY6V92cS2//bT/LyjGuqUyYStAk/bw6Q5f/pFibR1c4/CYbYqV+SPVD6VKG6BtwI1ZnLaKRm
+        ubM5G1ug==;
+Received: from [2601:1c2:980:9ec0::9fed]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qicrX-000mij-35;
+        Tue, 19 Sep 2023 15:42:08 +0000
+Message-ID: <04b8a6de-2b20-4488-b20f-c8a8f6001fd2@infradead.org>
+Date:   Tue, 19 Sep 2023 08:42:07 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQm5woD5zwRIG9cf@sashalap>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Sep 19 (UML)
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>
+References: <20230919163728.78432283@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230919163728.78432283@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 11:09:54AM -0400, Sasha Levin wrote:
-> On Tue, Sep 19, 2023 at 03:28:24PM +0200, Johan Hovold wrote:
-> >On Tue, Sep 19, 2023 at 09:06:54AM -0400, Sasha Levin wrote:
-> >> On Tue, Sep 19, 2023 at 08:15:04AM +0200, Johan Hovold wrote:
 
-> >> >Call it what you will, but please drop it. Otherwise by that logic you'd
-> >> >need to backport all devicetree patches (as well as most driver changes)
-> >> >since they ultimately aim at enabling hardware.
-> >>
-> >> Not all, only ones that re-use existing kernel driver but enable it for
-> >> new hardware (i.e. adding a new pci-id/usb-id/dts entries).
-> >
-> >Again, that's basically all our device-tree patches. And that can break
-> >in all sorts of ways. So again, please drop. This does not belong in
-> >stable.
+
+On 9/18/23 23:37, Stephen Rothwell wrote:
+> Hi all,
 > 
-> This is part of the criteria we use to select patches, yes? If you have
-> an objection around this particular patch then please let me know, or if
-> you have an objection around hardware enablement patches in stable then
-> we can have a bigger discussion around that one.
+> Changes since 20230918:
 > 
-> However, just dropping this one for no particular reasonisn't the right
-> approach: we've been using this selection criteria for quite a few years
-> now.
+> New tree: kvm-ppc
+> 
+> The mm tree gained a boot warning for which I reverted 5 commits.
+> 
+> Non-merge commits (relative to Linus' tree): 5750
+>  3717 files changed, 446028 insertions(+), 107378 deletions(-)
+> 
+> ----------------------------------------------------------------------------
+> 
 
-This patch makes zero sense to backport. It's a place holder for a
-camera led that we may one day need. No one marked it for stable, no
-one wants it in stable, no one needs it in stable, yet you repeatedly
-refuse to drop it and keep wasting my time.
+on i386 or x86_64:
 
-Backports, and especially your autosel ones, always come with a risk.
-And here there is ZERO upsides to that. Next time the feature you try to
-retroactively enable may not be as trivial and could cause real
-regressions.
+../arch/x86/um/../kernel/module.c: In function 'execmem_arch_params':
+../arch/x86/um/../kernel/module.c:54:50: error: implicit declaration of function 'kaslr_enabled'; did you mean 'kasan_enabled'? [-Werror=implicit-function-declaration]
+   54 |         if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_enabled())
+      |                                                  ^~~~~~~~~~~~~
+      |                                                  kasan_enabled
 
-We're on our knees dealing with development and review of stuff that
-people do want and need. And you keep pushing silly things like and
-spamming us with backports that no one asked for. I'm just baffled.
 
-Johan
+
+git blames this on:
+
+commit 12633d679796
+Author: Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Tue Sep 19 15:14:03 2023 +1000
+
+    Revert "arch: make execmem setup available regardless of CONFIG_MODULES"
+    
+    This reverts commit 3300c3af20090ff5e03e5c4bf2ef2cfaa03d4e9b.
+
+
+-- 
+~Randy
