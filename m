@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB36A7A573B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F0C7A5742
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 04:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjISCHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 22:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33114 "EHLO
+        id S230456AbjISCNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 22:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjISCHk (ORCPT
+        with ESMTP id S229522AbjISCNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 22:07:40 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 9DB1C10A
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 19:07:34 -0700 (PDT)
-Received: from localhost.localdomain (unknown [219.141.250.2])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id E526D60292B81;
-        Tue, 19 Sep 2023 10:07:30 +0800 (CST)
-X-MD-Sfrom: kunyu@nfschina.com
-X-MD-SrcIP: 219.141.250.2
-From:   Li kunyu <kunyu@nfschina.com>
-To:     kai.heng.feng@canonical.com, dmitry.osipenko@collabora.com,
-        rafael.j.wysocki@intel.com
-Cc:     linux-kernel@vger.kernel.org, Li kunyu <kunyu@nfschina.com>
-Subject: [PATCH] =?UTF-8?q?reboot:=20Remove=20unnecessary=20=E2=80=980?= =?UTF-8?q?=E2=80=99=20values=20from=20ret?=
-Date:   Tue, 19 Sep 2023 10:07:23 +0800
-Message-Id: <20230919020723.8569-1-kunyu@nfschina.com>
-X-Mailer: git-send-email 2.18.2
+        Mon, 18 Sep 2023 22:13:14 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD2E10D;
+        Mon, 18 Sep 2023 19:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1695089583;
+        bh=yK4i0fyc5ITTA94RNhwm6rcVMib+w9bmcMtOgracjcM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Qgq3yOvs6gGgFR80VJ38hn9Cwo84MntwgzdO4oF59tS94tUSQ+ttUeM62Md9g0evl
+         QwxqqXHzTm0ZtXxHKOmH012krt4g6qLXwQqCcACUN9RAEK5rUwACqiaf7RoMw1FOyl
+         ZTwD3Xgl+uCB5EB82Miw5QQLBETwXpqUklZDJebz8yRAPQJnNJnUKjdUYGFd6CrHGL
+         aPdh7qQ2Zmpjb0XdtHZNfc/vJrR9SZ/u/U8/lKWQKBanezPW8J2OSuHQbaxR7IPbBr
+         a0T9M2Y6rySu6F95/tCoaF9JDGhU28j1/sxXlCznmtM34o3lt3q8+k2toEAfmN+E5g
+         L4oylx7S2wosg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RqQDZ3JWCz4xDB;
+        Tue, 19 Sep 2023 12:13:01 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+        linux-spdx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 2/2] powerpc: Replace GPL 2.0+ README.legal
+ boilerplate with SPDX
+In-Reply-To: <d91725ff1ed5d4b6ba42474e2ebfeebe711cba23.1695031668.git.geert@linux-m68k.org>
+References: <cover.1695031668.git.geert@linux-m68k.org>
+ <d91725ff1ed5d4b6ba42474e2ebfeebe711cba23.1695031668.git.geert@linux-m68k.org>
+Date:   Tue, 19 Sep 2023 12:12:57 +1000
+Message-ID: <87h6nqlxli.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ret is assigned first, so it does not need to initialize the
-assignment.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> Upstream Linux never had a "README.legal" file, but it was present
+> in early source releases of Linux/m68k.  It contained a simple copyright
+> notice and a link to a version of the "COPYING" file that predated the
+> addition of the "only valid GPL version is v2" clause.
+>
+> Get rid of the references to non-existent files by replacing the
+> boilerplate with SPDX license identifiers.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Li kunyu <kunyu@nfschina.com>
----
- kernel/reboot.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+LGTM.
 
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 3bba88c7ffc6..e00a02a74694 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -702,7 +702,7 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
- {
- 	struct pid_namespace *pid_ns = task_active_pid_ns(current);
- 	char buffer[256];
--	int ret = 0;
-+	int ret;
- 
- 	/* We only trust the superuser with rebooting the system. */
- 	if (!ns_capable(pid_ns->user_ns, CAP_SYS_BOOT))
--- 
-2.18.2
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
+cheers
