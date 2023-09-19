@@ -2,121 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E807A6914
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393D97A691C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 18:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbjISQmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 12:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
+        id S231583AbjISQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 12:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbjISQmJ (ORCPT
+        with ESMTP id S231208AbjISQpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:42:09 -0400
-Received: from www.kot-begemot.co.uk (ns1.kot-begemot.co.uk [217.160.28.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CEAD6;
-        Tue, 19 Sep 2023 09:42:02 -0700 (PDT)
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1qidmu-002SbU-Ay; Tue, 19 Sep 2023 16:41:24 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1qidmr-00FzAL-KO; Tue, 19 Sep 2023 17:41:23 +0100
-Message-ID: <de98424d-41f9-90f9-742d-623e2b55c564@cambridgegreys.com>
-Date:   Tue, 19 Sep 2023 17:41:21 +0100
+        Tue, 19 Sep 2023 12:45:01 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C04AC6;
+        Tue, 19 Sep 2023 09:44:54 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-532c66a105bso965518a12.3;
+        Tue, 19 Sep 2023 09:44:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695141893; x=1695746693; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/5csdseofUImLx6yLn7zRKEPhOKmtYK2S3jJiaVBr/o=;
+        b=KdmjX0vrW+Ar5h1zPgB6pcRxbqvfll7yR4hAx5BxlN5GPZ/vEOhf78Zp1wLVwL9zV3
+         Gcc+caBp6cru3f+Z5AicPriKd0lDIpSpRcm7D9PDxwckNtitjvi4xCtVtObqwgVtbVwS
+         6zcxqaHt6YDrUNe6ptnAAtoIvAYFm2uFvMHje/Nhf96dhIgB/1cKkMTW3zmDA5oVbsLR
+         Xph0A9d6sciby+PNjEZX/uZnbkfwk/hR6RLe26I6tah49UWu9wBZF13zcOCVXUqlY0hc
+         V/ShvvpbOnljjl+e3J7By0tww44H12Wvvjev+h4R8gYQHUQpF/C6uCMUUb13V1LV4asy
+         AP3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695141893; x=1695746693;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/5csdseofUImLx6yLn7zRKEPhOKmtYK2S3jJiaVBr/o=;
+        b=djgaEX3fpzerQbVWKBhrtPwd8ds1WH0+qgOsLtZbK1xLqDRYx8tsTbQVmafV/ImM4i
+         aDYwP5zQSvmwykoQ1wVphyvgmUD0stc1y39Get3ssLUtqp+4BiFgnjiItEDTcQlErtI7
+         6H7EZiYBlcYLRLXPROmEID6BI8fiam47mw5KqqgrMXta/KvttJd5xlFuj8NkkK/6QOed
+         qi3GQA5D2MaKsE1JUaMI2IUTCOvxwKr1Ubgi4pCIOhyVQ0Wj0BMUtXRzav2QbDPbHLup
+         a9EpHP2eRe5v42WoK2g9NuMwYINoHWSs0vmUcfMxS8X+8dEi3aQo9nNjWPuyeJfyvAph
+         hLRw==
+X-Gm-Message-State: AOJu0YyQTK+1KPiwFoXa30wWnnVhOxm3a7hG6YPjNjcAbwroy9ZEizWK
+        MoYAjMjysJLk3sPB25e+kSbtDJl7w/qPAaOIC0Q=
+X-Google-Smtp-Source: AGHT+IFMkv7QwQy5FRBZvVlosHX0VQUrCiobfUAS/8A2a6uMQjvCuplS5beL3JeSjAeRM9zRpQQCF8OX7y2bjWQ3dwo=
+X-Received: by 2002:a50:ec87:0:b0:531:9c1:8271 with SMTP id
+ e7-20020a50ec87000000b0053109c18271mr23997edr.14.1695141892455; Tue, 19 Sep
+ 2023 09:44:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: Arches that don't support PREEMPT
-Content-Language: en-US
-To:     Richard Weinberger <richard@nod.at>
-Cc:     tglx <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        torvalds <torvalds@linux-foundation.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, x86 <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>, bp <bp@alien8.de>,
-        dave hansen <dave.hansen@linux.intel.com>, hpa <hpa@zytor.com>,
-        mingo <mingo@redhat.com>, juri lelli <juri.lelli@redhat.com>,
-        vincent guittot <vincent.guittot@linaro.org>, mgorman@suse.de,
-        Steven Rostedt <rostedt@goodmis.org>,
-        jon grimm <jon.grimm@amd.com>, bharata@amd.com,
-        raghavendra kt <raghavendra.kt@amd.com>,
-        boris ostrovsky <boris.ostrovsky@oracle.com>,
-        konrad wilk <konrad.wilk@oracle.com>, jgross <jgross@suse.com>,
-        andrew cooper3 <andrew.cooper3@citrix.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        linux-alpha <linux-alpha@vger.kernel.org>
-References: <87zg1u1h5t.fsf@oracle.com> <87led2wdj0.ffs@tglx>
- <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <bd664a61-4506-bab0-19c3-0011f57005b5@cambridgegreys.com>
- <87y1h2ur98.ffs@tglx>
- <9a5c0856-d542-9912-7494-53d7fe4538a3@cambridgegreys.com>
- <551475267.58816.1695140566849.JavaMail.zimbra@nod.at>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <551475267.58816.1695140566849.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.0
-X-Spam-Score: -2.0
-X-Clacks-Overhead: GNU Terry Pratchett
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230918080314.11959-1-jagathjog1996@gmail.com>
+ <20230918080314.11959-2-jagathjog1996@gmail.com> <b27b58d9-9e55-b803-dd61-dd86a78e7c5c@linaro.org>
+In-Reply-To: <b27b58d9-9e55-b803-dd61-dd86a78e7c5c@linaro.org>
+From:   Jagath Jog J <jagathjog1996@gmail.com>
+Date:   Tue, 19 Sep 2023 22:14:40 +0530
+Message-ID: <CAM+2Eu+R6M7U+t4z5K0Cty736ybAzis7xnrT1edk4-y6B=JAOA@mail.gmail.com>
+Subject: Re: [RFC 1/2] dt-bindings: iio: imu: Add DT binding doc for BMI323
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     jic23@kernel.org, andriy.shevchenko@linux.intel.com,
+        lars@metafoo.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
 
+On Mon, Sep 18, 2023 at 5:55=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 18/09/2023 10:03, Jagath Jog J wrote:
+> > Add devicetree description document for Bosch BMI323, a 6-Axis IMU.
+>
+> I don't know why this is RFC and cover letter does not explain it. Shall
+> I just ignore it? Patch is no ready? Recently at least two times someone
+> was disappointed that his code marked as RFC received my review.
 
-On 19/09/2023 17:22, Richard Weinberger wrote:
-> ----- Ursprüngliche Mail -----
->> Von: "anton ivanov" <anton.ivanov@cambridgegreys.com>
->> It's been a while. I remember that I dropped it at the time, but do not remember
->> the full details.
->>
->> There was some stuff related to FP state and a few other issues I ran into while
->> rewriting the interrupt controller. Some of it may be resolved by now as we are
->> using host cpu flags, etc.
-> 
-> I remember also having a hacky but working version almost 10 years ago.
-> It was horrible slow because of the extra scheduler rounds.
-> But yes, if PREEMPT will be a must-have feature we'll have to try again.
+Thank you for reviewing. This was the sensor's first patch series,
+so I initially submitted it as an RFC. I will mark it as "Patch"
+in the next series.
 
-We will need proper fpu primitives for starters that's for sure. fpu_star/end in UML are presently NOOP.
+>
+> A nit, subject: drop second/last, redundant "DT binding doc for". The
+> "dt-bindings" prefix is already stating that these are bindings. Four
+> words entirely redundant and duplicating what prefix is saying...
 
-Some of the default spinlocks and other stuff which we pick up from generic may need to change as well.
+Sure I will remove redundant words from the subject line.
 
-This is off the top of my head and something which we can fix straight away. I will send some patches to the mailing list tomorrow or on Thu.
+>
+>
+> >
+> > Signed-off-by: Jagath Jog J <jagathjog1996@gmail.com>
+> > ---
+> >  .../bindings/iio/imu/bosch,bmi323.yaml        | 81 +++++++++++++++++++
+> >  1 file changed, 81 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bmi=
+323.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/iio/imu/bosch,bmi323.yam=
+l b/Documentation/devicetree/bindings/iio/imu/bosch,bmi323.yaml
+> > new file mode 100644
+> > index 000000000000..9c08988103c5
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/imu/bosch,bmi323.yaml
+> > @@ -0,0 +1,81 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/imu/bosch,bmi323.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Bosch BMI323 6-Axis IMU
+> > +
+> > +maintainers:
+> > +  - Jagath Jog J <jagathjog1996@gmail.com>
+> > +
+> > +description:
+> > +  BMI323 is a 6-axis inertial measurement unit that supports accelerat=
+ion and
+> > +  gyroscopic measurements with hardware fifo buffering. Sensor also pr=
+ovides
+> > +  events information such as motion, steps, orientation, single and do=
+uble
+> > +  tap detection.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: bosch,bmi323
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  interrupt-names:
+> > +    enum:
+> > +      - INT1
+> > +      - INT2
+> > +    description: |
+>
+> Do not need '|' unless you need to preserve formatting.
+>
+> > +      set to "INT1" if INT1 pin should be used as interrupt input, set
+> > +      to "INT2" if INT2 pin should be used instead
+>
+> And what happens with other INT pin? Remains floating?`
 
-A.
+Yes, the other pin is unconnected. The driver provides
+support for either INT1, INT2, or no interrupt configuration.
+I should have added minItems, maxItems, and const,
+I will add these in the next series.
 
-> 
-> Thanks,
-> //richard
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
+>
+> > +
+> > +  drive-open-drain:
+> > +    description: |
+>
+> Do not need '|' unless you need to preserve formatting.
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+Sure I will remove this.
+
+>
+> > +      set if the specified interrupt pin should be configured as
+> > +      open drain. If not set, defaults to push-pull.
+>
+> Missing supplies. Are you sure device does not use any electric energy?
+
+Sorry, I missed adding supply, I will add it in the next series.
+
+>
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    // Example for I2C
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    i2c {
+> > +        #address-cells =3D <1>;
+> > +        #size-cells =3D <0>;
+> > +> +        bmi323@68 {
+>
+> Node names should be generic. See also an explanation and list of
+> examples (not exhaustive) in DT specification:
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-device=
+tree-basics.html#generic-names-recommendation
+
+I intend to utilize the generic term 'imu' (representing the
+accelerometer and gyrometer)
+even though it's not listed in the generic-names recommendation.
+Would this be acceptable?
+
+>
+> > +            compatible =3D "bosch,bmi323";
+> > +            reg =3D <0x68>;
+> > +            interrupt-parent =3D <&gpio1>;
+> > +            interrupts =3D <29 IRQ_TYPE_EDGE_RISING>;
+> > +            interrupt-names =3D "INT1";
+> > +        };
+> > +    };
+> > +  - |
+> > +    // Example for SPI
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    spi {
+>
+>
+> It's the same as other example. No difference. Drop.
+
+Sure I will keep only one example.
+
+>
+> Best regards,
+> Krzysztof
+>
+
+Regards,
+Jagath
