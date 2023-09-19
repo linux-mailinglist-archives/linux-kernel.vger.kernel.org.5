@@ -2,155 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7AC7A5BE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357AE7A5C07
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 10:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjISIFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 04:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
+        id S230300AbjISILO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 04:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjISIFA (ORCPT
+        with ESMTP id S229436AbjISILM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 04:05:00 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2047.outbound.protection.outlook.com [40.107.21.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E98100;
-        Tue, 19 Sep 2023 01:04:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TXIAj2gD+9/f2GBaawqEmiSWIsjrC+LbrL5gYOfWYhwHRUKN6nQ0ujjxGQzJh306jwTpdlCHlh38JQXAPDnw9GVGbLuRNd0fvt4qOiLm0DqsfVSIH9muprdmhPbEjMGJoJgpjDGEWr5nGyqdFUU2bIEDOfkBotRJiPSGikpTpYG7IYQUu2ErmY4Z/niZM+wNnuwTFRNvvudmAhQmm5SY0wQ0d3X0RePXMzRg2MKwjj3VcrNqi1P8NcXO4gXTUjJXUhYBwz9LE66XLa3CHAs+LYO9d5qWuLLTem+HQM07Lu0is5Iyh7F7Pk4/ZWpxRPMLtNko+hJUVetgQ8oj2slOTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FxhEgIgyV3L2F30HYyOnJZyO7eYfNR81TlxUv0LrLkg=;
- b=S/3Srgz9buyKgncvTVSfxifLVT4/fHu2AzyWXX5uZ0vFKnZcI939HuZny+sDu/7HpKLaMdnVkH0aJXTC7H6tcoDITEUGFMNjvj9YSEdmxF6awtKzLDZhAZtQ6FCZbglXBfCNoORCSXWFZLUPWBxqZRg4yLhtysCzd2gVxmpO+Bwdl6bMb90qlV9scYwLYzdCFN3hh+WJfYFxrkbrsJrADdbx3YhBUVjzJGTgyHsT+qasWib2o0zLECekHrhy/kOgcCQkzkDU+oDIIjYjZBMiwNPuDwgx7i6dqfIPaMWZimD8G+66CFReiysswSql3q+2ZHvXL6wTbA3l0RrsSGiBjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FxhEgIgyV3L2F30HYyOnJZyO7eYfNR81TlxUv0LrLkg=;
- b=q6uliTaC6La/KIok26/PgXFlOaL/yIi3yh9HuyVI86NO+KC5VzlykcdyvzevpHcGnEJgeOdVTJz+ba4kKbcm2MR2mHnekx1FdFNUzrgcYtjaKMCilzgPd4xr4y5v0zEGh6q5HZISwxDKY3luioFrQHcOklT810WdzxLE3D0oIQE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB7PR04MB4505.eurprd04.prod.outlook.com (2603:10a6:5:39::26) by
- DU0PR04MB9394.eurprd04.prod.outlook.com (2603:10a6:10:359::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.26; Tue, 19 Sep 2023 08:04:51 +0000
-Received: from DB7PR04MB4505.eurprd04.prod.outlook.com
- ([fe80::6444:e07a:e7f7:3923]) by DB7PR04MB4505.eurprd04.prod.outlook.com
- ([fe80::6444:e07a:e7f7:3923%7]) with mapi id 15.20.6792.026; Tue, 19 Sep 2023
- 08:04:51 +0000
-From:   Xu Yang <xu.yang_2@nxp.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xu.yang_2@nxp.com
-Subject: [PATCH] perf jevents: fix no member named 'entries' issue
-Date:   Tue, 19 Sep 2023 16:09:29 +0800
-Message-Id: <20230919080929.3807123-1-xu.yang_2@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR06CA0219.apcprd06.prod.outlook.com
- (2603:1096:4:68::27) To DB7PR04MB4505.eurprd04.prod.outlook.com
- (2603:10a6:5:39::26)
+        Tue, 19 Sep 2023 04:11:12 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B35102;
+        Tue, 19 Sep 2023 01:11:06 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38J6UtWk006727;
+        Tue, 19 Sep 2023 08:10:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=4blhq8qd9KKzeLmoqutpb1p6JidNWHDIAVBNMO2p2wU=;
+ b=Nh9a529ZagNi2nEFA5k7/IZnwshEn0x0D63xX+s/SEIcb+cFhRWPDmNVtvI9g44zIA/4
+ gF8neQCmFGH9VnLJ0ZOn4htI3J6KvSs9hfq/4qmp+WTzz2hlUMDVjHIT+gYwNzAwsG82
+ MLRtF6yrlN4wkOZcyEDQZcNfdB5sabBiU3/c748fp61bdPTaS+i/GvEHJtPjKSqg4BXN
+ s+6u8OoE57tPd2nQF5mqJfFgyHGcD2o6UMw4jKEe8oXgf4CO4wBisA0N6PnjsKdafzZt
+ arM37WMlnaE6taFNTxjF4kxcse7EJJ8Gsqdeg2TTOhyM8ihdnHv7/TTgzr+O2tMW6LmT Vw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6v2dh5mq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Sep 2023 08:10:55 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38J8AsmU013471
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Sep 2023 08:10:54 GMT
+Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 19 Sep 2023 01:10:49 -0700
+From:   Luo Jie <quic_luoj@quicinc.com>
+To:     <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <p.zabel@pengutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+Subject: [PATCH v8 0/4] add clock controller of qca8386/qca8084
+Date:   Tue, 19 Sep 2023 16:10:25 +0800
+Message-ID: <20230919081029.30324-1-quic_luoj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB7PR04MB4505:EE_|DU0PR04MB9394:EE_
-X-MS-Office365-Filtering-Correlation-Id: a4943999-db5e-44b1-29f1-08dbb8e71989
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G8AF1GM5al4yxZEN8gDEU2MHbJd7xbv9eq+3DpFJrIsCbbsRP2aol16nv37QkusMdVZsySpZUw4vhOmO9A96Z9qvxWwM8XGLwGUCuj6hizuULklOPK0xUp4n134P4ccjv+vdOYynw1S6Gz9cGHJAooVUOLqem592o9wWYxhBt/xSVoCmLpfdzOiEf/gWvcF90++6pQyUAPPJe3bLhd0eZ++HOChSxrF0t5OdQ6pG03ev8GVkra3PUciIq2FrT122z5a5EopK9jH8D/LHdUzRNK0l+U9+YKJS1nl9qZv82Xw5Pjd+4sKA8Jg1Kay8+mtH6jLTUw3/mP50Djm44qAQpvz5+xRmEJuEvJZDkGp+V6Zj3Mt5ps5PtjUKIcqvIAGW80TNJj0Re/zDIwYZqSiSAMJV3656SS/+iWCsLsGZc67Pvhhf3P9+Mf41WkJBcXjR6qauGxRm/HvT2NUnA2Qh7ikE1ITfTDywL2WOb3KtP1N7VjdjpKdectycpH9O727DAh+P2kJhNwQGPTCtqhqrRSpJm2Rst+MN8wARam+hhKl78TFIRblPFQTHUa5luHs2nALGpDnkpF3KKvtg5QFJpUCdTtyZT/csDoo7pBbrxKkl9WCI/84H/T5DU4zT5VfB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB4505.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(396003)(366004)(346002)(451199024)(186009)(1800799009)(6666004)(6486002)(52116002)(36756003)(6506007)(86362001)(38350700002)(38100700002)(2616005)(1076003)(26005)(2906002)(6512007)(478600001)(8676002)(83380400001)(5660300002)(4326008)(8936002)(41300700001)(66556008)(7416002)(66946007)(66476007)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SGtIakdZbzBCZUVGNEFtTnBvZktCKzBvUkMrbDVwejI3NFRDY1Exd1llREJR?=
- =?utf-8?B?cmpqbkhCYjhOUytHbW5ZMmo5SzV3UnRrV2hFK0Z6YWpaWGg5Y24rUDBzMkZ0?=
- =?utf-8?B?WkhVamtKYmVDNnpUUVNJeUhQM3BOWUdQbTcwQ3FVR2FxN0lySU1rZUw5RmNV?=
- =?utf-8?B?bDh0eC85QUhtM1dOV0E2YUtnM1lPcFNJY1U2WXkzalR6Y3RiMUY2WVdyaUdX?=
- =?utf-8?B?Tzc5MllZTWxhV1dKTmljN1dTc0lSWDdJRUYraFF2RnZHMklabEVHWlQxNWRG?=
- =?utf-8?B?OFp3OFprQlJXRTNtRE5lYXpWOXRBcGs5SE9IeVlrdGRUNStYdjdLbmRlRnBL?=
- =?utf-8?B?Vy9BRnBpZW9pMU54MXRIM2tHb2tkSnFSZCtFdmIxNGk0YXc0dU00QUpXNmVF?=
- =?utf-8?B?ak15bDV6QkRvUHJ1Vnl5Wk9yZm41YmlaQlJWWGtEVWNuSDNuK2FSQk9pcjFq?=
- =?utf-8?B?QW5ldCtWbEZ6TXBxVlVjcGgxSVRMNGwxMDZ0WDVSbGdieXVEQnovVzRmOEhq?=
- =?utf-8?B?VmVFVGNYdXA0ZnAyNkRnTG8rNXhTNG9LUWNETGFhTGNtbWsvV0FnVk4wU1J3?=
- =?utf-8?B?UUtlcVVhYnBWWkJuUzBLcnd6cXJlOFd1WFZadFBsbFptdXBvMDVpMG04d3A5?=
- =?utf-8?B?UGo2K29FL2hFWnhVTmYwMVhwZGhHR0hRd29XRmNET3h0N1hVd0R5THBUWkVv?=
- =?utf-8?B?bFVmeXBNZVN1a0o5bmpLNXpxQ0JodjZKUUp1UllPR3J0b3BwVmQrS3crMDhX?=
- =?utf-8?B?N1RUQTVpWm9yU2lwM251dHNFbVR0Rnh5M3gzMEpxaUNLcGxJWlZDMU9HNnc4?=
- =?utf-8?B?dWIybERFMk5BVWFnWlpIZkdlK3dGMzJBbWhjZHhGYUI4L3VWQi84aGhBLzVK?=
- =?utf-8?B?dzBrWk5iaUI1cnZrTERTbzd6Mm1lOGJRRWNacmNNM3hRZDU4ZUZXQzZmR1Ba?=
- =?utf-8?B?V00yaEF4VzlmVy9wL3NDQTZaL1Z1cnVwaHNPN1kzZnhmNzM0dlN4eU5lOEVM?=
- =?utf-8?B?c2pzS2YvbGpsQ0xycDVncnp2L2daWk1hbzRqZlFvY3FUV2NPWnZVdW9FU0kw?=
- =?utf-8?B?blBsUjI5VUxwVHBERUUwTTNzbmhGQWFZa05iTVlJdTFraHRSbjBObHRLckhi?=
- =?utf-8?B?eWlBZmNuL3lwSSsyNWx1d2w3Mk9iUUR0NCsyblZOK2RsZFA2V3I1czZ3Rlht?=
- =?utf-8?B?NWNUc3ZqeDVjSy9mZ2ZKSkJLQTRaS0lxY3pKd2QxR2Y0MmVxbE1mTkI1YjEw?=
- =?utf-8?B?N2RXTWxOWndDRXptcWFpQUYxREN0VERybXJ3NVNwVUdwVEp1M3kwUUNmRXlX?=
- =?utf-8?B?UzloUHpxTnZZNGFoQklXT0xNRU04TUFWaFQwRUZ6N05pNnNzcHVzVEF1NFVB?=
- =?utf-8?B?T0w3eVZ0djVwUjArV1k2Mmc5ZnIwajhLMGRxcVBrMFJxTktQeUgyZklMNml1?=
- =?utf-8?B?OTJJTUM0L0J4YU9ndmJRbmdJWERwTUtQZWFyK0NFemI3Z2plVzU3cGlwZmlz?=
- =?utf-8?B?MDMzOVBuU0g3RGFzN2c4cEVxT2RwMkdLUmh2VXNKQUM5cElXRWtIcU5YY0RB?=
- =?utf-8?B?S05HTVlvZS9JYnROR2wzcHhuamtweHlteXFNeENEeUhVcXpkVi9EVjNmYWFW?=
- =?utf-8?B?NlNVSTFXNm1ZbUhVRjhLV0cxNy9BT2k2L3J1NVdXNzNGbDM1N21CMVJZTlNn?=
- =?utf-8?B?N1MwMTVEdS9oVW1vN2VBUjhnNndOOTBwOTBSSUVpRkhXS3AySHpxTTlGOENE?=
- =?utf-8?B?R0RWa2lUU0JiWDlNR05idDJaNFVHUkkzcmVYbmdKR1FBbWUrQmJWeFhmbkZH?=
- =?utf-8?B?aWd3N1A4cUZTYVk2ZG5Uazd2YTVKS1RUL3p1VlYzdGJkV0pVTlcwY0VkVzJV?=
- =?utf-8?B?bHdPT1hQSjEyV0Q2QTkwMndrS2dtVVlxT1ZMYzZLemZwOFVVMTZDRjZ6OHVk?=
- =?utf-8?B?YkNkWk9mcUt2V080eFZ1eUQ4T2UyVmNwR2tKdzFYVWJXYXZWaUhWWnkwb2hR?=
- =?utf-8?B?dC8rdVhOMUdGa3p0RFpKTzJNOFNnUUk5OE9QU1djZU9IZk1KM3E4Z3czSVBD?=
- =?utf-8?B?Umo3TFljUkdaMmhNcWNXeExLOThJZ1hJSTBFTWRzZ08zcWM0WDBnVVJDM0Nr?=
- =?utf-8?Q?mCmBgdxoHiNMWC4TZtWUnwNIE?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4943999-db5e-44b1-29f1-08dbb8e71989
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB4505.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2023 08:04:51.1255
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PGUr0efceQJ7txdF5stWsQFRoyNVelMPZvhhSxibXcAgppP9/WztNe70S0I0uNl6Z4hmxE+hYXWCjlTdj2MwlA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9394
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: HYw2g7m853Lult8FnQJBTkN4VyuyvaMT
+X-Proofpoint-GUID: HYw2g7m853Lult8FnQJBTkN4VyuyvaMT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-19_02,2023-09-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=906 spamscore=0
+ suspectscore=0 priorityscore=1501 bulkscore=0 malwarescore=0 phishscore=0
+ impostorscore=0 clxscore=1015 mlxscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309190067
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct "pmu_events_table" has been changed after commit
-2e255b4f9f41 (perf jevents: Group events by PMU, 2023-08-23).
-So there doesn't exist 'entries' in pmu_events_table anymore.
-This will align the members with that commit. Othewise, below
-errors will be printed when run jevent.py:
+qca8xxx is 4 * 2.5GBaseT ports chip, working as switch mode
+named by qca8386, or working as PHY mode named by qca8084,
+clock hardware reigster is accessed by MDIO bus.
 
-pmu-events/pmu-events.c:5485:26: error: ‘struct pmu_metrics_table’ has no member named ‘entries’
- 5485 |                         .entries = pmu_metrics__freescale_imx8dxl_sys,
+This patch series add the clock controller of qca8363/qca8084,
+and add the clock ops clk_branch2_prepare_ops to avoid spin lock
+used during the clock operation of qca8k clock controller where
+the sleep happens when accessing clock control register by MDIO
+bus.
 
-Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
----
- tools/perf/pmu-events/jevents.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes in v2:
+	* remove clock flag CLK_ENABLE_MUTEX_LOCK.
+	* add clock ops clk_branch2_qca8k_ops.
+	* improve yaml file for fixing dtschema warnings.
+	* enable clock controller driver in defconfig.
 
-diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-index a7e88332276d..af15fa2cadbd 100755
---- a/tools/perf/pmu-events/jevents.py
-+++ b/tools/perf/pmu-events/jevents.py
-@@ -764,8 +764,8 @@ static const struct pmu_sys_events pmu_sys_event_tables[] = {
-       continue
-     _args.output_file.write(f"""\t{{
- \t\t.metric_table = {{
--\t\t\t.entries = {tblname},
--\t\t\t.length = ARRAY_SIZE({tblname})
-+\t\t\t.pmus = {tblname},
-+\t\t\t.num_pmus = ARRAY_SIZE({tblname})
- \t\t}},
- \t\t.name = \"{tblname}\",
- \t}},
+Changes in v3:
+	* rename clk_branch2_qca8k_ops to clk_branch2_mdio_ops.
+	* fix review comments on yaml file.
+	* use dev_err_probe on driver probe error.
+	* only use the compatible "qcom,qca8084-nsscc".
+	* remove enable clock controller driver patch.
+
+Changes in v4:
+	* add _qcom_cc_really_probe function.
+	* commonizing the probe function.
+	* remove flag CLK_IS_CRITICAL from clocks only needed
+	to be enabled in switch device.
+	* update device tree property reg to 0x10. 
+
+Changes in v5:
+	* commonize qcom_cc_really_probe.
+	* add halt_check for the branch clocks.
+	* fix the review comments on nsscc-qca8k.c. 
+
+Changes in v6:
+	* rename clk_branch2_mdio_ops to clk_branch2_prepare_ops.
+
+Changes in v7:
+	* remove the clock flag CLK_IS_CRITICAL.
+	* optimize the file nsscc-qca8k.c.
+	* identify & fix the comments from Stephen.
+
+Changes in v8:
+	* add dependency on ARM in Kconfig.
+
+Luo Jie (4):
+  clk: qcom: branch: Add clk_branch2_prepare_ops
+  dt-bindings: clock: add qca8386/qca8084 clock and reset definitions
+  clk: qcom: common: commonize qcom_cc_really_probe
+  clk: qcom: add clock controller driver for qca8386/qca8084
+
+ .../bindings/clock/qcom,qca8k-nsscc.yaml      |   79 +
+ drivers/clk/qcom/Kconfig                      |   10 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/apss-ipq6018.c               |    2 +-
+ drivers/clk/qcom/camcc-sc7180.c               |    2 +-
+ drivers/clk/qcom/camcc-sc7280.c               |    2 +-
+ drivers/clk/qcom/camcc-sdm845.c               |    2 +-
+ drivers/clk/qcom/camcc-sm6350.c               |    2 +-
+ drivers/clk/qcom/camcc-sm8250.c               |    2 +-
+ drivers/clk/qcom/camcc-sm8450.c               |    2 +-
+ drivers/clk/qcom/clk-branch.c                 |    7 +
+ drivers/clk/qcom/clk-branch.h                 |    1 +
+ drivers/clk/qcom/common.c                     |    7 +-
+ drivers/clk/qcom/common.h                     |    2 +-
+ drivers/clk/qcom/dispcc-qcm2290.c             |    2 +-
+ drivers/clk/qcom/dispcc-sc7180.c              |    2 +-
+ drivers/clk/qcom/dispcc-sc7280.c              |    2 +-
+ drivers/clk/qcom/dispcc-sc8280xp.c            |    2 +-
+ drivers/clk/qcom/dispcc-sdm845.c              |    2 +-
+ drivers/clk/qcom/dispcc-sm6115.c              |    2 +-
+ drivers/clk/qcom/dispcc-sm6125.c              |    2 +-
+ drivers/clk/qcom/dispcc-sm6350.c              |    2 +-
+ drivers/clk/qcom/dispcc-sm6375.c              |    2 +-
+ drivers/clk/qcom/dispcc-sm8250.c              |    2 +-
+ drivers/clk/qcom/dispcc-sm8450.c              |    2 +-
+ drivers/clk/qcom/dispcc-sm8550.c              |    2 +-
+ drivers/clk/qcom/gcc-ipq5018.c                |    2 +-
+ drivers/clk/qcom/gcc-ipq6018.c                |    2 +-
+ drivers/clk/qcom/gcc-ipq8074.c                |    2 +-
+ drivers/clk/qcom/gcc-mdm9607.c                |    2 +-
+ drivers/clk/qcom/gcc-mdm9615.c                |    2 +-
+ drivers/clk/qcom/gcc-msm8917.c                |    2 +-
+ drivers/clk/qcom/gcc-msm8939.c                |    2 +-
+ drivers/clk/qcom/gcc-msm8953.c                |    2 +-
+ drivers/clk/qcom/gcc-msm8976.c                |    2 +-
+ drivers/clk/qcom/gcc-msm8996.c                |    2 +-
+ drivers/clk/qcom/gcc-msm8998.c                |    2 +-
+ drivers/clk/qcom/gcc-qcm2290.c                |    2 +-
+ drivers/clk/qcom/gcc-qcs404.c                 |    2 +-
+ drivers/clk/qcom/gcc-qdu1000.c                |    2 +-
+ drivers/clk/qcom/gcc-sa8775p.c                |    2 +-
+ drivers/clk/qcom/gcc-sc7180.c                 |    2 +-
+ drivers/clk/qcom/gcc-sc7280.c                 |    2 +-
+ drivers/clk/qcom/gcc-sc8180x.c                |    2 +-
+ drivers/clk/qcom/gcc-sc8280xp.c               |    2 +-
+ drivers/clk/qcom/gcc-sdm660.c                 |    2 +-
+ drivers/clk/qcom/gcc-sdm845.c                 |    2 +-
+ drivers/clk/qcom/gcc-sdx55.c                  |    2 +-
+ drivers/clk/qcom/gcc-sdx65.c                  |    2 +-
+ drivers/clk/qcom/gcc-sdx75.c                  |    2 +-
+ drivers/clk/qcom/gcc-sm6115.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm6125.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm6350.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm6375.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm7150.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm8150.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm8250.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm8350.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm8450.c                 |    2 +-
+ drivers/clk/qcom/gcc-sm8550.c                 |    2 +-
+ drivers/clk/qcom/gpucc-msm8998.c              |    2 +-
+ drivers/clk/qcom/gpucc-sa8775p.c              |    2 +-
+ drivers/clk/qcom/gpucc-sc7180.c               |    2 +-
+ drivers/clk/qcom/gpucc-sc7280.c               |    2 +-
+ drivers/clk/qcom/gpucc-sc8280xp.c             |    2 +-
+ drivers/clk/qcom/gpucc-sdm660.c               |    2 +-
+ drivers/clk/qcom/gpucc-sdm845.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm6115.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm6125.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm6350.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm6375.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm8150.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm8250.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm8350.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm8450.c               |    2 +-
+ drivers/clk/qcom/gpucc-sm8550.c               |    2 +-
+ drivers/clk/qcom/lcc-ipq806x.c                |    2 +-
+ drivers/clk/qcom/lcc-msm8960.c                |    2 +-
+ drivers/clk/qcom/lpassaudiocc-sc7280.c        |    4 +-
+ drivers/clk/qcom/lpasscorecc-sc7180.c         |    2 +-
+ drivers/clk/qcom/lpasscorecc-sc7280.c         |    2 +-
+ drivers/clk/qcom/mmcc-msm8960.c               |    2 +-
+ drivers/clk/qcom/mmcc-msm8974.c               |    2 +-
+ drivers/clk/qcom/mmcc-msm8994.c               |    2 +-
+ drivers/clk/qcom/mmcc-msm8996.c               |    2 +-
+ drivers/clk/qcom/mmcc-msm8998.c               |    2 +-
+ drivers/clk/qcom/mmcc-sdm660.c                |    2 +-
+ drivers/clk/qcom/nsscc-qca8k.c                | 2178 +++++++++++++++++
+ drivers/clk/qcom/tcsrcc-sm8550.c              |    2 +-
+ drivers/clk/qcom/videocc-sc7180.c             |    2 +-
+ drivers/clk/qcom/videocc-sc7280.c             |    2 +-
+ drivers/clk/qcom/videocc-sdm845.c             |    2 +-
+ drivers/clk/qcom/videocc-sm8150.c             |    2 +-
+ drivers/clk/qcom/videocc-sm8250.c             |    2 +-
+ drivers/clk/qcom/videocc-sm8350.c             |    2 +-
+ drivers/clk/qcom/videocc-sm8450.c             |    2 +-
+ drivers/clk/qcom/videocc-sm8550.c             |    2 +-
+ include/dt-bindings/clock/qcom,qca8k-nsscc.h  |  101 +
+ include/dt-bindings/reset/qcom,qca8k-nsscc.h  |   75 +
+ 99 files changed, 2546 insertions(+), 95 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml
+ create mode 100644 drivers/clk/qcom/nsscc-qca8k.c
+ create mode 100644 include/dt-bindings/clock/qcom,qca8k-nsscc.h
+ create mode 100644 include/dt-bindings/reset/qcom,qca8k-nsscc.h
+
+
+base-commit: a5ea26536e89d04485aa9e1c8f60ba11dfc5469e
 -- 
-2.34.1
+2.42.0
 
