@@ -2,150 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8387A6C71
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AE67A6C7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbjISUqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 16:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42974 "EHLO
+        id S233257AbjISUqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 16:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbjISUqW (ORCPT
+        with ESMTP id S233253AbjISUqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 16:46:22 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0818493;
-        Tue, 19 Sep 2023 13:46:17 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38JIROAk031116;
-        Tue, 19 Sep 2023 16:46:04 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3t6gc23s82-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 16:46:04 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 38JKk3bR059541
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 Sep 2023 16:46:03 -0400
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 19 Sep 2023 16:46:02 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 19 Sep 2023 16:46:02 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 19 Sep 2023 16:46:02 -0400
-Received: from HYB-a2JJhsYKAxD.ad.analog.com ([10.132.252.38])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 38JKjWcw032705;
-        Tue, 19 Sep 2023 16:45:47 -0400
-From:   Gokhan Celik <gokhan.celik@analog.com>
-To:     <outreachy@lists.linux.dev>
-CC:     Gokhan Celik <gokhan.celik@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Gokhan Celik <Gokhan.Celik@analog.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH v2 2/2] regulator: dt-bindings: Add ADI MAX77503 support
-Date:   Tue, 19 Sep 2023 23:45:22 +0300
-Message-ID: <5ce9482e53587d9250ecaa07d0908b987081b4e9.1695155379.git.gokhan.celik@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1695155379.git.gokhan.celik@analog.com>
-References: <cover.1695155379.git.gokhan.celik@analog.com>
+        Tue, 19 Sep 2023 16:46:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DC8CE;
+        Tue, 19 Sep 2023 13:46:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A819FC433C9;
+        Tue, 19 Sep 2023 20:46:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695156393;
+        bh=BmRXQZIEgC13FrkspW8zNhSJjLbclay0bgLqEV3Rrl8=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=q9KdgZu946MZfw7DxJLZIxiiIbHL9p62pycuILxZHzw8MqP3sd2qzr3E/ZkzfhbEv
+         Sv560WUNQE0HlwP/5rEqpm3bw7jCmrV5akvxgau1zBqN4rLOK+/ZjoboBONeleNI+5
+         6SP6lExUu15oD0xQisxQolfz9bgwYx59X/D7X0LTGvi5p2a+XVoY+oMnByTr4quQRa
+         dZXyYP7t6FAFej2yuwhu+Ce8pxPjyRxtNPk1CXlFaDLgBYYr9H9mjHCggTcasxMD+A
+         UZV+ik47sNRSAwVomJhe40/Ndx/tHAngLhTIM40zYtZFnzpPzdTJ314IhHsCYJFhNI
+         PFuADp6gLFx9g==
+Message-ID: <6e6da8a875a0defec1a0f58314995a6a12dca74e.camel@kernel.org>
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Paul Eggert <eggert@cs.ucla.edu>, Bruno Haible <bruno@clisp.org>,
+        Jan Kara <jack@suse.cz>,
+        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bo b Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <l@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Tue, 19 Sep 2023 16:46:25 -0400
+In-Reply-To: <c8315110-4684-9b83-d6c5-751647037623@cs.ucla.edu>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+         <20230919110457.7fnmzo4nqsi43yqq@quack3>
+         <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+         <4511209.uG2h0Jr0uP@nimes>
+         <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
+         <c8315110-4684-9b83-d6c5-751647037623@cs.ucla.edu>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: goQT9poUM5z38Phckr8lvcqg8Pge3ip7
-X-Proofpoint-ORIG-GUID: goQT9poUM5z38Phckr8lvcqg8Pge3ip7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_10,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 malwarescore=0 adultscore=0
- lowpriorityscore=0 phishscore=0 bulkscore=0 suspectscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2309190177
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ADI MAX77503 buck converter devicetree document.
+On Tue, 2023-09-19 at 13:10 -0700, Paul Eggert wrote:
+> On 2023-09-19 09:31, Jeff Layton wrote:
+> > The typical case for make
+> > timestamp comparisons is comparing source files vs. a build target. If
+> > those are being written nearly simultaneously, then that could be an
+> > issue, but is that a typical behavior?
+>=20
+> I vaguely remember running into problems with 'make' a while ago=20
+> (perhaps with a BSDish system) when filesystem timestamps were=20
+> arbitrarily truncated in some cases but not others. These files would=20
+> look older than they really were, so 'make' would think they were=20
+> up-to-date when they weren't, and 'make' would omit actions that it=20
+> should have done, thus screwing up the build.
+>=20
+> File timestamps can be close together with 'make -j' on fast hosts.=20
+> Sometimes a shell script (or 'make' itself) will run 'make', then modify=
+=20
+> a file F, then immediately run 'make' again; the latter 'make' won't=20
+> work if F's timestamp is mistakenly older than targets that depend on it.
+>=20
+> Although 'make'-like apps are the biggest canaries in this coal mine,=20
+> the issue also affects 'find -newer' (as Bruno mentioned), 'rsync -u',=
+=20
+> 'mv -u', 'tar -u', Emacs file-newer-than-file-p, and surely many other=
+=20
+> places. For example, any app that creates a timestamp file, then backs=
+=20
+> up all files newer than that file, would be at risk.
+>=20
+>=20
+> > I wonder if it would be feasible to just advance the coarse-grained
+> > current_time whenever we end up updating a ctime with a fine-grained
+> > timestamp?
+>=20
+> Wouldn't this need to be done globally, that is, not just on a per-file=
+=20
+> or per-filesystem basis? If so, I don't see how we'd avoid locking=20
+> performance issues.
+>=20
 
-Signed-off-by: Gokhan Celik <gokhan.celik@analog.com>
----
- .../regulator/adi,max77503-regulator.yaml     | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/adi,max77503-regulator.yaml
+Maybe. Another idea might be to introduce a new timekeeper for
+multigrain filesystems, but all of those would likely have to share the
+same coarse-grained clock source.
 
-diff --git a/Documentation/devicetree/bindings/regulator/adi,max77503-regulator.yaml b/Documentation/devicetree/bindings/regulator/adi,max77503-regulator.yaml
-new file mode 100644
-index 000000000000..128e04ae3f4d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/adi,max77503-regulator.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright (c) 2023 Analog Devices, Inc.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/adi,max77503-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices MAX77503 Buck Converter
-+
-+maintainers:
-+  - Gokhan Celik <Gokhan.Celik@analog.com>
-+
-+description: |
-+  The Analog Devices MAX77503 is a single channel 14V input, 1.5A 
-+  high-efficiency buck converter. This converter has 94% efficiency
-+  for 2-Cell/3-Cell battery applications.
-+
-+allOf:
-+  - $ref: regulator.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,max77503
-+
-+  reg:
-+    description: I2C address of the device
-+    items:
-+      - enum: [0x1e, 0x24, 0x37]
-+
-+required:
-+  - compatible
-+  - reg
-+  - regulator-min-microvolt
-+  - regulator-max-microvolt
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        regulator@1e {
-+            compatible = "adi,max77503";
-+            reg = <0x1e>;
-+
-+            regulator-min-microvolt = <800000>;
-+            regulator-max-microvolt = <5000000>;
-+        };
-+    };
-+
--- 
-2.34.1
+So yeah, if you stat an inode and then update it, any inode written on a
+multigrain filesystem within the same jiffy-sized window would have to
+log an extra transaction to write out the inode. That's what I meant
+when I was talking about write amplification.
 
+>=20
+> PS. Although I'm no expert in the Linux inode code I hope you don't mind=
+=20
+> my asking a question about this part of inode_set_ctime_current:
+>=20
+> 	/*
+> 	 * If we've recently updated with a fine-grained timestamp,
+> 	 * then the coarse-grained one may still be earlier than the
+> 	 * existing ctime. Just keep the existing value if so.
+> 	 */
+> 	ctime.tv_sec =3D inode->__i_ctime.tv_sec;
+> 	if (timespec64_compare(&ctime, &now) > 0)
+> 		return ctime;
+>=20
+> Suppose root used clock_settime to set the clock backwards. Won't this=
+=20
+> code incorrectly refuse to update the file's timestamp afterwards? That=
+=20
+> is, shouldn't the last line be "goto fine_grained;" rather than "return=
+=20
+> ctime;", with the comment changed from "keep the existing value" to "use=
+=20
+> a fine-grained value"?
+
+It is a problem, and Linus pointed that out yesterday, which is why I
+sent this earlier today:
+
+https://lore.kernel.org/linux-fsdevel/20230919-ctime-v1-1-97b3da92f504@kern=
+el.org/T/#u
+
+Bear in mind that we're not dealing with a situation where the value has
+not been queried since its last update, so we don't need to use a fine
+grained timestamp there (and really, it's preferable not to do so). A
+coarse one should be fine in this case.
+--=20
+Jeff Layton <jlayton@kernel.org>
