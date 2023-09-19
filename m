@@ -2,162 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8280E7A6486
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3C37A648D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjISNM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
+        id S231980AbjISNOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjISNMZ (ORCPT
+        with ESMTP id S229648AbjISNOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:12:25 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0574EF0;
-        Tue, 19 Sep 2023 06:12:19 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9C9C45C01BE;
-        Tue, 19 Sep 2023 09:12:16 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 19 Sep 2023 09:12:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1695129136; x=1695215536; bh=35U7SZxly5E4C5II0R3QwFIGHLkcF+Joifa
-        Lm/DjmW8=; b=SZuY9XIYk8UoYI0cncKefuLo+3a8kidBwLfYvWl/HMWy4sDKpey
-        5lybXHs4E+8uqsMuhnLl53Ms7goP5REEXf7GB3jlkqf8mWqkiDdhMnRELphtCf/E
-        y8VCX4qmyfdn7jynjeh9/E9wZ6/wdiodDiguGzIWupbXsyQg38yPic+DD+VqFzcS
-        bVOEQ8sY54KmuMJKnpl+QKGpYDXvA+vraZf42r9DlljLSav05OO/s9VOzDLsNyxQ
-        wM4TWSwUx5d8CpIIUIlVnP577X9wcPhzGBhu+CYLKS+4BgUeGZDRC5J2WIOsvdOJ
-        B4AWJd0MNH/CRZjR1FMptpEoi8j0x2yefxA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1695129136; x=
-        1695215536; bh=35U7SZxly5E4C5II0R3QwFIGHLkcF+JoifaLm/DjmW8=; b=h
-        leu/2n2IqBV76jXcXUaryUgHgVvO2eQIsDZmcMckNMClWVc+rhh4Frle33aRBbkW
-        9dOrGPNkT0almLn2hpK3SJljCulNBKP1biwByfGoWT6sRpmiupocQfVLmF5YprFm
-        yybIQaUimxhWJXfxy0nbIw3+6tgDzz8vhYZ20bb9ZPRD2+QoyrqXS9cNDHZF8Xi6
-        4GB0uIe3EppIoBnqWbM/dSNJO3dr4bCKvkIB0RURW+MU71HQXm1dJwl3NVVJsJty
-        UnM3+Bo4FWfrIpENHxqFGLZ6CINqSWMhqltm/2YGCDwn889yn78eCbVSKZJbdCmu
-        mZUojfE0by3yTgcQf20jA==
-X-ME-Sender: <xms:MJ4JZYJQgV4QQTYxak_epWfKOKwKblnygXCXIWHtApxUFofYKu-89Q>
-    <xme:MJ4JZYIvMqc8Yo5MU8KnKfw8eIF3k1gL3EFNpTIT3tsMsLpMwvc7eemNK2kiHm6bH
-    W1RdKnv8JmWBerK>
-X-ME-Received: <xmr:MJ4JZYteRcaRSZsCHc9IgLH42dUhMuomtwp9hkJiWXftE0YQjzAvyjq-Xrwsfm1dP7WAfuz4VEnoV6LlFppNmml3DjVM1MzAGMK8WrmkNP9iN0uAGwac>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekuddgfeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvfhfhjggtgfesthekredttdefjeenucfhrhhomhepuegvrhhn
-    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
-    drfhhmqeenucggtffrrghtthgvrhhnpefgleefffejffeugeeivedvleevffeihfeuleev
-    leeutdefieeftddttdeghfelgeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsggvrhhnugdr
-    shgthhhusggvrhhtsehfrghsthhmrghilhdrfhhm
-X-ME-Proxy: <xmx:MJ4JZVaPgbV5OEXezqOc7hscMxEQ5BS6nbURXVjIAaWlqp9Qm4cKLA>
-    <xmx:MJ4JZfYPfaLLMswEdVloUctbwQyxQddHRJTp8SkZw0_PRH-kECtdYQ>
-    <xmx:MJ4JZRBsRRe23KF462il6y78m9hO5zllA8TTwzeMLscRaTW6MT0O_g>
-    <xmx:MJ4JZenlYXTfTMg1TTDRiPVMIujiifw4YdtWlwIUbSgOHKKyhdUiGg>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 19 Sep 2023 09:12:15 -0400 (EDT)
-Message-ID: <73e673d6-ecb8-dec9-bdc0-6dde9c4e76cb@fastmail.fm>
-Date:   Tue, 19 Sep 2023 15:12:13 +0200
+        Tue, 19 Sep 2023 09:14:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABB6EC
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695129220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2RckHjxKJ/DBwzz6iC1sFaYDrVOyjnLoFmkRy7jkyvQ=;
+        b=jRLMS/wPCacC/wQHCj7gFWzgIa4dt0Vp+miDbcvbsjj16bACG60f5rP1wRBDkPB0ki0RhE
+        73OWaFjTi21mxqH8g+tkYuehJCRF4QC7Own3Urry5U2yCvVsUGGLvkYmZTtyaLMUI5Cyih
+        VqnR1/aD45fRbrVxC5195SavUzmdvX0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-360-oZXK3DCgMw6VsoO9oR6ltA-1; Tue, 19 Sep 2023 09:13:38 -0400
+X-MC-Unique: oZXK3DCgMw6VsoO9oR6ltA-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9adcb9ecc16so105065866b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:13:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695129217; x=1695734017;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2RckHjxKJ/DBwzz6iC1sFaYDrVOyjnLoFmkRy7jkyvQ=;
+        b=N6c5VV3XPgxEejVKKcDKqtkYc+BV2IqT0oU1AzI38rGaY+iKiALutje3oaEsRw1RgA
+         yY7wBtacSbyE/upO5YOLrs5XJp2IPExkQ8+IGw13N9vXKikmSw6Nto6YMJTgBkVJ3+ZD
+         gtTTu1DMJ0xKaTlMPHXosZ/gcFWg3qKYbdG9vd/rQRYAuUpRFj9jMR858KNmp3ma7VYo
+         BVY8iSySkcfj/rTDFo8nlKOkvpm+/N1lkRE282+WXQOh5yJHu0zBR0VnzLaCFPrLNgeF
+         u5ktiseEGYWg6xBo5HDEs3pNGI+2xc9w0kUfYbwN5XyG4o7UyVQyyxcWS9xrgSAvIC8S
+         nLbw==
+X-Gm-Message-State: AOJu0YzQuWqBTo6usHM4eXz/9CvGbXjpRCZx22tNvulx6iav8vfbfHYt
+        prHgbXTDpm4hpU6mnSR3ww0m9LNOi1ssr/bClfcSVt62ObaejTWGHbWzQLorrMhKqT1VB+EcHzj
+        w6uXsCA431VAuxtDuV2UckW4y
+X-Received: by 2002:a17:906:5341:b0:9ad:e66a:413f with SMTP id j1-20020a170906534100b009ade66a413fmr7926876ejo.3.1695129217560;
+        Tue, 19 Sep 2023 06:13:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFOjZRtj5oGUym5VCX6sEBFHCi1p8R7yHSbCfnhmWdHIxrPoDeN11gLmXKuoL1heM5zbA5+kw==
+X-Received: by 2002:a17:906:5341:b0:9ad:e66a:413f with SMTP id j1-20020a170906534100b009ade66a413fmr7926845ejo.3.1695129217203;
+        Tue, 19 Sep 2023 06:13:37 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-241-221.dyn.eolo.it. [146.241.241.221])
+        by smtp.gmail.com with ESMTPSA id jx10-20020a170906ca4a00b009ae3e6c342asm145816ejb.111.2023.09.19.06.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 06:13:36 -0700 (PDT)
+Message-ID: <ad0a961c523aa50f25380b339e1cb6f50109a5fe.camel@redhat.com>
+Subject: Re: [PATCH v3] net: ethernet: ti: am65-cpsw-qos: Add Frame
+ Preemption MAC Merge support
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Roger Quadros <rogerq@kernel.org>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, vladimir.oltean@nxp.com
+Cc:     horms@kernel.org, s-vadapalli@ti.com, srk@ti.com, vigneshr@ti.com,
+        p-varis@ti.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 19 Sep 2023 15:13:35 +0200
+In-Reply-To: <20230918095346.91592-1-rogerq@kernel.org>
+References: <20230918095346.91592-1-rogerq@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] fuse: remove unneeded lock which protecting update of
- congestion_threshold
-Content-Language: en-US, de-DE
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, miklos@szeredi.hu,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230914154553.71939-1-shikemeng@huaweicloud.com>
- <9a5d4c82-1ab3-e96d-98bb-369acc8404d1@fastmail.fm>
- <177d891e-9258-68bb-72aa-4d4126403b7e@huaweicloud.com>
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <177d891e-9258-68bb-72aa-4d4126403b7e@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2023-09-18 at 12:53 +0300, Roger Quadros wrote:
+> Add driver support for viewing / changing the MAC Merge sublayer
+> parameters and seeing the verification state machine's current state
+> via ethtool.
+>=20
+> As hardware does not support interrupt notification for verification
+> events we resort to polling on link up. On link up we try a couple of
+> times for verification success and if unsuccessful then give up.
+>=20
+> The Frame Preemption feature is described in the Technical Reference
+> Manual [1] in section:
+> 	12.3.1.4.6.7 Intersperced Express Traffic (IET =E2=80=93 P802.3br/D2.0)
+>=20
+> Due to Silicon Errata i2208 [2] we set limit min IET fragment size to 124=
+.
+>=20
+> [1] AM62x TRM - https://www.ti.com/lit/ug/spruiv7a/spruiv7a.pdf
+> [2] AM62x Silicon Errata - https://www.ti.com/lit/er/sprz487c/sprz487c.pd=
+f
+>=20
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>  drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 150 ++++++++++++
+>  drivers/net/ethernet/ti/am65-cpsw-nuss.c    |   2 +
+>  drivers/net/ethernet/ti/am65-cpsw-nuss.h    |   5 +
+>  drivers/net/ethernet/ti/am65-cpsw-qos.c     | 240 ++++++++++++++++----
+>  drivers/net/ethernet/ti/am65-cpsw-qos.h     | 104 +++++++++
+>  5 files changed, 454 insertions(+), 47 deletions(-)
+>=20
+> Changelog:
+>=20
+> v3:
+> - Rebase on top of v6.6-rc1 and mqprio support [1]
 
+I'm unsure if this will require a rebase for the next revision of the
+mqprio support. Anyhow the two patches are related, it's probably
+better bundle them in a series so that the dep is straight-forward.
 
-On 9/19/23 08:11, Kemeng Shi wrote:
-> 
-> 
-> on 9/16/2023 7:06 PM, Bernd Schubert wrote:
->>
->>
->> On 9/14/23 17:45, Kemeng Shi wrote:
->>> Commit 670d21c6e17f6 ("fuse: remove reliance on bdi congestion") change how
->>> congestion_threshold is used and lock in
->>> fuse_conn_congestion_threshold_write is not needed anymore.
->>> 1. Access to supe_block is removed along with removing of bdi congestion.
->>> Then down_read(&fc->killsb) which protecting access to super_block is no
->>> needed.
->>> 2. Compare num_background and congestion_threshold without holding
->>> bg_lock. Then there is no need to hold bg_lock to update
->>> congestion_threshold.
->>>
->>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->>> ---
->>>    fs/fuse/control.c | 4 ----
->>>    1 file changed, 4 deletions(-)
->>>
->>> diff --git a/fs/fuse/control.c b/fs/fuse/control.c
->>> index 247ef4f76761..c5d7bf80efed 100644
->>> --- a/fs/fuse/control.c
->>> +++ b/fs/fuse/control.c
->>> @@ -174,11 +174,7 @@ static ssize_t fuse_conn_congestion_threshold_write(struct file *file,
->>>        if (!fc)
->>>            goto out;
->>>    -    down_read(&fc->killsb);
->>> -    spin_lock(&fc->bg_lock);
->>>        fc->congestion_threshold = val;
->>> -    spin_unlock(&fc->bg_lock);
->>> -    up_read(&fc->killsb);
->>>        fuse_conn_put(fc);
->>>    out:
->>>        return ret;
->>
->> Yeah, I don't see readers holding any of these locks.
->> I just wonder if it wouldn't be better to use WRITE_ONCE to ensure a single atomic operation to store the value.
-> Sure, WRITE_ONCE looks better. I wonder if we should use READ_ONCE from reader.
-> Would like to get any advice. Thanks!
+When reposting, please insert the target tree in the subject profix
+(net-next in this case).
 
-I'm not entirely sure either, but I _think_ the compiler is free to 
-store a 32 bit value  with multiple operations (like 2 x 16 bit). In 
-that case a competing reading thread might read garbage...
-Although I don't see this documented here
-https://www.kernel.org/doc/Documentation/memory-barriers.txt
-Though documented there is that the compile is free to optimize out the 
-storage at all, see
-"(*) Similarly, the compiler is within its rights to omit a store entirely"
+Thanks!
 
-
-Regarding READ_ONCE, I don't have a strong opinion, if the compiler 
-makes some optimizations and the value would be wrong for a few cycles, 
-would that matter for that variable? Unless the compiler would be really 
-creative and the variable would get never updated... For sure READ_ONCE 
-would be safer, but I don't know if it is needed
-SSee section
-"The compiler is within its rights to omit a load entirely if it know"
-in the document above.
-
-Thanks,
-Bernd
-
-
-
+Paolo
 
