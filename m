@@ -2,129 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 136FF7A6547
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39C07A6555
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 15:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbjISNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 09:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
+        id S232412AbjISNgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 09:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231960AbjISNfd (ORCPT
+        with ESMTP id S232410AbjISNgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 09:35:33 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB1C102
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:35:25 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id CFB7D5C01A1;
-        Tue, 19 Sep 2023 09:35:24 -0400 (EDT)
-Received: from imap47 ([10.202.2.97])
-  by compute5.internal (MEProxy); Tue, 19 Sep 2023 09:35:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=cc:cc:content-type:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1695130524; x=
-        1695216924; bh=bzYopflC5Ycg8A2mJPw24w/sj5t1CGgoOnaSWed8JPs=; b=G
-        xkvsvm1Lv3PVPu/1d0UOhoBRpcl6vGaXwglXl7zL/K2X4XwXEcu26QIVR96ZqJ9D
-        ve09wgF21jfWJmXoRdEVt4GRq+wP8NEDQhF+bnIBsehFnzxw1gDCoxOeXNfsEctx
-        dsDNbVOkNYx93GJzeQJLRdOI1t5vszmAOJnXyILewQu/uD2AiEqSii94BQd4l97M
-        bFlGX6j0M1nit11hzi2d52OMqb2LU7a+1HhvpyvwYmsfxwbkLpzqs7B6VtPFqNzn
-        P+cM6CdSyPmT5RFV8aAuhSW0fZ3WZqfVQwqqEjYERFarlYudYxv6vyRj3Yvv477d
-        0ZXUhUYSwKh+niWI9+Kow==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695130524; x=1695216924; bh=bzYopflC5Ycg8
-        A2mJPw24w/sj5t1CGgoOnaSWed8JPs=; b=cJ40j89MtlxPv1P76qx03WptbAU0Y
-        N1XDGCPeqOJ+a+vXaaujdtlx2+ahVGHk1BuhjHklocmR6jgySY+AtophrMYRUTaZ
-        1l48dPYYaHWmH+0dKwI6+toRv1FwmMDchseSCaqqavhEAt14mrhsWoOpocM16XN0
-        +yhL3h2SDsGVt4lZ496YIi6UcOKCeRg1PHd1F31zKPHbLO1Vc9XQel+QPZqvExZm
-        EQwN00GMvYFHicAGxbYTNEU2Bz5nopZ44sPybpkcZQmk0rXPbkbEoJ9eQ9BtlAxq
-        2GXV5V5yAE4roHzux5EVGepdzDWWZuKfmdNGvKdIAPy9wNvMrI54cAkAA==
-X-ME-Sender: <xms:m6MJZeYPlnBDGfO9EiuXstpqZbWk8fH-neCoq2pQXg1LBVz7MVpoYQ>
-    <xme:m6MJZRaFKyZX62E7ATL4RRdobt_AbADJtLsolBlpya6eHc1mrOtyPvhwZC3Z6gEel
-    tFWq9FbO5p8htHy6oY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekuddgfeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepleevgfegffehvedtieevhfekheeftedtjeetudevieehveevieelgffh
-    ieevieeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:m6MJZY_GwRUhftXlMxJCw9Rv6bQwZ82is_lAZf-TKrplb4vS0jHQrA>
-    <xmx:m6MJZQpxna4jNlTNejkmH80f-rv4cqSCu4syUY6nzphWXsb3uwRQ0Q>
-    <xmx:m6MJZZrhE-qHyacNyyye8opYDn8qgylQyWjL5D1DjksUzl8hLjTzzg>
-    <xmx:nKMJZSA0wjtME7UWU_7b4iBqgE-CqN8PVX8G9dgEPNlQhHa6DoT0wA>
-Feedback-ID: i51094778:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 93789A60077; Tue, 19 Sep 2023 09:35:23 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+        Tue, 19 Sep 2023 09:36:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384B7100
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:36:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695130561;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BQmRjXCmgAQl3a6tpa/J+d//osgH4H/G1TUy2TGbM10=;
+        b=enFmpdmPnDJUjCGdFo2A+7ljU6lVl06QBRf4XfQhtrxaUVwKsHRoWSV+7i9iVDfpwhyY6i
+        29utuKROz4Fz2xuWWGsdyX6yx2zoVL6xdDqJVQEUMrtY1OQ1Ssrv+2Xd/dSNnH+nTIGzaS
+        LHj14iahnvgWIw7pomcemw5UDyvxLxM=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-634-XPW0FuXdM3GPyV9ki5XbQw-1; Tue, 19 Sep 2023 09:35:59 -0400
+X-MC-Unique: XPW0FuXdM3GPyV9ki5XbQw-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-773c03f2bdaso374236185a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 06:35:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695130559; x=1695735359;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BQmRjXCmgAQl3a6tpa/J+d//osgH4H/G1TUy2TGbM10=;
+        b=fu4+fR0xbyWJTet4HKFP3rpKBxyh0pGnrgTc1zXMRnBShQoDf22azYEDtOP2xLFsHM
+         /Wdz59lmAUTDlQu+rHosLiQjoUFTB2CbLTpgewodX7Qg2Uod5k5rlBlkkjsD4vrSP2lZ
+         9jHzbdfTTwofWUBgoH7sOyvKhs+DPB+oZ7/mvyW649owSZwgxVSfS4VFXsmmaTkEM4dc
+         0O8bCmKxi6Dg82++Gi55Zreir5k7iC4iRw5beqYXAXeEXS0R9NfTIt/vdIdv0rfLOhaF
+         eVVefIV9CxugcZIQKyA5UO4Qzy0Xho5Du7xS7O7OAVokX/LipgK1g++MriChE6j9/Ei0
+         y2QA==
+X-Gm-Message-State: AOJu0YzhPC1s96HpgkBDLeeErhSDuZ/yzRN1670BEB9ocYXkfnBln9g5
+        V8RHg33bvGxFH1DQgtpmOPr14g4UPGuoUpQ4C+IwIEmlQr6HQQdX5K0DVeVROYDL6IDhY+cJBmx
+        qoBfVBG9FE7LbEag5rszmEKYn
+X-Received: by 2002:a0c:f001:0:b0:656:4a25:2080 with SMTP id z1-20020a0cf001000000b006564a252080mr7874554qvk.14.1695130559370;
+        Tue, 19 Sep 2023 06:35:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IELog22rYA2MEE9wvtU9k2iQ0qP5GVCV4XB9+NFnOEeZMlYRp+cnMnNZiRhNH7IqEct7Tt4FA==
+X-Received: by 2002:a0c:f001:0:b0:656:4a25:2080 with SMTP id z1-20020a0cf001000000b006564a252080mr7874542qvk.14.1695130559155;
+        Tue, 19 Sep 2023 06:35:59 -0700 (PDT)
+Received: from sgarzare-redhat ([46.222.165.38])
+        by smtp.gmail.com with ESMTPSA id g28-20020a0caadc000000b0064d6a81e4d4sm1773184qvb.113.2023.09.19.06.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 06:35:58 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 15:35:51 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Arseniy Krasnov <avkrasnov@salutedevices.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v9 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
+ preparations
+Message-ID: <hq67e2b3ljfjikvbaneczdve3fzg3dl5ziyc7xtujyqesp6dzm@fh5nqkptpb4n>
+References: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
+ <b5873e36-fe8c-85e8-e11b-4ccec386c015@salutedevices.com>
+ <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
+ <a5b25ee07245125fac4bbdc3b3604758251907d2.camel@redhat.com>
 MIME-Version: 1.0
-Message-Id: <c6dd2daf-f833-4c2f-9a67-640fb2c424fc@app.fastmail.com>
-In-Reply-To: <ff8e4a01-9a58-45bf-a743-08f4f6027251@suse.de>
-References: <20230912-simpledrm-multiple-power-domains-v2-1-01b66bfb1980@jannau.net>
- <ff8e4a01-9a58-45bf-a743-08f4f6027251@suse.de>
-Date:   Tue, 19 Sep 2023 15:34:56 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Thomas Zimmermann" <tzimmermann@suse.de>,
-        "Janne Grunau" <j@jannau.net>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        "David Airlie" <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev
-Subject: Re: [PATCH v2] drm/simpledrm: Add support for multiple "power-domains"
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <a5b25ee07245125fac4bbdc3b3604758251907d2.camel@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-
-On Mon, Sep 18, 2023, at 09:11, Thomas Zimmermann wrote:
-> Hi
+On Tue, Sep 19, 2023 at 03:19:54PM +0200, Paolo Abeni wrote:
+>On Tue, 2023-09-19 at 09:54 +0200, Stefano Garzarella wrote:
+>> On Mon, Sep 18, 2023 at 07:56:00PM +0300, Arseniy Krasnov wrote:
+>> > Hi Stefano,
+>> >
+>> > thanks for review! So when this patchset will be merged to net-next,
+>> > I'll start sending next part of MSG_ZEROCOPY patchset, e.g. AF_VSOCK +
+>> > Documentation/ patches.
+>>
+>> Ack, if it is not a very big series, maybe better to include also the
+>> tests so we can run them before merge the feature.
 >
-> Am 12.09.23 um 22:22 schrieb Janne Grunau via B4 Relay:
->> From: Janne Grunau <j@jannau.net>
->> 
->> Multiple power domains need to be handled explicitly in each driver. The
->> driver core can not handle it automatically since it is not aware of
->> power sequencing requirements the hardware might have. This is not a
->> problem for simpledrm since everything is expected to be powered on by
->> the bootloader. simpledrm has just ensure it remains powered on during
->> its lifetime.
->> This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
->> systems. The HDMI output initialized by the bootloader requires keeping
->> the display controller and a DP phy power domain on.
->> 
->> Signed-off-by: Janne Grunau <j@jannau.net>
+>I understand that at least 2 follow-up series are waiting for this, one
+>of them targeting net-next and the bigger one targeting the virtio
+>tree. Am I correct?
+
+IIUC the next series will touch only the vsock core
+(net/vmw_vsock/af_vsock.c), tests, and documentation.
+
+The virtio part should be fully covered by this series.
+
+@Arseniy feel free to correct me!
+
 >
-> As a simpledrm patch:
->
-> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
->
-> Do you want to wait for another review from  someone with 
-> power-management expertise?
+>DaveM suggests this should go via the virtio tree, too. Any different
+>opinion?
 
-I can't claim to have a lot of genpd experience but we use very similar
-code in a few other M1/M2 drivers that also require multiple power domains
-to be up without any sequencing constraints. So for whatever it's worth:
+For this series should be fine, I'm not sure about the next series.
+Merging this with the virtio tree, then it forces us to do it for
+followup as well right?
 
-Reviewed-by: Sven Peter <sven@svenpeter.dev>
+In theory followup is more on the core, so better with net-next, but
+it's also true that for now only virtio transports support it, so it
+might be okay to continue with virtio.
 
+@Michael WDYT?
 
-Best,
+Thanks,
+Stefano
 
-
-Sven
