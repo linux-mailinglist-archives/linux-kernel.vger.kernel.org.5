@@ -2,288 +2,565 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4777A6C91
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835507A6C6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Sep 2023 22:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbjISU5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 16:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
+        id S232036AbjISUom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 16:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233273AbjISU5w (ORCPT
+        with ESMTP id S232649AbjISUok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 16:57:52 -0400
-X-Greylist: delayed 907 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Sep 2023 13:57:46 PDT
-Received: from s1-ba86.socketlabs.email-od.com (s1-ba86.socketlabs.email-od.com [142.0.186.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DD9BF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; d=email-od.com;i=@email-od.com;s=dkim;
-        c=relaxed/relaxed; q=dns/txt; t=1695157067; x=1697749067;
-        h=content-transfer-encoding:content-type:in-reply-to:from:content-language:references:cc:to:subject:mime-version:date:message-id:x-thread-info:subject:to:from:cc:reply-to;
-        bh=AskR4byY02A0+0bNCEbBq1u+3fbXAqKncGpUjIuFVcM=;
-        b=VP5mjrgwnnLw7XEwEfN7y/K0nBCpdZGNDwMM+WflR9uuFqZryhFmX06ntCsAjp2z6Oj2VNH8dRx5WFXleHDMcwyAFanV+j9IfD4uqxbyBMJQD3krQ3VQbgTaXvRM+tuChfMyRNhYYrPbJ/bv8YB5iqOwmybsfa8doQSFUVnRJHw=
-X-Thread-Info: NDUwNC4xMi4xNWZkOTAwMDdhNzdkMjIubGludXgta2VybmVsPXZnZXIua2VybmVsLm9yZw==
-Received: from r3.us-east-1.aws.in.socketlabs.com (r3.us-east-1.aws.in.socketlabs.com [142.0.191.3]) by mxrs4.email-od.com
-        with ESMTP(version=Tls12 cipher=Aes256 bits=256); Tue, 19 Sep 2023 16:42:29 -0400
-Received: from nalramli.com (d14-69-55-117.try.wideopenwest.com [69.14.117.55]) by r3.us-east-1.aws.in.socketlabs.com
-        with ESMTP; Tue, 19 Sep 2023 16:42:28 -0400
-Received: from [10.0.2.15] (d14-69-55-117.try.wideopenwest.com [69.14.117.55])
-        by nalramli.com (Postfix) with ESMTPS id 09F092CE000F;
-        Tue, 19 Sep 2023 16:42:27 -0400 (EDT)
-Message-ID: <150cef65-1de0-4145-a917-18a3665808c2@nalramli.com>
-Date:   Tue, 19 Sep 2023 16:42:27 -0400
+        Tue, 19 Sep 2023 16:44:40 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02AA99
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:44:33 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-690c6f4f6a5so901975b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 13:44:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695156273; x=1695761073; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ExQKscZ59NQl4S7+S0POdlY5kq9zgEA2mOHUrQX5Svc=;
+        b=JgBAaYTvIO40c4/uRLpUCajP88MsWQvRiAmjwbpIbbnQNXutx/JUEZAAYHx44l8CX/
+         i6c0DEM4/R9RtFVac9tn/B0N+W8KexOltiD2ir46r6W5TO2SxNssh5R9tOn5mtTh4wey
+         VjpvxcEMTBAouRLnWsPaVc6ScXsOp6A7Z5SIAtkkYMGIwy+n1tP5qUpXF1+MRC4qDVn6
+         uf1/fVdt7GqSMd0bBRpq3OqJ12FGU5BFWdTud9nfRa9zGC7lmWHsQ4uThh9l8+EAeRPi
+         JV7fBq2EF70coXzrkujGbcguBPzkSDmZhqwXSH6445TpUMSb0eQ8ii50X5Mhle1aYV5s
+         0Xew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695156273; x=1695761073;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ExQKscZ59NQl4S7+S0POdlY5kq9zgEA2mOHUrQX5Svc=;
+        b=L78b2LnyiNzpteVgANEEpiupo94KNkdzUSS9jeMSdX0NHpHpRsoohDJKKX5NfrWmRq
+         T3cQx7XEEuXET8zTC4VgqlI8dwGDcq0X2uFzMfan+rwkCn0HbRD0gRTBuCXkI+IxrdRq
+         h+dijgty2wtNrkzd3/LKc5+ge22pjVbKGxxwpgrcG99pA0i46fCAmKvPf5ysCOcqWS4i
+         gvmKTaD0XQhvTEZ8f3290YYpsuMUZYDarGvZRSJJSxLq3J8Uizvqb4zbxmLUz7t+/FyZ
+         +FZREvu9kDkxrxkkFIU6eQ9APC0P3PfwgaZpwgvSmZy0NjaidXV1uz3X3a4LDYm/ceBl
+         q+BQ==
+X-Gm-Message-State: AOJu0YwZX1PpkwdUFsaUXNaPKcHHxgz1ViMpxahvjp+ssKohayJOuPy4
+        ni+Z5G+Arfu7UEN2DUutNMnwYTqmOh2EInDwLpVa9A==
+X-Google-Smtp-Source: AGHT+IFuf7+6BfL5h7f/TjFDpIdv3+O9FNZBxVLCouZ/e6lb6fHYnrZ/aEdNoEvBdFXbE4nwPUAqww==
+X-Received: by 2002:a05:6a00:c91:b0:68f:b8ca:b11 with SMTP id a17-20020a056a000c9100b0068fb8ca0b11mr794020pfv.11.1695156272812;
+        Tue, 19 Sep 2023 13:44:32 -0700 (PDT)
+Received: from google.com ([2620:15c:2d1:203:118e:eaf2:1433:f9fe])
+        by smtp.gmail.com with ESMTPSA id b5-20020aa78705000000b0067b643b814csm9037810pfo.6.2023.09.19.13.44.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 13:44:32 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 13:44:28 -0700
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH 2/2] ALSA: hda: cirrus_scodec: Add KUnit test
+Message-ID: <ZQoILN6QCjzosCOs@google.com>
+References: <20230918095129.440-1-rf@opensource.cirrus.com>
+ <20230918095129.440-3-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next RFC v2 0/4] mlx5: support per queue coalesce settings
-To:     Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Cc:     netdev@vger.kernel.org, saeedm@nvidia.com, saeed@kernel.org,
-        kuba@kernel.org, davem@davemloft.net, tariqt@nvidia.com,
-        linux-kernel@vger.kernel.org, leon@kernel.org, jdamato@fastly.com,
-        sbhogavilli@fastly.com, nalramli@fastly.com
-References: <ZOemz1HLp95aGXXQ@x130> <20230918222955.2066-1-dev@nalramli.com>
- <87ttrq802f.fsf@nvidia.com>
-Content-Language: en-US
-From:   "Nabil S. Alramli" <dev@nalramli.com>
-In-Reply-To: <87ttrq802f.fsf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.3 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_IADB_DK,RCVD_IN_IADB_LISTED,
-        RCVD_IN_IADB_OPTIN,RCVD_IN_IADB_RDNS,RCVD_IN_IADB_SENDERID,
-        RCVD_IN_IADB_SPF,RCVD_IN_IADB_VOUCHED,SPF_HELO_PASS,SPF_PASS,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918095129.440-3-rf@opensource.cirrus.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rahul,
-
-Thank you for your response.
-
-On 9/19/23 14:55, Rahul Rameshbabu wrote:
-> Hi Nabil,
+On Mon, Sep 18, 2023 at 10:51:29AM +0100, Richard Fitzgerald wrote:
+> Add a KUnit test for cirrus_scodec_get_speaker_id(). It is impractical
+> to have enough hardware with every possible permutation of speaker id.
+> So use a test harness to test all theoretically supported options.
 > 
-> On Mon, 18 Sep, 2023 18:29:51 -0400 "Nabil S. Alramli" <dev@nalramli.com> wrote:
->> Hello,
->>
->> This is v2 of my previous patch:
->> https://lore.kernel.org/lkml/20230823223121.58676-1-dev@nalramli.com/.
->>
->> Saeed: Thanks for reviewing v1. I made significant changes to support
->> per-channel DIM settings. Is this ready for an official v1 submission or
->> are there other major changes you'd like to see before I do that?
->>
->> ***************************************************************************
->> Version History
->> ---------------
->> * v1: Initial draft, individual channel DIM changes not supported.
->> * v2: Support individual channel DIM changes.
->> ***************************************************************************
+> The test harness consists of:
+> - a mock GPIO controller.
+> - a mock struct device to represent the scodec driver
+> - software nodes to provide the fwnode info that would normally come
+>   from ACPI.
 > 
-> We actually began working on a patch set for the feature internally
-> inspired by your initial RFC. If it is alright with you, would it be ok
-> to have you as a co-author of that series that we should have prepared
-> in the coming days? We have some minor enhancements that we think will
-> improve the general architecture for how we handle both the global and
-> per-queue settings.
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+>  sound/pci/hda/Kconfig              |  12 +
+>  sound/pci/hda/Makefile             |   2 +
+>  sound/pci/hda/cirrus_scodec_test.c | 370 +++++++++++++++++++++++++++++
+>  sound/pci/hda/cs35l56_hda.c        |  10 +
+>  4 files changed, 394 insertions(+)
+>  create mode 100644 sound/pci/hda/cirrus_scodec_test.c
 > 
+> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+> index 2980bfef0a4c..706cdc589e6f 100644
+> --- a/sound/pci/hda/Kconfig
+> +++ b/sound/pci/hda/Kconfig
+> @@ -94,6 +94,18 @@ config SND_HDA_PATCH_LOADER
+>  config SND_HDA_CIRRUS_SCODEC
+>  	tristate
+>  
+> +config SND_HDA_CIRRUS_SCODEC_KUNIT_TEST
+> +	tristate "KUnit test for Cirrus side-codec library" if !KUNIT_ALL_TESTS
+> +	select SND_HDA_CIRRUS_SCODEC
+> +	depends on KUNIT
+> +	default KUNIT_ALL_TESTS
+> +	help
+> +	  This builds KUnit tests for the cirrus side-codec library.
+> +	  For more information on KUnit and unit tests in general,
+> +	  please refer to the KUnit documentation in
+> +	  Documentation/dev-tools/kunit/.
+> +	  If in doubt, say "N".
+> +
+>  config SND_HDA_SCODEC_CS35L41
+>  	tristate
+>  	select SND_HDA_GENERIC
+> diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
+> index aa445af0cf9a..793e296c3f64 100644
+> --- a/sound/pci/hda/Makefile
+> +++ b/sound/pci/hda/Makefile
+> @@ -29,6 +29,7 @@ snd-hda-codec-hdmi-objs :=	patch_hdmi.o hda_eld.o
+>  
+>  # side codecs
+>  snd-hda-cirrus-scodec-objs :=		cirrus_scodec.o
+> +snd-hda-cirrus-scodec-test-objs :=	cirrus_scodec_test.o
+>  snd-hda-scodec-cs35l41-objs :=		cs35l41_hda.o cs35l41_hda_property.o
+>  snd-hda-scodec-cs35l41-i2c-objs :=	cs35l41_hda_i2c.o
+>  snd-hda-scodec-cs35l41-spi-objs :=	cs35l41_hda_spi.o
+> @@ -58,6 +59,7 @@ obj-$(CONFIG_SND_HDA_CODEC_HDMI) += snd-hda-codec-hdmi.o
+>  
+>  # side codecs
+>  obj-$(CONFIG_SND_HDA_CIRRUS_SCODEC) += snd-hda-cirrus-scodec.o
+> +obj-$(CONFIG_SND_HDA_CIRRUS_SCODEC_KUNIT_TEST) += snd-hda-cirrus-scodec-test.o
+>  obj-$(CONFIG_SND_HDA_SCODEC_CS35L41) += snd-hda-scodec-cs35l41.o
+>  obj-$(CONFIG_SND_HDA_SCODEC_CS35L41_I2C) += snd-hda-scodec-cs35l41-i2c.o
+>  obj-$(CONFIG_SND_HDA_SCODEC_CS35L41_SPI) += snd-hda-scodec-cs35l41-spi.o
+> diff --git a/sound/pci/hda/cirrus_scodec_test.c b/sound/pci/hda/cirrus_scodec_test.c
+> new file mode 100644
+> index 000000000000..5eb590cd4fe2
+> --- /dev/null
+> +++ b/sound/pci/hda/cirrus_scodec_test.c
+> @@ -0,0 +1,370 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// KUnit test for the Cirrus side-codec library.
+> +//
+> +// Copyright (C) 2023 Cirrus Logic, Inc. and
+> +//                    Cirrus Logic International Semiconductor Ltd.
+> +
+> +#include <kunit/test.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include "cirrus_scodec.h"
+> +
+> +struct cirrus_scodec_test_gpio {
+> +	unsigned int pin_state;
+> +	struct gpio_chip chip;
+> +};
+> +
+> +struct cirrus_scodec_test_priv {
+> +	struct platform_device amp_pdev;
+> +	struct platform_device *gpio_pdev;
+> +	struct cirrus_scodec_test_gpio *gpio_priv;
+> +};
+> +
+> +static int cirrus_scodec_test_gpio_get_direction(struct gpio_chip *chip,
+> +						 unsigned int offset)
+> +{
+> +	return GPIO_LINE_DIRECTION_IN;
+> +}
+> +
+> +static int cirrus_scodec_test_gpio_direction_in(struct gpio_chip *chip,
+> +						unsigned int offset)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int cirrus_scodec_test_gpio_get(struct gpio_chip *chip, unsigned int offset)
+> +{
+> +	struct cirrus_scodec_test_gpio *gpio_priv = gpiochip_get_data(chip);
+> +
+> +	return !!(gpio_priv->pin_state & BIT(offset));
+> +}
+> +
+> +static int cirrus_scodec_test_gpio_direction_out(struct gpio_chip *chip,
+> +						 unsigned int offset, int value)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static void cirrus_scodec_test_gpio_set(struct gpio_chip *chip, unsigned int offset,
+> +					int value)
+> +{
+> +}
+> +
+> +static int cirrus_scodec_test_gpio_set_config(struct gpio_chip *gc,
+> +					      unsigned int offset,
+> +					      unsigned long config)
+> +{
+> +	switch (pinconf_to_config_param(config)) {
+> +	case PIN_CONFIG_OUTPUT:
+> +	case PIN_CONFIG_OUTPUT_ENABLE:
+> +		return -EOPNOTSUPP;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static const struct gpio_chip cirrus_scodec_test_gpio_chip = {
+> +	.label			= "cirrus_scodec_test_gpio",
+> +	.owner			= THIS_MODULE,
+> +	.request		= gpiochip_generic_request,
+> +	.free			= gpiochip_generic_free,
+> +	.get_direction		= cirrus_scodec_test_gpio_get_direction,
+> +	.direction_input	= cirrus_scodec_test_gpio_direction_in,
+> +	.get			= cirrus_scodec_test_gpio_get,
+> +	.direction_output	= cirrus_scodec_test_gpio_direction_out,
+> +	.set			= cirrus_scodec_test_gpio_set,
+> +	.set_config		= cirrus_scodec_test_gpio_set_config,
+> +	.base			= -1,
+> +	.ngpio			= 32,
+> +};
+> +
+> +static int cirrus_scodec_test_gpio_probe(struct platform_device *pdev)
+> +{
+> +	struct cirrus_scodec_test_gpio *gpio_priv;
+> +	int ret;
+> +
+> +	gpio_priv = devm_kzalloc(&pdev->dev, sizeof(*gpio_priv), GFP_KERNEL);
+> +	if (!gpio_priv)
+> +		return -ENOMEM;
+> +
+> +	/* GPIO core modifies our struct gpio_chip so use a copy */
+> +	gpio_priv->chip = cirrus_scodec_test_gpio_chip;
+> +	ret = devm_gpiochip_add_data(&pdev->dev, &gpio_priv->chip, gpio_priv);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "Failed to add gpiochip\n");
+> +
+> +	dev_set_drvdata(&pdev->dev, gpio_priv);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver cirrus_scodec_test_gpio_driver = {
+> +	.driver.name	= "cirrus_scodec_test_gpio_drv",
+> +	.probe		= cirrus_scodec_test_gpio_probe,
+> +};
+> +
+> +/* software_node referencing the gpio driver */
+> +static const struct software_node cirrus_scodec_test_gpio_swnode = {
+> +	.name = "cirrus_scodec_test_gpio",
+> +};
+> +
+> +static int cirrus_scodec_test_create_gpio(struct kunit *test)
+> +{
+> +	struct cirrus_scodec_test_priv *priv = test->priv;
+> +	int ret;
+> +
+> +	priv->gpio_pdev = platform_device_alloc(cirrus_scodec_test_gpio_driver.driver.name, -1);
+> +	if (!priv->gpio_pdev)
+> +		return -ENOMEM;
+> +
+> +	ret = device_add_software_node(&priv->gpio_pdev->dev, &cirrus_scodec_test_gpio_swnode);
+> +	if (ret) {
+> +		platform_device_put(priv->gpio_pdev);
+> +		KUNIT_FAIL(test, "Failed to add swnode to gpio: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = platform_device_add(priv->gpio_pdev);
+> +	if (ret) {
+> +		platform_device_put(priv->gpio_pdev);
+> +		KUNIT_FAIL(test, "Failed to add gpio platform device: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	priv->gpio_priv = dev_get_drvdata(&priv->gpio_pdev->dev);
+> +	if (!priv->gpio_priv) {
+> +		platform_device_put(priv->gpio_pdev);
+> +		KUNIT_FAIL(test, "Failed to get gpio private data: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void cirrus_scodec_test_set_gpio_ref_arg(struct software_node_ref_args *arg,
+> +						int gpio_num)
+> +{
+> +	struct software_node_ref_args template =
+> +		SOFTWARE_NODE_REFERENCE(&cirrus_scodec_test_gpio_swnode, gpio_num, 0);
 
-Yes. Please feel free to add me as a co-author. Actually, I'm new to
-submitting mlx-5 patches and a lot of credit goes to Joe Damato
-<jdamato@fastly.com> who had this initial idea and helped me develop it
-into this patch, so would you mind adding him as well? If you would like
-you could start with my patch-set and then revert it and add your own,
-or if you think that's too much trouble then I'm fine with however you'd
-like to proceed. I'd be happy to test your patch whenever it's ready.
+I'm observing the following error when building with:
 
->>
->> Currently, only gobal coalescing configuration queries or changes are
->> supported in the `mlx5` driver. However, per-queue operations are not, and
->> result in `EOPNOTSUPP` errors when attempted with `ethtool`. This patch
->> adds support for per-queue coalesce operations.
->>
->> Here's an example use case:
->>
->> - A mlx5 NIC is configured with 8 queues, each queue has its IRQ pinned to
->>    a unique CPU.
->> - Two custom RSS contexts are created: context 1 and context 2. Each
->>    context has a different set of queues where flows are distributed. For
->>    example, context 1 may distribute flows to queues 0-3, and context 2 may
->>    distribute flows to queues 4-7.
->> - A series of ntuple filters are installed which direct matching flows to
->>    RSS contexts. For example, perhaps port 80 is directed to context 1 and
->>    port 443 to context 2.
->> - Applications which receive network data associated with either context
->>    are pinned to the CPUs where the queues in the matching context have
->>    their IRQs pinned to maximize locality.
->>
->> The apps themselves, however, may have different requirements on latency vs
->> CPU usage and so setting the per queue IRQ coalesce values would be very
->> helpful.
->>
->> This patch would support this. In v1 DIM mode changes could only be changed
->> NIC-wide. However, in this iteration, DIM mode changes are supported
->> globally as well as on a per-queue basis.
->>
->> Here's an example:
->>
->> ```
->> $ sudo ethtool --per-queue eth0 queue_mask 0x4 --show-coalesce
->> Queue: 2
->> Adaptive RX: on  TX: on
->> stats-block-usecs: 0
->> sample-interval: 0
->> pkt-rate-low: 0
->> pkt-rate-high: 0
->>
->> rx-usecs: 8
->> rx-frames: 128
->> rx-usecs-irq: 0
->> rx-frames-irq: 0
->>
->> tx-usecs: 8
->> tx-frames: 128
->> tx-usecs-irq: 0
->> tx-frames-irq: 0
->> ```
->>
->> Now, let's try to set adaptive-rx off rx-usecs 16 for queue 2:
->>
->> ```
->> $ sudo ethtool --per-queue eth0 queue_mask 0x4 --coalesce adaptive-rx off
->> $ sudo ethtool --per-queue eth0 queue_mask 0x4 --coalesce rx-usecs 16
->> ```
->>
->> Confirm that the operation succeeded:
->>
->> ```
->> $ sudo ethtool --per-queue eth0 queue_mask 0x4 --show-coalesce
->> Queue: 2
->> Adaptive RX: off  TX: on
->> stats-block-usecs: 0
->> sample-interval: 0
->> pkt-rate-low: 0
->> pkt-rate-high: 0
->>
->> rx-usecs: 16
->> rx-frames: 32
->> rx-usecs-irq: 0
->> rx-frames-irq: 0
->>
->> tx-usecs: 8
->> tx-frames: 128
->> tx-usecs-irq: 0
->> tx-frames-irq: 0
->> ```
->>
->> The individual channel settings do not overwrite the global ones. However
->> Setting the global parameters will also reset all of the individual channel
->> options. For example, after we set the options for queue 2, we'll see that
->> the global options remain unchanged:
->> ```
->> $ sudo ethtool --show-coalesce eth0
->> Coalesce parameters for eth0:
->> Adaptive RX: on  TX: on
->> stats-block-usecs: 0
->> sample-interval: 0
->> pkt-rate-low: 0
->> pkt-rate-high: 0
->>
->> rx-usecs: 8
->> rx-frames: 128
->> rx-usecs-irq: 0
->> rx-frames-irq: 0
->>
->> tx-usecs: 16
->> tx-frames: 32
->> tx-usecs-irq: 0
->> tx-frames-irq: 0
->> ```
->>
->> But then if we set them, we'll see that the options for queue 2 have been
->> reset as well:
->> ```
->> $ sudo ethtool --coalesce eth0 adaptive-tx off
->>
->> $ sudo ethtool --show-coalesce eth0
->> Coalesce parameters for eth0:
->> Adaptive RX: on  TX: off
->> stats-block-usecs: 0
->> sample-interval: 0
->> pkt-rate-low: 0
->> pkt-rate-high: 0
->>
->> rx-usecs: 8
->> rx-frames: 128
->> rx-usecs-irq: 0
->> rx-frames-irq: 0
->>
->> tx-usecs: 16
->> tx-frames: 32
->> tx-usecs-irq: 0
->> tx-frames-irq: 0
->>
->> $ sudo ethtool --per-queue eth0 queue_mask 0x4 --show-coalesce
->> Queue: 2
->> Adaptive RX: on  TX: off
->> stats-block-usecs: 0
->> sample-interval: 0
->> pkt-rate-low: 0
->> pkt-rate-high: 0
->>
->> rx-usecs: 8
->> rx-frames: 128
->> rx-usecs-irq: 0
->> rx-frames-irq: 0
->>
->> tx-usecs: 16
->> tx-frames: 32
->> tx-usecs-irq: 0
->> tx-frames-irq: 0
->> ```
->>
->> Previously a global `struct mlx5e_params` stored the options in
->> `struct mlx5e_priv.channels.params`. That was preserved, but a channel-
->> specific instance was added as well, in `struct mlx5e_channel.params`.
->>
->> Best Regards,
->>
->> ***************************************************************************
->>
->> Nabil S. Alramli (4):
->>    mlx5: Add mlx5e_param to individual mlx5e_channel and preserve them
->>      through mlx5e_open_channels()
->>    mlx5: Add queue number parameter to mlx5e_safe_switch_params()
+$ make LLVM=1 -j128 allmodconfig sound/pci/hda/cirrus_scodec_test.o
+
+sound/pci/hda/cirrus_scodec_test.c:151:60: error: initializer element is not a compile-time constant
+  151 |                 SOFTWARE_NODE_REFERENCE(&cirrus_scodec_test_gpio_swnode, gpio_num, 0);
+      |                                                                          ^~~~~~~~
+/builds/linux/include/linux/property.h:291:37: note: expanded from macro 'SOFTWARE_NODE_REFERENCE'
+  291 |         .nargs = ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1, \
+      |                                            ^~~~~~~~~~~
+/builds/linux/include/linux/kernel.h:57:75: note: expanded from macro 'ARRAY_SIZE'
+   57 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+      |                                                                           ^~~
+/builds/linux/include/linux/compiler.h:228:59: note: expanded from macro '__must_be_array'
+  228 | #define __must_be_array(a)      BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+      |                                                                ^
+/builds/linux/include/linux/compiler_types.h:366:63: note: expanded from macro '__same_type'
+  366 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+      |                                                               ^
+/builds/linux/include/linux/build_bug.h:16:62: note: expanded from macro 'BUILD_BUG_ON_ZERO'
+   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+      |                                                              ^
+
+This needs to be fixed before being sent to mainline else it will break
+our builds; our CI is already red in -next over this.
+
+> +
+> +	*arg = template;
+> +}
+> +
+> +static int cirrus_scodec_test_set_spkid_swnode(struct kunit *test,
+> +					       struct device *dev,
+> +					       struct software_node_ref_args *args,
+> +					       int num_args)
+> +{
+> +	const struct property_entry props_template[] = {
+> +		PROPERTY_ENTRY_REF_ARRAY_LEN("spk-id-gpios", args, num_args),
+> +		{ }
+> +	};
+> +	struct property_entry *props;
+> +	struct software_node *node;
+> +
+> +	node = kunit_kzalloc(test, sizeof(*node), GFP_KERNEL);
+> +	if (!node)
+> +		return -ENOMEM;
+> +
+> +	props = kunit_kzalloc(test, sizeof(props_template), GFP_KERNEL);
+> +	if (!props)
+> +		return -ENOMEM;
+> +
+> +	memcpy(props, props_template, sizeof(props_template));
+> +	node->properties = props;
+> +
+> +	return device_add_software_node(dev, node);
+> +}
+> +
+> +struct cirrus_scodec_test_spkid_param {
+> +	int num_amps;
+> +	int gpios_per_amp;
+> +	int num_amps_sharing;
+> +};
+> +
+> +static void cirrus_scodec_test_spkid_parse(struct kunit *test)
+> +{
+> +	struct cirrus_scodec_test_priv *priv = test->priv;
+> +	const struct cirrus_scodec_test_spkid_param *param = test->param_value;
+> +	int num_spk_id_refs = param->num_amps * param->gpios_per_amp;
+> +	struct software_node_ref_args *refs;
+> +	struct device *dev = &priv->amp_pdev.dev;
+> +	unsigned int v;
+> +	int i, ret;
+> +
+> +	refs = kunit_kcalloc(test, num_spk_id_refs, sizeof(*refs), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, refs);
+> +
+> +	for (i = 0, v = 0; i < num_spk_id_refs; ) {
+> +		cirrus_scodec_test_set_gpio_ref_arg(&refs[i++], v++);
+> +
+> +		/*
+> +		 * If amps are sharing GPIOs repeat the last set of
+> +		 * GPIOs until we've done that number of amps.
+> +		 * We have done all GPIOs for an amp when i is a multiple
+> +		 * of gpios_per_amp.
+> +		 * We have done all amps sharing the same GPIOs when i is
+> +		 * a multiple of (gpios_per_amp * num_amps_sharing).
+> +		 */
+> +		if (!(i % param->gpios_per_amp) &&
+> +		    (i % (param->gpios_per_amp * param->num_amps_sharing)))
+> +			v -= param->gpios_per_amp;
+> +	}
+> +
+> +	ret = cirrus_scodec_test_set_spkid_swnode(test, dev, refs, num_spk_id_refs);
+> +	KUNIT_EXPECT_EQ_MSG(test, ret, 0, "Failed to add swnode\n");
+> +
+> +	for (i = 0; i < param->num_amps; ++i) {
+> +		for (v = 0; v < (1 << param->gpios_per_amp); ++v) {
+> +			/* Set only the GPIO bits used by this amp */
+> +			priv->gpio_priv->pin_state =
+> +				v << (param->gpios_per_amp * (i / param->num_amps_sharing));
+> +
+> +			ret = cirrus_scodec_get_speaker_id(dev, i, param->num_amps, -1);
+> +			KUNIT_EXPECT_EQ_MSG(test, ret, v,
+> +					    "get_speaker_id failed amp:%d pin_state:%#x\n",
+> +					    i, priv->gpio_priv->pin_state);
+> +		}
+> +	}
+> +}
+> +
+> +static void cirrus_scodec_test_no_spkid(struct kunit *test)
+> +{
+> +	struct cirrus_scodec_test_priv *priv = test->priv;
+> +	struct device *dev = &priv->amp_pdev.dev;
+> +	int ret;
+> +
+> +	ret = cirrus_scodec_get_speaker_id(dev, 0, 4, -1);
+> +	KUNIT_EXPECT_EQ(test, ret, -ENOENT);
+> +}
+> +
+> +static void cirrus_scodec_test_dev_release(struct device *dev)
+> +{
+> +}
+> +
+> +static int cirrus_scodec_test_case_init(struct kunit *test)
+> +{
+> +	struct cirrus_scodec_test_priv *priv;
+> +	int ret;
+> +
+> +	priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	test->priv = priv;
+> +
+> +	/* Create dummy GPIO */
+> +	ret = cirrus_scodec_test_create_gpio(test);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* Create dummy amp driver dev */
+> +	priv->amp_pdev.name = "cirrus_scodec_test_amp_drv";
+> +	priv->amp_pdev.id = -1;
+> +	priv->amp_pdev.dev.release = cirrus_scodec_test_dev_release;
+> +	ret = platform_device_register(&priv->amp_pdev);
+> +	KUNIT_ASSERT_GE_MSG(test, ret, 0, "Failed to register amp platform device\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static void cirrus_scodec_test_case_exit(struct kunit *test)
+> +{
+> +	struct cirrus_scodec_test_priv *priv = test->priv;
+> +
+> +	if (priv->amp_pdev.name)
+> +		platform_device_unregister(&priv->amp_pdev);
+> +
+> +	if (priv->gpio_pdev) {
+> +		device_remove_software_node(&priv->gpio_pdev->dev);
+> +		platform_device_unregister(priv->gpio_pdev);
+> +	}
+> +}
+> +
+> +static int cirrus_scodec_test_suite_init(struct kunit_suite *suite)
+> +{
+> +	int ret;
+> +
+> +	/* Register mock GPIO driver */
+> +	ret = platform_driver_register(&cirrus_scodec_test_gpio_driver);
+> +	if (ret < 0) {
+> +		kunit_err(suite, "Failed to register gpio platform driver, %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void cirrus_scodec_test_suite_exit(struct kunit_suite *suite)
+> +{
+> +	platform_driver_unregister(&cirrus_scodec_test_gpio_driver);
+> +}
+> +
+> +static const struct cirrus_scodec_test_spkid_param cirrus_scodec_test_spkid_param_cases[] = {
+> +	{ .num_amps = 2, .gpios_per_amp = 1, .num_amps_sharing = 1 },
+> +	{ .num_amps = 2, .gpios_per_amp = 2, .num_amps_sharing = 1 },
+> +	{ .num_amps = 2, .gpios_per_amp = 3, .num_amps_sharing = 1 },
+> +	{ .num_amps = 2, .gpios_per_amp = 4, .num_amps_sharing = 1 },
+> +	{ .num_amps = 3, .gpios_per_amp = 1, .num_amps_sharing = 1 },
+> +	{ .num_amps = 3, .gpios_per_amp = 2, .num_amps_sharing = 1 },
+> +	{ .num_amps = 3, .gpios_per_amp = 3, .num_amps_sharing = 1 },
+> +	{ .num_amps = 3, .gpios_per_amp = 4, .num_amps_sharing = 1 },
+> +	{ .num_amps = 4, .gpios_per_amp = 1, .num_amps_sharing = 1 },
+> +	{ .num_amps = 4, .gpios_per_amp = 2, .num_amps_sharing = 1 },
+> +	{ .num_amps = 4, .gpios_per_amp = 3, .num_amps_sharing = 1 },
+> +	{ .num_amps = 4, .gpios_per_amp = 4, .num_amps_sharing = 1 },
+> +
+> +	/* Same GPIO shared by all amps */
+> +	{ .num_amps = 2, .gpios_per_amp = 1, .num_amps_sharing = 2 },
+> +	{ .num_amps = 2, .gpios_per_amp = 2, .num_amps_sharing = 2 },
+> +	{ .num_amps = 2, .gpios_per_amp = 3, .num_amps_sharing = 2 },
+> +	{ .num_amps = 2, .gpios_per_amp = 4, .num_amps_sharing = 2 },
+> +	{ .num_amps = 3, .gpios_per_amp = 1, .num_amps_sharing = 3 },
+> +	{ .num_amps = 3, .gpios_per_amp = 2, .num_amps_sharing = 3 },
+> +	{ .num_amps = 3, .gpios_per_amp = 3, .num_amps_sharing = 3 },
+> +	{ .num_amps = 3, .gpios_per_amp = 4, .num_amps_sharing = 3 },
+> +	{ .num_amps = 4, .gpios_per_amp = 1, .num_amps_sharing = 4 },
+> +	{ .num_amps = 4, .gpios_per_amp = 2, .num_amps_sharing = 4 },
+> +	{ .num_amps = 4, .gpios_per_amp = 3, .num_amps_sharing = 4 },
+> +	{ .num_amps = 4, .gpios_per_amp = 4, .num_amps_sharing = 4 },
+> +
+> +	/* Two sets of shared GPIOs */
+> +	{ .num_amps = 4, .gpios_per_amp = 1, .num_amps_sharing = 2 },
+> +	{ .num_amps = 4, .gpios_per_amp = 2, .num_amps_sharing = 2 },
+> +	{ .num_amps = 4, .gpios_per_amp = 3, .num_amps_sharing = 2 },
+> +	{ .num_amps = 4, .gpios_per_amp = 4, .num_amps_sharing = 2 },
+> +};
+> +
+> +static void cirrus_scodec_test_spkid_param_desc(const struct cirrus_scodec_test_spkid_param *param,
+> +						char *desc)
+> +{
+> +	snprintf(desc, KUNIT_PARAM_DESC_SIZE, "amps:%d gpios_per_amp:%d num_amps_sharing:%d",
+> +		 param->num_amps, param->gpios_per_amp, param->num_amps_sharing);
+> +}
+> +
+> +KUNIT_ARRAY_PARAM(cirrus_scodec_test_spkid, cirrus_scodec_test_spkid_param_cases,
+> +		  cirrus_scodec_test_spkid_param_desc);
+> +
+> +static struct kunit_case cirrus_scodec_test_cases[] = {
+> +	KUNIT_CASE_PARAM(cirrus_scodec_test_spkid_parse, cirrus_scodec_test_spkid_gen_params),
+> +	KUNIT_CASE(cirrus_scodec_test_no_spkid),
+> +	{ } /* terminator */
+> +};
+> +
+> +static struct kunit_suite cirrus_scodec_test_suite = {
+> +	.name = "snd-hda-scodec-cs35l56-test",
+> +	.suite_init = cirrus_scodec_test_suite_init,
+> +	.suite_exit = cirrus_scodec_test_suite_exit,
+> +	.init = cirrus_scodec_test_case_init,
+> +	.exit = cirrus_scodec_test_case_exit,
+> +	.test_cases = cirrus_scodec_test_cases,
+> +};
+> +
+> +kunit_test_suite(cirrus_scodec_test_suite);
+> +
+> +MODULE_IMPORT_NS(SND_HDA_CIRRUS_SCODEC);
+> +MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.cirrus.com>");
+> +MODULE_LICENSE("GPL");
+> diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
+> index 44f5ca0e73e3..d3cfdad7dd76 100644
+> --- a/sound/pci/hda/cs35l56_hda.c
+> +++ b/sound/pci/hda/cs35l56_hda.c
+> @@ -1035,6 +1035,16 @@ const struct dev_pm_ops cs35l56_hda_pm_ops = {
+>  };
+>  EXPORT_SYMBOL_NS_GPL(cs35l56_hda_pm_ops, SND_HDA_SCODEC_CS35L56);
+>  
+> +#if IS_ENABLED(CONFIG_SND_HDA_SCODEC_CS35L56_KUNIT_TEST)
+> +/* Hooks to export static function to KUnit test */
+> +
+> +int cs35l56_hda_test_hook_get_speaker_id(struct device *dev, int amp_index, int num_amps)
+> +{
+> +	return cs35l56_hda_get_speaker_id(dev, amp_index, num_amps);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cs35l56_hda_test_hook_get_speaker_id, SND_HDA_SCODEC_CS35L56);
+> +#endif
+> +
+>  MODULE_DESCRIPTION("CS35L56 HDA Driver");
+>  MODULE_IMPORT_NS(SND_HDA_CIRRUS_SCODEC);
+>  MODULE_IMPORT_NS(SND_HDA_CS_DSP_CONTROLS);
+> -- 
+> 2.30.2
 > 
-> We currently are working on a variation of this without needing to use
-> mlx5e_safe_switch_params for updating individual channel states (our
-> variation of the feature avoids needing to place an instance of
-> mlx5e_params per channel).
-> 
-
-Oh I'm curious to see how this solution works. I look forward to your
-upcoming patch, and would be happy to review it as well.
-
->>    mlx5: Implement mlx5e_ethtool_{get,set}_per_queue_coalesce() to
->>      support per-queue operations
->>    mlx5: Add {get,set}_per_queue_coalesce()
->>
->>   drivers/net/ethernet/mellanox/mlx5/core/en.h  |   6 +-
->>   .../ethernet/mellanox/mlx5/core/en_dcbnl.c    |   2 +-
->>   .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 214 +++++++++++++-----
->>   .../net/ethernet/mellanox/mlx5/core/en_main.c |  76 +++++--
->>   .../ethernet/mellanox/mlx5/core/ipoib/ipoib.c |   2 +-
->>   5 files changed, 222 insertions(+), 78 deletions(-)
-> 
-> --
-> Thanks,
-> 
-> Rahul Rameshbabu
-
-Best Regards,
-
--- Nabil S. Alramli
-
