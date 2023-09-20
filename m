@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 052BB7A702B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7274A7A7036
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbjITCKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 22:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
+        id S231971AbjITCKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 22:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231840AbjITCKC (ORCPT
+        with ESMTP id S231840AbjITCKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 22:10:02 -0400
+        Tue, 19 Sep 2023 22:10:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D556BE;
-        Tue, 19 Sep 2023 19:09:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ED8CC433CD;
-        Wed, 20 Sep 2023 02:09:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F74CE;
+        Tue, 19 Sep 2023 19:10:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4790C433CC;
+        Wed, 20 Sep 2023 02:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695175797;
-        bh=X231F0W4UNjrve3JRnUM4cCtW/rxv8gXIFxjWMkm1Yw=;
+        s=k20201202; t=1695175800;
+        bh=Vv/k0XfU635pKagxS1yVwKInDfpvPuQUWW4tmVK3bH4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c5BR//i5gD2qkTtwKeEJrlvf7gPrylBzHrbXB2qeguKAO/fEhtc221UyK3wSlu6kB
-         OH4ZX0ain5DaFpJnhe3dDNBQnpJdRtzRcuVHcfmMPUmirvRXGRWdo/rAmevd3V4wsw
-         oWgXQ7Zm4tzaj2RxAOZcYtAqNMYTOKEPTu92QKMWCBEux5aHAYfcX52DNClYJ+GYjD
-         7nekmamYzI7+Lj3Zt/K4eaiRGnd8nuCE42twU5YYnolgn8RIHGW+oCsWdJKBzkO7I/
-         wDIpIdDbc9G+HKJeE3R9fkd9e8RXVkrTDDWqKZnsMi3AFZrOE54ZbaTtNQ6hzPvhtC
-         qpI+fo1Hu5zjQ==
+        b=KZTCNhCkAGmZJrqZcS/ojYeWZSoHbkfPlQdikglz5QftJkjuSufYxt2OY3ow4zkqp
+         eMvZAA/KEf7fJYeOS0KcKtXMzwvVHtHv6eIdFx8CaX5CPE8k+yMNM+cMgHaLZnF7LM
+         Eqy/cQT7qlkbuSidYKimEkDe0WDyzs46yQWUs/gqLox0GZfHLYGzT4VapLW/bzmkkx
+         OmbhbKXAo2DSiReq1ctdSIKiz/ZJ4CeNKWHPU8AFnvHNOuEeAj7rvBND5oKmMsBJaN
+         aMO90G0Adc9WUwobdFBqg0MXNmEtMwT72WT+FJ0Omz5sH076w3Qgy+Q8HKc2sn7KG9
+         Sxnod11HithRQ==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        Andy Gross <agross@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+To:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH 1/2] arm64: dts: qcom: sc7180: Move trogdor rt5682s bits to a fragment
-Date:   Tue, 19 Sep 2023 19:13:57 -0700
-Message-ID: <169517603992.822793.4084645192755492251.b4-ty@kernel.org>
+        Conor Dooley <conor+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Subject: Re: [PATCH 0/5] RB1 features
+Date:   Tue, 19 Sep 2023 19:14:00 -0700
+Message-ID: <169517603987.822793.12171416203818012201.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3e01923220@changeid>
-References: <20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3e01923220@changeid>
+In-Reply-To: <20230906-topic-rb1_features_sans_icc-v1-0-e92ce6fbde16@linaro.org>
+References: <20230906-topic-rb1_features_sans_icc-v1-0-e92ce6fbde16@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -57,23 +57,29 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 16 Aug 2023 11:21:53 -0700, Douglas Anderson wrote:
-> Several trogdor boards have moved from the older rt5862i to the newer
-> rt5862s, at least on newer revisions of boards. Let's get rid of the
-> dts duplication across boards and promote this to a fragment.
+On Wed, 06 Sep 2023 11:24:54 +0200, Konrad Dybcio wrote:
+> This series brings:
 > 
-> Note: The old boards used to override the "compatible" in the "sound"
-> node with the exact same thing that was in "sc7180-trogdor.dtsi"
-> ("google,sc7180-trogdor"). I got rid of that.
+> - a boot fix (Qualcomm's promises of updated hw never materialized)
+> - regulator fixes (way back then schema didn't notice my mistakes)
+> - GPIO LEDs
+> - USB3
+> - remote processors
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] arm64: dts: qcom: sc7180: Move trogdor rt5682s bits to a fragment
-      commit: 8ff1aaba032dd00e71aadeafa0ef2f79d3693c99
-[2/2] arm64: dts: qcom: sc7180: Reorganize trogdor rt5682 audio codec dts
-      commit: 214945cbf375cc27d684f4cd2abb569e8c888688
+[1/5] arm64: dts: qcom: qrb2210-rb1: Swap UART index
+      commit: 973c015facabcbd320063648010942c51992c1a1
+[2/5] arm64: dts: qcom: qrb2210-rb1: Fix regulators
+      commit: 31bee70793b67f4b428825434542afc72ddb2b3b
+[3/5] arm64: dts: qcom: qrb2210-rb1: Enable remote processors
+      commit: 9692ccc49583cd43184ea192af127635877e0f24
+[4/5] arm64: dts: qcom: qrb2210-rb1: Add GPIO LEDs
+      commit: 02a2fcfbb835bac0c523b3f89326bc1c69f83ce0
+[5/5] arm64: dts: qcom: qrb2210-rb1: Hook up USB3
+      commit: 59f9ff79cd9cf3bc10743d61662b5729fcffff24
 
 Best regards,
 -- 
