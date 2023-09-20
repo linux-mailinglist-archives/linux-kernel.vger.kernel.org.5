@@ -2,80 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4FB7A8FAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFB27A8FAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbjITXCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 19:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
+        id S229645AbjITXCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 19:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjITXB5 (ORCPT
+        with ESMTP id S229497AbjITXCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 19:01:57 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346CBA3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:01:51 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-7955636f500so15553139f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:01:51 -0700 (PDT)
+        Wed, 20 Sep 2023 19:02:05 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D595FC9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:01:58 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-502defbb0c3so654215e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:01:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1695250910; x=1695855710; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=YHS0g09D6vc1thRPLJnGpAPdP+yVHQW0z02dWszN1A0=;
-        b=PaieXlJHRsMjfC3fjDiReZ9AwKblQM3mT8XDx3Nfj8mdRGgLBgdZSb9cddSfQVREbv
-         mTj6vO4BZf8ebNw3VT9DNHgFnYqqu2XR1eIyqk2dYj0JRC4aIeDF8neBqQzP5wV/E3AA
-         7K4P+si7AGjg23D39b2j4MwFnR4ySWx67n/pZPDHFHevs8offQ9UDP9iQsXy8O7yQFDE
-         wbhuAJeUVamMS+W8ZiJK7OItopGYmxachoV1KdahfjTgTnxvY3wjGSgzB9suVGX/lVAJ
-         KGCQXsPNV/bE5oJ7xQWkPeAOENu33bvYGCcU0lToPp5NxgpJgWbwYd/ZKWelDfELaCJa
-         YxFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695250910; x=1695855710;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+        d=atishpatra.org; s=google; t=1695250917; x=1695855717; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YHS0g09D6vc1thRPLJnGpAPdP+yVHQW0z02dWszN1A0=;
-        b=o3Ilr6m7OBVmAakFVu2ydgSejPrkfEMh2rBYIoVtx9mQGSAAkWDuBoIFfxYbMYwsln
-         clwq9B0BWac/3aQOVG5dRTKQwuGxaTMMs43LaNVA+EuN7f6BtO08tDAekHKiafBw9CjE
-         9+6bd7wB6VThyTbUJyXKIuObWjyom16FzCWXF5nIgMBqTICE1tcy/cbEhZ0ZFd/lqwmJ
-         mcX21dxqgGyYrkqlvVwzQ+H6j/KRlnFT6EnywP3ORlKG0xWAiO0Z6/+1Z1uTU86W53pJ
-         UwCHvOftBu71o7vzxmFOgv8X4xiZ347s0FBu34ozSMK/9043QrNC3cuFxftGLnLvPbJW
-         AQTw==
-X-Gm-Message-State: AOJu0YzPLC49B4t6eQMoNMXpuLq8Pd75yTSos4S8UrlollI4jCFKD0+h
-        dJI37rQnyV26LVv9ZDOnQCUa7Q==
-X-Google-Smtp-Source: AGHT+IEHrF3yRt5OaS3ynJdUvHgMnpCvlGeaGnJh9f4vOkGFecidC0lD/kLQsvkNbHNd0tUPsMmf/g==
-X-Received: by 2002:a05:6e02:1b06:b0:349:36e1:10fb with SMTP id i6-20020a056e021b0600b0034936e110fbmr5083232ilv.18.1695250910530;
-        Wed, 20 Sep 2023 16:01:50 -0700 (PDT)
-Received: from localhost ([158.51.192.73])
-        by smtp.gmail.com with ESMTPSA id a17-20020a62bd11000000b0068e38cf211bsm54027pff.197.2023.09.20.16.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 16:01:50 -0700 (PDT)
-References: <20230906204857.85619-1-manmshuk@gmail.com>
-User-agent: mu4e 1.10.7; emacs 28.2.50
-From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-To:     Manmohan Shukla <manmshuk@gmail.com>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: error: Markdown style nit
-Date:   Wed, 20 Sep 2023 16:01:13 -0700
-In-reply-to: <20230906204857.85619-1-manmshuk@gmail.com>
-Message-ID: <87cyyc78km.fsf@metaspace.dk>
+        bh=OVI1kQAYY1H6Rup9yJAb3ULOmSiNWwKwDibucQ/HouI=;
+        b=fwJo3UKZc0m5WSRUUzNViO6C1mzp2o2LOWkb4Me17MDKEx5NHEIHWuY3IhBpqNIGhe
+         VMFbj53NcMmSC3xb7HKoKM1u4SU/PbYs4narHAVAgKPY0dPnvx2aYiec+Fpx1H58kcok
+         6kbE0RckCEd8diItpYzfZMjJta0g7Uk9Z49Bo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695250917; x=1695855717;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OVI1kQAYY1H6Rup9yJAb3ULOmSiNWwKwDibucQ/HouI=;
+        b=DRJ3y1e0ol2sv9VQJXn9GWkhMwIEiLChu5Y8HvK96058xQt/qVoEdPyg0NEWFUvROQ
+         CeMX/ryTggNrC4JJZH9Z4HTBrnWpSO9c5WU58E/nei9WnNQUwE7cHlmNsK8OPFBfFSGX
+         gW7kiMlnnWuZfUM1VlfWqQcZt5lZQ/WTXa3Ge/4bBv2EUfYyKiFuAgyKkdzGcVB2IPGC
+         CO7pjoOmOCMZMucvk/c97OBMID24K9ttPBsa8GSZmpuzD8Gp6mi+NeuxsIo6iZypSLZ5
+         vQQKFckEvmZQMKBhfNU+um84tc1pNxEZL5YKe+cuPo2tLOnnbthIjWv2qpghNYslChoL
+         TIKQ==
+X-Gm-Message-State: AOJu0YyPr2QDB7CmPMLpVWFw6qB34UVhpjR9OsfrwmFCWgQ5Ytzmok72
+        gYNofc+/UH9w0NviHZCZ07MtYyqqJqubaxhzJLu0
+X-Google-Smtp-Source: AGHT+IFXnWGXW8cB93bXiMz9Jl+KdpDWFEF+9MqDskY1cIxpbbthxUKanZZmg166RPl3Bw0vao3h2/sb983B2DCTplM=
+X-Received: by 2002:a05:6512:398a:b0:502:fff9:64da with SMTP id
+ j10-20020a056512398a00b00502fff964damr4109727lfu.53.1695250916994; Wed, 20
+ Sep 2023 16:01:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230918180646.1398384-1-apatel@ventanamicro.com>
+ <20230918180646.1398384-4-apatel@ventanamicro.com> <CAOnJCUJYDHtbYS4js7PSAeLqT4sL5zi7DT5xeSww+5Nvs2UhcA@mail.gmail.com>
+ <CAK9=C2UbjOGyxo8oP36Tinjhv1jRpCb+hVbZCOJ70G4-WiHw1g@mail.gmail.com>
+In-Reply-To: <CAK9=C2UbjOGyxo8oP36Tinjhv1jRpCb+hVbZCOJ70G4-WiHw1g@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Wed, 20 Sep 2023 16:01:45 -0700
+Message-ID: <CAOnJCULajHa6H6Rt75rNepYaT-3+Bo=1hQVb_oozPZK13N6yKQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] KVM: riscv: selftests: Fix ISA_EXT register handling
+ in get-reg-list
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Manmohan Shukla <manmshuk@gmail.com> writes:
-
-> This patch fixes a trivial markdown style nit in the `SAFETY` comment.
+On Wed, Sep 20, 2023 at 6:56=E2=80=AFAM Anup Patel <apatel@ventanamicro.com=
+> wrote:
 >
-> Signed-off-by: Manmohan Shukla <manmshuk@gmail.com>
-> ---
+> On Wed, Sep 20, 2023 at 1:24=E2=80=AFAM Atish Patra <atishp@atishpatra.or=
+g> wrote:
+> >
+> > On Mon, Sep 18, 2023 at 11:07=E2=80=AFAM Anup Patel <apatel@ventanamicr=
+o.com> wrote:
+> > >
+> > > Same set of ISA_EXT registers are not present on all host because
+> > > ISA_EXT registers are visible to the KVM user space based on the
+> > > ISA extensions available on the host. Also, disabling an ISA
+> > > extension using corresponding ISA_EXT register does not affect
+> > > the visibility of the ISA_EXT register itself.
+> > >
+> > > Based on the above, we should filter-out all ISA_EXT registers.
+> > >
+> >
+> > In that case, we don't need the switch case any more. Just a
+> > conditional check with KVM_RISCV_ISA_EXT_MAX should be sufficient.
+>
+> If we compare against KVM_RISCV_ISA_EXT_MAX then we will forget
+> adding test configs for newer ISA extensions.
+>
 
-Reviewed-by: Andreas Hindborg <a.hindborg@samsung.com>
+I feel it just bloats the code as we may end up in hundreds of
+extensions in the future
+given the state of the extension scheme.
 
+> >
+> > > Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
+> > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > > ---
+> > >  .../selftests/kvm/riscv/get-reg-list.c        | 35 +++++++++++------=
+--
+> > >  1 file changed, 21 insertions(+), 14 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools=
+/testing/selftests/kvm/riscv/get-reg-list.c
+> > > index d8ecacd03ecf..76c0ad11e423 100644
+> > > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > > @@ -14,17 +14,33 @@
+> > >
+> > >  bool filter_reg(__u64 reg)
+> > >  {
+> > > +       switch (reg & ~REG_MASK) {
+> > >         /*
+> > > -        * Some ISA extensions are optional and not present on all ho=
+st,
+> > > -        * but they can't be disabled through ISA_EXT registers when =
+present.
+> > > -        * So, to make life easy, just filtering out these kind of re=
+gisters.
+> > > +        * Same set of ISA_EXT registers are not present on all host =
+because
+> > > +        * ISA_EXT registers are visible to the KVM user space based =
+on the
+> > > +        * ISA extensions available on the host. Also, disabling an I=
+SA
+> > > +        * extension using corresponding ISA_EXT register does not af=
+fect
+> > > +        * the visibility of the ISA_EXT register itself.
+> > > +        *
+> > > +        * Based on above, we should filter-out all ISA_EXT registers=
+.
+> > >          */
+> > > -       switch (reg & ~REG_MASK) {
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_A:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_C:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_D:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_F:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_H:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_I:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_M:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVPBMT:
+> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSTC:
+> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVINVAL:
+> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHINTPAUSE:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOM:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOZ:
+> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBB:
+> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSAIA:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_V:
+> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVNAPOT:
+> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBA:
+> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBS:
+> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICNTR:
+> > > @@ -50,12 +66,7 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *v=
+cpu, int ext)
+> > >         unsigned long value;
+> > >
+> > >         ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> > > -       if (ret) {
+> > > -               printf("Failed to get ext %d", ext);
+> > > -               return false;
+> > > -       }
+> > > -
+> > > -       return !!value;
+> > > +       return (ret) ? false : !!value;
+> > >  }
+> > >
+> > >  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
+> > > @@ -506,10 +517,6 @@ static __u64 base_regs[] =3D {
+> > >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_=
+REG_RISCV_TIMER_REG(time),
+> > >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_=
+REG_RISCV_TIMER_REG(compare),
+> > >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_=
+REG_RISCV_TIMER_REG(state),
+> > > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | =
+KVM_RISCV_ISA_EXT_A,
+> > > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | =
+KVM_RISCV_ISA_EXT_C,
+> > > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | =
+KVM_RISCV_ISA_EXT_I,
+> > > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | =
+KVM_RISCV_ISA_EXT_M,
+> > >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | =
+KVM_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_V01,
+> > >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | =
+KVM_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_TIME,
+> > >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | =
+KVM_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_IPI,
+> > > --
+> > > 2.34.1
+> > >
+> >
+> >
+> > --
+> > Regards,
+> > Atish
+>
+> Regards,
+> Anup
+
+
+
+--=20
+Regards,
+Atish
