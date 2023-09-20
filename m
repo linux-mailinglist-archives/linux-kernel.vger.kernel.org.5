@@ -2,136 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B787A7198
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 06:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431447A71A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 06:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbjITEsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 00:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
+        id S231630AbjITEws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 00:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjITEsV (ORCPT
+        with ESMTP id S229534AbjITEwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 00:48:21 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF60D9C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:48:14 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4051f8e1ba0so5708335e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695185293; x=1695790093; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=m1zNdUzVc6Pr4pcVKMskltzftfT89TOksGte9XFhwTk=;
-        b=NNPGHjV53xANPWwuwjnbRMVW11TDIyX6tRzO2So/mXhIYKDkn8IPbQkLNlLe7CUGPR
-         2Dg5tYoH33JqtyKSPzztxF11jy3y+rR3RwAXA12dck7wlzlD5EthXdnHM/e0lp69VDyy
-         L7wldaV8/Y5vX+Bf8SciY7BTDPlBYmvX9WV6BLpB6Vo4BkbZkQuahtxOzSrYTKJ3yS9l
-         dJ0HQdmKQZrIVj6D0BBdnkBHzWEMGAotkoH9okLmzWnStK2bsmT/fSoIIvWaEmeMjBN3
-         ywegrRZYL7yRHCAR4ofb6n5vdWjIXby6b8ArjfriVqIdY4ak1yUqs7i8f2AdNvOh84Cz
-         J+zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695185293; x=1695790093;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m1zNdUzVc6Pr4pcVKMskltzftfT89TOksGte9XFhwTk=;
-        b=ucaI8gezjTcICy0tmHVqh1IBvUR+Din34ZbHmFXjcGF00fOqunatyzqRcYqtbezNjJ
-         gZW1mOAPZkoWKiT0I1rD8cZmBEvWDTMseUv2sJzVnieExVs/7B49P/zHVjZTRlGa7wRq
-         LJ/3qHNg2mxSFbxD+xlKR0ChH1JZZwyjxOG2gkrDdfauMp6Kgg723IonBWCLLE1K3IDS
-         ahiTeJblOGnUcm9cZB5tXR+3lhTadBEQ3WCrBJP12CY2JzkmlQVD+4lMQaBvSka7pa0H
-         v9i7CHzkFu9P+FcfJsamlq/ZvcKA3sCS5PjppjE7GDEQM1B8cyj0de5BxX9HiQ9e3nBO
-         G2hw==
-X-Gm-Message-State: AOJu0Yz87nn7WJh7gR4cJq/cOkpSrKNjAuHZ1vAb04LqJo3E6AWWhnNd
-        JwrR+0F2qGGaAUxuRED3qM8NZw==
-X-Google-Smtp-Source: AGHT+IHNTj0/2lmbfWYjEmf3kCedBQ4IVwJ4KHiViE5ekRfu5L22Fq6enMo4axMx60gYT7DGOhz9tg==
-X-Received: by 2002:a7b:cd8c:0:b0:401:d2cb:e6f3 with SMTP id y12-20020a7bcd8c000000b00401d2cbe6f3mr1247667wmj.1.1695185293390;
-        Tue, 19 Sep 2023 21:48:13 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id 15-20020a05600c020f00b00401d8810c8bsm805326wmi.15.2023.09.19.21.48.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 21:48:12 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 06:48:11 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Anup Patel <apatel@ventanamicro.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 4/4] KVM: riscv: selftests: Selectively filter-out AIA
- registers
-Message-ID: <20230920-bc0e3956d144be651727e252@orel>
-References: <20230918180646.1398384-1-apatel@ventanamicro.com>
- <20230918180646.1398384-5-apatel@ventanamicro.com>
- <CAOnJCU+h-Y_i=HkCf194SLWp-7bqzMhRLC31q0xxQDMuLppapA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOnJCU+h-Y_i=HkCf194SLWp-7bqzMhRLC31q0xxQDMuLppapA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 00:52:45 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DFF7B9C;
+        Tue, 19 Sep 2023 21:52:39 -0700 (PDT)
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5820E212C4AB;
+        Tue, 19 Sep 2023 21:52:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5820E212C4AB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695185559;
+        bh=nk8j8n5l3H6ZmjjGQXn6Qac2KVHEWrc13iwWOpAK64s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WqgMPhDiZ4BklcqJlJHfmiokM/hJFbli9jKb/xJhhkjP+0cp5c5NF2zetmW38D6m7
+         BZm3PET2TI+8u8J4mINDSOlVh4OkLadUIEzugR9qxFfhYh7VEPjSgqmrxHw8jRrYqs
+         gnPTNB/kfTFJ8L7a+pgiyNiaJZCTW2qkjcpPfhtM=
+From:   Saurabh Sengar <ssengar@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com
+Cc:     minipli@grsecurity.net, ssengar@microsoft.com
+Subject: [PATCH] x86/hyperv: Remove hv_vtl_early_init initcall
+Date:   Tue, 19 Sep 2023 21:52:32 -0700
+Message-Id: <1695185552-19910-1-git-send-email-ssengar@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 01:12:47PM -0700, Atish Patra wrote:
-> On Mon, Sep 18, 2023 at 11:07 AM Anup Patel <apatel@ventanamicro.com> wrote:
-> >
-> > Currently the AIA ONE_REG registers are reported by get-reg-list
-> > as new registers for various vcpu_reg_list configs whenever Ssaia
-> > is available on the host because Ssaia extension can only be
-> > disabled by Smstateen extension which is not always available.
-> >
-> > To tackle this, we should filter-out AIA ONE_REG registers only
-> > when Ssaia can't be disabled for a VCPU.
-> >
-> > Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  .../selftests/kvm/riscv/get-reg-list.c        | 23 +++++++++++++++++--
-> >  1 file changed, 21 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > index 76c0ad11e423..85907c86b835 100644
-> > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > @@ -12,6 +12,8 @@
-> >
-> >  #define REG_MASK (KVM_REG_ARCH_MASK | KVM_REG_SIZE_MASK)
-> >
-> > +static bool isa_ext_cant_disable[KVM_RISCV_ISA_EXT_MAX];
-> > +
-> >  bool filter_reg(__u64 reg)
-> >  {
-> >         switch (reg & ~REG_MASK) {
-> > @@ -48,6 +50,15 @@ bool filter_reg(__u64 reg)
-> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
-> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
-> >                 return true;
-> > +       /* AIA registers are always available when Ssaia can't be disabled */
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siselect):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio1):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio2):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(sieh):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siph):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio1h):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio2h):
-> > +               return isa_ext_cant_disable[KVM_RISCV_ISA_EXT_SSAIA] ? true : false;
-> 
-> Ahh I guess. you do need the switch case for AIA CSRs but for ISA
-> extensions can be avoided as it is contiguous.
+There has been cases reported where HYPERV_VTL_MODE is enabled by mistake,
+on a non Hyper-V platforms. This causes the hv_vtl_early_init function to
+be called in an non Hyper-V/VTL platforms which results the memory
+corruption.
 
-I guess we could so something like
+Remove the early_initcall for vhv_vtl_early_init and call it at the end of
+hyperv_init to make sure it is never called in a non Hyper-V platform by
+mistake.
 
-case KVM_REG_RISCV_ISA_EXT ... KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_MAX:
+Reported-by: Mathias Krause <minipli@grsecurity.net>
+Closes: https://lore.kernel.org/lkml/40467722-f4ab-19a5-4989-308225b1f9f0@grsecurity.net/
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+---
+This patch is dependent on :
+https://lore.kernel.org/lkml/1695182675-13405-1-git-send-email-ssengar@linux.microsoft.com/
 
-for the ISA extensions.
+ arch/x86/hyperv/hv_init.c       | 3 +++
+ arch/x86/hyperv/hv_vtl.c        | 3 +--
+ arch/x86/include/asm/mshyperv.h | 2 ++
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
-Thanks,
-drew
+diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+index f0128fd4031d..608f4fe41fb7 100644
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -610,6 +610,9 @@ void __init hyperv_init(void)
+ 	/* Find the VTL */
+ 	ms_hyperv.vtl = get_vtl();
+ 
++	if (ms_hyperv.vtl > 0) /* non default VTL */
++		hv_vtl_early_init();
++
+ 	return;
+ 
+ clean_guest_os_id:
+diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
+index 36a562218010..999f5ac82fe9 100644
+--- a/arch/x86/hyperv/hv_vtl.c
++++ b/arch/x86/hyperv/hv_vtl.c
+@@ -215,7 +215,7 @@ static int hv_vtl_wakeup_secondary_cpu(int apicid, unsigned long start_eip)
+ 	return hv_vtl_bringup_vcpu(vp_id, start_eip);
+ }
+ 
+-static int __init hv_vtl_early_init(void)
++int __init hv_vtl_early_init(void)
+ {
+ 	/*
+ 	 * `boot_cpu_has` returns the runtime feature support,
+@@ -230,4 +230,3 @@ static int __init hv_vtl_early_init(void)
+ 
+ 	return 0;
+ }
+-early_initcall(hv_vtl_early_init);
+diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+index 033b53f993c6..83019c3aaae9 100644
+--- a/arch/x86/include/asm/mshyperv.h
++++ b/arch/x86/include/asm/mshyperv.h
+@@ -340,8 +340,10 @@ static inline u64 hv_get_non_nested_register(unsigned int reg) { return 0; }
+ 
+ #ifdef CONFIG_HYPERV_VTL_MODE
+ void __init hv_vtl_init_platform(void);
++int __init hv_vtl_early_init(void);
+ #else
+ static inline void __init hv_vtl_init_platform(void) {}
++static int __init hv_vtl_early_init(void) {}
+ #endif
+ 
+ #include <asm-generic/mshyperv.h>
+-- 
+2.34.1
+
