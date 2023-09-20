@@ -2,141 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1B17A7561
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43727A755E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbjITIIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        id S233243AbjITIIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjITIIi (ORCPT
+        with ESMTP id S230447AbjITIIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:08:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E3997
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:08:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78E31C433C7;
-        Wed, 20 Sep 2023 08:08:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695197312;
-        bh=qAIWwAW7lDeNaVQ6985ltio37pUtvHfKeT/9/6f+OBI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Og/WmP3CZ5J7hvEETGEL3OPUIlYQllkLKHEDQMjERAINdOUuCn8UxlgYAbZoxHuQV
-         2gY21+83STqm9iL6lZ+aozfwPU2p2QUWQcft5kEW3keZ900y5539c8j32vAXOnh+y5
-         uiOhAgTjsGDUVzisBwiN2ReF86J+XigjtjnsVgg7W0QDpkubxdq4DIyYVOVqK4nNX2
-         e+MYZvHvO4f9aPexa4ig6YjO8FovDEc7wPBhXK73/eAMYRvRWaojJGuD83bAMEq5wq
-         1QkyrCt7mUZ/Y4pFehvmo+F95iGJ7w5sZONetCB+gYxhkWZn9iYzB0ddX4r0HNDK0X
-         1b/CneLa/VoCw==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-9ae22bf33a0so139788466b.0;
-        Wed, 20 Sep 2023 01:08:32 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz2y7ae3AllfJcgMF1xVQaNGHWXp8zY5Gob90PC3uGLmJaCrl/U
-        RcVBlAYZu2dbBdVtrCmYXramWTRikDMFI/B/AMI=
-X-Google-Smtp-Source: AGHT+IGJiPFLwCVRF104WW4YBT4ZXHyqim7bUeetLR+HqIGqrPKeTAvjlz5fqzoJgz93uyq8IImxyV+0vGy9K2i7YvA=
-X-Received: by 2002:a17:906:74db:b0:99c:5056:4e31 with SMTP id
- z27-20020a17090674db00b0099c50564e31mr2898912ejl.15.1695197310819; Wed, 20
- Sep 2023 01:08:30 -0700 (PDT)
+        Wed, 20 Sep 2023 04:08:32 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5B897
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:08:26 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 78A0366028F5;
+        Wed, 20 Sep 2023 09:08:24 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695197305;
+        bh=xWTJKdiQL/zsJInvZzW3QMO4ZtXOI8FVcEemZ/E7TgY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=KSRRJP2AFK0D/W7GRW1VVZDFdvt4hACRxlJv1JhWU0dWe8vmy89VwBzxbH9ThOcYD
+         YoMYNnjHJ4yA/0yk8b8KV45b8XtkhW0ZreCg1q39UhrqZeTn7wafaiZO6jBGt0aUh4
+         JAkv/97mWVpyG0BA6bTRT/dBdsq4puOyUb4n6fp9MZ0iRyE4x78m3dFr663WWdUcvs
+         bR2XFt+7ww08dUiBI+sArdZX5DPhyv16HdvIYe9epBsSO2nsNGnBvgaQwyH47wSFtg
+         IooxKtFD6gRZJIUYSsPCN+HGgpPQlxHeQ5TSLMdjP1XODALawfTrgJA0sa12MSmDxy
+         4KWYWgGB8ehLg==
+Message-ID: <4b1b3614-6a76-1ce9-7274-b5bb4deb6b74@collabora.com>
+Date:   Wed, 20 Sep 2023 10:08:21 +0200
 MIME-Version: 1.0
-References: <cover.1695189879.git.wangchen20@iscas.ac.cn> <888d57a2d5e62affb8e29e0098402e428facd969.1695189879.git.wangchen20@iscas.ac.cn>
- <CAJF2gTR7xzGvQeewuhRLHE2yjH8zeDMj4qfE4_W-yb71-Zx6Zg@mail.gmail.com> <MA0P287MB03320173BB92D2C54FD659A7FEF9A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-In-Reply-To: <MA0P287MB03320173BB92D2C54FD659A7FEF9A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 20 Sep 2023 16:08:17 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRNQwEgcFKOUt_A6jzF1k8GeU46FTvLBsE2YkHzGMvP6A@mail.gmail.com>
-Message-ID: <CAJF2gTRNQwEgcFKOUt_A6jzF1k8GeU46FTvLBsE2YkHzGMvP6A@mail.gmail.com>
-Subject: Re: [PATCH v2 08/11] serial: 8250_dw: Add Sophgo SG2042 support
-To:     Chen Wang <unicorn_wang@outlook.com>
-Cc:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-        chao.wei@sophgo.com, conor@kernel.org, devicetree@vger.kernel.org,
-        emil.renner.berthing@canonical.com, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v10 03/16] drm/mediatek: gamma: Support SoC specific LUT
+ size
+Content-Language: en-US
+To:     =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
+Cc:     "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wenst@chromium.org" <wenst@chromium.org>,
+        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amergnat@baylibre.com" <amergnat@baylibre.com>,
+        "ehristev@collabora.com" <ehristev@collabora.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+References: <20230804072850.89365-1-angelogioacchino.delregno@collabora.com>
+ <20230804072850.89365-4-angelogioacchino.delregno@collabora.com>
+ <ab2981b2f2278a7e9a02c4f3f9aa5b6c9677c1b9.camel@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <ab2981b2f2278a7e9a02c4f3f9aa5b6c9677c1b9.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 4:06=E2=80=AFPM Chen Wang <unicorn_wang@outlook.com=
-> wrote:
->
-> Ren, thanks for your review.
->
-> sg2042 and jh7100 use the same uart driver and we here just want to reuse=
- the logic from jh7100.
-> We don't touch jh7100 stuff, we just rename "dw8250_starfive_jh7100_data"=
-  to "dw8250_skip_set_rate_data" and make it a common data for both sg2042 =
-and jh7100.
-Okay, I got it now.
-LGTM
+Il 18/09/23 04:30, CK Hu (胡俊光) ha scritto:
+> Hi, Angelo:
+> 
+> On Fri, 2023-08-04 at 09:28 +0200, AngeloGioacchino Del Regno wrote:
+>> Newer SoCs support a bigger Gamma LUT table: wire up a callback
+>> to retrieve the correct LUT size for each different Gamma IP.
+>>
+>> Co-developed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+>> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+>> [Angelo: Rewritten commit message/description + porting]
+>> Signed-off-by: AngeloGioacchino Del Regno <
+>> angelogioacchino.delregno@collabora.com>
+>> Reviewed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+>> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+>> ---
+>>   drivers/gpu/drm/mediatek/mtk_disp_aal.c     | 17 ++++++++++++++-
+>>   drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  2 ++
+>>   drivers/gpu/drm/mediatek/mtk_disp_gamma.c   | 23 ++++++++++++++++++-
+>> --
+>>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |  8 +++++--
+>>   drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |  1 -
+>>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c |  2 ++
+>>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  9 ++++++++
+>>   7 files changed, 55 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+>> b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+>> index 2f602f1f1c49..e2e4155faf01 100644
+>> --- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+>> +++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+>> @@ -19,7 +19,7 @@
+>>   #define AAL_EN						BIT(0)
+>>   #define DISP_AAL_SIZE				0x0030
+>>   #define DISP_AAL_OUTPUT_SIZE			0x04d8
+>> -
+>> +#define DISP_AAL_LUT_SIZE			512
+>>   
+>>   struct mtk_disp_aal_data {
+>>   	bool has_gamma;
+>> @@ -61,6 +61,21 @@ void mtk_aal_config(struct device *dev, unsigned
+>> int w,
+>>   	mtk_ddp_write(cmdq_pkt, w << 16 | h, &aal->cmdq_reg, aal->regs,
+>> DISP_AAL_OUTPUT_SIZE);
+>>   }
+>>   
+>> +/**
+>> + * mtk_aal_gamma_get_lut_size() - Get gamma LUT size for AAL
+>> + * @dev: Pointer to struct device
+>> + *
+>> + * Return: 0 if gamma control not supported in AAL or gamma LUT size
+>> + */
+>> +unsigned int mtk_aal_gamma_get_lut_size(struct device *dev)
+>> +{
+>> +	struct mtk_disp_aal *aal = dev_get_drvdata(dev);
+>> +
+>> +	if (aal->data && aal->data->has_gamma)
+>> +		return DISP_AAL_LUT_SIZE;
+>> +	return 0;
+>> +}
+>> +
+>>   void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state
+>> *state)
+>>   {
+>>   	struct mtk_disp_aal *aal = dev_get_drvdata(dev);
+>> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+>> b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+>> index 75045932353e..ca377265e5eb 100644
+>> --- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+>> +++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+>> @@ -17,6 +17,7 @@ void mtk_aal_clk_disable(struct device *dev);
+>>   void mtk_aal_config(struct device *dev, unsigned int w,
+>>   		    unsigned int h, unsigned int vrefresh,
+>>   		    unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
+>> +unsigned int mtk_aal_gamma_get_lut_size(struct device *dev);
+>>   void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state
+>> *state);
+>>   void mtk_aal_start(struct device *dev);
+>>   void mtk_aal_stop(struct device *dev);
+>> @@ -53,6 +54,7 @@ void mtk_gamma_clk_disable(struct device *dev);
+>>   void mtk_gamma_config(struct device *dev, unsigned int w,
+>>   		      unsigned int h, unsigned int vrefresh,
+>>   		      unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
+>> +unsigned int mtk_gamma_get_lut_size(struct device *dev);
+>>   void mtk_gamma_set(struct device *dev, struct drm_crtc_state
+>> *state);
+>>   void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
+>> struct drm_crtc_state *state);
+>>   void mtk_gamma_start(struct device *dev);
+>> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+>> b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+>> index 47751864bd5c..7575237625d2 100644
+>> --- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+>> +++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+>> @@ -24,10 +24,12 @@
+>>   #define DISP_GAMMA_LUT				0x0700
+>>   
+>>   #define LUT_10BIT_MASK				0x03ff
+>> +#define LUT_SIZE_DEFAULT			512
+>>   
+>>   struct mtk_disp_gamma_data {
+>>   	bool has_dither;
+>>   	bool lut_diff;
+>> +	u16 lut_size;
+>>   };
+>>   
+>>   /*
+>> @@ -54,6 +56,15 @@ void mtk_gamma_clk_disable(struct device *dev)
+>>   	clk_disable_unprepare(gamma->clk);
+>>   }
+>>   
+>> +unsigned int mtk_gamma_get_lut_size(struct device *dev)
+>> +{
+>> +	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
+>> +
+>> +	if (gamma && gamma->data)
+>> +		return gamma->data->lut_size;
+>> +	return LUT_SIZE_DEFAULT;
+>> +}
+>> +
+>>   void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
+>> struct drm_crtc_state *state)
+>>   {
+>>   	struct mtk_disp_gamma *gamma;
+>> @@ -61,6 +72,7 @@ void mtk_gamma_set_common(struct device *dev, void
+>> __iomem *regs, struct drm_crt
+>>   	struct drm_color_lut *lut;
+>>   	void __iomem *lut_base;
+>>   	bool lut_diff;
+>> +	u16 lut_size;
+>>   	u32 word;
+>>   	u32 diff[3] = {0};
+>>   
+>> @@ -71,17 +83,20 @@ void mtk_gamma_set_common(struct device *dev,
+>> void __iomem *regs, struct drm_crt
+>>   	/* If we're called from AAL, dev is NULL */
+>>   	gamma = dev ? dev_get_drvdata(dev) : NULL;
+>>   
+>> -	if (gamma && gamma->data)
+>> +	if (gamma && gamma->data) {
+>>   		lut_diff = gamma->data->lut_diff;
+>> -	else
+>> +		lut_size = gamma->data->lut_size;
+>> +	} else {
+>>   		lut_diff = false;
+>> +		lut_size = LUT_SIZE_DEFAULT;
+> 
+> Only AAL use this definiton. As previous discussion,
+> mtk_gamm_set_common() would not be common and has gamma version and AAL
+> version.
+> 
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
+Hello CK,
 
->
-> =E5=9C=A8 2023/9/20 15:53, Guo Ren =E5=86=99=E9=81=93:
-> > On Wed, Sep 20, 2023 at 2:40=E2=80=AFPM Chen Wang <unicornxw@gmail.com>=
- wrote:
-> >> From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> >>
-> >> Add quirk to skip setting the input clock rate for the uarts on the
-> >> Sophgo SG2042 SoC similar to the StarFive JH7100.
-> >>
-> >> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.co=
-m>
-> >> Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
-> >> ---
-> >>   drivers/tty/serial/8250/8250_dw.c | 5 +++--
-> >>   1 file changed, 3 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/82=
-50/8250_dw.c
-> >> index f4cafca1a7da..6c344877a07f 100644
-> >> --- a/drivers/tty/serial/8250/8250_dw.c
-> >> +++ b/drivers/tty/serial/8250/8250_dw.c
-> >> @@ -770,7 +770,7 @@ static const struct dw8250_platform_data dw8250_re=
-nesas_rzn1_data =3D {
-> >>          .quirks =3D DW_UART_QUIRK_IS_DMA_FC,
-> >>   };
-> >>
-> >> -static const struct dw8250_platform_data dw8250_starfive_jh7100_data =
-=3D {
-> >> +static const struct dw8250_platform_data dw8250_skip_set_rate_data =
-=3D {
-> >>          .usr_reg =3D DW_UART_USR,
-> >>          .quirks =3D DW_UART_QUIRK_SKIP_SET_RATE,
-> >>   };
-> >> @@ -780,7 +780,8 @@ static const struct of_device_id dw8250_of_match[]=
- =3D {
-> >>          { .compatible =3D "cavium,octeon-3860-uart", .data =3D &dw825=
-0_octeon_3860_data },
-> >>          { .compatible =3D "marvell,armada-38x-uart", .data =3D &dw825=
-0_armada_38x_data },
-> >>          { .compatible =3D "renesas,rzn1-uart", .data =3D &dw8250_rene=
-sas_rzn1_data },
-> >> -       { .compatible =3D "starfive,jh7100-uart", .data =3D &dw8250_st=
-arfive_jh7100_data },
-> >> +       { .compatible =3D "sophgo,sg2042-uart", .data =3D &dw8250_skip=
-_set_rate_data },
-> >> +       { .compatible =3D "starfive,jh7100-uart", .data =3D &dw8250_sk=
-ip_set_rate_data },
-> > Why shall we touch the jh7100 stuff in this patch?
-> >
-> >>          { /* Sentinel */ }
-> >>   };
-> >>   MODULE_DEVICE_TABLE(of, dw8250_of_match);
-> >> --
-> >> 2.25.1
-> >>
-> >
+Yes, that's true, but every patch has to work on its own: this means that
+I forcefully have to add this here to avoid breaking functionality!
 
+Please check patch [08/16] where I de-commonize the gamma_set function, as
+there I am removing the AAL-only definition and adding a AAL-specific
+gamma_set() callback.
 
+I've done it this way for multiple reasons, one of which is to show why a
+de-commonization of this function is required.
 
---=20
-Best Regards
- Guo Ren
+Regards,
+Angelo
+
+> Regards,
+> CK
+> 
+
