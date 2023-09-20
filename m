@@ -2,218 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961C77A8C26
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3683D7A8C20
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjITS7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 14:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        id S229774AbjITS6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 14:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjITS7d (ORCPT
+        with ESMTP id S229485AbjITS6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 14:59:33 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F312AF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:59:26 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 75C9A5C012A;
-        Wed, 20 Sep 2023 14:59:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 20 Sep 2023 14:59:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1695236363; x=1695322763; bh=t4
-        Kp9fLt8bqhZ5C1c0iLXPtn7Zyyv0RxVkTe9WghAqI=; b=TkEy/w0ELZo7Ts6DPH
-        J/A3DNMUiSFBbNvlHGDpEbQT4vX0NWaauoea1txWsnxUvz9yQFk0z57awJGyYLV5
-        3hnE80afN3X9cNNdPggYK1wTw3Es3y5c9Wh6cppa92es7YRvN/5OdlTMvuZQoQ16
-        DDWyCIIBczpvEms3KhyeekdUZs3vM5G/c9NHnWpCdUGf3tSovz0b04N7U1mlv3hL
-        DRuwrQuYQiC6EAhPTE7eZzsOAEW0Q4CM0fcBzn2NMUdhnGvDHh2YuAgmDhKTFiS2
-        vBbSWjkqtUWJ0BmwSGNC1Sm/A8nAGJ5mJFDzb3JZGtjIffozyg7KIYtbwZyx0RTu
-        L+iA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695236363; x=1695322763; bh=t4Kp9fLt8bqhZ
-        5C1c0iLXPtn7Zyyv0RxVkTe9WghAqI=; b=BnXfMTOSi8a+AM/3jDAuEON7D5sOq
-        SDimlGw4ZLAM20NIrNs2PYkBiVzMcEq2UEyMGbIp5Yow8rnsdJ/mr9730SimOF5z
-        PT8/LupdGemc2dzWo4lCcblhVWheQSO0BgV3VYfhc3Zz8QOFg4FMUoIkP7ABGn1Z
-        jWbIIfDq51tSNCsSPPl+tgK0KUvNJkCu0cO96CPJme7na5sGO1Nw8x0saLzDsUP7
-        uH8NRApyVyHbobokZMQGUkSuTd0uYIZqF9eYCcYi4yk8FzQVezXhWzZz+Y1N7WXX
-        EU6EGd5E5nHm62Z6LbExzQUcFScpiMBdPWz4Y3HkGkgM5ovBwU3cyeFew==
-X-ME-Sender: <xms:CkELZZDkcboljhWBsagkdDuN5rDvwesyXAXLjlNdYMLUwcPuDNFP-A>
-    <xme:CkELZXjNjZJXU4Ceww95Q1CXFjrSvEH98qc5uX2ZOxwvcJrh6vCBQ-ccaQp1JPxPN
-    _l2nR6iSluAYMoYWnI>
-X-ME-Received: <xmr:CkELZUmk-j5TRxe-esALbrHoLPb3cQTdd7NuWzWwDOgbbaIeX59T-4Z5mOFkEO5Roy-0BKmG09WMaCxVeY9gQP9y1lHR5qcTTnAQyrF7TqhW>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekfedgudeffecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgv
-    fhgrnhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrg
-    htthgvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdu
-    geeutdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hshhhrseguvghvkhgvrhhnvghlrdhioh
-X-ME-Proxy: <xmx:CkELZTz1gAb-N7tbrGIKY3FWxmQ69Y3tuF-a5n9YaYl4Og6Fjk57Jw>
-    <xmx:CkELZeQW0PhwDh8ELkw3YcH9sYdUxjTfJkhISLksqb-5ECFbFm8JjQ>
-    <xmx:CkELZWYzQTijEJhYdd8lzLzf7KxuIe3XyDj7PeSnUbxdaEg60Gk61g>
-    <xmx:C0ELZbIhp8RTppB0gYXDRieDxt1DVDrWDD6UrGNKCnaoMSCmz68x0w>
-Feedback-ID: i84614614:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 20 Sep 2023 14:59:22 -0400 (EDT)
-References: <20230919205158.1897353-1-shr@devkernel.io>
- <20230919205158.1897353-3-shr@devkernel.io>
- <daf57da6-b22d-bdfb-c6f0-0ac07824ab72@redhat.com>
-User-agent: mu4e 1.10.1; emacs 28.2.50
-From:   Stefan Roesch <shr@devkernel.io>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 2/2] mm/ksm: Test case for prctl fork/exec workflow
-Date:   Wed, 20 Sep 2023 11:57:27 -0700
-In-reply-to: <daf57da6-b22d-bdfb-c6f0-0ac07824ab72@redhat.com>
-Message-ID: <qvqwpm2c1xix.fsf@devbig1114.prn1.facebook.com>
+        Wed, 20 Sep 2023 14:58:15 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D20AF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Rt9cmS1OYnqvPF2srfjhhS4oqufX6LSMU2kxOSUqtBY=; b=NNPE5yxU7A4HA6M8eH1Zfas8Po
+        z2UgSalclfWy3W5fJfrGlaC1iPuAokZPb83X2VaNImAI4CaD6ICzwDjNJauJ0YGVG/jJBXcmfy5Cx
+        x8Pml+bhl1X1roDHlOpr3JgG45AsgZitsDPhSYCPE6MqsI2du1Hkuqqh1ytFTaQkDCl0l6JECeVnM
+        kXQhyhd2zU2IK0tfCboKxXvtLB9O6x6dplHOTMXl2Xh8XrvHCpkyjpd4FGu7AhWPaJw1L9ID1DaJs
+        40tjGSuc3mLRiF77mXQLnJ6bGWMtH6VyoXRx0zkoJE15U789TiBAVvLpbhz89ArnJWXJ/oMOlMU4J
+        0qrKY8vQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51398)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qj2Oe-0003cU-30;
+        Wed, 20 Sep 2023 19:58:00 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qj2Oe-0002l8-RE; Wed, 20 Sep 2023 19:58:00 +0100
+Date:   Wed, 20 Sep 2023 19:58:00 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org, airlied@gmail.com,
+        daniel@ffwll.ch, linux-kernel@vger.kernel.org
+Subject: Re: [RFT PATCH 01/15] drm/armada: Call drm_atomic_helper_shutdown()
+ at shutdown time
+Message-ID: <ZQtAuKBwo+ue8QQQ@shell.armlinux.org.uk>
+References: <20230901234202.566951-1-dianders@chromium.org>
+ <20230901164111.RFT.1.I3d5598bd73a59b5ded71430736c93f67dc5dea61@changeid>
+ <ZPSsBhbekKY7VyDg@shell.armlinux.org.uk>
+ <CAD=FV=WT4Hf1XVA641WtNFg4WRYFKarU1WOkLPEbr0eiVQuZPg@mail.gmail.com>
+ <CAD=FV=UpJEFKcsnHSzPqEiGaWusp50DrcEh=mcra4eLeRQT5NQ@mail.gmail.com>
+ <CAD=FV=WSdp=5DnJinELOSncX=eqrN9y27kw=VFDHowzgnTS6Qg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=WSdp=5DnJinELOSncX=eqrN9y27kw=VFDHowzgnTS6Qg@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 20, 2023 at 11:03:32AM -0700, Doug Anderson wrote:
+> Maxime,
+> 
+> On Wed, Sep 13, 2023 at 8:34 AM Doug Anderson <dianders@chromium.org> wrote:
+> >
+> > Hi,
+> >
+> > On Tue, Sep 5, 2023 at 7:23 AM Doug Anderson <dianders@chromium.org> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Sun, Sep 3, 2023 at 8:53 AM Russell King (Oracle)
+> > > <linux@armlinux.org.uk> wrote:
+> > > >
+> > > > On Fri, Sep 01, 2023 at 04:41:12PM -0700, Douglas Anderson wrote:
+> > > > > Based on grepping through the source code this driver appears to be
+> > > > > missing a call to drm_atomic_helper_shutdown() at system shutdown
+> > > > > time. Among other things, this means that if a panel is in use that it
+> > > > > won't be cleanly powered off at system shutdown time.
+> > > > >
+> > > > > The fact that we should call drm_atomic_helper_shutdown() in the case
+> > > > > of OS shutdown/restart comes straight out of the kernel doc "driver
+> > > > > instance overview" in drm_drv.c.
+> > > > >
+> > > > > This driver was fairly easy to update. The drm_device is stored in the
+> > > > > drvdata so we just have to make sure the drvdata is NULL whenever the
+> > > > > device is not bound.
+> > > >
+> > > > ... and there I think you have a misunderstanding of the driver model.
+> > > > Please have a look at device_unbind_cleanup() which will be called if
+> > > > probe fails, or when the device is removed (in other words, when it is
+> > > > not bound to a driver.)
+> > >
+> > > ...and there I think you didn't read this patch closely enough and
+> > > perhaps that you have a misunderstanding of the component model.
+> > > Please have a look at the difference between armada_drm_unbind() and
+> > > armada_drm_remove() and also check which of those two functions is
+> > > being modified by my patch. Were this patch adding a call to
+> > > "dev_set_drvdata(dev, NULL)" in armada_drm_remove() then your NAK
+> > > would be justified. However, I am not aware of anything in the
+> > > component unbind path nor in the failure case of component bind that
+> > > would NULL the drvdata.
+> > >
+> > > Kindly look at the patch a second time with this in mind.
+> >
+> > Since I didn't see any further response, I'll assume that my
+> > explanation here has addressed your concerns. If not, I can re-post it
+> > without NULLing the "drvdata". While I still believe this is unsafe in
+> > some corner cases because of the component model used by this driver,
+> > at least it would get the shutdown call in.
+> >
+> > In any case, what's the process for landing patches to this driver?
+> > Running `./scripts/get_maintainer.pl --scm -f
+> > drivers/gpu/drm/armada/armada_drv.c` seems to indicate that this
+> > should go through the git tree:
+> >
+> > git git://git.armlinux.org.uk/~rmk/linux-arm.git drm-armada-devel
+> >
+> > ...but it doesn't appear that recent changes to this driver have gone
+> > that way. Should this land through drm-misc?
+> 
+> Do you have any advice here? Should I land this through drm-misc-next,
+> put it on ice for a while, or resend without the calls to NULL our the
+> drvdata?
 
-David Hildenbrand <david@redhat.com> writes:
+Sorry, I haven't had a chance to look at it, but I think you're probably
+right, so I withdraw my objection. Please take it through drm-misc for
+the time being. Thanks.
 
-> On 19.09.23 22:51, Stefan Roesch wrote:
->> This adds a new test case to the ksm functional tests to make sure that
->> the KSM setting is inherited by the child process when doing a
->> fork/exec.
->> Signed-off-by: Stefan Roesch <shr@devkernel.io>
->> ---
->>   tools/testing/selftests/mm/Makefile           |  2 +
->>   .../selftests/mm/ksm_fork_exec_child.c        |  9 ++++
->>   .../selftests/mm/ksm_functional_tests.c       | 50 ++++++++++++++++++-
->>   3 files changed, 60 insertions(+), 1 deletion(-)
->>   create mode 100644 tools/testing/selftests/mm/ksm_fork_exec_child.c
->> diff --git a/tools/testing/selftests/mm/Makefile
->> b/tools/testing/selftests/mm/Makefile
->> index 6a9fc5693145..9ab6aa402544 100644
->> --- a/tools/testing/selftests/mm/Makefile
->> +++ b/tools/testing/selftests/mm/Makefile
->> @@ -73,6 +73,8 @@ ifneq ($(ARCH),arm64)
->>   TEST_GEN_PROGS += soft-dirty
->>   endif
->>   +TEST_GEN_PROGS += ksm_fork_exec_child
->
-> It's not a test itself, so it shouldn't be run when running all tests. See
-> below.
->
->> +
->>   ifeq ($(ARCH),x86_64)
->>   CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh "$(CC)" ../x86/trivial_32bit_program.c -m32)
->>   CAN_BUILD_X86_64 := $(shell ./../x86/check_cc.sh "$(CC)" ../x86/trivial_64bit_program.c)
->> diff --git a/tools/testing/selftests/mm/ksm_fork_exec_child.c b/tools/testing/selftests/mm/ksm_fork_exec_child.c
->> new file mode 100644
->> index 000000000000..298439f0d55f
->> --- /dev/null
->> +++ b/tools/testing/selftests/mm/ksm_fork_exec_child.c
->> @@ -0,0 +1,9 @@
->> +#include <sys/prctl.h>
->> +#include <stdlib.h>
->> +
->> +int main()
->> +{
->> +	/* Test if KSM is enabled for the process. */
->> +	int ksm = prctl(68, 0, 0, 0, 0);
->
-> Can we use the define from a header? (PR_SET_MEMORY_MERGE)
->
-
-I changed it.
-
-> I was wondering if we could simply exec() ourself (same binary), but pass a
-> special cmdline argument. Then you don't have to build a separate binary.
->
-
-I'm execing the same executable with an additional parameter.
-
-> Just special-case in main() on that argument and perform this check.
->
-
-I added a check in main and invoke a new function for the child.
-
->> +	exit(ksm == 1 ? 0 : 1);
->> +}
->> diff --git a/tools/testing/selftests/mm/ksm_functional_tests.c b/tools/testing/selftests/mm/ksm_functional_tests.c
->> index 901e950f9138..4dc0bb522c07 100644
->> --- a/tools/testing/selftests/mm/ksm_functional_tests.c
->> +++ b/tools/testing/selftests/mm/ksm_functional_tests.c
->> @@ -479,6 +479,53 @@ static void test_prctl_fork(void)
->>   	ksft_test_result_pass("PR_SET_MEMORY_MERGE value is inherited\n");
->>   }
->>   +static void test_prctl_fork_exec(void)
->> +{
->> +	int ret, status;
->> +	pid_t child_pid;
->> +
->> +	ksft_print_msg("[RUN] %s\n", __func__);
->> +
->> +	ret = prctl(PR_SET_MEMORY_MERGE, 1, 0, 0, 0);
->> +	if (ret < 0 && errno == EINVAL) {
->> +		ksft_test_result_skip("PR_SET_MEMORY_MERGE not supported\n");
->> +		return;
->> +	} else if (ret) {
->> +		ksft_test_result_fail("PR_SET_MEMORY_MERGE=1 failed\n");
->> +		return;
->> +	}
->> +
->> +	child_pid = fork();
->> +	if (child_pid == -1) {
->> +		ksft_test_result_skip("fork() failed\n");
->> +		return;
->> +	} else if (child_pid == 0) {
->> +		char *filename = "./ksm_fork_exec_child";
->> +		char *argv_for_program[] = { filename, NULL };
->> +
->> +		execv(filename, argv_for_program);;
->
-> s/;;/;/
->
-
-Fixed.
-
-> Add a return; so you can simplify the code below (no need for the "else")
->
-
-Done.
-
-
->> +	} else {
->> +		if (waitpid(child_pid, &status, 0) > 0) {
->> +			if (WIFEXITED(status)) {
->> +				status = WEXITSTATUS(status);
->> +				if (status) {
->> +					ksft_test_result_fail("KSM not enabled\n");
->> +					return;
->> +				}
->> +
->> +			} else {
->> +				ksft_test_result_fail("program didn't terminate normally\n");
->> +				return;
->> +			}
->> +		} else {
->> +			ksft_test_result_fail("waitpid() failed\n");
->> +			return;
->> +		}
->> +	}
->> +
->> +	ksft_test_result_pass("PR_SET_MEMORY_MERGE value is inherited\n");
->
-> It's probably the cleanest to disable PR_SET_MEMORY_MERGE again when returning
-> form this function, so the other tests have a clean slate.
-
-In the next version it is disabled at the end.
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
