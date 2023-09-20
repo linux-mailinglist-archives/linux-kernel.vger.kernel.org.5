@@ -2,194 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 777437A6FCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C597A6FCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbjITARj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 20:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51838 "EHLO
+        id S230510AbjITARp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 20:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjITARi (ORCPT
+        with ESMTP id S230010AbjITARn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 20:17:38 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25CEAB
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:17:32 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b6a51f360so70967917b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:17:32 -0700 (PDT)
+        Tue, 19 Sep 2023 20:17:43 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF8CAF;
+        Tue, 19 Sep 2023 17:17:36 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690bd8f89baso1553804b3a.2;
+        Tue, 19 Sep 2023 17:17:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695169052; x=1695773852; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tT8RTtiIvMH0jr3h5GfFxiVuJzDdiA1NvVC8sxpn06Q=;
-        b=NnS8rvEjStTsox1SybNVAn5om+cHQtX9dZb8cenUc5AFD5/QjRWATh/3NWcDv3nMY6
-         9I/sGmwyTHp0VKD9+td4FJvO9W/ua6gOYfrAGx0EHfRuPSk5AB1yBcRuWDJJA86h3iUB
-         DbbXGZivz0gb4mddw2TPNRzwOccLZdgPcRFlOoe5ZOWezoyjcDykoFkhnH3VhoDQ7usY
-         S6wr48nwPcp854QNbMo++nAjONinYDSw/KigvEn52nU9fotX0vGB1NVH0tW0mlOY43rD
-         FZyacfOw3VhzwRqfh0Hju3HLDJms54bnvJUKTFNpiKQ9R+kkzCRS4qpGZ77Vsemqmr5u
-         SA1A==
+        d=gmail.com; s=20230601; t=1695169056; x=1695773856; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5GxdpHi3q0CHa12EPny+xqE489Qgh1zELK2uRy2oNZ4=;
+        b=kX2JAo3vHo80oj2FSmYCTv/mzmvD1X8NjGNAGgyWtuVb8LTw2XUGvcUGiwOQR9Tx0Y
+         wk+9p7EbPF/C1LA2aW4nLZDjORWz8vdhxqB/yMCv33asBsnnnP+VPwwKa4cES6WntnxO
+         2oLMbfnOj+/LPhWpQXaB9cP0tzE4BDmZ2HU4a8k+0e7rsIGdGVGlQVFac8aMAkch7+9J
+         59mCgTguKBvBzCdv6ix1t7K57s+hcin5mVYF0Fp6itVXQPYvoGQsWKRm6Kn3b1yFuPiN
+         7mmWJo4Z7lfZCKKDQPXkpdda8iVZSB1yyqARl3JeHNXhXapznB5Wn2S320IqwAGD9keT
+         vbwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695169052; x=1695773852;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tT8RTtiIvMH0jr3h5GfFxiVuJzDdiA1NvVC8sxpn06Q=;
-        b=TBf48LvSvU7L1X5xnKhEb2JwlsHCTr1hDO6GeB4gtC1QLDNOiGCnOEdCnpL/amLZxM
-         rbhg8qOmOF1khyxKQQTn3zsPHh8J0iPy5fXVHgbzcyfXbC6eCNIw/IlASkAivhroBBqI
-         k6pwTXyXLduQieaKeHhEBnYJGnw6qANDJb12PMB/PAr2654WO54tUFAlpIOrNc0lXE1G
-         bVhpDfEBmbzFsPQJblrGoSNgNqfIOhfXqffxK4mfja/31EQrvq9JiRU86Hat3knYQlnn
-         f36n93m3fs8Gw2hrwCCJ/OnTEBwhW05YcFyU5534rD9C9dj8gvYXbQNpjpOmsPkWtUp8
-         9GNQ==
-X-Gm-Message-State: AOJu0YzHRR1biMMBLDMPMaf6REMwDAiT89QY70rejMXSGw2wCrARpMTR
-        ti3ojoN4TPJCdTyHBXq/ja/RQqtwGLsk
-X-Google-Smtp-Source: AGHT+IHXYkvHxsnm+XtyucMHmTP6WHJAmizuj0WQQpgTjADkwA/bJi/QLtEi5t/MKjFM1E/F7Det8is3uPc/
-X-Received: from maskray.svl.corp.google.com ([2620:15c:2d3:205:57db:b73a:fd87:4f18])
- (user=maskray job=sendgmr) by 2002:a81:b1c8:0:b0:58c:7cb1:10f with SMTP id
- p191-20020a81b1c8000000b0058c7cb1010fmr15525ywh.9.1695169051817; Tue, 19 Sep
- 2023 17:17:31 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 17:17:28 -0700
-Mime-Version: 1.0
-Message-ID: <20230920001728.1439947-1-maskray@google.com>
-Subject: [PATCH] x86/speculation, objtool: Use absolute relocations for annotations
-From:   Fangrui Song <maskray@google.com>
-To:     x86@kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695169056; x=1695773856;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5GxdpHi3q0CHa12EPny+xqE489Qgh1zELK2uRy2oNZ4=;
+        b=KooXdkpJMe0Swp9qiGM078T1Wh3YumWgTqQVQT9MKQ0ZRYoTyk7BG3TdCuEVQQWPIx
+         QqoF9MOhiTXC/HaMti6EHZ/s5/PQ1ChwAfq7tcZ+cC7ex+D9Z2FCj+ed3cVv41mN6cQf
+         fTEQAP2w7dyWL05ypdC6iXlfOL9I5ECrKlLMtAfWzUFUSVmZjICkSHvahdlMU8wcsWnF
+         +R726zmhH0T7MELKZAikb1PXbU4urqyfoOh27skBWOYuEmGhyaXgUoPeXe42oDgWFOZF
+         ai0XzUcx6Pmzgs3HJurM+MvtaWwBaKUUHCV3Ryniy1GsGwwUFGdKXbFIS+u3XlT/Bwms
+         QiAw==
+X-Gm-Message-State: AOJu0Yw0l6/yQx+Fbxd3eNeFBLQlRYAHwlDbJXwcPZEPYP1mZ+yArCDv
+        B9qkoQk3o7ScLFE7l4HJCy4=
+X-Google-Smtp-Source: AGHT+IGH8hEfdOhQEhyWIhoiv+3C1v4+rACphz7fI6edJm1RgY/m7G23pjshzuaWIBz4ZKb4jorJXA==
+X-Received: by 2002:a05:6a00:2389:b0:68b:fb93:5b4e with SMTP id f9-20020a056a00238900b0068bfb935b4emr1330871pfc.26.1695169056076;
+        Tue, 19 Sep 2023 17:17:36 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id y4-20020a63ad44000000b005777a911342sm2571677pgo.59.2023.09.19.17.17.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 17:17:35 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 4017281A82C8; Wed, 20 Sep 2023 07:17:32 +0700 (WIB)
+Date:   Wed, 20 Sep 2023 07:17:31 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Charles Han <hanchunchao@inspur.com>, <corbet@lwn.net>,
+        <djwong@kernel.org>, <dchinner@redhat.com>,
+        <allison.henderson@oracle.com>, <bhelgaas@google.com>
+Cc:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Documentation: xfs: Remove repeated word in comments
+Message-ID: <ZQo6G5Z2v1Tk6ShQ@debian.me>
+References: <20230918071905.296081-1-hanchunchao@inspur.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kduWLGSWSb2kmx57"
+Content-Disposition: inline
+In-Reply-To: <20230918071905.296081-1-hanchunchao@inspur.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-.discard.retpoline_safe sections do not have the SHF_ALLOC flag.  These
-sections referencing text sections' STT_SECTION symbols with PC-relative
-relocations like R_386_PC32 [0] is conceptually not suitable.  Newer
-LLD will report warnings for REL relocations even for relocatable links
-[1].
 
-    ld.lld: warning: vmlinux.a(drivers/i2c/busses/i2c-i801.o):(.discard.retpoline_safe+0x120): has non-ABS relocation R_386_PC32 against symbol ''
+--kduWLGSWSb2kmx57
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Switch to absolute relocations instead, which indicate link-time
-addresses.  In a relocatable link, these addresses are also output
-section offsets, used by checks in tools/objtool/check.c.  When linking
-vmlinux, these .discard.* sections will be discarded, therefore it is
-not a problem that R_X86_64_32 cannot represent a kernel address.
+On Mon, Sep 18, 2023 at 03:19:05PM +0800, Charles Han wrote:
+> diff --git a/Documentation/filesystems/xfs-online-fsck-design.rst b/Docum=
+entation/filesystems/xfs-online-fsck-design.rst
+> index 1625d1131093..a0678101a7d0 100644
+> --- a/Documentation/filesystems/xfs-online-fsck-design.rst
+> +++ b/Documentation/filesystems/xfs-online-fsck-design.rst
+> @@ -1585,7 +1585,7 @@ The transaction sequence looks like this:
+>  2. The second transaction contains a physical update to the free space b=
+trees
+>     of AG 3 to release the former BMBT block and a second physical update=
+ to the
+>     free space btrees of AG 7 to release the unmapped file space.
+> -   Observe that the the physical updates are resequenced in the correct =
+order
+> +   Observe that the physical updates are resequenced in the correct order
+>     when possible.
+>     Attached to the transaction is a an extent free done (EFD) log item.
+>     The EFD contains a pointer to the EFI logged in transaction #1 so tha=
+t log
 
-Alternatively, we could set the SHF_ALLOC flag for .discard.* sections,
-but I think non-SHF_ALLOC for sections to be discarded makes more sense.
+I feel guilty here. Only considering the diff,
 
-Note: if we decide to never support REL architectures (e.g. arm, i386),
-we can utilize R_*_NONE relocations (.reloc ., BFD_RELOC_NONE, sym),
-making .discard.* sections zero-sized.  That said, the section content
-waste is 4 bytes per entry, much smaller than sizeof(Elf{32,64}_Rel).
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-[0] commit 1c0c1faf5692 ("objtool: Use relative pointers for annotations")
+Not sure if jon pick this or v2, though.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1937 [1]
-Signed-off-by: Fangrui Song <maskray@google.com>
----
- arch/x86/include/asm/alternative.h   |  4 ++--
- arch/x86/include/asm/nospec-branch.h |  4 ++--
- include/linux/objtool.h              | 10 +++++-----
- 3 files changed, 9 insertions(+), 9 deletions(-)
+Sorry for inconvenience.
 
-diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index 9c4da699e11a..65f79092c9d9 100644
---- a/arch/x86/include/asm/alternative.h
-+++ b/arch/x86/include/asm/alternative.h
-@@ -58,7 +58,7 @@
- #define ANNOTATE_IGNORE_ALTERNATIVE				\
- 	"999:\n\t"						\
- 	".pushsection .discard.ignore_alts\n\t"			\
--	".long 999b - .\n\t"					\
-+	".long 999b\n\t"					\
- 	".popsection\n\t"
- 
- /*
-@@ -352,7 +352,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
- .macro ANNOTATE_IGNORE_ALTERNATIVE
- 	.Lannotate_\@:
- 	.pushsection .discard.ignore_alts
--	.long .Lannotate_\@ - .
-+	.long .Lannotate_\@
- 	.popsection
- .endm
- 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index c55cc243592e..4952b73d944e 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -196,7 +196,7 @@
- .macro ANNOTATE_RETPOLINE_SAFE
- .Lhere_\@:
- 	.pushsection .discard.retpoline_safe
--	.long .Lhere_\@ - .
-+	.long .Lhere_\@
- 	.popsection
- .endm
- 
-@@ -334,7 +334,7 @@
- #define ANNOTATE_RETPOLINE_SAFE					\
- 	"999:\n\t"						\
- 	".pushsection .discard.retpoline_safe\n\t"		\
--	".long 999b - .\n\t"					\
-+	".long 999b\n\t"					\
- 	".popsection\n\t"
- 
- typedef u8 retpoline_thunk_t[RETPOLINE_THUNK_SIZE];
-diff --git a/include/linux/objtool.h b/include/linux/objtool.h
-index 03f82c2c2ebf..6f6da95fe7f9 100644
---- a/include/linux/objtool.h
-+++ b/include/linux/objtool.h
-@@ -48,13 +48,13 @@
- #define ANNOTATE_NOENDBR					\
- 	"986: \n\t"						\
- 	".pushsection .discard.noendbr\n\t"			\
--	".long 986b - .\n\t"					\
-+	".long 986b\n\t"					\
- 	".popsection\n\t"
- 
- #define ASM_REACHABLE							\
- 	"998:\n\t"							\
- 	".pushsection .discard.reachable\n\t"				\
--	".long 998b - .\n\t"						\
-+	".long 998b\n\t"						\
- 	".popsection\n\t"
- 
- #else /* __ASSEMBLY__ */
-@@ -66,7 +66,7 @@
- #define ANNOTATE_INTRA_FUNCTION_CALL				\
- 	999:							\
- 	.pushsection .discard.intra_function_calls;		\
--	.long 999b - .;						\
-+	.long 999b;						\
- 	.popsection;
- 
- /*
-@@ -118,7 +118,7 @@
- .macro ANNOTATE_NOENDBR
- .Lhere_\@:
- 	.pushsection .discard.noendbr
--	.long	.Lhere_\@ - .
-+	.long	.Lhere_\@
- 	.popsection
- .endm
- 
-@@ -141,7 +141,7 @@
- .macro REACHABLE
- .Lhere_\@:
- 	.pushsection .discard.reachable
--	.long	.Lhere_\@ - .
-+	.long	.Lhere_\@
- 	.popsection
- .endm
- 
--- 
-2.42.0.459.ge4e396fd5e-goog
+--=20
+An old man doll... just what I always wanted! - Clara
 
+--kduWLGSWSb2kmx57
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQo6FAAKCRD2uYlJVVFO
+o2jXAQDvbVwFBbhBP6n5B+AS5f2BFQ4jllPxTMyuSN+++PhfUAD/YNgagSNZbSoE
+KJhXB/XMmdMhcLvXPW3T2I7oLiEl3AQ=
+=j0q+
+-----END PGP SIGNATURE-----
+
+--kduWLGSWSb2kmx57--
