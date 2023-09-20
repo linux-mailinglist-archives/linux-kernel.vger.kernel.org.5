@@ -2,170 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAD47A878F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C18C7A8791
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbjITOwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S234339AbjITOwm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 10:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234330AbjITOwJ (ORCPT
+        with ESMTP id S234330AbjITOwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:52:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7939FAD;
-        Wed, 20 Sep 2023 07:52:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0126C433C8;
-        Wed, 20 Sep 2023 14:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695221522;
-        bh=+2j3nces5C2Y6G0w4dr7sRGrgDbYjuDpUw6pC0lKXLQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NygEtZrk84lRg6zKqBNWyp3ecx3eq9+OEYuaKVfg2N7CTM0PFuCY+ay2Nts8XzVf9
-         q4P86pfVq6bOsFt9RzKQMFNwbNhIRkmKK/+yQxcmlNfb/bwcOf0le3K5HVsWDaus7x
-         8rG61cADEugt8Xq3G2sh+KU2IF3kD/RDzsV3kbHi3tlwbwEUhyOAI3/FNNgC8WphQG
-         IQTQtfOjcvDjO5g1asyVSoMh/huLKRvq68pCPMiIyIssh7pZgVN2npFfCq6+p2q2i6
-         29gO3GTdmMadV259kKNdlXHvnW/wCxAYFhp+wR/X5lodXFNBFyRhiuY1kExAraLatu
-         HWAE1QULyRqTA==
-Date:   Wed, 20 Sep 2023 15:51:55 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        evicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
-        guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>,
-        Atish Patra <atishp@rivosinc.com>
-Subject: Re: [PATCH v2 06/11] dt-bindings: timer: Add Sophgo sg2042 clint
-Message-ID: <20230920-992a56b66366f3c0591a6a94@fedora>
-References: <66b988f0-39fc-2ed3-8f38-151d6a3c9e52@linaro.org>
- <IA1PR20MB49536BFE1254ADEE0E795A26BBF9A@IA1PR20MB4953.namprd20.prod.outlook.com>
- <20230920-8503c6365655d3ef3dadfd53@fedora>
- <CAK9=C2WWzc_M49-S+Gi509a6-gk3-89sAZn-ZCRhsQc4JwUpoQ@mail.gmail.com>
+        Wed, 20 Sep 2023 10:52:41 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C70A9;
+        Wed, 20 Sep 2023 07:52:34 -0700 (PDT)
+Received: from pd9e2f2b6.dip0.t-ipconnect.de ([217.226.242.182] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qiyYh-0040UG-5J; Wed, 20 Sep 2023 16:52:06 +0200
+Date:   Wed, 20 Sep 2023 16:52:04 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
+        bcousson@baylibre.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, jarkko.nikula@bitmer.com,
+        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
+ fck_src
+Message-ID: <20230920165204.0fbc0ff3@aktux>
+In-Reply-To: <20230920063353.GQ5285@atomide.com>
+References: <20230705190324.355282-1-andreas@kemnade.info>
+        <20230705190324.355282-2-andreas@kemnade.info>
+        <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
+        <20230920063353.GQ5285@atomide.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lO3IQKh1/e514qwn"
-Content-Disposition: inline
-In-Reply-To: <CAK9=C2WWzc_M49-S+Gi509a6-gk3-89sAZn-ZCRhsQc4JwUpoQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,T_SPF_HELO_TEMPERROR,T_SPF_TEMPERROR
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---lO3IQKh1/e514qwn
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 20 Sep 2023 09:33:53 +0300
+Tony Lindgren <tony@atomide.com> wrote:
 
-On Wed, Sep 20, 2023 at 08:08:49PM +0530, Anup Patel wrote:
-> On Wed, Sep 20, 2023 at 6:28=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > On Wed, Sep 20, 2023 at 08:40:07PM +0800, Inochi Amaoto wrote:
-> > > >On 20/09/2023 14:15, Inochi Amaoto wrote:
-> > > >>> On 20/09/2023 08:39, Chen Wang wrote:
-> > > >>>> From: Inochi Amaoto <inochiama@outlook.com>
-> > > >>>>
-> > > >>>> Add two new compatible string formatted like `C9xx-clint-xxx` to=
- identify
-> > > >>>> the timer and ipi device separately, and do not allow c900-clint=
- as the
-> > > >>>
-> > > >>> Why?
-> > > >>>
-> > > >>
-> > > >> If use the same compatible, SBI will process this twice in both ip=
-i and
-> > > >> timer, use different compatible will allow SBI to treat these as d=
-ifferent.
-> > > >> AFAIK, the aclint in SBI use the same concepts, which make hard to=
- use the
-> > > >> second register range. I have explained in another response.
-> > > >
-> > > >What is a SBI? Linux driver? If so, why some intermediate Linux driv=
-er
-> > > >choice should affect bindings?
-> > > >Best regards,
-> > > >Krzysztof
-> > > >
-> > >
-> > > SBI (Supervisor Binary Interface) is defined by riscv, which is an in=
-terface
-> > > between the Supervisor Execution Environment (SEE) and the supervisor=
-=2E The
-> > > detailed documentation can be found in [1].
-> > >
-> > > The implement of SBI needs fdt info of the platform, which is provide=
-d by
-> > > kernel. So we need a dt-bindings for these devices, and these will be
-> > > processed by SBI.
-> > >
-> > > [1] https://github.com/riscv-non-isa/riscv-sbi-doc
-> >
-> > Yeah, this is the unfortunate problem of half-baked bindings (IMO)
-> > ending up in OpenSBI (which likely means they also ended up in QEMU).
-> > This T-Head stuff is coming across our (metaphorical) desks, so we are
-> > obviously going to try to do things correctly. I may end up speaking to
-> > Anup later today, if I do I will point him at this thread (if he hasn't
-> > seen it already).
->=20
-> RISC-V ACLINT is one of those unfortunate non-ISA specs (like
-> SiFive PLIC) which is implemented by various organizations but
-> not officially ratified by RVI.
+> Hi,
+> 
+> * Péter Ujfalusi <peter.ujfalusi@gmail.com> [230919 18:25]:
+> > 
+> > 
+> > On 7/5/23 22:03, Andreas Kemnade wrote:  
+> > > Commit 349355ce3a05 ("ARM: OMAP2+: Drop legacy platform data for omap4 mcbsp")
+> > > dropped prcm_fck for omap4,  
+> 
+> The prcm_fck should be there in the dts for each mcbsp interconnect targe
+> module as "fck" alias and get's enabled/disabled when the mcbsp driver
+> calls runtime PM.
+> 
+> So maybe the description should explain that things broke as the aliases
+> for prcm_fck and pad_ck no longer get added.
+> 
+> > it also dropped the pad_fck for that matter.  
+> 
+> OK so an alias is needed for that too.
+> 
+> That's the MCPDM_CLKCTRL pad_clks_ck alias, right? Seems like the
+> pad_clks_ck should be claimed by the mcpdm and mcbsp drivers if they are
+> used? I guess it would be for some external device use case?
+> 
+> > > so the clk_src might not be >available making the
+> > > clk_get(src) fail.  
+> > 
+> > Wow, so OMAP4 audio is pretty broken if would ever need to select FCLK?
+> > By default we don't on OMAP4, but this is astonishing.  
+> 
+> So sounds like we just got lucky because of -ENOSUCHUSERS? The mcbsp works
+> for me, not sure how come I'm not seeing this issue, does it now only work
+> for the default clock source?
+> 
+Well, I did not run into any problems (besides of no sound output)
+as long as I tried to use the codec side as bitclock/frameclock-master and
+that is what droid4 does...
 
-Yeah, I brought this stuff up at the weekly pw sync call, and Paul
-pointed that out.
-
-> The SiFive CLINT has flexibility related limitations which makes it
-> not useful for multi-socket and mult-die systems. The SiFive CLINT
-> is also not useful for systems with AIA because with AIA M-mode has
-> a new way of doing M-mode IPIs. Due to this reasons, the RISC-V
-> ACLINT spec breaks down traditional SiFive CLINT into two separate
-> devices namely mtimer and mswi. This allows platforms to implement
-> only the required set of devices. The mtimer as defined by the ACLINT
-> specifications also allows platforms to place mtime and mtimecmp
-> registers at different locations.
->=20
-> Refer, https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
->=20
-> We need a separate DT bindings document for ACLINT MTIMER
-> and ACLINT MSWI because these are separate devices. The
-> Sophgo sg2042 SoC should add their implementation specific
-> compatible strings in this document.
-
-If the spec isn't frozen, I'm not accepting a binding for the "generic"
-version of it. Bindings for this specific implemtnation are okay.
-For sure though, squeezing this into the sifive,plic binding isn't
-appropriate.
-
-What was pointed out, I think by Samuel, that the reason that this may
-need to be split is the fact that there are many possible MTIMER
-register ranges & possibly sswi stuff too that would need to be
-differentiated.
-
->=20
-> Regards,
-> Anup
-
---lO3IQKh1/e514qwn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQsHCAAKCRB4tDGHoIJi
-0oIxAP4l9Y+OWxR43uIh16s9q+QkJcVDOsWIXdpnb0KYX5AOogD/eVTeoiQKQkzL
-Sdw+Zw7PIgPrS0SkTX280B840uhfswE=
-=7xPz
------END PGP SIGNATURE-----
-
---lO3IQKh1/e514qwn--
+Regards,
+Andreas
