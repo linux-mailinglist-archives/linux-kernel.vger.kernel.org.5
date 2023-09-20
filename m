@@ -2,119 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 060AD7A74D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D5C7A74D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbjITHu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
+        id S232820AbjITHui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232853AbjITHuW (ORCPT
+        with ESMTP id S233005AbjITHue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:50:22 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52D9186
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:50:14 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3215f19a13aso2415281f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:50:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695196213; x=1695801013; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v7CkeCjzvtAvF0BFc3WkolXtUPqkPIzEOcb2KkTPFs0=;
-        b=Elt+kzVC7E2IH0bp6reU6j/ZHuNUhA+qTEhn3dH9kd7dAAFz06uWdp01/UJUXuySeE
-         b5nA7ae92GreyupW3kXnq5YbNu9o9NJhAD2adh9gFiMXPwUo081zAJAUpvfIqGFFAYto
-         FgaJpAkvBZwgYkiPB8+CN0q+26+vemKFTIzcrcUnct4o4KvhBm5h6idG6fO1UxzgPx43
-         AcfNNkqwjyIhb9PRxURyr6udIBY3665zvrpycU89TbQ9/+DeWaWjC/ItBLU0GBoR9LEt
-         JLH/rrIBuUYrl+3t9FkBSZ1akwCXwtyfYTmC8fm6oL0gBIL4xmHGOWzgDY8hHAeE2x6K
-         c06Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695196213; x=1695801013;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v7CkeCjzvtAvF0BFc3WkolXtUPqkPIzEOcb2KkTPFs0=;
-        b=Gw2WfxkGKeNB81aXJIbbBbFViSFDm5oZydvbUlI0/KLpKLtbi1qC/mnvT4bTWdGAv5
-         IfvdJBewXvXr42qS+VTmiPGVEEfeEBL3msgNLaG7ySVDY3FMjbzH/she6BhgHRGcrn71
-         JXqBhkziVJwDOp2WSV1b85tU0DtIBjscGKxmWkqAHM3bjtfHOY4M+cqfJqyGxY+2dfTs
-         3bABD6ksqms9gca5mhYY3yaWRYgbN1WmpXKMe9a8eWwcOaT921+ZbEuV6CCUpg91vT/0
-         oUSNdEBpcU2Ftdr4X+aMr/sy380jThVUMA5od95exL7Ed95RkFzpGkKr+e1LfKkYY8Ys
-         RsPQ==
-X-Gm-Message-State: AOJu0YyHDOByGy/JBavw/gBgCjcg9MBRqu+lD65tmvxdH1rOq6nDCckw
-        XOMfNrIyjmBwIqKmmGRg61J+vPVSWJNCTk6ERvU=
-X-Google-Smtp-Source: AGHT+IGw1VBQZO24lqLlXFGTfo8W9hy1BjDwhuuXt9Rrtc78ra8pQJSm+b20JrGdyY74TJahcGWzCA==
-X-Received: by 2002:adf:d0c8:0:b0:31f:d8b3:ea06 with SMTP id z8-20020adfd0c8000000b0031fd8b3ea06mr1576992wrh.0.1695196213173;
-        Wed, 20 Sep 2023 00:50:13 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id z8-20020a056000110800b0031f9bdb79dasm17647528wrw.61.2023.09.20.00.50.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:50:12 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 09:50:12 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 5/7] KVM: riscv: selftests: Add senvcfg register to
- get-reg-list test
-Message-ID: <20230920-a6e56a81b36f95d115efceff@orel>
-References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-6-apatel@ventanamicro.com>
+        Wed, 20 Sep 2023 03:50:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7596012B;
+        Wed, 20 Sep 2023 00:50:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0697AC433C8;
+        Wed, 20 Sep 2023 07:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695196223;
+        bh=qgnXu1TyYhloTi8YxIU3S0Uj/ogkTienBEk6w7AwPsA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=a469RoIF/TseFpgEKVifl0CRz3yEPY4vn2YwIGI9Tf2LwaXVNfLY95PHBZXcUuD4C
+         wlRjk4Fb5SpLEAmSorm5DX8AhtGpAw+uA17JeTc8KjK2AFnsIAuf6b8j6xvSpOsHHb
+         iU7oaHrT8itoWuPPw9C9qKpuZpoJyuOb0C17bkZa8haJQ/V/NyJ7Re/R9oADlPbXAR
+         qU+wpEkrdOLKK2dtZU9/CM/wZ7HtzOLpfLJohSQ6rVmRBVqjdhcB/29YQnlXfHK6zq
+         Dt+rQ50n9rwL2hwAU6WspRIU1LFbI7EaYOQT3O5Ieu1wnsbaD+qBMMbU8JF2Pajava
+         SF4vXzzlcOfJQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E1DE1C41671;
+        Wed, 20 Sep 2023 07:50:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919035343.1399389-6-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: rds: Fix possible NULL-pointer dereference
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169519622292.27747.2696089097178293135.git-patchwork-notify@kernel.org>
+Date:   Wed, 20 Sep 2023 07:50:22 +0000
+References: <20230918135623.630654-1-artem.chernyshev@red-soft.ru>
+In-Reply-To: <20230918135623.630654-1-artem.chernyshev@red-soft.ru>
+To:     Artem Chernyshev <artem.chernyshev@red-soft.ru>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:23:41AM +0530, Anup Patel wrote:
-> We have a new senvcfg register in the general CSR ONE_REG interface
-> so let us add it to get-reg-list test.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  tools/testing/selftests/kvm/riscv/get-reg-list.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> index 85907c86b835..0928c35470ae 100644
-> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> @@ -209,6 +209,8 @@ static const char *general_csr_id_to_str(__u64 reg_off)
->  		return RISCV_CSR_GENERAL(satp);
->  	case KVM_REG_RISCV_CSR_REG(scounteren):
->  		return RISCV_CSR_GENERAL(scounteren);
-> +	case KVM_REG_RISCV_CSR_REG(senvcfg):
-> +		return RISCV_CSR_GENERAL(senvcfg);
->  	}
->  
->  	TEST_FAIL("Unknown general csr reg: 0x%llx", reg_off);
-> @@ -532,6 +534,7 @@ static __u64 base_regs[] = {
->  	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(sip),
->  	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(satp),
->  	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(scounteren),
-> +	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(senvcfg),
->  	KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_RISCV_TIMER_REG(frequency),
->  	KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_RISCV_TIMER_REG(time),
->  	KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_RISCV_TIMER_REG(compare),
-> -- 
-> 2.34.1
->
+Hello:
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Mon, 18 Sep 2023 16:56:23 +0300 you wrote:
+> In rds_rdma_cm_event_handler_cmn() check, if conn pointer exists
+> before dereferencing it as rdma_set_service_type() argument
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: fd261ce6a30e ("rds: rdma: update rdma transport for tos")
+> Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+> 
+> [...]
+
+Here is the summary with links:
+  - net: rds: Fix possible NULL-pointer dereference
+    https://git.kernel.org/netdev/net/c/f1d95df0f310
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
