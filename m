@@ -2,130 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0650F7A8D9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AAE7A8DA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbjITUOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 16:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        id S229886AbjITUO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 16:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjITUOe (ORCPT
+        with ESMTP id S229713AbjITUOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 16:14:34 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7B5AB
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:14:28 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KIEkJu007325;
-        Wed, 20 Sep 2023 20:14:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=zZxXZJcu+7jXEdG3EFHrpNBrQsAQooeCP1LQOLZ2Bn8=;
- b=TSZ3pmbwR1v/s1rbAkTttx5/DlgE2d8YUDo2uDRebvgHgeiO7VPJRlpUepT5/5NN8vm+
- 9CuSyhSE2kuVEasCrjTjoKkBcdi0zWiktlajCcjepXGLFgnIq485aOk/j023P8UxdVRa
- eLJp4TipiWnZtW4/SwGGhmJ1RlDsLHM0979SbYjHgUm044BwcQNLJgPhGlLyvw4Pcy0l
- XPY/7rXvd+Ij6/6oC7SgzvuqBjq8aPKsc/4dSz+pIYBl/ve+YBopU8Nnz8Ep8rCnPu2R
- QJcMfJNs1eg/J3MOheK1sNqCMwFKmd1MUdq9iqxxAeTxIKUEGf9vZvo4pRYEltx3BwTk WQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7amnc39y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 20:14:11 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38KKEBmg008113
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 20:14:11 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 20 Sep 2023 13:14:10 -0700
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <dri-devel@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        <freedreno@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <laurent.pinchart@ideasonboard.com>,
-        <andersson@kernel.org>, <jani.nikula@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm: improve the documentation of connector hpd ops
-Date:   Wed, 20 Sep 2023 13:13:58 -0700
-Message-ID: <20230920201358.27597-1-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.40.1
+        Wed, 20 Sep 2023 16:14:54 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE23A9;
+        Wed, 20 Sep 2023 13:14:48 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c3d6d88231so1656475ad.0;
+        Wed, 20 Sep 2023 13:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695240888; x=1695845688; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=iBAkISg4liJpMSv79ebj2TeKhgO/99XxEW65IYWMigQ=;
+        b=MdjFWySsnCCx6jy//SfWXKUVvYIWNmGWBHU2BV9hFd8KrNplYqiobZwWieUIn8tomf
+         1Vf8s93XEF4iLgUin1QBLwTpfBWH+IuwRsqUnR/7H9TfA4fu8zuP+1uLQ3A7skeaW1tn
+         6P8SFfQ/26WGNN5+yL6dBeymRWrHo0f9s+q1nD1Y4nNvIXwFYQ8QaFc+yVhU15hv6Td3
+         qGyyUmMGljhIOm7KdWSRQ2oGjsJBlEuJ6ba0ZIsSBrY2etYXh32QhnjM23pMWEquk0nP
+         n4ZkqiyhfVFBvIniy/7HwrK9GEblMKucIMjwV6IexkXVtZ4qDcKuCrukJutnG0HQIGNN
+         W7Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695240888; x=1695845688;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iBAkISg4liJpMSv79ebj2TeKhgO/99XxEW65IYWMigQ=;
+        b=FTdWeV7uZKoevf1ozSrR3ul9Q+swQEdnpTm1IlwGWJuQPEGvgnp4nuzY9XDoTdmK82
+         oMVYmPVCggcaYyMytsLkoaKu0eZMFYwziTUvwrv1agjqFnsTkstONIM4OlddRvNQGJmq
+         UnxhvVtwngkPL8YW0S+XsnuJDLcCJiSqg9ueUVwhkrVgIe0mx95zx3L8BY2HAq9GZKNH
+         k71/1YBjYoDse/R9TFZmSUcLnQSEHZdXRKama2mEtgBTtLsvHqbu4vuoqKkTSdvrp+Om
+         b95U0VGgVOlVMGD52sLfy/a6ktUrbzGCHVsWs8dG1XWNZ57gK86jLMB6JVtySqKhpTlD
+         GwXg==
+X-Gm-Message-State: AOJu0YzdMW2DNdEn6BOUHgA0qixE2ERIy6E6ejAvzbIQdtgc38gLxfFY
+        daBzVUFkZTZrjRmcZ39gjPN1AtlcskU=
+X-Google-Smtp-Source: AGHT+IEmCDf8b3mlYUNXqLfFkKrJ9PDxO9NjeDkIOVQFK/O/Z5JIlGM1JSxzUBcTuFaxCR1315FDQw==
+X-Received: by 2002:a17:903:1211:b0:1c3:61d9:2b32 with SMTP id l17-20020a170903121100b001c361d92b32mr2187662plh.45.1695240887675;
+        Wed, 20 Sep 2023 13:14:47 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e12-20020a170902d38c00b001b9de4fb749sm1311015pld.20.2023.09.20.13.14.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 13:14:46 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <f1abf571-c903-ad51-10eb-1e20d2b3ab75@roeck-us.net>
+Date:   Wed, 20 Sep 2023 13:14:45 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0uNC1Bf6DvnlTR5LUYEFIAAstZHZIdEl
-X-Proofpoint-ORIG-GUID: 0uNC1Bf6DvnlTR5LUYEFIAAstZHZIdEl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_10,2023-09-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- clxscore=1015 bulkscore=0 priorityscore=1501 suspectscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=825 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309200169
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 4/6] watchdog: ar7_wdt: remove driver to prepare for
+ platform removal
+Content-Language: en-US
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mips@vger.kernel.org
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
+ <20230920201035.3445-5-wsa+renesas@sang-engineering.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230920201035.3445-5-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While making the changes in [1], it was noted that the documentation
-of the enable_hpd() and disable_hpd() does not make it clear that
-these ops should not try to do hpd state maintenance and should only
-attempt to enable/disable hpd related hardware for the connector.
+On 9/20/23 13:10, Wolfram Sang wrote:
+> AR7 is going to be removed from the Kernel, so remove its watchdog
+> support. This allows us to remove the platform because this driver
+> includes a platform specific header.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-The state management of these calls to make sure these calls are
-balanced is handled by the DRM core and we should keep it that way
-to minimize the overhead in the drivers which implement these ops.
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-[1]: https://patchwork.freedesktop.org/patch/558387/
-
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
----
- include/drm/drm_modeset_helper_vtables.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-index e3c3ac615909..a33cf7488737 100644
---- a/include/drm/drm_modeset_helper_vtables.h
-+++ b/include/drm/drm_modeset_helper_vtables.h
-@@ -1154,6 +1154,11 @@ struct drm_connector_helper_funcs {
- 	 * This operation is optional.
- 	 *
- 	 * This callback is used by the drm_kms_helper_poll_enable() helpers.
-+	 *
-+	 * This operation does not need to perform any hpd state tracking as
-+	 * the DRM core handles that maintenance and ensures the calls to enable
-+	 * and disable hpd are balanced.
-+	 *
- 	 */
- 	void (*enable_hpd)(struct drm_connector *connector);
- 
-@@ -1165,6 +1170,11 @@ struct drm_connector_helper_funcs {
- 	 * This operation is optional.
- 	 *
- 	 * This callback is used by the drm_kms_helper_poll_disable() helpers.
-+	 *
-+	 * This operation does not need to perform any hpd state tracking as
-+	 * the DRM core handles that maintenance and ensures the calls to enable
-+	 * and disable hpd are balanced.
-+	 *
- 	 */
- 	void (*disable_hpd)(struct drm_connector *connector);
- };
--- 
-2.40.1
+> ---
+>   drivers/watchdog/Kconfig   |   6 -
+>   drivers/watchdog/Makefile  |   1 -
+>   drivers/watchdog/ar7_wdt.c | 315 -------------------------------------
+>   3 files changed, 322 deletions(-)
+>   delete mode 100644 drivers/watchdog/ar7_wdt.c
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 751458959411..b9f715d73fe8 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1768,12 +1768,6 @@ config SIBYTE_WDOG
+>   	  To compile this driver as a loadable module, choose M here.
+>   	  The module will be called sb_wdog.
+>   
+> -config AR7_WDT
+> -	tristate "TI AR7 Watchdog Timer"
+> -	depends on AR7 || (MIPS && 32BIT && COMPILE_TEST)
+> -	help
+> -	  Hardware driver for the TI AR7 Watchdog Timer.
+> -
+>   config TXX9_WDT
+>   	tristate "Toshiba TXx9 Watchdog Timer"
+>   	depends on CPU_TX49XX || (MIPS && COMPILE_TEST)
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index 7eab9de311cb..7cbc34514ec1 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -168,7 +168,6 @@ obj-$(CONFIG_INDYDOG) += indydog.o
+>   obj-$(CONFIG_JZ4740_WDT) += jz4740_wdt.o
+>   obj-$(CONFIG_WDT_MTX1) += mtx-1_wdt.o
+>   obj-$(CONFIG_SIBYTE_WDOG) += sb_wdog.o
+> -obj-$(CONFIG_AR7_WDT) += ar7_wdt.o
+>   obj-$(CONFIG_TXX9_WDT) += txx9wdt.o
+>   obj-$(CONFIG_OCTEON_WDT) += octeon-wdt.o
+>   octeon-wdt-y := octeon-wdt-main.o octeon-wdt-nmi.o
+> diff --git a/drivers/watchdog/ar7_wdt.c b/drivers/watchdog/ar7_wdt.c
+> deleted file mode 100644
+> index cdcaeb0961ac..000000000000
 
