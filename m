@@ -2,133 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1CD7A7986
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9F07A7988
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbjITKoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
+        id S234326AbjITKoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbjITKo0 (ORCPT
+        with ESMTP id S234244AbjITKo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:44:26 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6215CA
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:44:19 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9aa2c6f0806so874894766b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695206658; x=1695811458; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7O7mWyhJga1IYEYoLQcrmnzYFbmyVRQyHT7Q+TKsjdE=;
-        b=E2hk2cM20Acvnfd3/3r7bxco2Xyc0iWlKaxvEDn66gMvg4j+yLaCjLxSS/1XLzeztT
-         0GcjIrAB0g+8dMRdvSv7aWe5QgdE6XIrv2MCva65kYwn7SKMr2RiOOM325asIkrK3rNW
-         mHnSubkPq1b1fmG0LeLgvEeUvm4V26zsB5rCSkGRAY8nId+FCUl13RTZasWpJkx3AfWR
-         v3+IQz9WtWFjdzvBYZ5k0Epw1IqS3o13qrHRlXsvSKBJ94uhop8fRmAeKiW38UrvmI+9
-         leITM0vDHseACWXK2MYiHb5qOYCOFS9m/0hrG+umiugsv3ZtC1xmAtm7JaGW85q2k907
-         14og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695206658; x=1695811458;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7O7mWyhJga1IYEYoLQcrmnzYFbmyVRQyHT7Q+TKsjdE=;
-        b=jCDSFDl+y9g7a27vpJH/Inb9+o1U4h4+FaGyd/C/+n/4C64yeOv4AQGQ+KKc5XErDj
-         lfkpU0+eNHK0CJ7qu5PZrQsCVVEHoC29FVfhALRRYN/gy+28Tc0W4e0Fhbn6gLjvyp96
-         95QhiGjcAAZQOjhGazXQbnKj0C5HPzvee9kt03C0jFRAkLVWt7/9aua+7ItPBtTEeeJN
-         Yw37Xk/+uH4EPr6T1FSiI7RGqKW54YBRlcCHvwMCF+NJkyYcTzGqbv5qNqViD6Yn1vC2
-         0c/iTDYwGc1R9h76D/bnBBu82TYpH9r/1pQHeaqLmV1LHKfYz0O69sq2zh563cKzPlKn
-         4vsA==
-X-Gm-Message-State: AOJu0Yxq5HkNaKauuBSgLoh9ddWV9M9Pdg+IF2RDZJv4N+B7YG5sm8No
-        Ejur/Df6VLiOvdXA8evOnxOnGg==
-X-Google-Smtp-Source: AGHT+IGO3lncIOMxzIVaRUoIoQXNjIcQ22mCx46sIDTt+vAiLFg+skIRbs2SUmaSDzWxxnF2blZYPA==
-X-Received: by 2002:a17:907:75c2:b0:9aa:25f5:8d95 with SMTP id jl2-20020a17090775c200b009aa25f58d95mr1711323ejc.59.1695206658146;
-        Wed, 20 Sep 2023 03:44:18 -0700 (PDT)
-Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
-        by smtp.gmail.com with ESMTPSA id i13-20020a170906114d00b00992afee724bsm8979517eja.76.2023.09.20.03.44.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 03:44:17 -0700 (PDT)
-Message-ID: <a2a5ede9-c93e-915d-61be-c2c2fab18479@blackwall.org>
-Date:   Wed, 20 Sep 2023 13:44:16 +0300
+        Wed, 20 Sep 2023 06:44:29 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBB5C2;
+        Wed, 20 Sep 2023 03:44:24 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4F15966020EE;
+        Wed, 20 Sep 2023 11:44:22 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695206662;
+        bh=v6OXoORpooHQSXX2uzSECYJDG7gT9Gv+5nUaIefwooM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=N8OnldgrfVAP1gPm+4lEweW46+KBWAASsSFF0cvTBnF2Y5wLGdgve1HstxTroceg8
+         4h1Kvw+RK+NRmL1EOVHB5avww3XNrtPBbxuDPHAFha0ty67hY4QlYzwBe59qda41G/
+         a/ywvx2teWbb4EDcRN1dRhB7de48lVZMT1+3jrrGfgdYxOXQaZhTgJVWsiEqDr9H3E
+         vBS5ArEOlnZwcZV4Qf9YnxdtI+kgeB94IDgnm1day26RVdqx/5GqeEervS1vMQeHkL
+         JzGOQ9pB3kXyJL9VUYsDGZ1JcswcTiYJFdy1L5fs7RO5PrlQXgX2NLC43SrP8lyTAI
+         SDOy2rabeep+w==
+Message-ID: <e4a6d5c7-fbc5-23df-c91b-e433d8d05eb8@collabora.com>
+Date:   Wed, 20 Sep 2023 12:44:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH net-next v4 1/6] net: bridge: Set BR_FDB_ADDED_BY_USER
- early in fdb_add_entry
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 10/12] regulator: mt6358: Add missing regulators for
+ MT6366
 Content-Language: en-US
-To:     Johannes Nixdorf <jnixdorf-oss@avm.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
- <20230919-fdb_limit-v4-1-39f0293807b8@avm.de>
-From:   Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20230919-fdb_limit-v4-1-39f0293807b8@avm.de>
+To:     Chen-Yu Tsai <wenst@chromium.org>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Zhiyong Tao <zhiyong.tao@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230919104357.3971512-1-wenst@chromium.org>
+ <20230919104357.3971512-11-wenst@chromium.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230919104357.3971512-11-wenst@chromium.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/23 11:12, Johannes Nixdorf wrote:
-> In preparation of the following fdb limit for dynamically learned entries,
-> allow fdb_create to detect that the entry was added by the user. This
-> way it can skip applying the limit in this case.
+Il 19/09/23 12:43, Chen-Yu Tsai ha scritto:
+> When support for the MT6366 PMIC regulators was added, it was assumed
+> that it had the same functionality as MT6358. In reality there are
+> differences. A few regulators have different ranges, or were renamed
+> and repurposed, or removed altogether.
 > 
-> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
-> ---
->   net/bridge/br_fdb.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
+> Add the 3 regulators that were missing from the original submission.
+> These are added for completeness. VSRAM_CORE is not used in existing
+> projects. VM18 and VMDDR feed DRAM related consumers, and are not used
+> in-kernel.
 > 
-> diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
-> index e69a872bfc1d..f517ea92132c 100644
-> --- a/net/bridge/br_fdb.c
-> +++ b/net/bridge/br_fdb.c
-> @@ -1056,7 +1056,8 @@ static int fdb_add_entry(struct net_bridge *br, struct net_bridge_port *source,
->   		if (!(flags & NLM_F_CREATE))
->   			return -ENOENT;
->   
-> -		fdb = fdb_create(br, source, addr, vid, 0);
-> +		fdb = fdb_create(br, source, addr, vid,
-> +				 BIT(BR_FDB_ADDED_BY_USER));
->   		if (!fdb)
->   			return -ENOMEM;
->   
-> @@ -1069,6 +1070,8 @@ static int fdb_add_entry(struct net_bridge *br, struct net_bridge_port *source,
->   			WRITE_ONCE(fdb->dst, source);
->   			modified = true;
->   		}
-> +
-> +		set_bit(BR_FDB_ADDED_BY_USER, &fdb->flags);
->   	}
->   
->   	if (fdb_to_nud(br, fdb) != state) {
-> @@ -1100,8 +1103,6 @@ static int fdb_add_entry(struct net_bridge *br, struct net_bridge_port *source,
->   	if (fdb_handle_notify(fdb, notify))
->   		modified = true;
->   
-> -	set_bit(BR_FDB_ADDED_BY_USER, &fdb->flags);
-> -
->   	fdb->used = jiffies;
->   	if (modified) {
->   		if (refresh)
-> 
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
-Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
