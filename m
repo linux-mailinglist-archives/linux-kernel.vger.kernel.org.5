@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D54B07A8ADB
+	by mail.lfdr.de (Postfix) with ESMTP id 349447A8AD9
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbjITRuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
+        id S229601AbjITRuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjITRuR (ORCPT
+        with ESMTP id S229461AbjITRuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Sep 2023 13:50:17 -0400
 Received: from mxout2.routing.net (mxout2.routing.net [IPv6:2a03:2900:1:a::b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF52DCA;
-        Wed, 20 Sep 2023 10:50:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C9594;
+        Wed, 20 Sep 2023 10:50:11 -0700 (PDT)
 Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
-        by mxout2.routing.net (Postfix) with ESMTP id 0817F6035B;
+        by mxout2.routing.net (Postfix) with ESMTP id C33F1615FC;
         Wed, 20 Sep 2023 17:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
         s=20200217; t=1695232209;
@@ -24,13 +24,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EpXyE3pyrLeXOoW/vTn/35mmwMMGT5ciC6Nn0z7I4eI=;
-        b=h3BGCFCnFpKrXPsRyyuYxjScEcHuE5yKI+5VscIyM7e7qLus6YOrnwRwLFbkKcXdFMSYQn
-        m5hNdJW/WcuqODSErRv/CIL4K5wM4z5EC31U7rZbwkdsTsflW1wyRhE2xZsfc6WNeoDGrl
-        G04GkiedV1LYm7WjGhG2R4//uig4pg0=
+        bh=6Ab/IJGopl0Fd9bE40PtYLKeKlhYSWE9/GzXwTQ8IZ0=;
+        b=KDbQv9Gp+pCwGmY6GAW2gND9JNsiWa5glAC5IBTBQfSu8U0WauN54as8GQ2Wo1J/3n3+Dy
+        MsTnFSnIdVbzRL0rgcTtKfQ9SO/zQwVJZRAOIReRI/NzAxlqlFEsHOyF0GRefAPf95F53V
+        IvQNeadAvecIjjDQl6HUgoP4KTimw1k=
 Received: from frank-G5.. (fttx-pool-217.61.152.105.bambit.de [217.61.152.105])
-        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 3BE701006A2;
-        Wed, 20 Sep 2023 17:50:08 +0000 (UTC)
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 059B31015CA;
+        Wed, 20 Sep 2023 17:50:09 +0000 (UTC)
 From:   Frank Wunderlich <linux@fw-web.de>
 To:     linux-mediatek@lists.infradead.org
 Cc:     Frank Wunderlich <frank-w@public-files.de>,
@@ -46,15 +46,15 @@ Cc:     Frank Wunderlich <frank-w@public-files.de>,
         <angelogioacchino.delregno@collabora.com>,
         linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 1/4] dt-bindings: thermal: mediatek: add mt7988 lvts compatible
-Date:   Wed, 20 Sep 2023 19:49:58 +0200
-Message-Id: <20230920175001.47563-2-linux@fw-web.de>
+Subject: [PATCH v2 2/4] dt-bindings: thermal: mediatek: Add LVTS thermal sensors for mt7988
+Date:   Wed, 20 Sep 2023 19:49:59 +0200
+Message-Id: <20230920175001.47563-3-linux@fw-web.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230920175001.47563-1-linux@fw-web.de>
 References: <20230920175001.47563-1-linux@fw-web.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mail-ID: 5430aa16-e26a-4aa4-9ee0-76ea05442544
+X-Mail-ID: c3a287f9-3456-4424-bf8c-b952a733516f
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -66,29 +66,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frank Wunderlich <frank-w@public-files.de>
 
-Add compatible string for mt7988 lvts application processor.
+Add sensor constants for MT7988.
 
 Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 ---
 v2:
-- change mt7988-lvts to mt7988-lvts-ap (Application Processor)
-- not added Ack from Rob because of this change
+- new patch (moved from driver code to binding header)
+- give sensors more meaningful names
 ---
- .../devicetree/bindings/thermal/mediatek,lvts-thermal.yaml       | 1 +
- 1 file changed, 1 insertion(+)
+ include/dt-bindings/thermal/mediatek,lvts-thermal.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/thermal/mediatek,lvts-thermal.yaml b/Documentation/devicetree/bindings/thermal/mediatek,lvts-thermal.yaml
-index fe9ae4c425c0..e6665af52ee6 100644
---- a/Documentation/devicetree/bindings/thermal/mediatek,lvts-thermal.yaml
-+++ b/Documentation/devicetree/bindings/thermal/mediatek,lvts-thermal.yaml
-@@ -18,6 +18,7 @@ description: |
- properties:
-   compatible:
-     enum:
-+      - mediatek,mt7988-lvts-ap
-       - mediatek,mt8192-lvts-ap
-       - mediatek,mt8192-lvts-mcu
-       - mediatek,mt8195-lvts-ap
+diff --git a/include/dt-bindings/thermal/mediatek,lvts-thermal.h b/include/dt-bindings/thermal/mediatek,lvts-thermal.h
+index 8fa5a46675c4..8c1fdc18cf34 100644
+--- a/include/dt-bindings/thermal/mediatek,lvts-thermal.h
++++ b/include/dt-bindings/thermal/mediatek,lvts-thermal.h
+@@ -7,6 +7,15 @@
+ #ifndef __MEDIATEK_LVTS_DT_H
+ #define __MEDIATEK_LVTS_DT_H
+ 
++#define MT7988_CPU_0		0
++#define MT7988_CPU_1		1
++#define MT7988_ETH2P5G_0	2
++#define MT7988_ETH2P5G_1	3
++#define MT7988_TOPS_0		4
++#define MT7988_TOPS_1		5
++#define MT7988_ETHWARP_0	6
++#define MT7988_ETHWARP_1	7
++
+ #define MT8195_MCU_BIG_CPU0     0
+ #define MT8195_MCU_BIG_CPU1     1
+ #define MT8195_MCU_BIG_CPU2     2
 -- 
 2.34.1
 
