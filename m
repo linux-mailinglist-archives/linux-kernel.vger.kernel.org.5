@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4237A8E5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542877A8E61
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjITVZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 17:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
+        id S229493AbjITV0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 17:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjITVZ6 (ORCPT
+        with ESMTP id S229456AbjITV0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 17:25:58 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15383C2;
-        Wed, 20 Sep 2023 14:25:53 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c3bd829b86so2197665ad.0;
-        Wed, 20 Sep 2023 14:25:53 -0700 (PDT)
+        Wed, 20 Sep 2023 17:26:12 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE26D9;
+        Wed, 20 Sep 2023 14:26:05 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c5c91bec75so1895785ad.3;
+        Wed, 20 Sep 2023 14:26:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695245152; x=1695849952; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695245165; x=1695849965; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=PMbPNeYy+UGMgyZDyxPbuxTcd7HPf3Y3TrYovIXSs50=;
-        b=VtIWFE8FnbXo/Q774ZoU87GqsvfliKaWbI/wCg4iLT4Ir/e3yD4qdq40sb83Qv3VKL
-         K0m2h43RY7YtJmK8B6vxBd4mcS51st8K9JNPrdiE9o35Kj5eIw1dhif5ncWa/S4/E0Oy
-         p/MV/FPsdFXWd5STDc7WhlSaXiHQBT3HCaHQ9Vv6dhsxI7QTay5I9lEl85ZgAV6nBU1s
-         4G7NvsbAGDn5kwqVdWKn/zZz5mxXESvJIVCfcTIULFqBYxvNtPB038jIPpZ56hnHqf91
-         RmncYxa0sDmlnAwSixVINp+3azZysoxg8tgV6IpKFm98g4eNm3pdi1NuKqoV5KRSFLHI
-         YBow==
+        bh=wDky5cMjhAdH0XJ0lHaGj/gCp8pUga3o69CncHMTrXA=;
+        b=eLLazJkKlfB1YT9Hw7EQZlbxK8cZMvPlZr6yEL9Lcw0f8eEkKxbGQ3zmYkNeWCSkA7
+         G5kiKDZlrPL48BWZYojoFiapJKaWQZ4HntTMx/0o1g8rJtc57/sJQsw8eNvU/8sU6UhU
+         BI8oy1ExFbATOkx2SF28O++7Cpg8nL9z4tpfEjjQqo4XiwAkb3H4wPKkESZwhT70sgpW
+         psDgkrC4UMCaRhbpsGruULHVNAjMgoXrbpgAS8znR+kVk86pj83wkWUVGb8JOtSO5FSl
+         NBPlbPXWMHVb8p0Cc6m45n4wnkqIla/L97shPDpgXiG383VsSZ2ByYqNUaS2jt1XkWwU
+         aveg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695245152; x=1695849952;
+        d=1e100.net; s=20230601; t=1695245165; x=1695849965;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PMbPNeYy+UGMgyZDyxPbuxTcd7HPf3Y3TrYovIXSs50=;
-        b=cZPF9m0bckB9/a3JhxQc4Itwx1CW+TGyCYbmJYjKZa28Z026K8KNcv12rZZ19+Q0nd
-         HcL0L0/OVRhqNV9W0JHL8i12uSVlLNkJxhPgJiuSw+eDifDIBOIyjV7N9q6ksAB1xqKP
-         MnOQ4DGlVfm9mjDYZgHd3kfCp0kRBa02hQwByj2Su5A0xzISXc6SNAsb9maZUd0X6+Vq
-         Ux6ykjKcoPPuWPybZCCBRU1nizpLFd5vM7OpH1FRIIKG2SFbNzJWK3oeW75XU5mT0akJ
-         wZ/lv8w7FWuqs7YiXxYYbJY799xAp+ip+9LdNb+6o0gVXPhhYROJYMygiNgc1G8BALYg
-         RmxA==
-X-Gm-Message-State: AOJu0Yzop82YHooqGXSor+OlILUqiUr9JE4X9PWHN/nYYp08Hd/2Mzk1
-        JWAeboSWrOgOiPyFhBC87w5QmvXIV4r86w==
-X-Google-Smtp-Source: AGHT+IGzqX77C1WpExcjByUyYVEVr2I38LrIA4s3nXcrHk/SqCMeB6QNSE8/IB5ycHUd/IjSg1YsTg==
-X-Received: by 2002:a17:903:32c5:b0:1c3:411c:9b7d with SMTP id i5-20020a17090332c500b001c3411c9b7dmr4053435plr.57.1695245152274;
-        Wed, 20 Sep 2023 14:25:52 -0700 (PDT)
+        bh=wDky5cMjhAdH0XJ0lHaGj/gCp8pUga3o69CncHMTrXA=;
+        b=R/ty/GPWCk4G0cj0GiDSmYetT049kZlLElCZ1E9LcEoBvTd5Fe2+CHvtsXKhA8Klgh
+         gM+MZY7AeiPVuGhUHBrcuF7p3vQprplUDNSpGYRAadcWKbWqiJdot0Phxy2tpWBAIsy6
+         4Jq8Kp8wF9OIE9VVo5L+JXqv+lojYc2RBnoDDNB3it3tx4eI08BJgc2YsZ0wG4KYwLXg
+         LB+B3DoEhFeCkjwbUmWrV4huBJ0/IypnvQOac8cWrQdQTzKTCCqAix/4/JNA6ZZsqO5X
+         CwkI0UcBAyaC16oxPUFLcbkpU7+n9q05fSa3vbNfDkQMYfQOKqUaOeRGOwhQsfMdJe1r
+         poVQ==
+X-Gm-Message-State: AOJu0YyYGR1zAGvMEerhLRuJIjrtXQA6ajvn+jqHDh9ZC0BjWr2c7QPg
+        CavIxISGZH+uQweXr2/wVOxvQMQgKyQjaA==
+X-Google-Smtp-Source: AGHT+IHcAvgXhDYx2lkefhWfeaa8+dmAicl4g02UBEsy+n2QB988lCu6OOvdMJZ3YymOi4uZKs00Kg==
+X-Received: by 2002:a17:902:d2cb:b0:1c2:218c:3762 with SMTP id n11-20020a170902d2cb00b001c2218c3762mr4003650plc.42.1695245164701;
+        Wed, 20 Sep 2023 14:26:04 -0700 (PDT)
 Received: from [10.67.49.139] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id o10-20020a170902d4ca00b001bf3bdbceb5sm12286208plg.134.2023.09.20.14.25.50
+        by smtp.googlemail.com with ESMTPSA id e6-20020a170902cf4600b001bf5e24b2a8sm1466185plg.174.2023.09.20.14.26.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 14:25:51 -0700 (PDT)
-Message-ID: <f814cce5-9721-f64a-e8f6-cf390d1c43e6@gmail.com>
-Date:   Wed, 20 Sep 2023 14:25:49 -0700
+        Wed, 20 Sep 2023 14:26:03 -0700 (PDT)
+Message-ID: <78ca6618-27ac-811e-a37c-d83cc5426e0c@gmail.com>
+Date:   Wed, 20 Sep 2023 14:26:02 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 1/6] serial: 8250: remove AR7 support
+Subject: Re: [PATCH 2/6] mtd: parsers: ar7: remove support
 Content-Language: en-US
 To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
         linux-mips@vger.kernel.org
 Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+        Russell King <linux@armlinux.org.uk>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
 References: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
- <20230920201035.3445-2-wsa+renesas@sang-engineering.com>
+ <20230920201035.3445-3-wsa+renesas@sang-engineering.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230920201035.3445-2-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20230920201035.3445-3-wsa+renesas@sang-engineering.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,9 +83,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 9/20/23 13:10, Wolfram Sang wrote:
-> AR7 is going to be removed from the Kernel, so remove its type
-> definition from 8250 code. As with previous removals, I checked with
-> Debian Code Search that 'PORT_AR7' is not used in userspace.
+> AR7 is going to be removed from the Kernel, so remove its support for
+> MTD.
 > 
 > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
