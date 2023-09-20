@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 033E87A7CE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFD17A7CFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbjITMF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
+        id S235247AbjITMFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235203AbjITMEq (ORCPT
+        with ESMTP id S235216AbjITMFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:04:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFE393;
-        Wed, 20 Sep 2023 05:04:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8E2C433C9;
-        Wed, 20 Sep 2023 12:04:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695211480;
-        bh=RgqfN1Xfu93qH4Xs8kjd1SVTw5FJiMEsbdBE8cSzoSw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=JIPB8+8SaGhnOnwhY5AOQ1YKEJgLdk5rqXNB4YBIIpwK+6qTfGr7Q2XxUPu5J3bxf
-         g2gWiOvBZmidtRyKP3b7v9F74QTfHCQINVJlSueaWTRoTimYE0kpwfhf2Fr7KvMGLk
-         zEezT+tEGiGROhnuLkFkGTWOZzP4q04xSQN8H1qiYWUilr20cuO0pO3GUwz5Eu5q8O
-         e1vC8NakXuhWFkcz7xEm0nLqSdc4oTRYxVGO9uImxin2wCbuXAEbOA9spRzt6FKW32
-         JZ9TdZvNVTZoOXgmUfJX1RQLdtuvjRbSihHdOH6xy+GUjTsUpNgXO6wPJsLauYDTAS
-         Iwhk6XfgEzIlA==
-From:   Lee Jones <lee@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, tglx@linutronix.de, maz@kernel.org,
-        lee@kernel.org, Tengfei Fan <quic_tengfan@quicinc.com>
-Cc:     robimarko@gmail.com, quic_gurus@quicinc.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_tsoni@quicinc.com,
-        quic_shashim@quicinc.com, quic_kaushalk@quicinc.com,
-        quic_tdas@quicinc.com, quic_tingweiz@quicinc.com,
-        quic_aiquny@quicinc.com, kernel@quicinc.com,
-        quic_bjorande@quicinc.com
-In-Reply-To: <20230908065847.28382-3-quic_tengfan@quicinc.com>
-References: <20230908065847.28382-1-quic_tengfan@quicinc.com>
- <20230908065847.28382-3-quic_tengfan@quicinc.com>
-Subject: Re: (subset) [PATCH 2/6] dt-bindings: mfd: qcom,tcsr: Add
- compatible for sm4450
-Message-Id: <169521147588.3404980.18311458594014218511.b4-ty@kernel.org>
-Date:   Wed, 20 Sep 2023 13:04:35 +0100
+        Wed, 20 Sep 2023 08:05:49 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F7FC2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:05:43 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qivxT-0004MG-T3; Wed, 20 Sep 2023 14:05:31 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qivxR-007g38-VX; Wed, 20 Sep 2023 14:05:29 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qivxR-00BmIp-Ma; Wed, 20 Sep 2023 14:05:29 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Sascha Hauer <s.hauer@pengutronix.de>, stable@vger.kernel.org
+Subject: [PATCH] ARM: dts: stm32: Fix ethernet pins used on phyCORE-STM32MP15
+Date:   Wed, 20 Sep 2023 14:05:20 +0200
+Message-Id: <20230920120520.2807275-1-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Sep 2023 14:58:43 +0800, Tengfei Fan wrote:
-> Document the qcom,sm4450-tcsr compatible.
-> 
-> 
+On the phyCORE-STM32MP15 the 125MHz clock for the ethernet phy must
+be provided on the ETH_RGMII_GTX_CLK. ETH_RGMII_CLK125 is unused though,
+so remove the latter pin and add the former.
 
-Applied, thanks!
+ethernet0_rgmii_pins_d and ethernet0_rgmii_sleep_pins_d are used by the
+phyCORE-STM32MP15 board only, so we can do this change in the generic
+pinctrl file without breaking other boards.
 
-[2/6] dt-bindings: mfd: qcom,tcsr: Add compatible for sm4450
-      commit: 961c8e9cffce3bcbea982b609fd3df1913c9b905
+Fixes: 303f3fe1d88f ("ARM: dts: stm32: Add alternate pinmux for ethernet for stm32mp15")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---
-Lee Jones [李琼斯]
+diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+index 098153ee99a3a..5d85bcc8b3a8c 100644
+--- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+@@ -354,7 +354,7 @@ pins1 {
+ 
+ 	ethernet0_rgmii_pins_d: rgmii-3 {
+ 		pins1 {
+-			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
++			pinmux = <STM32_PINMUX('G', 4, AF11)>, /* ETH_RGMII_GTX_CLK */
+ 				 <STM32_PINMUX('G', 13, AF11)>,	/* ETH_RGMII_TXD0 */
+ 				 <STM32_PINMUX('G', 14, AF11)>,	/* ETH_RGMII_TXD1 */
+ 				 <STM32_PINMUX('C', 2, AF11)>, /* ETH_RGMII_TXD2 */
+@@ -384,8 +384,7 @@ pins3 {
+ 
+ 	ethernet0_rgmii_sleep_pins_d: rgmii-sleep-3 {
+ 		pins1 {
+-			pinmux = <STM32_PINMUX('G', 5, ANALOG)>, /* ETH_RGMII_CLK125 */
+-				 <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
++			pinmux = <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
+ 				 <STM32_PINMUX('G', 13, ANALOG)>, /* ETH_RGMII_TXD0 */
+ 				 <STM32_PINMUX('G', 14, ANALOG)>, /* ETH_RGMII_TXD1 */
+ 				 <STM32_PINMUX('C', 2, ANALOG)>, /* ETH_RGMII_TXD2 */
+-- 
+2.39.2
 
