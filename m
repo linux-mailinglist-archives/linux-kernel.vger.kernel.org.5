@@ -2,109 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A4D7A784D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F0C7A783A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbjITJ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60286 "EHLO
+        id S234293AbjITJ55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234319AbjITJ6f (ORCPT
+        with ESMTP id S234287AbjITJ5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:58:35 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388F2F1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:58:22 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-5308430052fso6644385a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695203900; x=1695808700; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JuLstdULL+9O12ksEVrhOrE8xohHCriozL2R7kr9wsU=;
-        b=MWPgFZOKpyi90rllEY2JHAETeGoUbT9EwaY1cgFARFZacloXrQMpgwBm6+D+8P0tOa
-         vucBv3fFrC2G9irFnNxCPYuoHbaCBBWzEseAbhY/5kodqVNFNR+xH5KFnE8OKY5nP5mB
-         QRFQZ8VG4F6d+Yc761JnYH1qEgKyv19uaQs84WIrOfuUVDehhqEJTyQoGMTPGmUpWb3R
-         VxjHBoL5USKoscbmICDZTxhBCbYRWfVckbiAv9trlglIAVxI/V8kRFSm4S22x3Uf2Wgl
-         bgCYpVpMivzxE8j80fGlLZ+P5oJDCN8bG5BuxFbLLnMMQS/XZoTWig+0+5/H0B4Fze2h
-         XwWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695203900; x=1695808700;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JuLstdULL+9O12ksEVrhOrE8xohHCriozL2R7kr9wsU=;
-        b=XJlMu+vtrG2iPR1m/ExIcrznvkCqPsLd8HVz5Xs+nfrrh8dzyg9ikQIw2EwoJaMwvA
-         JPOGyAtNqXo5DCtpFeIb11SBjTb0S3FP3Ka+xDg6LQ8kry2fsrBFcjjw0iaqVq+jlzzP
-         u1dcE80BvKd3TmvJ12rXgluE2pR4tLr9LAVM3Pb/mX0JskOUIYgYIwfaJNaJ/koD0ypD
-         lcrmnOOPZZ+jNPcCxqj5wWdnX6Ja74r+2S2zaoZL29nEHYoJ89wJx5bM6JnNObxk18tw
-         a8n4eUYTj4j3EEaiTufwxptjRZzTW2u/0Xa26FSR5m8Z6Jja9WrP75ysCJlWxp2maWMa
-         n8cg==
-X-Gm-Message-State: AOJu0Yw4PgGtU0jyCvBjqf8vHGrHW7U8LP1d+I3eytjEP9hYQutudSlR
-        KFSh2j0grETkSIDrawq62ZijyOo8LOc9nKPOud8=
-X-Google-Smtp-Source: AGHT+IHxb41VlvhZmfdMDaH9WPByQBzvrpvRMO9a59WOypr5/4Kw13TOhdfJKUi0HA5By1OVpoHbv+q6NFBs/Rd5468=
-X-Received: by 2002:aa7:dace:0:b0:52d:212d:78ee with SMTP id
- x14-20020aa7dace000000b0052d212d78eemr1591973eds.25.1695203900414; Wed, 20
- Sep 2023 02:58:20 -0700 (PDT)
+        Wed, 20 Sep 2023 05:57:55 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A592A3;
+        Wed, 20 Sep 2023 02:57:47 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A9E36240004;
+        Wed, 20 Sep 2023 09:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1695203866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uQfat50UKXUla6URYtqZR/m0tQpWjLWXwPATJcJZz7Q=;
+        b=dV4SlmlbwCXkPWzfBh1N58yEwC6SmTYkjS4g3rAlzx2Z7DJrXF/ySpmM+WgHE9qnUQpGJy
+        DLwe60+hXP7yG28gcODqWaEzo0cFTeHK1YqtPMkYtsPqREIgIwXGIdLpv4/2uqvy18uNpd
+        03kJrFVWrZxL2nViaLasgHy2zlOAc09iv2nZvTYzhCEk8um+4dbRl4tLgoxe+6RwOA7/qE
+        qmNswhs+aU3OTIPfQWCHfjmLHUYOJ2K/bQ18nrMh56K047n+VVaNft1yOQZnQ2VRfpR0jv
+        WCgwL9ZiOnoiQ8YG4hJk4wn+ckvpF/wXoeb9FWhjcLgGCyYs69TKgkQ8w625HA==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Robert Marko <robert.marko@sartura.hr>, andrew@lunn.ch,
+        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
+Subject: Re: [PATCH 2/2] arm64: dts: marvell: eDPU: add support for version
+ with external switch
+In-Reply-To: <20230914094550.1519097-2-robert.marko@sartura.hr>
+References: <20230914094550.1519097-1-robert.marko@sartura.hr>
+ <20230914094550.1519097-2-robert.marko@sartura.hr>
+Date:   Wed, 20 Sep 2023 11:57:45 +0200
+Message-ID: <875y45f9pi.fsf@BL-laptop>
 MIME-Version: 1.0
-References: <20230920041446.300415-1-koba.ko@canonical.com>
-In-Reply-To: <20230920041446.300415-1-koba.ko@canonical.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 20 Sep 2023 11:57:44 +0200
-Message-ID: <CAP01T77uPmAmCiqNUJ=NwJ3c=1uTM9Qb92-yQTRc4NVUuK5y6g@mail.gmail.com>
-Subject: Re: [PATCH] x86/arch: Fix access invalid member when disable CONFIG_UNWINDER_ORC
-To:     Koba Ko <koba.ko@canonical.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 06:14, Koba Ko <koba.ko@canonical.com> wrote:
+Robert Marko <robert.marko@sartura.hr> writes:
+
+> New revision of eDPU uses an Marvell MV88E6361 switch to connect the SFP
+> cage and G.hn IC instead of connecting them directly to the ethernet
+> controllers.
 >
-> CONFIG_UNWINDER_DRAME_POINTER doesn't have bp and sp members.
-> this leads the compilation error when only enable CONFIG_UNWINDER_DRAME_POINTER.
+> U-Boot will enable the switch node and disable the unused ethernet
+> controller.
 >
-> arch/x86/net/bpf_jit_comp.c:3022:72: error: 'struct unwind_state' has no member named
-> 'sp'; did you mean 'bp'?
-> 3022 | if (!addr || !consume_fn(cookie, (u64)addr, (u64)state.sp, (u64)state.bp))
->
-> Fixes: f18b03fabaa9 ("bpf: Implement BPF exceptions")
-> Signed-off-by: Koba Ko <koba.ko@canonical.com>
+
+
+Applied on mvebu/dt64
+
+Thanks,
+
+Gregory
+
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
 > ---
+>  .../boot/dts/marvell/armada-3720-eDPU.dts     | 47 +++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts b/arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts
+> index 57fc698e55d0..d6d37a1f6f38 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts
+> @@ -12,3 +12,50 @@ / {
+>  &eth0 {
+>  	phy-mode = "2500base-x";
+>  };
+> +
+> +/*
+> + * External MV88E6361 switch is only available on v2 of the board.
+> + * U-Boot will enable the MDIO bus and switch nodes.
+> + */
+> +&mdio {
+> +	status = "disabled";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&smi_pins>;
+> +
+> +	/* Actual device is MV88E6361 */
+> +	switch: switch@0 {
+> +		compatible = "marvell,mv88e6190";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		reg = <0>;
+> +		status = "disabled";
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				label = "cpu";
+> +				phy-mode = "2500base-x";
+> +				managed = "in-band-status";
+> +				ethernet = <&eth0>;
+> +			};
+> +
+> +			port@9 {
+> +				reg = <9>;
+> +				label = "downlink";
+> +				phy-mode = "2500base-x";
+> +				managed = "in-band-status";
+> +			};
+> +
+> +			port@a {
+> +				reg = <10>;
+> +				label = "uplink";
+> +				phy-mode = "2500base-x";
+> +				managed = "in-band-status";
+> +				sfp = <&sfp_eth1>;
+> +			};
+> +		};
+> +	};
+> +};
+> -- 
+> 2.41.0
+>
 
-Hi Koba,
-Sincere apologies for the build breakage. This is fixed now in
-bpf-next, and I believe it will soon make its way into net-next and
-linux-next.
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=5bfdb4fbf348f9e1935a6e9c64e7f60cb913fb21
-
->  arch/x86/net/bpf_jit_comp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 84005f2114e09..db2b09949d407 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -3012,7 +3012,7 @@ bool bpf_jit_supports_exceptions(void)
->
->  void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
->  {
-> -#if defined(CONFIG_UNWINDER_ORC) || defined(CONFIG_UNWINDER_FRAME_POINTER)
-> +#if defined(CONFIG_UNWINDER_ORC)
->         struct unwind_state state;
->         unsigned long addr;
->
-> --
-> 2.34.1
->
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
