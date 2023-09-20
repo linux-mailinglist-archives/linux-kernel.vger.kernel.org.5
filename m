@@ -2,134 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9DB7A79B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4697A79B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbjITKu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
+        id S233567AbjITKuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbjITKuv (ORCPT
+        with ESMTP id S232192AbjITKul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:50:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AB183;
-        Wed, 20 Sep 2023 03:50:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81DF1C433C7;
-        Wed, 20 Sep 2023 10:50:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695207044;
-        bh=bIXhOQis1Sn3vDslhC5JOJ46taY/IsHYFumVE4W8Y80=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VXqJG4lV3wtMjenjbKnz4AsLWvuuyyOBcDoFkIXAx3ndSX+O49DrlYN1AqVyqX4PU
-         QXSS5Bg8hKoR/QVFgvpH0fjCclcmCfzRCxUrD9TSgcCC79ofxZdWT8qPRmN9jXAdXM
-         lgdug6jqMidDA+9D+lycVhB/tiadWlYrg41eb6q8Pm5DEqS+fnIFUundXOL+JEAEY5
-         5nMdbQszsrad83IuEmIReGPc2N9dhNAfboNZlzbrHI90mSQnAZEyMi2LLAdGT5QoXK
-         CCjGrUcxHYC14nbFOePBYzOMi47JSYtSEasazxqIbtVgtZ7YOALF03bd4JNal/qJwS
-         gdzCflxF3WNKw==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2bffa8578feso61283241fa.2;
-        Wed, 20 Sep 2023 03:50:44 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwEgUJsW3jNF9WKIFl/YO+NKZf5XWrA3x8eF0NJmrkBfBOwasyW
-        cHiyOGwpqn11wGf9idKBjM4ylatBl7Ku1D1eebc=
-X-Google-Smtp-Source: AGHT+IHfM05co9ZEeBSxDjJRZrcRdy68odWxBS48uGxXpH1ue24f8M12y+gEOGX0fSu6rxr+dxPeMYdxQNv8JVZ2Hhc=
-X-Received: by 2002:a2e:86d6:0:b0:2bc:cc1a:139c with SMTP id
- n22-20020a2e86d6000000b002bccc1a139cmr1796132ljj.11.1695207042721; Wed, 20
- Sep 2023 03:50:42 -0700 (PDT)
+        Wed, 20 Sep 2023 06:50:41 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3C997
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:50:35 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9adb9fa7200so171706666b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:50:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695207034; x=1695811834; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WdySEJI2yS6LDSRHQg7SGzxRhw3iuitdUpfv1l3JcAY=;
+        b=DC7g9gScHH264+gpbJTEP+wT94XTBYYMmkqrHx6/WPA/3wViLI964kc6pFLJVReF6X
+         sqOkuA5mzJjh5URLylNuwDWtyXHgerd+zlyc8TyI+0YvRYu4Een2PZ0skGMhzujL625C
+         +ePY9wXpbS2285crO4xBhkADxBYnSJdkZYrho8ec9xqZ3xVkXlW8SBIl4plqgAuRTJnO
+         jlaQllxo5tx+uPQQu9o0NplYTIhpLWeAUzCxUvi7xDhcnXx/dJ6dlWXT2bMBemI35G4R
+         olz/dRMlpE23nyYlqfiig86BA8uVVnL0U2iTyauTRuleNHWCUVPTMi9FwWl1/v+miL2t
+         3fbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695207034; x=1695811834;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WdySEJI2yS6LDSRHQg7SGzxRhw3iuitdUpfv1l3JcAY=;
+        b=SZjyKeeaZ5/Ol4D9mVZzPF6BBVtA9YG5dGaUtJw8376IyuzSpO/XdNhwJPAogA8AkH
+         I2+V6dUZGFlmvPMW6x46HBIXUA8W3a3JKSFZ9QFIa5ksUPh1v8m4WWZ4+E1EAAqmNP+v
+         8drTDM5KIkx3bjyd05svYs2EKHsJ00zCE/jzDonox5m6DOgtPqhMjrd+FY9cZzA2qD7L
+         GocMpY2tNsKzmvuyN2VMCYb4S8I8nieJMULtzMVrJ8gJL5N/mnti72i/UgGlqlz/eNEz
+         jzaO5fLeMWd9ruGPIKiBKoFJfLSAmYigcTOjbjxWNzUCOet0v29N3gytSnPsrA5WBPL2
+         bxYA==
+X-Gm-Message-State: AOJu0Ywb2bKHUbTMQavOviGRTNnjz0EcQ/DuLvle9BoBs7bh1I6P+HxA
+        PGipalM1KT3Qw9QV1l0JUFnkBQ==
+X-Google-Smtp-Source: AGHT+IEXAc0tImdf+B7fXBw8e7MEehjBdBzYqQ4u5phtJfnemHHVkzrvbPIMmv9UT9jYRTr16t3u9w==
+X-Received: by 2002:a17:907:3e15:b0:9ad:e3fd:d46c with SMTP id hp21-20020a1709073e1500b009ade3fdd46cmr7182594ejc.10.1695207033924;
+        Wed, 20 Sep 2023 03:50:33 -0700 (PDT)
+Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
+        by smtp.gmail.com with ESMTPSA id c6-20020a17090620c600b009888aa1da11sm9182888ejc.188.2023.09.20.03.50.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 03:50:33 -0700 (PDT)
+Message-ID: <f5aca33e-693f-9d8d-c45a-41ada00a9f03@blackwall.org>
+Date:   Wed, 20 Sep 2023 13:50:32 +0300
 MIME-Version: 1.0
-References: <20230911052535.335770-1-kernel@jfarr.cc> <20230913160045.40d377f9@rotkaeppchen>
- <63952cb0-5217-42a8-9b62-8be6d03f5844@app.fastmail.com> <CALu+AoTAUWWtx8yChQMKF9J5X_Qd8+x0hz0jzVwoOvAvh5VmHA@mail.gmail.com>
- <CALu+AoRiok-bzM4OQbiix44O-PUgO2N6Yi+_qTOn4iWtk_u4cg@mail.gmail.com>
-In-Reply-To: <CALu+AoRiok-bzM4OQbiix44O-PUgO2N6Yi+_qTOn4iWtk_u4cg@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 20 Sep 2023 10:50:31 +0000
-X-Gmail-Original-Message-ID: <CAMj1kXFkQ+T9OjK6NkKjfyR8gW4EZKFw5rEk0rgrzkHyK2BNXQ@mail.gmail.com>
-Message-ID: <CAMj1kXFkQ+T9OjK6NkKjfyR8gW4EZKFw5rEk0rgrzkHyK2BNXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
-To:     Dave Young <dyoung@redhat.com>
-Cc:     Jan Hendrik Farr <kernel@jfarr.cc>,
-        Philipp Rudo <prudo@redhat.com>, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
-        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, Baoquan He <bhe@redhat.com>,
-        bhelgaas@google.com, Luca Boccassi <bluca@debian.org>,
-        lennart@poettering.net, "Liu, Pingfan" <piliu@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH net-next v4 4/6] net: bridge: Add netlink knobs for number
+ / max learned FDB entries
+Content-Language: en-US
+To:     Johannes Nixdorf <jnixdorf-oss@avm.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
+ <20230919-fdb_limit-v4-4-39f0293807b8@avm.de>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20230919-fdb_limit-v4-4-39f0293807b8@avm.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 08:40, Dave Young <dyoung@redhat.com> wrote:
->
-> On Wed, 20 Sept 2023 at 15:43, Dave Young <dyoung@redhat.com> wrote:
-> >
-> > > > In the end the only benefit this series brings is to extend the
-> > > > signature checking on the whole UKI except of just the kernel image.
-> > > > Everything else can also be done in user space. Compared to the
-> > > > problems described above this is a very small gain for me.
-> > >
-> > > Correct. That is the benefit of pulling the UKI apart in the
-> > > kernel. However having to sign the kernel inside the UKI defeats
-> > > the whole point.
-> >
-> >
-> > Pingfan added the zboot load support in kexec-tools, I know that he is
-> > trying to sign the zboot image and the inside kernel twice. So
-> > probably there are some common areas which can be discussed.
-> > Added Ard and Pingfan in cc.
-> > http://lists.infradead.org/pipermail/kexec/2023-August/027674.html
-> >
->
-> Here is another thread of the initial try in kernel with a few more
-> options eg. some fake efi service helpers.
-> https://lore.kernel.org/linux-arm-kernel/ZBvKSis+dfnqa+Vz@piliu.users.ipa.redhat.com/T/#m42abb0ad3c10126b8b3bfae8a596deb707d6f76e
->
+On 9/19/23 11:12, Johannes Nixdorf wrote:
+> The previous patch added accounting and a limit for the number of
+> dynamically learned FDB entries per bridge. However it did not provide
+> means to actually configure those bounds or read back the count. This
+> patch does that.
+> 
+> Two new netlink attributes are added for the accounting and limit of
+> dynamically learned FDB entries:
+>   - IFLA_BR_FDB_N_LEARNED (RO) for the number of entries accounted for
+>     a single bridge.
+>   - IFLA_BR_FDB_MAX_LEARNED (RW) for the configured limit of entries for
+>     the bridge.
+> 
+> The new attributes are used like this:
+> 
+>   # ip link add name br up type bridge fdb_max_learned 256
+>   # ip link add name v1 up master br type veth peer v2
+>   # ip link set up dev v2
+>   # mausezahn -a rand -c 1024 v2
+>   0.01 seconds (90877 packets per second
+>   # bridge fdb | grep -v permanent | wc -l
+>   256
+>   # ip -d link show dev br
+>   13: br: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 [...]
+>       [...] fdb_n_learned 256 fdb_max_learned 256
+> 
+> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
+> ---
+>   include/uapi/linux/if_link.h |  2 ++
+>   net/bridge/br_netlink.c      | 15 ++++++++++++++-
+>   2 files changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+> index ce3117df9cec..0486f314c176 100644
+> --- a/include/uapi/linux/if_link.h
+> +++ b/include/uapi/linux/if_link.h
+> @@ -510,6 +510,8 @@ enum {
+>   	IFLA_BR_VLAN_STATS_PER_PORT,
+>   	IFLA_BR_MULTI_BOOLOPT,
+>   	IFLA_BR_MCAST_QUERIER_STATE,
+> +	IFLA_BR_FDB_N_LEARNED,
+> +	IFLA_BR_FDB_MAX_LEARNED,
+>   	__IFLA_BR_MAX,
+>   };
+>   
+> diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+> index 505683ef9a26..f5d49a05e61b 100644
+> --- a/net/bridge/br_netlink.c
+> +++ b/net/bridge/br_netlink.c
+> @@ -1267,6 +1267,8 @@ static const struct nla_policy br_policy[IFLA_BR_MAX + 1] = {
+>   	[IFLA_BR_VLAN_STATS_PER_PORT] = { .type = NLA_U8 },
+>   	[IFLA_BR_MULTI_BOOLOPT] =
+>   		NLA_POLICY_EXACT_LEN(sizeof(struct br_boolopt_multi)),
+> +	[IFLA_BR_FDB_N_LEARNED] = { .type = NLA_U32 },
 
-Currently, UKI's external interface is defined in terms of EFI
-services, i.e., it is an executable PE/COFF binary that encapsulates
-all the logic that performs the unpacking of the individual sections,
-and loads the kernel as a PE/COFF binary as well (i.e., via
-LoadImage/StartImage)
+hmm? I thought this one was RO.
 
-As soon as we add support to Linux to unpack a UKI and boot the
-encapsulated kernel using a boot protocol other than EFI, we are
-painting ourselves into a corner, severely limiting the freedom of the
-UKI effort to make changes to the interfaces that were implementation
-details up to this point.
+> +	[IFLA_BR_FDB_MAX_LEARNED] = { .type = NLA_U32 },
+>   };
+>   
+>   static int br_changelink(struct net_device *brdev, struct nlattr *tb[],
+> @@ -1541,6 +1543,12 @@ static int br_changelink(struct net_device *brdev, struct nlattr *tb[],
+>   			return err;
+>   	}
+>   
+> +	if (data[IFLA_BR_FDB_MAX_LEARNED]) {
+> +		u32 val = nla_get_u32(data[IFLA_BR_FDB_MAX_LEARNED]);
+> +
+> +		WRITE_ONCE(br->fdb_max_learned, val);
+> +	}
+> +
+>   	return 0;
+>   }
+>   
+> @@ -1595,6 +1603,8 @@ static size_t br_get_size(const struct net_device *brdev)
+>   	       nla_total_size_64bit(sizeof(u64)) + /* IFLA_BR_TOPOLOGY_CHANGE_TIMER */
+>   	       nla_total_size_64bit(sizeof(u64)) + /* IFLA_BR_GC_TIMER */
+>   	       nla_total_size(ETH_ALEN) +       /* IFLA_BR_GROUP_ADDR */
+> +	       nla_total_size(sizeof(u32)) +    /* IFLA_BR_FDB_N_LEARNED */
+> +	       nla_total_size(sizeof(u32)) +    /* IFLA_BR_FDB_MAX_LEARNED */
+>   #ifdef CONFIG_BRIDGE_IGMP_SNOOPING
+>   	       nla_total_size(sizeof(u8)) +     /* IFLA_BR_MCAST_ROUTER */
+>   	       nla_total_size(sizeof(u8)) +     /* IFLA_BR_MCAST_SNOOPING */
+> @@ -1670,7 +1680,10 @@ static int br_fill_info(struct sk_buff *skb, const struct net_device *brdev)
+>   	    nla_put_u8(skb, IFLA_BR_TOPOLOGY_CHANGE_DETECTED,
+>   		       br->topology_change_detected) ||
+>   	    nla_put(skb, IFLA_BR_GROUP_ADDR, ETH_ALEN, br->group_addr) ||
+> -	    nla_put(skb, IFLA_BR_MULTI_BOOLOPT, sizeof(bm), &bm))
+> +	    nla_put(skb, IFLA_BR_MULTI_BOOLOPT, sizeof(bm), &bm) ||
+> +	    nla_put_u32(skb, IFLA_BR_FDB_N_LEARNED,
+> +			atomic_read(&br->fdb_n_learned)) ||
+> +	    nla_put_u32(skb, IFLA_BR_FDB_MAX_LEARNED, br->fdb_max_learned))
+>   		return -EMSGSIZE;
+>   
+>   #ifdef CONFIG_BRIDGE_VLAN_FILTERING
+> 
 
-It also means that UKI handling in kexec will need to be taught about
-every individual architecture again, which is something we are trying
-to avoid with EFI support in general. Breaking the abstraction like
-this lets the cat out of the bag, and will add yet another variation
-of kexec that we will need to support and maintain forever.
-
-So the only way to do this properly and portably is to implement the
-minimal set of EFI boot services [0] that Linux actually needs to run
-its EFI stub (which is mostly identical to the set that UKI relies on
-afaict), and expose them to the kexec image as it is being loaded.
-This is not as bad as it sounds - I have some Rust code that could be
-used as an inspiration [1] and which could be reused and shared
-between architectures.
-
-This would also reduce/remove the need for a purgatory: loading a EFI
-binary in this way would run it up to the point were it calls
-ExitBootServices(), and the actual kexec would invoke the image as if
-it was returning from ExitBootServices().
-
-The only fundamental problem here is the need to allocate large chunks
-of physical memory, which would need some kind of CMA support, I
-imagine?
-
-Maybe we should do a BoF at LPC to discuss this further?
-
-[0] this is not as bad as it sounds: beyond a protocol database, a
-heap allocator and a memory map, there is actually very little needed
-to boot Linux via the EFI stub (although UKI needs
-LoadImage/StartImage as well)
-
-[1] https://github.com/ardbiesheuvel/efilite
