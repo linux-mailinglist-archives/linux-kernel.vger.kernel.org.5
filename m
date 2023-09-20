@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C44847A827B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E891C7A8283
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236348AbjITM70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
+        id S236360AbjITNAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236230AbjITM7W (ORCPT
+        with ESMTP id S236339AbjITNAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:59:22 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F016BED
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:59:13 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d816fa2404aso7621957276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695214753; x=1695819553; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3wmPAnEgBxhZRH8t7r1kcgo1IpRf4a8FQcxFi6+YZA=;
-        b=fnjgcqLTWFktXluoONga5YgCL8op3q4UJJQnCvF6USU4WuEpLk+JEyHpYgx7CKM5cD
-         /dywMcVbGE4dE1dJCu40VdhlM/yMtZTdT8vNM8MAoa4jQyxOM6bQlQ4ge6DDxSR+g0DP
-         5z8s91T7+JyFnO/UGBy1jecr+8zrY+Yj77PrtfiW6Q8IMTAuKbk8wOzisZngYCg8f3/r
-         F+BDcBUJIjbEFM2U9fSdP4MQbL6G4YD5olU7HbsvsC9F7js9tsHu7ICkyKWDQoIsazEr
-         QtxYnzDlrc8oPv6ucdP5PZ1Yq6hFczOMHDwYn7tRpZwIa+saAeY1Ir2Nq6Ia2XdvNyeE
-         Uldg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695214753; x=1695819553;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3wmPAnEgBxhZRH8t7r1kcgo1IpRf4a8FQcxFi6+YZA=;
-        b=OTwT1M3llwW6rBM1kD9ui+EUyCbnoEu1kYXzBLJvAEfSy3NOp6c88chsIwUnkFMpRR
-         fUYfbYacwfs9lU6hcU4LBQjC5qfxoH6uXbnxgRv1jWCSOrBUW46LLAyEcpcSnxixyZdI
-         jcc8L3Ida9pyn0M4uo8KdVuJGb/PXQPiuyDo+UrU2FOsqH6v1FKU7IAvrn1a+IB0SX88
-         wfPg6iuSPSPkoDNtolu5UsMc3s21PFRnKrhgSwEIdc4HJFUuF0L80EE58Jg3pv6Tuq7D
-         rZRyu+578VOuyhwi7qQNXlDQhbgiHs35PZZvQapqscfy5vAMjLL6OrN6W4qW2EPwqEUa
-         P8Tg==
-X-Gm-Message-State: AOJu0YwYjrkkbBKXS2uN9F7mAjEO8PGzZgM4mRe1c0coymQeNECCY/im
-        YdbGaaK6PpcFNEd+B5IbWtZOSMi8xK0=
-X-Google-Smtp-Source: AGHT+IGOqqxtlFukUUfzBK6fHUUKzOQyLu4WD5tAqIeUWcLlS+2TJtNtJ4x7MKTmSURN75SthjwkSR2/nEg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:100c:b0:d40:932e:f7b1 with SMTP id
- w12-20020a056902100c00b00d40932ef7b1mr45097ybt.7.1695214753193; Wed, 20 Sep
- 2023 05:59:13 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 12:59:11 +0000
-In-Reply-To: <SA1PR11MB5923CE0CA793FF8B63DFDAEBBFF9A@SA1PR11MB5923.namprd11.prod.outlook.com>
-Mime-Version: 1.0
-References: <20230919234951.3163581-1-seanjc@google.com> <SA1PR11MB5923CE0CA793FF8B63DFDAEBBFF9A@SA1PR11MB5923.namprd11.prod.outlook.com>
-Message-ID: <ZQrsdOTPtSEhXpFT@google.com>
-Subject: Re: [ANNOUNCE] PUCK Agenda - 2023.09.20 - No Topic (Office Hours)
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jason Chen <jason.cj.chen@intel.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 09:00:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA40D93
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:00:19 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695214818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b+lwndKdQlP/9nZEQAFcW14cpo1FpcaI6fxfaleP4oA=;
+        b=DDx3bnMdWWwpG85xcoDuibKSsbmtg8cu1d3hN5naZ//ntjz6h1Q4hBoY/m4UrhJHzW7oSd
+        sLTWX5lIy+EBvtw487xsoKS8rvBXkP2V4r24h1FFs2++IsTmNBvyN29scZNac2nq7CdnQj
+        du+8uB2QGlWcbbZ93+pv2/Ewm9WZn5re/qZsXiH4mQx+LbKCsLEsNziYKK1fO9uNog5Xja
+        a9dq3VF1BaX+UWQymmu3RYubgR4caJuxXJ+Jy/OErpDCch8cTUkeqTaFld6PDFUMi5n3L0
+        nOtVxg0t9wKzjI32hJLGWbzGGi853HQFxP7GEp+nxy1Eqeig/NR5Wp5mr8hx9Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695214818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b+lwndKdQlP/9nZEQAFcW14cpo1FpcaI6fxfaleP4oA=;
+        b=pSKL+CZ/M3RATCymopWoEDKt9qljPHgoljCszAEqb356czCG6wLngmoITLVGJXedJwcE4c
+        vfvAlAHTj4Cf+ADw==
+To:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH] printk/nbcon: Add assert that CPU migration is disabled
+ when calling nbcon_context_try_acquire()
+In-Reply-To: <20230920125136.15504-1-pmladek@suse.com>
+References: <20230920125136.15504-1-pmladek@suse.com>
+Date:   Wed, 20 Sep 2023 15:06:08 +0206
+Message-ID: <874jjpt2xz.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023, Chen, Jason CJ wrote:
-> Hi, Sean,
-> 
-> Do you think we can have a quick sync about the re-assess for pKVM on x86?
+On 2023-09-20, Petr Mladek <pmladek@suse.com> wrote:
+> The nbcon console is locked when the 'prio' and 'cpu' fields in
+> console->nbcon_state stay the same. The locking algorithm would
+> break when the locked context got migrated to another CPU.
+>
+> Add assert into nbcon_context_try_acquire(). It would warn when
+> the function is called in a context where the CPU migration
+> is possible.
 
-Yes, any topic is fair game.
+static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
+{
+        unsigned int cpu = smp_processor_id();
+
+Doesn't smp_processor_id() already provide the necessary checking and
+warning?
+
+John
