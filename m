@@ -2,204 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2457A72BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74657A747F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbjITGU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
+        id S233847AbjITHnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233412AbjITGUe (ORCPT
+        with ESMTP id S233608AbjITHnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:20:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779BCF2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695190813; x=1726726813;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=S/60qEX1jhBiS6ZWzLs5VHrBM2EfBeFasIo8hPl4DFY=;
-  b=jXr2YEz5bQqQJL6tBRUhfqJ/2om3UBPX4ttJKoUkB70zGed/KbsMcjHt
-   GwnxWs9nTzfNbNZZ8aVqrelL+1PLcNHDXec5ADbkRCIr/H878JtAIyvyQ
-   rqqY2P9OtbEC4qBmPsIBXZGFNeWmkMFEIG/872CrNvbyl4qfMi/N744JH
-   geBo1qcaNYIHzWcrBdskweFXpGVbidnoZ/5BCMTXkSfQgwdIgQhIQs1q/
-   rYoApNGtTJZ3+u+BX6I4QU+Zqsukkhn7pbd9ooxywB0RRuRbdbGr3+V+4
-   76tCdHwLfb9vUncuIaFZTyubtr7qFVNmnGDu9WOn+9XYzJzFlKK4rDeeJ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="365187807"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="365187807"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:20:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="740060689"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="740060689"
-Received: from yhuang6-mobl2.sh.intel.com ([10.238.6.133])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:20:08 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Lameter <cl@linux.com>
-Subject: [PATCH 10/10] mm, pcp: reduce detecting time of consecutive high order page freeing
-Date:   Wed, 20 Sep 2023 14:18:56 +0800
-Message-Id: <20230920061856.257597-11-ying.huang@intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230920061856.257597-1-ying.huang@intel.com>
-References: <20230920061856.257597-1-ying.huang@intel.com>
+        Wed, 20 Sep 2023 03:43:37 -0400
+X-Greylist: delayed 4200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 00:43:29 PDT
+Received: from 14.mo561.mail-out.ovh.net (14.mo561.mail-out.ovh.net [188.165.43.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC234DD
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:43:29 -0700 (PDT)
+Received: from director2.ghost.mail-out.ovh.net (unknown [10.109.156.38])
+        by mo561.mail-out.ovh.net (Postfix) with ESMTP id 063D725DC3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:24:59 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-9dvr6 (unknown [10.110.103.93])
+        by director2.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 33E281FE5D;
+        Wed, 20 Sep 2023 06:24:59 +0000 (UTC)
+Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
+        by ghost-submission-6684bf9d7b-9dvr6 with ESMTPSA
+        id zUNWCzuQCmU11gkA6QqK6A
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 20 Sep 2023 06:24:59 +0000
 MIME-Version: 1.0
+Date:   Wed, 20 Sep 2023 09:24:58 +0300
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/atomic-helper: prevent uaf in wait_for_vblanks
+In-Reply-To: <c64d38db-cb55-a511-3f19-0cf2ee2c7557@mailbox.org>
+References: <20230918165340.2330-1-jose.pekkarinen@foxhound.fi>
+ <c64d38db-cb55-a511-3f19-0cf2ee2c7557@mailbox.org>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <95caefafeec02b0fa01177c7ebf94838@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 185.220.102.7
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Ovh-Tracer-Id: 10392900568754923241
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekvddguddtkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhepggffhffvvefujghffgfkgihoihgtgfesthekjhdttderjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeekhfeguddufeegvdelgedtvdffgeehvddtkeevkeejvedvgeeitdefleehtdeitdenucfkphepuddvjedrtddrtddruddpudekhedrvddvtddruddtvddrjedpudehuddrkedtrddvledrvddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehiedupdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current PCP auto-tuning design, if the number of pages allocated is
-much more than that of pages freed on a CPU, the PCP high may become
-the maximal value even if the allocating/freeing depth is small, for
-example, in the sender of network workloads.  If a CPU was used as
-sender originally, then it is used as receiver after context
-switching, we need to fill the whole PCP with maximal high before
-triggering PCP draining for consecutive high order freeing.  This will
-hurt the performance of some network workloads.
+On 2023-09-19 19:56, Michel Dänzer wrote:
+> On 9/18/23 18:53, José Pekkarinen wrote:
+>> Kasan reported the following in my system:
+>> 
+>> [ 3935.321003] 
+>> ==================================================================
+>> [ 3935.321022] BUG: KASAN: slab-use-after-free in 
+>> drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+>> [ 3935.321124] Read of size 1 at addr ffff88818a6f8009 by task 
+>> kworker/u16:3/5268
+>> 
+>> [ 3935.321124] CPU: 7 PID: 5268 Comm: kworker/u16:3 Not tainted 
+>> 6.6.0-rc2+ #1
+>> [ 3935.321124] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), 
+>> BIOS 0.0.0 02/06/2015
+>> [ 3935.321124] Workqueue: events_unbound commit_work [drm_kms_helper]
+>> [ 3935.321124] Call Trace:
+>> [ 3935.321124]  <TASK>
+>> [ 3935.321124]  dump_stack_lvl+0x43/0x60
+>> [ 3935.321124]  print_report+0xcf/0x660
+>> [ 3935.321124]  ? remove_entity_load_avg+0xdc/0x100
+>> [ 3935.321124]  ? __virt_addr_valid+0xd9/0x160
+>> [ 3935.321124]  ? 
+>> drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+>> [ 3935.321124]  kasan_report+0xda/0x110
+>> [ 3935.321124]  ? 
+>> drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 [drm_kms_helper]
+>> [ 3935.321124]  drm_atomic_helper_wait_for_vblanks.part.0+0x116/0x450 
+>> [drm_kms_helper]
+>> [ 3935.321124]  ? 
+>> __pfx_drm_atomic_helper_wait_for_vblanks.part.0+0x10/0x10 
+>> [drm_kms_helper]
+>> [ 3935.321124]  ? complete_all+0x48/0x100
+>> [ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x19/0x40
+>> [ 3935.321124]  ? preempt_count_sub+0x14/0xc0
+>> [ 3935.321124]  ? _raw_spin_unlock_irqrestore+0x23/0x40
+>> [ 3935.321124]  ? drm_atomic_helper_commit_hw_done+0x1ac/0x240 
+>> [drm_kms_helper]
+>> [ 3935.321124]  drm_atomic_helper_commit_tail+0x82/0x90 
+>> [drm_kms_helper]
+>> [ 3935.321124]  commit_tail+0x15c/0x1d0 [drm_kms_helper]
+>> [ 3935.323185]  process_one_work+0x31a/0x610
+>> [ 3935.323185]  worker_thread+0x38e/0x5f0
+>> [ 3935.323185]  ? __pfx_worker_thread+0x10/0x10
+>> [ 3935.323185]  kthread+0x184/0x1c0
+>> [ 3935.323185]  ? __pfx_kthread+0x10/0x10
+>> [ 3935.323185]  ret_from_fork+0x30/0x50
+>> [ 3935.323185]  ? __pfx_kthread+0x10/0x10
+>> [ 3935.323185]  ret_from_fork_asm+0x1b/0x30
+>> [ 3935.323185]  </TASK>
+>> 
+>> [ 3935.323185] Allocated by task 3751:
+>> [ 3935.323185]  kasan_save_stack+0x2f/0x50
+>> [ 3935.323185]  kasan_set_track+0x21/0x30
+>> [ 3935.323185]  __kasan_kmalloc+0xa6/0xb0
+>> [ 3935.323185]  drm_atomic_helper_crtc_duplicate_state+0x42/0x70 
+>> [drm_kms_helper]
+>> [ 3935.323185]  drm_atomic_get_crtc_state+0xc3/0x1e0 [drm]
+>> [ 3935.323185]  page_flip_common+0x42/0x160 [drm_kms_helper]
+>> [ 3935.323185]  drm_atomic_helper_page_flip+0x6b/0xf0 [drm_kms_helper]
+>> [ 3935.323185]  drm_mode_page_flip_ioctl+0x8ad/0x900 [drm]
+>> [ 3935.323185]  drm_ioctl_kernel+0x169/0x240 [drm]
+>> [ 3935.323185]  drm_ioctl+0x399/0x6b0 [drm]
+>> [ 3935.324772]  __x64_sys_ioctl+0xc5/0x100
+>> [ 3935.324772]  do_syscall_64+0x5b/0xc0
+>> [ 3935.324772]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>> 
+>> [ 3935.324772] Freed by task 3751:
+>> [ 3935.324772]  kasan_save_stack+0x2f/0x50
+>> [ 3935.324772]  kasan_set_track+0x21/0x30
+>> [ 3935.324772]  kasan_save_free_info+0x27/0x40
+>> [ 3935.324772]  ____kasan_slab_free+0x166/0x1c0
+>> [ 3935.324772]  slab_free_freelist_hook+0x9f/0x1e0
+>> [ 3935.324772]  __kmem_cache_free+0x187/0x2d0
+>> [ 3935.324772]  drm_atomic_state_default_clear+0x226/0x5e0 [drm]
+>> [ 3935.324772]  __drm_atomic_state_free+0xc8/0x130 [drm]
+>> [ 3935.324772]  drm_atomic_helper_update_plane+0x17d/0x1b0 
+>> [drm_kms_helper]
+>> [ 3935.324772]  drm_mode_cursor_universal+0x2a4/0x4d0 [drm]
+>> [ 3935.324772]  drm_mode_cursor_common+0x1cf/0x430 [drm]
+>> [ 3935.324772]  drm_mode_cursor_ioctl+0xc6/0x100 [drm]
+>> [ 3935.326167]  drm_ioctl_kernel+0x169/0x240 [drm]
+>> [ 3935.326167]  drm_ioctl+0x399/0x6b0 [drm]
+>> [ 3935.326614]  __x64_sys_ioctl+0xc5/0x100
+>> [ 3935.326614]  do_syscall_64+0x5b/0xc0
+>> [ 3935.326614]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>> 
+>> [ 3935.326614] The buggy address belongs to the object at 
+>> ffff88818a6f8000
+>>                 which belongs to the cache kmalloc-512 of size 512
+>> [ 3935.326614] The buggy address is located 9 bytes inside of
+>>                 freed 512-byte region [ffff88818a6f8000, 
+>> ffff88818a6f8200)
+>> 
+>> [ 3935.326614] The buggy address belongs to the physical page:
+>> [ 3935.326614] page:00000000b0fb0816 refcount:1 mapcount:0 
+>> mapping:0000000000000000 index:0x0 pfn:0x18a6f8
+>> [ 3935.326614] head:00000000b0fb0816 order:3 entire_mapcount:0 
+>> nr_pages_mapped:0 pincount:0
+>> [ 3935.326614] anon flags: 
+>> 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+>> [ 3935.326614] page_type: 0xffffffff()
+>> [ 3935.326614] raw: 0017ffffc0000840 ffff888100042c80 0000000000000000 
+>> dead000000000001
+>> [ 3935.326614] raw: 0000000000000000 0000000080200020 00000001ffffffff 
+>> 0000000000000000
+>> [ 3935.326614] page dumped because: kasan: bad access detected
+>> 
+>> [ 3935.326614] Memory state around the buggy address:
+>> [ 3935.326614]  ffff88818a6f7f00: fc fc fc fc fc fc fc fc fc fc fc fc 
+>> fc fc fc fc
+>> [ 3935.326614]  ffff88818a6f7f80: fc fc fc fc fc fc fc fc fc fc fc fc 
+>> fc fc fc fc
+>> [ 3935.326614] >ffff88818a6f8000: fa fb fb fb fb fb fb fb fb fb fb fb 
+>> fb fb fb fb
+>> [ 3935.326772]                       ^
+>> [ 3935.326772]  ffff88818a6f8080: fb fb fb fb fb fb fb fb fb fb fb fb 
+>> fb fb fb fb
+>> [ 3935.326772]  ffff88818a6f8100: fb fb fb fb fb fb fb fb fb fb fb fb 
+>> fb fb fb fb
+>> [ 3935.326772] 
+>> ==================================================================
+>> 
+>> This suggest there may be some situation where a
+>> struct drm_crtc_state is referenced after already
+>> being freed by drm_atomic_state_default_clear. This
+>> patch will check the new_crtc_state is not null before
+>> using it.
+>> 
+>> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+>> ---
+>>  drivers/gpu/drm/drm_atomic_helper.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/gpu/drm/drm_atomic_helper.c 
+>> b/drivers/gpu/drm/drm_atomic_helper.c
+>> index 292e38eb6218..cc75d387a542 100644
+>> --- a/drivers/gpu/drm/drm_atomic_helper.c
+>> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+>> @@ -1647,7 +1647,7 @@ drm_atomic_helper_wait_for_vblanks(struct 
+>> drm_device *dev,
+>>  		return;
+>> 
+>>  	for_each_oldnew_crtc_in_state(old_state, crtc, old_crtc_state, 
+>> new_crtc_state, i) {
+>> -		if (!new_crtc_state->active)
+>> +		if (new_crtc_state && !new_crtc_state->active)
+>>  			continue;
+>> 
+>>  		ret = drm_crtc_vblank_get(crtc);
+> 
+> I'm not quite seeing the connection between this change and the KASAN 
+> report.
+> 
+> If new_crtc_state was NULL, I would have expected a normal NULL
+> pointer dereference oops, not a KASAN report.
+> 
+> The KASAN report instead indicates that new_crtc_state isn't NULL, but
+> points to memory which has already been freed. This could be e.g. due
+> to incorrect reference counting somewhere else.
 
-To solve the issue, in this patch, we will track the consecutive page
-freeing with a counter in stead of relying on PCP draining.  So, we
-can detect consecutive page freeing much earlier.
+     Hi Michel,
 
-On a 2-socket Intel server with 128 logical CPU, we tested
-SCTP_STREAM_MANY test case of netperf test suite with 64-pair
-processes.  With the patch, the network bandwidth improves 3.1%.  This
-restores the performance drop caused by PCP auto-tuning.
+     Thanks for your comments, I found the kasan report also
+in this version of the patch, so I'm setting bigger traps to
+the bug to find out what is the issue behind. While what you
+say it is true, I may invite you to take a look to
+drm_atomic_state_default_clear, you'll quickly notice that
+after destroying the crtc_state, it set state pointers to null,
+so unless something very bad happened in my system, at the
+time of executing drm_atomic_helper_wait_for_vblanks, if state
+is freed, its pointer should be null also.
 
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Johannes Weiner <jweiner@redhat.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Christoph Lameter <cl@linux.com>
----
- include/linux/mmzone.h |  2 +-
- mm/page_alloc.c        | 23 +++++++++++------------
- 2 files changed, 12 insertions(+), 13 deletions(-)
+     Best regards.
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 35b78c7522a7..44f6dc3cdeeb 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -689,10 +689,10 @@ struct per_cpu_pages {
- 	int batch;		/* chunk size for buddy add/remove */
- 	u8 flags;		/* protected by pcp->lock */
- 	u8 alloc_factor;	/* batch scaling factor during allocate */
--	u8 free_factor;		/* batch scaling factor during free */
- #ifdef CONFIG_NUMA
- 	u8 expire;		/* When 0, remote pagesets are drained */
- #endif
-+	short free_count;	/* consecutive free count */
- 
- 	/* Lists of pages, one per migrate type stored on the pcp-lists */
- 	struct list_head lists[NR_PCP_LISTS];
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 77e9b7b51688..6ae2a5ebf7a4 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2375,13 +2375,10 @@ static int nr_pcp_free(struct per_cpu_pages *pcp, int batch, int high, bool free
- 	max_nr_free = high - batch;
- 
- 	/*
--	 * Double the number of pages freed each time there is subsequent
--	 * freeing of pages without any allocation.
-+	 * Increase the batch number to the number of the consecutive
-+	 * freed pages to reduce zone lock contention.
- 	 */
--	batch <<= pcp->free_factor;
--	if (batch <= max_nr_free && pcp->free_factor < PCP_BATCH_SCALE_MAX)
--		pcp->free_factor++;
--	batch = clamp(batch, min_nr_free, max_nr_free);
-+	batch = clamp_t(int, pcp->free_count, min_nr_free, max_nr_free);
- 
- 	return batch;
- }
-@@ -2408,7 +2405,7 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
- 	 * stored on pcp lists
- 	 */
- 	if (test_bit(ZONE_RECLAIM_ACTIVE, &zone->flags)) {
--		pcp->high = max(high - (batch << pcp->free_factor), high_min);
-+		pcp->high = max(high - pcp->free_count, high_min);
- 		return min(batch << 2, pcp->high);
- 	}
- 
-@@ -2416,10 +2413,10 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
- 		return high;
- 
- 	if (test_bit(ZONE_BELOW_HIGH, &zone->flags)) {
--		pcp->high = max(high - (batch << pcp->free_factor), high_min);
-+		pcp->high = max(high - pcp->free_count, high_min);
- 		high = max(pcp->count, high_min);
- 	} else if (pcp->count >= high) {
--		int need_high = (batch << pcp->free_factor) + batch;
-+		int need_high = pcp->free_count + batch;
- 
- 		/* pcp->high should be large enough to hold batch freed pages */
- 		if (pcp->high < need_high)
-@@ -2456,7 +2453,7 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 	 * stops will be drained from vmstat refresh context.
- 	 */
- 	if (order && order <= PAGE_ALLOC_COSTLY_ORDER) {
--		free_high = (pcp->free_factor &&
-+		free_high = (pcp->free_count >= batch &&
- 			     (pcp->flags & PCPF_PREV_FREE_HIGH_ORDER) &&
- 			     (!(pcp->flags & PCPF_FREE_HIGH_BATCH) ||
- 			      pcp->count >= READ_ONCE(batch)));
-@@ -2464,6 +2461,8 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 	} else if (pcp->flags & PCPF_PREV_FREE_HIGH_ORDER) {
- 		pcp->flags &= ~PCPF_PREV_FREE_HIGH_ORDER;
- 	}
-+	if (pcp->free_count < (batch << PCP_BATCH_SCALE_MAX))
-+		pcp->free_count += (1 << order);
- 	high = nr_pcp_high(pcp, zone, batch, free_high);
- 	if (pcp->count >= high) {
- 		free_pcppages_bulk(zone, nr_pcp_free(pcp, batch, high, free_high),
-@@ -2861,7 +2860,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
- 	 * See nr_pcp_free() where free_factor is increased for subsequent
- 	 * frees.
- 	 */
--	pcp->free_factor >>= 1;
-+	pcp->free_count >>= 1;
- 	list = &pcp->lists[order_to_pindex(migratetype, order)];
- 	page = __rmqueue_pcplist(zone, order, migratetype, alloc_flags, pcp, list);
- 	pcp_spin_unlock(pcp);
-@@ -5483,7 +5482,7 @@ static void per_cpu_pages_init(struct per_cpu_pages *pcp, struct per_cpu_zonesta
- 	pcp->high_min = BOOT_PAGESET_HIGH;
- 	pcp->high_max = BOOT_PAGESET_HIGH;
- 	pcp->batch = BOOT_PAGESET_BATCH;
--	pcp->free_factor = 0;
-+	pcp->free_count = 0;
- }
- 
- static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high_min,
--- 
-2.39.2
-
+     José.
