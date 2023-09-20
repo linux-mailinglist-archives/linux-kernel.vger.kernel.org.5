@@ -2,52 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 709607A8E3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838CE7A8E45
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjITVLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 17:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        id S230185AbjITVOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 17:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjITVLI (ORCPT
+        with ESMTP id S229566AbjITVOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 17:11:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75BDC9;
-        Wed, 20 Sep 2023 14:11:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5mvVkHxDzc75LO4BcLLqzyEg+sz+YO60woTJ/QrfPzs=; b=x9+U0lnTN7uFzW8ZVY63lO9a82
-        Isf1JGhfx/wIb3EUAUfZoXi4xpQG12OHeHUy8PnRKEBhsTfqlBJ0robaURy1dffdphfy2CYX3tjpF
-        A+H/C5R2+O2yyMkwSJ+qGe2CPkgPwn1FrihCkcBQA2uhG1Snd7LjxKwqN/gfZxeFifnztPMmiBoPj
-        vjdMyikJy9YURQI8S7IEGHfaQm6Ggnnl2sOMS28+eFkDg51yer5ST1ween7K/CoIvo0rfHZxbmrxe
-        Nm1fF+1By2vLjqkuU1HT8b/fnHdBRxDBmLKXwu7QoiLZ2MM6nYVPIKo0tGxSznC4MgXne7xSaBWcT
-        Zg2VmFFg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qj4TJ-004Edi-1f;
-        Wed, 20 Sep 2023 21:10:57 +0000
-Date:   Wed, 20 Sep 2023 14:10:57 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Johan Hovold <johan@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] module: Clarify documentation of module_param_call()
-Message-ID: <ZQtf4TqRxaps8Opx@bombadil.infradead.org>
-References: <20230913235407.gonna.817-kees@kernel.org>
+        Wed, 20 Sep 2023 17:14:05 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A8DB9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:14:00 -0700 (PDT)
+Received: from [192.168.2.59] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9A50F6607243;
+        Wed, 20 Sep 2023 22:13:57 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695244438;
+        bh=AEY7xSy+XlWvC67wCNaiGkWUgOsbIuFYHHmnxBCjy3I=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=OVtEQlBJBAtJi9tb4FkbfpRmsugl2ETOMWGjfNX2zARe4zatOkyv2qFJys4qpZtAF
+         +Pd04c3WENeHGNveAmVQjypZBCeUc+c3fmfZbTJ2yHcQiA7cdicWuFvMkGH+n3TRTC
+         xMNh9WWDUw4RunEtbk8xx8tLFjrKDMQJOSJGXl9t3FkCbgj0JSaYOa8v/SiZtqvHp2
+         EcMhgaMKvguYPbjpwINvIxme70frCQjPc81NrM7RCkxjaGlNIzwfyrePkf6ASLYE+o
+         mf9DkAuGVNsiaI/F26kgzkV66Gg9aLL+UXmsce2VOVwbfv1f+LeTqxhXQFWC8u9ttg
+         75roO4Mdw5y1Q==
+Message-ID: <e944b37b-87e2-5cd4-1140-f7bb7e28519f@collabora.com>
+Date:   Thu, 21 Sep 2023 00:13:54 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913235407.gonna.817-kees@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/virtio: clean out_fence on complete_submit
+Content-Language: en-US
+To:     =?UTF-8?Q?Jos=c3=a9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        airlied@redhat.com, kraxel@redhat.com, skhan@linuxfoundation.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        gurchetansingh@chromium.org,
+        virtualization@lists.linux-foundation.org,
+        christian.koenig@amd.com, Rob Clark <robdclark@gmail.com>
+References: <20230912060824.5210-1-jose.pekkarinen@foxhound.fi>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230912060824.5210-1-jose.pekkarinen@foxhound.fi>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,49 +61,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 04:54:14PM -0700, Kees Cook wrote:
-> Commit 9bbb9e5a3310 ("param: use ops in struct kernel_param, rather than
-> get and set fns directly") added the comment that module_param_call()
-> was deprecated, during a large scale refactoring to bring sanity to type
-> casting back then. In 2017 following more cleanups, it became useful
-> again as it wraps a common pattern of creating an ops struct for a
-> given get/set pair:
+On 9/12/23 09:08, José Pekkarinen wrote:
+> The removed line prevents the following cleanup function
+> to execute a dma_fence_put on the out_fence to free its
+> memory, producing the following output in kmemleak:
 > 
->   b2f270e87473 ("module: Prepare to convert all module_param_call() prototypes")
->   ece1996a21ee ("module: Do not paper over type mismatches in module_param_call()")
+> unreferenced object 0xffff888126d8ee00 (size 128):
+>   comm "kwin_wayland", pid 981, jiffies 4295380296 (age 390.060s)
+>   hex dump (first 32 bytes):
+>     c8 a1 c2 27 81 88 ff ff e0 14 a9 c0 ff ff ff ff  ...'............
+>     30 1a e1 2e a6 00 00 00 28 fc 5b 17 81 88 ff ff  0.......(.[.....
+>   backtrace:
+>     [<0000000011655661>] kmalloc_trace+0x26/0xa0
+>     [<0000000055f15b82>] virtio_gpu_fence_alloc+0x47/0xc0 [virtio_gpu]
+>     [<00000000fa6d96f9>] virtio_gpu_execbuffer_ioctl+0x1a8/0x800 [virtio_gpu]
+>     [<00000000e6cb5105>] drm_ioctl_kernel+0x169/0x240 [drm]
+>     [<000000005ad33e27>] drm_ioctl+0x399/0x6b0 [drm]
+>     [<00000000a19dbf65>] __x64_sys_ioctl+0xc5/0x100
+>     [<0000000011fa801e>] do_syscall_64+0x5b/0xc0
+>     [<0000000065c76d8a>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> unreferenced object 0xffff888121930500 (size 128):
+>   comm "kwin_wayland", pid 981, jiffies 4295380313 (age 390.096s)
+>   hex dump (first 32 bytes):
+>     c8 a1 c2 27 81 88 ff ff e0 14 a9 c0 ff ff ff ff  ...'............
+>     f9 ec d7 2f a6 00 00 00 28 fc 5b 17 81 88 ff ff  .../....(.[.....
+>   backtrace:
+>     [<0000000011655661>] kmalloc_trace+0x26/0xa0
+>     [<0000000055f15b82>] virtio_gpu_fence_alloc+0x47/0xc0 [virtio_gpu]
+>     [<00000000fa6d96f9>] virtio_gpu_execbuffer_ioctl+0x1a8/0x800 [virtio_gpu]
+>     [<00000000e6cb5105>] drm_ioctl_kernel+0x169/0x240 [drm]
+>     [<000000005ad33e27>] drm_ioctl+0x399/0x6b0 [drm]
+>     [<00000000a19dbf65>] __x64_sys_ioctl+0xc5/0x100
+>     [<0000000011fa801e>] do_syscall_64+0x5b/0xc0
+>     [<0000000065c76d8a>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [...]
 > 
->         static const struct kernel_param_ops __param_ops_##name = \
->                 { .flags = 0, .set = _set, .get = _get }; \
->         __module_param_call(MODULE_PARAM_PREFIX, \
->                             name, &__param_ops_##name, arg, perm, -1, 0)
+> This memleak will grow quickly, being possible to see the
+> following line in dmesg after few minutes of life in the
+> virtual machine:
 > 
->         __module_param_call(MODULE_PARAM_PREFIX, name, ops, arg, perm, -1, 0)
+> [  706.217388] kmemleak: 10731 new suspected memory leaks (see /sys/kernel/debug/kmemleak)
 > 
-> Many users of module_param_cb() appear to be almost universally
-> open-coding the same thing that module_param_call() does now. Don't
-> discourage[1] people from using module_param_call(): clarify the comment
-> to show that module_param_cb() is useful if you repeatedly use the same
-> pair of get/set functions.
+> The patch will remove the line to allow the cleanup
+> function do its job.
 > 
-> [1] https://lore.kernel.org/lkml/202308301546.5C789E5EC@keescook/
-> 
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: Jessica Yu <jeyu@kernel.org>
-> Cc: Sagi Grimberg <sagi@grimberg.me>
-> Cc: Nick Desaulniers <ndesaulniers@gooogle.com>
-> Cc: Miguel Ojeda <ojeda@kernel.org>
-> Cc: Joe Perches <joe@perches.com>
-> Cc: linux-modules@vger.kernel.org
-> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Applied and pushed to modules-next, thanks
-
+> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
 > ---
-> Luis, I note that include/linux/moduleparam.h isn't in the MAINTAINERS
-> file pattern. Perhaps you want to use include/linux/module*.h?
+>  drivers/gpu/drm/virtio/virtgpu_submit.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-Sent patch! Thanks!
+Added fixes tag and pushed to misc-fixes
 
-  Luis
+-- 
+Best regards,
+Dmitry
+
