@@ -2,352 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F957A7483
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BB77A747D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbjITHoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
+        id S233880AbjITHnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233850AbjITHoK (ORCPT
+        with ESMTP id S233793AbjITHnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:44:10 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BC5DE;
-        Wed, 20 Sep 2023 00:44:02 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 2F2E060157;
-        Wed, 20 Sep 2023 09:43:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695195829; bh=+1+lWp07mJQBiLck3AusgoT8+We21cYFD6KbxGYygBA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UtfxYKmEsLmEyRY9je27BUc9bm2H+j8sOJjUUAr1AVt5qugKj1U1+Wecm9ghX7u9a
-         Zh/foZ3H3C9sK0cc6cUxdv+3QHaZH/r75biBJSHRKZP4Kh1DfECahmGYPqUhJxqIba
-         PsrvNzmCnCLtqvof0qRfGwfP6VlydCKdTdRhjOY/1eiG1Oz0D5ZD7u6um9YCHI7r6E
-         CSj8hvl0So5SCNay209qR+taWG3fkFaOGikVtPvt/byOl8dApl8D9Xm0XV4zDGLaW7
-         CNq4Zo8ZW0dWlLLe5oIY7+CTwC6eSjpHyGBcSx77i1/DcUPaD54KE0VrUjRPny7xq+
-         cjmBlSndiud2w==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id np-neNR6A0IQ; Wed, 20 Sep 2023 09:43:46 +0200 (CEST)
-Received: from defiant.home (78-2-200-2.adsl.net.t-com.hr [78.2.200.2])
-        by domac.alu.hr (Postfix) with ESMTPSA id 9E7CB60152;
-        Wed, 20 Sep 2023 09:43:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695195826; bh=+1+lWp07mJQBiLck3AusgoT8+We21cYFD6KbxGYygBA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sSMugMNbzSihde1J0x28p9IP5WP0u7yn/LkWhXKOeSANjfhVHhiCseWAZzEkFeNU+
-         bWiCAqfvkF5veQ5c9lL0F3qslmZgdqsCLMYXHgYWxPjt6T+LSTUr80JbCvv1yOg75W
-         Ol8e2oCIAvdS6kSgDp/N2+qRo4Uwy+3m8ZoS5I/rvKahvqAHn3b6KkN7IrxL65KrwS
-         kcsOMOQP3MaD3k9iDlhik13R/wN/L1WK83dhejQrD/1Pb2X6n9dG+2Nvb2ZmE7ucMS
-         3bJDTmtKNXxmZVkRLEkhiQmDykaRi6xY+eCzcr/5hpjxYFUJuA+5nkEGARWrcVqWnj
-         4MYd2EU3LUf/Q==
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@FreeBSD.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 1/1] acpica: use spinlocks to fix the data-races reported by the KCSAN
-Date:   Wed, 20 Sep 2023 09:41:59 +0200
-Message-Id: <20230920074158.3605-1-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.34.1
+        Wed, 20 Sep 2023 03:43:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC2FC9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:42:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695195779; x=1726731779;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=bdJdq90Qgn1SFrKBxabnaoZCvkUC+xAMYLb5I/6g4NA=;
+  b=TxGFqgUZADEhPOx3XqriYJ4GIL2CUrKgynyEdT4rp0ijPFinpK4CKofJ
+   HbnqCWVs+naINtjXzt3vl+ziYoob+j+iWz1/WUjOYcbwmEoGKZFEbmWAI
+   euEA1AFV1PNoHdolQzInA40V/TmTs20Hh88UnC1RjKlMhp0kZ5iP82YuI
+   Er4PuD7V8IZXs7Piz1r680LN95dKURh8szPqpxtkFhr2b1eqNiDm9guwA
+   Xaav8hcy2NNTg6i/drRI5JcIu+fq+B57qjBXsCXPjZou3obVbDUtGNGUP
+   ErayZG+HeM5bZPoi0k1xY/mOwxImP6QLhfE+YUtruf9MI42mM4OFoiCsq
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="446623139"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="446623139"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:42:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="816792544"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="816792544"
+Received: from lingshan-mobl.ccr.corp.intel.com (HELO [10.93.14.5]) ([10.93.14.5])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:42:52 -0700
+Message-ID: <c928e39c-fe4a-81d5-51a9-11bc14959a80@intel.com>
+Date:   Wed, 20 Sep 2023 15:42:50 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [virtio-comment] Re: [virtio-dev] Re: [virtio-comment] Re:
+ [VIRTIO PCI PATCH v5 1/1] transport-pci: Add freeze_mode to
+ virtio_pci_common_cfg
+Content-Language: en-US
+To:     "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
+        Parav Pandit <parav@nvidia.com>,
+        "virtio-comment@lists.oasis-open.org" 
+        <virtio-comment@lists.oasis-open.org>,
+        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+References: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
+ <20230919114242.2283646-2-Jiqian.Chen@amd.com>
+ <20230919082802-mutt-send-email-mst@kernel.org>
+ <cd8d306b-6acc-34be-516c-b89c23ac108d@intel.com>
+ <BL1PR12MB5849E32A76165F1307492185E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+ <badb53e0-513c-f88c-67b9-ecd59d1cf051@intel.com>
+ <BL1PR12MB584905241D62294075BC701BE7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+In-Reply-To: <BL1PR12MB584905241D62294075BC701BE7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KCSAN reported hundreds of instances of data-races in ACPICA like this one:
 
-[    6.994149] ==================================================================
-[    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
 
-[    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
-[    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
-[    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
-[    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
-[    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
-[    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
-[    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
-[    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
-[    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
-[    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
-[    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
-[    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
-[    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
-[    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+On 9/20/2023 3:17 PM, Chen, Jiqian wrote:
+> Hi Lingshan,
+>
+> On 2023/9/20 14:58, Zhu, Lingshan wrote:
+>>
+>> On 9/20/2023 2:33 PM, Chen, Jiqian wrote:
+>>> Hi Lingshan,
+>>>
+>>> On 2023/9/20 13:59, Zhu, Lingshan wrote:
+>>>> On 9/19/2023 8:31 PM, Michael S. Tsirkin wrote:
+>>>>> On Tue, Sep 19, 2023 at 07:42:42PM +0800, Jiqian Chen wrote:
+>>>>>> When guest vm does S3, Qemu will reset and clear some things of virtio
+>>>>>> devices, but guest can't aware that, so that may cause some problems.
+>>>>>> For excample, Qemu calls virtio_reset->virtio_gpu_gl_reset when guest
+>>>>>> resume, that function will destroy render resources of virtio-gpu. As
+>>>>>> a result, after guest resume, the display can't come back and we only
+>>>>>> saw a black screen. Due to guest can't re-create all the resources, so
+>>>>>> we need to let Qemu not to destroy them when S3.
+>>>>>>
+>>>>>> For above purpose, we need a mechanism that allows guests and QEMU to
+>>>>>> negotiate their reset behavior. So this patch add a new parameter
+>>>>>> named freeze_mode to struct virtio_pci_common_cfg. And when guest
+>>>>>> suspends, it can write freeze_mode to be FREEZE_S3, and then virtio
+>>>>>> devices can change their reset behavior on Qemu side according to
+>>>>>> freeze_mode. What's more, freeze_mode can be used for all virtio
+>>>>>> devices to affect the behavior of Qemu, not just virtio gpu device.
+>>>> Hi Jiqian,
+>>>>
+>>>> Have you seen this series: [PATCH 0/5] virtio: introduce SUSPEND bit and vq state
+>>>> https://lore.kernel.org/all/3f4cbf84-010c-cffa-0b70-33c449b5561b@intel.com/T/
+>>>>
+>>>> We introduced a bit in the device status SUSPEND, when VIRTIO_F_SUSPEND is
+>>>> negotiated, the driver can set SUSPEND in the device status to suspend the
+>>>> device.
+>>>>
+>>>> When SUSPEND, the device should pause its operations and preserve its configurations
+>>>> in its configuration space.
+>>>>
+>>>> The driver re-write DRIVER_OK to clear SUSPEND, so the device resumes running.
+>>>>
+>>>> This is originally to serve live migration, but I think it can also meet your needs.
+>>> I noticed your series, but I am not sure they are also meet my needs.
+>>> If driver write 0 to reset device, can the SUSPEND bit be cleared? (pci_pm_resume->virtio_pci_restore->virtio_device_restore->virtio_reset_device)
+>> if the driver writes 0, it resets all virtio functionalities. So SUSPEND is cleared.
+> Then your patches are not meet my needs. In my scene, it needs to keep the SUSPEND bit util the resume process is complete.
+> Because in my virtio-gpu scene, when guest resume, it call virtio_reset_device to clear all device status bits, and then reset virtio-gpu in Qemu, and then destroy render resources, I don't want the resources are destroyed during the resume process. So, I add freeze_mode to tell Qemu that guest is doing S3 and resources need to be kept.
+When a guest set to S3, the hypervisor suspend the guest to RAM, and the 
+passthrough-ed device are in low power state.
+I am not sure the device can keep its status/context/data, maybe need to 
+recover from RAM anyway.
 
-[    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
-[    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
-[    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
-[    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
-[    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
-[    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
-[    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
-[    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
-[    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
-[    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
-[    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
-[    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
-[    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
-[    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
-[    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
-[    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
-[    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
-
-[    6.995476] value changed: 0x00000004 -> 0x00000002
-
-[    6.995629] Reported by Kernel Concurrency Sanitizer on:
-[    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
-[    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[    6.995765] ==================================================================
-
-Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
-
-A number of unprotected increments:
-
-        acpi_gbl_nesting_level++;
-
-and conditional statements:
-
-        if (acpi_gbl_nesting_level) {
-                acpi_gbl_nesting_level--;
-        }
-
-no longer work in SMP environment.
-
-Proper locking like
-
-        spin_lock(&acpi_utdebug_lock);
-        acpi_gbl_nesting_level++;
-        spin_unlock(&acpi_utdebug_lock);
-
-and
-
-        spin_lock(&acpi_utdebug_lock);
-        if (acpi_gbl_nesting_level) {
-                acpi_gbl_nesting_level--;
-        }
-        spin_unlock(&acpi_utdebug_lock);
-
-makes these data-races go away.
-
-Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
-acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
-stuff the optmisers do.
-
-The patch eliminates KCSAN BUG warnings.
-
-Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
-Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
-Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
-Fixes: ^1da177e4c3f4 ("Initial git repository build.")
-Cc: Jung-uk Kim <jkim@FreeBSD.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Erik Kaneda <erik.kaneda@intel.com>
-Cc: Bob Moore <robert.moore@intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: Len Brown <lenb@kernel.org>
-Cc: linux-acpi@vger.kernel.org
-Cc: acpica-devel@lists.linuxfoundation.org
-Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309201331.S2c1JL2h-lkp@intel.com/
----
-v1 -> v2:
- Moved the declaration of 'u32 nesting_level' inside #ifdef ACPI_APPLICATION ... #endif
- according to the unused variable warning of the kernel test robot.
-
-v1:
- Preliminary RFC version of the patch.
-
- drivers/acpi/acpica/utdebug.c | 40 ++++++++++++++++++++++++++++++-----
- 1 file changed, 35 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
-index c5f6c85a3a09..1faf7dc144f0 100644
---- a/drivers/acpi/acpica/utdebug.c
-+++ b/drivers/acpi/acpica/utdebug.c
-@@ -16,6 +16,8 @@
- #define _COMPONENT          ACPI_UTILITIES
- ACPI_MODULE_NAME("utdebug")
- 
-+static DEFINE_SPINLOCK(acpi_utdebug_lock);
-+
- #ifdef ACPI_DEBUG_OUTPUT
- static acpi_thread_id acpi_gbl_previous_thread_id = (acpi_thread_id) 0xFFFFFFFF;
- static const char *acpi_gbl_function_entry_prefix = "----Entry";
-@@ -60,13 +62,16 @@ void acpi_ut_init_stack_ptr_trace(void)
- void acpi_ut_track_stack_ptr(void)
- {
- 	acpi_size current_sp;
-+	u32 nesting_level;
- 
- 	if (&current_sp < acpi_gbl_lowest_stack_pointer) {
- 		acpi_gbl_lowest_stack_pointer = &current_sp;
- 	}
- 
--	if (acpi_gbl_nesting_level > acpi_gbl_deepest_nesting) {
--		acpi_gbl_deepest_nesting = acpi_gbl_nesting_level;
-+	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
-+
-+	if (nesting_level > acpi_gbl_deepest_nesting) {
-+		acpi_gbl_deepest_nesting = nesting_level;
- 	}
- }
- 
-@@ -136,6 +141,7 @@ acpi_debug_print(u32 requested_debug_level,
- 	va_list args;
- #ifdef ACPI_APPLICATION
- 	int fill_count;
-+	u32 nesting_level;
- #endif
- 
- 	/* Check if debug output enabled */
-@@ -156,7 +162,7 @@ acpi_debug_print(u32 requested_debug_level,
- 		}
- 
- 		acpi_gbl_previous_thread_id = thread_id;
--		acpi_gbl_nesting_level = 0;
-+		WRITE_ONCE(acpi_gbl_nesting_level, 0);
- 	}
- 
- 	/*
-@@ -176,14 +182,16 @@ acpi_debug_print(u32 requested_debug_level,
- 		acpi_os_printf("[%u] ", (u32)thread_id);
- 	}
- 
--	fill_count = 48 - acpi_gbl_nesting_level -
-+	fill_count = 48 - READ_ONCE(acpi_gbl_nesting_level) -
- 	    strlen(acpi_ut_trim_function_name(function_name));
- 	if (fill_count < 0) {
- 		fill_count = 0;
- 	}
- 
-+	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
-+
- 	acpi_os_printf("[%02d] %*s",
--		       acpi_gbl_nesting_level, acpi_gbl_nesting_level + 1, " ");
-+		       nesting_level, nesting_level + 1, " ");
- 	acpi_os_printf("%s%*s: ",
- 		       acpi_ut_trim_function_name(function_name), fill_count,
- 		       " ");
-@@ -260,7 +268,10 @@ acpi_ut_trace(u32 line_number,
- 	      const char *module_name, u32 component_id)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
-+
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -298,7 +309,10 @@ acpi_ut_trace_ptr(u32 line_number,
- 		  u32 component_id, const void *pointer)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
-+
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -334,7 +348,10 @@ acpi_ut_trace_str(u32 line_number,
- 		  const char *module_name, u32 component_id, const char *string)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
-+
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -370,7 +387,10 @@ acpi_ut_trace_u32(u32 line_number,
- 		  const char *module_name, u32 component_id, u32 integer)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
-+
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -414,9 +434,11 @@ acpi_ut_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_exit)
-@@ -463,9 +485,11 @@ acpi_ut_status_exit(u32 line_number,
- 		}
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
-@@ -502,9 +526,11 @@ acpi_ut_value_exit(u32 line_number,
- 				 ACPI_FORMAT_UINT64(value));
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
-@@ -540,9 +566,11 @@ acpi_ut_ptr_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix, ptr);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- /*******************************************************************************
-@@ -577,9 +605,11 @@ acpi_ut_str_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix, string);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- /*******************************************************************************
--- 
-2.34.1
+So I suggest not reset the device, there need some code changes in QEMU
+When set to S3, SUSPEND the device, then suspend to RAM
+When resume from S3, restore from RAM and set DRIVER_OK to resume running.
+>
+>> device reset can also be used to recover the device from fatal errors, so it should reset everything in virtio.
+>>> If SUSPEND is cleared, then during the reset process in Qemu, I can't judge if the reset request is from guest restore process or not, and then I can't change the reset behavior.
+>> I think when enter S3, the hypervisor/driver should set SUSPEND to the device. And when resume from S3, the hypervisor/driver should
+>> re-write DRIVER_OK to clear SUSPEND, then the device resume running.
+>>> Can you send me your patch link on kernel and qemu side? I will take a deep look.
+>> There are no patches for qemu/kernel yet, spec first.
+>>>> Thanks,
+>>>> Zhu Lingshan
+>>>>>> Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
+>>>>>> ---
+>>>>>>     transport-pci.tex | 7 +++++++
+>>>>>>     1 file changed, 7 insertions(+)
+>>>>>>
+>>>>>> diff --git a/transport-pci.tex b/transport-pci.tex
+>>>>>> index a5c6719..2543536 100644
+>>>>>> --- a/transport-pci.tex
+>>>>>> +++ b/transport-pci.tex
+>>>>>> @@ -319,6 +319,7 @@ \subsubsection{Common configuration structure layout}\label{sec:Virtio Transport
+>>>>>>             le64 queue_desc;                /* read-write */
+>>>>>>             le64 queue_driver;              /* read-write */
+>>>>>>             le64 queue_device;              /* read-write */
+>>>>>> +        le16 freeze_mode;               /* read-write */
+>>>>>>             le16 queue_notif_config_data;   /* read-only for driver */
+>>>>>>             le16 queue_reset;               /* read-write */
+>>>>>>
+>>>>> we can't add fields in the middle of the structure like this -
+>>>>> offset of queue_notif_config_data and queue_reset changes.
+>>>>>
+>>>>>    
+>>>>>> @@ -393,6 +394,12 @@ \subsubsection{Common configuration structure layout}\label{sec:Virtio Transport
+>>>>>>     \item[\field{queue_device}]
+>>>>>>             The driver writes the physical address of Device Area here.  See section \ref{sec:Basic Facilities of a Virtio Device / Virtqueues}.
+>>>>>>     +\item[\field{freeze_mode}]
+>>>>>> +        The driver writes this to set the freeze mode of virtio pci.
+>>>>>> +        VIRTIO_PCI_FREEZE_MODE_UNFREEZE - virtio-pci is running;
+>>>>>> +        VIRTIO_PCI_FREEZE_MODE_FREEZE_S3 - guest vm is doing S3, and virtio-pci enters S3 suspension;
+>>>>>> +        Other values are reserved for future use, like S4, etc.
+>>>>>> +
+>>>>> we need to specify these values then.
+>>>>>
+>>>>> we also need
+>>>>> - feature bit to detect support for S3
+>>>>> - conformance statements documenting behavious under S3
+>>>>>
+>>>>>
+>>>>>>     \item[\field{queue_notif_config_data}]
+>>>>>>             This field exists only if VIRTIO_F_NOTIF_CONFIG_DATA has been negotiated.
+>>>>>>             The driver will use this value when driver sends available buffer
+>>>>>> -- 
+>>>>>> 2.34.1
+>>>>> This publicly archived list offers a means to provide input to the
+>>>>> OASIS Virtual I/O Device (VIRTIO) TC.
+>>>>>
+>>>>> In order to verify user consent to the Feedback License terms and
+>>>>> to minimize spam in the list archive, subscription is required
+>>>>> before posting.
+>>>>>
+>>>>> Subscribe: virtio-comment-subscribe@lists.oasis-open.org
+>>>>> Unsubscribe: virtio-comment-unsubscribe@lists.oasis-open.org
+>>>>> List help: virtio-comment-help@lists.oasis-open.org
+>>>>> List archive: https://lists.oasis-open.org/archives/virtio-comment/
+>>>>> Feedback License: https://www.oasis-open.org/who/ipr/feedback_license.pdf
+>>>>> List Guidelines: https://www.oasis-open.org/policies-guidelines/mailing-lists
+>>>>> Committee: https://www.oasis-open.org/committees/virtio/
+>>>>> Join OASIS: https://www.oasis-open.org/join/
+>>>>>
+>>>> ---------------------------------------------------------------------
+>>>> To unsubscribe, e-mail: virtio-dev-unsubscribe@lists.oasis-open.org
+>>>> For additional commands, e-mail: virtio-dev-help@lists.oasis-open.org
+>>>>
+>>
+>> This publicly archived list offers a means to provide input to the
+>> OASIS Virtual I/O Device (VIRTIO) TC.
+>>
+>> In order to verify user consent to the Feedback License terms and
+>> to minimize spam in the list archive, subscription is required
+>> before posting.
+>>
+>> Subscribe: virtio-comment-subscribe@lists.oasis-open.org
+>> Unsubscribe: virtio-comment-unsubscribe@lists.oasis-open.org
+>> List help: virtio-comment-help@lists.oasis-open.org
+>> List archive: https://lists.oasis-open.org/archives/virtio-comment/
+>> Feedback License: https://www.oasis-open.org/who/ipr/feedback_license.pdf
+>> List Guidelines: https://www.oasis-open.org/policies-guidelines/mailing-lists
+>> Committee: https://www.oasis-open.org/committees/virtio/
+>> Join OASIS: https://www.oasis-open.org/join/
+>>
 
