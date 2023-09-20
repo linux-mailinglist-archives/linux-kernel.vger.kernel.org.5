@@ -2,142 +2,398 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DA77A72B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D447A72BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbjITGTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S233381AbjITGUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbjITGTH (ORCPT
+        with ESMTP id S233350AbjITGUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:19:07 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2114.outbound.protection.outlook.com [40.107.114.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4C7B9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:19:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iDo9vIAsRU1TKUzs6OlHBVR949ums36jeoa5Af6OCPHH0HJBEJ4SCQ4N24sCm8uI4cNkGRux2AcWXGY1UyPANif/UFbZkjS3+g1bwihG5PV1fB+MRblj18ZtcwskgkPob8fDUPc3FA/VtC5ZjccKfkaF0oRqeYPVZL83iKeL87nIwrnANjub6ANICU4Q20oEfWGl8jlYGqRFfevwgbdp93Q/Vu399Qw06mvqq0fTpJIAMnUPgFJwjw2jI6QTR1Od49juAWkIKJFj1u6BxBaubtPGERBQmnyexvaJLDYKm02GJCPPXCveVxs2ylafS+oSUu1BXN8OT466lvB53YUJrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LAXWOLIrkgLkGOXI9geJCKCvV9vdbZqeS9wG1wzUSzQ=;
- b=BghBFZ90jucm8FWwbmkCSkKZcPX1ho4hdpgkztYemyIEzcgeGrdFflBTGpB38ZEm0irNaS4nl6n5tO02/ZSlxjJSXsQPw7vGlz0SV7UMd2T6VnVYi/+GSZkJUDOYHZUSXqrOuySPtK23qTJxX51tDitu51ctnJpui9WjL2ecm+3XWa6caPd2lmhU9z2dRmvekIiNaM06EF/8G6dPnEfbzag2UBZuBfTCyQxoBP38X18geTRgfROlVvcLfG+hcU0eUrl0vPOUK1f40tHYuHuOAOL6zMsUSueS+fcRniCdvNGLL52TuyueTnUotfpnAUog4ZezNgSKzUnbH3bQqVOssA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LAXWOLIrkgLkGOXI9geJCKCvV9vdbZqeS9wG1wzUSzQ=;
- b=TqRqdw8WECqJx2iMG++WBSDkUgqOk0i6GeKS/Cks6KlDQcDrDzKriXHcOrv2ibZAw4NEgK3g4CWwfbqsEoeBPOW3YXkqBgjYj+u4fBbmE/6Czl8y/Wjwci+KdX6F5wsLo8YTFsOANbFEjO/Arsy29kVgwBjL8PZQy/or98dLGrg=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYYPR01MB8248.jpnprd01.prod.outlook.com (2603:1096:400:111::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
- 2023 06:18:57 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 06:18:54 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Lee Jones <lee@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: RE: [PATCH v3] mfd: max77541: Simplify probe()
-Thread-Topic: [PATCH v3] mfd: max77541: Simplify probe()
-Thread-Index: AQHZ3Dxyc5HSAi6RuE62fpzMHWxMxbAiYjKAgAD5xqA=
-Date:   Wed, 20 Sep 2023 06:18:53 +0000
-Message-ID: <OS0PR01MB592294617B806A39AFDF142286F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230831185329.70472-1-biju.das.jz@bp.renesas.com>
- <20230919152409.GZ13143@google.com>
-In-Reply-To: <20230919152409.GZ13143@google.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYYPR01MB8248:EE_
-x-ms-office365-filtering-correlation-id: ed42298c-4967-4b66-2ac5-08dbb9a176f5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oR9n0+jKAQlFcjyk+6Fl2yjoof13lsZuMhUNQHmZWvSSTbcqfzbd6Pt3wS7XQ+Fb7xh+dZpNRtHzRn8n5LGcib3wilOgfJPFbGD6CWNSO2WqP5v8Jo8y+mEApRCjwtFLRBVlAuSXULeG8i3qXwgY36pCMPIfNona04TsCStHPbB8gt8S+nKXktGwtVsnsJ6aemSBG24eW7YjjquQvlHxvP3rHPgNbUvcSmLpotx/wSFPwarZfpdp+sni+ugAJqsChwNkMBkoa2aKnCY20WrF5R2nOa08ItTA32v9GpOXMm6PqwKvpaGv94mp19gled3KvZBtkV97NDvl1q+wEHPzy+43o42ZsRfgXmhqRk11QqdzRQ0So6YKISycMeSaCYtsF8YVIdd4w9b52SmG3gBw3Vuva2yE4IknrmVACQWdJwp0Bfs/wuAbb1g4jbJmR4j9PsytCYYlj0lFIcIfJl2CUYmejaXvfuypkg5GDPmWNlztYCd5F/zvkdv0D1js+W1UKkX4Tma2H4ntjeng8MMAOkvXstPVhPg7+WYU0RgGFsCIW16VJx/jDmiA9LSFiYFrOvaUpjG0BjmT7jx+EiD0tcZRC73v21h0OQqlrdC9+mlpWaJXU+S8umJtVpxTPD8O
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(136003)(366004)(186009)(1800799009)(451199024)(71200400001)(55016003)(38100700002)(4326008)(122000001)(66446008)(8936002)(33656002)(38070700005)(64756008)(54906003)(41300700001)(9686003)(76116006)(66946007)(66476007)(6916009)(66556008)(8676002)(2906002)(4744005)(316002)(5660300002)(83380400001)(26005)(52536014)(7696005)(86362001)(6506007)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eVBNSDlDYXJSU0wxM2FwT3FTR1MyaHBLMnZ0VUVNd3E5VCtDdnI1OGF6bHpa?=
- =?utf-8?B?cGRlVUpUbjVBZTRhdlo1b0kyajRKMjZwSFJnQmV0WlBtbVhvVndQRVhqUkRa?=
- =?utf-8?B?S1JpQzZHcms1QkpTK1JFdVVoUjV4YW40NmhoSXUwNW1pOXE3OTl1aHlMemVq?=
- =?utf-8?B?bXd0YU1MSDRWOXlRMHpHU1NCQ0R0dkRGcFhiVVRnS0NVaSthNUw3bDdmeDNP?=
- =?utf-8?B?VWtHaitPRjRTR0JMTHFsaVFobnZ5MjNqTEFMNWRWS1ZrdHdKNThSRWFmYzd2?=
- =?utf-8?B?M1AvZ0N0cmR2Mk1nVk1BZjVNelIwVzdDbDgxd0V5Z0Q1ay8xZWRvZ0hiSUM0?=
- =?utf-8?B?Z2pxVGNpUzJvUFRwdlZ6cVN3OUg4eXRBdDFDWFo1OVVodFdxTmlFOW9HQmVz?=
- =?utf-8?B?NEZLeDRHQ2Q4WUN0QkJLQjhRVkkxVVVuT2RWWEdrZmRJdWFzeHBtbUFuSlVK?=
- =?utf-8?B?V2pZMFFZQ1YyNXhQeXVpLzNpWWF2QmU1ckdwZ3J4RjJ3bURmdnU2T0tkQmdn?=
- =?utf-8?B?TGNFTHk4U3lJenhPNmxHNG02N2plSE50ZjhIYXFjSU5CSFh5eVZ3Q1k5TWVW?=
- =?utf-8?B?VDZMMXUxMWhxbnhSUE1GMWJmcW40TXRTbitrUUh2V0RHYzhZVXNrTTh6V2Rs?=
- =?utf-8?B?Nlg4dW52TjVkMEp0MzNwMGQrL3g0M0FPYm12Z0E5VUg3Si9iR2ZtdFNicDIz?=
- =?utf-8?B?T29lMU1aZ3NybzRPVkx1RmNCQURtNHBiUDNyVDhvTFpsZnZZR2tRVkJJUmVT?=
- =?utf-8?B?YkZaZWVLUWRRQTBhL2I0UXlVeEFISkw0UnROOUM4b0VyL3NnbWNXUU10d1N3?=
- =?utf-8?B?VE8rNHZIVStxbm5hNDRhZXA5UkhvRERGM2kxZWdQaytwRWFwRkc3ME8vem5O?=
- =?utf-8?B?MG56Z0lONi8rQ0JpaC8vWlZDRzk5Q0xwK0JiMTBuNUJud2t4ZTNCakVuOXBO?=
- =?utf-8?B?Ukw5SUEvZjZYZlZPYmVjV2F2UlhBb3V2bisvNGhXZW50Q3VZaGh5TFdSN20y?=
- =?utf-8?B?UG1id3Zhcngxcm5hRFBVRVUzM0xQMEp6Nk9ZOFlsb3p5YXlvS29EMytQMGVq?=
- =?utf-8?B?VXZ2TkUxalhydHl2akF4QThoWjhCYWlxdENuRmlwRUsrdjNJSG83ME15blNI?=
- =?utf-8?B?YlM1dWlJbUJ4QWRCcFhqeWFIdkY0ajhMZEpTZ05McEhzaVJTdHpVbEkzeEdW?=
- =?utf-8?B?Ni92cTZBdUhrYzVuZGhvUTE4a3ZMelpYVTQrQmM0Mnd1cVVvcWdLL1laVDZy?=
- =?utf-8?B?N2V3MnllNGV3MkpTWnF5dE5PVWlkNlowckV3b1hOVHRUSnFBbFhLVXczK0J6?=
- =?utf-8?B?NDlNcDVrQUdFdWZ4OXc1Wm9tdEF0Uk9MYm1abk0xTGxVZ3JLU05yUkFoQUFM?=
- =?utf-8?B?Tnl4cFZaMnI5Y2lIek1FV2ZWYXMyQU9IMTcvWGtGeUh0aUpGWlBiOG5vM2pR?=
- =?utf-8?B?V3UwQ0xvdTY5azV2OW9RT3M0T2tVVkhYWjBGK2FCa1l1dUQ0UGlwSU5oTXJp?=
- =?utf-8?B?QXdBOUhqQThBOS9FSkFkVFc2QXJFemxFZFJVSU43REhJYkdmSytJaEdpUTN4?=
- =?utf-8?B?akpJYzNUTGtJMVFCZjZFZ25lRVcwR3ZBbmZ4ckZKem03eU90eHNlZVZmOWxi?=
- =?utf-8?B?dGc5cXV4OVBaS0dYVWw5MWo1UEg5OHJ4bVhpYWxoaEhuT2hMdjVMRUJTNm5G?=
- =?utf-8?B?ZTArYnlqcENVTXUxblZKbHhlMGZTTGNSWUZwdFNJc2g0bzZORlh6NWRnVU9P?=
- =?utf-8?B?c0VUdkR4QkxkbHhnVWJNN0Z3a1hyYmFIWU4wMlYvSGhISjhSYWVFRVVNZjZ3?=
- =?utf-8?B?blJQZXM2dFVQbWVtdDBEd3R5ZGNlVW1CK2lsNVNiT3Fyb0JCRWFxamJRNjJ6?=
- =?utf-8?B?YlZpLzZyNEFkRC80NGNuNnZSdmZuR1BXVVNtWDVpUm9pU2VYK0ZKN0pQZTl0?=
- =?utf-8?B?VlFnQ0I5VldWdGNpMkNBOUdLSURnRkRtSkI2cWRHV0JvUStwb010cUVXUTAw?=
- =?utf-8?B?Mm1QajRxNG03Nnh1eU5YTlp3RCtwVkZaOGxNd1pLV0hxend1dVE0U1haQzMv?=
- =?utf-8?B?MHpPOVJWNHIwRVl4bG9MLzY1Z21GeFFucFhrdTM1d2owMW01TGJsV2xON2py?=
- =?utf-8?B?R0pFRVdWN1B2Qi81aTBNdXNZRzZwV2FWRFJUUWMrNGZ2WjNjZmp5QmlqMzlp?=
- =?utf-8?B?cnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 20 Sep 2023 02:20:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0171A8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695190801; x=1726726801;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hq7IYYC8nVzeFGqZQrv5zeua36AUxmv2g1nXbA7LL/w=;
+  b=WfeXs7PrdGSr3f+XV/Uc1r9LwyeMX1Cw4QnURWL8lbYlu9+v5goZsLbj
+   k2oezLdBJhx/WyXGMsdlSxkrH7aiz8f0KFHMOs8oO6+fGLx6C7xjjZLMM
+   lko0OYwm5S3Ykconu0RM2xs4V8BNMUZaAUl6F4Tv2DjGwOG6we/zFTWBh
+   aC7UcZqc2D5l45YWEr7V3jBgjb1XtJ1di3Yd5omRFHOnqOAq85MI0eYmn
+   SZEZ1DqnQFC/mghhRfFuxwILn+vH41pxAty2RugV6YgnsnXJq2Lohd1Un
+   G2It5WZvQY0gD1beKoMDAzJZIS56oGxReI9eBkYKeBxkR3iApefk0ltZ1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="365187731"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="365187731"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:20:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="740060638"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="740060638"
+Received: from yhuang6-mobl2.sh.intel.com ([10.238.6.133])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:19:56 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>
+Subject: [PATCH 07/10] mm: tune PCP high automatically
+Date:   Wed, 20 Sep 2023 14:18:53 +0800
+Message-Id: <20230920061856.257597-8-ying.huang@intel.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230920061856.257597-1-ying.huang@intel.com>
+References: <20230920061856.257597-1-ying.huang@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed42298c-4967-4b66-2ac5-08dbb9a176f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2023 06:18:53.9496
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MCW5RTl7p7w96WSkwyxB5wq11QRgd2rH45MrGNEBOLbMCdfHPlYY2eeldrIRwBarXzZioceIEGfDlWyvL8psXFC88DuVj0txPWcYLK4u00s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB8248
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTGVlIEpvbmVzLA0KDQpUaGFua3MgZm9yIHRoZSBmZWVkYmFjay4NCg0KPiBTdWJqZWN0OiBS
-ZTogW1BBVENIIHYzXSBtZmQ6IG1heDc3NTQxOiBTaW1wbGlmeSBwcm9iZSgpDQo+IA0KPiBPbiBU
-aHUsIDMxIEF1ZyAyMDIzLCBCaWp1IERhcyB3cm90ZToNCj4gDQo+ID4gU2ltcGxpZnkgcHJvYmUo
-KSBieSByZXBsYWNpbmcgZGV2aWNlX2dldF9tYXRjaF9kYXRhKCkgYW5kIElEIGxvb2t1cA0KPiA+
-IGZvcg0KPiANCj4gVGhlcmUgYXJlIGh1bmRyZWRzIG9mIHdheXMgdG8gInNpbXBsaWZ5IHByb2Jl
-KCkiDQo+IA0KPiBQbGVhc2UgY29sbGVjdCBhbGwgb2YgdGhlc2UgTUZEIHJlbGF0ZWQgcGF0Y2hl
-cyBhbmQgcHJvdmlkZSBhIGJldHRlcg0KPiBzdWJqZWN0IGxpbmUgdGhhdCBlYXNpbHkgaWRlbnRp
-ZmllcyB0aGUgY2hhbmdlcy4NCj4gDQo+IEZvciBleGFtcGxlLCBJIGp1c3QgYXBwbGllZCBvbmUg
-b2YgeW91ciBlYXJsaWVyIHBhdGNoZXMgYXM6DQo+IA0KPiAgIG1mZDogbWF4ODk5NzogU2ltcGxp
-Znkgb2J0YWluaW5nIEkyQyBtYXRjaCBkYXRhIGFuZCBkcm9wDQo+IG1heDg5OTdfaTJjX2dldF9k
-cml2ZXJfZGF0YSgpDQo+IA0KPiAuLi4gYnV0IEkgZG9uJ3QgaGF2ZSBlbm91Z2ggc3BhcmUgY3lj
-bGVzIHRvIGZpeCB0aGVtIGFsbCB1cC4NCj4gDQo+IEZlZWwgZnJlZSB0byB1c2UgdGhpcyBkZXNj
-cmlwdGlvbiBvciBjb21lIHVwIHdpdGggc29tZXRoaW5nIGJldHRlci4NCj4gDQo+IFBsZWFzZSBw
-b3N0IHRoZW0gYWxsIGluIG9uZSBzZXQgLSBlbHNlIHRoZXkgZW5kIHVwIHNwcmVhZCBhbGwgb3Zl
-ciBteQ0KPiBpbmJveC4NCg0KQWdyZWVkLg0KDQpDaGVlcnMsDQpCaWp1DQo=
+The target to tune PCP high automatically is as follows,
+
+- Minimize allocation/freeing from/to shared zone
+
+- Minimize idle pages in PCP
+
+- Minimize pages in PCP if the system free pages is too few
+
+To reach these target, a tuning algorithm as follows is designed,
+
+- When we refill PCP via allocating from the zone, increase PCP high.
+  Because if we had larger PCP, we could avoid to allocate from the
+  zone.
+
+- In periodic vmstat updating kworker (via refresh_cpu_vm_stats()),
+  decrease PCP high to try to free possible idle PCP pages.
+
+- When page reclaiming is active for the zone, stop increasing PCP
+  high in allocating path, decrease PCP high and free some pages in
+  freeing path.
+
+So, the PCP high can be tuned to the page allocating/freeing depth of
+workloads eventually.
+
+One issue of the algorithm is that if the number of pages allocated is
+much more than that of pages freed on a CPU, the PCP high may become
+the maximal value even if the allocating/freeing depth is small.  But
+this isn't a severe issue, because there are no idle pages in this
+case.
+
+One alternative choice is to increase PCP high when we drain PCP via
+trying to free pages to the zone, but don't increase PCP high during
+PCP refilling.  This can avoid the issue above.  But if the number of
+pages allocated is much less than that of pages freed on a CPU, there
+will be many idle pages in PCP and it may be hard to free these idle
+pages.
+
+On a 2-socket Intel server with 224 logical CPU, we tested kbuild on
+one socket with `make -j 112`.  With the patch, the build time
+decreases 10.1%.  The cycles% of the spinlock contention (mostly for
+zone lock) decreases from 37.9% to 9.8% (with PCP size == 361).  The
+number of PCP draining for high order pages freeing (free_high)
+decreases 53.4%.  The number of pages allocated from zone (instead of
+from PCP) decreases 77.3%.
+
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Suggested-by: Mel Gorman <mgorman@techsingularity.net>
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Johannes Weiner <jweiner@redhat.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Christoph Lameter <cl@linux.com>
+---
+ include/linux/gfp.h |   1 +
+ mm/page_alloc.c     | 118 ++++++++++++++++++++++++++++++++++----------
+ mm/vmstat.c         |   8 +--
+ 3 files changed, 98 insertions(+), 29 deletions(-)
+
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 665edc11fb9f..5b917e5b9350 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -320,6 +320,7 @@ extern void page_frag_free(void *addr);
+ #define free_page(addr) free_pages((addr), 0)
+ 
+ void page_alloc_init_cpuhp(void);
++int decay_pcp_high(struct zone *zone, struct per_cpu_pages *pcp);
+ void drain_zone_pages(struct zone *zone, struct per_cpu_pages *pcp);
+ void drain_all_pages(struct zone *zone);
+ void drain_local_pages(struct zone *zone);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 38bfab562b44..225abe56752c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2160,6 +2160,40 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+ 	return i;
+ }
+ 
++/*
++ * Called from the vmstat counter updater to decay the PCP high.
++ * Return whether there are addition works to do.
++ */
++int decay_pcp_high(struct zone *zone, struct per_cpu_pages *pcp)
++{
++	int high_min, to_drain, batch;
++	int todo = 0;
++
++	high_min = READ_ONCE(pcp->high_min);
++	batch = READ_ONCE(pcp->batch);
++	/*
++	 * Decrease pcp->high periodically to try to free possible
++	 * idle PCP pages.  And, avoid to free too many pages to
++	 * control latency.
++	 */
++	if (pcp->high > high_min) {
++		pcp->high = max3(pcp->count - (batch << PCP_BATCH_SCALE_MAX),
++				 pcp->high * 4 / 5, high_min);
++		if (pcp->high > high_min)
++			todo++;
++	}
++
++	to_drain = pcp->count - pcp->high;
++	if (to_drain > 0) {
++		spin_lock(&pcp->lock);
++		free_pcppages_bulk(zone, to_drain, pcp, 0);
++		spin_unlock(&pcp->lock);
++		todo++;
++	}
++
++	return todo;
++}
++
+ #ifdef CONFIG_NUMA
+ /*
+  * Called from the vmstat counter updater to drain pagesets of this
+@@ -2321,14 +2355,13 @@ static bool free_unref_page_prepare(struct page *page, unsigned long pfn,
+ 	return true;
+ }
+ 
+-static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
++static int nr_pcp_free(struct per_cpu_pages *pcp, int batch, int high, bool free_high)
+ {
+ 	int min_nr_free, max_nr_free;
+-	int batch = READ_ONCE(pcp->batch);
+ 
+-	/* Free everything if batch freeing high-order pages. */
++	/* Free as much as possible if batch freeing high-order pages. */
+ 	if (unlikely(free_high))
+-		return pcp->count;
++		return min(pcp->count, batch << PCP_BATCH_SCALE_MAX);
+ 
+ 	/* Check for PCP disabled or boot pageset */
+ 	if (unlikely(high < batch))
+@@ -2343,7 +2376,7 @@ static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
+ 	 * freeing of pages without any allocation.
+ 	 */
+ 	batch <<= pcp->free_factor;
+-	if (batch < max_nr_free && pcp->free_factor < PCP_BATCH_SCALE_MAX)
++	if (batch <= max_nr_free && pcp->free_factor < PCP_BATCH_SCALE_MAX)
+ 		pcp->free_factor++;
+ 	batch = clamp(batch, min_nr_free, max_nr_free);
+ 
+@@ -2351,28 +2384,47 @@ static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
+ }
+ 
+ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
+-		       bool free_high)
++		       int batch, bool free_high)
+ {
+-	int high = READ_ONCE(pcp->high_min);
++	int high, high_min, high_max;
+ 
+-	if (unlikely(!high || free_high))
++	high_min = READ_ONCE(pcp->high_min);
++	high_max = READ_ONCE(pcp->high_max);
++	high = pcp->high = clamp(pcp->high, high_min, high_max);
++
++	if (unlikely(!high))
+ 		return 0;
+ 
+-	if (!test_bit(ZONE_RECLAIM_ACTIVE, &zone->flags))
+-		return high;
++	if (unlikely(free_high)) {
++		pcp->high = max(high - (batch << PCP_BATCH_SCALE_MAX), high_min);
++		return 0;
++	}
+ 
+ 	/*
+ 	 * If reclaim is active, limit the number of pages that can be
+ 	 * stored on pcp lists
+ 	 */
+-	return min(READ_ONCE(pcp->batch) << 2, high);
++	if (test_bit(ZONE_RECLAIM_ACTIVE, &zone->flags)) {
++		pcp->high = max(high - (batch << pcp->free_factor), high_min);
++		return min(batch << 2, pcp->high);
++	}
++
++	if (pcp->count >= high && high_min != high_max) {
++		int need_high = (batch << pcp->free_factor) + batch;
++
++		/* pcp->high should be large enough to hold batch freed pages */
++		if (pcp->high < need_high)
++			pcp->high = clamp(need_high, high_min, high_max);
++	}
++
++	return high;
+ }
+ 
+ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
+ 				   struct page *page, int migratetype,
+ 				   unsigned int order)
+ {
+-	int high;
++	int high, batch;
+ 	int pindex;
+ 	bool free_high = false;
+ 
+@@ -2387,6 +2439,7 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
+ 	list_add(&page->pcp_list, &pcp->lists[pindex]);
+ 	pcp->count += 1 << order;
+ 
++	batch = READ_ONCE(pcp->batch);
+ 	/*
+ 	 * As high-order pages other than THP's stored on PCP can contribute
+ 	 * to fragmentation, limit the number stored when PCP is heavily
+@@ -2397,14 +2450,15 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
+ 		free_high = (pcp->free_factor &&
+ 			     (pcp->flags & PCPF_PREV_FREE_HIGH_ORDER) &&
+ 			     (!(pcp->flags & PCPF_FREE_HIGH_BATCH) ||
+-			      pcp->count >= READ_ONCE(pcp->batch)));
++			      pcp->count >= READ_ONCE(batch)));
+ 		pcp->flags |= PCPF_PREV_FREE_HIGH_ORDER;
+ 	} else if (pcp->flags & PCPF_PREV_FREE_HIGH_ORDER) {
+ 		pcp->flags &= ~PCPF_PREV_FREE_HIGH_ORDER;
+ 	}
+-	high = nr_pcp_high(pcp, zone, free_high);
++	high = nr_pcp_high(pcp, zone, batch, free_high);
+ 	if (pcp->count >= high) {
+-		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, free_high), pcp, pindex);
++		free_pcppages_bulk(zone, nr_pcp_free(pcp, batch, high, free_high),
++				   pcp, pindex);
+ 	}
+ }
+ 
+@@ -2688,24 +2742,38 @@ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
+ 	return page;
+ }
+ 
+-static int nr_pcp_alloc(struct per_cpu_pages *pcp, int order)
++static int nr_pcp_alloc(struct per_cpu_pages *pcp, struct zone *zone, int order)
+ {
+-	int high, batch, max_nr_alloc;
++	int high, base_batch, batch, max_nr_alloc;
++	int high_max, high_min;
+ 
+-	high = READ_ONCE(pcp->high_min);
+-	batch = READ_ONCE(pcp->batch);
++	base_batch = READ_ONCE(pcp->batch);
++	high_min = READ_ONCE(pcp->high_min);
++	high_max = READ_ONCE(pcp->high_max);
++	high = pcp->high = clamp(pcp->high, high_min, high_max);
+ 
+ 	/* Check for PCP disabled or boot pageset */
+-	if (unlikely(high < batch))
++	if (unlikely(high < base_batch))
+ 		return 1;
+ 
++	if (order)
++		batch = base_batch;
++	else
++		batch = (base_batch << pcp->alloc_factor);
++
+ 	/*
+-	 * Double the number of pages allocated each time there is subsequent
+-	 * refiling of order-0 pages without drain.
++	 * If we had larger pcp->high, we could avoid to allocate from
++	 * zone.
+ 	 */
++	if (high_min != high_max && !test_bit(ZONE_RECLAIM_ACTIVE, &zone->flags))
++		high = pcp->high = min(high + batch, high_max);
++
+ 	if (!order) {
+-		max_nr_alloc = max(high - pcp->count - batch, batch);
+-		batch <<= pcp->alloc_factor;
++		max_nr_alloc = max(high - pcp->count - base_batch, base_batch);
++		/*
++		 * Double the number of pages allocated each time there is
++		 * subsequent refiling of order-0 pages without drain.
++		 */
+ 		if (batch <= max_nr_alloc && pcp->alloc_factor < PCP_BATCH_SCALE_MAX)
+ 			pcp->alloc_factor++;
+ 		batch = min(batch, max_nr_alloc);
+@@ -2735,7 +2803,7 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+ 
+ 	do {
+ 		if (list_empty(list)) {
+-			int batch = nr_pcp_alloc(pcp, order);
++			int batch = nr_pcp_alloc(pcp, zone, order);
+ 			int alloced;
+ 
+ 			alloced = rmqueue_bulk(zone, order,
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 00e81e99c6ee..2f716ad14168 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -814,9 +814,7 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
+ 
+ 	for_each_populated_zone(zone) {
+ 		struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
+-#ifdef CONFIG_NUMA
+ 		struct per_cpu_pages __percpu *pcp = zone->per_cpu_pageset;
+-#endif
+ 
+ 		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
+ 			int v;
+@@ -832,10 +830,12 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
+ #endif
+ 			}
+ 		}
+-#ifdef CONFIG_NUMA
+ 
+ 		if (do_pagesets) {
+ 			cond_resched();
++
++			changes += decay_pcp_high(zone, this_cpu_ptr(pcp));
++#ifdef CONFIG_NUMA
+ 			/*
+ 			 * Deal with draining the remote pageset of this
+ 			 * processor
+@@ -862,8 +862,8 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
+ 				drain_zone_pages(zone, this_cpu_ptr(pcp));
+ 				changes++;
+ 			}
+-		}
+ #endif
++		}
+ 	}
+ 
+ 	for_each_online_pgdat(pgdat) {
+-- 
+2.39.2
+
