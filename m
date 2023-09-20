@@ -2,67 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D9F7A76C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C927A76CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbjITJDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
+        id S233929AbjITJEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234177AbjITJDB (ORCPT
+        with ESMTP id S233766AbjITJDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:03:01 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BA018A
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:01:36 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59be6605e1dso71269867b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695200495; x=1695805295; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wYvirtTEHfvn8mKnPG5A91Sh0MgTtcoSl/PA6YHPo2E=;
-        b=e67SKoZXfFeMQUmerjh6yyRcmC80eeCa1feNmPVuynm/J+GCmXkW/9Ev8w9zQYYxl1
-         gIk0CMgsA1WjPdiYZi9caw6Syt3B6C12lfapGutfdqz+NTr8tbZYLH5042aJiYxzhl43
-         W5cK+ZvBfjdfKGDGpBLHzXDDX6qi2hf61iWRkiD2hVDHurmlHFJUtgHL9sJceBruqBHp
-         JdlQTV4Y86r4+yCGp40UVUifJmKDQMKzhNBnG4aPjiZO9QKpkhcfXvFgEKsyYSnqttbL
-         5xbDMK0s5w77gprYbgoq+lSRGNNksqNbUa8DFOI81yLUD7caa1NFWSBDTPAW5wifgdzF
-         GJYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695200495; x=1695805295;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wYvirtTEHfvn8mKnPG5A91Sh0MgTtcoSl/PA6YHPo2E=;
-        b=ngeOIGBuBDgWZOtmQS8GCutsgdPvHjvdHBQGpGAR5B+BCtlY3GPW+lEc1IUOhJ+HlT
-         l2inWDD/UGg1B0FMyLCWN2i5AbMMxGpFdhHC0qf1Pf40DK8gntq1wdfvN4xSSkc/nkDj
-         MCrvIZwE0aI1Y4kNBSBllbT7QoyZcFDgTrKd6+DRbXRkgXkX1V731RVWJ+sqvRtF1a6W
-         XLo1GQ2HD9enTVeoHYlsKzMRMJF3j+G5OzPLPvdG/ay4KBBllL4DLQFRydiU7JFcYoJg
-         Pwp7tIw3Hh2Z/95VTzeazVVb1HW9AK93pwfD6bwMNlCekdhYkoF6TMmN4PHoiGolKXQo
-         CXOA==
-X-Gm-Message-State: AOJu0YzDSNi73530lzNQFi3YxDhwCWz2Rbd/txHr625caIRNNOwVr2Af
-        oOyMe7NVk3m/60mtNS+6wYzM4imLAw9sxz5Yxp8OyA==
-X-Google-Smtp-Source: AGHT+IFYLO2eNKBLqWVJQogBfVy7gr+MrzJaAmqy5D9Lx5g4OrGNYLDqAwhQN3dOD8W4tqRc3FI0bLkqPu2G9bCLMcI=
-X-Received: by 2002:a81:a111:0:b0:59b:49a0:eec0 with SMTP id
- y17-20020a81a111000000b0059b49a0eec0mr1942407ywg.12.1695200495386; Wed, 20
- Sep 2023 02:01:35 -0700 (PDT)
+        Wed, 20 Sep 2023 05:03:44 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97738E52
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:02:51 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 35CB38A;
+        Wed, 20 Sep 2023 02:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1695200571;
+        bh=LqQi9cbwVGnsnr4W3l34OevCOxKkaiW8cXfPwk3LzP4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Al2gktbhpjdT2t7pmqjibmiq7Z9pGqUlsIsCZDH98Ame25hx3o9F4nESrTZtqBruj
+         b7UkdIsW4gwY2RX6IIRVXRGcBRYMDrvlgkWYRQbg8thmzOeaQzJNwScUz5q+ztYPtq
+         csHDedlms1SnD+QOYDtDztHaqXwSi0vrGZKtxwu0=
+Date:   Wed, 20 Sep 2023 02:02:49 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Naresh Solanki <naresh.solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] Documentation: ABI: sysfs-driver-regulator-output
+Message-ID: <25844d80-fadb-44c3-a0e6-334aa6e4afd7@hatter.bewilderbeest.net>
+References: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
+ <20230831121412.2359239-3-Naresh.Solanki@9elements.com>
+ <90b1af83-cb03-476f-9147-eb06247bf09c@hatter.bewilderbeest.net>
+ <2023090330-bling-mammary-3177@gregkh>
+ <6eb78818-7838-4616-bf44-05c215bfa8b3@hatter.bewilderbeest.net>
+ <763bd845-d8d6-489c-bd31-305ed14bc40f@sirena.org.uk>
+ <1518370c-e0cd-4d78-af54-3e2cf4dd6e3c@hatter.bewilderbeest.net>
+ <5282acd1-3c7a-4948-83f2-2829910ab841@sirena.org.uk>
 MIME-Version: 1.0
-References: <20230915150327.81918-1-brgl@bgdev.pl> <20230915150327.81918-8-brgl@bgdev.pl>
- <ZQf6zTsoZDFaIgHO@smile.fi.intel.com> <CAMRc=Mc9k9Brxw9eQxLS75ukin1o3D6P6FrX=nbfhgM7_e9W_A@mail.gmail.com>
-In-Reply-To: <CAMRc=Mc9k9Brxw9eQxLS75ukin1o3D6P6FrX=nbfhgM7_e9W_A@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 20 Sep 2023 11:01:23 +0200
-Message-ID: <CACRpkdZh5p78pVCS6MJ=fkxpP+sbYFRpM2-icGKr5wmkhPiTNg@mail.gmail.com>
-Subject: Re: [PATCH v3 07/11] gpiolib: replace find_chip_by_name() with gpio_device_find_by_label()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <5282acd1-3c7a-4948-83f2-2829910ab841@sirena.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -72,30 +58,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 10:03=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
-> On Mon, Sep 18, 2023 at 9:23=E2=80=AFAM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-
-> > >       for (p =3D &table->table[0]; p->key; p++) {
-> > > +             struct gpio_device *gdev __free(gpio_device_put) =3D NU=
-LL;
-> >
-> > > +             gdev =3D gpio_device_find_by_label(p->key);
-> > > +             if (!gdev) {
-> >
-> > I haven't got the fix for gpio-sim, shouldn't we have the same here, i.=
-e.
-> > definition being done together with the assignment when __free() is in =
-use?
+On Tue, Sep 12, 2023 at 07:03:47AM PDT, Mark Brown wrote:
+>On Sun, Sep 10, 2023 at 01:50:37PM -0700, Zev Weiss wrote:
+>> On Mon, Sep 04, 2023 at 05:24:31AM PDT, Mark Brown wrote:
 >
-> It should but I only got yelled at by Linus under the gpio-sim patch
-> after I sent this one.
+>> > It's a clear on read interrupt.
+>
+>> Sure, analogous behavior in hardware is reasonably common, but that doesn't
+>> strike me as a very compelling reason to design the kernel<->userspace
+>> interface to mimic it -- providing nicer interfaces than the raw hardware is
+>> one of the main reasons for having an OS in the first place, after all.
+>
+>If it were something other than the userspace consumer I'd be a bit more
+>concerned but that's all sharp edges and direct access in a very
+>controlled system.  In any case clear on write is the obvious
+>alternative approach.
 
-That happens, it's all new.
-I guess ideally we should patch checkpatch to just moan about
-this, I wonder how hard that could be (I've only patched it once in
-my life...)
+I'm using this driver in production systems, and I think 
+Naresh/9elements do or intend to as well (and in my case at least, 
+they're systems human operators can and do log in to).  I, for one, 
+would thus very much prefer it be treated as a first-class citizen and 
+afforded considerations of robustness and such as with any other driver.  
+(I'm not entirely sure what other sharp edges with it you're referring 
+to.)
 
-Yours,
-Linus Walleij
+To make a slightly more concrete proposal (or perhaps just flesh out one 
+I vaguely gestured at previously), how about something along the lines 
+of the below, as a modification on top of Naresh's patch -- most of the 
+code to do it via uevents is already there anyway.  With this code in 
+place I can run 'udevadm monitor -p' and see the expected events 
+delivered when I manually enable & disable the regulator via its 'state' 
+sysfs attribute, which I think basically fulfills the requirements we're 
+aiming for?  Naresh, could using netlink/uevents work for your needs?
+
+
+Thanks,
+Zev
+
+
+diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
+index 74247e526a42..df783ca02757 100644
+--- a/drivers/regulator/userspace-consumer.c
++++ b/drivers/regulator/userspace-consumer.c
+@@ -32,7 +32,6 @@ struct userspace_consumer_data {
+  
+  	struct kobject *kobj;
+  	struct notifier_block nb;
+-	unsigned long events;
+  };
+  
+  static ssize_t name_show(struct device *dev,
+@@ -93,30 +92,12 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
+  	return count;
+  }
+  
+-static DEFINE_SPINLOCK(events_lock);
+-
+-static ssize_t events_show(struct device *dev,
+-			   struct device_attribute *attr, char *buf)
+-{
+-	struct userspace_consumer_data *data = dev_get_drvdata(dev);
+-	unsigned long e;
+-
+-	spin_lock(&events_lock);
+-	e = data->events;
+-	data->events = 0;
+-	spin_unlock(&events_lock);
+-
+-	return sprintf(buf, "0x%lx\n", e);
+-}
+-
+  static DEVICE_ATTR_RO(name);
+  static DEVICE_ATTR_RW(state);
+-static DEVICE_ATTR_RO(events);
+  
+  static struct attribute *attributes[] = {
+  	&dev_attr_name.attr,
+  	&dev_attr_state.attr,
+-	&dev_attr_events.attr,
+  	NULL,
+  };
+  
+@@ -137,19 +118,35 @@ static const struct attribute_group attr_group = {
+  	.is_visible =  attr_visible,
+  };
+  
++/*
++ * This will of course need more of a real implementation (handling more than
++ * a single set event bit) and should probably live somewhere else, but for
++ * the sake of brevity...
++ */
++static const char *regulator_event_str(unsigned long event)
++{
++	switch (event) {
++	case REGULATOR_EVENT_PRE_DISABLE:
++		return "pre-disable";
++	case REGULATOR_EVENT_DISABLE:
++		return "disable";
++	case REGULATOR_EVENT_ENABLE:
++		return "enable";
++	default:
++		return "NYI";
++	}
++}
++
+  static int regulator_userspace_notify(struct notifier_block *nb,
+  				      unsigned long event,
+  				      void *ignored)
+  {
+  	struct userspace_consumer_data *data =
+  		container_of(nb, struct userspace_consumer_data, nb);
+-	static const char * const *envp[] = { "NAME=events", NULL };
+-
+-	spin_lock(&events_lock);
+-	data->events |= event;
+-	spin_unlock(&events_lock);
++	char eventstr[128];
++	char *envp[] = { "NAME=event", eventstr, NULL };
+  
+-	sysfs_notify(data->kobj, NULL, dev_attr_events.attr.name);
++	scnprintf(eventstr, sizeof(eventstr), "EVENT=%s", regulator_event_str(event));
+  	kobject_uevent_env(data->kobj, KOBJ_CHANGE, envp);
+  
+  	return NOTIFY_OK;
+
