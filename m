@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1C27A781C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA0D7A781A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbjITJz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
+        id S234249AbjITJzS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 05:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbjITJzP (ORCPT
+        with ESMTP id S234263AbjITJzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:55:15 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CDA25AB;
-        Wed, 20 Sep 2023 02:55:08 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B4DFA1FB;
-        Wed, 20 Sep 2023 02:55:45 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.59.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AD71E3F5A1;
-        Wed, 20 Sep 2023 02:55:04 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V6 3/3] Documentation: coresight: Add cc_threshold tunable
-Date:   Wed, 20 Sep 2023 15:24:43 +0530
-Message-Id: <20230920095443.1126617-4-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230920095443.1126617-1-anshuman.khandual@arm.com>
-References: <20230920095443.1126617-1-anshuman.khandual@arm.com>
+        Wed, 20 Sep 2023 05:55:07 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E18EEA;
+        Wed, 20 Sep 2023 02:55:01 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5733d11894dso1143853eaf.0;
+        Wed, 20 Sep 2023 02:55:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695203700; x=1695808500;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bjJLFT8aYZmJIG1InbR35s+9z4+ZwViYLByBPUHAjdo=;
+        b=BBb5ag9Pj0Hcxu4vEjItLJlP7vFlsbU7gRkwFRK2psBu7O/tlz2PSlaA5gaGco3p+v
+         L8p6CpyEjwDpgGHvP1UEPPP1cFKu7LZki3Rrh96CWn18ARHnqHZp1I42htUGFVQDEOGT
+         yOiUUMD4jNSPXyMf0846l1Nor0gphZkW3dYyDJZMPoGyFZNu0hVXSjjnTUBLPX5CrQAm
+         /7sUhysqbNne9OzXgPM8Ub5KME7UrMi2DPltmQk3Y5i9sDX0W8pm127MNEDLJbmHIJgU
+         ma7X1v3jHzKPPlBTwsm9VAprj4NwAIrq5JWKGD5dvwKxl6lIStSzFmfu/XOdpHw8B1Ip
+         LcjA==
+X-Gm-Message-State: AOJu0YzbMIZKO+eQA7tWkBBENrveCh1wO5iCyarRrWuSjXMBTbVYztQn
+        +oOyQmyvXBPlRq6Y8EKbThuQmUt2pD61wjVQfd052C2T
+X-Google-Smtp-Source: AGHT+IFEbSPMkFJJ03xl80+Nht+U2FS4YWwbgo3FHlvuVLSjpIA63OpjiPyOEYLQdTQatBXjAXEin3+br44695wkh+s=
+X-Received: by 2002:a4a:2a4e:0:b0:573:3a3b:594b with SMTP id
+ x14-20020a4a2a4e000000b005733a3b594bmr1817199oox.1.1695203700711; Wed, 20 Sep
+ 2023 02:55:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <12296181.O9o76ZdvQC@kreacher> <ZQqpbSYsUdAZrcrT@shredder>
+In-Reply-To: <ZQqpbSYsUdAZrcrT@shredder>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 20 Sep 2023 11:54:48 +0200
+Message-ID: <CAJZ5v0i2Fjq8V=fy4TODbQxC5dtFc+rwJ1fuE3PMZeMn0=ttGQ@mail.gmail.com>
+Subject: Re: [PATCH v1] thermal: core: Drop trips_disabled bitmask
+To:     Ido Schimmel <idosch@nvidia.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This updates config option to include 'cc_threshold' tunable value.
+On Wed, Sep 20, 2023 at 10:12 AM Ido Schimmel <idosch@nvidia.com> wrote:
+>
+> On Tue, Sep 19, 2023 at 08:54:37PM +0200, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > After recent changes, thermal_zone_get_trip() cannot fail, as invoked
+> > from thermal_zone_device_register_with_trips(), so the only role of
+> > the trips_disabled bitmask is struct thermal_zone_device is to make
+> > handle_thermal_trip() skip trip points whose temperature was initially
+> > zero.  However, since the unit of temperature in the thermal core is
+> > millicelsius, zero may very well be a valid temperature value at least
+> > in some usage scenarios and the trip temperature may as well change
+> > later.  Thus there is no reason to permanently disable trip points
+> > with initial temperature equal to zero.
+> >
+> > Accordingly, drop the trips_disabled bitmask along with the code
+> > related to it.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> I guess I was copied because of commit f1b80a3878b2 ("thermal: core:
+> Restore behavior regarding invalid trip points").
 
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed by: Mike Leach <mike.leach@linaro.org>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- Documentation/trace/coresight/coresight.rst | 4 ++++
- 1 file changed, 4 insertions(+)
+That's correct.
 
-diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
-index 4a71ea6cb390..ce55adb80b82 100644
---- a/Documentation/trace/coresight/coresight.rst
-+++ b/Documentation/trace/coresight/coresight.rst
-@@ -624,6 +624,10 @@ They are also listed in the folder /sys/bus/event_source/devices/cs_etm/format/
-    * - timestamp
-      - Session local version of the system wide setting: :ref:`ETMv4_MODE_TIMESTAMP
-        <coresight-timestamp>`
-+   * - cc_threshold
-+     - Cycle count threshold value. If nothing is provided here or the provided value is 0, then the
-+       default value i.e 0x100 will be used. If provided value is less than minimum cycles threshold
-+       value, as indicated via TRCIDR3.CCITMIN, then the minimum value will be used instead.
- 
- How to use the STM module
- -------------------------
--- 
-2.25.1
+> Since then we stopped
+> relying on this behavior with commit 5601ef91fba8 ("mlxsw: core_thermal:
+> Use static trip points for transceiver modules").
+>
+> Tested your patch and didn't see any regressions:
+>
+> Tested-by: Ido Schimmel <idosch@nvidia.com>
 
+Thank you!
