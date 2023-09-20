@@ -2,239 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B281D7A874C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818DD7A86CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236964AbjITOjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        id S236671AbjITOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236841AbjITOiz (ORCPT
+        with ESMTP id S236533AbjITOgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:38:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2181BC2;
-        Wed, 20 Sep 2023 07:37:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F12DC433B9;
-        Wed, 20 Sep 2023 14:37:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695220646;
-        bh=3B4cKJeyaHEA4qnMRAdXt6vbTh9xnPoZLjBoO+s6BVk=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=JAbqgnUzDDNhJr4q840OWp8qI3jw3X1WWILJafsi2kFtKITNSaCpq9rjC+qwaxmWB
-         NspkMEYNaqNpZQHOgneVbzA6s0oQc/aIlnFVdSU78Ki9uopM9kdBMR+UVZjG8cuebO
-         4LeGsLskNcWdAdJwd/5rDjXeA5t+hG6bESzeEAGqkRkSt34zFZ+lKGs0fg9yYZRuWk
-         cQ8uSlMPUgTni9sBhHQgZ3o8Fn2x4sBv6Gk7cuBK6lq+QHLWnQwhoO9r0eQLYFRcm6
-         gunWxMKJQufjTqnxNx7RPXl11AwOTnDlpU2sodPlATZq72iAilnLzrDvm91JwnDU9Y
-         fzZZo9LK1V0sA==
-From:   Maxime Ripard <mripard@kernel.org>
-Date:   Wed, 20 Sep 2023 16:35:52 +0200
-Subject: [PATCH RFC v2 37/37] drm/sun4i: hdmi: Switch to HDMI connector
+        Wed, 20 Sep 2023 10:36:07 -0400
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BCACF;
+        Wed, 20 Sep 2023 07:36:00 -0700 (PDT)
+Received: from localhost (unknown [10.10.165.8])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 76EFF40F1DD2;
+        Wed, 20 Sep 2023 14:35:57 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 76EFF40F1DD2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+        s=default; t=1695220557;
+        bh=059s3evXL96HfEwH+9seFh8IG+n66+ESgEoyP5gXLcw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VLtYzEpvpsk/iHTDMfR6Gw89KjSlToJvcFcA4XZyJxTfrRmw0tYDuDLi6OvlA680N
+         PBIKoJb2agrdHVgcQOMslA2VXQQf+N7h7HNuqZLILhQQfW1KkBllMi3zl8wFlRwqB4
+         6YjjJ2mL+EB+YV5QKDh7QtQSxHgD7ZQYa2tuzoYA=
+Date:   Wed, 20 Sep 2023 17:35:56 +0300
+From:   Fedor Pchelkin <pchelkin@ispras.ru>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Mike Snitzer <snitzer@kernel.org>,
+        Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org, stable@vger.kernel.org
+Subject: Re: [PATCH] dm-zoned: free dmz->ddev array in dmz_put_zoned_device
+Message-ID: <vdtvo2av3upya6mugjyiqo2hfnn6q4dpofoku6rvrtgmycgbrp@scpcnu3ta7ch>
+References: <20230920105119.21276-1-pchelkin@ispras.ru>
+ <c7818967-1fea-45da-9713-20de4bcb1c44@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230920-kms-hdmi-connector-state-v2-37-17932daddd7d@kernel.org>
-References: <20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org>
-In-Reply-To: <20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sandy Huang <hjc@rock-chips.com>,
-        =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Maxime Ripard <mripard@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6185; i=mripard@kernel.org;
- h=from:subject:message-id; bh=3B4cKJeyaHEA4qnMRAdXt6vbTh9xnPoZLjBoO+s6BVk=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKnczNaMWjsSjrwX2fD68hfB4kk2V6ar/1+bHxM8xWhTQ
- lGMpO+ajlIWBjEuBlkxRZYYYfMlcadmve5k45sHM4eVCWQIAxenAEykxZqR4cHHWW2zF04uZel1
- Y3vs0Z6gukbzUY+jT9ocr92RfFse7mb47zVDkk1pWqOcaKa8SNLm6eW1KZnq/QFSstp97eHPm1O
- ZAQ==
-X-Developer-Key: i=mripard@kernel.org; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c7818967-1fea-45da-9713-20de4bcb1c44@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new HDMI connector infrastructure allows to remove some boilerplate,
-especially to generate infoframes. Let's switch to it.
+On 23/09/20 04:06PM, Hannes Reinecke wrote:
+> On 9/20/23 12:51, Fedor Pchelkin wrote:
+> > Commit 4dba12881f88 ("dm zoned: support arbitrary number of devices")
+> > made the pointers to additional zoned devices to be stored in a
+> > dynamically allocated dmz->ddev array. However, this array is not freed.
+> > 
+> > Free it when cleaning up zoned device information inside
+> > dmz_put_zoned_device(). Assigning NULL to dmz->ddev elements doesn't make
+> > sense there as they are not supposed to be reused later and the whole dmz
+> > target structure is being cleaned anyway.
+> > 
+> > Found by Linux Verification Center (linuxtesting.org).
+> > 
+> > Fixes: 4dba12881f88 ("dm zoned: support arbitrary number of devices")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+> > ---
+> >   drivers/md/dm-zoned-target.c | 8 +++-----
+> >   1 file changed, 3 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/md/dm-zoned-target.c b/drivers/md/dm-zoned-target.c
+> > index ad8e670a2f9b..e25cd9db6275 100644
+> > --- a/drivers/md/dm-zoned-target.c
+> > +++ b/drivers/md/dm-zoned-target.c
+> > @@ -753,12 +753,10 @@ static void dmz_put_zoned_device(struct dm_target *ti)
+> >   	struct dmz_target *dmz = ti->private;
+> >   	int i;
+> > -	for (i = 0; i < dmz->nr_ddevs; i++) {
+> > -		if (dmz->ddev[i]) {
+> > +	for (i = 0; i < dmz->nr_ddevs; i++)
+> > +		if (dmz->ddev[i])
+> >   			dm_put_device(ti, dmz->ddev[i]);
+> > -			dmz->ddev[i] = NULL;
+> > -		}
+> > -	}
+> > +	kfree(dmz->ddev);
+> >   }
+> >   static int dmz_fixup_devices(struct dm_target *ti)
+> 
+> Hmm. I'm not that happy with it; dmz_put_zoned_device() is using dm_target
+> as an argument, whereas all of the functions surrounding the call sites is
+> using the dmz_target directly.
+> 
+> Mind to modify the function to use 'struct dmz_target' as an argument?
 
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
----
- drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 80 ++++++++++++++++++++++------------
- 1 file changed, 51 insertions(+), 29 deletions(-)
+dm_target is required inside dmz_put_zoned_device() for dm_put_device()
+calls. I can't see a way for referencing it via dmz_target. Do you mean
+passing additional second argument like
+  dmz_put_zoned_device(struct dmz_target *dmz, struct dm_target *ti) ?
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-index b7cf369b1906..8a9106a39f23 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-@@ -36,30 +36,24 @@
- #define drm_connector_to_sun4i_hdmi(c)		\
- 	container_of_const(c, struct sun4i_hdmi, connector)
- 
--static int sun4i_hdmi_setup_avi_infoframes(struct sun4i_hdmi *hdmi,
--					   struct drm_display_mode *mode)
-+static int sun4i_hdmi_write_infoframe(struct drm_connector *connector,
-+				      enum hdmi_infoframe_type type,
-+				      const u8 *buffer, size_t len)
- {
--	struct hdmi_avi_infoframe frame;
--	u8 buffer[17];
--	int i, ret;
-+	struct sun4i_hdmi *hdmi = drm_connector_to_sun4i_hdmi(connector);
-+	int i;
- 
--	ret = drm_hdmi_avi_infoframe_from_display_mode(&frame,
--						       &hdmi->connector, mode);
--	if (ret < 0) {
--		DRM_ERROR("Failed to get infoframes from mode\n");
--		return ret;
-+	if (type != HDMI_INFOFRAME_TYPE_AVI) {
-+		drm_err(connector->dev,
-+			"Unsupported infoframe type: %u\n", type);
-+		return 0;
- 	}
- 
--	ret = hdmi_avi_infoframe_pack(&frame, buffer, sizeof(buffer));
--	if (ret < 0) {
--		DRM_ERROR("Failed to pack infoframes\n");
--		return ret;
--	}
--
--	for (i = 0; i < sizeof(buffer); i++)
-+	for (i = 0; i < len; i++)
- 		writeb(buffer[i], hdmi->base + SUN4I_HDMI_AVI_INFOFRAME_REG(i));
- 
- 	return 0;
-+
- }
- 
- static void sun4i_hdmi_disable(struct drm_encoder *encoder,
-@@ -82,14 +76,18 @@ static void sun4i_hdmi_enable(struct drm_encoder *encoder,
- {
- 	struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
- 	struct sun4i_hdmi *hdmi = drm_encoder_to_sun4i_hdmi(encoder);
--	struct drm_display_info *display = &hdmi->connector.display_info;
-+	struct drm_connector *connector = &hdmi->connector;
-+	struct drm_display_info *display = &connector->display_info;
-+	struct drm_connector_state *conn_state =
-+		drm_atomic_get_new_connector_state(state, connector);
-+	unsigned long long tmds_rate = conn_state->hdmi.tmds_char_rate;
- 	unsigned int x, y;
- 	u32 val = 0;
- 
- 	DRM_DEBUG_DRIVER("Enabling the HDMI Output\n");
- 
--	clk_set_rate(hdmi->mod_clk, mode->crtc_clock * 1000);
--	clk_set_rate(hdmi->tmds_clk, mode->crtc_clock * 1000);
-+	clk_set_rate(hdmi->mod_clk, tmds_rate);
-+	clk_set_rate(hdmi->tmds_clk, tmds_rate);
- 
- 	/* Set input sync enable */
- 	writel(SUN4I_HDMI_UNKNOWN_INPUT_SYNC,
-@@ -142,7 +140,8 @@ static void sun4i_hdmi_enable(struct drm_encoder *encoder,
- 
- 	clk_prepare_enable(hdmi->tmds_clk);
- 
--	sun4i_hdmi_setup_avi_infoframes(hdmi, mode);
-+	drm_atomic_helper_connector_hdmi_update_infoframes(connector, state);
-+
- 	val |= SUN4I_HDMI_PKT_CTRL_TYPE(0, SUN4I_HDMI_PKT_AVI);
- 	val |= SUN4I_HDMI_PKT_CTRL_TYPE(1, SUN4I_HDMI_PKT_END);
- 	writel(val, hdmi->base + SUN4I_HDMI_PKT_CTRL_REG(0));
-@@ -195,7 +194,7 @@ static int sun4i_hdmi_connector_atomic_check(struct drm_connector *connector,
- 	enum drm_mode_status status;
- 
- 	status = sun4i_hdmi_connector_clock_valid(connector, mode,
--						  mode->clock * 1000);
-+						  conn_state->hdmi.tmds_char_rate);
- 	if (status != MODE_OK)
- 		return -EINVAL;
- 
-@@ -206,8 +205,11 @@ static enum drm_mode_status
- sun4i_hdmi_connector_mode_valid(struct drm_connector *connector,
- 				struct drm_display_mode *mode)
- {
--	return sun4i_hdmi_connector_clock_valid(connector, mode,
--						mode->clock * 1000);
-+	unsigned long long rate =
-+		drm_connector_hdmi_compute_mode_clock(mode, 8,
-+						      HDMI_COLORSPACE_RGB);
-+
-+	return sun4i_hdmi_connector_clock_valid(connector, mode, rate);
- }
- 
- static int sun4i_hdmi_get_modes(struct drm_connector *connector)
-@@ -253,6 +255,11 @@ static struct i2c_adapter *sun4i_hdmi_get_ddc(struct device *dev)
- 	return ddc;
- }
- 
-+static const struct drm_connector_hdmi_funcs sun4i_hdmi_hdmi_connector_funcs = {
-+	.tmds_char_rate_valid	= sun4i_hdmi_connector_clock_valid,
-+	.write_infoframe	= sun4i_hdmi_write_infoframe,
-+};
-+
- static const struct drm_connector_helper_funcs sun4i_hdmi_connector_helper_funcs = {
- 	.atomic_check	= sun4i_hdmi_connector_atomic_check,
- 	.mode_valid	= sun4i_hdmi_connector_mode_valid,
-@@ -274,11 +281,17 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
- 	return connector_status_connected;
- }
- 
-+static void sun4i_hdmi_connector_reset(struct drm_connector *connector)
-+{
-+	drm_atomic_helper_connector_reset(connector);
-+	__drm_atomic_helper_connector_hdmi_reset(connector, connector->state);
-+}
-+
- static const struct drm_connector_funcs sun4i_hdmi_connector_funcs = {
- 	.detect			= sun4i_hdmi_connector_detect,
- 	.fill_modes		= drm_helper_probe_single_connector_modes,
- 	.destroy		= drm_connector_cleanup,
--	.reset			= drm_atomic_helper_connector_reset,
-+	.reset			= sun4i_hdmi_connector_reset,
- 	.atomic_duplicate_state	= drm_atomic_helper_connector_duplicate_state,
- 	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
- };
-@@ -637,10 +650,19 @@ static int sun4i_hdmi_bind(struct device *dev, struct device *master,
- 
- 	drm_connector_helper_add(&hdmi->connector,
- 				 &sun4i_hdmi_connector_helper_funcs);
--	ret = drm_connector_init_with_ddc(drm, &hdmi->connector,
--					  &sun4i_hdmi_connector_funcs,
--					  DRM_MODE_CONNECTOR_HDMIA,
--					  hdmi->ddc_i2c);
-+	ret = drmm_connector_hdmi_init(drm, &hdmi->connector,
-+				       /*
-+					* NOTE: Those are likely to be
-+					* wrong, but I couldn't find the
-+					* actual ones in the BSP.
-+					*/
-+				       "AW", "HDMI",
-+				       &sun4i_hdmi_connector_funcs,
-+				       &sun4i_hdmi_hdmi_connector_funcs,
-+				       DRM_MODE_CONNECTOR_HDMIA,
-+				       hdmi->ddc_i2c,
-+				       BIT(HDMI_COLORSPACE_RGB),
-+				       8);
- 	if (ret) {
- 		dev_err(dev,
- 			"Couldn't initialise the HDMI connector\n");
+BTW, I also think it can be renamed to dmz_put_zoned_devices().
 
--- 
-2.41.0
-
+> 
+> Cheers,
+> 
+> Hannes
+> -- 
+> Dr. Hannes Reinecke                Kernel Storage Architect
+> hare@suse.de                              +49 911 74053 688
+> SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+> HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+> Myers, Andrew McDonald, Martje Boudien Moerman
+> 
