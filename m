@@ -2,73 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8804C7A89C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3F57A89C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234651AbjITQvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S234749AbjITQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbjITQvI (ORCPT
+        with ESMTP id S233691AbjITQyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 12:51:08 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE83499
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:51:01 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59c2ca01f27so238147b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:51:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695228661; x=1695833461; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XFp4/FBehp7bXIUiukwsVd1VDsGADtdLcprhP9iiGVo=;
-        b=pAg3CkC/Du4ux91LNo3FyRoTIlxCCG45OZxGbWIvjzdJ+iqtrQJYSlZQQy+0xtvHuV
-         U4tGnnZrIVWwWtAyzm99So2MGa8z9OAd9RABEz0vSJFzN7dhZlSYTJZVsg42wZGc7B8c
-         tEVfOf/AcovO8hDTUYW9vVDMoFUrItIUVD5f8aGNOWYvIR+/3QtxXwVv2d1XIXHTmxVX
-         YlPkrgd/zo15mWlKuM8lAu5DiaJ0UJhSFkhFZIn4WUMmGXs4FWAb1C/A1493H5lCiiyD
-         GCgLC1B822J77mtCpkron+zHhlhnpwTXwJOj+DBdyCqdyQoIHNy9agxzbgxqbtNkO65e
-         PdFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695228661; x=1695833461;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XFp4/FBehp7bXIUiukwsVd1VDsGADtdLcprhP9iiGVo=;
-        b=t4EIv9AJX6tNcvHOymc1tbZTA6hHV9Mb+tNz4t3zIORSugO1D24XEuNN5RkZ+orlWB
-         gzrePP/Ct3wP40wZWWVnBhDlMmo8vK8ZgoX7MncyBfXDwI2UVVvxoaA29FuVUyfZM+LH
-         CVuzrUkr9gUB8pfoyQhtu12XVUSwLfF2L6VywqkeWyUQb/LfOZArn5gZB7Ghppn9DRwk
-         GHGvb8aL1lG5MLU9a2n/VWzwnJhXMBzM8AlaVZ6OpzZ4ISFSP/pYZeJoy4ePVjG6+jhg
-         bnMSj62LbyvO55vJ3GF0XMhBoIiakpbBmLIi0WGwuxnkW5va+Ra+1l2y2r9HpNkrsdAH
-         U3ig==
-X-Gm-Message-State: AOJu0YzdVE+VDu6UnMRdH6x3tFPCQx7kHiL//RR1sCvWVreHtaTEGE+H
-        HKydcHOfVIyl2uzU1/MfBeBgTNA0GWUCam/FYpnhtg==
-X-Google-Smtp-Source: AGHT+IEuELX3/Oyy6eRXnIacTDFmEDIXHMrCxW6IPWYkJBUy8R78CaXGS8Piry3NQBq/Ct/oKIOvajA2h1foAouaUKk=
-X-Received: by 2002:a25:d0d7:0:b0:d81:5ec1:80cf with SMTP id
- h206-20020a25d0d7000000b00d815ec180cfmr3192253ybg.12.1695228660956; Wed, 20
- Sep 2023 09:51:00 -0700 (PDT)
+        Wed, 20 Sep 2023 12:54:37 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 85717CA;
+        Wed, 20 Sep 2023 09:54:29 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 104761FB;
+        Wed, 20 Sep 2023 09:55:06 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE0293F67D;
+        Wed, 20 Sep 2023 09:54:27 -0700 (PDT)
+Message-ID: <353919fd-932e-5d81-6ac5-7b51117366cd@arm.com>
+Date:   Wed, 20 Sep 2023 17:54:26 +0100
 MIME-Version: 1.0
-References: <20230920153819.2069869-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230920153819.2069869-1-andriy.shevchenko@linux.intel.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 20 Sep 2023 09:50:45 -0700
-Message-ID: <CAKwvOd=7vk2HKOpgVrRd2RtKSF9tXPqbVmN+5teLTNoBy4BWVg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] device property: Replace custom implementation of COUNT_ARGS()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>, tiwai@suse.com,
-        llvm@lists.linux.dev, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] MA-21654 Use dma_alloc_pages in
+ vb2_dma_sg_alloc_compacted
+Content-Language: en-GB
+To:     Tomasz Figa <tfiga@chromium.org>, Fang Hui <hui.fang@nxp.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        anle.pan@nxp.com, xuegang.liu@nxp.com
+References: <20230914145812.12851-1-hui.fang@nxp.com>
+ <CAAFQd5CcN+TiVd8vhMxQRbmrJuBGYwL5d6C0fKzOy4ujjM_JMQ@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <CAAFQd5CcN+TiVd8vhMxQRbmrJuBGYwL5d6C0fKzOy4ujjM_JMQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,53 +49,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 8:38=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Replace custom and non-portable implementation of COUNT_ARGS().
->
-> Fixes: e64b674bc9d7 ("software node: implement reference properties")
-> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> Closes: https://lore.kernel.org/r/ZQoILN6QCjzosCOs@google.com
+On 20/09/2023 8:41 am, Tomasz Figa wrote:
+> Hi Fang,
+> 
+> On Thu, Sep 14, 2023 at 4:41 PM Fang Hui <hui.fang@nxp.com> wrote:
+>>
+>> On system with "CONFIG_ZONE_DMA32=y", if the allocated physical address is
+> 
+> First of all, thanks a lot for the patch! Please check my review comments below.
+> 
+> Is CONFIG_ZONE_DMA32 really the factor that triggers the problem? My
+> understanding was that the problem was that the hardware has 32-bit
+> DMA, but the system has physical memory at addresses beyond the first
+> 4G.
 
-Thanks for the patch!
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1935
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Indeed, without ZONE-DMA32 it would be difficult for any allocator to 
+support this at all. SWIOTLB is merely a symptom - if it wasn't enabled, 
+the dma_map_sgtable() operation would just fail entirely when any page 
+is beyond the device's reach.
 
-Of course Linux would have a macro for this!  I should have known.
-Trying to wrap my head around it. Awesome
+>> greater than 4G, swiotlb will be used. It will lead below defects.
+>> 1) Impact performance due to an extra memcpy.
+>> 2) May meet below error due to swiotlb_max_mapping_size()
+>>     is 256K (IO_TLB_SIZE * IO_TLB_SEGSIZE).
+>> "swiotlb buffer is full (sz: 393216 bytes), total 65536 (slots),
+>> used 2358 (slots)"
+>>
+>> To avoid those defects, use dma_alloc_pages() instead of alloc_pages()
+>> in vb2_dma_sg_alloc_compacted().
+>>
+>> Suggested-by: Tomasz Figa <tfiga@chromium.org>
+>> Signed-off-by: Fang Hui <hui.fang@nxp.com>
+>> ---
+>>   drivers/media/common/videobuf2/videobuf2-dma-sg.c | 11 +++++++----
+>>   1 file changed, 7 insertions(+), 4 deletions(-)
+>>
+> 
+> Please remove MA-21654 from the subject and prefix it with the right
+> tags for the path (`git log drivers/media/common/videobuf2` should be
+> helpful to find the right one).
+> 
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+>> index 28f3fdfe23a2..b938582c68f4 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+>> @@ -58,7 +58,7 @@ struct vb2_dma_sg_buf {
+>>   static void vb2_dma_sg_put(void *buf_priv);
+>>
+>>   static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg_buf *buf,
+>> -               gfp_t gfp_flags)
+>> +               gfp_t gfp_flags, struct device *dev)
+> 
+> FWIW buf->dev already points to the right device - although we would
+> need to move the assignment in vb2_dma_sg_alloc() to a place higher in
+> that function before calling this function.
+> 
+>>   {
+>>          unsigned int last_page = 0;
+>>          unsigned long size = buf->size;
+>> @@ -67,6 +67,7 @@ static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg_buf *buf,
+>>                  struct page *pages;
+>>                  int order;
+>>                  int i;
+>> +               dma_addr_t dma_handle;
+>>
+>>                  order = get_order(size);
+>>                  /* Don't over allocate*/
+>> @@ -75,8 +76,9 @@ static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg_buf *buf,
+>>
+>>                  pages = NULL;
+>>                  while (!pages) {
+>> -                       pages = alloc_pages(GFP_KERNEL | __GFP_ZERO |
+>> -                                       __GFP_NOWARN | gfp_flags, order);
+>> +                       pages = dma_alloc_pages(dev, PAGE_SIZE << order, &dma_handle,
+> 
+> Hmm, when I was proposing dma_alloc_pages(), I missed that it returns
+> a DMA handle. That on its own can be handled by saving the returned
+> handles somewhere in struct vb2_dma_sg_buf, but there is a bigger
+> problem - the function would actually create a mapping if the DMA
+> device requires some mapping management (e.g. is behind an IOMMU),
+> which is undesirable, because we create the mapping ourselves below
+> anyway...
+> 
+> @Christoph Hellwig @Robin Murphy  I need your thoughts on this as
+> well. Would it make sense to have a variant of dma_alloc_pages() that
+> only allocates the pages, but doesn't perform the mapping? (Or a flag
+> that tells the implementation to skip creating a mapping.)
 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  include/linux/property.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/property.h b/include/linux/property.h
-> index 1684fca930f7..55c2692ffa8c 100644
-> --- a/include/linux/property.h
-> +++ b/include/linux/property.h
-> @@ -10,6 +10,7 @@
->  #ifndef _LINUX_PROPERTY_H_
->  #define _LINUX_PROPERTY_H_
->
-> +#include <linux/args.h>
->  #include <linux/bits.h>
->  #include <linux/fwnode.h>
->  #include <linux/stddef.h>
-> @@ -314,7 +315,7 @@ struct software_node_ref_args {
->  #define SOFTWARE_NODE_REFERENCE(_ref_, ...)                    \
->  (const struct software_node_ref_args) {                                \
->         .node =3D _ref_,                                          \
-> -       .nargs =3D ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1, \
-> +       .nargs =3D COUNT_ARGS(__VA_ARGS__),                       \
->         .args =3D { __VA_ARGS__ },                                \
->  }
->
-> --
-> 2.40.0.1.gaa8946217a0b
->
+As I mentioned before, I think it might make the most sense to make the 
+whole thing into a "proper" dma_alloc_sgtable() function, which can then 
+be used with dma_sync_sgtable_*() as dma_alloc_pages() is used with 
+dma_sync_single_*() (and then dma_alloc_noncontiguous() clearly falls as 
+the special in-between case).
 
-
---=20
 Thanks,
-~Nick Desaulniers
+Robin.
+
+>> +                               DMA_BIDIRECTIONAL,
+> 
+> The right value should be already available in buf->dma_dir.
+> 
+>> +                               GFP_KERNEL | __GFP_ZERO | __GFP_NOWARN | gfp_flags);
+>>                          if (pages)
+>>                                  break;
+>>
+>> @@ -96,6 +98,7 @@ static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg_buf *buf,
+>>          }
+>>
+>>          return 0;
+>> +
+> 
+> Unnecessary blank line.
+> 
+>>   }
+>>
+>>   static void *vb2_dma_sg_alloc(struct vb2_buffer *vb, struct device *dev,
+>> @@ -130,7 +133,7 @@ static void *vb2_dma_sg_alloc(struct vb2_buffer *vb, struct device *dev,
+>>          if (!buf->pages)
+>>                  goto fail_pages_array_alloc;
+>>
+>> -       ret = vb2_dma_sg_alloc_compacted(buf, vb->vb2_queue->gfp_flags);
+>> +       ret = vb2_dma_sg_alloc_compacted(buf, vb->vb2_queue->gfp_flags, dev);
+>>          if (ret)
+>>                  goto fail_pages_alloc;
+>>
+>> --
+>> 2.17.1
+>>
+> 
+> We also need to use dma_free_pages() to free the memory.
+> 
+> Best regards,
+> Tomasz
