@@ -2,173 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B25267A70D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC1E7A70D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbjITDHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 23:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
+        id S232360AbjITDF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 23:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232316AbjITDHW (ORCPT
+        with ESMTP id S232316AbjITDFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 23:07:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE5A9C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:07:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695179237; x=1726715237;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=wVwCa7de0uB/cIkohpBJsr4N51ML8Ja9GYUPeKKwzNI=;
-  b=YgcVv7aTB4Bt0jCDoobkLJ1KBGg3cACNCnOm4lVIHgwLJK76+aYKaLyR
-   ZkSAuxaj2ICInLWr4hqWeIvIu0XB+9Mpks+bsBmJAXiWtq5PATztFM3DC
-   /T/UiG2v/Srdty+ONEPeoBKdS2q1PeR9nxGR8xtEV+HXQgFLesr6g4I/3
-   KWId8ZolB2Kpa1X3aLU6VUQj8O8gxt5MfIlPo+dViUCvjei5WD4fKqNQE
-   ZLjmjdQJFy79CxHISnKo1vQwGL+8w0hE8i+BZ5a878dNlEY0WvYbNovuS
-   Gwv6LVJd/uAseayO4SRfIlBFOE+fLKOLmTaxtVT7Cbzk2zzkrG+U5y6oz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="370424496"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="370424496"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 20:07:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="861798110"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="861798110"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 20:07:13 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, <willy@infradead.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, <hughd@google.com>
-Subject: Re: [PATCH 1/6] sched/numa, mm: make numa migrate functions to take
- a folio
-References: <20230918103213.4166210-1-wangkefeng.wang@huawei.com>
-        <20230918103213.4166210-2-wangkefeng.wang@huawei.com>
-Date:   Wed, 20 Sep 2023 11:05:03 +0800
-In-Reply-To: <20230918103213.4166210-2-wangkefeng.wang@huawei.com> (Kefeng
-        Wang's message of "Mon, 18 Sep 2023 18:32:08 +0800")
-Message-ID: <87ttrpwnmo.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 23:05:53 -0400
+Received: from out-219.mta0.migadu.com (out-219.mta0.migadu.com [IPv6:2001:41d0:1004:224b::db])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB310C6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:05:47 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695179146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jDBdAOX8X4/yrrTFzJbuMsKMOkcsSNgaTZUefdy6Nao=;
+        b=azFm46innPw/65tmW3UAt68ipYmSNr80v//8HmFizwfiNGkGw0fe2zrfnr7UfHOdeBPqpj
+        F9QzphTq0VG+xK+qAXTuI4XP7d5x8Pu7odblTZmZF3GKJ/fwZhrEcBXlxcHiAnQb7kjvgi
+        U28tex+IzTVGMKeyEg+PEObm9Q7TFNo=
+Mime-Version: 1.0
+Subject: Re: [PATCH v4 3/8] hugetlb: perform vmemmap optimization on a list of
+ pages
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230919204954.GA425719@monkey>
+Date:   Wed, 20 Sep 2023 11:05:30 +0800
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <57BC1D0C-23B2-4363-8B14-9602B69D53D5@linux.dev>
+References: <20230918230202.254631-1-mike.kravetz@oracle.com>
+ <20230918230202.254631-4-mike.kravetz@oracle.com>
+ <e284396d-c32d-b69d-21c6-7025db93b873@linux.dev>
+ <20230919204954.GA425719@monkey>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kefeng Wang <wangkefeng.wang@huawei.com> writes:
 
-> The cpuid(or access time) is stored in the head page for THP, so it is
 
-s/cpuid/cpupid/
+> On Sep 20, 2023, at 04:49, Mike Kravetz <mike.kravetz@oracle.com> =
+wrote:
+>=20
+> On 09/19/23 11:10, Muchun Song wrote:
+>>=20
+>>=20
+>> On 2023/9/19 07:01, Mike Kravetz wrote:
+>>> When adding hugetlb pages to the pool, we first create a list of the
+>>> allocated pages before adding to the pool.  Pass this list of pages =
+to a
+>>> new routine hugetlb_vmemmap_optimize_folios() for vmemmap =
+optimization.
+>>>=20
+>>> Due to significant differences in vmemmmap initialization for =
+bootmem
+>>> allocated hugetlb pages, a new routine prep_and_add_bootmem_folios
+>>> is created.
+>>>=20
+>>> We also modify the routine vmemmap_should_optimize() to check for =
+pages
+>>> that are already optimized.  There are code paths that might request
+>>> vmemmap optimization twice and we want to make sure this is not
+>>> attempted.
+>>>=20
+>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>> ---
+>>>  mm/hugetlb.c         | 50 =
++++++++++++++++++++++++++++++++++++++-------
+>>>  mm/hugetlb_vmemmap.c | 11 ++++++++++
+>>>  mm/hugetlb_vmemmap.h |  5 +++++
+>>>  3 files changed, 58 insertions(+), 8 deletions(-)
+>>>=20
+>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>> index 8624286be273..d6f3db3c1313 100644
+>>> --- a/mm/hugetlb.c
+>>> +++ b/mm/hugetlb.c
+>>> @@ -2269,6 +2269,11 @@ static void =
+prep_and_add_allocated_folios(struct hstate *h,
+>>>  {
+>>>   struct folio *folio, *tmp_f;
+>>> + /*
+>>> +  * Send list for bulk vmemmap optimization processing
+>>> +  */
+>>=20
+>> =46rom the kernel development document, one-line comment format is =
+"/**/".
+>>=20
+>=20
+> Will change the comments introduced here.
 
-> safely to make should_numa_migrate_memory() and numa_hint_fault_latency()
-> to take a folio. This is in preparation for large folio numa balancing.
->
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  include/linux/sched/numa_balancing.h |  4 ++--
->  kernel/sched/fair.c                  | 12 ++++++------
->  mm/mempolicy.c                       |  3 ++-
->  3 files changed, 10 insertions(+), 9 deletions(-)
->
-> diff --git a/include/linux/sched/numa_balancing.h b/include/linux/sched/numa_balancing.h
-> index 3988762efe15..a38528c28665 100644
-> --- a/include/linux/sched/numa_balancing.h
-> +++ b/include/linux/sched/numa_balancing.h
-> @@ -20,7 +20,7 @@ extern void task_numa_fault(int last_node, int node, int pages, int flags);
->  extern pid_t task_numa_group_id(struct task_struct *p);
->  extern void set_numabalancing_state(bool enabled);
->  extern void task_numa_free(struct task_struct *p, bool final);
-> -extern bool should_numa_migrate_memory(struct task_struct *p, struct page *page,
-> +extern bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
->  					int src_nid, int dst_cpu);
->  #else
->  static inline void task_numa_fault(int last_node, int node, int pages,
-> @@ -38,7 +38,7 @@ static inline void task_numa_free(struct task_struct *p, bool final)
->  {
->  }
->  static inline bool should_numa_migrate_memory(struct task_struct *p,
-> -				struct page *page, int src_nid, int dst_cpu)
-> +				struct folio *folio, int src_nid, int dst_cpu)
->  {
->  	return true;
->  }
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index cb225921bbca..683cc1e417d7 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1722,12 +1722,12 @@ static bool pgdat_free_space_enough(struct pglist_data *pgdat)
->   * The smaller the hint page fault latency, the higher the possibility
->   * for the page to be hot.
->   */
-> -static int numa_hint_fault_latency(struct page *page)
-> +static int numa_hint_fault_latency(struct folio *folio)
->  {
->  	int last_time, time;
->  
->  	time = jiffies_to_msecs(jiffies);
-> -	last_time = xchg_page_access_time(page, time);
-> +	last_time = xchg_page_access_time(&folio->page, time);
+BTW, there are some places as well, please updates all, thanks.
 
-How about define xchg_folio_access_time() and folio_cpupid_xchg_last()?
+>=20
+>>> + hugetlb_vmemmap_optimize_folios(h, folio_list);
+>>> +
+>>>   /*
+>>>    * Add all new pool pages to free lists in one lock cycle
+>>>    */
+>>> @@ -3309,6 +3314,40 @@ static void __init =
+hugetlb_folio_init_vmemmap(struct folio *folio,
+>>>   prep_compound_head((struct page *)folio, huge_page_order(h));
+>>>  }
+>>> +static void __init prep_and_add_bootmem_folios(struct hstate *h,
+>>> + struct list_head *folio_list)
+>>> +{
+>>> + struct folio *folio, *tmp_f;
+>>> +
+>>> + /*
+>>> +  * Send list for bulk vmemmap optimization processing
+>>> +  */
+>>> + hugetlb_vmemmap_optimize_folios(h, folio_list);
+>>> +
+>>> + /*
+>>> +  * Add all new pool pages to free lists in one lock cycle
+>>> +  */
+>>> + spin_lock_irq(&hugetlb_lock);
+>>> + list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
+>>> + if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
+>>> + /*
+>>> +  * If HVO fails, initialize all tail struct pages
+>>> +  * We do not worry about potential long lock hold
+>>> +  * time as this is early in boot and there should
+>>> +  * be no contention.
+>>> +  */
+>>> + hugetlb_folio_init_tail_vmemmap(folio,
+>>> + HUGETLB_VMEMMAP_RESERVE_PAGES,
+>>> + pages_per_huge_page(h));
+>>> + }
+>>> + __prep_account_new_huge_page(h, folio_nid(folio));
+>>> + enqueue_hugetlb_folio(h, folio);
+>>> + }
+>>> + spin_unlock_irq(&hugetlb_lock);
+>>> +
+>>> + INIT_LIST_HEAD(folio_list);
+>>=20
+>> I'm not sure what is the purpose of the reinitialization to list =
+head?
+>>=20
+>=20
+> There really is no purpose.  This was copied from
+> prep_and_add_allocated_folios which also has this unnecessary call.  =
+It is
+> unnecessary as enqueue_hugetlb_folio() will do a list_move for each
+> folio on the list.  Therefore, at the end of the loop we KNOW the list
+> is empty.
 
---
-Best Regards,
-Huang, Ying
+Right.
 
->  
->  	return (time - last_time) & PAGE_ACCESS_TIME_MASK;
->  }
-> @@ -1784,7 +1784,7 @@ static void numa_promotion_adjust_threshold(struct pglist_data *pgdat,
->  	}
->  }
->  
-> -bool should_numa_migrate_memory(struct task_struct *p, struct page * page,
-> +bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
->  				int src_nid, int dst_cpu)
->  {
->  	struct numa_group *ng = deref_curr_numa_group(p);
-> @@ -1814,16 +1814,16 @@ bool should_numa_migrate_memory(struct task_struct *p, struct page * page,
->  		numa_promotion_adjust_threshold(pgdat, rate_limit, def_th);
->  
->  		th = pgdat->nbp_threshold ? : def_th;
-> -		latency = numa_hint_fault_latency(page);
-> +		latency = numa_hint_fault_latency(folio);
->  		if (latency >= th)
->  			return false;
->  
->  		return !numa_promotion_rate_limit(pgdat, rate_limit,
-> -						  thp_nr_pages(page));
-> +						  folio_nr_pages(folio));
->  	}
->  
->  	this_cpupid = cpu_pid_to_cpupid(dst_cpu, current->pid);
-> -	last_cpupid = page_cpupid_xchg_last(page, this_cpupid);
-> +	last_cpupid = page_cpupid_xchg_last(&folio->page, this_cpupid);
->  
->  	if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) &&
->  	    !node_is_toptier(src_nid) && !cpupid_valid(last_cpupid))
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 42b5567e3773..39584dc25c84 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2642,7 +2642,8 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->  	if (pol->flags & MPOL_F_MORON) {
->  		polnid = thisnid;
->  
-> -		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
-> +		if (!should_numa_migrate_memory(current, page_folio(page),
-> +						curnid, thiscpu))
->  			goto out;
->  	}
+>=20
+> I will remove here and in prep_and_add_allocated_folios.
+
+Thanks.
+
+>=20
+> Thanks,
+> --=20
+> Mike Kravetz
+
+
