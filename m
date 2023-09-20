@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBBB7A8E1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4AB7A8E26
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjITVBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 17:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
+        id S229885AbjITVBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 17:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjITVBM (ORCPT
+        with ESMTP id S229463AbjITVBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 17:01:12 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D18D3;
-        Wed, 20 Sep 2023 14:01:04 -0700 (PDT)
-Received: from notapiano (unknown [185.213.155.222])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4A88D6607243;
-        Wed, 20 Sep 2023 22:01:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695243662;
-        bh=Rtz3erKyUOgKqZM9Fh/lnQavTB+Wa5RuboyAzdxYPLg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EjtNw7g2/rRrUYorNvkEqpKPwq+RWcONPEdiiyLA/JzNV4qLkpq1ko4v9iaU9EwSz
-         UT0TDFmRA07pEn24u2Wyb37LLo2PqvxnpDLaLjhUPoghKY5cKOQtMyogxRe3dDqV0q
-         gROtD6w1u4K2iV1be/a2j/ptDKVwQzqhWF30lr1iMR1yvf1SLDLmkyTeLeurVIn+CR
-         Tx3ihWbL2GL6Qe5ZQi+LFsKhmcoX4V5WQI9KmRvR5rFWXhUzsUvEOUjorwg/zbrKsh
-         Ca5fLcRW/meo/Z5i74tx+xE3mJ37WPHtDwKMzW5gYsOGI6RV1WnzOMihTDT26wnl2o
-         2UejAn5V85png==
-Date:   Wed, 20 Sep 2023 17:00:56 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Mark Brown <broonie@kernel.org>,
-        kernelci@lists.linux.dev, kernel@collabora.com,
-        Guenter Roeck <groeck@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Add a test to catch unprobed Devicetree devices
-Message-ID: <368a1fc3-02d7-49f2-a881-f39259f8c186@notapiano>
-References: <20230828211424.2964562-1-nfraprado@collabora.com>
- <97c368a1-9c76-490a-848e-eacd6411e810@notapiano>
- <20230920195629.GA2784994-robh@kernel.org>
+        Wed, 20 Sep 2023 17:01:44 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2C3BB;
+        Wed, 20 Sep 2023 14:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=az/Js1qF679MHxIz4hhXazYZEbEi8gu09dkZtiwmuX0=; b=UvFQToudjIHsbXoBhoCpv/JCy5
+        q0xUgS0z5kAtDjmhlolxdXTv9bksN8Pf8xZWK/pHqcVzdRAOHmz/01zFL3BtMMR8cqsRGxs+pxnXI
+        BuLXY775HyQC8SyYkSmupfEcsbPlT9P9uqkxymu1Y2hKEO/3YUTfzgIglXw3YZV/FIigu2WnPoKgT
+        jR0K72e08akM941MjuMFG5p3zV1PUlT6c8L5oEhS1PdkM2ngJ0uoo0BCAEngPPSx4jpzWQRTa1pUO
+        4iFf5VdrG47kBUv1+FhEJS/K/GS8sWTh1J0gYywbvikVoKmcvntPLFZKBCIU6GzkfxnqIbVBhlfzQ
+        Pmu4VU4A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qj4Jj-004CX6-2H;
+        Wed, 20 Sep 2023 21:01:04 +0000
+Date:   Wed, 20 Sep 2023 14:01:03 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     j.granados@samsung.com
+Cc:     willy@infradead.org, josh@joshtriplett.org,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Guo Ren <guoren@kernel.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-csky@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v2 0/8] sysctl: Remove sentinel elements from arch
+Message-ID: <ZQtdj211q5PekVRc@bombadil.infradead.org>
+References: <20230913-jag-sysctl_remove_empty_elem_arch-v2-0-d1bd13a29bae@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230920195629.GA2784994-robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230913-jag-sysctl_remove_empty_elem_arch-v2-0-d1bd13a29bae@samsung.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 02:56:29PM -0500, Rob Herring wrote:
-> On Wed, Sep 20, 2023 at 10:03:06AM -0400, Nícolas F. R. A. Prado wrote:
-> > On Mon, Aug 28, 2023 at 05:13:09PM -0400, Nícolas F. R. A. Prado wrote:
-> > > 
-> > > Regressions that cause a device to no longer be probed by a driver can
-> > > have a big impact on the platform's functionality, and despite being
-> > > relatively common there isn't currently any generic test to detect them.
-> > > As an example, bootrr [1] does test for device probe, but it requires
-> > > defining the expected probed devices for each platform.
-> > > 
-> > > Given that the Devicetree already provides a static description of
-> > > devices on the system, it is a good basis for building such a test on
-> > > top.
-> > > 
-> > > This series introduces a test to catch regressions that prevent devices
-> > > from probing.
-> > > 
-> > > Patches 1 and 2 extend the existing dt-extract-compatibles to be able to
-> > > output only the compatibles that can be expected to match a Devicetree
-> > > node to a driver. Patch 2 adds a kselftest that walks over the
-> > > Devicetree nodes on the current platform and compares the compatibles to
-> > > the ones on the list, and on an ignore list, to point out devices that
-> > > failed to be probed.
-> > > 
-> > > A compatible list is needed because not all compatibles that can show up
-> > > in a Devicetree node can be used to match to a driver, for example the
-> > > code for that compatible might use "OF_DECLARE" type macros and avoid
-> > > the driver framework, or the node might be controlled by a driver that
-> > > was bound to a different node.
-> > > 
-> > > An ignore list is needed for the few cases where it's common for a
-> > > driver to match a device but not probe, like for the "simple-mfd"
-> > > compatible, where the driver only probes if that compatible is the
-> > > node's first compatible.
-> > > 
-> > > The reason for parsing the kernel source instead of relying on
-> > > information exposed by the kernel at runtime (say, looking at modaliases
-> > > or introducing some other mechanism), is to be able to catch issues
-> > > where a config was renamed or a driver moved across configs, and the
-> > > .config used by the kernel not updated accordingly. We need to parse the
-> > > source to find all compatibles present in the kernel independent of the
-> > > current config being run.
-> > > 
-> > > [1] https://github.com/kernelci/bootrr
-> > > 
-> > > Changes in v3:
-> > > - Added DT selftest path to MAINTAINERS
-> > > - Enabled device probe test for nodes with 'status = "ok"'
-> > > - Added pass/fail/skip totals to end of test output
-> > > 
-> > > Changes in v2:
-> > > - Extended dt-extract-compatibles script to be able to extract driver
-> > >   matching compatibles, instead of adding a new one in Coccinelle
-> > > - Made kselftest output in the KTAP format
-> > > 
-> > > Nícolas F. R. A. Prado (3):
-> > >   dt: dt-extract-compatibles: Handle cfile arguments in generator
-> > >     function
-> > >   dt: dt-extract-compatibles: Add flag for driver matching compatibles
-> > >   kselftest: Add new test for detecting unprobed Devicetree devices
-> > > 
-> > >  MAINTAINERS                                   |  1 +
-> > >  scripts/dtc/dt-extract-compatibles            | 74 +++++++++++++----
-> > >  tools/testing/selftests/Makefile              |  1 +
-> > >  tools/testing/selftests/dt/.gitignore         |  1 +
-> > >  tools/testing/selftests/dt/Makefile           | 21 +++++
-> > >  .../selftests/dt/compatible_ignore_list       |  1 +
-> > >  tools/testing/selftests/dt/ktap_helpers.sh    | 70 ++++++++++++++++
-> > >  .../selftests/dt/test_unprobed_devices.sh     | 83 +++++++++++++++++++
-> > >  8 files changed, 236 insertions(+), 16 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/dt/.gitignore
-> > >  create mode 100644 tools/testing/selftests/dt/Makefile
-> > >  create mode 100644 tools/testing/selftests/dt/compatible_ignore_list
-> > >  create mode 100644 tools/testing/selftests/dt/ktap_helpers.sh
-> > >  create mode 100755 tools/testing/selftests/dt/test_unprobed_devices.sh
-> > 
-> > Hi Rob,
-> > 
-> > gentle ping on this series.
-> > 
-> > I take it you'll be merging this through your tree, so I've added Shuah's R-b
-> > that she supplied on v2 for the kselftest patch.
-> 
-> Sorry, now applied.
-> 
-> If you send something before or in the merge window, it is best to 
-> rebase and resend after rc1 comes out.
+On Wed, Sep 13, 2023 at 11:10:54AM +0200, Joel Granados via B4 Relay wrote:
+> V2:
+> * Added clarification both in the commit messages and the coverletter as
+>   to why this patch is safe to apply.
+> * Added {Acked,Reviewed,Tested}-by from list
+> * Link to v1: https://lore.kernel.org/r/20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com
 
-Ah didn't know about that, will keep it in mind for the future, thanks!
+Thanks! I've merged this onto sysctl-next.
 
-Nícolas
+  Luis
