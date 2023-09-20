@@ -2,128 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93AC87A8453
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944617A8451
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236786AbjITN5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
+        id S236777AbjITN5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236703AbjITN4u (ORCPT
+        with ESMTP id S236670AbjITN4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:56:50 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773D6F9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:56:44 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38KD9sDC008065;
-        Wed, 20 Sep 2023 08:56:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=lJfsBldziK0+y1g
-        Zd9MVBY3xzM0ZT8qirDWA/gZ7Zm4=; b=X8zECv28oHQ5bGY8PM8vMmpx03QOrNB
-        TeBHMmJi43hL3Vde3mIqe8AeE0DbVnH5QnnlrLZK4ba2dVPsWvbn4gcoyJibJ3ll
-        DBfgYcNT4RudtDjJTpPsFvu7xVaoDQPwBOn9d4FN9G836F8nFqZrNpyPAFmO/0Ul
-        6iIkTf1JRujs1NnIKlVHBpuXzYqjvQVPze5kPY6N/rq7UCIWqTJEy3/WibwV//YY
-        VqfLD+1O0s9M2eKLQ1+W7vmT+tCZvDCz77rCMME2FCaG1OUlQ8RvBAKs1E3cc4+C
-        RVMyr/qNLcJMJJmshZCOYkiGBSGz/niXCawG4s9l5b6d7xpfQ7aNiuw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t58shvex9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 08:56:17 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 20 Sep
- 2023 14:56:15 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Wed, 20 Sep 2023 14:56:15 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 78124458;
-        Wed, 20 Sep 2023 13:56:15 +0000 (UTC)
-Date:   Wed, 20 Sep 2023 13:56:15 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     <yung-chuan.liao@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        <rdunlap@infradead.org>
-Subject: Re: [PATCH] soundwire: bus: Make IRQ handling conditionally built
-Message-ID: <20230920135615.GG103419@ediswmail.ad.cirrus.com>
-References: <20230918161026.472405-1-ckeepax@opensource.cirrus.com>
- <ZQqZqalGdqy86qdD@matsya>
- <20230920085133.GE103419@ediswmail.ad.cirrus.com>
- <ZQr4iYRmDppFJS0w@matsya>
+        Wed, 20 Sep 2023 09:56:40 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2CDF0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:56:33 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5789ffc8ae0so2061370a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1695218193; x=1695822993; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gWvN1Bpbs1PF50qBbgm5YoDriWQXveHOdhR/Dx6i6jg=;
+        b=jumE20PqqxAOG4i4XuVhj2Nh8I6uySmZUS93YfHY39qWcwjbLIRR5M+ck+mKp0NWXD
+         uzeC4VI/6nKwqJwmoIyQ056PUqpI0++aifGvopEMs8T5eaLR3VVSL6DmsUZt0ddgXphm
+         ySlNyon5TUygh10a/CidiQU9h5nt+LUG2TTFq7PH927GexnxrnMLUOw0x617/Q2LW3Is
+         RykXdeC9AKumyTPXURHuJRExonlMn70okeL6/moqXpUiRjiHol1JZNre3vAt/oHq0+Hj
+         FuRww++Vb5LYoff/watqnwLyHGPhJnGElUpjR1dVbXMFoI4rKFfqh7bi0o4Ane2Gq+Yv
+         RQDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695218193; x=1695822993;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gWvN1Bpbs1PF50qBbgm5YoDriWQXveHOdhR/Dx6i6jg=;
+        b=I0BqJhRL42RDf9rK1F/4imsae3cIkqoXIeSy9WNvoA2aCy5FFtdBBkmxq8N+UCOMpj
+         VG/l0Q9eUUlvBif+Q43HwmtKSmQSDWkqrX7NVvbLuuFkqrqia6jsjkXX7HUvNmj4KT69
+         /2OLf1J/gZDwTaggSbeR/k36ORa00cD+alXFDHNyGyJiW2bDb9+r1O1QOqd+7hweWR24
+         xrsxh9yf1ADN0Mn4ozEKfovqJXpEZsCp+jrlUV7NVvfGbnoO/o+fwHNPyFX315/YWCB4
+         Z+/ZG0GFBGL1jMA4i2WG9mODLF9cIyRtQNoaRtY/T7QuoHCWE/XxWG96ParhGzTlAkyu
+         u5HQ==
+X-Gm-Message-State: AOJu0YxBfdHVf5z4bPIPBs/kTK4Z2eae6gfpLZBKK3puriAGk5Cw6rih
+        jDm80/UBrII3elZzgfts5gtvVwVw7cltMC8YGp8fWA==
+X-Google-Smtp-Source: AGHT+IFb9PPNvdqtSUNwQS6mJlCIQK/y8XDdGfu9RdEx32Z3P7W7GzvDtIiLZCDP6pBGCTmuF0vbzKB6JetQRNt81ig=
+X-Received: by 2002:a05:6a20:6a27:b0:14c:383b:294a with SMTP id
+ p39-20020a056a206a2700b0014c383b294amr2839055pzk.5.1695218193018; Wed, 20 Sep
+ 2023 06:56:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZQr4iYRmDppFJS0w@matsya>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: 0FQlsJktRyIHuK9SDNJuiiRy6BUDZkyc
-X-Proofpoint-ORIG-GUID: 0FQlsJktRyIHuK9SDNJuiiRy6BUDZkyc
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918180646.1398384-1-apatel@ventanamicro.com>
+ <20230918180646.1398384-4-apatel@ventanamicro.com> <CAOnJCUJYDHtbYS4js7PSAeLqT4sL5zi7DT5xeSww+5Nvs2UhcA@mail.gmail.com>
+In-Reply-To: <CAOnJCUJYDHtbYS4js7PSAeLqT4sL5zi7DT5xeSww+5Nvs2UhcA@mail.gmail.com>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Wed, 20 Sep 2023 19:26:21 +0530
+Message-ID: <CAK9=C2UbjOGyxo8oP36Tinjhv1jRpCb+hVbZCOJ70G4-WiHw1g@mail.gmail.com>
+Subject: Re: [PATCH 3/4] KVM: riscv: selftests: Fix ISA_EXT register handling
+ in get-reg-list
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 03:50:01PM +0200, Vinod Koul wrote:
-> On 20-09-23, 08:51, Charles Keepax wrote:
-> > On Wed, Sep 20, 2023 at 09:05:13AM +0200, Vinod Koul wrote:
-> > > On 18-09-23, 17:10, Charles Keepax wrote:
-> > > > SoundWire has provisions for a simple callback for the IRQ handling so
-> > > > has no hard dependency on IRQ_DOMAIN, but the recent addition of IRQ
-> > > > handling was causing builds without IRQ_DOMAIN to fail. Resolve this by
-> > > > moving the IRQ handling into its own file and only add it to the build
-> > > > when IRQ_DOMAIN is included in the kernel.
-> > > > 
-> > > > Fixes: 12a95123bfe1 ("soundwire: bus: Allow SoundWire peripherals to register IRQ handlers")
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > Closes: https://lore.kernel.org/oe-kbuild-all/202309150522.MoKeF4jx-lkp@intel.com/
-> > > > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> > > > ---
-> > > >  drivers/soundwire/Makefile   |  4 +++
-> > > >  drivers/soundwire/bus.c      | 31 +++----------------
-> > > >  drivers/soundwire/bus_type.c | 11 +++----
-> > > >  drivers/soundwire/irq.c      | 59 ++++++++++++++++++++++++++++++++++++
-> > > >  drivers/soundwire/irq.h      | 43 ++++++++++++++++++++++++++
-> > > >  5 files changed, 115 insertions(+), 33 deletions(-)
-> > > >  create mode 100644 drivers/soundwire/irq.c
-> > > >  create mode 100644 drivers/soundwire/irq.h
-> > > > 
-> > > > diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-> > > > index c3d3ab3262d3a..657f5888a77b0 100644
-> > > > --- a/drivers/soundwire/Makefile
-> > > > +++ b/drivers/soundwire/Makefile
-> > > > @@ -15,6 +15,10 @@ ifdef CONFIG_DEBUG_FS
-> > > >  soundwire-bus-y += debugfs.o
-> > > >  endif
-> > > >  
-> > > > +ifdef CONFIG_IRQ_DOMAIN
-> > > > +soundwire-bus-y += irq.o
-> > > > +endif
-> > > 
-> > > Any reason why we cant use depends for this?
-> > > 
-> > 
-> > No reason we can't, but my thinking was really that SoundWire doesn't
-> > really have a dependency on IRQ_DOMAIN, as you can use the original
-> > callback mechanism. It seemed a shame to force it as a dependency,
-> > when the whole subsystem can function happily without it.
-> > 
-> > That said, I am happy to switch to a simple dependency if you prefer?
-> > It would certainly be a much simpler change.
-> 
-> That is very valid point, not every user needs it... I guess lets go
-> with this change now, can you fix the comment style and we can merge
-> this
-> 
+On Wed, Sep 20, 2023 at 1:24=E2=80=AFAM Atish Patra <atishp@atishpatra.org>=
+ wrote:
+>
+> On Mon, Sep 18, 2023 at 11:07=E2=80=AFAM Anup Patel <apatel@ventanamicro.=
+com> wrote:
+> >
+> > Same set of ISA_EXT registers are not present on all host because
+> > ISA_EXT registers are visible to the KVM user space based on the
+> > ISA extensions available on the host. Also, disabling an ISA
+> > extension using corresponding ISA_EXT register does not affect
+> > the visibility of the ISA_EXT register itself.
+> >
+> > Based on the above, we should filter-out all ISA_EXT registers.
+> >
+>
+> In that case, we don't need the switch case any more. Just a
+> conditional check with KVM_RISCV_ISA_EXT_MAX should be sufficient.
 
-Cool will send a v2 either later today or tomorrow morning.
+If we compare against KVM_RISCV_ISA_EXT_MAX then we will forget
+adding test configs for newer ISA extensions.
 
-Thanks,
-Charles
+>
+> > Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  .../selftests/kvm/riscv/get-reg-list.c        | 35 +++++++++++--------
+> >  1 file changed, 21 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/t=
+esting/selftests/kvm/riscv/get-reg-list.c
+> > index d8ecacd03ecf..76c0ad11e423 100644
+> > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > @@ -14,17 +14,33 @@
+> >
+> >  bool filter_reg(__u64 reg)
+> >  {
+> > +       switch (reg & ~REG_MASK) {
+> >         /*
+> > -        * Some ISA extensions are optional and not present on all host=
+,
+> > -        * but they can't be disabled through ISA_EXT registers when pr=
+esent.
+> > -        * So, to make life easy, just filtering out these kind of regi=
+sters.
+> > +        * Same set of ISA_EXT registers are not present on all host be=
+cause
+> > +        * ISA_EXT registers are visible to the KVM user space based on=
+ the
+> > +        * ISA extensions available on the host. Also, disabling an ISA
+> > +        * extension using corresponding ISA_EXT register does not affe=
+ct
+> > +        * the visibility of the ISA_EXT register itself.
+> > +        *
+> > +        * Based on above, we should filter-out all ISA_EXT registers.
+> >          */
+> > -       switch (reg & ~REG_MASK) {
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_A:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_C:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_D:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_F:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_H:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_I:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_M:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVPBMT:
+> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSTC:
+> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVINVAL:
+> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHINTPAUSE:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOM:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOZ:
+> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBB:
+> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSAIA:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_V:
+> > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVNAPOT:
+> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBA:
+> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBS:
+> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICNTR:
+> > @@ -50,12 +66,7 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *vcp=
+u, int ext)
+> >         unsigned long value;
+> >
+> >         ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> > -       if (ret) {
+> > -               printf("Failed to get ext %d", ext);
+> > -               return false;
+> > -       }
+> > -
+> > -       return !!value;
+> > +       return (ret) ? false : !!value;
+> >  }
+> >
+> >  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
+> > @@ -506,10 +517,6 @@ static __u64 base_regs[] =3D {
+> >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_RE=
+G_RISCV_TIMER_REG(time),
+> >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_RE=
+G_RISCV_TIMER_REG(compare),
+> >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_RE=
+G_RISCV_TIMER_REG(state),
+> > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KV=
+M_RISCV_ISA_EXT_A,
+> > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KV=
+M_RISCV_ISA_EXT_C,
+> > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KV=
+M_RISCV_ISA_EXT_I,
+> > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KV=
+M_RISCV_ISA_EXT_M,
+> >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | KV=
+M_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_V01,
+> >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | KV=
+M_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_TIME,
+> >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | KV=
+M_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_IPI,
+> > --
+> > 2.34.1
+> >
+>
+>
+> --
+> Regards,
+> Atish
+
+Regards,
+Anup
