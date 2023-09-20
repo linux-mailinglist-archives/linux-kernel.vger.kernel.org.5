@@ -2,214 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DDD7A8FB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58F67A8FB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjITXDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 19:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
+        id S229662AbjITXEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 19:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjITXDG (ORCPT
+        with ESMTP id S229486AbjITXD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 19:03:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9BD0A3;
-        Wed, 20 Sep 2023 16:02:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26AF1C433C8;
-        Wed, 20 Sep 2023 23:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695250979;
-        bh=Zk4ujfkFmSNtiTgBEOrvD7R3EsDa5uPjHsUOQXft7vY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=E9/5vRGEsGzKegCu2DninNk52ODyzPtj9qhHx85u3mWzdAHeA20G5Mp9dW87NblaK
-         0cXnTww3yriMw6vJ6QHjgIqZNNwpNp5HVHGc7ErMbTIyFmFjiClXWC4rm+BRLxKaQi
-         uu+rfqrd3XpBh9nygaet6ZX/g8SLibnfgi+1K3Ap5W6nK12o3lcxVgXuau0iM8tMgp
-         3ixA4xKV6Njt1tRobAyf1FGa79OZDdERK0D0s6VU6OM768Ulb6sTbaONRuBJMOWOs8
-         XPca1/1qBBbCKo78mCbwspK2EqcAKTKRJ13vU8wmPtkvW9apmyCt2hkaOYbb9apZeW
-         ii2dsu1p0GLGg==
-Date:   Wed, 20 Sep 2023 18:02:57 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     "lenb@kernel.org" <lenb@kernel.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>, mahesh@linux.ibm.com,
-        bhelgaas@google.com,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        gregkh@linuxfoundation.org,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>
-Subject: Re: Questions: Should kernel panic when PCIe fatal error occurs?
-Message-ID: <20230920230257.GA280837@bhelgaas>
+        Wed, 20 Sep 2023 19:03:59 -0400
+Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DECB7
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:03:52 -0700 (PDT)
+Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1d66d948417so448590fac.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:03:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695251032; x=1695855832;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oO0eTIehJ1nO4l0iT8zyk7N+9L71kWtfUX3Abpeyoo0=;
+        b=B8/sD+TbPuTSOmeWZyxkI9GpPPBqe7MmmdctDfq8UHwWmR9LXBhJfwr6zLvmw41cNI
+         NDQDMXG95WXYMuTgWH5fNOJDJEA5+DReUChX/uSUFcP2Z2ZrzmRHoGvZ8iuwboF/rwLo
+         KvJ/DXnbGFz/j9Qx4nDCYWc97fMuMQZle1FsrV/FYdziCxGzQ/5vuZfR2WXL36MsHBBx
+         1jCiYccYsvCU+5B/zeUfOm2uo/OmLpwi4A6hslHbtUWrVloB0IG/MwP9L9y65HPBuZ/V
+         c9GP3areiS3xAOSrDmukhW4QWnlIc0y6wZMg8JbMUZGiCEX1Aqt+pjiXCYuacIZziiXu
+         Dn0g==
+X-Gm-Message-State: AOJu0YzxDjjXOWhmTkmYyMCan+oqiUs0IAP67P1Q9Iy3Ip8cHlYwW0Nv
+        /ibFk+n0oWbZIRykWOMZ0CsAEL2Ohyl6KDigBaIyyno2nZyu
+X-Google-Smtp-Source: AGHT+IHJ3FTjDHl4K+/SYLL/69WPAUHQSoJ+2W67HnFqIFENZTAfF6w1PR9zh166ItXWL0uXCAv3s9qBY5By9+TB8eu7QjifCO/2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e486db16-d36d-9e14-4f10-dc755c0ef97d@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:c797:b0:1db:d697:45e5 with SMTP id
+ dy23-20020a056870c79700b001dbd69745e5mr1468090oab.10.1695251032202; Wed, 20
+ Sep 2023 16:03:52 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 16:03:52 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009463840605d2633c@google.com>
+Subject: [syzbot] [bluetooth?] KASAN: null-ptr-deref Write in l2cap_sock_suspend_cb
+From:   syzbot <syzbot+df5cbce32ac8cdb9c7fa@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 05:39:58PM +0800, Shuai Xue wrote:
-> Hi, all folks,
-> 
-> Error reporting and recovery are one of the important features of PCIe, and
-> the kernel has been supporting them since version 2.6, 17 years ago.
-> I am very curious about the expected behavior of the software.
-> I first recap the error classification and then list my questions bellow it.
-> 
-> ## Recap: Error classification
-> 
-> - Fatal Errors
-> 
-> Fatal errors are uncorrectable error conditions which render the particular
-> Link and related hardware unreliable. For Fatal errors, a reset of the
-> components on the Link may be required to return to reliable operation.
-> Platform handling of Fatal errors, and any efforts to limit the effects of
-> these errors, is platform implementation specific. (PCIe 6.0.1, sec
-> 6.2.2.2.1 Fatal Errors).
-> 
-> - Non-Fatal Errors
-> 
-> Non-fatal errors are uncorrectable errors which cause a particular
-> transaction to be unreliable but the Link is otherwise fully functional.
-> Isolating Non-fatal from Fatal errors provides Requester/Receiver logic in
-> a device or system management software the opportunity to recover from the
-> error without resetting the components on the Link and disturbing other
-> transactions in progress. Devices not associated with the transaction in
-> error are not impacted by the error.  (PCIe 6.0.1, sec 6.2.2.2.1 Non-Fatal
-> Errors).
-> 
-> ## What the kernel do?
-> 
-> The Linux kernel supports both the OS native and firmware first modes in
-> AER and DPC drivers. The error recovery API is defined in `struct
-> pci_error_handlers`, and the recovery process is performed in several
-> stages in pcie_do_recovery(). One main difference in handling PCIe errors
-> is that the kernel only resets the link when a fatal error is detected.
-> 
-> ## Questions
-> 
-> 1. Should kernel panic when fatal errors occur without AER recovery?
-> 
-> IMHO, the answer is NO. The AER driver handles both fatal and
-> non-fatal errors, and I have not found any panic changes in the
-> recovery path in OS native mode.
-> 
-> As far as I know, on many X86 platforms, struct
-> `acpi_hest_generic_status::error_severity` is set as CPER_SEV_FATAL
-> in firmware first mode. As a result, kernel will panic immediately
-> in ghes_proc() when fatal AER errors occur, and there is no chance
-> to handle the error and perform recovery in AER driver.
+Hello,
 
-UEFI r2.10, sec N.2.1,, defines CPER_SEV_FATAL, and platform firmware
-decides which Error Severity to put in the error record.  I don't see
-anything in UEFI about how the OS should handle fatal errors.
+syzbot found the following issue on:
 
-ACPI r6.5, sec 18.1, says on fatal uncorrected error, the system
-should be restarted to prevent propagation of the error.  For
-CPER_SEV_FATAL errors, it looks like ghes_proc() panics even before
-trying AER recovery.
+HEAD commit:    23f108dc9ed2 Merge tag 'tpmdd-v6.6-rc2' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=177aa344680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9681c105d52b0a72
+dashboard link: https://syzkaller.appspot.com/bug?extid=df5cbce32ac8cdb9c7fa
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-I guess your point is that for CPER_SEV_FATAL errors, the APEI/GHES
-path always panics but the native path never does, and that maybe both
-paths should work the same way?
+Unfortunately, I don't have any reproducer for this issue yet.
 
-It would be nice if they worked the same, but I suspect that vendors
-may rely on the fact that CPER_SEV_FATAL forces a restart/panic as
-part of their system integrity story.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-23f108dc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e159271e5620/vmlinux-23f108dc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7aa0e7830b31/bzImage-23f108dc.xz
 
-It doesn't seem like the native path should always panic.  If we can
-tell that data was corrupted, we may want to panic, but otherwise I
-don't think we should crash the entire system even if some device is
-permanently broken.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+df5cbce32ac8cdb9c7fa@syzkaller.appspotmail.com
 
-> For fatal and non-fatal errors, struct
-> `acpi_hest_generic_status::error_severity` should as
-> CPER_SEV_RECOVERABLE, and struct
-> `acpi_hest_generic_data::error_severity` should reflect its real
-> severity. Then, the kernel is equivalent to handling PCIe errors in
-> Firmware first mode as it does in OS native mode.  Please correct me
-> if I am wrong.
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_write include/linux/instrumented.h:82 [inline]
+BUG: KASAN: null-ptr-deref in set_bit include/asm-generic/bitops/instrumented-atomic.h:28 [inline]
+BUG: KASAN: null-ptr-deref in l2cap_sock_suspend_cb+0x43/0x90 net/bluetooth/l2cap_sock.c:1698
+Write of size 8 at addr 0000000000000528 by task kworker/3:4/5228
 
-I don't know enough to comment on how Error Severity should be used in
-the Generic Error Status Block vs the Generic Error Data Entry.
+CPU: 3 PID: 5228 Comm: kworker/3:4 Not tainted 6.6.0-rc1-syzkaller-00070-g23f108dc9ed2 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Workqueue: events l2cap_info_timeout
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ check_region_inline mm/kasan/generic.c:181 [inline]
+ kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
+ instrument_atomic_write include/linux/instrumented.h:82 [inline]
+ set_bit include/asm-generic/bitops/instrumented-atomic.h:28 [inline]
+ l2cap_sock_suspend_cb+0x43/0x90 net/bluetooth/l2cap_sock.c:1698
+ l2cap_chan_ready.part.0+0x1bc/0x230 net/bluetooth/l2cap_core.c:1376
+ l2cap_chan_ready net/bluetooth/l2cap_core.c:1365 [inline]
+ l2cap_conn_start+0x15c/0xa40 net/bluetooth/l2cap_core.c:1640
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+==================================================================
+Kernel panic - not syncing: KASAN: panic_on_warn set ...
+CPU: 3 PID: 5228 Comm: kworker/3:4 Not tainted 6.6.0-rc1-syzkaller-00070-g23f108dc9ed2 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Workqueue: events l2cap_info_timeout
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ panic+0x6a6/0x750 kernel/panic.c:340
+ check_panic_on_warn+0xab/0xb0 kernel/panic.c:236
+ end_report+0x108/0x150 mm/kasan/report.c:225
+ kasan_report+0xea/0x110 mm/kasan/report.c:590
+ check_region_inline mm/kasan/generic.c:181 [inline]
+ kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
+ instrument_atomic_write include/linux/instrumented.h:82 [inline]
+ set_bit include/asm-generic/bitops/instrumented-atomic.h:28 [inline]
+ l2cap_sock_suspend_cb+0x43/0x90 net/bluetooth/l2cap_sock.c:1698
+ l2cap_chan_ready.part.0+0x1bc/0x230 net/bluetooth/l2cap_core.c:1376
+ l2cap_chan_ready net/bluetooth/l2cap_core.c:1365 [inline]
+ l2cap_conn_start+0x15c/0xa40 net/bluetooth/l2cap_core.c:1640
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Kernel Offset: disabled
 
-> However, I have changed my mind on this issue as I encounter a case where
-> a error propagation is detected due to fatal DLLP (Data Link Protocol
-> Error) error. A DLLP error occurred in the Compute node, causing the
-> node to panic because `struct acpi_hest_generic_status::error_severity` was
-> set as CPER_SEV_FATAL. However, data corruption was still detected in the
-> storage node by CRC.
 
-The only mention of Data Link Protocol Error that looks relevant is
-PCIe r6.0, sec 3.6.2.2, which basically says a DLLP with an unexpected
-Sequence Number should be discarded:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-  For Ack and Nak DLLPs, the following steps are followed (see Figure
-  3-21):
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-    - If the Sequence Number specified by the AckNak_Seq_Num does not
-      correspond to an unacknowledged TLP, or to the value in
-      ACKD_SEQ, the DLLP is discarded
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-      - This is a Data Link Protocol Error, which is a reported error
-	associated with the Port (see Section 6.2).
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-So data from that DLLP should not have made it to memory, although of
-course the DMA may not have been completed.  But it sounds like you
-did see corrupted data written to memory?
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
-I assume it is not reproducible and we have no reason to think the
-receiver of the DLLP has a design defect, e.g., it reported the error
-but failed to drop the DLLP?
-
-> 2. Should kernel panic when AER recovery failed?
-> 
-> This question is actually a TODO that was added when the AER driver was
-> first upstreamed 17 years ago, and it is still relevant today. The kernel
-> does not proactively panic regardless of the error types occurring in OS
-> native mode. The DLLP error propagation case indicates that the kernel
-> might should panic when recovery failed?
-
-I'm not a hardware engineer, but I'm not yet convinced that a Data
-Link Protocol Error should cause a panic because sec 3.6.2.2 suggests
-that this error should not cause data corruption.  Certainly willing
-to be proved wrong!
-
-> 3. Should DPC be enabled by default to contain fatal and non-fatal error?
-> 
-> According to the PCIe specification, DPC halts PCIe traffic below a
-> Downstream Port after an unmasked uncorrectable error is detected at or
-> below the Port, avoiding the potential spread of any data corruption.
-> 
-> The kernel configures DPC to be triggered only on ERR_FATAL. Literally
-> speaking, only fatal error have the potential spread of any data
-> corruption?
-
-Sec 6.2.2.2 talks about fatal vs non-fatal but only in terms of
-whether the error affects a particular transaction (non-fatal) or
-everything related to a Link (fatal).  Unless there's more detail
-elsewhere, I would assume either could corrupt data.
-
-> In addition, the AER Severity is programable by the
-> Uncorrectable Error Severity Register (Offset 0Ch in PCIe AER cap). If a
-> default fatal error, e.g. DLLP, set as non-fatal, DPC will not be
-> triggered.
-
-Sec 6.2.7 and 7.8.4.4 suggest the Data Link Protocol Error should be
-a fatal error by default.
-
-I don't think Linux changes PCI_ERR_UNC_DLP (unless there's an _HPX or
-similar method), so I would expect it to be set as fatal.
-
-Bjorn
-
-> [1] https://github.com/torvalds/linux/commit/6c2b374d74857e892080ee726184ec1d15e7d4e4#diff-fea64904d30501b59d2e948189bbedc476fc270ed4c15e4ae29d7f0efd06771aR438
+If you want to undo deduplication, reply with:
+#syz undup
