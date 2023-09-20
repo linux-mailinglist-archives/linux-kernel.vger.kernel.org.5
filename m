@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A09937A8718
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425117A871E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236866AbjITOhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
+        id S236829AbjITOho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236721AbjITOg5 (ORCPT
+        with ESMTP id S236683AbjITOhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:36:57 -0400
+        Wed, 20 Sep 2023 10:37:20 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27A8E50;
-        Wed, 20 Sep 2023 07:36:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4C56C433A9;
-        Wed, 20 Sep 2023 14:36:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2938CE5;
+        Wed, 20 Sep 2023 07:36:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BF4AC433C7;
+        Wed, 20 Sep 2023 14:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695220602;
-        bh=cewGjSfrxsWvWPkrDxnbvQOKsF0K1kZ/Vi1wxjvWMJU=;
+        s=k20201202; t=1695220605;
+        bh=vxR+qUPDNITjlXpsuvoNcEUlFJrjEuDeYp+w/DlrP3Y=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=pE+ag+5Yn7c2nYuj40N7SFctWUKMFs0tKR5WUX66n0vaipiYu4+iREdYGDUd3kdyn
-         67+PuQ549klOAWsPYbWHzsJZFc/UJP256VAlVpzGy3vO5g4xebRWgGpHIr6I9OM/rP
-         BHAV8iKU1w5Jd1O+OzUCwQe8/JSOugxUxHBVNXugPRDU6E/5N2DLr29oqUL4kUQEcB
-         W7pueG1VYtj4+1TcVtXOmRMNW6DTeyrktRbtWZ2u2vJt5VLQFqxBUZseQ6TScASbDt
-         0qCjQKDOBkxRNQg4RBuYZ/TukKVayxg8Vv/+WCY77qIXEkQtS5L++68v5145EfiNvh
-         LSGuzPqjr+0DQ==
+        b=eGIikLMLKipYM2ljRuFicxNhmEhzlnjlAJJBnjzlsqt5+/csI34LQ2ZzHMOuXhL+y
+         aTtTT5AnbLhRjfM5Dk3uZyRSbUQPK2pyQFS5lS48VoLc2wQLMDXfNAHZOFSGShF3iL
+         Rm2v2SbH4DnlVU+7b/AE1R4hwMbvi+wcv8qBGfl5WT9zrJM7CInHnwPYYRAcbL2Zlz
+         2pf6bkQFdY2zewI83PGgsRU9mBej6OGjpKrUQTedtSl1uOnGrTiJmFlzZnqbxScfpC
+         ERJbntYpeDBZSWfdfUGiiHHD8PQfS+5mgwQovJYbctPCJZ2wirRIyGlc4IGbHYZJKf
+         G4jAuQibmJAsQ==
 From:   Maxime Ripard <mripard@kernel.org>
-Date:   Wed, 20 Sep 2023 16:35:36 +0200
-Subject: [PATCH RFC v2 21/37] drm/rockchip: inno_hdmi: Remove useless input
- format
+Date:   Wed, 20 Sep 2023 16:35:37 +0200
+Subject: [PATCH RFC v2 22/37] drm/rockchip: inno_hdmi: Remove useless
+ output format
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230920-kms-hdmi-connector-state-v2-21-17932daddd7d@kernel.org>
+Message-Id: <20230920-kms-hdmi-connector-state-v2-22-17932daddd7d@kernel.org>
 References: <20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org>
 In-Reply-To: <20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -53,12 +53,12 @@ Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
         linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
         Maxime Ripard <mripard@kernel.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3445; i=mripard@kernel.org;
- h=from:subject:message-id; bh=cewGjSfrxsWvWPkrDxnbvQOKsF0K1kZ/Vi1wxjvWMJU=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKnczFZVPcu5FRuFbfgW5XyJcUpa4zth9R/54un7Qt2Ot
- H08dKKlo5SFQYyLQVZMkSVG2HxJ3KlZrzvZ+ObBzGFlAhnCwMUpABORt2FkOHqV+9zirONiEoqF
- Ud7bNxoFVq0wVpawfKT9x/zHDBfjPwz/Pe/ca+BlPH8iOKec/5DgvZtXdkxoP2m3SI6Pe9+P39M
- 5OQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3790; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=vxR+qUPDNITjlXpsuvoNcEUlFJrjEuDeYp+w/DlrP3Y=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKnczFY7pQ47VDTd05xisUajezm7gl5ugmHw7p/aR/fyR
+ Fht3jy7o5SFQYyLQVZMkSVG2HxJ3KlZrzvZ+ObBzGFlAhnCwMUpABO5cI6RYd6ifRf+lRxOjHhs
+ 9fa8/Z24J73Zec1Tbh5NvhX3myVQYzHDP/30ywkf11l9UrKfPDM4TTvnx44Ga4acmlPm08NYmxW
+ 6WAE=
 X-Developer-Key: i=mripard@kernel.org; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -71,93 +71,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver has a lot of logic to deal with multiple input formats, but
-hardcodes it to RGB. This means that most of that code has been dead
-code, so let's get rid of it.
+Similarly to the input format, the driver has a lot of code to deal with
+various output format, but the driver hardcodes it to RGB always.
+
+Let's get rid of the dead code.
 
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/rockchip/inno_hdmi.c | 39 +++++++++---------------------------
- 1 file changed, 10 insertions(+), 29 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 57 ++++--------------------------------
+ 1 file changed, 6 insertions(+), 51 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 3908dc09d85f..e0696ab16da3 100644
+index e0696ab16da3..0c6c550e0ce7 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
 @@ -28,7 +28,6 @@
  #include "inno_hdmi.h"
  
  struct hdmi_data_info {
--	unsigned int enc_in_format;
- 	unsigned int enc_out_format;
+-	unsigned int enc_out_format;
  	unsigned int colorimetry;
  };
-@@ -328,47 +327,30 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
+ 
+@@ -296,26 +295,14 @@ static int inno_hdmi_config_video_avi(struct inno_hdmi *hdmi,
+ 	rc = drm_hdmi_avi_infoframe_from_display_mode(&frame.avi,
+ 						      &hdmi->connector,
+ 						      mode);
+-
+-	if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV444)
+-		frame.avi.colorspace = HDMI_COLORSPACE_YUV444;
+-	else if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV422)
+-		frame.avi.colorspace = HDMI_COLORSPACE_YUV422;
+-	else
+-		frame.avi.colorspace = HDMI_COLORSPACE_RGB;
++	frame.avi.colorspace = HDMI_COLORSPACE_RGB;
+ 
+ 	return inno_hdmi_upload_frame(hdmi, rc, &frame, INFOFRAME_AVI, 0, 0, 0);
+ }
+ 
+ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
+ {
+-	struct hdmi_data_info *data = &hdmi->hdmi_data;
+-	int c0_c2_change = 0;
+-	int csc_enable = 0;
+-	int csc_mode = 0;
+-	int auto_csc = 0;
+ 	int value;
+-	int i;
+ 
+ 	/* Input video mode is SDR RGB24bit, data enable signal from external */
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL1, v_DE_EXTERNAL |
+@@ -327,43 +314,13 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
  		v_VIDEO_INPUT_CSP(0);
  	hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL2, value);
  
--	if (data->enc_in_format == data->enc_out_format) {
--		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) ||
--		    (data->enc_in_format >= HDMI_COLORSPACE_YUV444)) {
--			value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
--			hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
-+	if (HDMI_COLORSPACE_RGB == data->enc_out_format) {
-+		value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
-+		hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
- 
--			hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
--				  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
--				  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
--				  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
--			return 0;
+-	if (HDMI_COLORSPACE_RGB == data->enc_out_format) {
+-		value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
+-		hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
+-
+-		hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
+-			  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
+-			  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
+-			  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
+-		return 0;
+-	}
+-
+-	if (data->colorimetry == HDMI_COLORIMETRY_ITU_601) {
+-		if (data->enc_out_format == HDMI_COLORSPACE_YUV444) {
+-			csc_mode = CSC_RGB_0_255_TO_ITU601_16_235_8BIT;
+-			auto_csc = AUTO_CSC_DISABLE;
+-			c0_c2_change = C0_C2_CHANGE_DISABLE;
+-			csc_enable = v_CSC_ENABLE;
 -		}
-+		hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
-+			  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
-+			  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
-+			  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
-+		return 0;
- 	}
- 
- 	if (data->colorimetry == HDMI_COLORIMETRY_ITU_601) {
--		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) &&
--		    (data->enc_out_format == HDMI_COLORSPACE_YUV444)) {
-+		if (data->enc_out_format == HDMI_COLORSPACE_YUV444) {
- 			csc_mode = CSC_RGB_0_255_TO_ITU601_16_235_8BIT;
- 			auto_csc = AUTO_CSC_DISABLE;
- 			c0_c2_change = C0_C2_CHANGE_DISABLE;
- 			csc_enable = v_CSC_ENABLE;
--		} else if ((data->enc_in_format == HDMI_COLORSPACE_YUV444) &&
--			   (data->enc_out_format == HDMI_COLORSPACE_RGB)) {
--			csc_mode = CSC_ITU601_16_235_TO_RGB_0_255_8BIT;
--			auto_csc = AUTO_CSC_ENABLE;
+-	} else {
+-		if (data->enc_out_format == HDMI_COLORSPACE_YUV444) {
+-			csc_mode = CSC_RGB_0_255_TO_ITU709_16_235_8BIT;
+-			auto_csc = AUTO_CSC_DISABLE;
 -			c0_c2_change = C0_C2_CHANGE_DISABLE;
--			csc_enable = v_CSC_DISABLE;
- 		}
- 	} else {
--		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) &&
--		    (data->enc_out_format == HDMI_COLORSPACE_YUV444)) {
-+		if (data->enc_out_format == HDMI_COLORSPACE_YUV444) {
- 			csc_mode = CSC_RGB_0_255_TO_ITU709_16_235_8BIT;
- 			auto_csc = AUTO_CSC_DISABLE;
- 			c0_c2_change = C0_C2_CHANGE_DISABLE;
- 			csc_enable = v_CSC_ENABLE;
--		} else if ((data->enc_in_format == HDMI_COLORSPACE_YUV444) &&
--			   (data->enc_out_format == HDMI_COLORSPACE_RGB)) {
--			csc_mode = CSC_ITU709_16_235_TO_RGB_0_255_8BIT;
--			auto_csc = AUTO_CSC_ENABLE;
--			c0_c2_change = C0_C2_CHANGE_DISABLE;
--			csc_enable = v_CSC_DISABLE;
- 		}
- 	}
+-			csc_enable = v_CSC_ENABLE;
+-		}
+-	}
+-
+-	for (i = 0; i < 24; i++)
+-		hdmi_writeb(hdmi, HDMI_VIDEO_CSC_COEF + i,
+-			    coeff_csc[csc_mode][i]);
+-
+-	value = v_SOF_DISABLE | csc_enable | v_COLOR_DEPTH_NOT_INDICATED(1);
++	value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
+-	hdmi_modb(hdmi, HDMI_VIDEO_CONTRL, m_VIDEO_AUTO_CSC |
+-		  m_VIDEO_C0_C2_SWAP, v_VIDEO_AUTO_CSC(auto_csc) |
+-		  v_VIDEO_C0_C2_SWAP(c0_c2_change));
  
-@@ -443,7 +425,6 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
++	hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
++		  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
++		  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
++		  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
+ 	return 0;
+ }
+ 
+@@ -425,8 +382,6 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
  	struct drm_display_info *display = &hdmi->connector.display_info;
  	u8 vic = drm_match_cea_mode(mode);
  
--	hdmi->hdmi_data.enc_in_format = HDMI_COLORSPACE_RGB;
- 	hdmi->hdmi_data.enc_out_format = HDMI_COLORSPACE_RGB;
- 
+-	hdmi->hdmi_data.enc_out_format = HDMI_COLORSPACE_RGB;
+-
  	if ((vic == 6) || (vic == 7) ||
+ 	    (vic == 21) || (vic == 22) ||
+ 	    (vic == 2) || (vic == 3) ||
 
 -- 
 2.41.0
