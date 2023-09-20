@@ -2,207 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C767A7908
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7227A7912
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234323AbjITKUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S234235AbjITKV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233864AbjITKUK (ORCPT
+        with ESMTP id S233785AbjITKV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:20:10 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2048.outbound.protection.outlook.com [40.107.247.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871C5AC;
-        Wed, 20 Sep 2023 03:20:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O5HQwT670UVX8mnI0ax+FZj9EsuY4esnkzbGJCLSr3sgHEbv+A0PtTLSObG5YKXPWqmENTjruN0bIPsmLSaZ7Xdgi4lD2Y0EvL7wf1ZFGOHk958e2ZNomWAC0aTkT3fwjCEJpB92qw3diCmSzea+Si8AwyhXJ3LFbgg9CAATA6UrImQajy33h/WZYLst+Z/K+58SNHKO4NdvvGvygugCOSF4ZSjd4bmMcsgJeVq8YSqHer8Q27SYBuYaLZihmlX9lzB8payeJ2SpJYwBGcYoyQJLRrjkc3arM3eksbvAYB8+G30T/7N+Lr39dwxTOBHdH6YkGJRk0hhPtvU5v2mdPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YAINhEdYTcENyXk8OY5ai9zN5pJCicyvFXeYrjOYSPk=;
- b=Tk055o/G+0dcH5nVVPu9VlH1hxH7IhX5z7RJXT5M0BCw21Lw9/E3Hi41eI6rEfUGOZGGybO9QWdVrY0HKfa2us17bC4/kndQh24Xv6G/AZ2QdnUv4P7F5ijRCr6NSbc7xVcchYjzS3+Pi52ePlvQw5il0i7xBmDoNO9KQd63Hl3f5JwN+18eCHkGvV7OWbrHMRsuzO5RPVnTfx6dmdqVGeW8CVboANe2qZP7tGhl3U3ofPMZDNInd7q+OWy17yYMlSwrCoSSMerTK4LmrU3YLX+3pucK1sonCwvPp3qne8ycMKWXWDCGWW2GpJxlxoaMDZwEy/WsU/f8ErwbVkT6qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YAINhEdYTcENyXk8OY5ai9zN5pJCicyvFXeYrjOYSPk=;
- b=4dMO9RPLB8esifBXGX+b69aSKwYBMKuuu9SbliM2w+93wU3sv8Wh0ypn6QH1p5e2pLrGGsGlX5zBguqFOfjixxMG6DNB/LhVhz9ujtqLtoow8uZliP2SgPIs9SUAImRtiHdt7K82+QRBgNyEBhSQHbl2H18jtGyoffTOd49SNCHhFmIqnv51HMK4cpDXI0B9+zhDzbcsfZRYLPTq6Q5t+o5vKOsEZVOWieQtE7F9ovHr+BAEd2L2dO92Lb+6M3vdXY7OswSe9uFRZ2ER4YhpDzXBz91uKTRKFkmdaQV+MvypNYOVKX087sx6eZ6L7BRHgwbPnUpYBXMkFhQktqlnNA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DBBPR04MB7788.eurprd04.prod.outlook.com (2603:10a6:10:1e4::15)
- by DB9PR04MB9703.eurprd04.prod.outlook.com (2603:10a6:10:302::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
- 2023 10:20:00 +0000
-Received: from DBBPR04MB7788.eurprd04.prod.outlook.com
- ([fe80::5b25:12c8:9f51:9b31]) by DBBPR04MB7788.eurprd04.prod.outlook.com
- ([fe80::5b25:12c8:9f51:9b31%4]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 10:20:00 +0000
-Message-ID: <aaed79d5-d683-d1bc-7ba1-b33c8d6db618@suse.com>
-Date:   Wed, 20 Sep 2023 13:19:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v10 09/38] x86/fred: Disable FRED support if
- CONFIG_X86_FRED is disabled
-Content-Language: en-US
-To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, andrew.cooper3@citrix.com,
-        jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-10-xin3.li@intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20230914044805.301390-10-xin3.li@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0098.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:cb::15) To DBBPR04MB7788.eurprd04.prod.outlook.com
- (2603:10a6:10:1e4::15)
+        Wed, 20 Sep 2023 06:21:26 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8385194;
+        Wed, 20 Sep 2023 03:21:20 -0700 (PDT)
+Received: from fsav311.sakura.ne.jp (fsav311.sakura.ne.jp [153.120.85.142])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38KAKb2V096280;
+        Wed, 20 Sep 2023 19:20:37 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav311.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp);
+ Wed, 20 Sep 2023 19:20:37 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38KAKaKw096276
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 20 Sep 2023 19:20:36 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <ec37cd2f-24ee-3273-c253-58d480569117@I-love.SAKURA.ne.jp>
+Date:   Wed, 20 Sep 2023 19:20:35 +0900
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DBBPR04MB7788:EE_|DB9PR04MB9703:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5e38e81a-8c4e-4991-7042-08dbb9c32549
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZbyrK9C+nN2sIcAa9U8A4mG00Z/bAaHO+AuovHU6defTCjOQsINvYY6lphvwL0TupGeSiieGz/Jg3WyX2rp8veexmyXx4Tz8KgWFzTm0rYAbgWmwivrGvLMgn0jPuYS7q5IklfIhkYrUYtUleH8ejqAZNpj2k0gtYK7pmuP3Ds+3277tuBgv6anaALRNczHIlJU6kJY0NTVzCPxyGetMn5mMFIBoZIOTaFsGR8UySX7rg1LjpHw0zOa3YXs6MriIb/8fltt5zHFk97Xdz+eoVwlq7BkTMCDp+5LWWRRl70HmwyYqy/+9t5f3u8yQHN/uP17w2SLDjAooROBR8SwrdOtiOQV5HIVQyIRxW/zucBlLwAt9dhWIKRsmvT4Cq2E8AHusYguWNs6el1oMkHBRntcxelM0k1fnffndSLb2Aif1XQFTESChf3rGxkqPewgS3uA0I4ogsns/n3nkaoIlp9Uy5VQKwLidtK3538JzuupBYfFw3hvmJRd3ihWuAKRiOGMS8tylKQnUJAuwrQ1W9FWAeIdTwca7ouCh/r0q3Gi7WeFxxuIokus/XoikFSUpaxLk7/aJYPDv0CNfZonsPkqEZ+65qSM3KPaB97V2Xvzs1a9jv6pmMzE/vByQ9Ndh0KrqQhM/q1wG/56fXMTipg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7788.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(39860400002)(136003)(1800799009)(186009)(451199024)(26005)(2616005)(8676002)(8936002)(4326008)(7416002)(83380400001)(2906002)(31696002)(36756003)(86362001)(6506007)(6486002)(31686004)(5660300002)(6666004)(316002)(6512007)(478600001)(66946007)(66556008)(41300700001)(38100700002)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dGUzUzVlT09tVWt4cTltMXQ3cEZnME5OUmJqUFJnUXgzRlBBa3dGbmdMVDVV?=
- =?utf-8?B?ZFZhZWhLdU9ZWFlKQ2FiUFVnNXZhN2QyK2I3clBxN2dsWDV2clZ3aWRsKzEr?=
- =?utf-8?B?dzd6WUhlSC9ick1uSG9teFR2eGVwb0cxK1lNVTRVY1pTaDNQdzRjaDh4NkJl?=
- =?utf-8?B?VDF5d3BHank3dnFKUGtCQmgzVk5uTmhJR01MMHVDZ3pjNm9QczZqQU9TeHJn?=
- =?utf-8?B?K1owVitaaVU3bUNuYWwvdGlhZDFxell4UEtHVmtvejgyV3VTYlhUSk9kRkht?=
- =?utf-8?B?ejl1Q1FrYlVPeFlubTBDTFhzMHhqNi9EVjJVOWRNNnMwdzVIR0hFbU8vSExm?=
- =?utf-8?B?dWZ5U2V3WWhDRy9wZVU3Sk13T25XSTdjWVh1V3dZeThsbE5TRTJ3WFArUXdR?=
- =?utf-8?B?QVNXRlFFb3R3TDg0Z1ZXUlU4ZUgvU1QyQmdJS05BTEhlL1BPeUtEQWU5WDFP?=
- =?utf-8?B?QmVzb3VKSTJLcVlSSnVpWDNIZjBEZ0I5eVVGOHVPUjZXSGRseWo3TXhDMDN4?=
- =?utf-8?B?MElteE9mTFhoNkdrZmJSM3FVcm9pTzBnelFNaHhEbVF2cVFRZW5KK1pqQith?=
- =?utf-8?B?QU1wZ0dqdW9CQ2o3ZExaOGQzbGE2RHFpRFVRd21JOGhYTHBOTzRSd0QvYkZJ?=
- =?utf-8?B?MkZ0dEdpYmswd3BDSFc4ZVZ1bnE0SS9QanZZbTVORm9sSVVSQkE5empUdHpz?=
- =?utf-8?B?dlFVa0pyTlY1WUZZb01JblRoSDRhU09nMjZQUXNMZ3diK1NiRFovK2FKenhC?=
- =?utf-8?B?V2lyeklWUGUxampJdXNvZTFxRXBGVExJOEpRV3NQZWhseHZNZ0ZyTkMzNE5C?=
- =?utf-8?B?cVFRcXlSTGlPcitERWRENmF0bDY1WUZPeVFqQ3YxclVzZGVMUjVReTFiMThO?=
- =?utf-8?B?bGdqenJNZXNIV05RSC9IaWwrY01jVHpFTmp0bDJuYUl2NG1CakRUWVI1OEtX?=
- =?utf-8?B?T3N2UFFXY2lDUFU4NVNWODJVOEdlYUxOUDdRcXcra2lKd3IyTnVuUTRRRWIv?=
- =?utf-8?B?cTRvUjRoOHVMdkpPUkZzUGlDK2p1MlhDRFMwbldoaTAraE0zQklIcWhlQmp1?=
- =?utf-8?B?OWZjdUx6M0d0NmtDQmhhVlVjNUxmakcxbnl5UzBJUmJmM0tKVXZ4cGQ4bUQv?=
- =?utf-8?B?clJwZ0U0Z1dqN24vbFFLY2orZDFpMEtncENMdkMrdDZxa0lXYzc0Q1dzUkp0?=
- =?utf-8?B?STlCdlIwVUVUTG50TWU2UUJhRllVTENPWlQzNi8vVnNYTWNQeWdveHB6blpl?=
- =?utf-8?B?OUNWemkxbnpHd05JK3dnNUttSVJzazNGNUtjWjh2VGJWa2RjVENpV2xYTmFT?=
- =?utf-8?B?SU9FV3J5QlNGMDF6UnVWUTlyU2J1bkpRcWVLbFNVYzRhWXJsbmRpZGRpd2s0?=
- =?utf-8?B?U0Z2NExTSWFIclNoZzBtL1dud3dxQ2RGOTZ3NE8rc0Z6UGR1YmVrRjMyRHFT?=
- =?utf-8?B?Q29JNk5CdjR4K2kyUUZGZEt1eHJ3QTBDTXJzQ0FSSVArT0hLR24zYkg1cVR4?=
- =?utf-8?B?M3B5VWVJUmJCT2FCbVBEbWxXWk1pNUl6ZXY5blowYkg2ekpscVNIaFcrQkts?=
- =?utf-8?B?N1RYcXJ3T2dEZ0ZLYnhHN2FZODI0V05idjdvL1NxTFZPN1RoQnhPSDJidy94?=
- =?utf-8?B?ZTdwYnVEajIwd0dFRzdjNjZMYUNBbzRhSnJNU1BCNmVZZjdkc3ZFanZnMUZU?=
- =?utf-8?B?RmoxOWtIYks5anJVdlRQQkh1N0kxTnRUTk9Vd0IxTkJXaTk4MGVuM2xuQ3NB?=
- =?utf-8?B?T1hLcm9oMnNQWlN6RVlYQ3lUNnFqQVlreVVzNGlrNVJ2TzhFd2k2cEYvVlJQ?=
- =?utf-8?B?QXg2d2REWGRjcUpRMzNDc3RVUVMvNExPbHBpTXA1SHRsbnByZW02ajQ5azNG?=
- =?utf-8?B?TUNTaC80L3E3cjZQUW10dlI2Ni9pbDNyUmJYZVhmYzdsNmlsSkN0em5rV1BS?=
- =?utf-8?B?Q2xPTDdGQ1pPZXdpNmhkb3lwTUdDTWtwVDhIT1BUSXV4Yjh3L3FmWXBlUXpU?=
- =?utf-8?B?YWJIMDdVM2ZKbFlab3YwUzZWU3Q2VXlEa3FiMlNNN1FFeTgwNVlpM3I3Tmw5?=
- =?utf-8?B?Zit2VWhlTWU5MWlHRkdRRjIybHNJY2p4NUFNM3JuU3hZeVFaRnpWZVJ6aTRL?=
- =?utf-8?Q?gkjQgbXLoUdX8YFCFNLsh28bJ?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e38e81a-8c4e-4991-7042-08dbb9c32549
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7788.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 10:20:00.0455
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Gw/P3fDnlhKg24u3Qd13vdZu029a/Zv4oqik/MLVWTKMPaHSo3OcXBRu7GKof8FbiJ6sBXov8DVqEYMP+/5FNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9703
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v15 01/11] LSM: Identify modules by more than name
+Content-Language: en-US
+To:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
+        linux-security-module@vger.kernel.org
+Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, stephen.smalley.work@gmail.com,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        mic@digikod.net, Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <20230912205658.3432-1-casey@schaufler-ca.com>
+ <20230912205658.3432-2-casey@schaufler-ca.com>
+ <1f5e725d-58b6-eca2-97dc-d7c1209ff167@I-love.SAKURA.ne.jp>
+ <568c0730-b458-04b4-dbfa-77da1758aa05@schaufler-ca.com>
+ <94743c22-bc76-e741-e577-3e0845423f69@I-love.SAKURA.ne.jp>
+ <6df9f8b8-5653-09a5-ae0a-6526016abaff@schaufler-ca.com>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <6df9f8b8-5653-09a5-ae0a-6526016abaff@schaufler-ca.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14.09.23 г. 7:47 ч., Xin Li wrote:
-> From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
+On 2023/09/18 1:38, Casey Schaufler wrote:
+> On 9/15/2023 11:32 PM, Tetsuo Handa wrote:
+>> +/**
+>> + * struct lsm_id - Identify a Linux Security Module.
+>> + * @lsm: name of the LSM, must be approved by the LSM maintainers
+>>
+>> Why can't you understand that "approved by the LSM maintainers" is a horrible
+>> requirement for LSM modules which cannot become one of in-tree LSMs?
+>>
+>> One of reasons for not every proposed LSM module can become in-tree is out of
+>> the LSM community's resources for reviewing/maintaining (or failure to acquire
+>> attention from the LSM community enough to get reviewed).
+>>
+>> + * @id: LSM ID number from uapi/linux/lsm.h
+>>
+>> Since the LSM community cannot accept all of proposed LSMs due to limited resources,
+>> the LSM community is responsible for allowing whatever proposed LSMs (effectively any
+>> publicly available LSMs) to live as out-of-tree LSMs, by approving the LSM name and
+>> assigning a permanent LSM ID number.
+>>
+>> The only exception the LSM community can refuse to approve/assign would be that the name
+>> is not appropriate (e.g. a LSM module named "FuckYou") or the name is misleading (e.g.
+>> "selinux+", "smock", "tomato", "apparmour"). Otherwise, no matter how many times you repeat
+>> "we don't care out-of-tree LSMs" or "I do not intentionally plan to make life difficult for
+>> the out-of-tree LSMs", this patch is intended to lock out out-of-tree LSMs.
 > 
-> Add CONFIG_X86_FRED to <asm/disabled-features.h> to make
-> cpu_feature_enabled() work correctly with FRED.
-> 
-> Originally-by: Megha Dey <megha.dey@intel.com>
-> Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> ---
->   arch/x86/include/asm/disabled-features.h       | 8 +++++++-
->   tools/arch/x86/include/asm/disabled-features.h | 8 +++++++-
->   2 files changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-> index 702d93fdd10e..3cde57cb5093 100644
-> --- a/arch/x86/include/asm/disabled-features.h
-> +++ b/arch/x86/include/asm/disabled-features.h
-> @@ -117,6 +117,12 @@
->   #define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
->   #endif
->   
-> +#ifdef CONFIG_X86_FRED
-> +# define DISABLE_FRED	0
-> +#else
-> +# define DISABLE_FRED	(1 << (X86_FEATURE_FRED & 31))
-> +#endif
-> +
->   /*
->    * Make sure to add features to the correct mask
->    */
-> @@ -134,7 +140,7 @@
->   #define DISABLED_MASK11	(DISABLE_RETPOLINE|DISABLE_RETHUNK|DISABLE_UNRET| \
->   			 DISABLE_CALL_DEPTH_TRACKING|DISABLE_USER_SHSTK)
->   #define DISABLED_MASK12	(DISABLE_LAM)
-> -#define DISABLED_MASK13	0
-> +#define DISABLED_MASK13	(DISABLE_FRED)
->   #define DISABLED_MASK14	0
->   #define DISABLED_MASK15	0
->   #define DISABLED_MASK16	(DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_UMIP| \
-> diff --git a/tools/arch/x86/include/asm/disabled-features.h b/tools/arch/x86/include/asm/disabled-features.h
-> index fafe9be7a6f4..d540ecdd8812 100644
-> --- a/tools/arch/x86/include/asm/disabled-features.h
-> +++ b/tools/arch/x86/include/asm/disabled-features.h
-> @@ -105,6 +105,12 @@
->   # define DISABLE_TDX_GUEST	(1 << (X86_FEATURE_TDX_GUEST & 31))
->   #endif
->   
-> +#ifdef CONFIG_X86_FRED
-> +# define DISABLE_FRED	0
-> +#else
-> +# define DISABLE_FRED	(1 << (X86_FEATURE_FRED & 31))
-> +#endif
-> +
->   /*
->    * Make sure to add features to the correct mask
->    */
-> @@ -122,7 +128,7 @@
->   #define DISABLED_MASK11	(DISABLE_RETPOLINE|DISABLE_RETHUNK|DISABLE_UNRET| \
->   			 DISABLE_CALL_DEPTH_TRACKING)
->   #define DISABLED_MASK12	(DISABLE_LAM)
-> -#define DISABLED_MASK13	0
-> +#define DISABLED_MASK13	(DISABLE_FRED)
+> That is a false statement. There is a huge difference between apathy and malice. 
 
-FRED feature is defined in cpuid word 12, not 13
+Dave Chinner wrote at https://lkml.kernel.org/r/ZQo94mCzV7hOrVkh@dread.disaster.area
+as a response to "We don't care about out of tree filesystems.":
 
->   #define DISABLED_MASK14	0
->   #define DISABLED_MASK15	0
->   #define DISABLED_MASK16	(DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_UMIP| \
+  In this case, we most certainly do care. Downstream distros support
+  all sorts of out of tree filesystems loaded via kernel modules, so a
+  syscall that is used to uniquely identify a filesystem type to
+  userspace *must* have a mechanism for the filesystem to provide that
+  unique identifier to userspace.
+
+  Fundamentally, the kernel does not and should not dictate what
+  filesystem types it supports; the user decides what filesystem they
+  need to use, and it is the kernel's job to provide infrastructure
+  that works with that user's choice.
+
+Can you see? What you are trying to is NACKed by simple s/filesystem/LSM/g .
+
+The kernel is ultimately there for users. The kernel is never there for doing patent
+acquisition competition. If the LSM community accepts only LSMs which won the patent
+acquisition competition as in-tree (as described in "ANN: new LSM guidelines"),
+the LSM community is responsible for allowing any publicly available LSMs to live as
+out of tree modules.
+
+Unless the policy is updated to approve any publicly available LSMs and assign a unique
+identifier (which can be passed to the syscalls introduced by this series) to each
+publicly available LSM, this series is a regression.
+
+The "[PATCH v15 01/11] LSM: Identify modules by more than name" is exactly doing
+"LSM: allow only in-tree LSM modules, lock out out-of-tree LSM modules".
+Nack, Nack, Nack, Nack, Nack!!!!!
+
+> 
+>>
+>> + *
+>> + * Contains the information that identifies the LSM.
+>> + */
+>> +struct lsm_id {
+>> +	const char	*name;
+>> +	u64		id;
+>> +};
+>>
+>> Therefore, unless you change the policy for assigning LSM ID, I keep NACK on this change.
+>>
+
