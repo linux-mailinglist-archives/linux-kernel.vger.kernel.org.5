@@ -2,155 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CEC7A87A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA637A87AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235225AbjITOxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        id S235319AbjITOyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234330AbjITOxu (ORCPT
+        with ESMTP id S236655AbjITOyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:53:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78473A9;
-        Wed, 20 Sep 2023 07:53:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10CFC433C7;
-        Wed, 20 Sep 2023 14:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695221624;
-        bh=pv/mshlnOGkJ5ebR+d6AqRiPt7G4UklH+5Y/YwatjVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hUm3CDqBbqdWl1gTcXLfMGrJ4YfO3wokaDGaQDO3xOEWDbllQ4Mfpj/KueremMgA5
-         pBL/JzWz4+0hsTX69O5jnf1yRuwKeufAxYGRi9hiZ4ho9usSCqwyLkEScujErQvTLd
-         pH8R4MxKr1CGxSHyPru+0iqA3gh7pydF57H5YT0p+7Rd0zhQBTnYL0en9hUyWFooe+
-         Mdfj3r0q5YN+5TWuL0JXteBwUKeABbsXdunQnhbthSc1EwQj0hbuY8ac5vX7VekjTf
-         fGOHz5omQ2+B/RCVrXr9woAH7FyctwMygMiv3giawQBEFR5HdvJ9UunmoJQb2brq0N
-         41leRmH4Vm1Jg==
-Date:   Wed, 20 Sep 2023 16:53:26 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Chuck Lever III <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>
-Cc:     Bruno Haible <bruno@clisp.org>,
-        Xi Ruoyao <xry111@linuxfromscratch.org>,
-        "bug-gnulib@gnu.org" <bug-gnulib@gnu.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>,
-        "coda@cs.cmu.edu" <coda@cs.cmu.edu>,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bo b Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <l@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "v9fs@lists.linux.dev" <v9fs@lists.linux.dev>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "codalist@coda.cs.cmu.edu" <codalist@coda.cs.cmu.edu>,
-        "ecryptfs@vger.kernel.org" <ecryptfs@vger.kernel.org>,
-        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "ocfs2-devel@lists.linux.dev" <ocfs2-devel@lists.linux.dev>,
-        "devel@lists.orangefs.org" <devel@lists.orangefs.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-Message-ID: <20230920-keine-eile-c9755b5825db@brauner>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230919110457.7fnmzo4nqsi43yqq@quack3>
- <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
- <4511209.uG2h0Jr0uP@nimes>
- <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
- <20230920-leerung-krokodil-52ec6cb44707@brauner>
- <20230920101731.ym6pahcvkl57guto@quack3>
- <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
- <20230920-raser-teehaus-029cafd5a6e4@brauner>
- <57C103E1-1AD2-4D86-926C-481BC6BDB191@oracle.com>
+        Wed, 20 Sep 2023 10:54:47 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509A7A9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:54:37 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7748ca56133so55805539f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:54:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695221676; x=1695826476; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4gSTAFCjAjz9EbkEdAVZmbLCM6zbrZ3KXGMs93zaaHA=;
+        b=pHw+0sFW2VgyotjYA3YMxX2dEzmfe4ZdqEFLEx5AAeysNIYBIEqvtnNEZ4h9arBcle
+         2X3axa7iMeyb2QPmUbug4pBG1ZEVBloXD07W/2kwDtD5HAxYVuwCEsDneoVY1+9YcjNA
+         FIe3NHyIp5Jt2gCf1S4q3WOU4zp2pX8+SzHaz2ReeaJssJVmK3hDfCLiQ60QJknRXciQ
+         7KxVqpdx3SeyPA6Mi4G0tbJeD39ve0v1YxW0eGr2usewwxSOmojw3PV57zJlAghJxYhh
+         TngsrNz9UsZWpGj75D+lO7XZz2y9wEYLpQ1Rw3gBwHON7W6tdKTga2hj684o4cuCFPH5
+         Pxlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695221676; x=1695826476;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4gSTAFCjAjz9EbkEdAVZmbLCM6zbrZ3KXGMs93zaaHA=;
+        b=iXIz4Vfe1HePqWqdLdoWidAJutoEex2dfFuXWUoiIY0TJWEGX3m0SB/ioZC3kxby5u
+         bjLfM9FuFkGRij/E+GExe4bNCGItCo+NitQ3w3s3/EXsmejggYOoHtHVaMmyo296Y7up
+         2qgtLD6Av3n+0IPFOTa82PbIwXV6HPbkU2KT0XQvY4x4gwuXzcl/pdCO28/1URJeykiE
+         THYfxFnzWCaPwYZIBtysZaZk2FFJP5tHjEsOL5O1khaobHjQidWdHw9coJjWKmBSDJ9a
+         e9GaPS8+VbHtxnj5B4kzf1RFBfetsFfpB1v68z+9BfAQMgbGcKZKtH5DM+4Cusa9LO82
+         Su6w==
+X-Gm-Message-State: AOJu0Yzu80oFLUg2NDzbsVTuxURCsuNkAtIFNLiqggS9XowkpkZaDAWd
+        0iYhY6G87dbWqhxaMzWXosyGaDBPnRHfwWXJneh4rw==
+X-Google-Smtp-Source: AGHT+IGXmrDRzeD9focLY39nrOY1tY3KU5q6K/zPWh+OttDDNs9l75IOAgr+eNaPE0pqrFWNGFsT7Q==
+X-Received: by 2002:a05:6602:4996:b0:79a:c487:2711 with SMTP id eg22-20020a056602499600b0079ac4872711mr3550341iob.0.1695221676571;
+        Wed, 20 Sep 2023 07:54:36 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id g8-20020a02c548000000b004290f6c15bfsm4219015jaj.145.2023.09.20.07.54.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 07:54:35 -0700 (PDT)
+Message-ID: <81e0ef16-c780-478b-aeb0-5564aa010b13@kernel.dk>
+Date:   Wed, 20 Sep 2023 08:54:34 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <57C103E1-1AD2-4D86-926C-481BC6BDB191@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHSET v4 0/5] Add io_uring support for waitid
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de, asml.silence@gmail.com
+References: <20230909151124.1229695-1-axboe@kernel.dk>
+ <26ddc629-e685-49b9-9786-73c0f89854d8@kernel.dk>
+ <20230919-beinen-fernab-dbc587acb08d@brauner>
+ <c20d61f4-0e4f-49a8-804f-d827ff705dcf@kernel.dk>
+In-Reply-To: <c20d61f4-0e4f-49a8-804f-d827ff705dcf@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> You could put it behind an EXPERIMENTAL Kconfig option so that the
-> code stays in and can be used by the brave or foolish while it is
-> still being refined.
+On 9/19/23 8:57 AM, Jens Axboe wrote:
+> On 9/19/23 8:45 AM, Christian Brauner wrote:
+>> On Tue, Sep 12, 2023 at 11:06:39AM -0600, Jens Axboe wrote:
+>>> On 9/9/23 9:11 AM, Jens Axboe wrote:
+>>>> Hi,
+>>>>
+>>>> This adds support for IORING_OP_WAITID, which is an async variant of
+>>>> the waitid(2) syscall. Rather than have a parent need to block waiting
+>>>> on a child task state change, it can now simply get an async notication
+>>>> when the requested state change has occured.
+>>>>
+>>>> Patches 1..4 are purely prep patches, and should not have functional
+>>>> changes. They split out parts of do_wait() into __do_wait(), so that
+>>>> the prepare-to-wait and sleep parts are contained within do_wait().
+>>>>
+>>>> Patch 5 adds io_uring support.
+>>>>
+>>>> I wrote a few basic tests for this, which can be found in the
+>>>> 'waitid' branch of liburing:
+>>>>
+>>>> https://git.kernel.dk/cgit/liburing/log/?h=waitid
+>>>>
+>>>> Also spun a custom kernel for someone to test it, and no issues reported
+>>>> so far.
+>>>
+>>> Forget to mention that I also ran all the ltp testcases for any wait*
+>>> syscall test, and everything still passes just fine.
+>>
+>> I think the struct that this ends up exposing to io_uring is pretty ugly
+>> and it would warrant a larger cleanup. I wouldn't be surprised if you
+>> get some people complain about this.
+>>
+>> Other than that I don't have any complaints about the series.
+> 
+> io_uring only really needs child_wait and wo_pid on the wait_opts side,
+> for waitid_info it needs all of it. I'm assuming your worry is about the
+> former rather than the latter.
+> 
+> I think we could only make this smaller if we had a separate entry point
+> for io_uring, which would then make the code reuse a lot smaller. Right
+> now we just have __do_wait() abstracted out, and if we added a third
+> struct that has child_wait/wo_pid and exposed just that, we could not
+> share this infrastructure.
+> 
+> So as far as I can tell, there's no way to make the sharing less than it
+> is, at least not without adding cost of more code and less reuse.
+> 
+> Shrug?
 
-Given that the discussion has now fully gone back to the drawing board
-and this is a regression the honest thing to do is to revert the five
-patches that introduce the infrastructure:
+Took a closer look, and I don't think it's really possible to split much
+out of wait_opts. You may only need child_wait/wo_pid for setup, but on
+the wakeup side you type and flags as well. We could probably add that
+third struct and move wo_rusage and notask_error out, but seems very
+pointless at that point just to avoid those two. And if we do wire up
+rusage at some point, then we're left with just the one.
 
-ffb6cf19e063 ("fs: add infrastructure for multigrain timestamps")
-d48c33972916 ("tmpfs: add support for multigrain timestamps")
-e44df2664746 ("xfs: switch to multigrain timestamps")
-0269b585868e ("ext4: switch to multigrain timestamps")
-50e9ceef1d4f ("btrfs: convert to multigrain timestamps")
+-- 
+Jens Axboe
 
-The conversion to helpers and cleanups are sane and should stay and can
-be used for any solution that gets built on top of it.
-
-I'd appreciate a look at the branch here:
-git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.ctime.revert
-
-survives xfstests.
