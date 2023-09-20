@@ -2,60 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD34E7A70CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E057A70CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbjITDDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 23:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
+        id S232358AbjITDEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 23:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbjITDDn (ORCPT
+        with ESMTP id S231675AbjITDEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 23:03:43 -0400
-Received: from out-221.mta1.migadu.com (out-221.mta1.migadu.com [95.215.58.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7613EC6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:03:36 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695179014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1uzlbMLsHNxdyHyPYcnTyYym5TRZCmDz2enQEvobPPM=;
-        b=ApLVPmLvcjA/Lkjvt3sMoF1OIQd3MZ8D4lujojaPiZygHu3B7njq65su0pjj4bbuHjxuq2
-        fc4KWWDd3cW8q1MYinxxnq/BjgFAulHLnUWCGvXmBAvbS22DpxqmbSxxf/6br1vMnXFlcC
-        EqqhzlxTUk31+SqTNUWWl0dLQ7vcKpY=
-Mime-Version: 1.0
-Subject: Re: [PATCH v4 4/8] hugetlb: perform vmemmap restoration on a list of
- pages
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <CED64A95-00E8-4B52-A77A-8B13D2795507@linux.dev>
-Date:   Wed, 20 Sep 2023 11:03:21 +0800
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2FDB2018-74AE-4514-9B43-01664A8E5DBF@linux.dev>
-References: <20230918230202.254631-1-mike.kravetz@oracle.com>
- <20230918230202.254631-5-mike.kravetz@oracle.com>
- <b9d03e01-7582-8ec9-d219-941184166835@linux.dev>
- <20230919205756.GB425719@monkey>
- <CED64A95-00E8-4B52-A77A-8B13D2795507@linux.dev>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-X-Migadu-Flow: FLOW_OUT
+        Tue, 19 Sep 2023 23:04:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0C9C6;
+        Tue, 19 Sep 2023 20:04:44 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38K2GBV3028718;
+        Wed, 20 Sep 2023 03:04:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=qcppdkim1;
+ bh=72Zh74UtllpRjj9hNt5DbTA6YqNubjF+pjgqAMLRreI=;
+ b=CL+PDhwKUprLPGZ3hYfPGHj+LGEfmBQX4VjTYmQ4lo+x+g8kQvCuBFiWEK2UrKGbuazp
+ NQNp6jHnm2sskDkCbodfRCq9AnxlmsKCYFTRutd3kUn04EfYKerRHDL0ChBacO/B/nG0
+ yj9VjUSxpV+DkjcNbMsp5cQVSenESoOyr9ijyM2ksv24lC0D02lYI0vKwNsCnkxMtQzU
+ JuACoBVVcQ0mQJJIJt1TWpZc+Pf4mEOwPldkZvFKZzcsjZVtM21MrGeCicDnx9de8WvN
+ StAdUUUsr+GPNW78ageBJT1ks02s/DZ1JfBFkGrMPghXQVhFl4yUQCjIQJpBAES7nosT hQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t77wna522-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 03:04:30 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38K34Tlq016296
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 03:04:29 GMT
+Received: from hu-omprsing-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 19 Sep 2023 20:04:24 -0700
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+To:     <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+Subject: [PATCH V2] crypto: qcom-rng - Add hw_random interface support
+Date:   Wed, 20 Sep 2023 08:34:08 +0530
+Message-ID: <20230920030408.3181394-1-quic_omprsing@quicinc.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230905062420.3983268-1-quic_omprsing@quicinc.com>
+References: <20230905062420.3983268-1-quic_omprsing@quicinc.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: dWJwYM3rol0T-ynWGlypJANTNuTyXqH6
+X-Proofpoint-GUID: dWJwYM3rol0T-ynWGlypJANTNuTyXqH6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_02,2023-09-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ clxscore=1015 suspectscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ mlxlogscore=961 priorityscore=1501 spamscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309200023
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,184 +81,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add hw_random interface support in qcom-rng driver as new IP block
+in Qualcomm SoC has inbuilt NIST SP800 90B compliant entropic source
+to generate true random number.
 
+Keeping current rng_alg interface as well for random number generation
+using Kernel Crypto API.
 
-> On Sep 20, 2023, at 10:56, Muchun Song <muchun.song@linux.dev> wrote:
->=20
->=20
->=20
->> On Sep 20, 2023, at 04:57, Mike Kravetz <mike.kravetz@oracle.com> =
-wrote:
->>=20
->> On 09/19/23 17:52, Muchun Song wrote:
->>>=20
->>>=20
->>> On 2023/9/19 07:01, Mike Kravetz wrote:
->>>> The routine update_and_free_pages_bulk already performs vmemmap
->>>> restoration on the list of hugetlb pages in a separate step.  In
->>>> preparation for more functionality to be added in this step, create =
-a
->>>> new routine hugetlb_vmemmap_restore_folios() that will restore
->>>> vmemmap for a list of folios.
->>>>=20
->>>> This new routine must provide sufficient feedback about errors and
->>>> actual restoration performed so that update_and_free_pages_bulk can
->>>> perform optimally.
->>>>=20
->>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>>> ---
->>>> mm/hugetlb.c         | 36 ++++++++++++++++++------------------
->>>> mm/hugetlb_vmemmap.c | 37 +++++++++++++++++++++++++++++++++++++
->>>> mm/hugetlb_vmemmap.h | 11 +++++++++++
->>>> 3 files changed, 66 insertions(+), 18 deletions(-)
->>>>=20
->>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>>> index d6f3db3c1313..814bb1982274 100644
->>>> --- a/mm/hugetlb.c
->>>> +++ b/mm/hugetlb.c
->>>> @@ -1836,36 +1836,36 @@ static void =
-update_and_free_hugetlb_folio(struct hstate *h, struct folio *folio,
->>>> static void update_and_free_pages_bulk(struct hstate *h, struct =
-list_head *list)
->>>> {
->>>> + int ret;
->>>> + unsigned long restored;
->>>>  struct folio *folio, *t_folio;
->>>> - bool clear_dtor =3D false;
->>>>  /*
->>>> -  * First allocate required vmemmmap (if necessary) for all folios =
-on
->>>> -  * list.  If vmemmap can not be allocated, we can not free folio =
-to
->>>> -  * lower level allocator, so add back as hugetlb surplus page.
->>>> -  * add_hugetlb_folio() removes the page from THIS list.
->>>> -  * Use clear_dtor to note if vmemmap was successfully allocated =
-for
->>>> -  * ANY page on the list.
->>>> +  * First allocate required vmemmmap (if necessary) for all =
-folios.
->>>>   */
->>>> - list_for_each_entry_safe(folio, t_folio, list, lru) {
->>>> - if (folio_test_hugetlb_vmemmap_optimized(folio)) {
->>>> - if (hugetlb_vmemmap_restore(h, &folio->page)) {
->>>> - spin_lock_irq(&hugetlb_lock);
->>>> + ret =3D hugetlb_vmemmap_restore_folios(h, list, &restored);
->>>> +
->>>> + /*
->>>> +  * If there was an error restoring vmemmap for ANY folios on the =
-list,
->>>> +  * add them back as surplus hugetlb pages.  add_hugetlb_folio() =
-removes
->>>> +  * the folio from THIS list.
->>>> +  */
->>>> + if (ret < 0) {
->>>> + spin_lock_irq(&hugetlb_lock);
->>>> + list_for_each_entry_safe(folio, t_folio, list, lru)
->>>> + if (folio_test_hugetlb_vmemmap_optimized(folio))
->>>>  add_hugetlb_folio(h, folio, true);
->>>> - spin_unlock_irq(&hugetlb_lock);
->>>> - } else
->>>> - clear_dtor =3D true;
->>>> - }
->>>> + spin_unlock_irq(&hugetlb_lock);
->>>>  }
->>>>  /*
->>>> -  * If vmemmmap allocation was performed on any folio above, take =
-lock
->>>> -  * to clear destructor of all folios on list.  This avoids the =
-need to
->>>> +  * If vmemmmap allocation was performed on ANY folio , take lock =
-to
->>>> +  * clear destructor of all folios on list.  This avoids the need =
-to
->>>>   * lock/unlock for each individual folio.
->>>>   * The assumption is vmemmap allocation was performed on all or =
-none
->>>>   * of the folios on the list.  This is true expect in VERY rare =
-cases.
->>>>   */
->>>> - if (clear_dtor) {
->>>> + if (restored) {
->>>>  spin_lock_irq(&hugetlb_lock);
->>>>  list_for_each_entry(folio, list, lru)
->>>>  __clear_hugetlb_destructor(h, folio);
->>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->>>> index 4558b814ffab..463a4037ec6e 100644
->>>> --- a/mm/hugetlb_vmemmap.c
->>>> +++ b/mm/hugetlb_vmemmap.c
->>>> @@ -480,6 +480,43 @@ int hugetlb_vmemmap_restore(const struct =
-hstate *h, struct page *head)
->>>>  return ret;
->>>> }
->>>> +/**
->>>> + * hugetlb_vmemmap_restore_folios - restore vmemmap for every =
-folio on the list.
->>>> + * @h: struct hstate.
->>>> + * @folio_list: list of folios.
->>>> + * @restored: Set to number of folios for which vmemmap was =
-restored
->>>> + * successfully if caller passes a non-NULL pointer.
->>>> + *
->>>> + * Return: %0 if vmemmap exists for all folios on the list.  If an =
-error is
->>>> + * encountered restoring vmemmap for ANY folio, an error code
->>>> + * will be returned to the caller.  It is then the responsibility
->>>> + * of the caller to check the hugetlb vmemmap optimized flag of
->>>> + * each folio to determine if vmemmap was actually restored.
->>>> + */
->>>> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
->>>> + struct list_head *folio_list,
->>>> + unsigned long *restored)
->>>> +{
->>>> + unsigned long num_restored;
->>>> + struct folio *folio;
->>>> + int ret =3D 0, t_ret;
->>>> +
->>>> + num_restored =3D 0;
->>>> + list_for_each_entry(folio, folio_list, lru) {
->>>> + if (folio_test_hugetlb_vmemmap_optimized(folio)) {
->>>> + t_ret =3D hugetlb_vmemmap_restore(h, &folio->page);
->>>=20
->>> I still think we should free a non-optimized HugeTLB page if we
->>> encounter an OOM situation instead of continue to restore
->>> vemmmap pages. Restoring vmemmmap pages will only aggravate
->>> the OOM situation. The suitable appraoch is to free a non-optimized
->>> HugeTLB page to satisfy our allocation of vmemmap pages, what's
->>> your opinion, Mike?
->>=20
->> I agree.
->>=20
->> As you mentioned previously, this may complicate this code path a =
-bit.
->> I will rewrite to make this happen.
->=20
-> Maybe we could introduced two list passed to =
-update_and_free_pages_bulk (this
-> will be easy for the callers of it), one is for non-optimized huge =
-page,
-> another is optimized one. In update_and_free_pages_bulk, we could =
-first
-> free those non-optimized huge page, and then restore vemmmap pages for
-> those optimized ones, in which case, the code could be simple.
-> hugetlb_vmemmap_restore_folios() dose not need to add complexity, =
-which
-> still continue to restore vmemmap pages and will stop once we =
-encounter
-> an OOM situation.
+Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+---
 
-BTW, maybe we should try again iff there are some non-optimized huge =
-page
-whose vmemmap pages are restored successfully previously and could be =
-freed
-first, then continue to restore the vmemmap pages of the remaining huge =
-pages.
-I think the retry code could be done in update_and_free_pages_bulk() as =
-well.
+Changes in V2:
+- Updated patch to fix the return value from qcom_rng_generate() to be
+  consistent with current implementation
+- Updated patch to make it more concise
+- Removed unnecessary use local variable and it's initialization
+- Updated patch to use devm_hwrng_register() instead of hwrng_register()
+- Updated subject line of the patch
 
->=20
-> Thanks.
->=20
->> --=20
->> Mike Kravetz
+This patch is depends on [1]
+[1] https://lore.kernel.org/lkml/20230824-topic-sm8550-rng-v2-4-dfcafbb16a3e@linaro.org/
 
+ drivers/crypto/qcom-rng.c | 65 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 58 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/crypto/qcom-rng.c b/drivers/crypto/qcom-rng.c
+index fb54b8cfc35f..e5a574a3cc59 100644
+--- a/drivers/crypto/qcom-rng.c
++++ b/drivers/crypto/qcom-rng.c
+@@ -7,6 +7,7 @@
+ #include <linux/acpi.h>
+ #include <linux/clk.h>
+ #include <linux/crypto.h>
++#include <linux/hw_random.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+ #include <linux/kernel.h>
+@@ -32,13 +33,18 @@ struct qcom_rng {
+ 	struct mutex lock;
+ 	void __iomem *base;
+ 	struct clk *clk;
+-	unsigned int skip_init;
++	struct qcom_rng_of_data *of_data;
+ };
+ 
+ struct qcom_rng_ctx {
+ 	struct qcom_rng *rng;
+ };
+ 
++struct qcom_rng_of_data {
++	bool skip_init;
++	bool hwrng_support;
++};
++
+ static struct qcom_rng *qcom_rng_dev;
+ 
+ static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
+@@ -70,7 +76,7 @@ static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
+ 		}
+ 	} while (currsize < max);
+ 
+-	return 0;
++	return currsize;
+ }
+ 
+ static int qcom_rng_generate(struct crypto_rng *tfm,
+@@ -92,6 +98,9 @@ static int qcom_rng_generate(struct crypto_rng *tfm,
+ 	mutex_unlock(&rng->lock);
+ 	clk_disable_unprepare(rng->clk);
+ 
++	if (ret == dlen)
++		ret = 0;
++
+ 	return ret;
+ }
+ 
+@@ -101,6 +110,13 @@ static int qcom_rng_seed(struct crypto_rng *tfm, const u8 *seed,
+ 	return 0;
+ }
+ 
++static int qcom_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
++{
++	struct qcom_rng *qrng = (struct qcom_rng *)rng->priv;
++
++	return qcom_rng_read(qrng, data, max);
++}
++
+ static int qcom_rng_enable(struct qcom_rng *rng)
+ {
+ 	u32 val;
+@@ -136,7 +152,7 @@ static int qcom_rng_init(struct crypto_tfm *tfm)
+ 
+ 	ctx->rng = qcom_rng_dev;
+ 
+-	if (!ctx->rng->skip_init)
++	if (!ctx->rng->of_data->skip_init)
+ 		return qcom_rng_enable(ctx->rng);
+ 
+ 	return 0;
+@@ -157,6 +173,12 @@ static struct rng_alg qcom_rng_alg = {
+ 	}
+ };
+ 
++static struct hwrng qcom_hwrng = {
++	.name = "qcom-hwrng",
++	.read = qcom_hwrng_read,
++	.quality = 1024,
++};
++
+ static int qcom_rng_probe(struct platform_device *pdev)
+ {
+ 	struct qcom_rng *rng;
+@@ -177,15 +199,29 @@ static int qcom_rng_probe(struct platform_device *pdev)
+ 	if (IS_ERR(rng->clk))
+ 		return PTR_ERR(rng->clk);
+ 
+-	rng->skip_init = (unsigned long)device_get_match_data(&pdev->dev);
++	rng->of_data = (struct qcom_rng_of_data *)of_device_get_match_data(&pdev->dev);
+ 
+ 	qcom_rng_dev = rng;
+ 	ret = crypto_register_rng(&qcom_rng_alg);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Register crypto rng failed: %d\n", ret);
+ 		qcom_rng_dev = NULL;
++		return ret;
++	}
++
++	if (rng->of_data->hwrng_support) {
++		qcom_hwrng.priv = (unsigned long)qcom_rng_dev;
++		ret = devm_hwrng_register(&pdev->dev, &qcom_hwrng);
++		if (ret) {
++			dev_err(&pdev->dev, "Register hwrng failed: %d\n", ret);
++			qcom_rng_dev = NULL;
++			goto fail;
++		}
+ 	}
+ 
++	return ret;
++fail:
++	crypto_unregister_rng(&qcom_rng_alg);
+ 	return ret;
+ }
+ 
+@@ -198,6 +234,21 @@ static int qcom_rng_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++struct qcom_rng_of_data qcom_prng_of_data = {
++	.skip_init = false,
++	.hwrng_support = false,
++};
++
++struct qcom_rng_of_data qcom_prng_ee_of_data = {
++	.skip_init = true,
++	.hwrng_support = false,
++};
++
++struct qcom_rng_of_data qcom_trng_of_data = {
++	.skip_init = true,
++	.hwrng_support = true,
++};
++
+ static const struct acpi_device_id __maybe_unused qcom_rng_acpi_match[] = {
+ 	{ .id = "QCOM8160", .driver_data = 1 },
+ 	{}
+@@ -205,9 +256,9 @@ static const struct acpi_device_id __maybe_unused qcom_rng_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, qcom_rng_acpi_match);
+ 
+ static const struct of_device_id __maybe_unused qcom_rng_of_match[] = {
+-	{ .compatible = "qcom,prng", .data = (void *)0},
+-	{ .compatible = "qcom,prng-ee", .data = (void *)1},
+-	{ .compatible = "qcom,trng", .data = (void *)1},
++	{ .compatible = "qcom,prng", .data = &qcom_prng_of_data },
++	{ .compatible = "qcom,prng-ee", .data = &qcom_prng_ee_of_data },
++	{ .compatible = "qcom,trng", .data = &qcom_trng_of_data },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, qcom_rng_of_match);
+-- 
+2.25.1
 
