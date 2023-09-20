@@ -2,184 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CE87A7002
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 03:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6687A7001
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 03:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbjITBPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 21:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
+        id S231617AbjITBPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 21:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbjITBPu (ORCPT
+        with ESMTP id S229641AbjITBPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 21:15:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E0BBD
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 18:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695172495;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=99BVBvPZ3yZ06BgSazMx7Jl4RmSGfTzaJowoaUdSNng=;
-        b=fW5q/tPisdAnb8N30fxrCSi8jFCgF6nEqBQ85ia2RevSVLLAWXmSdTeSwczGSsJN1fL5Bn
-        jiui+xHlj/XvgPc2f1+xLhM4z7rzCDBs74LSHX6ntA08YkMKsLa+WlXX2W1Y0tPCxWrmqL
-        1MfV5ke5C6OasRm9tEhdXTTMYYWuasQ=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-693-JtHHZnEKMNOGr_RswbgLqA-1; Tue, 19 Sep 2023 21:14:53 -0400
-X-MC-Unique: JtHHZnEKMNOGr_RswbgLqA-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2bcc2fd542bso77938761fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 18:14:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695172492; x=1695777292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=99BVBvPZ3yZ06BgSazMx7Jl4RmSGfTzaJowoaUdSNng=;
-        b=S87kbw6vzLYfgXaBxdF6Yj3prx067ZraTp6J93eVS/SjgugtHM0FX8JirafsBp4AIO
-         QJX1KAl32JOo1dWsxe8MAPAXrRexmpY2lEH4omSoMZ/zJZPSh+OrEle5XAT03XhU7DrG
-         CAt0wDgX1MOByONV3LXlvES11MIiJ/eLUNXZfphBt95VZwJs+JYj/Iod2muq3vtQdcSz
-         DXCIVXfceV0O0r+dRBWl92ZmkRNxzw8kCwx+uU6FpDVBNOkBseLHgrtCHsrUGNxKXxkH
-         DfW4IzsC7dYIZkQ6g3oy1FHFfjwGYGemSQa7R5VcMLiykfnKo9qKRFyxCDhRdwpw01fa
-         0s2g==
-X-Gm-Message-State: AOJu0YyJ142cJvTEoEA9XJPQFE8Gr5j3mOfZMV4a11ZWdXwbc0APbpaa
-        xjGxnxV++IgDusGcrc+i+6zJsHoR06IJz022Z5AMQqiOq8impv0WnU0TDCkxWBeSEvoHoUJdsbo
-        sIZDMF5AiA2y+eEvVVSpX1jkxIIYAw4BD+Lqx+VaK
-X-Received: by 2002:a19:2d15:0:b0:500:acf1:b432 with SMTP id k21-20020a192d15000000b00500acf1b432mr902222lfj.63.1695172492109;
-        Tue, 19 Sep 2023 18:14:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHj7eAx4jZAQah1riRAQMhwzq3vg+DaA8QjTtiq/c1iWCtJMTr/gNV0zbLVkJXSfKfeswovEpIUFLQUMBtrxoc=
-X-Received: by 2002:a19:2d15:0:b0:500:acf1:b432 with SMTP id
- k21-20020a192d15000000b00500acf1b432mr902204lfj.63.1695172491630; Tue, 19 Sep
- 2023 18:14:51 -0700 (PDT)
+        Tue, 19 Sep 2023 21:15:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30C5AC
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 18:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695172503; x=1726708503;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lA+14hohHu5S8812drCkV8Tr88aACel8SEr2nOsWFLk=;
+  b=NT6WFyz9XIcLYcRFGGNOAoS6xyXNN/ahQn0FyFVreMsvP9yf6CM8n7eZ
+   COxchMIW1AhyW/J3VWtg+Ms7qaIgsPFu5UF6QCQwS/+AvUT0IrHkamuY1
+   A5sZk+hXsKW6Xg0JPDfajI4pj3hDy25sSV1fE9hmY4StEZ9uVzxHA0IfI
+   HWTRmsRy6qZmo/csVPe+BoGpBMRIglwHBL4vp8nE1IAJuumf38xDbENTX
+   MCSGdEtFytKPm9UFUydLIo8C3cMR7MeSIOa4OiGLx0hNuGszAdpdRz2i3
+   fWApDgH00z72vaxatrML/uHqL3zJquKdHuaBa0bFasgx7fPL4jZM7lZXh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="378985136"
+X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
+   d="scan'208";a="378985136"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 18:15:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="836641330"
+X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
+   d="scan'208";a="836641330"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Sep 2023 18:14:59 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qilnp-000882-30;
+        Wed, 20 Sep 2023 01:14:55 +0000
+Date:   Wed, 20 Sep 2023 09:14:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
+Subject: Re: [PATCH] sched: fix warning in bandwidth distribution
+Message-ID: <202309200825.vOa3t8Sx-lkp@intel.com>
+References: <20230920000559.3872416-1-joshdon@google.com>
 MIME-Version: 1.0
-References: <20230912130132.561193-1-dtatulea@nvidia.com> <CAPpAL=w6KeBG5Ur037GNQa=n_fdoUwrFo+ATsFtX9HbWPHZvsg@mail.gmail.com>
- <CAJaqyWeVjKTPmGWwZ26TgebuzCaN8Z2FmPontHvZauOTQj0brQ@mail.gmail.com> <b223d828-2c08-841f-47fb-7cb072fa5ec9@oracle.com>
-In-Reply-To: <b223d828-2c08-841f-47fb-7cb072fa5ec9@oracle.com>
-From:   Lei Yang <leiyang@redhat.com>
-Date:   Wed, 20 Sep 2023 09:14:14 +0800
-Message-ID: <CAPpAL=zwz32gVmXzqEHEe6nZPfuE-GTXHdUa2MF9brpdZWw5+Q@mail.gmail.com>
-Subject: Re: [PATCH 00/16] vdpa: Add support for vq descriptor mappings
-To:     Si-Wei Liu <si-wei.liu@oracle.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>,
-        Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920000559.3872416-1-joshdon@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QE tested this series with regression testing on real nic, there are
-no new issues.
+Hi Josh,
 
-Tested-by: Lei Yang <leiyang@redhat.com>
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on tip/sched/core]
+[also build test WARNING on tip/master tip/auto-latest linus/master v6.6-rc2 next-20230919]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Josh-Don/sched-fix-warning-in-bandwidth-distribution/20230920-080712
+base:   tip/sched/core
+patch link:    https://lore.kernel.org/r/20230920000559.3872416-1-joshdon%40google.com
+patch subject: [PATCH] sched: fix warning in bandwidth distribution
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230920/202309200825.vOa3t8Sx-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309200825.vOa3t8Sx-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309200825.vOa3t8Sx-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+         |                     ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5820:34: error: 'struct cfs_rq' has no member named 'throttled_csd_list'; did you mean 'throttled_list'?
+    5820 |                                  throttled_csd_list) {
+         |                                  ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:858:21: note: in expansion of macro 'list_next_entry'
+     858 |                 n = list_next_entry(pos, member);                       \
+         |                     ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5820:34: error: 'struct cfs_rq' has no member named 'throttled_csd_list'; did you mean 'throttled_list'?
+    5820 |                                  throttled_csd_list) {
+         |                                  ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:21:23: note: in expansion of macro '__same_type'
+      21 |                       __same_type(*(ptr), void),                        \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:858:21: note: in expansion of macro 'list_next_entry'
+     858 |                 n = list_next_entry(pos, member);                       \
+         |                     ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/compiler_types.h:366:27: error: expression in static assertion is not an integer
+     366 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:858:21: note: in expansion of macro 'list_next_entry'
+     858 |                 n = list_next_entry(pos, member);                       \
+         |                     ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5820:34: error: 'struct cfs_rq' has no member named 'throttled_csd_list'; did you mean 'throttled_list'?
+    5820 |                                  throttled_csd_list) {
+         |                                  ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:16:58: note: in definition of macro 'offsetof'
+      16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
+         |                                                          ^~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:858:21: note: in expansion of macro 'list_next_entry'
+     858 |                 n = list_next_entry(pos, member);                       \
+         |                     ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/preempt.h:12,
+                    from arch/m68k/include/asm/irqflags.h:6,
+                    from include/linux/irqflags.h:17,
+                    from arch/m68k/include/asm/atomic.h:6,
+                    from include/linux/atomic.h:7,
+                    from include/linux/cpumask.h:13:
+>> include/linux/list.h:857:64: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+     857 |         for (pos = list_first_entry(head, typeof(*pos), member),        \
+         |                                                                ^
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5820:34: error: 'struct cfs_rq' has no member named 'throttled_csd_list'; did you mean 'throttled_list'?
+    5820 |                                  throttled_csd_list) {
+         |                                  ^~~~~~~~~~~~~~~~~~
+   include/linux/list.h:761:16: note: in definition of macro 'list_entry_is_head'
+     761 |         (&pos->member == (head))
+         |                ^~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5820:34: error: 'struct cfs_rq' has no member named 'throttled_csd_list'; did you mean 'throttled_list'?
+    5820 |                                  throttled_csd_list) {
+         |                                  ^~~~~~~~~~~~~~~~~~
+   include/linux/container_of.h:19:33: note: in definition of macro 'container_of'
+      19 |         void *__mptr = (void *)(ptr);                                   \
+         |                                 ^~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:860:27: note: in expansion of macro 'list_next_entry'
+     860 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5820:34: error: 'struct cfs_rq' has no member named 'throttled_csd_list'; did you mean 'throttled_list'?
+    5820 |                                  throttled_csd_list) {
+         |                                  ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:860:27: note: in expansion of macro 'list_next_entry'
+     860 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5820:34: error: 'struct cfs_rq' has no member named 'throttled_csd_list'; did you mean 'throttled_list'?
+    5820 |                                  throttled_csd_list) {
+         |                                  ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:860:27: note: in expansion of macro 'list_next_entry'
+     860 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5820:34: error: 'struct cfs_rq' has no member named 'throttled_csd_list'; did you mean 'throttled_list'?
+    5820 |                                  throttled_csd_list) {
+         |                                  ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:21:23: note: in expansion of macro '__same_type'
+      21 |                       __same_type(*(ptr), void),                        \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:860:27: note: in expansion of macro 'list_next_entry'
+     860 |              pos = n, n = list_next_entry(n, member))
+         |                           ^~~~~~~~~~~~~~~
+   kernel/sched/fair.c:5819:9: note: in expansion of macro 'list_for_each_entry_safe'
+    5819 |         list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
 
 
+vim +857 include/linux/list.h
 
-On Fri, Sep 15, 2023 at 2:34=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.com> =
-wrote:
->
->
->
-> On 9/13/2023 9:08 AM, Eugenio Perez Martin wrote:
-> > On Wed, Sep 13, 2023 at 3:03=E2=80=AFAM Lei Yang <leiyang@redhat.com> w=
-rote:
-> >> Hi Dragos, Eugenio and Si-Wei
-> >>
-> >> My name is Lei Yang, a software Quality Engineer from Red Hat.  And
-> >> always paying attention to improving the live migration downtime
-> >> issues because there are others QE asked about this problem when I
-> >> share live migration status  recently. Therefore I would like to test
-> >> it in my environment. Before the testing I want to know if there is an
-> >> expectation of downtime range based on this series of patches? In
-> >> addition, QE also can help do a regression test based on this series
-> >> of patches if there is a requirement.
-> >>
-> > Hi Lei,
-> >
-> > Thanks for offering the testing bandwidth!
-> >
-> > I think we can only do regression tests here, as the userland part is
-> > still not sent to qemu.
-> Right. Regression for now, even QEMU has it, to exercise the relevant
-> feature it would need a supporting firmware that is not yet available
-> for now. Just stay tuned.
->
-> thanks for your patience,
-> -Siwei
-> >
-> >> Regards and thanks
-> >> Lei
-> >>
-> >>
-> >> On Tue, Sep 12, 2023 at 9:04=E2=80=AFPM Dragos Tatulea <dtatulea@nvidi=
-a.com> wrote:
-> >>> This patch series adds support for vq descriptor table mappings which
-> >>> are used to improve vdpa live migration downtime. The improvement com=
-es
-> >>> from using smaller mappings which take less time to create and destro=
-y
-> >>> in hw.
-> >>>
-> >>> The first part adds the vdpa core changes from Si-Wei [0].
-> >>>
-> >>> The second part adds support in mlx5_vdpa:
-> >>> - Refactor the mr code to be able to cleanly add descriptor mappings.
-> >>> - Add hardware descriptor mr support.
-> >>> - Properly update iotlb for cvq during ASID switch.
-> >>>
-> >>> [0] https://lore.kernel.org/virtualization/1694248959-13369-1-git-sen=
-d-email-si-wei.liu@oracle.com
-> >>>
-> >>> Dragos Tatulea (13):
-> >>>    vdpa/mlx5: Create helper function for dma mappings
-> >>>    vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
-> >>>    vdpa/mlx5: Take cvq iotlb lock during refresh
-> >>>    vdpa/mlx5: Collapse "dvq" mr add/delete functions
-> >>>    vdpa/mlx5: Rename mr destroy functions
-> >>>    vdpa/mlx5: Allow creation/deletion of any given mr struct
-> >>>    vdpa/mlx5: Move mr mutex out of mr struct
-> >>>    vdpa/mlx5: Improve mr update flow
-> >>>    vdpa/mlx5: Introduce mr for vq descriptor
-> >>>    vdpa/mlx5: Enable hw support for vq descriptor mapping
-> >>>    vdpa/mlx5: Make iotlb helper functions more generic
-> >>>    vdpa/mlx5: Update cvq iotlb mapping on ASID change
-> >>>    Cover letter: vdpa/mlx5: Add support for vq descriptor mappings
-> >>>
-> >>> Si-Wei Liu (3):
-> >>>    vdpa: introduce dedicated descriptor group for virtqueue
-> >>>    vhost-vdpa: introduce descriptor group backend feature
-> >>>    vhost-vdpa: uAPI to get dedicated descriptor group id
-> >>>
-> >>>   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
-> >>>   drivers/vdpa/mlx5/core/mr.c        | 191 ++++++++++++++++----------=
----
-> >>>   drivers/vdpa/mlx5/core/resources.c |   6 +-
-> >>>   drivers/vdpa/mlx5/net/mlx5_vnet.c  | 100 ++++++++++-----
-> >>>   drivers/vhost/vdpa.c               |  27 ++++
-> >>>   include/linux/mlx5/mlx5_ifc.h      |   8 +-
-> >>>   include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
-> >>>   include/linux/vdpa.h               |  11 ++
-> >>>   include/uapi/linux/vhost.h         |   8 ++
-> >>>   include/uapi/linux/vhost_types.h   |   5 +
-> >>>   10 files changed, 264 insertions(+), 130 deletions(-)
-> >>>
-> >>> --
-> >>> 2.41.0
-> >>>
->
+4d70c74659d974 Andy Shevchenko          2022-11-30  753  
+e130816164e244 Andy Shevchenko          2020-10-15  754  /**
+e130816164e244 Andy Shevchenko          2020-10-15  755   * list_entry_is_head - test if the entry points to the head of the list
+e130816164e244 Andy Shevchenko          2020-10-15  756   * @pos:	the type * to cursor
+e130816164e244 Andy Shevchenko          2020-10-15  757   * @head:	the head for your list.
+e130816164e244 Andy Shevchenko          2020-10-15  758   * @member:	the name of the list_head within the struct.
+e130816164e244 Andy Shevchenko          2020-10-15  759   */
+e130816164e244 Andy Shevchenko          2020-10-15  760  #define list_entry_is_head(pos, head, member)				\
+e130816164e244 Andy Shevchenko          2020-10-15  761  	(&pos->member == (head))
+e130816164e244 Andy Shevchenko          2020-10-15  762  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  763  /**
+^1da177e4c3f41 Linus Torvalds           2005-04-16  764   * list_for_each_entry	-	iterate over list of given type
+8e3a67a99231f9 Randy Dunlap             2006-06-25  765   * @pos:	the type * to use as a loop cursor.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  766   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  767   * @member:	the name of the list_head within the struct.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  768   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  769  #define list_for_each_entry(pos, head, member)				\
+93be3c2eb3371f Oleg Nesterov            2013-11-12  770  	for (pos = list_first_entry(head, typeof(*pos), member);	\
+e130816164e244 Andy Shevchenko          2020-10-15  771  	     !list_entry_is_head(pos, head, member);			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  772  	     pos = list_next_entry(pos, member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  773  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  774  /**
+^1da177e4c3f41 Linus Torvalds           2005-04-16  775   * list_for_each_entry_reverse - iterate backwards over list of given type.
+8e3a67a99231f9 Randy Dunlap             2006-06-25  776   * @pos:	the type * to use as a loop cursor.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  777   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  778   * @member:	the name of the list_head within the struct.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  779   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  780  #define list_for_each_entry_reverse(pos, head, member)			\
+93be3c2eb3371f Oleg Nesterov            2013-11-12  781  	for (pos = list_last_entry(head, typeof(*pos), member);		\
+e130816164e244 Andy Shevchenko          2020-10-15  782  	     !list_entry_is_head(pos, head, member); 			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  783  	     pos = list_prev_entry(pos, member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  784  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  785  /**
+72fd4a35a82433 Robert P. J. Day         2007-02-10  786   * list_prepare_entry - prepare a pos entry for use in list_for_each_entry_continue()
+^1da177e4c3f41 Linus Torvalds           2005-04-16  787   * @pos:	the type * to use as a start point
+^1da177e4c3f41 Linus Torvalds           2005-04-16  788   * @head:	the head of the list
+3943f42c11896c Andrey Utkin             2014-11-14  789   * @member:	the name of the list_head within the struct.
+fe96e57d77481c Randy Dunlap             2006-06-25  790   *
+72fd4a35a82433 Robert P. J. Day         2007-02-10  791   * Prepares a pos entry for use as a start point in list_for_each_entry_continue().
+^1da177e4c3f41 Linus Torvalds           2005-04-16  792   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  793  #define list_prepare_entry(pos, head, member) \
+^1da177e4c3f41 Linus Torvalds           2005-04-16  794  	((pos) ? : list_entry(head, typeof(*pos), member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  795  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  796  /**
+fe96e57d77481c Randy Dunlap             2006-06-25  797   * list_for_each_entry_continue - continue iteration over list of given type
+8e3a67a99231f9 Randy Dunlap             2006-06-25  798   * @pos:	the type * to use as a loop cursor.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  799   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  800   * @member:	the name of the list_head within the struct.
+fe96e57d77481c Randy Dunlap             2006-06-25  801   *
+fe96e57d77481c Randy Dunlap             2006-06-25  802   * Continue to iterate over list of given type, continuing after
+fe96e57d77481c Randy Dunlap             2006-06-25  803   * the current position.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  804   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  805  #define list_for_each_entry_continue(pos, head, member) 		\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  806  	for (pos = list_next_entry(pos, member);			\
+e130816164e244 Andy Shevchenko          2020-10-15  807  	     !list_entry_is_head(pos, head, member);			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  808  	     pos = list_next_entry(pos, member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  809  
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  810  /**
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  811   * list_for_each_entry_continue_reverse - iterate backwards from the given point
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  812   * @pos:	the type * to use as a loop cursor.
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  813   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  814   * @member:	the name of the list_head within the struct.
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  815   *
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  816   * Start to iterate over list of given type backwards, continuing after
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  817   * the current position.
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  818   */
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  819  #define list_for_each_entry_continue_reverse(pos, head, member)		\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  820  	for (pos = list_prev_entry(pos, member);			\
+e130816164e244 Andy Shevchenko          2020-10-15  821  	     !list_entry_is_head(pos, head, member);			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  822  	     pos = list_prev_entry(pos, member))
+768f3591e2b1cc Pavel Emelyanov          2007-09-18  823  
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  824  /**
+fe96e57d77481c Randy Dunlap             2006-06-25  825   * list_for_each_entry_from - iterate over list of given type from the current point
+8e3a67a99231f9 Randy Dunlap             2006-06-25  826   * @pos:	the type * to use as a loop cursor.
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  827   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  828   * @member:	the name of the list_head within the struct.
+fe96e57d77481c Randy Dunlap             2006-06-25  829   *
+fe96e57d77481c Randy Dunlap             2006-06-25  830   * Iterate over list of given type, continuing from current position.
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  831   */
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  832  #define list_for_each_entry_from(pos, head, member) 			\
+e130816164e244 Andy Shevchenko          2020-10-15  833  	for (; !list_entry_is_head(pos, head, member);			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  834  	     pos = list_next_entry(pos, member))
+e229c2fb3370a0 Arnaldo Carvalho de Melo 2006-03-20  835  
+b862815c3ee7b4 Jiri Pirko               2017-02-03  836  /**
+b862815c3ee7b4 Jiri Pirko               2017-02-03  837   * list_for_each_entry_from_reverse - iterate backwards over list of given type
+b862815c3ee7b4 Jiri Pirko               2017-02-03  838   *                                    from the current point
+b862815c3ee7b4 Jiri Pirko               2017-02-03  839   * @pos:	the type * to use as a loop cursor.
+b862815c3ee7b4 Jiri Pirko               2017-02-03  840   * @head:	the head for your list.
+b862815c3ee7b4 Jiri Pirko               2017-02-03  841   * @member:	the name of the list_head within the struct.
+b862815c3ee7b4 Jiri Pirko               2017-02-03  842   *
+b862815c3ee7b4 Jiri Pirko               2017-02-03  843   * Iterate backwards over list of given type, continuing from current position.
+b862815c3ee7b4 Jiri Pirko               2017-02-03  844   */
+b862815c3ee7b4 Jiri Pirko               2017-02-03  845  #define list_for_each_entry_from_reverse(pos, head, member)		\
+e130816164e244 Andy Shevchenko          2020-10-15  846  	for (; !list_entry_is_head(pos, head, member);			\
+b862815c3ee7b4 Jiri Pirko               2017-02-03  847  	     pos = list_prev_entry(pos, member))
+b862815c3ee7b4 Jiri Pirko               2017-02-03  848  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  849  /**
+^1da177e4c3f41 Linus Torvalds           2005-04-16  850   * list_for_each_entry_safe - iterate over list of given type safe against removal of list entry
+8e3a67a99231f9 Randy Dunlap             2006-06-25  851   * @pos:	the type * to use as a loop cursor.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  852   * @n:		another type * to use as temporary storage
+^1da177e4c3f41 Linus Torvalds           2005-04-16  853   * @head:	the head for your list.
+3943f42c11896c Andrey Utkin             2014-11-14  854   * @member:	the name of the list_head within the struct.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  855   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  856  #define list_for_each_entry_safe(pos, n, head, member)			\
+93be3c2eb3371f Oleg Nesterov            2013-11-12 @857  	for (pos = list_first_entry(head, typeof(*pos), member),	\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  858  		n = list_next_entry(pos, member);			\
+e130816164e244 Andy Shevchenko          2020-10-15  859  	     !list_entry_is_head(pos, head, member); 			\
+8120e2e5141a42 Oleg Nesterov            2013-11-12  860  	     pos = n, n = list_next_entry(n, member))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  861  
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
