@@ -2,335 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E06597A7953
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4CA7A7957
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234420AbjITKcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
+        id S233864AbjITKd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234481AbjITKcJ (ORCPT
+        with ESMTP id S234374AbjITKdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:32:09 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6764B9;
-        Wed, 20 Sep 2023 03:32:01 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38K9xMgk028257;
-        Wed, 20 Sep 2023 10:31:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=SX6rZUjGcL73HkjcqQno+7tDYQSU+S9wDZakuIwCU/M=;
- b=DqzxquBmoOGXZR5liK1vsfp7MyJBX5IvWMhecNoL4T+F2gl+NxpNDHPRswHHjGaIu1Pf
- zXoYaShA6/80qp7yREv9cPw+Lkhg5N45iHTDiDGP5V2gyuVAnRPITqazZSvpzh/l8Z2H
- xE5wubldNdcW9Q4vGEZlXvUVVPSheWO0PKyoHUcp6tulQ1LWxM2ICHNq6f0gIx2SVJkY
- yk5Qs4D8pL1RhiHcwPM6cpDoJ8DpV6r7jnkCbnvOkUQWuK3G6El02yLF7CGJnGfKoUZu
- 00e3CG5rHd9AMljuF0zU8GblEwmGaHItkDewVgnNmdZeUYV09atsHy3nbFwNSlrln/NL Xw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7qj90xye-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 10:31:56 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38KAVtTK008656
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 10:31:55 GMT
-Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 20 Sep 2023 03:31:52 -0700
-From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
-To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
-CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
-Subject: [PATCH v2 5/5] misc: fastrpc: Add support to allocate shared context bank
-Date:   Wed, 20 Sep 2023 16:01:30 +0530
-Message-ID: <1695205890-21018-6-git-send-email-quic_ekangupt@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1695205890-21018-1-git-send-email-quic_ekangupt@quicinc.com>
-References: <1695205890-21018-1-git-send-email-quic_ekangupt@quicinc.com>
+        Wed, 20 Sep 2023 06:33:45 -0400
+Received: from TWMBX03.aspeed.com (mail.aspeedtech.com [211.20.114.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB27E114;
+        Wed, 20 Sep 2023 03:33:36 -0700 (PDT)
+Received: from TWMBX02.aspeed.com (192.168.0.24) by TWMBX03.aspeed.com
+ (192.168.0.62) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Sep
+ 2023 18:33:36 +0800
+Received: from twmbx02.aspeed.com (192.168.10.13) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 20 Sep 2023 18:33:36 +0800
+From:   Joe Wang <joe_wang@aspeedtech.com>
+To:     <andrew@aj.id.au>, <linus.walleij@linaro.org>, <joel@jms.id.au>
+CC:     <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
+        <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] pinctrl: pinctrl-aspeed-g6: Add more settings for USB2AHP function
+Date:   Wed, 20 Sep 2023 18:33:32 +0800
+Message-ID: <20230920103332.274151-1-joe_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: iCHBbQpGKOjz3OqAqD9bqFOZX1Dkt31Y
-X-Proofpoint-ORIG-GUID: iCHBbQpGKOjz3OqAqD9bqFOZX1Dkt31Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_05,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 impostorscore=0 suspectscore=0 mlxlogscore=999
- mlxscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309200083
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_FAIL,SPF_PASS,UPPERCASE_50_75
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Context banks could be set as a shared one using a DT propery
-"qcom,nsessions". The property takes the number of session to
-be created of the context bank. This change provides a control
-mechanism for user to use shared context banks for light weight
-processes. The session is set as shared while its creation and if
-a user requests for shared context bank, the same will be allocated
-during process initialization.
+AST2600 USB2AHP (USB PortA: PCIe EHCI to PHY) function needs to set the
+register SCUC20[16]. Set it to enable the PCIe EHCI device on PCIe bus.
+Besides, also add USB2AHP signal expressions into pin declarations.
 
-Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+Signed-off-by: Joe Wang <joe_wang@aspeedtech.com>
 ---
-Changes in v2:
-  - Fixed missing definition
-  - Fixes compile time issue
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
- drivers/misc/fastrpc.c      | 122 ++++++++++++++++++++++++++++++--------------
- include/uapi/misc/fastrpc.h |  12 +++++
- 2 files changed, 95 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 1c625571..6deef32 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -296,6 +296,7 @@ struct fastrpc_session_ctx {
- 	int sid;
- 	bool used;
- 	bool valid;
-+	bool sharedcb;
- };
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+index 80838dc54b3a..d376fa7114d1 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+@@ -1592,9 +1592,10 @@ SIG_EXPR_LIST_DECL_SEMG(A4, USB2ADPDP, USBA, USB2ADP, USB2ADP_DESC,
+ 			SIG_DESC_SET(SCUC20, 16));
+ SIG_EXPR_LIST_DECL_SEMG(A4, USB2ADDP, USBA, USB2AD, USB2AD_DESC);
+ SIG_EXPR_LIST_DECL_SEMG(A4, USB2AHDP, USBA, USB2AH, USB2AH_DESC);
+-SIG_EXPR_LIST_DECL_SEMG(A4, USB2AHPDP, USBA, USB2AHP, USB2AHP_DESC);
++SIG_EXPR_LIST_DECL_SEMG(A4, USB2AHPDP, USBA, USB2AHP, USB2AHP_DESC,
++			SIG_DESC_SET(SCUC20, 16));
+ PIN_DECL_(A4, SIG_EXPR_LIST_PTR(A4, USB2ADPDP), SIG_EXPR_LIST_PTR(A4, USB2ADDP),
+-	  SIG_EXPR_LIST_PTR(A4, USB2AHDP));
++	  SIG_EXPR_LIST_PTR(A4, USB2AHDP), SIG_EXPR_LIST_PTR(A4, USB2AHPDP));
  
- struct fastrpc_channel_ctx {
-@@ -343,12 +344,22 @@ struct fastrpc_user {
- 	int tgid;
- 	int pd;
- 	bool is_secure_dev;
-+	bool sharedcb;
- 	/* Lock for lists */
- 	spinlock_t lock;
- 	/* lock for allocations */
- 	struct mutex mutex;
- };
+ #define B4 253
+ SIG_EXPR_LIST_DECL_SEMG(B4, USB2ADPDN, USBA, USB2ADP, USB2ADP_DESC);
+@@ -1602,7 +1603,7 @@ SIG_EXPR_LIST_DECL_SEMG(B4, USB2ADDN, USBA, USB2AD, USB2AD_DESC);
+ SIG_EXPR_LIST_DECL_SEMG(B4, USB2AHDN, USBA, USB2AH, USB2AH_DESC);
+ SIG_EXPR_LIST_DECL_SEMG(B4, USB2AHPDN, USBA, USB2AHP, USB2AHP_DESC);
+ PIN_DECL_(B4, SIG_EXPR_LIST_PTR(B4, USB2ADPDN), SIG_EXPR_LIST_PTR(B4, USB2ADDN),
+-	  SIG_EXPR_LIST_PTR(B4, USB2AHDN));
++	  SIG_EXPR_LIST_PTR(B4, USB2AHDN), SIG_EXPR_LIST_PTR(B4, USB2AHPDN));
  
-+struct fastrpc_ctrl_smmu {
-+	u32 sharedcb;	/* Set to SMMU share context bank */
-+};
-+
-+struct fastrpc_internal_control {
-+	u32 req;
-+	struct fastrpc_ctrl_smmu smmu;
-+};
-+
- static inline int64_t getnstimediff(struct timespec64 *start)
- {
- 	int64_t ns;
-@@ -850,6 +861,37 @@ static const struct dma_buf_ops fastrpc_dma_buf_ops = {
- 	.release = fastrpc_release,
- };
+ GROUP_DECL(USBA, A4, B4);
  
-+static struct fastrpc_session_ctx *fastrpc_session_alloc(
-+					struct fastrpc_channel_ctx *cctx, bool sharedcb)
-+{
-+	struct fastrpc_session_ctx *session = NULL;
-+	unsigned long flags;
-+	int i;
-+
-+	spin_lock_irqsave(&cctx->lock, flags);
-+	for (i = 0; i < cctx->sesscount; i++) {
-+		if (!cctx->session[i].used && cctx->session[i].valid &&
-+			cctx->session[i].sharedcb == sharedcb) {
-+			cctx->session[i].used = true;
-+			session = &cctx->session[i];
-+			break;
-+		}
-+	}
-+	spin_unlock_irqrestore(&cctx->lock, flags);
-+
-+	return session;
-+}
-+
-+static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
-+				 struct fastrpc_session_ctx *session)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&cctx->lock, flags);
-+	session->used = false;
-+	spin_unlock_irqrestore(&cctx->lock, flags);
-+}
-+
- static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
- 			      u64 len, u32 attr, struct fastrpc_map **ppmap)
- {
-@@ -1446,6 +1488,10 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
- 		goto err_name;
- 	}
- 
-+	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
-+	if (!fl->sctx)
-+		return -EBUSY;
-+
- 	if (!fl->cctx->remote_heap) {
- 		err = fastrpc_remote_heap_alloc(fl, fl->sctx->dev, init.memlen,
- 						&fl->cctx->remote_heap);
-@@ -1563,6 +1609,10 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
- 		goto err;
- 	}
- 
-+	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
-+	if (!fl->sctx)
-+		return -EBUSY;
-+
- 	inbuf.pgid = fl->tgid;
- 	inbuf.namelen = strlen(current->comm) + 1;
- 	inbuf.filelen = init.filelen;
-@@ -1637,36 +1687,6 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
- 	return err;
- }
- 
--static struct fastrpc_session_ctx *fastrpc_session_alloc(
--					struct fastrpc_channel_ctx *cctx)
--{
--	struct fastrpc_session_ctx *session = NULL;
--	unsigned long flags;
--	int i;
--
--	spin_lock_irqsave(&cctx->lock, flags);
--	for (i = 0; i < cctx->sesscount; i++) {
--		if (!cctx->session[i].used && cctx->session[i].valid) {
--			cctx->session[i].used = true;
--			session = &cctx->session[i];
--			break;
--		}
--	}
--	spin_unlock_irqrestore(&cctx->lock, flags);
--
--	return session;
--}
--
--static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
--				 struct fastrpc_session_ctx *session)
--{
--	unsigned long flags;
--
--	spin_lock_irqsave(&cctx->lock, flags);
--	session->used = false;
--	spin_unlock_irqrestore(&cctx->lock, flags);
--}
--
- static void fastrpc_context_list_free(struct fastrpc_user *fl)
- {
- 	struct fastrpc_invoke_ctx *ctx, *n;
-@@ -1770,15 +1790,6 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
- 	fl->cctx = cctx;
- 	fl->is_secure_dev = fdevice->secure;
- 
--	fl->sctx = fastrpc_session_alloc(cctx);
--	if (!fl->sctx) {
--		dev_err(&cctx->rpdev->dev, "No session available\n");
--		mutex_destroy(&fl->mutex);
--		kfree(fl);
--
--		return -EBUSY;
--	}
--
- 	spin_lock_irqsave(&cctx->lock, flags);
- 	list_add_tail(&fl->user, &cctx->users);
- 	spin_unlock_irqrestore(&cctx->lock, flags);
-@@ -1837,6 +1848,10 @@ static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
- 	struct fastrpc_enhanced_invoke ioctl;
- 	int tgid = fl->tgid;
- 
-+	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
-+	if (!fl->sctx)
-+		return -EBUSY;
-+
- 	args[0].ptr = (u64)(uintptr_t) &tgid;
- 	args[0].length = sizeof(tgid);
- 	args[0].fd = -1;
-@@ -1883,11 +1898,33 @@ static int fastrpc_invoke(struct fastrpc_user *fl, char __user *argp)
- 	return err;
- }
- 
-+static int fastrpc_internal_control(struct fastrpc_user *fl,
-+					struct fastrpc_internal_control *cp)
-+{
-+	int err = 0;
-+
-+	if (!fl)
-+		return -EBADF;
-+	if (!cp)
-+		return -EINVAL;
-+
-+	switch (cp->req) {
-+	case FASTRPC_CONTROL_SMMU:
-+		fl->sharedcb = cp->smmu.sharedcb;
-+		break;
-+	default:
-+		err = -EBADRQC;
-+		break;
-+	}
-+	return err;
-+}
-+
- static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
- {
- 	struct fastrpc_enhanced_invoke einv;
- 	struct fastrpc_invoke_args *args = NULL;
- 	struct fastrpc_ioctl_multimode_invoke invoke;
-+	struct fastrpc_internal_control cp = {0};
- 	u32 nscalars;
- 	u64 *perf_kernel;
- 	int err;
-@@ -1920,6 +1957,12 @@ static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
- 		err = fastrpc_internal_invoke(fl, false, &einv);
- 		kfree(args);
- 		break;
-+	case FASTRPC_INVOKE_CONTROL:
-+		if (copy_from_user(&cp, (void __user *)(uintptr_t)invoke.invparam, sizeof(cp)))
-+			return  -EFAULT;
-+
-+		err = fastrpc_internal_control(fl, &cp);
-+		break;
- 	default:
- 		err = -ENOTTY;
- 		break;
-@@ -2420,6 +2463,7 @@ static int fastrpc_cb_probe(struct platform_device *pdev)
- 	if (sessions > 0) {
- 		struct fastrpc_session_ctx *dup_sess;
- 
-+		sess->sharedcb = true;
- 		for (i = 1; i < sessions; i++) {
- 			if (cctx->sesscount >= FASTRPC_MAX_SESSIONS)
- 				break;
-diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
-index c64cf6a..c9faecf 100644
---- a/include/uapi/misc/fastrpc.h
-+++ b/include/uapi/misc/fastrpc.h
-@@ -165,6 +165,18 @@ struct fastrpc_ioctl_capability {
- 	__u32 reserved[4];
- };
- 
-+enum fastrpc_control_type {
-+	FASTRPC_CONTROL_LATENCY		=	1,
-+	FASTRPC_CONTROL_SMMU		=	2,
-+	FASTRPC_CONTROL_KALLOC		=	3,
-+	FASTRPC_CONTROL_WAKELOCK	=	4,
-+	FASTRPC_CONTROL_PM		=	5,
-+	FASTRPC_CONTROL_DSPPROCESS_CLEAN	=	6,
-+	FASTRPC_CONTROL_RPC_POLL	=	7,
-+	FASTRPC_CONTROL_ASYNC_WAKE	=	8,
-+	FASTRPC_CONTROL_NOTIF_WAKE	=	9,
-+};
-+
- enum fastrpc_perfkeys {
- 	PERF_COUNT = 0,
- 	PERF_RESERVED1 = 1,
 -- 
-2.7.4
+2.34.1
 
