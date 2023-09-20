@@ -2,203 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3817A8A06
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A147A89ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235083AbjITRGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
+        id S234660AbjITRB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234157AbjITRGq (ORCPT
+        with ESMTP id S232318AbjITRB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:06:46 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B11CAB;
-        Wed, 20 Sep 2023 10:06:39 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KGcPbX003785;
-        Wed, 20 Sep 2023 17:06:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=SClTe7Y+yQmbgOG6ZOrfvTmRznIZMbiGfmLotSSihF0=;
- b=HBeDIbYr9EA3Evf0f+8hlJzLn/2l4phH+HWwBv0EpOiNspV+o5g6K/AMg+ikrQMILvtZ
- yzEokCARAnZWDHQv67Fb7oPwRqgf9Y3UnRlIWek/mLtb23iRVK0Df6PC42bgK1fEAMYn
- vrtVDnab5uwr79OZbtgyqolatTgOU97e9vopcFICdtOI0CdDIM35wIG0mTfFpkJOMjxs
- LyQi3fZ0Zzybpx01bClEmi84ks8INA7mL1jKbOGOqErTRMMIP2hNOYF7JQkReefhxITL
- 5PNYglGb1yFkSiR4e4hkAhmHBjPmbcgwoexPETkiar81vZaVArvLz6eBCM8W6bJLig+8 gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t82ghcw6g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 17:06:33 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38KGcjVH007371;
-        Wed, 20 Sep 2023 17:06:31 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t82ghcvxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 17:06:31 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38KGXXaB011656;
-        Wed, 20 Sep 2023 17:01:26 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t5qpnqudc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 17:01:26 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38KH1Plu42402266
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Sep 2023 17:01:26 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BFEA658061;
-        Wed, 20 Sep 2023 17:01:25 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 28E585803F;
-        Wed, 20 Sep 2023 17:01:25 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 20 Sep 2023 17:01:25 +0000 (GMT)
-Message-ID: <bed99e92-cb7c-868d-94f3-ddf53e2b262a@linux.ibm.com>
-Date:   Wed, 20 Sep 2023 13:01:24 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [syzbot] [integrity] [overlayfs] general protection fault in
- d_path
-Content-Language: en-US
-To:     syzbot <syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com>,
-        amir73il@gmail.com, brauner@kernel.org, jlayton@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com,
-        zohar@linux.ibm.com
-References: <000000000000259bd8060596e33f@google.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <000000000000259bd8060596e33f@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: m8tcC00qp-4uDnbPNrydUJH2LVBnpeLW
-X-Proofpoint-ORIG-GUID: mUGk2JmRhTcySjAWig0LtQz-651E1pxV
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 20 Sep 2023 13:01:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F63EC6;
+        Wed, 20 Sep 2023 10:01:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3CAEC433C7;
+        Wed, 20 Sep 2023 17:01:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695229309;
+        bh=FE+ERN9kYmk/tFJKbkEObD7giTNovYxp0e/E+ZM5F30=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZEsRpWOa+xwQHlJKfBH6YqDYvONF9ywj/F8ePf64xIH+dCAytAPiDv7KscV2PVAfw
+         GhrXTr8sP2WIBy++735sJPPV+//PxUS/quR7D+L3YlFcrGrGdBNlKK1dfJybXpbbFT
+         X22uq5HbesoEvl0Nd4shsdJZAcr7yoOKi7SiLcBgg6fxu9NnJwahLm5GHYxQXvDIYE
+         hA3Gj2okbfScI/UyaUGOh5x8Evae3QS0FLE99fdfJn1ug94hOHc65CpfSLhBi6KpYL
+         SZn9AJQjgpmBVKNnVctU+1eg4nn/J+xSDaYVFZBw7sXlQmYs8A44B39Eie5YjHdeLw
+         wiFFt2lK8wW/w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A9CE3CE0CF9; Wed, 20 Sep 2023 10:01:46 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 10:01:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        LTP List <ltp@lists.linux.it>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        rcu <rcu@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        chrubis <chrubis@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: arm64: Unable to handle kernel execute from non-executable
+ memory at virtual address ffff8000834c13a0
+Message-ID: <8474df43-0718-4ae5-b36e-2c3c1f19d5e9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CA+G9fYtqLarsezP_-6iQqonh8M4Q6McUCEBM9gFv+GU-zZRHAQ@mail.gmail.com>
+ <ZQsCj997AW8Tz27W@FVFF77S0Q05N.cambridge.arm.com>
+ <7c85cbf5-efb2-9cc6-4a5c-9854f7db1b0e@arm.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_06,2023-09-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=349
- suspectscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 clxscore=1011
- spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309200136
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c85cbf5-efb2-9cc6-4a5c-9854f7db1b0e@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 20, 2023 at 05:26:33PM +0100, Robin Murphy wrote:
+> On 20/09/2023 3:32 pm, Mark Rutland wrote:
+> > Hi Naresh,
+> > 
+> > On Wed, Sep 20, 2023 at 11:29:12AM +0200, Naresh Kamboju wrote:
+> > > [ my two cents ]
+> > > While running LTP pty07 test cases on arm64 juno-r2 with Linux next-20230919
+> > > the following kernel crash was noticed.
+> > > 
+> > > I have been noticing this issue intermittently on Juno-r2 for more than a month.
+> > > Anyone have noticed this crash ?
+> > 
+> > How intermittent is this? 1/2, 1/10, 1/100, rarer still?
+> > 
+> > Are you running *just* the pty07 test, or are you running a whole LTP suite and
+> > the issue first occurs around pty07?
+> > 
+> > Given you've been hitting this for a month, have you tried testing mainline? Do
+> > you have a known-good kernel that we can start a bisect from?
+> > 
+> > Do you *only* see this on Juno-r2 and are you testing on other hardware?
+> > 
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > 
+> > > [    0.000000] Linux version 6.6.0-rc2-next-20230919 (tuxmake@tuxmake)
+> > > (aarch64-linux-gnu-gcc (Debian 13.2.0-2) 13.2.0, GNU ld (GNU Binutils
+> > > for Debian) 2.41) #1 SMP PREEMPT @1695107157
+> > > [    0.000000] KASLR disabled due to lack of seed
+> > > [    0.000000] Machine model: ARM Juno development board (r2)
+> > > ...
+> > > LTP running pty
+> > > ...
+> > > 
+> > > pty07.c:92: TINFO: Saving active console 1
+> > > ../../../include/tst_fuzzy_sync.h:640: TINFO: Stopped sampling at 552
+> > > (out of 1024) samples, sampling time reached 50% of the total time
+> > > limit
+> > > ../../../include/tst_fuzzy_sync.h:307: TINFO: loop = 552, delay_bias = 0
+> > > ../../../include/tst_fuzzy_sync.h:295: TINFO: start_a - start_b: { avg
+> > > =   127ns, avg_dev =    84ns, dev_ratio = 0.66 }
+> > > ../../../include/tst_fuzzy_sync.h:295: TINFO: end_a - start_a  : { avg
+> > > = 17296156ns, avg_dev = 5155058ns, dev_ratio = 0.30 }
+> > > ../../../include/tst_fuzzy_sync.h:295: TINFO: end_b - start_b  : { avg
+> > > = 101202336ns, avg_dev = 6689286ns, dev_ratio = 0.07 }
+> > > ../../../include/tst_fuzzy_sync.h:295: TINFO: end_a - end_b    : { avg
+> > > = -83906064ns, avg_dev = 10230694ns, dev_ratio = 0.12 }
+> > > ../../../include/tst_fuzzy_sync.h:295: TINFO: spins            : { avg
+> > > = 2765565  , avg_dev = 339285  , dev_ratio = 0.12 }
+> > > [  384.133538] Unable to handle kernel execute from non-executable
+> > > memory at virtual address ffff8000834c13a0
+> > > [  384.133559] Mem abort info:
+> > > [  384.133568]   ESR = 0x000000008600000f
+> > > [  384.133578]   EC = 0x21: IABT (current EL), IL = 32 bits
+> > > [  384.133590]   SET = 0, FnV = 0
+> > > [  384.133600]   EA = 0, S1PTW = 0
+> > > [  384.133610]   FSC = 0x0f: level 3 permission fault
+> > > [  384.133621] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000082375000
+> > > [  384.133634] [ffff8000834c13a0] pgd=10000009fffff003,
+> > > p4d=10000009fffff003, pud=10000009ffffe003, pmd=10000009ffff8003,
+> > > pte=00780000836c1703
+> > > [  384.133697] Internal error: Oops: 000000008600000f [#1] PREEMPT SMP
+> > > [  384.133707] Modules linked in: tda998x onboard_usb_hub cec hdlcd
+> > > crct10dif_ce drm_dma_helper drm_kms_helper fuse drm backlight dm_mod
+> > > ip_tables x_tables
+> > > [  384.133767] CPU: 3 PID: 589 Comm: (udev-worker) Not tainted
+> > > 6.6.0-rc2-next-20230919 #1
+> > > [  384.133779] Hardware name: ARM Juno development board (r2) (DT)
+> > > [  384.133784] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > > [  384.133796] pc : in_lookup_hashtable+0x178/0x2000
+> > 
+> > This indicates that the faulting address ffff8000834c13a0 is
+> > in_lookup_hashtable+0x178/0x2000, which would been we've somehow marked the
+> > kernel text as non-executable, which we never do intentionally.
+> > 
+> > I suspect that implies memory corruption. Have you tried running this with
+> > KASAN enabled?
+> > 
+> > > [  384.133818] lr : rcu_core (arch/arm64/include/asm/preempt.h:13
+> > > (discriminator 1) kernel/rcu/tree.c:2146 (discriminator 1)
+> > > kernel/rcu/tree.c:2403 (discriminator 1))
+> 
+> For the record, this LR appears to be the expected return address of the
+> "f(rhp);" call within rcu_do_batch() (if CONFIG_DEBUG_LOCK_ALLOC=n), so it
+> looks like a case of a bogus or corrupted RCU callback. The PC is in the
+> middle of a data symbol (in_lookup_hashtable is an array), so NX is expected
+> and I wouldn't imagine the pagetables have gone wrong, just regular data
+> corruption or use-after-free somewhere.
 
-On 9/17/23 20:04, syzbot wrote:
-> syzbot has bisected this issue to:
->
-> commit db1d1e8b9867aae5c3e61ad7859abfcc4a6fd6c7
-> Author: Jeff Layton <jlayton@kernel.org>
-> Date:   Mon Apr 17 16:55:51 2023 +0000
->
->      IMA: use vfs_getattr_nosec to get the i_version
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106f7e54680000
-> start commit:   a747acc0b752 Merge tag 'linux-kselftest-next-6.6-rc2' of g..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=126f7e54680000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=146f7e54680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a67fc5321ffb4b311c98
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1671b694680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ec94d8680000
->
-> Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
-> Fixes: db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Is it possible to use either KASAN or CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
+here?
 
-The final oops shows this here:
+							Thanx, Paul
 
-BUG: kernel NULL pointer dereference, address: 0000000000000058
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0
-Oops: 0000 [#1] PREEMPT SMP
-CPU: 0 PID: 3192 Comm: syz-executor.0 Not tainted 6.4.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS 
-Google 08/04/2023
-RIP: 0010:__lock_acquire+0x35/0x490 kernel/locking/lockdep.c:4946
-Code: 83 ec 18 65 4c 8b 35 aa 60 f4 7e 83 3d b7 11 e4 02 00 0f 84 05 02 
-00 00 4c 89 cb 89 cd 41 89 d5 49 89 ff 83 fe 01 77 0c 89 f0 <49> 8b 44 
-c7 08 48 85 c0 75 1b 4c 89 ff 31 d2 45 89 c4 e8 74 f6 ff
-RSP: 0018:ffffc90002edb840 EFLAGS: 00010097
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000002
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000050
-RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff888102ea5340 R15: 0000000000000050
-FS:  0000000000000000(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000058 CR3: 0000000003aa8000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  <TASK>
-  lock_acquire+0xd8/0x1f0 kernel/locking/lockdep.c:5691
-  seqcount_lockdep_reader_access include/linux/seqlock.h:102 [inline]
-  get_fs_root_rcu fs/d_path.c:243 [inline]
-  d_path+0xd1/0x1f0 fs/d_path.c:285
-  audit_log_d_path+0x65/0x130 kernel/audit.c:2139
-  dump_common_audit_data security/lsm_audit.c:224 [inline]
-  common_lsm_audit+0x3b3/0x840 security/lsm_audit.c:458
-  smack_log+0xad/0x130 security/smack/smack_access.c:383
-  smk_tskacc+0xb1/0xd0 security/smack/smack_access.c:253
-  smack_inode_getattr+0x8a/0xb0 security/smack/smack_lsm.c:1187
-  security_inode_getattr+0x32/0x50 security/security.c:2114
-  vfs_getattr+0x1b/0x40 fs/stat.c:167
-  ovl_getattr+0xa6/0x3e0 fs/overlayfs/inode.c:173
-  ima_check_last_writer security/integrity/ima/ima_main.c:171 [inline]
-  ima_file_free+0xbd/0x130 security/integrity/ima/ima_main.c:203
-  __fput+0xc7/0x220 fs/file_table.c:315
-  task_work_run+0x7d/0xa0 kernel/task_work.c:179
-  exit_task_work include/linux/task_work.h:38 [inline]
-  do_exit+0x2c7/0xa80 kernel/exit.c:871 <-----------------------
-  do_group_exit+0x85/0xa0 kernel/exit.c:1021
-  get_signal+0x73c/0x7f0 kernel/signal.c:2874
-  arch_do_signal_or_restart+0x89/0x290 arch/x86/kernel/signal.c:306
-  exit_to_user_mode_loop+0x61/0xb0 kernel/entry/common.c:168
-  exit_to_user_mode_prepare+0x64/0xb0 kernel/entry/common.c:204
-  __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
-  syscall_exit_to_user_mode+0x2b/0x1d0 kernel/entry/common.c:297
-  do_syscall_64+0x4d/0x90 arch/x86/entry/common.c:86
-  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-
-do_exit has called exit_fs(tsk) [ 
-https://elixir.bootlin.com/linux/v6.4-rc2/source/kernel/exit.c#L867 ]
-
-exit_fs(tsk) has set tsk->fs = NULL [ 
-https://elixir.bootlin.com/linux/v6.4-rc2/source/fs/fs_struct.c#L103 ]
-
-I think this then bites in d_path() where it calls:
-
-     get_fs_root_rcu(current->fs, &root);   [ 
-https://elixir.bootlin.com/linux/v6.4-rc2/source/fs/d_path.c#L285 ]
-
-current->fs is likely NULL here.
-
-If this was correct it would have nothing to do with the actual patch, 
-though, but rather with the fact that smack logs on process termination. 
-I am not sure what the solution would be other than testing for 
-current->fs == NULL in d_path before using it and returning an error 
-that is not normally returned or trying to intercept this case in smack.
-
-    Stefan
-
+> Robin.
+> 
+> > > [  384.133832] sp : ffff800083533e60
+> > > [  384.133836] x29: ffff800083533e60 x28: ffff0008008a6180 x27: 000000000000000a
+> > > [  384.133854] x26: 0000000000000000 x25: 0000000000000000 x24: ffff800083533f10
+> > > [  384.133871] x23: ffff800082404008 x22: ffff800082ebea80 x21: ffff800082f55940
+> > > [  384.133889] x20: ffff00097ed75440 x19: 0000000000000001 x18: 0000000000000000
+> > > [  384.133905] x17: ffff8008fc95c000 x16: ffff800083530000 x15: 00003d0900000000
+> > > [  384.133922] x14: 0000000000030d40 x13: 0000000000000000 x12: 003d090000000000
+> > > [  384.133939] x11: 0000000000000000 x10: 0000000000000008 x9 : ffff80008015b05c
+> > > [  384.133955] x8 : ffff800083533da8 x7 : 0000000000000000 x6 : 0000000000000100
+> > > [  384.133971] x5 : ffff800082ebf000 x4 : ffff800082ebf2e8 x3 : 0000000000000000
+> > > [  384.133987] x2 : ffff000825bf8618 x1 : ffff8000834c13a0 x0 : ffff00082b6d7170
+> > > [  384.134005] Call trace:
+> > > [  384.134009] in_lookup_hashtable+0x178/0x2000
+> > > [  384.134022] rcu_core_si (kernel/rcu/tree.c:2421)
+> > > [  384.134035] __do_softirq (arch/arm64/include/asm/jump_label.h:21
+> > > include/linux/jump_label.h:207 include/trace/events/irq.h:142
+> > > kernel/softirq.c:554)
+> > > [  384.134046] ____do_softirq (arch/arm64/kernel/irq.c:81)
+> > > [  384.134058] call_on_irq_stack (arch/arm64/kernel/entry.S:888)
+> > > [  384.134070] do_softirq_own_stack (arch/arm64/kernel/irq.c:86)
+> > > [  384.134082] irq_exit_rcu (arch/arm64/include/asm/percpu.h:44
+> > > kernel/softirq.c:612 kernel/softirq.c:634 kernel/softirq.c:644)
+> > > [  384.134094] el0_interrupt (arch/arm64/include/asm/daifflags.h:28
+> > > arch/arm64/kernel/entry-common.c:133
+> > > arch/arm64/kernel/entry-common.c:144
+> > > arch/arm64/kernel/entry-common.c:763)
+> > > [  384.134110] __el0_irq_handler_common (arch/arm64/kernel/entry-common.c:769)
+> > > [  384.134124] el0t_64_irq_handler (arch/arm64/kernel/entry-common.c:774)
+> > > [  384.134137] el0t_64_irq (arch/arm64/kernel/entry.S:592)
+> > > [ 384.134153] Code: 00000000 00000000 00000000 00000000 (2b6d7170)
+> > > All code
+> > > ========
+> > > ...
+> > >    10: 70 71                jo     0x83
+> > >    12: 6d                    insl   (%dx),%es:(%rdi)
+> > >    13: 2b                    .byte 0x2b
+> > > 
+> > > Code starting with the faulting instruction
+> > > ===========================================
+> > >     0: 70 71                jo     0x73
+> > >     2: 6d                    insl   (%dx),%es:(%rdi)
+> > >     3: 2b                    .byte 0x2b
+> > 
+> > As a general thing, can you *please* fix this code dump to decode arm64 as
+> > arm64?
+> > 
+> > Given the instructions before this are all UDF #0, I suspect the page table
+> > entry has been corrupted and this is pointing at entirely the wrong page.
+> > 
+> > Thanks,
+> > Mark.
+> > 
+> > > [  384.134161] ---[ end trace 0000000000000000 ]---
+> > > [  384.134168] Kernel panic - not syncing: Oops: Fatal exception in interrupt
+> > > [  384.134173] SMP: stopping secondary CPUs
+> > > [  384.134184] Kernel Offset: disabled
+> > > [  384.134187] CPU features: 0x8000020c,3c020000,0000421b
+> > > [  384.134194] Memory Limit: none
+> > > 
+> > > Links:
+> > >   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230919/testrun/20054202/suite/log-parser-test/tests/
+> > >   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230919/testrun/20054202/suite/log-parser-test/test/check-kernel-oops/log
+> > >   - https://storage.tuxsuite.com/public/linaro/lkft/builds/2VbZdpWwncUx8oSxsSXCWV3N5DH/
+> > >   - https://lkft.validation.linaro.org/scheduler/job/6666807#L2461
+> > > 
+> > > --
+> > > Linaro LKFT
+> > > https://lkft.linaro.org
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
