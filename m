@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083C27A77E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FB97A77E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234192AbjITJrh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 05:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
+        id S234196AbjITJrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234129AbjITJre (ORCPT
+        with ESMTP id S234190AbjITJrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:47:34 -0400
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD23AB;
-        Wed, 20 Sep 2023 02:47:27 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59c268676a9so43973047b3.0;
-        Wed, 20 Sep 2023 02:47:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695203246; x=1695808046;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fEXcFTx8NBhUQLoak79jfYmt6kaIk047FnPy9WrHfn8=;
-        b=m4ljMYcgx74MDf0swHR7CVFbC9hp8Ms1jmsnlFd90C1Ok/pmt+YyKrn86LmvGFxLpg
-         DVJNogc0waSrAem55XVbqu/rIX3YiRfSVkTp+HMj0+dJ/wwA8i7Kld7poDKqGcLDVNPH
-         4gjQeLL7msbRmPgn1j+3YSuvJGY3BJtvdWJ7Fr22AVQE9ea3rk5GH9RWgB9pzOthsUC7
-         rkUz4Ozy9yyhO2wzqxW4pp5FwczHtm7UAqEG0JShf3xOkTkqjJqa4IAQwBvvNzwOexVS
-         vrImcSyw7LfbuuclaFXuYuoFUYKxPqdKfVFJLxKdt3pW69GfTDlIcby2FDzCoeMT/I2L
-         GeIA==
-X-Gm-Message-State: AOJu0YyDHy+TpM4qAU8zU1H5tFYFdVz06WINIut7Tzo+FKgAjgZKDLvK
-        dKzHn6GUmi5fWhRwzzVuSs09UQWdW9eDKg==
-X-Google-Smtp-Source: AGHT+IH4uFa4mW7y+CcQ0SfdscXUoyE+vyyNTYmsgkqVedyKoArnSFkskGE1v25T6Im/qL1VmhrQHw==
-X-Received: by 2002:a0d:df4e:0:b0:592:85ec:df15 with SMTP id i75-20020a0ddf4e000000b0059285ecdf15mr1828658ywe.11.1695203246252;
-        Wed, 20 Sep 2023 02:47:26 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id e184-20020a8169c1000000b0057042405e2csm3710221ywc.71.2023.09.20.02.47.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 02:47:26 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-59bc956b029so64237477b3.2;
-        Wed, 20 Sep 2023 02:47:25 -0700 (PDT)
-X-Received: by 2002:a81:4e95:0:b0:59b:c847:bce0 with SMTP id
- c143-20020a814e95000000b0059bc847bce0mr1982086ywb.42.1695203245405; Wed, 20
- Sep 2023 02:47:25 -0700 (PDT)
+        Wed, 20 Sep 2023 05:47:49 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39053E5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:47:41 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C50AAC000F;
+        Wed, 20 Sep 2023 09:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1695203258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KBMJgzR8VAF5Tv49FJwXsEieKkO/KF/zP4P1pWbF3QI=;
+        b=D6zZpFJjRJP4kcKIdstlMhQTixcG8o/ZnAzvvG4N/thpkp9V4+LgaIfndEnRJtrrmT04/T
+        kV6omv2joTkvFisnannvxB81iHhFkxjshJoFkdogs6I375rbAgo1+mzkNyTzo0PoGjEp0m
+        hAQHcvIeqkJhgzWXmPC+xx7dUXycYlyF0l3QBtXgP3FCjEaCa3eRvY1cX0p2GnilJqv3Zh
+        kStJ0kJDhy4KgtpFtMAQdIU3F7MrZnkVzgFb+myqQ8WWO8LEnS/3KKkvjdqczUCMsgJjKd
+        u8KIK5zYY/ibKmr9iLixP2NKyOAq6RDJWMrV0NwXFQhkjPVO5SYq/CvfKcLHHA==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Robert Marko <robert.marko@sartura.hr>, andrew@lunn.ch,
+        sebastian.hesselbarth@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
+Subject: Re: [PATCH 1/2] MAINTAINERS: uDPU: make myself maintainer of it
+In-Reply-To: <20230914095236.1601639-1-robert.marko@sartura.hr>
+References: <20230914095236.1601639-1-robert.marko@sartura.hr>
+Date:   Wed, 20 Sep 2023 11:47:37 +0200
+Message-ID: <87editfa6e.fsf@BL-laptop>
 MIME-Version: 1.0
-References: <20230919151948.21564-1-wsa+renesas@sang-engineering.com> <20230919151948.21564-3-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20230919151948.21564-3-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 20 Sep 2023 11:47:13 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX=95RZFwWBPMEtNTn2FFUr5VzDmDotEnmcip_0j+A-RQ@mail.gmail.com>
-Message-ID: <CAMuHMdX=95RZFwWBPMEtNTn2FFUr5VzDmDotEnmcip_0j+A-RQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] i2c: rcar: improve accuracy for R-Car Gen3+
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+Robert Marko <robert.marko@sartura.hr> writes:
 
-On Tue, Sep 19, 2023 at 8:45 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> With some new registers, SCL can be calculated to be closer to the
-> desired rate. Apply the new formula for R-Car Gen3 device types.
+> Vladimir is no longer at the company, so I am stepping up to maintain the
+> Methode boards.
 >
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+
+Applied on mvebu/fixes
+
+Thanks,
+
+Gregory
 > ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Changes since v1:
-> * fixed two whitespace issues
-> * use dedicated variables for scld and schd
-> * explicitly say "2 * smd" in the comment explaining the new formula
-> * use correct division 'clkp/SCL' in the same comment
-> * updated debug printout to use the new variables
-
-Thanks for the update!
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-But given you have to respin 1/2 anyway, what about...
-
-> --- a/drivers/i2c/busses/i2c-rcar.c
-> +++ b/drivers/i2c/busses/i2c-rcar.c
-
-> @@ -128,6 +146,8 @@ struct rcar_i2c_priv {
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fa7487b7729b..e0c4cf40cbb8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13873,7 +13873,7 @@ F:	Documentation/devicetree/bindings/media/amlogic,gx-vdec.yaml
+>  F:	drivers/staging/media/meson/vdec/
+>  
+>  METHODE UDPU SUPPORT
+> -M:	Vladimir Vid <vladimir.vid@sartura.hr>
+> +M:	Robert Marko <robert.marko@sartura.hr>
+>  S:	Maintained
+>  F:	arch/arm64/boot/dts/marvell/armada-3720-uDPU.dts
+>  
+> -- 
+> 2.41.0
 >
->         int pos;
->         u32 icccr;
-> +       u16 scld;
-> +       u16 schd;
-
-... changing the order, to match alphabetical and register offset order.
-
-> +
-> +               priv->icccr = cdf;
-> +               priv->scld = RCAR_SCLD_RATIO * x;
-> +               priv->schd = RCAR_SCHD_RATIO * x;
-
-Likewise.
-
-> +
-> +               dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u SCLD %u SCHD %u\n",
-> +                       scl, t.bus_freq_hz, rate, round, cdf, priv->scld, priv->schd);
-> +       }
->
->         return 0;
-
-Gr{oetje,eeting}s,
-
-                        Geert
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
