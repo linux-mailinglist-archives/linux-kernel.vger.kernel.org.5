@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FDE7A8DD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02157A8DDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbjITUc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 16:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
+        id S229593AbjITUgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 16:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjITUc4 (ORCPT
+        with ESMTP id S229463AbjITUgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 16:32:56 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78268AB
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:32:50 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50300141a64so545058e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:32:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695241968; x=1695846768; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5A++2mX03Hcr44T/e+yZZvTQBTnG7Z4Hfb7UlqgoOko=;
-        b=Q+tf13eEfIK1ZDdhriHkszIP/K2CAz1MGYtZesaema1BQCiiQlDmVFZO9+5ySWB3e0
-         mmUUl73ocIhPGPe/lWKCxhg+jcmHeQBATIxNp02HRRIWF+00233zX17fDmTpC6eMi9W9
-         ZK5Xt3a4wIqNSpC8IZhW0ZkG3PbRWPLwe0OYA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695241968; x=1695846768;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5A++2mX03Hcr44T/e+yZZvTQBTnG7Z4Hfb7UlqgoOko=;
-        b=NohhNqfUYew0eJp+ljqYCYON3on5keTKzfAm9tw6cIwx/tyvQFXaz0ViPYBDjpqgWP
-         ycZFe9WteJDzLtKBLzfJGT8U92Vd136xdda2a69qmtX9NbtVpCqA2gRdkG2lVTPp5TCO
-         ZpohznqRkhdOVIXeT3cOQOBFKiGuNJm5ev/Cy2FwlzKg6JUY5GlDVDiU4ujFyd8088bz
-         fJVPuUQ4A8n9yRUND7whMuA6Dik4Usnymd+RErupo1xzbaji3aRIckbZaFs9jFYWHkTf
-         XQgkvgd6Vu4bvVb5qpBItucuaGomQcSKGBc3FlQ1MuLATWrZ/xn5qIlrJyn14ANuZURX
-         0/Sw==
-X-Gm-Message-State: AOJu0YzkuqergElqgqIREl0U0Tdd3/IhARe7gUpaNRMn/w58BBatvNdY
-        qWzJkgURgBvRU3ia8Vkb1QhqAcPxQFpjaoG2rmdRWG0e
-X-Google-Smtp-Source: AGHT+IE1MKRPcyoR5fpwxdieos9/a+a3gj4ecj3SqWCyqyhSYeiBrqsUv/UYExGwjdGiuaXvB06Zgg==
-X-Received: by 2002:a05:6512:3150:b0:503:38fe:4598 with SMTP id s16-20020a056512315000b0050338fe4598mr3065758lfi.64.1695241968384;
-        Wed, 20 Sep 2023 13:32:48 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id p5-20020a056512328500b004fe0fead9e2sm2100426lfe.165.2023.09.20.13.32.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 13:32:47 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-501eec0a373so503795e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:32:47 -0700 (PDT)
-X-Received: by 2002:a05:6512:39ca:b0:503:7c0:ae96 with SMTP id
- k10-20020a05651239ca00b0050307c0ae96mr4520271lfu.20.1695241967063; Wed, 20
- Sep 2023 13:32:47 -0700 (PDT)
+        Wed, 20 Sep 2023 16:36:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B53BC6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695242159;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X7Fy9zw5ej/V6zjA8OzVPy/jO4OeVwHuOObAxe8q5yo=;
+        b=efEC6G0sOJ5Hnx9WVsvoCNhkuc3js/SNeCJ0dLrrNaN/RbZMS1NnPdCklqmhlEoOusV1fb
+        WNH/dLrnxi+BUwOCKF44AGyEQixvLPYAXqgoFTKUbeEUw1kUnsNNUrTLvVvhZmISUz4QZO
+        p8ByyLQT4nfbtT0YN3Nq268kooXY+vA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-161-2-hTVdAfMjGx01ME_rzv1Q-1; Wed, 20 Sep 2023 16:35:53 -0400
+X-MC-Unique: 2-hTVdAfMjGx01ME_rzv1Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 14DE728EC106;
+        Wed, 20 Sep 2023 20:35:52 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5507940C2064;
+        Wed, 20 Sep 2023 20:35:47 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20230920130400.203330-6-dhowells@redhat.com>
+References: <20230920130400.203330-6-dhowells@redhat.com> <20230920130400.203330-1-dhowells@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Matthew Wilcox <willy@infradead.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, loongarch@lists.linux.dev,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC PATCH v2 5/9] iov_iter: Create a function to prepare userspace VM for UBUF/IOVEC tests
 MIME-Version: 1.0
-References: <20230920060615.GA2739@sol.localdomain> <CAHk-=wja26UmHQCu48n_HN5t5w3fa6ocm5d_VrJe6-RhCU_x9A@mail.gmail.com>
- <20230920193203.GA914@sol.localdomain> <CAHk-=wicaC9BhbgufM_Ym6bkjrRcB7ZXSK00fYEmiAcFmwN3Kg@mail.gmail.com>
- <20230920202126.GC914@sol.localdomain>
-In-Reply-To: <20230920202126.GC914@sol.localdomain>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 20 Sep 2023 13:32:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgu4a=ckih8+JgfwYPZcp-uvc1Nh2LTGBSzSVKMYRk+-w@mail.gmail.com>
-Message-ID: <CAHk-=wgu4a=ckih8+JgfwYPZcp-uvc1Nh2LTGBSzSVKMYRk+-w@mail.gmail.com>
-Subject: Re: [RFC] Should writes to /dev/urandom immediately affect reads?
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <578661.1695242146.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 20 Sep 2023 21:35:46 +0100
+Message-ID: <578662.1695242146@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 13:21, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> It seems that what you're claiming (in addition to the RNG always being
-> initialized quickly on platforms that are "relevant", whatever that means) is
-> that once the RNG is "initialized", there's no need to reseed it anymore.
+David Howells <dhowells@redhat.com> wrote:
 
-No. You are literally putting words in my mouth that I at no point
-even implied. You're making up an argument.
+> diff --git a/arch/loongarch/include/asm/page.h b/arch/loongarch/include/=
+asm/page.h
+> index 63f137ce82a4..c7c5f5b4c0d3 100644
+> --- a/arch/loongarch/include/asm/page.h
+> +++ b/arch/loongarch/include/asm/page.h
+> @@ -32,6 +32,7 @@
+>  =
 
-I *LITERALLY* am asking a very simple question: WHO DO YOU EVEN CARE
-ABOUT THIS "IMMEDIATE" EFFECT.
+>  #include <linux/kernel.h>
+>  #include <linux/pfn.h>
+> +#include <linux/personality.h>
+>  =
 
-Give me a real reason. Give me *any* reason.
+>  /*
+>   * It's normally defined only for FLATMEM config but it's
 
-Don't try to turn this into some other discussion. I'm asking WHY DOES
-ANY OF THIS MATTER?
+I've moved this addition to lib/kunit_iov_iter.c as the READ_IMPLIES_EXEC =
+flag
+is also not defined otherwise on powerpc and repushed my patches.
 
-The immediacy has changed several times, as you yourself lined up. And
-as far as I can tell, none of this matter in the least.
+David
 
-> The question is, given that, shouldn't the RNG also reseed right
-> away when userspace explicitly adds something to it
-
-I don't see that there is any "given" at all.
-
-We do re-seed regularly. I'm not arguing against that.
-
-I'm literally arguing against applying random changes without giving
-any actual reason for them.
-
-Which is why I'm asking "why do you care"? Give em a *reason*. Why
-would a user space write matter at all?
-
-It was why I also asked about entropy. Because *if* you argue that the
-user-space write contains entropy, then that would be a reason.
-
-You didn't.
-
-You argue that the current behavior hasn't been the universal behavior. I agree.
-
-But considering that we've switched behaviors apparently at least
-three times, and at no point did it make any difference, my argument
-is really that without a *REASON*, why would we switch behavior *four*
-times?
-
-Is it just "four changes is better than three"?
-
-             Linus
