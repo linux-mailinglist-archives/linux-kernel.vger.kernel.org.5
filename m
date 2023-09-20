@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F268E7A74A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDFE7A74B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233995AbjITHqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
+        id S233960AbjITHrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234001AbjITHqU (ORCPT
+        with ESMTP id S234052AbjITHqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:46:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ACFE8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695195947; x=1726731947;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=9aISSy5Y6tM/5Mn3uS24TYyGdedLlI00cbNXlchHbQU=;
-  b=l2Xh1rwslYrzpiC9dAqARlRahanGE3c9AzAnOMGswCW9Onjo00YJoWEY
-   riLhZXvySb5whOa16Gqd85cl/3PWjg+dv5gjccARCr72sIm2idczr6gxf
-   tbF6MOaAriHCxWa15WukMPOn7sJQk3j9WY4pWdwqr7NL0c8VVCG3uzcYg
-   SpV1846pID3a3RsF91ci0MM4v1bF2ZJszvM3yCKWTjGJMYpOAK6NsYORx
-   bzIRcU3WMRf2IBh5nb0uGyI3WUXMVu9XxAeWrMMsJQQ3uWe4xR1Un/G+h
-   T2zaRFyEAi6kUFln8vQLG47jZeQOdpeVzC/cnDULhB74KJtWPvvaUMREs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="370468073"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="370468073"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:45:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="749789384"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="749789384"
-Received: from lingshan-mobl.ccr.corp.intel.com (HELO [10.93.14.5]) ([10.93.14.5])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:45:41 -0700
-Message-ID: <1a2537e9-b70c-0d85-20f5-e8ef5c8a9bb8@intel.com>
-Date:   Wed, 20 Sep 2023 15:45:38 +0800
+        Wed, 20 Sep 2023 03:46:33 -0400
+Received: from icp-osb-irony-out5.external.iinet.net.au (icp-osb-irony-out5.external.iinet.net.au [203.59.1.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C72DCE4;
+        Wed, 20 Sep 2023 00:45:52 -0700 (PDT)
+X-SMTP-MATCH: 1
+IronPort-Data: A9a23:azQpg6xIW9ObnWEOXuN6t+cnxyrEfRIJ4+MujC+fZmUNrF6WrkU3e
+ hirod39jgY+HhL3funC5f239Uo2Dfalz9J9ShxunZ1UZyoigdLfAtiEJVvHMSqXL8nSJGpq9
+ Mx2huPodajYdVeC4E/3WlTdhSMkj/rQF+CkULes1h1ZHmeIdg9w0XqPpMZk2uaEsfDhayuRt
+ NX7pdHoOVPN81aY5UpNtspvADs21BjDkGtwUm4WPJinj3eH/5UhN6/zEInqR5fOrii4KcbhL
+ wrL5OnREmrxo0x3Uov9+lrxWhVirrX6ZWBihlIKAPL62kAqSiEais4G2PQghUh/u2WkkdZ62
+ tp3kZ2TcVYlA4/nwvkmakwNe81+FfUuFL7vEiHu64rKkR2AKz22mcAG4EMeYN1epKAtWz8Ir
+ 6RIQNwORknra+aez6i2RfRqick5IdPDI44Epndt0XfSCvNgSI2rr6DiuY4BjWlh2JgTdRrYT
+ 9AHVTd9NhXdWkFwNBRNMKM9w8KamVCqJlW0r3rQ/8Lb+VP70w111KnFMdzbYNWGSMxZ2EGCq
+ Qru+2X/HwFfN9GFzzeB2myji/WJni7hXo8WUrqi+ZZChFyV23xWBgYaWEW2pdGnhUOkHdFSM
+ UoZ/mwpt6da3EiqSMTtGhSiq36soBERQZxTHvc85QXLzbDbiy6FAXIaRzpNc/QitckrVXkk0
+ UKPk9r1BDtp9rqPRhq18K+VojyzPwAaKGYDYWkPSg5t3jX4iNxjy0yKFIw9VfTt3pvpAT7xh
+ TuNqW43mt3/kPI26klyxnif6xrEm3QDZlddCtn/No590j5EWQ==
+IronPort-HdrOrdr: A9a23:8cNknKgC5uWXPwRJcEjE0pucnXBQXmsji2hC6mlwRA09TyX4ra
+ 6TdZEguCMc5wxxZJhNo7C90dC7MBThHPxOkOss1MaZLWrbUQKTRekIh+eM/9SHIVybygc379
+ YET0ERMqyJMXFKyez/pCG+G9Mx2tmcmZrY+dv2/jNGSUVHbL5t6gFhBm+gYzJLbTgDKZ0lFI
+ eNouprzgDQAkj/t/7LYEXtidKz3uHjpdbvfBoPBxss7Q+TgHey7qLmH3Gjr2kjegIKyaon+W
+ jBmQn++qjmqeiyzlvV3XLS6ZM+oqqa9vJzQMSQjsAULz/ojBqkIJ55U7nHpzwtpvqzgWxa7e
+ Xxnw==
+X-Talos-CUID: =?us-ascii?q?9a23=3AuWQeS2pTeuaoxyCd2FPf7pvmUfB1X3Pbx2XfGWu?=
+ =?us-ascii?q?5Kl44RIC3YgWNw5oxxg=3D=3D?=
+X-Talos-MUID: 9a23:z4HOwgWseijTGJ7q/CXyuDxwbsZ12viRBgNXqaQF5Oy2KgUlbg==
+X-IronPort-AV: E=Sophos;i="6.02,161,1688400000"; 
+   d="scan'208";a="491969605"
+Received: from 58-6-226-208.tpgi.com.au (HELO [192.168.0.22]) ([58.6.226.208])
+  by icp-osb-irony-out5.iinet.net.au with ESMTP; 20 Sep 2023 15:45:47 +0800
+Message-ID: <5add8ae8-d746-b254-7559-b96aa72d3523@westnet.com.au>
+Date:   Wed, 20 Sep 2023 17:45:47 +1000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [virtio-dev] Re: [virtio-comment] Re: [VIRTIO PCI PATCH v5 1/1]
- transport-pci: Add freeze_mode to virtio_pci_common_cfg
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
 Content-Language: en-US
-To:     Parav Pandit <parav@nvidia.com>,
-        "Chen, Jiqian" <Jiqian.Chen@amd.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        David Airlie <airlied@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
-        "virtio-comment@lists.oasis-open.org" 
-        <virtio-comment@lists.oasis-open.org>,
-        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
-        Xenia Ragiadakou <burzalodowa@gmail.com>,
-        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
-        "Zhang, Julia" <Julia.Zhang@amd.com>,
-        "Huang, Ray" <Ray.Huang@amd.com>
-References: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
- <20230919114242.2283646-2-Jiqian.Chen@amd.com>
- <20230919082802-mutt-send-email-mst@kernel.org>
- <cd8d306b-6acc-34be-516c-b89c23ac108d@intel.com>
- <BL1PR12MB5849E32A76165F1307492185E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
- <PH0PR12MB5481D2CBCFBF7BCBF427EE1EDCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
- <701bb67c-c52d-4eb3-a6ed-f73bd5d0ff33@intel.com>
- <PH0PR12MB5481891053E37A79920991F6DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
- <91c3e7ec-d702-ee61-c420-59ddc8dac6dc@intel.com>
- <PH0PR12MB548118296F71CBD9158963B0DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-In-Reply-To: <PH0PR12MB548118296F71CBD9158963B0DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
+From:   Greg Ungerer <gregungerer@westnet.com.au>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, torvalds@linux-foundation.org,
+        Nicholas Piggin <npiggin@gmail.com>
+References: <20230915183707.2707298-1-willy@infradead.org>
+ <20230915183707.2707298-10-willy@infradead.org>
+ <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
+ <ZQW849TfSCK6u2f8@casper.infradead.org>
+ <cb763591-a697-ab74-171e-fcd7f4e70137@westnet.com.au>
+In-Reply-To: <cb763591-a697-ab74-171e-fcd7f4e70137@westnet.com.au>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -98,56 +71,121 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 9/20/2023 3:32 PM, Parav Pandit wrote:
->
->> From: Zhu, Lingshan <lingshan.zhu@intel.com>
->> Sent: Wednesday, September 20, 2023 12:58 PM
->>
->> On 9/20/2023 3:10 PM, Parav Pandit wrote:
->>>> From: Zhu, Lingshan <lingshan.zhu@intel.com>
->>>> Sent: Wednesday, September 20, 2023 12:37 PM
->>>>> The problem to overcome in [1] is, resume operation needs to be
->>>>> synchronous
->>>> as it involves large part of context to resume back, and hence just
->>>> asynchronously setting DRIVER_OK is not enough.
->>>>> The sw must verify back that device has resumed the operation and
->>>>> ready to
->>>> answer requests.
->>>> this is not live migration, all device status and other information
->>>> still stay in the device, no need to "resume" context, just resume running.
+On 19/9/23 00:37, Greg Ungerer wrote:
+> On 17/9/23 00:34, Matthew Wilcox wrote:
+>> On Sat, Sep 16, 2023 at 11:11:32PM +1000, Greg Ungerer wrote:
+>>> On 16/9/23 04:36, Matthew Wilcox (Oracle) wrote:
+>>>> Using EOR to clear the guaranteed-to-be-set lock bit will test the
+>>>> negative flag just like the x86 implementation.  This should be
+>>>> more efficient than the generic implementation in filemap.c.  It
+>>>> would be better if m68k had __GCC_ASM_FLAG_OUTPUTS__.
 >>>>
->>> I am aware that it is not live migration. :)
+>>>> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>>>> ---
+>>>>    arch/m68k/include/asm/bitops.h | 14 ++++++++++++++
+>>>>    1 file changed, 14 insertions(+)
+>>>>
+>>>> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+>>>> index e984af71df6b..909ebe7cab5d 100644
+>>>> --- a/arch/m68k/include/asm/bitops.h
+>>>> +++ b/arch/m68k/include/asm/bitops.h
+>>>> @@ -319,6 +319,20 @@ arch___test_and_change_bit(unsigned long nr, volatile unsigned long *addr)
+>>>>        return test_and_change_bit(nr, addr);
+>>>>    }
+>>>> +static inline bool xor_unlock_is_negative_byte(unsigned long mask,
+>>>> +        volatile unsigned long *p)
+>>>> +{
+>>>> +    char result;
+>>>> +    char *cp = (char *)p + 3;    /* m68k is big-endian */
+>>>> +
+>>>> +    __asm__ __volatile__ ("eor.b %1, %2; smi %0"
 >>>
->>> "Just resuming" involves lot of device setup task. The device implementation
->> does not know for how long a device is suspended.
->>> So for example, a VM is suspended for 6 hours, hence the device context
->> could be saved in a slow disk.
->>> Hence, when the resume is done, it needs to setup things again and driver got
->> to verify before accessing more from the device.
->> The restore procedures should perform by the hypervisor and done before set
->> DRIVER_OK and wake up the guest.
-> Which is the signal to trigger the restore? Which is the trigger in physical device when there is no hypervisor?
->
-> In my view, setting the DRIVER_OK is the signal regardless of hypervisor or physical device.
-> Hence the re-read is must.
-Yes, as I said below, should verify by re-read.
->
->> And the hypervisor/driver needs to check the device status by re-reading.
->>>> Like resume from a failed LM.
->>>>> This is slightly different flow than setting the DRIVER_OK for the
->>>>> first time
->>>> device initialization sequence as it does not involve large restoration.
->>>>> So, to merge two ideas, instead of doing DRIVER_OK to resume, the
->>>>> driver
->>>> should clear the SUSPEND bit and verify that it is out of SUSPEND.
->>>>> Because driver is still in _OK_ driving the device flipping the SUSPEND bit.
->>>> Please read the spec, it says:
->>>> The driver MUST NOT clear a device status bit
->>>>
->>> Yes, this is why either DRIER_OK validation by the driver is needed or Jiqian's
->> synchronous new register..
->> so re-read
-> Yes. re-read until set, Thanks.
->
+>>> The ColdFire members of the 68k family do not support byte size eor:
+>>>
+>>>    CC      mm/filemap.o
+>>> {standard input}: Assembler messages:
+>>> {standard input}:824: Error: invalid instruction for this architecture; needs 68000 or higher (68000 [68ec000, 68hc000, 68hc001, 68008, 68302, 68306, 68307, 68322, 68356], 68010, 68020 [68k, 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060], cpu32 [68330, 68331, 68332, 68333, 68334, 68336, 68340, 68341, 68349, 68360], fidoa [fido]) -- statement `eor.b #1,3(%a0)' ignored
+>>
+>> Well, that sucks.  What do you suggest for Coldfire?
+> 
+> I am not seeing an easy way to not fall back to something like the MIPS
+> implementation for ColdFire. Could obviously assemblerize this to do better
+> than gcc, but if it has to be atomic I think we are stuck with the irq locking.
+> 
+> static inline bool cf_xor_is_negative_byte(unsigned long mask,
+>                  volatile unsigned long *addr)
+> {
+>          unsigned long flags;
+>          unsigned long data;
+> 
+>          local_irq_save(flags)
+>          data = *addr;
+>          *addr = data ^ mask;
+>          local_irq_restore(flags);
+> 
+>          return (data & BIT(7)) != 0;
+> }
 
+The problem with this C implementation is that need to use loal_irq_save()
+which results in some ugly header dependencies trying top include irqflags.h.
+
+This version at least compiles and run, though we can probably do better still.
+
+
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index e984af71df6b..99392c26e784 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -319,6 +319,48 @@ arch___test_and_change_bit(unsigned long nr, volatile unsigned long *addr)
+         return test_and_change_bit(nr, addr);
+  }
+  
++static inline bool cf_xor_unlock_is_negative_byte(unsigned long mask,
++               volatile unsigned long *addr)
++{
++       unsigned long data;
++
++        asm volatile (
++               "move.w %%sr,%%d1       \n\t"
++               "move.w %%d1,%%d0       \n\t"
++               "ori.l  #0x0700,%%d0    \n\t"
++               "move.w %%d0,%%sr       \n\t"
++
++               "move.l %2@,%0          \n\t"
++               "eor.l  %1,%0           \n\t"
++               "move.l %0,%2@          \n\t"
++
++               "movew  %%d1,%%sr       \n"
++               : "=d" (data)
++               : "di" (mask), "a" (addr)
++               : "cc", "%d0", "%d1", "memory");
++
++       return (data & BIT(7)) != 0;
++}
++
++static inline bool m68k_xor_unlock_is_negative_byte(unsigned long mask,
++               volatile unsigned long *p)
++{
++       char result;
++       char *cp = (char *)p + 3;       /* m68k is big-endian */
++
++       __asm__ __volatile__ ("eor.b %1, %2; smi %0"
++               : "=d" (result)
++               : "di" (mask), "o" (*cp)
++               : "memory");
++       return result;
++}
++
++#if defined(CONFIG_COLDFIRE)
++#define xor_unlock_is_negative_byte(mask, p) cf_xor_unlock_is_negative_byte(mask, p)
++#else
++#define xor_unlock_is_negative_byte(mask, p) m68k_xor_unlock_is_negative_byte(mask, p)
++#endif
++
+  /*
+   *     The true 68020 and more advanced processors support the "bfffo"
+   *     instruction for finding bits. ColdFire and simple 68000 parts
+
+
+Regards
+Greg
