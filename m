@@ -2,68 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 271CC7A8AB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2747A8AC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjITRfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
+        id S229563AbjITRos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjITRfb (ORCPT
+        with ESMTP id S229520AbjITRor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:35:31 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9D8AF;
-        Wed, 20 Sep 2023 10:35:25 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a9e89fa553so3564b6e.1;
-        Wed, 20 Sep 2023 10:35:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695231324; x=1695836124; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=72ZMPmG8h3bndMZ2rA/WbfU0f4MVxkLqm1XQLZCVksU=;
-        b=dFXBgRYMZFiyt5OqkpejE1IJJ9CUVsDn/MDdagjipaMCpCg2cpPDo5XgxDwj4dEaXH
-         V60QJZ+d802O5fC5/oixgwCUFeCM7rGb7Mgk8pZhje1SCb26loY/evW7tyRuprkCPEZD
-         AVX3DEej6ztuurUwVpUKAf9UKn3s8eTWT9788ItxFJEXzgF+qBGTengs5XZOwF/nHzUk
-         aN/8yxDlQi9LedQvyDvS4kGDJtn/NbIYixF6hvd0+HhWilY77/FoFlcrYijtdQbO0juQ
-         PAINypN9aeFwUPaxNtNQdA9dfWRnxzX7W4NdQgLjXPWqjZCnAqW+1faucWrGNiMy2XM9
-         varg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695231324; x=1695836124;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=72ZMPmG8h3bndMZ2rA/WbfU0f4MVxkLqm1XQLZCVksU=;
-        b=KkNo0yLlI+gmzGku70SevbEeaVL2nEw+OHsLw9MlMPBh1SCGI8G+niT9ntte81+q9v
-         532WW7HZpnzRisKXvoq2Pu0W+IxDuLX8gclOB0P9z6Q21/E6FicfFnyPbZjuqdQsjc5j
-         lppbJWIG3WehGuhUVqCxyTDYNVD6Zxo7VD+9jBv3mCLn1Z5WZASuYqXGpUYrOOHkT3vx
-         s67WK12VLA0bXPeM09wiirNXKfECba23nIaZrmTy7jIkpyDX9liwkLsgGNN++j2DfaDj
-         DNN6fPzHJ52uY1IunbBIP+dtftW9moJCHvBpy1DECcVqnYjfUmzgmKXjXH3beUMBRUJY
-         qXOQ==
-X-Gm-Message-State: AOJu0YwODOqjSjLSCGeaKYgRU2nWyOFgWulWeM3jqWBEAB9a/t9dGUTQ
-        K4t/tjysokEZQw6mbt2GqIo=
-X-Google-Smtp-Source: AGHT+IHvsv5cqcTBdZLRLx1t5JqBmwesPoIlsPl1SxJ0hbPDCm88UcuT5wiVNT+hETSB3dNaZATfHA==
-X-Received: by 2002:a05:6808:178a:b0:3a9:e40c:683c with SMTP id bg10-20020a056808178a00b003a9e40c683cmr3397758oib.1.1695231324271;
-        Wed, 20 Sep 2023 10:35:24 -0700 (PDT)
-Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:9f0c:3917:3374:12c4])
-        by smtp.gmail.com with ESMTPSA id 22-20020aca1016000000b003a9baa79051sm1352994oiq.11.2023.09.20.10.35.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 10:35:23 -0700 (PDT)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     kuba@kernel.org
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        l00g33k@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>
-Subject: [PATCH] net: dsa: mv88e6xxx: Avoid EEPROM timeout when EEPROM is absent
-Date:   Wed, 20 Sep 2023 14:35:08 -0300
-Message-Id: <20230920173508.63449-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 20 Sep 2023 13:44:47 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91377C6;
+        Wed, 20 Sep 2023 10:44:41 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4C4D321EFD;
+        Wed, 20 Sep 2023 17:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695231880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=CvCpha75ppGhrQPyy+zvoIVH54+vq874hW3LP3zJbWg=;
+        b=dZXOGz3bYiXEUA0rHpQlTEVzuqxob7mvZleto6Ef50A3VjCG/fPK3tg3wzcgZI2x+HRJPB
+        RODaszQA/za/ZCdKRJmQLZHjr6xGd8fKMpk5AQPdbVuL/Am+nkUYwDVq+tcCKTffpBKYOL
+        WmLjSs8JFRK2fyo4Zri5/HIqvSgNtWY=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 3155D2C142;
+        Wed, 20 Sep 2023 17:44:40 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 066EDDA9EB; Wed, 20 Sep 2023 19:38:06 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.6-rc3
+Date:   Wed, 20 Sep 2023 19:38:03 +0200
+Message-ID: <cover.1695229068.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,117 +50,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@denx.de>
+Hi,
 
-Since commit 23d775f12dcd ("net: dsa: mv88e6xxx: Wait for EEPROM done
-before HW reset") the following error is seen on a imx8mn board with
-a 88E6320 switch:
+a few more followup fixes to the directory listing. People have noticed
+different behaviour compared to other filesystems after changes in 6.5.
+This is now unified to more "logical" and expected behaviour while still
+within POSIX. And a few more fixes for stable.
 
-mv88e6085 30be0000.ethernet-1:00: Timeout waiting for EEPROM done
+Please pull, thanks.
 
-This board does not have an EEPROM attached to the switch though.
+- directory listing fixes
+  - change behaviour of readdir()/rewinddir() when new directory entries
+    are created after opendir(), properly tracking the last entry
+  - fix race in readdir when multiple threads can set the last entry
+    index for a directory
 
-This problem is well explained by Andrew Lunn:
+- use exclusive lock when direct io might need to drop privs and call
+  notify_change()
 
-"If there is an EEPROM, and the EEPROM contains a lot of data, it could
-be that when we perform a hardware reset towards the end of probe, it
-interrupts an I2C bus transaction, leaving the I2C bus in a bad state,
-and future reads of the EEPROM do not work.
+- don't clear uptodate bit on page after an error, this may lead to a
+  deadlock in subpage mode
 
-The work around for this was to poll the EEInt status and wait for it
-to go true before performing the hardware reset.
+- fix waiting pattern when multiple readers block on Merkle tree data,
+  switch to folios
 
-However, we have discovered that for some boards which do not have an
-EEPROM, EEInt never indicates complete. As a result,
-mv88e6xxx_g1_wait_eeprom_done() spins for a second and then prints a
-warning.
+----------------------------------------------------------------
+The following changes since commit 5facccc9402301d67d48bef06159b91f7e41efc0:
 
-We probably need a different solution than calling
-mv88e6xxx_g1_wait_eeprom_done(). The datasheet for 6352 documents the
-EEPROM Command register:
+  MAINTAINERS: remove links to obsolete btrfs.wiki.kernel.org (2023-09-08 14:21:27 +0200)
 
-bit 15 is:
+are available in the Git repository at:
 
-  EEPROM Unit Busy. This bit must be set to a one to start an EEPROM
-  operation (see EEOp below). Only one EEPROM operation can be
-  executing at one time so this bit must be zero before setting it to
-  a one.  When the requested EEPROM operation completes this bit will
-  automatically be cleared to a zero. The transition of this bit from
-  a one to a zero can be used to generate an interrupt (the EEInt in
-  Global 1, offset 0x00).
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc2-tag
 
-and more interesting is bit 11:
+for you to fetch changes up to 8e7f82deb0c0386a03b62e30082574347f8b57d5:
 
-  Register Loader Running. This bit is set to one whenever the
-  register loader is busy executing instructions contained in the
-  EEPROM."
+  btrfs: fix race between reading a directory and adding entries to it (2023-09-14 23:24:42 +0200)
 
-Change to calling mv88e6xxx_g1_wait_eeprom_done() to fix the timeout
-error when the EEPROM chip is not present.
-  
-Fixes: 23d775f12dcd ("net: dsa: mv88e6xxx: Wait for EEPROM done before HW reset")
-Suggested-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Fabio Estevam <festevam@denx.de>
----
-Alfred,
+----------------------------------------------------------------
+Bernd Schubert (1):
+      btrfs: file_remove_privs needs an exclusive lock in direct io write
 
-Please test it, if you have a chance. I want to be sure that your usecase
-still works well.
+Filipe Manana (3):
+      btrfs: set last dir index to the current last index when opening dir
+      btrfs: refresh dir last index during a rewinddir(3) call
+      btrfs: fix race between reading a directory and adding entries to it
 
- drivers/net/dsa/mv88e6xxx/chip.c    | 6 ++++--
- drivers/net/dsa/mv88e6xxx/global2.c | 2 +-
- drivers/net/dsa/mv88e6xxx/global2.h | 2 ++
- 3 files changed, 7 insertions(+), 3 deletions(-)
+Josef Bacik (1):
+      btrfs: don't clear uptodate on write errors
 
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index a73008b9e0b3..ba906dfab055 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3012,14 +3012,16 @@ static void mv88e6xxx_hardware_reset(struct mv88e6xxx_chip *chip)
- 		 * from the wrong location resulting in the switch booting
- 		 * to wrong mode and inoperable.
- 		 */
--		mv88e6xxx_g1_wait_eeprom_done(chip);
-+		if (chip->info->ops->get_eeprom)
-+			mv88e6xxx_g2_eeprom_wait(chip);
- 
- 		gpiod_set_value_cansleep(gpiod, 1);
- 		usleep_range(10000, 20000);
- 		gpiod_set_value_cansleep(gpiod, 0);
- 		usleep_range(10000, 20000);
- 
--		mv88e6xxx_g1_wait_eeprom_done(chip);
-+		if (chip->info->ops->get_eeprom)
-+			mv88e6xxx_g2_eeprom_wait(chip);
- 	}
- }
- 
-diff --git a/drivers/net/dsa/mv88e6xxx/global2.c b/drivers/net/dsa/mv88e6xxx/global2.c
-index ec49939968fa..ac302a935ce6 100644
---- a/drivers/net/dsa/mv88e6xxx/global2.c
-+++ b/drivers/net/dsa/mv88e6xxx/global2.c
-@@ -340,7 +340,7 @@ int mv88e6xxx_g2_pot_clear(struct mv88e6xxx_chip *chip)
-  * Offset 0x15: EEPROM Addr (for 8-bit data access)
-  */
- 
--static int mv88e6xxx_g2_eeprom_wait(struct mv88e6xxx_chip *chip)
-+int mv88e6xxx_g2_eeprom_wait(struct mv88e6xxx_chip *chip)
- {
- 	int bit = __bf_shf(MV88E6XXX_G2_EEPROM_CMD_BUSY);
- 	int err;
-diff --git a/drivers/net/dsa/mv88e6xxx/global2.h b/drivers/net/dsa/mv88e6xxx/global2.h
-index c05fad5c9f19..6d8d38944b23 100644
---- a/drivers/net/dsa/mv88e6xxx/global2.h
-+++ b/drivers/net/dsa/mv88e6xxx/global2.h
-@@ -360,6 +360,8 @@ int mv88e6xxx_g2_trunk_clear(struct mv88e6xxx_chip *chip);
- int mv88e6xxx_g2_device_mapping_write(struct mv88e6xxx_chip *chip, int target,
- 				      int port);
- 
-+int mv88e6xxx_g2_eeprom_wait(struct mv88e6xxx_chip *chip);
-+
- extern const struct mv88e6xxx_irq_ops mv88e6097_watchdog_ops;
- extern const struct mv88e6xxx_irq_ops mv88e6250_watchdog_ops;
- extern const struct mv88e6xxx_irq_ops mv88e6390_watchdog_ops;
--- 
-2.34.1
+Matthew Wilcox (Oracle) (1):
+      btrfs: convert btrfs_read_merkle_tree_page() to use a folio
 
+ fs/btrfs/extent_io.c |  9 +-------
+ fs/btrfs/file.c      | 16 +++++++++++--
+ fs/btrfs/inode.c     | 33 +++++++++++++++++++--------
+ fs/btrfs/verity.c    | 64 +++++++++++++++++++++++++---------------------------
+ 4 files changed, 69 insertions(+), 53 deletions(-)
