@@ -2,82 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 850D47A715C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADBB7A715D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbjITD53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 23:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
+        id S232580AbjITD6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 23:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233037AbjITD5F (ORCPT
+        with ESMTP id S232602AbjITD6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 23:57:05 -0400
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EDB1B6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:55:58 -0700 (PDT)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by Atcsqr.andestech.com with ESMTP id 38K3tokQ069459;
-        Wed, 20 Sep 2023 11:55:50 +0800 (+08)
-        (envelope-from peterlin@andestech.com)
-Received: from atctrx.andestech.com (10.0.15.173) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Sep 2023
- 11:55:46 +0800
-From:   Yu Chien Peter Lin <peterlin@andestech.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <david@redhat.com>,
-        <akpm@linux-foundation.org>, <alexghiti@rivosinc.com>,
-        <bjorn@rivosinc.com>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <conor.dooley@microchip.com>,
-        Yu Chien Peter Lin <peterlin@andestech.com>
-Subject: [PATCH v3 3/3] riscv: Introduce NAPOT field to PTDUMP
-Date:   Wed, 20 Sep 2023 11:55:22 +0800
-Message-ID: <20230920035522.3180558-3-peterlin@andestech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230920035522.3180558-1-peterlin@andestech.com>
-References: <20230920035522.3180558-1-peterlin@andestech.com>
+        Tue, 19 Sep 2023 23:58:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A5DF4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=A1BPMwH2UDIlMDkUUSRsazWTjzTwQxn28F0/xEN7Fd4=; b=swRfjP1TPecEPIMAREeGgZUpCV
+        gyR9XRsySpjeM4V6BJvBRG2OpeK6665cqxzP2t59HDLQ4KawzavOowyjJVBtf+HuZ0ijua423WLzF
+        SbDyI8V1NzhvMSjyD2HCWnEYr18f3vzWkCL/Tu/x9m+VhA/rcg+sXuJrkspvNuhvPBDNBiFQkW5eC
+        PUa3IH/XU+OQC25+8qO5IzX/3JQ9b2IHHwgpDkZqvlLjt49Jzzbte8o6HQwxQCmqH6yY/CEQkA+S3
+        xHbUsbfwH1vCG22QG69ZrBp4NFP8L/JxgpQbtwtw0pUE33jYQCEYj+LaGc92BjHt/L42kLS+NLqZk
+        oK3dPDpg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qioLF-003aQw-7D; Wed, 20 Sep 2023 03:57:33 +0000
+Date:   Wed, 20 Sep 2023 04:57:33 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     riel@surriel.com
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, mike.kravetz@oracle.com, leit@meta.com
+Subject: Re: [PATCH 1/2] hugetlbfs: extend hugetlb_vma_lock to private VMAs
+Message-ID: <ZQptrdK69wvJ2NXP@casper.infradead.org>
+References: <20230920021811.3095089-1-riel@surriel.com>
+ <20230920021811.3095089-2-riel@surriel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.0.15.173]
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL: Atcsqr.andestech.com 38K3tokQ069459
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920021811.3095089-2-riel@surriel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces the NAPOT field to PTDUMP, allowing it
-to display the letter "N" for pages that have the 63rd bit set.
+On Tue, Sep 19, 2023 at 10:16:09PM -0400, riel@surriel.com wrote:
+> From: Rik van Riel <riel@surriel.com>
+> 
+> Extend the locking scheme used to protect shared hugetlb mappings
+> from truncate vs page fault races, in order to protect private
+> hugetlb mappings (with resv_map) against MADV_DONTNEED.
+> 
+> Add a read-write semaphore to the resv_map data structure, and
+> use that from the hugetlb_vma_(un)lock_* functions, in preparation
+> for closing the race between MADV_DONTNEED and page faults.
 
-Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
----
-Changes v1 -> v3
-- no change
----
- arch/riscv/mm/ptdump.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-index 13997cf3fe36..b71f08b91e53 100644
---- a/arch/riscv/mm/ptdump.c
-+++ b/arch/riscv/mm/ptdump.c
-@@ -136,6 +136,10 @@ struct prot_bits {
- static const struct prot_bits pte_bits[] = {
- 	{
- #ifdef CONFIG_64BIT
-+		.mask = _PAGE_NAPOT,
-+		.set = "N",
-+		.clear = ".",
-+	}, {
- 		.mask = _PAGE_MTMASK_SVPBMT,
- 		.set = "MT(%s)",
- 		.clear = "  ..  ",
--- 
-2.34.1
-
+This feels an awful lot like the invalidate_lock in struct address_space
+which was recently added by Jan Kara.
