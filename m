@@ -2,126 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D587A8AE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABED7A8AE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbjITRxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
+        id S229597AbjITRyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjITRxC (ORCPT
+        with ESMTP id S229572AbjITRyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:53:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C4594
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695232376; x=1726768376;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8I2IGkNC/baJK58DapJVr5UzrlSeyECeNh/uWrx8ZqU=;
-  b=MoNpV9WX53xwwFIohkixwv4eqg4iMIg5kSjI7g1fbfJfK9zPiXsEQIks
-   VR1QoFYIo15je+KEmVXU3ThTNEF3pXo8Cl2+u+sfcdAUje/oIQ75RF2jD
-   C8FmhyROylLp+vJ/g81cQstueGRLudc79OQEv+gmKu/hhXMMLpkI9XDsM
-   ip0fAD5sxe3fKeKLRVILUCe7/JbHpEehJ+TgF9fDvPjXam7D9yKmsFWiN
-   gOtX4fVPX2sG9P8HNItCxeEFN8f4eKtmOAePkIRykH1Wt4ibd/nPko6r/
-   LXA05yCQdZGs6DoGl0L1gNtz4FqMwpO8ksJhVTWd4N7jsCGOYdC0kIjuA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="359680534"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="359680534"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 10:52:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="870465270"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="870465270"
-Received: from zhijingf-mobl1.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.218.227])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 10:52:51 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id EDF8A109E26; Wed, 20 Sep 2023 20:52:48 +0300 (+03)
-Date:   Wed, 20 Sep 2023 20:52:48 +0300
-From:   "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Wander Lairson Costa <wander@redhat.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Qinkun Bao <qinkun@apache.org>,
-        Guorui Yu <GuoRui.Yu@linux.alibaba.com>,
-        linux-coco@lists.linux.dev, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] virt: tdx-guest: Add Quote generation support using
- TSM_REPORTS
-Message-ID: <20230920175248.6foe67cwfe5oaa7u@box.shutemov.name>
-References: <20230914031349.23516-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20230920131633.ig6ldmwavpu7uhss@box.shutemov.name>
- <0031e031-10a8-43b1-a29c-8e1cf913eaad@linux.intel.com>
+        Wed, 20 Sep 2023 13:54:54 -0400
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0723A3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:54:08 -0700 (PDT)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-773ac11de71so1060285a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:54:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695232448; x=1695837248;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sMUjbe6jAZJm7ZNBEI2GzRHbQh/3nvCFD3HmyB44o2Y=;
+        b=hlvSnpF4u88GmTjJ8lm/jLC96GYu14FicJMjfuTX2muFscIFIPrDx5z2TyKp57N423
+         AkcgUec2+FLbCraex8R3uL+5kRWcdZC7v2bf0NCrsZpigU/VbSdi+TJE4vqN4/jNXmqx
+         vGLSzpBikmWwwhgEwVqDcgQ0f1ssak4+CJPoYRWQlh/idOep8nlnkl5DMo9kMi+SyUsc
+         FaB4waQDjqzHvGJyB9fxY9mjpKWnuY9qutzXJotTwVn/uX33wNkx824He/yiMUUTO9o6
+         fU8oc8TnDy1lfLpOiJ5Nvv11wLQvIdcu6Iw2tArds1rq1zg1gHkt34l2ZZpZtkTz7Qlg
+         64gQ==
+X-Gm-Message-State: AOJu0Yww7fhkl5C4zr/rzU4tgxYx8YK8HJkSPIsittDpdEVNeFPHWrV1
+        DTMTvkJCn49krs18oTtbTJl/2VFsTKApHOiHww==
+X-Google-Smtp-Source: AGHT+IEak9SOm9Pps/WpGIUms89fzDOBjAMtv3am2s1xZcN9i58NixmmmksMVtNi4wnk9/5qJ6K1AQ==
+X-Received: by 2002:a05:620a:3890:b0:76f:19fd:5058 with SMTP id qp16-20020a05620a389000b0076f19fd5058mr2422766qkn.78.1695232447730;
+        Wed, 20 Sep 2023 10:54:07 -0700 (PDT)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id d21-20020a05620a159500b007710052789dsm4986047qkk.94.2023.09.20.10.54.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 10:54:07 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 13:54:05 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Fedor Pchelkin <pchelkin@ispras.ru>
+Cc:     Hannes Reinecke <hare@suse.de>, Alasdair Kergon <agk@redhat.com>,
+        dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org, stable@vger.kernel.org
+Subject: Re: dm-zoned: free dmz->ddev array in dmz_put_zoned_device
+Message-ID: <ZQsxvY12z+/yYcR6@redhat.com>
+References: <20230920105119.21276-1-pchelkin@ispras.ru>
+ <c7818967-1fea-45da-9713-20de4bcb1c44@suse.de>
+ <vdtvo2av3upya6mugjyiqo2hfnn6q4dpofoku6rvrtgmycgbrp@scpcnu3ta7ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0031e031-10a8-43b1-a29c-8e1cf913eaad@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <vdtvo2av3upya6mugjyiqo2hfnn6q4dpofoku6rvrtgmycgbrp@scpcnu3ta7ch>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 08:27:39AM -0700, Kuppuswamy Sathyanarayanan wrote:
-> 
-> 
-> On 9/20/2023 6:16 AM, Kirill A . Shutemov wrote:
-> >> +static u8 *tdx_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
-> >> +{
-> >> +	struct tdx_quote_buf *quote_buf = quote_data;
-> >> +	int ret;
-> >> +	u8 *buf;
-> >> +	u64 err;
-> >> +
-> >> +	if (mutex_lock_interruptible(&quote_lock))
-> >> +		return ERR_PTR(-EINTR);
-> >> +
-> >> +	/*
-> >> +	 * If the previous request is timedout or interrupted, and the
-> >> +	 * Quote buf status is still in GET_QUOTE_IN_FLIGHT (owned by
-> >> +	 * VMM), don't permit any new request.
-> >> +	 */
-> >> +	if (quote_buf->status == GET_QUOTE_IN_FLIGHT) {
-> >> +		ret = -EBUSY;
-> >> +		goto done;
-> >> +	}
-> >> +
-> >> +	if (desc->inblob_len != TDX_REPORTDATA_LEN) {
-> >> +		ret = -EINVAL;
-> >> +		goto done;
-> >> +	}
-> >> +
-> >> +	/* TDX attestation only supports default format request */
-> >> +	if (desc->outblob_format != TSM_FORMAT_DEFAULT) {
-> >> +		ret = -EINVAL;
-> >> +		goto done;
-> >> +	}
-> >> +
-> >> +	u8 *reportdata __free(kfree) = kmalloc(TDX_REPORTDATA_LEN, GFP_KERNEL);
-> > __free() is new to me. Good to know.
+On Wed, Sep 20 2023 at 10:35P -0400,
+Fedor Pchelkin <pchelkin@ispras.ru> wrote:
+
+> On 23/09/20 04:06PM, Hannes Reinecke wrote:
+> > On 9/20/23 12:51, Fedor Pchelkin wrote:
+> > > Commit 4dba12881f88 ("dm zoned: support arbitrary number of devices")
+> > > made the pointers to additional zoned devices to be stored in a
+> > > dynamically allocated dmz->ddev array. However, this array is not freed.
+> > > 
+> > > Free it when cleaning up zoned device information inside
+> > > dmz_put_zoned_device(). Assigning NULL to dmz->ddev elements doesn't make
+> > > sense there as they are not supposed to be reused later and the whole dmz
+> > > target structure is being cleaned anyway.
+> > > 
+> > > Found by Linux Verification Center (linuxtesting.org).
+> > > 
+> > > Fixes: 4dba12881f88 ("dm zoned: support arbitrary number of devices")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+> > > ---
+> > >   drivers/md/dm-zoned-target.c | 8 +++-----
+> > >   1 file changed, 3 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/md/dm-zoned-target.c b/drivers/md/dm-zoned-target.c
+> > > index ad8e670a2f9b..e25cd9db6275 100644
+> > > --- a/drivers/md/dm-zoned-target.c
+> > > +++ b/drivers/md/dm-zoned-target.c
+> > > @@ -753,12 +753,10 @@ static void dmz_put_zoned_device(struct dm_target *ti)
+> > >   	struct dmz_target *dmz = ti->private;
+> > >   	int i;
+> > > -	for (i = 0; i < dmz->nr_ddevs; i++) {
+> > > -		if (dmz->ddev[i]) {
+> > > +	for (i = 0; i < dmz->nr_ddevs; i++)
+> > > +		if (dmz->ddev[i])
+> > >   			dm_put_device(ti, dmz->ddev[i]);
+> > > -			dmz->ddev[i] = NULL;
+> > > -		}
+> > > -	}
+> > > +	kfree(dmz->ddev);
+> > >   }
+> > >   static int dmz_fixup_devices(struct dm_target *ti)
 > > 
-> > But are we okay now with declaring variables in the middle of the
-> > function? Any reason we can't do at the top?
+> > Hmm. I'm not that happy with it; dmz_put_zoned_device() is using dm_target
+> > as an argument, whereas all of the functions surrounding the call sites is
+> > using the dmz_target directly.
+> > 
+> > Mind to modify the function to use 'struct dmz_target' as an argument?
 > 
-> Declaring variables at the top is no longer a hard requirement. The main reason
-> for declaring it here is to use __free cleanup function. If we use top
-> declaration, then we have free it manually.
+> dm_target is required inside dmz_put_zoned_device() for dm_put_device()
+> calls. I can't see a way for referencing it via dmz_target. Do you mean
+> passing additional second argument like
+>   dmz_put_zoned_device(struct dmz_target *dmz, struct dm_target *ti) ?
 
-What's wrong with allocating it it there too?
+No, what you did is fine.  Not sure what Hannes is saying given only
+passing dm_target has symmetry with dm_get_zoned_device (and
+dmz_fixup_devices).
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+> BTW, I also think it can be renamed to dmz_put_zoned_devices().
+
+I've renamed like you suggested and added a newline to
+dmz_put_zoned_devices() and staged this fix in linux-next for
+upstream inclusion before 6.6 final releases.
+
+Mike
