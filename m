@@ -2,149 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6E27A8CEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089937A8CF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjITTan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
+        id S230135AbjITTcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjITTaf (ORCPT
+        with ESMTP id S229949AbjITTcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:30:35 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2057.outbound.protection.outlook.com [40.107.237.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CC2CE4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 12:30:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Of9BrFpEKYrcEReAvBMRYw/BcJfPPMuuPuDjwrzF4MoT0yrpqvKelVi9L4QKGFD/DBUD1Gkk0Dizr+kizYHueoXx3jY+loJko2EHE7dheat+6fnn/KNVhBbr1Q+YudoNhUbyCRUtLgJGDTU0Gz3SN0Sn7lBiJtUzaGqF+wc3ctI+RHh21RlRw3pTOHMIkY3xIDwoDZiDdnm0mSTNVJ4bor3iojjPCvvQWI+kE6vnSXgn34RoYMKahW9FaFdRbB0jtVnHXEMBjveW9CZ8htzxYaa52gpm9kw8Hy0rrxBlraBfyLdNVGdhAwhyeWJ3Cdz8LOvNlwnu6c4/Dj1kYQNMhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4OTGXgWcMVLRJhOMF4H8KpNJ2wrnUf9Pt4EB9CpU5vs=;
- b=mjxnG6nC/hAfvTOKokXLzQUWcqRj2iPXaQU/i91Kxdm/S2eABywFRYfg+P7siRZsweymIFpeY0QWfGzvtd8UbvwkilitBCsgYhY1WpjetzyYNAp1MhhK2O6NhwvH8B/xdvbmeisPnz+CKbK8602BR6wRsSfatZuvtc7yopY6mOcKdVnAsaRqDV9G14/JIv19uhmS1RyJ9BpVyAs4TUmYMLzck2ovkPWWRZ7016qx7yt5RnRsJzsgb1kvQkcPsouvK3PL9dCrYX1NiL43VqUX6aUE4aFHaRrjLpWKmPlnM3q0gm/UybfpxIOexu6ZblssiwRceRKcohErwklHB2IsGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4OTGXgWcMVLRJhOMF4H8KpNJ2wrnUf9Pt4EB9CpU5vs=;
- b=VRvbPe6wGXPyesqn6zcNoj775Vz0VyJ+MqblKI0c1aBaVXIynlz0eUi2mTHw83wwqHRzvO9bxqBZnjpHvfrMlilPiG9TYFc8bUQeJ3E/50aKD1EoshNRCsOulwv2jMz+490Fj921UOkAGR9HEdNiVE+i0P3lJo6IPss296NH0p+aHSKyyKUaQ4Z+SzLD506RTEGf5hjg+issMtksFSAu4e+5aHQiDt4GCVsGxhs/92/0+cGeJkB58hJD02wtWgfT4ARugJlzD1VfXQxgnnkPgPEPqnq05xMNTaiaax9o3PHKd8UVGsMTueWnTFObWKLVFbPyHpQO10aptX81tTDKpQ==
-Received: from DS0PR12MB6391.namprd12.prod.outlook.com (2603:10b6:8:cd::16) by
- DS0PR12MB9446.namprd12.prod.outlook.com (2603:10b6:8:192::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6813.20; Wed, 20 Sep 2023 19:29:57 +0000
-Received: from DS0PR12MB6391.namprd12.prod.outlook.com
- ([fe80::76bc:2a16:6e0f:72b6]) by DS0PR12MB6391.namprd12.prod.outlook.com
- ([fe80::76bc:2a16:6e0f:72b6%4]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 19:29:57 +0000
-From:   Timur Tabi <ttabi@nvidia.com>
-To:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        "lyude@redhat.com" <lyude@redhat.com>
-CC:     "keescook@chromium.org" <keescook@chromium.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "ruanjinjie@huawei.com" <ruanjinjie@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bskeggs@redhat.com" <bskeggs@redhat.com>
-Subject: Re: [Nouveau] [PATCH v3 23/44] drm/nouveau/disp: add output backlight
- control methods
-Thread-Topic: [Nouveau] [PATCH v3 23/44] drm/nouveau/disp: add output
- backlight control methods
-Thread-Index: AQHZ60WVhNkCDmHJXkKprwZ0JCI6l7AkGyAA
-Date:   Wed, 20 Sep 2023 19:29:56 +0000
-Message-ID: <855a4931c8a652f97e83d911b76ccf98a3655c17.camel@nvidia.com>
-References: <20230919220442.202488-1-lyude@redhat.com>
-         <20230919220442.202488-24-lyude@redhat.com>
-In-Reply-To: <20230919220442.202488-24-lyude@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS0PR12MB6391:EE_|DS0PR12MB9446:EE_
-x-ms-office365-filtering-correlation-id: 8727c6d7-b954-47f1-7050-08dbba0ff92a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FpwUJivH2gqHizwlbzfYnpv5zzzX43F8wP/xDmu5OKOuLQCCcYM8k8s6MpP9pupUuQJl8a9EoekogQyQlRWshssF5xWycwZpNU9KJaBdacyMWFLqjH9T+p49eQ9HuGwg59oMxelm3IOJjbVj0sKd5j+H58DyNNSlqMxOS8bmwU1tBl5I0lfwgqXQUyBjqJ4P5anb4MnvlHMUUMSeHLsh76sZxthzWy2dHtt0y1MZ49MIoCmHZPStuBZTlFX7dESOFXGoN0846P0EvctPfbT6SrXeguI7JM+lX+HMIhmEJaruwvZ5kll2pQLXtncfcnNHqbZ/BUBfWvDBMDc+4uJ9ljjd67V3uoOez/mQ4IOXIwHBEtrDduGLUgme+P09PN/uByPh1B11BWRUwuDtMXFfAf8S5GWgEqUwit32wHRw8x+/BBNxn6Uxq79Qmq2VWaf3coiQmOFzAJn6iHYDAtGe6GEQzNQqMebtXTDVqzxfGyBkUGjhKgSpZumQrmIHSsB6wln9Xq9Ra8r/MHWh3OFk++B1GfamItUqNDhe3yF2OgjtkrlFcJMpWNN3oi5Mqc+JoaAj10gtT/6s6s4oIdjSNWqx82pdmcbwjGKTLVKlfTG3Vlak2K4vGaJ4fTOEr85B
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6391.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39860400002)(396003)(136003)(186009)(1800799009)(451199024)(83380400001)(26005)(71200400001)(2616005)(6486002)(6506007)(6512007)(38070700005)(478600001)(86362001)(36756003)(122000001)(38100700002)(41300700001)(316002)(54906003)(64756008)(66446008)(66946007)(91956017)(66556008)(66476007)(76116006)(110136005)(4744005)(2906002)(4326008)(8936002)(5660300002)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T2NNRlExWWg3b2NTcllrTCtxL0VZVnVYYUFzZkFaSlB3ZHZnMG1IQ2hsQmV6?=
- =?utf-8?B?S3VCbml6Y1NQSnVOTTRCNlFMSUJtR1locld0cUpFZy94b20yaENRQUhqSGlF?=
- =?utf-8?B?ZmJNOEo2Um5MRzFvS3NQQWhjNzZlME1xOTNndjQ2Z0ZOZllzRFVrTEdueDMy?=
- =?utf-8?B?NElwTnVqZk9QRGxSRzZJUHRhbXVnUkI1ZnV0Nk10ZGFValowVDdEZjlianVR?=
- =?utf-8?B?eDEvNWNJa2wwb2tFSlZ2NnZCRTBndC85aUorN05iV3Y1RVdlaGZ0NEd2dW40?=
- =?utf-8?B?RTcyYSt2MEMrNW44MmpldWJOS0pWTnFXa0M3dXZpc2JYZVFtUFdHYWp1SjhU?=
- =?utf-8?B?UG8rS3Q4TVQvYTk4NDNTbG5pQnZ2YktHWmFYcnA0WHpWV1AxdC9MT1ZoTWhG?=
- =?utf-8?B?a3BRZk9kQmdqaVZVT1Q2Ynl1RFpudk1yL21BdDg5endqdSthbHNGZ1hqcGxQ?=
- =?utf-8?B?Sm9Gdi93UHUrdW84R2x6QzdDWFd4VlhUVTlOZnJVMHptUklaa0l0YW1IL3E1?=
- =?utf-8?B?eXM0RmIrRTFqUWl1Tm44bkMwblV4ZXh5cHNSL0pwOUFFU01UMlVUd2R2QnJO?=
- =?utf-8?B?WExaMktXSysyMmY2VjIwY015azNjcmtnRHRvVEMwUGFpb1pRVlZLTitUeVBD?=
- =?utf-8?B?aXAvazBYb1pYQzNxcTFsWjAxRmpHTVVuNHVmNVZ0VjRFcnBocUR0OUgxdjNz?=
- =?utf-8?B?YTFTZXVPcEpkOHNIRHRqaDBmaHdNeGFQaTdKUm5YYmUzbFlTbmNyUWx2OGV4?=
- =?utf-8?B?dmJ4cGdzSXJHT3QzOVJ0c3hYL0RaZDNWM2tIWHlYZy9NcC9tTGNEQzFsM1RP?=
- =?utf-8?B?SHpxUjE5RFF0R1l4aHBqZHg4RUVPZHY4NXNHZ29OUUhIUVdabHRIRGRrU2Jv?=
- =?utf-8?B?NTFMa1JSQnVPR1lyTGRnTVAwbi9LNVpSa0hLUXlOZlc3WGdac0NDbW1nMkNH?=
- =?utf-8?B?MFBxSHR6cjFpMVZlRC9tdC9OWW9tZ2JiTmNZbS8zQUd4SDVDVnRQN3ZLMXRv?=
- =?utf-8?B?Sk5GbzNZZUFBcGZibEkvOThMUDVCMXc2NzNOUnFRTmZ2RFVERTYxQjI2UHRH?=
- =?utf-8?B?a1MzQVNNakJHc3hrYzZCUUNTOG5yZjQvSkpML0kyMlNwL29TQ1RpbUczdjUr?=
- =?utf-8?B?WmQwZm83eDJTRkJYQU1hV3BNMnlxTktVcVVYSWdOY2tFbFpUWmpjLzVxc0lV?=
- =?utf-8?B?b3VtMzJsdHhGdVg0SUlrZ1FVYjE3NG82QTJmK3M5Y2oyTzRGNDhKdmdia1lL?=
- =?utf-8?B?dC9Ocjg2aEV6S3FIZ0VJdlR0NVFZbUs0WEdnTlBsbU5xZk1DSVBlZlBrUEtj?=
- =?utf-8?B?U3krSUlEVU9OQjE5UVY5eFFmMVZIK3N1RW9GZXhXcm9PUnJDN085WTFwWmM4?=
- =?utf-8?B?Zk1CTmN1cGhCQ2FENmttSmpNSmp2aDFlQVBOSlZCREVBZTdTTUxVdlpQMm1h?=
- =?utf-8?B?ZkpFYSs4Z29nV3pZcWpENDZ2d1NGOUpuSVBwNjRPWHNNeCttZkZvRjc0bnE1?=
- =?utf-8?B?WVR0YmZ3eEFEdW1UZlFsZ0ZDQmlKNnVQd3NLY1ozVmRnakp5aWRvYVpTdFZh?=
- =?utf-8?B?UGgwdm1PK1VUT1JVc2I3QmJuTlJWTmdqdHZBbXllVU5LTHE5Y3V5OFFhbk1H?=
- =?utf-8?B?RSs0VlRwVGxGbzJiL25vVHVUUlBFMTZyNDR6UG9uL29QQVpYbGhqdVJTOXpP?=
- =?utf-8?B?d0FpVjFTdU96MXQ5RW9YMUZTTEpwRWNJOUtBNGhyRUduQlVBUmR1NnZHQVR3?=
- =?utf-8?B?M1lPTHBXTStpWlUrdkN1WkxhT2pVaVJFWExSb2VxSnBYREpBL2VTZ05FcFlW?=
- =?utf-8?B?aTNMVnViMy9SNlBEbXBGbDN6NU5TS3cwSzVKc1d6UHBJMHMvVERubjc1R2JL?=
- =?utf-8?B?VXl4Vi9adWh3dFkrZUw3NnMvMXFHVG9sRjdyUUhnVnR4ZzBOblZwMm9LMHBC?=
- =?utf-8?B?NUVPcVJ3alc4R3Z0VmI5YUFzZkU5aEY5TzdJMm9sS3FTUklUVkpoR1Zqa3Rh?=
- =?utf-8?B?UmZnblIvcTBKdVpoNG53V3JVaU9BUGdFSjZuNklKUGpIdGRkYzdSMlVJTkFz?=
- =?utf-8?B?ZTR6RjNZaUtwMXJndWMwNzdkdXhrOVl3ZFBZUjl0aEZrelRVTDBKdVNJSlBW?=
- =?utf-8?Q?ry1IJRU73ezQUm2L9VK2jccyT?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8BEF0A74A7F6A84E9065D50577BCA5ED@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6391.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8727c6d7-b954-47f1-7050-08dbba0ff92a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2023 19:29:57.0218
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g+pXFBbIoRE2PtoW/IP5btYrh0svNmEReiHWKGOmPh2j37+RXdaFIpqBlY9MVwyLRSgiz2E6vQQKWc/8QLz+Ow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9446
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 15:32:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 191131B0;
+        Wed, 20 Sep 2023 12:32:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2F034C433AB;
+        Wed, 20 Sep 2023 19:31:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695238304;
+        bh=PslVLVAWLGRCunjlPT6cdEldzcdIiPvjsu/BqQzPdHU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=u4nDbS9T9fhpeDNvvuMKJ9Ci4JhTA9URMVkcJg40jrdmLWMW/B/obPiWR1N5/hw/a
+         d7BJMt1pvg5cuWSctagdGUte4minIZYgctWYjjuTjU9BNSc1a0XLW/pl1ucDGkhcfi
+         KcxZzk8u2l/NSehu+3VZPANVs/6PwUbYJVQ5xywgaV42Lbi45xaWD+KXNffkZ6c71r
+         WQP1ya8wSXsHpP0rJ6WaR6t0OQbVMOjsSR9xTqhdKipAWfMoUNOhZNWyBKYy0nD/v6
+         kn2nKI437cK4BNtMSv9caCehJGmCkIql/3Zpr2N27ZqKVWy2TTaS0zBp1q1xm9LYXW
+         RzopOAKPBhaqg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 16C8FC40C5E;
+        Wed, 20 Sep 2023 19:31:44 +0000 (UTC)
+Subject: Re: [GIT PULL for v6.6-rc3] media fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230920200902.72ee092c@sal.lan>
+References: <20230920200902.72ee092c@sal.lan>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230920200902.72ee092c@sal.lan>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v6.6-2
+X-PR-Tracked-Commit-Id: 263cb0cc5abac7c22a6c0dfa7e50e89d8e6c6900
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 42dc814987c1feb6410904e58cfd4c36c4146150
+Message-Id: <169523830408.24049.1227797317999208199.pr-tracker-bot@kernel.org>
+Date:   Wed, 20 Sep 2023 19:31:44 +0000
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTA5LTE5IGF0IDE3OjU2IC0wNDAwLCBMeXVkZSBQYXVsIHdyb3RlOg0KPiAr
-c3RhdGljIGludA0KPiArZ3QyMTVfc29yX2JsX3NldChzdHJ1Y3QgbnZrbV9pb3IgKmlvciwgaW50
-IGx2bCkNCj4gK3sNCj4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IG52a21fZGV2aWNlICpkZXZpY2Ug
-PSBpb3ItPmRpc3AtPmVuZ2luZS5zdWJkZXYuZGV2aWNlOw0KPiArwqDCoMKgwqDCoMKgwqBjb25z
-dCB1MzIgc29mZiA9IG52NTBfaW9yX2Jhc2UoaW9yKTsNCj4gK8KgwqDCoMKgwqDCoMKgdTMyIGRp
-diwgdmFsOw0KPiArDQo+ICvCoMKgwqDCoMKgwqDCoGRpdiA9IG52a21fcmQzMihkZXZpY2UsIDB4
-NjFjMDgwICsgc29mZik7DQo+ICvCoMKgwqDCoMKgwqDCoHZhbCA9IChsdmwgKiBkaXYpIC8gMTAw
-Ow0KDQpJbnRlZ2VyIHByb21vdGlvbiBydWxlcyBhbHdheXMgdGhyb3cgbWUgZm9yIGEgbG9vcCwg
-YnV0IHNpbmNlICdsdmwnIGlzIGENCnNpZ25lZCBpbnRlZ2VyLCBhbmQgZGl2IGlzIGEgdTMyLCBh
-cmUgd2Ugc3VyZSB0aGlzIHdvbid0IG92ZXJmbG93PyAgTWF5YmUNCmx2bCBzaG91bGQgYmUgdW5z
-aWduZWQgYW5kIHZhbCBzaG91bGQgYmUgYSB1NjQ/DQoNCg0KPiArwqDCoMKgwqDCoMKgwqBpZiAo
-ZGl2KQ0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbnZrbV93cjMyKGRldmljZSwg
-MHg2MWMwODQgKyBzb2ZmLCAweGMwMDAwMDAwIHwgdmFsKTsNCg0KQWxzbywgbWF5YmUgY2FsY3Vs
-YXRlICd2YWwnIGluIHRoaXMgaWYtYmxvY2s/DQoNCg==
+The pull request you sent on Wed, 20 Sep 2023 20:09:02 +0200:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v6.6-2
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/42dc814987c1feb6410904e58cfd4c36c4146150
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
