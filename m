@@ -2,68 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D7A7A718F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 06:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7EB7A7197
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 06:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbjITEfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 00:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
+        id S231809AbjITEs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 00:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjITEfl (ORCPT
+        with ESMTP id S229534AbjITEsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 00:35:41 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F1EB0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:35:35 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-493639d6173so2767595e0c.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:35:35 -0700 (PDT)
+        Wed, 20 Sep 2023 00:48:25 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF6FAF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:48:19 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34fe6722847so1419825ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695184534; x=1695789334; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695185298; x=1695790098; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=azuj7xcq6eQ3UpWdDpWKUV4XGXp2CNoolDstHELC1/c=;
-        b=V4iSnqZ/6sr3irpoMhzhpW9ZiujomcHIDQqwy3fDEWIpnMSkJ+QcRLMqNJj9Cq/djB
-         OiQH70l2928/XvbzQUGDasnLNI37lp140dNz/iYKkMYDMAq8U+PrZr5ppvQtOZ4VDp3y
-         TtSoEugkDmGBIxggXQDmAUDaazFJq6wwBu+YgoQrIrxESsfhWbD1SNF3on/gEMwKCW0l
-         3AfhG7TN7EMn3O0z7cKJnmvJBtvnIZwhlA2eJHdHQ2wZDS330FQtFxXKsHAYOTw3O1Un
-         X44WjmKD30ArzWbd+jpvMOA1RBRVrB9czJeQDH/pDjNPep4SZN1hXFbDmxiV47biAaC2
-         kZ/A==
+        bh=/Oz7azZo6W32sAYSfgYrh6I15vH6WNt1KpOD5gToflE=;
+        b=oHh/UpnOuZmlCay6r1htGpIT772XL0W2VJO7QuepCFSU/rPTSUjWPXWKb0rebszkF5
+         Hca1gh7d1MeT/iTGKIewmGJLyU8wkeMBT/k559VRm9Ml+xk8G/JFcko6SmwhAViNGuim
+         m9whbV5QuC87k7IbbQsrj5bfA/Vv7pKsoyS4k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695184534; x=1695789334;
+        d=1e100.net; s=20230601; t=1695185298; x=1695790098;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=azuj7xcq6eQ3UpWdDpWKUV4XGXp2CNoolDstHELC1/c=;
-        b=WFSS9tjM7LuTnm225xYdJw60W5KfvF0vrgB3B8BnxXmogOvVCn977mBHr6z5KOGYbJ
-         zSNpBfG4X3gLGlMRQ5tPhPrjUTpVzmDO66df5AUsr/ESW5HaCxDcUsJ4quRfy/5U/vIT
-         eu5nGz3Wn/Lyu7N3bFXzxuK96MtTY7H53MxOdvTmoVJRzCBlVsLNnWn9FW9uaM8YUOIG
-         oZmaPyuVnbqiRdEChQJyKlIdcQ1o0ezl0LkNrvNGSs+W5C9LVGPscN/YcoFlUk3POZFQ
-         78zg5z6Umw5ULk4RjUxi+jCM3oz3x4YXItXC90XqwwPqGQIBnbwSsFNSM6ou/7OB59LA
-         H8oA==
-X-Gm-Message-State: AOJu0Yw0B4OONVUj3FlSrT8rvgW3ZqyM8Hm8FJb5eq1pptGnjelFirBy
-        JjEsne+5i7N8IJ0xa0IsCQhaAF2H9+lDa+xCTtzaeBQLdzg=
-X-Google-Smtp-Source: AGHT+IExHNh2WhAbEaA4SQ/mudAUGhUPe8vGstLIvuW9HiXr+96pF1eFwDgZY7qv8ThkhnTMX6WlmFj3D1AE863ju7k=
-X-Received: by 2002:a1f:e6c3:0:b0:47e:8a9:478c with SMTP id
- d186-20020a1fe6c3000000b0047e08a9478cmr1678764vkh.16.1695184534162; Tue, 19
- Sep 2023 21:35:34 -0700 (PDT)
+        bh=/Oz7azZo6W32sAYSfgYrh6I15vH6WNt1KpOD5gToflE=;
+        b=D0Wz7EBRfAwukKS7TURzCNMqqbDBEZF5/3VeO25ImGyiPuhNPGaehSHQmEUDMzLdT7
+         LzCh6aydsa/zfGJmGfgI3Wz2c2o4TleL63+5cIfiuLttNGOResY7iLCjdmJ0wPGPXf95
+         s2pAZzqFexKMBUQHG7H+nvO85rc+tBBjhFDyRFd8L+hn00pzjOg3sa9WjSH4UFm3nRzK
+         7pcbPLQAI24CinK6Ev6o5qp1I0NbQWeDj9Rj66FrPaPbnDDvg8ieW6CdZub5+lfUv959
+         HOfJ0U/GQHESSlk6sWVyEZ7jxnZa1TnwAgtyOte1mZHSxG/j4YDvwg5TNEV04u8CITdm
+         MdGw==
+X-Gm-Message-State: AOJu0YzyBnQOtSJ8IRtZNRqfQiS1GCUP5o79zLrCq7kCqWpgNVZJIiRy
+        a64qd7WobRB0Mzs3mw4pRX0Y7puKjRb5pZLHG/o=
+X-Google-Smtp-Source: AGHT+IEz377OF642WzxvUMLTKmIPmFBYkruFapOPIbnPEO3rmDZ9UIBTDOZO5L+7b6sYjZO/8Yth8Q==
+X-Received: by 2002:a05:6e02:1bcf:b0:34f:14e5:5c89 with SMTP id x15-20020a056e021bcf00b0034f14e55c89mr4512040ilv.13.1695185298350;
+        Tue, 19 Sep 2023 21:48:18 -0700 (PDT)
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com. [209.85.166.49])
+        by smtp.gmail.com with ESMTPSA id l19-20020a02a893000000b0042b09bde126sm3920828jam.165.2023.09.19.21.48.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 21:48:16 -0700 (PDT)
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7926de0478eso14073139f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:48:16 -0700 (PDT)
+X-Received: by 2002:a5d:9da4:0:b0:79d:2d66:9b3f with SMTP id
+ ay36-20020a5d9da4000000b0079d2d669b3fmr5407772iob.7.1695185296364; Tue, 19
+ Sep 2023 21:48:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <202309191848.cMwd2D4d-lkp@intel.com>
-In-Reply-To: <202309191848.cMwd2D4d-lkp@intel.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 20 Sep 2023 07:35:23 +0300
-Message-ID: <CAOQ4uxjTv+5cB4z8TZQ02c5F3rags1HARoEQG9834A0+_+_twA@mail.gmail.com>
-Subject: Re: arch/alpha/include/asm/rwonce.h:25:35: warning: array subscript 0
- is outside array bounds of 'struct inode[11885788707287082]'
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexander Larsson <alexl@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
+References: <20230919014439.5795-1-chun-jen.tseng@mediatek.com>
+ <20230919014439.5795-3-chun-jen.tseng@mediatek.com> <0009f224-aac4-6681-fde5-cf1ead94c604@collabora.com>
+ <acd2cba7db6d4e523f84fa4725e9bd6b596023ba.camel@mediatek.com>
+In-Reply-To: <acd2cba7db6d4e523f84fa4725e9bd6b596023ba.camel@mediatek.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Wed, 20 Sep 2023 12:47:39 +0800
+X-Gmail-Original-Message-ID: <CAC=S1ng5wkZa6LzASUNDW9miG_ev7FGhw_8Xumom4y0oy3QN0w@mail.gmail.com>
+Message-ID: <CAC=S1ng5wkZa6LzASUNDW9miG_ev7FGhw_8Xumom4y0oy3QN0w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] soc: mediatek: svs: add support for mt8188
+To:     =?UTF-8?B?Q2h1bi1KZW4gVHNlbmcgKOabvuS/iuS7gSk=?= 
+        <Chun-Jen.Tseng@mediatek.com>
+Cc:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "khilman@kernel.org" <khilman@kernel.org>,
+        =?UTF-8?B?Um9nZXIgTHUgKOmZuOeRnuWCkSk=?= <Roger.Lu@mediatek.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,115 +94,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 1:43=E2=80=AFPM kernel test robot <lkp@intel.com> w=
-rote:
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   2cf0f715623872823a72e451243bbf555d10d032
-> commit: 0af950f57fefabab628f1963af881e6b9bfe7f38 ovl: move ovl_entry into=
- ovl_inode
+Hi Mark,
 
-Are you sure that this is the regressing commit?
-I don't see anything that has changed wrt the ovl_dentry_upper()
-call chain.
+On Tue, Sep 19, 2023 at 8:38=E2=80=AFPM Chun-Jen Tseng (=E6=9B=BE=E4=BF=8A=
+=E4=BB=81)
+<Chun-Jen.Tseng@mediatek.com> wrote:
+>
+> On Tue, 2023-09-19 at 12:52 +0200, AngeloGioacchino Del Regno wrote:
+> > Il 19/09/23 03:44, Mark Tseng ha scritto:
+> > > MT8188 svs gpu uses 2-line high bank and low bank to optimize the
+> > > voltage of opp table for higher and lower frequency respectively.
+> > >
+> > > Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
+> > > ---
+<snip>
+> > > +
+> > > +   /* For voltage bin support */
+> >
+> > I already asked you to please send the voltage bin support as a
+> > separated commit
+> > because this is for *all SoCs* and not only for 8188.
+> >
+> > Again, please separate the voltage bin support from the MT8188
+> > support.
+> >
+> Hi Angelo,
+>
+> I have already checked "voltage bins turn point" with DE, it is support
+> for *all SoCs* , not only for MT8188.
 
-> date:   3 months ago
-> config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230=
-919/202309191848.cMwd2D4d-lkp@intel.com/config)
-> compiler: alpha-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20230919/202309191848.cMwd2D4d-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309191848.cMwd2D4d-lkp=
-@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
->    In file included from include/linux/compiler.h:246,
->                     from include/linux/build_bug.h:5,
->                     from include/linux/container_of.h:5,
->                     from include/linux/list.h:5,
->                     from include/linux/wait.h:7,
->                     from include/linux/wait_bit.h:8,
->                     from include/linux/fs.h:6,
->                     from fs/overlayfs/util.c:7:
->    In function 'ovl_upperdentry_dereference',
->        inlined from 'ovl_dentry_upper' at fs/overlayfs/util.c:266:9,
->        inlined from 'ovl_path_type' at fs/overlayfs/util.c:184:6:
-> >> arch/alpha/include/asm/rwonce.h:25:35: warning: array subscript 0 is o=
-utside array bounds of 'struct inode[11885788707287082]' [-Warray-bounds=3D=
-]
->       25 |         __unqual_scalar_typeof(x) __x =3D                     =
-            \
->          |                                   ^~~
->    include/asm-generic/rwonce.h:50:9: note: in expansion of macro '__READ=
-_ONCE'
->       50 |         __READ_ONCE(x);                                       =
-          \
->          |         ^~~~~~~~~~~
->    fs/overlayfs/ovl_entry.h:163:16: note: in expansion of macro 'READ_ONC=
-E'
->      163 |         return READ_ONCE(oi->__upperdentry);
->          |                ^~~~~~~~~
->
+I think Angelo's point is that you should separate this patch into two, whe=
+re:
+- "soc: mediatek: svs: Add support for voltage bins" contains changes
+only related to the "For voltage bin support" part.
+- "soc: mediatek: svs: Add support for MT8188 SoC" contains code that
+is specifically for MT8188, i.e. svs_mt8188_efuse_parsing,
+svs_mt8188_banks etc.
 
-Why would the type of oi->__upperdentry be considered to be
-'struct inode[11885788707287082]'?
-I don't understand this report.
+It'd be easier for people to review, manage and cherry-pick patches if
+you add the generic changes apart from the platform-specific code.
+For example, someone will be able to simply pick up the patch for
+voltage bin support solely if they are not interested in MT8188.
 
-Miklos, any clue?
-
-Thanks,
-Amir.
-
+Regards,
+Fei
 >
-> vim +25 arch/alpha/include/asm/rwonce.h
 >
-> d6462858851549 Will Deacon 2019-10-30  11
-> d6462858851549 Will Deacon 2019-10-30  12  /*
-> d6462858851549 Will Deacon 2019-10-30  13   * Alpha is apparently daft en=
-ough to reorder address-dependent loads
-> d6462858851549 Will Deacon 2019-10-30  14   * on some CPU implementations=
-. Knock some common sense into it with
-> d6462858851549 Will Deacon 2019-10-30  15   * a memory barrier in READ_ON=
-CE().
-> d6462858851549 Will Deacon 2019-10-30  16   *
-> d6462858851549 Will Deacon 2019-10-30  17   * For the curious, more infor=
-mation about this unusual reordering is
-> d6462858851549 Will Deacon 2019-10-30  18   * available in chapter 15 of =
-the "perfbook":
-> d6462858851549 Will Deacon 2019-10-30  19   *
-> d6462858851549 Will Deacon 2019-10-30  20   *  https://kernel.org/pub/lin=
-ux/kernel/people/paulmck/perfbook/perfbook.html
-> d6462858851549 Will Deacon 2019-10-30  21   *
-> d6462858851549 Will Deacon 2019-10-30  22   */
-> d6462858851549 Will Deacon 2019-10-30  23  #define __READ_ONCE(x)        =
-                                               \
-> d6462858851549 Will Deacon 2019-10-30  24  ({                            =
-                                       \
-> d6462858851549 Will Deacon 2019-10-30 @25       __unqual_scalar_typeof(x)=
- __x =3D                                 \
-> d6462858851549 Will Deacon 2019-10-30  26               (*(volatile typeo=
-f(__x) *)(&(x)));                      \
-> d6462858851549 Will Deacon 2019-10-30  27       mb();                    =
-                                       \
-> d6462858851549 Will Deacon 2019-10-30  28       (typeof(x))__x;          =
-                                       \
-> d6462858851549 Will Deacon 2019-10-30  29  })
-> d6462858851549 Will Deacon 2019-10-30  30
->
-> :::::: The code at line 25 was first introduced by commit
-> :::::: d6462858851549c62d73eaa14b31132b0f32d6b6 alpha: Override READ_ONCE=
-() with barriered implementation
->
-> :::::: TO: Will Deacon <will@kernel.org>
-> :::::: CC: Will Deacon <will@kernel.org>
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+> > soc: mediatek: svs: Add support for voltage bins
+> > soc: mediatek: svs: Add support for MT8188 SoC
+> >
+> > Regards,
+> > Angelo
+> >
