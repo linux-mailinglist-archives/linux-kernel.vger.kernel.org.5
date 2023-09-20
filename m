@@ -2,130 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 240467A701B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 03:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C807A701C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 03:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbjITB4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 21:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39096 "EHLO
+        id S231580AbjITB6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 21:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjITB4X (ORCPT
+        with ESMTP id S229521AbjITB6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 21:56:23 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2087.outbound.protection.outlook.com [40.107.243.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06ECB3;
-        Tue, 19 Sep 2023 18:56:17 -0700 (PDT)
+        Tue, 19 Sep 2023 21:58:42 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2134.outbound.protection.outlook.com [40.107.255.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809B1C6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 18:58:36 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D2SwyhHicENQQiNEXefj09amo+vlpCtNRWIswMZ3TYyIAUvDUhHAzNI+FPh0q6kswCHsvuR6sxTn8kxmzMec6867qJZ+uWqx0kmgfAZKEKGJ58KW7Zy2Wsvz+PAeQ56pshgP/HSGU5MBEiVi1qc1DjkHJsEcJspdi118Xtc5ATE8gv7xeZgnzaCANHEaKBxqSnoORC67XiJnyHzSQnvd9ngoJwCfS8rQFTsXEkS5bB0wVbUDU8jVPYlvqVYe9jW3iN1G8T19EgPx9L6F8ZNtE2sG1HDp9lw/Vu72kU+OGzwBExPRhS4d0ROYRd+DBHsC5RX8INZ+0F8Wo2nGhJh10Q==
+ b=QTgWJXElbecwRC00v6lsTYff98ggPgovh0zYmk7oodQvXOq7MOYjtGeaOf51qLqvQVnzbj6XSxhGaIO2eLL9W1xPLgGcZGioFPPeOKog3HOLTtnwoC+3+Fj0ZBKmdQcbCEOeSL7BVEAJHRWY38F7QxnYzCT+vIxyheFeHsCBgQvKMKF2hD0HUescgQfU589aGI21Xv3PlrfBwcgOD0ovLBYdMHXpxjUONTZFsL7dqQQ67X6hk8XlbA0MhGp037UwCJxtUHpl7xIuFqJqCrk83HHrap4sOyE7aDJlR4bYSseSfq6bsA6vyfSDCR2OsKKghPY/3IS6EAkNKhLdKsblAQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EIG0DrZqB0lOVOhvLj20UfsT/MiYdiO6sZfBcsdSvCc=;
- b=L2sX0/XQDLyNvxny/l4Wre/vXbRt8SXW7mi2j4tbcHVkvL0ZRVEEJk9f79SSq5DrKmNJkMi5DSYcL9x6gr+2g0gaTHAtOb2zWbIr2wwU1tvx+AKu309R4mzGyL6vbaRkpTfwa4vHimYAaT3jYN7dEG73SSd/bYTWn4HzZNkxT/vscD4ytgtyJiD1RUfQB8XKm5CwDA5Lq3qxK3G4XMulu8knInKBhw8pPBF53SJo0kMSKffyWiznY0kAEzacyaoCAuK3gvbci2cxV4+2nhpYSiDsibPgHxhmFY5VfHDRfKYcnIb25EwFiXKqV+Oax79XiV05oBAYukwHikjBFZCqxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=kwFZKJqP6TASZx+Y2sllK4SrBIaFfq9nVZikO9rzKyY=;
+ b=mqlb+OnhEvHkUddjeJZJCug8K2DyGTJADA5IFz0P8qHQJsJKQF5kCxrzT5R7M5A6bp++Q1yZunMOPJpBgRKc8rgnGuy7sohGAPiGom862PR/3fiF46AO/nWOycsDG+t5666Ne9Vanfu23qLjIEAxUTgmhmakT3ZsuXLZaLvBaseU5MU3j+xicKVpC8lmnEYzmhftqA1d0OFtaiGHdT9KkLQrnbsB0/iLpFoS5a93NqlmRFnrj2keU9Hq84Hn8KOaZVI3Lp9FdNBOR3fyirmTa5906WAemHW429CZYQUrI3Mo0XGps4Kz8wRsLH/4SNoIXPWWa5pP8pGkCYE9dACV/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EIG0DrZqB0lOVOhvLj20UfsT/MiYdiO6sZfBcsdSvCc=;
- b=5p+D7+YVPHOkkGEkfnMN5cMvzMysKETHILntHoRgsUMXL25INkpN+1MoTyxsGk5HoCB9wrXPj4tL7+9Erpk24eB28foMp0ZnCRkafoQu5R4jYh4BcHXLB/A0mNg/ctPn5A0iyVBTA1z5pmSukODmiyxJftUPbVz613MXIKHlvkM=
-Received: from CY5P221CA0064.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:4::33) by
- SJ0PR12MB6784.namprd12.prod.outlook.com (2603:10b6:a03:44f::20) with
+ bh=kwFZKJqP6TASZx+Y2sllK4SrBIaFfq9nVZikO9rzKyY=;
+ b=kpTjzCntSwFl10eVfWLJ+QWJI8loUlrv9JLF4Y4HZioYfq+rNRnrUK6k8uyirwYw7bEsliEqckqsd1bLHfnJvb7F05VEBirVbhXV2z1qH5FLKRkP335iKnAAX5fQdVZBQUTPyd/x6Y/+x4ECmOqOFEZoSNzjbZujKxyOEzK9p8Y0sSogQ/Xc3YR5XSeUp6l1+oJ30Pi3MLkyVAEvkNrc+p/q77ikNdaSqxIgZIOkQcDmjTErFHcazOd2ZZJT5/nbn9YRCOvJoA+5SR7RAs7u3xzQ2JVYSX1BoIbVLoP47Srcd/hxKQ5AIRnpgk7KTb+p5eTOF4qoWwNY/1AYsxjPyg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by TYZPR06MB6954.apcprd06.prod.outlook.com (2603:1096:405:43::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
- 2023 01:56:14 +0000
-Received: from CY4PEPF0000EE3E.namprd03.prod.outlook.com
- (2603:10b6:930:4:cafe::a7) by CY5P221CA0064.outlook.office365.com
- (2603:10b6:930:4::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28 via Frontend
- Transport; Wed, 20 Sep 2023 01:56:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE3E.mail.protection.outlook.com (10.167.242.18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6792.19 via Frontend Transport; Wed, 20 Sep 2023 01:56:13 +0000
-Received: from aiemdee.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 19 Sep
- 2023 20:56:10 -0500
-From:   Alexey Kardashevskiy <aik@amd.com>
-To:     <linux-kbuild@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexey Kardashevskiy <aik@amd.com>
-Subject: [PATCH kernel] kbuild: get rid of unwanted "+" when CONFIG_LOCALVERSION is set
-Date:   Wed, 20 Sep 2023 11:55:59 +1000
-Message-ID: <20230920015559.1877441-1-aik@amd.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Wed, 20 Sep
+ 2023 01:58:33 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::64c1:bd7f:ced7:7d02]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::64c1:bd7f:ced7:7d02%4]) with mapi id 15.20.6792.020; Wed, 20 Sep 2023
+ 01:58:32 +0000
+From:   Huan Yang <link@vivo.com>
+To:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Huan Yang <link@vivo.com>
+Subject: [PATCH v3] mm/damon/core: remove unnecessary si_meminfo invoke.
+Date:   Wed, 20 Sep 2023 09:57:27 +0800
+Message-Id: <20230920015727.4482-1-link@vivo.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <7b38eb40-1d74-4308-ae9a-b6aa91a46833@vivo.com>
+References: <7b38eb40-1d74-4308-ae9a-b6aa91a46833@vivo.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: SG2PR01CA0116.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:40::20) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3E:EE_|SJ0PR12MB6784:EE_
-X-MS-Office365-Filtering-Correlation-Id: a0ff88b7-56d5-44f9-a3b8-08dbb97cc558
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TYZPR06MB6954:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4df8955f-c3c3-4611-e571-08dbb97d17e4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jBHNqI5d4KKl2GAsv++8B/FZD5ZF4g+6Z2pjfsxTB0aBzYCJFn0sj+0LgY7IDk9dL2G2OT2fQviSYKCjHBqgvTVJk6ahNCeAXqD9JBSyvD1BQHIQAPgqBXLzIaQc//xMHLThM02LJVauzH6JGp211IF1rPIJhZ2WAHd6qPI8n05YZExBYWrP9vjqltgUA+2lVSdDP6N0EAvIzuS5hsUYnOOmWciXe0KTnP7aruSpjwVlu0fzBb+W6IejJFAMbk3ocgjOWzvSJn3E1TXYexlaLvr9eH1y2vIfSABqGshO3ctKryp3I1A09N6hC9eEmVyKblohG10nL7fdaFRCpsPnajJcmmwNneSGtbLepsYQvubquItVH3LyjO6MOVEKsEbc6ha7vpHPW6irQ4DA9xL7ir73V/qlpt/FjkOoOW4uS09VMiaeOAK0nTWl7c/33wcOFdcH+/o3GLSnXo/FdUqsNrH+ikNUyvWU1G0oDw9T21QEFBXm+lIvfXFMNdPrlH2gtdutYYmyL5w2W5P3iLTDvf4kA0IHiToPFh+X6GBKW62rzA+jnDDWQsmvDK2igv3uLvYJRtcqsqX0EfCPay7LO6EhSeHhsDUn5rCkF5O9IyBLSBhAle3pEnQsXyk0FeVyPI1hndg/MVtFGHycM+Mr8z12bSIueiM2x4CY0GttnMUIO2BmuwWxdHHHwFo+1F0ow94VAX8MAKx95GeHSx2aX0rjt4NeI6Rjp7/dE9NsuUUrFIFd+cKdII2n6nVxZEzAJ5UTqVVWkQ6zhPm4ccj8BeAFyVZeKLhRTN6paANtPOGmOq8o9nNRMzadL3eVC83S
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(136003)(396003)(346002)(451199024)(1800799009)(186009)(82310400011)(46966006)(36840700001)(40470700004)(4326008)(7696005)(40460700003)(16526019)(26005)(426003)(40480700001)(336012)(2616005)(1076003)(8936002)(8676002)(83380400001)(356005)(2906002)(82740400003)(81166007)(36860700001)(36756003)(41300700001)(70586007)(54906003)(316002)(6916009)(6666004)(70206006)(5660300002)(47076005)(478600001)(26583001)(26123001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 01:56:13.9967
+X-Microsoft-Antispam-Message-Info: K6QsMJCQTunNPyWXMyi0vUBRY2slg3Yr+1oHI8++h0o9zFAWAa2q/6Xp76zH345BJBkOjCSGDBg7M1aUTbF+BYTKaoh5eqJ79poZsXF5cRGQu0IT2Wyv0glf9G2NyXxg2ndgIEGbFrkb/rUxnHuWUdZqRropjxJi+zXAuS18xCNodmpkS3VoS9yxiKbrXMpowOHnZMeg0nuCzDNhySXfMe7bf/D0eEIrzmsgmXU8kU3Zr/HF+fm6exwarBddfM20Elr9UZkoU558+cfrAJZVJo2HLVS/gdkhxI22Mp6yLT/dYc935mfzpWzmWrcJOEl3Y4s4hOo4wBee/Lyfmy9plZPeXgWiUppSImATJP9npvtWzVl00cof7gRz6zeBDPA3vyiYXqg5lR7bmoR0/im4e/a190q7eO3LyRYHf3axLmq0VgcNP8wHUA+6xlISuxptOUbmli2Pa0sceUhPelpe6gcqnaV84Be1kOBPguwCADlkAqs6lxXqguzfNGG8d1bkA7MsysHonsLdppdA49DiY0U7FFMaYR46imVKEhnsqVzIjI7nOVaS8zxjNh1cVYlyfoMxb7IZ6/T5n9z9aZc4B480+oM2olm/VQZO9cY2dRcabkAwqRMz+YquYi9d+hOz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(396003)(136003)(366004)(346002)(376002)(1800799009)(186009)(451199024)(83380400001)(6506007)(6486002)(52116002)(6666004)(86362001)(36756003)(38100700002)(38350700002)(4326008)(1076003)(107886003)(2906002)(8676002)(26005)(8936002)(6512007)(2616005)(478600001)(5660300002)(110136005)(41300700001)(66476007)(66946007)(66556008)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uGiiGr5Slk+c71/58ubIdJ2e6n29/EqsyTpDubSFRT79+nvvvTANGgXa05jB?=
+ =?us-ascii?Q?ka8FaZ5MTZy1cGQ7DlrHQmbAXZGeaw4pH4BUkWg+lZvJEx1KDS3WqqVfO+vO?=
+ =?us-ascii?Q?bODV/aP64ZCygZJWQinGHMV6eS/400PVzIF7srDwvS2iwJpGUj2+Fzni7GdJ?=
+ =?us-ascii?Q?8xJBZINOwnMv3BaXYvjYe0rKkGKVPcS5o1V/f9iFpAhLO/itpXe2fqKv/PHH?=
+ =?us-ascii?Q?DW8tL3KcIkNybQuFNWSAh05bz+e9MvXdJimtiwIwndlJDsRPG68o1bO5WlZy?=
+ =?us-ascii?Q?PiRngHJYnAGGQOgIsQEkU2AfRtNjy3B1o2SsoyIwXTejj91Nvm1B7jH04kbV?=
+ =?us-ascii?Q?Q6vQZTA4Rg4OTtgSKoLk5WaYwPAb7Httbcod2IIHmsPMLcb4Jfpw3sVX6eB3?=
+ =?us-ascii?Q?FVqefq5wGK1I5K/6AJC1liVlHgH63CXPLrYa5vK7ogOBwbqq+mBLsiQhoMzW?=
+ =?us-ascii?Q?Ez9NK4vA+dbnhFvN+A+i6j9R58E9VZw2B7KGgslCDmBogq/UsTfkrNZcqz1d?=
+ =?us-ascii?Q?NHPP9LkouzJleA9zuYEAYi5K/vLd2ZAIDvzuaHhhAx/IRH9zG8D0c+s6CPB6?=
+ =?us-ascii?Q?3mvg9SPn4qBNjggJ47yydHFCoSdxkZqyZGFHjCEMnOdkmnsHUsyEBVEkQ2kO?=
+ =?us-ascii?Q?F4ZWzoMwoXvQUUgF+7GQG41eKpfpp0qXzH/KxcVx1yNYwUtrw5nBWOLqVZ3x?=
+ =?us-ascii?Q?6fze/J+gPZEyKfUyIvegeKT5iqJhll0/xILpBcEm51ZyRDOeIK4KdAEqPuiX?=
+ =?us-ascii?Q?SbrGCH5NgcLiAXUn2/wsj1SZw5qQEBxskKSCwdbYWTV/knvuVTVKDTvUGMtW?=
+ =?us-ascii?Q?tRVlcHcgyE0dFGkezba9McVl0R7N15PUzitisWZFOny0kFb/3gq2kxrrG6V7?=
+ =?us-ascii?Q?2Kicn3jAJylAOQoIOoSbFE4JD6H24VRDqC/RL6FpCz+N9tnEQm8R8Ssmaf+M?=
+ =?us-ascii?Q?Z4ukZEerREyWQb+uVrY+T2EZIYoSkWxNexfkhmtyJGNJ8n/9anhvo1Ebl6LT?=
+ =?us-ascii?Q?tRMf/x7nDKda9AqKpCTxMXiMCljw0ytDk2JndjlapMkcj/DVVpAVAAZYwajr?=
+ =?us-ascii?Q?cMZkns1pUiAIeygbXGoLUMHaH4uHV0i6Z2AZOULUGH+xbcJQfe9zxqjQ2BEx?=
+ =?us-ascii?Q?sN3hNTrwKZu+4jxkgr5uj/xQNzmsLfs215/Yo7Aj2xNwCyLMt/niIM37icZo?=
+ =?us-ascii?Q?j1CR9Gm39PG73+GUGlKOX9FW3G2lo/O4IuSRj20doxoaTx2B9es2jquh+m1U?=
+ =?us-ascii?Q?clcAxM7/1/56QKfyiE5pnrACNyEXJZpbvp16tI5hD9YhPCOUhy+h6JwM7eh0?=
+ =?us-ascii?Q?WxK1vDIMvRdbRgGJt7Imc4FbglhLSOlXML0ckVSpGoW7vhDhoLFh0YdIgoNZ?=
+ =?us-ascii?Q?xfgQk8f8Tj4OmsSACVD/XGWz2WyeFn4StALOF5vdOYuvzVzwqOq6twnDLb8c?=
+ =?us-ascii?Q?jhCXH5O8+uZ20jD9VaShvh3Ub/6k120AMcn3CCrRaTHOyWl4jAW7bRr+6lge?=
+ =?us-ascii?Q?lmFqELabhT1TYCVPX5E2m/7NdK+WgFDLZTZpsvO5CXl6o5+rAHmGb8o0kXsM?=
+ =?us-ascii?Q?Si6veQ8fX8YEWFy1vPdz32rXiTX67h9CS9uEvlzN?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4df8955f-c3c3-4611-e571-08dbb97d17e4
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 01:58:32.8529
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0ff88b7-56d5-44f9-a3b8-08dbb97cc558
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE3E.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6784
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JmtY0Cz8HzitpF8N+RNy0TXqk79KD/ijUx4huF+/s6s+sLBRdbyCY007Of2dfD8gEF4xeIcwqFJac2DktvsBSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6954
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scripts/setlocalversion script correctly tries not adding "+" when
-CONFIG_LOCALVERSION is defined. However, instead of grepping for it
-(as it is done for CONFIG_LOCALVERSION_AUTO=y), it relies on LOCALVERSION
-set in the shell which is not.
+si_meminfo() will read and assign more info not just free/ram pages.
+For just DAMOS_WMARK_FREE_MEM_RATE use, only get free and ram pages
+is ok to save cpu.
 
-Export LOCALVERSION so scripts/setlocalversion could see it and not add
-unwanted "+" at the end of the kernelrelease.
-
-Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+Signed-off-by: Huan Yang <link@vivo.com>
 ---
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Change from v1:
+v1 fold free mem rate logic into __damos_get_wmark_free_mem_rate and not
+invoke si_meminfo, just get free/ram_pages in global.
+v2 cancel this __damos_get_wmark_free_mem_rate and just calculate rate
+in damos_wmark_metric_value to keep it simple.
+v3 fix changelog format, fix code style.
 
-diff --git a/Makefile b/Makefile
-index 57698d048e2c..fc45bed69790 100644
---- a/Makefile
-+++ b/Makefile
-@@ -368,7 +368,7 @@ include $(srctree)/scripts/Kbuild.include
- # Read KERNELRELEASE from include/config/kernel.release (if it exists)
- KERNELRELEASE = $(call read-file, include/config/kernel.release)
- KERNELVERSION = $(VERSION)$(if $(PATCHLEVEL),.$(PATCHLEVEL)$(if $(SUBLEVEL),.$(SUBLEVEL)))$(EXTRAVERSION)
--export VERSION PATCHLEVEL SUBLEVEL KERNELRELEASE KERNELVERSION
-+export VERSION PATCHLEVEL SUBLEVEL KERNELRELEASE KERNELVERSION LOCALVERSION
+
+ mm/damon/core.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index bcd2bd9d6c10..6ceb52298904 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -1280,12 +1280,10 @@ static bool kdamond_need_stop(struct damon_ctx *ctx)
  
- include $(srctree)/scripts/subarch.include
- 
+ static unsigned long damos_wmark_metric_value(enum damos_wmark_metric metric)
+ {
+-	struct sysinfo i;
+-
+ 	switch (metric) {
+ 	case DAMOS_WMARK_FREE_MEM_RATE:
+-		si_meminfo(&i);
+-		return i.freeram * 1000 / i.totalram;
++		return global_zone_page_state(NR_FREE_PAGES) * 1000 /
++		       totalram_pages();
+ 	default:
+ 		break;
+ 	}
 -- 
-2.41.0
+2.34.1
 
