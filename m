@@ -2,74 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D16637A8C07
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D2B7A8C09
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjITSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 14:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        id S229699AbjITStz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 14:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjITSsx (ORCPT
+        with ESMTP id S229461AbjITStx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 14:48:53 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D463C9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:48:47 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso1996501fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:48:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695235725; x=1695840525; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X1hFrP0vWNBME7dDNcg/fEbps60Tl05diwzAP59+3sw=;
-        b=AXQsgJaTWvfLszH1nhmige5zIrolkGN5tWGUxIw594N1LopPbLxoF0j0ViApTvCNuY
-         keo4+edsKUcrkrlobuH2zC/yx6NOiZIyjZ3ACCvlz1LuWC5bdy1EhXcwv6t4xe9ZTD9p
-         dliCbhUkn6qj8aV3SfMYY+lz3i3ajWTOPpXFs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695235725; x=1695840525;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X1hFrP0vWNBME7dDNcg/fEbps60Tl05diwzAP59+3sw=;
-        b=n54inCMK2gCfcPrmM4qrReYmo3mBATxzuO5HYjSalDYrDpglzrW5FTf+8PQUOJ469T
-         Sbd1vp8Y9h/b2kwvzglLYOUOT3uLJRD52XRZEie8jRfmJHLlGYfoKxAyZ5a5MmDGiz2y
-         herv16ziEQvHtjZ2y6xX9TmKUAjx8A5tHf1PLqw7tCMlSxuHMAfrLOZqnTXbdJoXpGjs
-         J1DfBA0vbngMTIcDO/9Iwp5XrKRofFQ+Q9i7wGKx+ktEqhCCWyMUn6/5JAYI7UYw/F0m
-         cE2SHGW+Z8qaFOnlCEeQHFqijetXTvTXxQs+uppjnniiLgdkCOGRwbD81bYan4CUFYHn
-         Hkdg==
-X-Gm-Message-State: AOJu0YzLwb6qB6rD4MIfPedAoA1WBNZPq8bpcH6EcGNxG3/3ej/dv+KE
-        vJOpGwySIjlERL9UrJTTrnKJzrVfGZKJEB38QEvEhA==
-X-Google-Smtp-Source: AGHT+IFpZsXlwMCvFrdGW6rJkotu6TuXtxmlcCCygNbx88P4G9tS50ZiSbB+7xHmA/qAhkWOuwJu3g==
-X-Received: by 2002:a2e:804a:0:b0:2b6:e105:6174 with SMTP id p10-20020a2e804a000000b002b6e1056174mr2955907ljg.47.1695235725584;
-        Wed, 20 Sep 2023 11:48:45 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id w22-20020a2e9bd6000000b002b9ff8450aesm3222090ljj.91.2023.09.20.11.48.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 11:48:44 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so309066e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:48:44 -0700 (PDT)
-X-Received: by 2002:a05:6512:b1c:b0:503:6b8:a84a with SMTP id
- w28-20020a0565120b1c00b0050306b8a84amr3636614lfu.54.1695235724132; Wed, 20
- Sep 2023 11:48:44 -0700 (PDT)
+        Wed, 20 Sep 2023 14:49:53 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE119B4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:49:46 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85A4C1FB;
+        Wed, 20 Sep 2023 11:50:23 -0700 (PDT)
+Received: from [10.57.0.222] (unknown [10.57.0.222])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14A3F3F67D;
+        Wed, 20 Sep 2023 11:49:44 -0700 (PDT)
+Message-ID: <170e8577-42c9-b72f-60c7-80141f379ec4@arm.com>
+Date:   Wed, 20 Sep 2023 19:49:19 +0100
 MIME-Version: 1.0
-References: <20230920060615.GA2739@sol.localdomain>
-In-Reply-To: <20230920060615.GA2739@sol.localdomain>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 20 Sep 2023 11:48:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wja26UmHQCu48n_HN5t5w3fa6ocm5d_VrJe6-RhCU_x9A@mail.gmail.com>
-Message-ID: <CAHk-=wja26UmHQCu48n_HN5t5w3fa6ocm5d_VrJe6-RhCU_x9A@mail.gmail.com>
-Subject: Re: [RFC] Should writes to /dev/urandom immediately affect reads?
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] ARM: vfp: Add vudot opcode to VFP undef hook
+To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     yj.chiang@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>
+References: <20230920083907.30479-1-mark-pk.tsai@mediatek.com>
+Content-Language: en-GB
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230920083907.30479-1-mark-pk.tsai@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,34 +50,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sept 2023 at 23:06, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> This would be the potential change, BTW:
+On 2023-09-20 09:39, Mark-PK Tsai wrote:
+> Add vudot opcode to the VFP undef hook to fix the
+> potentially undefined instruction error when the
+> user space executes vudot instruction.
 
-Entirely regardless of your fundamental question, no, that's not the
-potential change.
+Did the kernel expose a hwcap to say that the dot product extension is 
+supported? I'm pretty sure it didn't, so why would userspace expect this 
+to work? ;)
 
-That causes a crng_reseed() even if the write fails completely and
-returns -EFAULT.
+IIRC Amit was looking at defining the hwcaps to align with arm64 compat, 
+but I believe that series faltered since most of them weren't actually 
+needed (and I think at that point it was still missing the VFP support 
+code parts). It would be nice if someone could pick up and combine both 
+efforts and get this done properly; fill in *all* the hwcaps and 
+relevant handling for extensions which Cortex-A55 supports (since 
+there's definitely more than just VUDOT), and then hopefully we're done 
+for good.
 
-So at a *minimum*, I'd expect the patch to be be something like
+> Before this commit, kernel didn't handle the undef exception
+> caused by vudot and didn't enable VFP in lazy VFP context
+> switch code like other NEON instructions.
+> This led to the occurrence of the undefined instruction
+> error as following:
+> 
+> [  250.741238 ] 0904 (26902): undefined instruction: pc=004014ec
+> ...
+> [  250.741287 ] PC is at 0x4014ec
+> [  250.741298 ] LR is at 0xb677874f
+> [  250.741303 ] pc : [<004014ec>]    lr : [<b677874f>]    psr: 80070010
+> [  250.741309 ] sp : beffedb0  ip : b67d7864  fp : beffee58
+> [  250.741314 ] r10: 00000000  r9 : 00000000  r8 : 00000000
+> [  250.741319 ] r7 : 00000001  r6 : 00000001  r5 : beffee90  r4 : 00401470
+> [  250.741324 ] r3 : beffee20  r2 : beffee30  r1 : beffee40  r0 : 004003a8
+> [  250.741331 ] Flags: Nzcv  IRQs on  FIQs on  Mode USER_32  ISA ARM Segment user
+> [  250.741339 ] Control: 10c5383d  Table: 32d0406a  DAC: 00000055
+> [  250.741348 ] Code: f4434aef f4610aef f4622aef f4634aef (fc620df4)
+> 
+> Below is the assembly of the user program:
+> 
+> 0x4014dc <+108>: vst1.64 {d20, d21}, [r3:128]
+> 0x4014e0 <+112>: vld1.64 {d16, d17}, [r1:128]
+> 0x4014e4 <+116>: vld1.64 {d18, d19}, [r2:128]
+> 0x4014e8 <+120>: vld1.64 {d20, d21}, [r3:128] --> switch out
+> 0x4014ec <+124>: vudot.u8 q8, q9, q10         <-- switch in, and FPEXC.EN = 0
+>                                                    SIGILL(illegal instruction)
+> 
+> Link: https://services.arm.com/support/s/case/5004L00000XsOjP
 
-        memzero_explicit(block, sizeof(block));
--       return ret ? ret : -EFAULT;
-+       if (!ret)
-+               return -EFAULT;
-+       crng_reseed(NULL);
-+       return ret;
+Linking to your private support case is not useful to upstream. Even I 
+can't open that link.
 
-but even then I'd ask
+> Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> ---
+>   arch/arm/vfp/vfpmodule.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
+> index 7e8773a2d99d..7eab8d1019d2 100644
+> --- a/arch/arm/vfp/vfpmodule.c
+> +++ b/arch/arm/vfp/vfpmodule.c
+> @@ -788,6 +788,12 @@ static struct undef_hook neon_support_hook[] = {{
+>   	.cpsr_mask	= PSR_T_BIT,
+>   	.cpsr_val	= 0,
+>   	.fn		= vfp_support_entry,
+> +}, {
+> +	.instr_mask	= 0xffb00000,
+> +	.instr_val	= 0xfc200000,
+> +	.cpsr_mask	= PSR_T_BIT,
+> +	.cpsr_val	= 0,
+> +	.fn		= vfp_support_entry,
+>   }, {
+>   	.instr_mask	= 0xef000000,
+>   	.instr_val	= 0xef000000,
+> @@ -800,6 +806,12 @@ static struct undef_hook neon_support_hook[] = {{
+>   	.cpsr_mask	= PSR_T_BIT,
+>   	.cpsr_val	= PSR_T_BIT,
+>   	.fn		= vfp_support_entry,
+> +}, {
+> +	.instr_mask	= 0xffb00000,
+> +	.instr_val	= 0xfc200000,
+> +	.cpsr_mask	= PSR_T_BIT,
+> +	.cpsr_val	= PSR_T_BIT,
+> +	.fn		= vfp_support_entry,
 
- - wouldn't we want some kind of minimum check?
+Why have two entries conditional on each possible value of one bit for 
+otherwise identical encodings? Surely it suffices to set both cpsr_mask 
+and cpsr_val to 0?
 
- - do we really trust writes to add any actual entropy at all and at what point?
+Thanks,
+Robin.
 
-which are admittedly likely the same question just in different guises.
-
-Also, are there any relevant architectures where
-"try_to_generate_entropy()" doesn't work? IOW, why do you even care?
-
-                Linus
+>   }};
+>   
+>   static struct undef_hook vfp_support_hook = {
