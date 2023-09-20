@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB41C7A8C77
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6271C7A8C7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjITTNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
+        id S229609AbjITTOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjITTMt (ORCPT
+        with ESMTP id S229886AbjITTON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:12:49 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614A8E5E;
-        Wed, 20 Sep 2023 12:12:24 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-503065c4b25so339581e87.1;
-        Wed, 20 Sep 2023 12:12:24 -0700 (PDT)
+        Wed, 20 Sep 2023 15:14:13 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939C61998;
+        Wed, 20 Sep 2023 12:13:32 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c0ecb9a075so977305ad.2;
+        Wed, 20 Sep 2023 12:13:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695237142; x=1695841942; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1gewAssQsy3DL4fnx2jYYjoNFT27/4qEDJvjdzsaw8U=;
-        b=VDEHjv416neOGmxpt/NCv+PTFNZFA04u7Ea8azAgZS7IaPPI4ofJ0jBYp0z1g1LtpE
-         KMjzaQPPw5FxopXNwfzjZ3cX3C9SrCOyBykI7acYtr34bUDiZxoprPpu5CA4wYpS4kU7
-         GzXgwvlUzeehqoUNRz+GXUOmlxl6WTWLAk7H65L+Vz1nBgrQDvUV36QsiI1lsNEKGNMq
-         5PdjCjO2qV3v+XgML7tubvzGlx8Uo9imS6uo9zQcAZjIWbO3BTBG3Z2f3QqQJgDp2eBt
-         eSzdeOBmlLfxsvaXaaYGU6QTsVkPRaddI5UZNKA9j+eKXmr5xDUtkyjr7FMzCX3QfyFn
-         DiwA==
+        d=gmail.com; s=20230601; t=1695237209; x=1695842009; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MvQvJejvv/JyR5w5hxlhwEeijWF4kg5buSYDY153wM8=;
+        b=N8qX2R7FXCkslmKR9iL/jEFBF122fKu8G76eULtf7e7sY3TizsL0WCQHiZdsiI15Zz
+         kIzAPYs0LbLnOXNmbJn1kEuIy6tA0rrpRzUPCuhTrJTuGAzfyfCYFi1tTAZoZqQWT+AX
+         ALyl3CI0ndvfW/uB9XzR1orbEpO9Y9THOJMpoT9D9A8nCt11JkGG53/Kz6woOCbkeNkB
+         4oF9AUG8RUtCIy7v/MSkt0oY3DJHuUw3rJm0a1gGSZzNLeSFszkPVr7m48UG+VKUfsiI
+         2nXXBWNPqMLrLSOJpYsRRVYLJS9h+jWgrXTcorQFw4WitWmP1gVplOcKTSugpm1jlex5
+         O+Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695237142; x=1695841942;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1gewAssQsy3DL4fnx2jYYjoNFT27/4qEDJvjdzsaw8U=;
-        b=I1ikIS5arIUN/CBy9K0yu4ZFY1MIDyralo0WgDsmMb9jC7TYIAhxlLeYHTuPY+7LWB
-         ZNiRNsq29e8trgSZNo2qdDUxKFNEhFf97sXV2k3YG9tK1asaC/3wFgyUrpMJxpPU0qHL
-         zS/nU/3oUFiwRg3w/PVtkpr5RYqMRgU4hx4n3VyaFEXVE0XKJ4EF6FQR12PlT69uN6Ez
-         /dQI9rqRQu30FMrM/7SeDZ9mN7VUN3YiVumNBFgU4GvPREeLyprJXcZoEw/mJL2bkutb
-         yQglLR/5/4EYRUhH3yduXUJkFAVrDye3rHyRrrxaUxzbDj9iSkiFbDige3HGibv76/HW
-         CF4w==
-X-Gm-Message-State: AOJu0YzIRgheKUJ14CKsH2n2La/dHU4fOiPcqTv4Vvl4N3f64xA/XcS5
-        AKeTMKUzw5z+4LyO0k4RtUw=
-X-Google-Smtp-Source: AGHT+IFBow7TY/rA6kICI6lM0bMeycNtU15JfCtI1e8+Skt/16OLRm+ILMx+BgukQcMUiRHZD3QaLQ==
-X-Received: by 2002:a05:6512:3292:b0:503:9eb:d277 with SMTP id p18-20020a056512329200b0050309ebd277mr2529333lfe.49.1695237142256;
-        Wed, 20 Sep 2023 12:12:22 -0700 (PDT)
-Received: from localhost ([178.176.82.53])
-        by smtp.gmail.com with ESMTPSA id w18-20020a05651203d200b004fe15a2f0f6sm2801194lfp.62.2023.09.20.12.12.21
+        d=1e100.net; s=20230601; t=1695237209; x=1695842009;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MvQvJejvv/JyR5w5hxlhwEeijWF4kg5buSYDY153wM8=;
+        b=Onit8YxWlOCUKOR+TSbZqUXOi5KJuB1ZZl9T5//aFs2EY3rwHKYGC8g5X5IlhaftDR
+         rsCVIM5gdICBfIitkApLDbe7E5r8BDo4OrwzBKMRn6AOhJwWSO+M7gXnnru0TRYqvV+P
+         Qkz8rLg9pfNNwXpFzms71YTaokL8o+x+Vq9iO14Dguq7RL0irMQ2hv7fCY46ky3TWN1s
+         t7nr+3rFa6dNeMY36H3MpzQ0xTqUEjX4Bsj9PbJei4Eabj6U01Euea1eEmg0t+6W7Ji4
+         hva08gExT2H90ebmd6OyfZ/p0Wf+w8fp1aEKKBuBcRPRYensU1WH3lblTtRkjzgjwvUy
+         ynUQ==
+X-Gm-Message-State: AOJu0YyBofOOgHNWpqEQIm1ugUMw1cwoImt+0oKQOPC06MYrFBqfEtnk
+        Vmi3xq9Z+VXhzJeDhj+0nYg=
+X-Google-Smtp-Source: AGHT+IG3IRpXbiPviocPsFARPN84Bklbi5ohm2JoGYKzWZPQrZhkvLD9B9pT+Xh28LF7mj5eRbufog==
+X-Received: by 2002:a17:903:11d1:b0:1c1:e7b2:27af with SMTP id q17-20020a17090311d100b001c1e7b227afmr3663953plh.57.1695237209254;
+        Wed, 20 Sep 2023 12:13:29 -0700 (PDT)
+Received: from westworld (209-147-138-147.nat.asu.edu. [209.147.138.147])
+        by smtp.gmail.com with ESMTPSA id d2-20020a170902654200b001c43307f87asm10324192pln.91.2023.09.20.12.13.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:12:21 -0700 (PDT)
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Michal Simek <michal.simek@amd.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Punnaiah Choudary Kalluri 
-        <punnaiah.choudary.kalluri@xilinx.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Wed, 20 Sep 2023 12:13:28 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 12:13:25 -0700
+From:   Kyle Zeng <zengyhkyle@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 20/20] EDAC/synopsys: Convert to using BIT/GENMASK/FIELD_x macros
-Date:   Wed, 20 Sep 2023 22:10:44 +0300
-Message-ID: <20230920191059.28395-21-fancer.lancer@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230920191059.28395-1-fancer.lancer@gmail.com>
-References: <20230920191059.28395-1-fancer.lancer@gmail.com>
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 5.10 000/406] 5.10.195-rc1 review
+Message-ID: <ZQtEVR+Vc6CD6iUG@westworld>
+References: <20230917191101.035638219@linuxfoundation.org>
+ <07a04540-554c-4394-1e79-46ea665f8c03@roeck-us.net>
+ <2023092009-angriness-sank-ae4f@gregkh>
+ <27f978f3-11ca-6054-5160-ab66d4c918bc@roeck-us.net>
+ <8457ff12-c28b-898b-3f12-97aa12ce6716@gmail.com>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="C+MjqotaCJLWzlak"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <8457ff12-c28b-898b-3f12-97aa12ce6716@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,266 +83,249 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of using the very handy helpers denoted in the subject the driver
-has been created with the open-coded {mask,shift} statements. It makes the
-code bulky, prone to mistakes and much harder to read. Seeing there are
-many places in the driver implementing the CSR fields get/set pattern use
-the FIELD_GET()/FIELD_PREP() macros introduced in the kernel specifically
-for that case. In addition use the BIT() and GENMASK() macros to generate
-the CSR flags/masks. While at it unify the row, column, rank, bank and
-bank group macros names to be having a suffix similar to the
-snps_ecc_error_info structure fields name.
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
----
- drivers/edac/synopsys_edac.c | 137 +++++++++++++++++------------------
- 1 file changed, 67 insertions(+), 70 deletions(-)
+--C+MjqotaCJLWzlak
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index bf23ed6e1779..327023e35d42 100644
---- a/drivers/edac/synopsys_edac.c
-+++ b/drivers/edac/synopsys_edac.c
-@@ -6,6 +6,8 @@
-  * Copyright (C) 2012 - 2014 Xilinx, Inc.
-  */
+On Wed, Sep 20, 2023 at 10:01:55AM -0700, Florian Fainelli wrote:
+> On 9/20/23 08:18, Guenter Roeck wrote:
+> > On 9/20/23 01:11, Greg Kroah-Hartman wrote:
+> > > On Tue, Sep 19, 2023 at 09:57:25PM -0700, Guenter Roeck wrote:
+> > > > On 9/17/23 12:07, Greg Kroah-Hartman wrote:
+> > > > > This is the start of the stable review cycle for the 5.10.195 release.
+> > > > > There are 406 patches in this series, all will be posted as a response
+> > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > let me know.
+> > > > > 
+> > > > > Responses should be made by Tue, 19 Sep 2023 19:10:04 +0000.
+> > > > > Anything received after that time might be too late.
+> > > > > 
+> > > > 
+> > > > chromeos-5.10 locks up in configfs_lookup() after the merge of
+> > > > v5.10.195.
+> > > > 
+> > > > I am a bit puzzled because I see
+> > > > 
+> > > > c709c7ca020a configfs: fix a race in configfs_lookup()
+> > > > 
+> > > > in v5.10.195 but not in the list of commits below. I guess I must be
+> > > > missing something.
+> > > 
+> > > It was part of the big patchset, it was posted here:
+> > >     https://lore.kernel.org/r/20230917191101.511939651@linuxfoundation.org
+> > > 
+> > > Not hidden at all :)
+> > > 
+> > > and was submitted here:
+> > >     https://lore.kernel.org/r/ZPOZFHHA0abVmGx+@westworld
+> > > 
+> > > > Either case, the code now looks as follows.
+> > > > 
+> > > > configfs_lookup()
+> > > > {
+> > > >      ...
+> > > >      spin_lock(&configfs_dirent_lock);
+> > > >      ...
+> > > >          err = configfs_attach_attr(sd, dentry);
+> > > >      ...
+> > > >      spin_unlock(&configfs_dirent_lock);
+> > > >      ...
+> > > > }
+> > > > 
+> > > > and
+> > > > 
+> > > > configfs_attach_attr(...)
+> > > > {
+> > > >      ...
+> > > >      spin_lock(&configfs_dirent_lock);
+> > > >      ...
+> > > > }
+> > > > 
+> > > > which unless it is way too late here and I really need to go to sleep
+> > > > just won't work.
+> > > 
+> > > Kyle, you did the backport, any comments?
+> > > 
+> > 
+> > After a good night sleep, the code still looks wrong to me. Reverting
+> > the offending patch in chromeos-5.10 solved the problem there.
+> > That makes me suspect that no one actually tests configfs.
+> 
+> Humm indeed, looking at our testing we don't have our USB devices being
+> tested which would exercise configfs since we switch the USB device between
+> different configurations (mass storage, serial, networking etc.). Let me see
+> about adding that so we get some coverage.
+> -- 
+> Florian
+> 
+
+Sorry for the wrong patch. My intention was to backport c42dd069be8dfc9b2239a5c89e73bbd08ab35de0
+to v5.10 to avoid a race condition triggered in my test. I tested the
+patch with my PoC program and made sure it won't trigger the crash. But
+I didn't notice that it could hang the kernel.
+I sincerely apologize for the mistake.
+
+My new proposed patch backports both
+c42dd069be8dfc9b2239a5c89e73bbd08ab35de0 and d07f132a225c013e59aa77f514ad9211ecab82ee.
+I made sure it does not trigger the race condition anymore.
+Can anyone having access to more comprehensive tests please check whether it works?
+
+Also, I'm not sure whether it is OK or how to backport two patches in
+one patch. Please advise on how to do it properly.
+
+The crash triggering PoC program is also attached.
+
+Thanks,
+Kyle Zeng
+
+--C+MjqotaCJLWzlak
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=patch
+
+diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
+index 12388ed4faa5..43093c218628 100644
+--- a/fs/configfs/dir.c
++++ b/fs/configfs/dir.c
+@@ -55,7 +55,7 @@ static void configfs_d_iput(struct dentry * dentry,
+ 		/*
+ 		 * Set sd->s_dentry to null only when this dentry is the one
+ 		 * that is going to be killed.  Otherwise configfs_d_iput may
+-		 * run just after configfs_attach_attr and set sd->s_dentry to
++		 * run just after configfs_lookup and set sd->s_dentry to
+ 		 * NULL even it's still in use.
+ 		 */
+ 		if (sd->s_dentry == dentry)
+@@ -428,44 +428,13 @@ static void configfs_remove_dir(struct config_item * item)
+ 	dput(dentry);
+ }
  
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
- #include <linux/edac.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-@@ -90,33 +92,29 @@
- #define ZYNQMP_DDR_QOS_IRQ_DB_OFST	0x2020C
- 
- /* DDR Master register definitions */
--#define DDR_MSTR_DEV_CFG_MASK		0xC0000000
--#define DDR_MSTR_DEV_CFG_SHIFT		30
-+#define DDR_MSTR_DEV_CFG_MASK		GENMASK(31, 30)
- #define DDR_MSTR_DEV_X4			0
- #define DDR_MSTR_DEV_X8			1
- #define DDR_MSTR_DEV_X16		2
- #define DDR_MSTR_DEV_X32		3
--#define DDR_MSTR_BUSWIDTH_MASK		0x3000
--#define DDR_MSTR_BUSWIDTH_SHIFT		12
-+#define DDR_MSTR_BUSWIDTH_MASK		GENMASK(13, 12)
- #define DDR_MSTR_BUSWIDTH_16		2
- #define DDR_MSTR_BUSWIDTH_32		1
- #define DDR_MSTR_BUSWIDTH_64		0
--#define DDR_MSTR_MEM_LPDDR4		0x20
--#define DDR_MSTR_MEM_DDR4		0x10
--#define DDR_MSTR_MEM_LPDDR3		0x8
--#define DDR_MSTR_MEM_DDR2		0x4
--#define DDR_MSTR_MEM_DDR3		0x1
-+#define DDR_MSTR_MEM_LPDDR4		BIT(5)
-+#define DDR_MSTR_MEM_DDR4		BIT(4)
-+#define DDR_MSTR_MEM_LPDDR3		BIT(3)
-+#define DDR_MSTR_MEM_DDR2		BIT(2)
-+#define DDR_MSTR_MEM_DDR3		BIT(0)
- 
- /* ECC CFG0 register definitions */
--#define ECC_CFG0_MODE_MASK		0x7
-+#define ECC_CFG0_MODE_MASK		GENMASK(2, 0)
- #define ECC_CFG0_MODE_SECDED		0x4
- 
- /* ECC status register definitions */
--#define ECC_STAT_UECNT_MASK		0xF0000
--#define ECC_STAT_UECNT_SHIFT		16
--#define ECC_STAT_CECNT_MASK		0xF00
--#define ECC_STAT_CECNT_SHIFT		8
--#define ECC_STAT_BITNUM_MASK		0x7F
-+#define ECC_STAT_UE_MASK		GENMASK(23, 16)
-+#define ECC_STAT_CE_MASK		GENMASK(15, 8)
-+#define ECC_STAT_BITNUM_MASK		GENMASK(6, 0)
- 
- /* ECC control/clear register definitions */
- #define ECC_CTRL_CLR_CE_ERR		BIT(0)
-@@ -127,34 +125,26 @@
- #define ECC_CTRL_EN_UE_IRQ		BIT(9)
- 
- /* ECC error count register definitions */
--#define ECC_ERRCNT_UECNT_MASK		0xFFFF0000
--#define ECC_ERRCNT_UECNT_SHIFT		16
--#define ECC_ERRCNT_CECNT_MASK		0xFFFF
 -
--/* ECC Corrected Error Register Mask and Shifts*/
--#define ECC_CEADDR0_RW_MASK		0x3FFFF
--#define ECC_CEADDR0_RNK_MASK		BIT(24)
--#define ECC_CEADDR1_BNKGRP_MASK		0x3000000
--#define ECC_CEADDR1_BNKNR_MASK		0x70000
--#define ECC_CEADDR1_COL_MASK		0xFFF
--#define ECC_CEADDR1_BNKGRP_SHIFT	24
--#define ECC_CEADDR1_BNKNR_SHIFT		16
+-/* attaches attribute's configfs_dirent to the dentry corresponding to the
+- * attribute file
+- */
+-static int configfs_attach_attr(struct configfs_dirent * sd, struct dentry * dentry)
+-{
+-	struct configfs_attribute * attr = sd->s_element;
+-	struct inode *inode;
 -
--/* ECC Poison register shifts */
--#define ECC_POISON0_RANK_SHIFT		24
--#define ECC_POISON0_RANK_MASK		BIT(24)
--#define ECC_POISON0_COLUMN_SHIFT	0
--#define ECC_POISON0_COLUMN_MASK		0xFFF
--#define ECC_POISON1_BG_SHIFT		28
--#define ECC_POISON1_BG_MASK		0x30000000
--#define ECC_POISON1_BANKNR_SHIFT	24
--#define ECC_POISON1_BANKNR_MASK		0x7000000
--#define ECC_POISON1_ROW_SHIFT		0
--#define ECC_POISON1_ROW_MASK		0x3FFFF
-+#define ECC_ERRCNT_UECNT_MASK		GENMASK(31, 16)
-+#define ECC_ERRCNT_CECNT_MASK		GENMASK(15, 0)
-+
-+/* ECC Corrected Error register definitions */
-+#define ECC_CEADDR0_RANK_MASK		GENMASK(27, 24)
-+#define ECC_CEADDR0_ROW_MASK		GENMASK(17, 0)
-+#define ECC_CEADDR1_BANKGRP_MASK	GENMASK(25, 24)
-+#define ECC_CEADDR1_BANK_MASK		GENMASK(23, 16)
-+#define ECC_CEADDR1_COL_MASK		GENMASK(11, 0)
-+
-+/* ECC Poison register definitions */
-+#define ECC_POISON0_RANK_MASK		GENMASK(27, 24)
-+#define ECC_POISON0_COL_MASK		GENMASK(11, 0)
-+#define ECC_POISON1_BANKGRP_MASK	GENMASK(29, 28)
-+#define ECC_POISON1_BANK_MASK		GENMASK(26, 24)
-+#define ECC_POISON1_ROW_MASK		GENMASK(17, 0)
- 
- /* DDRC ECC CE & UE poison mask */
--#define ECC_CEPOISON_MASK		0x3
--#define ECC_UEPOISON_MASK		0x1
-+#define ECC_CEPOISON_MASK		GENMASK(1, 0)
-+#define ECC_UEPOISON_MASK		BIT(0)
- 
- /* DDRC Device config shifts/masks */
- #define DDR_MAX_ROW_SHIFT		18
-@@ -210,9 +200,9 @@
- #define RANK_B0_BASE			6
- 
- /* ZynqMP DDR QOS Interrupt register definitions */
--#define ZYNQMP_DDR_QOS_UE_MASK		0x4
--#define ZYNQMP_DDR_QOS_CE_MASK		0x2
--#define ZYNQMP_DDR_QOS_IRQ_MASK		0x6
-+#define ZYNQMP_DDR_QOS_UE_MASK		BIT(2)
-+#define ZYNQMP_DDR_QOS_CE_MASK		BIT(1)
-+#define ZYNQMP_DDR_QOS_IRQ_MASK		(ZYNQMP_DDR_QOS_UE_MASK | ZYNQMP_DDR_QOS_CE_MASK)
- 
- /**
-  * struct snps_ecc_error_info - ECC error log information.
-@@ -304,38 +294,40 @@ static int snps_get_error_info(struct snps_edac_priv *priv)
- 	if (!regval)
- 		return 1;
- 
--	p->ceinfo.bitpos = (regval & ECC_STAT_BITNUM_MASK);
-+	p->ceinfo.bitpos = FIELD_GET(ECC_STAT_BITNUM_MASK, regval);
- 
- 	regval = readl(base + ECC_ERRCNT_OFST);
--	p->ce_cnt = regval & ECC_ERRCNT_CECNT_MASK;
--	p->ue_cnt = (regval & ECC_ERRCNT_UECNT_MASK) >> ECC_ERRCNT_UECNT_SHIFT;
-+	p->ce_cnt = FIELD_GET(ECC_ERRCNT_CECNT_MASK, regval);
-+	p->ue_cnt = FIELD_GET(ECC_ERRCNT_UECNT_MASK, regval);
- 	if (!p->ce_cnt)
- 		goto ue_err;
- 
- 	regval = readl(base + ECC_CEADDR0_OFST);
--	p->ceinfo.row = (regval & ECC_CEADDR0_RW_MASK);
-+	p->ceinfo.row = FIELD_GET(ECC_CEADDR0_ROW_MASK, regval);
-+
- 	regval = readl(base + ECC_CEADDR1_OFST);
--	p->ceinfo.bank = (regval & ECC_CEADDR1_BNKNR_MASK) >>
--					ECC_CEADDR1_BNKNR_SHIFT;
--	p->ceinfo.bankgrp = (regval & ECC_CEADDR1_BNKGRP_MASK) >>
--					ECC_CEADDR1_BNKGRP_SHIFT;
--	p->ceinfo.col = (regval & ECC_CEADDR1_COL_MASK);
-+	p->ceinfo.bank = FIELD_GET(ECC_CEADDR1_BANK_MASK, regval);
-+	p->ceinfo.bankgrp = FIELD_GET(ECC_CEADDR1_BANKGRP_MASK, regval);
-+	p->ceinfo.col = FIELD_GET(ECC_CEADDR1_COL_MASK, regval);
-+
- 	p->ceinfo.data = readl(base + ECC_CSYND0_OFST);
-+
- 	edac_dbg(2, "ECCCSYN0: 0x%08X ECCCSYN1: 0x%08X ECCCSYN2: 0x%08X\n",
- 		 readl(base + ECC_CSYND0_OFST), readl(base + ECC_CSYND1_OFST),
- 		 readl(base + ECC_CSYND2_OFST));
-+
- ue_err:
- 	if (!p->ue_cnt)
- 		goto out;
- 
- 	regval = readl(base + ECC_UEADDR0_OFST);
--	p->ueinfo.row = (regval & ECC_CEADDR0_RW_MASK);
-+	p->ueinfo.row = FIELD_GET(ECC_CEADDR0_ROW_MASK, regval);
-+
- 	regval = readl(base + ECC_UEADDR1_OFST);
--	p->ueinfo.bankgrp = (regval & ECC_CEADDR1_BNKGRP_MASK) >>
--					ECC_CEADDR1_BNKGRP_SHIFT;
--	p->ueinfo.bank = (regval & ECC_CEADDR1_BNKNR_MASK) >>
--					ECC_CEADDR1_BNKNR_SHIFT;
--	p->ueinfo.col = (regval & ECC_CEADDR1_COL_MASK);
-+	p->ueinfo.bankgrp = FIELD_GET(ECC_CEADDR1_BANKGRP_MASK, regval);
-+	p->ueinfo.bank = FIELD_GET(ECC_CEADDR1_BANK_MASK, regval);
-+	p->ueinfo.col = FIELD_GET(ECC_CEADDR1_COL_MASK, regval);
-+
- 	p->ueinfo.data = readl(base + ECC_UESYND0_OFST);
- out:
- 	spin_lock_irqsave(&priv->reglock, flags);
-@@ -484,7 +476,7 @@ static enum dev_type snps_get_dtype(const void __iomem *base)
- 	if (!(regval & DDR_MSTR_MEM_DDR4))
- 		return DEV_UNKNOWN;
- 
--	regval = (regval & DDR_MSTR_DEV_CFG_MASK) >> DDR_MSTR_DEV_CFG_SHIFT;
-+	regval = FIELD_GET(DDR_MSTR_DEV_CFG_MASK, regval);
- 	switch (regval) {
- 	case DDR_MSTR_DEV_X4:
- 		return DEV_X4;
-@@ -511,7 +503,8 @@ static bool snps_get_ecc_state(void __iomem *base)
+-	spin_lock(&configfs_dirent_lock);
+-	dentry->d_fsdata = configfs_get(sd);
+-	sd->s_dentry = dentry;
+-	spin_unlock(&configfs_dirent_lock);
+-
+-	inode = configfs_create(dentry, (attr->ca_mode & S_IALLUGO) | S_IFREG);
+-	if (IS_ERR(inode)) {
+-		configfs_put(sd);
+-		return PTR_ERR(inode);
+-	}
+-	if (sd->s_type & CONFIGFS_ITEM_BIN_ATTR) {
+-		inode->i_size = 0;
+-		inode->i_fop = &configfs_bin_file_operations;
+-	} else {
+-		inode->i_size = PAGE_SIZE;
+-		inode->i_fop = &configfs_file_operations;
+-	}
+-	d_add(dentry, inode);
+-	return 0;
+-}
+-
+ static struct dentry * configfs_lookup(struct inode *dir,
+ 				       struct dentry *dentry,
+ 				       unsigned int flags)
  {
- 	u32 regval;
+ 	struct configfs_dirent * parent_sd = dentry->d_parent->d_fsdata;
+ 	struct configfs_dirent * sd;
+-	int found = 0;
+-	int err;
++	struct inode *inode = NULL;
  
--	regval = readl(base + ECC_CFG0_OFST) & ECC_CFG0_MODE_MASK;
-+	regval = readl(base + ECC_CFG0_OFST);
-+	regval = FIELD_GET(ECC_CFG0_MODE_MASK, regval);
+ 	/*
+ 	 * Fake invisibility if dir belongs to a group/default groups hierarchy
+@@ -475,36 +444,39 @@ static struct dentry * configfs_lookup(struct inode *dir,
+ 	 * not complete their initialization, since the dentries of the
+ 	 * attributes won't be instantiated.
+ 	 */
+-	err = -ENOENT;
+ 	if (!configfs_dirent_is_ready(parent_sd))
+-		goto out;
++		return ERR_PTR(-ENOENT);
  
- 	return (regval == ECC_CFG0_MODE_SECDED);
++	spin_lock(&configfs_dirent_lock);
+ 	list_for_each_entry(sd, &parent_sd->s_children, s_sibling) {
+-		if (sd->s_type & CONFIGFS_NOT_PINNED) {
+-			const unsigned char * name = configfs_get_name(sd);
++		if ((sd->s_type & CONFIGFS_NOT_PINNED) &&
++		    !strcmp(configfs_get_name(sd), dentry->d_name.name)) {
++			struct configfs_attribute *attr = sd->s_element;
++			umode_t mode = (attr->ca_mode & S_IALLUGO) | S_IFREG;
+ 
+-			if (strcmp(name, dentry->d_name.name))
+-				continue;
++			dentry->d_fsdata = configfs_get(sd);
++			sd->s_dentry = dentry;
++			spin_unlock(&configfs_dirent_lock);
+ 
+-			found = 1;
+-			err = configfs_attach_attr(sd, dentry);
+-			break;
++			inode = configfs_create(dentry, mode);
++			if (IS_ERR(inode)) {
++				configfs_put(sd);
++				return ERR_CAST(inode);
++			}
++			if (sd->s_type & CONFIGFS_ITEM_BIN_ATTR) {
++				inode->i_size = 0;
++				inode->i_fop = &configfs_bin_file_operations;
++			} else {
++				inode->i_size = PAGE_SIZE;
++				inode->i_fop = &configfs_file_operations;
++			}
++			goto done;
+ 		}
+ 	}
+-
+-	if (!found) {
+-		/*
+-		 * If it doesn't exist and it isn't a NOT_PINNED item,
+-		 * it must be negative.
+-		 */
+-		if (dentry->d_name.len > NAME_MAX)
+-			return ERR_PTR(-ENAMETOOLONG);
+-		d_add(dentry, NULL);
+-		return NULL;
+-	}
+-
+-out:
+-	return ERR_PTR(err);
++	spin_unlock(&configfs_dirent_lock);
++done:
++	d_add(dentry, inode);
++	return NULL;
  }
-@@ -698,13 +691,13 @@ static void snps_data_poison_setup(struct snps_edac_priv *priv)
- 	if (priv->rank_shift[0])
- 		rank = (hif_addr >> priv->rank_shift[0]) & BIT(0);
  
--	regval = (rank << ECC_POISON0_RANK_SHIFT) & ECC_POISON0_RANK_MASK;
--	regval |= (col << ECC_POISON0_COLUMN_SHIFT) & ECC_POISON0_COLUMN_MASK;
-+	regval = FIELD_PREP(ECC_POISON0_RANK_MASK, rank) |
-+		 FIELD_PREP(ECC_POISON0_COL_MASK, col);
- 	writel(regval, priv->baseaddr + ECC_POISON0_OFST);
- 
--	regval = (bankgrp << ECC_POISON1_BG_SHIFT) & ECC_POISON1_BG_MASK;
--	regval |= (bank << ECC_POISON1_BANKNR_SHIFT) & ECC_POISON1_BANKNR_MASK;
--	regval |= (row << ECC_POISON1_ROW_SHIFT) & ECC_POISON1_ROW_MASK;
-+	regval = FIELD_PREP(ECC_POISON1_BANKGRP_MASK, bankgrp) |
-+		 FIELD_PREP(ECC_POISON1_BANK_MASK, bank) |
-+		 FIELD_PREP(ECC_POISON1_ROW_MASK, row);
- 	writel(regval, priv->baseaddr + ECC_POISON1_OFST);
- }
- 
-@@ -743,10 +736,14 @@ static ssize_t inject_data_poison_show(struct device *dev,
- {
- 	struct mem_ctl_info *mci = to_mci(dev);
- 	struct snps_edac_priv *priv = mci->pvt_info;
-+	const char *errstr;
-+	u32 regval;
-+
-+	regval = readl(priv->baseaddr + ECC_CFG1_OFST);
-+	errstr = FIELD_GET(ECC_CEPOISON_MASK, regval) == ECC_CEPOISON_MASK ?
-+		 "Correctable Error" : "UnCorrectable Error";
- 
--	return sprintf(data, "Data Poisoning: %s\n\r",
--			(((readl(priv->baseaddr + ECC_CFG1_OFST)) & 0x3) == 0x3)
--			? ("Correctable Error") : ("UnCorrectable Error"));
-+	return sprintf(data, "Data Poisoning: %s\n\r", errstr);
- }
- 
- static ssize_t inject_data_poison_store(struct device *dev,
-@@ -853,7 +850,7 @@ static void snps_setup_column_address_map(struct snps_edac_priv *priv, u32 *addr
- 	int index;
- 
- 	memtype = readl(priv->baseaddr + DDR_MSTR_OFST);
--	width = (memtype & DDR_MSTR_BUSWIDTH_MASK) >> DDR_MSTR_BUSWIDTH_SHIFT;
-+	width = FIELD_GET(DDR_MSTR_BUSWIDTH_MASK, memtype);
- 
- 	priv->col_shift[0] = 0;
- 	priv->col_shift[1] = 1;
--- 
-2.41.0
+ /*
 
+--C+MjqotaCJLWzlak
+Content-Type: text/x-csrc; charset=us-ascii
+Content-Disposition: attachment; filename="poc.c"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(void)
+{
+	int fd = open("/sys/kernel/config", 0);
+
+	if(!fork()) {
+		while(1) lseek(fd, SEEK_CUR, 1);
+	}
+	while(1) unlinkat(fd, "file", 0);
+
+	return 0;
+}
+
+--C+MjqotaCJLWzlak--
