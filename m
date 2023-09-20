@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E497A77E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB477A77EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbjITJsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
+        id S234142AbjITJvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234185AbjITJsJ (ORCPT
+        with ESMTP id S231948AbjITJvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:48:09 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E42FA3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:48:01 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 88E671C000B;
-        Wed, 20 Sep 2023 09:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695203280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IA4WLlvkMqmNqXdDac+G3m7vIHHqX9F+9GNYax6y8fQ=;
-        b=hi72pEcK8zlBRyl0qdUKn8ZHmrqcOtfMLeRBbBed39s64kYU67R6UyQs/bGo/FQXU1oCdf
-        4l/hBylRcSsvBsRH5SGb2TVnHyGg4R6UvPIde+Cw64loJyFs7fVx2D6l4w9BwaoA2iQDIB
-        4BsAKr3cRdfd2knz9nykrVR7C9acgiypp3JIMwLxmySOmcdm9EWPXW5EiokrWeS6aeM5F9
-        CWhJX8Itvnkb2eupAHa+cvYvh1/o3fy0DO5Bz1gXVyp9dssI1H+XRUwLTm+bZTGcdsKZnr
-        yJsF72x6O85zDKu5NvapmGJvfgl27jAO+XxZvc0MjhyvIOCGtC+g8xOpquV6+w==
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Robert Marko <robert.marko@sartura.hr>, andrew@lunn.ch,
-        sebastian.hesselbarth@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
-Subject: Re: [PATCH 2/2] MAINTAINERS: uDPU: add remaining Methode boards
-In-Reply-To: <20230914095236.1601639-2-robert.marko@sartura.hr>
-References: <20230914095236.1601639-1-robert.marko@sartura.hr>
- <20230914095236.1601639-2-robert.marko@sartura.hr>
-Date:   Wed, 20 Sep 2023 11:47:58 +0200
-Message-ID: <87bkdxfa5t.fsf@BL-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 05:51:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A759A3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:51:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D66F1C433C7;
+        Wed, 20 Sep 2023 09:51:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695203490;
+        bh=N8ZLggmYMnn+YtdULCemgfJEc5yqhwLremHJS2MrLg0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=R0H7fWFpFPy4USe9OY7GEwDP46a3AGPyGCGSLufeH76Gktirywu0ARTx74+5OZgJ7
+         Acz3W85Ivgul8ASndW8Jg0LMYGRWLWdIphk18rJvit9h3fVQbiWxukJToiO2g1WMzP
+         BLwniNCuhIP7rJ27kNnb0+XdNS2ACneaKKmyXL1Tt1jexgKcB7TX7RQvwto9kpKHM5
+         Rf4H1+IG7uNVviIgZ+/CQ2hGIbQsc973rPQgzwKtQVhg7jiL0YdxSpjMdbYFZ64LPt
+         iuWhW0fDV169qAg9VvHxrFwnsgXtgAPHvBJCOoAQ13odv0fl6EaI9F4ddEESLFe0jR
+         L2hl+2a46vuUg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qitrk-00EaUm-GG;
+        Wed, 20 Sep 2023 10:51:28 +0100
+Date:   Wed, 20 Sep 2023 10:51:27 +0100
+Message-ID: <86v8c5cgv4.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 09/16] irqchip: irq-xtensa-mx: include header for missing prototype
+In-Reply-To: <20230920052139.10570-10-rdunlap@infradead.org>
+References: <20230920052139.10570-1-rdunlap@infradead.org>
+        <20230920052139.10570-10-rdunlap@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rdunlap@infradead.org, linux-kernel@vger.kernel.org, chris@zankel.net, jcmvbkbc@gmail.com, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Robert Marko <robert.marko@sartura.hr> writes:
+On Wed, 20 Sep 2023 06:21:32 +0100,
+Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+> Add <linux/irqchips/xtensa-mx.h> to provide the function prototype to
+> prevent a build warning:
+> 
+> drivers/irqchip/irq-xtensa-mx.c:166:12: warning: no previous prototype for 'xtensa_mx_init_legacy' [-Wmissing-prototypes]
+>   166 | int __init xtensa_mx_init_legacy(struct device_node *interrupt_parent)
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/irqchip/irq-xtensa-mx.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff -- a/drivers/irqchip/irq-xtensa-mx.c b/drivers/irqchip/irq-xtensa-mx.c
+> --- a/drivers/irqchip/irq-xtensa-mx.c
+> +++ b/drivers/irqchip/irq-xtensa-mx.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/irqdomain.h>
+>  #include <linux/irq.h>
+>  #include <linux/irqchip.h>
+> +#include <linux/irqchip/xtensa-mx.h>
+>  #include <linux/of.h>
+>  
+>  #include <asm/mxregs.h>
+> 
 
-> Methode also has eDPU which is based on uDPU, so add eDPU as well
-> as the common uDPU DTSI.
->
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-Applied on mvebu/fixes
+It also begs the question of the continuing support for non-DT driven
+systems.
+
+Max, Chris: are we any closer to being DT-only on the xtensa front?
 
 Thanks,
 
-Gregory
-> ---
->  MAINTAINERS | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e0c4cf40cbb8..5bec4bcf8386 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13875,7 +13875,8 @@ F:	drivers/staging/media/meson/vdec/
->  METHODE UDPU SUPPORT
->  M:	Robert Marko <robert.marko@sartura.hr>
->  S:	Maintained
-> -F:	arch/arm64/boot/dts/marvell/armada-3720-uDPU.dts
-> +F:	arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts
-> +F:	arch/arm64/boot/dts/marvell/armada-3720-uDPU.*
->  
->  MHI BUS
->  M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> -- 
-> 2.41.0
->
+	M.
 
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Without deviation from the norm, progress is not possible.
