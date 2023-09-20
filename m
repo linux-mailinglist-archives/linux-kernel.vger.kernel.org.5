@@ -2,86 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 962137A7A21
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428527A7A28
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbjITLLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
+        id S234401AbjITLMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbjITLLA (ORCPT
+        with ESMTP id S233970AbjITLMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:11:00 -0400
-Received: from out-224.mta0.migadu.com (out-224.mta0.migadu.com [IPv6:2001:41d0:1004:224b::e0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F48B4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:10:54 -0700 (PDT)
-Message-ID: <0ae9f426-7225-ac4b-4ecd-d53e36dbf365@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695208252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ahWAoqjkjHE7OKtu8gYBWsnzFn2eGN8zPA0rlWEMIgU=;
-        b=uHAbTRnk6FKa0i1DNUr+weL5Zd/1izaFg50KVEVqeHBZCFN4CoB7Yc3A/jKs2MPjg8pAyb
-        6STsBpkkmeCh8xmixYuuXBdRADSdxM8cat+FTOdB1Yp5HRBwb55kkNlfw/tolSQs/1xo2S
-        KPJx/SpvUE0UOk3Eq/78q9Lp+HAmetw=
-Date:   Wed, 20 Sep 2023 12:10:47 +0100
+        Wed, 20 Sep 2023 07:12:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A262C2;
+        Wed, 20 Sep 2023 04:12:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97A12C433C7;
+        Wed, 20 Sep 2023 11:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695208320;
+        bh=uHc4UgrN4XzoKh+DGF1PQDJ1c4JYNlGD5zoJ/jU3kDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EwXGJYWnSHSBpKSFpLRbmdPXk99ikPurTLFEfQ+M+ZLK1VFlSNbhCnZ4rla+gvNfI
+         i+l0nhxQCLJEpL28IZL2HcPXHYxnM1n7RLlAMcKyCauZMpChodHq2LKVvUjhIBcIOO
+         fEinuKB8rxps4rQ2sL+gqnxUu9AuJlnoqJq808N4=
+Date:   Wed, 20 Sep 2023 13:11:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Suraj Jitindar Singh <surajjs@amazon.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        adobriyan@gmail.com, sjitindarsingh@gmail.com,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Zhang Yi <yi.zhang@huawei.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Baoquan He <bhe@redhat.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH stable 5.10.y] proc: fix a dentry lock race between
+ release_task and lookup
+Message-ID: <2023092048-posting-unlit-4734@gregkh>
+References: <20230919233335.170835-1-surajjs@amazon.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next] netdev: Remove unneeded semicolon
-Content-Language: en-US
-To:     Yang Li <yang.lee@linux.alibaba.com>,
-        arkadiusz.kubalewski@intel.com, jiri@resnulli.us
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-References: <20230919010305.120991-1-yang.lee@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20230919010305.120991-1-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230919233335.170835-1-surajjs@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/09/2023 02:03, Yang Li wrote:
-> ./drivers/dpll/dpll_netlink.c:847:3-4: Unneeded semicolon
+On Tue, Sep 19, 2023 at 04:33:35PM -0700, Suraj Jitindar Singh wrote:
+> From: Zhihao Cheng <chengzhihao1@huawei.com>
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6605
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-
-Hi Yang!
-There was a report from Intel's bot too about the issue, could you 
-please add the tags from it?
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: 
-https://lore.kernel.org/oe-kbuild-all/202309190540.RFwfIgO7-lkp@intel.com/
-
-Thanks!
-
-> ---
->   drivers/dpll/dpll_netlink.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> commit d919a1e79bac890421537cf02ae773007bf55e6b upstream.
 > 
-> diff --git a/drivers/dpll/dpll_netlink.c b/drivers/dpll/dpll_netlink.c
-> index 764437a0661b..e20daba6896a 100644
-> --- a/drivers/dpll/dpll_netlink.c
-> +++ b/drivers/dpll/dpll_netlink.c
-> @@ -844,7 +844,7 @@ dpll_pin_find(u64 clock_id, struct nlattr *mod_name_attr,
->   				return ERR_PTR(-EINVAL);
->   			}
->   			pin_match = pin;
-> -		};
-> +		}
->   	}
->   	if (!pin_match) {
->   		NL_SET_ERR_MSG(extack, "not found");
+> Commit 7bc3e6e55acf06 ("proc: Use a list of inodes to flush from proc")
+> moved proc_flush_task() behind __exit_signal().  Then, process systemd can
+> take long period high cpu usage during releasing task in following
+> concurrent processes:
+> 
+>   systemd                                 ps
+> kernel_waitid                 stat(/proc/tgid)
+>   do_wait                       filename_lookup
+>     wait_consider_task            lookup_fast
+>       release_task
+>         __exit_signal
+>           __unhash_process
+>             detach_pid
+>               __change_pid // remove task->pid_links
+>                                      d_revalidate -> pid_revalidate  // 0
+>                                      d_invalidate(/proc/tgid)
+>                                        shrink_dcache_parent(/proc/tgid)
+>                                          d_walk(/proc/tgid)
+>                                            spin_lock_nested(/proc/tgid/fd)
+>                                            // iterating opened fd
+>         proc_flush_pid                                    |
+>            d_invalidate (/proc/tgid/fd)                   |
+>               shrink_dcache_parent(/proc/tgid/fd)         |
+>                 shrink_dentry_list(subdirs)               ↓
+>                   shrink_lock_dentry(/proc/tgid/fd) --> race on dentry lock
+> 
+> Function d_invalidate() will remove dentry from hash firstly, but why does
+> proc_flush_pid() process dentry '/proc/tgid/fd' before dentry
+> '/proc/tgid'?  That's because proc_pid_make_inode() adds proc inode in
+> reverse order by invoking hlist_add_head_rcu().  But proc should not add
+> any inodes under '/proc/tgid' except '/proc/tgid/task/pid', fix it by
+> adding inode into 'pid->inodes' only if the inode is /proc/tgid or
+> /proc/tgid/task/pid.
+> 
+> Performance regression:
+> Create 200 tasks, each task open one file for 50,000 times. Kill all
+> tasks when opened files exceed 10,000,000 (cat /proc/sys/fs/file-nr).
+> 
+> Before fix:
+> $ time killall -wq aa
+>   real    4m40.946s   # During this period, we can see 'ps' and 'systemd'
+> 			taking high cpu usage.
+> 
+> After fix:
+> $ time killall -wq aa
+>   real    1m20.732s   # During this period, we can see 'systemd' taking
+> 			high cpu usage.
+> 
+> Link: https://lkml.kernel.org/r/20220713130029.4133533-1-chengzhihao1@huawei.com
+> Fixes: 7bc3e6e55acf06 ("proc: Use a list of inodes to flush from proc")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216054
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> Suggested-by: Brian Foster <bfoster@redhat.com>
+> Reviewed-by: Brian Foster <bfoster@redhat.com>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Alexey Dobriyan <adobriyan@gmail.com>
+> Cc: Eric Biederman <ebiederm@xmission.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Kalesh Singh <kaleshsingh@google.com>
+> Cc: Yu Kuai <yukuai3@huawei.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> [ bp: Context adjustments ]
+> Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
 
+both now queued up, thanks.
+
+greg k-h
