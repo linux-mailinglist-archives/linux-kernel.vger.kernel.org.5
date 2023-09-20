@@ -2,207 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE1E7A8317
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3E77A8314
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234824AbjITNRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
+        id S234789AbjITNRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234696AbjITNRr (ORCPT
+        with ESMTP id S234465AbjITNRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:17:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BDDF2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:16:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695215805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4TWOLSo8HNAumxEdXb8FwLPVqXlryu4M1tjfBv1puco=;
-        b=i0bb6y5nnPMtvsexSzB62Y6zicDmQXrT2eSrjCJp8telsMmk+q9Wkz67xgnn68Wv5n9LH5
-        BoQ582/sWQhnYeyC7a02TRzjrIpCrlo+bGXrBu6RqbrOB1Dg6xThVzc1aWhpRV5zoV39VI
-        M7q8+vBEfo35zI8rQioI37yVZkwrkYo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-47-Awecw_Y6NYWtSFQLftGphA-1; Wed, 20 Sep 2023 09:16:41 -0400
-X-MC-Unique: Awecw_Y6NYWtSFQLftGphA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40469bcd1eeso47756645e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:16:41 -0700 (PDT)
+        Wed, 20 Sep 2023 09:17:37 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC9CAD
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:17:30 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so2013633a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:17:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695215849; x=1695820649; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4z1ebTU1XlJL0RNvsPG4JRKzQxEhUmSGzIqnEtPiLRQ=;
+        b=fdf7T2WSp1aqkPRuZ7vK0uFXsWWJozqklf5R0YrYAtvJ+ccj4tP3m6hZetS3ge5rqf
+         qg47/gMfcFQS6UFDjWhm6qM2KPhVdR34vgtb73tmTU3V6uHIWpietCu9ExsPbh2nCtHv
+         lWGqfUS4Jr5qy7zqWx7e5ABStT7iH4ObaBYf4w3fHu46BNiSCXcafmNS0naM1IZkDpdA
+         dAf2o1xgHcM4KX1jPWEuftE4cpSNOxg54Fj7U6UPHV3uWgGHBlo1lxOLT/vQlyXsXlCD
+         +Dmv3nJCNbuTtWpAxfIjeay8qHXKXYLRtywNpvtgJQERRgC+uQTgvPoU+DLMZp1NKWB3
+         SYbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695215800; x=1695820600;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4TWOLSo8HNAumxEdXb8FwLPVqXlryu4M1tjfBv1puco=;
-        b=ccQDQ9iVQ832ASJWGeE0jjgy+JpqzABB987bk7JI1APXhody76kYPRG0rtv8UB8mIR
-         YgPzO5gjXliAMwVhhyaZVXgXJuDlOBaK2KN7jElOub9wew5Uj3K1Kmi+17zmuXaYUIPr
-         8pxsQxwme0hOjofavUGM8u/MLHC+/GWwqyp3hhZjAr3FKZLyzLg43xo0sqUbu+6UT5MG
-         rhwYCjmX1svksyz1EnlwlpEW9o54wF4bR7zWOXCNhB8LV4LkCPMjtP2sRQYWCUJHUyz2
-         C7Rt8lrRrubf8dolRpepuEX84rglqLgMAIjd6/H8QrUwbTNWoG6eYO0QRG1XbRG951AV
-         Adgg==
-X-Gm-Message-State: AOJu0Ywq+GZH6Pd+kV2IMnB8L5VA5LUqgrJjuuu4DLObAoKEC8JQPwb+
-        hIAAUc67LH0PLa4m4dGOR0Dt+HiFQGn4BO+KFqd5r7R1BCFREFf647LFWsw2cod/nPDeRULtirU
-        pEtnI/lYNgwhJqEtrxMtP7hKm
-X-Received: by 2002:a5d:4c47:0:b0:317:5e91:5588 with SMTP id n7-20020a5d4c47000000b003175e915588mr2350962wrt.3.1695215800567;
-        Wed, 20 Sep 2023 06:16:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFoxkH4fJ4IWTtydyWVjX3Dh7sW3UjyelgPeBkHUWrD0hiFoSLYgkFFH/YN+BrbyFmyPjIFXg==
-X-Received: by 2002:a5d:4c47:0:b0:317:5e91:5588 with SMTP id n7-20020a5d4c47000000b003175e915588mr2350938wrt.3.1695215800071;
-        Wed, 20 Sep 2023 06:16:40 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70b:8600:dad5:13bb:38a9:3010? (p200300cbc70b8600dad513bb38a93010.dip0.t-ipconnect.de. [2003:cb:c70b:8600:dad5:13bb:38a9:3010])
-        by smtp.gmail.com with ESMTPSA id j21-20020adfd215000000b003179d7ed4f3sm15175401wrh.12.2023.09.20.06.16.39
+        d=1e100.net; s=20230601; t=1695215849; x=1695820649;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4z1ebTU1XlJL0RNvsPG4JRKzQxEhUmSGzIqnEtPiLRQ=;
+        b=e3omX4Rz8238nQHCJKJNI598wwNwQUg3IY0B+yJYznJvYYE/Sx/n22XLgIN1uHFkO2
+         51+5sKhvyGUYgVUbqyqKraL84ezoNDoeKaM2jTrHqjUe7U7QfG8XjH2BTiIgHiKlRJQ2
+         GR8qBLcABol+YhIUd61vLHx2A5aufWAV18GYGDbZ5gM3Qq1n1lUlaOMOGHoeXct1lyL6
+         EbykZFCw2jB/uQdAWF/q8OUSM1h8SMOyPjx9qIoFCAZNwIGHarXgckaBZ3P8xAWr/nHD
+         1Xl9MINE92Bmpc6YY/FjbORk0e5wbxOOQVj0O28CK+FJ1XMJn4zIBanfcCmAK5ASRx85
+         YTdw==
+X-Gm-Message-State: AOJu0YwCKqR0WRW/XjbJyQ0BsvHTdtZyFjbjIUHYZWdt9Pg8rNn8Cjhh
+        FrZlqJLV/Sb500IIRns0O3Z2cA==
+X-Google-Smtp-Source: AGHT+IEmvvIFfHDLufK6B7+1Zm9nQFebxNW9ONYqmXunc/NW7CodSVkSB9tXJZNIb7OE8MRpGCwd0w==
+X-Received: by 2002:a17:907:360a:b0:98e:4f1:f987 with SMTP id bk10-20020a170907360a00b0098e04f1f987mr7939528ejc.3.1695215848815;
+        Wed, 20 Sep 2023 06:17:28 -0700 (PDT)
+Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id g5-20020a170906394500b0099bc038eb2bsm9305870eje.58.2023.09.20.06.17.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 06:16:39 -0700 (PDT)
-Message-ID: <daf57da6-b22d-bdfb-c6f0-0ac07824ab72@redhat.com>
-Date:   Wed, 20 Sep 2023 15:16:38 +0200
+        Wed, 20 Sep 2023 06:17:28 -0700 (PDT)
+Message-ID: <85958d72-a06c-b709-594e-52550f591175@linaro.org>
+Date:   Wed, 20 Sep 2023 15:17:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 2/2] mm/ksm: Test case for prctl fork/exec workflow
+ Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v2 1/2] dt-bindings: net: mediatek,net: add
+ phandles for SerDes on MT7988
 Content-Language: en-US
-To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20230919205158.1897353-1-shr@devkernel.io>
- <20230919205158.1897353-3-shr@devkernel.io>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230919205158.1897353-3-shr@devkernel.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Daniel Golle <daniel@makrotopia.org>, Rob Herring <robh@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <cover.1695058909.git.daniel@makrotopia.org>
+ <35c12a115893d324db16ec6983afb5f1951fd4c9.1695058909.git.daniel@makrotopia.org>
+ <20230919180909.GA4151534-robh@kernel.org> <ZQoJpGLhNZ0M2JhI@makrotopia.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <ZQoJpGLhNZ0M2JhI@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.09.23 22:51, Stefan Roesch wrote:
-> This adds a new test case to the ksm functional tests to make sure that
-> the KSM setting is inherited by the child process when doing a
-> fork/exec.
+On 19/09/2023 22:50, Daniel Golle wrote:
+> Hi Rob,
 > 
-> Signed-off-by: Stefan Roesch <shr@devkernel.io>
-> ---
->   tools/testing/selftests/mm/Makefile           |  2 +
->   .../selftests/mm/ksm_fork_exec_child.c        |  9 ++++
->   .../selftests/mm/ksm_functional_tests.c       | 50 ++++++++++++++++++-
->   3 files changed, 60 insertions(+), 1 deletion(-)
->   create mode 100644 tools/testing/selftests/mm/ksm_fork_exec_child.c
+> thank you for the review!
 > 
-> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
-> index 6a9fc5693145..9ab6aa402544 100644
-> --- a/tools/testing/selftests/mm/Makefile
-> +++ b/tools/testing/selftests/mm/Makefile
-> @@ -73,6 +73,8 @@ ifneq ($(ARCH),arm64)
->   TEST_GEN_PROGS += soft-dirty
->   endif
->   
-> +TEST_GEN_PROGS += ksm_fork_exec_child
+> On Tue, Sep 19, 2023 at 01:09:09PM -0500, Rob Herring wrote:
+>> On Mon, Sep 18, 2023 at 11:26:34PM +0100, Daniel Golle wrote:
+>>> Add several phandles needed for Ethernet SerDes interfaces on the
+>>> MediaTek MT7988 SoC.
+>>>
+>>> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+>>> ---
+>>>  .../devicetree/bindings/net/mediatek,net.yaml | 28 +++++++++++++++++++
+>>>  1 file changed, 28 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+>>> index e74502a0afe86..78219158b96af 100644
+>>> --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
+>>> +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+>>> @@ -385,6 +385,34 @@ allOf:
+>>>            minItems: 2
+>>>            maxItems: 2
+>>>  
+>>> +        mediatek,toprgu:
+>>> +          $ref: /schemas/types.yaml#/definitions/phandle
+>>> +          description:
+>>> +            Phandle to the syscon representing the reset controller.
+>>
+>> Use the reset binding
+> 
+> I got an alternative implementation ready which implements an actual
+> reset controller (by extending drivers/watchdog/mtk_wdt.c to cover
+> also MT7988 and its addition sw-reset-enable bits) and uses single
+> phandles for each reset bit assigned to the corresponding units
+> instead of listing them all for the ethernet controller (maybe that's
+> one step too far though...)
+> 
+> However, as mentioned in the cover letter, using the Linux reset
+> controller API (which having to use is a consequence of having to use
+> the reset bindings) doesn't allow to simultanously deassert the
+> resets of pextp, usxgmii pcs and/or sgmii pcs which is how the vendor
+> implementation is doing it as all reset bits are on the same 32-bit
+> register and the Ethernet driver is the only driver needing to access
+> that register.
 
-It's not a test itself, so it shouldn't be run when running all tests. 
-See below.
-
-> +
->   ifeq ($(ARCH),x86_64)
->   CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh "$(CC)" ../x86/trivial_32bit_program.c -m32)
->   CAN_BUILD_X86_64 := $(shell ./../x86/check_cc.sh "$(CC)" ../x86/trivial_64bit_program.c)
-> diff --git a/tools/testing/selftests/mm/ksm_fork_exec_child.c b/tools/testing/selftests/mm/ksm_fork_exec_child.c
-> new file mode 100644
-> index 000000000000..298439f0d55f
-> --- /dev/null
-> +++ b/tools/testing/selftests/mm/ksm_fork_exec_child.c
-> @@ -0,0 +1,9 @@
-> +#include <sys/prctl.h>
-> +#include <stdlib.h>
-> +
-> +int main()
-> +{
-> +	/* Test if KSM is enabled for the process. */
-> +	int ksm = prctl(68, 0, 0, 0, 0);
-
-Can we use the define from a header? (PR_SET_MEMORY_MERGE)
-
-I was wondering if we could simply exec() ourself (same binary), but 
-pass a special cmdline argument. Then you don't have to build a separate 
-binary.
-
-Just special-case in main() on that argument and perform this check.
-
-> +	exit(ksm == 1 ? 0 : 1);
-> +}
-> diff --git a/tools/testing/selftests/mm/ksm_functional_tests.c b/tools/testing/selftests/mm/ksm_functional_tests.c
-> index 901e950f9138..4dc0bb522c07 100644
-> --- a/tools/testing/selftests/mm/ksm_functional_tests.c
-> +++ b/tools/testing/selftests/mm/ksm_functional_tests.c
-> @@ -479,6 +479,53 @@ static void test_prctl_fork(void)
->   	ksft_test_result_pass("PR_SET_MEMORY_MERGE value is inherited\n");
->   }
->   
-> +static void test_prctl_fork_exec(void)
-> +{
-> +	int ret, status;
-> +	pid_t child_pid;
-> +
-> +	ksft_print_msg("[RUN] %s\n", __func__);
-> +
-> +	ret = prctl(PR_SET_MEMORY_MERGE, 1, 0, 0, 0);
-> +	if (ret < 0 && errno == EINVAL) {
-> +		ksft_test_result_skip("PR_SET_MEMORY_MERGE not supported\n");
-> +		return;
-> +	} else if (ret) {
-> +		ksft_test_result_fail("PR_SET_MEMORY_MERGE=1 failed\n");
-> +		return;
-> +	}
-> +
-> +	child_pid = fork();
-> +	if (child_pid == -1) {
-> +		ksft_test_result_skip("fork() failed\n");
-> +		return;
-> +	} else if (child_pid == 0) {
-> +		char *filename = "./ksm_fork_exec_child";
-> +		char *argv_for_program[] = { filename, NULL };
-> +
-> +		execv(filename, argv_for_program);;
-
-s/;;/;/
-
-Add a return; so you can simplify the code below (no need for the "else")
-
-> +	} else {
-> +		if (waitpid(child_pid, &status, 0) > 0) {
-> +			if (WIFEXITED(status)) {
-> +				status = WEXITSTATUS(status);
-> +				if (status) {
-> +					ksft_test_result_fail("KSM not enabled\n");
-> +					return;
-> +				}
-> +
-> +			} else {
-> +				ksft_test_result_fail("program didn't terminate normally\n");
-> +				return;
-> +			}
-> +		} else {
-> +			ksft_test_result_fail("waitpid() failed\n");
-> +			return;
-> +		}
-> +	}
-> +
-> +	ksft_test_result_pass("PR_SET_MEMORY_MERGE value is inherited\n");
-
-It's probably the cleanest to disable PR_SET_MEMORY_MERGE again when 
-returning form this function, so the other tests have a clean slate.
+You can have reset for entire register, why not? And even if current
+Linux implementation had some troubles with this, you could fix it.
 
 
--- 
-Cheers,
+> 
+>>
+>>> +
+>>> +        mediatek,xfi-pll:
+>>> +          $ref: /schemas/types.yaml#/definitions/phandle
+>>> +          description:
+>>> +            Phandle to the syscon node handling the 10GE SerDes clock setup.
+>>
+>> Use the clock binding
+> 
+> Does that imply that I should implement a clock driver whith only a
+> single clock offering only a single operation ('enable') which would
+> then do the magic register writes?
 
-David / dhildenb
+Yes
+
+> 
+> While one part is actually identifyable as taking care of enabling a
+> clock, I would not know how to meaningfully abstract the other (first)
+> part, see vendor driver:
+> 
+> /* Register to control USXGMII XFI PLL digital */
+> #define XFI_PLL_DIG_GLB8        0x08
+> #define RG_XFI_PLL_EN           BIT(31)
+> 
+> /* Register to control USXGMII XFI PLL analog */
+> #define XFI_PLL_ANA_GLB8        0x108
+> #define RG_XFI_PLL_ANA_SWWA     0x02283248
+> 
+> [...]
+> 
+> /* Add software workaround for USXGMII PLL TCL issue */
+> regmap_write(ss->pll, XFI_PLL_ANA_GLB8, RG_XFI_PLL_ANA_SWWA);
+> // How would you represent the line above using the abstractions of the
+> // common clk framework?
+
+What is above line? Please do not ask us to decode your vendor code. You
+know, we also have nothing to do with it.
+
+And anyway, why do you need to abstract it? Why not writing unconditionally?
+
+
+> 
+> regmap_read(ss->pll, XFI_PLL_DIG_GLB8, &val); //    that looks like it
+> val |= RG_XFI_PLL_EN;                         // <- could be a abstracted
+> regmap_write(ss->pll, XFI_PLL_DIG_GLB8, val); //    in a meaningful way in
+>                                                     clock driver.
+> 
+> ... which is all we ever do on that regmap. Ever.
+
+Not only. You will also get all Linux infrastructure associated with
+this clock, so proper devlinks, sysfs/debug entries, automatic gating of
+unused clocks etc.
+
+Best regards,
+Krzysztof
 
