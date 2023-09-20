@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D19A87A7748
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CAC7A774D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbjITJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
+        id S234104AbjITJZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234077AbjITJYu (ORCPT
+        with ESMTP id S233968AbjITJY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:24:50 -0400
+        Wed, 20 Sep 2023 05:24:59 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E15DCF7
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:24:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D1412C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:24:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695201856; x=1726737856;
+  t=1695201860; x=1726737860;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PU/+VooEDTR8KIjZIhosROtp+J92FMcpEeYpHRPxDe4=;
-  b=DwNpYhgF50WRx0TZ8btvBXtKw9NLFCqqrenpEzxMD5dSF9erzE0+CmCl
-   6PjKaIyQ/l2pNwy3+6+7a0ta0o128oS4CqRI4W5XBL91w2Sc/Y8BziLNO
-   LBaMAJCPfUHH19vQu4RQVYcxbhWZ9aUlHhvcQa+Gw96Q2rJOhV137p1NP
-   PVuI6i/i7OX3t3P8AvdRT47P7P+upIdXbhZvHe4LS4xBxUTP3pfYbxUUZ
-   zOPZvgWSyhRPQ4XaYtERgg+7AxqTSb6lBjgLfXLswCChJctDXlDhbAE9z
-   XRG4gAlCoTFfuAnu1CBAWY6iivN7qsRX/LfcA4ZKQuAQh67w0gG9Bj/m2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="444267605"
+  bh=4WM2KCti8i2E7B6SMGB0qycCPouS4f1wftRxbpl2I+w=;
+  b=J1cpMZ53Gf5dRgcbjm/tkSF0ZGOWV22m8lm1YR7DvZLDHkF1V3D+w5cX
+   FqXSL2GZpmaPYdmAGinlWQPmcrbPeAjQztF7Jv2ilYtT3aE14cL9BP8sp
+   8SSfhK9TVSCzP8LVG3Etj28aeyairxn+LkyGW/AzlPuShlq4qeAXyeban
+   4yFjzISSTcCDfmEcGRYb/nljTDBbFwfMV9esfaXgQGQd0aJWPNqZmEIBl
+   DPwwl69VgrILvoDIE4qHazeJUkWmQK1ib1eZUYx3y0+aL6K8v/2r36hIE
+   Pb7Jvbgpigcmst9HVJUSf+F3X4iKon2wBjfLSdTlDahz+KY8THh+FoSkd
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="444267617"
 X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="444267605"
+   d="scan'208";a="444267617"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 02:23:49 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 02:23:52 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="781625280"
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="781625302"
 X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="781625280"
+   d="scan'208";a="781625302"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 02:23:46 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 02:23:49 -0700
 From:   Alexander Usyskin <alexander.usyskin@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lucas De Marchi <lucas.demarchi@intel.com>,
@@ -48,9 +48,9 @@ Cc:     Tomas Winkler <tomas.winkler@intel.com>,
         Alexander Usyskin <alexander.usyskin@intel.com>,
         Vitaly Lubart <vitaly.lubart@intel.com>,
         intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/4] drm/xe/gsc: add has_heci_gscfi indication to device
-Date:   Wed, 20 Sep 2023 12:19:21 +0300
-Message-Id: <20230920091923.1573873-3-alexander.usyskin@intel.com>
+Subject: [PATCH v3 3/4] drm/xe/gsc: add gsc device support
+Date:   Wed, 20 Sep 2023 12:19:22 +0300
+Message-Id: <20230920091923.1573873-4-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230920091923.1573873-1-alexander.usyskin@intel.com>
 References: <20230920091923.1573873-1-alexander.usyskin@intel.com>
@@ -68,94 +68,413 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vitaly Lubart <vitaly.lubart@intel.com>
 
-Mark support of MEI-GSC interaction per device.
-Add has_heci_gscfi indication to xe_device and xe_pci structures.
-Mark DG1 and DG2 devices as supported.
+Create mei-gscfi auxiliary device and configure interrupts
+to be consumed by mei-gsc device driver.
 
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Vitaly Lubart <vitaly.lubart@intel.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/gpu/drm/xe/xe_device_types.h | 3 +++
- drivers/gpu/drm/xe/xe_pci.c          | 9 +++++++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/xe/Kconfig           |   1 +
+ drivers/gpu/drm/xe/Makefile          |   1 +
+ drivers/gpu/drm/xe/xe_device.c       |   4 +
+ drivers/gpu/drm/xe/xe_device_types.h |   4 +
+ drivers/gpu/drm/xe/xe_heci_gsc.c     | 222 +++++++++++++++++++++++++++
+ drivers/gpu/drm/xe/xe_heci_gsc.h     |  35 +++++
+ drivers/gpu/drm/xe/xe_irq.c          |  21 ++-
+ 7 files changed, 283 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/gpu/drm/xe/xe_heci_gsc.c
+ create mode 100644 drivers/gpu/drm/xe/xe_heci_gsc.h
 
+diff --git a/drivers/gpu/drm/xe/Kconfig b/drivers/gpu/drm/xe/Kconfig
+index 096bd066afa8..da82084fe236 100644
+--- a/drivers/gpu/drm/xe/Kconfig
++++ b/drivers/gpu/drm/xe/Kconfig
+@@ -37,6 +37,7 @@ config DRM_XE
+ 	select DRM_SCHED
+ 	select MMU_NOTIFIER
+ 	select WANT_DEV_COREDUMP
++	select AUXILIARY_BUS
+ 	help
+ 	  Experimental driver for Intel Xe series GPUs
+ 
+diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
+index 9d2311f8141f..fbdb28fa5ace 100644
+--- a/drivers/gpu/drm/xe/Makefile
++++ b/drivers/gpu/drm/xe/Makefile
+@@ -73,6 +73,7 @@ xe-y += xe_bb.o \
+ 	xe_guc_log.o \
+ 	xe_guc_pc.o \
+ 	xe_guc_submit.o \
++	xe_heci_gsc.o \
+ 	xe_hw_engine.o \
+ 	xe_hw_engine_class_sysfs.o \
+ 	xe_hw_fence.o \
+diff --git a/drivers/gpu/drm/xe/xe_device.c b/drivers/gpu/drm/xe/xe_device.c
+index d6fc06d4c9dc..b6f7c7ab7d0d 100644
+--- a/drivers/gpu/drm/xe/xe_device.c
++++ b/drivers/gpu/drm/xe/xe_device.c
+@@ -292,6 +292,8 @@ int xe_device_probe(struct xe_device *xe)
+ 			goto err_irq_shutdown;
+ 	}
+ 
++	xe_heci_gsc_init(xe);
++
+ 	err = xe_mmio_probe_vram(xe);
+ 	if (err)
+ 		goto err_irq_shutdown;
+@@ -365,6 +367,8 @@ void xe_device_remove(struct xe_device *xe)
+ 
+ 	xe_display_fini(xe);
+ 
++	xe_heci_gsc_fini(xe);
++
+ 	xe_irq_shutdown(xe);
+ }
+ 
 diff --git a/drivers/gpu/drm/xe/xe_device_types.h b/drivers/gpu/drm/xe/xe_device_types.h
-index 750e1f0d3339..1d1fe53fc30d 100644
+index 1d1fe53fc30d..18a527853109 100644
 --- a/drivers/gpu/drm/xe/xe_device_types.h
 +++ b/drivers/gpu/drm/xe/xe_device_types.h
-@@ -32,6 +32,7 @@ struct xe_ggtt;
- #define GRAPHICS_VERx100(xe) ((xe)->info.graphics_verx100)
- #define MEDIA_VERx100(xe) ((xe)->info.media_verx100)
- #define IS_DGFX(xe) ((xe)->info.is_dgfx)
-+#define HAS_HECI_GSCFI(xe) ((xe)->info.has_heci_gscfi)
+@@ -13,6 +13,7 @@
+ #include <drm/ttm/ttm_device.h>
  
- #define XE_VRAM_FLAGS_NEED64K		BIT(0)
+ #include "xe_devcoredump_types.h"
++#include "xe_heci_gsc.h"
+ #include "xe_gt_types.h"
+ #include "xe_platform_types.h"
+ #include "xe_step_types.h"
+@@ -364,6 +365,9 @@ struct xe_device {
+ 	 */
+ 	struct task_struct *pm_callback_task;
  
-@@ -237,6 +238,8 @@ struct xe_device {
- 		u8 has_link_copy_engine:1;
- 		/** @enable_display: display enabled */
- 		u8 enable_display:1;
-+		/** @has_heci_gscfi: device has heci gscfi */
-+		u8 has_heci_gscfi:1;
++	/** @heci_gsc: graphics security controller */
++	struct xe_heci_gsc heci_gsc;
++
+ 	/* private: */
  
  #if IS_ENABLED(CONFIG_DRM_XE_DISPLAY)
- 		const struct intel_display_device_info *display;
-diff --git a/drivers/gpu/drm/xe/xe_pci.c b/drivers/gpu/drm/xe/xe_pci.c
-index dc233a1226bd..145eaa430d74 100644
---- a/drivers/gpu/drm/xe/xe_pci.c
-+++ b/drivers/gpu/drm/xe/xe_pci.c
-@@ -57,6 +57,7 @@ struct xe_device_desc {
- 	u8 require_force_probe:1;
- 	u8 is_dgfx:1;
- 	u8 has_display:1;
-+	u8 has_heci_gscfi:1;
+diff --git a/drivers/gpu/drm/xe/xe_heci_gsc.c b/drivers/gpu/drm/xe/xe_heci_gsc.c
+new file mode 100644
+index 000000000000..3328ddca42d0
+--- /dev/null
++++ b/drivers/gpu/drm/xe/xe_heci_gsc.c
+@@ -0,0 +1,222 @@
++// SPDX-License-Identifier: MIT
++/*
++ * Copyright(c) 2023, Intel Corporation. All rights reserved.
++ */
++
++#include <linux/irq.h>
++#include <linux/mei_aux.h>
++#include <linux/pci.h>
++#include <linux/sizes.h>
++
++#include "regs/xe_regs.h"
++#include "xe_device_types.h"
++#include "xe_drv.h"
++#include "xe_heci_gsc.h"
++#include "xe_platform_types.h"
++
++#define GSC_BAR_LENGTH  0x00000FFC
++
++static void heci_gsc_irq_mask(struct irq_data *d)
++{
++	/* generic irq handling */
++}
++
++static void heci_gsc_irq_unmask(struct irq_data *d)
++{
++	/* generic irq handling */
++}
++
++static struct irq_chip heci_gsc_irq_chip = {
++	.name = "gsc_irq_chip",
++	.irq_mask = heci_gsc_irq_mask,
++	.irq_unmask = heci_gsc_irq_unmask,
++};
++
++static int heci_gsc_irq_init(int irq)
++{
++	irq_set_chip_and_handler_name(irq, &heci_gsc_irq_chip,
++				      handle_simple_irq, "heci_gsc_irq_handler");
++
++	return irq_set_chip_data(irq, NULL);
++}
++
++/**
++ * struct heci_gsc_def - graphics security controller heci interface definitions
++ *
++ * @name: name of the heci device
++ * @bar: address of the mmio bar
++ * @bar_size: size of the mmio bar
++ * @use_polling: indication of using polling mode for the device
++ * @slow_firmware: indication of whether the device is slow (needs longer timeouts)
++ */
++struct heci_gsc_def {
++	const char *name;
++	unsigned long bar;
++	size_t bar_size;
++	bool use_polling;
++	bool slow_firmware;
++};
++
++/* gsc resources and definitions */
++static const struct heci_gsc_def heci_gsc_def_dg1 = {
++	.name = "mei-gscfi",
++	.bar = DG1_GSC_HECI2_BASE,
++	.bar_size = GSC_BAR_LENGTH,
++};
++
++static const struct heci_gsc_def heci_gsc_def_dg2 = {
++	.name = "mei-gscfi",
++	.bar = DG2_GSC_HECI2_BASE,
++	.bar_size = GSC_BAR_LENGTH,
++};
++
++static void heci_gsc_release_dev(struct device *dev)
++{
++	struct auxiliary_device *aux_dev = to_auxiliary_dev(dev);
++	struct mei_aux_device *adev = auxiliary_dev_to_mei_aux_dev(aux_dev);
++
++	kfree(adev);
++}
++
++void xe_heci_gsc_fini(struct xe_device *xe)
++{
++	struct xe_heci_gsc *heci_gsc = &xe->heci_gsc;
++
++	if (!HAS_HECI_GSCFI(xe))
++		return;
++
++	if (heci_gsc->adev) {
++		struct auxiliary_device *aux_dev = &heci_gsc->adev->aux_dev;
++
++		auxiliary_device_delete(aux_dev);
++		auxiliary_device_uninit(aux_dev);
++		heci_gsc->adev = NULL;
++	}
++
++	if (heci_gsc->irq >= 0)
++		irq_free_desc(heci_gsc->irq);
++	heci_gsc->irq = -1;
++}
++
++static int heci_gsc_irq_setup(struct xe_device *xe)
++{
++	struct xe_heci_gsc *heci_gsc = &xe->heci_gsc;
++	int ret;
++
++	heci_gsc->irq = irq_alloc_desc(0);
++	if (heci_gsc->irq < 0) {
++		drm_err(&xe->drm, "gsc irq error %d\n", heci_gsc->irq);
++		return heci_gsc->irq;
++	}
++
++	ret = heci_gsc_irq_init(heci_gsc->irq);
++	if (ret < 0)
++		drm_err(&xe->drm, "gsc irq init failed %d\n", ret);
++
++	return ret;
++}
++
++static int heci_gsc_add_device(struct xe_device *xe, const struct heci_gsc_def *def)
++{
++	struct xe_heci_gsc *heci_gsc = &xe->heci_gsc;
++	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
++	struct auxiliary_device *aux_dev;
++	struct mei_aux_device *adev;
++	int ret;
++
++	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
++	if (!adev)
++		return -ENOMEM;
++	adev->irq = heci_gsc->irq;
++	adev->bar.parent = &pdev->resource[0];
++	adev->bar.start = def->bar + pdev->resource[0].start;
++	adev->bar.end = adev->bar.start + def->bar_size - 1;
++	adev->bar.flags = IORESOURCE_MEM;
++	adev->bar.desc = IORES_DESC_NONE;
++	adev->slow_firmware = def->slow_firmware;
++
++	aux_dev = &adev->aux_dev;
++	aux_dev->name = def->name;
++	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) |
++		      PCI_DEVID(pdev->bus->number, pdev->devfn);
++	aux_dev->dev.parent = &pdev->dev;
++	aux_dev->dev.release = heci_gsc_release_dev;
++
++	ret = auxiliary_device_init(aux_dev);
++	if (ret < 0) {
++		drm_err(&xe->drm, "gsc aux init failed %d\n", ret);
++		kfree(adev);
++		return ret;
++	}
++
++	heci_gsc->adev = adev; /* needed by the notifier */
++	ret = auxiliary_device_add(aux_dev);
++	if (ret < 0) {
++		drm_err(&xe->drm, "gsc aux add failed %d\n", ret);
++		heci_gsc->adev = NULL;
++
++		/* adev will be freed with the put_device() and .release sequence */
++		auxiliary_device_uninit(aux_dev);
++	}
++	return ret;
++}
++
++void xe_heci_gsc_init(struct xe_device *xe)
++{
++	struct xe_heci_gsc *heci_gsc = &xe->heci_gsc;
++	const struct heci_gsc_def *def;
++	int ret;
++
++	if (!HAS_HECI_GSCFI(xe))
++		return;
++
++	heci_gsc->irq = -1;
++
++	if (xe->info.platform == XE_DG2) {
++		def = &heci_gsc_def_dg2;
++	} else if (xe->info.platform == XE_DG1) {
++		def = &heci_gsc_def_dg1;
++	} else {
++		drm_warn_once(&xe->drm, "Unknown platform\n");
++		return;
++	}
++
++	if (!def->name) {
++		drm_warn_once(&xe->drm, "HECI is not implemented!\n");
++		return;
++	}
++
++	if (!def->use_polling) {
++		ret = heci_gsc_irq_setup(xe);
++		if (ret)
++			goto fail;
++	}
++
++	ret = heci_gsc_add_device(xe, def);
++	if (ret)
++		goto fail;
++
++	return;
++fail:
++	xe_heci_gsc_fini(xe);
++}
++
++void xe_heci_gsc_irq_handler(struct xe_device *xe, u32 iir)
++{
++	int ret;
++
++	if ((iir & GSC_IRQ_INTF(1)) == 0)
++		return;
++
++	if (!HAS_HECI_GSCFI(xe)) {
++		drm_warn_once(&xe->drm, "GSC irq: not supported");
++		return;
++	}
++
++	if (xe->heci_gsc.irq < 0)
++		return;
++
++	ret = generic_handle_irq(xe->heci_gsc.irq);
++	if (ret)
++		drm_err_ratelimited(&xe->drm, "error handling GSC irq: %d\n", ret);
++}
+diff --git a/drivers/gpu/drm/xe/xe_heci_gsc.h b/drivers/gpu/drm/xe/xe_heci_gsc.h
+new file mode 100644
+index 000000000000..9db454478fae
+--- /dev/null
++++ b/drivers/gpu/drm/xe/xe_heci_gsc.h
+@@ -0,0 +1,35 @@
++/* SPDX-License-Identifier: MIT */
++/*
++ * Copyright(c) 2023, Intel Corporation. All rights reserved.
++ */
++#ifndef __XE_HECI_GSC_DEV_H__
++#define __XE_HECI_GSC_DEV_H__
++
++#include <linux/types.h>
++
++struct xe_device;
++struct mei_aux_device;
++
++/*
++ * The HECI1 bit corresponds to bit15 and HECI2 to bit14.
++ * The reason for this is to allow growth for more interfaces in the future.
++ */
++#define GSC_IRQ_INTF(_x)  BIT(15 - (_x))
++
++/**
++ * struct xe_heci_gsc - graphics security controller for xe, HECI interface
++ *
++ * @adev : pointer to mei auxiliary device structure
++ * @irq : irq number
++ *
++ */
++struct xe_heci_gsc {
++	struct mei_aux_device *adev;
++	int irq;
++};
++
++void xe_heci_gsc_init(struct xe_device *xe);
++void xe_heci_gsc_fini(struct xe_device *xe);
++void xe_heci_gsc_irq_handler(struct xe_device *xe, u32 iir);
++
++#endif /* __XE_HECI_GSC_DEV_H__ */
+diff --git a/drivers/gpu/drm/xe/xe_irq.c b/drivers/gpu/drm/xe/xe_irq.c
+index 1dee3e832eb5..1e9d6e6ad2df 100644
+--- a/drivers/gpu/drm/xe/xe_irq.c
++++ b/drivers/gpu/drm/xe/xe_irq.c
+@@ -128,6 +128,7 @@ void xe_irq_enable_hwe(struct xe_gt *gt)
+ 	struct xe_device *xe = gt_to_xe(gt);
+ 	u32 ccs_mask, bcs_mask;
+ 	u32 irqs, dmask, smask;
++	u32 gsc_mask;
  
- 	u8 has_llc:1;
- };
-@@ -265,6 +266,7 @@ static const struct xe_device_desc dg1_desc = {
- 	PLATFORM(XE_DG1),
- 	.has_display = true,
- 	.require_force_probe = true,
-+	.has_heci_gscfi = 1,
- };
+ 	if (xe_device_guc_submission_enabled(xe)) {
+ 		irqs = GT_RENDER_USER_INTERRUPT |
+@@ -177,9 +178,13 @@ void xe_irq_enable_hwe(struct xe_gt *gt)
+ 		xe_mmio_write32(gt, VCS2_VCS3_INTR_MASK, ~dmask);
+ 		xe_mmio_write32(gt, VECS0_VECS1_INTR_MASK, ~dmask);
  
- static const u16 dg2_g10_ids[] = { XE_DG2_G10_IDS(NOP), XE_ATS_M150_IDS(NOP), 0 };
-@@ -274,6 +276,7 @@ static const u16 dg2_g12_ids[] = { XE_DG2_G12_IDS(NOP), 0 };
- #define DG2_FEATURES \
- 	DGFX_FEATURES, \
- 	PLATFORM(XE_DG2), \
-+	.has_heci_gscfi = 1, \
- 	.subplatforms = (const struct xe_subplatform_desc[]) { \
- 		{ XE_SUBPLATFORM_DG2_G10, "G10", dg2_g10_ids }, \
- 		{ XE_SUBPLATFORM_DG2_G11, "G11", dg2_g11_ids }, \
-@@ -562,6 +565,7 @@ static int xe_info_init(struct xe_device *xe,
- 		return -ENODEV;
+-		if (xe_hw_engine_mask_per_class(gt, XE_ENGINE_CLASS_OTHER)) {
+-			xe_mmio_write32(gt, GUNIT_GSC_INTR_ENABLE, irqs);
+-			xe_mmio_write32(gt, GUNIT_GSC_INTR_MASK, ~irqs);
++		if (xe_hw_engine_mask_per_class(gt, XE_ENGINE_CLASS_OTHER))
++			gsc_mask = irqs;
++		else if (HAS_HECI_GSCFI(xe))
++			gsc_mask = GSC_IRQ_INTF(1);
++		if (gsc_mask) {
++			xe_mmio_write32(gt, GUNIT_GSC_INTR_ENABLE, gsc_mask);
++			xe_mmio_write32(gt, GUNIT_GSC_INTR_MASK, ~gsc_mask);
+ 		}
+ 	}
+ }
+@@ -284,6 +289,11 @@ static void gt_irq_handler(struct xe_tile *tile,
+ 			instance = INTR_ENGINE_INSTANCE(identity[bit]);
+ 			intr_vec = INTR_ENGINE_INTR(identity[bit]);
  
- 	xe->info.is_dgfx = desc->is_dgfx;
-+	xe->info.has_heci_gscfi = desc->has_heci_gscfi;
- 	xe->info.graphics_name = graphics_desc->name;
- 	xe->info.media_name = media_desc ? media_desc->name : "none";
- 	xe->info.has_llc = desc->has_llc;
-@@ -703,7 +707,7 @@ static int xe_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
++			if (class == XE_ENGINE_CLASS_OTHER && instance == OTHER_GSC_INSTANCE) {
++				xe_heci_gsc_irq_handler(xe, intr_vec);
++				continue;
++			}
++
+ 			engine_gt = pick_engine_gt(tile, class, instance);
  
- 	xe_display_info_init(xe);
+ 			hwe = xe_gt_hw_engine(engine_gt, class, instance, false);
+@@ -470,8 +480,9 @@ static void gt_irq_reset(struct xe_tile *tile)
+ 	if (ccs_mask & (BIT(2)|BIT(3)))
+ 		xe_mmio_write32(mmio,  CCS2_CCS3_INTR_MASK, ~0);
  
--	drm_dbg(&xe->drm, "%s %s %04x:%04x dgfx:%d gfx:%s (%d.%02d) media:%s (%d.%02d) display:%s dma_m_s:%d tc:%d",
-+	drm_dbg(&xe->drm, "%s %s %04x:%04x dgfx:%d gfx:%s (%d.%02d) media:%s (%d.%02d) display:%s dma_m_s:%d tc:%d gscfi:%d",
- 		desc->platform_name,
- 		subplatform_desc ? subplatform_desc->name : "",
- 		xe->info.devid, xe->info.revid,
-@@ -715,7 +719,8 @@ static int xe_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		xe->info.media_verx100 / 100,
- 		xe->info.media_verx100 % 100,
- 		str_yes_no(xe->info.enable_display),
--		xe->info.dma_mask_size, xe->info.tile_count);
-+		xe->info.dma_mask_size, xe->info.tile_count,
-+		xe->info.has_heci_gscfi);
- 
- 	drm_dbg(&xe->drm, "Stepping = (G:%s, M:%s, D:%s, B:%s)\n",
- 		xe_step_name(xe->info.step.graphics),
+-	if (tile->media_gt &&
+-	    xe_hw_engine_mask_per_class(tile->media_gt, XE_ENGINE_CLASS_OTHER)) {
++	if ((tile->media_gt &&
++	     xe_hw_engine_mask_per_class(tile->media_gt, XE_ENGINE_CLASS_OTHER)) ||
++	    HAS_HECI_GSCFI(tile_to_xe(tile))) {
+ 		xe_mmio_write32(mmio, GUNIT_GSC_INTR_ENABLE, 0);
+ 		xe_mmio_write32(mmio, GUNIT_GSC_INTR_MASK, ~0);
+ 	}
 -- 
 2.34.1
 
