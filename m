@@ -2,376 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFEB7A797B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2B17A7985
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbjITKnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
+        id S234245AbjITKoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233866AbjITKnO (ORCPT
+        with ESMTP id S233974AbjITKoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:43:14 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F05AC2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:43:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bQDs6qsuDumtTCQTVrtGOVAcCu9AOIlFez/RCCDPkHZyvHl4BaoctNd0ENfu0Mg0cEmroCbwUzrUMyM59s6d2jFPahBN5nBwSD/G+ecp5Qc+RnHtiYbCFw6AHz6cZXgD7Z65THryxDjDhF9q96/nd4AOCK3aiq8pFaBA7s2ZOUr7VFQRB9Jt3toPwOvWeLzP740ArYz02WZB9MrD0heJSvUW1smP1yj7JHpcoWKXpAvdr5RlDkbYLlXJJCyd4Eu29viHUX/HKQezBalD0Zgim3/HhWUzrp9rwb1gW7gmc6feHq6tHxVZv7sGlgKeVjctKnFd40W42O9Eirn98iX0Fw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iscMtwZmoDtCOZLt5MXdHnj5VU27DUR2xWVqetmXgFg=;
- b=NaiJl5yxXGVd2nBFGgcyoHOQTF/qTol2HKFXN4kOs1T64VwMABu2RbnNGv9K4ZpIuFreSeaVoEg9AB3PoaaKk/JQoNOU1VFD+aIBPlFF7+tn9TsVgJh9JJqVhlJO8Rq7bUA85h3oNs/XopAc/yGRC6uclMIF6Ly4og9GD4MEWM5zzqof9UjKwuTQ+ClClqH0BJMvL4Svh+JJcB3mkmf/HG3uR6OlrUVHmSseUWN7wj0Lvr8XvcX9/2Cpgrwgk0ttWbsazdrJjHA30Z8C0mXvBZNnuRa1ikajg3I1bF880PBS1BYKvB7Zc7SRG1Xq/pxRJtKoNMUyoOCgkVuBymLg/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iscMtwZmoDtCOZLt5MXdHnj5VU27DUR2xWVqetmXgFg=;
- b=Un9IRyzyWCBzciEXnzLIcPMFKKA1rHhvofLXnBRjbxQngG7A31gKiHoNU2bA7HozyiD4WckTYlCNHmpEbGf67BhhQKCDMtYNxKxeLt/Bn29uf4XjdyWe8I+AQ01hYgGia0n/3MxhzJ921yJvWYUIe7xJj3UXspvJ1DEYW/5LrSE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3008.namprd12.prod.outlook.com (2603:10b6:208:c8::17)
- by SN7PR12MB7299.namprd12.prod.outlook.com (2603:10b6:806:2af::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.36; Wed, 20 Sep
- 2023 10:43:00 +0000
-Received: from MN2PR12MB3008.namprd12.prod.outlook.com
- ([fe80::74d4:ad6f:f00:8187]) by MN2PR12MB3008.namprd12.prod.outlook.com
- ([fe80::74d4:ad6f:f00:8187%3]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 10:42:59 +0000
-Message-ID: <6d9d7ad8-58ba-1da8-a046-466b1ebfcf8e@amd.com>
-Date:   Wed, 20 Sep 2023 16:12:45 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [RFC PATCH V1 0/6] sched/numa: Enhance disjoint VMA scanning
-Content-Language: en-US
-To:     Mel Gorman <mgorman@suse.de>, Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>, rppt@kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bharata B Rao <bharata@amd.com>,
-        Aithal Srikanth <sraithal@amd.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Sapkal Swapnil <Swapnil.Sapkal@amd.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-References: <cover.1693287931.git.raghavendra.kt@amd.com>
- <20230919092830.GF21729@noisy.programming.kicks-ass.net>
- <20230919162215.2cszdylo2skevnr6@suse.de>
-From:   Raghavendra K T <raghavendra.kt@amd.com>
-In-Reply-To: <20230919162215.2cszdylo2skevnr6@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0172.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:26::27) To MN2PR12MB3008.namprd12.prod.outlook.com
- (2603:10b6:208:c8::17)
+        Wed, 20 Sep 2023 06:44:25 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6DAC9;
+        Wed, 20 Sep 2023 03:44:17 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 00BAC66020EE;
+        Wed, 20 Sep 2023 11:44:15 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695206656;
+        bh=NDWVRwmCVk94kKKusMIvqhB611Y4sHX8Uwz9shitv3Y=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=cgSDyH9dtclWR0OSUy5aAVRzfOTr85L9b34Iz6kh20A22ubRHIbnWXQ9rw6drWQg6
+         W+Xi+xFXNixr+CAgcIx6QgSA5ycvS+WOKfVknZn4GcSalNiNj6BFS50YxlKP6yYxpz
+         zFI5Rt0YxCJHbr503PyY0lbXWOigYmF7qvoBQeJjORc3WxSRhGhoStrH+dQlssAOv/
+         j4YeU3+pZZwR0Hzt04Tso4x/NhmOd05awDLDUN6VLO8a+NwvMkmEZrpAo1UMeMa/If
+         UzGY1NqN2GpRhvti97Pfz3Bjtgff8ctZpY/IS40YgAE9vlUEr+PaLlpXAGoqSiMxQ9
+         kQG5E8O3fwE+A==
+Message-ID: <b55b708d-5564-cd98-3b87-243311319f2f@collabora.com>
+Date:   Wed, 20 Sep 2023 12:44:13 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3008:EE_|SN7PR12MB7299:EE_
-X-MS-Office365-Filtering-Correlation-Id: 212b0e51-c107-432e-8081-08dbb9c65b2d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Nqmga66funyYy95t+4irLXrr1lazMKvphey8tCiVrqotJIcEAxRY0R6nJ5CBjaZ4khvTGe1O4UVQXiB5OZRhYC4CCLewT/hNfsGoNLR0fa5Jkx46OWC5zCnOC3ovSXKmCpA/7oU2AFzSC/MyytXutWGneGHARD2npCZJp4HByhEZCL2h3j/emDGe/dCN51G8a11FDaXXknJ58AnKu4uGtmJkaCOD2P2MpvbXRFhuVAYJ2+7TZ5COodf63L0iaR37bHaYRiZSKfWfY/uxm8Kt2WvFwwVsegJQgFYbbPmT94ieEcf973h6vHfrLEmfMhARCuxY5JNrtE+ybVI+ao82XzVqjdseegAlKtTUKYMu9w1npswIBzImVxWofI8kF7e0nWCaEZEs6DCOWXSrm76C/ej47ikuxEVPsAg1Wh0s9syXalmqk4/0tvDwVyxx/SkVokex3RsJ0XbfFMztcc6k8DEaOz6lBx63nbzP8VVW1xJfZZ+8AxRkVBpAqi/z6pUktaxdVJ+M+sB8zDF+Kg2E9MRz/pTZ12nt5icaVotDLny9fnsMtWiJxs6W3hZ90+uCfgnUlP19itInAVz4hUPBprnl5vUt3iMzXSaZmkN9TpPyMT1Ag/xNYtffKK30ZVAG5L6SmaykJS8s3/UmzwxHaA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3008.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(396003)(39860400002)(366004)(136003)(186009)(1800799009)(451199024)(6666004)(966005)(6512007)(53546011)(6506007)(6486002)(36756003)(31686004)(41300700001)(110136005)(66476007)(54906003)(66946007)(478600001)(316002)(66556008)(38100700002)(31696002)(8936002)(8676002)(4326008)(26005)(66899024)(5660300002)(83380400001)(2616005)(2906002)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RDg0Tmk5dkxmeEVhSHlKRHBMbHdpWkNqaTNOWFJpUjllUHkwdXVuUEtZYzNH?=
- =?utf-8?B?TEVNZkprdU1WK3orMVpSUHBRblQvV2lsalNzQk1LdDAvaEtEanczOTEyN2NK?=
- =?utf-8?B?aFZmZGtIVkdldGhpWVhLZmcxcUQrNmY0bmtUbXpIV0hKOVpoUXMrVGVvMU5Z?=
- =?utf-8?B?WUhWWG80TlYvY1IxTnVtMDBINjFBSjhPWWkzcmJzWDFYckdzd243aVVZczNB?=
- =?utf-8?B?V2prL0FSeXd3WW9GU3c0ZUJMWVpFMVNmdStpSkFUSkhuNjR5blVtdmhkN2wv?=
- =?utf-8?B?VEVKenhNY09ybUtheVVGRHBzZkpYWHBNcC9pTUpFYWpWdk1xM05TaXJYeGYz?=
- =?utf-8?B?ZEZ3OCtyWG1JUFUySWhPVGs3VS9KVW9USDRmM01lQVdiNGgyZGZucEFCdlov?=
- =?utf-8?B?MzdPRHloNjZRb0tka1hNbUZwUFFObmRvaGN6ZWx0cVNLdHNJbXNIMmFmQ2Ey?=
- =?utf-8?B?ZEszQitsVFA4UDFLSVhSQWUyYXFKYXVyWElmVEhBOUkzTkwzSEdlNTVmVTFU?=
- =?utf-8?B?dWN1Sk0yTTBURUNiN2NkODZOaWM4WXVXRG1JYmo3WXp2TEtydHUxaEZZcGlo?=
- =?utf-8?B?UUJOd3FUNElhakRFN3krSFhMUUpzNzZ1QVZWQk84bWpvTk9iTDhPVGJhaTYx?=
- =?utf-8?B?UUNaZW1xbjhXMmN4M2w5L3M2UGxuQkorUGFOYjJ0cjZRWGxzaWM1Nnd2SXg3?=
- =?utf-8?B?MDJKS2xhR0UvZjhmYXZGbmVsMXdDQ2tIUHY2VjA3dy9wME1FSFdkalJTeGNQ?=
- =?utf-8?B?SmUzeTNzZTNscmloTGtmeEptR0FEeG5Ja0psWStNUy9HOTZkMGszZmZaTUJO?=
- =?utf-8?B?ZElzSXBhc0ZXSUJ1cGxoN0ZESFc4NktOZ0hhTjYvTnR5SFhKcExwcTlWaURS?=
- =?utf-8?B?dEMxUkQ4UnMveXVYZVFZT3dWL3ZiTVlCbUw1YTdOVmFUWFJnV1U2NXpkM1Ft?=
- =?utf-8?B?MDk1WE0vMFY1RVJwM1VYcndmanh2WThhUDdSUXp1MmhsMkI3NWpTUUdnZ2xm?=
- =?utf-8?B?Qkl5MXU3K0NDbGF5UUdtQ016NUcwME43TWF4RG5nWkdZaCtPMVF5NW1ScmIx?=
- =?utf-8?B?NmtaczZ2aXk1U2cxUEl5T0JBWFJpOWV5T1FDdEVIazhnbzkzdzlFVEIraTNF?=
- =?utf-8?B?bGVwNHdKSGtpVEdvcmhtMkw3ODE2Q1FyQk85aTRIT29pYlFIcmJEblRjVkVJ?=
- =?utf-8?B?dUp6b2M0eW9KTTBIc2JFbDhQUmRKN25wbkpIbEUrSDM0cWVmVkw1NUluNmVW?=
- =?utf-8?B?K1h6UG5OVG02enlSL3lDTlhoTXJHdk1hTXg0RW1MRVI1aDBzZXhMWkdMdDVD?=
- =?utf-8?B?MW1WMndsQVl1UUI0b1ZSU0tnUndQV01VSGxFTll6Uk1qamd4ZFpDUEZPZEJK?=
- =?utf-8?B?S0oyL0ZZYjJsZ3ZCUUxHMnNieE01V3ZBZnR6RmZVbkh1L2FNWjR3bHRDWEEw?=
- =?utf-8?B?UXBtT1dhZUtyR0VTWURDWVBCeWVTOXo2VHcraXdSYVlyY0hTejJ0UWtRREds?=
- =?utf-8?B?akgzb2djN29yUFRXMVNHQzF0TzBYRXVTSlJPYkxyT3d3aWRWZXZTUHQyVG1S?=
- =?utf-8?B?SG5HYnh6cXNXajZtOStDbGdkZkpkY2NYV0ViaGZQcmJUTSszbU1EMjJpN05v?=
- =?utf-8?B?V05JRG0vOWg0UWpzbmZPTUhoOTlybjlMRW9kY2JNcGVYN2VscW1vdGRYZ3lh?=
- =?utf-8?B?RVB2KzN4OXZEMkJ6RStRaC9MQ2FzeVByMExGVUlUNUJ1dTVuNmF6dFBSdFlL?=
- =?utf-8?B?Qmg0OUIzbG9SSHhWSXI0NWczT3dnODdDZzdYbllCZzFTT0NhUU4wcXc1dERG?=
- =?utf-8?B?RDhhakJJOGpJMnlzVlVDWGVFbC9WSmlrRzRlV0NVTDkzaVVSa3J6VDllb0FH?=
- =?utf-8?B?aTlYMDVTMGtGbUs2NElDSS9oNHVmcFZWdGFLMnIzY2ZDWVY3L3FUWWRQS0RO?=
- =?utf-8?B?M21WczZtRVplYTdmeXJjZm1SYTlHVXZaS05IblkrSTI5RHd0UXRPSlNBM2hC?=
- =?utf-8?B?UHV6RVpvUGZjRVpXbGpBZVRUNkRta0hZbUp0anVrcDRGWEhHUWd6QWFiSzlz?=
- =?utf-8?B?NHdpNTEvS0FUd0dwUnUzRmRzUU5CRXBMMVdBQldVZkkvRENHSDAwV2NpTmx6?=
- =?utf-8?Q?YsKLpGWv6jGtLbHPkTbPOtTly?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 212b0e51-c107-432e-8081-08dbb9c65b2d
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3008.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 10:42:59.6712
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dcL7i5sULzwcpJ8YSEOP7u7OoFG0iSHl3r+LC5DfehfQ6H5qfuf0fd8CW+4xss2XZ4tU6eX7xvIstJZbKxj4ag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7299
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 07/12] regulator: mt6358: Add supply names for MT6358
+ regulators
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Zhiyong Tao <zhiyong.tao@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230919104357.3971512-1-wenst@chromium.org>
+ <20230919104357.3971512-8-wenst@chromium.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230919104357.3971512-8-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/2023 9:52 PM, Mel Gorman wrote:
-> On Tue, Sep 19, 2023 at 11:28:30AM +0200, Peter Zijlstra wrote:
->> On Tue, Aug 29, 2023 at 11:36:08AM +0530, Raghavendra K T wrote:
->>
->>> Peter Zijlstra (1):
->>>    sched/numa: Increase tasks' access history
->>>
->>> Raghavendra K T (5):
->>>    sched/numa: Move up the access pid reset logic
->>>    sched/numa: Add disjoint vma unconditional scan logic
->>>    sched/numa: Remove unconditional scan logic using mm numa_scan_seq
->>>    sched/numa: Allow recently accessed VMAs to be scanned
->>>    sched/numa: Allow scanning of shared VMAs
->>>
->>>   include/linux/mm.h       |  12 +++--
->>>   include/linux/mm_types.h |   5 +-
->>>   kernel/sched/fair.c      | 109 ++++++++++++++++++++++++++++++++-------
->>>   3 files changed, 102 insertions(+), 24 deletions(-)
->>
->> So I don't immediately see anything horrible with this. Mel, do you have
->> a few cycles to go over this as well?
+Il 19/09/23 12:43, Chen-Yu Tsai ha scritto:
+> The DT bindings for MT6358 regulator now defines the supply names for the
+> PMIC.
 > 
-> I've been trying my best to find the necessary time and it's still on my
-> radar for this week. 
-
-Hello Mel,
-Thanks you a lot for your time and for having a detailed look, and your
-patches.
-
-In summary, I will start with your patchset.
-Link:  https://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git/ 
-sched-numabselective-v1r5
-and see if there is any cumulative benefits from my patches (3-6) on top 
-of them.
-
-Trying to give out some details for your questions. please skip if its
-long..
-
-Preliminary results don't look great for the first part
-> of the series up to the patch "sched/numa: Add disjoint vma unconditional
-> scan logic" even though other reports indicate the performance may be
-> fixed up later in the series. For example
+> Add support for them by adding .supply_name field settings for each
+> regulator.
 > 
-> autonumabench
->                                     6.5.0-rc6              6.5.0-rc6
->                           sched-pidclear-v1r5   sched-forcescan-v1r5
-> Min       syst-NUMA02        1.94 (   0.00%)        1.38 (  28.87%)
-> Min       elsp-NUMA02       12.67 (   0.00%)       21.02 ( -65.90%)
-> Amean     syst-NUMA02        2.35 (   0.00%)        1.86 (  21.13%)
-> Amean     elsp-NUMA02       12.93 (   0.00%)       21.69 * -67.76%*
-> Stddev    syst-NUMA02        0.54 (   0.00%)        0.90 ( -67.67%)
-> Stddev    elsp-NUMA02        0.18 (   0.00%)        0.44 (-144.19%)
-> CoeffVar  syst-NUMA02       22.82 (   0.00%)       48.50 (-112.58%)
-> CoeffVar  elsp-NUMA02        1.38 (   0.00%)        2.01 ( -45.56%)
-> Max       syst-NUMA02        3.15 (   0.00%)        3.89 ( -23.49%)
-> Max       elsp-NUMA02       13.16 (   0.00%)       22.36 ( -69.91%)
-> BAmean-50 syst-NUMA02        2.01 (   0.00%)        1.45 (  27.69%)
-> BAmean-50 elsp-NUMA02       12.77 (   0.00%)       21.34 ( -67.04%)
-> BAmean-95 syst-NUMA02        2.22 (   0.00%)        1.52 (  31.68%)
-> BAmean-95 elsp-NUMA02       12.89 (   0.00%)       21.58 ( -67.39%)
-> BAmean-99 syst-NUMA02        2.22 (   0.00%)        1.52 (  31.68%)
-> BAmean-99 elsp-NUMA02       12.89 (   0.00%)       21.58 ( -67.39%)
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+> ---
+>   drivers/regulator/mt6358-regulator.c | 106 +++++++++++++--------------
+>   1 file changed, 51 insertions(+), 55 deletions(-)
 > 
->                     6.5.0-rc6   6.5.0-rc6
->                  sched-pidclear-v1r5sched-forcescan-v1r5
-> Duration User        5702.00    10264.25
-> Duration System        17.02       13.59
-> Duration Elapsed       92.57      156.30
-> 
-> Similar results seen across multiple machines. It's not universally bad
-> but the NUMA02 tests appear to suffer quite badly and while not realistic,
-> they are somewhat relevant because numa02 is likely an "adverse workload"
-> for the logic that skips VMAs based on PID accesses.
-> 
-> For the rest of the series, the changelogs lacked detail on why those
-> changes helped. Patch 4's changelog lacks detail and patch 6 stating
-> "VMAs being accessed by more than two tasks are critical" is not helpful
-> either -- e.g. why are they critical?
+> diff --git a/drivers/regulator/mt6358-regulator.c b/drivers/regulator/mt6358-regulator.c
+> index c312e79a0a39..cdb776d30a6d 100644
+> --- a/drivers/regulator/mt6358-regulator.c
+> +++ b/drivers/regulator/mt6358-regulator.c
+> @@ -33,12 +33,13 @@ struct mt6358_regulator_info {
+>   
+>   #define to_regulator_info(x) container_of((x), struct mt6358_regulator_info, desc)
+>   
+> -#define MT6358_BUCK(match, vreg, min, max, step,		\
+> -	vosel_mask, _da_vsel_reg, _da_vsel_mask,	\
+> -	_modeset_reg, _modeset_shift)		\
+> +#define MT6358_BUCK(match, vreg, supply, min, max, step,	\
+> +		    vosel_mask, _da_vsel_reg, _da_vsel_mask,	\
+> +		    _modeset_reg, _modeset_shift)		\
+>   [MT6358_ID_##vreg] = {	\
+>   	.desc = {	\
+>   		.name = #vreg,	\
+> +		.supply_name = supply,		\
+>   		.of_match = of_match_ptr(match),	\
+>   		.ops = &mt6358_volt_range_ops,	\
+>   		.type = REGULATOR_VOLTAGE,	\
+> @@ -61,10 +62,11 @@ struct mt6358_regulator_info {
+>   	.modeset_mask = BIT(_modeset_shift),	\
+>   }
+>   
+> -#define MT6358_LDO(match, vreg, volt_ranges, enreg, enbit, vosel, vosel_mask) \
+> +#define MT6358_LDO(match, vreg, supply, volt_ranges, enreg, enbit, vosel, vosel_mask) \
+>   [MT6358_ID_##vreg] = {	\
+>   	.desc = {	\
+>   		.name = #vreg,	\
+> +		.supply_name = supply,		\
+>   		.of_match = of_match_ptr(match),	\
+>   		.ops = &mt6358_volt_table_ops,	\
+>   		.type = REGULATOR_VOLTAGE,	\
+> @@ -85,12 +87,12 @@ struct mt6358_regulator_info {
+>   	.qi = BIT(15),	\
+>   }
+>   
+> -#define MT6358_LDO1(match, vreg, min, max, step,	\
+> -	_da_vsel_reg, _da_vsel_mask,	\
+> -	vosel, vosel_mask)	\
+> +#define MT6358_LDO1(match, vreg, supply, min, max, step,	\
+> +		    _da_vsel_reg, _da_vsel_mask, vosel, vosel_mask)	\
+>   [MT6358_ID_##vreg] = {	\
+>   	.desc = {	\
+>   		.name = #vreg,	\
+> +		.supply_name = supply,		\
+>   		.of_match = of_match_ptr(match),	\
+>   		.ops = &mt6358_volt_range_ops,	\
+>   		.type = REGULATOR_VOLTAGE,	\
+> @@ -110,11 +112,11 @@ struct mt6358_regulator_info {
+>   	.qi = BIT(0),	\
+>   }
+>   
+> -#define MT6358_REG_FIXED(match, vreg,	\
+> -	enreg, enbit, volt)	\
+> +#define MT6358_REG_FIXED(match, vreg, supply, enreg, enbit, volt)	\
+>   [MT6358_ID_##vreg] = {	\
+>   	.desc = {	\
+>   		.name = #vreg,	\
+> +		.supply_name = supply,		\
+>   		.of_match = of_match_ptr(match),	\
+>   		.ops = &mt6358_volt_fixed_ops,	\
+>   		.type = REGULATOR_VOLTAGE,	\
+> @@ -457,79 +459,73 @@ static const struct regulator_ops mt6358_volt_fixed_ops = {
+>   
+>   /* The array is indexed by id(MT6358_ID_XXX) */
+>   static const struct mt6358_regulator_info mt6358_regulators[] = {
+> -	MT6358_BUCK("buck_vdram1", VDRAM1, 500000, 2087500, 12500,
+> +	MT6358_BUCK("buck_vdram1", VDRAM1, "vsys-vdram1", 500000, 2087500, 12500,
+>   		    0x7f, MT6358_BUCK_VDRAM1_DBG0, 0x7f, MT6358_VDRAM1_ANA_CON0, 8),
+> -	MT6358_BUCK("buck_vcore", VCORE, 500000, 1293750, 6250,
+> +	MT6358_BUCK("buck_vcore", VCORE, "vsys-vcore", 500000, 1293750, 6250,
+>   		    0x7f, MT6358_BUCK_VCORE_DBG0, 0x7f, MT6358_VCORE_VGPU_ANA_CON0, 1),
+> -	MT6358_BUCK("buck_vpa", VPA, 500000, 3650000, 50000,
+> +	MT6358_BUCK("buck_vpa", VPA, "vsys-vpa", 500000, 3650000, 50000,
+>   		    0x3f, MT6358_BUCK_VPA_DBG0, 0x3f, MT6358_VPA_ANA_CON0, 3),
+> -	MT6358_BUCK("buck_vproc11", VPROC11, 500000, 1293750, 6250,
+> +	MT6358_BUCK("buck_vproc11", VPROC11, "vsys-vproc11", 500000, 1293750, 6250,
+>   		    0x7f, MT6358_BUCK_VPROC11_DBG0, 0x7f, MT6358_VPROC_ANA_CON0, 1),
+> -	MT6358_BUCK("buck_vproc12", VPROC12, 500000, 1293750, 6250,
+> +	MT6358_BUCK("buck_vproc12", VPROC12, "vsys-vproc12", 500000, 1293750, 6250,
+>   		    0x7f, MT6358_BUCK_VPROC12_DBG0, 0x7f, MT6358_VPROC_ANA_CON0, 2),
+> -	MT6358_BUCK("buck_vgpu", VGPU, 500000, 1293750, 6250,
+> +	MT6358_BUCK("buck_vgpu", VGPU, "vsys-vgpu", 500000, 1293750, 6250,
+>   		    0x7f, MT6358_BUCK_VGPU_ELR0, 0x7f, MT6358_VCORE_VGPU_ANA_CON0, 2),
+> -	MT6358_BUCK("buck_vs2", VS2, 500000, 2087500, 12500,
+> +	MT6358_BUCK("buck_vs2", VS2, "vsys-vs2", 500000, 2087500, 12500,
+>   		    0x7f, MT6358_BUCK_VS2_DBG0, 0x7f, MT6358_VS2_ANA_CON0, 8),
+> -	MT6358_BUCK("buck_vmodem", VMODEM, 500000, 1293750, 6250,
+> +	MT6358_BUCK("buck_vmodem", VMODEM, "vsys-vmodem", 500000, 1293750, 6250,
+>   		    0x7f, MT6358_BUCK_VMODEM_DBG0, 0x7f, MT6358_VMODEM_ANA_CON0, 8),
+> -	MT6358_BUCK("buck_vs1", VS1, 1000000, 2587500, 12500,
+> +	MT6358_BUCK("buck_vs1", VS1, "vsys-vs1", 1000000, 2587500, 12500,
+>   		    0x7f, MT6358_BUCK_VS1_DBG0, 0x7f, MT6358_VS1_ANA_CON0, 8),
+> -	MT6358_REG_FIXED("ldo_vrf12", VRF12,
+> -			 MT6358_LDO_VRF12_CON0, 0, 1200000),
+> -	MT6358_REG_FIXED("ldo_vio18", VIO18,
+> -			 MT6358_LDO_VIO18_CON0, 0, 1800000),
+> -	MT6358_REG_FIXED("ldo_vcamio", VCAMIO,
+> -			 MT6358_LDO_VCAMIO_CON0, 0, 1800000),
+> -	MT6358_REG_FIXED("ldo_vcn18", VCN18, MT6358_LDO_VCN18_CON0, 0, 1800000),
+> -	MT6358_REG_FIXED("ldo_vfe28", VFE28, MT6358_LDO_VFE28_CON0, 0, 2800000),
+> -	MT6358_REG_FIXED("ldo_vcn28", VCN28, MT6358_LDO_VCN28_CON0, 0, 2800000),
+> -	MT6358_REG_FIXED("ldo_vxo22", VXO22, MT6358_LDO_VXO22_CON0, 0, 2200000),
+> -	MT6358_REG_FIXED("ldo_vaux18", VAUX18,
+> -			 MT6358_LDO_VAUX18_CON0, 0, 1800000),
+> -	MT6358_REG_FIXED("ldo_vbif28", VBIF28,
+> -			 MT6358_LDO_VBIF28_CON0, 0, 2800000),
+> -	MT6358_REG_FIXED("ldo_vio28", VIO28, MT6358_LDO_VIO28_CON0, 0, 2800000),
+> -	MT6358_REG_FIXED("ldo_va12", VA12, MT6358_LDO_VA12_CON0, 0, 1200000),
+> -	MT6358_REG_FIXED("ldo_vrf18", VRF18, MT6358_LDO_VRF18_CON0, 0, 1800000),
+> -	MT6358_REG_FIXED("ldo_vaud28", VAUD28,
+> -			 MT6358_LDO_VAUD28_CON0, 0, 2800000),
+> -	MT6358_LDO("ldo_vdram2", VDRAM2, vdram2,
+> +	MT6358_REG_FIXED("ldo_vrf12", VRF12, "vs2-ldo2", MT6358_LDO_VRF12_CON0, 0, 1200000),
+> +	MT6358_REG_FIXED("ldo_vio18", VIO18, "vs1-ldo1", MT6358_LDO_VIO18_CON0, 0, 1800000),
+> +	MT6358_REG_FIXED("ldo_vcamio", VCAMIO, "vs1-ldo1", MT6358_LDO_VCAMIO_CON0, 0, 1800000),
+> +	MT6358_REG_FIXED("ldo_vcn18", VCN18, "vs1-ldo1", MT6358_LDO_VCN18_CON0, 0, 1800000),
+> +	MT6358_REG_FIXED("ldo_vfe28", VFE28, "vsys-ldo1", MT6358_LDO_VFE28_CON0, 0, 2800000),
+> +	MT6358_REG_FIXED("ldo_vcn28", VCN28, "vsys-ldo1", MT6358_LDO_VCN28_CON0, 0, 2800000),
+> +	MT6358_REG_FIXED("ldo_vxo22", VXO22, "vsys-ldo1", MT6358_LDO_VXO22_CON0, 0, 2200000),
+> +	MT6358_REG_FIXED("ldo_vaux18", VAUX18, "vsys-ldo1", MT6358_LDO_VAUX18_CON0, 0, 1800000),
+> +	MT6358_REG_FIXED("ldo_vbif28", VBIF28, "vsys-ldo1", MT6358_LDO_VBIF28_CON0, 0, 2800000),
+> +	MT6358_REG_FIXED("ldo_vio28", VIO28, "vsys-ldo2", MT6358_LDO_VIO28_CON0, 0, 2800000),
+> +	MT6358_REG_FIXED("ldo_va12", VA12, "vs2-ldo2", MT6358_LDO_VA12_CON0, 0, 1200000),
+> +	MT6358_REG_FIXED("ldo_vrf18", VRF18, "vs1-ldo1", MT6358_LDO_VRF18_CON0, 0, 1800000),
+> +	MT6358_REG_FIXED("ldo_vaud28", VAUD28, "vsys-ldo1", MT6358_LDO_VAUD28_CON0, 0, 2800000),
+> +	MT6358_LDO("ldo_vdram2", VDRAM2, "vs2-ldo1", vdram2,
+>   		   MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0xf),
+> -	MT6358_LDO("ldo_vsim1", VSIM1, vsim,
+> +	MT6358_LDO("ldo_vsim1", VSIM1, "vsys-ldo1", vsim,
+>   		   MT6358_LDO_VSIM1_CON0, 0, MT6358_VSIM1_ANA_CON0, 0xf00),
+> -	MT6358_LDO("ldo_vibr", VIBR, vibr,
+> +	MT6358_LDO("ldo_vibr", VIBR, "vsys-ldo3", vibr,
+>   		   MT6358_LDO_VIBR_CON0, 0, MT6358_VIBR_ANA_CON0, 0xf00),
+> -	MT6358_LDO("ldo_vusb", VUSB, vusb,
+> +	MT6358_LDO("ldo_vusb", VUSB, "vsys-ldo1", vusb,
+>   		   MT6358_LDO_VUSB_CON0_0, 0, MT6358_VUSB_ANA_CON0, 0x700),
+> -	MT6358_LDO("ldo_vcamd", VCAMD, vcamd,
+> +	MT6358_LDO("ldo_vcamd", VCAMD, "vs2-ldo4", vcamd,
+>   		   MT6358_LDO_VCAMD_CON0, 0, MT6358_VCAMD_ANA_CON0, 0xf00),
+> -	MT6358_LDO("ldo_vefuse", VEFUSE, vefuse,
+> +	MT6358_LDO("ldo_vefuse", VEFUSE, "vs1-ldo1", vefuse,
+>   		   MT6358_LDO_VEFUSE_CON0, 0, MT6358_VEFUSE_ANA_CON0, 0xf00),
+> -	MT6358_LDO("ldo_vmch", VMCH, vmch_vemc,
+> +	MT6358_LDO("ldo_vmch", VMCH, "vsys-ldo2", vmch_vemc,
+>   		   MT6358_LDO_VMCH_CON0, 0, MT6358_VMCH_ANA_CON0, 0x700),
+> -	MT6358_LDO("ldo_vcama1", VCAMA1, vcama,
+> +	MT6358_LDO("ldo_vcama1", VCAMA1, "vsys-ldo3", vcama,
+>   		   MT6358_LDO_VCAMA1_CON0, 0, MT6358_VCAMA1_ANA_CON0, 0xf00),
+> -	MT6358_LDO("ldo_vemc", VEMC, vmch_vemc,
+> +	MT6358_LDO("ldo_vemc", VEMC, "vsys-ldo2", vmch_vemc,
+>   		   MT6358_LDO_VEMC_CON0, 0, MT6358_VEMC_ANA_CON0, 0x700),
+> -	MT6358_LDO("ldo_vcn33", VCN33, vcn33,
+> +	MT6358_LDO("ldo_vcn33", VCN33, "vsys-ldo3", vcn33,
+>   		   MT6358_LDO_VCN33_CON0_0, 0, MT6358_VCN33_ANA_CON0, 0x300),
+> -	MT6358_LDO("ldo_vcama2", VCAMA2, vcama,
+> +	MT6358_LDO("ldo_vcama2", VCAMA2, "vsys-ldo3", vcama,
+>   		   MT6358_LDO_VCAMA2_CON0, 0, MT6358_VCAMA2_ANA_CON0, 0xf00),
+> -	MT6358_LDO("ldo_vmc", VMC, vmc,
+> +	MT6358_LDO("ldo_vmc", VMC, "vsys-ldo2", vmc,
+>   		   MT6358_LDO_VMC_CON0, 0, MT6358_VMC_ANA_CON0, 0xf00),
+> -	MT6358_LDO("ldo_vldo28", VLDO28, vldo28,
+> +	MT6358_LDO("ldo_vldo28", VLDO28, "vsys-ldo2", vldo28,
+>   		   MT6358_LDO_VLDO28_CON0_0, 0,
+>   		   MT6358_VLDO28_ANA_CON0, 0x300),
+> -	MT6358_LDO("ldo_vsim2", VSIM2, vsim,
+> +	MT6358_LDO("ldo_vsim2", VSIM2, "vsys-ldo2", vsim,
+>   		   MT6358_LDO_VSIM2_CON0, 0, MT6358_VSIM2_ANA_CON0, 0xf00),
+> -	MT6358_LDO1("ldo_vsram_proc11", VSRAM_PROC11, 500000, 1293750, 6250,
+> +	MT6358_LDO1("ldo_vsram_proc11", VSRAM_PROC11, "vs2-ldo3", 500000, 1293750, 6250,
+>   		    MT6358_LDO_VSRAM_PROC11_DBG0, 0x7f00, MT6358_LDO_VSRAM_CON0, 0x7f),
+> -	MT6358_LDO1("ldo_vsram_others", VSRAM_OTHERS, 500000, 1293750, 6250,
+> +	MT6358_LDO1("ldo_vsram_others", VSRAM_OTHERS, "vs2-ldo3", 500000, 1293750, 6250,
+>   		    MT6358_LDO_VSRAM_OTHERS_DBG0, 0x7f00, MT6358_LDO_VSRAM_CON2, 0x7f),
+> -	MT6358_LDO1("ldo_vsram_gpu", VSRAM_GPU, 500000, 1293750, 6250,
+> +	MT6358_LDO1("ldo_vsram_gpu", VSRAM_GPU, "vs2-ldo3", 500000, 1293750, 6250,
+>   		    MT6358_LDO_VSRAM_GPU_DBG0, 0x7f00, MT6358_LDO_VSRAM_CON3, 0x7f),
+> -	MT6358_LDO1("ldo_vsram_proc12", VSRAM_PROC12, 500000, 1293750, 6250,
+> +	MT6358_LDO1("ldo_vsram_proc12", VSRAM_PROC12, "vs2-ldo3", 500000, 1293750, 6250,
+>   		    MT6358_LDO_VSRAM_PROC12_DBG0, 0x7f00, MT6358_LDO_VSRAM_CON1, 0x7f),
+>   };
+>   
 
-Agree, for patch 5 and 6 (scanning shared VMA and recently accessed
-VMAs) there was a brief rationale in cover letter, but it was not enough
-perhaps.
+-- 
+AngeloGioacchino Del Regno
+Software Engineer
 
-More background:
-I had used trace_prints to understand vma sizes, PID hash, success
-percentage of is_vma_accessed(), and also how many tasks are typically
-accessing etc for some of the workloads..
-(vma_size here was in KB)
+Collabora Ltd.
+Platinum Building, St John's Innovation Park, Cambridge CB4 0DS, UK
+Registered in England & Wales, no. 5513718
 
-E.g.,
-<...>-1451602 [116] ...1. 39195.488591: vma_fault: vma=ffff8bcab42ad7b8 
-pid=1451602 hash=40, success=1
-            <...>-1451481 [210] ..... 39196.948390: sched_numascan: 
-comm=numa01 pid=1451481 vma = ffff8bc9228637b8 
-access_hist=4200000cfe66727 hashval = 26 bitmap_wt = 22, vma_size = 
-3153924 success = 1
-            <...>-1451570 [052] ...1. 39196.948725: vma_fault: 
-vma=ffff8bc9228637b8 pid=1451570 hash=25, success=1
-
-1) For very large VMAs we may incur delay in scanning whole VMA,
-because we scan only in 256MB chunks and filter out tasks which had not
-touched them etc, So idea was to speed up the scanning.
-
-2) Similar rationale for recently accessed VMA, i.e., not to delay
-scanning for a very recently (hot) accessed VMAs.
-
-[ I did not explore using young page info, mm walk etc as I thought it
-may be expensive ].
-
-> They are obviously shared VMAs and
-> therefore it may be the case that they need to be identified and interleaved
-> quickly
-
-Yes. Mostly that was idea as mentioned above.
-
-> but maybe not. Is the shared VMA that is critical a large malloc'd
-> area split into per-thread sections or something that is MAP_SHARED? The
-> changelog doesn't say so I have to guess.  > There are also a bunch of
-> magic variables with limited explanation (e.g. why NR_ACCESS_PID_HIST==4
-> and SHARED_VMA_THRESH=3?),
-
-Those thresholds were result of multiple experiments I did.
-(SHARED_VMA_THRESH = 3,4 .. NR_ACCESS_PID_HIST=3, 4 etc ).
-
-One thing I did not look is whether I should reduce PID_RESET interval
-(because we are maintaining more history now.)
-
-> the numab fields are not documented 
-Agree, I should have done better earlier.
-
-> and the
-> changelogs lack supporting data. I suspect that patches 3-6 may be dealing
-> with regressions introduced by patch 2, particularly for NUMA02, but I'm
-
-TBH, Did not really target to worsen num02, improve num02 later.
-This is the data I had for the full patchset.
-
-autonumabench
-                              base                   patched
-Min       syst-NUMA02        0.99 (   0.00%)        0.99 (   0.00%)
-Min       elsp-NUMA02        3.04 (   0.00%)        3.04 (   0.00%)
-Amean     syst-NUMA02        1.06 (   0.00%)        1.05 *   1.08%*
-Amean     elsp-NUMA02        3.80 (   0.00%)        3.39 *  10.68%*
-Stddev    syst-NUMA02        0.10 (   0.00%)        0.07 (  24.57%)
-Stddev    elsp-NUMA02        0.73 (   0.00%)        0.34 (  52.86%)
-CoeffVar  syst-NUMA02        9.04 (   0.00%)        6.89 (  23.75%)
-CoeffVar  elsp-NUMA02       19.25 (   0.00%)       10.16 (  47.22%)
-Max       syst-NUMA02        1.27 (   0.00%)        1.21 (   4.72%)
-Max       elsp-NUMA02        4.91 (   0.00%)        4.04 (  17.72%)
-BAmean-50 syst-NUMA02        1.00 (   0.00%)        1.01 (  -0.66%)
-BAmean-50 elsp-NUMA02        3.21 (   0.00%)        3.12 (   2.60%)
-BAmean-95 syst-NUMA02        1.03 (   0.00%)        1.02 (   0.32%)
-BAmean-95 elsp-NUMA02        3.61 (   0.00%)        3.28 (   9.09%)
-BAmean-99 syst-NUMA02        1.03 (   0.00%)        1.02 (   0.32%)
-BAmean-99 elsp-NUMA02        3.61 (   0.00%)        3.28 (   9.09%)
-
-Duration User        1555.24     1377.57
-Duration System         8.10        7.99
-Duration Elapsed       30.86       26.49
-
-But then, I saw result from Kernel test Robot, which compared individual
-patches,
-
-commit:
-   2f88c8e802 ("(tip/sched/core) sched/eevdf/doc: Modify the documented 
-knob to base_slice_ns as well")
-   2a806eab1c ("sched/numa: Move up the access pid reset logic")
-   1ef5cbb92b ("sched/numa: Add disjoint vma unconditional scan logic")
-   68cfe9439a ("sched/numa: Allow scanning of shared VMAs")
-
-
-2f88c8e802c8b128 2a806eab1c2e1c9f0ae39dc0307 1ef5cbb92bdb320c5eb9fdee1a8 
-68cfe9439a1baa642e05883fa64
----------------- --------------------------- --------------------------- 
----------------------------
-          %stddev     %change         %stddev     %change 
-%stddev     %change         %stddev
-              \          |                \          |                \ 
-          |                \
-     271.01            +0.8%     273.24            -0.7%     269.00 
-       -26.4%     199.49 ±  3%  autonuma-benchmark.numa01.seconds
-      76.28            +0.2%      76.44           -11.7%      67.36 ± 
-6%     -46.9%      40.49 ±  5% 
-autonuma-benchmark.numa01_THREAD_ALLOC.seconds
-       8.11            -0.9%       8.04            -0.7%       8.05 
-        -0.1%       8.10        autonuma-benchmark.numa02.seconds
-       1425            +0.7%       1434            -3.1%       1381 
-       -30.1%     996.02 ±  2%  autonuma-benchmark.time.elapsed_time
-
-I do see some negligible overhead from first patch but second patch
-still gave some improvement.
-
-My observation with the patchset was increase in system time
-  because of additional scanning we re-introduced but this
-was still 2x better than where we started without numascan enhancements.
-
-> not certain as I didn't dedicate the necessary test time to prove that
-> and it's the type of information that should be in the changelog. While
-> there is nothing wrong with that as such, it's very hard to imagine how
-> patches 3-6 work in every case and be certain that the various parameters
-> make sense. That could cause difficulties later in terms of maintenance.
->
-
-Agree regarding maintenance.
-
-> My initial thinking was "There should be a standalone series that deals
-> *only* with scanning VMAs that had no fault activity and skipped due to
-> PID hashing". These are important because there may be no fault activity
-> because there is no scan activity which is due to to fault activity. The
-> series is incomplete and without changelogs but I pushed it anyway to
-> 
-
-Agreed.
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git/ sched-numabselective-v1r5
-> 
-
-Thanks.. Patches are simple to start with (1-4) with a force scan in
-patch5. Will experiment with these.
-
-> The first two patches simply improve the documentation on what is going
-> on, patch 3 adds a tracepoint for figuring out why VMAs were skipped or
-> not skipped. Patch 4 handles a corner case to complete the scan of a VMA
-> once it has started regardless of what task is doing the scanning. The
-> last patch scans VMAs that have seen no fault activity once active VMAs
-> have been scanned.
->
-> It has its weaknesses because it may be overly simplisitic and it forces
-> all VMAs to be scanned on every sequence which is wasteful. It also hurts
-> NUMA02 performance, although not as badly as ""sched/numa: Add disjoint
-> vma unconditional scan logic". On the plus side, it is easier to reason
-> about, it solves only one problem in the series and any patch on top or
-> modification should justify each change individually.
-> 
-Anything else you have in mind that I should look into apart from
-above (Rebasing to your patches and experiment with my patch 3-6 for any
-cumulative improvements ?).
-
-Thanks and Regards
-- Raghu
