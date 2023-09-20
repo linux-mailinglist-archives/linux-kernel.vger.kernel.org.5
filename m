@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBBF7A8CD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3447A8CD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjITT3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
+        id S230089AbjITT3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbjITT2y (ORCPT
+        with ESMTP id S230118AbjITT27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:28:54 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD9E1A5;
-        Wed, 20 Sep 2023 12:28:45 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-500cfb168c6so371944e87.2;
-        Wed, 20 Sep 2023 12:28:45 -0700 (PDT)
+        Wed, 20 Sep 2023 15:28:59 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09217D9;
+        Wed, 20 Sep 2023 12:28:48 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c012232792so2901491fa.0;
+        Wed, 20 Sep 2023 12:28:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695238123; x=1695842923; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695238127; x=1695842927; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9BUlFc32U67LJr2U7BzHv473MxaTEfZQ+YLInYVLVj8=;
-        b=G4j6I0PEtmkd/FLWjBLSJKg6Uuxtf/S9Losx6B2SdamqsmGTzr1tHFoDUxfyUY3cJm
-         me3PddC58J1/UI8FxHS6DPa0wnTSveOjva4W9VW8mbGkR+4ysct1U+Ze1k0IZiImWlyU
-         dh5kWVx4cPqZZ+dv1AW11+wpw279/INJc0kDxKPhLE2CjnfmljWglf6MNwBirgxg96fU
-         BaJtfaBQ7ECFRWUwTrvgYejOk6QPWgUpcsvwG8xSCx6JKrdOi0kLbMMUYaapny1G/R7A
-         oX1WtiqNvyxCB5wdcm69KztPCK4adr4qaGuHqp4sNgM0ems85pBslctZXLh+1dHQ0qhF
-         qwCw==
+        bh=TA5e5G5EPvnnL49j/b8nNcZDnZYJMuuDQgONa21D59s=;
+        b=HVTKD1PAZTSKPtyVTWjufOWJMa9K4lX7qwOMsIF7NIOSM8Detpe1AejJOFkMO2PWJ5
+         fDIk4DQWjDKhP/JOrJrLjo/7ZQP7Mc9OICb1YVPdlBwXrB4WJ5EOmChD6TYL1nUxK2aT
+         XtaLOPl6CT+P2FfG2vUAV9Uk6YyxRQvhHXxAiB999nvXMu0/+Q/YdiJ1jAb2vXFJPE4A
+         Zob0Y+YndTxFSqzrVRDqFLHHg8OrGsrXAbvABAPaF8zt9/TenjN9WeFPj4DFLmwuCcRF
+         hq66PcrB+aK0lEAYRkb9t6cqAoI0v4qKHjVtXQVeTtNROR0kA78eMAv/5r448V/VzzEu
+         lv1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695238123; x=1695842923;
+        d=1e100.net; s=20230601; t=1695238127; x=1695842927;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9BUlFc32U67LJr2U7BzHv473MxaTEfZQ+YLInYVLVj8=;
-        b=a2pzXqTAVm5psBTrPVjuoVjH/Tg8R5kUDMdRUAMnlhUnMq0EjJML8l8Jp7eNlnDoMV
-         bRw7LLHAuFxkqgrQqRUMkHqHgZG0bV+ODHYLwJJ/a8GpXH6hle6MjaprLDAi3sc8Tv/C
-         yxKng5kjkHTgB7984FpZLaY9mOiZQlLOgmwovpCumNyXO7poSDAz/9mt5PzSFpdmymMX
-         awdpMemLpGmdPWOMdQ5+0w2jPmXrM4jnSsGt3vx0tErqTAotEBDKe8IJTYUtIsnlqfkQ
-         9uZxRJjo2O80KDSX1bDV5RERVoYgfLMwypkcAaGGngf4CI5XjIO9LPbsS6H7mUZSLLfF
-         wclw==
-X-Gm-Message-State: AOJu0YzfpBduH5HTxh8DSJ+/v7+kreOD31tDpHhbmx6vgPQRlB5D+Kc9
-        Q5DD/ISsONDH7/2HbuGeYR8xtcnC0Xg=
-X-Google-Smtp-Source: AGHT+IFYNvADX+pg8J040J7aG80SLXnN5ERc9qA5f7ctLC5xfL2gP5i7P26Ct9T5OB35Yi6y+G1VvQ==
-X-Received: by 2002:a19:384b:0:b0:4fd:c715:5667 with SMTP id d11-20020a19384b000000b004fdc7155667mr2480908lfj.20.1695238123500;
-        Wed, 20 Sep 2023 12:28:43 -0700 (PDT)
-Received: from localhost ([178.176.82.53])
-        by smtp.gmail.com with ESMTPSA id d5-20020ac241c5000000b004fe28e3841bsm2793757lfi.267.2023.09.20.12.28.40
+        bh=TA5e5G5EPvnnL49j/b8nNcZDnZYJMuuDQgONa21D59s=;
+        b=xHMW3lJcnzHhdkWYpyNdnip3H+FAvfOS/F4hTOcWYHFNER9E7m9MZx2KpX9eHwnjK6
+         cIc2wy4kP7K23XEZb3LUB9roZrWW0whGyYB+YRV9J9mw8Pqjq5l/KiokYkoTIgZ+xhu3
+         PkhzrSFgI1Jo9Um5snlHgzjFMW8WCK+f709ZmIVXjUPl3DqMX0mrzcIiHhMwiOC4Ydil
+         hzr3j+3iUP3AM83H6KFWoXYReRnK2tGPghQswU0lWDzGnhIn+cd1794OVFVBYu26jf8U
+         70yG9xVTV9yuZwhafFGHw4Vmy61SeoFVHtcjIfHpX26O9+rLyP5y4LXf7hBkpxTgzUXY
+         gSeg==
+X-Gm-Message-State: AOJu0Yx24Rc17SJFk11WQ9gArhgM/wBaDBm3yhhPnBDSFNH4B44rparI
+        BoIUbh19KrIO/Z1J7E6fTss=
+X-Google-Smtp-Source: AGHT+IFZDSF5zoq/W8jvFfDRKCF1KokOy7dJYucnqgvUrulEP8IaDlgpjwEqAHOhtU+vPGMtXh3DmA==
+X-Received: by 2002:a05:6512:104f:b0:503:364e:96ce with SMTP id c15-20020a056512104f00b00503364e96cemr3532656lfb.29.1695238126987;
+        Wed, 20 Sep 2023 12:28:46 -0700 (PDT)
+Received: from localhost ([178.176.85.138])
+        by smtp.gmail.com with ESMTPSA id j26-20020a19f51a000000b004ff973cb14esm739436lfb.108.2023.09.20.12.28.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:28:42 -0700 (PDT)
+        Wed, 20 Sep 2023 12:28:45 -0700 (PDT)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Michal Simek <michal.simek@amd.com>,
         Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -66,9 +66,9 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 07/18] EDAC/synopsys: Parse ADDRMAP[7-8] CSRs for (LP)DDR4 only
-Date:   Wed, 20 Sep 2023 22:26:52 +0300
-Message-ID: <20230920192806.29960-8-fancer.lancer@gmail.com>
+Subject: [PATCH v4 08/18] EDAC/synopsys: Parse ADDRMAP[0] CSR for multi-ranks case only
+Date:   Wed, 20 Sep 2023 22:26:53 +0300
+Message-ID: <20230920192806.29960-9-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230920192806.29960-1-fancer.lancer@gmail.com>
 References: <20230920192806.29960-1-fancer.lancer@gmail.com>
@@ -84,56 +84,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These CSRs contain the SDRAM Bank Groups and row[16]/row[17] bits mapping,
-which are applicable for the DDR4 and LPDDR4 memory chips only. For the
-rest of the memories the ADDRMAP[7-8] registers are unused by the
-controller and are zeros by default. The zero values will be perceived by
-the HIF/SDRAM mapping detection procedure as normal bit positions, which
-is wrong. So in order to prevent that parse these registers only if they
-are applicable for the detected DDR protocol.
+The ADDRMAP[0] CSR contains the SDRAM Rank bits mapping (and memory
+channel mapping but it's irrelevant in this case). Obviously they are
+applicable for the multi-ranked memory only. If either the attached memory
+isn't multi-ranked or the controller simply doesn't support the multi-rank
+memory, parsing the ADDRMAP[0] CSR will be not just pointless, but in the
+later case erroneous since the CSR fields will contain zeros which will be
+perceived by the mapping detection procedure as a valid value. So the
+mapping will get to be invalid. Thus make sure the ADDRMAP[0] register is
+parsed only if a multi-ranked memory setup has been detected.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- drivers/edac/synopsys_edac.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/edac/synopsys_edac.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index b77bc84c0bb0..5a06038aedcb 100644
+index 5a06038aedcb..e6288e135480 100644
 --- a/drivers/edac/synopsys_edac.c
 +++ b/drivers/edac/synopsys_edac.c
-@@ -1008,12 +1008,15 @@ static void snps_setup_row_address_map(struct snps_edac_priv *priv, u32 *addrmap
- 	priv->row_shift[15] = (((addrmap[6] >> 24) & ROW_MAX_VAL_MASK) ==
- 				ROW_MAX_VAL_MASK) ? 0 : (((addrmap[6] >> 24) &
- 				ROW_MAX_VAL_MASK) + ROW_B15_BASE);
--	priv->row_shift[16] = ((addrmap[7] & ROW_MAX_VAL_MASK) ==
--				ROW_MAX_VAL_MASK) ? 0 : ((addrmap[7] &
--				ROW_MAX_VAL_MASK) + ROW_B16_BASE);
--	priv->row_shift[17] = (((addrmap[7] >> 8) & ROW_MAX_VAL_MASK) ==
--				ROW_MAX_VAL_MASK) ? 0 : (((addrmap[7] >> 8) &
--				ROW_MAX_VAL_MASK) + ROW_B17_BASE);
-+
-+	if (priv->info.sdram_mode == MEM_DDR4 || priv->info.sdram_mode == MEM_LPDDR4) {
-+		priv->row_shift[16] = ((addrmap[7] & ROW_MAX_VAL_MASK) ==
-+					ROW_MAX_VAL_MASK) ? 0 : ((addrmap[7] &
-+					ROW_MAX_VAL_MASK) + ROW_B16_BASE);
-+		priv->row_shift[17] = (((addrmap[7] >> 8) & ROW_MAX_VAL_MASK) ==
-+					ROW_MAX_VAL_MASK) ? 0 : (((addrmap[7] >> 8) &
-+					ROW_MAX_VAL_MASK) + ROW_B17_BASE);
+@@ -1146,9 +1146,12 @@ static void snps_setup_bg_address_map(struct snps_edac_priv *priv, u32 *addrmap)
+ 
+ static void snps_setup_rank_address_map(struct snps_edac_priv *priv, u32 *addrmap)
+ {
+-	priv->rank_shift[0] = ((addrmap[0] & RANK_MAX_VAL_MASK) ==
+-				RANK_MAX_VAL_MASK) ? 0 : ((addrmap[0] &
+-				RANK_MAX_VAL_MASK) + RANK_B0_BASE);
++	/* Ranks mapping is unavailable for the single-ranked memory */
++	if (priv->info.ranks > 1) {
++		priv->rank_shift[0] = ((addrmap[0] & RANK_MAX_VAL_MASK) ==
++					RANK_MAX_VAL_MASK) ? 0 : ((addrmap[0] &
++					RANK_MAX_VAL_MASK) + RANK_B0_BASE);
 +	}
  }
  
- static void snps_setup_column_address_map(struct snps_edac_priv *priv, u32 *addrmap)
-@@ -1129,6 +1132,10 @@ static void snps_setup_bank_address_map(struct snps_edac_priv *priv, u32 *addrma
- 
- static void snps_setup_bg_address_map(struct snps_edac_priv *priv, u32 *addrmap)
- {
-+	/* Bank group signals are available on the DDR4 memory only */
-+	if (priv->info.sdram_mode != MEM_DDR4)
-+		return;
-+
- 	priv->bankgrp_shift[0] = (addrmap[8] &
- 				BANKGRP_MAX_VAL_MASK) + BANKGRP_B0_BASE;
- 	priv->bankgrp_shift[1] = (((addrmap[8] >> 8) & BANKGRP_MAX_VAL_MASK) ==
+ /**
 -- 
 2.41.0
 
