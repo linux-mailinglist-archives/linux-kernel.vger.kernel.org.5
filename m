@@ -2,136 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A647A89B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A02E7A89AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234779AbjITQoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        id S234724AbjITQnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234802AbjITQom (ORCPT
+        with ESMTP id S234501AbjITQnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 12:44:42 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8C1AD;
-        Wed, 20 Sep 2023 09:44:36 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38KGiPvq107107;
-        Wed, 20 Sep 2023 11:44:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695228265;
-        bh=s7HosED0HiRN/Farus8C14hAZV0LN1la064sKC2XqYQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=SNEy30wTl5t7mJOrpc2UwPmTMHFScG6LXBUmtybzneVTYLinscXFCPj81i10KNhp2
-         MVBaaP3exrTPXITCi/PEefqaRCrxNgMR2viPZ8lLrYM9ordlwYIyYBFa1uusNvqLDl
-         Nnb0IOFBN0dJT32VnkIN2EfuGQj2Y+mHPPz/I2qw=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38KGiPTX103967
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 Sep 2023 11:44:25 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 20
- Sep 2023 11:44:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 20 Sep 2023 11:44:24 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38KGiOwT010187;
-        Wed, 20 Sep 2023 11:44:24 -0500
-Date:   Wed, 20 Sep 2023 11:44:24 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Roger Quadros <rogerq@kernel.org>
-CC:     <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srk@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] arm64: dts: ti: am642-evm: Add overlay for NAND
- expansion card
-Message-ID: <20230920164424.rrjvm6nvtv4ysyrw@unreal>
-References: <20230920133450.54226-1-rogerq@kernel.org>
- <20230920133450.54226-3-rogerq@kernel.org>
- <20230920135802.3ej2wcuaruqjidel@uncouth>
- <e8f26137-1284-4f45-a74d-a0a5f2aa2f93@kernel.org>
+        Wed, 20 Sep 2023 12:43:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34CCCA;
+        Wed, 20 Sep 2023 09:43:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 969C7C433C8;
+        Wed, 20 Sep 2023 16:43:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695228197;
+        bh=yoeBHvv0QH4aSbA/oAFONsW054HHzRA0z4ZaijSOAlc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LeV+LG/YDoC0+9+af/1a5Erov8uH1NXbRSMm0skLWpjY60cckKI6qu9LLr423DlEP
+         K9uWquTpLB9RWPNiu+PmRd6A6Mb0VKcA915WtUdut1jLLMS/8eyXg829y3P6mcaiC7
+         Aehjlj2/Oni844AAV0PBxeDuYsITbYl1HO60wwEDsBmJCQj/+WTO2/oGNgcUhgmxQB
+         o81AtA3PFgJ7Byji5HpOfT1Fq00sSA1Gw10TXSdRbDL31DJ8TKge5lhRMjCZzDGEv+
+         SfGvgaqrZC+AFTk01bLh1OHeh7WJhcIj9lGQaqkrmm/UE/4KW9fWboFvjzSf6ERia+
+         XTrthmm7kDlfg==
+Date:   Wed, 20 Sep 2023 09:47:24 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Sridharan S N <quic_sridsn@quicinc.com>
+Cc:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: ipq9574: add support for the
+ RDP417 variant
+Message-ID: <zn43mwjxnbpah2xnvsqpvzqthbksgrall7hkoh5ilosu4lmnwp@sf2dw7osdw2x>
+References: <20230713152522.1063154-1-quic_sridsn@quicinc.com>
+ <20230713152522.1063154-3-quic_sridsn@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e8f26137-1284-4f45-a74d-a0a5f2aa2f93@kernel.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230713152522.1063154-3-quic_sridsn@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18:18-20230920, Roger Quadros wrote:
+On Thu, Jul 13, 2023 at 08:55:22PM +0530, Sridharan S N wrote:
+> Add the initial device tree support for the Reference Design
+> Platform(RDP) 417 based on IPQ9574 family of SoC.
 > 
-> 
-> On 20/09/2023 16:58, Nishanth Menon wrote:
-> > On 16:34-20230920, Roger Quadros wrote:
-> >> The NAND expansion card plugs in over the HSE (High Speed Expansion)
-> >> connector. Add support for it.
-> >>
-> >> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> >> ---
-> >>  arch/arm64/boot/dts/ti/Makefile               |   1 +
-> >>  arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 140 ++++++++++++++++++
-> >>  2 files changed, 141 insertions(+)
-> >>  create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
-> >>
-> >> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> >> index 06d6f264f292..ece74085a6be 100644
-> >> --- a/arch/arm64/boot/dts/ti/Makefile
-> >> +++ b/arch/arm64/boot/dts/ti/Makefile
-> >> @@ -29,6 +29,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62p5-sk.dtb
-> >>  
-> >>  # Boards with AM64x SoC
-> >>  dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
-> >> +dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtbo
-> >>  dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
-> >>  dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
-> >>  dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
-> > 
-> > Also see https://lore.kernel.org/all/20230911165610.GA1362932-robh@kernel.org/
-> > 
-> > you may not get the dtbo installed when doing make dtbs_install
-> > 
-> > [...]
-> > 
-> 
-> $ v8make dtbs_install INSTALL_DTBS_PATH=/tmp
->   INSTALL /tmp/ti/k3-am625-beagleplay.dtb
->   INSTALL /tmp/ti/k3-am625-phyboard-lyra-rdk.dtb
->   INSTALL /tmp/ti/k3-am625-sk.dtb
->   INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dahlia.dtb
->   INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dev.dtb
->   INSTALL /tmp/ti/k3-am625-verdin-nonwifi-yavia.dtb
->   INSTALL /tmp/ti/k3-am625-verdin-wifi-dahlia.dtb
->   INSTALL /tmp/ti/k3-am625-verdin-wifi-dev.dtb
->   INSTALL /tmp/ti/k3-am625-verdin-wifi-yavia.dtb
->   INSTALL /tmp/ti/k3-am62-lp-sk.dtb
->   INSTALL /tmp/ti/k3-am62x-sk-hdmi-audio.dtbo
->   INSTALL /tmp/ti/k3-am62a7-sk.dtb
->   INSTALL /tmp/ti/k3-am62p5-sk.dtb
->   INSTALL /tmp/ti/k3-am642-evm.dtb
->   INSTALL /tmp/ti/k3-am642-evm-nand.dtbo
-> ^^^^
->   INSTALL /tmp/ti/k3-am642-phyboard-electra-rdk.dtb
->   INSTALL /tmp/ti/k3-am642-sk.dtb
-> 
-> 
-> What did I miss?
+> Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
 
-I missed it, actually. See Rob's comment:
-https://lore.kernel.org/all/CAL_Jsq+GR3hP6hFvFn2z5aXvSXnh9butD3aKZ-y_XJgx0_YPTw@mail.gmail.com/
+Please spell out your name.
 
-Having orphan dtbo is apparently frowned upon
+> ---
+> changes in v2:
+> 	- updated commit message.Moved dependency to change log
+> 	  This patch depends on below patchset:
+> 	  https://lore.kernel.org/lkml/20230713105909.14209-2-quic_anusha@quicinc.com/
 
--- 
+I don't see a new version of this, perhaps I'm just missing it. Please
+resubmit this, if it's still relevant.
+
 Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Bjorn
+
+> 	
+> 
+>  arch/arm64/boot/dts/qcom/Makefile           |  1 +
+>  arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts | 16 ++++++++++++++++
+>  2 files changed, 17 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 337abc4ceb17..9c30344d08c1 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -12,6 +12,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c2.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp417.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp418.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp433.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp449.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
+> new file mode 100644
+> index 000000000000..9a5d4c3db1f2
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
+> @@ -0,0 +1,16 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> +/*
+> + * IPQ9574 RDP417 board device tree source
+> + *
+> + * Copyright (c) 2020-2021 The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "ipq9574-rdp-common.dtsi"
+> +
+> +/ {
+> +	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL01-C1";
+> +	compatible = "qcom,ipq9574-ap-al01-c1", "qcom,ipq9574";
+> +};
+> -- 
+> 2.34.1
+> 
