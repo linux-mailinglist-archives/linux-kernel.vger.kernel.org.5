@@ -2,149 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9362E7A8FEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D84F7A8FF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjITXmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 19:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
+        id S229638AbjITXpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 19:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjITXmF (ORCPT
+        with ESMTP id S229468AbjITXo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 19:42:05 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCCFC9;
-        Wed, 20 Sep 2023 16:41:58 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KMkDIW019187;
-        Wed, 20 Sep 2023 23:41:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=8KAHJyb7ukMJL9JrE9n3VvcVa5V7tnW/DWUd0mk62fY=;
- b=HbjQATyCTC/6PLpQbAbTPJyU4Bt2xzoFAIuicO2LiX9htYKQ4ZFqhCwTX41d3yoUBX4O
- Y++bZz6kRwDQw1wzY4L1DrgKsMYPuZJwJTyuxxYHHqF/wY16QI1R4j+aVEnIcxEa6w2v
- 1VdXRD377BcPbz15VMC0IZcIWoOooLLGNaHcvxJhaY+xZg7PWl2tPdn6+TxmGEWEpkky
- GK4wwdSwQDK8hya8HvNWLxO3BIK7DEnX9QC3aI9bcs6RZNeu3tYyh9FFhGj+Z7/OO4FD
- IThn2+zNKEh2riDJQvTYSAW8KHLVNN5LolV8y7asnlBE9FnpocFrgXUDoaUDLqxuUrvC Dg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7rhuthv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 23:41:42 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38KNffS5026075
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 23:41:41 GMT
-Received: from [10.71.111.102] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 20 Sep
- 2023 16:41:39 -0700
-Message-ID: <3b23270c-ec89-2177-8252-6ccaf58d37ac@quicinc.com>
-Date:   Wed, 20 Sep 2023 16:41:39 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 1/3] drm/msm/dpu: Fix SC7280 PP length
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20230921-topic-7280_dpu-v1-0-6912a97183d5@linaro.org>
- <20230921-topic-7280_dpu-v1-1-6912a97183d5@linaro.org>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20230921-topic-7280_dpu-v1-1-6912a97183d5@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 5aMlcQT71gL4U0CQLsyPDlhyxVdm4f83
-X-Proofpoint-GUID: 5aMlcQT71gL4U0CQLsyPDlhyxVdm4f83
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_12,2023-09-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 adultscore=0 mlxlogscore=858 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309200199
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 19:44:57 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9E0D9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:44:49 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c577fea3dcso2779325ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:44:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695253489; x=1695858289; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YMbatuEIGrWsTlMlK7Tk6yapZGH8kwO0Z4+wG56Y3PQ=;
+        b=hz/qLqNkPaJwrFs4Bfl+b+D2DMfp7nppSPU1y3a9M5mOOqTEaCTcY1Qb/tbs/vZJ3I
+         0pCFwsgOoCU/5SKXWlWY4gG1/VF9tXAoJ9NyLvdFYKn3YpubFq7yoaFJfPa5G0hxuVIj
+         1wjHcqK/1f1di1Of2NbZnD6XaaYIY9+sfkiVl7uRYef/Ob3p0P2MRcGj16uQSiu+F8co
+         2e/NVdI9W30clWI2J7aTfD8OqTUEQtplGpPRBuMluYGTt+Rd/Kjx/qxgtQJEZdxGSIeT
+         Z9lCU8YVH7CjyVp2P3ZuerKl4vl0jJajuspHr5RdWeLVpD/8UQhic6ZUVt2cLw23Ge28
+         nsEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695253489; x=1695858289;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YMbatuEIGrWsTlMlK7Tk6yapZGH8kwO0Z4+wG56Y3PQ=;
+        b=OFmZ7ur0zB3E1Dg/k+37kUagPjzCJ1ONs3XWugFNaasd/uDfTM/CzP09OIgbTyOVLO
+         +cYD6PS2ZGEILddlC9hiOrD2Y3eAotSoMzVHin7Lk3s4i4WUVxYmnMF/IJl2iI3yP8Bg
+         G+DCbBiObH5QyHg7HVcWRS8THkf4187RCW2wYeD9qYCijqlUNDWz4O4ymm0t5ZbUOKNp
+         ienB8oZFboxBjCtcMotF1RwzJA9La73KV7k6L+TFdDdJKPMjYV4XuWAwUYfYbhJ5378r
+         dZKjV6CUjDFWeeLzOyofBMlFxEZoAiJhq7eyYEAaodZrCzXLWtWARrcfR6qdjI7zq6b+
+         M+IQ==
+X-Gm-Message-State: AOJu0YwbTjMxkJ9z+qQbklr48BNMIkqcmSUqwb39IxwDOLAth6pMew18
+        lEycHNwHpDMjCpiuyDG06P1O53d5ZCQ=
+X-Google-Smtp-Source: AGHT+IHQbG7yFE9jJPEUI1XKEjcd5Hn7eouqEyZetIlWhAmmYx1Ip3XqohOdLN8YNlfaQrxQ5DSfhNksAYI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:22d0:b0:1ae:6895:cb96 with SMTP id
+ y16-20020a17090322d000b001ae6895cb96mr56298plg.5.1695253488829; Wed, 20 Sep
+ 2023 16:44:48 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 16:44:47 -0700
+In-Reply-To: <20230918163647.m6bjgwusc7ww5tyu@amd.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-15-seanjc@google.com>
+ <20230918163647.m6bjgwusc7ww5tyu@amd.com>
+Message-ID: <ZQuD77vlBiSU/PE4@google.com>
+Subject: Re: [RFC PATCH v12 14/33] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/20/2023 3:46 PM, Konrad Dybcio wrote:
-> Commit 194347df5844 ("drm/msm/dpu: inline DSC_BLK and DSC_BLK_1_2
-> macros") unrolled a macro incorrectly. Fix that.
+On Mon, Sep 18, 2023, Michael Roth wrote:
+> > +static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+> > +{
+> > +	struct list_head *gmem_list = &inode->i_mapping->private_list;
+> > +	pgoff_t start = offset >> PAGE_SHIFT;
+> > +	pgoff_t end = (offset + len) >> PAGE_SHIFT;
+> > +	struct kvm_gmem *gmem;
+> > +
+> > +	/*
+> > +	 * Bindings must stable across invalidation to ensure the start+end
+> > +	 * are balanced.
+> > +	 */
+> > +	filemap_invalidate_lock(inode->i_mapping);
+> > +
+> > +	list_for_each_entry(gmem, gmem_list, entry) {
+> > +		kvm_gmem_invalidate_begin(gmem, start, end);
 > 
+> In v11 we used to call truncate_inode_pages_range() here to drop filemap's
+> reference on the folio. AFAICT the folios are only getting free'd upon
+> guest shutdown without this. Was this on purpose?
 
-No, its correct from what i can tell.
+Nope, I just spotted this too.  And then after scratching my head for a few minutes,
+wondering if I was having an -ENOCOFFEE moment, I finally read your mail.  *sigh*
 
-Before inlining it was using PP_BLK_DITHER macro and not PP_BLK.
+Looking at my reflog history, I'm pretty sure I deleted the wrong line when
+removing the truncation from kvm_gmem_error_page().
 
-PP_BLK_DITHER has a len of 0 and not 0xd4.
-
-Hence I cannot see whats wrong here.
-
-> Fixes: 194347df5844 ("drm/msm/dpu: inline DSC_BLK and DSC_BLK_1_2 macros")
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+> > +		kvm_gmem_invalidate_end(gmem, start, end);
+> > +	}
+> > +
+> > +	filemap_invalidate_unlock(inode->i_mapping);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static long kvm_gmem_allocate(struct inode *inode, loff_t offset, loff_t len)
+> > +{
+> > +	struct address_space *mapping = inode->i_mapping;
+> > +	pgoff_t start, index, end;
+> > +	int r;
+> > +
+> > +	/* Dedicated guest is immutable by default. */
+> > +	if (offset + len > i_size_read(inode))
+> > +		return -EINVAL;
+> > +
+> > +	filemap_invalidate_lock_shared(mapping);
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
-> index 3b5061c4402a..dc3198335164 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
-> @@ -126,7 +126,7 @@ static const struct dpu_dspp_cfg sc7280_dspp[] = {
->   static const struct dpu_pingpong_cfg sc7280_pp[] = {
->   	{
->   		.name = "pingpong_0", .id = PINGPONG_0,
-> -		.base = 0x69000, .len = 0,
-> +		.base = 0x69000, .len = 0xd4,
->   		.features = BIT(DPU_PINGPONG_DITHER),
->   		.sblk = &sc7280_pp_sblk,
->   		.merge_3d = 0,
-> @@ -134,7 +134,7 @@ static const struct dpu_pingpong_cfg sc7280_pp[] = {
->   		.intr_rdptr = -1,
->   	}, {
->   		.name = "pingpong_1", .id = PINGPONG_1,
-> -		.base = 0x6a000, .len = 0,
-> +		.base = 0x6a000, .len = 0xd4,
->   		.features = BIT(DPU_PINGPONG_DITHER),
->   		.sblk = &sc7280_pp_sblk,
->   		.merge_3d = 0,
-> @@ -142,7 +142,7 @@ static const struct dpu_pingpong_cfg sc7280_pp[] = {
->   		.intr_rdptr = -1,
->   	}, {
->   		.name = "pingpong_2", .id = PINGPONG_2,
-> -		.base = 0x6b000, .len = 0,
-> +		.base = 0x6b000, .len = 0xd4,
->   		.features = BIT(DPU_PINGPONG_DITHER),
->   		.sblk = &sc7280_pp_sblk,
->   		.merge_3d = 0,
-> @@ -150,7 +150,7 @@ static const struct dpu_pingpong_cfg sc7280_pp[] = {
->   		.intr_rdptr = -1,
->   	}, {
->   		.name = "pingpong_3", .id = PINGPONG_3,
-> -		.base = 0x6c000, .len = 0,
-> +		.base = 0x6c000, .len = 0xd4,
->   		.features = BIT(DPU_PINGPONG_DITHER),
->   		.sblk = &sc7280_pp_sblk,
->   		.merge_3d = 0,
+> We take the filemap lock here, but not for
+> kvm_gmem_get_pfn()->kvm_gmem_get_folio(). Is it needed there as well?
+
+No, we specifically do not want to take a rwsem when faulting in guest memory.
+Callers of kvm_gmem_get_pfn() *must* guard against concurrent invalidations via
+mmu_invalidate_seq and friends.
+
+> > +	/*
+> > +	 * For simplicity, require the offset into the file and the size of the
+> > +	 * memslot to be aligned to the largest possible page size used to back
+> > +	 * the file (same as the size of the file itself).
+> > +	 */
+> > +	if (!kvm_gmem_is_valid_size(offset, flags) ||
+> > +	    !kvm_gmem_is_valid_size(size, flags))
+> > +		goto err;
 > 
+> I needed to relax this check for SNP. KVM_GUEST_MEMFD_ALLOW_HUGEPAGE
+> applies to entire gmem inode, so it makes sense for userspace to enable
+> hugepages if start/end are hugepage-aligned, but QEMU will do things
+> like map overlapping regions for ROMs and other things on top of the
+> GPA range that the gmem inode was originally allocated for. For
+> instance:
+> 
+>   692500@1689108688.696338:kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x4 gpa=0x0 size=0x80000000 ua=0x7fbf5be00000 ret=0 restricted_fd=19 restricted_offset=0x0
+>   692500@1689108688.699802:kvm_set_user_memory AddrSpace#0 Slot#1 flags=0x4 gpa=0x100000000 size=0x380000000 ua=0x7fbfdbe00000 ret=0 restricted_fd=19 restricted_offset=0x80000000
+>   692500@1689108688.795412:kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x0 gpa=0x0 size=0x0 ua=0x7fbf5be00000 ret=0 restricted_fd=19 restricted_offset=0x0
+>   692500@1689108688.795550:kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x4 gpa=0x0 size=0xc0000 ua=0x7fbf5be00000 ret=0 restricted_fd=19 restricted_offset=0x0
+>   692500@1689108688.796227:kvm_set_user_memory AddrSpace#0 Slot#6 flags=0x4 gpa=0x100000 size=0x7ff00000 ua=0x7fbf5bf00000 ret=0 restricted_fd=19 restricted_offset=0x100000
+> 
+> Because of that the KVM_SET_USER_MEMORY_REGIONs for non-THP-aligned GPAs
+> will fail. Maybe instead it should be allowed, and kvm_gmem_get_folio()
+> should handle the alignment checks on a case-by-case and simply force 4k
+> for offsets corresponding to unaligned bindings?
+
+Yeah, I wanted to keep the code simple, but disallowing small bindings/memslots
+is probably going to be a deal-breaker.  Even though I'm skeptical that QEMU
+_needs_ to play these games for SNP guests, not playing nice will make it all
+but impossible to use guest_memfd for regular VMs.
+
+And the code isn't really any more complex, so long as we punt on allowing
+hugepages on interior sub-ranges.
+
+Compile-tested only, but this?
+
+---
+ virt/kvm/guest_mem.c | 54 ++++++++++++++++++++++----------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
+
+diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
+index a819367434e9..dc12e38211df 100644
+--- a/virt/kvm/guest_mem.c
++++ b/virt/kvm/guest_mem.c
+@@ -426,20 +426,6 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags,
+ 	return err;
+ }
+ 
+-static bool kvm_gmem_is_valid_size(loff_t size, u64 flags)
+-{
+-	if (size < 0 || !PAGE_ALIGNED(size))
+-		return false;
+-
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	if ((flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE) &&
+-	    !IS_ALIGNED(size, HPAGE_PMD_SIZE))
+-		return false;
+-#endif
+-
+-	return true;
+-}
+-
+ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
+ {
+ 	loff_t size = args->size;
+@@ -452,9 +438,15 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
+ 	if (flags & ~valid_flags)
+ 		return -EINVAL;
+ 
+-	if (!kvm_gmem_is_valid_size(size, flags))
++	if (size < 0 || !PAGE_ALIGNED(size))
+ 		return -EINVAL;
+ 
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	if ((flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE) &&
++	    !IS_ALIGNED(size, HPAGE_PMD_SIZE))
++		return false;
++#endif
++
+ 	return __kvm_gmem_create(kvm, size, flags, kvm_gmem_mnt);
+ }
+ 
+@@ -462,7 +454,7 @@ int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		  unsigned int fd, loff_t offset)
+ {
+ 	loff_t size = slot->npages << PAGE_SHIFT;
+-	unsigned long start, end, flags;
++	unsigned long start, end;
+ 	struct kvm_gmem *gmem;
+ 	struct inode *inode;
+ 	struct file *file;
+@@ -481,16 +473,9 @@ int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		goto err;
+ 
+ 	inode = file_inode(file);
+-	flags = (unsigned long)inode->i_private;
+ 
+-	/*
+-	 * For simplicity, require the offset into the file and the size of the
+-	 * memslot to be aligned to the largest possible page size used to back
+-	 * the file (same as the size of the file itself).
+-	 */
+-	if (!kvm_gmem_is_valid_size(offset, flags) ||
+-	    !kvm_gmem_is_valid_size(size, flags))
+-		goto err;
++	if (offset < 0 || !PAGE_ALIGNED(offset))
++		return -EINVAL;
+ 
+ 	if (offset + size > i_size_read(inode))
+ 		goto err;
+@@ -591,8 +576,23 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 	page = folio_file_page(folio, index);
+ 
+ 	*pfn = page_to_pfn(page);
+-	if (max_order)
+-		*max_order = compound_order(compound_head(page));
++	if (!max_order)
++		goto success;
++
++	*max_order = compound_order(compound_head(page));
++	if (!*max_order)
++		goto success;
++
++	/*
++	 * For simplicity, allow mapping a hugepage if and only if the entire
++	 * binding is compatible, i.e. don't bother supporting mapping interior
++	 * sub-ranges with hugepages (unless userspace comes up with a *really*
++	 * strong use case for needing hugepages within unaligned bindings).
++	 */
++	if (!IS_ALIGNED(slot->gmem.pgoff, 1ull << *max_order) ||
++	    !IS_ALIGNED(slot->npages, 1ull << *max_order))
++		*max_order = 0;
++success:
+ 	r = 0;
+ 
+ out_unlock:
+
+base-commit: bc1a54ee393e0574ea422525cf0b2f1e768e38c5
+-- 
+
