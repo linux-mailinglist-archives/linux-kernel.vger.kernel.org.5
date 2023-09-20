@@ -2,52 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9407A8679
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5657D7A8687
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbjITOZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
+        id S234742AbjITO2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235174AbjITOY7 (ORCPT
+        with ESMTP id S234641AbjITO2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:24:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDFDD7;
-        Wed, 20 Sep 2023 07:24:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3178C433C8;
-        Wed, 20 Sep 2023 14:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695219890;
-        bh=RViBJ1ipCpvcOamR36FBZv/+zuY68gbePAurU1aB8A0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o0zxW3WhPXPdjGkBVHgfiGfkhrq0T1IM6K/OdjXSOqWF92J9cPrB8iClVSWHJcPew
-         GNPMu0KprRsTgynMWZPIerPkcDms+5vJOmMVdF+2VC7VjtyiwT+kj+tdNhzSdmAUD2
-         hU0aoNYyyN0/G0DSUnqjmHasvpMXC1qNNoLU1oEpBt32jOQcon/zNg6Fi48+KM14fp
-         Ky64mdl2BLSLaznU8c38BAivfhtoL4ccYXOXNCstrduAoxSN+PeZMMku0vzeP35AKU
-         LEIXCQP+TGB3kxH/fZrD0osEnxPj5WRR8aTdMzPbcYr0eKqCp5pwHoyHZbban9CILe
-         8KgB/v+77jI6A==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.5 000/211] 6.5.5-rc1 review
-Date:   Wed, 20 Sep 2023 14:24:47 +0000
-Message-Id: <20230920142447.1843-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230920112845.859868994@linuxfoundation.org>
-References: 
+        Wed, 20 Sep 2023 10:28:48 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AF1CE
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:28:41 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c007d6159aso56263891fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695220120; x=1695824920; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LtxCq9Na6rpCtPYQhYFE+hYkNtnlIQOOpKV463CAC6I=;
+        b=fx3mtXeOQDHaBTQqDb8QNb5zG9AA0ZRMUjibtAtPb8eIW47Rg8uPulz6+FPRi/yEQU
+         T7nZjwO5DcDXFv9DRXh4MVFjvSBqE8xjoxuHOdn3uRq3BvaqgJfvLwIB1Lt3g5zsO2J2
+         bA+7ifQ9dGnWwYQEvm87fDeC2VhZA54P5Y3SYwszQwamig6B4CgbiF1GEucv2cJQOAg0
+         6aJFHn2IxXypSw9y4l0UV87vemzYPgKjOz6WAaQmaOBG2NTWfmtAaDkc3rMEDH1OZmkn
+         DLYVuQEqEZ3hXmPO/O80mCBpRF3IIaej1VvoOJrMifY/AhdLNB/oOnzJ0lbjQZG/ZlbC
+         FFcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695220120; x=1695824920;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LtxCq9Na6rpCtPYQhYFE+hYkNtnlIQOOpKV463CAC6I=;
+        b=gfLG1aOZc+NmX3wXIkAyB25d/61S7bYcP/axQ4xJvwNqRkfU1zgL6lRCkUAlL2hx61
+         bG8URktuqXwmH+MauVs7Af4dimiXbtB0Od9uS2w43wiLFV4IqUjTsJmUOppWzEoOQIXy
+         N8YtZF34+J5w7l1uB/6JVia6AEFkQ2n2qS4goaykZtto5UFk/4x3KITix3Oz4a4391Ke
+         FMurUb+edb/o0AwDkic33cTTcLjBAK+opHbTtWQxL7msNle/eIwp7h8SLaqqb/Aqnv2I
+         qsSMWqWwPlkLZyp7Z8t9dKakLtP+YbRLuzGZiumRVDgiNdQN+OcrM23ARDA16uPbnoYH
+         LueQ==
+X-Gm-Message-State: AOJu0Yy09EWtdSr09B9IsOT7Q6o6IzvsFMNI2TsjbCR1ajM7GCQBFsT0
+        IO4Y6M8AwX5phZ2+oJM3B6A2uw==
+X-Google-Smtp-Source: AGHT+IHy7BqgLDFZs6UQbHtu2/7vJypH4EJX8MKjk8ev1/EHp8Jj55x1ob7FX8sqs1VAb0K4W9HOQA==
+X-Received: by 2002:a2e:884e:0:b0:2bc:39f5:ecb4 with SMTP id z14-20020a2e884e000000b002bc39f5ecb4mr2411051ljj.25.1695220119763;
+        Wed, 20 Sep 2023 07:28:39 -0700 (PDT)
+Received: from [172.20.86.172] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id f13-20020a170906390d00b00982a92a849asm9418489eje.91.2023.09.20.07.28.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 07:28:39 -0700 (PDT)
+Message-ID: <911fd752-d5dc-79e2-91b7-74c70e5d8632@linaro.org>
+Date:   Wed, 20 Sep 2023 16:28:38 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 4/5] PCI: epf-mhi: Add support for SA8775P
+Content-Language: en-US
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, mani@kernel.org
+Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+        linux-phy@lists.infradead.org
+References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
+ <1695218113-31198-5-git-send-email-quic_msarkar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <1695218113-31198-5-git-send-email-quic_msarkar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,65 +88,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Wed, 20 Sep 2023 13:27:24 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 6.5.5 release.
-> There are 211 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 9/20/23 15:55, Mrinmay Sarkar wrote:
+> Add support for Qualcomm Snapdragon SA8775P SoC to the EPF driver.
+> SA8775P has the PID (0x0306) and supports HDMA. Currently, it has
+> no fixed PCI class, so it is being advertised as "PCI_CLASS_OTHERS".
 > 
-> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+>   drivers/pci/endpoint/functions/pci-epf-mhi.c | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.5-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> index b7b9d3e..4b349fd 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> @@ -114,6 +114,23 @@ static const struct pci_epf_mhi_ep_info sm8450_info = {
+>   	.flags = MHI_EPF_USE_DMA,
+>   };
+>   
+> +static struct pci_epf_header sa8775p_header = {
+const?
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 9e47a110b1b5 ("Linux 6.5.5-rc1")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+Konrad
