@@ -2,126 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3D37A7915
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B967A7919
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233924AbjITKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
+        id S234294AbjITKXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233999AbjITKVs (ORCPT
+        with ESMTP id S233864AbjITKXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:21:48 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C390EAD;
-        Wed, 20 Sep 2023 03:21:41 -0700 (PDT)
-Received: from [192.168.2.41] (77-166-152-30.fixed.kpn.net [77.166.152.30])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2BF7C212C4B3;
-        Wed, 20 Sep 2023 03:21:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2BF7C212C4B3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695205301;
-        bh=2MniQsug91jwOSu/YyVgz9F4Hyl7CDet0WnAmSOuWhY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=DZF28Ylh13QXobO3U0L2pHvZLnHVj+gNmED89RYf4K5gqiLYlvfCnMYMTZ2tTuQ40
-         GBvDVBnt2dAlSXtVEiuhkRJK0lzkvBIRyNhbA3bMmPuhzyX2WpSLnDJlmsXAaIRUpU
-         wsPR2CjegMpKHQw1xjum7hKE9MR75K6HRoSouIvU=
-Message-ID: <76525b1a-6857-434d-86ee-3c2ff4db0e4c@linux.microsoft.com>
-Date:   Wed, 20 Sep 2023 12:21:37 +0200
+        Wed, 20 Sep 2023 06:23:22 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A42AF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:23:16 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so8404173a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:23:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695205394; x=1695810194; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RBlFPN4rTkvNkIwWrvWpLVOcnwv+R23CbwzJnrGYB5Q=;
+        b=vl7v/rHUnxVgRjBExA2/rBghzGOU38LmkRZ4TENkUu1g+eUHFyL0qHMzFLf2EJtmQW
+         zSYvkAw7uG2DH/8waB8Ha3s3ob2bGiw+B+08VLoLSRfI39BmKOakZ9mSp7m2Nuhd3TjX
+         cHo9xNu75S3sokRMALw1IfcYNnvTGdcEZTP6wz17vk7ZBH+mwVYKBcA3FwhH3qzgrmvK
+         OjqtiqijTajMZ11UJRri2ELeVlcQTZCX7QZQQmEIirqFOSwP7Fl0XdXtdcuKUnc10Wlp
+         zFiufk91rGHDrWmeGBkZRXGlZQmV9Iz+LdX/+RJ1RRYeFHq58ZndaZByTSa8I27VcRCX
+         TIkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695205394; x=1695810194;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RBlFPN4rTkvNkIwWrvWpLVOcnwv+R23CbwzJnrGYB5Q=;
+        b=uQgdhQGZgPj/Zw1M64wGGbsPmsdI2QGSpoeCNJ8A1zsLG6FdvomlikIa/7Fu3i/e0i
+         jYa6QyuRO01PFa9jQc0jcAh/qUQEY8BNvdRzWBhNEvXjw9lUzhK3qWLHgkrq3pAiHTZl
+         g6zci9iNOv2+pAfsSEf7sgmRyHFaxfQ5FcMY/2BawmOGuVsHeEo9jbE0iQ4TdpoosNtS
+         2m5tzVpnVFB7loFLK8qJqlBNVrezxYMbienYjENhxes0MeQohh/9h+M3w4aVThk3U2iB
+         2J57u3MpN0XI0Gi9BFukGn56JSE7vMZ71s3v2GUIjL2+rZZCPnQrpeRa6YdLpBN5iNJR
+         rYwQ==
+X-Gm-Message-State: AOJu0YxG/3BIFAjKm+J/ojGbN7yTEn3QCq1IQk8QwSCv0EcpV/M5TNsy
+        3gzFshHm6BTqBJLAaSSWYBilXQ==
+X-Google-Smtp-Source: AGHT+IFQ9N7cmG2hrJt3k0vQuqNuVRpWI/r0U6RCPWb3X6phrFE4fTmuSKXBdG5HqOkgH191zMBCWg==
+X-Received: by 2002:a17:906:1015:b0:9a9:d651:68f5 with SMTP id 21-20020a170906101500b009a9d65168f5mr1642291ejm.3.1695205394405;
+        Wed, 20 Sep 2023 03:23:14 -0700 (PDT)
+Received: from uffe-tuxpro14.. (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id cf21-20020a170906b2d500b009ad8d444be4sm9061397ejb.43.2023.09.20.03.23.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 03:23:13 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        linux-mips@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+Subject: [PATCH v3 05/17] pmdomain: bcm: Move Kconfig options to the pmdomain subsystem
+Date:   Wed, 20 Sep 2023 12:22:22 +0200
+Message-Id: <20230920102222.39831-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
- kmem.limit_in_bytes
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
-        mathieu.tortuyaux@gmail.com
-References: <20230917191040.964416434@linuxfoundation.org>
- <20230917191042.204185566@linuxfoundation.org>
- <20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz> <2023092032-applied-gave-0bff@gregkh>
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <2023092032-applied-gave-0bff@gregkh>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/2023 11:25 AM, Greg Kroah-Hartman wrote:
-> On Wed, Sep 20, 2023 at 10:43:56AM +0200, Michal Hocko wrote:
->> On Wed 20-09-23 01:11:01, Jeremi Piotrowski wrote:
->>> On Sun, Sep 17, 2023 at 09:12:40PM +0200, Greg Kroah-Hartman wrote:
->>>> 6.1-stable review patch.  If anyone has any objections, please let me know.
->>>>
->>>> ------------------
->>>
->>> Hi Greg/Michal,
->>>
->>> This commit breaks userspace which makes it a bad commit for mainline and an
->>> even worse commit for stable.
->>>
->>> We ingested 6.1.54 into our nightly testing and found that runc fails to gather
->>> cgroup statistics (when reading kmem.limit_in_bytes). The same code is vendored
->>> into kubelet and kubelet fails to start if this operation fails. 6.1.53 is
->>> fine.
->>
->> Could you expand some more on why is the file read? It doesn't support
->> writing to it for some time so how does reading it helps in any sense?
->>
->> Anyway, I do agree that the stable backport should be reverted.
-> 
-> That will just postpone the breakage, we really shouldn't break
-> userspace.
-> 
-> That being said, having userspace "break" because a file is no longer
-> present is not good coding style on the userspace side at all.  That's
-> why we have sysfs and single-value-files now, if the file isn't present,
-> then userspace instantly notices and can handle it.  Much easier than
-> the old-style multi-fields-in-one-file problem.
-> 
+The Kconfig options belongs closer to the corresponding implementations,
+hence let's move them from the soc subsystem to the pmdomain subsystem.
 
-The memcg files in this case are single-value, but userspace expects to be able
-to read memcg limits when it can read the usage (indicating MEMCG is enabled).
-If it can't - then something is off, and the node is marked unhealthy.
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Ray Jui <rjui@broadcom.com>
+Cc: Scott Branden <sbranden@broadcom.com>
+Cc: <linux-mips@vger.kernel.org>
+Cc: <linux-rpi-kernel@lists.infradead.org>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
 
->>>> Address this by wiping out the file completely and effectively get back to
->>>> pre 4.5 era and CONFIG_MEMCG_KMEM=n configuration.
-> 
-> The fact that this is a valid option (i.e. no file) with that config
-> option disabled makes me want to keep this as well, as how does
-> userspace handle this option disabled at all?  Or old kernels?
-> 
+Changes in v3:
+	- Dropped the SOC_BCM63XX config altogether.
 
-Userspace has had to handle the case of MEMCG_KMEM=n, but that had 2 cases so far:
+---
+ drivers/pmdomain/Kconfig     |  1 +
+ drivers/pmdomain/bcm/Kconfig | 42 +++++++++++++++++++++++++++++
+ drivers/soc/bcm/Kconfig      | 51 ------------------------------------
+ 3 files changed, 43 insertions(+), 51 deletions(-)
+ create mode 100644 drivers/pmdomain/bcm/Kconfig
 
-limits/usage/max_usage/failcnt files are all available or none of them are available.
-
-Now it needs to handle 3 of 4 files being available, but only for kmem (and not plain
-memory, memsw or kmem.tcp). That's an inconsistency.
-
-> I can drop this from stable kernels, but again, this feels like the runc
-> developers are just postponing the problem...
->
-
-Since cgroups v1 is deprecated, I think the runc developers haven't touched this part
-of the code in years and expected it to keep working while they wait for the long tail
-of usage to die out.
-
-> thanks,
-> 
-> greg k-h
+diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
+index 482d9e970e14..ddc05d6af100 100644
+--- a/drivers/pmdomain/Kconfig
++++ b/drivers/pmdomain/Kconfig
+@@ -4,5 +4,6 @@ menu "PM Domains"
+ source "drivers/pmdomain/actions/Kconfig"
+ source "drivers/pmdomain/amlogic/Kconfig"
+ source "drivers/pmdomain/apple/Kconfig"
++source "drivers/pmdomain/bcm/Kconfig"
+ 
+ endmenu
+diff --git a/drivers/pmdomain/bcm/Kconfig b/drivers/pmdomain/bcm/Kconfig
+new file mode 100644
+index 000000000000..b28c9f6d256b
+--- /dev/null
++++ b/drivers/pmdomain/bcm/Kconfig
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: GPL-2.0-only
++menu "Broadcom PM Domains"
++
++config BCM2835_POWER
++	bool "BCM2835 power domain driver"
++	depends on ARCH_BCM2835 || (COMPILE_TEST && OF)
++	default y if ARCH_BCM2835
++	select PM_GENERIC_DOMAINS if PM
++	select RESET_CONTROLLER
++	help
++	  This enables support for the BCM2835 power domains and reset
++	  controller.  Any usage of power domains by the Raspberry Pi
++	  firmware means that Linux usage of the same power domain
++	  must be accessed using the RASPBERRYPI_POWER driver
++
++config RASPBERRYPI_POWER
++	bool "Raspberry Pi power domain driver"
++	depends on ARCH_BCM2835 || (COMPILE_TEST && OF)
++	depends on RASPBERRYPI_FIRMWARE=y
++	select PM_GENERIC_DOMAINS if PM
++	help
++	  This enables support for the RPi power domains which can be enabled
++	  or disabled via the RPi firmware.
++
++config BCM_PMB
++	bool "Broadcom PMB (Power Management Bus) driver"
++	depends on ARCH_BCMBCA || (COMPILE_TEST && OF)
++	default ARCH_BCMBCA
++	select PM_GENERIC_DOMAINS if PM
++	help
++	  This enables support for the Broadcom's PMB (Power Management Bus) that
++	  is used for disabling and enabling SoC devices.
++
++config BCM63XX_POWER
++	bool "BCM63xx power domain driver"
++	depends on BMIPS_GENERIC || (COMPILE_TEST && OF)
++	select PM_GENERIC_DOMAINS if PM
++	help
++	  This enables support for the BCM63xx power domains controller on
++	  BCM6318, BCM6328, BCM6362 and BCM63268 SoCs.
++
++endmenu
+diff --git a/drivers/soc/bcm/Kconfig b/drivers/soc/bcm/Kconfig
+index f96906795fa6..1f5577cfd68c 100644
+--- a/drivers/soc/bcm/Kconfig
++++ b/drivers/soc/bcm/Kconfig
+@@ -1,36 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menu "Broadcom SoC drivers"
+ 
+-config BCM2835_POWER
+-	bool "BCM2835 power domain driver"
+-	depends on ARCH_BCM2835 || (COMPILE_TEST && OF)
+-	default y if ARCH_BCM2835
+-	select PM_GENERIC_DOMAINS if PM
+-	select RESET_CONTROLLER
+-	help
+-	  This enables support for the BCM2835 power domains and reset
+-	  controller.  Any usage of power domains by the Raspberry Pi
+-	  firmware means that Linux usage of the same power domain
+-	  must be accessed using the RASPBERRYPI_POWER driver
+-
+-config RASPBERRYPI_POWER
+-	bool "Raspberry Pi power domain driver"
+-	depends on ARCH_BCM2835 || (COMPILE_TEST && OF)
+-	depends on RASPBERRYPI_FIRMWARE=y
+-	select PM_GENERIC_DOMAINS if PM
+-	help
+-	  This enables support for the RPi power domains which can be enabled
+-	  or disabled via the RPi firmware.
+-
+-config SOC_BCM63XX
+-	bool "Broadcom 63xx SoC drivers"
+-	depends on BMIPS_GENERIC || COMPILE_TEST
+-	help
+-	  Enables drivers for the Broadcom 63xx series of chips.
+-	  Drivers can be enabled individually within this menu.
+-
+-	  If unsure, say N.
+-
+ config SOC_BRCMSTB
+ 	bool "Broadcom STB SoC drivers"
+ 	depends on ARM || ARM64 || BMIPS_GENERIC || COMPILE_TEST
+@@ -42,27 +12,6 @@ config SOC_BRCMSTB
+ 
+ 	  If unsure, say N.
+ 
+-config BCM_PMB
+-	bool "Broadcom PMB (Power Management Bus) driver"
+-	depends on ARCH_BCMBCA || (COMPILE_TEST && OF)
+-	default ARCH_BCMBCA
+-	select PM_GENERIC_DOMAINS if PM
+-	help
+-	  This enables support for the Broadcom's PMB (Power Management Bus) that
+-	  is used for disabling and enabling SoC devices.
+-
+-if SOC_BCM63XX
+-
+-config BCM63XX_POWER
+-	bool "BCM63xx power domain driver"
+-	depends on BMIPS_GENERIC || (COMPILE_TEST && OF)
+-	select PM_GENERIC_DOMAINS if PM
+-	help
+-	  This enables support for the BCM63xx power domains controller on
+-	  BCM6318, BCM6328, BCM6362 and BCM63268 SoCs.
+-
+-endif # SOC_BCM63XX
+-
+ source "drivers/soc/bcm/brcmstb/Kconfig"
+ 
+ endmenu
+-- 
+2.34.1
 
