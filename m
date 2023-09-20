@@ -2,311 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8817A778A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554F17A77B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbjITJad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
+        id S234166AbjITJh5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 05:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234093AbjITJab (ORCPT
+        with ESMTP id S233753AbjITJhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:30:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3091D3;
-        Wed, 20 Sep 2023 02:30:22 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 11:30:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695202218;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=hhCYI+PeWEvc67H6YD9WCNTIMASfjH2wx16HCENacCE=;
-        b=rfCR8vEaESxonkkT7GovT/1/5BmcBNeGyDMKKlFSNZaLkzePT5vhDCPs82DWVug3KF5M44
-        Ddqh1k/swKDT3f0SH/G2vgRpRSv7hUk6dZ8/XO0CV9ALCzDUb+/4LfVkqA1mi1JOQURG1r
-        /r5WkkSB7kTpRpsJo/XAt6SE29FRmrQEqT4UThKFWrwT7+Onf5f8sbBClWTXd8ySKFR+Zp
-        /0x5AXX4OVi3qqTn2ev9pI2znSX9ELDvJ9W7q5bwpXYObsdTHjfHZXxnFRHYL1bKCh6fUa
-        ahj2qQIt7rh9IsYbqBIq72tWlJnSZAqZsS+4ef4PyhMUqfaRiAYEpYS/Op8acA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695202218;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=hhCYI+PeWEvc67H6YD9WCNTIMASfjH2wx16HCENacCE=;
-        b=FOZHJQ0/1sXkeAQoO/fyp8vCk2CQN/8MyfyXU81exOyQ81lChOm6jiVZhfTAvOHXOF1Mjo
-        bzasBbEirmJtuiDw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v6.6-rc2-rt3
-Message-ID: <20230920093016.xGpZHYvz@linutronix.de>
+        Wed, 20 Sep 2023 05:37:52 -0400
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337259E;
+        Wed, 20 Sep 2023 02:37:46 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-773e8a62b05so84946785a.0;
+        Wed, 20 Sep 2023 02:37:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695202665; x=1695807465;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JcKwdyW9PID8T3nWdTHS9gLtWKlKQ0LLCT75T/ZuZuw=;
+        b=AkC6DMGnUzgWzgb2VOFpDVphNQTtmyCgY3FeFJvDZbDSghkEst1X2Yg+IOyNyjtsWx
+         OGccdTCh0IJRGpk3lt1ub0TzYZtQxctRjWuOVAQwT8slSd80IpA2wnt5HgwcDbzCQDF4
+         UlduL59SZwXfpWV2DZDZTOew6TRoRp/cbsvOvi2+ffVzPhTVKmWhyhnWJEFOjhbfuHbO
+         ctg47Y5u14rAxzc8H3NW8ZsEpFkY9EhUwt9mPRztBOce+qz/jXVPuQE3FWCEJiNLzH92
+         KLRRdcxEKs5JRAkN995I0tYfD8JRA6OdzvbNOJflHQNF4P3GPZFoyAi2jpJIafXt8q7s
+         0fYQ==
+X-Gm-Message-State: AOJu0YwHPbrC8gegmpsqQdthUA9A7iNLjegXfCqOzhj3qhqxbGQVwC/u
+        54ntOOFcyvWZM4PUPbHk8but7LXFkrhofw==
+X-Google-Smtp-Source: AGHT+IHAmfPYX0T2pYm4Tposc4SM/FZTjzTsi0LvEINKR7shef7bVnTyYlrZx3ne8+hzrSSbiiHmMw==
+X-Received: by 2002:a05:620a:2443:b0:773:b795:c9e9 with SMTP id h3-20020a05620a244300b00773b795c9e9mr2435905qkn.17.1695202665006;
+        Wed, 20 Sep 2023 02:37:45 -0700 (PDT)
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com. [209.85.160.181])
+        by smtp.gmail.com with ESMTPSA id i11-20020a37c20b000000b0076e1e2d6496sm4682171qkm.104.2023.09.20.02.37.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 02:37:44 -0700 (PDT)
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-414b0bdea1cso40766741cf.1;
+        Wed, 20 Sep 2023 02:37:44 -0700 (PDT)
+X-Received: by 2002:a0d:c705:0:b0:59c:1880:18e0 with SMTP id
+ j5-20020a0dc705000000b0059c188018e0mr1688724ywd.21.1695202235254; Wed, 20 Sep
+ 2023 02:30:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918175529.19011-1-peter@n8pjl.ca> <20230918234108.GN19790@gate.crashing.org>
+ <20230919000026.7409-1-peter@n8pjl.ca> <20230919151630.GO19790@gate.crashing.org>
+ <20230919155832.4179-1-peter@n8pjl.ca> <CAMuHMdXQ=xpeY3tmLXe1kgJbRtmVAn62rEhvzO+VB7GCgy4F8w@mail.gmail.com>
+ <20230919161535.4774-1-peter@n8pjl.ca>
+In-Reply-To: <20230919161535.4774-1-peter@n8pjl.ca>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 20 Sep 2023 11:30:23 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWQwDzAnbQvBvt3iuL=UPxtufU=TgQM=oKjDvmgmrcy3g@mail.gmail.com>
+Message-ID: <CAMuHMdWQwDzAnbQvBvt3iuL=UPxtufU=TgQM=oKjDvmgmrcy3g@mail.gmail.com>
+Subject: Re: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
+To:     Peter Lafreniere <peter@n8pjl.ca>
+Cc:     anton.ivanov@cambridgegreys.com, ink@jurassic.park.msu.ru,
+        jack@suse.cz, johannes@sipsolutions.net,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux@armlinux.org.uk,
+        linuxppc-dev@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+        richard.henderson@linaro.org, richard@nod.at,
+        segher@kernel.crashing.org, tsbogend@alpha.franken.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+Hi Peter,
 
-I'm pleased to announce the v6.6-rc2-rt3 patch set. 
+On Tue, Sep 19, 2023 at 6:16 PM Peter Lafreniere <peter@n8pjl.ca> wrote:
+> On Tue, Sep 19, 2023 at 12:02, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Tue, Sep 19, 2023 at 5:58 PM Peter Lafreniere peter@n8pjl.ca wrote:
+> > > 2) Stops building an obsolete and largely-unused filesystem unnecessarily.
+> > > Some hobbyist targets like m68k and alpha may prefer to keep all filesystems
+> > > available until total removal, but others like arm and UML have no need for
+> > > ReiserFS to be built unless specifically configured.
+> >
+> >
+> > As UML is used a lot for testing, isn't it actually counter-productive
+> > to remove ReiserFS from the UML defconfig? The less testing it
+> > receives, the higher the chance of introducing regressions.
+>
+> UML is used for testing, but in my view that makes the inclusion of
+> ReiserFS in its defconfig even worse. Users of UML are trying to test a
 
-Changes since v6.6-rc2-rt2:
+Why?
+Because you want to avoid doing any testing at all on deprecated features?
 
-  - The locking patches for flushed queued I/O have been applied to the
-    tip tree. This update synchronises the patches with the version as
-    applied to the tip tree.
+> particular function, and so tend to use ext[2-4], as those are included in
+> the defconfig and are well tested and stable. So there is no extra testing
+> being done on ReiserFS due to its inclusion in the defconfig.
 
-Known issues
-     None
+I'd expect global file system testers to use something along the line of:
 
-The delta patch against v6.6-rc2-rt2 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/incr/patch-6.6-rc2-rt2-rt3.patch.xz
+    for i in $(grep -v nodev /proc/filesystems ); do
+        echo --- Testing $i ---
+        dd if=/dev/zero of=testimage bs=1M count=1 seek=10000
+        mkfs.$i testimage
+        mount testimage /mnt -t $i
+        [run xfstests on testimage]
+        rm -f testimage
+    done
 
-You can get this release via the git tree at:
+> Keeping UML's defconfig as slim as possible improves build times, which is
+> particularly important for kernel testing and development.
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.6-rc2-rt3
+Good luck testing all functionality using a "slim" kernel ;-)
 
-The RT patch against v6.6-rc2 can be found here:
+Gr{oetje,eeting}s,
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6-rc2-rt3.patch.xz
+                        Geert
 
-The split quilt queue is available at:
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patches-6.6-rc2-rt3.tar.xz
-
-Sebastian
-
-diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-index 58fbc34a59811..b5379c0e6d6d1 100644
---- a/kernel/futex/futex.h
-+++ b/kernel/futex/futex.h
-@@ -254,29 +254,6 @@ double_unlock_hb(struct futex_hash_bucket *hb1, struct futex_hash_bucket *hb2)
- 		spin_unlock(&hb2->lock);
- }
- 
--static inline void futex_trylock_hblock(spinlock_t *lock)
--{
--	do {
--		ktime_t chill_time;;
--
--		/*
--		 * Current is not longer pi_blocked_on if it owns the lock. It
--		 * can still have pi_blocked_on set if the lock acquiring was
--		 * interrupted by signal or timeout. The trylock operation does
--		 * not clobber pi_blocked_on so it is the only option.
--		 * Should the try-lock operation fail then it needs leave the CPU
--		 * to avoid a busy loop in case it is the task with the highest
--		 * priority.
--		 */
--		if (spin_trylock(lock))
--			return;
--
--		chill_time = ktime_set(0, NSEC_PER_MSEC);
--		set_current_state(TASK_UNINTERRUPTIBLE);
--		schedule_hrtimeout(&chill_time, HRTIMER_MODE_REL_HARD);
--	} while (1);
--}
--
- /* syscalls */
- 
- extern int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags, u32
-diff --git a/kernel/futex/pi.c b/kernel/futex/pi.c
-index 1440fdcdbfd8c..d636a1bbd7d06 100644
---- a/kernel/futex/pi.c
-+++ b/kernel/futex/pi.c
-@@ -611,29 +611,16 @@ int futex_lock_pi_atomic(u32 __user *uaddr, struct futex_hash_bucket *hb,
- /*
-  * Caller must hold a reference on @pi_state.
-  */
--static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_state)
-+static int wake_futex_pi(u32 __user *uaddr, u32 uval,
-+			 struct futex_pi_state *pi_state,
-+			 struct rt_mutex_waiter *top_waiter)
- {
--	struct rt_mutex_waiter *top_waiter;
- 	struct task_struct *new_owner;
- 	bool postunlock = false;
- 	DEFINE_RT_WAKE_Q(wqh);
- 	u32 curval, newval;
- 	int ret = 0;
- 
--	top_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
--	if (WARN_ON_ONCE(!top_waiter)) {
--		/*
--		 * As per the comment in futex_unlock_pi() this should not happen.
--		 *
--		 * When this happens, give up our locks and try again, giving
--		 * the futex_lock_pi() instance time to complete, either by
--		 * waiting on the rtmutex or removing itself from the futex
--		 * queue.
--		 */
--		ret = -EAGAIN;
--		goto out_unlock;
--	}
--
- 	new_owner = top_waiter->task;
- 
- 	/*
-@@ -1046,21 +1033,37 @@ int futex_lock_pi(u32 __user *uaddr, unsigned int flags, ktime_t *time, int tryl
- 	ret = rt_mutex_wait_proxy_lock(&q.pi_state->pi_mutex, to, &rt_waiter);
- 
- cleanup:
--	rt_mutex_post_schedule();
--
--	futex_trylock_hblock(q.lock_ptr);
--
- 	/*
- 	 * If we failed to acquire the lock (deadlock/signal/timeout), we must
--	 * first acquire the hb->lock before removing the lock from the
--	 * rt_mutex waitqueue, such that we can keep the hb and rt_mutex wait
--	 * lists consistent.
-+	 * must unwind the above, however we canont lock hb->lock because
-+	 * rt_mutex already has a waiter enqueued and hb->lock can itself try
-+	 * and enqueue an rt_waiter through rtlock.
- 	 *
--	 * In particular; it is important that futex_unlock_pi() can not
--	 * observe this inconsistency.
-+	 * Doing the cleanup without holding hb->lock can cause inconsistent
-+	 * state between hb and pi_state, but only in the direction of not
-+	 * seeing a waiter that is leaving.
-+	 *
-+	 * See futex_unlock_pi(), it deals with this inconsistency.
-+	 *
-+	 * There be dragons here, since we must deal with the inconsistency on
-+	 * the way out (here), it is impossible to detect/warn about the race
-+	 * the other way around (missing an incoming waiter).
-+	 *
-+	 * What could possibly go wrong...
- 	 */
- 	if (ret && !rt_mutex_cleanup_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter))
- 		ret = 0;
-+
-+	/*
-+	 * Now that the rt_waiter has been dequeued, it is safe to use
-+	 * spinlock/rtlock (which might enqueue its own rt_waiter) and fix up
-+	 * the
-+	 */
-+	spin_lock(q.lock_ptr);
-+	/*
-+	 * Waiter is unqueued.
-+	 */
-+	rt_mutex_post_schedule();
- no_block:
- 	/*
- 	 * Fixup the pi_state owner and possibly acquire the lock if we
-@@ -1141,6 +1144,7 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
- 	top_waiter = futex_top_waiter(hb, &key);
- 	if (top_waiter) {
- 		struct futex_pi_state *pi_state = top_waiter->pi_state;
-+		struct rt_mutex_waiter *rt_waiter;
- 
- 		ret = -EINVAL;
- 		if (!pi_state)
-@@ -1153,22 +1157,39 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
- 		if (pi_state->owner != current)
- 			goto out_unlock;
- 
--		get_pi_state(pi_state);
- 		/*
- 		 * By taking wait_lock while still holding hb->lock, we ensure
--		 * there is no point where we hold neither; and therefore
--		 * wake_futex_p() must observe a state consistent with what we
--		 * observed.
-+		 * there is no point where we hold neither; and thereby
-+		 * wake_futex_pi() must observe any new waiters.
-+		 *
-+		 * Since the cleanup: case in futex_lock_pi() removes the
-+		 * rt_waiter without holding hb->lock, it is possible for
-+		 * wake_futex_pi() to not find a waiter while the above does,
-+		 * in this case the waiter is on the way out and it can be
-+		 * ignored.
- 		 *
- 		 * In particular; this forces __rt_mutex_start_proxy() to
- 		 * complete such that we're guaranteed to observe the
--		 * rt_waiter. Also see the WARN in wake_futex_pi().
-+		 * rt_waiter.
- 		 */
- 		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
-+
-+		/*
-+		 * Futex vs rt_mutex waiter state -- if there are no rt_mutex
-+		 * waiters even though futex thinks there are, then the waiter
-+		 * is leaving and the uncontended path is safe to take.
-+		 */
-+		rt_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
-+		if (!rt_waiter) {
-+			raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
-+			goto do_uncontended;
-+		}
-+
-+		get_pi_state(pi_state);
- 		spin_unlock(&hb->lock);
- 
- 		/* drops pi_state->pi_mutex.wait_lock */
--		ret = wake_futex_pi(uaddr, uval, pi_state);
-+		ret = wake_futex_pi(uaddr, uval, pi_state, rt_waiter);
- 
- 		put_pi_state(pi_state);
- 
-@@ -1196,6 +1217,7 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
- 		return ret;
- 	}
- 
-+do_uncontended:
- 	/*
- 	 * We have no kernel internal state, i.e. no waiters in the
- 	 * kernel. Waiters which are about to queue themselves are stuck
-diff --git a/kernel/futex/requeue.c b/kernel/futex/requeue.c
-index 26888cfa74449..4c73e0b81accd 100644
---- a/kernel/futex/requeue.c
-+++ b/kernel/futex/requeue.c
-@@ -850,11 +850,13 @@ int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
- 		pi_mutex = &q.pi_state->pi_mutex;
- 		ret = rt_mutex_wait_proxy_lock(pi_mutex, to, &rt_waiter);
- 
--		futex_trylock_hblock(q.lock_ptr);
--
-+		/*
-+		 * See futex_unlock_pi()'s cleanup: comment.
-+		 */
- 		if (ret && !rt_mutex_cleanup_proxy_lock(pi_mutex, &rt_waiter))
- 			ret = 0;
- 
-+		spin_lock(q.lock_ptr);
- 		debug_rt_mutex_free_waiter(&rt_waiter);
- 		/*
- 		 * Fixup the pi_state owner and possibly acquire the lock if we
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index e56585ef489c8..4a10e8c16fd2b 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1166,13 +1166,10 @@ try_to_take_rt_mutex(struct rt_mutex_base *lock, struct task_struct *task,
- 	 * Clear @task->pi_blocked_on. Requires protection by
- 	 * @task->pi_lock. Redundant operation for the @waiter == NULL
- 	 * case, but conditionals are more expensive than a redundant
--	 * store. But then there is FUTEX and if rt_mutex_wait_proxy_lock()
--	 * did not acquire the lock it try-locks another lock before it clears
--	 * @task->pi_blocked_on so we mustn't clear it here premature.
-+	 * store.
- 	 */
- 	raw_spin_lock(&task->pi_lock);
--	if (waiter)
--		task->pi_blocked_on = NULL;
-+	task->pi_blocked_on = NULL;
- 	/*
- 	 * Finish the lock acquisition. @task is the new owner. If
- 	 * other waiters exist we have to insert the highest priority
-diff --git a/localversion-rt b/localversion-rt
-index c3054d08a1129..1445cd65885cd 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt2
-+-rt3
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
