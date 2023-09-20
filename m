@@ -2,335 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1084A7A8D10
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95447A8D19
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjITTrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37894 "EHLO
+        id S229459AbjITTt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjITTrW (ORCPT
+        with ESMTP id S229503AbjITTty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:47:22 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFC5B9;
-        Wed, 20 Sep 2023 12:47:15 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-502153ae36cso382930e87.3;
-        Wed, 20 Sep 2023 12:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695239233; x=1695844033; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LsdrfYeqptfMWbElOCcxrDUsL4RROO8o0AF8EPJzHss=;
-        b=c/gRjfOw9dmTnxtzo7sBfACCqEXDPfz98CVaBXUfyrxX4u+W+QnBKBs0V1XtMj57RY
-         c47vQ/5foZQZSFJiVzGUUyFMGFGQA4+pHHn4R1O5qkOwd5JtLvE7E2hca7JpsRpJg88U
-         VPcK+bu5QjN5F0T97OHCP8T41jam/4cIGkusnD/fCw/sO/YHjpos6/FpcgydiVzmVPbg
-         Fhe6O4IkRUy5b2u2OMJ4PSj3kr6ZIOrErYV3HvTnykKNvMrl/NADrFsK3ivZIjW+58pH
-         ad7BWLwJwp72O2PX0hhaZTLMkE6srNdJ8O9Hp91XW40WcIGKoZXzZvp7PnNf2uowhCIL
-         rXVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695239233; x=1695844033;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LsdrfYeqptfMWbElOCcxrDUsL4RROO8o0AF8EPJzHss=;
-        b=iQrWqaz+Vzt1BS4foztSAHkW8235wFkKTlnT8PCzk27H0qXRWyI86f5YyZcwy5fcb3
-         Ri0vlAgwck0VAkI6OH3CeulqrmIwQ8bFNsXQNqJ0wL5zOTlNbbBQvwZ6x2F0IYQFQ96r
-         nYEPh+oV+96dN1sTcTR+1+ZlZaEwrVs13bXIhf04CSCEtCu1qJLGadNO0FdpZqwpYw+5
-         nIvLgYq+EuImFYW+3dJ79c6HWwMSjD8u8GgUrV2OEXG66GTLfOEDsjfM56nX00whvo7H
-         6B6Oc321e8sVyhqke813zmhfxfTBHQC3Y68XfpBE6yH+DKylzrcFIg406L0ImnBCmUwo
-         gqBg==
-X-Gm-Message-State: AOJu0YwO3aP12wNyQPNmi5x/JlOKyOPp6ADsbDsc4lLzwOthSQC3HPFv
-        aKRtBW1s3NYq+ONcxCMnVms=
-X-Google-Smtp-Source: AGHT+IF2EECUChEDs96AZIqyG2t+5+DnqORvDjSbDx+3X391xaVVAM70vp3LMepGVoihIJSTPWJe+g==
-X-Received: by 2002:a2e:96c4:0:b0:2bd:1804:29fa with SMTP id d4-20020a2e96c4000000b002bd180429famr3383605ljj.39.1695239233454;
-        Wed, 20 Sep 2023 12:47:13 -0700 (PDT)
-Received: from localhost ([178.176.81.142])
-        by smtp.gmail.com with ESMTPSA id v5-20020a2e7a05000000b002bcda31af28sm3240999ljc.42.2023.09.20.12.47.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:47:12 -0700 (PDT)
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Michal Simek <michal.simek@amd.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>
-Cc:     Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 16/18] EDAC/synopsys: Add erroneous page-frame/offset reporting
-Date:   Wed, 20 Sep 2023 22:46:53 +0300
-Message-ID: <20230920194656.30879-1-fancer.lancer@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230920192806.29960-1-fancer.lancer@gmail.com>
-References: <20230920192806.29960-1-fancer.lancer@gmail.com>
+        Wed, 20 Sep 2023 15:49:54 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812D29E;
+        Wed, 20 Sep 2023 12:49:47 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KIEwvg020193;
+        Wed, 20 Sep 2023 19:49:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=WeywDlCOIdwYl34bVTgy3VkUkdmS227lBW5hfd2vf9s=;
+ b=C0gInY75Ewi75AdQUy2oqTdnaVMkFoa5ycIpifEWyjSQ5pFLmXkic9yT7TSg756uGWJF
+ GTmEuXS5uWSasfAgQxWHQXouygpWjXNeETIiOat9s06X9+ED0Y5BdXMXl8fFo6f9JlxP
+ GNQsATHM7OmmfdpMCaBr1ZJOqsba7Pz0IbBbHVSYQSCQmIw9Wv8tbkriAFr90eLjtQlh
+ cgbqjZ4ADSAJylNiXNrVNNJISYqZrQPL0VVWSyMuVLp1b/PMG3u8mH3Lk3Gx7XlpLxQJ
+ DrUVMqHrG/62siAoBiVSU3jWxZzT4E/km74jFboR16hqptbYwMpGgFyXndWQ8Wx0gLbi fA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7sh3t19p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 19:49:22 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38KJnMFt005660
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 19:49:22 GMT
+Received: from [10.110.124.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 20 Sep
+ 2023 12:49:20 -0700
+Message-ID: <cc9d09f1-2f59-19ae-8c69-15caaadf264a@quicinc.com>
+Date:   Wed, 20 Sep 2023 12:49:19 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 6/7] drm/msm/dp: add
+ pm_runtime_force_suspend()/resume()
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
+ <1694813901-26952-7-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqPXoFX4LXyXYgfh07Vpxg-KgD8VBR6x5bXf4GOJmbOtw@mail.gmail.com>
+ <2f98d5f1-57c1-d9fe-cb1c-b975db057287@quicinc.com>
+ <CAA8EJpr2wRq6Txi7YAQpJKa_9UGqH_nmHzvVOaAPkwOrtDg4Tw@mail.gmail.com>
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <CAA8EJpr2wRq6Txi7YAQpJKa_9UGqH_nmHzvVOaAPkwOrtDg4Tw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: v8-4G4iyIqSJyx0Kdmmcrc340zaj0COa
+X-Proofpoint-GUID: v8-4G4iyIqSJyx0Kdmmcrc340zaj0COa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_09,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ spamscore=0 adultscore=0 mlxscore=0 phishscore=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309200165
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A full System/SDRAM address translation interface is now available. Use it
-to determine the system address causing the ECC faults: add the System->
-Application->HIF->SDRAM address translation procedures based on the DW
-uMCTL2 DDRC DQ-bus config and HIF/SDRAM mapping table retrieved on the
-device probe stage; for the sake of simplification convert the
-snps_ecc_error_info structure to containing the snps_sdram_addr structure
-instance, since the erroneous SDRAM address will now participate in the
-address translation chain; issue the SDRAM->System address translation
-before passing the later to the edac_mc_handle_error() method.
 
-Note the ECC address rank needs to be retrieved now too in order to
-determine a correct system address. But the rank won't be passed to the
-MCI core for now since the MCI device is registered with a single ranked
-layer 0.
+On 9/19/2023 2:50 AM, Dmitry Baryshkov wrote:
+> On Mon, 18 Sept 2023 at 20:48, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>>
+>> On 9/15/2023 6:21 PM, Dmitry Baryshkov wrote:
+>>> On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>>>> Add pm_runtime_force_suspend()/resume() to complete incorporating pm
+>>>> runtime framework into DP driver. Both dp_pm_prepare() and dp_pm_complete()
+>>>> are added to set hpd_state to correct state. After resume, DP driver will
+>>>> re training its main link after .hpd_enable() callback enabled HPD
+>>>> interrupts and bring up display accordingly.
+>>> How will it re-train the main link? What is the code path for that?
+>> 1) for edp, dp_bridge_atomic_enable(), called from framework, to start
+>> link training and bring up display.
+> And this path doesn't use .hpd_enable() which you have mentioned in
+> the commit message. Please don't try to shorten the commit message.
+> You see, I have had questions to several of them, which means that
+> they were not verbose enough.
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
----
- drivers/edac/synopsys_edac.c | 143 +++++++++++++++++++++++++++++------
- 1 file changed, 118 insertions(+), 25 deletions(-)
+ok, my bad,
 
-diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index 6b8949c66eef..5384e93ec58c 100644
---- a/drivers/edac/synopsys_edac.c
-+++ b/drivers/edac/synopsys_edac.c
-@@ -12,6 +12,7 @@
- #include <linux/fs.h>
- #include <linux/log2.h>
- #include <linux/module.h>
-+#include <linux/pfn.h>
- #include <linux/platform_device.h>
- #include <linux/seq_file.h>
- #include <linux/spinlock.h>
-@@ -346,20 +347,14 @@ struct snps_sdram_addr {
- 
- /**
-  * struct snps_ecc_error_info - ECC error log information.
-- * @row:	Row number.
-- * @col:	Column number.
-- * @bank:	Bank number.
-- * @bankgrp:	Bank group number.
-+ * @sdram:	SDRAM address.
-  * @syndrome:	Error syndrome.
-  * @bitpos:	Bit position.
-  * @data:	Data causing the error.
-  * @ecc:	Data ECC.
-  */
- struct snps_ecc_error_info {
--	u32 row;
--	u32 col;
--	u32 bank;
--	u32 bankgrp;
-+	struct snps_sdram_addr sdram;
- 	u32 syndrome;
- 	u32 bitpos;
- 	u64 data;
-@@ -420,6 +415,21 @@ static void snps_map_app_to_hif(struct snps_edac_priv *priv,
- 	*hif = app >> priv->info.dq_width;
- }
- 
-+/**
-+ * snps_map_hif_to_app - Map HIF address to Application address.
-+ * @priv:	DDR memory controller private instance data.
-+ * @hif:	HIF address (source).
-+ * @app:	Application address (destination).
-+ *
-+ * Backward HIF-to-App translation is just the opposite DQ-width-based
-+ * shift operation.
-+ */
-+static void snps_map_hif_to_app(struct snps_edac_priv *priv,
-+				u64 hif, u64 *app)
-+{
-+	*app = hif << priv->info.dq_width;
-+}
-+
- /**
-  * snps_map_hif_to_sdram - Map HIF address to SDRAM address.
-  * @priv:	DDR memory controller private instance data.
-@@ -471,6 +481,58 @@ static void snps_map_hif_to_sdram(struct snps_edac_priv *priv,
- 	}
- }
- 
-+/**
-+ * snps_map_sdram_to_hif - Map SDRAM address to HIF address.
-+ * @priv:	DDR memory controller private instance data.
-+ * @sdram:	SDRAM address (source).
-+ * @hif:	HIF address (destination).
-+ *
-+ * SDRAM-HIF address mapping is similar to the HIF-SDRAM mapping procedure, but
-+ * we'll traverse each SDRAM rank/bank/column/row bit.
-+ *
-+ * Note the unmapped bits of the SDRAM address components will be just
-+ * ignored. So make sure the source address is valid.
-+ */
-+static void snps_map_sdram_to_hif(struct snps_edac_priv *priv,
-+				  struct snps_sdram_addr *sdram, u64 *hif)
-+{
-+	struct snps_hif_sdram_map *map = &priv->hif_sdram_map;
-+	unsigned long addr;
-+	int i;
-+
-+	*hif = 0;
-+
-+	addr = sdram->row;
-+	for_each_set_bit(i, &addr, DDR_MAX_ROW_WIDTH) {
-+		if (map->row[i] != DDR_ADDRMAP_UNUSED)
-+			*hif |= BIT_ULL(map->row[i]);
-+	}
-+
-+	addr = sdram->col;
-+	for_each_set_bit(i, &addr, DDR_MAX_COL_WIDTH) {
-+		if (map->col[i] != DDR_ADDRMAP_UNUSED)
-+			*hif |= BIT_ULL(map->col[i]);
-+	}
-+
-+	addr = sdram->bank;
-+	for_each_set_bit(i, &addr, DDR_MAX_BANK_WIDTH) {
-+		if (map->bank[i] != DDR_ADDRMAP_UNUSED)
-+			*hif |= BIT_ULL(map->bank[i]);
-+	}
-+
-+	addr = sdram->bankgrp;
-+	for_each_set_bit(i, &addr, DDR_MAX_BANKGRP_WIDTH) {
-+		if (map->bankgrp[i] != DDR_ADDRMAP_UNUSED)
-+			*hif |= BIT_ULL(map->bankgrp[i]);
-+	}
-+
-+	addr = sdram->rank;
-+	for_each_set_bit(i, &addr, DDR_MAX_RANK_WIDTH) {
-+		if (map->rank[i] != DDR_ADDRMAP_UNUSED)
-+			*hif |= BIT_ULL(map->rank[i]);
-+	}
-+}
-+
- /**
-  * snps_map_sys_to_sdram - Map System address to SDRAM address.
-  * @priv:	DDR memory controller private instance data.
-@@ -492,6 +554,27 @@ static void snps_map_sys_to_sdram(struct snps_edac_priv *priv,
- 	snps_map_hif_to_sdram(priv, hif, sdram);
- }
- 
-+/**
-+ * snps_map_sdram_to_sys - Map SDRAM address to SDRAM address.
-+ * @priv:	DDR memory controller private instance data.
-+ * @sys:	System address (source).
-+ * @sdram:	SDRAM address (destination).
-+ *
-+ * Perform a full mapping of the SDRAM address (row/column/bank/etc) to
-+ * the system address specific to the controller system bus ports.
-+ */
-+static void snps_map_sdram_to_sys(struct snps_edac_priv *priv,
-+				  struct snps_sdram_addr *sdram, dma_addr_t *sys)
-+{
-+	u64 app, hif;
-+
-+	snps_map_sdram_to_hif(priv, sdram, &hif);
-+
-+	snps_map_hif_to_app(priv, hif, &app);
-+
-+	*sys = app;
-+}
-+
- /**
-  * snps_get_bitpos - Get DQ-bus corrected bit position.
-  * @syndrome:	Error syndrome.
-@@ -544,12 +627,13 @@ static int snps_get_error_info(struct snps_edac_priv *priv)
- 	p->ceinfo.bitpos = snps_get_bitpos(p->ceinfo.syndrome, priv->info.dq_width);
- 
- 	regval = readl(base + ECC_CEADDR0_OFST);
--	p->ceinfo.row = FIELD_GET(ECC_CEADDR0_ROW_MASK, regval);
-+	p->ceinfo.sdram.rank = FIELD_GET(ECC_CEADDR0_RANK_MASK, regval);
-+	p->ceinfo.sdram.row = FIELD_GET(ECC_CEADDR0_ROW_MASK, regval);
- 
- 	regval = readl(base + ECC_CEADDR1_OFST);
--	p->ceinfo.bank = FIELD_GET(ECC_CEADDR1_BANK_MASK, regval);
--	p->ceinfo.bankgrp = FIELD_GET(ECC_CEADDR1_BANKGRP_MASK, regval);
--	p->ceinfo.col = FIELD_GET(ECC_CEADDR1_COL_MASK, regval);
-+	p->ceinfo.sdram.bankgrp = FIELD_GET(ECC_CEADDR1_BANKGRP_MASK, regval);
-+	p->ceinfo.sdram.bank = FIELD_GET(ECC_CEADDR1_BANK_MASK, regval);
-+	p->ceinfo.sdram.col = FIELD_GET(ECC_CEADDR1_COL_MASK, regval);
- 
- 	p->ceinfo.data = readl(base + ECC_CSYND0_OFST);
- 	if (priv->info.dq_width == SNPS_DQ_64)
-@@ -562,12 +646,13 @@ static int snps_get_error_info(struct snps_edac_priv *priv)
- 		goto out;
- 
- 	regval = readl(base + ECC_UEADDR0_OFST);
--	p->ueinfo.row = FIELD_GET(ECC_CEADDR0_ROW_MASK, regval);
-+	p->ueinfo.sdram.rank = FIELD_GET(ECC_CEADDR0_RANK_MASK, regval);
-+	p->ueinfo.sdram.row = FIELD_GET(ECC_CEADDR0_ROW_MASK, regval);
- 
- 	regval = readl(base + ECC_UEADDR1_OFST);
--	p->ueinfo.bankgrp = FIELD_GET(ECC_CEADDR1_BANKGRP_MASK, regval);
--	p->ueinfo.bank = FIELD_GET(ECC_CEADDR1_BANK_MASK, regval);
--	p->ueinfo.col = FIELD_GET(ECC_CEADDR1_COL_MASK, regval);
-+	p->ueinfo.sdram.bankgrp = FIELD_GET(ECC_CEADDR1_BANKGRP_MASK, regval);
-+	p->ueinfo.sdram.bank = FIELD_GET(ECC_CEADDR1_BANK_MASK, regval);
-+	p->ueinfo.sdram.col = FIELD_GET(ECC_CEADDR1_COL_MASK, regval);
- 
- 	p->ueinfo.data = readl(base + ECC_UESYND0_OFST);
- 	if (priv->info.dq_width == SNPS_DQ_64)
-@@ -599,31 +684,39 @@ static void snps_handle_error(struct mem_ctl_info *mci, struct snps_ecc_status *
- {
- 	struct snps_edac_priv *priv = mci->pvt_info;
- 	struct snps_ecc_error_info *pinf;
-+	dma_addr_t sys;
- 
- 	if (p->ce_cnt) {
- 		pinf = &p->ceinfo;
- 
-+		snps_map_sdram_to_sys(priv, &pinf->sdram, &sys);
-+
- 		snprintf(priv->message, SNPS_EDAC_MSG_SIZE,
--			 "Row %d Col %d Bank %d Bank Group %d Bit %d Data 0x%08llx:0x%02x",
--			 pinf->row, pinf->col, pinf->bank, pinf->bankgrp,
-+			 "Row %hu Col %hu Bank %hhu Bank Group %hhu Rank %hhu Bit %d Data 0x%08llx:0x%02x",
-+			 pinf->sdram.row, pinf->sdram.col, pinf->sdram.bank,
-+			 pinf->sdram.bankgrp, pinf->sdram.rank,
- 			 pinf->bitpos, pinf->data, pinf->ecc);
- 
--		edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci,
--				     p->ce_cnt, 0, 0, pinf->syndrome, 0, 0, -1,
-+		edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci, p->ce_cnt,
-+				     PHYS_PFN(sys), offset_in_page(sys),
-+				     pinf->syndrome, 0, 0, -1,
- 				     priv->message, "");
- 	}
- 
- 	if (p->ue_cnt) {
- 		pinf = &p->ueinfo;
- 
-+		snps_map_sdram_to_sys(priv, &pinf->sdram, &sys);
-+
- 		snprintf(priv->message, SNPS_EDAC_MSG_SIZE,
--			 "Row %d Col %d Bank %d Bank Group %d Data 0x%08llx:0x%02x",
--			 pinf->row, pinf->col, pinf->bank, pinf->bankgrp,
-+			 "Row %hu Col %hu Bank %hhu Bank Group %hhu Rank %hhu Data 0x%08llx:0x%02x",
-+			 pinf->sdram.row, pinf->sdram.col, pinf->sdram.bank,
-+			 pinf->sdram.bankgrp, pinf->sdram.rank,
- 			 pinf->data, pinf->ecc);
- 
--		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci,
--				     p->ue_cnt, 0, 0, 0, 0, 0, -1,
--				     priv->message, "");
-+		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci, p->ue_cnt,
-+				     PHYS_PFN(sys), offset_in_page(sys),
-+				     0, 0, 0, -1, priv->message, "");
- 	}
- 
- 	memset(p, 0, sizeof(*p));
--- 
-2.41.0
+I will add more explain to commit text.
 
+>> 2) for external DP, HPD_PLUG_INT will be generated to start link
+>> training and bring up display.
+> This should be hpd_notify, who starts link training, not some event.
+>
+>>> I think this is a misuse for prepare/complete callbacks, at least
+>>> judging from their documentation.
+>> 1) dp_pm_prepare() is called to make sure eDP/DP related power/clocks
+>> are off and set hpd_state  to ST_SUSPENDED and nothing else.
+>>
+>> 2) dp_pm_completed() is called to set hpd_state to ST_ST_DISCONNECTED
+>> (default state) and nothing else.
+>>
+>> I think both are doing proper action.
+> Have you read the prepare() / complete() documentation? Does your
+> usage follow the documented use case?
+I think I can just remove both dp_pm_prepare and dp_pm_complete fro 
+this  patch.
+>
+>>
+>>>> Changes in v3:
+>>>> -- replace dp_pm_suspend() with pm_runtime_force_suspend()
+>>>> -- replace dp_pm_resume() with pm_runtime_force_resume()
+>>>>
+>>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>>> ---
+>>>>    drivers/gpu/drm/msm/dp/dp_display.c | 87 +++++--------------------------------
+>>>>    1 file changed, 10 insertions(+), 77 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>> index b6992202..b58cb02 100644
+>>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>> @@ -1333,101 +1333,35 @@ static int dp_pm_runtime_resume(struct device *dev)
+>>>>           return 0;
+>>>>    }
+>>>>
+>>>> -static int dp_pm_resume(struct device *dev)
+>>>> +static void dp_pm_complete(struct device *dev)
+>>>>    {
+>>>> -       struct platform_device *pdev = to_platform_device(dev);
+>>>> -       struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>>>> -       struct dp_display_private *dp;
+>>>> -       int sink_count = 0;
+>>>> -
+>>>> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+>>>> +       struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>>>>
+>>>>           mutex_lock(&dp->event_mutex);
+>>>>
+>>>>           drm_dbg_dp(dp->drm_dev,
+>>>> -               "Before, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
+>>>> +               "type=%d core_inited=%d phy_inited=%d power_on=%d\n",
+>>>>                   dp->dp_display.connector_type, dp->core_initialized,
+>>>> -               dp->phy_initialized, dp_display->power_on);
+>>>> +               dp->phy_initialized, dp->dp_display.power_on);
+>>>>
+>>>>           /* start from disconnected state */
+>>>>           dp->hpd_state = ST_DISCONNECTED;
+>>>>
+>>>> -       /* turn on dp ctrl/phy */
+>>>> -       dp_display_host_init(dp);
+>>>> -
+>>>> -       if (dp_display->is_edp)
+>>>> -               dp_catalog_ctrl_hpd_enable(dp->catalog);
+>>>> -
+>>>> -       if (dp_catalog_link_is_connected(dp->catalog)) {
+>>>> -               /*
+>>>> -                * set sink to normal operation mode -- D0
+>>>> -                * before dpcd read
+>>>> -                */
+>>>> -               dp_display_host_phy_init(dp);
+>>>> -               dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+>>>> -               sink_count = drm_dp_read_sink_count(dp->aux);
+>>>> -               if (sink_count < 0)
+>>>> -                       sink_count = 0;
+>>>> -
+>>>> -               dp_display_host_phy_exit(dp);
+>>>> -       }
+>>>> -
+>>>> -       dp->link->sink_count = sink_count;
+>>>> -       /*
+>>>> -        * can not declared display is connected unless
+>>>> -        * HDMI cable is plugged in and sink_count of
+>>>> -        * dongle become 1
+>>>> -        * also only signal audio when disconnected
+>>>> -        */
+>>>> -       if (dp->link->sink_count) {
+>>>> -               dp->dp_display.link_ready = true;
+>>>> -       } else {
+>>>> -               dp->dp_display.link_ready = false;
+>>>> -               dp_display_handle_plugged_change(dp_display, false);
+>>>> -       }
+>>>> -
+>>>> -       drm_dbg_dp(dp->drm_dev,
+>>>> -               "After, type=%d sink=%d conn=%d core_init=%d phy_init=%d power=%d\n",
+>>>> -               dp->dp_display.connector_type, dp->link->sink_count,
+>>>> -               dp->dp_display.link_ready, dp->core_initialized,
+>>>> -               dp->phy_initialized, dp_display->power_on);
+>>>> -
+>>>>           mutex_unlock(&dp->event_mutex);
+>>>> -
+>>>> -       return 0;
+>>>>    }
+>>>>
+>>>> -static int dp_pm_suspend(struct device *dev)
+>>>> +static int dp_pm_prepare(struct device *dev)
+>>>>    {
+>>>> -       struct platform_device *pdev = to_platform_device(dev);
+>>>> -       struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>>>> -       struct dp_display_private *dp;
+>>>> -
+>>>> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+>>>> +       struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>>>>
+>>>>           mutex_lock(&dp->event_mutex);
+>>>>
+>>>> -       drm_dbg_dp(dp->drm_dev,
+>>>> -               "Before, type=%d core_inited=%d  phy_inited=%d power_on=%d\n",
+>>>> -               dp->dp_display.connector_type, dp->core_initialized,
+>>>> -               dp->phy_initialized, dp_display->power_on);
+>>>> -
+>>>>           /* mainlink enabled */
+>>>>           if (dp_power_clk_status(dp->power, DP_CTRL_PM))
+>>>>                   dp_ctrl_off_link_stream(dp->ctrl);
+>>>>
+>>>> -       dp_display_host_phy_exit(dp);
+>>>> -
+>>>> -       /* host_init will be called at pm_resume */
+>>>> -       dp_display_host_deinit(dp);
+>>>> -
+>>>>           dp->hpd_state = ST_SUSPENDED;
+>>>>
+>>>> -       drm_dbg_dp(dp->drm_dev,
+>>>> -               "After, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
+>>>> -               dp->dp_display.connector_type, dp->core_initialized,
+>>>> -               dp->phy_initialized, dp_display->power_on);
+>>>> -
+>>>>           mutex_unlock(&dp->event_mutex);
+>>>>
+>>>>           return 0;
+>>>> @@ -1435,8 +1369,10 @@ static int dp_pm_suspend(struct device *dev)
+>>>>
+>>>>    static const struct dev_pm_ops dp_pm_ops = {
+>>>>           SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, NULL)
+>>>> -       .suspend = dp_pm_suspend,
+>>>> -       .resume =  dp_pm_resume,
+>>>> +       SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+>>>> +                                pm_runtime_force_resume)
+>>>> +       .prepare = dp_pm_prepare,
+>>>> +       .complete = dp_pm_complete,
+>>>>    };
+>>>>
+>>>>    static struct platform_driver dp_display_driver = {
+>>>> @@ -1670,9 +1606,6 @@ void dp_bridge_atomic_post_disable(struct drm_bridge *drm_bridge,
+>>>>
+>>>>           dp_display = container_of(dp, struct dp_display_private, dp_display);
+>>>>
+>>>> -       if (dp->is_edp)
+>>>> -               dp_hpd_unplug_handle(dp_display, 0);
+>>>> -
+>>>>           mutex_lock(&dp_display->event_mutex);
+>>>>
+>>>>           state = dp_display->hpd_state;
+>>>> --
+>>>> 2.7.4
+>>>>
+>
+>
