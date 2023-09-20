@@ -2,156 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 394547A88B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DC97A88B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236688AbjITPnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46596 "EHLO
+        id S236548AbjITPoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235497AbjITPnI (ORCPT
+        with ESMTP id S235478AbjITPox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:43:08 -0400
+        Wed, 20 Sep 2023 11:44:53 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6B0CA;
-        Wed, 20 Sep 2023 08:43:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE46DC433C8;
-        Wed, 20 Sep 2023 15:42:56 +0000 (UTC)
-Message-ID: <b8f8876e-d712-4ffb-b082-b8e02363ec33@xs4all.nl>
-Date:   Wed, 20 Sep 2023 17:42:55 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C763A3;
+        Wed, 20 Sep 2023 08:44:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CCADC433C7;
+        Wed, 20 Sep 2023 15:44:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695224686;
+        bh=RRa/kljzVI7ePl2GXpjf5f4B2/meO63ZzzO8/qNPWlI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k0LyVu04lAJ6UgJrETfPNKruWIv6ufrNFTdi2G5FCPJZIyqdXJhKD2HOTk8ifmrma
+         JFwWo1azasocmfufW87UDx3kzeLwPBgeEGUKx6JQTmoie/05Mcc0WrWmV1ehqga6Ak
+         e1lEDuVJ0KunuooPDkhSY+6dv7SC+SFSM75w00AWZ3QSqurOD76Hvmee3mshSON2uQ
+         6pFqqXaIytrAl1pAtz/Xnrc6Ijq4jlEzLSPOTaBoiopebqCrTEiPzur1guuqcHIQCY
+         +fRL+mOVghqiMnYbSWDKOlM4WN4QNYdDWUVR5ZO2UJV6DMEAX9ErD8oHpvwQoPTSkn
+         9UeqMLCCVsT1Q==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2] tracing/timerlat: Hotplug support for the user-space interface
+Date:   Wed, 20 Sep 2023 17:44:41 +0200
+Message-Id: <6b9a5f306e488bc77bf8521faeade420a0adf3e4.1695224204.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 7/7] media: nuvoton: Add driver for NPCM video capture
- and encoding engine
-Content-Language: en-US, nl
-To:     Marvin Lin <milkfafa@gmail.com>, mchehab@kernel.org,
-        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        andrzej.p@collabora.com
-Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        kwliu@nuvoton.com, kflin@nuvoton.com
-References: <20230920022812.601800-1-milkfafa@gmail.com>
- <20230920022812.601800-8-milkfafa@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230920022812.601800-8-milkfafa@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2023 04:28, Marvin Lin wrote:
-> Add driver for Video Capture/Differentiation Engine (VCD) and Encoding
-> Compression Engine (ECE) present on Nuvoton NPCM SoCs. As described in
-> the datasheet NPCM750D_DS_Rev_1.0, the VCD can capture frames from
-> digital video input and compare two frames in memory, and then the ECE
-> can compress the frame data into HEXTILE format. This driver implements
-> V4L2 interfaces and provides user controls to support KVM feature, also
-> tested with VNC Viewer ver.6.22.826 and openbmc/obmc-ikvm.
-> 
-> Signed-off-by: Marvin Lin <milkfafa@gmail.com>
+The osnoise/per_cpu/CPU$/timerlat_fd is create for each possible
+CPU, but it might create confusion if the CPU is not online.
 
-I'm getting two sparse warnings:
+Create the file only for online CPUs, also follow hotplug by
+creating and deleting as CPUs come and go.
 
-drivers/media/platform/nuvoton/npcm-video.c:227:27: warning: incorrect type in argument 1 (different address spaces)
-drivers/media/platform/nuvoton/npcm-video.c:227:27:    expected void const volatile [noderef] __iomem *addr
-drivers/media/platform/nuvoton/npcm-video.c:227:27:    got void *
-drivers/media/platform/nuvoton/npcm-video.c:1050:20: warning: context imbalance in 'npcm_video_irq' - different lock contexts for basic block
+Fixes: e88ed227f639 ("tracing/timerlat: Add user-space interface")
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+  Changes from V1:
+    - Fix compilation issue when !HOTPLUG
+    - Fix init interface | hotplug race
+    Link: https://lore.kernel.org/lkml/b619d9fd08a3bb47018cf40afa95783844a3c1fd.1694789910.git.bristot@kernel.org/
 
-That last one is a missing unlock:
+ kernel/trace/trace_osnoise.c | 112 +++++++++++++++++++++++++++--------
+ 1 file changed, 86 insertions(+), 26 deletions(-)
 
-> +static irqreturn_t npcm_video_irq(int irq, void *arg)
-> +{
-> +	struct npcm_video *video = arg;
-> +	struct regmap *vcd = video->vcd_regmap;
-> +	struct npcm_video_buffer *buf;
-> +	unsigned int index, size, status, fmt;
-> +	dma_addr_t dma_addr;
-> +	void *addr;
-> +	static const struct v4l2_event ev = {
-> +		.type = V4L2_EVENT_SOURCE_CHANGE,
-> +		.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
-> +	};
-> +
-> +	regmap_read(vcd, VCD_STAT, &status);
-> +	dev_dbg(video->dev, "VCD irq status 0x%x\n", status);
-> +
-> +	regmap_write(vcd, VCD_STAT, VCD_STAT_CLEAR);
-> +
-> +	if (test_bit(VIDEO_STOPPED, &video->flags) ||
-> +	    !test_bit(VIDEO_STREAMING, &video->flags))
-> +		return IRQ_NONE;
-> +
-> +	if (status & VCD_STAT_DONE) {
-> +		regmap_write(vcd, VCD_INTE, 0);
-> +		spin_lock(&video->lock);
-> +		clear_bit(VIDEO_CAPTURING, &video->flags);
-> +		buf = list_first_entry_or_null(&video->buffers,
-> +					       struct npcm_video_buffer, link);
-> +		if (!buf) {
-> +			spin_unlock(&video->lock);
-> +			return IRQ_NONE;
-> +		}
-> +
-> +		addr = vb2_plane_vaddr(&buf->vb.vb2_buf, 0);
-> +		index = buf->vb.vb2_buf.index;
-> +		fmt = video->pix_fmt.pixelformat;
-> +
-> +		switch (fmt) {
-> +		case V4L2_PIX_FMT_RGB565:
-> +			size = npcm_video_raw(video, index, addr);
-> +			break;
-> +		case V4L2_PIX_FMT_HEXTILE:
-> +			dma_addr = vb2_dma_contig_plane_dma_addr(&buf->vb.vb2_buf, 0);
-> +			size = npcm_video_hextile(video, index, dma_addr, addr);
-> +			break;
-> +		default:
-
-Missing unlock here.
-
-> +			return IRQ_NONE;
-> +		}
-> +
-> +		vb2_set_plane_payload(&buf->vb.vb2_buf, 0, size);
-> +		buf->vb.vb2_buf.timestamp = ktime_get_ns();
-> +		buf->vb.sequence = video->sequence++;
-> +		buf->vb.field = V4L2_FIELD_NONE;
-> +
-> +		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
-> +		list_del(&buf->link);
-> +		spin_unlock(&video->lock);
-> +
-> +		if (npcm_video_start_frame(video))
-> +			dev_err(video->dev, "Failed to capture next frame\n");
-> +	}
-> +
-> +	/* Resolution changed */
-> +	if (status & VCD_STAT_VHT_CHG || status & VCD_STAT_HAC_CHG) {
-> +		if (!test_bit(VIDEO_RES_CHANGING, &video->flags)) {
-> +			set_bit(VIDEO_RES_CHANGING, &video->flags);
-> +
-> +			vb2_queue_error(&video->queue);
-> +			v4l2_event_queue(&video->vdev, &ev);
-> +		}
-> +	}
-> +
-> +	if (status & VCD_STAT_IFOR || status & VCD_STAT_IFOT) {
-> +		dev_warn(video->dev, "VCD FIFO overrun or over thresholds\n");
-> +		if (npcm_video_start_frame(video))
-> +			dev_err(video->dev, "Failed to recover from FIFO overrun\n");
-> +	}
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-Regards,
-
-	Hans
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index bd0d01d00fb9..8422562d9864 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -229,6 +229,19 @@ static inline struct osnoise_variables *this_cpu_osn_var(void)
+ }
+ 
+ #ifdef CONFIG_TIMERLAT_TRACER
++
++/*
++ * osnoise/per_cpu dir
++ */
++static struct dentry		*osnoise_per_cpu_fd;
++
++struct osnoise_per_cpu_dir {
++	struct dentry *root;
++	struct dentry *timerlat_fd;
++};
++
++static DEFINE_PER_CPU(struct osnoise_per_cpu_dir, osnoise_per_cpu_dir);
++
+ /*
+  * Runtime information for the timer mode.
+  */
+@@ -2000,6 +2013,9 @@ static int start_kthread(unsigned int cpu)
+ 	char comm[24];
+ 
+ 	if (timerlat_enabled()) {
++		if (!test_bit(OSN_WORKLOAD, &osnoise_options))
++			return 0;
++
+ 		snprintf(comm, 24, "timerlat/%d", cpu);
+ 		main = timerlat_main;
+ 	} else {
+@@ -2065,19 +2081,64 @@ static int start_per_cpu_kthreads(void)
+ 	return retval;
+ }
+ 
++#ifdef CONFIG_TIMERLAT_TRACER
++static const struct file_operations timerlat_fd_fops;
++static int timerlat_add_per_cpu_interface(long cpu)
++{
++	struct dentry *timerlat_fd, *cpu_dir_fd;
++	char cpu_str[30]; /* see trace.c: tracing_init_tracefs_percpu() */
++
++	if (!osnoise_per_cpu_fd)
++		return 0;
++
++	snprintf(cpu_str, 30, "cpu%ld", cpu);
++	cpu_dir_fd = tracefs_create_dir(cpu_str, osnoise_per_cpu_fd);
++
++	if (cpu_dir_fd) {
++		timerlat_fd = trace_create_file("timerlat_fd", TRACE_MODE_READ,
++					       cpu_dir_fd, NULL, &timerlat_fd_fops);
++		WARN_ON_ONCE(!timerlat_fd);
++		per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root = cpu_dir_fd;
++		per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->timerlat_fd = timerlat_fd;
++
++		/* Record the CPU */
++		d_inode(timerlat_fd)->i_cdev = (void *)(cpu);
++
++		return 0;
++	}
++
++	return -ENOMEM;
++}
++
++static void timerlat_rm_per_cpu_interface(long cpu)
++{
++	struct dentry *cpu_dir = per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root;
++
++	if (cpu_dir) {
++		tracefs_remove(cpu_dir);
++		per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root = NULL;
++		per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->timerlat_fd = NULL;
++	}
++}
++#elif defined(CONFIG_HOTPLUG_CPU)
++static int timerlat_add_per_cpu_interface(long cpu) { return 0; };
++static void timerlat_rm_per_cpu_interface(long cpu) {};
++#endif
++
+ #ifdef CONFIG_HOTPLUG_CPU
+ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+ {
+ 	unsigned int cpu = smp_processor_id();
+ 
+ 	mutex_lock(&trace_types_lock);
+-
+-	if (!osnoise_has_registered_instances())
+-		goto out_unlock_trace;
+-
+ 	mutex_lock(&interface_lock);
+ 	cpus_read_lock();
+ 
++	timerlat_add_per_cpu_interface(cpu);
++
++	if (!osnoise_has_registered_instances())
++		goto out_unlock;
++
+ 	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
+ 		goto out_unlock;
+ 
+@@ -2086,7 +2147,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+ out_unlock:
+ 	cpus_read_unlock();
+ 	mutex_unlock(&interface_lock);
+-out_unlock_trace:
+ 	mutex_unlock(&trace_types_lock);
+ }
+ 
+@@ -2106,6 +2166,7 @@ static int osnoise_cpu_init(unsigned int cpu)
+  */
+ static int osnoise_cpu_die(unsigned int cpu)
+ {
++	timerlat_rm_per_cpu_interface(cpu);
+ 	stop_kthread(cpu);
+ 	return 0;
+ }
+@@ -2708,10 +2769,7 @@ static int init_timerlat_stack_tracefs(struct dentry *top_dir)
+ 
+ static int osnoise_create_cpu_timerlat_fd(struct dentry *top_dir)
+ {
+-	struct dentry *timerlat_fd;
+-	struct dentry *per_cpu;
+-	struct dentry *cpu_dir;
+-	char cpu_str[30]; /* see trace.c: tracing_init_tracefs_percpu() */
++	int retval;
+ 	long cpu;
+ 
+ 	/*
+@@ -2720,29 +2778,24 @@ static int osnoise_create_cpu_timerlat_fd(struct dentry *top_dir)
+ 	 * Because osnoise/timerlat have a single workload, having
+ 	 * multiple files like these are wast of memory.
+ 	 */
+-	per_cpu = tracefs_create_dir("per_cpu", top_dir);
+-	if (!per_cpu)
++	osnoise_per_cpu_fd = tracefs_create_dir("per_cpu", top_dir);
++	if (!osnoise_per_cpu_fd)
+ 		return -ENOMEM;
+ 
+-	for_each_possible_cpu(cpu) {
+-		snprintf(cpu_str, 30, "cpu%ld", cpu);
+-		cpu_dir = tracefs_create_dir(cpu_str, per_cpu);
+-		if (!cpu_dir)
+-			goto out_clean;
+-
+-		timerlat_fd = trace_create_file("timerlat_fd", TRACE_MODE_READ,
+-						cpu_dir, NULL, &timerlat_fd_fops);
+-		if (!timerlat_fd)
++	for_each_online_cpu(cpu) {
++		retval = timerlat_add_per_cpu_interface(cpu);
++		if (retval < 0)
+ 			goto out_clean;
+-
+-		/* Record the CPU */
+-		d_inode(timerlat_fd)->i_cdev = (void *)(cpu);
+ 	}
+ 
+ 	return 0;
+ 
+ out_clean:
+-	tracefs_remove(per_cpu);
++	tracefs_remove(osnoise_per_cpu_fd);
++	/* tracefs_remove() recursively deletes all the other files */
++	osnoise_per_cpu_fd = NULL;
++	for_each_online_cpu(cpu)
++		timerlat_rm_per_cpu_interface(cpu);
+ 	return -ENOMEM;
+ }
+ 
+@@ -3122,11 +3175,18 @@ __init static int init_osnoise_tracer(void)
+ 		return ret;
+ 	}
+ 
+-	osnoise_init_hotplug_support();
+-
+ 	INIT_LIST_HEAD_RCU(&osnoise_instances);
+ 
++	/*
++	 * Avoid race between creating per cpu dir and the hotplug operations
++	 * that add/rm entries.
++	 */
++	cpus_read_lock();
++
+ 	init_tracefs();
++	osnoise_init_hotplug_support();
++
++	cpus_read_unlock();
+ 
+ 	return 0;
+ }
+-- 
+2.38.1
 
