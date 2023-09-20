@@ -2,232 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AA87A8E2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CE87A8E2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbjITVEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 17:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
+        id S229463AbjITVEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 17:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjITVD6 (ORCPT
+        with ESMTP id S229597AbjITVD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 17:03:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE14CC
+        Wed, 20 Sep 2023 17:03:57 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A09CA
         for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:03:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13DCFC433C8;
-        Wed, 20 Sep 2023 21:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695243831;
-        bh=OLB7oDrv5ooNLbRTNix2Xc97l0Z4tqh8a92sf+yMsA8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k++4IS5CNvaGJwJ1AFoGHHewRaUQ0tV+bgKJhAv7oaA9gEum90L+ps3XXAZR+OheC
-         idNdf7EOHxGO+U6f/mpDooJRqNIa0SIof3rAiuI2alm26Q1YQFG+CaptOFN/+T4xRU
-         ABj6rYeKVTPkiDiT2vfU9bxsob3pa5O6FshOuT/LM9qjwBo0cMd2VR9+FymLwp5HCz
-         psqrgcGOKUvd4OhE2qIqgMq+MVqHhj8bT00Kp7rwZCxS3SZ2gI71/ALTssnpueQE1L
-         5eW/kQeHhCVyor0kVQONTWc46uWmTEluVK83Xs5tGeOtNJAxApSyid+sLdyoYEEJVI
-         mueMtKNUUEf0w==
-Date:   Wed, 20 Sep 2023 22:03:45 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c4375c1406so1910565ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695243830; x=1695848630; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QFTXI1M20f8gmG6BvRAdcxEpoXePrbyr+CokqbvWBWc=;
+        b=YBB92SBCF7Hff5sSHvPsWLZsVpMrv+Nl0UIbQv7rB4s5KbvjkoryE7ANGFhAl3ZUOY
+         XOz5HSz1JykM+i1Yb2lu7wu5YhqpmGp0qiwqGjag6g21TIuaOTtBANkCbe2wlhf62FxN
+         1lak6BOZ+i864pP48UrkEPAxbstc16yg2iUAL3kqaQojWszOZsLaQGyqW7Q17wFRA5pS
+         YukXT15ZjEfn2V/sRN4udANdKQS7bHzeb1rCtJKrCEAXpTbsKVowFQcM2dYmMaK7zbY1
+         ARgNAbrAoaznbzr/fpH9ZnScVlSvAGQdDwVENeAYFHe1suNMj9gpIDcA1dEq4I4cKDvO
+         t3zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695243830; x=1695848630;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QFTXI1M20f8gmG6BvRAdcxEpoXePrbyr+CokqbvWBWc=;
+        b=T9b7el/BkLishvWdtFxCEPcmEwXc3xo+huNngQ/NfZR9hTZb2usvan0mOFaok9tmLH
+         L9dzjog0smbhHxcBz0K/H29d/OPlvxbvKhFvBEQjeE1HqeekDi0yREkoqfuVo4CVFBzd
+         WxqFR1qR+Yc7TfpWv+grTQVWE3cGY9yekzIDUEFTU0elxAuv2l6Ad3H063oPwSKdMSjO
+         7MDO+pSTU0xX4v35wcXr2UN0OCObz7tptIo9M83sHda75vDE8HD4A3Cwij1T4eq9diQN
+         ljrJKfZ5bsa+SMM3r+7zplSMm7RxLbnLk61LyU2OMrFbbABJt6s+s9IiUlxRjfFZ1+6o
+         KtbQ==
+X-Gm-Message-State: AOJu0YykSzKate6QrGtKieV7uTFSL0MfKkWMT0Abyf8bQXaoiUXSGjXB
+        qSIQBB7yQTBlCYvjIXM59KCLtL7ijPw=
+X-Google-Smtp-Source: AGHT+IH5QBEwnaGAG6ouJVZQG2FiwG4z7ywKiDhgLSOOF+0VMXfLus6G3HR8pg7XpQjZrIgu3wnPZ1Tf/l8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:c407:b0:1c3:411c:9b7c with SMTP id
+ k7-20020a170902c40700b001c3411c9b7cmr51568plk.13.1695243830643; Wed, 20 Sep
+ 2023 14:03:50 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 14:03:49 -0700
+In-Reply-To: <d66795f8-e524-2912-4b71-92ca4ffe8807@linux.intel.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-12-seanjc@google.com>
+ <d66795f8-e524-2912-4b71-92ca4ffe8807@linux.intel.com>
+Message-ID: <ZQteNbPfx6P3r6B8@google.com>
+Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
         Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2] RISC-V: Probe misaligned access speed in parallel
-Message-ID: <20230920-98a392b40f88c69e852e2c88@fedora>
-References: <20230920193801.3035093-1-evan@rivosinc.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5mYs5g9D4GCVb2xK"
-Content-Disposition: inline
-In-Reply-To: <20230920193801.3035093-1-evan@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 18, 2023, Binbin Wu wrote:
+> 
+> 
+> On 9/14/2023 9:55 AM, Sean Christopherson wrote:
+> > From: Chao Peng <chao.p.peng@linux.intel.com>
+> [...]
+> > +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+> > +/*
+> > + * Returns true if _all_ gfns in the range [@start, @end) have attributes
+> > + * matching @attrs.
+> > + */
+> > +bool kvm_range_has_memory_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
+> > +				     unsigned long attrs)
+> > +{
+> > +	XA_STATE(xas, &kvm->mem_attr_array, start);
+> > +	unsigned long index;
+> > +	bool has_attrs;
+> > +	void *entry;
+> > +
+> > +	rcu_read_lock();
+> > +
+> > +	if (!attrs) {
+> > +		has_attrs = !xas_find(&xas, end);
+> IIUIC, xas_find() is inclusive for "end", so here should be "end - 1" ?
 
---5mYs5g9D4GCVb2xK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Yo,
-
-On Wed, Sep 20, 2023 at 12:38:01PM -0700, Evan Green wrote:
-> Probing for misaligned access speed takes about 0.06 seconds. On a
-> system with 64 cores, doing this in smp_callin() means it's done
-> serially, extending boot time by 3.8 seconds. That's a lot of boot time.
->=20
-> Instead of measuring each CPU serially, let's do the measurements on
-> all CPUs in parallel. If we disable preemption on all CPUs, the
-> jiffies stop ticking, so we can do this in stages of 1) everybody
-> except core 0, then 2) core 0.
->=20
-> The measurement call in smp_callin() stays around, but is now
-> conditionalized to only run if a new CPU shows up after the round of
-> in-parallel measurements has run. The goal is to have the measurement
-> call not run during boot or suspend/resume, but only on a hotplug
-> addition.
->=20
-> Reported-by: Jisheng Zhang <jszhang@kernel.org>
-> Closes: https://lore.kernel.org/all/mhng-9359993d-6872-4134-83ce-c97debe1=
-cf9a@palmer-ri-x1c9/T/#mae9b8f40016f9df428829d33360144dc5026bcbf
-> Fixes: 584ea6564bca ("RISC-V: Probe for unaligned access speed")
-> Signed-off-by: Evan Green <evan@rivosinc.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> Tested-by: Andrew Jones <ajones@ventanamicro.com>
->=20
-> ---
->=20
-> Changes in v2:
->  - Removed new global, used system_state =3D=3D SYSTEM_RUNNING instead
->    (Jisheng)
->  - Added tags
->=20
->  arch/riscv/include/asm/cpufeature.h |  2 +-
->  arch/riscv/kernel/cpufeature.c      | 22 +++++++++++++++++-----
->  arch/riscv/kernel/smpboot.c         | 11 ++++++++++-
->  3 files changed, 28 insertions(+), 7 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
-/cpufeature.h
-> index d0345bd659c9..b139796392d0 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -30,6 +30,6 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
->  /* Per-cpu ISA extensions. */
->  extern struct riscv_isainfo hart_isa[NR_CPUS];
-> =20
-> -void check_unaligned_access(int cpu);
-> +int check_unaligned_access(void *unused);
-> =20
->  #endif
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 1cfbba65d11a..40bb854fcb96 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -556,8 +556,9 @@ unsigned long riscv_get_elf_hwcap(void)
->  	return hwcap;
->  }
-> =20
-> -void check_unaligned_access(int cpu)
-> +int check_unaligned_access(void *unused)
->  {
-> +	int cpu =3D smp_processor_id();
->  	u64 start_cycles, end_cycles;
->  	u64 word_cycles;
->  	u64 byte_cycles;
-> @@ -571,7 +572,7 @@ void check_unaligned_access(int cpu)
->  	page =3D alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
->  	if (!page) {
->  		pr_warn("Can't alloc pages to measure memcpy performance");
-> -		return;
-> +		return 0;
-
-Dumb question maybe, but I am limited setup wise at the moment due to
-a hardware failure which makes checking stuff hard, why the signature
-change? Requirement for on_each_cpu()?
-
->  	}
-> =20
->  	/* Make an unaligned destination buffer. */
-> @@ -643,15 +644,26 @@ void check_unaligned_access(int cpu)
-> =20
->  out:
->  	__free_pages(page, get_order(MISALIGNED_BUFFER_SIZE));
-> +	return 0;
-> +}
-> +
-> +static void check_unaligned_access_nonboot_cpu(void *param)
-> +{
-> +	if (smp_processor_id() !=3D 0)
-> +		check_unaligned_access(param);
->  }
-> =20
-> -static int check_unaligned_access_boot_cpu(void)
-> +static int check_unaligned_access_all_cpus(void)
->  {
-> -	check_unaligned_access(0);
-> +	/* Check everybody except 0, who stays behind to tend jiffies. */
-> +	on_each_cpu(check_unaligned_access_nonboot_cpu, NULL, 1);
-> +
-> +	/* Check core 0. */
-> +	smp_call_on_cpu(0, check_unaligned_access, NULL, true);
->  	return 0;
-
-Why does this function return an int if it can only return 0?
-
-Cheers,
-Conor.
-
->  }
-> =20
-> -arch_initcall(check_unaligned_access_boot_cpu);
-> +arch_initcall(check_unaligned_access_all_cpus);
-> =20
->  #ifdef CONFIG_RISCV_ALTERNATIVE
->  /*
-> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-> index 1b8da4e40a4d..a014955b8699 100644
-> --- a/arch/riscv/kernel/smpboot.c
-> +++ b/arch/riscv/kernel/smpboot.c
-> @@ -27,6 +27,7 @@
->  #include <linux/sched/mm.h>
->  #include <asm/cpu_ops.h>
->  #include <asm/cpufeature.h>
-> +#include <asm/hwprobe.h>
->  #include <asm/irq.h>
->  #include <asm/mmu_context.h>
->  #include <asm/numa.h>
-> @@ -246,7 +247,15 @@ asmlinkage __visible void smp_callin(void)
-> =20
->  	numa_add_cpu(curr_cpuid);
->  	set_cpu_online(curr_cpuid, 1);
-> -	check_unaligned_access(curr_cpuid);
-> +
-> +	/*
-> +	 * Boot-time misaligned access speed measurements are done in parallel
-> +	 * in an initcall. Only measure here for hotplug.
-> +	 */
-> +	if ((system_state =3D=3D SYSTEM_RUNNING) &&
-> +	    (per_cpu(misaligned_access_speed, curr_cpuid) =3D=3D RISCV_HWPROBE_=
-MISALIGNED_UNKNOWN)) {
-> +		check_unaligned_access(NULL);
-> +	}
-> =20
->  	if (has_vector()) {
->  		if (riscv_v_setup_vsize())
-> --=20
-> 2.34.1
->=20
-
---5mYs5g9D4GCVb2xK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQteLQAKCRB4tDGHoIJi
-0nbzAQDntgQEICHVv5aJTHbUL/w2FHj/Ki1XSspCxq3x0ZadCQEAluzwk2hjM+7s
-y49xnHaUDezu6lFi1aNbMX1dBv4p2wI=
-=WrQ/
------END PGP SIGNATURE-----
-
---5mYs5g9D4GCVb2xK--
+Yes, that does appear to be the case.  Inclusive vs. exclusive on gfn ranges has
+is the bane of my existence.
