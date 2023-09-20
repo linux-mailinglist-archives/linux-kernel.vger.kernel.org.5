@@ -2,229 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B457A76CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2167A76D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbjITJEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
+        id S232813AbjITJHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234094AbjITJEQ (ORCPT
+        with ESMTP id S229648AbjITJHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:04:16 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD66CFC;
-        Wed, 20 Sep 2023 02:04:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 57E721FE31;
-        Wed, 20 Sep 2023 09:04:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695200644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X2lVHakLrQt1LUndbWfEXURHJ3ClBXtmgdVVnOA5KNo=;
-        b=jV/gQkwgMh2kRtzTDIwbuXmRVY0O2qCrkRSR+x02tdW527P6xmwZwfQr4I0ei+QUwPu+LW
-        Kq+dGT1E7wuwaPQRcjZGXkGbB7skWtECTIMZGEB6kfTmtCNjt/q9+iWmKEtGEbzlZmF2a+
-        3gWWmd0llOJ6hTal/rU1VAEHfwurvUU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695200644;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X2lVHakLrQt1LUndbWfEXURHJ3ClBXtmgdVVnOA5KNo=;
-        b=FDbsCmRdWTY5IV1syw1j52bD8UgkMJB1UbBbFf3P7m/3Us6sriCdp15hDDiNkDw6vY+Srk
-        7Co1IiGh4OX3zzCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E44D11333E;
-        Wed, 20 Sep 2023 09:04:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id l2ARN4O1CmUqaQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 20 Sep 2023 09:04:03 +0000
-Message-ID: <059cdca4-6dc7-3928-c6f7-54e4816cf728@suse.cz>
-Date:   Wed, 20 Sep 2023 11:04:03 +0200
+        Wed, 20 Sep 2023 05:07:39 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2036.outbound.protection.outlook.com [40.92.21.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DF2CF;
+        Wed, 20 Sep 2023 02:07:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QzDYlJfCGDtsB/sgdN4u5Xy7e+FRo3Hoe72m6hcxJAPjMJeJFCYWgZxDKflWXhEJfh4YLNOD946a5p5qEss7LhZ4BBIPMbzukwTX11JFybStqNLzvClUIO4t6mvFb6s3fkhwDFErrA9YyM9J7HJ9B0XLXDDT8zAs6gxRQc3dJPtrq29FwHpisPyl+11mNQS4KcYgYV0oYbU13xlmxnvciS/+XCMkjmJC6xwnkwr95hzjDYLr6XxIbHBwBY99njLtGO1HNNmpd3+mf8pwv55e3grqasBs8duSx6on4tGmKNoeluTd4tdXddAast/Kj1eibhsIVJhbOiRsCclsmly8EQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kENiXb4qlzWWnSu2KhmkK19p5zMSOn5d0b5G6RvJnZ0=;
+ b=RSiaV3FQpOQr/2pCEDhMdYdYsmK4b0x1HJ7k5C5++miz4Dx6nn1WsDRvg3SFVh3QA03eLVsA/x0Km3mAK+OIO/IcJAbfwTB4yBx+Bw2Ke8DaZiApRBqSGSsuKBHdsymv3DobUtEbVWQU3kcSl600oFnGQEEFJ7+vvwXJxi+tvDr3MuYE+31cgq3+DyQuzMYaAdBQEgm4is9ZtLnD8ncxCBLGMVMhadJjup1VIqWNvnFVhoqkeT0h+QDtegLNCXRzcYE0ubbvP02ppQ2Bqf0yrJhPAHvxk/7D7KaSLo41qZ2WZ6afxturg+2bJG+kWpbs73BGoFnHLzCwoipRiXRqKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kENiXb4qlzWWnSu2KhmkK19p5zMSOn5d0b5G6RvJnZ0=;
+ b=bzrliBsJGYfn0TyWISuesDkEz2FT1cRSa41OiTYDZWG+aB25IyJVG2Cu79rzOlx9zLaE9Jx8ByOH5Ok4ETBdsaXhdWL6fsv+czsTbA462Q0mrt1oGAulK3WOmlVVrNEsE6Kx9c7qowcg5ugXjeu3WPhRVfTgWL1VxR79zHch4yiidqkfnSTzVDPebA0VNvPIQg1SBd8YewHR7me+Vh1GNreNSf9WkAISr90UGNvOldJsCkYUJf8/veD5uDHGqJIw2D7KwADA7LFfQ00Lnk/MCpb+trpNP3+iTKMoYw/GFHEZmwfxVxyhEesYiK/xvUU71AejdkZKU51izS5WrtxikQ==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by MN0PR20MB4569.namprd20.prod.outlook.com (2603:10b6:208:370::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.19; Wed, 20 Sep
+ 2023 09:07:30 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::d050:882f:a8a7:8263%4]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
+ 09:07:30 +0000
+From:   Inochi Amaoto <inochiama@outlook.com>
+To:     Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        evicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
+        guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>,
+        Inochi Amaoto <inochiama@outlook.com>
+Subject: Re: [PATCH v2 06/11] dt-bindings: timer: Add Sophgo sg2042 clint
+Date:   Wed, 20 Sep 2023 17:07:26 +0800
+Message-ID: <IA1PR20MB495308A2C6A11C42C25CE484BBF9A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230920-financial-declared-7b4b4baae517@wendy>
+References: <20230920-financial-declared-7b4b4baae517@wendy>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [ythxh9qJv6dRyLC2UQ6j1IjsFLq42j38EZ3VN/WXoe0=]
+X-ClientProxiedBy: SJ0PR05CA0108.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::23) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID: <20230920090726.143314-1-inochiama@outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH 14/14] security: add documentation for SLAB_VIRTUAL
-Content-Language: en-US
-To:     Matteo Rizzo <matteorizzo@google.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, linux-hardening@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        corbet@lwn.net, luto@kernel.org, peterz@infradead.org,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     jannh@google.com, evn@google.com, poprdi@google.com,
-        jordyzomer@google.com
-References: <20230915105933.495735-1-matteorizzo@google.com>
- <20230915105933.495735-15-matteorizzo@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230915105933.495735-15-matteorizzo@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|MN0PR20MB4569:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1d2356f4-54c9-433c-1137-08dbb9b904bd
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Sn1B1yy2r1/MV48Z7Tde7ilzjD18IrXaO83vULRpWx+pOIZ54b3vqLkoseN91nhb0Cg/DTq7fEg0LV5+ks8m34bBhcv2izW7+8fILhAG+D58JGLOJGtrjUR7Oj2z/3CXlze/AAViekt9BBzkccdT4I3+sDIusPIluockK6WAvwmJfuY2PXXlZ5nTVrWIodlrKQ2qvPnxxa2EbaTMGVUyxNXAUofmBXW8H4FJaO3YDLkWKNyLhybCmn98ePSCDGRC3RiWT8rDrZUrg9BzXf27T5UV4IAM0g3D08/LF14xOKwQI0lBUmQstGgdhxvK/SJAHzJiIzOao0nh0q7ZBzKB4QhcLVEqjDQE2zDdzkW0slF8XPs57sBw9RaIHiizfxBGC6BdueFpF0EOWq1DaYUjGoEtqXUcXb6RF+juBPSCLGf2a3bqcPBYinMz4yQ8w6QfTvOo/44kUnWA5jtS9S1yebuzpRTIKcGN3XYF2idyuTQKdirYuLftp7WwXrmsEsUO0wHd5pgCy6+oS0akfWVG9AxqNJri7ws6bNNpuHI0qy3Yq9Td5uRdOXXARYEJhDMyFMo2BExiMeezHaFVqpJCExKUlOuMV8PZ9g3odFN5utUBABL+Mv/E7im0mHdm62Yj
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UdciULzY260B8eNmomoj75pCl6cxbc9wI99dgOJfgYaQFlla8J8XIuf+ovwQ?=
+ =?us-ascii?Q?+uDHvDVaTeMQJY30xxdT3ID1Ws5nmT4uHsdFqlkl0pMuKVUatlI0HVVmavi+?=
+ =?us-ascii?Q?FAM/LlL9f8Y0Rl85LpSUDcZ2RZnR0+F6t4lK2MjFC6B3ZCUb0u48iCq1h6PQ?=
+ =?us-ascii?Q?uwNdJHoiNlT+JHnF34JZsXGlmOKvkLVu7qse2gp/kN3FyQ+uUzxI7OnY4+2z?=
+ =?us-ascii?Q?MRDmSRQ67QhyKhVWULLPohq0chnyTs0xHfEy0slqQrMxENbfKoz0akWGnnlK?=
+ =?us-ascii?Q?sz01jjwm+6nGGMZ+uq1TlEDMGZ8MyHqqk7jPMVmDbwh1kve8+Qd+1vMiJvf0?=
+ =?us-ascii?Q?2hdjHC5c6h7/N66CZjecwt+4C66IW6EfacEsNZJvXGerBvX6Wx271s7pP+9i?=
+ =?us-ascii?Q?1Xr57vgco76KV9RJoiKbI+NAifjSxKWh3j68VB4JLPC0mPrLQfYrF6GkszbY?=
+ =?us-ascii?Q?epc6UevjawJ+ZlGUgK0mygzi3FmLQutwtB70mfzKezjfq38BMswCJSi5JFzq?=
+ =?us-ascii?Q?uRLdIOluQrpFrH2a+c8I/QaSjOQOpP2xXniGXSQo0Ih1ul0yQWo2c4NNLEWF?=
+ =?us-ascii?Q?VsDOrqAqzCGZ4qLuL398fCsFSdHljHXvWVXkP6CisDDSBLpcp3QfqszvazUX?=
+ =?us-ascii?Q?SgwYtPU9QWQKkP+gDqMHvOHsRbM71f06FtmAcVJzri51RU2Uq6bZyuX0he78?=
+ =?us-ascii?Q?o1vHNNIFSf0vrcp1nMZuTiig+OnkFr+4V8mf/VvX7SbqS19/lStKPoJAZMEq?=
+ =?us-ascii?Q?iIJqPx5cKiAXsCni3VeZv19TX2uhTcVq5KZNnPyfuX6ekhM6Bg+QdUXw+e8A?=
+ =?us-ascii?Q?8pJVgdh/UxBErFa7IxF5pUoptZ9QNSke3UwpRm/0SB9iVNjzi2kdMZPHrU0m?=
+ =?us-ascii?Q?cOzYO+mEYxy8IZSxt07sKpLwClLb+idb/bZzkND3nSJ2PbprcB/cvL7pSQRK?=
+ =?us-ascii?Q?MNcrE/3VGIjcH6WDXOohcbWgWLpO3YCjjxbc9vttuchwtvz6yH7zwuSknzUE?=
+ =?us-ascii?Q?uh5uH+Ek2BYvD/C2mqvfJuLyGg/VlKQ8yRItjFJUH1A5Ur9q2o/BUM4ql9bm?=
+ =?us-ascii?Q?1cfLtS6R1Ti9Jg/n8h6Mno/BtBj+Mhcm5ekUkeO6WWhNXIg45dOEmOuJJNmb?=
+ =?us-ascii?Q?EkYOkBvHW5PUbjNu4IMXsnJkSCQcoEt9YPvO785c7w9Nv5NpxRrzXPnHQuy8?=
+ =?us-ascii?Q?i/cVmLoNw8/V1NOdOezCMNTbKpDmZbkpFvPbqqK9i4Ph508OUQZykGt5SYo?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d2356f4-54c9-433c-1137-08dbb9b904bd
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 09:07:30.7343
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR20MB4569
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/23 12:59, Matteo Rizzo wrote:
-> From: Jann Horn <jannh@google.com>
-> 
-> Document what SLAB_VIRTUAL is trying to do, how it's implemented, and
-> why.
-> 
-> Signed-off-by: Jann Horn <jannh@google.com>
-> Co-developed-by: Matteo Rizzo <matteorizzo@google.com>
-> Signed-off-by: Matteo Rizzo <matteorizzo@google.com>
-> ---
->  Documentation/security/self-protection.rst | 102 +++++++++++++++++++++
->  1 file changed, 102 insertions(+)
-> 
-> diff --git a/Documentation/security/self-protection.rst b/Documentation/security/self-protection.rst
-> index 910668e665cb..5a5e99e3f244 100644
-> --- a/Documentation/security/self-protection.rst
-> +++ b/Documentation/security/self-protection.rst
-> @@ -314,3 +314,105 @@ To help kill classes of bugs that result in kernel addresses being
->  written to userspace, the destination of writes needs to be tracked. If
->  the buffer is destined for userspace (e.g. seq_file backed ``/proc`` files),
->  it should automatically censor sensitive values.
-> +
-> +
-> +Memory Allocator Mitigations
-> +============================
-> +
-> +Protection against cross-cache attacks (SLAB_VIRTUAL)
-> +-----------------------------------------------------
-> +
-> +SLAB_VIRTUAL is a mitigation that deterministically prevents cross-cache
-> +attacks.
-> +
-> +Linux Kernel use-after-free vulnerabilities are commonly exploited by turning
-> +them into an object type confusion (having two active pointers of different
-> +types to the same memory location) using one of the following techniques:
-> +
-> +1. Direct object reuse: make the kernel give the victim object back to the slab
-> +   allocator, then allocate the object again from the same slab cache as a
-> +   different type. This is only possible if the victim object resides in a slab
-> +   cache which can contain objects of different types - for example one of the
-> +   kmalloc caches.
-> +2. "Cross-cache attack": make the kernel give the victim object back to the slab
-> +   allocator, then make the slab allocator give the page containing the object
-> +   back to the page allocator, then either allocate the page directly as some
-> +   other type of page or make the slab allocator allocate it again for a
-> +   different slab cache and allocate an object from there.
-> +
-> +In either case, the important part is that the same virtual address is reused
-> +for two objects of different types.
+>On Wed, Sep 20, 2023 at 02:39:39PM +0800, Chen Wang wrote:
+>> From: Inochi Amaoto <inochiama@outlook.com>
+>>
+>> Add two new compatible string formatted like `C9xx-clint-xxx` to identify
+>> the timer and ipi device separately, and do not allow c900-clint as the
+>> fallback to avoid conflict.
+>>
+>> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+>> Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+>
+>Have you ignored Krzysztof's comments on this? I don't see a response or
+>a reaction to his comments about the compatibles on the last version.
+>Additionally, where is the user for these? I don't see any drivers that
+>actually make use of these.
+>
 
-Hmm but in the 2. technique and "either allocate the page directly" case,
-it's not just the virtual address, right? So we should be saying that
-SLAB_VIRTUAL won't help with that case, but hopefully it's also less
-common/harder to exploit? I'm not sure though - kmalloc() in SLUB will pass
-anything larger than order-1 (8kB) directly to the page allocator via
-kmalloc_large() so it will bypass both CONFIG_RANDOM_KMALLOC_CACHES and
-SLAB_VIRTUAL, AFAICS?
+Sorry for late reply.
 
-> +The first case can be addressed by separating objects of different types
-> +into different slab caches. If a slab cache only contains objects of the
-> +same type then directly turning an use-after-free into a type confusion is
-> +impossible as long as the slab page that contains the victim object remains
-> +assigned to that slab cache. This type of mitigation is easily bypassable
-> +by cross-cache attacks: if the attacker can make the slab allocator return
-> +the page containing the victim object to the page allocator and then make
-> +it use the same page for a different slab cache, type confusion becomes
-> +possible again. Addressing the first case is therefore only worthwhile if
-> +cross-cache attacks are also addressed. AUTOSLAB uses a combination of
-> +probabilistic mitigations for this. SLAB_VIRTUAL addresses the second case
+The clint is parsed by sbi. As use the same compatible, the opensbi will
+parse the device twice. This will cause a fault.
 
-As Kees mentioned - I don't think you're talking about
-CONFIG_RANDOM_KMALLOC_CACHES here, but it should be mentioned. Comparison of
-the combination of both with AUTOSLAB could be also interesting, if
-clarified it's not mainline, so unaware readers are not confused.
+>Why do you need to have 2 compatibles (and therefore 2 devices) for the
+>clint? I thought the clint was a single device, of which the mtimer and
+>mswi bits were just "features"? Having split register ranges isn't a
+>reason to have two compatibles, so I must be missing something here...
+>
+>Thanks,
+>Conor.
+>
 
-> +deterministically by changing the way the slab allocator allocates memory.
-> +
-> +Preventing slab virtual address reuse
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +In theory there is an easy fix against cross-cache attacks: modify the slab
-> +allocator so that it never gives memory back to the page allocator. In practice
-> +this would be problematic because physical memory remains permanently assigned
-> +to a slab cache even if it doesn't contain any active objects. A viable
-> +cross-cache mitigation must allow the system to reclaim unused physical memory.
-> +In the current design of the slab allocator there is no way
-> +to keep a region of virtual memory permanently assigned to a slab cache without
-> +also permanently reserving physical memory. That is because the virtual
-> +addresses that the slab allocator uses come from the linear map region, where
-> +there is a 1:1 correspondence between virtual and physical addresses.
-> +
-> +SLAB_VIRTUAL's solution is to create a dedicated virtual memory region that is
-> +only used for slab memory, and to enforce that once a range of virtual addresses
-> +is used for a slab cache, it is never reused for any other caches. Using a
-> +dedicated region of virtual memory lets us reserve ranges of virtual addresses
-> +to prevent cross-cache attacks and at the same time release physical memory back
-> +to the system when it's no longer needed. This is what Chromium's PartitionAlloc
-> +does in userspace
-> +(https://chromium.googlesource.com/chromium/src/+/354da2514b31df2aa14291199a567e10a7671621/base/allocator/partition_allocator/PartitionAlloc.md).
-> +
-> +Implementation
-> +~~~~~~~~~~~~~~
-> +
-> +SLAB_VIRTUAL reserves a region of virtual memory for the slab allocator. All
-> +pointers returned by the slab allocator point to this region. The region is
-> +statically partitioned in two sub-regions: the metadata region and the data
-> +region. The data region is where the actual objects are allocated from. The
-> +metadata region is an array of struct slab objects, one for each PAGE_SIZE bytes
-> +in the data region.
-> +Without SLAB_VIRTUAL, struct slab is overlaid on top of the struct page/struct
-> +folio that corresponds to the physical memory page backing the slab instead of
-> +using a dedicated memory region. This doesn't work for SLAB_VIRTUAL, which needs
-> +to store metadata for slabs even when no physical memory is allocated to them.
-> +Having an array of struct slab lets us implement virt_to_slab efficiently purely
-> +with arithmetic. In order to support high-order slabs, the struct slabs
-> +corresponding to tail pages contain a pointer to the head slab, which
-> +corresponds to the slab's head page.
+Sorry for late reply, The clint consists of mtimer and ipi devices, which
+is defined in [1]. This standard shows clint(or the aclint) has two device,
+but not one. In another word, there is no need to defined mtimer and ipi
+device on the same base address. So we need two compatibles to allow sbi
+to identify them correctly.
 
-I think ideally we should be using the folio code to get from tail pages to
-a folio and then a single struct slab - it would be more in line how Matthew
-envisions future of struct page array AFAIK. Unless it's significantly
-slower, which would be a shame :/
+[1] https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
 
-> +
-> +TLB flushing
-> +~~~~~~~~~~~~
-> +
-> +Before it can release a page of physical memory back to the page allocator, the
-> +slab allocator must flush the TLB entries for that page on all CPUs. This is not
-> +only necessary for the mitigation to work reliably but it's also required for
-> +correctness. Without a TLB flush some CPUs might continue using the old mapping
-> +if the virtual address range is reused for a new slab and cause memory
-> +corruption even in the absence of other bugs. The slab allocator can release
-> +pages in contexts where TLB flushes can't be performed (e.g. in hardware
-> +interrupt handlers). Pages to free are not freed directly, and instead they are
-> +put on a queue and freed from a workqueue context which also flushes the TLB.
-> +
-> +Performance
-> +~~~~~~~~~~~
-> +
-> +SLAB_VIRTUAL's performance impact depends on the workload. On kernel compilation
-> +(kernbench) the slowdown is about 1-2% depending on the machine type and is
-> +slightly worse on machines with more cores.
-
+>> ---
+>>  Documentation/devicetree/bindings/timer/sifive,clint.yaml | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+>> index a0185e15a42f..ae69696c5c75 100644
+>> --- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+>> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+>> @@ -39,6 +39,14 @@ properties:
+>>                - allwinner,sun20i-d1-clint
+>>                - thead,th1520-clint
+>>            - const: thead,c900-clint
+>> +      - items:
+>> +          - enum:
+>> +              - sophgo,sg2042-clint-mtimer
+>> +          - const: thead,c900-clint-mtimer
+>> +      - items:
+>> +          - enum:
+>> +              - sophgo,sg2042-clint-mswi
+>> +          - const: thead,c900-clint-mswi
+>>        - items:
+>>            - const: sifive,clint0
+>>            - const: riscv,clint0
+>> --
+>> 2.25.1
+>>
+>
