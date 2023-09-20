@@ -2,176 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 896CE7A83F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017F87A8423
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236468AbjITNyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
+        id S236599AbjITN4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236024AbjITNyt (ORCPT
+        with ESMTP id S236533AbjITNzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:54:49 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931DEAD;
-        Wed, 20 Sep 2023 06:54:43 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-773ae5d2b1fso377165685a.2;
-        Wed, 20 Sep 2023 06:54:43 -0700 (PDT)
+        Wed, 20 Sep 2023 09:55:38 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769A1DD
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:55:07 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5924b2aac52so89054627b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:55:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695218082; x=1695822882; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FVF06t7IZza16CFzCOJgQajEkOspYiDG67dNcLwWTqA=;
-        b=H8IMUrKBcPWPk4ZyKKQAIo53+W7GSRbli2+0RrSu45mmGdiBXKzJUVmExCnfV8SJQj
-         e7KaiyMUS6zi0rwLacOo5q6Ci8m6G4vmCt1D5Ti65ARS8+kiTjDe9fvAYOPhZIz1E5Ju
-         pSXx9rhxOJTfqcsCgoPMFCMGySTGiJevv59jo/icKKzuBj4zlMT9DGTHQC9GEKiMtdiJ
-         UPTOIlyL8OCPeM6HviFCM1xSGdY/XzRXnL4SNYd74IDaPBsQByMtfN3PBXDN7IWH/d+v
-         7rxsCqoDgiE/Yq94iwHh8WyODtXB0OLn1H5TwLpVgH2mKV2pXRVu4Qws5tgX7KlIAfue
-         gCpw==
+        d=google.com; s=20230601; t=1695218106; x=1695822906; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0APReAt4bNnnd5kx+NahuCYj0tgbUgwxY6/xmv3q1x8=;
+        b=qYN6MLIfTj4icmmBpIkd0WLhJxjSRWRnp5CVrZ5zO23Hc6SEWKaxnDv2NJItwfDuFQ
+         6RVvMGhZPLFVWocauiDyLryXn63S6KPTLdALA3Qsdgqj3uuPB/A2o/4ptf1HYp9bQI/0
+         1cYLmwlGz2SJqRrIPPncawpZ4aDzCTJ8sW2gL6tfKGnzilsZLa6El4ASlO1PaFkjNm/O
+         bYywfPO/0UW/nevxIlFfp0aeaozdgulhoho9Sa50zXYSvg9W6zOTkgKB/8FODKp3Zw2Z
+         dwA7/f8AInE7LDVv1jVJABSqsl1VCpa8fzDiXuUQzjW4V/dFydMGpeKFv2KS3ghLlvrS
+         QzZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695218082; x=1695822882;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FVF06t7IZza16CFzCOJgQajEkOspYiDG67dNcLwWTqA=;
-        b=Zv/uA1jnTyquaVuldl2KvfbeB97Uh4vDBSbQZLsSycO1xXNz0C48v8tQ5Gb3RiRGxV
-         NGp855YFFuTBHvYhL2CTaicU8hkMmnk1UJIo94q+kXJn/MeJW3PFwEV8HUqkN0r9or2C
-         gyHHxpC8pjxGVpEhWN2K/hb28F4gMs3t1hzntdPGSh5fYjWXJWiUNja5qB439ARcX+Id
-         xhMXm+puKfUA7FuOd9C6xXGh5Bh/swCFZ3xE56E6U32mUqZSh6Ht5hhE7CYCmvpdJyKv
-         QHsp+EMzP11DzUOTN1uAdO2Dax1orQkj+DqEuwI6gb5sFdxcuuPBJ/GHVdg3NMWl+2SQ
-         CerA==
-X-Gm-Message-State: AOJu0Yz1HZJ54nGmlWZWecUbHO5Dy31sDVm/GOqIXIl6xtUeRfZ43heB
-        zrcihNbwOZDW0MZ1ggy7Y7cIzcSC+yw=
-X-Google-Smtp-Source: AGHT+IEF8xZCVveTfM6rspnqiBn7ZNNofTz733mxQ//7oM0FYPWLnypYaEAokeajcDlKDm96sVZ/ZA==
-X-Received: by 2002:a05:620a:1407:b0:76f:98c:3f05 with SMTP id d7-20020a05620a140700b0076f098c3f05mr2500850qkj.76.1695218082632;
-        Wed, 20 Sep 2023 06:54:42 -0700 (PDT)
-Received: from localhost (193.132.150.34.bc.googleusercontent.com. [34.150.132.193])
-        by smtp.gmail.com with ESMTPSA id m10-20020ae9e00a000000b0076f35d17d06sm4812021qkk.69.2023.09.20.06.54.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 06:54:42 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 09:54:42 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org
-Cc:     dhowells@redhat.com,
-        syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Message-ID: <650af9a2aa74_37bf362941f@willemb.c.googlers.com.notmuch>
-In-Reply-To: <108791.1695199151@warthog.procyon.org.uk>
-References: <108791.1695199151@warthog.procyon.org.uk>
-Subject: Re: [PATCH net v2] ipv4, ipv6: Fix handling of transhdrlen in
- __ip{,6}_append_data()
+        d=1e100.net; s=20230601; t=1695218106; x=1695822906;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0APReAt4bNnnd5kx+NahuCYj0tgbUgwxY6/xmv3q1x8=;
+        b=RzRaYkBXrAgiktUOfUVjR5GgoaSA9u+X2e7PKFLTzzlr68y2Ed66/y8e5va7Lz9SWS
+         l084oW8BNNuRInOJHxbwNzd6bVQfwBIcSgZtopVfTMz6Z8Rie/yJ0UyOyktZeLpETGnt
+         7Aq46kHQ8Bswj0I2AO9LLOSVf26DC9lWVxtunbivWxUGq/wohSTguxoV0w8PBisD4EeD
+         1/OtjQC2vKq9SCmKNvEil+bKFlFf84fsageoXuI79CsVtcrKDEWEIrmXv271YWYaMgSu
+         c8EenUjOQrr4wR6c9ZfhVlklneYAZptoNy+2w7fFw6SUcA5YdgFW6iQMyN6i3QYLvcQI
+         6Ekg==
+X-Gm-Message-State: AOJu0YxaIVLYJyWMk6xiKZR8PfC7S1k902soaume8umBj240inN+ue9x
+        hCM6evsxh0M1ZIX80ThWsvKQmK0/Dn4=
+X-Google-Smtp-Source: AGHT+IHuQ24Hy0wlZqpKThD2hndi3rYWapG+J/d1L/ai4z7W/k7rmZdxNg2zwHr4zmYKJTJyjaSKmjFgB/U=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ae57:0:b0:59b:ee27:bbe9 with SMTP id
+ g23-20020a81ae57000000b0059bee27bbe9mr35901ywk.9.1695218106527; Wed, 20 Sep
+ 2023 06:55:06 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 06:55:05 -0700
+In-Reply-To: <ZQqMBEL61p739dpF@yilunxu-OptiPlex-7050>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-3-seanjc@google.com>
+ <ZQqMBEL61p739dpF@yilunxu-OptiPlex-7050>
+Message-ID: <ZQr5uXhV6Cnx4DYT@google.com>
+Subject: Re: [RFC PATCH v12 02/33] KVM: Use gfn instead of hva for mmu_notifier_retry
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells wrote:
-> Including the transhdrlen in length is a problem when the packet is
-> partially filled (e.g. something like send(MSG_MORE) happened previously)
-> when appending to an IPv4 or IPv6 packet as we don't want to repeat the
-> transport header or account for it twice.  This can happen under some
-> circumstances, such as splicing into an L2TP socket.
+On Wed, Sep 20, 2023, Xu Yilun wrote:
+> On 2023-09-13 at 18:55:00 -0700, Sean Christopherson wrote:
+> > +void kvm_mmu_invalidate_range_add(struct kvm *kvm, gfn_t start, gfn_t end)
+> > +{
+> > +	lockdep_assert_held_write(&kvm->mmu_lock);
+> > +
+> > +	WARN_ON_ONCE(!kvm->mmu_invalidate_in_progress);
+> > +
+> >  	if (likely(kvm->mmu_invalidate_in_progress == 1)) {
+> >  		kvm->mmu_invalidate_range_start = start;
+> >  		kvm->mmu_invalidate_range_end = end;
 > 
-> The symptom observed is a warning in __ip6_append_data():
+> IIUC, Now we only add or override a part of the invalidate range in
+> these fields, IOW only the range in last slot is stored when we unlock.
+
+Ouch.  Good catch!
+
+> That may break mmu_invalidate_retry_gfn() cause it can never know the
+> whole invalidate range.
 > 
->     WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_append_data.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
+> How about we extend the mmu_invalidate_range_start/end everytime so that
+> it records the whole invalidate range:
 > 
-> that occurs when MSG_SPLICE_PAGES is used to append more data to an already
-> partially occupied skbuff.  The warning occurs when 'copy' is larger than
-> the amount of data in the message iterator.  This is because the requested
-> length includes the transport header length when it shouldn't.  This can be
-> triggered by, for example:
-> 
->         sfd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
->         bind(sfd, ...); // ::1
->         connect(sfd, ...); // ::1 port 7
->         send(sfd, buffer, 4100, MSG_MORE);
->         sendfile(sfd, dfd, NULL, 1024);
-> 
-> Fix this by deducting transhdrlen from length in ip{,6}_append_data() right
-> before we clear transhdrlen if there is already a packet that we're going
-> to try appending to.
-> 
-> Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com/
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Eric Dumazet <edumazet@google.com>
-> cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> cc: "David S. Miller" <davem@davemloft.net>
-> cc: David Ahern <dsahern@kernel.org>
-> cc: Paolo Abeni <pabeni@redhat.com>
-> cc: Jakub Kicinski <kuba@kernel.org>
-> cc: netdev@vger.kernel.org
-> cc: bpf@vger.kernel.org
-> cc: syzkaller-bugs@googlegroups.com
-> Link: https://lore.kernel.org/r/75315.1695139973@warthog.procyon.org.uk/ # v1
-> ---
->  net/ipv4/ip_output.c  |    1 +
->  net/ipv6/ip6_output.c |    1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> index 4ab877cf6d35..9646f2d9afcf 100644
-> --- a/net/ipv4/ip_output.c
-> +++ b/net/ipv4/ip_output.c
-> @@ -1354,6 +1354,7 @@ int ip_append_data(struct sock *sk, struct flowi4 *fl4,
->  		if (err)
->  			return err;
->  	} else {
-> +		length -= transhdrlen;
->  		transhdrlen = 0;
->  	}
->  
-> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> index 54fc4c711f2c..6a4ce7f622e9 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -1888,6 +1888,7 @@ int ip6_append_data(struct sock *sk,
->  		length += exthdrlen;
->  		transhdrlen += exthdrlen;
->  	} else {
-> +		length -= transhdrlen;
->  		transhdrlen = 0;
->  	}
->  
+> if (kvm->mmu_invalidate_range_start == INVALID_GPA) {
+> 	kvm->mmu_invalidate_range_start = start;
+> 	kvm->mmu_invalidate_range_end = end;
+> } else {
+> 	kvm->mmu_invalidate_range_start =
+> 		min(kvm->mmu_invalidate_range_start, start);
+> 	kvm->mmu_invalidate_range_end =
+> 		max(kvm->mmu_invalidate_range_end, end);
+> }
 
-Definitely a much simpler patch, thanks.
+Yeah, that does seem to be the easiest solution.
 
-So the current model is that callers with non-zero transhdrlen always
-pass to __ip_append_data payload length + transhdrlen.
-
-I do see that udp does this: ulen += sizeof(struct udphdr); This calls
-ip_make_skb if not corked, but directly ip_append_data if corked.
-
-Then __ip_append_data will use transhdrlen in its packet calculations,
-and reset that to zero after allocating the first new skb.
-
-So if corked *and* fragmentation, which would cause a new skb to be
-allocated, the next skb would incorrectly reserve udp header space,
-because the second __ip_append_data call will again pass transhdrlen.
-If so, then this patch fixes that. But that has never been reported,
-so I'm most likely misreading some part..
-
-So on the surface this makes sense to me. But I need to read it more
-closely still. The most risk-averse version would limit this change
-explicitly to MSG_SPLICE_PAGES calls.
-
-FWIW I think MSG_ZEROCOPY is somewhat immune compared to
-MSG_SPLCE_PAGES solely because it is limited to TCP, UDP and RDS
-sockets.
+I'll post a fixup patch, unless you want the honors.
