@@ -2,168 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D4C7A73E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0312B7A73E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbjITHWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
+        id S233705AbjITHWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbjITHWd (ORCPT
+        with ESMTP id S233686AbjITHWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:22:33 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D469893;
-        Wed, 20 Sep 2023 00:22:25 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-401b393ddd2so72705745e9.0;
-        Wed, 20 Sep 2023 00:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695194544; x=1695799344; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2bhVmf9Xb0W3PnpeUv/b1V4dB6FaBxpZCDQFmYEoS+s=;
-        b=FmOzVrqNOBSJZOXzZGu2uSrZgTnRVXHP2xxmrLSF0uzkHH/AWCCGlj7ZakwXoaUkmo
-         OHRQAoKWL0yyaZIiDYmAYcr1fpgHw2GvcXfn7RAHYLWGDGITRA+zHpVLWb6l6Fg0kNNK
-         tT3e7ZhfMdCaqbNADgLGDXUDrLsayjZiQzjnFqirlAZB5UqffvrAsBCnxb5gOYnoClv9
-         cHJD1Qp2TgOQPp68uLwrUZr9pChr3Yor6E6Wr9C5FMc69MSiPUmpG19vVbCD26WuWtOQ
-         TYyHHaadO5SscTnOMyjl5ljSTHwND63xX/SCgUcqxyOFcPJH6Qm3HOHS8qtSEopE5FXO
-         aI6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695194544; x=1695799344;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2bhVmf9Xb0W3PnpeUv/b1V4dB6FaBxpZCDQFmYEoS+s=;
-        b=UG+wJgArIesCPR1I5rqpqxRKn16DbmCozlqAhifCI2RAcIk5KX8EB0sjAiOsbdkvFw
-         x0hEQ8zygBLbY5n5sN0uRMyPHdtOKesawsAFIMtkWR0Xd2x+zQjJu6ZuBWXDahOXb+sG
-         TjjB4ucYXjqJoVNDcW2eM+AlBOt5BGYIPoHxiim52YLqJ7Vi3z6iLWXBh/AQlUwO60zr
-         Qtowx1/Dk6skBAW3yPXwoV4ja0vAmenMcnAsh5QXBB37BNQnNHkxTj4jlO8/eC4DQNca
-         xkAolhWGfs25Qmq9XUHnnH99MIZHQoRdF4ilQi3+qAc94/OJVUbYAfmX8ZCS2cBmJdr6
-         PxMw==
-X-Gm-Message-State: AOJu0YxiohpDJ1QvDqHfuQt/rBioXqji5GNMP1fMHs+yaUIjdG0KsPR3
-        FMm8adqX4L1anaFB8Gx0yK8=
-X-Google-Smtp-Source: AGHT+IHhx4uy7+lhAAone/xKFAY7os8e9wsVKqyqvDOdNWqQ9Nb+5vwmAcbdDNQiKjqhnufHlkQO9Q==
-X-Received: by 2002:a1c:f70f:0:b0:403:bb3:28c9 with SMTP id v15-20020a1cf70f000000b004030bb328c9mr1721441wmh.38.1695194543932;
-        Wed, 20 Sep 2023 00:22:23 -0700 (PDT)
-Received: from PCBABN.skidata.net ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id o16-20020a5d4a90000000b0031ffb51f6f9sm13119633wrq.30.2023.09.20.00.22.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:22:23 -0700 (PDT)
-From:   Benjamin Bara <bbara93@gmail.com>
-To:     mripard@kernel.org
-Cc:     abelvesa@kernel.org, bbara93@gmail.com, benjamin.bara@skidata.com,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        festevam@gmail.com, frank@oltmanns.dev, kernel@pengutronix.de,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, mturquette@baylibre.com, peng.fan@nxp.com,
-        robh+dt@kernel.org, s.hauer@pengutronix.de, sboyd@kernel.org,
-        shawnguo@kernel.org
-Subject: Re: [PATCH 06/13] clk: keep track if a clock is explicitly configured
-Date:   Wed, 20 Sep 2023 09:22:16 +0200
-Message-Id: <20230920072216.1737599-1-bbara93@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <pgnlrokdqqqclqvp4h2zk7iyq2jfncnvvwavovydovdmj3d2gf@kszpslmeswbr>
-References: <pgnlrokdqqqclqvp4h2zk7iyq2jfncnvvwavovydovdmj3d2gf@kszpslmeswbr>
+        Wed, 20 Sep 2023 03:22:43 -0400
+Received: from icp-osb-irony-out2.external.iinet.net.au (icp-osb-irony-out2.external.iinet.net.au [203.59.1.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1DB293;
+        Wed, 20 Sep 2023 00:22:35 -0700 (PDT)
+X-SMTP-MATCH: 1
+IronPort-Data: A9a23:xGcDEKncPfZRAAHEGTRw5dLo5gyqJ0RdPkR7XQ2eYbSJt1+Wr1Gzt
+ xIv7RMywkvx1ptBB6l0bb0CeDoHuZblerYTSQZyrzc3J55zgZKtLcyDKUvtND+lIMTGTUZ2h
+ +0TcdCowPocFxcwnT/zdOC7xZVA/fvQHOGkWbScYnkZqTJME0/Ntzoyw4bVvaY12bBVMyvV0
+ fvursvWPkOS2jIcGgr4PIra9XuDFNyr0N8plgRWicJj5TcypFFMZH4rHpxdGlOjKmVi8k9Wc
+ M6YpF2x1juxEx4FVoj/yu6jGqEAaua60QOm0hK6V4D+2UIa/nRaPqsTbJIhhUlrZzqhxstaw
+ t9klbmKRwYVMPPLqNUTDhhTKnQrVUFG0OevzXmXgpXClQufLSuqm7M0VnRe0Y8wp7YxXycUr
+ 6JecmhdBvyAr7veLLaTRfNhidklI8TxMZk3pXx70TfUEbAtRpWFSriiCdpwgGls2ZwXQq2HD
+ yYfQRRJRi/RPyRyAw8SM5Musf+aul7QaTIN/Tp5ooJyuQA/1jdZz7npNMv9e9qEX8xZk0+U4
+ GXc8AzRLhgENdDZ7TOE/XKwrubEgCfyUsQZE7jQ3vprhkCDg28eEhsbUXOlrvSjzE2zQdRSL
+ woT4CVGhawz8lG7C9fmUxCmrXqsoBERQZxTHvc85QXLzbDbiy6dB24ZXntIctcmnNE5SCZs1
+ VKTmd7tQzt1v9W9VXWH6L6QoSiaPSkTMH9HaygZSwcM/9jkpsc0lB2nZtB7EaG6j9vdFjT5w
+ jTMpy8774j/luZWh+DluAqd3Xf2/siPUhY650PcWWfj5x4RiJOZWrFEIGPztZ5oRLt1hHHa1
+ JTYs6ByNNwzMKw=
+IronPort-HdrOrdr: A9a23:5rTZZK3p7qBPZBgNA2Q5cQqjBD0kLtp133Aq2lEZdPUzSL3gqy
+ nOpoV86faQslsssR4b+exoVJPvfZq+z+8R3WByB8bEYOCOggLBR+sM0WKF+UyDJ8SUzI9gPM
+ lbAstDIey1J1w/pcHz5RmjE8xI+qj8zImYwc3bi1trUg1ubbhthj0JdzpzQncbeCB2QZIlEJ
+ Kd48BDoSasPW8Qctm2b0N1I9TrlpnCiZbvYRsNAhg65U2VlDutrLbxDhif2X4lIkty6IZn+X
+ XAmwz97KCkr/z+0AbV0yvJ441Rg8aJ8Ko5OCTP4vJlTgnRtg==
+X-Talos-CUID: =?us-ascii?q?9a23=3AQPBk0mscTlBg1xLtMUWUVoTT6It8aVbXxl7wBnW?=
+ =?us-ascii?q?2CFpnFrqleFHN+ahdxp8=3D?=
+X-Talos-MUID: 9a23:9VkdxAoeOwopQ79+1Uwezx9EHvx5v52TMRgIqpQWltG2CQtfITjI2Q==
+X-IronPort-AV: E=Sophos;i="6.02,161,1688400000"; 
+   d="scan'208";a="464741731"
+Received: from 58-6-226-208.tpgi.com.au (HELO [192.168.0.22]) ([58.6.226.208])
+  by icp-osb-irony-out2.iinet.net.au with ESMTP; 20 Sep 2023 15:22:33 +0800
+Message-ID: <35a33582-9206-94bb-eca2-a1d9c585f6c1@westnet.com.au>
+Date:   Wed, 20 Sep 2023 17:22:33 +1000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+References: <20230915183707.2707298-1-willy@infradead.org>
+ <20230915183707.2707298-10-willy@infradead.org>
+ <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
+ <ZQW849TfSCK6u2f8@casper.infradead.org>
+ <e1fb697714ac408e85c4e3dc573cd7d5@AcuMS.aculab.com>
+ <ZQmvhC+pGWNs9R23@casper.infradead.org>
+ <cffc2a427ae74f62b07345ec9348e43e@AcuMS.aculab.com>
+ <ZQm67lGOBBdC2Dl9@casper.infradead.org>
+From:   Greg Ungerer <gregungerer@westnet.com.au>
+In-Reply-To: <ZQm67lGOBBdC2Dl9@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime!
 
-thanks for taking the time to look through :)
 
-On Tue, 19 Sept 2023 at 09:07, Maxime Ripard <mripard@kernel.org> wrote:
-> On Mon, Sep 18, 2023 at 12:40:02AM +0200, Benjamin Bara wrote:
-> > From: Benjamin Bara <benjamin.bara@skidata.com>
-> >
-> > When we keep track if a clock has a given rate explicitly set by a
-> > consumer, we can identify unintentional clock rate changes in an easy
-> > way. This also helps during debugging, as one can see if a rate is set
-> > by accident or due to a consumer-related change.
-> >
-> > Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
-> > ---
-> >  drivers/clk/clk.c            | 25 +++++++++++++++++++++++++
-> >  include/linux/clk-provider.h |  1 +
-> >  2 files changed, 26 insertions(+)
-> >
-> > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> > index 8f4f92547768..82c65ed432c5 100644
-> > --- a/drivers/clk/clk.c
-> > +++ b/drivers/clk/clk.c
-> > @@ -70,6 +70,7 @@ struct clk_core {
-> >       unsigned long           rate;
-> >       unsigned long           req_rate;
-> >       unsigned long           new_rate;
-> > +     unsigned long           set_rate;
->
-> This is pretty much what req_rate is supposed to be about. Why didn't it
-> work in your case?
+On 20/9/23 01:14, Matthew Wilcox wrote:
+> On Tue, Sep 19, 2023 at 02:35:25PM +0000, David Laight wrote:
+>> From: Matthew Wilcox <willy@infradead.org>
+>>> Sent: 19 September 2023 15:26
+>>>
+>>> On Tue, Sep 19, 2023 at 01:23:08PM +0000, David Laight wrote:
+>>>>> Well, that sucks.  What do you suggest for Coldfire?
+>>>>
+>>>> Can you just do a 32bit xor ?
+>>>> Unless you've got smp m68k I'd presume it is ok?
+>>>> (And assuming you aren't falling off a page.)
+>>>
+>>> Patch welcome.
+>>
+>> My 68020 book seems to be at work and I'm at home.
+>> (The 286, 386 and cy7c600 (sparc 32) books don't help).
+>>
+>> But if the code is trying to do *ptr ^= 0x80 and check the
+>> sign flag then you just need to use eor.l with 0x80000000
+>> on the same address.
+> 
+> I have a 68020 book; what I don't have is a Coldfire manual.
 
-I picked this one to respond first because I think some of the
-implemented stuff just workarounds the current req_rate behaviour.
+You can find it here: https://www.nxp.com/docs/en/reference-manual/CFPRM.pdf
 
-Currently, I have two "problems" with it:
-1. It's set during initialization[1]. In this phase, the *required* rate
-   isn't known yet, so it should be 0 imo.
-2. It's set during re-parenting[2,3]. Also here, just because we
-   re-parent, the active consumer (which set the req_rate to a valid
-   value) still requires the clock to have the same rate.
+Regards
+Greg
 
-That is basically the reason why we have no info if the req_rate is
-really "required" by a consumer or if it is just set because the parent
-had it at some time. It's only usage is here[4], which IMO doesn't
-really depends on the wrong behaviour I described above.
 
-The respective sub-tree we talk about on the imx8mp looks like this (one
-example for the the LVDS-only case):
-video_pll1 (pll; 7x crtc rate - currently, rate is assigned via dt)
-  video_pll1_bypass (mux; 7x crtc rate)
-    video_pll1_out (gate; 7x crtc rate)
-      media_ldb (divider; 7x crtc rate)
-        media_ldb_root_clk (gate; 7x crtc rate)
-      media_disp2_pix (divider; 1x crtc rate)
-        media_disp2_pix_root_clk (gate; 1x crtc rate)
-      media_disp1_pix (divider; unused for now)
-        media_disp1_pix_root_clk (gate; unused for now)
-
-The problem is that the panel driver sets media_disp1_pix_root_clk,
-ldb-bridge driver sets media_ldb_root_clk. All the others have a
-req_rate of the rate video_pll1 had when they got initialized or
-re-parented.
-
-My idea was, that when media_disp2_pix_root_clk is set to the CRTC rate,
-IMO all clocks along the line (especially media_disp1_pix, which is
-"seen" as child of the PLL, and the actual divider for
-media_disp2_pix_root_clk) need to set their new rate as "required",
-because the subtree below them relies on it. This might be a wrong
-approach. It might be sufficient to have a req_rate only on the nodes
-that actually require it. However, IMHO we need to make sure that *all*
-required rates (especially the ones of leaves!) are respected after a
-change. Meaning if we e.g. request video_pll1 to change again (this time
-by media_ldb_root_clk), we have to ensure that media_disp2_pix_root_clk
-has still the rate which has been set as req_rate before.
-
-Ultimately, my trigger patch is also just a really bad workaround for a
-new_rate != req_rate check, so I want to re-build the idea behind it
-based on a differently defined req_rate. Need to take a deeper look on
-that.
-
-Thanks & regards
-Benjamin
-
-[1] https://elixir.bootlin.com/linux/v6.5.3/source/drivers/clk/clk.c#L3891
-[2] https://elixir.bootlin.com/linux/v6.5.3/source/drivers/clk/clk.c#L2726
-[3] https://elixir.bootlin.com/linux/v6.5.3/source/drivers/clk/clk.c#L2812
-[4] https://elixir.bootlin.com/linux/v6.5.3/source/drivers/clk/clk.c#L2592
+> Anyway, that's not the brief.  We're looking to (eg) clear bit 0
+> and test whether bit 7 was set.  So it's the sign bit of the byte,
+> not the sign bit of the int.
