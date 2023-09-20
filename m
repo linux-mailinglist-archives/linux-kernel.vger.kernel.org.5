@@ -2,152 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413D37A748E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC767A7493
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbjITHoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
+        id S233971AbjITHpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233905AbjITHok (ORCPT
+        with ESMTP id S233983AbjITHop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:44:40 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AB9EA
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:44:33 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32008b5e2d2so380298f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:44:33 -0700 (PDT)
+        Wed, 20 Sep 2023 03:44:45 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFC1E8;
+        Wed, 20 Sep 2023 00:44:38 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso68845785e9.2;
+        Wed, 20 Sep 2023 00:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695195871; x=1695800671; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695195877; x=1695800677; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cx5iccFvgcy7SfhkU5VK+FkZItyjUgRW2eoOl85UWN0=;
-        b=mUvsG4BUv+wqri5oScmAmkx2R/A4EG8v+fU8ZWF2dFWv7yDXtV34PsUwVqY4jq3WPf
-         MtclqmNFtjuUbfNoCMw0mBUz9RSeuJ3D1KY8aK7+YdjEdSyuMLi7tF9i0tggxUrfZd6A
-         U9PzEsHJCdhaJhB7gVdhLsgkAFGu4DB/nrNVZS/3zJqPFtqVs+b/9kxr6ChXkB4ZhEas
-         6Ki3ulT0AJsIUtgYBrWzS/a3MQdhmRRqvdaSbjsVRPmwIaB3hntdisxw3Y63v5TgCRfB
-         qlByJM4o7N4prSNFUCh4F8F8QiuN7uHJn8hmdsdtt3uSnWwcCW6Sa9iUEonr0AI/H3xa
-         edvg==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XzT+Xiw8JySJKyD7hHrg/jFpbzpL9ozxt4Lqd8Kjts4=;
+        b=bA3jdgYNN8fGAyxxIZrFC+df4Ag5Sr/1FxNbfFI3uDzU6DdyR/Jk2aFVWECaP7+f2Z
+         7iMoRrG2xe10GRY3OoU8+m9jFnU5Yj3iUaJsunTJmsMF2mIEQybQBbxnfomKOgrOZ9LL
+         c9dbc7fU6yC93Bjcpikgf6lIu416z+KPrxLWAjPd2xMCopd8FNnqS4dljakybQT2qlS6
+         3UdG2gZ7MpCd36zg9o4NBOAK3uoVDHb5kDTrjjZ430Hl+KQUatUI462JmhZnoRaI4zsm
+         Sv74pe7Wy3ocyfkUSWS8cayXfmna/N7Xp47zbSOj+n+5erfy8MDC9WnM/jIZNmrawxdU
+         fnbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695195871; x=1695800671;
+        d=1e100.net; s=20230601; t=1695195877; x=1695800677;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cx5iccFvgcy7SfhkU5VK+FkZItyjUgRW2eoOl85UWN0=;
-        b=cf7RwbaFFR8xziy1pZSyBwVhjITvQ6MOJvkNrT/a0SWpq23URErtK7o2OfjPNhS31m
-         67GIrbfe0EvrSB1pH4z2WnmoP3cN4siV6pCX8ZYlMRohwU3IxDr8nvncJyDf7/M4r/UF
-         HWkPmYNj4DNSXdTRblsCiX4HZLoiQLVtn2MrhJzeX+oZaJsHmpt/XNbS9Kn8WVYv4ZdZ
-         l5/nqNQLPFSetktqzh92foxGCDdMbLQxvF2gGocCMzBt2hGHv+TBv0+hxTNn5+vG+Pnb
-         a/OVsiTHOYjFwAqGjDrzJgwoP7PxESmO9UkUddEDdL2fNWMFrVIXXctZRKCvKXNgD7Ca
-         F+HA==
-X-Gm-Message-State: AOJu0YwRN4YhWAEb/580yOLPeAFgQSeLdPy+v4oIyeAgC4bLxdi4cszp
-        iRHS5V2jrEoiSPO61yb5kGPIpA==
-X-Google-Smtp-Source: AGHT+IE9o5cHV0urm0ODENi3O9Ijn9lkPrkLZDxOpwqO/HAz0TCM7U3u4Zev5n0hHdafHw71Ec1kOw==
-X-Received: by 2002:a5d:4286:0:b0:31f:e5cb:88e3 with SMTP id k6-20020a5d4286000000b0031fe5cb88e3mr3453401wrq.21.1695195871548;
-        Wed, 20 Sep 2023 00:44:31 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id b17-20020a5d4d91000000b0031c855d52efsm17509312wru.87.2023.09.20.00.44.30
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XzT+Xiw8JySJKyD7hHrg/jFpbzpL9ozxt4Lqd8Kjts4=;
+        b=dTtAs54f2DXqdZB1OPFHNV9HPzAfsA6J6MTsOAzpNvCgW5MzsK0H7x+3R1hO9OnQ7o
+         ZTkk/GJwzDSdfJ9YtkryTS0H8k1ObSaTeR+mbOFe7xO+9VQCmIRmPYxDgI0dO0aOVyXW
+         hHoIXK+c5euNP96MjAo8G6mmJzKR4NT4YUp+sZFbHQ27OAdUqB5vaMb0tp0vMX3Tu0ev
+         5Dc1mLJ9msgI4BjZ07asgEvDNq/UiaP/cn4VhEwEW2mNP/ry78/jqp1Bz4HjBs6vmR48
+         MiwgRhWk7afCzjjBmK/8RMTRvZiHmAZQscUY8CA0NqY/B7qyKMgJM5Z13gICd0vAT6F2
+         J4Mg==
+X-Gm-Message-State: AOJu0YwESKQvDZULTVJ78e36dSQl5+lHSnTCk1rKTGMhiD+cPLVMfM6r
+        hcvyUaBojimXdexpfXzCrXs=
+X-Google-Smtp-Source: AGHT+IGGJqNN92cz5c7adAH7+BYpcEYHIa0hDUrWov+ACoikEcq6k5usOPuqM5OZepDWyc7c5KEP/w==
+X-Received: by 2002:a1c:ed08:0:b0:405:1bbd:aa9c with SMTP id l8-20020a1ced08000000b004051bbdaa9cmr1709320wmh.34.1695195876972;
+        Wed, 20 Sep 2023 00:44:36 -0700 (PDT)
+Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
+        by smtp.gmail.com with ESMTPSA id f7-20020adff987000000b0031c8a43712asm17606651wrr.69.2023.09.20.00.44.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:44:31 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 09:44:30 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/7] RISC-V: Detect Zicond from ISA string
-Message-ID: <20230920-36a5645f766ed9cce75a9e8c@orel>
-References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-3-apatel@ventanamicro.com>
+        Wed, 20 Sep 2023 00:44:36 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 20 Sep 2023 09:44:33 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Matteo Rizzo <matteorizzo@google.com>
+Cc:     "Lameter, Christopher" <cl@os.amperecomputing.com>,
+        Dave Hansen <dave.hansen@intel.com>, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-hardening@vger.kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, corbet@lwn.net, luto@kernel.org,
+        peterz@infradead.org, jannh@google.com, evn@google.com,
+        poprdi@google.com, jordyzomer@google.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [RFC PATCH 00/14] Prevent cross-cache attacks in the SLUB
+ allocator
+Message-ID: <ZQqi4RqpEM7PRGkF@gmail.com>
+References: <20230915105933.495735-1-matteorizzo@google.com>
+ <7a4f5128-28fd-3c5f-34c2-1c34f4448174@intel.com>
+ <1d7573c0-ebbc-6ed2-f152-1045eb0542f9@os.amperecomputing.com>
+ <CAHKB1w+rVyww0UrHhzeGfPA7FM482Z-7ApzXvekVqLHvTDAV3Q@mail.gmail.com>
+ <ZQiLX0W2Tcr+wdJT@gmail.com>
+ <CAHKB1wKneke-dyvMY0JtW-xwW8m=GaUdafoAqdCE0B9csY7_bw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230919035343.1399389-3-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAHKB1wKneke-dyvMY0JtW-xwW8m=GaUdafoAqdCE0B9csY7_bw@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:23:38AM +0530, Anup Patel wrote:
-> The RISC-V integer conditional (Zicond) operation extension defines
-> standard conditional arithmetic and conditional-select/move operations
-> which are inspired from the XVentanaCondOps extension. In fact, QEMU
-> RISC-V also has support for emulating Zicond extension.
+
+* Matteo Rizzo <matteorizzo@google.com> wrote:
+
+> On Mon, 18 Sept 2023 at 19:39, Ingo Molnar <mingo@kernel.org> wrote:
+> >
+> > What's the split of the increase in overhead due to SLAB_VIRTUAL=y, between
+> > user-space execution and kernel-space execution?
+> >
 > 
-> Let us detect Zicond extension from ISA string available through
-> DT or ACPI.
+> Same benchmark as before (compiling a kernel on a system running the patched
+> kernel):
 > 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
->  arch/riscv/include/asm/hwcap.h                          | 1 +
->  arch/riscv/kernel/cpufeature.c                          | 1 +
->  3 files changed, 8 insertions(+)
+> Intel Skylake:
 > 
-> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> index cad8ef68eca7..7ea90e2dbc5b 100644
-> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> @@ -225,6 +225,12 @@ properties:
->              ratified in the 20191213 version of the unprivileged ISA
->              specification.
->  
-> +        - const: zicond
-> +          description:
-> +            The standard Zicond extension for conditional arithmetic and
-> +            conditional-select/move operations as ratified in commit 8fb6694
-> +            ("Update Gemfile") of riscv-zicond.
+>       LABEL    | COUNT |   MIN    |   MAX    |   MEAN   |  MEDIAN  | STDDEV
+> ---------------+-------+----------+----------+----------+----------+--------
+> wall clock     |       |          |          |          |          |
+> SLAB_VIRTUAL=n | 150   | 49.700   | 51.320   | 50.449   | 50.430   | 0.29959
+> SLAB_VIRTUAL=y | 150   | 50.020   | 51.660   | 50.880   | 50.880   | 0.30495
+>                |       | +0.64%   | +0.66%   | +0.85%   | +0.89%   | +1.79%
+> system time    |       |          |          |          |          |
+> SLAB_VIRTUAL=n | 150   | 358.560  | 362.900  | 360.922  | 360.985  | 0.91761
+> SLAB_VIRTUAL=y | 150   | 362.970  | 367.970  | 366.062  | 366.115  | 1.015
+>                |       | +1.23%   | +1.40%   | +1.42%   | +1.42%   | +10.60%
+> user time      |       |          |          |          |          |
+> SLAB_VIRTUAL=n | 150   | 3110.000 | 3124.520 | 3118.143 | 3118.120 | 2.466
+> SLAB_VIRTUAL=y | 150   | 3115.070 | 3127.070 | 3120.762 | 3120.925 | 2.654
+>                |       | +0.16%   | +0.08%   | +0.08%   | +0.09%   | +7.63%
 
-As of yesterday, v1.0 of the spec points at commit 95cf1f9 ("Add changes
-requested by Ved during signoff")
+These Skylake figures are a bit counter-intuitive: how does an increase of 
+only +0.08% user-time - which dominates 89.5% of execution, combined with a 
++1.42% increase in system time that consumes only 10.5% of CPU capacity, 
+result in a +0.85% increase in wall-clock time?
 
-> +
->          - const: zicsr
->            description: |
->              The standard Zicsr extension for control and status register
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> index b7efe9e2fa89..15bafc02ffd4 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -60,6 +60,7 @@
->  #define RISCV_ISA_EXT_ZIHPM		42
->  #define RISCV_ISA_EXT_SMSTATEEN		43
->  #define RISCV_ISA_EXT_XVENTANACONDOPS	44
-> +#define RISCV_ISA_EXT_ZICOND		45
->  
->  #define RISCV_ISA_EXT_MAX		64
->  
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index 3a31d34fe709..49b6551f3347 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -174,6 +174,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
->  	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
->  	__RISCV_ISA_EXT_DATA(zbs, RISCV_ISA_EXT_ZBS),
-> +	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+There might be hidden factors at work in the DMA space, as Linus suggested?
 
-Zi extensions come before Zb extensions.
+Or perhaps wall-clock time is dominated by the single-threaded final link 
+time of the kernel, which phase might be disproportionately hurt by these 
+changes?
 
->  	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
->  	__RISCV_ISA_EXT_DATA(smstateen, RISCV_ISA_EXT_SMSTATEEN),
->  	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
-> -- 
-> 2.34.1
+(Stddev seems low enough for this not to be a measurement artifact.)
+
+The AMD Milan figures are more intuitive:
+
+> AMD Milan:
+> 
+>       LABEL    | COUNT |   MIN    |   MAX    |   MEAN   |  MEDIAN  | STDDEV
+> ---------------+-------+----------+----------+----------+----------+--------
+> wall clock     |       |          |          |          |          |
+> SLAB_VIRTUAL=n | 150   | 25.480   | 26.550   | 26.065   | 26.055   | 0.23495
+> SLAB_VIRTUAL=y | 150   | 25.820   | 27.080   | 26.531   | 26.540   | 0.25974
+>                |       | +1.33%   | +2.00%   | +1.79%   | +1.86%   | +10.55%
+> system time    |       |          |          |          |          |
+> SLAB_VIRTUAL=n | 150   | 478.530  | 540.420  | 520.803  | 521.485  | 9.166
+> SLAB_VIRTUAL=y | 150   | 530.520  | 572.460  | 552.825  | 552.985  | 7.161
+>                |       | +10.86%  | +5.93%   | +6.15%   | +6.04%   | -21.88%
+> user time      |       |          |          |          |          |
+> SLAB_VIRTUAL=n | 150   | 2373.540 | 2403.800 | 2386.343 | 2385.840 | 5.325
+> SLAB_VIRTUAL=y | 150   | 2388.690 | 2426.290 | 2408.325 | 2408.895 | 6.667
+>                |       | +0.64%   | +0.94%   | +0.92%   | +0.97%   | +25.20%
 >
+> 
+> I'm not exactly sure why user time increases by almost 1% on Milan, it 
+> could be TLB contention.
+
+The other worrying aspect is the increase of +6.15% of system time ... 
+which is roughly in line with what we'd expect from a +1.79% increase in 
+wall-clock time.
 
 Thanks,
-drew
+
+	Ingo
