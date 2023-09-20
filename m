@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B81777A7709
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669207A770E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbjITJRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
+        id S233921AbjITJTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbjITJRa (ORCPT
+        with ESMTP id S232318AbjITJTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:17:30 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598BB93;
-        Wed, 20 Sep 2023 02:17:24 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 18F481FE5A;
-        Wed, 20 Sep 2023 09:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1695201443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=27wI1sJ0W7FVqiafMukx5GHlCjweHRT5QdRGpq+Xpj4=;
-        b=ltBrVNxJVyHNQlquXEA+Hh07m+uqUVjLEEMJAwzXX5Nx/z2bqzy2Uu0y7moLco66mSEJjP
-        7PqOnFt6ioZhafT+HrkyQpqTP09zAQ8EnJibjH+q2LYmMm+Y6a9Rw6aI5HOaJckFB8qipy
-        FxnwP9sROYS2BnJZkoTzMp3yPoxF7sA=
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DBEBD2C142;
-        Wed, 20 Sep 2023 09:17:22 +0000 (UTC)
-Date:   Wed, 20 Sep 2023 11:17:22 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     jpoimboe@kernel.org, jikos@kernel.org, mbenes@suse.cz,
-        joe.lawrence@redhat.com, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        yeweihua4@huawei.com
-Subject: Re: [PATCH] livepatch: Fix missing newline character in
- klp_resolve_symbols()
-Message-ID: <ZQq4oo2i-dZZPt4D@alley>
-References: <20230914072644.4098857-1-zhengyejian1@huawei.com>
+        Wed, 20 Sep 2023 05:19:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D7E83;
+        Wed, 20 Sep 2023 02:19:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8352C433C8;
+        Wed, 20 Sep 2023 09:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695201553;
+        bh=9xBbxr+swRhwwQgmUTAanBRHI1SK4zTTAg4FJYXKK24=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Gwkcc8Xu5Nso+9thrscxOksnORUUzS6emX7ckBzzFxMBJUbeQsViBBg7tKz0IYHBe
+         3xSxW2DGNqUJQpjF34PagKy3hH3cKXS78UuR5ptd4VCnObq9SqHDuIxPy+Rdng4Y8U
+         Lsa1zPhYc55ZxPPTPJvLhF2jeJpl1avLsLfAKmcWhXsFzkWH0jL36nGGUl1sEEY/+4
+         /mAqv7azDV4eECtV/HS7JZ3Vojf9HTNzYKJ6Wsze4zOdZsNnJp8tTK3pFSL0fRR7bm
+         3tz3QRf/bFwz7LAEhAKqddoHPGQ8rnZNUgR8j6Sxe2+xa21kBRLRk4ffV1QcMgJ6vO
+         3GIDT/6cj8Mfw==
+From:   Lee Jones <lee@kernel.org>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        lee@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        sboyd@kernel.org, luca.weiss@fairphone.com,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230816115151.501736-2-bryan.odonoghue@linaro.org>
+References: <20230816115151.501736-1-bryan.odonoghue@linaro.org>
+ <20230816115151.501736-2-bryan.odonoghue@linaro.org>
+Subject: Re: (subset) [PATCH v9 1/7] dt-bindings: mfd: qcom,spmi-pmic: Add
+ typec to SPMI device types
+Message-Id: <169520155063.3348589.10688565387981596667.b4-ty@kernel.org>
+Date:   Wed, 20 Sep 2023 10:19:10 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914072644.4098857-1-zhengyejian1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2023-09-14 15:26:44, Zheng Yejian wrote:
-> Without the newline character, the log may not be printed immediately
-> after the error occurs.
+On Wed, 16 Aug 2023 12:51:45 +0100, Bryan O'Donoghue wrote:
+> Add the PMIC Type-C port driver to the list of devices.
 > 
-> Fixes: ca376a937486 ("livepatch: Prevent module-specific KLP rela sections from referencing vmlinux symbols")
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> 
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+Applied, thanks!
 
-Best Regards,
-Petr
+[1/7] dt-bindings: mfd: qcom,spmi-pmic: Add typec to SPMI device types
+      commit: 852355e98e45ec7f9adf06de92bba063424aa7cb
+
+--
+Lee Jones [李琼斯]
+
