@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A637B7A8A42
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D917A8A3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbjITRLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
+        id S235619AbjITRK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235625AbjITRKi (ORCPT
+        with ESMTP id S235601AbjITRKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Sep 2023 13:10:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63058129;
-        Wed, 20 Sep 2023 10:10:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5036EC433CA;
-        Wed, 20 Sep 2023 17:10:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405CE1A5;
+        Wed, 20 Sep 2023 10:10:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD70C433A9;
+        Wed, 20 Sep 2023 17:10:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695229823;
-        bh=u5gZSSDuo6bC0Rf1ntYLT4MADeEqbRtBchnHNiD3jso=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gGdc8wpw46wpbq+2K6KBvvl8w2hOQ3WF/XPGskKzYGMC+eQo44HkOSLF8SAk+/r0l
-         avuH4AdjzwfUpQQwVtWwfZWnlIFEKaUvAwADmpu/U88n49pMBLmw283B16pc38J4ze
-         WJOcYdTRimE2xzXfS2WzZ5ttY9ffSv2XI5x5sfvFMGUar428CKbWILAmeLnPkAutCx
-         Wg9Ewa7ViWtFq06DZYfwyV//Ha7wpqda9T6jk7zQfJ9IyIWNfomF1BgUVFZXpCMBTV
-         dCkE/nrAyEAolm4sCalMNnrk14CNLpL4gzNBGAw+jrybM7U0xEW3MbpY21K6DYkGnt
-         bwsKq+F+xb/0Q==
+        s=k20201202; t=1695229824;
+        bh=5jerPGNbcK9KNA1y+/GRylQgU81KiqAMsxmSHXO1ZY4=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=klXnREVt9CDId2+UUdmcI9nssWMto2cM99O71tm4zWG0sOb2+9uVcbS0vUo8O3TP4
+         T3nm7cXtVhE3PAPERM3jL0AyROJCENs3Ea0xyAPP9UHcaiI8IAkoNYy3Lsu41BsBBQ
+         Hgv+yjIrDDoU2FViqNML5U62jwLtb0dsNyAXD7m72hkC9Gj3452v2J1giMEqDC6qg9
+         aRp1AiKU6f0w19osS6OvuSH0Hfdh5XNyIbppExbhZk90FOh3MqlgpQEZ9hB8IJvTF6
+         q4LB90wxZApxt4CxCLQvtKkJOpB1tZ9L5KDnNC6WHrxS8zCcJs5vO+bMO/tdyW/EcI
+         EENd7JJ1Ozq0w==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        srinivas.kandagatla@linaro.org, bryan.odonoghue@linaro.org,
-        Komal Bajaj <quic_kbajaj@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 0/6] soc: qcom: llcc: Add support for QDU1000/QRU1000
-Date:   Wed, 20 Sep 2023 10:14:09 -0700
-Message-ID: <169523004944.2665018.13586229919901477277.b4-ty@kernel.org>
+        catalin.marinas@arm.com, will@kernel.org, vkoul@kernel.org,
+        kishon@kernel.org, arnd@arndb.de, geert+renesas@glider.be,
+        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-phy@lists.infradead.org,
+        Varadarajan Narayanan <quic_varada@quicinc.com>
+Subject: Re: (subset) [PATCH v12 0/4] Enable IPQ5332 USB2
+Date:   Wed, 20 Sep 2023 10:14:10 -0700
+Message-ID: <169523004948.2665018.13241458828978249111.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230830105654.28057-1-quic_kbajaj@quicinc.com>
-References: <20230830105654.28057-1-quic_kbajaj@quicinc.com>
+In-Reply-To: <cover.1693468292.git.quic_varada@quicinc.com>
+References: <cover.1693468292.git.quic_varada@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,34 +56,30 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 30 Aug 2023 16:26:48 +0530, Komal Bajaj wrote:
-> This patch series does the following -
->  * Refactor LLCC driver to support multiple configuration
->  * Add stub function for nvmem_cell_read_u8
->  * Add support for multi channel DDR configuration in LLCC
->  * Add LLCC support for the Qualcomm QDU1000 and QRU1000 SoCs
+On Thu, 31 Aug 2023 14:47:42 +0530, Varadarajan Narayanan wrote:
+> This patch series adds the relevant phy and controller
+> DT configurations for enabling USB2 on IPQ5332
 > 
-> Changes in v8 -
->  - Removed macro DEF_NUM_CFG as suggested by Bryan.
->  - Rebased on top of linux-next/master.
->  - Link to v7: https://lore.kernel.org/all/20230810061140.15608-1-quic_kbajaj@quicinc.com/
+> v12:
+> 	DTS:	usb2_0_dwc -> usb_dwc
+> v11:
+> 	Driver: Rebased to accommodate https://lore.kernel.org/linux-arm-msm/20230824091345.1072650-1-yangyingliang@huawei.com/
+> 	DTS:	Sort nodes in alphanumeric order
+> v10:
+> 	Driver: Restore register success print per Dmitry's comment
+> 	DTS:	usb@8a00000 -> usb@8af8800
+> 		regulator_s0500 -> regulator-s0500
+> v9:
+> 	Driver: Since the driver code has been picked up for merge,
+> 		(https://lore.kernel.org/linux-arm-msm/169226613917.81413.1200008047604336868.b4-ty@kernel.org/)
+> 		adding the coding style fixes alone in this patch.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/6] dt-bindings: cache: qcom,llcc: Add LLCC compatible for QDU1000/QRU1000
-      commit: 8e2506d0123149a7b7846fbabbf4295b6005faf4
-[2/6] soc: qcom: llcc: Refactor llcc driver to support multiple configuration
-      commit: 16fa93112f26a7a151f3d86a2a9223c564f6e3bf
-[3/6] nvmem: core: Add stub for nvmem_cell_read_u8
-      commit: 54e1f99d91405417b3ddb6050cfba82733c3aa41
-[4/6] soc: qcom: Add LLCC support for multi channel DDR
-      commit: a78502a4b2201235d93b04ac2902e01e32588bd5
-[5/6] soc: qcom: llcc: Updating the macro name
-      commit: 0bc76be64e80b15b975345b6957a87a1893c34f2
-[6/6] soc: qcom: llcc: Add QDU1000 and QRU1000 LLCC support
-      commit: db1e57928766966cd542e59789125968ac29b9da
+[4/4] arm64: defconfig: Enable M31 USB phy driver
+      commit: b46d856cb9b3bd2fef54cc8caec8595a232a23b6
 
 Best regards,
 -- 
