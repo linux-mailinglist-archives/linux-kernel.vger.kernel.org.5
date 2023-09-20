@@ -2,151 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF4C7A898E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9678E7A8985
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234997AbjITQeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        id S234638AbjITQcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234795AbjITQeL (ORCPT
+        with ESMTP id S236890AbjITP7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 12:34:11 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5726DDC
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:34:05 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38KFt6MZ023727;
-        Wed, 20 Sep 2023 11:33:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=PzgE18K4PqO8dXD62uIrqgRS5xHATb17ID0/Z6vMJHE=; b=
-        YWbx3A5Ecp6k7YzYCpzXyDXj+LPXsyFHg7swCcqlPTVkoEIF7mOTOUYJAIwZ/yuv
-        8NKiYaodEeULYqdozFiZGpD+dFm+pVgWp67ePuR5Ban5b5TNEFRJxObkHPi2tSUN
-        cIPdQKuJaNbMW1WWXapgcMGJKzIVbkVm1R19C+TVh6YSCd062lsJsbtvOdGJaClF
-        ng+9kfpdTLrCgBTaOD0CyTiGOhbMajsup1CWt8CRiKW9q629gLWVSOOxnHAK48Dd
-        BFya0A+UCOXSJuupSf4PYiv6Q2iY6o2RcbXbw6t5Qr7hB7oR7Z9tJOprCEmoj1+4
-        m4tTVjRqTMHpagvY8+0ByA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t58shvnd5-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 11:33:39 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 20 Sep
- 2023 17:33:37 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Wed, 20 Sep 2023 17:33:37 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 393BE458;
-        Wed, 20 Sep 2023 16:33:37 +0000 (UTC)
-From:   Stefan Binding <sbinding@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v4 4/4] ALSA: hda: cs35l41: Add read-only ALSA control for forced mute
-Date:   Wed, 20 Sep 2023 16:54:50 +0100
-Message-ID: <20230920155450.576287-5-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230920155450.576287-1-sbinding@opensource.cirrus.com>
-References: <20230920155450.576287-1-sbinding@opensource.cirrus.com>
+        Wed, 20 Sep 2023 11:59:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518FDC2;
+        Wed, 20 Sep 2023 08:59:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB1E8C433C8;
+        Wed, 20 Sep 2023 15:59:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695225578;
+        bh=TgtnsvbGOUf8/0QiUmZytL37sBH2oYZX/bZUhckgbWU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZJkPEMCBo+sXlFkUNsfJxYxt0aDsH8bSEpxSVkhOlXV8YRypx58EO6CWrZiWsKb1M
+         FDDK6ykYVM6VWpu993IiZiF8hm8CrMlDczIeOuLFFqVbU1QNta1+1PLawVO5tlEdid
+         B10WocAKfwAbIkD3GggqrFQsJ79ofEPp+h8eNjStcr0U1ncEdM9XHTAwcu8wi+a23X
+         4NcyNZHzvgT2KtQk33pbRHMNVRK4qAsq7C2L3qIbvI4RIyeI402aF6vuSg2PE30b55
+         zQ9hd9WNZSDs7qD6KaXrh93CPnjJZkjfHKERT7BFjIcri9H4Yjrie3P04D/Ykha+0U
+         rEF/Zj6gdaI1A==
+Date:   Wed, 20 Sep 2023 16:59:33 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@collabora.com>
+Cc:     Takashi Iwai <tiwai@suse.com>, kernel@collabora.com,
+        Jaroslav Kysela <perex@perex.cz>,
+        Shuah Khan <shuah@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] kselftest/alsa: pcm-test: Report cards declared in
+ config but missing
+Message-ID: <b1658cfc-74b6-44c5-9e2b-816772ff58a1@sirena.org.uk>
+References: <20230919152702.100617-1-nfraprado@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: EUwYUiMW8bgtt8XIRHweRy9CqW2mTvf_
-X-Proofpoint-ORIG-GUID: EUwYUiMW8bgtt8XIRHweRy9CqW2mTvf_
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TR7m/tl8KYNB3BtE"
+Content-Disposition: inline
+In-Reply-To: <20230919152702.100617-1-nfraprado@collabora.com>
+X-Cookie: Even a hawk is an eagle among crows.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the CS35L41 amp is requested to mute using the ACPI
-notification mechanism, userspace is not notified that the amp
-is muted. To allow userspace to know about the mute, add an
-ALSA control which tracks the forced mute override.
-This control does not track the overall mute state of the amp,
-since the amp is only unmuted during playback anyway, instead
-it tracks the mute override request from the ACPI notification.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+--TR7m/tl8KYNB3BtE
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 7b56bceea9e8..dd10b4cd3d1a 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -972,6 +972,15 @@ static int cs35l41_fw_load_ctl_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static int cs35l41_mute_override_ctl_get(struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = cs35l41->mute_override;
-+	return 0;
-+}
-+
- static void cs35l41_fw_load_work(struct work_struct *work)
- {
- 	struct cs35l41_hda *cs35l41 = container_of(work, struct cs35l41_hda, fw_load_work);
-@@ -1055,6 +1064,7 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
- {
- 	char fw_type_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	char fw_load_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	char mute_override_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	struct snd_kcontrol_new fw_type_ctl = {
- 		.name = fw_type_ctl_name,
- 		.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-@@ -1069,12 +1079,21 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
- 		.get = cs35l41_fw_load_ctl_get,
- 		.put = cs35l41_fw_load_ctl_put,
- 	};
-+	struct snd_kcontrol_new mute_override_ctl = {
-+		.name = mute_override_ctl_name,
-+		.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-+		.info = snd_ctl_boolean_mono_info,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.get = cs35l41_mute_override_ctl_get,
-+	};
- 	int ret;
- 
- 	scnprintf(fw_type_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s DSP1 Firmware Type",
- 		  cs35l41->amp_name);
- 	scnprintf(fw_load_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s DSP1 Firmware Load",
- 		  cs35l41->amp_name);
-+	scnprintf(mute_override_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s Forced Mute Status",
-+		  cs35l41->amp_name);
- 
- 	ret = snd_ctl_add(cs35l41->codec->card, snd_ctl_new1(&fw_type_ctl, cs35l41));
- 	if (ret) {
-@@ -1092,6 +1111,15 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
- 
- 	dev_dbg(cs35l41->dev, "Added Control %s\n", fw_load_ctl.name);
- 
-+	ret = snd_ctl_add(cs35l41->codec->card, snd_ctl_new1(&mute_override_ctl, cs35l41));
-+	if (ret) {
-+		dev_err(cs35l41->dev, "Failed to add KControl %s = %d\n", mute_override_ctl.name,
-+			ret);
-+		return ret;
-+	}
-+
-+	dev_dbg(cs35l41->dev, "Added Control %s\n", mute_override_ctl.name);
-+
- 	return 0;
- }
- 
--- 
-2.34.1
+On Tue, Sep 19, 2023 at 11:26:21AM -0400, N=EDcolas F. R. A. Prado wrote:
+> When parsing the configs, keep track of card configurations that match
+> the current system but haven't matched any card, and report those as
+> test failures as they represent that a card which was expected to be
+> present on the system is missing. This allows the configuration files to
+> not only be used to detect missing PCM devices (which is currently
+> possible) but also that the soundcard hasn't been registered at all.
 
+Reviewed-by: Mark Brown <broonie@kernel.org>
+
+--TR7m/tl8KYNB3BtE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmULFuQACgkQJNaLcl1U
+h9Ahigf/dKE+gXp9ZH4jZ1QZyixn2tKUPrKHFW0rcLc22QxUNfiy8PHk75LjKCXJ
+o+rCl7qjgygLrfSiPNOsBbqeoW+v4G932AuYCGpMZKI2/u1oDTNg7NTnBcJTw4xz
+fDYMOrZ+1z96gZHeOAZJa3C10hgkWMz72duAVMWb4b1S03kyRY7EboUzFc5bgqSi
+SpnwJoQweI0DRjAsK4FoITvWctL4krn1l5eMOClIIA9CgHZKjORGeQD6ReIDZ16N
+Dwkc6jRHnprFA4bWxcMCHzCAIY4MdP+EA6B2i7baLfwodjo1tRNRCUDXPXworCwP
+e7QJf2nIQGkX9IvdZXSwXkwcZxgWMg==
+=XtEC
+-----END PGP SIGNATURE-----
+
+--TR7m/tl8KYNB3BtE--
