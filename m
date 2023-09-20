@@ -2,50 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8D97A8226
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630437A8229
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234898AbjITM5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
+        id S235569AbjITM6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235048AbjITM5r (ORCPT
+        with ESMTP id S235290AbjITM6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:57:47 -0400
+        Wed, 20 Sep 2023 08:58:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01A383;
-        Wed, 20 Sep 2023 05:57:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 542B4C433C7;
-        Wed, 20 Sep 2023 12:57:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C1BF2;
+        Wed, 20 Sep 2023 05:57:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F344DC433C8;
+        Wed, 20 Sep 2023 12:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695214661;
-        bh=BEisPBW1KmRtjT0oASI8wcLRc3DN9B2NAkRyypriO4c=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=epCiZInOoCbpxjCdjLMW2InMLbNS+gI1bdgkUZm6GNs5MUjUeXpqAh6I1m3ZEe4lh
-         VGqMvfAxWlROij4oB6Irk1fEbrtp//aeUmw3bSdQEXfrE6qiZ06Wb4472o3AZN78CT
-         Q/4ELlqfcVoBmMWwJdRjTys1eLuU4i5jOWfnfKf6AfoKVFmF4eX33lwm3KnOSMz746
-         KS0kXiKmJ5ORY5R/qYSdu1HdePrPRkBqUtNehb/r69reG8bM6Y/HfML5UM06vRHvvq
-         jmAz/slVpAgad01z2H/w79rcPLPGpoxn488UjfAzR/d5dBwSFJCM8F9RRJ0RfixCJW
-         h8sXuXece5RoQ==
-Received: (nullmailer pid 2032568 invoked by uid 1000);
-        Wed, 20 Sep 2023 12:57:39 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20230920115044.53098-1-tony@atomide.com>
-References: <20230920115044.53098-1-tony@atomide.com>
-Message-Id: <169521465924.2032537.6288372017884083091.robh@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: input: gpio-keys: Allow optional
- dedicated wakeirq
-Date:   Wed, 20 Sep 2023 07:57:39 -0500
+        s=k20201202; t=1695214670;
+        bh=4p5SQAL1LP6H+eXb90nX905DDE9cHrNP+UjAWJaND3I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Mgs7/jNaPRjinPacz28dnAfbIhK/3aRU4sH6890PjcXFI0tyeItmhmKqwYWQYjngg
+         eKYsdY5VCbOjlgWFkdplQ31MXAv+Zwd1PNP/dvehvD0C9Kt7llTgtKBTegnxWvs8c0
+         ui6dOAanSr00S4iKaRAgVTpgXBtxmHNhPvWN9MD0abeBLXQ+/W8e/hzak87Pf1m4Yf
+         w42ND+He5DqJ59EzF9WAP2haOGTaw/EFbFyEkOJ+T0nR0SzmCpOa2GCWa+WDCVcpTb
+         nLTHikbWrMyjj2Hi2/TejsyohH8IDMncAKAuLCPiwgwlZJzMbjzhZ/GUtLzGJDkrg7
+         +nwv3Ermq9epg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] SPI fixes for v6.6-rc2
+Date:   Wed, 20 Sep 2023 13:57:40 +0100
+Message-Id: <20230920125749.F344DC433C8@smtp.kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -56,62 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-On Wed, 20 Sep 2023 14:50:43 +0300, Tony Lindgren wrote:
-> Allow configuring an optional dedicated wakeirq for gpio-keys that
-> some SoCs have.
-> 
-> Let's use the common interrupt naming "irq" and "wakeup" that we already
-> have in use for some drivers and subsystems like i2c framework.
-> 
-> Note that the gpio-keys interrupt property is optional. If only a gpio
-> property is specified, the driver tries to translate the gpio into an
-> interrupt.
-> 
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
-> 
-> Changes since v1:
-> 
-> - Run make dt_binding_check on the binding
-> 
-> - Add better checks for interrupt-names as suggested by Rob, it is
->   now required if two interrupts are configured
-> 
-> - Add more decription entries
-> 
-> - Add a new example for key-wakeup
-> 
-> ---
->  .../devicetree/bindings/input/gpio-keys.yaml  | 41 ++++++++++++++++++-
->  1 file changed, 40 insertions(+), 1 deletion(-)
-> 
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+are available in the Git repository at:
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/input/gpio-keys.yaml:36:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
-./Documentation/devicetree/bindings/input/gpio-keys.yaml:38:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
-./Documentation/devicetree/bindings/input/gpio-keys.yaml:47:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
-./Documentation/devicetree/bindings/input/gpio-keys.yaml:49:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v6.6-rc2
 
-dtschema/dtc warnings/errors:
+for you to fetch changes up to 4221a2bec2189275f3f49492a73221498ae6d131:
 
-doc reference errors (make refcheckdocs):
+  spi: Merge up old fix (2023-09-19 13:17:52 +0100)
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230920115044.53098-1-tony@atomide.com
+----------------------------------------------------------------
+spi: Fixes for v6.6
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+A small collection of fixes, plus a new device ID for Intel Granite
+Rapids systems.  The fix for the i.MX driver is fairly urgent, it's
+fixing a data corruption issue when bits per word isn't 8.  There's also
+one fix which was queued but not sent for v6.4 due to being minor and
+arriving at the end of the release.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+----------------------------------------------------------------
+Han Xu (1):
+      spi: nxp-fspi: reset the FLSHxCR1 registers
 
-pip3 install dtschema --upgrade
+Johan Hovold (1):
+      spi: zynqmp-gqspi: fix clock imbalance on probe failure
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Mark Brown (1):
+      spi: Merge up old fix
 
+Mika Westerberg (1):
+      spi: intel-pci: Add support for Granite Rapids SPI serial flash
+
+Stefan Moring (1):
+      spi: imx: Take in account bits per word instead of assuming 8-bits
+
+Valentin Caron (1):
+      spi: stm32: add a delay before SPI disable
+
+ drivers/spi/spi-imx.c          |  2 +-
+ drivers/spi/spi-intel-pci.c    |  1 +
+ drivers/spi/spi-nxp-fspi.c     |  7 +++++++
+ drivers/spi/spi-stm32.c        |  8 ++++++++
+ drivers/spi/spi-zynqmp-gqspi.c | 12 ++++++++----
+ 5 files changed, 25 insertions(+), 5 deletions(-)
