@@ -2,165 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DEA7A8E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3EB7A8E04
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbjITUvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 16:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
+        id S229658AbjITUxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 16:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjITUvU (ORCPT
+        with ESMTP id S229545AbjITUw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 16:51:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C988B9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:51:13 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695243071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e8wH3xXptk2FaJacDdB38SCo/MZ0RCGy/rAMkir/m48=;
-        b=1n8rvgbpA1zMkUhWgjZHoFQy61k0a96eow1oOnnXvxrzr/Y9EUx1/vQyCwU4m6U52x9wCB
-        9pV6Ai3qTsH9qJWRurLdtmo97xLmamyaqZcTu5ILbTXR0IEVBoUqu3+X9l5gAt7N7imPd/
-        GRiVhL4hxRWVK2muDGPdAulrAP9DExCFQ8ZdionPdaDCZnRt1i41Cfz7cuERLpK5w1Fop2
-        zYkpVXtF27bAmymFZlVpUIWj9WeQ9wF42AA7KMYSBaJfnLA6ZRwHN+21oNTw0LK4f/lLhk
-        panNSY1uU2H0Ph+UysgaZYH4Urv35Z8BxD2ZkIWybTkEpH/eG+Xryw2m8hisZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695243071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e8wH3xXptk2FaJacDdB38SCo/MZ0RCGy/rAMkir/m48=;
-        b=NaCa2jCnfgpxfOhrn9TpCEHpP+IS0cE5Y/7MBHlCNzs3fyea7v3XXFsVarBr6Qha+gjuv7
-        X8R4m0Iyy4lWefCw==
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-In-Reply-To: <878r90lyai.fsf@oracle.com>
-References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
- <20230908070258.GA19320@noisy.programming.kicks-ass.net>
- <87zg1v3xxh.fsf@oracle.com>
- <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
- <87edj64rj1.fsf@oracle.com>
- <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
- <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <878r90lyai.fsf@oracle.com>
-Date:   Wed, 20 Sep 2023 22:51:10 +0200
-Message-ID: <875y44va9t.ffs@tglx>
+        Wed, 20 Sep 2023 16:52:58 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2081.outbound.protection.outlook.com [40.107.223.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD02CA
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:52:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C0UPufvFBCnDveQdihqOgSXfpypr6O61FAt65/2T1Z//PigeH0FJKnYjateb2bxh2V3kW3DR0RRJXzBCJPm3oe5AOef0RRWqTL+thqswr10sLM3UAZuFAjs5sfDb1a1trwZi9yu55vo/80x8wcceXOzavgsOiQ2O9BuTmyE2sUKHolAcbvKNawllrGZ7sENbtHKhBt36AxQ1k3IMRJKY6Mj94RmomVOEY++shFOz3o7AngaJ8lA0DNPgSO+Y1cm6WXdzqeZ6T5IscqKci8NLGCostSQkQAO/FNMnSq+uu9OK4eanA2VuQnIEnNhB5cCndP4ChDaegR8KmbSFewMyiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/BiL26q7Ussw2gAXW2RtQEwNrzdQxhI3t5+7gynbRek=;
+ b=k2qz1PqSx9JSH1cCRkQUWTTfWUh02gQu/HsK4hXTjHG1TJHRMYqI0UvBIgw5CJOuWmukFIPGmWhXUQkkyG96y0/jgtQTUYASS0eRPWRd2LvM9dbgn9OBWc/VepJRxFyFe+bnlGDTuDJAazC4SM4RfdTM8i8Xj1epjMIfohtxAgf4apakvfY8BCj4sgkjlBmsvWium72SwDHzGUcPxP3K1vXvogqIlZ5lUOU5wZBAxbanSBJ1GhKCfzzYx/XYfPfpi60d9QUmE+ISmGmFmJGCzbWkvO2vbO0X/65Xzkhp5GM5VfOUJwtxAJliuNpYiGCwlz/kcHXMarQEI1KZQOJ7Ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/BiL26q7Ussw2gAXW2RtQEwNrzdQxhI3t5+7gynbRek=;
+ b=KOCbkhwAQcldrh9Nktv0jYB9AOhux3oiLXi7jX908HJoE3t4iLnGgonKVjKhFwhN3nj+1Tcm7cJxQe2Vf1K7rwj+1qsmTAdRrd5g1msYuc6iZ31U+1dVkHZyk6Ud5mmj/1LvL5PQWMtpubsr6rKB4103/7wf4WajaLOFtLDBtOaHshsqjYF/UxRzTH98TwiCMbzZicGW/W06jMxzkwXkGVhnpfd0yApsUk/qP9t5wTCmWaA8X2sxDOyQTswb+xYzUfPxHlV+qFEvv5abO9dY08I4RMbWRqKuviz9ddjRrZtFkafxa3tY+6F/rHCwiNk5854ExFNWA/IS+VlrcQe2Ng==
+Received: from BL1PR13CA0269.namprd13.prod.outlook.com (2603:10b6:208:2ba::34)
+ by IA1PR12MB7543.namprd12.prod.outlook.com (2603:10b6:208:42d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
+ 2023 20:52:50 +0000
+Received: from MN1PEPF0000ECD7.namprd02.prod.outlook.com
+ (2603:10b6:208:2ba:cafe::7b) by BL1PR13CA0269.outlook.office365.com
+ (2603:10b6:208:2ba::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28 via Frontend
+ Transport; Wed, 20 Sep 2023 20:52:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ MN1PEPF0000ECD7.mail.protection.outlook.com (10.167.242.136) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6792.20 via Frontend Transport; Wed, 20 Sep 2023 20:52:49 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 20 Sep
+ 2023 13:52:38 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Wed, 20 Sep 2023 13:52:37 -0700
+Received: from Asurada-Nvidia.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Wed, 20 Sep 2023 13:52:37 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     <will@kernel.org>, <robin.murphy@arm.com>, <jgg@nvidia.com>
+CC:     <joro@8bytes.org>, <jean-philippe@linaro.org>,
+        <mshavit@google.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
+Subject: [PATCH v4 0/2] iommu/arm-smmu-v3: Allow default substream bypass with a pasid support
+Date:   Wed, 20 Sep 2023 13:52:02 -0700
+Message-ID: <cover.1695242337.git.nicolinc@nvidia.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD7:EE_|IA1PR12MB7543:EE_
+X-MS-Office365-Filtering-Correlation-Id: 601cc50d-ed5a-4738-cce9-08dbba1b8d48
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A4P+3zSto94vySv9gQuQZpSk8sAbszsXgfEAcKNz9soNZS/ldkuiCQFsJZtaQhWJkkHbLOvwISw+/yourRooU2kXoP9YJBNoj9rXWArjtWnfKkRC9DPDTrlFeRtMjpbe0BVgxYz2UrikOtz0RLUYllsgmpBLym1YJ8fcsJEK5mjHP1z+3VMEzfw/V4ohIKw8xdS1x+SxIAXiGnFlLq+vZYma6JmcYiDInp0+TPGoVZY0JtzVQ3Ql+BFLGXcOouepz4uJvW3fhsBSg1RJd8ct7PK2VcSDLgsuVYmKOqsZ7QKx4FzrhH8AJXRLEWr0FXNn7OOx46BZwEyh1GS/pT/uAWpvxW//8keXjspuQlxWCse8gQX7RhPtgNb3hqSkdw/IrEx69ry+EOpedjAKd5g4FJj+pHB7xbT6pLeckXHnx9zZApnrkf8sWZk/eo2z2ZmHnFfgSUADRsyICG2BTtrmB/G+6Zy8XLUB7duFs1nEnOW/n+6oI3j9h7P8Z9PF4Y2dlZnixjKntavMZafQX5x7lN9oI8a4DlMM3YDjs4MCm67DW4smbhu0lTu02wytMHqDOlmomsqcCAKCIAYDHlYA7N4linvnrSlzg7r429hxXO8k8rF1WZNcRnNajOSmYbjjyIxhJmH6rnb3gQA9IAiaQPB8umWLA5N8qt7TOAobkizRqtHJvuCqPv1YFJ5aDhI+TLPrA0h0mGj7dYp5wBnka+avE+LalVPicaEoG465L3A7H5a0xCSxYzTC07OmWnFdCzxWS9DQ6OISe+GE6UHcRIax0Nyfc1BC5GsBg1C3hmNFSdPQarltVZU1fTo6pYPT
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(396003)(136003)(82310400011)(451199024)(186009)(1800799009)(36840700001)(46966006)(40470700004)(336012)(426003)(478600001)(41300700001)(40480700001)(2906002)(6666004)(356005)(966005)(70206006)(83380400001)(40460700003)(70586007)(54906003)(82740400003)(36756003)(7696005)(7636003)(110136005)(86362001)(2616005)(26005)(6636002)(316002)(4326008)(8676002)(8936002)(36860700001)(5660300002)(47076005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 20:52:49.8424
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 601cc50d-ed5a-4738-cce9-08dbba1b8d48
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD7.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7543
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20 2023 at 07:22, Ankur Arora wrote:
-> Thomas Gleixner <tglx@linutronix.de> writes:
->
->> So the decision matrix would be:
->>
->>                 Ret2user        Ret2kernel      PreemptCnt=0
->>
->> NEED_RESCHED       Y                Y               Y
->> LAZY_RESCHED       Y                N               N
->>
->> That is completely independent of the preemption model and the
->> differentiation of the preemption models happens solely at the scheduler
->> level:
->
-> This is relatively minor, but do we need two flags? Seems to me we
-> can get to the same decision matrix by letting the scheduler fold
-> into the preempt-count based on current preemption model.
+(This series is rebased on top of Michael's refactor series [1])
 
-You still need the TIF flags because there is no way to do remote
-modification of preempt count.
+When an iommu_domain is set to IOMMU_DOMAIN_IDENTITY, the driver sets the
+arm_smmu_domain->stage to ARM_SMMU_DOMAIN_BYPASS and skips the allocation
+of a CD table, and then sets STRTAB_STE_0_CFG_BYPASS to the CONFIG field
+of the STE. This works well for devices that only have one substream, i.e.
+pasid disabled.
 
-The preempt count folding is an optimization which simplifies the
-preempt_enable logic:
+With a pasid-capable device, however, there could be a use case where it
+allows an IDENTITY domain attachment without disabling its pasid feature.
+This requires the driver to allocate a multi-entry CD table to attach the
+IDENTITY domain to its default substream and to configure the S1DSS filed
+of the STE to STRTAB_STE_1_S1DSS_BYPASS. So, there is a missing link here
+between the STE setup and an IDENTITY domain attachment.
 
-	if (--preempt_count && need_resched())
-		schedule()
-to
-	if (--preempt_count)
-		schedule()
+This series fills the gap for the use case above. The first patch corrects
+the conditions at ats_enabled capability and arm_smmu_alloc_cd_tables() so
+that the use case above could set the ats_enabled and allocate a CD table
+correctly. The second patch reworks the arm_smmu_write_strtab_ent() in a
+fashion of all possible configurations of STE.Config fields.
 
-i.e. a single conditional instead of two.
+[1]
+https://lore.kernel.org/all/20230915132051.2646055-1-mshavit@google.com/
+---
 
-The lazy bit is only evaluated in:
+Changelog
+v4:
+ * Rebased on top of v6.6-rc2 and Michael's refactor series v8 [1]
+v3: https://lore.kernel.org/all/cover.1692959239.git.nicolinc@nvidia.com/
+ * Replaced ARM_SMMU_DOMAIN_BYPASS_S1DSS with two boolean flags to correct
+   conditions of STE bypass and CD table allocation.
+ * Reworked arm_smmu_write_strtab_ent() with four helper functions
+v2: https://lore.kernel.org/all/20230817042135.32822-1-nicolinc@nvidia.com/
+ * Rebased on top of Michael's series reworking CD table ownership
+ * Added a new ARM_SMMU_DOMAIN_BYPASS_S1DSS stage to tag the use case
+v1: https://lore.kernel.org/all/20230627033326.5236-1-nicolinc@nvidia.com/
 
-    1) The return to user path
+Nicolin Chen (2):
+  iommu/arm-smmu-v3: Add boolean bypass_ste and skip_cdtab flags
+  iommu/arm-smmu-v3: Refactor arm_smmu_write_strtab_ent()
 
-    2) need_reched()
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 232 ++++++++++++--------
+ 1 file changed, 137 insertions(+), 95 deletions(-)
 
-In neither case preempt_count is involved.
 
-So it does not buy us enything. We might revisit that later, but for
-simplicity sake the extra TIF bit is way simpler.
+base-commit: 8bab08e86afa9e0afd25887c0c273c1506d16c0f
+-- 
+2.42.0
 
-Premature optimization is the enemy of correctness.
-
->> We should be able merge the PREEMPT_NONE/VOLUNTARY behaviour so that we
->> only end up with two variants or even subsume PREEMPT_FULL into that
->> model because that's what is closer to the RT LAZY preempt behaviour,
->> which has two goals:
->>
->>       1) Make low latency guarantees for RT workloads
->>
->>       2) Preserve the throughput for non-RT workloads
->>
->> But in any case this decision happens solely in the core scheduler code
->> and nothing outside of it needs to be changed.
->>
->> So we not only get rid of the cond/might_resched() muck, we also get rid
->> of the static_call/static_key machinery which drives PREEMPT_DYNAMIC.
->> The only place which still needs that runtime tweaking is the scheduler
->> itself.
->
-> True. The dynamic preemption could just become a scheduler tunable.
-
-That's the point.
-
->> But they support PREEMPT_COUNT, so we might get away with a reduced
->> preemption point coverage:
->>
->>                 Ret2user        Ret2kernel      PreemptCnt=0
->>
->> NEED_RESCHED       Y                N               Y
->> LAZY_RESCHED       Y                N               N
->
-> So from the discussion in the other thread, for the ARCH_NO_PREEMPT
-> configs that don't support preemption, we probably need a fourth
-> preemption model, say PREEMPT_UNSAFE.
-
-As discussed they wont really notice the latency issues because the
-museum pieces are not used for anything crucial and for UM that's the
-least of the correctness worries.
-
-So no, we don't need yet another knob. We keep them chucking along and
-if they really want they can adopt to the new world order. :)
-
-Thanks,
-
-        tglx
