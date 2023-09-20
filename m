@@ -2,202 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5417A73D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9677A73D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233648AbjITHT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
+        id S233588AbjITHUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbjITHTZ (ORCPT
+        with ESMTP id S233662AbjITHT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:19:25 -0400
+        Wed, 20 Sep 2023 03:19:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E6FCA
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:19:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37707C433C7;
-        Wed, 20 Sep 2023 07:19:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4043ECE
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:19:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4550FC433C8;
+        Wed, 20 Sep 2023 07:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695194358;
-        bh=WyO9M//XrozD9V7TnomV/MSTgBlPqTOV4kfhlkxyjSU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=U+YO+seSaVhGE61tbw7daKIcwHsvtGx6VsQenbdtEZ77Rmrr0voTBoP7zvXToLX5p
-         8h8qn6gk0nul2EC9kuw8FTVswGOmVSVqIkK+rW9n8MTh7YQWlEjVNdVxcxmHCUAWY3
-         gHyLknMIgdQQP+Lu9GQQT0riUjYtZ6X5LfOJPq5uiUbtCzxkIPS/h4fmUaCO+NBq6E
-         hCtyMJxOABL4mwaJX6HXJLxbgRg6yDuiCBrayvBkdDPuypU5P0lDwc6SlHs7EhbVyl
-         uLq6ZqbALxmJiC1qzwR/gq0ZLWpCXlVkomuyrLntgNIkEVYmpGTdP6ZyLb5praUKFy
-         3tXT1Dw2+aMiA==
-Message-ID: <79bd4b5b-7ea8-4a3b-d098-9aecd43b1675@kernel.org>
-Date:   Wed, 20 Sep 2023 10:19:12 +0300
+        s=k20201202; t=1695194391;
+        bh=qFdKBzqTmmQ2nUPNK5GbW1ZYNZ25HnBX2G2O6O2qgtw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JwJfNw/lMLXQffIjVCXrlngljneOT1KsD/CT/8dx3/6vAVvsTcZnnJ1wTHnCl3Dxw
+         XVGw5FQj7scOr7UQIxB8HR9uSOUorhtAo4kd+tgEtBXjsjQwzhQZTeXgnGNdUACt4D
+         9beTUeZFLL7xehCRZzEPLn3AjkYwxquqQBZrAlX/KlOr6EJk2yTeZxJou3Ako5IG/F
+         1OHIY7IxbA0ypJHv2yVoW99OewAZqs9frGUN7abb0dOwEiF7uLiMtu6fUpyGDmikuf
+         9dZalQI5eoc2NMridpMayTavc4YYmAiZhddH1DD9OfrB9wxzfL7NgtspXoHi358r6C
+         ps4EoiYlOWEkw==
+From:   SeongJae Park <sj@kernel.org>
+To:     Huan Yang <link@vivo.com>
+Cc:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH v3] mm/damon/core: remove unnecessary si_meminfo invoke.
+Date:   Wed, 20 Sep 2023 07:19:49 +0000
+Message-Id: <20230920071949.26063-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230920015727.4482-1-link@vivo.com>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] net: ethernet: ti: am65-cpsw: add mqprio qdisc offload
- in channel mode
-Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, horms@kernel.org, s-vadapalli@ti.com,
-        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rogerq@kernel.rog
-References: <20230918075358.5878-1-rogerq@kernel.org>
- <20230918075358.5878-1-rogerq@kernel.org>
- <20230919124703.hj2bvqeogfhv36qy@skbuf>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20230919124703.hj2bvqeogfhv36qy@skbuf>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+Hi Huan,
 
-On 19/09/2023 15:47, Vladimir Oltean wrote:
-> Hi Roger,
-> 
-> On Mon, Sep 18, 2023 at 10:53:58AM +0300, Roger Quadros wrote:
->> -int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
->> -			       void *type_data)
->> -{
->> -	switch (type) {
->> -	case TC_QUERY_CAPS:
->> -		return am65_cpsw_tc_query_caps(ndev, type_data);
->> -	case TC_SETUP_QDISC_TAPRIO:
->> -		return am65_cpsw_setup_taprio(ndev, type_data);
->> -	case TC_SETUP_BLOCK:
->> -		return am65_cpsw_qos_setup_tc_block(ndev, type_data);
->> -	default:
->> -		return -EOPNOTSUPP;
->> -	}
->> -}
->> -
->> -void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed)
->> -{
->> -	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
->> -
->> -	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
->> -		return;
->> -
->> -	am65_cpsw_est_link_up(ndev, link_speed);
->> -	port->qos.link_down_time = 0;
->> -}
->> -
->> -void am65_cpsw_qos_link_down(struct net_device *ndev)
->> -{
->> -	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
->> -
->> -	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
->> -		return;
->> -
->> -	if (!port->qos.link_down_time)
->> -		port->qos.link_down_time = ktime_get();
->> -
->> -	port->qos.link_speed = SPEED_UNKNOWN;
->> -}
->> -
-> 
-> Could you split the code movement to a separate change?
+On Wed, 20 Sep 2023 09:57:27 +0800 Huan Yang <link@vivo.com> wrote:
 
-OK.
+> si_meminfo() will read and assign more info not just free/ram pages.
+> For just DAMOS_WMARK_FREE_MEM_RATE use, only get free and ram pages
+> is ok to save cpu.
+> 
+> Signed-off-by: Huan Yang <link@vivo.com>
 
-> 
->> +	if (port->qos.link_speed != SPEED_UNKNOWN) {
->> +		if (min_rate_total > port->qos.link_speed) {
->> +			NL_SET_ERR_MSG_FMT_MOD(extack, "TX rate min %llu exceeds link speed %d\n",
->> +					       min_rate_total, port->qos.link_speed);
->> +			return -EINVAL;
->> +		}
->> +
->> +		if (max_rate_total > port->qos.link_speed) {
->> +			NL_SET_ERR_MSG_FMT_MOD(extack, "TX rate max %llu exceeds link speed %d\n",
->> +					       max_rate_total, port->qos.link_speed);
->> +			return -EINVAL;
->> +		}
->> +	}
-> 
-> Link speeds can be renegotiated, and the mqprio offload can be installed
-> while the link is down. So this restriction, while honorable, has limited
-> usefulness.
+Reviewed-by: SeongJae Park <sj@kernel.org>
 
-For link down case it won't run those checks, but I get your point.
-I'll drop these checks.
 
-> 
->> +
->> +	p_mqprio->shaper_en = 1;
-> 
-> s/1/true/
-> 
->> +	p_mqprio->max_rate_total = max_t(u64, min_rate_total, max_rate_total);
->> +
->> +	return 0;
->> +}
->> +
->> +static void am65_cpsw_reset_tc_mqprio(struct net_device *ndev)
->> +{
->> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
->> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
->> +	struct am65_cpsw_common *common = port->common;
->> +
->> +	p_mqprio->shaper_en = 0;
-> 
-> s/0/false/
-> 
->> +	p_mqprio->max_rate_total = 0;
->> +
->> +	am65_cpsw_tx_pn_shaper_reset(port);
->> +	netdev_reset_tc(ndev);
->> +	netif_set_real_num_tx_queues(ndev, common->tx_ch_num);
->> +
->> +	/* Reset all Queue priorities to 0 */
->> +	writel(0,
->> +	       port->port_base + AM65_CPSW_PN_REG_TX_PRI_MAP);
-> 
-> What exactly needs pm_runtime_get_sync()? This writel() doesn't?
+Thanks,
+SJ
 
-Good catch. In my tests, the network interface was up so controller
-was already active. But we will need to do a pm_runtime_get_sync()
-if all network interfaces of the controller are down.
-
-So, I will need to move the pm_runtime_get_sync() call before
-am65_cpsw_reset_tc_mqprio();
-
+> ---
+> Change from v1:
+> v1 fold free mem rate logic into __damos_get_wmark_free_mem_rate and not
+> invoke si_meminfo, just get free/ram_pages in global.
+> v2 cancel this __damos_get_wmark_free_mem_rate and just calculate rate
+> in damos_wmark_metric_value to keep it simple.
+> v3 fix changelog format, fix code style.
 > 
->> +}
->> +
->> +static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data)
->> +{
->> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
->> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
->> +	struct tc_mqprio_qopt_offload *mqprio = type_data;
->> +	struct am65_cpsw_common *common = port->common;
->> +	struct tc_mqprio_qopt *qopt = &mqprio->qopt;
->> +	int tc, offset, count, ret, prio;
->> +	u8 num_tc = qopt->num_tc;
->> +	u32 tx_prio_map = 0;
->> +	int i;
->> +
->> +	memcpy(&p_mqprio->mqprio_hw, mqprio, sizeof(*mqprio));
->> +
->> +	if (!num_tc) {
->> +		am65_cpsw_reset_tc_mqprio(ndev);
->> +		return 0;
->> +	}
->> +
->> +	ret = pm_runtime_get_sync(common->dev);
->> +	if (ret < 0) {
->> +		pm_runtime_put_noidle(common->dev);
->> +		return ret;
->> +	}
-
--- 
-cheers,
--roger
+> 
+>  mm/damon/core.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index bcd2bd9d6c10..6ceb52298904 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+> @@ -1280,12 +1280,10 @@ static bool kdamond_need_stop(struct damon_ctx *ctx)
+>  
+>  static unsigned long damos_wmark_metric_value(enum damos_wmark_metric metric)
+>  {
+> -	struct sysinfo i;
+> -
+>  	switch (metric) {
+>  	case DAMOS_WMARK_FREE_MEM_RATE:
+> -		si_meminfo(&i);
+> -		return i.freeram * 1000 / i.totalram;
+> +		return global_zone_page_state(NR_FREE_PAGES) * 1000 /
+> +		       totalram_pages();
+>  	default:
+>  		break;
+>  	}
+> -- 
+> 2.34.1
