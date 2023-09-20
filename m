@@ -2,192 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 563977A8A84
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F3E7A8A87
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjITRYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
+        id S229526AbjITRY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjITRYG (ORCPT
+        with ESMTP id S229520AbjITRYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:24:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D3FAF;
-        Wed, 20 Sep 2023 10:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695230641; x=1726766641;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=iKoow6Tdt+p1gT55GuUjOKUy4B07DzdExnBYDMgYgu0=;
-  b=b8/WRUNfcDgHCesFj5SJoH3wWvTnE98NoM78eTIyGNLlZh589UxeGsvJ
-   /nb88/wke42+fcLFTxNfLsi8NJkETH266vuwaS5G3MOrfLKLw/PqtSEca
-   0hMwF4Kwz4IkS96HQwuhOJVZjCHGoEr7oiTfS5pkoDuj6QmSEFqBtnAmN
-   bjzpyVJI8IudatjZ5OTws3KecMuJEyIO41Mzw1VsXKojAmqaQOn9lh1F0
-   gSK70IwCHZTyY0i2tbjWLe8R0BkPCc8vytN0BoWEvBBBMmUpu7B+442Az
-   RofyQnTk9yW0t8ctoQCjOHv2FydgwxobnEjnL7NjQtS+3Ez6/V2hxR3fQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="379174619"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="379174619"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 10:24:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="890017227"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="890017227"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Sep 2023 10:23:11 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 20 Sep 2023 10:23:59 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 20 Sep 2023 10:23:59 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 20 Sep 2023 10:23:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nABNNYOjCg3uNj+88AiNEhMRcKlSJYOoeIqKo1n9YqKejbfm7bEpX+tBpFXiwuUEF6H2fl08LLaL/kPPzIMeNjRmgNRes49XAVeqmGhiD8gwKgvFUzhHJxvWCAXbbEry2xD2v3kQl53j/85AlCZALhldnNzgOVl7R7PQmG36wAKOjeK7d5GvwBZ6FtaPseNb8Nn7OkZOONl+4ljItVey6GbFsFXMqEqZJw+LXdNf45U8hSyWF4+VXNJMGeMNheUbpJzd63QKI18JxgRlrwkHPTCWqRJJKmn0fQz7H/SFRcrez4aVBitdpp2R0vuUZggrF0MLgc6RGYCXx5EwAeCKmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iKoow6Tdt+p1gT55GuUjOKUy4B07DzdExnBYDMgYgu0=;
- b=c3TwP56a5c2BnPWnkp1tNKYFtb3KeoVteRFtzUeJEa0wxDLZ1aoHVKjqIaN8uC8Gnqs/s2iHZ3Wi8wLvTU5mQ2KCxxVSXEgM/em9+Pc6by8J0kKAzVctKd7pUScW4zUdy4WXiCTpOdBxUrHiZ+v/LoHkVENAfQ7KUAyLP/VNHW4JUXv0Qk0TypfLbMhgFe04JB6CQm5Ptn7xEAb3TcuEAMAsythB1zfnzY50ya60I7VvzEmcvMVZRha5TGZWCaksBU6boAO5TcpEcPGJ1c9kkNEgVWHG3RrptOQ/XFXPM/sRk58kzDyittJFHDZZf5gURJeGoV5wBfLj6AdVXM/CLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
- by CH3PR11MB7179.namprd11.prod.outlook.com (2603:10b6:610:142::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Wed, 20 Sep
- 2023 17:23:48 +0000
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::922f:ec7c:601b:7f61]) by SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::922f:ec7c:601b:7f61%5]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 17:23:48 +0000
-From:   "Li, Xin3" <xin3.li@intel.com>
-To:     Nikolay Borisov <nik.borisov@suse.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>
-Subject: RE: [PATCH v10 16/38] x86/ptrace: Add FRED additional information to
- the pt_regs structure
-Thread-Topic: [PATCH v10 16/38] x86/ptrace: Add FRED additional information to
- the pt_regs structure
-Thread-Index: AQHZ5ss6vttMEsm+OUmXJJK/yPurx7AjtmQAgABJenA=
-Date:   Wed, 20 Sep 2023 17:23:48 +0000
-Message-ID: <SA1PR11MB6734182B172E9204CD11688CA8F9A@SA1PR11MB6734.namprd11.prod.outlook.com>
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-17-xin3.li@intel.com>
- <336f77d6-1d94-d2b7-f429-855bfbc3f271@suse.com>
-In-Reply-To: <336f77d6-1d94-d2b7-f429-855bfbc3f271@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|CH3PR11MB7179:EE_
-x-ms-office365-filtering-correlation-id: d56e26c8-a579-40b4-7b08-08dbb9fe59cc
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rrrZeJhRf65aUKIytRbmdcJ6B43Uvoz3LCi2sGJiiDBaB9F7hZ83ZdGPQ+V8GLGFGWHR6zVfrtoi9WSpKWrieFByFOeXPYrYYO3rFEyieQC2ueSHYpDnKiErLOJT/Lezr6MfWkFlSISGYtXHj6c0FlY5kwbwrkeGxTBTA3HgaHZfeuIAQq8GpMnUdkGMS+fwuYcrOgdqf7DlBCXmY/i0Wv8XjzTFqRIyNuzxRpvEl2LTQ1myCkMKeyCg5mUbm6rVjt25b+wVR7NYEbVbZgKGdDiEx2teU4wnj7jl6ut8J+NCPWXAxUUCcWVydeG48JQrsMpaHPHsDq3wH01/zp2mG6fB7UubtcxHxVo7hp9nheZFXCmo7EMQ6A+nZboQMCrYCc2vSc3E6F34g/ZBSAyy0SXTURH0YQMijf08lfhEltKdeErkvwcPHBH6Fy7IWPHxutKctVCUcRhVPUNoE5d2vFU1UHfQwLiu4zdDWNkdiz2cuz2v/rbR5MzO3bHoVO32jUcR7DRdvvtIHalLi/YPE6juI8BprNkX2biWCxqXvyvGjF0KSPw7Qb4gFDaagnrvh1FoqhHzu/LaVI2ug6JENJQLcP4crpLcERLZv3SxzjQrSSFlH9WVrbc1KlO7PtMU
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(376002)(396003)(39860400002)(186009)(1800799009)(451199024)(478600001)(9686003)(71200400001)(7696005)(6506007)(83380400001)(4326008)(5660300002)(4744005)(2906002)(26005)(52536014)(76116006)(316002)(54906003)(66476007)(66446008)(66556008)(64756008)(66946007)(41300700001)(8936002)(8676002)(110136005)(7416002)(55016003)(38100700002)(33656002)(38070700005)(122000001)(86362001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L3JEd3RqcUhsR1ZvSFNSRFM0QUpaemt6VGJLUTU2U0lBNHRHMlU4QUNzaSth?=
- =?utf-8?B?WitiZEpYRHR3THk4WmQ4NmJPNGdGYytoUlZXSkt0VytMY3Z1UjhhZzlCNkg5?=
- =?utf-8?B?L2dweGtaR3A1S2dsdDdQeTgxaUMwRFk0Sk5WZjIrUG96cStrWWVJejVLZ1V5?=
- =?utf-8?B?SFJHVXBORHdwbG9oYitwTi96Y04zWGRqbkltQW9VaWRncDdPc2hOV0ZEOUZr?=
- =?utf-8?B?Z0NtQVNjWmppSndGdzJRbnA5RWJ6QVBUS2k2RUFFdXZDZS9EcVhwQWhSSlMz?=
- =?utf-8?B?TjRJQjNERWVaWTNOc1lSZ3dkY0hreXhwR0hSSE1XbmFrakpYY1ZKbEhhK2pO?=
- =?utf-8?B?a3A5NDErT0crSVBWRmh2N3gyZUQ0NkpLSFdwamptTHlKd2N1NGhwZ2lIOHpv?=
- =?utf-8?B?TzJNdFlHb2xkRVgyVUR1K0I5VVRTd3djSlVodTJtNXJmL2JKZDM0SnlTOFEy?=
- =?utf-8?B?aFZmMy9TVm9WR0x3L3NvN2lHVHhRaDRQMFlhYk56OWxJWTR6VDF4enEyVURU?=
- =?utf-8?B?bEp4Ym52d3VQUkNReUxlN1pZUzBCeTNpcFozTklCZmR4NDRadGFMOWxsbUZa?=
- =?utf-8?B?ZEJudXI4WWE4K1AydTU4V05UdVNjNUZlSXJGMTVUNDh3eEV5WCtFMkk3ZzlG?=
- =?utf-8?B?czRJZjZHZ2NxVm9BNkF2WHVncnRySkxaaXFGMllYeW83OVNJMFh0NjhxVUlu?=
- =?utf-8?B?Q1Qvek1KcThsb0t2VkVFbkdwR3ZaUk8yOHhBb3h3UTVjaENuN21EWG9Yd1kz?=
- =?utf-8?B?R2Z0NWhENDRuQzB5dnJrRTZWRndYa2M4VHdqV0IxcmRhZHRhNHhTTHVqbEw0?=
- =?utf-8?B?c0JTS2dYWmN4SGxWaTZieWJZU0REUTZRdTc1ZzMwWlJBYzJab0xEdnVEVUVJ?=
- =?utf-8?B?ZzAvUzFFMXRoUHdUT1d1cU1nNCtKbTNwZDN6NlRkajFvcDkxKzdKdGFDMER5?=
- =?utf-8?B?VW9FRVhHUGFpVDJleU5DNllKZFhRQlVDT1pSM2I5UVRnOU1SSVFzUGlHalAy?=
- =?utf-8?B?MHp6V2huNUNKZ3hmdXJ1RjB0bXQxd3AvZW5FeVhmclB4OEowQVZwWVZ5MWVQ?=
- =?utf-8?B?Y2FGM05ON0t0YUdLVUl2SDJZcDA5aXhlVStMQ1RIUHBESDBRRFJrSXFteld4?=
- =?utf-8?B?RVQrTThJWkZ4UnM5QWRiM2xoNVlROTlyR1NyWWxVeXN4dDdyZ0trVXRPN04v?=
- =?utf-8?B?TWpCVXRWQk5TWE02SFNRaG5LTkM1Qk5xU01Yb3hmS082ZDBZcUg1Z1RnZnMz?=
- =?utf-8?B?MXJldmhrclB4L3RsdG83S1FtSmg3SGV3d1dhb08wTDJqMmpudk1QL2RQY0ds?=
- =?utf-8?B?NFJWa2tSRGRNb1RoQU1LOXRzSzkyeSszWFk5NWhyMVpOdHdjbkMxV2F2R0N6?=
- =?utf-8?B?LzlTQVplejZiS294T2dBUTUrdDZSdEVIMkVXVDNWKzdyaGt0NnlCU1h1UEpZ?=
- =?utf-8?B?NVNDdzhnblEvVGFZSE1FSk5lNktlWWthOGlRSzIwSG04TXpoKzFZUmRxUjUz?=
- =?utf-8?B?ZzlITHBLelRtQ1NldjA3RkhseGVpK3U2Zk9YRnVCRzVpbmJEQUJ4em5zMEU1?=
- =?utf-8?B?QVY2cDFtQXBGNm1JaVJ1Qks3cFpySy9Na1dmTzJXVU9Ta2JPRUxOUnJhZEI3?=
- =?utf-8?B?OHYyYU1yVjNSMTNDViswYzVNNXU3TjhWNlpoZGRNblc0UHpiaVdUa0kzdmx6?=
- =?utf-8?B?ajVZcWc3MVNXZ1pYa2pkcS9MdnhPY0lWV3RoNFhLU1piYSttSGd3Nmx1cCti?=
- =?utf-8?B?RjQxa3NrMGVDd3pWUStSQlZhSnFjaFQ0NkdRYUVLaDJRb1BXTWppM1dzN2Mw?=
- =?utf-8?B?dkVlcHZFUTVLUUVKWmlwWWdVaWZFdFM3NmZrVWlOcG4wdTFQR1Buamc0OENE?=
- =?utf-8?B?TVNaMXpXMzR1cC9lRmp5NkxwT091UEhndkxja2t1Z01Idk92cEtuT0d0QTYw?=
- =?utf-8?B?YjNZaXQ0TlRYTFRuekdpT2kvNENSdWtZYzBqZjcwL2lyQUlZYS9iNjVHUm53?=
- =?utf-8?B?TGVpYUk1b2wyUnlLZjFoRXFUcFU4b2xEbmZjazcvTGZ2WlB0clNxd1BFcS9P?=
- =?utf-8?B?ek1nczljYVNUWGNGeTlkMjN2WGlsdVlCbDIyc000OG1ic0tTaVQvMit1V3M0?=
- =?utf-8?Q?xBa5f2vPvEFruH4JZk0WC2Sdf?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 20 Sep 2023 13:24:20 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07B9F7;
+        Wed, 20 Sep 2023 10:24:09 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50336768615so200559e87.0;
+        Wed, 20 Sep 2023 10:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695230647; x=1695835447; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AfiikMIrYn39kPmf1XpzwzyflnoDFSxd0c5KM6+tLH4=;
+        b=W4Mq0WbOB9vEqBJPMnnHQYpL+G399iQMigLVgovqCSrecdsyJLWiDyPDjsfPH4MiXs
+         gD37S5yMTUsoIBcDoOeGSRCZo751aTaxCfZYM8/jaYqh9K4N1ZyLdLbQ/LZzDXvtHLHs
+         jq9yWVUctT4XZSUHX61bs6Bi0dJmNNKqpMxEQfAI/69/AQB+E8+llzwOwex2AS2/uvKh
+         9BkDghiT8nyYWgtyrAm3hb/hjonfDW2aoly4QIqyqro9lpJ7Tf4bOC1iLS52hQuP4NyK
+         gMpWM10XS0waqwUv/oPt0twoZEgXHksYAmFhZ57EFsTBp/CS74HxtDkQ19uTywlIMrPM
+         XNDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695230647; x=1695835447;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AfiikMIrYn39kPmf1XpzwzyflnoDFSxd0c5KM6+tLH4=;
+        b=adP/3iPNLF++tJVBRsAZIbUhSVVuJSJL04vjz9IitK3+yrt8XtHWVFc3O6KLjkVzUB
+         PkhbxSOvii65FOWXnq53xxYmI4JgMvWz9q7SCM8m0e/Tf3b5rbayCAqOupg2hiJJ7AUW
+         u7IeHgHFXAJMMYW8DslWH4GyuyKVhwqxnvkKAMFmPx/kJijyDpa2UkhDJ/RQtfuBu3BT
+         GQPqnMfHK9jbwFiA92OsMBPO0KvkdOwWLjTWGW6P1NXICgx53sb2zuqkHwM05QePWQcT
+         utrME2EJ5v48k9lWVryXhzb0QIpfvMKgECZXLPUl1gOa1OAIDwIVCITFI9/l4ZyCMx3B
+         fpHw==
+X-Gm-Message-State: AOJu0YweQhA/8pSN4nqawP8ZjkJuWKza1CWItuOy2FHNvOosEx0ej5P3
+        GUmwLcL/KnLjZ5WrJUTpprc=
+X-Google-Smtp-Source: AGHT+IECCauuhP3vTBGBf/lQVx6tED+vbCi8sf5TYDpauGNNEOX3HDVGDsKjG3Bi3kURlLtbgevGPA==
+X-Received: by 2002:a05:651c:235:b0:2b9:b27c:f727 with SMTP id z21-20020a05651c023500b002b9b27cf727mr2797044ljn.8.1695230646850;
+        Wed, 20 Sep 2023 10:24:06 -0700 (PDT)
+Received: from [10.0.0.42] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
+        by smtp.gmail.com with ESMTPSA id v8-20020a2ea448000000b002c128e45245sm107170ljn.23.2023.09.20.10.24.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 10:24:06 -0700 (PDT)
+Message-ID: <68b74422-d53e-4147-bbb5-ffc04443f969@gmail.com>
+Date:   Wed, 20 Sep 2023 20:24:05 +0300
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d56e26c8-a579-40b4-7b08-08dbb9fe59cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2023 17:23:48.2140
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Q3Wq3CF2mMJkMIG9ikbqCOAWD4a1xlLvgpYbczFv0FH7A0GzvRnQgO0Q03B9ywiGgSq3A/Wx5ElTwV+juAtYAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7179
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
+ fck_src
+To:     Andreas Kemnade <andreas@kemnade.info>,
+        Tony Lindgren <tony@atomide.com>
+Cc:     bcousson@baylibre.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, jarkko.nikula@bitmer.com,
+        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20230705190324.355282-1-andreas@kemnade.info>
+ <20230705190324.355282-2-andreas@kemnade.info>
+ <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
+ <20230920063353.GQ5285@atomide.com> <20230920165204.0fbc0ff3@aktux>
+Content-Language: en-US
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20230920165204.0fbc0ff3@aktux>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+ICtzdHJ1Y3QgZnJlZF9zcyB7DQo+ID4gKwl1NjQJc3MJOiAxNiwJLy8gU1Mgc2VsZWN0b3IN
-Cj4gDQo+IElzIHRoaXMgc3RydWN0dXJlIGNvbmZvcm1hbnQgdG8gdGhlIHJldHVybiBzdGF0ZSBh
-cyBkZXNjcmliZWQgaW4gRlJFRCA1LjA/DQo+IA0KPiDigJQgVGhlIHN0YWNrIHNlZ21lbnQgb2Yg
-dGhlIGludGVycnVwdGVkIGNvbnRleHQsIDY0IGJpdHMgZm9ybWF0dGVkIGFzIGZvbGxvd3M6DQo+
-IA0KPiDigKIgQml0cyAxNTowIGNvbnRhaW4gdGhlIFNTIHNlbGVjdG9yLiA8IC0gV0UgSEFWRSBU
-SElTDQo+IA0KPiDigKIgQml0cyAzMToxNiBhcmUgbm90IGN1cnJlbnRseSBkZWZpbmVkIGFuZCB3
-aWxsIGJlIHplcm8gdW50aWwgdGhleSBhcmUuDQoNCldoZXJlIGRpZCB5b3UgZG93bmxvYWQgdGhl
-IEZSRUQgNS4wIHNwZWMgZnJvbT8NCg0KTWluZSBzYXlzIGJpdCAxNiBpcyBzdGksIGJpdCAxNyBm
-b3Igc3cgaW5pdGlhdGVkIGV2ZW50cyBhbmQgYml0IDE4IGlzIE5NSS4NCg0KSSBndWVzcyB5b3Ug
-aGF2ZSBGUkVEIDMuMCBzcGVjLCBubz8NCg0KPiAgPCAtIE1JU1NJTkcgPiBob2xlPw0KPiANCj4g
-PiArCQlzdGkJOiAgMSwJLy8gU1RJIHN0YXRlIDwgLQ0KPiA+ICsJCXN3ZXZlbnQJOiAgMSwJLy8g
-U2V0IGlmIHN5c2NhbGwsIHN5c2VudGVyIG9yIElOVCBuDQo+ID4gKwkJbm1pCTogIDEsCS8vIEV2
-ZW50IGlzIE5NSSB0eXBlDQo+ID4gKwkJCTogMTMsDQogDQo=
+Hi,
+
+On 9/20/23 17:52, Andreas Kemnade wrote:
+> Hi,
+> 
+> On Wed, 20 Sep 2023 09:33:53 +0300
+> Tony Lindgren <tony@atomide.com> wrote:
+> 
+>> Hi,
+>>
+>> * Péter Ujfalusi <peter.ujfalusi@gmail.com> [230919 18:25]:
+>>>
+>>>
+>>> On 7/5/23 22:03, Andreas Kemnade wrote:  
+>>>> Commit 349355ce3a05 ("ARM: OMAP2+: Drop legacy platform data for omap4 mcbsp")
+>>>> dropped prcm_fck for omap4,  
+>>
+>> The prcm_fck should be there in the dts for each mcbsp interconnect targe
+>> module as "fck" alias and get's enabled/disabled when the mcbsp driver
+>> calls runtime PM.
+>>
+>> So maybe the description should explain that things broke as the aliases
+>> for prcm_fck and pad_ck no longer get added.
+>>
+>>> it also dropped the pad_fck for that matter.  
+>>
+>> OK so an alias is needed for that too.
+>>
+>> That's the MCPDM_CLKCTRL pad_clks_ck alias, right? Seems like the
+>> pad_clks_ck should be claimed by the mcpdm and mcbsp drivers if they are
+>> used? I guess it would be for some external device use case?
+>>
+>>>> so the clk_src might not be >available making the
+>>>> clk_get(src) fail.  
+>>>
+>>> Wow, so OMAP4 audio is pretty broken if would ever need to select FCLK?
+>>> By default we don't on OMAP4, but this is astonishing.  
+>>
+>> So sounds like we just got lucky because of -ENOSUCHUSERS? The mcbsp works
+>> for me, not sure how come I'm not seeing this issue, does it now only work
+>> for the default clock source?
+>>
+> Well, I did not run into any problems (besides of no sound output)
+> as long as I tried to use the codec side as bitclock/frameclock-master and
+> that is what droid4 does...
+
+Looks like only omap3 pandora is using external clock source for McBSP,
+most OMAP4/5 devices tend to use McPDM and in most cases the McBSP is
+not the clock provider, so the clocking does not matter.
+
+It is going to cause issues on new boards, but those are unlikely to
+surface.
+
+-- 
+Péter
