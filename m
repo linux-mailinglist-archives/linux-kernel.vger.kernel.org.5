@@ -2,191 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C9A7A8863
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD45A7A886A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbjITPas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        id S235493AbjITPbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbjITPap (ORCPT
+        with ESMTP id S235364AbjITPbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:30:45 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5F58F;
-        Wed, 20 Sep 2023 08:30:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3EDCD21F9F;
-        Wed, 20 Sep 2023 15:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695223837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z07gJ0ljk8a9zukVNTeRislBXMh7pJ7EEuF8a+v+/FI=;
-        b=cPiRr5NlB4Iwub7EwKz86boVSJQJZ3WLxzLaU6G09EfO4FmtVOdy7KUFneBvjrGmUR3ITh
-        2SAzepsqhIpBmvq/dM3lwFGS4jeZb1JiYpwLyM/YRSlBcScjreBuxS42wYeBxMo6k0JIzb
-        vOOpZeXkJqjpWBWmAFVZOTXkw8HJ8lk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695223837;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z07gJ0ljk8a9zukVNTeRislBXMh7pJ7EEuF8a+v+/FI=;
-        b=6KZkGGsMv2dh1rvGNnyToBfPP9oSwDD0PDv8XeIzbn7pcxdfbwlBblC3C43EGbanxkRyi5
-        mASfcKX9dgdX2bCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29F7813A64;
-        Wed, 20 Sep 2023 15:30:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Fng8Ch0QC2WORwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 20 Sep 2023 15:30:37 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 97616A077D; Wed, 20 Sep 2023 17:30:36 +0200 (CEST)
-Date:   Wed, 20 Sep 2023 17:30:36 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Chuck Lever III <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
-        Bruno Haible <bruno@clisp.org>,
-        Xi Ruoyao <xry111@linuxfromscratch.org>,
-        "bug-gnulib@gnu.org" <bug-gnulib@gnu.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>,
-        "coda@cs.cmu.edu" <coda@cs.cmu.edu>,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bo b Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <l@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "v9fs@lists.linux.dev" <v9fs@lists.linux.dev>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "codalist@coda.cs.cmu.edu" <codalist@coda.cs.cmu.edu>,
-        "ecryptfs@vger.kernel.org" <ecryptfs@vger.kernel.org>,
-        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "ocfs2-devel@lists.linux.dev" <ocfs2-devel@lists.linux.dev>,
-        "devel@lists.orangefs.org" <devel@lists.orangefs.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-Message-ID: <20230920153036.pfg5h4aoed6ua6s3@quack3>
-References: <20230919110457.7fnmzo4nqsi43yqq@quack3>
- <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
- <4511209.uG2h0Jr0uP@nimes>
- <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
- <20230920-leerung-krokodil-52ec6cb44707@brauner>
- <20230920101731.ym6pahcvkl57guto@quack3>
- <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
- <20230920-raser-teehaus-029cafd5a6e4@brauner>
- <57C103E1-1AD2-4D86-926C-481BC6BDB191@oracle.com>
- <20230920-keine-eile-c9755b5825db@brauner>
+        Wed, 20 Sep 2023 11:31:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3971099
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:31:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A284EC433C8;
+        Wed, 20 Sep 2023 15:31:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695223904;
+        bh=vDRC+pMd+istEzU3u9J+6oRj4LV4EU2Hsm2Q37r1+P0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XO1/tCZUlwCBIbs5u4A1SCtenBzkBrRpVAG6ciDLezz+sC9kS9AbSzaocGwlkjrBY
+         4rm6+nlC66Qe2H+5R9CvP6p5xzNMizWfig65dnrmSNHfASwkrnr4j/bggBQs8G0N89
+         CjGHKAdfXPMo4jRALmPujyADPdi7/YADRQ1XGVpHUJXZAAVcZ/3tyUHsFkD4ieZuDD
+         rFKOVJm0tO8zCn1hZDV6b8JrUZOdtAxh1gDwlbUXKHJ+M6lZdLSi9OZNZfyoCLBgZb
+         2QTwxYrl0oyiiGYUcN9KwuQo6KFm/s2zzYakos3Cvl2YMW2sp3owiNtTcigDwdWPq9
+         cQis8vO6XPLCQ==
+Date:   Wed, 20 Sep 2023 16:31:38 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     unicornxw@gmail.com, aou@eecs.berkeley.edu, chao.wei@sophgo.com,
+        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
+        guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, wangchen20@iscas.ac.cn,
+        inochiama@outlook.com
+Subject: Re: [PATCH v2 09/11] riscv: dts: add initial SOPHGO SG2042 SoC
+ device tree
+Message-ID: <20230920-e8d6af9c0c652631412606ab@fedora>
+References: <ffe6a61a8879232aea7b86ff8aee5d681c6bd287.1695189879.git.wangchen20@iscas.ac.cn>
+ <mhng-09373969-fd57-4fa2-b0fa-470004f6e17c@palmer-ri-x1c9a>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iKhkmUT5MoZnUM4l"
 Content-Disposition: inline
-In-Reply-To: <20230920-keine-eile-c9755b5825db@brauner>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <mhng-09373969-fd57-4fa2-b0fa-470004f6e17c@palmer-ri-x1c9a>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-09-23 16:53:26, Christian Brauner wrote:
-> > You could put it behind an EXPERIMENTAL Kconfig option so that the
-> > code stays in and can be used by the brave or foolish while it is
-> > still being refined.
-> 
-> Given that the discussion has now fully gone back to the drawing board
-> and this is a regression the honest thing to do is to revert the five
-> patches that introduce the infrastructure:
-> 
-> ffb6cf19e063 ("fs: add infrastructure for multigrain timestamps")
-> d48c33972916 ("tmpfs: add support for multigrain timestamps")
-> e44df2664746 ("xfs: switch to multigrain timestamps")
-> 0269b585868e ("ext4: switch to multigrain timestamps")
-> 50e9ceef1d4f ("btrfs: convert to multigrain timestamps")
-> 
-> The conversion to helpers and cleanups are sane and should stay and can
-> be used for any solution that gets built on top of it.
-> 
-> I'd appreciate a look at the branch here:
-> git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.ctime.revert
-> 
-> survives xfstests.
 
-Agreed. I think most of ffb6cf19e063 ("fs: add infrastructure for
-multigrain timestamps") will be needed anyway but there's no problem in
-reintroducing it in the new solution. I've checked the branch and the
-reverts look good to me. Feel free to add:
+--iKhkmUT5MoZnUM4l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Jan Kara <jack@suse.cz>
+On Wed, Sep 20, 2023 at 08:19:59AM -0700, Palmer Dabbelt wrote:
+> On Tue, 19 Sep 2023 23:40:32 PDT (-0700), unicornxw@gmail.com wrote:
+> > Milk-V Pioneer motherboard is powered by SOPHON's SG2042.
+> >=20
+> > SG2042 is server grade chip with high performance, low power
+> > consumption and high data throughput.
+> > Key features:
+> > - 64 RISC-V cpu cores which implements IMAFDC
+> > - 4 cores per cluster, 16 clusters on chip
+> > - ......
+> >=20
+> > More info is available at [1].
+> >=20
+> > [1]: https://en.sophgo.com/product/introduce/sg2042.html
+> >=20
+> > Currently only support booting into console with only uart,
+> > other features will be added soon later.
+> >=20
+> > Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> > Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> > Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+> > ---
+> >  arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi | 1744 +++++++++++++++++++
+> >  arch/riscv/boot/dts/sophgo/sg2042.dtsi      |  439 +++++
+> >  2 files changed, 2183 insertions(+)
+> >  create mode 100644 arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi
+> >  create mode 100644 arch/riscv/boot/dts/sophgo/sg2042.dtsi
+>=20
+> Just an FYI: a handful of replies to this are getting blocked by the lists
+> as they end up being too big.  I just went and allowed what was there, but
+> future replies will probably require someone to be away as well and thus
+> might be slow.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+95% of this patch is the same, if people that reply are good citizens
+& trim, it'll not be too bad. btw, if you want, you can add me as
+someone that can click the "not spam" button.
+
+--iKhkmUT5MoZnUM4l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQsQVwAKCRB4tDGHoIJi
+0uOsAQCyjy3WsBTXoTMVD+ypX+oNG+eBikmo/bWRi0/v9v+GLwD/VfFHnfj9JoEz
+O1i5OsFBctQObbyWHyhshnVjKOXjSQQ=
+=nmgF
+-----END PGP SIGNATURE-----
+
+--iKhkmUT5MoZnUM4l--
