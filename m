@@ -2,273 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B677A7648
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD327A7646
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbjITIt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57346 "EHLO
+        id S233714AbjITItr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233830AbjITIty (ORCPT
+        with ESMTP id S233758AbjITItl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:49:54 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5BEA1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:49:48 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c453379020so29930325ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695199788; x=1695804588; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sIoijCx6rkpyZ1+1/kEfoWcLDXx0pEQYHV/MpqTrqlI=;
-        b=PVwulDxCPauwV7NEJjppUmqFxfkh8we59u9hw8llPMjYQbT/q6LgDRZwFHkBwklYv4
-         q9/ikRJos5rH84M8dSCCu9FB2hQ4tufbxxfVEMBoYHLE2oU9+uiHDQA4TSGovWydYLbd
-         WncridU5lIh2iVB2M/i5P7jZwFlpQd9QuFjlS9Adn5v7FsKL1LQTrEjJkYRFCY27/UVm
-         Jj8JHk1x017/orG/7YyMQiKm1WvqCYHTNEN8OWq+DEB5hA2wPzsEGS8DUalNw4tbRE+X
-         uTCSBMkjD+bMcOeMMskF+50cv6rf4iki6AYKZJx8ld72wqI6CEnZcGV2KVDWF5MdLpck
-         Zyxg==
+        Wed, 20 Sep 2023 04:49:41 -0400
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AC4B6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:49:35 -0700 (PDT)
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3ab3059eb0cso9536922b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:49:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695199788; x=1695804588;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sIoijCx6rkpyZ1+1/kEfoWcLDXx0pEQYHV/MpqTrqlI=;
-        b=TSW5Fh9btVB/2O5J2ef+sORasTQ6gROmjMivmtP91Q8UPEIHA273nJ3WxyKXYigjcp
-         Ty6F0UVR8nTYWy5SnE/EUNUDuiJIdi4wxsNHju0ToHyPRpPlLhrtgLgAgHVWOusTERgq
-         9iEYD/hBCCT5gBO5ERNi1YPKTbhNKpCvbO3cCzPnp1D3j1HFIhlUmBICfLag2PBhkWRb
-         ne5/QI3RKAPdH5ejtFJLesEb3z251UoSRxTv3krzVF/Chcpnn/bDnlPHLu269OGfpIXt
-         gvydFOsZHAiF/abggOrW8D0JXStvvqfW0hBCOjuxG27clmR+l/8qmIdhJrAWvsiTupNe
-         FMyA==
-X-Gm-Message-State: AOJu0YyOqMcGXQ+WavJH6s9GZQ/2IF4LXfNlOLprfVSy3L44GQoK/HAh
-        iRadmFvylJwINDe9C7udSb4d0NxedMRA0m3EZnht7g==
-X-Google-Smtp-Source: AGHT+IF2nwl5i5fn1VY65q5N8BI0kqYSqVMg/lSvjB307L4JRc3CfC+HJHLQR3YbIUCiYQT39pwWwSYA1J/Wf9FrhaQ=
-X-Received: by 2002:a17:90a:c206:b0:267:eeee:ab17 with SMTP id
- e6-20020a17090ac20600b00267eeeeab17mr1895900pjt.45.1695199787742; Wed, 20 Sep
- 2023 01:49:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695199775; x=1695804575;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JJD7FHC2t1nFq02NE3AMgOEqkFGUcT0nwVaE8WPBzYA=;
+        b=hjTk8bm2ADAcq6eyI8NAcoxNOy2/FpdwTZJUoM6BM/7STbwPPr7ib5ila0yGKdwKzt
+         qVbL+RB94QIJOhA/hOI0grAAbK9fQWhvAsQLDI5hPFcqjmkrtYlLjt88oF6+98orMeMV
+         ppK3bvLNm2Pwa5AMDmJsPM0NlPTrg/FanaRtbZc7/VfXH8Sgl+JJ8/fCtW1mW3S0b6EH
+         HurA6NPzSvRlNXw2Vq0ZGyr8vuqF2Xi723p+A/V9AP+FDbbmEQTkwyJFSGYOZF8+eBCd
+         s1vRyrHNRg+Q5h3HucwWXllN17AT1iFP99RMKdeafMdq6+5KNTxc8VRxHBbPgBo8cZDd
+         VpNg==
+X-Gm-Message-State: AOJu0YxAriM0CHFTSyD/PoNba5S5kAccr0tpXpgu9nRhJ/ufjbii6koI
+        dsWUER0pwtaHmic/8yuEkCfjxLCp8fPwhotwalpzVOmXG6b8
+X-Google-Smtp-Source: AGHT+IGms+9J52ItwC0Q1fibulOToekNFjB1LtC8gWLhv2tfIFaTHRXx5yvPz7DRNlYD16Fo5QwFQVOsrOYta/M/ozVCd3J8UDn3
 MIME-Version: 1.0
-References: <20230915093649.435163-1-anshuman.khandual@arm.com>
- <20230915093649.435163-2-anshuman.khandual@arm.com> <3cd57606-5a82-8978-b057-8b3cfea8c62d@arm.com>
- <ca5728fb-87fb-0088-4769-3087060182e2@arm.com>
-In-Reply-To: <ca5728fb-87fb-0088-4769-3087060182e2@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Wed, 20 Sep 2023 09:49:35 +0100
-Message-ID: <CAJ9a7VhyKjLtRfg09GWKs5k0QfQK7mix8H8MB5ObF5ADB=RC-w@mail.gmail.com>
-Subject: Re: [PATCH V5 - RESEND 1/3] coresight: etm: Override TRCIDR3.CCITMIN
- on errata affected cpus
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6808:219d:b0:3a4:1e93:8988 with SMTP id
+ be29-20020a056808219d00b003a41e938988mr911332oib.10.1695199775087; Wed, 20
+ Sep 2023 01:49:35 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 01:49:35 -0700
+In-Reply-To: <00000000000044b47605ee8544b2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006aed130605c67464@google.com>
+Subject: Re: [syzbot] kernel BUG in __ext4_journal_stop
+From:   syzbot <syzbot+bdab24d5bf96d57c50b0@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, joneslee@google.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nogikh@google.com, syzkaller-android-bugs@googlegroups.com,
+        syzkaller-bugs@googlegroups.com, tudor.ambarus@linaro.org,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 07:40, Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
->
->
->
-> On 9/19/23 16:56, Suzuki K Poulose wrote:
-> > Hi Anshuman
-> >
-> > On 15/09/2023 10:36, Anshuman Khandual wrote:
-> >> This work arounds errata 1490853 on Cortex-A76, and Neoverse-N1, errata
-> >> 1491015 on Cortex-A77, errata 1502854 on Cortex-X1, and errata 1619801 on
-> >> Neoverse-V1, based affected cpus, where software read for TRCIDR3.CCITMIN
-> >> field in ETM gets an wrong value.
-> >>
-> >> If software uses the value returned by the TRCIDR3.CCITMIN register field,
-> >> then it will limit the range which could be used for programming the ETM.
-> >> In reality, the ETM could be programmed with a much smaller value than what
-> >> is indicated by the TRCIDR3.CCITMIN field and still function correctly.
-> >>
-> >> If software reads the TRCIDR3.CCITMIN register field, corresponding to the
-> >> instruction trace counting minimum threshold, observe the value 0x100 or a
-> >> minimum cycle count threshold of 256. The correct value should be 0x4 or a
-> >> minimum cycle count threshold of 4.
-> >>
-> >> This work arounds the problem via storing 4 in drvdata->ccitmin on affected
-> >> systems where the TRCIDR3.CCITMIN has been 256, thus preserving cycle count
-> >> threshold granularity.
-> >>
-> >
-> > The patch looks good to me, please find a minor change below.
-> >
-> >> These errata information has been updated in arch/arm64/silicon-errata.rst,
-> >> but without their corresponding configs because these have been implemented
-> >> directly in the driver.
-> >>
-> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >> Cc: Will Deacon <will@kernel.org>
-> >> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >> Cc: Mike Leach <mike.leach@linaro.org>
-> >> Cc: James Clark <james.clark@arm.com>
-> >> Cc: Jonathan Corbet <corbet@lwn.net>
-> >> Cc: linux-doc@vger.kernel.org
-> >> Cc: coresight@lists.linaro.org
-> >> Cc: linux-arm-kernel@lists.infradead.org
-> >> Cc: linux-kernel@vger.kernel.org
-> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> >> ---
-> >>   Documentation/arch/arm64/silicon-errata.rst   | 10 ++++++
-> >>   .../coresight/coresight-etm4x-core.c          | 36 +++++++++++++++++++
-> >>   2 files changed, 46 insertions(+)
-> >>
-> >> diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
-> >> index e96f057ea2a0..8f1be5da68b7 100644
-> >> --- a/Documentation/arch/arm64/silicon-errata.rst
-> >> +++ b/Documentation/arch/arm64/silicon-errata.rst
-> >> @@ -115,6 +115,10 @@ stable kernels.
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Cortex-A76      | #1463225        | ARM64_ERRATUM_1463225       |
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >> +| ARM            | Cortex-A76      | #1490853        | N/A                         |
-> >> ++----------------+-----------------+-----------------+-----------------------------+
-> >> +| ARM            | Cortex-A77      | #1491015        | N/A                         |
-> >> ++----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Cortex-A77      | #1508412        | ARM64_ERRATUM_1508412       |
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
-> >> @@ -125,6 +129,8 @@ stable kernels.
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Cortex-A715     | #2645198        | ARM64_ERRATUM_2645198       |
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >> +| ARM            | Cortex-X1       | #1502854        | N/A                         |
-> >> ++----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Cortex-X2       | #2119858        | ARM64_ERRATUM_2119858       |
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Cortex-X2       | #2224489        | ARM64_ERRATUM_2224489       |
-> >> @@ -133,6 +139,8 @@ stable kernels.
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Neoverse-N1     | #1349291        | N/A                         |
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >> +| ARM            | Neoverse-N1     | #1490853        | N/A                         |
-> >> ++----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Neoverse-N1     | #1542419        | ARM64_ERRATUM_1542419       |
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
-> >> @@ -141,6 +149,8 @@ stable kernels.
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | Neoverse-N2     | #2253138        | ARM64_ERRATUM_2253138       |
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >> +| ARM            | Neoverse-V1     | #1619801        | N/A                         |
-> >> ++----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | MMU-500         | #841119,826419  | N/A                         |
-> >>   +----------------+-----------------+-----------------+-----------------------------+
-> >>   | ARM            | MMU-600         | #1076982,1209401| N/A                         |
-> >> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >> index 77b0271ce6eb..c01455bb1caf 100644
-> >> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >> @@ -1150,6 +1150,39 @@ static void cpu_detect_trace_filtering(struct etmv4_drvdata *drvdata)
-> >>       drvdata->trfcr = trfcr;
-> >>   }
-> >>   +/*
-> >> + * The following errata on applicable cpu ranges, affect the CCITMIN filed
-> >> + * in TCRIDR3 register. Software read for the field returns 0x100 limiting
-> >> + * the cycle threshold granularity, whereas the right value should have
-> >> + * been 0x4, which is well supported in the hardware.
-> >> + */
-> >> +static struct midr_range etm_wrong_ccitmin_cpus[] = {
-> >> +    /* Erratum #1490853 - Cortex-A76 */
-> >> +    MIDR_RANGE(MIDR_CORTEX_A76, 0, 0, 4, 0),
-> >> +    /* Erratum #1490853 - Neoverse-N1 */
-> >> +    MIDR_RANGE(MIDR_NEOVERSE_N1, 0, 0, 4, 0),
-> >> +    /* Erratum #1491015 - Cortex-A77 */
-> >> +    MIDR_RANGE(MIDR_CORTEX_A77, 0, 0, 1, 0),
-> >> +    /* Erratum #1502854 - Cortex-X1 */
-> >> +    MIDR_REV(MIDR_CORTEX_X1, 0, 0),
-> >> +    /* Erratum #1619801 - Neoverse-V1 */
-> >> +    MIDR_REV(MIDR_NEOVERSE_V1, 0, 0),
-> >> +    {},
-> >> +};
-> >> +
-> >> +static bool etm4_core_reads_wrong_ccitmin(struct etmv4_drvdata *drvdata)
-> >> +{
-> >> +    /*
-> >> +     * Erratum affected cpus will read 256 as the minimum
-> >> +     * instruction trace cycle counting threshold whereas
-> >> +     * the correct value should be 4 instead. Override the
-> >> +     * recorded value for 'drvdata->ccitmin' to workaround
-> >> +     * this problem.
-> >> +     */
-> >> +    return is_midr_in_range_list(read_cpuid_id(), etm_wrong_ccitmin_cpus) &&
-> >> +           (drvdata->ccitmin == 256);
-> >
-> > minor nit: Having looked at this, it feels like, fixing the ccitmin
-> > value to 4, could be moved into this function. Otherwise,  we have all
-> > the required information about the erratum and the real application of
-> > work around is left in the caller, which kind of feels disconnected.
-> >
-> > So, please could we rename the above function to:
-> >
-> > static void etm4_fixup_wrong_ccitmin(str..)
-> > {
-> >   /* Comment as above */
-> >    if (....)
-> >     drvdata->ccitmin = 4;
-> > }
->
-> I will fold in the following change for the patch. Please do let me
-> know if this reflects your suggestions accurately. Also planning to
-> carry Mike's tag after the change.
->
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 044aed25979b..5b6a878a2ac5 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1175,7 +1175,7 @@ static struct midr_range etm_wrong_ccitmin_cpus[] = {
->         {},
->  };
->
-> -static bool etm4_core_reads_wrong_ccitmin(struct etmv4_drvdata *drvdata)
-> +static void etm4_fixup_wrong_ccitmin(struct etmv4_drvdata *drvdata)
->  {
->         /*
->          * Erratum affected cpus will read 256 as the minimum
-> @@ -1184,8 +1184,10 @@ static bool etm4_core_reads_wrong_ccitmin(struct etmv4_drvdata *drvdata)
->          * recorded value for 'drvdata->ccitmin' to workaround
->          * this problem.
->          */
-> -       return is_midr_in_range_list(read_cpuid_id(), etm_wrong_ccitmin_cpus) &&
-> -              (drvdata->ccitmin == 256);
-> +       if (is_midr_in_range_list(read_cpuid_id(), etm_wrong_ccitmin_cpus)) {
-> +               if (drvdata->ccitmin == 256)
-> +                       drvdata->ccitmin = 4;
-> +       }
->  }
->
-Looks good to me
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-Mike
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
->  static void etm4_init_arch_data(void *info)
-> @@ -1252,8 +1254,7 @@ static void etm4_init_arch_data(void *info)
->         etmidr3 = etm4x_relaxed_read32(csa, TRCIDR3);
->         /* CCITMIN, bits[11:0] minimum threshold value that can be programmed */
->         drvdata->ccitmin = FIELD_GET(TRCIDR3_CCITMIN_MASK, etmidr3);
-> -       if (etm4_core_reads_wrong_ccitmin(drvdata))
-> -               drvdata->ccitmin = 4;
-> +       etm4_fixup_wrong_ccitmin(drvdata);
->
->         /* EXLEVEL_S, bits[19:16] Secure state instruction tracing */
->         drvdata->s_ex_level = FIELD_GET(TRCIDR3_EXLEVEL_S_MASK, etmidr3);
->
+#syz fix: exact-commit-title
 
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=bdab24d5bf96d57c50b0
+
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
