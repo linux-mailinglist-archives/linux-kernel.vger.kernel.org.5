@@ -2,334 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9697A893A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CE87A893D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235580AbjITQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50658 "EHLO
+        id S236442AbjITQEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbjITQEe (ORCPT
+        with ESMTP id S234961AbjITQEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Sep 2023 12:04:34 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C28C9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:04:27 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38K4psDO005790;
-        Wed, 20 Sep 2023 11:04:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=v
-        Ofg11fsgJwJA7H/TF/i8UwyCz43iFeG9yWXJNApa6k=; b=KWz4o9p7MZ3AQn7vI
-        FC6ox1p7EiMIoioJpdCVSjsuIMzESwK19KpnP2nhvB4+iJebQ7tvB74WWuac0TVY
-        jGXBv+jVHi5IeYqmosiXx65NTtaqAZwY3y9jt+75vriq2LuEHOJOeMEPpr2lIcIF
-        DciTNIMYByhSpbDvPpKmyoWRuFLEyyHVESc4ol5rphqJG7ujBWFiHwpqSspCekaU
-        MFfjA4X0SdHpaySjrNbiyLoHt0E+8ktOPDj/isTr7RNAzX8y66cltOFNP6IoC6hW
-        IF7hiRuhtgQqqmfy7SLo0HwcUXXIia2CIGui+VLSj1r4tJYEHPSSmGfqToycPwxk
-        7A7kw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry5r5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 11:04:04 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 20 Sep
- 2023 17:04:01 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Wed, 20 Sep 2023 17:04:01 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AEBFA15B9;
-        Wed, 20 Sep 2023 16:04:01 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <vkoul@kernel.org>
-CC:     <yung-chuan.liao@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        <rdunlap@infradead.org>
-Subject: [PATCH v2] soundwire: bus: Make IRQ handling conditionally built
-Date:   Wed, 20 Sep 2023 17:04:01 +0100
-Message-ID: <20230920160401.854052-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2060.outbound.protection.outlook.com [40.107.93.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C41CB9;
+        Wed, 20 Sep 2023 09:04:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QIARuCGABWNvxkVyGd+1ksy9c3PZc4EcSO3HPOAozDYUwjJpxHJSmzs4RswmHRLpHnSw/e5DGRBhuQD15eHaqkDE10gGk1gTkpgt2Ge88gSv9EEh6mqIee4XpWGpMIwgZ06msv6aUEo2x/nN77fsgOfOXBKdJm9dqbSvTPSaeYquvUcFRlY4jZC2mAESJF8Alh4NB8cxKn1RZaEC1oBuRjSmumRAofE1MfB4u23K1wLjsAvsP+TBgxWP8JoXWf1Xxer1MCZ0NK3hFNLqqGqikPA+oK8VqW2NMMq//+rTTpSXU0dAXvVDGFlLQAv/wdA+bnCBxKDn4SnIthPABXr5QA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dbHWXoGiEvc70TXCCHmYfomlEXfG+J/7xwnBUkptj2U=;
+ b=eOcU/L3raPW8B84Xt2gPdgEQd6HDijM5J24Kag7C7iFk2ZxRpTZg2c0tzJf2xXG31Ry7xbefwOpAhcMafebeOQ3XJCJbZOUnAR544cXudh7YDGkKrrzJ+17Ea1QOm2rF31Q5uT7MjRohXzq8zERAiurRejkl7GgiAJo/GkjzCqFXicakYjV500/7TU0sW0I3RGRI8iFuKSvKvHQLw4dYelbJhaXn/9fvT1rF8AEIjPErLwV7T+iwocqXtGG6bp6HH4SagOCivpJu/Twv9Wjoq/8lGMNS1+GFZDqHxyi8+9rkF3oMexjCTyqabojCG5Zm/HfgSZzQSppsvpb1lG3nlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dbHWXoGiEvc70TXCCHmYfomlEXfG+J/7xwnBUkptj2U=;
+ b=bngCi2gtrxiikIrBTT521jlVVSH39LEK/1B/bNIeCJj2tXeNNBtXequHopEj0e/jGU+xBwCKyg9ntKVTxuLcrRDT5i8byG9ZE61x07rLkJYRs9KW8XSD2ZiHD7FVS3c2p7oDpG37YTKsn4Jdn6mZC4QUOiScfG/HEhJ2fCsb28Pnl5BdxH5TZCvCXvMAgqTtNaB8I+MFtyNF0xmj6g3F9Hsmab4OfAZKh+ItcxjZ4z1Vs7tsNNFyBNnVaAiGVtxxCb+hn6hk9oKhO89EQUmAR2X9c8CgYavIrV6OSQ8KdOlQ2c7OZNlxLuKtpD8+779yahUGfI62xiYJ5Zw0Y/ofkQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DS0PR12MB6534.namprd12.prod.outlook.com (2603:10b6:8:c1::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
+ 2023 16:04:25 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
+ 16:04:25 +0000
+Date:   Wed, 20 Sep 2023 13:04:24 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     ankita@nvidia.com, alex.williamson@redhat.com, tony.luck@intel.com,
+        bp@alien8.de, naoya.horiguchi@nec.com, linmiaohe@huawei.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        anuaggarwal@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-edac@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v1 0/4] mm: Implement ECC handling for pfn with no struct
+ page
+Message-ID: <20230920160424.GD13733@nvidia.com>
+References: <20230920140210.12663-1-ankita@nvidia.com>
+ <20230920090222.580f2b3ca43f21f752c10e0a@linux-foundation.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920090222.580f2b3ca43f21f752c10e0a@linux-foundation.org>
+X-ClientProxiedBy: YT3PR01CA0009.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:86::21) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: M4n4pgAYGMfAojS8_eM0tFDE50aHQM_u
-X-Proofpoint-ORIG-GUID: M4n4pgAYGMfAojS8_eM0tFDE50aHQM_u
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB6534:EE_
+X-MS-Office365-Filtering-Correlation-Id: 29c043b6-a8e2-4996-f407-08dbb9f342e0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Oxost35uNTEuHw4fR60NSN3i9CLNMcgyPfGUtqf8odI3YR2R0gJ/QS4FcvPHZquXBkqCbEwmik8/yDlktAyFtniz0DhtOIVG8P2suMh3ZwzFtNpu26FwfPiNfEAtZRtyMDy0IhGOc9pOEINpUv4MJTdzU2rmoVDTCNEypOcVPYER51aNQ966ghPMZL/t6MzYI6QEWDVRY7+xD38Bs3DAryOQLOvYG3wcEeQYesuI/dt2IcKbUnO2cdynaaWfuNDS01ngiuR3E8zNqGiTO4tFNQ/g2W2Yh5gwKEsrmdMjVucAfuS+vPZkB5TSIf7Ls8E4b0VpRbtFL6NUhnBLv/thBeGDMold5Igu4V4cTwwuKAR5wNrXHqKG2mrvr6JpHICvchkd1qh1ifdwfAmTGRhWV6yCZ1n5zvCCXfiyKvDN2w+1ahAUfky8499WREG0B7mVTJrEgORGtOcJsE+LJywMdeAzKPUYSQSR2qiQ2vF87g6k64m6Y4egPFnI/pJXut4qWlbGypJOIi7iMWcJk8u7sFMYO02d4Mqj1etcxqq7ifXhAd9eOMwVakPK7C8CB0yN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(376002)(39860400002)(186009)(1800799009)(451199024)(316002)(6916009)(66556008)(66946007)(86362001)(66476007)(33656002)(4744005)(38100700002)(2906002)(41300700001)(36756003)(7416002)(5660300002)(478600001)(6506007)(6486002)(6512007)(4326008)(8936002)(8676002)(1076003)(26005)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/V1RtyOCfrl0II6mlFjL/kQc81jyuodS9JTh0RBiWNOSMfaI30qwZNM9iliH?=
+ =?us-ascii?Q?uJLsWdvpBcjo4qpgb9DtfKqw0lKWLceqKPd3pubRv2ZC/Acfb1GpvdYotXBJ?=
+ =?us-ascii?Q?autLCvhs+VCQ6WYYA+D5iBTe0g5Kcbjqmz5RkGNnU2ngJVQhIoRc9RFdl4Bs?=
+ =?us-ascii?Q?KdFIcQKkk8OtaPcSCDrjRaI6WL6b2hA/rfqxPSC+MovAjUKCzqlp/NpfdTwM?=
+ =?us-ascii?Q?CP1cky0/KqPBsQSDETwDWzQbhAats9cxAyqkHriA/shKxUAkKduo58o7Br/Y?=
+ =?us-ascii?Q?99gaZKfEQZOJqIeSVMrYLxFdL6CjyT3GCRAtPbtPX6PgWBvUrI+MfrLdVwVu?=
+ =?us-ascii?Q?rTwHFcln57CQTXNIe7XikObI6nlXl1+VdPaPXzlT01CSePn8SpFWujAE56w1?=
+ =?us-ascii?Q?Av5bZ0q3VJpbKG39GyZyatJfDNHSaKNrV6IMrwrLsT9rNIbKoSVqkb6Y6Y+2?=
+ =?us-ascii?Q?EskyVD5cR/UhAqGfWo9PVNAfuUJtGC3mnLDNYC7hPf6FeDQB6U2JV0u6BXtP?=
+ =?us-ascii?Q?z8YKC7n2+XSy1RIDMPRh7y1UIFfXAA3iHUoVSZPleO5zHaxYiLNe7xFFHcCt?=
+ =?us-ascii?Q?z5H2B7ezuIGMJby7B6GRQrY6zPUMF60C4hrrJ+yUwddYvwVO7bFFl4MyiEC8?=
+ =?us-ascii?Q?mtT7If+MWYGdEG0Fo7K3sq34ujNEpz2gzJFy73qsI4difaFk3C3QNfer+VWP?=
+ =?us-ascii?Q?7iChbh+/NWAYYcHnnAYUMWNAu0cOyCg9+FhmbmlIWR2v9TvMpx7knLoned9i?=
+ =?us-ascii?Q?AlfR5GV9X1AGXvDUzbkQiQwa1hIht8JZQWQrtO0Fhj8IEiqCrmUBLAvZvlqU?=
+ =?us-ascii?Q?VT5+sPa5X+B81YsXn5LhO/Gy6+OEHnCd2JzoVnuutnzmFGdYviCnGEcLQPuq?=
+ =?us-ascii?Q?KnLjpZedrD4Jq1PemaQdYWpEMdiktuwNXkeOrvXLxK/MdpIvn+Xc8MekZfpE?=
+ =?us-ascii?Q?l8k+B6cPzUZXSdhh6ArVgDt2kACejMTzVkyY6baWVlLu5Qi8Z5lsBr1CZ6ty?=
+ =?us-ascii?Q?ttPdbP3is3hkT8kiyds7BwssdbC100OYdZnFxNFUVsHiGvkvXVHezyGwWkb2?=
+ =?us-ascii?Q?AltR/VYe6Pou5UKkD0ppuioe5tH4YIkMUK5IqvHZoD6zBrtuBuKT6LlDPWom?=
+ =?us-ascii?Q?7eXdqV8Q5cEvSmRsvXnckKQs2cSK74U8499d6ws9vcxElXRnyhSI4V8PU2/L?=
+ =?us-ascii?Q?4iYCFPLmfB170CoBp0qGgsCxQEq/4zsy9x+sWAhExKJ+saHyYLsfL16DqAnw?=
+ =?us-ascii?Q?BDsLNKgrlP/tcnoEOvK+3l4mzSGA0MgGaQpKPuMNKN+6HsRYR+V5GczzdUKS?=
+ =?us-ascii?Q?YCt2+kf0Idh+VNWfWs64lgkN6w8wHUBHj++zbFNHaEJCA4mCm6/FcdJPISVd?=
+ =?us-ascii?Q?uQBhtZHv1q3OphZjqy9XDLsGcY8pzCps2emghO/CwaP9Y3g0rozS19hJT1T+?=
+ =?us-ascii?Q?ndkTT+aRja8TLMFraE2WjtzORf0XVDdT9pRzoiXq2tHD6psGnPUvEcurLA/q?=
+ =?us-ascii?Q?S6RUk7aVryz9iGzJ5no7brhg6BomtCcon9cSaZdRhX8n6JNCU+wpy0CHiHal?=
+ =?us-ascii?Q?a6td3SOwC1rWUtLz7xf4SRnxfFdhM5HQ39VLyY2O?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29c043b6-a8e2-4996-f407-08dbb9f342e0
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 16:04:25.5152
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hDO0GrdqwbPOhGA8myyDqRsuPyUnpQp5B824jo41gEvUIlUx0zwOrOUOE1DpZ0N8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6534
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SoundWire has provisions for a simple callback for the IRQ handling so
-has no hard dependency on IRQ_DOMAIN, but the recent addition of IRQ
-handling was causing builds without IRQ_DOMAIN to fail. Resolve this by
-moving the IRQ handling into its own file and only add it to the build
-when IRQ_DOMAIN is included in the kernel.
+On Wed, Sep 20, 2023 at 09:02:22AM -0700, Andrew Morton wrote:
+> On Wed, 20 Sep 2023 19:32:06 +0530 <ankita@nvidia.com> wrote:
+> 
+> > The kernel MM currently handles ECC errors / poison only on memory page
+> > backed by struct page. As part of [1], the nvgrace-gpu-vfio-pci module
+> > maps the device memory to user VA (Qemu) using remap_pfn_range without
+> > being added to the kernel. These pages are not backed by struct page.
+> 
+> Are you able to identify any other drivers which can (or will) use
+> this?  Or is it likely that this feature will only ever be for
+> nvgrace-gpu-vfio-pci?
 
-Fixes: 12a95123bfe1 ("soundwire: bus: Allow SoundWire peripherals to register IRQ handlers")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309150522.MoKeF4jx-lkp@intel.com/
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
+I think a future vfio-cxl will have a similar desire at least.
 
-Changes since v1:
- - Change comments to /* */
-
-Thanks,
-Charles
-
- drivers/soundwire/Makefile   |  4 +++
- drivers/soundwire/bus.c      | 31 +++----------------
- drivers/soundwire/bus_type.c | 11 +++----
- drivers/soundwire/irq.c      | 59 ++++++++++++++++++++++++++++++++++++
- drivers/soundwire/irq.h      | 43 ++++++++++++++++++++++++++
- 5 files changed, 115 insertions(+), 33 deletions(-)
- create mode 100644 drivers/soundwire/irq.c
- create mode 100644 drivers/soundwire/irq.h
-
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index c3d3ab3262d3a..657f5888a77b0 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -15,6 +15,10 @@ ifdef CONFIG_DEBUG_FS
- soundwire-bus-y += debugfs.o
- endif
- 
-+ifdef CONFIG_IRQ_DOMAIN
-+soundwire-bus-y += irq.o
-+endif
-+
- #AMD driver
- soundwire-amd-y :=	amd_manager.o
- obj-$(CONFIG_SOUNDWIRE_AMD) += soundwire-amd.o
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 1720031f35a35..0e7bc3c40f9df 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -3,13 +3,13 @@
- 
- #include <linux/acpi.h>
- #include <linux/delay.h>
--#include <linux/irq.h>
- #include <linux/mod_devicetable.h>
- #include <linux/pm_runtime.h>
- #include <linux/soundwire/sdw_registers.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_type.h>
- #include "bus.h"
-+#include "irq.h"
- #include "sysfs_local.h"
- 
- static DEFINE_IDA(sdw_bus_ida);
-@@ -25,23 +25,6 @@ static int sdw_get_id(struct sdw_bus *bus)
- 	return 0;
- }
- 
--static int sdw_irq_map(struct irq_domain *h, unsigned int virq,
--		       irq_hw_number_t hw)
--{
--	struct sdw_bus *bus = h->host_data;
--
--	irq_set_chip_data(virq, bus);
--	irq_set_chip(virq, &bus->irq_chip);
--	irq_set_nested_thread(virq, 1);
--	irq_set_noprobe(virq);
--
--	return 0;
--}
--
--static const struct irq_domain_ops sdw_domain_ops = {
--	.map	= sdw_irq_map,
--};
--
- /**
-  * sdw_bus_master_add() - add a bus Master instance
-  * @bus: bus instance
-@@ -168,13 +151,9 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
- 	bus->params.curr_bank = SDW_BANK0;
- 	bus->params.next_bank = SDW_BANK1;
- 
--	bus->irq_chip.name = dev_name(bus->dev);
--	bus->domain = irq_domain_create_linear(fwnode, SDW_MAX_DEVICES,
--					       &sdw_domain_ops, bus);
--	if (!bus->domain) {
--		dev_err(bus->dev, "Failed to add IRQ domain\n");
--		return -EINVAL;
--	}
-+	ret = sdw_irq_create(bus, fwnode);
-+	if (ret)
-+		return ret;
- 
- 	return 0;
- }
-@@ -213,7 +192,7 @@ void sdw_bus_master_delete(struct sdw_bus *bus)
- {
- 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
- 
--	irq_domain_remove(bus->domain);
-+	sdw_irq_delete(bus);
- 
- 	sdw_master_device_del(bus);
- 
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index fafbc284e82da..9fa93bb923d70 100644
---- a/drivers/soundwire/bus_type.c
-+++ b/drivers/soundwire/bus_type.c
-@@ -7,6 +7,7 @@
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_type.h>
- #include "bus.h"
-+#include "irq.h"
- #include "sysfs_local.h"
- 
- /**
-@@ -122,11 +123,8 @@ static int sdw_drv_probe(struct device *dev)
- 	if (drv->ops && drv->ops->read_prop)
- 		drv->ops->read_prop(slave);
- 
--	if (slave->prop.use_domain_irq) {
--		slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
--		if (!slave->irq)
--			dev_warn(dev, "Failed to map IRQ\n");
--	}
-+	if (slave->prop.use_domain_irq)
-+		sdw_irq_create_mapping(slave);
- 
- 	/* init the sysfs as we have properties now */
- 	ret = sdw_slave_sysfs_init(slave);
-@@ -176,8 +174,7 @@ static int sdw_drv_remove(struct device *dev)
- 	slave->probed = false;
- 
- 	if (slave->prop.use_domain_irq)
--		irq_dispose_mapping(irq_find_mapping(slave->bus->domain,
--						     slave->dev_num));
-+		sdw_irq_dispose_mapping(slave);
- 
- 	mutex_unlock(&slave->sdw_dev_lock);
- 
-diff --git a/drivers/soundwire/irq.c b/drivers/soundwire/irq.c
-new file mode 100644
-index 0000000000000..0c08cebb1235c
---- /dev/null
-+++ b/drivers/soundwire/irq.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2023 Cirrus Logic, Inc. and
-+//                    Cirrus Logic International Semiconductor Ltd.
-+
-+#include <linux/device.h>
-+#include <linux/fwnode.h>
-+#include <linux/irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/soundwire/sdw.h>
-+#include "irq.h"
-+
-+static int sdw_irq_map(struct irq_domain *h, unsigned int virq,
-+		       irq_hw_number_t hw)
-+{
-+	struct sdw_bus *bus = h->host_data;
-+
-+	irq_set_chip_data(virq, bus);
-+	irq_set_chip(virq, &bus->irq_chip);
-+	irq_set_nested_thread(virq, 1);
-+	irq_set_noprobe(virq);
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops sdw_domain_ops = {
-+	.map	= sdw_irq_map,
-+};
-+
-+int sdw_irq_create(struct sdw_bus *bus,
-+		   struct fwnode_handle *fwnode)
-+{
-+	bus->irq_chip.name = dev_name(bus->dev);
-+
-+	bus->domain = irq_domain_create_linear(fwnode, SDW_MAX_DEVICES,
-+					       &sdw_domain_ops, bus);
-+	if (!bus->domain) {
-+		dev_err(bus->dev, "Failed to add IRQ domain\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+void sdw_irq_delete(struct sdw_bus *bus)
-+{
-+	irq_domain_remove(bus->domain);
-+}
-+
-+void sdw_irq_create_mapping(struct sdw_slave *slave)
-+{
-+	slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
-+	if (!slave->irq)
-+		dev_warn(&slave->dev, "Failed to map IRQ\n");
-+}
-+
-+void sdw_irq_dispose_mapping(struct sdw_slave *slave)
-+{
-+	irq_dispose_mapping(irq_find_mapping(slave->bus->domain, slave->dev_num));
-+}
-diff --git a/drivers/soundwire/irq.h b/drivers/soundwire/irq.h
-new file mode 100644
-index 0000000000000..58a58046d92b8
---- /dev/null
-+++ b/drivers/soundwire/irq.h
-@@ -0,0 +1,43 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Cirrus Logic, Inc. and
-+ *                    Cirrus Logic International Semiconductor Ltd.
-+ */
-+
-+#ifndef __SDW_IRQ_H
-+#define __SDW_IRQ_H
-+
-+#include <linux/soundwire/sdw.h>
-+#include <linux/fwnode.h>
-+
-+#if IS_ENABLED(CONFIG_IRQ_DOMAIN)
-+
-+int sdw_irq_create(struct sdw_bus *bus,
-+		   struct fwnode_handle *fwnode);
-+void sdw_irq_delete(struct sdw_bus *bus);
-+void sdw_irq_create_mapping(struct sdw_slave *slave);
-+void sdw_irq_dispose_mapping(struct sdw_slave *slave);
-+
-+#else /* CONFIG_IRQ_DOMAIN */
-+
-+static inline int sdw_irq_create(struct sdw_bus *bus,
-+				 struct fwnode_handle *fwnode)
-+{
-+	return 0;
-+}
-+
-+static inline void sdw_irq_delete(struct sdw_bus *bus)
-+{
-+}
-+
-+static inline void sdw_irq_create_mapping(struct sdw_slave *slave)
-+{
-+}
-+
-+static inline void sdw_irq_dispose_mapping(struct sdw_slave *slave)
-+{
-+}
-+
-+#endif /* CONFIG_IRQ_DOMAIN */
-+
-+#endif /* __SDW_IRQ_H */
--- 
-2.39.2
-
+Jason
