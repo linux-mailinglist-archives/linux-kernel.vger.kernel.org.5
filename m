@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A6D7A8D40
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECAF7A8D42
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjITT5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S229804AbjITT5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjITT5f (ORCPT
+        with ESMTP id S229495AbjITT5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:57:35 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F843D6;
-        Wed, 20 Sep 2023 12:57:29 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-502a4f33440so464244e87.1;
-        Wed, 20 Sep 2023 12:57:29 -0700 (PDT)
+        Wed, 20 Sep 2023 15:57:42 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E55AB;
+        Wed, 20 Sep 2023 12:57:32 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcb50e194dso2754671fa.3;
+        Wed, 20 Sep 2023 12:57:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695239847; x=1695844647; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bKDIR6G5AYRbAL3MwUKTNni8G8jkvUYyxekLscAaADg=;
-        b=PFRKCMag+c6+mQBOmiBwWFWXBTX5Yy2aNnqGVNddTybqD8NEXBkQVigSgSeLGWY4LQ
-         oGJ7ueC5dT8SkbrGI85bMFp9EyFOFpRdlLGm44IM5nI2FjOpyOdpdS3w9OFrCr91oZjl
-         u8aZwReeWA5phG8+7qB1F81LCCpzmXF76GT0j3uwNY2sK/y3u1HteicXooMh2naw2696
-         JjbioCdMHxGgrebd0KvXYbtV7fhaJG8bd5pZ2Tl1ajFM7DcwvveVX3YH3s14Zk1lpc/P
-         9Iv03GisqjJQgzvtHi0KKpAwDMGYgsNXExRllL40iSmJl5TeSmew8FsR6iCO297ZmD8T
-         hnSQ==
+        d=gmail.com; s=20230601; t=1695239850; x=1695844650; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jH5/i0fBYTGbVf7HMN5Ff/WeloccWe2hg/tj/I2fUhw=;
+        b=Uq22OAGhqRcEycrmEt6+enuC4rjzyCVkxF8yKcKqJagzzH7RWdywYjpMRxEYro8oRd
+         lFV/vKoZneuwJWzJdeOCp0Blj2KK9EkCSW4h0mzQMpBCDpWcay+vx3laMAhm6YrhU1lE
+         j9b/EgCfn8GUJ/5l0KaqXdnXN2+1W/sBO4amYnDaMZ1FakNf4++cgNRfCVB5CVJOb7Dx
+         rHaWU1AYgiTbNLlT6gOZ3j8+2Q/BoeMpMrVaqRZ6FOXBh2DApqpew4qYXxtRtwrumqA+
+         ++BRH+qWHjrK5Edr+hQKcliB3+lrHvBYZJ6R4hkitkIw/5OCagHxVs08H55l9ob9QWiH
+         dmZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695239847; x=1695844647;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bKDIR6G5AYRbAL3MwUKTNni8G8jkvUYyxekLscAaADg=;
-        b=JK1uCpGwYZKZFwg07/5nP1OfDn2ZYcuG1lClkLjjK/v3uyx3fNcR00qhZZQVnX4Ym7
-         IY6EC+bOP71rs+M/HlQwm3rmkB9cgXhlajgxH2ptdm1Pk/WhdnBA8mCI8689AX4i2eRh
-         Y+ZDOphyOIdjv+c2MDFxWYI7WxOu9ZzLx3Ao2P0FQMyAd9LqNtbeZqCPOGvWPnh7R03N
-         sD/zqVgNF+WlP6Yme7jzqvGzoaF0hb6iIvClagrXUYjkmaBomkxz6EAhq4RmM2EPLaE7
-         rteb3uD0ATgMEz/M3U6U/hTonOBlt5QFlgKlh85w49XJzkrfLIr84f/T4T4eTayS7xYJ
-         TiEQ==
-X-Gm-Message-State: AOJu0Yz4M8pAcj5vaL6+s9LZA66TcTvxXtJEBGckAh3WjKC9f+4GGMAl
-        9hjtTb3/OVgialZ2+f5MHRM=
-X-Google-Smtp-Source: AGHT+IGhI+lDUY/uLLOp6V/114v+B9NN5IhbHDxcNJIb0D1yso3plt/Tt5Lcg0nfkuulD9FWd9fk6w==
-X-Received: by 2002:a05:6512:104f:b0:503:2924:f8dd with SMTP id c15-20020a056512104f00b005032924f8ddmr4186642lfb.47.1695239847098;
-        Wed, 20 Sep 2023 12:57:27 -0700 (PDT)
-Received: from localhost ([85.26.234.143])
-        by smtp.gmail.com with ESMTPSA id l18-20020ac24312000000b004fa52552c7csm2788079lfh.151.2023.09.20.12.57.26
+        d=1e100.net; s=20230601; t=1695239850; x=1695844650;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jH5/i0fBYTGbVf7HMN5Ff/WeloccWe2hg/tj/I2fUhw=;
+        b=JOyp44j5PmnX5YGH/CitSOvzjntewZrWXineZq1bMriFvPGOoUu1ZZe8po6WniA8ts
+         kQYl+NV8V+zNuSiL2wORF39tyK75SwXBg3KjML0s8+MX2WzDQ9YgJTqv5xHZteMVnJmV
+         zEHHxEu17JH3TddhUKf7ytlNPDQWlx7XOpVDHKgF3ien5yT4vfosR53sXt9sEUQI+5nX
+         KBNgHH9bl2ca7s6af89G4TzsTdNGLHL8pKCfsbuqijZpGCGOdPPOk0S1yFI/WHOdlrpz
+         qIAtVIXuB57XbjpzmZ3/Hjm3mxVU3vUyYUS1UnQX6Gb1eSJ44PdVtMMLZUMnbE090p6a
+         7/lw==
+X-Gm-Message-State: AOJu0YwtES5NeJrPXGLbEyPZ7hUaCvLsm4q45gvl3NDNROtpLPmAfOCJ
+        oop0MBP8yaDREwFHk3yK4Ww=
+X-Google-Smtp-Source: AGHT+IFzH++l2jpm7pegKlKpDJsv+54jftKDNT9JdrwOv9zHkESy0z9L5WvYlTizinZRa16Imnfx2g==
+X-Received: by 2002:a19:8c4f:0:b0:503:19d8:8dc3 with SMTP id i15-20020a198c4f000000b0050319d88dc3mr2753220lfj.31.1695239850052;
+        Wed, 20 Sep 2023 12:57:30 -0700 (PDT)
+Received: from localhost ([178.176.85.138])
+        by smtp.gmail.com with ESMTPSA id a14-20020a19f80e000000b00504296f067esm11659lff.233.2023.09.20.12.57.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:57:26 -0700 (PDT)
+        Wed, 20 Sep 2023 12:57:29 -0700 (PDT)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Michal Simek <michal.simek@amd.com>,
         Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -58,161 +59,225 @@ To:     Michal Simek <michal.simek@amd.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Robert Richter <rric@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manish Narani <manish.narani@xilinx.com>
 Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Punnaiah Choudary Kalluri 
         <punnaiah.choudary.kalluri@xilinx.com>,
         Dinh Nguyen <dinguyen@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 00/13] EDAC/synopsys: Add generic resources and Scrub support
-Date:   Wed, 20 Sep 2023 22:56:31 +0300
-Message-ID: <20230920195720.32047-1-fancer.lancer@gmail.com>
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v4 01/13] dt-bindings: memory: snps: Convert the schema to being generic
+Date:   Wed, 20 Sep 2023 22:56:32 +0300
+Message-ID: <20230920195720.32047-2-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230920195720.32047-1-fancer.lancer@gmail.com>
+References: <20230920195720.32047-1-fancer.lancer@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset is a third one in the series created in the framework of
-my Synopsys DW uMCTL2 DDRC-related work:
+At the current state the DW uMCTL2 DDRC DT-schema can't be used as the
+common one for all the IP-core-based devices due to the compatible string
+property constraining the list of the supported device names. In order to
+fix that detach the common properties definition to the separate schema.
+The later will be used by the vendor-specific controller versions to
+preserve the DT-bindings convention defined for the DW uMCTL2 DDR
+controller. Thus the generic DW uMCTL2 DDRC DT-bindings will be left with
+the compatible property definition only and will just refer to the
+detached common DT-schema.
 
-[1: In-progress v4] EDAC/mc/synopsys: Various fixes and cleanups
-Link: https://lore.kernel.org/linux-edac/20230920191059.28395-1-fancer.lancer@gmail.com
-[2: In-progress v4] EDAC/synopsys: Add generic DDRC info and address mapping
-Link: https://lore.kernel.org/linux-edac/20230920192806.29960-1-fancer.lancer@gmail.com
-[3: In-progress v4] EDAC/synopsys: Add generic resources and Scrub support
-Link: ---you are looking at it---
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Note the patchsets above must be merged in the same order as they are
-placed in the list in order to prevent conflicts. Nothing prevents them
-from being reviewed synchronously though. Any tests are very welcome.
-Thanks in advance.
-
-This is a final patchset in the framework of my Synopsys DW uMCTL2 DDRC
-work, which completes the driver updates with the new functionality.
-
-The series starts from extending the Synopsys DW uMCTL2 DDRC DT-schema
-with the controller specific IRQs, clocks and resets properties. In
-addition the Baikal-T1 DDRC is added to the DT-bindings since it's
-based on the DW uMCTL2 DDRC v2.61a.
-
-After that the driver is finally altered to informing the MCI core with
-the detected SDRAM ranks and making sure the detected errors are reported
-to the corresponding rank. Then the DDRC capabilities are extended with
-optional Scrub functionality. It's indeed possible to have the DW uMCTL2
-controller with no HW-accelerated Scrub support (no RMW engine). In that
-case the MCI core is supposed to perform the erroneous location ECC update
-by means of the platform-specific scrub method.
-
-Then the error-injection functionality is fixed a bit. First since the
-driver now has the Sys<->SDRAM address translation infrastructure it can
-be utilized to convert the supplied poisonous system address to the SDRAM
-one. Thus there is no longer need in preserving the address in the device
-private data. Second a DebuFS node-based command to disable the
-error-injection feature is added (no idea why it hasn't been done in the
-first place).
-
-Afterwards a series of the IRQ-related patches goes. First introduce the
-individual DDRC event IRQs support in accordance with what has been added
-to the DT-bindings and what the native DW uMCTL2 DDR controller actually
-provides. Then aside to the ECC CE/UE errors detection, the DFI/SDRAM
-CRC/Parity errors report is added. It specifically useful for the DDR4
-memory which has dedicated ALARM_n signal, but can be still utilized in
-the framework of the older protocols if the device DFI-PHY calculates the
-HIF-interface signals parity. Third after adding the platform clock/resets
-request procedure introduce the HW-accelerated Scrubber support. Its
-performance can be tuned by means of the sdram_scrub_rate SysFS node and
-the Core clock rate. Note it is possible to one-time-run the Scrubber in
-the back-to-back mode so to perform a burst-like scan of the entire SDRAM
-memory.
-
-At the patchset closure he DW uMCTL2 DDRC kernel config is finally fixed
-to be available not only on the Xilinx, Intel and MXC platforms, but on
-anyone including the Baikal-T1 SoC which has the DW uMCTL2 DDRC v2.61a on
-board.
+---
 
 Changelog v2:
-- Replace "snps,ddrc-3.80a" compatible string with "snps,dw-umctl2-ddrc"
-  in the example.
-- Move unrelated changes in to the dedicated patches. (@Krzysztof)
-- Use the IRQ macros in the example. (@Krzysztof)
-- Add a new patch:
-[PATCH v2 01/15] dt-bindings: memory: snps: Replace opencoded numbers with macros
-  (@Krzysztof)
-- Add a new patch:
-[PATCH v2 03/15] dt-bindings: memory: snps: Convert the schema to being generic
-  (@Krzysztof)
-- Drop the PHY CSR region. (@Rob)
-- Move the Baikal-T1 DDRC bindings to the separate DT-schema.
+- This is a new patch created on v2 cycle of the patchset. (@Krzysztof)
 
 Changelog v3:
 - Create common DT-schema instead of using the generic device DT-bindings.
   (@Rob)
-- Drop the merged in patches:
-[PATCH v2 01/15] dt-bindings: memory: snps: Replace opencoded numbers with macros
-[PATCH v2 02/15] dt-bindings: memory: snps: Extend schema with IRQs/resets/clocks props
-  (@Krzysztof)
-
-Changelog v4:
-- Explicitly set snps_ddrc_info.dq_width for Baikal-T1 DDRC for better
-  maintainability.
-- Explicitly set sys_app_map.minsize to SZ_256M instead of using a helper
-  macro DDR_MIN_SARSIZE for Baikal-T1 DDRC.
-- Use div_u64() instead of do_div().
-- Use FIELD_MAX() instead of open-coding the bitwise shift to find
-  the max field value.
-- Fix inject_data_error string printing "Rank" word where "Col" is
-  supposed to be.
-- Rebase onto the kernel v6.6-rcX.
-
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-Cc: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: devicetree@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-edac@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
-Serge Semin (13):
-  dt-bindings: memory: snps: Convert the schema to being generic
-  dt-bindings: memory: Add BT1 DDRC DT-schema
-  EDAC/synopsys: Add multi-ranked memory support
-  EDAC/synopsys: Add optional ECC Scrub support
-  EDAC/synopsys: Drop ECC poison address from private data
-  EDAC/synopsys: Add data poisoning disable support
-  EDAC/synopsys: Split up ECC UE/CE IRQs handler
-  EDAC/synopsys: Add individual named ECC IRQs support
-  EDAC/synopsys: Add DFI alert_n IRQ support
-  EDAC/synopsys: Add reference clocks support
-  EDAC/synopsys: Add ECC Scrubber support
-  EDAC/synopsys: Drop vendor-specific arch dependency
-  EDAC/synopsys: Add BT1 DDRC support
-
- .../memory-controllers/baikal,bt1-ddrc.yaml   |  91 ++
- .../snps,dw-umctl2-common.yaml                |  75 ++
- .../snps,dw-umctl2-ddrc.yaml                  |  57 +-
- drivers/edac/Kconfig                          |   1 -
- drivers/edac/synopsys_edac.c                  | 950 ++++++++++++++----
- 5 files changed, 933 insertions(+), 241 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/baikal,bt1-ddrc.yaml
+---
+ .../snps,dw-umctl2-common.yaml                | 75 +++++++++++++++++++
+ .../snps,dw-umctl2-ddrc.yaml                  | 57 ++------------
+ 2 files changed, 81 insertions(+), 51 deletions(-)
  create mode 100644 Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-common.yaml
 
+diff --git a/Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-common.yaml b/Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-common.yaml
+new file mode 100644
+index 000000000000..115fe5e8339a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-common.yaml
+@@ -0,0 +1,75 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/memory-controllers/snps,dw-umctl2-common.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Synopsys DesignWare Universal Multi-Protocol Memory Controller
++
++maintainers:
++  - Krzysztof Kozlowski <krzk@kernel.org>
++  - Manish Narani <manish.narani@xilinx.com>
++  - Michal Simek <michal.simek@xilinx.com>
++
++description:
++  Synopsys DesignWare Enhanced uMCTL2 DDR Memory Controller is capable of
++  working with the memory devices supporting up to (LP)DDR4 protocol. It can
++  be equipped with SEC/DEC ECC feature if DRAM data bus width is either
++  16-bits or 32-bits or 64-bits wide.
++
++select: false
++
++properties:
++  interrupts:
++    description:
++      DW uMCTL2 DDRC IP-core provides individual IRQ signal for each event":"
++      ECC Corrected Error, ECC Uncorrected Error, ECC Address Protection,
++      Scrubber-Done signal, DFI Parity/CRC Error. Some platforms may have the
++      signals merged before they reach the IRQ controller or have some of them
++      absent in case if the corresponding feature is unavailable/disabled.
++    minItems: 1
++    maxItems: 5
++
++  interrupt-names:
++    minItems: 1
++    maxItems: 5
++    oneOf:
++      - description: Common ECC CE/UE/Scrubber/DFI Errors IRQ
++        items:
++          - const: ecc
++      - description: Individual ECC CE/UE/Scrubber/DFI Errors IRQs
++        items:
++          enum: [ ecc_ce, ecc_ue, ecc_ap, ecc_sbr, dfi_e ]
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    description:
++      A standard set of the clock sources contains CSRs bus clock, AXI-ports
++      reference clock, DDRC core clock, Scrubber standalone clock
++      (synchronous to the DDRC clock).
++    minItems: 1
++    maxItems: 4
++
++  clock-names:
++    minItems: 1
++    maxItems: 4
++    items:
++      enum: [ pclk, aclk, core, sbr ]
++
++  resets:
++    description:
++      Each clock domain can have separate reset signal.
++    minItems: 1
++    maxItems: 4
++
++  reset-names:
++    minItems: 1
++    maxItems: 4
++    items:
++      enum: [ prst, arst, core, sbr ]
++
++additionalProperties: true
++
++...
+diff --git a/Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-ddrc.yaml b/Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-ddrc.yaml
+index 87ff9ee098f5..80b25d2fa974 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-ddrc.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-ddrc.yaml
+@@ -20,6 +20,11 @@ description: |
+   controller. It has an optional SEC/DEC ECC support in 64- and 32-bits
+   bus width configurations.
+ 
++allOf:
++  - $ref: /schemas/memory-controllers/snps,dw-umctl2-common.yaml#
++
++# Please create a separate DT-schema for your DW uMCTL2 DDR controller
++# with more detailed properties definition.
+ properties:
+   compatible:
+     oneOf:
+@@ -31,62 +36,12 @@ properties:
+       - description: Xilinx ZynqMP DDR controller v2.40a
+         const: xlnx,zynqmp-ddrc-2.40a
+ 
+-  interrupts:
+-    description:
+-      DW uMCTL2 DDRC IP-core provides individual IRQ signal for each event":"
+-      ECC Corrected Error, ECC Uncorrected Error, ECC Address Protection,
+-      Scrubber-Done signal, DFI Parity/CRC Error. Some platforms may have the
+-      signals merged before they reach the IRQ controller or have some of them
+-      absent in case if the corresponding feature is unavailable/disabled.
+-    minItems: 1
+-    maxItems: 5
+-
+-  interrupt-names:
+-    minItems: 1
+-    maxItems: 5
+-    oneOf:
+-      - description: Common ECC CE/UE/Scrubber/DFI Errors IRQ
+-        items:
+-          - const: ecc
+-      - description: Individual ECC CE/UE/Scrubber/DFI Errors IRQs
+-        items:
+-          enum: [ ecc_ce, ecc_ue, ecc_ap, ecc_sbr, dfi_e ]
+-
+-  reg:
+-    maxItems: 1
+-
+-  clocks:
+-    description:
+-      A standard set of the clock sources contains CSRs bus clock, AXI-ports
+-      reference clock, DDRC core clock, Scrubber standalone clock
+-      (synchronous to the DDRC clock).
+-    minItems: 1
+-    maxItems: 4
+-
+-  clock-names:
+-    minItems: 1
+-    maxItems: 4
+-    items:
+-      enum: [ pclk, aclk, core, sbr ]
+-
+-  resets:
+-    description:
+-      Each clock domain can have separate reset signal.
+-    minItems: 1
+-    maxItems: 4
+-
+-  reset-names:
+-    minItems: 1
+-    maxItems: 4
+-    items:
+-      enum: [ prst, arst, core, sbr ]
+-
+ required:
+   - compatible
+   - reg
+   - interrupts
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
 -- 
 2.41.0
 
