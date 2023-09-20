@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5447A71BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87417A71BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbjITFA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 01:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
+        id S232098AbjITFDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 01:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjITFAx (ORCPT
+        with ESMTP id S230021AbjITFDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 01:00:53 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6A395
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:00:48 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-565e54cb93aso3778402a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:00:48 -0700 (PDT)
+        Wed, 20 Sep 2023 01:03:22 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9659F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:03:16 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32003aae100so297236f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695186047; x=1695790847; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R1RaaAojR4q7FCgZtVcWHvcAV0ec+aUWfHX+ZrBpzu8=;
-        b=MRjRKss4imNtiI5laH5iUWEC7J34fMcVCrQ97tLVs1HlxCEuPp02dA8bYSFuQgqQDl
-         BmFh/3ZoTchZ3isOixbbNkoIdnlrEJsP+v11Yl5xlRwf+yz6hGaxb9oHOr2uDPYx53C6
-         AREP8luqt1zSJ4wa+M8f4MJr+3XYphW28w0FQKxPmUGASnUPfDPDRdoTX1qS2DqV0MuX
-         BOwBS/WFpB7ZGYYOenvH0SDv/cI40HxJ9WsT+EkXqRjs+BU0EMogSsnQT2P9YSJNNJ7z
-         GJSMDJSXplTDkVKGvftGPoF0LVThbNdOd7A18rgc+3ZvBf0D6IoO1s7LEEom/r0zcrnQ
-         CHxA==
+        d=ventanamicro.com; s=google; t=1695186193; x=1695790993; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=c+3/wOOicjYC2xAjvdjrTiizxDM62+8wq1jD8pVAYJM=;
+        b=GVKCBrVy2HKF/bepzP0e/OjjmI4zNnEwEJizGC9dZQYT1hNZReL6LKFO3fc0OdJtQ5
+         cMfA++en6RbNBtGqQwM9iVbxKmDXLNmxwMa+SHZ7Y78D1LMQMp5+Ky+fQ0FVSex2VCqr
+         jEuh28Q7zr99fmUiATcyFgVYapcbuctgf5BELXbcCVAGwBYLHS/qZEu5QlHSUoz6Nypm
+         RgfxEq1mp2G/XUTamd5HPuvAdjHEKC18hmLSlf9CHOiIWfHICDO7PeF9KgIAu16klBrl
+         zU9A2v7QsiYYlVIb2+JpjVsJJD9qUCpm2BiZvQcESjyTGOwL07BmFadDWaKa7RA8YzE5
+         PQcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695186047; x=1695790847;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R1RaaAojR4q7FCgZtVcWHvcAV0ec+aUWfHX+ZrBpzu8=;
-        b=xCWseEzbMfJwYaEDNlSYo5CwDVfJ79E+3cPFyI5TnFHb/K1cEQHH1CasOPsHoRmft2
-         9faKz9QbavFUwsM3LSsIcb+HJx7/qXz4WyA5tdUTzThXmGy8S+iB1Z09xKP6Pjibfll3
-         pLCp9/Jnh3SyAVPOzQvVJF7HC1nPWywaLMmRheRDihk1Pbm8D2FmOwj1EjivE20ZhqbZ
-         ptJv02al4V+RolY5AkDGkWpwSWXfeQmxERT1A7gKl4cyQEy++Cpjqj+T7GS7vBKaGUmV
-         5JEJnB39QSaXX6nnortmYNUjh4SECjQgLbnTb3L511ZiEnk86hf8xKQrk4ckBnQX4pMJ
-         /j3g==
-X-Gm-Message-State: AOJu0YzXvwWRsLizNBIDJ7UTfWAqQUIerv8wvwM4KUbDkVa4xyVJ+yuO
-        z4VqIqXtW0Zus1nYc8oqZybTncrCi9SoziXnrxE=
-X-Google-Smtp-Source: AGHT+IGY27ppvSFjm8SPutNys0rT8KblVX6qGjRDOYicgz7TxrRMAo1Fa5l/p9FZUXB1KYNG8OCvWozmL6yLj2kUShk=
-X-Received: by 2002:a17:90b:3847:b0:276:7683:70f6 with SMTP id
- nl7-20020a17090b384700b00276768370f6mr1545464pjb.33.1695186047388; Tue, 19
- Sep 2023 22:00:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695186193; x=1695790993;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c+3/wOOicjYC2xAjvdjrTiizxDM62+8wq1jD8pVAYJM=;
+        b=LJcxNGBb0+3NAr3YreK9E99RZUL56kBTDSLfWzQf/Y88Qx6DkMfZXRbNjwOUrMTbuf
+         671P3K8JEf4aKCNp/k3ta7NrpqhpK7t0ho8GFsTAEQFGcyqmuD8lLfWdKYVd3rRr/dJv
+         9rG897tfXfTvQd1RX6nsX66+UQR72c9Yx3Yp5lcMULMKPfrKikxIIxjAXgoBA0ilJote
+         DGMJHjBFgE6hzSVxley5klQCam+YP9eSC3jhAIvyNLpFCw48I0egT6fZfCX91Dc1hl2J
+         bM9pL1YJScVGvxAXHBF059RETwq6d7LlRxpaYpU4H8FiusV6gy56jqulHLcCVX9iuqjY
+         9x/w==
+X-Gm-Message-State: AOJu0Yw8VX9Q8WsNFH5lM2lwmCWPMuelm72a9bKctKxmF8KNjvc8mIDG
+        VItB9GPIBiZjVOVP7Rna/AakzQ==
+X-Google-Smtp-Source: AGHT+IES2JCsdwAJKjskK6b48tRhcrGtknKDz0H9fUak3sptmBQ8p70dRsJQ4y4NQvgiGitKUcLV4A==
+X-Received: by 2002:adf:e6d1:0:b0:315:a235:8aa8 with SMTP id y17-20020adfe6d1000000b00315a2358aa8mr3313895wrm.2.1695186193391;
+        Tue, 19 Sep 2023 22:03:13 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id q24-20020a7bce98000000b003fbca942499sm834220wmj.14.2023.09.19.22.03.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 22:03:13 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 07:03:12 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/4] RISC-V: KVM: Fix KVM_GET_REG_LIST API for ISA_EXT
+ registers
+Message-ID: <20230920-6ef044ecc94ec729f2f6ca37@orel>
+References: <20230918180646.1398384-1-apatel@ventanamicro.com>
+ <20230918180646.1398384-2-apatel@ventanamicro.com>
 MIME-Version: 1.0
-References: <20230919081958.7071-1-qiang.zhang1211@gmail.com>
- <ZQndj34e9lOpA8Fm@slm.duckdns.org> <ZQnd9CVWecNqHo5V@slm.duckdns.org>
-In-Reply-To: <ZQnd9CVWecNqHo5V@slm.duckdns.org>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Wed, 20 Sep 2023 13:00:35 +0800
-Message-ID: <CALm+0cWVTk9fJpvurej-k71mS640GorwkWfwgVdRpeikd9VUDw@mail.gmail.com>
-Subject: Re: [PATCH v2] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
-To:     Tejun Heo <tj@kernel.org>
-Cc:     jiangshanlai@gmail.com, syzkaller-bugs@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918180646.1398384-2-apatel@ventanamicro.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> On Tue, Sep 19, 2023 at 07:42:39AM -1000, Tejun Heo wrote:
-> > Hello,
-> >
-> > The patch looks fine but
-> >
-> > On Tue, Sep 19, 2023 at 04:19:58PM +0800, Zqiang wrote:
-> > > @@ -4743,6 +4743,8 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
-> > >     wq_free_lockdep(wq);
-> > >  err_free_wq:
-> > >     free_workqueue_attrs(wq->unbound_attrs);
-> >
-> > Can you please add a comment here explaining why the flushing is necessary?
-> >
-> > > +   if (wq->flags & WQ_UNBOUND)
-> > > +           kthread_flush_worker(pwq_release_worker);
->
-> Hmm... also, wouldn't it be clearer to flush from alloc_and_link_pwqs()
-> right after apply_workqueue_attrs() failed? That's the only case that
-> requires flushing, right?
+On Mon, Sep 18, 2023 at 11:36:43PM +0530, Anup Patel wrote:
+> The ISA_EXT registers to enabled/disable ISA extensions for VCPU
+> are always available when underlying host has the corresponding
+> ISA extension. The copy_isa_ext_reg_indices() called by the
+> KVM_GET_REG_LIST API does not align with this expectation so
+> let's fix it.
+> 
+> Fixes: 031f9efafc08 ("KVM: riscv: Add KVM_GET_REG_LIST API support")
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  arch/riscv/kvm/vcpu_onereg.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
+> index 1b7e9fa265cb..e7e833ced91b 100644
+> --- a/arch/riscv/kvm/vcpu_onereg.c
+> +++ b/arch/riscv/kvm/vcpu_onereg.c
+> @@ -842,7 +842,7 @@ static int copy_isa_ext_reg_indices(const struct kvm_vcpu *vcpu,
+>  		u64 reg = KVM_REG_RISCV | size | KVM_REG_RISCV_ISA_EXT | i;
+>  
+>  		isa_ext = kvm_isa_ext_arr[i];
+> -		if (!__riscv_isa_extension_available(vcpu->arch.isa, isa_ext))
+> +		if (!__riscv_isa_extension_available(NULL, isa_ext))
+>  			continue;
+>  
+>  		if (uindices) {
+> -- 
+> 2.34.1
 >
 
-Yes, thanks,  I will resend :)
 
-Thanks
-Zqiang
-
->
-> Thanks.
->
-> --
-> tejun
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
