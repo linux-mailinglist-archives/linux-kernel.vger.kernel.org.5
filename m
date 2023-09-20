@@ -2,153 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B087A760B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9627A760F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbjITIjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
+        id S232907AbjITIkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbjITIjw (ORCPT
+        with ESMTP id S232488AbjITIkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:39:52 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524C5A1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:39:41 -0700 (PDT)
-X-UUID: 3842f098579111ee8051498923ad61e6-20230920
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=5pQDPEILnfYhssOsspJi/HLClnlTJNhu9qnEQV02GWs=;
-        b=oLUo7Nu0uMHgaf3PZuCl2KH8qGUaFGgEnKO2uxlW+pr5vFLEY3AV6pr6cAHKiPQaks/hhDvt14d27i4nBvSBgw/EXZ9N53muzDONKiTY6cpE5fmmc0G3qrsXDu50q7yJOP9IflyxEqWukgnvCBHb9TCHGrz73+O5n1W2xcghfHo=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:0e7b6228-37ff-426e-ac82-4947f8a4743f,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:dcdc3ec3-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 3842f098579111ee8051498923ad61e6-20230920
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1852090131; Wed, 20 Sep 2023 16:39:32 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 20 Sep 2023 16:39:27 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 20 Sep 2023 16:39:27 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-CC:     <yj.chiang@mediatek.com>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] ARM: vfp: Add vudot opcode to VFP undef hook
-Date:   Wed, 20 Sep 2023 16:39:00 +0800
-Message-ID: <20230920083907.30479-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 20 Sep 2023 04:40:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBAC90
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695199162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+3yBpA5iz82pce6LfLZNujDLBSjE7ZVN1nK9Rsm3ufc=;
+        b=czUj6an4tmC8yvo5TCg5v68hUY+mos8NhxGUIUWLHDkmIWnT0OBj7AHmXiH4nETIcsUj+1
+        rWY5CjoohHp5KXRSB3Mf6NPY0WnNdERIfQeXy4mNW2/4U8RztNFhJHj3p6FDT8diEjFKbd
+        Wm+yOvWnd1VuywC6/NiPZZnAvwJvkf4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-169-whr9bxVyOA-yv0PPo12ZiA-1; Wed, 20 Sep 2023 04:39:15 -0400
+X-MC-Unique: whr9bxVyOA-yv0PPo12ZiA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 139D385A5BA;
+        Wed, 20 Sep 2023 08:39:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5788E2156701;
+        Wed, 20 Sep 2023 08:39:12 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+cc:     dhowells@redhat.com,
+        syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--3.013800-8.000000
-X-TMASE-MatchedRID: 9DomuZeNnSa1sMSHsUAj4Lxk3OaETqHeKx5ICGp/WtFLgo8+IIHbcEgC
-        lCIX2gewg3p00t6s280nwBB3NtvSKQEzlKcqjzGcA9lly13c/gFU3K6aV1ad7RHfiujuTbedT3R
-        jcc0BoKjdgHbDOFCwFL1w52Nz/jeVZz86fqAj7POeAiCmPx4NwBnUJ0Ek6yhjxEHRux+uk8jfhP
-        1xgyx3DMuPepAhR43rmVA2Qontecaf28qhBpYtbAX124h0O/fVGc/R3xyaMvvxWfARh0eB/EG7F
-        afXxneqCAvSFapN290+5hawsd+EhY6H7DI0GsVcMmI24qiENwrMpIbcl3IoA+q1XYAYw09qIdY9
-        jOi4lTI=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--3.013800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 930D6D5A1FDBC23AA7D97CE0F6C28E4A3DDDD614DD17B445283A19010B18C6642000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <108790.1695199151.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 20 Sep 2023 09:39:11 +0100
+Message-ID: <108791.1695199151@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vudot opcode to the VFP undef hook to fix the
-potentially undefined instruction error when the
-user space executes vudot instruction.
+Including the transhdrlen in length is a problem when the packet is
+partially filled (e.g. something like send(MSG_MORE) happened previously)
+when appending to an IPv4 or IPv6 packet as we don't want to repeat the
+transport header or account for it twice.  This can happen under some
+circumstances, such as splicing into an L2TP socket.
 
-Before this commit, kernel didn't handle the undef exception
-caused by vudot and didn't enable VFP in lazy VFP context
-switch code like other NEON instructions.
-This led to the occurrence of the undefined instruction
-error as following:
+The symptom observed is a warning in __ip6_append_data():
 
-[  250.741238 ] 0904 (26902): undefined instruction: pc=004014ec
-...
-[  250.741287 ] PC is at 0x4014ec
-[  250.741298 ] LR is at 0xb677874f
-[  250.741303 ] pc : [<004014ec>]    lr : [<b677874f>]    psr: 80070010
-[  250.741309 ] sp : beffedb0  ip : b67d7864  fp : beffee58
-[  250.741314 ] r10: 00000000  r9 : 00000000  r8 : 00000000
-[  250.741319 ] r7 : 00000001  r6 : 00000001  r5 : beffee90  r4 : 00401470
-[  250.741324 ] r3 : beffee20  r2 : beffee30  r1 : beffee40  r0 : 004003a8
-[  250.741331 ] Flags: Nzcv  IRQs on  FIQs on  Mode USER_32  ISA ARM Segment user
-[  250.741339 ] Control: 10c5383d  Table: 32d0406a  DAC: 00000055
-[  250.741348 ] Code: f4434aef f4610aef f4622aef f4634aef (fc620df4)
+    WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_append_d=
+ata.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
 
-Below is the assembly of the user program:
+that occurs when MSG_SPLICE_PAGES is used to append more data to an alread=
+y
+partially occupied skbuff.  The warning occurs when 'copy' is larger than
+the amount of data in the message iterator.  This is because the requested
+length includes the transport header length when it shouldn't.  This can b=
+e
+triggered by, for example:
 
-0x4014dc <+108>: vst1.64 {d20, d21}, [r3:128]
-0x4014e0 <+112>: vld1.64 {d16, d17}, [r1:128]
-0x4014e4 <+116>: vld1.64 {d18, d19}, [r2:128]
-0x4014e8 <+120>: vld1.64 {d20, d21}, [r3:128] --> switch out
-0x4014ec <+124>: vudot.u8 q8, q9, q10         <-- switch in, and FPEXC.EN = 0
-                                                  SIGILL(illegal instruction)
+        sfd =3D socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
+        bind(sfd, ...); // ::1
+        connect(sfd, ...); // ::1 port 7
+        send(sfd, buffer, 4100, MSG_MORE);
+        sendfile(sfd, dfd, NULL, 1024);
 
-Link: https://services.arm.com/support/s/case/5004L00000XsOjP
-Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Fix this by deducting transhdrlen from length in ip{,6}_append_data() righ=
+t
+before we clear transhdrlen if there is already a packet that we're going
+to try appending to.
+
+Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com/
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: David Ahern <dsahern@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: netdev@vger.kernel.org
+cc: bpf@vger.kernel.org
+cc: syzkaller-bugs@googlegroups.com
+Link: https://lore.kernel.org/r/75315.1695139973@warthog.procyon.org.uk/ #=
+ v1
 ---
- arch/arm/vfp/vfpmodule.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ net/ipv4/ip_output.c  |    1 +
+ net/ipv6/ip6_output.c |    1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
-index 7e8773a2d99d..7eab8d1019d2 100644
---- a/arch/arm/vfp/vfpmodule.c
-+++ b/arch/arm/vfp/vfpmodule.c
-@@ -788,6 +788,12 @@ static struct undef_hook neon_support_hook[] = {{
- 	.cpsr_mask	= PSR_T_BIT,
- 	.cpsr_val	= 0,
- 	.fn		= vfp_support_entry,
-+}, {
-+	.instr_mask	= 0xffb00000,
-+	.instr_val	= 0xfc200000,
-+	.cpsr_mask	= PSR_T_BIT,
-+	.cpsr_val	= 0,
-+	.fn		= vfp_support_entry,
- }, {
- 	.instr_mask	= 0xef000000,
- 	.instr_val	= 0xef000000,
-@@ -800,6 +806,12 @@ static struct undef_hook neon_support_hook[] = {{
- 	.cpsr_mask	= PSR_T_BIT,
- 	.cpsr_val	= PSR_T_BIT,
- 	.fn		= vfp_support_entry,
-+}, {
-+	.instr_mask	= 0xffb00000,
-+	.instr_val	= 0xfc200000,
-+	.cpsr_mask	= PSR_T_BIT,
-+	.cpsr_val	= PSR_T_BIT,
-+	.fn		= vfp_support_entry,
- }};
- 
- static struct undef_hook vfp_support_hook = {
--- 
-2.18.0
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 4ab877cf6d35..9646f2d9afcf 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -1354,6 +1354,7 @@ int ip_append_data(struct sock *sk, struct flowi4 *f=
+l4,
+ 		if (err)
+ 			return err;
+ 	} else {
++		length -=3D transhdrlen;
+ 		transhdrlen =3D 0;
+ 	}
+ =
+
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 54fc4c711f2c..6a4ce7f622e9 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -1888,6 +1888,7 @@ int ip6_append_data(struct sock *sk,
+ 		length +=3D exthdrlen;
+ 		transhdrlen +=3D exthdrlen;
+ 	} else {
++		length -=3D transhdrlen;
+ 		transhdrlen =3D 0;
+ 	}
+ =
 
