@@ -2,137 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A427A8CE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F887A8CEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbjITTaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
+        id S230283AbjITTaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbjITT37 (ORCPT
+        with ESMTP id S230274AbjITTaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:29:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48819CD4;
-        Wed, 20 Sep 2023 12:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695238177; x=1726774177;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=aiq472JWLWXdIz5Cjfz8QekXdY4FBzRQ9k7JBMwVEVs=;
-  b=ja6QT85wuCUisPI4pXmiTi4nMaTc1pVdPtI7ZqPEJ2njbxqvgargovy4
-   uvU7+6mglj0J1zu8B3dQ8iZ6pdx5Vw2oZQfFXVGtTDbQHmI0igOOFGzhX
-   RIrmuzdhBwhfa/ue0tcDnYeYPGzayGUMY26C7G9C/JyQ8zG7MWm9SFzPb
-   nnY1sUIVr1lfzariIpoJFXYauB8mq/JS5E67HNo5TFAzRIYPxnBwLmWmT
-   JmG/ly1fA2HFrSotxgBxn9IEA3QbrRJurBlt2EZoL5sHXm1IbHoFPEebU
-   mP4XZ9LV+YF3My2ex7j4HfYs0GCdaM7XvEesa1HZ8YV+FkuxxPoGrY0+i
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="360568671"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="360568671"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 12:29:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="817041802"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="817041802"
-Received: from spandruv-desk1.amr.corp.intel.com ([10.212.142.24])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 12:29:32 -0700
-Message-ID: <51b3a2f115b2392557331442460c2a52432f399d.camel@linux.intel.com>
-Subject: Re: [PATCH linux-next] thermal: int340x: processor_thermal: Ack all
- PCI interrupts
-From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     daniel.lezcano@linaro.org, rui.zhang@intel.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 20 Sep 2023 12:29:31 -0700
-In-Reply-To: <CAJZ5v0jLms5iUM8CXDWNCPcXSQgLv9_XJzqx9RwReqGGUKFL_Q@mail.gmail.com>
-References: <20230920185153.613706-1-srinivas.pandruvada@linux.intel.com>
-         <CAJZ5v0jLms5iUM8CXDWNCPcXSQgLv9_XJzqx9RwReqGGUKFL_Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 20 Sep 2023 15:30:21 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC59118F;
+        Wed, 20 Sep 2023 12:29:51 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KJOsab031106;
+        Wed, 20 Sep 2023 19:29:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=f9M2cPom+8uzIHRKEFk/J7faMo4xsq8DtVTD+om7VMw=;
+ b=Zl+3OEBi73ct+/2c+QwcHcaixTS4klPhGJjhkH87k8pVAJWI9xtX3977xVpH5Mn1uMIS
+ vc14a/phGyPTNSJ2JCdF0HRsP7GODaUc9CCnk5fHYPqiqpmfTNtqXpX3n9VsMCaEjHto
+ DhPVmdArgchTFFYgkxf2MNgTh4tjFzeY3hN5y8Lb3Ip/6DsagJePOM8pHqAFZRhd/EZ1
+ efNP0RwB5jgDpUiTLsmaVpffljIRasrSGzE5rgbzggxj51T7FBfDRK0a5EGUEz0ArcM3
+ WawOlYa1TpD9FQqcCaqda0TJ1k7vmPBecsyXtmoWnqpOySGdgLXxttjv9hut2z8scQyN 7Q== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7qujj376-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 19:29:41 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38KJTeSF024325
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 19:29:40 GMT
+Received: from [10.48.245.144] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 20 Sep
+ 2023 12:29:40 -0700
+Message-ID: <47c0e19e-5f79-4b91-8110-9df835434cfd@quicinc.com>
+Date:   Wed, 20 Sep 2023 12:29:39 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 wireless-next 8/9] wifi: ath11k: remove unnecessary
+ (void*) conversions
+Content-Language: en-US
+To:     Wu Yunchuan <yunchuan@nfschina.com>, <kvalo@kernel.org>
+CC:     <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+References: <20230919045150.524304-1-yunchuan@nfschina.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230919045150.524304-1-yunchuan@nfschina.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: vCCQPVBNwDbx0ZSqzURi7wLIjz9qGuIt
+X-Proofpoint-ORIG-GUID: vCCQPVBNwDbx0ZSqzURi7wLIjz9qGuIt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_09,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ mlxscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=668
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309200161
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-20 at 21:21 +0200, Rafael J. Wysocki wrote:
-> On Wed, Sep 20, 2023 at 8:52=E2=80=AFPM Srinivas Pandruvada
-> <srinivas.pandruvada@linux.intel.com> wrote:
-> >=20
-> > All interrupts from the processor thermal PCI device requires ACK.
-> > This
-> > is done by writing 0x01 at offset 0xDC in the config space. This is
-> > already done for the thereshold interrupt. Extend this for the
-> > workload
-> > hint interrupt.
-> >=20
-> > Signed-off-by: Srinivas Pandruvada
-> > <srinivas.pandruvada@linux.intel.com>
->=20
-> Is this a fix for one of the commits in linux-next?=C2=A0 If so, which
-> one?
-This is on top of workload hints patches.  I marked linux-next as they
-are not in mainline kernel.
-
-This can alternatively merged to=20
-e682b86211a1 thermal: int340x: Handle workload hint interrupts
-
-But not sure how to mark the commit id as they will change.
-Whatever you prefer.
-
-Thanks,
-Srinivas
-
-
-
->=20
-> > ---
-> > =C2=A0.../intel/int340x_thermal/processor_thermal_device_pci.c=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 3
-> > ++-
-> > =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git
-> > a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pc
-> > i.c
-> > b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pc
-> > i.c
-> > index 44b179ce9bc9..3c5ced79ead0 100644
-> > ---
-> > a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pc
-> > i.c
-> > +++
-> > b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pc
-> > i.c
-> > @@ -154,10 +154,11 @@ static irqreturn_t
-> > proc_thermal_irq_handler(int irq, void *devid)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (status) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 /* Disable enable interrupt flag */
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 proc_thermal_mmio_write(pci_info,
-> > PROC_THERMAL_MMIO_INT_ENABLE_0, 0);
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 pci_write_config_byte(pci_info->pdev, 0xdc, 0x01);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 pkg_thermal_schedule_work(&pci_info->work);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_write_config_byte(pci_info->p=
-dev, 0xdc, 0x01);
-> > +
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
-> > =C2=A0}
-> >=20
-> > --
-> > 2.40.1
-> >=20
+On 9/18/2023 9:51 PM, Wu Yunchuan wrote:
+> No need cast (void *) to (struct ath11k_base *),
+> struct hal_rx_msdu_link *), (struct ath11k_buffer_addr *) or
+> other types.
+> 
+> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
