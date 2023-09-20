@@ -2,72 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8197A7564
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4BC7A7575
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbjITIJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
+        id S232738AbjITILK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbjITIJB (ORCPT
+        with ESMTP id S230447AbjITILJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:09:01 -0400
-Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A3CD6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:08:54 -0700 (PDT)
-Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1c02d6efee4so10246619fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:08:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695197334; x=1695802134; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=REAWAikAYJXQC/q1dB6BWiV4dg8+qBHJA6pZo9MKtrQ=;
-        b=d4stG3mmwMKvayPoqNJywOfduTCqejfe/ff/r2PSb9wIzh5m3uYpvcOLm352qPmUbs
-         TA0voN4bBdkzl5U0ihgFuC3TGrC8ghqplRUA+PL5PXRX0rwUuyaXhHfs703Y7qW7oJOJ
-         K+H0pEhMVGdIRWLPDfOmhsQe9sr4DCZuJSXvCefYKTG/qatI9Rszfr43o0hbxHkypZ4s
-         UdE9pjtU31ax5EFJ5Qf00o//vh+vQKZvRUEYdoCYbkAhCE2DJbLnSI49aR59aA7yxz0i
-         oRAfugO+2HFEobV7eO6BA8k2mqZ0Pd6f8xIowXuKZRNDXH0q92NuIIRHBJ7FyFE6/VYc
-         GwzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695197334; x=1695802134;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=REAWAikAYJXQC/q1dB6BWiV4dg8+qBHJA6pZo9MKtrQ=;
-        b=BTeRROFZdAdu/NAN5drj6DzfDC7ndqrLUuJjFmTpMjT8C0+kxXBQWV90wLD9Gl34do
-         fqTCbIA4aHoU4x6miQa9ZcFaCnP4xWqT89KW6yqk6ayR6dCLmx4gNp38ej2kQpIM6xkQ
-         lGZx6eRYKwlb9U7X+TZCShZJzJDu+2jbIcGoP/a0BN90YuKFJEMYOSYQNgLLOKBHj1Dd
-         oEN+f1MIV7PiYnweOiy6C1mR/LIFJuNob+/YNFxEHvVWfALVfFctRGI5ptYv9ZrEAPNO
-         feFZzPkWg0uzxOisHmWZNnTPwILbTxOep+ijjbXjv1pQT7EwGYtd2JQusvvuIYwTmX02
-         dWvg==
-X-Gm-Message-State: AOJu0Yxsl61UD62+opHcEatimpXgqfFi+/oBrnwDMwkeHhiC5IJrm4Me
-        8Q9ypt0nXIjdFEeohp+/e91Ijjfs4jYXoW+IMw==
-X-Google-Smtp-Source: AGHT+IEprTy2S7DDywHlMknBrYSwbbE1mFZmKv4PQM+CHnVjbh7wziEtHIiWVjrM4IRkiEMalxvMkv2HUNQB8D7/PQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6870:76ae:b0:1d6:aa05:c733 with
- SMTP id dx46-20020a05687076ae00b001d6aa05c733mr683064oab.5.1695197334295;
- Wed, 20 Sep 2023 01:08:54 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 08:08:52 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJOoCmUC/yWNMQ7CMAwAv1J5xlJiVBB8BTEYxwUvIbKhAlX9O
- 1HZ7pa7BULdNOA8LOA6W9izdsm7AeTB9a5opTtQon06UcJ4eZX2xeI2qwcaCd7eEfpHaXTIIwo yF06TEvMxQ68118k+2+lyXdcfp11yS3kAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695197333; l=1890;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=peY/eB5hS5lFuPdGG7LKSdDML84Nket0C8FattpjfI8=; b=sgpIFQ7oSn1XZ9OMjko5WEhP6Q5ktCLe0KgZ/OEqR0rGjxM+3HnxdRCXnTgkCRJYoMtT4Lgoj
- TqIRI/KQxrPBTsdjEtbmnlrYumsTKSf/bIFwMnGkJPmXrDcEd5SfvOX
-X-Mailer: b4 0.12.3
-Message-ID: <20230920-strncpy-drivers-i2c-busses-i2c-cp2615-c-v1-1-11406a996794@google.com>
-Subject: [PATCH] i2c: cp2615: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     "=?utf-8?q?Bence_Cs=C3=B3k=C3=A1s?=" <bence98@sch.bme.hu>,
-        Andi Shyti <andi.shyti@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Wed, 20 Sep 2023 04:11:09 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB6ADA1;
+        Wed, 20 Sep 2023 01:11:02 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1112)
+        id 00268212C4B0; Wed, 20 Sep 2023 01:11:01 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 00268212C4B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695197462;
+        bh=MCcFdYcZBq72znSVOGs8taMAEPXbYkraDxusQXChN6k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KU12UclarmRWfDJZUmgx0gvenLqRo5r/VS7sUpslwGHf4LO3Wws2ZA5jOG84QhruY
+         8HhLeUk21ak2eADTaCPLv7qJcrj3VPOyLofny44JVT1JcWCDMyJGhLum8gTiXCOLhN
+         zyL+vxc/1fN0wN6vRAIz+G6P9iGEfIDV/r+0ixK4=
+Date:   Wed, 20 Sep 2023 01:11:01 -0700
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        mathieu.tortuyaux@gmail.com
+Subject: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop kmem.limit_in_bytes
+Message-ID: <20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20230917191040.964416434@linuxfoundation.org>
+ <20230917191042.204185566@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230917191042.204185566@linuxfoundation.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,51 +56,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Sun, Sep 17, 2023 at 09:12:40PM +0200, Greg Kroah-Hartman wrote:
+> 6.1-stable review patch.  If anyone has any objections, please let me know.
+> 
+> ------------------
 
-We should prefer more robust and less ambiguous string interfaces.
+Hi Greg/Michal,
 
-We expect name to be NUL-terminated based on its numerous uses with
-functions that expect NUL-terminated strings.
+This commit breaks userspace which makes it a bad commit for mainline and an
+even worse commit for stable.
 
-For example in i2c-core-base.c +1533:
-| dev_dbg(&adap->dev, "adapter [%s] registered\n", adap->name);
+We ingested 6.1.54 into our nightly testing and found that runc fails to gather
+cgroup statistics (when reading kmem.limit_in_bytes). The same code is vendored
+into kubelet and kubelet fails to start if this operation fails. 6.1.53 is
+fine.
 
-NUL-padding is not required as `adap` is already zero-alloacted with:
-| adap = devm_kzalloc(&usbif->dev, sizeof(struct i2c_adapter), GFP_KERNEL);
+> Address this by wiping out the file completely and effectively get back to
+> pre 4.5 era and CONFIG_MEMCG_KMEM=n configuration.
 
-With the above in mind, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
+On reads, the runc code checks for MEMCG_KMEM=n by checking
+kmem.usage_in_bytes. If it is present then runc expects the other cgroup files
+to be there (including kmem.limit_in_bytes). So this change is not effectively
+the same.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- drivers/i2c/busses/i2c-cp2615.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here's a link to the PR that would be needed to handle this change in userspace
+(not merged yet and would need to be propagated through the ecosystem):
 
-diff --git a/drivers/i2c/busses/i2c-cp2615.c b/drivers/i2c/busses/i2c-cp2615.c
-index 3ded28632e4c..20f8f7c9a8cd 100644
---- a/drivers/i2c/busses/i2c-cp2615.c
-+++ b/drivers/i2c/busses/i2c-cp2615.c
-@@ -298,7 +298,7 @@ cp2615_i2c_probe(struct usb_interface *usbif, const struct usb_device_id *id)
- 	if (!adap)
- 		return -ENOMEM;
- 
--	strncpy(adap->name, usbdev->serial, sizeof(adap->name) - 1);
-+	strscpy(adap->name, usbdev->serial, sizeof(adap->name));
- 	adap->owner = THIS_MODULE;
- 	adap->dev.parent = &usbif->dev;
- 	adap->dev.of_node = usbif->dev.of_node;
+https://github.com/opencontainers/runc/pull/4018.
 
----
-base-commit: 2cf0f715623872823a72e451243bbf555d10d032
-change-id: 20230920-strncpy-drivers-i2c-busses-i2c-cp2615-c-aada0fe2aa71
+Jeremi
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+> 
+> From: Michal Hocko <mhocko@suse.com>
+> 
+> commit 86327e8eb94c52eca4f93cfece2e29d1bf52acbf upstream.
+> 
+> kmem.limit_in_bytes (v1 way to limit kernel memory usage) has been
+> deprecated since 58056f77502f ("memcg, kmem: further deprecate
+> kmem.limit_in_bytes") merged in 5.16.  We haven't heard about any serious
+> users since then but it seems that the mere presence of the file is
+> causing more harm thatn good.  We (SUSE) have had several bug reports from
+> customers where Docker based containers started to fail because a write to
+> kmem.limit_in_bytes has failed.
+> 
+> This was unexpected because runc code only expects ENOENT (kmem disabled)
+> or EBUSY (tasks already running within cgroup).  So a new error code was
+> unexpected and the whole container startup failed.  This has been later
+> addressed by
+> https://github.com/opencontainers/runc/commit/52390d68040637dfc77f9fda6bbe70952423d380
+> so current Docker runtimes do not suffer from the problem anymore.  There
+> are still older version of Docker in use and likely hard to get rid of
+> completely.
+> 
+> Address this by wiping out the file completely and effectively get back to
+> pre 4.5 era and CONFIG_MEMCG_KMEM=n configuration.
+> 
+> I would recommend backporting to stable trees which have picked up
+> 58056f77502f ("memcg, kmem: further deprecate kmem.limit_in_bytes").
+> 
+> [mhocko@suse.com: restore _KMEM switch case]
+>   Link: https://lkml.kernel.org/r/ZKe5wxdbvPi5Cwd7@dhcp22.suse.cz
+> Link: https://lkml.kernel.org/r/20230704115240.14672-1-mhocko@kernel.org
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Muchun Song <muchun.song@linux.dev>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  Documentation/admin-guide/cgroup-v1/memory.rst |    2 --
+>  mm/memcontrol.c                                |   10 ----------
+>  2 files changed, 12 deletions(-)
+> 
+> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
+> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+> @@ -91,8 +91,6 @@ Brief summary of control files.
+>   memory.oom_control		     set/show oom controls.
+>   memory.numa_stat		     show the number of memory usage per numa
+>  				     node
+> - memory.kmem.limit_in_bytes          This knob is deprecated and writing to
+> -                                     it will return -ENOTSUPP.
+>   memory.kmem.usage_in_bytes          show current kernel memory allocation
+>   memory.kmem.failcnt                 show the number of kernel memory usage
+>  				     hits limits
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3841,10 +3841,6 @@ static ssize_t mem_cgroup_write(struct k
+>  		case _MEMSWAP:
+>  			ret = mem_cgroup_resize_max(memcg, nr_pages, true);
+>  			break;
+> -		case _KMEM:
+> -			/* kmem.limit_in_bytes is deprecated. */
+> -			ret = -EOPNOTSUPP;
+> -			break;
+>  		case _TCP:
+>  			ret = memcg_update_tcp_max(memcg, nr_pages);
+>  			break;
+> @@ -5056,12 +5052,6 @@ static struct cftype mem_cgroup_legacy_f
+>  	},
+>  #endif
+>  	{
+> -		.name = "kmem.limit_in_bytes",
+> -		.private = MEMFILE_PRIVATE(_KMEM, RES_LIMIT),
+> -		.write = mem_cgroup_write,
+> -		.read_u64 = mem_cgroup_read_u64,
+> -	},
+> -	{
+>  		.name = "kmem.usage_in_bytes",
+>  		.private = MEMFILE_PRIVATE(_KMEM, RES_USAGE),
+>  		.read_u64 = mem_cgroup_read_u64,
+> 
+> 
