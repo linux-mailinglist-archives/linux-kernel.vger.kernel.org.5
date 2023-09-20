@@ -2,115 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F02157A8DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55907A8DDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbjITUgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 16:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        id S229685AbjITUhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 16:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjITUgv (ORCPT
+        with ESMTP id S229463AbjITUhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 16:36:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B53BC6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695242159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X7Fy9zw5ej/V6zjA8OzVPy/jO4OeVwHuOObAxe8q5yo=;
-        b=efEC6G0sOJ5Hnx9WVsvoCNhkuc3js/SNeCJ0dLrrNaN/RbZMS1NnPdCklqmhlEoOusV1fb
-        WNH/dLrnxi+BUwOCKF44AGyEQixvLPYAXqgoFTKUbeEUw1kUnsNNUrTLvVvhZmISUz4QZO
-        p8ByyLQT4nfbtT0YN3Nq268kooXY+vA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-161-2-hTVdAfMjGx01ME_rzv1Q-1; Wed, 20 Sep 2023 16:35:53 -0400
-X-MC-Unique: 2-hTVdAfMjGx01ME_rzv1Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 14DE728EC106;
-        Wed, 20 Sep 2023 20:35:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5507940C2064;
-        Wed, 20 Sep 2023 20:35:47 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20230920130400.203330-6-dhowells@redhat.com>
-References: <20230920130400.203330-6-dhowells@redhat.com> <20230920130400.203330-1-dhowells@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Matthew Wilcox <willy@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
+        Wed, 20 Sep 2023 16:37:48 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A92FB9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:37:43 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d84acda47aeso405877276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:37:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695242262; x=1695847062; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ke8Z55Fzu2JKAUQugjnNSN+yilI9hv8hL0qCM2xQHoo=;
+        b=JBgzipvxH4GpmAsPpkmBXsJ2OynGNULO/ECE5o8ZtF8PPnEasLeKDo99fYYWL34RFI
+         Avp+gZ/q81y/fb6LwsYzj72VLnZE/na6geNE4CsBhLvd+RoLV/8cfsqZuPqdrnm+CKTg
+         CXZp75nNA7ZIbVeoR43E6AKPSP4xOJq4+Aeh+csccnLYigsA54WhH7hWdLXTSOMlRd2c
+         BBsbpItfWY7rJD2FPMAKAP2vAtYPrNd/eblMSUNmdi1owfs3zVaNw39BDibjs/iCs702
+         1Z6ITxnwOBoOkQhis/VSE2Q8Zz6fSW1uqkCeP39xDDosiKLcQY9gi7IIxjJ1Psq7SBUX
+         oqRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695242262; x=1695847062;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ke8Z55Fzu2JKAUQugjnNSN+yilI9hv8hL0qCM2xQHoo=;
+        b=mG4mkwny783Q3x+ciaFGKQrMs75LOS/M3R27Iz+72OK6pk+dLUPrWds4vianrROi5m
+         tXTO9BzmO0nk8+qXXmFn3tZ1JLGm8Vhyrs0xvYdg2rhZvoijbRJBMy960Hv3kgbstI8x
+         m7v5JptkZFtFwnQy+RcEHzKSlrAr/dvuOmYQNhZVjCGTDnIymtJrEGdK2nquQaomwN1K
+         R+VbiApS2GNjhQ4A3f/BHPGRSeitCASFxUENBBidiFEmQDlPk+HXhwzfKN/v++vtmO5N
+         w/HWLwm/2sbS6E6Qd/VnYEj4KlON4hZ08hMlUa5uKTtalmcJy1pJ6Ar+KD/T+t+Ptsvb
+         gs1A==
+X-Gm-Message-State: AOJu0YzLUhj59ITOCQvGaoi189QvcYxoyUJm+7qghZZHyCat9OUFmd28
+        CQD2JY9A6to9W5Zz/i2q3A9lZD+/iNA=
+X-Google-Smtp-Source: AGHT+IH8CNIWITFsrgppaygErXmKK03IDLuJcOpZJ7gFWKpVHRpldBqCXG7nsBI/YtgK51P/0FDFxn70SaY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ca8b:0:b0:d77:bcce:eb11 with SMTP id
+ a133-20020a25ca8b000000b00d77bcceeb11mr53094ybg.10.1695242262250; Wed, 20 Sep
+ 2023 13:37:42 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 13:37:40 -0700
+In-Reply-To: <20230912002703.3924521-2-acdunlap@google.com>
+Mime-Version: 1.0
+References: <20230912002703.3924521-1-acdunlap@google.com> <20230912002703.3924521-2-acdunlap@google.com>
+Message-ID: <ZQtYFAA9vD7gJM1t@google.com>
+Subject: Re: [PATCH v2 1/2] x86/sev-es: Allow copy_from_kernel_nofault in
+ earlier boot
+From:   Sean Christopherson <seanjc@google.com>
+To:     Adam Dunlap <acdunlap@google.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
         David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, loongarch@lists.linux.dev,
-        linux-s390@vger.kernel.org
-Subject: Re: [RFC PATCH v2 5/9] iov_iter: Create a function to prepare userspace VM for UBUF/IOVEC tests
-MIME-Version: 1.0
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nikunj A Dadhania <nikunj@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Khalid ElMously <khalid.elmously@canonical.com>,
+        Jacob Xu <jacobhxu@google.com>
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <578661.1695242146.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 20 Sep 2023 21:35:46 +0100
-Message-ID: <578662.1695242146@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
+On Mon, Sep 11, 2023, Adam Dunlap wrote:
+> Previously, if copy_from_kernel_nofault was called before
+> boot_cpu_data.x86_virt_bits was set up, then it would trigger undefined
+> behavior due to a shift by 64. This ended up causing boot failures in
+> the latest version of ubuntu2204 in the gcp project when using SEV-SNP.
+> Specifically, this function is called during an early #VC handler which
+> is triggered by a cpuid to check if nx is implemented.
 
-> diff --git a/arch/loongarch/include/asm/page.h b/arch/loongarch/include/=
-asm/page.h
-> index 63f137ce82a4..c7c5f5b4c0d3 100644
-> --- a/arch/loongarch/include/asm/page.h
-> +++ b/arch/loongarch/include/asm/page.h
-> @@ -32,6 +32,7 @@
->  =
+Why not stuff boot_cpu_data.x86_virt_bits to a "default" value that is guaranteed
+to be accurate (or at least safe) for the purposes of the early boot code.  I.e.
+set it to 48 for 64-bit kernels.
 
->  #include <linux/kernel.h>
->  #include <linux/pfn.h>
-> +#include <linux/personality.h>
->  =
+That'd avoid the extra conditional, and would avoid laying whack-a-mole with
+anything else that consumes x86_virt_bits.
 
->  /*
->   * It's normally defined only for FLATMEM config but it's
-
-I've moved this addition to lib/kunit_iov_iter.c as the READ_IMPLIES_EXEC =
-flag
-is also not defined otherwise on powerpc and repushed my patches.
-
-David
-
+> Fixes: 1aa9aa8ee517 ("x86/sev-es: Setup GHCB-based boot #VC handler")
+> Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Adam Dunlap <acdunlap@google.com>
+> ---
+>  arch/x86/mm/maccess.c | 19 ++++++++++++++-----
+>  1 file changed, 14 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
+> index 5a53c2cc169c..6993f026adec 100644
+> --- a/arch/x86/mm/maccess.c
+> +++ b/arch/x86/mm/maccess.c
+> @@ -9,12 +9,21 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+>  	unsigned long vaddr = (unsigned long)unsafe_src;
+>  
+>  	/*
+> -	 * Range covering the highest possible canonical userspace address
+> -	 * as well as non-canonical address range. For the canonical range
+> -	 * we also need to include the userspace guard page.
+> +	 * Do not allow userspace addresses.  This disallows
+> +	 * normal userspace and the userspace guard page:
+>  	 */
+> -	return vaddr >= TASK_SIZE_MAX + PAGE_SIZE &&
+> -	       __is_canonical_address(vaddr, boot_cpu_data.x86_virt_bits);
+> +	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
+> +		return false;
+> +
+> +	/*
+> +	 * Allow everything during early boot before 'x86_virt_bits'
+> +	 * is initialized.  Needed for instruction decoding in early
+> +	 * exception handlers.
+> +	 */
+> +	if (!boot_cpu_data.x86_virt_bits)
+> +		return true;
+> +
+> +	return __is_canonical_address(vaddr, boot_cpu_data.x86_virt_bits);
+>  }
+>  #else
+>  bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+> -- 
+> 2.42.0.283.g2d96d420d3-goog
+> 
