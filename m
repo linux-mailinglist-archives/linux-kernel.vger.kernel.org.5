@@ -2,53 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3447A883B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5EC7A8845
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235476AbjITPZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
+        id S235358AbjITP1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234610AbjITPZx (ORCPT
+        with ESMTP id S234467AbjITP1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:25:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C308F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:25:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB690C433C8;
-        Wed, 20 Sep 2023 15:25:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695223546;
-        bh=84if6Rt9sb+lMTCfxVLo8MgoC3NPhilBQ/XZ/msXQ0Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WRMM6LkbqVxZHgOxKUk6odzdzhWDBIsEkU7VQsMn6HA3FGvfa220uRNNesUZucYyg
-         Rp17+LhuklSWjjQvITGBawPJOh/+nA9maYOpJQ2HSwo7yTYmiCKzRaMNzxCbwukWK6
-         qEF7BBCBfHB7dcr83yjRsVHMOd64T+q+DxxmLNyo0Euv5S7Yfp87yIea8PIEsI6XkB
-         DenQ99cRM30vad1K6qF8tFBFLnba4/IJQ4BbUNqP+a+gEz9PXCzk2NW0T+bAG2oCtn
-         69ac8Yt8Q740eBMBU1ZQqHRNgz47aF2+G+g62Yd0ZBTmYdNKUBbmShl639QC521TCT
-         LT8g4oJ4zWkxg==
-Date:   Wed, 20 Sep 2023 16:25:42 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Gokhan Celik <gokhan.celik@analog.com>
-Cc:     outreachy@lists.linux.dev, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] regulator: dt-bindings: Add ADI MAX77503 support
-Message-ID: <20230920-84ed9120f304012067f0d390@fedora>
-References: <cover.1695155379.git.gokhan.celik@analog.com>
- <5ce9482e53587d9250ecaa07d0908b987081b4e9.1695155379.git.gokhan.celik@analog.com>
+        Wed, 20 Sep 2023 11:27:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7364D8F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695223660; x=1726759660;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=KijHtpRJFl9wBZjIYL7/l4jdXyNhLusYqik2sns1Gmg=;
+  b=hCX952Uiz5ton0qgd+P/pBfuEokmBSWqRLzsDlxb+p/Z1ZtsxYRob5Dg
+   +j8+93CSEJulMWQoD0z8xyZkDlOpSL8rYBHxeQswNJERfnoU9V1d+xmw4
+   1kB5FtdZjieOnIB47ajXvBYyZmFCJvbxdxtUWb8rMSdcW7BYo1vhu6lef
+   xC0itopQ85oPyN5iveKOx9+ftrxxnufSuV5ESff/KF1xD7MNKmIoyrqN6
+   5YDjjJYBt8rEJmK7qXP5LBDPVjX2Gtn/r50dKUtm4jhKzczpAFvmLvGFC
+   63QBqLXygxWXJ7u3vp3f4LG13LG8KZ0k3pfeuglLJZAJSZSyKw7mZtt8R
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="370566109"
+X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
+   d="scan'208";a="370566109"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 08:27:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="889970093"
+X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
+   d="scan'208";a="889970093"
+Received: from pkmanna-mobl3.amr.corp.intel.com (HELO [10.209.53.192]) ([10.209.53.192])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 08:26:50 -0700
+Message-ID: <0031e031-10a8-43b1-a29c-8e1cf913eaad@linux.intel.com>
+Date:   Wed, 20 Sep 2023 08:27:39 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ou1Mt6OWPM9UBPMp"
-Content-Disposition: inline
-In-Reply-To: <5ce9482e53587d9250ecaa07d0908b987081b4e9.1695155379.git.gokhan.celik@analog.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] virt: tdx-guest: Add Quote generation support using
+ TSM_REPORTS
+Content-Language: en-US
+To:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Wander Lairson Costa <wander@redhat.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Qinkun Bao <qinkun@apache.org>,
+        Guorui Yu <GuoRui.Yu@linux.alibaba.com>,
+        linux-coco@lists.linux.dev, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230914031349.23516-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20230920131633.ig6ldmwavpu7uhss@box.shutemov.name>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20230920131633.ig6ldmwavpu7uhss@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -56,104 +77,49 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ou1Mt6OWPM9UBPMp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 19, 2023 at 11:45:22PM +0300, Gokhan Celik wrote:
-> Add ADI MAX77503 buck converter devicetree document.
->=20
-> Signed-off-by: Gokhan Celik <gokhan.celik@analog.com>
+On 9/20/2023 6:16 AM, Kirill A . Shutemov wrote:
+>> +static u8 *tdx_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
+>> +{
+>> +	struct tdx_quote_buf *quote_buf = quote_data;
+>> +	int ret;
+>> +	u8 *buf;
+>> +	u64 err;
+>> +
+>> +	if (mutex_lock_interruptible(&quote_lock))
+>> +		return ERR_PTR(-EINTR);
+>> +
+>> +	/*
+>> +	 * If the previous request is timedout or interrupted, and the
+>> +	 * Quote buf status is still in GET_QUOTE_IN_FLIGHT (owned by
+>> +	 * VMM), don't permit any new request.
+>> +	 */
+>> +	if (quote_buf->status == GET_QUOTE_IN_FLIGHT) {
+>> +		ret = -EBUSY;
+>> +		goto done;
+>> +	}
+>> +
+>> +	if (desc->inblob_len != TDX_REPORTDATA_LEN) {
+>> +		ret = -EINVAL;
+>> +		goto done;
+>> +	}
+>> +
+>> +	/* TDX attestation only supports default format request */
+>> +	if (desc->outblob_format != TSM_FORMAT_DEFAULT) {
+>> +		ret = -EINVAL;
+>> +		goto done;
+>> +	}
+>> +
+>> +	u8 *reportdata __free(kfree) = kmalloc(TDX_REPORTDATA_LEN, GFP_KERNEL);
+> __free() is new to me. Good to know.
+> 
+> But are we okay now with declaring variables in the middle of the
+> function? Any reason we can't do at the top?
 
-Other than Mark's comment, this seems fine to me. W/ that to his
-satisfaction,=20
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Declaring variables at the top is no longer a hard requirement. The main reason
+for declaring it here is to use __free cleanup function. If we use top
+declaration, then we have free it manually.
 
-Thanks,
-Conor.
-
-> ---
->  .../regulator/adi,max77503-regulator.yaml     | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/adi,max77=
-503-regulator.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/regulator/adi,max77503-reg=
-ulator.yaml b/Documentation/devicetree/bindings/regulator/adi,max77503-regu=
-lator.yaml
-> new file mode 100644
-> index 000000000000..128e04ae3f4d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/adi,max77503-regulator.=
-yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (c) 2023 Analog Devices, Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/adi,max77503-regulator.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices MAX77503 Buck Converter
-> +
-> +maintainers:
-> +  - Gokhan Celik <Gokhan.Celik@analog.com>
-> +
-> +description: |
-> +  The Analog Devices MAX77503 is a single channel 14V input, 1.5A=20
-> +  high-efficiency buck converter. This converter has 94% efficiency
-> +  for 2-Cell/3-Cell battery applications.
-> +
-> +allOf:
-> +  - $ref: regulator.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,max77503
-> +
-> +  reg:
-> +    description: I2C address of the device
-> +    items:
-> +      - enum: [0x1e, 0x24, 0x37]
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - regulator-min-microvolt
-> +  - regulator-max-microvolt
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        regulator@1e {
-> +            compatible =3D "adi,max77503";
-> +            reg =3D <0x1e>;
-> +
-> +            regulator-min-microvolt =3D <800000>;
-> +            regulator-max-microvolt =3D <5000000>;
-> +        };
-> +    };
-> +
-> --=20
-> 2.34.1
->=20
-
---ou1Mt6OWPM9UBPMp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQsO8wAKCRB4tDGHoIJi
-0tyYAQCJxMcDy+fikeaoO+6jOx5wjXyy908NVat3LeWdpb/TvAEAmbrmH+5qlBYF
-yWONjlrdSzj+KY+xOXuYPIy/X/Ccxg4=
-=vn73
------END PGP SIGNATURE-----
-
---ou1Mt6OWPM9UBPMp--
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
