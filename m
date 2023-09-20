@@ -2,90 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FAA7A7387
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D528E7A7392
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbjITG7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        id S233485AbjITHBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbjITG7K (ORCPT
+        with ESMTP id S232245AbjITHB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:59:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A97F0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695193142; x=1726729142;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ffnKPVyNxy55r7abNlxMw5Gbvsj5jCv6UNFrWk2dtDA=;
-  b=Sruqn48PgKLWMEq7nUB6UfTC/etyYWnQ0VYCPf2NmxgZFmUSavmNIELO
-   l9UeQhm5ZnlrL6osiiB+CJowW+bY4STka36kFs7OQdvkr3FuKw/N8Juwj
-   Ked/WyKAeILgEo3qQYrXz7PA7z7U7tk9uhblCz3sDTaNdY9RWVG2gR+3G
-   jP2cF4dmbBi9QI6mUKHg6xkURubfi64blSn4214ahrzYKscEt8KsbGYd4
-   ASY7tk3eWjZ9hoDS17s8HyfnziLebdCTnyDufZY7HlRoaxVQ4UkE9Ob3G
-   WxR/hJm31BlVZsuALx+3qMEqbJTXg8SqoNhuakLI46J2/sPUO+7tn916X
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="411079657"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="411079657"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:59:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="696197650"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="696197650"
-Received: from lingshan-mobl.ccr.corp.intel.com (HELO [10.93.14.5]) ([10.93.14.5])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:58:55 -0700
-Message-ID: <badb53e0-513c-f88c-67b9-ecd59d1cf051@intel.com>
-Date:   Wed, 20 Sep 2023 14:58:52 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [virtio-dev] Re: [virtio-comment] Re: [VIRTIO PCI PATCH v5 1/1]
- transport-pci: Add freeze_mode to virtio_pci_common_cfg
-Content-Language: en-US
-To:     "Chen, Jiqian" <Jiqian.Chen@amd.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        David Airlie <airlied@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
-        Parav Pandit <parav@nvidia.com>,
-        "virtio-comment@lists.oasis-open.org" 
-        <virtio-comment@lists.oasis-open.org>,
-        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
-        Xenia Ragiadakou <burzalodowa@gmail.com>,
-        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
-        "Zhang, Julia" <Julia.Zhang@amd.com>,
-        "Huang, Ray" <Ray.Huang@amd.com>
-References: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
- <20230919114242.2283646-2-Jiqian.Chen@amd.com>
- <20230919082802-mutt-send-email-mst@kernel.org>
- <cd8d306b-6acc-34be-516c-b89c23ac108d@intel.com>
- <BL1PR12MB5849E32A76165F1307492185E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-In-Reply-To: <BL1PR12MB5849E32A76165F1307492185E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+        Wed, 20 Sep 2023 03:01:27 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2043.outbound.protection.outlook.com [40.107.22.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5AEB9;
+        Wed, 20 Sep 2023 00:01:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kIFWpwCehvJrJB43shcv1Np2Ck5HALOD3MdUOGGQIk8A/DQkJJctm4XT8ZUX8XGnywBmX4tqGn+fgdjUjqNZXOYBHvNd0BCdnddBKfS57oqmtTDlLq832dzgM3ReU5U9OaqNwKhpNFtXOfp+c8aqsj9cHUNqfL6pk6TPS6fgWTG+IOBEA3n6WicVDxknGoX2UiYTwNUvF8sAaIYHYuLwCeR9PrwTHQnY0qaWLQHMuWIhFCalHMVgA7YFfaJ8K3f9TpiS/jDA90iWLSbkT+focqff0iLm6BnKIjIhkQw/xR+t+uCX1y50yJ/+pl94ObCOh7eLtlWK61N4pl2pR3rCPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hTsZWd9GSe6iYlYmqnhZ63IGCRGjiwaV7XEWxztu/3w=;
+ b=Te+1/j8fZ2DERLekPt6HVBghp2R455oWDGU7ZT3jI+EkUHOQ7iuXltDwQI/vT1Pa2wimpA15Mj02Wy85DHCwVZy9CPpfLASsyU2zCx+sAfJG3L4njcdfcu6Ri/84SjUyvgYTh0Un5fRsuhqbnSkqotQoL/WweFFDp3zsyVqkeB9Y6DyAe14gDTBWsNlenlEQUmv9NOpqgXrqt1BkDd22C70T2RtbgwiAGk8r4tHE6MYs87J0xzwq2bTgAByWSWVL4qm5ZxzWwS9y1w9I6UlCzgiYUcAOgAA5Dq05Fkzaq2Nx98PWEbLQiIJEqRCZHAodwMJPzTB0qMKWAQWG4ty6Fw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hTsZWd9GSe6iYlYmqnhZ63IGCRGjiwaV7XEWxztu/3w=;
+ b=DyNJvlo9EbHtePmEO4KpSY3uCNEgOowyZ6wSJ3XCKNdfaujiZwAyxQ/mQpf9rxD/EsNCWoqHqEqKQFSkkrygXLer0cP4U2mkrf9k1O3Rebs1QELtoB6ewNNeNyOP8E1gamLFAYAnowsOdI8nhEe7aBAvMvaibbCVSzXMc3nqoL3jnsOgTjpep/8V3OROUThgx+RW1NPcZa3BBxZXr/rv9NQGeXfNVP8yqW8QbLg5vTiDB5jlURWfaOphs1Xd+AcH28BHUjgjnNuaAyVn5sMOUEn5JGVudlxWw95ZdOrkphrbPuZBBvDkDs8F959+RPyPyhnEQKu7jp8B923X1iSGAA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from VE1PR04MB6432.eurprd04.prod.outlook.com (2603:10a6:803:122::21)
+ by AS8PR04MB7927.eurprd04.prod.outlook.com (2603:10a6:20b:2ad::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Wed, 20 Sep
+ 2023 07:01:17 +0000
+Received: from VE1PR04MB6432.eurprd04.prod.outlook.com
+ ([fe80::8066:2981:a2d7:e654]) by VE1PR04MB6432.eurprd04.prod.outlook.com
+ ([fe80::8066:2981:a2d7:e654%5]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
+ 07:01:17 +0000
+Message-ID: <3698c731-34fe-b6bf-46be-15146ae209bb@suse.com>
+Date:   Wed, 20 Sep 2023 09:01:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] wifi: brcmfmac: firmware: Annotate struct
+ brcmf_fw_request with __counted_by
+Content-Language: en-US, ca-ES, es-ES
+To:     Kees Cook <keescook@chromium.org>,
+        Arend van Spriel <aspriel@gmail.com>
+Cc:     Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alsi@bang-olufsen.dk>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+References: <20230915200552.never.642-kees@kernel.org>
+From:   Matthias Brugger <mbrugger@suse.com>
+In-Reply-To: <20230915200552.never.642-kees@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR3P281CA0198.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a5::20) To VE1PR04MB6432.eurprd04.prod.outlook.com
+ (2603:10a6:803:122::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6432:EE_|AS8PR04MB7927:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca4aea40-514e-4af7-cc9b-08dbb9a76277
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oP5Jm8bOrLzdh7oz3CH8Uqy1EX75i3frelX8Yrcq61lPkhk/qDJ0oEbuEzugTbmC52e2I1sAffrY3WFT0Oakge0GRy4XR7VbKej56izIT4aj6vm9m3sgtlcImrhWfs1H4cKY2hiCRIKvxLP4ePKktI01Cdc9oIh9rHj6jRpAcNQiBpT11NJtuMA5uz1k3NYqCPtcu9nOJbfdiE9TmvPqOjxg6NxjH1zsLLKLMqGNZEGHLfFMTLDJS0gC22cQbP8OdbdknUcl8Y/KlzYpim56O/7eSG47bDQMiXjX2u0zUiVXUgaR8tcp66WxJdesHscZNO2oo2coPKF/SdG8lp8xRFr8qHBUV/AGyJeNCpvKsfGXmdgW6tv1TS+zgV+sRNY6SvcabONmKUu+2cuP5gmoBJAzvXLxmoSA3gOYucNKr8fB/VlMk7u/hE/ZOFtbrO99ciFz53Q2php23qPO5vHcBp48/VddaFdn/2EerqXR/0cERORpVs2Y3vokFUIwzisrY88gNgysi97zmsXaUxMIsL6ksPfnkn9teeijY8svOFCwkn6aSuPPg1Ikh0ObFLi1DnDhiyYorpzUWfxdMQgRVQDDQ9epiQn7cPlSefPDiUKzkrgk5oVgae7U3TIvGCUk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6432.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(396003)(366004)(39860400002)(451199024)(1800799009)(186009)(26005)(2616005)(31686004)(83380400001)(66574015)(5660300002)(110136005)(66946007)(66476007)(66556008)(31696002)(8936002)(7416002)(316002)(41300700001)(8676002)(2906002)(4326008)(86362001)(38100700002)(478600001)(966005)(36756003)(54906003)(6486002)(6506007)(53546011)(6512007)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZE9oY3FTQUowZ1dObkxza2o5aUI4SXJJWVlQRk5PRW9SOWtRY1lPWG9lUWt1?=
+ =?utf-8?B?MHNaM1VRQUUwMjRCamN3RG5oUER6MHI3blcrS1NPV2RhVllQZ2FhRWVybm8x?=
+ =?utf-8?B?WlBuMGYzaGdiMkU1R09rOXlHR0hUMVdRUGJ0U29aL2d0T2FybkR5T3Vrd2hK?=
+ =?utf-8?B?am52S3ZmOTRFOUthM2paVFNHd2RDb1ppdHhkbFZyL3lxTjlJaWk1azFhVGgy?=
+ =?utf-8?B?WFBpNHFwbWR1VUF1TEZpQ0tRQ3Bpcnp3MHczQmFCK3lQZjVDSFoxQzVtVkVh?=
+ =?utf-8?B?R2VyU0lrOHpvdDNCQndCbWlRU3hKN01wYkl6c2ZyNzFDczNDbXd3SjZtYTU4?=
+ =?utf-8?B?Y0hUVGRnMUhLMVNoSUlhSnVTaERtL3gvaHBNc1M4eTlPbU9XZmZkSmhIZENL?=
+ =?utf-8?B?b1FHUE8xMjdnWWtXc0lDS05HNnFVK2N4RlFGZ01UbEF1TGxiS2NHVC9WN0ht?=
+ =?utf-8?B?ek40S1I2NjhLUDlJZ2hUV2JhY01Ncjh3c0c5dXBjeStGMElzU2hCc0ZJZmN2?=
+ =?utf-8?B?MlR2U0hxc2RTdHlqQ29SQ3ZsNkxUYms5M0l1cU5vRUZsV0tPU05McFhOZ3ZE?=
+ =?utf-8?B?eVBTQzZ3NER3V2ZkSVFFcGIxeHQxVkdWSGJZZ0RiRzdrSy9jL2djZU8rRTIz?=
+ =?utf-8?B?MERCSG5DMGNEQktCNWtEWGcvRlR0YlNITkVsZjd6U0NrYzRPNXNXZmZHZlBQ?=
+ =?utf-8?B?V1NhWS9VMmIrUEZqTDJwbVBrNDFHenVhWmV6dVVzbHdxVkN6N2NzcSs1Y3h2?=
+ =?utf-8?B?c0FQaThOKysyNFhjZzlqM2l1OC8zeUlpWHVWenY0azkrdUZ5SWRlSEZ1aGty?=
+ =?utf-8?B?VlFuTnNyN0w2VEpwOWkzeEFPQU9qM0xHNXJteFYwVXl6MTNyNlR1eXpOZm00?=
+ =?utf-8?B?WitDdTNkRGNWTS9DSEUwcjc3aTh3QStQaFZhanJuNHJsQ3l3dWxnaUQrUWgy?=
+ =?utf-8?B?cVkyUDZvejQ2eGhnZzlRelEvbWJQNW9BZVZmNFZGd285ZGU5MmJsK3h5dDZy?=
+ =?utf-8?B?R3ZrWklYL3hsZXByQjhNcWNvb0NCbkROdDBsMFBoQ2hVUU42V2NORmlQdFJr?=
+ =?utf-8?B?WEJMK3FhQzNMKzFNTDNjb1R2UlhLajR1NWxiN0dCc0ZVL0NvU2o3QWRBMEZv?=
+ =?utf-8?B?M2R1SDAxaGdFUXV3emNNNXhiYTNzVDBFQ01TUUlMTjVJT3VoQm44MGNka0lC?=
+ =?utf-8?B?VHAycFZVazd6dHR2a0Q2eW12aCsxaDkzZWd6c0ZNTmNQM0hUUU9VZ0Z4bFJB?=
+ =?utf-8?B?RGN0WTRoOFN0cTNsSWtNelYxeHJuZTBaK1NjblB6bTY4cEViaERqenp6cCt0?=
+ =?utf-8?B?eWdKMFdBUllEa0l4UUwxV0FkNkRnYTd0dXdTZnNlZjNzWTYybVprVlp3S0Y0?=
+ =?utf-8?B?MmtjZkduKzc0Nk5qdlpxMjJodk1JVEZIUDc0UDdZQ0VkOWpXWXNheUhGeTVV?=
+ =?utf-8?B?N2ZVMU4xTFR0NFFid05KQURVQ1N1NUJiVTVSbzlZTlUraTNBRGwrRldRV0JS?=
+ =?utf-8?B?c2d2MWxvY1pZNzE3M2VpdVpMcVlIUlUrN0lwei9FTEo0ZVRDOG8xakZ5VUdl?=
+ =?utf-8?B?M1dSZWhvK2hnUkhDakpjbWJtTjVHNko3LzlZdXcvUEJEcUY2TlRrOHQzcXlF?=
+ =?utf-8?B?eHJxWTk1QjZ2elIyT0M3VXR5MG1XdE10N3VXLzBWTlhSYnNUMTl4c3VNVXRM?=
+ =?utf-8?B?RzNoaTJoeURZZzd0LzFYSHBpQUVobm9vTm9Tcll0S2kxT3JodWJOd3k4UTFF?=
+ =?utf-8?B?ZmpaOFQ0Z2Nyazd4anI2cVN4SzVFL2hKTGNtNUZSV2xnREpEQ0wwN3VpTlVR?=
+ =?utf-8?B?WkRrM2NiK05UNjF6WHM5d2QzQm92QVdNTEptL3NQcXI3V0xoN2xYRFMwQVdV?=
+ =?utf-8?B?bjVKSjNLRXFBcXVhMDhJWUJCeXdLMnhPSVlqZGpCbXdHbmwwSE40S1pQcGZi?=
+ =?utf-8?B?c2tPU0k2Qy9SY3pLOExQWmN4eHAvQkhTb2tSM2FTdEgvTGJEYlMxaVdvRDla?=
+ =?utf-8?B?RHVIMDVaam8rcVMzaTBabWRQd094NGlMczJmd2ZiK1NDZzNDT1RsKzJvVksr?=
+ =?utf-8?B?WVhlV1l3TWUwYmhxeW1wS2xMS0ZRRmV1TmlGcHM4aUltNW5QbE1VSDQ1M1dU?=
+ =?utf-8?Q?Yw9YUXEZlOikG/ExwDt2IgfH6?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca4aea40-514e-4af7-cc9b-08dbb9a76277
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6432.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 07:01:17.0019
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lF4MSzCSHkXBFMaSVDJ7x7ZYuMuPH4pK8U//EUpWps3Wzp5P49eeCf4LPN9RMd0k/7vkGGzjMMzfbGtQ3Vkb0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7927
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -94,119 +141,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/20/2023 2:33 PM, Chen, Jiqian wrote:
-> Hi Lingshan,
->
-> On 2023/9/20 13:59, Zhu, Lingshan wrote:
->>
->> On 9/19/2023 8:31 PM, Michael S. Tsirkin wrote:
->>> On Tue, Sep 19, 2023 at 07:42:42PM +0800, Jiqian Chen wrote:
->>>> When guest vm does S3, Qemu will reset and clear some things of virtio
->>>> devices, but guest can't aware that, so that may cause some problems.
->>>> For excample, Qemu calls virtio_reset->virtio_gpu_gl_reset when guest
->>>> resume, that function will destroy render resources of virtio-gpu. As
->>>> a result, after guest resume, the display can't come back and we only
->>>> saw a black screen. Due to guest can't re-create all the resources, so
->>>> we need to let Qemu not to destroy them when S3.
->>>>
->>>> For above purpose, we need a mechanism that allows guests and QEMU to
->>>> negotiate their reset behavior. So this patch add a new parameter
->>>> named freeze_mode to struct virtio_pci_common_cfg. And when guest
->>>> suspends, it can write freeze_mode to be FREEZE_S3, and then virtio
->>>> devices can change their reset behavior on Qemu side according to
->>>> freeze_mode. What's more, freeze_mode can be used for all virtio
->>>> devices to affect the behavior of Qemu, not just virtio gpu device.
->> Hi Jiqian,
->>
->> Have you seen this series: [PATCH 0/5] virtio: introduce SUSPEND bit and vq state
->> https://lore.kernel.org/all/3f4cbf84-010c-cffa-0b70-33c449b5561b@intel.com/T/
->>
->> We introduced a bit in the device status SUSPEND, when VIRTIO_F_SUSPEND is
->> negotiated, the driver can set SUSPEND in the device status to suspend the
->> device.
->>
->> When SUSPEND, the device should pause its operations and preserve its configurations
->> in its configuration space.
->>
->> The driver re-write DRIVER_OK to clear SUSPEND, so the device resumes running.
->>
->> This is originally to serve live migration, but I think it can also meet your needs.
-> I noticed your series, but I am not sure they are also meet my needs.
-> If driver write 0 to reset device, can the SUSPEND bit be cleared? (pci_pm_resume->virtio_pci_restore->virtio_device_restore->virtio_reset_device)
-if the driver writes 0, it resets all virtio functionalities. So SUSPEND 
-is cleared.
-device reset can also be used to recover the device from fatal errors, 
-so it should reset everything in virtio.
-> If SUSPEND is cleared, then during the reset process in Qemu, I can't judge if the reset request is from guest restore process or not, and then I can't change the reset behavior.
-I think when enter S3, the hypervisor/driver should set SUSPEND to the 
-device. And when resume from S3, the hypervisor/driver should
-re-write DRIVER_OK to clear SUSPEND, then the device resume running.
-> Can you send me your patch link on kernel and qemu side? I will take a deep look.
-There are no patches for qemu/kernel yet, spec first.
->
->> Thanks,
->> Zhu Lingshan
->>>> Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
->>>> ---
->>>>    transport-pci.tex | 7 +++++++
->>>>    1 file changed, 7 insertions(+)
->>>>
->>>> diff --git a/transport-pci.tex b/transport-pci.tex
->>>> index a5c6719..2543536 100644
->>>> --- a/transport-pci.tex
->>>> +++ b/transport-pci.tex
->>>> @@ -319,6 +319,7 @@ \subsubsection{Common configuration structure layout}\label{sec:Virtio Transport
->>>>            le64 queue_desc;                /* read-write */
->>>>            le64 queue_driver;              /* read-write */
->>>>            le64 queue_device;              /* read-write */
->>>> +        le16 freeze_mode;               /* read-write */
->>>>            le16 queue_notif_config_data;   /* read-only for driver */
->>>>            le16 queue_reset;               /* read-write */
->>>>
->>> we can't add fields in the middle of the structure like this -
->>> offset of queue_notif_config_data and queue_reset changes.
->>>
->>>    
->>>> @@ -393,6 +394,12 @@ \subsubsection{Common configuration structure layout}\label{sec:Virtio Transport
->>>>    \item[\field{queue_device}]
->>>>            The driver writes the physical address of Device Area here.  See section \ref{sec:Basic Facilities of a Virtio Device / Virtqueues}.
->>>>    +\item[\field{freeze_mode}]
->>>> +        The driver writes this to set the freeze mode of virtio pci.
->>>> +        VIRTIO_PCI_FREEZE_MODE_UNFREEZE - virtio-pci is running;
->>>> +        VIRTIO_PCI_FREEZE_MODE_FREEZE_S3 - guest vm is doing S3, and virtio-pci enters S3 suspension;
->>>> +        Other values are reserved for future use, like S4, etc.
->>>> +
->>> we need to specify these values then.
->>>
->>> we also need
->>> - feature bit to detect support for S3
->>> - conformance statements documenting behavious under S3
->>>
->>>
->>>>    \item[\field{queue_notif_config_data}]
->>>>            This field exists only if VIRTIO_F_NOTIF_CONFIG_DATA has been negotiated.
->>>>            The driver will use this value when driver sends available buffer
->>>> -- 
->>>> 2.34.1
->>> This publicly archived list offers a means to provide input to the
->>> OASIS Virtual I/O Device (VIRTIO) TC.
->>>
->>> In order to verify user consent to the Feedback License terms and
->>> to minimize spam in the list archive, subscription is required
->>> before posting.
->>>
->>> Subscribe: virtio-comment-subscribe@lists.oasis-open.org
->>> Unsubscribe: virtio-comment-unsubscribe@lists.oasis-open.org
->>> List help: virtio-comment-help@lists.oasis-open.org
->>> List archive: https://lists.oasis-open.org/archives/virtio-comment/
->>> Feedback License: https://www.oasis-open.org/who/ipr/feedback_license.pdf
->>> List Guidelines: https://www.oasis-open.org/policies-guidelines/mailing-lists
->>> Committee: https://www.oasis-open.org/committees/virtio/
->>> Join OASIS: https://www.oasis-open.org/join/
->>>
->>
->> ---------------------------------------------------------------------
->> To unsubscribe, e-mail: virtio-dev-unsubscribe@lists.oasis-open.org
->> For additional commands, e-mail: virtio-dev-help@lists.oasis-open.org
->>
+On 15/09/2023 22:05, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct brcmf_fw_request.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Arend van Spriel <aspriel@gmail.com>
+> Cc: Franky Lin <franky.lin@broadcom.com>
+> Cc: Hante Meuleman <hante.meuleman@broadcom.com>
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: Matthias Brugger <mbrugger@suse.com>
+> Cc: Hector Martin <marcan@marcan.st>
+> Cc: "Alvin Šipraga" <alsi@bang-olufsen.dk>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: brcm80211-dev-list.pdl@broadcom.com
+> Cc: SHA-cyfmac-dev-list@infineon.com
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
+Reviewed-by: Matthias Brugger <mbrugger@suse.com>
+
+> ---
+>   drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
+> index 1266cbaee072..4002d326fd21 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
+> @@ -69,7 +69,7 @@ struct brcmf_fw_request {
+>   	u16 bus_nr;
+>   	u32 n_items;
+>   	const char *board_types[BRCMF_FW_MAX_BOARD_TYPES];
+> -	struct brcmf_fw_item items[];
+> +	struct brcmf_fw_item items[] __counted_by(n_items);
+>   };
+>   
+>   struct brcmf_fw_name {
