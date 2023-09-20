@@ -2,67 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F467A87F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A43E7A87FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbjITPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
+        id S235006AbjITPOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234731AbjITPNf (ORCPT
+        with ESMTP id S234765AbjITPO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:13:35 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1FDB9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:13:30 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bf1935f6c2so7379665ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:13:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695222809; x=1695827609; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/hyiPJzwLyvz53eOPwWn5KTS3ATXYJRveFNMbAiYRwk=;
-        b=P3YvM4YLE5mdSNDQP8M83pygwFAlb3uI5G0LrtEMOn+sJK3er3zTqU/QyIncSs7RoK
-         JTMEpFCaTV+ADa9cf4nqwf4nXcWkg8LOHtpidLsiri2q4GtYqUjSghXbS5d5y9lvRvBh
-         FJJHr/rKVG9xIiHK/lVpHNeOzMRRTPPAWtpVE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695222809; x=1695827609;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/hyiPJzwLyvz53eOPwWn5KTS3ATXYJRveFNMbAiYRwk=;
-        b=Wiv7zSRzHgliZJnfTKkOt3iPXoZ6TLITcVSNPLylsh0x5Sth74oUo4K8y5RhwYQwAJ
-         T3eWnnJAawiJMvhz+a5EM8asDDDg86Tk2UQcFfTrZni7UdpRZ0exQRxu+LrFHsREz3Xd
-         iABrUqQMe4o47QJUR5xhbxqA2Ezs2Nc4TsAm+J6k6rz7rwzYaftnJsmAqws+TXOfiPNB
-         yuN+A8CnrodTP/wTFZniGmSr6haPh5DajSAWQnixvDjn5s1nQiSDLS9YDPErQv2lxhJx
-         /1Xg0PAt0g8U5n9uaPt8JvDQCAASTW4cygWGvlZqyHUd7im0y9QT0vO6xmcX/7I4qCAe
-         w4FA==
-X-Gm-Message-State: AOJu0Yy5SDVqVUOobLhZKVAy+RU/NdH4DGyktMWfyQ2sp5inE7ffoD/K
-        Hb3iZrO70sWW0Cg5H140Jc9Hmg==
-X-Google-Smtp-Source: AGHT+IHjY/EA4Uaz2uN8Hf+rV5YjM1d2ccJFzhZB2yI5nZQzuRgpHsCOPdzZTHTUX2L8rGpX2Z27SA==
-X-Received: by 2002:a17:902:d2cd:b0:1c5:6f43:9502 with SMTP id n13-20020a170902d2cd00b001c56f439502mr4352961plc.14.1695222809493;
-        Wed, 20 Sep 2023 08:13:29 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u7-20020a170903124700b001bb0eebd90asm11948601plh.245.2023.09.20.08.13.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 08:13:28 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 08:13:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Azeem Shaikh <azeems@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH v2] vt: Replace strlcpy with strscpy
-Message-ID: <202309200813.1B0C125@keescook>
-References: <20230919192156.121503-1-azeems@google.com>
+        Wed, 20 Sep 2023 11:14:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDDEA1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:14:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E69C433C7;
+        Wed, 20 Sep 2023 15:14:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695222863;
+        bh=US0SAylhHjSsU0gUBHB9ewTD8IhR8dxZrCpzZnZdmLY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=oNh/bV0QG0mjI0qPwdgdG2wlEXxpspFr4gZxZepZPL3s5/gVDLewwq2zb2YtxjM73
+         wktaPVc0X3GTV+jRb8HsYAVQrPFu2o2dAkQlpWRsWW4gzK8Q52Z56U9F9lj4dTHJxw
+         aAnN9i+8o1JQ1bJKHuuwNK1W3t4bjUtYD9RhSsmoM2SjQVNfZTtMCpxJTw29olNrP4
+         xhJSnJ0KePDsKyB09ZW1JmuDfuoT7/8WDHoSSje2WXnJP7+HC5MqGYfhvMIKTbZJob
+         HEX/EU+t815piZPlN1Tpo+8diWtYyGlq9TkAaNhVrRXCpi/c/WfI5EU5eiHVNZrrxL
+         SntHls165iiNg==
+Message-ID: <2c179d6e-7427-46a1-ae31-d0a48b0c2723@kernel.org>
+Date:   Wed, 20 Sep 2023 18:14:18 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919192156.121503-1-azeems@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] arm64: dts: ti: Enable support for overlays for
+ relevant boards
+To:     Nishanth Menon <nm@ti.com>
+Cc:     vigneshr@ti.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, srk@ti.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230920133450.54226-1-rogerq@kernel.org>
+ <20230920133450.54226-2-rogerq@kernel.org>
+ <20230920135722.tl2yupwpffa3ryfy@jaunt>
+Content-Language: en-US
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20230920135722.tl2yupwpffa3ryfy@jaunt>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,33 +56,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 07:21:56PM +0000, Azeem Shaikh wrote:
-> strlcpy() reads the entire source buffer first and returns the size of
-> the source string, not the destination string, which can be accidentally
-> misused [1].
-> 
-> The copy_to_user() call uses @len returned from strlcpy() directly
-> without checking its value. This could potentially lead to read
-> overflow. There is no existing bug since @len is always guaranteed to be
-> greater than hardcoded strings in @func_table[kb_func]. But as written
-> it is very fragile and specifically uses a strlcpy() result without sanity
-> checking and using it to copy to userspace.
-> 
-> In an effort to remove strlcpy() completely [2], replace
-> strlcpy() here with strscpy().
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> [2] https://github.com/KSPP/linux/issues/89
-> 
-> Signed-off-by: Azeem Shaikh <azeems@google.com>
-> ---
-> v2:
->  * Return -ENOSPC instead of -EFAULT in case of truncation.
->  * Update commit log to clarify that there is no exploitable bug but instead the code uses a fragile anti-pattern.
 
-Changes look good. Thanks!
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+On 20/09/2023 16:57, Nishanth Menon wrote:
+> On 16:34-20230920, Roger Quadros wrote:
+>> Enable __symbols__ in board DT files for which we expect
+>> overlays to be supported.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>> ---
+>>  arch/arm64/boot/dts/ti/Makefile | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+>> index e7b8e2e7f083..06d6f264f292 100644
+>> --- a/arch/arm64/boot/dts/ti/Makefile
+>> +++ b/arch/arm64/boot/dts/ti/Makefile
+>> @@ -72,8 +72,16 @@ dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
+>>  dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
+>>  
+>>  # Enable support for device-tree overlays
+>> +DTC_FLAGS_k3-am625-beagleplay += -@
+>>  DTC_FLAGS_k3-am625-sk += -@
+>>  DTC_FLAGS_k3-am62-lp-sk += -@
+>> +DTC_FLAGS_k3-am62a7-sk += -@
+>> +DTC_FLAGS_k3-am642-evm += -@
+>> +DTC_FLAGS_k3-am654-base-board += -@
+>>  DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
+>> +DTC_FLAGS_k3-am68-sk-base-board += -@
+>> +DTC_FLAGS_k3-am69-sk += -@
+>>  DTC_FLAGS_k3-j721e-common-proc-board += -@
+>> +DTC_FLAGS_k3-j721e-sk += -@
+>>  DTC_FLAGS_k3-j721s2-common-proc-board += -@
+>> +DTC_FLAGS_k3-j784s4-evm += -@
+> 
+> is'nt it better to do it in context of the changes introduced?
+> 
+
+Do you mean I should just add for the particular platform when
+adding an overlay for that platform?
 
 -- 
-Kees Cook
+cheers,
+-roger
