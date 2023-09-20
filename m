@@ -2,192 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C537A7270
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E577A7273
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjITF7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 01:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
+        id S232895AbjITGBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbjITF7b (ORCPT
+        with ESMTP id S230447AbjITGBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 01:59:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295779F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:59:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695189565; x=1726725565;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1AFS0qlu86X69HdRueO8Qt7qnBiopMrULvB4gkTp+4M=;
-  b=CHTEIpz9BAaaFZqspRkPnU1kkvp4s3F8aF+xM3u90VkLsNBz/+5cT8zG
-   VIsb8YlQ/+jKV0ahpFP9ZtLo/7EZ4UnikSrNnUzzWSVpZH3qn8u7NFptd
-   w7/fhkZcLNXPkcdoBeHKkAXLGv0xFDfUEcwjtlaV2l4pf1SneMqUMFt64
-   HlcQZno6P7PQbEJsqTxhxdTE4B4fltVJ3Qnu3yt149b6kEjw+GrxXo9R/
-   4eGpaRtPNkRwbc/1uMNq+U/RQaZbrG2MzkdoMRZ+vyfUXKvI6/lGnG+39
-   +1HYzwZc3iVWhGKPn/qlFdNWLnc4ChYUK/hV6uCAjkH9R/AZfhYGhaFv1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="444226203"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="444226203"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 22:59:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="812013672"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="812013672"
-Received: from lingshan-mobl.ccr.corp.intel.com (HELO [10.93.14.5]) ([10.93.14.5])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 22:59:18 -0700
-Message-ID: <cd8d306b-6acc-34be-516c-b89c23ac108d@intel.com>
-Date:   Wed, 20 Sep 2023 13:59:16 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [virtio-comment] Re: [VIRTIO PCI PATCH v5 1/1] transport-pci: Add
- freeze_mode to virtio_pci_common_cfg
+        Wed, 20 Sep 2023 02:01:16 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE999F;
+        Tue, 19 Sep 2023 23:01:07 -0700 (PDT)
+X-UUID: 132659fa577b11ee8051498923ad61e6-20230920
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=tckp63eZq4d9Nfo/DcIBj3ct0EYqPYfOpr1vdt8FuhY=;
+        b=cO69VEwzkpGf6b063v67LCQfu/D2+ELGEuMtYxOihGHxMEiSRIQeSCBbQ85yjGIYKmPmfsCCyZIfKnByqHA0LRQH6UW89U7Jnd5TTvLYBAe2045fmYjELOfuouf+UJOBq5lBPLmzO1Y952XSal3IBejJFdtxbF+J3f4gRKCZiYg=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:a849ad73-083b-4a43-96e4-6ea3678e9e86,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:9e7fe8ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 132659fa577b11ee8051498923ad61e6-20230920
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1293127521; Wed, 20 Sep 2023 14:01:00 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 20 Sep 2023 14:00:59 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 20 Sep 2023 14:00:59 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SzzUa+PKJyYQsKSVSwyyU8Z0YB5vFX92qisnr6vfFZHtlVH0x2IxTtPs0lCoCgHLx1VIrlS7Lv9pfhYKucMJKkKEJ9jVtHLaHVGrLpFAcIRp9ceD/SvSaByylkUm5AWe/IedM20+5WvEwtouNbfrtSwwua4iz/QMa3+iDTYxlgqBszOHruQJFtPfdPvjt6K6dMEPq4uqvxOpPmFrapHYdgd1z0DRzct+YaluMeLwd2DzUmVfBB2YyTqUuhH2jJ26FvWQV4li3m+WiUsGFSWRt8eRFyjm5UD/SYSe7X7R+pZ2Y5lcybzkObCGcG07QpQBHCfVuJJNHPzdxcg+ux1+lQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tckp63eZq4d9Nfo/DcIBj3ct0EYqPYfOpr1vdt8FuhY=;
+ b=fp/wAOEcH0s+pKBbW/ZXciKkkg2lEkfHXBg70v275c4/LaufU8QrlEDyrmluS3VK/4ENc0Ya8Eh71VjxDpuYzMyHfpILDmsDgnPhOtaHspU4+51C+Zslxf1Eus+bPIl3JF9tj2n7bfyMhWd8c0Bk1HSsOoJFVp8Gj+myThThxfEWzqH4cv65nzwUtElGRediIM+oO8OIV4lOlK6/kUpPFvxPebmsTrzWodVdiynbD1I6iG8dlomYW4sossGKML671l0zXne3+we5QXLd+6wSH7DXcWjB0ijUSxkNYeG6oMaZvAaX2H0JNHhpPFsu1yP2X+IA4b8UQZYxssxO9RP+uQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tckp63eZq4d9Nfo/DcIBj3ct0EYqPYfOpr1vdt8FuhY=;
+ b=b+hgx5PfX3xV4keaMQAx3I64wZVMFWWxJI2LVPB7xDhYtb9deLhd63JYAquZlhA1MEFrib+0ymGRoY5yjNon1Fi5vbTb8ZnQb0RMu4pHTCAn8JZ11ONBXWUa9NcclAaIEUoQxcneK8tZEar9Doiz49e7cnaMtwYjreLrPjIe5wE=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by TYSPR03MB7706.apcprd03.prod.outlook.com (2603:1096:400:413::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
+ 2023 06:00:56 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::9c2c:c08a:212f:e984]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::9c2c:c08a:212f:e984%6]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
+ 06:00:56 +0000
+From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To:     =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
+        <Singo.Chang@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "nfraprado@collabora.com" <nfraprado@collabora.com>
+Subject: Re: [RESEND PATCH v6 01/20] dt-bindings: display: mediatek: ethdr:
+ Add compatible for MT8188
+Thread-Topic: [RESEND PATCH v6 01/20] dt-bindings: display: mediatek: ethdr:
+ Add compatible for MT8188
+Thread-Index: AQHZ5IOpllqLDOuYakOF2HJ3eFO0T7AjRpoA
+Date:   Wed, 20 Sep 2023 06:00:56 +0000
+Message-ID: <1b5ad730c689894ac202c171c46135f9a8ff8d57.camel@mediatek.com>
+References: <20230911074233.31556-1-shawn.sung@mediatek.com>
+         <20230911074233.31556-2-shawn.sung@mediatek.com>
+In-Reply-To: <20230911074233.31556-2-shawn.sung@mediatek.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jiqian Chen <Jiqian.Chen@amd.com>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        David Airlie <airlied@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
-        Parav Pandit <parav@nvidia.com>,
-        virtio-comment@lists.oasis-open.org,
-        virtio-dev@lists.oasis-open.org, qemu-devel@nongnu.org,
-        linux-kernel@vger.kernel.org,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Alex Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
-        Xenia Ragiadakou <burzalodowa@gmail.com>,
-        Honglei Huang <Honglei1.Huang@amd.com>,
-        Julia Zhang <Julia.Zhang@amd.com>,
-        Huang Rui <Ray.Huang@amd.com>
-References: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
- <20230919114242.2283646-2-Jiqian.Chen@amd.com>
- <20230919082802-mutt-send-email-mst@kernel.org>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-In-Reply-To: <20230919082802-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|TYSPR03MB7706:EE_
+x-ms-office365-filtering-correlation-id: f8ce35a7-f2f4-432a-0fe1-08dbb99ef48e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3pbkbR+W7ZQcyfxc4o3s/2DZVBWedZlUQyd30G1gvTDX5ejRJqPv2pZkHkKzxHQfOi86Na87LeW2B4s1qC8PF+076yK+mzrO2HjJmAnW4zjmw7VYvNwoPlmBgml1sqnOyoPkrCs+AVR/H0WVxiLQaRY0n7nxpfelTWgoDk5Wo1IrYV+n36b1FN+KDr3oz6Go/+tmlPDvfa8tLO4VmYJm64dgphILpRSH7+GF+CRRLovXbf2hGyhihpuAp6tstYaKHZGOQf7OOlCiXbBV+t46K5xLAFR+VV+XBF3ZMIWPLWUcQPgFsziwScCNyHX9/xih4TZqoiuHqNpfIJ/ZmkG42wRxnnvgxQLeho0fNvFG4qnBX8ThHT4sAvwQ9OMS8B4s66ZXXdDKJusT3Hh/AYyzUWwDgCRZAb3VBEu29FA/WtSEUMXNBtC5n+e5DeE+4kT+9XSTb4HVGIZVQOHmgHtsduJm1aOHv8qunR16TaTOkhBuKJxuByxWHlGpADlljFjcxJVcZP+BSV5HIDPBsfkI+Q9AfMX1aOrJokYAwjB7IlSxqaGRsOc5aJLXxVRL8+xLF/sXuDQAcwL8r6DEXJLasdluw5OsSD/lJuFOhoS4J6NDMziPDrT65mo1XW20P+Y7fY12yjyEMuUMZPF5L4+JI36uVoUZGYEkF6/1BvelpNQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(39860400002)(396003)(136003)(451199024)(1800799009)(186009)(85182001)(66556008)(6506007)(66946007)(66476007)(6486002)(64756008)(66446008)(316002)(38070700005)(38100700002)(83380400001)(36756003)(110136005)(76116006)(86362001)(6512007)(54906003)(2616005)(478600001)(26005)(8676002)(71200400001)(7416002)(2906002)(8936002)(4326008)(122000001)(5660300002)(41300700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OGNZY28ra0VITXRnY1dHREJQbVhYU3l6QjZpV01weXhuVzB6Q1dVTnpJSCtO?=
+ =?utf-8?B?UkZwQUJrbVdqNFJlSW1UM2xtMXZuQlVBY09sTU1RcVYyamNTdUVvQUhOWkxB?=
+ =?utf-8?B?WktwT3h4OUMrdGlMWEwxUUhta3VETlBPaHZwZWZxTXBpUEJHWmpUaGNGWmJx?=
+ =?utf-8?B?anR0U3VkZjJ0TjQzRFdhMDBoS1J5K1NUbHdRTkk1emppOHkydzNuRFlvQ3gz?=
+ =?utf-8?B?OW91T1RLM3ByVS9FMXdBSTE3VlRYOEpVbUpYWWRnTUt3c2U2Yk1kb3gzMTNZ?=
+ =?utf-8?B?S0tWeERORThsSjdid0gzczJYN0s5UE5aRDIyZzFoODdHcmc4MTZPK0oxUndk?=
+ =?utf-8?B?YnptNXk5aUdjSkNkaDJiYVFSU3kzZTQwQzQ4d0dPQ21DUGF1Zk0ranhLeDUz?=
+ =?utf-8?B?Snlqb3h0b25KaFJEZk8zcml1c0x0VUhPL1FES3crOGtMYkI4d0lRSG1GbDcz?=
+ =?utf-8?B?ZHVKckxIZUUyK0dyVzR5eGhVVDRvQjNnTDdsTURTeEZhMFhEOVV3dHpxTVNU?=
+ =?utf-8?B?SUhUTHRTQkg5NllTZ2NydUtndU04S1N6ZUZWajNRSTIya2ZOMjJUakM4V0Y5?=
+ =?utf-8?B?bTVwVFEyYXFPN2lNVXg4YTZkd0ZEdTFEblVEeC9wTnozTGgxMFRVRktVdzYx?=
+ =?utf-8?B?clVjcjRRemc0T1FvUzdSWHJaQTZsbXpTd3VhdXhycm8xWFBkeXNFTFdMejFY?=
+ =?utf-8?B?M2lYc1lhQ2Z0TWFnWVMvQkwwT2tsc2hxZFd0S0JYVzlTNzlscDI1UXF3QzM1?=
+ =?utf-8?B?a3AzdFZmVjRFMkFuQkc4NEZRWThOM1BCc2RwRm4vMm4zTGRPQ3FMV05LeEFK?=
+ =?utf-8?B?djV1M2J1Nk44ZmRLVlN6UFZTazVjdTFvRFZEZTRLaFpwWndyRTZQcUQzcTZj?=
+ =?utf-8?B?aG44R0VWS01ZMmlsVi9hZy9aUWlCT3lEckQ2b28vVG1lWjMvck1SVU56ZDZR?=
+ =?utf-8?B?UzI1Y1N2TDhNY2dEcEJlUVp5d2R0M0VGZHZtaEE0RDh1S2xiQytIVmZNSGlS?=
+ =?utf-8?B?bzFkTmp6QXR5Q0lreVl6cmNVcmZwcHhWcVRuNXNUYUQ4T1JvVjc1OUpBSlJ5?=
+ =?utf-8?B?TEtSRWNmdCtTSVJRQlNOSWNzV0ozMDNwYzhDWWJ5TlYvYjNKVE9ZVEpaMXFN?=
+ =?utf-8?B?NEtKRCtEN3VnLzVQUGcwc2VrVFViRkJPTGN6NFZHZVN3SGozU1BIampWSU9z?=
+ =?utf-8?B?UStUNlFCSGxyd01HT1c1aXN3N2RlcWh3VXl4ZThvS3JXY2t2dmFtOHpkVmdC?=
+ =?utf-8?B?MHNoZEdiQ3RWQk1OVGJqeVpnMzhRazJjaFpDcXFySEhVdkNZaFVxa0tEYzZK?=
+ =?utf-8?B?MkRZM05OZzdKcmM3ZHFlOWUwM3ozZlNTMll3Qys5ZG4yd0llL1RkTHlRcE9u?=
+ =?utf-8?B?RlEwamdFM0xwaWNYR0ZNei9jaDh5TDF3T1dwRkRnTmVDK0ZBSUpTdnFTQnFS?=
+ =?utf-8?B?M1lDN3h5MTgydC9VNVYyclNNK1RwVEFLU0JUMGRnVTl3VEFrcUNnNE05c1VM?=
+ =?utf-8?B?dmlKVDlJQTE5a0lpdGJTVGR2S21vU2FPVmhQQWtnTm5rOVFIanRGNWJITDRm?=
+ =?utf-8?B?SDVnUGQxTWdFM3NJd0p3eXJvRkQ0ekFNbFQrRHFHL0E3KzEyL1NLK1phdy9l?=
+ =?utf-8?B?THlmNlJ2V2lLNThPUFZkcGhnZ21QV1Mxb2EwdVFkY25NTndpZkE0T21SbkxM?=
+ =?utf-8?B?THdLZlYxckYwSVRlelByZmV6TUdiZUNTRXlJNjV0Rk5ZUCthbzljbHM3NDNn?=
+ =?utf-8?B?L2IySGMvQXZCVjJCcjQyUzdDZEJTRUNqNTZWazVtRjVCVG1FVml1a3Rjck5n?=
+ =?utf-8?B?dkhudmtBZVdKRWtnclhhZTJ5NUZxTzBTWVF2QU9BTXRjNEUwbnl1MkV1LytK?=
+ =?utf-8?B?ZmtPcFUxaW0vZjBTYnlzYmRJWnZ6aGlDaDlvZ3VrYVZmU1d3YzdEQ1ZJbzY1?=
+ =?utf-8?B?ZlVpWFYwZm5mTXhzZ3pVYUUzL3Foa2tUK2w2VWFYM01Fc0IySnpjVUsxd0pu?=
+ =?utf-8?B?NzBFT2g5NHRKKytDbERkek9TN0hUK2V5UGxycTVyVXhuY1pwOEY0dGl1R0tG?=
+ =?utf-8?B?TzhaRFVER25ZSHBUUWJURUxwNktXK281YlJwTUNlbHJZNk1mMGVZRmRJcTI3?=
+ =?utf-8?Q?GrGBMyjuCMEqIqAN9WGpTqZp6?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1990F33AD589BB488869609D1DE4F413@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8ce35a7-f2f4-432a-0fe1-08dbb99ef48e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2023 06:00:56.1924
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: O+0zku2lVXwI4qqZFacB3S++D+MKuCpX/b9gMgdRq6p/wwfDl7DMoIgXaMCqiFhZlYyciHzA/BboECYHoYxzYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR03MB7706
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/19/2023 8:31 PM, Michael S. Tsirkin wrote:
-> On Tue, Sep 19, 2023 at 07:42:42PM +0800, Jiqian Chen wrote:
->> When guest vm does S3, Qemu will reset and clear some things of virtio
->> devices, but guest can't aware that, so that may cause some problems.
->> For excample, Qemu calls virtio_reset->virtio_gpu_gl_reset when guest
->> resume, that function will destroy render resources of virtio-gpu. As
->> a result, after guest resume, the display can't come back and we only
->> saw a black screen. Due to guest can't re-create all the resources, so
->> we need to let Qemu not to destroy them when S3.
->>
->> For above purpose, we need a mechanism that allows guests and QEMU to
->> negotiate their reset behavior. So this patch add a new parameter
->> named freeze_mode to struct virtio_pci_common_cfg. And when guest
->> suspends, it can write freeze_mode to be FREEZE_S3, and then virtio
->> devices can change their reset behavior on Qemu side according to
->> freeze_mode. What's more, freeze_mode can be used for all virtio
->> devices to affect the behavior of Qemu, not just virtio gpu device.
-Hi Jiqian,
-
-Have you seen this series: [PATCH 0/5] virtio: introduce SUSPEND bit and 
-vq state
-https://lore.kernel.org/all/3f4cbf84-010c-cffa-0b70-33c449b5561b@intel.com/T/
-
-We introduced a bit in the device status SUSPEND, when VIRTIO_F_SUSPEND is
-negotiated, the driver can set SUSPEND in the device status to suspend the
-device.
-
-When SUSPEND, the device should pause its operations and preserve its 
-configurations
-in its configuration space.
-
-The driver re-write DRIVER_OK to clear SUSPEND, so the device resumes 
-running.
-
-This is originally to serve live migration, but I think it can also meet 
-your needs.
-
-Thanks,
-Zhu Lingshan
->>
->> Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
->> ---
->>   transport-pci.tex | 7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> diff --git a/transport-pci.tex b/transport-pci.tex
->> index a5c6719..2543536 100644
->> --- a/transport-pci.tex
->> +++ b/transport-pci.tex
->> @@ -319,6 +319,7 @@ \subsubsection{Common configuration structure layout}\label{sec:Virtio Transport
->>           le64 queue_desc;                /* read-write */
->>           le64 queue_driver;              /* read-write */
->>           le64 queue_device;              /* read-write */
->> +        le16 freeze_mode;               /* read-write */
->>           le16 queue_notif_config_data;   /* read-only for driver */
->>           le16 queue_reset;               /* read-write */
->>
-> we can't add fields in the middle of the structure like this -
-> offset of queue_notif_config_data and queue_reset changes.
->
->    
->> @@ -393,6 +394,12 @@ \subsubsection{Common configuration structure layout}\label{sec:Virtio Transport
->>   \item[\field{queue_device}]
->>           The driver writes the physical address of Device Area here.  See section \ref{sec:Basic Facilities of a Virtio Device / Virtqueues}.
->>   
->> +\item[\field{freeze_mode}]
->> +        The driver writes this to set the freeze mode of virtio pci.
->> +        VIRTIO_PCI_FREEZE_MODE_UNFREEZE - virtio-pci is running;
->> +        VIRTIO_PCI_FREEZE_MODE_FREEZE_S3 - guest vm is doing S3, and virtio-pci enters S3 suspension;
->> +        Other values are reserved for future use, like S4, etc.
->> +
-> we need to specify these values then.
->
-> we also need
-> - feature bit to detect support for S3
-> - conformance statements documenting behavious under S3
->
->
->>   \item[\field{queue_notif_config_data}]
->>           This field exists only if VIRTIO_F_NOTIF_CONFIG_DATA has been negotiated.
->>           The driver will use this value when driver sends available buffer
->> -- 
->> 2.34.1
->
-> This publicly archived list offers a means to provide input to the
-> OASIS Virtual I/O Device (VIRTIO) TC.
->
-> In order to verify user consent to the Feedback License terms and
-> to minimize spam in the list archive, subscription is required
-> before posting.
->
-> Subscribe: virtio-comment-subscribe@lists.oasis-open.org
-> Unsubscribe: virtio-comment-unsubscribe@lists.oasis-open.org
-> List help: virtio-comment-help@lists.oasis-open.org
-> List archive: https://lists.oasis-open.org/archives/virtio-comment/
-> Feedback License: https://www.oasis-open.org/who/ipr/feedback_license.pdf
-> List Guidelines: https://www.oasis-open.org/policies-guidelines/mailing-lists
-> Committee: https://www.oasis-open.org/committees/virtio/
-> Join OASIS: https://www.oasis-open.org/join/
->
-
+SGksIEhzaWFvLWNoaWVuOg0KDQpPbiBNb24sIDIwMjMtMDktMTEgYXQgMTU6NDIgKzA4MDAsIEhz
+aWFvIENoaWVuIFN1bmcgd3JvdGU6DQo+IEFkZCBjb21wYXRpYmxlIG5hbWUgZm9yIE1lZGlhVGVr
+IE1UODE4OCBFVEhEUi4NCg0KUmV2aWV3ZWQtYnk6IENLIEh1IDxjay5odUBtZWRpYXRlay5jb20+
+DQoNCj4gDQo+IFJldmlld2VkLWJ5OiBBbmdlbG9HaW9hY2NoaW5vIERlbCBSZWdubyA8DQo+IGFu
+Z2Vsb2dpb2FjY2hpbm8uZGVscmVnbm9AY29sbGFib3JhLmNvbT4NCj4gQWNrZWQtYnk6IEtyenlz
+enRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAbGluYXJvLm9yZz4NCj4gU2lnbmVk
+LW9mZi1ieTogSHNpYW8gQ2hpZW4gU3VuZyA8c2hhd24uc3VuZ0BtZWRpYXRlay5jb20+DQo+IC0t
+LQ0KPiAgLi4uL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssZXRoZHIueWFtbCAg
+ICAgICAgICAgfCA2DQo+ICsrKysrLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygr
+KSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdA0KPiBhL0RvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGV0aGRyLnkNCj4gYW1s
+DQo+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsv
+bWVkaWF0ZWssZXRoZHIueQ0KPiBhbWwNCj4gaW5kZXggODAxZmE2NmFlNjE1Li42Nzc4ODIzNDhl
+ZGUgMTAwNjQ0DQo+IC0tLQ0KPiBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9k
+aXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGV0aGRyLnkNCj4gYW1sDQo+ICsrKw0KPiBiL0RvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGV0
+aGRyLnkNCj4gYW1sDQo+IEBAIC0yMyw3ICsyMywxMSBAQCBkZXNjcmlwdGlvbjoNCj4gDQo+ICBw
+cm9wZXJ0aWVzOg0KPiAgICBjb21wYXRpYmxlOg0KPiAtICAgIGNvbnN0OiBtZWRpYXRlayxtdDgx
+OTUtZGlzcC1ldGhkcg0KPiArICAgIG9uZU9mOg0KPiArICAgICAgLSBjb25zdDogbWVkaWF0ZWss
+bXQ4MTk1LWRpc3AtZXRoZHINCj4gKyAgICAgIC0gaXRlbXM6DQo+ICsgICAgICAgICAgLSBjb25z
+dDogbWVkaWF0ZWssbXQ4MTg4LWRpc3AtZXRoZHINCj4gKyAgICAgICAgICAtIGNvbnN0OiBtZWRp
+YXRlayxtdDgxOTUtZGlzcC1ldGhkcg0KPiANCj4gICAgcmVnOg0KPiAgICAgIG1heEl0ZW1zOiA3
+DQo+IC0tDQo+IDIuMTguMA0KPiANCg==
