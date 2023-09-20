@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFC87A8795
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AB37A879D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235216AbjITOwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
+        id S235251AbjITOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235086AbjITOwn (ORCPT
+        with ESMTP id S235011AbjITOxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:52:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FEA91;
-        Wed, 20 Sep 2023 07:52:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CADFC433C7;
-        Wed, 20 Sep 2023 14:52:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695221557;
-        bh=5h6v16wWKhONz72yVfPnsD86/kim+Vey7bcx5sp9XPw=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=H1BGfj0tjIThLBRbQg1ItMQ3Ju2K+XPPDe3C5H2KlmI88xRnwSjHZltwSGjWGQDTn
-         Hz+lKxfdNxKpN+fMYhTSOm/7uuiX0n5H4muLu3dtYhbiXDNytLCfSXTP0tTeZqfIB0
-         3Utoa4RnTSjOe50PQWHNtQ/W/mGaEgtO/2tC3oer65fgBtzbWMjaGVkieF1iiomoDr
-         nCqKQZwSmLd1yg4z0xr66clgZDgQlkB5KWtKCBVEHLiwaaKYTakZAIm2V1pzWTlou/
-         cV5s+YiBtBjlZd+7+bUFPMj4B8+oSLVlVt0ptF0jgwOFURs6wQ5duwOj4u3w37VZ7C
-         4krVl8Seq4tNw==
-Content-Type: text/plain; charset="utf-8"
+        Wed, 20 Sep 2023 10:53:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467A39F;
+        Wed, 20 Sep 2023 07:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GyiHhTkxOm0E3nJZzmdSc55EE6M80FFoZ8Fg8eF69QI=; b=qal6/LGdy1+KLISPaYnZD8Qx03
+        0sPsW4Hb98j/QISugyJf8X+fjehOvS9Ll09sNhQBGt4zYCqJLS05+5zcypr1lxzUUBMMzVD94e3dM
+        WsEbCy3MXmjjSIbGTjummdcpDaTg/Q5P6+27Ache2MDt+PDg7wvaaYBxEqYwmH7IH6z3v4Nrab3kH
+        jumgDPBEh8iwGY7QxhMaZVdU9o7YOZ+lp8opCiziKvMXLydIfARsPghjuMR+QFMMUTvGJiINVUWkL
+        bzeShoJxnjyr3LqxNC1fTfMdieOivUFEv0jhy8CMnJm5sqI4skd6Rbs5aAGT9J8EfMFToJBwbaylz
+        Z9nmpmCw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qiyZT-006Oz0-BC; Wed, 20 Sep 2023 14:52:55 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 04996300348; Wed, 20 Sep 2023 16:52:55 +0200 (CEST)
+Date:   Wed, 20 Sep 2023 16:52:54 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Srivatsa S. Bhat (VMware)" <srivatsa@csail.mit.edu>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [RFC PATCH 1/3] x86/paravirt: move some functions and defines to
+ alternative
+Message-ID: <20230920145254.GC6687@noisy.programming.kicks-ass.net>
+References: <20230608140333.4083-1-jgross@suse.com>
+ <20230608140333.4083-2-jgross@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2 wireless-next 7/9] wifi: ath12k: Remove unnecessary
- (void*)
- conversions
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20230919045142.524226-1-yunchuan@nfschina.com>
-References: <20230919045142.524226-1-yunchuan@nfschina.com>
-To:     Wu Yunchuan <yunchuan@nfschina.com>
-Cc:     quic_jjohnson@quicinc.com, ath12k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Wu Yunchuan <yunchuan@nfschina.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169522155403.1418260.5064455550425202498.kvalo@kernel.org>
-Date:   Wed, 20 Sep 2023 14:52:35 +0000 (UTC)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230608140333.4083-2-jgross@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wu Yunchuan <yunchuan@nfschina.com> wrote:
-
-> No need cast (void*) to (struct hal_rx_ppdu_end_user_stats *),
-> (struct ath12k_rx_desc_info *) or (struct hal_tx_msdu_ext_desc *).
-> Change the prototype to remove the local variable.
+On Thu, Jun 08, 2023 at 04:03:31PM +0200, Juergen Gross wrote:
+> As a preparation for replacing paravirt patching completely by
+> alternative patching, move some backend functions and #defines to
+> alternative code and header.
 > 
-> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
-> Suggested-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-This added new warnings:
-
-drivers/net/wireless/ath/ath12k/dp_mon.c:25: line length of 92 exceeds 90 columns
-drivers/net/wireless/ath/ath12k/dp_mon.c:26: line length of 95 exceeds 90 columns
-
-I fixed them in the pending branch by renaming ppdu_end_user to stats and
-moving rx_user_status to it's own line:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=5c0910fdf1d800f1aeb8ab3e860e61bebec0091b
-
-No need to resend because of this.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20230919045142.524226-1-yunchuan@nfschina.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
