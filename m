@@ -2,73 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA777A6FF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010AE7A6FFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 03:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjITArJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 20:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
+        id S230272AbjITBM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 21:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbjITArH (ORCPT
+        with ESMTP id S229641AbjITBMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 20:47:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE16F83
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:47:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 727C5C433C8;
-        Wed, 20 Sep 2023 00:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695170821;
-        bh=hIe7iSfzxlD1Ssky6t8tpNboP78N0LngZBkea2BN3Rk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=D/+bENO1pwEuPTaRAaguImitaJz1Y0zXTJ8C+HrEyNgAQrd5QVA/RtTx2A1539PAy
-         +lmO13z0FP6zQ/6XRni1I91F3+IWAPcDX6ByLfbHNeKjuV9XasIjZZ+mS7sPu4uHDc
-         lA62UFazSBO1BFb4TbxND7gtfzhTSN7UpR9ZHV5ae+G4510Md4Z+dmYzkVxn/rxyYF
-         jDc578zj+TQD477ASBCQeB0WYRHWF3UtUDM/aNc22i2eIEHU9WWqWEKQvlPE3Bu7Iz
-         tWIkBXnGfV2s/Z3iSQdjCEKuOQjAA0xRB4/far3aKd4meEP2ehCgLbtFsQjgxQ9s8Y
-         eV8PJq2+voe9A==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH] f2fs: preload extent_cache for POSIX_FADV_WILLNEED
-Date:   Tue, 19 Sep 2023 17:46:45 -0700
-Message-ID: <20230920004645.1462354-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+        Tue, 19 Sep 2023 21:12:24 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5043B3;
+        Tue, 19 Sep 2023 18:12:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695172332;
+        bh=naroMBErSn2t3KbKYiTgYiGNYwV6PHYlOn96MGhMVbU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eQhvCkGQy6/Zb2WjeJo7Q0LxmIDUIvRrFY3Vv9TAIwmeq0MYlPuzrgfJffsVYAToE
+         mU8tGlAN/uCQhcdWBDbg2hh8080qBybcRGIu9srJg8Mu/29jGnl9Qpv9iNKd34GgQF
+         fbssHai6RLXbVsIb8eypLsQM2l1UQCheHX6a/wCcaWcTUbi2memdDNPwSWFV+7zI37
+         WAE3/gULCeuT2Pa5MBg6Orm61rPdfFo88ZLx8MukYpErYU+AqoojpCdAAVGE2zgY0a
+         qXyRAZy7d4G+cnreP6M4soU9Yoa4ZSZ9Z9X6AblzWHOwg1PWzQydRTDh7S9cvuEoXZ
+         kggzWQdIXTxag==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rr0qw0Fyhz4xGM;
+        Wed, 20 Sep 2023 11:12:11 +1000 (AEST)
+Date:   Wed, 20 Sep 2023 11:12:10 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Ben Skeggs <bskeggs@redhat.com>, Karol Herbst <kherbst@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lyude Paul <lyude@redhat.com>
+Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
+Message-ID: <20230920111210.505e5daa@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/o52gEQ/sgnm94h5t6ow.E0z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch tries to preload extent_cache given POSIX_FADV_WILLNEED, which is
-more useful for generic usecases.
+--Sig_/o52gEQ/sgnm94h5t6ow.E0z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Suggested-by: Eric Biggers <ebiggers@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/file.c | 2 ++
- 1 file changed, 2 insertions(+)
+Hi all,
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 09716127e107..df7703c1f7d7 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -4858,6 +4858,8 @@ static int f2fs_file_fadvise(struct file *filp, loff_t offset, loff_t len,
- 		filp->f_mode &= ~FMODE_RANDOM;
- 		spin_unlock(&filp->f_lock);
- 		return 0;
-+	} else if (advice == POSIX_FADV_WILLNEED) {
-+		f2fs_precache_extents(inode);
- 	}
- 
- 	err = generic_fadvise(filp, offset, len, advice);
--- 
-2.42.0.459.ge4e396fd5e-goog
+Today's linux-next merge of the drm-misc tree got a conflict in:
 
+  drivers/gpu/drm/nouveau/nouveau_connector.c
+
+between commit:
+
+  1b254b791d7b ("drm/nouveau/disp: fix use-after-free in error handling of =
+nouveau_connector_create")
+
+from Linus' tree and commit:
+
+  8b7d92cad953 ("drm/nouveau/kms/nv50-: create connectors based on nvkm inf=
+o")
+
+from the drm-misc tree.
+
+I fixed it up (I think, see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/nouveau/nouveau_connector.c
+index 79ea30aac31f,94498c15b50e..000000000000
+--- a/drivers/gpu/drm/nouveau/nouveau_connector.c
++++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+@@@ -1295,70 -1303,76 +1303,75 @@@ nouveau_connector_create(struct drm_dev
+  	nv_connector->index =3D index;
+  	INIT_WORK(&nv_connector->irq_work, nouveau_dp_irq);
+ =20
+- 	/* attempt to parse vbios connector type and hotplug gpio */
+- 	nv_connector->dcb =3D olddcb_conn(dev, index);
+- 	if (nv_connector->dcb) {
+- 		u32 entry =3D ROM16(nv_connector->dcb[0]);
+- 		if (olddcb_conntab(dev)[3] >=3D 4)
+- 			entry |=3D (u32)ROM16(nv_connector->dcb[2]) << 16;
+-=20
+- 		nv_connector->type =3D nv_connector->dcb[0];
+- 		if (drm_conntype_from_dcb(nv_connector->type) =3D=3D
+- 					  DRM_MODE_CONNECTOR_Unknown) {
+- 			NV_WARN(drm, "unknown connector type %02x\n",
+- 				nv_connector->type);
+- 			nv_connector->type =3D DCB_CONNECTOR_NONE;
++ 	if (disp->disp.conn_mask & BIT(nv_connector->index)) {
++ 		ret =3D nvif_conn_ctor(&disp->disp, nv_connector->base.name, nv_connect=
+or->index,
++ 				     &nv_connector->conn);
++ 		if (ret) {
+ -			kfree(nv_connector);
+ -			return ERR_PTR(ret);
+++			goto drm_conn_err;
+  		}
+ =20
+- 		/* Gigabyte NX85T */
+- 		if (nv_match_device(dev, 0x0421, 0x1458, 0x344c)) {
+- 			if (nv_connector->type =3D=3D DCB_CONNECTOR_HDMI_1)
+- 				nv_connector->type =3D DCB_CONNECTOR_DVI_I;
++ 		switch (nv_connector->conn.info.type) {
++ 		case NVIF_CONN_VGA      : type =3D DCB_CONNECTOR_VGA; break;
++ 		case NVIF_CONN_DVI_I    : type =3D DCB_CONNECTOR_DVI_I; break;
++ 		case NVIF_CONN_DVI_D    : type =3D DCB_CONNECTOR_DVI_D; break;
++ 		case NVIF_CONN_LVDS     : type =3D DCB_CONNECTOR_LVDS; break;
++ 		case NVIF_CONN_LVDS_SPWG: type =3D DCB_CONNECTOR_LVDS_SPWG; break;
++ 		case NVIF_CONN_DP       : type =3D DCB_CONNECTOR_DP; break;
++ 		case NVIF_CONN_EDP      : type =3D DCB_CONNECTOR_eDP; break;
++ 		case NVIF_CONN_HDMI     : type =3D DCB_CONNECTOR_HDMI_0; break;
++ 		default:
++ 			WARN_ON(1);
++ 			return NULL;
+  		}
+ =20
+- 		/* Gigabyte GV-NX86T512H */
+- 		if (nv_match_device(dev, 0x0402, 0x1458, 0x3455)) {
+- 			if (nv_connector->type =3D=3D DCB_CONNECTOR_HDMI_1)
+- 				nv_connector->type =3D DCB_CONNECTOR_DVI_I;
+- 		}
++ 		nv_connector->type =3D type;
+  	} else {
+- 		nv_connector->type =3D DCB_CONNECTOR_NONE;
+- 	}
++ 		u8 *dcb =3D olddcb_conn(dev, nv_connector->index);
+ =20
+- 	/* no vbios data, or an unknown dcb connector type - attempt to
+- 	 * figure out something suitable ourselves
+- 	 */
+- 	if (nv_connector->type =3D=3D DCB_CONNECTOR_NONE) {
+- 		struct nouveau_drm *drm =3D nouveau_drm(dev);
+- 		struct dcb_table *dcbt =3D &drm->vbios.dcb;
+- 		u32 encoders =3D 0;
+- 		int i;
++ 		if (dcb)
++ 			nv_connector->type =3D dcb[0];
++ 		else
++ 			nv_connector->type =3D DCB_CONNECTOR_NONE;
+ =20
+- 		for (i =3D 0; i < dcbt->entries; i++) {
+- 			if (dcbt->entry[i].connector =3D=3D nv_connector->index)
+- 				encoders |=3D (1 << dcbt->entry[i].type);
++ 		/* attempt to parse vbios connector type and hotplug gpio */
++ 		if (nv_connector->type !=3D DCB_CONNECTOR_NONE) {
++ 			if (drm_conntype_from_dcb(nv_connector->type) =3D=3D
++ 						  DRM_MODE_CONNECTOR_Unknown) {
++ 				NV_WARN(drm, "unknown connector type %02x\n",
++ 					nv_connector->type);
++ 				nv_connector->type =3D DCB_CONNECTOR_NONE;
++ 			}
+  		}
+ =20
+- 		if (encoders & (1 << DCB_OUTPUT_DP)) {
+- 			if (encoders & (1 << DCB_OUTPUT_TMDS))
+- 				nv_connector->type =3D DCB_CONNECTOR_DP;
+- 			else
+- 				nv_connector->type =3D DCB_CONNECTOR_eDP;
+- 		} else
+- 		if (encoders & (1 << DCB_OUTPUT_TMDS)) {
+- 			if (encoders & (1 << DCB_OUTPUT_ANALOG))
+- 				nv_connector->type =3D DCB_CONNECTOR_DVI_I;
+- 			else
+- 				nv_connector->type =3D DCB_CONNECTOR_DVI_D;
+- 		} else
+- 		if (encoders & (1 << DCB_OUTPUT_ANALOG)) {
+- 			nv_connector->type =3D DCB_CONNECTOR_VGA;
+- 		} else
+- 		if (encoders & (1 << DCB_OUTPUT_LVDS)) {
+- 			nv_connector->type =3D DCB_CONNECTOR_LVDS;
+- 		} else
+- 		if (encoders & (1 << DCB_OUTPUT_TV)) {
+- 			nv_connector->type =3D DCB_CONNECTOR_TV_0;
++ 		/* no vbios data, or an unknown dcb connector type - attempt to
++ 		 * figure out something suitable ourselves
++ 		 */
++ 		if (nv_connector->type =3D=3D DCB_CONNECTOR_NONE &&
++ 		    !WARN_ON(drm->client.device.info.family >=3D NV_DEVICE_INFO_V0_TESL=
+A)) {
++ 			struct dcb_table *dcbt =3D &drm->vbios.dcb;
++ 			u32 encoders =3D 0;
++ 			int i;
++=20
++ 			for (i =3D 0; i < dcbt->entries; i++) {
++ 				if (dcbt->entry[i].connector =3D=3D nv_connector->index)
++ 					encoders |=3D (1 << dcbt->entry[i].type);
++ 			}
++=20
++ 			if (encoders & (1 << DCB_OUTPUT_TMDS)) {
++ 				if (encoders & (1 << DCB_OUTPUT_ANALOG))
++ 					nv_connector->type =3D DCB_CONNECTOR_DVI_I;
++ 				else
++ 					nv_connector->type =3D DCB_CONNECTOR_DVI_D;
++ 			} else
++ 			if (encoders & (1 << DCB_OUTPUT_ANALOG)) {
++ 				nv_connector->type =3D DCB_CONNECTOR_VGA;
++ 			} else
++ 			if (encoders & (1 << DCB_OUTPUT_LVDS)) {
++ 				nv_connector->type =3D DCB_CONNECTOR_LVDS;
++ 			} else
++ 			if (encoders & (1 << DCB_OUTPUT_TV)) {
++ 				nv_connector->type =3D DCB_CONNECTOR_TV_0;
++ 			}
+  		}
+  	}
+ =20
+@@@ -1367,11 -1387,10 +1386,9 @@@
+  		ret =3D nouveau_bios_parse_lvds_table(dev, 0, &dummy, &dummy);
+  		if (ret) {
+  			NV_ERROR(drm, "Error parsing LVDS table, disabling\n");
+--			kfree(nv_connector);
+--			return ERR_PTR(ret);
+++			goto drm_conn_err;
+  		}
+ =20
+- 		funcs =3D &nouveau_connector_funcs_lvds;
+  		break;
+  	case DRM_MODE_CONNECTOR_DisplayPort:
+  	case DRM_MODE_CONNECTOR_eDP:
+
+--Sig_/o52gEQ/sgnm94h5t6ow.E0z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUKRusACgkQAVBC80lX
+0Gz/Jwf9EpFciQytMrB9EGPZlDQNNqcVzmXmhOf9lPP86jVE4c9drE/m/V3hI+HJ
++1rtkzxoagrKym44GM5O+lE0ojheWp0hDejTFjAqeBkMGoj/WAzxW7bb8gAjDXkd
+NNUZcT1EmM9EfbBgH8fvBX2158atvl+82mOAlBpoT1jnEMnR3gQjer+rJN5leVlq
+TEQl8CB0fkGjqaqTEt/AHh4Wv8/jM5CTrsTUqM3ZBz+ffD/zPYiEFA49PxQX8WHb
+cllEMe1zIJsR2I//LPTFnmuvRIwC1Ws02STVlb5Sy1LTvbCDEJX1+TpGnuq+Hxl+
+6oZ4vG+hqHnZCyxHLW8mlLVlJAdw8Q==
+=BmcH
+-----END PGP SIGNATURE-----
+
+--Sig_/o52gEQ/sgnm94h5t6ow.E0z--
