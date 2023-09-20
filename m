@@ -2,289 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAED67A8664
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CA97A8665
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234959AbjITOWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54820 "EHLO
+        id S234800AbjITOXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbjITOWI (ORCPT
+        with ESMTP id S234339AbjITOXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:22:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45390AF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:22:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5FF5C433C7;
-        Wed, 20 Sep 2023 14:22:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695219721;
-        bh=LqtqpHzwRDH0oWFyoYM+97XwIaM8ozMTSXhPn4/77c8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PUBcifAXieesYeb9maaaTS68yS0r2bj9paBIg4jeIUAuxAN3aa9wOqdS82iXcoEGN
-         CexkaU3/X9lFp5se8Zi6ZBWce7wLw8E5e5sL1gpnYInOw8KG9XL1aOsTy6L4Pj481S
-         v+xQYwBJjE/5H/PRq8gnK4XKZpY3KO/2xWdxQdIdh+hNUrm6JkacOVELEo9wL42qJr
-         zoI61/yTlB6wNO01fUAg1KnMdlZ9Sh6EHYhNo39GJGtxdPGxLJUHGbuMjQjwMHCNAV
-         jvrOCBAHfEeZmt4ZSwpXCzcMV0LO3s6xsJCGizXwosg8QA8viuRO8LGd5zie9iYPWi
-         sM2TYm9y24z7Q==
-Date:   Wed, 20 Sep 2023 07:22:01 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        david@fromorbit.com, kent.overstreet@linux.dev,
-        linux-arm-kernel@lists.infradead.org, ming.lei@redhat.com,
-        will@kernel.org, yi.zhang@redhat.com,
-        yangerkun <yangerkun@huawei.com>
-Subject: Re: [PATCH] locking/atomic: scripts: fix fallback ifdeffery
-Message-ID: <20230920142201.GG348037@frogsfrogsfrogs>
-References: <20230919171430.2697727-1-mark.rutland@arm.com>
- <8cef9531-e44d-04de-f789-cb77c63ecf4f@huawei.com>
+        Wed, 20 Sep 2023 10:23:23 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06649AD
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:23:16 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38K9shYt030394;
+        Wed, 20 Sep 2023 14:22:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
+ to : cc : subject : in-reply-to : date : message-id : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=/7j5v3v7+cZBKvacGHeHBD8Su5jfJ7uIABMmiibyn1M=;
+ b=2ABvszAXOZg4MViin6Fkd7O7ABaI42vLpa/SqtjkW7e5FIyvcwkZamBWwmkFQHrq7Jfg
+ SC3hqTFSygd0w+lKETdwOIRAwu2pxnX8QJ+w6aTaxU0rTlTHN60BATzH/R2x1/oP9ofQ
+ SiZVCG785r0teVSeVwSPvosye8Ey3VMCBBmbZ6eONM3jpBbVXmyoJGpoFxdeEvXrUjws
+ pi7tetqWn/Z/C94ibDOmHUe0qKPXWG9/I2mNgrWkAXF9BSZdb3DtBwFfJFI8BU0rsWE8
+ bxSOoRowzuaGuvCBljVnwCOTe4ET7Ovqxmco/+bfPqB8sjlM1ycdIMywQbDFBIwnMMKt 9g== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t53yu7d7s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Sep 2023 14:22:35 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38KDeGeo030918;
+        Wed, 20 Sep 2023 14:22:34 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2175.outbound.protection.outlook.com [104.47.73.175])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t52t75fam-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Sep 2023 14:22:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dViy3dbV3PTuM4E3FVI8HcwYI8WT9fMNYUnqcMSjVXT1pk5Lwr2GkV1ljGCs3hM0VN9I1dXpevVHNpfpiSVyXP6/8L10k7SNhPo6wQ9Wt0YKsutCNDSTBASYcQsFhN6T+kWaDcWL4W2O5gxvZC4WQM5GAclsgumYUJ6jt4ox9pYg6UQV5rQbPBso2O2GqUIar2AgRD70nxsW/HKdeK6ZGVrr8OQggLhUc23I+QJFT8Qs5/QZHHPzoAJ8epDNAWwHheAYAjwBWVZqBo4Jt/AF7G+hDbv73kDirL0pVbr8s3+lRykIObt+9owyEznLpKkxu5XJSOqp6OdAIZTYqFvAJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/7j5v3v7+cZBKvacGHeHBD8Su5jfJ7uIABMmiibyn1M=;
+ b=nxHZ/Hc9VPw4F71k4REirT9ciQMT56M7l9vv0imbKWHSZo9AF8NfeNXjfyOeiysea25w9SIc2yjjKaAxipbWuzRkgnhvEFQcM/F8qzOVzQokd0IHW9YEWJPlLYN+lSbnNpYr8v68c5SG60Qcq/H3ot8z53s/PXphpJTGl94jaCslvPZt6Gl82p3uzw+qeiGbaw9VFV5zIZ/4lam7EQCQWy6KjUI+dfqrxsa4AXYagT1R55osL4TyAn3ow/DUtKxMU4RDxgTSyiI3E0B+1eTLQJZypIhgsxxymgZiQa1fDgQT+/8k9XBpPWAcddO5XYaSBtbTTpqN6iKNJTKbzfzo0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/7j5v3v7+cZBKvacGHeHBD8Su5jfJ7uIABMmiibyn1M=;
+ b=TxOsQNCtVAaDkGOLEDW0SOPXNh9dtAoAuM47cG8Ik2nlX6bpQY/zmcwz63bYwT3vri+KfE0pbdXnsdA/9TMKgu0JlyWEc1DvsYjsbSWe2IjmYq/GpHRL89F0tSmsWjRhTJGV+qgpKNegF4I3zrqh4PHCN2qSGZw0A3T0vw2BOIA=
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
+ by CY5PR10MB6024.namprd10.prod.outlook.com (2603:10b6:930:3c::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.23; Wed, 20 Sep
+ 2023 14:22:31 +0000
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::864:27ff:9c9b:fc03]) by CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::864:27ff:9c9b:fc03%5]) with mapi id 15.20.6813.018; Wed, 20 Sep 2023
+ 14:22:31 +0000
+References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
+ <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+ <87zg1v3xxh.fsf@oracle.com>
+ <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+ <87edj64rj1.fsf@oracle.com>
+ <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+ <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+ <87cyyfxd4k.ffs@tglx>
+ <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+ <87led2wdj0.ffs@tglx>
+User-agent: mu4e 1.4.10; emacs 27.2
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+In-reply-to: <87led2wdj0.ffs@tglx>
+Date:   Wed, 20 Sep 2023 07:22:29 -0700
+Message-ID: <878r90lyai.fsf@oracle.com>
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR11CA0103.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::44) To CO6PR10MB5409.namprd10.prod.outlook.com
+ (2603:10b6:5:357::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8cef9531-e44d-04de-f789-cb77c63ecf4f@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|CY5PR10MB6024:EE_
+X-MS-Office365-Filtering-Correlation-Id: ba6390f3-a05a-4d1d-74e6-08dbb9e50670
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0+3/6ABwno9ApZyyfXxhpF+bJcEEzJQ6YOkyTPX/KKy9voRWkXXFg79+1WC7WCcxvWKgvWT259877PANTWeM78QBSaNIE1BvtBuLpaGoHVR8dN32/Z+VrE3/hEsWfvQr+5cehokMnFqNQEDGjKCvc6smtA65JnhiMDm5nQVPJk60L3vNVFTBAISiapS7/sRkumouhRoMTSpJNvsBuEPgjqhK98dFjIeljPt6mxIib0YjOxYvY3P3Pyk0JokB2/9Mv5aGCLyQZgNzlvj2MiR+z7XoeVo6JbDs2pcEQpuKuMLem5lsAMrCFmS7Ui/CTEdJ1ny7KZDnIFvfl4TDH/woxF6/VHqB+2UteHR8PYtiBlyjf2nVcvN8dhhVhRDCp2BubUK4xoivBBKVCexejcliApVTEsmpL424RFz57I3fanh88kATow19MVKKADkV7r1gL5WHCjIXoOM/cYG56RBcFc9osQLwREg1/8iqQEfaBnFjVnOAsvQg15OEEisXjBh5+vCqpJKQSJZ46wgTH1M1M/bBCqQEa9G3vKoi+ad1bM06JKMhyrrdH8Wf+EL2P90n
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(366004)(396003)(451199024)(1800799009)(186009)(6486002)(5660300002)(6506007)(86362001)(66476007)(66946007)(478600001)(54906003)(6512007)(66556008)(316002)(41300700001)(38100700002)(6916009)(2616005)(8676002)(8936002)(26005)(2906002)(36756003)(4326008)(83380400001)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8dtwZM5Cew7TtO49gE11AlNueeWDAf+ir3fxZzdHGzBTGwggd/7FR9l/IpHT?=
+ =?us-ascii?Q?end6nM3FbMtEnAraF8Sv43N6wWkUnPdwXjkCyiXMMqgPPTG3w+DLNyzg8XUA?=
+ =?us-ascii?Q?SUhH2zdeHwjFJDWsUEjtkfimVNR3Lq/0WRTmB8xbzTnv0vLxMKv/p6teGuIG?=
+ =?us-ascii?Q?GIdi1PxsD5q147bYKYNFgYpEyWKdTOJwZ2R0M1pHZs2cZKNjm+l6eA5mTUcy?=
+ =?us-ascii?Q?hQZcQe22ZKxLt6s/iv8GQyaO/rR86MlSZAO5cSBlP3X8eZUefGXu/xCCxJ8B?=
+ =?us-ascii?Q?tS149M46ERyqtgpudVbLTz2bVIXgmya3eLcErLrnrmwrZ3dU4Lxz7h2Jeioe?=
+ =?us-ascii?Q?UnaWZv9ZO0DgOJmjXVIWX6miTu8LOOKsAwRHEFAarMMD8CBSPdQv4Mj5TJG/?=
+ =?us-ascii?Q?3ko8FzDos98MLiDBoSCHObKmyMN3xuiFx/qNvC+JpoqffUHgN/vNOQb81Huw?=
+ =?us-ascii?Q?JOdWquAamDqV7XYlkz2B8cLPG6SEz4kwJPJbr7AEfLroQvCdkGoJ2Yu4bKuV?=
+ =?us-ascii?Q?XUUir3BDM/gyVxt+P9g3/a8BBzCaiw1rS8TsmnVtgLJsLI2yEDQqf39JLxC9?=
+ =?us-ascii?Q?yVm1fNA6ykIfJTZay9RmtNZ7hNeKfTyw6Q2RIuBOnrHdGidnJX3r7trGcrIp?=
+ =?us-ascii?Q?jOHVJtskd3d/N/vlsx6Bpp/eBCYWxw7szigfzE/xL7fHvNBWgWQkAlgNToew?=
+ =?us-ascii?Q?Cv9RlUaeiYmWjUAkGwlpDT39yLnFhRACUI0RKRbfQ5M6xdWkKqTf1wyzJedS?=
+ =?us-ascii?Q?ueUDDYEeqrIMGsLrcVzW+8foC7smYWzHI1B4ESrSugZZ+jDWhsC6ROyfmNsL?=
+ =?us-ascii?Q?3Ev1ZA+fhzhEqfv2/RjX+qrLEoNocRqfatAKVENMWTehj4IATGwqUDrvpPby?=
+ =?us-ascii?Q?tBLnp47kldZB9OX+DOEWpimJYLQIEcDGWYslmrZzgfQFyQi3buYfwZkE/X9S?=
+ =?us-ascii?Q?CgQkiEqaFhUB67StAfzAHrXh5EShN4hjkrzUfj49vvUoJFVGU9hkiZ89BSIM?=
+ =?us-ascii?Q?l2gH6B623cy/vz1cvs8fAxzDqrL+YZP4WFgVnekE8Cw7vILTire5CD4+Prf6?=
+ =?us-ascii?Q?U4il9GpLdMjrE6Bfi7TIn70YLwqgBBDKuQkAha4noPiJBy0Y6yu/hC3+DQ21?=
+ =?us-ascii?Q?PARfzkmI4lUOjrs5bx0dxXFjp8rbjIWHcdVIKMatvLWbzBVzF/gxCk+lwtTn?=
+ =?us-ascii?Q?Ye5UI9uauEbmrrKPdqaroQjqdtXAKnSAOzyTdFeiobuGNnmgfgg789Ux8kc1?=
+ =?us-ascii?Q?azFRRFteMi92ObLoP3qj+TbUQ1Vpx0FYwBwIsxjSb+VymjXfWor2QXokqbg9?=
+ =?us-ascii?Q?LUh9gcfK8PflCucDf9c9mcQh/FQjktKiiSokh/yG0zfdnScsOaYK1mQ3qZsW?=
+ =?us-ascii?Q?SPpsiMGjPDEi/nlF+j+Vx+Nz2NJvc8NlGTQ+AGiMCinGZNQ8htOY7wdqRV6m?=
+ =?us-ascii?Q?4nnJ982iEF818ImSTQqMCdTwbXhVbTqverErYPgTDaxQs8ZWdwlNA9R6r/te?=
+ =?us-ascii?Q?hDDL/a92lA6/yYxlYxSBvkUUMNrlOODqXLpGUmfkeSY7ForugovbsiMRzrm/?=
+ =?us-ascii?Q?vrbtVGTiD/WoBRxqpukCW8/B11o6C+psEAuX6uwfRYihLl1xdllTCwepd2ei?=
+ =?us-ascii?Q?HQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?/x3Pase/AgcP62cDkiUA/cSZCkLyoOlNPQ+2Mhpv0idctAiHHAFa+c9oTjKM?=
+ =?us-ascii?Q?zN/C0jQ2d3IC0uL746iLiz3ZvZoOdVjCNPG+qVa7RlFmZEUQ3TcMjc8KM/c0?=
+ =?us-ascii?Q?Bfflt1BnXN1YFEzu5ifJJH2dnP3ybBlecGVPfIraaIVetOUEajb3BxZ/MjcM?=
+ =?us-ascii?Q?j4XKZ6ynxpbevL2q/Ox3FWc/KOUah0FWditxHgeDiM9pZ23lUFPD5oOiul4P?=
+ =?us-ascii?Q?TJvHbyJj36vhnHoM7UYy/vnbvbeKmsB2xZVr/vAsn/TLKZn3awXoYFlSvphS?=
+ =?us-ascii?Q?D2+1w/YWey58mXR9/xRg1fTYF+ZMJP/dpeVggBChc9clVOfUSMMssFNpy16z?=
+ =?us-ascii?Q?49JD9CjhE8cdE3U0IMKmGUWFVHBVVcyuoaT3IO7XNVeX02aoZpr15pAEae2H?=
+ =?us-ascii?Q?HPijhV0unumz7yCtFMh2Kisz/sOA+4xTB1y6LjQrf2g+0R7Mr0ck5Y/zCgnT?=
+ =?us-ascii?Q?dmjOhYcAZ68ZmQDHZzJpt8k0hHo691dc4YySNL6mJjqIcqSHDnbl6cLhuAeP?=
+ =?us-ascii?Q?vNB0icLNiChJKkW3RDjGgH2JBR7F+0s6TpNq9CtY4Ork7W1UILhYeY6rObl8?=
+ =?us-ascii?Q?dGvqBZT1WGxLazRaEhd2MiJ8ZRnAXoKdgTorYPYNKjstddcYiilO3Zgx/Z0C?=
+ =?us-ascii?Q?kWe+itvKvRWSAUbpqKV6dKfIajCQ/6y+ESKFiVjMybJqhFmKn1EoiNUAbPbR?=
+ =?us-ascii?Q?IFdUsUXzLWFn93+iqFqOFkrw3h7vuEMfa3W7nF9EpCWnaZkeccnCR/B0Dtex?=
+ =?us-ascii?Q?11JIDWq4tf53Sq+fdAKTWmQ+ukLAzdgnOktFGgIITklju3kqJFD7tSY+2zTZ?=
+ =?us-ascii?Q?EWvsStglmB+o4Ul1fiOpJ+RdYksAvsUFtiABHxEg1i0jKo0j1p8AkOxK6b1Y?=
+ =?us-ascii?Q?uk/c0CCDT9KK92qRV4XtYnYgOtQm1i4nz71cqu4IjPk9R8tLgGnVQqw3S8Eo?=
+ =?us-ascii?Q?07LX82Ccu3eXjGK8lzRRRhI2DN3zwjYf6bGlik/RCq3tuOojEpobiSyol4/0?=
+ =?us-ascii?Q?GM2XFWYFanHPJ0fhYbGbh2+NV6XZaGtmV7h6PVbfVmb9CHWhZzBTUYEvMIBz?=
+ =?us-ascii?Q?6nXoOV4u3LX4Worvz68avavu7tkZ/e3FHld9fk9UrVmA8JSC7XLDGTvKHVK8?=
+ =?us-ascii?Q?UlnkFazWElmj2vOBXnogP6oNrHH7sjpL+42yC9hQVhkzvfPhPtKs0gHxgKZR?=
+ =?us-ascii?Q?B6RO/GvameQ6w+NBdiaHNGCbc3UC+SRQABIEasceYF+wFZdNWr5kUo4qpoI?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba6390f3-a05a-4d1d-74e6-08dbb9e50670
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 14:22:31.1746
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: syksx0mxZdg9P4G4Zty34wpwgQWBPVPsprhAwZ7EUrQKZEfVQOEukuNsCkS+I3LovJma0WnyyO8pX3ARDnLndpmo9h4YaO9YTlH7sqEvAl8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6024
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_05,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=785 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309200117
+X-Proofpoint-GUID: KEkIz4pqhcEnLIZJG9OCUgnO-KJJByse
+X-Proofpoint-ORIG-GUID: KEkIz4pqhcEnLIZJG9OCUgnO-KJJByse
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 10:08:02AM +0800, Baokun Li wrote:
-> On 2023/9/20 1:14, Mark Rutland wrote:
-> > Since commit:
-> > 
-> >    9257959a6e5b4fca ("locking/atomic: scripts: restructure fallback ifdeffery")
-> > 
-> > The ordering fallbacks for atomic*_read_acquire() and
-> > atomic*_set_release() erroneously fall back to the implictly relaxed
-> > atomic*_read() and atomic*_set() variants respectively, without any
-> > additional barriers. This loses the ACQUIRE and RELEASE ordering
-> > semantics, which can result in a wide variety of problems, even on
-> > strongly-ordered architectures where the implementation of
-> > atomic*_read() and/or atomic*_set() allows the compiler to reorder those
-> > relative to other accesses.
-> > 
-> > In practice this has been observed to break bit spinlocks on arm64,
-> > resulting in dentry cache corruption.
-> > 
-> > The fallback logic was intended to allow ACQUIRE/RELEASE/RELAXED ops to
-> > be defined in terms of FULL ops, but where an op had RELAXED ordering by
-> > default, this unintentionally permitted the ACQUIRE/RELEASE ops to be
-> > defined in terms of the implicitly RELAXED default.
-> > 
-> > This patch corrects the logic to avoid falling back to implicitly
-> > RELAXED ops, resulting in the same behaviour as prior to commit
-> > 9257959a6e5b4fca.
-> > 
-> > I've verified the resulting assembly on arm64 by generating outlined
-> > wrappers of the atomics. Prior to this patch the compiler generates
-> > sequences using relaxed load (LDR) and store (STR) instructions, e.g.
-> > 
-> > | <outlined_atomic64_read_acquire>:
-> > |         ldr     x0, [x0]
-> > |         ret
-> > |
-> > | <outlined_atomic64_set_release>:
-> > |         str     x1, [x0]
-> > |         ret
-> > 
-> > With this patch applied the compiler generates sequences using the
-> > intended load-acquire (LDAR) and store-release (STLR) instructions, e.g.
-> > 
-> > | <outlined_atomic64_read_acquire>:
-> > |         ldar    x0, [x0]
-> > |         ret
-> > |
-> > | <outlined_atomic64_set_release>:
-> > |         stlr    x1, [x0]
-> > |         ret
-> > 
-> > To make sure that there were no other victims of the ifdeffery rewrite,
-> > I generated outlined copies of all of the {atomic,atomic64,atomic_long}
-> > atomic operations before and after commit 9257959a6e5b4fca. A diff of
-> > the generated assembly on arm64 shows that only the read_acquire() and
-> > set_release() operations were changed, and only lost their intended
-> > ordering:
-> > 
-> > | [mark@lakrids:~/src/linux]% diff -u \
-> > | 	<(aarch64-linux-gnu-objdump -d before-9257959a6e5b4fca.o)
-> > | 	<(aarch64-linux-gnu-objdump -d after-9257959a6e5b4fca.o)
-> > | --- /proc/self/fd/11    2023-09-19 16:51:51.114779415 +0100
-> > | +++ /proc/self/fd/16    2023-09-19 16:51:51.114779415 +0100
-> > | @@ -1,5 +1,5 @@
-> > |
-> > | -before-9257959a6e5b4fca.o:     file format elf64-littleaarch64
-> > | +after-9257959a6e5b4fca.o:     file format elf64-littleaarch64
-> > |
-> > |
-> > |  Disassembly of section .text:
-> > | @@ -9,7 +9,7 @@
-> > |         4:      d65f03c0        ret
-> > |
-> > |  0000000000000008 <outlined_atomic_read_acquire>:
-> > | -       8:      88dffc00        ldar    w0, [x0]
-> > | +       8:      b9400000        ldr     w0, [x0]
-> > |         c:      d65f03c0        ret
-> > |
-> > |  0000000000000010 <outlined_atomic_set>:
-> > | @@ -17,7 +17,7 @@
-> > |        14:      d65f03c0        ret
-> > |
-> > |  0000000000000018 <outlined_atomic_set_release>:
-> > | -      18:      889ffc01        stlr    w1, [x0]
-> > | +      18:      b9000001        str     w1, [x0]
-> > |        1c:      d65f03c0        ret
-> > |
-> > |  0000000000000020 <outlined_atomic_add>:
-> > | @@ -1230,7 +1230,7 @@
-> > |      1070:      d65f03c0        ret
-> > |
-> > |  0000000000001074 <outlined_atomic64_read_acquire>:
-> > | -    1074:      c8dffc00        ldar    x0, [x0]
-> > | +    1074:      f9400000        ldr     x0, [x0]
-> > |      1078:      d65f03c0        ret
-> > |
-> > |  000000000000107c <outlined_atomic64_set>:
-> > | @@ -1238,7 +1238,7 @@
-> > |      1080:      d65f03c0        ret
-> > |
-> > |  0000000000001084 <outlined_atomic64_set_release>:
-> > | -    1084:      c89ffc01        stlr    x1, [x0]
-> > | +    1084:      f9000001        str     x1, [x0]
-> > |      1088:      d65f03c0        ret
-> > |
-> > |  000000000000108c <outlined_atomic64_add>:
-> > | @@ -2427,7 +2427,7 @@
-> > |      207c:      d65f03c0        ret
-> > |
-> > |  0000000000002080 <outlined_atomic_long_read_acquire>:
-> > | -    2080:      c8dffc00        ldar    x0, [x0]
-> > | +    2080:      f9400000        ldr     x0, [x0]
-> > |      2084:      d65f03c0        ret
-> > |
-> > |  0000000000002088 <outlined_atomic_long_set>:
-> > | @@ -2435,7 +2435,7 @@
-> > |      208c:      d65f03c0        ret
-> > |
-> > |  0000000000002090 <outlined_atomic_long_set_release>:
-> > | -    2090:      c89ffc01        stlr    x1, [x0]
-> > | +    2090:      f9000001        str     x1, [x0]
-> > |      2094:      d65f03c0        ret
-> > |
-> > |  0000000000002098 <outlined_atomic_long_add>:
-> > 
-> > I've build tested this with a variety of configs for alpha, arm, arm64,
-> > csky, i386, m68k, microblaze, mips, nios2, openrisc, powerpc, riscv,
-> > s390, sh, sparc, x86_64, and xtensa, for which I've seen no issues. I
-> > was unable to build test for ia64 and parisc due to existing build
-> > breakage in v6.6-rc2.
-> > 
-> > Fixes: 9257959a6e5b4fca ("locking/atomic: scripts: restructure fallback ifdeffery")
-> > Reported-by: Ming Lei <ming.lei@redhat.com>
-> > Link: https://lore.kernel.org/all/ZOWFtqA2om0w5Vmz@fedora/
-> > Reported-by: Darrick J. Wong <djwong@kernel.org>
 
-The dentry crashes on fstests on arm64 have gone away, so I feel
-confident in saying:
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-Tested-by: Darrick J. Wong <djwong@kernel.org>
+> So the decision matrix would be:
+>
+>                 Ret2user        Ret2kernel      PreemptCnt=0
+>
+> NEED_RESCHED       Y                Y               Y
+> LAZY_RESCHED       Y                N               N
+>
+> That is completely independent of the preemption model and the
+> differentiation of the preemption models happens solely at the scheduler
+> level:
 
---D
+This is relatively minor, but do we need two flags? Seems to me we
+can get to the same decision matrix by letting the scheduler fold
+into the preempt-count based on current preemption model.
 
-> > Link: https://lore.kernel.org/linux-fsdevel/20230912173026.GA3389127@frogsfrogsfrogs/
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> Thank you  for the patch that fixes this issue!
-> 
-> I tested the patch and confirmed that hlist_bl_lock now provides the
-> guarantees it should.
-> 
-> Tested-by: Baokun Li <libaokun1@huawei.com>
-> 
-> 
-> Cheers!
-> Baokun Li
-> > Cc: Baokun Li <libaokun1@huawei.com>
-> > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > Cc: Darrick J. Wong <djwong@kernel.org>
-> > Cc: Dave Chinner <david@fromorbit.com>
-> > Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> > Cc: Ming Lei <ming.lei@redhat.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Yi Zhang <yi.zhang@redhat.com>
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > ---
-> >   include/linux/atomic/atomic-arch-fallback.h | 10 +---------
-> >   scripts/atomic/gen-atomic-fallback.sh       |  2 +-
-> >   2 files changed, 2 insertions(+), 10 deletions(-)
-> > 
-> > Peter, are you happy to queue this in the tip tree? It's a pretty nasty
-> > regresssion in v6.5, and I'd like to get this in as a fix for v6.6 ASAP.
-> > 
-> > Thanks,
-> > Mark.
-> > 
-> > diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
-> > index 18f5744dfb5d8..b83ef19da13de 100644
-> > --- a/include/linux/atomic/atomic-arch-fallback.h
-> > +++ b/include/linux/atomic/atomic-arch-fallback.h
-> > @@ -459,8 +459,6 @@ raw_atomic_read_acquire(const atomic_t *v)
-> >   {
-> >   #if defined(arch_atomic_read_acquire)
-> >   	return arch_atomic_read_acquire(v);
-> > -#elif defined(arch_atomic_read)
-> > -	return arch_atomic_read(v);
-> >   #else
-> >   	int ret;
-> > @@ -508,8 +506,6 @@ raw_atomic_set_release(atomic_t *v, int i)
-> >   {
-> >   #if defined(arch_atomic_set_release)
-> >   	arch_atomic_set_release(v, i);
-> > -#elif defined(arch_atomic_set)
-> > -	arch_atomic_set(v, i);
-> >   #else
-> >   	if (__native_word(atomic_t)) {
-> >   		smp_store_release(&(v)->counter, i);
-> > @@ -2575,8 +2571,6 @@ raw_atomic64_read_acquire(const atomic64_t *v)
-> >   {
-> >   #if defined(arch_atomic64_read_acquire)
-> >   	return arch_atomic64_read_acquire(v);
-> > -#elif defined(arch_atomic64_read)
-> > -	return arch_atomic64_read(v);
-> >   #else
-> >   	s64 ret;
-> > @@ -2624,8 +2618,6 @@ raw_atomic64_set_release(atomic64_t *v, s64 i)
-> >   {
-> >   #if defined(arch_atomic64_set_release)
-> >   	arch_atomic64_set_release(v, i);
-> > -#elif defined(arch_atomic64_set)
-> > -	arch_atomic64_set(v, i);
-> >   #else
-> >   	if (__native_word(atomic64_t)) {
-> >   		smp_store_release(&(v)->counter, i);
-> > @@ -4657,4 +4649,4 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
-> >   }
-> >   #endif /* _LINUX_ATOMIC_FALLBACK_H */
-> > -// 202b45c7db600ce36198eb1f1fc2c2d5268ace2d
-> > +// 2fdd6702823fa842f9cea57a002e6e4476ae780c
-> > diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
-> > index c0c8a85d7c81b..a45154cefa487 100755
-> > --- a/scripts/atomic/gen-atomic-fallback.sh
-> > +++ b/scripts/atomic/gen-atomic-fallback.sh
-> > @@ -102,7 +102,7 @@ gen_proto_order_variant()
-> >   	fi
-> >   	# Allow ACQUIRE/RELEASE/RELAXED ops to be defined in terms of FULL ops
-> > -	if [ ! -z "${order}" ]; then
-> > +	if [ ! -z "${order}" ] && ! meta_is_implicitly_relaxed "${meta}"; then
-> >   		printf "#elif defined(arch_${basename})\n"
-> >   		printf "\t${retstmt}arch_${basename}(${args});\n"
-> >   	fi
-> 
-> 
+> PREEMPT_NONE sets only LAZY_RESCHED unless it needs to enforce the time
+> slice where it sets NEED_RESCHED.
+
+PREEMPT_NONE sets up TIF_NEED_RESCHED. For the time-slice expiry case,
+also fold into preempt-count.
+
+> PREEMPT_VOLUNTARY extends the NONE model so that the wakeup of RT class
+> tasks or sporadic event tasks sets NEED_RESCHED too.
+
+PREEMPT_NONE sets up TIF_NEED_RESCHED and also folds it for the
+RT/sporadic tasks.
+
+> PREEMPT_FULL always sets NEED_RESCHED like today.
+
+Always fold the TIF_NEED_RESCHED into the preempt-count.
+
+> We should be able merge the PREEMPT_NONE/VOLUNTARY behaviour so that we
+> only end up with two variants or even subsume PREEMPT_FULL into that
+> model because that's what is closer to the RT LAZY preempt behaviour,
+> which has two goals:
+>
+>       1) Make low latency guarantees for RT workloads
+>
+>       2) Preserve the throughput for non-RT workloads
+>
+> But in any case this decision happens solely in the core scheduler code
+> and nothing outside of it needs to be changed.
+>
+> So we not only get rid of the cond/might_resched() muck, we also get rid
+> of the static_call/static_key machinery which drives PREEMPT_DYNAMIC.
+> The only place which still needs that runtime tweaking is the scheduler
+> itself.
+
+True. The dynamic preemption could just become a scheduler tunable.
+
+> Though it just occured to me that there are dragons lurking:
+>
+> arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
+> arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
+> arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
+> arch/um/Kconfig:        select ARCH_NO_PREEMPT
+>
+> So we have four architectures which refuse to enable preemption points,
+> i.e. the only model they allow is NONE and they rely on cond_resched()
+> for breaking large computations.
+>
+> But they support PREEMPT_COUNT, so we might get away with a reduced
+> preemption point coverage:
+>
+>                 Ret2user        Ret2kernel      PreemptCnt=0
+>
+> NEED_RESCHED       Y                N               Y
+> LAZY_RESCHED       Y                N               N
+
+So from the discussion in the other thread, for the ARCH_NO_PREEMPT
+configs that don't support preemption, we probably need a fourth
+preemption model, say PREEMPT_UNSAFE.
+
+These could use only the Ret2user preemption points and just fallback
+to the !PREEMPT_COUNT primitives.
+
+Thanks
+
+--
+ankur
