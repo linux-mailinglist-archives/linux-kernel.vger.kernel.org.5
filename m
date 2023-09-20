@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 930C57A8A69
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1A57A8A64
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjITRRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
+        id S235105AbjITRPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjITRRR (ORCPT
+        with ESMTP id S234174AbjITRPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:17:17 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186CCA9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:17:12 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c1e3a4a06fso22175ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:17:12 -0700 (PDT)
+        Wed, 20 Sep 2023 13:15:48 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A93A3;
+        Wed, 20 Sep 2023 10:15:41 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so2594958a12.0;
+        Wed, 20 Sep 2023 10:15:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695230231; x=1695835031; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QOS+5EG5HCh/KtSWQpSt4vXKPupbqZZS9Bbcm1Xg6BE=;
-        b=Mc5qD3YSA+Hfs+CNVesH+r0DuUIxOSIx7DN3/kpHVlpBO1w6RnVBsIlhKrLkVM00X5
-         DUxY5WlBaOlnl8aTDCKp1uDhOZ+QiVERMU7EWVySlr4qAXmJu2RyISJVqoirlejS7acN
-         xJgGW8nJpIWS9499MNauANQ3B15gdVYKHR6QVsXyP/T53vzvYN5MD0Wnp3w/w/682nDE
-         vr+MBOFgK/xh9proh1fy9ABQBk3HzF3b8ROcCf9KVQHWkOoH4i0Ss+0i2q7/Wooxj/e7
-         7gowoaGoi8AEfkDs5NS04tVIhMNezB20CmUkixM1z4U2QRg3qYaKXVfgH3GVf0VZrDMl
-         aCCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695230231; x=1695835031;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1695230139; x=1695834939; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QOS+5EG5HCh/KtSWQpSt4vXKPupbqZZS9Bbcm1Xg6BE=;
-        b=rtBd2zMtL4kEr/RZ3aIJVHWfhIHuFhjVRBWeEU5RyUzi8P0yK8Dl4A6SDXyNDMk9T4
-         VWg3vlVzcdEc09f5NnW7D/V0PqVzswowK3kY4oPoOHmZHcjz3gQrZo9NcFI+DWlrgH5S
-         8ZSdg87lEIJTYbIH3a3Kd7shrSsCszkLZ+zF1RyyVcLtURwemh8T713z0OkerNKeR7mk
-         3Kgm+wllkZqzr/ai15w+Wi0MqYzG52fRa1LaHeePNFox3PWcgRlKc2mkimqdoh8ZY3vI
-         IFt0TsaPbP7Gd5h4p4gWeQ6ilMaj0709ftq01NkWFPd/z82pJQdAhRDmapmG5axx5/pV
-         b5AQ==
-X-Gm-Message-State: AOJu0YxuOVL4BC9BGGVkhapxsE0PouXCE8zGvK+AOQQ/M8MhQ7D8x3wY
-        kWAH/S//bgPSzF6O2gFsvGA=
-X-Google-Smtp-Source: AGHT+IEY8HDNNtZhYZANek9UW67AyxssTPWX0iiVpwERwVkPdu6/+HqVJOdZ8JTdn/GuVPGdLkAN0g==
-X-Received: by 2002:a17:902:b708:b0:1bc:e6a:205f with SMTP id d8-20020a170902b70800b001bc0e6a205fmr2506031pls.20.1695230231447;
-        Wed, 20 Sep 2023 10:17:11 -0700 (PDT)
-Received: from localhost ([216.228.127.131])
-        by smtp.gmail.com with ESMTPSA id u7-20020a170903124700b001bb0eebd90asm12071760plh.245.2023.09.20.10.17.10
+        bh=7BA/1TKZ7fFQpqXSbCVNQn/zfVi+d+HyfuxOxnEyY4I=;
+        b=DHjVpv+1ChsbOTMGB5Dpmk1oEXNskx0m3PcnR6OoHgandUGBYN7ZHi0TmbctauPWHB
+         xFVmItXu0HbroXn9j7pjRvlHZ+8agcIzy5opp8BjoVxeDs9fqrVvUAKzfXlvvV1423CZ
+         OL4NZe6Ct83k/CCPiKtK0AO4i+cNXqCdBv9kqZ/v7HKxnG90TTYam6HPz6xLo06x23RU
+         iZyw/7jlfesMjvUWgFbba4V2qv9Cwz2NctA0eq4t0x+2XsLN1560rjdxokwUP7EoZB3j
+         WtX5EXwKSG3wN30XUGVOFFP/S19GwhGYDSLba+8HTxe0t7MKoA3ihF422ouLgHov0sGn
+         Mnnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695230139; x=1695834939;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7BA/1TKZ7fFQpqXSbCVNQn/zfVi+d+HyfuxOxnEyY4I=;
+        b=utlnOUQ1LGIwFIq9x0XX7Xig4HLuo2AOaSmfKiSWXxNHScCLUSu78UtcsHkBLanv3X
+         m2KGQVCSln8wkNFj+sk7aUskrm6j0eDk9Ku4NC1DI775vH2iZ8Pc7ny+38xUnAWrOidj
+         2ehyqg4MDTchwIrqPkLIor28uHvtsGuNtYZqLkVX/iUvhhVwxZanPVKcpHJ5Hi/NgWLR
+         doQ5ph+x/MJvVmWHpVW3HAGkWRzyPuHXudZYbNYy+0qQfhFtTz8GlZr0xI1KtKnckTh6
+         dg2ElDOcn7/9AWOgHPrazCLPlMgYj8xjTkOxWyXcBXdzrVAB6UgW0sn/DjpKrktUfuiC
+         kIOg==
+X-Gm-Message-State: AOJu0YzW9Os3fAO64JplOm6mdIPftC3kJc7up0/3lvkvtkgN0teojZdR
+        RomGy0zcVrcYoOjNl+fUUAg=
+X-Google-Smtp-Source: AGHT+IEQhqAdu9sZQ70y0DS8nngdK+Mk0pkfbWS4qneo1KxLRSZ3qBsiVtqIu4sC8i/YErZyL1rzjQ==
+X-Received: by 2002:a17:906:3147:b0:993:eee4:e704 with SMTP id e7-20020a170906314700b00993eee4e704mr4288238eje.38.1695230139300;
+        Wed, 20 Sep 2023 10:15:39 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id lx12-20020a170906af0c00b00988f168811bsm9649634ejb.135.2023.09.20.10.15.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 10:17:10 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 10:14:56 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 1/4] bitmap: define a cleanup function for bitmaps
-Message-ID: <ZQsokMJmD548DZrm@yury-ThinkPad>
-References: <20230920075500.96260-1-brgl@bgdev.pl>
- <20230920075500.96260-2-brgl@bgdev.pl>
+        Wed, 20 Sep 2023 10:15:38 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Maxime Ripard <mripard@kernel.org>
+Subject: Re: [PATCH RFC v2 07/37] drm/connector: hdmi: Add HDMI compute clock helper
+Date:   Wed, 20 Sep 2023 19:15:37 +0200
+Message-ID: <1967070.usQuhbGJ8B@jernej-laptop>
+In-Reply-To: <20230920-kms-hdmi-connector-state-v2-7-17932daddd7d@kernel.org>
+References: <20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org>
+ <20230920-kms-hdmi-connector-state-v2-7-17932daddd7d@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920075500.96260-2-brgl@bgdev.pl>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,37 +85,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 09:54:57AM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Add support for autopointers for bitmaps allocated with bitmap_alloc()
-> et al.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  include/linux/bitmap.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index 03644237e1ef..6709807ebb59 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -6,6 +6,7 @@
->  
->  #include <linux/align.h>
->  #include <linux/bitops.h>
-> +#include <linux/cleanup.h>
->  #include <linux/find.h>
->  #include <linux/limits.h>
->  #include <linux/string.h>
-> @@ -125,6 +126,8 @@ unsigned long *bitmap_alloc_node(unsigned int nbits, gfp_t flags, int node);
->  unsigned long *bitmap_zalloc_node(unsigned int nbits, gfp_t flags, int node);
->  void bitmap_free(const unsigned long *bitmap);
->  
-> +DEFINE_FREE(bitmap, unsigned long *, if (_T) bitmap_free(_T))
-> +
->  /* Managed variants of the above. */
->  unsigned long *devm_bitmap_alloc(struct device *dev,
->  				 unsigned int nbits, gfp_t flags);
+Hi Maxime!
 
-Acked-by: Yury Norov <yury.norov@gmail.com>
+Dne sreda, 20. september 2023 ob 16:35:22 CEST je Maxime Ripard napisal(a):
+> A lot of HDMI drivers have some variation of the formula to calculate
+> the TMDS character rate from a mode, but few of them actually take all
+> parameters into account.
+> 
+> Let's create a helper to provide that rate taking all parameters into
+> account.
+> 
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
+>  drivers/gpu/drm/drm_connector.c | 31 +++++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h     |  5 +++++
+>  2 files changed, 36 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> index b01cb4783ea6..4c1af97971bb 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -2944,6 +2944,37 @@ void drm_connector_update_privacy_screen(const struct drm_connector_state *conne
+>  }
+>  EXPORT_SYMBOL(drm_connector_update_privacy_screen);
+>  
+> +/**
+> + * drm_connector_hdmi_compute_mode_clock() - Computes the TMDS Character Rate
+> + * @mode: Display mode to compute the clock for
+> + * @bpc: Bits per character
+> + * @fmt: Output Pixel Format used
+> + *
+> + * Returns the TMDS Character Rate for a given mode, bpc count and output format.
+> + *
+> + * RETURNS:
+> + * The TMDS Character Rate, in Hertz
+> + */
+> +unsigned long long
+> +drm_connector_hdmi_compute_mode_clock(const struct drm_display_mode *mode,
+> +				      unsigned int bpc,
+> +				      enum hdmi_colorspace fmt)
+> +{
+> +	unsigned long long clock = mode->clock * 1000ULL;
+> +
+> +	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
+> +		clock = clock * 2;
+> +
+> +	if (fmt == HDMI_COLORSPACE_YUV422)
+> +		bpc = 8;
+
+I think you're missing YUV420 handling, which needs half of clock speed. But
+this is a thing of HDMI2.
+
+Best regards,
+Jernej
+
+> +
+> +	clock = clock * bpc;
+> +	do_div(clock, 8);
+> +
+> +	return clock;
+> +}
+> +EXPORT_SYMBOL(drm_connector_hdmi_compute_mode_clock);
+> +
+>  int drm_connector_set_obj_prop(struct drm_mode_object *obj,
+>  				    struct drm_property *property,
+>  				    uint64_t value)
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index a66cb4e35d7b..d74e9c64ee88 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -38,6 +38,7 @@ struct drm_connector_helper_funcs;
+>  struct drm_modeset_acquire_ctx;
+>  struct drm_device;
+>  struct drm_crtc;
+> +struct drm_display_mode;
+>  struct drm_encoder;
+>  struct drm_panel;
+>  struct drm_property;
+> @@ -2115,6 +2116,10 @@ void drm_connector_attach_privacy_screen_properties(struct drm_connector *conn);
+>  void drm_connector_attach_privacy_screen_provider(
+>  	struct drm_connector *connector, struct drm_privacy_screen *priv);
+>  void drm_connector_update_privacy_screen(const struct drm_connector_state *connector_state);
+> +unsigned long long
+> +drm_connector_hdmi_compute_mode_clock(const struct drm_display_mode *mode,
+> +				      unsigned int bpc,
+> +				      enum hdmi_colorspace fmt);
+>  
+>  /**
+>   * struct drm_tile_group - Tile group metadata
+> 
+> 
+
+
+
+
