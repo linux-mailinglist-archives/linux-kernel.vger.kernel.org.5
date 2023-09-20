@@ -2,129 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 410E47A7A0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61347A7A08
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbjITLHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        id S234376AbjITLHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234438AbjITLHp (ORCPT
+        with ESMTP id S233970AbjITLHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:07:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50BEC9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:06:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695208013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Wed, 20 Sep 2023 07:07:19 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC689E;
+        Wed, 20 Sep 2023 04:07:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8A2D921C89;
+        Wed, 20 Sep 2023 11:07:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695208031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=cfDCNnVKo1svwadEk9oIfDB+2esqrYhApxIidnLEY88=;
-        b=d/XVQK+/Mz5f7d0BbLwjFz8WYneuefNs3Ftl2GQRwX6h3S7kcpGOHJBt5O5Vj9PSJ6ocSd
-        44Yi52Kyx/6WfatnjNMY4icO9lySeAYVKCoKHYm0C5eUmeE0rcBaxiUHd4qOnCGNG7VslC
-        ndNoyYThRkZoRjnEoyxFfVRGwY1CXLk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-478-hpGnM_6CPyKX3PG5w5ZJKw-1; Wed, 20 Sep 2023 07:06:52 -0400
-X-MC-Unique: hpGnM_6CPyKX3PG5w5ZJKw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-404df8f48ccso14150295e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:06:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695208011; x=1695812811;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cfDCNnVKo1svwadEk9oIfDB+2esqrYhApxIidnLEY88=;
-        b=sqkdPyanxXwfHCOD2i0vIrcLvxcwdWsH4wuNyA2JeCF68jGeqNiGxVPWD7u7WesyF0
-         3IlXa6pYneQOWxAQbfCA1J1dXCr1sJgvWBPzf7K8kHEu8WqhDBRtOMS/2xU2rzA7IvhH
-         zkVIpEzowKIfre3n/Eog3doo/PW0DBQMD2sRmkPI60pXEANcZuzmw4umBBXYbzKJYeQq
-         UKFGILDYOSeaqpLYQMHVr+AwWzDH+rZ2CeqbptZuvqW5HEAkK/YSho2zAshnFuMTNVK7
-         /ubtZGw6de40Z+cDYDTSL+mXyUZGfkfknWESrVs61iaqnBlPcsOZ2akkaU2Xx67KDiSE
-         /3cw==
-X-Gm-Message-State: AOJu0YxrPRpt4sczN0lC+qc6acVA7Vc2m1rqiOFBJLPpy7zzbXeqxpLG
-        Ic6Mv7H5kG8Hv+PbWqov7eNomFoAi/PqaTmn8kFil2fNYAnb5pwsVTK00h4iP6TsbrhBzQXNLRV
-        kp+nUVoxMotd4ipvmrR2YWXvV
-X-Received: by 2002:a05:600c:358d:b0:401:b53e:6c3e with SMTP id p13-20020a05600c358d00b00401b53e6c3emr2246221wmq.1.1695208011292;
-        Wed, 20 Sep 2023 04:06:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGQai1hDlcW1xi3A9mCJ3IVLesx5xOiB+d9PQpepYxX8c8mzd0ejadrsxaFt3WWy0dIOq2VYg==
-X-Received: by 2002:a05:600c:358d:b0:401:b53e:6c3e with SMTP id p13-20020a05600c358d00b00401b53e6c3emr2246193wmq.1.1695208010924;
-        Wed, 20 Sep 2023 04:06:50 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-242-56.dyn.eolo.it. [146.241.242.56])
-        by smtp.gmail.com with ESMTPSA id g33-20020a05600c4ca100b004051d5b2cf1sm1645878wmp.12.2023.09.20.04.06.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 04:06:50 -0700 (PDT)
-Message-ID: <f1198daa6d068c76b8ce692ad313698c34d0d1a3.camel@redhat.com>
-Subject: Re: [PATCH net-next v9 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
- preparations
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Arseniy Krasnov <avkrasnov@salutedevices.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Date:   Wed, 20 Sep 2023 13:06:48 +0200
-In-Reply-To: <20230919223700-mutt-send-email-mst@kernel.org>
-References: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
-         <b5873e36-fe8c-85e8-e11b-4ccec386c015@salutedevices.com>
-         <yys5jgwkukvfyrgfz6txxzqc7el5megf2xntnk6j4ausvjdgld@7aan4quqy4bs>
-         <a5b25ee07245125fac4bbdc3b3604758251907d2.camel@redhat.com>
-         <hq67e2b3ljfjikvbaneczdve3fzg3dl5ziyc7xtujyqesp6dzm@fh5nqkptpb4n>
-         <20230919223700-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        bh=ZM62khM9FxGPIIvx68TVvW1jtj2aPa/D+qo+qZGdyOk=;
+        b=WlQEqs3rft1VUSfH4TwqG44CQcpS3cp1YzjSM1DGSLQSUYCNiI1sxGI4veqcYOEEzBM1zy
+        uVQpQ3hzhtwKwjHpM/f5UDbRjmLT1Ky6hHAmf3fUlknmevXyTVhmJfXnZHPphoKezatdSD
+        f6FzOkTePV/aTjsTrJLv1ti98/OJm9M=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 67E63132C7;
+        Wed, 20 Sep 2023 11:07:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hHLnFl/SCmXmLQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 20 Sep 2023 11:07:11 +0000
+Date:   Wed, 20 Sep 2023 13:07:10 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        mathieu.tortuyaux@gmail.com
+Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
+ kmem.limit_in_bytes
+Message-ID: <ZQrSXh+riB7NnZuE@dhcp22.suse.cz>
+References: <20230917191040.964416434@linuxfoundation.org>
+ <20230917191042.204185566@linuxfoundation.org>
+ <20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz>
+ <101987a1-b1ab-429d-af03-b6bdf6216474@linux.microsoft.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <101987a1-b1ab-429d-af03-b6bdf6216474@linux.microsoft.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-19 at 22:38 -0400, Michael S. Tsirkin wrote:
-> On Tue, Sep 19, 2023 at 03:35:51PM +0200, Stefano Garzarella wrote:
-> > On Tue, Sep 19, 2023 at 03:19:54PM +0200, Paolo Abeni wrote:
-> >=20
-> > > DaveM suggests this should go via the virtio tree, too. Any different
-> > > opinion?
-> >=20
-> > For this series should be fine, I'm not sure about the next series.
-> > Merging this with the virtio tree, then it forces us to do it for
-> > followup as well right?
-> >=20
-> > In theory followup is more on the core, so better with net-next, but
-> > it's also true that for now only virtio transports support it, so it
-> > might be okay to continue with virtio.
-> >=20
-> > @Michael WDYT?
-> >=20
-> > Thanks,
-> > Stefano
->=20
-> I didn't get DaveM's mail - was this off-list?
+On Wed 20-09-23 12:04:48, Jeremi Piotrowski wrote:
+> On 9/20/2023 10:43 AM, Michal Hocko wrote:
+> > On Wed 20-09-23 01:11:01, Jeremi Piotrowski wrote:
+> >> On Sun, Sep 17, 2023 at 09:12:40PM +0200, Greg Kroah-Hartman wrote:
+> >>> 6.1-stable review patch.  If anyone has any objections, please let me know.
+> >>>
+> >>> ------------------
+> >>
+> >> Hi Greg/Michal,
+> >>
+> >> This commit breaks userspace which makes it a bad commit for mainline and an
+> >> even worse commit for stable.
+> >>
+> >> We ingested 6.1.54 into our nightly testing and found that runc fails to gather
+> >> cgroup statistics (when reading kmem.limit_in_bytes). The same code is vendored
+> >> into kubelet and kubelet fails to start if this operation fails. 6.1.53 is
+> >> fine.
+> > 
+> > Could you expand some more on why is the file read? It doesn't support
+> > writing to it for some time so how does reading it helps in any sense?
+> > 
+> > Anyway, I do agree that the stable backport should be reverted.
+> > 
+> 
+> This file is read together with all the other memcg files. Each prefix:
+> 
+> memory
+> memory.memsw
+> memory.kmem
+> memory.kmem.tcp
+> 
+> is combined with these suffixes
+> 
+> .usage_in_bytes
+> .max_usage_in_bytes
+> .failcnt
+> .limit_in_bytes
+> 
+> and read, the values are then forwarded on to other components for scheduling decisions.
+> You want to know the limit when checking the usage (is the usage close to the limit or not).
 
-Yes, that was off-list co-ordination.
+You know there is no kmem limit as there is no way to set it for some
+time (since 5.16 - i.e. 2 years ago). I can see that users following old
+kernels could have missed that though.
 
-> I think net-next is easier because the follow up belongs in net-next.
-> But if not I can take it, sure. Let me know.
+> Userspace tolerates MEMCG/MEMCG_KMEM being disabled, but having a single file out of the
+> set missing is an anomaly. So maybe we could keep the dummy file just for the
+> sake of consistency? Cgroupv1 is legacy after all.
 
-Since there is agreement on that route, we will take it (likely
-tomorrow).
+What we had was a dummy file. It didn't allow to write any value so it
+would have always reported unlimited. The reason I've decided to remove
+the file was that there were other users not being able to handle the
+write failure while they are just fine not having the file. So we are
+effectively between a rock and hard place here. Either way something is
+broken. The other SW got fixed as well but similar to your case it takes
+some time to absorb the change through all 3rd party users.
 
-Cheers,
+> >>> Address this by wiping out the file completely and effectively get back to
+> >>> pre 4.5 era and CONFIG_MEMCG_KMEM=n configuration.
+> >>
+> >> On reads, the runc code checks for MEMCG_KMEM=n by checking
+> >> kmem.usage_in_bytes.
 
-Paolo
+Just one side note. Config options get renamed and their semantic
+changes over time so I would just recomment to never make any
+dependencies on any specific one. 
 
+> >> If it is present then runc expects the other cgroup files
+> >> to be there (including kmem.limit_in_bytes). So this change is not effectively
+> >> the same.
+> >>
+> >> Here's a link to the PR that would be needed to handle this change in userspace
+> >> (not merged yet and would need to be propagated through the ecosystem):
+> >>
+> >> https://github.com/opencontainers/runc/pull/4018.
+> > 
+> > Thanks. Does that mean the revert is still necessary for the Linus tree
+> > or do you expect that the fix can be merged and propagated in a
+> > reasonable time?
+> > 
+> 
+> We can probably get runc and currently supported kubernetes versions patched in time
+> before 6.6 (or the next LTS kernel) hits LTS distros.
+> 
+> But there's still a bunch of users running cgroupv1 with unsupported kubernetes
+> versions that are still taking kernel updates as they come, so this might get reported
+> again next year if it stays in mainline.
+
+I can see how 3rd party users are hard to get aligned but having a fix
+available should allow them to apply it or is there any actual roadblock
+for them to adapt as soon as they hit the issue?
+
+I mean, normally I would be just fine reverting this API change because
+it is disruptive but the only way to have the file available and not
+break somebody is to revert 58056f77502f ("memcg, kmem: further
+deprecate kmem.limit_in_bytes") as well. Or to ignore any value written
+there but that sounds rather dubious. Although one could argue this
+would mimic nokmem kernel option.
+
+-- 
+Michal Hocko
+SUSE Labs
