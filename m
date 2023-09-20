@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3447A8CD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C373A7A8CD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbjITT3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
+        id S230094AbjITT3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjITT27 (ORCPT
+        with ESMTP id S230098AbjITT3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:28:59 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09217D9;
-        Wed, 20 Sep 2023 12:28:48 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c012232792so2901491fa.0;
-        Wed, 20 Sep 2023 12:28:48 -0700 (PDT)
+        Wed, 20 Sep 2023 15:29:06 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EC5D3;
+        Wed, 20 Sep 2023 12:28:52 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bcb50e194dso2352431fa.3;
+        Wed, 20 Sep 2023 12:28:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695238127; x=1695842927; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695238130; x=1695842930; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TA5e5G5EPvnnL49j/b8nNcZDnZYJMuuDQgONa21D59s=;
-        b=HVTKD1PAZTSKPtyVTWjufOWJMa9K4lX7qwOMsIF7NIOSM8Detpe1AejJOFkMO2PWJ5
-         fDIk4DQWjDKhP/JOrJrLjo/7ZQP7Mc9OICb1YVPdlBwXrB4WJ5EOmChD6TYL1nUxK2aT
-         XtaLOPl6CT+P2FfG2vUAV9Uk6YyxRQvhHXxAiB999nvXMu0/+Q/YdiJ1jAb2vXFJPE4A
-         Zob0Y+YndTxFSqzrVRDqFLHHg8OrGsrXAbvABAPaF8zt9/TenjN9WeFPj4DFLmwuCcRF
-         hq66PcrB+aK0lEAYRkb9t6cqAoI0v4qKHjVtXQVeTtNROR0kA78eMAv/5r448V/VzzEu
-         lv1A==
+        bh=QqkMxqOHncqsMYhQRlBDL7MG22B9ye3F7LSOor6Fxdc=;
+        b=a++IAGYwtjcU3SLjl1zGCBp9P+8PgKA35kvSW1Wn9LUe6HB2d8Mpsdg5/pkHCLU2Sn
+         wF5k5bjzBx4hn0pJ38Kg7mLaRZXpI06/fPaFKE9LM2agjjudqUNG5dBk1BkWBFyHxC/9
+         w+NzRHXiTK4F1ZOTTgADtw6Ilr9jaDdM8/HIrQkGIYQfHiOurz43vHFxP1E6WlGZq86B
+         wQLqZJ0SM535FxlNDQgsusYhMTGLT3SlXtIvY1eeOTPOIOt6zAESGRLunQkNggV+DT6y
+         DHoXXbKOqhSDIIFghyL2CiDgKcPrx8edHCEovnQrx7wCE66GGH6cgy2SgotVQLyVRpzx
+         qHoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695238127; x=1695842927;
+        d=1e100.net; s=20230601; t=1695238130; x=1695842930;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TA5e5G5EPvnnL49j/b8nNcZDnZYJMuuDQgONa21D59s=;
-        b=xHMW3lJcnzHhdkWYpyNdnip3H+FAvfOS/F4hTOcWYHFNER9E7m9MZx2KpX9eHwnjK6
-         cIc2wy4kP7K23XEZb3LUB9roZrWW0whGyYB+YRV9J9mw8Pqjq5l/KiokYkoTIgZ+xhu3
-         PkhzrSFgI1Jo9Um5snlHgzjFMW8WCK+f709ZmIVXjUPl3DqMX0mrzcIiHhMwiOC4Ydil
-         hzr3j+3iUP3AM83H6KFWoXYReRnK2tGPghQswU0lWDzGnhIn+cd1794OVFVBYu26jf8U
-         70yG9xVTV9yuZwhafFGHw4Vmy61SeoFVHtcjIfHpX26O9+rLyP5y4LXf7hBkpxTgzUXY
-         gSeg==
-X-Gm-Message-State: AOJu0Yx24Rc17SJFk11WQ9gArhgM/wBaDBm3yhhPnBDSFNH4B44rparI
-        BoIUbh19KrIO/Z1J7E6fTss=
-X-Google-Smtp-Source: AGHT+IFZDSF5zoq/W8jvFfDRKCF1KokOy7dJYucnqgvUrulEP8IaDlgpjwEqAHOhtU+vPGMtXh3DmA==
-X-Received: by 2002:a05:6512:104f:b0:503:364e:96ce with SMTP id c15-20020a056512104f00b00503364e96cemr3532656lfb.29.1695238126987;
-        Wed, 20 Sep 2023 12:28:46 -0700 (PDT)
-Received: from localhost ([178.176.85.138])
-        by smtp.gmail.com with ESMTPSA id j26-20020a19f51a000000b004ff973cb14esm739436lfb.108.2023.09.20.12.28.45
+        bh=QqkMxqOHncqsMYhQRlBDL7MG22B9ye3F7LSOor6Fxdc=;
+        b=iMGI9tOzHR4gidoF3IY9qQXzUMQOkGaXcs8lu5NYF6X9wmCSUqk83i1uzbseL702za
+         FyhfDN9+4IFRsyt0YCdTAVoMhXxI/FSyprwe+0BL1QhAQTE1adfnowMJV8kIIJGOkQco
+         YX50KyNeNCxjEfm803JULXDcxB+lmp0YkVMKonD6VWKbKYZifa6AHwoV6rLPV9fKmGKz
+         w252dJd4htXzMJUNsBriaPXGCTQJ5qZxpMbYfW4hj/Aea8G46N70KNLyWGjvFLsYMDQ4
+         S+Zpz/I0Q4p4V5VnF2K18mI8d8lvejpVjVEidXxaou+TcgvAwHonFCAuvl90qQGYrXYS
+         6JBg==
+X-Gm-Message-State: AOJu0YyHM15TBPGwrceizy/7eg48R/UTVwl6H4bUUOg+F0jaX6l1xYO0
+        TqUYVfYjSqLaGSYCQ4Yj4ZA=
+X-Google-Smtp-Source: AGHT+IHwKIWEU16ms/otWDq2b8ELHaN+mH3xTI3PC2c/Z46prfo2moy4ZDTclGHfvjbZhTpn7gKqlQ==
+X-Received: by 2002:a05:6512:2813:b0:503:3803:9e99 with SMTP id cf19-20020a056512281300b0050338039e99mr4239358lfb.15.1695238129974;
+        Wed, 20 Sep 2023 12:28:49 -0700 (PDT)
+Received: from localhost ([178.176.86.191])
+        by smtp.gmail.com with ESMTPSA id r6-20020a19ac46000000b00502e01d1383sm2805899lfc.27.2023.09.20.12.28.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:28:45 -0700 (PDT)
+        Wed, 20 Sep 2023 12:28:49 -0700 (PDT)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Michal Simek <michal.simek@amd.com>,
         Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -66,9 +66,9 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 08/18] EDAC/synopsys: Parse ADDRMAP[0] CSR for multi-ranks case only
-Date:   Wed, 20 Sep 2023 22:26:53 +0300
-Message-ID: <20230920192806.29960-9-fancer.lancer@gmail.com>
+Subject: [PATCH v4 09/18] EDAC/synopsys: Set actual DIMM ECC errors grain
+Date:   Wed, 20 Sep 2023 22:26:54 +0300
+Message-ID: <20230920192806.29960-10-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230920192806.29960-1-fancer.lancer@gmail.com>
 References: <20230920192806.29960-1-fancer.lancer@gmail.com>
@@ -84,41 +84,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ADDRMAP[0] CSR contains the SDRAM Rank bits mapping (and memory
-channel mapping but it's irrelevant in this case). Obviously they are
-applicable for the multi-ranked memory only. If either the attached memory
-isn't multi-ranked or the controller simply doesn't support the multi-rank
-memory, parsing the ADDRMAP[0] CSR will be not just pointless, but in the
-later case erroneous since the CSR fields will contain zeros which will be
-perceived by the mapping detection procedure as a valid value. So the
-mapping will get to be invalid. Thus make sure the ADDRMAP[0] register is
-parsed only if a multi-ranked memory setup has been detected.
+It was wrong to set the DIMM errors grain parameter to just 1 byte because
+DW uMCTL2 DDRC calculates ECC for each SDRAM word and passes it as an
+additional byte of data to the memory chips. SDRAM word is the actual
+DQ-bus width determined by the DQ-width set during the IP-core synthesize
+and the DQ-bus mode (part of the DQ-bus actually used to get data from the
+memory chips) selected during the DDR controller initial setup procedure.
+Thus set the MCI DIMMs grain based on these parameters determined during
+the DW uMCTL2 DDRC config getting procedure.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- drivers/edac/synopsys_edac.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/edac/synopsys_edac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index 5a06038aedcb..e6288e135480 100644
+index e6288e135480..e10778cead63 100644
 --- a/drivers/edac/synopsys_edac.c
 +++ b/drivers/edac/synopsys_edac.c
-@@ -1146,9 +1146,12 @@ static void snps_setup_bg_address_map(struct snps_edac_priv *priv, u32 *addrmap)
+@@ -26,9 +26,6 @@
+ /* Number of channels per memory controller */
+ #define SNPS_EDAC_NR_CHANS		1
  
- static void snps_setup_rank_address_map(struct snps_edac_priv *priv, u32 *addrmap)
- {
--	priv->rank_shift[0] = ((addrmap[0] & RANK_MAX_VAL_MASK) ==
--				RANK_MAX_VAL_MASK) ? 0 : ((addrmap[0] &
--				RANK_MAX_VAL_MASK) + RANK_B0_BASE);
-+	/* Ranks mapping is unavailable for the single-ranked memory */
-+	if (priv->info.ranks > 1) {
-+		priv->rank_shift[0] = ((addrmap[0] & RANK_MAX_VAL_MASK) ==
-+					RANK_MAX_VAL_MASK) ? 0 : ((addrmap[0] &
-+					RANK_MAX_VAL_MASK) + RANK_B0_BASE);
-+	}
- }
+-/* Granularity of reported error in bytes */
+-#define SNPS_EDAC_ERR_GRAIN		1
+-
+ #define SNPS_EDAC_MSG_SIZE		256
  
- /**
+ #define SNPS_EDAC_MOD_STRING		"snps_edac"
+@@ -736,9 +733,12 @@ static void snps_init_csrows(struct mem_ctl_info *mci)
+ 	struct snps_edac_priv *priv = mci->pvt_info;
+ 	struct csrow_info *csi;
+ 	struct dimm_info *dimm;
+-	u32 size, row;
++	u32 size, row, width;
+ 	int j;
+ 
++	/* Actual SDRAM-word width for which ECC is calculated */
++	width = 1U << (priv->info.dq_width - priv->info.dq_mode);
++
+ 	for (row = 0; row < mci->nr_csrows; row++) {
+ 		csi = mci->csrows[row];
+ 		size = snps_get_memsize();
+@@ -748,7 +748,7 @@ static void snps_init_csrows(struct mem_ctl_info *mci)
+ 			dimm->edac_mode	= EDAC_SECDED;
+ 			dimm->mtype	= priv->info.sdram_mode;
+ 			dimm->nr_pages	= (size >> PAGE_SHIFT) / csi->nr_channels;
+-			dimm->grain	= SNPS_EDAC_ERR_GRAIN;
++			dimm->grain	= width;
+ 			dimm->dtype	= priv->info.dev_cfg;
+ 		}
+ 	}
 -- 
 2.41.0
 
