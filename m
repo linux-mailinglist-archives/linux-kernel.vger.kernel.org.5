@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC4F7A7F81
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE707A7FAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbjITM1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38526 "EHLO
+        id S235861AbjITM33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235894AbjITM1X (ORCPT
+        with ESMTP id S234642AbjITM32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:27:23 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AC0E6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:27:17 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-530e180ffcbso4543405a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695212835; x=1695817635; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hv2thh1H9tA97kPGliYAF+DpZy/mFhBKmC18f7g/H+8=;
-        b=gTBJ71bQIeIVolDEZJIODZhuDnrWLqps9SijgyLrQpTQpXNDl9CsRDpdrRglaEzyXt
-         ekH0Q8wd2rJ4Owa7f9X2BbRnw/qbqbDOsaumPnTlh/g4zKTuSCenS0zQ14CWkARLV/Uk
-         0EYW7KYQ051zL1sXCEDJCdLP124OkKiOiJtwLwDkHvM9vLx9wkUve5bR19cRE0YTCypp
-         YJwpbky8d4Vh2Q/Bs0m06gPnjkZNIg69iSKvc5e9zCVdyvrfkakTOjt8xM+aclIPoqif
-         IKs/KvlvQHpXnJjGkI41sWdEgDtY4LwEgnsKFNbSqi1SpxN1aUbuu51YzbAhIrYDE21V
-         NmSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695212835; x=1695817635;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hv2thh1H9tA97kPGliYAF+DpZy/mFhBKmC18f7g/H+8=;
-        b=BWIvlW60e/3sBkB3fTBWub/JhT0W8EtMEh7IVy0kD5ztN0rb7fjcn35/LIugHdc4bv
-         01St59+R6J9tNOF5FDP+liEryBhy77yzMfofudvvf819Diq4j+Zq7dJMlBxVtlDXrBzi
-         BxsnWGq780qLZ7fDiafk3x5C/QLlgDAribf3NvG2brZkWD8GTQfuoX6RFHfjvJV/eu7q
-         KmoDrf1jJrn3G7IEo5KbZBzqg51nd/lhSSFG3dk7zvbTLzSc6qaBgS8Bh28kC9IqJF8F
-         oCdz6w3e25qAMgfT/lYDGavXg+ekX6WxSC7osPQPuM2gZ88tWGDC56B4l142V4mAa2Df
-         aKoA==
-X-Gm-Message-State: AOJu0YxJmQC+lGf133H7JchNXnzX2OXlFqv9qrqi+rbA8pwvWqDFaYZv
-        ldmk6w90290YUfNnp91XZRVbOGl1yhZskN1EXMwJ8w==
-X-Google-Smtp-Source: AGHT+IGhilnDj/sus5JakUZtSo3PYNc+I+MMntBHtlUMM1+I1hu3v/I4zTxsAW6rKgXqdzXJYZ8m6w==
-X-Received: by 2002:a17:906:2ce:b0:9a5:846d:d81f with SMTP id 14-20020a17090602ce00b009a5846dd81fmr1726172ejk.17.1695212835687;
-        Wed, 20 Sep 2023 05:27:15 -0700 (PDT)
-Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id z18-20020a1709060ad200b009887f4e0291sm9210859ejf.27.2023.09.20.05.27.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 05:27:14 -0700 (PDT)
-Message-ID: <817a2b0c-cc90-e109-0b8d-4283f0ac2610@linaro.org>
-Date:   Wed, 20 Sep 2023 14:27:14 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 3/3] media: exynos4-is: fimc-is: replace duplicate pmu
- node with phandle
-Content-Language: en-US
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Wed, 20 Sep 2023 08:29:28 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2124D8F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:29:22 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qiwKT-0008Hr-Qa; Wed, 20 Sep 2023 14:29:17 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qiwKS-007gUa-CY; Wed, 20 Sep 2023 14:29:16 +0200
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qiwKS-00ACFb-8L; Wed, 20 Sep 2023 14:29:16 +0200
+Date:   Wed, 20 Sep 2023 14:29:16 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230815060739.30160-1-krzysztof.kozlowski@linaro.org>
- <20230815060739.30160-3-krzysztof.kozlowski@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230815060739.30160-3-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Subject: Re: [PATCH] ARM: dts: stm32: omit unused pinctrl groups from dtb
+ files
+Message-ID: <20230920122916.GV637806@pengutronix.de>
+References: <20230920121147.2807758-1-s.hauer@pengutronix.de>
+ <33956b8b-465f-3a99-0331-7ed784c502f3@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33956b8b-465f-3a99-0331-7ed784c502f3@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,37 +66,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 08:07, Krzysztof Kozlowski wrote:
-> Devicetree for the FIMC IS camera included duplicated PMU node as its
-> child like:
+On Wed, Sep 20, 2023 at 02:15:24PM +0200, Ahmad Fatoum wrote:
+> Hello Sascha,
 > 
->   soc@0 {
->     system-controller@10020000 { ... }; // Real PMU
+> On 20.09.23 14:11, Sascha Hauer wrote:
+> > stm32mp15-pinctrl.dtsi contains nearly all pinctrl groups collected from
+> > all boards. Most of them end up unused by a board and only waste binary
+> > space. Add /omit-if-no-ref/ to the groups to scrub the unused groups
+> > from the dtbs.
+> > 
+> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > ---
+> >  arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 228 ++++++++++++++++++++
+> >  1 file changed, 228 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+> > index e1df345801dc2..778a83471df4c 100644
+> > --- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+> > +++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+> > @@ -7,6 +7,7 @@
+> >  
+> >  &pinctrl {
+> >  	adc1_ain_pins_a: adc1-ain-0 {
+> > +		/omit-if-no-ref/
 > 
->     camera@11800000 {
->       fimc-is@12000000 {
->         // FIMC IS camera node
->         pmu@10020000 {
->           reg = <0x10020000 0x3000>; // Fake PMU node
->         };
->       };
->     };
->   };
-> 
-> This is not a correct representation of the hardware.  Mapping the PMU
-> (Power Management Unit) IO memory should be via syscon-like phandle
-> (samsung,pmu-syscon, already used for other drivers), not by duplicating
-> "pmu" Devicetree node inside the FIMC IS.  Backward compatibility is
-> preserved.
+> I think the correct place is above the node name that would be referenced,
+> i.e. before adc1_ain_pins_a: adc1-ain-0 here.
 
-Hey Mauro,
+Argh! You are right. I'll send a v2 once my fingers are no longer
+bleeding.
 
-This patchset is waiting a bit. Patchwork:
-https://patchwork.linuxtv.org/project/linux-media/list/?series=11051
+Sascha
 
-This is a cleanup which blocks further DTS cleanup changes. Any comments
-from your side?
 
-Best regards,
-Krzysztof
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
