@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E067A8663
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAED67A8664
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbjITOVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        id S234959AbjITOWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234971AbjITOVO (ORCPT
+        with ESMTP id S234717AbjITOWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:21:14 -0400
+        Wed, 20 Sep 2023 10:22:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678BCB9;
-        Wed, 20 Sep 2023 07:21:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B31CCC433C7;
-        Wed, 20 Sep 2023 14:21:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45390AF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:22:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5FF5C433C7;
+        Wed, 20 Sep 2023 14:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695219668;
-        bh=NvDTE4coXFzcg9T9zLlpbjt4Q2P5H6tVQUNN1gsYROc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pdrwUhCh1BGUk0VwviTh4v3rcldyKdMGJy9k6friNPKgLScI0zBSPZ0SIiL1s1szg
-         OHk0aMuqTOvFZ797w3TmbpRu3qQep0oq5x2fdylhtVcs4MmP2N9RmtTN8eck19ymA5
-         eYq5iv7n3MNJOx5YQvTElVwa9O0V9ywsOp3Kr9BxCqKXOT7u8mJBFHIEJLVfbJgPz5
-         SC7/G3Pwe6a5LHomKvRf/717FBnPu91RICgKbDBrzsSaHqIyJlk6XXAc+vtlyw6sHo
-         2omH7rTUeIOM8oqeUdPqE/MfkCB4Nf4J0H2B2mjfdWJ+vsUpj9Cr8M1Ka4KW2XdiT1
-         BjhxJUIZgnCvg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 5.15 000/110] 5.15.133-rc1 review
-Date:   Wed, 20 Sep 2023 14:21:05 +0000
-Message-Id: <20230920142105.1709-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230920112830.377666128@linuxfoundation.org>
-References: 
+        s=k20201202; t=1695219721;
+        bh=LqtqpHzwRDH0oWFyoYM+97XwIaM8ozMTSXhPn4/77c8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PUBcifAXieesYeb9maaaTS68yS0r2bj9paBIg4jeIUAuxAN3aa9wOqdS82iXcoEGN
+         CexkaU3/X9lFp5se8Zi6ZBWce7wLw8E5e5sL1gpnYInOw8KG9XL1aOsTy6L4Pj481S
+         v+xQYwBJjE/5H/PRq8gnK4XKZpY3KO/2xWdxQdIdh+hNUrm6JkacOVELEo9wL42qJr
+         zoI61/yTlB6wNO01fUAg1KnMdlZ9Sh6EHYhNo39GJGtxdPGxLJUHGbuMjQjwMHCNAV
+         jvrOCBAHfEeZmt4ZSwpXCzcMV0LO3s6xsJCGizXwosg8QA8viuRO8LGd5zie9iYPWi
+         sM2TYm9y24z7Q==
+Date:   Wed, 20 Sep 2023 07:22:01 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        david@fromorbit.com, kent.overstreet@linux.dev,
+        linux-arm-kernel@lists.infradead.org, ming.lei@redhat.com,
+        will@kernel.org, yi.zhang@redhat.com,
+        yangerkun <yangerkun@huawei.com>
+Subject: Re: [PATCH] locking/atomic: scripts: fix fallback ifdeffery
+Message-ID: <20230920142201.GG348037@frogsfrogsfrogs>
+References: <20230919171430.2697727-1-mark.rutland@arm.com>
+ <8cef9531-e44d-04de-f789-cb77c63ecf4f@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <8cef9531-e44d-04de-f789-cb77c63ecf4f@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -55,55 +55,236 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 20, 2023 at 10:08:02AM +0800, Baokun Li wrote:
+> On 2023/9/20 1:14, Mark Rutland wrote:
+> > Since commit:
+> > 
+> >    9257959a6e5b4fca ("locking/atomic: scripts: restructure fallback ifdeffery")
+> > 
+> > The ordering fallbacks for atomic*_read_acquire() and
+> > atomic*_set_release() erroneously fall back to the implictly relaxed
+> > atomic*_read() and atomic*_set() variants respectively, without any
+> > additional barriers. This loses the ACQUIRE and RELEASE ordering
+> > semantics, which can result in a wide variety of problems, even on
+> > strongly-ordered architectures where the implementation of
+> > atomic*_read() and/or atomic*_set() allows the compiler to reorder those
+> > relative to other accesses.
+> > 
+> > In practice this has been observed to break bit spinlocks on arm64,
+> > resulting in dentry cache corruption.
+> > 
+> > The fallback logic was intended to allow ACQUIRE/RELEASE/RELAXED ops to
+> > be defined in terms of FULL ops, but where an op had RELAXED ordering by
+> > default, this unintentionally permitted the ACQUIRE/RELEASE ops to be
+> > defined in terms of the implicitly RELAXED default.
+> > 
+> > This patch corrects the logic to avoid falling back to implicitly
+> > RELAXED ops, resulting in the same behaviour as prior to commit
+> > 9257959a6e5b4fca.
+> > 
+> > I've verified the resulting assembly on arm64 by generating outlined
+> > wrappers of the atomics. Prior to this patch the compiler generates
+> > sequences using relaxed load (LDR) and store (STR) instructions, e.g.
+> > 
+> > | <outlined_atomic64_read_acquire>:
+> > |         ldr     x0, [x0]
+> > |         ret
+> > |
+> > | <outlined_atomic64_set_release>:
+> > |         str     x1, [x0]
+> > |         ret
+> > 
+> > With this patch applied the compiler generates sequences using the
+> > intended load-acquire (LDAR) and store-release (STLR) instructions, e.g.
+> > 
+> > | <outlined_atomic64_read_acquire>:
+> > |         ldar    x0, [x0]
+> > |         ret
+> > |
+> > | <outlined_atomic64_set_release>:
+> > |         stlr    x1, [x0]
+> > |         ret
+> > 
+> > To make sure that there were no other victims of the ifdeffery rewrite,
+> > I generated outlined copies of all of the {atomic,atomic64,atomic_long}
+> > atomic operations before and after commit 9257959a6e5b4fca. A diff of
+> > the generated assembly on arm64 shows that only the read_acquire() and
+> > set_release() operations were changed, and only lost their intended
+> > ordering:
+> > 
+> > | [mark@lakrids:~/src/linux]% diff -u \
+> > | 	<(aarch64-linux-gnu-objdump -d before-9257959a6e5b4fca.o)
+> > | 	<(aarch64-linux-gnu-objdump -d after-9257959a6e5b4fca.o)
+> > | --- /proc/self/fd/11    2023-09-19 16:51:51.114779415 +0100
+> > | +++ /proc/self/fd/16    2023-09-19 16:51:51.114779415 +0100
+> > | @@ -1,5 +1,5 @@
+> > |
+> > | -before-9257959a6e5b4fca.o:     file format elf64-littleaarch64
+> > | +after-9257959a6e5b4fca.o:     file format elf64-littleaarch64
+> > |
+> > |
+> > |  Disassembly of section .text:
+> > | @@ -9,7 +9,7 @@
+> > |         4:      d65f03c0        ret
+> > |
+> > |  0000000000000008 <outlined_atomic_read_acquire>:
+> > | -       8:      88dffc00        ldar    w0, [x0]
+> > | +       8:      b9400000        ldr     w0, [x0]
+> > |         c:      d65f03c0        ret
+> > |
+> > |  0000000000000010 <outlined_atomic_set>:
+> > | @@ -17,7 +17,7 @@
+> > |        14:      d65f03c0        ret
+> > |
+> > |  0000000000000018 <outlined_atomic_set_release>:
+> > | -      18:      889ffc01        stlr    w1, [x0]
+> > | +      18:      b9000001        str     w1, [x0]
+> > |        1c:      d65f03c0        ret
+> > |
+> > |  0000000000000020 <outlined_atomic_add>:
+> > | @@ -1230,7 +1230,7 @@
+> > |      1070:      d65f03c0        ret
+> > |
+> > |  0000000000001074 <outlined_atomic64_read_acquire>:
+> > | -    1074:      c8dffc00        ldar    x0, [x0]
+> > | +    1074:      f9400000        ldr     x0, [x0]
+> > |      1078:      d65f03c0        ret
+> > |
+> > |  000000000000107c <outlined_atomic64_set>:
+> > | @@ -1238,7 +1238,7 @@
+> > |      1080:      d65f03c0        ret
+> > |
+> > |  0000000000001084 <outlined_atomic64_set_release>:
+> > | -    1084:      c89ffc01        stlr    x1, [x0]
+> > | +    1084:      f9000001        str     x1, [x0]
+> > |      1088:      d65f03c0        ret
+> > |
+> > |  000000000000108c <outlined_atomic64_add>:
+> > | @@ -2427,7 +2427,7 @@
+> > |      207c:      d65f03c0        ret
+> > |
+> > |  0000000000002080 <outlined_atomic_long_read_acquire>:
+> > | -    2080:      c8dffc00        ldar    x0, [x0]
+> > | +    2080:      f9400000        ldr     x0, [x0]
+> > |      2084:      d65f03c0        ret
+> > |
+> > |  0000000000002088 <outlined_atomic_long_set>:
+> > | @@ -2435,7 +2435,7 @@
+> > |      208c:      d65f03c0        ret
+> > |
+> > |  0000000000002090 <outlined_atomic_long_set_release>:
+> > | -    2090:      c89ffc01        stlr    x1, [x0]
+> > | +    2090:      f9000001        str     x1, [x0]
+> > |      2094:      d65f03c0        ret
+> > |
+> > |  0000000000002098 <outlined_atomic_long_add>:
+> > 
+> > I've build tested this with a variety of configs for alpha, arm, arm64,
+> > csky, i386, m68k, microblaze, mips, nios2, openrisc, powerpc, riscv,
+> > s390, sh, sparc, x86_64, and xtensa, for which I've seen no issues. I
+> > was unable to build test for ia64 and parisc due to existing build
+> > breakage in v6.6-rc2.
+> > 
+> > Fixes: 9257959a6e5b4fca ("locking/atomic: scripts: restructure fallback ifdeffery")
+> > Reported-by: Ming Lei <ming.lei@redhat.com>
+> > Link: https://lore.kernel.org/all/ZOWFtqA2om0w5Vmz@fedora/
+> > Reported-by: Darrick J. Wong <djwong@kernel.org>
 
-On Wed, 20 Sep 2023 13:30:58 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+The dentry crashes on fstests on arm64 have gone away, so I feel
+confident in saying:
 
-> This is the start of the stable review cycle for the 5.15.133 release.
-> There are 110 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Tested-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> > Link: https://lore.kernel.org/linux-fsdevel/20230912173026.GA3389127@frogsfrogsfrogs/
+> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 > 
-> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> Anything received after that time might be too late.
+> Thank you  for the patch that fixes this issue!
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.133-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 634d2466eedd ("Linux 5.15.133-rc1")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+> I tested the patch and confirmed that hlist_bl_lock now provides the
+> guarantees it should.
+> 
+> Tested-by: Baokun Li <libaokun1@huawei.com>
+> 
+> 
+> Cheers!
+> Baokun Li
+> > Cc: Baokun Li <libaokun1@huawei.com>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Darrick J. Wong <djwong@kernel.org>
+> > Cc: Dave Chinner <david@fromorbit.com>
+> > Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> > Cc: Ming Lei <ming.lei@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Yi Zhang <yi.zhang@redhat.com>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > ---
+> >   include/linux/atomic/atomic-arch-fallback.h | 10 +---------
+> >   scripts/atomic/gen-atomic-fallback.sh       |  2 +-
+> >   2 files changed, 2 insertions(+), 10 deletions(-)
+> > 
+> > Peter, are you happy to queue this in the tip tree? It's a pretty nasty
+> > regresssion in v6.5, and I'd like to get this in as a fix for v6.6 ASAP.
+> > 
+> > Thanks,
+> > Mark.
+> > 
+> > diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
+> > index 18f5744dfb5d8..b83ef19da13de 100644
+> > --- a/include/linux/atomic/atomic-arch-fallback.h
+> > +++ b/include/linux/atomic/atomic-arch-fallback.h
+> > @@ -459,8 +459,6 @@ raw_atomic_read_acquire(const atomic_t *v)
+> >   {
+> >   #if defined(arch_atomic_read_acquire)
+> >   	return arch_atomic_read_acquire(v);
+> > -#elif defined(arch_atomic_read)
+> > -	return arch_atomic_read(v);
+> >   #else
+> >   	int ret;
+> > @@ -508,8 +506,6 @@ raw_atomic_set_release(atomic_t *v, int i)
+> >   {
+> >   #if defined(arch_atomic_set_release)
+> >   	arch_atomic_set_release(v, i);
+> > -#elif defined(arch_atomic_set)
+> > -	arch_atomic_set(v, i);
+> >   #else
+> >   	if (__native_word(atomic_t)) {
+> >   		smp_store_release(&(v)->counter, i);
+> > @@ -2575,8 +2571,6 @@ raw_atomic64_read_acquire(const atomic64_t *v)
+> >   {
+> >   #if defined(arch_atomic64_read_acquire)
+> >   	return arch_atomic64_read_acquire(v);
+> > -#elif defined(arch_atomic64_read)
+> > -	return arch_atomic64_read(v);
+> >   #else
+> >   	s64 ret;
+> > @@ -2624,8 +2618,6 @@ raw_atomic64_set_release(atomic64_t *v, s64 i)
+> >   {
+> >   #if defined(arch_atomic64_set_release)
+> >   	arch_atomic64_set_release(v, i);
+> > -#elif defined(arch_atomic64_set)
+> > -	arch_atomic64_set(v, i);
+> >   #else
+> >   	if (__native_word(atomic64_t)) {
+> >   		smp_store_release(&(v)->counter, i);
+> > @@ -4657,4 +4649,4 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
+> >   }
+> >   #endif /* _LINUX_ATOMIC_FALLBACK_H */
+> > -// 202b45c7db600ce36198eb1f1fc2c2d5268ace2d
+> > +// 2fdd6702823fa842f9cea57a002e6e4476ae780c
+> > diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
+> > index c0c8a85d7c81b..a45154cefa487 100755
+> > --- a/scripts/atomic/gen-atomic-fallback.sh
+> > +++ b/scripts/atomic/gen-atomic-fallback.sh
+> > @@ -102,7 +102,7 @@ gen_proto_order_variant()
+> >   	fi
+> >   	# Allow ACQUIRE/RELEASE/RELAXED ops to be defined in terms of FULL ops
+> > -	if [ ! -z "${order}" ]; then
+> > +	if [ ! -z "${order}" ] && ! meta_is_implicitly_relaxed "${meta}"; then
+> >   		printf "#elif defined(arch_${basename})\n"
+> >   		printf "\t${retstmt}arch_${basename}(${args});\n"
+> >   	fi
+> 
+> 
