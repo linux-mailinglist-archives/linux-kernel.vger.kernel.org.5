@@ -2,49 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B4B7A8CF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40597A8CF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbjITTcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
+        id S229661AbjITTeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjITTcu (ORCPT
+        with ESMTP id S229441AbjITTej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:32:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8141B4;
-        Wed, 20 Sep 2023 12:32:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05091C433AD;
-        Wed, 20 Sep 2023 19:32:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695238325;
-        bh=bcP72m9EhmjsOzjFU5Em8mvcDsCEuWWFRjHnralHl2s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OC1ZMnQiXtxcKFL3Cj3sqwJdmfq4v5O2Asja5tvU1SeCJUZPzH/pK4gaJYnHyPTgY
-         abWhQpwerZ44NlDpaEIK1x+H9IOTbNAPLXiMkLMCSO7ri85yks004apzex0V2HHbx6
-         UeC5RwBV+YwrfT/hd7PMuAgP4gn7OpjnXEHQUw9xqAvqc3Z4dj+AUK31hETnaS34gE
-         TCqskU9N+1fiySWy822kzYIh/PLHAGRkWPpoWGiihAzbT512i3sMV1Gjuy7LLoSkSM
-         zvoqP9J58veqwNNchMhyNEj6opXTbCCKkGijfYhJcpXeJuaH6a9n1GXs0926935X0+
-         rNENwAmVDy/4g==
-Date:   Wed, 20 Sep 2023 12:32:03 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC] Should writes to /dev/urandom immediately affect reads?
-Message-ID: <20230920193203.GA914@sol.localdomain>
-References: <20230920060615.GA2739@sol.localdomain>
- <CAHk-=wja26UmHQCu48n_HN5t5w3fa6ocm5d_VrJe6-RhCU_x9A@mail.gmail.com>
+        Wed, 20 Sep 2023 15:34:39 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [104.207.131.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D3B9F;
+        Wed, 20 Sep 2023 12:34:31 -0700 (PDT)
+Received: from spock.localnet (unknown [94.142.239.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 74E58150A22B;
+        Wed, 20 Sep 2023 21:34:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1695238468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ieFwOXSMXwW5Z1TbA7klO5guFnw5DamdxsZ5CsxGlt0=;
+        b=Wpkll7Je8Gck2iZpd4BOW50eRsftKl4A3iDUArvIOYyke7t3nm5Fli7jg4q5J3dJGqEEVy
+        kEYUkhw7PIY+Cd/WggeAxoELj3T7EBZ741uOX07yatvrGaYUBgLLLU9TUsowp1OuVGQMWj
+        n+h5ufMLaU9YYHTGfcKYISaR6KJC4oc=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Huang Rui <ray.huang@amd.com>, Meng Li <li.meng@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-acpi@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH V7 0/7] amd-pstate preferred core
+Date:   Wed, 20 Sep 2023 21:34:17 +0200
+Message-ID: <12290212.O9o76ZdvQC@natalenko.name>
+In-Reply-To: <ce377dda-e1ce-4553-b9b8-125620b8b2d7@amd.com>
+References: <20230918081407.756858-1-li.meng@amd.com> <5973628.lOV4Wx5bFT@natalenko.name>
+ <ce377dda-e1ce-4553-b9b8-125620b8b2d7@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wja26UmHQCu48n_HN5t5w3fa6ocm5d_VrJe6-RhCU_x9A@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: multipart/signed; boundary="nextPart5713749.DvuYhMxLoT";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,55 +64,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--nextPart5713749.DvuYhMxLoT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+Subject: Re: [PATCH V7 0/7] amd-pstate preferred core
+Date: Wed, 20 Sep 2023 21:34:17 +0200
+Message-ID: <12290212.O9o76ZdvQC@natalenko.name>
+In-Reply-To: <ce377dda-e1ce-4553-b9b8-125620b8b2d7@amd.com>
+MIME-Version: 1.0
 
-On Wed, Sep 20, 2023 at 11:48:26AM -0700, Linus Torvalds wrote:
-> On Tue, 19 Sept 2023 at 23:06, Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > This would be the potential change, BTW:
-> 
-> Entirely regardless of your fundamental question, no, that's not the
-> potential change.
-> 
-> That causes a crng_reseed() even if the write fails completely and
-> returns -EFAULT.
-> 
-> So at a *minimum*, I'd expect the patch to be be something like
-> 
->         memzero_explicit(block, sizeof(block));
-> -       return ret ? ret : -EFAULT;
-> +       if (!ret)
-> +               return -EFAULT;
-> +       crng_reseed(NULL);
-> +       return ret;
-> 
-> but even then I'd ask
-> 
->  - wouldn't we want some kind of minimum check?
-> 
->  - do we really trust writes to add any actual entropy at all and at what point?
-> 
-> which are admittedly likely the same question just in different guises.
+Hello.
 
-Whether to credit entropy for writes to /dev/{u,}random is an unrelated topic,
-and the answer is clearly "no, we must not, and we never have" (as I mentioned
-in the second paragraph of my email).  I understand the last discussion
-https://lore.kernel.org/lkml/20220322191436.110963-1-Jason@zx2c4.com/T/#u
-diverged into both topics, but they're not directly related.  Reseeding the CRNG
-just makes it up to date with the entropy pool; nothing more than that.
+On st=C5=99eda 20. z=C3=A1=C5=99=C3=AD 2023 18:56:09 CEST Mario Limonciello=
+ wrote:
+> > When applied on top of v6.5.3 this breaks turbo on my 5950X after suspe=
+nd/resume cycle. Please see the scenario description below.
+> >=20
+> > If I boot v6.5.3 + this patchset, then `turbostat` reports ~4.9 GHz on =
+core 0 where `taskset -c 0 dd if=3D/dev/zero of=3D/dev/null` is being run.
+> >=20
+> > After I suspend the machine and then resume it, and run `dd` again, `tu=
+rbostat` reports the core to be capped to a stock frequency of ~3.4 GHz. Re=
+booting the machine fixes this, and the CPU can boost again.
+> >=20
+> > If this patchset is reverted, then the CPU can turbo after suspend/resu=
+me cycle just fine.
+> >=20
+> > I'm using `amd_pstate=3Dguided`.
+> >=20
+> > Is this behaviour expected?
+>=20
+> To help confirm where the issue is, can I ask you to do three=20
+> experiments with the patch series applied:
+>=20
+> 1) 'amd_pstate=3Dactive' on your kernel command line.
 
-Yes, obviously there's no point in reseeding if nothing actually got added, so
-we could skip the reseed in that case if we want to.
+The issue is reproducible. If I toggle the governor in cpupower to `powersa=
+ve` and back to `performance`, boost is restored.
 
-> 
-> Also, are there any relevant architectures where
-> "try_to_generate_entropy()" doesn't work? IOW, why do you even care?
-> 
+> 2) 'amd_pstate=3Dactive amd_prefcore=3Ddisable' on your kernel command li=
+ne.
 
-There are, as shown by the fact that the full unification of /dev/urandom and
-/dev/random failed yet again.  But similarly, that's unrelated.  The actual
-question, which I'm attempting to start a discussion about without getting
-sidetracked into questions that may seem related but actually aren't, is simply
-whether writes to /dev/{u,}random should immediately affect reads.
+The issue is not reproducible.
 
-- Eric
+> 3) 'amd_pstate=3Dguided amd_prefcore=3Ddisable' on your kernel command li=
+ne.
+
+The issue is not reproducible.
+
+I should also mention that in my initial configuration I use `amd_pstate=3D=
+guided` and `schedutil`. If I switch to `performance` after suspend-resume =
+cycle, the boost is restored. However, if I switch back to `schedutil`, the=
+ freq is capped.
+
+Does this info help?
+
+> Looking through the code, I anticipate from your report that it=20
+> reproduces on "1" but not "2" and "3".
+>=20
+> Meng,
+>=20
+> Can you try to repro?
+>=20
+> I think that it's probably a call to amd_pstate_init_prefcore() missing
+> from amd_pstate_cpu_resume() and also amd_pstate_epp_resume().
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart5713749.DvuYhMxLoT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmULSTkACgkQil/iNcg8
+M0sqsA//eFdiuY7Cxaer5l0lBux1QhGyN0q30uy+zbybTXSfN4BGYulhA/nihp5k
+TRvwAYlSQf1Zhoi40S2xQlpblgLkiSl+a9UtdVju7RKfButrbNhFmQSygIHYQnmc
+kKYu+2079+3GvpFYPxtMJBR5UNbbNZ+dFTmj8SYnQ7Zm0cizbzi+WtIphnNuhubE
+fLs8Dc1XtvrqukGjffefSDjzQ7pd/LIcD1zG4nPbdyUIki52P/Y4TewqqJ8ZePg5
+qw/a/pRHePddz4rnEjCuSswZ98PXfipz7C1R49b1I6E7UlFAPqWnMQbioKYPUsWW
+Eszd8omTV4ejEwZ6kX22zynoCHNRg8O37SMBHxhNbIzIOVXTyGtD+9c4wd6AjAvy
+/+VRk9JJGHoZfh9YOB8tHNvmxzKUEQSW93KKlD8Var5hsqzWHsUxkCn3U74hB7Px
+dWmKRtau/qrarrS068QtM8QOIgfegUzvu0s6DyVFleI9Sx0zjfV1cfzgv02OYY75
+9Zk+/qfNe6opvZMtGLTMUueQGMy1KGYhN55PPMxy5S1LeZPgfXZDHWdBMqQYpz3X
+RyNLvfoUYHGSQJJBKvhuloW0sauhFtVnBG7CF3A8e6t3dvzqBrwem+vdFBZw4uwt
+xuw0b6tGpTkmeRCtz23xGHpH9qE6uIo4Bo2FxenUm3jZHnNbALY=
+=EcDU
+-----END PGP SIGNATURE-----
+
+--nextPart5713749.DvuYhMxLoT--
+
+
+
