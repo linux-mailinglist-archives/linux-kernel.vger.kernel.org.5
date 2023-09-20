@@ -2,789 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6107A78CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A286D7A78D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbjITKNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
+        id S234118AbjITKNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234244AbjITKND (ORCPT
+        with ESMTP id S231948AbjITKNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:13:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5288494;
-        Wed, 20 Sep 2023 03:12:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46601C433C7;
-        Wed, 20 Sep 2023 10:12:50 +0000 (UTC)
-Message-ID: <f9ad3d89-af41-4bcf-8f58-bb52f8458532@xs4all.nl>
-Date:   Wed, 20 Sep 2023 12:12:48 +0200
+        Wed, 20 Sep 2023 06:13:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E74794;
+        Wed, 20 Sep 2023 03:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695204826; x=1726740826;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=MXZsMvfM/PTS1OqKKxUeKKs73pl+BDqPGUkQDECMhTw=;
+  b=WvozUsUupP6H0fnU3C8R8RzeqTx8RJQPS4iUVFVEImA3WPvYfOzy5fK/
+   AvIWRce/dMK6cBpIqcI5rocQciS+GFGdRu/hLBzc7FUJEf5xJcpWTmTjz
+   Z/30wkETEgU1yC2+itX3GR/EUte1a3x7zQmvzJRf9kxt7n9TO9z+v50l3
+   ybuZ2oBt3S0OhO/IAXefrvjDQNderVOw+Yy74QW/BJCxpT1XyQYjELMPJ
+   oA6EuxktvX2ToeweQLmxLOpGWKYueGyVtpW2esdErBFEzRlIyA5bXLbjv
+   fHAkmg0cHjuVWnJGeY+XEV/wUzIh/DG8mtz1W6lEViriRP3I+FpIEDj0D
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="360440962"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="360440962"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 03:13:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="920229680"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="920229680"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Sep 2023 03:13:45 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 20 Sep 2023 03:13:45 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 20 Sep 2023 03:13:44 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 20 Sep 2023 03:13:44 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 20 Sep 2023 03:13:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nMRPg9vzh9dg+byx+2De4Imdtg7BVOE3Ohu7cry7cHrtQIVfPxE0RIANstattdRBIQj3Yw4iUtxvxYxMdegHRQpaWj8IPeAe0SoJ7euL8EzLllVBAXMEMotdG96Pt1RnipWYzeKldFLh8q+6bxgVd0ptZLIS7Zn/zeCfVgm5ukA7BK83Rz+1/gsC1Ww23a6SmUwdQjqrokodp4sTRiazFo8YeSBavQchWdOaPr+dFaMmA4znuDrpB2ejSy2Ie6Yk2QCKm3p3W1WRSGzdq0yzFog4lNlhMpdTSv6kfkQDucLaqWw28cnQDVBngyUMsPeYMauSM6cPV5P865eczyyDUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+BWxV+43FIjRAhds4nA0W+YISl9t4Ody4x30WuynfTE=;
+ b=gHisycLHMy7QvpDpPH4Bb0Wwhv1bddsWDi/YuVDO8Cvg28RaX43FtFe3Bz/nZtMEEQq9jF9k/lv+gYWrH2pJ6I2D8r89k06e9xTetoiofd9MIR9HRNY+l+uIgmtol6vBQwwxw+C+MB9oEq4yKK48ZpBMF4BbDpcSqjm9umPqrp+I9+l5WsXHoyjCbTb4Lxdmm6dIg2TvntXraaJGjz35efOTYBc7f9borvpFwq5xWk+8duiZYi8EcVO6qyl7Md+o4Bl6QfJYoMnXhVY79Lu6sLEecAmHb1MMkMT9Q5YKwjscPNKDElooTxZzW0eUM9csSVNyE5x3oSnvqrDoJJeElA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by SA2PR11MB5066.namprd11.prod.outlook.com (2603:10b6:806:110::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.30; Wed, 20 Sep
+ 2023 10:13:42 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::6ecb:9e9a:87e5:f342]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::6ecb:9e9a:87e5:f342%4]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
+ 10:13:42 +0000
+Date:   Wed, 20 Sep 2023 12:13:36 +0200
+From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+CC:     Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 0/6] selftests/resctrl: Fixes to failing tests
+Message-ID: <4dbp2pvuckgbphc3bgwo5xxe3tbpwtibhqd5aykotbjrzaro3q@gcu72ie6zs4k>
+References: <20230915154438.82931-1-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230915154438.82931-1-ilpo.jarvinen@linux.intel.com>
+X-ClientProxiedBy: FR2P281CA0050.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:92::13) To MN0PR11MB6231.namprd11.prod.outlook.com
+ (2603:10b6:208:3c4::15)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 6/9] media: v4l2: Add audio capture and output
- support
-Content-Language: en-US, nl
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1694670845-17070-1-git-send-email-shengjiu.wang@nxp.com>
- <1694670845-17070-7-git-send-email-shengjiu.wang@nxp.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <1694670845-17070-7-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|SA2PR11MB5066:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61b26454-7f28-437e-963a-08dbb9c24461
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J4kPL5qF0NjW0FW5t3xwTc9ZLCSOUZvq4eXdyOxWPYdAdI0/A4Y+czZ+4YwKpqBr18W7EhT0cRcKi3AQdRjdv61/FWvoCzyVY5bkCp6Anup23SR0uAQcXJgt/QqrOZ/D4yW9qYatEkBQIpbvmt8SW+SObSH1OsOi3TYWucN4cQQO9kLwIcEWOZDHy7mSgZ3zZddIhYb24MGSbAUSKJN0LXJSxFUUGs4g5UrRWKEad5lPkjGGcOyFORPHSpiFWO0VW8QAL3VDAtY/PwgiiwnCAOnk4hlOPpCEncnyaodQcOns/zCiKq2kP4hhtBTYaOxgg3rxtu7nq2GbadhfGTITtovzDiRo7Vel54iV4xIneQflL6BivWTX7gGazuHZbiCLdBS7X0EloYCpGk29rc2weaiDOTU4o4HOiy712vd/rO5+lezhrHdb5KWz/DYtcfY5PIv3ZfN4bbIZnDuxsaOBN+/0fLB/lCuRdwQe+6a9Nkx053GCznu8hdKvnfr0fo5jIURy8EYiHaTRP0YB2Cv7DVlY2SxWuM3OjWbe4b3bMyFGiT5aN5w3DUskmINY9ZQa
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(376002)(346002)(366004)(396003)(451199024)(186009)(1800799009)(6666004)(6506007)(6486002)(558084003)(38100700002)(82960400001)(86362001)(26005)(2906002)(6512007)(9686003)(478600001)(5660300002)(4326008)(8676002)(8936002)(41300700001)(33716001)(54906003)(66556008)(66476007)(6916009)(316002)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?uYczgOyhury0dC/r2a6kRil+wvKGO9psCfVMrSAz4oYgp8hiDz6bH0tK37?=
+ =?iso-8859-1?Q?7+Att9NhoNAazd0RwiK2LUunUgm3ao4zNaa1xQJkftqnQRJuFRz1BsqxKL?=
+ =?iso-8859-1?Q?pJ2pkWmVps1tqnCrzNGurBxw0jQiK1QsYDounkDYJgiGP6XPP/nOQ2CkmO?=
+ =?iso-8859-1?Q?AsbH6Ld1GXRF/zVp7a5w8wHOLQTre1ZatqFmCNQkm9wMIUB4sCBtzxw1YV?=
+ =?iso-8859-1?Q?HGPWqgTSmtz8H2FhTAHVZcy7ieBizPBFVtYcO7WjxT6sILgGEAOv0RbfWH?=
+ =?iso-8859-1?Q?knnwUTe43j4lf64a8S9bBaalP6gbXgAVv7arEzsI0Gj2uZ8Phvp0nagI0G?=
+ =?iso-8859-1?Q?KV6Lw3j0z2tgDnCspz6kxF6IC5gUc/CmHKNnSoe+j3Zg//bLXr045oKL7V?=
+ =?iso-8859-1?Q?0WYH4bafF3tmIw8wo+e/HT7AY+laFcr2DqT+1fxqVL81Sdde6JiPVhGPVG?=
+ =?iso-8859-1?Q?iXzTvH7JIdLc4dQxVMr0j+lwN8gL14kU7Q7loRKl5pFYdwgspyFbZphj6L?=
+ =?iso-8859-1?Q?hPHLkAKOU6c/a/Hs8OqCEZdKXJlKkUiWXilrMXfKspMNchf3Itlj7w7im3?=
+ =?iso-8859-1?Q?S4oi1NNn9EAMFlUmRQzxoisawStDdsKL7Ga50GtWKtposhScITgARp51QK?=
+ =?iso-8859-1?Q?f2WthnC/wIjRiUBVr2Bs5EG9dBO0Sn6S0TU7GFm/koq/cAfkesysmgNwfR?=
+ =?iso-8859-1?Q?5zlDKCDMViluM/KGUKkStlcPwG3TZfghVQv0ghgs57lstRvXxNGi5yoPu3?=
+ =?iso-8859-1?Q?mcYecqDwvfNpqWxN+985Uhw1nYX+HTbZglk/EozTgJIe/k35wlOrw5oT80?=
+ =?iso-8859-1?Q?hlwMym8Ps0m3h3mwAC79BqyYxpAoSz+aHRhy3jl8pCIPNWoTRSkfMGuu1N?=
+ =?iso-8859-1?Q?JBjs59X94a62XomVGBmTIl9M5ImEEgmBPbI+L+ZrcctGclNxjYtLgRXB39?=
+ =?iso-8859-1?Q?PqAd84havuGNkWvUofOGt7QPJ4nwRvfFCcrz2SzBn3XaeKrBe8kvxn8wo3?=
+ =?iso-8859-1?Q?7v49MzMuxqTBwhE/cS/kf2stcydrfzHuN/cCUyXnI/0Kf9tOE7fpF1sYA6?=
+ =?iso-8859-1?Q?q2mN37OXoadg4s5TItNMgLH05h16Fv//2hnVyNMXTFV5GBaFvcaJAmtFuD?=
+ =?iso-8859-1?Q?Utp4KT6jfQWLLw6PRxsl0Q5jEf0Fg5vJLObVXdg0VYHvQNl7w7raVG/PgX?=
+ =?iso-8859-1?Q?ugSOP/apekUrsteYJWI27hIOE5R4vj8FDfwlrSUVdCcLM/MPFHLTeosq+w?=
+ =?iso-8859-1?Q?oZSHbJQ5bF+INwhTJ6Jor9lCTOLZOveYQUF9efvTW0Le+Y4TEDHqKnSxdb?=
+ =?iso-8859-1?Q?76bED/fWqnI4bm8lJxj+0ICwUrTg6ecZlx6VrSAF58bz0l8hoDlWMHUuh9?=
+ =?iso-8859-1?Q?2rjTy94mtA6AIwxFLKlMZSf/ZAVBC+WjM3pgVXi3aMYW5pntK0dC8CFxuw?=
+ =?iso-8859-1?Q?pOJSCbzvkfza+trl/UWhw84dBzndhB2iWKHXygu57EivuyBz8Jp8XjliEm?=
+ =?iso-8859-1?Q?flZmKD6FclmGAaOjspA37j6BoXaEaD1a/Ri5KpEsb+Tb2dafLDqa9DbkJT?=
+ =?iso-8859-1?Q?7tYDSGygKZ4bjqEMQiphiDO31xMVmT5fEL3QhY1WV5xucNR7iB/ty0eJzL?=
+ =?iso-8859-1?Q?1JsoBkVPYDSpUTDHbryIw82Vc6ItBJij3bDlHq5BroS8XpkKwgt70DhTbK?=
+ =?iso-8859-1?Q?7odOR4kfDAn2tl/gWiw=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61b26454-7f28-437e-963a-08dbb9c24461
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 10:13:42.7098
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: p7TMMkiax+8C8ySvskol/Yl1u1eWAoQHZTOK5OMmOFKkv3oRsA4iOdmMqyNnFMAf8M3mq/qjQwxVYlO+rrBP0TIeQU+ccrNwgdyjpZjrxHY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5066
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shengjiu,
+Hi, looks good to me. Also ran it without problems on Intel(R) Xeon(R)
+Platinum 8360Y.
 
-I just noticed you posted a v4, but I expect that my comments below are still valid...
+Reviewed-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Tested-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 
-On 14/09/2023 07:54, Shengjiu Wang wrote:
-> Audio signal processing has the requirement for memory to
-> memory similar as Video.
-> 
-> This patch is to add this support in v4l2 framework, defined
-> new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
-> V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
-> for audio case usage.
-> 
-> Defined V4L2_AUDIO_FMT_LPCM format type for audio.
-> 
-> Defined V4L2_CAP_AUDIO_M2M capability type for audio memory
-> to memory case.
-> 
-> The created audio device is named "/dev/v4l-audioX".
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../userspace-api/media/v4l/audio-formats.rst | 15 +++++
->  .../userspace-api/media/v4l/buffer.rst        |  6 ++
->  .../userspace-api/media/v4l/dev-audio.rst     | 63 +++++++++++++++++++
->  .../userspace-api/media/v4l/devices.rst       |  1 +
->  .../media/v4l/pixfmt-aud-lpcm.rst             | 31 +++++++++
->  .../userspace-api/media/v4l/pixfmt.rst        |  1 +
->  .../media/v4l/vidioc-enum-fmt.rst             |  2 +
->  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |  4 ++
->  .../media/v4l/vidioc-querycap.rst             |  3 +
->  .../media/videodev2.h.rst.exceptions          |  2 +
->  .../media/common/videobuf2/videobuf2-v4l2.c   |  4 ++
->  drivers/media/v4l2-core/v4l2-dev.c            | 17 +++++
->  drivers/media/v4l2-core/v4l2-ioctl.c          | 53 ++++++++++++++++
->  include/media/v4l2-dev.h                      |  2 +
->  include/media/v4l2-ioctl.h                    | 34 ++++++++++
->  include/uapi/linux/videodev2.h                | 25 ++++++++
->  16 files changed, 263 insertions(+)
->  create mode 100644 Documentation/userspace-api/media/v4l/audio-formats.rst
->  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio.rst
->  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/audio-formats.rst b/Documentation/userspace-api/media/v4l/audio-formats.rst
-> new file mode 100644
-> index 000000000000..bc52712d20d3
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/audio-formats.rst
-> @@ -0,0 +1,15 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +
-> +.. _audio-formats:
-> +
-> +*************
-> +Audio Formats
-> +*************
-> +
-> +These formats are used for :ref:`audio` interface only.
-> +
-> +
-> +.. toctree::
-> +    :maxdepth: 1
-> +
-> +    pixfmt-aud-lpcm
-> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
-> index 04dec3e570ed..80cf2cb20dfe 100644
-> --- a/Documentation/userspace-api/media/v4l/buffer.rst
-> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
-> @@ -438,6 +438,12 @@ enum v4l2_buf_type
->      * - ``V4L2_BUF_TYPE_META_OUTPUT``
->        - 14
->        - Buffer for metadata output, see :ref:`metadata`.
-> +    * - ``V4L2_BUF_TYPE_AUDIO_CAPTURE``
-> +      - 15
-> +      - Buffer for audio capture, see :ref:`audio`.
-> +    * - ``V4L2_BUF_TYPE_AUDIO_OUTPUT``
-> +      - 16
-> +      - Buffer for audio output, see :ref:`audio`.
->  
->  
->  .. _buffer-flags:
-> diff --git a/Documentation/userspace-api/media/v4l/dev-audio.rst b/Documentation/userspace-api/media/v4l/dev-audio.rst
-> new file mode 100644
-> index 000000000000..f9bcf0c7b056
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/dev-audio.rst
-
-Rename the file to dev-audio-mem2mem.rst as this is specific to an audio
-M2M interface.
-
-> @@ -0,0 +1,63 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +
-> +.. _audiodev:
-> +
-> +******************
-> +audio Interface
-> +******************
-> +
-> +The audio interface is implemented on audio device nodes. The audio device
-> +which uses application software for modulation or demodulation. This
-> +interface is intended for controlling and data streaming of such devices
-> +
-> +Audio devices are accessed through character device special files named
-> +``/dev/v4l-audio``
-
-I think this intro is somewhat confusing. I would recommend to copy the intro
-from dev-mem2mem.rst instead, adapting it for audio.
-
-> +
-> +Querying Capabilities
-> +=====================
-> +
-> +Device nodes supporting the audio capture and output interface set the
-> +``V4L2_CAP_AUDIO_M2M`` flag in the ``device_caps`` field of the
-> +:c:type:`v4l2_capability` structure returned by the :c:func:`VIDIOC_QUERYCAP`
-> +ioctl.
-> +
-> +At least one of the read/write or streaming I/O methods must be supported.
-
-M2M devices do not support read/write, only streaming I/O is supported.
-
-> +
-> +
-> +Data Format Negotiation
-> +=======================
-> +
-> +The audio device uses the :ref:`format` ioctls to select the capture format.
-> +The audio buffer content format is bound to that selected format. In addition
-> +to the basic :ref:`format` ioctls, the :c:func:`VIDIOC_ENUM_FMT` ioctl must be
-> +supported as well.
-> +
-> +To use the :ref:`format` ioctls applications set the ``type`` field of the
-> +:c:type:`v4l2_format` structure to ``V4L2_BUF_TYPE_AUDIO_CAPTURE`` or to
-> +``V4L2_BUF_TYPE_AUDIO_OUTPUT``. Both drivers and applications must set the
-> +remainder of the :c:type:`v4l2_format` structure to 0.
-> +
-> +.. c:type:: v4l2_audio_format
-> +
-> +.. tabularcolumns:: |p{1.4cm}|p{2.4cm}|p{13.5cm}|
-> +
-> +.. flat-table:: struct v4l2_audio_format
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - __u32
-> +      - ``rate``
-> +      - The sample rate, set by the application. The range is [5512, 768000].
-> +    * - __u32
-> +      - ``format``
-> +      - The sample format, set by the application. format is defined as
-> +        SNDRV_PCM_FORMAT_S8, SNDRV_PCM_FORMAT_U8, ...,
-> +    * - __u32
-> +      - ``channels``
-> +      - The channel number, set by the application. channel number range is
-> +        [1, 32].
-> +    * - __u32
-> +      - ``buffersize``
-> +      - Maximum buffer size in bytes required for data. The value is set by the
-> +        driver.
-> diff --git a/Documentation/userspace-api/media/v4l/devices.rst b/Documentation/userspace-api/media/v4l/devices.rst
-> index 8bfbad65a9d4..8261f3468489 100644
-> --- a/Documentation/userspace-api/media/v4l/devices.rst
-> +++ b/Documentation/userspace-api/media/v4l/devices.rst
-> @@ -24,3 +24,4 @@ Interfaces
->      dev-event
->      dev-subdev
->      dev-meta
-> +    dev-audio
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst b/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
-> new file mode 100644
-> index 000000000000..f9ebe2a05f69
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
-> @@ -0,0 +1,31 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +
-> +.. _v4l2-aud-fmt-lpcm:
-> +
-> +*************************
-> +V4L2_AUDIO_FMT_LPCM ('LPCM')
-> +*************************
-> +
-> +Linear Pulse-Code Modulation (LPCM)
-> +
-> +
-> +Description
-> +===========
-> +
-> +This describes audio format used by the audio memory to memory driver.
-> +
-> +It contains the following fields:
-> +
-> +.. flat-table::
-> +    :widths: 1 4
-> +    :header-rows:  1
-> +    :stub-columns: 0
-> +
-> +    * - Field
-> +      - Description
-> +    * - u32 samplerate;
-> +      - which is the number of times per second that samples are taken.
-> +    * - u32 sampleformat;
-> +      - which determines the number of possible digital values that can be used to represent each sample
-> +    * - u32 channels;
-> +      - channel number for each sample.
-
-See Sakari's comments. This section describes how the audio data is formatted
-in the buffer memory. Presumably this is already documented somewhere in the ALSA
-docs, so a reference to that would work.
-
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt.rst b/Documentation/userspace-api/media/v4l/pixfmt.rst
-> index 11dab4a90630..e205db5fa8af 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt.rst
-> @@ -36,3 +36,4 @@ see also :ref:`VIDIOC_G_FBUF <VIDIOC_G_FBUF>`.)
->      colorspaces
->      colorspaces-defs
->      colorspaces-details
-> +    audio-formats
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst b/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
-> index 000c154b0f98..42deb07f4ff4 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
-> @@ -96,6 +96,8 @@ the ``mbus_code`` field is handled differently:
->  	``V4L2_BUF_TYPE_VIDEO_OVERLAY``,
->  	``V4L2_BUF_TYPE_SDR_CAPTURE``,
->  	``V4L2_BUF_TYPE_SDR_OUTPUT``,
-> +	``V4L2_BUF_TYPE_AUDIO_CAPTURE``,
-> +	``V4L2_BUF_TYPE_AUDIO_OUTPUT``,
->  	``V4L2_BUF_TYPE_META_CAPTURE`` and
->  	``V4L2_BUF_TYPE_META_OUTPUT``.
->  	See :c:type:`v4l2_buf_type`.
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-fmt.rst b/Documentation/userspace-api/media/v4l/vidioc-g-fmt.rst
-> index 675c385e5aca..1ecb7d640057 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-g-fmt.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-fmt.rst
-> @@ -130,6 +130,10 @@ The format as returned by :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` must be identical
->        - ``meta``
->        - Definition of a metadata format, see :ref:`meta-formats`, used by
->  	metadata capture devices.
-> +    * - struct :c:type:`v4l2_audio_format`
-> +      - ``audio``
-> +      - Definition of a audio data format, see :ref:`dev-audio`, used by
-> +        audio capture and output devices
->      * - __u8
->        - ``raw_data``\ [200]
->        - Place holder for future extensions.
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-> index 6c57b8428356..0b3cefefc86b 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-> @@ -259,6 +259,9 @@ specification the ioctl returns an ``EINVAL`` error code.
->          video topology configuration, including which I/O entity is routed to
->          the input/output, is configured by userspace via the Media Controller.
->          See :ref:`media_controller`.
-> +    * - ``V4L2_CAP_AUDIO_M2M``
-> +      - 0x40000000
-> +      - The device supports the audio Memory-To-Memory interface.
->      * - ``V4L2_CAP_DEVICE_CAPS``
->        - 0x80000000
->        - The driver fills the ``device_caps`` field. This capability can
-> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> index 3e58aac4ef0b..48ef3bce3d20 100644
-> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> @@ -29,6 +29,8 @@ replace symbol V4L2_FIELD_SEQ_TB :c:type:`v4l2_field`
->  replace symbol V4L2_FIELD_TOP :c:type:`v4l2_field`
->  
->  # Documented enum v4l2_buf_type
-> +replace symbol V4L2_BUF_TYPE_AUDIO_CAPTURE :c:type:`v4l2_buf_type`
-> +replace symbol V4L2_BUF_TYPE_AUDIO_OUTPUT :c:type:`v4l2_buf_type`
->  replace symbol V4L2_BUF_TYPE_META_CAPTURE :c:type:`v4l2_buf_type`
->  replace symbol V4L2_BUF_TYPE_META_OUTPUT :c:type:`v4l2_buf_type`
->  replace symbol V4L2_BUF_TYPE_SDR_CAPTURE :c:type:`v4l2_buf_type`
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index c7a54d82a55e..12f2be2773a2 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -785,6 +785,10 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->  	case V4L2_BUF_TYPE_META_OUTPUT:
->  		requested_sizes[0] = f->fmt.meta.buffersize;
->  		break;
-> +	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-> +	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-> +		requested_sizes[0] = f->fmt.audio.buffersize;
-> +		break;
->  	default:
->  		return -EINVAL;
->  	}
-> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
-> index f81279492682..b92c760b611a 100644
-> --- a/drivers/media/v4l2-core/v4l2-dev.c
-> +++ b/drivers/media/v4l2-core/v4l2-dev.c
-> @@ -553,6 +553,7 @@ static void determine_valid_ioctls(struct video_device *vdev)
->  	bool is_tch = vdev->vfl_type == VFL_TYPE_TOUCH;
->  	bool is_meta = vdev->vfl_type == VFL_TYPE_VIDEO &&
->  		       (vdev->device_caps & meta_caps);
-> +	bool is_audio = vdev->vfl_type == VFL_TYPE_AUDIO;
->  	bool is_rx = vdev->vfl_dir != VFL_DIR_TX;
->  	bool is_tx = vdev->vfl_dir != VFL_DIR_RX;
->  	bool is_io_mc = vdev->device_caps & V4L2_CAP_IO_MC;
-> @@ -664,6 +665,19 @@ static void determine_valid_ioctls(struct video_device *vdev)
->  		SET_VALID_IOCTL(ops, VIDIOC_S_FMT, vidioc_s_fmt_meta_out);
->  		SET_VALID_IOCTL(ops, VIDIOC_TRY_FMT, vidioc_try_fmt_meta_out);
->  	}
-> +	if (is_audio && is_rx) {
-> +		/* audio capture specific ioctls */
-> +		SET_VALID_IOCTL(ops, VIDIOC_ENUM_FMT, vidioc_enum_fmt_audio_cap);
-> +		SET_VALID_IOCTL(ops, VIDIOC_G_FMT, vidioc_g_fmt_audio_cap);
-> +		SET_VALID_IOCTL(ops, VIDIOC_S_FMT, vidioc_s_fmt_audio_cap);
-> +		SET_VALID_IOCTL(ops, VIDIOC_TRY_FMT, vidioc_try_fmt_audio_cap);
-> +	} else if (is_audio && is_tx) {
-> +		/* audio output specific ioctls */
-> +		SET_VALID_IOCTL(ops, VIDIOC_ENUM_FMT, vidioc_enum_fmt_audio_out);
-> +		SET_VALID_IOCTL(ops, VIDIOC_G_FMT, vidioc_g_fmt_audio_out);
-> +		SET_VALID_IOCTL(ops, VIDIOC_S_FMT, vidioc_s_fmt_audio_out);
-> +		SET_VALID_IOCTL(ops, VIDIOC_TRY_FMT, vidioc_try_fmt_audio_out);
-> +	}
->  	if (is_vbi) {
->  		/* vbi specific ioctls */
->  		if ((is_rx && (ops->vidioc_g_fmt_vbi_cap ||
-> @@ -927,6 +941,9 @@ int __video_register_device(struct video_device *vdev,
->  	case VFL_TYPE_TOUCH:
->  		name_base = "v4l-touch";
->  		break;
-> +	case VFL_TYPE_AUDIO:
-> +		name_base = "v4l-audio";
-> +		break;
->  	default:
->  		pr_err("%s called with unknown type: %d\n",
->  		       __func__, type);
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index f4d9d6279094..767588d5822a 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -188,6 +188,8 @@ const char *v4l2_type_names[] = {
->  	[V4L2_BUF_TYPE_SDR_OUTPUT]         = "sdr-out",
->  	[V4L2_BUF_TYPE_META_CAPTURE]       = "meta-cap",
->  	[V4L2_BUF_TYPE_META_OUTPUT]	   = "meta-out",
-> +	[V4L2_BUF_TYPE_AUDIO_CAPTURE]      = "audio-cap",
-> +	[V4L2_BUF_TYPE_AUDIO_OUTPUT]	   = "audio-out",
->  };
->  EXPORT_SYMBOL(v4l2_type_names);
->  
-> @@ -276,6 +278,7 @@ static void v4l_print_format(const void *arg, bool write_only)
->  	const struct v4l2_sliced_vbi_format *sliced;
->  	const struct v4l2_window *win;
->  	const struct v4l2_meta_format *meta;
-> +	const struct v4l2_audio_format *audio;
->  	u32 pixelformat;
->  	u32 planes;
->  	unsigned i;
-> @@ -346,6 +349,12 @@ static void v4l_print_format(const void *arg, bool write_only)
->  		pr_cont(", dataformat=%p4cc, buffersize=%u\n",
->  			&pixelformat, meta->buffersize);
->  		break;
-> +	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-> +	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-> +		audio = &p->fmt.audio;
-> +		pr_cont(", rate=%u, format=%u, channels=%u, buffersize=%u\n",
-> +			audio->rate, audio->format, audio->channels, audio->buffersize);
-> +		break;
->  	}
->  }
->  
-> @@ -927,6 +936,7 @@ static int check_fmt(struct file *file, enum v4l2_buf_type type)
->  	bool is_tch = vfd->vfl_type == VFL_TYPE_TOUCH;
->  	bool is_meta = vfd->vfl_type == VFL_TYPE_VIDEO &&
->  		       (vfd->device_caps & meta_caps);
-> +	bool is_audio = vfd->vfl_type == VFL_TYPE_AUDIO;
->  	bool is_rx = vfd->vfl_dir != VFL_DIR_TX;
->  	bool is_tx = vfd->vfl_dir != VFL_DIR_RX;
->  
-> @@ -992,6 +1002,14 @@ static int check_fmt(struct file *file, enum v4l2_buf_type type)
->  		if (is_meta && is_tx && ops->vidioc_g_fmt_meta_out)
->  			return 0;
->  		break;
-> +	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-> +		if (is_audio && is_rx && ops->vidioc_g_fmt_audio_cap)
-> +			return 0;
-> +		break;
-> +	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-> +		if (is_audio && is_tx && ops->vidioc_g_fmt_audio_out)
-> +			return 0;
-> +		break;
->  	default:
->  		break;
->  	}
-> @@ -1452,6 +1470,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
->  	case V4L2_PIX_FMT_Y210:		descr = "10-bit YUYV Packed"; break;
->  	case V4L2_PIX_FMT_Y212:		descr = "12-bit YUYV Packed"; break;
->  	case V4L2_PIX_FMT_Y216:		descr = "16-bit YUYV Packed"; break;
-> +	case V4L2_AUDIO_FMT_LPCM:	descr = "Audio LPCM"; break;
->  
->  	default:
->  		/* Compressed formats */
-> @@ -1596,6 +1615,16 @@ static int v4l_enum_fmt(const struct v4l2_ioctl_ops *ops,
->  			break;
->  		ret = ops->vidioc_enum_fmt_meta_out(file, fh, arg);
->  		break;
-> +	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-> +		if (unlikely(!ops->vidioc_enum_fmt_audio_cap))
-> +			break;
-> +		ret = ops->vidioc_enum_fmt_audio_cap(file, fh, arg);
-> +		break;
-> +	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-> +		if (unlikely(!ops->vidioc_enum_fmt_audio_out))
-> +			break;
-> +		ret = ops->vidioc_enum_fmt_audio_out(file, fh, arg);
-> +		break;
->  	}
->  	if (ret == 0)
->  		v4l_fill_fmtdesc(p);
-> @@ -1672,6 +1701,10 @@ static int v4l_g_fmt(const struct v4l2_ioctl_ops *ops,
->  		return ops->vidioc_g_fmt_meta_cap(file, fh, arg);
->  	case V4L2_BUF_TYPE_META_OUTPUT:
->  		return ops->vidioc_g_fmt_meta_out(file, fh, arg);
-> +	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-> +		return ops->vidioc_g_fmt_audio_cap(file, fh, arg);
-> +	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-> +		return ops->vidioc_g_fmt_audio_out(file, fh, arg);
->  	}
->  	return -EINVAL;
->  }
-> @@ -1783,6 +1816,16 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
->  			break;
->  		memset_after(p, 0, fmt.meta);
->  		return ops->vidioc_s_fmt_meta_out(file, fh, arg);
-> +	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-> +		if (unlikely(!ops->vidioc_s_fmt_audio_cap))
-> +			break;
-> +		memset_after(p, 0, fmt.audio);
-> +		return ops->vidioc_s_fmt_audio_cap(file, fh, arg);
-> +	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-> +		if (unlikely(!ops->vidioc_s_fmt_audio_out))
-> +			break;
-> +		memset_after(p, 0, fmt.audio);
-> +		return ops->vidioc_s_fmt_audio_out(file, fh, arg);
->  	}
->  	return -EINVAL;
->  }
-> @@ -1891,6 +1934,16 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
->  			break;
->  		memset_after(p, 0, fmt.meta);
->  		return ops->vidioc_try_fmt_meta_out(file, fh, arg);
-> +	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-> +		if (unlikely(!ops->vidioc_try_fmt_audio_cap))
-> +			break;
-> +		memset_after(p, 0, fmt.audio);
-> +		return ops->vidioc_try_fmt_audio_cap(file, fh, arg);
-> +	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-> +		if (unlikely(!ops->vidioc_try_fmt_audio_out))
-> +			break;
-> +		memset_after(p, 0, fmt.audio);
-> +		return ops->vidioc_try_fmt_audio_out(file, fh, arg);
->  	}
->  	return -EINVAL;
->  }
-> diff --git a/include/media/v4l2-dev.h b/include/media/v4l2-dev.h
-> index e0a13505f88d..0924e6d1dab1 100644
-> --- a/include/media/v4l2-dev.h
-> +++ b/include/media/v4l2-dev.h
-> @@ -30,6 +30,7 @@
->   * @VFL_TYPE_SUBDEV:	for V4L2 subdevices
->   * @VFL_TYPE_SDR:	for Software Defined Radio tuners
->   * @VFL_TYPE_TOUCH:	for touch sensors
-> + * @VFL_TYPE_AUDIO:	for audio input/output devices
-
-Change this to: "for audio memory-to-memory devices"
-That's the only audio type we support at the moment. I don't see a need
-for pure capture or output audio devices, since that would be handled in
-alsa.
-
->   * @VFL_TYPE_MAX:	number of VFL types, must always be last in the enum
->   */
->  enum vfl_devnode_type {
-> @@ -39,6 +40,7 @@ enum vfl_devnode_type {
->  	VFL_TYPE_SUBDEV,
->  	VFL_TYPE_SDR,
->  	VFL_TYPE_TOUCH,
-> +	VFL_TYPE_AUDIO,
->  	VFL_TYPE_MAX /* Shall be the last one */
->  };
->  
-> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
-> index edb733f21604..f840cf740ce1 100644
-> --- a/include/media/v4l2-ioctl.h
-> +++ b/include/media/v4l2-ioctl.h
-> @@ -45,6 +45,12 @@ struct v4l2_fh;
->   * @vidioc_enum_fmt_meta_out: pointer to the function that implements
->   *	:ref:`VIDIOC_ENUM_FMT <vidioc_enum_fmt>` ioctl logic
->   *	for metadata output
-> + * @vidioc_enum_fmt_audio_cap: pointer to the function that implements
-> + *	:ref:`VIDIOC_ENUM_FMT <vidioc_enum_fmt>` ioctl logic
-> + *	for audio capture
-> + * @vidioc_enum_fmt_audio_out: pointer to the function that implements
-> + *	:ref:`VIDIOC_ENUM_FMT <vidioc_enum_fmt>` ioctl logic
-> + *	for audio output
->   * @vidioc_g_fmt_vid_cap: pointer to the function that implements
->   *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for video capture
->   *	in single plane mode
-> @@ -79,6 +85,10 @@ struct v4l2_fh;
->   *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for metadata capture
->   * @vidioc_g_fmt_meta_out: pointer to the function that implements
->   *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for metadata output
-> + * @vidioc_g_fmt_audio_cap: pointer to the function that implements
-> + *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for audio capture
-> + * @vidioc_g_fmt_audio_out: pointer to the function that implements
-> + *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for audio output
->   * @vidioc_s_fmt_vid_cap: pointer to the function that implements
->   *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for video capture
->   *	in single plane mode
-> @@ -113,6 +123,10 @@ struct v4l2_fh;
->   *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for metadata capture
->   * @vidioc_s_fmt_meta_out: pointer to the function that implements
->   *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for metadata output
-> + * @vidioc_s_fmt_audio_cap: pointer to the function that implements
-> + *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for audio capture
-> + * @vidioc_s_fmt_audio_out: pointer to the function that implements
-> + *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for audio output
->   * @vidioc_try_fmt_vid_cap: pointer to the function that implements
->   *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for video capture
->   *	in single plane mode
-> @@ -149,6 +163,10 @@ struct v4l2_fh;
->   *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for metadata capture
->   * @vidioc_try_fmt_meta_out: pointer to the function that implements
->   *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for metadata output
-> + * @vidioc_try_fmt_audio_cap: pointer to the function that implements
-> + *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for audio capture
-> + * @vidioc_try_fmt_audio_out: pointer to the function that implements
-> + *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for audio output
->   * @vidioc_reqbufs: pointer to the function that implements
->   *	:ref:`VIDIOC_REQBUFS <vidioc_reqbufs>` ioctl
->   * @vidioc_querybuf: pointer to the function that implements
-> @@ -315,6 +333,10 @@ struct v4l2_ioctl_ops {
->  					struct v4l2_fmtdesc *f);
->  	int (*vidioc_enum_fmt_meta_out)(struct file *file, void *fh,
->  					struct v4l2_fmtdesc *f);
-> +	int (*vidioc_enum_fmt_audio_cap)(struct file *file, void *fh,
-> +					 struct v4l2_fmtdesc *f);
-> +	int (*vidioc_enum_fmt_audio_out)(struct file *file, void *fh,
-> +					 struct v4l2_fmtdesc *f);
->  
->  	/* VIDIOC_G_FMT handlers */
->  	int (*vidioc_g_fmt_vid_cap)(struct file *file, void *fh,
-> @@ -345,6 +367,10 @@ struct v4l2_ioctl_ops {
->  				     struct v4l2_format *f);
->  	int (*vidioc_g_fmt_meta_out)(struct file *file, void *fh,
->  				     struct v4l2_format *f);
-> +	int (*vidioc_g_fmt_audio_cap)(struct file *file, void *fh,
-> +				      struct v4l2_format *f);
-> +	int (*vidioc_g_fmt_audio_out)(struct file *file, void *fh,
-> +				      struct v4l2_format *f);
->  
->  	/* VIDIOC_S_FMT handlers */
->  	int (*vidioc_s_fmt_vid_cap)(struct file *file, void *fh,
-> @@ -375,6 +401,10 @@ struct v4l2_ioctl_ops {
->  				     struct v4l2_format *f);
->  	int (*vidioc_s_fmt_meta_out)(struct file *file, void *fh,
->  				     struct v4l2_format *f);
-> +	int (*vidioc_s_fmt_audio_cap)(struct file *file, void *fh,
-> +				      struct v4l2_format *f);
-> +	int (*vidioc_s_fmt_audio_out)(struct file *file, void *fh,
-> +				      struct v4l2_format *f);
->  
->  	/* VIDIOC_TRY_FMT handlers */
->  	int (*vidioc_try_fmt_vid_cap)(struct file *file, void *fh,
-> @@ -405,6 +435,10 @@ struct v4l2_ioctl_ops {
->  				       struct v4l2_format *f);
->  	int (*vidioc_try_fmt_meta_out)(struct file *file, void *fh,
->  				       struct v4l2_format *f);
-> +	int (*vidioc_try_fmt_audio_cap)(struct file *file, void *fh,
-> +					struct v4l2_format *f);
-> +	int (*vidioc_try_fmt_audio_out)(struct file *file, void *fh,
-> +					struct v4l2_format *f);
->  
->  	/* Buffer handlers */
->  	int (*vidioc_reqbufs)(struct file *file, void *fh,
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 78260e5d9985..8dc615f2b60c 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -153,6 +153,8 @@ enum v4l2_buf_type {
->  	V4L2_BUF_TYPE_SDR_OUTPUT           = 12,
->  	V4L2_BUF_TYPE_META_CAPTURE         = 13,
->  	V4L2_BUF_TYPE_META_OUTPUT	   = 14,
-> +	V4L2_BUF_TYPE_AUDIO_CAPTURE        = 15,
-> +	V4L2_BUF_TYPE_AUDIO_OUTPUT         = 16,
->  	/* Deprecated, do not use */
->  	V4L2_BUF_TYPE_PRIVATE              = 0x80,
->  };
-> @@ -169,6 +171,7 @@ enum v4l2_buf_type {
->  	 || (type) == V4L2_BUF_TYPE_VBI_OUTPUT			\
->  	 || (type) == V4L2_BUF_TYPE_SLICED_VBI_OUTPUT		\
->  	 || (type) == V4L2_BUF_TYPE_SDR_OUTPUT			\
-> +	 || (type) == V4L2_BUF_TYPE_AUDIO_OUTPUT		\
->  	 || (type) == V4L2_BUF_TYPE_META_OUTPUT)
->  
->  #define V4L2_TYPE_IS_CAPTURE(type) (!V4L2_TYPE_IS_OUTPUT(type))
-> @@ -508,6 +511,7 @@ struct v4l2_capability {
->  #define V4L2_CAP_TOUCH                  0x10000000  /* Is a touch device */
->  
->  #define V4L2_CAP_IO_MC			0x20000000  /* Is input/output controlled by the media controller */
-> +#define V4L2_CAP_AUDIO_M2M              0x40000000
->  
->  #define V4L2_CAP_DEVICE_CAPS            0x80000000  /* sets device capabilities field */
->  
-> @@ -838,6 +842,9 @@ struct v4l2_pix_format {
->  #define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
->  #define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
->  
-> +/* Audio-data formats */
-> +#define V4L2_AUDIO_FMT_LPCM	  v4l2_fourcc('L', 'P', 'C', 'M') /* audio lpcm */
-> +
-
-Hmm, this I am uncertain about. This doesn't add anything. If you enumerate the
-formats, they will all report just this format, so you still don't know which
-actual audio formats are supported.
-
-The real audio format is the 'format' field.
-
->  /* priv field value to indicates that subsequent fields are valid. */
->  #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
->  
-> @@ -2417,6 +2424,22 @@ struct v4l2_meta_format {
->  	__u32				buffersize;
->  } __attribute__ ((packed));
->  
-> +/**
-> + * struct v4l2_audio_format - audio data format definition
-> + * @pixelformat:	little endian four character code (fourcc)
-> + * @rate:		sample rate
-> + * @format:		sample format
-> + * @channels:		channel numbers
-> + * @buffersize:		maximum size in bytes required for data
-> + */
-> +struct v4l2_audio_format {
-> +	__u32				pixelformat;
-
-Why not just drop this field, and instead use the format field?
-
-You would have to update the ENUM_FMT documentation to indicate that for
-audio m2m device the pixelformat field of v4l2_fmtdesc is actually the
-audio format, and that it is not a fourcc, but a SNDRV_PCM_FORMAT_ format.
-
-v4l_fill_fmtdesc can just add 'case SNDRV_PCM_FORMAT_U8:' etc., since they
-luckily won't conflict with the existing fourccs as far as I can tell.
-
-One problem might be the use of %p4cc as a printf formatter for fourcc
-values, that would fail with these formats.
-
-One option to solve this could be to add a define to videodev2.h that converts
-a SNDRV_PCM_FORMAT_* to a fourcc, e.g.:
-
-#define v4l2_fourcc_pcm(pcm_fmt) v4l2_fourcc('A', 'U', (pcm_fmt) / 10 + '0', (pcm_fmt) % 10 + '0')
-
-So all audio formats end up like 'ADXX' where XX is the SNDRV_PCM_FORMAT_* value.
-
-You would also need a define to translate a fourcc back to a pcm format.
-
-This scheme would allow %p4cc to continue to be used. Alternatively, you need
-to check all places where %p4cc is used in the media subsystem core and see if
-you need to check if it is an audio buffer type, and if so, just use %u.
-
-I'm not quite sure which of the two options is best.
-
-More input on this would be welcome.
-
-> +	__u32				rate;
-> +	__u32				format;
-> +	__u32				channels;
-> +	__u32				buffersize;
-> +} __attribute__ ((packed));
-> +
->  /**
->   * struct v4l2_format - stream data format
->   * @type:	enum v4l2_buf_type; type of the data stream
-> @@ -2425,6 +2448,7 @@ struct v4l2_meta_format {
->   * @win:	definition of an overlaid image
->   * @vbi:	raw VBI capture or output parameters
->   * @sliced:	sliced VBI capture or output parameters
-> + * @audio:	definition of an audio format
->   * @raw_data:	placeholder for future extensions and custom formats
->   * @fmt:	union of @pix, @pix_mp, @win, @vbi, @sliced, @sdr, @meta
->   *		and @raw_data
-> @@ -2439,6 +2463,7 @@ struct v4l2_format {
->  		struct v4l2_sliced_vbi_format	sliced;  /* V4L2_BUF_TYPE_SLICED_VBI_CAPTURE */
->  		struct v4l2_sdr_format		sdr;     /* V4L2_BUF_TYPE_SDR_CAPTURE */
->  		struct v4l2_meta_format		meta;    /* V4L2_BUF_TYPE_META_CAPTURE */
-> +		struct v4l2_audio_format	audio;   /* V4L2_BUF_TYPE_AUDIO_CAPTURE */
->  		__u8	raw_data[200];                   /* user-defined */
->  	} fmt;
->  };
-
-Regards,
-
-	Hans
+-- 
+Kind regards
+Maciej Wieczór-Retman
