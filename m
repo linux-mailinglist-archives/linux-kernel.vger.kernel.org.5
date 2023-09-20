@@ -2,104 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C65EC7A7C15
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817EC7A7C91
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbjITL5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
+        id S235012AbjITMCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234952AbjITL5q (ORCPT
+        with ESMTP id S235001AbjITMC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:57:46 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2A2CA
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:57:39 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9338e4695so108954011fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695211057; x=1695815857; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w1DviYvLqEA/sZL5Xm7Eug1cL8OIq39bt8izdUeklRY=;
-        b=qOExDvC2m+AG5X4z8cSJxMjs9+Cq+RBI6LIIEAE7zGGcu8xz4mMWMQZVLJ59RvC004
-         vt4pzrNziRUAm/ZcKZPS1b2w09xQCKBQ5rWxlNVcD2zxn5L9idy/+mQbfG8k1gMJKIf2
-         Fc601MB/PngswpawwwBlI68JYR8vC14eJifb1mEQNsSIEAiyUADgigJgY8jOk+PzVIl0
-         To0Fx1H6f17MIy7zRnF/pT6tMCBvkwR9omAJ8xXLVxeTSbW2GEO2J9hGmLsNBnObd/na
-         Wsvv+ZJoZ/NdA2BSHrKORpn2OEEOViKSSM2QAPnAR5Z4sBO+aLGGhDwIrFyFNklsGBVY
-         rWOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695211057; x=1695815857;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w1DviYvLqEA/sZL5Xm7Eug1cL8OIq39bt8izdUeklRY=;
-        b=jnalhgg9vM6aLmgoZRcHqW3e9OHhhWIBLiQ3oa5YBVtCaLQEFjuG3juRJAYNBMAfb4
-         FVOCHJfpF8ai5jEi/dLDvTJmEVGSD3094mLiTzU6re1jgvP/1eNZ1FvS7kL+dBDQ0ziT
-         P1HpMmdH0r0imd43Y8Of+k5JYjWCouDyasl/L+Fvk54p6oJQmzwbeQkSh5S1ve7M1+kQ
-         EzEayZUhq1dBwxJqsl/vvLCwvf8/Yy09LGA5O9VBGBlY3HaXiyjf6mpMnhAKs9E4FyWR
-         s0KIjvENle3A5OWHA4bdqB/jgDn1ayQF2uyj/Ip/evdKbCzTlT7C6s4sWqH/H+yfX/Eg
-         H2xQ==
-X-Gm-Message-State: AOJu0Yw6IkqYk4hCJj5YSzuaZxnQ91II8l0DcQ5TROC6/g1xdLYaViqq
-        aFBhvpsUcccnxt2n7zTqD52New==
-X-Google-Smtp-Source: AGHT+IHi2kpY9k3ikgCwNoko87/nzsnTiOCoDw3bl/xpeTq0iM230cVrxJbvaiXRPxFgp6S5vX6VBw==
-X-Received: by 2002:a2e:2c12:0:b0:2bd:1f83:8d4 with SMTP id s18-20020a2e2c12000000b002bd1f8308d4mr2147021ljs.22.1695211057552;
-        Wed, 20 Sep 2023 04:57:37 -0700 (PDT)
-Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id u1-20020a1709064ac100b009934855d8f1sm9177212ejt.34.2023.09.20.04.57.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 04:57:37 -0700 (PDT)
-Message-ID: <0b84ef92-f6b7-f3bc-fd51-8f61cbc91ff8@linaro.org>
-Date:   Wed, 20 Sep 2023 13:57:35 +0200
+        Wed, 20 Sep 2023 08:02:28 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02A1B6;
+        Wed, 20 Sep 2023 05:02:19 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RrHCY1NNBzrSqj;
+        Wed, 20 Sep 2023 20:00:09 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 20 Sep 2023 20:02:15 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next v9 0/6] introduce page_pool_alloc() related API
+Date:   Wed, 20 Sep 2023 19:58:49 +0800
+Message-ID: <20230920115855.27631-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 06/11] dt-bindings: timer: Add Sophgo sg2042 clint
-Content-Language: en-US
-To:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-        chao.wei@sophgo.com, conor@kernel.org, devicetree@vger.kernel.org,
-        emil.renner.berthing@canonical.com, guoren@kernel.org,
-        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Chen Wang <wangchen20@iscas.ac.cn>
-References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
- <55865e1ce40d2017f047d3a9e1a9ee30043b271f.1695189879.git.wangchen20@iscas.ac.cn>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <55865e1ce40d2017f047d3a9e1a9ee30043b271f.1695189879.git.wangchen20@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2023 08:39, Chen Wang wrote:
-> From: Inochi Amaoto <inochiama@outlook.com>
-> 
-> Add two new compatible string formatted like `C9xx-clint-xxx` to identify
-> the timer and ipi device separately, and do not allow c900-clint as the
+In [1] & [2] & [3], there are usecases for veth and virtio_net
+to use frag support in page pool to reduce memory usage, and it
+may request different frag size depending on the head/tail
+room space for xdp_frame/shinfo and mtu/packet size. When the
+requested frag size is large enough that a single page can not
+be split into more than one frag, using frag support only have
+performance penalty because of the extra frag count handling
+for frag support.
 
-Why?
+So this patchset provides a page pool API for the driver to
+allocate memory with least memory utilization and performance
+penalty when it doesn't know the size of memory it need
+beforehand.
 
-You received comment about it, so please provide proper explanation in
-the commit msg.
+1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
+2. https://patchwork.kernel.org/project/netdevbpf/patch/20230526054621.18371-3-liangchen.linux@gmail.com/
+3. https://github.com/alobakin/linux/tree/iavf-pp-frag
 
-Same device does not get two different compatibles.
+V9: Update some performance info in patch 2.
 
-You also did not respond to my comments, so you basically ignored it and
-send the same.
+V8: Store the dma addr on a shifted u32 instead of using
+    dma_addr_t explicitly for 32-bit arch with 64-bit DMA.
+    Update document according to discussion in v7.
 
-NAK
+V7: Fix a compile error, a few typo and use kernel-doc syntax.
 
-Best regards,
-Krzysztof
+V6: Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag to fail the page_pool
+    creation for 32-bit arch with 64-bit DMA when driver tries to
+    do the page splitting itself, adjust the requested size to
+    include head/tail room in veth, and rebased on the latest
+    next-net.
+
+v5 RFC: Add a new page_pool_cache_alloc() API, and other minor
+        change as discussed in v4. As there seems to be three
+        comsumers that might be made use of the new API, so
+        repost it as RFC and CC the relevant authors to see
+        if the new API fits their need.
+
+V4. Fix a typo and add a patch to update document about frag
+    API, PAGE_POOL_DMA_USE_PP_FRAG_COUNT is not renamed yet
+    as we may need a different thread to discuss that.
+
+V3: Incorporate changes from the disscusion with Alexander,
+    mostly the inline wraper, PAGE_POOL_DMA_USE_PP_FRAG_COUNT
+    change split to separate patch and comment change.
+V2: Add patch to remove PP_FLAG_PAGE_FRAG flags and mention
+    virtio_net usecase in the cover letter.
+V1: Drop RFC tag and page_pool_frag patch.
+
+Yunsheng Lin (6):
+  page_pool: frag API support for 32-bit arch with 64-bit DMA
+  page_pool: unify frag_count handling in page_pool_is_last_frag()
+  page_pool: remove PP_FLAG_PAGE_FRAG
+  page_pool: introduce page_pool[_cache]_alloc() API
+  page_pool: update document about frag API
+  net: veth: use newly added page pool API for veth with xdp
+
+ Documentation/networking/page_pool.rst        |   4 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   2 -
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |   3 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   2 +-
+ drivers/net/veth.c                            |  25 +-
+ drivers/net/wireless/mediatek/mt76/mac80211.c |   2 +-
+ include/linux/mm_types.h                      |  13 +-
+ include/net/page_pool/helpers.h               | 225 +++++++++++++++---
+ include/net/page_pool/types.h                 |   6 +-
+ net/core/page_pool.c                          |  31 ++-
+ net/core/skbuff.c                             |   2 +-
+ 12 files changed, 240 insertions(+), 77 deletions(-)
+
+-- 
+2.33.0
 
