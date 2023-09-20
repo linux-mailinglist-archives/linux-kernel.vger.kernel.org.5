@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 034117A7996
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B1C7A798F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbjITKqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
+        id S234511AbjITKpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbjITKpp (ORCPT
+        with ESMTP id S234444AbjITKpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:45:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C77DF4;
-        Wed, 20 Sep 2023 03:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695206730; x=1726742730;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BQ04r3rhhEvN+xUr1SkWuerOykbF40OxGzgam9T1NW4=;
-  b=au9Ol2F26fxL8ZoFfi3/ihSrkQVAa3Vpo4Vhj+/+YEUf093EfX2Acs2w
-   MzpljUc0yaaVH6fMai1ACPuV3SkPv8hDViX4PRlfREOxd3OH5nMlKCqUK
-   ZDEVOBsVOQsY778oGUrFYxvAiI2QeB263Ogz/fCTAPgQ3FW/yJhOlSYXn
-   IOIXyGYwmx7xDNKY+s8fF0fBIEmmC+6p9lzuRxy8+N7KTW/vlhDH/I2oT
-   5h71NHabrV/2GfZZJNmbczI95//XHZK14JvZBuhmygm4yIHdbE1ZPWuKq
-   z1bqGjcQUUM0JupVOALCYX2Al+aBWb/6yYMZl/3fU90/B4fH0K86cRLA+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="360445466"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="360445466"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 03:45:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="723226594"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="723226594"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 20 Sep 2023 03:45:27 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qiuhx-0008ei-08;
-        Wed, 20 Sep 2023 10:45:25 +0000
-Date:   Wed, 20 Sep 2023 18:44:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
-        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: dt-bindings: tfa9879: Convert to dtschema
-Message-ID: <202309201811.iKOZ5prG-lkp@intel.com>
-References: <20230919090739.2448-1-bragathemanick0908@gmail.com>
+        Wed, 20 Sep 2023 06:45:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E82EA1B9;
+        Wed, 20 Sep 2023 03:45:02 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B98951FB;
+        Wed, 20 Sep 2023 03:45:39 -0700 (PDT)
+Received: from [10.163.63.253] (unknown [10.163.63.253])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84ACA3F5A1;
+        Wed, 20 Sep 2023 03:44:59 -0700 (PDT)
+Message-ID: <21bc7889-e456-e95b-7155-2563f1b6c3e4@arm.com>
+Date:   Wed, 20 Sep 2023 16:14:56 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919090739.2448-1-bragathemanick0908@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH V5 - RESEND 2/3] coresight: etm: Make cycle count
+ threshold user configurable
+Content-Language: en-US
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20230915093649.435163-1-anshuman.khandual@arm.com>
+ <20230915093649.435163-3-anshuman.khandual@arm.com>
+ <e29f83cc-6a00-0e5a-20ca-55d39dc2e3a3@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <e29f83cc-6a00-0e5a-20ca-55d39dc2e3a3@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bragatheswaran,
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on linus/master v6.6-rc2 next-20230920]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On 9/20/23 14:52, Suzuki K Poulose wrote:
+> On 15/09/2023 10:36, Anshuman Khandual wrote:
+>> Cycle counting is enabled, when requested and supported but with a default
+>> threshold value ETM_CYC_THRESHOLD_DEFAULT i.e 0x100 getting into TRCCCCTLR,
+>> representing the minimum interval between cycle count trace packets.
+> 
+> minor nit:
+> 
+> When Cycle counting is enabled, we use a default threshold value (0x100) for the instruction trace cycle counting.
+>>
+>> This makes cycle threshold user configurable, from the user space via perf
+>> event attributes. Although it falls back using ETM_CYC_THRESHOLD_DEFAULT,
+>> in case no explicit request.
+> 
+> Minor nit:
+> 
+> This patch makes the cycle threshold user configurable via perf event
+> attributes( 'cc_threshold' => event->attr.config3[11:0] ), falling back
+> to the the current default if unspecified.
+> 
+> 
+> 
+>> As expected it creates a sysfs file as well.
+> 
+> 
+>>
+>> /sys/bus/event_source/devices/cs_etm/format/cc_threshold
+>>
+>> New 'cc_threshold' uses 'event->attr.config3' as no more space is available
+>> in 'event->attr.config1' or 'event->attr.config2'.
+> 
+> Trim the above part.
+> 
+> 
+> Rest looks fine to me.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bragatheswaran-Manickavel/ASoC-dt-bindings-tfa9879-Convert-to-dtschema/20230919-170919
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230919090739.2448-1-bragathemanick0908%40gmail.com
-patch subject: [PATCH] ASoC: dt-bindings: tfa9879: Convert to dtschema
-reproduce: (https://download.01.org/0day-ci/archive/20230920/202309201811.iKOZ5prG-lkp@intel.com/reproduce)
+Will change the commit message as follows.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309201811.iKOZ5prG-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
-
->> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/sound/tfa9879.txt
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+    coresight: etm: Make cycle count threshold user configurable
+    
+    When cycle counting is enabled, we use a default threshold value i.e 0x100
+    for the instruction trace cycle counting.
+    
+    This patch makes the cycle threshold user configurable via perf event
+    attributes( 'cc_threshold' => event->attr.config3[11:0] ), falling back
+    to the current default if unspecified.
