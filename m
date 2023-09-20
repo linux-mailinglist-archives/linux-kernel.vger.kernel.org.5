@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EEC7A72B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098357A72B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbjITGTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
+        id S233232AbjITGT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233150AbjITGTn (ORCPT
+        with ESMTP id S233183AbjITGTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:19:43 -0400
+        Wed, 20 Sep 2023 02:19:47 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCDF69D
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:19:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D1599
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:19:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695190777; x=1726726777;
+  t=1695190781; x=1726726781;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=y5KqaVwntn1O5nTc80IjgYebQMrM7BtNCmGfR5qYkwg=;
-  b=JscwNsJ7pqDILWogYR/nvN0sLD+OCVPadr9V0lRIcJP5vJrgX4zEShqS
-   teJ4pVWjU/AmN1Z5uMKIjRtkXitW2QdP0iwXPyO9OdPGvVvfz2/rRz8fz
-   w8j0JJSVZ51bdSTiSkb/LmI2P7/ZOB/7vPz7YNX5BVM3S5SQ7UUWpuuDQ
-   iRVx+Do1eniOy7v/KREL5E+pYa7sRODKw8GkKAGgi7s2A26Tz4Mm1OBaA
-   G5+QV7OqWMSN+512nZdWijau83Okth2Arz5taU88FlomqgpjTVfJBPOmB
-   Yddkrr6j0MUXfUgqglSjWBDhRHkKSbTs9hqhoC3mvTWnefZ+b1XgaWPvM
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="365187579"
+  bh=lVKcfu7RB9vKN2Hm50wym0zo99YnMLypq+qR+yt7FI8=;
+  b=JjzVS/GcIFCb+wgM1BJ+H3FLzEFp5+5xFRNe/q+EottYmRsCWs8d1Aty
+   mL9rWfNOJjg1yrrjhnxMG9F/x8Cs4zqr9LqUzdLZiUc6keZE2KiPDNHOP
+   N7dtAalDPQnLrJpzV1ORi3roa9MxwkSuF6POwF1MzTjDXnwSWwEg8czLN
+   ncJrt3MizNw++vSJm/adsezjJctPwBR5wc6WvqIERr6CWS7SmVH8R3IPt
+   uYnKk6AB6zlmCkmjwnXYdhPxXzrVj0fVdIdZKiTbsN4n5kjI8O3bbWUTo
+   rUCcD+7FDZsEU77OZY5TG+5FmAoulthw4V4Ud0+KW4I+cAH9qNjwrog+w
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="365187600"
 X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="365187579"
+   d="scan'208";a="365187600"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:19:37 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:19:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="740060503"
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="740060521"
 X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="740060503"
+   d="scan'208";a="740060521"
 Received: from yhuang6-mobl2.sh.intel.com ([10.238.6.133])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:19:33 -0700
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:19:37 -0700
 From:   Huang Ying <ying.huang@intel.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
         Arjan Van De Ven <arjan@linux.intel.com>,
         Huang Ying <ying.huang@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mel Gorman <mgorman@techsingularity.net>,
         Vlastimil Babka <vbabka@suse.cz>,
@@ -54,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         Matthew Wilcox <willy@infradead.org>,
         Christoph Lameter <cl@linux.com>
-Subject: [PATCH 01/10] mm, pcp: avoid to drain PCP when process exit
-Date:   Wed, 20 Sep 2023 14:18:47 +0800
-Message-Id: <20230920061856.257597-2-ying.huang@intel.com>
+Subject: [PATCH 02/10] cacheinfo: calculate per-CPU data cache size
+Date:   Wed, 20 Sep 2023 14:18:48 +0800
+Message-Id: <20230920061856.257597-3-ying.huang@intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230920061856.257597-1-ying.huang@intel.com>
 References: <20230920061856.257597-1-ying.huang@intel.com>
@@ -71,78 +72,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit f26b3fa04611 ("mm/page_alloc: limit number of high-order
-pages on PCP during bulk free"), the PCP (Per-CPU Pageset) will be
-drained when PCP is mostly used for high-order pages freeing to
-improve the cache-hot pages reusing between page allocation and
-freeing CPUs.
+Per-CPU data cache size is useful information.  For example, it can be
+used to determine per-CPU cache size.  So, in this patch, the data
+cache size for each CPU is calculated via data_cache_size /
+shared_cpu_weight.
 
-But, the PCP draining mechanism may be triggered unexpectedly when
-process exits.  With some customized trace point, it was found that
-PCP draining (free_high == true) was triggered with the order-1 page
-freeing with the following call stack,
-
- => free_unref_page_commit
- => free_unref_page
- => __mmdrop
- => exit_mm
- => do_exit
- => do_group_exit
- => __x64_sys_exit_group
- => do_syscall_64
-
-Checking the source code, this is the page table PGD
-freeing (mm_free_pgd()).  It's a order-1 page freeing if
-CONFIG_PAGE_TABLE_ISOLATION=y.  Which is a common configuration for
-security.
-
-Just before that, page freeing with the following call stack was
-found,
-
- => free_unref_page_commit
- => free_unref_page_list
- => release_pages
- => tlb_batch_pages_flush
- => tlb_finish_mmu
- => exit_mmap
- => __mmput
- => exit_mm
- => do_exit
- => do_group_exit
- => __x64_sys_exit_group
- => do_syscall_64
-
-So, when a process exits,
-
-- a large number of user pages of the process will be freed without
-  page allocation, it's highly possible that pcp->free_factor becomes
-  > 0.
-
-- after freeing all user pages, the PGD will be freed, which is a
-  order-1 page freeing, PCP will be drained.
-
-All in all, when a process exits, it's high possible that the PCP will
-be drained.  This is an unexpected behavior.
-
-To avoid this, in the patch, the PCP draining will only be triggered
-for 2 consecutive high-order page freeing.
-
-On a 2-socket Intel server with 224 logical CPU, we tested kbuild on
-one socket with `make -j 112`.  With the patch, the build time
-decreases 3.4% (from 206s to 199s).  The cycles% of the spinlock
-contention (mostly for zone lock) decreases from 43.6% to 40.3% (with
-PCP size == 361).  The number of PCP draining for high order pages
-freeing (free_high) decreases 50.8%.
-
-This helps network workload too for reduced zone lock contention.  On
-a 2-socket Intel server with 128 logical CPU, with the patch, the
-network bandwidth of the UNIX (AF_UNIX) test case of lmbench test
-suite with 16-pair processes increase 17.1%.  The cycles% of the
-spinlock contention (mostly for zone lock) decreases from 50.0% to
-45.8%.  The number of PCP draining for high order pages
-freeing (free_high) decreases 27.4%.  The cache miss rate keeps 0.3%.
+A brute-force algorithm to iterate all online CPUs is used to avoid
+to allocate an extra cpumask, especially in offline callback.
 
 Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Vlastimil Babka <vbabka@suse.cz>
@@ -154,60 +93,89 @@ Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Christoph Lameter <cl@linux.com>
 ---
- include/linux/mmzone.h |  5 ++++-
- mm/page_alloc.c        | 11 ++++++++---
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/base/cacheinfo.c  | 42 ++++++++++++++++++++++++++++++++++++++-
+ include/linux/cacheinfo.h |  1 +
+ 2 files changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 4106fbc5b4b3..64d5ed2bb724 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -676,12 +676,15 @@ enum zone_watermarks {
- #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
- #define wmark_pages(z, i) (z->_watermark[i] + z->watermark_boost)
+diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
+index cbae8be1fe52..3e8951a3fbab 100644
+--- a/drivers/base/cacheinfo.c
++++ b/drivers/base/cacheinfo.c
+@@ -898,6 +898,41 @@ static int cache_add_dev(unsigned int cpu)
+ 	return rc;
+ }
  
-+#define	PCPF_PREV_FREE_HIGH_ORDER	0x01
++static void update_data_cache_size_cpu(unsigned int cpu)
++{
++	struct cpu_cacheinfo *ci;
++	struct cacheinfo *leaf;
++	unsigned int i, nr_shared;
++	unsigned int size_data = 0;
 +
- struct per_cpu_pages {
- 	spinlock_t lock;	/* Protects lists field */
- 	int count;		/* number of pages in the list */
- 	int high;		/* high watermark, emptying needed */
- 	int batch;		/* chunk size for buddy add/remove */
--	short free_factor;	/* batch scaling factor during free */
-+	u8 flags;		/* protected by pcp->lock */
-+	u8 free_factor;		/* batch scaling factor during free */
- #ifdef CONFIG_NUMA
- 	short expire;		/* When 0, remote pagesets are drained */
- #endif
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 0c5be12f9336..828dcc24b030 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2370,7 +2370,7 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- {
- 	int high;
- 	int pindex;
--	bool free_high;
-+	bool free_high = false;
- 
- 	__count_vm_events(PGFREE, 1 << order);
- 	pindex = order_to_pindex(migratetype, order);
-@@ -2383,8 +2383,13 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 	 * freeing without allocation. The remainder after bulk freeing
- 	 * stops will be drained from vmstat refresh context.
- 	 */
--	free_high = (pcp->free_factor && order && order <= PAGE_ALLOC_COSTLY_ORDER);
--
-+	if (order && order <= PAGE_ALLOC_COSTLY_ORDER) {
-+		free_high = (pcp->free_factor &&
-+			     (pcp->flags & PCPF_PREV_FREE_HIGH_ORDER));
-+		pcp->flags |= PCPF_PREV_FREE_HIGH_ORDER;
-+	} else if (pcp->flags & PCPF_PREV_FREE_HIGH_ORDER) {
-+		pcp->flags &= ~PCPF_PREV_FREE_HIGH_ORDER;
++	if (!per_cpu_cacheinfo(cpu))
++		return;
++
++	ci = ci_cacheinfo(cpu);
++	for (i = 0; i < cache_leaves(cpu); i++) {
++		leaf = per_cpu_cacheinfo_idx(cpu, i);
++		if (leaf->type != CACHE_TYPE_DATA &&
++		    leaf->type != CACHE_TYPE_UNIFIED)
++			continue;
++		nr_shared = cpumask_weight(&leaf->shared_cpu_map);
++		if (!nr_shared)
++			continue;
++		size_data += leaf->size / nr_shared;
 +	}
- 	high = nr_pcp_high(pcp, zone, free_high);
- 	if (pcp->count >= high) {
- 		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, free_high), pcp, pindex);
++	ci->size_data = size_data;
++}
++
++static void update_data_cache_size(bool cpu_online, unsigned int cpu)
++{
++	unsigned int icpu;
++
++	for_each_online_cpu(icpu) {
++		if (!cpu_online && icpu == cpu)
++			continue;
++		update_data_cache_size_cpu(icpu);
++	}
++}
++
+ static int cacheinfo_cpu_online(unsigned int cpu)
+ {
+ 	int rc = detect_cache_attributes(cpu);
+@@ -906,7 +941,11 @@ static int cacheinfo_cpu_online(unsigned int cpu)
+ 		return rc;
+ 	rc = cache_add_dev(cpu);
+ 	if (rc)
+-		free_cache_attributes(cpu);
++		goto err;
++	update_data_cache_size(true, cpu);
++	return 0;
++err:
++	free_cache_attributes(cpu);
+ 	return rc;
+ }
+ 
+@@ -916,6 +955,7 @@ static int cacheinfo_cpu_pre_down(unsigned int cpu)
+ 		cpu_cache_sysfs_exit(cpu);
+ 
+ 	free_cache_attributes(cpu);
++	update_data_cache_size(false, cpu);
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/cacheinfo.h b/include/linux/cacheinfo.h
+index a5cfd44fab45..4e7ccfa0c36d 100644
+--- a/include/linux/cacheinfo.h
++++ b/include/linux/cacheinfo.h
+@@ -73,6 +73,7 @@ struct cacheinfo {
+ 
+ struct cpu_cacheinfo {
+ 	struct cacheinfo *info_list;
++	unsigned int size_data;
+ 	unsigned int num_levels;
+ 	unsigned int num_leaves;
+ 	bool cpu_map_populated;
 -- 
 2.39.2
 
