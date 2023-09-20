@@ -2,204 +2,790 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F255C7A899E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B127A89A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234756AbjITQhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
+        id S234630AbjITQke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234697AbjITQhh (ORCPT
+        with ESMTP id S234174AbjITQkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 12:37:37 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D2FC6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:37:30 -0700 (PDT)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KFxpgo008103;
-        Wed, 20 Sep 2023 16:36:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=corp-2023-03-30;
- bh=i+qDtNJcw4HCsa9ilv89VYJ3yaEH9fkCW0DsYmBakno=;
- b=septd/rWkyKvBnSNFAq7B8UgSdjVuVMkHxZCU8fOdn2rZr5xQECstprZ6jdveVmcof4Y
- Xdz/bxsHaL7LPfkxlBC/9C4FMYUpGKbUvSS6pYPWvLdpYQgMtK72ItHZIAZiW1c08yaQ
- bCCViE0ih9gi20eRAHWKWoHTQx1Gi+Zy7XDD4Y/bC0AuD72LOLX9fSrKjswTxepdggef
- cgUZ/Ef1ELyK+e9uJ1M8EB20wV6zrjVAwBs4dFDXYGcjVd2AA2ydFOZ7r9yW4EfMTcQ9
- jPCOcSoVDI10LTQ6pl/QFa47yY4bzZ/otk7W6/6YAlGN29jvPkLxM4vyvlqRYt+g+voe JQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t539cqwr9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Sep 2023 16:36:57 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38KG57c6027348;
-        Wed, 20 Sep 2023 16:36:56 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t52t7kjps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Sep 2023 16:36:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXmpQQU6GFrv+cUwFybjFxRS7fBEGKlUAT9EIzNsgtdoP6Skrk9yCBdbD9cdNEMYHRuSXQIhtTqd68HWqYjBTkIPgoB7AmCY/qAvGUdW2MLy2iu5BxY7BMUlfUrW8CRb1gVyNI6TgtBwAdvhgV12w1Z31pIBHIwChtdrxZ9QmCA2KIQ9hkEczQpnVSoleg4bvRK39IVdXUVrCkg0r0tvvaOocaaohCD9E2ECNHWvTfxHu0T6CATleg+58D6qcp6RKQlNVdE51xhoSzk34fal0c3WZsx9cEGwZr8X79YXMKgtmzn4PMLsxMAT/ls2jjOsxIs0gZ/KGSnrPaAjpLKaeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HViWx9NznodUBk0EkcH3pEi6U/gkic/iKsJE8AzTkiE=;
- b=f/z2bBeKZzAhoJ2Y7t2cShj4VA95J9RWItoiBAOX4M6J/PNh1HqWSc7E2n0qULU52IkHucbuLS2vCR+wHnXzIkNoruZa9D0F2IRCyHQSFgmAgSEOf5M7tbQLIeS07j47ITUJwM7QHsA3jlNdp2d6PZpm7jjMOJiI336DX0WfAe+TOfJ+8X8yNKo0KOfGYBuu66bhBdFk9RBbvfjzgxwF50KG+rVRLpSEWgv7+lcWNabfq+BtX+mdwe5t0D3jKCYD9pcL89YzwDBGeRl5MsTpXL1/QeyZ+HdWK3Rw2HZUybXC+kE0VPx+trvtSPRGO37AV3xzh4uVkVaFUPl+zfbL+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 20 Sep 2023 12:40:32 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99FF1CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:40:24 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-415155b2796so405591cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:40:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HViWx9NznodUBk0EkcH3pEi6U/gkic/iKsJE8AzTkiE=;
- b=RjOFxpExOr0oH2tjToL/TaUYm2BUvm8ry0FAN6WjTKGXtO3aOe/rbaZucRuUdOy3VYlRcdFKd7e3RLF8K8awhLQ6dBY+/IUlELeotOuD1nh3bGCtzRFu00urgto5588UQQMWaubcz+Xmq/nOcfvtMLcDIxnF+FySkUtbnVrfhNI=
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by LV8PR10MB7918.namprd10.prod.outlook.com (2603:10b6:408:1f8::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.23; Wed, 20 Sep
- 2023 16:36:54 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::c621:12ca:ba40:9054]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::c621:12ca:ba40:9054%5]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 16:36:54 +0000
-Date:   Wed, 20 Sep 2023 09:36:50 -0700
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org, muchun.song@linux.dev, leit@meta.com
-Subject: Re: [PATCH 1/2] hugetlbfs: extend hugetlb_vma_lock to private VMAs
-Message-ID: <20230920163650.GA4065@monkey>
-References: <20230920021811.3095089-1-riel@surriel.com>
- <20230920021811.3095089-2-riel@surriel.com>
- <ZQptrdK69wvJ2NXP@casper.infradead.org>
- <7ddc6ba18b3fef3ed637dcd9a85e90cf4ca6ca7d.camel@surriel.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7ddc6ba18b3fef3ed637dcd9a85e90cf4ca6ca7d.camel@surriel.com>
-X-ClientProxiedBy: MW4P223CA0004.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:303:80::9) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        d=google.com; s=20230601; t=1695228023; x=1695832823; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QwG85VFJON3DuTqKWcUmSuv6jkWLQ8Avrej5F5wpGzM=;
+        b=jFrDxtRieNrg7Nnab1IF/y2P3MDy4UZ9vx0pyMre25hKG2D+JgbRQ6Q7tYESq29St4
+         jzhoFAe9XquLDg1n0Pr3ltfZuF1qifn9CIe668ZJb8GCczsQQItFUWMLBo7F1u7DXv/3
+         kVzec6uCeZLdO6nkYcD94DZYCMGLuEFV57sQ1OiSw6SIIhF0KhQYe8MKfHz0P3tKOc0L
+         Rk6emqT24Z3GGsdBXTFsaOo2O7sVGg+aT9gkyel3qV1nttXOnzrG5tZGrM2O7A6EMVyW
+         GFI9VRq7nWCsQCKNCBVIfgpCROn6IZzMe5gcvzPs4EG8M+FmPWhrnaAHXI1+e+v/pPmh
+         8nyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695228023; x=1695832823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QwG85VFJON3DuTqKWcUmSuv6jkWLQ8Avrej5F5wpGzM=;
+        b=Md3yUdP9RD9XLJTkFc+r14clxnf1yRN6dW1T1JnGkSWmsFSKhX915goJaR9qirQidq
+         VQQhh6c74uk5O5wvDsxhvaFqRSwdjvVPGVujym6y6kzp5gxpqCzlIaN3LfIWRRS1cW0y
+         gba8HzGp8hZNLkRH2ilMUb6lPty/Lc7sY/mCTImsZoW3EpcFACv/ZfEayD4tUXxhWo58
+         WQjWCQ0l9gpz6iIeeiVGwmVh+dfue8PNiDWAWfgymiUa2BRze9CX3wtIOpQInj+5Lc3h
+         mCmr9Szf42f82uI+emxwVDRagd6aAXeLrAR+iiTcd/Wk+e4cgyHjrM22GE9obfyJgGm8
+         l4tQ==
+X-Gm-Message-State: AOJu0YxOiElJDseOrrLUUye4OeQ/qANHXXqMLr+HwnKVUvsPbwI1s09e
+        pjBOh1ZHUiTYG9VP5M0epW8rDCmShdLEt4J8mowggw==
+X-Google-Smtp-Source: AGHT+IGMc5I6KasyQGn672R4+uOGdgt3oCOpiY46NS50obr6tHCRjUJ+a+r8VoeLaGxlmiLk1UZ+Q9Fszdztq+jod+0=
+X-Received: by 2002:a05:622a:303:b0:417:b70f:1a6a with SMTP id
+ q3-20020a05622a030300b00417b70f1a6amr329036qtw.28.1695228023111; Wed, 20 Sep
+ 2023 09:40:23 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|LV8PR10MB7918:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e0307a7-03f6-4128-3683-08dbb9f7cc3f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JO14GoXSlaCar5ih6bdvlkmSpYQL+V5JLTO2oBtWeK95wfX7TA679kajGkoKw/IIJYZZCq6CN9OJ2XOvYYY9/fq1x019PkE9wRJYnQL0pAzeZbmX0XYZqwlvkC9KCVu5202d7raBQFkuYbiV1kIfWcCHhoSRv0f0C2mN+SOkxwZGyqtU45irmhX3GGiILR63DZv8RPhm2gohx0bN7UjMSdagTQhmr81gSzP5rv3yi7jH+/PhHsWcVnGdME82YX0v6vVFv8KPh4LlTNtxLVbjFbu9iH/9ZcKj8n/2lWgg0j7tZSa5ACjjkXbo+P+kd1zwFAc4ldSSYoW9h9ML0PnBzmEn4AchzFWD15X8bthiH7hIrvEVjf696E2mDBLm2AQdb1G1iRKBKYGYJ1J0DCl8BVaZOrpOYyz3faI9dbelaHwZNtvv66VnhWnjjXVG3ZiaVUmGQfraWcGuN63bzoYocLNrJ1Bh2E6k1qLLlWyN95lw94KQqksoymw9DY06cykBJ6aG8GeCg0OO/MmPPWiQjJM8ha54C+SwfoJPdxZC7tDhCaaFlXacFKGcY+cW25sM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(39860400002)(136003)(376002)(346002)(1800799009)(451199024)(186009)(33716001)(38100700002)(33656002)(86362001)(6506007)(6666004)(53546011)(6486002)(44832011)(478600001)(5660300002)(316002)(4326008)(1076003)(9686003)(83380400001)(2906002)(6512007)(66556008)(26005)(6916009)(41300700001)(8936002)(8676002)(66946007)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?/uthZ2Lh4WhcUGS+YwVx2N/UQcjBuuQ6QOQP9jOo9md1IrlMA6OgADWKG9?=
- =?iso-8859-1?Q?HXcal6eFhmj3awxQRCIg39B4sR/Emg7MHl/Uhobw5hCdr105AAi6dL1iqA?=
- =?iso-8859-1?Q?KS2tqUpKb1ZtUjHSslC9eWvJexFJFuPGFSIaNBH+7JdIJrDGv9ucG6vHUz?=
- =?iso-8859-1?Q?Y68T0etlsA/ef6i4VZQ2c3kiD9o0iZV+5LJIi4mYF41tLookbLbHo1wnOO?=
- =?iso-8859-1?Q?6jS13ruMRgcW5UJAWg9RTrYNIdauFRdN4u9dTclFWOIwEL/8O2q5w01YFV?=
- =?iso-8859-1?Q?/25XE6G2JNLz/ZU3uBaxGd8q/W1IrZGtWgcHry6YfvKOD+NtcpAf3nA6lG?=
- =?iso-8859-1?Q?bp9KGX+cKuPOF/fSJhy84a5Qwr6vLTWOCQFwlTx+Ac3VH/s/qo0G7lLfym?=
- =?iso-8859-1?Q?xN2Lk0H4IEtc2bt1Htns0jEi1LqE4uHjbKXvtOIOwBUSajoRmGUE/Zw2c5?=
- =?iso-8859-1?Q?9yjdk4CQs9XYpAqGE3B0PK1TGgtvj1ZSzpS2VrPWLINeQBdC+B+lJHaqLe?=
- =?iso-8859-1?Q?U1Y1QBy+cr0IFUVZEjp+j4e30bG5jdNgry1TnaAUBwtZd5abFHoiL/hUmg?=
- =?iso-8859-1?Q?Cp6b12EDQDojjNfdVSBjZy13kv7ZGQ4qD7CA05L1ijk+TUH2fTLah2nZ7b?=
- =?iso-8859-1?Q?+SOnJBXL/Pg8kPtCwqX4iBvGUV1wO7vSQQJWtMHrnTmInaXSOf8Ue9l9UF?=
- =?iso-8859-1?Q?j301cIuUpn3meXOMJ8jd054V6a6Bym0PuUZCj1osMcw+s3JHw/5u1NdpLE?=
- =?iso-8859-1?Q?0fJRf+o2E35Mr4N2J3XcgPWlhGJpGc3e/cRnZrtlfeLQ+ihmuQmSyUGQTX?=
- =?iso-8859-1?Q?PY+YP5MZ6Murf4pbJbJZLeMp60Cdqctm3U3H4dA1Gn5K9SgjCI2MSD7RfM?=
- =?iso-8859-1?Q?c6lFFZf4gc/mgJL7+eB7IGCqVZh1HjCUViHU9XuAckz8knrCJgaPPy7ZfO?=
- =?iso-8859-1?Q?6g0RAz7DME4ruL/e8DIKdR2Sbg4NFpudyBbKAaTg/DsKZVZnCquKh/j7Gy?=
- =?iso-8859-1?Q?pkRAjCwij9HgEotZXZfMbUB0KZg4bdq67BcULkkuxgmXOPbsPHbANwGr3d?=
- =?iso-8859-1?Q?zjvNrCtQGbiJ+bshNc3OONrlTYirGXfmo/Qw9LlQjPCz54feyMPKyEpXfZ?=
- =?iso-8859-1?Q?c3GYAoOF2Ca6B5ItQ6VXYB3iqCIC+ucGefncrFSvLxAOktWFk+XgdLj6Bz?=
- =?iso-8859-1?Q?0mzX1pU7lpdf9Dwib3xk+OABv31FIKNwU1zNfpgxdELCMyQZ0VILrblZkA?=
- =?iso-8859-1?Q?KbhqgpvVnaief86Z1ETqYFe2tx9dL21Mp95pKtFblW9XR4jq6la6G4UN+O?=
- =?iso-8859-1?Q?9vbEm4WALJFkaTHJTang/UfEa3IFTCW23cjMIDAZ/flg+8U6SRUvenWssb?=
- =?iso-8859-1?Q?wjFkU/Dv6hV+GyWTLQ2t2bGO6AOTnGt5CkBBqDRmqqAa9NWZ1BSsPDSFB6?=
- =?iso-8859-1?Q?LoeQIVtSWmXoa2A5DeXi45PpwPcmFU49ZGTxsdaePkcxRHBRnusa6r0HAe?=
- =?iso-8859-1?Q?ZlwspR/sa38AL675DqERr0+V0ay7+PNR/Imdr9XKvBp+9aeNE9KvMwJpjp?=
- =?iso-8859-1?Q?lmkcZanRy6CFMkLnugkEyX9qjfAsLU7pRAViseSK5a85pWUxwb86wvPRsr?=
- =?iso-8859-1?Q?DXrTjPXjC+b5br2zijGhfYm7x2Ri+kWOuX?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?iso-8859-1?Q?ZEKLuCixqjHVMhohxrvaxA1oYUZ+WcYGc6v1GHl7dUy6ZkQFgi78zMwVem?=
- =?iso-8859-1?Q?WdpMb4Itt0+HBjG7nSIp0c+aVhQnEySZjAtLZ/So+A2CmqPpvoMJunNlrA?=
- =?iso-8859-1?Q?AckuhHTAvzTBwvmswcvC0OxNq81E23zcQi/+aB9o56IvxTsBai4dgefYTE?=
- =?iso-8859-1?Q?ddEhMwwEf27MLsQ7p07jNsuVf+2l6ORPIRYFntQHGVybFLYu5geF+K92ro?=
- =?iso-8859-1?Q?fgSsei4bSYw4eLmEBre6a/ZfADVQu8BnUL8dgUZr7AeUJ4ZLtGTcYPh+Gt?=
- =?iso-8859-1?Q?QiYFj+3etMoMQ2VpCAgLN1BjKPlif2cfYRCqIeY4qEVfc/6pcOtg85Mf9m?=
- =?iso-8859-1?Q?zvazjyBikEXcuM8G/1j2sR4OiE+YhNrQd/QbPjI73UQyA4c4cIYbY77Ygl?=
- =?iso-8859-1?Q?Tzf3g2J/hgoTkHzdIWRl+I7N1qJX2cvCwXJEJf1r2Wk6CEF2qsmWe2Omjb?=
- =?iso-8859-1?Q?5c0UNf1+aALlVXI4UPvW6IcsQodI+xy/DWNJ83CqBLcu06yD0SOCelcA+C?=
- =?iso-8859-1?Q?t5Vke2DlUehzqsxAB+GgeUJdt8CcPBEeeNfPGQVogzi4idT2s9VpZnYS8C?=
- =?iso-8859-1?Q?Y9O5mUknAgmVe/QCgl1iGo7Kz/ifMKOwskrsnJnDLVjZffIYesN9uCtKZn?=
- =?iso-8859-1?Q?OKLKTPXaf0bBfJi5lhFRx0HthyDx4jIoPk1s1+HRRBUCT7U1+3ov1lWX7W?=
- =?iso-8859-1?Q?lnJInGZ9L/0dqy0/XRd7dR0OsheiLdU9aOR9mP1sQT0oNMeAPYUDOkQZl1?=
- =?iso-8859-1?Q?GcApDzkDA7wFL9xvxOIOk4sh0SHttwfiBLyY1s0Sx2554re0blE60o4CLD?=
- =?iso-8859-1?Q?N1dN5omvTVphC/2q3BnjHb+abQ+YF6nqUIJU0SeNBuIcw91Txy04do3AL1?=
- =?iso-8859-1?Q?uPEVbP2jimHdmpBRF+JQ5AnKmu83T3mP1qPjoCcCpI/d0C++rmRMQa2+Jr?=
- =?iso-8859-1?Q?CNiKm1Skk7SRhT7SfgO9g8Y+IId5pQhVeeaDQ8vSeL2ne/0testWdg=3D?=
- =?iso-8859-1?Q?=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e0307a7-03f6-4128-3683-08dbb9f7cc3f
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 16:36:53.9711
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TIWecJ5tp8qU5cA8Ss+OD1tzATklC/D0Ys9TtbuHT5CBgxNfoXg9VGfDNR89BnL0Dyibnv1zSWlxxbOVPNL3Fg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR10MB7918
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_06,2023-09-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- malwarescore=0 adultscore=0 phishscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=813 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309200136
-X-Proofpoint-ORIG-GUID: c7mwLSQzor3fgLot-z3nQap64LOPSrEU
-X-Proofpoint-GUID: c7mwLSQzor3fgLot-z3nQap64LOPSrEU
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+References: <20230920061839.2437413-1-ilkka@os.amperecomputing.com>
+In-Reply-To: <20230920061839.2437413-1-ilkka@os.amperecomputing.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 20 Sep 2023 09:40:11 -0700
+Message-ID: <CAP-5=fX0JYb96A+RCtJpSvqoz4Ya306FJZ3gRUX3o_Qj7Jaisg@mail.gmail.com>
+Subject: Re: [PATCH v2] perf vendor events arm64: Fix for AmpereOne metrics
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>
+Cc:     James Clark <james.clark@arm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/20/23 00:09, Rik van Riel wrote:
-> On Wed, 2023-09-20 at 04:57 +0100, Matthew Wilcox wrote:
-> > On Tue, Sep 19, 2023 at 10:16:09PM -0400, riel@surriel.com wrote:
-> > > From: Rik van Riel <riel@surriel.com>
-> > > 
-> > > Extend the locking scheme used to protect shared hugetlb mappings
-> > > from truncate vs page fault races, in order to protect private
-> > > hugetlb mappings (with resv_map) against MADV_DONTNEED.
-> > > 
-> > > Add a read-write semaphore to the resv_map data structure, and
-> > > use that from the hugetlb_vma_(un)lock_* functions, in preparation
-> > > for closing the race between MADV_DONTNEED and page faults.
-> > 
-> > This feels an awful lot like the invalidate_lock in struct
-> > address_space
-> > which was recently added by Jan Kara.
-> > 
-> Indeed it does.
-> 
-> It might be even nicer if we could replace the hugetlb_vma_lock
-> special logic with the invalidate_lock for hugetlbfs.
-> 
-> Mike, can you think of any reason why the hugetlb_vma_lock logic
-> should not be replaced with the invalidate_lock?
-> 
-> If not, I'd be happy to implement that.
-> 
+On Tue, Sep 19, 2023 at 11:19=E2=80=AFPM Ilkka Koskinen
+<ilkka@os.amperecomputing.com> wrote:
+>
+> This patch addresses review comments that were given for
+> 705ed549148f ("perf vendor events arm64: Add AmpereOne metrics")
+> but didn't make it to the original patch [1][2]
+>
+> Changes include: A fix for backend_memory formula, use of standard metric=
+s
+> when possible, using #slots, renaming metrics to avoid spaces in the name=
+s,
+> and cleanup.
+>
+> [1] https://lore.kernel.org/linux-perf-users/e9bdacb-a231-36af-6a2e-6918e=
+e7effa@os.amperecomputing.com/
+> [2] https://lore.kernel.org/linux-perf-users/20230826192352.3043220-1-ilk=
+ka@os.amperecomputing.com/
+>
+> Fixes: 705ed549148f ("perf vendor events arm64: Add AmpereOne metrics")
+> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 
-Sorry Rik,
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-I have some other things that need immediate attention and have not had a
-chance to take a close look here.  I'll take a closer look later (my) today
-or tomorrow.
--- 
-Mike Kravetz
+> ---
+> Fixed the scaling issues on some of the metrics in v1.
+>
+> I'll be offline for a couple of weeks but Scott can address any review
+> comments meanwhile.
+>
+> Cheers, Ilkka
+>
+> .../arch/arm64/ampere/ampereone/metrics.json  | 418 +++++++++---------
+>  1 file changed, 220 insertions(+), 198 deletions(-)
+>
+> diff --git a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.js=
+on b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
+> index 1e7e8901a445..e2848a9d4848 100644
+> --- a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
+> +++ b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
+> @@ -1,362 +1,384 @@
+>  [
+>      {
+> +       "MetricName": "branch_miss_pred_rate",
+>         "MetricExpr": "BR_MIS_PRED / BR_PRED",
+>         "BriefDescription": "Branch predictor misprediction rate. May not=
+ count branches that are never resolved because they are in the mispredicti=
+on shadow of an earlier branch",
+> -       "MetricGroup": "Branch Prediction",
+> -       "MetricName": "Misprediction"
+> +       "MetricGroup": "branch",
+> +        "ScaleUnit": "100%"
+>      },
+>      {
+> -       "MetricExpr": "BR_MIS_PRED_RETIRED / BR_RETIRED",
+> -       "BriefDescription": "Branch predictor misprediction rate",
+> -       "MetricGroup": "Branch Prediction",
+> -       "MetricName": "Misprediction (retired)"
+> -    },
+> -    {
+> -       "MetricExpr": "BUS_ACCESS / ( BUS_CYCLES * 1)",
+> +       "MetricName": "bus_utilization",
+> +       "MetricExpr": "((BUS_ACCESS / (BUS_CYCLES * 1)) * 100)",
+>         "BriefDescription": "Core-to-uncore bus utilization",
+>         "MetricGroup": "Bus",
+> -       "MetricName": "Bus utilization"
+> +        "ScaleUnit": "1percent of bus cycles"
+
+nits: this could be "100percent of bus cycles" and then you needn't "*
+100" as you did above, but this doesn't matter as they are equivalent.
+There are a few acronyms in the metric descriptions (IXU, LOB, ROB,
+SOB) perhaps they could be added to:
+https://perf.wiki.kernel.org/index.php/Glossary
+
+Thanks,
+Ian
+
+>      },
+>      {
+> -       "MetricExpr": "L1D_CACHE_REFILL / L1D_CACHE",
+> -       "BriefDescription": "L1D cache miss rate",
+> -       "MetricGroup": "Cache",
+> -       "MetricName": "L1D cache miss"
+> +        "MetricName": "l1d_cache_miss_ratio",
+> +        "MetricExpr": "(L1D_CACHE_REFILL / L1D_CACHE)",
+> +        "BriefDescription": "This metric measures the ratio of level 1 d=
+ata cache accesses missed to the total number of level 1 data cache accesse=
+s. This gives an indication of the effectiveness of the level 1 data cache.=
+",
+> +        "MetricGroup": "Miss_Ratio;L1D_Cache_Effectiveness",
+> +        "ScaleUnit": "1per cache access"
+> +    },
+> +    {
+> +        "MetricName": "l1i_cache_miss_ratio",
+> +        "MetricExpr": "(L1I_CACHE_REFILL / L1I_CACHE)",
+> +        "BriefDescription": "This metric measures the ratio of level 1 i=
+nstruction cache accesses missed to the total number of level 1 instruction=
+ cache accesses. This gives an indication of the effectiveness of the level=
+ 1 instruction cache.",
+> +        "MetricGroup": "Miss_Ratio;L1I_Cache_Effectiveness",
+> +        "ScaleUnit": "1per cache access"
+>      },
+>      {
+> +       "MetricName": "Miss_Ratio;l1d_cache_read_miss",
+>         "MetricExpr": "L1D_CACHE_LMISS_RD / L1D_CACHE_RD",
+>         "BriefDescription": "L1D cache read miss rate",
+>         "MetricGroup": "Cache",
+> -       "MetricName": "L1D cache read miss"
+> +        "ScaleUnit": "1per cache read access"
+>      },
+>      {
+> -       "MetricExpr": "L1I_CACHE_REFILL / L1I_CACHE",
+> -       "BriefDescription": "L1I cache miss rate",
+> -       "MetricGroup": "Cache",
+> -       "MetricName": "L1I cache miss"
+> -    },
+> -    {
+> -       "MetricExpr": "L2D_CACHE_REFILL / L2D_CACHE",
+> -       "BriefDescription": "L2 cache miss rate",
+> -       "MetricGroup": "Cache",
+> -       "MetricName": "L2 cache miss"
+> +        "MetricName": "l2_cache_miss_ratio",
+> +        "MetricExpr": "(L2D_CACHE_REFILL / L2D_CACHE)",
+> +        "BriefDescription": "This metric measures the ratio of level 2 c=
+ache accesses missed to the total number of level 2 cache accesses. This gi=
+ves an indication of the effectiveness of the level 2 cache, which is a uni=
+fied cache that stores both data and instruction. Note that cache accesses =
+in this cache are either data memory access or instruction fetch as this is=
+ a unified cache.",
+> +        "MetricGroup": "Miss_Ratio;L2_Cache_Effectiveness",
+> +        "ScaleUnit": "1per cache access"
+>      },
+>      {
+> +       "MetricName": "l1i_cache_read_miss_rate",
+>         "MetricExpr": "L1I_CACHE_LMISS / L1I_CACHE",
+>         "BriefDescription": "L1I cache read miss rate",
+>         "MetricGroup": "Cache",
+> -       "MetricName": "L1I cache read miss"
+> +        "ScaleUnit": "1per cache access"
+>      },
+>      {
+> +       "MetricName": "l2d_cache_read_miss_rate",
+>         "MetricExpr": "L2D_CACHE_LMISS_RD / L2D_CACHE_RD",
+>         "BriefDescription": "L2 cache read miss rate",
+>         "MetricGroup": "Cache",
+> -       "MetricName": "L2 cache read miss"
+> +        "ScaleUnit": "1per cache read access"
+>      },
+>      {
+> -       "MetricExpr": "(L1D_CACHE_LMISS_RD * 1000) / INST_RETIRED",
+> +       "MetricName": "l1d_cache_miss_mpki",
+> +       "MetricExpr": "(L1D_CACHE_LMISS_RD * 1e3) / INST_RETIRED",
+>         "BriefDescription": "Misses per thousand instructions (data)",
+>         "MetricGroup": "Cache",
+> -       "MetricName": "MPKI data"
+> +        "ScaleUnit": "1MPKI"
+>      },
+>      {
+> -       "MetricExpr": "(L1I_CACHE_LMISS * 1000) / INST_RETIRED",
+> +       "MetricName": "l1i_cache_miss_mpki",
+> +       "MetricExpr": "(L1I_CACHE_LMISS * 1e3) / INST_RETIRED",
+>         "BriefDescription": "Misses per thousand instructions (instructio=
+n)",
+>         "MetricGroup": "Cache",
+> -       "MetricName": "MPKI instruction"
+> +        "ScaleUnit": "1MPKI"
+>      },
+>      {
+> -       "MetricExpr": "ASE_SPEC / OP_SPEC",
+> -       "BriefDescription": "Proportion of advanced SIMD data processing =
+operations (excluding DP_SPEC/LD_SPEC) operations",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "ASE mix"
+> +        "MetricName": "simd_percentage",
+> +        "MetricExpr": "((ASE_SPEC / INST_SPEC) * 100)",
+> +        "BriefDescription": "This metric measures advanced SIMD operatio=
+ns as a percentage of total operations speculatively executed.",
+> +        "MetricGroup": "Operation_Mix",
+> +        "ScaleUnit": "1percent of operations"
+>      },
+>      {
+> -       "MetricExpr": "CRYPTO_SPEC / OP_SPEC",
+> -       "BriefDescription": "Proportion of crypto data processing operati=
+ons",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "Crypto mix"
+> +        "MetricName": "crypto_percentage",
+> +        "MetricExpr": "((CRYPTO_SPEC / INST_SPEC) * 100)",
+> +        "BriefDescription": "This metric measures crypto operations as a=
+ percentage of operations speculatively executed.",
+> +        "MetricGroup": "Operation_Mix",
+> +        "ScaleUnit": "1percent of operations"
+>      },
+>      {
+> -       "MetricExpr": "VFP_SPEC / (duration_time *1000000000)",
+> +       "MetricName": "gflops",
+> +       "MetricExpr": "VFP_SPEC / (duration_time * 1e9)",
+>         "BriefDescription": "Giga-floating point operations per second",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "GFLOPS_ISSUED"
+> +       "MetricGroup": "InstructionMix"
+>      },
+>      {
+> -       "MetricExpr": "DP_SPEC / OP_SPEC",
+> -       "BriefDescription": "Proportion of integer data processing operat=
+ions",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "Integer mix"
+> +        "MetricName": "integer_dp_percentage",
+> +        "MetricExpr": "((DP_SPEC / INST_SPEC) * 100)",
+> +        "BriefDescription": "This metric measures scalar integer operati=
+ons as a percentage of operations speculatively executed.",
+> +        "MetricGroup": "Operation_Mix",
+> +        "ScaleUnit": "1percent of operations"
+>      },
+>      {
+> -       "MetricExpr": "INST_RETIRED / CPU_CYCLES",
+> -       "BriefDescription": "Instructions per cycle",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "IPC"
+> +        "MetricName": "ipc",
+> +        "MetricExpr": "(INST_RETIRED / CPU_CYCLES)",
+> +        "BriefDescription": "This metric measures the number of instruct=
+ions retired per cycle.",
+> +        "MetricGroup": "General",
+> +        "ScaleUnit": "1per cycle"
+>      },
+>      {
+> -       "MetricExpr": "LD_SPEC / OP_SPEC",
+> -       "BriefDescription": "Proportion of load operations",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "Load mix"
+> +        "MetricName": "load_percentage",
+> +        "MetricExpr": "((LD_SPEC / INST_SPEC) * 100)",
+> +        "BriefDescription": "This metric measures load operations as a p=
+ercentage of operations speculatively executed.",
+> +        "MetricGroup": "Operation_Mix",
+> +        "ScaleUnit": "1percent of operations"
+>      },
+>      {
+> -       "MetricExpr": "LDST_SPEC/ OP_SPEC",
+> -       "BriefDescription": "Proportion of load & store operations",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "Load-store mix"
+> +       "MetricName": "load_store_spec_rate",
+> +       "MetricExpr": "((LDST_SPEC / INST_SPEC) * 100)",
+> +       "BriefDescription": "The rate of load or store instructions specu=
+latively executed to overall instructions speclatively executed",
+> +        "MetricGroup": "Operation_Mix",
+> +        "ScaleUnit": "1percent of operations"
+>      },
+>      {
+> -       "MetricExpr": "INST_RETIRED / (duration_time * 1000000)",
+> +       "MetricName": "retired_mips",
+> +       "MetricExpr": "INST_RETIRED / (duration_time * 1e6)",
+>         "BriefDescription": "Millions of instructions per second",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "MIPS_RETIRED"
+> +       "MetricGroup": "InstructionMix"
+>      },
+>      {
+> -       "MetricExpr": "INST_SPEC / (duration_time * 1000000)",
+> +       "MetricName": "spec_utilization_mips",
+> +       "MetricExpr": "INST_SPEC / (duration_time * 1e6)",
+>         "BriefDescription": "Millions of instructions per second",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "MIPS_UTILIZATION"
+> -    },
+> -    {
+> -       "MetricExpr": "PC_WRITE_SPEC / OP_SPEC",
+> -       "BriefDescription": "Proportion of software change of PC operatio=
+ns",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "PC write mix"
+> +       "MetricGroup": "PEutilization"
+>      },
+>      {
+> -       "MetricExpr": "ST_SPEC / OP_SPEC",
+> -       "BriefDescription": "Proportion of store operations",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "Store mix"
+> +       "MetricName": "pc_write_spec_rate",
+> +       "MetricExpr": "((PC_WRITE_SPEC / INST_SPEC) * 100)",
+> +       "BriefDescription": "The rate of software change of the PC specul=
+atively executed to overall instructions speclatively executed",
+> +        "MetricGroup": "Operation_Mix",
+> +        "ScaleUnit": "1percent of operations"
+>      },
+>      {
+> -       "MetricExpr": "VFP_SPEC / OP_SPEC",
+> -       "BriefDescription": "Proportion of FP operations",
+> -       "MetricGroup": "Instruction",
+> -       "MetricName": "VFP mix"
+> +        "MetricName": "store_percentage",
+> +        "MetricExpr": "((ST_SPEC / INST_SPEC) * 100)",
+> +        "BriefDescription": "This metric measures store operations as a =
+percentage of operations speculatively executed.",
+> +        "MetricGroup": "Operation_Mix",
+> +        "ScaleUnit": "1percent of operations"
+>      },
+>      {
+> -       "MetricExpr": "1 - (OP_RETIRED/ (CPU_CYCLES * 4))",
+> -       "BriefDescription": "Proportion of slots lost",
+> -       "MetricGroup": "Speculation / TDA",
+> -       "MetricName": "CPU lost"
+> +        "MetricName": "scalar_fp_percentage",
+> +        "MetricExpr": "((VFP_SPEC / INST_SPEC) * 100)",
+> +        "BriefDescription": "This metric measures scalar floating point =
+operations as a percentage of operations speculatively executed.",
+> +        "MetricGroup": "Operation_Mix",
+> +        "ScaleUnit": "1percent of operations"
+>      },
+>      {
+> -       "MetricExpr": "OP_RETIRED/ (CPU_CYCLES * 4)",
+> -       "BriefDescription": "Proportion of slots retiring",
+> -       "MetricGroup": "Speculation / TDA",
+> -       "MetricName": "CPU utilization"
+> +        "MetricName": "retired_rate",
+> +        "MetricExpr": "OP_RETIRED / OP_SPEC",
+> +        "BriefDescription": "Of all the micro-operations issued, what pe=
+rcentage are retired(committed)",
+> +        "MetricGroup": "General",
+> +        "ScaleUnit": "100%"
+>      },
+>      {
+> -       "MetricExpr": "OP_RETIRED - OP_SPEC",
+> -       "BriefDescription": "Operations lost due to misspeculation",
+> -       "MetricGroup": "Speculation / TDA",
+> -       "MetricName": "Operations lost"
+> +       "MetricName": "wasted",
+> +       "MetricExpr": "1 - (OP_RETIRED / (CPU_CYCLES * #slots))",
+> +        "BriefDescription": "Of all the micro-operations issued, what pr=
+oportion are lost",
+> +       "MetricGroup": "General",
+> +       "ScaleUnit": "100%"
+>      },
+>      {
+> -       "MetricExpr": "1 - (OP_RETIRED / OP_SPEC)",
+> -       "BriefDescription": "Proportion of operations lost",
+> -       "MetricGroup": "Speculation / TDA",
+> -       "MetricName": "Operations lost (ratio)"
+> +        "MetricName": "wasted_rate",
+> +        "MetricExpr": "1 - OP_RETIRED / OP_SPEC",
+> +        "BriefDescription": "Of all the micro-operations issued, what pe=
+rcentage are not retired(committed)",
+> +        "MetricGroup": "General",
+> +        "ScaleUnit": "100%"
+>      },
+>      {
+> -       "MetricExpr": "OP_RETIRED / OP_SPEC",
+> -       "BriefDescription": "Proportion of operations retired",
+> -       "MetricGroup": "Speculation / TDA",
+> -       "MetricName": "Operations retired"
+> -    },
+> -    {
+> -       "MetricExpr": "STALL_BACKEND_CACHE / CPU_CYCLES",
+> +       "MetricName": "stall_backend_cache_rate",
+> +       "MetricExpr": "((STALL_BACKEND_CACHE / CPU_CYCLES) * 100)",
+>         "BriefDescription": "Proportion of cycles stalled and no operatio=
+ns issued to backend and cache miss",
+>         "MetricGroup": "Stall",
+> -       "MetricName": "Stall backend cache cycles"
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -       "MetricExpr": "STALL_BACKEND_RESOURCE / CPU_CYCLES",
+> +       "MetricName": "stall_backend_resource_rate",
+> +       "MetricExpr": "((STALL_BACKEND_RESOURCE / CPU_CYCLES) * 100)",
+>         "BriefDescription": "Proportion of cycles stalled and no operatio=
+ns issued to backend and resource full",
+>         "MetricGroup": "Stall",
+> -       "MetricName": "Stall backend resource cycles"
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -       "MetricExpr": "STALL_BACKEND_TLB / CPU_CYCLES",
+> +       "MetricName": "stall_backend_tlb_rate",
+> +       "MetricExpr": "((STALL_BACKEND_TLB / CPU_CYCLES) * 100)",
+>         "BriefDescription": "Proportion of cycles stalled and no operatio=
+ns issued to backend and TLB miss",
+>         "MetricGroup": "Stall",
+> -       "MetricName": "Stall backend tlb cycles"
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -       "MetricExpr": "STALL_FRONTEND_CACHE / CPU_CYCLES",
+> +       "MetricName": "stall_frontend_cache_rate",
+> +       "MetricExpr": "((STALL_FRONTEND_CACHE / CPU_CYCLES) * 100)",
+>         "BriefDescription": "Proportion of cycles stalled and no ops deli=
+vered from frontend and cache miss",
+>         "MetricGroup": "Stall",
+> -       "MetricName": "Stall frontend cache cycles"
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -       "MetricExpr": "STALL_FRONTEND_TLB / CPU_CYCLES",
+> +       "MetricName": "stall_frontend_tlb_rate",
+> +       "MetricExpr": "((STALL_FRONTEND_TLB / CPU_CYCLES) * 100)",
+>         "BriefDescription": "Proportion of cycles stalled and no ops deli=
+vered from frontend and TLB miss",
+>         "MetricGroup": "Stall",
+> -       "MetricName": "Stall frontend tlb cycles"
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -       "MetricExpr": "DTLB_WALK / L1D_TLB",
+> -       "BriefDescription": "D-side walk per d-side translation request",
+> -       "MetricGroup": "TLB",
+> -       "MetricName": "DTLB walks"
+> +        "MetricName": "dtlb_walk_ratio",
+> +        "MetricExpr": "(DTLB_WALK / L1D_TLB)",
+> +        "BriefDescription": "This metric measures the ratio of data TLB =
+Walks to the total number of data TLB accesses. This gives an indication of=
+ the effectiveness of the data TLB accesses.",
+> +        "MetricGroup": "Miss_Ratio;DTLB_Effectiveness",
+> +        "ScaleUnit": "1per TLB access"
+>      },
+>      {
+> -       "MetricExpr": "ITLB_WALK / L1I_TLB",
+> -       "BriefDescription": "I-side walk per i-side translation request",
+> -       "MetricGroup": "TLB",
+> -       "MetricName": "ITLB walks"
+> +        "MetricName": "itlb_walk_ratio",
+> +        "MetricExpr": "(ITLB_WALK / L1I_TLB)",
+> +        "BriefDescription": "This metric measures the ratio of instructi=
+on TLB Walks to the total number of instruction TLB accesses. This gives an=
+ indication of the effectiveness of the instruction TLB accesses.",
+> +        "MetricGroup": "Miss_Ratio;ITLB_Effectiveness",
+> +        "ScaleUnit": "1per TLB access"
+>      },
+>      {
+> -        "MetricExpr": "STALL_SLOT_BACKEND / (CPU_CYCLES * 4)",
+> -        "BriefDescription": "Fraction of slots backend bound",
+> -        "MetricGroup": "TopDownL1",
+> -        "MetricName": "backend"
+> +        "ArchStdEvent": "backend_bound"
+>      },
+>      {
+> -        "MetricExpr": "1 - (retiring + lost + backend)",
+> -        "BriefDescription": "Fraction of slots frontend bound",
+> -        "MetricGroup": "TopDownL1",
+> -        "MetricName": "frontend"
+> +        "ArchStdEvent": "frontend_bound",
+> +        "MetricExpr": "100 - (retired_fraction + slots_lost_misspeculati=
+on_fraction + backend_bound)"
+>      },
+>      {
+> -        "MetricExpr": "((OP_SPEC - OP_RETIRED) / (CPU_CYCLES * 4))",
+> +        "MetricName": "slots_lost_misspeculation_fraction",
+> +        "MetricExpr": "100 * ((OP_SPEC - OP_RETIRED) / (CPU_CYCLES * #sl=
+ots))",
+>          "BriefDescription": "Fraction of slots lost due to misspeculatio=
+n",
+> -        "MetricGroup": "TopDownL1",
+> -        "MetricName": "lost"
+> +        "MetricGroup": "Default;TopdownL1",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "(OP_RETIRED / (CPU_CYCLES * 4))",
+> +        "MetricName": "retired_fraction",
+> +        "MetricExpr": "100 * (OP_RETIRED / (CPU_CYCLES * #slots))",
+>          "BriefDescription": "Fraction of slots retiring, useful work",
+> -        "MetricGroup": "TopDownL1",
+> -        "MetricName": "retiring"
+> +        "MetricGroup": "Default;TopdownL1",
+> +       "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "backend - backend_memory",
+> +        "MetricName": "backend_core",
+> +        "MetricExpr": "(backend_bound / 100) - backend_memory",
+>          "BriefDescription": "Fraction of slots the CPU was stalled due t=
+o backend non-memory subsystem issues",
+> -        "MetricGroup": "TopDownL2",
+> -        "MetricName": "backend_core"
+> +        "MetricGroup": "TopdownL2",
+> +        "ScaleUnit": "100%"
+>      },
+>      {
+> -        "MetricExpr": "(STALL_BACKEND_TLB + STALL_BACKEND_CACHE + STALL_=
+BACKEND_MEM) / CPU_CYCLES ",
+> +        "MetricName": "backend_memory",
+> +        "MetricExpr": "(STALL_BACKEND_TLB + STALL_BACKEND_CACHE) / CPU_C=
+YCLES",
+>          "BriefDescription": "Fraction of slots the CPU was stalled due t=
+o backend memory subsystem issues (cache/tlb miss)",
+> -        "MetricGroup": "TopDownL2",
+> -        "MetricName": "backend_memory"
+> +        "MetricGroup": "TopdownL2",
+> +        "ScaleUnit": "100%"
+>      },
+>      {
+> -        "MetricExpr": " (BR_MIS_PRED_RETIRED / GPC_FLUSH) * lost",
+> +        "MetricName": "branch_mispredict",
+> +        "MetricExpr": "(BR_MIS_PRED_RETIRED / GPC_FLUSH) * slots_lost_mi=
+sspeculation_fraction",
+>          "BriefDescription": "Fraction of slots lost due to branch mispre=
+diciton",
+> -        "MetricGroup": "TopDownL2",
+> -        "MetricName": "branch_mispredict"
+> +        "MetricGroup": "TopdownL2",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "frontend - frontend_latency",
+> +        "MetricName": "frontend_bandwidth",
+> +        "MetricExpr": "frontend_bound - frontend_latency",
+>          "BriefDescription": "Fraction of slots the CPU did not dispatch =
+at full bandwidth - able to dispatch partial slots only (1, 2, or 3 uops)",
+> -        "MetricGroup": "TopDownL2",
+> -        "MetricName": "frontend_bandwidth"
+> +        "MetricGroup": "TopdownL2",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "(STALL_FRONTEND - ((STALL_SLOT_FRONTEND - (fronte=
+nd * CPU_CYCLES * 4)) / 4)) / CPU_CYCLES",
+> +        "MetricName": "frontend_latency",
+> +        "MetricExpr": "((STALL_FRONTEND - ((STALL_SLOT_FRONTEND - ((fron=
+tend_bound / 100) * CPU_CYCLES * #slots)) / #slots)) / CPU_CYCLES) * 100",
+>          "BriefDescription": "Fraction of slots the CPU was stalled due t=
+o frontend latency issues (cache/tlb miss); nothing to dispatch",
+> -        "MetricGroup": "TopDownL2",
+> -        "MetricName": "frontend_latency"
+> +        "MetricGroup": "TopdownL2",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "lost - branch_mispredict",
+> +        "MetricName": "other_miss_pred",
+> +        "MetricExpr": "slots_lost_misspeculation_fraction - branch_mispr=
+edict",
+>          "BriefDescription": "Fraction of slots lost due to other/non-bra=
+nch misprediction misspeculation",
+> -        "MetricGroup": "TopDownL2",
+> -        "MetricName": "other_clears"
+> +        "MetricGroup": "TopdownL2",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "(IXU_NUM_UOPS_ISSUED + FSU_ISSUED) / (CPU_CYCLES =
+* 6)",
+> +        "MetricName": "pipe_utilization",
+> +        "MetricExpr": "100 * ((IXU_NUM_UOPS_ISSUED + FSU_ISSUED) / (CPU_=
+CYCLES * 6))",
+>          "BriefDescription": "Fraction of execute slots utilized",
+> -        "MetricGroup": "TopDownL2",
+> -        "MetricName": "pipe_utilization"
+> +        "MetricGroup": "TopdownL2",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "STALL_BACKEND_MEM / CPU_CYCLES",
+> +        "MetricName": "d_cache_l2_miss_rate",
+> +        "MetricExpr": "((STALL_BACKEND_MEM / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled due =
+to data L2 cache miss",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "d_cache_l2_miss"
+> +        "MetricGroup": "TopdownL3",
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -        "MetricExpr": "STALL_BACKEND_CACHE / CPU_CYCLES",
+> +        "MetricName": "d_cache_miss_rate",
+> +        "MetricExpr": "((STALL_BACKEND_CACHE / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled due =
+to data cache miss",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "d_cache_miss"
+> +        "MetricGroup": "TopdownL3",
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -        "MetricExpr": "STALL_BACKEND_TLB / CPU_CYCLES",
+> +        "MetricName": "d_tlb_miss_rate",
+> +        "MetricExpr": "((STALL_BACKEND_TLB / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled due =
+to data TLB miss",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "d_tlb_miss"
+> +        "MetricGroup": "TopdownL3",
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -        "MetricExpr": "FSU_ISSUED / (CPU_CYCLES * 2)",
+> +        "MetricName": "fsu_pipe_utilization",
+> +        "MetricExpr": "((FSU_ISSUED / (CPU_CYCLES * 2)) * 100)",
+>          "BriefDescription": "Fraction of FSU execute slots utilized",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "fsu_pipe_utilization"
+> +        "MetricGroup": "TopdownL3",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "STALL_FRONTEND_CACHE / CPU_CYCLES",
+> +        "MetricName": "i_cache_miss_rate",
+> +        "MetricExpr": "((STALL_FRONTEND_CACHE / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled due =
+to instruction cache miss",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "i_cache_miss"
+> +        "MetricGroup": "TopdownL3",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": " STALL_FRONTEND_TLB / CPU_CYCLES ",
+> +        "MetricName": "i_tlb_miss_rate",
+> +        "MetricExpr": "((STALL_FRONTEND_TLB / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled due =
+to instruction TLB miss",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "i_tlb_miss"
+> +        "MetricGroup": "TopdownL3",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "IXU_NUM_UOPS_ISSUED / (CPU_CYCLES / 4)",
+> +        "MetricName": "ixu_pipe_utilization",
+> +        "MetricExpr": "((IXU_NUM_UOPS_ISSUED / (CPU_CYCLES * #slots)) * =
+100)",
+>          "BriefDescription": "Fraction of IXU execute slots utilized",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "ixu_pipe_utilization"
+> +        "MetricGroup": "TopdownL3",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "IDR_STALL_FLUSH / CPU_CYCLES",
+> +        "MetricName": "stall_recovery_rate",
+> +        "MetricExpr": "((IDR_STALL_FLUSH / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled due =
+to flush recovery",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "recovery"
+> -    },
+> -    {
+> -        "MetricExpr": "STALL_BACKEND_RESOURCE / CPU_CYCLES",
+> -        "BriefDescription": "Fraction of cycles the CPU was stalled due =
+to core resource shortage",
+> -        "MetricGroup": "TopDownL3",
+> -        "MetricName": "resource"
+> +        "MetricGroup": "TopdownL3",
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "IDR_STALL_FSU_SCHED / CPU_CYCLES ",
+> +        "MetricName": "stall_fsu_sched_rate",
+> +        "MetricExpr": "((IDR_STALL_FSU_SCHED / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled and =
+FSU was full",
+> -        "MetricGroup": "TopDownL4",
+> -        "MetricName": "stall_fsu_sched"
+> +        "MetricGroup": "TopdownL4",
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -        "MetricExpr": "IDR_STALL_IXU_SCHED / CPU_CYCLES ",
+> +        "MetricName": "stall_ixu_sched_rate",
+> +        "MetricExpr": "((IDR_STALL_IXU_SCHED / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled and =
+IXU was full",
+> -        "MetricGroup": "TopDownL4",
+> -        "MetricName": "stall_ixu_sched"
+> +        "MetricGroup": "TopdownL4",
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -        "MetricExpr": "IDR_STALL_LOB_ID / CPU_CYCLES ",
+> +        "MetricName": "stall_lob_id_rate",
+> +        "MetricExpr": "((IDR_STALL_LOB_ID / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled and =
+LOB was full",
+> -        "MetricGroup": "TopDownL4",
+> -        "MetricName": "stall_lob_id"
+> +        "MetricGroup": "TopdownL4",
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -        "MetricExpr": "IDR_STALL_ROB_ID / CPU_CYCLES",
+> +        "MetricName": "stall_rob_id_rate",
+> +        "MetricExpr": "((IDR_STALL_ROB_ID / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled and =
+ROB was full",
+> -        "MetricGroup": "TopDownL4",
+> -        "MetricName": "stall_rob_id"
+> +        "MetricGroup": "TopdownL4",
+> +        "ScaleUnit": "1percent of cycles"
+>      },
+>      {
+> -        "MetricExpr": "IDR_STALL_SOB_ID / CPU_CYCLES ",
+> +        "MetricName": "stall_sob_id_rate",
+> +        "MetricExpr": "((IDR_STALL_SOB_ID / CPU_CYCLES) * 100)",
+>          "BriefDescription": "Fraction of cycles the CPU was stalled and =
+SOB was full",
+> -        "MetricGroup": "TopDownL4",
+> -        "MetricName": "stall_sob_id"
+> +        "MetricGroup": "TopdownL4",
+> +        "ScaleUnit": "1percent of cycles"
+>      }
+>  ]
+> --
+> 2.40.1
+>
