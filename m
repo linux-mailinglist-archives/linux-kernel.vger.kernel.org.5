@@ -2,152 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5457A874F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C9F7A8755
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236876AbjITOky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
+        id S235107AbjITOm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236673AbjITOkl (ORCPT
+        with ESMTP id S236550AbjITOmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:40:41 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8202130DB
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:39:04 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68fb98745c1so5267800b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695220741; x=1695825541; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tVjsOZJ8bggozwjwCYWOh6I0B4C7rlCVK2zz6fw/jxM=;
-        b=oLhZUBgxnlIIUZPa957EPD5fIoTDDgXtpuaaxFvro0mvz3v1gI8FAo4R+RXDGbWA0W
-         Y1UvZ1QA5G08pZbDNK/Aek+0jZMYAO8HpZeSIW2nGSJRrBVSEEHoCgv2g/0I8+iJ4iK8
-         I3Ig0LTD3/hG+BukCYaNPvMK7/ee8yk7tw7rJtJe2T1Ga/swRSDef4Ix+fP16t9pHT44
-         d7Np6Bf7pc3a4VKkTnBsOPdR5KcGnTU6u9WNeckZSZb8kow/5NAKLrYr1eq+eHWmQEck
-         mXeeU11NKZRpzSNk7b2Ghvb67T/HBbnQh045Lju/+DZ6RIWQNGpUcGL4tJUSxP0lI3zW
-         T/tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695220741; x=1695825541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tVjsOZJ8bggozwjwCYWOh6I0B4C7rlCVK2zz6fw/jxM=;
-        b=Oj6nYtHLOMaq7c0/Yy9b8fsd4YQ1RmxevT/tfynM+hh90RPGZCD/u2epeArTsFSLE4
-         SOSeBlD8DlstoRqSqx7/x/Uz+2jWdKrhl5vn5P/kxphkJQp2O4vBYfeJA6+C2q6AMePv
-         zaxbuhbHzmT4IcBpdRq4p85JZkEx2I2FpVulJbQGYg9zrdUWrFhmIIIKGno1RwH4CVtS
-         l5unD+yQDnYRQm0sRnGkfHmR3j7cakSG5RkfJYleSg1jyjVACDfVR3zbjgrlSMjdZdGf
-         sT5jPVNiD98Xz19eTrX+JSyYOrTugEEfyYjoPzW1sh5htbx0rr7G2oKBNcI5mVUsqLdz
-         aL6w==
-X-Gm-Message-State: AOJu0YzpinFjSYIXm9BOjetUNYAsoXcyX+/62IuMfp0eyY3PjA+/4W08
-        lUVjuFUS5f7+2utLGf7WsXMcwcInxCOn/hY/6oVMfQ==
-X-Google-Smtp-Source: AGHT+IEr2Lac4PW5MEs8w2glHD2rv5IneEoO2/iHMRaS9AnyeCZ7nvHVBgJDCdg7GwNcp3Cwv5ypWCr2gQmimN6JYbQ=
-X-Received: by 2002:a17:90b:38d2:b0:271:bc40:5097 with SMTP id
- nn18-20020a17090b38d200b00271bc405097mr2554985pjb.30.1695220741330; Wed, 20
- Sep 2023 07:39:01 -0700 (PDT)
+        Wed, 20 Sep 2023 10:42:12 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C213D1FCE
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:40:32 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BF7A440E01AD;
+        Wed, 20 Sep 2023 14:39:42 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id yK1v070zsPFi; Wed, 20 Sep 2023 14:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1695220780; bh=sn1u7HbfEqB/KGzQxppt+e8lAPpzlONuIUwyW8EB+qM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CzRbSJEK1RNHJw84Oj+M+2Qaa0PGN7FW21Nhap4Nhsdl3HhVv9JU2zoSRMPXwp8ty
+         8bOga0J+x4RxkrIwU8YLWXQqSm43X6e1PGVCcIJERsuxl9WlBnNONFjw4MMw+J7+WX
+         SBgDgn0lktp9LV0707pp96exB5aRdxNN4RJdpzoUL/P9REh78UNFrkzTV2wFKh1RWi
+         YDJKlGV4skqvxW2d8OUqGYibaZClhHQgG+UnQ8dxbFWgsTgy6ZlrCpUGi/NuzruI7n
+         IJO9v7AHOpkDtvVHS5hN2xpawK6sKXeAzRkRRCGaRHdZ8gPGLbV0fLF/fl96R82glF
+         mMNPyNwPenqUwOTDXomch28zc0QCiEMOJWkXfojVveZ7QbTkfd/wTqZmTD/dtlL7D5
+         2ZwZyLgroV6EI5cUWhu5Noel45clrsZ1ipikSEDYsL8VuMLmtnMZClO5Xky7ptmQ6t
+         EXWyZ5XlrK+ZE9H6oyVcgxc62Cs42RZt4QdP6jbtpu0peQ1WxWk08/jAGqOhJzYLyo
+         M5cWA19CFeF4nnqkFUD+JgOXi1L4+0LfNqeqID27kiz2xc5G/BzdFQ8DRTMejYqVWy
+         WSpilsTAJmhg4IxbisgNZ3GsylcVaShjWzDGFESJTqCMxdSxRWILPg1KErzEh+irGo
+         OpXPQvz0eRuEBsx7hO/F2xyU=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DF01840E01A1;
+        Wed, 20 Sep 2023 14:39:33 +0000 (UTC)
+Date:   Wed, 20 Sep 2023 16:39:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [patch V3 08/30] x86/microcode/intel: Save the microcode only
+ after a successful late-load
+Message-ID: <20230920143928.GFZQsEIFvAuH8YMSq6@fat_crate.local>
+References: <20230912065249.695681286@linutronix.de>
+ <20230912065501.269244004@linutronix.de>
 MIME-Version: 1.0
-References: <66b988f0-39fc-2ed3-8f38-151d6a3c9e52@linaro.org>
- <IA1PR20MB49536BFE1254ADEE0E795A26BBF9A@IA1PR20MB4953.namprd20.prod.outlook.com>
- <20230920-8503c6365655d3ef3dadfd53@fedora>
-In-Reply-To: <20230920-8503c6365655d3ef3dadfd53@fedora>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Wed, 20 Sep 2023 20:08:49 +0530
-Message-ID: <CAK9=C2WWzc_M49-S+Gi509a6-gk3-89sAZn-ZCRhsQc4JwUpoQ@mail.gmail.com>
-Subject: Re: [PATCH v2 06/11] dt-bindings: timer: Add Sophgo sg2042 clint
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        evicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
-        guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>,
-        Atish Patra <atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230912065501.269244004@linutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 6:28=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Wed, Sep 20, 2023 at 08:40:07PM +0800, Inochi Amaoto wrote:
-> > >On 20/09/2023 14:15, Inochi Amaoto wrote:
-> > >>> On 20/09/2023 08:39, Chen Wang wrote:
-> > >>>> From: Inochi Amaoto <inochiama@outlook.com>
-> > >>>>
-> > >>>> Add two new compatible string formatted like `C9xx-clint-xxx` to i=
-dentify
-> > >>>> the timer and ipi device separately, and do not allow c900-clint a=
-s the
-> > >>>
-> > >>> Why?
-> > >>>
-> > >>
-> > >> If use the same compatible, SBI will process this twice in both ipi =
-and
-> > >> timer, use different compatible will allow SBI to treat these as dif=
-ferent.
-> > >> AFAIK, the aclint in SBI use the same concepts, which make hard to u=
-se the
-> > >> second register range. I have explained in another response.
-> > >
-> > >What is a SBI? Linux driver? If so, why some intermediate Linux driver
-> > >choice should affect bindings?
-> > >Best regards,
-> > >Krzysztof
-> > >
-> >
-> > SBI (Supervisor Binary Interface) is defined by riscv, which is an inte=
-rface
-> > between the Supervisor Execution Environment (SEE) and the supervisor. =
-The
-> > detailed documentation can be found in [1].
-> >
-> > The implement of SBI needs fdt info of the platform, which is provided =
-by
-> > kernel. So we need a dt-bindings for these devices, and these will be
-> > processed by SBI.
-> >
-> > [1] https://github.com/riscv-non-isa/riscv-sbi-doc
->
-> Yeah, this is the unfortunate problem of half-baked bindings (IMO)
-> ending up in OpenSBI (which likely means they also ended up in QEMU).
-> This T-Head stuff is coming across our (metaphorical) desks, so we are
-> obviously going to try to do things correctly. I may end up speaking to
-> Anup later today, if I do I will point him at this thread (if he hasn't
-> seen it already).
+On Tue, Sep 12, 2023 at 09:57:56AM +0200, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> There are situations where the late microcode is loaded into memory, but is
+> not applied:
+> 
+>   1) The rendevouz fails
+>   2) The microcode is rejected by the CPUs
+> 
+> If any of this happens then the pointer which was updated at firmware load
+> time is stale and subsequent CPU hotplug operations either fail to update
+> or create inconsistent microcode state.
+> 
+> Save the loaded microcode in a separate pointer from with the late load is
 
-RISC-V ACLINT is one of those unfortunate non-ISA specs (like
-SiFive PLIC) which is implemented by various organizations but
-not officially ratified by RVI.
+s/from with/before/
 
-The SiFive CLINT has flexibility related limitations which makes it
-not useful for multi-socket and mult-die systems. The SiFive CLINT
-is also not useful for systems with AIA because with AIA M-mode has
-a new way of doing M-mode IPIs. Due to this reasons, the RISC-V
-ACLINT spec breaks down traditional SiFive CLINT into two separate
-devices namely mtimer and mswi. This allows platforms to implement
-only the required set of devices. The mtimer as defined by the ACLINT
-specifications also allows platforms to place mtime and mtimecmp
-registers at different locations.
+> attempted and when successful, update the hotplug pointer accordingly via a
+> new micrcode_ops callback.
 
-Refer, https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
+-- 
+Regards/Gruss,
+    Boris.
 
-We need a separate DT bindings document for ACLINT MTIMER
-and ACLINT MSWI because these are separate devices. The
-Sophgo sg2042 SoC should add their implementation specific
-compatible strings in this document.
-
-Regards,
-Anup
+https://people.kernel.org/tglx/notes-about-netiquette
