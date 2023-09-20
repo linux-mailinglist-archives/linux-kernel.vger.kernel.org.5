@@ -2,101 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7857A85ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910C87A85FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbjITN7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56334 "EHLO
+        id S234868AbjITOB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236676AbjITN6s (ORCPT
+        with ESMTP id S234729AbjITOBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:58:48 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68401E53;
-        Wed, 20 Sep 2023 06:58:10 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38KDw3JP070446;
-        Wed, 20 Sep 2023 08:58:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695218283;
-        bh=/i4O/PcSizbavl+z7domJ3obcFd1M8+KI8C0kFKq9l0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=WtAvVQAZNiRlP/+//Y1NmPpEwdtIeoxIO+L/BR7nMsmazOfyTLNiOjfMfvjhQctPM
-         2f4JzjbPyB0F4Lnbnc2fouHM1umnXo6PfnNO5nMYiPbyZb7zPfjfYdP1ywqZlZ9Mkf
-         UVPQ4d2xzukGKp6MWeEkLAzntHKCNB7VSGiWKSLA=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38KDw3bM096043
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 Sep 2023 08:58:03 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 20
- Sep 2023 08:58:02 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 20 Sep 2023 08:58:02 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38KDw21I119453;
-        Wed, 20 Sep 2023 08:58:02 -0500
-Date:   Wed, 20 Sep 2023 08:58:02 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Roger Quadros <rogerq@kernel.org>
-CC:     <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srk@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] arm64: dts: ti: am642-evm: Add overlay for NAND
- expansion card
-Message-ID: <20230920135802.3ej2wcuaruqjidel@uncouth>
-References: <20230920133450.54226-1-rogerq@kernel.org>
- <20230920133450.54226-3-rogerq@kernel.org>
+        Wed, 20 Sep 2023 10:01:55 -0400
+Received: from out-226.mta0.migadu.com (out-226.mta0.migadu.com [IPv6:2001:41d0:1004:224b::e2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2A5AC
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:01:48 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695218505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q5FMu0D+lg+hJ0WRrS1fbyuLn69QOn+cvkKyyXnvWFQ=;
+        b=ZonHdx0zZ+TxdSp20seUHtqn7aIDhF9v3k1JUwdciOcnxZjL66NQrZa1qYfgoSXMsqCQdb
+        zmlHaJGF1jW+vFBNB7B0oXCx3KsaG8HwpMrQgb9HsJ+RGi8di4j/NR2OMMf02tFrHc7eIX
+        UkR22KywqfnEdenLjjNU0kvD8JDplu8=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH v2] sched/rt: move back to RT_GROUP_SCHED and rename it child
+Date:   Wed, 20 Sep 2023 22:01:27 +0800
+Message-Id: <20230920140127.1671945-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230920133450.54226-3-rogerq@kernel.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16:34-20230920, Roger Quadros wrote:
-> The NAND expansion card plugs in over the HSE (High Speed Expansion)
-> connector. Add support for it.
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
->  arch/arm64/boot/dts/ti/Makefile               |   1 +
->  arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 140 ++++++++++++++++++
->  2 files changed, 141 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
-> 
-> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> index 06d6f264f292..ece74085a6be 100644
-> --- a/arch/arm64/boot/dts/ti/Makefile
-> +++ b/arch/arm64/boot/dts/ti/Makefile
-> @@ -29,6 +29,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62p5-sk.dtb
->  
->  # Boards with AM64x SoC
->  dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtbo
->  dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
+The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
+it should not place out of RT_GROUP_SCHED, move back to RT_GROUP_SCHED
+and rename it child. This would save a few bytes.
 
-Also see https://lore.kernel.org/all/20230911165610.GA1362932-robh@kernel.org/
+Init child when parent isn't NULL in init_tg_rt_entry() and introduce
+for_each_sched_rt_entity_reverse() to iterate rt_se from top to down.
 
-you may not get the dtbo installed when doing make dtbs_install
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+v2: fix the "uninitialized symbol 'root'" warning
+v1: https://lore.kernel.org/all/20230919035114.2364567-1-yajun.deng@linux.dev/
+---
+ include/linux/sched.h |  2 +-
+ kernel/sched/rt.c     | 25 ++++++++++++++++---------
+ 2 files changed, 17 insertions(+), 10 deletions(-)
 
-[...]
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 7fcf1b82cfa6..cd05f4bb6a26 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -594,8 +594,8 @@ struct sched_rt_entity {
+ 	unsigned short			on_rq;
+ 	unsigned short			on_list;
+ 
+-	struct sched_rt_entity		*back;
+ #ifdef CONFIG_RT_GROUP_SCHED
++	struct sched_rt_entity		*child;
+ 	struct sched_rt_entity		*parent;
+ 	/* rq on which this entity is (to be) queued: */
+ 	struct rt_rq			*rt_rq;
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 0597ba0f85ff..473a21b76c62 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -230,8 +230,10 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
+ 
+ 	if (!parent)
+ 		rt_se->rt_rq = &rq->rt;
+-	else
++	else {
+ 		rt_se->rt_rq = parent->my_q;
++		parent->child = rt_se;
++	}
+ 
+ 	rt_se->my_q = rt_rq;
+ 	rt_se->parent = parent;
+@@ -564,6 +566,9 @@ static inline struct task_group *next_task_group(struct task_group *tg)
+ #define for_each_sched_rt_entity(rt_se) \
+ 	for (; rt_se; rt_se = rt_se->parent)
+ 
++#define for_each_sched_rt_entity_reverse(rt_se) \
++	for (; rt_se; rt_se = rt_se->child)
++
+ static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
+ {
+ 	return rt_se->my_q;
+@@ -669,6 +674,9 @@ typedef struct rt_rq *rt_rq_iter_t;
+ #define for_each_sched_rt_entity(rt_se) \
+ 	for (; rt_se; rt_se = NULL)
+ 
++#define for_each_sched_rt_entity_reverse(rt_se) \
++	for_each_sched_rt_entity(rt_se)
++
+ static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
+ {
+ 	return NULL;
+@@ -1481,22 +1489,21 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
+  */
+ static void dequeue_rt_stack(struct sched_rt_entity *rt_se, unsigned int flags)
+ {
+-	struct sched_rt_entity *back = NULL;
++	struct sched_rt_entity *root = NULL;
+ 	unsigned int rt_nr_running;
+ 
+-	for_each_sched_rt_entity(rt_se) {
+-		rt_se->back = back;
+-		back = rt_se;
+-	}
++	for_each_sched_rt_entity(rt_se)
++		root = rt_se;
+ 
+-	rt_nr_running = rt_rq_of_se(back)->rt_nr_running;
++	rt_nr_running = rt_rq_of_se(root)->rt_nr_running;
+ 
+-	for (rt_se = back; rt_se; rt_se = rt_se->back) {
++	rt_se = root;
++	for_each_sched_rt_entity_reverse(rt_se) {
+ 		if (on_rt_rq(rt_se))
+ 			__dequeue_rt_entity(rt_se, flags);
+ 	}
+ 
+-	dequeue_top_rt_rq(rt_rq_of_se(back), rt_nr_running);
++	dequeue_top_rt_rq(rt_rq_of_se(root), rt_nr_running);
+ }
+ 
+ static void enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flags)
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.25.1
+
