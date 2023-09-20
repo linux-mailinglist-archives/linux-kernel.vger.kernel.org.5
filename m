@@ -2,171 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F2D7A7287
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6040C7A728F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbjITGHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        id S233099AbjITGIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbjITGHS (ORCPT
+        with ESMTP id S233073AbjITGIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:07:18 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC118F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:07:13 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-570a432468bso400230a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695190032; x=1695794832; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ouAZ40qYhyMLl0VsSuL25OrolKhfRz4aLVqyhzGAO+o=;
-        b=cDU2QQ2IuW7J9fQw41IHKzad02p7oP7+RfeTBK+kUKirwK6MKXUmxIji8kI5cRDnMR
-         EDj1WXKIEhfSXq1ETNY4vt2Q7AOp09Dg8XfNyPUUmmfgOZjda6TCQsrWkx99OB/Fu8It
-         +ThpHXPxowf7AcIICOUURyOHC+j7SuYlqlnxNVD2kEBh/rq2Hd4d6DivuuvbFKPYws4M
-         r/UrDZa+NF3cd16zuj2JkeA8ECIRTPgGpUThOO9LK7KKdyG8Vf6U2b+MHOtRL5hCaxP7
-         y2rIT2yMJWCWT3t2tqoFvychKRd6HtBL/gQ+FC6LT49JLLv8dEDJMy342Luf2aRXFKz9
-         PbZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695190032; x=1695794832;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ouAZ40qYhyMLl0VsSuL25OrolKhfRz4aLVqyhzGAO+o=;
-        b=h5SuRT+/jrsm57OYv7YiyvaGcUhdtHZCUIIyrRLvUju9gd5MvQ6YJXPo//KGrJ/nZ9
-         OUrCn8VZ8SSYGVGLWXNbZx9bc1VqrkCe61ZVeLNxC3qvf+GrYXuRFI3fmcKp77TrJMc/
-         2Q0DSpciatSRTSdirI9ec5o6NIRVROvBL8kR4M+OjG1EBp+sn+ZqrVi1LU61PGfAACp8
-         XVdlg78t3VppzZ6yuEAJJdz33bc6etY8IBy0FS2rUj5YmcH+N8S5cwk2Vlc/WkceLCPe
-         3Phjdd1nr7jaOcVgVK14Y74/H8NUwAnatliufnx+gl4peXMUjIS3ZxaMhVajEKjSJWZn
-         EU+g==
-X-Gm-Message-State: AOJu0YxQgShFx7XlmEmwF8e/I7Tlz4HcK2qJkoAyeXxrV8hh4sM2NNcB
-        HKxmKG9poWGP+ZGQYByMPBfXjn+Vn+4=
-X-Google-Smtp-Source: AGHT+IGCzf1AWZVQ5CeZspFEfknvQDBqLRSMfum/WCw5ibpGLQAauYwTGzz5trDWednUzuFiCMIung==
-X-Received: by 2002:a17:90b:3b45:b0:274:ac60:1d57 with SMTP id ot5-20020a17090b3b4500b00274ac601d57mr6017163pjb.16.1695190032471;
-        Tue, 19 Sep 2023 23:07:12 -0700 (PDT)
-Received: from MSCND1355B05.fareast.nevint.com ([183.242.39.186])
-        by smtp.gmail.com with ESMTPSA id p30-20020a63951e000000b005740aa41237sm1661869pgd.74.2023.09.19.23.07.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 23:07:12 -0700 (PDT)
-From:   Zqiang <qiang.zhang1211@gmail.com>
-To:     tj@kernel.org, jiangshanlai@gmail.com
-Cc:     syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
-        qiang.zhang1211@gmail.com
-Subject: [PATCH v3] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
-Date:   Wed, 20 Sep 2023 14:07:04 +0800
-Message-Id: <20230920060704.24981-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 02:08:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA476CA
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:07:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D66331F45B;
+        Wed, 20 Sep 2023 06:07:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695190073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=se+KZYftOIBUnwMWyj6AIrStZz8EeoGJhUCJe5qxccM=;
+        b=i6wTg7u3h8G4w3VCeriFi2y8sONvVPDvRw8npOymVr3S+O2Misb8wuhDIvlZq935VPzqbL
+        /lGaopi8TtPP4ZUhrW1/ugQyP3OO8ZB9vfMHzg4pxU5jS1WSKDlMhXbmWrqB7hQdQiNwkM
+        rATEZSsx0GH+t0SSjS9t0joWT2UTu04=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695190073;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=se+KZYftOIBUnwMWyj6AIrStZz8EeoGJhUCJe5qxccM=;
+        b=1SZIr55G08CSCrHOvzVZqzG9EJuGpQsUPUnWrQO5aEOQQLp8YMS0PkAvmyPVFeW3Q44v/7
+        3S1CaBRembpSejBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1D2E132C7;
+        Wed, 20 Sep 2023 06:07:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gJieKjmMCmW0CgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 20 Sep 2023 06:07:53 +0000
+Message-ID: <bc4bd049-1e29-0f23-cca6-493abb5e774f@suse.cz>
+Date:   Wed, 20 Sep 2023 08:07:53 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
+To:     Zi Yan <ziy@nvidia.com>, Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230911195023.247694-1-hannes@cmpxchg.org>
+ <20230914235238.GB129171@monkey> <20230915141610.GA104956@cmpxchg.org>
+ <20230916195739.GB618858@monkey>
+ <a88b7339-beab-37c6-7d32-0292b325916d@suse.cz>
+ <20230918145204.GB16104@cmpxchg.org> <20230918174037.GA112714@monkey>
+ <20230919064914.GA124289@cmpxchg.org> <20230919184731.GC112714@monkey>
+ <C416A861-44D3-46E7-B756-63DA3731FC1E@nvidia.com>
+ <20230920003239.GD112714@monkey>
+ <149ACAE8-D3E4-4009-828A-D3AC881FFB9C@nvidia.com>
+Content-Language: en-US
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <149ACAE8-D3E4-4009-828A-D3AC881FFB9C@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, for UNBOUND wq, if the apply_wqattrs_prepare() return error,
-the apply_wqattr_cleanup() will be called and use the pwq_release_worker
-kthread to release resources asynchronously. however, the kfree(wq) is
-invoked directly in failure path of alloc_workqueue(), if the kfree(wq)
-has been executed and when the pwq_release_workfn() accesses wq, this
-leads to the following scenario:
+On 9/20/23 03:38, Zi Yan wrote:
+> On 19 Sep 2023, at 20:32, Mike Kravetz wrote:
+> 
+>> On 09/19/23 16:57, Zi Yan wrote:
+>>> On 19 Sep 2023, at 14:47, Mike Kravetz wrote:
+>>>
+>>>> 	--- a/mm/page_alloc.c
+>>>> 	+++ b/mm/page_alloc.c
+>>>> 	@@ -1651,8 +1651,13 @@ static bool prep_move_freepages_block(struct zone *zone, struct page *page,
+>>>>  		end = pageblock_end_pfn(pfn) - 1;
+>>>>
+>>>>  		/* Do not cross zone boundaries */
+>>>> 	+#if 0
+>>>>  		if (!zone_spans_pfn(zone, start))
+>>>> 			start = zone->zone_start_pfn;
+>>>> 	+#else
+>>>> 	+	if (!zone_spans_pfn(zone, start))
+>>>> 	+		start = pfn;
+>>>> 	+#endif
+>>>> 	 	if (!zone_spans_pfn(zone, end))
+>>>> 	 		return false;
+>>>> 	I can still trigger warnings.
+>>>
+>>> OK. One thing to note is that the page type in the warning changed from
+>>> 5 (MIGRATE_ISOLATE) to 0 (MIGRATE_UNMOVABLE) with my suggested change.
+>>>
+>>
+>> Just to be really clear,
+>> - the 5 (MIGRATE_ISOLATE) warning was from the __alloc_pages call path.
+>> - the 0 (MIGRATE_UNMOVABLE) as above was from the alloc_contig_range call
+>>   path WITHOUT your change.
+>>
+>> I am guessing the difference here has more to do with the allocation path?
+>>
+>> I went back and reran focusing on the specific migrate type.
+>> Without your patch, and coming from the alloc_contig_range call path,
+>> I got two warnings of 'page type is 0, passed migratetype is 1' as above.
+>> With your patch I got one 'page type is 0, passed migratetype is 1'
+>> warning and one 'page type is 1, passed migratetype is 0' warning.
+>>
+>> I could be wrong, but I do not think your patch changes things.
+> 
+> Got it. Thanks for the clarification.
+>>
+>>>>
+>>>> One idea about recreating the issue is that it may have to do with size
+>>>> of my VM (16G) and the requested allocation sizes 4G.  However, I tried
+>>>> to really stress the allocations by increasing the number of hugetlb
+>>>> pages requested and that did not help.  I also noticed that I only seem
+>>>> to get two warnings and then they stop, even if I continue to run the
+>>>> script.
+>>>>
+>>>> Zi asked about my config, so it is attached.
+>>>
+>>> With your config, I still have no luck reproducing the issue. I will keep
+>>> trying. Thanks.
+>>>
+>>
+>> Perhaps try running both scripts in parallel?
+> 
+> Yes. It seems to do the trick.
+> 
+>> Adjust the number of hugetlb pages allocated to equal 25% of memory?
+> 
+> I am able to reproduce it with the script below:
+> 
+> while true; do
+>  echo 4 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages&
+>  echo 2048 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages&
+>  wait
+>  echo 0 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+>  echo 0 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
+> done
+> 
+> I will look into the issue.
 
-BUG: KASAN: slab-use-after-free in pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
-Read of size 4 at addr ffff888027b831c0 by task pool_workqueue_/3
-
-CPU: 0 PID: 3 Comm: pool_workqueue_ Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
-Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
- kthread_worker_fn+0x2fc/0xa80 kernel/kthread.c:823
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-
-Allocated by task 5054:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- alloc_workqueue+0x16f/0x1490 kernel/workqueue.c:4684
- kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
- kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
- kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
- kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
- kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
- kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Freed by task 5054:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- alloc_workqueue+0xe76/0x1490 kernel/workqueue.c:4746
- kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
- kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
- kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
- kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
- kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
- kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-This commit therefore flush pwq_release_worker in the alloc_and_link_pwqs()
-before invoke kfree(wq).
-
-Reported-by: syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=60db9f652c92d5bacba4
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- kernel/workqueue.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index c85825e17df8..2e1a9ad0eab1 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4600,6 +4600,12 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
- 	}
- 	cpus_read_unlock();
- 
-+	/* for unbound pwq, flush the pwq_release_worker ensures that the
-+	 * pwq_release_workfn() completes before calling kfree(wq).
-+	 */
-+	if (ret)
-+		kthread_flush_worker(pwq_release_worker);
-+
- 	return ret;
- 
- enomem:
--- 
-2.17.1
-
+With migratetypes 0 and 1 and somewhat harder to reproduce scenario (= less
+deterministic, more racy) it's possible we now see what I suspected can
+happen here:
+https://lore.kernel.org/all/37dbd4d0-c125-6694-dec4-6322ae5b6dee@suse.cz/
+In that there are places reading the migratetype outside of zone lock.
