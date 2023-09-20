@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61347A7470
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1377A7474
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233911AbjITHkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        id S233814AbjITHll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233845AbjITHkZ (ORCPT
+        with ESMTP id S233790AbjITHlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:40:25 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29ED5130;
-        Wed, 20 Sep 2023 00:40:19 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-5712b68dbc0so3735386eaf.1;
-        Wed, 20 Sep 2023 00:40:19 -0700 (PDT)
+        Wed, 20 Sep 2023 03:41:39 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051A997
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:41:33 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-773e8a62b05so78594585a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:41:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695195618; x=1695800418; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=y//mcqepO87JWsJ0Vw521wL8mh9/ml4p7g1NN9TJbSU=;
-        b=GTXFsL/MDi3BqfWLcElBespBNa1+U6yYKpB/tS+6kE+bKn0vZnfAz1+4M1qmhXLpiM
-         RliQTATfRlOiTa0lkSmBpnwY9tLiXWra2VOPUEzm8seDUBZFgEXKRPcWJWEfsbrFwPLM
-         2ChAkV/5S0uyUxy6Rapl84cEgCqRSNbIEPaZB067IU0KTqyw3EoWriuJ+ZNJRq2cECQ8
-         S7JGiRtQPh7JoJy101ATamfDTiD1phGGTlozYoGyH6IFm/svZeDohB2irbNLi2pvSjgU
-         TLVaJxXk6FVbFf/6PUHOfHeemXAPXxKYN7WRlyB4b8RUmLNW6R3LfdIsUIuxmKlqU+Lv
-         9kkw==
+        d=chromium.org; s=google; t=1695195691; x=1695800491; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iP+e5yTNMQ0UK6TWKcNmH7iV1dhFExt2WXPYDJ8BwIE=;
+        b=MNNsePBDOCzn7X/8BK3suQssV+/TwpoQkcpxQrdoBHiuL26TYy+3/B9T/BRgtXNVry
+         1wiTnEf8Zm1G5JryrXTKxC8mZej26x6RK3c+6uAPQNR4qUP8POMVAjAOwZjpNlvvwklR
+         v/6+JRSIn2VWcf3S7g2LXmGJp65g3eGxxoERk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695195618; x=1695800418;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y//mcqepO87JWsJ0Vw521wL8mh9/ml4p7g1NN9TJbSU=;
-        b=Uaj4Nya6xMxPfKYsHjIwU0F9A7zqnh2ata79U7rEvgomPo7An7yAwhwLjaSQXqp5YT
-         b8ftzCLcN0fbFj7X79bPnvzAtzUaL8DS2zL+ezJ13cvXrJD/0nZehr+Rho6i6ljraoFG
-         4B3qy83Bp9w8Bn5ygrYUsX2OkYReO4uoZaJXH9/hYYxbWtnmuJSzMK0uFztKcF02mMh1
-         b85cF0PN9cEQeDc7zs6dv6yoXVqd9CBWxkOVxqKe3re0FpDJE2LcXjL3AX3RrO6ah4PE
-         Pb8szI5xhT1qi5PITCc8zY46+0dAx3CXtGA8weSSkKKANUuZYcu+vAluw4t6LQXxoIsK
-         Egng==
-X-Gm-Message-State: AOJu0Yz6G4U9lWM4CPz7bRbcoAa9VvXzbQ41XspCfm+xeSwr7BtNwj0x
-        tO0yUGC0XRiQyNRj5COqtlf/KqGxQ2BE+j9aibM=
-X-Google-Smtp-Source: AGHT+IGrC9bHvDUlxweLsvu/t9RjF0z84NqFOkkMPAU5RvInLk2ooXy9TaJ/PgC9TCQSq+ILRXuDc/Ka6TVeMFlqWSc=
-X-Received: by 2002:a4a:2a55:0:b0:570:fdf2:41f0 with SMTP id
- x21-20020a4a2a55000000b00570fdf241f0mr1844775oox.1.1695195617965; Wed, 20 Sep
- 2023 00:40:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695195691; x=1695800491;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iP+e5yTNMQ0UK6TWKcNmH7iV1dhFExt2WXPYDJ8BwIE=;
+        b=Uoy2yRDtaa1Z40OFqXpPw4p8ZpDxr2PYMRX2rgb9S+GvHeD1FrHlJfSWjXbhYASjW9
+         9/jDz6VVqas+0M4zeePEmw2gfiCdhu/EH7Gki5vpFXnrS+ctJ490egex5lFdbGhKoa2z
+         v+9RjPkolz61g6ohWrB2oR2UJsqAxQ69xj3JigoZIDqRjsj6HDMXPnyyc9BvTlY8OdSj
+         HmXRfxhFKsRo7N3cbN2Y46jiS31spoPEq2xLuASkI6xKdRCRd61ObGgNuTPg96WkpRgX
+         wt0hFqd5892y2Sm6a9R8ZmH360869uZDhGgEEjWv2RFsXcP3SnZvpb1FVji639v+PqDF
+         K6lQ==
+X-Gm-Message-State: AOJu0YyBFeuaTTcih74+2AIGHwB9xVvlROnMvwwSx9kxhIQzc/ux1ke6
+        kH9QYZBHwItArMwRY6qQB5mZgIlKf0p4kIqtdX0=
+X-Google-Smtp-Source: AGHT+IH5C66KXpjquBmPwQmig21XNfajAOrZiOJ0pH2qkAfsG4RSyhLOGtsgjACCQwd2X8LEQ5uQLQ==
+X-Received: by 2002:a0c:aa8d:0:b0:658:95e9:111d with SMTP id f13-20020a0caa8d000000b0065895e9111dmr124571qvb.12.1695195691088;
+        Wed, 20 Sep 2023 00:41:31 -0700 (PDT)
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com. [209.85.219.53])
+        by smtp.gmail.com with ESMTPSA id w25-20020a0cb559000000b0064f741d2a97sm5074528qvd.40.2023.09.20.00.41.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 00:41:30 -0700 (PDT)
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-65631aa8b93so31000406d6.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:41:29 -0700 (PDT)
+X-Received: by 2002:a0c:f8c9:0:b0:62f:f6ed:857e with SMTP id
+ h9-20020a0cf8c9000000b0062ff6ed857emr1539387qvo.55.1695195688994; Wed, 20 Sep
+ 2023 00:41:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230919193948.465340-1-alessandro.carminati@gmail.com> <20230920085251.a4e68173ee2539f695182810@kernel.org>
-In-Reply-To: <20230920085251.a4e68173ee2539f695182810@kernel.org>
-From:   Alessandro Carminati <alessandro.carminati@gmail.com>
-Date:   Wed, 20 Sep 2023 09:39:41 +0200
-Message-ID: <CAPp5cGS96hcv3GK5n4EdvA9eGf3YnzkCqL01eZPw_RzHMhPoyQ@mail.gmail.com>
-Subject: Re: [PATCH v4] scripts/link-vmlinux.sh: Add alias to duplicate
- symbols for kallsyms
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        Eugene Loh <eugene.loh@oracle.com>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        Viktor Malik <vmalik@redhat.com>,
-        Petr Mladek <pmladek@suse.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20230914145812.12851-1-hui.fang@nxp.com>
+In-Reply-To: <20230914145812.12851-1-hui.fang@nxp.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 20 Sep 2023 16:41:08 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5CcN+TiVd8vhMxQRbmrJuBGYwL5d6C0fKzOy4ujjM_JMQ@mail.gmail.com>
+Message-ID: <CAAFQd5CcN+TiVd8vhMxQRbmrJuBGYwL5d6C0fKzOy4ujjM_JMQ@mail.gmail.com>
+Subject: Re: [PATCH] MA-21654 Use dma_alloc_pages in vb2_dma_sg_alloc_compacted
+To:     Fang Hui <hui.fang@nxp.com>, Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        anle.pan@nxp.com, xuegang.liu@nxp.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,129 +78,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Masami,
+Hi Fang,
 
-Thank you for the feedback.
+On Thu, Sep 14, 2023 at 4:41=E2=80=AFPM Fang Hui <hui.fang@nxp.com> wrote:
+>
+> On system with "CONFIG_ZONE_DMA32=3Dy", if the allocated physical address=
+ is
 
+First of all, thanks a lot for the patch! Please check my review comments b=
+elow.
 
-Il giorno mer 20 set 2023 alle ore 01:52 Masami Hiramatsu
-<mhiramat@kernel.org> ha scritto:
->
-> On Tue, 19 Sep 2023 19:39:48 +0000
-> "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com> wrote:
->
-> > It is not uncommon for drivers or modules related to similar peripherals
-> > to have symbols with the exact same name.
-> > While this is not a problem for the kernel's binary itself, it becomes an
-> > issue when attempting to trace or probe specific functions using
-> > infrastructure like ftrace or kprobe.
-> >
-> > The tracing subsystem relies on the `nm -n vmlinux` output, which provides
-> > symbol information from the kernel's ELF binary. However, when multiple
-> > symbols share the same name, the standard nm output does not differentiate
-> > between them. This can lead to confusion and difficulty when trying to
-> > probe the intended symbol.
-> >
-> >  ~ # cat /proc/kallsyms | grep " name_show"
-> >  ffffffff8c4f76d0 t name_show
-> >  ffffffff8c9cccb0 t name_show
-> >  ffffffff8cb0ac20 t name_show
-> >  ffffffff8cc728c0 t name_show
-> >  ffffffff8ce0efd0 t name_show
-> >  ffffffff8ce126c0 t name_show
-> >  ffffffff8ce1dd20 t name_show
-> >  ffffffff8ce24e70 t name_show
-> >  ffffffff8d1104c0 t name_show
-> >  ffffffff8d1fe480 t name_show
-> >
-> > kas_alias addresses this challenge by enhancing symbol names with
-> > meaningful suffixes generated from the source file and line number
-> > during the kernel build process.
-> > These newly generated aliases provide tracers with the ability to
-> > comprehend the symbols they are interacting with when utilizing the
-> > ftracefs interface.
-> > This approach may also allow for the probing by name of previously
-> > inaccessible symbols.
-> >
-> >  ~ # cat /proc/kallsyms | grep gic_mask_irq
-> >  ffffd15671e505ac t gic_mask_irq
-> >  ffffd15671e505ac t gic_mask_irq@drivers_irqchip_irq_gic_c_167
-> >  ffffd15671e532a4 t gic_mask_irq
-> >  ffffd15671e532a4 t gic_mask_irq@drivers_irqchip_irq_gic_v3_c_407
-> >  ~ #
-> >
-> > Changes from v1:
-> > - Integrated changes requested by Masami to exclude symbols with prefixes
-> >   "_cfi" and "_pfx".
-> > - Introduced a small framework to handle patterns that need to be excluded
-> >   from the alias production.
-> > - Excluded other symbols using the framework.
-> > - Introduced the ability to discriminate between text and data symbols.
-> > - Added two new config symbols in this version: CONFIG_KALLSYMS_ALIAS_DATA,
-> >   which allows data for data, and CONFIG_KALLSYMS_ALIAS_DATA_ALL, which
-> >   excludes all filters and provides an alias for each duplicated symbol.
-> >
-> > https://lore.kernel.org/all/20230711151925.1092080-1-alessandro.carminati@gmail.com/
-> >
-> > Changes from v2:
-> > - Alias tags are created by querying DWARF information from the vmlinux.
-> > - The filename + line number is normalized and appended to the original
-> >   name.
-> > - The tag begins with '@' to indicate the symbol source.
-> > - Not a change, but worth mentioning, since the alias is added to the
-> >   existing list, the old duplicated name is preserved, and the livepatch
-> >   way of dealing with duplicates is maintained.
-> > - Acknowledging the existence of scenarios where inlined functions
-> >   declared in header files may result in multiple copies due to compiler
-> >   behavior, though it is not actionable as it does not pose an operational
-> >   issue.
-> > - Highlighting a single exception where the same name refers to different
-> >   functions: the case of "compat_binfmt_elf.c," which directly includes
-> >   "binfmt_elf.c" producing identical function copies in two separate
-> >   modules.
-> >
-> > https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carminati@gmail.com/
-> >
-> > Changes from v3:
-> > - kas_alias was rewritten in Python to create a more concise and
-> >   maintainable codebase.
-> > - The previous automation process used by kas_alias to locate the vmlinux
-> >   and the addr2line has been replaced with an explicit command-line switch
-> >   for specifying these requirements.
-> > - addr2line has been added into the main Makefile.
-> > - A new command-line switch has been introduced, enabling users to extend
-> >   the alias to global data names.
-> >
-> > https://lore.kernel.org/all/20230828080423.3539686-1-alessandro.carminati@gmail.com/
-> >
-> > NOTE:
-> > About the symbols name duplication that happens as consequence of the
-> > inclusion compat_binfmt_elf.c does, it is evident that this corner is
-> > inherently challenging the addr2line approach.
-> > Attempting to conceal this limitation would be counterproductive.
-> >
-> > compat_binfmt_elf.c includes directly binfmt_elf.c, addr2line can't help
-> > but report all functions and data declared by that file, coming from
-> > binfmt_elf.c.
-> >
-> > My position is that, rather than producing a more complicated pipeline
-> > to handle this corner case, it is better to fix the compat_binfmt_elf.c
-> > anomaly.
-> >
-> > This patch does not deal with the two potentially problematic symbols
-> > defined by compat_binfmt_elf.c
->
-> Hi, it looks good but if I build with O=<build dir>, I have this error.
->
-> /ksrc/linux/scripts/link-vmlinux.sh: 176: scripts/kas_alias.py: not found
->
-> Maybe something wrong with setting the path?
+Is CONFIG_ZONE_DMA32 really the factor that triggers the problem? My
+understanding was that the problem was that the hardware has 32-bit
+DMA, but the system has physical memory at addresses beyond the first
+4G.
 
-You're spot on.
-Switching from C to Python for kas_alias has this little quirk where it
-doesn't end up in the target script directory anymore. So, if you're using
-a specific target build directory, you'll have to hunt down the script in
-the source tree. I'll sort this out once I've collected all the feedback.
+> greater than 4G, swiotlb will be used. It will lead below defects.
+> 1) Impact performance due to an extra memcpy.
+> 2) May meet below error due to swiotlb_max_mapping_size()
+>    is 256K (IO_TLB_SIZE * IO_TLB_SEGSIZE).
+> "swiotlb buffer is full (sz: 393216 bytes), total 65536 (slots),
+> used 2358 (slots)"
+>
+> To avoid those defects, use dma_alloc_pages() instead of alloc_pages()
+> in vb2_dma_sg_alloc_compacted().
+>
+> Suggested-by: Tomasz Figa <tfiga@chromium.org>
+> Signed-off-by: Fang Hui <hui.fang@nxp.com>
+> ---
+>  drivers/media/common/videobuf2/videobuf2-dma-sg.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
 
-Regards
-Alessandro
+Please remove MA-21654 from the subject and prefix it with the right
+tags for the path (`git log drivers/media/common/videobuf2` should be
+helpful to find the right one).
+
+> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/=
+media/common/videobuf2/videobuf2-dma-sg.c
+> index 28f3fdfe23a2..b938582c68f4 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+> @@ -58,7 +58,7 @@ struct vb2_dma_sg_buf {
+>  static void vb2_dma_sg_put(void *buf_priv);
+>
+>  static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg_buf *buf,
+> -               gfp_t gfp_flags)
+> +               gfp_t gfp_flags, struct device *dev)
+
+FWIW buf->dev already points to the right device - although we would
+need to move the assignment in vb2_dma_sg_alloc() to a place higher in
+that function before calling this function.
+
+>  {
+>         unsigned int last_page =3D 0;
+>         unsigned long size =3D buf->size;
+> @@ -67,6 +67,7 @@ static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg=
+_buf *buf,
+>                 struct page *pages;
+>                 int order;
+>                 int i;
+> +               dma_addr_t dma_handle;
+>
+>                 order =3D get_order(size);
+>                 /* Don't over allocate*/
+> @@ -75,8 +76,9 @@ static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg=
+_buf *buf,
+>
+>                 pages =3D NULL;
+>                 while (!pages) {
+> -                       pages =3D alloc_pages(GFP_KERNEL | __GFP_ZERO |
+> -                                       __GFP_NOWARN | gfp_flags, order);
+> +                       pages =3D dma_alloc_pages(dev, PAGE_SIZE << order=
+, &dma_handle,
+
+Hmm, when I was proposing dma_alloc_pages(), I missed that it returns
+a DMA handle. That on its own can be handled by saving the returned
+handles somewhere in struct vb2_dma_sg_buf, but there is a bigger
+problem - the function would actually create a mapping if the DMA
+device requires some mapping management (e.g. is behind an IOMMU),
+which is undesirable, because we create the mapping ourselves below
+anyway...
+
+@Christoph Hellwig @Robin Murphy  I need your thoughts on this as
+well. Would it make sense to have a variant of dma_alloc_pages() that
+only allocates the pages, but doesn't perform the mapping? (Or a flag
+that tells the implementation to skip creating a mapping.)
+
+> +                               DMA_BIDIRECTIONAL,
+
+The right value should be already available in buf->dma_dir.
+
+> +                               GFP_KERNEL | __GFP_ZERO | __GFP_NOWARN | =
+gfp_flags);
+>                         if (pages)
+>                                 break;
+>
+> @@ -96,6 +98,7 @@ static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg=
+_buf *buf,
+>         }
+>
+>         return 0;
+> +
+
+Unnecessary blank line.
+
+>  }
+>
+>  static void *vb2_dma_sg_alloc(struct vb2_buffer *vb, struct device *dev,
+> @@ -130,7 +133,7 @@ static void *vb2_dma_sg_alloc(struct vb2_buffer *vb, =
+struct device *dev,
+>         if (!buf->pages)
+>                 goto fail_pages_array_alloc;
+>
+> -       ret =3D vb2_dma_sg_alloc_compacted(buf, vb->vb2_queue->gfp_flags)=
+;
+> +       ret =3D vb2_dma_sg_alloc_compacted(buf, vb->vb2_queue->gfp_flags,=
+ dev);
+>         if (ret)
+>                 goto fail_pages_alloc;
+>
+> --
+> 2.17.1
+>
+
+We also need to use dma_free_pages() to free the memory.
+
+Best regards,
+Tomasz
