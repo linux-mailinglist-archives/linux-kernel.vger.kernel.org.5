@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F00D27A7903
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D257A78EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234069AbjITKUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
+        id S234197AbjITKQM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 06:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233950AbjITKUG (ORCPT
+        with ESMTP id S234061AbjITKQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:20:06 -0400
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A673AC
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:20:00 -0700 (PDT)
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A38AD200B1D;
-        Wed, 20 Sep 2023 12:19:58 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6AF6E200B27;
-        Wed, 20 Sep 2023 12:19:58 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id E88891802200;
-        Wed, 20 Sep 2023 18:19:56 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl-asoc-card: use integer type for fll_id and pll_id
-Date:   Wed, 20 Sep 2023 17:43:12 +0800
-Message-Id: <1695202992-24864-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 06:16:10 -0400
+X-Greylist: delayed 904 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 03:16:01 PDT
+Received: from sender11-of-o51.zoho.eu (sender11-of-o51.zoho.eu [31.186.226.237])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EF0AD
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:16:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695204020; cv=none; 
+        d=zohomail.eu; s=zohoarc; 
+        b=aPF06cmUj0A63kCGcCQK8JxxdOlZLE4g5au+qDUpIxUYZv3MQV3Rnxx05dJc2LFMkm2t72132GKI4HSIGkcc84mE53luY3rSEuD80U/3mAR+pPGXAhBReXVb5lu/1zJbguJlb8QRtIN9rBPhcen/DXx1Swpw8c25NPnQVVH7Zxk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+        t=1695204020; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=ivU1Q3Lm3SRkvOu8dDzPYKK2MzEusFDp8L1yK82VhDE=; 
+        b=bjXroVLQkynczCeCxqxd0fYRDsxpMhvCMoSkuJY20f4Taree1+gNPDeE4wHXMzYBF1fyInZUlAQm1NHHxfwdUY24svMl7t920LaCl2RCkqMuEdWBYCA47e28tQ5WTiTA+yLCokTIShglDhg6rxAhRBB9rkPtjB0NMBuccoHuN9Q=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+        spf=pass  smtp.mailfrom=carl@uvos.xyz;
+        dmarc=pass header.from=<carl@uvos.xyz>
+Received: from [10.0.0.2] (ip-037-201-240-033.um10.pools.vodafone-ip.de [37.201.240.33]) by mx.zoho.eu
+        with SMTPS id 1695204018039776.6738542916296; Wed, 20 Sep 2023 12:00:18 +0200 (CEST)
+Message-ID: <0b5c436a9772b3dac647a5981e50881f5c22c137.camel@uvos.xyz>
+Subject: Re: [PATCH v1 1/2] mm/ksm: support fork/exec for prctl
+From:   Carl Klemm <carl@uvos.xyz>
+To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
+Cc:     akpm@linux-foundation.org, david@redhat.com, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Date:   Wed, 20 Sep 2023 12:00:16 +0200
+In-Reply-To: <20230919205158.1897353-2-shr@devkernel.io>
+References: <20230919205158.1897353-1-shr@devkernel.io>
+         <20230919205158.1897353-2-shr@devkernel.io>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
+X-ZohoMailClient: External
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the pll_id and pll_id can be zero (WM8960_SYSCLK_AUTO)
-with the commit 2bbc2df46e67 ("ASoC: wm8960: Make automatic the
-default clocking mode")
+On Tue, 2023-09-19 at 13:51 -0700, Stefan Roesch wrote:
+> A process can enable KSM with the prctl system call. When the process
+> is
+> forked the KSM flag is inherited by the child process. However if the
+> process is executing an exec system call directly after the fork, the
+> KSM setting is cleared. This patch addresses this problem.
+> 
+> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+> Reported-by: Carl Klemm <carl@uvos.xyz>
+> ---
+>  include/linux/sched/coredump.h | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/sched/coredump.h
+> b/include/linux/sched/coredump.h
+> index 0ee96ea7a0e9..205aa9917394 100644
+> --- a/include/linux/sched/coredump.h
+> +++ b/include/linux/sched/coredump.h
+> @@ -87,8 +87,11 @@ static inline int get_dumpable(struct mm_struct
+> *mm)
+>  
+>  #define MMF_DISABLE_THP_MASK   (1 << MMF_DISABLE_THP)
+>  
+> +#define MMF_VM_MERGE_ANY       29
+> +#define MMF_VM_MERGE_ANY_MASK  (1 << MMF_VM_MERGE_ANY)
+> +
+>  #define MMF_INIT_MASK          (MMF_DUMPABLE_MASK |
+> MMF_DUMP_FILTER_MASK |\
+> -                                MMF_DISABLE_THP_MASK |
+> MMF_HAS_MDWE_MASK)
+> +                                MMF_DISABLE_THP_MASK |
+> MMF_HAS_MDWE_MASK |\
+> +                                MMF_VM_MERGE_ANY_MASK)
+>  
+> -#define MMF_VM_MERGE_ANY       29
+>  #endif /* _LINUX_SCHED_COREDUMP_H */
 
-Then the machine driver will skip to call set_sysclk() and set_pll()
-for codec, when the sysclk rate is different with what wm8960 read
-at probe, the output sound frequency is wrong.
+I can confirm that this patch works as intended for my usecase, you can
+have my:
 
-So change the fll_id and pll_id initial value, still keep machine
-driver's behavior same as before.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl-asoc-card.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 76b5bfc288fd..bab7d34cf585 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -52,8 +52,8 @@ struct codec_priv {
- 	unsigned long mclk_freq;
- 	unsigned long free_freq;
- 	u32 mclk_id;
--	u32 fll_id;
--	u32 pll_id;
-+	int fll_id;
-+	int pll_id;
- };
- 
- /**
-@@ -206,7 +206,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Specific configuration for PLL */
--	if (codec_priv->pll_id && codec_priv->fll_id) {
-+	if (codec_priv->pll_id >= 0 && codec_priv->fll_id >= 0) {
- 		if (priv->sample_format == SNDRV_PCM_FORMAT_S24_LE)
- 			pll_out = priv->sample_rate * 384;
- 		else
-@@ -248,7 +248,7 @@ static int fsl_asoc_card_hw_free(struct snd_pcm_substream *substream)
- 
- 	priv->streams &= ~BIT(substream->stream);
- 
--	if (!priv->streams && codec_priv->pll_id && codec_priv->fll_id) {
-+	if (!priv->streams && codec_priv->pll_id >= 0 && codec_priv->fll_id >= 0) {
- 		/* Force freq to be free_freq to avoid error message in codec */
- 		ret = snd_soc_dai_set_sysclk(asoc_rtd_to_codec(rtd, 0),
- 					     codec_priv->mclk_id,
-@@ -621,6 +621,10 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	priv->card.dapm_routes = audio_map;
- 	priv->card.num_dapm_routes = ARRAY_SIZE(audio_map);
- 	priv->card.driver_name = DRIVER_NAME;
-+
-+	priv->codec_priv.fll_id = -1;
-+	priv->codec_priv.pll_id = -1;
-+
- 	/* Diversify the card configurations */
- 	if (of_device_is_compatible(np, "fsl,imx-audio-cs42888")) {
- 		codec_dai_name = "cs42888";
--- 
-2.34.1
+Tested-by: Carl Klemm <carl@uvos.xyz>
 
