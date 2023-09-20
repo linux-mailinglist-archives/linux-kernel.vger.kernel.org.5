@@ -2,120 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F437A8FC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAEA7A8FD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjITXOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 19:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
+        id S229666AbjITXXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 19:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjITXOD (ORCPT
+        with ESMTP id S229547AbjITXXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 19:14:03 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB56B7;
-        Wed, 20 Sep 2023 16:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695251635;
-        bh=Jax4QiRNwepvVIwXxs1UWMsI2Jx/hXZe78H9Co8AuGE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LglUSZ4VJUD9W2r1j+MU+I953kPP6CP2yjCQr1LG6e+cG8e6gMrOak6m8EySJcfR3
-         g7iKMv3d5FjjtVbAoVkA9G1Y+5o8fo5ZHnbdi0Cm3zp6cNGoNZOkruF/+I3RQd96u+
-         Mg9Rgd0Z0C2bbuh6xTa7dq1z3QNc3cV6zYKgaUTLLBRLHtpPbX8RvphqCuIdA3Y2nO
-         UOGviicSZqxSqahwB0B3vKUqAPw1ooYQkHhn7bpnwQllucJZbAe9+OyyWfkE/72fxH
-         IiH4ETRrc8eMaAlmegH64DXxFh+30ioRs2Q3wfxceU6Ixm6bconROe+Y4vE9QWv0FL
-         +HJlROHeB6kBw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 20 Sep 2023 19:23:11 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEA6C1;
+        Wed, 20 Sep 2023 16:23:04 -0700 (PDT)
+Received: from [192.168.68.123] (unknown [177.98.21.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RrZ8x4f3yz4x4D;
-        Thu, 21 Sep 2023 09:13:53 +1000 (AEST)
-Date:   Thu, 21 Sep 2023 09:13:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ying Sun <sunying@nj.iscas.ac.cn>
-Subject: linux-next: manual merge of the vfs-brauner tree with the mm tree
-Message-ID: <20230921091352.01306900@canb.auug.org.au>
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 848E866071F4;
+        Thu, 21 Sep 2023 00:23:00 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695252183;
+        bh=+YZpoRmce8OurCbnO+g1RkxNh8kILN8Pm0hmQiuUJow=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=IC8IAmTPSxv+Im6k4NJe2Pk7Wfav6sU+pQjM9vnJfNF/NlzQzu6QxUT9/H0v5S+Gr
+         bcFTPVR3TzhDebh8rhYGZo0l0uARJZHlzZuMFvmKv0QkZJOsKtUGTRb/h/8ZdHRHf+
+         MaVnYaRscPtnOLQ0vOil/YNXEbXXXxL7GsxzzQxGzQICvSDLZskFt0tfdxaIGOdAkt
+         f1NSnfamQQRrEXzQJ0905Kbv7LEELWamwG4t4MTietpE+EeXSOp4gc/K6ehe5XV3fZ
+         Zx1nOAwRlycY7Ncx3ugNYSSc0GIGfk/Ct+4in7MKdz5oha9LeDaMIWTePoJ0+PW76A
+         10XVrneKXdIxA==
+Message-ID: <7318d141-12b7-eab7-52dd-8953305d85c6@collabora.com>
+Date:   Wed, 20 Sep 2023 20:22:55 -0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ab_d6kmKoTJ3hBjotJm9urW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] drm/ci: Uprev IGT to pull in fixes
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Rob Clark <robdclark@chromium.org>, linux-arm-msm@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        "moderated list:ARM/Rockchip SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Daniel Stone <daniels@collabora.com>
+References: <20230920180526.137369-1-robdclark@gmail.com>
+ <CAF6AEGvUOX-D+-vwov-FDp46rJdo8wq1Do-9Gj3k5v313wVJhA@mail.gmail.com>
+ <2ec320ca-d768-89ec-200f-695839e48538@collabora.com>
+ <CAF6AEGvhav3kX0fRpjeGbJYqQ_J5gonng-wYjZUeRunOBuUC1A@mail.gmail.com>
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <CAF6AEGvhav3kX0fRpjeGbJYqQ_J5gonng-wYjZUeRunOBuUC1A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ab_d6kmKoTJ3hBjotJm9urW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the vfs-brauner tree got a conflict in:
+On 20/09/2023 16:44, Rob Clark wrote:
+> On Wed, Sep 20, 2023 at 11:53 AM Helen Koike <helen.koike@collabora.com> wrote:
+>>
+>> Hi Rob,
+>>
+>> Thanks for the patch.
+>>
+>> On 20/09/2023 15:10, Rob Clark wrote:
+>>> On Wed, Sep 20, 2023 at 11:06 AM Rob Clark <robdclark@gmail.com> wrote:
+>>>>
+>>>> From: Rob Clark <robdclark@chromium.org>
+>>>>
+>>>> There have been a few igt test fixes compared to the commit that we were
+>>>> currently using.  Pull in a newer igt and update expectations.
+>>>>
+>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+>>>> ---
+>>
+>> Could you send here the url of a pipeline run with this change?
+> 
+> https://gitlab.freedesktop.org/drm/msm/-/pipelines/989913
 
-  mm/shmem.c
+Thanks, lgtm.
 
-between commit:
+Acked-by: Helen Koike <helen.koike@collabora.com>
 
-  449e3b71c77c ("mm/shmem: remove dead code can not be satisfied by "(CONFI=
-G_SHMEM)&&(!(CONFIG_SHMEM))"")
-
-from the mm tree and commit:
-
-  db58b5eea8a4 ("Revert "tmpfs: add support for multigrain timestamps"")
-
-from the vfs-brauner tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc mm/shmem.c
-index be050efe18cb,69595d341882..000000000000
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@@ -4602,7 -4585,11 +4602,7 @@@ static struct file_system_type shmem_fs
-  	.parameters	=3D shmem_fs_parameters,
-  #endif
-  	.kill_sb	=3D kill_litter_super,
-- 	.fs_flags	=3D FS_USERNS_MOUNT | FS_ALLOW_IDMAP | FS_MGTIME,
- -#ifdef CONFIG_SHMEM
-+ 	.fs_flags	=3D FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
- -#else
- -	.fs_flags	=3D FS_USERNS_MOUNT,
- -#endif
-  };
- =20
-  void __init shmem_init(void)
-
---Sig_/ab_d6kmKoTJ3hBjotJm9urW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmULfLAACgkQAVBC80lX
-0GzAVgf/e2yLK5Nt9UJjjjc5OxUir4/PJzA/bnBIyRyr6rC4hpw3St0kH96Fh2f+
-UwaEJwVQbIOe0uX0XWnqPtrKfaUqpyNMWT43PAdU5koU4mUyT2DDpmCEHFLyuJXz
-3z0ItYySelpgd6U7jKFRj/uW5SVA1OpS6r/fggTFLFyMIwqwO+gH24voSCPnDw65
-IwjHnPl69IvVBWTYq9uqm5xrqX8u5OW+R6oxku22FP3ggvRc5/mevfmZ8zUAtkI2
-6Q5fq4CIDT01hlx5DLPj2LxL7Kp4Nz0VcDwO+Y1odIwsv/HlueBp/SrXcZvqVR+w
-QUnTlpBT5U+/JT0PD8RCmmStzFxqsw==
-=pc46
------END PGP SIGNATURE-----
-
---Sig_/ab_d6kmKoTJ3hBjotJm9urW--
+> 
+> That was before I wrote a proper commit msg so you can ignore the
+> checkpatch job.. and there is an unrelated issue with the sdm845
+> runners not booting w/ v6.6-rc2, which still needs to be tracked down.
+> 
+> BR,
+> -R
+> 
+>>>>    drivers/gpu/drm/ci/gitlab-ci.yml               |  2 +-
+>>>>    .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt  |  4 ++--
+>>>>    drivers/gpu/drm/ci/xfails/i915-apl-fails.txt   | 11 -----------
+>>>>    drivers/gpu/drm/ci/xfails/i915-cml-fails.txt   |  2 +-
+>>>>    drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt   |  1 -
+>>>>    drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt | 18 +-----------------
+>>>>    .../drm/ci/xfails/rockchip-rk3288-fails.txt    |  2 ++
+>>>>    7 files changed, 7 insertions(+), 33 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+>>>> index 2c4df53f5dfe..3ecb5879e80f 100644
+>>>> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
+>>>> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+>>>> @@ -5,7 +5,7 @@ variables:
+>>>>      UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
+>>>>      TARGET_BRANCH: drm-next
+>>>>
+>>>> -  IGT_VERSION: 471bfababd070e1dac0ebb87470ac4f2ae85e663
+>>>> +  IGT_VERSION: 2517e42d612e0c1ca096acf8b5f6177f7ef4bce7
+>>>>
+>>>>      DEQP_RUNNER_GIT_URL: https://gitlab.freedesktop.org/anholt/deqp-runner.git
+>>>>      DEQP_RUNNER_GIT_TAG: v0.15.0
+>>>> diff --git a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+>>>> index bd9392536e7c..bab21930a0d4 100644
+>>>> --- a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+>>>> +++ b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+>>>> @@ -1,7 +1,6 @@
+>>>>    kms_addfb_basic@bad-pitch-65536,Fail
+>>>>    kms_addfb_basic@bo-too-small,Fail
+>>>>    kms_async_flips@invalid-async-flip,Fail
+>>>> -kms_atomic@plane-immutable-zpos,Fail
+>>>>    kms_atomic_transition@plane-toggle-modeset-transition,Fail
+>>>>    kms_bw@linear-tiling-1-displays-2560x1440p,Fail
+>>>>    kms_bw@linear-tiling-1-displays-3840x2160p,Fail
+>>>> @@ -11,9 +10,10 @@ kms_color@degamma,Fail
+>>>>    kms_cursor_crc@cursor-size-change,Fail
+>>>>    kms_cursor_crc@pipe-A-cursor-size-change,Fail
+>>>>    kms_cursor_crc@pipe-B-cursor-size-change,Fail
+>>>> -kms_cursor_legacy@forked-move,Fail
+>>>>    kms_hdr@bpc-switch,Fail
+>>>>    kms_hdr@bpc-switch-dpms,Fail
+>>>>    kms_plane_multiple@atomic-pipe-A-tiling-none,Fail
+>>>>    kms_rmfb@close-fd,Fail
+>>>>    kms_rotation_crc@primary-rotation-180,Fail
+>>>> +kms_flip@flip-vs-modeset-vs-hang,Fail
+>>>> +kms_flip@flip-vs-panning-vs-hang,Fail
+>>>> diff --git a/drivers/gpu/drm/ci/xfails/i915-apl-fails.txt b/drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
+>>>> index 46397ce38d5a..2e3b7c5dac3c 100644
+>>>> --- a/drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
+>>>> +++ b/drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
+>>>> @@ -8,13 +8,6 @@ kms_bw@linear-tiling-3-displays-3840x2160p,Fail
+>>>>    kms_bw@linear-tiling-4-displays-1920x1080p,Fail
+>>>>    kms_bw@linear-tiling-4-displays-2560x1440p,Fail
+>>>>    kms_bw@linear-tiling-4-displays-3840x2160p,Fail
+>>>> -kms_color@ctm-0-25,Fail
+>>>> -kms_color@ctm-0-50,Fail
+>>>> -kms_color@ctm-0-75,Fail
+>>>> -kms_color@ctm-max,Fail
+>>>> -kms_color@ctm-negative,Fail
+>>>> -kms_color@ctm-red-to-blue,Fail
+>>>> -kms_color@ctm-signed,Fail
+>>>>    kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-downscaling,Fail
+>>>>    kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-upscaling,Fail
+>>>>    kms_flip_scaled_crc@flip-32bpp-xtile-to-64bpp-xtile-downscaling,Fail
+>>>> @@ -38,8 +31,6 @@ kms_flip_scaled_crc@flip-64bpp-ytile-to-32bpp-ytile-upscaling,Fail
+>>>>    kms_flip_scaled_crc@flip-64bpp-ytile-to-32bpp-ytilegen12rcccs-upscaling,Fail
+>>>>    kms_flip_scaled_crc@flip-64bpp-ytile-to-32bpp-ytilercccs-downscaling,Fail
+>>>>    kms_flip_scaled_crc@flip-64bpp-ytile-to-32bpp-ytilercccs-upscaling,Fail
+>>>> -kms_hdmi_inject@inject-4k,Timeout
+>>>> -kms_plane@plane-position-hole,Timeout
+>>>>    kms_plane_alpha_blend@alpha-basic,Fail
+>>>>    kms_plane_alpha_blend@alpha-opaque-fb,Fail
+>>>>    kms_plane_alpha_blend@alpha-transparent-fb,Fail
+>>>> @@ -53,6 +44,4 @@ kms_plane_alpha_blend@pipe-B-constant-alpha-max,Fail
+>>>>    kms_plane_alpha_blend@pipe-C-alpha-opaque-fb,Fail
+>>>>    kms_plane_alpha_blend@pipe-C-alpha-transparent-fb,Fail
+>>>>    kms_plane_alpha_blend@pipe-C-constant-alpha-max,Fail
+>>>> -kms_plane_multiple@tiling-y,Timeout
+>>>> -kms_pwrite_crc,Timeout
+>>>>    kms_sysfs_edid_timing,Fail
+>>>> diff --git a/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt b/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+>>>> index 6139b410e767..13c0a25fc627 100644
+>>>> --- a/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+>>>> +++ b/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+>>>> @@ -1,4 +1,3 @@
+>>>> -kms_color@ctm-0-25,Fail
+>>>>    kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-downscaling,Fail
+>>>>    kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-upscaling,Fail
+>>>>    kms_flip_scaled_crc@flip-32bpp-xtile-to-64bpp-xtile-downscaling,Fail
+>>>> @@ -16,3 +15,4 @@ kms_plane_alpha_blend@alpha-basic,Fail
+>>>>    kms_plane_alpha_blend@alpha-opaque-fb,Fail
+>>>>    kms_plane_alpha_blend@alpha-transparent-fb,Fail
+>>>>    kms_plane_alpha_blend@constant-alpha-max,Fail
+>>>> +kms_async_flips@crc,Fail
+>>>> diff --git a/drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt b/drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
+>>>> index a6da5544e198..27bfca1c6f2c 100644
+>>>> --- a/drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
+>>>> +++ b/drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
+>>>> @@ -8,7 +8,6 @@ kms_bw@linear-tiling-4-displays-3840x2160p,Fail
+>>>>    kms_bw@linear-tiling-5-displays-1920x1080p,Fail
+>>>>    kms_bw@linear-tiling-5-displays-2560x1440p,Fail
+>>>>    kms_bw@linear-tiling-5-displays-3840x2160p,Fail
+>>>> -kms_color@ctm-0-25,Fail
+>>>>    kms_flip@flip-vs-panning-vs-hang,Timeout
+>>>>    kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-downscaling,Fail
+>>>>    kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-upscaling,Fail
+>>>> diff --git a/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt b/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
+>>>> index 410e0eeb3161..e59a2fddfde0 100644
+>>>> --- a/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
+>>>> +++ b/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
+>>>
+>>> Side note, I noticed for sc7180-skips (and a lot of other boards) we have:
+>>>
+>>> # Suspend to RAM seems to be broken on this machine
+>>> .*suspend.*
+>>>
+>>> Locally I've not had problems with the suspend tests, I'm guessing the
+>>> actual issue is usb-ethernet vs nfsroot.  But maybe the filesys for
+>>> igt jobs is small enough that we can do initramfs instead?  Someone
+>>> should probably confirm what the root issue is and update the
+>>> comments, so developers aren't thinking that suspend is something that
+>>> needs to be debugged
+>>
+>> Agreed.
+>>
+>> Regards,
+>> Helen
+>>
+>>>
+>>> BR,
+>>> -R
+>>>
+>>>
+>>>> @@ -4,20 +4,4 @@
+>>>>    # Test incorrectly assumes that CTM support implies gamma/degamma
+>>>>    # LUT support.  None of the subtests handle the case of only having
+>>>>    # CTM support
+>>>> -kms_color.*
+>>>> -
+>>>> -# 4k@60 is not supported on this hw, but driver doesn't handle it
+>>>> -# too gracefully.. https://gitlab.freedesktop.org/drm/msm/-/issues/15
+>>>> -kms_bw@linear-tiling-.*-displays-3840x2160p
+>>>> -
+>>>> -# Until igt fix lands: https://patchwork.freedesktop.org/patch/493175/
+>>>> -kms_bw@linear-tiling-2.*
+>>>> -kms_bw@linear-tiling-3.*
+>>>> -kms_bw@linear-tiling-4.*
+>>>> -kms_bw@linear-tiling-5.*
+>>>> -kms_bw@linear-tiling-6.*
+>>>> -
+>>>> -# igt fix posted: https://patchwork.freedesktop.org/patch/499926/
+>>>> -# failure mode is flakey due to randomization but fails frequently
+>>>> -# enough to be detected as a Crash or occasionally UnexpectedPass.
+>>>> -kms_plane_multiple@atomic-pipe-A-tiling-none
+>>>> +#kms_color.*
+>>>> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
+>>>> index 2a1baa948e12..15ac861a58bf 100644
+>>>> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
+>>>> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
+>>>> @@ -46,3 +46,5 @@ kms_properties@connector-properties-legacy,Crash
+>>>>    kms_properties@get_properties-sanity-atomic,Crash
+>>>>    kms_properties@get_properties-sanity-non-atomic,Crash
+>>>>    kms_setmode@invalid-clone-single-crtc,Crash
+>>>> +kms_flip@flip-vs-modeset-vs-hang,Crash
+>>>> +kms_flip@flip-vs-panning-vs-hang,Crash
+>>>> --
+>>>> 2.41.0
+>>>>
