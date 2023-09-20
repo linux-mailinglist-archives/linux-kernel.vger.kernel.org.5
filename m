@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A660C7A7075
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF197A707A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbjITC3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 22:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
+        id S232294AbjITC31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 22:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbjITC3G (ORCPT
+        with ESMTP id S232346AbjITC3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 22:29:06 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAD412F;
-        Tue, 19 Sep 2023 19:28:57 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c328b53aeaso57153625ad.2;
-        Tue, 19 Sep 2023 19:28:57 -0700 (PDT)
+        Tue, 19 Sep 2023 22:29:15 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50A7E4;
+        Tue, 19 Sep 2023 19:29:00 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-690bccb0d8aso1488587b3a.0;
+        Tue, 19 Sep 2023 19:29:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695176937; x=1695781737; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695176940; x=1695781740; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=czUvoB2YphHxinmpy35aY7rZVy/pXgKwXq7ZvtF0H2o=;
-        b=hDVkcNQNzGBWx5z3Tq0YTSl+CZigWuaX6OIEoJsC+93Z4T/x3qlhIWF+4YDbVHwlDC
-         0wGiGmULatAVYE2zddGD1rz1gIUZwuNn1ELZYu6UksHSJ4IOne82Fz8YLAAH6I0PH14I
-         uv6aUnEwd7ZFYpl6Lols1l90kLIXLs764RFrbLwlKBuTIrWQhrnADfLQFkimBtpS/xtf
-         rwxDZ7M6DLcQZPlAhyPFOrm46Kxb7EVFzoZU7TA71lSrc1oEdla9xBZ50gWlIje5EGuI
-         wE8TX9pr7AOBGAliOchwLNjs1eUP/HI6MJ124t5QrL3t+JYtdbqyJGAcm7wM/FqHMS7F
-         FUPA==
+        bh=tctOiThLj6Q9+Dvszb1ohC6zJEOPoGelrBq8oKS8xvw=;
+        b=MvEgV2eV/tgap1jlyny9M08wC+HuFXxiIEKaUsw6pRhQg9yfV1RXN4P1FsLgPZqHfH
+         B2zt7GqJbPRImMY8AC+B7aW0Wh+CVxPFQ5goBxGEBw5ERgMDphjopP4nEBqR5TJHomRB
+         438I3c/oL5bYQpvegq2G+dhfBeobVA+zd3923ihkGp2ME8o6iZB+DKrNGt9caVh6JHzj
+         gD32abvUFXJRHvjaQLnHWcqGCRvBztrt9wMQQz5M4OC2OiHfMXqEPl53VN2O/jNR+6Zk
+         BJHFQxlWKRXekhhl96+2VSiWw+dxqnf9IKWN1qg4FRM0EFmMU1h8+8RaXGZH0NSgPuqs
+         VGoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695176937; x=1695781737;
+        d=1e100.net; s=20230601; t=1695176940; x=1695781740;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=czUvoB2YphHxinmpy35aY7rZVy/pXgKwXq7ZvtF0H2o=;
-        b=OFDL2WX4RwNCh6Ze0y5ptU+j9y3876ed8TLlWRRwlF+liQACgzZvYxEqndiq9/QrKp
-         a0CUrHIk1k2WTpd/rRFCzSzSHMW8rRns6hMSBH29/DMxm0em4H4kuuYNQxBx3DP6iQkw
-         RM7MjTDT7kpvELfV70cHA0BhSeamzSbAczjlGsZs5xkhli73mRckE/lNrCIscevxuSQa
-         7Zo9x3rABr9jakwts16ul6VctEhCEV+1fo+HXxn9YRflTHs80eoBbzQYf1VRdHYOdufF
-         DGcZ6RId+IxKJHNV1L9Ln3LfZvEu+qM0gzj9i9WHzHSXRhWwwDs9ERHWQRiFoMalnWDd
-         /iKw==
-X-Gm-Message-State: AOJu0YzI7QPn2RfsFDRI6Mcf4PEel5L+uPyyHTb5Vn1h0GlHFypQ1Qqn
-        pxYCv9rU+D1JOXNWRvNfIlk=
-X-Google-Smtp-Source: AGHT+IEZlDmWh7PrhaDhdl49q2CMxvu8uzds0DqTSVDtgAY96SSaYFWPfAb2DTn+AFysKoEXOjzLgw==
-X-Received: by 2002:a17:903:191:b0:1bf:826:9e30 with SMTP id z17-20020a170903019100b001bf08269e30mr1357501plg.16.1695176936887;
-        Tue, 19 Sep 2023 19:28:56 -0700 (PDT)
+        bh=tctOiThLj6Q9+Dvszb1ohC6zJEOPoGelrBq8oKS8xvw=;
+        b=erfBZdT4ilJoe3USkrqcQWG1YD3Zk18g5X4m59zRUz/fK8vKkNLipDVWP7HC/kAMJZ
+         0dvfnZ5PtfVinVoLzIndxv6+Y+Xo6tVu35EZTMr/HpML8LZhENwzpDVQAWY6+rZ1iYY8
+         Y/EVEeQXUDiFuZuRnzB/exWUF3g5OROFcbXshBQ3jzWS0VYVUde/LmScga3Ha3O5e+HE
+         G6efqFuyMKT5gmFYZCvMG1lGuFjY1bGsSfTUrprp16yrWfyLjkFYxocJiPWGVi5Lo40K
+         xJ2qgna0+VpxwwO6hz59toR5G0sCNHzCA7pnEwiQW64xwzxP2jPfbgKvhiOf0UZ5qmBv
+         4ftg==
+X-Gm-Message-State: AOJu0Yzix9a6Fop30zknilt5VYssnleoBI/1qchXS8DYd+Nsp1lCiCwt
+        f8mr+z+SqqaHAE5U1GsAVWI=
+X-Google-Smtp-Source: AGHT+IFN3yYilGW0EcLDkLN9214P07XTC/7XpGK1gEYIcR6Y578f+dumcCw1h29qxsoTv60ubVfR5Q==
+X-Received: by 2002:a05:6a21:4849:b0:156:6bdd:2305 with SMTP id au9-20020a056a21484900b001566bdd2305mr1245669pzc.45.1695176939990;
+        Tue, 19 Sep 2023 19:28:59 -0700 (PDT)
 Received: from hcdev-d520mt2.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170903110900b001bc930d4517sm10610009plh.42.2023.09.19.19.28.54
+        by smtp.gmail.com with ESMTPSA id n9-20020a170903110900b001bc930d4517sm10610009plh.42.2023.09.19.19.28.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 19:28:56 -0700 (PDT)
+        Tue, 19 Sep 2023 19:28:59 -0700 (PDT)
 From:   Marvin Lin <milkfafa@gmail.com>
 To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
         avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
@@ -60,9 +60,9 @@ Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
         linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
         kwliu@nuvoton.com, kflin@nuvoton.com,
         Marvin Lin <milkfafa@gmail.com>
-Subject: [PATCH v15 5/7] media: v4l2-ctrls: Add user control base for Nuvoton NPCM controls
-Date:   Wed, 20 Sep 2023 10:28:10 +0800
-Message-Id: <20230920022812.601800-6-milkfafa@gmail.com>
+Subject: [PATCH v15 6/7] media: uapi: Add controls for NPCM video driver
+Date:   Wed, 20 Sep 2023 10:28:11 +0800
+Message-Id: <20230920022812.601800-7-milkfafa@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230920022812.601800-1-milkfafa@gmail.com>
 References: <20230920022812.601800-1-milkfafa@gmail.com>
@@ -78,31 +78,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a control base for Nuvoton NPCM driver controls, and reserve 16
-controls.
+Create controls for Nuvoton NPCM video driver to support setting
+capture mode of Video Capture/Differentiation (VCD) engine and getting
+the count of HEXTILE rectangles that is compressed by Encoding
+Compression Engine (ECE).
 
 Signed-off-by: Marvin Lin <milkfafa@gmail.com>
 ---
- include/uapi/linux/v4l2-controls.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../userspace-api/media/drivers/index.rst     |  1 +
+ .../media/drivers/npcm-video.rst              | 66 +++++++++++++++++++
+ include/uapi/linux/npcm-video.h               | 41 ++++++++++++
+ 3 files changed, 108 insertions(+)
+ create mode 100644 Documentation/userspace-api/media/drivers/npcm-video.rst
+ create mode 100644 include/uapi/linux/npcm-video.h
 
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index c3604a0a3e30..68db66d4aae8 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -203,6 +203,12 @@ enum v4l2_colorfx {
-  */
- #define V4L2_CID_USER_ASPEED_BASE		(V4L2_CID_USER_BASE + 0x11a0)
- 
-+/*
-+ * The base for Nuvoton NPCM driver controls.
-+ * We reserve 16 controls for this driver.
-+ */
-+#define V4L2_CID_USER_NPCM_BASE			(V4L2_CID_USER_BASE + 0x11b0)
+diff --git a/Documentation/userspace-api/media/drivers/index.rst b/Documentation/userspace-api/media/drivers/index.rst
+index 6708d649afd7..783f92f01a4c 100644
+--- a/Documentation/userspace-api/media/drivers/index.rst
++++ b/Documentation/userspace-api/media/drivers/index.rst
+@@ -37,6 +37,7 @@ For more details see the file COPYING in the source distribution of Linux.
+ 	dw100
+ 	imx-uapi
+ 	max2175
++	npcm-video
+ 	omap3isp-uapi
+ 	st-vgxy61
+ 	uvcvideo
+diff --git a/Documentation/userspace-api/media/drivers/npcm-video.rst b/Documentation/userspace-api/media/drivers/npcm-video.rst
+new file mode 100644
+index 000000000000..b47771dd8b27
+--- /dev/null
++++ b/Documentation/userspace-api/media/drivers/npcm-video.rst
+@@ -0,0 +1,66 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
- /* MPEG-class control IDs */
- /* The MPEG controls are applicable to all codec controls
-  * and the 'MPEG' part of the define is historical */
++.. include:: <isonum.txt>
++
++NPCM video driver
++=================
++
++This driver is used to control the Video Capture/Differentiation (VCD) engine
++and Encoding Compression Engine (ECE) present on Nuvoton NPCM SoCs. The VCD can
++capture a frame from digital video input and compare two frames in memory, and
++the ECE can compress the frame data into HEXTILE format.
++
++Driver-specific Controls
++------------------------
++
++V4L2_CID_NPCM_CAPTURE_MODE
++~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The VCD engine supports two modes:
++
++- COMPLETE mode:
++
++  Capture the next complete frame into memory.
++
++- DIFF mode:
++
++  Compare the incoming frame with the frame stored in memory, and updates the
++  differentiated frame in memory.
++
++Application can use ``V4L2_CID_NPCM_CAPTURE_MODE`` control to set the VCD mode
++with different control values (enum v4l2_npcm_capture_mode):
++
++- ``V4L2_NPCM_CAPTURE_MODE_COMPLETE``: will set VCD to COMPLETE mode.
++- ``V4L2_NPCM_CAPTURE_MODE_DIFF``: will set VCD to DIFF mode.
++
++V4L2_CID_NPCM_RECT_COUNT
++~~~~~~~~~~~~~~~~~~~~~~~~
++
++If using V4L2_PIX_FMT_HEXTILE format, VCD will capture frame data and then ECE
++will compress the data into HEXTILE rectangles and store them in V4L2 video
++buffer with the layout defined in Remote Framebuffer Protocol:
++::
++
++           (RFC 6143, https://www.rfc-editor.org/rfc/rfc6143.html#section-7.6.1)
++
++           +--------------+--------------+-------------------+
++           | No. of bytes | Type [Value] | Description       |
++           +--------------+--------------+-------------------+
++           | 2            | U16          | x-position        |
++           | 2            | U16          | y-position        |
++           | 2            | U16          | width             |
++           | 2            | U16          | height            |
++           | 4            | S32          | encoding-type (5) |
++           +--------------+--------------+-------------------+
++           |             HEXTILE rectangle data              |
++           +-------------------------------------------------+
++
++Application can get the video buffer through VIDIOC_DQBUF, and followed by
++calling ``V4L2_CID_NPCM_RECT_COUNT`` control to get the number of HEXTILE
++rectangles in this buffer.
++
++References
++----------
++include/uapi/linux/npcm-video.h
++
++**Copyright** |copy| 2022 Nuvoton Technologies
+diff --git a/include/uapi/linux/npcm-video.h b/include/uapi/linux/npcm-video.h
+new file mode 100644
+index 000000000000..1d39f6f38c96
+--- /dev/null
++++ b/include/uapi/linux/npcm-video.h
+@@ -0,0 +1,41 @@
++/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
++/*
++ * Controls header for NPCM video driver
++ *
++ * Copyright (C) 2022 Nuvoton Technologies
++ */
++
++#ifndef _UAPI_LINUX_NPCM_VIDEO_H
++#define _UAPI_LINUX_NPCM_VIDEO_H
++
++#include <linux/v4l2-controls.h>
++
++/*
++ * Check Documentation/userspace-api/media/drivers/npcm-video.rst for control
++ * details.
++ */
++
++/*
++ * This control is meant to set the mode of NPCM Video Capture/Differentiation
++ * (VCD) engine.
++ *
++ * The VCD engine supports two modes:
++ * COMPLETE - Capture the next complete frame into memory.
++ * DIFF	    - Compare the incoming frame with the frame stored in memory, and
++ *	      updates the differentiated frame in memory.
++ */
++#define V4L2_CID_NPCM_CAPTURE_MODE	(V4L2_CID_USER_NPCM_BASE + 0)
++
++enum v4l2_npcm_capture_mode {
++	V4L2_NPCM_CAPTURE_MODE_COMPLETE	= 0, /* COMPLETE mode */
++	V4L2_NPCM_CAPTURE_MODE_DIFF	= 1, /* DIFF mode */
++};
++
++/*
++ * This control is meant to get the count of compressed HEXTILE rectangles which
++ * is relevant to the number of differentiated frames if VCD is in DIFF mode.
++ * And the count will always be 1 if VCD is in COMPLETE mode.
++ */
++#define V4L2_CID_NPCM_RECT_COUNT	(V4L2_CID_USER_NPCM_BASE + 1)
++
++#endif /* _UAPI_LINUX_NPCM_VIDEO_H */
 -- 
 2.34.1
 
