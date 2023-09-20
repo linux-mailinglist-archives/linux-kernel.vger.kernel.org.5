@@ -2,157 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01737A8B07
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548587A8B0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjITSDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 14:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
+        id S229541AbjITSD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 14:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjITSDB (ORCPT
+        with ESMTP id S229481AbjITSDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 14:03:01 -0400
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2E9A3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:02:55 -0700 (PDT)
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3acfa8f8df3so119538b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:02:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695232975; x=1695837775;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5teg6OFj1pXhxaX7rzqqapjXA/AqJ3+972X/yqDBJ5k=;
-        b=X0kxQZcogdG57vlLuPMHK4Fxdm5epqZpJf2ZaxE7m8HSGwxWo17IwIaWT6GQ6Ce5Q7
-         8R19vPEtD2mgB45cmwxR7akxZ9KKyqJduWfJwK9R+lPxHaSMOy7JxlqZp+onuWxpRYSK
-         FiuYYxtnoJdac8gSisCDpvItFguB0+3ydZioVvzubAUSZUSXD0nNbwt8wWRPmHD7IFLq
-         QOBdDHD3QTj5LRGULD1TVp3Q0zwPhvWU2Yw09zwt8DZZ9OcsABnW/KShJOTANT2QVswr
-         f3m8/VZqDRW3W4RCnGNPrdetqKtlEGbPpOoYgFr0Ve9RTdz6HlQbfr2R++p7edeZ/mEa
-         qO9w==
-X-Gm-Message-State: AOJu0YylPd2lkPTmTX2Q78E+kh6G8zBeiQ7R5cB6/hKMkYSl8ySs4DLM
-        1Qm4ngL/guLA780s4K/0ui/qZftKpdsUZcCjEMScXHhBdCWp
-X-Google-Smtp-Source: AGHT+IGoe5uqnvjbQP57E1f0/PkNymIgtUSx1BPpiQbSFRMO0t4C0JJlxF8jfjvKAn8EyN0LbsNFwNbYzxagQ4Xwa4hqZEgXWJga
+        Wed, 20 Sep 2023 14:03:25 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FA5C6;
+        Wed, 20 Sep 2023 11:03:17 -0700 (PDT)
+Received: from [192.168.68.123] (unknown [177.98.21.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C55EB66071EF;
+        Wed, 20 Sep 2023 19:03:10 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695232995;
+        bh=uhO6IttlYAj/yo5egvC4YtDuaO5w616IbV33O4PUKrA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=djBLZIQj9bZUYXB/HL8DhBfnmC6Zz5EM+aa0PPgailiNE5qvhOkymJegKZyBU/RE6
+         BSS8YEJKGpW2t7+MQkScLOjwNgv1gsedUfSqOtgqU5Y6Cy9NjTrLNyFEGqTlCDj5sX
+         0R0rQBrXo/gDPOmeXr7dbIyf9OFHQxIMx2yVA1VWNpKf9FSqC0lFrb4ZQhZez0inf/
+         ggI4sLNlVN7FYenfT4vHjqyXlHM+ZX12zifTl11CJ8d0iwqBh3SmjkcJKb+5MnkRUh
+         TJvxFaOGotp9hboR5qBFsoCgIqk4dX4FgN/QABKtLjcUvp+gVlSE/4lCCZST7kkXAK
+         zYpUinJKpsP8g==
+Message-ID: <393d65d0-8886-6663-5521-ba495d711750@collabora.com>
+Date:   Wed, 20 Sep 2023 15:03:05 -0300
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:3026:b0:3a8:41a7:eafc with SMTP id
- ay38-20020a056808302600b003a841a7eafcmr1573311oib.7.1695232975148; Wed, 20
- Sep 2023 11:02:55 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 11:02:55 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004ba00e0605ce2fcf@google.com>
-Subject: [syzbot] [net?] WARNING in inet_csk_get_port (2)
-From:   syzbot <syzbot+71e724675ba3958edb31@syzkaller.appspotmail.com>
-To:     avagin@gmail.com, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, kuba@kernel.org, kuniyu@amazon.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 7/7] drm/vkms Add hotplug support via configfs to VKMS.
+Content-Language: en-US
+To:     Brandon Pollack <brpol@chromium.org>, marius.vlad@collabora.com,
+        mairacanal@riseup.net, jshargo@chromium.org
+Cc:     hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
+        linux-doc@vger.kernel.org, hirono@chromium.org, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        melissa.srw@gmail.com, mduggan@chromium.org, mripard@kernel.org,
+        tzimmermann@suse.de
+References: <20230829053201.423261-1-brpol@chromium.org>
+ <20230829053201.423261-8-brpol@chromium.org>
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20230829053201.423261-8-brpol@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello!
 
-syzbot found the following issue on:
+Thanks for the patch.
 
-HEAD commit:    2cf0f7156238 Merge tag 'nfs-for-6.6-2' of git://git.linux-..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=17405ab0680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d594086f139d167
-dashboard link: https://syzkaller.appspot.com/bug?extid=71e724675ba3958edb31
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b2e118680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=127b55c4680000
+On 29/08/2023 02:30, Brandon Pollack wrote:
+> This change adds the ability to read or write a "1" or a "0" to the
+> newly added "connected" attribute of a connector in the vkms entry in
+> configfs.
+> 
+> A write will trigger a call to drm_kms_helper_hotplug_event, causing a
+> hotplug uevent.
+> 
+> With this we can write virtualized multidisplay tests that involve
+> hotplugging displays (eg recompositing windows when a monitor is turned
+> off).
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/456b02029fa8/disk-2cf0f715.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9f9ff0c00454/vmlinux-2cf0f715.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0ede19fba30f/bzImage-2cf0f715.xz
+Are these tests going to be added in igt?
 
-The issue was bisected to:
+I was just wondering if it requires any special thing for drm ci:
 
-commit c48ef9c4aed3632566b57ba66cec6ec78624d4cb
-Author: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date:   Mon Sep 11 18:36:57 2023 +0000
+https://lists.freedesktop.org/archives/dri-devel/2023-September/423719.html
 
-    tcp: Fix bind() regression for v4-mapped-v6 non-wildcard address.
+(btw, it would be awesome of you could test your changes with drm ci :)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15567dc4680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17567dc4680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13567dc4680000
+Regards,
+Helen
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+71e724675ba3958edb31@syzkaller.appspotmail.com
-Fixes: c48ef9c4aed3 ("tcp: Fix bind() regression for v4-mapped-v6 non-wildcard address.")
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5049 at net/ipv4/inet_connection_sock.c:587 inet_csk_get_port+0xf96/0x2350 net/ipv4/inet_connection_sock.c:587
-Modules linked in:
-CPU: 0 PID: 5049 Comm: syz-executor288 Not tainted 6.6.0-rc2-syzkaller-00018-g2cf0f7156238 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:inet_csk_get_port+0xf96/0x2350 net/ipv4/inet_connection_sock.c:587
-Code: 7c 24 08 e8 4c b6 8a 01 31 d2 be 88 01 00 00 48 c7 c7 e0 94 ae 8b e8 59 2e a3 f8 2e 2e 2e 31 c0 e9 04 fe ff ff e8 ca 88 d0 f8 <0f> 0b e9 0f f9 ff ff e8 be 88 d0 f8 49 8d 7e 48 e8 65 ca 5a 00 31
-RSP: 0018:ffffc90003abfbf0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888026429100 RCX: 0000000000000000
-RDX: ffff88807edcbb80 RSI: ffffffff88b73d66 RDI: ffff888026c49f38
-RBP: ffff888026c49f30 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff9260f200
-R13: ffff888026c49880 R14: 0000000000000000 R15: ffff888026429100
-FS:  00005555557d5380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000045ad50 CR3: 0000000025754000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- inet_csk_listen_start+0x155/0x360 net/ipv4/inet_connection_sock.c:1256
- __inet_listen_sk+0x1b8/0x5c0 net/ipv4/af_inet.c:217
- inet_listen+0x93/0xd0 net/ipv4/af_inet.c:239
- __sys_listen+0x194/0x270 net/socket.c:1866
- __do_sys_listen net/socket.c:1875 [inline]
- __se_sys_listen net/socket.c:1873 [inline]
- __x64_sys_listen+0x53/0x80 net/socket.c:1873
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f3a5bce3af9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc1a1c79e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000032
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f3a5bce3af9
-RDX: 00007f3a5bce3af9 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 00007f3a5bd565f0 R08: 0000000000000006 R09: 0000000000000006
-R10: 0000000000000006 R11: 0000000000000246 R12: 0000000000000001
-R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
+> Signed-off-by: Brandon Pollack <brpol@chromium.org>
+> ---
+>   Documentation/gpu/vkms.rst           |  2 +-
+>   drivers/gpu/drm/vkms/vkms_configfs.c | 68 ++++++++++++++++++++++++++--
+>   drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++
+>   drivers/gpu/drm/vkms/vkms_output.c   | 47 ++++++++++++++++++-
+>   4 files changed, 123 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
+> index c3875bf66dba..7f715097539c 100644
+> --- a/Documentation/gpu/vkms.rst
+> +++ b/Documentation/gpu/vkms.rst
+> @@ -145,7 +145,7 @@ We want to be able to manipulate vkms instances without having to reload the
+>   module. Such configuration can be added as extensions to vkms's ConfigFS
+>   support. Use-cases:
+>   
+> -- Hotplug/hotremove connectors on the fly (to be able to test DP MST handling
+> +- Hotremove connectors on the fly (to be able to test DP MST handling
+>     of compositors).
+>   
+>   - Change output configuration: Plug/unplug screens, change EDID, allow changing
+> diff --git a/drivers/gpu/drm/vkms/vkms_configfs.c b/drivers/gpu/drm/vkms/vkms_configfs.c
+> index bc35dcc47585..d231e28101ae 100644
+> --- a/drivers/gpu/drm/vkms/vkms_configfs.c
+> +++ b/drivers/gpu/drm/vkms/vkms_configfs.c
+> @@ -1,5 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0+
+>   
+> +#include "drm/drm_probe_helper.h"
+>   #include <linux/configfs.h>
+>   #include <linux/mutex.h>
+>   #include <linux/platform_device.h>
+> @@ -40,6 +41,7 @@
+>    *   `-- vkms
+>    *       `-- test
+>    *           |-- connectors
+> + *                `-- connected
+>    *           |-- crtcs
+>    *           |-- encoders
+>    *           |-- planes
+> @@ -89,6 +91,14 @@
+>    *
+>    *   echo 1 > /config/vkms/test/enabled
+>    *
+> + * By default no display is "connected" so to connect a connector you'll also
+> + * have to write 1 to a connectors "connected" attribute::
+> + *
+> + *   echo 1 > /config/vkms/test/connectors/connector/connected
+> + *
+> + * One can verify that this is worked using the `modetest` utility or the
+> + * equivalent for your platform.
+> + *
+>    * When you're done with the virtual device, you can clean up the device like
+>    * so::
+>    *
+> @@ -236,7 +246,58 @@ static void add_possible_encoders(struct config_group *parent,
+>   
+>   /*  Connector item, e.g. /config/vkms/device/connectors/ID */
+>   
+> +static ssize_t connector_connected_show(struct config_item *item, char *buf)
+> +{
+> +	struct vkms_config_connector *connector =
+> +		item_to_config_connector(item);
+> +	struct vkms_configfs *configfs = connector_item_to_configfs(item);
+> +	bool connected = false;
+> +
+> +	mutex_lock(&configfs->lock);
+> +	connected = connector->connected;
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	return sprintf(buf, "%d\n", connected);
+> +}
+> +
+> +static ssize_t connector_connected_store(struct config_item *item,
+> +					 const char *buf, size_t len)
+> +{
+> +	struct vkms_config_connector *connector =
+> +		item_to_config_connector(item);
+> +	struct vkms_configfs *configfs = connector_item_to_configfs(item);
+> +	int val, ret;
+> +
+> +	ret = kstrtouint(buf, 10, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (val != 1 && val != 0)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&configfs->lock);
+> +	connector->connected = val;
+> +	if (!connector->connector) {
+> +		pr_info("VKMS Device %s is not yet enabled, connector will be enabled on start",
+> +			configfs->device_group.cg_item.ci_name);
+> +	}
+> +	mutex_unlock(&configfs->lock);
+> +
+> +	if (connector->connector)
+> +		drm_kms_helper_hotplug_event(connector->connector->dev);
+> +
+> +	return len;
+> +}
+> +
+> +CONFIGFS_ATTR(connector_, connected);
+> +
+> +static struct configfs_attribute *connector_attrs[] = {
+> +	&connector_attr_connected,
+> +	NULL,
+> +};
+> +
+>   static struct config_item_type connector_type = {
+> +	.ct_attrs = connector_attrs,
+>   	.ct_owner = THIS_MODULE,
+>   };
+>   
+> @@ -264,7 +325,7 @@ static ssize_t plane_type_show(struct config_item *item, char *buf)
+>   	plane_type = plane->type;
+>   	mutex_unlock(&configfs->lock);
+>   
+> -	return sprintf(buf, "%u", plane_type);
+> +	return sprintf(buf, "%u\n", plane_type);
+>   }
+>   
+>   static ssize_t plane_type_store(struct config_item *item, const char *buf,
+> @@ -319,6 +380,7 @@ static struct config_group *connectors_group_make(struct config_group *group,
+>   				    &connector_type);
+>   	add_possible_encoders(&connector->config_group,
+>   			      &connector->possible_encoders.group);
+> +	connector->connected = false;
+>   
+>   	return &connector->config_group;
+>   }
+> @@ -500,7 +562,7 @@ static ssize_t device_enabled_show(struct config_item *item, char *buf)
+>   	is_enabled = configfs->vkms_device != NULL;
+>   	mutex_unlock(&configfs->lock);
+>   
+> -	return sprintf(buf, "%d", is_enabled);
+> +	return sprintf(buf, "%d\n", is_enabled);
+>   }
+>   
+>   static ssize_t device_enabled_store(struct config_item *item, const char *buf,
+> @@ -557,7 +619,7 @@ static ssize_t device_id_show(struct config_item *item, char *buf)
+>   
+>   	mutex_unlock(&configfs->lock);
+>   
+> -	return sprintf(buf, "%d", id);
+> +	return sprintf(buf, "%d\n", id);
+>   }
+>   
+>   CONFIGFS_ATTR_RO(device_, id);
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 2b9545ada9c2..5336281f397e 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -3,6 +3,7 @@
+>   #ifndef _VKMS_DRV_H_
+>   #define _VKMS_DRV_H_
+>   
+> +#include "drm/drm_connector.h"
+>   #include <linux/configfs.h>
+>   #include <linux/hrtimer.h>
+>   
+> @@ -147,7 +148,9 @@ struct vkms_config_links {
+>   
+>   struct vkms_config_connector {
+>   	struct config_group config_group;
+> +	struct drm_connector *connector;
+>   	struct vkms_config_links possible_encoders;
+> +	bool connected;
+>   };
+>   
+>   struct vkms_config_crtc {
+> @@ -220,6 +223,10 @@ struct vkms_device {
+>   #define item_to_configfs(item) \
+>   	container_of(to_config_group(item), struct vkms_configfs, device_group)
+>   
+> +#define connector_item_to_configfs(item)                                     \
+> +	container_of(to_config_group(item->ci_parent), struct vkms_configfs, \
+> +		     connectors_group)
+> +
+>   #define item_to_config_connector(item)                                    \
+>   	container_of(to_config_group(item), struct vkms_config_connector, \
+>   		     config_group)
+> @@ -279,4 +286,8 @@ int vkms_enable_writeback_connector(struct vkms_device *vkmsdev,
+>   int vkms_init_configfs(void);
+>   void vkms_unregister_configfs(void);
+>   
+> +/* Connector hotplugging */
+> +enum drm_connector_status vkms_connector_detect(struct drm_connector *connector,
+> +						bool force);
+> +
+>   #endif /* _VKMS_DRV_H_ */
+> diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
+> index 0ee1f3f4a305..1a1cd0202c5f 100644
+> --- a/drivers/gpu/drm/vkms/vkms_output.c
+> +++ b/drivers/gpu/drm/vkms/vkms_output.c
+> @@ -1,5 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0+
+>   
+> +#include <drm/drm_print.h>
+>   #include <drm/drm_atomic_helper.h>
+>   #include <drm/drm_connector.h>
+>   #include <drm/drm_crtc.h>
+> @@ -8,10 +9,12 @@
+>   #include <drm/drm_plane.h>
+>   #include <drm/drm_probe_helper.h>
+>   #include <drm/drm_simple_kms_helper.h>
+> +#include <linux/printk.h>
+>   
+>   #include "vkms_drv.h"
+>   
+>   static const struct drm_connector_funcs vkms_connector_funcs = {
+> +	.detect = vkms_connector_detect,
+>   	.fill_modes = drm_helper_probe_single_connector_modes,
+>   	.destroy = drm_connector_cleanup,
+>   	.reset = drm_atomic_helper_connector_reset,
+> @@ -19,6 +22,48 @@ static const struct drm_connector_funcs vkms_connector_funcs = {
+>   	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+>   };
+>   
+> +static const struct vkms_config_connector *
+> +find_config_for_connector(struct drm_connector *connector)
+> +{
+> +	struct vkms_device *vkms = drm_device_to_vkms_device(connector->dev);
+> +	struct vkms_configfs *configfs = vkms->configfs;
+> +	struct config_item *item;
+> +
+> +	if (!configfs) {
+> +		pr_info("Default connector has no configfs entry");
+> +		return NULL;
+> +	}
+> +
+> +	list_for_each_entry(item, &configfs->connectors_group.cg_children,
+> +			    ci_entry) {
+> +		struct vkms_config_connector *config_connector =
+> +			item_to_config_connector(item);
+> +		if (config_connector->connector == connector)
+> +			return config_connector;
+> +	}
+> +
+> +	pr_warn("Could not find config to match connector %s, but configfs was initialized",
+> +		connector->name);
+> +
+> +	return NULL;
+> +}
+> +
+> +enum drm_connector_status vkms_connector_detect(struct drm_connector *connector,
+> +						bool force)
+> +{
+> +	enum drm_connector_status status = connector_status_connected;
+> +	const struct vkms_config_connector *config_connector =
+> +		find_config_for_connector(connector);
+> +
+> +	if (!config_connector)
+> +		return connector_status_connected;
+> +
+> +	if (!config_connector->connected)
+> +		status = connector_status_disconnected;
+> +
+> +	return status;
+> +}
+> +
+>   static const struct drm_encoder_funcs vkms_encoder_funcs = {
+>   	.destroy = drm_encoder_cleanup,
+>   };
+> @@ -280,12 +325,12 @@ int vkms_output_init(struct vkms_device *vkmsdev)
+>   		struct vkms_config_connector *config_connector =
+>   			item_to_config_connector(item);
+>   		struct drm_connector *connector = vkms_connector_init(vkmsdev);
+> -
+>   		if (IS_ERR(connector)) {
+>   			DRM_ERROR("Failed to init connector from config: %s",
+>   				  item->ci_name);
+>   			return PTR_ERR(connector);
+>   		}
+> +		config_connector->connector = connector;
+>   
+>   		for (int j = 0; j < output->num_encoders; j++) {
+>   			struct encoder_map *encoder = &encoder_map[j];
