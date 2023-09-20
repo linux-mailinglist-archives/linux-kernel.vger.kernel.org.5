@@ -2,357 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAF37A70FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870B47A7102
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbjITD2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 23:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        id S232007AbjITDdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 23:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbjITD2V (ORCPT
+        with ESMTP id S231675AbjITDdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 23:28:21 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6452DB0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:28:12 -0700 (PDT)
-Received: from loongson.cn (unknown [10.2.9.158])
-        by gateway (Coremail) with SMTP id _____8CxfOrKZgplJyYqAA--.53937S3;
-        Wed, 20 Sep 2023 11:28:10 +0800 (CST)
-Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxG9zKZgpl6jUMAA--.24496S2;
-        Wed, 20 Sep 2023 11:28:10 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Xi Ruoyao <xry111@xry111.site>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] LoongArch: Fix some build warnings with W=1 option
-Date:   Wed, 20 Sep 2023 11:28:10 +0800
-Message-Id: <20230920032810.1392548-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.27.0
+        Tue, 19 Sep 2023 23:33:19 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED96B0;
+        Tue, 19 Sep 2023 20:33:09 -0700 (PDT)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rr3t90M35zJsWs;
+        Wed, 20 Sep 2023 11:29:21 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 20 Sep 2023 11:33:06 +0800
+From:   Junxian Huang <huangjunxian6@hisilicon.com>
+To:     <jgg@ziepe.ca>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next] RDMA/hns: Support SRQ record doorbell
+Date:   Wed, 20 Sep 2023 11:30:05 +0800
+Message-ID: <20230920033005.1557-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxG9zKZgpl6jUMAA--.24496S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3ur47Xr1rWFyUJF47ZF13trc_yoWDKF17pF
-        ZrAr1kGrZ5Gw1kZF9rA3yjvr13Jws5Kw12v3W2kFyrAF12qrn5Xr4v9FyDXF18ta95KFy0
-        vFWfKw1SvF45XwcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-        kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jUsqXUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some building warnings when building LoongArch kernel
-with W=1 option as following, this patch fixes these building
-warnings.
+From: Yangyang Li <liyangyang20@huawei.com>
 
-arch/loongarch/kernel/traps.c:496:25: warning: no previous prototype
-for 'do_fpe' [-Wmissing-prototypes]
-  496 | asmlinkage void noinstr do_fpe(struct pt_regs *regs
-      |                         ^~~~~~
-arch/loongarch/kernel/syscall.c:21:40: warning: initialized field
-overwritten [-Woverride-init]
-   21 | #define __SYSCALL(nr, call)     [nr] = (call),
-      |                                        ^
+Compared with normal doorbell, using record doorbell can shorten the
+process of ringing the doorbell and reduce the latency.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Add a flag HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB to allow FW to
+enable/disable SRQ record doorbell.
+
+If the flag above is set, allocate the dma buffer for SRQ record
+doorbell and write the buffer address into SRQC during SRQ creation.
+
+For userspace SRQ, add a flag HNS_ROCE_RSP_SRQ_CAP_RECORD_DB to notify
+userspace whether the SRQ record doorbell is enabled.
+
+Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
-Changes in v2:
-  1. Remove modification about file arch/loongarch/kernel/asm-offsets.c,
-since it is refacted now.
-  2. Add more modification and eliminate almost all building warnings in
-arch/loongarch tree.
----
- arch/loongarch/include/asm/exception.h | 26 ++++++++++++++++++++++++++
- arch/loongarch/include/asm/io.h        |  4 +---
- arch/loongarch/include/asm/smp.h       |  1 +
- arch/loongarch/include/asm/syscall.h   |  1 +
- arch/loongarch/kernel/Makefile         |  1 +
- arch/loongarch/kernel/process.c        |  1 +
- arch/loongarch/kernel/signal.c         |  6 +++---
- arch/loongarch/kernel/smp.c            |  3 +++
- arch/loongarch/kernel/syscall.c        |  1 +
- arch/loongarch/kernel/time.c           |  2 +-
- arch/loongarch/kernel/traps.c          | 10 ++++++----
- arch/loongarch/mm/fault.c              |  1 +
- arch/loongarch/mm/tlb.c                |  2 +-
- 13 files changed, 47 insertions(+), 12 deletions(-)
- create mode 100644 arch/loongarch/include/asm/exception.h
+ drivers/infiniband/hw/hns/hns_roce_device.h |  3 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 30 ++++++--
+ drivers/infiniband/hw/hns/hns_roce_srq.c    | 85 ++++++++++++++++++++-
+ include/uapi/rdma/hns-abi.h                 | 13 +++-
+ 4 files changed, 120 insertions(+), 11 deletions(-)
 
-diff --git a/arch/loongarch/include/asm/exception.h b/arch/loongarch/include/asm/exception.h
-new file mode 100644
-index 000000000000..ffa068aa6ac9
---- /dev/null
-+++ b/arch/loongarch/include/asm/exception.h
-@@ -0,0 +1,26 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __ASM_EXCEPTION_H
-+#define __ASM_EXCEPTION_H
-+
-+#include <asm/ptrace.h>
-+
-+asmlinkage void noinstr do_fpe(struct pt_regs *regs, unsigned long fcsr);
-+asmlinkage void noinstr do_ade(struct pt_regs *regs);
-+asmlinkage void noinstr do_ale(struct pt_regs *regs);
-+asmlinkage void noinstr do_bce(struct pt_regs *regs);
-+asmlinkage void noinstr do_bp(struct pt_regs *regs);
-+asmlinkage void noinstr do_watch(struct pt_regs *regs);
-+asmlinkage void noinstr do_ri(struct pt_regs *regs);
-+asmlinkage void noinstr do_fpu(struct pt_regs *regs);
-+asmlinkage void noinstr do_lsx(struct pt_regs *regs);
-+asmlinkage void noinstr do_lasx(struct pt_regs *regs);
-+asmlinkage void noinstr do_lbt(struct pt_regs *regs);
-+asmlinkage void noinstr do_reserved(struct pt_regs *regs);
-+asmlinkage void cache_parity_error(void);
-+asmlinkage void noinstr handle_loongarch_irq(struct pt_regs *regs);
-+asmlinkage void noinstr do_vint(struct pt_regs *regs, unsigned long sp);
-+asmlinkage void __kprobes do_page_fault(struct pt_regs *regs,
-+				unsigned long write, unsigned long address);
-+
-+#endif	/* __ASM_EXCEPTION_H */
-diff --git a/arch/loongarch/include/asm/io.h b/arch/loongarch/include/asm/io.h
-index 0dcb36b32cb2..58bc88c5a9e5 100644
---- a/arch/loongarch/include/asm/io.h
-+++ b/arch/loongarch/include/asm/io.h
-@@ -10,6 +10,7 @@
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 7f0d0288beb1..668cef06a269 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -146,6 +146,7 @@ enum {
+ 	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
+ 	HNS_ROCE_CAP_FLAG_STASH			= BIT(17),
+ 	HNS_ROCE_CAP_FLAG_CQE_INLINE		= BIT(19),
++	HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB         = BIT(22),
+ };
  
- #include <asm/addrspace.h>
- #include <asm/cpu.h>
-+#include <asm/early_ioremap.h>
- #include <asm/page.h>
- #include <asm/pgtable-bits.h>
- #include <asm/string.h>
-@@ -19,9 +20,6 @@
-  */
- #define page_to_phys(page)	((phys_addr_t)page_to_pfn(page) << PAGE_SHIFT)
+ #define HNS_ROCE_DB_TYPE_COUNT			2
+@@ -453,6 +454,8 @@ struct hns_roce_srq {
+ 	spinlock_t		lock;
+ 	struct mutex		mutex;
+ 	void (*event)(struct hns_roce_srq *srq, enum hns_roce_event event);
++	struct hns_roce_db	rdb;
++	u32			cap_flags;
+ };
  
--extern void __init __iomem *early_ioremap(u64 phys_addr, unsigned long size);
--extern void __init early_iounmap(void __iomem *addr, unsigned long size);
--
- #define early_memremap early_ioremap
- #define early_memunmap early_iounmap
- 
-diff --git a/arch/loongarch/include/asm/smp.h b/arch/loongarch/include/asm/smp.h
-index 66ecb480c894..a845ed3a6456 100644
---- a/arch/loongarch/include/asm/smp.h
-+++ b/arch/loongarch/include/asm/smp.h
-@@ -19,6 +19,7 @@ extern cpumask_t cpu_sibling_map[];
- extern cpumask_t cpu_core_map[];
- extern cpumask_t cpu_foreign_map[];
- 
-+asmlinkage void start_secondary(void);
- void loongson_smp_setup(void);
- void loongson_prepare_cpus(unsigned int max_cpus);
- void loongson_boot_secondary(int cpu, struct task_struct *idle);
-diff --git a/arch/loongarch/include/asm/syscall.h b/arch/loongarch/include/asm/syscall.h
-index e286dc58476e..089a58d2a45f 100644
---- a/arch/loongarch/include/asm/syscall.h
-+++ b/arch/loongarch/include/asm/syscall.h
-@@ -20,6 +20,7 @@
- 
- extern void *sys_call_table[];
- 
-+void noinstr do_syscall(struct pt_regs *regs);
- static inline long syscall_get_nr(struct task_struct *task,
- 				  struct pt_regs *regs)
- {
-diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makefile
-index c56ea0b75448..1e94764005e1 100644
---- a/arch/loongarch/kernel/Makefile
-+++ b/arch/loongarch/kernel/Makefile
-@@ -19,6 +19,7 @@ obj-$(CONFIG_CPU_HAS_LBT)	+= lbt.o
- 
- obj-$(CONFIG_ARCH_STRICT_ALIGN)	+= unaligned.o
- 
-+CFLAGS_syscall.o	+= $(call cc-option,-Wno-override-init,)
- ifdef CONFIG_FUNCTION_TRACER
-   ifndef CONFIG_DYNAMIC_FTRACE
-     obj-y += mcount.o ftrace.o
-diff --git a/arch/loongarch/kernel/process.c b/arch/loongarch/kernel/process.c
-index 3cb082e0c992..767d94cce0de 100644
---- a/arch/loongarch/kernel/process.c
-+++ b/arch/loongarch/kernel/process.c
-@@ -37,6 +37,7 @@
- #include <asm/bootinfo.h>
- #include <asm/cpu.h>
- #include <asm/elf.h>
-+#include <asm/exec.h>
- #include <asm/fpu.h>
- #include <asm/lbt.h>
- #include <asm/io.h>
-diff --git a/arch/loongarch/kernel/signal.c b/arch/loongarch/kernel/signal.c
-index 504fdfe85203..aa482eae5e79 100644
---- a/arch/loongarch/kernel/signal.c
-+++ b/arch/loongarch/kernel/signal.c
-@@ -13,6 +13,7 @@
- #include <linux/audit.h>
- #include <linux/cache.h>
- #include <linux/context_tracking.h>
-+#include <linux/entry-common.h>
- #include <linux/irqflags.h>
- #include <linux/sched.h>
- #include <linux/mm.h>
-@@ -891,7 +892,7 @@ static unsigned long setup_extcontext(struct extctx_layout *extctx, unsigned lon
- 	return new_sp;
+ struct hns_roce_uar_table {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index d82daff2d9bd..6418c681eb5a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -941,11 +941,16 @@ static void fill_wqe_idx(struct hns_roce_srq *srq, unsigned int wqe_idx)
+ 	idx_que->head++;
  }
  
--void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
-+static void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
- 			  struct extctx_layout *extctx)
+-static void update_srq_db(struct hns_roce_v2_db *db, struct hns_roce_srq *srq)
++static void update_srq_db(struct hns_roce_srq *srq)
  {
- 	unsigned long sp;
-@@ -921,8 +922,7 @@ void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
- /*
-  * Atomically swap in the new signal mask, and wait for a signal.
-  */
--
--asmlinkage long sys_rt_sigreturn(void)
-+SYSCALL_DEFINE0(rt_sigreturn)
- {
- 	int sig;
- 	sigset_t set;
-diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
-index 6667b0a90f81..ef35c871244f 100644
---- a/arch/loongarch/kernel/smp.c
-+++ b/arch/loongarch/kernel/smp.c
-@@ -13,6 +13,7 @@
- #include <linux/cpumask.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/profile.h>
- #include <linux/seq_file.h>
- #include <linux/smp.h>
- #include <linux/threads.h>
-@@ -556,10 +557,12 @@ void smp_send_stop(void)
- 	smp_call_function(stop_this_cpu, NULL, 0);
+-	hr_reg_write(db, DB_TAG, srq->srqn);
+-	hr_reg_write(db, DB_CMD, HNS_ROCE_V2_SRQ_DB);
+-	hr_reg_write(db, DB_PI, srq->idx_que.head);
++	struct hns_roce_dev *hr_dev = to_hr_dev(srq->ibsrq.device);
++	struct hns_roce_v2_db db;
++
++	hr_reg_write(&db, DB_TAG, srq->srqn);
++	hr_reg_write(&db, DB_CMD, HNS_ROCE_V2_SRQ_DB);
++	hr_reg_write(&db, DB_PI, srq->idx_que.head);
++
++	hns_roce_write64(hr_dev, (__le32 *)&db, srq->db_reg);
  }
  
-+#ifdef CONFIG_PROFILING
- int setup_profiling_timer(unsigned int multiplier)
+ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
+@@ -954,7 +959,6 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
  {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibsrq->device);
+ 	struct hns_roce_srq *srq = to_hr_srq(ibsrq);
+-	struct hns_roce_v2_db srq_db;
+ 	unsigned long flags;
+ 	int ret = 0;
+ 	u32 max_sge;
+@@ -985,9 +989,11 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
+ 	}
+ 
+ 	if (likely(nreq)) {
+-		update_srq_db(&srq_db, srq);
+-
+-		hns_roce_write64(hr_dev, (__le32 *)&srq_db, srq->db_reg);
++		if (srq->cap_flags & HNS_ROCE_SRQ_CAP_RECORD_DB)
++			*srq->rdb.db_record = srq->idx_que.head &
++					      V2_DB_PRODUCER_IDX_M;
++		else
++			update_srq_db(srq);
+ 	}
+ 
+ 	spin_unlock_irqrestore(&srq->lock, flags);
+@@ -5606,6 +5612,14 @@ static int hns_roce_v2_write_srqc(struct hns_roce_srq *srq, void *mb_buf)
+ 	hr_reg_write(ctx, SRQC_WQE_BUF_PG_SZ,
+ 		     to_hr_hw_page_shift(srq->buf_mtr.hem_cfg.buf_pg_shift));
+ 
++	if (srq->cap_flags & HNS_ROCE_SRQ_CAP_RECORD_DB) {
++		hr_reg_enable(ctx, SRQC_DB_RECORD_EN);
++		hr_reg_write(ctx, SRQC_DB_RECORD_ADDR_L,
++			     lower_32_bits(srq->rdb.dma) >> 1);
++		hr_reg_write(ctx, SRQC_DB_RECORD_ADDR_H,
++			     upper_32_bits(srq->rdb.dma));
++	}
++
+ 	return hns_roce_v2_write_srqc_index_queue(srq, ctx);
+ }
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index 8dae98f827eb..4e2d1c8e164a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/pci.h>
+ #include <rdma/ib_umem.h>
++#include <rdma/uverbs_ioctl.h>
+ #include "hns_roce_device.h"
+ #include "hns_roce_cmd.h"
+ #include "hns_roce_hem.h"
+@@ -387,6 +388,79 @@ static void free_srq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
+ 	free_srq_idx(hr_dev, srq);
+ }
+ 
++static int get_srq_ucmd(struct hns_roce_srq *srq, struct ib_udata *udata,
++			struct hns_roce_ib_create_srq *ucmd)
++{
++	struct ib_device *ibdev = srq->ibsrq.device;
++	int ret;
++
++	ret = ib_copy_from_udata(ucmd, udata, min(udata->inlen, sizeof(*ucmd)));
++	if (ret) {
++		ibdev_err(ibdev, "failed to copy SRQ udata, ret = %d.\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void free_srq_db(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
++			struct ib_udata *udata)
++{
++	struct hns_roce_ucontext *uctx;
++
++	if (!(srq->cap_flags & HNS_ROCE_SRQ_CAP_RECORD_DB))
++		return;
++
++	srq->cap_flags &= ~HNS_ROCE_SRQ_CAP_RECORD_DB;
++	if (udata) {
++		uctx = rdma_udata_to_drv_context(udata,
++						 struct hns_roce_ucontext,
++						 ibucontext);
++		hns_roce_db_unmap_user(uctx, &srq->rdb);
++	} else {
++		hns_roce_free_db(hr_dev, &srq->rdb);
++	}
++}
++
++static int alloc_srq_db(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
++			struct ib_udata *udata,
++			struct hns_roce_ib_create_srq_resp *resp)
++{
++	struct hns_roce_ib_create_srq ucmd = {};
++	struct hns_roce_ucontext *uctx;
++	int ret;
++
++	if (udata) {
++		ret = get_srq_ucmd(srq, udata, &ucmd);
++		if (ret)
++			return ret;
++
++		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB) &&
++		    (ucmd.req_cap_flags & HNS_ROCE_SRQ_CAP_RECORD_DB)) {
++			uctx = rdma_udata_to_drv_context(udata,
++					struct hns_roce_ucontext, ibucontext);
++			ret = hns_roce_db_map_user(uctx, ucmd.db_addr,
++						   &srq->rdb);
++			if (ret)
++				return ret;
++
++			srq->cap_flags |= HNS_ROCE_RSP_SRQ_CAP_RECORD_DB;
++		}
++	} else {
++		if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB) {
++			ret = hns_roce_alloc_db(hr_dev, &srq->rdb, 1);
++			if (ret)
++				return ret;
++
++			*srq->rdb.db_record = 0;
++			srq->cap_flags |= HNS_ROCE_RSP_SRQ_CAP_RECORD_DB;
++		}
++		srq->db_reg = hr_dev->reg_base + SRQ_DB_REG;
++	}
++
++	return 0;
++}
++
+ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 			struct ib_srq_init_attr *init_attr,
+ 			struct ib_udata *udata)
+@@ -407,15 +481,20 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = alloc_srqn(hr_dev, srq);
++	ret = alloc_srq_db(hr_dev, srq, udata, &resp);
+ 	if (ret)
+ 		goto err_srq_buf;
+ 
++	ret = alloc_srqn(hr_dev, srq);
++	if (ret)
++		goto err_srq_db;
++
+ 	ret = alloc_srqc(hr_dev, srq);
+ 	if (ret)
+ 		goto err_srqn;
+ 
+ 	if (udata) {
++		resp.cap_flags = srq->cap_flags;
+ 		resp.srqn = srq->srqn;
+ 		if (ib_copy_to_udata(udata, &resp,
+ 				     min(udata->outlen, sizeof(resp)))) {
+@@ -424,7 +503,6 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 		}
+ 	}
+ 
+-	srq->db_reg = hr_dev->reg_base + SRQ_DB_REG;
+ 	srq->event = hns_roce_ib_srq_event;
+ 	refcount_set(&srq->refcount, 1);
+ 	init_completion(&srq->free);
+@@ -435,6 +513,8 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	free_srqc(hr_dev, srq);
+ err_srqn:
+ 	free_srqn(hr_dev, srq);
++err_srq_db:
++	free_srq_db(hr_dev, srq, udata);
+ err_srq_buf:
+ 	free_srq_buf(hr_dev, srq);
+ 
+@@ -448,6 +528,7 @@ int hns_roce_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
+ 
+ 	free_srqc(hr_dev, srq);
+ 	free_srqn(hr_dev, srq);
++	free_srq_db(hr_dev, srq, udata);
+ 	free_srq_buf(hr_dev, srq);
  	return 0;
  }
-+#endif
+diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+index 2e68a8b0c92c..c68bb0cd80e1 100644
+--- a/include/uapi/rdma/hns-abi.h
++++ b/include/uapi/rdma/hns-abi.h
+@@ -52,15 +52,26 @@ struct hns_roce_ib_create_cq_resp {
+ 	__aligned_u64 cap_flags;
+ };
  
- static void flush_tlb_all_ipi(void *info)
- {
-diff --git a/arch/loongarch/kernel/syscall.c b/arch/loongarch/kernel/syscall.c
-index 3fc4211db989..b73218ce55e8 100644
---- a/arch/loongarch/kernel/syscall.c
-+++ b/arch/loongarch/kernel/syscall.c
-@@ -15,6 +15,7 @@
- #include <asm/asm.h>
- #include <asm/signal.h>
- #include <asm/switch_to.h>
-+#include <asm/syscall.h>
- #include <asm-generic/syscalls.h>
++enum hns_roce_srq_cap_flags {
++	HNS_ROCE_SRQ_CAP_RECORD_DB = 1 << 0,
++};
++
++enum hns_roce_srq_cap_flags_resp {
++	HNS_ROCE_RSP_SRQ_CAP_RECORD_DB = 1 << 0,
++};
++
++
+ struct hns_roce_ib_create_srq {
+ 	__aligned_u64 buf_addr;
+ 	__aligned_u64 db_addr;
+ 	__aligned_u64 que_addr;
++	__u32 req_cap_flags; /* Use enum hns_roce_srq_cap_flags */
++	__u32 reserved;
+ };
  
- #undef __SYSCALL
-diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
-index c189e03cd5da..3064af94db9c 100644
---- a/arch/loongarch/kernel/time.c
-+++ b/arch/loongarch/kernel/time.c
-@@ -29,7 +29,7 @@ static void constant_event_handler(struct clock_event_device *dev)
- {
- }
+ struct hns_roce_ib_create_srq_resp {
+ 	__u32	srqn;
+-	__u32	reserved;
++	__u32	cap_flags; /* Use enum hns_roce_srq_cap_flags */
+ };
  
--irqreturn_t constant_timer_interrupt(int irq, void *data)
-+static irqreturn_t constant_timer_interrupt(int irq, void *data)
- {
- 	int cpu = smp_processor_id();
- 	struct clock_event_device *cd;
-diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
-index 65214774ef7c..e6429047b6d9 100644
---- a/arch/loongarch/kernel/traps.c
-+++ b/arch/loongarch/kernel/traps.c
-@@ -35,6 +35,7 @@
- #include <asm/branch.h>
- #include <asm/break.h>
- #include <asm/cpu.h>
-+#include <asm/exception.h>
- #include <asm/fpu.h>
- #include <asm/lbt.h>
- #include <asm/inst.h>
-@@ -371,7 +372,7 @@ void show_regs(struct pt_regs *regs)
- 	dump_stack();
- }
- 
--void show_registers(struct pt_regs *regs)
-+static void show_registers(struct pt_regs *regs)
- {
- 	__show_regs(regs);
- 	print_modules();
-@@ -439,7 +440,7 @@ static inline void setup_vint_size(unsigned int size)
-  * happen together with Overflow or Underflow, and `ptrace' can set
-  * any bits.
-  */
--void force_fcsr_sig(unsigned long fcsr, void __user *fault_addr,
-+static void force_fcsr_sig(unsigned long fcsr, void __user *fault_addr,
- 		     struct task_struct *tsk)
- {
- 	int si_code = FPE_FLTUNK;
-@@ -458,7 +459,8 @@ void force_fcsr_sig(unsigned long fcsr, void __user *fault_addr,
- 	force_sig_fault(SIGFPE, si_code, fault_addr);
- }
- 
--int process_fpemu_return(int sig, void __user *fault_addr, unsigned long fcsr)
-+static int process_fpemu_return(int sig, void __user *fault_addr,
-+				unsigned long fcsr)
- {
- 	int si_code;
- 
-@@ -824,7 +826,7 @@ asmlinkage void noinstr do_watch(struct pt_regs *regs)
- asmlinkage void noinstr do_ri(struct pt_regs *regs)
- {
- 	int status = SIGILL;
--	unsigned int opcode = 0;
-+	unsigned int __maybe_unused opcode;
- 	unsigned int __user *era = (unsigned int __user *)exception_era(regs);
- 	irqentry_state_t state = irqentry_enter(regs);
- 
-diff --git a/arch/loongarch/mm/fault.c b/arch/loongarch/mm/fault.c
-index e6376e3dce86..02f2a9765524 100644
---- a/arch/loongarch/mm/fault.c
-+++ b/arch/loongarch/mm/fault.c
-@@ -26,6 +26,7 @@
- #include <linux/kfence.h>
- 
- #include <asm/branch.h>
-+#include <asm/exception.h>
- #include <asm/mmu_context.h>
- #include <asm/ptrace.h>
- 
-diff --git a/arch/loongarch/mm/tlb.c b/arch/loongarch/mm/tlb.c
-index eb8572e201ea..2c0a411f23aa 100644
---- a/arch/loongarch/mm/tlb.c
-+++ b/arch/loongarch/mm/tlb.c
-@@ -261,7 +261,7 @@ unsigned long pcpu_handlers[NR_CPUS];
- #endif
- extern long exception_handlers[VECSIZE * 128 / sizeof(long)];
- 
--void setup_tlb_handler(int cpu)
-+static void setup_tlb_handler(int cpu)
- {
- 	setup_ptwalker();
- 	local_flush_tlb_all();
-
-base-commit: 9fdfb15a3dbf818e06be514f4abbfc071004cbe7
+ struct hns_roce_ib_create_qp {
 -- 
-2.27.0
+2.30.0
 
