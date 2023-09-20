@@ -2,215 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFB27A8FAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DDD7A8FB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 01:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjITXCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 19:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
+        id S229653AbjITXDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 19:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjITXCF (ORCPT
+        with ESMTP id S229486AbjITXDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 19:02:05 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D595FC9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:01:58 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-502defbb0c3so654215e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 16:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1695250917; x=1695855717; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OVI1kQAYY1H6Rup9yJAb3ULOmSiNWwKwDibucQ/HouI=;
-        b=fwJo3UKZc0m5WSRUUzNViO6C1mzp2o2LOWkb4Me17MDKEx5NHEIHWuY3IhBpqNIGhe
-         VMFbj53NcMmSC3xb7HKoKM1u4SU/PbYs4narHAVAgKPY0dPnvx2aYiec+Fpx1H58kcok
-         6kbE0RckCEd8diItpYzfZMjJta0g7Uk9Z49Bo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695250917; x=1695855717;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OVI1kQAYY1H6Rup9yJAb3ULOmSiNWwKwDibucQ/HouI=;
-        b=DRJ3y1e0ol2sv9VQJXn9GWkhMwIEiLChu5Y8HvK96058xQt/qVoEdPyg0NEWFUvROQ
-         CeMX/ryTggNrC4JJZH9Z4HTBrnWpSO9c5WU58E/nei9WnNQUwE7cHlmNsK8OPFBfFSGX
-         gW7kiMlnnWuZfUM1VlfWqQcZt5lZQ/WTXa3Ge/4bBv2EUfYyKiFuAgyKkdzGcVB2IPGC
-         CO7pjoOmOCMZMucvk/c97OBMID24K9ttPBsa8GSZmpuzD8Gp6mi+NeuxsIo6iZypSLZ5
-         vQQKFckEvmZQMKBhfNU+um84tc1pNxEZL5YKe+cuPo2tLOnnbthIjWv2qpghNYslChoL
-         TIKQ==
-X-Gm-Message-State: AOJu0YyPr2QDB7CmPMLpVWFw6qB34UVhpjR9OsfrwmFCWgQ5Ytzmok72
-        gYNofc+/UH9w0NviHZCZ07MtYyqqJqubaxhzJLu0
-X-Google-Smtp-Source: AGHT+IFXnWGXW8cB93bXiMz9Jl+KdpDWFEF+9MqDskY1cIxpbbthxUKanZZmg166RPl3Bw0vao3h2/sb983B2DCTplM=
-X-Received: by 2002:a05:6512:398a:b0:502:fff9:64da with SMTP id
- j10-20020a056512398a00b00502fff964damr4109727lfu.53.1695250916994; Wed, 20
- Sep 2023 16:01:56 -0700 (PDT)
+        Wed, 20 Sep 2023 19:03:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9BD0A3;
+        Wed, 20 Sep 2023 16:02:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26AF1C433C8;
+        Wed, 20 Sep 2023 23:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695250979;
+        bh=Zk4ujfkFmSNtiTgBEOrvD7R3EsDa5uPjHsUOQXft7vY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=E9/5vRGEsGzKegCu2DninNk52ODyzPtj9qhHx85u3mWzdAHeA20G5Mp9dW87NblaK
+         0cXnTww3yriMw6vJ6QHjgIqZNNwpNp5HVHGc7ErMbTIyFmFjiClXWC4rm+BRLxKaQi
+         uu+rfqrd3XpBh9nygaet6ZX/g8SLibnfgi+1K3Ap5W6nK12o3lcxVgXuau0iM8tMgp
+         3ixA4xKV6Njt1tRobAyf1FGa79OZDdERK0D0s6VU6OM768Ulb6sTbaONRuBJMOWOs8
+         XPca1/1qBBbCKo78mCbwspK2EqcAKTKRJ13vU8wmPtkvW9apmyCt2hkaOYbb9apZeW
+         ii2dsu1p0GLGg==
+Date:   Wed, 20 Sep 2023 18:02:57 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     "lenb@kernel.org" <lenb@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>, mahesh@linux.ibm.com,
+        bhelgaas@google.com,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        gregkh@linuxfoundation.org,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: Re: Questions: Should kernel panic when PCIe fatal error occurs?
+Message-ID: <20230920230257.GA280837@bhelgaas>
 MIME-Version: 1.0
-References: <20230918180646.1398384-1-apatel@ventanamicro.com>
- <20230918180646.1398384-4-apatel@ventanamicro.com> <CAOnJCUJYDHtbYS4js7PSAeLqT4sL5zi7DT5xeSww+5Nvs2UhcA@mail.gmail.com>
- <CAK9=C2UbjOGyxo8oP36Tinjhv1jRpCb+hVbZCOJ70G4-WiHw1g@mail.gmail.com>
-In-Reply-To: <CAK9=C2UbjOGyxo8oP36Tinjhv1jRpCb+hVbZCOJ70G4-WiHw1g@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Wed, 20 Sep 2023 16:01:45 -0700
-Message-ID: <CAOnJCULajHa6H6Rt75rNepYaT-3+Bo=1hQVb_oozPZK13N6yKQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] KVM: riscv: selftests: Fix ISA_EXT register handling
- in get-reg-list
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e486db16-d36d-9e14-4f10-dc755c0ef97d@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 6:56=E2=80=AFAM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> On Wed, Sep 20, 2023 at 1:24=E2=80=AFAM Atish Patra <atishp@atishpatra.or=
-g> wrote:
-> >
-> > On Mon, Sep 18, 2023 at 11:07=E2=80=AFAM Anup Patel <apatel@ventanamicr=
-o.com> wrote:
-> > >
-> > > Same set of ISA_EXT registers are not present on all host because
-> > > ISA_EXT registers are visible to the KVM user space based on the
-> > > ISA extensions available on the host. Also, disabling an ISA
-> > > extension using corresponding ISA_EXT register does not affect
-> > > the visibility of the ISA_EXT register itself.
-> > >
-> > > Based on the above, we should filter-out all ISA_EXT registers.
-> > >
-> >
-> > In that case, we don't need the switch case any more. Just a
-> > conditional check with KVM_RISCV_ISA_EXT_MAX should be sufficient.
->
-> If we compare against KVM_RISCV_ISA_EXT_MAX then we will forget
-> adding test configs for newer ISA extensions.
->
+On Mon, Sep 18, 2023 at 05:39:58PM +0800, Shuai Xue wrote:
+> Hi, all folks,
+> 
+> Error reporting and recovery are one of the important features of PCIe, and
+> the kernel has been supporting them since version 2.6, 17 years ago.
+> I am very curious about the expected behavior of the software.
+> I first recap the error classification and then list my questions bellow it.
+> 
+> ## Recap: Error classification
+> 
+> - Fatal Errors
+> 
+> Fatal errors are uncorrectable error conditions which render the particular
+> Link and related hardware unreliable. For Fatal errors, a reset of the
+> components on the Link may be required to return to reliable operation.
+> Platform handling of Fatal errors, and any efforts to limit the effects of
+> these errors, is platform implementation specific. (PCIe 6.0.1, sec
+> 6.2.2.2.1 Fatal Errors).
+> 
+> - Non-Fatal Errors
+> 
+> Non-fatal errors are uncorrectable errors which cause a particular
+> transaction to be unreliable but the Link is otherwise fully functional.
+> Isolating Non-fatal from Fatal errors provides Requester/Receiver logic in
+> a device or system management software the opportunity to recover from the
+> error without resetting the components on the Link and disturbing other
+> transactions in progress. Devices not associated with the transaction in
+> error are not impacted by the error.  (PCIe 6.0.1, sec 6.2.2.2.1 Non-Fatal
+> Errors).
+> 
+> ## What the kernel do?
+> 
+> The Linux kernel supports both the OS native and firmware first modes in
+> AER and DPC drivers. The error recovery API is defined in `struct
+> pci_error_handlers`, and the recovery process is performed in several
+> stages in pcie_do_recovery(). One main difference in handling PCIe errors
+> is that the kernel only resets the link when a fatal error is detected.
+> 
+> ## Questions
+> 
+> 1. Should kernel panic when fatal errors occur without AER recovery?
+> 
+> IMHO, the answer is NO. The AER driver handles both fatal and
+> non-fatal errors, and I have not found any panic changes in the
+> recovery path in OS native mode.
+> 
+> As far as I know, on many X86 platforms, struct
+> `acpi_hest_generic_status::error_severity` is set as CPER_SEV_FATAL
+> in firmware first mode. As a result, kernel will panic immediately
+> in ghes_proc() when fatal AER errors occur, and there is no chance
+> to handle the error and perform recovery in AER driver.
 
-I feel it just bloats the code as we may end up in hundreds of
-extensions in the future
-given the state of the extension scheme.
+UEFI r2.10, sec N.2.1,, defines CPER_SEV_FATAL, and platform firmware
+decides which Error Severity to put in the error record.  I don't see
+anything in UEFI about how the OS should handle fatal errors.
 
-> >
-> > > Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
-> > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > > ---
-> > >  .../selftests/kvm/riscv/get-reg-list.c        | 35 +++++++++++------=
---
-> > >  1 file changed, 21 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools=
-/testing/selftests/kvm/riscv/get-reg-list.c
-> > > index d8ecacd03ecf..76c0ad11e423 100644
-> > > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > > @@ -14,17 +14,33 @@
-> > >
-> > >  bool filter_reg(__u64 reg)
-> > >  {
-> > > +       switch (reg & ~REG_MASK) {
-> > >         /*
-> > > -        * Some ISA extensions are optional and not present on all ho=
-st,
-> > > -        * but they can't be disabled through ISA_EXT registers when =
-present.
-> > > -        * So, to make life easy, just filtering out these kind of re=
-gisters.
-> > > +        * Same set of ISA_EXT registers are not present on all host =
-because
-> > > +        * ISA_EXT registers are visible to the KVM user space based =
-on the
-> > > +        * ISA extensions available on the host. Also, disabling an I=
-SA
-> > > +        * extension using corresponding ISA_EXT register does not af=
-fect
-> > > +        * the visibility of the ISA_EXT register itself.
-> > > +        *
-> > > +        * Based on above, we should filter-out all ISA_EXT registers=
-.
-> > >          */
-> > > -       switch (reg & ~REG_MASK) {
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_A:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_C:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_D:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_F:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_H:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_I:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_M:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVPBMT:
-> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSTC:
-> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVINVAL:
-> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHINTPAUSE:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOM:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOZ:
-> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBB:
-> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSAIA:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_V:
-> > > +       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVNAPOT:
-> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBA:
-> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBS:
-> > >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICNTR:
-> > > @@ -50,12 +66,7 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *v=
-cpu, int ext)
-> > >         unsigned long value;
-> > >
-> > >         ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
-> > > -       if (ret) {
-> > > -               printf("Failed to get ext %d", ext);
-> > > -               return false;
-> > > -       }
-> > > -
-> > > -       return !!value;
-> > > +       return (ret) ? false : !!value;
-> > >  }
-> > >
-> > >  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
-> > > @@ -506,10 +517,6 @@ static __u64 base_regs[] =3D {
-> > >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_=
-REG_RISCV_TIMER_REG(time),
-> > >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_=
-REG_RISCV_TIMER_REG(compare),
-> > >         KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_=
-REG_RISCV_TIMER_REG(state),
-> > > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | =
-KVM_RISCV_ISA_EXT_A,
-> > > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | =
-KVM_RISCV_ISA_EXT_C,
-> > > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | =
-KVM_RISCV_ISA_EXT_I,
-> > > -       KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | =
-KVM_RISCV_ISA_EXT_M,
-> > >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | =
-KVM_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_V01,
-> > >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | =
-KVM_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_TIME,
-> > >         KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_SBI_EXT | =
-KVM_REG_RISCV_SBI_SINGLE | KVM_RISCV_SBI_EXT_IPI,
-> > > --
-> > > 2.34.1
-> > >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
->
-> Regards,
-> Anup
+ACPI r6.5, sec 18.1, says on fatal uncorrected error, the system
+should be restarted to prevent propagation of the error.  For
+CPER_SEV_FATAL errors, it looks like ghes_proc() panics even before
+trying AER recovery.
 
+I guess your point is that for CPER_SEV_FATAL errors, the APEI/GHES
+path always panics but the native path never does, and that maybe both
+paths should work the same way?
 
+It would be nice if they worked the same, but I suspect that vendors
+may rely on the fact that CPER_SEV_FATAL forces a restart/panic as
+part of their system integrity story.
 
---=20
-Regards,
-Atish
+It doesn't seem like the native path should always panic.  If we can
+tell that data was corrupted, we may want to panic, but otherwise I
+don't think we should crash the entire system even if some device is
+permanently broken.
+
+> For fatal and non-fatal errors, struct
+> `acpi_hest_generic_status::error_severity` should as
+> CPER_SEV_RECOVERABLE, and struct
+> `acpi_hest_generic_data::error_severity` should reflect its real
+> severity. Then, the kernel is equivalent to handling PCIe errors in
+> Firmware first mode as it does in OS native mode.  Please correct me
+> if I am wrong.
+
+I don't know enough to comment on how Error Severity should be used in
+the Generic Error Status Block vs the Generic Error Data Entry.
+
+> However, I have changed my mind on this issue as I encounter a case where
+> a error propagation is detected due to fatal DLLP (Data Link Protocol
+> Error) error. A DLLP error occurred in the Compute node, causing the
+> node to panic because `struct acpi_hest_generic_status::error_severity` was
+> set as CPER_SEV_FATAL. However, data corruption was still detected in the
+> storage node by CRC.
+
+The only mention of Data Link Protocol Error that looks relevant is
+PCIe r6.0, sec 3.6.2.2, which basically says a DLLP with an unexpected
+Sequence Number should be discarded:
+
+  For Ack and Nak DLLPs, the following steps are followed (see Figure
+  3-21):
+
+    - If the Sequence Number specified by the AckNak_Seq_Num does not
+      correspond to an unacknowledged TLP, or to the value in
+      ACKD_SEQ, the DLLP is discarded
+
+      - This is a Data Link Protocol Error, which is a reported error
+	associated with the Port (see Section 6.2).
+
+So data from that DLLP should not have made it to memory, although of
+course the DMA may not have been completed.  But it sounds like you
+did see corrupted data written to memory?
+
+I assume it is not reproducible and we have no reason to think the
+receiver of the DLLP has a design defect, e.g., it reported the error
+but failed to drop the DLLP?
+
+> 2. Should kernel panic when AER recovery failed?
+> 
+> This question is actually a TODO that was added when the AER driver was
+> first upstreamed 17 years ago, and it is still relevant today. The kernel
+> does not proactively panic regardless of the error types occurring in OS
+> native mode. The DLLP error propagation case indicates that the kernel
+> might should panic when recovery failed?
+
+I'm not a hardware engineer, but I'm not yet convinced that a Data
+Link Protocol Error should cause a panic because sec 3.6.2.2 suggests
+that this error should not cause data corruption.  Certainly willing
+to be proved wrong!
+
+> 3. Should DPC be enabled by default to contain fatal and non-fatal error?
+> 
+> According to the PCIe specification, DPC halts PCIe traffic below a
+> Downstream Port after an unmasked uncorrectable error is detected at or
+> below the Port, avoiding the potential spread of any data corruption.
+> 
+> The kernel configures DPC to be triggered only on ERR_FATAL. Literally
+> speaking, only fatal error have the potential spread of any data
+> corruption?
+
+Sec 6.2.2.2 talks about fatal vs non-fatal but only in terms of
+whether the error affects a particular transaction (non-fatal) or
+everything related to a Link (fatal).  Unless there's more detail
+elsewhere, I would assume either could corrupt data.
+
+> In addition, the AER Severity is programable by the
+> Uncorrectable Error Severity Register (Offset 0Ch in PCIe AER cap). If a
+> default fatal error, e.g. DLLP, set as non-fatal, DPC will not be
+> triggered.
+
+Sec 6.2.7 and 7.8.4.4 suggest the Data Link Protocol Error should be
+a fatal error by default.
+
+I don't think Linux changes PCI_ERR_UNC_DLP (unless there's an _HPX or
+similar method), so I would expect it to be set as fatal.
+
+Bjorn
+
+> [1] https://github.com/torvalds/linux/commit/6c2b374d74857e892080ee726184ec1d15e7d4e4#diff-fea64904d30501b59d2e948189bbedc476fc270ed4c15e4ae29d7f0efd06771aR438
