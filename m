@@ -2,156 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 287C97A8450
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03A47A8452
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236470AbjITN5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
+        id S236499AbjITN51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236574AbjITNzz (ORCPT
+        with ESMTP id S236659AbjITN43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:55:55 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906A7187;
-        Wed, 20 Sep 2023 06:55:49 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KAgktW024808;
-        Wed, 20 Sep 2023 13:55:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=7I6/6X+gKlwGgDCS5f88atWdI570d7IklQfY3taOiIk=;
- b=T0bIlDFUZJ6LSvPemKyAxWYokXDvyWR1I25/QN8mBmbne+3n15N+lYmA/zBzuTBJ2erT
- IvrwAIi0Enrw4FJCyUV8G9MxCNOMGTsYuEZMtmcYUMLZhPfYGNdfwNywlpglaVprpOll
- rJoDf1EXvTRH8Xupxk1fXp/tcNpgKufqtc0FKSGcobiT3Qja4QYkLS24m1dNYSIVQInS
- aRblqjNK9mxYSEoyBlRcwxMGgs0axFK4friFXjugLHAgFkqt6OxP0SlI7OV6q6wB0smF
- zSNWlBBH7lyyzaEweKi8w+O8MnwxriV6/IQ9jnduJYpyvNoparBe4dldCCBhwwRUrWLU 1Q== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7qj91c6e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 13:55:31 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38KDtLHS008201;
-        Wed, 20 Sep 2023 13:55:27 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3t55ekk8pj-1;
-        Wed, 20 Sep 2023 13:55:27 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38KDtRlG008275;
-        Wed, 20 Sep 2023 13:55:27 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 38KDtRJw008274;
-        Wed, 20 Sep 2023 13:55:27 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
-        id B1D824070; Wed, 20 Sep 2023 19:25:26 +0530 (+0530)
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, mani@kernel.org
-Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, Mrinmay Sarkar <quic_msarkar@quicinc.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-        linux-phy@lists.infradead.org
-Subject: [PATCH v1 5/5] arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
-Date:   Wed, 20 Sep 2023 19:25:12 +0530
-Message-Id: <1695218113-31198-6-git-send-email-quic_msarkar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
-References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: oc5f-7IEcVUKLvC9h-YblYiocHEUt79t
-X-Proofpoint-ORIG-GUID: oc5f-7IEcVUKLvC9h-YblYiocHEUt79t
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_05,2023-09-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 impostorscore=0 suspectscore=0 mlxlogscore=999
- mlxscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309200114
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 09:56:29 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06336E4;
+        Wed, 20 Sep 2023 06:56:21 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38KDuBZa039452;
+        Wed, 20 Sep 2023 08:56:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695218171;
+        bh=m8KgHngVmiI/7GBOu/bwjxQ6OOHwyl5qa2i1mbM36xE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=tEPYFUlh9wt7q5WoWNNmSUnEsKkrDooopKQmqUoS4IKX5U72BxLmc1kvpGe4Ru9Y2
+         CeWx8921YElb90aKdVydNTIo9oplHKn26L8uv49eXsIedP0Ra2XHxEol1fF/wxEFVL
+         fdgsm7EAuI2lOky9zIUeDIrUVvjfOR1iEe2rs5oE=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38KDuB1S020463
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 Sep 2023 08:56:11 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 20
+ Sep 2023 08:56:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 20 Sep 2023 08:56:10 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38KDuAso003398;
+        Wed, 20 Sep 2023 08:56:10 -0500
+Date:   Wed, 20 Sep 2023 08:56:10 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Aradhya Bhatia <a-bhatia1@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Devarsh Thakkar <devarsht@ti.com>, Jai Luthra <j-luthra@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: Fix HDMI Audio overlay in Makefile
+Message-ID: <20230920135610.njestouho5cemdtv@sprint>
+References: <20230914194139.23132-1-a-bhatia1@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230914194139.23132-1-a-bhatia1@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ep pcie dtsi node for pcie0 controller found on sa8775p platform.
+On 01:11-20230915, Aradhya Bhatia wrote:
+> Apply HDMI audio overlay to AM625 and AM62-LP SK-EVMs DT binaries,
+> instead of leaving it in a floating state.
+> 
+> Fixes: b50ccab9e07c ("arm64: dts: ti: am62x-sk: Add overlay for HDMI audio")
+> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
 
-Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sa8775p.dtsi | 45 +++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+Can you acknowledge Rob for the report and provide appropriate tags?
+> ---
+>  arch/arm64/boot/dts/ti/Makefile | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index e7b8e2e7f083..77aa44c9663b 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -9,6 +9,8 @@
+>  # alphabetically.
+>  
+>  # Boards with AM62x SoC
+> +k3-am625-sk-hdmi-audio-dtbs := k3-am625-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
+> +k3-am62-lp-sk-hdmi-audio-dtbs := k3-am62-lp-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
+>  dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am625-phyboard-lyra-rdk.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am625-sk.dtb
+> @@ -19,7 +21,8 @@ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dahlia.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dev.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-yavia.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk.dtb
+> -dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-hdmi-audio.dtbo
+> +dtb-$(CONFIG_ARCH_K3) += k3-am625-sk-hdmi-audio.dtb
+> +dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk-hdmi-audio.dtb
+>  
+>  # Boards with AM62Ax SoC
+>  dtb-$(CONFIG_ARCH_K3) += k3-am62a7-sk.dtb
+> -- 
+> 2.40.1
+> 
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-index 9f4f58e8..5571131 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-@@ -2600,4 +2600,49 @@
- 
- 		status = "disabled";
- 	};
-+
-+	pcie0_ep: pcie-ep@1c00000 {
-+		compatible = "qcom,sa8775p-pcie-ep";
-+		reg = <0x0 0x01c00000 0x0 0x3000>,
-+		      <0x0 0x40000000 0x0 0xf20>,
-+		      <0x0 0x40000f20 0x0 0xa8>,
-+		      <0x0 0x40001000 0x0 0x4000>,
-+		      <0x0 0x40200000 0x0 0x100000>,
-+		      <0x0 0x01c03000 0x0 0x1000>,
-+		      <0x0 0x40005000 0x0 0x2000>;
-+		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-+			    "mmio", "dma";
-+
-+		clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
-+			<&gcc GCC_PCIE_0_CFG_AHB_CLK>,
-+			<&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
-+			<&gcc GCC_PCIE_0_SLV_AXI_CLK>,
-+			<&gcc GCC_PCIE_0_SLV_Q2A_AXI_CLK>;
-+
-+		clock-names = "aux",
-+			      "cfg",
-+			      "bus_master",
-+			      "bus_slave",
-+			      "slave_q2a";
-+
-+		interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 630 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		interrupt-names = "global", "doorbell", "dma";
-+
-+		interconnects = <&pcie_anoc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
-+				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
-+		interconnect-names = "pcie-mem", "cpu-pcie";
-+
-+		resets = <&gcc GCC_PCIE_0_BCR>;
-+		reset-names = "core";
-+		power-domains = <&gcc PCIE_0_GDSC>;
-+		phys = <&pcie0_phy>;
-+		phy-names = "pciephy";
-+		max-link-speed = <3>;
-+		num-lanes = <2>;
-+
-+		status = "disabled";
-+	};
- };
 -- 
-2.7.4
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
