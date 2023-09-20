@@ -2,144 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7710C7A861A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EB17A863B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236523AbjITOD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
+        id S234704AbjITOLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236587AbjITODX (ORCPT
+        with ESMTP id S234100AbjITOLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:03:23 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC8BB9;
-        Wed, 20 Sep 2023 07:03:13 -0700 (PDT)
-Received: from notapiano (unknown [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8A6936607201;
-        Wed, 20 Sep 2023 15:03:10 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695218591;
-        bh=0As1l5pUnNWGSkzZabr2JsNuZssFSpilRQkjdz8AJ1k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=igMB+AMiayEFp612LIiv/IJGUNWjv/yfNcI67RWl3fmXUEAusqwBRIlxTDEnn2i74
-         okinKpYzPipz6KpaHM6vvNcdzoEXqnTJ2BgQiVicY1/H3HXJHGjSAysNjpxU7HhdCs
-         F5ZGEAKOmET+xH7LYlgwLFAJMwlcvTf/KRpwxU2fn4JmBJ5QOlVGdMJrEJoPX7bOvB
-         twcnEEonoCMblVmogccUDxSIVxOChfpO4MI6qbNxW0kQh0YGDbPdJRKLlZxhsddiz6
-         ZMNqYv8Rg1RsUg86xJu1pzQnOcJAVnrGWtuFpq4W0DC1i2LZFeNKUErHFMEZd6klRr
-         Efc5V3eD7jPiw==
-Date:   Wed, 20 Sep 2023 10:03:06 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, kernelci@lists.linux.dev,
-        kernel@collabora.com, Guenter Roeck <groeck@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Add a test to catch unprobed Devicetree devices
-Message-ID: <97c368a1-9c76-490a-848e-eacd6411e810@notapiano>
-References: <20230828211424.2964562-1-nfraprado@collabora.com>
+        Wed, 20 Sep 2023 10:11:20 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB21AD
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:11:14 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3214cdb4b27so3327168f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pqrs.dk; s=google; t=1695219073; x=1695823873; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hwi8Aua8Y+P9FZKHN1BFMedplZvBD6+gBTVYLrMGWT8=;
+        b=FKJiiU1nuHY/TlAjYGLSG0DzZoIg9sLpdBsWDEUosCjL8GhAfdzqhG3iiFvYIzyR2J
+         aueaa2el9vyBZ5jzHUaizFxKml1Z4QVp5L1js783GTU1n2Lnois+UOomoqVDHOxS/oB9
+         401Z683OuBlQvzgBiWVa6yoq9rj7zEH8sSG/YS7S8QX1OMyhPqQJhcSgJMQIVNT+bqdL
+         xq4IS3y7uPpXFU/uJsGtGRgqReHPvV/3YjVHsTJyGHRvSH1rGjgoQcB+Ov1jSaaNulc1
+         CSksd12V06JcN16hIL2qvOxu6mKHXfUNUmVnsdBTJD4t/LqVSs3l1V+sz8WNo9ZgNyog
+         CRtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695219073; x=1695823873;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hwi8Aua8Y+P9FZKHN1BFMedplZvBD6+gBTVYLrMGWT8=;
+        b=EqwkVX8acDkki87qkVG/f3YZDAxSz8+41Efa3KG6zC3k9Ewh2+0fCU3wnOcddGq5FC
+         DCnKia5wI9xNoiyTqFbRKv3YXERXUKXu/fKkhM7XiF9eb0huVq5HTL3zHCSdg6lMQFZU
+         O25p7FOxe1IrOUPeTG3tbr8n9pauYLXL6FBrpWW+6rZIsTm+MAYvEHq/Wq3o9tZfOm1X
+         GhZDLZ54VO5pzqpiViE65twwBLeSBhsehRj4q1pUEP8ZEFWRrtvN7y0Z90RaJN/tVMyY
+         VHFKp4Pim8UnlVVwp5Kjz2r6j3bmBOjNulCrK59Yu+0bXbuMNhf4a0yl2GKPysvVAH1s
+         G5cA==
+X-Gm-Message-State: AOJu0YzSdPtPqNc9Y/dLJhw2HnK01/qWX9SVRpIub/+RHjDYmFaNZbCF
+        rZSpBbi1GWEcOUBp1QQ91UlT09LsP2ZHTFx0X1uSQw==
+X-Google-Smtp-Source: AGHT+IHTJNOjPaxtCMEhcXl924Qdc/tQizDwoWDkol3TLylbsbucUit0glZlNiGcAG4UP+pOmxG/Xg==
+X-Received: by 2002:a5d:60c5:0:b0:31f:dc60:13b5 with SMTP id x5-20020a5d60c5000000b0031fdc6013b5mr2391311wrt.25.1695218654230;
+        Wed, 20 Sep 2023 07:04:14 -0700 (PDT)
+Received: from capella.localdomain ([193.89.194.60])
+        by smtp.gmail.com with ESMTPSA id c26-20020a170906341a00b00993470682e5sm9397761ejb.32.2023.09.20.07.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 07:04:13 -0700 (PDT)
+From:   =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alvin@pqrs.dk>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?=A0ipraga?= <alsi@bang-olufsen.dk>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] clk: si5351: add option to adjust PLL without glitches
+Date:   Wed, 20 Sep 2023 15:09:52 +0200
+Message-ID: <20230920140343.2329225-1-alvin@pqrs.dk>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230828211424.2964562-1-nfraprado@collabora.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 05:13:09PM -0400, Nícolas F. R. A. Prado wrote:
-> 
-> Regressions that cause a device to no longer be probed by a driver can
-> have a big impact on the platform's functionality, and despite being
-> relatively common there isn't currently any generic test to detect them.
-> As an example, bootrr [1] does test for device probe, but it requires
-> defining the expected probed devices for each platform.
-> 
-> Given that the Devicetree already provides a static description of
-> devices on the system, it is a good basis for building such a test on
-> top.
-> 
-> This series introduces a test to catch regressions that prevent devices
-> from probing.
-> 
-> Patches 1 and 2 extend the existing dt-extract-compatibles to be able to
-> output only the compatibles that can be expected to match a Devicetree
-> node to a driver. Patch 2 adds a kselftest that walks over the
-> Devicetree nodes on the current platform and compares the compatibles to
-> the ones on the list, and on an ignore list, to point out devices that
-> failed to be probed.
-> 
-> A compatible list is needed because not all compatibles that can show up
-> in a Devicetree node can be used to match to a driver, for example the
-> code for that compatible might use "OF_DECLARE" type macros and avoid
-> the driver framework, or the node might be controlled by a driver that
-> was bound to a different node.
-> 
-> An ignore list is needed for the few cases where it's common for a
-> driver to match a device but not probe, like for the "simple-mfd"
-> compatible, where the driver only probes if that compatible is the
-> node's first compatible.
-> 
-> The reason for parsing the kernel source instead of relying on
-> information exposed by the kernel at runtime (say, looking at modaliases
-> or introducing some other mechanism), is to be able to catch issues
-> where a config was renamed or a driver moved across configs, and the
-> .config used by the kernel not updated accordingly. We need to parse the
-> source to find all compatibles present in the kernel independent of the
-> current config being run.
-> 
-> [1] https://github.com/kernelci/bootrr
-> 
-> Changes in v3:
-> - Added DT selftest path to MAINTAINERS
-> - Enabled device probe test for nodes with 'status = "ok"'
-> - Added pass/fail/skip totals to end of test output
-> 
-> Changes in v2:
-> - Extended dt-extract-compatibles script to be able to extract driver
->   matching compatibles, instead of adding a new one in Coccinelle
-> - Made kselftest output in the KTAP format
-> 
-> Nícolas F. R. A. Prado (3):
->   dt: dt-extract-compatibles: Handle cfile arguments in generator
->     function
->   dt: dt-extract-compatibles: Add flag for driver matching compatibles
->   kselftest: Add new test for detecting unprobed Devicetree devices
-> 
->  MAINTAINERS                                   |  1 +
->  scripts/dtc/dt-extract-compatibles            | 74 +++++++++++++----
->  tools/testing/selftests/Makefile              |  1 +
->  tools/testing/selftests/dt/.gitignore         |  1 +
->  tools/testing/selftests/dt/Makefile           | 21 +++++
->  .../selftests/dt/compatible_ignore_list       |  1 +
->  tools/testing/selftests/dt/ktap_helpers.sh    | 70 ++++++++++++++++
->  .../selftests/dt/test_unprobed_devices.sh     | 83 +++++++++++++++++++
->  8 files changed, 236 insertions(+), 16 deletions(-)
->  create mode 100644 tools/testing/selftests/dt/.gitignore
->  create mode 100644 tools/testing/selftests/dt/Makefile
->  create mode 100644 tools/testing/selftests/dt/compatible_ignore_list
->  create mode 100644 tools/testing/selftests/dt/ktap_helpers.sh
->  create mode 100755 tools/testing/selftests/dt/test_unprobed_devices.sh
+From: Alvin Å ipraga <alsi@bang-olufsen.dk>
 
-Hi Rob,
+This series intends to address a problem I had when using the Si5351A as
+a runtime adjustable audio bit clock. The basic issue is that the driver
+in its current form unconditionally resets the PLL whenever adjusting
+its rate. But this reset causes an unwanted ~1.4 ms LOW signal glitch in
+the clock output.
 
-gentle ping on this series.
+As a remedy, a new property is added to control the reset behaviour of
+the PLLs more precisely. In the process I also converted the bindings to
+YAML.
 
-I take it you'll be merging this through your tree, so I've added Shuah's R-b
-that she supplied on v2 for the kselftest patch.
+Alvin Å ipraga (3):
+  dt-bindings: clock: si5351: convert to yaml
+  dt-bindings: clock: si5351: add PLL reset mode property
+  clk: si5351: allow PLLs to be adjusted without reset
 
-Thanks,
-Nícolas
+ .../bindings/clock/silabs,si5351.txt          | 126 --------
+ .../bindings/clock/silabs,si5351.yaml         | 270 ++++++++++++++++++
+ drivers/clk/clk-si5351.c                      |  47 ++-
+ include/linux/platform_data/si5351.h          |   2 +
+ 4 files changed, 316 insertions(+), 129 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/silabs,si5351.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/silabs,si5351.yaml
+
+-- 
+2.41.0
+
