@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 309A77A7AA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D26B7A7A6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234544AbjITLoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
+        id S234308AbjITL2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234463AbjITLoP (ORCPT
+        with ESMTP id S232327AbjITL2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:44:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB853C2;
-        Wed, 20 Sep 2023 04:44:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02B5AC433C8;
-        Wed, 20 Sep 2023 11:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695210249;
-        bh=DyKwxzaJYpoA4xccVeB9/sY8k2MBqmWTPVNgHC29ZJI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O7TiMV+pDIK3FoaObHDGu1K4CQ6eJwE4N9erCjK5mtgXnvNlBjylqB7riLvnSKTrf
-         G8GQVyd/K3L7d81la5ACGOV3ooYzYNP+nmo80nf/BI9L9kfGpf0C2NGRgW+7uGH+8n
-         QQ+/141Y0130ehiahkBefwIkFnVz/n2FpslRmrAU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev,
-        syzbot+5e53f70e69ff0c0a1c0c@syzkaller.appspotmail.com,
-        Takeshi Misawa <jeliantsurux@gmail.com>,
-        Fedor Pchelkin <pchelkin@ispras.ru>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Ian Kent <raven@themaw.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrei Vagin <avagin@gmail.com>, autofs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.5 002/211] autofs: fix memory leak of waitqueues in autofs_catatonic_mode
-Date:   Wed, 20 Sep 2023 13:27:26 +0200
-Message-ID: <20230920112845.931609612@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230920112845.859868994@linuxfoundation.org>
-References: <20230920112845.859868994@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+        Wed, 20 Sep 2023 07:28:13 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B08B0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:28:07 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9adca291f99so676884366b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695209286; x=1695814086; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GACDrnV+AI9jqnTx+ewaqjW9iyUrnWty7M6DlDib3xY=;
+        b=Jew4i+KKCPTjDYUfasNhsDJvQr4GJMsiFnnv2QecUb3uC0Cp0zfQ/tvVHIDsdny0BK
+         gy0ZEXKzpR1GvUPv4QERl6X2RooP/fRn5AWFNDIAPB+PE8R5AuqEk6+Q0YXyUnuDQ2Ph
+         l6Wku95Y247xoJIRpNbWd60ce3VPgniUGRWsLDSOvP0SGiA4RBzIS7HeHCLhNVEX9ddP
+         MLHckis0z51GOF5yuBrrroXqRQ6xrt9VIubqhQF9FhpStD9HAf34uQe+uGbZzycLkEuB
+         Hx/UVR0GFi1w5it4RnXV6kExvEDduILP759XPiZyn84MzzzR+RCJrNjm7dQbyLqti97c
+         dD6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695209286; x=1695814086;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GACDrnV+AI9jqnTx+ewaqjW9iyUrnWty7M6DlDib3xY=;
+        b=DfOcYHtPgcBtJNHp2KUygef9WkPI1Cr/XJZe0rujyvzaA4W8ndTodS5HZShdV4GgQ7
+         r0CFXVMypB0zIEdjqqPPUx4rIBfOnMj2llrvyOKymt6D74o7Jo6A3pNwxWGevrQWLgVS
+         +9IsKvcHSqvpzfedxp8JMrE+m8EdU0/MBn1n60AR8+lvSiFn+QbzEJxum1PMV+7umoQa
+         paxiXbS+PkbuNQGMV+bIlhGcjhvFy0qgi1ZYB9VWzQ4YJFUrcNzkGqd9Da3JFNPaldXx
+         twvgdJ1UlKRDQNKiqiCj3JQAr2LdWfSLBRl/jfhrZ2xhLj82PWeZKBuLVsp+yU6U1olj
+         lx5A==
+X-Gm-Message-State: AOJu0YwECTdrqym8+APKa81iorB1BPBauC0fav6A0cP84u9ccpVSV2wn
+        d4w0IIYAIb1RNOhkozg5Y93jwg==
+X-Google-Smtp-Source: AGHT+IGPfIQWQ+EueBRU+uoEQXPLQOfh1V2CdlSsyL7H9gVvMK0VwLBKxAMb/iW36KEiRSVWP/qlAA==
+X-Received: by 2002:a17:906:311b:b0:9a2:143e:a062 with SMTP id 27-20020a170906311b00b009a2143ea062mr1843177ejx.49.1695209286403;
+        Wed, 20 Sep 2023 04:28:06 -0700 (PDT)
+Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id wy2-20020a170906fe0200b009adcb6c0f0esm7835502ejb.193.2023.09.20.04.28.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 04:28:05 -0700 (PDT)
+Message-ID: <9d612171-8ae4-de65-31b0-fbb5f1f8331e@linaro.org>
+Date:   Wed, 20 Sep 2023 13:28:05 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] ASoC: dt-bindings: tfa9879: Convert to dtschema
+To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230919090739.2448-1-bragathemanick0908@gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230919090739.2448-1-bragathemanick0908@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,110 +77,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-6.5-stable review patch.  If anyone has any objections, please let me know.
+On 19/09/2023 11:07, Bragatheswaran Manickavel wrote:
+> Convert the tfa9879 audio CODEC bindings to DT schema
+> 
 
-------------------
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#sound-dai-cells'
+> +
+> +additionalProperties: false
 
-From: Fedor Pchelkin <pchelkin@ispras.ru>
+Instead:
+unevaluatedProperties: false
 
-[ Upstream commit ccbe77f7e45dfb4420f7f531b650c00c6e9c7507 ]
+> +
+> +examples:
+> +  - |
+> +    i2c1 {
+> +       #address-cells = <1>;
+> +       #size-cells = <0>;
+> +       amp: amp@6c {
 
-Syzkaller reports a memory leak:
+amplifier@6c
 
-BUG: memory leak
-unreferenced object 0xffff88810b279e00 (size 96):
-  comm "syz-executor399", pid 3631, jiffies 4294964921 (age 23.870s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 08 9e 27 0b 81 88 ff ff  ..........'.....
-    08 9e 27 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ..'.............
-  backtrace:
-    [<ffffffff814cfc90>] kmalloc_trace+0x20/0x90 mm/slab_common.c:1046
-    [<ffffffff81bb75ca>] kmalloc include/linux/slab.h:576 [inline]
-    [<ffffffff81bb75ca>] autofs_wait+0x3fa/0x9a0 fs/autofs/waitq.c:378
-    [<ffffffff81bb88a7>] autofs_do_expire_multi+0xa7/0x3e0 fs/autofs/expire.c:593
-    [<ffffffff81bb8c33>] autofs_expire_multi+0x53/0x80 fs/autofs/expire.c:619
-    [<ffffffff81bb6972>] autofs_root_ioctl_unlocked+0x322/0x3b0 fs/autofs/root.c:897
-    [<ffffffff81bb6a95>] autofs_root_ioctl+0x25/0x30 fs/autofs/root.c:910
-    [<ffffffff81602a9c>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff81602a9c>] __do_sys_ioctl fs/ioctl.c:870 [inline]
-    [<ffffffff81602a9c>] __se_sys_ioctl fs/ioctl.c:856 [inline]
-    [<ffffffff81602a9c>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:856
-    [<ffffffff84608225>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84608225>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84800087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> +          compatible: "nxp,tfa9879";
+> +          reg: <0x6c>;
+> +          "#sound-dai-cells": <0>;
+> +          pinctrl-names: "default";
+> +          pinctrl-0: <&pinctrl_i2c1>;
 
-autofs_wait_queue structs should be freed if their wait_ctr becomes zero.
-Otherwise they will be lost.
+That's not a DT syntax.
 
-In this case an AUTOFS_IOC_EXPIRE_MULTI ioctl is done, then a new
-waitqueue struct is allocated in autofs_wait(), its initial wait_ctr
-equals 2. After that wait_event_killable() is interrupted (it returns
--ERESTARTSYS), so that 'wq->name.name == NULL' condition may be not
-satisfied. Actually, this condition can be satisfied when
-autofs_wait_release() or autofs_catatonic_mode() is called and, what is
-also important, wait_ctr is decremented in those places. Upon the exit of
-autofs_wait(), wait_ctr is decremented to 1. Then the unmounting process
-begins: kill_sb calls autofs_catatonic_mode(), which should have freed the
-waitqueues, but it only decrements its usage counter to zero which is not
-a correct behaviour.
-
-edit:imk
-This description is of course not correct. The umount performed as a result
-of an expire is a umount of a mount that has been automounted, it's not the
-autofs mount itself. They happen independently, usually after everything
-mounted within the autofs file system has been expired away. If everything
-hasn't been expired away the automount daemon can still exit leaving mounts
-in place. But expires done in both cases will result in a notification that
-calls autofs_wait_release() with a result status. The problem case is the
-summary execution of of the automount daemon. In this case any waiting
-processes won't be woken up until either they are terminated or the mount
-is umounted.
-end edit: imk
-
-So in catatonic mode we should free waitqueues which counter becomes zero.
-
-edit: imk
-Initially I was concerned that the calling of autofs_wait_release() and
-autofs_catatonic_mode() was not mutually exclusive but that can't be the
-case (obviously) because the queue entry (or entries) is removed from the
-list when either of these two functions are called. Consequently the wait
-entry will be freed by only one of these functions or by the woken process
-in autofs_wait() depending on the order of the calls.
-end edit: imk
-
-Reported-by: syzbot+5e53f70e69ff0c0a1c0c@syzkaller.appspotmail.com
-Suggested-by: Takeshi Misawa <jeliantsurux@gmail.com>
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Signed-off-by: Ian Kent <raven@themaw.net>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andrei Vagin <avagin@gmail.com>
-Cc: autofs@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-Id: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/autofs/waitq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
-index 54c1f8b8b0757..efdc76732faed 100644
---- a/fs/autofs/waitq.c
-+++ b/fs/autofs/waitq.c
-@@ -32,8 +32,9 @@ void autofs_catatonic_mode(struct autofs_sb_info *sbi)
- 		wq->status = -ENOENT; /* Magic is gone - report failure */
- 		kfree(wq->name.name - wq->offset);
- 		wq->name.name = NULL;
--		wq->wait_ctr--;
- 		wake_up_interruptible(&wq->queue);
-+		if (!--wq->wait_ctr)
-+			kfree(wq);
- 		wq = nwq;
- 	}
- 	fput(sbi->pipe);	/* Close the pipe */
--- 
-2.40.1
-
-
+Best regards,
+Krzysztof
 
