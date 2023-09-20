@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B987A8C63
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75DA7A8C67
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjITTM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S229934AbjITTMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjITTMP (ORCPT
+        with ESMTP id S230018AbjITTMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:12:15 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52A412E;
-        Wed, 20 Sep 2023 12:11:55 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-502b1bbe5c3so344446e87.1;
-        Wed, 20 Sep 2023 12:11:55 -0700 (PDT)
+        Wed, 20 Sep 2023 15:12:20 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CE518B;
+        Wed, 20 Sep 2023 12:11:57 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-503056c8195so383855e87.1;
+        Wed, 20 Sep 2023 12:11:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695237113; x=1695841913; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695237116; x=1695841916; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fcL6jVEgRGh/qyB/fYgM+LhUsSDKaUSeMRlsor46jHo=;
-        b=A0ILyv7kbWUloEEQ81tMPRc4Vs/7ANXKz5LUuHQZl5mh5RiLCRq+/kf2ihzuV0yNKW
-         FyeH37C5GwWK70JRURwS4+z7XfwCpKSQazhUO7KoBqqZuqxchiw5p0u+CoQ9Qqyk6ZZ7
-         mmioI7LIKooeiyq7qvZvOXZklTV6N6LYwUaYnHki8sbv+z5GbUbbBpJrAk8Dc4LSsp9w
-         i535QBkveNUOEpGkJQcn5A+agGFcvYDDRYmF5N45GnbrQsMnIKd35JrLbh3Z44HJz8MZ
-         VY9NYQDS5OkUeNwikxvxcpJNDcVwHXRU4864bICyrunzLaBxWboVMh/sg77FsMOYfjDU
-         scnA==
+        bh=v+zg14s+8ZGl4N+E2RwxXEDbGvXikDYsUs+6iexwq0A=;
+        b=iMpwe/bGXZgSZUkhwQLh+QsCvlqioCJQEkzOK12DeX8qUVnQAQP0D1khwkclsOrqdQ
+         iOPK1yuxBSH5rHfbw08zJFXS7+EgKTuY3sNbY6S0Lfl58asxXAeh+j952+4VBZv7Az1Z
+         HwrciRcEm8p8j9Ksl732ua9xEhm9nl4TXtD5Hgy+QpbjPXjZdg30TgHz2b8jAIDGk4sd
+         jrLTClyUDsVd8nJaJV+RwkDD/cktS7jdmg9sBC5U9/tUaDwtOrYhnmWd4KV1tzbzRs0/
+         BaWlswllYHGw5ziY1W4Z/JDYp/8KzRNEDQZPPfj8WK5ONVbB4DocVmS2aTat3hxr/Jxl
+         qLqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695237113; x=1695841913;
+        d=1e100.net; s=20230601; t=1695237116; x=1695841916;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fcL6jVEgRGh/qyB/fYgM+LhUsSDKaUSeMRlsor46jHo=;
-        b=FqHvyFJ363huPbp0szao0W4SLDOfVSMlgcNRyXnXbQYbAfW5AFzMfVSow0eHXV0EAA
-         OUVo6CKEU1QCK9UUQyMYdNdoDyRCC5AQFKfhUnWPYSZeDTrmognTu39e021piOEPsnub
-         sWokMbeN61ebsdAi0GKmhGHA5o4FAQRlRyWyrvkPEf7cUtOznrrHCafeNfj4n+neXVJb
-         vazvMmAGgpOlyXXZxHUswMJLzznJ1M+bgKf1tcnGCPOTY5RL/kA3EpCb74edxpT8IhN0
-         4LI/QQ/L2cZh5MVTme6N8BGpK7rlQhLaMJlr06fMq14EFcI7TwLf5sKlmb0d3JEJCduk
-         53Lg==
-X-Gm-Message-State: AOJu0YytSdv+a2WjyEg70BHDZ1tU4KbDVO8cnI14M8orEw/T0cr/o6K7
-        SUIg/z3PUbvWTZIZJQ6Zr0Q=
-X-Google-Smtp-Source: AGHT+IHkTSYPsgKsNJY3ThE2JEfP39gTJq7Sqe3B+h1DLraWjnV2B9+b5fyyV5SzFtu+I00UXiAL6w==
-X-Received: by 2002:a05:6512:3254:b0:4fd:8976:5fc9 with SMTP id c20-20020a056512325400b004fd89765fc9mr3089136lfr.23.1695237113037;
-        Wed, 20 Sep 2023 12:11:53 -0700 (PDT)
+        bh=v+zg14s+8ZGl4N+E2RwxXEDbGvXikDYsUs+6iexwq0A=;
+        b=Lrae2a1q3Ila5JelJGw2uDLoBH2BHX0OK81LN9Ox/8L+iyvgTQrRdo3CM6wtdLIj8X
+         5OBLbDF6WkrmrUt+kuzp1VZss+B2oEUZ2CeO93xrx06RW2j5gMg/NJqKVwDmjJPsR+EC
+         6R3VlXJY8goJWuXBYnD9F9eUXh9oObiT7cNClEYivxG4P+fm3ykzQw7QemTYFo2Tgp4B
+         qGUcmDeQZCy5mywC45oj+4YwwbuRtK1QLgcuJzrJrRm5RGfCLKUzqx6m0ab0k6cbq7uI
+         9FkH5DioF9WYPBf+O1DAg68WN06233eacu8OEKigMFPRnlV+OUXPfyF9f87zHGWk+okb
+         toog==
+X-Gm-Message-State: AOJu0YzjqUESjmokuc6bnBVtB4rjIcnYQz/QdB8blYT1xqnSbDhcoN6j
+        FY4kV9ldAnn8uBdyWcRYu28=
+X-Google-Smtp-Source: AGHT+IEKgVoHipql50H/RhjNA6phuGUygs8P02VerAp2mt48qJNC1iDtdTfRSAEsH+etmBYaawlTjg==
+X-Received: by 2002:a19:a410:0:b0:503:3890:ca3a with SMTP id q16-20020a19a410000000b005033890ca3amr2685854lfc.66.1695237115765;
+        Wed, 20 Sep 2023 12:11:55 -0700 (PDT)
 Received: from localhost ([85.26.234.178])
-        by smtp.gmail.com with ESMTPSA id k8-20020ac24568000000b00502ae6b8ebcsm568414lfm.304.2023.09.20.12.11.52
+        by smtp.gmail.com with ESMTPSA id p19-20020ac246d3000000b00504230986fbsm95145lfo.52.2023.09.20.12.11.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:11:52 -0700 (PDT)
+        Wed, 20 Sep 2023 12:11:55 -0700 (PDT)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Michal Simek <michal.simek@amd.com>,
         Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -66,9 +66,9 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 12/20] EDAC/synopsys: Drop redundant info from the error messages
-Date:   Wed, 20 Sep 2023 22:10:36 +0300
-Message-ID: <20230920191059.28395-13-fancer.lancer@gmail.com>
+Subject: [PATCH v4 13/20] EDAC/mc: Init DIMM labels in MC registration method
+Date:   Wed, 20 Sep 2023 22:10:37 +0300
+Message-ID: <20230920191059.28395-14-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230920191059.28395-1-fancer.lancer@gmail.com>
 References: <20230920191059.28395-1-fancer.lancer@gmail.com>
@@ -84,61 +84,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the custom error messages are needlessly long so the logged text
-gets to be printed in several lines in console. There is some
-duplicated/redundant information which can be freely removed from it: drop
-the message prefix "DDR ECC error type:%s" since the resultant text
-printed to the log by the edac_mc_printk() method will contain the error
-type and the memory controller id referring to the device detected the
-error anyway; with no harm to readability shorten out the phrase "Bit
-Position" to being just "Bit".
+Move the DIMM labels initialization to the memory controller registration
+method as a preparation before adding the generic procedure to allocate an
+unique MC index. It's required because the DIMM labels contain the MC
+index as the "mc%u" part of the string, which in case of the
+auto-generated index isn't available at the moment of the MCI/csrow/dimms
+descriptor allocation.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- drivers/edac/synopsys_edac.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ drivers/edac/edac_mc.c | 48 +++++++++++++++++++++++++++---------------
+ 1 file changed, 31 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index f1ec44cdd87f..62f498b6dfed 100644
---- a/drivers/edac/synopsys_edac.c
-+++ b/drivers/edac/synopsys_edac.c
-@@ -479,13 +479,13 @@ static void handle_error(struct mem_ctl_info *mci, struct synps_ecc_status *p)
- 		pinf = &p->ceinfo;
- 		if (priv->p_data->quirks & DDR_ECC_INTR_SUPPORT) {
- 			snprintf(priv->message, SYNPS_EDAC_MSG_SIZE,
--				 "DDR ECC error type:%s Row %d Col %d Bank %d Bank Group %d Bit Position: %d Data: 0x%08x",
--				 "CE", pinf->row, pinf->col, pinf->bank,
--				 pinf->bankgrp, pinf->bitpos, pinf->data);
-+				 "Row %d Col %d Bank %d Bank Group %d Bit %d Data 0x%08x",
-+				 pinf->row, pinf->col, pinf->bank, pinf->bankgrp,
-+				 pinf->bitpos, pinf->data);
- 		} else {
- 			snprintf(priv->message, SYNPS_EDAC_MSG_SIZE,
--				 "DDR ECC error type:%s Row %d Bank %d Col %d Bit Position: %d Data: 0x%08x",
--				 "CE", pinf->row, pinf->bank, pinf->col,
-+				 "Row %d Bank %d Col %d Bit: %d Data: 0x%08x",
-+				 pinf->row, pinf->bank, pinf->col,
- 				 pinf->bitpos, pinf->data);
- 		}
+diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
+index 6faeb2ab3960..24814839d885 100644
+--- a/drivers/edac/edac_mc.c
++++ b/drivers/edac/edac_mc.c
+@@ -256,7 +256,6 @@ static int edac_mc_alloc_dimms(struct mem_ctl_info *mci)
+ 	unsigned int pos[EDAC_MAX_LAYERS];
+ 	unsigned int row, chn, idx;
+ 	int layer;
+-	void *p;
  
-@@ -498,13 +498,12 @@ static void handle_error(struct mem_ctl_info *mci, struct synps_ecc_status *p)
- 		pinf = &p->ueinfo;
- 		if (priv->p_data->quirks & DDR_ECC_INTR_SUPPORT) {
- 			snprintf(priv->message, SYNPS_EDAC_MSG_SIZE,
--				 "DDR ECC error type :%s Row %d Col %d Bank %d Bank Group %d",
--				 "UE", pinf->row, pinf->col, pinf->bank,
--				 pinf->bankgrp);
-+				 "Row %d Col %d Bank %d Bank Group %d",
-+				 pinf->row, pinf->col, pinf->bank, pinf->bankgrp);
- 		} else {
- 			snprintf(priv->message, SYNPS_EDAC_MSG_SIZE,
--				 "DDR ECC error type :%s Row %d Bank %d Col %d ",
--				 "UE", pinf->row, pinf->bank, pinf->col);
-+				 "Row %d Bank %d Col %d",
-+				 pinf->row, pinf->bank, pinf->col);
- 		}
+ 	/*
+ 	 * Allocate and fill the dimm structs
+@@ -271,7 +270,6 @@ static int edac_mc_alloc_dimms(struct mem_ctl_info *mci)
+ 	for (idx = 0; idx < mci->tot_dimms; idx++) {
+ 		struct dimm_info *dimm;
+ 		struct rank_info *chan;
+-		int n, len;
  
- 		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci,
+ 		chan = mci->csrows[row]->channels[chn];
+ 
+@@ -282,22 +280,9 @@ static int edac_mc_alloc_dimms(struct mem_ctl_info *mci)
+ 		dimm->mci = mci;
+ 		dimm->idx = idx;
+ 
+-		/*
+-		 * Copy DIMM location and initialize it.
+-		 */
+-		len = sizeof(dimm->label);
+-		p = dimm->label;
+-		n = scnprintf(p, len, "mc#%u", mci->mc_idx);
+-		p += n;
+-		len -= n;
+-		for (layer = 0; layer < mci->n_layers; layer++) {
+-			n = scnprintf(p, len, "%s#%u",
+-				      edac_layer_name[mci->layers[layer].type],
+-				      pos[layer]);
+-			p += n;
+-			len -= n;
++		/* Copy DIMM location */
++		for (layer = 0; layer < mci->n_layers; layer++)
+ 			dimm->location[layer] = pos[layer];
+-		}
+ 
+ 		/* Link it to the csrows old API data */
+ 		chan->dimm = dimm;
+@@ -510,6 +495,33 @@ void edac_mc_reset_delay_period(unsigned long value)
+ 
+ 
+ 
++/**
++ * edac_mc_init_labels() - Initialize DIMM labels
++ *
++ * @mci: pointer to the mci structure which DIMM labels need to be initialized
++ *
++ * .. note::
++ *	locking model: must be called with the mem_ctls_mutex lock held
++ */
++static void edac_mc_init_labels(struct mem_ctl_info *mci)
++{
++	int n, len, layer;
++	unsigned int idx;
++	char *p;
++
++	for (idx = 0; idx < mci->tot_dimms; idx++) {
++		len = sizeof(mci->dimms[idx]->label);
++		p = mci->dimms[idx]->label;
++
++		n = scnprintf(p, len, "mc#%u", mci->mc_idx);
++		for (layer = 0; layer < mci->n_layers; layer++) {
++			n += scnprintf(p + n, len - n, "%s#%u",
++				      edac_layer_name[mci->layers[layer].type],
++				      mci->dimms[idx]->location[layer]);
++		}
++	}
++}
++
+ /* Return 0 on success, 1 on failure.
+  * Before calling this function, caller must
+  * assign a unique value to mci->mc_idx.
+@@ -637,6 +649,8 @@ int edac_mc_add_mc_with_groups(struct mem_ctl_info *mci,
+ 		goto fail0;
+ 	}
+ 
++	edac_mc_init_labels(mci);
++
+ 	if (add_mc_to_global_list(mci))
+ 		goto fail0;
+ 
 -- 
 2.41.0
 
