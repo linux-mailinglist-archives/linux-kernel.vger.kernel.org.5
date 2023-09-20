@@ -2,48 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2707A70F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990527A70F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbjITDWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 23:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
+        id S232458AbjITDXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 23:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjITDW3 (ORCPT
+        with ESMTP id S229521AbjITDXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 23:22:29 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 908419F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=KQLUY
-        a3KKK3ZT24Fs/QQWKicsaIGPOdPCRwIWIKrD1s=; b=T1ufyU42gJYnYJshDrzsl
-        o47D4KyptcT4WfcGzE/IdE/KGCCTOY+37mdOSBMk4jDC7r+VfU+jlJQ3YOVSWjIy
-        UgBU9yX+qKp7YF9xym4Gf1nSmE5zyGlpSEZSMGAeW1MLBAFumXkJhmj/99KXiD5n
-        FfQqqMa/1czgf0fT3+efmQ=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wCnKEdYZQplhLhFCg--.4484S4;
-        Wed, 20 Sep 2023 11:22:07 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     alain.volmat@foss.st.com, airlied@gmail.com
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH] drm/sti: avoid potential dereference of error pointers
-Date:   Wed, 20 Sep 2023 11:21:59 +0800
-Message-Id: <20230920032159.3542372-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Tue, 19 Sep 2023 23:23:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0A99F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:23:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609AEC433C7;
+        Wed, 20 Sep 2023 03:22:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695180179;
+        bh=CZNGlwk8El4NyNLGtKLKanjOxlEfzUXc4QahjCELL4w=;
+        h=Date:From:To:Subject:From;
+        b=pdAw+pM7dGeShqsn9EodB4tRccrdTLlVla4VxYvMBxs/BNnNtsG8kTAea8mef5EA/
+         jE/KSbz+D0f8eZosEaQn8KP/7i1+dsfNgbbDgsVA8yHdjjrZw14yLk3MIic2FnOsTu
+         mNZO7omTlaLkNrgJUTBuP6vAS+7H4+yFuyIlv7gRNLPGzCpU0Xx8saqpJgxC5eB5N+
+         y8mLavqxwD+K3reUtWH616TVG8Rb1WEpIYBp4Bmx/D/ilcfzd3M6pDANSMvmwEp22p
+         jNu/T68NLoXVhFKDCvqO1Z5oGDmmCgkZUncohgJCLOF8spuG+BQvh55V25e6QSqPaU
+         htCbSYCXdeqxA==
+Date:   Tue, 19 Sep 2023 20:22:57 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Prebuilt LLVM 17.0.1 uploaded
+Message-ID: <20230920032257.GA472311@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCnKEdYZQplhLhFCg--.4484S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFyUWw4rGr43ZFW7Jw13Arb_yoW3trg_G3
-        WUXr1fKrWDKa1jqF4jyrn8JasY9rZ5XF48Xr1Iqas8ur4kAry8X347Wr1fWFyUWF18tFyq
-        qa1xur90krn0kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRMeHqJUUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbivgDwC1ZciymIqgAAsP
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,28 +44,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value of drm_atomic_get_crtc_state() needs to be
-checked. To avoid use of error pointer 'crtc_state' in case
-of the failure.
+Hi all,
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- drivers/gpu/drm/sti/sti_cursor.c | 2 ++
- 1 file changed, 2 insertions(+)
+I have built and uploaded LLVM 17.0.1 to
+https://mirrors.edge.kernel.org/pub/tools/llvm/. This is the first
+stable release of the 17.x series, as 17.0.0 final was withdrawn due to
+some issue.
 
-diff --git a/drivers/gpu/drm/sti/sti_cursor.c b/drivers/gpu/drm/sti/sti_cursor.c
-index db0a1eb53532..e460f5ba2d87 100644
---- a/drivers/gpu/drm/sti/sti_cursor.c
-+++ b/drivers/gpu/drm/sti/sti_cursor.c
-@@ -200,6 +200,8 @@ static int sti_cursor_atomic_check(struct drm_plane *drm_plane,
- 		return 0;
- 
- 	crtc_state = drm_atomic_get_crtc_state(state, crtc);
-+	if (IS_ERR(crtc_state))
-+		return PTR_ERR(crtc_state);
- 	mode = &crtc_state->mode;
- 	dst_x = new_plane_state->crtc_x;
- 	dst_y = new_plane_state->crtc_y;
--- 
-2.37.2
+If there are any issues found, please let us know via
+email or https://github.com/ClangBuiltLinux/linux/issues/new, so that we
+have an opportunity to get them fixed in main and backported before the
+17.x series is no longer supported.
 
+Cheers,
+Nathan
