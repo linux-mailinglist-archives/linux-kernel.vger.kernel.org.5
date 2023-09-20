@@ -2,157 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB037A8950
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062BB7A8953
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbjITQPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
+        id S234575AbjITQRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234457AbjITQPK (ORCPT
+        with ESMTP id S234100AbjITQRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 12:15:10 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F2F9F;
-        Wed, 20 Sep 2023 09:15:03 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34ff2ee8f8eso10509875ab.3;
-        Wed, 20 Sep 2023 09:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695226502; x=1695831302; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vp5ehFIEHrL6EHi+otp8Bh+D7ZWmQZrK9toHBT+EKsk=;
-        b=fkK308tOwM0ClFtcDbIUpUxCq8faXWFRNy55+NMozqburk3bhnAlvW+r6vJl+AyGzb
-         3m4AgC72EYruJVJ3Bob7zmKTfM4wmao3z9KoK86ClU2iBlUwdSJmf4rIFJdN8wNDMi3w
-         uRbcW81H53Gjktexn2bOi2p0S6Nc6dn4W9aUWrZDzvasCj4hWZ7k6HQPbFeLvufP0VUt
-         Hms1pruL+933165mFnxKB8qmMNhuEiDKuj/9LTGUs0oOwjpKeUv79Zyn5RoSkJ8C7NTA
-         1R3H3ibJoucpOqsoN/un4p7+4pavOwrcYpn4Jzd0FiBmIpXXVmiSJXT9WKX6twAvbcsX
-         nPFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695226502; x=1695831302;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vp5ehFIEHrL6EHi+otp8Bh+D7ZWmQZrK9toHBT+EKsk=;
-        b=EEHO4/roedrFaWr4PvDWeXbjHRQVKpzSaHNFJ9S2B96QSgzC3z0Cw9jVLuE55tAiFk
-         j0DW+pv6kp7MTEOsYFPU9tRVaqxQfLUnMkOO0GkryEspG9U4BKSE0laTyTlXTh+CbFoD
-         H0Q3i6ZnXKQpHZRwU14MFUJURNFKZelKvaWYoskwuKpzdqyRoJOGqN934llAqvxVbj0T
-         j7rSaBF781BwHsMPioDmDbpiZzpe0VtkhLrsWx3uyCJeHgoI7VM8iXbiJdDlM3CXnq4O
-         WDeJC/m/tsjDHL33bK5PA3U7WxiYC+vlpxfPBmuFio6sG1TDGX8oZ23cQY9i21V6Awtw
-         Y7+w==
-X-Gm-Message-State: AOJu0Yxs8v7amWOuNRe9HQ1dKaQNCG3BsLkI+IFuNrirmmKkDcIBKEA9
-        +70c164tq4BUboCyi9W+Rts=
-X-Google-Smtp-Source: AGHT+IEoJRppbCar5L+CmeQPgUld+slWvoWUC9djlkm8jLzTeiLSqSZkhxD6dqlF5pFs289hDWVU3w==
-X-Received: by 2002:a05:6e02:14c1:b0:34f:6dbb:6a24 with SMTP id o1-20020a056e0214c100b0034f6dbb6a24mr3180632ilk.1.1695226502303;
-        Wed, 20 Sep 2023 09:15:02 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c10-20020a92dc8a000000b0034f6f2eca21sm1667137iln.69.2023.09.20.09.15.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 09:15:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <76c39035-06a4-a7db-50e5-517004c0dad9@roeck-us.net>
-Date:   Wed, 20 Sep 2023 09:14:59 -0700
+        Wed, 20 Sep 2023 12:17:41 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452F4C6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:17:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695226656; x=1726762656;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oOoaB1KS0Eiipp5IcFf75B/P4E+oA/gb1k22OBoC38o=;
+  b=Wrve+VYmfutxq+p49s5l/jcVUlF1Ecr+Y6hOL2oAJp0J8KiLdv3SIcrS
+   xbJqtB/RAY8zJdXrR89dLJ0yOeUwEGIc6EupIucNhXHMl2/vQwiqBNHMt
+   wSqLQJvzH8nhWaGIcwEzTbIrTZ7VsEqSwQXOPVXgQAzgDnc7GQn/U1OV3
+   ucF/uARJkhxRFC4sbiHI6+y3IJvp7MQ1RNIIkFFKJ3h7yp3X0IxrjK6hG
+   DS5Nxm+SVUCOcERpGDM6k6oScSbu7MSnN/oF6QnmugHAkg6fPJXRqvoBI
+   ZipuNnFXvsKoplhayKzxd7DpBes+GGib0Rky/SW1koiE/lS5pGNsRyu0W
+   w==;
+X-CSE-ConnectionGUID: kv4cb7CyT2KXaEGqaQkOVg==
+X-CSE-MsgGUID: JH7tRU/ATMaibGX1tMOLYQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
+   d="scan'208";a="236244815"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Sep 2023 09:17:35 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 20 Sep 2023 09:16:53 -0700
+Received: from [10.171.246.35] (10.10.85.11) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Wed, 20 Sep 2023 09:16:51 -0700
+Message-ID: <4c9b0dff-6350-376b-60ac-c36f98378a51@microchip.com>
+Date:   Wed, 20 Sep 2023 18:16:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Content-Language: en-US
-To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230920054739.1561080-1-Delphine_CC_Chiu@wiwynn.com>
- <20230920054739.1561080-2-Delphine_CC_Chiu@wiwynn.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v1 1/2] dt-bindings: hwmon: add INA233 binding documents
-In-Reply-To: <20230920054739.1561080-2-Delphine_CC_Chiu@wiwynn.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] mtd: spi-nor: atmel: add at25ff321a entry
+Content-Language: en-US, fr-FR
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230908151400.164470-1-nicolas.ferre@microchip.com>
+ <8d72820d-bbaa-abc8-4448-87f0f054c381@linaro.org>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+In-Reply-To: <8d72820d-bbaa-abc8-4448-87f0f054c381@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/23 22:47, Delphine CC Chiu wrote:
-> Add INA233 binding documents for Yosemite V4 config.
+On 19/09/2023 at 18:12, Tudor Ambarus wrote:
+> On 08.09.2023 18:14, nicolas.ferre@microchip.com wrote:
+>> From: Nicolas Ferre <nicolas.ferre@microchip.com>
+>>
+>> Add the at25ff321a 4MB SPI flash which is able to provide
+>> SFDP informations.
+>> Datasheet: https://www.renesas.com/us/en/document/dst/at25ff321a-datasheet
+>>
+>> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+>> ---
+
+[..]
+
+>>   drivers/mtd/spi-nor/atmel.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+>> index 58968c1e7d2f..c94d52951481 100644
+>> --- a/drivers/mtd/spi-nor/atmel.c
+>> +++ b/drivers/mtd/spi-nor/atmel.c
+>> @@ -184,6 +184,10 @@ static const struct flash_info atmel_nor_parts[] = {
+>>                FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+>>                NO_SFDP_FLAGS(SECT_4K)
+>>                .fixups = &atmel_nor_global_protection_fixups },
+>> +     { "at25ff321a", INFO(0x1f4708, 0, 64 * 1024,  64)
+>> +             FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+>> +             PARSE_SFDP
+>> +             .fixups = &atmel_nor_global_protection_fixups },
 > 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-> ---
->   .../devicetree/bindings/hwmon/ina233.txt      | 27 +++++++++++++++++++
->   MAINTAINERS                                   |  6 +++++
->   2 files changed, 33 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/hwmon/ina233.txt
+> We have recently changed how the flash entries are defined. Would you
+> please try the following changes instead?
 > 
-> diff --git a/Documentation/devicetree/bindings/hwmon/ina233.txt b/Documentation/devicetree/bindings/hwmon/ina233.txt
-> new file mode 100644
-> index 000000000000..a1067788ec0c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/ina233.txt
-> @@ -0,0 +1,27 @@
-> +Bindings for the Maxim MAX31790 Intelligent Fan Controller
+> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+> index 95f0e139284e..44218716d81e 100644
+> --- a/drivers/mtd/spi-nor/atmel.c
+> +++ b/drivers/mtd/spi-nor/atmel.c
+> @@ -213,6 +213,12 @@ static const struct flash_info atmel_nor_parts[] = {
+>                  .flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+>                  .no_sfdp_flags = SECT_4K,
+>                  .fixups = &atmel_nor_global_protection_fixups
+> +       }, {
+> +               .id = SNOR_ID(0x1f, 0x47, 0x08),
+> +               .name = "at25ff321a",
+> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
 
-Not really.
+Here, I added:
 
-> +==========================================================
-> +
-> +Reference:
-> +
-> +https://pdf1.alldatasheet.com/datasheet-pdf/view/930928/TI1/INA233.html
-> +
-> +The INA233 device is a current, voltage and power monitor with an I2C-, SMBus-,and PMBus-compatible interface
-> +that is compliant with digital bus voltages from 1.8 V to 5.0 V.
-> +The device monitors and reports values for current, voltage and power.
-> +The integrated power accumulator can be used for energy or average power calculations.
-> +Programmable calibration value, conversion times and averaging when combined with an internal multiplier
-> +enable direct readouts of current in amperes and power in watts.
-> +
-> +Required properties:
-> +- compatible     	: ti,ina233
-> +- reg            	: I2C address
-> +- resistor-calibration  : MFR_CALIBRATION which will be set into register 0xd4
-> +- current-lsb    	: Current_LSB for calibration
+                .no_sfdp_flags = SECT_4K,
 
-The lack of valid ranges is a concern for me, as well as the lack of units.
-MFR_CALIBRATION is register 0xd4, so I don't think that "MFR_CALIBRATION
-which will be set into register 0xd4" is a really useful description.
+to match the other devices of the family... I checked on the datasheet, 
+4K sectors are okay, but I don't know exactly if this is eligible to the 
+"no_sfdb_flags" property... forgive me, I didn't check further knowing 
+that you might have better view on this than me ;-)
 
-Also, the calibration register value is, per datasheet, supposed to be
-calculated from current_lsb and Rshunt. Since current_lsb is calculated
-from the maximum expected current, the properties should actually be
-the maximum expected current and Rshunt.
+> +               .fixups = &atmel_nor_global_protection_fixups
+> +       }, {
+>          }, {
+>                  .id = SNOR_ID(0x1f, 0x48, 0x00),
+>                  .name = "at25df641",
 
-> +Example:
-> +
-> +        ina233@45 {
-> +                compatible = "ti,ina233";
-> +                reg = <0x45>;
-> +                resistor-calibration = /bits/ 16 <0x0a00>;
-> +                current-lsb= /bits/ 16 <0x0001>;
-> +        };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bf0f54c24f81..48b9a73d259f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10243,6 +10243,12 @@ F:	Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
->   F:	Documentation/hwmon/ina209.rst
->   F:	drivers/hwmon/ina209.c
->   
-> +INA233 HARDWARE MONITOR DRIVER
-> +M:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-> +S:     Odd Fixes
-> +F:     Documentation/devicetree/bindings/hwmon/ina233.txt
-> +F:     drivers/hwmon/ina233.c
-> +
->   INA2XX HARDWARE MONITOR DRIVER
->   M:	Guenter Roeck <linux@roeck-us.net>
->   L:	linux-hwmon@vger.kernel.org
+That works perfectly well (I can re-post the test results as my previous 
+patch if needed): do you want me to send the updated patch with your 
+Suggested-by tag or you can send yours, tell me what you prefer.
+
+Thanks for the heads-up on this update that I hadn't noticed. Best regards,
+   Nicolas
 
