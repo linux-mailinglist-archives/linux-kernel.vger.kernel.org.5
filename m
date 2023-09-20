@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2187A72ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A639F7A72EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233288AbjITGj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
+        id S233304AbjITGkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbjITGjw (ORCPT
+        with ESMTP id S233243AbjITGkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:39:52 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0740AB0;
-        Tue, 19 Sep 2023 23:39:47 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6befdb1f545so4507136a34.3;
-        Tue, 19 Sep 2023 23:39:46 -0700 (PDT)
+        Wed, 20 Sep 2023 02:40:11 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46139CE;
+        Tue, 19 Sep 2023 23:40:06 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-573675e6b43so4165165eaf.0;
+        Tue, 19 Sep 2023 23:40:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695191986; x=1695796786; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695192005; x=1695796805; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xIS769hMse1vDi7mpkrCqnYIQ3QwZYvHFR8ADh3yuGA=;
-        b=lFAudFNhrBA4ZnDgB3a+jeL/HC//SVvy6DWZYhJo3J3bZtvWXDwzpEvTEgF9ue2NlC
-         QThz1nLtJNVcumaOQ8ZXkxmuHYdJEAgU3aFySUBoqjvRXQahg9/L8cuPqC/Ys56reYGZ
-         Hlm3n0NQ4Mkyc5Gb6Sj5C7yV33uVpS4C5bra3+f0xhcoFZkAa/0WOhFp0SZe6xeghAb3
-         60bjZI6peiVj6mduRVHlgtlNDMqVVFdiNph5HTjED2kf72K/XwB/icVm7B9Ri7uXchh7
-         Q99l0XwrCuzCMuW4ACZv63U0lb58mXZ6WPmQsdraYyXgb9NDNraG73b94X62uZ4VcFE6
-         z6qQ==
+        bh=JwXg+ilQ0RHmfCXNasOazmFwYr/JJwhhEAkK60Nck04=;
+        b=QQJVjwEljXgYm8IOhOLijSZE/O/w6muLfZ0KUJoGgH+S0naLh3TZrWae14Ns8HxcBN
+         gDWFXAEdPoJ5J6OCQl7ZxTE0VyvJJKzBI0UMcB+NA7Vtjo5SQvVQ+EAQPepLpg57lGdM
+         igfmi3yaBkcIK7+GfrxTnB9jKX9U6VHS+mu1oIytYi3dVFEc4S+7YSbUJP5qIq+NojVT
+         OAz6cP7n+4hMLhbKEoBSnlEGvqjV1UYGjRm0BaRUG8jTLPDw9XUM2hZMhXlEbKhnWKu2
+         HnfPZYaAl6FMGj7oNkWMunbTdh2uBiMAI2ryIAVy59u3USYyBir3Lqp/2v3bkUWkpU+T
+         dsPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695191986; x=1695796786;
+        d=1e100.net; s=20230601; t=1695192005; x=1695796805;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xIS769hMse1vDi7mpkrCqnYIQ3QwZYvHFR8ADh3yuGA=;
-        b=ssB4u/IKNIVlVOGmv6rQM4VWtOzxCuikTwtkUz1wwtHrPtnswHSlsEUfgT0nuFEHvM
-         h1KsMZ6J8M6NulKX8s+4NQrHl8CBBIbnkez6PzVZUf6OX1EF3VF3rCpfclS+VYhYEjfy
-         kz4ENUw0LV5xRJgOL1J3lS3B70xnK/sSbyxVgcg09Pzhzg1aCdYCK4x10tdQ0qHs+7Qr
-         RxHU83mEsD6VUE8dioOxDiKwPx2aYUcvPIf0JrtP8XNfRbu3t0giZlgT8dZI/svsw1NT
-         L99VU7Qs7fbaEBFdX4wZdXa0bjmTjXSf2euoVar0TiaD+BfKtrRX11PnNgr1harLZt9Y
-         yUkg==
-X-Gm-Message-State: AOJu0YwXdI2KZpu/uxTozWowR8ggeF6N1ImeN2xRYaw/HmB3PUssKrIF
-        0U6KkUz98ctG8+5l4G2a1Aw=
-X-Google-Smtp-Source: AGHT+IGvOZR9TEOpFxR7CU19sAHd0S0o7LQPvKu+dpiaEQBrFkNJITq/KyqRguWGoKOQD5qCXe3qBg==
-X-Received: by 2002:a05:6870:c6a5:b0:1d5:4fb0:105 with SMTP id cv37-20020a056870c6a500b001d54fb00105mr1753205oab.20.1695191986216;
-        Tue, 19 Sep 2023 23:39:46 -0700 (PDT)
+        bh=JwXg+ilQ0RHmfCXNasOazmFwYr/JJwhhEAkK60Nck04=;
+        b=czq9sKWMAYlOPThGfpUBAsdeV8MmqfChVxrtzEmfAXi3WChisGPFA0BsVeOHDs/98G
+         6DcEAiCwbnd31lK38zi53ERvGLC/cX91xWPETiSziDKVRj9x5t7fQYUUdZJyHSFJDTaQ
+         +7TzFoirFbGjXhJaVFeFuZf5oCeuyyJw8tqQgX1d9NH7KEoRe30NEe1ETHxrC0t9YGIK
+         kJujxWR29iaI3HDcwKq8US5peTRT2H193G18wdwp4I/RWPyOv8oBW/v6RUsH0f5t4Ig4
+         4rqQwKhFf+97I0Xa3VzgRz5+TxY25wGt86whkzykRqOBf27XCLfAGsJexIn5LbOT6E33
+         Bl7Q==
+X-Gm-Message-State: AOJu0YzZbh4k9Wu5d4VMc5E4IyB6sxK7WuZQWOuRGt8ZnRr8PxQE18zM
+        YoxPSSZPLiTNqFMI0z2OBD8=
+X-Google-Smtp-Source: AGHT+IHW9cf7GsKofv0VrXQeWwee9ruAO4LJSIL63WsuVZFAbAAr2jucMD2LgmNLvK50rjiBsZPYAg==
+X-Received: by 2002:a4a:e096:0:b0:57b:3a07:181c with SMTP id w22-20020a4ae096000000b0057b3a07181cmr261020oos.9.1695192005156;
+        Tue, 19 Sep 2023 23:40:05 -0700 (PDT)
 Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id m10-20020a056870560a00b001c02f12abd0sm6282986oao.38.2023.09.19.23.39.45
+        by smtp.gmail.com with ESMTPSA id z196-20020a4a49cd000000b005768a6a19f9sm6450618ooa.2.2023.09.19.23.40.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 23:39:46 -0700 (PDT)
+        Tue, 19 Sep 2023 23:40:04 -0700 (PDT)
 From:   Chen Wang <unicornxw@gmail.com>
 X-Google-Original-From: Chen Wang <wangchen20@iscas.ac.cn>
 To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
@@ -59,11 +59,10 @@ To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
         linux-riscv@lists.infradead.org, palmer@dabbelt.com,
         paul.walmsley@sifive.com, robh+dt@kernel.org,
         xiaoguang.xing@sophgo.com
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Chen Wang <wangchen20@iscas.ac.cn>
-Subject: [PATCH v2 06/11] dt-bindings: timer: Add Sophgo sg2042 clint
-Date:   Wed, 20 Sep 2023 14:39:39 +0800
-Message-Id: <55865e1ce40d2017f047d3a9e1a9ee30043b271f.1695189879.git.wangchen20@iscas.ac.cn>
+Cc:     Chen Wang <wangchen20@iscas.ac.cn>
+Subject: [PATCH v2 07/11] dt-bindings: serial: snps-dw-apb-uart: Add Sophgo SG2042 uarts
+Date:   Wed, 20 Sep 2023 14:39:58 +0800
+Message-Id: <05fcf91d60468323a6c7cdb8ac57c356ab4a3050.1695189879.git.wangchen20@iscas.ac.cn>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695189879.git.wangchen20@iscas.ac.cn>
 References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
@@ -79,37 +78,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Inochi Amaoto <inochiama@outlook.com>
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
-Add two new compatible string formatted like `C9xx-clint-xxx` to identify
-the timer and ipi device separately, and do not allow c900-clint as the
-fallback to avoid conflict.
+Add compatible for the uarts on the Sophgo SG2042 RISC-V SoC.
 
-Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
 ---
- Documentation/devicetree/bindings/timer/sifive,clint.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-index a0185e15a42f..ae69696c5c75 100644
---- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-+++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-@@ -39,6 +39,14 @@ properties:
-               - allwinner,sun20i-d1-clint
-               - thead,th1520-clint
-           - const: thead,c900-clint
-+      - items:
-+          - enum:
-+              - sophgo,sg2042-clint-mtimer
-+          - const: thead,c900-clint-mtimer
-+      - items:
-+          - enum:
-+              - sophgo,sg2042-clint-mswi
-+          - const: thead,c900-clint-mswi
+diff --git a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
+index 17c553123f96..011d89e6df0f 100644
+--- a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
+@@ -45,6 +45,7 @@ properties:
+           - const: snps,dw-apb-uart
        - items:
-           - const: sifive,clint0
-           - const: riscv,clint0
+           - enum:
++              - sophgo,sg2042-uart
+               - starfive,jh7100-hsuart
+               - starfive,jh7100-uart
+           - const: snps,dw-apb-uart
 -- 
 2.25.1
 
