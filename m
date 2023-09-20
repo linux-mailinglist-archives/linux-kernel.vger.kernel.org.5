@@ -2,116 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5A97A88AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394547A88B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235449AbjITPmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
+        id S236688AbjITPnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234622AbjITPma (ORCPT
+        with ESMTP id S235497AbjITPnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:42:30 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3440CA9;
-        Wed, 20 Sep 2023 08:42:25 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c4586b12feso30745095ad.2;
-        Wed, 20 Sep 2023 08:42:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695224544; x=1695829344; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/FopUyV3sWTM0BYSDm8MXgHOopR6PnUhg8HFvmChPo4=;
-        b=dsDeyx/zRjXeFICEFax+ycZJmINaBsKPK/9IG1+zFQir1zbqksO5fGQcGHIYZLpy4I
-         Q27/OBqVe4V/CNSwI4/xFY4xH5BEwurLY0eWlNFV/3AzT+rpUC8QiaSVitYCSCLZzXcs
-         +1I+8g5hDd+T7nDHTsw/bb+UvhE6Pu+a0TpLoernIbw5DfV7ZHKIbxMLYOr0o2cnDbgN
-         f012PRPTytQlO3fBk6pYKYtWEADyOszt+RQBC8D/0Kh/d1CUlkRYPdDo21ig/eHr/nqG
-         K5wd6fTsiqKOD9surAW6dTU8hnnFy+tEZ/6L/J4v3KsaC4Yze+P3cmdwtVLcvltvMdIu
-         7Nkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695224544; x=1695829344;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/FopUyV3sWTM0BYSDm8MXgHOopR6PnUhg8HFvmChPo4=;
-        b=cH9Rmzqq3QIBG3U20BW1UljDjFQErcJIOoawQuXwub9Y0UXo/3OFUN+IC9TgI6D4gk
-         YQJUBot1DAv4DIwK/Bo9hzf8hv/Bi/IOS4FxBgJyJSL+R0wbBsIVaxync/Kjjia4lnSR
-         s3U9hc/2GlA2PHytAEViMl75LRvHl790v/IvEWWZmflOj+OaliESi28+0fvfGz2AysPC
-         chn5Ib688PhjRceXAzLSD3HQglQV2ekBY8QaCOYdCv4jlI1owBOq4oOX4KzIxZ1VkMHW
-         jqpz2UvDbYzY6lo97pxc09l3gRxULPaB+cMRKlq3Fnvo4O64X8Yin3PL5LvlFD8niKFy
-         vccw==
-X-Gm-Message-State: AOJu0YzflufVl0Fm2awjrPfCPuvgna917TRrWKUPdNS9RvhUjnf5vQC/
-        cTSLT49a59VQAtwzjiSk8EPJqFf7B1s=
-X-Google-Smtp-Source: AGHT+IEg7YKWpX/lvcgUKqgEZpPhN5zjZAhlL+5B313ksWVb7l6TWMOYw1KftwM2OOl0540JUnhR3g==
-X-Received: by 2002:a17:902:9f8e:b0:1c5:b1a6:8111 with SMTP id g14-20020a1709029f8e00b001c5b1a68111mr2306749plq.31.1695224544654;
-        Wed, 20 Sep 2023 08:42:24 -0700 (PDT)
-Received: from [192.168.31.134] ([117.243.89.101])
-        by smtp.gmail.com with ESMTPSA id ik26-20020a170902ab1a00b001b89b7e208fsm12228396plb.88.2023.09.20.08.42.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 08:42:24 -0700 (PDT)
-Message-ID: <74322740-8db4-f165-7c01-47ed98f07e51@gmail.com>
-Date:   Wed, 20 Sep 2023 21:12:16 +0530
+        Wed, 20 Sep 2023 11:43:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6B0CA;
+        Wed, 20 Sep 2023 08:43:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE46DC433C8;
+        Wed, 20 Sep 2023 15:42:56 +0000 (UTC)
+Message-ID: <b8f8876e-d712-4ffb-b082-b8e02363ec33@xs4all.nl>
+Date:   Wed, 20 Sep 2023 17:42:55 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] ASoC: dt-bindings: tfa9879: Convert to dtschema
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230919090739.2448-1-bragathemanick0908@gmail.com>
- <9d612171-8ae4-de65-31b0-fbb5f1f8331e@linaro.org>
-From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-In-Reply-To: <9d612171-8ae4-de65-31b0-fbb5f1f8331e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v15 7/7] media: nuvoton: Add driver for NPCM video capture
+ and encoding engine
+Content-Language: en-US, nl
+To:     Marvin Lin <milkfafa@gmail.com>, mchehab@kernel.org,
+        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        andrzej.p@collabora.com
+Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        kwliu@nuvoton.com, kflin@nuvoton.com
+References: <20230920022812.601800-1-milkfafa@gmail.com>
+ <20230920022812.601800-8-milkfafa@gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230920022812.601800-8-milkfafa@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20/09/2023 04:28, Marvin Lin wrote:
+> Add driver for Video Capture/Differentiation Engine (VCD) and Encoding
+> Compression Engine (ECE) present on Nuvoton NPCM SoCs. As described in
+> the datasheet NPCM750D_DS_Rev_1.0, the VCD can capture frames from
+> digital video input and compare two frames in memory, and then the ECE
+> can compress the frame data into HEXTILE format. This driver implements
+> V4L2 interfaces and provides user controls to support KVM feature, also
+> tested with VNC Viewer ver.6.22.826 and openbmc/obmc-ikvm.
+> 
+> Signed-off-by: Marvin Lin <milkfafa@gmail.com>
 
-On 20/09/23 16:58, Krzysztof Kozlowski wrote:
-> On 19/09/2023 11:07, Bragatheswaran Manickavel wrote:
->> Convert the tfa9879 audio CODEC bindings to DT schema
->>
->> +required:
->> +  - compatible
->> +  - reg
->> +  - '#sound-dai-cells'
->> +
->> +additionalProperties: false
-> Instead:
-> unevaluatedProperties: false
->
->> +
->> +examples:
->> +  - |
->> +    i2c1 {
->> +       #address-cells = <1>;
->> +       #size-cells = <0>;
->> +       amp: amp@6c {
-> amplifier@6c
->
->> +          compatible: "nxp,tfa9879";
->> +          reg: <0x6c>;
->> +          "#sound-dai-cells": <0>;
->> +          pinctrl-names: "default";
->> +          pinctrl-0: <&pinctrl_i2c1>;
-> That's not a DT syntax.
->
-> Best regards,
-> Krzysztof
->
-Let me correct all this errors/warnings and send a new patch.
+I'm getting two sparse warnings:
 
-Thanks,
-Bragathe
+drivers/media/platform/nuvoton/npcm-video.c:227:27: warning: incorrect type in argument 1 (different address spaces)
+drivers/media/platform/nuvoton/npcm-video.c:227:27:    expected void const volatile [noderef] __iomem *addr
+drivers/media/platform/nuvoton/npcm-video.c:227:27:    got void *
+drivers/media/platform/nuvoton/npcm-video.c:1050:20: warning: context imbalance in 'npcm_video_irq' - different lock contexts for basic block
+
+That last one is a missing unlock:
+
+> +static irqreturn_t npcm_video_irq(int irq, void *arg)
+> +{
+> +	struct npcm_video *video = arg;
+> +	struct regmap *vcd = video->vcd_regmap;
+> +	struct npcm_video_buffer *buf;
+> +	unsigned int index, size, status, fmt;
+> +	dma_addr_t dma_addr;
+> +	void *addr;
+> +	static const struct v4l2_event ev = {
+> +		.type = V4L2_EVENT_SOURCE_CHANGE,
+> +		.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
+> +	};
+> +
+> +	regmap_read(vcd, VCD_STAT, &status);
+> +	dev_dbg(video->dev, "VCD irq status 0x%x\n", status);
+> +
+> +	regmap_write(vcd, VCD_STAT, VCD_STAT_CLEAR);
+> +
+> +	if (test_bit(VIDEO_STOPPED, &video->flags) ||
+> +	    !test_bit(VIDEO_STREAMING, &video->flags))
+> +		return IRQ_NONE;
+> +
+> +	if (status & VCD_STAT_DONE) {
+> +		regmap_write(vcd, VCD_INTE, 0);
+> +		spin_lock(&video->lock);
+> +		clear_bit(VIDEO_CAPTURING, &video->flags);
+> +		buf = list_first_entry_or_null(&video->buffers,
+> +					       struct npcm_video_buffer, link);
+> +		if (!buf) {
+> +			spin_unlock(&video->lock);
+> +			return IRQ_NONE;
+> +		}
+> +
+> +		addr = vb2_plane_vaddr(&buf->vb.vb2_buf, 0);
+> +		index = buf->vb.vb2_buf.index;
+> +		fmt = video->pix_fmt.pixelformat;
+> +
+> +		switch (fmt) {
+> +		case V4L2_PIX_FMT_RGB565:
+> +			size = npcm_video_raw(video, index, addr);
+> +			break;
+> +		case V4L2_PIX_FMT_HEXTILE:
+> +			dma_addr = vb2_dma_contig_plane_dma_addr(&buf->vb.vb2_buf, 0);
+> +			size = npcm_video_hextile(video, index, dma_addr, addr);
+> +			break;
+> +		default:
+
+Missing unlock here.
+
+> +			return IRQ_NONE;
+> +		}
+> +
+> +		vb2_set_plane_payload(&buf->vb.vb2_buf, 0, size);
+> +		buf->vb.vb2_buf.timestamp = ktime_get_ns();
+> +		buf->vb.sequence = video->sequence++;
+> +		buf->vb.field = V4L2_FIELD_NONE;
+> +
+> +		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
+> +		list_del(&buf->link);
+> +		spin_unlock(&video->lock);
+> +
+> +		if (npcm_video_start_frame(video))
+> +			dev_err(video->dev, "Failed to capture next frame\n");
+> +	}
+> +
+> +	/* Resolution changed */
+> +	if (status & VCD_STAT_VHT_CHG || status & VCD_STAT_HAC_CHG) {
+> +		if (!test_bit(VIDEO_RES_CHANGING, &video->flags)) {
+> +			set_bit(VIDEO_RES_CHANGING, &video->flags);
+> +
+> +			vb2_queue_error(&video->queue);
+> +			v4l2_event_queue(&video->vdev, &ev);
+> +		}
+> +	}
+> +
+> +	if (status & VCD_STAT_IFOR || status & VCD_STAT_IFOT) {
+> +		dev_warn(video->dev, "VCD FIFO overrun or over thresholds\n");
+> +		if (npcm_video_start_frame(video))
+> +			dev_err(video->dev, "Failed to recover from FIFO overrun\n");
+> +	}
+> +
+> +	return IRQ_HANDLED;
+> +}
+
+Regards,
+
+	Hans
+
