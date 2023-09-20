@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AD57A8E6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8565C7A8E73
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjITV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 17:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
+        id S229539AbjITVa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 17:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjITV2y (ORCPT
+        with ESMTP id S229456AbjITVaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 17:28:54 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30639C9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:28:48 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-79f7d596279so4526439f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1695245327; x=1695850127; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+2tU7WgIdeqMFoUWsvwgrS0UpcgpoQLXurBiEI1oqgk=;
-        b=Xmf4MguvNnu35K32tGwUGwRIPTSQ/qYRqRumyyrgVFaW4WgWj6WMswGkdD12nv7VoH
-         7/fKTtFP1MX5IiS7s4aoqBi2tEJyNtmN45oR8MfiD5HZrlZ0no9VytAtv4JmIHgJzCoY
-         1miV2nhpypdSyeIysTklp5P3XBRGHo5HEjaU8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695245327; x=1695850127;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+2tU7WgIdeqMFoUWsvwgrS0UpcgpoQLXurBiEI1oqgk=;
-        b=kFJJQSmObmy261uk42LTVl/J8v0P6NR1xddyiIMd5STg/0EU5uHQrCcWf8cptir82R
-         X+Xml/BAyIkXeTm09dPH3Cd1BvLlLDkykUfBn2Zgt1Akt2H0sNudZba2N3b9847AyXI5
-         iRoKLnNm8pEOYzDMa7da2+bGH8PFk2Pz0mioDZrSwbCOkWxW8yURb7d/rvdlcWZUHdNa
-         DuAGHkaSX+3J56Lvc9NNYto0iRc9F8D+lcYvpvS4CCWW9FJZrnhn/Ys9aUp6SIRP+vqe
-         bkfM6Ob7mxPom/P5JFh/7IYJvskpVcicI6uunDzo4Cp9myBixwBzoD8ObDNij5FDP4qb
-         WEqg==
-X-Gm-Message-State: AOJu0YyBO0DggzR8sfRBpZLtHRFJ3N6dY+HWmWA85aqPv72piKf9KxTQ
-        ZznG132A78UQfMrLKwy6yEY4AA==
-X-Google-Smtp-Source: AGHT+IHmFil7972NKUJ3vWb9mLeobhcI3iGZsatlWHXlyJS/jrbNxe7e15O42qmMG1XTDBfTtahfSg==
-X-Received: by 2002:a05:6602:13c2:b0:79d:1c65:9bde with SMTP id o2-20020a05660213c200b0079d1c659bdemr5568258iov.1.1695245327395;
-        Wed, 20 Sep 2023 14:28:47 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id a31-20020a029422000000b00439d4db47b6sm2362220jai.39.2023.09.20.14.28.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 14:28:46 -0700 (PDT)
-Message-ID: <1e76d4cb-aa5a-4e8e-7019-2095d97d3fb8@linuxfoundation.org>
-Date:   Wed, 20 Sep 2023 15:28:46 -0600
+        Wed, 20 Sep 2023 17:30:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734F6C2;
+        Wed, 20 Sep 2023 14:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=6v2opmoFg7iTULsiIm+tDuLVY19sjKvFanl0iv7NN1o=; b=buDyQX+yG1Vtywipv9/KYh/HQS
+        mG+ZauoFDs4ND9NJqm+19+SHBrVxkSxzDN5235umhT2Js9Lgh/CY6IYgzU6zBNupVHwoR1TWSf09K
+        0yF2XxYy0CP4qJ5iGkRiqCLkTPDHnFSKQU+Z8MhUyO6BzWwXVXGVL0ixewm0hgVtXY82csiDQ7TbR
+        DDIlGmBn0/zs2vqoK8OaYuVvpgpNw9VgColQpDf7iEWOT4l50YyEJMIEJmMqHZjBl6tHfJFiF7Cx7
+        DW4UlH8dpST1tGqD0MKsNQA2RYmE860c67qFZvABmYlNJLWvKroHgaumo8FWGFGVdl1fIi7I+/xLi
+        NBufu3MA==;
+Received: from [2601:1c2:980:9ec0::9fed]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qj4lx-004Gnu-1X;
+        Wed, 20 Sep 2023 21:30:13 +0000
+Message-ID: <2038f544-859f-4ffb-9840-37c1ba289259@infradead.org>
+Date:   Wed, 20 Sep 2023 14:30:09 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 6.1 000/139] 6.1.55-rc1 review
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 3/3] idpf: fix undefined reference to
+ tcp_gro_complete() when !CONFIG_INET
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230920112835.549467415@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230920112835.549467415@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        Michal Michalik <michal.michalik@intel.com>,
+        Milena Olech <milena.olech@intel.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230920180745.1607563-1-aleksander.lobakin@intel.com>
+ <20230920180745.1607563-4-aleksander.lobakin@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230920180745.1607563-4-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/23 05:28, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.55 release.
-> There are 139 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.55-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
 
-Compiled and booted on my test system. No dmesg regressions.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+On 9/20/23 11:07, Alexander Lobakin wrote:
+> When CONFIG_INET is not set, tcp_gro_complete is not compiled, although
+> the drivers using it may still be compiled (spotted by Randy):
+> 
+> aarch64-linux-ld: drivers/net/ethernet/intel/idpf/idpf_txrx.o:
+> in function `idpf_rx_rsc.isra.0':
+> drivers/net/ethernet/intel/idpf/idpf_txrx.c:2909:(.text+0x40cc):
+> undefined reference to `tcp_gro_complete'
+> 
+> The drivers need to guard the calls to it manually.
+> Return early from the RSC completion function if !CONFIG_INET, it won't
+> work properly either way. This effectively makes it be compiled-out
+> almost entirely on such builds.
+> 
+> Fixes: 3a8845af66ed ("idpf: add RX splitq napi poll support")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Closes: https://lore.kernel.org/linux-next/4c84eb7b-3dec-467b-934b-8a0240f7fb12@infradead.org
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-thanks,
--- Shuah
+That builds for me.  Thanks.
+
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+
+I hope that these patches can be merged into the v6.6 instead of
+v6.7 kernel at some point (i.e., [PATCH net] instead of net-next).
+
+
+> ---
+>  drivers/net/ethernet/intel/idpf/idpf_txrx.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> index 6fa79898c42c..aa45afeb6496 100644
+> --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> @@ -2876,6 +2876,9 @@ static int idpf_rx_rsc(struct idpf_queue *rxq, struct sk_buff *skb,
+>  	if (unlikely(!(ipv4 ^ ipv6)))
+>  		return -EINVAL;
+>  
+> +	if (!IS_ENABLED(CONFIG_INET))
+> +		return 0;
+> +
+>  	rsc_segments = DIV_ROUND_UP(skb->data_len, rsc_seg_len);
+>  	if (unlikely(rsc_segments == 1))
+>  		return 0;
+
+-- 
+~Randy
