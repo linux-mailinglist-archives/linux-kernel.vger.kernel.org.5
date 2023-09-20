@@ -2,88 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3880E7A7640
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C417A7644
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232618AbjITIrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
+        id S233525AbjITItQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbjITIra (ORCPT
+        with ESMTP id S233125AbjITItO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:47:30 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66058B9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:47:25 -0700 (PDT)
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6c0d4cb748bso9059241a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:47:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695199644; x=1695804444;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=RIvWf+AjXp+m2VGzmx0A/5W3GTrQMhufVPcteZ+VFUYorRm5paQ8KFS+B1MCLV4e12
-         WkfUabKPO2EOcwqL2nFmfcDiYXapRh9VXMUUF+MjuhZeQBZ9bBzZ5jdLHjYla3fUeDs2
-         mRkyOgjDgH2pseIRBSyEV6rkG7EE4jyZNwMnSTdrFkuMuPwOehViATgvkZnSSKbIfBH/
-         tLB4KKuAqk5Gev1/rULN3DZw0pRwH3xkOjdGjGYBvHNwctHLxmzlN6SdZl3aQnp/cngS
-         jTm+krdq2qgy1rSi+F2M2Ko1QjYhAYbvnP2gkD4QaOCjyArlrAKQqzJAZaF+boYuCpdw
-         p8eA==
-X-Gm-Message-State: AOJu0YwHZOMEVa+VbYR0qmQ7FT/Tsqo2LLidfpXvuIOO97sARkH6aVIk
-        egyYxcKvYUtGESzc58UPhjyVUUyHGgxQCGPzoRnci9nnfT2u
-X-Google-Smtp-Source: AGHT+IFYvU19CpGa7Sw8FeaKksspIk2gdk0wHVOg44SWeKSJgHOrmyuVpkSdrfe3P9Ukwk210+icYgW8ipwzEsG3vBbaHOIWDvS/
+        Wed, 20 Sep 2023 04:49:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDAA93;
+        Wed, 20 Sep 2023 01:49:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B8FCC433C7;
+        Wed, 20 Sep 2023 08:49:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695199748;
+        bh=qSsw71s1Fjqhd6GpejqtDVQ+WOuNOzjUTZO9Z7vF7/U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fFAMTd+2BBf2WY/P+COVYj/C+yt5CW2oUw5+/gHjtBVXIg8DfalWC6QQBjBe0+lzI
+         HCRD/4HKgXi6HHRdTJBRaP3MAtQfvuk4CuqD3kn14luq9yfCUZ219qJyhzlljI5rZ0
+         8GOsRtOiS4bY3sHoIrlScmuKF1T6NIfYXb/i0b+ci1NyaVrMNe3xaEUKH13jcFMCtE
+         gKwWWwElx1pddNUlBvkKnp7oOVbW9AUj9bTtiYF0FLTQuEVCaPLu/Si1b39j9VM/A9
+         rGnf/k9CCmLomNoq1h3YsW+zmKbfqgMn2wC3CnTBuBvXwxQ8sRFz1Wt+ImMkHcNRNN
+         Zc5kHJiq44UWQ==
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rae Moar <rmoar@google.com>, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] kunit: Warn if tests are slow
+Date:   Wed, 20 Sep 2023 10:49:03 +0200
+Message-ID: <20230920084903.1522728-1-mripard@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:19a2:b0:3a7:75cd:df40 with SMTP id
- bj34-20020a05680819a200b003a775cddf40mr920966oib.7.1695199644793; Wed, 20 Sep
- 2023 01:47:24 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 01:47:24 -0700
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a6cc1f0605c66c04@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From:   syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+Kunit recently gained support to setup attributes, the first one being
+the speed of a given test, then allowing to filter out slow tests.
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+A slow test is defined in the documentation as taking more than one
+second. There's an another speed attribute called "super slow" but whose
+definition is less clear.
 
-#syz fix: exact-commit-title
+Add support to the test runner to check the test execution time, and
+report tests that should be marked as slow but aren't.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
-
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
 ---
-[1] I expect the commit to be present in:
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+To: Brendan Higgins <brendan.higgins@linux.dev>
+To: David Gow <davidgow@google.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Rae Moar <rmoar@google.com>
+Cc: linux-kselftest@vger.kernel.org
+Cc: kunit-dev@googlegroups.com
+Cc: linux-kernel@vger.kernel.org
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+Changes from v1:
+- Split the patch out of the series
+- Change to trigger the warning only if the runtime is twice the
+  threshold (Jani, Rae)
+- Split the speed check into a separate function (Rae)
+- Link: https://lore.kernel.org/all/20230911-kms-slow-tests-v1-0-d3800a69a1a1@kernel.org/
+---
+ lib/kunit/test.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 49698a168437..a1d5dd2bf87d 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -372,6 +372,25 @@ void kunit_init_test(struct kunit *test, const char *name, char *log)
+ }
+ EXPORT_SYMBOL_GPL(kunit_init_test);
+ 
++#define KUNIT_SPEED_SLOW_THRESHOLD_S	1
++
++static void kunit_run_case_check_speed(struct kunit *test,
++				       struct kunit_case *test_case,
++				       struct timespec64 duration)
++{
++	enum kunit_speed speed = test_case->attr.speed;
++
++	if (duration.tv_sec < (2 * KUNIT_SPEED_SLOW_THRESHOLD_S))
++		return;
++
++	if (speed == KUNIT_SPEED_VERY_SLOW || speed == KUNIT_SPEED_SLOW)
++		return;
++
++	kunit_warn(test,
++		   "Test should be marked slow (runtime: %lld.%09lds)",
++		   duration.tv_sec, duration.tv_nsec);
++}
++
+ /*
+  * Initializes and runs test case. Does not clean up or do post validations.
+  */
+@@ -379,6 +398,8 @@ static void kunit_run_case_internal(struct kunit *test,
+ 				    struct kunit_suite *suite,
+ 				    struct kunit_case *test_case)
+ {
++	struct timespec64 start, end;
++
+ 	if (suite->init) {
+ 		int ret;
+ 
+@@ -390,7 +411,13 @@ static void kunit_run_case_internal(struct kunit *test,
+ 		}
+ 	}
+ 
++	ktime_get_ts64(&start);
++
+ 	test_case->run_case(test);
++
++	ktime_get_ts64(&end);
++
++	kunit_run_case_check_speed(test, test_case, timespec64_sub(end, start));
+ }
+ 
+ static void kunit_case_internal_cleanup(struct kunit *test)
+-- 
+2.41.0
 
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
