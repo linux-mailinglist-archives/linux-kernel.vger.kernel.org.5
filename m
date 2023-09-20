@@ -2,120 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F24217A83F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 896CE7A83F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236431AbjITNyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        id S236468AbjITNyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236409AbjITNyp (ORCPT
+        with ESMTP id S236024AbjITNyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:54:45 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70A4C6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:54:38 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d857847be8cso1625189276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:54:38 -0700 (PDT)
+        Wed, 20 Sep 2023 09:54:49 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931DEAD;
+        Wed, 20 Sep 2023 06:54:43 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-773ae5d2b1fso377165685a.2;
+        Wed, 20 Sep 2023 06:54:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695218078; x=1695822878; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1695218082; x=1695822882; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rYSun0Wdmv2UxSSLu5pfbVvQMooLrR2EKUP0Tr60xow=;
-        b=ea+IVKz9zJZdF95klQvVuDM3C0WLFlv/nbqT2c3NS6yyU7AtfON77YulBVAM9Ez9zl
-         7p1nWqUsvqpWlNmfgCz2zeBa4kIamt9UYxQbtz/kc0DCpwBdeSlbF1Sik/JfIn3Qb/ZA
-         aB0ytQ0ppOhsPWHUeS4XMnBn1QciwrCQZKQyduIth8tFcq5OJxppTY0eyltcwraXLgZI
-         oqSqasQCLFO8gyKDBLPULSor579KPfCN7AUzDYFy3n/zlHagwNqIvas30qifqIs9n4wZ
-         nyL/2uyaSRYNZrVmmdQ+CqY4qKBPolSJWzk8bcOOjQFTU2MyWEcde3lsDD+B55YXb720
-         Opcw==
+        bh=FVF06t7IZza16CFzCOJgQajEkOspYiDG67dNcLwWTqA=;
+        b=H8IMUrKBcPWPk4ZyKKQAIo53+W7GSRbli2+0RrSu45mmGdiBXKzJUVmExCnfV8SJQj
+         e7KaiyMUS6zi0rwLacOo5q6Ci8m6G4vmCt1D5Ti65ARS8+kiTjDe9fvAYOPhZIz1E5Ju
+         pSXx9rhxOJTfqcsCgoPMFCMGySTGiJevv59jo/icKKzuBj4zlMT9DGTHQC9GEKiMtdiJ
+         UPTOIlyL8OCPeM6HviFCM1xSGdY/XzRXnL4SNYd74IDaPBsQByMtfN3PBXDN7IWH/d+v
+         7rxsCqoDgiE/Yq94iwHh8WyODtXB0OLn1H5TwLpVgH2mKV2pXRVu4Qws5tgX7KlIAfue
+         gCpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695218078; x=1695822878;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rYSun0Wdmv2UxSSLu5pfbVvQMooLrR2EKUP0Tr60xow=;
-        b=fm1CN6Now4gQFoN8WY/OrBHlFvnM4G13zpD1onX9+X+MS7uBIMKE5S6ML5cDNOHpWt
-         3iGzGcSbq7Ej/mTIpt62Ubf7d+HxyqpGTx6gGFyZSnpNzAQ6wth/M2JjCUFeYvy6rK5f
-         rUDVheaNFI38exw9RJKuyCgtDUGRpHHZoVTr+zuvk0WK77/GvUrdzIfqVleJT9jft1ZO
-         Z8Javqna+RaPo6Ahohn+viK+CKjam0PWgvpo/AKBMuopsl1o5tLxK6iwMZ89+jaVL0XE
-         Uxax/zxAXeAEkQ1amZDfAZAILRai+grZjTrU8dk4deQozDWsWig1M/WTqdTmYhO47uUp
-         7Srw==
-X-Gm-Message-State: AOJu0YyNjpaqGaqd5YxJaodkg+UofjrcWGL/uHgcmA7UsA1b4NcgRMFK
-        +LkpgZV7KVwbVoYz6EzXZsEclCDofe6A91BWPuFlmw==
-X-Google-Smtp-Source: AGHT+IGFGAKCcwstzXpUX0QWqQdz4xwL43xZgTH8JleZVL+Potm/mUTnmvrUwC6OfeP4HqgEYKbLvshd0Iv3xs/pHq0=
-X-Received: by 2002:a25:25c3:0:b0:d78:1b39:fd03 with SMTP id
- l186-20020a2525c3000000b00d781b39fd03mr2546447ybl.64.1695218077919; Wed, 20
- Sep 2023 06:54:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230918123355.262115-1-biju.das.jz@bp.renesas.com>
- <20230918123355.262115-3-biju.das.jz@bp.renesas.com> <CACRpkdYYKAFLvpKH0ih5qZVbv7L3auny5WWx+qKa_HD1o-vsog@mail.gmail.com>
- <OS0PR01MB5922A256D2C57963ADEBCEDB86F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-In-Reply-To: <OS0PR01MB5922A256D2C57963ADEBCEDB86F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 20 Sep 2023 15:54:25 +0200
-Message-ID: <CACRpkdbM+XNjvxBZQFzZCsU+3V7PucBhbi_WjVtnGpakFQasAw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] pinctrl: renesas: rzg2l: Enable noise filter for GPIO
- interrupt input
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        Biju Das <biju.das.au@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20230601; t=1695218082; x=1695822882;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FVF06t7IZza16CFzCOJgQajEkOspYiDG67dNcLwWTqA=;
+        b=Zv/uA1jnTyquaVuldl2KvfbeB97Uh4vDBSbQZLsSycO1xXNz0C48v8tQ5Gb3RiRGxV
+         NGp855YFFuTBHvYhL2CTaicU8hkMmnk1UJIo94q+kXJn/MeJW3PFwEV8HUqkN0r9or2C
+         gyHHxpC8pjxGVpEhWN2K/hb28F4gMs3t1hzntdPGSh5fYjWXJWiUNja5qB439ARcX+Id
+         xhMXm+puKfUA7FuOd9C6xXGh5Bh/swCFZ3xE56E6U32mUqZSh6Ht5hhE7CYCmvpdJyKv
+         QHsp+EMzP11DzUOTN1uAdO2Dax1orQkj+DqEuwI6gb5sFdxcuuPBJ/GHVdg3NMWl+2SQ
+         CerA==
+X-Gm-Message-State: AOJu0Yz1HZJ54nGmlWZWecUbHO5Dy31sDVm/GOqIXIl6xtUeRfZ43heB
+        zrcihNbwOZDW0MZ1ggy7Y7cIzcSC+yw=
+X-Google-Smtp-Source: AGHT+IEF8xZCVveTfM6rspnqiBn7ZNNofTz733mxQ//7oM0FYPWLnypYaEAokeajcDlKDm96sVZ/ZA==
+X-Received: by 2002:a05:620a:1407:b0:76f:98c:3f05 with SMTP id d7-20020a05620a140700b0076f098c3f05mr2500850qkj.76.1695218082632;
+        Wed, 20 Sep 2023 06:54:42 -0700 (PDT)
+Received: from localhost (193.132.150.34.bc.googleusercontent.com. [34.150.132.193])
+        by smtp.gmail.com with ESMTPSA id m10-20020ae9e00a000000b0076f35d17d06sm4812021qkk.69.2023.09.20.06.54.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 06:54:42 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 09:54:42 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org
+Cc:     dhowells@redhat.com,
+        syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Message-ID: <650af9a2aa74_37bf362941f@willemb.c.googlers.com.notmuch>
+In-Reply-To: <108791.1695199151@warthog.procyon.org.uk>
+References: <108791.1695199151@warthog.procyon.org.uk>
+Subject: Re: [PATCH net v2] ipv4, ipv6: Fix handling of transhdrlen in
+ __ip{,6}_append_data()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 2:37=E2=80=AFPM Biju Das <biju.das.jz@bp.renesas.co=
-m> wrote:
+David Howells wrote:
+> Including the transhdrlen in length is a problem when the packet is
+> partially filled (e.g. something like send(MSG_MORE) happened previously)
+> when appending to an IPv4 or IPv6 packet as we don't want to repeat the
+> transport header or account for it twice.  This can happen under some
+> circumstances, such as splicing into an L2TP socket.
+> 
+> The symptom observed is a warning in __ip6_append_data():
+> 
+>     WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_append_data.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
+> 
+> that occurs when MSG_SPLICE_PAGES is used to append more data to an already
+> partially occupied skbuff.  The warning occurs when 'copy' is larger than
+> the amount of data in the message iterator.  This is because the requested
+> length includes the transport header length when it shouldn't.  This can be
+> triggered by, for example:
+> 
+>         sfd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
+>         bind(sfd, ...); // ::1
+>         connect(sfd, ...); // ::1 port 7
+>         send(sfd, buffer, 4100, MSG_MORE);
+>         sendfile(sfd, dfd, NULL, 1024);
+> 
+> Fix this by deducting transhdrlen from length in ip{,6}_append_data() right
+> before we clear transhdrlen if there is already a packet that we're going
+> to try appending to.
+> 
+> Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com/
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Eric Dumazet <edumazet@google.com>
+> cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> cc: "David S. Miller" <davem@davemloft.net>
+> cc: David Ahern <dsahern@kernel.org>
+> cc: Paolo Abeni <pabeni@redhat.com>
+> cc: Jakub Kicinski <kuba@kernel.org>
+> cc: netdev@vger.kernel.org
+> cc: bpf@vger.kernel.org
+> cc: syzkaller-bugs@googlegroups.com
+> Link: https://lore.kernel.org/r/75315.1695139973@warthog.procyon.org.uk/ # v1
+> ---
+>  net/ipv4/ip_output.c  |    1 +
+>  net/ipv6/ip6_output.c |    1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+> index 4ab877cf6d35..9646f2d9afcf 100644
+> --- a/net/ipv4/ip_output.c
+> +++ b/net/ipv4/ip_output.c
+> @@ -1354,6 +1354,7 @@ int ip_append_data(struct sock *sk, struct flowi4 *fl4,
+>  		if (err)
+>  			return err;
+>  	} else {
+> +		length -= transhdrlen;
+>  		transhdrlen = 0;
+>  	}
+>  
+> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+> index 54fc4c711f2c..6a4ce7f622e9 100644
+> --- a/net/ipv6/ip6_output.c
+> +++ b/net/ipv6/ip6_output.c
+> @@ -1888,6 +1888,7 @@ int ip6_append_data(struct sock *sk,
+>  		length += exthdrlen;
+>  		transhdrlen += exthdrlen;
+>  	} else {
+> +		length -= transhdrlen;
+>  		transhdrlen = 0;
+>  	}
+>  
 
-> 2) Digital Noise Filter Clock Selection Register (FILCLKSEL):
->
-> The FILCLKSEL register selects the divided clock to be input to digital n=
-oise filters.
->
-> 00b: Not divided (initial value)
-> 01b: Divided by 9000 (41.666 ns x 9000 =3D 375,000 ns)
-> 10b: Divided by 18000 (41.666 ns x 18000 =3D 750,000 ns)
-> 11b: Divided by 36000 (41.666 ns x 36000 =3D 1,500,000 ns)
-> Note: This value is the value when the external clock is 24MHz.
->
-> Q1) What is the recommended way to associate the above values with
->     PIN_CONFIG_INPUT_DEBOUNCE?
->
-> Eg: I need to configure filter on, 8 stage filter , a divisor of 18000 fo=
-r a mechanical button bounce noise.
+Definitely a much simpler patch, thanks.
 
-As per the generic pin config and DT bindings:
+So the current model is that callers with non-zero transhdrlen always
+pass to __ip_append_data payload length + transhdrlen.
 
- * @PIN_CONFIG_INPUT_DEBOUNCE: this will configure the pin to debounce mode=
-,
- *      which means it will wait for signals to settle when reading inputs.=
- The
- *      argument gives the debounce time in usecs. Setting the
- *      argument to zero turns debouncing off.
+I do see that udp does this: ulen += sizeof(struct udphdr); This calls
+ip_make_skb if not corked, but directly ip_append_data if corked.
 
-  input-debounce:
-    $ref: /schemas/types.yaml#/definitions/uint32
-    description: Takes the debounce time in usec as argument or 0 to disabl=
-e
-      debouncing
+Then __ip_append_data will use transhdrlen in its packet calculations,
+and reset that to zero after allocating the first new skb.
 
-The recommended way is to pass the desired clock cycle in microseconds as t=
-he
-argument to the pin config.
+So if corked *and* fragmentation, which would cause a new skb to be
+allocated, the next skb would incorrectly reserve udp header space,
+because the second __ip_append_data call will again pass transhdrlen.
+If so, then this patch fixes that. But that has never been reported,
+so I'm most likely misreading some part..
 
-Yours,
-Linus Walleij
+So on the surface this makes sense to me. But I need to read it more
+closely still. The most risk-averse version would limit this change
+explicitly to MSG_SPLICE_PAGES calls.
+
+FWIW I think MSG_ZEROCOPY is somewhat immune compared to
+MSG_SPLCE_PAGES solely because it is limited to TCP, UDP and RDS
+sockets.
