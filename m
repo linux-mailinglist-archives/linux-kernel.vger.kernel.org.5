@@ -2,284 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D689F7A8938
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9697A893A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235498AbjITQEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
+        id S235580AbjITQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbjITQEJ (ORCPT
+        with ESMTP id S233691AbjITQEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 12:04:09 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B83C2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:04:02 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-6564515ec4eso25744816d6.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695225842; x=1695830642; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CTf4+1qMO9RJAdxQkVKBmTQcbxilq1N2AJD6yiobRZU=;
-        b=rGXYJOLOO+PJn9eR4SufydPJ0zpYTMBcm4hm5wgQX/pcowl4A4Pt9dVTwBmS5MJfUI
-         hoNaVrQEKFQ8HEfg0t2rYl4891PowmGooNsXCgR6aqtHLf1RgW+SLPEH/csz6Ad7r6+s
-         sFXpg851cojfG0yTtquxW9lIcaIka+thwyMUKINdyEYs0aplzQwqq18vsrkQb4BFv+jg
-         IoBIybVwjQbmuCRZAc+9gS6al0VZwQ5PekYfOMZCPCq+uQR7TG33HlJQVDYmwNAbEnwp
-         rUScz6KC+0+jRjJ8B1EpMZxpwsT2u4pFXgo8FRUKS3uR7lVX+rw3hm1X4S+ocA+ebzZZ
-         tvuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695225842; x=1695830642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CTf4+1qMO9RJAdxQkVKBmTQcbxilq1N2AJD6yiobRZU=;
-        b=HO8KwNOYFXIDDjP6A59tCTRknHW0LPitvh5WIqOR/Q9k3wR3GOG3f+MZMs1UcZZcpC
-         1b3m5iWAAwFxd6AIK7WJwM3prViTNLakMOIar8SVMHS39md/FWvyeHxk89crY1h786PZ
-         ZFyMlFGgOFTuE3XAJq7jM4H9BorZYdEfWpfYyub7CKHi2eEaG0c9lq8XX8HKI97g2lG3
-         /vmkOn+BMDxD9dpjOzvRB1erjxBlpqfO23vSpYUV8tywYENCsR0mCFbVscuLwneb7fHy
-         t4nVq46xnq0RvnO4iowmDkw1sm16xhui7r4iruJszjD5rUpjGGupIaElDkYV+eB0mZqm
-         rxtg==
-X-Gm-Message-State: AOJu0YwFMoglX8Vbj6v2Q7IMH40S/N8IZR/Urzjh1uLDU94zXGC3R+cP
-        jsC5sTko07sQc11Iermnrpnl4w==
-X-Google-Smtp-Source: AGHT+IHHXbHgASQaS929AeKMlhY2inMZSrvpLyMfiPOrCVe6y/8IW4Jal46dUXMGYNyJabzlAN+kHQ==
-X-Received: by 2002:a0c:e8ce:0:b0:655:88e9:1b09 with SMTP id m14-20020a0ce8ce000000b0065588e91b09mr2919676qvo.18.1695225841455;
-        Wed, 20 Sep 2023 09:04:01 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:d7e0])
-        by smtp.gmail.com with ESMTPSA id d8-20020a0cfe88000000b0064f4258184csm5306520qvs.53.2023.09.20.09.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 09:04:01 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 12:04:00 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Zi Yan <ziy@nvidia.com>, Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
-Message-ID: <20230920160400.GC124289@cmpxchg.org>
-References: <a88b7339-beab-37c6-7d32-0292b325916d@suse.cz>
- <20230918145204.GB16104@cmpxchg.org>
- <20230918174037.GA112714@monkey>
- <20230919064914.GA124289@cmpxchg.org>
- <20230919184731.GC112714@monkey>
- <C416A861-44D3-46E7-B756-63DA3731FC1E@nvidia.com>
- <20230920003239.GD112714@monkey>
- <149ACAE8-D3E4-4009-828A-D3AC881FFB9C@nvidia.com>
- <bc4bd049-1e29-0f23-cca6-493abb5e774f@suse.cz>
- <20230920134811.GB124289@cmpxchg.org>
+        Wed, 20 Sep 2023 12:04:34 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C28C9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 09:04:27 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38K4psDO005790;
+        Wed, 20 Sep 2023 11:04:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=v
+        Ofg11fsgJwJA7H/TF/i8UwyCz43iFeG9yWXJNApa6k=; b=KWz4o9p7MZ3AQn7vI
+        FC6ox1p7EiMIoioJpdCVSjsuIMzESwK19KpnP2nhvB4+iJebQ7tvB74WWuac0TVY
+        jGXBv+jVHi5IeYqmosiXx65NTtaqAZwY3y9jt+75vriq2LuEHOJOeMEPpr2lIcIF
+        DciTNIMYByhSpbDvPpKmyoWRuFLEyyHVESc4ol5rphqJG7ujBWFiHwpqSspCekaU
+        MFfjA4X0SdHpaySjrNbiyLoHt0E+8ktOPDj/isTr7RNAzX8y66cltOFNP6IoC6hW
+        IF7hiRuhtgQqqmfy7SLo0HwcUXXIia2CIGui+VLSj1r4tJYEHPSSmGfqToycPwxk
+        7A7kw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry5r5x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 11:04:04 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 20 Sep
+ 2023 17:04:01 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Wed, 20 Sep 2023 17:04:01 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AEBFA15B9;
+        Wed, 20 Sep 2023 16:04:01 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <vkoul@kernel.org>
+CC:     <yung-chuan.liao@linux.intel.com>,
+        <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        <rdunlap@infradead.org>
+Subject: [PATCH v2] soundwire: bus: Make IRQ handling conditionally built
+Date:   Wed, 20 Sep 2023 17:04:01 +0100
+Message-ID: <20230920160401.854052-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920134811.GB124289@cmpxchg.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: M4n4pgAYGMfAojS8_eM0tFDE50aHQM_u
+X-Proofpoint-ORIG-GUID: M4n4pgAYGMfAojS8_eM0tFDE50aHQM_u
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 09:48:12AM -0400, Johannes Weiner wrote:
-> On Wed, Sep 20, 2023 at 08:07:53AM +0200, Vlastimil Babka wrote:
-> > On 9/20/23 03:38, Zi Yan wrote:
-> > > On 19 Sep 2023, at 20:32, Mike Kravetz wrote:
-> > > 
-> > >> On 09/19/23 16:57, Zi Yan wrote:
-> > >>> On 19 Sep 2023, at 14:47, Mike Kravetz wrote:
-> > >>>
-> > >>>> 	--- a/mm/page_alloc.c
-> > >>>> 	+++ b/mm/page_alloc.c
-> > >>>> 	@@ -1651,8 +1651,13 @@ static bool prep_move_freepages_block(struct zone *zone, struct page *page,
-> > >>>>  		end = pageblock_end_pfn(pfn) - 1;
-> > >>>>
-> > >>>>  		/* Do not cross zone boundaries */
-> > >>>> 	+#if 0
-> > >>>>  		if (!zone_spans_pfn(zone, start))
-> > >>>> 			start = zone->zone_start_pfn;
-> > >>>> 	+#else
-> > >>>> 	+	if (!zone_spans_pfn(zone, start))
-> > >>>> 	+		start = pfn;
-> > >>>> 	+#endif
-> > >>>> 	 	if (!zone_spans_pfn(zone, end))
-> > >>>> 	 		return false;
-> > >>>> 	I can still trigger warnings.
-> > >>>
-> > >>> OK. One thing to note is that the page type in the warning changed from
-> > >>> 5 (MIGRATE_ISOLATE) to 0 (MIGRATE_UNMOVABLE) with my suggested change.
-> > >>>
-> > >>
-> > >> Just to be really clear,
-> > >> - the 5 (MIGRATE_ISOLATE) warning was from the __alloc_pages call path.
-> > >> - the 0 (MIGRATE_UNMOVABLE) as above was from the alloc_contig_range call
-> > >>   path WITHOUT your change.
-> > >>
-> > >> I am guessing the difference here has more to do with the allocation path?
-> > >>
-> > >> I went back and reran focusing on the specific migrate type.
-> > >> Without your patch, and coming from the alloc_contig_range call path,
-> > >> I got two warnings of 'page type is 0, passed migratetype is 1' as above.
-> > >> With your patch I got one 'page type is 0, passed migratetype is 1'
-> > >> warning and one 'page type is 1, passed migratetype is 0' warning.
-> > >>
-> > >> I could be wrong, but I do not think your patch changes things.
-> > > 
-> > > Got it. Thanks for the clarification.
-> > >>
-> > >>>>
-> > >>>> One idea about recreating the issue is that it may have to do with size
-> > >>>> of my VM (16G) and the requested allocation sizes 4G.  However, I tried
-> > >>>> to really stress the allocations by increasing the number of hugetlb
-> > >>>> pages requested and that did not help.  I also noticed that I only seem
-> > >>>> to get two warnings and then they stop, even if I continue to run the
-> > >>>> script.
-> > >>>>
-> > >>>> Zi asked about my config, so it is attached.
-> > >>>
-> > >>> With your config, I still have no luck reproducing the issue. I will keep
-> > >>> trying. Thanks.
-> > >>>
-> > >>
-> > >> Perhaps try running both scripts in parallel?
-> > > 
-> > > Yes. It seems to do the trick.
-> > > 
-> > >> Adjust the number of hugetlb pages allocated to equal 25% of memory?
-> > > 
-> > > I am able to reproduce it with the script below:
-> > > 
-> > > while true; do
-> > >  echo 4 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages&
-> > >  echo 2048 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages&
-> > >  wait
-> > >  echo 0 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
-> > >  echo 0 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
-> > > done
-> > > 
-> > > I will look into the issue.
-> 
-> Nice!
-> 
-> I managed to reproduce it ONCE, triggering it not even a second after
-> starting the script. But I can't seem to do it twice, even after
-> several reboots and letting it run for minutes.
+SoundWire has provisions for a simple callback for the IRQ handling so
+has no hard dependency on IRQ_DOMAIN, but the recent addition of IRQ
+handling was causing builds without IRQ_DOMAIN to fail. Resolve this by
+moving the IRQ handling into its own file and only add it to the build
+when IRQ_DOMAIN is included in the kernel.
 
-I managed to reproduce it reliably by cutting the nr_hugepages
-parameters respectively in half.
-
-The one that triggers for me is always MIGRATE_ISOLATE. With some
-printk-tracing, the scenario seems to be this:
-
-#0                                                   #1
-start_isolate_page_range()
-  isolate_single_pageblock()
-    set_migratetype_isolate(tail)
-      lock zone->lock
-      move_freepages_block(tail) // nop
-      set_pageblock_migratetype(tail)
-      unlock zone->lock
-                                                     del_page_from_freelist(head)
-                                                     expand(head, head_mt)
-                                                       WARN(head_mt != tail_mt)
-    start_pfn = ALIGN_DOWN(MAX_ORDER_NR_PAGES)
-    for (pfn = start_pfn, pfn < end_pfn)
-      if (PageBuddy())
-        split_free_page(head)
-
-IOW, we update a pageblock that isn't MAX_ORDER aligned, then drop the
-lock. The move_freepages_block() does nothing because the PageBuddy()
-is set on the pageblock to the left. Once we drop the lock, the buddy
-gets allocated and the expand() puts things on the wrong list. The
-splitting code that handles MAX_ORDER blocks runs *after* the tail
-type is set and the lock has been dropped, so it's too late.
-
-I think this would work fine if we always set MIGRATE_ISOLATE in a
-linear fashion, with start and end aligned to MAX_ORDER. Then we also
-wouldn't have to split things.
-
-There are two reasons this doesn't happen today:
-
-1. The isolation range is rounded to pageblocks, not MAX_ORDER. In
-   this test case they always seem aligned, but it's not
-   guaranteed. However,
-
-2. start_isolate_page_range() explicitly breaks ordering by doing the
-   last block in the range before the center. It's that last block
-   that triggers the race with __rmqueue_smallest -> expand() for me.
-
-With the below patch I can no longer reproduce the issue:
-
+Fixes: 12a95123bfe1 ("soundwire: bus: Allow SoundWire peripherals to register IRQ handlers")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309150522.MoKeF4jx-lkp@intel.com/
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
 
-diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-index b5c7a9d21257..b7c8730bf0e2 100644
---- a/mm/page_isolation.c
-+++ b/mm/page_isolation.c
-@@ -538,8 +538,8 @@ int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
- 	unsigned long pfn;
- 	struct page *page;
- 	/* isolation is done at page block granularity */
--	unsigned long isolate_start = pageblock_start_pfn(start_pfn);
--	unsigned long isolate_end = pageblock_align(end_pfn);
-+	unsigned long isolate_start = ALIGN_DOWN(start_pfn, MAX_ORDER_NR_PAGES);
-+	unsigned long isolate_end = ALIGN(end_pfn, MAX_ORDER_NR_PAGES);
- 	int ret;
- 	bool skip_isolation = false;
+Changes since v1:
+ - Change comments to /* */
+
+Thanks,
+Charles
+
+ drivers/soundwire/Makefile   |  4 +++
+ drivers/soundwire/bus.c      | 31 +++----------------
+ drivers/soundwire/bus_type.c | 11 +++----
+ drivers/soundwire/irq.c      | 59 ++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/irq.h      | 43 ++++++++++++++++++++++++++
+ 5 files changed, 115 insertions(+), 33 deletions(-)
+ create mode 100644 drivers/soundwire/irq.c
+ create mode 100644 drivers/soundwire/irq.h
+
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index c3d3ab3262d3a..657f5888a77b0 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -15,6 +15,10 @@ ifdef CONFIG_DEBUG_FS
+ soundwire-bus-y += debugfs.o
+ endif
  
-@@ -549,17 +549,6 @@ int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
- 	if (ret)
- 		return ret;
++ifdef CONFIG_IRQ_DOMAIN
++soundwire-bus-y += irq.o
++endif
++
+ #AMD driver
+ soundwire-amd-y :=	amd_manager.o
+ obj-$(CONFIG_SOUNDWIRE_AMD) += soundwire-amd.o
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 1720031f35a35..0e7bc3c40f9df 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -3,13 +3,13 @@
  
--	if (isolate_start == isolate_end - pageblock_nr_pages)
--		skip_isolation = true;
--
--	/* isolate [isolate_end - pageblock_nr_pages, isolate_end) pageblock */
--	ret = isolate_single_pageblock(isolate_end, flags, gfp_flags, true,
--			skip_isolation, migratetype);
--	if (ret) {
--		unset_migratetype_isolate(pfn_to_page(isolate_start), migratetype);
--		return ret;
--	}
--
- 	/* skip isolated pageblocks at the beginning and end */
- 	for (pfn = isolate_start + pageblock_nr_pages;
- 	     pfn < isolate_end - pageblock_nr_pages;
-@@ -568,12 +557,21 @@ int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
- 		if (page && set_migratetype_isolate(page, migratetype, flags,
- 					start_pfn, end_pfn)) {
- 			undo_isolate_page_range(isolate_start, pfn, migratetype);
--			unset_migratetype_isolate(
--				pfn_to_page(isolate_end - pageblock_nr_pages),
--				migratetype);
- 			return -EBUSY;
- 		}
- 	}
-+
-+	if (isolate_start == isolate_end - pageblock_nr_pages)
-+		skip_isolation = true;
-+
-+	/* isolate [isolate_end - pageblock_nr_pages, isolate_end) pageblock */
-+	ret = isolate_single_pageblock(isolate_end, flags, gfp_flags, true,
-+			skip_isolation, migratetype);
-+	if (ret) {
-+		undo_isolate_page_range(isolate_start, pfn, migratetype);
-+		return ret;
-+	}
-+
+ #include <linux/acpi.h>
+ #include <linux/delay.h>
+-#include <linux/irq.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
++#include "irq.h"
+ #include "sysfs_local.h"
+ 
+ static DEFINE_IDA(sdw_bus_ida);
+@@ -25,23 +25,6 @@ static int sdw_get_id(struct sdw_bus *bus)
  	return 0;
  }
  
-@@ -591,8 +589,8 @@ void undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
- {
- 	unsigned long pfn;
- 	struct page *page;
--	unsigned long isolate_start = pageblock_start_pfn(start_pfn);
--	unsigned long isolate_end = pageblock_align(end_pfn);
-+	unsigned long isolate_start = ALIGN_DOWN(start_pfn, MAX_ORDER_NR_PAGES);
-+	unsigned long isolate_end = ALIGN(end_pfn, MAX_ORDER_NR_PAGES);
+-static int sdw_irq_map(struct irq_domain *h, unsigned int virq,
+-		       irq_hw_number_t hw)
+-{
+-	struct sdw_bus *bus = h->host_data;
+-
+-	irq_set_chip_data(virq, bus);
+-	irq_set_chip(virq, &bus->irq_chip);
+-	irq_set_nested_thread(virq, 1);
+-	irq_set_noprobe(virq);
+-
+-	return 0;
+-}
+-
+-static const struct irq_domain_ops sdw_domain_ops = {
+-	.map	= sdw_irq_map,
+-};
+-
+ /**
+  * sdw_bus_master_add() - add a bus Master instance
+  * @bus: bus instance
+@@ -168,13 +151,9 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
+ 	bus->params.curr_bank = SDW_BANK0;
+ 	bus->params.next_bank = SDW_BANK1;
  
- 	for (pfn = isolate_start;
- 	     pfn < isolate_end;
+-	bus->irq_chip.name = dev_name(bus->dev);
+-	bus->domain = irq_domain_create_linear(fwnode, SDW_MAX_DEVICES,
+-					       &sdw_domain_ops, bus);
+-	if (!bus->domain) {
+-		dev_err(bus->dev, "Failed to add IRQ domain\n");
+-		return -EINVAL;
+-	}
++	ret = sdw_irq_create(bus, fwnode);
++	if (ret)
++		return ret;
+ 
+ 	return 0;
+ }
+@@ -213,7 +192,7 @@ void sdw_bus_master_delete(struct sdw_bus *bus)
+ {
+ 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
+ 
+-	irq_domain_remove(bus->domain);
++	sdw_irq_delete(bus);
+ 
+ 	sdw_master_device_del(bus);
+ 
+diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+index fafbc284e82da..9fa93bb923d70 100644
+--- a/drivers/soundwire/bus_type.c
++++ b/drivers/soundwire/bus_type.c
+@@ -7,6 +7,7 @@
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
++#include "irq.h"
+ #include "sysfs_local.h"
+ 
+ /**
+@@ -122,11 +123,8 @@ static int sdw_drv_probe(struct device *dev)
+ 	if (drv->ops && drv->ops->read_prop)
+ 		drv->ops->read_prop(slave);
+ 
+-	if (slave->prop.use_domain_irq) {
+-		slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
+-		if (!slave->irq)
+-			dev_warn(dev, "Failed to map IRQ\n");
+-	}
++	if (slave->prop.use_domain_irq)
++		sdw_irq_create_mapping(slave);
+ 
+ 	/* init the sysfs as we have properties now */
+ 	ret = sdw_slave_sysfs_init(slave);
+@@ -176,8 +174,7 @@ static int sdw_drv_remove(struct device *dev)
+ 	slave->probed = false;
+ 
+ 	if (slave->prop.use_domain_irq)
+-		irq_dispose_mapping(irq_find_mapping(slave->bus->domain,
+-						     slave->dev_num));
++		sdw_irq_dispose_mapping(slave);
+ 
+ 	mutex_unlock(&slave->sdw_dev_lock);
+ 
+diff --git a/drivers/soundwire/irq.c b/drivers/soundwire/irq.c
+new file mode 100644
+index 0000000000000..0c08cebb1235c
+--- /dev/null
++++ b/drivers/soundwire/irq.c
+@@ -0,0 +1,59 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (C) 2023 Cirrus Logic, Inc. and
++//                    Cirrus Logic International Semiconductor Ltd.
++
++#include <linux/device.h>
++#include <linux/fwnode.h>
++#include <linux/irq.h>
++#include <linux/irqdomain.h>
++#include <linux/soundwire/sdw.h>
++#include "irq.h"
++
++static int sdw_irq_map(struct irq_domain *h, unsigned int virq,
++		       irq_hw_number_t hw)
++{
++	struct sdw_bus *bus = h->host_data;
++
++	irq_set_chip_data(virq, bus);
++	irq_set_chip(virq, &bus->irq_chip);
++	irq_set_nested_thread(virq, 1);
++	irq_set_noprobe(virq);
++
++	return 0;
++}
++
++static const struct irq_domain_ops sdw_domain_ops = {
++	.map	= sdw_irq_map,
++};
++
++int sdw_irq_create(struct sdw_bus *bus,
++		   struct fwnode_handle *fwnode)
++{
++	bus->irq_chip.name = dev_name(bus->dev);
++
++	bus->domain = irq_domain_create_linear(fwnode, SDW_MAX_DEVICES,
++					       &sdw_domain_ops, bus);
++	if (!bus->domain) {
++		dev_err(bus->dev, "Failed to add IRQ domain\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++void sdw_irq_delete(struct sdw_bus *bus)
++{
++	irq_domain_remove(bus->domain);
++}
++
++void sdw_irq_create_mapping(struct sdw_slave *slave)
++{
++	slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
++	if (!slave->irq)
++		dev_warn(&slave->dev, "Failed to map IRQ\n");
++}
++
++void sdw_irq_dispose_mapping(struct sdw_slave *slave)
++{
++	irq_dispose_mapping(irq_find_mapping(slave->bus->domain, slave->dev_num));
++}
+diff --git a/drivers/soundwire/irq.h b/drivers/soundwire/irq.h
+new file mode 100644
+index 0000000000000..58a58046d92b8
+--- /dev/null
++++ b/drivers/soundwire/irq.h
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Cirrus Logic, Inc. and
++ *                    Cirrus Logic International Semiconductor Ltd.
++ */
++
++#ifndef __SDW_IRQ_H
++#define __SDW_IRQ_H
++
++#include <linux/soundwire/sdw.h>
++#include <linux/fwnode.h>
++
++#if IS_ENABLED(CONFIG_IRQ_DOMAIN)
++
++int sdw_irq_create(struct sdw_bus *bus,
++		   struct fwnode_handle *fwnode);
++void sdw_irq_delete(struct sdw_bus *bus);
++void sdw_irq_create_mapping(struct sdw_slave *slave);
++void sdw_irq_dispose_mapping(struct sdw_slave *slave);
++
++#else /* CONFIG_IRQ_DOMAIN */
++
++static inline int sdw_irq_create(struct sdw_bus *bus,
++				 struct fwnode_handle *fwnode)
++{
++	return 0;
++}
++
++static inline void sdw_irq_delete(struct sdw_bus *bus)
++{
++}
++
++static inline void sdw_irq_create_mapping(struct sdw_slave *slave)
++{
++}
++
++static inline void sdw_irq_dispose_mapping(struct sdw_slave *slave)
++{
++}
++
++#endif /* CONFIG_IRQ_DOMAIN */
++
++#endif /* __SDW_IRQ_H */
+-- 
+2.39.2
+
