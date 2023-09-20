@@ -2,434 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BAD7A6FB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 01:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296787A6FBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbjISXxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 19:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
+        id S233082AbjITACw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 20:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233556AbjISXxG (ORCPT
+        with ESMTP id S229690AbjITACw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 19:53:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C76C9D;
-        Tue, 19 Sep 2023 16:52:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A6EFC433C8;
-        Tue, 19 Sep 2023 23:52:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695167578;
-        bh=GXDw7exWljXp23bTtcSOFgaTX+pOlkl0dL7k2SAaU60=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YwO2L8/RoEhX2aukJQcmsqxr3p9NcjyVo6TXKVtB+hDzYAQkJTCnYkFNJTHZJ1KAE
-         fCz8ndoWhlkpaTYs1zQwvu4F/9385RhhJi1CYRd2ZV3gyXKnvUrF8GWSQjUwr2/eHE
-         Zgbiw4cx2MZpXOcOcBjbX0B0suM2pPXMXq/y5OHQy8Pu5bl3GXF78rlk7e8c51+PDS
-         A3L9wf6EsI7zCj0LTh5Gz2Cqv9Df4xkb3cA+7fIfHbUcornxUX2P1d7n96YXzV/cgX
-         yue7L00/ltTaL7prhMtywxv8j22Fqi3fDIL+bQR/smc4szk2tiSEsXuVUZTEkijVP9
-         16TmeOKYnfJng==
-Date:   Wed, 20 Sep 2023 08:52:51 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        Eugene Loh <eugene.loh@oracle.com>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        Viktor Malik <vmalik@redhat.com>,
-        Petr Mladek <pmladek@suse.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] scripts/link-vmlinux.sh: Add alias to duplicate
- symbols for kallsyms
-Message-Id: <20230920085251.a4e68173ee2539f695182810@kernel.org>
-In-Reply-To: <20230919193948.465340-1-alessandro.carminati@gmail.com>
-References: <20230919193948.465340-1-alessandro.carminati@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 20:02:52 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C213B95;
+        Tue, 19 Sep 2023 17:02:45 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 3E01D60157;
+        Wed, 20 Sep 2023 02:02:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695168164; bh=utPA7n7Yd2xyMem/Et4OtLEbYxG/j95VNgIAsibOFp4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gLn0Ja8cF2t3vVv0+mTfL/TZhVfVDiTO5V8+3Bp7fs9LrbvwBVBNVS1OkOV1tfSB1
+         O4tB3q626hPc8eCr/G426zfo0FkQ8m9GUoL0f4i6rBRoUb+eAJpsSHPb6ysYh/9IaN
+         Ao3Qn3a9GWQDLmoDEN4/OSiXSnl5rBjrbZDpVbpDmleWSEKFStfdm/Chaskean+QJ4
+         z3SmWfQfnKyo78zDg/wERcG+y7LrPCVe8DfElEj+TZbR3fBHneIJJVq+VMVf32oStp
+         38Z2T4U2HvZ/RD+xDiIK9UHgqJPdSh0PLwmjDuIa7V1/oweByN79DdJ2qI6BVW6WHE
+         oCBRIKD0FLCmQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 4y_SY_XXPWRI; Wed, 20 Sep 2023 02:02:41 +0200 (CEST)
+Received: from defiant.home (78-2-200-2.adsl.net.t-com.hr [78.2.200.2])
+        by domac.alu.hr (Postfix) with ESMTPSA id 006D660152;
+        Wed, 20 Sep 2023 02:02:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695168161; bh=utPA7n7Yd2xyMem/Et4OtLEbYxG/j95VNgIAsibOFp4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eFwQ5jINT4MhN7WjvnbnDTbQ2E7ivLLaGFZ3+aoNrCWdm/EQSLY4XeXDs/eRxTrlv
+         CwCq4AaROOF7VljeOWxpj0HEVqw+xmORSyK5mz+5Z9LVfLOW3+SsqSxhqsFeI1CqiG
+         pHiG6Iu04NQlD0iPbrTDPmqf4chW5GCULwpDVFzikRL+mbvZSCTOFMaqAdmbWGWXga
+         yrWU302jObOn4aiD1Mfi6z+S1mp7BX4AhS/mBerCbsrNbr0/Rv9cULlZaBC06WKnmy
+         yC2l51USwZ5YnV57pXu2UDB65cCFTob4FxtkCnnGJPFB3IOXMME2ztA9Io1yzpzyr6
+         RGJbR6pFLF40Q==
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@FreeBSD.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Subject: [PATCH v1 1/1] acpica: use spinlocks to fix the data-races reported by the KCSAN
+Date:   Wed, 20 Sep 2023 02:01:40 +0200
+Message-Id: <20230920000139.15533-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 19:39:48 +0000
-"Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com> wrote:
+KCSAN reported hundreds of instances of data-races in ACPICA like this one:
 
-> It is not uncommon for drivers or modules related to similar peripherals
-> to have symbols with the exact same name.
-> While this is not a problem for the kernel's binary itself, it becomes an
-> issue when attempting to trace or probe specific functions using
-> infrastructure like ftrace or kprobe.
-> 
-> The tracing subsystem relies on the `nm -n vmlinux` output, which provides
-> symbol information from the kernel's ELF binary. However, when multiple
-> symbols share the same name, the standard nm output does not differentiate
-> between them. This can lead to confusion and difficulty when trying to
-> probe the intended symbol.
-> 
->  ~ # cat /proc/kallsyms | grep " name_show"
->  ffffffff8c4f76d0 t name_show
->  ffffffff8c9cccb0 t name_show
->  ffffffff8cb0ac20 t name_show
->  ffffffff8cc728c0 t name_show
->  ffffffff8ce0efd0 t name_show
->  ffffffff8ce126c0 t name_show
->  ffffffff8ce1dd20 t name_show
->  ffffffff8ce24e70 t name_show
->  ffffffff8d1104c0 t name_show
->  ffffffff8d1fe480 t name_show
-> 
-> kas_alias addresses this challenge by enhancing symbol names with
-> meaningful suffixes generated from the source file and line number
-> during the kernel build process.
-> These newly generated aliases provide tracers with the ability to
-> comprehend the symbols they are interacting with when utilizing the
-> ftracefs interface.
-> This approach may also allow for the probing by name of previously
-> inaccessible symbols.
-> 
->  ~ # cat /proc/kallsyms | grep gic_mask_irq
->  ffffd15671e505ac t gic_mask_irq
->  ffffd15671e505ac t gic_mask_irq@drivers_irqchip_irq_gic_c_167
->  ffffd15671e532a4 t gic_mask_irq
->  ffffd15671e532a4 t gic_mask_irq@drivers_irqchip_irq_gic_v3_c_407
->  ~ #
-> 
-> Changes from v1:
-> - Integrated changes requested by Masami to exclude symbols with prefixes
->   "_cfi" and "_pfx".
-> - Introduced a small framework to handle patterns that need to be excluded
->   from the alias production.
-> - Excluded other symbols using the framework.
-> - Introduced the ability to discriminate between text and data symbols.
-> - Added two new config symbols in this version: CONFIG_KALLSYMS_ALIAS_DATA,
->   which allows data for data, and CONFIG_KALLSYMS_ALIAS_DATA_ALL, which
->   excludes all filters and provides an alias for each duplicated symbol.
-> 
-> https://lore.kernel.org/all/20230711151925.1092080-1-alessandro.carminati@gmail.com/
-> 
-> Changes from v2:
-> - Alias tags are created by querying DWARF information from the vmlinux.
-> - The filename + line number is normalized and appended to the original
->   name.
-> - The tag begins with '@' to indicate the symbol source.
-> - Not a change, but worth mentioning, since the alias is added to the
->   existing list, the old duplicated name is preserved, and the livepatch
->   way of dealing with duplicates is maintained.
-> - Acknowledging the existence of scenarios where inlined functions
->   declared in header files may result in multiple copies due to compiler
->   behavior, though it is not actionable as it does not pose an operational
->   issue.
-> - Highlighting a single exception where the same name refers to different
->   functions: the case of "compat_binfmt_elf.c," which directly includes
->   "binfmt_elf.c" producing identical function copies in two separate
->   modules.
-> 
-> https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carminati@gmail.com/
-> 
-> Changes from v3:
-> - kas_alias was rewritten in Python to create a more concise and
->   maintainable codebase.
-> - The previous automation process used by kas_alias to locate the vmlinux
->   and the addr2line has been replaced with an explicit command-line switch
->   for specifying these requirements.
-> - addr2line has been added into the main Makefile.
-> - A new command-line switch has been introduced, enabling users to extend
->   the alias to global data names.
-> 
-> https://lore.kernel.org/all/20230828080423.3539686-1-alessandro.carminati@gmail.com/
-> 
-> NOTE:
-> About the symbols name duplication that happens as consequence of the
-> inclusion compat_binfmt_elf.c does, it is evident that this corner is
-> inherently challenging the addr2line approach.
-> Attempting to conceal this limitation would be counterproductive.
-> 
-> compat_binfmt_elf.c includes directly binfmt_elf.c, addr2line can't help
-> but report all functions and data declared by that file, coming from
-> binfmt_elf.c.
-> 
-> My position is that, rather than producing a more complicated pipeline
-> to handle this corner case, it is better to fix the compat_binfmt_elf.c
-> anomaly.
-> 
-> This patch does not deal with the two potentially problematic symbols
-> defined by compat_binfmt_elf.c
+[    6.994149] ==================================================================
+[    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
 
-Hi, it looks good but if I build with O=<build dir>, I have this error.
+[    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
+[    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
+[    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
+[    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+[    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+[    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+[    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+[    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+[    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+[    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+[    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+[    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+[    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+[    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
 
-/ksrc/linux/scripts/link-vmlinux.sh: 176: scripts/kas_alias.py: not found
+[    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
+[    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
+[    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
+[    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
+[    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
+[    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
+[    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+[    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+[    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+[    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+[    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+[    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+[    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+[    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+[    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+[    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+[    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
 
-Maybe something wrong with setting the path?
+[    6.995476] value changed: 0x00000004 -> 0x00000002
 
-Thank you,
+[    6.995629] Reported by Kernel Concurrency Sanitizer on:
+[    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+[    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[    6.995765] ==================================================================
 
-> 
-> Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
-> ---
->  Makefile                |   4 +-
->  init/Kconfig            |  22 +++++++
->  scripts/kas_alias.py    | 132 ++++++++++++++++++++++++++++++++++++++++
->  scripts/link-vmlinux.sh |  20 +++++-
->  4 files changed, 175 insertions(+), 3 deletions(-)
->  create mode 100755 scripts/kas_alias.py
-> 
-> diff --git a/Makefile b/Makefile
-> index 4f283d915e54..f33c179f4cc3 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -488,6 +488,7 @@ OBJCOPY		= $(LLVM_PREFIX)llvm-objcopy$(LLVM_SUFFIX)
->  OBJDUMP		= $(LLVM_PREFIX)llvm-objdump$(LLVM_SUFFIX)
->  READELF		= $(LLVM_PREFIX)llvm-readelf$(LLVM_SUFFIX)
->  STRIP		= $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
-> +ADDR2LINE	= $(LLVM_PREFIX)llvm-addr2line$(LLVM_SUFFIX)
->  else
->  CC		= $(CROSS_COMPILE)gcc
->  LD		= $(CROSS_COMPILE)ld
-> @@ -497,6 +498,7 @@ OBJCOPY		= $(CROSS_COMPILE)objcopy
->  OBJDUMP		= $(CROSS_COMPILE)objdump
->  READELF		= $(CROSS_COMPILE)readelf
->  STRIP		= $(CROSS_COMPILE)strip
-> +ADDR2LINE	= $(CROSS_COMPILE)addr2line
->  endif
->  RUSTC		= rustc
->  RUSTDOC		= rustdoc
-> @@ -611,7 +613,7 @@ export RUSTC_BOOTSTRAP := 1
->  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC HOSTPKG_CONFIG
->  export RUSTC RUSTDOC RUSTFMT RUSTC_OR_CLIPPY_QUIET RUSTC_OR_CLIPPY BINDGEN CARGO
->  export HOSTRUSTC KBUILD_HOSTRUSTFLAGS
-> -export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
-> +export CPP AR NM STRIP OBJCOPY OBJDUMP READELF ADDR2LINE PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
->  export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
->  export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
->  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 6d35728b94b2..d45dd423e1ec 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1738,6 +1738,28 @@ config KALLSYMS_BASE_RELATIVE
->  	  time constants, and no relocation pass is required at runtime to fix
->  	  up the entries based on the runtime load address of the kernel.
->  
-> +config KALLSYMS_ALIAS_SRCLINE
-> +	bool "Produces alias for duplicated text symbols" if EXPERT
-> +	depends on KALLSYMS && DEBUG_INFO && !DEBUG_INFO_SPLIT
-> +	help
-> +	  It is not uncommon for drivers or modules related to similar
-> +	  peripherals to have symbols with the exact same name.
-> +	  While this is not a problem for the kernel's binary itself, it
-> +	  becomes an issue when attempting to trace or probe specific
-> +	  functions using infrastructure like ftrace or kprobe.
-> +
-> +	  This option addresses this challenge, producing alias for text
-> +	  symbol names that include the file name and line where the symbols
-> +	  are defined in the source code.
-> +
-> +config KALLSYMS_ALIAS_SRCLINE_DATA
-> +	bool "Produces alias also for global variables names"
-> +	depends on KALLSYMS_ALIAS_SRCLINE
-> +	help
-> +	  Sometimes it can be useful to refer to global vars by name. Since
-> +	  they suffer the same issue as text symbols, this config option
-> +	  allows having aliases for global variables names too.
-> +
->  # end of the "standard kernel features (expert users)" menu
->  
->  # syscall, maps, verifier
-> diff --git a/scripts/kas_alias.py b/scripts/kas_alias.py
-> new file mode 100755
-> index 000000000000..8cc2a2178da6
-> --- /dev/null
-> +++ b/scripts/kas_alias.py
-> @@ -0,0 +1,132 @@
-> +#!/usr/bin/env python3
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Copyright (C) 2023 Red Hat, Inc. Alessandro Carminati <alessandro.carminati@gmail.com>
-> +#
-> +# kas_alias: Adds alias to duplicate symbols in the kallsyms output.
-> +
-> +import subprocess
-> +import sys
-> +import os
-> +import argparse
-> +import re
-> +from collections import namedtuple
-> +
-> +regex_filter = [
-> +        "^__compound_literal\\.[0-9]+$",
-> +        "^__[wm]*key\\.[0-9]+$",
-> +        "^_*TRACE_SYSTEM.*$",
-> +        "^__already_done\\.[0-9]+$",
-> +        "^__msg\\.[0-9]+$",
-> +        "^__func__\\.[0-9]+$",
-> +        "^CSWTCH\\.[0-9]+$",
-> +        "^_rs\\.[0-9]+$",
-> +        "^___tp_str\\.[0-9]+$",
-> +        "^__flags\\.[0-9]+$",
-> +        "^___done\\.[0-9]+$",
-> +        "^__print_once\\.[0-9]+$",
-> +        "^___once_key\\.[0-9]+$",
-> +        "^__pfx_.*$",
-> +        "^__cfi_.*$"
-> +        ]
-> +
-> +class SeparatorType:
-> +    def __call__(self, separator):
-> +        if len(separator) != 1:
-> +            raise argparse.ArgumentTypeError("Separator must be a single character")
-> +        return separator
-> +
-> +Line = namedtuple('Line', ['address', 'type', 'name'])
-> +
-> +def parse_file(filename):
-> +    symbol_list = []
-> +    name_occurrences = {}
-> +
-> +    with open(filename, 'r') as file:
-> +        for line in file:
-> +            fields = line.strip().split()
-> +
-> +            if len(fields) >= 3:
-> +                address, type, name = fields[0], fields[1], ' '.join(fields[2:])
-> +                symbol_list.append(Line(address, type, name))
-> +                name_occurrences[name] = name_occurrences.get(name, 0) + 1
-> +
-> +    return symbol_list, name_occurrences
-> +
-> +def find_duplicate(symbol_list, name_occurrences):
-> +    name_to_lines = {}
-> +    duplicate_lines = []
-> +
-> +    for line in symbol_list:
-> +        if line.name in name_to_lines:
-> +            first_occurrence = name_to_lines[line.name]
-> +            duplicate_lines.extend([first_occurrence, line])
-> +        else:
-> +            name_to_lines[line.name] = line
-> +
-> +    return duplicate_lines
-> +
-> +def start_addr2line_process(binary_file, addr2line_file):
-> +    try:
-> +        addr2line_process = subprocess.Popen([addr2line_file, '-fe', binary_file],
-> +                                             stdin=subprocess.PIPE,
-> +                                             stdout=subprocess.PIPE,
-> +                                             stderr=subprocess.PIPE,
-> +                                             text=True)
-> +        return addr2line_process
-> +    except Exception as e:
-> +        print(f"Error starting addr2line process: {str(e)}")
-> +        return None
-> +
-> +def addr2line_fetch_address(addr2line_process, address):
-> +    try:
-> +        addr2line_process.stdin.write(address + '\n')
-> +        addr2line_process.stdin.flush()
-> +        addr2line_process.stdout.readline().strip()
-> +        output = addr2line_process.stdout.readline().strip()
-> +
-> +        return os.path.normpath(output)
-> +    except Exception as e:
-> +        print(f"Error communicating with addr2line: {str(e)}")
-> +        return None
-> +
-> +def process_line(line, config):
-> +    if config:
-> +        return not (any(re.match(regex, obj.name) for regex in regex_filter))
-> +    else:
-> +        return obj.type in {"T", "t"}
-> +
-> +if __name__ == "__main__":
-> +    parser = argparse.ArgumentParser(description='Add alias to multiple occurring symbols name in kallsyms')
-> +    parser.add_argument('-a', "--addr2line", dest="addr2line_file", required=True)
-> +    parser.add_argument('-v', "--vmlinux", dest="vmlinux_file", required=True)
-> +    parser.add_argument('-o', "--outfile", dest="output_file", required=True)
-> +    parser.add_argument('-n', "--nmdata", dest="nm_data_file", required=True)
-> +    parser.add_argument('-s', "--separator", dest="separator", required=False, default="@", type=SeparatorType())
-> +    parser.add_argument('-d', "--data", dest="include_data", required=False, action='store_true')
-> +    config = parser.parse_args()
-> +
-> +    try:
-> +        config.linux_base_dir = os.getcwd()+"/"
-> +        symbol_list, name_occurrences = parse_file(config.nm_data_file)
-> +        addr2line_process = start_addr2line_process(config.vmlinux_file, config.addr2line_file)
-> +
-> +        with open(config.output_file, 'w') as file:
-> +            for obj in symbol_list:
-> +                file.write("{} {} {}\n".format(obj.address, obj.type, obj.name))
-> +                if (name_occurrences[obj.name] > 1) and process_line(obj, config.include_data) :
-> +                    output = addr2line_fetch_address(addr2line_process, obj.address)
-> +                    decoration = config.separator + "".join(
-> +                        "_" if not c.isalnum() else c for c in output.replace(config.linux_base_dir, "")
-> +                    )
-> +                    if decoration != config.separator + "____":
-> +                        file.write("{} {} {}\n".format(obj.address, obj.type, obj.name + decoration))
-> +
-> +        addr2line_process.stdin.close()
-> +        addr2line_process.stdout.close()
-> +        addr2line_process.stderr.close()
-> +        addr2line_process.wait()
-> +
-> +    except Exception as e:
-> +        print(f"An error occurred: {str(e)}")
-> +        raise SystemExit("Script terminated due to an error")
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index a432b171be82..7cc24fd5f6b4 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -91,7 +91,12 @@ vmlinux_link()
->  
->  	# The kallsyms linking does not need debug symbols included.
->  	if [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
-> -		ldflags="${ldflags} ${wl}--strip-debug"
-> +		# The kallsyms linking does not need debug symbols included,
-> +		# unless the KALLSYMS_ALIAS_SRCLINE.
-> +		if ! is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE && \
-> +		   [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
-> +			ldflags="${ldflags} ${wl}--strip-debug"
-> +		fi
->  	fi
->  
->  	if is_enabled CONFIG_VMLINUX_MAP; then
-> @@ -161,7 +166,18 @@ kallsyms()
->  	fi
->  
->  	info KSYMS ${2}
-> -	scripts/kallsyms ${kallsymopt} ${1} > ${2}
-> +	ALIAS=""
-> +	KAS_DATA=""
-> +	if is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE_DATA; then
-> +		KAS_DATA="-d"
-> +	fi
-> +	if is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE; then
-> +		ALIAS=".alias"
-> +		scripts/kas_alias.py \
-> +			-a ${ADDR2LINE} -v ${kallsyms_vmlinux} -n ${1} \
-> +			-o ${1}${ALIAS} -s @ ${KAS_DATA}
-> +	fi
-> +	scripts/kallsyms ${kallsymopt} ${1}${ALIAS} > ${2}
->  }
->  
->  # Perform one step in kallsyms generation, including temporary linking of
-> -- 
-> 2.34.1
-> 
+Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
 
+A number of unprotected increments:
 
+        acpi_gbl_nesting_level++;
+
+and conditional statements:
+
+        if (acpi_gbl_nesting_level) {
+                acpi_gbl_nesting_level--;
+        }
+
+no longer work in SMP environment.
+
+Proper locking like
+
+        spin_lock(&acpi_utdebug_lock);
+        acpi_gbl_nesting_level++;
+        spin_unlock(&acpi_utdebug_lock);
+
+and
+
+        spin_lock(&acpi_utdebug_lock);
+        if (acpi_gbl_nesting_level) {
+                acpi_gbl_nesting_level--;
+        }
+        spin_unlock(&acpi_utdebug_lock);
+
+makes these data-races go away.
+
+Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
+acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
+stuff the optmisers do.
+
+The patch eliminates KCSAN BUG warnings.
+
+Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
+Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
+Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
+Fixes: ^1da177e4c3f4 ("Initial git repository build.")
+Cc: Jung-uk Kim <jkim@FreeBSD.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Erik Kaneda <erik.kaneda@intel.com>
+Cc: Bob Moore <robert.moore@intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org
+Cc: acpica-devel@lists.linuxfoundation.org
+Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+---
+v1:
+ Preliminary RFC version of the patch.
+
+ drivers/acpi/acpica/utdebug.c | 40 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
+index c5f6c85a3a09..148f2b820c88 100644
+--- a/drivers/acpi/acpica/utdebug.c
++++ b/drivers/acpi/acpica/utdebug.c
+@@ -16,6 +16,8 @@
+ #define _COMPONENT          ACPI_UTILITIES
+ ACPI_MODULE_NAME("utdebug")
+ 
++static DEFINE_SPINLOCK(acpi_utdebug_lock);
++
+ #ifdef ACPI_DEBUG_OUTPUT
+ static acpi_thread_id acpi_gbl_previous_thread_id = (acpi_thread_id) 0xFFFFFFFF;
+ static const char *acpi_gbl_function_entry_prefix = "----Entry";
+@@ -60,13 +62,16 @@ void acpi_ut_init_stack_ptr_trace(void)
+ void acpi_ut_track_stack_ptr(void)
+ {
+ 	acpi_size current_sp;
++	u32 nesting_level;
+ 
+ 	if (&current_sp < acpi_gbl_lowest_stack_pointer) {
+ 		acpi_gbl_lowest_stack_pointer = &current_sp;
+ 	}
+ 
+-	if (acpi_gbl_nesting_level > acpi_gbl_deepest_nesting) {
+-		acpi_gbl_deepest_nesting = acpi_gbl_nesting_level;
++	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
++
++	if (nesting_level > acpi_gbl_deepest_nesting) {
++		acpi_gbl_deepest_nesting = nesting_level;
+ 	}
+ }
+ 
+@@ -137,6 +142,7 @@ acpi_debug_print(u32 requested_debug_level,
+ #ifdef ACPI_APPLICATION
+ 	int fill_count;
+ #endif
++	u32 nesting_level;
+ 
+ 	/* Check if debug output enabled */
+ 
+@@ -156,7 +162,7 @@ acpi_debug_print(u32 requested_debug_level,
+ 		}
+ 
+ 		acpi_gbl_previous_thread_id = thread_id;
+-		acpi_gbl_nesting_level = 0;
++		WRITE_ONCE(acpi_gbl_nesting_level, 0);
+ 	}
+ 
+ 	/*
+@@ -176,14 +182,16 @@ acpi_debug_print(u32 requested_debug_level,
+ 		acpi_os_printf("[%u] ", (u32)thread_id);
+ 	}
+ 
+-	fill_count = 48 - acpi_gbl_nesting_level -
++	fill_count = 48 - READ_ONCE(acpi_gbl_nesting_level) -
+ 	    strlen(acpi_ut_trim_function_name(function_name));
+ 	if (fill_count < 0) {
+ 		fill_count = 0;
+ 	}
+ 
++	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
++
+ 	acpi_os_printf("[%02d] %*s",
+-		       acpi_gbl_nesting_level, acpi_gbl_nesting_level + 1, " ");
++		       nesting_level, nesting_level + 1, " ");
+ 	acpi_os_printf("%s%*s: ",
+ 		       acpi_ut_trim_function_name(function_name), fill_count,
+ 		       " ");
+@@ -260,7 +268,10 @@ acpi_ut_trace(u32 line_number,
+ 	      const char *module_name, u32 component_id)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -298,7 +309,10 @@ acpi_ut_trace_ptr(u32 line_number,
+ 		  u32 component_id, const void *pointer)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -334,7 +348,10 @@ acpi_ut_trace_str(u32 line_number,
+ 		  const char *module_name, u32 component_id, const char *string)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -370,7 +387,10 @@ acpi_ut_trace_u32(u32 line_number,
+ 		  const char *module_name, u32 component_id, u32 integer)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -414,9 +434,11 @@ acpi_ut_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix);
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ ACPI_EXPORT_SYMBOL(acpi_ut_exit)
+@@ -463,9 +485,11 @@ acpi_ut_status_exit(u32 line_number,
+ 		}
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
+@@ -502,9 +526,11 @@ acpi_ut_value_exit(u32 line_number,
+ 				 ACPI_FORMAT_UINT64(value));
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
+@@ -540,9 +566,11 @@ acpi_ut_ptr_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix, ptr);
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ /*******************************************************************************
+@@ -577,9 +605,11 @@ acpi_ut_str_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix, string);
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ /*******************************************************************************
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.34.1
+
