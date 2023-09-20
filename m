@@ -2,249 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DA57A83B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D867A83C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236224AbjITNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S236391AbjITNqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234771AbjITNo3 (ORCPT
+        with ESMTP id S235132AbjITNqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:44:29 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C1AAD;
-        Wed, 20 Sep 2023 06:44:23 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-4962ea9921aso2682665e0c.0;
-        Wed, 20 Sep 2023 06:44:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695217462; x=1695822262; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=95fTQPVKJHWmCHRYGh/6GuNTqeE/4yo9MhUnxDaE2lo=;
-        b=CB0wsID4G4zWqt++NXEzpOaoNFWcw4IxRRt5gXO70xHnC1/fyV71xpb75nTQqol9Iu
-         SwhhSL/uA7+zmlv7VnCOAfoW17mI7ei2SHMRY6tBNRW3GBqgQ4E2jssSZZldg/JMXPAP
-         T6pp+f/wCjhyAgTZwbTJubSAvA4IZq+vMRvhz1iACvH8YPHHmcKyjkqQQeAyTfjDSvMI
-         D/oawpmL5mBIeg05ACF3auxGooFM25KbyMCH+tIoQJfMzGr+vKzRDz5sMwqS2JKSWzZC
-         KYxsz64Fy4PWJ4vkeQ5NHPmnsHJ5J04ohbfsR+Ei+hRNTEIgE7Z3Q1S6+eFY1PJIPiyn
-         cRGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695217462; x=1695822262;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=95fTQPVKJHWmCHRYGh/6GuNTqeE/4yo9MhUnxDaE2lo=;
-        b=PqEV+7aVztKDXkKKQFa1wbGJdDc/KLALsKIaIvegz2L8QD+dPAuwcb1hWS5DTJxQfv
-         Xdum/Lz9xe50nxi0TO6cjRtF3Tai+cJnt9ubfl+w+Jkk1/yf+Jv+Z4lfCyJ7Req0EnRJ
-         z19bKblu5zF95l6BzqbOzBJm6i/wAfGGWtpFV4wEZXdqSFSn7paiL9Au0BAcSOCvDOJC
-         eGQYu7YYfX3jXtWUPkq9PFBmnyzGRxumUKo/eFfpebhn13fUqhwRuIQrnRnjGzQQRH53
-         cWinsvIAa1DkqgsTGO65gJzbAemuQ7Pku0xufOm5jIaX/xxnvwotWcoNb7DeGp7U9LK2
-         FUfg==
-X-Gm-Message-State: AOJu0YzWg/RkTc3uGU7aW6bqmwZKuscCeP33gMhuyroNe/G+xa59mP8w
-        fYYeMuhnGfIJ67CjSf4S11EC8XQgceNlTw4YgrE=
-X-Google-Smtp-Source: AGHT+IHMmwuzvv3m+YOPL1VZk9naST2BH9KaMdyZjYBGtPJKZd+26gmjj5LV5wpQUnYyN5k5pq3Aj7bDw4GZyw78O1M=
-X-Received: by 2002:a1f:4c43:0:b0:48f:e2eb:6dd9 with SMTP id
- z64-20020a1f4c43000000b0048fe2eb6dd9mr2628965vka.8.1695217462414; Wed, 20 Sep
- 2023 06:44:22 -0700 (PDT)
+        Wed, 20 Sep 2023 09:46:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FD8A1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:45:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695217526;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=ujgTQ3qDufxtYM9d31tejNUpUpn73FVEUPZ3OHRj4VM=;
+        b=NfRXg3/Eo0y0TtSswgDucso8FU3AyZcFCxQ6j6lefHauWVUtXitpBS/Ctbn9f9cHCEnpP/
+        LA9Mi5Pvl/iXKdY5RFrK+NHSLWMuNnrTcK+10o8k32RH91XJ2kbQnfdn5k+IV2C2bR/Pwy
+        uMJUm5x/lLfBDwAvhfpMT+r3kSEWpAM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-325-gkLD6GTqPb-VgyoADgSo4A-1; Wed, 20 Sep 2023 09:45:23 -0400
+X-MC-Unique: gkLD6GTqPb-VgyoADgSo4A-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6D3533C23FE9;
+        Wed, 20 Sep 2023 13:45:22 +0000 (UTC)
+Received: from redhat.com (unknown [10.42.28.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A0021492C37;
+        Wed, 20 Sep 2023 13:45:19 +0000 (UTC)
+Date:   Wed, 20 Sep 2023 14:45:17 +0100
+From:   Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
+To:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Wander Lairson Costa <wander@redhat.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Qinkun Bao <qinkun@apache.org>,
+        Guorui Yu <GuoRui.Yu@linux.alibaba.com>,
+        linux-coco@lists.linux.dev, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] virt: tdx-guest: Add Quote generation support using
+ TSM_REPORTS
+Message-ID: <ZQr3bTtq6N+myZ4u@redhat.com>
+Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
+References: <20230914031349.23516-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20230920131633.ig6ldmwavpu7uhss@box.shutemov.name>
 MIME-Version: 1.0
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-24-claudiu.beznea.uj@bp.renesas.com> <CAMuHMdUwnsJ0uKeLtFcwB6a2nQtaSUPu0ZR7kYwQeEhKMhfXFQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUwnsJ0uKeLtFcwB6a2nQtaSUPu0ZR7kYwQeEhKMhfXFQ@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 20 Sep 2023 14:43:55 +0100
-Message-ID: <CA+V-a8vQzBs-Qq0mRyjn_=ciqxna9Fw64dvnQCFF-0xLEx7Fmg@mail.gmail.com>
-Subject: Re: [PATCH 23/37] pinctrl: renesas: rzg2l: index all registers based
- on port offset
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Claudiu <claudiu.beznea@tuxon.dev>,
-        prabhakar.mahadev-lad.rj@bp.renesas.com, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230920131633.ig6ldmwavpu7uhss@box.shutemov.name>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Wed, Sep 20, 2023 at 04:16:33PM +0300, Kirill A . Shutemov wrote:
+> On Thu, Sep 14, 2023 at 03:13:49AM +0000, Kuppuswamy Sathyanarayanan wrote:
+> > In TDX guest, the attestation process is used to verify the TDX guest
+> > trustworthiness to other entities before provisioning secrets to the
+> > guest. The First step in the attestation process is TDREPORT
+> 
+> s/First/first/ ?
+> 
+> > generation, which involves getting the guest measurement data in the
+> > format of TDREPORT, which is further used to validate the authenticity
+> > of the TDX guest. TDREPORT by design is integrity-protected and can
+> > only be verified on the local machine.
+> > 
+> > To support remote verification of the TDREPORT (in a SGX-based
+> > attestation), the TDREPORT needs to be sent to the SGX Quoting Enclave
+> 
+> Parentheses can be dropped.
+> 
+> > (QE) to convert it to a remotely verifiable Quote. SGX QE by design can
+> > only run outside of the TDX guest (i.e. in a host process or in a
+> > normal VM) and guest can use communication channels like vsock or
+> > TCP/IP to send the TDREPORT to the QE. But for security concerns, the
+> > TDX guest may not support these communication channels. To handle such
+> > cases, TDX defines a GetQuote hypercall which can be used by the guest
+> > to request the host VMM to communicate with the SGX QE. More details
+> > about GetQuote hypercall can be found in TDX Guest-Host Communication
+> > Interface (GHCI) for Intel TDX 1.0, section titled
+> > "TDG.VP.VMCALL<GetQuote>".
+> > 
+> > Trusted Security Module (TSM) [1] exposes a common ABI for Confidential
+> > Computing Guest platforms to get the measurement data via ConfigFS.
+> > Extend the TSM framework and add support to allow an attestation agent
+> > to get the TDX Quote data (included usage example below).
+> > 
+> >   report=/sys/kernel/config/tsm/report/report0
+> >   mkdir $report
+> >   dd if=/dev/urandom bs=64 count=1 > $report/inblob
+> >   hexdump -C $report/outblob
+> >   rmdir $report
+> > 
+> > GetQuote TDVMCALL requires TD guest pass a 4K aligned shared buffer
+> > with TDREPORT data as input, which is further used by the VMM to copy
+> > the TD Quote result after successful Quote generation. To create the
+> > shared buffer, allocate a large enough memory and mark it shared using
+> > set_memory_decrypted() in tdx_guest_init(). This buffer will be re-used
+> > for GetQuote requests in the TDX TSM handler.
+> > 
+> > Although this method reserves a fixed chunk of memory for GetQuote
+> > requests, such one time allocation can help avoid memory fragmentation
+> > related allocation failures later in the uptime of the guest.
+> > 
+> > Since the Quote generation process is not time-critical or frequently
+> > used, the current version uses a polling model for Quote requests and
+> > it also does not support parallel GetQuote requests.
+> > 
+> > Link: https://lore.kernel.org/lkml/169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com/ [1]
+> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> 
+> The patch looks good to me. See one question below.
 
-On Wed, Sep 20, 2023 at 2:22=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Claudiu,
->
-> Thanks for your patch!
->
-> On Tue, Sep 12, 2023 at 6:53=E2=80=AFAM Claudiu <claudiu.beznea@tuxon.dev=
-> wrote:
-> > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >
-> > To get address that needs to be read/write for specific port
-> > functionalities the P(), PM(), PMC(), PFC(), PIN(), IOLH() IEN(), ISEL(=
-)
-> > macros are used. Some of these macros received as argument the hardware
-> > port identifier, some hardware port offset address (e.g. ISEL() receive=
-d
-> > port identifier, IOLH() received port offset address). This makes hard =
-to
-> > extend the current driver for SoCs were port identifiers are not contin=
-uous
-> > in memory map of pin controller. This is the case for RZ/G3S pin contro=
-ller
-> > were ports are mapped as follows:
-> >
-> > port offset    port identifier
-> > -----------    ---------------
-> > 0x20           P0
-> > 0x21           P5
-> > 0x22           P6
-> > 0x23           P11
-> > 0x24           P12
-> > 0x25           P13
-> > 0x26           P14
-> > 0x27           P15
-> > 0x28           P16
-> > 0x29           P17
-> > 0x2a           P18
-> > 0x30           P1
-> > 0x31           P2
-> > 0x32           P3
-> > 0x33           P4
-> > 0x34           P7
-> > 0x35           P8
-> > 0x36           P8
-> > 0x37           P10
-> >
-> > To make this achievable change all the above macros used to get the add=
-ress
-> > of a port register for specific port functionality based on port hardwa=
-re
-> > address. Shortly, all the above macros will get as argument the port
-> > offset address listed in the above table.
-> >
-> > With this RZG2L_SINGLE_PIN_GET_PORT_OFFSET() and
-> > RZG2L_PIN_ID_TO_PORT_OFFSET() were replaced by
->
-> and RZG2L_GPIO_PORT_GET_INDEX()?
->
-> > RZG2L_PIN_CFG_TO_PORT_OFFSET(), RZG2L_SINGLE_PIN_GET_CFGS() and
-> > RZG2L_GPIO_PORT_GET_CFGS() were replaced by RZG2L_PIN_CFG_TO_CAPS().
-> >
-> > Also rzg2l_pinctrl_set_pfc_mode() don't need port argument anymore.
-> > Also rzg2l_gpio_direction_input() and rzg2l_gpio_direction_output() don=
-'t
-> > need to translate port and bit locally as this can be done by
-> > rzg2l_gpio_set_direction().
-> >
-> > To use the same naming for port, bit/pin and register offset the
-> > port_offset variable names in different places was replaced by variable
-> > named off and there is no need to initialize anymore cfg and bit in
-> > different code places.
-> >
-> > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> This looks like a nice cleanup, thanks a lot!
-> Prabhakar: do you like it, too?
->
-Yes indeed, I loved it when I reviewed it internally. This makes it
-easier for me to add those extra port pins present on rz/five ;)
-
-Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-
-Cheers,
-Prabhakar
-
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> You can find a few suggestions for improvement below...
->
-> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > @@ -202,9 +202,11 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_de=
-v *pctldev,
-> >                                  unsigned int group_selector)
-> >  {
-> >         struct rzg2l_pinctrl *pctrl =3D pinctrl_dev_get_drvdata(pctldev=
-);
-> > +       const struct pinctrl_pin_desc *pin_desc;
-> > +       unsigned int i, *psel_val, *pin_data;
-> >         struct function_desc *func;
-> > -       unsigned int i, *psel_val;
-> >         struct group_desc *group;
-> > +       u32 port, pin, off;
->
-> Please move the new variable declarations inside the for(), and
-> combine them with their initialization.
->
-> >         int *pins;
-> >
-> >         func =3D pinmux_generic_get_function(pctldev, func_selector);
-> > @@ -218,11 +220,17 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_d=
-ev *pctldev,
-> >         pins =3D group->pins;
-> >
-> >         for (i =3D 0; i < group->num_pins; i++) {
-> > -               dev_dbg(pctrl->dev, "port:%u pin: %u PSEL:%u\n",
-> > -                       RZG2L_PIN_ID_TO_PORT(pins[i]), RZG2L_PIN_ID_TO_=
-PIN(pins[i]),
-> > -                       psel_val[i]);
-> > -               rzg2l_pinctrl_set_pfc_mode(pctrl, RZG2L_PIN_ID_TO_PORT(=
-pins[i]),
-> > -                                          RZG2L_PIN_ID_TO_PIN(pins[i])=
-, psel_val[i]);
-> > +               pin_desc =3D &pctrl->desc.pins[pins[i]];
-> > +               pin_data =3D pin_desc->drv_data;
+> > +static u8 *tdx_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
+> > +{
+> > +	struct tdx_quote_buf *quote_buf = quote_data;
+> > +	int ret;
+> > +	u8 *buf;
+> > +	u64 err;
 > > +
-> > +               port =3D RZG2L_PIN_ID_TO_PORT(pins[i]);
->
-> As port is unused but in the debug print, please drop the variable,
-> and use RZG2L_PIN_ID_TO_PORT() in the debug print below.
->
-> > +               pin =3D RZG2L_PIN_ID_TO_PIN(pins[i]);
-> > +               off =3D RZG2L_PIN_CFG_TO_PORT_OFFSET(*pin_data);
+> > +	if (mutex_lock_interruptible(&quote_lock))
+> > +		return ERR_PTR(-EINTR);
 > > +
-> > +               dev_dbg(pctrl->dev, "port:%u pin: %u off:%x PSEL:%u\n",=
- port,
-> > +                       pin, off, psel_val[i]);
+> > +	/*
+> > +	 * If the previous request is timedout or interrupted, and the
+> > +	 * Quote buf status is still in GET_QUOTE_IN_FLIGHT (owned by
+> > +	 * VMM), don't permit any new request.
+> > +	 */
+> > +	if (quote_buf->status == GET_QUOTE_IN_FLIGHT) {
+> > +		ret = -EBUSY;
+> > +		goto done;
+> > +	}
 > > +
-> > +               rzg2l_pinctrl_set_pfc_mode(pctrl, pin, off, psel_val[i]=
-);
-> >         }
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > +	if (desc->inblob_len != TDX_REPORTDATA_LEN) {
+> > +		ret = -EINVAL;
+> > +		goto done;
+> > +	}
+> > +
+> > +	/* TDX attestation only supports default format request */
+> > +	if (desc->outblob_format != TSM_FORMAT_DEFAULT) {
+> > +		ret = -EINVAL;
+> > +		goto done;
+> > +	}
+> > +
+> > +	u8 *reportdata __free(kfree) = kmalloc(TDX_REPORTDATA_LEN, GFP_KERNEL);
+> 
+> __free() is new to me. Good to know.
+> 
+> But are we okay now with declaring variables in the middle of the
+> function? Any reason we can't do at the top?
+
+I expect that to be unsafe and result in uninitialized data from the
+stack being passed to kfree, if a "goto done" in the lines prior to
+this declaration is triggered.
+
+The 'reportdata' variable will be in scope at the "done:" label,
+thus triggering the __free callback, but the 'kmalloc' initializer
+will not have executed.
+
+Variables should always be declared prior to any 'goto' statement
+within the same block of scope, if relying on __attribute__((cleanup))
+callbacks.
+
+> 
+> > +	if (!reportdata) {
+> > +		ret = -ENOMEM;
+> > +		goto done;
+> > +	}
+> > +
+> > +	u8 *tdreport __free(kfree) = kzalloc(TDX_REPORT_LEN, GFP_KERNEL);
+> > +	if (!tdreport) {
+> > +		ret = -ENOMEM;
+> > +		goto done;
+> > +	}
+> > +
+> > +	memcpy(reportdata, desc->inblob, desc->inblob_len);
+> > +
+> > +	/* Generate TDREPORT0 using "TDG.MR.REPORT" TDCALL */
+> > +	ret = tdx_mcall_get_report0(reportdata, tdreport);
+> > +	if (ret) {
+> > +		pr_err("GetReport call failed\n");
+> > +		goto done;
+> > +	}
+> > +
+> > +	memset(quote_data, 0, GET_QUOTE_BUF_SIZE);
+> > +
+> > +	/* Update Quote buffer header */
+> > +	quote_buf->version = GET_QUOTE_CMD_VER;
+> > +	quote_buf->in_len = TDX_REPORT_LEN;
+> > +
+> > +	memcpy(quote_buf->data, tdreport, TDX_REPORT_LEN);
+> > +
+> > +	err = tdx_hcall_get_quote(quote_data, GET_QUOTE_BUF_SIZE);
+> > +	if (err) {
+> > +		pr_err("GetQuote hypercall failed, status:%llx\n", err);
+> > +		ret = -EIO;
+> > +		goto done;
+> > +	}
+> > +
+> > +	ret = wait_for_quote_completion(quote_buf, getquote_timeout);
+> > +	if (ret) {
+> > +		pr_err("GetQuote request timedout\n");
+> > +		goto done;
+> > +	}
+> > +
+> > +	buf = kvmemdup(quote_buf->data, quote_buf->out_len, GFP_KERNEL);
+> > +	if (!buf) {
+> > +		ret = -ENOMEM;
+> > +		goto done;
+> > +	}
+> > +
+> > +	*outblob_len = quote_buf->out_len;
+> > +
+> > +done:
+> > +	mutex_unlock(&quote_lock);
+> > +	return ret ? ERR_PTR(ret) : buf;
+> > +}
+
+With regards,
+Daniel
+-- 
+|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
+|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
+|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
+
