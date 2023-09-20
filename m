@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E77787A74F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598997A74F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbjITHzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+        id S233740AbjITHzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbjITHz0 (ORCPT
+        with ESMTP id S233308AbjITHz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:55:26 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D45C2
+        Wed, 20 Sep 2023 03:55:27 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD7497
         for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:55:20 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5033918c09eso1205819e87.2
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52f3ba561d9so1344742a12.1
         for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:55:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695196518; x=1695801318; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695196519; x=1695801319; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CxpXhgDL+WYT4ZjQ7cMsLe1CH/MZvqWCA7Gdeim4PCs=;
-        b=MPbd8dIcjKsOFEcJvJt7H7izZQeSXtMJPYD4w3Kg171bYAKiPmyJ8rEa84sB6NwVRx
-         Nq27ll6KEdv6k52q3rrwbSgrsN+aHtNalJGiRPgJL1bkbcimYn2NQNKOPkANzViYvX8V
-         6TG9c84/YOQA87xHd+0FVF4OoD9cYM5I0XOyZdAFRanuKFZUS1fbX8vFOSe93A/fp5nP
-         rnj+so/EBObI4KAFd9fGHga3scTWiC6N9i5eGnxLmg5XsicQHNUidhPB5ma+2ywzN60s
-         HTHatbBW0p9Wd01k57HD32QWVl+A3+9+X//tPjAvJ5pEauEkh2ZI0NyTt5YdKvBG4daa
-         hrfw==
+        bh=B+hhScSa68yGcwdNh6Yw39YhA0WpD2wyeMxz+ezDQj8=;
+        b=SuO+tIgyu2ompYirr2AZN/z6fLFdTDh3SDXLOiwIVojIpx1WVcEKuwZG1g9pcQ/YzO
+         rQdptQNrNQ0qD7IKVhrekQMxmdR8XeDzllJszz8EWF9SaibBLcltyZE9IrMhJY+a2zsh
+         fsxL/raG2VCTTSqvH2Ls0kDv1S9D0Pv0wZVcDV3HhovjU6cfWLutwVwKDpvu4DsCrSiq
+         DpEOSEwsu4skiZlEa85c89SQREaTPoPoBFw/pBGNgjMoZ8lcWRAx06ZkFqfQNzubGKEn
+         ukkSdPhI4uwkB3mVs8sXnWi6rzRVYgzNGfq7gQ11LGLGmfcDRV9KcOaz7+FjhJbh///O
+         11zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695196518; x=1695801318;
+        d=1e100.net; s=20230601; t=1695196519; x=1695801319;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CxpXhgDL+WYT4ZjQ7cMsLe1CH/MZvqWCA7Gdeim4PCs=;
-        b=cseVx8a8lsH71kmzJkodytBdFBknU2X7MUse6Gnc59Zbx4aLl2CT4KmHl8Zmmk3eak
-         sCmzu83l+If73S1FCk75xIId+f7hWbZ8i2wqiRhxJ0+73uDPFk9/mXEneNHOQ+YvKgfe
-         PJ4ywldr6mXZGCrtHFluBEo5u5v5AfOXxZJbkw+BYKoDl8P4wDaM6oPyOnUjKImXgnI2
-         GVYr6OySWG+2LWo34KjGlF86T2eKl+CtfZXTObu9bUHtFVpYmLDePM4+v8PYTJqt/Xcu
-         6vYHtDOTsRN1xgChMTj+Hk4boYIjLPnE1zJgNzA3E0Mo8xLTNy/KKFK0w9PkPWyrqDUS
-         hZbg==
-X-Gm-Message-State: AOJu0YxSaBzWCAlowUlK0/s/nR3lJPgljiygS7BCgJrfqlhgV+m5VS5L
-        gcbtasFUBC47OADSGC5kylfXDQ==
-X-Google-Smtp-Source: AGHT+IGgi716OSTmXEPCt0gS07zfGFz0XZMiSgl59FvqDlgT7KDpWgU4g/roFPYq3nL1GboCJgyqMA==
-X-Received: by 2002:a19:9110:0:b0:502:fd08:69f7 with SMTP id t16-20020a199110000000b00502fd0869f7mr1618424lfd.28.1695196518530;
-        Wed, 20 Sep 2023 00:55:18 -0700 (PDT)
+        bh=B+hhScSa68yGcwdNh6Yw39YhA0WpD2wyeMxz+ezDQj8=;
+        b=LYjQhxsp3QBDzLSbKYiyXLuOFPCphLcETSgHDNFBNB+hgHhwgKlCc3hO+I53IWA7w5
+         hyGB/R7p78rKMcvVtKkyh0Yo65LgipFXvexP2nbtjHa8mgnNeeT09CBvJFWpQJH3/q7i
+         HTRRXx1jRyJMglId2gTv2a1iRuJD1rIfcRV9v27MFDsVHi36ElEAWqmxipaTD8XcTRaa
+         8g/dHKZS7fk9ADzuT3s7f4viiLyiRNDnzDEIZ7B+8Ty1bfi8mEXot//UlUjyxNO+hmNu
+         +kZpteIQ2LX/9PcORlWGQibmQrGtxIMAHclJoQ8dcuC4WyxgpObWeXBT2y5jXCNEL5VR
+         tmhw==
+X-Gm-Message-State: AOJu0YxPaN9xfh7ggKXKYGS5FSwGs5XfiIMao58S6lmoZlskBNFWThab
+        52sIZvXqMLcuCYtZwV6zqQ07cQ==
+X-Google-Smtp-Source: AGHT+IGT/coOXP4Dw0eIT751zWvicwOSP0GLnyBBKNWIYK+3BTZBYpJ89H66fmPvz4TzD+JFPx1ZLg==
+X-Received: by 2002:a05:6402:2803:b0:532:7daa:e50e with SMTP id h3-20020a056402280300b005327daae50emr6306611ede.6.1695196519343;
+        Wed, 20 Sep 2023 00:55:19 -0700 (PDT)
 Received: from brgl-uxlite.. (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id d9-20020a05640208c900b0051bed21a635sm8481981edz.74.2023.09.20.00.55.17
+        by smtp.gmail.com with ESMTPSA id d9-20020a05640208c900b0051bed21a635sm8481981edz.74.2023.09.20.00.55.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:55:17 -0700 (PDT)
+        Wed, 20 Sep 2023 00:55:18 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -59,9 +59,9 @@ To:     Yury Norov <yury.norov@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>
 Cc:     linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2 3/4] genirq/irq_sim: order headers alphabetically
-Date:   Wed, 20 Sep 2023 09:54:59 +0200
-Message-Id: <20230920075500.96260-4-brgl@bgdev.pl>
+Subject: [PATCH v2 4/4] genirq/irq_sim: shrink code by using cleanup helpers
+Date:   Wed, 20 Sep 2023 09:55:00 +0200
+Message-Id: <20230920075500.96260-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230920075500.96260-1-brgl@bgdev.pl>
 References: <20230920075500.96260-1-brgl@bgdev.pl>
@@ -78,30 +78,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-For better readability and maintenance keep headers in alphabetical
-order.
+Use the new __free helper from linux/cleanup.h to remove all gotos and
+simplify the error paths.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- kernel/irq/irq_sim.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/irq/irq_sim.c | 27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
-index f5ebb3ba6f9a..b0d50b48dbd1 100644
+index b0d50b48dbd1..82b7b5051249 100644
 --- a/kernel/irq/irq_sim.c
 +++ b/kernel/irq/irq_sim.c
-@@ -4,10 +4,10 @@
+@@ -4,6 +4,7 @@
   * Copyright (C) 2020 Bartosz Golaszewski <bgolaszewski@baylibre.com>
   */
  
-+#include <linux/interrupt.h>
++#include <linux/cleanup.h>
+ #include <linux/interrupt.h>
  #include <linux/irq.h>
  #include <linux/irq_sim.h>
- #include <linux/irq_work.h>
--#include <linux/interrupt.h>
- #include <linux/slab.h>
+@@ -163,33 +164,27 @@ static const struct irq_domain_ops irq_sim_domain_ops = {
+ struct irq_domain *irq_domain_create_sim(struct fwnode_handle *fwnode,
+ 					 unsigned int num_irqs)
+ {
+-	struct irq_sim_work_ctx *work_ctx;
+-
+-	work_ctx = kmalloc(sizeof(*work_ctx), GFP_KERNEL);
++	struct irq_sim_work_ctx *work_ctx __free(kfree) =
++				kmalloc(sizeof(*work_ctx), GFP_KERNEL);
+ 	if (!work_ctx)
+-		goto err_out;
++		return ERR_PTR(-ENOMEM);
  
- struct irq_sim_work_ctx {
+-	work_ctx->pending = bitmap_zalloc(num_irqs, GFP_KERNEL);
+-	if (!work_ctx->pending)
+-		goto err_free_work_ctx;
++	unsigned long *pending __free(bitmap) = bitmap_zalloc(num_irqs,
++							      GFP_KERNEL);
++	if (!pending)
++		return ERR_PTR(-ENOMEM);
+ 
+ 	work_ctx->domain = irq_domain_create_linear(fwnode, num_irqs,
+ 						    &irq_sim_domain_ops,
+ 						    work_ctx);
+ 	if (!work_ctx->domain)
+-		goto err_free_bitmap;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	work_ctx->irq_count = num_irqs;
+ 	work_ctx->work = IRQ_WORK_INIT_HARD(irq_sim_handle_irq);
++	work_ctx->pending = no_free_ptr(pending);
+ 
+-	return work_ctx->domain;
+-
+-err_free_bitmap:
+-	bitmap_free(work_ctx->pending);
+-err_free_work_ctx:
+-	kfree(work_ctx);
+-err_out:
+-	return ERR_PTR(-ENOMEM);
++	return no_free_ptr(work_ctx)->domain;
+ }
+ EXPORT_SYMBOL_GPL(irq_domain_create_sim);
+ 
 -- 
 2.39.2
 
