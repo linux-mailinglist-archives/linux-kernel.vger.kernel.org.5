@@ -2,47 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A02E7A89AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B33C7A89BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234724AbjITQnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
+        id S234669AbjITQr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234501AbjITQnW (ORCPT
+        with ESMTP id S234502AbjITQrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 12:43:22 -0400
+        Wed, 20 Sep 2023 12:47:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34CCCA;
-        Wed, 20 Sep 2023 09:43:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 969C7C433C8;
-        Wed, 20 Sep 2023 16:43:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D01AD;
+        Wed, 20 Sep 2023 09:47:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6308C433C8;
+        Wed, 20 Sep 2023 16:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695228197;
-        bh=yoeBHvv0QH4aSbA/oAFONsW054HHzRA0z4ZaijSOAlc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LeV+LG/YDoC0+9+af/1a5Erov8uH1NXbRSMm0skLWpjY60cckKI6qu9LLr423DlEP
-         K9uWquTpLB9RWPNiu+PmRd6A6Mb0VKcA915WtUdut1jLLMS/8eyXg829y3P6mcaiC7
-         Aehjlj2/Oni844AAV0PBxeDuYsITbYl1HO60wwEDsBmJCQj/+WTO2/oGNgcUhgmxQB
-         o81AtA3PFgJ7Byji5HpOfT1Fq00sSA1Gw10TXSdRbDL31DJ8TKge5lhRMjCZzDGEv+
-         SfGvgaqrZC+AFTk01bLh1OHeh7WJhcIj9lGQaqkrmm/UE/4KW9fWboFvjzSf6ERia+
-         XTrthmm7kDlfg==
-Date:   Wed, 20 Sep 2023 09:47:24 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Sridharan S N <quic_sridsn@quicinc.com>
-Cc:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: ipq9574: add support for the
- RDP417 variant
-Message-ID: <zn43mwjxnbpah2xnvsqpvzqthbksgrall7hkoh5ilosu4lmnwp@sf2dw7osdw2x>
-References: <20230713152522.1063154-1-quic_sridsn@quicinc.com>
- <20230713152522.1063154-3-quic_sridsn@quicinc.com>
+        s=k20201202; t=1695228469;
+        bh=r30aIpQQhCZ4Z6suXNj6hTQWuZkVh/YVJ+fHWZJ6sQk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fF8JZ9ACKhwCgLuGteyztXl/KlDWOzEfe2T3hkxdt9bYqiwgnokNcFdKhEi+menH8
+         tULXp1XABocr2Xl+qPXnN/lZGHenoZL8k+yovjEwHb1+8AK8wlJSL7z4jPcyiOrC2J
+         NTd+ZjSjfzeZplDBAFSzpTQNUuTXvBB5PFvCuhsyvgIdBcYc+AAS3J0v075JtyagtN
+         nBI3jiTId2CBc+Jls9/aDqTBHOyRo1FvpkJ7hjCqHHniUuvLcTQ5mcJl+ZVpgRurb3
+         yRFgY1+N+jWl2N8hEvlk/B9WxwRqt5YV8Vie72zpq21foU70HPf/nV3mqkAiqocv/K
+         Qxyu2HLJB+Dug==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50335f6b48dso83983e87.3;
+        Wed, 20 Sep 2023 09:47:49 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwXPQkhys82Kh2Q5wOd6c1azMamqwBI/bJQf02u53usV5pjxBdm
+        ALZ8FvgSo2GZH/95bIc89rrt3SN/KAESigjnpQ==
+X-Google-Smtp-Source: AGHT+IGiTh+zc7qYXjKUQyoPg3HpMv3+MHhqTU1tl3azptdXxTWh6ldrFFQPGAtHCvEawv+9b+rjj03MynaXJqtGaiI=
+X-Received: by 2002:a05:6512:329c:b0:503:3781:ac32 with SMTP id
+ p28-20020a056512329c00b005033781ac32mr3030609lfe.41.1695228468007; Wed, 20
+ Sep 2023 09:47:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713152522.1063154-3-quic_sridsn@quicinc.com>
+References: <20230912121120.380420-1-robh@kernel.org> <20230912121120.380420-2-robh@kernel.org>
+ <20230918100102.GA17472@willie-the-truck> <dcb12b18edc02634be3ac9909fa70602@misterjones.org>
+ <CAL_JsqLXBDaAUKDjRCyiuZeR4khxKzN5Q2_LhUPg34YDGpjmGg@mail.gmail.com> <86zg1icop8.wl-maz@kernel.org>
+In-Reply-To: <86zg1icop8.wl-maz@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 20 Sep 2023 11:47:35 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJsQaA4N6xGenzZ=P2r+PR=x=bcB8ikrJzrJOn1FgKYmA@mail.gmail.com>
+Message-ID: <CAL_JsqJsQaA4N6xGenzZ=P2r+PR=x=bcB8ikrJzrJOn1FgKYmA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: errata: Add Cortex-A520 speculative
+ unprivileged load workaround
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morse <james.morse@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -53,67 +65,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 08:55:22PM +0530, Sridharan S N wrote:
-> Add the initial device tree support for the Reference Design
-> Platform(RDP) 417 based on IPQ9574 family of SoC.
-> 
-> Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
+On Tue, Sep 19, 2023 at 7:50=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
+:
+>
+> On Tue, 19 Sep 2023 13:29:07 +0100,
+> Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Mon, Sep 18, 2023 at 5:18=E2=80=AFAM Marc Zyngier <maz@misterjones.o=
+rg> wrote:
+> > >
+> > > On 2023-09-18 11:01, Will Deacon wrote:
+> > > > On Tue, Sep 12, 2023 at 07:11:15AM -0500, Rob Herring wrote:
+> > > >> Implement the workaround for ARM Cortex-A520 erratum 2966298. On a=
+n
+> > > >> affected Cortex-A520 core, a speculatively executed unprivileged l=
+oad
+> > > >> might leak data from a privileged level via a cache side channel.
+> > > >>
+> > > >> The workaround is to execute a TLBI before returning to EL0. A
+> > > >> non-shareable TLBI to any address is sufficient.
+> > > >
+> > > > Can you elaborate at all on how this works, please? A TLBI addressi=
+ng a
+> > > > cache side channel feels weird (or is "cache" referring to some TLB
+> > > > structures rather than e.g. the data cache here?).
+> > > >
+> > > > Assuming there's some vulnerable window between the speculative
+> > > > unprivileged load and the completion of the TLBI, what prevents ano=
+ther
+> > > > CPU from observing the side-channel during that time? Also, does th=
+e
+> > > > TLBI need to be using the same ASID as the unprivileged load? If so=
+,
+> > > > then
+> > > > a context-switch could widen the vulnerable window quite significan=
+tly.
+> > >
+> > > Another 'interesting' case is the KVM world switch. If EL0 is
+> > > affected, what about EL1? Can such a data leak exist cross-EL1,
+> > > or from EL2 to El1? Asking for a friend...
+> >
+> > I'm checking for a definitive answer, but page table isolation also
+> > avoids the issue. Wouldn't these scenarios all be similar to page
+> > table isolation in that the EL2 or prior EL1 context is unmapped?
+>
+> No, EL2 is always mapped, and we don't have anything like KPTI there.
+>
+> Maybe the saving grace is that EL2 and EL2&0 are different translation
+> regimes from EL1&0, but there's nothing in the commit message that
+> indicates it. As for EL1-to-EL1 leaks, it again completely depends on
+> how the TLBs are tagged.
 
-Please spell out your name.
+Different translation regimes are not affected. It must be the same
+regime and same translation.
 
-> ---
-> changes in v2:
-> 	- updated commit message.Moved dependency to change log
-> 	  This patch depends on below patchset:
-> 	  https://lore.kernel.org/lkml/20230713105909.14209-2-quic_anusha@quicinc.com/
+> You'd hope that having different VMIDs would save the bacon, but if
+> you can leak EL1 translations into EL0, it means that the associated
+> permission and/or tags do not contain all the required information...
 
-I don't see a new version of this, perhaps I'm just missing it. Please
-resubmit this, if it's still relevant.
+The VMID is part of the equation. See here[1].
 
-Regards,
-Bjorn
+Rob
 
-> 	
-> 
->  arch/arm64/boot/dts/qcom/Makefile           |  1 +
->  arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts | 16 ++++++++++++++++
->  2 files changed, 17 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 337abc4ceb17..9c30344d08c1 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -12,6 +12,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c1.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c2.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp417.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp418.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp433.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp449.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
-> new file mode 100644
-> index 000000000000..9a5d4c3db1f2
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
-> @@ -0,0 +1,16 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
-> +/*
-> + * IPQ9574 RDP417 board device tree source
-> + *
-> + * Copyright (c) 2020-2021 The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "ipq9574-rdp-common.dtsi"
-> +
-> +/ {
-> +	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL01-C1";
-> +	compatible = "qcom,ipq9574-ap-al01-c1", "qcom,ipq9574";
-> +};
-> -- 
-> 2.34.1
-> 
+[1] https://developer.arm.com/documentation/102517/0001/Memory-management/T=
+ranslation-Lookaside-Buffer-match-process?lang=3Den
