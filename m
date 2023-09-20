@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B437A7991
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3437A7993
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbjITKpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
+        id S234426AbjITKqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234307AbjITKpY (ORCPT
+        with ESMTP id S234415AbjITKpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:45:24 -0400
+        Wed, 20 Sep 2023 06:45:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDE0197;
-        Wed, 20 Sep 2023 03:45:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3628BC433CB;
-        Wed, 20 Sep 2023 10:45:01 +0000 (UTC)
-Date:   Wed, 20 Sep 2023 11:44:58 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Jan Bottorff <janb@os.amperecomputing.com>
-Cc:     Yann Sionneau <ysionneau@kalrayinc.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Yann Sionneau <yann@sionneau.net>,
-        Will Deacon <will@kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
-Message-ID: <ZQrNKo8fTy0Rh5su@arm.com>
-References: <a7a85428-d40d-4adb-8f84-75e1dabe19c9@os.amperecomputing.com>
- <xxnggfauhkfum63p5bkgxsu3m5odyjda7pnwpb5ocwf4gez7fh@4lu6qyqy6dvh>
- <37e10c3d-b5ab-75ec-3c96-76e15eb9bef8@sionneau.net>
- <v4hdblxwhl6ncdfxre5gyrve7bgdsorfqpqj53ib6q4tr7aguy@4kfr6ergb3jn>
- <9de89e14-35bd-415d-97f1-4b6db1258997@os.amperecomputing.com>
- <ZQlwC9TCSwWJpuxy@arm.com>
- <ZQl1zwVkx9n2MPvr@shikoro>
- <da400d3e-a357-1ae8-cb92-728cc4974b67@kalrayinc.com>
- <ZQm1UyZ0g7KxRW3a@arm.com>
- <cde7e2fc-2e13-4b82-98b3-3d3a52c4c185@os.amperecomputing.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ABBF2;
+        Wed, 20 Sep 2023 03:45:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AF22C433C8;
+        Wed, 20 Sep 2023 10:45:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695206715;
+        bh=JugKkRU1X5rlumprCvTfvliuik27QKBGnmfChQ51VtU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0S0tEb+VLi12h64gO4CuGvecaMFC5e19Gongi+LH/kAPQd6rkoQNPtKmmAORZDr8e
+         Be6rS8Q9MrvPZtQZm48G3aKKzKhvvoN2Zr6YEjQbV5BNCXtv2aQTmq8zxbUzgK84OQ
+         oFkgMCBCH/uxkCGtN6+rNx5I4XEwVNdG7gTRT6HE=
+Date:   Wed, 20 Sep 2023 12:45:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc:     Michal Hocko <mhocko@suse.com>, stable@vger.kernel.org,
+        patches@lists.linux.dev, Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        mathieu.tortuyaux@gmail.com
+Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
+ kmem.limit_in_bytes
+Message-ID: <2023092044-porthole-impeding-e539@gregkh>
+References: <20230917191040.964416434@linuxfoundation.org>
+ <20230917191042.204185566@linuxfoundation.org>
+ <20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz>
+ <2023092032-applied-gave-0bff@gregkh>
+ <76525b1a-6857-434d-86ee-3c2ff4db0e4c@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cde7e2fc-2e13-4b82-98b3-3d3a52c4c185@os.amperecomputing.com>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <76525b1a-6857-434d-86ee-3c2ff4db0e4c@linux.microsoft.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 11:54:10AM -0700, Jan Bottorff wrote:
-> On 9/19/2023 7:51 AM, Catalin Marinas wrote:
-> > While smp_* is ok, it really depends on what the regmap_write() does. Is
-> > it a write to a shared peripheral (if not, you may need a DSB)? Does the
-> > regmap_write() caller know this? That's why I think having the barrier
-> > in dw_reg_write() is better.
+On Wed, Sep 20, 2023 at 12:21:37PM +0200, Jeremi Piotrowski wrote:
+> On 9/20/2023 11:25 AM, Greg Kroah-Hartman wrote:
+> > On Wed, Sep 20, 2023 at 10:43:56AM +0200, Michal Hocko wrote:
+> >> On Wed 20-09-23 01:11:01, Jeremi Piotrowski wrote:
+> >>> On Sun, Sep 17, 2023 at 09:12:40PM +0200, Greg Kroah-Hartman wrote:
+> >>>> 6.1-stable review patch.  If anyone has any objections, please let me know.
+> >>>>
+> >>>> ------------------
+> >>>
+> >>> Hi Greg/Michal,
+> >>>
+> >>> This commit breaks userspace which makes it a bad commit for mainline and an
+> >>> even worse commit for stable.
+> >>>
+> >>> We ingested 6.1.54 into our nightly testing and found that runc fails to gather
+> >>> cgroup statistics (when reading kmem.limit_in_bytes). The same code is vendored
+> >>> into kubelet and kubelet fails to start if this operation fails. 6.1.53 is
+> >>> fine.
+> >>
+> >> Could you expand some more on why is the file read? It doesn't support
+> >> writing to it for some time so how does reading it helps in any sense?
+> >>
+> >> Anyway, I do agree that the stable backport should be reverted.
 > > 
-> > If you do want to stick to a fix in i2c_dw_xfer_init(), you could go for
-> > dma_wmb(). While this is not strictly DMA, it's sharing data with
-> > another coherent agent (a different CPU in this instance). The smp_wmb()
-> > is more about communication via memory not involving I/O. But this still
-> > assumes that the caller knows regmap_write() ends up with an I/O
-> > write*() (potentially relaxed).
+> > That will just postpone the breakage, we really shouldn't break
+> > userspace.
+> > 
+> > That being said, having userspace "break" because a file is no longer
+> > present is not good coding style on the userspace side at all.  That's
+> > why we have sysfs and single-value-files now, if the file isn't present,
+> > then userspace instantly notices and can handle it.  Much easier than
+> > the old-style multi-fields-in-one-file problem.
+> > 
 > 
-> If we wanted maximum correctness wouldn't we need something like
-> writel_triggers_interrupt/regmap_write_triggers_interrupt or maybe
-> preinterrupt_wmb?
-
-Well, if you want to have an API for all things that can be triggered
-(interrupts, device DMA), you can try but I think it would make things
-more confusing and driver writers won't bother (if, say, they only test
-on x86 and never see a problem). The other way around - barriers by
-default and only relax if you see a performance issue - seems more
-sensible. But I don't maintain these drivers, so it's up to you guys.
-
-> The ARM docs do have a specific example case where the device write triggers
-> an interrupt, and that example specifically says a DSB barrier is needed.
-
-Yeah, the Arm ARM is not very precise here on what the mailbox is,
-whether it's a local or shared peripheral and they went for the
-stronger DMB. Will added a good explanation on why a DMB is sufficient
-in commit 22ec71615d82 ("arm64: io: Relax implicit barriers in default
-I/O accessors"). It talks about DMA but it applies equally to another
-CPU accessing the memory. It's pretty subtle though.
-
-> If I look at the ARM GIC IPI send function gic_ipi_send_mask in
-> https://elixir.bootlin.com/linux/v6.6-rc2/source/drivers/irqchip/irq-gic-v3.c#L1354
-> is says:
+> The memcg files in this case are single-value, but userspace expects to be able
+> to read memcg limits when it can read the usage (indicating MEMCG is enabled).
+> If it can't - then something is off, and the node is marked unhealthy.
 > 
->         /*
-> 	 * Ensure that stores to Normal memory are visible to the
-> 	 * other CPUs before issuing the IPI.
-> 	 */
-> 	dsb(ishst);
+> >>>> Address this by wiping out the file completely and effectively get back to
+> >>>> pre 4.5 era and CONFIG_MEMCG_KMEM=n configuration.
+> > 
+> > The fact that this is a valid option (i.e. no file) with that config
+> > option disabled makes me want to keep this as well, as how does
+> > userspace handle this option disabled at all?  Or old kernels?
+> > 
 > 
-> I would think the IPI send code is very carefully tuned for performance, and
-> would not use a barrier any stronger than required.
+> Userspace has had to handle the case of MEMCG_KMEM=n, but that had 2 cases so far:
+> 
+> limits/usage/max_usage/failcnt files are all available or none of them are available.
+> 
+> Now it needs to handle 3 of 4 files being available, but only for kmem (and not plain
+> memory, memsw or kmem.tcp). That's an inconsistency.
+> 
+> > I can drop this from stable kernels, but again, this feels like the runc
+> > developers are just postponing the problem...
+> >
+> 
+> Since cgroups v1 is deprecated, I think the runc developers haven't touched this part
+> of the code in years and expected it to keep working while they wait for the long tail
+> of usage to die out.
 
-That's why I mentioned in my previous reply that it really depends on
-what the regmap_write() does, where the I/O go shared peripheral or some
-local CPU interface). In the GIC example above, there's not even an I/O
-access but a system register write (MSR, see gic_write_sgi1r()), hence
-the DSB. If you look at gic_ipi_send_mask() in irq-gic.c (GICv2), there
-is a dmb(ishst) since the interrupt is sent with an I/O write to the GIC
-distributor (shared peripheral).
+Ok, then we should revert this, I'll go drop it in the stable trees, it
+should also be reverted in Linus's tree too.
 
-> I believe dma_wmb maps to DMB on ARM64.
+thanks,
 
-Yes, it does.
-
--- 
-Catalin
+greg k-h
