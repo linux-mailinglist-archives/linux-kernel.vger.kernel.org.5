@@ -2,135 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7227A7912
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3D37A7915
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbjITKV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S233924AbjITKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbjITKV0 (ORCPT
+        with ESMTP id S233999AbjITKVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:21:26 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8385194;
-        Wed, 20 Sep 2023 03:21:20 -0700 (PDT)
-Received: from fsav311.sakura.ne.jp (fsav311.sakura.ne.jp [153.120.85.142])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38KAKb2V096280;
-        Wed, 20 Sep 2023 19:20:37 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav311.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp);
- Wed, 20 Sep 2023 19:20:37 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38KAKaKw096276
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 20 Sep 2023 19:20:36 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <ec37cd2f-24ee-3273-c253-58d480569117@I-love.SAKURA.ne.jp>
-Date:   Wed, 20 Sep 2023 19:20:35 +0900
+        Wed, 20 Sep 2023 06:21:48 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C390EAD;
+        Wed, 20 Sep 2023 03:21:41 -0700 (PDT)
+Received: from [192.168.2.41] (77-166-152-30.fixed.kpn.net [77.166.152.30])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2BF7C212C4B3;
+        Wed, 20 Sep 2023 03:21:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2BF7C212C4B3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695205301;
+        bh=2MniQsug91jwOSu/YyVgz9F4Hyl7CDet0WnAmSOuWhY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=DZF28Ylh13QXobO3U0L2pHvZLnHVj+gNmED89RYf4K5gqiLYlvfCnMYMTZ2tTuQ40
+         GBvDVBnt2dAlSXtVEiuhkRJK0lzkvBIRyNhbA3bMmPuhzyX2WpSLnDJlmsXAaIRUpU
+         wsPR2CjegMpKHQw1xjum7hKE9MR75K6HRoSouIvU=
+Message-ID: <76525b1a-6857-434d-86ee-3c2ff4db0e4c@linux.microsoft.com>
+Date:   Wed, 20 Sep 2023 12:21:37 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v15 01/11] LSM: Identify modules by more than name
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
+ kmem.limit_in_bytes
 Content-Language: en-US
-To:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
-        linux-security-module@vger.kernel.org
-Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, stephen.smalley.work@gmail.com,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        mic@digikod.net, Dave Chinner <david@fromorbit.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <20230912205658.3432-1-casey@schaufler-ca.com>
- <20230912205658.3432-2-casey@schaufler-ca.com>
- <1f5e725d-58b6-eca2-97dc-d7c1209ff167@I-love.SAKURA.ne.jp>
- <568c0730-b458-04b4-dbfa-77da1758aa05@schaufler-ca.com>
- <94743c22-bc76-e741-e577-3e0845423f69@I-love.SAKURA.ne.jp>
- <6df9f8b8-5653-09a5-ae0a-6526016abaff@schaufler-ca.com>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <6df9f8b8-5653-09a5-ae0a-6526016abaff@schaufler-ca.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        mathieu.tortuyaux@gmail.com
+References: <20230917191040.964416434@linuxfoundation.org>
+ <20230917191042.204185566@linuxfoundation.org>
+ <20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz> <2023092032-applied-gave-0bff@gregkh>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <2023092032-applied-gave-0bff@gregkh>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/09/18 1:38, Casey Schaufler wrote:
-> On 9/15/2023 11:32 PM, Tetsuo Handa wrote:
->> +/**
->> + * struct lsm_id - Identify a Linux Security Module.
->> + * @lsm: name of the LSM, must be approved by the LSM maintainers
+On 9/20/2023 11:25 AM, Greg Kroah-Hartman wrote:
+> On Wed, Sep 20, 2023 at 10:43:56AM +0200, Michal Hocko wrote:
+>> On Wed 20-09-23 01:11:01, Jeremi Piotrowski wrote:
+>>> On Sun, Sep 17, 2023 at 09:12:40PM +0200, Greg Kroah-Hartman wrote:
+>>>> 6.1-stable review patch.  If anyone has any objections, please let me know.
+>>>>
+>>>> ------------------
+>>>
+>>> Hi Greg/Michal,
+>>>
+>>> This commit breaks userspace which makes it a bad commit for mainline and an
+>>> even worse commit for stable.
+>>>
+>>> We ingested 6.1.54 into our nightly testing and found that runc fails to gather
+>>> cgroup statistics (when reading kmem.limit_in_bytes). The same code is vendored
+>>> into kubelet and kubelet fails to start if this operation fails. 6.1.53 is
+>>> fine.
 >>
->> Why can't you understand that "approved by the LSM maintainers" is a horrible
->> requirement for LSM modules which cannot become one of in-tree LSMs?
+>> Could you expand some more on why is the file read? It doesn't support
+>> writing to it for some time so how does reading it helps in any sense?
 >>
->> One of reasons for not every proposed LSM module can become in-tree is out of
->> the LSM community's resources for reviewing/maintaining (or failure to acquire
->> attention from the LSM community enough to get reviewed).
->>
->> + * @id: LSM ID number from uapi/linux/lsm.h
->>
->> Since the LSM community cannot accept all of proposed LSMs due to limited resources,
->> the LSM community is responsible for allowing whatever proposed LSMs (effectively any
->> publicly available LSMs) to live as out-of-tree LSMs, by approving the LSM name and
->> assigning a permanent LSM ID number.
->>
->> The only exception the LSM community can refuse to approve/assign would be that the name
->> is not appropriate (e.g. a LSM module named "FuckYou") or the name is misleading (e.g.
->> "selinux+", "smock", "tomato", "apparmour"). Otherwise, no matter how many times you repeat
->> "we don't care out-of-tree LSMs" or "I do not intentionally plan to make life difficult for
->> the out-of-tree LSMs", this patch is intended to lock out out-of-tree LSMs.
+>> Anyway, I do agree that the stable backport should be reverted.
 > 
-> That is a false statement. There is a huge difference between apathy and malice. 
-
-Dave Chinner wrote at https://lkml.kernel.org/r/ZQo94mCzV7hOrVkh@dread.disaster.area
-as a response to "We don't care about out of tree filesystems.":
-
-  In this case, we most certainly do care. Downstream distros support
-  all sorts of out of tree filesystems loaded via kernel modules, so a
-  syscall that is used to uniquely identify a filesystem type to
-  userspace *must* have a mechanism for the filesystem to provide that
-  unique identifier to userspace.
-
-  Fundamentally, the kernel does not and should not dictate what
-  filesystem types it supports; the user decides what filesystem they
-  need to use, and it is the kernel's job to provide infrastructure
-  that works with that user's choice.
-
-Can you see? What you are trying to is NACKed by simple s/filesystem/LSM/g .
-
-The kernel is ultimately there for users. The kernel is never there for doing patent
-acquisition competition. If the LSM community accepts only LSMs which won the patent
-acquisition competition as in-tree (as described in "ANN: new LSM guidelines"),
-the LSM community is responsible for allowing any publicly available LSMs to live as
-out of tree modules.
-
-Unless the policy is updated to approve any publicly available LSMs and assign a unique
-identifier (which can be passed to the syscalls introduced by this series) to each
-publicly available LSM, this series is a regression.
-
-The "[PATCH v15 01/11] LSM: Identify modules by more than name" is exactly doing
-"LSM: allow only in-tree LSM modules, lock out out-of-tree LSM modules".
-Nack, Nack, Nack, Nack, Nack!!!!!
-
+> That will just postpone the breakage, we really shouldn't break
+> userspace.
 > 
->>
->> + *
->> + * Contains the information that identifies the LSM.
->> + */
->> +struct lsm_id {
->> +	const char	*name;
->> +	u64		id;
->> +};
->>
->> Therefore, unless you change the policy for assigning LSM ID, I keep NACK on this change.
->>
+> That being said, having userspace "break" because a file is no longer
+> present is not good coding style on the userspace side at all.  That's
+> why we have sysfs and single-value-files now, if the file isn't present,
+> then userspace instantly notices and can handle it.  Much easier than
+> the old-style multi-fields-in-one-file problem.
+> 
+
+The memcg files in this case are single-value, but userspace expects to be able
+to read memcg limits when it can read the usage (indicating MEMCG is enabled).
+If it can't - then something is off, and the node is marked unhealthy.
+
+>>>> Address this by wiping out the file completely and effectively get back to
+>>>> pre 4.5 era and CONFIG_MEMCG_KMEM=n configuration.
+> 
+> The fact that this is a valid option (i.e. no file) with that config
+> option disabled makes me want to keep this as well, as how does
+> userspace handle this option disabled at all?  Or old kernels?
+> 
+
+Userspace has had to handle the case of MEMCG_KMEM=n, but that had 2 cases so far:
+
+limits/usage/max_usage/failcnt files are all available or none of them are available.
+
+Now it needs to handle 3 of 4 files being available, but only for kmem (and not plain
+memory, memsw or kmem.tcp). That's an inconsistency.
+
+> I can drop this from stable kernels, but again, this feels like the runc
+> developers are just postponing the problem...
+>
+
+Since cgroups v1 is deprecated, I think the runc developers haven't touched this part
+of the code in years and expected it to keep working while they wait for the long tail
+of usage to die out.
+
+> thanks,
+> 
+> greg k-h
 
