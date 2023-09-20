@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A347A74FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31A27A74FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbjITH4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S233218AbjITH4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:56:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbjITH4I (ORCPT
+        with ESMTP id S233871AbjITH4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:56:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7899CCE
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695196555; x=1726732555;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PMdqRxGvUvcQLS6EMGIpghBZ2plKJ6T+R8ospUk7Ykc=;
-  b=LezoSUfLrYEcrAhyauetVjIHsErNNhYDIHO9Uc5kSO/UKPiyE8yYidWP
-   8PV4s2N/42dgOqansrf1yjWvyqPhfP3UamohcISmzVZlYpUbvXkxtxFNW
-   qXXvMQwBHU/y0c9+8djPr98WQZgnbBCFT6IbCjWN2FJsB1iFLLzkBkrul
-   j34PSnoUlWjgJWUZ/mIAVqWoTr4mB5vo0kmyqmq3w6S2TgsafQcfeR0Ye
-   M5VGVGzoKbgKzfNk19vFIY6uMVdi7APr1Ahb69hFuTlG0zd7fJkl8Exjh
-   me0wWFUOsw73jG+YUO7qW0uQS5Jl4J/z8Th9dAx7X3o0G+o5EbRuUfsd3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="384001915"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="384001915"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:55:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="1077330435"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="1077330435"
-Received: from jiaxu2-mobl.ccr.corp.intel.com (HELO [10.93.21.134]) ([10.93.21.134])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:55:48 -0700
-Message-ID: <3ffa081d-2711-6fb7-9861-4e6494a44591@intel.com>
-Date:   Wed, 20 Sep 2023 15:55:46 +0800
+        Wed, 20 Sep 2023 03:56:16 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F50518C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:56:02 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-58dce1f42d6so9011627b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695196562; x=1695801362; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0W2F0GXbbtqn7CRR5nnsH3NJIOvd/wi06m4wX+wnCSk=;
+        b=C3GN6J2+s9vi6NkInIZVTPJHhsLeNTnqqkADfsy10nKvVQDi2kRM7Dw3gxbGHd9Jqj
+         i3nYoma+O4jBNi2Iqei9KbEQWwvK5qxdD418E13y/gZlv07xPr3hSZPPhjCFrqCGf1mH
+         aEFKITaePrrMlmSm1KwB2L/+V64SqprAjTVBuYdC4MkuabbxY41wWYom7AW6SVC1mX+5
+         TxbERl56q2jQpswFf03gBUasUY3Tm5/sXC0QoWRVzfpEVmU+3J2xaMwhiiYR08GQU1qg
+         /I+k4hSoiT9GYK1RN539hHZZxxI9jqnaAu4Fg8E4KjjjBw0HmejD58ED2iwqhJHxh2UT
+         BoTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695196562; x=1695801362;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0W2F0GXbbtqn7CRR5nnsH3NJIOvd/wi06m4wX+wnCSk=;
+        b=MoNRIjiaXSKbQBuCiNdzVc0Oxr/7Trkam3r+BeRCM8Q2nR+fNLbjd+1e8pXfragzIf
+         CZ/DYJgtSFxZxHz7tcHosNn380t5E0ItM60MwpxrolV7hyEFq2VvtkVtACM+2ndX+fu5
+         pnv/QmXLQM3aNdG7asVDrJX4b1Vc3ME7mgHeqnSgMFWDX5tXhywXx0/17JSH2UFfW9vt
+         q1aJLkJwp38Me/Z8B97YZ1RfeoS80Mb4tpX4rVI47YT4aFeRwfrekGyscR9+q1uHANIh
+         bn5daMFRnZ63g18BRE/fUfhERjlyLDUk+203xPzXDFScy7lzGuwNIzl2tj9V9CUj0Bb6
+         zOHw==
+X-Gm-Message-State: AOJu0Yzg8Fv5t1FqV1ooy3fV2FnhcEvXC2MPvUXFKI8BJjuJCWjoPb8a
+        CXI6HKgLZOeNLLFPq6rmrYlZctg3oWGY8cBGNEGqHQ==
+X-Google-Smtp-Source: AGHT+IE8ZqLABHkmB1AmVdyVdn+zBjcBgUb4lYtT3ybz6pYiTkDfaC6C0g3wu5g0PMG3zmMsCIys38gLD8uinlOnnuw=
+X-Received: by 2002:a81:6dd1:0:b0:59b:cf74:ee8d with SMTP id
+ i200-20020a816dd1000000b0059bcf74ee8dmr5249310ywc.10.1695196561782; Wed, 20
+ Sep 2023 00:56:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [virtio-dev] Re: [virtio-comment] Re: [VIRTIO PCI PATCH v5 1/1]
- transport-pci: Add freeze_mode to virtio_pci_common_cfg
-Content-Language: en-US
-To:     Parav Pandit <parav@nvidia.com>,
-        "Chen, Jiqian" <Jiqian.Chen@amd.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        David Airlie <airlied@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
-        "virtio-comment@lists.oasis-open.org" 
-        <virtio-comment@lists.oasis-open.org>,
-        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
-        Xenia Ragiadakou <burzalodowa@gmail.com>,
-        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
-        "Zhang, Julia" <Julia.Zhang@amd.com>,
-        "Huang, Ray" <Ray.Huang@amd.com>
-References: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
- <20230919114242.2283646-2-Jiqian.Chen@amd.com>
- <20230919082802-mutt-send-email-mst@kernel.org>
- <cd8d306b-6acc-34be-516c-b89c23ac108d@intel.com>
- <BL1PR12MB5849E32A76165F1307492185E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
- <PH0PR12MB5481D2CBCFBF7BCBF427EE1EDCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
- <701bb67c-c52d-4eb3-a6ed-f73bd5d0ff33@intel.com>
- <BL1PR12MB5849A542AA93F6ED9FEEAAF0E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
- <a636b841-1bfc-925a-406e-6c4469e7e4c6@intel.com>
- <PH0PR12MB54817E116B756914B3FC1860DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
- <40765650-ba6e-357a-cf73-ff6a0288c0e8@intel.com>
- <PH0PR12MB5481E16E2BC9C5B4B786FD91DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-In-Reply-To: <PH0PR12MB5481E16E2BC9C5B4B786FD91DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230916081615.4237-1-iuncuim@gmail.com>
+In-Reply-To: <20230916081615.4237-1-iuncuim@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 20 Sep 2023 09:55:49 +0200
+Message-ID: <CACRpkdYPtxAZrf4=btbF53U3CGgSMOZ_39eJDWjBTwBU21XYaQ@mail.gmail.com>
+Subject: Re: [PATCH v3] pinctrl: sunxi: h616: add extra gpio banks
+To:     Mikhail Kalashnikov <iuncuim@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Sep 16, 2023 at 10:16=E2=80=AFAM Mikhail Kalashnikov <iuncuim@gmail=
+.com> wrote:
 
+> From: iuncuim <iuncuim@gmail.com>
+>
+> Some SoCs from the H616 family (such as the T507) have the same die but
+> more output pins that are used for additional peripherals. The T507 SoC
+> don't have a built-in multiphy like the AC200 or AC300 connected to the
+> bank A. With the T507 these pins can be freely used for any other applica=
+tion.
+> This patch adds the missing muxes on banks A, D and E.
+>
+> Signed-off-by: Mikhail Kalashnikov <iuncuim@gmail.com>
+>
+> Changes from v2:
+>  * replaced gpio alt functions from "h_i2s0" to "i2s0"
+> https://lore.kernel.org/linux-sunxi/20230909094529.6083-1-iuncuim@gmail.c=
+om/
 
-On 9/20/2023 3:51 PM, Parav Pandit wrote:
->> From: Zhu, Lingshan <lingshan.zhu@intel.com>
->> Sent: Wednesday, September 20, 2023 1:17 PM
->>> This is not live or device migration. This is restoring the device context
->> initiated by the driver owning the device.
->> restore the device context should be done by the hypervisor before setting
->> DRIVER_OK and waking up the guest, not a concern here, out of spec
-> The framework is generic for the PCI devices hence, there may not be any hypervisor at all. Hence restore operation to trigger on DRIVER_OK setting, when previously suspended.
->
-> Since we already agree in previous email that re-read until device sets the DRIVER_OK, its fine to me. It covers the above restore condition.
-OK
->
-> Thanks.
->
+No review on this yet, but I think Neil Armstrong is familiar with
+the AMLogic stuff so paging him!
 
+Yours,
+Linus Walleij
