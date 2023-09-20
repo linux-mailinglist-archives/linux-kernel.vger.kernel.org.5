@@ -2,171 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E78127A78FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC847A7A03
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbjITKT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        id S234362AbjITLGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234069AbjITKT1 (ORCPT
+        with ESMTP id S234339AbjITKTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:19:27 -0400
+        Wed, 20 Sep 2023 06:19:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82E6AC;
-        Wed, 20 Sep 2023 03:19:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5682C433C7;
-        Wed, 20 Sep 2023 10:19:17 +0000 (UTC)
-Message-ID: <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl>
-Date:   Wed, 20 Sep 2023 12:19:16 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD0D110;
+        Wed, 20 Sep 2023 03:19:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B3A0C433C8;
+        Wed, 20 Sep 2023 10:19:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695205169;
+        bh=OjA7iTECs8f9+839G62xTmbLSGvLzLZmyK1Rhd04rVI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q/c412THfLmc6qea7o9R/VfTdCcbfi8mZ0ttkYhqouACRznUQ57Hgkrh50E+LknXY
+         MsvMbvVdu3CI0iswDjXXT1cE9xD7hw1r7DxwXZHkSCJZ4kkdAMhcTnA8c9iiYaPvFI
+         qxp/Dq5zi8dMXWFL9cqQ7Yh8HtihnHVlOT/w5qdkxQyyaOcMIThvdICKC3l/yruyC/
+         CvnUUY2ViVFNbMN6npMy68oMuxuFq2CEXdjLOYboGmqqXb8QnduuJitRCizNUqQ9MJ
+         1sIT5v+0WLYUzck3AAyVe5MrZ2tHlbHP/3po/cyjALIIIIU4MRASh6jiTa0i16OC6q
+         KaiBFXp2gFQHA==
+Date:   Wed, 20 Sep 2023 12:19:23 +0200
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Can Guo <quic_cang@quicinc.com>, quic_nguyenb@quicinc.com,
+        quic_nitirawa@quicinc.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>
+Subject: Re: [PATCH 4/6] phy: qualcomm: phy-qcom-qmp-ufs: Move data structs
+ and setting tables to header
+Message-ID: <20230920101923.GG4732@thinkpad>
+References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
+ <1694411968-14413-5-git-send-email-quic_cang@quicinc.com>
+ <CAA8EJpoWnXeJKPB04kJW6Qo7ifAnt1u2ZSiq+W2HWOez=hi5gA@mail.gmail.com>
+ <20230919121524.GD4732@thinkpad>
+ <CAA8EJpoqRBxS7HJrFdRAvv677hKJw+d_K+fN_4ABDrj+68r28w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v4 09/11] media: uapi: Add
- V4L2_CID_USER_IMX_ASRC_RATIO_MOD control
-Content-Language: en-US, nl
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1695202370-24678-1-git-send-email-shengjiu.wang@nxp.com>
- <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA8EJpoqRBxS7HJrFdRAvv677hKJw+d_K+fN_4ABDrj+68r28w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2023 11:32, Shengjiu Wang wrote:
-> The input clock and output clock may not be the accurate
-> rate as the sample rate, there is some drift, so the convert
-> ratio of i.MX ASRC module need to be changed according to
-> actual clock rate.
+On Wed, Sep 20, 2023 at 01:30:21AM +0300, Dmitry Baryshkov wrote:
+> On Tue, 19 Sept 2023 at 15:15, Manivannan Sadhasivam <mani@kernel.org> wrote:
+> >
+> > On Thu, Sep 14, 2023 at 03:28:59PM +0300, Dmitry Baryshkov wrote:
+> > > On Mon, 11 Sept 2023 at 09:01, Can Guo <quic_cang@quicinc.com> wrote:
+> > > >
+> > > > To make the code more readable, move the data structs and PHY settting
+> > > > tables to a header file, namely the phy-qcom-qmp-ufs.h.
+> > > >
+> > > > Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> > > > ---
+> > > >  drivers/phy/qualcomm/phy-qcom-qmp-ufs.c | 802 +------------------------------
+> > > >  drivers/phy/qualcomm/phy-qcom-qmp-ufs.h | 805 ++++++++++++++++++++++++++++++++
+> > > >  2 files changed, 806 insertions(+), 801 deletions(-)
+> > > >  create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-ufs.h
+> > >
+> > > Is there any reason to do so? Other than just moving stuff around, it
+> > > doesn't give us anything. This header will not be shared with any
+> > > other driver. Just moving data tables to the header (ugh, static data
+> > > in the header) doesn't make code more readable.
+> > >
+> >
+> > I think the motive here is to move the static tables to one file and have the
+> > rest of the code in another. Because, the static tables itself occupy 1.2k LoC
+> > now and it is going to grow. So let's keep them in a single file to avoid mixing
+> > it with rest of the driver code.
 > 
-> Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD control for user to
-> adjust the ratio.
+> My 2c is that this is mostly useless. The headers are for sharing, not
+> for moving the data out of the .c files. Not to mention that the
+> driver code comes after the tables.
+> I'd really suggest starting such a move with separating common parts
+> of all the QMP drivers.
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  Documentation/userspace-api/media/v4l/control.rst | 5 +++++
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 1 +
->  include/uapi/linux/v4l2-controls.h                | 1 +
->  3 files changed, 7 insertions(+)
+
+Makes sense.
+
+Can, please propose a separate series if you want to pursue the effort.
+Also, I'd say that instead of moving the tables to a header (which defeats the
+purpose of the header), the tables can be moved to a separate .c file. Like,
+
+phy-qcom-qmp-ufs-tables.c
+phy-qcom-qmp-ufs.c
+
+Btw, why do we have "phy-qcom" prefix inside drivers/phy/qualcomm/?
+
+- Mani
+
+> >
+> > - Mani
+> >
+> > > If you really would like to clean up the QMP drivers, please consider
+> > > splitting _common_ parts. But at this point I highly doubt that it is
+> > > possible in a useful way.
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
-> index 4463fce694b0..2bc175900a34 100644
-> --- a/Documentation/userspace-api/media/v4l/control.rst
-> +++ b/Documentation/userspace-api/media/v4l/control.rst
-> @@ -318,6 +318,11 @@ Control IDs
->      depending on particular custom controls should check the driver name
->      and version, see :ref:`querycap`.
->  
-> +.. _v4l2-audio-imx:
-> +
-> +``V4L2_CID_USER_IMX_ASRC_RATIO_MOD``
-> +    sets the rasampler ratio modifier of i.MX asrc module.
+> 
+> -- 
+> With best wishes
+> Dmitry
 
-rasampler -> resampler (I think?)
-
-This doesn't document at all what the type of the control is or how to interpret it.
-
-> +
->  Applications can enumerate the available controls with the
->  :ref:`VIDIOC_QUERYCTRL` and
->  :ref:`VIDIOC_QUERYMENU <VIDIOC_QUERYCTRL>` ioctls, get and set a
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> index 8696eb1cdd61..16f66f66198c 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> @@ -1242,6 +1242,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
->  	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
->  	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
-> +	case V4L2_CID_USER_IMX_ASRC_RATIO_MOD:			return "ASRC RATIO MOD";
-
-Let's stay consistent with the other control names:
-
-"ASRC Ratio Modifier"
-
-But if this is a driver specific control, then this doesn't belong here.
-
-Driver specific controls are defined in the driver itself, including this
-description.
-
-Same for the control documentation: if it is driver specific, then that
-typically is documented either in a driver-specific public header, or
-possibly in driver-specific documentation (Documentation/admin-guide/media/).
-
-But is this imx specific? Wouldn't other similar devices need this?
-
->  	default:
->  		return NULL;
->  	}
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index c3604a0a3e30..b1c319906d12 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -162,6 +162,7 @@ enum v4l2_colorfx {
->  /* The base for the imx driver controls.
->   * We reserve 16 controls for this driver. */
->  #define V4L2_CID_USER_IMX_BASE			(V4L2_CID_USER_BASE + 0x10b0)
-> +#define V4L2_CID_USER_IMX_ASRC_RATIO_MOD	(V4L2_CID_USER_IMX_BASE + 0)
->  
->  /*
->   * The base for the atmel isc driver controls.
-
-Regards,
-
-	Hans
+-- 
+மணிவண்ணன் சதாசிவம்
