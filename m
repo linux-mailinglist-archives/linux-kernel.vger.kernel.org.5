@@ -2,183 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C927A76CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC44E7A76D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbjITJEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        id S233901AbjITJEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233766AbjITJDo (ORCPT
+        with ESMTP id S233556AbjITJEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:03:44 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97738E52
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:02:51 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 35CB38A;
-        Wed, 20 Sep 2023 02:02:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1695200571;
-        bh=LqQi9cbwVGnsnr4W3l34OevCOxKkaiW8cXfPwk3LzP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Al2gktbhpjdT2t7pmqjibmiq7Z9pGqUlsIsCZDH98Ame25hx3o9F4nESrTZtqBruj
-         b7UkdIsW4gwY2RX6IIRVXRGcBRYMDrvlgkWYRQbg8thmzOeaQzJNwScUz5q+ztYPtq
-         csHDedlms1SnD+QOYDtDztHaqXwSi0vrGZKtxwu0=
-Date:   Wed, 20 Sep 2023 02:02:49 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] Documentation: ABI: sysfs-driver-regulator-output
-Message-ID: <25844d80-fadb-44c3-a0e6-334aa6e4afd7@hatter.bewilderbeest.net>
-References: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
- <20230831121412.2359239-3-Naresh.Solanki@9elements.com>
- <90b1af83-cb03-476f-9147-eb06247bf09c@hatter.bewilderbeest.net>
- <2023090330-bling-mammary-3177@gregkh>
- <6eb78818-7838-4616-bf44-05c215bfa8b3@hatter.bewilderbeest.net>
- <763bd845-d8d6-489c-bd31-305ed14bc40f@sirena.org.uk>
- <1518370c-e0cd-4d78-af54-3e2cf4dd6e3c@hatter.bewilderbeest.net>
- <5282acd1-3c7a-4948-83f2-2829910ab841@sirena.org.uk>
+        Wed, 20 Sep 2023 05:04:25 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50A7CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:04:19 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38K3GoSr018911;
+        Wed, 20 Sep 2023 04:03:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=v
+        Em9S6Wha8oGRe3mleV8+Gy4YEDfjz8SVmCnJA061Dw=; b=hHpaLLuGQLHxyjeS5
+        ZKQ2VhWfa7IdccTgbX8Cr05H+0NVvQ0NW8+J4ZQAuPS/k+v0FkVobzDuPGKBck+d
+        T7yV74yxRea1DbmM0C/EgoRlnpVE5HE7otj7gOhWV8LDFmEHC5eTg93RscG6rJV5
+        zZXCe3kwq1SNw2PHEf6pswy4tV27BVrLepEPJVnRRIMfE1xh3334fAy31hUzrhc5
+        xG7eDrnAAnvgK+CvWprne+zAMec/pFRdeZHhCGvIgLlsrkJBpgEtF5ktqwPMTmCb
+        xJ+s0jA0d1hu3JgSKOfjKehFzM8Uvs+QrcdWQwr+kYJNrKSgEhtag7jOUPuk4VWW
+        Y6mvg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry572h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 04:03:47 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 20 Sep
+ 2023 10:03:45 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Wed, 20 Sep 2023 10:03:45 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (unknown [198.90.238.129])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0FD0511AA;
+        Wed, 20 Sep 2023 09:03:45 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] ALSA: hda: cirrus_scodec: Select GPIOLIB for KUnit test
+Date:   Wed, 20 Sep 2023 10:03:38 +0100
+Message-ID: <20230920090338.29345-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <5282acd1-3c7a-4948-83f2-2829910ab841@sirena.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: _F5HLFKgPHp6ijuj-437vxI4GfFRzN4h
+X-Proofpoint-ORIG-GUID: _F5HLFKgPHp6ijuj-437vxI4GfFRzN4h
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 07:03:47AM PDT, Mark Brown wrote:
->On Sun, Sep 10, 2023 at 01:50:37PM -0700, Zev Weiss wrote:
->> On Mon, Sep 04, 2023 at 05:24:31AM PDT, Mark Brown wrote:
->
->> > It's a clear on read interrupt.
->
->> Sure, analogous behavior in hardware is reasonably common, but that doesn't
->> strike me as a very compelling reason to design the kernel<->userspace
->> interface to mimic it -- providing nicer interfaces than the raw hardware is
->> one of the main reasons for having an OS in the first place, after all.
->
->If it were something other than the userspace consumer I'd be a bit more
->concerned but that's all sharp edges and direct access in a very
->controlled system.  In any case clear on write is the obvious
->alternative approach.
+The KUnit test for cirrus_scodec uses GPIO library functions so select
+GPIOLIB in Kconfig.
 
-I'm using this driver in production systems, and I think 
-Naresh/9elements do or intend to as well (and in my case at least, 
-they're systems human operators can and do log in to).  I, for one, 
-would thus very much prefer it be treated as a first-class citizen and 
-afforded considerations of robustness and such as with any other driver.  
-(I'm not entirely sure what other sharp edges with it you're referring 
-to.)
+This fixes the ld failures on builds that didn't already select GPIOLIB.
+ ld: vmlinux.o: in function `cirrus_scodec_test_gpio_get':
+ sound/pci/hda/cirrus_scodec_test.c:40: undefined reference to
+	`gpiochip_get_data'
+ ld: vmlinux.o: in function `cirrus_scodec_test_gpio_probe':
+ sound/pci/hda/cirrus_scodec_test.c:94: undefined reference to
+	`gpiochip_generic_request'
+ ld: sound/pci/hda/cirrus_scodec_test.c:94: undefined reference to
+	`gpiochip_generic_free'
+ ld: sound/pci/hda/cirrus_scodec_test.c:95: undefined reference to
+	`devm_gpiochip_add_data_with_key'
 
-To make a slightly more concrete proposal (or perhaps just flesh out one 
-I vaguely gestured at previously), how about something along the lines 
-of the below, as a modification on top of Naresh's patch -- most of the 
-code to do it via uevents is already there anyway.  With this code in 
-place I can run 'udevadm monitor -p' and see the expected events 
-delivered when I manually enable & disable the regulator via its 'state' 
-sysfs attribute, which I think basically fulfills the requirements we're 
-aiming for?  Naresh, could using netlink/uevents work for your needs?
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309201646.NnjfKPWk-lkp@intel.com/
+Fixes: 2144833e7b41 ("ALSA: hda: cirrus_scodec: Add KUnit test")
+---
+ sound/pci/hda/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Thanks,
-Zev
-
-
-diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
-index 74247e526a42..df783ca02757 100644
---- a/drivers/regulator/userspace-consumer.c
-+++ b/drivers/regulator/userspace-consumer.c
-@@ -32,7 +32,6 @@ struct userspace_consumer_data {
-  
-  	struct kobject *kobj;
-  	struct notifier_block nb;
--	unsigned long events;
-  };
-  
-  static ssize_t name_show(struct device *dev,
-@@ -93,30 +92,12 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
-  	return count;
-  }
-  
--static DEFINE_SPINLOCK(events_lock);
--
--static ssize_t events_show(struct device *dev,
--			   struct device_attribute *attr, char *buf)
--{
--	struct userspace_consumer_data *data = dev_get_drvdata(dev);
--	unsigned long e;
--
--	spin_lock(&events_lock);
--	e = data->events;
--	data->events = 0;
--	spin_unlock(&events_lock);
--
--	return sprintf(buf, "0x%lx\n", e);
--}
--
-  static DEVICE_ATTR_RO(name);
-  static DEVICE_ATTR_RW(state);
--static DEVICE_ATTR_RO(events);
-  
-  static struct attribute *attributes[] = {
-  	&dev_attr_name.attr,
-  	&dev_attr_state.attr,
--	&dev_attr_events.attr,
-  	NULL,
-  };
-  
-@@ -137,19 +118,35 @@ static const struct attribute_group attr_group = {
-  	.is_visible =  attr_visible,
-  };
-  
-+/*
-+ * This will of course need more of a real implementation (handling more than
-+ * a single set event bit) and should probably live somewhere else, but for
-+ * the sake of brevity...
-+ */
-+static const char *regulator_event_str(unsigned long event)
-+{
-+	switch (event) {
-+	case REGULATOR_EVENT_PRE_DISABLE:
-+		return "pre-disable";
-+	case REGULATOR_EVENT_DISABLE:
-+		return "disable";
-+	case REGULATOR_EVENT_ENABLE:
-+		return "enable";
-+	default:
-+		return "NYI";
-+	}
-+}
-+
-  static int regulator_userspace_notify(struct notifier_block *nb,
-  				      unsigned long event,
-  				      void *ignored)
-  {
-  	struct userspace_consumer_data *data =
-  		container_of(nb, struct userspace_consumer_data, nb);
--	static const char * const *envp[] = { "NAME=events", NULL };
--
--	spin_lock(&events_lock);
--	data->events |= event;
--	spin_unlock(&events_lock);
-+	char eventstr[128];
-+	char *envp[] = { "NAME=event", eventstr, NULL };
-  
--	sysfs_notify(data->kobj, NULL, dev_attr_events.attr.name);
-+	scnprintf(eventstr, sizeof(eventstr), "EVENT=%s", regulator_event_str(event));
-  	kobject_uevent_env(data->kobj, KOBJ_CHANGE, envp);
-  
-  	return NOTIFY_OK;
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 706cdc589e6f..21a90b3c4cc7 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -97,6 +97,7 @@ config SND_HDA_CIRRUS_SCODEC
+ config SND_HDA_CIRRUS_SCODEC_KUNIT_TEST
+ 	tristate "KUnit test for Cirrus side-codec library" if !KUNIT_ALL_TESTS
+ 	select SND_HDA_CIRRUS_SCODEC
++	select GPIOLIB
+ 	depends on KUNIT
+ 	default KUNIT_ALL_TESTS
+ 	help
+-- 
+2.30.2
 
