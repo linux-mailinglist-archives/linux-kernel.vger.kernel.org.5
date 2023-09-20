@@ -2,224 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE947A866E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3277A8676
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235092AbjITOYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44500 "EHLO
+        id S235188AbjITOYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234753AbjITOYR (ORCPT
+        with ESMTP id S235174AbjITOYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:24:17 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C0CC9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:24:10 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c5b1e55d5eso11879145ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:24:10 -0700 (PDT)
+        Wed, 20 Sep 2023 10:24:41 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE24188
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:24:33 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a65f9147ccso907819766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695219850; x=1695824650; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DOI6e5Fz0eSccYOGv0a2XgOrMIQyrqURVkPdu4XpUSk=;
-        b=OdKcggWCZY2WLZg3BR5y9Qaj6VyhXLyvl6oJlR09C7EAcdWY7dpuz50dDSjkdtsSix
-         RMq4f2c/gEEGfZc3SPb7ZbGg38xceu/gcoJCvba3XRu7T9YAfJmD94dU2FUkIKE8Scpv
-         AjMy76ufmRmNk7SZqkvRXWqyoQMPu2HUzT3Xi1u7MZjreQ/5XUKrlvPn57iY//9mAIEO
-         uhPy6gEzm3RXtu+TSpKXLcEc//YAmg35x5qKKnXJG/tuB4GKwyzMKJABJ8gPnDz/mO6q
-         /giYzhixp+w5k4J00eWuKJF+0OWk+J0bGfmL7vSpMRs5E9O8HO4hXDdrjVXFbI0ThYsn
-         eOqg==
+        d=linaro.org; s=google; t=1695219871; x=1695824671; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CNbD5JZlT85L92cZjusJkHp4jtK/JZ5bz82Z9IIMDbo=;
+        b=jIE/8psk4CmBDHStB71z+WVxaf2b18lsxtGcXwjhAqusN5SJ6rnp/lusEio7gTE8KQ
+         4QD8JIBzeEka05rgShfU99gul/qai2hJADGxdH8tE15IW9ZRbHeBihgs22wUPKZ1qiPM
+         J9p5eu68R4o1uNFafB+yDfZ79b50WiGNs/PqGVDkbbiGmgAv4KszyaMm+vVjZYx8r0aw
+         MTkKMdrXEH7kpYkqcGfT5l1MQ7qjED2OC/bvX/ZTE0dWQuYpNdlFlGJ5+/kfRyXFpV1R
+         A0peqV0bwpnt7TlSIDN9qgVhvlGq92Jbh+lrHiwaoEdnuWfIUTMWz3mgz1/jD66jo254
+         SWEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695219850; x=1695824650;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DOI6e5Fz0eSccYOGv0a2XgOrMIQyrqURVkPdu4XpUSk=;
-        b=pteU1PQcBhK2CHCX32aBL/Mf3mWXL077D4GLOd2ycD9W/VKThtZAmanJqbubaH4/4i
-         3F42nIqJNKThhvpblVjdAMnFl9MDLSFkrvboKfxeKackxKtxCH6TE/u2xe+rfUgmmr+0
-         rXqXSYjISj2oXusV3MM87vzlxgluB7fupw/38UAzw6ONX2ZQIk3EKCmQm0dPI/oegZzs
-         /ITsHSOcKb8Lio8OTkUjygnxuydAe/sMqLPUF1rruV3J9TzhauQymfLnj1w6lubPOFeZ
-         cnvFGAmBYNG99IYs0B5cakzGxZYi1NdWaUozC9q15HS5c1364ZIUuovMpDZHC4wK+5JQ
-         pTXA==
-X-Gm-Message-State: AOJu0Yz10S7wCxYHgSis0IbwEnlrZ2uuoktoYdZTl5T9BlkUcpb4qTJc
-        cktmgQ4w/sjc7CdYXBQYbVeWvvRWML0=
-X-Google-Smtp-Source: AGHT+IG+7+KaIB01fLVIPGeb7tjb/zu/hrsNFs+xXo/mmyM/aDSVQYbb0kWI4ACm+gkgu18FM/xCEI0V+P0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:f203:b0:1c0:ac09:4032 with SMTP id
- m3-20020a170902f20300b001c0ac094032mr25326plc.9.1695219850013; Wed, 20 Sep
- 2023 07:24:10 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 07:24:08 -0700
-In-Reply-To: <e397d30c-c6af-e68f-d18e-b4e3739c5389@linux.intel.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-15-seanjc@google.com>
- <e397d30c-c6af-e68f-d18e-b4e3739c5389@linux.intel.com>
-Message-ID: <ZQsAiGuw/38jIOV7@google.com>
-Subject: Re: [RFC PATCH v12 14/33] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695219871; x=1695824671;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CNbD5JZlT85L92cZjusJkHp4jtK/JZ5bz82Z9IIMDbo=;
+        b=N6hYwqlsxF/SlA7eWXFH09JGPbF/wreFVg60uIAARgLkZxIvPZyvAyNK0FjJ+gNLPq
+         fVxGzgKgnh9HfKHpoHiQN+88Cu86mN22aW7AsbNPqv7GmomI1Jc8GFVrVDuo3amjpkA9
+         omzzDhVUJa5bm3fihJHPs1nK3N+rq2SvekG50nHW3+OOEdrlVCMPDfp4bzj1HEuBbPNp
+         IhRvh3JsO8zaDQ803ODUJxDbzjdog5O/4bm3Wu9BuO64E3qEXgp8yXWUJPl3R/bpeUyw
+         p2vt39bS3HNgwkjsQGcL0O3JpJn7YpafV/if7/uZp+VI3hYWVfqiYN+PRjcr1g4a8vGb
+         JW7g==
+X-Gm-Message-State: AOJu0YxnHIptEmkY54xosOf30zy8d9KsuhDtfwUpQEH7vCH9mqruGOQL
+        0/6GhRjsSMze7fy1GP1/65+rFA==
+X-Google-Smtp-Source: AGHT+IEWeR4ibVo/0lBYIQnbCIzA4Q1ZL7a5w7fDqs/tLyxpyOxPFsZtH1PIFFFFdedlS+oRgvhRMw==
+X-Received: by 2002:a17:906:225b:b0:9ae:541e:7310 with SMTP id 27-20020a170906225b00b009ae541e7310mr477368ejr.33.1695219871576;
+        Wed, 20 Sep 2023 07:24:31 -0700 (PDT)
+Received: from [172.20.86.172] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id lg13-20020a170906f88d00b009ad88839665sm9435005ejb.70.2023.09.20.07.24.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 07:24:31 -0700 (PDT)
+Message-ID: <4b20d3bb-d2d2-0864-013f-104e26ae558c@linaro.org>
+Date:   Wed, 20 Sep 2023 16:24:30 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 2/5] PCI: qcom-ep: Add support for SA8775P SoC
+Content-Language: en-US
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, mani@kernel.org
+Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+        linux-phy@lists.infradead.org
+References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
+ <1695218113-31198-3-git-send-email-quic_msarkar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <1695218113-31198-3-git-send-email-quic_msarkar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023, Binbin Wu wrote:
+
+
+On 9/20/23 15:55, Mrinmay Sarkar wrote:
+> Add support for SA8775P SoC to the Qualcomm PCIe Endpoint Controller
+> driver.
 > 
-> 
-> On 9/14/2023 9:55 AM, Sean Christopherson wrote:
-> [...]
-> > +
-> > +static void kvm_gmem_invalidate_begin(struct kvm_gmem *gmem, pgoff_t start,
-> > +				      pgoff_t end)
-> > +{
-> > +	struct kvm_memory_slot *slot;
-> > +	struct kvm *kvm = gmem->kvm;
-> > +	unsigned long index;
-> > +	bool flush = false;
-> > +
-> > +	KVM_MMU_LOCK(kvm);
-> > +
-> > +	kvm_mmu_invalidate_begin(kvm);
-> > +
-> > +	xa_for_each_range(&gmem->bindings, index, slot, start, end - 1) {
-> > +		pgoff_t pgoff = slot->gmem.pgoff;
-> > +
-> > +		struct kvm_gfn_range gfn_range = {
-> > +			.start = slot->base_gfn + max(pgoff, start) - pgoff,
-> > +			.end = slot->base_gfn + min(pgoff + slot->npages, end) - pgoff,
-> > +			.slot = slot,
-> > +			.may_block = true,
-> > +		};
-> > +
-> > +		flush |= kvm_mmu_unmap_gfn_range(kvm, &gfn_range);
-> > +	}
-> > +
-> > +	if (flush)
-> > +		kvm_flush_remote_tlbs(kvm);
-> > +
-> > +	KVM_MMU_UNLOCK(kvm);
-> > +}
-> > +
-> > +static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem, pgoff_t start,
-> > +				    pgoff_t end)
-> > +{
-> > +	struct kvm *kvm = gmem->kvm;
-> > +
-> > +	KVM_MMU_LOCK(kvm);
-> > +	if (xa_find(&gmem->bindings, &start, end - 1, XA_PRESENT))
-> > +		kvm_mmu_invalidate_end(kvm);
-> kvm_mmu_invalidate_begin() is called unconditionally in
-> kvm_gmem_invalidate_begin(),
-> but kvm_mmu_invalidate_end() is not here.
-> This makes the kvm_gmem_invalidate_{begin, end}() calls asymmetric.
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+This compatible does not bring anything new to the table
+on its own. Please create a fallback compatible, document it
+in the bindings and use that. See [1] and [2] for example.
 
-Another ouch :-(
+Konrad
 
-And there should be no need to acquire mmu_lock() unconditionally, the inode's
-mutex protects the bindings, not mmu_lock.
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-repeater.yaml?h=next-20230920
 
-I'll get a fix posted today.  I think KVM can also add a sanity check to detect
-unresolved invalidations, e.g.
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 7ba1ab1832a9..2a2d18070856 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1381,8 +1381,13 @@ static void kvm_destroy_vm(struct kvm *kvm)
-         * No threads can be waiting in kvm_swap_active_memslots() as the
-         * last reference on KVM has been dropped, but freeing
-         * memslots would deadlock without this manual intervention.
-+        *
-+        * If the count isn't unbalanced, i.e. KVM did NOT unregister between
-+        * a start() and end(), then there shouldn't be any in-progress
-+        * invalidations.
-         */
-        WARN_ON(rcuwait_active(&kvm->mn_memslots_update_rcuwait));
-+       WARN_ON(!kvm->mn_active_invalidate_count && kvm->mmu_invalidate_in_progress);
-        kvm->mn_active_invalidate_count = 0;
- #else
-        kvm_flush_shadow_all(kvm);
-
-
-or an alternative style
-
-	if (kvm->mn_active_invalidate_count)
-		kvm->mn_active_invalidate_count = 0;
-	else
-		WARN_ON(kvm->mmu_invalidate_in_progress)
-
-> > +	KVM_MMU_UNLOCK(kvm);
-> > +}
-> > +
-> > +static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
-> > +{
-> > +	struct list_head *gmem_list = &inode->i_mapping->private_list;
-> > +	pgoff_t start = offset >> PAGE_SHIFT;
-> > +	pgoff_t end = (offset + len) >> PAGE_SHIFT;
-> > +	struct kvm_gmem *gmem;
-> > +
-> > +	/*
-> > +	 * Bindings must stable across invalidation to ensure the start+end
-> > +	 * are balanced.
-> > +	 */
-> > +	filemap_invalidate_lock(inode->i_mapping);
-> > +
-> > +	list_for_each_entry(gmem, gmem_list, entry) {
-> > +		kvm_gmem_invalidate_begin(gmem, start, end);
-> > +		kvm_gmem_invalidate_end(gmem, start, end);
-> > +	}
-> Why to loop for each gmem in gmem_list here?
-> 
-> IIUIC, offset is the offset according to the inode, it is only meaningful to
-> the inode passed in, i.e, it is only meaningful to the gmem binding with the
-> inode, not others.
-
-The code is structured to allow for multiple gmem instances per inode.  This isn't
-actually possible in the initial code base, but it's on the horizon[*].  I included
-the list-based infrastructure in this initial series to ensure that guest_memfd
-can actually support multiple files per inode, and to minimize the churn when the
-"link" support comes along.
-
-[*] https://lore.kernel.org/all/cover.1691446946.git.ackerleytng@google.com
-
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/qcom/pm7550ba.dtsi?h=next-20230920#n65
