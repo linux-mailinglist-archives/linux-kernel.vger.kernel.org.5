@@ -2,182 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FA07A83EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797DC7A83EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234565AbjITNwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
+        id S236018AbjITNwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234796AbjITNwO (ORCPT
+        with ESMTP id S234796AbjITNwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:52:14 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA87B9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:52:08 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-578af21ff50so1617168a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695217928; x=1695822728; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FzKUIkp2N4mFsPMBkGOtGZ83qroR9oeUcPf9C3+REGI=;
-        b=Afz5XzDwptMY7dWBZQPXw2i0KdFVRR6oMLfCqIQ9e7jBl6L8qTcD5KYq5ZThPKHSv4
-         t49sU10OIwYxFm0vm2HM9LJjDpPlhBxYQtQvW5PKAuFvf1h9nRVSFgW409JijUhfwDtk
-         FM31hIqH8mmQ50yRJXCu4e28aNrpm2h6MKLutBcb6EgpzMsS3DP0DIkzK4rBBi30cJOR
-         1+VWSEmGmvo6XyqtYLfIRrZyeojrpCbKjoiQi+7AZRzIAN8JcOYDrgfqOO2VwMvTTjku
-         KbuRfhoEThYJGT1bSb8+FdOLSG3cX9hqSd18DLatbNq0Ewvilc62/H2UcUU/ftddgtn4
-         sofQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695217928; x=1695822728;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FzKUIkp2N4mFsPMBkGOtGZ83qroR9oeUcPf9C3+REGI=;
-        b=JVo9vi5Y790JlStG7j0qAefvvvO6OR1pYALJLAwAtOSe+2VtLQNXssimvW9YYRZBXo
-         QdJdajSALiGe2l7UC31XxhpkDRxv2s3mhXSAoANnD4/pCf31Kja6jvevuGZrDP3N0QqM
-         Xszmi7rVVI/WteTqmVN+a0wNTVhITEVrAYOvNf/blfG9zGJt9cqqx20CnNRhke//tOtx
-         AmRgXy6CyogKloysq/iFqXniDtqZfw1x+i7Tjk6yqJwYf4+O0mj1KcB1KXnBGHumt3Y0
-         fom/Jw286CWhetzNy4PHOAK6Uv5WVfSICazHpPj1XnJ4lWO6O6qDgCu9r1QO58ToP5Yl
-         s3Vg==
-X-Gm-Message-State: AOJu0YzAMj6N7sVbAZtEP85UPPO3MTZjjSTY1d182wTXmWlwia6bmk88
-        u7vJlq4MVzWUlaLlw1nw9myackM0BDSNSt5Npo0KjQ==
-X-Google-Smtp-Source: AGHT+IGXSUP8486WAuGjNv3n0pBFc9g0bpvw4aa5VzPg+ObGcV35R+/p4WGbHUmzy1ayTCndxJcGUvNBRm3i9v1Kurw=
-X-Received: by 2002:a17:90a:3d43:b0:26b:7d8e:edf9 with SMTP id
- o3-20020a17090a3d4300b0026b7d8eedf9mr2256888pjf.49.1695217928154; Wed, 20 Sep
- 2023 06:52:08 -0700 (PDT)
+        Wed, 20 Sep 2023 09:52:54 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B158AC;
+        Wed, 20 Sep 2023 06:52:48 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qixdE-0002e2-SC; Wed, 20 Sep 2023 15:52:44 +0200
+Message-ID: <e34d4c14-af07-b5a1-8341-d8658c1efb39@leemhuis.info>
+Date:   Wed, 20 Sep 2023 15:52:44 +0200
 MIME-Version: 1.0
-References: <20230918180646.1398384-1-apatel@ventanamicro.com>
- <20230918180646.1398384-5-apatel@ventanamicro.com> <CAOnJCU+h-Y_i=HkCf194SLWp-7bqzMhRLC31q0xxQDMuLppapA@mail.gmail.com>
-In-Reply-To: <CAOnJCU+h-Y_i=HkCf194SLWp-7bqzMhRLC31q0xxQDMuLppapA@mail.gmail.com>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Wed, 20 Sep 2023 19:21:56 +0530
-Message-ID: <CAK9=C2XFGoZ-JZmMv4qmgzE+0Rt_pv+5k8UMJ0ivh=MaBoxxhA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] KVM: riscv: selftests: Selectively filter-out AIA registers
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: meson-mx-sdhc: Fix initialization frozen issue
+Content-Language: en-US, de-DE
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Ziyang Huang <hzyitc@outlook.com>,
+        martin.blumenstingl@googlemail.com
+Cc:     neil.armstrong@linaro.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>
+References: <TYZPR01MB5556B56D834E02F41C44D81DC95FA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+ <CAPDyKFqyi97kjdiNM60WYK+cs4pw5pW3AyfiWKnsCRXd5BXUww@mail.gmail.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <CAPDyKFqyi97kjdiNM60WYK+cs4pw5pW3AyfiWKnsCRXd5BXUww@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695217968;03883f8f;
+X-HE-SMSGID: 1qixdE-0002e2-SC
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 1:43=E2=80=AFAM Atish Patra <atishp@atishpatra.org>=
- wrote:
->
-> On Mon, Sep 18, 2023 at 11:07=E2=80=AFAM Anup Patel <apatel@ventanamicro.=
-com> wrote:
-> >
-> > Currently the AIA ONE_REG registers are reported by get-reg-list
-> > as new registers for various vcpu_reg_list configs whenever Ssaia
-> > is available on the host because Ssaia extension can only be
-> > disabled by Smstateen extension which is not always available.
-> >
-> > To tackle this, we should filter-out AIA ONE_REG registers only
-> > when Ssaia can't be disabled for a VCPU.
-> >
-> > Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  .../selftests/kvm/riscv/get-reg-list.c        | 23 +++++++++++++++++--
-> >  1 file changed, 21 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/t=
-esting/selftests/kvm/riscv/get-reg-list.c
-> > index 76c0ad11e423..85907c86b835 100644
-> > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > @@ -12,6 +12,8 @@
-> >
-> >  #define REG_MASK (KVM_REG_ARCH_MASK | KVM_REG_SIZE_MASK)
-> >
-> > +static bool isa_ext_cant_disable[KVM_RISCV_ISA_EXT_MAX];
-> > +
-> >  bool filter_reg(__u64 reg)
-> >  {
-> >         switch (reg & ~REG_MASK) {
-> > @@ -48,6 +50,15 @@ bool filter_reg(__u64 reg)
-> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
-> >         case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
-> >                 return true;
-> > +       /* AIA registers are always available when Ssaia can't be disab=
-led */
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_=
-CSR_AIA_REG(siselect):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_=
-CSR_AIA_REG(iprio1):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_=
-CSR_AIA_REG(iprio2):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_=
-CSR_AIA_REG(sieh):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_=
-CSR_AIA_REG(siph):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_=
-CSR_AIA_REG(iprio1h):
-> > +       case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_=
-CSR_AIA_REG(iprio2h):
-> > +               return isa_ext_cant_disable[KVM_RISCV_ISA_EXT_SSAIA] ? =
-true : false;
->
-> Ahh I guess. you do need the switch case for AIA CSRs but for ISA
-> extensions can be avoided as it is contiguous.
+On 14.09.23 16:45, Ulf Hansson wrote:
+> + Thorsten
 
-Fow now, let's leave it as-is because this way get-reg-list will
-complain if some new ONE_REG register is missed out.
+I recently gave up on this, as it seems nobody cared anymore, but let's
+give this another try.
 
->
-> >         default:
-> >                 break;
-> >         }
-> > @@ -71,14 +82,22 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *vc=
-pu, int ext)
-> >
-> >  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
-> >  {
-> > +       int rc;
-> >         struct vcpu_reg_sublist *s;
-> > +       unsigned long isa_ext_state[KVM_RISCV_ISA_EXT_MAX] =3D { 0 };
-> > +
-> > +       for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
-> > +               __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(i), &isa_ext_sta=
-te[i]);
-> >
-> >         /*
-> >          * Disable all extensions which were enabled by default
-> >          * if they were available in the risc-v host.
-> >          */
-> > -       for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
-> > -               __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
-> > +       for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++) {
-> > +               rc =3D __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
-> > +               if (rc && isa_ext_state[i])
-> > +                       isa_ext_cant_disable[i] =3D true;
-> > +       }
-> >
-> >         for_each_sublist(c, s) {
-> >                 if (!s->feature)
-> > --
-> > 2.34.1
-> >
->
-> Otherwise, LGTM.
->
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
->
-> --
-> Regards,
-> Atish
+> On Mon, 19 Jun 2023 at 19:36, Ziyang Huang <hzyitc@outlook.com> wrote:
+>>
+>> Commit 4bc31edebde5 ("mmc: core: Set HS clock speed before sending
+>> HS CMD13") set HS clock (52MHz) before switching to HS mode. For this
+>> freq, FCLK_DIV5 will be selected and div value is 10 (reg value is 9).
+>> Then we set rx_clk_phase to 11 or 15 which is out of range and make
+>> hardware frozen. After we send command request, no irq will be
+>> interrupted and the mmc driver will keep to wait for request finished,
+>> even durning rebooting.
+>>
+>> So let's set a common value - 1 just for initialization. Then let
+>> meson_mx_sdhc_execute_tuning() to find the accurate value for data
+>> transfer.
+>>
+>> Fixes: e4bf1b0970ef ("mmc: host: meson-mx-sdhc: new driver for the Amlogic Meson SDHC host")
+>> Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
+> 
+> I don't quite understand if this patch is ok for everybody for me to apply?
+> 
+> It seems like it solves at least some part of the problems that
+> Martin/Thorsten were looking at too [1], right?
 
-Regards,
-Anup
+Martin, could you help clarifying the situation here? It seems Ziyang
+Huang is busy.
+
+I briefly skimmed this thread again and to me it sounded like there was
+a plan for an improved patch that hasn't shown up yet.
+
+Also CCing Brian Norris who according to the bisection from Martin in
+that "[1]" caused the regression (or am I missing/confusing something
+here?).
+
+> [1]
+> https://lore.kernel.org/all/CAFBinCD0RT0p-jk86W0JuMT3ufohRh1RqWCcM35DKZJpuc10HQ@mail.gmail.com/#r
+
+Ciao, Thorsten
+
+>> ---
+>>  drivers/mmc/host/meson-mx-sdhc-mmc.c | 26 +++-----------------------
+>>  1 file changed, 3 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/meson-mx-sdhc-mmc.c b/drivers/mmc/host/meson-mx-sdhc-mmc.c
+>> index da85c2f2..a01090a2 100644
+>> --- a/drivers/mmc/host/meson-mx-sdhc-mmc.c
+>> +++ b/drivers/mmc/host/meson-mx-sdhc-mmc.c
+>> @@ -269,7 +269,6 @@ static int meson_mx_sdhc_enable_clks(struct mmc_host *mmc)
+>>  static int meson_mx_sdhc_set_clk(struct mmc_host *mmc, struct mmc_ios *ios)
+>>  {
+>>         struct meson_mx_sdhc_host *host = mmc_priv(mmc);
+>> -       u32 rx_clk_phase;
+>>         int ret;
+>>
+>>         meson_mx_sdhc_disable_clks(mmc);
+>> @@ -290,31 +289,12 @@ static int meson_mx_sdhc_set_clk(struct mmc_host *mmc, struct mmc_ios *ios)
+>>                 mmc->actual_clock = clk_get_rate(host->sd_clk);
+>>
+>>                 /*
+>> -                * according to Amlogic the following latching points are
+>> -                * selected with empirical values, there is no (known) formula
+>> -                * to calculate these.
+>> +                * This value is just for initialization. For data transmission,
+>> +                * meson_mx_sdhc_execute_tuning() will find a accurate value
+>>                  */
+>> -               if (mmc->actual_clock > 100000000) {
+>> -                       rx_clk_phase = 1;
+>> -               } else if (mmc->actual_clock > 45000000) {
+>> -                       if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_330)
+>> -                               rx_clk_phase = 15;
+>> -                       else
+>> -                               rx_clk_phase = 11;
+>> -               } else if (mmc->actual_clock >= 25000000) {
+>> -                       rx_clk_phase = 15;
+>> -               } else if (mmc->actual_clock > 5000000) {
+>> -                       rx_clk_phase = 23;
+>> -               } else if (mmc->actual_clock > 1000000) {
+>> -                       rx_clk_phase = 55;
+>> -               } else {
+>> -                       rx_clk_phase = 1061;
+>> -               }
+>> -
+>>                 regmap_update_bits(host->regmap, MESON_SDHC_CLK2,
+>>                                    MESON_SDHC_CLK2_RX_CLK_PHASE,
+>> -                                  FIELD_PREP(MESON_SDHC_CLK2_RX_CLK_PHASE,
+>> -                                             rx_clk_phase));
+>> +                                  FIELD_PREP(MESON_SDHC_CLK2_RX_CLK_PHASE, 1));
+>>         } else {
+>>                 mmc->actual_clock = 0;
+>>         }
+>> --
+>> 2.34.1
+>>
+> 
