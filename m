@@ -2,151 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C1F7A7246
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249217A7248
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbjITFpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 01:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
+        id S232854AbjITFqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 01:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231839AbjITFpC (ORCPT
+        with ESMTP id S230021AbjITFq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 01:45:02 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E313D8F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:44:55 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-        id F0D91212C4AD; Tue, 19 Sep 2023 22:44:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F0D91212C4AD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695188694;
-        bh=8sN6z5YjhtFz0yFNj635BK3PS4McjJIaFDZfvIlqfVc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dtToQtEuwQZb7hcE7TLvwY/My32GHeJ1ZpuVKZd56M5ZFH7HgSj9Czng7E7u2XMKa
-         Q9yLQXt/7xIxy+wWEWcJ/cd9xLSWgYNy2SgNx2EpX4llBySS6khuFt3+W7zTu/rAr6
-         6biQCqzz5XgLwyr0gj7cskhmgjPq4QBVEhoZ61qY=
-Date:   Tue, 19 Sep 2023 22:44:54 -0700
-From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To:     Zach O'Keefe <zokeefe@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Saurabh Singh Sengar <ssengar@microsoft.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [EXTERNAL] Re: [PATCH v3] mm/thp: fix "mm: thp: kill
- __transhuge_page_enabled()"
-Message-ID: <20230920054454.GA26860@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <37c2b525-5c2c-d400-552c-9ccb91f4d7bf@redhat.com>
- <CAAa6QmSHF6-9aFa68WDcb+WATh2Yz=wXyp8VBLDNv6yPp2SS5Q@mail.gmail.com>
- <3e08d48b-7b70-cc7f-0ec1-12ad9b1a33db@redhat.com>
- <CAAa6QmSNvx7wbZzfhFOyhODTMoBbf6PimnOf2xeAw5NkD1eXVg@mail.gmail.com>
- <PUZP153MB06350A5DC9CCB8448C98E4EEBE1DA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <3408ff54-f353-0334-0d66-c808389d2f01@redhat.com>
- <ZOijSwCa9NFD6DZI@casper.infradead.org>
- <9f967665-2cbd-f80b-404e-ac741eab1ced@redhat.com>
- <CAAa6QmQRFwzXWHEL2d74sX6JuciJeBzprk1NxCWKB6i53gmt6Q@mail.gmail.com>
- <20230906065817.GA27879@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        Wed, 20 Sep 2023 01:46:29 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2086.outbound.protection.outlook.com [40.107.223.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAB394
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:46:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KEiLrmkcUhYypB5cQwXJNHx59t5B3q6fTw+N3cdjQ5ioaq91OUOoBaZTDhgi5C1oDoy22BT6a0qFBOc448YajlgVi8EH/3ZN69JGxA+zAudMNuWi7P9YfiktrJp0+abRpe98h8DY3RDt32TMZOtxis63sJHOlrC4Hv1qIB7hSOg3MA+IejL3x/fI8qQiElXGZK6ZuTTNCu6FSPRDlSg4FF3LXs79sHWSCyaS2cGQCIlwkeZDIb2/H+uN3RtpZ4asinEFM0a3XU2Ku8OyPUmXCgRBF1EEMy3NK/UwlOJX8383ZO80rytlH+0w7sSTc5IY9ygIfb+xcyleFLgVBdpXig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/bD/MXVv+U61wlCIf4RpUfYikmzpEZUf3NQpqDYHdC8=;
+ b=TJE5niAvFUL6phUc80bxsC4H6ewYyY0d/WrFs+JSJ5ybidq5LmXOusAgJbFjKEUlfL/g5/zi52HSYJYCFbbsfki2sb7Mq45Xx/CnAt1OIIwQOSJh/AMKfqyZ7HVoREUOY+rpLfRjEzv1uUZg6SGp7cAE84+pW4EeQj88OEZQAdbrKBLuFBzHHZGREwwqDXeEt5dMjIOvrcOdCFubuMkoeDFbDul10i5cJntFXFPyaBNNET/0LDy61q+JC/D2gdVBs1ZT1a1j0WHX6feqBP/OJQYEGZ9X6ZDJjo2dr6p04KkXXUU8Y+VQHNb5DWvkbg9d2HpdaPpQuXW3j1HkryVRtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/bD/MXVv+U61wlCIf4RpUfYikmzpEZUf3NQpqDYHdC8=;
+ b=Sg/o6rXnaY5tSFzEhBQqkFamS4DhM9c4bxyA897iRrI7jRi4/e/jR/JmhFWXSFa5RnKFeqW3xAquxUm8GAFILdumraYF5Dg3eyFtQud1w5Cxyt1yMSdmXiYmFvzZ31fDVMqYCyn6LjbfuXEIiNrb98KZW9RPgbdZ+UUOox0dvUxtnFCW2hTb6oPHE8nLqWMl60WX/YJd+y/NmDZ+WxdyxSHH43SZ1qGfVIqy/09JyfajJi5ReznEdAAfRC+Ks+kg+cjsnBB/P8Dh6yiViU0bJwv3daC2nRZkDu/ufBw3ifx3oMK3b+pyc01TVvrmV3ZF1K32kdjVxT5MRMRT/6ivkw==
+Received: from BL0PR02CA0109.namprd02.prod.outlook.com (2603:10b6:208:35::14)
+ by PH0PR12MB8125.namprd12.prod.outlook.com (2603:10b6:510:293::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Wed, 20 Sep
+ 2023 05:46:20 +0000
+Received: from MN1PEPF0000ECD7.namprd02.prod.outlook.com
+ (2603:10b6:208:35:cafe::5f) by BL0PR02CA0109.outlook.office365.com
+ (2603:10b6:208:35::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27 via Frontend
+ Transport; Wed, 20 Sep 2023 05:46:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ MN1PEPF0000ECD7.mail.protection.outlook.com (10.167.242.136) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6792.20 via Frontend Transport; Wed, 20 Sep 2023 05:46:20 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 19 Sep
+ 2023 22:46:02 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Tue, 19 Sep 2023 22:46:01 -0700
+Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Tue, 19 Sep 2023 22:46:01 -0700
+Date:   Tue, 19 Sep 2023 22:45:59 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+CC:     <iommu@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <jgg@nvidia.com>,
+        <jean-philippe@linaro.org>, <robin.murphy@arm.com>,
+        <will@kernel.org>, Alistair Popple <apopple@nvidia.com>,
+        Dawei Li <set_pte_at@outlook.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "Tomas Krcka" <krckatom@amazon.de>
+Subject: Re: [PATCH v8 0/9] Refactor the SMMU's CD table ownership
+Message-ID: <ZQqHFz4WUQOub7/F@Asurada-Nvidia>
+References: <20230915132051.2646055-1-mshavit@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230906065817.GA27879@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230915132051.2646055-1-mshavit@google.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD7:EE_|PH0PR12MB8125:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c41a970-795c-407a-1992-08dbb99cea79
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: m/WXIGEVmCVcVoW/3Wtuv2ZfQBaXZeP134fwNA7F6ubAmyEbsgMrNCPqBccE3qhtQkJitFKfaDYx9jLwhZ6yiwM6fYpQ47WJA+3NwVnayG0AllX1p1MUhnbxQNCob5enmM2GVK7vyxq+J4Y+WIETdyJxQYU0FwMw9l7LtgrjMU8tHxQO3usjcg/1aKaPNPZJwNWukFHsjm6wbBG3waGhoaRO4FsqpnnwT5XcwJc0lZjiyTVZAaCV9Tbt2qNVbXjg70a0XlEBci7kPmPPaYVXidQ1d86U2F6REAh9h73rlvksOB487QMuuSv3zvo7ogtUpxmaOjCSpymRi+T4wJ3AFAJXLSBSs8JVhHaEmlnHd8tC0uopOHCtb8sNxswD3RuIOtcOtO7391NE1v27ECi4y1/R5tHKyxb7jVdcXA0HgpcAYgNh0kNbNoiDJo5S9ykUh0fMswB1Hg7N7bsEAo47o24TFe/x6tt9pk1OFD/+32IO6rZ3LWom3BIgDpTf04JxQ2KkQKrlaxsU1uFA1Y5a+oc2bT4FChfgYC+rKhrHmSNN3ZiyllmfquvsDpcK+PnqjsruvguHQgNyhSfXqGdc3rlIXGcbZiIto4TdUsdoRMS8WnR5gFAJA6lzC/VSZbCipelJhLJXnkHC7XI0zFr2hxtr5l+OK02IVqpaWdzXqpoycRApc0iNgEyNleFF2hoqvngLRCYXFDR0aizeYl8eQesGXoz4xPI9roNOUHg6Qsro9MXwOw23yG1Zf09vbkIXlOEbnxEvGlgALJS+4hdNM6WtuThcv20PmLC/AZDHsjc=
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(136003)(396003)(451199024)(1800799009)(186009)(82310400011)(40470700004)(36840700001)(55016003)(83380400001)(7636003)(40460700003)(356005)(40480700001)(36860700001)(32650700002)(82740400003)(86362001)(26005)(336012)(2906002)(6916009)(966005)(9686003)(426003)(478600001)(4326008)(8676002)(316002)(41300700001)(8936002)(5660300002)(33716001)(7416002)(54906003)(70586007)(70206006);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 05:46:20.0711
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c41a970-795c-407a-1992-08dbb99cea79
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD7.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8125
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 11:58:17PM -0700, Saurabh Singh Sengar wrote:
-> On Fri, Aug 25, 2023 at 08:09:07AM -0700, Zach O'Keefe wrote:
-> > On Fri, Aug 25, 2023 at 5:58 AM David Hildenbrand <david@redhat.com> wrote:
-> > >
-> > > On 25.08.23 14:49, Matthew Wilcox wrote:
-> > > > On Fri, Aug 25, 2023 at 09:59:23AM +0200, David Hildenbrand wrote:
-> > > >> Especially, we do have bigger ->huge_fault changes coming up:
-> > > >>
-> > > >> https://lkml.kernel.org/r/20230818202335.2739663-1-willy@infradead.org
-> > 
-> > FWIW, one of those patches updates the docs to read,
-> > 
-> > "->huge_fault() is called when there is no PUD or PMD entry present.  This
-> > gives the filesystem the opportunity to install a PUD or PMD sized page.
-> > Filesystems can also use the ->fault method to return a PMD sized page,
-> > so implementing this function may not be necessary.  In particular,
-> > filesystems should not call filemap_fault() from ->huge_fault(). [..]"
-> > 
-> > Which won't work (in the general case) without this patch (well, at
-> > least the ->huge_fault() check part).
-> > 
-> > So, if we're advertising this is the way it works, maybe that gives a
-> > stronger argument for addressing it sooner vs when the first in-tree
-> > user depends on it?
-> > 
-> > > >> If the driver is not in the tree, people don't care.
-> > > >>
-> > > >> You really should try upstreaming that driver.
-> > > >>
-> > > >>
-> > > >> So this patch here adds complexity (which I don't like) in order to keep an
-> > > >> OOT driver working -- possibly for a short time. I'm tempted to say "please
-> > > >> fix your driver to not use huge faults in that scenario, it is no longer
-> > > >> supported".
-> > > >>
-> > > >> But I'm just about to vanish for 1.5 week into vacation :)
-> > > >>
-> > > >> @Willy, what are your thoughts?
-> > > >
-> > > > Fundamentally there was a bad assumption with the original patch --
-> > > > it assumed that the only reason to support ->huge_fault was for DAX,
-> > > > and that's not true.  It's just that the only drivers in-tree which
-> > > > support ->huge_fault do so in order to support DAX.
-> > >
-> > > Okay, and we are willing to continue supporting that then and it's
-> > > nothing we want to stop OOT drivers from doing.
-> > >
-> > > Fine with me; we should probably reflect that in the patch description.
-> > 
-> > I can change these paragraphs,
-> > 
-> > "During the review of the above commits, it was determined that in-tree
-> > users weren't affected by the change; most notably, since the only relevant
-> > user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
-> > explicitly approved early in approval logic.  However, there is at least
-> > one occurrence where an out-of-tree driver that used
-> > VM_HUGEPAGE|VM_MIXEDMAP with a vm_ops->huge_fault handler, was broken.
-> > 
-> > Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
-> > any ->huge_fault handler a chance to handle the fault.  Note that we
-> > don't validate the file mode or mapping alignment, which is consistent
-> > with the behavior before the aforementioned commits."
-> > 
-> > To read,
-> > 
-> > "The above commits, however, overfit the existing in-tree use cases,
-> > and assume that
-> > the only reason to support ->huge_fault was for DAX (which is
-> > explicitly approved early in the approval logic).
-> > This is a bad assumption to make and unnecessarily prevents general
-> > support of ->huge_fault by filesystems. Allow returning "true" if such
-> > a handler exists, giving the fault path an opportunity to exercise it.
-> > 
-> > Similarly, the rationale for including the VM_NO_KHUGEPAGED check
-> > along the fault path was that it didn't alter any in-tree users, but
-> > was likewise similarly unnecessarily restrictive (and reads odd).
-> > Remove the check from the fault path."
-> >
+On Fri, Sep 15, 2023 at 09:17:31PM +0800, Michael Shavit wrote:
 > 
+> Hi all,
 > 
-> Any chance this can make it to 6.6 kernel ?
+> This series refactors stage 1 domains so that they describe a single CD
+> entry. These entries are now inserted into a CD table that is owned by
+> the arm_smmu_master instead of the domain.
+> This is conceptually cleaner and unblocks other features, such as
+> attaching domains with PASID (for unmanaged/dma domains).
+> 
+> This patch series was originally part of a larger patch series that
+> implemented the set_dev_pasid callback for non-SVA domains but is now
+> split into a distinct series.
+> 
+> This patch series is also available on gerrit with Jean's SMMU test
+> engine patches cherry-picked on top for testing:
+> https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/24742/16
+> 
+> Thanks,
+> Michael Shavit
+> 
+> Changes in v8:
+> - Rebased off of 6.6-rc1
+> - Drive-by update of the "Move ctx_desc out of s1_cfg" commit message to be less
+>   vague.
+> - Link to v7: https://lore.kernel.org/linux-iommu/20230831174536.103472-1-mshavit@google.com/
+ 
+Hmm. I recall that I gave Tested-by to v7, yet some of the patches
+in this v8 don't include that. Anyway, I retested with this v8:
 
-ping
-
-> 
-> - Saurabh 
+Tested-by: Nicolin Chen <nicolinc@nvidia.com>
