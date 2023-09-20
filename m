@@ -2,57 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1447A8914
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2647A8919
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236793AbjITP6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
+        id S235384AbjITP7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235556AbjITP6D (ORCPT
+        with ESMTP id S235495AbjITP7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:58:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCC8C6;
-        Wed, 20 Sep 2023 08:57:57 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 17:57:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695225475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DpJgK3AoeiL0qj/8hSRWzm5J6WB7MCZiwbQ65O5g5hE=;
-        b=HoVeYs+Fzkh4C3WRSaDVyKTi7I2akLKNQqMscfyApQI2XrdYmjd8ckESHwBYByCH/J0ejO
-        LJcDH5QZl08p3I5rBaO9y4WS6XfaOrBETJzWcWupGyDH3vTse6b9oXJQGBXQ6FSnG7kjz8
-        BufhIGn5JvWFFzfLdbdc69Tn1qUAOY5E9UXh9ejZckIH+vp8MbD2PvbrkTEX+LyLZvoDA/
-        4vUEP1cP8ldVwfltw4l8ny9Dq7Qxfs9j/8AOFHz0FYbqDA+Tf3YVBTp/nN6zX6+tCrDTXN
-        xhEXFXXfOydt4+MsPosxo9KSnwGyfEq6P6RqbtSa2cEAxTHeBcd+1GaAS4yQXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695225475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DpJgK3AoeiL0qj/8hSRWzm5J6WB7MCZiwbQ65O5g5hE=;
-        b=AgatWMwCIEwvEz7hCBga346W0evtLm84oXwufeiosrpS5dp02LijPUYp/zDPRKriM4tgfd
-        xcEa+JV7TLddAyCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wander Lairson Costa <wander@redhat.com>
-Subject: Re: [RFC PATCH net-next 1/2] net: Use SMP threads for backlog NAPI.
-Message-ID: <20230920155754.KzYGXMWh@linutronix.de>
-References: <20230814093528.117342-1-bigeasy@linutronix.de>
- <20230814093528.117342-2-bigeasy@linutronix.de>
- <0a842574fd0acc113ef925c48d2ad9e67aa0e101.camel@redhat.com>
+        Wed, 20 Sep 2023 11:59:16 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77091B9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:59:10 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bdcade7fbso908503766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1695225549; x=1695830349; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rTOJJcBmIOT1+zi0OT/D2Ib8E/xBZc3n9UZuUTQAznk=;
+        b=Gl6FWXk6yzKOoc0d6MY67zjOaZFsQ/eWn4xMYvkewbV9nojS9o1XGFL8ALbRZbVdBh
+         oLY/DONYIwK+TerP4LruP8ZWUmVS9V7xFniM9CpUlGPp7PAQ8KJMCTdHGCI+sDx+eLFd
+         DFrPyrkwF6fyyd/k+pNtHu/fAQoD8ztisoC1fim2dxX53zIG6TobzbqtEo+7wlqLGsKY
+         KatU1jv9qrnI9oeVcUY+u6ftC8dwHJqzSIofU6G16gDz1yHesZwy28Nrnr2OwdWQ9bmT
+         umU5TgE3T/XYc4NntsUbsr0rYlqdmuMv3ZfYm+ImF455bz6XtBJSizl/bh+Wc0tglOWG
+         aQJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695225549; x=1695830349;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rTOJJcBmIOT1+zi0OT/D2Ib8E/xBZc3n9UZuUTQAznk=;
+        b=A7h0o26+Rok2wl7Vp8qkAZj+tRndkuGTS+Dac4HqaXUSp0ArAnhyxyPndS1W7t3cmU
+         qO3l2lQm9TFpH6iwHuzxH7ZSF36W/pH241jWiu+DNWbhiX+s3W3AO3k4N2GdviDQi+Tw
+         sRe48RbzMw2YppIQzDoykMAA0K9F0RgrEJAGt+D9QO1sEBd/0db9bJbmFOzJXPNeH45p
+         GNjdWcLbalzD33S4GCToExG84t1X7tUsb/BPJosXjym1qWclzehS/V+C6dOXxpzQU5bK
+         SBVXOXTmaWrrKoQD1kpDS4waVuDyRQSnKucVxBPYYgzoc20YWgyyfYG6wVkcN3ruowHL
+         OSHQ==
+X-Gm-Message-State: AOJu0YwFNjP8Nye3oSIRW3hiaDzJpZBQXURlw4jC6iw/59GoHWT0DjHC
+        M8rOlla8hY8N/b/sP/xlCjytww==
+X-Google-Smtp-Source: AGHT+IHW9j1u4BZK6Q94x+QFx47AjJOr1ij3Eo4Zz9gh+6BWeijfKQS2YiZAaLykAhzJF3l96vQ3Sg==
+X-Received: by 2002:a17:907:2cd9:b0:9ae:4d6d:ba5b with SMTP id hg25-20020a1709072cd900b009ae4d6dba5bmr1730696ejc.40.1695225548942;
+        Wed, 20 Sep 2023 08:59:08 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id v14-20020a17090606ce00b00993cc1242d4sm9573744ejb.151.2023.09.20.08.59.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 08:59:08 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 17:59:07 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Atish Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH v2 4/4] KVM: riscv: selftests: Selectively filter-out AIA
+ registers
+Message-ID: <20230920-e3fc5272a2818c67a17cd90c@orel>
+References: <20230920154608.1447057-1-apatel@ventanamicro.com>
+ <20230920154608.1447057-5-apatel@ventanamicro.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a842574fd0acc113ef925c48d2ad9e67aa0e101.camel@redhat.com>
+In-Reply-To: <20230920154608.1447057-5-apatel@ventanamicro.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,72 +78,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-23 15:35:41 [+0200], Paolo Abeni wrote:
-> On Mon, 2023-08-14 at 11:35 +0200, Sebastian Andrzej Siewior wrote:
-> > @@ -4781,7 +4733,7 @@ static int enqueue_to_backlog(struct sk_buff *skb, int cpu,
-> >  		 * We can use non atomic operation since we own the queue lock
-> >  		 */
-> >  		if (!__test_and_set_bit(NAPI_STATE_SCHED, &sd->backlog.state))
-> > -			napi_schedule_rps(sd);
-> > +			__napi_schedule_irqoff(&sd->backlog);
-> >  		goto enqueue;
-> >  	}
-> >  	reason = SKB_DROP_REASON_CPU_BACKLOG;
+On Wed, Sep 20, 2023 at 09:16:08PM +0530, Anup Patel wrote:
+> Currently the AIA ONE_REG registers are reported by get-reg-list
+> as new registers for various vcpu_reg_list configs whenever Ssaia
+> is available on the host because Ssaia extension can only be
+> disabled by Smstateen extension which is not always available.
 > 
-> I *think* that the above could be quite dangerous when cpu ==
-> smp_processor_id() - that is, with plain veth usage.
+> To tackle this, we should filter-out AIA ONE_REG registers only
+> when Ssaia can't be disabled for a VCPU.
 > 
-> Currently, each packet runs into the rx path just after
-> enqueue_to_backlog()/tx completes.
-> 
-> With this patch there will be a burst effect, where the backlog thread
-> will run after a few (several) packets will be enqueued, when the
-> process scheduler will decide - note that the current CPU is already
-> hosting a running process, the tx thread.
-> 
-> The above can cause packet drops (due to limited buffering) or very
-> high latency (due to long burst), even in non overload situation, quite
-> hard to debug.
-> 
-> I think the above needs to be an opt-in, but I guess that even RT
-> deployments doing some packet forwarding will not be happy with this
-> on.
+> Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
 
-I've been looking at this again and have been thinking what you said
-here. I think part of the problem is that we lack a policy/ mechanism
-when a DoS is happening and what to do.
+I guess you missed my reply to myself where I corrected my analysis and
+gave an r-b. Anyway, here it is again, and thanks for fixing up the nits.
 
-Before commit d15121be74856 ("Revert "softirq: Let ksoftirqd do its
-job"") when a lot of network packets are processed then processing is
-moved to ksoftirqd and continues based on how the scheduler schedules
-the SCHED_OTHER ksoftirqd task. This avoids lock-ups of the system and
-it can do something else in between. Any interrupt will not continue the
-outstanding softirq backlog but wait for ksoftirqd. So it basically
-avoids the networking overload. It throttles the throughput if needed.
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
-This isn't the case after that commit. Now, the CPU can be stuck with
-processing networking packets if the packets come in fast enough. Even
-if ksoftirqd is woken up, the next interrupt (say the timer) will
-continue with at least one round.
-By using NAPI-threads it is possible to give the control back to the
-scheduler which can throttle the NAPI processing in favour of other
-threads that ask for CPU. As you pointed out, waking the thread does not
-guarantee that it will immediately do the NAPI work. It can be delayed
-based on current load on the system.
-
-This could be influenced by assigning the NAPI-thread a SCHED_FIFO
-priority. Based on the priority it could be ensured that the thread
-starts right away or "later" if something else is more important.
-However, this opens the DoS window again: The scheduler will put the
-NAPI thread on CPU as long as it asks for it with no throttling.
-
-If we could somehow define a DoS condition once we are overwhelmed with
-packets, then we could act on it and throttle it. This in turn would
-allow a SCHED_FIFO priority without the fear of a lockup if the system
-is flooded with packets.
-
-> Cheers,
-> 
-> Paolo
-
-Sebastian
+Thanks,
+drew
