@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 513347A74C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184057A74C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbjITHsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
+        id S234078AbjITHsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233885AbjITHrw (ORCPT
+        with ESMTP id S233964AbjITHrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:47:52 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BA5CCC;
+        Wed, 20 Sep 2023 03:47:53 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFFFE4;
         Wed, 20 Sep 2023 00:47:21 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-530e721f077so4467283a12.2;
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50305abe5f0so6275407e87.2;
         Wed, 20 Sep 2023 00:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695196039; x=1695800839; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Khfw26nVwR5SSm/oHTsHGdekypaZLMTQP1+Wqxj59M=;
-        b=MZqmRFY9+1cc1zpVsxKovDpKbOIElez6M7HL12hk0HagnwPDHyjFMeLLu8OtCBDB2K
-         cedOtaoVE2EO36xqWTler5uQ21c5fdpBrWDGAmbyXU++7qEffA7jj2LIqKkWn9/UOCvQ
-         AUkcfkbG8hYUJ5o8xfTbHOSjFyCjmGTBubTnEvgCmhbWwcztDg9599CnXM6ZMffpeVAg
-         A/uUpW++cFi5JNKiFAJmXZQuG+qi0eJ+rwZHbeASJ2rVMboFT1WiMNSJe/BfYLyvmp74
-         xp7v+oRj2o31jlKD9rhOB20RIgb0/xF5myZnSvf3lcvYtj67U8HojMTLpBYw331o34kk
-         g/+w==
+        d=gmail.com; s=20230601; t=1695196040; x=1695800840; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EiROdoH/w6RO4T8v4L/D2wMa6DTfaV0sshbNKHl/Sqc=;
+        b=DrS2mQoO7JEXK91qMbYdeWSpq0tx6CD3rch0bpk4F00jwj36/7CzTT/EUbp0P0HPxd
+         OFFrUyZUA6Irj0HqAbkyEG+ZIyFmx+HpQPwu/MFl23qw05zooGIN+/uhY5o9zfvGEx+L
+         v7gTkdgDyWdow0rRvnAhl4Bf30F39pZoTQziKj4xKkfrfxFZWW0sM3xk0H+Ok7ySIKjC
+         VmbJjCr0N2Y2eVydPp9nrPcNAyIIHwFt3unIy7Dz0xq7UTAlvTcRfhMI9gcDYCeviouG
+         UO9IpKUNzYHBqCzH13kDY4wcIE+vKWpP1U2rSGta0/VwlWnTYaq2mDV8z8Wx80aJ6SHb
+         euIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695196039; x=1695800839;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9Khfw26nVwR5SSm/oHTsHGdekypaZLMTQP1+Wqxj59M=;
-        b=McaKRf5IjyoetQEnCD9jMSeSn/rZVNaLgAZV6Y5NMOWBskiSdiGFO2uSUGQW0ed4tp
-         A/T4CNnmV/TBr49zadN/VYeZG8PDjGgZbwTlPmSBe0DvkwOZnXmMgP7HwiMRf4f2QaM1
-         UuWT9PdlekuIZ/JAbDLWFlq72h9nWdnYvgfsCU0X9EukVRz5vc44iuovjtPpwQR0RaBf
-         jSX6qi7pLVGfOIDmHVoCY0iqW2mb0oQcBJ+bHaaHwuP5+Vi5g68Y/VJ9UN7tWViwBKYe
-         OM1leKm3QoZ5So0Cz7HfHqb0FTtTHsGD6E3YtsumwIPVlssHaVOR0xxOvX29UtdZeS8S
-         pLfA==
-X-Gm-Message-State: AOJu0YxbjUhGQRP+rLP/FsMf6tevlsthZxsUMqQCVl9iKMMNN7/+N9O8
-        VVVe0d+CKsxPR+CHzbxtHrpAo+Ql7iyr+giw
-X-Google-Smtp-Source: AGHT+IEPJxUtV2nUN0msBQ02+l+gW1F3kkVtyEcpM3CrOHECZQROH/bEt+wczTzlBKHfoeBEpzqwPA==
-X-Received: by 2002:aa7:c658:0:b0:51e:1643:5ad0 with SMTP id z24-20020aa7c658000000b0051e16435ad0mr1444419edr.8.1695196039173;
+        d=1e100.net; s=20230601; t=1695196040; x=1695800840;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EiROdoH/w6RO4T8v4L/D2wMa6DTfaV0sshbNKHl/Sqc=;
+        b=g7zApiXfnKD9uJlqUatf+9cf35j3iReNxrCir2vkiRywEkxePqHRksCxigvK77xt/H
+         VRfuZI0x3MrW4xrJDsRkDAcflKY6qrveoPjgOrwmUBKl0jTyDzEQIuOO27pMdxZchzkp
+         4gNlpym2ISMLD5nMeHGjstFwuqwVkLVaLzOtGlTun74lvSmacytUPg5mf74d6amYYK0z
+         bXeX9O+RiqsSh8zVrM4D9XHtHfBIu5MVvKatCgfW+WRC8d+VAkMaqe2GUwVsz8QXKD4O
+         71B6wzXyA70ditzYZKN1SXtymEzghS4vNto/8sJJCq6QFEkJ65SwcnYX7RxrN9g33G3Y
+         F/CA==
+X-Gm-Message-State: AOJu0YwHU5bhIEXCThN748vvebsYzThouT/OUSgZ7guz34yVqS2TOWNV
+        tOA/w+pNJBqskXjHkveLFmGfXCGqgKqggQXo
+X-Google-Smtp-Source: AGHT+IEh42GA3m8adzBJpTUtD8Z4DxwCwU2gQBF5a0RFIAgE0gQQya6HjUPx2E0eunpYTGcjxFk04A==
+X-Received: by 2002:a05:6512:3a8e:b0:4fe:1681:9377 with SMTP id q14-20020a0565123a8e00b004fe16819377mr1830125lfu.44.1695196039628;
         Wed, 20 Sep 2023 00:47:19 -0700 (PDT)
 Received: from emanuele-nb.toradex.int (31-10-206-125.static.upc.ch. [31.10.206.125])
-        by smtp.gmail.com with ESMTPSA id p13-20020a056402074d00b005224d960e66sm8438186edy.96.2023.09.20.00.47.18
+        by smtp.gmail.com with ESMTPSA id p13-20020a056402074d00b005224d960e66sm8438186edy.96.2023.09.20.00.47.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:47:18 -0700 (PDT)
+        Wed, 20 Sep 2023 00:47:19 -0700 (PDT)
 From:   Emanuele Ghidoli <ghidoliemanuele@gmail.com>
 To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc:     Emanuele Ghidoli <emanuele.ghidoli@toradex.com>,
         linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
         Joe Hung <joe_hung@ilitek.com>
-Subject: [PATCH v2 0/2] Input: ilitek_ts_i2c - Fix spurious input events
-Date:   Wed, 20 Sep 2023 09:46:48 +0200
-Message-Id: <20230920074650.922292-1-ghidoliemanuele@gmail.com>
+Subject: [PATCH v2 1/2] Input: ilitek_ts_i2c - avoid wrong input subsystem sync
+Date:   Wed, 20 Sep 2023 09:46:49 +0200
+Message-Id: <20230920074650.922292-2-ghidoliemanuele@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230920074650.922292-1-ghidoliemanuele@gmail.com>
+References: <20230920074650.922292-1-ghidoliemanuele@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,15 +75,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
 
-A couple of fixes to prevent spurious events when the data buffer is not the expected one.
+For different reasons i2c transaction may fail or
+report id message content may be wrong.
+Avoid sync the input subsystem if message cannot be parsed.
+An input subsystem sync without points is interpreted as
+"nothing is touching the screen" while normally this is not the case.
 
-Emanuele Ghidoli (2):
-  Input: ilitek_ts_i2c - avoid wrong input subsystem sync
-  Input: ilitek_ts_i2c - add report id message validation
+Fixes: 42370681bd46 ("Input: Add support for ILITEK Lego Series")
+Signed-off-by: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
+---
+ drivers/input/touchscreen/ilitek_ts_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/input/touchscreen/ilitek_ts_i2c.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/input/touchscreen/ilitek_ts_i2c.c b/drivers/input/touchscreen/ilitek_ts_i2c.c
+index 90c4934e750a..0c3491e346f4 100644
+--- a/drivers/input/touchscreen/ilitek_ts_i2c.c
++++ b/drivers/input/touchscreen/ilitek_ts_i2c.c
+@@ -203,9 +203,9 @@ static int ilitek_process_and_report_v6(struct ilitek_ts_data *ts)
+ 		ilitek_touch_down(ts, id, x, y);
+ 	}
+ 
+-err_sync_frame:
+ 	input_mt_sync_frame(input);
+ 	input_sync(input);
++err_sync_frame:
+ 	return error;
+ }
+ 
 -- 
 2.34.1
 
