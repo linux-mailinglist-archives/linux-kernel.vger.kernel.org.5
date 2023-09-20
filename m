@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 818DD7A86CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38ECA7A877D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236671AbjITOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        id S236782AbjITOqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 10:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236533AbjITOgH (ORCPT
+        with ESMTP id S236384AbjITOqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:36:07 -0400
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BCACF;
-        Wed, 20 Sep 2023 07:36:00 -0700 (PDT)
-Received: from localhost (unknown [10.10.165.8])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 76EFF40F1DD2;
-        Wed, 20 Sep 2023 14:35:57 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 76EFF40F1DD2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1695220557;
-        bh=059s3evXL96HfEwH+9seFh8IG+n66+ESgEoyP5gXLcw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VLtYzEpvpsk/iHTDMfR6Gw89KjSlToJvcFcA4XZyJxTfrRmw0tYDuDLi6OvlA680N
-         PBIKoJb2agrdHVgcQOMslA2VXQQf+N7h7HNuqZLILhQQfW1KkBllMi3zl8wFlRwqB4
-         6YjjJ2mL+EB+YV5QKDh7QtQSxHgD7ZQYa2tuzoYA=
-Date:   Wed, 20 Sep 2023 17:35:56 +0300
-From:   Fedor Pchelkin <pchelkin@ispras.ru>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Mike Snitzer <snitzer@kernel.org>,
-        Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org, stable@vger.kernel.org
-Subject: Re: [PATCH] dm-zoned: free dmz->ddev array in dmz_put_zoned_device
-Message-ID: <vdtvo2av3upya6mugjyiqo2hfnn6q4dpofoku6rvrtgmycgbrp@scpcnu3ta7ch>
-References: <20230920105119.21276-1-pchelkin@ispras.ru>
- <c7818967-1fea-45da-9713-20de4bcb1c44@suse.de>
+        Wed, 20 Sep 2023 10:46:07 -0400
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1362E1996;
+        Wed, 20 Sep 2023 07:38:55 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-68fb6fd2836so6351593b3a.0;
+        Wed, 20 Sep 2023 07:38:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695220693; x=1695825493;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wsiOE3sViWDOZyKIgjf60eL0/VIA+MntKbdNkIr6/zE=;
+        b=YBMUrBNZIEzJVDwkekCpedgTwFp7gRJEaLhPXeHbbfdsdRcx+idX7C6clA5KeZWIjC
+         IoiwXWT77GXkLOOwnS/btwYX7ZpO4SWsl6EEvCrAKilpi/DiMzG47bYAMxHmDjmt9oJP
+         hh2EN2MWYssqmFnCihwS5Ew+WbTdFwf7AwxWAOANnRnjsGOspNCMx6QFnZkhYdKpz4k9
+         9ZsyzowsAHGdJLpREzfk4XBNdZSh83XK2kyW3ESpOhGN62GbJ4ftXBvlIjUezgRUAa41
+         yL57A116jKxGUj9kjb/A8oqumtOAvX+pmPq2JWZtaiQu8fdV57bEe3ECU5+tn60Gb7cK
+         BL2w==
+X-Gm-Message-State: AOJu0YxIjUjo5//fy9+05z0NkzFZIKNmsH3F023wi5IMn1rYqo5t6WRF
+        BxySFLi+btEWW/5F6t6UY0tTkk+0Dy0=
+X-Google-Smtp-Source: AGHT+IGjEtftlqB0LLmXFgjmJ3akbl0aPACEmLvM5aMb3hhiy69dDS5Db9HczLRrW8o3/3S2Y48SjQ==
+X-Received: by 2002:a05:6a20:1386:b0:157:b7d3:2bcb with SMTP id hn6-20020a056a20138600b00157b7d32bcbmr2265909pzc.27.1695220693045;
+        Wed, 20 Sep 2023 07:38:13 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:b0c6:e5b6:49ef:e0bd? ([2620:15c:211:201:b0c6:e5b6:49ef:e0bd])
+        by smtp.gmail.com with ESMTPSA id je20-20020a170903265400b001bf044dc1a6sm11587565plb.39.2023.09.20.07.38.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 07:38:12 -0700 (PDT)
+Message-ID: <a9b436bb-ccc2-4089-aaea-0e3f3f61fcc2@acm.org>
+Date:   Wed, 20 Sep 2023 07:38:09 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c7818967-1fea-45da-9713-20de4bcb1c44@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scsi: ufs: core: Do not access null point in
+ ufshpb_remove
+Content-Language: en-US
+To:     Zhang Hui <masonzhang.xiaomi@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stanley.chu@mediatek.com, peng.zhou@mediatek.com,
+        yujiaochen@xiaomi.com, yudongbin@xiaomi.com, zhanghui31@xiaomi.com
+References: <20230920091226.55663-1-zhanghui31@xiaomi.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230920091226.55663-1-zhanghui31@xiaomi.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/20 04:06PM, Hannes Reinecke wrote:
-> On 9/20/23 12:51, Fedor Pchelkin wrote:
-> > Commit 4dba12881f88 ("dm zoned: support arbitrary number of devices")
-> > made the pointers to additional zoned devices to be stored in a
-> > dynamically allocated dmz->ddev array. However, this array is not freed.
-> > 
-> > Free it when cleaning up zoned device information inside
-> > dmz_put_zoned_device(). Assigning NULL to dmz->ddev elements doesn't make
-> > sense there as they are not supposed to be reused later and the whole dmz
-> > target structure is being cleaned anyway.
-> > 
-> > Found by Linux Verification Center (linuxtesting.org).
-> > 
-> > Fixes: 4dba12881f88 ("dm zoned: support arbitrary number of devices")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> > ---
-> >   drivers/md/dm-zoned-target.c | 8 +++-----
-> >   1 file changed, 3 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/md/dm-zoned-target.c b/drivers/md/dm-zoned-target.c
-> > index ad8e670a2f9b..e25cd9db6275 100644
-> > --- a/drivers/md/dm-zoned-target.c
-> > +++ b/drivers/md/dm-zoned-target.c
-> > @@ -753,12 +753,10 @@ static void dmz_put_zoned_device(struct dm_target *ti)
-> >   	struct dmz_target *dmz = ti->private;
-> >   	int i;
-> > -	for (i = 0; i < dmz->nr_ddevs; i++) {
-> > -		if (dmz->ddev[i]) {
-> > +	for (i = 0; i < dmz->nr_ddevs; i++)
-> > +		if (dmz->ddev[i])
-> >   			dm_put_device(ti, dmz->ddev[i]);
-> > -			dmz->ddev[i] = NULL;
-> > -		}
-> > -	}
-> > +	kfree(dmz->ddev);
-> >   }
-> >   static int dmz_fixup_devices(struct dm_target *ti)
-> 
-> Hmm. I'm not that happy with it; dmz_put_zoned_device() is using dm_target
-> as an argument, whereas all of the functions surrounding the call sites is
-> using the dmz_target directly.
-> 
-> Mind to modify the function to use 'struct dmz_target' as an argument?
+On 9/20/23 02:12, Zhang Hui wrote:
+> If hpb is not enabled or not allowed, some points will not be
+> allocated in init flow, so access them will trigger KE in ufshpb
+> remove flow.
 
-dm_target is required inside dmz_put_zoned_device() for dm_put_device()
-calls. I can't see a way for referencing it via dmz_target. Do you mean
-passing additional second argument like
-  dmz_put_zoned_device(struct dmz_target *dmz, struct dm_target *ti) ?
+Since the HPB code has been removed from the kernel, I don't think that
+this patch applies. Please always start from the latest kernel version
+when preparing patches.
 
-BTW, I also think it can be renamed to dmz_put_zoned_devices().
+Thanks,
 
-> 
-> Cheers,
-> 
-> Hannes
-> -- 
-> Dr. Hannes Reinecke                Kernel Storage Architect
-> hare@suse.de                              +49 911 74053 688
-> SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-> HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-> Myers, Andrew McDonald, Martje Boudien Moerman
-> 
+Bart.
+
