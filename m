@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E83A7A73F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8937A7400
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbjITHYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
+        id S233716AbjITH0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233739AbjITHYi (ORCPT
+        with ESMTP id S233602AbjITH0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:24:38 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9680F1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:24:24 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9ad8d47ef2fso821227666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695194663; x=1695799463; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Gh6bN/XfsrzCsTKkHAHoaKxBwUi0FWCvO6Qlvt6FoGE=;
-        b=FQ9t6WvxuVlk/47MWJ2FS+avZ3nndh95dLIb2rQCOsIdD0QUtf7Jl3uArODoSC1wCR
-         VVXemckB7nu2KHJblXddSclH1SG0CL4Y3c4zOT6xYelrBgpISeocLhR2Y8W8qmYtl4n2
-         1ztXuHxue9IvwXsQA5W2JoEsqWxYRHETkPpNmERwI8kMKuTXJB7OlGhSGB5Uk9k+n25O
-         vh/DVj/V8UvGv772kiuSuQzSLnMdYutWBuLJiM8ObpMfiJME6H5KqL3syG+NkNxkuO1v
-         EXNz8QGVK//8NLThj1C0UxuzZU6AYsbxT25c1lVljSiDlPjTYTjigCfSh/SzhKfBzhc/
-         Uhjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695194663; x=1695799463;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gh6bN/XfsrzCsTKkHAHoaKxBwUi0FWCvO6Qlvt6FoGE=;
-        b=k+KNTixYGNW2qIl4soeZnRkIIokU4s0SnClCk7BdtQ3KHpbuhJ66WFwfML8BRFajKR
-         /kKhXTahBXTa4qQlXier2IoFBPFjI4yJIsSNO/I6PD0fack2q7wurZ7tn9kH0Gq1kMM8
-         sDjNGGbI9VNQgf/R1uuWiB8EFiGFMrZ2azXy/gtJZylIrhlg8yGpYueZ7sPbKpItIH11
-         GaBdIhKLrTZURwSa6nP8s2JU+hw25V5R9BqMSuUZL4mcmY3i78XJdaMPba6AkbMhHoNi
-         jCl9noflRsv3umvDoVXpWDTBMDxT8kHwmKiAVryDwwoaNCSCyp55jQGk+CutSl1deQex
-         KTOg==
-X-Gm-Message-State: AOJu0Yw3rZNmA4HbNSrvL9H7uJryUyxVgIZdCs3H2KDq9djqyGzqZILo
-        5V/kSrLpl+6vfc+NJkp7vzg/gw==
-X-Google-Smtp-Source: AGHT+IGI6kJ9MIS9s0oujXu1c46uNGlXl85H+BimXj90vilN9IFdT+328TLODqgYWzrAcqqC1a0w1A==
-X-Received: by 2002:a17:906:1053:b0:9ae:4d6d:ba4f with SMTP id j19-20020a170906105300b009ae4d6dba4fmr514445ejj.42.1695194662816;
-        Wed, 20 Sep 2023 00:24:22 -0700 (PDT)
-Received: from [172.20.63.174] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.googlemail.com with ESMTPSA id jx10-20020a170906ca4a00b009ae3e6c342asm1256419ejb.111.2023.09.20.00.24.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 00:24:22 -0700 (PDT)
-Message-ID: <9575d7d8-83dc-5814-ced0-46d49eeded84@linaro.org>
-Date:   Wed, 20 Sep 2023 09:24:21 +0200
+        Wed, 20 Sep 2023 03:26:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12229CA;
+        Wed, 20 Sep 2023 00:26:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B7C2C433C7;
+        Wed, 20 Sep 2023 07:26:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695194761;
+        bh=X9yOJUrjbWjEiTh3oxcVWNpA9x66namZO18j2DCtN20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H+kD+g2qcMwNqpfEO7M07AvF7mj0L2bWq9J+lhxLXC5Zv1dIeob7kY1rrVuRwy2wn
+         akDNc2Q9cWeWeMjfXM2O72qeESctR/xVOIH9600vNp05V0VFuT01QEtxIe7envji46
+         Kug1Ox3t1DdD8ceidkDfa4WPtmuXz/G7qafrk9KhIoTDo/pQ51gpdXIMupjA4bRPk0
+         RbClZGqhXy4LyHl20I5dugCOoGsgH/YclPT5NHpxUQmhUN7ls21L9qwrzYjxJlqyDT
+         zDn3aaeJNv5rti4DuNoC/ED3BhxOTptixs4LOs9xMlszJrOSbinRxnAQlR2o33qmuR
+         4Ed7283WVi2KQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qirbE-0002wI-2Q;
+        Wed, 20 Sep 2023 09:26:17 +0200
+Date:   Wed, 20 Sep 2023 09:26:16 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        LinusW <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH] HID: i2c-hid: fix handling of unpopulated devices
+Message-ID: <ZQqemN8P2VKgxhsV@hovoldconsulting.com>
+References: <20230918125851.310-1-johan+linaro@kernel.org>
+ <CAD=FV=Wfwvp-SbGrdO5VJcjG42njkApJPB7wnY-YYa1_-O0JWQ@mail.gmail.com>
+ <ZQlIveJVdvyV2Ygy@hovoldconsulting.com>
+ <CAD=FV=XBG7auVVyHn5uvahSZZxp5qBfp4+A9NwFqahdN6XrbZA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v8 3/6] nvmem: core: Add stub for nvmem_cell_read_u8
-Content-Language: en-US
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>
-Cc:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        bryan.odonoghue@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230830105654.28057-1-quic_kbajaj@quicinc.com>
- <20230830105654.28057-4-quic_kbajaj@quicinc.com>
- <pvif5decuie62pid3zjpsb2tp5hzndxvww7v3jdhl6jkymbpcn@bjhud2hevjm6>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <pvif5decuie62pid3zjpsb2tp5hzndxvww7v3jdhl6jkymbpcn@bjhud2hevjm6>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=XBG7auVVyHn5uvahSZZxp5qBfp4+A9NwFqahdN6XrbZA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 19, 2023 at 11:15:46AM -0700, Doug Anderson wrote:
+> On Tue, Sep 19, 2023 at 12:07 AM Johan Hovold <johan@kernel.org> wrote:
 
-
-On 13/09/2023 21:27, Bjorn Andersson wrote:
-> On Wed, Aug 30, 2023 at 04:26:51PM +0530, Komal Bajaj wrote:
->> Add the stub nvmem_cell_read_u8() function for drivers running with
->> CONFIG_NVMEM disabled.
->>
->> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> > But regardless of what a long-term proper solution to this may look
+> > like, we need to fix the regression in 6.6-rc1 by restoring the old
+> > behaviour.
 > 
-> Srini, do you have any concerns with me taking this together with the
-> remaining patches through my tree?
-
-It works for me.
-
-Acked-by: Srinivas Kandagatla <srinivas.kadnagatla@linaro.org>
-
-
---srin
+> OK, fair enough. I'll take a look at your patch, though I think the
+> person that really needs to approve it is Benjamin...
 > 
-> Regards,
-> Bjorn
-> 
->> ---
->>   include/linux/nvmem-consumer.h | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
->> index 4523e4e83319..6ec4b9743e25 100644
->> --- a/include/linux/nvmem-consumer.h
->> +++ b/include/linux/nvmem-consumer.h
->> @@ -127,6 +127,12 @@ static inline int nvmem_cell_write(struct nvmem_cell *cell,
->>   	return -EOPNOTSUPP;
->>   }
->>
->> +static inline int nvmem_cell_read_u8(struct device *dev,
->> +				     const char *cell_id, u8 *val)
->> +{
->> +	return -EOPNOTSUPP;
->> +}
->> +
->>   static inline int nvmem_cell_read_u16(struct device *dev,
->>   				      const char *cell_id, u16 *val)
->>   {
->> --
->> 2.41.0
->>
+> Style-wise, I will say that Benjamin really wanted to keep the "panel
+> follower" code out of the main probe routine. Some of my initial
+> patches adding "panel follower" looked more like the results after
+> your patch but Benjamin really wasn't happy until there were no
+> special cases for panel-followers in the main probe routine. This is
+> why the code is structured as it is.
+
+Ok, I prefer not hiding away things like that as it obscures what's
+really going on, for example, in this case, that you register a device
+without really having probed it.
+
+As I alluded to in the commit message, you probably want to be able to
+support second-source touchscreen panel followers as well at some point
+and then deferring checking whether device is populated until the panel
+is powered on is not going to work.
+
+I skimmed the thread were you added this, but I'm not sure I saw any
+reason for why powering on the panel follower temporarily during probe
+would not work?
+
+> Thinking that way, is there any reason you can't just move the
+> i2c_hid_init_irq() into __do_i2c_hid_core_initial_power_up()? You
+> could replace the call to enable_irq() with it and then remove the
+> `IRQF_NO_AUTOEN` flag? I think that would also solve the issue if you
+> wanted to use a 2nd source + the panel follower concept? Both devices
+> would probe, but only one of them would actually grab the interrupt
+> and only one of them would actually create real HID devices. We might
+> need to do some work to keep from trying again at every poweron of the
+> panel, but it would probably be workable? I think this would also be a
+> smaller change...
+
+That was my first idea as well, but conceptually it is more correct to
+request resources at probe time and not at some later point when you can
+no longer fail probe.
+
+You'd also need to handle the fact that the interrupt may never have
+been requested when remove() is called, which adds unnecessary
+complexity.
+
+Johan
