@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B62D07A8F1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 00:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545997A8F21
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 00:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbjITWIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 18:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
+        id S229574AbjITWJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 18:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjITWIf (ORCPT
+        with ESMTP id S229436AbjITWJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 18:08:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CF4DC
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 15:07:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695247660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=UXqNIXLUOMNbgJ9+MM8oKISLDgnvMvvIEY5bwnukpQw=;
-        b=GlFXUWNk1wUOurv8dB5WRGmqRIHa2B/f9mdef2z5DHg5rdHD84IbRAsaAVEPTfiap8X1m/
-        rz26DKxeeHffpl3hfyq5c1J3IHl/orkpz2PqTB/BpBv8lNQGZCfsz5PaalpA2wGKUwTei4
-        hrEMTYr1hkMYo8y+kKUZfaL9V69fRuQ=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-614-Ba_GZhf4OZ2UIPs4szE2cg-1; Wed, 20 Sep 2023 18:07:38 -0400
-X-MC-Unique: Ba_GZhf4OZ2UIPs4szE2cg-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-770ef96aa0bso26678285a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 15:07:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695247658; x=1695852458;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UXqNIXLUOMNbgJ9+MM8oKISLDgnvMvvIEY5bwnukpQw=;
-        b=xK4T3OazsixtgGdyLWYITq6CVM0bBQRmWNZqgWJHEWTH/BbPhoEzn0yLuJFy34rR+7
-         v0J/lPjyDzHw1C6B23ShkwY3Qp3ppB71pd2axVqeDYFqxV+dCsTu+oIfFr0i1TCeeMdz
-         ARifvOp0B9KW5t41jRP/5Kcp3KPmQXrwchxaalxtud+gylzYD8wNf2Hu8ITVxNbJA9zm
-         PBHa+QJZvAQJaxiF/sPUfPm4sfx+5sv07ueUp7T+S/sV/DVRuA4yDn3DtbQrBXlfKcHT
-         /Lt/FdxJUgLqpbqZSDQR3MutIb65hQymusCfkkfaLpi5djVYJXOGJZatCIUFGtKuzdS5
-         KShQ==
-X-Gm-Message-State: AOJu0YxUSsOXUTnS5ckHC/NDQfgL6JiVXasenkKTOD4NRG6QHd65gPBe
-        7N9SGd5sSapmugk2dIGkQgzAt1aVeBR6wz67UmZeAHLRz+o2jDm9mhtq6sQP2++MzpjBYRzGh3j
-        sIHUt7GFWnuz110jkYHw8WDM7Gs6hVgpZ
-X-Received: by 2002:a05:620a:2a07:b0:76d:988b:a5dd with SMTP id o7-20020a05620a2a0700b0076d988ba5ddmr4851068qkp.46.1695247657858;
-        Wed, 20 Sep 2023 15:07:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFLabWkNxjgq/nmDel+vJZUaCBnv0ccalvvYq3Px3EIkrnsQoL3TvFmYb8wKGSAM3zGqa1ltA==
-X-Received: by 2002:a05:620a:2a07:b0:76d:988b:a5dd with SMTP id o7-20020a05620a2a0700b0076d988ba5ddmr4851046qkp.46.1695247657434;
-        Wed, 20 Sep 2023 15:07:37 -0700 (PDT)
-Received: from thinkpad2021 ([64.99.149.73])
-        by smtp.gmail.com with ESMTPSA id g7-20020ac85807000000b00400a99b8b38sm51429qtg.78.2023.09.20.15.07.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 15:07:37 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 18:07:35 -0400
-From:   "John B. Wyatt IV" <jwyatt@redhat.com>
-To:     linux-rt-users@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-rts-sst <kernel-rts-sst@redhat.com>, jlelli@redhat.com
-Subject: Crash with 6.6.0-rc1-rt1 and several i915 locking call traces with
- v6.5.2-rt8 and gnome-shell on Alder Lake laptop
-Message-ID: <ZQttJ8W9UFP46E1b@thinkpad2021>
+        Wed, 20 Sep 2023 18:09:29 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CABC2;
+        Wed, 20 Sep 2023 15:09:23 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KM7U5l023017;
+        Wed, 20 Sep 2023 22:09:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=HWAu+tvI0sWmZpCWN6VQ1BriQW7isGEcPzeDMCDjPkI=;
+ b=A4bwi7rP+/BqtNW2NfPAxv/GG4eUkNdSoQT+bIxuq40WQLf4wGzmRT6c8p54Qn8B9N9T
+ 6zudPkKW3gmynjF6eYiW15uMJs8/V8lmvVVRGPH5LTCwsKrIh/WnXgx69St9LwCcznmI
+ JBzRBbFZ9yHpMkQgOoY810kz9dg409I7I0NxsWdBvuqJZJIiCzBYvyaAr6vpt6Z0Mddf
+ 3a2ldnABsCjzBwNjMHgneGqrutbfSaTUQnIyCr9obwdAqke+FzKrb0a/TPKbCOHYCZB9
+ SsasOzwyg5lbRf2EbTwy3IhNuWzAsykDtrttXzzfgy27BUu3OLjd9f6JGXdSJo7dxkAq 4Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t816ppfcv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 22:09:16 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38KM8ncQ030751;
+        Wed, 20 Sep 2023 22:09:15 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t816ppfby-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 22:09:15 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38KKkLFD011671;
+        Wed, 20 Sep 2023 22:09:14 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t5qpnsvcj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 22:09:14 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38KM9E5F66978178
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Sep 2023 22:09:14 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 33C705805A;
+        Wed, 20 Sep 2023 22:09:14 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 358ED5803F;
+        Wed, 20 Sep 2023 22:09:13 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed, 20 Sep 2023 22:09:13 +0000 (GMT)
+Message-ID: <b16550ac-f589-c5d7-e139-d585e8771cfd@linux.ibm.com>
+Date:   Wed, 20 Sep 2023 18:09:12 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [syzbot] [integrity] [overlayfs] general protection fault in
+ d_path
+Content-Language: en-US
+To:     Jeff Layton <jlayton@kernel.org>,
+        syzbot <syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com>,
+        amir73il@gmail.com, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com,
+        zohar@linux.ibm.com, casey@schaufler-ca.com
+References: <000000000000259bd8060596e33f@google.com>
+ <bed99e92-cb7c-868d-94f3-ddf53e2b262a@linux.ibm.com>
+ <8a65f5eb-2b59-9903-c6b8-84971f8765ae@linux.ibm.com>
+ <ab7df5e93b5493de5fa379ccab48859fe953d7ae.camel@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <ab7df5e93b5493de5fa379ccab48859fe953d7ae.camel@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sd2dT-XsnDf7KpSqwiBV7O5Kt6THrl60
+X-Proofpoint-ORIG-GUID: iFkMUeRkb6KlGv1bDSNt3I8Oaz3oEUC5
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_11,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
+ phishscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
+ mlxlogscore=626 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309200185
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,285 +103,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone,
 
-While backporting i915 fixes to the RHEL9 kernel for a similar looking
-issue; I noticed the commits that worked for RHEL8 did not work for RHEL9.
+On 9/20/23 17:16, Jeff Layton wrote:
+> On Wed, 2023-09-20 at 16:37 -0400, Stefan Berger wrote:
+>> On 9/20/23 13:01, Stefan Berger wrote:
+>>> On 9/17/23 20:04, syzbot wrote:
+>>>> syzbot has bisected this issue to:
+>>>>
+>>>> commit db1d1e8b9867aae5c3e61ad7859abfcc4a6fd6c7
+>>>> Author: Jeff Layton <jlayton@kernel.org>
+>>>> Date:   Mon Apr 17 16:55:51 2023 +0000
+>>>>
+>>>>       IMA: use vfs_getattr_nosec to get the i_version
+>>>>
+>>>> bisection log:
+>>>> https://syzkaller.appspot.com/x/bisect.txt?x=106f7e54680000
+>>>> start commit:   a747acc0b752 Merge tag 'linux-kselftest-next-6.6-rc2'
+>>>> of g..
+>>>> git tree:       upstream
+>>>> final oops: https://syzkaller.appspot.com/x/report.txt?x=126f7e54680000
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=146f7e54680000
+>>>> kernel config:
+>>>> https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
+>>>> dashboard link:
+>>>> https://syzkaller.appspot.com/bug?extid=a67fc5321ffb4b311c98
+>>>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=1671b694680000
+>>>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=14ec94d8680000
+>>>>
+>>>> Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
+>>>> Fixes: db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
+>>>>
+>>>> For information about bisection process see:
+>>>> https://goo.gl/tpsmEJ#bisection
+>>> The final oops shows this here:
+>>>
+>>> BUG: kernel NULL pointer dereference, address: 0000000000000058
+>>> #PF: supervisor read access in kernel mode
+>>> #PF: error_code(0x0000) - not-present page
+>>> PGD 0 P4D 0
+>>> Oops: 0000 [#1] PREEMPT SMP
+>>> CPU: 0 PID: 3192 Comm: syz-executor.0 Not tainted 6.4.0-rc2-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine,
+>>> BIOS Google 08/04/2023
+>>> RIP: 0010:__lock_acquire+0x35/0x490 kernel/locking/lockdep.c:4946
+>>> Code: 83 ec 18 65 4c 8b 35 aa 60 f4 7e 83 3d b7 11 e4 02 00 0f 84 05
+>>> 02 00 00 4c 89 cb 89 cd 41 89 d5 49 89 ff 83 fe 01 77 0c 89 f0 <49> 8b
+>>> 44 c7 08 48 85 c0 75 1b 4c 89 ff 31 d2 45 89 c4 e8 74 f6 ff
+>>> RSP: 0018:ffffc90002edb840 EFLAGS: 00010097
+>>> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000002
+>>> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000050
+>>> RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
+>>> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+>>> R13: 0000000000000000 R14: ffff888102ea5340 R15: 0000000000000050
+>>> FS:  0000000000000000(0000) GS:ffff88813bc00000(0000)
+>>> knlGS:0000000000000000
+>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> CR2: 0000000000000058 CR3: 0000000003aa8000 CR4: 00000000003506f0
+>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>> Call Trace:
+>>>   <TASK>
+>>>   lock_acquire+0xd8/0x1f0 kernel/locking/lockdep.c:5691
+>>>   seqcount_lockdep_reader_access include/linux/seqlock.h:102 [inline]
+>>>   get_fs_root_rcu fs/d_path.c:243 [inline]
+>>>   d_path+0xd1/0x1f0 fs/d_path.c:285
+>>>   audit_log_d_path+0x65/0x130 kernel/audit.c:2139
+>>>   dump_common_audit_data security/lsm_audit.c:224 [inline]
+>>>   common_lsm_audit+0x3b3/0x840 security/lsm_audit.c:458
+>>>   smack_log+0xad/0x130 security/smack/smack_access.c:383
+>>>   smk_tskacc+0xb1/0xd0 security/smack/smack_access.c:253
+>>>   smack_inode_getattr+0x8a/0xb0 security/smack/smack_lsm.c:1187
+>>>   security_inode_getattr+0x32/0x50 security/security.c:2114
+>>>   vfs_getattr+0x1b/0x40 fs/stat.c:167
+>>>   ovl_getattr+0xa6/0x3e0 fs/overlayfs/inode.c:173
+>>>   ima_check_last_writer security/integrity/ima/ima_main.c:171 [inline]
+>>>   ima_file_free+0xbd/0x130 security/integrity/ima/ima_main.c:203
+>>>   __fput+0xc7/0x220 fs/file_table.c:315
+>>>   task_work_run+0x7d/0xa0 kernel/task_work.c:179
+>>>   exit_task_work include/linux/task_work.h:38 [inline]
+>>>   do_exit+0x2c7/0xa80 kernel/exit.c:871 <-----------------------
+>>>   do_group_exit+0x85/0xa0 kernel/exit.c:1021
+>>>   get_signal+0x73c/0x7f0 kernel/signal.c:2874
+>>>   arch_do_signal_or_restart+0x89/0x290 arch/x86/kernel/signal.c:306
+>>>   exit_to_user_mode_loop+0x61/0xb0 kernel/entry/common.c:168
+>>>   exit_to_user_mode_prepare+0x64/0xb0 kernel/entry/common.c:204
+>>>   __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+>>>   syscall_exit_to_user_mode+0x2b/0x1d0 kernel/entry/common.c:297
+>>>   do_syscall_64+0x4d/0x90 arch/x86/entry/common.c:86
+>>>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>>>
+>>>
+>>> do_exit has called exit_fs(tsk) [
+>>> https://elixir.bootlin.com/linux/v6.4-rc2/source/kernel/exit.c#L867 ]
+>>>
+>>> exit_fs(tsk) has set tsk->fs = NULL [
+>>> https://elixir.bootlin.com/linux/v6.4-rc2/source/fs/fs_struct.c#L103 ]
+>>>
+>>> I think this then bites in d_path() where it calls:
+>>>
+>>>      get_fs_root_rcu(current->fs, &root);   [
+>>> https://elixir.bootlin.com/linux/v6.4-rc2/source/fs/d_path.c#L285 ]
+>>>
+>>> current->fs is likely NULL here.
+>>>
+>>> If this was correct it would have nothing to do with the actual patch,
+>>> though, but rather with the fact that smack logs on process
+>>> termination. I am not sure what the solution would be other than
+>>> testing for current->fs == NULL in d_path before using it and
+>>> returning an error that is not normally returned or trying to
+>>> intercept this case in smack.
+>> I have now been able to recreate the syzbot issue with the test program
+>> and the issue is exactly the one described here, current->fs == NULL.
+>>
+> Earlier in this thread, Amir had a diagnosis that IMA is inappropriately
+> trying to use f_path directly instead of using the helpers that are
+> friendly for stacking filesystems.
+>
+> https://lore.kernel.org/linux-fsdevel/CAOQ4uxgjnYyeQL-LbS5kQ7+C0d6sjzKqMDWAtZW8cAkPaed6=Q@mail.gmail.com/
+>
+> I'm not an IMA hacker so I'm not planning to roll a fix here. Perhaps
+> someone on the IMA team could try this approach?
 
-Testing the (almost) latest release: 6.5.2-rt8; showed a lot of call traces
-on RHEL9. [1] being the most common one and it repeats itself on suspend.
 
-[2] was the second one to show and seems to be the second most common
-call trace. This was tested on a Framework Alder Lake laptop with i915
-graphics. There was a total of 36 call traces before suspend and
-additional 12 after suspend (once again, [1]).
+I have applied this patch here from Amir now and it does NOT resolve the 
+issue:
 
-When I tested on 6.6.0-rc1-rt1 the kernel crashed on boot. I did not
-have a way to pull the information and was transcribed manually. [3]
+https://lore.kernel.org/linux-integrity/296dae962a2a488bde682d3def074db91686e1c3.camel@linux.ibm.com/T/#m4ebdb780bf6952e7f210c55e87950d0cfa1d5eb0
 
-[1]
+     Stefan
 
-BUG: sleeping function called from invalid context at drivers/gpu/drm/i915/gt/uc/intel_guc.h:330
-in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 6590, name: gnome-shell
-preempt_count: 0, expected: 0
-RCU nest depth: 6, expected: 0
-12 locks held by gnome-shell/6590:
-#0: ffffc900083dfb70 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_mode_atomic_ioctl (drivers/gpu/drm/drm_atomic_uapi.c:1347) drm
-#1: ffff88812d8e6880 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock (drivers/gpu/drm/drm_modeset_lock.c:309) drm
-#2: ffff88884e42f9e0 ((softirq_ctrl.lock)){+.+.}-{2:2}, at: __local_bh_disable_ip (./include/linux/rcupdate.h:747 kernel/softirq.c:155) 
-#3: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/rtmutex.c:1862 kernel/locking/spinlock_rt.c:43 kernel/locking/spinlock_rt.c:49 kernel/locking/spinlock_rt.c:57) 
-#4: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: __local_bh_disable_ip (kernel/softirq.c:153) 
-#5: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: fence_set_priority (drivers/gpu/drm/i915/gem/i915_gem_wait.c:102 drivers/gpu/drm/i915/gem/i915_gem_wait.c:92) i915
-#6: ffffffffc0e91060 (schedule_lock){+.+.}-{2:2}, at: i915_schedule (drivers/gpu/drm/i915/i915_scheduler.c:292) i915
-#7: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/rtmutex.c:1862 kernel/locking/spinlock_rt.c:43 kernel/locking/spinlock_rt.c:49 kernel/locking/spinlock_rt.c:57) 
-#8: ffff88818110d468 (&sched_engine->lock/2){+.+.}-{2:2}, at: __i915_schedule (drivers/gpu/drm/i915/i915_scheduler.c:144 drivers/gpu/drm/i915/i915_scheduler.c:238) i915
-#9: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/rtmutex.c:1862 kernel/locking/spinlock_rt.c:43 kernel/locking/spinlock_rt.c:49 kernel/locking/spinlock_rt.c:57) 
-#10: ffff8881419be9b0 (&ce->guc_state.lock){+.+.}-{2:2}, at: guc_bump_inflight_request_prio (drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:4050) i915
-#11: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/rtmutex.c:1862 kernel/locking/spinlock_rt.c:43 kernel/locking/spinlock_rt.c:49 kernel/locking/spinlock_rt.c:57) 
-Hardware name: Framework Laptop (12th Gen Intel Core)/FRANGACP04, BIOS 03.04 07/15/2022
-Call Trace:
- <TASK>
-dump_stack_lvl (lib/dump_stack.c:107) 
-__might_resched (kernel/sched/core.c:10320) 
-guc_context_set_prio (./drivers/gpu/drm/i915/gt/uc/intel_guc.h:330 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:625 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:2478 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3333 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3360) i915
-? __pfx_guc_context_set_prio (drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3348) i915
-? mark_held_locks (kernel/locking/lockdep.c:4273) 
-guc_bump_inflight_request_prio (drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3414 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:4055) i915
-__i915_schedule (drivers/gpu/drm/i915/i915_scheduler.c:258) i915
-? __pfx___i915_schedule (drivers/gpu/drm/i915/i915_scheduler.c:157) i915
-? __pfx___lock_release (kernel/locking/lockdep.c:5405) 
-i915_schedule (./include/linux/spinlock_rt.h:117 drivers/gpu/drm/i915/i915_scheduler.c:293) i915
-fence_set_priority (drivers/gpu/drm/i915/gem/i915_gem_wait.c:106 drivers/gpu/drm/i915/gem/i915_gem_wait.c:92) i915
-i915_gem_fence_wait_priority.part.0 (drivers/gpu/drm/i915/gem/i915_gem_wait.c:145) i915
-i915_gem_object_wait_priority (drivers/gpu/drm/i915/gem/i915_gem_wait.c:157) i915
-? __pfx_i915_gem_object_wait_priority (drivers/gpu/drm/i915/gem/i915_gem_wait.c:151) i915
-? __pfx_mark_lock.part.0 (kernel/locking/lockdep.c:4636) 
-intel_prepare_plane_fb (drivers/gpu/drm/i915/display/intel_atomic_plane.c:1078) i915
-? __pfx_intel_prepare_plane_fb (drivers/gpu/drm/i915/display/intel_atomic_plane.c:1017) i915
-? __module_address.part.0 (kernel/module/main.c:3287) 
-? is_module_address (./arch/x86/include/asm/bitops.h:207 ./arch/x86/include/asm/bitops.h:239 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 ./include/linux/thread_info.h:118 ./arch/x86/include/asm/preempt.h:132 kernel/module/main.c:3258) 
-drm_atomic_helper_prepare_planes.part.0 (drivers/gpu/drm/drm_atomic_helper.c:2589) drm_kms_helper
-? __init_waitqueue_head (./include/linux/list.h:37 kernel/sched/wait.c:12) 
-intel_atomic_commit (drivers/gpu/drm/i915/display/intel_display.c:6414 drivers/gpu/drm/i915/display/intel_display.c:7249) i915
-drm_mode_atomic_ioctl (drivers/gpu/drm/drm_atomic_uapi.c:1438) drm
-? __pfx_drm_mode_atomic_ioctl (drivers/gpu/drm/drm_atomic_uapi.c:1291) drm
-? __pfx_do_raw_spin_trylock (kernel/locking/spinlock_debug.c:121) 
-? _raw_spin_unlock_irqrestore (./include/linux/spinlock_api_smp.h:151 kernel/locking/spinlock.c:194) 
-? rt_spin_unlock (./include/linux/rcupdate.h:781 kernel/locking/spinlock_rt.c:82) 
-drm_ioctl_kernel (drivers/gpu/drm/drm_ioctl.c:788) drm
-? __pfx_drm_mode_atomic_ioctl (drivers/gpu/drm/drm_atomic_uapi.c:1291) drm
-? __pfx_drm_ioctl_kernel (drivers/gpu/drm/drm_ioctl.c:773) drm
-? __might_fault (mm/memory.c:5856 mm/memory.c:5849) 
-? __might_fault (mm/memory.c:5856 mm/memory.c:5849) 
-drm_ioctl (drivers/gpu/drm/drm_ioctl.c:892) drm
-? __pfx_drm_mode_atomic_ioctl (drivers/gpu/drm/drm_atomic_uapi.c:1291) drm
-? __pfx_drm_ioctl (drivers/gpu/drm/drm_ioctl.c:813) drm
-? register_lock_class (./include/linux/rculist.h:589 kernel/locking/lockdep.c:1340) 
-? __fget_files (./include/linux/rcupdate.h:781 fs/file.c:915) 
-? __fget_files (fs/file.c:918) 
-? security_file_ioctl (security/security.c:2608 (discriminator 13)) 
-__x64_sys_ioctl (fs/ioctl.c:51 fs/ioctl.c:870 fs/ioctl.c:856 fs/ioctl.c:856) 
-do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
-? rcu_is_watching (./arch/x86/include/asm/bitops.h:207 ./arch/x86/include/asm/bitops.h:239 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 ./include/linux/thread_info.h:118 ./arch/x86/include/asm/preempt.h:108 kernel/rcu/tree.c:696) 
-? do_syscall_64 (arch/x86/entry/common.c:87) 
-? lockdep_hardirqs_on (kernel/locking/lockdep.c:4422) 
-? do_syscall_64 (arch/x86/entry/common.c:87) 
-? asm_sysvec_apic_timer_interrupt (./arch/x86/include/asm/idtentry.h:645) 
-? lockdep_hardirqs_on (kernel/locking/lockdep.c:4422) 
-entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120) 
-RIP: 0033:0x7f54bc427c6b
-Code: 73 01 c3 48 8b 0d b5 b1 1b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 85 b1 1b 00 f7 d8 64 89 01 48
-All code
-========
-   0:	73 01                	jae    0x3
-   2:	c3                   	retq   
-   3:	48 8b 0d b5 b1 1b 00 	mov    0x1bb1b5(%rip),%rcx        # 0x1bb1bf
-   a:	f7 d8                	neg    %eax
-   c:	64 89 01             	mov    %eax,%fs:(%rcx)
-   f:	48 83 c8 ff          	or     $0xffffffffffffffff,%rax
-  13:	c3                   	retq   
-  14:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
-  1b:	00 00 00 
-  1e:	90                   	nop
-  1f:	f3 0f 1e fa          	endbr64 
-  23:	b8 10 00 00 00       	mov    $0x10,%eax
-  28:	0f 05                	syscall 
-  2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- trapping instruction
-  30:	73 01                	jae    0x33
-  32:	c3                   	retq   
-  33:	48 8b 0d 85 b1 1b 00 	mov    0x1bb185(%rip),%rcx        # 0x1bb1bf
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3f:	48                   	rex.W
-
-Code starting with the faulting instruction
-===========================================
-   0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
-   6:	73 01                	jae    0x9
-   8:	c3                   	retq   
-   9:	48 8b 0d 85 b1 1b 00 	mov    0x1bb185(%rip),%rcx        # 0x1bb195
-  10:	f7 d8                	neg    %eax
-  12:	64 89 01             	mov    %eax,%fs:(%rcx)
-  15:	48                   	rex.W
-RSP: 002b:00007fff0545df38 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fff0545df80 RCX: 00007f54bc427c6b
-RDX: 00007fff0545df80 RSI: 00000000c03864bc RDI: 000000000000000d
-RBP: 00000000c03864bc R08: 0000000000000000 R09: 0000000000000000
-R10: 00007f54bc5e3c80 R11: 0000000000000246 R12: 000055c504faa9a0
-R13: 000000000000000d R14: 000055c505118380 R15: 000055c50554daa0
- </TASK>
-
-[2]
-
-BUG: sleeping function called from invalid context at drivers/gpu/drm/i915/gt/uc/intel_guc.h:330
-in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 6590, name: gnome-shell
-preempt_count: 0, expected: 0
-RCU nest depth: 5, expected: 0
-11 locks held by gnome-shell/6590:
-#0: ffffc900083df8f0 (reservation_ww_class_acquire){+.+.}-{0:0}, at: i915_gem_do_execbuffer (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:1927 drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3454) i915
-#1: ffff8881829301f8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: __intel_context_do_pin_ww (./include/linux/dma-resv.h:372 ./drivers/gpu/drm/i915/gem/i915_gem_object.h:171 ./drivers/gpu/drm/i915/gem/i915_gem_object.h:193 drivers/gpu/drm/i915/gt/intel_context.c:222) i915
-#2: ffff8881a346f870 (&timeline->mutex){+.+.}-{3:3}, at: i915_request_create (./drivers/gpu/drm/i915/gt/intel_context.h:262 drivers/gpu/drm/i915/i915_request.c:1035) i915
-#3: ffff88884dc2f9e0 ((softirq_ctrl.lock)){+.+.}-{2:2}, at: __local_bh_disable_ip (./include/linux/rcupdate.h:747 kernel/softirq.c:155) 
-#4: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/rtmutex.c:1862 kernel/locking/spinlock_rt.c:43 kernel/locking/spinlock_rt.c:49 kernel/locking/spinlock_rt.c:57) 
-#5: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: __local_bh_disable_ip (kernel/softirq.c:153) 
-#6: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: submit_notify (./include/linux/rcupdate.h:747 drivers/gpu/drm/i915/i915_request.c:796) i915
-#7: ffff88818110d468 (&sched_engine->lock/2){+.+.}-{2:2}, at: guc_submit_request (drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:2026) i915
-#8: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/rtmutex.c:1862 kernel/locking/spinlock_rt.c:43 kernel/locking/spinlock_rt.c:49 kernel/locking/spinlock_rt.c:57) 
-#9: ffff8881419be9b0 (&ce->guc_state.lock){+.+.}-{2:2}, at: add_to_context (./include/linux/list.h:134 ./include/linux/list.h:229 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3434) i915
-#10: ffffffff9794b9c0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/rtmutex.c:1862 kernel/locking/spinlock_rt.c:43 kernel/locking/spinlock_rt.c:49 kernel/locking/spinlock_rt.c:57) 
-Hardware name: Framework Laptop (12th Gen Intel Core)/FRANGACP04, BIOS 03.04 07/15/2022
-Call Trace:
- <TASK>
-dump_stack_lvl (lib/dump_stack.c:107) 
-__might_resched (kernel/sched/core.c:10320) 
-guc_context_set_prio (./drivers/gpu/drm/i915/gt/uc/intel_guc.h:330 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:625 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:2478 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3333 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3360) i915
-? __pfx_guc_context_set_prio (drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3348) i915
-? mark_held_locks (kernel/locking/lockdep.c:4273) 
-add_to_context (drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3414 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:3444) i915
-? gen12_emit_fini_breadcrumb_rcs (drivers/gpu/drm/i915/gt/gen8_engine_cs.c:831) i915
-__i915_request_submit (drivers/gpu/drm/i915/i915_request.c:676) i915
-? rcu_is_watching (./include/linux/context_tracking.h:122 kernel/rcu/tree.c:695) 
-guc_submit_request (drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:790 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:1990 drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:2028) i915
-submit_notify (drivers/gpu/drm/i915/i915_request.c:797) i915
-__i915_sw_fence_complete (drivers/gpu/drm/i915/i915_sw_fence.c:131 drivers/gpu/drm/i915/i915_sw_fence.c:201 drivers/gpu/drm/i915/i915_sw_fence.c:191) i915
-__i915_request_queue (./include/linux/bottom_half.h:33 drivers/gpu/drm/i915/i915_request.c:1843) i915
-eb_request_add (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3110) i915
-? __pfx_eb_request_add (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3074) i915
-? eb_request_submit (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2418) i915
-i915_gem_do_execbuffer (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3131 drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3486) i915
-? __pfx_i915_gem_do_execbuffer (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3347) i915
-? validate_chain (./arch/x86/include/asm/bitops.h:228 ./arch/x86/include/asm/bitops.h:240 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 kernel/locking/lockdep.c:228 kernel/locking/lockdep.c:3780 kernel/locking/lockdep.c:3836) 
-? i915_gem_execbuffer2_ioctl (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3579) i915
-? __kmalloc_node_track_caller (mm/slab_common.c:973 mm/slab_common.c:1005) 
-? __lock_acquire (kernel/locking/lockdep.c:5136) 
-? __might_fault (mm/memory.c:5856 mm/memory.c:5849) 
-? __might_fault (mm/memory.c:5856 mm/memory.c:5849) 
-i915_gem_execbuffer2_ioctl (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3600) i915
-drm_ioctl_kernel (drivers/gpu/drm/drm_ioctl.c:788) drm
-? __pfx_i915_gem_execbuffer2_ioctl (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3560) i915
-? __pfx_drm_ioctl_kernel (drivers/gpu/drm/drm_ioctl.c:773) drm
-? __might_fault (mm/memory.c:5856 mm/memory.c:5849) 
-? __might_fault (mm/memory.c:5856 mm/memory.c:5849) 
-drm_ioctl (drivers/gpu/drm/drm_ioctl.c:892) drm
-? __pfx_i915_gem_execbuffer2_ioctl (drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3560) i915
-? __pfx_drm_ioctl (drivers/gpu/drm/drm_ioctl.c:813) drm
-? register_lock_class (kernel/locking/lockdep.c:1335) 
-? __fget_files (fs/file.c:918) 
-? security_file_ioctl (security/security.c:2608 (discriminator 13)) 
-__x64_sys_ioctl (fs/ioctl.c:51 fs/ioctl.c:870 fs/ioctl.c:856 fs/ioctl.c:856) 
-do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
-? ktime_get_coarse_real_ts64 (./include/linux/seqlock.h:104 kernel/time/timekeeping.c:2261) 
-? __task_pid_nr_ns (./include/linux/rcupdate.h:781 kernel/pid.c:501) 
-? rcu_is_watching (./arch/x86/include/asm/bitops.h:207 ./arch/x86/include/asm/bitops.h:239 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 ./include/linux/thread_info.h:118 ./arch/x86/include/asm/preempt.h:108 kernel/rcu/tree.c:696) 
-? do_syscall_64 (arch/x86/entry/common.c:87) 
-? lockdep_hardirqs_on (kernel/locking/lockdep.c:4422) 
-? do_syscall_64 (arch/x86/entry/common.c:87) 
-? do_syscall_64 (arch/x86/entry/common.c:87) 
-? lockdep_hardirqs_on (kernel/locking/lockdep.c:4422) 
-entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120) 
-RIP: 0033:0x7f54bc427c6b
-Code: 73 01 c3 48 8b 0d b5 b1 1b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 85 b1 1b 00 f7 d8 64 89 01 48
-All code
-========
-   0:	73 01                	jae    0x3
-   2:	c3                   	retq   
-   3:	48 8b 0d b5 b1 1b 00 	mov    0x1bb1b5(%rip),%rcx        # 0x1bb1bf
-   a:	f7 d8                	neg    %eax
-   c:	64 89 01             	mov    %eax,%fs:(%rcx)
-   f:	48 83 c8 ff          	or     $0xffffffffffffffff,%rax
-  13:	c3                   	retq   
-  14:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
-  1b:	00 00 00 
-  1e:	90                   	nop
-  1f:	f3 0f 1e fa          	endbr64 
-  23:	b8 10 00 00 00       	mov    $0x10,%eax
-  28:	0f 05                	syscall 
-  2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- trapping instruction
-  30:	73 01                	jae    0x33
-  32:	c3                   	retq   
-  33:	48 8b 0d 85 b1 1b 00 	mov    0x1bb185(%rip),%rcx        # 0x1bb1bf
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3f:	48                   	rex.W
-
-Code starting with the faulting instruction
-===========================================
-   0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
-   6:	73 01                	jae    0x9
-   8:	c3                   	retq   
-   9:	48 8b 0d 85 b1 1b 00 	mov    0x1bb185(%rip),%rcx        # 0x1bb195
-  10:	f7 d8                	neg    %eax
-  12:	64 89 01             	mov    %eax,%fs:(%rcx)
-  15:	48                   	rex.W
-RSP: 002b:00007fff0545ddf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000010 RCX: 00007f54bc427c6b
-RDX: 00007fff0545de00 RSI: 0000000040406469 RDI: 0000000000000010
-RBP: 00007fff0545de00 R08: 000055c506bd3520 R09: 000055c504560e60
-R10: 0000000000100080 R11: 0000000000000246 R12: 000055c5046ae6f0
-R13: 000055c504f1c280 R14: 000055c5046387dc R15: 000055c5046387c0
- </TASK>
-
-[3]
-
-general protection fault, probably for non-canonical address 0xdffffc0004: 0000(#1) PREEMPT_RT SMP KASAN NOPRI
-KASAM: null-ptr-deref in range [0x000...20-0x000...27]
-RIP: 0010:ucsi_debugfs_unregister (drivers/usb/typec/ucsi/debugfs.c:87) 
-[snipped]
-PKRU: 5555554
-Call Trace:
-<TASK>
-? die_addr (arch/x86/kernel/dumpstack.c:421 arch/x86/kernel/dumpstack.c:460) 
-? exe_general_proection+0x150/0x230 
-? asm_exc_general_protection (./arch/x86/include/asm/idtentry.h:564) 
-? ucsi_debugfs_unregister (drivers/usb/typec/ucsi/debugfs.c:87) 
-usci_destroy+0xe/0x20 
-ucsi_acpi_probe (drivers/usb/typec/ucsi/ucsi_acpi.c:207) 
-platform_probe (drivers/base/platform.c:1404) 
-really_probe (drivers/base/dd.c:579 drivers/base/dd.c:658) 
-__driver_probe_device (drivers/base/dd.c:800) 
-? __driver_attach (drivers/base/dd.c:1216) 
-driver_probe_device (drivers/base/dd.c:830) 
-__driver_attach (drivers/base/dd.c:1217) 
-? __pfx___driver_attach (drivers/base/dd.c:1157) 
-bus_for_each_dev (drivers/base/bus.c:368) 
-? __pfx_bus_for_each_dev (drivers/base/bus.c:356) 
-? rt_spin_unlock (./include/linux/rcupdate.h:781 kernel/locking/spinlock_rt.c:82) 
-bus_add_driver (drivers/base/bus.c:674) 
-driver_register (drivers/base/driver.c:246) 
-? rcu_is_watching (./arch/x86/include/asm/bitops.h:207 ./arch/x86/include/asm/bitops.h:239 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 ./include/linux/thread_info.h:118 ./arch/x86/include/asm/preempt.h:108 kernel/rcu/tree.c:700) 
-? __pfx_usci_acpi_platform_driver_init+0x10/0x10 
-do_one_initcall (init/main.c:1232) 
-? __pfx_do_one_initcall (init/main.c:1223) 
-? parse_one (kernel/params.c:138) 
-? __kem_cache_alloc_node+0x191/0x270 
-? rcu_is_watching (./arch/x86/include/asm/bitops.h:207 ./arch/x86/include/asm/bitops.h:239 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 ./include/linux/thread_info.h:118 ./arch/x86/include/asm/preempt.h:108 kernel/rcu/tree.c:700) 
-do_initcalls (init/main.c:1293 init/main.c:1310) 
-kernel_init_freeable (init/main.c:1551) 
-? __pfx_kernel_init (init/main.c:1429) 
-kernel_init (init/main.c:1439) 
-ret_from_fork (arch/x86/kernel/process.c:147) 
-? __pfx_kernel_init (init/main.c:1429) 
-ret_from_fork_asm (arch/x86/entry/entry_64.S:312) 
-</TASK>
-Modules
 
