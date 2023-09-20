@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB357A74B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4AB7A74C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234080AbjITHrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
+        id S233855AbjITHsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234005AbjITHrV (ORCPT
+        with ESMTP id S234008AbjITHsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:47:21 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCD4138
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:46:56 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4051fea48a8so6288015e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695196015; x=1695800815; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JVunG7o3B5X9vaQEWyirI9ryk0oP6Di9CEjbsBLCF3g=;
-        b=fHfOiLxqkX2tSeVZEYuOcrhH248DI/1r3oPkrfSwzvCd19TsI7wsDzMRoMdD8OWrZk
-         Lp9hTAsk6e7YDGOevgOjdXGrYp2urWkCafL/CUA1mjPfLQTUSEmY6zftslcJ8sRQsF2H
-         DEEIHOKzogDrdEKiaXnCu6hP8e5lp6e7UWR3zeDC8aAPIE7H6rWrBRXPHXBjyhIhqJDB
-         cxsxSJDrMxtaNZLu+Tfx9wlAnddAX8HOtLfmEqJ33R0a7SN/WfupE2L6/W6MzyIDtcqW
-         xy6h+xttBcydarZT5XGW21tefc3CjBFu4hoGl5PGEelQcW61/q6oYkqIno0hdw95/tSZ
-         +klA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695196015; x=1695800815;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JVunG7o3B5X9vaQEWyirI9ryk0oP6Di9CEjbsBLCF3g=;
-        b=LrBla07k+7UM4CAh5Q2/LsUzoNe/WYXnwKEmHh27ob5RwZPh2RdztNlrrJMoUJujc3
-         LCXWhdWAh0X7uaLROPIqtim54RJynq8lpQTZJ3uPeWrFCs2BQZBrL477tr5vhojsLpJ4
-         lgCt27whQmbZc2H4LuMc5gdneWwOvlsfOQA7TdJuHRoH07me4bpNMFT0eaL3tMtrh7hd
-         MxLhuJtWIWo9P5oPd1lh5yahRHcdw+mrqAgLbPbG+WavbqJTdNWQieQya82CypwS6zau
-         yDQhXPdu0zkxZsdOhCWw001e+duQypuGm1mgdQzPN33UhqlknR1qOjBoXVOKQ2CKtpHd
-         +cGQ==
-X-Gm-Message-State: AOJu0YwIvJoit9qlJQTCdwuZXVLd1kCPSbqOVEcdCmGQMT+viohBQTT4
-        OnzfcAmLiGRRpMqwsU+s5cem2g==
-X-Google-Smtp-Source: AGHT+IGG/3UyVqZOOAbC3tloQ80fV1Kl6R8qcuyc4Oxl1dNBdENA4jwJSlr1R6ygp4yAftiTc+gUZw==
-X-Received: by 2002:a05:600c:280b:b0:401:38dc:8916 with SMTP id m11-20020a05600c280b00b0040138dc8916mr1690704wmb.10.1695196014842;
-        Wed, 20 Sep 2023 00:46:54 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id a24-20020a05600c225800b00402d7105035sm1167853wmm.26.2023.09.20.00.46.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:46:54 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 09:46:53 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 4/7] RISC-V: KVM: Allow Zicond extension for Guest/VM
-Message-ID: <20230920-be44cc5bd0f749a1137d103c@orel>
-References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-5-apatel@ventanamicro.com>
+        Wed, 20 Sep 2023 03:48:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF9D132
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695196058; x=1726732058;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=6EIYxxBxmaM+623ONioCHxvpX1okslSwTEtsPJQ94lQ=;
+  b=NhDR5M7Bn6RnDrXhT9dsuGgdc1ZlnunrOK8v0Nrf0EGWHnS10Vs3xS+9
+   YqYOn1tJZHgXYc+EgMa93CNtd/jmLG/0mlYK1RPct9Cn6lkgPzTSe8ssO
+   nEZdcwm2DSJgsDTnDvbEwcvi5uPzVOf153dvP6LNJrvxxtKLx0Ip4OU2D
+   jF4mLmHkj7kaQkw+VkyEVKK1fT9M3KyfMbZdMK1wo9BWzf3RhqJgEYGdE
+   SN36HIWYwzK0wmJ7cVlYmvAhqgR8TF0TWuIZ6aykOPX0ueKoj66gYsMoR
+   jm4LlHGz+WTyt828+yqf5zgU26x3GtZBsWJvImmMyHvlaEEoyFv0jMaZs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="444247258"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="444247258"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:47:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="920180951"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="920180951"
+Received: from lingshan-mobl.ccr.corp.intel.com (HELO [10.93.14.5]) ([10.93.14.5])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:47:31 -0700
+Message-ID: <40765650-ba6e-357a-cf73-ff6a0288c0e8@intel.com>
+Date:   Wed, 20 Sep 2023 15:47:29 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919035343.1399389-5-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [virtio-dev] Re: [virtio-comment] Re: [VIRTIO PCI PATCH v5 1/1]
+ transport-pci: Add freeze_mode to virtio_pci_common_cfg
+Content-Language: en-US
+To:     Parav Pandit <parav@nvidia.com>,
+        "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
+        "virtio-comment@lists.oasis-open.org" 
+        <virtio-comment@lists.oasis-open.org>,
+        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+References: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
+ <20230919114242.2283646-2-Jiqian.Chen@amd.com>
+ <20230919082802-mutt-send-email-mst@kernel.org>
+ <cd8d306b-6acc-34be-516c-b89c23ac108d@intel.com>
+ <BL1PR12MB5849E32A76165F1307492185E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+ <PH0PR12MB5481D2CBCFBF7BCBF427EE1EDCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
+ <701bb67c-c52d-4eb3-a6ed-f73bd5d0ff33@intel.com>
+ <BL1PR12MB5849A542AA93F6ED9FEEAAF0E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+ <a636b841-1bfc-925a-406e-6c4469e7e4c6@intel.com>
+ <PH0PR12MB54817E116B756914B3FC1860DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+In-Reply-To: <PH0PR12MB54817E116B756914B3FC1860DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:23:40AM +0530, Anup Patel wrote:
-> We extend the KVM ISA extension ONE_REG interface to allow KVM
-> user space to detect and enable Zicond extension for Guest/VM.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/uapi/asm/kvm.h | 1 +
->  arch/riscv/kvm/vcpu_onereg.c      | 2 ++
->  2 files changed, 3 insertions(+)
-> 
-> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
-> index e030c12c7dfc..35ceb38a4eff 100644
-> --- a/arch/riscv/include/uapi/asm/kvm.h
-> +++ b/arch/riscv/include/uapi/asm/kvm.h
-> @@ -139,6 +139,7 @@ enum KVM_RISCV_ISA_EXT_ID {
->  	KVM_RISCV_ISA_EXT_ZIHPM,
->  	KVM_RISCV_ISA_EXT_SMSTATEEN,
->  	KVM_RISCV_ISA_EXT_XVENTANACONDOPS,
-> +	KVM_RISCV_ISA_EXT_ZICOND,
->  	KVM_RISCV_ISA_EXT_MAX,
->  };
->  
-> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
-> index 17a847a1114b..d3ca4969c985 100644
-> --- a/arch/riscv/kvm/vcpu_onereg.c
-> +++ b/arch/riscv/kvm/vcpu_onereg.c
-> @@ -47,6 +47,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
->  	KVM_ISA_EXT_ARR(ZICBOM),
->  	KVM_ISA_EXT_ARR(ZICBOZ),
->  	KVM_ISA_EXT_ARR(ZICNTR),
-> +	KVM_ISA_EXT_ARR(ZICOND),
->  	KVM_ISA_EXT_ARR(ZICSR),
->  	KVM_ISA_EXT_ARR(ZIFENCEI),
->  	KVM_ISA_EXT_ARR(ZIHINTPAUSE),
-> @@ -95,6 +96,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
->  	case KVM_RISCV_ISA_EXT_ZBB:
->  	case KVM_RISCV_ISA_EXT_ZBS:
->  	case KVM_RISCV_ISA_EXT_ZICNTR:
-> +	case KVM_RISCV_ISA_EXT_ZICOND:
->  	case KVM_RISCV_ISA_EXT_ZICSR:
->  	case KVM_RISCV_ISA_EXT_ZIFENCEI:
->  	case KVM_RISCV_ISA_EXT_ZIHINTPAUSE:
-> -- 
-> 2.34.1
->
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+
+On 9/20/2023 3:35 PM, Parav Pandit wrote:
+>> From: Zhu, Lingshan <lingshan.zhu@intel.com>
+>> Sent: Wednesday, September 20, 2023 1:00 PM
+>>
+>> On 9/20/2023 3:24 PM, Chen, Jiqian wrote:
+>>> Hi Lingshan,
+>>> It seems you reply to the wrong email thread. They are not related to my
+>> patch.
+>> These reply to Parva's comments.
+>> @Parva, if you want to discuss more about live migration, please reply in my
+>> thread, lets don't flood here.
+> You made the point that "this is not live migration".
+> I am not discussing live migration in this thread.
+>
+> I replied for the point that device restoration from suspend for physical and hypevisor based device is not a 40nsec worth of work to restore by just doing a register write.
+> This is not live or device migration. This is restoring the device context initiated by the driver owning the device.
+restore the device context should be done by the hypervisor before 
+setting DRIVER_OK and waking up the guest, not a concern here, out of spec
+
