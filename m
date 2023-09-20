@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D371E7A7BB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1447F7A7BCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbjITLzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
+        id S234850AbjITLzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235028AbjITLzA (ORCPT
+        with ESMTP id S234835AbjITLzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:55:00 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E75B9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:54:54 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-27489f78e52so4174458a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:54:54 -0700 (PDT)
+        Wed, 20 Sep 2023 07:55:40 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC569AD
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:55:33 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a21b6d105cso860163166b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:55:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695210893; x=1695815693; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SegRVwPy3T4Drw15gY3BMKb819flE9DBZjuEZxE8SHs=;
-        b=EWhMsdHWucBVDP6vYIJi7x5xeVFxktef3umE8wh6qmv0G/tS9y8bXkqN+vb2Gr6UW4
-         dhrjH8H2j8eK0ImLK87wN0tWWYEiXNugYzBtzlVkVQVVyUSrpcRVKG+nHOGNfCNv/Tzp
-         3Z5/GF3uft9SSDZoz4TIpEeI/l0Kme7iRV4V/DTvE34TAwKGnaKvaHn7Ow1t/2E5VpFk
-         fyb0fa29Jin/v3QPj+IEQZbC7izTlFe5apnZH11nGRV9IHFshQG9kcN9NpQJRHo+JxiY
-         S61ztzHVzidvStsviZ+vAQVgwxogQTxkn3FasXUqpEdLUOkWC8w8Ns3O8ZbjGmEdkCRT
-         Qc3Q==
+        d=linaro.org; s=google; t=1695210932; x=1695815732; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UW8N+KeoRBbtzYhOGJomwLmPo9kvmA2DLIA6YpijZTs=;
+        b=ucMMjhUdGZxTaql8dpRJYooTztxB7IpYttHY6iDM30QvBbTHw0psZVrTvxpWzHNQrp
+         iFUzScUGIYmnDMwBMwDkU1tN0fMHxtR4+deGTje4HIDMKDuO73jmlgcV2hkcOusAj+P3
+         GQb8w4l6MWxB6H4aZ2GzPpfgIjp/8w1vI3c4moq5/lU6WP4kD081NLwQH6GN6g0OLxpc
+         xnRz56SRtSscOmy70t3K8Dfg/cqMeYfPp6fFvSPO5YrDW4BWTTYMQZg6Cu+gw4VcPpVK
+         V8fSYtJAOwHiJb0iWf4vhW9dO9MEYI5VRvaOaZLZBrF0Uq6i2/CmDMSU2DMoW1SzUOHd
+         JJUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695210893; x=1695815693;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SegRVwPy3T4Drw15gY3BMKb819flE9DBZjuEZxE8SHs=;
-        b=t4Psobqg4jKQRLx3PFpw0cS+BIPg4V+Ykt0uEsAjmKhrjXUuWEh2WAjXYe9VjSJ4fQ
-         t2CjDdbp8ddaW3iJTkM83qHRYnR6KvIH6R+JiE5OQh2HoesuVqUoe60YBTVEkBFEfBHs
-         TZrzkl7E542Aso9ABBW6HSEk5OJG/FiN0juvVlPrdom/KW316WQn/IKuCONsuH44Bl0u
-         Nnp3fbtXa1QP7kOPZhpDcZmupLHf9ippDmfamAROBYbQGfMJe90yBr8SUDzfi8LbYBy/
-         GZokps8u4SzRMlgVIO3/WOZPBf7Vr8P1xqJlmSyZvN0g+AqspeFkcMl62vMQ38KXA0ds
-         ZNlQ==
-X-Gm-Message-State: AOJu0YwcMWtSmvAdaVPvygx65XwBYgTMWFFot7aqUdMk0uRT9UgGQVzR
-        Uv5yxmcUcxWd11EHapphZD5PkKd+OmHMm9MsWTc=
-X-Google-Smtp-Source: AGHT+IE/BPHXLd4hag8jyMe1TlVptfK/q3aIbYRMWRAaeP6MW4nEzvtIV/IzRcxvcUw6u95E0EjbzIXNtCWp5VkSodM=
-X-Received: by 2002:a17:90a:de8a:b0:274:4fb:3610 with SMTP id
- n10-20020a17090ade8a00b0027404fb3610mr2363065pjv.47.1695210893556; Wed, 20
- Sep 2023 04:54:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695210932; x=1695815732;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UW8N+KeoRBbtzYhOGJomwLmPo9kvmA2DLIA6YpijZTs=;
+        b=JN54YDJka4k4uyY81j+2ZVqT9k2Bim3pehOCW2PgMRZFkw+I/FD7lG5JOkjAeRfF2H
+         x4ZlRSUhz/R7+ndZ1qFp92OPavXFKz+TzhYD4a6bmzX0aDrxa53/ZBXcFM3NsGuLHLCE
+         AFXv6G1Whku+1+70iQAShJl9Uo0MG8yT6ukvy/lrFFR4kYkaYjrduPDrIakYrdByz2Op
+         Ql+ZIY20rfQ8aPmf0TFkmg7KkctB10OFyOp8dhD0RH0DaBI8ESTtupPDYiLLT2PKi9EY
+         DeT7B+HNy8UZY/6s0FXMGa0/vMpgs8R2gwNpWqq0l0QORRxo3iaQT/nDa2qflJkaRHK3
+         OeLA==
+X-Gm-Message-State: AOJu0Yz9RW51Km8qoae5aQ2y/Eppzl61AfCOGNGRx5hPGJHXODi1fpvj
+        Qz/R1KRz1fbd8EBGqMKLIwRBSg==
+X-Google-Smtp-Source: AGHT+IHdCynh+x46AKAMnLAwGdoI29Wy7NyQlaXU6tFEhUkwzwooMPkfiZE8Hj3OCNEur1xDIctNjQ==
+X-Received: by 2002:a17:906:b1d5:b0:9a1:e233:e627 with SMTP id bv21-20020a170906b1d500b009a1e233e627mr1862460ejb.42.1695210932442;
+        Wed, 20 Sep 2023 04:55:32 -0700 (PDT)
+Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id rh1-20020a17090720e100b009ad8ba6976bsm9307629ejb.9.2023.09.20.04.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 04:55:31 -0700 (PDT)
+Message-ID: <ec11eb6a-c37b-08bd-5997-8fc390fd58c8@linaro.org>
+Date:   Wed, 20 Sep 2023 13:55:30 +0200
 MIME-Version: 1.0
-References: <20230920052139.10570-1-rdunlap@infradead.org> <20230920052139.10570-17-rdunlap@infradead.org>
-In-Reply-To: <20230920052139.10570-17-rdunlap@infradead.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Wed, 20 Sep 2023 04:54:42 -0700
-Message-ID: <CAMo8Bf+UpPzHd_Dc-236sMRcGZ6ynwG3mY-7NCtApbLdzvjsNw@mail.gmail.com>
-Subject: Re: [PATCH 16/16] xtensa: boot/lib: add missing prototypes for functions
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Chris Zankel <chris@zankel.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 03/11] dt-bindings: riscv: add sophgo sg2042 bindings
+Content-Language: en-US
+To:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, conor@kernel.org, devicetree@vger.kernel.org,
+        emil.renner.berthing@canonical.com, guoren@kernel.org,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com
+Cc:     Chen Wang <wangchen20@iscas.ac.cn>
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
+ <c6aea83bb1df563b1f2a66c5f230c3861aed1e15.1695189879.git.wangchen20@iscas.ac.cn>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <c6aea83bb1df563b1f2a66c5f230c3861aed1e15.1695189879.git.wangchen20@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 10:21=E2=80=AFPM Randy Dunlap <rdunlap@infradead.or=
-g> wrote:
->
-> Add function prototypes for exit(), zalloc(), and gunzip() to the
-> boot library code.
+On 20/09/2023 08:37, Chen Wang wrote:
+> Add DT binding documentation for the Sophgo SG2042 Soc [1] and the
+> Milk-V Pioneer board [2].
+> 
+> [1]: https://en.sophgo.com/product/introduce/sg2042.html
+> [2]: https://milkv.io/pioneer
 
-exit() and zalloc() don't need to be public. I've posted a different fix th=
-at
-makes these two functions static.
+This is a friendly reminder during the review process.
 
+It looks like you received a tag and forgot to add it.
 
-> arch/xtensa/boot/lib/zmem.c:8:6: warning: no previous prototype for 'exit=
-' [-Wmissing-prototypes]
->     8 | void exit (void)
-> arch/xtensa/boot/lib/zmem.c:13:7: warning: no previous prototype for 'zal=
-loc' [-Wmissing-prototypes]
->    13 | void *zalloc(unsigned size)
-> arch/xtensa/boot/lib/zmem.c:35:6: warning: no previous prototype for 'gun=
-zip' [-Wmissing-prototypes]
->    35 | void gunzip (void *dst, int dstlen, unsigned char *src, int *lenp=
-)
->
-> Fixes: 4bedea945451 ("xtensa: Architecture support for Tensilica Xtensa P=
-art 2")
-> Fixes: e7d163f76665 ("xtensa: Removed local copy of zlib and fixed O=3D s=
-upport")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> ---
->  arch/xtensa/boot/lib/zmem.c |    4 ++++
->  1 file changed, 4 insertions(+)
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
 
---=20
-Thanks.
--- Max
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+
+If a tag was not added on purpose, please state why and what changed.
+
+Best regards,
+Krzysztof
+
