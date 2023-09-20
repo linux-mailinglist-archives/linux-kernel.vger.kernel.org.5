@@ -2,195 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EED7A79BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCA47A79BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbjITKvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
+        id S234351AbjITKvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbjITKvL (ORCPT
+        with ESMTP id S233999AbjITKvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Sep 2023 06:51:11 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2041.outbound.protection.outlook.com [40.107.247.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5952E4;
-        Wed, 20 Sep 2023 03:51:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mRwNMxBxr5L2Gy6QsNvOdh+bMiuQPG0dfXJXa1q5XnPBYHvvkZ++inBkDdnaaenmRY4wc1qhs41VsQD7XO77iIkd5fhTVJ9NmmIg8dawiLr29DVeIsN+kI6bykRdohZx4109euTkLwf0grTvy80ZJXq3PW9Gms6B2LFpvy6TMb+OXarQp8gkHdSZ73IW2cqWI76wE1AW4+QFlQG90lrpmxCXE9qg6B/XVNoI/CRHoT6qxwPHovGc9f4wtFyomT7j6ppOFVY7nDTF67S2DXNym1BA9XmZxnlFIT5YNTP9fqTXmCIqebtHKTGiB0afmhgxCt34R5puTKJclF6DsqkTqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7mn48O79cCJUHPDmHf5UU3FL2KFU9vaaPc5Rcjmf5v4=;
- b=awFkq182LhHFar7MkwgPIksVv6nUSnHBj/kWomi/14S08SZSq9Fc3/mqqnqurEztfdhd+xvHqo9RH8yQ0ezy+b7THAldpIZV8VBulog4N54tPL09pwezHUMVgEdPjcMI9jVuLuq+gG24wkYeC5lQxkcqK7EVZG39Y1zaEWsWOWLbSMH301RYZnoW+15yIzE2m/RUl/IoL4Py245BZoidHDsNJEqeYszXLQCPAt0dAnauo5GJcNvWtm/WZkMO4PayZLdzzkmKafziONJH5u2QznpDWrsmuuQIRXHmOX1iL/825DSAQqfoyz1hWtKSS8jH3CHOEp5HjWlQXuxrX9gkbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7mn48O79cCJUHPDmHf5UU3FL2KFU9vaaPc5Rcjmf5v4=;
- b=xvCSw0qU3Wncbc9h17hm9HBWqhMBFabuQ5pAMKU7p4/+tZGQzcA2h/jYAVlZG9oxlAkLS8GNaT9ZAtsQ+DAP6zRgGnVh/UK9ACvGDZGpXFHAu43zxW0znd6BW1oyeBTNDH3jlMFC2c8KFp7RJhXWdJp23eGOwahod1p5thrR58ctEzZmwOZ70E1QsYwMDkB+AAnIYGQYFwaQiceMhKzFXTkaeY5CMntJMRDawP+N828//RBpORLPGaQHNX6aeZYx8C80mB949Lcd0lpOWagwOHUrFiJP+nw3Wue0cMNMcvaI3BCKsEVvS6BVXQx3Gu5P2fGv8CimesgjNL6DyeQ07Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DBBPR04MB7788.eurprd04.prod.outlook.com (2603:10a6:10:1e4::15)
- by AS1PR04MB9697.eurprd04.prod.outlook.com (2603:10a6:20b:480::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
- 2023 10:50:57 +0000
-Received: from DBBPR04MB7788.eurprd04.prod.outlook.com
- ([fe80::5b25:12c8:9f51:9b31]) by DBBPR04MB7788.eurprd04.prod.outlook.com
- ([fe80::5b25:12c8:9f51:9b31%4]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 10:50:57 +0000
-Message-ID: <085176da-924e-8d6d-1c56-8bfc9d457b0b@suse.com>
-Date:   Wed, 20 Sep 2023 13:50:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, andrew.cooper3@citrix.com,
-        jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-14-xin3.li@intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [PATCH v10 13/38] x86/cpu: Add X86_CR4_FRED macro
-In-Reply-To: <20230914044805.301390-14-xin3.li@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR06CA0113.eurprd06.prod.outlook.com
- (2603:10a6:803:8c::42) To DBBPR04MB7788.eurprd04.prod.outlook.com
- (2603:10a6:10:1e4::15)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2F0E6;
+        Wed, 20 Sep 2023 03:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695207065; x=1726743065;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Xf+UZEfn7rC+Qte0CL3CXZpBR9LRbgEa0lssvdc8chs=;
+  b=fuJXOOFqYHczGBzY9QQoUECs7ImY2NF2BZwuL40cvhnzT4ImW3c4xQ13
+   I3yDXwRKLGM/bxrrrwYth0ug0K5gXxIstNQafU2u9zPoWkt7XIvOznnDx
+   SzqcbKqLABX5XReryrzIhPM6kWU6ZRAIs7t8AV6JYnQNxkXfabSRnQWFI
+   fjAXoxk4sBTae9syyJfzCO59YzupTT7VG2Le8q/YdrOMJ4INjTDBgz9K2
+   BYqhumnXRDptg+yX50R+OB7EWb64bDGpO6Elq5lcT4W237BOjsfIWqdDQ
+   PYjT2dZQxWY6Lg+kcoObJhVquG8RHz4+guUaZZ45+q0DgYvzHXkKu5WUB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="466501487"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="466501487"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 03:51:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="746596854"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="746596854"
+Received: from swegrzyn-mobl.ger.corp.intel.com ([10.252.52.91])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 03:51:01 -0700
+Date:   Wed, 20 Sep 2023 13:50:58 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Fernando Eckhardt Valle <fevalle@ipt.br>
+cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Pearson <mpearson-lenovo@squebb.ca>, corbet@lwn.net,
+        hmh@hmh.eng.br, markgross@kernel.org, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v3] platform/x86: thinkpad_acpi: sysfs interface to
+ auxmac
+In-Reply-To: <20230919201136.63736-1-fevalle@ipt.br>
+Message-ID: <965b4ab5-3526-c7c-58ab-2252734e3ad6@linux.intel.com>
+References: <20230919201136.63736-1-fevalle@ipt.br>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DBBPR04MB7788:EE_|AS1PR04MB9697:EE_
-X-MS-Office365-Filtering-Correlation-Id: 315d7862-073f-4fde-51e0-08dbb9c77872
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fHYxRv9+gqf7o8sRdcd6/eZzkDX1Beo0yXUyTzHw0+uHfyARhX+uEd8BWiN+benYIxURj1+YboOrusNvBezSBVe3LYbquziWpqeSt35TDYZFe8OEn80WiNSAsnvUCe5YFhCCdm1WYiPcWNhnH1cgu9BtjcUlIwo2sYHteOtTvSasfuQyPMOG7KXyEkvYWylx7mUXTWUv1tvJdH2gyfcxv2FAFBbaN0GYbO+AUpDgO9WTx8h9CfXpCUmRqjcWQnLDl+9AzXW2s1Lvhwik5TolotcOJEm6Nm+ON9uW73nEoehGGo2l9iWp8eYo3K8EGldxDYLfvsPzoh1r4Iuw+IQz28wkf6Rgt7c2kWPWyZcO9Omgq1mhmVz0g9Hh5nerbYt8XbhEnXzcuc8QLP+sGKF8OQI2/Ca9oOTpoUn6nJzUPY4ouEkljFGhjKHENVMSzj7zcfLfFyp7/lQaVD/fwx3E0niwGXqXovBZqGOV3KjhwP4AR04kYPZDCEn2l0sjkcQFH4IilMJzIdysbQ/YYiqtOV/lK2/2Wra/q+/xnvupOSelMftxGf2fwG/NSoqgVIC/DQmxB4S8SEfTseK/Q+hSHwphNmbPAmQI58Wxrv0UDM3uVWh0FOv4nVwoyyOce42pJ5iHge8ACLWGlc4QZ6jqPA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7788.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(366004)(396003)(346002)(1800799009)(186009)(451199024)(6506007)(2616005)(31686004)(26005)(5660300002)(8936002)(8676002)(4326008)(6486002)(6512007)(83380400001)(478600001)(6666004)(316002)(66946007)(41300700001)(66476007)(66556008)(86362001)(31696002)(36756003)(7416002)(2906002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SzJMV0h1cnZSSWswWGJQbk8vcGFOUS9NK0FRbEFqcnhzSnVPYVZHV0pzSFZX?=
- =?utf-8?B?ajhKTXhEaS8vOUZpdi9oV2hBbnVJN1AzRUUrSllrbDNGbVpmYys0Y29mM3lQ?=
- =?utf-8?B?VTczZ3g2VzVETlRaYTFRSHNjK2ZPZktZWURxbzFtcitWbUhtMWwxM2QvaXRW?=
- =?utf-8?B?WTVjc2pJb3NJaGxENTZmTzY1cFhqVGUxMHQyaVBvek5tRjJwaUd0RUVoQzdh?=
- =?utf-8?B?czIzZkpmOXlSWnJQd3pnUWFHNllJMlYzRWEzUlV3MEZXdTZDVEFWWm13MnAv?=
- =?utf-8?B?OGtSbVYwemJSMWxQZVIzQTF2VHVaWDdnYWRyOWZmNlllQnlEdU5iSmpvamlt?=
- =?utf-8?B?dk5DTkcrbzEwWmJxdGZtNXNZbS9EdFdXaFhOb3RGWFdNLy9NUHVqNG1Ock1M?=
- =?utf-8?B?VjB4Y3BMMWRObjlmUGdFYXN3WlQxT1JDdmRlRXQ0L2V6WWF4UjN2RWNlbjRB?=
- =?utf-8?B?MS9UY29hOVlESWVMTFVwM2F0Vk1La1U3TFJnVzBXdHdqRUZiYURyR0NpOU45?=
- =?utf-8?B?cjhYUlBPR3BMNStqa2t3Z1FzZ2lRRDMxRWxXQTBsTjlDaklZVEZVN2MzMmtt?=
- =?utf-8?B?V0FEMzZJQU93YzNWSEdrMUsxWnFyRXdCc1ppaGhPTmI2dmRXV1Z3c2FWa09P?=
- =?utf-8?B?SmwzYnBUdWdPUi9WZjM2bWlsU1E0VWhKdDBWd1BvVzN2UzBwWERSU1hpUVVY?=
- =?utf-8?B?S2NmRWxLQkhMbjZOakZtK2liWUZ0QTBFeDhyZGxFUWJvdUdLeEJuenNBL25O?=
- =?utf-8?B?UnlUVlF3dWF5czhIcFdheVlRSkIxUEJYbVVOWEdGM1dSWlNGSVpMQ0QzSVM1?=
- =?utf-8?B?Wmd1cjdIMUtnL2E3bzkvWkJ4U0FWM0sremhOTFFFT2lJYTVsN0ZvT1JvYmR2?=
- =?utf-8?B?dXJSSURyQkx1eTZJazcxZnh6Q0JQYmtQeFYrWlluQ1pNemFYS09kQlJRQTB4?=
- =?utf-8?B?bUVybWZGN2F5QUdqWFZMRC9ScmpQWTR6Y0QzZHd2QmtKaC8xb2U4eldqRnpr?=
- =?utf-8?B?cHo0N3ZnSFRURitlTDFrRnhqTlU5d2NlQXJySXhwSVl6bmVpbXNXSHk1dktT?=
- =?utf-8?B?Y3dIOXJ6K1piUGpHU0Y2Vm94dUMyNnlUdFVRRlBjM1RnZEVNK0JkVXFLOGxK?=
- =?utf-8?B?Zk1uRFJvYTJYcVBSaW9lVjh2MEJtcDU3ZjR0V3Y1YUxGcGMxWm9qN1hkdldi?=
- =?utf-8?B?SVVaV1ZlOVpFN0g4ZG0vVFhzOTdMZStpQ1pCaGp2NDRVb3F3bFVJdUlzUC90?=
- =?utf-8?B?bC9ZTEVlMHQ2YVZYZ1Nab2dEUHRLUU91U1N4UU0wUHU3QWFBTDRwcEQrZ1dS?=
- =?utf-8?B?Qzc2MzZwS3ZvZlEvTmwrbkFjaVJWVVZFK1ZMdnkwa29BZk9UYm5YUUcyMFRR?=
- =?utf-8?B?Q1FoQjYzcEJkUkdiOEdjTmFsd2VkeHJPSmNMb1FOTXd1eXkyZ0txMWdKeml6?=
- =?utf-8?B?bUx1WmRrODZjcm9rSnQzWDZsblhnSFVKNHV0cG55dmUrWG5zcjFmbDBJRjNp?=
- =?utf-8?B?Q3pHNVRmRURWVDYzdXNKczFMR0UyUDNtaVNFa0hFNVpXUk11ZklSZ3BrejNs?=
- =?utf-8?B?SXFJdmsrbTQ1eUNGNzd2c3ZXYW9tdXBOVkVjMVdkeDE1b1FGZlJUTUtLWWk1?=
- =?utf-8?B?eDNFdWZOWEtYMVI1aFF0WmkyZ1duNzQya1VzUDkzS3VGZDh3TEY3eFlzK0Fx?=
- =?utf-8?B?cU9nYWhyWENYRng0OVZva3ZzaGNFd2RuSkUyY0cxRlppY2tKdXFHWjBJakhI?=
- =?utf-8?B?MXcwQUNQb2hIcUk4dHNPNWZxTVY1NzJUU1Y2Qi9iQmZPdGhrenZZN0tkSXp1?=
- =?utf-8?B?empWQWhHWVRnYkFTUjdEN1psQzVneGRPZzBvK2hQWFJMblhkOEZjdzFyUWlv?=
- =?utf-8?B?VTlKN0xUczMyTHhnTTFmYk8yclE3eGVWdm16bUR0UW9FMUdOWEREZk5qRk1m?=
- =?utf-8?B?SlZac2swRkdKQjhHTnpvTmdZYXo0bG0wenVuV05ISThDbFphd1EwYXk0RmVE?=
- =?utf-8?B?TUZpU1Q4TU0rWVdtWVpVdEcydWZrZmc1U0xvZDA1RVcwaE44V3FGVVRZSXVD?=
- =?utf-8?B?QWt0dUc2NzVyV0Q1UHNrc3liNVlpSzg3Y1RoeE5VWGZJS0hkdVUwd0JnYjJt?=
- =?utf-8?Q?HLy8YoQUSgE+KJTM2BFuapYYY?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 315d7862-073f-4fde-51e0-08dbb9c77872
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7788.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 10:50:57.5825
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Qwkcv/VyZxNurR2292Q8b5NzmCjdzC5pRDe7q64nr4B31dfPUo90H1Zgp3AYkuNC0gyfr0R3b9Z0t1dNBYSw4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9697
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 19 Sep 2023, Fernando Eckhardt Valle wrote:
 
+> Newer Thinkpads have a feature called MAC Address Pass-through.
+> This patch provides a sysfs interface that userspace can use
+> to get this auxiliary mac address.
+> 
+> Signed-off-by: Fernando Eckhardt Valle <fevalle@ipt.br>
 
-On 14.09.23 г. 7:47 ч., Xin Li wrote:
-> From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
-> 
-> Add X86_CR4_FRED macro for the FRED bit in %cr4. This bit must not be
-> changed after initialization, so add it to the pinned CR4 bits.
-> 
-> Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
+Thanks for the update, in general this looks much better already. A few 
+further comments below.
+
 > ---
-> 
-> Changes since v9:
-> * Avoid a type cast by defining X86_CR4_FRED as 0 on 32-bit (Thomas
->    Gleixner).
+> Changes in v3:
+> - Added null terminator to auxmac string when copying auxiliary
+> mac address value.
+> Changes in v2:
+> - Added documentation
+> - All handling of the auxmac value is done in the _init function.
 > ---
->   arch/x86/include/uapi/asm/processor-flags.h | 7 +++++++
->   arch/x86/kernel/cpu/common.c                | 5 ++---
->   2 files changed, 9 insertions(+), 3 deletions(-)
+>  .../admin-guide/laptops/thinkpad-acpi.rst     | 20 +++++
+>  drivers/platform/x86/thinkpad_acpi.c          | 81 +++++++++++++++++++
+>  2 files changed, 101 insertions(+)
 > 
-> diff --git a/arch/x86/include/uapi/asm/processor-flags.h b/arch/x86/include/uapi/asm/processor-flags.h
-> index d898432947ff..f1a4adc78272 100644
-> --- a/arch/x86/include/uapi/asm/processor-flags.h
-> +++ b/arch/x86/include/uapi/asm/processor-flags.h
-> @@ -139,6 +139,13 @@
->   #define X86_CR4_LAM_SUP_BIT	28 /* LAM for supervisor pointers */
->   #define X86_CR4_LAM_SUP		_BITUL(X86_CR4_LAM_SUP_BIT)
->   
-> +#ifdef __x86_64__
-> +#define X86_CR4_FRED_BIT	32 /* enable FRED kernel entry */
-> +#define X86_CR4_FRED		_BITUL(X86_CR4_FRED_BIT)
-
-nit: s/BITUL/BITULL I guess if __x86_64__ is defined then we are 
-guaranteed that unsigned long will be a 64 bit, but for the sake of 
-clarity I'd rather have this spelled out explicitly by using BITULL
-
-
-> +#else
-> +#define X86_CR4_FRED		(0)
-> +#endif
+> diff --git a/Documentation/admin-guide/laptops/thinkpad-acpi.rst b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> index e27a1c3f6..98d304010 100644
+> --- a/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> +++ b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> @@ -53,6 +53,7 @@ detailed description):
+>  	- Lap mode sensor
+>  	- Setting keyboard language
+>  	- WWAN Antenna type
+> +	- Auxmac
+>  
+>  A compatibility table by model and feature is maintained on the web
+>  site, http://ibm-acpi.sf.net/. I appreciate any success or failure
+> @@ -1511,6 +1512,25 @@ Currently 2 antenna types are supported as mentioned below:
+>  The property is read-only. If the platform doesn't have support the sysfs
+>  class is not created.
+>  
+> +Auxmac
+> +------
 > +
->   /*
->    * x86-64 Task Priority Register, CR8
->    */
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 317b4877e9c7..42511209469b 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -400,9 +400,8 @@ static __always_inline void setup_umip(struct cpuinfo_x86 *c)
->   }
->   
->   /* These bits should not change their value after CPU init is finished. */
-> -static const unsigned long cr4_pinned_mask =
-> -	X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_UMIP |
-> -	X86_CR4_FSGSBASE | X86_CR4_CET;
-> +static const unsigned long cr4_pinned_mask = X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_UMIP |
-> +					     X86_CR4_FSGSBASE | X86_CR4_CET | X86_CR4_FRED;
->   static DEFINE_STATIC_KEY_FALSE_RO(cr_pinning);
->   static unsigned long cr4_pinned_bits __ro_after_init;
->   
+> +sysfs: auxmac
+> +
+> +Some newer Thinkpads have a feature called MAC Address Pass-through. This
+> +feature is implemented by the system firmware to provide a system unique MAC,
+> +that can override a dock or USB ethernet dongle MAC, when connected to a
+> +network. This property enables user-space to easily determine the MAC address
+> +if the feature is enabled.
+> +
+> +The values of this auxiliary MAC are:
+> +
+> +        cat /sys/devices/platform/thinkpad_acpi/auxmac
+> +
+> +If the feature is disabled, the value will be 'disabled'.
+> +
+> +This property is read-only.
+> +
+>  Adaptive keyboard
+>  -----------------
+>  
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index d70c89d32..ccb4969ac 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -10785,6 +10785,82 @@ static struct ibm_struct dprc_driver_data = {
+>  	.name = "dprc",
+>  };
+>  
+> +/*
+> + * Auxmac
+> + *
+> + * This auxiliary mac address is enabled in the bios through the
+> + * MAC Address Pass-through feature. In most cases, there are three
+> + * possibilities: Internal Mac, Second Mac, and disabled.
+> + *
+> + */
+> +
+> +#define AUXMAC_LEN 12
+> +#define AUXMAC_START 9
+> +#define AUXMAC_STRLEN 22
+> +#define AUXMAC_BEGIN_MARKER 8
+> +#define AUXMAC_END_MARKER 21
+> +static char auxmac[AUXMAC_LEN + 1];
+
+Add a newline between the defines and the declaration.
+
+> +
+> +static int auxmac_init(struct ibm_init_struct *iibm)
+> +{
+> +	acpi_status status;
+> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+> +	union acpi_object *obj;
+> +
+> +	status = acpi_evaluate_object(NULL, "\\MACA", NULL, &buffer);
+> +
+> +	if (ACPI_FAILURE(status))
+> +		return -ENODEV;
+> +
+> +	obj = (union acpi_object *)buffer.pointer;
+
+Assigment from void * does not need explicit casting.
+
+> +
+> +	if (obj->type != ACPI_TYPE_STRING || obj->string.length != AUXMAC_STRLEN) {
+> +		pr_info("Invalid buffer for MAC address pass-through.\n");
+> +		goto auxmacinvalid;
+> +	}
+> +
+> +	if (obj->string.pointer[AUXMAC_BEGIN_MARKER] != '#' ||
+> +	    obj->string.pointer[AUXMAC_END_MARKER] != '#') {
+> +		pr_info("Invalid header for MAC address pass-through.\n");
+> +		goto auxmacinvalid;
+> +	}
+> +
+> +	if (strncmp(obj->string.pointer + AUXMAC_START, "XXXXXXXXXXXX", AUXMAC_LEN) != 0) {
+> +		memcpy(auxmac, obj->string.pointer + AUXMAC_START, AUXMAC_LEN);
+> +		auxmac[AUXMAC_LEN] = '\0';
+> +	} else
+> +		strcpy(auxmac, "disabled");
+
+strcpy() is deprecated, please use strscpy().
+
+https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
+
+Btw, the usual coding style requires braces to be balanced so the else 
+should have braces on both sides if either side requires them.
+
+> +	kfree(obj);
+> +	return 0;
+> +
+> +auxmacinvalid:
+> +	kfree(obj);
+> +	strcpy(auxmac, "unavailable");
+
+strscpy().
+
+Can't you do this strscpy() before you goto here? Then you can share the 
+return path with the normal return path since only kfree() remains here.
+
+-- 
+ i.
+
+
+> +	return 0;
+> +}
+> +
+> +static struct ibm_struct auxmac_data = {
+> +	.name = "auxmac",
+> +};
+> +
+> +static ssize_t auxmac_show(struct device *dev,
+> +			   struct device_attribute *attr,
+> +			   char *buf)
+> +{
+> +	return sysfs_emit(buf, "%s\n", auxmac);
+> +}
+> +static DEVICE_ATTR_RO(auxmac);
+> +
+> +static struct attribute *auxmac_attributes[] = {
+> +	&dev_attr_auxmac.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group auxmac_attr_group = {
+> +	.attrs = auxmac_attributes,
+> +};
+> +
+>  /* --------------------------------------------------------------------- */
+>  
+>  static struct attribute *tpacpi_driver_attributes[] = {
+> @@ -10843,6 +10919,7 @@ static const struct attribute_group *tpacpi_groups[] = {
+>  	&proxsensor_attr_group,
+>  	&kbdlang_attr_group,
+>  	&dprc_attr_group,
+> +	&auxmac_attr_group,
+>  	NULL,
+>  };
+>  
+> @@ -11414,6 +11491,10 @@ static struct ibm_init_struct ibms_init[] __initdata = {
+>  		.init = tpacpi_dprc_init,
+>  		.data = &dprc_driver_data,
+>  	},
+> +	{
+> +		.init = auxmac_init,
+> +		.data = &auxmac_data,
+> +	},
+>  };
+>  
+>  static int __init set_ibm_param(const char *val, const struct kernel_param *kp)
+> 
