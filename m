@@ -2,77 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 020747A8B0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62CE7A8B0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjITSD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 14:03:57 -0400
+        id S229612AbjITSEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 14:04:00 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjITSDz (ORCPT
+        with ESMTP id S229600AbjITSD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 14:03:55 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2C994
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:03:48 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso2274466b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:03:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695233026; x=1695837826; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wNWpiq1Y/Z/txxjcp0TRMtu8Ee0OMKlu6U++2G9rtSM=;
-        b=fsdyJni6lK1O1fUFnXbIkqL3ol6n2HJcM0w8qDDQ+vsrluynxfwxHm08lKPLZDyB/S
-         a+n6mqkOv4WyxDOMhgDcKKMqF96WFnxVkHq4EAb0X3UKUlGfcQOFto4pFoLsr/x7jElo
-         BB12vXpaNb1ZEAtiV7UwnNDNAKpemVQY1trHo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695233026; x=1695837826;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wNWpiq1Y/Z/txxjcp0TRMtu8Ee0OMKlu6U++2G9rtSM=;
-        b=UmwwTjrSDjgFZVMVTEPPleaqgl6Dy/HczqhPGLavfGhhq+637PXYtRaLvmMpd1Cf5s
-         tq8XtVl8sCwuBWpNSqxxrWb6csohcTAE/JpdjdlDe1Tu93BQTlrXycdAorlRmaoxjlXH
-         vRoLvY1yd+CuNgadseY50VkYoy1kQ73KuxUCWbRmTEYEjqso9W8+RlzH+SxTPQ9gaRY7
-         tHpZ4j86DDgujR4PdF80AyHqtM07ztGOJvglkD6canf1w+Kpr9kKtxmOafFNL1HxjzSU
-         IgvyWuonb16NY+JQYZDhbZt2lkE6nbUUO/UrJfhTdxlBiJhSE9hKM2N5JyPfRcZFW6nc
-         kgAA==
-X-Gm-Message-State: AOJu0Yxn2Ms9qnicgaRapYVchfX3RKCSoouZUzFiarldFR1B0YgwVoYc
-        Pe+imUK6yEYbIYQGGbevycrlosFN9w3VSiQOg20Plnf7
-X-Google-Smtp-Source: AGHT+IGKyvSpwlasB7pU6gawqIHhTDUKZgUjOG9kpOe0WK/0jdMebqm8MMcEQCMwWDsEylD8uSmpkQ==
-X-Received: by 2002:a17:906:1da:b0:9ae:513d:47bd with SMTP id 26-20020a17090601da00b009ae513d47bdmr1861718ejj.26.1695233025253;
-        Wed, 20 Sep 2023 11:03:45 -0700 (PDT)
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
-        by smtp.gmail.com with ESMTPSA id kt26-20020a170906aada00b0098f99048053sm9941478ejb.148.2023.09.20.11.03.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 11:03:44 -0700 (PDT)
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-404f881aa48so12235e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:03:44 -0700 (PDT)
-X-Received: by 2002:a05:600c:3b95:b0:3fe:dd72:13ae with SMTP id
- n21-20020a05600c3b9500b003fedd7213aemr6399wms.0.1695233024332; Wed, 20 Sep
- 2023 11:03:44 -0700 (PDT)
+        Wed, 20 Sep 2023 14:03:57 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7385A94;
+        Wed, 20 Sep 2023 11:03:51 -0700 (PDT)
+Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RrR9b1jYgz67hvQ;
+        Thu, 21 Sep 2023 01:58:59 +0800 (CST)
+Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
+ lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 20 Sep 2023 19:03:48 +0100
+From:   <shiju.jose@huawei.com>
+To:     <helgaas@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
+        <tony.luck@intel.com>, <james.morse@arm.com>, <bp@alien8.de>,
+        <ying.huang@intel.com>, <linux-acpi@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
+        <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
+        <shiju.jose@huawei.com>
+Subject: [PATCH v3 1/1] ACPI / APEI: Fix for overwriting AER info when error status data has multiple sections
+Date:   Thu, 21 Sep 2023 02:03:36 +0800
+Message-ID: <20230920180337.809-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.35.1.windows.2
 MIME-Version: 1.0
-References: <20230901234202.566951-1-dianders@chromium.org>
- <20230901164111.RFT.1.I3d5598bd73a59b5ded71430736c93f67dc5dea61@changeid>
- <ZPSsBhbekKY7VyDg@shell.armlinux.org.uk> <CAD=FV=WT4Hf1XVA641WtNFg4WRYFKarU1WOkLPEbr0eiVQuZPg@mail.gmail.com>
- <CAD=FV=UpJEFKcsnHSzPqEiGaWusp50DrcEh=mcra4eLeRQT5NQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=UpJEFKcsnHSzPqEiGaWusp50DrcEh=mcra4eLeRQT5NQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 20 Sep 2023 11:03:32 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WSdp=5DnJinELOSncX=eqrN9y27kw=VFDHowzgnTS6Qg@mail.gmail.com>
-Message-ID: <CAD=FV=WSdp=5DnJinELOSncX=eqrN9y27kw=VFDHowzgnTS6Qg@mail.gmail.com>
-Subject: Re: [RFT PATCH 01/15] drm/armada: Call drm_atomic_helper_shutdown()
- at shutdown time
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, airlied@gmail.com,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.122.247.234]
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500006.china.huawei.com (7.191.161.198)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,78 +50,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime,
+From: Shiju Jose <shiju.jose@huawei.com>
 
-On Wed, Sep 13, 2023 at 8:34=E2=80=AFAM Doug Anderson <dianders@chromium.or=
-g> wrote:
->
-> Hi,
->
-> On Tue, Sep 5, 2023 at 7:23=E2=80=AFAM Doug Anderson <dianders@chromium.o=
-rg> wrote:
-> >
-> > Hi,
-> >
-> > On Sun, Sep 3, 2023 at 8:53=E2=80=AFAM Russell King (Oracle)
-> > <linux@armlinux.org.uk> wrote:
-> > >
-> > > On Fri, Sep 01, 2023 at 04:41:12PM -0700, Douglas Anderson wrote:
-> > > > Based on grepping through the source code this driver appears to be
-> > > > missing a call to drm_atomic_helper_shutdown() at system shutdown
-> > > > time. Among other things, this means that if a panel is in use that=
- it
-> > > > won't be cleanly powered off at system shutdown time.
-> > > >
-> > > > The fact that we should call drm_atomic_helper_shutdown() in the ca=
-se
-> > > > of OS shutdown/restart comes straight out of the kernel doc "driver
-> > > > instance overview" in drm_drv.c.
-> > > >
-> > > > This driver was fairly easy to update. The drm_device is stored in =
-the
-> > > > drvdata so we just have to make sure the drvdata is NULL whenever t=
-he
-> > > > device is not bound.
-> > >
-> > > ... and there I think you have a misunderstanding of the driver model=
-.
-> > > Please have a look at device_unbind_cleanup() which will be called if
-> > > probe fails, or when the device is removed (in other words, when it i=
-s
-> > > not bound to a driver.)
-> >
-> > ...and there I think you didn't read this patch closely enough and
-> > perhaps that you have a misunderstanding of the component model.
-> > Please have a look at the difference between armada_drm_unbind() and
-> > armada_drm_remove() and also check which of those two functions is
-> > being modified by my patch. Were this patch adding a call to
-> > "dev_set_drvdata(dev, NULL)" in armada_drm_remove() then your NAK
-> > would be justified. However, I am not aware of anything in the
-> > component unbind path nor in the failure case of component bind that
-> > would NULL the drvdata.
-> >
-> > Kindly look at the patch a second time with this in mind.
->
-> Since I didn't see any further response, I'll assume that my
-> explanation here has addressed your concerns. If not, I can re-post it
-> without NULLing the "drvdata". While I still believe this is unsafe in
-> some corner cases because of the component model used by this driver,
-> at least it would get the shutdown call in.
->
-> In any case, what's the process for landing patches to this driver?
-> Running `./scripts/get_maintainer.pl --scm -f
-> drivers/gpu/drm/armada/armada_drv.c` seems to indicate that this
-> should go through the git tree:
->
-> git git://git.armlinux.org.uk/~rmk/linux-arm.git drm-armada-devel
->
-> ...but it doesn't appear that recent changes to this driver have gone
-> that way. Should this land through drm-misc?
+ghes_handle_aer() passes AER data to the PCI core for logging and
+recovery by calling aer_recover_queue() with a pointer to struct
+aer_capability_regs.
 
-Do you have any advice here? Should I land this through drm-misc-next,
-put it on ice for a while, or resend without the calls to NULL our the
-drvdata?
+The problem was that aer_recover_queue() queues the pointer directly
+without copying the aer_capability_regs data.  The pointer was to
+the ghes->estatus buffer, which could be reused before
+aer_recover_work_func() reads the data.
 
-Thanks!
+To avoid this problem, allocate a new aer_capability_regs structure
+from the ghes_estatus_pool, copy the AER data from the ghes->estatus
+buffer into it, pass a pointer to the new struct to
+aer_recover_queue(), and free it after aer_recover_work_func() has
+processed it.
 
--Doug
+Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+---
+Changes from v2 to v3:
+1. Add stub code for ghes_estatus_pool_region_free() to fix following
+build error, reported by kernel test robot, if CONFIG_ACPI_APEI_GHES
+is not enabled.
+ld: drivers/pci/pcie/aer.o: in function `aer_recover_work_func':
+aer.c:(.text+0xec5): undefined reference to `ghes_estatus_pool_region_free'
+
+Changes from v1 to v2:
+1. Updated patch description with the description Bjorn has suggested.
+2. Add Acked-by: Bjorn Helgaas <bhelgaas@google.com>.
+---
+ drivers/acpi/apei/ghes.c | 23 ++++++++++++++++++++++-
+ drivers/pci/pcie/aer.c   | 10 ++++++++++
+ include/acpi/ghes.h      |  4 ++++
+ 3 files changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index ef59d6ea16da..63ad0541db38 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -209,6 +209,20 @@ int ghes_estatus_pool_init(unsigned int num_ghes)
+ 	return -ENOMEM;
+ }
+ 
++/**
++ * ghes_estatus_pool_region_free - free previously allocated memory
++ *				   from the ghes_estatus_pool.
++ * @addr: address of memory to free.
++ * @size: size of memory to free.
++ *
++ * Returns none.
++ */
++void ghes_estatus_pool_region_free(unsigned long addr, u32 size)
++{
++	gen_pool_free(ghes_estatus_pool, addr, size);
++}
++EXPORT_SYMBOL_GPL(ghes_estatus_pool_region_free);
++
+ static int map_gen_v2(struct ghes *ghes)
+ {
+ 	return apei_map_generic_address(&ghes->generic_v2->read_ack_register);
+@@ -564,6 +578,7 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+ 	    pcie_err->validation_bits & CPER_PCIE_VALID_AER_INFO) {
+ 		unsigned int devfn;
+ 		int aer_severity;
++		u8 *aer_info;
+ 
+ 		devfn = PCI_DEVFN(pcie_err->device_id.device,
+ 				  pcie_err->device_id.function);
+@@ -577,11 +592,17 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+ 		if (gdata->flags & CPER_SEC_RESET)
+ 			aer_severity = AER_FATAL;
+ 
++		aer_info = (void *)gen_pool_alloc(ghes_estatus_pool,
++						  sizeof(struct aer_capability_regs));
++		if (!aer_info)
++			return;
++		memcpy(aer_info, pcie_err->aer_info, sizeof(struct aer_capability_regs));
++
+ 		aer_recover_queue(pcie_err->device_id.segment,
+ 				  pcie_err->device_id.bus,
+ 				  devfn, aer_severity,
+ 				  (struct aer_capability_regs *)
+-				  pcie_err->aer_info);
++				  aer_info);
+ 	}
+ #endif
+ }
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index e85ff946e8c8..ba1ce820c141 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -29,6 +29,7 @@
+ #include <linux/kfifo.h>
+ #include <linux/slab.h>
+ #include <acpi/apei.h>
++#include <acpi/ghes.h>
+ #include <ras/ras_event.h>
+ 
+ #include "../pci.h"
+@@ -996,6 +997,15 @@ static void aer_recover_work_func(struct work_struct *work)
+ 			continue;
+ 		}
+ 		cper_print_aer(pdev, entry.severity, entry.regs);
++		/*
++		 * Memory for aer_capability_regs(entry.regs) is being allocated from the
++		 * ghes_estatus_pool to protect it from overwriting when multiple sections
++		 * are present in the error status. Thus free the same after processing
++		 * the data.
++		 */
++		ghes_estatus_pool_region_free((unsigned long)entry.regs,
++					      sizeof(struct aer_capability_regs));
++
+ 		if (entry.severity == AER_NONFATAL)
+ 			pcie_do_recovery(pdev, pci_channel_io_normal,
+ 					 aer_root_reset);
+diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
+index 3c8bba9f1114..be1dd4c1a917 100644
+--- a/include/acpi/ghes.h
++++ b/include/acpi/ghes.h
+@@ -73,8 +73,12 @@ int ghes_register_vendor_record_notifier(struct notifier_block *nb);
+ void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
+ 
+ struct list_head *ghes_get_devices(void);
++
++void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
+ #else
+ static inline struct list_head *ghes_get_devices(void) { return NULL; }
++
++static inline void ghes_estatus_pool_region_free(unsigned long addr, u32 size) { return; }
+ #endif
+ 
+ int ghes_estatus_pool_init(unsigned int num_ghes);
+-- 
+2.25.1
+
