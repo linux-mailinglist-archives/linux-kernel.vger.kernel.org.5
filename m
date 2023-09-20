@@ -2,291 +2,821 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 438557A7A2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675E17A7A2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbjITLNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        id S234532AbjITLNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbjITLNb (ORCPT
+        with ESMTP id S234474AbjITLNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:13:31 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EFDB4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:13:25 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59bc97d7b3dso10882037b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695208404; x=1695813204; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Jwn7Ew5nILHx+5GR+NTRHmaRmX431keEmXsyqdl+cE=;
-        b=N5ts5z/qcIAYAiiXCsKFQqSIhcp6iAXBz2ORgEsgZ+Z1HISeg5ffxxVQ2S/S0XfA2O
-         DaEs+yMWTg9tVG7OuRB3EEG5FyjBux8fDL93Hv+3StZukOE1IZVYi6xrT9GVi4Hxgqtj
-         Tsq4tEf82AkuZ1Y1cipgabwBgv6Cer/lNRduGlNWewZJWY88Wk1QQVud71NBuqlmmDu9
-         OA+2k1+WTY1d7UgEmtNtAWGC15phWRC+alfiicl6snLV4YMSf3cCCO6GXJEupwwIri3l
-         1/Q22dEaqAFm1Um2PmRz3R8ArWfflCoPnDyVMvPEtZrjdmF7vHCNG5KhXQJk4S7AnDcz
-         lhXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695208404; x=1695813204;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0Jwn7Ew5nILHx+5GR+NTRHmaRmX431keEmXsyqdl+cE=;
-        b=KLHwckogOwy/b35g8CKiuFJQqVQXSKb9AsK3W77i/CzaJuSinnXzRSQ9qiELBhIbEA
-         T6V0QiF9CTFrvNsobIMw30rx/TSE3Si0cveWtgC85+7L/ta7hZAuJ1LyPEFwb1b3GNNq
-         n8u5TQVzrTDwco9Idx2LiRVGvgaMMBc1deuvnWt2eqzxinHrCNECRia3P+BX26tqpCcF
-         Itol66nz9ThPwUmzMZUjdnirx3kUX0hpWPtuw9gXJTnT1TWcKD+TyPvQDLlwgM418iIU
-         IvdXD/PNfi3CT4BwaMgVXiAZF2JQXped/zuo2DiBhdLRVdURZVbeLSA3lfRXrSiUjMK8
-         n4tw==
-X-Gm-Message-State: AOJu0YwtSaUm/aUSaWu/1GvkN+b5RPPyVEPvHXG2QLD4ocaTqp5DM3Hg
-        7C8SHPgBIUYqZGYxBC451z9ubj/n2Y687onSQZfFsg==
-X-Google-Smtp-Source: AGHT+IHFsk9NaAteTvH3BmgCmk5ASoDueVueBNUnIXp+GgAzs2/Sm1uxwVIu+WcbtMUf2HUohWdEYcPhj4wbxzyvucw=
-X-Received: by 2002:a81:9115:0:b0:56d:4d1e:74ab with SMTP id
- i21-20020a819115000000b0056d4d1e74abmr5958371ywg.23.1695208404698; Wed, 20
- Sep 2023 04:13:24 -0700 (PDT)
+        Wed, 20 Sep 2023 07:13:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8044E4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:13:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81508C433CA;
+        Wed, 20 Sep 2023 11:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695208413;
+        bh=Jl9sN6MH4FuJOWjrEPg++mG8zFXtqvv+0NEC7/S5d5U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TeHVQpRVGj8XHwKxxNfMca2SYIpartUGr5Kp52KgY4kcv8H9mhYbFcH2ASKTucTdK
+         kTFNlNcoGl7wQ7O7kWnBeDTFabx+BSA0WIuUYdQO4juV+y2W+W0EULvh7oRbOF/4ab
+         oluF6vDicelylaX6uE12AL9khmzMJ89VZapgjFDfg7DuHIN/dKvZncio1l75F3YniF
+         uv/dgMikzYAUmGmTH7/YbA6PuOc2IWl+4CKUh8tlEMFmGVpax07UGNU8rY3Z5bjsua
+         nxHgX5927tVhEAZ6+juPaAC9lB83pBM9sHXRQKQXqb3wPYpThvLNkKW/03sgCsB/5X
+         a6WOzKrMG4etA==
+Date:   Wed, 20 Sep 2023 12:13:29 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     advantech.susiteam@gmail.com
+Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mfd: eiois200: Add EIO-IS200 Series EC Core Driver
+Message-ID: <20230920111329.GD13143@google.com>
+References: <20230907031320.6814-1-advantech.susiteam@gmail.com>
+ <20230907031320.6814-5-advantech.susiteam@gmail.com>
 MIME-Version: 1.0
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
- <1694411968-14413-3-git-send-email-quic_cang@quicinc.com> <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
- <6225a132-4b7f-bbb4-e863-4e62b99dd79d@quicinc.com> <31823dc4-6f50-435b-9a20-66471209ec31@linaro.org>
- <d34242f8-6e21-1549-b87d-3db2e825b7d5@quicinc.com> <1413119B-8B9C-4DE4-A086-476B2BAA60AD@linaro.org>
- <20230919120829.GB4732@thinkpad> <CAA8EJppwjzNDsPHZqUdmgQy3fAbP+AFnOo4+FTDCdpBEZp5S_w@mail.gmail.com>
- <20230920102327.GH4732@thinkpad>
-In-Reply-To: <20230920102327.GH4732@thinkpad>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 20 Sep 2023 14:13:13 +0300
-Message-ID: <CAA8EJprSVv0E7w7LQoN=Ar+tducP_7dDS8SF_k_BBi6cJDos5A@mail.gmail.com>
-Subject: Re: [PATCH 2/6] scsi: ufs: ufs-qcom: Add support for UFS device
- version detection
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Can Guo <quic_cang@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230907031320.6814-5-advantech.susiteam@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 13:23, Manivannan Sadhasivam <mani@kernel.org> wrot=
-e:
->
-> On Wed, Sep 20, 2023 at 01:27:59AM +0300, Dmitry Baryshkov wrote:
-> > On Tue, 19 Sept 2023 at 15:08, Manivannan Sadhasivam <mani@kernel.org> =
-wrote:
-> > >
-> > > On Fri, Sep 15, 2023 at 05:31:45AM +0300, Dmitry Baryshkov wrote:
-> > > > On 11 September 2023 13:02:50 GMT+03:00, Can Guo <quic_cang@quicinc=
-.com> wrote:
-> > > > >
-> > > > >On 9/11/2023 5:46 PM, Konrad Dybcio wrote:
-> > > > >> On 11.09.2023 11:42, Can Guo wrote:
-> > > > >>> Hi Konrad,
-> > > > >>>
-> > > > >>> On 9/11/2023 5:17 PM, Konrad Dybcio wrote:
-> > > > >>>> On 11.09.2023 07:59, Can Guo wrote:
-> > > > >>>>> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
-> > > > >>>>>
-> > > > >>>>> Retrieve UFS device version from UFS host controller's spare =
-register
-> > > > >>>>> which is populated by bootloader, and use the UFS device vers=
-ion together
-> > > > >>>>> with host controller's HW version to decide the proper power =
-modes which
-> > > > >>>>> should be used to configure the UFS PHY.
-> > > > >>>> That sounds a bit fishy.. is there no bootloader-independent
-> > > > >>>> solution to that? Can't we bring in the code that the bootload=
-er
-> > > > >>>> uses to determine these values?
-> > > > >>>>
-> > > > >>>> Konrad
-> > > > >>>
-> > > > >>> Agree, it is.
-> > > > >>>
-> > > > >>>
-> > > > >>> All these complexities come from one request from PHY design te=
-am - power saving.
-> > > > >>>
-> > > > >>> And to achieve power saving, Qualcomm UFS developers are reques=
-ted to use the
-> > > > >>>
-> > > > >>> lowest hanging PHY settings which can sustain the Max agreed HS=
- Gear (btw host
-> > > > >>>
-> > > > >>> and UFS device) during UFS's lifecycle in High Level OS,  where=
-as the power saving
-> > > > >>>
-> > > > >>> request does not apply to bootloader, which works for only a fe=
-w seconds during
-> > > > >>>
-> > > > >>> bootup. Hence, there is no such version detect code in bootload=
-er -  it just uses the
-> > > > >>>
-> > > > >>> highest PHY settings to configure PHY, boot up UFS and put UFS =
-device version in this
-> > > > >>>
-> > > > >>> register.
-> > > > >> First of all, your email client seems to be inserting 2 newlines
-> > > > >> instead of 1. If you're using thunderbird, you may want to edit:
-> > > > >>
-> > > > >> mail.identity.(default or your mail identity idx).default.compos=
-e_html
-> > > > >>
-> > > > >> to `false`
-> > > > >>
-> > > > >> and add that to your internal wiki page, as I see many @quic fol=
-ks having
-> > > > >> this issue.
-> > > > >>
-> > > > >>
-> > > > >> Going back to the main topic, I don't think we understood each o=
-ther.
-> > > > >> The commit message states:
-> > > > >>
-> > > > >>
-> > > > >> "Retrieve UFS device version from UFS host controller's spare re=
-gister
-> > > > >> which is populated by bootloader"
-> > > > >>
-> > > > >>
-> > > > >> Which means the bootloader is able to somehow determine the valu=
-e
-> > > > >> that's in the spare register and write it there.
-> > > > >>
-> > > > >> I'm asking whether we can take the logic behind this value and
-> > > > >> move it to Linux so that we don't depend on the bootloader to
-> > > > >> guarantee it (e.g. Chrome or some other devices with more exotic
-> > > > >> fw may not work this way).
-> > > > >>
-> > > > >>
-> > > > >> Konrad
-> > > > >
-> > > > >
-> > > > >There is no logic behind this value at all in bootloader, as I exp=
-lained, after bootloader
-> > > > >
-> > > > >initializes UFS, bootloader simply reads UFS's device version (the=
- value you are referring)
-> > > > >
-> > > > >and write it to the register. But in Linux kernel, we need (or wan=
-t to know) this value
-> > > > >
-> > > > >BEFORE we initialize UFS host controller (and UFS device).
-> > > >
-> > > > Depending on the bootloader behaviour is not an option. For example=
- the kernel might be started via kexec. Or via u-boot. Or grub. Or any othe=
-r bootloader. So please duplicate the logic to read the UFS version instead=
-.
-> > > >
-> > >
-> > > As Can said, there is no logic in the bootloader. What it does it, af=
-ter doing
-> > > the UFS initialization, it writes the agreed gear (between host and t=
-he device)
-> > > to this register. And in linux, we use that value to initialize the d=
-evice
-> > > (i.e., not doing init based on the min gear).
-> > >
-> > > But the important factor here is that, we use this gear value to prog=
-ram the PHY
-> > > init sequence. So if there is no hint from the bootloader, linux will=
- program
-> > > the min phy sequence (G3/G4) and then once the gear scaling happens, =
-it will
-> > > program the max phy sequence (G4/G5).
-> > >
-> > > Now on recent platforms, the init sequences are not compatible with e=
-ach other
-> > > i.e., once the min seq. is programmed, then before programming max se=
-q. the
-> > > registers not common to both seq. should be programmed to default val=
-ue. In
-> > > other words, min seq. specific registers should be reset to the defau=
-lt value.
-> > > Otherwise, there will be stability issues in the PHY.
-> >
-> > I see nothing wrong with adding 'default' register programming to the
-> > gear tables. If we have to reset them to the default values to switch
-> > the PHY settings, these writes must be a part of the corresponding
-> > tables.
-> >
->
-> Yep, that's what I initially proposed. But Qcom wanted to avoid the cost =
-of
-> programming the reset tables in the PHY driver.
+On Thu, 07 Sep 2023, advantech.susiteam@gmail.com wrote:
 
-We should not be programming the whole reset table. Only those several
-registers that are changed in the lowest settings.
+> From: Wenkai <advantech.susiteam@gmail.com>
+> 
+> This patch introduces the Advantech EIO-IS200 Series EC Core Driver.
+> The EIO-IS200 combines hardware functionality with firmware
+> capabilities to provide key features through a dedicated Power
+> Management Channel (PMC).
+> 
+> Key Features:
+> - Implements the core EIO-IS200 IC driver that serves as the
+>   interface to the IC's firmware and hardware functions.
+> - Contains low-level functions for accessing the IC's Power
+>   Management Channel (PMC).
+> - Manages PMC command execution, PMC buffer handling, and
+>   communication.
+> - Expose a regmap and a mutex for low-level access.
+> - Activates support for GPIO, I2C, Hwmon, and Watchdog functionalities
+>   of the EIO-IS200 IC.
+> - Provides various sysfs attributes to expose information about the
+>   EC chip, firmware, and motherboard.
+> - Includes a timeout parameter to allow modification of the default
+>   PMC command timeout value, which is particularly useful when
+>   dealing with an extremely slow-responding device.
+> 
+> Signed-off-by: Wenkai <advantech.susiteam@gmail.com>
+> ---
+>  drivers/mfd/eiois200_core.c | 590 ++++++++++++++++++++++++++++++++++++
 
->
-> Can, could you please check if programming the additional sequence doesn'=
-t cause
-> any power/performance effect?
->
-> - Mani
->
-> > >
-> > > So to avoid that, if we get the hint from bootloader (always the max =
-supported
-> > > gear between host and device), then only one seq. will be programmed.
-> > >
-> > > Other way to solve this issue is to reset the non common registers in=
- the init
-> > > seq. to default value. But that will be an additional overhead.
-> > >
-> > > But... if the bootloader doesn't populate this register (if the boot =
-device is
-> > > not UFS, like in compute platforms), then this whole logic won't work=
-. This
-> > > should also be taken into consideration.
-> >
-> > Yep, that's the dependency on the bootloader. Which we should avoid.
-> >
-> > >
-> > > - Mani
-> > >
-> > > >
-> > > > P.S. you have been asked to fix your email client. Please do so. Or=
-, if you are inserting these linebreaks manually, please stop.
-> > > >
-> > > > >Thanks,
-> > > > >
-> > > > >Can Guo.
-> > > > >
-> > > >
-> > >
-> > > --
-> > > =E0=AE=AE=E0=AE=A3=E0=AE=BF=E0=AE=B5=E0=AE=A3=E0=AF=8D=E0=AE=A3=E0=AE=
-=A9=E0=AF=8D =E0=AE=9A=E0=AE=A4=E0=AE=BE=E0=AE=9A=E0=AE=BF=E0=AE=B5=E0=AE=
-=AE=E0=AF=8D
-> >
-> >
-> >
-> > --
-> > With best wishes
-> > Dmitry
->
-> --
-> =E0=AE=AE=E0=AE=A3=E0=AE=BF=E0=AE=B5=E0=AE=A3=E0=AF=8D=E0=AE=A3=E0=AE=A9=
-=E0=AF=8D =E0=AE=9A=E0=AE=A4=E0=AE=BE=E0=AE=9A=E0=AE=BF=E0=AE=B5=E0=AE=AE=
-=E0=AF=8D
+Please organise patches by functionality, not file.
 
+Each of the patches in this series are worthless without the others.
 
+Have you run static analysis on this?
 
---=20
-With best wishes
-Dmitry
+What about checkpatch.pl?
+
+>  1 file changed, 590 insertions(+)
+>  create mode 100644 drivers/mfd/eiois200_core.c
+> 
+> diff --git a/drivers/mfd/eiois200_core.c b/drivers/mfd/eiois200_core.c
+> new file mode 100644
+> index 000000000000..7459dee1ed53
+> --- /dev/null
+> +++ b/drivers/mfd/eiois200_core.c
+> @@ -0,0 +1,590 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Advantech EIO-IS200 Series EC base Driver
+> + *
+> + * This driver provides an interface to access the EIO-IS200 Series EC
+> + * firmware via its own Power Management Channel (PMC) for subdrivers:
+> + *
+> + * - Watchdog: drivers/watchdog/eiois200_wdt
+> + * - GPIO: drivers/gpio/gpio_eiois200
+> + * - Hwmon: drivers/hwmon/eiois200_hwmon
+> + * - I2C: drivers/i2c/busses/i2c_eiois200
+> + * - Thermal: drivers/thermal/eiois200_thermal
+
+None of these exist.  I would remove these completely. They will be
+highly susceptible to bit-rot.
+
+> + * A system may have one or two independent EIO-IS200s.
+> + *
+> + * Copyright (C) 2023 Advantech Co., Ltd.
+> + * Author: wenkai.chung <wenkai.chung@advantech.com.tw>
+
+Is the name on your government ID "wenkai.chung"?
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/isa.h>
+> +#include <linux/mfd/core.h>
+> +#include <linux/mutex.h>
+> +#include <linux/time.h>
+> +#include <linux/uaccess.h>
+> +
+> +#include "eiois200.h"
+> +
+> +#define TIMEOUT_MAX	(10 * 1000 * 1000)
+
+There are helpers to convert between time bases.  Please use them.
+
+Where do these values come from?
+
+> +#define TIMEOUT_MIN	200
+> +
+> +static uint timeout = 5000;
+
+Why 5000?
+
+> +module_param(timeout, uint, 0664);
+> +MODULE_PARM_DESC(timeout,
+> +		 "Default PMC command timeout in usec.\n");
+
+How useful is it to override this on the commandline, really?
+
+> +struct eiois200_dev_port {
+> +	u16 idx;
+> +	u16 data;
+
+2 of the worst variable names of all time.
+
+Please ensure variable names describe their purpose.
+
+> +};
+> +
+> +struct eiois200_dev_port pnp_port[] = {
+> +	{ .idx = EIOIS200_PNP_INDEX,	 .data = EIOIS200_PNP_DATA     },
+> +	{ .idx = EIOIS200_SUB_PNP_INDEX, .data = EIOIS200_SUB_PNP_DATA },
+> +};
+> +
+> +static struct eiois200_dev *eiois200_dev;
+> +static struct regmap *regmap_is200;
+
+Avoid globals at all (most, many ...) costs.
+
+> +static struct mfd_cell susi_mfd_devs[] = {
+> +	{ .name = "eiois200_wdt"     },
+> +	{ .name = "gpio_eiois200"    },
+> +	{ .name = "eiois200_hwmon"   },
+> +	{ .name = "eiois200_i2c"     },
+> +	{ .name = "eiois200_thermal" },
+> +};
+> +
+> +struct regmap_range is200_range[] = {
+> +	 regmap_reg_range(EIOIS200_PNP_INDEX,	  EIOIS200_PNP_DATA),
+> +	 regmap_reg_range(EIOIS200_SUB_PNP_INDEX, EIOIS200_SUB_PNP_DATA),
+> +	 regmap_reg_range(EIOIS200_PMC_PORT,	  EIOIS200_PMC_PORT + 0x0F),
+> +	 regmap_reg_range(EIOIS200_PMC_PORT_SUB,  EIOIS200_PMC_PORT_SUB + 0x0F),
+> +};
+> +
+> +static const struct regmap_access_table volatile_regs = {
+> +	.yes_ranges   = is200_range,
+> +	.n_yes_ranges = ARRAY_SIZE(is200_range),
+> +};
+> +
+> +static const struct regmap_config pnp_regmap_config = {
+> +	.name		= "eiois200-gpio",
+> +	.reg_bits	= 16,
+> +	.val_bits	= 8,
+> +	.volatile_table = &volatile_regs,
+> +	.io_port	= true,
+> +};
+> +
+> +/* Following are EIO-IS200 pnp io port access functions */
+
+"IO"
+
+Probably "PNP" too.
+
+> +static int is200_pnp_read(struct eiois200_dev_port *port, u8 idx)
+> +{
+> +	int val;
+> +
+> +	if (regmap_write(regmap_is200, port->idx, idx))
+> +		pr_err("Error port write 0x%X\n", port->idx);
+
+Why pr_err()?  You should have a 'dev' pointer.  So use dev_err().
+
+> +	if (regmap_read(regmap_is200, port->data, &val))
+> +		pr_err("Error port read 0x%X\n", port->data);
+> +
+> +	return val;
+> +}
+> +
+> +static void is200_pnp_write(struct eiois200_dev_port *port, u8 idx, u8 data)
+> +{
+> +	if (regmap_write(regmap_is200, port->idx, idx) ||
+> +	    regmap_write(regmap_is200, port->data, data))
+> +		pr_err("Error port write 0x%X %X\n",
+> +		       port->idx, port->data);
+> +}
+> +
+> +static void is200_pnp_enter(struct eiois200_dev_port *port)
+> +{
+> +	if (regmap_write(regmap_is200, port->idx, EIOIS200_EXT_MODE_ENTER) ||
+> +	    regmap_write(regmap_is200, port->idx, EIOIS200_EXT_MODE_ENTER))
+
+How are these 2 calls any different to each other?
+
+> +		pr_err("Error port write 0x%X\n", port->idx);
+
+Return error?
+
+> +}
+> +
+> +static void is200_pnp_leave(struct eiois200_dev_port *port)
+> +{
+> +	if (regmap_write(regmap_is200, port->idx, EIOIS200_EXT_MODE_EXIT))
+> +		pr_err("Error port write 0x%X\n", port->idx);
+
+Return error?
+
+> +}
+> +
+> +/* Following are EIO-IS200 io port access functions for pmc command */
+> +static int pmc_write_data(int id, u8 value, u16 timeout)
+> +{
+> +	int ret;
+> +
+> +	if (WAIT_IBF(id, timeout))
+> +		return -ETIME;
+
+What's happening here?
+
+> +	ret = regmap_write(regmap_is200, eiois200_dev->pmc[id].data, value);
+> +	if (ret)
+> +		pr_err("Error pmc write %X:%X\n",
+> +		       eiois200_dev->pmc[id].data, value);
+> +
+> +	return ret;
+> +}
+> +
+> +static int pmc_write_cmd(int id, u8 value, u16 timeout)
+> +{
+> +	int ret;
+> +
+> +	if (WAIT_IBF(id, timeout))
+> +		return -ETIME;
+> +
+> +	ret = regmap_write(regmap_is200, eiois200_dev->pmc[id].cmd, value);
+> +	if (ret)
+> +		pr_err("Error pmc write %X:%X\n",
+> +		       eiois200_dev->pmc[id].data, value);
+> +
+> +	return ret;
+> +}
+> +
+> +static int pmc_read_data(int id, u8 *value, u16 timeout)
+> +{
+> +	int val, ret;
+> +
+> +	if (WAIT_OBF(id, timeout))
+> +		return -ETIME;
+> +
+> +	ret = regmap_read(regmap_is200, eiois200_dev->pmc[id].data, &val);
+> +	if (ret)
+> +		pr_err("Error pmc read %X\n", eiois200_dev->pmc[id].data);
+> +	else
+> +		*value = val & 0xFF;
+> +
+> +	return ret;
+> +}
+> +
+> +static int pmc_read_status(int id)
+> +{
+> +	int val;
+> +
+> +	if (regmap_read(regmap_is200, eiois200_dev->pmc[id].data, &val)) {
+> +		pr_err("Error pmc read %X\n", eiois200_dev->pmc[id].data);
+> +		return 0;
+
+You've just filed and yet you are returning success?
+
+> +	}
+> +
+> +	return val;
+> +}
+> +
+> +static void pmc_clear(int id)
+> +{
+> +	int val;
+> +
+> +	/* Check if input buffer blocked */
+> +	if ((pmc_read_status(id) & EIOIS200_PMC_STATUS_IBF) == 0)
+> +		return;
+> +
+> +	/* Read out previous garbage */
+> +	if (regmap_read(regmap_is200, eiois200_dev->pmc[id].data, &val))
+> +		pr_err("Error pmc clear\n");
+> +
+> +	usleep_range(10, 100);
+> +}
+> +
+> +/**
+> + * eiois200_core_pmc_wait - Wait for input / output buffer to be ready.
+> + * @id:			0 for main chip, 1 for sub chip.
+> + * @wait:		%PMC_WAIT_INPUT or %PMC_WAIT_OUTPUT.
+> + *			%PMC_WAIT_INPUT for waiting input buffer data ready.
+> + *			%PMC_WAIT_OUTPUT for waiting output buffer empty.
+> + * max_duration:	The timeout value in usec.
+> + */
+> +int eiois200_core_pmc_wait(int id,
+> +			   enum eiois200_pmc_wait wait,
+> +			   uint max_duration)
+> +{
+> +	u32	cnt = 0;
+> +	uint	val;
+> +	int	ret;
+> +	int	new_timeout = max_duration ? max_duration : timeout;
+> +	ktime_t time_end    = ktime_add_us(ktime_get(), new_timeout);
+
+Remove all of this type of lining up.
+
+> +
+> +	if (new_timeout > TIMEOUT_MAX ||
+> +	    new_timeout < TIMEOUT_MIN) {
+
+Why the '\n' here?
+
+> +		pr_err("Error timeout value: %dus\nTimeout value should between %d and %d\n",
+
+Avoid line breaks in error messages.
+
+> +		       new_timeout, TIMEOUT_MIN, TIMEOUT_MAX);
+> +		return -ETIME;
+> +	}
+> +
+> +	do {
+> +		ret = regmap_read(regmap_is200,
+> +				  eiois200_dev->pmc[id].status,
+> +				  &val);
+> +		if (ret)
+> +			return ret;
+> +
+> +		if (wait == PMC_WAIT_INPUT) {
+> +			if ((val & EIOIS200_PMC_STATUS_IBF) == 0)
+> +				return 0;
+> +		} else {
+> +			if ((val & EIOIS200_PMC_STATUS_OBF) != 0)
+> +				return 0;
+> +		}
+> +
+> +		/* Incremental delay */
+> +		fsleep(cnt++ * 10);
+> +
+> +	} while (ktime_before(ktime_get(), time_end));
+> +
+> +	return -ETIME;
+> +}
+> +EXPORT_SYMBOL_GPL(eiois200_core_pmc_wait);
+> +
+> +/**
+> + * eiois200_core_pmc_operation - Execute a pmc command
+
+"PMC"
+
+> + * @op:		Pointer to an pmc command.
+> + */
+> +int eiois200_core_pmc_operation(struct _pmc_op *op)
+> +{
+> +	u8 	i;
+> +	int	ret;
+> +	bool	read_cmd = op->cmd & 0x01;
+> +	ktime_t t = ktime_get();
+> +
+> +	mutex_lock(&eiois200_dev->mutex);
+> +
+> +	pmc_clear(op->chip);
+> +
+> +	ret = pmc_write_cmd(op->chip, op->cmd, op->timeout);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = pmc_write_data(op->chip, op->control, op->timeout);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = pmc_write_data(op->chip, op->device_id, op->timeout);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = pmc_write_data(op->chip, op->size, op->timeout);
+> +	if (ret)
+> +		goto err;
+> +
+> +	for (i = 0 ; i < op->size ; i++) {
+
+Remove the spaces before the ';'s.
+
+> +		if (read_cmd)
+> +			ret = pmc_read_data(op->chip, &op->payload[i], op->timeout);
+> +		else
+> +			ret = pmc_write_data(op->chip, op->payload[i], op->timeout);
+> +
+> +		if (ret)
+> +			goto err;
+> +	}
+> +
+> +	mutex_unlock(&eiois200_dev->mutex);
+> +
+> +	return 0;
+> +
+> +err:
+> +	mutex_unlock(&eiois200_dev->mutex);
+> +
+> +	pr_err("PMC error duration:%lldus\n",
+> +	       ktime_to_us(ktime_sub(ktime_get(), t)));
+
+Why the line wrap.
+
+> +	pr_err(".cmd=0x%02X, .ctrl=0x%02X .id=0x%02X, .size=0x%02X .data=0x%02X%02X\n",
+> +	       op->cmd, op->control, op->device_id,
+> +	       op->size, op->payload[0], op->payload[1]);
+
+Are these prints actually useful?
+
+I'd suggest that they are debug prints at best.
+
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(eiois200_core_pmc_operation);
+> +
+> +static int get_pmc_port(struct device *dev, int id, struct eiois200_dev_port *port)
+> +{
+> +	struct _pmc_port *pmc = &eiois200_dev->pmc[id];
+
+What's with the '_'?
+
+This usually means that it's internal and should not be used.
+
+> +	is200_pnp_enter(port);
+> +
+> +	/* Switch to PMC device page */
+> +	is200_pnp_write(port, EIOIS200_LDN, EIOIS200_LDN_PMC1);
+> +
+> +	/* Active this device */
+> +	is200_pnp_write(port, EIOIS200_LDAR, EIOIS200_LDAR_LDACT);
+> +
+> +	/* Get PMC cmd and data port */
+> +	pmc->data  = is200_pnp_read(port, EIOIS200_IOBA0H) << 8;
+> +	pmc->data |= is200_pnp_read(port, EIOIS200_IOBA0L);
+> +	pmc->cmd   = is200_pnp_read(port, EIOIS200_IOBA1H) << 8;
+> +	pmc->cmd  |= is200_pnp_read(port, EIOIS200_IOBA1L);
+> +
+> +	/* Disable IRQ */
+> +	is200_pnp_write(port, EIOIS200_IRQCTRL, 0);
+> +
+> +	is200_pnp_leave(port);
+> +
+> +	/* Make sure IO ports are not occupied */
+> +	if (!devm_request_region(dev, pmc->data, 2, KBUILD_MODNAME)) {
+> +		dev_err(dev, "Request region %X error\n", pmc->data);
+> +		return -EBUSY;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int eiois200_exist(struct device *dev)
+> +{
+> +	u16  chip_id = 0;
+> +	u8   tmp = 0;
+> +	int  i = 0;
+> +	int  ret = -ENOMEM;
+> +	char chip[][8] = { "First",  "Second" };
+> +
+> +	for (i = 0 ; i < ARRAY_SIZE(pnp_port) ; i++) {
+
+Should 'i' be 'port' here?
+
+> +		struct eiois200_dev_port *port = pnp_port + i;
+> +
+> +		if (!devm_request_region(dev,
+> +					 pnp_port[i].idx,
+> +					 2,
+
+What's 2?  This should probably be defined.
+
+> +					 KBUILD_MODNAME))
+> +			continue;
+> +
+> +		is200_pnp_enter(port);
+> +
+> +		chip_id  = is200_pnp_read(port, EIOIS200_CHIPID1) << 8;
+> +		chip_id |= is200_pnp_read(port, EIOIS200_CHIPID2);
+> +
+> +		if (chip_id != EIOIS200_CHIPID &&
+> +		    chip_id != EIO201_211_CHIPID)
+> +			continue;
+> +
+> +		/* Turn on the enable flag */
+> +		tmp = is200_pnp_read(port, EIOIS200_SIOCTRL);
+> +		tmp |= EIOIS200_SIOCTRL_SIOEN;
+> +		is200_pnp_write(port, EIOIS200_SIOCTRL, tmp);
+> +
+> +		is200_pnp_leave(port);
+> +
+> +		ret = get_pmc_port(dev, i, port);
+> +		if (ret)
+> +			return ret;
+> +
+> +		eiois200_dev->flag |= i == 0 ?  EIOIS200_F_CHIP_EXIST :
+
+This logic either needs improving or commented on.
+
+> +						EIOIS200_F_SUB_CHIP_EXIST;
+> +
+> +		pr_info("%s chip detected: %04X\n", chip[i], chip_id);
+
+We can almost certainly do without these in production code.
+
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +/* read information about acpi stored in EC */
+
+Please use prober grammar.
+
+"Read ACPI information stored in the EC"
+
+> +static uint8_t acpiram_access(uint8_t offset)
+> +{
+> +	u8  val;
+> +	int ret;
+> +
+> +	mutex_lock(&eiois200_dev->mutex);
+> +
+> +	pmc_clear(0);
+> +
+> +	ret = pmc_write_cmd(0, EIOIS200_PMC_CMD_ACPIRAM_READ, 0);
+
+All of the magic numbers in this function need to be defined.
+
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = pmc_write_data(0, offset, 0);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = pmc_write_data(0, 1, 0);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = pmc_read_data(0, &val, 0);
+> +	if (ret)
+> +		goto err;
+> +
+> +err:
+> +	mutex_unlock(&eiois200_dev->mutex);
+> +	return ret ? 0 : val;
+
+If it fails, you return success?
+
+> +}
+> +
+> +static int firmware_code_base(struct device *dev)
+> +{
+> +	u8 ic_vendor, ic_code, code_base;
+> +
+> +	ic_vendor = acpiram_access(EIOIS200_ACPIRAM_ICVENDOR);
+> +	ic_code   = acpiram_access(EIOIS200_ACPIRAM_ICCODE);
+> +	code_base = acpiram_access(EIOIS200_ACPIRAM_CODEBASE);
+> +
+> +	if (ic_vendor != 'R')
+> +		return -ENODEV;
+> +
+> +	if (ic_code != EIOIS200_ICCODE &&
+> +	    ic_code != EIO201_ICCODE   &&
+> +	    ic_code != EIO211_ICCODE)
+> +		goto err;
+> +
+> +	if (code_base == 0x80) {
+
+No magic numbers please.
+
+> +		eiois200_dev->flag |= EIOIS200_F_NEW_CODE_BASE;
+> +		return 0;
+> +	}
+> +
+> +	if (code_base == 0 && (ic_code != EIO201_ICCODE &&
+> +			       ic_code != EIO211_ICCODE)) {
+> +		pr_info("Old code base not supported, yet.");
+> +		return -ENODEV;
+> +	}
+> +
+> + err:
+> +	dev_err(dev,
+> +		"Codebase check fail:\n"
+> +		"ic_vendor: 0x%X  ,ic_code : 0x%X ,code_base : 0x%X\n",
+> +		ic_vendor, ic_code, code_base);
+
+These are really ugly prints.
+
+Also, they should not contain new lines.
+
+> +	return -ENODEV;
+> +}
+> +
+> +int eiois200_probe(struct device *dev, unsigned int id)
+
+.probe() usually goes near the bottom.
+
+> +{
+> +	int  ret = 0;
+> +	void __iomem *iomem;
+
+Swap these over.
+
+> +	iomem = devm_ioport_map(dev, 0, EIOIS200_SUB_PNP_DATA + 1);
+> +	if (!iomem)
+> +		return -ENOMEM;
+> +
+> +	regmap_is200 = devm_regmap_init_mmio(dev, iomem, &pnp_regmap_config);
+> +	if (!regmap_is200)
+> +		return -ENOMEM;
+> +
+> +	eiois200_dev = devm_kzalloc(dev,
+> +				    sizeof(struct eiois200_dev),
+
+sizeof(*eiois200_dev)
+
+> +				    GFP_KERNEL);
+> +	if (!eiois200_dev)
+> +		return -ENOMEM;
+> +
+> +	mutex_init(&eiois200_dev->mutex);
+> +
+> +	if (eiois200_exist(dev))
+> +		return -ENODEV;
+> +
+> +	if (firmware_code_base(dev)) {
+> +		dev_err(dev, "Chip code base check fail\n");
+> +		return -EIO;
+> +	}
+> +
+> +	dev_set_drvdata(dev, eiois200_dev);
+
+What data have you stored in eiois200_dev?
+
+> +	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, susi_mfd_devs,
+> +				   ARRAY_SIZE(susi_mfd_devs),
+> +				   NULL, 0, NULL);
+> +	if (ret)
+> +		dev_err(dev, "Cannot register child devices (error = %d)\n", ret);
+> +
+> +	pr_info("%s started", KBUILD_MODNAME);
+
+These prints are not useful, please remove them.
+
+> +
+> +	return 0;
+> +}
+> +
+> +struct {
+> +	char name[32];
+> +	int  cmd;
+> +	int  ctrl;
+> +	int  size;
+> +} attrs[] = {
+> +	{ "board_name",		0x53, 0x10, 16 },
+> +	{ "board_serial",	0x53, 0x1F, 16 },
+> +	{ "board_manufacturer", 0x53, 0x11, 16 },
+> +	{ "board_id",		0x53, 0x1E,  4 },
+> +	{ "firmware_version",	0x53, 0x22, 16 },
+> +	{ "firmware_build",	0x53, 0x23, 26 },
+> +	{ "firmware_date",	0x53, 0x24, 16 },
+> +	{ "chip_id",		0x53, 0x12, 12 },
+> +	{ "chip_detect",	0x53, 0x15, 12 },
+> +	{ "platform_type",	0x53, 0x13, 16 },
+> +	{ "platform_revision",	0x53, 0x14,  4 },
+> +	{ "eapi_version",	0x53, 0x30,  4 },
+> +	{ "eapi_id",		0x53, 0x31,  4 },
+> +	{ "boot_count",		0x55, 0x10,  4 },
+> +	{ "powerup_hour",	0x55, 0x11,  4 },
+> +};
+> +
+> +static ssize_t info_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+
+SYSFS handling usually goes near the top.
+
+> +{
+> +	uint i;
+> +
+> +	for (i = 0 ; i < ARRAY_SIZE(attrs) ; i++)
+> +		if (!strcmp(attr->attr.name, attrs[i].name)) {
+> +			int ret;
+> +			char str[32] = "";
+> +			struct _pmc_op op = {
+> +				.cmd     = attrs[i].cmd,
+> +				.control = attrs[i].ctrl,
+> +				.payload = (u8 *)str,
+> +				.size    = attrs[i].size,
+> +			};
+> +
+> +			ret = eiois200_core_pmc_operation(&op);
+> +			if (ret)
+> +				return ret;
+> +
+> +			if (attrs[i].size == 4)
+> +				return sysfs_emit(buf, "%X\n", *(u32 *)str);
+> +			else
+> +				return sysfs_emit(buf, "%s\n", str);
+> +		}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static DEVICE_ATTR(board_name,		0444, info_show, NULL);
+> +static DEVICE_ATTR(board_serial,	0444, info_show, NULL);
+> +static DEVICE_ATTR(board_manufacturer,	0444, info_show, NULL);
+> +static DEVICE_ATTR(firmware_version,	0444, info_show, NULL);
+> +static DEVICE_ATTR(firmware_build,	0444, info_show, NULL);
+> +static DEVICE_ATTR(firmware_date,	0444, info_show, NULL);
+> +static DEVICE_ATTR(chip_id,		0444, info_show, NULL);
+> +static DEVICE_ATTR(chip_detect,		0444, info_show, NULL);
+> +static DEVICE_ATTR(platform_type,	0444, info_show, NULL);
+> +static DEVICE_ATTR(platform_revision,	0444, info_show, NULL);
+> +static DEVICE_ATTR(board_id,		0444, info_show, NULL);
+> +static DEVICE_ATTR(eapi_version,	0444, info_show, NULL);
+> +static DEVICE_ATTR(eapi_id,		0444, info_show, NULL);
+> +static DEVICE_ATTR(boot_count,		0444, info_show, NULL);
+> +static DEVICE_ATTR(powerup_hour,	0444, info_show, NULL);
+> +
+> +static struct attribute *pmc_attrs[] = {
+> +	&dev_attr_board_name.attr,
+> +	&dev_attr_board_serial.attr,
+> +	&dev_attr_board_manufacturer.attr,
+> +	&dev_attr_firmware_version.attr,
+> +	&dev_attr_firmware_build.attr,
+> +	&dev_attr_firmware_date.attr,
+> +	&dev_attr_chip_id.attr,
+> +	&dev_attr_chip_detect.attr,
+> +	&dev_attr_platform_type.attr,
+> +	&dev_attr_platform_revision.attr,
+> +	&dev_attr_board_id.attr,
+> +	&dev_attr_eapi_version.attr,
+> +	&dev_attr_eapi_id.attr,
+> +	&dev_attr_boot_count.attr,
+> +	&dev_attr_powerup_hour.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group attr_group = {
+> +	.attrs = pmc_attrs,
+> +};
+> +
+> +static const struct attribute_group *attr_groups[] = {
+> +	&attr_group,
+> +	NULL
+> +};
+
+Pretty sure there are helper MACROS for this.
+
+> +static struct isa_driver eiois200_driver = {
+> +	.probe    = eiois200_probe,
+> +
+> +	.driver = {
+> +		.owner = THIS_MODULE,
+
+Are you sure the class doesn't do this for you?
+
+> +		.name  = KBUILD_MODNAME,
+
+Use a proper string.
+
+> +		.dev_groups = attr_groups,
+> +	},
+> +};
+> +
+> +module_isa_driver(eiois200_driver, 1);
+> +
+> +MODULE_AUTHOR("susi.driver <susi.driver@advantech.com.tw>");
+
+This does not match the credentials above.
+
+> +MODULE_DESCRIPTION("Advantech EIO-IS200 series EC core driver");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.34.1
+> 
+
+-- 
+Lee Jones [李琼斯]
