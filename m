@@ -2,151 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8427A8785
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 16:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6557A87C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbjITOsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 10:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        id S235341AbjITPBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236650AbjITOsC (ORCPT
+        with ESMTP id S235298AbjITPBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:48:02 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02604E4F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:47:33 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50317080342so5752098e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:47:33 -0700 (PDT)
+        Wed, 20 Sep 2023 11:01:15 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADF191;
+        Wed, 20 Sep 2023 08:01:09 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-402d499580dso75008185e9.1;
+        Wed, 20 Sep 2023 08:01:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695221252; x=1695826052; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/cF+h5j15Rca2B8Ac70UcdcDuVaOzRHd+CtHU3r+VSA=;
-        b=aab4BhcJPtrXm+QA7o67bXkoyOT7nNdsdAdQ3mooNefjfXQM6/nYyotQ2zv2FdfeMX
-         9AEVwFhRWZhA1SCspHH4cd19x5PDA9fhJ3/hPj85pA+A/qIf3vramc0UF1X95ttjtV2u
-         wnjpszXZsnWWM0CUeWdZcb/lhIR2Zf8cGghlg6nxsTjiKutnjPlM/izY8SUSab/wRJPE
-         2StPYkRxpLL+pVk1Af+pbnG7BCSAgtqCz7RTxVOgzCFJecrJqUyjePJxBe6Ff4o60rH+
-         py5WWu9vstXk3s5PmGjMMpp4+PIkmTSaUmyduNjrXDWWOn4LEBa1sJSOCVi+NeZaWP5k
-         crWg==
+        d=gmail.com; s=20230601; t=1695222068; x=1695826868; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D0MPgiZbxZbSzUsXqTDVKwoPGRFcJqc+1YPwRP9UNJI=;
+        b=hZgj0W6EFlCR2WlTMr4kM7OM6nYpWxXNPWDaopCx+kGFzO2E/6+QXLF/rVHqFt9Ac6
+         6vSn2vw06OREX0jBG14HpyYwLeRH01o+BuSqNx4PpC+wDwirKnJpXZdQIF3W2tbcKaep
+         7zVUikc9wQ8rQBWQfvxdk22W+pLRjfsWH40mRXIocMrKUcxdRunkBJZN/wN9vmLID3t3
+         wsiz6J1Cl0ID9KBfM+M7SbQRNgXnSLb/Z+U79nI8IfveyyyU20JJTw43Q/SnDV/5H7Bs
+         3xeypfEh4jmwp8V3QXG73qn8On6ZUlOF6F6Qbl5bqKseygHFf1JawvbzLJD+dcp2+Bal
+         XznQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695221252; x=1695826052;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/cF+h5j15Rca2B8Ac70UcdcDuVaOzRHd+CtHU3r+VSA=;
-        b=NKXld/VBESql1FlzW8Sw2UhKr4Jv+Sn6Y6Au7M4oBk6zXUMtslfx/5PsFCTHE63tXN
-         +J9FlF+VWjv14Ah8nsVdUtIK97E9WRFbG4QyM093YoNdA/OUStdFBaRwVbrlcaCLE6Y9
-         46qp55i9Y+tjVuRTtn+YAvjh0o9Ol48EsBOx6lbnlEiMRezODLSOAqatH1Nm3BD5XtV9
-         aXklxQSpKRyUxYuvsTh7+7njbI5WWRwLYYzR3TzWryBku58V7VwaSZt1L4ChGPNhR2m5
-         7is5g2CsqDGmFIp2PWDrQlopQS2Koa3jcwThuKsWuaJQjNJXa8aug4dHc4vNvldKP7+u
-         7iEA==
-X-Gm-Message-State: AOJu0YyfKXpM+4ENFDjyQogSv7O7MT4r2go+78w9QaALaspRoEHBIAYf
-        Uj2PsKTUPs9ard0ulF7wkhHPWA==
-X-Google-Smtp-Source: AGHT+IEC4UKJzn8HINvDR186oQwvlaGU0qyeL+doNP5/QKlVeseSI6jPj0WZSM0ZMJt4ddKdxluT0Q==
-X-Received: by 2002:a05:6512:513:b0:4fe:c98:789a with SMTP id o19-20020a056512051300b004fe0c98789amr2514259lfb.37.1695221252005;
-        Wed, 20 Sep 2023 07:47:32 -0700 (PDT)
-Received: from [172.20.86.172] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id bo6-20020a0564020b2600b0052284228e3bsm9092882edb.8.2023.09.20.07.47.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 07:47:31 -0700 (PDT)
-Message-ID: <44a00fc6-d700-4713-34f0-36b172d8cb90@linaro.org>
-Date:   Wed, 20 Sep 2023 16:47:30 +0200
+        d=1e100.net; s=20230601; t=1695222068; x=1695826868;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D0MPgiZbxZbSzUsXqTDVKwoPGRFcJqc+1YPwRP9UNJI=;
+        b=olRrtFhdY2E7qidtFx2dMj/Lx3NEqn4LdPvkAqL3TbtNt2+NoE+cUdDR+gdIwY1HYK
+         akbHl+PIOm5o2/+KYqVF/UOkmJA8VSy86SDJHq76NREytCS/Sm/vkMWb5Zup+sJyQSA1
+         XlUUHKlsyzKb/mHun6l0r5cwQgS2EyDzWOMeRQBlZtrGT5u+SwBLk6oCOQs+yiHR0L1+
+         dFXfP9w7gdilG3fmz7ddeWSjeAcbqdBUElc3TLedh0unQzoE/tJqRA/Yn5fADS10tW7W
+         pryQIP0Vyrehek2fBLuWunBmGqLwdIoMJLFBFhBnFXMhZbpiQ0X+K+A6u1A73BKJ8rzp
+         TFgg==
+X-Gm-Message-State: AOJu0Yx1GJtD5dMT+0SIBWSmrcK4wFU8cnBtGJvRRsaI/hG9l0efZ7YC
+        oGnV4BJuTE/+GXodOYe5bkH+mfMhurRQGNs7fEc=
+X-Google-Smtp-Source: AGHT+IER8+VELFzpEVI2XHFwY0rPDpYyCVCmhJX++vO0mopYjoeBzOgJ7ln8g04ac+lGVxO2UpImhg==
+X-Received: by 2002:a7b:c859:0:b0:402:95a0:b2ae with SMTP id c25-20020a7bc859000000b0040295a0b2aemr2444890wml.32.1695222067223;
+        Wed, 20 Sep 2023 08:01:07 -0700 (PDT)
+Received: from primary ([212.34.23.120])
+        by smtp.gmail.com with ESMTPSA id a24-20020a05600c225800b00402d7105035sm2170550wmm.26.2023.09.20.08.01.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 08:01:06 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 10:47:38 -0400
+From:   Abdel Alkuor <alkuor@gmail.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        abdelalkuor@geotab.com
+Subject: Re: [PATCH v5 05/15] USB: typec: Check for EEPROM present
+Message-ID: <ZQsGChGBq93Rh35U@primary>
+References: <20230917152639.21443-1-alkuor@gmail.com>
+ <20230917152639.21443-6-alkuor@gmail.com>
+ <ZQhGUKocVc+yjOVL@kuha.fi.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8939-huawei-kiwi: Add initial
- device tree
-Content-Language: en-US
-To:     Lukas Walter <lukas.walter@aceart.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Raymond Hackley <raymondhackley@protonmail.com>
-References: <20230916134147.163764-1-lukas.walter@aceart.de>
- <20230916134147.163764-2-lukas.walter@aceart.de>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230916134147.163764-2-lukas.walter@aceart.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQhGUKocVc+yjOVL@kuha.fi.intel.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/16/23 15:41, Lukas Walter wrote:
-> This dts adds support for Huawei Honor 5X / GR5 (2016) smartphone
-> released in 2015.
+On Mon, Sep 18, 2023 at 03:45:04PM +0300, Heikki Krogerus wrote:
+> On Sun, Sep 17, 2023 at 11:26:29AM -0400, Abdel Alkuor wrote:
+> > From: Abdel Alkuor <abdelalkuor@geotab.com>
+> > 
+> > When an EEPROM is present, tps25750 loads the binary configuration from
+> > EEPROM. Hence, all we need to do is wait for the device to switch to APP
+> > mode
+> > 
+> > Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+> > ---
+> >  drivers/usb/typec/tipd/core.c     | 13 +++++++++++++
+> >  drivers/usb/typec/tipd/tps6598x.h |  3 +++
+> >  2 files changed, 16 insertions(+)
+> > 
+> > diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> > index fea139c72d6d..b3d4b2b5bf5f 100644
+> > --- a/drivers/usb/typec/tipd/core.c
+> > +++ b/drivers/usb/typec/tipd/core.c
+> > @@ -37,6 +37,7 @@
+> >  #define TPS_REG_STATUS			0x1a
+> >  #define TPS_REG_SYSTEM_CONF		0x28
+> >  #define TPS_REG_CTRL_CONF		0x29
+> > +#define TPS_REG_BOOT_STATUS		0x2D
+> >  #define TPS_REG_POWER_STATUS		0x3f
+> >  #define TPS_REG_RX_IDENTITY_SOP		0x48
+> >  #define TPS_REG_DATA_STATUS		0x5f
+> > @@ -897,6 +898,17 @@ static int tps25750_apply_patch(struct tps6598x *tps)
+> >  	int ret;
+> >  	unsigned long timeout;
+> >  	u8 mode;
+> > +	u64 status = 0;
+> > +
+> > +	ret = tps6598x_block_read(tps, TPS_REG_BOOT_STATUS, &status, 5);
+> > +	if (ret)
+> > +		return ret;
+> > +	/*
+> > +	 * Nothing to be done if the configuration
+> > +	 * is being loaded from EERPOM
+> > +	 */
+> > +	if (status & TPS25750_BOOT_STATUS_I2C_EEPROM_PRESENT)
+> > +		goto wait_for_app;
+> >  
+> >  	ret = tps25750_start_patch_burst_mode(tps);
+> >  	if (ret) {
+> > @@ -908,6 +920,7 @@ static int tps25750_apply_patch(struct tps6598x *tps)
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +wait_for_app:
+> >  	timeout = jiffies + msecs_to_jiffies(1000);
+> >  
+> >  	do {
+> > diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
+> > index 527857549d69..5e942c089c27 100644
+> > --- a/drivers/usb/typec/tipd/tps6598x.h
+> > +++ b/drivers/usb/typec/tipd/tps6598x.h
+> > @@ -199,4 +199,7 @@
+> >  #define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_A    BIT(2)
+> >  #define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_B    (BIT(2) | BIT(1))
+> >  
+> > +/* BOOT STATUS REG*/
+> > +#define TPS25750_BOOT_STATUS_I2C_EEPROM_PRESENT	BIT(3)
 > 
-> Add device tree with initial support for:
+> That's not TPS25750 specific bit, so please rename that to
+> TPS_BOOT_STATUS_I2C_EEPROM_PRESENT
 > 
-> - GPIO keys
-> - Hall sensor
-> - SDHCI (internal and external storage)
-> - WCNSS (BT/WIFI)
-> - Sensors (accelerometer, proximity and gyroscope)
-> - Vibrator
-> - Touchscreen
+I will fix it in v6.
+> thanks,
 > 
-> Signed-off-by: Lukas Walter <lukas.walter@aceart.de>
-> Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
-> ---
-Beyond the signoff question from Krzysztof, this looks really good.
-Some comments below.
+> -- 
+> heikki
 
-[...]
-
-> +
-> +	reserved-memory {
-> +		reserved@84a00000 {
-> +			reg = <0x0 0x84a00000 0x0 0x1600000>;
-> +			no-map;
-> +		};
-Do we know what this is for?
-
-
-> +	};
-> +
-> +	gpio-hall-sensor {
-> +		compatible = "gpio-keys";
-> +
-> +		pinctrl-0 = <&gpio_hall_sensor_default>;
-> +		pinctrl-names = "default";
-> +
-> +		label = "GPIO Hall Effect Sensor";
-I think we can have both hall sensor and V+ under gpio-keys
-
-And then I am not sure how useful the label is for the container
-node, maybe you or somebody else can tell me whether it's used
-anywhere
-> +
-> +		event-hall-sensor {
-> +			label = "Hall Effect Sensor";
-> +			gpios = <&tlmm 69 GPIO_ACTIVE_LOW>;
-> +			linux,input-type = <EV_SW>;
-> +			linux,code = <SW_LID>;
-> +			linux,can-disable;
-Should this not be a wakeup-source btw?
-
-> +		};
-> +	};
-> +
-[...]
-
-> +		/*
-> +		 * NOTE: vdd is not directly supplied by pm8916_l16, it seems to be a
-> +		 * fixed regulator that is automatically enabled by pm8916_l16.
-That sounds reasonable, many boards have such circuits
-
-Konrad
+Thanks,
+Abdel
