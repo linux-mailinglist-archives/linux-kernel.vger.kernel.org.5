@@ -2,143 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C3F7A75C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8727A75D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbjITIXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
+        id S233738AbjITIY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbjITIXq (ORCPT
+        with ESMTP id S233899AbjITIY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:23:46 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9BB99;
-        Wed, 20 Sep 2023 01:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695198219; x=1726734219;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=h8v+kPqS+HjJo2h9d2NO6MN5S7urQThJPL5oA0y2o4A=;
-  b=QpLHrG2IuObaFFzi4IJld2IH3EzVoGsEQGEOIKFQutleXaZSiH6zLq/X
-   5QtF65BMCCU98jH+mAPSHmFQvUNRyR3v5bhXkTwBvrMYTtZeGxIHH7ZJi
-   dQUXctD1EygwVjMDfqOzahe3vRhKavWuVM0w7537vSL4TDXJg2mDHOMzF
-   N7lVt23UJHFhdmO4xvmtt2i1wISwoZSlrME6cIZCYnBh1l18+ppxFBiP+
-   V6we0TWRO7E+zS6nQW1sA/3KYHqGSEUepNJDtz59oIJ6fOJIqkbN4v4YM
-   CoAkzHnzMMZXPEKRTGKil5cxjCbzEvqMwq/7Qbp5eSrbq0Eyfm0iuHt6T
-   Q==;
-X-CSE-ConnectionGUID: 447RiIfjRayIHUjMe4w4Kg==
-X-CSE-MsgGUID: AttvSdqhTIu+lS3BC2Ba3A==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="asc'?scan'208";a="5613544"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Sep 2023 01:23:38 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 20 Sep 2023 01:23:01 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 20 Sep 2023 01:22:58 -0700
-Date:   Wed, 20 Sep 2023 09:22:41 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Chen Wang <unicornxw@gmail.com>
-CC:     <aou@eecs.berkeley.edu>, <chao.wei@sophgo.com>, <conor@kernel.org>,
-        <devicetree@vger.kernel.org>, <emil.renner.berthing@canonical.com>,
-        <guoren@kernel.org>, <jszhang@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
-        <robh+dt@kernel.org>, <xiaoguang.xing@sophgo.com>,
-        Chen Wang <wangchen20@iscas.ac.cn>
-Subject: Re: [PATCH v2 02/11] dt-bindings: vendor-prefixes: add milkv/sophgo
-Message-ID: <20230920-unable-impish-373fd26b7d16@wendy>
-References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
- <dbd7d823a73d8a9484efcd55f6616f5392daf608.1695189879.git.wangchen20@iscas.ac.cn>
+        Wed, 20 Sep 2023 04:24:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F988131
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:24:44 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 447F566003AF;
+        Wed, 20 Sep 2023 09:24:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695198283;
+        bh=A5e7XZz1Vz5cGVbLdkx/jRxgzoIVS2ZgkuULWqKvE0Y=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=FsZTDG4RTKeQAaMJvZSgnuAAHZHNvMI0PvMF3quOB72278UF5mqcvnTLhBRw0fDN/
+         OpDihFI2OsXEwyql6hveCMhCqqyzEyGyjl1OKbMAGbQ4zpTcfPz2xXV9LzESsQMW/7
+         Qw7Fkepm4uuTA/YmzQYVJn0uX5xAeAEdas5hcHipKH6eLRiUNSBMUDaPzRT3eqMhD5
+         WAiJcwytHOg93mEhZbvCLMnQp/nb1BdhC6HOaF9jnH5ErC4q/7QT6pG3UAV8D0SvRF
+         Ea16ix2fzDBs1m+m/5VwS6jA/eCiQPUrYKQLbbCdnLdGwJvz+v9fZESf/yzaDg3cXK
+         oZNztHAHPPiwA==
+Message-ID: <6cde344a-9e93-07b0-862b-aa401e6c64fb@collabora.com>
+Date:   Wed, 20 Sep 2023 10:24:39 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SwIF3I7rfx1hXsx3"
-Content-Disposition: inline
-In-Reply-To: <dbd7d823a73d8a9484efcd55f6616f5392daf608.1695189879.git.wangchen20@iscas.ac.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] drm/bridge: panel: Fix device link for
+ DRM_BRIDGE_ATTACH_NO_CONNECTOR
+Content-Language: en-US
+To:     Ying Liu <victor.liu@nxp.com>,
+        "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>
+Cc:     "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        "rfoss@kernel.org" <rfoss@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        "ehristev@collabora.com" <ehristev@collabora.com>,
+        "wenst@chromium.org" <wenst@chromium.org>
+References: <20230918150043.403250-1-angelogioacchino.delregno@collabora.com>
+ <AM7PR04MB70466D88048831E48EBBBD0898FAA@AM7PR04MB7046.eurprd04.prod.outlook.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <AM7PR04MB70466D88048831E48EBBBD0898FAA@AM7PR04MB7046.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---SwIF3I7rfx1hXsx3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Il 19/09/23 03:45, Ying Liu ha scritto:
+> Hi Angelo,
+> 
+> Thank you for the patch.
+> 
+> On Monday, September 18, 2023 11:01 PM, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com> wrote:
+>> When external bridges are attached with
+>> DRM_BRIDGE_ATTACH_NO_CONNECTOR,
+>> the panel bridge may also get the same flag, but in the .attach()
+>> callback for the panel bridge a device link is added only when this
+>> flag is not present; To make things worse, the .detach() callback
+>> tries to delete the device link unconditionally and without checking
+>> if it was created in the first place, crashing the kernel with a NULL
+>> pointer kernel panic upon calling panel_bridge_detach().
+>>
+>> Fix that by moving the device_link_add() call before checking if the
+>> DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is present.
+>>
+>> Fixes: 199cf07ebd2b ("drm/bridge: panel: Add a device link between drm
+>> device and panel device")
+>> Signed-off-by: AngeloGioacchino Del Regno
+>> <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   drivers/gpu/drm/bridge/panel.c | 16 ++++++++--------
+>>   1 file changed, 8 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/panel.c
+>> b/drivers/gpu/drm/bridge/panel.c
+>> index e00d2e94c751..8c507dfd589e 100644
+>> --- a/drivers/gpu/drm/bridge/panel.c
+>> +++ b/drivers/gpu/drm/bridge/panel.c
+>> @@ -67,14 +67,6 @@ static int panel_bridge_attach(struct drm_bridge
+>> *bridge,
+>>   	struct drm_device *drm_dev = bridge->dev;
+>>   	int ret;
+>>
+>> -	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
+>> -		return 0;
+>> -
+>> -	if (!bridge->encoder) {
+>> -		DRM_ERROR("Missing encoder\n");
+>> -		return -ENODEV;
+>> -	}
+>> -
+>>   	panel_bridge->link = device_link_add(drm_dev->dev, panel->dev,
+>>   					     DL_FLAG_STATELESS);
+>>   	if (!panel_bridge->link) {
+>> @@ -83,6 +75,14 @@ static int panel_bridge_attach(struct drm_bridge
+>> *bridge,
+>>   		return -EINVAL;
+>>   	}
+>>
+>> +	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
+>> +		return 0;
+>> +
+>> +	if (!bridge->encoder) {
+>> +		DRM_ERROR("Missing encoder\n");
+> 
+> Shouldn't the device link be deleted in case of error?
+> 
 
-Yo,
+Whoops! Yes, that's right. I'm sending a v2 right now.
 
-On Wed, Sep 20, 2023 at 02:37:28PM +0800, Chen Wang wrote:
-> Add new vendor strings to dt bindings.
-> These new vendor strings are used by
-> - Sophgo SG2042 SoC [1]
-> - Milk-V Pioneer board [2], which uses SG2042 chip.
->=20
-> [1]: https://en.sophgo.com/product/introduce/sg2042.html
-> [2]: https://milkv.io/pioneer
+Thanks!
+Angelo
 
-If you resend, make these link tags please. Otherwise,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Regards,
+> Liu Ying
+> 
+>> +		return -ENODEV;
+>> +	}
+>> +
+>>   	drm_connector_helper_add(connector,
+>>   				 &panel_bridge_connector_helper_funcs);
+>>
+>> --
+>> 2.42.0
+> 
 
-Thanks,
-Conor.
 
-> Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
-> Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
-umentation/devicetree/bindings/vendor-prefixes.yaml
-> index 573578db9509..fcca9e070a9a 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -863,6 +863,8 @@ patternProperties:
->      description: MikroElektronika d.o.o.
->    "^mikrotik,.*":
->      description: MikroTik
-> +  "^milkv,.*":
-> +    description: MilkV Technology Co., Ltd
->    "^miniand,.*":
->      description: Miniand Tech
->    "^minix,.*":
-> @@ -1273,6 +1275,8 @@ patternProperties:
->      description: Solomon Systech Limited
->    "^sony,.*":
->      description: Sony Corporation
-> +  "^sophgo,.*":
-> +    description: Sophgo Technology Inc.
->    "^sourceparts,.*":
->      description: Source Parts Inc.
->    "^spansion,.*":
-> --=20
-> 2.25.1
->=20
-
---SwIF3I7rfx1hXsx3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQqr0QAKCRB4tDGHoIJi
-0uyKAPsHIRY81qzmFLxN6FMUw75lAg98PudIOjgADw5xJjpEIAD/cyrHv5LAaY6t
-yPmwkTQt4gexHGLZEQIyIf/v7yfSnwc=
-=W+PQ
------END PGP SIGNATURE-----
-
---SwIF3I7rfx1hXsx3--
