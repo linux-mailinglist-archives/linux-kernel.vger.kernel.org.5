@@ -2,206 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B74F7A758D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC507A7590
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233646AbjITINk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        id S232496AbjITIPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbjITINi (ORCPT
+        with ESMTP id S231347AbjITIPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:13:38 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5AECA
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:13:32 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3214d4ecd39so2970933f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:13:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695197611; x=1695802411; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bFVwkQGYHLyQMWXHCf9YewQuFfTq2ysEb3BcSmI7FIU=;
-        b=BJ6u2Pql7OkqQ1r+Iqe2+y7461xtkaFj69u7uawVgPKyR72fkCZVGwJCYK0AGWL+eS
-         aprYUV4ov1ZUtjnTXKTL7YISl98GwfBKD1gGuTOPD4BL0uiNPAyZqHRgOzcs3euMvvYp
-         9AQBKpx6KZ7RFC//lhJgAH7pHT4KDyDR6pVe8YZEcm/cT+E4X/0PihZe57Hjqy6/Jxg6
-         ol5xC1GUuHjf/6SivCb8J8yVzXg51d9Y96GQZy7A/8P46ku/F6xSXTG3J/jzu9CvnBBQ
-         jYf4aFlwINk8FNwESFV3b5UFiowOCYZRB7NErkUwBLlxYLbhcef4+yQAnQaAs/3TjGfV
-         /OcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695197611; x=1695802411;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bFVwkQGYHLyQMWXHCf9YewQuFfTq2ysEb3BcSmI7FIU=;
-        b=Es0DARIVPtZiz9HU/GfmAViv9ocyFWIQS6ePtQi2Kim5eLsV/3vJjHtMeryBIwfbAH
-         bz99fR1wZwpgK637P5S8q8RkSzoOTtKj/kl+ufmkzsiJ8NhcvuCUrCvzn8FBJlURAISj
-         Qi5vDwoYA+QGbAIdIG1He94G+V7J8dFZA2wF4TTdEDwLtKKzS97KHDGWw3BRLRcW1Z9+
-         dxH7DpCMbgUoNK4vN9wU8xSuPrj3fmM2rTc+Y3xnVosGP+lKsedYBrhG55Muk2Cqv2cV
-         tqbED/sTMkckHC4lxauEz9jPcaDmF28vWi89zQum5P+F3fHnxTbjKFZIrBbxrxtmp0Ev
-         LOqg==
-X-Gm-Message-State: AOJu0YwJLVr+l5KXDTysvioc4mAW+yutVQxvFsXno5PBjZXsSaM9vevA
-        1sP2asaIBZ/XTw/RiLD1HwPkMQ==
-X-Google-Smtp-Source: AGHT+IGq8/xjn/oNq2PTpNaOrP+pjj6Y9zwWhdZGp94uECltWuxSC0BJqvKxel2SPT2PaHs+TjltqA==
-X-Received: by 2002:a5d:56ce:0:b0:31c:8c93:61e3 with SMTP id m14-20020a5d56ce000000b0031c8c9361e3mr1658749wrw.60.1695197610866;
-        Wed, 20 Sep 2023 01:13:30 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id e1-20020a5d65c1000000b00315af025098sm17764141wrw.46.2023.09.20.01.13.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 01:13:30 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 10:13:29 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 6/7] KVM: riscv: selftests: Add smstateen registers to
- get-reg-list test
-Message-ID: <20230920-af833495ead3e2f8c32d63cc@orel>
-References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-7-apatel@ventanamicro.com>
+        Wed, 20 Sep 2023 04:15:08 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D79E9E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:15:02 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VsUU2iq_1695197698;
+Received: from 30.97.48.72(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VsUU2iq_1695197698)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Sep 2023 16:14:59 +0800
+Message-ID: <0d92b375-c583-a21e-4e5b-355932a8b30e@linux.alibaba.com>
+Date:   Wed, 20 Sep 2023 16:15:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919035343.1399389-7-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC PATCH 2/4] mm/compaction: optimize >0 order folio compaction
+ with free page split.
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rohan Puri <rohan.puri15@gmail.com>,
+        Mcgrof Chamberlain <mcgrof@kernel.org>,
+        Adam Manzanares <a.manzanares@samsung.com>,
+        John Hubbard <jhubbard@nvidia.com>
+References: <20230912162815.440749-1-zi.yan@sent.com>
+ <20230912162815.440749-3-zi.yan@sent.com>
+ <28f76c7c-4b84-5e08-2f27-07592d8078a2@linux.alibaba.com>
+ <40CD5F50-FC29-46FB-A3E2-76C6D14D390E@nvidia.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <40CD5F50-FC29-46FB-A3E2-76C6D14D390E@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:23:42AM +0530, Anup Patel wrote:
-> We have a new smstateen registers as separate sub-type of CSR ONE_REG
-> interface so let us add these registers to get-reg-list test.
+
+
+On 9/19/2023 1:20 AM, Zi Yan wrote:
+> On 18 Sep 2023, at 3:34, Baolin Wang wrote:
 > 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  .../selftests/kvm/riscv/get-reg-list.c        | 34 +++++++++++++++++++
->  1 file changed, 34 insertions(+)
+>> On 9/13/2023 12:28 AM, Zi Yan wrote:
+>>> From: Zi Yan <ziy@nvidia.com>
+>>>
+>>> During migration in a memory compaction, free pages are placed in an array
+>>> of page lists based on their order. But the desired free page order (i.e.,
+>>> the order of a source page) might not be always present, thus leading to
+>>> migration failures. Split a high order free pages when source migration
+>>> page has a lower order to increase migration successful rate.
+>>>
+>>> Note: merging free pages when a migration fails and a lower order free
+>>> page is returned via compaction_free() is possible, but there is too much
+>>> work. Since the free pages are not buddy pages, it is hard to identify
+>>> these free pages using existing PFN-based page merging algorithm.
+>>>
+>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>> ---
+>>>    mm/compaction.c | 40 +++++++++++++++++++++++++++++++++++++++-
+>>>    1 file changed, 39 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>> index 868e92e55d27..45747ab5f380 100644
+>>> --- a/mm/compaction.c
+>>> +++ b/mm/compaction.c
+>>> @@ -1801,9 +1801,46 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
+>>>    	struct compact_control *cc = (struct compact_control *)data;
+>>>    	struct folio *dst;
+>>>    	int order = folio_order(src);
+>>> +	bool has_isolated_pages = false;
+>>>   +again:
+>>>    	if (!cc->freepages[order].nr_free) {
+>>> -		isolate_freepages(cc);
+>>> +		int i;
+>>> +
+>>> +		for (i = order + 1; i <= MAX_ORDER; i++) {
+>>> +			if (cc->freepages[i].nr_free) {
+>>> +				struct page *freepage =
+>>> +					list_first_entry(&cc->freepages[i].pages,
+>>> +							 struct page, lru);
+>>> +
+>>> +				int start_order = i;
+>>> +				unsigned long size = 1 << start_order;
+>>> +
+>>> +				list_del(&freepage->lru);
+>>> +				cc->freepages[i].nr_free--;
+>>> +
+>>> +				while (start_order > order) {
+>>> +					start_order--;
+>>> +					size >>= 1;
+>>> +
+>>> +					list_add(&freepage[size].lru,
+>>> +						&cc->freepages[start_order].pages);
+>>> +					cc->freepages[start_order].nr_free++;
+>>> +					set_page_private(&freepage[size], start_order);
+>>
+>> IIUC, these split pages should also call functions to initialize? e.g. prep_compound_page()?
 > 
-> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> index 0928c35470ae..9f464c7996c6 100644
-> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> @@ -49,6 +49,7 @@ bool filter_reg(__u64 reg)
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICSR:
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
-> +	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SMSTATEEN:
->  		return true;
->  	/* AIA registers are always available when Ssaia can't be disabled */
->  	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siselect):
-> @@ -184,6 +185,8 @@ static const char *core_id_to_str(const char *prefix, __u64 id)
->  	"KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(" #csr ")"
->  #define RISCV_CSR_AIA(csr) \
->  	"KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_REG(" #csr ")"
-> +#define RISCV_CSR_SMSTATEEN(csr) \
-> +	"KVM_REG_RISCV_CSR_SMSTATEEN | KVM_REG_RISCV_CSR_REG(" #csr ")"
->  
->  static const char *general_csr_id_to_str(__u64 reg_off)
->  {
-> @@ -241,6 +244,18 @@ static const char *aia_csr_id_to_str(__u64 reg_off)
->  	return NULL;
->  }
->  
-> +static const char *smstateen_csr_id_to_str(__u64 reg_off)
-> +{
-> +	/* reg_off is the offset into struct kvm_riscv_smstateen_csr */
-> +	switch (reg_off) {
-> +	case KVM_REG_RISCV_CSR_SMSTATEEN_REG(sstateen0):
-> +		return RISCV_CSR_SMSTATEEN(sstateen0);
-> +	}
-> +
-> +	TEST_FAIL("Unknown smstateen csr reg: 0x%llx", reg_off);
-> +	return NULL;
-> +}
-> +
->  static const char *csr_id_to_str(const char *prefix, __u64 id)
->  {
->  	__u64 reg_off = id & ~(REG_MASK | KVM_REG_RISCV_CSR);
-> @@ -253,6 +268,8 @@ static const char *csr_id_to_str(const char *prefix, __u64 id)
->  		return general_csr_id_to_str(reg_off);
->  	case KVM_REG_RISCV_CSR_AIA:
->  		return aia_csr_id_to_str(reg_off);
-> +	case KVM_REG_RISCV_CSR_SMSTATEEN:
-> +		return smstateen_csr_id_to_str(reg_off);
->  	}
->  
->  	TEST_FAIL("%s: Unknown csr subtype: 0x%llx", prefix, reg_subtype);
-> @@ -342,6 +359,7 @@ static const char *isa_ext_id_to_str(__u64 id)
->  		"KVM_RISCV_ISA_EXT_ZICSR",
->  		"KVM_RISCV_ISA_EXT_ZIFENCEI",
->  		"KVM_RISCV_ISA_EXT_ZIHPM",
-> +		"KVM_RISCV_ISA_EXT_SMSTATEEN",
+> Not at this place. It is done right below and above "done" label. When free pages
+> are on cc->freepages, we want to keep them without being post_alloc_hook() or
+> prep_compound_page() processed for a possible future split. A free page is
+> only initialized when it is returned by compaction_alloc().
 
-If we merge [1] first, then this would be added in alphabetical order.
-
-[1] https://lore.kernel.org/all/20230817162344.17076-6-ajones@ventanamicro.com/
-
->  	};
->  
->  	if (reg_off >= ARRAY_SIZE(kvm_isa_ext_reg_name)) {
-> @@ -629,6 +647,11 @@ static __u64 aia_regs[] = {
->  	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SSAIA,
->  };
->  
-> +static __u64 smstateen_regs[] = {
-> +	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_SMSTATEEN | KVM_REG_RISCV_CSR_SMSTATEEN_REG(sstateen0),
-> +	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SMSTATEEN,
-> +};
-> +
->  static __u64 fp_f_regs[] = {
->  	KVM_REG_RISCV | KVM_REG_SIZE_U32 | KVM_REG_RISCV_FP_F | KVM_REG_RISCV_FP_F_REG(f[0]),
->  	KVM_REG_RISCV | KVM_REG_SIZE_U32 | KVM_REG_RISCV_FP_F | KVM_REG_RISCV_FP_F_REG(f[1]),
-> @@ -736,6 +759,8 @@ static __u64 fp_d_regs[] = {
->  	{"zihpm", .feature = KVM_RISCV_ISA_EXT_ZIHPM, .regs = zihpm_regs, .regs_n = ARRAY_SIZE(zihpm_regs),}
->  #define AIA_REGS_SUBLIST \
->  	{"aia", .feature = KVM_RISCV_ISA_EXT_SSAIA, .regs = aia_regs, .regs_n = ARRAY_SIZE(aia_regs),}
-> +#define SMSTATEEN_REGS_SUBLIST \
-> +	{"smstateen", .feature = KVM_RISCV_ISA_EXT_SMSTATEEN, .regs = smstateen_regs, .regs_n = ARRAY_SIZE(smstateen_regs),}
->  #define FP_F_REGS_SUBLIST \
->  	{"fp_f", .feature = KVM_RISCV_ISA_EXT_F, .regs = fp_f_regs, \
->  		.regs_n = ARRAY_SIZE(fp_f_regs),}
-> @@ -863,6 +888,14 @@ static struct vcpu_reg_list aia_config = {
->  	},
->  };
->  
-> +static struct vcpu_reg_list smstateen_config = {
-> +	.sublists = {
-> +	BASE_SUBLIST,
-> +	SMSTATEEN_REGS_SUBLIST,
-> +	{0},
-> +	},
-> +};
-> +
->  static struct vcpu_reg_list fp_f_config = {
->  	.sublists = {
->  	BASE_SUBLIST,
-> @@ -895,6 +928,7 @@ struct vcpu_reg_list *vcpu_configs[] = {
->  	&zifencei_config,
->  	&zihpm_config,
->  	&aia_config,
-> +	&smstateen_config,
->  	&fp_f_config,
->  	&fp_d_config,
->  };
-> -- 
-> 2.34.1
->
-
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-
-Thanks,
-drew
+Ah, I see. Thanks for explanation.
