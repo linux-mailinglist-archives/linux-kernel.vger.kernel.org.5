@@ -2,118 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1677A74C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FBA7A7468
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbjITHsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S233782AbjITHjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbjITHrz (ORCPT
+        with ESMTP id S233681AbjITHjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:47:55 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9E4CD2;
-        Wed, 20 Sep 2023 00:47:22 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-532c66a105bso1709663a12.3;
-        Wed, 20 Sep 2023 00:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695196040; x=1695800840; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=28rY4Z706VhStnnBjkizJUKVhlFQfIjXo/tl5cpkk8U=;
-        b=k8zBfS/zLjI+VGpiHftUdv7w1RN83ygC7omTGL+cx13zT7kvi2MHp1kkBtpKJTvQvG
-         gvcyNn1L91rFSFVzeU1vgWrVNiaDeon3IH//AGdEk9qNjLKtPe97exvhZixsr0bCANt/
-         ns4rfuXcf0JKUpJ0JMpwrI5nL7LiQ1LlXGyh09HpVur5vVsS5hDd5T0eBJu2BoHb/AGq
-         u+F11+fkRP5o6as9OU8WZDIaeCZsKU7ISfins1HHEt3xQwKBAEgUMy+TV3W6GUITjLiL
-         j2y5xMB99OcNZescwQiB3CRC/TQfBRIOHXYJdqTdr/mBrj7m9zO+/OP06+lnWb0MMsBb
-         6W3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695196040; x=1695800840;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=28rY4Z706VhStnnBjkizJUKVhlFQfIjXo/tl5cpkk8U=;
-        b=paFy/w3NTh5inTQ2OJhV4jqPqw1NCzoC3/tkEdJn/IY56ol1JK8SxfH37vH0VcNavl
-         qYMk6f+0cDuefU3Bd0s3XoJjatQB3FNlvDdFuJI2JufeLH4A3apZ75yw8O9Z1iGlCamB
-         I7phbUAtjNrxiqNpDWTu2QCFE6RqoctToKFo6TL/Bu1lwaHxP7UhOLGneLAb0QKHbdE4
-         U1BoKIq7n0RuN20lSCY3DYUldOiySHP60mZ4xaFTVTuVXiV0ecpgP0WTnIuj7S9+umB1
-         TW/L4a+AU4vGJcziMbRXvukeH0frIYtWc+KXJuB9uX61k3NoUUeVO90krN75Qm0QzCND
-         IDVQ==
-X-Gm-Message-State: AOJu0YzcBqonvFklYc7H2EZjZprb9AzjUsILaF4n9xqS0+FaasqMUg2G
-        4/09Z+bIhQbuRQ6LR8UUxJ0=
-X-Google-Smtp-Source: AGHT+IGJ43ApLqSeJRixEnKo/cgmqEMOAcdlKq+0hGznVxNqZSgit02ciMUZnX8fvnqI7zIhTCz2Vw==
-X-Received: by 2002:aa7:c3c3:0:b0:532:deae:9c1f with SMTP id l3-20020aa7c3c3000000b00532deae9c1fmr1397757edr.18.1695196040241;
-        Wed, 20 Sep 2023 00:47:20 -0700 (PDT)
-Received: from emanuele-nb.toradex.int (31-10-206-125.static.upc.ch. [31.10.206.125])
-        by smtp.gmail.com with ESMTPSA id p13-20020a056402074d00b005224d960e66sm8438186edy.96.2023.09.20.00.47.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:47:20 -0700 (PDT)
-From:   Emanuele Ghidoli <ghidoliemanuele@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Emanuele Ghidoli <emanuele.ghidoli@toradex.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Joe Hung <joe_hung@ilitek.com>
-Subject: [PATCH v2 2/2] Input: ilitek_ts_i2c - add report id message validation
-Date:   Wed, 20 Sep 2023 09:46:50 +0200
-Message-Id: <20230920074650.922292-3-ghidoliemanuele@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230920074650.922292-1-ghidoliemanuele@gmail.com>
-References: <20230920074650.922292-1-ghidoliemanuele@gmail.com>
+        Wed, 20 Sep 2023 03:39:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0CE9E;
+        Wed, 20 Sep 2023 00:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695195583; x=1726731583;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hcN5dyOX2piu1MHW4eheSWMp4q3vJNBIWWMTg8pcyZs=;
+  b=IkncGxvFMn56sh7LB+j2t1jKzPhwILqqk1RfcHzPjYRbW4WCJ2swrQaf
+   4YQ2YYguw4ClQxy9cHRacCrTi6rMmsRXeli2+36xi2KkU6hW9Wstrut92
+   OLD1G21tsEtJllC+f78CBNxgtP/LNx6ne2ToFhD1Dh7WdClMOg8vNUuHF
+   7JLTVSfJ+gKM6O1uqAjsMFHeksVcsx3suWqnwirgcp14Zmi+rIX0uQNeq
+   VENuLN45pvkAjiHfQAJTbUIdwKMgB5Qx3eQG5TQxVAuD8yS+br6QFi7iC
+   X0ucrYeDWkH7k2X/KRdfKAwPVzyH8N0sBciC8KBWAD6ZuGLZaGpipcIRA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="446622591"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="446622591"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:39:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="816791812"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="816791812"
+Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Sep 2023 00:39:39 -0700
+From:   Xiao Wang <xiao.w.wang@intel.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, ardb@kernel.org
+Cc:     anup@brainfault.org, haicheng.li@intel.com,
+        ajones@ventanamicro.com, linux-riscv@lists.infradead.org,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiao Wang <xiao.w.wang@intel.com>
+Subject: [PATCH v2 0/2] riscv: Optimize bitops with Zbb extension
+Date:   Wed, 20 Sep 2023 15:46:51 +0800
+Message-Id: <20230920074653.2509631-1-xiao.w.wang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
+Bitops optimization with specialized instructions is common practice in
+popular ISAs, this patch set uses RISC-V Zbb extension to optimize four
+bitops: __ffs, __fls, ffs and fls.
 
-Ilitek touch IC driver answer to plain i2c read request, after it has
-generated an interrupt request, with a report id message starting
-with an identifier and a series of points.
-If a request is sent unsolicited by an interrupt request the answer
-do not contain this identifier.
-Add a test to discard these messages, making the driver robust to
-spurious interrupt requests.
+The first patch rearranges the content in hwcap.h cpufeature.h, it helps
+to avoid a cyclic header including issue for patch 2.
 
-Fixes: 42370681bd46 ("Input: Add support for ILITEK Lego Series")
-Signed-off-by: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
----
- drivers/input/touchscreen/ilitek_ts_i2c.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+The second patch leverages the alternative mechanism to dynamically apply
+this optimization.
 
-diff --git a/drivers/input/touchscreen/ilitek_ts_i2c.c b/drivers/input/touchscreen/ilitek_ts_i2c.c
-index 0c3491e346f4..efce545236cd 100644
---- a/drivers/input/touchscreen/ilitek_ts_i2c.c
-+++ b/drivers/input/touchscreen/ilitek_ts_i2c.c
-@@ -37,6 +37,8 @@
- #define ILITEK_TP_CMD_GET_MCU_VER			0x61
- #define ILITEK_TP_CMD_GET_IC_MODE			0xC0
- 
-+#define ILITEK_TP_I2C_REPORT_ID				0x48
-+
- #define REPORT_COUNT_ADDRESS				61
- #define ILITEK_SUPPORT_MAX_POINT			40
- 
-@@ -163,6 +165,11 @@ static int ilitek_process_and_report_v6(struct ilitek_ts_data *ts)
- 		goto err_sync_frame;
- 	}
- 
-+	if (buf[0] != ILITEK_TP_I2C_REPORT_ID) {
-+		dev_err(dev, "get touch info failed. Wrong id: 0x%02X\n", buf[0]);
-+		goto err_sync_frame;
-+	}
-+
- 	report_max_point = buf[REPORT_COUNT_ADDRESS];
- 	if (report_max_point > ts->max_tp) {
- 		dev_err(dev, "FW report max point:%d > panel info. max:%d\n",
+The series has following dependency:
+https://lore.kernel.org/linux-riscv/20230918131518.56803-8-ajones@ventanamicro.com/
+
+Thanks,
+Xiao
+
+v2:
+- Remove the "EFI_" prefix from macro name "EFI_NO_ALTERNATIVE" to make it
+  generic. (Ard)
+- patch-1 is added, it's based on "RISC-V: Enable cbo.zero in usermode". (Andrew)
+
+Xiao Wang (2):
+  riscv: Rearrange hwcap.h and cpufeature.h
+  riscv: Optimize bitops with Zbb extension
+
+ arch/riscv/include/asm/bitops.h       | 266 +++++++++++++++++++++++++-
+ arch/riscv/include/asm/cpufeature.h   |  83 ++++++++
+ arch/riscv/include/asm/hwcap.h        |  91 ---------
+ arch/riscv/include/asm/pgtable.h      |   1 +
+ arch/riscv/include/asm/switch_to.h    |   2 +-
+ arch/riscv/include/asm/vector.h       |   2 +-
+ drivers/firmware/efi/libstub/Makefile |   2 +-
+ 7 files changed, 350 insertions(+), 97 deletions(-)
+
 -- 
-2.34.1
+2.25.1
 
