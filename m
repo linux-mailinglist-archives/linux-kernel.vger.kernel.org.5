@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DFD7A88E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4783D7A88EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbjITPtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
+        id S236817AbjITPum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbjITPth (ORCPT
+        with ESMTP id S235426AbjITPub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:49:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4BFAF;
-        Wed, 20 Sep 2023 08:49:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695224972; x=1726760972;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=9BObM4Lytu9yb7SGsKBARlJL+kOZDhJhXYFWzJTPPfU=;
-  b=iZ4wPBfBgQABGZ8g/ETgLej1sJQxucwYqRou2+crFVBxj9i0CWHFnFRr
-   LNlaRzlwKrVunZ4TIJbfQ4NSM/1pags949duo4FaNvfXCO4YkQBQh4sdp
-   /iPdUkV/WkVHvUgnoGyWLe4IilqKFjEiZDPFk2uqpqvc2W7v+f/BNJpnu
-   jTM/B7lkbImHREtRWRl+cVuWQ682YwGCLmBnw7BczVYv27t4kNn3fthmw
-   J/kG7FftezdKgfhfVh26bL98+Kc0QANf3RRQLHbABaDG3qUwMF350+JSc
-   AFftkO3N793wH7i7Y1WtJG77eOw+duzwYuDKdW8H1r9VNF3kT6DtCMsGN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="446730107"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="446730107"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 08:49:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="993654619"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="993654619"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 20 Sep 2023 08:49:29 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E416F71B; Wed, 20 Sep 2023 18:49:27 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Georgi Djakov <djakov@kernel.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] interconnect: qcom: osm-l3: Replace custom implementation of COUNT_ARGS()
-Date:   Wed, 20 Sep 2023 18:49:27 +0300
-Message-Id: <20230920154927.2090732-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Wed, 20 Sep 2023 11:50:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76BBAF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:50:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 53AC4C433CA;
+        Wed, 20 Sep 2023 15:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695225025;
+        bh=i6ZrC8twPkdmMTcCFAxDTNOGE1x2JCRDQFyKX/X5q/A=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DtHyO333m9sIjpXf28lydAgurEtbjB6KBsVg7OM41DNBwDs7dTY/UjnAXyMBELbdl
+         EfpCAqWaF9nB/QsXDKnjYDfSN1EU1VosrluDn/gzDCb6xiySodlt9mnRlH7q6+S799
+         kYdP7M8UwqEX1SYZs5xpa9OkBmhAw4c+pPHxQD/nQupvrCtFZWssZs349VKf2oooqF
+         rPh9juQJ+UtRG8SljZUdxEUu2wlpGe591a8/S5iqM+JLvRRGN3ek/FWIIDTJh3YaCz
+         nwuZN0535iHQp4l9EppFOZaF9IhfpQvpKUMy2SRfRMOs44vLB6KLeJPtStqDwwwHJ9
+         RDxxQpr/cBJcg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2F853C40C5E;
+        Wed, 20 Sep 2023 15:50:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [f2fs-dev] [PATCH 1/4] f2fs: compress: fix deadloop in
+ f2fs_write_cache_pages()
+From:   patchwork-bot+f2fs@kernel.org
+Message-Id: <169522502519.22557.11952566114540568403.git-patchwork-notify@kernel.org>
+Date:   Wed, 20 Sep 2023 15:50:25 +0000
+References: <20230828140417.2951796-1-chao@kernel.org>
+In-Reply-To: <20230828140417.2951796-1-chao@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace custom and non-portable implementation of COUNT_ARGS().
+Hello:
 
-Fixes: 5bc9900addaf ("interconnect: qcom: Add OSM L3 interconnect provider support")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/interconnect/qcom/osm-l3.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This series was applied to jaegeuk/f2fs.git (dev)
+by Jaegeuk Kim <jaegeuk@kernel.org>:
 
-diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
-index dc321bb86d0b..e97478bbc282 100644
---- a/drivers/interconnect/qcom/osm-l3.c
-+++ b/drivers/interconnect/qcom/osm-l3.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-  */
- 
-+#include <linux/args.h>
- #include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/interconnect-provider.h>
-@@ -78,7 +79,7 @@ enum {
- 		.name = #_name,						\
- 		.id = _id,						\
- 		.buswidth = _buswidth,					\
--		.num_links = ARRAY_SIZE(((int[]){ __VA_ARGS__ })),	\
-+		.num_links = COUNT_ARGS(__VA_ARGS__),			\
- 		.links = { __VA_ARGS__ },				\
- 	}
- 
+On Mon, 28 Aug 2023 22:04:14 +0800 you wrote:
+> With below mount option and testcase, it hangs kernel.
+> 
+> 1. mount -t f2fs -o compress_log_size=5 /dev/vdb /mnt/f2fs
+> 2. touch /mnt/f2fs/file
+> 3. chattr +c /mnt/f2fs/file
+> 4. dd if=/dev/zero of=/mnt/f2fs/file bs=1MB count=1
+> 5. sync
+> 6. dd if=/dev/zero of=/mnt/f2fs/file bs=111 count=11 conv=notrunc
+> 7. sync
+> 
+> [...]
+
+Here is the summary with links:
+  - [f2fs-dev,1/4] f2fs: compress: fix deadloop in f2fs_write_cache_pages()
+    https://git.kernel.org/jaegeuk/f2fs/c/c5d3f9b7649a
+  - [f2fs-dev,2/4] f2fs: compress: fix to avoid use-after-free on dic
+    https://git.kernel.org/jaegeuk/f2fs/c/b0327c84e91a
+  - [f2fs-dev,3/4] f2fs: compress: do sanity check on cluster when CONFIG_F2FS_CHECK_FS is on
+    https://git.kernel.org/jaegeuk/f2fs/c/2aaea533bf06
+  - [f2fs-dev,4/4] f2fs: compress: fix to avoid redundant compress extension
+    https://git.kernel.org/jaegeuk/f2fs/c/7e1b150fece0
+
+You are awesome, thank you!
 -- 
-2.40.0.1.gaa8946217a0b
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
