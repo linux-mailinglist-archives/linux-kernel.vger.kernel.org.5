@@ -2,440 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E26337A7AA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FD17A7AE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbjITLoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
+        id S234590AbjITLrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234481AbjITLoO (ORCPT
+        with ESMTP id S234582AbjITLrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:44:14 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071C9A3;
-        Wed, 20 Sep 2023 04:44:07 -0700 (PDT)
-Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 2420886B71;
-        Wed, 20 Sep 2023 13:44:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1695210241;
-        bh=uiJK38QTpw7WM8uiJwTHDQJJXfroiX/8d6izBt4p75U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KrqFRrTcXmEYeDYHILvPtziWsfzTW2XPLny3c1aazhq1AHLub+85O1qQfW+6ruK3N
-         xKZj2y9gQt8jie+x+KpgwDQ/ZslLD4aaUfyz8xHMel1MB3qSvrsW+i0Qxd8Cletj76
-         Gmq+7ry7TTcWOc+bdPDNfpKdIac3WpRaPNKYcxVq8MPew8k7kV64c8/hRWu34oTDOE
-         34LfTgoC7KMsczh2Nrq3L8GWypPo2OulC4UX9ckT8qkJv4Q66+n6Z+y0S2bKsvkalB
-         9IsuHAZwd8u+ZCf52ShoviB+AUaMEByFFnofXVegVKhJs17Vjnp7H6bj/LrL7vnUfU
-         M8kIhGPzbRxiQ==
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukasz Majewski <lukma@denx.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: [PATCH v5 net-next 5/5] net: dsa: microchip: Enable HSR offloading for KSZ9477
-Date:   Wed, 20 Sep 2023 13:43:43 +0200
-Message-Id: <20230920114343.1979843-6-lukma@denx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230920114343.1979843-1-lukma@denx.de>
-References: <20230920114343.1979843-1-lukma@denx.de>
+        Wed, 20 Sep 2023 07:47:10 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2136.outbound.protection.outlook.com [40.107.114.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988F9B0;
+        Wed, 20 Sep 2023 04:47:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kWEvWFK1D1ivA9ijiXhyjeUpj+UFNwuSdNEID9sRKfsEltoMu2c67fdpLtKe4q5KhaSqcMef5mkk4UuvQpzUI3Lau2E/+vXf0UHvHAgoqLFinpPPx1kLLmu82/DC8Dvh19JLYyOffUb/Nx2Bx2HR/4Tz5YfuxaJJ1gHG0RmYKJAhcFljByBqmODxQnQfRBRYq8k1wNiQBRHoHYEFbwR89AK0StxeACWHGTNjEaWP9U2bDDwoR5DkKasDwZOTjwqK9akBmoENfMEGHkB5FSWV0P7bYX5bBil9EpC05yQq2/53V+Y4cd40n6+VptQbzcHyM6P/0MBTeFp4aF0idBmAyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X9gSj/bUJ3giYfour0lSM/2pmT52qxMi14p/NX4CHRE=;
+ b=OL06W4x/CQLM/NWZWuAkuO1ggRWyBi/fri3lJ0sf64ZYjIdLYVr8cVDbs8a8caJHf3kkxmMiwUwAFdyK02/aalYZP7iw8dkeYTT6lXhDa7erapFdVrJ4ELUnTV7wIC1LPrxkAkabj2fckRR0o9dXzDycsnp7TguCEVITkZceFeHcZuh1YuF4Xs20r8SQCnHdyO//DOYyCO8Vy1r6taS7APudeZvEs7QSFzVZpxj9rED29tzQQ9meyu65RO2wVrqdooPlvfb06Ytq8rLpgmqEXzA04GI2u3y6f9BHynKBxsSMizT0JynMvF2bWYZUi4i+mr1WU1SF0EHJU4vW/WQ6Kg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X9gSj/bUJ3giYfour0lSM/2pmT52qxMi14p/NX4CHRE=;
+ b=n69Wp3sdAcMX32WopB7mjWQejRlmPhrEzcVyL34Y153KmYKdG5gtWm+8jXtzwXMnH0NXGMDadEWeTVem/u6huN6tIXVGm+uF/QqMZiOfDLX+ryxFBYmOujbVYmlIypl7BG3Vkype/+fYNyOBT+oIWI5EDtRRzhnjdsXKZMyzR70=
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
+ by TY3PR01MB10517.jpnprd01.prod.outlook.com (2603:1096:400:315::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.19; Wed, 20 Sep
+ 2023 11:47:00 +0000
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6813.017; Wed, 20 Sep 2023
+ 11:46:57 +0000
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Trent Piepho <tpiepho@gmail.com>
+Subject: RE: [Query]: Resource cleanup for Alarmtimer
+Thread-Topic: [Query]: Resource cleanup for Alarmtimer
+Thread-Index: AdnrmFAjUih7l1QlSdSObu7MvB/BAQAH7oWA
+Date:   Wed, 20 Sep 2023 11:46:56 +0000
+Message-ID: <OS0PR01MB5922E907FCC5B7638B9CA29A86F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <OS0PR01MB5922DD412F43E1C836E32AF486F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+In-Reply-To: <OS0PR01MB5922DD412F43E1C836E32AF486F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TY3PR01MB10517:EE_
+x-ms-office365-filtering-correlation-id: da2a09a3-12d0-4d8d-73eb-08dbb9cf4af5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nA11M2GFJEF+raIH1cymjhO4rGRpQciOgFvO2MELiEcIQRrS2MC89BrPPlgYsPtFJhwyE8L084cUcMqjZtPSWcBEnKv2U1mZ2yLXh9mmC4LIqihav88dPDkOmx6uc7pbcECwwO55XA8o8SDWuighIdFXqHe6ERW32DHgATWJ91GuSS0d1T9QUm+ZYprDYIzh+ifo/4D5GlVQxPduweDOwFDd2T5EKptHd9Vb7KntIJtsYB/z3PRDDRfqQF5dS/BxJ1uAQrsK4w38lyCbH4YKuU1YZX32a/6FDkcrxaHs2uS4BCry5aI5w+GDdo+wM5EUOsLlHRfh3rk48oUfDnGAxTGv6BW8wJNQMsTR1h8e7tBHQAMgtZzhErWassvFv4zoRhUZIV8CaRyw+vmgiSOoii5Hs+XAx3Qf0D233Vlo3J8v4K5uYSZ9WQcWT1lODnbDntT/2cz22Ok4HssruR9+/+esROxLEEj0tOmoBwbIUWUY+kmdDrzm46pyOvszvUR7QXV3u4vulG8MkNnh3kq4VBZZ7IUGOoJ6FVVn/hbvDsQTJP/HOZpYKk+UhFq93sOq1cN0xZC5hqfQaMCyTu5vtPnZ+7ovqkfGIs7QmqRC2R4FEpd7WK9prDPiLJHAtR93
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(136003)(366004)(1800799009)(186009)(451199024)(2940100002)(9686003)(6506007)(7696005)(71200400001)(122000001)(86362001)(38070700005)(33656002)(38100700002)(55016003)(4744005)(110136005)(66476007)(66556008)(316002)(64756008)(66946007)(54906003)(66446008)(76116006)(41300700001)(7416002)(2906002)(52536014)(5660300002)(8936002)(4326008)(8676002)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4QbKqCyWfyzXSdQpNQrQ8nuWmB4tT9V1SIeOn0sS1DwxDdqFBsNKUu+fUEcw?=
+ =?us-ascii?Q?eUxXRVoauCEZrtp3J0+NWvwsjZ60SjqyYLGT7G06Jy7zMcBoc8iugdXdqtjl?=
+ =?us-ascii?Q?V+t7fodO8APd4FG88z2EiESK2VGqDGSp/6xfD42B5ZqGlYCrA2VE2Qe/rxnV?=
+ =?us-ascii?Q?jMeB5YvcRURSpymEpFbz+BrqQmIOL0IGfCEe2GgBfG8pdGAV/34Nvz2sAD86?=
+ =?us-ascii?Q?Rm5djXDDpemHaeUoQJpgJxpyIgEehb8qvCtOLizbm7NOAjbiKCKwrrq94iX0?=
+ =?us-ascii?Q?gFztRM0HsvcLEPFC7KZfYH1jkVMAP8CdK8T/YHEpXstOCvX/DDFF+xasM3it?=
+ =?us-ascii?Q?2EPHy/pUJOVUNrRiJFyP69DPUUya271ZfH4Yq+5BF6OkP1/Jv9v6CkB4dojR?=
+ =?us-ascii?Q?rAAlBDGZ/qi+aMdPgB3alDMjsuwqwEMPkWJBqp6dF/5nleQvENXTlGEurx3c?=
+ =?us-ascii?Q?J5YAqYVZyNzXIXZmW5IpGnjXKH3Febf/zPszvnd6PA+qOiHsoDp0LTfj3Obh?=
+ =?us-ascii?Q?MQi2pvGnGLBV8LmpNAkURyttSsTajrfAdbKvfPxSMhq19AJS2ETWgQg8Gs/F?=
+ =?us-ascii?Q?/S+PKyvkunbVdE/5IDKl0JhteHMD0ykNoXPvUeQCDQSSArBbfnQVF3NBywN/?=
+ =?us-ascii?Q?b0vLOyyBZzRJg1Y+GUf+1yRvbJ875r+Ik5gxkOYJ9jJc3OcU4XdzvOfeIo2g?=
+ =?us-ascii?Q?OXo6zJ312iSVLxfzj0d68fhSpzEBMORZtuHVtV7bC5XjokrxJ3ZvsqnAJxcy?=
+ =?us-ascii?Q?kg/3g4eOaaUMcIsvo/iYwFs4rX9N84/XU8J3u7nFNX2auvX6nfiL4zRPeg7b?=
+ =?us-ascii?Q?8e59BiK3mz1+TDojwhlGxbmvdjnyYGPtCfV5q1J7r9pEA6CAirzcO1hBUSwU?=
+ =?us-ascii?Q?iHsrMOxnxRVPTXANxyraEXA4Z2YLt3WboPyRzwKadlLJGrEaGe8PxSedtIGV?=
+ =?us-ascii?Q?0mnP7pJzFfn3sK6tGes+4QA/Y//yw84wFpGFdxq7Hi8JxvfJlLBav+zrbiQC?=
+ =?us-ascii?Q?HJJ8QV1G5bjB+t5mcEcXELEcVVU6mJYCiRW5Vs7PDF/Y1or9aO4nt7hEYIEr?=
+ =?us-ascii?Q?xa4Y6jO37Fx7Gxs01j72E4J31QoZ65SMUpQn87qEPMIedc6qbgf7tLnHrD2m?=
+ =?us-ascii?Q?3dZFeDCyIeZgQRKmTrhMzxMfuMpHVgdc+gzu1BTf4NDLlg8/bmuedBFnnLHy?=
+ =?us-ascii?Q?ivu2KRR+kTSYOVsOLoFoyKO1awwFfrZSdEg703dyM6P4+/AYJz2U4E2DdLlM?=
+ =?us-ascii?Q?cAWzPbJZYprx+JqPp8QmgmVRO3tcoTUHocvOGyqvKQgnnxlP1xnN1BwuDxdU?=
+ =?us-ascii?Q?KoDNrjNeRjPdLcAuwYbAdv//Mm/e9FqbpatFIl1ZT6yN5Xs81Jdla6c/Z3Nx?=
+ =?us-ascii?Q?Iin56XwngKffc4v5jxR2sActKvephUxNImuieSSVQWIdeXYCToTNKpvf9xRu?=
+ =?us-ascii?Q?wQWjVNY3u/JlnORsf4HiG2ufSTa/nxyXh9djzVuc/X3LZYDZrjB3BUuWdArk?=
+ =?us-ascii?Q?Qv0WeLU6gsBVdJtdlsKhhwq5xvcnrREnuvtSMxco2NkVIIwOawrbomZHmnPY?=
+ =?us-ascii?Q?roAGPEhmUS1makfkFVc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da2a09a3-12d0-4d8d-73eb-08dbb9cf4af5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2023 11:46:56.9779
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BssCwHosGTEeijBuFrZsPcLwNa4kkGC1j60EOHe+xjzuKpHAqftC5oPnEmfu8W7Fnhn0MXwmH4w5mh1/znqShewnqUz2i2LGGVqFU7bIrUs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10517
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds functions for providing in KSZ9477 switch HSR
-(High-availability Seamless Redundancy) hardware offloading.
+HI all,
 
-According to AN3474 application note following features are provided:
-- TX packet duplication from host to switch (NETIF_F_HW_HSR_DUP)
-- RX packet duplication discarding
-- Prevention of packet loop
+I will send a patch to fix this issue soon. We will discuss
+this topic there.
 
-For last two ones - there is a probability that some packets will not
-be filtered in HW (in some special cases - described in AN3474).
-Hence, the HSR core code shall be used to discard those not caught frames.
+Cheers,
+Biju
 
-Moreover, some switch registers adjustments are required - like setting
-MAC address of HSR network interface.
-
-Additionally, the KSZ9477 switch has been configured to forward frames
-between HSR ports (e.g. 1,2) members to provide support for
-NETIF_F_HW_HSR_FWD flag.
-
-Join and leave functions are written in a way, that are executed with
-single port - i.e. configuration is NOT done only when second HSR port
-is configured.
-
-Co-developed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: Lukasz Majewski <lukma@denx.de>
-
----
-Changes for v2:
-- Use struct ksz_device to store hsr ports information (not struct dsa)
-
-Changes for v3:
-- Enable in-switch forwarding of frames between HSR ports (i.e. enable
-  bridging of those two ports)
-
-- The NETIF_F_HW_HSR_FWD flag has been marked as supported by the HSR
-  network device
-
-- Remove ETH MAC address validity check as it is done earlier in the net
-  driver
-
-- Add comment regarding adding support for NETIF_F_HW_HSR_FWD flag
-
-Changes for v4:
-- Merge patches for ksz_common.c and ksz9477.c
-
-- Remove code to set global self-address filtering as this bit has
-  already been set at ksz9477_reset_switch() function. Update also
-  comment.
-
-- Use already available ksz9477_cfg_port_member() instead of ksz_prmw32()
-
-- Add description about chip limitations
-
-- Allow having only one offloaded hsr interface (e.g. hsr0). Other ones
-  (like hsr1) will have only SW HSR support
-
-- Add check if MAC address of HSR device is equal to one from DSA master
-
-- Rewrite the code to support per port join (i.e. not making init only
-  when second HSR port is join)
-
-- Add check to allow only one HSR port HW offloading
-
-- Add hsr_ports to ksz_device struct to allow clean removal of network
-  interfaces composing hsr device
-
-Changes for v5:
-- Add implementation of .port_set_mac_address callback for KSZ switch
-  to prevent MAC address change when HSR HW offloading is used
-
-- Use NL_SET_ERR_MSG_MOD() to propagate error messages to user
-
-- Implement functions to use reference counter to allow in-HW MAC
-  address change only when no other functionality requires it.
----
- drivers/net/dsa/microchip/ksz9477.c    |  70 ++++++++++++
- drivers/net/dsa/microchip/ksz9477.h    |   2 +
- drivers/net/dsa/microchip/ksz_common.c | 147 +++++++++++++++++++++++++
- drivers/net/dsa/microchip/ksz_common.h |   9 ++
- 4 files changed, 228 insertions(+)
-
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 83b7f2d5c1ea..c4da8dc7638e 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -1141,6 +1141,76 @@ int ksz9477_tc_cbs_set_cinc(struct ksz_device *dev, int port, u32 val)
- 	return ksz_pwrite16(dev, port, REG_PORT_MTI_CREDIT_INCREMENT, val);
- }
- 
-+/* The KSZ9477 provides following HW features to accelerate
-+ * HSR frames handling:
-+ *
-+ * 1. TX PACKET DUPLICATION FROM HOST TO SWITCH
-+ * 2. RX PACKET DUPLICATION DISCARDING
-+ * 3. PREVENTING PACKET LOOP IN THE RING BY SELF-ADDRESS FILTERING
-+ *
-+ * Only one from point 1. has the NETIF_F* flag available.
-+ *
-+ * Ones from point 2 and 3 are "best effort" - i.e. those will
-+ * work correctly most of the time, but it may happen that some
-+ * frames will not be caught - to be more specific; there is a race
-+ * condition in hardware such that, when duplicate packets are received
-+ * on member ports very close in time to each other, the hardware fails
-+ * to detect that they are duplicates.
-+ *
-+ * Hence, the SW needs to handle those special cases. However, the speed
-+ * up gain is considerable when above features are used.
-+ *
-+ * Moreover, the NETIF_F_HW_HSR_FWD feature is also enabled, as HSR frames
-+ * can be forwarded in the switch fabric between HSR ports.
-+ */
-+#define KSZ9477_SUPPORTED_HSR_FEATURES (NETIF_F_HW_HSR_DUP | NETIF_F_HW_HSR_FWD)
-+
-+void ksz9477_hsr_join(struct dsa_switch *ds, int port, struct net_device *hsr)
-+{
-+	struct ksz_device *dev = ds->priv;
-+	struct net_device *slave;
-+	u8 data;
-+
-+	/* Program which port(s) shall support HSR */
-+	ksz_rmw32(dev, REG_HSR_PORT_MAP__4, BIT(port), BIT(port));
-+
-+	/* Forward frames between HSR ports (i.e. bridge together HSR ports) */
-+	ksz9477_cfg_port_member(dev, port,
-+				BIT(dsa_upstream_port(ds, port)) | BIT(port));
-+
-+	if (!dev->hsr_ports) {
-+		/* Enable discarding of received HSR frames */
-+		ksz_read8(dev, REG_HSR_ALU_CTRL_0__1, &data);
-+		data |= HSR_DUPLICATE_DISCARD;
-+		data &= ~HSR_NODE_UNICAST;
-+		ksz_write8(dev, REG_HSR_ALU_CTRL_0__1, data);
-+	}
-+
-+	/* Enable per port self-address filtering.
-+	 * The global self-address filtering has already been enabled in the
-+	 * ksz9477_reset_switch() function.
-+	 */
-+	ksz_port_cfg(dev, port, REG_PORT_LUE_CTRL, PORT_SRC_ADDR_FILTER, true);
-+
-+	/* Setup HW supported features for lan HSR ports */
-+	slave = dsa_to_port(ds, port)->slave;
-+	slave->features |= KSZ9477_SUPPORTED_HSR_FEATURES;
-+}
-+
-+void ksz9477_hsr_leave(struct dsa_switch *ds, int port, struct net_device *hsr)
-+{
-+	struct ksz_device *dev = ds->priv;
-+
-+	/* Clear port HSR support */
-+	ksz_rmw32(dev, REG_HSR_PORT_MAP__4, BIT(port), 0);
-+
-+	/* Disable forwarding frames between HSR ports */
-+	ksz9477_cfg_port_member(dev, port, BIT(dsa_upstream_port(ds, port)));
-+
-+	/* Disable per port self-address filtering */
-+	ksz_port_cfg(dev, port, REG_PORT_LUE_CTRL, PORT_SRC_ADDR_FILTER, false);
-+}
-+
- int ksz9477_switch_init(struct ksz_device *dev)
- {
- 	u8 data8;
-diff --git a/drivers/net/dsa/microchip/ksz9477.h b/drivers/net/dsa/microchip/ksz9477.h
-index a6f425866a29..8625bf474764 100644
---- a/drivers/net/dsa/microchip/ksz9477.h
-+++ b/drivers/net/dsa/microchip/ksz9477.h
-@@ -56,5 +56,7 @@ int ksz9477_reset_switch(struct ksz_device *dev);
- int ksz9477_switch_init(struct ksz_device *dev);
- void ksz9477_switch_exit(struct ksz_device *dev);
- void ksz9477_port_queue_split(struct ksz_device *dev, int port);
-+void ksz9477_hsr_join(struct dsa_switch *ds, int port, struct net_device *hsr);
-+void ksz9477_hsr_leave(struct dsa_switch *ds, int port, struct net_device *hsr);
- 
- #endif
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index c67ad0f6e1fa..0a8d99ae1132 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -16,6 +16,7 @@
- #include <linux/etherdevice.h>
- #include <linux/if_bridge.h>
- #include <linux/if_vlan.h>
-+#include <linux/if_hsr.h>
- #include <linux/irq.h>
- #include <linux/irqdomain.h>
- #include <linux/of.h>
-@@ -3421,6 +3422,149 @@ static int ksz_setup_tc(struct dsa_switch *ds, int port,
- 	}
- }
- 
-+static int ksz_port_set_mac_address(struct dsa_switch *ds, int port,
-+				    const unsigned char *addr)
-+{
-+	struct dsa_port *dp = dsa_to_port(ds, port);
-+
-+	if (dp->hsr_dev) {
-+		dev_err(ds->dev,
-+			"Cannot change MAC address on port %d with active HSR offload\n",
-+			port);
-+		return -EBUSY;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Program the switch's MAC address register with the MAC address of the
-+ * requesting user port. This single address is used by the switch for multiple
-+ * features, like HSR self-address filtering and WoL. Other user ports are
-+ * allowed to share ownership of this address as long as their MAC address is
-+ * the same. The user ports' MAC addresses must not change while they have
-+ * ownership of the switch MAC address.
-+ */
-+static int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
-+				  struct netlink_ext_ack *extack)
-+{
-+	struct net_device *slave = dsa_to_port(ds, port)->slave;
-+	const unsigned char *addr = slave->dev_addr;
-+	struct ksz_switch_macaddr *switch_macaddr;
-+	struct ksz_device *dev = ds->priv;
-+	const u16 *regs = dev->info->regs;
-+	int i;
-+
-+	/* Make sure concurrent MAC address changes are blocked */
-+	ASSERT_RTNL();
-+
-+	switch_macaddr = dev->switch_macaddr;
-+	if (switch_macaddr) {
-+		if (!ether_addr_equal(switch_macaddr->addr, addr)) {
-+			NL_SET_ERR_MSG_FMT_MOD(extack,
-+					       "Switch already configured for MAC address %pM",
-+					       switch_macaddr->addr);
-+			return -EBUSY;
-+		}
-+
-+		refcount_inc(&switch_macaddr->refcount);
-+		return 0;
-+	}
-+
-+	switch_macaddr = kzalloc(sizeof(*switch_macaddr), GFP_KERNEL);
-+	if (!switch_macaddr)
-+		return -ENOMEM;
-+
-+	ether_addr_copy(switch_macaddr->addr, addr);
-+	refcount_set(&switch_macaddr->refcount, 1);
-+	dev->switch_macaddr = switch_macaddr;
-+
-+	/* Program the switch MAC address to hardware */
-+	for (i = 0; i < ETH_ALEN; i++)
-+		ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
-+
-+	return 0;
-+}
-+
-+static void ksz_switch_macaddr_put(struct dsa_switch *ds)
-+{
-+	struct ksz_switch_macaddr *switch_macaddr;
-+	struct ksz_device *dev = ds->priv;
-+	const u16 *regs = dev->info->regs;
-+	int i;
-+
-+	/* Make sure concurrent MAC address changes are blocked */
-+	ASSERT_RTNL();
-+
-+	switch_macaddr = dev->switch_macaddr;
-+	if (!refcount_dec_and_test(&switch_macaddr->refcount))
-+		return;
-+
-+	for (i = 0; i < ETH_ALEN; i++)
-+		ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, 0);
-+
-+	dev->switch_macaddr = NULL;
-+	kfree(switch_macaddr);
-+}
-+
-+static int ksz_hsr_join(struct dsa_switch *ds, int port, struct net_device *hsr,
-+			struct netlink_ext_ack *extack)
-+{
-+	struct ksz_device *dev = ds->priv;
-+	enum hsr_version ver;
-+	int ret;
-+
-+	ret = hsr_get_version(hsr, &ver);
-+	if (ret)
-+		return ret;
-+
-+	if (dev->chip_id != KSZ9477_CHIP_ID) {
-+		NL_SET_ERR_MSG_MOD(extack, "Chip does not support HSR offload");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	/* KSZ9477 can support HW offloading of only 1 HSR device */
-+	if (dev->hsr_dev && hsr != dev->hsr_dev) {
-+		NL_SET_ERR_MSG_MOD(extack, "Offload supported for a single HSR");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	/* KSZ9477 only supports HSR v0 and v1 */
-+	if (!(ver == HSR_V0 || ver == HSR_V1)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Only HSR v0 and v1 supported");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	/* Self MAC address filtering, to avoid frames traversing
-+	 * the HSR ring more than once.
-+	 */
-+	ret = ksz_switch_macaddr_get(ds, port, extack);
-+	if (ret)
-+		return ret;
-+
-+	ksz9477_hsr_join(ds, port, hsr);
-+	dev->hsr_dev = hsr;
-+	dev->hsr_ports |= BIT(port);
-+
-+	return 0;
-+}
-+
-+static int ksz_hsr_leave(struct dsa_switch *ds, int port,
-+			 struct net_device *hsr)
-+{
-+	struct ksz_device *dev = ds->priv;
-+
-+	WARN_ON(dev->chip_id != KSZ9477_CHIP_ID);
-+
-+	ksz9477_hsr_leave(ds, port, hsr);
-+	dev->hsr_ports &= ~BIT(port);
-+	if (!dev->hsr_ports)
-+		dev->hsr_dev = NULL;
-+
-+	ksz_switch_macaddr_put(ds);
-+
-+	return 0;
-+}
-+
- static const struct dsa_switch_ops ksz_switch_ops = {
- 	.get_tag_protocol	= ksz_get_tag_protocol,
- 	.connect_tag_protocol   = ksz_connect_tag_protocol,
-@@ -3440,6 +3584,9 @@ static const struct dsa_switch_ops ksz_switch_ops = {
- 	.get_sset_count		= ksz_sset_count,
- 	.port_bridge_join	= ksz_port_bridge_join,
- 	.port_bridge_leave	= ksz_port_bridge_leave,
-+	.port_hsr_join		= ksz_hsr_join,
-+	.port_hsr_leave		= ksz_hsr_leave,
-+	.port_set_mac_address	= ksz_port_set_mac_address,
- 	.port_stp_state_set	= ksz_port_stp_state_set,
- 	.port_pre_bridge_flags	= ksz_port_pre_bridge_flags,
- 	.port_bridge_flags	= ksz_port_bridge_flags,
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 1f3fb6c23f36..1f447a34f555 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -101,6 +101,11 @@ struct ksz_ptp_irq {
- 	int num;
- };
- 
-+struct ksz_switch_macaddr {
-+	unsigned char addr[ETH_ALEN];
-+	refcount_t refcount;
-+};
-+
- struct ksz_port {
- 	bool remove_tag;		/* Remove Tag flag set, for ksz8795 only */
- 	bool learning;
-@@ -169,6 +174,10 @@ struct ksz_device {
- 	struct mutex lock_irq;		/* IRQ Access */
- 	struct ksz_irq girq;
- 	struct ksz_ptp_data ptp_data;
-+
-+	struct ksz_switch_macaddr *switch_macaddr;
-+	struct net_device *hsr_dev;     /* HSR */
-+	u8 hsr_ports;
- };
- 
- /* List of supported models */
--- 
-2.20.1
+> Subject: [Query]: Resource cleanup for Alarmtimer
+>=20
+> Hi All,
+>=20
+> Currently unbind/bind is not working as expected on rtc-isl1208 driver. T=
+he
+> reason is put_device() is not calling rtc_device_release() as some of the
+> kobjects are not freed during unbind.
+>=20
+> The commit 	c79108bd19a8 "alarmtimer: Make alarmtimer platform device
+> child of RTC device" adds kobjects for alarmtimer device/sysfs, when we
+> call device_init_wakeup() followed by devm_rtc_register_device()from the
+> end point driver during probe().
+> But these kobjects are never freed when we do unbind on the endpoint
+> driver.
+>=20
+> The alarm timer device has alarmtimer_rtc_add_device() but it does not ha=
+ve
+> remove_device() callbacks to free kbjects.
+>=20
+> Q1) Has anyone tested unbind/rebind on RTC subsystem with
+> device_init_wakeup() followed by devm_rtc_register_device() in the probe?
+>=20
+> Cheers,
+> Biju
+>=20
 
