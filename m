@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752807A7448
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CDE7A7446
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233827AbjITHgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49976 "EHLO
+        id S233810AbjITHgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbjITHgS (ORCPT
+        with ESMTP id S233781AbjITHgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Sep 2023 03:36:18 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E729E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A55197;
         Wed, 20 Sep 2023 00:36:12 -0700 (PDT)
 Date:   Wed, 20 Sep 2023 07:36:10 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695195371;
+        s=2020; t=1695195370;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IfjCkGSUzZIAS5GF7Q7Yq7fEldgU3hvl4AditqhqRTk=;
-        b=XJG3bTnasZIAcGpZrUrL+xSyDMeYWnqp5NfP3B1mxzRqCSA/XomvZA9+2pHzWdK8Pm96u9
-        NfhEhBlbiXiNg88ng3uZFg3VF4llLHkbM8tN+AepSBe1ntFa2hZTDu7t3DSRAkZW1ZpeY5
-        cWNbYMh/3ZXhUvIDIBJLJxekyrNzjtdyCQuwaIw1X4YEGjTbcMWbB0W85FVgJRAUle0McO
-        6D2XJq7VlXQGWcoAH1feo+spoUuuMYBLc5CQW6F3JsdNnQ1xqJLurh0NLzvfQtlPd6/lwZ
-        wlU9I+PIY1QVEZLa4Tm0n1c3/vpf//Gb8NFFrrj5JKz8dKX5xUTxzrO2XQUWSQ==
+        bh=iUexxCBLwPFp5aWH62AQDgFy7yp+ore6PnYzOXd+ANk=;
+        b=j5DNR2RHfKs+UiXB/iW2kBNN8bDuTE1QQXz/hd2ETg/0LTt5sBny82hZ84qIE1igZCGgZ9
+        saeJozcDXTzz6zpkcbdZOIGZTiNEFLVE8oN2xHQhA8oogkUxV8vexm17J2mT1gF4O2gngV
+        raGAy09xo9gsH+lYS/+qZB1XEgcyG4YixTcd2FQ31fo2gQGTmHmfolTDrZhRsDZ8TwG8RL
+        2j/VCcyQVLabbJ5Z5Iehz0nJV+uUC04dZKxFPEN9cGkkxACMBbbOReKO3QPp9z3P8I7BcN
+        StXWGXnumv7jjRYVvlZ52Lz6YWbssx03iDtsj0cAwyUH2igCHRUBQ/N5zXL23Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695195371;
+        s=2020e; t=1695195370;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IfjCkGSUzZIAS5GF7Q7Yq7fEldgU3hvl4AditqhqRTk=;
-        b=Nf1exM4X1NFZGzqjtuwbUCpKiFPT+oxsby/Q3KsNzLAWyrEmZ8Lx8tDccdXHmtc40OmWEW
-        o2KIgDPnCH0VWoAg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=iUexxCBLwPFp5aWH62AQDgFy7yp+ore6PnYzOXd+ANk=;
+        b=YPrwgFmpAMrRKaldMu/AhtSW9IAxvXt5PsF4ykBakaLCiIAexjAy+FJd1Q98BTQP9hSMOM
+        0S/f7McMv24aM4Ag==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] sched: Provide rt_mutex specific scheduler helpers
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: locking/core] locking/rtmutex: Use rt_mutex specific scheduler helpers
+Cc:     Crystal Wood <swood@redhat.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230908162254.999499-5-bigeasy@linutronix.de>
-References: <20230908162254.999499-5-bigeasy@linutronix.de>
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230908162254.999499-6-bigeasy@linutronix.de>
+References: <20230908162254.999499-6-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169519537073.27769.17755473188215858233.tip-bot2@tip-bot2>
+Message-ID: <169519537017.27769.1840935326971122859.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,141 +67,194 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     6b596e62ed9f90c4a97e68ae1f7b1af5beeb3c05
-Gitweb:        https://git.kernel.org/tip/6b596e62ed9f90c4a97e68ae1f7b1af5beeb3c05
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 08 Sep 2023 18:22:51 +02:00
+Commit-ID:     d14f9e930b9073de264c106bf04968286ef9b3a4
+Gitweb:        https://git.kernel.org/tip/d14f9e930b9073de264c106bf04968286ef9b3a4
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Fri, 08 Sep 2023 18:22:52 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 20 Sep 2023 09:31:12 +02:00
+CommitterDate: Wed, 20 Sep 2023 09:31:13 +02:00
 
-sched: Provide rt_mutex specific scheduler helpers
+locking/rtmutex: Use rt_mutex specific scheduler helpers
 
-With PREEMPT_RT there is a rt_mutex recursion problem where
-sched_submit_work() can use an rtlock (aka spinlock_t). More
-specifically what happens is:
+Have rt_mutex use the rt_mutex specific scheduler helpers to avoid
+recursion vs rtlock on the PI state.
 
-  mutex_lock() /* really rt_mutex */
-    ...
-      __rt_mutex_slowlock_locked()
-	task_blocks_on_rt_mutex()
-          // enqueue current task as waiter
-          // do PI chain walk
-        rt_mutex_slowlock_block()
-          schedule()
-            sched_submit_work()
-              ...
-              spin_lock() /* really rtlock */
-                ...
-                  __rt_mutex_slowlock_locked()
-                    task_blocks_on_rt_mutex()
-                      // enqueue current task as waiter *AGAIN*
-                      // *CONFUSION*
+[[ peterz: adapted to new names ]]
 
-Fix this by making rt_mutex do the sched_submit_work() early, before
-it enqueues itself as a waiter -- before it even knows *if* it will
-wait.
-
-[[ basically Thomas' patch but with different naming and a few asserts
-   added ]]
-
-Originally-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reported-by: Crystal Wood <swood@redhat.com>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20230908162254.999499-5-bigeasy@linutronix.de
+Link: https://lkml.kernel.org/r/20230908162254.999499-6-bigeasy@linutronix.de
 ---
- include/linux/sched.h    |  3 +++
- include/linux/sched/rt.h |  4 ++++
- kernel/sched/core.c      | 36 ++++++++++++++++++++++++++++++++----
- 3 files changed, 39 insertions(+), 4 deletions(-)
+ kernel/futex/pi.c            | 11 +++++++++++
+ kernel/locking/rtmutex.c     | 14 ++++++++++++--
+ kernel/locking/rwbase_rt.c   |  6 ++++++
+ kernel/locking/rwsem.c       |  8 +++++++-
+ kernel/locking/spinlock_rt.c |  4 ++++
+ 5 files changed, 40 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 77f01ac..67623ff 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -911,6 +911,9 @@ struct task_struct {
- 	 * ->sched_remote_wakeup gets used, so it can be in this word.
- 	 */
- 	unsigned			sched_remote_wakeup:1;
-+#ifdef CONFIG_RT_MUTEXES
-+	unsigned			sched_rt_mutex:1;
-+#endif
+diff --git a/kernel/futex/pi.c b/kernel/futex/pi.c
+index ce2889f..f8e65b2 100644
+--- a/kernel/futex/pi.c
++++ b/kernel/futex/pi.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
  
- 	/* Bit to tell LSMs we're in execve(): */
- 	unsigned			in_execve:1;
-diff --git a/include/linux/sched/rt.h b/include/linux/sched/rt.h
-index 994c256..b2b9e6e 100644
---- a/include/linux/sched/rt.h
-+++ b/include/linux/sched/rt.h
-@@ -30,6 +30,10 @@ static inline bool task_is_realtime(struct task_struct *tsk)
- }
+ #include <linux/slab.h>
++#include <linux/sched/rt.h>
+ #include <linux/sched/task.h>
  
- #ifdef CONFIG_RT_MUTEXES
-+extern void rt_mutex_pre_schedule(void);
-+extern void rt_mutex_schedule(void);
-+extern void rt_mutex_post_schedule(void);
+ #include "futex.h"
+@@ -1002,6 +1003,12 @@ retry_private:
+ 		goto no_block;
+ 	}
+ 
++	/*
++	 * Must be done before we enqueue the waiter, here is unfortunately
++	 * under the hb lock, but that *should* work because it does nothing.
++	 */
++	rt_mutex_pre_schedule();
 +
- /*
-  * Must hold either p->pi_lock or task_rq(p)->lock.
-  */
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 1ea7ba5..58d0346 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6723,9 +6723,6 @@ static inline void sched_submit_work(struct task_struct *tsk)
- 	static DEFINE_WAIT_OVERRIDE_MAP(sched_map, LD_WAIT_CONFIG);
- 	unsigned int task_flags;
+ 	rt_mutex_init_waiter(&rt_waiter);
  
--	if (task_is_running(tsk))
--		return;
--
  	/*
- 	 * Establish LD_WAIT_CONFIG context to ensure none of the code called
- 	 * will use a blocking primitive -- which would lead to recursion.
-@@ -6783,7 +6780,12 @@ asmlinkage __visible void __sched schedule(void)
- {
- 	struct task_struct *tsk = current;
+@@ -1052,6 +1059,10 @@ cleanup:
+ 	if (ret && !rt_mutex_cleanup_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter))
+ 		ret = 0;
  
--	sched_submit_work(tsk);
-+#ifdef CONFIG_RT_MUTEXES
-+	lockdep_assert(!tsk->sched_rt_mutex);
-+#endif
-+
-+	if (!task_is_running(tsk))
-+		sched_submit_work(tsk);
- 	__schedule_loop(SM_NONE);
- 	sched_update_worker(tsk);
++	/*
++	 * Waiter is unqueued.
++	 */
++	rt_mutex_post_schedule();
+ no_block:
+ 	/*
+ 	 * Fixup the pi_state owner and possibly acquire the lock if we
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index bcec053..a3fe05d 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -1632,7 +1632,7 @@ static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
+ 		raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 		if (!owner || !rtmutex_spin_on_owner(lock, waiter, owner))
+-			schedule();
++			rt_mutex_schedule();
+ 
+ 		raw_spin_lock_irq(&lock->wait_lock);
+ 		set_current_state(state);
+@@ -1661,7 +1661,7 @@ static void __sched rt_mutex_handle_deadlock(int res, int detect_deadlock,
+ 	WARN(1, "rtmutex deadlock detected\n");
+ 	while (1) {
+ 		set_current_state(TASK_INTERRUPTIBLE);
+-		schedule();
++		rt_mutex_schedule();
+ 	}
  }
-@@ -7044,6 +7046,32 @@ static void __setscheduler_prio(struct task_struct *p, int prio)
  
- #ifdef CONFIG_RT_MUTEXES
+@@ -1757,6 +1757,15 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 	int ret;
  
-+/*
-+ * Would be more useful with typeof()/auto_type but they don't mix with
-+ * bit-fields. Since it's a local thing, use int. Keep the generic sounding
-+ * name such that if someone were to implement this function we get to compare
-+ * notes.
-+ */
-+#define fetch_and_set(x, v) ({ int _x = (x); (x) = (v); _x; })
+ 	/*
++	 * Do all pre-schedule work here, before we queue a waiter and invoke
++	 * PI -- any such work that trips on rtlock (PREEMPT_RT spinlock) would
++	 * otherwise recurse back into task_blocks_on_rt_mutex() through
++	 * rtlock_slowlock() and will then enqueue a second waiter for this
++	 * same task and things get really confusing real fast.
++	 */
++	rt_mutex_pre_schedule();
 +
-+void rt_mutex_pre_schedule(void)
-+{
-+	lockdep_assert(!fetch_and_set(current->sched_rt_mutex, 1));
-+	sched_submit_work(current);
-+}
++	/*
+ 	 * Technically we could use raw_spin_[un]lock_irq() here, but this can
+ 	 * be called in early boot if the cmpxchg() fast path is disabled
+ 	 * (debug, no architecture support). In this case we will acquire the
+@@ -1767,6 +1776,7 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 	raw_spin_lock_irqsave(&lock->wait_lock, flags);
+ 	ret = __rt_mutex_slowlock_locked(lock, ww_ctx, state);
+ 	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
++	rt_mutex_post_schedule();
+ 
+ 	return ret;
+ }
+diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+index 25ec023..c7258cb 100644
+--- a/kernel/locking/rwbase_rt.c
++++ b/kernel/locking/rwbase_rt.c
+@@ -71,6 +71,7 @@ static int __sched __rwbase_read_lock(struct rwbase_rt *rwb,
+ 	struct rt_mutex_base *rtm = &rwb->rtmutex;
+ 	int ret;
+ 
++	rwbase_pre_schedule();
+ 	raw_spin_lock_irq(&rtm->wait_lock);
+ 
+ 	/*
+@@ -125,6 +126,7 @@ static int __sched __rwbase_read_lock(struct rwbase_rt *rwb,
+ 		rwbase_rtmutex_unlock(rtm);
+ 
+ 	trace_contention_end(rwb, ret);
++	rwbase_post_schedule();
+ 	return ret;
+ }
+ 
+@@ -237,6 +239,8 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+ 	/* Force readers into slow path */
+ 	atomic_sub(READER_BIAS, &rwb->readers);
+ 
++	rwbase_pre_schedule();
 +
-+void rt_mutex_schedule(void)
-+{
-+	lockdep_assert(current->sched_rt_mutex);
-+	__schedule_loop(SM_NONE);
-+}
+ 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+ 	if (__rwbase_write_trylock(rwb))
+ 		goto out_unlock;
+@@ -248,6 +252,7 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+ 		if (rwbase_signal_pending_state(state, current)) {
+ 			rwbase_restore_current_state();
+ 			__rwbase_write_unlock(rwb, 0, flags);
++			rwbase_post_schedule();
+ 			trace_contention_end(rwb, -EINTR);
+ 			return -EINTR;
+ 		}
+@@ -266,6 +271,7 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+ 
+ out_unlock:
+ 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
++	rwbase_post_schedule();
+ 	return 0;
+ }
+ 
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 9eabd58..2340b6d 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -1427,8 +1427,14 @@ static inline void __downgrade_write(struct rw_semaphore *sem)
+ #define rwbase_signal_pending_state(state, current)	\
+ 	signal_pending_state(state, current)
+ 
++#define rwbase_pre_schedule()				\
++	rt_mutex_pre_schedule()
 +
-+void rt_mutex_post_schedule(void)
-+{
-+	sched_update_worker(current);
-+	lockdep_assert(fetch_and_set(current->sched_rt_mutex, 0));
-+}
+ #define rwbase_schedule()				\
+-	schedule()
++	rt_mutex_schedule()
 +
- static inline int __rt_effective_prio(struct task_struct *pi_task, int prio)
- {
- 	if (pi_task)
++#define rwbase_post_schedule()				\
++	rt_mutex_post_schedule()
+ 
+ #include "rwbase_rt.c"
+ 
+diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
+index 48a19ed..842037b 100644
+--- a/kernel/locking/spinlock_rt.c
++++ b/kernel/locking/spinlock_rt.c
+@@ -184,9 +184,13 @@ static __always_inline int  rwbase_rtmutex_trylock(struct rt_mutex_base *rtm)
+ 
+ #define rwbase_signal_pending_state(state, current)	(0)
+ 
++#define rwbase_pre_schedule()
++
+ #define rwbase_schedule()				\
+ 	schedule_rtlock()
+ 
++#define rwbase_post_schedule()
++
+ #include "rwbase_rt.c"
+ /*
+  * The common functions which get wrapped into the rwlock API.
