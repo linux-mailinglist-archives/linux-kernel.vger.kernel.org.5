@@ -2,188 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4ED7A88FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90FA7A8905
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbjITPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
+        id S236851AbjITPyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235495AbjITPw4 (ORCPT
+        with ESMTP id S236793AbjITPym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:52:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7032EA3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:52:50 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695225168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RiToQxeJYRNFsLus3AGdgJigY3Zsm0XtXndlOR433v4=;
-        b=hZzpfqlTsGHjMNsLOX11qxft14ghonOKPS1ASHK8MOZj6Bm0N9bAaZk2ilWQUMjItJnZSm
-        lDM469p5C5RFvqdm011M7zqGR4Pid/NL0cam5zUndBgaKCRog6yjVgzHxAxbagOqGTDinB
-        RPZSaphBXR/+OZf5TQ4b9yflgMcwu5nn42Sog8G0wq00hla2Roe50cImPXnKlyw/t5pIB5
-        h10gxIxOhEO/FQMiFbJyTcOzaf64NkcWd84MhHnNgx6toryXeifWolyTI6YzD/Hr1lNhsS
-        sVi1kdQdWZg1cXQE9YOMfjGX1CRjksnBlxnyl98C6dEGndeoeLPzTXmdHm2RmA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695225168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RiToQxeJYRNFsLus3AGdgJigY3Zsm0XtXndlOR433v4=;
-        b=k0iGd7BEEgYfQcGIWKBPEk5kEL/c2Gn/pBCPkAac0tfEGQtX1ExB1839tn2JuSGH0d29Yn
-        2Yl7QRdupNP7ajAA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH printk v1] printk: fix illegal pbufs access for !CONFIG_PRINTK
-Date:   Wed, 20 Sep 2023 17:58:38 +0206
-Message-Id: <20230920155238.670439-1-john.ogness@linutronix.de>
+        Wed, 20 Sep 2023 11:54:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C2DB9;
+        Wed, 20 Sep 2023 08:54:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695225276; x=1726761276;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=GX8QBYbOXmpGWhJr3AbYH3d7nSxzLiqXFbOp3mAqEig=;
+  b=ZodkR2bu8Xg2RXmFrsfepYqZP+jwDXIe3GO9uDV7uhGyCF9Z338K/50A
+   SUFTYIcnbWE3qk9FLUrLyT++VRsM2gmNTtS2za60entcySntICFbCP0Nb
+   KFg4KoAJ4kH8zD6y/Q2Grml/SgT9MNEh1jti3vtpDLNzWMhP7Q+MsNmOB
+   TdXRbg7MeAL7EwLP1i/tLKEInBheu7DsHJsd9y/S453xVTQqgPCvJsfZb
+   K7WjBRlvoS6p9LAFsHCAtEha66NcsQNEs98GrMnMRVClslAlhADS5gY9/
+   zVpbZWNcg6bFsOf93BD1tmaxMIm+WUfUush5axz2EF/hge9TuHDJQw1TU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="380178456"
+X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
+   d="scan'208";a="380178456"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 08:54:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="776043470"
+X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
+   d="scan'208";a="776043470"
+Received: from conorbyr-mobl1.ger.corp.intel.com (HELO [10.213.199.161]) ([10.213.199.161])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 08:53:57 -0700
+Message-ID: <495203cd-d85e-2c00-4fa9-81879a882441@linux.intel.com>
+Date:   Wed, 20 Sep 2023 16:53:55 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 4/6] drm/drm_file: Add DRM obj's RSS reporting function
+ for fdinfo
+Content-Language: en-US
+To:     =?UTF-8?Q?Adri=c3=a1n_Larumbe?= <adrian.larumbe@collabora.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, healych@amazon.com,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        kernel@collabora.com, freedreno@lists.freedesktop.org
+References: <20230919233556.1458793-1-adrian.larumbe@collabora.com>
+ <20230919233556.1458793-5-adrian.larumbe@collabora.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <20230919233556.1458793-5-adrian.larumbe@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_PRINTK is not set, PRINTK_MESSAGE_MAX is 0. This
-leads to a zero-sized array @outbuf in @printk_shared_pbufs. In
-console_flush_all() a pointer to the first element of the array
-is assigned with:
 
-   char *outbuf = &printk_shared_pbufs.outbuf[0];
+On 20/09/2023 00:34, Adrián Larumbe wrote:
+> Some BO's might be mapped onto physical memory chunkwise and on demand,
+> like Panfrost's tiler heap. In this case, even though the
+> drm_gem_shmem_object page array might already be allocated, only a very
+> small fraction of the BO is currently backed by system memory, but
+> drm_show_memory_stats will then proceed to add its entire virtual size to
+> the file's total resident size regardless.
+> 
+> This led to very unrealistic RSS sizes being reckoned for Panfrost, where
+> said tiler heap buffer is initially allocated with a virtual size of 128
+> MiB, but only a small part of it will eventually be backed by system memory
+> after successive GPU page faults.
+> 
+> Provide a new DRM object generic function that would allow drivers to
+> return a more accurate RSS size for their BOs.
+> 
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Reviewed-by: Steven Price <steven.price@arm.com>
+> ---
+>   drivers/gpu/drm/drm_file.c | 5 ++++-
+>   include/drm/drm_gem.h      | 9 +++++++++
+>   2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+> index 883d83bc0e3d..762965e3d503 100644
+> --- a/drivers/gpu/drm/drm_file.c
+> +++ b/drivers/gpu/drm/drm_file.c
+> @@ -944,7 +944,10 @@ void drm_show_memory_stats(struct drm_printer *p, struct drm_file *file)
+>   		}
+>   
+>   		if (s & DRM_GEM_OBJECT_RESIDENT) {
+> -			status.resident += obj->size;
+> +			if (obj->funcs && obj->funcs->rss)
+> +				status.resident += obj->funcs->rss(obj);
+> +			else
+> +				status.resident += obj->size;
 
-For !CONFIG_PRINTK this leads to a compiler warning:
+Presumably you'd want the same smaller size in both active and 
+purgeable? Or you can end up with more in those two than in rss which 
+would look odd.
 
-   warning: array subscript 0 is outside array bounds of
-   'char[0]' [-Warray-bounds]
+Also, alternative to adding a new callback could be adding multiple 
+output parameters to the existing obj->func->status() which maybe ends 
+up simpler due fewer callbacks?
 
-This is not really dangerous because printk_get_next_message()
-always returns false for !CONFIG_PRINTK, which leads to @outbuf
-never being used. However, it makes no sense to even compile
-these functions for !CONFIG_PRINTK.
+Like:
 
-Extend the existing '#ifdef CONFIG_PRINTK' block to contain
-the formatting and emitting functions since these have no
-purpose in !CONFIG_PRINTK. This also allows removing several
-more !CONFIG_PRINTK dummies as well as moving
-@suppress_panic_printk into a CONFIG_PRINTK block.
+  s = obj->funcs->status(obj, &supported_status, &rss)
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309201724.M9BMAQIh-lkp@intel.com/
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- kernel/printk/printk.c | 44 +++++++++++++++++-------------------------
- 1 file changed, 18 insertions(+), 26 deletions(-)
+And adjust the code flow to pick up the rss if driver signaled it 
+supports reporting it.
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 778359b21761..7f40d9122caa 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -102,12 +102,6 @@ DEFINE_STATIC_SRCU(console_srcu);
-  */
- int __read_mostly suppress_printk;
- 
--/*
-- * During panic, heavy printk by other CPUs can delay the
-- * panic and risk deadlock on console resources.
-- */
--static int __read_mostly suppress_panic_printk;
--
- #ifdef CONFIG_LOCKDEP
- static struct lockdep_map console_lock_dep_map = {
- 	.name = "console_lock"
-@@ -445,6 +439,12 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
- static DEFINE_MUTEX(syslog_lock);
- 
- #ifdef CONFIG_PRINTK
-+/*
-+ * During panic, heavy printk by other CPUs can delay the
-+ * panic and risk deadlock on console resources.
-+ */
-+static int __read_mostly suppress_panic_printk;
-+
- DECLARE_WAIT_QUEUE_HEAD(log_wait);
- /* All 3 protected by @syslog_lock. */
- /* the next printk record to read by syslog(READ) or /proc/kmsg */
-@@ -2346,22 +2346,6 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
- 
- static u64 syslog_seq;
- 
--static size_t record_print_text(const struct printk_record *r,
--				bool syslog, bool time)
--{
--	return 0;
--}
--static ssize_t info_print_ext_header(char *buf, size_t size,
--				     struct printk_info *info)
--{
--	return 0;
--}
--static ssize_t msg_print_ext_body(char *buf, size_t size,
--				  char *text, size_t text_len,
--				  struct dev_printk_info *dev_info) { return 0; }
--static void console_lock_spinning_enable(void) { }
--static int console_lock_spinning_disable_and_check(int cookie) { return 0; }
--static bool suppress_message_printing(int level) { return false; }
- static bool pr_flush(int timeout_ms, bool reset_on_progress) { return true; }
- static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progress) { return true; }
- 
-@@ -2715,6 +2699,8 @@ static void __console_unlock(void)
- 	up_console_sem();
- }
- 
-+#ifdef CONFIG_PRINTK
-+
- /*
-  * Prepend the message in @pmsg->pbufs->outbuf with a "dropped message". This
-  * is achieved by shifting the existing message over and inserting the dropped
-@@ -2729,7 +2715,6 @@ static void __console_unlock(void)
-  *
-  * If @pmsg->pbufs->outbuf is modified, @pmsg->outbuf_len is updated.
-  */
--#ifdef CONFIG_PRINTK
- void console_prepend_dropped(struct printk_message *pmsg, unsigned long dropped)
- {
- 	struct printk_buffers *pbufs = pmsg->pbufs;
-@@ -2761,9 +2746,6 @@ void console_prepend_dropped(struct printk_message *pmsg, unsigned long dropped)
- 	memcpy(outbuf, scratchbuf, len);
- 	pmsg->outbuf_len += len;
- }
--#else
--#define console_prepend_dropped(pmsg, dropped)
--#endif /* CONFIG_PRINTK */
- 
- /*
-  * Read and format the specified record (or a later record if the specified
-@@ -2921,6 +2903,16 @@ static bool console_emit_next_record(struct console *con, bool *handover, int co
- 	return true;
- }
- 
-+#else
-+
-+static bool console_emit_next_record(struct console *con, bool *handover, int cookie)
-+{
-+	*handover = false;
-+	return false;
-+}
-+
-+#endif /* CONFIG_PRINTK */
-+
- /*
-  * Print out all remaining records to all consoles.
-  *
+Regards,
 
-base-commit: 9757acd0a700ba4a0d16dde4ba820eb052aba1a7
--- 
-2.39.2
+Tvrtko
 
+>   		} else {
+>   			/* If already purged or not yet backed by pages, don't
+>   			 * count it as purgeable:
+> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+> index bc9f6aa2f3fe..16364487fde9 100644
+> --- a/include/drm/drm_gem.h
+> +++ b/include/drm/drm_gem.h
+> @@ -208,6 +208,15 @@ struct drm_gem_object_funcs {
+>   	 */
+>   	enum drm_gem_object_status (*status)(struct drm_gem_object *obj);
+>   
+> +	/**
+> +	 * @rss:
+> +	 *
+> +	 * Return resident size of the object in physical memory.
+> +	 *
+> +	 * Called by drm_show_memory_stats().
+> +	 */
+> +	size_t (*rss)(struct drm_gem_object *obj);
+> +
+>   	/**
+>   	 * @vm_ops:
+>   	 *
