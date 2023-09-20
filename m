@@ -2,151 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5ECE7A7461
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DF97A7463
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbjITHie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
+        id S233717AbjITHiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233879AbjITHiS (ORCPT
+        with ESMTP id S233889AbjITHik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:38:18 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456FC128
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:38:11 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-404fbfac998so40813395e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695195490; x=1695800290; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zz3/ecOKh4XgsJl46wvd3sKyjYtoix9I3w8gro1wfuw=;
-        b=cm0vLhfht5SysJJxneUJRJXDWefeNpW+wH2/8WrEcjg28/Usqq2r5VVb6o5oH7gHy6
-         7N8eZ39T8tDSBOK1hg63PfQi7k1Wm3TtLpjgxKbk8mo2EXZ/qSIQKrRxMdJGgdz44MMp
-         3cVSuNYnvWbvwUrRzujB+KGPDS5IUUsoG6OjcLlfwwGYd8mH2xHm5AXbQno8qxpT/V/P
-         XWVY0Zy2s61i73t0tFEMY9chGCBDbCGrHyXQ1QW0UV89GM3IIYu1KxJe+JHYLLAoqx03
-         X7P6n6YmUOe2u2YMFwOnxEn9X4DjJ3MI6eLq2VrzW4T+StGvTuByOsHZmEjQuefSGM+2
-         65Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695195490; x=1695800290;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zz3/ecOKh4XgsJl46wvd3sKyjYtoix9I3w8gro1wfuw=;
-        b=bRO9FI8dv2xTGasXvNftGRRh15ooVGItjtuZrxVGbj2ejIPG1kVdJo1D2aiOIRgh0L
-         4w6ky9Z13dFN0b6sgFomWLWVzd/2V5eTP2rskFafnvYAAmpazAWTBOYCnmIz1jkM7Y5o
-         I8bEtth2ndEIP0oqyBrx51F4j6GWkNmCrgGruYQf6fJMaIp59ZrRLTwcw3t9iByK9Gke
-         NUCha7LGu3IXJQ8snz5nOLrOwRlaeY4Vj2NBa1GedIvtnEdvTm73ZzjjVnylA8zVWIf1
-         ZZiI/TA+ISwGWIbmY6BZQS2A1i2q7FycgiIlq4AUZwvIz+04OIqvmb9WktBp77JfCmx2
-         kqxg==
-X-Gm-Message-State: AOJu0YwsZIMkm/Jk1uaJdo84SYsnJijXS2aZ9uMUMeQ85ygt8R8c+uW+
-        I42koUQgP4Nw2LOma5vtv7K6DQ==
-X-Google-Smtp-Source: AGHT+IHTqEA03iyluOTE5KNwlZAgRLI+hQhb/1jCFIbu1+TPY1ZpietUNW+El8NpgjOI/gBNn23OCQ==
-X-Received: by 2002:a05:600c:2909:b0:401:2ee0:754a with SMTP id i9-20020a05600c290900b004012ee0754amr1614112wmd.13.1695195489693;
-        Wed, 20 Sep 2023 00:38:09 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id o5-20020a05600c510500b004052093a8f6sm1176515wms.25.2023.09.20.00.38.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:38:09 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 09:38:03 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/7] RISC-V: Detect XVentanaCondOps from ISA string
-Message-ID: <20230920-ab82cd5fbac7606ba747afa4@orel>
-References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-2-apatel@ventanamicro.com>
+        Wed, 20 Sep 2023 03:38:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6177110
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:38:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58FAFC433CA;
+        Wed, 20 Sep 2023 07:38:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695195514;
+        bh=4NlRl7tmZMlfASt9XMRrxPS/AlpbPNnFQnsAF66CTlA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fbOv5Ga5pOr8bEBqOsDmwv+qo+NkSh7hSrqE9C/EQnXiA7C5v9Cy5dCGE8jSKmdvZ
+         O/v5Zatn42gteY9WxSpqTymCnb+ixM0XX4DLLgN1Fxilum3hjw9q7y+mgHeszDM7Bs
+         ZPb0wsc18lBuK3JclBPaONYI54BGmI598o12WgsYaHKLv6501kgIK9onNvHdK3ax4u
+         y7maDMUZ1dknByW8d3NcpRbqLW41yrtOQ4uPfFsqhe/VjGoK20ddyGNieIS7+YSb54
+         BVb4lyyQbfTv4ycjdl/l3GGArDJ9MdgZAPCHSQxqyEqih+GGENIEgbmA17AmTbRAXc
+         YzzS4LEzKCnRQ==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9a64619d8fbso861234366b.0;
+        Wed, 20 Sep 2023 00:38:34 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzUNQF7lxBckkheGlZmT5X2Zpx6N7AV0IlSOJbD3pHEukZjonFO
+        4Dywowy7oq1Vj+0lsWGAj7LNofIl/L58tnfq9aE=
+X-Google-Smtp-Source: AGHT+IGLN8EgkEV3ltTwt+G6aGQQKtZQniuqxBAE1MIL3EKm4G4pYEaRbZGEIQOkUwjSiwQT7EJF3oIY42lCYaKF3b0=
+X-Received: by 2002:a17:906:3694:b0:99b:627b:e96d with SMTP id
+ a20-20020a170906369400b0099b627be96dmr1221708ejc.44.1695195512786; Wed, 20
+ Sep 2023 00:38:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919035343.1399389-2-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn> <dbd7d823a73d8a9484efcd55f6616f5392daf608.1695189879.git.wangchen20@iscas.ac.cn>
+In-Reply-To: <dbd7d823a73d8a9484efcd55f6616f5392daf608.1695189879.git.wangchen20@iscas.ac.cn>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 20 Sep 2023 15:38:19 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRd=G+-zzFXEF+XUT3vLtfeHJknODoTWUVP36hy-7MoRg@mail.gmail.com>
+Message-ID: <CAJF2gTRd=G+-zzFXEF+XUT3vLtfeHJknODoTWUVP36hy-7MoRg@mail.gmail.com>
+Subject: Re: [PATCH v2 02/11] dt-bindings: vendor-prefixes: add milkv/sophgo
+To:     Chen Wang <unicornxw@gmail.com>
+Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:23:37AM +0530, Anup Patel wrote:
-> The Veyron-V1 CPU supports custom conditional arithmetic and
-> conditional-select/move operations referred to as XVentanaCondOps
-> extension. In fact, QEMU RISC-V also has support for emulating
-> XVentanaCondOps extension.
-> 
-> Let us detect XVentanaCondOps extension from ISA string available
-> through DT or ACPI.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  Documentation/devicetree/bindings/riscv/extensions.yaml | 7 +++++++
->  arch/riscv/include/asm/hwcap.h                          | 1 +
->  arch/riscv/kernel/cpufeature.c                          | 1 +
->  3 files changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> index 36ff6749fbba..cad8ef68eca7 100644
-> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> @@ -171,6 +171,13 @@ properties:
->              memory types as ratified in the 20191213 version of the privileged
->              ISA specification.
->  
-> +        - const: xventanacondops
-> +          description: |
-> +            The Ventana specific XVentanaCondOps extension for conditional
-> +            arithmetic and conditional-select/move operations defined by the
-> +            Ventana custom extensions specification v1.0.1 (or higher) at
-> +            https://github.com/ventanamicro/ventana-custom-extensions/releases.
-> +
->          - const: zba
->            description: |
->              The standard Zba bit-manipulation extension for address generation
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> index 0f520f7d058a..b7efe9e2fa89 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -59,6 +59,7 @@
->  #define RISCV_ISA_EXT_ZIFENCEI		41
->  #define RISCV_ISA_EXT_ZIHPM		42
->  #define RISCV_ISA_EXT_SMSTATEEN		43
-> +#define RISCV_ISA_EXT_XVENTANACONDOPS	44
->  
->  #define RISCV_ISA_EXT_MAX		64
->  
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index 3755a8c2a9de..3a31d34fe709 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -182,6 +182,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
->  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
->  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
-> +	__RISCV_ISA_EXT_DATA(xventanacondops, RISCV_ISA_EXT_XVENTANACONDOPS),
->  };
->  
->  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
-> -- 
-> 2.34.1
+On Wed, Sep 20, 2023 at 2:37=E2=80=AFPM Chen Wang <unicornxw@gmail.com> wro=
+te:
 >
+> Add new vendor strings to dt bindings.
+> These new vendor strings are used by
+> - Sophgo SG2042 SoC [1]
+> - Milk-V Pioneer board [2], which uses SG2042 chip.
+>
+> [1]: https://en.sophgo.com/product/introduce/sg2042.html
+> [2]: https://milkv.io/pioneer
+>
+> Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml
+> index 573578db9509..fcca9e070a9a 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -863,6 +863,8 @@ patternProperties:
+>      description: MikroElektronika d.o.o.
+>    "^mikrotik,.*":
+>      description: MikroTik
+> +  "^milkv,.*":
+> +    description: MilkV Technology Co., Ltd
+>    "^miniand,.*":
+>      description: Miniand Tech
+>    "^minix,.*":
+> @@ -1273,6 +1275,8 @@ patternProperties:
+>      description: Solomon Systech Limited
+>    "^sony,.*":
+>      description: Sony Corporation
+> +  "^sophgo,.*":
+> +    description: Sophgo Technology Inc.
+>    "^sourceparts,.*":
+>      description: Source Parts Inc.
+>    "^spansion,.*":
+> --
+> 2.25.1
+>
+Reviewed-by: Guo Ren <guoren@kernel.org>
 
-Besides Conor's comment about splitting the patch,
-
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-
-Thanks,
-drew
+--=20
+Best Regards
+ Guo Ren
