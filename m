@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A4D7A71E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E3D7A71E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbjITFWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 01:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
+        id S232801AbjITFWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 01:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbjITFVu (ORCPT
+        with ESMTP id S232477AbjITFVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Sep 2023 01:21:50 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04ABD9F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6BCDE
         for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:21:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=s0y5UIjqoCpjnF4OBN5FWM7GDvbMo4ENMqy1dPJ0poI=; b=sQqu1AdlYjnuMiQvcqDvmHt5VE
-        sdb/baXQUxEVZsWLXtqSeajq7O9yxvqpXOG4BgJhE2TUFqFiY2jMNCYDj1LYZJdkviYGJVNmetyPj
-        ybFTPwhaatYrk7Mte4h//Zc+8I+QEKkKqmJ8llxJUNs//YyDiig5APahD5sWPTaDvLSvOH7HLXlvJ
-        JJWj8vi+t/EMCheqqC2JnU2OMpcmklG5JhYuE5Gfw7PgW4i0RXcXKm9gWyoGos8SGglL9UBTAvdz5
-        gbC325GIkyK0CRYnzE4hh2cjmIfD8xWDMQcOTc/k+dd0ZRM4olETPt+/9d4d593V8+4X/b7CIlRA+
-        PA9uaQBA==;
+        bh=OX+5DgL5L+DB7XZdBwxF1pwtxEcW3b8yHimwNmQkOpo=; b=ARBb1QXsZW6yqaduKl4ez0JHar
+        gvxxwUAo4kAzoYh8DJAZvYiWfQYaDVTGNmyyd5G//JeJ6BdQw1mvdSYVkl5uINRbBHhxZLR0kkbOy
+        //QDlldJmSoqOyWvrHCOg4Tz/93iw6d+9eX0h8wsdqG0PC2PTbWDzYH/aNJ7um82RP1x1ua4GNJmS
+        JEXYFubkGfNM5BHYd2AvT/ETCOKfCc1IXxvupJ/vr9Tm5Vu337dRy3/3ja91zYJg9bsLGr8THIJmz
+        6087bbXgj6zJG7zEhmRDe1lhMZTT2UpD0hur3ygUZmNz6/thB4Q2V8y5P8RTAl6PNdcfdWrzBP3E8
+        GHxuY7Hg==;
 Received: from [2601:1c2:980:9ec0::9fed] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qipeh-001tym-2Z;
-        Wed, 20 Sep 2023 05:21:43 +0000
+        id 1qipei-001tym-0H;
+        Wed, 20 Sep 2023 05:21:44 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Chris Zankel <chris@zankel.net>,
         Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH 06/16] xtensa: signal: include headers for function prototypes
-Date:   Tue, 19 Sep 2023 22:21:29 -0700
-Message-ID: <20230920052139.10570-7-rdunlap@infradead.org>
+Subject: [PATCH 07/16] xtensa: stacktrace: include <asm/ftrace.h> for prototype
+Date:   Tue, 19 Sep 2023 22:21:30 -0700
+Message-ID: <20230920052139.10570-8-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230920052139.10570-1-rdunlap@infradead.org>
 References: <20230920052139.10570-1-rdunlap@infradead.org>
@@ -51,43 +51,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add <asm/syscall.h> to satisfy the xtensa_rt_sigreturn() prototype
-warning.
-Add <asm/processor.h> to satisfy the do_notify_resume() prototype
-warning.
+Use <asm/ftrace.h> to prevent a build warning:
 
-arch/xtensa/kernel/signal.c:246:17: warning: no previous prototype for 'xtensa_rt_sigreturn' [-Wmissing-prototypes]
-arch/xtensa/kernel/signal.c:525:6: warning: no previous prototype for 'do_notify_resume' [-Wmissing-prototypes]
-  525 | void do_notify_resume(struct pt_regs *regs)
+arch/xtensa/kernel/stacktrace.c:263:15: warning: no previous prototype for 'return_address' [-Wmissing-prototypes]
+  263 | unsigned long return_address(unsigned level)
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Cc: Chris Zankel <chris@zankel.net>
 Cc: Max Filippov <jcmvbkbc@gmail.com>
 ---
- arch/xtensa/include/asm/processor.h |    1 +
- arch/xtensa/kernel/signal.c         |    2 ++
- 2 files changed, 3 insertions(+)
+ arch/xtensa/kernel/stacktrace.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff -- a/arch/xtensa/kernel/signal.c b/arch/xtensa/kernel/signal.c
---- a/arch/xtensa/kernel/signal.c
-+++ b/arch/xtensa/kernel/signal.c
-@@ -26,6 +26,8 @@
+diff -- a/arch/xtensa/kernel/stacktrace.c b/arch/xtensa/kernel/stacktrace.c
+--- a/arch/xtensa/kernel/stacktrace.c
++++ b/arch/xtensa/kernel/stacktrace.c
+@@ -12,6 +12,7 @@
+ #include <linux/sched.h>
+ #include <linux/stacktrace.h>
+ 
++#include <asm/ftrace.h>
+ #include <asm/stacktrace.h>
+ #include <asm/traps.h>
  #include <linux/uaccess.h>
- #include <asm/cacheflush.h>
- #include <asm/coprocessor.h>
-+#include <asm/processor.h>
-+#include <asm/syscall.h>
- #include <asm/unistd.h>
- 
- extern struct task_struct *coproc_owners[];
-diff -- a/arch/xtensa/include/asm/processor.h b/arch/xtensa/include/asm/processor.h
---- a/arch/xtensa/include/asm/processor.h
-+++ b/arch/xtensa/include/asm/processor.h
-@@ -220,6 +220,7 @@ struct mm_struct;
- extern unsigned long __get_wchan(struct task_struct *p);
- 
- void init_arch(bp_tag_t *bp_start);
-+void do_notify_resume(struct pt_regs *regs);
- 
- #define KSTK_EIP(tsk)		(task_pt_regs(tsk)->pc)
- #define KSTK_ESP(tsk)		(task_pt_regs(tsk)->areg[1])
