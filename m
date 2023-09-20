@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B307A8C50
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AA17A8C51
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjITTLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        id S229940AbjITTLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjITTLa (ORCPT
+        with ESMTP id S229882AbjITTLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:11:30 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9F0C2;
-        Wed, 20 Sep 2023 12:11:24 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c129cb7770so1099631fa.1;
-        Wed, 20 Sep 2023 12:11:24 -0700 (PDT)
+        Wed, 20 Sep 2023 15:11:36 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D71AF;
+        Wed, 20 Sep 2023 12:11:28 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5008d16cc36so344389e87.2;
+        Wed, 20 Sep 2023 12:11:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695237082; x=1695841882; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695237086; x=1695841886; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SOzZD92zaXAANSSJuQi8lUO8jcRVO2h2VCNQ1+CPjLg=;
-        b=aVEXoDtskz2UKfXKOn7Jf8V8CjiHa10tc31BO95awIAzzhlhbQ1AxGoFUYiE9gUfOp
-         6h2fhnl3oLdVH4MHAymb1i0603gJqoZwiSUF3eG25rYbBHCtx2YsEVuYmaMISPmdi4nT
-         XgyLkNPcHgE1lvbdyM+l2JgYk1fSVK5bDHmldk3CZk802sX11676wQUc/eXDAOBmYKDg
-         2vPuQqmtQi4RulNF6isMs3vUE7ozRxW6J6n9Ct60nP3WVHGeuIhXTfSmJk7QTzSgv23A
-         +9ovkwh/ZIDzKrPYhkRXsaXgCXTNgcsLqJ1VwhrFKsOvwo4uey4vDkHzcSAysb+7Sc1X
-         kdfw==
+        bh=ZnR6l+vYOh9Csf9eBwgQHTo/sUEkvBg0hJ7+UGZ8t70=;
+        b=TNMK6pnIc7HTFAHxZdDx7uu8/pjaDh5/eyj2ZtwGNcgUG2POe95l8rHCUAnuhHF+W4
+         /AJxFzyVeRMhvwsaiGqa85ZnDKCSOgpxD52J0o6AxQ9uaQMp1/OsSppt61OESagcw1F1
+         Rs+d8ehnwNiDGmX36wYbxXyo3RfVxQcFcKJh8CcTRtsk/GXZ13WMosEyggFKJRYvM8r+
+         eZgLYMQ9q2XRkM8fvJ/VZEMkJjwYW0V3OSMBTKu4BBklaFqI+PcOfqef9w0zVktxeQlx
+         6a0H+qPbwy5x6sKSlUywkosXlB0kZO8/fjc7FVPXFT8l/usaG/Bc7m5angbDQUehCsQC
+         RBXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695237082; x=1695841882;
+        d=1e100.net; s=20230601; t=1695237086; x=1695841886;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SOzZD92zaXAANSSJuQi8lUO8jcRVO2h2VCNQ1+CPjLg=;
-        b=qczS6yegyvJgIXe17YlyE0Dn96Qflj9tmnB1bL9pjhgV+KoRQmulHlQTBFDY8F+Ah0
-         AXAdnrJehHcHkrjAF+81XJGgHj1yhO/JG2+iya3xWMrzQ+SykU/04rC5wA/0KKn+j/0+
-         Qu6CqAsdfRFI4lkxtOMtbNvtecZ0D2uOw5m6nU7vxJHLXRzzFYeZIw5bY3YNm+NXMGH6
-         p6P/M37JER0zuPQwE4S6aK0HMkfMDQ3Dfwd03qsSpZWfD59o7V9q2C/xjEG4nW/c4+Fd
-         JdCdZc4oQYF8zyA6XW9ddR5EXITBN3nb1SRlzoZygAEg1liqkTC5ogu4278AYPxzZzXn
-         /cVA==
-X-Gm-Message-State: AOJu0Yw+02sXWFBZIL4WZw93z48DmZR1mXZGfC/jCXO9t8ndJYnxkHGC
-        myTvetRPbR0XkG4Iizqk3Jw=
-X-Google-Smtp-Source: AGHT+IGoZ96V+G1d/YUQj+Y5RWTQKPaREb6RoceSVpNeh+joRF/L+Ofo/NpGOHNhubiVImEchz2i+w==
-X-Received: by 2002:a2e:90d5:0:b0:2bf:f861:f523 with SMTP id o21-20020a2e90d5000000b002bff861f523mr1361029ljg.4.1695237082187;
-        Wed, 20 Sep 2023 12:11:22 -0700 (PDT)
-Received: from localhost ([83.149.21.16])
-        by smtp.gmail.com with ESMTPSA id a14-20020a2ebe8e000000b002bffb3f8cebsm1996479ljr.54.2023.09.20.12.11.20
+        bh=ZnR6l+vYOh9Csf9eBwgQHTo/sUEkvBg0hJ7+UGZ8t70=;
+        b=IODceeovfqcVS6+TYvxZqUolxRrjKkI+Nqu6hAx9vr6gYMgUuZG8g7rUujjFQw6Jv9
+         946fReL6p8eGa5yJYdsSkHrMf6dF1Ae8jYFcCmSyTPBpG/k0G56vjfIVIWsMHygct36U
+         aV3P1OktdVRY8APl7vuKklhClZwR8WzFGoTtU5u0Lr+tyjGw+dUbF+5+O1jxDKwcsxfb
+         d+DU4WXuAaPSJHdfjaSVJL9W+/xNbUMH8WUQOxWbBMz1hNGkL8+TwWukfKjsdmFiCs3W
+         l0+hs+F9NuIYrzT0z5GbF9SGgfz7H0sfeuMCBgFC+iLJPAlGGZDMu0qb72vTtlymdsh/
+         /1yg==
+X-Gm-Message-State: AOJu0YzdSHDPWgK7WHWWPMAudf9aKavWr4PQTtFbtM7o+u4VX/XWGQcw
+        JvGvFOIVHWzuLTJgxcQKBoU=
+X-Google-Smtp-Source: AGHT+IExfWuCoa4RzHs2lEM9AIkEJYLw9ooHlfGZM2+IIUrULkxRvC9LOMmRYav56Pnn28/FK1GUFA==
+X-Received: by 2002:ac2:5dd3:0:b0:500:78ee:4cd7 with SMTP id x19-20020ac25dd3000000b0050078ee4cd7mr3193711lfq.23.1695237086256;
+        Wed, 20 Sep 2023 12:11:26 -0700 (PDT)
+Received: from localhost ([85.140.6.11])
+        by smtp.gmail.com with ESMTPSA id f9-20020ac251a9000000b00501c1794883sm2812429lfk.251.2023.09.20.12.11.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:11:21 -0700 (PDT)
+        Wed, 20 Sep 2023 12:11:25 -0700 (PDT)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Michal Simek <michal.simek@amd.com>,
         Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -58,148 +58,59 @@ To:     Michal Simek <michal.simek@amd.com>,
         James Morse <james.morse@arm.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Robert Richter <rric@kernel.org>,
-        Manish Narani <manish.narani@xilinx.com>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Punnaiah Choudary Kalluri 
-        <punnaiah.choudary.kalluri@xilinx.com>,
+        <punnaiah.choudary.kalluri@xilinx.com>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Dinh Nguyen <dinguyen@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
         linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>
-Subject: [PATCH v4 02/20] EDAC/synopsys: Fix generic device type detection procedure
-Date:   Wed, 20 Sep 2023 22:10:26 +0300
-Message-ID: <20230920191059.28395-3-fancer.lancer@gmail.com>
+Subject: [PATCH v4 03/20] EDAC/synopsys: Fix mci->scrub_cap field setting
+Date:   Wed, 20 Sep 2023 22:10:27 +0300
+Message-ID: <20230920191059.28395-4-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230920191059.28395-1-fancer.lancer@gmail.com>
 References: <20230920191059.28395-1-fancer.lancer@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
         autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First of all the enum dev_type constants describe the memory DRAM chips
-used at the stick, not the entire DQ-bus width (see the enumeration kdoc
-for details). So what is returned from the zynqmp_get_dtype() function and
-then specified to the dimm_info->dtype field is definitely incorrect.
-Secondly the DRAM chips type has nothing to do with the data bus width
-specified in the MSTR.data_bus_width CSR field. That CSR field just
-determines the part of the whole DQ-bus currently used to access the data
-from the all DRAM memory chips. So it doesn't indicate the individual
-chips type. Thirdly the DRAM chips type can be determined only in case of
-the DDR4 protocol by means of the MSTR.device_config field state (it is
-supposed to be set by the system firmware). Finally the DW uMCTL2 DDRC ECC
-capability doesn't depend on the memory chips type. Moreover it doesn't
-depend on the utilized data bus width in runtime either. The IP-core
-reference manual says in [1,2] that the ECC support can't be enabled
-during the IP-core synthesizes for the DRAM data bus widths other than 16,
-32 or 64.  At the same time the bus width mode (MSTR.data_bus_width)
-doesn't change the ECC feature availability. Thus it was wrong to
-determine the ECC state with respect to the DQ-bus width mode.
+The mem_ctl_info.scrub_cap field is supposed to be set with the ECC
+scrub-related flags. Instead the driver erroneously initializes it with
+the SCRUB_HW_SRC flag ID. It's definitely wrong, though it hasn't caused
+any problem so far since the structure field isn't used by the EDAC core.
+Fix it anyway by using the SCRUB_FLAG_HW_SRC macro to initialize the
+field.
 
-Fix all of the mistakes described above in the zynqmp_get_dtype() and
-zynqmp_get_ecc_state() methods: specify actual DRAM chips data width only
-for the DDR4 protocol and return that it's UNKNOWN in the rest of the
-cases; determine ECC availability by the ECCCFG0.ecc_mode field state
-only (that field can't be modified anyway if the IP-core was synthesized
-with no ECC support).
-
-[1] DesignWare® Cores Enhanced Universal DDR Memory Controller (uMCTL2)
-Databook, Version 3.91a, October 2020, p. 421.
-[2] DesignWare® Cores Enhanced Universal DDR Memory Controller (uMCTL2)
-Databook, Version 3.91a, October 2020, p. 633.
-
-Fixes: b500b4a029d5 ("EDAC, synopsys: Add ECC support for ZynqMP DDR controller")
+Fixes: ae9b56e3996d ("EDAC, synps: Add EDAC support for zynq ddr ecc controller")
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-
 ---
-
-Changelog v2:
-- Include "linux/bitfield.h" header file to get the FIELD_GET macro
-  definition. (@tbot)
----
- drivers/edac/synopsys_edac.c | 49 +++++++++++++++---------------------
- 1 file changed, 20 insertions(+), 29 deletions(-)
+ drivers/edac/synopsys_edac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index 014a2176c2c1..b463bd802961 100644
+index b463bd802961..65790097beb2 100644
 --- a/drivers/edac/synopsys_edac.c
 +++ b/drivers/edac/synopsys_edac.c
-@@ -675,26 +675,25 @@ static enum dev_type zynq_get_dtype(const void __iomem *base)
-  */
- static enum dev_type zynqmp_get_dtype(const void __iomem *base)
- {
--	enum dev_type dt;
--	u32 width;
--
--	width = readl(base + CTRL_OFST);
--	width = (width & ECC_CTRL_BUSWIDTH_MASK) >> ECC_CTRL_BUSWIDTH_SHIFT;
--	switch (width) {
--	case DDRCTL_EWDTH_16:
--		dt = DEV_X2;
--		break;
--	case DDRCTL_EWDTH_32:
--		dt = DEV_X4;
--		break;
--	case DDRCTL_EWDTH_64:
--		dt = DEV_X8;
--		break;
--	default:
--		dt = DEV_UNKNOWN;
-+	u32 regval;
-+
-+	regval = readl(base + CTRL_OFST);
-+	if (!(regval & MEM_TYPE_DDR4))
-+		return DEV_UNKNOWN;
-+
-+	regval = (regval & DDRC_MSTR_CFG_MASK) >> DDRC_MSTR_CFG_SHIFT;
-+	switch (regval) {
-+	case DDRC_MSTR_CFG_X4_MASK:
-+		return DEV_X4;
-+	case DDRC_MSTR_CFG_X8_MASK:
-+		return DEV_X8;
-+	case DDRC_MSTR_CFG_X16_MASK:
-+		return DEV_X16;
-+	case DDRC_MSTR_CFG_X32_MASK:
-+		return DEV_X32;
- 	}
+@@ -856,7 +856,7 @@ static void mc_init(struct mem_ctl_info *mci, struct platform_device *pdev)
+ 	/* Initialize controller capabilities and configuration */
+ 	mci->mtype_cap = MEM_FLAG_DDR3 | MEM_FLAG_DDR2;
+ 	mci->edac_ctl_cap = EDAC_FLAG_NONE | EDAC_FLAG_SECDED;
+-	mci->scrub_cap = SCRUB_HW_SRC;
++	mci->scrub_cap = SCRUB_FLAG_HW_SRC;
+ 	mci->scrub_mode = SCRUB_NONE;
  
--	return dt;
-+	return DEV_UNKNOWN;
- }
- 
- /**
-@@ -731,19 +730,11 @@ static bool zynq_get_ecc_state(void __iomem *base)
-  */
- static bool zynqmp_get_ecc_state(void __iomem *base)
- {
--	enum dev_type dt;
--	u32 ecctype;
-+	u32 regval;
- 
--	dt = zynqmp_get_dtype(base);
--	if (dt == DEV_UNKNOWN)
--		return false;
-+	regval = readl(base + ECC_CFG0_OFST) & SCRUB_MODE_MASK;
- 
--	ecctype = readl(base + ECC_CFG0_OFST) & SCRUB_MODE_MASK;
--	if ((ecctype == SCRUB_MODE_SECDED) &&
--	    ((dt == DEV_X2) || (dt == DEV_X4) || (dt == DEV_X8)))
--		return true;
--
--	return false;
-+	return (regval == SCRUB_MODE_SECDED);
- }
- 
- /**
+ 	mci->edac_cap = EDAC_FLAG_SECDED;
 -- 
 2.41.0
 
