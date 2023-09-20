@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 008BB7A79EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCDC7A79F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbjITLBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
+        id S234421AbjITLDU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 07:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbjITLBT (ORCPT
+        with ESMTP id S232488AbjITLDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:01:19 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337C7DD
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:01:14 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52f9a45b4bdso8353626a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695207672; x=1695812472; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fFCnzCVFLsbuhvtZ9EHw9SNjPT4ld8559k/OSp8m+oI=;
-        b=0znRomiutZ2eIGc65iJ/S7ilbpslzEmVEOOVmqie/ulpkTpD0kFFdccUKxRqJL4+rt
-         LXxHLipcu0e5avdRoEAkO/2pU7tZt1N9CpYQwpj6CzSO9peXSehnNNrNovnT/yapd3tu
-         7DAPbecOOwVyZWkKMoGXvc5+WQDUls9Q0AsV51/MALOvqp0CH2jqa28xWb/aXGjM5ZvF
-         cTWnUBfv7+CdLZ/aADHKKE3z2z7R9swELk8P4bEPaEY7TXMie/gIVPFAdQOt7QCkgGpK
-         n8HsqASiz7S2caHNhmVjX4IjkDFviRLf3b30onCvrubo6wQTR7Ku2Y+PLlTKUW7NJkMI
-         ZUtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695207672; x=1695812472;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fFCnzCVFLsbuhvtZ9EHw9SNjPT4ld8559k/OSp8m+oI=;
-        b=phluUNWcqHngsoMobycHga2eAvxlYqjaCPfTbuph9QB/tevW511CJhyKr/BU2ahoFv
-         NroOqV4wvDKONn0yUuMHcxD/LRtyX1Eh6R6AO3cSxf3w9Vu0L4c0PLwArEyPO+1CtHL1
-         rFDr5nQtK5tTC3aGLasobwgY7giMrrrEf2MUve+OtJSlIuspL42roPmAzvwbZQchzrNy
-         /jockw8YVjHKoitfniHUa+scZfL3g6cLwESFPQ1sjn9/cWOdiQ33xkHs10kN7KaCRo2x
-         IBaxsBwV5bj+kKFSWBRbPfGi0HVLoATaWJeGg7rHRyM3y76LxGXrw7Oo3eRjvJjzBalJ
-         4wyQ==
-X-Gm-Message-State: AOJu0YzorCIsk0mSPekBcd4aXXoxcJ7rb5vi8p/TV7LNcyk9B1BYycyv
-        VzHsv/yA9OMd/bK2fnccwzIf3Q==
-X-Google-Smtp-Source: AGHT+IG3UkUHhXRFKHx1etLPK3jZZNjDhVAwE4UIfgjnZzVOtLR39Gca5U0GPsI8uvAEiDai68jh1Q==
-X-Received: by 2002:a17:907:a087:b0:9aa:186:959a with SMTP id hu7-20020a170907a08700b009aa0186959amr1644862ejc.31.1695207672595;
-        Wed, 20 Sep 2023 04:01:12 -0700 (PDT)
-Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
-        by smtp.gmail.com with ESMTPSA id o2-20020a1709062e8200b009ad8338aafasm9320070eji.13.2023.09.20.04.01.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 04:01:12 -0700 (PDT)
-Message-ID: <e1c0f5ac-a0bc-dc2c-0638-c580498670e4@blackwall.org>
-Date:   Wed, 20 Sep 2023 14:01:10 +0300
+        Wed, 20 Sep 2023 07:03:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CDB9E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:03:10 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-262-EgUX-j8ZPY-PRUixsIQ3Pw-1; Wed, 20 Sep 2023 12:02:56 +0100
+X-MC-Unique: EgUX-j8ZPY-PRUixsIQ3Pw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 20 Sep
+ 2023 12:02:52 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 20 Sep 2023 12:02:51 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: RE: Buggy __free(kfree) usage pattern already in tree
+Thread-Topic: Buggy __free(kfree) usage pattern already in tree
+Thread-Index: AQHZ6zB0ngjqcerR/0+SR8HlhTcAlbAji3Fg
+Date:   Wed, 20 Sep 2023 11:02:51 +0000
+Message-ID: <a0ba32c892654a2bb60327e103d181fb@AcuMS.aculab.com>
+References: <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
+ <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com>
+ <20230915210851.GA23174@noisy.programming.kicks-ass.net>
+ <CAHk-=whvOGL3aNhtps0YksGtzvaob_bvZpbaTcVEqGwNMxB6xg@mail.gmail.com>
+ <20230915213231.GB23174@noisy.programming.kicks-ass.net>
+ <CAHk-=wi08ZUguV_n88h=bP6X01-tah29RtB0t9TmXtyuEJev-Q@mail.gmail.com>
+ <20230915221332.GC23174@noisy.programming.kicks-ass.net>
+ <20230919125752.GA39346@noisy.programming.kicks-ass.net>
+ <20230919125954.GB39346@noisy.programming.kicks-ass.net>
+ <20230919131038.GC39346@noisy.programming.kicks-ass.net>
+ <20230919193516.GA20937@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230919193516.GA20937@noisy.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH net-next v4 6/6] selftests: forwarding:
- bridge_fdb_learning_limit: Add a new selftest
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Johannes Nixdorf <jnixdorf-oss@avm.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
- <20230919-fdb_limit-v4-6-39f0293807b8@avm.de>
-From:   Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20230919-fdb_limit-v4-6-39f0293807b8@avm.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,18 +70,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/23 11:12, Johannes Nixdorf wrote:
-> Add a suite covering the fdb_n_learned and fdb_max_learned bridge
-> features, touching all special cases in accounting at least once.
-> 
-> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
-> ---
->   tools/testing/selftests/net/forwarding/Makefile    |   3 +-
->   .../net/forwarding/bridge_fdb_learning_limit.sh    | 283 +++++++++++++++++++++
->   2 files changed, 285 insertions(+), 1 deletion(-)
-> 
+If this stuff is so hard to get right for non-trivial cases
+perhaps it should all be ripped out?
 
-Always nice to see new tests. Thanks,
-Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
+The trivial cases are pretty easy to eve-ball check and
+static analysis tools do a reasonable job.
 
+Maybe I'm 'old-school' but I'd much rather see explicit
+unlock() and free() than have 'some compiler magic' do
+it for you.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
