@@ -2,186 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B417A8E1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBBB7A8E1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjITVAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 17:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        id S229998AbjITVBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 17:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbjITVAb (ORCPT
+        with ESMTP id S229819AbjITVBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 17:00:31 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1E1C9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:00:24 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8186d705a9so421047276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695243624; x=1695848424; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WD85YU6GCdPtOsLZeVlIeZZfzAYdtoOH/7wu6gyWXNI=;
-        b=lrXR4KDKyB3CuUyGP5uNfXTfoHTjrrZkUVpu9kQNuYv9InUBqUeB4fMdB30349PPIZ
-         RcGYV8CUadyrYi4ihZfTHpQg/09qpPl+c/zYxq0o2P7dwkfgXkXcp+bq3MVEF+9duUBe
-         HTtCh9+ypTXfAcyFaAzJk68f4w++iv6tmGozumlieWuG+llNlw0IlHzHC0WhvmQeQ47D
-         BIPb11gg7udeYiklPqgWMrsDyd383pwOvV8mQ+zScwuU8lJXO0Vahq5kKfJ4f6dThPzb
-         EXaItMpjNVLeAY+6Kq+gMt7n0juNGBqQvhqE4dZEpjqEgFDXknQSWJecxRAUASzTRNFm
-         LQQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695243624; x=1695848424;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WD85YU6GCdPtOsLZeVlIeZZfzAYdtoOH/7wu6gyWXNI=;
-        b=SsvX2zrrVDfM60G0GVOkgWoJIKgkEFNbVf2D7Q747INntxPGB8rTpEiyviCjmnO0pR
-         +rqsCUYip5vP8Fdvs29L/Db80qiMM2uH3ukILNkx8Glv3RtIXzqALhhY29WH3aNNU0Q3
-         CJszFO1xMRyTJ7k2+PPgIuZeZvn8lPrhbn1JsNRCQoM2+U2QUL+btUpb8r/R4FvMpzjS
-         wZKbiokCWe89uVCG1rRXf6oO57VSYPFfJY9yshVDNn8vlVvdAqUaSrCT0dxgPuE4jwSD
-         R65dUj45NGiCmMTVOMBUo9Vl1nLqRePBBXF0s2uA+4ocB0LXAaDdnpeUOSF/0f2E+kWP
-         btNg==
-X-Gm-Message-State: AOJu0YyTK+US+EFAIfg5zlNPt5S0NxhyOiZHUMz2udSmEecRmu/UvZ49
-        CXs1ExOK14hiBKrUjC84udGYuAluHdU=
-X-Google-Smtp-Source: AGHT+IE6bowhyf6hyHthYBPyW6IZfmwFxVZA3ErkF6QZibGvin1ESoG81Vf7MPhR8G5wDRxCxsmQT8EV7w4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:496:0:b0:d7f:2cb6:7d88 with SMTP id
- 144-20020a250496000000b00d7f2cb67d88mr58003ybe.13.1695243624102; Wed, 20 Sep
- 2023 14:00:24 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 14:00:22 -0700
-In-Reply-To: <ZQP6ZqXH81V24Lj/@yzhao56-desk.sh.intel.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-12-seanjc@google.com>
- <ZQP6ZqXH81V24Lj/@yzhao56-desk.sh.intel.com>
-Message-ID: <ZQtdZmJ3SekURjiQ@google.com>
-Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 17:01:12 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D18D3;
+        Wed, 20 Sep 2023 14:01:04 -0700 (PDT)
+Received: from notapiano (unknown [185.213.155.222])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4A88D6607243;
+        Wed, 20 Sep 2023 22:01:01 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695243662;
+        bh=Rtz3erKyUOgKqZM9Fh/lnQavTB+Wa5RuboyAzdxYPLg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EjtNw7g2/rRrUYorNvkEqpKPwq+RWcONPEdiiyLA/JzNV4qLkpq1ko4v9iaU9EwSz
+         UT0TDFmRA07pEn24u2Wyb37LLo2PqvxnpDLaLjhUPoghKY5cKOQtMyogxRe3dDqV0q
+         gROtD6w1u4K2iV1be/a2j/ptDKVwQzqhWF30lr1iMR1yvf1SLDLmkyTeLeurVIn+CR
+         Tx3ihWbL2GL6Qe5ZQi+LFsKhmcoX4V5WQI9KmRvR5rFWXhUzsUvEOUjorwg/zbrKsh
+         Ca5fLcRW/meo/Z5i74tx+xE3mJ37WPHtDwKMzW5gYsOGI6RV1WnzOMihTDT26wnl2o
+         2UejAn5V85png==
+Date:   Wed, 20 Sep 2023 17:00:56 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, Mark Brown <broonie@kernel.org>,
+        kernelci@lists.linux.dev, kernel@collabora.com,
+        Guenter Roeck <groeck@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Add a test to catch unprobed Devicetree devices
+Message-ID: <368a1fc3-02d7-49f2-a881-f39259f8c186@notapiano>
+References: <20230828211424.2964562-1-nfraprado@collabora.com>
+ <97c368a1-9c76-490a-848e-eacd6411e810@notapiano>
+ <20230920195629.GA2784994-robh@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230920195629.GA2784994-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023, Yan Zhao wrote:
-> On Wed, Sep 13, 2023 at 06:55:09PM -0700, Sean Christopherson wrote:
-> > From: Chao Peng <chao.p.peng@linux.intel.com>
+On Wed, Sep 20, 2023 at 02:56:29PM -0500, Rob Herring wrote:
+> On Wed, Sep 20, 2023 at 10:03:06AM -0400, Nícolas F. R. A. Prado wrote:
+> > On Mon, Aug 28, 2023 at 05:13:09PM -0400, Nícolas F. R. A. Prado wrote:
+> > > 
+> > > Regressions that cause a device to no longer be probed by a driver can
+> > > have a big impact on the platform's functionality, and despite being
+> > > relatively common there isn't currently any generic test to detect them.
+> > > As an example, bootrr [1] does test for device probe, but it requires
+> > > defining the expected probed devices for each platform.
+> > > 
+> > > Given that the Devicetree already provides a static description of
+> > > devices on the system, it is a good basis for building such a test on
+> > > top.
+> > > 
+> > > This series introduces a test to catch regressions that prevent devices
+> > > from probing.
+> > > 
+> > > Patches 1 and 2 extend the existing dt-extract-compatibles to be able to
+> > > output only the compatibles that can be expected to match a Devicetree
+> > > node to a driver. Patch 2 adds a kselftest that walks over the
+> > > Devicetree nodes on the current platform and compares the compatibles to
+> > > the ones on the list, and on an ignore list, to point out devices that
+> > > failed to be probed.
+> > > 
+> > > A compatible list is needed because not all compatibles that can show up
+> > > in a Devicetree node can be used to match to a driver, for example the
+> > > code for that compatible might use "OF_DECLARE" type macros and avoid
+> > > the driver framework, or the node might be controlled by a driver that
+> > > was bound to a different node.
+> > > 
+> > > An ignore list is needed for the few cases where it's common for a
+> > > driver to match a device but not probe, like for the "simple-mfd"
+> > > compatible, where the driver only probes if that compatible is the
+> > > node's first compatible.
+> > > 
+> > > The reason for parsing the kernel source instead of relying on
+> > > information exposed by the kernel at runtime (say, looking at modaliases
+> > > or introducing some other mechanism), is to be able to catch issues
+> > > where a config was renamed or a driver moved across configs, and the
+> > > .config used by the kernel not updated accordingly. We need to parse the
+> > > source to find all compatibles present in the kernel independent of the
+> > > current config being run.
+> > > 
+> > > [1] https://github.com/kernelci/bootrr
+> > > 
+> > > Changes in v3:
+> > > - Added DT selftest path to MAINTAINERS
+> > > - Enabled device probe test for nodes with 'status = "ok"'
+> > > - Added pass/fail/skip totals to end of test output
+> > > 
+> > > Changes in v2:
+> > > - Extended dt-extract-compatibles script to be able to extract driver
+> > >   matching compatibles, instead of adding a new one in Coccinelle
+> > > - Made kselftest output in the KTAP format
+> > > 
+> > > Nícolas F. R. A. Prado (3):
+> > >   dt: dt-extract-compatibles: Handle cfile arguments in generator
+> > >     function
+> > >   dt: dt-extract-compatibles: Add flag for driver matching compatibles
+> > >   kselftest: Add new test for detecting unprobed Devicetree devices
+> > > 
+> > >  MAINTAINERS                                   |  1 +
+> > >  scripts/dtc/dt-extract-compatibles            | 74 +++++++++++++----
+> > >  tools/testing/selftests/Makefile              |  1 +
+> > >  tools/testing/selftests/dt/.gitignore         |  1 +
+> > >  tools/testing/selftests/dt/Makefile           | 21 +++++
+> > >  .../selftests/dt/compatible_ignore_list       |  1 +
+> > >  tools/testing/selftests/dt/ktap_helpers.sh    | 70 ++++++++++++++++
+> > >  .../selftests/dt/test_unprobed_devices.sh     | 83 +++++++++++++++++++
+> > >  8 files changed, 236 insertions(+), 16 deletions(-)
+> > >  create mode 100644 tools/testing/selftests/dt/.gitignore
+> > >  create mode 100644 tools/testing/selftests/dt/Makefile
+> > >  create mode 100644 tools/testing/selftests/dt/compatible_ignore_list
+> > >  create mode 100644 tools/testing/selftests/dt/ktap_helpers.sh
+> > >  create mode 100755 tools/testing/selftests/dt/test_unprobed_devices.sh
 > > 
-> > In confidential computing usages, whether a page is private or shared is
-> > necessary information for KVM to perform operations like page fault
-> > handling, page zapping etc. There are other potential use cases for
-> > per-page memory attributes, e.g. to make memory read-only (or no-exec,
-> > or exec-only, etc.) without having to modify memslots.
+> > Hi Rob,
 > > 
-> ...
-> >> +bool kvm_range_has_memory_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
-> > +				     unsigned long attrs)
-> > +{
-> > +	XA_STATE(xas, &kvm->mem_attr_array, start);
-> > +	unsigned long index;
-> > +	bool has_attrs;
-> > +	void *entry;
-> > +
-> > +	rcu_read_lock();
-> > +
-> > +	if (!attrs) {
-> > +		has_attrs = !xas_find(&xas, end);
-> > +		goto out;
-> > +	}
-> > +
-> > +	has_attrs = true;
-> > +	for (index = start; index < end; index++) {
-> > +		do {
-> > +			entry = xas_next(&xas);
-> > +		} while (xas_retry(&xas, entry));
-> > +
-> > +		if (xas.xa_index != index || xa_to_value(entry) != attrs) {
-> Should "xa_to_value(entry) != attrs" be "!(xa_to_value(entry) & attrs)" ?
+> > gentle ping on this series.
+> > 
+> > I take it you'll be merging this through your tree, so I've added Shuah's R-b
+> > that she supplied on v2 for the kselftest patch.
+> 
+> Sorry, now applied.
+> 
+> If you send something before or in the merge window, it is best to 
+> rebase and resend after rc1 comes out.
 
-No, the exact comparsion is deliberate.  The intent of the API is to determine
-if the entire range already has the desired attributes, not if there is overlap
-between the two.
+Ah didn't know about that, will keep it in mind for the future, thanks!
 
-E.g. if/when RWX attributes are supported, the exact comparison is needed to
-handle a RW => R conversion.
-
-> > +			has_attrs = false;
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +out:
-> > +	rcu_read_unlock();
-> > +	return has_attrs;
-> > +}
-> > +
-> ...
-> > +/* Set @attributes for the gfn range [@start, @end). */
-> > +static int kvm_vm_set_mem_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
-> > +				     unsigned long attributes)
-> > +{
-> > +	struct kvm_mmu_notifier_range pre_set_range = {
-> > +		.start = start,
-> > +		.end = end,
-> > +		.handler = kvm_arch_pre_set_memory_attributes,
-> > +		.on_lock = kvm_mmu_invalidate_begin,
-> > +		.flush_on_ret = true,
-> > +		.may_block = true,
-> > +	};
-> > +	struct kvm_mmu_notifier_range post_set_range = {
-> > +		.start = start,
-> > +		.end = end,
-> > +		.arg.attributes = attributes,
-> > +		.handler = kvm_arch_post_set_memory_attributes,
-> > +		.on_lock = kvm_mmu_invalidate_end,
-> > +		.may_block = true,
-> > +	};
-> > +	unsigned long i;
-> > +	void *entry;
-> > +	int r = 0;
-> > +
-> > +	entry = attributes ? xa_mk_value(attributes) : NULL;
-> Also here, do we need to get existing attributes of a GFN first ?
-
-No?  @entry is the new value that will be set for all entries.  This line doesn't
-touch the xarray in any way.  Maybe I'm just not understanding your question.
+Nícolas
