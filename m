@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B837A74F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77787A74F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbjITHza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
+        id S233299AbjITHzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbjITHzY (ORCPT
+        with ESMTP id S233005AbjITHz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:55:24 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE2AAB
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:55:19 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5041335fb9cso532403e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:55:19 -0700 (PDT)
+        Wed, 20 Sep 2023 03:55:26 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D45C2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:55:20 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5033918c09eso1205819e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:55:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695196517; x=1695801317; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695196518; x=1695801318; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dp0b1o9g+PpYZByhHPBV5mXBlVfc9hIIqUxUds48fFY=;
-        b=pz0YYAki58qMYyHhoypI6ekyY+s8qoiOIaDLRx2kE8d7edG/rYfuTuqvYBCzLGrMgF
-         5+Oh5Nl4yjrOUmg3lbLapDWgdjQhBQ4zKXhlMstmwb7hMZ/yG8Y0oD/uoxVCsIQr8ImT
-         Q3pUXEpKRmnsRzk4kZXgvhZiA6VGS3sGXopLNIVEEEGgUL44T1ZnWlx1CT2VdRb/xoQO
-         HcI0sCNvxiaOUufVXMqOGWXpk1ZxlDIAlT0EoAuqVF+VG2R5WfZhLGNCuzWDvLJlX4Wk
-         leN56a6ChEE+VV+0/FXHB38THhaoCQU1GQS8vroNAfx3gUhg4Ajh5MiaRNJm3otHGRvP
-         pltA==
+        bh=CxpXhgDL+WYT4ZjQ7cMsLe1CH/MZvqWCA7Gdeim4PCs=;
+        b=MPbd8dIcjKsOFEcJvJt7H7izZQeSXtMJPYD4w3Kg171bYAKiPmyJ8rEa84sB6NwVRx
+         Nq27ll6KEdv6k52q3rrwbSgrsN+aHtNalJGiRPgJL1bkbcimYn2NQNKOPkANzViYvX8V
+         6TG9c84/YOQA87xHd+0FVF4OoD9cYM5I0XOyZdAFRanuKFZUS1fbX8vFOSe93A/fp5nP
+         rnj+so/EBObI4KAFd9fGHga3scTWiC6N9i5eGnxLmg5XsicQHNUidhPB5ma+2ywzN60s
+         HTHatbBW0p9Wd01k57HD32QWVl+A3+9+X//tPjAvJ5pEauEkh2ZI0NyTt5YdKvBG4daa
+         hrfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695196517; x=1695801317;
+        d=1e100.net; s=20230601; t=1695196518; x=1695801318;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dp0b1o9g+PpYZByhHPBV5mXBlVfc9hIIqUxUds48fFY=;
-        b=gwas6oCoBX854XYaj9oM5q+cCE5OuhT7lCfLGXS5iYiohbQfxL2JajnXk39p8sKfo6
-         JTG/1RpwaNfDwi4dM4a4/pi0Wd8/GtTdME2S+MFxWbFBtSiAp079ELLQ0OtrPvPSdmqA
-         fBNVi6N7nf3yBL9zANozZXbqPMI+0JWj77+x7GfZO6/qqX9yvcrHh3IvOGc32Qegbmkz
-         wj7p1Kduuj0tDTBS1N1KUesFanSuxGD0XwiQzndhXaEXaCELhQqPqfRDD+YePLAGHzja
-         Km/DbUyv50xDIEs0O6daa1SKPEUJ/K3ZkwSDuAR7lsEUebvE3NVZjqtXr6MyBPYtB4Be
-         /e0Q==
-X-Gm-Message-State: AOJu0YwRfv7GRkpdHwfuh6E1DeYiuvjgPzKYF39eT7UdTvpbjlXohmt2
-        Ym+RlqW2jrBHa809CepxGz5yjvOblAel/M4rz4xFfw==
-X-Google-Smtp-Source: AGHT+IH1KiwFHBI5ax0lkBY8FLQFTsXSNMqUPbbuKanTrs9I2ZibluGCw6QDkjf+tYKu0Qcn0ux4OA==
-X-Received: by 2002:a05:6512:2f6:b0:4f9:6842:afc with SMTP id m22-20020a05651202f600b004f968420afcmr1454497lfq.64.1695196517306;
-        Wed, 20 Sep 2023 00:55:17 -0700 (PDT)
+        bh=CxpXhgDL+WYT4ZjQ7cMsLe1CH/MZvqWCA7Gdeim4PCs=;
+        b=cseVx8a8lsH71kmzJkodytBdFBknU2X7MUse6Gnc59Zbx4aLl2CT4KmHl8Zmmk3eak
+         sCmzu83l+If73S1FCk75xIId+f7hWbZ8i2wqiRhxJ0+73uDPFk9/mXEneNHOQ+YvKgfe
+         PJ4ywldr6mXZGCrtHFluBEo5u5v5AfOXxZJbkw+BYKoDl8P4wDaM6oPyOnUjKImXgnI2
+         GVYr6OySWG+2LWo34KjGlF86T2eKl+CtfZXTObu9bUHtFVpYmLDePM4+v8PYTJqt/Xcu
+         6vYHtDOTsRN1xgChMTj+Hk4boYIjLPnE1zJgNzA3E0Mo8xLTNy/KKFK0w9PkPWyrqDUS
+         hZbg==
+X-Gm-Message-State: AOJu0YxSaBzWCAlowUlK0/s/nR3lJPgljiygS7BCgJrfqlhgV+m5VS5L
+        gcbtasFUBC47OADSGC5kylfXDQ==
+X-Google-Smtp-Source: AGHT+IGgi716OSTmXEPCt0gS07zfGFz0XZMiSgl59FvqDlgT7KDpWgU4g/roFPYq3nL1GboCJgyqMA==
+X-Received: by 2002:a19:9110:0:b0:502:fd08:69f7 with SMTP id t16-20020a199110000000b00502fd0869f7mr1618424lfd.28.1695196518530;
+        Wed, 20 Sep 2023 00:55:18 -0700 (PDT)
 Received: from brgl-uxlite.. (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id d9-20020a05640208c900b0051bed21a635sm8481981edz.74.2023.09.20.00.55.16
+        by smtp.gmail.com with ESMTPSA id d9-20020a05640208c900b0051bed21a635sm8481981edz.74.2023.09.20.00.55.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:55:16 -0700 (PDT)
+        Wed, 20 Sep 2023 00:55:17 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -59,9 +59,9 @@ To:     Yury Norov <yury.norov@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>
 Cc:     linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2 2/4] genirq/irq_sim: remove unused field from struct irq_sim_irq_ctx
-Date:   Wed, 20 Sep 2023 09:54:58 +0200
-Message-Id: <20230920075500.96260-3-brgl@bgdev.pl>
+Subject: [PATCH v2 3/4] genirq/irq_sim: order headers alphabetically
+Date:   Wed, 20 Sep 2023 09:54:59 +0200
+Message-Id: <20230920075500.96260-4-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230920075500.96260-1-brgl@bgdev.pl>
 References: <20230920075500.96260-1-brgl@bgdev.pl>
@@ -78,25 +78,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-The irqnum field is unused. Remove it.
+For better readability and maintenance keep headers in alphabetical
+order.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- kernel/irq/irq_sim.c | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/irq/irq_sim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
-index dd76323ea3fd..f5ebb3ba6f9a 100644
+index f5ebb3ba6f9a..b0d50b48dbd1 100644
 --- a/kernel/irq/irq_sim.c
 +++ b/kernel/irq/irq_sim.c
-@@ -19,7 +19,6 @@ struct irq_sim_work_ctx {
- };
+@@ -4,10 +4,10 @@
+  * Copyright (C) 2020 Bartosz Golaszewski <bgolaszewski@baylibre.com>
+  */
  
- struct irq_sim_irq_ctx {
--	int			irqnum;
- 	bool			enabled;
- 	struct irq_sim_work_ctx	*work_ctx;
- };
++#include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/irq_sim.h>
+ #include <linux/irq_work.h>
+-#include <linux/interrupt.h>
+ #include <linux/slab.h>
+ 
+ struct irq_sim_work_ctx {
 -- 
 2.39.2
 
