@@ -2,83 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D70757A7881
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6A57A78A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbjITKDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        id S234172AbjITKJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234128AbjITKDN (ORCPT
+        with ESMTP id S233786AbjITKJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:03:13 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D103CA9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:03:06 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52c4d3ff424so8316426a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695204185; x=1695808985; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FkXGC8/llEzHx22WCqyo1sMVOiWRsz/r1ftC1969lDw=;
-        b=F/JYnu2Zuexvcx3U7vAPXSJaJBDKVYg0w8bn+IQHHrUcJMc7xaOIKy6C163hQzGaxX
-         HajZENZHl1twtxS0oq6sAQRJcpiRuszYBeFfNc/cz+ieQlqDvLWQs1vyZeW2c3AU5/Vt
-         CpHMybXr9B+Ft+GQ5FaZPfCWqEubjBhlTJa5lOJkUdVxNT/HRf3wE4DPW+63paKL60NO
-         NBcCfSWCwkOzmcb3DKeQeQ2E6aw2BddZawt05QGtKB4cGKgPNLzMsO1l2w1bunV+9Ek5
-         NxoCXHBLa6TZkjSSQQ1qetIwOloidwfqdUcBGEoGVMKwtXfH0aM6IWJF6hGxephEglBD
-         Qzig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695204185; x=1695808985;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FkXGC8/llEzHx22WCqyo1sMVOiWRsz/r1ftC1969lDw=;
-        b=ouay+QZBBgvirKRP4OZLol7vYYQi9xfAb2sVq57U9sjU5ZwfqnnaaPwo93MBVgNYbk
-         Ab1WbGcvsIDhBSREMaK19rtD234L/jwmkHvXKVsChYwAmXGgUEiOrCvdJv49OVOUb+Pg
-         phw4nDVJ1hacEOxPTGNgSpWT8pzXVtQOrLZbgWi85GTfBL0opmFlPGC0lTh3znNstqhZ
-         glw3r7pJLnM89oZgAJuaad54WTnRj3U4ZaEWrQoRdgjnTzLDd/8WULPm3mIeN6IGRm6N
-         3kVIPiZFHKywAS6QBECOpnJHoLntDYEpJunDRVTXQi6K6zXlAAnS//V0ldpJbR+L2PDP
-         ZPKw==
-X-Gm-Message-State: AOJu0YyGfcvsJq12H0+kLbF1nQ4QqzDQk3Hj6la4gxLVaGP1uCqTDgMW
-        jdKRJuZpRPmnGCn2u15arAdtdA==
-X-Google-Smtp-Source: AGHT+IG6sJ+R1lkn+lfZVNrnVeKvzzEIZMu5ACOOPhlXnMNNxo3Svp7xYrZA+OV9whJvdn8P8ZsfMg==
-X-Received: by 2002:aa7:c98e:0:b0:51e:4439:f474 with SMTP id c14-20020aa7c98e000000b0051e4439f474mr1657874edt.35.1695204185176;
-        Wed, 20 Sep 2023 03:03:05 -0700 (PDT)
-Received: from [172.20.86.172] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id s29-20020a50d49d000000b00532bec5f768sm2084757edi.95.2023.09.20.03.03.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 03:03:04 -0700 (PDT)
-Message-ID: <93ff26cc-f9b9-a064-8597-bc1a754d2dc2@linaro.org>
-Date:   Wed, 20 Sep 2023 12:03:03 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 4/5] arm64: dts: qcom: add uart console support for
- SM4450
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, tglx@linutronix.de, maz@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org
-Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
-        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
-        quic_ajipan@quicinc.com, kernel@quicinc.com
-References: <20230920065459.12738-1-quic_tengfan@quicinc.com>
- <20230920065459.12738-5-quic_tengfan@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230920065459.12738-5-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        Wed, 20 Sep 2023 06:09:57 -0400
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA95AD;
+        Wed, 20 Sep 2023 03:09:50 -0700 (PDT)
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 63D11200B77;
+        Wed, 20 Sep 2023 12:09:48 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 092EB200B82;
+        Wed, 20 Sep 2023 12:09:48 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 2632A180327D;
+        Wed, 20 Sep 2023 18:09:46 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
+        m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [RFC PATCH v4 00/11] Add audio support in v4l2 framework
+Date:   Wed, 20 Sep 2023 17:32:39 +0800
+Message-Id: <1695202370-24678-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,91 +46,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Audio signal processing also has the requirement for memory to
+memory similar as Video.
 
+This asrc memory to memory (memory ->asrc->memory) case is a non
+real time use case.
 
-On 9/20/23 08:54, Tengfei Fan wrote:
-> Add base description of UART and TLMM nodes which helps SM4450
-> boot to shell with console on boards with this SoC.
-> 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
-The SoC change must be separate from the board change.
+User fills the input buffer to the asrc module, after conversion, then asrc
+sends back the output buffer to user. So it is not a traditional ALSA playback
+and capture case.
 
-[...]
+It is a specific use case,  there is no reference in current kernel.
+v4l2 memory to memory is the closed implementation,  v4l2 current
+support video, image, radio, tuner, touch devices, so it is not
+complicated to add support for this specific audio case.
 
-Please leave a comment explaining what these GPIOs are
-used for.
-> +&tlmm {
-> +	gpio-reserved-ranges = <0 4>, <136 1>;
-> +};
+Because we had implemented the "memory -> asrc ->i2s device-> codec"
+use case in ALSA.  Now the "memory->asrc->memory" needs
+to reuse the code in asrc driver, so the first 3 patches is for refining
+the code to make it can be shared by the "memory->asrc->memory"
+driver.
 
-[...]
+The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
+user applications only use the ioctl of v4l2 framework.
 
-> +		qupv3_id_0: geniqup@ac0000 {
-> +			compatible = "qcom,geni-se-qup";
-> +			reg = <0x0 0x00ac0000 0x0 0x2000>;
-> +			ranges;
-> +			clock-names = "m-ahb", "s-ahb";
-> +			clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
-> +				 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
-property
-property-names
+Other change is to add memory to memory support for two kinds of i.MX ASRC
+module.
 
-[...]
+changes in v4:
+- update document style
+- separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commit
 
-> +
-> +			uart7: serial@a88000 {
-> +				compatible = "qcom,geni-debug-uart";
-> +				reg = <0 0x00a88000 0 0x4000>;
-Use 0x0 consistently.
+changes in v3:
+- Modify documents for adding audio m2m support
+- Add audio virtual m2m driver
+- Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+- Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
+- with modification in v4l-utils, pass v4l2-compliance test.
 
-> +				clock-names = "se";
-> +				clocks = <&gcc GCC_QUPV3_WRAP1_S2_CLK>;
-property
-property-names
+changes in v2:
+- decouple the implementation in v4l2 and ALSA
+- implement the memory to memory driver as a platfrom driver
+  and move it to driver/media
+- move fsl_asrc_common.h to include/sound folder
 
-> +				interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&qup_uart7_tx>, <&qup_uart7_rx>;
-ditto
+Shengjiu Wang (11):
+  ASoC: fsl_asrc: define functions for memory to memory usage
+  ASoC: fsl_easrc: define functions for memory to memory usage
+  ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
+  ASoC: fsl_asrc: register m2m platform device
+  ASoC: fsl_easrc: register m2m platform device
+  media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
+  media: uapi: Add V4L2_AUDIO_FMT_LPCM fourcc format
+  media: v4l2: Add audio capture and output support
+  media: uapi: Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD control
+  media: audm2m: add virtual driver for audio memory to memory
+  media: imx-asrc: Add memory to memory driver
 
-[...]
+ .../userspace-api/media/v4l/audio-formats.rst |   15 +
+ .../userspace-api/media/v4l/buffer.rst        |    6 +
+ .../userspace-api/media/v4l/control.rst       |    5 +
+ .../userspace-api/media/v4l/dev-audio.rst     |   63 +
+ .../userspace-api/media/v4l/devices.rst       |    1 +
+ .../media/v4l/pixfmt-aud-lpcm.rst             |   61 +
+ .../userspace-api/media/v4l/pixfmt.rst        |    1 +
+ .../media/v4l/vidioc-enum-fmt.rst             |    2 +
+ .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
+ .../media/v4l/vidioc-querycap.rst             |    3 +
+ .../media/videodev2.h.rst.exceptions          |    3 +
+ .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
+ drivers/media/platform/nxp/Kconfig            |   12 +
+ drivers/media/platform/nxp/Makefile           |    1 +
+ drivers/media/platform/nxp/imx-asrc.c         | 1058 +++++++++++++++++
+ drivers/media/test-drivers/Kconfig            |    9 +
+ drivers/media/test-drivers/Makefile           |    1 +
+ drivers/media/test-drivers/audm2m.c           |  767 ++++++++++++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    1 +
+ drivers/media/v4l2-core/v4l2-dev.c            |   17 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   53 +
+ include/media/v4l2-dev.h                      |    2 +
+ include/media/v4l2-ioctl.h                    |   34 +
+ .../fsl => include/sound}/fsl_asrc_common.h   |   54 +
+ include/uapi/linux/v4l2-controls.h            |    1 +
+ include/uapi/linux/videodev2.h                |   25 +
+ sound/soc/fsl/fsl_asrc.c                      |  162 +++
+ sound/soc/fsl/fsl_asrc.h                      |    4 +-
+ sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
+ sound/soc/fsl/fsl_easrc.c                     |  239 ++++
+ sound/soc/fsl/fsl_easrc.h                     |    8 +-
+ 31 files changed, 2615 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/userspace-api/media/v4l/audio-formats.rst
+ create mode 100644 Documentation/userspace-api/media/v4l/dev-audio.rst
+ create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
+ create mode 100644 drivers/media/platform/nxp/imx-asrc.c
+ create mode 100644 drivers/media/test-drivers/audm2m.c
+ rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (60%)
 
-> +			compatible = "qcom,sm4450-tlmm";
-> +			reg = <0 0x0f100000 0 0x300000>;
-Use 0x0 consistently
+-- 
+2.34.1
 
-> +			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-> +			gpio-controller;
-> +			#gpio-cells = <2>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <2>;
-> +			gpio-ranges = <&tlmm 0 0 137>;
-> +			wakeup-parent = <&pdc>;
-> +
-> +			qup_uart7_rx: qup-uart7-rx-state {
-> +				pins = "gpio23";
-> +				function = "qup1_se2_l2";
-> +				drive-strength = <2>;
-> +				bias-disable;
-> +			};
-> +
-> +			qup_uart7_tx: qup-uart7-tx-state {
-> +				pins = "gpio22";
-> +				function = "qup1_se2_l2";
-> +				drive-strength = <2>;
-> +				bias-disable;
-> +			};
-> +		};
-> +
->   		intc: interrupt-controller@17200000 {
->   			compatible = "arm,gic-v3";
->   			reg = <0x0 0x17200000 0x0 0x10000>,     /* GICD */
-> @@ -476,7 +525,6 @@
->   				clocks = <&xo_board>;
->   			};
->   		};
-> -
-Totally unrelated change, fix the patch introducing it instead.
-
-Konrad
