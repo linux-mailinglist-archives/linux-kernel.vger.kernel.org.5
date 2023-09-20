@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AA27A798B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034117A7996
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234345AbjITKpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
+        id S234508AbjITKqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234387AbjITKow (ORCPT
+        with ESMTP id S234462AbjITKpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:44:52 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B591A1;
-        Wed, 20 Sep 2023 03:44:35 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CE07D66020EE;
-        Wed, 20 Sep 2023 11:44:33 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695206674;
-        bh=G338lXUJZ7YTM0Q7o/Hhflrx9583KA/wLdEtpyqYJyo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=CEWExvrD9a+y3n9LJ7lAa7Kl4RvaCKlBKmInfM9DF1uU8oclkaQa35rBxaOtGABPg
-         yf8+mp2+A+dGECE8suzbmU+0xPADRqLIa67y4+no7vKahABQhuaLjuYZfJc03uDmUc
-         bTLKGbisZSoW0Cc91620NogoBAQsTpFXKPGunidYcHeakpINz5eJOO13g1U/Ro1xN+
-         EIsXOka5uUfnsnipLT7xLWc8hVH9Ts5fa2qohiNE9YrVv3ffP0XmTh0F9iMgaeclfu
-         91wTAMogsV8JSHuPhue+917MpHbZQXJuXWxPqUA1vJutEGFX//P1r6GkImep/v2X4a
-         XksEYfLEGvdvA==
-Message-ID: <f8c359f6-4525-081c-290c-146ce99b1cfb@collabora.com>
-Date:   Wed, 20 Sep 2023 12:44:32 +0200
+        Wed, 20 Sep 2023 06:45:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C77DF4;
+        Wed, 20 Sep 2023 03:45:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695206730; x=1726742730;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BQ04r3rhhEvN+xUr1SkWuerOykbF40OxGzgam9T1NW4=;
+  b=au9Ol2F26fxL8ZoFfi3/ihSrkQVAa3Vpo4Vhj+/+YEUf093EfX2Acs2w
+   MzpljUc0yaaVH6fMai1ACPuV3SkPv8hDViX4PRlfREOxd3OH5nMlKCqUK
+   ZDEVOBsVOQsY778oGUrFYxvAiI2QeB263Ogz/fCTAPgQ3FW/yJhOlSYXn
+   IOIXyGYwmx7xDNKY+s8fF0fBIEmmC+6p9lzuRxy8+N7KTW/vlhDH/I2oT
+   5h71NHabrV/2GfZZJNmbczI95//XHZK14JvZBuhmygm4yIHdbE1ZPWuKq
+   z1bqGjcQUUM0JupVOALCYX2Al+aBWb/6yYMZl/3fU90/B4fH0K86cRLA+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="360445466"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="360445466"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 03:45:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="723226594"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="723226594"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 20 Sep 2023 03:45:27 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qiuhx-0008ei-08;
+        Wed, 20 Sep 2023 10:45:25 +0000
+Date:   Wed, 20 Sep 2023 18:44:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: dt-bindings: tfa9879: Convert to dtschema
+Message-ID: <202309201811.iKOZ5prG-lkp@intel.com>
+References: <20230919090739.2448-1-bragathemanick0908@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 09/12] regulator: mt6358: Make MT6366 vcn18 LDO
- configurable
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>, Lee Jones <lee@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Zhiyong Tao <zhiyong.tao@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230919104357.3971512-1-wenst@chromium.org>
- <20230919104357.3971512-10-wenst@chromium.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230919104357.3971512-10-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919090739.2448-1-bragathemanick0908@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 19/09/23 12:43, Chen-Yu Tsai ha scritto:
-> The VCN18 regulator on the MT6366 (only) actually has a wide
-> configurable range of voltages, even though its name suggests a fixed
-> output voltage.
-> 
-> Convert it from a fixed LDO to a configurable LDO. Its range of settings
-> is the same as the VM18 regulator, which is missing and will be added in
-> a subsequent patch.
-> 
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Hi Bragatheswaran,
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+kernel test robot noticed the following build warnings:
 
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on linus/master v6.6-rc2 next-20230920]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Bragatheswaran-Manickavel/ASoC-dt-bindings-tfa9879-Convert-to-dtschema/20230919-170919
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20230919090739.2448-1-bragathemanick0908%40gmail.com
+patch subject: [PATCH] ASoC: dt-bindings: tfa9879: Convert to dtschema
+reproduce: (https://download.01.org/0day-ci/archive/20230920/202309201811.iKOZ5prG-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309201811.iKOZ5prG-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/sound/tfa9879.txt
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
