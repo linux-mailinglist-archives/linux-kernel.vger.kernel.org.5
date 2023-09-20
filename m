@@ -2,350 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF447A78F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76BA7A78FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234273AbjITKRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
+        id S234341AbjITKSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234244AbjITKRk (ORCPT
+        with ESMTP id S234405AbjITKSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:17:40 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0367CB4;
-        Wed, 20 Sep 2023 03:17:34 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AD3EA1FF06;
-        Wed, 20 Sep 2023 10:17:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695205052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XpHsNizvelec1zcW5xxDBrnNaFeZBOad68HcE9xlPoQ=;
-        b=YVbpxMQaiO5YfasTiKUfZOAiDtooFHNrVzqi/tf4bOPpUAujoNX/JB57Yr2SU203IvJcRQ
-        Kkqoj3OwVNe1Xenl8kmN8w0bois62Jy+6GEIRzHdP6oGJ5i63/iaiDlZ1ha7vL3mjbo2+W
-        dBz0IKO6MPMxIfyTow3SJo4hCy/TfiI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695205052;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XpHsNizvelec1zcW5xxDBrnNaFeZBOad68HcE9xlPoQ=;
-        b=O67IcegbK9h8y6im/RLen3XchB6W8nkPyTro7doG3LAWfJ7j6SF/NWcoOQh16p+i7ws/IB
-        InZ6cnU08qb4yEDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B898132C7;
-        Wed, 20 Sep 2023 10:17:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gboIIrzGCmW2EgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 20 Sep 2023 10:17:32 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id F205EA077D; Wed, 20 Sep 2023 12:17:31 +0200 (CEST)
-Date:   Wed, 20 Sep 2023 12:17:31 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jeff Layton <jlayton@kernel.org>, Bruno Haible <bruno@clisp.org>,
-        Jan Kara <jack@suse.cz>,
-        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bo b Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <l@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-Message-ID: <20230920101731.ym6pahcvkl57guto@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230919110457.7fnmzo4nqsi43yqq@quack3>
- <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
- <4511209.uG2h0Jr0uP@nimes>
- <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
- <20230920-leerung-krokodil-52ec6cb44707@brauner>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Wed, 20 Sep 2023 06:18:10 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2059.outbound.protection.outlook.com [40.107.243.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D48D1AC
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:17:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PgdXUMQyGf7Lux7K4htciuyxMsh+zZhMn5kh3hDp6m1M6XnDKtIpnrJzgPTm2ZbJzoS6nOWCM/E0JeXFXuCorYUMv+dTrdRNfVl1iOG5g0yhQeHUEJa7lYP9XO7PVCHaIKIm53wqYW4m798vxiSWHvVuCUnWyh2yKTPhL+Dgw4inXjA1Ti3YF7tNSk60gnX+jJuJdbL6eLulM0Wyv3Nj2HFENdKRbpRSGInpj5CQvtfKSVN+tpL0KtZMbQV7ROCiE47EGeFlff3ziLMdBHEyUrCeilG0VyD02mnzNN29hCBK+W2DC3ngcytWFzsiSkYXWP4g8qyJf5l8FX2qhVijQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OCTNBsCpZtjPX2Mm+WCQOweUJw01/xtDvdiZEnWubnQ=;
+ b=PcOhUi/Z+vWIzaY1vA0P2Gk+CJA/pGv0xpmjWLy40vzo4MnM0d1P2WX1R2DESYxsIJC/fOshW/lyd9j3ewxGZmFBI4xtCQbttXidvsNZWE+bf5N4LTJxQrgOvavB+ppLMeNxY8RunXubNvrh7mncLMeF80fkZT4gHMX877k2OqhOM/R1fLypbohgVO2O2LLOQL3a1aVYJMWAVJ1Nd4fBzeMwTXk/r0YvUesFRUP3TJ4iqNMkhr5m4wpfBDeJM+Z1y2Idh8k7y6jTYlJF6B4W2nAcCbo0Oq32tCbdHbXNkGLMG0Mntt9jZiwUqsfcYDJV/QRpTKDGH6RHtSvHMTnQIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OCTNBsCpZtjPX2Mm+WCQOweUJw01/xtDvdiZEnWubnQ=;
+ b=LNAkm+mN8A5T+iGVOt08BSeprN1GGDpXIFtbgPDxSPmwfGXrVI1BeDd656n3ko1xQ6ZI4Nv379MgIGgAq5pjGlyndVGeut91HxyChnrIgy0m3NCzTMAVkpwhxkFE5cVY0BluWQGLM2rYG8O81ED+D1moxUB8DMet/T1+FUwhn8fFZCaub2pkwN9CFrjJ7ZXG075yPeRbLykgS9P4NAAMhpE6mE7JvhiVdGjnzln24XImu4ijeYISND0HyLATuJmyu+4iCNP1zdbtkm0KXJ/otwl86GAh69V+N2rlrZ3MavznYgTMMvjvwssmWelbP8mys/bay9eLUWvxGwBPwJdTqg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM8PR12MB5413.namprd12.prod.outlook.com (2603:10b6:8:3b::8) by
+ SA1PR12MB7293.namprd12.prod.outlook.com (2603:10b6:806:2b9::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6745.36; Wed, 20 Sep 2023 10:17:52 +0000
+Received: from DM8PR12MB5413.namprd12.prod.outlook.com
+ ([fe80::705a:137:c5df:60e8]) by DM8PR12MB5413.namprd12.prod.outlook.com
+ ([fe80::705a:137:c5df:60e8%6]) with mapi id 15.20.6813.018; Wed, 20 Sep 2023
+ 10:17:52 +0000
+Date:   Wed, 20 Sep 2023 12:17:46 +0200
+From:   Thierry Reding <treding@nvidia.com>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
+        jgg@nvidia.com, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iommu: map reserved memory as cacheable if device is
+ coherent
+Message-ID: <ZQrGyqQ7K96PFXQ1@orome>
+References: <20230914125258.19640-1-laurentiu.tudor@nxp.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="l5ynBMd9YR5I0Y9k"
 Content-Disposition: inline
-In-Reply-To: <20230920-leerung-krokodil-52ec6cb44707@brauner>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230914125258.19640-1-laurentiu.tudor@nxp.com>
+X-NVConfidentiality: public
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-ClientProxiedBy: FR2P281CA0156.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:98::13) To DM8PR12MB5413.namprd12.prod.outlook.com
+ (2603:10b6:8:3b::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5413:EE_|SA1PR12MB7293:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5cfd795b-e640-4205-038f-08dbb9c2d91d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zqtJUg1IpAqMu2o4XXdFiR6UZl1snuY5JaWT5ZQVNSe1Ih39p5dkecaqHFwbnV7G+43ABcJdeLoMlriw6YrW2/0NsV42IbiZkZ03jBi8iIiJNCjwNK1scDYAgQq0QIPpPmk4nB+nSkmzeKeLRtzEFvRMhozO6HQ1T4C84ajfdcr9oMc/t6AII4vh7SXrYgj7LDQIP777646nAwkmjoyftnGFHGUrERUDetj9Ht9924gKeh+MGYaDSUS4ZkSt0of+td2dOhw4/Z8H2JixNosOPRRP5n4DOMVwVwBBSxsu5eObtEaZKJBPiPTezj0Jno05yevJMv01nxerCCehQfGrvrqQQlo4s6tUhmI2cB2p2YTQd/yFgSxDFhjIfvAwVMZilFoeC0LHc8BgScOQ5j1NbMfwHMCQlNByMMRvK76oDVuqe+v9vWoL3rHAFWRxrWLMwdKHDhrSzk3UPR+Wa5zrhi0e2tfFflS9+2aIjBx3zQEhdSYCKu4/PUmphrg3wVZwzeuyFwUWwKbHjm+aQguE2Vq1nB1STzzkSlO+Uy2QFHRh5tnK0R1i8wJg9cC9EX8svrwlufXNuwK/ZP0kdWvJ+sImQUcv9sw5RBaOVgTmAoGWtHNU2crXj+PTHhpeM9s3
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR12MB5413.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(346002)(39860400002)(136003)(376002)(451199024)(186009)(1800799009)(38100700002)(6486002)(6506007)(44144004)(86362001)(21480400003)(478600001)(9686003)(6512007)(6666004)(2906002)(8676002)(4326008)(5660300002)(6916009)(8936002)(41300700001)(316002)(33716001)(66946007)(83380400001)(66556008)(66476007)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/jF4FreU2NmKPxl53nDFXganDEHGSyYbk3Y2xiTCHfInE5U25oMITrj68Bvr?=
+ =?us-ascii?Q?Vxo+hMQdvH575vNarb7JJpmpycr/fQ9LbeRuvpdqdlzCOSdNIYUQ4MxJldB4?=
+ =?us-ascii?Q?Tu/uL51o5feAjrFp7LIH2SmP6EfJlKs6EBQKfXWX20ET8r/2nfYe3A0Z2sXi?=
+ =?us-ascii?Q?o69e4SHJ/7LsJx1rDELRIKt090t3W+KUHy6M/kqmczwcdRCM4jIrc2vt4LIY?=
+ =?us-ascii?Q?K6n17JOlbNGmhpMUaXUJHw0qjrxF+qiVqJLWVDccrjMoFEjoIrpEK+JzUzPw?=
+ =?us-ascii?Q?5Dzg3eBQQlLEa2yEyjx3eYTaeS0QUP72ehHV64utOkANnH62jCVs8O3C9Ne1?=
+ =?us-ascii?Q?LKN1FI0qjKldjurkdqNhudlmlQ44fZ7bMzhP53PfIiZmWsgb2PcLUJ6f4z8i?=
+ =?us-ascii?Q?xKyZdS0Z6uGE865ZR45LQyoQY6LmXKqtCR2cMj5BdAxoH3aGyKRqNMZS1ZXr?=
+ =?us-ascii?Q?ThWmdnu81cJ2UMLGKHwkZICbB3G4n+UTIRL4kBBlxgKbok1qgR13tqf2CrWf?=
+ =?us-ascii?Q?ILJEYt3sBwXJa2N20Q1dZt5vhdN89X+r1F4zLsspeNNg6cG9xi6TV8qPctAv?=
+ =?us-ascii?Q?pLtERkkMeusUPTNqLFOR9qz4F97pTm7Ty2eNg3JRZWIb+Go+VqSU0LO6oEfk?=
+ =?us-ascii?Q?QSCenbjm6Zh2s8H85v/gylMIK0XNn+lMS/Hu7z1O6Wsx6v2x2OVTuIfmtNAY?=
+ =?us-ascii?Q?ni+/NAqocLEKbFPOAiB0NWOONYb1OEVhgw0N1mBpNa8GAlzvdOe96kXVadpx?=
+ =?us-ascii?Q?fNIUph6Cpglw3Vwdi5n4xycnJzcr3aI474ZwuozF3PEKTFEsxZ9yqtVAtrTC?=
+ =?us-ascii?Q?Lab89Q5yJg5FeGukRQOCc9Pc8YLXoYPZ2VBzV1g4nINFP0VTYBaZw1QQcM3b?=
+ =?us-ascii?Q?4GJe0dfbIhoed8NeTB1wYkVBuo4lQbSnakRv8jaJ08Kaa1FMglqvfalWWFRk?=
+ =?us-ascii?Q?qYVx3GAQmN5I95TyC1EO4LaH+mx2mP16A+xdtFn75G+zMQkmamL2SQZTq2ZN?=
+ =?us-ascii?Q?B1lvlCoKJ3GOSCuJW8fPxDxkUef1o9N8V4L7CC9IayaWe1AmlbnSk+OHhlUP?=
+ =?us-ascii?Q?bv1gUl+oJqQEzcP0pXzDjVDYaVGbC92zKcjmLSkttgpLPWojxwXnVRAmYwrW?=
+ =?us-ascii?Q?8+mpX2A5OsdAvAoBp/iMRmHh13FsDqnu94nXNKqR7W/XleOK1zPZvvw+8oCa?=
+ =?us-ascii?Q?2waeaXZEIvGeSckpbRA3Tsbe0p5jnqpCEt55T3WULszcks9WINU9veCf/BMV?=
+ =?us-ascii?Q?ZEhVQRV7QN5ZLhoPeHxI5Ty6v4uUWuqdhIgWYxFBgZUmPt2hjGxKfnTrZOOc?=
+ =?us-ascii?Q?fMDdnMwEA8L4wVjj4wC2wgxdtwjoPptLoWp0sB6xKoPTlXmD+lqJ/fLKqEq9?=
+ =?us-ascii?Q?3P6VXh++qw0FkzX/N32k42H5JTUCTLQKiE73wyt2Kvl11asnvEugAA8RPsuy?=
+ =?us-ascii?Q?q473Pv4DTYT1rb8Sv0v9Oh5B6IdAKcKOMhALSToZnrlfUSJ3UQkvqiVwePK0?=
+ =?us-ascii?Q?TsJiVR0O1ohVoq8hUhN0X5BdUWqLZVXdbnjaxMhv2T3KG136oUBI6uvjnJ59?=
+ =?us-ascii?Q?YQo2gaO1n+jsGGacmaPaicrZ0Rk1IZTD/wZyZXlPHMzlYyflXCSyqNyZiS0n?=
+ =?us-ascii?Q?sowzbBdhCoz5k5J7C7OzcHDiC+G9ec7FS2RC3U/XvqYS?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5cfd795b-e640-4205-038f-08dbb9c2d91d
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR12MB5413.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 10:17:52.1827
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: R/fCsqlfFE9DoaPyAKWb14tZotlhQC1DMs0W8t4/jdpfHHNtyFmrzqoi0PouvwY+kQizvbvCpLNXCjWYK+5TcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7293
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-09-23 10:41:30, Christian Brauner wrote:
-> > > f1 was last written to *after* f2 was last written to. If the timestamp of f1
-> > > is then lower than the timestamp of f2, timestamps are fundamentally broken.
-> > > 
-> > > Many things in user-space depend on timestamps, such as build system
-> > > centered around 'make', but also 'find ... -newer ...'.
-> > > 
-> > 
-> > 
-> > What does breakage with make look like in this situation? The "fuzz"
-> > here is going to be on the order of a jiffy. The typical case for make
-> > timestamp comparisons is comparing source files vs. a build target. If
-> > those are being written nearly simultaneously, then that could be an
-> > issue, but is that a typical behavior? It seems like it would be hard to
-> > rely on that anyway, esp. given filesystems like NFS that can do lazy
-> > writeback.
-> > 
-> > One of the operating principles with this series is that timestamps can
-> > be of varying granularity between different files. Note that Linux
-> > already violates this assumption when you're working across filesystems
-> > of different types.
-> > 
-> > As to potential fixes if this is a real problem:
-> > 
-> > I don't really want to put this behind a mount or mkfs option (a'la
-> > relatime, etc.), but that is one possibility.
-> > 
-> > I wonder if it would be feasible to just advance the coarse-grained
-> > current_time whenever we end up updating a ctime with a fine-grained
-> > timestamp? It might produce some inode write amplification. Files that
-> 
-> Less than ideal imho.
-> 
-> If this risks breaking existing workloads by enabling it unconditionally
-> and there isn't a clear way to detect and handle these situations
-> without risk of regression then we should move this behind a mount
-> option.
-> 
-> So how about the following:
-> 
-> From cb14add421967f6e374eb77c36cc4a0526b10d17 Mon Sep 17 00:00:00 2001
-> From: Christian Brauner <brauner@kernel.org>
-> Date: Wed, 20 Sep 2023 10:00:08 +0200
-> Subject: [PATCH] vfs: move multi-grain timestamps behind a mount option
-> 
-> While we initially thought we can do this unconditionally it turns out
-> that this might break existing workloads that rely on timestamps in very
-> specific ways and we always knew this was a possibility. Move
-> multi-grain timestamps behind a vfs mount option.
-> 
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
+--l5ynBMd9YR5I0Y9k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Surely this is a safe choice as it moves the responsibility to the sysadmin
-and the cases where finegrained timestamps are required. But I kind of
-wonder how is the sysadmin going to decide whether mgtime is safe for his
-system or not? Because the possible breakage needn't be obvious at the
-first sight... If I were a sysadmin, I'd rather opt for something like
-finegrained timestamps + lazytime (if I needed the finegrained timestamps
-functionality). That should avoid the IO overhead of finegrained timestamps
-as well and I'd know I can have problems with timestamps only after a
-system crash.
-
-I've just got another idea how we could solve the problem: Couldn't we
-always just report coarsegrained timestamp to userspace and provide access
-to finegrained value only to NFS which should know what it's doing?
-
-								Honza
-
+On Thu, Sep 14, 2023 at 03:52:58PM +0300, Laurentiu Tudor wrote:
+> Check if the device is marked as DMA coherent in the DT and if so,
+> map its reserved memory as cacheable in the IOMMU.
+> This fixes the recently added IOMMU reserved memory support which
+> uses IOMMU_RESV_DIRECT without properly building the PROT for the
+> mapping.
+>=20
+> Fixes: a5bf3cfce8cb ("iommu: Implement of_iommu_get_resv_regions()")
+> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 > ---
->  fs/fs_context.c     | 18 ++++++++++++++++++
->  fs/inode.c          |  4 ++--
->  fs/proc_namespace.c |  1 +
->  fs/stat.c           |  2 +-
->  include/linux/fs.h  |  4 +++-
->  5 files changed, 25 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/fs_context.c b/fs/fs_context.c
-> index a0ad7a0c4680..dd4dade0bb9e 100644
-> --- a/fs/fs_context.c
-> +++ b/fs/fs_context.c
-> @@ -44,6 +44,7 @@ static const struct constant_table common_set_sb_flag[] = {
->  	{ "mand",	SB_MANDLOCK },
->  	{ "ro",		SB_RDONLY },
->  	{ "sync",	SB_SYNCHRONOUS },
-> +	{ "mgtime",	SB_MGTIME },
->  	{ },
->  };
->  
-> @@ -52,18 +53,32 @@ static const struct constant_table common_clear_sb_flag[] = {
->  	{ "nolazytime",	SB_LAZYTIME },
->  	{ "nomand",	SB_MANDLOCK },
->  	{ "rw",		SB_RDONLY },
-> +	{ "nomgtime",	SB_MGTIME },
->  	{ },
->  };
->  
-> +static inline int check_mgtime(unsigned int token, const struct fs_context *fc)
-> +{
-> +	if (token != SB_MGTIME)
-> +		return 0;
-> +	if (!(fc->fs_type->fs_flags & FS_MGTIME))
-> +		return invalf(fc, "Filesystem doesn't support multi-grain timestamps");
-> +	return 0;
-> +}
-> +
->  /*
->   * Check for a common mount option that manipulates s_flags.
->   */
->  static int vfs_parse_sb_flag(struct fs_context *fc, const char *key)
->  {
->  	unsigned int token;
-> +	int ret;
->  
->  	token = lookup_constant(common_set_sb_flag, key, 0);
->  	if (token) {
-> +		ret = check_mgtime(token, fc);
-> +		if (ret)
-> +			return ret;
->  		fc->sb_flags |= token;
->  		fc->sb_flags_mask |= token;
->  		return 0;
-> @@ -71,6 +86,9 @@ static int vfs_parse_sb_flag(struct fs_context *fc, const char *key)
->  
->  	token = lookup_constant(common_clear_sb_flag, key, 0);
->  	if (token) {
-> +		ret = check_mgtime(token, fc);
-> +		if (ret)
-> +			return ret;
->  		fc->sb_flags &= ~token;
->  		fc->sb_flags_mask |= token;
->  		return 0;
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 54237f4242ff..fd1a2390aaa3 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -2141,7 +2141,7 @@ EXPORT_SYMBOL(current_mgtime);
->  
->  static struct timespec64 current_ctime(struct inode *inode)
->  {
-> -	if (is_mgtime(inode))
-> +	if (IS_MGTIME(inode))
->  		return current_mgtime(inode);
->  	return current_time(inode);
->  }
-> @@ -2588,7 +2588,7 @@ struct timespec64 inode_set_ctime_current(struct inode *inode)
->  		now = current_time(inode);
->  
->  		/* Just copy it into place if it's not multigrain */
-> -		if (!is_mgtime(inode)) {
-> +		if (!IS_MGTIME(inode)) {
->  			inode_set_ctime_to_ts(inode, now);
->  			return now;
->  		}
-> diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
-> index 250eb5bf7b52..08f5bf4d2c6c 100644
-> --- a/fs/proc_namespace.c
-> +++ b/fs/proc_namespace.c
-> @@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
->  		{ SB_DIRSYNC, ",dirsync" },
->  		{ SB_MANDLOCK, ",mand" },
->  		{ SB_LAZYTIME, ",lazytime" },
-> +		{ SB_MGTIME, ",mgtime" },
->  		{ 0, NULL }
->  	};
->  	const struct proc_fs_opts *fs_infop;
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 6e60389d6a15..2f18dd5de18b 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -90,7 +90,7 @@ void generic_fillattr(struct mnt_idmap *idmap, u32 request_mask,
->  	stat->size = i_size_read(inode);
->  	stat->atime = inode->i_atime;
->  
-> -	if (is_mgtime(inode)) {
-> +	if (IS_MGTIME(inode)) {
->  		fill_mg_cmtime(stat, request_mask, inode);
->  	} else {
->  		stat->mtime = inode->i_mtime;
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 4aeb3fa11927..03e415fb3a7c 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -1114,6 +1114,7 @@ extern int send_sigurg(struct fown_struct *fown);
->  #define SB_NODEV        BIT(2)	/* Disallow access to device special files */
->  #define SB_NOEXEC       BIT(3)	/* Disallow program execution */
->  #define SB_SYNCHRONOUS  BIT(4)	/* Writes are synced at once */
-> +#define SB_MGTIME	BIT(5)	/* Use multi-grain timestamps */
->  #define SB_MANDLOCK     BIT(6)	/* Allow mandatory locks on an FS */
->  #define SB_DIRSYNC      BIT(7)	/* Directory modifications are synchronous */
->  #define SB_NOATIME      BIT(10)	/* Do not update access times. */
-> @@ -2105,6 +2106,7 @@ static inline bool sb_rdonly(const struct super_block *sb) { return sb->s_flags
->  					((inode)->i_flags & (S_SYNC|S_DIRSYNC)))
->  #define IS_MANDLOCK(inode)	__IS_FLG(inode, SB_MANDLOCK)
->  #define IS_NOATIME(inode)	__IS_FLG(inode, SB_RDONLY|SB_NOATIME)
-> +#define IS_MGTIME(inode)	__IS_FLG(inode, SB_MGTIME)
->  #define IS_I_VERSION(inode)	__IS_FLG(inode, SB_I_VERSION)
->  
->  #define IS_NOQUOTA(inode)	((inode)->i_flags & S_NOQUOTA)
-> @@ -2366,7 +2368,7 @@ struct file_system_type {
->   */
->  static inline bool is_mgtime(const struct inode *inode)
->  {
-> -	return inode->i_sb->s_type->fs_flags & FS_MGTIME;
-> +	return inode->i_sb->s_flags & SB_MGTIME;
->  }
->  
->  extern struct dentry *mount_bdev(struct file_system_type *fs_type,
-> -- 
-> 2.34.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Changes in v2:
+>  - added Reviewed-by tag
+>=20
+>  drivers/iommu/of_iommu.c | 3 +++
+>  1 file changed, 3 insertions(+)
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--l5ynBMd9YR5I0Y9k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUKxsoACgkQ3SOs138+
+s6E5Nw/7BYBpHpklVqYfz0op9mksacRAPuGUax0iogiYThKoFV/0VWg8chM1GyFC
+xNnC6JcKc99NhAlQaz9HSY7haNGaJOcmSHzYzs7HSPycOEPj/0JgkNnQmlZfZUFv
+2cdwYDsYCkIQCKGoyq63q/RF18rlftkMO99lz9X3gVSCbbn2k8A51llbCxt5V25U
+XE/894KiVW1Yst+jUiwzmF7D5ePjp18Z+eDjxKN9ZeyP4f4KioAwe5YFKZvTSQ5P
+0UY1kZFQUXiaVjP0Y5f9Bk8bmdhHJ2/Dpzax1CbaFIAp91NLRCHCMEodZ7yYwauM
+Z7AjcRsvdfSvoXCi4wjOPmqLGLI14kFAc5PMT2sHQt2zTENydqoD5TabGdiKq7nX
+vfqvMWyDQVkiLUZcJaxaxpzimmd5IsEKblFOor2VM6EYx6M0wk2xgFDsZWqJuRo6
+HuiOpZC7BZ7kA1bvjGcPwJXjHlQWRiTr0R38VpRtUTjdEi1jZG+COvqjJP+Ghdqw
+YUlIuOBf1R/b8NgmpI0ZV0EL1l6NrLX5zuo107J/Bpomc5VDmusofenHo3sS8/4A
+5osFG4TurkcoR/MHyMQfcSmRuCz5Q+I7EVWAHhRsNjxMGIUz8yXp5ZDfIEncRh+1
+K0Aqa3qJhZkVjDyOXhMILehIN9N+gHbVbk7hXH48B0q+Um1mlDM=
+=xEFx
+-----END PGP SIGNATURE-----
+
+--l5ynBMd9YR5I0Y9k--
