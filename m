@@ -2,522 +2,742 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE5A7A72B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DD77A72B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbjITGSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
+        id S233202AbjITGTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbjITGSu (ORCPT
+        with ESMTP id S233174AbjITGTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:18:50 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D189D;
-        Tue, 19 Sep 2023 23:18:43 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id E7DBB60157;
-        Wed, 20 Sep 2023 08:18:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695190718; bh=LHuGey4TTsCHQfhZeL2CAsAnbsLEBdvwK2SjAiHcwIE=;
-        h=Date:From:Subject:To:Cc:From;
-        b=DLbJ+0RUaTILV9c8RqT1F2T8y/0BQF243H2IA5bmO27MeKuJBM4NgD9U9sMGYkUfQ
-         y3yrP5DKzm29Z+Sn6Kubwb3bOJO7nhgpdyRs5P4v2MPnrchvIr3gdmmqo0k08gQNHP
-         hVO/+kKqkggk/8R29f9q0J9uWRUS6PFsGZ0YVTZdV0O1JOQYIfK94u2Mc2LiSEPpUO
-         oTGCk9eDwjJVgTuAbhnLyqPG5TvWru+bqSPntzAzCb+P0HsnMY7x8h1h4PCWu+tasn
-         CM1HT1UDsRQBeA2+vWXmhqSHQhgNSZlGvZArBJI4kEWPDE8JyLZIpwyIIoSNcfasuH
-         mfwNQ3N7x5oTQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id nkcAFhpHWtSl; Wed, 20 Sep 2023 08:18:36 +0200 (CEST)
-Received: from [192.168.1.6] (78-2-200-2.adsl.net.t-com.hr [78.2.200.2])
-        by domac.alu.hr (Postfix) with ESMTPSA id AC60460152;
-        Wed, 20 Sep 2023 08:18:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695190715; bh=LHuGey4TTsCHQfhZeL2CAsAnbsLEBdvwK2SjAiHcwIE=;
-        h=Date:From:Subject:To:Cc:From;
-        b=wmjacRb9nZ05EdDCqFterWlfuKQIyta8edvfJpzJA06U9Y6NpPklJFADAfk9s5G5A
-         n0TIgreoAPwAKuW0pHvfQDGDO+soIjJnBxCPPCjCv6T9lQmne5OeNSn3Nlen1LVstx
-         7tO8AAGIiFdZmwG8D6huCWFoqdzkfaNhB+0MAM5577+SrtPPWpasS0wfvwp/Owx11g
-         o8jBf1TgHttD/yjFb6hvyHRJu4jWAA8xaTReRsXUxwl7OCe79xI3GtPZ1S2rctxPqq
-         F14/YqmKsJt/dSNuIAFZ5bDdfdTIFtVN1ZQtZiMq++ewPt8NmhWmtHa2yThS9T4mWs
-         WWmph5Sm+y/vw==
-Message-ID: <c9e4e480-6f52-949b-e4b6-3eb0fcda3f83@alu.unizg.hr>
-Date:   Wed, 20 Sep 2023 08:18:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: BUG: KCSAN: data-race in btrfs_calculate_inode_block_rsv_size [btrfs]
- / btrfs_use_block_rsv [btrfs] [EXPERIMENTAL PATCH]
-To:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Wed, 20 Sep 2023 02:19:47 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2130.outbound.protection.outlook.com [40.107.237.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3C5A1;
+        Tue, 19 Sep 2023 23:19:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mGEsE6d4DacTOJLLMisZhiHCYq2FmSoOXBx2ctvGViD51+8TvTjQI0sbtq1lrqwViJjM/cue5zATu2VrmSxgF7uE9tq0MHrBjBPWTblUfweKjj9J2ue5E8Q65ogBY1vInR2v/+qJuOBIr0Om+cdWBgNhq/GfyX6LWuSKKh+8nOEegBGpm3Qncg8X179SAPz36xMEzLOcvnQ2wtqW0ju2tX+1SrNP/atyXx0dd+SpLcafoqvEzZvlcoNPmrLFZjo7fJPvwUpjoO5Pqk2ElleIwfEzzLWCQghLPNLL17SjwDF4hineq8DIC3Ds8lk0vNRrcQg2EosHeNjSFF/GVWT2NA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bq+n/3d5A+JaKTad/kJZXGrRevhBzuByM/PGWpLtlbI=;
+ b=WcUYm9YnrXlK8Y4QHOxwarrg11ex/2BIjZaqFSePltyai8mLQIL6cxr1ntmJ8K7l2bPg1/Fc7MSVSvgKeUD44fKg5UPWF9EMR/xUriz88xcSJ5Gk+cdMNAaeSoMZhZ5yN0XUThLKMOHIRdiLXw9z7Ywf/ki9n8cTogLyKguQh4aDgImmGnhstY2TBObsyMrPLtIxL9wPSOhbh9leECayDaoXInGu7/MDTPib4t9ZJhRfkRTtRoPRfjFpkCA5D7en0L0Qf+x7RMdXc9rS+ymSkDENi0E1QHiJ8LlSHNC7Nv1rngv1lpQZuWtIGqh+H6UH/oWlbYnP6kGHJz3IjgVunQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bq+n/3d5A+JaKTad/kJZXGrRevhBzuByM/PGWpLtlbI=;
+ b=iz0U+KuSt0c2cF3wNpTamMaNVwRljou7qAhOElQ/EF100cfgNLuDcip4krPBX+yAmVQamMR8Cl8dPGoNyS4bY1wZL7CoQJQMjrcyA3rp/4yh6brCtYSlHDXkifLmNGyoHUCW4cnIbfp61JYZIu+jynlRURKmoUn6LBWxBjLe2vs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
+ BL1PR01MB7818.prod.exchangelabs.com (2603:10b6:208:39a::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6792.21; Wed, 20 Sep 2023 06:19:10 +0000
+Received: from DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::bfa4:8250:f526:5015]) by DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::bfa4:8250:f526:5015%6]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
+ 06:19:10 +0000
+From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To:     James Clark <james.clark@arm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf vendor events arm64: Fix for AmpereOne metrics
+Date:   Tue, 19 Sep 2023 23:18:39 -0700
+Message-Id: <20230920061839.2437413-1-ilkka@os.amperecomputing.com>
+X-Mailer: git-send-email 2.40.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CH0P220CA0012.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:610:ef::18) To DM5PR0102MB3590.prod.exchangelabs.com
+ (2603:10b6:4:a4::25)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|BL1PR01MB7818:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61682014-06bf-41ce-9da7-08dbb9a1804e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: t3mtJu30d13xixbPb93Jgl8qrAxGsq7qAyoM3NqU8PneuiIH+/T+ScONuRv3Td09/Vek7AELLrgdSPj4Ads7IU/yae5rsH1ZxZTprkKUnypBRZ1U/9mksNtAFMartfe7tGHa2RIx2T+Lg/jBVPeHgxvJBSzPXZel+UI3EfY2p+O/Oj0BMSyRvy9oz8Pg8ZPX4PfTCa89BHLbQmoz+HcIqeEg9aVBwjhWgv7fLwV1B7BdPCHSl9dA1eSyqzlDs/D+2MlUczs1WFTWXJxQ3yni2wYa6ir4LlnM0BzU8ZkIWAF5aQ1P/iVHY8Rrnvjld8IxbeScxFDQ5pVTsDpQ98bE56RbUUGyVxql//5UZGFQCzZqz3etm0Y9VKxFGOOFaxcG1B0lHTiRP/rNIT9doAfdhAz5YIn/IcNISEqGmQbpvWhflzMXCJZykIcr8YnVm6KJA7cCHcGL85IPfth+YC9E9Ape6tiy8yg2o1okyqnD3299v4D951JeJdJfi3LfJ1ttRva5xq7maitVw34fWq4FlkMCHkVCIGk1VS3p/tLUxZbWkX5ONMICvDbYNotBZVXfP3zJtgqbQm9x2ssD2HCatT42+hkkjBPhHjAkSta4H8k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(346002)(39850400004)(1800799009)(186009)(451199024)(66556008)(54906003)(66476007)(110136005)(5660300002)(66946007)(8676002)(41300700001)(8936002)(83380400001)(316002)(38350700002)(6486002)(6512007)(966005)(6666004)(478600001)(38100700002)(6506007)(52116002)(6636002)(26005)(4326008)(1076003)(2906002)(30864003)(7416002)(86362001)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FHI9DffbC9gaXoZKQfS0/mVYmNi4x2fZ9p/stXUKZXkJ/zIImEigj+ID+hEJ?=
+ =?us-ascii?Q?JqadpR6SRqmWyLIiNYhCbqUrmsyIUAWToY89gz7/SOnKoEST+MDpNmaRg6EQ?=
+ =?us-ascii?Q?VVxzXytgltBd6TCS2fi96wbA599J+gViSZ6S0me47kxE4+Nkusedsbr/84Lv?=
+ =?us-ascii?Q?n+DNpkHnfCRMRt2dkVog3kjZAaX+Td8hI4ouoyTjCczKK77RzxcjKk0Qm0Gb?=
+ =?us-ascii?Q?tSli3VfDFDmZQWCT+GVDwG7IPACsA/NtSXtZKBbHTrcmNugG82HzN488H0H/?=
+ =?us-ascii?Q?CLoTtmrFDfcI0f9n6TFCXEl4MhY8Z0tpCRsrtglk0Pp6KZtW9/rMgKjfyQcf?=
+ =?us-ascii?Q?RuhvbNmIDD/qjUYthMfHXpdcESPQ7BT+OK0Mj7xDn5l+idD/AIzGSMTGKbPF?=
+ =?us-ascii?Q?01WhIQNOyF/kiKWrN9tkGz1sVsefyh8TLdQZxRJqh8kI3V4a8dT1phmRv0T+?=
+ =?us-ascii?Q?dZFJk78a8ySX3pIehstj0NXaGq4ruwqM0mxilYi2+TAsWPVIYEB6tHi5yDqm?=
+ =?us-ascii?Q?Ixg3fd70u+23Zd6/1wjvS9iPHxDgE27a+uL9Nid/Y4yDV9VH3f6I5DnjJ2QV?=
+ =?us-ascii?Q?NG6M81dBi5eLYU1VQFHr5isC1Y+8umj+E+PYqtJxeyeUwT8pJDplbUb1WqhZ?=
+ =?us-ascii?Q?oBedDuJxTgpSPy2aL+EKelD9MC93dV+FJfRNW2trk+TKuZpTpzh41D28232X?=
+ =?us-ascii?Q?K2jaD8ueMf3YGnfJ6dMc8f4tA/OH1FloU67qc1q07Ys4LiVO3nCvZj9MPhm3?=
+ =?us-ascii?Q?Ah1IYDk/TcUSrdulEkkxhba5gD31dSb1nibuNyoa/f6s101N982CEiTElnR+?=
+ =?us-ascii?Q?0yg2axjlxAMVs1nB9vFLZqz6orbR2GzgKO1FXED9bclzlK41/+jqzFtxMGyj?=
+ =?us-ascii?Q?hht+J4M0P42fmxCp7Bw7lk/zxXU1l8isLSHX8Jd7prLCS7Jm+x36W2QVYur9?=
+ =?us-ascii?Q?RQzmQytIq2t7Qp41lbmIxPPa0hjd9izdYCUO1i42MvNmcvFZM0+U5FyE04Nu?=
+ =?us-ascii?Q?+YsM7pNnLQVWK4vs1R4+NGeiqXe5SlIDQyayu4mPOpeuXFWXclGmuwh9s4Jd?=
+ =?us-ascii?Q?03Brxq2CDK0Xq+DxtuDoaKWzQ8RFYqjbbNnXlqOaYvqLRW3hZLB6Fmlh+ZYl?=
+ =?us-ascii?Q?rmVx1eFHYzn6AqTLeN5jTIIOgHFz7NTv3WiSXP70gXQL202NVR4K3QKMgvUS?=
+ =?us-ascii?Q?At7jlrzDa02kLNfx1GEelXD9/bZtG9VYUKrN6U2YrQ0g25mzv39yBWuNHH/k?=
+ =?us-ascii?Q?Tr4RFxKSHDaP4uIW1pa1AxJPbTbzQ882FkoJqDtQNjtWbrLqnJhHmMznZLH6?=
+ =?us-ascii?Q?4Hxs4ruLPKmfwMTt9EjxIYB5d9YQXxYRK45t+6fddVqFQQqWnEA9wDdkvGx8?=
+ =?us-ascii?Q?6dQpoD0KfqtT2pWb0LJNKdeN+nNanIQJCg6seFE0MYvWvjShoNWAZ/e9gNkY?=
+ =?us-ascii?Q?JnFlFb9G2dtMrfrNWoONLq6bzW2d2keXNpnQTBFY+xARqpy6LAbfKS25EHB4?=
+ =?us-ascii?Q?tPPqSsMA2d+x07xri28aYF5BQXceKc0Oxuj7MRWrANPJgLlYcWGJkEhNooD+?=
+ =?us-ascii?Q?t+jPTJM4eluCbqmtsLwBDGppj0cLAlvnyFLp8kW/w2QNQAfsm5GE6Sl+7j53?=
+ =?us-ascii?Q?d3/1GEuejhaokTf4LAkZZAI=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61682014-06bf-41ce-9da7-08dbb9a1804e
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 06:19:10.2985
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RiNdkKBrv+xIqbeH66weD+zJ2p9atQ/KO2Ufwcsimr1ihBEINeEyZs+SHUAFppKZMHV9AFIRZW3JwrCWGOpN03fCTS2eeXNITTBvMlEPvXvVvAxj4pNdpCHSDrCVUbly
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR01MB7818
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patch addresses review comments that were given for
+705ed549148f ("perf vendor events arm64: Add AmpereOne metrics")
+but didn't make it to the original patch [1][2]
 
-This is your friendly bug reporter again.
+Changes include: A fix for backend_memory formula, use of standard metrics
+when possible, using #slots, renaming metrics to avoid spaces in the names,
+and cleanup.
 
-Please don't throw stuff at me, as I found another KCSAN data-race problem.
+[1] https://lore.kernel.org/linux-perf-users/e9bdacb-a231-36af-6a2e-6918ee7effa@os.amperecomputing.com/
+[2] https://lore.kernel.org/linux-perf-users/20230826192352.3043220-1-ilkka@os.amperecomputing.com/
 
-I feel like a boy who cried wolf ...
-
-I hope this will get some attention, as it looks this time like a real btrfs problem that could cause
-the kernel module to make a wrong turn when managing storage in different threads simultaneously and
-lead to the corruption of data. However, I do not have an example of this corruption, it is by now only
-theoretical in this otherwise great filesystem.
-
-In fact, I can announce quite a number of KCSAN bugs already in dmesg log:
-
-    # of
-occuren
-     ces problematic function
--------------------------------------------
-     182 __bitmap_and+0xa3/0x110
-       2 __bitmap_weight+0x62/0xa0
-     138 __call_rcu_common.constprop.0
-       3 __cgroup_account_cputime
-       1 __dentry_kill
-       3 __mod_lruvec_page_state
-      15 __percpu_counter_compare
-       1 __percpu_counter_sum+0x8f/0x120
-       1 acpi_ut_acquire_mutex
-       2 amdgpu_fence_emit
-       1 btrfs_calculate_inode_block_rsv_size
-       1 btrfs_page_set_uptodate
-      28 copy_from_read_buf
-       3 d_add
-       3 d_splice_alias
-       1 delayacct_add_tsk+0x10d/0x630
-       7 do_epoll_ctl
-       1 do_vmi_align_munmap
-      86 drm_sched_entity_is_ready
-       4 drm_sched_entity_pop_job
-       3 enqueue_timer
-       1 finish_fault+0xde/0x360
-       2 generic_fillattr
-       2 getrusage
-       9 getrusage+0x3ba/0xaa0
-       1 getrusage+0x3df/0xaa0
-       6 inode_needs_update_time
-       1 inode_set_ctime_current
-       1 inode_update_timestamps
-       3 kernfs_refresh_inode
-      22 ktime_get_mono_fast_ns+0x87/0x120
-      13 ktime_get_mono_fast_ns+0xb0/0x120
-      24 ktime_get_mono_fast_ns+0xc0/0x120
-      79 mas_topiary_replace
-      12 mas_wr_modify
-      61 mas_wr_node_store
-       1 memchr_inv+0x71/0x160
-       1 memchr_inv+0xcf/0x160
-      19 n_tty_check_unthrottle
-       5 n_tty_kick_worker
-      35 n_tty_poll
-      32 n_tty_read
-       1 n_tty_read+0x5f8/0xaf0
-       3 osq_lock
-      27 process_one_work
-       4 process_one_work+0x169/0x700
-       2 rcu_implicit_dynticks_qs
-       1 show_stat+0x45b/0xb70
-       3 task_mem
-     344 tick_nohz_idle_stop_tick
-      32 tick_nohz_next_event
-       1 tick_nohz_next_event+0xe7/0x1e0
-      90 tick_sched_do_timer
-       5 tick_sched_do_timer+0x2c/0x120
-       1 wbt_done
-       1 wbt_issue
-       2 wq_worker_tick
-      37 xas_clear_mark
-
-------------------------------------------------------
-
-This report is from a vanilla torvalds tree 6.6-rc2 kernel on Ubuntu 22.04:
-
-[13429.116126] ==================================================================
-[13429.116794] BUG: KCSAN: data-race in btrfs_calculate_inode_block_rsv_size [btrfs] / btrfs_use_block_rsv [btrfs]
-
-[13429.118113] write to 0xffff8884c38043f8 of 8 bytes by task 25471 on cpu 30:
-[13429.118124] btrfs_calculate_inode_block_rsv_size (/home/marvin/linux/kernel/torvalds2/fs/btrfs/delalloc-space.c:276) btrfs
-[13429.118819] btrfs_delalloc_release_metadata (/home/marvin/linux/kernel/torvalds2/./include/linux/spinlock.h:391 /home/marvin/linux/kernel/torvalds2/fs/btrfs/delalloc-space.c:400) btrfs
-[13429.119479] btrfs_remove_ordered_extent (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:606) btrfs
-[13429.120135] btrfs_finish_one_ordered (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3221) btrfs
-[13429.120789] btrfs_finish_ordered_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3234) btrfs
-[13429.121439] finish_ordered_fn (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:304) btrfs
-[13429.122095] btrfs_work_helper (/home/marvin/linux/kernel/torvalds2/fs/btrfs/async-thread.c:314) btrfs
-[13429.122781] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
-[13429.122794] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
-[13429.122804] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
-[13429.122813] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
-[13429.122825] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
-
-[13429.122842] read to 0xffff8884c38043f8 of 8 bytes by task 25472 on cpu 25:
-[13429.122853] btrfs_use_block_rsv (/home/marvin/linux/kernel/torvalds2/fs/btrfs/block-rsv.c:496) btrfs
-[13429.123513] btrfs_alloc_tree_block (/home/marvin/linux/kernel/torvalds2/fs/btrfs/extent-tree.c:4925) btrfs
-[13429.124162] __btrfs_cow_block (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ctree.c:546) btrfs
-[13429.124806] btrfs_cow_block (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ctree.c:712) btrfs
-[13429.125452] btrfs_search_slot (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ctree.c:2194) btrfs
-[13429.126094] btrfs_lookup_file_extent (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file-item.c:271) btrfs
-[13429.126742] btrfs_drop_extents (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file.c:250) btrfs
-[13429.127392] insert_reserved_file_extent (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:2900) btrfs
-[13429.128040] btrfs_finish_one_ordered (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3111) btrfs
-[13429.128689] btrfs_finish_ordered_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3234) btrfs
-[13429.129338] finish_ordered_fn (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:304) btrfs
-[13429.129992] btrfs_work_helper (/home/marvin/linux/kernel/torvalds2/fs/btrfs/async-thread.c:314) btrfs
-[13429.130648] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
-[13429.130659] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
-[13429.130670] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
-[13429.130678] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
-[13429.130689] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
-
-[13429.130704] value changed: 0x0000000000760000 -> 0x0000000000720000
-
-[13429.130718] Reported by Kernel Concurrency Sanitizer on:
-[13429.130727] CPU: 25 PID: 25472 Comm: kworker/u66:3 Tainted: G             L     6.6.0-rc2-kcsan-00003-g16819584c239-dirty #22
-[13429.130739] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[13429.130747] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
-[13429.131404] ==================================================================
-
-The code is:
-
-fs/btrfs/delalloc-space.c
----------------------------------------------------------------------------------
-   242 static void btrfs_calculate_inode_block_rsv_size(struct btrfs_fs_info *fs_info,
-   243                                                  struct btrfs_inode *inode)
-   244 {
-   245         struct btrfs_block_rsv *block_rsv = &inode->block_rsv;
-   246         u64 reserve_size = 0;
-   247         u64 qgroup_rsv_size = 0;
-   248         u64 csum_leaves;
-   249         unsigned outstanding_extents;
-   250
-   251         lockdep_assert_held(&inode->lock);
-   252         outstanding_extents = inode->outstanding_extents;
-   253
-   254         /*
-   255          * Insert size for the number of outstanding extents, 1 normal size for
-   256          * updating the inode.
-   257          */
-   258         if (outstanding_extents) {
-   259                 reserve_size = btrfs_calc_insert_metadata_size(fs_info,
-   260                                                 outstanding_extents);
-   261                 reserve_size += btrfs_calc_metadata_size(fs_info, 1);
-   262         }
-   263         csum_leaves = btrfs_csum_bytes_to_leaves(fs_info,
-   264                                                  inode->csum_bytes);
-   265         reserve_size += btrfs_calc_insert_metadata_size(fs_info,
-   266                                                         csum_leaves);
-   267         /*
-   268          * For qgroup rsv, the calculation is very simple:
-   269          * account one nodesize for each outstanding extent
-   270          *
-   271          * This is overestimating in most cases.
-   272          */
-   273         qgroup_rsv_size = (u64)outstanding_extents * fs_info->nodesize;
-   274
-   275         spin_lock(&block_rsv->lock);
-→ 276         block_rsv->size = reserve_size;
-   277         block_rsv->qgroup_rsv_size = qgroup_rsv_size;
-   278         spin_unlock(&block_rsv->lock);
-   279 }
-
-fs/btrfs/block-rsv.c
--------------------------------------------------------------------------------
-   477 struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-   478                                             struct btrfs_root *root,
-   479                                             u32 blocksize)
-   480 {
-   481         struct btrfs_fs_info *fs_info = root->fs_info;
-   482         struct btrfs_block_rsv *block_rsv;
-   483         struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
-   484         int ret;
-   485         bool global_updated = false;
-   486
-   487         block_rsv = get_block_rsv(trans, root);
-   488
-   489         if (unlikely(block_rsv->size == 0))
-   490                 goto try_reserve;
-   491 again:
-   492         ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
-   493         if (!ret)
-   494                 return block_rsv;
-   495
-→ 496         if (block_rsv->failfast)
-   497                 return ERR_PTR(ret);
-   498
-   499         if (block_rsv->type == BTRFS_BLOCK_RSV_GLOBAL && !global_updated) {
-   500                 global_updated = true;
-   501                 btrfs_update_global_block_rsv(fs_info);
-   502                 goto again;
-   503         }
-   504
-   505         /*
-   506          * The global reserve still exists to save us from ourselves, so don't
-   507          * warn_on if we are short on our delayed refs reserve.
-   508          */
-   509         if (block_rsv->type != BTRFS_BLOCK_RSV_DELREFS &&
-   510             btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
-   511                 static DEFINE_RATELIMIT_STATE(_rs,
-   512                                 DEFAULT_RATELIMIT_INTERVAL * 10,
-   513                                 /*DEFAULT_RATELIMIT_BURST*/ 1);
-   514                 if (__ratelimit(&_rs))
-   515                         WARN(1, KERN_DEBUG
-   516                                 "BTRFS: block rsv %d returned %d\n",
-   517                                 block_rsv->type, ret);
-   518         }
-   519 try_reserve:
-   520         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
-   521                                            BTRFS_RESERVE_NO_FLUSH);
-   522         if (!ret)
-   523                 return block_rsv;
-   524         /*
-   525          * If we couldn't reserve metadata bytes try and use some from
-   526          * the global reserve if its space type is the same as the global
-   527          * reservation.
-   528          */
-   529         if (block_rsv->type != BTRFS_BLOCK_RSV_GLOBAL &&
-   530             block_rsv->space_info == global_rsv->space_info) {
-   531                 ret = btrfs_block_rsv_use_bytes(global_rsv, blocksize);
-   532                 if (!ret)
-   533                         return global_rsv;
-   534         }
-   535
-   536         /*
-   537          * All hope is lost, but of course our reservations are overly
-   538          * pessimistic, so instead of possibly having an ENOSPC abort here, try
-   539          * one last time to force a reservation if there's enough actual space
-   540          * on disk to make the reservation.
-   541          */
-   542         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
-   543                                            BTRFS_RESERVE_FLUSH_EMERGENCY);
-   544         if (!ret)
-   545                 return block_rsv;
-   546
-   547         return ERR_PTR(ret);
-   548 }
-
-Now, see the logical problem: when these two threads are (obviously) executed in parallel,
-the write side uses spin_lock(&block_srv) from *inode it changes the reserve_size of,
-however it seems that this line 496 of btrfs_use_block_rsv() reads these struct members
-without a lock and they can change during the operation.
-
-To illustrate this, an experimental patch is provided:
-
-(NOTE that btrfs_block_rsv_use_bytes() uses spin_lock(&block_rsv->lock), so it had to be
-  moved upwards.)
-
-----------------------------------------
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index 77684c5e0c8b..8153814c7861 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -166,7 +166,9 @@ int btrfs_block_rsv_migrate(struct btrfs_block_rsv *src,
-  {
-         int ret;
-  
-+       spin_lock(&src->lock);
-         ret = btrfs_block_rsv_use_bytes(src, num_bytes);
-+       spin_unlock(&src->lock);
-         if (ret)
-                 return ret;
-  
-@@ -298,14 +300,12 @@ int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
-  {
-         int ret = -ENOSPC;
-  
--       spin_lock(&block_rsv->lock);
-         if (block_rsv->reserved >= num_bytes) {
-                 block_rsv->reserved -= num_bytes;
-                 if (block_rsv->reserved < block_rsv->size)
-                         block_rsv->full = false;
-                 ret = 0;
-         }
--       spin_unlock(&block_rsv->lock);
-         return ret;
-  }
-  
-@@ -486,15 +486,16 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-  
-         block_rsv = get_block_rsv(trans, root);
-  
-+       spin_lock(&block_rsv->lock);
-         if (unlikely(block_rsv->size == 0))
-                 goto try_reserve;
-  again:
-         ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
-         if (!ret)
--               return block_rsv;
-+               goto exit_ret_block_rsv;
-  
-         if (block_rsv->failfast)
--               return ERR_PTR(ret);
-+               goto exit_ret_err;
-  
-         if (block_rsv->type == BTRFS_BLOCK_RSV_GLOBAL && !global_updated) {
-                 global_updated = true;
-@@ -520,7 +521,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
-                                            BTRFS_RESERVE_NO_FLUSH);
-         if (!ret)
--               return block_rsv;
-+               goto exit_ret_block_rsv;
-         /*
-          * If we couldn't reserve metadata bytes try and use some from
-          * the global reserve if its space type is the same as the global
-@@ -530,7 +531,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-             block_rsv->space_info == global_rsv->space_info) {
-                 ret = btrfs_block_rsv_use_bytes(global_rsv, blocksize);
-                 if (!ret)
--                       return global_rsv;
-+                       goto exit_ret_global_rsv;
-         }
-  
-         /*
-@@ -542,9 +543,20 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
-                                            BTRFS_RESERVE_FLUSH_EMERGENCY);
-         if (!ret)
--               return block_rsv;
-+               goto exit_ret_block_rsv;
-  
-+exit_ret_err:
-+       spin_unlock(&block_rsv->lock);
-         return ERR_PTR(ret);
-+
-+exit_ret_block_rsv:
-+       spin_unlock(&block_rsv->lock);
-+       return block_rsv;
-+
-+exit_ret_global_rsv:
-+       spin_unlock(&block_rsv->lock);
-+       return global_rsv;
-+
-  }
-  
-  int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
+Fixes: 705ed549148f ("perf vendor events arm64: Add AmpereOne metrics")
+Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 ---
+Fixed the scaling issues on some of the metrics in v1.
 
-This is of course just a symptomatic patch, but since btrfs_block_rsv_use_bytes() is not used outside
-of fs/btrfs/block-rsv.c,it could just work as PoC.
+I'll be offline for a couple of weeks but Scott can address any review
+comments meanwhile.
 
-OTOH, this version might be more elegant:
+Cheers, Ilkka
 
-----------------------------------------------------------------------
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index 77684c5e0c8b..192be99cc6f4 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -294,18 +294,28 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
-                                        qgroup_to_release);
-  }
-  
--int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
-+static
-+int __btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
-  {
-         int ret = -ENOSPC;
-  
--       spin_lock(&block_rsv->lock);
-         if (block_rsv->reserved >= num_bytes) {
-                 block_rsv->reserved -= num_bytes;
-                 if (block_rsv->reserved < block_rsv->size)
-                         block_rsv->full = false;
-                 ret = 0;
-         }
-+       return ret;
-+}
-+
-+int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
-+{
-+       int ret;
-+
-+       spin_lock(&block_rsv->lock);
-+       ret = __btrfs_block_rsv_use_bytes(block_rsv, num_bytes);
-         spin_unlock(&block_rsv->lock);
-+
-         return ret;
-  }
-  
-@@ -486,15 +496,16 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-  
-         block_rsv = get_block_rsv(trans, root);
-  
-+       spin_lock(&block_rsv->lock);
-         if (unlikely(block_rsv->size == 0))
-                 goto try_reserve;
-  again:
--       ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
-+       ret = __btrfs_block_rsv_use_bytes(block_rsv, blocksize);
-         if (!ret)
--               return block_rsv;
-+               goto exit_ret_block_rsv;
-  
-         if (block_rsv->failfast)
--               return ERR_PTR(ret);
-+               goto exit_ret_err;
-  
-         if (block_rsv->type == BTRFS_BLOCK_RSV_GLOBAL && !global_updated) {
-                 global_updated = true;
-@@ -520,7 +531,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
-                                            BTRFS_RESERVE_NO_FLUSH);
-         if (!ret)
--               return block_rsv;
-+               goto exit_ret_block_rsv;
-         /*
-          * If we couldn't reserve metadata bytes try and use some from
-          * the global reserve if its space type is the same as the global
-@@ -528,9 +539,9 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-          */
-         if (block_rsv->type != BTRFS_BLOCK_RSV_GLOBAL &&
-             block_rsv->space_info == global_rsv->space_info) {
--               ret = btrfs_block_rsv_use_bytes(global_rsv, blocksize);
-+               ret = __btrfs_block_rsv_use_bytes(global_rsv, blocksize);
-                 if (!ret)
--                       return global_rsv;
-+                       goto exit_ret_global_rsv;
-         }
-  
-         /*
-@@ -542,9 +553,20 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
-                                            BTRFS_RESERVE_FLUSH_EMERGENCY);
-         if (!ret)
--               return block_rsv;
-+               goto exit_ret_block_rsv;
-  
-+exit_ret_err:
-+       spin_unlock(&block_rsv->lock);
-         return ERR_PTR(ret);
-+
-+exit_ret_block_rsv:
-+       spin_unlock(&block_rsv->lock);
-+       return block_rsv;
-+
-+exit_ret_global_rsv:
-+       spin_unlock(&block_rsv->lock);
-+       return global_rsv;
-+
-  }
-  
-  int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
----
+.../arch/arm64/ampere/ampereone/metrics.json  | 418 +++++++++---------
+ 1 file changed, 220 insertions(+), 198 deletions(-)
 
-Of course, I did not run these patches on a production system, I just verified that they build.
+diff --git a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
+index 1e7e8901a445..e2848a9d4848 100644
+--- a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
++++ b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
+@@ -1,362 +1,384 @@
+ [
+     {
++	"MetricName": "branch_miss_pred_rate",
+ 	"MetricExpr": "BR_MIS_PRED / BR_PRED",
+ 	"BriefDescription": "Branch predictor misprediction rate. May not count branches that are never resolved because they are in the misprediction shadow of an earlier branch",
+-	"MetricGroup": "Branch Prediction",
+-	"MetricName": "Misprediction"
++	"MetricGroup": "branch",
++        "ScaleUnit": "100%"
+     },
+     {
+-	"MetricExpr": "BR_MIS_PRED_RETIRED / BR_RETIRED",
+-	"BriefDescription": "Branch predictor misprediction rate",
+-	"MetricGroup": "Branch Prediction",
+-	"MetricName": "Misprediction (retired)"
+-    },
+-    {
+-	"MetricExpr": "BUS_ACCESS / ( BUS_CYCLES * 1)",
++	"MetricName": "bus_utilization",
++	"MetricExpr": "((BUS_ACCESS / (BUS_CYCLES * 1)) * 100)",
+ 	"BriefDescription": "Core-to-uncore bus utilization",
+ 	"MetricGroup": "Bus",
+-	"MetricName": "Bus utilization"
++        "ScaleUnit": "1percent of bus cycles"
+     },
+     {
+-	"MetricExpr": "L1D_CACHE_REFILL / L1D_CACHE",
+-	"BriefDescription": "L1D cache miss rate",
+-	"MetricGroup": "Cache",
+-	"MetricName": "L1D cache miss"
++        "MetricName": "l1d_cache_miss_ratio",
++        "MetricExpr": "(L1D_CACHE_REFILL / L1D_CACHE)",
++        "BriefDescription": "This metric measures the ratio of level 1 data cache accesses missed to the total number of level 1 data cache accesses. This gives an indication of the effectiveness of the level 1 data cache.",
++        "MetricGroup": "Miss_Ratio;L1D_Cache_Effectiveness",
++        "ScaleUnit": "1per cache access"
++    },
++    {
++        "MetricName": "l1i_cache_miss_ratio",
++        "MetricExpr": "(L1I_CACHE_REFILL / L1I_CACHE)",
++        "BriefDescription": "This metric measures the ratio of level 1 instruction cache accesses missed to the total number of level 1 instruction cache accesses. This gives an indication of the effectiveness of the level 1 instruction cache.",
++        "MetricGroup": "Miss_Ratio;L1I_Cache_Effectiveness",
++        "ScaleUnit": "1per cache access"
+     },
+     {
++	"MetricName": "Miss_Ratio;l1d_cache_read_miss",
+ 	"MetricExpr": "L1D_CACHE_LMISS_RD / L1D_CACHE_RD",
+ 	"BriefDescription": "L1D cache read miss rate",
+ 	"MetricGroup": "Cache",
+-	"MetricName": "L1D cache read miss"
++        "ScaleUnit": "1per cache read access"
+     },
+     {
+-	"MetricExpr": "L1I_CACHE_REFILL / L1I_CACHE",
+-	"BriefDescription": "L1I cache miss rate",
+-	"MetricGroup": "Cache",
+-	"MetricName": "L1I cache miss"
+-    },
+-    {
+-	"MetricExpr": "L2D_CACHE_REFILL / L2D_CACHE",
+-	"BriefDescription": "L2 cache miss rate",
+-	"MetricGroup": "Cache",
+-	"MetricName": "L2 cache miss"
++        "MetricName": "l2_cache_miss_ratio",
++        "MetricExpr": "(L2D_CACHE_REFILL / L2D_CACHE)",
++        "BriefDescription": "This metric measures the ratio of level 2 cache accesses missed to the total number of level 2 cache accesses. This gives an indication of the effectiveness of the level 2 cache, which is a unified cache that stores both data and instruction. Note that cache accesses in this cache are either data memory access or instruction fetch as this is a unified cache.",
++        "MetricGroup": "Miss_Ratio;L2_Cache_Effectiveness",
++        "ScaleUnit": "1per cache access"
+     },
+     {
++	"MetricName": "l1i_cache_read_miss_rate",
+ 	"MetricExpr": "L1I_CACHE_LMISS / L1I_CACHE",
+ 	"BriefDescription": "L1I cache read miss rate",
+ 	"MetricGroup": "Cache",
+-	"MetricName": "L1I cache read miss"
++        "ScaleUnit": "1per cache access"
+     },
+     {
++	"MetricName": "l2d_cache_read_miss_rate",
+ 	"MetricExpr": "L2D_CACHE_LMISS_RD / L2D_CACHE_RD",
+ 	"BriefDescription": "L2 cache read miss rate",
+ 	"MetricGroup": "Cache",
+-	"MetricName": "L2 cache read miss"
++        "ScaleUnit": "1per cache read access"
+     },
+     {
+-	"MetricExpr": "(L1D_CACHE_LMISS_RD * 1000) / INST_RETIRED",
++	"MetricName": "l1d_cache_miss_mpki",
++	"MetricExpr": "(L1D_CACHE_LMISS_RD * 1e3) / INST_RETIRED",
+ 	"BriefDescription": "Misses per thousand instructions (data)",
+ 	"MetricGroup": "Cache",
+-	"MetricName": "MPKI data"
++        "ScaleUnit": "1MPKI"
+     },
+     {
+-	"MetricExpr": "(L1I_CACHE_LMISS * 1000) / INST_RETIRED",
++	"MetricName": "l1i_cache_miss_mpki",
++	"MetricExpr": "(L1I_CACHE_LMISS * 1e3) / INST_RETIRED",
+ 	"BriefDescription": "Misses per thousand instructions (instruction)",
+ 	"MetricGroup": "Cache",
+-	"MetricName": "MPKI instruction"
++        "ScaleUnit": "1MPKI"
+     },
+     {
+-	"MetricExpr": "ASE_SPEC / OP_SPEC",
+-	"BriefDescription": "Proportion of advanced SIMD data processing operations (excluding DP_SPEC/LD_SPEC) operations",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "ASE mix"
++        "MetricName": "simd_percentage",
++        "MetricExpr": "((ASE_SPEC / INST_SPEC) * 100)",
++        "BriefDescription": "This metric measures advanced SIMD operations as a percentage of total operations speculatively executed.",
++        "MetricGroup": "Operation_Mix",
++        "ScaleUnit": "1percent of operations"
+     },
+     {
+-	"MetricExpr": "CRYPTO_SPEC / OP_SPEC",
+-	"BriefDescription": "Proportion of crypto data processing operations",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "Crypto mix"
++        "MetricName": "crypto_percentage",
++        "MetricExpr": "((CRYPTO_SPEC / INST_SPEC) * 100)",
++        "BriefDescription": "This metric measures crypto operations as a percentage of operations speculatively executed.",
++        "MetricGroup": "Operation_Mix",
++        "ScaleUnit": "1percent of operations"
+     },
+     {
+-	"MetricExpr": "VFP_SPEC / (duration_time *1000000000)",
++	"MetricName": "gflops",
++	"MetricExpr": "VFP_SPEC / (duration_time * 1e9)",
+ 	"BriefDescription": "Giga-floating point operations per second",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "GFLOPS_ISSUED"
++	"MetricGroup": "InstructionMix"
+     },
+     {
+-	"MetricExpr": "DP_SPEC / OP_SPEC",
+-	"BriefDescription": "Proportion of integer data processing operations",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "Integer mix"
++        "MetricName": "integer_dp_percentage",
++        "MetricExpr": "((DP_SPEC / INST_SPEC) * 100)",
++        "BriefDescription": "This metric measures scalar integer operations as a percentage of operations speculatively executed.",
++        "MetricGroup": "Operation_Mix",
++        "ScaleUnit": "1percent of operations"
+     },
+     {
+-	"MetricExpr": "INST_RETIRED / CPU_CYCLES",
+-	"BriefDescription": "Instructions per cycle",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "IPC"
++        "MetricName": "ipc",
++        "MetricExpr": "(INST_RETIRED / CPU_CYCLES)",
++        "BriefDescription": "This metric measures the number of instructions retired per cycle.",
++        "MetricGroup": "General",
++        "ScaleUnit": "1per cycle"
+     },
+     {
+-	"MetricExpr": "LD_SPEC / OP_SPEC",
+-	"BriefDescription": "Proportion of load operations",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "Load mix"
++        "MetricName": "load_percentage",
++        "MetricExpr": "((LD_SPEC / INST_SPEC) * 100)",
++        "BriefDescription": "This metric measures load operations as a percentage of operations speculatively executed.",
++        "MetricGroup": "Operation_Mix",
++        "ScaleUnit": "1percent of operations"
+     },
+     {
+-	"MetricExpr": "LDST_SPEC/ OP_SPEC",
+-	"BriefDescription": "Proportion of load & store operations",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "Load-store mix"
++	"MetricName": "load_store_spec_rate",
++	"MetricExpr": "((LDST_SPEC / INST_SPEC) * 100)",
++	"BriefDescription": "The rate of load or store instructions speculatively executed to overall instructions speclatively executed",
++        "MetricGroup": "Operation_Mix",
++        "ScaleUnit": "1percent of operations"
+     },
+     {
+-	"MetricExpr": "INST_RETIRED / (duration_time * 1000000)",
++	"MetricName": "retired_mips",
++	"MetricExpr": "INST_RETIRED / (duration_time * 1e6)",
+ 	"BriefDescription": "Millions of instructions per second",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "MIPS_RETIRED"
++	"MetricGroup": "InstructionMix"
+     },
+     {
+-	"MetricExpr": "INST_SPEC / (duration_time * 1000000)",
++	"MetricName": "spec_utilization_mips",
++	"MetricExpr": "INST_SPEC / (duration_time * 1e6)",
+ 	"BriefDescription": "Millions of instructions per second",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "MIPS_UTILIZATION"
+-    },
+-    {
+-	"MetricExpr": "PC_WRITE_SPEC / OP_SPEC",
+-	"BriefDescription": "Proportion of software change of PC operations",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "PC write mix"
++	"MetricGroup": "PEutilization"
+     },
+     {
+-	"MetricExpr": "ST_SPEC / OP_SPEC",
+-	"BriefDescription": "Proportion of store operations",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "Store mix"
++	"MetricName": "pc_write_spec_rate",
++	"MetricExpr": "((PC_WRITE_SPEC / INST_SPEC) * 100)",
++	"BriefDescription": "The rate of software change of the PC speculatively executed to overall instructions speclatively executed",
++        "MetricGroup": "Operation_Mix",
++        "ScaleUnit": "1percent of operations"
+     },
+     {
+-	"MetricExpr": "VFP_SPEC / OP_SPEC",
+-	"BriefDescription": "Proportion of FP operations",
+-	"MetricGroup": "Instruction",
+-	"MetricName": "VFP mix"
++        "MetricName": "store_percentage",
++        "MetricExpr": "((ST_SPEC / INST_SPEC) * 100)",
++        "BriefDescription": "This metric measures store operations as a percentage of operations speculatively executed.",
++        "MetricGroup": "Operation_Mix",
++        "ScaleUnit": "1percent of operations"
+     },
+     {
+-	"MetricExpr": "1 - (OP_RETIRED/ (CPU_CYCLES * 4))",
+-	"BriefDescription": "Proportion of slots lost",
+-	"MetricGroup": "Speculation / TDA",
+-	"MetricName": "CPU lost"
++        "MetricName": "scalar_fp_percentage",
++        "MetricExpr": "((VFP_SPEC / INST_SPEC) * 100)",
++        "BriefDescription": "This metric measures scalar floating point operations as a percentage of operations speculatively executed.",
++        "MetricGroup": "Operation_Mix",
++        "ScaleUnit": "1percent of operations"
+     },
+     {
+-	"MetricExpr": "OP_RETIRED/ (CPU_CYCLES * 4)",
+-	"BriefDescription": "Proportion of slots retiring",
+-	"MetricGroup": "Speculation / TDA",
+-	"MetricName": "CPU utilization"
++        "MetricName": "retired_rate",
++        "MetricExpr": "OP_RETIRED / OP_SPEC",
++        "BriefDescription": "Of all the micro-operations issued, what percentage are retired(committed)",
++        "MetricGroup": "General",
++        "ScaleUnit": "100%"
+     },
+     {
+-	"MetricExpr": "OP_RETIRED - OP_SPEC",
+-	"BriefDescription": "Operations lost due to misspeculation",
+-	"MetricGroup": "Speculation / TDA",
+-	"MetricName": "Operations lost"
++	"MetricName": "wasted",
++	"MetricExpr": "1 - (OP_RETIRED / (CPU_CYCLES * #slots))",
++        "BriefDescription": "Of all the micro-operations issued, what proportion are lost",
++	"MetricGroup": "General",
++	"ScaleUnit": "100%"
+     },
+     {
+-	"MetricExpr": "1 - (OP_RETIRED / OP_SPEC)",
+-	"BriefDescription": "Proportion of operations lost",
+-	"MetricGroup": "Speculation / TDA",
+-	"MetricName": "Operations lost (ratio)"
++        "MetricName": "wasted_rate",
++        "MetricExpr": "1 - OP_RETIRED / OP_SPEC",
++        "BriefDescription": "Of all the micro-operations issued, what percentage are not retired(committed)",
++        "MetricGroup": "General",
++        "ScaleUnit": "100%"
+     },
+     {
+-	"MetricExpr": "OP_RETIRED / OP_SPEC",
+-	"BriefDescription": "Proportion of operations retired",
+-	"MetricGroup": "Speculation / TDA",
+-	"MetricName": "Operations retired"
+-    },
+-    {
+-	"MetricExpr": "STALL_BACKEND_CACHE / CPU_CYCLES",
++	"MetricName": "stall_backend_cache_rate",
++	"MetricExpr": "((STALL_BACKEND_CACHE / CPU_CYCLES) * 100)",
+ 	"BriefDescription": "Proportion of cycles stalled and no operations issued to backend and cache miss",
+ 	"MetricGroup": "Stall",
+-	"MetricName": "Stall backend cache cycles"
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-	"MetricExpr": "STALL_BACKEND_RESOURCE / CPU_CYCLES",
++	"MetricName": "stall_backend_resource_rate",
++	"MetricExpr": "((STALL_BACKEND_RESOURCE / CPU_CYCLES) * 100)",
+ 	"BriefDescription": "Proportion of cycles stalled and no operations issued to backend and resource full",
+ 	"MetricGroup": "Stall",
+-	"MetricName": "Stall backend resource cycles"
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-	"MetricExpr": "STALL_BACKEND_TLB / CPU_CYCLES",
++	"MetricName": "stall_backend_tlb_rate",
++	"MetricExpr": "((STALL_BACKEND_TLB / CPU_CYCLES) * 100)",
+ 	"BriefDescription": "Proportion of cycles stalled and no operations issued to backend and TLB miss",
+ 	"MetricGroup": "Stall",
+-	"MetricName": "Stall backend tlb cycles"
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-	"MetricExpr": "STALL_FRONTEND_CACHE / CPU_CYCLES",
++	"MetricName": "stall_frontend_cache_rate",
++	"MetricExpr": "((STALL_FRONTEND_CACHE / CPU_CYCLES) * 100)",
+ 	"BriefDescription": "Proportion of cycles stalled and no ops delivered from frontend and cache miss",
+ 	"MetricGroup": "Stall",
+-	"MetricName": "Stall frontend cache cycles"
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-	"MetricExpr": "STALL_FRONTEND_TLB / CPU_CYCLES",
++	"MetricName": "stall_frontend_tlb_rate",
++	"MetricExpr": "((STALL_FRONTEND_TLB / CPU_CYCLES) * 100)",
+ 	"BriefDescription": "Proportion of cycles stalled and no ops delivered from frontend and TLB miss",
+ 	"MetricGroup": "Stall",
+-	"MetricName": "Stall frontend tlb cycles"
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-	"MetricExpr": "DTLB_WALK / L1D_TLB",
+-	"BriefDescription": "D-side walk per d-side translation request",
+-	"MetricGroup": "TLB",
+-	"MetricName": "DTLB walks"
++        "MetricName": "dtlb_walk_ratio",
++        "MetricExpr": "(DTLB_WALK / L1D_TLB)",
++        "BriefDescription": "This metric measures the ratio of data TLB Walks to the total number of data TLB accesses. This gives an indication of the effectiveness of the data TLB accesses.",
++        "MetricGroup": "Miss_Ratio;DTLB_Effectiveness",
++        "ScaleUnit": "1per TLB access"
+     },
+     {
+-	"MetricExpr": "ITLB_WALK / L1I_TLB",
+-	"BriefDescription": "I-side walk per i-side translation request",
+-	"MetricGroup": "TLB",
+-	"MetricName": "ITLB walks"
++        "MetricName": "itlb_walk_ratio",
++        "MetricExpr": "(ITLB_WALK / L1I_TLB)",
++        "BriefDescription": "This metric measures the ratio of instruction TLB Walks to the total number of instruction TLB accesses. This gives an indication of the effectiveness of the instruction TLB accesses.",
++        "MetricGroup": "Miss_Ratio;ITLB_Effectiveness",
++        "ScaleUnit": "1per TLB access"
+     },
+     {
+-        "MetricExpr": "STALL_SLOT_BACKEND / (CPU_CYCLES * 4)",
+-        "BriefDescription": "Fraction of slots backend bound",
+-        "MetricGroup": "TopDownL1",
+-        "MetricName": "backend"
++        "ArchStdEvent": "backend_bound"
+     },
+     {
+-        "MetricExpr": "1 - (retiring + lost + backend)",
+-        "BriefDescription": "Fraction of slots frontend bound",
+-        "MetricGroup": "TopDownL1",
+-        "MetricName": "frontend"
++        "ArchStdEvent": "frontend_bound",
++        "MetricExpr": "100 - (retired_fraction + slots_lost_misspeculation_fraction + backend_bound)"
+     },
+     {
+-        "MetricExpr": "((OP_SPEC - OP_RETIRED) / (CPU_CYCLES * 4))",
++        "MetricName": "slots_lost_misspeculation_fraction",
++        "MetricExpr": "100 * ((OP_SPEC - OP_RETIRED) / (CPU_CYCLES * #slots))",
+         "BriefDescription": "Fraction of slots lost due to misspeculation",
+-        "MetricGroup": "TopDownL1",
+-        "MetricName": "lost"
++        "MetricGroup": "Default;TopdownL1",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "(OP_RETIRED / (CPU_CYCLES * 4))",
++        "MetricName": "retired_fraction",
++        "MetricExpr": "100 * (OP_RETIRED / (CPU_CYCLES * #slots))",
+         "BriefDescription": "Fraction of slots retiring, useful work",
+-        "MetricGroup": "TopDownL1",
+-        "MetricName": "retiring"
++        "MetricGroup": "Default;TopdownL1",
++	"ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "backend - backend_memory",
++        "MetricName": "backend_core",
++        "MetricExpr": "(backend_bound / 100) - backend_memory",
+         "BriefDescription": "Fraction of slots the CPU was stalled due to backend non-memory subsystem issues",
+-        "MetricGroup": "TopDownL2",
+-        "MetricName": "backend_core"
++        "MetricGroup": "TopdownL2",
++        "ScaleUnit": "100%"
+     },
+     {
+-        "MetricExpr": "(STALL_BACKEND_TLB + STALL_BACKEND_CACHE + STALL_BACKEND_MEM) / CPU_CYCLES ",
++        "MetricName": "backend_memory",
++        "MetricExpr": "(STALL_BACKEND_TLB + STALL_BACKEND_CACHE) / CPU_CYCLES",
+         "BriefDescription": "Fraction of slots the CPU was stalled due to backend memory subsystem issues (cache/tlb miss)",
+-        "MetricGroup": "TopDownL2",
+-        "MetricName": "backend_memory"
++        "MetricGroup": "TopdownL2",
++        "ScaleUnit": "100%"
+     },
+     {
+-        "MetricExpr": " (BR_MIS_PRED_RETIRED / GPC_FLUSH) * lost",
++        "MetricName": "branch_mispredict",
++        "MetricExpr": "(BR_MIS_PRED_RETIRED / GPC_FLUSH) * slots_lost_misspeculation_fraction",
+         "BriefDescription": "Fraction of slots lost due to branch misprediciton",
+-        "MetricGroup": "TopDownL2",
+-        "MetricName": "branch_mispredict"
++        "MetricGroup": "TopdownL2",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "frontend - frontend_latency",
++        "MetricName": "frontend_bandwidth",
++        "MetricExpr": "frontend_bound - frontend_latency",
+         "BriefDescription": "Fraction of slots the CPU did not dispatch at full bandwidth - able to dispatch partial slots only (1, 2, or 3 uops)",
+-        "MetricGroup": "TopDownL2",
+-        "MetricName": "frontend_bandwidth"
++        "MetricGroup": "TopdownL2",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "(STALL_FRONTEND - ((STALL_SLOT_FRONTEND - (frontend * CPU_CYCLES * 4)) / 4)) / CPU_CYCLES",
++        "MetricName": "frontend_latency",
++        "MetricExpr": "((STALL_FRONTEND - ((STALL_SLOT_FRONTEND - ((frontend_bound / 100) * CPU_CYCLES * #slots)) / #slots)) / CPU_CYCLES) * 100",
+         "BriefDescription": "Fraction of slots the CPU was stalled due to frontend latency issues (cache/tlb miss); nothing to dispatch",
+-        "MetricGroup": "TopDownL2",
+-        "MetricName": "frontend_latency"
++        "MetricGroup": "TopdownL2",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "lost - branch_mispredict",
++        "MetricName": "other_miss_pred",
++        "MetricExpr": "slots_lost_misspeculation_fraction - branch_mispredict",
+         "BriefDescription": "Fraction of slots lost due to other/non-branch misprediction misspeculation",
+-        "MetricGroup": "TopDownL2",
+-        "MetricName": "other_clears"
++        "MetricGroup": "TopdownL2",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "(IXU_NUM_UOPS_ISSUED + FSU_ISSUED) / (CPU_CYCLES * 6)",
++        "MetricName": "pipe_utilization",
++        "MetricExpr": "100 * ((IXU_NUM_UOPS_ISSUED + FSU_ISSUED) / (CPU_CYCLES * 6))",
+         "BriefDescription": "Fraction of execute slots utilized",
+-        "MetricGroup": "TopDownL2",
+-        "MetricName": "pipe_utilization"
++        "MetricGroup": "TopdownL2",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "STALL_BACKEND_MEM / CPU_CYCLES",
++        "MetricName": "d_cache_l2_miss_rate",
++        "MetricExpr": "((STALL_BACKEND_MEM / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled due to data L2 cache miss",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "d_cache_l2_miss"
++        "MetricGroup": "TopdownL3",
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-        "MetricExpr": "STALL_BACKEND_CACHE / CPU_CYCLES",
++        "MetricName": "d_cache_miss_rate",
++        "MetricExpr": "((STALL_BACKEND_CACHE / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled due to data cache miss",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "d_cache_miss"
++        "MetricGroup": "TopdownL3",
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-        "MetricExpr": "STALL_BACKEND_TLB / CPU_CYCLES",
++        "MetricName": "d_tlb_miss_rate",
++        "MetricExpr": "((STALL_BACKEND_TLB / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled due to data TLB miss",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "d_tlb_miss"
++        "MetricGroup": "TopdownL3",
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-        "MetricExpr": "FSU_ISSUED / (CPU_CYCLES * 2)",
++        "MetricName": "fsu_pipe_utilization",
++        "MetricExpr": "((FSU_ISSUED / (CPU_CYCLES * 2)) * 100)",
+         "BriefDescription": "Fraction of FSU execute slots utilized",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "fsu_pipe_utilization"
++        "MetricGroup": "TopdownL3",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "STALL_FRONTEND_CACHE / CPU_CYCLES",
++        "MetricName": "i_cache_miss_rate",
++        "MetricExpr": "((STALL_FRONTEND_CACHE / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled due to instruction cache miss",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "i_cache_miss"
++        "MetricGroup": "TopdownL3",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": " STALL_FRONTEND_TLB / CPU_CYCLES ",
++        "MetricName": "i_tlb_miss_rate",
++        "MetricExpr": "((STALL_FRONTEND_TLB / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled due to instruction TLB miss",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "i_tlb_miss"
++        "MetricGroup": "TopdownL3",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "IXU_NUM_UOPS_ISSUED / (CPU_CYCLES / 4)",
++        "MetricName": "ixu_pipe_utilization",
++        "MetricExpr": "((IXU_NUM_UOPS_ISSUED / (CPU_CYCLES * #slots)) * 100)",
+         "BriefDescription": "Fraction of IXU execute slots utilized",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "ixu_pipe_utilization"
++        "MetricGroup": "TopdownL3",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "IDR_STALL_FLUSH / CPU_CYCLES",
++        "MetricName": "stall_recovery_rate",
++        "MetricExpr": "((IDR_STALL_FLUSH / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled due to flush recovery",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "recovery"
+-    },
+-    {
+-        "MetricExpr": "STALL_BACKEND_RESOURCE / CPU_CYCLES",
+-        "BriefDescription": "Fraction of cycles the CPU was stalled due to core resource shortage",
+-        "MetricGroup": "TopDownL3",
+-        "MetricName": "resource"
++        "MetricGroup": "TopdownL3",
++        "ScaleUnit": "1percent of slots"
+     },
+     {
+-        "MetricExpr": "IDR_STALL_FSU_SCHED / CPU_CYCLES ",
++        "MetricName": "stall_fsu_sched_rate",
++        "MetricExpr": "((IDR_STALL_FSU_SCHED / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled and FSU was full",
+-        "MetricGroup": "TopDownL4",
+-        "MetricName": "stall_fsu_sched"
++        "MetricGroup": "TopdownL4",
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-        "MetricExpr": "IDR_STALL_IXU_SCHED / CPU_CYCLES ",
++        "MetricName": "stall_ixu_sched_rate",
++        "MetricExpr": "((IDR_STALL_IXU_SCHED / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled and IXU was full",
+-        "MetricGroup": "TopDownL4",
+-        "MetricName": "stall_ixu_sched"
++        "MetricGroup": "TopdownL4",
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-        "MetricExpr": "IDR_STALL_LOB_ID / CPU_CYCLES ",
++        "MetricName": "stall_lob_id_rate",
++        "MetricExpr": "((IDR_STALL_LOB_ID / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled and LOB was full",
+-        "MetricGroup": "TopDownL4",
+-        "MetricName": "stall_lob_id"
++        "MetricGroup": "TopdownL4",
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-        "MetricExpr": "IDR_STALL_ROB_ID / CPU_CYCLES",
++        "MetricName": "stall_rob_id_rate",
++        "MetricExpr": "((IDR_STALL_ROB_ID / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled and ROB was full",
+-        "MetricGroup": "TopDownL4",
+-        "MetricName": "stall_rob_id"
++        "MetricGroup": "TopdownL4",
++        "ScaleUnit": "1percent of cycles"
+     },
+     {
+-        "MetricExpr": "IDR_STALL_SOB_ID / CPU_CYCLES ",
++        "MetricName": "stall_sob_id_rate",
++        "MetricExpr": "((IDR_STALL_SOB_ID / CPU_CYCLES) * 100)",
+         "BriefDescription": "Fraction of cycles the CPU was stalled and SOB was full",
+-        "MetricGroup": "TopDownL4",
+-        "MetricName": "stall_sob_id"
++        "MetricGroup": "TopdownL4",
++        "ScaleUnit": "1percent of cycles"
+     }
+ ]
+-- 
+2.40.1
 
-Best regards,
-Mirsad Todorovac
