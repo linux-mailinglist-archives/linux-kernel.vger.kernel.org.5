@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EF37A77C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8E67A77DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbjITJl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
+        id S234165AbjITJqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbjITJlv (ORCPT
+        with ESMTP id S233753AbjITJqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:41:51 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815C293;
-        Wed, 20 Sep 2023 02:41:44 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38K9fWQW080462;
-        Wed, 20 Sep 2023 04:41:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695202892;
-        bh=9fp9OF36S/XXnEBcCGrs7kEJkJhySv6EG42Vubf+KlY=;
-        h=From:To:CC:Subject:Date;
-        b=Dq2FT2DUs9AvxYXJSA3W4TKU3rS26jdlBR7u8iN3bkM4P6j3/1rdxHAgYN69Op7yG
-         0kkaEDKNYU54F6Ig11sjqXh0+UmXXG/eyNkxL0BiBIYYWNoVZ9b0azluCbJZ7u4w0w
-         YH4dg3mn/2gud4R2DcgdPm+q8A/wBvUKdyqAKvVM=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38K9fWuR027160
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 Sep 2023 04:41:32 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 20
- Sep 2023 04:41:31 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 20 Sep 2023 04:41:31 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38K9fUSj021166;
-        Wed, 20 Sep 2023 04:41:31 -0500
-From:   Bhavya Kapoor <b-kapoor@ti.com>
-To:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <a-govindraju@ti.com>, <kishon@ti.com>, <b-kapoor@ti.com>,
-        <u-kumar1@ti.com>
-Subject: [PATCH v3] arm64: dts: ti: k3-j721s2-main: Enable support for SDR104 speed mode
-Date:   Wed, 20 Sep 2023 15:11:30 +0530
-Message-ID: <20230920094130.20279-1-b-kapoor@ti.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 20 Sep 2023 05:46:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79609A3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695203172; x=1726739172;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=u4voPDQa+cnIPzLkG1HPDN3ibxpjo/+rdfse8VD10ts=;
+  b=fgFT5ghBD4Mb7XZzvXndz3o4Fun5oXerI4TX67AZcacxx+f3dA0gIiLp
+   FYoM/phDd2rd/GiYefsE071fNkfC31KV9++WSC9D2PevCr/RlUH9/i06F
+   3QbkOmzxzC9b9QGzrzdWh8n22pj+SAlTvbQKzCblsJN5EyMNnCsSXBk4v
+   ZsscvQQTD0xloyAF3q3GRekOZZ2nHN9mBUzGnCPrWY5BSeRMokJ64eyH2
+   ebuwp/J4ZODYUwqm2TLrZ0m6L0+6QEiA+5V07Cdil3/4Esxamo3sFdgSc
+   wSD91pTFfSDMeOY3Lu999/FYbeWHb4PXO8vG08FOkN+6t+L1gpyDwHjpp
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="370491711"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="370491711"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 02:46:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="861911763"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="861911763"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 02:46:09 -0700
+From:   Alexander Usyskin <alexander.usyskin@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Vitaly Lubart <vitaly.lubart@intel.com>,
+        intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/4] drm/xe/gsc: add initial gsc support
+Date:   Wed, 20 Sep 2023 12:41:47 +0300
+Message-Id: <20230920094151.1593505-1-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to TRM for J721S2, SDR104 speed mode is supported by the SoC
-but its capabilities were masked in device tree. Remove sdhci-caps-mask
-to enable support for SDR104 speed mode for SD card in J721S2 SoC. Also
-add itap delay select value for DDR50 High Speed Mode.
+Add initial GSC support for DG1 and DG2.
+Create mei-gscfi auxiliary device and add
+support for device created by Xe to the mei-gsc driver.
 
-[+] Refer to : section 12.3.6.1.1 MMCSD Features, in J721S2 TRM
-- https://www.ti.com/lit/zip/spruj28
+This series intended to be merged into Xe tree,
+the only patch that touches char-misc is addition
+of id and alias in mei-gsc.
 
-Fixes: b8545f9d3a54 ("arm64: dts: ti: Add initial support for J721S2 SoC")
-Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
-Reviewed-by: Udit Kumar <u-kumar1@ti.com>
----
+V4: no-change rebase over updated drm-xe-next to fix FTBFS
 
-Changelog v2->v3:
- - Add Itap Delay Select value for DDR50 SD High Speed Mode
+V3: Review comments addressed:
+    - xe_heci_gsc_init mover earlier
+    - part of init flow moved to dedicated functions
+    - KDoc fix
 
-Link to v2 patch : https://lore.kernel.org/all/20230412121415.860447-1-b-kapoor@ti.com/
+V2: Added heci_ to struct and APIs
+    heci_gsc moved under xe_device as GSC is not under GT
 
- arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-index 084f8f5b6699..a5ab301b14f1 100644
---- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-@@ -766,11 +766,10 @@ main_sdhci1: mmc@4fb0000 {
- 		ti,itap-del-sel-sd-hs = <0x0>;
- 		ti,itap-del-sel-sdr12 = <0x0>;
- 		ti,itap-del-sel-sdr25 = <0x0>;
-+		ti,itap-del-sel-ddr50 = <0x2>;
- 		ti,clkbuf-sel = <0x7>;
- 		ti,trm-icp = <0x8>;
- 		dma-coherent;
--		/* Masking support for SDR104 capability */
--		sdhci-caps-mask = <0x00000003 0x00000000>;
- 		status = "disabled";
- 	};
- 
+Vitaly Lubart (4):
+  drm/xe/gsc: add HECI2 register offsets
+  drm/xe/gsc: add has_heci_gscfi indication to device
+  drm/xe/gsc: add gsc device support
+  mei: gsc: add support for auxiliary device created by Xe driver
+
+ drivers/gpu/drm/xe/Kconfig           |   1 +
+ drivers/gpu/drm/xe/Makefile          |   1 +
+ drivers/gpu/drm/xe/regs/xe_regs.h    |   4 +
+ drivers/gpu/drm/xe/xe_device.c       |   4 +
+ drivers/gpu/drm/xe/xe_device_types.h |   7 +
+ drivers/gpu/drm/xe/xe_heci_gsc.c     | 222 +++++++++++++++++++++++++++
+ drivers/gpu/drm/xe/xe_heci_gsc.h     |  35 +++++
+ drivers/gpu/drm/xe/xe_irq.c          |  21 ++-
+ drivers/gpu/drm/xe/xe_pci.c          |   9 +-
+ drivers/misc/mei/gsc-me.c            |   5 +
+ 10 files changed, 302 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/gpu/drm/xe/xe_heci_gsc.c
+ create mode 100644 drivers/gpu/drm/xe/xe_heci_gsc.h
+
 -- 
-2.39.2
+2.34.1
 
