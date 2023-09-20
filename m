@@ -2,48 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 939727A7450
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5ECE7A7461
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbjITHhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
+        id S233865AbjITHie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:38:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233815AbjITHhS (ORCPT
+        with ESMTP id S233879AbjITHiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:37:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24058FB;
-        Wed, 20 Sep 2023 00:37:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60753C433C7;
-        Wed, 20 Sep 2023 07:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695195421;
-        bh=z1dy31UeAiNB72SwXICT2TJ42xSh8mt5/7TGfDru1x0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y/66sa17bNa1qC8ThA1zSpgs9biCJH1Ajq5zq+89aqkyyGbjOYvXo/ix8Ipb4iCbJ
-         prWNMZnrLsew+TlFTLIEqYJ0sVZkH3HvclRrEsMYJVRIV4pUKy2Uz0sOWBMOQZE2hj
-         n9SC8mBlrHgeSegE0Ii4Sg9EwFJ1viOeEpJDATKEG7WHw94hPro747FW/4htGtWSO2
-         vXoQKlxD8oaN8exIdqpRKtQWTGUKpKr4c7O2XrYV42TXjlaPA1bzwi3KR2w6OMd9Ck
-         G3YBFcWZxiFlIaJJdOQEavZpDwaPVRVojE1MmeCM/4Q2GkOLHauvubw5qiw/xQhm/h
-         1XyGgUohrjsfw==
-Date:   Wed, 20 Sep 2023 00:36:59 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+9cf75dc581fb4307d6dd@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, krisman@collabora.com,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] general protection fault in utf8nlookup
-Message-ID: <20230920073659.GC2739@sol.localdomain>
-References: <0000000000001f0b970605c39a7e@google.com>
+        Wed, 20 Sep 2023 03:38:18 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456FC128
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:38:11 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-404fbfac998so40813395e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:38:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1695195490; x=1695800290; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zz3/ecOKh4XgsJl46wvd3sKyjYtoix9I3w8gro1wfuw=;
+        b=cm0vLhfht5SysJJxneUJRJXDWefeNpW+wH2/8WrEcjg28/Usqq2r5VVb6o5oH7gHy6
+         7N8eZ39T8tDSBOK1hg63PfQi7k1Wm3TtLpjgxKbk8mo2EXZ/qSIQKrRxMdJGgdz44MMp
+         3cVSuNYnvWbvwUrRzujB+KGPDS5IUUsoG6OjcLlfwwGYd8mH2xHm5AXbQno8qxpT/V/P
+         XWVY0Zy2s61i73t0tFEMY9chGCBDbCGrHyXQ1QW0UV89GM3IIYu1KxJe+JHYLLAoqx03
+         X7P6n6YmUOe2u2YMFwOnxEn9X4DjJ3MI6eLq2VrzW4T+StGvTuByOsHZmEjQuefSGM+2
+         65Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695195490; x=1695800290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zz3/ecOKh4XgsJl46wvd3sKyjYtoix9I3w8gro1wfuw=;
+        b=bRO9FI8dv2xTGasXvNftGRRh15ooVGItjtuZrxVGbj2ejIPG1kVdJo1D2aiOIRgh0L
+         4w6ky9Z13dFN0b6sgFomWLWVzd/2V5eTP2rskFafnvYAAmpazAWTBOYCnmIz1jkM7Y5o
+         I8bEtth2ndEIP0oqyBrx51F4j6GWkNmCrgGruYQf6fJMaIp59ZrRLTwcw3t9iByK9Gke
+         NUCha7LGu3IXJQ8snz5nOLrOwRlaeY4Vj2NBa1GedIvtnEdvTm73ZzjjVnylA8zVWIf1
+         ZZiI/TA+ISwGWIbmY6BZQS2A1i2q7FycgiIlq4AUZwvIz+04OIqvmb9WktBp77JfCmx2
+         kqxg==
+X-Gm-Message-State: AOJu0YwsZIMkm/Jk1uaJdo84SYsnJijXS2aZ9uMUMeQ85ygt8R8c+uW+
+        I42koUQgP4Nw2LOma5vtv7K6DQ==
+X-Google-Smtp-Source: AGHT+IHTqEA03iyluOTE5KNwlZAgRLI+hQhb/1jCFIbu1+TPY1ZpietUNW+El8NpgjOI/gBNn23OCQ==
+X-Received: by 2002:a05:600c:2909:b0:401:2ee0:754a with SMTP id i9-20020a05600c290900b004012ee0754amr1614112wmd.13.1695195489693;
+        Wed, 20 Sep 2023 00:38:09 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id o5-20020a05600c510500b004052093a8f6sm1176515wms.25.2023.09.20.00.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 00:38:09 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 09:38:03 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        devicetree@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/7] RISC-V: Detect XVentanaCondOps from ISA string
+Message-ID: <20230920-ab82cd5fbac7606ba747afa4@orel>
+References: <20230919035343.1399389-1-apatel@ventanamicro.com>
+ <20230919035343.1399389-2-apatel@ventanamicro.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000001f0b970605c39a7e@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+In-Reply-To: <20230919035343.1399389-2-apatel@ventanamicro.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,52 +82,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 10:25:22PM -0700, syzbot wrote:
-> Hello,
+On Tue, Sep 19, 2023 at 09:23:37AM +0530, Anup Patel wrote:
+> The Veyron-V1 CPU supports custom conditional arithmetic and
+> conditional-select/move operations referred to as XVentanaCondOps
+> extension. In fact, QEMU RISC-V also has support for emulating
+> XVentanaCondOps extension.
 > 
-> syzbot found the following issue on:
+> Let us detect XVentanaCondOps extension from ISA string available
+> through DT or ACPI.
 > 
-> HEAD commit:    e42bebf6db29 Merge tag 'efi-fixes-for-v6.6-1' of git://git..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=179f4a38680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9cf75dc581fb4307d6dd
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1374a174680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b12928680000
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  Documentation/devicetree/bindings/riscv/extensions.yaml | 7 +++++++
+>  arch/riscv/include/asm/hwcap.h                          | 1 +
+>  arch/riscv/kernel/cpufeature.c                          | 1 +
+>  3 files changed, 9 insertions(+)
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/14a6a5d23944/disk-e42bebf6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/98cc4c220388/vmlinux-e42bebf6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/6a1d09cf21bf/bzImage-e42bebf6.xz
-> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/37e5beb24789/mount_0.gz
-> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/f219a9e665e9/mount_8.gz
-> 
-> The issue was bisected to:
-> 
-> commit b81427939590450172716093dafdda8ef52e020f
-> Author: Eric Biggers <ebiggers@google.com>
-> Date:   Mon Aug 14 18:29:02 2023 +0000
-> 
->     ext4: remove redundant checks of s_encoding
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10852352680000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12852352680000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14852352680000
+> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> index 36ff6749fbba..cad8ef68eca7 100644
+> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> @@ -171,6 +171,13 @@ properties:
+>              memory types as ratified in the 20191213 version of the privileged
+>              ISA specification.
+>  
+> +        - const: xventanacondops
+> +          description: |
+> +            The Ventana specific XVentanaCondOps extension for conditional
+> +            arithmetic and conditional-select/move operations defined by the
+> +            Ventana custom extensions specification v1.0.1 (or higher) at
+> +            https://github.com/ventanamicro/ventana-custom-extensions/releases.
+> +
+>          - const: zba
+>            description: |
+>              The standard Zba bit-manipulation extension for address generation
+> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+> index 0f520f7d058a..b7efe9e2fa89 100644
+> --- a/arch/riscv/include/asm/hwcap.h
+> +++ b/arch/riscv/include/asm/hwcap.h
+> @@ -59,6 +59,7 @@
+>  #define RISCV_ISA_EXT_ZIFENCEI		41
+>  #define RISCV_ISA_EXT_ZIHPM		42
+>  #define RISCV_ISA_EXT_SMSTATEEN		43
+> +#define RISCV_ISA_EXT_XVENTANACONDOPS	44
+>  
+>  #define RISCV_ISA_EXT_MAX		64
+>  
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> index 3755a8c2a9de..3a31d34fe709 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -182,6 +182,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
+>  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
+>  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
+> +	__RISCV_ISA_EXT_DATA(xventanacondops, RISCV_ISA_EXT_XVENTANACONDOPS),
+>  };
+>  
+>  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
+> -- 
+> 2.34.1
+>
 
-This report is expected for now, since the repro involves writing to the page
-cache of a mounted block device.  For more information see
-https://lore.kernel.org/linux-fsdevel/20230813001202.GE41642@sol.localdomain and
-https://lore.kernel.org/linux-fsdevel/20230814182903.37267-2-ebiggers@kernel.org.
-Also https://lore.kernel.org/linux-fsdevel/20230704122727.17096-1-jack@suse.cz
-which will ultimately be the fix for this class of issue.
+Besides Conor's comment about splitting the patch,
 
-Note: the repro that syzkaller generated for this is very strange (even moreso
-than usual for syzkaller repros...) because it replaces its "scratch space" at
-address 0x20000000 with a different mapping, specifically a mapping for a file
-that is mounted as a filesystem via loopback.  That makes "syscalls" have weird
-side effects as a result of the repro writing parameters to the address that is
-supposed to contain its scratch space.  I don't think this should be happening,
-so I've opened https://github.com/google/syzkaller/issues/4216 for it.
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
-- Eric
+Thanks,
+drew
