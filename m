@@ -2,121 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE817A75FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFBF7A75FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbjITIgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
+        id S233129AbjITIgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233325AbjITIgu (ORCPT
+        with ESMTP id S232618AbjITIgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:36:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFCA90
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695198964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fyO783HFK2K9KUO8v9jboxC20XyrMbrsezvU6yX9E9k=;
-        b=BUuIogEUFPDjGR2kSjBoCYc5+xKLQ8h7AkEgkI0O816rVFMtA9gcvL57NorH5lqYy6i13w
-        llFEzj0W41Kr7uJ2GvAVcFFga2P9KH+ht3p2oC/+VRQ2F/HkqMFKHf35Mvv6nkwK2nM8Se
-        Ji2ebRyM58X+9UtUkEIkwXcgp31wA1M=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-185-W7EXuqRtMya6E5jYoYDVdw-1; Wed, 20 Sep 2023 04:35:59 -0400
-X-MC-Unique: W7EXuqRtMya6E5jYoYDVdw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 07DAE811E7B;
-        Wed, 20 Sep 2023 08:35:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9792640C6EBF;
-        Wed, 20 Sep 2023 08:35:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAF=yD-+kRXmwuKHVrUUL6oBPhWiPKucm_5-Y+YM==9Bp3DQiGQ@mail.gmail.com>
-References: <CAF=yD-+kRXmwuKHVrUUL6oBPhWiPKucm_5-Y+YM==9Bp3DQiGQ@mail.gmail.com> <75315.1695139973@warthog.procyon.org.uk>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
-        syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
+        Wed, 20 Sep 2023 04:36:46 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB34399;
+        Wed, 20 Sep 2023 01:36:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695199000; x=1726735000;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WoALuM+T0aLjrEyZpAlA/0pok6fMu8xvTQIzRRVoeN4=;
+  b=rmOb1aaB3BB7nilMq40LXGzhYKe4sVF/MLJyeXlRT9D+bmXGfZ56G+fv
+   XpdFhnVHCmWA7EaIE9TbL0u9Ag8TTEJBJU26jcFwzJSQc75KD+VRBBiWk
+   7huAXhugfNqDxCn5bNBtljD15uiZkQHcnxiMqZ7DZu/gNb4om3u86zTAh
+   G0glzTpLz34eMB2CW/un/z/5WMYqr4ZcWo1Ruy5fnQYhh0Ej3+DF2ZehR
+   PresAirUM2B8oerTeQYzhb3rUHYlBIo4QBTH8RMlhacKICfXgB8SPolxN
+   YFNDY9M8tQ8h89Ty7w4U9N7yPqSCBvXjPzdvUyNYLtifrxqGkMB+KGv2l
+   g==;
+X-CSE-ConnectionGUID: egtUWndkSLy/5vEpLCYKng==
+X-CSE-MsgGUID: 7RoY1gSJTG67+SFdEzbIbw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="asc'?scan'208";a="172606441"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Sep 2023 01:36:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 20 Sep 2023 01:36:38 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 20 Sep 2023 01:36:36 -0700
+Date:   Wed, 20 Sep 2023 09:36:19 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Drew Fustini <dfustini@baylibre.com>
+Subject: Re: [PATCH v2] riscv: dts: thead: set dma-noncoherent to soc bus
+Message-ID: <20230920-pesky-stalemate-88f5036b8084@wendy>
+References: <20230912072232.2455-1-jszhang@kernel.org>
+ <20230912-trailing-pampered-52738ec6f009@spud>
+ <ZQHSLdPufI6CXApg@xhacker>
+ <20230913-faster-spotted-9df41a0d7787@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <108653.1695198956.1@warthog.procyon.org.uk>
-Date:   Wed, 20 Sep 2023 09:35:56 +0100
-Message-ID: <108654.1695198956@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="FctfBnGm8Rn+9xje"
+Content-Disposition: inline
+In-Reply-To: <20230913-faster-spotted-9df41a0d7787@spud>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
+--FctfBnGm8Rn+9xje
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The proposed fix is non-trivial, and changes not just the new path
-> that observes the issue (MSG_SPLICE_PAGES), but also the other more
-> common paths that exercise __ip6_append_data.
+Hey Jisheng,
 
-I realise that.  I broke ping/ping6 briefly, but I corrected that (I
-subtracted the ICMP header len from length after copying it out, but forgot
-that it needed adding back on for the return value of sendmsg()).  But I don't
-think there are that many callers - however, you might be right that this is
-too big for a fix.
+On Wed, Sep 13, 2023 at 04:44:18PM +0100, Conor Dooley wrote:
+> On Wed, Sep 13, 2023 at 11:15:57PM +0800, Jisheng Zhang wrote:
+> > On Tue, Sep 12, 2023 at 05:27:31PM +0100, Conor Dooley wrote:
+> > > On Tue, Sep 12, 2023 at 03:22:32PM +0800, Jisheng Zhang wrote:
+> > > > riscv select ARCH_DMA_DEFAULT_COHERENT by default, and th1520 isn't
+> > > > dma coherent, so set dma-noncoherent to reflect this fact.
+> > > >=20
+> > > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > > Tested-by: Drew Fustini <dfustini@baylibre.com>
+> > > > ---
+> > > >=20
+> > > > Since v1:
+> > > >  - rebase on v6.6-rc1
+> > > >  - collect Tested-by tag
+> > >=20
+> > > Does this mean you're expecting me to take this?
+> >=20
+> > Hi Conor,
+> >=20
+> > I think I will take this and send PR to soc people. The reason
+> > I send v2 is the rebasing on new rc1 and v1 wasn't in linux-riscv
+> > mailist due to typo;
+>=20
+> Great, thanks. Please ask SFR to add your tree to linux-next.
 
-> There is significant risk to introduce an unintended side effect
-> requiring a follow-up fix. Because this function is notoriously
-> complex, multiplexing a lot of behavior: with and without transport
-> headers, edge cases like fragmentation, MSG_MORE, absence of
-> scatter-gather, ....
+I lost my main x86 box over the weekend (looks like probably a dead
+motherboard), so I may have missed a response to this.
 
-The problem is that the bug isn't in __ip{,6}_append_data(), I think, it's
-actually higher up in ip{,6}_append_data().  I think I see *why* length has
-transhdrlen handed into it: because ping and raw sockets come with that
-pre-added-in by userspace.
+Did you see this email? Additionally, can you add that git tree to the
+maintainers entry for the thead devicetrees?
 
-I would actually like to eliminate the length argument entirely and use the
-length in the iterator - but that doesn't work in all cases as sometimes there
-isn't a msghdr struct.  (And, besides, that's too big a change for a fix).
+Thanks,
+Conor.
 
-I think the simplest fix, then, is just to make ip{,6}_append_data() subtract
-transhdrlen from length before clearing transhdrlen when there's already a
-packet in the queue from MSG_MORE/cork that will be appended to.
+--FctfBnGm8Rn+9xje
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> Does the issue discovered only affect MSG_SPLICE_PAGES or can it
-> affect other paths too? If the first, it possible to create a more
-> targeted fix that can trivially be seen to not affect code prior to
-> introduction of splice pages?
+-----BEGIN PGP SIGNATURE-----
 
-It may also affect MSG_ZEROCOPY in interesting ways.  msg_zerocopy_realloc()
-looks suspicious as it does things with 'size' bytes from the buffer that
-doesn't have 'size' bytes of data in it (because size (aka length) includes
-transhdrlen).
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQqvAgAKCRB4tDGHoIJi
+0pjEAQCCEy4ws0w7ssYsmKIE1EQRcxLvCTdUqWoOFxg1nbM3fQEA1Du/hWefkLhr
+EpqbC7FoifLUim+sBrFP7ataGcohSwI=
+=PI2j
+-----END PGP SIGNATURE-----
 
-I would guess that we don't notice issues with ping sockets because people
-don't often use MSG_MORE/corking with them.
-
-Raw sockets shouldn't exhibit this bug as they set transhdrlen to 0 up front,
-but I can't help but wonder what the consequences are as some bits of
-__ip*_append_data() change behaviour if they see transhdrlen==0 :-/
-
-David
-
+--FctfBnGm8Rn+9xje--
