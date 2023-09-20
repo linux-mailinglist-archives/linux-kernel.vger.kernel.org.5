@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BAD7A88DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D74C7A88E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236872AbjITPqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
+        id S235503AbjITPtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236814AbjITPqr (ORCPT
+        with ESMTP id S234160AbjITPtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:46:47 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B934CF2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:46:40 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c5cd27b1acso972005ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695224800; x=1695829600; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JEpzhn0/r3h7zE+n/9TA9uRn8epPj0d0ldcwcNh6iPI=;
-        b=pnsIS2+MTr2syyrsxFZt/NPneM/jbrZM+vk1hWMRdcktLCahZ5qNh6DdmvHWfLanSC
-         dMQoxCi0zx9jP7VvVr56THiz0lVK53+LZwo918oBaWIKxGP2IhN0ZqEEvboE/P39Ae+p
-         xjvUwmA3QiXbuJ1Ao389VLBWeiLw8qa7eWlfXdYadW/5ftumg9+MEE0IkVlazRqrhqPK
-         +Vt6+ZUldom8MdnnhmP7fWC6M62qLLlUgYToMcobwhptAeFgTP//T5KHqO/QJdrWufg4
-         3Uz5LPOmZBwhemVi5dy9akfH6dEJxTvghjgY8ClQcigL77zLBFivRv6Vqfjw3iyOWtG0
-         bs5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695224800; x=1695829600;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JEpzhn0/r3h7zE+n/9TA9uRn8epPj0d0ldcwcNh6iPI=;
-        b=JMFSkflSeLL2E+ev1E35QwbRzURfZADeMzQpv93ExGf7hNHxp1mYfqOfGJmt03SdLY
-         z7MEUEo4hPA9MzhdzerneR2S2sR4GYralyVsUz+bvT1TH+CNa9IjSmAWU99J+OsdKGsD
-         ae/FzESP8eEmVy2WIZjLa02zcYAg8Sy1Melpd/al6eXTIG/dLL19ODT0+86MaIvVMMF1
-         X4tbp3ZO/rAD7MZZX/+y+adtJnUx6Px543409ooaznCN4xjNXIJRN0bdgcMtpCpZeZ3z
-         Xh5/GnGywg6c4WtDx+B2VDJuCd+WhfD+TB557sUi/JI5mbjBYY5A6MVGelMiftHIhP7+
-         +mAA==
-X-Gm-Message-State: AOJu0YyEJtjYGqGIey3x9nGWOP8Lv+QWwr0FP8IvXnC4Vto7hVYV4phV
-        JagBNLDmNUe02Eel5Yt3l5nsow==
-X-Google-Smtp-Source: AGHT+IH0BX50WXqhda/5zYoaq97TFshDXBpBPxC7g6dc7L/kU35EsxkrRUvI9RxqMXaOowOkBXyeUQ==
-X-Received: by 2002:a17:902:c142:b0:1c4:bc8:4b64 with SMTP id 2-20020a170902c14200b001c40bc84b64mr2711290plj.5.1695224799935;
-        Wed, 20 Sep 2023 08:46:39 -0700 (PDT)
-Received: from anup-ubuntu-vm.localdomain ([171.76.85.109])
-        by smtp.gmail.com with ESMTPSA id m7-20020a170902db0700b001c0de73564dsm11995153plx.205.2023.09.20.08.46.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 08:46:39 -0700 (PDT)
-From:   Anup Patel <apatel@ventanamicro.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Anup Patel <apatel@ventanamicro.com>,
-        Atish Patra <atishp@rivosinc.com>
-Subject: [PATCH v2 4/4] KVM: riscv: selftests: Selectively filter-out AIA registers
-Date:   Wed, 20 Sep 2023 21:16:08 +0530
-Message-Id: <20230920154608.1447057-5-apatel@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230920154608.1447057-1-apatel@ventanamicro.com>
-References: <20230920154608.1447057-1-apatel@ventanamicro.com>
+        Wed, 20 Sep 2023 11:49:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFC8A9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:49:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1427422070;
+        Wed, 20 Sep 2023 15:49:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695224944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=xwmscEbu4Mg9p7LlGQ7SIxmKqR0eZYHrdLtjy0NQDoU=;
+        b=KgkmN0yW2XqcmcnoHqHc38wgpkX66hulJvJ2J3aYResMUg52Tp6pRy+IXADoOfLC41/u01
+        6sbS8ByWXyDL180SvS8q7J6smdvR/HO2xaC+JEWz1vSd7e+Fm9/rMO0xl1XKEBzfQs4Au8
+        IrCuoD0WWVjSswN1QD2EGoshx33MMdM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA9841333E;
+        Wed, 20 Sep 2023 15:49:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NjnqJ28UC2U1UQAAMHmgww
+        (envelope-from <jgross@suse.com>); Wed, 20 Sep 2023 15:49:03 +0000
+Message-ID: <e2d1157e-47cc-467d-a319-12bb07ef960c@suse.com>
+Date:   Wed, 20 Sep 2023 17:49:02 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 3/3] x86/paravirt: switch mixed paravirt/alternative
+ calls to alternative_2
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Srivatsa S. Bhat (VMware)" <srivatsa@csail.mit.edu>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+References: <20230608140333.4083-1-jgross@suse.com>
+ <20230608140333.4083-4-jgross@suse.com>
+ <20230920145222.GB6687@noisy.programming.kicks-ass.net>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20230920145222.GB6687@noisy.programming.kicks-ass.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------gAczc7bMggm6wsqpnF6QZbox"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -78,75 +96,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the AIA ONE_REG registers are reported by get-reg-list
-as new registers for various vcpu_reg_list configs whenever Ssaia
-is available on the host because Ssaia extension can only be
-disabled by Smstateen extension which is not always available.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------gAczc7bMggm6wsqpnF6QZbox
+Content-Type: multipart/mixed; boundary="------------7PxM014TwoOGFMgqnwnznIds";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux-foundation.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ "Srivatsa S. Bhat (VMware)" <srivatsa@csail.mit.edu>,
+ Alexey Makhalov <amakhalov@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+Message-ID: <e2d1157e-47cc-467d-a319-12bb07ef960c@suse.com>
+Subject: Re: [RFC PATCH 3/3] x86/paravirt: switch mixed paravirt/alternative
+ calls to alternative_2
+References: <20230608140333.4083-1-jgross@suse.com>
+ <20230608140333.4083-4-jgross@suse.com>
+ <20230920145222.GB6687@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230920145222.GB6687@noisy.programming.kicks-ass.net>
 
-To tackle this, we should filter-out AIA ONE_REG registers only
-when Ssaia can't be disabled for a VCPU.
+--------------7PxM014TwoOGFMgqnwnznIds
+Content-Type: multipart/mixed; boundary="------------PgzWaZUw7MU1dTZ4rj1huxtd"
 
-Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
----
- .../selftests/kvm/riscv/get-reg-list.c        | 23 +++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+--------------PgzWaZUw7MU1dTZ4rj1huxtd
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-index 76c0ad11e423..9f99ea42f45f 100644
---- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-+++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-@@ -12,6 +12,8 @@
- 
- #define REG_MASK (KVM_REG_ARCH_MASK | KVM_REG_SIZE_MASK)
- 
-+static bool isa_ext_cant_disable[KVM_RISCV_ISA_EXT_MAX];
-+
- bool filter_reg(__u64 reg)
- {
- 	switch (reg & ~REG_MASK) {
-@@ -48,6 +50,15 @@ bool filter_reg(__u64 reg)
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
- 		return true;
-+	/* AIA registers are always available when Ssaia can't be disabled */
-+	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siselect):
-+	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio1):
-+	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio2):
-+	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(sieh):
-+	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siph):
-+	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio1h):
-+	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio2h):
-+		return isa_ext_cant_disable[KVM_RISCV_ISA_EXT_SSAIA];
- 	default:
- 		break;
- 	}
-@@ -71,14 +82,22 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
- 
- void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
- {
-+	unsigned long isa_ext_state[KVM_RISCV_ISA_EXT_MAX] = { 0 };
- 	struct vcpu_reg_sublist *s;
-+	int rc;
-+
-+	for (int i = 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
-+		__vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(i), &isa_ext_state[i]);
- 
- 	/*
- 	 * Disable all extensions which were enabled by default
- 	 * if they were available in the risc-v host.
- 	 */
--	for (int i = 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
--		__vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
-+	for (int i = 0; i < KVM_RISCV_ISA_EXT_MAX; i++) {
-+		rc = __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
-+		if (rc && isa_ext_state[i])
-+			isa_ext_cant_disable[i] = true;
-+	}
- 
- 	for_each_sublist(c, s) {
- 		if (!s->feature)
--- 
-2.34.1
+T24gMjAuMDkuMjMgMTY6NTIsIFBldGVyIFppamxzdHJhIHdyb3RlOg0KPiBPbiBUaHUsIEp1
+biAwOCwgMjAyMyBhdCAwNDowMzozM1BNICswMjAwLCBKdWVyZ2VuIEdyb3NzIHdyb3RlOg0K
+Pj4gSW5zdGVhZCBvZiBzdGFja2luZyBhbHRlcm5hdGl2ZSBhbmQgcGFyYXZpcnQgcGF0Y2hp
+bmcsIHVzZSB0aGUgbmV3DQo+PiBBTFRfRkxBR19DQUxMIGZsYWcgdG8gc3dpdGNoIHRob3Nl
+IG1peGVkIGNhbGxzIHRvIHB1cmUgYWx0ZXJuYXRpdmUNCj4+IGhhbmRsaW5nLg0KPj4NCj4+
+IFRoaXMgZWxpbWluYXRlcyB0aGUgbmVlZCB0byBiZSBjYXJlZnVsIHJlZ2FyZGluZyB0aGUg
+c2VxdWVuY2Ugb2YNCj4+IGFsdGVybmF0aXZlIGFuZCBwYXJhdmlydCBwYXRjaGluZy4NCj4+
+DQo+PiBGb3IgY2FsbCBkZXB0aCB0cmFja2luZyBjYWxsdGh1bmtzX3NldHVwKCkgbmVlZHMg
+dG8gYmUgYWRhcHRlZCB0byBwYXRjaA0KPj4gY2FsbHMgYXQgYWx0ZXJuYXRpdmUgcGF0Y2hp
+bmcgc2l0ZXMgaW5zdGVhZCBvZiBwYXJhdmlydCBjYWxscy4NCj4+DQo+PiBSZW1vdmUgdGhl
+IG5vIGxvbmdlciBuZWVkZWQgcGFyYXZpcnQgcGF0Y2hpbmcgYW5kIHJlbGF0ZWQgY29kZS4N
+Cj4gDQo+IEkgdGhpbmsgdGhpcyBiZWNvbWVzIGVhc2llciBpZiB5b3UgZmlyc3QgY29udmVy
+dCB0aGUgcGFyYXZpcnQgc2l0ZXMgdG8NCj4gYWx0ZXJuYXRpdmVzLCBzdWNoIHRoYXQgLnBh
+cmFpbnN0cnVjdGlvbnMgaXMgZW1wdHksIGFuZCB0aGVuIGluIGENCj4gc3Vic2VxdWVudCBw
+YXRjaCByZW1vdmUgYWxsIHRoZSBwYXJhdmlydCBpbmZyYXN0cnVjdHVyZSB0aGF0IGlzIHVu
+dXNlZC4NCg0KRmluZSB3aXRoIG1lLg0KDQpTcGVha2luZyBvZiBhZGRpdGlvbmFsIHBhdGNo
+ZXM6IGFueSBpZGVhIGhvdyB0aGUgcmVsYXRlZCBvYmp0b29sIGNoYW5nZShzKQ0Kc2hvdWxk
+IGxvb2sgbGlrZT8gSSBzdXNwZWN0IHRoZXkgYXJlIG5lZWRlZCAuLi4NCg0KPiANCj4gDQo+
+PiArI2RlZmluZSBTQVZFX0ZMQUdTCUFMVEVSTkFUSVZFXzIgIlBBUkFfSVJRX3NhdmVfZmw7
+IiwgQUxUX0NBTExfSU5TVFIsIFwNCj4+ICsJCQkJICAgICAgQUxUX0NBTExfQUxXQVlTLCAi
+cHVzaGY7IHBvcCAlcmF4OyIsIFwNCj4+ICsJCQkJICAgICAgQUxUX05PVChYODZfRkVBVFVS
+RV9YRU5QVikNCj4gDQo+IEkgZmluZCB0aGlzIG1vcmUgcmVhZGFibGUgd2hlbiB3cml0dGVu
+IGFzOg0KPiANCj4gI2RlZmluZSBTQVZFX0ZMQUdTCUFMVEVSTkFUSVZFXzIgIlBBUkFfSVJR
+X3NhdmVfZmw7IiwJCVwNCj4gCQkJCSAgICAgIEFMVF9DQUxMX0lOU1RSLCBBTFRfQ0FMTF9B
+TFdBWVMsCVwNCj4gCQkJCSAgICAgICJwdXNoZjsgcG9wICVyYXg7IiwgQUxUX05PVChYODZf
+RkVBVFVSRV9YRU5QVikNCj4gDQo+IChhbmQgcGVyaGFwcyBBTFRfTk9UX1hFTiBpcyBpbiBv
+cmRlciwgdGhlcmUncyBhIHRvbiBvZiB0aG9zZSkNCg0KSSBsaWtlIGJvdGggc3VnZ2VzdGlv
+bnMuDQoNCj4gDQo+IElmIHlvdSBiYXNlIHRoaXMgb24gdG9wIG9mIHRoZSBuZXN0ZWQgYWx0
+ZXJuYXRpdmUgcGF0Y2hlcywgYW5vdGhlcg0KPiBoZWxwZXIgbWlnaHQgYmU6DQo+IA0KPiAj
+ZGVmaW5lIF9fUFZfQUxURVJOQVRJVkUob2xkKSBfX0FMVEVSTkFUSVZFKG9sZCwgQUxUX0NB
+TExfSU5TVFIsIEFMVF9DQUxMX0FMV0FZUykNCj4gDQo+IFNvIHRoYXQgeW91IGNhbiB0aGVu
+IHdyaXRlOg0KPiANCj4gI2RlZmluZSBTQVZFX0ZMQUdTCV9fQUxURVJOQVRJVkUoX19QVl9B
+TFRFUk5BVElWRSgiUEFSQV9JUlFfc2F2ZV9mbDsiKSwNCj4gCQkJCSAgICAgICJwdXNoZjsg
+cG9wICVyYXg7IiwgQUxUX05PVF9YRU4pDQo+IA0KPiBCdXQgcGVyaGFwcyBJJ20gb3Zlci1j
+b29raW5nIHRoaW5ncyBub3cuLg0KDQpJIGRvbid0IHRoaW5rIHRoaXMgaXMgbmVlZGVkIGZv
+ciB0aGUgc2luZ2xlIGluc3RhbmNlIGl0IGlzIHVzZWZ1bCBmb3IuDQoNCg0KSnVlcmdlbg0K
 
+--------------PgzWaZUw7MU1dTZ4rj1huxtd
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------PgzWaZUw7MU1dTZ4rj1huxtd--
+
+--------------7PxM014TwoOGFMgqnwnznIds--
+
+--------------gAczc7bMggm6wsqpnF6QZbox
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmULFG8FAwAAAAAACgkQsN6d1ii/Ey/+
+zgf+LVCAhPASEItcGSjU3MHyY1pjAhmx9/8CXNPg4au+Hw4oQ0o3beh7ffj60Li06wKaC38ygrKE
+gV+H3fwilPDOxC1LHYm3B72v+5qWQR6lFZtpMgDlX2ivClEayDhkLzvapR7k+DP9duycvUvwFFeV
+ydzLI4rRpRcQyZpTR3wF8xxhwDUdg0jEuJudS6RLWR2JU6lFjoM/Ec1/gPiNj/46bmj6LO6PIqHS
+DGqtSbt8s4366e2sLmPvCnJFDGoYSTzPvl3ErjYGj0Oy6TRh5lD7caue5ol3ogWRqssfx4hrMYPD
+aXQ8M0CphvKnjCKslVIpL+8gcN/2OFO7r6CnD7z6ww==
+=4fAN
+-----END PGP SIGNATURE-----
+
+--------------gAczc7bMggm6wsqpnF6QZbox--
