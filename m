@@ -2,50 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A017A76C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB487A7669
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234149AbjITJCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
+        id S233763AbjITIxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233907AbjITJCM (ORCPT
+        with ESMTP id S233486AbjITIxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:02:12 -0400
-X-Greylist: delayed 475 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 02:00:22 PDT
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144E61FEB
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:00:22 -0700 (PDT)
-Received: from wse.fritz.box (p5de45a8d.dip0.t-ipconnect.de [93.228.90.141])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by mail.tuxedocomputers.com (Postfix) with ESMTPA id 213F42FC00D1;
-        Wed, 20 Sep 2023 10:52:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-        s=default; t=1695199945;
+        Wed, 20 Sep 2023 04:53:34 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC509E;
+        Wed, 20 Sep 2023 01:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1695200005;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=42LaC+Ki9kS2X5mr9P1WxGQwcv49odezsy0vgHHfVsw=;
-        b=mv0T9T498iqueOpCOv40rVcUWk2+Ha5utGq1dUZye38ZUOBKjBTzWioTp5oV7/1VXUep0C
-        Nz1tVqDZ0TCIjcYQdIa1gZP+RpuMN68XYrHHNzRVWxAgR3Ry/6PyrDYp7AF642pPn4Qjjn
-        xMVGyHv+De0RuCec2o+hwsSpT01epTs=
-Authentication-Results: mail.tuxedocomputers.com;
-        auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-Cc:     Georg Gottleuber <ggo@tuxedocomputers.com>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] nvme-pci: Add sleep quirk for Kingston drives
-Date:   Wed, 20 Sep 2023 10:52:10 +0200
-Message-Id: <20230920085210.22573-1-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.34.1
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gJizfhMff7LAMmmuJXtFdbae/v/TJx7lLWUoiIv03oU=;
+        b=FILoFzJTbWaDrvv5BbWfWRbeEsH1VHN95xp0L+WuVlnyL6mgegwqmBPbUO8oFAt2RymcpU
+        ejJ0WzfmM9FummFyBNwSNIA3NhYtsI+HcmxgwPNxEWHlOnjS8TNxdi9qzNLLku+L853U1i
+        NlNHA1fDRcFY3rtxTcs3w0eYaAEE0+I=
+Message-ID: <790fac97ce79534733fe0bbd93cc0c9eaa835bf2.camel@crapouillou.net>
+Subject: Re: [PATCH v3] PM: Fix symbol export for _SIMPLE_ variants of
+ _PM_OPS()
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Raag Jadav <raag.jadav@intel.com>, rafael@kernel.org,
+        len.brown@intel.com, pavel@ucw.cz, Jonathan.Cameron@huawei.com,
+        andriy.shevchenko@linux.intel.com, rf@opensource.cirrus.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Date:   Wed, 20 Sep 2023 10:53:23 +0200
+In-Reply-To: <20230920084121.14131-1-raag.jadav@intel.com>
+References: <20230920084121.14131-1-raag.jadav@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,72 +49,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georg Gottleuber <ggo@tuxedocomputers.com>
-
-Some Kingston NV1 and A2000 are wasting a lot of power on specific TUXEDO
-platforms in s2idle sleep if 'Simple Suspend' is used.
-
-This patch applies a new quirk 'Force No Simple Suspend' to achieve a
-low power sleep without 'Simple Suspend'.
-
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Signed-off-by: Georg Gottleuber <ggo@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
----
- drivers/nvme/host/nvme.h |  5 +++++
- drivers/nvme/host/pci.c  | 16 +++++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index f35647c470afa..74f74b459f5fa 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -156,6 +156,11 @@ enum nvme_quirks {
- 	 * No temperature thresholds for channels other than 0 (Composite).
- 	 */
- 	NVME_QUIRK_NO_SECONDARY_TEMP_THRESH	= (1 << 19),
-+
-+	/*
-+	 * Disables simple suspend/resume path.
-+	 */
-+	NVME_QUIRK_FORCE_NO_SIMPLE_SUSPEND	= (1 << 20),
- };
- 
- /*
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 347cb5daebc3c..b4e6f0d21a44c 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2903,6 +2903,18 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
- 		if ((dmi_match(DMI_BOARD_VENDOR, "LENOVO")) &&
- 		     dmi_match(DMI_BOARD_NAME, "LNVNB161216"))
- 			return NVME_QUIRK_SIMPLE_SUSPEND;
-+	} else if (pdev->vendor == 0x2646 && (pdev->device == 0x2263 ||
-+		   pdev->device == 0x500f)) {
-+		/*
-+		 * Exclude some Kingston NV1 and A2000 devices from
-+		 * NVME_QUIRK_SIMPLE_SUSPEND. Do a full suspend to save a
-+		 * lot fo energy with s2idle sleep on some TUXEDO platforms.
-+		 */
-+		if (dmi_match(DMI_BOARD_NAME, "NS5X_NS7XAU") ||
-+		    dmi_match(DMI_BOARD_NAME, "NS5x_7xAU") ||
-+		    dmi_match(DMI_BOARD_NAME, "NS5x_7xPU") ||
-+		    dmi_match(DMI_BOARD_NAME, "PH4PRX1_PH6PRX1"))
-+			return NVME_QUIRK_FORCE_NO_SIMPLE_SUSPEND;
- 	}
- 
- 	return 0;
-@@ -2933,7 +2945,9 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
- 	dev->dev = get_device(&pdev->dev);
- 
- 	quirks |= check_vendor_combination_bug(pdev);
--	if (!noacpi && acpi_storage_d3(&pdev->dev)) {
-+	if (!noacpi &&
-+	    !(quirks & NVME_QUIRK_FORCE_NO_SIMPLE_SUSPEND) &&
-+	    acpi_storage_d3(&pdev->dev)) {
- 		/*
- 		 * Some systems use a bios work around to ask for D3 on
- 		 * platforms that support kernel managed suspend.
--- 
-2.34.1
+SGksCgpMZSBtZXJjcmVkaSAyMCBzZXB0ZW1icmUgMjAyMyDDoCAxNDoxMSArMDUzMCwgUmFhZyBK
+YWRhdiBhIMOpY3JpdMKgOgo+IEN1cnJlbnRseSBFWFBPUlRfKl9TSU1QTEVfREVWX1BNX09QUygp
+IHVzZSBFWFBPUlRfKl9ERVZfUE1fT1BTKCkgc2V0Cj4gb2YgbWFjcm9zIHRvIGV4cG9ydCBkZXZf
+cG1fb3BzIHN5bWJvbCwgd2hpY2ggZXhwb3J0IHRoZSBzeW1ib2wgaW4KPiBjYXNlCj4gQ09ORklH
+X1BNPXkgYnV0IGRvbid0IHRha2UgQ09ORklHX1BNX1NMRUVQIGludG8gY29uc2lkZXJhdGlvbi4K
+PiAKPiBTaW5jZSBfU0lNUExFXyB2YXJpYW50cyBvZiBfUE1fT1BTKCkgZG8gbm90IGluY2x1ZGUg
+cnVudGltZSBQTQo+IGhhbmRsZXMKPiBhbmQgYXJlIG9ubHkgdXNlZCBpbiBjYXNlIENPTkZJR19Q
+TV9TTEVFUD15LCB3ZSBzaG91bGQgbm90IGJlCj4gZXhwb3J0aW5nCj4gdGhlaXIgZGV2X3BtX29w
+cyBzeW1ib2wgaW4gY2FzZSBDT05GSUdfUE1fU0xFRVA9bi4KPiAKPiBUaGlzIGNhbiBiZSBmaXhl
+ZCBieSBoYXZpbmcgdHdvIGRpc3RpbmN0IHNldCBvZiBleHBvcnQgbWFjcm9zIGZvcgo+IGJvdGgK
+PiBfUlVOVElNRV8gYW5kIF9TSU1QTEVfIHZhcmlhbnRzIG9mIF9QTV9PUFMoKSwgc3VjaCB0aGF0
+IHRoZSBleHBvcnQgb2YKPiBkZXZfcG1fb3BzIHN5bWJvbCB1c2VkIGluIGVhY2ggdmFyaWFudCBk
+ZXBlbmRzIG9uIENPTkZJR19QTSBhbmQKPiBDT05GSUdfUE1fU0xFRVAgcmVzcGVjdGl2ZWx5Lgo+
+IAo+IEludHJvZHVjZSBfREVWX1NMRUVQX1BNX09QUygpIHNldCBvZiBleHBvcnQgbWFjcm9zIGZv
+ciBfU0lNUExFXwo+IHZhcmlhbnRzCj4gb2YgX1BNX09QUygpLCB3aGljaCBleHBvcnQgZGV2X3Bt
+X29wcyBzeW1ib2wgb25seSBpbiBjYXNlCj4gQ09ORklHX1BNX1NMRUVQPXkKPiBhbmQgZGlzY2Fy
+ZCBpdCBvdGhlcndpc2UuCj4gCj4gRml4ZXM6IDM0ZTFlZDE4OWZhYiAoIlBNOiBJbXByb3ZlIEVY
+UE9SVF8qX0RFVl9QTV9PUFMgbWFjcm9zIikKPiBTaWduZWQtb2ZmLWJ5OiBSYWFnIEphZGF2IDxy
+YWFnLmphZGF2QGludGVsLmNvbT4KPiAtLS0KPiBQUzogVGhpcyBpcyBhIHN0YW5kYWxvbmUgZml4
+IGFuZCB3b3JrcyB3aXRob3V0IHVwZGF0aW5nIGFueSBkcml2ZXJzLgoKSSBoYWQgdG8gZG91Ymxl
+LWNoZWNrIHRoYXQsIHRvIG1ha2Ugc3VyZSB0aGF0IG5vbmUgb2YgdGhlIGRyaXZlcnMgdXNpbmcK
+dGhlc2UgbWFjcm9zIGFsc28gdXNlIHBtX3B0cigpIGluc3RlYWQgb2YgcG1fc2xlZXBfcHRyKCkg
+dG8gYWNjZXNzIHRoZQpleHBvcnRlZCBkZXZfcG1fb3BzLgoKSSBkaWQgbm90IGNoZWNrIGV4dGVu
+c2l2ZWx5IGJ1dCBldmVyeXRoaW5nIHNlZW1zIHRvIHVzZSBwbV9zbGVlcF9wdHIoKSwKc28gaXQg
+bG9va3Mgc2FmZSBlbm91Z2guCgo+IAo+IENoYW5nZXMgc2luY2UgdjI6Cj4gLSBEcm9wIHJlZHVu
+ZGFudCBwYXRjaGVzCj4gCj4gQ2hhbmdlcyBzaW5jZSB2MToKPiAtIFVwZGF0ZSBkcml2ZXJzIHRv
+IG5ldyBzZXQgb2YgbWFjcm9zCj4gCj4gwqBpbmNsdWRlL2xpbnV4L3BtLmggfCA0MyArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tCj4gwqAxIGZpbGUgY2hhbmdlZCwg
+MjkgaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2luY2x1
+ZGUvbGludXgvcG0uaCBiL2luY2x1ZGUvbGludXgvcG0uaAo+IGluZGV4IDE0MDBjMzdiMjljNy4u
+OTlhODE0NmZhNDc5IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGludXgvcG0uaAo+ICsrKyBiL2lu
+Y2x1ZGUvbGludXgvcG0uaAo+IEBAIC0zNzQsMjQgKzM3NCwzOSBAQCBjb25zdCBzdHJ1Y3QgZGV2
+X3BtX29wcyBuYW1lID0geyBcCj4gwqDCoMKgwqDCoMKgwqDCoFJVTlRJTUVfUE1fT1BTKHJ1bnRp
+bWVfc3VzcGVuZF9mbiwgcnVudGltZV9yZXN1bWVfZm4sCj4gaWRsZV9mbikgXAo+IMKgfQo+IMKg
+Cj4gLSNpZmRlZiBDT05GSUdfUE0KPiAtI2RlZmluZSBfRVhQT1JUX0RFVl9QTV9PUFMobmFtZSwg
+bGljZW5zZSwKPiBucynCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgXAo+ICsjZGVmaW5lIF9FWFBPUlRfUE1fT1BTKG5hbWUsIGxpY2Vuc2UsCj4gbnMp
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgXAo+IMKgwqDCoMKgwqDCoMKgwqBjb25zdCBzdHJ1Y3QgZGV2X3BtX29wcwo+IG5hbWU7wqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoFwKPiDCoMKgwqDCoMKgwqDCoMKgX19FWFBPUlRfU1lNQk9MKG5hbWUsIGxpY2Vu
+c2UsCj4gbnMpO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqBcCj4gwqDCoMKgwqDCoMKgwqDCoGNvbnN0IHN0cnVjdCBkZXZfcG1fb3BzIG5h
+bWUKPiAtI2RlZmluZSBFWFBPUlRfUE1fRk5fR1BMKG5hbWUpwqDCoMKgwqDCoMKgwqDCoMKgRVhQ
+T1JUX1NZTUJPTF9HUEwobmFtZSkKPiAtI2RlZmluZSBFWFBPUlRfUE1fRk5fTlNfR1BMKG5hbWUs
+IG5zKcKgwqBFWFBPUlRfU1lNQk9MX05TX0dQTChuYW1lLAo+IG5zKQo+IC0jZWxzZQo+IC0jZGVm
+aW5lIF9FWFBPUlRfREVWX1BNX09QUyhuYW1lLCBsaWNlbnNlLAo+IG5zKcKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcCj4gKwo+ICsjZGVmaW5lIF9Q
+TV9PUFMobmFtZSwgbGljZW5zZSwKClRoaXMgbWFjcm8gY3JlYXRlcyBhIGRldl9wbV9vcHMgdGhh
+dCdzIG1lYW50IHRvIGJlIGdhcmJhZ2UtY29sbGVjdGVkIGJ5CnRoZSBjb21waWxlcjsgc28gbWF5
+YmUgbmFtZSBpdCBfVVNFTEVTU19QTV9PUFMoKSBvciBzb21ldGhpbmcgbGlrZQp0aGF0LgoKKEkg
+Y291bGQgaGF2ZSBzYWlkIHRoYXQgaW4geW91ciB2MiBwYXRjaCwgc29ycnkpCgpDaGVlcnMsCi1Q
+YXVsCgo+IG5zKcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgXAo+IMKgwqDCoMKgwqDCoMKgwqBzdGF0aWMgX19t
+YXliZV91bnVzZWQgY29uc3Qgc3RydWN0IGRldl9wbV9vcHMgX19zdGF0aWNfIyNuYW1lCj4gKwo+
+ICsjaWZkZWYgQ09ORklHX1BNCj4gKyNkZWZpbmUgX0VYUE9SVF9ERVZfUE1fT1BTKG5hbWUsIGxp
+Y2Vuc2UsCj4gbnMpwqDCoMKgwqDCoMKgwqDCoMKgwqBfRVhQT1JUX1BNX09QUyhuYW1lLCBsaWNl
+bnNlLCBucykKPiArI2RlZmluZQo+IEVYUE9SVF9QTV9GTl9HUEwobmFtZSnCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoEVYUE9SVF9TWU1CT0xfR1BMKG5h
+bWUKPiApCj4gKyNkZWZpbmUgRVhQT1JUX1BNX0ZOX05TX0dQTChuYW1lLAo+IG5zKcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoEVYUE9SVF9TWU1CT0xfTlNfR1BMKG5hbWUsIG5z
+KQo+ICsjZWxzZQo+ICsjZGVmaW5lIF9FWFBPUlRfREVWX1BNX09QUyhuYW1lLCBsaWNlbnNlLCBu
+cynCoMKgwqDCoMKgwqDCoMKgwqDCoF9QTV9PUFMobmFtZSwKPiBsaWNlbnNlLCBucykKPiDCoCNk
+ZWZpbmUgRVhQT1JUX1BNX0ZOX0dQTChuYW1lKQo+IMKgI2RlZmluZSBFWFBPUlRfUE1fRk5fTlNf
+R1BMKG5hbWUsIG5zKQo+IMKgI2VuZGlmCj4gwqAKPiAtI2RlZmluZSBFWFBPUlRfREVWX1BNX09Q
+UyhuYW1lKSBfRVhQT1JUX0RFVl9QTV9PUFMobmFtZSwgIiIsICIiKQo+IC0jZGVmaW5lIEVYUE9S
+VF9HUExfREVWX1BNX09QUyhuYW1lKSBfRVhQT1JUX0RFVl9QTV9PUFMobmFtZSwgIkdQTCIsCj4g
+IiIpCj4gLSNkZWZpbmUgRVhQT1JUX05TX0RFVl9QTV9PUFMobmFtZSwgbnMpIF9FWFBPUlRfREVW
+X1BNX09QUyhuYW1lLCAiIiwKPiAjbnMpCj4gLSNkZWZpbmUgRVhQT1JUX05TX0dQTF9ERVZfUE1f
+T1BTKG5hbWUsIG5zKSBfRVhQT1JUX0RFVl9QTV9PUFMobmFtZSwKPiAiR1BMIiwgI25zKQo+ICsj
+aWZkZWYgQ09ORklHX1BNX1NMRUVQCj4gKyNkZWZpbmUgX0VYUE9SVF9ERVZfU0xFRVBfUE1fT1BT
+KG5hbWUsIGxpY2Vuc2UsCj4gbnMpwqDCoMKgwqBfRVhQT1JUX1BNX09QUyhuYW1lLCBsaWNlbnNl
+LCBucykKPiArI2Vsc2UKPiArI2RlZmluZSBfRVhQT1JUX0RFVl9TTEVFUF9QTV9PUFMobmFtZSwg
+bGljZW5zZSwgbnMpwqDCoMKgwqBfUE1fT1BTKG5hbWUsCj4gbGljZW5zZSwgbnMpCj4gKyNlbmRp
+Zgo+ICsKPiArI2RlZmluZQo+IEVYUE9SVF9ERVZfUE1fT1BTKG5hbWUpwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoF9FWFBPUlRf
+REVWX1BNCj4gX09QUyhuYW1lLCAiIiwgIiIpCj4gKyNkZWZpbmUKPiBFWFBPUlRfR1BMX0RFVl9Q
+TV9PUFMobmFtZSnCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX0VYUE9S
+VF9ERVZfUE1fT1BTKG5hbQo+IGUsICJHUEwiLCAiIikKPiArI2RlZmluZSBFWFBPUlRfTlNfREVW
+X1BNX09QUyhuYW1lLAo+IG5zKcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBfRVhQ
+T1JUX0RFVl9QTV9PUFMobmFtZSwgIiIsICNucykKPiArI2RlZmluZSBFWFBPUlRfTlNfR1BMX0RF
+Vl9QTV9PUFMobmFtZSwKPiBucynCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoF9FWFBPUlRfREVW
+X1BNX09QUyhuYW1lLCAiR1BMIiwgI25zKQo+ICsKPiArI2RlZmluZQo+IEVYUE9SVF9ERVZfU0xF
+RVBfUE1fT1BTKG5hbWUpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX0VYUE9S
+VF9ERVZfU0xFRVBfUE1fTwo+IFBTKG5hbWUsICIiLCAiIikKPiArI2RlZmluZQo+IEVYUE9SVF9H
+UExfREVWX1NMRUVQX1BNX09QUyhuYW1lKcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBfRVhQ
+T1JUX0RFVl9TTEVFUF9QTV9PCj4gUFMobmFtZSwgIkdQTCIsICIiKQo+ICsjZGVmaW5lIEVYUE9S
+VF9OU19ERVZfU0xFRVBfUE1fT1BTKG5hbWUsCj4gbnMpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoF9F
+WFBPUlRfREVWX1NMRUVQX1BNX09QUyhuYW1lLCAiIiwgI25zKQo+ICsjZGVmaW5lIEVYUE9SVF9O
+U19HUExfREVWX1NMRUVQX1BNX09QUyhuYW1lLAo+IG5zKcKgwqDCoMKgwqDCoMKgX0VYUE9SVF9E
+RVZfU0xFRVBfUE1fT1BTKG5hbWUsICJHUEwiLCAjbnMpCj4gwqAKPiDCoC8qCj4gwqAgKiBVc2Ug
+dGhpcyBpZiB5b3Ugd2FudCB0byB1c2UgdGhlIHNhbWUgc3VzcGVuZCBhbmQgcmVzdW1lIGNhbGxi
+YWNrcwo+IGZvciBzdXNwZW5kCj4gQEAgLTQwNCwxOSArNDE5LDE5IEBAIGNvbnN0IHN0cnVjdCBk
+ZXZfcG1fb3BzIG5hbWUgPSB7IFwKPiDCoMKgwqDCoMKgwqDCoMKgX0RFRklORV9ERVZfUE1fT1BT
+KG5hbWUsIHN1c3BlbmRfZm4sIHJlc3VtZV9mbiwgTlVMTCwgTlVMTCwKPiBOVUxMKQo+IMKgCj4g
+wqAjZGVmaW5lIEVYUE9SVF9TSU1QTEVfREVWX1BNX09QUyhuYW1lLCBzdXNwZW5kX2ZuLCByZXN1
+bWVfZm4pIFwKPiAtwqDCoMKgwqDCoMKgwqBFWFBPUlRfREVWX1BNX09QUyhuYW1lKSA9IHsgXAo+
+ICvCoMKgwqDCoMKgwqDCoEVYUE9SVF9ERVZfU0xFRVBfUE1fT1BTKG5hbWUpID0geyBcCj4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBTWVNURU1fU0xFRVBfUE1fT1BTKHN1c3BlbmRf
+Zm4sIHJlc3VtZV9mbikgXAo+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqAjZGVmaW5lIEVYUE9SVF9H
+UExfU0lNUExFX0RFVl9QTV9PUFMobmFtZSwgc3VzcGVuZF9mbiwgcmVzdW1lX2ZuKSBcCj4gLcKg
+wqDCoMKgwqDCoMKgRVhQT1JUX0dQTF9ERVZfUE1fT1BTKG5hbWUpID0geyBcCj4gK8KgwqDCoMKg
+wqDCoMKgRVhQT1JUX0dQTF9ERVZfU0xFRVBfUE1fT1BTKG5hbWUpID0geyBcCj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBTWVNURU1fU0xFRVBfUE1fT1BTKHN1c3BlbmRfZm4sIHJl
+c3VtZV9mbikgXAo+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqAjZGVmaW5lIEVYUE9SVF9OU19TSU1Q
+TEVfREVWX1BNX09QUyhuYW1lLCBzdXNwZW5kX2ZuLCByZXN1bWVfZm4sCj4gbnMpwqDCoMKgXAo+
+IC3CoMKgwqDCoMKgwqDCoEVYUE9SVF9OU19ERVZfUE1fT1BTKG5hbWUsIG5zKSA9IHsgXAo+ICvC
+oMKgwqDCoMKgwqDCoEVYUE9SVF9OU19ERVZfU0xFRVBfUE1fT1BTKG5hbWUsIG5zKSA9IHsgXAo+
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgU1lTVEVNX1NMRUVQX1BNX09QUyhzdXNw
+ZW5kX2ZuLCByZXN1bWVfZm4pIFwKPiDCoMKgwqDCoMKgwqDCoMKgfQo+IMKgI2RlZmluZSBFWFBP
+UlRfTlNfR1BMX1NJTVBMRV9ERVZfUE1fT1BTKG5hbWUsIHN1c3BlbmRfZm4sIHJlc3VtZV9mbiwK
+PiBucynCoMKgwqDCoMKgwqDCoFwKPiAtwqDCoMKgwqDCoMKgwqBFWFBPUlRfTlNfR1BMX0RFVl9Q
+TV9PUFMobmFtZSwgbnMpID0geyBcCj4gK8KgwqDCoMKgwqDCoMKgRVhQT1JUX05TX0dQTF9ERVZf
+U0xFRVBfUE1fT1BTKG5hbWUsIG5zKSA9IHsgXAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgU1lTVEVNX1NMRUVQX1BNX09QUyhzdXNwZW5kX2ZuLCByZXN1bWVfZm4pIFwKPiDCoMKg
+wqDCoMKgwqDCoMKgfQo+IMKgCgo=
 
