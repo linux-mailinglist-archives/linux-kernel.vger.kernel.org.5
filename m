@@ -2,43 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3380D7A76F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B3B7A76F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbjITJMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S233938AbjITJMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234025AbjITJM1 (ORCPT
+        with ESMTP id S233766AbjITJMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:12:27 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A27EC
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:12:20 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5907D1BF207;
-        Wed, 20 Sep 2023 09:12:14 +0000 (UTC)
-Message-ID: <57862c7c-3158-c37b-baae-db6801f4d7e8@ghiti.fr>
-Date:   Wed, 20 Sep 2023 11:12:14 +0200
+        Wed, 20 Sep 2023 05:12:44 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5057683;
+        Wed, 20 Sep 2023 02:12:37 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bf7a6509deso49511045ad.3;
+        Wed, 20 Sep 2023 02:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695201157; x=1695805957; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9RDULjoQzHjU0PTxlc2WdDnc+PjIGpAs5L7B9DlE1S8=;
+        b=joVd7PI6EwxWeGhUZuaj58hCTKw6OecX+5EkDdFVRDHqAadvu9uafwaDgEa6VD/E91
+         5Nf/bBRSGRIYiq7ADaO93Enfx0xCNDzZEnolc2kXIP0zJ4dLa/LTCnJaOLVz9qtTlJ/y
+         L+CaerHZqUGxlPWdSd9Hn+yRtpPs+VlhGT/F1VH0NN5iAWwg/wvQxOmsOMciFWxrlLlJ
+         30eDEqTf2bqnFEk/SPMg40YPxoTnjkgF6i7yESSPG4N8Lf+J2GCD8m/3Ejb7w3C+TSOj
+         SH43Q6ozfjh4YVvDLjMhTdo26/TzhAYdcYLWnYrRGtjGLbEr2JEJ8bVnNIfld6zx8XYh
+         y9QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695201157; x=1695805957;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9RDULjoQzHjU0PTxlc2WdDnc+PjIGpAs5L7B9DlE1S8=;
+        b=MQ5XfMsj7hXjfYpBomKukGr1pLCB5NTRJYJDynpmnSDhsZnpaoYNtw1xMUDu7o+Y6N
+         a0UZmaoLVcNaIdpwLShC/sUf3oYw1rzcmDYDlsyZgHM72KaoVVXyFWZd+/4x5Si138jh
+         JVnLoJybbBm6aKeXHl1pKUEHY8KV7dZzFZNPfrMrZb6IkaAkEGOhtA0juBHyaOkr2D0q
+         qKE24S1i9bjEW7IO1tRnpbCsPICzSVk+DH+KuD331sSuJR5nsXDZ81ENVJeBH65eMBnd
+         XctboCQB5IRQGH4QY5HqOm5B6YfjQ0uxByjNWUO5w1jFh883kT1YRDtr88ufJPhTp57T
+         XlGQ==
+X-Gm-Message-State: AOJu0Yw7qI0pbKg26q4ih/FF5s3IOAitMd157h5xgaT97qrb5ek5qvEe
+        414XlJb2IvKXJhBcgXaAHLc=
+X-Google-Smtp-Source: AGHT+IH97MOvSyHSZv1yM6IYJs13VxkUpK8BAynmgGvotJS2mQ/lL7rqPZeXmBguHmAGzRIJfDcVTg==
+X-Received: by 2002:a17:903:124d:b0:1c5:6691:4978 with SMTP id u13-20020a170903124d00b001c566914978mr2154400plh.37.1695201156730;
+        Wed, 20 Sep 2023 02:12:36 -0700 (PDT)
+Received: from mason-virtual-machine.localdomain ([43.224.245.242])
+        by smtp.gmail.com with ESMTPSA id c21-20020a170902c1d500b001bb8895848bsm5247792plc.71.2023.09.20.02.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 02:12:36 -0700 (PDT)
+From:   Zhang Hui <masonzhang.xiaomi@gmail.com>
+X-Google-Original-From: Zhang Hui <zhanghui31@xiaomi.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stanley.chu@mediatek.com, peng.zhou@mediatek.com,
+        yujiaochen@xiaomi.com, yudongbin@xiaomi.com, zhanghui31@xiaomi.com
+Subject: [PATCH] scsi: ufs: core: Do not access null point in ufshpb_remove
+Date:   Wed, 20 Sep 2023 17:12:26 +0800
+Message-Id: <20230920091226.55663-1-zhanghui31@xiaomi.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/3] riscv: Introduce PBMT field to PTDUMP
-Content-Language: en-US
-To:     Yu Chien Peter Lin <peterlin@andestech.com>,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, david@redhat.com, akpm@linux-foundation.org,
-        alexghiti@rivosinc.com, bjorn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     conor.dooley@microchip.com
-References: <20230920035522.3180558-1-peterlin@andestech.com>
- <20230920035522.3180558-2-peterlin@andestech.com>
-From:   Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20230920035522.3180558-2-peterlin@andestech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,64 +72,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: zhanghui <zhanghui31@xiaomi.com>
 
-On 20/09/2023 05:55, Yu Chien Peter Lin wrote:
-> This patch introduces the PBMT field to the PTDUMP, so it can
-> display the memory attributes for NC or IO.
->
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> ---
-> Changes v1 -> v2
-> - no change
-> Changes v2 -> v3
-> - Add ".." when PBMT field is clear
-> ---
->   arch/riscv/mm/ptdump.c | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
->
-> diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-> index 57a0926c6627..13997cf3fe36 100644
-> --- a/arch/riscv/mm/ptdump.c
-> +++ b/arch/riscv/mm/ptdump.c
-> @@ -135,6 +135,12 @@ struct prot_bits {
->   
->   static const struct prot_bits pte_bits[] = {
->   	{
-> +#ifdef CONFIG_64BIT
-> +		.mask = _PAGE_MTMASK_SVPBMT,
-> +		.set = "MT(%s)",
-> +		.clear = "  ..  ",
-> +	}, {
-> +#endif
->   		.mask = _PAGE_SOFT,
->   		.set = "RSW(%d)",
->   		.clear = "  ..  ",
-> @@ -205,6 +211,16 @@ static void dump_prot(struct pg_state *st)
->   		if (val) {
->   			if (pte_bits[i].mask == _PAGE_SOFT)
->   				sprintf(s, pte_bits[i].set, val >> 8);
-> +#ifdef CONFIG_64BIT
-> +			else if (pte_bits[i].mask == _PAGE_MTMASK_SVPBMT) {
-> +				if (val == _PAGE_NOCACHE_SVPBMT)
-> +					sprintf(s, pte_bits[i].set, "NC");
-> +				else if (val == _PAGE_IO_SVPBMT)
-> +					sprintf(s, pte_bits[i].set, "IO");
-> +				else
-> +					sprintf(s, pte_bits[i].set, "??");
-> +			}
-> +#endif
->   			else
->   				sprintf(s, "%s", pte_bits[i].set);
->   		} else {
+If hpb is not enabled or not allowed, some points will not be allocated in
+init flow, so access them will trigger KE in ufshpb remove flow.
 
+Call trace in rmmod ko:
+destroy_workqueue+0x1c/0x234
+ufshpb_remove+0x40/0x50
+ufshcd_remove+0x3c/0xd0
+...
 
-You can add:
+Signed-off-by: zhanghui <zhanghui31@xiaomi.com>
+---
+ drivers/ufs/core/ufshpb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Tested-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Thanks!
-
-Alex
+diff --git a/drivers/ufs/core/ufshpb.c b/drivers/ufs/core/ufshpb.c
+index 255f8b38d0c2..fa345e161cb8 100644
+--- a/drivers/ufs/core/ufshpb.c
++++ b/drivers/ufs/core/ufshpb.c
+@@ -2656,6 +2656,9 @@ void ufshpb_init(struct ufs_hba *hba)
+ 
+ void ufshpb_remove(struct ufs_hba *hba)
+ {
++	if (!ufshpb_is_allowed(hba) || !hba->dev_info.hpb_enabled)
++		return;
++
+ 	mempool_destroy(ufshpb_page_pool);
+ 	mempool_destroy(ufshpb_mctx_pool);
+ 	kmem_cache_destroy(ufshpb_mctx_cache);
+-- 
+2.34.1
 
