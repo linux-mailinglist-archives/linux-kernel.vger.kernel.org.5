@@ -2,106 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCCF7A7207
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F8F7A7201
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 07:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232988AbjITF05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 01:26:57 -0400
+        id S232579AbjITF0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 01:26:10 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232959AbjITF00 (ORCPT
+        with ESMTP id S233002AbjITFZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 01:26:26 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A401FCB;
-        Tue, 19 Sep 2023 22:24:52 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38K4RCf2011873;
-        Wed, 20 Sep 2023 05:24:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=xRx5fKzdu6gGr9aTV9NGo7/N7jXHNpopLwj+YL0NYe0=;
- b=l5s9b/hsfai6uQZ2LepwC8pdBgpLLF+zUaSH9K8EAVk7XvTF+IY2T1UhG7naayVACvyw
- lQn8aL+k8Dzi40FxPl9Te+kh3S5Cts/sCBswh8QwHo5boNGcMmm/gpTCxIHulQaWvKmX
- OYiV2cRSQ3JfnAUuDSWo+/hs6S/BDosBsrQ0o13NI+COXU2qasnQxrcqw2GTK5MQfTc+
- GUdxOkirL5x5ZWneowHZMYWp2HH0mPHlpash13LnRVVyscG4OcgCHhYvvaep77a1wGFS
- WjOx8kCfoxv/MOLY00Bkoq+x4V+/6TJjaUov6cevgkke+tz//6wJ94lEc9Ve69DdFsqE 0w== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t746g2jkp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 05:24:47 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38K5OjGB019787
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 05:24:46 GMT
-Received: from hu-rkakarla-hyd.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 19 Sep 2023 22:24:41 -0700
-From:   Raghavendra Kakarla <quic_rkakarla@quicinc.com>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Raghavendra Kakarla" <quic_rkakarla@quicinc.com>
-CC:     <quic_mkshah@quicinc.com>, <quic_lsrao@quicinc.com>
-Subject: [PATCH] arm64: dts: qcom: Enable RPMh Sleep stats
-Date:   Wed, 20 Sep 2023 10:53:49 +0530
-Message-ID: <20230920052349.9907-1-quic_rkakarla@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 20 Sep 2023 01:25:48 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131461BC7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:24:19 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-403004a96a4so70991415e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 22:24:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1695187457; x=1695792257; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FdkiLvHF9gidro/3KgiAkGZtbptKxwZzl5vmZkiG0XI=;
+        b=pfbgTOqTiO1vDHPOs14bnMfDFcq6ArOs6YkseWn6RGBFn0eE6NZjx5HcAh8TAfXe2V
+         wCvqU9QLrSFUAQp84GDbt4XIfn9aB2JQMhBeOvwBV9g8ZccaL8x1WSF74tlIpNwAVyY9
+         e9ba5lO8edqd27wyab4D89ytr6QK5yq5PkVDAWv8SHphWvOAMJbo68VLjSCM4QcY/5Ri
+         e1waB+96Cqq7pApLH8MBrQT7pRvgm0qnfiK4YsnQY6HkgxBw+Li5viidv7084f9slMUt
+         OB1xAarbWxe5TJn/Jv25Ybq0K/MGUNie78mLQM2P6qJQMgErftOPgbIOQNLGSY57OgcO
+         7VSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695187457; x=1695792257;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FdkiLvHF9gidro/3KgiAkGZtbptKxwZzl5vmZkiG0XI=;
+        b=B1ng+t7Sv2DxZfnPyiXFUVoM/2V+BcrGA0sNQgwaNym1qzg8zbEHYHJ35JrXbT3Dgm
+         keLQXywlPrSOXiu6TPaB6wbOPIiIlMKcpqRH4tG18ZHanhyhqyz10rTX4Lgx135hwKrt
+         Q/JFGKTo86uiWAWnZU3+Hvludz3lAxLMPQQOwUYRhNucPGWiDvlRMultDFaiprGv9Dxi
+         LDhmxAiaX4JRAndhGR24jChrT6CZMQLeiBw1JUiWVWjvXDDP23QzIzNtxvnWW1kEKN5f
+         mwaId8cWsPJ166MU/Px3V48eg/W6iwSj/IyBtgR4zaIAw5bIGBQT2NoXjfuBB1TYlgKl
+         fK+w==
+X-Gm-Message-State: AOJu0Yyt8MvRr0A9+IrTwBNIocq1V/a3ZhPVPhMIusU3t/1hNeBqYp5i
+        mXhMmt7Zew+CcHs4fwoZFPb/LA==
+X-Google-Smtp-Source: AGHT+IHQdxfJ+WR4PPpqSYssTciQLBDW93+4eJ8/sDeDDHyZEJdTgHQCz4eKTxKGB5HuEUnCpOx01Q==
+X-Received: by 2002:a1c:f702:0:b0:402:f5c4:2e5a with SMTP id v2-20020a1cf702000000b00402f5c42e5amr1429426wmh.37.1695187457228;
+        Tue, 19 Sep 2023 22:24:17 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id p5-20020a7bcc85000000b003fe407ca05bsm874397wma.37.2023.09.19.22.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 22:24:16 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 07:24:16 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 4/4] KVM: riscv: selftests: Selectively filter-out AIA
+ registers
+Message-ID: <20230920-d524c40b616536d0ad8213c3@orel>
+References: <20230918180646.1398384-1-apatel@ventanamicro.com>
+ <20230918180646.1398384-5-apatel@ventanamicro.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: luxbe2ZRhQmpaCacpW93MkGVfbh6ee7Y
-X-Proofpoint-GUID: luxbe2ZRhQmpaCacpW93MkGVfbh6ee7Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_02,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- spamscore=0 mlxlogscore=556 impostorscore=0 adultscore=0 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309200043
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918180646.1398384-5-apatel@ventanamicro.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device node for Sleep stats driver which provides various
-low power mode stats on sa8775p SoC.
+On Mon, Sep 18, 2023 at 11:36:46PM +0530, Anup Patel wrote:
+> Currently the AIA ONE_REG registers are reported by get-reg-list
+> as new registers for various vcpu_reg_list configs whenever Ssaia
+> is available on the host because Ssaia extension can only be
+> disabled by Smstateen extension which is not always available.
+> 
+> To tackle this, we should filter-out AIA ONE_REG registers only
+> when Ssaia can't be disabled for a VCPU.
+> 
+> Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  .../selftests/kvm/riscv/get-reg-list.c        | 23 +++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> index 76c0ad11e423..85907c86b835 100644
+> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> @@ -12,6 +12,8 @@
+>  
+>  #define REG_MASK (KVM_REG_ARCH_MASK | KVM_REG_SIZE_MASK)
+>  
+> +static bool isa_ext_cant_disable[KVM_RISCV_ISA_EXT_MAX];
+> +
+>  bool filter_reg(__u64 reg)
+>  {
+>  	switch (reg & ~REG_MASK) {
+> @@ -48,6 +50,15 @@ bool filter_reg(__u64 reg)
+>  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
+>  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
+>  		return true;
+> +	/* AIA registers are always available when Ssaia can't be disabled */
+> +	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siselect):
+> +	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio1):
+> +	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio2):
+> +	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(sieh):
+> +	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siph):
+> +	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio1h):
+> +	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(iprio2h):
+> +		return isa_ext_cant_disable[KVM_RISCV_ISA_EXT_SSAIA] ? true : false;
 
-Signed-off-by: Raghavendra Kakarla <quic_rkakarla@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sa8775p.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+No need for the '? true : false'
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-index 9f4f58e831a4..23ae404da02e 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-@@ -1912,6 +1912,11 @@
- 			#clock-cells = <0>;
- 		};
- 
-+		sram@c3f0000 {
-+			compatible = "qcom,rpmh-stats";
-+			reg = <0x0c3f0000 0x400>;
-+		};
-+
- 		spmi_bus: spmi@c440000 {
- 			compatible = "qcom,spmi-pmic-arb";
- 			reg = <0x0 0x0c440000 0x0 0x1100>,
--- 
-2.17.1
+>  	default:
+>  		break;
+>  	}
+> @@ -71,14 +82,22 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
+>  
+>  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
+>  {
+> +	int rc;
+>  	struct vcpu_reg_sublist *s;
+> +	unsigned long isa_ext_state[KVM_RISCV_ISA_EXT_MAX] = { 0 };
 
+nit: I think we prefer reverse xmas tree in kselftests, but whatever.
+
+> +
+> +	for (int i = 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
+> +		__vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(i), &isa_ext_state[i]);
+>  
+>  	/*
+>  	 * Disable all extensions which were enabled by default
+>  	 * if they were available in the risc-v host.
+>  	 */
+> -	for (int i = 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
+> -		__vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
+> +	for (int i = 0; i < KVM_RISCV_ISA_EXT_MAX; i++) {
+> +		rc = __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
+> +		if (rc && isa_ext_state[i])
+
+How helpful is it to check that isa_ext_state[i] isn't zero? The value of
+the register could be zero, right? Shouldn't we instead capture the return
+values from __vcpu_get_reg and if the return value is zero for a get,
+but nonzero for a set, then we know we have it, but can't disable it.
+
+> +			isa_ext_cant_disable[i] = true;
+> +	}
+>  
+>  	for_each_sublist(c, s) {
+>  		if (!s->feature)
+> -- 
+> 2.34.1
+>
+
+Thanks,
+drew
