@@ -2,127 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE427A7093
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21B17A709D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbjITCde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 22:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
+        id S232204AbjITCgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 22:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbjITCdY (ORCPT
+        with ESMTP id S231968AbjITCgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 22:33:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BBBCE;
-        Tue, 19 Sep 2023 19:33:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695177197; x=1726713197;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dFOE4HirFKRZgsK0uCPrJhP57Aa31MNoDRzWf7ltFDM=;
-  b=EIolThKmoZVRYGF9PaaPtLdxcwA4A30XQyF3LFtv/Hn+gS48jaRb7r1x
-   P54awHFfiA0y3wZKNgA1ltFxeJu0t7fbLpDg/usf/4Rb7DCFIB/6QqR0P
-   gHKhsnMu2Jqj60FJDA5n7f4+n7v9UIg9xCU2bxLqHH8HdpYSqAi0XUI18
-   /CNFCB7FH+9E57kVvbLrv22iR9nlRZrHn5+VHRofltN8lgEysQP9cC0Bt
-   lY6fRI7jgeKUB5Dk+GU0UAQoRRAh0UmzMGHT05sMlA153AzM5sSetpmfy
-   MnCy6W8RW2jJ6N70Uouk8NBHX05v9gz1qBV1Wwp5lpONMruNXC++34VRk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="466422454"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="466422454"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 19:33:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="816690732"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="816690732"
-Received: from uhpatel-desk4.jf.intel.com ([10.23.15.215])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Sep 2023 19:33:14 -0700
-From:   Utkarsh Patel <utkarsh.h.patel@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com, pmalani@chromium.org,
-        chrome-platform@lists.linux.dev, andriy.shevchenko@linux.intel.com,
-        bleung@chromium.org, Utkarsh Patel <utkarsh.h.patel@intel.com>
-Subject: [PATCH v4 5/5] usb: typec: intel_pmc_mux: Configure Displayport Alternate mode 2.1
-Date:   Tue, 19 Sep 2023 19:32:43 -0700
-Message-Id: <20230920023243.2494410-6-utkarsh.h.patel@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230920023243.2494410-1-utkarsh.h.patel@intel.com>
-References: <20230920023243.2494410-1-utkarsh.h.patel@intel.com>
+        Tue, 19 Sep 2023 22:36:51 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5F485AC
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 19:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Xn2eh
+        TsuIkEZgo9LmLAl1j0/Kv7Gg6aMVTk7Dj5HatM=; b=pO1ecoWpYqwyk8L+R8PUl
+        TuDuls0HDGYhAyNdr+GZv8hh3qXdY2M0CTn1HxpTcNcQhOtFoquF6aObnMb2ipcQ
+        78VZbBQktQEn9Kf26cVmZqVx8mmPEm0yS5t42NKEFLS6TfSvGjwR3mYH9vLayBrz
+        vBBqk9aCgKdwrZ/of/0qYo=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g5-4 (Coremail) with SMTP id _____wAXRwV7Wgplju4nCg--.4366S4;
+        Wed, 20 Sep 2023 10:35:49 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     perex@perex.cz, tiwai@suse.com, mhocko@suse.com,
+        akpm@linux-foundation.org, make_ruc2021@163.com,
+        mgorman@techsingularity.net, 42.hyeyoo@gmail.com,
+        surenb@google.com, alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: pcm: oss: Fix race at SNDCTL_DSP_SETTRIGGER There is a small race window at snd_pcm_oss_set_trigger() that is called from OSS PCM SNDCTL_DSP_SETTRIGGER ioctl; namely the function calls snd_pcm_oss_make_ready() at first, then takes the params_lock mutex for the rest.  When the stream is set up again by another thread between them, it leads to inconsistency, and may result in unexpected results such as NULL dereference of OSS buffer as a fuzzer spotted recently.
+Date:   Wed, 20 Sep 2023 10:35:36 +0800
+Message-Id: <20230920023536.3535439-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: _____wAXRwV7Wgplju4nCg--.4366S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uw1rZw4kAF4DXFyxWry3Jwb_yoW8WF17pr
+        s7W34rtrW7JFyvv3WkJw1aqrn8Xr95ta4Ykw48C34Fkw4Fgr4FvFykKF1FqFZYkFWDuan0
+        qr4DA34UAr13AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zifb15UUUUU=
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbiVx3wC1etsZbuBgAAsE
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mux agent driver can configure cable details such as cable type and
-cable speed received as a part of displayport configuration to support
-Displayport Alternate mode 2.1.
+The fix is simply to cover snd_pcm_oss_make_ready() call into the same
+params_lock mutex with snd_pcm_oss_make_ready_locked() variant.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
 ---
-Changes in v4:
-- No change.
+ sound/core/oss/pcm_oss.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-Changes in v3:
-- No change.
-
-Changes in v2:
-- No change.
-
- drivers/usb/typec/mux/intel_pmc_mux.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
-index 60ed1f809130..233958084b43 100644
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -191,6 +191,12 @@ static int hsl_orientation(struct pmc_usb_port *port)
- 	return port->orientation - 1;
- }
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 728c211142d1..9a830aeeba63 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -2083,21 +2083,14 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+ 	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
+ 	csubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
  
-+static bool is_pmc_mux_tbt(struct acpi_device *adev)
-+{
-+	return acpi_dev_hid_uid_match(adev, "INTC1072", NULL) ||
-+	       acpi_dev_hid_uid_match(adev, "INTC1079", NULL);
-+}
-+
- static int pmc_usb_send_command(struct intel_scu_ipc_dev *ipc, u8 *msg, u32 len)
- {
- 	u8 response[4];
-@@ -293,6 +299,24 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
- 	req.mode_data |= (state->mode - TYPEC_STATE_MODAL) <<
- 			 PMC_USB_ALTMODE_DP_MODE_SHIFT;
- 
-+	if (!is_pmc_mux_tbt(port->pmc->iom_adev)) {
-+		u8 cable_speed = (data->conf & DP_CONF_SIGNALLING_MASK) >>
-+				  DP_CONF_SIGNALLING_SHIFT;
-+
-+		u8 cable_type = (data->conf & DP_CONF_CABLE_TYPE_MASK) >>
-+				 DP_CONF_CABLE_TYPE_SHIFT;
-+
-+		req.mode_data |= PMC_USB_ALTMODE_CABLE_SPD(cable_speed);
-+
-+		if (cable_type == DP_CONF_CABLE_TYPE_OPTICAL)
-+			req.mode_data |= PMC_USB_ALTMODE_CABLE_TYPE;
-+		else if (cable_type == DP_CONF_CABLE_TYPE_RE_TIMER)
-+			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE |
-+					 PMC_USB_ALTMODE_RETIMER_CABLE;
-+		else if (cable_type == DP_CONF_CABLE_TYPE_RE_DRIVER)
-+			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
-+	}
-+
- 	ret = pmc_usb_command(port, (void *)&req, sizeof(req));
- 	if (ret)
- 		return ret;
+-	if (psubstream) {
+-		err = snd_pcm_oss_make_ready(psubstream);
+-		if (err < 0)
+-			return err;
+-	}
+-	if (csubstream) {
+-		err = snd_pcm_oss_make_ready(csubstream);
+-		if (err < 0)
+-			return err;
+-	}
+       	if (psubstream) {
+       		runtime = psubstream->runtime;
+ 		cmd = 0;
+ 		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+ 			return -ERESTARTSYS;
++		err = snd_pcm_oss_make_ready_locked(psubstream);
++		if (err < 0)
++			goto _skip1;
+ 		if (trigger & PCM_ENABLE_OUTPUT) {
+ 			if (runtime->oss.trigger)
+ 				goto _skip1;
+@@ -2128,6 +2121,9 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+ 		cmd = 0;
+ 		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+ 			return -ERESTARTSYS;
++		err = snd_pcm_oss_make_ready_locked(csubstream);
++		if (err < 0)
++			goto _skip2;
+ 		if (trigger & PCM_ENABLE_INPUT) {
+ 			if (runtime->oss.trigger)
+ 				goto _skip2;
 -- 
-2.25.1
+2.37.2
 
