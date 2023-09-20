@@ -2,321 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 776B87A72BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DA77A72B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbjITGUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
+        id S233115AbjITGTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233308AbjITGUQ (ORCPT
+        with ESMTP id S233125AbjITGTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:20:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE45134
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695190797; x=1726726797;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mpRZqHQlbPyOoPdSIFxq6ijVhcRIT0jLaqXdR2d5F6E=;
-  b=AYL8fzfHjOESLE0NQxAgJ5zTca3qnmYfV3n1q/p24G9FwQkonPew90gz
-   QF7IJKLZ7M8I6izXYhRV6qo5tBFvX4TFwBQmU90Jg8q7lEw+hNf00gp0K
-   dQfjCtKadZwIfgZhKwkm/Pof6j56kZW5n4/dxrzP/MtCSvW+y52KGpnMO
-   3/92lJwVufPag6kMjnqAl/aukSzbMwXojUWUbGyMOBxU5QPxISKrl/hzV
-   rOjdhYeHk/q5HO86Ch2MfJVgspcyJOxZ06rcjOwmt+lEbhPeQR04f2WmE
-   PTFgkvSfpFj3slaIYBw00AQZnF+3KM6CRkx8h/Jp/ODNGYdITMWV6iwLM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="365187706"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="365187706"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:19:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="740060623"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="740060623"
-Received: from yhuang6-mobl2.sh.intel.com ([10.238.6.133])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 23:19:52 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Lameter <cl@linux.com>
-Subject: [PATCH 06/10] mm: add framework for PCP high auto-tuning
-Date:   Wed, 20 Sep 2023 14:18:52 +0800
-Message-Id: <20230920061856.257597-7-ying.huang@intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230920061856.257597-1-ying.huang@intel.com>
-References: <20230920061856.257597-1-ying.huang@intel.com>
+        Wed, 20 Sep 2023 02:19:07 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2114.outbound.protection.outlook.com [40.107.114.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4C7B9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:19:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iDo9vIAsRU1TKUzs6OlHBVR949ums36jeoa5Af6OCPHH0HJBEJ4SCQ4N24sCm8uI4cNkGRux2AcWXGY1UyPANif/UFbZkjS3+g1bwihG5PV1fB+MRblj18ZtcwskgkPob8fDUPc3FA/VtC5ZjccKfkaF0oRqeYPVZL83iKeL87nIwrnANjub6ANICU4Q20oEfWGl8jlYGqRFfevwgbdp93Q/Vu399Qw06mvqq0fTpJIAMnUPgFJwjw2jI6QTR1Od49juAWkIKJFj1u6BxBaubtPGERBQmnyexvaJLDYKm02GJCPPXCveVxs2ylafS+oSUu1BXN8OT466lvB53YUJrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LAXWOLIrkgLkGOXI9geJCKCvV9vdbZqeS9wG1wzUSzQ=;
+ b=BghBFZ90jucm8FWwbmkCSkKZcPX1ho4hdpgkztYemyIEzcgeGrdFflBTGpB38ZEm0irNaS4nl6n5tO02/ZSlxjJSXsQPw7vGlz0SV7UMd2T6VnVYi/+GSZkJUDOYHZUSXqrOuySPtK23qTJxX51tDitu51ctnJpui9WjL2ecm+3XWa6caPd2lmhU9z2dRmvekIiNaM06EF/8G6dPnEfbzag2UBZuBfTCyQxoBP38X18geTRgfROlVvcLfG+hcU0eUrl0vPOUK1f40tHYuHuOAOL6zMsUSueS+fcRniCdvNGLL52TuyueTnUotfpnAUog4ZezNgSKzUnbH3bQqVOssA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LAXWOLIrkgLkGOXI9geJCKCvV9vdbZqeS9wG1wzUSzQ=;
+ b=TqRqdw8WECqJx2iMG++WBSDkUgqOk0i6GeKS/Cks6KlDQcDrDzKriXHcOrv2ibZAw4NEgK3g4CWwfbqsEoeBPOW3YXkqBgjYj+u4fBbmE/6Czl8y/Wjwci+KdX6F5wsLo8YTFsOANbFEjO/Arsy29kVgwBjL8PZQy/or98dLGrg=
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
+ by TYYPR01MB8248.jpnprd01.prod.outlook.com (2603:1096:400:111::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
+ 2023 06:18:57 +0000
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
+ 06:18:54 +0000
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Lee Jones <lee@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: RE: [PATCH v3] mfd: max77541: Simplify probe()
+Thread-Topic: [PATCH v3] mfd: max77541: Simplify probe()
+Thread-Index: AQHZ3Dxyc5HSAi6RuE62fpzMHWxMxbAiYjKAgAD5xqA=
+Date:   Wed, 20 Sep 2023 06:18:53 +0000
+Message-ID: <OS0PR01MB592294617B806A39AFDF142286F9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <20230831185329.70472-1-biju.das.jz@bp.renesas.com>
+ <20230919152409.GZ13143@google.com>
+In-Reply-To: <20230919152409.GZ13143@google.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYYPR01MB8248:EE_
+x-ms-office365-filtering-correlation-id: ed42298c-4967-4b66-2ac5-08dbb9a176f5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oR9n0+jKAQlFcjyk+6Fl2yjoof13lsZuMhUNQHmZWvSSTbcqfzbd6Pt3wS7XQ+Fb7xh+dZpNRtHzRn8n5LGcib3wilOgfJPFbGD6CWNSO2WqP5v8Jo8y+mEApRCjwtFLRBVlAuSXULeG8i3qXwgY36pCMPIfNona04TsCStHPbB8gt8S+nKXktGwtVsnsJ6aemSBG24eW7YjjquQvlHxvP3rHPgNbUvcSmLpotx/wSFPwarZfpdp+sni+ugAJqsChwNkMBkoa2aKnCY20WrF5R2nOa08ItTA32v9GpOXMm6PqwKvpaGv94mp19gled3KvZBtkV97NDvl1q+wEHPzy+43o42ZsRfgXmhqRk11QqdzRQ0So6YKISycMeSaCYtsF8YVIdd4w9b52SmG3gBw3Vuva2yE4IknrmVACQWdJwp0Bfs/wuAbb1g4jbJmR4j9PsytCYYlj0lFIcIfJl2CUYmejaXvfuypkg5GDPmWNlztYCd5F/zvkdv0D1js+W1UKkX4Tma2H4ntjeng8MMAOkvXstPVhPg7+WYU0RgGFsCIW16VJx/jDmiA9LSFiYFrOvaUpjG0BjmT7jx+EiD0tcZRC73v21h0OQqlrdC9+mlpWaJXU+S8umJtVpxTPD8O
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(136003)(366004)(186009)(1800799009)(451199024)(71200400001)(55016003)(38100700002)(4326008)(122000001)(66446008)(8936002)(33656002)(38070700005)(64756008)(54906003)(41300700001)(9686003)(76116006)(66946007)(66476007)(6916009)(66556008)(8676002)(2906002)(4744005)(316002)(5660300002)(83380400001)(26005)(52536014)(7696005)(86362001)(6506007)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eVBNSDlDYXJSU0wxM2FwT3FTR1MyaHBLMnZ0VUVNd3E5VCtDdnI1OGF6bHpa?=
+ =?utf-8?B?cGRlVUpUbjVBZTRhdlo1b0kyajRKMjZwSFJnQmV0WlBtbVhvVndQRVhqUkRa?=
+ =?utf-8?B?S1JpQzZHcms1QkpTK1JFdVVoUjV4YW40NmhoSXUwNW1pOXE3OTl1aHlMemVq?=
+ =?utf-8?B?bXd0YU1MSDRWOXlRMHpHU1NCQ0R0dkRGcFhiVVRnS0NVaSthNUw3bDdmeDNP?=
+ =?utf-8?B?VWtHaitPRjRTR0JMTHFsaVFobnZ5MjNqTEFMNWRWS1ZrdHdKNThSRWFmYzd2?=
+ =?utf-8?B?M1AvZ0N0cmR2Mk1nVk1BZjVNelIwVzdDbDgxd0V5Z0Q1ay8xZWRvZ0hiSUM0?=
+ =?utf-8?B?Z2pxVGNpUzJvUFRwdlZ6cVN3OUg4eXRBdDFDWFo1OVVodFdxTmlFOW9HQmVz?=
+ =?utf-8?B?NEZLeDRHQ2Q4WUN0QkJLQjhRVkkxVVVuT2RWWEdrZmRJdWFzeHBtbUFuSlVK?=
+ =?utf-8?B?V2pZMFFZQ1YyNXhQeXVpLzNpWWF2QmU1ckdwZ3J4RjJ3bURmdnU2T0tkQmdn?=
+ =?utf-8?B?TGNFTHk4U3lJenhPNmxHNG02N2plSE50ZjhIYXFjSU5CSFh5eVZ3Q1k5TWVW?=
+ =?utf-8?B?VDZMMXUxMWhxbnhSUE1GMWJmcW40TXRTbitrUUh2V0RHYzhZVXNrTTh6V2Rs?=
+ =?utf-8?B?Nlg4dW52TjVkMEp0MzNwMGQrL3g0M0FPYm12Z0E5VUg3Si9iR2ZtdFNicDIz?=
+ =?utf-8?B?T29lMU1aZ3NybzRPVkx1RmNCQURtNHBiUDNyVDhvTFpsZnZZR2tRVkJJUmVT?=
+ =?utf-8?B?YkZaZWVLUWRRQTBhL2I0UXlVeEFISkw0UnROOUM4b0VyL3NnbWNXUU10d1N3?=
+ =?utf-8?B?VE8rNHZIVStxbm5hNDRhZXA5UkhvRERGM2kxZWdQaytwRWFwRkc3ME8vem5O?=
+ =?utf-8?B?MG56Z0lONi8rQ0JpaC8vWlZDRzk5Q0xwK0JiMTBuNUJud2t4ZTNCakVuOXBO?=
+ =?utf-8?B?Ukw5SUEvZjZYZlZPYmVjV2F2UlhBb3V2bisvNGhXZW50Q3VZaGh5TFdSN20y?=
+ =?utf-8?B?UG1id3Zhcngxcm5hRFBVRVUzM0xQMEp6Nk9ZOFlsb3p5YXlvS29EMytQMGVq?=
+ =?utf-8?B?VXZ2TkUxalhydHl2akF4QThoWjhCYWlxdENuRmlwRUsrdjNJSG83ME15blNI?=
+ =?utf-8?B?YlM1dWlJbUJ4QWRCcFhqeWFIdkY0ajhMZEpTZ05McEhzaVJTdHpVbEkzeEdW?=
+ =?utf-8?B?Ni92cTZBdUhrYzVuZGhvUTE4a3ZMelpYVTQrQmM0Mnd1cVVvcWdLL1laVDZy?=
+ =?utf-8?B?N2V3MnllNGV3MkpTWnF5dE5PVWlkNlowckV3b1hOVHRUSnFBbFhLVXczK0J6?=
+ =?utf-8?B?NDlNcDVrQUdFdWZ4OXc1Wm9tdEF0Uk9MYm1abk0xTGxVZ3JLU05yUkFoQUFM?=
+ =?utf-8?B?Tnl4cFZaMnI5Y2lIek1FV2ZWYXMyQU9IMTcvWGtGeUh0aUpGWlBiOG5vM2pR?=
+ =?utf-8?B?V3UwQ0xvdTY5azV2OW9RT3M0T2tVVkhYWjBGK2FCa1l1dUQ0UGlwSU5oTXJp?=
+ =?utf-8?B?QXdBOUhqQThBOS9FSkFkVFc2QXJFemxFZFJVSU43REhJYkdmSytJaEdpUTN4?=
+ =?utf-8?B?akpJYzNUTGtJMVFCZjZFZ25lRVcwR3ZBbmZ4ckZKem03eU90eHNlZVZmOWxi?=
+ =?utf-8?B?dGc5cXV4OVBaS0dYVWw5MWo1UEg5OHJ4bVhpYWxoaEhuT2hMdjVMRUJTNm5G?=
+ =?utf-8?B?ZTArYnlqcENVTXUxblZKbHhlMGZTTGNSWUZwdFNJc2g0bzZORlh6NWRnVU9P?=
+ =?utf-8?B?c0VUdkR4QkxkbHhnVWJNN0Z3a1hyYmFIWU4wMlYvSGhISjhSYWVFRVVNZjZ3?=
+ =?utf-8?B?blJQZXM2dFVQbWVtdDBEd3R5ZGNlVW1CK2lsNVNiT3Fyb0JCRWFxamJRNjJ6?=
+ =?utf-8?B?YlZpLzZyNEFkRC80NGNuNnZSdmZuR1BXVVNtWDVpUm9pU2VYK0ZKN0pQZTl0?=
+ =?utf-8?B?VlFnQ0I5VldWdGNpMkNBOUdLSURnRkRtSkI2cWRHV0JvUStwb010cUVXUTAw?=
+ =?utf-8?B?Mm1QajRxNG03Nnh1eU5YTlp3RCtwVkZaOGxNd1pLV0hxend1dVE0U1haQzMv?=
+ =?utf-8?B?MHpPOVJWNHIwRVl4bG9MLzY1Z21GeFFucFhrdTM1d2owMW01TGJsV2xON2py?=
+ =?utf-8?B?R0pFRVdWN1B2Qi81aTBNdXNZRzZwV2FWRFJUUWMrNGZ2WjNjZmp5QmlqMzlp?=
+ =?utf-8?B?cnc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed42298c-4967-4b66-2ac5-08dbb9a176f5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2023 06:18:53.9496
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MCW5RTl7p7w96WSkwyxB5wq11QRgd2rH45MrGNEBOLbMCdfHPlYY2eeldrIRwBarXzZioceIEGfDlWyvL8psXFC88DuVj0txPWcYLK4u00s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB8248
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page allocation performance requirements of different workloads
-are usually different.  So, we need to tune PCP (per-CPU pageset) high
-to optimize the workload page allocation performance.  Now, we have a
-system wide sysctl knob (percpu_pagelist_high_fraction) to tune PCP
-high by hand.  But, it's hard to find out the best value by hand.  And
-one global configuration may not work best for the different workloads
-that run on the same system.  One solution to these issues is to tune
-PCP high of each CPU automatically.
-
-This patch adds the framework for PCP high auto-tuning.  With it,
-pcp->high of each CPU will be changed automatically by tuning
-algorithm at runtime.  The minimal high (pcp->high_min) is the
-original PCP high value calculated based on the low watermark pages.
-While the maximal high (pcp->high_max) is the PCP high value when
-percpu_pagelist_high_fraction sysctl knob is set to
-MIN_PERCPU_PAGELIST_HIGH_FRACTION.  That is, the maximal pcp->high
-that can be set via sysctl knob by hand.
-
-It's possible that PCP high auto-tuning doesn't work well for some
-workloads.  So, when PCP high is tuned by hand via the sysctl knob,
-the auto-tuning will be disabled.  The PCP high set by hand will be
-used instead.
-
-This patch only adds the framework, so pcp->high will be set to
-pcp->high_min (original default) always.  We will add actual
-auto-tuning algorithm in the following patches in the series.
-
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Johannes Weiner <jweiner@redhat.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Christoph Lameter <cl@linux.com>
----
- include/linux/mmzone.h |  5 ++-
- mm/page_alloc.c        | 71 +++++++++++++++++++++++++++---------------
- 2 files changed, 50 insertions(+), 26 deletions(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 4f7420e35fbb..d6cfb5023f3e 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -683,6 +683,8 @@ struct per_cpu_pages {
- 	spinlock_t lock;	/* Protects lists field */
- 	int count;		/* number of pages in the list */
- 	int high;		/* high watermark, emptying needed */
-+	int high_min;		/* min high watermark */
-+	int high_max;		/* max high watermark */
- 	int batch;		/* chunk size for buddy add/remove */
- 	u8 flags;		/* protected by pcp->lock */
- 	u8 alloc_factor;	/* batch scaling factor during allocate */
-@@ -842,7 +844,8 @@ struct zone {
- 	 * the high and batch values are copied to individual pagesets for
- 	 * faster access
- 	 */
--	int pageset_high;
-+	int pageset_high_min;
-+	int pageset_high_max;
- 	int pageset_batch;
- 
- #ifndef CONFIG_SPARSEMEM
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 30bb05fa5353..38bfab562b44 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2353,7 +2353,7 @@ static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
- static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
- 		       bool free_high)
- {
--	int high = READ_ONCE(pcp->high);
-+	int high = READ_ONCE(pcp->high_min);
- 
- 	if (unlikely(!high || free_high))
- 		return 0;
-@@ -2692,7 +2692,7 @@ static int nr_pcp_alloc(struct per_cpu_pages *pcp, int order)
- {
- 	int high, batch, max_nr_alloc;
- 
--	high = READ_ONCE(pcp->high);
-+	high = READ_ONCE(pcp->high_min);
- 	batch = READ_ONCE(pcp->batch);
- 
- 	/* Check for PCP disabled or boot pageset */
-@@ -5298,14 +5298,15 @@ static int zone_batchsize(struct zone *zone)
- }
- 
- static int percpu_pagelist_high_fraction;
--static int zone_highsize(struct zone *zone, int batch, int cpu_online)
-+static int zone_highsize(struct zone *zone, int batch, int cpu_online,
-+			 int high_fraction)
- {
- #ifdef CONFIG_MMU
- 	int high;
- 	int nr_split_cpus;
- 	unsigned long total_pages;
- 
--	if (!percpu_pagelist_high_fraction) {
-+	if (!high_fraction) {
- 		/*
- 		 * By default, the high value of the pcp is based on the zone
- 		 * low watermark so that if they are full then background
-@@ -5318,15 +5319,15 @@ static int zone_highsize(struct zone *zone, int batch, int cpu_online)
- 		 * value is based on a fraction of the managed pages in the
- 		 * zone.
- 		 */
--		total_pages = zone_managed_pages(zone) / percpu_pagelist_high_fraction;
-+		total_pages = zone_managed_pages(zone) / high_fraction;
- 	}
- 
- 	/*
- 	 * Split the high value across all online CPUs local to the zone. Note
- 	 * that early in boot that CPUs may not be online yet and that during
- 	 * CPU hotplug that the cpumask is not yet updated when a CPU is being
--	 * onlined. For memory nodes that have no CPUs, split pcp->high across
--	 * all online CPUs to mitigate the risk that reclaim is triggered
-+	 * onlined. For memory nodes that have no CPUs, split the high value
-+	 * across all online CPUs to mitigate the risk that reclaim is triggered
- 	 * prematurely due to pages stored on pcp lists.
- 	 */
- 	nr_split_cpus = cpumask_weight(cpumask_of_node(zone_to_nid(zone))) + cpu_online;
-@@ -5354,19 +5355,21 @@ static int zone_highsize(struct zone *zone, int batch, int cpu_online)
-  * However, guaranteeing these relations at all times would require e.g. write
-  * barriers here but also careful usage of read barriers at the read side, and
-  * thus be prone to error and bad for performance. Thus the update only prevents
-- * store tearing. Any new users of pcp->batch and pcp->high should ensure they
-- * can cope with those fields changing asynchronously, and fully trust only the
-- * pcp->count field on the local CPU with interrupts disabled.
-+ * store tearing. Any new users of pcp->batch, pcp->high_min and pcp->high_max
-+ * should ensure they can cope with those fields changing asynchronously, and
-+ * fully trust only the pcp->count field on the local CPU with interrupts
-+ * disabled.
-  *
-  * mutex_is_locked(&pcp_batch_high_lock) required when calling this function
-  * outside of boot time (or some other assurance that no concurrent updaters
-  * exist).
-  */
--static void pageset_update(struct per_cpu_pages *pcp, unsigned long high,
--		unsigned long batch)
-+static void pageset_update(struct per_cpu_pages *pcp, unsigned long high_min,
-+			   unsigned long high_max, unsigned long batch)
- {
- 	WRITE_ONCE(pcp->batch, batch);
--	WRITE_ONCE(pcp->high, high);
-+	WRITE_ONCE(pcp->high_min, high_min);
-+	WRITE_ONCE(pcp->high_max, high_max);
- }
- 
- static void per_cpu_pages_init(struct per_cpu_pages *pcp, struct per_cpu_zonestat *pzstats)
-@@ -5386,20 +5389,21 @@ static void per_cpu_pages_init(struct per_cpu_pages *pcp, struct per_cpu_zonesta
- 	 * need to be as careful as pageset_update() as nobody can access the
- 	 * pageset yet.
- 	 */
--	pcp->high = BOOT_PAGESET_HIGH;
-+	pcp->high_min = BOOT_PAGESET_HIGH;
-+	pcp->high_max = BOOT_PAGESET_HIGH;
- 	pcp->batch = BOOT_PAGESET_BATCH;
- 	pcp->free_factor = 0;
- }
- 
--static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high,
--		unsigned long batch)
-+static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high_min,
-+					      unsigned long high_max, unsigned long batch)
- {
- 	struct per_cpu_pages *pcp;
- 	int cpu;
- 
- 	for_each_possible_cpu(cpu) {
- 		pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
--		pageset_update(pcp, high, batch);
-+		pageset_update(pcp, high_min, high_max, batch);
- 	}
- }
- 
-@@ -5409,19 +5413,34 @@ static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long h
-  */
- static void zone_set_pageset_high_and_batch(struct zone *zone, int cpu_online)
- {
--	int new_high, new_batch;
-+	int new_high_min, new_high_max, new_batch;
- 
- 	new_batch = max(1, zone_batchsize(zone));
--	new_high = zone_highsize(zone, new_batch, cpu_online);
-+	if (percpu_pagelist_high_fraction) {
-+		new_high_min = zone_highsize(zone, new_batch, cpu_online,
-+					     percpu_pagelist_high_fraction);
-+		/*
-+		 * PCP high is tuned manually, disable auto-tuning via
-+		 * setting high_min and high_max to the manual value.
-+		 */
-+		new_high_max = new_high_min;
-+	} else {
-+		new_high_min = zone_highsize(zone, new_batch, cpu_online, 0);
-+		new_high_max = zone_highsize(zone, new_batch, cpu_online,
-+					     MIN_PERCPU_PAGELIST_HIGH_FRACTION);
-+	}
- 
--	if (zone->pageset_high == new_high &&
-+	if (zone->pageset_high_min == new_high_min &&
-+	    zone->pageset_high_max == new_high_max &&
- 	    zone->pageset_batch == new_batch)
- 		return;
- 
--	zone->pageset_high = new_high;
-+	zone->pageset_high_min = new_high_min;
-+	zone->pageset_high_max = new_high_max;
- 	zone->pageset_batch = new_batch;
- 
--	__zone_set_pageset_high_and_batch(zone, new_high, new_batch);
-+	__zone_set_pageset_high_and_batch(zone, new_high_min, new_high_max,
-+					  new_batch);
- }
- 
- void __meminit setup_zone_pageset(struct zone *zone)
-@@ -5529,7 +5548,8 @@ __meminit void zone_pcp_init(struct zone *zone)
- 	 */
- 	zone->per_cpu_pageset = &boot_pageset;
- 	zone->per_cpu_zonestats = &boot_zonestats;
--	zone->pageset_high = BOOT_PAGESET_HIGH;
-+	zone->pageset_high_min = BOOT_PAGESET_HIGH;
-+	zone->pageset_high_max = BOOT_PAGESET_HIGH;
- 	zone->pageset_batch = BOOT_PAGESET_BATCH;
- 
- 	if (populated_zone(zone))
-@@ -6431,13 +6451,14 @@ EXPORT_SYMBOL(free_contig_range);
- void zone_pcp_disable(struct zone *zone)
- {
- 	mutex_lock(&pcp_batch_high_lock);
--	__zone_set_pageset_high_and_batch(zone, 0, 1);
-+	__zone_set_pageset_high_and_batch(zone, 0, 0, 1);
- 	__drain_all_pages(zone, true);
- }
- 
- void zone_pcp_enable(struct zone *zone)
- {
--	__zone_set_pageset_high_and_batch(zone, zone->pageset_high, zone->pageset_batch);
-+	__zone_set_pageset_high_and_batch(zone, zone->pageset_high_min,
-+		zone->pageset_high_max, zone->pageset_batch);
- 	mutex_unlock(&pcp_batch_high_lock);
- }
- 
--- 
-2.39.2
-
+SGkgTGVlIEpvbmVzLA0KDQpUaGFua3MgZm9yIHRoZSBmZWVkYmFjay4NCg0KPiBTdWJqZWN0OiBS
+ZTogW1BBVENIIHYzXSBtZmQ6IG1heDc3NTQxOiBTaW1wbGlmeSBwcm9iZSgpDQo+IA0KPiBPbiBU
+aHUsIDMxIEF1ZyAyMDIzLCBCaWp1IERhcyB3cm90ZToNCj4gDQo+ID4gU2ltcGxpZnkgcHJvYmUo
+KSBieSByZXBsYWNpbmcgZGV2aWNlX2dldF9tYXRjaF9kYXRhKCkgYW5kIElEIGxvb2t1cA0KPiA+
+IGZvcg0KPiANCj4gVGhlcmUgYXJlIGh1bmRyZWRzIG9mIHdheXMgdG8gInNpbXBsaWZ5IHByb2Jl
+KCkiDQo+IA0KPiBQbGVhc2UgY29sbGVjdCBhbGwgb2YgdGhlc2UgTUZEIHJlbGF0ZWQgcGF0Y2hl
+cyBhbmQgcHJvdmlkZSBhIGJldHRlcg0KPiBzdWJqZWN0IGxpbmUgdGhhdCBlYXNpbHkgaWRlbnRp
+ZmllcyB0aGUgY2hhbmdlcy4NCj4gDQo+IEZvciBleGFtcGxlLCBJIGp1c3QgYXBwbGllZCBvbmUg
+b2YgeW91ciBlYXJsaWVyIHBhdGNoZXMgYXM6DQo+IA0KPiAgIG1mZDogbWF4ODk5NzogU2ltcGxp
+Znkgb2J0YWluaW5nIEkyQyBtYXRjaCBkYXRhIGFuZCBkcm9wDQo+IG1heDg5OTdfaTJjX2dldF9k
+cml2ZXJfZGF0YSgpDQo+IA0KPiAuLi4gYnV0IEkgZG9uJ3QgaGF2ZSBlbm91Z2ggc3BhcmUgY3lj
+bGVzIHRvIGZpeCB0aGVtIGFsbCB1cC4NCj4gDQo+IEZlZWwgZnJlZSB0byB1c2UgdGhpcyBkZXNj
+cmlwdGlvbiBvciBjb21lIHVwIHdpdGggc29tZXRoaW5nIGJldHRlci4NCj4gDQo+IFBsZWFzZSBw
+b3N0IHRoZW0gYWxsIGluIG9uZSBzZXQgLSBlbHNlIHRoZXkgZW5kIHVwIHNwcmVhZCBhbGwgb3Zl
+ciBteQ0KPiBpbmJveC4NCg0KQWdyZWVkLg0KDQpDaGVlcnMsDQpCaWp1DQo=
