@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F457A833A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF097A833E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbjITNYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
+        id S234964AbjITNYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233952AbjITNYS (ORCPT
+        with ESMTP id S234788AbjITNYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:24:18 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A039E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:24:11 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C76E640E014B;
-        Wed, 20 Sep 2023 13:24:07 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id GHQ-TslXAbQ5; Wed, 20 Sep 2023 13:24:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695216245; bh=ZMbp5HTqzRJSg8VsgOW6uuoByeuTCjNSPL9JeNv0S6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UTsmLHl2DtuxJSHyDbZmTJPz0AY1KEpWsPP1mk+/9JpdDf8IIN6xBpLHFRlsuv52g
-         Ev3aM1pWWtuCxBdBniFMjw9TJAVd98eZOfbsW9gYWtsEaVBa3g+CPeobzpCRgJMVOF
-         N6rq4MEf5MfOAuE9ooWuOeHeV00jD6AFqENBrCRc04JW9qEZ2dkWSS2nNw0Ju8EUtj
-         yC2LKvRUw9m7+46fqEYweYzpMuVX8RBkL2QsjINodrAhRGrubpFgG0+R5EtnqGfA2m
-         0d8/wAo9HpEzrS+3wiFLxY1tgFShdy9Qazvim05PKTRn9u7u4QIU3aEm4pWwVvmNwR
-         Yz9OSvyi5XSE2tALrxmhIvOhth0yHwJELx5/K1CJzxygu6hJRIZVTEpeDrDaVp37wr
-         29PORG+0dxSuOlk2Zi6K/Eu6ijJht3Jeo3osovrus6uST080FTAWl21oIlkblwKbGm
-         YZ6zQaATvM8tUa+Imw8rIy562OopWjb38w4smXge3YnVYwpgGJg/tLlRnTlQflwZgZ
-         Id4F7RE8R2btNBqh/j1WSQS85gKDA971D2ul0s3NZ6oM4eDSVKM44/05cSgeTQmJtG
-         YBLL9MXqMlsbLjiq6cNMqpy10mpIP1lNi28HQh769RAwZmy8nWz1RXZCsgnZJ+P8yb
-         WdjpXDDej7ffqzyjjNQQSbXE=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7E78740E01A1;
-        Wed, 20 Sep 2023 13:23:48 +0000 (UTC)
-Date:   Wed, 20 Sep 2023 15:23:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Huibin Shi <henrys@silicom-usa.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Henry Shi <henryshi2018@gmail.com>,
-        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
-        Wen Wang <wenw@silicom-usa.com>
-Subject: Re: [PATCH v7] platform/x86: Add Silicom Platform Driver
-Message-ID: <20230920132343.GEZQryX/gCegY09+Qp@fat_crate.local>
-References: <20230919211650.25325-1-henryshi2018@gmail.com>
- <69a6279d-a191-e294-3db2-8041c4208783@redhat.com>
- <PA4PR04MB9222B2266E6D146F4CF2EE8F9AF9A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+        Wed, 20 Sep 2023 09:24:54 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E1391;
+        Wed, 20 Sep 2023 06:24:47 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38KDObDw034054;
+        Wed, 20 Sep 2023 08:24:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695216277;
+        bh=BlKg6vL328+Dp8aG1/tzq86FfOzqQNPttnvhLbHaa3A=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=tDzh/0vdpqYHX58DulY0zSPnDAsGpHMdBT9DYnP2UlJxxFy7oYdErQuo43HBp+rgn
+         skF8e8uXBgLloR7G2jJd3hZVKffG10JBXnns0gnCImVhV+u5zorVlJzbnb9dM6ncNT
+         FOV3TAncJ1tpACi4VRMtWRrlbnT1cBPHBuLsK1Z4=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38KDOboO031386
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 Sep 2023 08:24:37 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 20
+ Sep 2023 08:24:37 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 20 Sep 2023 08:24:37 -0500
+Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38KDOaNR002744;
+        Wed, 20 Sep 2023 08:24:36 -0500
+Message-ID: <917947a7-85bc-10d3-106d-d9f22f169870@ti.com>
+Date:   Wed, 20 Sep 2023 08:24:36 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <PA4PR04MB9222B2266E6D146F4CF2EE8F9AF9A@PA4PR04MB9222.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-base-board: Add I2C I/O
+ expander
+To:     Ravi Gunasekaran <r-gunasekaran@ti.com>, <nm@ti.com>,
+        <vigneshr@ti.com>
+CC:     <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230920053834.21399-1-r-gunasekaran@ti.com>
+Content-Language: en-US
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20230920053834.21399-1-r-gunasekaran@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 11:33:59AM +0000, Huibin Shi wrote:
-> Sorry for missing your inline code comments. I will address them and
-> send out new patch soon.
+On 9/20/23 12:38 AM, Ravi Gunasekaran wrote:
+> AM654 baseboard has two TCA9554 I/O expander on the WKUP_I2C0 bus.
+> The expander at address 0x38 is used to detect daughter cards.
+> Add a node for this I/O expander.
+> 
+> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+> ---
+> Changes from v1:
+> ---------------
+> * Moved the expander node @38 to appear before the one at address 39.
+> * Removed the label pca9554_1 for the node as it is not used.
+> 
 
-Don't send soon.
+LGTM,
 
-Take your time, give people a week to look at your patch and then send
-a new version. Go over the replies so that you don't miss review
-comments. Test it. Make sure you've designed it right. This is not
-a contest about who sends a new revision as quickly as possible.
+Reviewed-by: Andrew Davis <afd@ti.com>
 
-In the meantime, read this file:
-
-From: Documentation/process/submitting-patches.rst
-
-"Don't get discouraged - or impatient
-------------------------------------
-
-After you have submitted your change, be patient and wait.  Reviewers are
-busy people and may not get to your patch right away.
-
-Once upon a time, patches used to disappear into the void without comment,
-but the development process works more smoothly than that now.  You should
-receive comments within a week or so; if that does not happen, make sure
-that you have sent your patches to the right place.  Wait for a minimum of
-one week before resubmitting or pinging reviewers - possibly longer during
-busy times like merge windows."
-
-Thanks.
-
-P.S. Do not top-post but put your reply text *under* the quoted text
-you're replying to.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> v1: https://lore.kernel.org/all/20230919050340.16156-1-r-gunasekaran@ti.com/
+> 
+>   arch/arm64/boot/dts/ti/k3-am654-base-board.dts | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> index f5c26e9fba98..1637ec5ab5ed 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> @@ -369,6 +369,13 @@
+>   		ti,enable-vout-discharge;
+>   	};
+>   
+> +	gpio@38 {
+> +		compatible = "nxp,pca9554";
+> +		reg = <0x38>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +	};
+> +
+>   	pca9554: gpio@39 {
+>   		compatible = "nxp,pca9554";
+>   		reg = <0x39>;
+> 
+> base-commit: dfa449a58323de195773cf928d99db4130702bf7
