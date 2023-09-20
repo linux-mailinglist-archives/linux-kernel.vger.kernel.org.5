@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9677A73D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E5B7A73DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbjITHUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
+        id S233662AbjITHUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233662AbjITHT7 (ORCPT
+        with ESMTP id S233534AbjITHUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:19:59 -0400
+        Wed, 20 Sep 2023 03:20:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4043ECE
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:19:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4550FC433C8;
-        Wed, 20 Sep 2023 07:19:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D5F93
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:20:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8814C433C8;
+        Wed, 20 Sep 2023 07:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695194391;
-        bh=qFdKBzqTmmQ2nUPNK5GbW1ZYNZ25HnBX2G2O6O2qgtw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JwJfNw/lMLXQffIjVCXrlngljneOT1KsD/CT/8dx3/6vAVvsTcZnnJ1wTHnCl3Dxw
-         XVGw5FQj7scOr7UQIxB8HR9uSOUorhtAo4kd+tgEtBXjsjQwzhQZTeXgnGNdUACt4D
-         9beTUeZFLL7xehCRZzEPLn3AjkYwxquqQBZrAlX/KlOr6EJk2yTeZxJou3Ako5IG/F
-         1OHIY7IxbA0ypJHv2yVoW99OewAZqs9frGUN7abb0dOwEiF7uLiMtu6fUpyGDmikuf
-         9dZalQI5eoc2NMridpMayTavc4YYmAiZhddH1DD9OfrB9wxzfL7NgtspXoHi358r6C
-         ps4EoiYlOWEkw==
-From:   SeongJae Park <sj@kernel.org>
-To:     Huan Yang <link@vivo.com>
-Cc:     SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-Subject: Re: [PATCH v3] mm/damon/core: remove unnecessary si_meminfo invoke.
-Date:   Wed, 20 Sep 2023 07:19:49 +0000
-Message-Id: <20230920071949.26063-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230920015727.4482-1-link@vivo.com>
-References: 
+        s=k20201202; t=1695194435;
+        bh=H9wVKjvGVPXXyFE5kDB/IAFjYiewUvn32o8qyJzBTF0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fcvEFv9seiEaFxmdc9Dzr6HbMB0HFveSkjQztghfL8LG56IX4FfV7nIutdTAjFjpD
+         Sy2TPMuvHBZf1hcqgndCq2RbRolD+tlnnFyPG/LWe2fPd5rV/6INK794pM6O7pjJG5
+         RegCcH9Ytk7MHCoy0dPamWTmbfOvJOQshQkBMeSqSD1uMXSdvLnxf32E/0ZADpewD5
+         /nepXRsalCOinA0DuJxO6mRK7wkqoFFENfyDxScmLfRFhr6Gs/u945MasSyNmz4fvV
+         HsgPwjdUBZ/+Sp7N+tZHFuOzNjbWXfgCeldyxiRXPy2+yVZ4EsnHi9d4TqTrnotQBX
+         fh5C1Qr16a38Q==
+Message-ID: <5a4eb30b-6842-0512-56d5-23cb52c1f4ee@kernel.org>
+Date:   Wed, 20 Sep 2023 10:20:30 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] net: ethernet: ti: am65-cpsw-qos: Add Frame Preemption
+ MAC Merge support
+Content-Language: en-US
+To:     Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, vladimir.oltean@nxp.com
+Cc:     horms@kernel.org, s-vadapalli@ti.com, srk@ti.com, vigneshr@ti.com,
+        p-varis@ti.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230918095346.91592-1-rogerq@kernel.org>
+ <ad0a961c523aa50f25380b339e1cb6f50109a5fe.camel@redhat.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <ad0a961c523aa50f25380b339e1cb6f50109a5fe.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huan,
 
-On Wed, 20 Sep 2023 09:57:27 +0800 Huan Yang <link@vivo.com> wrote:
 
-> si_meminfo() will read and assign more info not just free/ram pages.
-> For just DAMOS_WMARK_FREE_MEM_RATE use, only get free and ram pages
-> is ok to save cpu.
+On 19/09/2023 16:13, Paolo Abeni wrote:
+> On Mon, 2023-09-18 at 12:53 +0300, Roger Quadros wrote:
+>> Add driver support for viewing / changing the MAC Merge sublayer
+>> parameters and seeing the verification state machine's current state
+>> via ethtool.
+>>
+>> As hardware does not support interrupt notification for verification
+>> events we resort to polling on link up. On link up we try a couple of
+>> times for verification success and if unsuccessful then give up.
+>>
+>> The Frame Preemption feature is described in the Technical Reference
+>> Manual [1] in section:
+>> 	12.3.1.4.6.7 Intersperced Express Traffic (IET – P802.3br/D2.0)
+>>
+>> Due to Silicon Errata i2208 [2] we set limit min IET fragment size to 124.
+>>
+>> [1] AM62x TRM - https://www.ti.com/lit/ug/spruiv7a/spruiv7a.pdf
+>> [2] AM62x Silicon Errata - https://www.ti.com/lit/er/sprz487c/sprz487c.pdf
+>>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>> ---
+>>  drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 150 ++++++++++++
+>>  drivers/net/ethernet/ti/am65-cpsw-nuss.c    |   2 +
+>>  drivers/net/ethernet/ti/am65-cpsw-nuss.h    |   5 +
+>>  drivers/net/ethernet/ti/am65-cpsw-qos.c     | 240 ++++++++++++++++----
+>>  drivers/net/ethernet/ti/am65-cpsw-qos.h     | 104 +++++++++
+>>  5 files changed, 454 insertions(+), 47 deletions(-)
+>>
+>> Changelog:
+>>
+>> v3:
+>> - Rebase on top of v6.6-rc1 and mqprio support [1]
 > 
-> Signed-off-by: Huan Yang <link@vivo.com>
+> I'm unsure if this will require a rebase for the next revision of the
+> mqprio support. Anyhow the two patches are related, it's probably
+> better bundle them in a series so that the dep is straight-forward.
 
-Reviewed-by: SeongJae Park <sj@kernel.org>
+Good idea.
 
-
-Thanks,
-SJ
-
-> ---
-> Change from v1:
-> v1 fold free mem rate logic into __damos_get_wmark_free_mem_rate and not
-> invoke si_meminfo, just get free/ram_pages in global.
-> v2 cancel this __damos_get_wmark_free_mem_rate and just calculate rate
-> in damos_wmark_metric_value to keep it simple.
-> v3 fix changelog format, fix code style.
 > 
-> 
->  mm/damon/core.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/damon/core.c b/mm/damon/core.c
-> index bcd2bd9d6c10..6ceb52298904 100644
-> --- a/mm/damon/core.c
-> +++ b/mm/damon/core.c
-> @@ -1280,12 +1280,10 @@ static bool kdamond_need_stop(struct damon_ctx *ctx)
->  
->  static unsigned long damos_wmark_metric_value(enum damos_wmark_metric metric)
->  {
-> -	struct sysinfo i;
-> -
->  	switch (metric) {
->  	case DAMOS_WMARK_FREE_MEM_RATE:
-> -		si_meminfo(&i);
-> -		return i.freeram * 1000 / i.totalram;
-> +		return global_zone_page_state(NR_FREE_PAGES) * 1000 /
-> +		       totalram_pages();
->  	default:
->  		break;
->  	}
-> -- 
-> 2.34.1
+> When reposting, please insert the target tree in the subject profix
+> (net-next in this case).
+
+My bad. I will add. Thanks.
+
+-- 
+cheers,
+-roger
