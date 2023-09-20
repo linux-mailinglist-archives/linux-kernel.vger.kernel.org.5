@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 849C57A7408
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203A47A740A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233710AbjITH1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
+        id S233724AbjITH14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbjITH1k (ORCPT
+        with ESMTP id S233728AbjITH1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:27:40 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E3494;
-        Wed, 20 Sep 2023 00:27:34 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405082a8c77so33177535e9.0;
-        Wed, 20 Sep 2023 00:27:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695194852; x=1695799652; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5+GDwghWtCGnjwtUkaeguB7fJuXzmOmAvKOJYz0ylF0=;
-        b=VVdpI3m2KUUs5z2r8pD0bVzluy5dTIfMsIlu5OIoFgNzR2gzdh8pL/wn2iSOLp7t2r
-         qrLI/kVGP3T9R2M6P/LYYFNzjehDAMTAYdAbB9F1WetvJ/c7RMk9N7vdutMHwykITt2e
-         J1qpZCNs8kHSk3zW4bnXKzDKOeEAdE0RNzTYnI0tkGWNentlVjihefYK5OTEjxNHXlpY
-         0tRZtvPglBGZ54n83Edsersq38a9adJ+/EBrDssuMSMShPzH/I9ukJKD3fsIPeGgMTrh
-         J7lIbOaYvUAi1dIxHQ+LNmGQXp45MpyC5Bbv/ik1LmZkNCv9IXHM4YbfUut5gt11kbHT
-         /+0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695194852; x=1695799652;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5+GDwghWtCGnjwtUkaeguB7fJuXzmOmAvKOJYz0ylF0=;
-        b=Y8X/pY8HEJNM0wkKu+NzJ6mnFJaTHxUIBC/4U5Lpiji+ufeYKSf4a0mGBBr3aa9mhp
-         Dko2OHQAX/HcPXXe+Wec/zHX8+d++ToaQKeB2sYJZ1UlRQaOBaPSH9CqCeKCw/kdhDhK
-         TpMIFPLlikEWmLNVUcDw362eDWGkmBe16U8HnCaKeB2QXz7OuzZVZvJ77bEbbJpZbWxs
-         UHdsCX0Rput0wVM1jP5jzbIq0PAQRKoGMTdQi++uf9+7ogjhlRcoClZ8bgKAnNr9MRFw
-         8oaBZ0R5wMwpy2WdkfzRJYLgVqBFws0mmVHML0auZRU9GyEZYXF3z9L9QWbFzJrdrO/P
-         F8Qg==
-X-Gm-Message-State: AOJu0YwsaeO7RI29P5YA+LjqKzO3wZh/1tYyO36NpvxmJxhZZqAgQUK+
-        60PjgpHOJnMRDTng7p4aWkk=
-X-Google-Smtp-Source: AGHT+IE36bbZ9tr6wEPLTb1Q/Lecmhd89mTYG9E4C6kcf04nY3dThV6ualRnEDrtvqfseFpx7wB9pw==
-X-Received: by 2002:a1c:740f:0:b0:402:cc9a:31a7 with SMTP id p15-20020a1c740f000000b00402cc9a31a7mr1978915wmc.19.1695194852167;
-        Wed, 20 Sep 2023 00:27:32 -0700 (PDT)
-Received: from PCBABN.skidata.net ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id u1-20020a05600c00c100b003fe0a0e03fcsm1141898wmm.12.2023.09.20.00.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:27:31 -0700 (PDT)
-From:   Benjamin Bara <bbara93@gmail.com>
-To:     mripard@kernel.org
-Cc:     abelvesa@kernel.org, bbara93@gmail.com, benjamin.bara@skidata.com,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        festevam@gmail.com, frank@oltmanns.dev, kernel@pengutronix.de,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, mturquette@baylibre.com, peng.fan@nxp.com,
-        robh+dt@kernel.org, s.hauer@pengutronix.de, sboyd@kernel.org,
-        shawnguo@kernel.org
-Subject: Re: [PATCH 01/13] arm64: dts: imx8mp: lvds_bridge: use root instead of composite
-Date:   Wed, 20 Sep 2023 09:27:25 +0200
-Message-Id: <20230920072726.1737684-1-bbara93@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <sam7p4hwzgzzicacmbie3o7izedgun7eyxwdyn2zszmvwbtfvv@7lnpxiscu3kr>
-References: <sam7p4hwzgzzicacmbie3o7izedgun7eyxwdyn2zszmvwbtfvv@7lnpxiscu3kr>
+        Wed, 20 Sep 2023 03:27:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3C3C9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695194860; x=1726730860;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=c//2mqr4QCDnboufqfxvs3v0ljEejNOYFoTJbE1+at8=;
+  b=R9WW70+gho4pqxFqCzld0/kgaekb54qloIAoeMvIbLX6nNnZuNW8k0Xg
+   tTbVoLrjuseBQjm+CXQUuWjftKTPO5boIEYWnORNyMdZjpQBXkNu5JQ0i
+   UNRTum6fOdO5SiPDpyZdhV1ShUaVK4N8mktoLTzScyMjl7bfq2YPDUXho
+   5QDjg8Qpmy3bhH/mzeJE2TlLKPyZ6cQuWQfET4HQ0IzsB323wNvRvgF8l
+   23Nvom41yWbcPZCcDIbY5EBsFBPjbo3s5Q3Zno0Q9f2Zwd3Hl0C2hmeTV
+   5JyD2EGjjRhSo+iJ7jWpnjupbZ+Ldx3eMUZgJ2inF0+4+86+M7CSxh9c+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="411088297"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="411088297"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:27:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="781592828"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="781592828"
+Received: from lingshan-mobl.ccr.corp.intel.com (HELO [10.93.14.5]) ([10.93.14.5])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:27:32 -0700
+Message-ID: <91c3e7ec-d702-ee61-c420-59ddc8dac6dc@intel.com>
+Date:   Wed, 20 Sep 2023 15:27:30 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [virtio-dev] Re: [virtio-comment] Re: [VIRTIO PCI PATCH v5 1/1]
+ transport-pci: Add freeze_mode to virtio_pci_common_cfg
+Content-Language: en-US
+To:     Parav Pandit <parav@nvidia.com>,
+        "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
+        "virtio-comment@lists.oasis-open.org" 
+        <virtio-comment@lists.oasis-open.org>,
+        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+References: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
+ <20230919114242.2283646-2-Jiqian.Chen@amd.com>
+ <20230919082802-mutt-send-email-mst@kernel.org>
+ <cd8d306b-6acc-34be-516c-b89c23ac108d@intel.com>
+ <BL1PR12MB5849E32A76165F1307492185E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+ <PH0PR12MB5481D2CBCFBF7BCBF427EE1EDCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
+ <701bb67c-c52d-4eb3-a6ed-f73bd5d0ff33@intel.com>
+ <PH0PR12MB5481891053E37A79920991F6DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+In-Reply-To: <PH0PR12MB5481891053E37A79920991F6DCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
 
-On Tue, 19 Sept 2023 at 08:47, Maxime Ripard <mripard@kernel.org> wrote:
-> On Mon, Sep 18, 2023 at 12:39:57AM +0200, Benjamin Bara wrote:
-> > From: Benjamin Bara <benjamin.bara@skidata.com>
-> >
-> > Use the actual root node of the media_ldb clock for the lvds_bridge.
-> >
-> > Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
+
+On 9/20/2023 3:10 PM, Parav Pandit wrote:
+>> From: Zhu, Lingshan <lingshan.zhu@intel.com>
+>> Sent: Wednesday, September 20, 2023 12:37 PM
+>>> The problem to overcome in [1] is, resume operation needs to be synchronous
+>> as it involves large part of context to resume back, and hence just
+>> asynchronously setting DRIVER_OK is not enough.
+>>> The sw must verify back that device has resumed the operation and ready to
+>> answer requests.
+>> this is not live migration, all device status and other information still stay in the
+>> device, no need to "resume" context, just resume running.
+>>
+> I am aware that it is not live migration. :)
 >
-> DT is supposed to be hardware description, so an explanation about what
-> has changed or was wrong in that description to make that patch needed
-> would be welcome here
+> "Just resuming" involves lot of device setup task. The device implementation does not know for how long a device is suspended.
+> So for example, a VM is suspended for 6 hours, hence the device context could be saved in a slow disk.
+> Hence, when the resume is done, it needs to setup things again and driver got to verify before accessing more from the device.
+The restore procedures should perform by the hypervisor and done before 
+set DRIVER_OK and wake up the guest.
+And the hypervisor/driver needs to check the device status by re-reading.
+>   
+>> Like resume from a failed LM.
+>>> This is slightly different flow than setting the DRIVER_OK for the first time
+>> device initialization sequence as it does not involve large restoration.
+>>> So, to merge two ideas, instead of doing DRIVER_OK to resume, the driver
+>> should clear the SUSPEND bit and verify that it is out of SUSPEND.
+>>> Because driver is still in _OK_ driving the device flipping the SUSPEND bit.
+>> Please read the spec, it says:
+>> The driver MUST NOT clear a device status bit
+>>
+> Yes, this is why either DRIER_OK validation by the driver is needed or Jiqian's synchronous new register..
+so re-read
+>
 
-Sure, sorry for that. In the imx8mp context, the _ROOT is the "leaf", so
-the actual clock that is connected to the bridge. I will adapt and
-clarify for V2.
-
-Thanks
