@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 050CA7A7310
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5F67A7318
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbjITGrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
+        id S233387AbjITGs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjITGra (ORCPT
+        with ESMTP id S232143AbjITGsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:47:30 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBDF83
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:47:24 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9a21b6d105cso817225166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695192443; x=1695797243; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ItM+TknBaVUePyzd+K9zDA8JpLcEfRL0RuIuQPWPMDo=;
-        b=tAVtGjWuSa9lNQKLbODyu9wLIICBl4fncvJ08jFuJRQ1Bg9O105Pl0Ag1rpEiq/zw4
-         RhSKrNYcg7pSS/56sDq40/y+jvNG1F0I1BAUftydBgz4koFcOl1A7BTaSZ9cBvRoM0DD
-         1/M7gySxFQuzgqyhdnM6nXxAjqbBAnMVT0O2gE6kupdE+4dE+BtAF0zEfezT2/yQeGg9
-         q6eLO334cDZe4jOsYz3WQ8+tu1SyofRLmtBnzkN3qIyuxlHkOfkjlS8Ya91fEPFJzb0v
-         oQuXU7NluDICj+cOvIiVCCPhI1uu5A8J7ow7eQmMD5B4HkSR8PyxMK4YyuspvI6kiEdU
-         pHHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695192443; x=1695797243;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ItM+TknBaVUePyzd+K9zDA8JpLcEfRL0RuIuQPWPMDo=;
-        b=Uk+KRvNgnP9xfhg1rYWnjmQT2k5CDiNYO7MQAbjDI/InUMNOc/VQduYYSZE/a0mwL8
-         b5lv36WTUt0YlHaq8gyhG0YJWhR9L64XBEFkdz10ZuVM+ZbcNdWAIhdeN961zd38kZvG
-         T9zHwnNiZvqLQfe0/J+DAD46n/7bGVwHGgZu1eAf7JGFQByG3gaR+ctIa8vbtWL3Vmni
-         FFtk4lX7kf779rmGxmZqCICk8r/0C5Qg95laUKG4JzwbdotqD48GcU9hKHiq+C1FLYwH
-         PaToYaaWmD9yChWSdBWSDVy58/pElsmWoKWrwsJngOZ3vthJ7EALwm92GQiVDgxbQHzG
-         tdfA==
-X-Gm-Message-State: AOJu0YzaEmmnLSdubpS/Mq6HKmV4nUdazgvPyY/uTJuX9TiNIMPuYw+Z
-        gGIAlx2kHPcyTjjW96alhzk6GQ==
-X-Google-Smtp-Source: AGHT+IH/O0PptEtTtAOR5cdeRSNUd/ta1ny/TMJspKe9DtyuAwN6r1PUUDbhIwgJ3hBlmrb4o+6xpA==
-X-Received: by 2002:a17:906:220f:b0:9a9:f09d:7c10 with SMTP id s15-20020a170906220f00b009a9f09d7c10mr1220085ejs.11.1695192443199;
-        Tue, 19 Sep 2023 23:47:23 -0700 (PDT)
-Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id oq8-20020a170906cc8800b0099bc08862b6sm9067327ejb.171.2023.09.19.23.47.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 23:47:22 -0700 (PDT)
-Message-ID: <9b0a9782-05fc-fad6-5abb-ba9c940e6d10@linaro.org>
-Date:   Wed, 20 Sep 2023 08:47:21 +0200
+        Wed, 20 Sep 2023 02:48:23 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B518983;
+        Tue, 19 Sep 2023 23:48:17 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38K5dbLc011120;
+        Wed, 20 Sep 2023 06:48:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=OoTk4EpIvXR/4iXXm5sbZdCaYwGn+wysCrh/xfEvj0k=;
+ b=m0TzpoyKFp5CTXGJnWTBkvHorWN4NK9/fLCw432Us6Y1Mfchosq8TWiN6EHYDGCB6lwc
+ FyDyxf7VS55WkRI+RBEygj8giuUPnTbeOGPvcEksCqY00XR/gAvYmXuMGRf/ap4bQnk5
+ ZFL7MVnaBUh+nZPKrqzuEDYeJfd6O0sHOryu/9AxxbN6KGErQS86olZRChH2vuNsQO+y
+ WJacFcfreS/SK7f6R+aJhO/8x54qo3yA3cQc8v6i2WqNPuVG2hJ56vRO3dPByL+eUgJO
+ I27gcCxNGg7MUsG1/51o1Jdn47jdQQc7rYWV45ZRswBQWXVyY8J1u7fAFtDJxtlexk/8 WA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t78upjdqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 06:48:11 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38K6mBUO008083
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 06:48:11 GMT
+Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 19 Sep 2023 23:48:03 -0700
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+To:     <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
+        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
+        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
+        <quic_ajipan@quicinc.com>, <kernel@quicinc.com>,
+        Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH v3 0/2] pinctl: qcom: Add SM4450 pinctrl driver
+Date:   Wed, 20 Sep 2023 14:47:37 +0800
+Message-ID: <20230920064739.12562-1-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 1/2] dt-bindings: hwmon: add INA233 binding documents
-To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230920054739.1561080-1-Delphine_CC_Chiu@wiwynn.com>
- <20230920054739.1561080-2-Delphine_CC_Chiu@wiwynn.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230920054739.1561080-2-Delphine_CC_Chiu@wiwynn.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 7i9y5HiOYbaQTJgM5t4Ack8U9365Oncc
+X-Proofpoint-ORIG-GUID: 7i9y5HiOYbaQTJgM5t4Ack8U9365Oncc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_02,2023-09-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 phishscore=0 mlxscore=0 mlxlogscore=768 suspectscore=0
+ spamscore=0 clxscore=1015 adultscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309200054
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2023 07:47, Delphine CC Chiu wrote:
-> Add INA233 binding documents for Yosemite V4 config.
-> 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-> ---
->  .../devicetree/bindings/hwmon/ina233.txt      | 27 +++++++++++++++++++
+Add Sm4450 pinctrl driver for support enable uart console.
 
-No bindings in the TXT format.
+Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+---
+v2 -> v3:
+  - update example pieces
+  - update gpio pins pattern
 
-Anyway, this looks like could be merged with existing ina bindings.
+v1 -> v2:
+  - update right platform name
+  - update gpio-reserved-ranges have right maxItems
+  - update gpio-line-names have right maxItems
+  - add min/maxItems for pins properties
+  - redo dt_binding_check check
+  - delete reserved gpios setting
+  - combine separate pinctrl functions
 
-Best regards,
-Krzysztof
+previous discussion here:
+[1] v1: https://lore.kernel.org/linux-arm-msm/20230915015808.18296-1-quic_tengfan@quicinc.com
+[2] v2: https://lore.kernel.org/linux-arm-msm/20230908063843.26835-1-quic_tengfan@quicinc.com
+
+Tengfei Fan (2):
+  dt-bindings: pinctrl: qcom: Add SM4450 pinctrl
+  pinctrl: qcom: Add SM4450 pinctrl driver
+
+ .../bindings/pinctrl/qcom,sm4450-tlmm.yaml    |  151 +++
+ drivers/pinctrl/qcom/Kconfig.msm              |    8 +
+ drivers/pinctrl/qcom/Makefile                 |    1 +
+ drivers/pinctrl/qcom/pinctrl-sm4450.c         | 1013 +++++++++++++++++
+ 4 files changed, 1173 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-sm4450.c
+
+
+base-commit: dfa449a58323de195773cf928d99db4130702bf7
+-- 
+2.17.1
 
