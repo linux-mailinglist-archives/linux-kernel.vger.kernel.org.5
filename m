@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527667A750F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C848B7A7511
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbjITH6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S233602AbjITH6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbjITH6H (ORCPT
+        with ESMTP id S233781AbjITH6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:58:07 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D0E97
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:58:01 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rr9lF3P0QztSJh;
-        Wed, 20 Sep 2023 15:53:45 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 20 Sep 2023 15:57:59 +0800
-Message-ID: <db90339a-1ff8-44c1-93e3-9a6832c1fa0d@huawei.com>
-Date:   Wed, 20 Sep 2023 15:57:58 +0800
+        Wed, 20 Sep 2023 03:58:20 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CDCE4;
+        Wed, 20 Sep 2023 00:58:11 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7540622696;
+        Wed, 20 Sep 2023 07:58:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695196690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HhvtpludUjIr++HnR2WYgKkCmY0kr0ew9GoO5GG10A0=;
+        b=B1245b9ttuxgIdWWprtAfA6rU3+OR02SOASLM7wuOEHHj8rhAtO8CoZ56Als8UKJBM+TWR
+        MO6hVGOSCz7bvFS/nq55lAth6ketQI/xF3e3pNfUEssmMNKyIe2N/pVy1PDBoCJqKbFBY4
+        xR3O3LKETqdt52j5zmEq1faOygbg3K8=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 3800D2C142;
+        Wed, 20 Sep 2023 07:58:10 +0000 (UTC)
+Date:   Wed, 20 Sep 2023 09:58:09 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH tty v1 01/74] serial: core: Provide port lock wrappers
+Message-ID: <ZQqmEaYeWrurNmGr@alley>
+References: <20230914183831.587273-1-john.ogness@linutronix.de>
+ <20230914183831.587273-2-john.ogness@linutronix.de>
+ <ZQmvMMRvnUxh1NJn@alley>
+ <87msxiuekv.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] sched/numa, mm: make numa migrate functions to take a
- folio
-Content-Language: en-US
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <willy@infradead.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, <hughd@google.com>
-References: <20230918103213.4166210-1-wangkefeng.wang@huawei.com>
- <20230918103213.4166210-2-wangkefeng.wang@huawei.com>
- <87ttrpwnmo.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <87ttrpwnmo.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87msxiuekv.ffs@tglx>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adding Peter into Cc who also has a big experience with locking APIs.
+Well, I think that he would not care ;-)
 
+On Tue 2023-09-19 21:51:12, Thomas Gleixner wrote:
+> On Tue, Sep 19 2023 at 16:24, Petr Mladek wrote:
+> > On Thu 2023-09-14 20:43:18, John Ogness wrote:
+> > IMHO, it would have been better to pass the flags variable directly
+> > via a macro as it is done in most *_lock_*_irqsafe() APIs. I mean
+> > something like:
+> >
+> > /**
+> >  * uart_port_trylock_irqsave - Try to lock the UART port, save and disable interrupts
+> >  * @up:		Pointer to UART port structure
+> >  * @flags:	Interrupt flags storage
+> >  *
+> >  * Returns: True if lock was acquired, false otherwise
+> >  */
+> > #define uart_port_lock_irqsave(up, flags)		\
+> > ({							\
+> > 	local_irq_save(flags);				\
+> > 	uart_port_lock(lock)				\
+> > })
+> 
+> It's worse.
+> 
+>      1) Macros are not type safe by themself and rely on type safety
+>         of the inner workings.
+> 
+>      2) Macros are bad for grep as you can't search for a 'struct foo *'
+>         argument. Even semantic parsers have their problems with macro
+>         constructs. I just learned that again when doing this.
+> 
+>      3) Macros are just horrible to read
+> 
+>      4) If you want to out of line the wrapper later, then you still
+>         have to keep the macro around because the 'flags' argument is by
+>         value and not a pointer.
+> 
+> >From a code generation point of view it's completely irrelevant whether
+> you have a macro or an inline. That was different 25 years ago, but who
+> cares about museum compilers today.
 
-On 2023/9/20 11:05, Huang, Ying wrote:
-> Kefeng Wang <wangkefeng.wang@huawei.com> writes:
-> 
->> The cpuid(or access time) is stored in the head page for THP, so it is
-> 
-> s/cpuid/cpupid/
+I probably was not clear enough. The difference and the motivation
+is to pass the "flags" variable instead of pointer "*flags".
 
-Will fix.
+Both most common APIs, local_irq_save(flags) and
+spin_lock_irqsave(lock, flags) pass the variable. Also most
+subsystem specific wrappers do so.
 
-> 
->> safely to make should_numa_migrate_memory() and numa_hint_fault_latency()
->> to take a folio. This is in preparation for large folio numa balancing.
->>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   include/linux/sched/numa_balancing.h |  4 ++--
->>   kernel/sched/fair.c                  | 12 ++++++------
->>   mm/mempolicy.c                       |  3 ++-
->>   3 files changed, 10 insertions(+), 9 deletions(-)
->>
->> diff --git a/include/linux/sched/numa_balancing.h b/include/linux/sched/numa_balancing.h
->> index 3988762efe15..a38528c28665 100644
->> --- a/include/linux/sched/numa_balancing.h
->> +++ b/include/linux/sched/numa_balancing.h
->> @@ -20,7 +20,7 @@ extern void task_numa_fault(int last_node, int node, int pages, int flags);
->>   extern pid_t task_numa_group_id(struct task_struct *p);
->>   extern void set_numabalancing_state(bool enabled);
->>   extern void task_numa_free(struct task_struct *p, bool final);
->> -extern bool should_numa_migrate_memory(struct task_struct *p, struct page *page,
->> +extern bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
->>   					int src_nid, int dst_cpu);
->>   #else
->>   static inline void task_numa_fault(int last_node, int node, int pages,
->> @@ -38,7 +38,7 @@ static inline void task_numa_free(struct task_struct *p, bool final)
->>   {
->>   }
->>   static inline bool should_numa_migrate_memory(struct task_struct *p,
->> -				struct page *page, int src_nid, int dst_cpu)
->> +				struct folio *folio, int src_nid, int dst_cpu)
->>   {
->>   	return true;
->>   }
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index cb225921bbca..683cc1e417d7 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -1722,12 +1722,12 @@ static bool pgdat_free_space_enough(struct pglist_data *pgdat)
->>    * The smaller the hint page fault latency, the higher the possibility
->>    * for the page to be hot.
->>    */
->> -static int numa_hint_fault_latency(struct page *page)
->> +static int numa_hint_fault_latency(struct folio *folio)
->>   {
->>   	int last_time, time;
->>   
->>   	time = jiffies_to_msecs(jiffies);
->> -	last_time = xchg_page_access_time(page, time);
->> +	last_time = xchg_page_access_time(&folio->page, time);
-> 
-> How about define xchg_folio_access_time() and folio_cpupid_xchg_last()?
-> 
-Yes, like 
-page_cpupid_last()/xchg_page_access_time()/page_cpupid_xchg_last(),
-we could do it later to change the caller to use a folio, and rename them.
+IMHO, some consistency makes the life easier for developers,
+especially for frequently used API. And the patchset seems to be
+adding >350 users of the uart_port_lock_*irqsave() API.
 
+I do not know. Maybe using macros was bad decision for local_irq*()
+and spin_lock*() API. Anyway, we are going to live with
+the uart_port_lock*() API for a looong time. And I want to be sure
+that we do not create (small) headaches for future generations.
 
-> --
-> Best Regards,
-> Huang, Ying
-> 
+OK, maybe this particular difference is not important enough.
+As I said, I do not resist on the change.
+
+Best Regards,
+Petr
