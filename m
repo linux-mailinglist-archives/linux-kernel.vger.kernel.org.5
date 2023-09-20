@@ -2,136 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D4F7A8D02
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F76B7A8D07
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbjITTl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45822 "EHLO
+        id S230018AbjITTnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjITTl1 (ORCPT
+        with ESMTP id S229441AbjITTnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:41:27 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BCD9E;
-        Wed, 20 Sep 2023 12:41:21 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7903D66071F1;
-        Wed, 20 Sep 2023 20:41:20 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695238880;
-        bh=ExX3SvDujzr9QOpYWZy4A/ye4S8keoato3pYxi1LhpA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AksLgzMXB+z48x+InzKNNqPPjq/AXKREYxp6x7rX/QNcZE+8CSwd7mQ2JzsvQkyaL
-         w0/e6NF86FBC0KhrNsNN8+uVpaybpsmjiv3Ohm2FA4hMcTMEhqT4LDsZhcbfPFOzMa
-         EwZ8dXyg2rYJMKPGv6BHHxbEXQqj99Z+oppaiIDheJ+dDCWViLABLsmLMT3h7ROH79
-         HxgVbYSQjn6odD80LPscplxnRVT69BnUZhdWwjUOoXigXQuuuBQNmKVlfG33XQZ7Kk
-         EDnOdy0BwCE0tcKYjqB/UvNoJe63Rmbk5CT/3XvOJAZQVzbAvqajBrO9gjjcQbJwWR
-         dDcqEoS/qQ3hA==
-Received: by mercury (Postfix, from userid 1000)
-        id CDD29106091E; Wed, 20 Sep 2023 21:41:17 +0200 (CEST)
-Date:   Wed, 20 Sep 2023 21:41:17 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, tony@atomide.com,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
-Subject: Re: [PATCH] omap: dsi: do not WARN on detach if dsidev was never
- attached
-Message-ID: <20230920194117.ghllpy7ubghakdrv@mercury.elektranox.org>
-References: <929c46beecf77f2ebfa9f8c9b1c09f6ec610c31a.1695130648.git.hns@goldelico.com>
+        Wed, 20 Sep 2023 15:43:20 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B099E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 12:43:14 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40479f8325fso2035835e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 12:43:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695238992; x=1695843792; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=piPcn5jP84Mk94uBsWZooyBKmFjEME+EXsVwt6XYvDs=;
+        b=ZtJa7m2J/ldGdabNdtcRaSb6em6ywDNYiNo2JFffeuMsXmV5pslFiH/wIzqqR4AY1a
+         cXo8TtylSEXLnfftt1soRjlgew6lJVAjurpqgQ0vZfftehkAKoCgcVbyKuZVyvVgHhLY
+         UGDnvvLTyPeuarDdiBOt5obScW27eldYOEWTQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695238992; x=1695843792;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=piPcn5jP84Mk94uBsWZooyBKmFjEME+EXsVwt6XYvDs=;
+        b=k5YkrdiK06yl/Vo0jDgjOXlVfEJCW1HR/MQG7JQBo35ZX6nC3yv49lbw1JaMhiWQaX
+         2Z5zS24CnXULn689rb8wLpJlNs5N2TRPgteI2T/n9Zbn7QPr98XXXDk5VzSkn/8CHz7x
+         lbaLX3nqR9ch71467cUxIXPYFfqwi78US6IkLITjarSmsCZUb+D5wJcn3LkNLxGPBrgx
+         AqU3ADhVYlMP6D/rHwthLyU3QZlor/g1rxI+KjhALq8MNjM/IvVSCcb35knSuhtMq16e
+         +dwrQ4YMYO0c3R5dnttpHWvhNZ+WYgDeoUeZkC26c2Pc92v4DCP929o68axi9ByLFDnO
+         Mzlw==
+X-Gm-Message-State: AOJu0YznI9Mko5DFUrr+SFCSlxAcaxYZXOHqE6VjrsXz7I7BBSQkzYJa
+        UM9lLGPyTUK9w++hqQot8bE32nhGBV+wl4E3aiPUrnaN
+X-Google-Smtp-Source: AGHT+IE2a3Fu9RLvGs58MkDlLVx8kcLNimwuSEZhD/+13efS5lRK+r4WyMf3Z8uc8SlFGfIwrszAmQ==
+X-Received: by 2002:a5d:6991:0:b0:321:5e13:3829 with SMTP id g17-20020a5d6991000000b003215e133829mr3151531wru.1.1695238992488;
+        Wed, 20 Sep 2023 12:43:12 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id i10-20020a17090671ca00b00999bb1e01dfsm9746441ejk.52.2023.09.20.12.43.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 12:43:11 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so126044a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 12:43:11 -0700 (PDT)
+X-Received: by 2002:a05:6402:184e:b0:523:3fff:5ce2 with SMTP id
+ v14-20020a056402184e00b005233fff5ce2mr3044193edy.41.1695238991470; Wed, 20
+ Sep 2023 12:43:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="q5rykixsz2od4xko"
-Content-Disposition: inline
-In-Reply-To: <929c46beecf77f2ebfa9f8c9b1c09f6ec610c31a.1695130648.git.hns@goldelico.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230920060615.GA2739@sol.localdomain> <CAHk-=wja26UmHQCu48n_HN5t5w3fa6ocm5d_VrJe6-RhCU_x9A@mail.gmail.com>
+ <20230920193203.GA914@sol.localdomain>
+In-Reply-To: <20230920193203.GA914@sol.localdomain>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 20 Sep 2023 12:42:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wicaC9BhbgufM_Ym6bkjrRcB7ZXSK00fYEmiAcFmwN3Kg@mail.gmail.com>
+Message-ID: <CAHk-=wicaC9BhbgufM_Ym6bkjrRcB7ZXSK00fYEmiAcFmwN3Kg@mail.gmail.com>
+Subject: Re: [RFC] Should writes to /dev/urandom immediately affect reads?
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 20 Sept 2023 at 12:32, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> >
+> > Also, are there any relevant architectures where
+> > "try_to_generate_entropy()" doesn't work? IOW, why do you even care?
+> >
+>
+> There are, as shown by the fact that the full unification of /dev/urandom and
+> /dev/random failed yet again.
 
---q5rykixsz2od4xko
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No, no. That only showed that such architectures exist. It didn't show
+that any *relevant* architectures exist.
 
-Hi,
+The ones reported on were 32-bit arm, m68k, microblaze, sparc32,
+xtensa.. Maybe others.
 
-On Tue, Sep 19, 2023 at 03:37:28PM +0200, H. Nikolaus Schaller wrote:
-> dsi_init_output() called by dsi_probe() may fail. In that
-> case mipi_dsi_host_unregister() is called which may call
-> omap_dsi_host_detach() with uninitialized dsi->dsidev
-> because omap_dsi_host_attach() was never called before.
->=20
-> This happens if the panel driver asks for an EPROBE_DEFER.
->=20
-> So let's suppress the WARN() in this special case.
+> But similarly, that's unrelated.
 
-=2E..
+They are related in the sense fo "why do you actually *care*?"
 
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> ---
+Because I don't see why any of this actually matters.
 
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
->  drivers/gpu/drm/omapdrm/dss/dsi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/=
-dss/dsi.c
-> index ea63c64d3a1ab..c37eb6b1b9a39 100644
-> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
-> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
-> @@ -4411,7 +4411,7 @@ static int omap_dsi_host_detach(struct mipi_dsi_hos=
-t *host,
->  {
->  	struct dsi_data *dsi =3D host_to_omap(host);
-> =20
-> -	if (WARN_ON(dsi->dsidev !=3D client))
-> +	if (!dsi->dsidev || WARN_ON(dsi->dsidev !=3D client))
->  		return -EINVAL;
-> =20
->  	cancel_delayed_work_sync(&dsi->dsi_disable_work);
-> --=20
-> 2.42.0
->=20
-
---q5rykixsz2od4xko
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmULStoACgkQ2O7X88g7
-+pqrDw//Z5G3Hdy4Q4+9AMElzRUARdvuxAIbYZf+Y6k/YyfadUCHAWHTltHB9QmK
-kMpmTIWlR+FWLxocOQSO1opLR4hyDuvG9EDiz3a6ke4lEB59LDQ++JmGTYqtS2c/
-YITY5z0xBXjNArIdVUiQLlhlyHrIyowC7JxMn/kEG9J1lSgkWJqn2REXad7Lc/Bi
-IKJyhgwszDfks2ryjx6CL2lXwDuwP51TPxxhBUIre7hxlYwzyZnt/3c/xUa+2ri8
-PmyHZxi/OWUi2CmJBkThyIrc+DoyevVo/q0GZqyq+mMwEAeuLY0CWpm7ZfmVph3c
-JkNlQFUhugQQZAekQ6kQB0fUy9+iz+3XrnBCeHiXEpJZwTpYWAUuXbZurnXZjesL
-XKro/5vXxklANhwTuodben/CQiBqQWDeAxHhgi0Gd3wGIB84sdE/PWapFOvzmTVj
-EmSmH77zdpCs8vuLCVIghiFchjs6tCLfeIS+nR2Sbup7s9Ye59V+/GNU2xirb4AM
-CJR5RyxXXYI9TRDhLyPKJCt29CefOzgxbrr54NHwLfrloVNXNkkuv5gI3O3aE/tS
-TreXxz7GTTpKQfW+wsCbD9xh78wBza2NEatYPUTTPk92rqT/ubf5KgKXTVIBE4Qb
-yy+aK7RUkKZ9dNXO7WJzPcmEzrBBd9Ky7232jsp9qMZlbnj/0Dg=
-=NcVx
------END PGP SIGNATURE-----
-
---q5rykixsz2od4xko--
+               Linus
