@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF257A8B34
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329857A8B37
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbjITSJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 14:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S229696AbjITSJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 14:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjITSJS (ORCPT
+        with ESMTP id S229678AbjITSJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 14:09:18 -0400
+        Wed, 20 Sep 2023 14:09:23 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4700C6;
-        Wed, 20 Sep 2023 11:09:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD5EF9;
+        Wed, 20 Sep 2023 11:09:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695233352; x=1726769352;
+  t=1695233356; x=1726769356;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=QkeZCJ+wbV6YBiqruqO3WbNO7KU2wC4MLYBVcJfsgoo=;
-  b=O30kftMdhUXNjDUiWf0UdGZjAHpXUxpKa4RmMAuWotabc0d9Ac4i9+ib
-   JiVb82GbFEgjjYV+l5HtaUfkk/IaxdCN/2Kxon5CcmR3ByXu2AGxQqqZZ
-   UuXxJWqicLRZqLZj+VPymu+sxxZjQ3EgHUSaIoc8a//Cn2yrOvPzrkBUY
-   COKU0wQ91NG5zc8JsjiiO5KsuD+gGO2hobJYCm3KPp8zcaa8OakE7N56Q
-   +C8Mx04EsUNKA3+gsqwO9LM9uKf52HXrCzbe5FLBPutWyXCqAzZZp3UDl
-   /kJQ4UKZrux/TuhuitPzEjV8BCnGK3tfby+YV77xaNZyvwQYpaKr2HcqE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="359685158"
+  bh=iBHldoR40VpXeC3G/McChx+fgRcdfcyH8Q5bUfcu6gs=;
+  b=cqoFZJY6521G/v8U12fJFye2KZl7CVMRvdxtw3+ddOvOj7ma2RK2Udrb
+   X7gccfTb1IO6XbT1t2WjvflpyKRPbaIDcm2EKKgrnym/OsPjJp9NK8dAa
+   Mc5sRk+kaWlN4s5hnyJb3MHf8e7Kg6s1oIG+WRhsrKjnuUj+gsa0DKsKt
+   WFBoFiR6ZFKdCtjLtSooBobRkBEvQBcJTLL/ff8iPsAtuNotZ61tc4gTT
+   aIfDt4nfphatE7W5mqqPIiMutDh1fG1b9Jyup/X6nwzELFiswR2wsAaY8
+   /aRLF1VHeODIX0YEWvaIvXMF8n2+tGvtJLaRk3LR50Hgf4H7tOFGv72I3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="359685184"
 X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="359685158"
+   d="scan'208";a="359685184"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 11:09:12 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 11:09:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="870469682"
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="870469685"
 X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="870469682"
+   d="scan'208";a="870469685"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orsmga004.jf.intel.com with ESMTP; 20 Sep 2023 11:09:09 -0700
+  by orsmga004.jf.intel.com with ESMTP; 20 Sep 2023 11:09:12 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -52,9 +52,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         Milena Olech <milena.olech@intel.com>,
         intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH net-next 1/3] ice: fix undefined references to ice_is_*() when !CONFIG_PTP_1588_CLOCK
-Date:   Wed, 20 Sep 2023 20:07:43 +0200
-Message-ID: <20230920180745.1607563-2-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next 2/3] ice: fix undefined references from DPLL code when !CONFIG_PTP_1588_CLOCK
+Date:   Wed, 20 Sep 2023 20:07:44 +0200
+Message-ID: <20230920180745.1607563-3-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230920180745.1607563-1-aleksander.lobakin@intel.com>
 References: <20230920180745.1607563-1-aleksander.lobakin@intel.com>
@@ -69,67 +69,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting the cited commit, ice_lib.c unconditionally refers to three
-functions compiled only when CONFIG_PTP_1588_CLOCK is set (as they're
-located in ice_ptp_hw.c):
+DPLL code in ice unconditionally calls several PTP functions which are
+only built when CONFIG_PTP_1588_CLOCK is set. This throws a good bunch
+of link errors:
 
-ERROR: modpost: "ice_is_clock_mux_present_e810t"
+ERROR: modpost: "ice_cgu_get_pin_name"
 [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_is_phy_rclk_present"
+ERROR: modpost: "ice_get_cgu_state"
 [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-ERROR: modpost: "ice_is_cgu_present"
+OR: modpost: "ice_is_cgu_present"
+[drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_get_cgu_rclk_pin_info"
+[drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_cgu_get_pin_type"
+[drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_cgu_get_pin_freq_supp"
 [drivers/net/ethernet/intel/ice/ice.ko] undefined!
 
-These three are HW feature tests and it is safe to stub them as
-`return false` when PTP support is disabled.
+ice_dpll_{,de}init() can be only called at runtime when the
+corresponding feature flags are set, which is not the case when PTP
+support is not compiled. However, the linker has no clue about this.
+Compile DPLL code only when CONFIG_PTP_1588_CLOCK is enabled and guard
+the mentioned init/deinit function calls, so that ice_dpll.o is only
+referred when it gets compiled.
 
-Fixes: 8a3a565ff210 ("ice: add admin commands to access cgu configuration")
+Note that ideally ice_is_feature_supported() needs to check for
+compile-time flags first to be able to handle this without any
+additional call guards, and we may want to do that in the future.
+
+Fixes: d7999f5ea64b ("ice: implement dpll interface to control cgu")
 Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309181001.G72eBLpj-lkp@intel.com
+Closes: https://lore.kernel.org/oe-kbuild-all/202309191214.TaYEct4H-lkp@intel.com
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_ptp_hw.h | 25 ++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/Makefile   | 5 ++---
+ drivers/net/ethernet/intel/ice/ice_main.c | 8 +++++---
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_ptp_hw.h b/drivers/net/ethernet/intel/ice/ice_ptp_hw.h
-index 6f277e7b06b9..405a72864dc7 100644
---- a/drivers/net/ethernet/intel/ice/ice_ptp_hw.h
-+++ b/drivers/net/ethernet/intel/ice/ice_ptp_hw.h
-@@ -271,10 +271,33 @@ int ice_read_sma_ctrl_e810t(struct ice_hw *hw, u8 *data);
- int ice_write_sma_ctrl_e810t(struct ice_hw *hw, u8 data);
- int ice_read_pca9575_reg_e810t(struct ice_hw *hw, u8 offset, u8 *data);
- bool ice_is_pca9575_present(struct ice_hw *hw);
-+
-+#if IS_ENABLED(CONFIG_PTP_1588_CLOCK)
-+
- bool ice_is_phy_rclk_present(struct ice_hw *hw);
- bool ice_is_clock_mux_present_e810t(struct ice_hw *hw);
--int ice_get_pf_c827_idx(struct ice_hw *hw, u8 *idx);
- bool ice_is_cgu_present(struct ice_hw *hw);
-+
-+#else /* !CONFIG_PTP_1588_CLOCK */
-+
-+static inline bool ice_is_phy_rclk_present(const struct ice_hw *hw)
-+{
-+	return false;
-+}
-+
-+static inline bool ice_is_clock_mux_present_e810t(const struct ice_hw *hw)
-+{
-+	return false;
-+}
-+
-+static inline bool ice_is_cgu_present(const struct ice_hw *hw)
-+{
-+	return false;
-+}
-+
-+#endif /* !CONFIG_PTP_1588_CLOCK */
-+
-+int ice_get_pf_c827_idx(struct ice_hw *hw, u8 *idx);
- enum dpll_pin_type ice_cgu_get_pin_type(struct ice_hw *hw, u8 pin, bool input);
- struct dpll_pin_frequency *
- ice_cgu_get_pin_freq_supp(struct ice_hw *hw, u8 pin, bool input, u8 *num);
+diff --git a/drivers/net/ethernet/intel/ice/Makefile b/drivers/net/ethernet/intel/ice/Makefile
+index 00806ddf5bf0..16f96d5210d8 100644
+--- a/drivers/net/ethernet/intel/ice/Makefile
++++ b/drivers/net/ethernet/intel/ice/Makefile
+@@ -34,8 +34,7 @@ ice-y := ice_main.o	\
+ 	 ice_lag.o	\
+ 	 ice_ethtool.o  \
+ 	 ice_repr.o	\
+-	 ice_tc_lib.o	\
+-	 ice_dpll.o
++	 ice_tc_lib.o
+ ice-$(CONFIG_PCI_IOV) +=	\
+ 	ice_sriov.o		\
+ 	ice_virtchnl.o		\
+@@ -44,7 +43,7 @@ ice-$(CONFIG_PCI_IOV) +=	\
+ 	ice_vf_mbx.o		\
+ 	ice_vf_vsi_vlan_ops.o	\
+ 	ice_vf_lib.o
+-ice-$(CONFIG_PTP_1588_CLOCK) += ice_ptp.o ice_ptp_hw.o
++ice-$(CONFIG_PTP_1588_CLOCK) += ice_dpll.o ice_ptp.o ice_ptp_hw.o
+ ice-$(CONFIG_DCB) += ice_dcb.o ice_dcb_nl.o ice_dcb_lib.o
+ ice-$(CONFIG_RFS_ACCEL) += ice_arfs.o
+ ice-$(CONFIG_XDP_SOCKETS) += ice_xsk.o
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index e22f41fea8db..9b48918dcdb7 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -4665,8 +4665,9 @@ static void ice_init_features(struct ice_pf *pf)
+ 	if (ice_is_feature_supported(pf, ICE_F_GNSS))
+ 		ice_gnss_init(pf);
+ 
+-	if (ice_is_feature_supported(pf, ICE_F_CGU) ||
+-	    ice_is_feature_supported(pf, ICE_F_PHY_RCLK))
++	if (IS_ENABLED(CONFIG_PTP_1588_CLOCK) &&
++	    (ice_is_feature_supported(pf, ICE_F_CGU) ||
++	     ice_is_feature_supported(pf, ICE_F_PHY_RCLK)))
+ 		ice_dpll_init(pf);
+ 
+ 	/* Note: Flow director init failure is non-fatal to load */
+@@ -4695,7 +4696,8 @@ static void ice_deinit_features(struct ice_pf *pf)
+ 		ice_gnss_exit(pf);
+ 	if (test_bit(ICE_FLAG_PTP_SUPPORTED, pf->flags))
+ 		ice_ptp_release(pf);
+-	if (test_bit(ICE_FLAG_DPLL, pf->flags))
++	if (IS_ENABLED(CONFIG_PTP_1588_CLOCK) &&
++	    test_bit(ICE_FLAG_DPLL, pf->flags))
+ 		ice_dpll_deinit(pf);
+ }
+ 
 -- 
 2.41.0
 
