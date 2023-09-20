@@ -2,101 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1AF7A70C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD34E7A70CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 05:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbjITDAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 23:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
+        id S232009AbjITDDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 23:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231968AbjITDAs (ORCPT
+        with ESMTP id S231630AbjITDDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 23:00:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5C1C6;
-        Tue, 19 Sep 2023 20:00:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695178843; x=1726714843;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mSL99h1syLWVif7Chcbad4B1xPqXmzezMeLKDzPTmvM=;
-  b=FkcZEP17vH+JQO1NngYOQq+Feimniydz/rtZuOhzX+WSvJzua7hswEd+
-   o3U2y2Sl7ivjoVrW/6HAo54/KN0jbSWKOFhM0wLKVQ2KA4/P84mpgYqxs
-   PDBp0RdDL67o0awKQAiZKsN0VZTsRRMRtGo5AidT7QokWw+gn+ltCdxN7
-   M+EHPxyLWvQMVgKo+xBi4JAdc3UfA195E2ob7IL/hCIlTYNbkYVJHp9RW
-   FR6/XrmmExKOSKug/BDVJAs4WANquXDWXe0sWbcEYAMoTm8Pmzbw9vvmm
-   N3oNK51AnO+SM88IHa8g/RJF8R6fn2ObmCp/nmJMXH7XSMmas8hvX+kyn
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="378999145"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="378999145"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2023 20:00:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="889737344"
-X-IronPort-AV: E=Sophos;i="6.02,160,1688454000"; 
-   d="scan'208";a="889737344"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Sep 2023 19:59:52 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qinS9-0008Co-08;
-        Wed, 20 Sep 2023 03:00:37 +0000
-Date:   Wed, 20 Sep 2023 10:59:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     shiju.jose@huawei.com, helgaas@kernel.org, rafael@kernel.org,
-        lenb@kernel.org, tony.luck@intel.com, james.morse@arm.com,
-        bp@alien8.de, ying.huang@intel.com, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linuxarm@huawei.com,
-        jonathan.cameron@huawei.com, tanxiaofei@huawei.com,
-        prime.zeng@hisilicon.com, shiju.jose@huawei.com
-Subject: Re: [PATCH v2 1/1] ACPI / APEI: Fix for overwriting AER info when
- error status data has multiple sections
-Message-ID: <202309201046.jwWoGRvA-lkp@intel.com>
-References: <20230919091543.794-1-shiju.jose@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919091543.794-1-shiju.jose@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 19 Sep 2023 23:03:43 -0400
+Received: from out-221.mta1.migadu.com (out-221.mta1.migadu.com [95.215.58.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7613EC6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 20:03:36 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695179014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1uzlbMLsHNxdyHyPYcnTyYym5TRZCmDz2enQEvobPPM=;
+        b=ApLVPmLvcjA/Lkjvt3sMoF1OIQd3MZ8D4lujojaPiZygHu3B7njq65su0pjj4bbuHjxuq2
+        fc4KWWDd3cW8q1MYinxxnq/BjgFAulHLnUWCGvXmBAvbS22DpxqmbSxxf/6br1vMnXFlcC
+        EqqhzlxTUk31+SqTNUWWl0dLQ7vcKpY=
+Mime-Version: 1.0
+Subject: Re: [PATCH v4 4/8] hugetlb: perform vmemmap restoration on a list of
+ pages
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <CED64A95-00E8-4B52-A77A-8B13D2795507@linux.dev>
+Date:   Wed, 20 Sep 2023 11:03:21 +0800
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2FDB2018-74AE-4514-9B43-01664A8E5DBF@linux.dev>
+References: <20230918230202.254631-1-mike.kravetz@oracle.com>
+ <20230918230202.254631-5-mike.kravetz@oracle.com>
+ <b9d03e01-7582-8ec9-d219-941184166835@linux.dev>
+ <20230919205756.GB425719@monkey>
+ <CED64A95-00E8-4B52-A77A-8B13D2795507@linux.dev>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-kernel test robot noticed the following build errors:
 
-[auto build test ERROR on rafael-pm/linux-next]
-[also build test ERROR on pci/next pci/for-linus linus/master v6.6-rc2 next-20230919]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> On Sep 20, 2023, at 10:56, Muchun Song <muchun.song@linux.dev> wrote:
+>=20
+>=20
+>=20
+>> On Sep 20, 2023, at 04:57, Mike Kravetz <mike.kravetz@oracle.com> =
+wrote:
+>>=20
+>> On 09/19/23 17:52, Muchun Song wrote:
+>>>=20
+>>>=20
+>>> On 2023/9/19 07:01, Mike Kravetz wrote:
+>>>> The routine update_and_free_pages_bulk already performs vmemmap
+>>>> restoration on the list of hugetlb pages in a separate step.  In
+>>>> preparation for more functionality to be added in this step, create =
+a
+>>>> new routine hugetlb_vmemmap_restore_folios() that will restore
+>>>> vmemmap for a list of folios.
+>>>>=20
+>>>> This new routine must provide sufficient feedback about errors and
+>>>> actual restoration performed so that update_and_free_pages_bulk can
+>>>> perform optimally.
+>>>>=20
+>>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>>> ---
+>>>> mm/hugetlb.c         | 36 ++++++++++++++++++------------------
+>>>> mm/hugetlb_vmemmap.c | 37 +++++++++++++++++++++++++++++++++++++
+>>>> mm/hugetlb_vmemmap.h | 11 +++++++++++
+>>>> 3 files changed, 66 insertions(+), 18 deletions(-)
+>>>>=20
+>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>>> index d6f3db3c1313..814bb1982274 100644
+>>>> --- a/mm/hugetlb.c
+>>>> +++ b/mm/hugetlb.c
+>>>> @@ -1836,36 +1836,36 @@ static void =
+update_and_free_hugetlb_folio(struct hstate *h, struct folio *folio,
+>>>> static void update_and_free_pages_bulk(struct hstate *h, struct =
+list_head *list)
+>>>> {
+>>>> + int ret;
+>>>> + unsigned long restored;
+>>>>  struct folio *folio, *t_folio;
+>>>> - bool clear_dtor =3D false;
+>>>>  /*
+>>>> -  * First allocate required vmemmmap (if necessary) for all folios =
+on
+>>>> -  * list.  If vmemmap can not be allocated, we can not free folio =
+to
+>>>> -  * lower level allocator, so add back as hugetlb surplus page.
+>>>> -  * add_hugetlb_folio() removes the page from THIS list.
+>>>> -  * Use clear_dtor to note if vmemmap was successfully allocated =
+for
+>>>> -  * ANY page on the list.
+>>>> +  * First allocate required vmemmmap (if necessary) for all =
+folios.
+>>>>   */
+>>>> - list_for_each_entry_safe(folio, t_folio, list, lru) {
+>>>> - if (folio_test_hugetlb_vmemmap_optimized(folio)) {
+>>>> - if (hugetlb_vmemmap_restore(h, &folio->page)) {
+>>>> - spin_lock_irq(&hugetlb_lock);
+>>>> + ret =3D hugetlb_vmemmap_restore_folios(h, list, &restored);
+>>>> +
+>>>> + /*
+>>>> +  * If there was an error restoring vmemmap for ANY folios on the =
+list,
+>>>> +  * add them back as surplus hugetlb pages.  add_hugetlb_folio() =
+removes
+>>>> +  * the folio from THIS list.
+>>>> +  */
+>>>> + if (ret < 0) {
+>>>> + spin_lock_irq(&hugetlb_lock);
+>>>> + list_for_each_entry_safe(folio, t_folio, list, lru)
+>>>> + if (folio_test_hugetlb_vmemmap_optimized(folio))
+>>>>  add_hugetlb_folio(h, folio, true);
+>>>> - spin_unlock_irq(&hugetlb_lock);
+>>>> - } else
+>>>> - clear_dtor =3D true;
+>>>> - }
+>>>> + spin_unlock_irq(&hugetlb_lock);
+>>>>  }
+>>>>  /*
+>>>> -  * If vmemmmap allocation was performed on any folio above, take =
+lock
+>>>> -  * to clear destructor of all folios on list.  This avoids the =
+need to
+>>>> +  * If vmemmmap allocation was performed on ANY folio , take lock =
+to
+>>>> +  * clear destructor of all folios on list.  This avoids the need =
+to
+>>>>   * lock/unlock for each individual folio.
+>>>>   * The assumption is vmemmap allocation was performed on all or =
+none
+>>>>   * of the folios on the list.  This is true expect in VERY rare =
+cases.
+>>>>   */
+>>>> - if (clear_dtor) {
+>>>> + if (restored) {
+>>>>  spin_lock_irq(&hugetlb_lock);
+>>>>  list_for_each_entry(folio, list, lru)
+>>>>  __clear_hugetlb_destructor(h, folio);
+>>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>>> index 4558b814ffab..463a4037ec6e 100644
+>>>> --- a/mm/hugetlb_vmemmap.c
+>>>> +++ b/mm/hugetlb_vmemmap.c
+>>>> @@ -480,6 +480,43 @@ int hugetlb_vmemmap_restore(const struct =
+hstate *h, struct page *head)
+>>>>  return ret;
+>>>> }
+>>>> +/**
+>>>> + * hugetlb_vmemmap_restore_folios - restore vmemmap for every =
+folio on the list.
+>>>> + * @h: struct hstate.
+>>>> + * @folio_list: list of folios.
+>>>> + * @restored: Set to number of folios for which vmemmap was =
+restored
+>>>> + * successfully if caller passes a non-NULL pointer.
+>>>> + *
+>>>> + * Return: %0 if vmemmap exists for all folios on the list.  If an =
+error is
+>>>> + * encountered restoring vmemmap for ANY folio, an error code
+>>>> + * will be returned to the caller.  It is then the responsibility
+>>>> + * of the caller to check the hugetlb vmemmap optimized flag of
+>>>> + * each folio to determine if vmemmap was actually restored.
+>>>> + */
+>>>> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
+>>>> + struct list_head *folio_list,
+>>>> + unsigned long *restored)
+>>>> +{
+>>>> + unsigned long num_restored;
+>>>> + struct folio *folio;
+>>>> + int ret =3D 0, t_ret;
+>>>> +
+>>>> + num_restored =3D 0;
+>>>> + list_for_each_entry(folio, folio_list, lru) {
+>>>> + if (folio_test_hugetlb_vmemmap_optimized(folio)) {
+>>>> + t_ret =3D hugetlb_vmemmap_restore(h, &folio->page);
+>>>=20
+>>> I still think we should free a non-optimized HugeTLB page if we
+>>> encounter an OOM situation instead of continue to restore
+>>> vemmmap pages. Restoring vmemmmap pages will only aggravate
+>>> the OOM situation. The suitable appraoch is to free a non-optimized
+>>> HugeTLB page to satisfy our allocation of vmemmap pages, what's
+>>> your opinion, Mike?
+>>=20
+>> I agree.
+>>=20
+>> As you mentioned previously, this may complicate this code path a =
+bit.
+>> I will rewrite to make this happen.
+>=20
+> Maybe we could introduced two list passed to =
+update_and_free_pages_bulk (this
+> will be easy for the callers of it), one is for non-optimized huge =
+page,
+> another is optimized one. In update_and_free_pages_bulk, we could =
+first
+> free those non-optimized huge page, and then restore vemmmap pages for
+> those optimized ones, in which case, the code could be simple.
+> hugetlb_vmemmap_restore_folios() dose not need to add complexity, =
+which
+> still continue to restore vmemmap pages and will stop once we =
+encounter
+> an OOM situation.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/shiju-jose-huawei-com/ACPI-APEI-Fix-for-overwriting-AER-info-when-error-status-data-has-multiple-sections/20230919-171718
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20230919091543.794-1-shiju.jose%40huawei.com
-patch subject: [PATCH v2 1/1] ACPI / APEI: Fix for overwriting AER info when error status data has multiple sections
-config: i386-buildonly-randconfig-006-20230920 (https://download.01.org/0day-ci/archive/20230920/202309201046.jwWoGRvA-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309201046.jwWoGRvA-lkp@intel.com/reproduce)
+BTW, maybe we should try again iff there are some non-optimized huge =
+page
+whose vmemmap pages are restored successfully previously and could be =
+freed
+first, then continue to restore the vmemmap pages of the remaining huge =
+pages.
+I think the retry code could be done in update_and_free_pages_bulk() as =
+well.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309201046.jwWoGRvA-lkp@intel.com/
+>=20
+> Thanks.
+>=20
+>> --=20
+>> Mike Kravetz
 
-All errors (new ones prefixed by >>):
 
-   ld: drivers/pci/pcie/aer.o: in function `aer_recover_work_func':
->> aer.c:(.text+0xec5): undefined reference to `ghes_estatus_pool_region_free'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
