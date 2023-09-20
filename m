@@ -2,107 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB04A7A7614
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E977A7630
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbjITIlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
+        id S233028AbjITImn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbjITIlS (ORCPT
+        with ESMTP id S232338AbjITImd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:41:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E078F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:40:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695199227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TBGan7puKQTZLNv3QP6UatLznvd0DiE0/xxoKZXKoRg=;
-        b=CcmGhpDYpABwq5T/aCUynZn2cxJ8BeKC5rt6rIfymEMOGxCLLHMR1gLd6lH4NpJY0pOBrr
-        zOlAYK+/stBLYHrvFck3YF09Q9Rbs7Q4TxoR+OhcoOBhetko1VR7W3fcszzy7hkJ8Adh4a
-        bRLgu4dj4c7DI37miixShaL6CGM75FA=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-529-seufK9QoOFKsNiuiL7TY9w-1; Wed, 20 Sep 2023 04:40:25 -0400
-X-MC-Unique: seufK9QoOFKsNiuiL7TY9w-1
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7983ed2a0f6so158221839f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:40:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695199225; x=1695804025;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TBGan7puKQTZLNv3QP6UatLznvd0DiE0/xxoKZXKoRg=;
-        b=mzfU/49zO07+JF7bQYo8PDj+SMI7tHAZGMubvLq9suhRdNuFtWICDT4u7nW795m3S0
-         3rS5vuX5HP4F9qBz32ekuqm6eZ3Ve3u3ug2StpKQSQdb0P6wD8e1DYsC8+B/FFwTb6Ac
-         eSz6U0PS99xYJoXdbuBsOLu+fG78RMuaUb8B9cbNmgrITnmBX9KeXPT/jybiSz31YWhX
-         w3PsTsO5tLDYrVl6ZRlnJEQmKbwsohE1GAY7vH5iXeJoZmNM3fyQMZW6XPwh6lEja96K
-         uwcBXv9bGa1y2Mgk9KslyyIrmhkkQRArSQBbI8GdBuHxmN3/VXdY37cIhDZSXsy5g0zW
-         4D1w==
-X-Gm-Message-State: AOJu0Yw7AxHzKGGFvQYDOtU19/88wthndSpzl2vO7GCsGum5cffDvVfz
-        6/UUmyvwGJ+wUXQrJ0J2JPn/y663jBLOYpuifIKCSEO9lEGKYEIxTh62qntyx64rBYWt4rD+xqg
-        OIoEO6T6+nDQW6xD76jKDgJbzYhb1y1WD6QerOuK6
-X-Received: by 2002:a92:d647:0:b0:345:e438:7381 with SMTP id x7-20020a92d647000000b00345e4387381mr2119506ilp.2.1695199225029;
-        Wed, 20 Sep 2023 01:40:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF/nNlgdwWnUwZKtEwOL/WSZUqmM3GjHBG6pv7scdqieL1P4bXUAf2on7dPyGtRFzK6Kz3jzeu8+oYoL+Sj3fk=
-X-Received: by 2002:a92:d647:0:b0:345:e438:7381 with SMTP id
- x7-20020a92d647000000b00345e4387381mr2119491ilp.2.1695199224757; Wed, 20 Sep
- 2023 01:40:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230911052535.335770-1-kernel@jfarr.cc> <20230913160045.40d377f9@rotkaeppchen>
- <63952cb0-5217-42a8-9b62-8be6d03f5844@app.fastmail.com> <CALu+AoTAUWWtx8yChQMKF9J5X_Qd8+x0hz0jzVwoOvAvh5VmHA@mail.gmail.com>
-In-Reply-To: <CALu+AoTAUWWtx8yChQMKF9J5X_Qd8+x0hz0jzVwoOvAvh5VmHA@mail.gmail.com>
-From:   Dave Young <dyoung@redhat.com>
-Date:   Wed, 20 Sep 2023 16:40:04 +0800
-Message-ID: <CALu+AoRiok-bzM4OQbiix44O-PUgO2N6Yi+_qTOn4iWtk_u4cg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
-To:     Jan Hendrik Farr <kernel@jfarr.cc>
-Cc:     Philipp Rudo <prudo@redhat.com>, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
-        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, Baoquan He <bhe@redhat.com>,
-        bhelgaas@google.com, Luca Boccassi <bluca@debian.org>,
-        lennart@poettering.net, "Liu, Pingfan" <piliu@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 04:42:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BF4B0;
+        Wed, 20 Sep 2023 01:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695199347; x=1726735347;
+  h=from:to:cc:subject:date:message-id;
+  bh=ZhLtFgkrfa1vb3NSe7b1Jh3EGEctt9IYI0cq0czH4IY=;
+  b=i0D60fYdipemgNChU/nDhKlFcfj7moXDGv5VdMYgX+EPaXsH4cfeR1Si
+   pG17JbeIRqJCc5ta+zxAc1JP/N1ig82+pXSsxPScCzubwnbJCGh4iC9Ug
+   htaPMRMha8+Z+VbDMvftPUrsvVnelChjHoE/n3Q1SdLwsFZkr0B1wrGeV
+   oaJHLXuZLpP2pwyYeBOhn354aguWsPnqQ5AvFX5/ykMamC7atd5uVzHyx
+   OX+/WUY0KONcmpbdNxX4w85A74y3b7a01GQAk7RDAIlrPa+p28u7vWqNu
+   D508il6GAx/serAwL3ti6xl88ergkjemOf/7REkMby5Tg/K9pmDyn9c/r
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="370479833"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="370479833"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 01:42:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="746564616"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="746564616"
+Received: from inlubt0316.iind.intel.com ([10.191.20.213])
+  by orsmga002.jf.intel.com with ESMTP; 20 Sep 2023 01:42:23 -0700
+From:   Raag Jadav <raag.jadav@intel.com>
+To:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
+        Jonathan.Cameron@huawei.com, paul@crapouillou.net,
+        andriy.shevchenko@linux.intel.com, rf@opensource.cirrus.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com,
+        Raag Jadav <raag.jadav@intel.com>
+Subject: [PATCH v3] PM: Fix symbol export for _SIMPLE_ variants of _PM_OPS()
+Date:   Wed, 20 Sep 2023 14:11:21 +0530
+Message-Id: <20230920084121.14131-1-raag.jadav@intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sept 2023 at 15:43, Dave Young <dyoung@redhat.com> wrote:
->
-> > > In the end the only benefit this series brings is to extend the
-> > > signature checking on the whole UKI except of just the kernel image.
-> > > Everything else can also be done in user space. Compared to the
-> > > problems described above this is a very small gain for me.
-> >
-> > Correct. That is the benefit of pulling the UKI apart in the
-> > kernel. However having to sign the kernel inside the UKI defeats
-> > the whole point.
->
->
-> Pingfan added the zboot load support in kexec-tools, I know that he is
-> trying to sign the zboot image and the inside kernel twice. So
-> probably there are some common areas which can be discussed.
-> Added Ard and Pingfan in cc.
-> http://lists.infradead.org/pipermail/kexec/2023-August/027674.html
->
+Currently EXPORT_*_SIMPLE_DEV_PM_OPS() use EXPORT_*_DEV_PM_OPS() set
+of macros to export dev_pm_ops symbol, which export the symbol in case
+CONFIG_PM=y but don't take CONFIG_PM_SLEEP into consideration.
 
-Here is another thread of the initial try in kernel with a few more
-options eg. some fake efi service helpers.
-https://lore.kernel.org/linux-arm-kernel/ZBvKSis+dfnqa+Vz@piliu.users.ipa.redhat.com/T/#m42abb0ad3c10126b8b3bfae8a596deb707d6f76e
+Since _SIMPLE_ variants of _PM_OPS() do not include runtime PM handles
+and are only used in case CONFIG_PM_SLEEP=y, we should not be exporting
+their dev_pm_ops symbol in case CONFIG_PM_SLEEP=n.
 
->
-> Thanks
-> Dave
+This can be fixed by having two distinct set of export macros for both
+_RUNTIME_ and _SIMPLE_ variants of _PM_OPS(), such that the export of
+dev_pm_ops symbol used in each variant depends on CONFIG_PM and
+CONFIG_PM_SLEEP respectively.
+
+Introduce _DEV_SLEEP_PM_OPS() set of export macros for _SIMPLE_ variants
+of _PM_OPS(), which export dev_pm_ops symbol only in case CONFIG_PM_SLEEP=y
+and discard it otherwise.
+
+Fixes: 34e1ed189fab ("PM: Improve EXPORT_*_DEV_PM_OPS macros")
+Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+---
+PS: This is a standalone fix and works without updating any drivers.
+
+Changes since v2:
+- Drop redundant patches
+
+Changes since v1:
+- Update drivers to new set of macros
+
+ include/linux/pm.h | 43 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
+
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index 1400c37b29c7..99a8146fa479 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -374,24 +374,39 @@ const struct dev_pm_ops name = { \
+ 	RUNTIME_PM_OPS(runtime_suspend_fn, runtime_resume_fn, idle_fn) \
+ }
+ 
+-#ifdef CONFIG_PM
+-#define _EXPORT_DEV_PM_OPS(name, license, ns)				\
++#define _EXPORT_PM_OPS(name, license, ns)				\
+ 	const struct dev_pm_ops name;					\
+ 	__EXPORT_SYMBOL(name, license, ns);				\
+ 	const struct dev_pm_ops name
+-#define EXPORT_PM_FN_GPL(name)		EXPORT_SYMBOL_GPL(name)
+-#define EXPORT_PM_FN_NS_GPL(name, ns)	EXPORT_SYMBOL_NS_GPL(name, ns)
+-#else
+-#define _EXPORT_DEV_PM_OPS(name, license, ns)				\
++
++#define _PM_OPS(name, license, ns)					\
+ 	static __maybe_unused const struct dev_pm_ops __static_##name
++
++#ifdef CONFIG_PM
++#define _EXPORT_DEV_PM_OPS(name, license, ns)		_EXPORT_PM_OPS(name, license, ns)
++#define EXPORT_PM_FN_GPL(name)				EXPORT_SYMBOL_GPL(name)
++#define EXPORT_PM_FN_NS_GPL(name, ns)			EXPORT_SYMBOL_NS_GPL(name, ns)
++#else
++#define _EXPORT_DEV_PM_OPS(name, license, ns)		_PM_OPS(name, license, ns)
+ #define EXPORT_PM_FN_GPL(name)
+ #define EXPORT_PM_FN_NS_GPL(name, ns)
+ #endif
+ 
+-#define EXPORT_DEV_PM_OPS(name) _EXPORT_DEV_PM_OPS(name, "", "")
+-#define EXPORT_GPL_DEV_PM_OPS(name) _EXPORT_DEV_PM_OPS(name, "GPL", "")
+-#define EXPORT_NS_DEV_PM_OPS(name, ns) _EXPORT_DEV_PM_OPS(name, "", #ns)
+-#define EXPORT_NS_GPL_DEV_PM_OPS(name, ns) _EXPORT_DEV_PM_OPS(name, "GPL", #ns)
++#ifdef CONFIG_PM_SLEEP
++#define _EXPORT_DEV_SLEEP_PM_OPS(name, license, ns)	_EXPORT_PM_OPS(name, license, ns)
++#else
++#define _EXPORT_DEV_SLEEP_PM_OPS(name, license, ns)	_PM_OPS(name, license, ns)
++#endif
++
++#define EXPORT_DEV_PM_OPS(name)				_EXPORT_DEV_PM_OPS(name, "", "")
++#define EXPORT_GPL_DEV_PM_OPS(name)			_EXPORT_DEV_PM_OPS(name, "GPL", "")
++#define EXPORT_NS_DEV_PM_OPS(name, ns)			_EXPORT_DEV_PM_OPS(name, "", #ns)
++#define EXPORT_NS_GPL_DEV_PM_OPS(name, ns)		_EXPORT_DEV_PM_OPS(name, "GPL", #ns)
++
++#define EXPORT_DEV_SLEEP_PM_OPS(name)			_EXPORT_DEV_SLEEP_PM_OPS(name, "", "")
++#define EXPORT_GPL_DEV_SLEEP_PM_OPS(name)		_EXPORT_DEV_SLEEP_PM_OPS(name, "GPL", "")
++#define EXPORT_NS_DEV_SLEEP_PM_OPS(name, ns)		_EXPORT_DEV_SLEEP_PM_OPS(name, "", #ns)
++#define EXPORT_NS_GPL_DEV_SLEEP_PM_OPS(name, ns)	_EXPORT_DEV_SLEEP_PM_OPS(name, "GPL", #ns)
+ 
+ /*
+  * Use this if you want to use the same suspend and resume callbacks for suspend
+@@ -404,19 +419,19 @@ const struct dev_pm_ops name = { \
+ 	_DEFINE_DEV_PM_OPS(name, suspend_fn, resume_fn, NULL, NULL, NULL)
+ 
+ #define EXPORT_SIMPLE_DEV_PM_OPS(name, suspend_fn, resume_fn) \
+-	EXPORT_DEV_PM_OPS(name) = { \
++	EXPORT_DEV_SLEEP_PM_OPS(name) = { \
+ 		SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+ 	}
+ #define EXPORT_GPL_SIMPLE_DEV_PM_OPS(name, suspend_fn, resume_fn) \
+-	EXPORT_GPL_DEV_PM_OPS(name) = { \
++	EXPORT_GPL_DEV_SLEEP_PM_OPS(name) = { \
+ 		SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+ 	}
+ #define EXPORT_NS_SIMPLE_DEV_PM_OPS(name, suspend_fn, resume_fn, ns)	\
+-	EXPORT_NS_DEV_PM_OPS(name, ns) = { \
++	EXPORT_NS_DEV_SLEEP_PM_OPS(name, ns) = { \
+ 		SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+ 	}
+ #define EXPORT_NS_GPL_SIMPLE_DEV_PM_OPS(name, suspend_fn, resume_fn, ns)	\
+-	EXPORT_NS_GPL_DEV_PM_OPS(name, ns) = { \
++	EXPORT_NS_GPL_DEV_SLEEP_PM_OPS(name, ns) = { \
+ 		SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
+ 	}
+ 
+-- 
+2.17.1
 
