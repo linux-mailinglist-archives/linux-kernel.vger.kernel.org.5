@@ -2,407 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2EC7A8969
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4755F7A8971
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 18:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234635AbjITQ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 12:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        id S234515AbjITQ3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 12:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbjITQ2C (ORCPT
+        with ESMTP id S233786AbjITQ3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 12:28:02 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879009F;
-        Wed, 20 Sep 2023 09:27:52 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 1336260157;
-        Wed, 20 Sep 2023 18:27:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695227265; bh=+OvLLBESNqjBmVlxMMDpY050RRLppCySaCLgwJ/WciM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GOdPK8R96Vx/57bgJzE5qdthj0Tcjm5toIXZYbMG66A8vA+oQB2qz1NfSOs7HRX7X
-         C0g2X+CxGsxUdaoGR87PXWwlZOKV/XhKs9pRI2rKwwphRZOIGwEVViIFt8eF2SQomb
-         LpeTH9oYlZqL/9TFHpG6F6c8dA7nZPJXjgTcX88nuCmN4QyXmnLczZkrK0W8Lwaj9D
-         BMo1IWAI60S3YnfouZYshFRCqnkwXCAK7VUtanmb2PMm6nsYg8n+uI/k4+3fLszaLe
-         9pONX8t1zupT87Ldx5bbqvF1M8bjuXM9iJRV8xhYPanXDpZkIfGO4CUl/odLhiZite
-         msXS7tw03zW7A==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id GLcmEF1AKJep; Wed, 20 Sep 2023 18:27:41 +0200 (CEST)
-Received: from defiant.home (78-2-200-2.adsl.net.t-com.hr [78.2.200.2])
-        by domac.alu.hr (Postfix) with ESMTPSA id 6C0E460152;
-        Wed, 20 Sep 2023 18:27:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695227261; bh=+OvLLBESNqjBmVlxMMDpY050RRLppCySaCLgwJ/WciM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JbXY/3XPXjt28x/1QTG2x5Be9X9DrIttwHhIHlTlGPI6IHv6M59HqlDoKjaxwwjSi
-         zsJVeb8KJEy2U5zO9tZVo+2V4FeiQj4cIkBzjj+8Yc3PB/banL9ev2+TOER73lmQQt
-         TEjCisJCWl36uRge1JOiwfssWzwmzqtwcMK4QEC2d6Eqs/6fHFDg21fG920Tl9tvgC
-         B+aOUPlqZw9eZohbr8/K8w98tI+3wrfAMXIzSbh4Ff1R/cJxXLWAjN/vRODOZvGsR8
-         7nOtMlQVkvTZwwUcaPLkUEqWbE0wJ+nQDgw1iks/6wqAzn9ZkKC1rTlNkX7woCtb7/
-         6L5HPnPPV3sFA==
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@FreeBSD.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v3 1/1] ACPICA: utdebug: use spinlocks to fix the data-races reported by the KCSAN
-Date:   Wed, 20 Sep 2023 18:22:23 +0200
-Message-Id: <20230920162222.3614-1-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.34.1
+        Wed, 20 Sep 2023 12:29:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537CBDE;
+        Wed, 20 Sep 2023 09:29:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A2A732005F;
+        Wed, 20 Sep 2023 16:29:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695227382;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NTCb7o7s6ZlZM8q9ihkFCFZRPR9gfoRPeSaA6vmFKn8=;
+        b=cTsocrCr9Wjmyx9sNKQwV+x/sZ1RdCuFSot3d+YnPXjD4XQYDGMtzH9cVKceoKtJdvokp3
+        wF9OYjq511x4XFlh0hA0pKOAyn3cnAj5ODIbS4cNLZQrmi4x/a2i/gR+CLQD8vPgLWUrnx
+        d1gGMIEQAdtLOkzrayig8hVLH/D0ShI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695227382;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NTCb7o7s6ZlZM8q9ihkFCFZRPR9gfoRPeSaA6vmFKn8=;
+        b=PZwpqsBHHl7YZyVnpv05r3w8X0zLjHY/22+Y7GA/z7RJgMadd/rm4245Mro5oulLZmWiRH
+        bH0juO6TABinuYDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 56C671333E;
+        Wed, 20 Sep 2023 16:29:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Q4lZFPYdC2WTZwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 20 Sep 2023 16:29:42 +0000
+Date:   Wed, 20 Sep 2023 18:23:08 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 00/11] btrfs: introduce RAID stripe tree
+Message-ID: <20230920162308.GE2268@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
+ <20230914182534.GD20408@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        T_SPF_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914182534.GD20408@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KCSAN reported hundreds of instances of data-races in ACPICA like this one:
+On Thu, Sep 14, 2023 at 08:25:34PM +0200, David Sterba wrote:
+> On Thu, Sep 14, 2023 at 09:06:55AM -0700, Johannes Thumshirn wrote:
+> > Updates of the raid-stripe-tree are done at ordered extent write time to safe
+> > on bandwidth while for reading we do the stripe-tree lookup on bio mapping
+> > time, i.e. when the logical to physical translation happens for regular btrfs
+> > RAID as well.
+> > 
+> > The stripe tree is keyed by an extent's disk_bytenr and disk_num_bytes and
+> > it's contents are the respective physical device id and position.
+> > 
+> > For an example 1M write (split into 126K segments due to zone-append)
+> > rapido2:/home/johannes/src/fstests# xfs_io -fdc "pwrite -b 1M 0 1M" -c fsync /mnt/test/test
+> > wrote 1048576/1048576 bytes at offset 0
+> > 1 MiB, 1 ops; 0.0065 sec (151.538 MiB/sec and 151.5381 ops/sec)
+> > 
+> > The tree will look as follows (both 128k buffered writes to a ZNS drive):
+> > 
+> > RAID0 case:
+> > bash-5.2# btrfs inspect-internal dump-tree -t raid_stripe /dev/nvme0n1
+> > btrfs-progs v6.3
+> > raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
+> > leaf 805535744 items 1 free space 16218 generation 8 owner RAID_STRIPE_TREE
+> > leaf 805535744 flags 0x1(WRITTEN) backref revision 1
+> > checksum stored 2d2d2262
+> > checksum calced 2d2d2262
+> > fs uuid ab05cfc6-9859-404e-970d-3999b1cb5438
+> > chunk uuid c9470ba2-49ac-4d46-8856-438a18e6bd23
+> >         item 0 key (1073741824 RAID_STRIPE_KEY 131072) itemoff 16243 itemsize 56
+> >                         encoding: RAID0
+> >                         stripe 0 devid 1 offset 805306368 length 131072
+> >                         stripe 1 devid 2 offset 536870912 length 131072
+> > total bytes 42949672960
+> > bytes used 294912
+> > uuid ab05cfc6-9859-404e-970d-3999b1cb5438
+> > 
+> > RAID1 case:
+> > bash-5.2# btrfs inspect-internal dump-tree -t raid_stripe /dev/nvme0n1
+> > btrfs-progs v6.3
+> > raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
+> > leaf 805535744 items 1 free space 16218 generation 8 owner RAID_STRIPE_TREE
+> > leaf 805535744 flags 0x1(WRITTEN) backref revision 1
+> > checksum stored 56199539
+> > checksum calced 56199539
+> > fs uuid 9e693a37-fbd1-4891-aed2-e7fe64605045
+> > chunk uuid 691874fc-1b9c-469b-bd7f-05e0e6ba88c4
+> >         item 0 key (939524096 RAID_STRIPE_KEY 131072) itemoff 16243 itemsize 56
+> >                         encoding: RAID1
+> >                         stripe 0 devid 1 offset 939524096 length 65536
+> >                         stripe 1 devid 2 offset 536870912 length 65536
+> > total bytes 42949672960
+> > bytes used 294912
+> > uuid 9e693a37-fbd1-4891-aed2-e7fe64605045
+> > 
+> > A design document can be found here:
+> > https://docs.google.com/document/d/1Iui_jMidCd4MVBNSSLXRfO7p5KmvnoQL/edit?usp=sharing&ouid=103609947580185458266&rtpof=true&sd=true
+> 
+> Please also turn it to developer documentation file (in
+> btrfs-progs/Documentation/dev), it can follow the same structure.
+> 
+> > 
+> > The user-space part of this series can be found here:
+> > https://lore.kernel.org/linux-btrfs/20230215143109.2721722-1-johannes.thumshirn@wdc.com
+> > 
+> > Changes to v8:
+> > - Changed tracepoints according to David's comments
+> > - Mark on-disk structures as packed
+> > - Got rid of __DECLARE_FLEX_ARRAY
+> > - Rebase onto misc-next
+> > - Split out helpers for new btrfs_load_block_group_zone_info RAID cases
+> > - Constify declarations where possible
+> > - Initialise variables before use
+> > - Lower scope of variables
+> > - Remove btrfs_stripe_root() helper
+> > - Pick different BTRFS_RAID_STRIPE_KEY constant
+> > - Reorder on-disk encoding types to match the raid_index
+> > - And possibly more, please git range-diff the versions
+> > - Link to v8: https://lore.kernel.org/r/20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com
+> 
+> v9 will be added as topic branch to for-next, I did several style
+> changes so please send any updates as incrementals if needed.
 
-[    6.994149] ==================================================================
-[    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
-
-[    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
-[    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
-[    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
-[    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
-[    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
-[    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
-[    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
-[    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
-[    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
-[    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
-[    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
-[    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
-[    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
-[    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
-
-[    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
-[    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
-[    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
-[    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
-[    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
-[    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
-[    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
-[    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
-[    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
-[    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
-[    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
-[    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
-[    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
-[    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
-[    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
-[    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
-[    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
-
-[    6.995476] value changed: 0x00000004 -> 0x00000002
-
-[    6.995629] Reported by Kernel Concurrency Sanitizer on:
-[    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
-[    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[    6.995765] ==================================================================
-
-Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
-
-A number of unprotected increments:
-
-        acpi_gbl_nesting_level++;
-
-and conditional statements:
-
-        if (acpi_gbl_nesting_level) {
-                acpi_gbl_nesting_level--;
-        }
-
-no longer work in SMP environment.
-
-Proper locking like
-
-        spin_lock(&acpi_utdebug_lock);
-        acpi_gbl_nesting_level++;
-        spin_unlock(&acpi_utdebug_lock);
-
-and
-
-        spin_lock(&acpi_utdebug_lock);
-        if (acpi_gbl_nesting_level) {
-                acpi_gbl_nesting_level--;
-        }
-        spin_unlock(&acpi_utdebug_lock);
-
-makes these data-races go away.
-
-Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
-acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
-stuff the optmisers do.
-
-The patch eliminates KCSAN BUG warnings.
-
-Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
-Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
-Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
-Fixes: ^1da177e4c3f4 ("Initial git repository build.")
-Cc: Jung-uk Kim <jkim@FreeBSD.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Erik Kaneda <erik.kaneda@intel.com>
-Cc: Bob Moore <robert.moore@intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: Len Brown <lenb@kernel.org>
-Cc: linux-acpi@vger.kernel.org
-Cc: acpica-devel@lists.linuxfoundation.org
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309201331.S2c1JL2h-lkp@intel.com/
-Closes: https://lore.kernel.org/oe-kbuild-all/202309201308.5ZBJFbjh-lkp@intel.com/
-Link: https://github.com/acpica/acpica/pull/893
-Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
----
-v2 -> v3:
- Made the pull request at the ACPICA github.
- Fixed DEFINE_SPINLOCK() undefined warning by putting it inside #ifdef ACPI_DEBUG_OUTPUT
- ... #endif
- Capitalised ACPICA according to the convention.
-
-v1 -> v2:
- Moved the declaration of 'u32 nesting_level' inside #ifdef ACPI_APPLICATION ... #endif
- according to the unused variable warning of the kernel test robot.
-
-v1:
- Preliminary RFC version of the patch.
-
- drivers/acpi/acpica/utdebug.c | 49 +++++++++++++++++++++++++----------
- 1 file changed, 35 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
-index c5f6c85a3a09..594eee294f0f 100644
---- a/drivers/acpi/acpica/utdebug.c
-+++ b/drivers/acpi/acpica/utdebug.c
-@@ -15,8 +15,9 @@
- 
- #define _COMPONENT          ACPI_UTILITIES
- ACPI_MODULE_NAME("utdebug")
--
- #ifdef ACPI_DEBUG_OUTPUT
-+static DEFINE_SPINLOCK(acpi_utdebug_lock);
-+
- static acpi_thread_id acpi_gbl_previous_thread_id = (acpi_thread_id) 0xFFFFFFFF;
- static const char *acpi_gbl_function_entry_prefix = "----Entry";
- static const char *acpi_gbl_function_exit_prefix = "----Exit-";
-@@ -65,9 +66,11 @@ void acpi_ut_track_stack_ptr(void)
- 		acpi_gbl_lowest_stack_pointer = &current_sp;
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level > acpi_gbl_deepest_nesting) {
- 		acpi_gbl_deepest_nesting = acpi_gbl_nesting_level;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- /*******************************************************************************
-@@ -136,6 +139,7 @@ acpi_debug_print(u32 requested_debug_level,
- 	va_list args;
- #ifdef ACPI_APPLICATION
- 	int fill_count;
-+	u32 nesting_level;
- #endif
- 
- 	/* Check if debug output enabled */
-@@ -152,11 +156,12 @@ acpi_debug_print(u32 requested_debug_level,
- 		if (ACPI_LV_THREADS & acpi_dbg_level) {
- 			acpi_os_printf
- 			    ("\n**** Context Switch from TID %u to TID %u ****\n\n",
--			     (u32)acpi_gbl_previous_thread_id, (u32)thread_id);
-+			     (u32) acpi_gbl_previous_thread_id,
-+			     (u32) thread_id);
- 		}
- 
- 		acpi_gbl_previous_thread_id = thread_id;
--		acpi_gbl_nesting_level = 0;
-+		WRITE_ONCE(acpi_gbl_nesting_level, 0);
- 	}
- 
- 	/*
-@@ -173,17 +178,18 @@ acpi_debug_print(u32 requested_debug_level,
- 	 * level.
- 	 */
- 	if (ACPI_LV_THREADS & acpi_dbg_level) {
--		acpi_os_printf("[%u] ", (u32)thread_id);
-+		acpi_os_printf("[%u] ", (u32) thread_id);
- 	}
- 
--	fill_count = 48 - acpi_gbl_nesting_level -
-+	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
-+
-+	fill_count = 48 - nesting_level -
- 	    strlen(acpi_ut_trim_function_name(function_name));
- 	if (fill_count < 0) {
- 		fill_count = 0;
- 	}
- 
--	acpi_os_printf("[%02d] %*s",
--		       acpi_gbl_nesting_level, acpi_gbl_nesting_level + 1, " ");
-+	acpi_os_printf("[%02d] %*s", nesting_level, nesting_level + 1, " ");
- 	acpi_os_printf("%s%*s: ",
- 		       acpi_ut_trim_function_name(function_name), fill_count,
- 		       " ");
-@@ -198,7 +204,6 @@ acpi_debug_print(u32 requested_debug_level,
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_debug_print)
--
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_debug_print_raw
-@@ -238,7 +243,6 @@ acpi_debug_print_raw(u32 requested_debug_level,
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_debug_print_raw)
--
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_ut_trace
-@@ -260,7 +264,10 @@ acpi_ut_trace(u32 line_number,
- 	      const char *module_name, u32 component_id)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
-+
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -274,7 +281,6 @@ acpi_ut_trace(u32 line_number,
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_trace)
--
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_ut_trace_ptr
-@@ -298,7 +304,10 @@ acpi_ut_trace_ptr(u32 line_number,
- 		  u32 component_id, const void *pointer)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
-+
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -334,7 +343,10 @@ acpi_ut_trace_str(u32 line_number,
- 		  const char *module_name, u32 component_id, const char *string)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
-+
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -370,7 +382,10 @@ acpi_ut_trace_u32(u32 line_number,
- 		  const char *module_name, u32 component_id, u32 integer)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
-+
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -414,13 +429,14 @@ acpi_ut_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_exit)
--
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_ut_status_exit
-@@ -463,13 +479,14 @@ acpi_ut_status_exit(u32 line_number,
- 		}
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
--
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_ut_value_exit
-@@ -502,13 +519,14 @@ acpi_ut_value_exit(u32 line_number,
- 				 ACPI_FORMAT_UINT64(value));
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
--
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_ut_ptr_exit
-@@ -540,9 +558,11 @@ acpi_ut_ptr_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix, ptr);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- /*******************************************************************************
-@@ -577,9 +597,11 @@ acpi_ut_str_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix, string);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- /*******************************************************************************
-@@ -612,5 +634,4 @@ acpi_trace_point(acpi_trace_event_type type, u8 begin, u8 *aml, char *pathname)
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_trace_point)
--
- #endif
--- 
-2.34.1
-
+Moved to misc-next. I'll do a minor release of btrfs-progs soon so we
+get the tool support for testing.
