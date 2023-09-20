@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 631547A8A98
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614447A8AA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjITR20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
+        id S229490AbjITR3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjITR2Z (ORCPT
+        with ESMTP id S229463AbjITR3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:28:25 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6092BCA
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:28:19 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7748ca56133so1461739f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:28:19 -0700 (PDT)
+        Wed, 20 Sep 2023 13:29:45 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3ECCC
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:29:38 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-276b9d5ce1dso1197069a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:29:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695230898; x=1695835698; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kkLqg2B+adiov6jsupv3kMfmjBJ7fS80McpmCcLUPX8=;
-        b=ULEYS0ovbxUEr54Io+CL/1yDYP5o6wwj90efvSPsjIYGnjEWhT0Rl23PA9/gdH8gCv
-         p6VOXYewGq+uKn2O7cbPBZsK1aZctAU5ZrhytnTbX0zye3wG+ElI+A2+0J6+rPGoZkrA
-         xOp59usLJGyEwTgDrtUm8A6pkuRQsynLFx0sHACJmCRbk+odSLSEGAE//loYXxDQ2GEk
-         Ku2gTfTYLrVfvF3TSc5cOjqlt1hxI4O2H8Top2IAJCEp1p9Hd+uU4CLmh7/EN5INaLmi
-         +b9eGYHy0onBW9ZOq30a89ctX4Al5Eonoqn0wtYXS3dQTcuzTMKqMPxQLIabOLuqmNzC
-         rKxA==
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1695230977; x=1695835777; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S2kSqjbE4R4s9y9PfagLdxTPyk6OQBps7KGlApfLIXc=;
+        b=xWFL8w1eAEZjW21bAvLu0Nie13OTsSvGPe5U0ge3uyfcB3WN8LVXh7KFNnwEHs85rH
+         8VnTaU9ivhsjea6qpxL90yKYBin6rI0oGADVpH7hoz+GSl0enPWQPOXqs9KQgI3PNIoz
+         6/wtaJK0lcgEtVQowL8RnzEuYTGzqoVhEssJHr1xmtZven3pBpplZ1UARkTzo5wzEvYT
+         xMILRhi78w4+4xKxeL2YMPbglhkY1z5BguGzB7kaFWP9mIkd7ELVkSOL3O/evLxNrjeZ
+         hT8j2CgQw5qXl/1kYtqoUzrV2NqkVG3N+Tx9G+A17NENVQvaj6ifTTz6TIf615sApxYK
+         1hCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695230898; x=1695835698;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kkLqg2B+adiov6jsupv3kMfmjBJ7fS80McpmCcLUPX8=;
-        b=OJhZSZPlCJvxKLBzBuGyUsIv57ehHoU+wJZLAdo1nguVtYFdSFg0EYN4CCQv3AVQzn
-         uVDLRIGqKLIk2ArBBOcGNNCxhsQ5nTA1pujJc1fD6Fr/cv/i7Cfx5U/YyK/rgBgTdaEQ
-         OHmsYD0CgqOlYjvx99OI8qw2hDBDMVmAFOfuoxAycKzfzmzswZYbA5Zj6oqvtQguyD4J
-         P6cz/TQwqMZ6zABAuCNr21alEqeGc57j4jYETZHTKTdbcQfXQGCxqNfgRHHE4PogSUve
-         2wkHcRY+rtkthYhQOMKuTGbpTIaujDp7I7Ps5k+j3zypQRZyRDnYDkqSEOsU+VF88jwI
-         YYxg==
-X-Gm-Message-State: AOJu0YzLqXYu++baDWpORoRvXcQpzg5Px3i731eW7CtTc/X/g8FJ2FHU
-        3UXq7Jj7Viki7Bohjw54HjUa4A==
-X-Google-Smtp-Source: AGHT+IH8ast9/jQse5Zw9YqcdIGsX6l6RDDVbdigCMzzsjRmjCk8jCwi/O/TtNcPRIKcV9tagNVo4Q==
-X-Received: by 2002:a05:6602:3807:b0:792:9b50:3c3d with SMTP id bb7-20020a056602380700b007929b503c3dmr4444110iob.1.1695230898513;
-        Wed, 20 Sep 2023 10:28:18 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id k28-20020a02c77c000000b0042b2959e6dcsm4312765jao.87.2023.09.20.10.28.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 10:28:17 -0700 (PDT)
-Message-ID: <f37c00c5-467a-4339-9e20-ca5a12905cd3@kernel.dk>
-Date:   Wed, 20 Sep 2023 11:28:17 -0600
+        d=1e100.net; s=20230601; t=1695230977; x=1695835777;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S2kSqjbE4R4s9y9PfagLdxTPyk6OQBps7KGlApfLIXc=;
+        b=pYBZ6RKfvxSiRqTVXoCawBTVdL07JzUEZWH9B6d03joeQ2Q9/NffXOeoVU4jBaiC9I
+         XsdYc0cK5HaD17dkEcCaejDfHQqghVoBBDI0TCw4eIUBE4JGvyQbOkKXqoG3boIJNd/J
+         TvoAcPTd7z1vCew1zFZpUpYZTtiP985Dv4J8d0vkvMfMkeYtvOnPsEGPhU/lEqefnpxt
+         lHPo1NralyyiORN3q9OY9VOOQ/537h1eXVPI2gKh1yoMieHNbBywnfFLGrcryhMQhjLy
+         XHwtYB8tm5gI5cDp+HrBmcbSXcPEUPR0o2pXchqO3PErmsOCWLv84B9ADGuC9kk6FspI
+         Nu2g==
+X-Gm-Message-State: AOJu0YwV4XFM4KxkeMn49SoPj+6MFUtajHYXN0qAwnFtFhFC2uBhjBZ1
+        2ncbBvNPNmft+59SUTPT7AkLZQ==
+X-Google-Smtp-Source: AGHT+IENxeIO9GsbP5Nbf4A5wYx4U8iUO+I6y0wMlt3QBuQ04m3lMwzoskKgzx6T3xCx7qIkJBoaEQ==
+X-Received: by 2002:a17:90b:1b03:b0:26b:4ce1:9705 with SMTP id nu3-20020a17090b1b0300b0026b4ce19705mr3390551pjb.38.1695230977427;
+        Wed, 20 Sep 2023 10:29:37 -0700 (PDT)
+Received: from hermes.local (204-195-112-131.wavecable.com. [204.195.112.131])
+        by smtp.gmail.com with ESMTPSA id oj15-20020a17090b4d8f00b0026b3ed37ddcsm1591518pjb.32.2023.09.20.10.29.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 10:29:37 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 10:29:34 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: include/linux/dma-mapping.h:416:36: warning: array subscript i
+ is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'}
+Message-ID: <20230920102934.595b755f@hermes.local>
+In-Reply-To: <202309200904.CEED70DA33@keescook>
+References: <202309191958.UBw1cjXk-lkp@intel.com>
+        <202309200904.CEED70DA33@keescook>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fs/splice: don't block splice_direct_to_actor() after
- data was read
-Content-Language: en-US
-To:     Christian Brauner <brauner@kernel.org>,
-        Max Kellermann <max.kellermann@ionos.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230919081259.1094971-1-max.kellermann@ionos.com>
- <20230919-kommilitonen-hufen-d270d1568897@brauner>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230919-kommilitonen-hufen-d270d1568897@brauner>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,95 +76,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/23 8:18 AM, Christian Brauner wrote:
-> [+Cc Jens]
+On Wed, 20 Sep 2023 09:09:33 -0700
+Kees Cook <keescook@chromium.org> wrote:
+
+> On Tue, Sep 19, 2023 at 07:27:26PM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   2cf0f715623872823a72e451243bbf555d10d032
+> > commit: df8fc4e934c12b906d08050d7779f292b9c5c6b5 kbuild: Enable -fstrict-flex-arrays=3
+> > date:   4 months ago
+> > config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20230919/202309191958.UBw1cjXk-lkp@intel.com/config)
+> > compiler: loongarch64-linux-gcc (GCC) 13.2.0
+> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230919/202309191958.UBw1cjXk-lkp@intel.com/reproduce)
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202309191958.UBw1cjXk-lkp@intel.com/
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> >    In file included from include/linux/skbuff.h:28,
+> >                     from include/net/net_namespace.h:43,
+> >                     from include/linux/netdevice.h:38,
+> >                     from drivers/net/ethernet/marvell/sky2.c:18:
+> >    drivers/net/ethernet/marvell/sky2.c: In function 'sky2_rx_unmap_skb':  
+> > >> include/linux/dma-mapping.h:416:36: warning: array subscript i is outside array bounds of 'dma_addr_t[0]' {aka 'long long unsigned int[]'} [-Warray-bounds=]  
+> >      416 | #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
+> >          |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >    drivers/net/ethernet/marvell/sky2.c:1257:17: note: in expansion of macro 'dma_unmap_page'
+> >     1257 |                 dma_unmap_page(&pdev->dev, re->frag_addr[i],
+> >          |                 ^~~~~~~~~~~~~~
+> >    In file included from drivers/net/ethernet/marvell/sky2.c:41:
+> >    drivers/net/ethernet/marvell/sky2.h:2198:25: note: while referencing 'frag_addr'
+> >     2198 |         dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT];
+> >          |                         ^~~~~~~~~  
 > 
-> On Tue, Sep 19, 2023 at 10:12:58AM +0200, Max Kellermann wrote:
->> If userspace calls sendfile() with a very large "count" parameter, the
->> kernel can block for a very long time until 2 GiB (0x7ffff000 bytes)
->> have been read from the hard disk and pushed into the socket buffer.
->>
->> Usually, that is not a problem, because the socket write buffer gets
->> filled quickly, and if the socket is non-blocking, the last
->> direct_splice_actor() call will return -EAGAIN, causing
->> splice_direct_to_actor() to break from the loop, and sendfile() will
->> return a partial transfer.
->>
->> However, if the network happens to be faster than the hard disk, and
->> the socket buffer keeps getting drained between two
->> generic_file_read_iter() calls, the sendfile() system call can keep
->> running for a long time, blocking for disk I/O over and over.
->>
->> That is undesirable, because it can block the calling process for too
->> long.  I discovered a problem where nginx would block for so long that
->> it would drop the HTTP connection because the kernel had just
->> transferred 2 GiB in one call, and the HTTP socket was not writable
->> (EPOLLOUT) for more than 60 seconds, resulting in a timeout:
->>
->>   sendfile(4, 12, [5518919528] => [5884939344], 1813448856) = 366019816 <3.033067>
->>   sendfile(4, 12, [5884939344], 1447429040) = -1 EAGAIN (Resource temporarily unavailable) <0.000037>
->>   epoll_wait(9, [{EPOLLOUT, {u32=2181955104, u64=140572166585888}}], 512, 60000) = 1 <0.003355>
->>   gettimeofday({tv_sec=1667508799, tv_usec=201201}, NULL) = 0 <0.000024>
->>   sendfile(4, 12, [5884939344] => [8032418896], 2147480496) = 2147479552 <10.727970>
->>   writev(4, [], 0) = 0 <0.000439>
->>   epoll_wait(9, [], 512, 60000) = 0 <60.060430>
->>   gettimeofday({tv_sec=1667508869, tv_usec=991046}, NULL) = 0 <0.000078>
->>   write(5, "10.40.5.23 - - [03/Nov/2022:21:5"..., 124) = 124 <0.001097>
->>   close(12) = 0 <0.000063>
->>   close(4)  = 0 <0.000091>
->>
->> In newer nginx versions (since 1.21.4), this problem was worked around
->> by defaulting "sendfile_max_chunk" to 2 MiB:
->>
->>  https://github.com/nginx/nginx/commit/5636e7f7b4
->>
->> Instead of asking userspace to provide an artificial upper limit, I'd
->> like the kernel to block for disk I/O at most once, and then pass back
->> control to userspace.
->>
->> There is prior art for this kind of behavior in filemap_read():
->>
->> 	/*
->> 	 * If we've already successfully copied some data, then we
->> 	 * can no longer safely return -EIOCBQUEUED. Hence mark
->> 	 * an async read NOWAIT at that point.
->> 	 */
->> 	if ((iocb->ki_flags & IOCB_WAITQ) && already_read)
->> 		iocb->ki_flags |= IOCB_NOWAIT;
->>
->> This modifies the caller-provided "struct kiocb", which has an effect
->> on repeated filemap_read() calls.  This effect however vanishes
->> because the "struct kiocb" is not persistent; splice_direct_to_actor()
->> doesn't have one, and each generic_file_splice_read() call initializes
->> a new one, losing the "IOCB_NOWAIT" flag that was injected by
->> filemap_read().
->>
->> There was no way to make generic_file_splice_read() aware that
->> IOCB_NOWAIT was desired because some data had already been transferred
->> in a previous call:
->>
->> - checking whether the input file has O_NONBLOCK doesn't work because
->>   this should be fixed even if the input file is not non-blocking
->>
->> - the SPLICE_F_NONBLOCK flag is not appropriate because it affects
->>   only whether pipe operations are non-blocking, not whether
->>   file/socket operations are non-blocking
->>
->> Since there are no other parameters, I suggest adding the
->> SPLICE_F_NOWAIT flag, which is similar to SPLICE_F_NONBLOCK, but
->> affects the "non-pipe" file descriptor passed to sendfile() or
->> splice().  It translates to IOCB_NOWAIT for regular files.  For now, I
->> have documented the flag to be kernel-internal with a high bit, like
->> io_uring does with SPLICE_F_FD_IN_FIXED, but making this part of the
->> system call ABI may be a good idea as well.
+> The .config has:
+> CONFIG_PAGE_SIZE_16KB=y
+> which makes PAGE_SHIFT == 14
+> 
+> #ifdef CONFIG_PAGE_SIZE_16KB
+> #define PAGE_SHIFT      14
+> 
+> ETH_JUMBO_MTU is:
+> 
+> #define ETH_JUMBO_MTU	9000
+> 
+> which forces "ETH_JUMBO_MTU >> PAGE_SHIFT" to be 0.
+> 
+> I think the right fix would be:
+> 
+> dma_addr_t      frag_addr[ETH_JUMBO_MTU >> PAGE_SHIFT ?: 1]
+> 
+> Thoughts?
+> 
+> -Kees
+> 
 
-I think adding the flag for this case makes sense, and also exposing it
-on the UAPI side. My only concern is full coverage of it. We can't
-really have a SPLICE_F_NOWAIT flag that only applies to some cases.
+This is old driver, I don't have the HW anymore, it went to Free Geek.
+Most of this code was based off of code in other drivers.
 
-That said, asking for a 2G splice, and getting a 2G splice no matter how
-slow it may be, is a bit of a "doctor it hurts when I..." scenario.
+The assumption is that the first part of the data will be received in the
+skb itself, then pages are used for overflow.
 
--- 
-Jens Axboe
+static unsigned sky2_get_rx_data_size(struct sky2_port *sky2)
+{
+	struct rx_ring_info *re;
+	unsigned size;
+
+	/* Space needed for frame data + headers rounded up */
+	size = roundup(sky2->netdev->mtu + ETH_HLEN + VLAN_HLEN, 8);
+
+	sky2->rx_nfrags = size >> PAGE_SHIFT;
+	BUG_ON(sky2->rx_nfrags > ARRAY_SIZE(re->frag_addr));
+
+Assuming PAGE_SIZE of 16k and MTU of 9000.
+
+	size = roundup(9000 + 14 + 4, 8) => 9024
+	sky2->rx_nfrags = 9024 >> 14 = 0
+
+Which means no skb frags will be used.
+
+This is probably suboptimal since it will endup calling alloc_skb()
+to get a 9024 skb. Which in turn causes a call to kmalloc() of 9024.
+
+Not really worth fixing if not testable.
 
