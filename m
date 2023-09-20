@@ -2,50 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 815417A7419
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35597A741E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbjITH3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        id S233736AbjITHaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233714AbjITH3h (ORCPT
+        with ESMTP id S233534AbjITHah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:29:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2970894
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:29:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AE9EC433C8;
-        Wed, 20 Sep 2023 07:29:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695194971;
-        bh=R/LetqBjqdPDGe4IllLhQOI0/OP/i4mhWyG/NZ4Z9g8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=iGnvJcAQnGhOcewj3jr5C0mSBG+QwMhY1aK9vGtHCjuNXJOBTTnVzs8RiOApQYI/k
-         jjPSR98kIPhA7GHRGroW1KDL18ea8aagmHincHE4EdiA5wLDFgaXjz1WTvFlKTHbmX
-         9GOXVmKKBvkNoKYNdR8+0t1itFV5SOTxjcrYoo5gP9zr3q+DdHMrdd6AmArWL5pO8d
-         vnWJVUvdujgNebAUwwpK7VsqLP77ZQM0mpSMf3SzWk4G9ad2G25QUGYyI55AuNvPQt
-         RUkQpnZz7pPXBgVpGBVTxWYL+4D5ugxt9mRtxNv6dA7QR++EpaV7aLnQpa9anv2Rd3
-         awaCjJoINy2cg==
-Message-ID: <65ddacbc-7094-5038-bc13-16bf209fc954@kernel.org>
-Date:   Wed, 20 Sep 2023 10:29:27 +0300
+        Wed, 20 Sep 2023 03:30:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7E4CE
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:30:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695195024; x=1726731024;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+f/SlsffWN3dCi/VtuiZU8f+moZRzVKgS6ofi5xty3Q=;
+  b=hBbw6qMK/UXmmZzxTnhjl/vqGLUsY+pcUpfbQYut01luIz4VfUCyLUxt
+   i5LgprlhbP77QeYJrgN+yLKii412wj9wRg8eebBckNvalCgJcQ7s1s/9m
+   o15j2dXae5RtNcLiAyBsRdXqGu28WvDuanZzAg+pz9TiHIKOJj7u2xLMF
+   708XqpCct1VHdnsyJ/877l3x6GNd5fuH0rM4kpgAHvTAn05xTw2chWkTM
+   fuUPdzHIWE/Wt7ct148j/rk0+TEBxnJ0naBpUGoO6S+i31tHAJD5ZRpvl
+   YInpkCPmC4HYlh+ZcO8/+oqoNYF3WR2PSSnbLgl3u0nssCJKyN9Wrrg43
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="383995573"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="383995573"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:30:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="870266763"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="870266763"
+Received: from lingshan-mobl.ccr.corp.intel.com (HELO [10.93.14.5]) ([10.93.14.5])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:30:17 -0700
+Message-ID: <a636b841-1bfc-925a-406e-6c4469e7e4c6@intel.com>
+Date:   Wed, 20 Sep 2023 15:30:14 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] usb: cdns3: Modify the return value of cdns_set_active ()
- to void when CONFIG_PM_SLEEP is disabled
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [virtio-dev] Re: [virtio-comment] Re: [VIRTIO PCI PATCH v5 1/1]
+ transport-pci: Add freeze_mode to virtio_pci_common_cfg
 Content-Language: en-US
-To:     Xiaolei Wang <xiaolei.wang@windriver.com>, peter.chen@kernel.org,
-        pawell@cadence.com, gregkh@linuxfoundation.org, pavel@denx.de
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230912064946.1405848-1-xiaolei.wang@windriver.com>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20230912064946.1405848-1-xiaolei.wang@windriver.com>
-Content-Type: text/plain; charset=UTF-8
+To:     "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+        Parav Pandit <parav@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
+        "virtio-comment@lists.oasis-open.org" 
+        <virtio-comment@lists.oasis-open.org>,
+        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+References: <20230919114242.2283646-1-Jiqian.Chen@amd.com>
+ <20230919114242.2283646-2-Jiqian.Chen@amd.com>
+ <20230919082802-mutt-send-email-mst@kernel.org>
+ <cd8d306b-6acc-34be-516c-b89c23ac108d@intel.com>
+ <BL1PR12MB5849E32A76165F1307492185E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+ <PH0PR12MB5481D2CBCFBF7BCBF427EE1EDCF9A@PH0PR12MB5481.namprd12.prod.outlook.com>
+ <701bb67c-c52d-4eb3-a6ed-f73bd5d0ff33@intel.com>
+ <BL1PR12MB5849A542AA93F6ED9FEEAAF0E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+In-Reply-To: <BL1PR12MB5849A542AA93F6ED9FEEAAF0E7F9A@BL1PR12MB5849.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,40 +95,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiaolei,
 
-On 12/09/2023 09:49, Xiaolei Wang wrote:
-> The return type of cdns_set_active () is inconsistent
-> depending on whether CONFIG_PM_SLEEP is enabled, so the
-> return value is modified to void type.
-> 
-> Reported-by: Pavel Machek <pavel@denx.de>
-> Closes: https://lore.kernel.org/all/ZP7lIKUzD68XA91j@duo.ucw.cz/
-> Fixes: 2319b9c87fe2 ("usb: cdns3: Put the cdns set active part outside the spin lock")
-> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
 
-Should this be CC to stable as the original patch which this patch is
-fixing has made it into the stable trees.
+On 9/20/2023 3:24 PM, Chen, Jiqian wrote:
+> Hi Lingshan,
+> It seems you reply to the wrong email thread. They are not related to my patch.
+These reply to Parva's comments.
+@Parva, if you want to discuss more about live migration, please reply 
+in my thread, lets don't flood here.
+>
+> On 2023/9/20 15:06, Zhu, Lingshan wrote:
+>>
+>> On 9/20/2023 2:58 PM, Parav Pandit wrote:
+>>>> From: Chen, Jiqian <Jiqian.Chen@amd.com>
+>>>> Sent: Wednesday, September 20, 2023 12:03 PM
+>>>> If driver write 0 to reset device, can the SUSPEND bit be cleared?
+>>> It must as reset operation, resets everything else and so the suspend too.
+>>>
+>>>> (pci_pm_resume->virtio_pci_restore->virtio_device_restore-
+>>>>> virtio_reset_device)
+>>>> If SUSPEND is cleared, then during the reset process in Qemu, I can't judge if
+>>>> the reset request is from guest restore process or not, and then I can't change
+>>>> the reset behavior.
+>>> Reset should not be influenced by suspend.
+>>> Suspend should do the work of suspend and reset to do the reset.
+>>>
+>>> The problem to overcome in [1] is, resume operation needs to be synchronous as it involves large part of context to resume back, and hence just asynchronously setting DRIVER_OK is not enough.
+>>> The sw must verify back that device has resumed the operation and ready to answer requests.
+>> this is not live migration, all device status and other information still stay in the device, no need to "resume" context, just resume running.
+>>
+>> Like resume from a failed LM.
+>>> This is slightly different flow than setting the DRIVER_OK for the first time device initialization sequence as it does not involve large restoration.
+>>>
+>>> So, to merge two ideas, instead of doing DRIVER_OK to resume, the driver should clear the SUSPEND bit and verify that it is out of SUSPEND.
+>>>
+>>> Because driver is still in _OK_ driving the device flipping the SUSPEND bit.
+>> Please read the spec, it says:
+>> The driver MUST NOT clear a device status bit
+>>
+>>
 
-> ---
->  drivers/usb/cdns3/core.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
-> index 4a4dbc2c1561..81a9c9d6be08 100644
-> --- a/drivers/usb/cdns3/core.h
-> +++ b/drivers/usb/cdns3/core.h
-> @@ -131,8 +131,7 @@ void cdns_set_active(struct cdns *cdns, u8 set_active);
->  #else /* CONFIG_PM_SLEEP */
->  static inline int cdns_resume(struct cdns *cdns)
->  { return 0; }
-> -static inline int cdns_set_active(struct cdns *cdns, u8 set_active)
-> -{ return 0; }
-> +static inline void cdns_set_active(struct cdns *cdns, u8 set_active) { }
->  static inline int cdns_suspend(struct cdns *cdns)
->  { return 0; }
->  #endif /* CONFIG_PM_SLEEP */
-
--- 
-cheers,
--roger
