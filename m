@@ -2,119 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 332E67A8A75
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C457A8A78
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbjITRV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
+        id S229485AbjITRWu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 13:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjITRV1 (ORCPT
+        with ESMTP id S229449AbjITRWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:21:27 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAB2A3;
-        Wed, 20 Sep 2023 10:21:21 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68cbbff84f6so794820b3a.1;
-        Wed, 20 Sep 2023 10:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695230481; x=1695835281; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4Bu8XpvjZ8gfoAYQP/ge6F6IM0gqUOA+cRgVZfRXgSY=;
-        b=QRZcxU8SJSfhYtd79mLzY4yxT6dweHwCQeSzuFR91N4/HBANadoXmzIucwCGYkMOYN
-         WhAOxXiwz+nx2gpjZmBA8Mjoo8AkrQA9Whqo05P57cP7kL69Tg6vN0GXcny4u5kmy51Z
-         Ju17vTk3aw8c3uwv/kDSr+OnQrYAwBIumYvSnRm/VPjzQanS8wju7bL3c6eNIfluJuxr
-         VEC03J51cJskLQDzZzRCWa3h7I9HH5nIjTiTKqZezHqKydaKrTBkYCQF0Z4f0PyBQ2dX
-         1MpgnDRQOzQ2Yq3J2mvOTbIJxO9dy2oE1SXzC/jLGTF4NYZX08wOo6wVEpODGuNq/4xo
-         NwBw==
+        Wed, 20 Sep 2023 13:22:48 -0400
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C27AAF;
+        Wed, 20 Sep 2023 10:22:42 -0700 (PDT)
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-57328758a72so19506eaf.1;
+        Wed, 20 Sep 2023 10:22:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695230481; x=1695835281;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Bu8XpvjZ8gfoAYQP/ge6F6IM0gqUOA+cRgVZfRXgSY=;
-        b=Z76HKJgR25IakCkX2S92bxR37kxgfEdzCaxBk+bvztOdLfzo3iIFdJJgRRcorwfZOz
-         HY2Bex7YiEfNo8CP5Doq2NYQnW28Wh044baeaor3PAZJpwHFtS8vEt0yP7WeKbjhAjjM
-         Uui657/TcnD0ZCozBM9fcC8sOVSQqx3YDcmls/GhpO3eQOM5a7Z9Lu++gPQEXQH6LiIR
-         6OxoY7FKztLTv7i6rx5u3KcDHayi9VwiuDqGqbyUkeAuC5IGNSpr5WU2zsVEEIftIIgU
-         aCtgMsbIKqWfygc39Z5G26fykxh4tWZn68aW5avy1h1SrFFw6143R1Do18v+is2fw1TF
-         i47Q==
-X-Gm-Message-State: AOJu0YyqTYVbXf08dJsYU5T67I7v77sJNxHAKE+I+5T1qUmrSqXdPizf
-        eoRJ1589a0DvK5PUOE9khFc=
-X-Google-Smtp-Source: AGHT+IEMY5ePH5jK9wyR98gxFyTuY52Atn0lCRfd+ThGE3tsETj0oFGpKKAAY4utQB0EgSyEqZdpcQ==
-X-Received: by 2002:a05:6a21:999c:b0:155:1710:664a with SMTP id ve28-20020a056a21999c00b001551710664amr5102634pzb.18.1695230481142;
-        Wed, 20 Sep 2023 10:21:21 -0700 (PDT)
-Received: from [10.67.49.139] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id p9-20020a056a0026c900b00690c52267easm2954411pfw.40.2023.09.20.10.21.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 10:21:20 -0700 (PDT)
-Message-ID: <166b5b43-adab-7d00-e3f6-c9a1dfd29f52@gmail.com>
-Date:   Wed, 20 Sep 2023 10:21:18 -0700
+        d=1e100.net; s=20230601; t=1695230562; x=1695835362;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pYehh7LzdQJneqnFsjZ62n8i914se3ySYfcSRbCw+BE=;
+        b=JttLTCjMhMV6DdkNgae6xPeAU6GSReY6hRqeYdoXvPNJf+YfLsNjHF2MSOv/ZH3awG
+         lX7QsFKItgOAWkr9u969NLNaGatPW67QCtxj9aBMA736Mp4muyZunkSZzDzZ8nHvyipL
+         ilijC3F0yJ0vykKto5KCCePgwvrCLKCp55rr44ul0+8ExS7PHg/WhL4O5wFg0fuUJNk+
+         zrDd1ZYentHxub7tOExOqGWV9Bdle2OUyVTHml9j3BckEi2yHd5PVeZtbZHj3YL+XsM3
+         ilbIugZxV8e3iBdj+QF7oOwOm3uVeZfDZLkg7/Nupz+fEK9CD33nmL0UlC+GTOynKW9P
+         ZmlA==
+X-Gm-Message-State: AOJu0YysIooEB31na3i20p54zZL3ZHJ35/Io+XBGUvZAEHTZL3bTCwhQ
+        hMqaeymv2saiilk5YJvKpcv7qRwSL1ZpJ8D3hGs=
+X-Google-Smtp-Source: AGHT+IEb9SMUBcyChlllZAnrubbMNL/iiYyldsK9QHvtjAA1iC4VMOrgwSpu5LpyXqWmUMaFgk+9F2u0K4LRdINEROw=
+X-Received: by 2002:a4a:ea53:0:b0:57b:2ca3:445b with SMTP id
+ j19-20020a4aea53000000b0057b2ca3445bmr2910016ooe.0.1695230561764; Wed, 20 Sep
+ 2023 10:22:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 5.4 000/367] 5.4.257-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230920112858.471730572@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230920112858.471730572@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230919091543.794-1-shiju.jose@huawei.com>
+In-Reply-To: <20230919091543.794-1-shiju.jose@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 20 Sep 2023 19:22:30 +0200
+Message-ID: <CAJZ5v0jeeYAtUEoc8C2TkA+dG8hR0S090RNNfs1DfzSkbxFoTg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ACPI / APEI: Fix for overwriting AER info when
+ error status data has multiple sections
+To:     shiju.jose@huawei.com
+Cc:     helgaas@kernel.org, rafael@kernel.org, lenb@kernel.org,
+        tony.luck@intel.com, james.morse@arm.com, bp@alien8.de,
+        ying.huang@intel.com, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, jonathan.cameron@huawei.com,
+        tanxiaofei@huawei.com, prime.zeng@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/23 04:26, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.257 release.
-> There are 367 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.257-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Tue, Sep 19, 2023 at 11:16 AM <shiju.jose@huawei.com> wrote:
+>
+> From: Shiju Jose <shiju.jose@huawei.com>
+>
+> ghes_handle_aer() passes AER data to the PCI core for logging and
+> recovery by calling aer_recover_queue() with a pointer to struct
+> aer_capability_regs.
+>
+> The problem was that aer_recover_queue() queues the pointer directly
+> without copying the aer_capability_regs data.  The pointer was to
+> the ghes->estatus buffer, which could be reused before
+> aer_recover_work_func() reads the data.
+>
+> To avoid this problem, allocate a new aer_capability_regs structure
+> from the ghes_estatus_pool, copy the AER data from the ghes->estatus
+> buffer into it, pass a pointer to the new struct to
+> aer_recover_queue(), and free it after aer_recover_work_func() has
+> processed it.
+>
+> Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+> ---
+> Changes from v1 to v2:
+> 1. Updated patch description with the description Bjorn has suggested.
+> 2. Add Acked-by: Bjorn Helgaas <bhelgaas@google.com>.
+> ---
+>  drivers/acpi/apei/ghes.c | 23 ++++++++++++++++++++++-
+>  drivers/pci/pcie/aer.c   | 10 ++++++++++
+>  include/acpi/ghes.h      |  1 +
+>  3 files changed, 33 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index ef59d6ea16da..63ad0541db38 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -209,6 +209,20 @@ int ghes_estatus_pool_init(unsigned int num_ghes)
+>         return -ENOMEM;
+>  }
+>
+> +/**
+> + * ghes_estatus_pool_region_free - free previously allocated memory
+> + *                                from the ghes_estatus_pool.
+> + * @addr: address of memory to free.
+> + * @size: size of memory to free.
+> + *
+> + * Returns none.
+> + */
+> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size)
+> +{
+> +       gen_pool_free(ghes_estatus_pool, addr, size);
+> +}
+> +EXPORT_SYMBOL_GPL(ghes_estatus_pool_region_free);
+> +
+>  static int map_gen_v2(struct ghes *ghes)
+>  {
+>         return apei_map_generic_address(&ghes->generic_v2->read_ack_register);
+> @@ -564,6 +578,7 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+>             pcie_err->validation_bits & CPER_PCIE_VALID_AER_INFO) {
+>                 unsigned int devfn;
+>                 int aer_severity;
+> +               u8 *aer_info;
+>
+>                 devfn = PCI_DEVFN(pcie_err->device_id.device,
+>                                   pcie_err->device_id.function);
+> @@ -577,11 +592,17 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+>                 if (gdata->flags & CPER_SEC_RESET)
+>                         aer_severity = AER_FATAL;
+>
+> +               aer_info = (void *)gen_pool_alloc(ghes_estatus_pool,
+> +                                                 sizeof(struct aer_capability_regs));
+> +               if (!aer_info)
+> +                       return;
+> +               memcpy(aer_info, pcie_err->aer_info, sizeof(struct aer_capability_regs));
+> +
+>                 aer_recover_queue(pcie_err->device_id.segment,
+>                                   pcie_err->device_id.bus,
+>                                   devfn, aer_severity,
+>                                   (struct aer_capability_regs *)
+> -                                 pcie_err->aer_info);
+> +                                 aer_info);
+>         }
+>  #endif
+>  }
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index e85ff946e8c8..388b614c11fd 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/kfifo.h>
+>  #include <linux/slab.h>
+>  #include <acpi/apei.h>
+> +#include <acpi/ghes.h>
+>  #include <ras/ras_event.h>
+>
+>  #include "../pci.h"
+> @@ -996,6 +997,15 @@ static void aer_recover_work_func(struct work_struct *work)
+>                         continue;
+>                 }
+>                 cper_print_aer(pdev, entry.severity, entry.regs);
+> +               /*
+> +                * Memory for aer_capability_regs(entry.regs) is being allocated from the
+> +                * ghes_estatus_pool to protect it from overwriting when multiple sections
+> +                * are present in the error status. Thus free the same after processing
+> +                * the data.
+> +                */
+> +               ghes_estatus_pool_region_free((unsigned long)entry.regs,
+> +                                             sizeof(struct aer_capability_regs));
+> +
+>                 if (entry.severity == AER_NONFATAL)
+>                         pcie_do_recovery(pdev, pci_channel_io_normal,
+>                                          aer_root_reset);
+> diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
+> index 3c8bba9f1114..40d89e161076 100644
+> --- a/include/acpi/ghes.h
+> +++ b/include/acpi/ghes.h
+> @@ -78,6 +78,7 @@ static inline struct list_head *ghes_get_devices(void) { return NULL; }
+>  #endif
+>
+>  int ghes_estatus_pool_init(unsigned int num_ghes);
+> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
 
-perf does not build with:
+If I'm not mistaken, this needs to go under #ifdef
+CONFIG_ACPI_APEI_GHES and it needs an empty stub for the case when
+CONFIG_ACPI_APEI_GHES is not set.
 
-libbpf.c: In function 'bpf_object__close':
-libbpf.c:4205:15: error: 'struct bpf_object' has no member named 
-'btf_vmlinux'
-   btf__free(obj->btf_vmlinux);
-                ^~
-
-due to 34d66b750e83d49c7d3d33d59e6a1b49e0d5db15 ("libbpf: Free 
-btf_vmlinux when closing bpf_object")
-
-the btf_vmlinux member was introduced with 
-a6ed02cac690b635dbb938690e795812ce1e14ca ("libbpf: Load btf_vmlinux only 
-once per object.") which is only in >= 5.6.
-
-Suggset we drop that commit.
--- 
-Florian
-
+>
+>  static inline int acpi_hest_get_version(struct acpi_hest_generic_data *gdata)
+>  {
+> --
+> 2.34.1
+>
