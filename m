@@ -2,1223 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6C47A89FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F367B7A8A01
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235236AbjITRDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33492 "EHLO
+        id S234588AbjITRDr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 13:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235100AbjITRDe (ORCPT
+        with ESMTP id S235174AbjITRDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:03:34 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D0EAB
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:03:25 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4052755d5bbso277255e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:03:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695229403; x=1695834203; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZinPJ5PYB2eid5QoM+L4lgEz+bW8cvHUuVjkVPgA4pk=;
-        b=j8UUajMdGwVtd3l/SeAm2L6p/J1g9XQXmUeYFIppqIZ4FRz05OWah4K7Ec9DU7YaYV
-         fWKVjx5LBU6kzJ3M0kumbwQUou/mfWz2RlhTe7hYgm4bX5xuiHePnjAu0rhqunpEyAcB
-         gzaH0X+5J/48OyR53vJOkW31k0g3hC7sz/MLPfi4h3giA5t352SANaS8nKEILQzf3jBn
-         NTWKjPhrT50lJrmE13VgQ2NN/rorl74vOtDs1aBwUoLLqqRjrfz0xzdcPuha/gw+OmTM
-         vMSsZfVfTUugFEl1FujCYXAeJ0Q/MQ5yvh4LFOWtmKyj1DF21wWGw3A4stn9C2KBeblP
-         ozlQ==
+        Wed, 20 Sep 2023 13:03:42 -0400
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72B5DE;
+        Wed, 20 Sep 2023 10:03:31 -0700 (PDT)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6bc57401cb9so13696a34.0;
+        Wed, 20 Sep 2023 10:03:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695229403; x=1695834203;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695229411; x=1695834211;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZinPJ5PYB2eid5QoM+L4lgEz+bW8cvHUuVjkVPgA4pk=;
-        b=OWx4dMNJiRJ7nJTpBZ5AL3l06tmKlSCzE9l3LVYCU9y2JH4YaUTsUzECCTCRUaWMaE
-         T4pagj4DdwUzgXFVTkvd2nCBqQZtPVu0ivilIkGAhRUL49Vsffy3WCkbYyIkDb/8zSzw
-         Fd2cZdYe/1TiwoBrdYuwDF7lBN5p6PHLMZ9httqHLx1vI1A+1ES8YS6cOc7PcJuwztRM
-         c66x3+YNc3VBZhEv4sGYY9MHlbcUZ3H8YRPAvLw84M+4wpDu3FcQHOTexeNk6kPuJ8IG
-         cuJ+OACwswRAhwD/MPQzv9uY37Oi9hCYzS4mpgfyAkpVXpl4lEekWpgqHKPdsYEWNVT5
-         094A==
-X-Gm-Message-State: AOJu0Yy6JUjV7YNFK+iz7U2HXhXbNEHEmTRWE2gpX2R8QGtyjzwoifVf
-        LBMm5QOKGUhRJNXzHqoSo9PF5w==
-X-Google-Smtp-Source: AGHT+IHkKZGhqZcw0k0xvwEozSAZi6uSahTQ7XYP5azIWJt3sy24MLTbjVNR1j+0gncdx74Uc44lNA==
-X-Received: by 2002:a5d:6b88:0:b0:317:5168:c21f with SMTP id n8-20020a5d6b88000000b003175168c21fmr2838659wrx.31.1695229403189;
-        Wed, 20 Sep 2023 10:03:23 -0700 (PDT)
-Received: from localhost.localdomain (abordeaux-655-1-129-86.w90-5.abo.wanadoo.fr. [90.5.10.86])
-        by smtp.gmail.com with ESMTPSA id g10-20020adff3ca000000b003200c918c81sm11221089wrp.112.2023.09.20.10.03.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 10:03:22 -0700 (PDT)
-From:   David Lechner <dlechner@baylibre.com>
-To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Cc:     David Lechner <dlechner@baylibre.com>,
-        linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>
-Subject: [PATCH 4/4] iio: resolver: add new driver for AD2S1210
-Date:   Wed, 20 Sep 2023 12:02:53 -0500
-Message-Id: <20230920170253.203395-5-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230920170253.203395-1-dlechner@baylibre.com>
-References: <20230920170253.203395-1-dlechner@baylibre.com>
+        bh=frwJafWpVtftBg3p1eNKNriXzlETV5ppzjf7DC98WZM=;
+        b=dlVPAkOEFs8K2mg9tP7WtV19RtoYmLuN+xgLNJW7oVpYfSC2lwDmNDTYELa8gOUjce
+         WNxRvvkpAaer5x/FN5wMhNuGnSnHoJnK/Tp4XeakYxFv/DrjlXs7m4IfBn2NzH1Szna9
+         LeZ+huoM9rbVtVbQmgCP7f3T4JWpq53+2lGF1+MuNcAMhobuHxifi20QnDWtw2pMTFis
+         RYQxZg/k9y0ho78r2ydEOKu9C2sFF7AEuYiQpOHz8N5kPBgiZgM1ny4INRX7TwsQuded
+         zmQsvPJrC4FB5M9Tq3j+UPoNVBklRH/VZ8+4u6zmK/UJ4jWUnmc0E3TEyMT9GOt8/DPt
+         2gDg==
+X-Gm-Message-State: AOJu0YwzC9k1oW2LCRgm/a3AbtwG+A7dXIuFdda650bXUWQ/vCBvI4Z4
+        2a4sXzxrUacG1nSENBq74yH40ha28MfhOCLw2+BGW+TT
+X-Google-Smtp-Source: AGHT+IFjjdGu8FBizMigrdWOdPJsngiIUgzdyjwxbhCkv6zx7OZxeWbBSCgfvJ4bB+HD6B+pmt8j/ywBR8MNX4OYgwM=
+X-Received: by 2002:a05:6808:1512:b0:3ad:f535:7e9a with SMTP id
+ u18-20020a056808151200b003adf5357e9amr1995902oiw.5.1695229410891; Wed, 20 Sep
+ 2023 10:03:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230920162222.3614-1-mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <20230920162222.3614-1-mirsad.todorovac@alu.unizg.hr>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 20 Sep 2023 19:03:19 +0200
+Message-ID: <CAJZ5v0iLjOYBGcANrziRghZTPqHrPhJksB=oV9tRJYctWJ=CvA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] ACPICA: utdebug: use spinlocks to fix the
+ data-races reported by the KCSAN
+To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@freebsd.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a new driver for Analog Devices, Inc. AD2S1210 resolver to
-digital converter. The driver is based on the staging driver with the
-following improvements:
+On Wed, Sep 20, 2023 at 6:30 PM Mirsad Goran Todorovac
+<mirsad.todorovac@alu.unizg.hr> wrote:
+>
+> KCSAN reported hundreds of instances of data-races in ACPICA like this one:
+>
+> [    6.994149] ==================================================================
+> [    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
+>
+> [    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
+> [    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
+> [    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
+> [    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+> [    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+> [    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+> [    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+> [    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+> [    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+> [    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+> [    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+> [    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+> [    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+> [    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>
+> [    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
+> [    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
+> [    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
+> [    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
+> [    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
+> [    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
+> [    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+> [    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+> [    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+> [    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+> [    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+> [    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+> [    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+> [    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+> [    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+> [    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+> [    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>
+> [    6.995476] value changed: 0x00000004 -> 0x00000002
+>
+> [    6.995629] Reported by Kernel Concurrency Sanitizer on:
+> [    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+> [    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+> [    6.995765] ==================================================================
+>
+> Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
+>
+> A number of unprotected increments:
+>
+>         acpi_gbl_nesting_level++;
+>
+> and conditional statements:
+>
+>         if (acpi_gbl_nesting_level) {
+>                 acpi_gbl_nesting_level--;
+>         }
+>
+> no longer work in SMP environment.
+>
+> Proper locking like
+>
+>         spin_lock(&acpi_utdebug_lock);
+>         acpi_gbl_nesting_level++;
+>         spin_unlock(&acpi_utdebug_lock);
+>
+> and
+>
+>         spin_lock(&acpi_utdebug_lock);
+>         if (acpi_gbl_nesting_level) {
+>                 acpi_gbl_nesting_level--;
+>         }
+>         spin_unlock(&acpi_utdebug_lock);
+>
+> makes these data-races go away.
+>
+> Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
+> acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
+> stuff the optmisers do.
+>
+> The patch eliminates KCSAN BUG warnings.
+>
+> Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+> Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
+> Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
+> Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
+> Fixes: ^1da177e4c3f4 ("Initial git repository build.")
+> Cc: Jung-uk Kim <jkim@FreeBSD.org>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Erik Kaneda <erik.kaneda@intel.com>
+> Cc: Bob Moore <robert.moore@intel.com>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> Cc: Len Brown <lenb@kernel.org>
+> Cc: linux-acpi@vger.kernel.org
+> Cc: acpica-devel@lists.linuxfoundation.org
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309201331.S2c1JL2h-lkp@intel.com/
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309201308.5ZBJFbjh-lkp@intel.com/
+> Link: https://github.com/acpica/acpica/pull/893
+> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+> ---
+> v2 -> v3:
+>  Made the pull request at the ACPICA github.
+>  Fixed DEFINE_SPINLOCK() undefined warning by putting it inside #ifdef ACPI_DEBUG_OUTPUT
+>  ... #endif
+>  Capitalised ACPICA according to the convention.
+>
+> v1 -> v2:
+>  Moved the declaration of 'u32 nesting_level' inside #ifdef ACPI_APPLICATION ... #endif
+>  according to the unused variable warning of the kernel test robot.
+>
+> v1:
+>  Preliminary RFC version of the patch.
+>
+>  drivers/acpi/acpica/utdebug.c | 49 +++++++++++++++++++++++++----------
+>  1 file changed, 35 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
+> index c5f6c85a3a09..594eee294f0f 100644
+> --- a/drivers/acpi/acpica/utdebug.c
+> +++ b/drivers/acpi/acpica/utdebug.c
+> @@ -15,8 +15,9 @@
+>
+>  #define _COMPONENT          ACPI_UTILITIES
+>  ACPI_MODULE_NAME("utdebug")
+> -
+>  #ifdef ACPI_DEBUG_OUTPUT
+> +static DEFINE_SPINLOCK(acpi_utdebug_lock);
 
-Fixes:
-- Fix use before initialization bug in probe.
-- Fix not checking error returns in probe.
-- Remove spi_setup() and spi_set_drvdata() from probe.
-- Fix ordering of devm_iio_device_register()
-- Remove incorrect hysteresis logic
+No, you can't do that in the ACPICA code.  Likewise for other
+Linux-specific pieces of code in the patch below.
 
-Changes:
-- Use BIT/GENMASK macros.
-- Use devicetree to get CLKIN frequency (was sysfs attribute).
-- No longer bit-shift the raw value for IIO_CHAN_INFO_RAW.
-- Use regmap for register access.
-- Remove config sysfs attribute.
-- Use gpio array for mode and resolution gpios.
-- Invert sample gpio logic and use GPIO_ACTIVE_LOW in devicetree.
-- Change hysteresis to use IIO_CHAN_INFO_HYSTERESIS instead of custom
-  device attribute.
-- Rename fexcit attribute to excitation_frequency.
-- Use devicetree to specify resolution instead of sysfs attribute.
+I'd very much prefer you to send a proper problem report instead of
+sending patches like this.
 
-Additions:
-- Implement IIO_CHAN_INFO_SCALE.
-- Implement debugfs register access.
-- Add phase_lock_range attribute.
-- Add triggered buffer support.
+As it stands, I'm not even sure what problem exactly this is
+attempting to address.
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- .../testing/sysfs-bus-iio-resolver-ad2s1210   | 109 ++
- drivers/iio/resolver/Kconfig                  |  13 +
- drivers/iio/resolver/Makefile                 |   1 +
- drivers/iio/resolver/ad2s1210.c               | 948 ++++++++++++++++++
- 4 files changed, 1071 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-resolver-ad2s1210
- create mode 100644 drivers/iio/resolver/ad2s1210.c
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-resolver-ad2s1210 b/Documentation/ABI/testing/sysfs-bus-iio-resolver-ad2s1210
-new file mode 100644
-index 000000000000..32890c85168e
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-iio-resolver-ad2s1210
-@@ -0,0 +1,109 @@
-+What:		/sys/bus/iio/devices/iio:deviceX/dos_mis_thrd
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Degradation of Signal Mismatch
-+		Threshold value. Writing sets the value. Valid values are 0 (0V)
-+		to 127 (4.826V). To convert the value to volts, multiply by
-+		0.038.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/dos_ovr_thrd
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Degradation of Signal Overrange
-+		Threshold value. Writing sets the value. Valid values are 0 (0V)
-+		to 127 (4.826V). To convert the value to volts, multiply by
-+		0.038.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/dos_rst_max_thrd
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Degradation of Signal Reset Maximum
-+		Threshold value. Writing sets the value. Valid values are 0 (0V)
-+		to 127 (4.826V). To convert the value to volts, multiply by
-+		0.038.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/dos_rst_min_thrd
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Degradation of Signal Reset Minimum
-+		Threshold value. Writing sets the value. Valid values are 0 (0V)
-+		to 127 (4.826V). To convert the value to volts, multiply by
-+		0.038.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/fault
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns a hex value containing the fault bit flags.
-+
-+		Bit	Description
-+		---	-----------
-+		D7	Sine/cosine inputs clipped
-+		D6	Sine/cosine inputs below LOS threshold
-+		D5	Sine/cosine inputs exceed DOS overrange threshold
-+		D4	Sine/cosine inputs exceed DOS mismatch threshold
-+		D3	Tracking error exceeds LOT threshold
-+		D2	Velocity exceeds maximum tracking rate
-+		D1	Phase error exceeds phase lock range
-+		D0	Configuration parity error
-+
-+		Writing any value will clear any fault conditions.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/excitation_frequency
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Excitation Frequency in Hz. Writing
-+		sets the Excitation Frequency and performs a software reset on
-+		the device to apply the change. Valid values are 2000 (2kHz) to
-+		20000 (20kHz).
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/los_thrd
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Loss of Signal Reset Threshold
-+		value. Writing sets the value. Valid values are 0 (0V) to
-+		127 (4.826V). To convert the value to volts, multiply by 0.038.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/lot_high_thrd
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Loss of Position Tracking Detection
-+		High Threshold value. Writing sets the value. Valid values are
-+		0 (0 deg) to 127 (9/18/45 deg). The interpretation of the value
-+		depends on the selected resolution. To convert the value to
-+		degrees, multiply by 0.35 for 10-bit resolution, multiply by
-+		0.14 for 12-bit resolution or multiply by 0.09 for 14 and 16-bit
-+		resolution.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/lot_low_thrd
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Loss of Position Tracking Detection
-+		Low Threshold value. Writing sets the value. Valid values are
-+		0 (0 deg) to 127 (9/18/45 deg). The interpretation of the value
-+		depends on the selected resolution. To convert the value to
-+		degrees, multiply by 0.35 for 10-bit resolution, multiply by
-+		0.14 for 12-bit resolution or multiply by 0.09 for 14 and 16-bit
-+		resolution.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/phase_lock_range
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the current Phase lock range in degrees. Writing
-+		sets the value in the configuration register.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/phase_lock_range_available
-+KernelVersion:  6.7
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading returns the possible values for the phase_lock_range
-+		attribute, namely 44 and 360.
-diff --git a/drivers/iio/resolver/Kconfig b/drivers/iio/resolver/Kconfig
-index 47dbfead9b31..424529d36080 100644
---- a/drivers/iio/resolver/Kconfig
-+++ b/drivers/iio/resolver/Kconfig
-@@ -25,4 +25,17 @@ config AD2S1200
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called ad2s1200.
-+
-+config AD2S1210
-+	tristate "Analog Devices ad2s1210 driver"
-+	depends on SPI
-+	depends on COMMON_CLK
-+	depends on GPIOLIB || COMPILE_TEST
-+	help
-+	  Say yes here to build support for Analog Devices spi resolver
-+	  to digital converters, ad2s1210, provides direct access via sysfs.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called ad2s1210.
-+
- endmenu
-diff --git a/drivers/iio/resolver/Makefile b/drivers/iio/resolver/Makefile
-index fa558138ce45..7f6c876c35ae 100644
---- a/drivers/iio/resolver/Makefile
-+++ b/drivers/iio/resolver/Makefile
-@@ -5,3 +5,4 @@
- 
- obj-$(CONFIG_AD2S90) += ad2s90.o
- obj-$(CONFIG_AD2S1200) += ad2s1200.o
-+obj-$(CONFIG_AD2S1210) += ad2s1210.o
-diff --git a/drivers/iio/resolver/ad2s1210.c b/drivers/iio/resolver/ad2s1210.c
-new file mode 100644
-index 000000000000..97833fbcbf7a
---- /dev/null
-+++ b/drivers/iio/resolver/ad2s1210.c
-@@ -0,0 +1,948 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ad2s1210.c support for the ADI Resolver to Digital Converters: AD2S1210
-+ *
-+ * Copyright (c) 2010-2010 Analog Devices Inc.
-+ * Copyright (C) 2023 BayLibre, SAS
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/spi/spi.h>
-+#include <linux/sysfs.h>
-+#include <linux/types.h>
-+
-+#include <linux/iio/buffer.h>
-+#include <linux/iio/iio.h>
-+#include <linux/iio/sysfs.h>
-+#include <linux/iio/trigger_consumer.h>
-+#include <linux/iio/triggered_buffer.h>
-+
-+#define DRV_NAME "ad2s1210"
-+
-+/* default value of control register on powerup */
-+#define AD2S1210_DEF_CONTROL		0x7E
-+
-+/* control register flags */
-+#define AD2S1210_ADDRESS_DATA		BIT(7)
-+#define AD2S1210_PHASE_LOCK_RANGE_44	BIT(5)
-+#define AD2S1210_ENABLE_HYSTERESIS	BIT(4)
-+#define AD2S1210_SET_ENRES		GENMASK(3, 2)
-+#define AD2S1210_SET_RES		GENMASK(1, 0)
-+
-+#define AD2S1210_REG_POSITION_MSB	0x80
-+#define AD2S1210_REG_POSITION_LSB	0x81
-+#define AD2S1210_REG_VELOCITY_MSB	0x82
-+#define AD2S1210_REG_VELOCITY_LSB	0x83
-+#define AD2S1210_REG_LOS_THRD		0x88
-+#define AD2S1210_REG_DOS_OVR_THRD	0x89
-+#define AD2S1210_REG_DOS_MIS_THRD	0x8A
-+#define AD2S1210_REG_DOS_RST_MAX_THRD	0x8B
-+#define AD2S1210_REG_DOS_RST_MIN_THRD	0x8C
-+#define AD2S1210_REG_LOT_HIGH_THRD	0x8D
-+#define AD2S1210_REG_LOT_LOW_THRD	0x8E
-+#define AD2S1210_REG_EXCIT_FREQ		0x91
-+#define AD2S1210_REG_CONTROL		0x92
-+#define AD2S1210_REG_SOFT_RESET		0xF0
-+#define AD2S1210_REG_FAULT		0xFF
-+
-+#define AD2S1210_MIN_CLKIN	6144000
-+#define AD2S1210_MAX_CLKIN	10240000
-+#define AD2S1210_MIN_EXCIT	2000
-+#define AD2S1210_DEF_EXCIT	10000
-+#define AD2S1210_MAX_EXCIT	20000
-+#define AD2S1210_MIN_FCW	0x4
-+#define AD2S1210_MAX_FCW	0x50
-+
-+enum ad2s1210_mode {
-+	AD2S1210_MODE_POS = 0b00,
-+	AD2S1210_MODE_VEL = 0b01,
-+	AD2S1210_MODE_CONFIG = 0b11,
-+};
-+
-+enum ad2s1210_resolution {
-+	AD2S1210_RES_10 = 0b00,
-+	AD2S1210_RES_12 = 0b01,
-+	AD2S1210_RES_14 = 0b10,
-+	AD2S1210_RES_16 = 0b11,
-+};
-+
-+struct ad2s1210_state {
-+	struct mutex lock;
-+	struct spi_device *sdev;
-+	/** GPIO pin connected to SAMPLE line. */
-+	struct gpio_desc *sample_gpio;
-+	/** GPIO pins connected to A0 and A1 lines. */
-+	struct gpio_descs *mode_gpios;
-+	/** Used to access config registers. */
-+	struct regmap *regmap;
-+	/** The external oscillator frequency in Hz. */
-+	unsigned long fclkin;
-+	/** The selected resolution */
-+	enum ad2s1210_resolution resolution;
-+	/* Scan buffer */
-+	struct {
-+		__be16 chan[2];
-+		/* Ensure timestamp is naturally aligned. */
-+		s64 timestamp __aligned(8);
-+	} scan;
-+	u8 rx[2] __aligned(IIO_DMA_MINALIGN);
-+	u8 tx[2];
-+};
-+
-+static int ad2s1210_set_mode(struct ad2s1210_state *st, enum ad2s1210_mode mode)
-+{
-+	struct gpio_descs *gpios = st->mode_gpios;
-+	DECLARE_BITMAP(bitmap, 2);
-+
-+	bitmap[0] = mode;
-+
-+	return gpiod_set_array_value(gpios->ndescs, gpios->desc, gpios->info,
-+				     bitmap);
-+}
-+
-+/**
-+ * Writes the given data to the given register address.
-+ *
-+ * If the mode is configurable, the device will first be placed in
-+ * configuration mode.
-+ */
-+static int ad2s1210_regmap_reg_write(void *context, unsigned int reg,
-+				     unsigned int val)
-+{
-+	struct ad2s1210_state *st = context;
-+	struct spi_transfer xfers[] = {
-+		{
-+			.len = 1,
-+			.rx_buf = &st->rx[0],
-+			.tx_buf = &st->tx[0],
-+			.cs_change = 1,
-+		}, {
-+			.len = 1,
-+			.rx_buf = &st->rx[1],
-+			.tx_buf = &st->tx[1],
-+		},
-+	};
-+	int ret;
-+
-+	/* values can only be 7 bits, the MSB indicates an address */
-+	if (val & ~0x7F)
-+		return -EINVAL;
-+
-+	st->tx[0] = reg;
-+	st->tx[1] = val;
-+
-+	ret = ad2s1210_set_mode(st, AD2S1210_MODE_CONFIG);
-+	if (ret < 0)
-+		return ret;
-+
-+	return spi_sync_transfer(st->sdev, xfers, ARRAY_SIZE(xfers));
-+}
-+
-+/**
-+ * Reads value from one of the registers.
-+ *
-+ * If the mode is configurable, the device will first be placed in
-+ * configuration mode.
-+ */
-+static int ad2s1210_regmap_reg_read(void *context, unsigned int reg,
-+				    unsigned int *val)
-+{
-+	struct ad2s1210_state *st = context;
-+	struct spi_transfer xfers[] = {
-+		{
-+			.len = 1,
-+			.rx_buf = &st->rx[0],
-+			.tx_buf = &st->tx[0],
-+			.cs_change = 1,
-+		}, {
-+			.len = 1,
-+			.rx_buf = &st->rx[1],
-+			.tx_buf = &st->tx[1],
-+		},
-+	};
-+	int ret;
-+
-+	ret = ad2s1210_set_mode(st, AD2S1210_MODE_CONFIG);
-+	if (ret < 0)
-+		return ret;
-+
-+	st->tx[0] = reg;
-+	/* Must be valid register address here otherwise this could write data.
-+	 * It doesn't matter which one.
-+	 */
-+	st->tx[1] = AD2S1210_REG_FAULT;
-+
-+	ret = spi_sync_transfer(st->sdev, xfers, ARRAY_SIZE(xfers));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* If the D7 bit is set on any read/write register, it indicates a
-+	 * parity error. The fault register is read-only and the D7 bit means
-+	 * something else there.
-+	 */
-+	if (reg != AD2S1210_REG_FAULT && st->rx[1] & AD2S1210_ADDRESS_DATA)
-+		return -EBADMSG;
-+
-+	*val = st->rx[1];
-+
-+	return 0;
-+}
-+
-+/**
-+ * Sets the excitation frequency and performs software reset.
-+ *
-+ * Must be called with lock held.
-+ */
-+static int ad2s1210_set_excitation_frequency(struct ad2s1210_state *st,
-+					     u16 fexcit)
-+{
-+	int ret;
-+	u8 fcw;
-+
-+	fcw = fexcit * (1 << 15) / st->fclkin;
-+	if (fcw < AD2S1210_MIN_FCW || fcw > AD2S1210_MAX_FCW)
-+		return -ERANGE;
-+
-+	ret = regmap_write(st->regmap, AD2S1210_REG_EXCIT_FREQ, fcw);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* software reset reinitializes the excitation frequency output */
-+	return regmap_write(st->regmap, AD2S1210_REG_SOFT_RESET, 0);
-+}
-+
-+static ssize_t excitation_frequency_show(struct device *dev,
-+						  struct device_attribute *attr,
-+						  char *buf)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	unsigned int value;
-+	u16 fexcit;
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = regmap_read(st->regmap, AD2S1210_REG_EXCIT_FREQ, &value);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	fexcit = value * st->fclkin / (1 << 15);
-+
-+	ret = sysfs_emit(buf, "%u\n", fexcit);
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+	return ret;
-+}
-+
-+static ssize_t excitation_frequency_store(struct device *dev,
-+						   struct device_attribute *attr,
-+						   const char *buf, size_t len)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	u16 fexcit;
-+	int ret;
-+
-+	ret = kstrtou16(buf, 10, &fexcit);
-+	if (ret < 0 || fexcit < AD2S1210_MIN_EXCIT || fexcit > AD2S1210_MAX_EXCIT)
-+		return -EINVAL;
-+
-+	mutex_lock(&st->lock);
-+	ret = ad2s1210_set_excitation_frequency(st, fexcit);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	ret = len;
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+
-+	return ret;
-+}
-+
-+static ssize_t phase_lock_range_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = regmap_test_bits(st->regmap, AD2S1210_REG_CONTROL,
-+			       AD2S1210_PHASE_LOCK_RANGE_44);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	ret = sysfs_emit(buf, "%d\n", ret ? 44 : 360);
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+	return ret;
-+}
-+
-+static ssize_t phase_lock_range_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t len)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	u16 udata;
-+	int ret;
-+
-+	ret = kstrtou16(buf, 10, &udata);
-+	if (ret < 0 || (udata != 44 && udata != 360))
-+		return -EINVAL;
-+
-+	mutex_lock(&st->lock);
-+
-+	ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
-+				 AD2S1210_PHASE_LOCK_RANGE_44,
-+				 udata == 44 ? AD2S1210_PHASE_LOCK_RANGE_44 : 0);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	ret = len;
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+	return ret;
-+}
-+
-+static ssize_t phase_lock_range_available_show(struct device *dev,
-+					       struct device_attribute *attr,
-+					       char *buf)
-+{
-+	return sysfs_emit(buf, "44 360\n");
-+}
-+
-+/* read the fault register since last sample */
-+static ssize_t fault_show(struct device *dev,
-+				   struct device_attribute *attr, char *buf)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	unsigned int value;
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = regmap_read(st->regmap, AD2S1210_REG_FAULT, &value);
-+	mutex_unlock(&st->lock);
-+
-+	return ret < 0 ? ret : sysfs_emit(buf, "0x%02x\n", value);
-+}
-+
-+static ssize_t fault_store(struct device *dev,
-+			   struct device_attribute *attr,
-+			   const char *buf,
-+			   size_t len)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	unsigned int value;
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+
-+	gpiod_set_value(st->sample_gpio, 1);
-+	/* delay (2 * tck + 20) nano seconds */
-+	udelay(1);
-+	gpiod_set_value(st->sample_gpio, 0);
-+
-+	ret = regmap_read(st->regmap, AD2S1210_REG_FAULT, &value);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	gpiod_set_value(st->sample_gpio, 1);
-+	gpiod_set_value(st->sample_gpio, 0);
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+
-+	return ret < 0 ? ret : len;
-+}
-+
-+static ssize_t reg_show(struct device *dev,
-+				 struct device_attribute *attr,
-+				 char *buf)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	struct iio_dev_attr *iattr = to_iio_dev_attr(attr);
-+	unsigned int value;
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = regmap_read(st->regmap, iattr->address, &value);
-+	mutex_unlock(&st->lock);
-+
-+	return ret < 0 ? ret : sysfs_emit(buf, "%d\n", value);
-+}
-+
-+static ssize_t reg_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t len)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	unsigned char data;
-+	int ret;
-+	struct iio_dev_attr *iattr = to_iio_dev_attr(attr);
-+
-+	ret = kstrtou8(buf, 10, &data);
-+	if (ret < 0)
-+		return -EINVAL;
-+
-+	mutex_lock(&st->lock);
-+	ret = regmap_write(st->regmap, iattr->address, data);
-+	mutex_unlock(&st->lock);
-+	return ret < 0 ? ret : len;
-+}
-+
-+static const int ad2s1210_velocity_scale[] = {
-+	17089132, /* 8.192MHz / (2*pi * 2500 / 2^15) */
-+	42722830, /* 8.192MHz / (2*pi * 1000 / 2^15) */
-+	85445659, /* 8.192MHz / (2*pi * 500 / 2^15) */
-+	341782638, /* 8.192MHz / (2*pi * 125 / 2^15) */
-+};
-+
-+static int ad2s1210_read_raw(struct iio_dev *indio_dev,
-+			     struct iio_chan_spec const *chan,
-+			     int *val,
-+			     int *val2,
-+			     long mask)
-+{
-+	struct ad2s1210_state *st = iio_priv(indio_dev);
-+	int ret = 0;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_RAW:
-+		mutex_lock(&st->lock);
-+		gpiod_set_value(st->sample_gpio, 1);
-+		/* delay (6 * tck + 20) nano seconds */
-+		udelay(1);
-+
-+		switch (chan->type) {
-+		case IIO_ANGL:
-+			ret = ad2s1210_set_mode(st, AD2S1210_MODE_POS);
-+			break;
-+		case IIO_ANGL_VEL:
-+			ret = ad2s1210_set_mode(st, AD2S1210_MODE_VEL);
-+			break;
-+		default:
-+			ret = -EINVAL;
-+			break;
-+		}
-+		if (ret < 0)
-+			goto error_info_raw;
-+		ret = spi_read(st->sdev, st->rx, 2);
-+		if (ret < 0)
-+			goto error_info_raw;
-+
-+		switch (chan->type) {
-+		case IIO_ANGL:
-+			*val = be16_to_cpup((__be16 *)st->rx);
-+			ret = IIO_VAL_INT;
-+			break;
-+		case IIO_ANGL_VEL:
-+			*val = (s16)be16_to_cpup((__be16 *)st->rx);
-+			ret = IIO_VAL_INT;
-+			break;
-+		default:
-+			ret = -EINVAL;
-+			break;
-+		}
-+
-+error_info_raw:
-+		gpiod_set_value(st->sample_gpio, 0);
-+		/* delay (2 * tck + 20) nano seconds */
-+		udelay(1);
-+		mutex_unlock(&st->lock);
-+		break;
-+
-+	case IIO_CHAN_INFO_SCALE:
-+		switch (chan->type) {
-+		case IIO_ANGL:
-+			/* approx 0.3 arc min converted to radians */
-+			*val = 0;
-+			*val2 = 95874;
-+			ret = IIO_VAL_INT_PLUS_NANO;
-+			break;
-+		case IIO_ANGL_VEL:
-+			*val = st->fclkin;
-+			*val2 = ad2s1210_velocity_scale[st->resolution];
-+			ret = IIO_VAL_FRACTIONAL;
-+			break;
-+		default:
-+			ret = -EINVAL;
-+			break;
-+		}
-+		break;
-+
-+	case IIO_CHAN_INFO_HYSTERESIS:
-+		switch (chan->type) {
-+		case IIO_ANGL:
-+			mutex_lock(&st->lock);
-+			ret = regmap_test_bits(st->regmap, AD2S1210_REG_CONTROL,
-+					       AD2S1210_ENABLE_HYSTERESIS);
-+			if (ret < 0)
-+				goto error_info_hysteresis;
-+
-+			*val = !!ret;
-+			ret = IIO_VAL_INT;
-+
-+error_info_hysteresis:
-+			mutex_unlock(&st->lock);
-+			break;
-+		default:
-+			ret = -EINVAL;
-+			break;
-+		}
-+		break;
-+
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int ad2s1210_read_avail(struct iio_dev *indio_dev,
-+			       struct iio_chan_spec const *chan,
-+			       const int **vals, int *type,
-+			       int *length, long mask)
-+{
-+	static const int available[] = { 0, 1 };
-+	int ret = -EINVAL;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_HYSTERESIS:
-+		switch (chan->type) {
-+		case IIO_ANGL:
-+			*vals = available;
-+			*type = IIO_VAL_INT;
-+			*length = ARRAY_SIZE(available);
-+			ret = IIO_AVAIL_LIST;
-+			break;
-+		default:
-+			break;
-+		}
-+	default:
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int ad2s1210_write_raw(struct iio_dev *indio_dev,
-+			      struct iio_chan_spec const *chan,
-+			      int val, int val2, long mask)
-+{
-+	struct ad2s1210_state *st = iio_priv(indio_dev);
-+	int ret = -EINVAL;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_HYSTERESIS:
-+		switch (chan->type) {
-+		case IIO_ANGL:
-+			mutex_lock(&st->lock);
-+			ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
-+						 AD2S1210_ENABLE_HYSTERESIS,
-+						 val ? AD2S1210_ENABLE_HYSTERESIS
-+						     : 0);
-+			mutex_unlock(&st->lock);
-+			break;
-+
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static IIO_DEVICE_ATTR_RW(excitation_frequency, 0);
-+static IIO_DEVICE_ATTR_RW(phase_lock_range, 0);
-+static IIO_DEVICE_ATTR_RO(phase_lock_range_available, 0);
-+static IIO_DEVICE_ATTR_RW(fault, 0);
-+static IIO_DEVICE_ATTR_NAMED_RW(los_thrd, reg, AD2S1210_REG_LOS_THRD);
-+static IIO_DEVICE_ATTR_NAMED_RW(dos_ovr_thrd, reg, AD2S1210_REG_DOS_OVR_THRD);
-+static IIO_DEVICE_ATTR_NAMED_RW(dos_mis_thrd, reg, AD2S1210_REG_DOS_MIS_THRD);
-+static IIO_DEVICE_ATTR_NAMED_RW(dos_rst_max_thrd, reg,
-+				AD2S1210_REG_DOS_RST_MAX_THRD);
-+static IIO_DEVICE_ATTR_NAMED_RW(dos_rst_min_thrd, reg,
-+				AD2S1210_REG_DOS_RST_MIN_THRD);
-+static IIO_DEVICE_ATTR_NAMED_RW(lot_high_thrd, reg, AD2S1210_REG_LOT_HIGH_THRD);
-+static IIO_DEVICE_ATTR_NAMED_RW(lot_low_thrd, reg, AD2S1210_REG_LOT_LOW_THRD);
-+
-+static const struct iio_chan_spec ad2s1210_channels[] = {
-+	{
-+		.type = IIO_ANGL,
-+		.indexed = 1,
-+		.channel = 0,
-+		.scan_index = 0,
-+		.scan_type = {
-+			.sign = 'u',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_BE,
-+		},
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+				      BIT(IIO_CHAN_INFO_SCALE) |
-+				      BIT(IIO_CHAN_INFO_HYSTERESIS),
-+		.info_mask_separate_available =
-+					BIT(IIO_CHAN_INFO_HYSTERESIS),
-+		.datasheet_name = "position",
-+	}, {
-+		.type = IIO_ANGL_VEL,
-+		.indexed = 1,
-+		.channel = 0,
-+		.scan_index = 1,
-+		.scan_type = {
-+			.sign = 's',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_BE,
-+		},
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+				      BIT(IIO_CHAN_INFO_SCALE),
-+		.datasheet_name = "velocity",
-+	},
-+	IIO_CHAN_SOFT_TIMESTAMP(2),
-+};
-+
-+static struct attribute *ad2s1210_attributes[] = {
-+	&iio_dev_attr_excitation_frequency.dev_attr.attr,
-+	&iio_dev_attr_phase_lock_range.dev_attr.attr,
-+	&iio_dev_attr_phase_lock_range_available.dev_attr.attr,
-+	&iio_dev_attr_fault.dev_attr.attr,
-+	&iio_dev_attr_los_thrd.dev_attr.attr,
-+	&iio_dev_attr_dos_ovr_thrd.dev_attr.attr,
-+	&iio_dev_attr_dos_mis_thrd.dev_attr.attr,
-+	&iio_dev_attr_dos_rst_max_thrd.dev_attr.attr,
-+	&iio_dev_attr_dos_rst_min_thrd.dev_attr.attr,
-+	&iio_dev_attr_lot_high_thrd.dev_attr.attr,
-+	&iio_dev_attr_lot_low_thrd.dev_attr.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group ad2s1210_attribute_group = {
-+	.attrs = ad2s1210_attributes,
-+};
-+
-+static int ad2s1210_debugfs_reg_access(struct iio_dev *indio_dev,
-+				       unsigned int reg, unsigned int writeval,
-+				       unsigned int *readval)
-+{
-+	struct ad2s1210_state *st = iio_priv(indio_dev);
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+
-+	if (readval)
-+		ret = regmap_read(st->regmap, reg, readval);
-+	else
-+		ret = regmap_write(st->regmap, reg, writeval);
-+
-+	mutex_unlock(&st->lock);
-+
-+	return ret;
-+}
-+
-+static irqreturn_t ad2s1210_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct ad2s1210_state *st = iio_priv(indio_dev);
-+	size_t chan = 0;
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+
-+	memset(&st->scan, 0, sizeof(st->scan));
-+	gpiod_set_value(st->sample_gpio, 1);
-+
-+	if (test_bit(0, indio_dev->active_scan_mask)) {
-+		ret = ad2s1210_set_mode(st, AD2S1210_MODE_POS);
-+		if (ret < 0)
-+			goto error_ret;
-+
-+		/* REVIST: we can read 3 bytes here and also get fault flags */
-+		ret = spi_read(st->sdev, st->rx, 2);
-+		if (ret < 0)
-+			goto error_ret;
-+
-+		memcpy(&st->scan.chan[chan++], st->rx, 2);
-+	}
-+
-+	if (test_bit(1, indio_dev->active_scan_mask)) {
-+		ret = ad2s1210_set_mode(st, AD2S1210_MODE_VEL);
-+		if (ret < 0)
-+			goto error_ret;
-+
-+		/* REVIST: we can read 3 bytes here and also get fault flags */
-+		ret = spi_read(st->sdev, st->rx, 2);
-+		if (ret < 0)
-+			goto error_ret;
-+
-+		memcpy(&st->scan.chan[chan++], st->rx, 2);
-+	}
-+
-+	iio_push_to_buffers_with_timestamp(indio_dev, &st->scan, pf->timestamp);
-+
-+error_ret:
-+	gpiod_set_value(st->sample_gpio, 0);
-+	mutex_unlock(&st->lock);
-+	iio_trigger_notify_done(indio_dev->trig);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static const struct iio_info ad2s1210_info = {
-+	.read_raw = ad2s1210_read_raw,
-+	.read_avail = ad2s1210_read_avail,
-+	.write_raw = ad2s1210_write_raw,
-+	.attrs = &ad2s1210_attribute_group,
-+	.debugfs_reg_access = &ad2s1210_debugfs_reg_access,
-+};
-+
-+static int ad2s1210_setup_properties(struct ad2s1210_state *st)
-+{
-+	struct device *dev = &st->sdev->dev;
-+	u32 val;
-+	int ret;
-+
-+	ret = device_property_read_u32(dev, "assigned-resolution-bits", &val);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret,
-+			"failed to read assigned-resolution-bits property\n");
-+
-+	if (val < 10 || val > 16)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "resolution out of range: %u\n", val);
-+
-+	st->resolution = (val - 10) >> 1;
-+
-+	return 0;
-+}
-+
-+static int ad2s1210_setup_clocks(struct ad2s1210_state *st)
-+{
-+	struct device *dev = &st->sdev->dev;
-+	struct clk *clk;
-+
-+	clk = devm_clk_get_enabled(dev, NULL);
-+	if (IS_ERR(clk))
-+		return dev_err_probe(dev, PTR_ERR(clk), "failed to get clock\n");
-+
-+	st->fclkin = clk_get_rate(clk);
-+	if (st->fclkin < AD2S1210_MIN_CLKIN || st->fclkin > AD2S1210_MAX_CLKIN)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "clock frequency out of range: %lu\n",
-+				     st->fclkin);
-+
-+	return 0;
-+}
-+
-+static int ad2s1210_setup_gpios(struct ad2s1210_state *st)
-+{
-+	struct device *dev = &st->sdev->dev;
-+	struct gpio_descs *resolution_gpios;
-+	DECLARE_BITMAP(bitmap, 2);
-+	int ret;
-+
-+	/* should not be sampling on startup */
-+	st->sample_gpio = devm_gpiod_get(dev, "sample", GPIOD_OUT_LOW);
-+	if (IS_ERR(st->sample_gpio))
-+		return dev_err_probe(dev, PTR_ERR(st->sample_gpio),
-+				     "failed to request sample GPIO\n");
-+
-+	/* both pins high means that we start in config mode */
-+	st->mode_gpios = devm_gpiod_get_array(dev, "mode", GPIOD_OUT_HIGH);
-+	if (IS_ERR(st->mode_gpios))
-+		return dev_err_probe(dev, PTR_ERR(st->mode_gpios),
-+				     "failed to request mode GPIOs\n");
-+
-+	if (st->mode_gpios->ndescs != 2)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "requires exactly 2 mode-gpios\n");
-+
-+	/* If resolution gpios are provided, they get set to the required
-+	 * resolution, otherwise it is assumed the RES0 and RES1 pins are
-+	 * hard-wired to match the resolution indicated in the devicetree.
-+	 */
-+	resolution_gpios = devm_gpiod_get_array_optional(dev, "resolution",
-+							 GPIOD_ASIS);
-+	if (IS_ERR(resolution_gpios))
-+		return dev_err_probe(dev, PTR_ERR(resolution_gpios),
-+				     "failed to request resolution GPIOs\n");
-+
-+	if (resolution_gpios) {
-+		if (resolution_gpios->ndescs != 2)
-+			return dev_err_probe(dev, -EINVAL,
-+				      "requires exactly 2 resolution-gpios\n");
-+
-+		bitmap[0] = st->resolution;
-+
-+		ret = gpiod_set_array_value(resolution_gpios->ndescs,
-+					    resolution_gpios->desc,
-+					    resolution_gpios->info,
-+					    bitmap);
-+		if (ret < 0)
-+			return dev_err_probe(dev, ret,
-+					     "failed to set resolution gpios\n");
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct regmap_range ad2s1210_regmap_readable_ranges[] = {
-+	regmap_reg_range(AD2S1210_REG_POSITION_MSB, AD2S1210_REG_VELOCITY_LSB),
-+	regmap_reg_range(AD2S1210_REG_LOS_THRD, AD2S1210_REG_LOT_LOW_THRD),
-+	regmap_reg_range(AD2S1210_REG_EXCIT_FREQ, AD2S1210_REG_CONTROL),
-+	regmap_reg_range(AD2S1210_REG_FAULT, AD2S1210_REG_FAULT),
-+};
-+
-+static const struct regmap_access_table ad2s1210_regmap_rd_table = {
-+	.yes_ranges = ad2s1210_regmap_readable_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(ad2s1210_regmap_readable_ranges),
-+};
-+
-+static const struct regmap_range ad2s1210_regmap_writeable_ranges[] = {
-+	regmap_reg_range(AD2S1210_REG_LOS_THRD, AD2S1210_REG_LOT_LOW_THRD),
-+	regmap_reg_range(AD2S1210_REG_EXCIT_FREQ, AD2S1210_REG_CONTROL),
-+	regmap_reg_range(AD2S1210_REG_SOFT_RESET, AD2S1210_REG_SOFT_RESET),
-+	regmap_reg_range(AD2S1210_REG_FAULT, AD2S1210_REG_FAULT),
-+};
-+
-+static const struct regmap_access_table ad2s1210_regmap_wr_table = {
-+	.yes_ranges = ad2s1210_regmap_writeable_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(ad2s1210_regmap_writeable_ranges),
-+};
-+
-+static int ad2s1210_setup_regmap(struct ad2s1210_state *st)
-+{
-+	struct device *dev = &st->sdev->dev;
-+	const struct regmap_config config = {
-+		.reg_bits = 8,
-+		.val_bits = 8,
-+		.disable_locking = true,
-+		.reg_read = ad2s1210_regmap_reg_read,
-+		.reg_write = ad2s1210_regmap_reg_write,
-+		.rd_table = &ad2s1210_regmap_rd_table,
-+		.wr_table = &ad2s1210_regmap_wr_table,
-+		.can_sleep = true,
-+	};
-+
-+	st->regmap = devm_regmap_init(dev, NULL, st, &config);
-+	if (IS_ERR(st->regmap))
-+		return dev_err_probe(dev, PTR_ERR(st->regmap),
-+				     "failed to allocate register map\n");
-+
-+	return 0;
-+}
-+
-+static int ad2s1210_init(struct ad2s1210_state *st)
-+{
-+	unsigned char data;
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+
-+	data = AD2S1210_DEF_CONTROL & ~AD2S1210_SET_RES;
-+	data |= st->resolution;
-+
-+	ret = regmap_write(st->regmap, AD2S1210_REG_CONTROL, data);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	ret = ad2s1210_set_excitation_frequency(st, AD2S1210_DEF_EXCIT);
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+	return ret;
-+}
-+
-+static int ad2s1210_probe(struct spi_device *spi)
-+{
-+	struct iio_dev *indio_dev;
-+	struct ad2s1210_state *st;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	st = iio_priv(indio_dev);
-+
-+	mutex_init(&st->lock);
-+	st->sdev = spi;
-+
-+	ret = ad2s1210_setup_properties(st);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = ad2s1210_setup_clocks(st);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = ad2s1210_setup_gpios(st);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = ad2s1210_setup_regmap(st);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = ad2s1210_init(st);
-+	if (ret < 0)
-+		return ret;
-+
-+	indio_dev->info = &ad2s1210_info;
-+	indio_dev->modes = INDIO_DIRECT_MODE;
-+	indio_dev->channels = ad2s1210_channels;
-+	indio_dev->num_channels = ARRAY_SIZE(ad2s1210_channels);
-+	indio_dev->name = spi_get_device_id(spi)->name;
-+
-+	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
-+					      &iio_pollfunc_store_time,
-+					      &ad2s1210_trigger_handler, NULL);
-+	if (ret < 0)
-+		return dev_err_probe(&spi->dev, ret,
-+				     "iio triggered buffer setup failed\n");
-+
-+	return devm_iio_device_register(&spi->dev, indio_dev);
-+}
-+
-+static const struct of_device_id ad2s1210_of_match[] = {
-+	{ .compatible = "adi,ad2s1210", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ad2s1210_of_match);
-+
-+static const struct spi_device_id ad2s1210_id[] = {
-+	{ "ad2s1210" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(spi, ad2s1210_id);
-+
-+static struct spi_driver ad2s1210_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.of_match_table = ad2s1210_of_match,
-+	},
-+	.probe = ad2s1210_probe,
-+	.id_table = ad2s1210_id,
-+};
-+module_spi_driver(ad2s1210_driver);
-+
-+MODULE_AUTHOR("Graff Yang <graff.yang@gmail.com>");
-+MODULE_DESCRIPTION("Analog Devices AD2S1210 Resolver to Digital SPI driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.34.1
-
+Thanks!
