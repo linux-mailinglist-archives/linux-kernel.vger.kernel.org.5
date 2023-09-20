@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E857A79C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C397A79C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234378AbjITKxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
+        id S233966AbjITKxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234335AbjITKxi (ORCPT
+        with ESMTP id S234036AbjITKxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:53:38 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E149CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:53:33 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-274dd099cd5so2787162a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695207213; x=1695812013; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5HU50GJakfit4skNHRT6DovjnNulHZNN9x8GJ1Pfq78=;
-        b=BEpWP3YDGt7Z1h/+NLZKWhrpY2pNme7Cs2L5u+ofekZrwk2AJvNHs14K3McNTIRDAJ
-         VdyG8bl4ULbmV9cQC/IYTvQD2i4Ri63/Lw7Uq2rjtMccaGbhcLJVX1bXZCWIx4Irxsf4
-         uXJLXlQvfRY699TSh3mPI4CWJ2YCArEZepHRLUK7UMd0pRQ0ANK9F8AM5OcxXxObhKZB
-         Nb1nyRNkT+GVnEdlTB1ZuBthxvp3q22qJe3ozg8mhGB9Xxyk4OozW7V3y0yeurx3aScn
-         vE464LKmFaVDJK6VqZE34aKVnX1OuYaTllgFV2Vosn/QWYyyCLS7aXPslfGNynDPWfwC
-         6bUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695207213; x=1695812013;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5HU50GJakfit4skNHRT6DovjnNulHZNN9x8GJ1Pfq78=;
-        b=fDld04nFmW8kxwxclWCX79mi4LH5N6uaWk6++KPWPwDzVcphzwGbxB6IqNneYW3Oxl
-         OVuzVDdEnyx3Vp4UVv3437UYWMKRqE1EaVgzVYrzC79dQeeFEy829z42zpYOKVKTyzMC
-         iAPYy23NPEP5IPoE4mtJRKmbi+25AyKhmkOCMjYkSLa1Jc+AFLTDbPJa2dB72Q82IgST
-         YaETHlnsG4XKiBPTxvFZuul153Z2WRaTIlX0gdlwdinBdYVUXi//HAPjcrKzrKrxy1x9
-         sR4rb834qQgAnbZb1+kNUAqEf0nE4XmmBvXnCH6gHNW9Nbwa0sACK2Bfrb3M2IFbDhpb
-         19fA==
-X-Gm-Message-State: AOJu0YzIpMKn4kouSdpNuOFhjCa/xA3Z1jH8wM/HlkJa+SdMb3+gKTQj
-        7d8KAI3pNIwe7eKsC3aQhVLRkYUcU57WFTwxxP4LXHof/YQ=
-X-Google-Smtp-Source: AGHT+IGHlILYd4/Yl86++MOCRIvl9UBpXr/2HiI9K0gZxhhE9PGh3GSuhqMMyNXEY7lu4kySxLGJNBELfoo3UVKfIGk=
-X-Received: by 2002:a17:90a:c696:b0:271:9e59:df28 with SMTP id
- n22-20020a17090ac69600b002719e59df28mr2076379pjt.29.1695207212776; Wed, 20
- Sep 2023 03:53:32 -0700 (PDT)
+        Wed, 20 Sep 2023 06:53:32 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E2FB4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:53:27 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id E453F2A7;
+        Wed, 20 Sep 2023 03:53:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1695207207;
+        bh=9el9Pcz/ONWOavO3ghWssH92pAeXdvb0MjC2aQTSwcg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WTRxXAetgfANTRD18QLW9GT6NenzctP9kqxKtgvBAWvrIMWgcYFv5Ws0wzbvKsaJk
+         SnaJocY/XuK/Za39P3r9CRNTMXPue1whP9Xuq0GbtYl9XjO6VdjKYDt4+DckPJs6Xe
+         2+s6BfOZ618r1iLPGnuZSffNtUFmJr7pPhcgf0T8=
+Date:   Wed, 20 Sep 2023 03:53:25 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Naresh Solanki <naresh.solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] Documentation: ABI: sysfs-driver-regulator-output
+Message-ID: <d390b52b-c047-4db6-bf1f-ff2b47756f89@hatter.bewilderbeest.net>
+References: <90b1af83-cb03-476f-9147-eb06247bf09c@hatter.bewilderbeest.net>
+ <2023090330-bling-mammary-3177@gregkh>
+ <6eb78818-7838-4616-bf44-05c215bfa8b3@hatter.bewilderbeest.net>
+ <763bd845-d8d6-489c-bd31-305ed14bc40f@sirena.org.uk>
+ <1518370c-e0cd-4d78-af54-3e2cf4dd6e3c@hatter.bewilderbeest.net>
+ <5282acd1-3c7a-4948-83f2-2829910ab841@sirena.org.uk>
+ <25844d80-fadb-44c3-a0e6-334aa6e4afd7@hatter.bewilderbeest.net>
+ <2023092037-denote-enslave-0a3f@gregkh>
+ <63fe0803-8120-41a8-8998-a4e6aa32308e@hatter.bewilderbeest.net>
+ <2023092027-epileptic-jolly-84ef@gregkh>
 MIME-Version: 1.0
-References: <20230920052139.10570-1-rdunlap@infradead.org> <20230920052139.10570-10-rdunlap@infradead.org>
- <86v8c5cgv4.wl-maz@kernel.org>
-In-Reply-To: <86v8c5cgv4.wl-maz@kernel.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Wed, 20 Sep 2023 03:53:21 -0700
-Message-ID: <CAMo8BfKMs797D+YSLG8ed6yPFfy1UqfxRC-coR+hHdKq_4CE2A@mail.gmail.com>
-Subject: Re: [PATCH 09/16] irqchip: irq-xtensa-mx: include header for missing prototype
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        Chris Zankel <chris@zankel.net>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <2023092027-epileptic-jolly-84ef@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 2:51=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
-> It also begs the question of the continuing support for non-DT driven
-> systems.
+On Wed, Sep 20, 2023 at 03:48:00AM PDT, Greg Kroah-Hartman wrote:
+>On Wed, Sep 20, 2023 at 03:44:29AM -0700, Zev Weiss wrote:
+>> On Wed, Sep 20, 2023 at 02:29:15AM PDT, Greg Kroah-Hartman wrote:
+>> > On Wed, Sep 20, 2023 at 02:02:49AM -0700, Zev Weiss wrote:
+>> > >  static int regulator_userspace_notify(struct notifier_block *nb,
+>> > >  				      unsigned long event,
+>> > >  				      void *ignored)
+>> > >  {
+>> > >  	struct userspace_consumer_data *data =
+>> > >  		container_of(nb, struct userspace_consumer_data, nb);
+>> > > -	static const char * const *envp[] = { "NAME=events", NULL };
+>> >
+>> > You removed this user/kernel api value, what will break if you do that?
+>> >
+>>
+>> Sorry, I don't follow -- what removal are you referring to?  The envp array
+>> still has a NAME entry -- I changed its value from "events" to "event",
 >
-> Max, Chris: are we any closer to being DT-only on the xtensa front?
+>Yes, that value.
+>
+>> but
+>> I wrote that part before I realized that the 'event' parameter of the
+>> function was actually a bitmask that might convey multiple events and just
+>> forgot to change it back, so keeping it pluralized is probably more
+>> appropriate.
+>>
+>> And FWIW, I didn't intend for the exact format of the EVENT parameter that I
+>> sketched there to be something that had to be kept; given that there might
+>> be multiple entries perhaps it'd be better to use separate parameters more
+>> like NUMEVENTS, EVENT0, EVENT1, etc?  (Or omit NUMEVENTS and just let the
+>> consumer count upward until it doesn't find a match.)
+>
+>I don't know, what does userspace do with this value today?  If you
+>change it, what will break?
+>
 
-I have never seen it as a goal. Let's see: iss doesn't have devices at all,
-virt based on it is DT-only, xtfpga with DT loses USB host support, but
-it hasn't really been all that useful. xt2000 is the only xtensa platform t=
-hat
-does not support device trees now. I can convert the code, but I don't have
-the hardware to test it. I also know that it hasn't been in use in Cadence.
-Maybe Chris has it? If not then I guess we can drop it.
+Unless there's something I'm not aware of, this is an entirely new 
+interface being added, not a change to an existing one, so I don't think 
+there's any existing userspace beyond draft/experimental code.  My patch 
+was a relative one on top of Naresh's patch 2/3 in this series as a 
+proposed amendment to it; the userspace-consumer driver as it presently 
+exists in the mainline kernel doesn't have a uevent interface at all.
 
---=20
-Thanks.
--- Max
+
+Zev
+
