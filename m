@@ -2,70 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 023257A8A09
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D966D7A8A0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbjITRGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
+        id S234486AbjITRIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234157AbjITRGu (ORCPT
+        with ESMTP id S230493AbjITRIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:06:50 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82688A3;
-        Wed, 20 Sep 2023 10:06:43 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38KH6XEQ117345;
-        Wed, 20 Sep 2023 12:06:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695229593;
-        bh=JPp8EjwI/JfwJ8zhlSnLz71JIkxoGMMEH6ncFguUk6Q=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=b/8kxMaxYONKAJHqGJjpli2i/dzwzOtemCVcevo58sz9uCHNWFA2q5oQYac6hCFxF
-         c+QPS86ST7KhRXPZxa95J0yPg08exTeH2RlrrIAOFFbBOQcMJF4rlmMAVN0d+PMXgb
-         TmGfm1qdYpq40N5lCY6TRPJe46W7WBwJ4jv32sG0=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38KH6XCM116391
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 Sep 2023 12:06:33 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 20
- Sep 2023 12:06:33 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 20 Sep 2023 12:06:33 -0500
-Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38KH6WeY088335;
-        Wed, 20 Sep 2023 12:06:32 -0500
-Message-ID: <c7ec6ccd-37de-244d-0b3b-cb5d13bae539@ti.com>
-Date:   Wed, 20 Sep 2023 12:06:32 -0500
+        Wed, 20 Sep 2023 13:08:39 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F41F7A3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:08:32 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 452341FB;
+        Wed, 20 Sep 2023 10:09:09 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65EC93F67D;
+        Wed, 20 Sep 2023 10:08:30 -0700 (PDT)
+Message-ID: <130ce530-a3c1-0918-e04f-cb7d94aef57b@arm.com>
+Date:   Wed, 20 Sep 2023 19:08:28 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/2] arm64: dts: ti: am642-evm: Add overlay for NAND
- expansion card
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arch_topology: Support SMT control on arm64
 Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>, Roger Quadros <rogerq@kernel.org>
-CC:     <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srk@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230920133450.54226-1-rogerq@kernel.org>
- <20230920133450.54226-3-rogerq@kernel.org>
- <20230920135802.3ej2wcuaruqjidel@uncouth>
- <e8f26137-1284-4f45-a74d-a0a5f2aa2f93@kernel.org>
- <20230920164424.rrjvm6nvtv4ysyrw@unreal>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230920164424.rrjvm6nvtv4ysyrw@unreal>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Yicong Yang <yangyicong@huawei.com>, catalin.marinas@arm.com,
+        will@kernel.org, sudeep.holla@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        jonathan.cameron@huawei.com, prime.zeng@hisilicon.com,
+        linuxarm@huawei.com, yangyicong@hisilicon.com,
+        linux-kernel@vger.kernel.org
+References: <20230919123319.23785-1-yangyicong@huawei.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230919123319.23785-1-yangyicong@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,72 +49,219 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/23 11:44 AM, Nishanth Menon wrote:
-> On 18:18-20230920, Roger Quadros wrote:
->>
->>
->> On 20/09/2023 16:58, Nishanth Menon wrote:
->>> On 16:34-20230920, Roger Quadros wrote:
->>>> The NAND expansion card plugs in over the HSE (High Speed Expansion)
->>>> connector. Add support for it.
->>>>
->>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>> ---
->>>>   arch/arm64/boot/dts/ti/Makefile               |   1 +
->>>>   arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 140 ++++++++++++++++++
->>>>   2 files changed, 141 insertions(+)
->>>>   create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
->>>>
->>>> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
->>>> index 06d6f264f292..ece74085a6be 100644
->>>> --- a/arch/arm64/boot/dts/ti/Makefile
->>>> +++ b/arch/arm64/boot/dts/ti/Makefile
->>>> @@ -29,6 +29,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62p5-sk.dtb
->>>>   
->>>>   # Boards with AM64x SoC
->>>>   dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
->>>> +dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtbo
->>>>   dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
->>>>   dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
->>>>   dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
->>>
->>> Also see https://lore.kernel.org/all/20230911165610.GA1362932-robh@kernel.org/
->>>
->>> you may not get the dtbo installed when doing make dtbs_install
->>>
->>> [...]
->>>
->>
->> $ v8make dtbs_install INSTALL_DTBS_PATH=/tmp
->>    INSTALL /tmp/ti/k3-am625-beagleplay.dtb
->>    INSTALL /tmp/ti/k3-am625-phyboard-lyra-rdk.dtb
->>    INSTALL /tmp/ti/k3-am625-sk.dtb
->>    INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dahlia.dtb
->>    INSTALL /tmp/ti/k3-am625-verdin-nonwifi-dev.dtb
->>    INSTALL /tmp/ti/k3-am625-verdin-nonwifi-yavia.dtb
->>    INSTALL /tmp/ti/k3-am625-verdin-wifi-dahlia.dtb
->>    INSTALL /tmp/ti/k3-am625-verdin-wifi-dev.dtb
->>    INSTALL /tmp/ti/k3-am625-verdin-wifi-yavia.dtb
->>    INSTALL /tmp/ti/k3-am62-lp-sk.dtb
->>    INSTALL /tmp/ti/k3-am62x-sk-hdmi-audio.dtbo
->>    INSTALL /tmp/ti/k3-am62a7-sk.dtb
->>    INSTALL /tmp/ti/k3-am62p5-sk.dtb
->>    INSTALL /tmp/ti/k3-am642-evm.dtb
->>    INSTALL /tmp/ti/k3-am642-evm-nand.dtbo
->> ^^^^
->>    INSTALL /tmp/ti/k3-am642-phyboard-electra-rdk.dtb
->>    INSTALL /tmp/ti/k3-am642-sk.dtb
->>
->>
->> What did I miss?
+On 19/09/2023 14:33, Yicong Yang wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
 > 
-> I missed it, actually. See Rob's comment:
-> https://lore.kernel.org/all/CAL_Jsq+GR3hP6hFvFn2z5aXvSXnh9butD3aKZ-y_XJgx0_YPTw@mail.gmail.com/
+> The core CPU control framework supports runtime SMT control which
+> is not yet supported on arm64. Besides the general vulnerabilities
+> concerns we want this runtime control on our arm64 server for:
 > 
-> Having orphan dtbo is apparently frowned upon
+> - better single CPU performance in some cases
+> - saving overall power consumption
 > 
+> This patch implements it in the following aspects:
+> 
+> - implement the callbacks of the core
 
-And if you apply these overlays to the base DTB then it gets
-symbols added automatically, no need for your patch [1/2] here.
+I see only 1 function here: topology_is_primary_thread() ?
 
-Andrew
+> - update the SMT status after the topology enumerated on arm64
+
+That's the call init_cpu_topology()
+                 topology_smt_set_num_threads()
+                  cpu_smt_set_num_threads()
+
+> - select HOTPLUG_SMT for arm64
+> 
+> For disabling SMT we'll offline all the secondary threads and
+
+`disabling SMT` means here setting cpu_smt_control=CPU_SMT_DISABLED ?
+
+> only leave the primary thread. Since we don't have restriction
+> for primary thread selection, the first thread is chosen as the
+> primary thread in this implementation.
+> 
+> Tests has been done on our ACPI based arm64 server and on
+> ACPI/OF based QEMU VMs.
+> 
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  arch/arm64/Kconfig            |  1 +
+>  drivers/base/arch_topology.c  | 63 +++++++++++++++++++++++++++++++++++
+>  include/linux/arch_topology.h | 11 ++++++
+>  3 files changed, 75 insertions(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index b10515c0200b..531a71c7f499 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -233,6 +233,7 @@ config ARM64
+>  	select HAVE_KRETPROBES
+>  	select HAVE_GENERIC_VDSO
+>  	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+> +	select HOTPLUG_SMT if SMP
+>  	select IRQ_DOMAIN
+>  	select IRQ_FORCED_THREADING
+>  	select KASAN_VMALLOC if KASAN
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index b741b5ba82bd..75a693834fff 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -729,6 +729,63 @@ const struct cpumask *cpu_clustergroup_mask(int cpu)
+>  	return &cpu_topology[cpu].cluster_sibling;
+>  }
+>  
+> +#ifdef CONFIG_HOTPLUG_SMT
+> +static int topology_smt_num_threads = 1;
+> +
+> +void __init topology_smt_set_num_threads(void)
+> +{
+> +	int cpu, sibling, threads;
+> +
+> +	/*
+> +	 * Walk all the CPUs to find the largest thread number, in case we're
+> +	 * on a heterogeneous platform with only part of the CPU cores support
+> +	 * SMT.
+> +	 *
+> +	 * Get the thread number by checking the CPUs with same core id
+> +	 * rather than checking the topology_sibling_cpumask(), since the
+> +	 * sibling mask will not cover all the CPUs if there's CPU offline.
+> +	 */
+> +	for_each_possible_cpu(cpu) {
+> +		threads = 1;
+> +
+> +		/* Invalid thread id, this CPU is not in a SMT core */
+> +		if (cpu_topology[cpu].thread_id == -1)
+> +			continue;
+> +
+> +		for_each_possible_cpu(sibling) {
+> +			if (sibling == cpu || cpu_topology[sibling].thread_id == -1)
+> +				continue;
+> +
+> +			if (cpu_topology[cpu].core_id == cpu_topology[sibling].core_id)
+> +				threads++;
+> +		}
+> +
+> +		if (threads > topology_smt_num_threads)
+> +			topology_smt_num_threads = threads;
+> +	}
+> +
+> +	/*
+> +	 * We don't support CONFIG_SMT_NUM_THREADS_DYNAMIC so make the
+> +	 * max_threads == num_threads.
+> +	 */
+> +	cpu_smt_set_num_threads(topology_smt_num_threads, topology_smt_num_threads);
+> +}
+> +
+> +/*
+> + * On SMT Hotplug the primary thread of the SMT won't be disabled. For x86 they
+> + * seem to have a primary thread for special purpose. For other arthitectures
+> + * like arm64 there's no such restriction for a primary thread, so make the
+> + * first thread in the SMT as the primary thread.
+> + */
+> +bool topology_is_primary_thread(unsigned int cpu)
+> +{
+> +	if (cpu == cpumask_first(topology_sibling_cpumask(cpu)))
+> +		return true;
+> +
+> +	return false;
+> +}
+> +#endif
+> +
+>  void update_siblings_masks(unsigned int cpuid)
+>  {
+>  	struct cpu_topology *cpu_topo, *cpuid_topo = &cpu_topology[cpuid];
+> @@ -841,6 +898,12 @@ void __init init_cpu_topology(void)
+>  		reset_cpu_topology();
+>  	}
+>  
+> +	/*
+> +	 * By this stage we get to know whether we support SMT or not, update
+> +	 * the information for the core.
+> +	 */
+> +	topology_smt_set_num_threads();
+> +
+
+So this would be the diff between x86 and arm64:
+
+start_kernel() [init/main.c]
+
+ arch_cpu_finalize_init() [arch/x86/kernel/cpu/common.c] <- x86
+
+  identify_boot_cpu() [arch/x86/kernel/cpu/common.c]
+
+   detect_ht() [arch/x86/kernel/cpu/common.c]
+
+    detect_ht_early() [arch/x86/kernel/cpu/common.c]
+
+  cpu_smt_set_num_threads(smp_num_siblings, smp_num_siblings) <- (1)
+   
+
+ arch_call_rest_init() [init/main.c] <- arm64
+
+  rest_init() [init/main.c]
+
+   kernel_init() [init/main.c]
+
+    kernel_init_freeable() [init/main.c]
+
+     smp_prepare_cpus() [arch/arm64/kernel/smp.c]
+
+      init_cpu_topology() [drivers/base/arch_topology.c]
+
+       topology_smt_set_num_threads()
+
+        cpu_smt_set_num_threads(topology_smt_num_threads, topology_smt_num_threads) <- (1) 
+
+[...]
+
+Did some rough testing with your patch on an SMT4 Arm64 server with 256
+CPUs:
+
+(1) CPU hp out all secondaries from the thread_siblings masks
+
+for i in {32..255}; do echo 0 > /sys/devices/system/cpu/cpu$i/online; done
+
+(2) Check thread_siblings cpumasks
+
+cat /sys/devices/system/cpu/cpu*/topology/thread_siblings
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000002
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000400
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000800
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00001000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00002000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00004000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00008000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00010000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00020000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00040000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00080000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000004
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00100000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00200000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00400000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00800000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,01000000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,02000000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,04000000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,08000000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,10000000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,20000000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000008
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,40000000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,80000000
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000010
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000020
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000040
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000080
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000100
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000200
+
+(3) CPU hp out and out CPU31
+
+echo 0 > /sys/devices/system/cpu/cpu31/online
+echo 1 > /sys/devices/system/cpu/cpu31/online
+
+cpu_smt_control is still CPU_SMT_ENABLED in cpu_smt_allowed() so
+topology_is_primary_thread() isn't called? 
