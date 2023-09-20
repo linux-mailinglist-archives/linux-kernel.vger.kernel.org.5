@@ -2,297 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB7B7A8F16
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 00:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D9C7A8F19
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 00:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbjITWBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 18:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39686 "EHLO
+        id S229556AbjITWCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 18:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjITWBO (ORCPT
+        with ESMTP id S229452AbjITWCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 18:01:14 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE54CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 15:01:05 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-41761e9181eso64431cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 15:01:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695247265; x=1695852065; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ySgTFRif0OhDbbpB+8wVZjSypEFgsdIXoRMvaDKaYV0=;
-        b=SuYBAF5i6Q5CuZyDineu84uzq4HnJdkdrfIkfwCtYmOtwGqCdd5rg79usviFIJ0b6L
-         +b6CCmxQr7DMuMMsOZIsYsARmv70PUK/A1oSCIpjO6WMJUgt3UdCHSI1yBKRETzmTkMu
-         VL3tRVulu3reQxw7LAewIYQ7jf/oQyFXol66BC/Aswtlo6gMmcyY+jaoVmLImucHay8C
-         Bl9ot+OzMY56D9Iwci90cBCcAaAoGRuNlyxyjncGJtAuwVcJj8HhndoU0TYtOy0MjGfm
-         dih77nfQpEFPgJ21Ei6yBkiiNa9kAc5BNMu/USDnV3TWpIZjkcOWAdJU40AtrwJSDwME
-         hIUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695247265; x=1695852065;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ySgTFRif0OhDbbpB+8wVZjSypEFgsdIXoRMvaDKaYV0=;
-        b=Uf7nMYnRynM5Z3x/Ln9sMsFDZ3d7S2DiHDXKiXPTctWtq3MxXyzfnWY0doWlvp8snK
-         mY8jXRQi35eDs/sxwAudmU5SlsTkCcpPya4eoFg6tHE6MMBL3nEPZ5XAltC+yBGsotP7
-         kzVixzea1Hb6WSwibsy61tMANPr4johOXw4tYZia5DssvD9qdA7qUBHu8YYDdtZwcYFV
-         s0rGQRm4Ne7c8MfB7bcextQ1mH8V3BlJvpBNhCHRA6KYubUtH+mFpXHjd3juzP8okQzf
-         l3FvR39BG8MrL/xUDAToY9tP8xC5nbYwQO392qvrD3PKlfJQevD+jP9F3jXIbhzhfu4a
-         rssA==
-X-Gm-Message-State: AOJu0YzxbMRfeH1HgDTCgeREC/1CAsZBQtd1CEeK8Z2P1q3voU4rX30b
-        sumGTN2FrEMjcYef9kouldxfw2jtH4WR7BFGBb6gFQ==
-X-Google-Smtp-Source: AGHT+IEIOGxOAfu95VjtBYDLxqKoGbq4TqwAOEQIYf2CdZGJkcySlLQPkIPiA1p0zbP/TrMmND9qvTxVsJtv7K76oBM=
-X-Received: by 2002:ac8:7f48:0:b0:412:16f:c44f with SMTP id
- g8-20020ac87f48000000b00412016fc44fmr84660qtk.6.1695247264772; Wed, 20 Sep
- 2023 15:01:04 -0700 (PDT)
+        Wed, 20 Sep 2023 18:02:41 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEBDC9;
+        Wed, 20 Sep 2023 15:02:34 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6DAC55C0064;
+        Wed, 20 Sep 2023 18:02:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 20 Sep 2023 18:02:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695247351; x=1695333751; bh=I6
+        UPNYQdv3Xjc3UL4AIR2FH2hUAbP58GDh15024AvlU=; b=OS0rrYIcBxSE/nnfdt
+        CNphdukv2JYmScLPGADJ5PPGKdyKp0qaImx3FRox3XgO79pGrhpc2yWbX34Wr9Np
+        88km6TIke7M1uo71MN+VTVlR/k66lmqCD+E7na2KfTbLJ/069+xyYT36cCluNgjk
+        qaXtQDjcAT1zGURWqVPczEB3RPI9/h0BuTwI8k876m5SyHpAy2s77ZjzEyi/sNHV
+        6wNYXCfSR+ckiE/IHuSCiLFyS2X0j7DJqyNJPTW97P10esRLA1hmY6j/MNQTpGdC
+        KFieegB5ahB9gLqvc0QiVitHC1L+HDu6m9553gAcxltAqbAX8BrF4YZyJA9bBEKB
+        t6YQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695247351; x=1695333751; bh=I6UPNYQdv3Xjc
+        3UL4AIR2FH2hUAbP58GDh15024AvlU=; b=kj6pieMgIX1De+3ZpLOXPqXfsxs86
+        AXs9rp4cQ6mDKl36y9EpPFoaDIbXOoDnPHf159/XjC/HWSZbKrspr/uaq7f7Wdb5
+        REN+v6jhC4EZR8mGDT2wAWc9xct84wFwlEz8rBB71TfqRraXPdjwL4em2f8ie46k
+        2485bC0q2KQaVJzTTVBCiDX0rXOMCJIArl4iJh7Gs4IM6WQ7B8+hdE0to3zNsL9m
+        4Np0GttmAtdScl8AmH4tMvs9ESgRlJwqz4WelQb4eCtsBgOWk1I0TZy69VwpIpZb
+        6UNmEmQ4PSDIJec4fRNQXFLf0+xAYcG8eOzHEi0jGtm5T1E99ZPsZoJdg==
+X-ME-Sender: <xms:9msLZW25k2x86_AFSkp4-3uUh5uiaqzlG3ikSlSbFhcTlKyi5B57Yw>
+    <xme:9msLZZH977Ffek9HVsV3aHAeyOjUEv3_NcXC-lmhHJvNVnPJrD3U6i520oiHmpExA
+    av0haE9unQUyRz_jRc>
+X-ME-Received: <xmr:9msLZe6UC9h-9lspx_CD6KGaCrLedclyIdz0sBJkecz08fLJCMUwzd26qCfYQCZ-R--PPBwDzVk8anHqvMDXT9fyyw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekgedgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdluddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddt
+    tddvnecuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrhcuoehkvghrnhgvlhesjh
+    hfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpeeuvdekhfejjeevleeguedvieekudef
+    vdetgeefieeuiefhgeeiffehgeetfffggeenucffohhmrghinhepihhnfhhrrgguvggrug
+    drohhrghdpkhgvrhhnvghlrdhorhhgpdhgihhthhhusgdrtghomhdpuhgrphhiqdhgrhho
+    uhhprdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepkhgvrhhnvghlsehjfhgrrhhrrdgttg
+X-ME-Proxy: <xmx:9msLZX2pB1l3kmRhs6cAy3MdtWt11IkOurfkrDWMZiJ2iZDd0EbUfQ>
+    <xmx:9msLZZE8CaxEkJvqTRfRorUOEbdn3832DeRNzwt3NCS11ZxNgx0IIw>
+    <xmx:9msLZQ-s66D00MLPpgN92I-u38eW7KqCi_e-vwqjdIE1nV_8gKyqnQ>
+    <xmx:92sLZWeLCtIXBOwiG89kNjVp5f4puEsygZt_zjylA60e3TG4UFIbnQ>
+Feedback-ID: i01d149f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 20 Sep 2023 18:02:28 -0400 (EDT)
+Date:   Thu, 21 Sep 2023 00:02:25 +0200
+From:   Jan Hendrik Farr <kernel@jfarr.cc>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Dave Young <dyoung@redhat.com>, Philipp Rudo <prudo@redhat.com>,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, tglx@linutronix.de, dhowells@redhat.com,
+        vgoyal@redhat.com, keyrings@vger.kernel.org,
+        akpm@linux-foundation.org, Baoquan He <bhe@redhat.com>,
+        bhelgaas@google.com, Luca Boccassi <bluca@debian.org>,
+        lennart@poettering.net, "Liu, Pingfan" <piliu@redhat.com>
+Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
+Message-ID: <ZQtr8Y_isZP4nG96@desktop>
+References: <20230911052535.335770-1-kernel@jfarr.cc>
+ <20230913160045.40d377f9@rotkaeppchen>
+ <63952cb0-5217-42a8-9b62-8be6d03f5844@app.fastmail.com>
+ <CALu+AoTAUWWtx8yChQMKF9J5X_Qd8+x0hz0jzVwoOvAvh5VmHA@mail.gmail.com>
+ <CALu+AoRiok-bzM4OQbiix44O-PUgO2N6Yi+_qTOn4iWtk_u4cg@mail.gmail.com>
+ <CAMj1kXFkQ+T9OjK6NkKjfyR8gW4EZKFw5rEk0rgrzkHyK2BNXQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
- <20230904115816.1237684-2-s.hauer@pengutronix.de> <CACRpkdYxRdToUM3JcEeNK_K87D5WDzzSLvVEbtqqdQEhz3k_Ow@mail.gmail.com>
- <CAGb2v65G-8EECNjqnpKCxqAD5nATAb0S7AA_WMiGXYOR1avrvg@mail.gmail.com>
- <20230913065843.GF637806@pengutronix.de> <CAGETcx8rO=aykjb6=5k0wpOyscqokNwSL6w-AHnodY7pNXyzGQ@mail.gmail.com>
- <20230915065120.GQ637806@pengutronix.de>
-In-Reply-To: <20230915065120.GQ637806@pengutronix.de>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 20 Sep 2023 15:00:28 -0700
-Message-ID: <CAGETcx-stUfkVmkwGhj7iBWfCRsY5uZ=CxJdX9pPY6OO6oGUhg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] pinctrl: rockchip: add support for io-domain dependency
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Chen-Yu Tsai <wens@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        kernel@pengutronix.de,
-        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFkQ+T9OjK6NkKjfyR8gW4EZKFw5rEk0rgrzkHyK2BNXQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 11:51=E2=80=AFPM Sascha Hauer <s.hauer@pengutronix.=
-de> wrote:
->
-> On Wed, Sep 13, 2023 at 01:48:12PM -0700, Saravana Kannan wrote:
-> > On Tue, Sep 12, 2023 at 11:58=E2=80=AFPM Sascha Hauer <s.hauer@pengutro=
-nix.de> wrote:
+Hi Ard, Greetings from Delft
+
+
+On 20 10:50:31, Ard Biesheuvel wrote:
+> On Wed, 20 Sept 2023 at 08:40, Dave Young <dyoung@redhat.com> wrote:
+> >
+> > On Wed, 20 Sept 2023 at 15:43, Dave Young <dyoung@redhat.com> wrote:
 > > >
-> > > On Wed, Sep 13, 2023 at 12:37:54PM +0800, Chen-Yu Tsai wrote:
-> > > > On Tue, Sep 12, 2023 at 4:07=E2=80=AFPM Linus Walleij <linus.wallei=
-j@linaro.org> wrote:
-> > > > >
-> > > > > Top posting to bring Saravana Kannan into this discussion.
-> > > > >
-> > > > > This looks like a big hack to me, Saravana has been working
-> > > > > tirelessly to make the device tree probe order "sort itself out"
-> > > > > and I am pretty sure this issue needs to be fixed at the DT
-> > > > > core level and not in a driver.
+> > > > > In the end the only benefit this series brings is to extend the
+> > > > > signature checking on the whole UKI except of just the kernel image.
+> > > > > Everything else can also be done in user space. Compared to the
+> > > > > problems described above this is a very small gain for me.
 > > > >
-> > > > We could merge all the IO domain stuff into the pinctrl node/driver=
-,
-> > > > like is done for Allwinner? Maybe that would simplify things a bit?
+> > > > Correct. That is the benefit of pulling the UKI apart in the
+> > > > kernel. However having to sign the kernel inside the UKI defeats
+> > > > the whole point.
 > > >
-> > > I thought about this as well. On Rockchip the pinctrl driver and the =
-IO
-> > > domain driver even work on the same register space, so putting these
-> > > into a single node/driver would even feel more natural than what we h=
-ave
-> > > now.
-> >
-> > Then we should try to do this and fix any issues blocking us.
-> >
-> > > However, with that the pinctrl node would get the supplies that the I=
-O
-> > > domain node now has and we would never get into the probe of the pinc=
-trl
-> > > driver due to the circular dependencies.
-> >
-> > From a fw_devlink perspective, the circular dependency shouldn't be a
-> > problem. It's smart enough to recognize all cycle possibilities (since
-> > 6.3) and not enforce ordering between nodes in a cycle.
-> >
-> > So, this is really only a matter of pinctrl not trying to do
-> > regulator_get() in its probe function. You need to do the
-> > regulator_get() when the pins that depend on the io-domain are
-> > requested. And if the regulator isn't ready yet, return -EPROBE_DEFER?
->
-> That's basically what my series does already, I return -EPROBE_DEFER
-> from the pinctrl driver when a pin is requested and the IO domain is not
-> yet ready.
->
-> >
-> > Is there something that prevents us from doing that?
->
-> No. We could do that, but it wouldn't buy us anthing. I am glad to hear
-> that fw_devlink can break the circular dependencies. With this we could
-> add the supplies to the pinctrl node and the pinctrl driver would still
-> be probed.
->
-> With the IO domain supplies added to the pinctrl node our binding would
-> be cleaner, but still we would have to defer probe of many requested
-> pins until finally the I2C driver providing access to the PMIC comes
-> along. We also still need a "Do not defer probe for these pins" property
-> in the pingrp needed for the I2C driver.
-
-Sorry about the slow reply. Been a bit busy.
-
-Oh, this is not true though. With the example binding I gave,
-fw_devlink will automatically defer the probe of devices that depend
-on pins that need an iodomain/regulator.
-
-pinctrl {
-    compatible =3D "rockchip,rk3568-pinctrl";
-    i2c0 {
-                /omit-if-no-ref/
-                i2c0_xfer: i2c0-xfer {
-                        rockchip,pins =3D
-                                /* i2c0_scl */
-                                <0 RK_PB1 1 &pcfg_pull_none_smt>,
-                                /* i2c0_sda */
-                                <0 RK_PB2 1 &pcfg_pull_none_smt>;
-                };
-    }
-    ...
-    ...
-    pinctrl-io {
-        compatible =3D "rockchip,rk3568-pinctrl-io";
-        pmuio1-supply =3D <&vcc3v3_pmu>;
-        cam {
-            ....
-        }
-        ....
-        ....
-}
-
-consumerA {
-   pinctrl-0 =3D <&cam>;
-}
-
-With this model above, there are no cycles anymore.
-
-pictrl doesn't depend on anything.
-vcc3v3_pmu will depend on pinctrl (not shown in DT above).
-pinctrl-io depends on pinctrl and vcc3v3_pmu.
-consumerA depends on pinctrl-io.
-
-So pinctrl probes first.
-vcc3v3 will probe next.
-pinctrl-io will probe now that the supply is ready.
-consumerA will probe now that pinctrl-io is ready.
-
-fw_devlink will enforce all these dependencies because it understands
-pinctrl and -supply bindings.
-
--Saravana
-
->
-> I would consider this being a way to cleanup the bindings, but not a
-> solution at DT core level that Linus was aiming at.
->
-> >
-> > > >
-> > > > IIRC on Allwinner SoCs the PMIC pins don't have a separate power ra=
-il,
-> > > > or if they do they almost certainly use the default I/O rail that i=
-s
-> > > > always on, and so we omit it to work around the dependency cycle.
 > > >
-> > > I looked into sun50i as an example. This one has two pinctrl nodes, p=
-io
-> > > and r_pio. Only the former has supplies whereas the latter, where the
-> > > PMIC is connected to, has (found in sun50i-a64-pinephone.dtsi):
+> > > Pingfan added the zboot load support in kexec-tools, I know that he is
+> > > trying to sign the zboot image and the inside kernel twice. So
+> > > probably there are some common areas which can be discussed.
+> > > Added Ard and Pingfan in cc.
+> > > http://lists.infradead.org/pipermail/kexec/2023-August/027674.html
 > > >
-> > > &r_pio {
-> > >         /*
-> > >          * FIXME: We can't add that supply for now since it would
-> > >          * create a circular dependency between pinctrl, the regulato=
-r
-> > >          * and the RSB Bus.
-> > >          *
-> > >          * vcc-pl-supply =3D <&reg_aldo2>;
-> > >          */
-> > > };
-> > >
-> > > At least it show me that I am not the first one who has this problem =
-;)
-> > >
-> > > We could add the supplies to the pingroup subnodes of the pinctrl dri=
-ver
-> > > to avoid that, but as Saravana already menioned, that would feel like
-> > > overkill.
 > >
-> > So my comment yesterday was that it'd be an overkill to make every
-> > struct pin_desc into a device. But if you can split that rockchip
-> > pinctrl into two devices, that should be okay and definitely not an
-> > overkill.
+> > Here is another thread of the initial try in kernel with a few more
+> > options eg. some fake efi service helpers.
+> > https://lore.kernel.org/linux-arm-kernel/ZBvKSis+dfnqa+Vz@piliu.users.ipa.redhat.com/T/#m42abb0ad3c10126b8b3bfae8a596deb707d6f76e
 > >
-> > Maybe something like:
-> >
-> > pinctrl {
-> >     compatible =3D "rockchip,rk3568-pinctrl";
-> >     i2c0 {
-> >                 /omit-if-no-ref/
-> >                 i2c0_xfer: i2c0-xfer {
-> >                         rockchip,pins =3D
-> >                                 /* i2c0_scl */
-> >                                 <0 RK_PB1 1 &pcfg_pull_none_smt>,
-> >                                 /* i2c0_sda */
-> >                                 <0 RK_PB2 1 &pcfg_pull_none_smt>;
-> >                 };
-> >     }
-> >     ...
-> >     ...
-> >     pinctrl-io {
-> >         compatible =3D "rockchip,rk3568-pinctrl-io";
-> >         pmuio1-supply =3D <&vcc3v3_pmu>;
-> >         cam {
-> >             ....
-> >         }
-> >         ....
-> >         ....
-> > }
-> >
-> > So pinctrl will probe successfully and add it's child device
-> > pinctrl-io. i2c0 will probe once pinctrl is available. Then eventually
-> > the regulator will probe. And after all that, pinctrl-io would probe.
-> >
-> > This has no cycles and IMHO represents the hardware accurately. You
-> > have a pinctrl block and there's a sub component of it (pinctrl-io)
-> > that works differently and has additional dependencies.
-> >
-> > Any thoughts on this?
+> 
+> Currently, UKI's external interface is defined in terms of EFI
+> services, i.e., it is an executable PE/COFF binary that encapsulates
+> all the logic that performs the unpacking of the individual sections,
+> and loads the kernel as a PE/COFF binary as well (i.e., via
+> LoadImage/StartImage)
 >
-> By making the IO domain device a child node of the pinctrl node we
-> wouldn't need a phandle from the pinctrl node to the IO domain node
-> anymore, but apart from that the approach is equivalent to what we have
-> already.
->
-> Given that fw_devlink allows us to add the supplies directly to the
-> pinctrl node, I would prefer doing that. But as said, it doesn't solve
-> the problem.
->
-> Sascha
->
-> --
-> Pengutronix e.K.                           |                             =
-|
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
-|
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
-|
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
-|
+> As soon as we add support to Linux to unpack a UKI and boot the
+> encapsulated kernel using a boot protocol other than EFI, we are
+> painting ourselves into a corner, severely limiting the freedom of the
+> UKI effort to make changes to the interfaces that were implementation
+> details up to this point.
+
+While this was true at some point, it's not anymore. The intention is
+for UKIs to be a stable file format that can be used outside of
+systemd-stub. They are no longer just defined by their interface to
+UEFI. While the spec will need work it can be found at [1]. This patch
+depends on the UKI containing the linux bzimage, initrd, and cmdline in
+the sections with those names. We can depend on this in the future.
+
+There is some discussions around supporting more of the UKI features in
+the future (TPM PCR signatures, etc). See [2].
+
+> It also means that UKI handling in kexec will need to be taught about
+> every individual architecture again, which is something we are trying
+> to avoid with EFI support in general. Breaking the abstraction like
+> this lets the cat out of the bag, and will add yet another variation
+> of kexec that we will need to support and maintain forever.
+
+Yes this would require more work for each architecture that wants to
+kexec UKIs (arm64 would be next).
+
+However I think the support required would be way lower than all the
+other kexec loaders. I would suggest that this loader is actually really
+simple (check the code in the uki_load function in
+arch/x86/kernel/kexec-uki.c). All of the heavy lifting is actually done
+by the existing bzimage loader. The UKI loader just pulls appart the UKI
+and calls the existing bzimage loader, it's really simple. It's like an add-on
+to the current loader.
+
+> So the only way to do this properly and portably is to implement the
+> minimal set of EFI boot services [0] that Linux actually needs to run
+> its EFI stub (which is mostly identical to the set that UKI relies on
+> afaict), and expose them to the kexec image as it is being loaded.
+> This is not as bad as it sounds - I have some Rust code that could be
+> used as an inspiration [1] and which could be reused and shared
+> between architectures.
+
+This would be a very cool thing in general though and would open a lot
+of possibilities. But how much support will this require? Soon people
+will want more than just the minimal set of EFI services for booting
+Linux. I do like this idea though and would probably be one of the
+people wanting more of the EFI services supported.
+
+> This would also reduce/remove the need for a purgatory: loading a EFI
+> binary in this way would run it up to the point were it calls
+> ExitBootServices(), and the actual kexec would invoke the image as if
+> it was returning from ExitBootServices().
+> 
+> The only fundamental problem here is the need to allocate large chunks
+> of physical memory, which would need some kind of CMA support, I
+> imagine?
+> 
+> Maybe we should do a BoF at LPC to discuss this further?
+
+I definetly won't be at LPC, is it possible to join virtually?
+
+> 
+> [0] this is not as bad as it sounds: beyond a protocol database, a
+> heap allocator and a memory map, there is actually very little needed
+> to boot Linux via the EFI stub (although UKI needs
+> LoadImage/StartImage as well)
+> 
+> [1] https://github.com/ardbiesheuvel/efilite
+
+
+[1] https://uapi-group.org/specifications/specs/unified_kernel_image/
+[2] https://github.com/systemd/systemd/issues/28538
