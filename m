@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 444F17A7888
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40D47A788A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbjITKEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47454 "EHLO
+        id S234327AbjITKFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234114AbjITKEk (ORCPT
+        with ESMTP id S234242AbjITKE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:04:40 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A650A3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:04:33 -0700 (PDT)
-X-QQ-mid: bizesmtp76t1695204251taao2372
-Received: from [10.4.6.71] ( [221.226.144.218])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 20 Sep 2023 18:04:10 +0800 (CST)
-X-QQ-SSF: 00200000000000B0B000000A0000000
-X-QQ-FEAT: IV30oiqrgAb5rna1TIEV7YfRW072k5eKxAQ5LfodYttb50A7vd2R+5p1I1QL1
-        laK8zIgLCa1QBVxGwsSeVP+5VLUtRrYmsY7fkrLmPFb6782LLuRNqfN7Qt+bY2ujIMut0HC
-        BbE+EyBB+E/toQsROAWBx8NpBFyspfc7ndKuq7pOsFXa5JtnWqkP0hw6ZQm3OxpB2ki6Yrc
-        SIpl+l5rSdDaWiSJn6PzpZtYagyK+7kWxUiz7keJ4frDvRtYMfx5cJfagGgh0UkajE/5wYH
-        wnMdqfNLQsG8FkoeCOTlcGpgIEJt082cNpIa+3MhnaDw5gxc+6nX8A+uWCNOHAUMm0lveTf
-        AOPeR6/fQymbQ/ybHWWlpUjS9gW0w==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4374422987798744598
-Message-ID: <114145FFA8546AF1+24aac21b-3748-3d50-4154-a25ab59be1be@tinylab.org>
-Date:   Wed, 20 Sep 2023 18:04:10 +0800
+        Wed, 20 Sep 2023 06:04:59 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8A4BAB;
+        Wed, 20 Sep 2023 03:04:52 -0700 (PDT)
+Received: from [192.168.2.41] (77-166-152-30.fixed.kpn.net [77.166.152.30])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 112CB212C4B2;
+        Wed, 20 Sep 2023 03:04:49 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 112CB212C4B2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695204292;
+        bh=3bC6p4sdHzytTO0QKfyFybQqp0lACEhiSf/B5PUqc00=;
+        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+        b=h/YyjqOEiWd8pu5Aeb671sFZKoQY0fwShQJicaEbCnEbeLBtsh7LHpAw5WRPPLqc2
+         BSkSqH5iAh9vTpQhEDIKk607F+IZLp27UXDd9uW9rs+uHhndP4n4ewpTFGgF5w1ycY
+         KQ5DrwpI4tOdPwgzvZQ1f6U3SuOuZipLoAyhOBG4=
+Message-ID: <101987a1-b1ab-429d-af03-b6bdf6216474@linux.microsoft.com>
+Date:   Wed, 20 Sep 2023 12:04:48 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH -fixes] riscv: Remove duplicate objcopy flag
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        anup@brainfault.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <mhng-8cabcad9-a181-4db8-904b-3f7daa7621f1@palmer-ri-x1c9a>
-From:   Song Shuai <songshuaishuai@tinylab.org>
-In-Reply-To: <mhng-8cabcad9-a181-4db8-904b-3f7daa7621f1@palmer-ri-x1c9a>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Subject: Re: [REGRESSION] Re: [PATCH 6.1 033/219] memcg: drop
+ kmem.limit_in_bytes
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        mathieu.tortuyaux@gmail.com
+References: <20230917191040.964416434@linuxfoundation.org>
+ <20230917191042.204185566@linuxfoundation.org>
+ <20230920081101.GA12096@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz>
+Content-Language: en-US
+In-Reply-To: <ZQqwzK/fDm+GLiKM@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/9/20 17:52, Palmer Dabbelt 写道:
-> On Thu, 14 Sep 2023 02:13:34 PDT (-0700), songshuaishuai@tinylab.org wrote:
->> There are two duplicate `-O binary` flags when objcopying from vmlinux
->> to Image/xipImage.
+On 9/20/2023 10:43 AM, Michal Hocko wrote:
+> On Wed 20-09-23 01:11:01, Jeremi Piotrowski wrote:
+>> On Sun, Sep 17, 2023 at 09:12:40PM +0200, Greg Kroah-Hartman wrote:
+>>> 6.1-stable review patch.  If anyone has any objections, please let me know.
+>>>
+>>> ------------------
 >>
->> RISC-V set `-O binary` flag in both OBJCOPYFLAGS in the top-level riscv
->> Makefile and OBJCOPYFLAGS_* in the boot/Makefile, and the objcopy cmd
->> in Kbuild would join them together.
+>> Hi Greg/Michal,
 >>
->> The `-O binary` flag is only needed for objcopying Image, so remove the
->> OBJCOPYFLAGS in the top-level riscv Makefile.
+>> This commit breaks userspace which makes it a bad commit for mainline and an
+>> even worse commit for stable.
 >>
->> Fixes: c0fbcd991860 ("RISC-V: Build flat and compressed kernel images")
->> Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
->> ---
->>  arch/riscv/Makefile | 1 -
->>  1 file changed, 1 deletion(-)
->>
->> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
->> index 1329e060c548..b43a6bb7e4dc 100644
->> --- a/arch/riscv/Makefile
->> +++ b/arch/riscv/Makefile
->> @@ -6,7 +6,6 @@
->>  # for more details.
->>  #
->>
->> -OBJCOPYFLAGS    := -O binary
->>  LDFLAGS_vmlinux := -z norelro
->>  ifeq ($(CONFIG_RELOCATABLE),y)
->>      LDFLAGS_vmlinux += -shared -Bsymbolic -z notext --emit-relocs
+>> We ingested 6.1.54 into our nightly testing and found that runc fails to gather
+>> cgroup statistics (when reading kmem.limit_in_bytes). The same code is vendored
+>> into kubelet and kubelet fails to start if this operation fails. 6.1.53 is
+>> fine.
 > 
-> Does this result in any incorrect behavior?  It looks fine to me, but if
-Nop, objcopy works as it's expected. You can put this patch on -next.
-
-> there's no regression I'll put in on -next instead of -fixes.
+> Could you expand some more on why is the file read? It doesn't support
+> writing to it for some time so how does reading it helps in any sense?
 > 
-> Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Anyway, I do agree that the stable backport should be reverted.
 > 
 
--- 
-Thanks
-Song Shuai
+This file is read together with all the other memcg files. Each prefix:
+
+memory
+memory.memsw
+memory.kmem
+memory.kmem.tcp
+
+is combined with these suffixes
+
+.usage_in_bytes
+.max_usage_in_bytes
+.failcnt
+.limit_in_bytes
+
+and read, the values are then forwarded on to other components for scheduling decisions.
+You want to know the limit when checking the usage (is the usage close to the limit or not).
+
+Userspace tolerates MEMCG/MEMCG_KMEM being disabled, but having a single file out of the
+set missing is an anomaly. So maybe we could keep the dummy file just for the
+sake of consistency? Cgroupv1 is legacy after all.
+
+>>> Address this by wiping out the file completely and effectively get back to
+>>> pre 4.5 era and CONFIG_MEMCG_KMEM=n configuration.
+>>
+>> On reads, the runc code checks for MEMCG_KMEM=n by checking
+>> kmem.usage_in_bytes. If it is present then runc expects the other cgroup files
+>> to be there (including kmem.limit_in_bytes). So this change is not effectively
+>> the same.
+>>
+>> Here's a link to the PR that would be needed to handle this change in userspace
+>> (not merged yet and would need to be propagated through the ecosystem):
+>>
+>> https://github.com/opencontainers/runc/pull/4018.
+> 
+> Thanks. Does that mean the revert is still necessary for the Linus tree
+> or do you expect that the fix can be merged and propagated in a
+> reasonable time?
+> 
+
+We can probably get runc and currently supported kubernetes versions patched in time
+before 6.6 (or the next LTS kernel) hits LTS distros.
+
+But there's still a bunch of users running cgroupv1 with unsupported kubernetes
+versions that are still taking kernel updates as they come, so this might get reported
+again next year if it stays in mainline.
