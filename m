@@ -2,300 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 911237A8C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E673D7A8C2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjITS75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 14:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S229848AbjITTAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjITS7z (ORCPT
+        with ESMTP id S229851AbjITTAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 14:59:55 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D82AC9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:59:49 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5738949f62cso123200eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:59:49 -0700 (PDT)
+        Wed, 20 Sep 2023 15:00:19 -0400
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC834E8;
+        Wed, 20 Sep 2023 12:00:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695236388; x=1695841188; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eTsWnCm4WBdqltgR3xxPn5PFi60U+G+FBv6+XPeoNEg=;
-        b=V5vq+oEAkikwTjjjscIYLkbJcxM9d1PhjozZM1AhYltycpP56KIJbvq8HewYSnU+p9
-         VmYbuhY/OjR3HoL7C0PwRHZ144zjzI7t+LrDWX4dEeVHbeB5tAG8ZTlzvyYpQDEiaUEo
-         AlwTRa6s7nfUt8BQDcFle5CafWlw/qbDfI7cGXcS2rE4cwPNkeyGwStFgag0qkCPlBam
-         ypLATPytWe8eRJMlHYGBDhWvEjXulzpFk9/frZsp5uxf8C8eCCrcKOnPXUJr2tseY5T2
-         j1DBXqUiPPjN30ixj+C9fvo+FRwj8uDx0/zJW+3qmWtrD6GVCMOFKFXINbq2r/L9Io5p
-         MzFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695236388; x=1695841188;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eTsWnCm4WBdqltgR3xxPn5PFi60U+G+FBv6+XPeoNEg=;
-        b=vfPnbpXLVb+SHcdZkGJvTbRMZEbCoPNeiX1JiYpCL6+099kfE+1uUfETlovw+g9ZFO
-         zFIRoYno7tQp1+Eg9H6cVRuTnlXekSj+97uCmDYB8tXHAPojYYkQTQcLTr74NlPiy0tW
-         g0nKSYDdVybAvW8OQfk6h7djHkiSuAfhQFFp6AENJ7/DlxVKVApGFQJQlaazlpGYKGJA
-         Rw1dJHDgo56A+x2MQgyL7hUUsSiVQy9O6NcDYyWl7UrSHV/mEnr07x3MAypcgnugnMGR
-         pyhmQfcY7gdPZD2S1GJdtNcGV9XHyInlVeqfQSurr+1DAmgF/kAYhEWFUoQ+rL1sSsuj
-         o9Sg==
-X-Gm-Message-State: AOJu0YwpH3Zq2guWRuXBg1mjsQYhI2FJWiMP6fP7ZRysmjddrvO6Xvxh
-        ZIMQAf2V8iKrEqEBz31RGWNl3AFk4mQ=
-X-Google-Smtp-Source: AGHT+IHxThdjq5VAwHR1MahDu+TtHYUMjtei4S4zVhg/HZcxY2tUSlOnDwpkv+ZNuzyuwXKAuGBJ2A==
-X-Received: by 2002:a4a:3c54:0:b0:56d:c55b:4792 with SMTP id p20-20020a4a3c54000000b0056dc55b4792mr4070515oof.6.1695236387785;
-        Wed, 20 Sep 2023 11:59:47 -0700 (PDT)
-Received: from localhost.localdomain ([143.166.81.254])
-        by smtp.gmail.com with ESMTPSA id v17-20020a4a9751000000b00573f5173a57sm7022440ooi.23.2023.09.20.11.59.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 11:59:47 -0700 (PDT)
-From:   Stuart Hayes <stuart.w.hayes@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Tanjore Suresh <tansuresh@google.com>,
-        Martin Belanger <Martin.Belanger@dell.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Cc:     Stuart Hayes <stuart.w.hayes@gmail.com>
-Subject: [PATCH v3] driver core: shut down devices asynchronously
-Date:   Wed, 20 Sep 2023 13:59:23 -0500
-Message-Id: <20230920185923.3422-1-stuart.w.hayes@gmail.com>
-X-Mailer: git-send-email 2.39.3
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1695236410; x=1726772410;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ZjPu7pghN+++7EQS8KqJ3h6m2q6ZCRIsdA25YcSip9k=;
+  b=EI794SIpSmfVJUWlCmifS/COuiH18aHbu119vncyh5v+rR6owCzd6di0
+   1P1BrjDZmwLuM95nYw+v5ENK0IbSCT5oQpAXGXxn7OQYe1KwgGwiI/p85
+   OkrCRLFJp27xHOf7J/OBiK2GK1f/qnnW1FqUNQjz4JMpzyG+2v9OtvX3g
+   I=;
+X-IronPort-AV: E=Sophos;i="6.03,162,1694736000"; 
+   d="scan'208";a="584644147"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 19:00:07 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com (Postfix) with ESMTPS id BEE8C40DCF;
+        Wed, 20 Sep 2023 19:00:05 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 20 Sep 2023 19:00:05 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.106.101.14) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 20 Sep 2023 19:00:02 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <syzbot+71e724675ba3958edb31@syzkaller.appspotmail.com>
+CC:     <avagin@gmail.com>, <davem@davemloft.net>, <dsahern@kernel.org>,
+        <edumazet@google.com>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [net?] WARNING in inet_csk_get_port (2)
+Date:   Wed, 20 Sep 2023 11:59:52 -0700
+Message-ID: <20230920185952.94518-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <0000000000004ba00e0605ce2fcf@google.com>
+References: <0000000000004ba00e0605ce2fcf@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.106.101.14]
+X-ClientProxiedBy: EX19D043UWC002.ant.amazon.com (10.13.139.222) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shut down devices asynchronously, ensuring that each device is shut down
-before its parents.
+From: syzbot <syzbot+71e724675ba3958edb31@syzkaller.appspotmail.com>
+Date: Wed, 20 Sep 2023 11:02:55 -0700
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    2cf0f7156238 Merge tag 'nfs-for-6.6-2' of git://git.linux-..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=17405ab0680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d594086f139d167
+> dashboard link: https://syzkaller.appspot.com/bug?extid=71e724675ba3958edb31
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b2e118680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=127b55c4680000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/456b02029fa8/disk-2cf0f715.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/9f9ff0c00454/vmlinux-2cf0f715.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/0ede19fba30f/bzImage-2cf0f715.xz
+> 
+> The issue was bisected to:
+> 
+> commit c48ef9c4aed3632566b57ba66cec6ec78624d4cb
+> Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Date:   Mon Sep 11 18:36:57 2023 +0000
+> 
+>     tcp: Fix bind() regression for v4-mapped-v6 non-wildcard address.
+>
 
-This can dramatically reduce system shutdown/reboot time on systems that
-have devices that take many seconds to shut down, such as some NVMe drives.
-On one system tested, the shutdown time went from 11 minutes without this
-patch to 55 seconds with the patch.
+We need this condition to put v4 sk and v4-mapped-v6 sk into
+the same bucket.
 
-Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
----
-v1->v2: rewritten using kernel async code (suggested by Lukas Wunner)
-v2->v3: removed recursive functions to schedule children to be shutdown
-        before parents, since existing device_shutdown loop will already
-        do this
----
- drivers/base/base.h   |   3 ++
- drivers/base/core.c   | 102 ++++++++++++++++++++++++++----------------
- include/linux/async.h |   6 +++
- 3 files changed, 73 insertions(+), 38 deletions(-)
-
-diff --git a/drivers/base/base.h b/drivers/base/base.h
-index eb4c0ace9242..9b9d80e575ca 100644
---- a/drivers/base/base.h
-+++ b/drivers/base/base.h
-@@ -11,6 +11,7 @@
-  *
-  */
- #include <linux/notifier.h>
-+#include <linux/async.h>
+---8<---
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index dfb1c61c0c2b..6487357d1ddd 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -822,7 +823,8 @@ static bool inet_bind2_bucket_match(const struct inet_bind2_bucket *tb,
+ 			return ipv6_addr_v4mapped(&tb->v6_rcv_saddr) &&
+ 				tb->v6_rcv_saddr.s6_addr32[3] == sk->sk_rcv_saddr;
  
- /**
-  * struct subsys_private - structure to hold the private to the driver core portions of the bus_type/class structure.
-@@ -97,6 +98,7 @@ struct driver_private {
-  *	the device; typically because it depends on another driver getting
-  *	probed first.
-  * @async_driver - pointer to device driver awaiting probe via async_probe
-+ * @child_domain - domain for async shutdown work of children
-  * @device - pointer back to the struct device that this structure is
-  * associated with.
-  * @dead - This device is currently either in the process of or has been
-@@ -114,6 +116,7 @@ struct device_private {
- 	struct list_head deferred_probe;
- 	struct device_driver *async_driver;
- 	char *deferred_probe_reason;
-+	struct async_domain child_domain;
- 	struct device *device;
- 	u8 dead:1;
- };
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 4d8b315c48a1..b0f71e64125c 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/async.h>
- #include <linux/cpufreq.h>
- #include <linux/device.h>
- #include <linux/err.h>
-@@ -3473,6 +3474,7 @@ static int device_private_init(struct device *dev)
- 	klist_init(&dev->p->klist_children, klist_children_get,
- 		   klist_children_put);
- 	INIT_LIST_HEAD(&dev->p->deferred_probe);
-+	INIT_ASYNC_DOMAIN_EXCLUSIVE(&dev->p->child_domain);
- 	return 0;
- }
- 
-@@ -4718,11 +4720,68 @@ int device_change_owner(struct device *dev, kuid_t kuid, kgid_t kgid)
- }
- EXPORT_SYMBOL_GPL(device_change_owner);
- 
-+/**
-+ * shutdown_device - shutdown one device
-+ * @data: the pointer to the struct device to be shutdown
-+ * @cookie: not used
-+ *
-+ * This shuts down one device, after waiting for children to finish
-+ * shutdown.  This should be scheduled for any children first.
-+ */
-+static void shutdown_device(void *data, async_cookie_t cookie)
-+{
-+	struct device *dev = data;
-+
-+	/*
-+	 * wait for shutdown work of children to finish
-+	 */
-+	async_synchronize_full_domain(&dev->p->child_domain);
-+
-+	/*
-+	 * Make sure the device is off the kset list, in the
-+	 * event that dev->*->shutdown() doesn't remove it.
-+	 */
-+	spin_lock(&devices_kset->list_lock);
-+	list_del_init(&dev->kobj.entry);
-+	spin_unlock(&devices_kset->list_lock);
-+
-+	/* hold lock to avoid race with probe/release */
-+	if (dev->parent)
-+		device_lock(dev->parent);
-+	device_lock(dev);
-+
-+	/* Don't allow any more runtime suspends */
-+	pm_runtime_get_noresume(dev);
-+	pm_runtime_barrier(dev);
-+
-+	if (dev->class && dev->class->shutdown_pre) {
-+		if (initcall_debug)
-+			dev_info(dev, "shutdown_pre\n");
-+		dev->class->shutdown_pre(dev);
-+	}
-+	if (dev->bus && dev->bus->shutdown) {
-+		if (initcall_debug)
-+			dev_info(dev, "shutdown\n");
-+		dev->bus->shutdown(dev);
-+	} else if (dev->driver && dev->driver->shutdown) {
-+		if (initcall_debug)
-+			dev_info(dev, "shutdown\n");
-+		dev->driver->shutdown(dev);
-+	}
-+
-+	device_unlock(dev);
-+	if (dev->parent)
-+		device_unlock(dev->parent);
-+
-+	put_device(dev);
-+}
-+
- /**
-  * device_shutdown - call ->shutdown() on each device to shutdown.
-  */
- void device_shutdown(void)
- {
-+	ASYNC_DOMAIN_EXCLUSIVE(top_domain);
- 	struct device *dev, *parent;
- 
- 	wait_for_device_probe();
-@@ -4732,20 +4791,14 @@ void device_shutdown(void)
- 
- 	spin_lock(&devices_kset->list_lock);
- 	/*
--	 * Walk the devices list backward, shutting down each in turn.
--	 * Beware that device unplug events may also start pulling
-+	 * Walk the devices list backward, scheduling shutdown of each in
-+	 * turn. Beware that device unplug events may also start pulling
- 	 * devices offline, even as the system is shutting down.
- 	 */
- 	while (!list_empty(&devices_kset->list)) {
- 		dev = list_entry(devices_kset->list.prev, struct device,
- 				kobj.entry);
- 
--		/*
--		 * hold reference count of device's parent to
--		 * prevent it from being freed because parent's
--		 * lock is to be held
--		 */
--		parent = get_device(dev->parent);
- 		get_device(dev);
- 		/*
- 		 * Make sure the device is off the kset list, in the
-@@ -4754,40 +4807,13 @@ void device_shutdown(void)
- 		list_del_init(&dev->kobj.entry);
- 		spin_unlock(&devices_kset->list_lock);
- 
--		/* hold lock to avoid race with probe/release */
--		if (parent)
--			device_lock(parent);
--		device_lock(dev);
--
--		/* Don't allow any more runtime suspends */
--		pm_runtime_get_noresume(dev);
--		pm_runtime_barrier(dev);
--
--		if (dev->class && dev->class->shutdown_pre) {
--			if (initcall_debug)
--				dev_info(dev, "shutdown_pre\n");
--			dev->class->shutdown_pre(dev);
--		}
--		if (dev->bus && dev->bus->shutdown) {
--			if (initcall_debug)
--				dev_info(dev, "shutdown\n");
--			dev->bus->shutdown(dev);
--		} else if (dev->driver && dev->driver->shutdown) {
--			if (initcall_debug)
--				dev_info(dev, "shutdown\n");
--			dev->driver->shutdown(dev);
--		}
--
--		device_unlock(dev);
--		if (parent)
--			device_unlock(parent);
--
--		put_device(dev);
--		put_device(parent);
-+		async_schedule_domain(shutdown_device, dev,
-+			dev->parent ? &parent->p->child_domain : &top_domain);
- 
- 		spin_lock(&devices_kset->list_lock);
+-		return false;
++		return ipv6_addr_v4mapped(&sk->sk_v6_rcv_saddr) &&
++			sk->sk_v6_rcv_saddr.s6_addr32[3] == tb->rcv_saddr;
  	}
- 	spin_unlock(&devices_kset->list_lock);
-+	async_synchronize_full_domain(&top_domain);
- }
  
- /*
-diff --git a/include/linux/async.h b/include/linux/async.h
-index cce4ad31e8fc..ab62402452f8 100644
---- a/include/linux/async.h
-+++ b/include/linux/async.h
-@@ -35,6 +35,12 @@ struct async_domain {
- 	struct async_domain _name = { .pending = LIST_HEAD_INIT(_name.pending), \
- 				      .registered = 0 }
- 
-+static inline void INIT_ASYNC_DOMAIN_EXCLUSIVE(struct async_domain *domain)
-+{
-+	INIT_LIST_HEAD(&domain->pending);
-+	domain->registered = 0;
-+}
-+
- async_cookie_t async_schedule_node(async_func_t func, void *data,
- 				   int node);
- async_cookie_t async_schedule_node_domain(async_func_t func, void *data,
--- 
-2.39.3
+ 	if (sk->sk_family == AF_INET6)
+---8<---
 
+Scenario is like
+
+  1) bind(v4) creates a tb2 bucket
+  2) bind(v4-mapped-v6) creates another tb2 bucket
+  3) listen(v4) finds the second tb2 and trigger warning
+
+---8<---
+from socket import *
+
+s = socket()
+s.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
+s.bind(('255.255.255.255', 0))
+
+s2 = socket(AF_INET6, SOCK_STREAM)
+s2.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
+s2.bind(('::ffff:255.255.255.255', s.getsockname()[1]))
+s.listen()
+---8<---
+
+Will post a formal patch after doing more tests with SO_REUSEPORT.
+
+Thanks!
+
+
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15567dc4680000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=17567dc4680000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13567dc4680000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+71e724675ba3958edb31@syzkaller.appspotmail.com
+> Fixes: c48ef9c4aed3 ("tcp: Fix bind() regression for v4-mapped-v6 non-wildcard address.")
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 5049 at net/ipv4/inet_connection_sock.c:587 inet_csk_get_port+0xf96/0x2350 net/ipv4/inet_connection_sock.c:587
+> Modules linked in:
+> CPU: 0 PID: 5049 Comm: syz-executor288 Not tainted 6.6.0-rc2-syzkaller-00018-g2cf0f7156238 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+> RIP: 0010:inet_csk_get_port+0xf96/0x2350 net/ipv4/inet_connection_sock.c:587
+> Code: 7c 24 08 e8 4c b6 8a 01 31 d2 be 88 01 00 00 48 c7 c7 e0 94 ae 8b e8 59 2e a3 f8 2e 2e 2e 31 c0 e9 04 fe ff ff e8 ca 88 d0 f8 <0f> 0b e9 0f f9 ff ff e8 be 88 d0 f8 49 8d 7e 48 e8 65 ca 5a 00 31
+> RSP: 0018:ffffc90003abfbf0 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffff888026429100 RCX: 0000000000000000
+> RDX: ffff88807edcbb80 RSI: ffffffff88b73d66 RDI: ffff888026c49f38
+> RBP: ffff888026c49f30 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff9260f200
+> R13: ffff888026c49880 R14: 0000000000000000 R15: ffff888026429100
+> FS:  00005555557d5380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000000045ad50 CR3: 0000000025754000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  inet_csk_listen_start+0x155/0x360 net/ipv4/inet_connection_sock.c:1256
+>  __inet_listen_sk+0x1b8/0x5c0 net/ipv4/af_inet.c:217
+>  inet_listen+0x93/0xd0 net/ipv4/af_inet.c:239
+>  __sys_listen+0x194/0x270 net/socket.c:1866
+>  __do_sys_listen net/socket.c:1875 [inline]
+>  __se_sys_listen net/socket.c:1873 [inline]
+>  __x64_sys_listen+0x53/0x80 net/socket.c:1873
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f3a5bce3af9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc1a1c79e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000032
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f3a5bce3af9
+> RDX: 00007f3a5bce3af9 RSI: 0000000000000000 RDI: 0000000000000003
+> RBP: 00007f3a5bd565f0 R08: 0000000000000006 R09: 0000000000000006
+> R10: 0000000000000006 R11: 0000000000000246 R12: 0000000000000001
+> R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+>  </TASK>
