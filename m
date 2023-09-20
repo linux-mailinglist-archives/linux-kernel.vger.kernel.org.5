@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3899E7A8C4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7973C7A8C4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjITTLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
+        id S229914AbjITTLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjITTLY (ORCPT
+        with ESMTP id S229498AbjITTL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:11:24 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE668F;
-        Wed, 20 Sep 2023 12:11:17 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c00b37ad84so2579871fa.0;
-        Wed, 20 Sep 2023 12:11:17 -0700 (PDT)
+        Wed, 20 Sep 2023 15:11:27 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2415A8F;
+        Wed, 20 Sep 2023 12:11:21 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-500bbe3ef0eso108928e87.1;
+        Wed, 20 Sep 2023 12:11:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695237076; x=1695841876; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0XSP0EPbm9YvKR6mPo23h+dPn77vhjtSt75IDiGzGvk=;
-        b=JWEfbkeNxxHXrxpkBOEFIT+U6OEGkLLSIM7wf+g5qYuP1nZ/iRMJmdIvtZ/bdEP4YC
-         18ZYee+9tlhWp1tXBUzbadknMBeSe5/S8N01104d3v+NwomWDdWk3wHFd1PYl0fGf2iI
-         4vPQ76LRORAinhzUjUZB4V7GMsSQacAih6YovFmQ0ct+HZBaw1bJEBrbCLFnjvR19+eq
-         OJDrm7Atu2S9NgQLIUSonLipWETTO/3saNOxp/yoYJHrfuA55Yb9bLXViAnSgO/Cpxz+
-         52Oxu1U6XwzXwao2Jt8gAWGSYes51VIeWh7fMCcx9ejBajUlhO/JU0nJ299TxBHp3HZr
-         rWZg==
+        d=gmail.com; s=20230601; t=1695237079; x=1695841879; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wR1JE8m9yIb2GrY6VQKOZhC73Jk1qxOxRizbrOmDB5o=;
+        b=YAkqtH/5XLK5BSea5moSW8AkhzpXd5e3zEVjaukVZj7LjK+YeaoAUueQh5LrgXcNQy
+         6j5NWG1gsm1cqh7A8qQoOQzyKh92Bdn1af7Y4n/WUI+R3DrWpBiBc6fYKxintReG5J+R
+         7/rLMabfLLOiWoyVKl7RXQFj2TYwqyBYSsaPltNFQ+JHX29/yGO4R86Cpg9An6hqxlyv
+         dFTF1vZ5bdzFXrMMtETyPyWQhFuNoXuWU3wdtzFgKPhE9j6ZU9qY8ONK7BrBMzwUQ6MT
+         E1W6YMp7T6HjJN4pTE6mO0zW/DKOrf25VnSXlx72i/C+b7PLVrUfH79hk4VkG/+MrVwg
+         N11g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695237076; x=1695841876;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0XSP0EPbm9YvKR6mPo23h+dPn77vhjtSt75IDiGzGvk=;
-        b=MFPI18jo2298j98DJTnw2HCrI+PPCj0DteB1j1ydBmMzLnYB5QxMTOFgzFVTrA2/Yj
-         UkmBW5oHtxftHaXMIT5qzW+TXrDCAcyZCbiVMBiwy63CCzeIPZnAPIakFSeslCT2eZJL
-         jb1vtOyRqvhD5EEF2gqZ18HiWw/nJcTukeimx2EoxiFh4pWkMR2+A6udH4UjYw5Fg4sH
-         l3p3KYTLSLZ3g14XltNFOQUfyXpz7m5ZTsFF+XJvswyQSy7GA4pwMIIT0dD4+TYNva6O
-         5N9+lh9l6y2QUpAMHoy9hC29CO4gX7HSJ5Rt0cRCTM8ZEeR8G8iSW1wwuylX42o1B/BJ
-         JqyQ==
-X-Gm-Message-State: AOJu0YwhdF0iZkmB8k52cMx2e7Ww0RIj7NY2eat+jg0dAyUrkfIf7jXS
-        LDUY8pZo3jtiaq4xbZLkU0UJ/w63Hag=
-X-Google-Smtp-Source: AGHT+IF/ZcMhoEpv4WOnm45w2MfZcJM/lpOWwlu3Qmbv76cWC/Oh09WqjdpyRUc6f4APUSu64lxJug==
-X-Received: by 2002:a2e:9cd4:0:b0:2c0:32a1:71dd with SMTP id g20-20020a2e9cd4000000b002c032a171ddmr3055632ljj.28.1695237075493;
-        Wed, 20 Sep 2023 12:11:15 -0700 (PDT)
-Received: from localhost ([85.26.234.178])
-        by smtp.gmail.com with ESMTPSA id by33-20020a05651c1a2100b002bfec05a693sm2376201ljb.22.2023.09.20.12.11.14
+        d=1e100.net; s=20230601; t=1695237079; x=1695841879;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wR1JE8m9yIb2GrY6VQKOZhC73Jk1qxOxRizbrOmDB5o=;
+        b=fcyNY6pknrkKXPaKA3iqNKbpfp3qUjZrCmhiRN3tyXZpkvxvnpV8CNpgWG7SmF6a3e
+         RGx/5PwLSkj0x3r4XKaIbj1yfzRQsFfVgT4IIksMOXTnUq4Mek9XMmmcDV7SBmCLB/0D
+         wy7jiw7Y8dPVCWDh/KqITdlCFjJtqNm1Yi06OR+I4a0unvoxgrgZcvbcOd9boko792a4
+         f09ffNCzNSgZ1mnz7/GLqd/gH+L9IuNIi+CQxubIJCuQU8cmAM0/+1dnhsQHrG5bY7td
+         ROc47jl6RCO0uFsepezSlXPEQQ917soPByKyhl8HrjTUnwYkUQIGovLR19a4Bw7LUpX4
+         6LAQ==
+X-Gm-Message-State: AOJu0YxMFQJSuaSiaoPaccDpciUHw53NtHn6mTxB5O1QF3JOZTHHXaZU
+        5DqHB1nnxs9w5Ek3Nh7k9clDMR5OjLQ=
+X-Google-Smtp-Source: AGHT+IG6GeZvz2KK7DDBg0fy99LGIWGIHeZjOEx66NYKlsdP58EJ7i/40rhVTU3icepvkciFRDsIaQ==
+X-Received: by 2002:a05:6512:12ca:b0:503:16ec:7153 with SMTP id p10-20020a05651212ca00b0050316ec7153mr2473011lfg.31.1695237079028;
+        Wed, 20 Sep 2023 12:11:19 -0700 (PDT)
+Received: from localhost ([85.140.0.168])
+        by smtp.gmail.com with ESMTPSA id j28-20020ac253bc000000b0050424698d62sm57962lfh.249.2023.09.20.12.11.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:11:14 -0700 (PDT)
+        Wed, 20 Sep 2023 12:11:18 -0700 (PDT)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Michal Simek <michal.simek@amd.com>,
         Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -56,176 +57,198 @@ To:     Michal Simek <michal.simek@amd.com>,
         Tony Luck <tony.luck@intel.com>,
         James Morse <james.morse@arm.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>
+        Robert Richter <rric@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>
 Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Punnaiah Choudary Kalluri 
         <punnaiah.choudary.kalluri@xilinx.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 00/20] EDAC/mc/synopsys: Various fixes and cleanups
-Date:   Wed, 20 Sep 2023 22:10:24 +0300
-Message-ID: <20230920191059.28395-1-fancer.lancer@gmail.com>
+        linux-kernel@vger.kernel.org, Sherry Sun <sherry.sun@nxp.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH v4 01/20] EDAC/synopsys: Fix ECC status data and IRQ disable race condition
+Date:   Wed, 20 Sep 2023 22:10:25 +0300
+Message-ID: <20230920191059.28395-2-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230920191059.28395-1-fancer.lancer@gmail.com>
+References: <20230920191059.28395-1-fancer.lancer@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset is a first one in the series created in the framework of
-my Synopsys DW uMCTL2 DDRC-related work:
+The race condition around the ECCCLR register access happens in the IRQ
+disable method called in the device remove() procedure and in the ECC IRQ
+handler:
+1. Enable IRQ:
+   a. ECCCLR = EN_CE | EN_UE
+2. Disable IRQ:
+   a. ECCCLR = 0
+3. IRQ handler:
+   a. ECCCLR = CLR_CE | CLR_CE_CNT | CLR_CE | CLR_CE_CNT
+   b. ECCCLR = 0
+   c. ECCCLR = EN_CE | EN_UE
+So if the IRQ disabling procedure is called concurrently with the IRQ
+handler method the IRQ might be actually left enabled due to the
+statement 3c.
 
-[1: In-progress v4] EDAC/mc/synopsys: Various fixes and cleanups
-Link: ---you are looking at it---
-[2: In-progress v4] EDAC/synopsys: Add generic DDRC info and address mapping
-Link: ---to be submitted---
-[3: In-progress v4] EDAC/synopsys: Add generic resources and Scrub support
-Link: ---to be submitted---
+The root cause of the problem is that ECCCLR register (which since v3.10a
+has been called as ECCCTL) has intermixed ECC status data clear flags and
+the IRQ enable/disable flags. Thus the IRQ disabling (clear EN flags) and
+handling (write 1 to clear ECC status data) procedures must be serialised
+around the ECCCTL register modification to prevent the race.
 
-Note the patchsets above must be merged in the same order as they are
-placed in the list in order to prevent conflicts. Nothing prevents them
-from being reviewed synchronously though. Any tests are very welcome.
-Thanks in advance.
+So fix the problem described above by adding the spin-lock around the
+ECCCLR modifications and preventing the IRQ-handler from modifying the
+IRQs enable flags (there is no point in disabling the IRQ and then
+re-enabling it again within a single IRQ handler call, see the statements
+3a/3b and 3c above).
 
-The main goal of the entire set of the changes provided in the mentioned
-patchsets is to as much as possible specialise the synopsys_edac.c driver
-to be working with the Synopsys DW uMCTL2 DDR controllers of various
-versions and synthesized parameters, and add useful error-detection
-features.
+Fixes: f7824ded4149 ("EDAC/synopsys: Add support for version 3 of the Synopsys EDAC DDR")
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 
-Regarding this series content. It's an initial patchset which
-traditionally provides various fixes, cleanups and modifications required
-for the more comfortable further features development. The main goal of it
-though is to detach the Xilinx Zynq A05 DDRC related code into the
-dedicated driver since first it has nothing to do with the Synopsys DW
-uMCTL2 DDR controller and second it will be a great deal obstacle on the
-way of extending the Synopsys-part functionality.
+---
 
-The series starts with the fixes patches, which in short concern the next
-aspects: touching the ZynqMP-specific CSRs on the Xilinx ZinqMP platform
-only, serializing an access to the ECCCLR/ECCCTL register, adding correct memory
-devices type detection, setting a correct value to the
-mem_ctl_info.scrub_cap field, dropping an erroneous ADDRMAP[4] parsing and
-getting back a correct order of the ECC errors info detection procedure.
-
-Afterwards the patchset provides several cleanup patches required for the
-more coherent code splitting up (Xilinx Zynq A05 and Synopsys DW uMCTL2
-DDRCs) so the provided modifications would be useful in both drivers.
-First the platform resource open-coded IO-space remapping is replaced with
-the devm_platform_ioremap_resource() method call for the sake of the code
-simplification. Secondly the next redundant entities are dropped: internal
-CE/UE errors counters, local to_mci() macros definition, some redundant
-ecc_error_info structure fields and redundant info from the error message,
-duplicated dimm->nr_pages debug printout and spaces from the MEM_TYPE
-flags declarations. (The later two updates concern the MCI core part.)
-Thirdly before detaching the Zynq A05-related code an unique MC index
-allocation infrastructure is added to the MCI core. It's required since
-after splitting the driver up both supported types of memory devices could
-be correctly probed on the same platform. Note even though it's currently
-unsupported by the synsopsys_edac.c driver it's claimed to be possible by
-the original driver author (it was a reason of having two unrelated
-devices supported in a single driver). Finally the Xilinx Zynq A05 part of
-the driver is moved out to a dedicated driver. After that the
-platform-specific setups API is removed from the Synopsys DW uMCTL2 DDRC
-driver since it's no longer required.
-
-Finally as the cherry on the cake a set of the local coding style
-cleanups are provided: unify the DW uMCTL2 DDRC driver entities naming and
-replace the open-coded "shift/mask" pattern with the kernel helpers like
-BIT/GENMASK/FIELD_x in there. It shall significantly improve the code
-readability.
-
-Changelog v2:
-- Move Synopsys DW uMCTL2 DDRC bindings file renaming to a separate patch.
-  (@Krzysztof)
-- Introduce a new compatible string "snps,dw-umctl2-ddrc" matching the new
-  DT-schema name.
-- Forgot to fix some of the prefix of the SYNPS_ZYNQMP_IRQ_REGS macro
-  in several places. (@tbot)
-- Drop the no longer used "priv" pointer from the mc_init() function.
-  (@tbot)
-- Include "linux/bitfield.h" header file to get the FIELD_GET macro
-  definition. (@tbot)
-- Drop the already merged in patches:
-[PATCH 12/20] EDAC/mc: Replace spaces with tabs in memtype flags definition
-[PATCH 13/20] EDAC/mc: Drop duplicated dimm->nr_pages debug printout
-
-Changelog v3:
-- Drop the no longer used "priv" pointer from the mc_init() function.
-  (@tbot)
-- Drop the merged in patches:
-[PATCH v2 14/19] dt-bindings: memory: snps: Detach Zynq DDRC controller support
-[PATCH v2 15/19] dt-bindings: memory: snps: Use more descriptive device name
-  (@Krzysztof)
+Cc: Sherry Sun <sherry.sun@nxp.com>
 
 Changelog v4:
-- Remove Rob, Krzysztof and DT-mailing list from Cc since the respective
-  patches have already been merged in.
-- Add a new patch
-  [PATCH v4 6/20] EDAC/synopsys: Fix misleading IRQ self-cleared quirk flag
-  detached from the very first patch of the series.
-- Add a new patch
-  [PATCH v4 15/20] EDAC/mc: Re-use generic unique MC index allocation procedure
-- Add a new patch
-  [PATCH v4 18/20] EDAC/synopsys: Unify CSRs macro declarations
-  collecting the changes from various patches of the series.
-- Drop redundant empty lines left by mistake.
-- Drop private counters access from the check_errors() method too.
-- Rebase onto the kernel v6.6-rcX.
+- This is a new patch detached from
+  [PATCH v3 01/17] EDAC/synopsys: Fix native uMCTL2 IRQs handling procedure
+- Rename lock to reglock (Borislav)
+---
+ drivers/edac/synopsys_edac.c | 50 ++++++++++++++++++++++++++----------
+ 1 file changed, 37 insertions(+), 13 deletions(-)
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-Cc: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-edac@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
-Serge Semin (20):
-  EDAC/synopsys: Fix ECC status data and IRQ disable race condition
-  EDAC/synopsys: Fix generic device type detection procedure
-  EDAC/synopsys: Fix mci->scrub_cap field setting
-  EDAC/synopsys: Drop erroneous ADDRMAP4.addrmap_col_b10 parse
-  EDAC/synopsys: Fix reading errors count before ECC status
-  EDAC/synopsys: Fix misleading IRQ self-cleared quirk flag
-  EDAC/synopsys: Use platform device devm ioremap method
-  EDAC/synopsys: Drop internal CE and UE counters
-  EDAC/synopsys: Drop local to_mci() macro definition
-  EDAC/synopsys: Drop struct ecc_error_info.blknr field
-  EDAC/synopsys: Shorten out struct ecc_error_info.bankgrpnr field name
-  EDAC/synopsys: Drop redundant info from the error messages
-  EDAC/mc: Init DIMM labels in MC registration method
-  EDAC/mc: Add generic unique MC index allocation procedure
-  EDAC/mc: Re-use generic unique MC index allocation procedure
-  EDAC/synopsys: Detach Zynq A05 DDRC support to separate driver
-  EDAC/synopsys: Drop unused platform-specific setup API
-  EDAC/synopsys: Unify CSRs macro declarations
-  EDAC/synopsys: Unify struct/macro/function prefixes
-  EDAC/synopsys: Convert to using BIT/GENMASK/FIELD_x macros
-
- MAINTAINERS                  |   1 +
- drivers/edac/Kconfig         |   9 +-
- drivers/edac/Makefile        |   1 +
- drivers/edac/dmc520_edac.c   |   4 +-
- drivers/edac/edac_mc.c       | 135 ++++-
- drivers/edac/edac_mc.h       |   4 +
- drivers/edac/pasemi_edac.c   |   5 +-
- drivers/edac/ppc4xx_edac.c   |   5 +-
- drivers/edac/synopsys_edac.c | 966 ++++++++++++-----------------------
- drivers/edac/zynq_edac.c     | 501 ++++++++++++++++++
- 10 files changed, 962 insertions(+), 669 deletions(-)
- create mode 100644 drivers/edac/zynq_edac.c
-
+diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
+index f7d37c282819..014a2176c2c1 100644
+--- a/drivers/edac/synopsys_edac.c
++++ b/drivers/edac/synopsys_edac.c
+@@ -9,6 +9,7 @@
+ #include <linux/edac.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/spinlock.h>
+ #include <linux/interrupt.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -300,6 +301,7 @@ struct synps_ecc_status {
+ /**
+  * struct synps_edac_priv - DDR memory controller private instance data.
+  * @baseaddr:		Base address of the DDR controller.
++ * @reglock:		Concurrent CSRs access lock.
+  * @message:		Buffer for framing the event specific info.
+  * @stat:		ECC status information.
+  * @p_data:		Platform data.
+@@ -314,6 +316,7 @@ struct synps_ecc_status {
+  */
+ struct synps_edac_priv {
+ 	void __iomem *baseaddr;
++	spinlock_t reglock;
+ 	char message[SYNPS_EDAC_MSG_SIZE];
+ 	struct synps_ecc_status stat;
+ 	const struct synps_platform_data *p_data;
+@@ -409,7 +412,8 @@ static int zynq_get_error_info(struct synps_edac_priv *priv)
+ static int zynqmp_get_error_info(struct synps_edac_priv *priv)
+ {
+ 	struct synps_ecc_status *p;
+-	u32 regval, clearval = 0;
++	u32 regval, clearval;
++	unsigned long flags;
+ 	void __iomem *base;
+ 
+ 	base = priv->baseaddr;
+@@ -453,10 +457,14 @@ static int zynqmp_get_error_info(struct synps_edac_priv *priv)
+ 	p->ueinfo.blknr = (regval & ECC_CEADDR1_BLKNR_MASK);
+ 	p->ueinfo.data = readl(base + ECC_UESYND0_OFST);
+ out:
+-	clearval = ECC_CTRL_CLR_CE_ERR | ECC_CTRL_CLR_CE_ERRCNT;
+-	clearval |= ECC_CTRL_CLR_UE_ERR | ECC_CTRL_CLR_UE_ERRCNT;
++	spin_lock_irqsave(&priv->reglock, flags);
++
++	clearval = readl(base + ECC_CLR_OFST) |
++		   ECC_CTRL_CLR_CE_ERR | ECC_CTRL_CLR_CE_ERRCNT |
++		   ECC_CTRL_CLR_UE_ERR | ECC_CTRL_CLR_UE_ERRCNT;
+ 	writel(clearval, base + ECC_CLR_OFST);
+-	writel(0x0, base + ECC_CLR_OFST);
++
++	spin_unlock_irqrestore(&priv->reglock, flags);
+ 
+ 	return 0;
+ }
+@@ -516,24 +524,41 @@ static void handle_error(struct mem_ctl_info *mci, struct synps_ecc_status *p)
+ 
+ static void enable_intr(struct synps_edac_priv *priv)
+ {
++	unsigned long flags;
++
+ 	/* Enable UE/CE Interrupts */
+-	if (priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)
+-		writel(DDR_UE_MASK | DDR_CE_MASK,
+-		       priv->baseaddr + ECC_CLR_OFST);
+-	else
++	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)) {
+ 		writel(DDR_QOSUE_MASK | DDR_QOSCE_MASK,
+ 		       priv->baseaddr + DDR_QOS_IRQ_EN_OFST);
+ 
++		return;
++	}
++
++	spin_lock_irqsave(&priv->reglock, flags);
++
++	writel(DDR_UE_MASK | DDR_CE_MASK,
++	       priv->baseaddr + ECC_CLR_OFST);
++
++	spin_unlock_irqrestore(&priv->reglock, flags);
+ }
+ 
+ static void disable_intr(struct synps_edac_priv *priv)
+ {
++	unsigned long flags;
++
+ 	/* Disable UE/CE Interrupts */
+-	if (priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)
+-		writel(0x0, priv->baseaddr + ECC_CLR_OFST);
+-	else
++	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)) {
+ 		writel(DDR_QOSUE_MASK | DDR_QOSCE_MASK,
+ 		       priv->baseaddr + DDR_QOS_IRQ_DB_OFST);
++
++		return;
++	}
++
++	spin_lock_irqsave(&priv->reglock, flags);
++
++	writel(0, priv->baseaddr + ECC_CLR_OFST);
++
++	spin_unlock_irqrestore(&priv->reglock, flags);
+ }
+ 
+ /**
+@@ -577,8 +602,6 @@ static irqreturn_t intr_handler(int irq, void *dev_id)
+ 	/* v3.0 of the controller does not have this register */
+ 	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR))
+ 		writel(regval, priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
+-	else
+-		enable_intr(priv);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1360,6 +1383,7 @@ static int mc_probe(struct platform_device *pdev)
+ 	priv = mci->pvt_info;
+ 	priv->baseaddr = baseaddr;
+ 	priv->p_data = p_data;
++	spin_lock_init(&priv->reglock);
+ 
+ 	mc_init(mci, pdev);
+ 
 -- 
 2.41.0
 
