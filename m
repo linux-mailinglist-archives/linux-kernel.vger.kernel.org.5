@@ -2,66 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 395B57A8829
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0F27A8830
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235077AbjITPX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
+        id S235417AbjITPYW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 11:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234923AbjITPXY (ORCPT
+        with ESMTP id S235376AbjITPYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:23:24 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E029CC6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:23:17 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c5cd27b1acso752965ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695223397; x=1695828197; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TkhkA2wta3b3NnYgpjyzB6TnKV7qIEnsiYZxlZsQF+0=;
-        b=MBdva0ezy4aH5hxL1+DeYTAUe3ISol840sUrBUofMMQKIdLvYFAC5Un/VEDjht7Si+
-         zJvRYYRG/9XGGGO36A78OwUoHuUHiYuuEi/7PuVznt0Kxw6bmEdcEPpElwwkG0M5gq7w
-         f3I+ry/f75MNL8IuoHJnNta5pU420+/ZZdP7U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695223397; x=1695828197;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TkhkA2wta3b3NnYgpjyzB6TnKV7qIEnsiYZxlZsQF+0=;
-        b=eNQ+e+o8nFn7/u4zbGafJfYeAD9F6BK7IVQYEdbuuR2N/svR/Q1l5CBDEIggEJ0veB
-         WRDSBqKq0V7TKRixmbWCbTncdlUl4Q6emJLX2DJL9X28mONKGyv9LZ3zKsdBVK9ZU6bM
-         fbWpNy69wRlL+8Zw4G3BZDuwvyK83B2IBOFGa3LfwN0nvjQaYfE3d7jpu+/29zf0zVlJ
-         0UVB8Zcg8Xe3NBh7EjRrROG0yZrbYLTj8IkDQVeanG3+hP756LXYqjr3MqeNanEbNFDy
-         gkIJM3M8oYP0XRCa2lP4ZHEz8wH/vdEGd8XFUntuc2yR3CRM+I4R7q98kbBsY5F7+PQT
-         /hVw==
-X-Gm-Message-State: AOJu0Yzx2nB0G9Pc2GPVUhoGkcQE3vKeOdh3z4RnJV/Ry3aiQkr9c9sM
-        giySLqFREORVXxu5wF458APcYg==
-X-Google-Smtp-Source: AGHT+IFkoVeBrAYW9kDPx/eSuBBIV9Z60OhCxMdcWJPZ8x/3m5ZPdDQ6YrHAXpAAtVgrL1if+0Xfnw==
-X-Received: by 2002:a17:902:ea04:b0:1bf:4a1f:2b57 with SMTP id s4-20020a170902ea0400b001bf4a1f2b57mr3039215plg.13.1695223397249;
-        Wed, 20 Sep 2023 08:23:17 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id iz17-20020a170902ef9100b001bbf7fd354csm998170plb.213.2023.09.20.08.23.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 08:23:16 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 08:23:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Bence =?iso-8859-1?B?Q3Pza+Fz?= <bence98@sch.bme.hu>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] i2c: cp2615: replace deprecated strncpy with strscpy
-Message-ID: <202309200822.67A5B4B61@keescook>
-References: <20230920-strncpy-drivers-i2c-busses-i2c-cp2615-c-v1-1-11406a996794@google.com>
+        Wed, 20 Sep 2023 11:24:20 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A7383
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:24:06 -0700 (PDT)
+Received: from [2601:18c:9101:a8b6:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qiz3B-0006ny-2v;
+        Wed, 20 Sep 2023 11:23:37 -0400
+Date:   Wed, 20 Sep 2023 11:23:29 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, mike.kravetz@oracle.com, leit@meta.com
+Subject: [RFC PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with
+ invalidate_lock
+Message-ID: <20230920112329.529c47ad@imladris.surriel.com>
+In-Reply-To: <ZQptrdK69wvJ2NXP@casper.infradead.org>
+References: <20230920021811.3095089-1-riel@surriel.com>
+        <20230920021811.3095089-2-riel@surriel.com>
+        <ZQptrdK69wvJ2NXP@casper.infradead.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920-strncpy-drivers-i2c-busses-i2c-cp2615-c-v1-1-11406a996794@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,33 +48,578 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 08:08:52AM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> We should prefer more robust and less ambiguous string interfaces.
-> 
-> We expect name to be NUL-terminated based on its numerous uses with
-> functions that expect NUL-terminated strings.
-> 
-> For example in i2c-core-base.c +1533:
-> | dev_dbg(&adap->dev, "adapter [%s] registered\n", adap->name);
-> 
-> NUL-padding is not required as `adap` is already zero-alloacted with:
-> | adap = devm_kzalloc(&usbif->dev, sizeof(struct i2c_adapter), GFP_KERNEL);
-> 
-> With the above in mind, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Wed, 20 Sep 2023 04:57:33 +0100
+Matthew Wilcox <willy@infradead.org> wrote:
+> On Tue, Sep 19, 2023 at 10:16:09PM -0400, riel@surriel.com wrote:
+> > From: Rik van Riel <riel@surriel.com>
+> > 
+> > Extend the locking scheme used to protect shared hugetlb mappings
+> > from truncate vs page fault races, in order to protect private
+> > hugetlb mappings (with resv_map) against MADV_DONTNEED.
 
-Thanks for the clear commit log! Looks good to me.
+> This feels an awful lot like the invalidate_lock in struct address_space
+> which was recently added by Jan Kara.
+> 
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Sure enough, the invalidate_lock is looking really similar.
+This has the potential to simplify the hugetlbfs code a bunch!
 
+On the flip side, this is a large change, and it may make sense
+to merge it separately to help with bisectability?
+
+Thank you for the suggestion!
+
+Mike, did I forget a spot somewhere? :)
+
+---8<---
+
+From 11ea3afbd836fff6d20ef946b52544162466cb9c Mon Sep 17 00:00:00 2001
+From: Rik van Riel <riel@surriel.com>
+Date: Wed, 20 Sep 2023 10:54:10 -0400
+Subject: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with invalidate_lock
+
+Replace the custom hugetlbfs VMA locking code with the recently
+introduced invalidate_lock. This greatly simplifies things.
+
+However, this is a large enough change that it should probably go in
+separately from the other changes.
+
+Suggested-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Rik van Riel <riel@surriel.com>
+---
+ fs/hugetlbfs/inode.c    |  68 +-----------
+ include/linux/fs.h      |   6 ++
+ include/linux/hugetlb.h |   7 --
+ kernel/fork.c           |   6 --
+ mm/hugetlb.c            | 233 +++-------------------------------------
+ 5 files changed, 26 insertions(+), 294 deletions(-)
+
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 316c4cebd3f3..5ff18b0933bc 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -485,7 +485,6 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
+ 					struct folio *folio, pgoff_t index)
+ {
+ 	struct rb_root_cached *root = &mapping->i_mmap;
+-	struct hugetlb_vma_lock *vma_lock;
+ 	struct page *page = &folio->page;
+ 	struct vm_area_struct *vma;
+ 	unsigned long v_start;
+@@ -496,8 +495,8 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
+ 	end = (index + 1) * pages_per_huge_page(h);
+ 
+ 	i_mmap_lock_write(mapping);
+-retry:
+-	vma_lock = NULL;
++	filemap_invalidate_lock(mapping);
++
+ 	vma_interval_tree_foreach(vma, root, start, end - 1) {
+ 		v_start = vma_offset_start(vma, start);
+ 		v_end = vma_offset_end(vma, end);
+@@ -505,62 +504,13 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
+ 		if (!hugetlb_vma_maps_page(vma, v_start, page))
+ 			continue;
+ 
+-		if (!hugetlb_vma_trylock_write(vma)) {
+-			vma_lock = vma->vm_private_data;
+-			/*
+-			 * If we can not get vma lock, we need to drop
+-			 * immap_sema and take locks in order.  First,
+-			 * take a ref on the vma_lock structure so that
+-			 * we can be guaranteed it will not go away when
+-			 * dropping immap_sema.
+-			 */
+-			kref_get(&vma_lock->refs);
+-			break;
+-		}
+-
+ 		unmap_hugepage_range(vma, v_start, v_end, NULL,
+ 				     ZAP_FLAG_DROP_MARKER);
+ 		hugetlb_vma_unlock_write(vma);
+ 	}
+ 
++	filemap_invalidate_unlock(mapping);
+ 	i_mmap_unlock_write(mapping);
+-
+-	if (vma_lock) {
+-		/*
+-		 * Wait on vma_lock.  We know it is still valid as we have
+-		 * a reference.  We must 'open code' vma locking as we do
+-		 * not know if vma_lock is still attached to vma.
+-		 */
+-		down_write(&vma_lock->rw_sema);
+-		i_mmap_lock_write(mapping);
+-
+-		vma = vma_lock->vma;
+-		if (!vma) {
+-			/*
+-			 * If lock is no longer attached to vma, then just
+-			 * unlock, drop our reference and retry looking for
+-			 * other vmas.
+-			 */
+-			up_write(&vma_lock->rw_sema);
+-			kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
+-			goto retry;
+-		}
+-
+-		/*
+-		 * vma_lock is still attached to vma.  Check to see if vma
+-		 * still maps page and if so, unmap.
+-		 */
+-		v_start = vma_offset_start(vma, start);
+-		v_end = vma_offset_end(vma, end);
+-		if (hugetlb_vma_maps_page(vma, v_start, page))
+-			unmap_hugepage_range(vma, v_start, v_end, NULL,
+-					     ZAP_FLAG_DROP_MARKER);
+-
+-		kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
+-		hugetlb_vma_unlock_write(vma);
+-
+-		goto retry;
+-	}
+ }
+ 
+ static void
+@@ -578,20 +528,10 @@ hugetlb_vmdelete_list(struct rb_root_cached *root, pgoff_t start, pgoff_t end,
+ 		unsigned long v_start;
+ 		unsigned long v_end;
+ 
+-		if (!hugetlb_vma_trylock_write(vma))
+-			continue;
+-
+ 		v_start = vma_offset_start(vma, start);
+ 		v_end = vma_offset_end(vma, end);
+ 
+ 		unmap_hugepage_range(vma, v_start, v_end, NULL, zap_flags);
+-
+-		/*
+-		 * Note that vma lock only exists for shared/non-private
+-		 * vmas.  Therefore, lock is not held when calling
+-		 * unmap_hugepage_range for private vmas.
+-		 */
+-		hugetlb_vma_unlock_write(vma);
+ 	}
+ }
+ 
+@@ -726,9 +666,11 @@ static void hugetlb_vmtruncate(struct inode *inode, loff_t offset)
+ 
+ 	i_size_write(inode, offset);
+ 	i_mmap_lock_write(mapping);
++	filemap_invalidate_lock(mapping);
+ 	if (!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root))
+ 		hugetlb_vmdelete_list(&mapping->i_mmap, pgoff, 0,
+ 				      ZAP_FLAG_DROP_MARKER);
++	filemap_invalidate_unlock(mapping);
+ 	i_mmap_unlock_write(mapping);
+ 	remove_inode_hugepages(inode, offset, LLONG_MAX);
+ }
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 4aeb3fa11927..b455a8913db4 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -847,6 +847,12 @@ static inline void filemap_invalidate_lock(struct address_space *mapping)
+ 	down_write(&mapping->invalidate_lock);
+ }
+ 
++static inline int filemap_invalidate_trylock(
++					struct address_space *mapping)
++{
++	return down_write_trylock(&mapping->invalidate_lock);
++}
++
+ static inline void filemap_invalidate_unlock(struct address_space *mapping)
+ {
+ 	up_write(&mapping->invalidate_lock);
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index d9ec500cfef9..af60b67ed828 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -60,7 +60,6 @@ struct resv_map {
+ 	long adds_in_progress;
+ 	struct list_head region_cache;
+ 	long region_cache_count;
+-	struct rw_semaphore rw_sema;
+ #ifdef CONFIG_CGROUP_HUGETLB
+ 	/*
+ 	 * On private mappings, the counter to uncharge reservations is stored
+@@ -107,12 +106,6 @@ struct file_region {
+ #endif
+ };
+ 
+-struct hugetlb_vma_lock {
+-	struct kref refs;
+-	struct rw_semaphore rw_sema;
+-	struct vm_area_struct *vma;
+-};
+-
+ extern struct resv_map *resv_map_alloc(void);
+ void resv_map_release(struct kref *ref);
+ 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 3b6d20dfb9a8..42453437b615 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -743,12 +743,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 			i_mmap_unlock_write(mapping);
+ 		}
+ 
+-		/*
+-		 * Copy/update hugetlb private vma information.
+-		 */
+-		if (is_vm_hugetlb_page(tmp))
+-			hugetlb_dup_vma_private(tmp);
+-
+ 		/* Link the vma into the MT */
+ 		if (vma_iter_bulk_store(&vmi, tmp))
+ 			goto fail_nomem_vmi_store;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 3510e2bf23da..3b97bd762049 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -92,9 +92,6 @@ struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
+ 
+ /* Forward declaration */
+ static int hugetlb_acct_memory(struct hstate *h, long delta);
+-static void hugetlb_vma_lock_free(struct vm_area_struct *vma);
+-static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma);
+-static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma);
+ static void hugetlb_unshare_pmds(struct vm_area_struct *vma,
+ 		unsigned long start, unsigned long end);
+ static struct resv_map *vma_resv_map(struct vm_area_struct *vma);
+@@ -264,165 +261,41 @@ static inline struct hugepage_subpool *subpool_vma(struct vm_area_struct *vma)
+  */
+ void hugetlb_vma_lock_read(struct vm_area_struct *vma)
+ {
+-	if (__vma_shareable_lock(vma)) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		down_read(&vma_lock->rw_sema);
+-	} else if (__vma_private_lock(vma)) {
+-		struct resv_map *resv_map = vma_resv_map(vma);
+-
+-		down_read(&resv_map->rw_sema);
+-	}
++	if (vma->vm_file)
++		filemap_invalidate_lock_shared(vma->vm_file->f_mapping);
+ }
+ 
+ void hugetlb_vma_unlock_read(struct vm_area_struct *vma)
+ {
+-	if (__vma_shareable_lock(vma)) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		up_read(&vma_lock->rw_sema);
+-	} else if (__vma_private_lock(vma)) {
+-		struct resv_map *resv_map = vma_resv_map(vma);
+-
+-		up_read(&resv_map->rw_sema);
+-	}
++	if (vma->vm_file)
++		filemap_invalidate_unlock_shared(vma->vm_file->f_mapping);
+ }
+ 
+ void hugetlb_vma_lock_write(struct vm_area_struct *vma)
+ {
+-	if (__vma_shareable_lock(vma)) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		down_write(&vma_lock->rw_sema);
+-	} else if (__vma_private_lock(vma)) {
+-		struct resv_map *resv_map = vma_resv_map(vma);
+-
+-		down_write(&resv_map->rw_sema);
+-	}
++	if (vma->vm_file)
++		filemap_invalidate_lock(vma->vm_file->f_mapping);
+ }
+ 
+ void hugetlb_vma_unlock_write(struct vm_area_struct *vma)
+ {
+-	if (__vma_shareable_lock(vma)) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		up_write(&vma_lock->rw_sema);
+-	} else if (__vma_private_lock(vma)) {
+-		struct resv_map *resv_map = vma_resv_map(vma);
+-
+-		up_write(&resv_map->rw_sema);
+-	}
++	if (vma->vm_file)
++		filemap_invalidate_unlock(vma->vm_file->f_mapping);
+ }
+ 
+ int hugetlb_vma_trylock_write(struct vm_area_struct *vma)
+ {
+ 
+-	if (__vma_shareable_lock(vma)) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		return down_write_trylock(&vma_lock->rw_sema);
+-	} else if (__vma_private_lock(vma)) {
+-		struct resv_map *resv_map = vma_resv_map(vma);
+-
+-		return down_write_trylock(&resv_map->rw_sema);
+-	}
++	if (vma->vm_file)
++		return filemap_invalidate_trylock(vma->vm_file->f_mapping);
+ 
+ 	return 1;
+ }
+ 
+ void hugetlb_vma_assert_locked(struct vm_area_struct *vma)
+ {
+-	if (__vma_shareable_lock(vma)) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		lockdep_assert_held(&vma_lock->rw_sema);
+-	} else if (__vma_private_lock(vma)) {
+-		struct resv_map *resv_map = vma_resv_map(vma);
+-
+-		lockdep_assert_held(&resv_map->rw_sema);
+-	}
+-}
+-
+-void hugetlb_vma_lock_release(struct kref *kref)
+-{
+-	struct hugetlb_vma_lock *vma_lock = container_of(kref,
+-			struct hugetlb_vma_lock, refs);
+-
+-	kfree(vma_lock);
+-}
+-
+-static void __hugetlb_vma_unlock_write_put(struct hugetlb_vma_lock *vma_lock)
+-{
+-	struct vm_area_struct *vma = vma_lock->vma;
+-
+-	/*
+-	 * vma_lock structure may or not be released as a result of put,
+-	 * it certainly will no longer be attached to vma so clear pointer.
+-	 * Semaphore synchronizes access to vma_lock->vma field.
+-	 */
+-	vma_lock->vma = NULL;
+-	vma->vm_private_data = NULL;
+-	up_write(&vma_lock->rw_sema);
+-	kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
+-}
+-
+-static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
+-{
+-	if (__vma_shareable_lock(vma)) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		__hugetlb_vma_unlock_write_put(vma_lock);
+-	}
+-}
+-
+-static void hugetlb_vma_lock_free(struct vm_area_struct *vma)
+-{
+-	/*
+-	 * Only present in sharable vmas.
+-	 */
+-	if (!vma || !__vma_shareable_lock(vma))
+-		return;
+-
+-	if (vma->vm_private_data) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		down_write(&vma_lock->rw_sema);
+-		__hugetlb_vma_unlock_write_put(vma_lock);
+-	}
+-}
+-
+-static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma)
+-{
+-	struct hugetlb_vma_lock *vma_lock;
+-
+-	/* Only establish in (flags) sharable vmas */
+-	if (!vma || !(vma->vm_flags & VM_MAYSHARE))
+-		return;
+-
+-	/* Should never get here with non-NULL vm_private_data */
+-	if (vma->vm_private_data)
+-		return;
+-
+-	vma_lock = kmalloc(sizeof(*vma_lock), GFP_KERNEL);
+-	if (!vma_lock) {
+-		/*
+-		 * If we can not allocate structure, then vma can not
+-		 * participate in pmd sharing.  This is only a possible
+-		 * performance enhancement and memory saving issue.
+-		 * However, the lock is also used to synchronize page
+-		 * faults with truncation.  If the lock is not present,
+-		 * unlikely races could leave pages in a file past i_size
+-		 * until the file is removed.  Warn in the unlikely case of
+-		 * allocation failure.
+-		 */
+-		pr_warn_once("HugeTLB: unable to allocate vma specific lock\n");
+-		return;
+-	}
+-
+-	kref_init(&vma_lock->refs);
+-	init_rwsem(&vma_lock->rw_sema);
+-	vma_lock->vma = vma;
+-	vma->vm_private_data = vma_lock;
++	if (vma->vm_file)
++		lockdep_assert_held(&vma->vm_file->f_mapping->invalidate_lock);
+ }
+ 
+ /* Helper that removes a struct file_region from the resv_map cache and returns
+@@ -1095,7 +968,6 @@ struct resv_map *resv_map_alloc(void)
+ 	kref_init(&resv_map->refs);
+ 	spin_lock_init(&resv_map->lock);
+ 	INIT_LIST_HEAD(&resv_map->regions);
+-	init_rwsem(&resv_map->rw_sema);
+ 
+ 	resv_map->adds_in_progress = 0;
+ 	/*
+@@ -1185,30 +1057,6 @@ static int is_vma_resv_set(struct vm_area_struct *vma, unsigned long flag)
+ 	return (get_vma_private_data(vma) & flag) != 0;
+ }
+ 
+-void hugetlb_dup_vma_private(struct vm_area_struct *vma)
+-{
+-	VM_BUG_ON_VMA(!is_vm_hugetlb_page(vma), vma);
+-	/*
+-	 * Clear vm_private_data
+-	 * - For shared mappings this is a per-vma semaphore that may be
+-	 *   allocated in a subsequent call to hugetlb_vm_op_open.
+-	 *   Before clearing, make sure pointer is not associated with vma
+-	 *   as this will leak the structure.  This is the case when called
+-	 *   via clear_vma_resv_huge_pages() and hugetlb_vm_op_open has already
+-	 *   been called to allocate a new structure.
+-	 * - For MAP_PRIVATE mappings, this is the reserve map which does
+-	 *   not apply to children.  Faults generated by the children are
+-	 *   not guaranteed to succeed, even if read-only.
+-	 */
+-	if (vma->vm_flags & VM_MAYSHARE) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		if (vma_lock && vma_lock->vma != vma)
+-			vma->vm_private_data = NULL;
+-	} else
+-		vma->vm_private_data = NULL;
+-}
+-
+ /*
+  * Reset and decrement one ref on hugepage private reservation.
+  * Called with mm->mmap_lock writer semaphore held.
+@@ -1236,8 +1084,6 @@ void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
+ 		resv_map_put_hugetlb_cgroup_uncharge_info(reservations);
+ 		kref_put(&reservations->refs, resv_map_release);
+ 	}
+-
+-	hugetlb_dup_vma_private(vma);
+ }
+ 
+ /* Returns true if the VMA has associated reserve pages */
+@@ -4841,25 +4687,6 @@ static void hugetlb_vm_op_open(struct vm_area_struct *vma)
+ 		resv_map_dup_hugetlb_cgroup_uncharge_info(resv);
+ 		kref_get(&resv->refs);
+ 	}
+-
+-	/*
+-	 * vma_lock structure for sharable mappings is vma specific.
+-	 * Clear old pointer (if copied via vm_area_dup) and allocate
+-	 * new structure.  Before clearing, make sure vma_lock is not
+-	 * for this vma.
+-	 */
+-	if (vma->vm_flags & VM_MAYSHARE) {
+-		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-
+-		if (vma_lock) {
+-			if (vma_lock->vma != vma) {
+-				vma->vm_private_data = NULL;
+-				hugetlb_vma_lock_alloc(vma);
+-			} else
+-				pr_warn("HugeTLB: vma_lock already exists in %s.\n", __func__);
+-		} else
+-			hugetlb_vma_lock_alloc(vma);
+-	}
+ }
+ 
+ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
+@@ -4870,8 +4697,6 @@ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
+ 	unsigned long reserve, start, end;
+ 	long gbl_reserve;
+ 
+-	hugetlb_vma_lock_free(vma);
+-
+ 	resv = vma_resv_map(vma);
+ 	if (!resv || !is_vma_resv_set(vma, HPAGE_RESV_OWNER))
+ 		return;
+@@ -5441,24 +5266,8 @@ void __hugetlb_zap_begin(struct vm_area_struct *vma,
+ void __hugetlb_zap_end(struct vm_area_struct *vma,
+ 		       struct zap_details *details)
+ {
+-	zap_flags_t zap_flags = details ? details->zap_flags : 0;
+-
+-	if (zap_flags & ZAP_FLAG_UNMAP) {	/* final unmap */
+-		/*
+-		 * Unlock and free the vma lock before releasing i_mmap_rwsem.
+-		 * When the vma_lock is freed, this makes the vma ineligible
+-		 * for pmd sharing.  And, i_mmap_rwsem is required to set up
+-		 * pmd sharing.  This is important as page tables for this
+-		 * unmapped range will be asynchrously deleted.  If the page
+-		 * tables are shared, there will be issues when accessed by
+-		 * someone else.
+-		 */
+-		__hugetlb_vma_unlock_write_free(vma);
+-		i_mmap_unlock_write(vma->vm_file->f_mapping);
+-	} else {
+-		i_mmap_unlock_write(vma->vm_file->f_mapping);
+-		hugetlb_vma_unlock_write(vma);
+-	}
++	i_mmap_unlock_write(vma->vm_file->f_mapping);
++	hugetlb_vma_unlock_write(vma);
+ }
+ 
+ void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
+@@ -6701,12 +6510,6 @@ bool hugetlb_reserve_pages(struct inode *inode,
+ 		return false;
+ 	}
+ 
+-	/*
+-	 * vma specific semaphore used for pmd sharing and fault/truncation
+-	 * synchronization
+-	 */
+-	hugetlb_vma_lock_alloc(vma);
+-
+ 	/*
+ 	 * Only apply hugepage reservation if asked. At fault time, an
+ 	 * attempt will be made for VM_NORESERVE to allocate a page
+@@ -6829,7 +6632,6 @@ bool hugetlb_reserve_pages(struct inode *inode,
+ 	hugetlb_cgroup_uncharge_cgroup_rsvd(hstate_index(h),
+ 					    chg * pages_per_huge_page(h), h_cg);
+ out_err:
+-	hugetlb_vma_lock_free(vma);
+ 	if (!vma || vma->vm_flags & VM_MAYSHARE)
+ 		/* Only call region_abort if the region_chg succeeded but the
+ 		 * region_add failed or didn't run.
+@@ -6899,13 +6701,10 @@ static unsigned long page_table_shareable(struct vm_area_struct *svma,
+ 	/*
+ 	 * match the virtual addresses, permission and the alignment of the
+ 	 * page table page.
+-	 *
+-	 * Also, vma_lock (vm_private_data) is required for sharing.
+ 	 */
+ 	if (pmd_index(addr) != pmd_index(saddr) ||
+ 	    vm_flags != svm_flags ||
+-	    !range_in_vma(svma, sbase, s_end) ||
+-	    !svma->vm_private_data)
++	    !range_in_vma(svma, sbase, s_end))
+ 		return 0;
+ 
+ 	return saddr;
+@@ -6925,8 +6724,6 @@ bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
+ 	 */
+ 	if (!(vma->vm_flags & VM_MAYSHARE))
+ 		return false;
+-	if (!vma->vm_private_data)	/* vma lock required for sharing */
+-		return false;
+ 	if (!range_in_vma(vma, start, end))
+ 		return false;
+ 	return true;
 -- 
-Kees Cook
+2.41.0
+
