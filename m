@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1167A8AC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ACF7A8ACB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbjITRpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
+        id S229593AbjITRpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 13:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjITRpE (ORCPT
+        with ESMTP id S229568AbjITRpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:45:04 -0400
+        Wed, 20 Sep 2023 13:45:08 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1117DB9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:44:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8A594
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:45:02 -0700 (PDT)
 Received: from ginger.. (unknown [177.98.21.237])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A648C66071EF;
-        Wed, 20 Sep 2023 18:44:52 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0E8C766071F1;
+        Wed, 20 Sep 2023 18:44:56 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695231896;
-        bh=7izphSNlUlY6toAYO8sGMEscU9ZreXBpSqo3489vsfo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SuC7+g/stbjbvv3I1wIMW1PtOS4W4G1VV1Ow7Tn/nJulcClzdzqfTs5OJRptgpBEY
-         W+xlQjH4aCX9gRDERpcQSD3vdJchKU08FmujX1Sn6GBh6k6p1hZajstsiZthwAs+6/
-         n8SfNt7Fxc5XW017QSG2fuEW4m7GswbD7gUNbrYTrP05jp5l/KGzEgp8UXVcyosSMx
-         OAz3v9JVAIGL48SK3ct58Qupo2t4Ji0In9R2iG0QEbyUHLSOwL5eRf32t3v8i+lO2U
-         XKw3OvI9+Zv27KxbNp0eC+qJKE1lDVrUUiIe4Kc0CaOk8W4kPGBlbmuvG68Y8hCVAL
-         +y0gmvi8F+Y7Q==
+        s=mail; t=1695231900;
+        bh=iyG/zP8lsWiF85bEI9JxB8hb6fP+W/W/tsnhlVaZ8bE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WSHrB/qXm8D0ocZ2VmfoJZhAHtFM52Ri7lmTj87RiAAiqjlWyUqRdHA+Oo9Tu2rFc
+         gB9+TU/BESm9AVA/wcSorGpoQr2/A92NbAG8w1OfTyAd0+J2CpStqQQjnEMoT5/Xon
+         of0UoQ20p9dg/N9/EkQZJFXLZGpXHpysGOtol7+Ss8RTVlUTIiEv4eftVZITgQosEI
+         sSTLf12W9oJvtk3ow61khH31HaS7qpOrRwSWuLveK0acpsdOP7Wdljfc2MzUWCHj6R
+         w7mG3wWzaEl68/UAGFofCZtxz+gpwlCEFzozJ6Wmpe5EUz/t26fNlgH+YossG/mDea
+         8XHcXhNtmV8lQ==
 From:   Helen Koike <helen.koike@collabora.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     airlied@gmail.com, daniel@ffwll.ch, rodrigosiqueiramelo@gmail.com,
@@ -40,10 +40,12 @@ Cc:     airlied@gmail.com, daniel@ffwll.ch, rodrigosiqueiramelo@gmail.com,
         daniel@fooishbar.org, vignesh.raman@collabora.com,
         jani.nikula@linux.intel.com, mripard@kernel.org,
         michel.daenzer@mailbox.org
-Subject: [RFC PATCH 0/2] drm/ci: Update Mesa and Introduce VKMS Support
-Date:   Wed, 20 Sep 2023 14:44:42 -0300
-Message-Id: <20230920174444.409586-1-helen.koike@collabora.com>
+Subject: [RFC PATCH 1/2] drm/ci: uprev mesa version - fix container build
+Date:   Wed, 20 Sep 2023 14:44:43 -0300
+Message-Id: <20230920174444.409586-2-helen.koike@collabora.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230920174444.409586-1-helen.koike@collabora.com>
+References: <20230920174444.409586-1-helen.koike@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -55,42 +57,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset offers two enhancements to drm/ci:
+When building containers, some rust packages were installed without
+locking the dependencies version, which got updated and started giving
+errors like:
 
-1. Mesa Version Update. drm/ci re-uses components from Mesa project.
-A recent bug in MesaCI was fixed. The first patch updates drm/ci
-Mesa's version, re-allowing containers rebuilds when uncached,
-essencial for new runs.
+error: failed to compile `bindgen-cli v0.62.0`, intermediate artifacts can be found at `/tmp/cargo-installkNKRwf`
+Caused by:
+  package `rustix v0.38.13` cannot be built because it requires rustc 1.63 or newer, while the currently active rustc version is 1.60.0
 
-At this moment, this change depends on the following MR:
-	https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/25238
-For now, I'm just pointing to a branch in my personal repo (this is why
-it is an RFC) so people can already review and test it.
+A patch to Mesa was recently added fixing this error, so update it.
 
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
 
-2. VKMS Driver Testing, together with the -skips.txt and -fails.txt
-list that were found during the tests.
+---
 
-Helen Koike (2):
-  drm/ci: uprev mesa version - fix container build
-  drm: ci: add tests on vkms
+I'm submitting this to make it available for other to run and test. I'd
+like to solve the TODO below (blocked on Mesa) before this is picked up.
+---
+ drivers/gpu/drm/ci/gitlab-ci.yml  | 19 +++++++++++++++++--
+ drivers/gpu/drm/ci/lava-submit.sh |  2 +-
+ 2 files changed, 18 insertions(+), 3 deletions(-)
 
- MAINTAINERS                                   |  1 +
- drivers/gpu/drm/ci/build.sh                   |  1 -
- drivers/gpu/drm/ci/gitlab-ci.yml              | 20 +++++++++++--
- drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
- drivers/gpu/drm/ci/image-tags.yml             |  2 +-
- drivers/gpu/drm/ci/lava-submit.sh             |  2 +-
- drivers/gpu/drm/ci/test.yml                   | 24 ++++++++++++++-
- drivers/gpu/drm/ci/x86_64.config              |  1 +
- .../drm/ci/xfails/virtio_gpu-none-flakes.txt  |  0
- drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 29 +++++++++++++++++++
- drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 10 +++++++
- 11 files changed, 87 insertions(+), 9 deletions(-)
- delete mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
- create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
- create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-
+diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+index 2c4df53f5dfe..73725070702b 100644
+--- a/drivers/gpu/drm/ci/gitlab-ci.yml
++++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+@@ -1,6 +1,8 @@
+ variables:
+-  DRM_CI_PROJECT_PATH: &drm-ci-project-path mesa/mesa
+-  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha 0dc961645c4f0241f8512cb0ec3ad59635842072
++  # TODO: point back to mesa/mesa once the following issue is fixed:
++  # https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/25238
++  DRM_CI_PROJECT_PATH: &drm-ci-project-path helen.fornazier/mesa
++  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha inc-files
+ 
+   UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
+   TARGET_BRANCH: drm-next
+@@ -24,6 +26,8 @@ variables:
+   PIPELINE_ARTIFACTS_BASE: ${S3_HOST}/artifacts/${CI_PROJECT_PATH}/${CI_PIPELINE_ID}
+   # per-job artifact storage on MinIO
+   JOB_ARTIFACTS_BASE: ${PIPELINE_ARTIFACTS_BASE}/${CI_JOB_ID}
++  # default kernel for rootfs before injecting the current kernel tree
++  KERNEL_IMAGE_BASE: https://${S3_HOST}/mesa-lava/gfx-ci/linux/v6.4.12-for-mesa-ci-f6b4ad45f48d
+ 
+   LAVA_JOB_PRIORITY: 30
+ 
+@@ -86,6 +90,17 @@ include:
+       - '/.gitlab-ci/container/gitlab-ci.yml'
+       - '/.gitlab-ci/test/gitlab-ci.yml'
+       - '/.gitlab-ci/lava/lava-gitlab-ci.yml'
++      - '/src/microsoft/ci/gitlab-ci-inc.yml'
++      - '/src/gallium/drivers/zink/ci/gitlab-ci-inc.yml'
++      - '/src/gallium/drivers/crocus/ci/gitlab-ci-inc.yml'
++      - '/src/gallium/drivers/softpipe/ci/gitlab-ci-inc.yml'
++      - '/src/gallium/drivers/llvmpipe/ci/gitlab-ci-inc.yml'
++      - '/src/gallium/drivers/virgl/ci/gitlab-ci-inc.yml'
++      - '/src/gallium/drivers/nouveau/ci/gitlab-ci-inc.yml'
++      - '/src/gallium/frontends/lavapipe/ci/gitlab-ci-inc.yml'
++      - '/src/intel/ci/gitlab-ci-inc.yml'
++      - '/src/freedreno/ci/gitlab-ci-inc.yml'
++      - '/src/amd/ci/gitlab-ci-inc.yml'
+   - drivers/gpu/drm/ci/image-tags.yml
+   - drivers/gpu/drm/ci/container.yml
+   - drivers/gpu/drm/ci/static-checks.yml
+diff --git a/drivers/gpu/drm/ci/lava-submit.sh b/drivers/gpu/drm/ci/lava-submit.sh
+index 0c4456b21b0f..379f26ea87cc 100755
+--- a/drivers/gpu/drm/ci/lava-submit.sh
++++ b/drivers/gpu/drm/ci/lava-submit.sh
+@@ -22,7 +22,7 @@ cp "$SCRIPTS_DIR"/setup-test-env.sh results/job-rootfs-overlay/
+ 
+ # Prepare env vars for upload.
+ section_start variables "Variables passed through:"
+-KERNEL_IMAGE_BASE_URL="https://${BASE_SYSTEM_HOST_PATH}" \
++KERNEL_IMAGE_BASE="https://${BASE_SYSTEM_HOST_PATH}" \
+ 	artifacts/ci-common/generate-env.sh | tee results/job-rootfs-overlay/set-job-env-vars.sh
+ section_end variables
+ 
 -- 
 2.34.1
 
