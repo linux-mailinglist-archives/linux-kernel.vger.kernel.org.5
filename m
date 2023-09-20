@@ -2,190 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDFE7A74B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ED77A74AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbjITHrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
+        id S233973AbjITHrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234052AbjITHqd (ORCPT
+        with ESMTP id S234015AbjITHqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:46:33 -0400
-Received: from icp-osb-irony-out5.external.iinet.net.au (icp-osb-irony-out5.external.iinet.net.au [203.59.1.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C72DCE4;
-        Wed, 20 Sep 2023 00:45:52 -0700 (PDT)
-X-SMTP-MATCH: 1
-IronPort-Data: A9a23:azQpg6xIW9ObnWEOXuN6t+cnxyrEfRIJ4+MujC+fZmUNrF6WrkU3e
- hirod39jgY+HhL3funC5f239Uo2Dfalz9J9ShxunZ1UZyoigdLfAtiEJVvHMSqXL8nSJGpq9
- Mx2huPodajYdVeC4E/3WlTdhSMkj/rQF+CkULes1h1ZHmeIdg9w0XqPpMZk2uaEsfDhayuRt
- NX7pdHoOVPN81aY5UpNtspvADs21BjDkGtwUm4WPJinj3eH/5UhN6/zEInqR5fOrii4KcbhL
- wrL5OnREmrxo0x3Uov9+lrxWhVirrX6ZWBihlIKAPL62kAqSiEais4G2PQghUh/u2WkkdZ62
- tp3kZ2TcVYlA4/nwvkmakwNe81+FfUuFL7vEiHu64rKkR2AKz22mcAG4EMeYN1epKAtWz8Ir
- 6RIQNwORknra+aez6i2RfRqick5IdPDI44Epndt0XfSCvNgSI2rr6DiuY4BjWlh2JgTdRrYT
- 9AHVTd9NhXdWkFwNBRNMKM9w8KamVCqJlW0r3rQ/8Lb+VP70w111KnFMdzbYNWGSMxZ2EGCq
- Qru+2X/HwFfN9GFzzeB2myji/WJni7hXo8WUrqi+ZZChFyV23xWBgYaWEW2pdGnhUOkHdFSM
- UoZ/mwpt6da3EiqSMTtGhSiq36soBERQZxTHvc85QXLzbDbiy6FAXIaRzpNc/QitckrVXkk0
- UKPk9r1BDtp9rqPRhq18K+VojyzPwAaKGYDYWkPSg5t3jX4iNxjy0yKFIw9VfTt3pvpAT7xh
- TuNqW43mt3/kPI26klyxnif6xrEm3QDZlddCtn/No590j5EWQ==
-IronPort-HdrOrdr: A9a23:8cNknKgC5uWXPwRJcEjE0pucnXBQXmsji2hC6mlwRA09TyX4ra
- 6TdZEguCMc5wxxZJhNo7C90dC7MBThHPxOkOss1MaZLWrbUQKTRekIh+eM/9SHIVybygc379
- YET0ERMqyJMXFKyez/pCG+G9Mx2tmcmZrY+dv2/jNGSUVHbL5t6gFhBm+gYzJLbTgDKZ0lFI
- eNouprzgDQAkj/t/7LYEXtidKz3uHjpdbvfBoPBxss7Q+TgHey7qLmH3Gjr2kjegIKyaon+W
- jBmQn++qjmqeiyzlvV3XLS6ZM+oqqa9vJzQMSQjsAULz/ojBqkIJ55U7nHpzwtpvqzgWxa7e
- Xxnw==
-X-Talos-CUID: =?us-ascii?q?9a23=3AuWQeS2pTeuaoxyCd2FPf7pvmUfB1X3Pbx2XfGWu?=
- =?us-ascii?q?5Kl44RIC3YgWNw5oxxg=3D=3D?=
-X-Talos-MUID: 9a23:z4HOwgWseijTGJ7q/CXyuDxwbsZ12viRBgNXqaQF5Oy2KgUlbg==
-X-IronPort-AV: E=Sophos;i="6.02,161,1688400000"; 
-   d="scan'208";a="491969605"
-Received: from 58-6-226-208.tpgi.com.au (HELO [192.168.0.22]) ([58.6.226.208])
-  by icp-osb-irony-out5.iinet.net.au with ESMTP; 20 Sep 2023 15:45:47 +0800
-Message-ID: <5add8ae8-d746-b254-7559-b96aa72d3523@westnet.com.au>
-Date:   Wed, 20 Sep 2023 17:45:47 +1000
+        Wed, 20 Sep 2023 03:46:31 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEE5138
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:46:05 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-404fbfac998so40880815e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1695195964; x=1695800764; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NCQ64axOzYWQoVJr89JJGEJBkzqcHIgukSDri2Lu2nY=;
+        b=gyy/EoGYbXfyOyLpfHmDk2WWbOm9L6Zqt4sjxcvHKfTBm6XNcQ8YSz6YjLKJRGyUSJ
+         c91AkGYNN/LlvPGeoNjPduIyomQsXUhY48vcfafjMUSBTZ6A0SLRO0nkPfMTmzdn+DPx
+         apOLtHGVcULHy/b/KcG9CvQ9J7MFWuybFZHJ91cBojYo2OvxoT8gcBispXSV5r8+Df+Z
+         EBITdzHl5MLglRy+VRQkEM5U6hVwfgLOffEFUXZE8ubWnzR8QKA1fjYqMxtSKqgKXrJ8
+         ay993suO4Qh93QmcU/F9s/Hmm8u1lZWM3Wzh30RzmXuM5YRsU7H7DSH4qeRMdRP5X5Of
+         JQdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695195964; x=1695800764;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NCQ64axOzYWQoVJr89JJGEJBkzqcHIgukSDri2Lu2nY=;
+        b=vs1sibx9TxJ1DWaxBf/DRbh+uRQCTaDR7PJDc9qxoEIh0+KcP1unJR6dKdF02e1m3K
+         bU5dFjCOQM3ShclRqPuaKBpGxSFiF/qeOZHVdgcT6jOawdDLOkjavwfuKN77XafXm4Fm
+         EsDovoejWHLDvBcukFdAUbG0niuPA3XXPvzerKDAlurE1AX9oLptPg/6wSuOHoy71iiP
+         LoCcn8JjiENkRKdiGd54cQapne1l/4wo00y0OiUPF5nbwy6iq18jvMEQ85yO5DDctkAw
+         CPDzhxUB6FocAjHGGYSIuZyPyHs1/zf2JUL89Dai58F/zvnLGcShc6yEJHfzyDR4MFNv
+         sBfQ==
+X-Gm-Message-State: AOJu0YzmMo6iF15k1yvn8rmxQoYEe0D4fgHRpb2I2GZJPHzVuPUVGdT2
+        Fb+sAy1A9RQuxo11nVk5mpOtdw==
+X-Google-Smtp-Source: AGHT+IGLhZyo0JLpS7qrAayTtRpx8WJ35UC8iBDR4G+V5sBDzN/EMK5surVVEn79abyRomu1HrsACQ==
+X-Received: by 2002:a7b:cd94:0:b0:401:b204:3b85 with SMTP id y20-20020a7bcd94000000b00401b2043b85mr1635240wmj.36.1695195963742;
+        Wed, 20 Sep 2023 00:46:03 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id j5-20020a5d6045000000b0032008f99216sm10914828wrt.96.2023.09.20.00.46.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 00:46:03 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 09:46:02 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        devicetree@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 3/7] RISC-V: KVM: Allow XVentanaCondOps extension for
+ Guest/VM
+Message-ID: <20230920-64bd7206b92e056d76cd9715@orel>
+References: <20230919035343.1399389-1-apatel@ventanamicro.com>
+ <20230919035343.1399389-4-apatel@ventanamicro.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
-Content-Language: en-US
-From:   Greg Ungerer <gregungerer@westnet.com.au>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, torvalds@linux-foundation.org,
-        Nicholas Piggin <npiggin@gmail.com>
-References: <20230915183707.2707298-1-willy@infradead.org>
- <20230915183707.2707298-10-willy@infradead.org>
- <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
- <ZQW849TfSCK6u2f8@casper.infradead.org>
- <cb763591-a697-ab74-171e-fcd7f4e70137@westnet.com.au>
-In-Reply-To: <cb763591-a697-ab74-171e-fcd7f4e70137@westnet.com.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919035343.1399389-4-apatel@ventanamicro.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 19/9/23 00:37, Greg Ungerer wrote:
-> On 17/9/23 00:34, Matthew Wilcox wrote:
->> On Sat, Sep 16, 2023 at 11:11:32PM +1000, Greg Ungerer wrote:
->>> On 16/9/23 04:36, Matthew Wilcox (Oracle) wrote:
->>>> Using EOR to clear the guaranteed-to-be-set lock bit will test the
->>>> negative flag just like the x86 implementation.  This should be
->>>> more efficient than the generic implementation in filemap.c.  It
->>>> would be better if m68k had __GCC_ASM_FLAG_OUTPUTS__.
->>>>
->>>> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->>>> ---
->>>>    arch/m68k/include/asm/bitops.h | 14 ++++++++++++++
->>>>    1 file changed, 14 insertions(+)
->>>>
->>>> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
->>>> index e984af71df6b..909ebe7cab5d 100644
->>>> --- a/arch/m68k/include/asm/bitops.h
->>>> +++ b/arch/m68k/include/asm/bitops.h
->>>> @@ -319,6 +319,20 @@ arch___test_and_change_bit(unsigned long nr, volatile unsigned long *addr)
->>>>        return test_and_change_bit(nr, addr);
->>>>    }
->>>> +static inline bool xor_unlock_is_negative_byte(unsigned long mask,
->>>> +        volatile unsigned long *p)
->>>> +{
->>>> +    char result;
->>>> +    char *cp = (char *)p + 3;    /* m68k is big-endian */
->>>> +
->>>> +    __asm__ __volatile__ ("eor.b %1, %2; smi %0"
->>>
->>> The ColdFire members of the 68k family do not support byte size eor:
->>>
->>>    CC      mm/filemap.o
->>> {standard input}: Assembler messages:
->>> {standard input}:824: Error: invalid instruction for this architecture; needs 68000 or higher (68000 [68ec000, 68hc000, 68hc001, 68008, 68302, 68306, 68307, 68322, 68356], 68010, 68020 [68k, 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060], cpu32 [68330, 68331, 68332, 68333, 68334, 68336, 68340, 68341, 68349, 68360], fidoa [fido]) -- statement `eor.b #1,3(%a0)' ignored
->>
->> Well, that sucks.  What do you suggest for Coldfire?
+On Tue, Sep 19, 2023 at 09:23:39AM +0530, Anup Patel wrote:
+> We extend the KVM ISA extension ONE_REG interface to allow KVM
+> user space to detect and enable XVentanaCondOps extension for
+> Guest/VM.
 > 
-> I am not seeing an easy way to not fall back to something like the MIPS
-> implementation for ColdFire. Could obviously assemblerize this to do better
-> than gcc, but if it has to be atomic I think we are stuck with the irq locking.
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  arch/riscv/include/uapi/asm/kvm.h | 1 +
+>  arch/riscv/kvm/vcpu_onereg.c      | 2 ++
+>  2 files changed, 3 insertions(+)
 > 
-> static inline bool cf_xor_is_negative_byte(unsigned long mask,
->                  volatile unsigned long *addr)
-> {
->          unsigned long flags;
->          unsigned long data;
-> 
->          local_irq_save(flags)
->          data = *addr;
->          *addr = data ^ mask;
->          local_irq_restore(flags);
-> 
->          return (data & BIT(7)) != 0;
-> }
+> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
+> index b1baf6f096a3..e030c12c7dfc 100644
+> --- a/arch/riscv/include/uapi/asm/kvm.h
+> +++ b/arch/riscv/include/uapi/asm/kvm.h
+> @@ -138,6 +138,7 @@ enum KVM_RISCV_ISA_EXT_ID {
+>  	KVM_RISCV_ISA_EXT_ZIFENCEI,
+>  	KVM_RISCV_ISA_EXT_ZIHPM,
+>  	KVM_RISCV_ISA_EXT_SMSTATEEN,
+> +	KVM_RISCV_ISA_EXT_XVENTANACONDOPS,
+>  	KVM_RISCV_ISA_EXT_MAX,
+>  };
+>  
+> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
+> index 388599fcf684..17a847a1114b 100644
+> --- a/arch/riscv/kvm/vcpu_onereg.c
+> +++ b/arch/riscv/kvm/vcpu_onereg.c
+> @@ -40,6 +40,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
+>  	KVM_ISA_EXT_ARR(SVINVAL),
+>  	KVM_ISA_EXT_ARR(SVNAPOT),
+>  	KVM_ISA_EXT_ARR(SVPBMT),
+> +	KVM_ISA_EXT_ARR(XVENTANACONDOPS),
+>  	KVM_ISA_EXT_ARR(ZBA),
+>  	KVM_ISA_EXT_ARR(ZBB),
+>  	KVM_ISA_EXT_ARR(ZBS),
+> @@ -89,6 +90,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
+>  	case KVM_RISCV_ISA_EXT_SSTC:
+>  	case KVM_RISCV_ISA_EXT_SVINVAL:
+>  	case KVM_RISCV_ISA_EXT_SVNAPOT:
+> +	case KVM_RISCV_ISA_EXT_XVENTANACONDOPS:
+>  	case KVM_RISCV_ISA_EXT_ZBA:
+>  	case KVM_RISCV_ISA_EXT_ZBB:
+>  	case KVM_RISCV_ISA_EXT_ZBS:
+> -- 
+> 2.34.1
+>
 
-The problem with this C implementation is that need to use loal_irq_save()
-which results in some ugly header dependencies trying top include irqflags.h.
-
-This version at least compiles and run, though we can probably do better still.
-
-
-diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
-index e984af71df6b..99392c26e784 100644
---- a/arch/m68k/include/asm/bitops.h
-+++ b/arch/m68k/include/asm/bitops.h
-@@ -319,6 +319,48 @@ arch___test_and_change_bit(unsigned long nr, volatile unsigned long *addr)
-         return test_and_change_bit(nr, addr);
-  }
-  
-+static inline bool cf_xor_unlock_is_negative_byte(unsigned long mask,
-+               volatile unsigned long *addr)
-+{
-+       unsigned long data;
-+
-+        asm volatile (
-+               "move.w %%sr,%%d1       \n\t"
-+               "move.w %%d1,%%d0       \n\t"
-+               "ori.l  #0x0700,%%d0    \n\t"
-+               "move.w %%d0,%%sr       \n\t"
-+
-+               "move.l %2@,%0          \n\t"
-+               "eor.l  %1,%0           \n\t"
-+               "move.l %0,%2@          \n\t"
-+
-+               "movew  %%d1,%%sr       \n"
-+               : "=d" (data)
-+               : "di" (mask), "a" (addr)
-+               : "cc", "%d0", "%d1", "memory");
-+
-+       return (data & BIT(7)) != 0;
-+}
-+
-+static inline bool m68k_xor_unlock_is_negative_byte(unsigned long mask,
-+               volatile unsigned long *p)
-+{
-+       char result;
-+       char *cp = (char *)p + 3;       /* m68k is big-endian */
-+
-+       __asm__ __volatile__ ("eor.b %1, %2; smi %0"
-+               : "=d" (result)
-+               : "di" (mask), "o" (*cp)
-+               : "memory");
-+       return result;
-+}
-+
-+#if defined(CONFIG_COLDFIRE)
-+#define xor_unlock_is_negative_byte(mask, p) cf_xor_unlock_is_negative_byte(mask, p)
-+#else
-+#define xor_unlock_is_negative_byte(mask, p) m68k_xor_unlock_is_negative_byte(mask, p)
-+#endif
-+
-  /*
-   *     The true 68020 and more advanced processors support the "bfffo"
-   *     instruction for finding bits. ColdFire and simple 68000 parts
-
-
-Regards
-Greg
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
