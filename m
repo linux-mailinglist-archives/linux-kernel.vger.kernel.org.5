@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFB37A8CFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D4F7A8D02
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjITTkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
+        id S229972AbjITTl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbjITTkP (ORCPT
+        with ESMTP id S229456AbjITTl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:40:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C1E9F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 12:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695238809; x=1726774809;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=CGrbJVE947kLcNQvJHXv006YPxanfka9C/SJUX7Mv1E=;
-  b=Bc6/2YIKAvd5/lVLBM5gkiVoIf3v2viGags5yZ1/jE/f0nLkKPVJCTXl
-   /akaQn9OXQxBcYRZTmIoJmmnfs+sM5WOf6WrUKQVjXU4E2byK4lvJrLYh
-   nt/VBWQZnZQ+diq5WVqssNH7tyXFxSeWhk7y7UGCfXewnu8pH4F6p+qgc
-   smmq1PbTzqNbWZpdP6WfWU3qH2Uc9xP9E3yilMoeqEVvNQNWCRPt+wbta
-   Vv5cwcRCtNp4RcIvDN5SxPKtCMF42MxJTaSl9s/En42LOj9c2Mmt1JdG3
-   XtUrAV3krpK0mGDqYjvmnP8x3LdLJb3Pq9z2t1FYTYFzUAABmmLwaInQI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="377621379"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="377621379"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 12:40:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="812291475"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="812291475"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Sep 2023 12:40:06 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qj33M-00094S-0w;
-        Wed, 20 Sep 2023 19:40:04 +0000
-Date:   Thu, 21 Sep 2023 03:39:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: arch/powerpc/kernel/traps.c:1167:19: error: unused function
- '__parse_fpscr'
-Message-ID: <202309210327.WkqSd5Bq-lkp@intel.com>
+        Wed, 20 Sep 2023 15:41:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BCD9E;
+        Wed, 20 Sep 2023 12:41:21 -0700 (PDT)
+Received: from mercury (unknown [185.254.75.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7903D66071F1;
+        Wed, 20 Sep 2023 20:41:20 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695238880;
+        bh=ExX3SvDujzr9QOpYWZy4A/ye4S8keoato3pYxi1LhpA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AksLgzMXB+z48x+InzKNNqPPjq/AXKREYxp6x7rX/QNcZE+8CSwd7mQ2JzsvQkyaL
+         w0/e6NF86FBC0KhrNsNN8+uVpaybpsmjiv3Ohm2FA4hMcTMEhqT4LDsZhcbfPFOzMa
+         EwZ8dXyg2rYJMKPGv6BHHxbEXQqj99Z+oppaiIDheJ+dDCWViLABLsmLMT3h7ROH79
+         HxgVbYSQjn6odD80LPscplxnRVT69BnUZhdWwjUOoXigXQuuuBQNmKVlfG33XQZ7Kk
+         EDnOdy0BwCE0tcKYjqB/UvNoJe63Rmbk5CT/3XvOJAZQVzbAvqajBrO9gjjcQbJwWR
+         dDcqEoS/qQ3hA==
+Received: by mercury (Postfix, from userid 1000)
+        id CDD29106091E; Wed, 20 Sep 2023 21:41:17 +0200 (CEST)
+Date:   Wed, 20 Sep 2023 21:41:17 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, tony@atomide.com,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Subject: Re: [PATCH] omap: dsi: do not WARN on detach if dsidev was never
+ attached
+Message-ID: <20230920194117.ghllpy7ubghakdrv@mercury.elektranox.org>
+References: <929c46beecf77f2ebfa9f8c9b1c09f6ec610c31a.1695130648.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="q5rykixsz2od4xko"
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <929c46beecf77f2ebfa9f8c9b1c09f6ec610c31a.1695130648.git.hns@goldelico.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a229cf67ab851a6e92395f37ed141d065176575a
-commit: ca13c130a43fe3ab625d22ada0a61e5c0b612229 powerpc/4xx: Remove WatchdogHandler() to fix no previous prototype error
-date:   5 weeks ago
-config: powerpc-kilauea_defconfig (https://download.01.org/0day-ci/archive/20230921/202309210327.WkqSd5Bq-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230921/202309210327.WkqSd5Bq-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309210327.WkqSd5Bq-lkp@intel.com/
+--q5rykixsz2od4xko
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All errors (new ones prefixed by >>):
+Hi,
 
->> arch/powerpc/kernel/traps.c:1167:19: error: unused function '__parse_fpscr' [-Werror,-Wunused-function]
-    1167 | static inline int __parse_fpscr(unsigned long fpscr)
-         |                   ^
-   1 error generated.
+On Tue, Sep 19, 2023 at 03:37:28PM +0200, H. Nikolaus Schaller wrote:
+> dsi_init_output() called by dsi_probe() may fail. In that
+> case mipi_dsi_host_unregister() is called which may call
+> omap_dsi_host_detach() with uninitialized dsi->dsidev
+> because omap_dsi_host_attach() was never called before.
+>=20
+> This happens if the panel driver asks for an EPROBE_DEFER.
+>=20
+> So let's suppress the WARN() in this special case.
 
+=2E..
 
-vim +/__parse_fpscr +1167 arch/powerpc/kernel/traps.c
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
 
-14cf11af6cf608 Paul Mackerras    2005-09-26  1166  
-5fad293bcbd48d Kumar Gala        2007-02-07 @1167  static inline int __parse_fpscr(unsigned long fpscr)
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1168  {
-aeb1c0f6ff18f5 Eric W. Biederman 2018-04-17  1169  	int ret = FPE_FLTUNK;
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1170  
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1171  	/* Invalid operation */
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1172  	if ((fpscr & FPSCR_VE) && (fpscr & FPSCR_VX))
-5fad293bcbd48d Kumar Gala        2007-02-07  1173  		ret = FPE_FLTINV;
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1174  
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1175  	/* Overflow */
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1176  	else if ((fpscr & FPSCR_OE) && (fpscr & FPSCR_OX))
-5fad293bcbd48d Kumar Gala        2007-02-07  1177  		ret = FPE_FLTOVF;
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1178  
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1179  	/* Underflow */
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1180  	else if ((fpscr & FPSCR_UE) && (fpscr & FPSCR_UX))
-5fad293bcbd48d Kumar Gala        2007-02-07  1181  		ret = FPE_FLTUND;
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1182  
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1183  	/* Divide by zero */
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1184  	else if ((fpscr & FPSCR_ZE) && (fpscr & FPSCR_ZX))
-5fad293bcbd48d Kumar Gala        2007-02-07  1185  		ret = FPE_FLTDIV;
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1186  
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1187  	/* Inexact result */
-dc1c1ca3dcd94c Stephen Rothwell  2005-10-01  1188  	else if ((fpscr & FPSCR_XE) && (fpscr & FPSCR_XX))
-5fad293bcbd48d Kumar Gala        2007-02-07  1189  		ret = FPE_FLTRES;
-5fad293bcbd48d Kumar Gala        2007-02-07  1190  
-5fad293bcbd48d Kumar Gala        2007-02-07  1191  	return ret;
-5fad293bcbd48d Kumar Gala        2007-02-07  1192  }
-5fad293bcbd48d Kumar Gala        2007-02-07  1193  
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-:::::: The code at line 1167 was first introduced by commit
-:::::: 5fad293bcbd48d9a2370020cf60e4b4a42559b12 [POWERPC] Fixup error handling when emulating a floating point instruction
+-- Sebastian
 
-:::::: TO: Kumar Gala <galak@kernel.crashing.org>
-:::::: CC: Kumar Gala <galak@kernel.crashing.org>
+>  drivers/gpu/drm/omapdrm/dss/dsi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/=
+dss/dsi.c
+> index ea63c64d3a1ab..c37eb6b1b9a39 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -4411,7 +4411,7 @@ static int omap_dsi_host_detach(struct mipi_dsi_hos=
+t *host,
+>  {
+>  	struct dsi_data *dsi =3D host_to_omap(host);
+> =20
+> -	if (WARN_ON(dsi->dsidev !=3D client))
+> +	if (!dsi->dsidev || WARN_ON(dsi->dsidev !=3D client))
+>  		return -EINVAL;
+> =20
+>  	cancel_delayed_work_sync(&dsi->dsi_disable_work);
+> --=20
+> 2.42.0
+>=20
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--q5rykixsz2od4xko
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmULStoACgkQ2O7X88g7
++pqrDw//Z5G3Hdy4Q4+9AMElzRUARdvuxAIbYZf+Y6k/YyfadUCHAWHTltHB9QmK
+kMpmTIWlR+FWLxocOQSO1opLR4hyDuvG9EDiz3a6ke4lEB59LDQ++JmGTYqtS2c/
+YITY5z0xBXjNArIdVUiQLlhlyHrIyowC7JxMn/kEG9J1lSgkWJqn2REXad7Lc/Bi
+IKJyhgwszDfks2ryjx6CL2lXwDuwP51TPxxhBUIre7hxlYwzyZnt/3c/xUa+2ri8
+PmyHZxi/OWUi2CmJBkThyIrc+DoyevVo/q0GZqyq+mMwEAeuLY0CWpm7ZfmVph3c
+JkNlQFUhugQQZAekQ6kQB0fUy9+iz+3XrnBCeHiXEpJZwTpYWAUuXbZurnXZjesL
+XKro/5vXxklANhwTuodben/CQiBqQWDeAxHhgi0Gd3wGIB84sdE/PWapFOvzmTVj
+EmSmH77zdpCs8vuLCVIghiFchjs6tCLfeIS+nR2Sbup7s9Ye59V+/GNU2xirb4AM
+CJR5RyxXXYI9TRDhLyPKJCt29CefOzgxbrr54NHwLfrloVNXNkkuv5gI3O3aE/tS
+TreXxz7GTTpKQfW+wsCbD9xh78wBza2NEatYPUTTPk92rqT/ubf5KgKXTVIBE4Qb
+yy+aK7RUkKZ9dNXO7WJzPcmEzrBBd9Ky7232jsp9qMZlbnj/0Dg=
+=NcVx
+-----END PGP SIGNATURE-----
+
+--q5rykixsz2od4xko--
