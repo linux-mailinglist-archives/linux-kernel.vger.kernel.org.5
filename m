@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 296787A6FBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4267A6FC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbjITACw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 20:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        id S231684AbjITAGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 20:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjITACw (ORCPT
+        with ESMTP id S229690AbjITAGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 20:02:52 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C213B95;
-        Tue, 19 Sep 2023 17:02:45 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 3E01D60157;
-        Wed, 20 Sep 2023 02:02:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695168164; bh=utPA7n7Yd2xyMem/Et4OtLEbYxG/j95VNgIAsibOFp4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gLn0Ja8cF2t3vVv0+mTfL/TZhVfVDiTO5V8+3Bp7fs9LrbvwBVBNVS1OkOV1tfSB1
-         O4tB3q626hPc8eCr/G426zfo0FkQ8m9GUoL0f4i6rBRoUb+eAJpsSHPb6ysYh/9IaN
-         Ao3Qn3a9GWQDLmoDEN4/OSiXSnl5rBjrbZDpVbpDmleWSEKFStfdm/Chaskean+QJ4
-         z3SmWfQfnKyo78zDg/wERcG+y7LrPCVe8DfElEj+TZbR3fBHneIJJVq+VMVf32oStp
-         38Z2T4U2HvZ/RD+xDiIK9UHgqJPdSh0PLwmjDuIa7V1/oweByN79DdJ2qI6BVW6WHE
-         oCBRIKD0FLCmQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4y_SY_XXPWRI; Wed, 20 Sep 2023 02:02:41 +0200 (CEST)
-Received: from defiant.home (78-2-200-2.adsl.net.t-com.hr [78.2.200.2])
-        by domac.alu.hr (Postfix) with ESMTPSA id 006D660152;
-        Wed, 20 Sep 2023 02:02:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695168161; bh=utPA7n7Yd2xyMem/Et4OtLEbYxG/j95VNgIAsibOFp4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eFwQ5jINT4MhN7WjvnbnDTbQ2E7ivLLaGFZ3+aoNrCWdm/EQSLY4XeXDs/eRxTrlv
-         CwCq4AaROOF7VljeOWxpj0HEVqw+xmORSyK5mz+5Z9LVfLOW3+SsqSxhqsFeI1CqiG
-         pHiG6Iu04NQlD0iPbrTDPmqf4chW5GCULwpDVFzikRL+mbvZSCTOFMaqAdmbWGWXga
-         yrWU302jObOn4aiD1Mfi6z+S1mp7BX4AhS/mBerCbsrNbr0/Rv9cULlZaBC06WKnmy
-         yC2l51USwZ5YnV57pXu2UDB65cCFTob4FxtkCnnGJPFB3IOXMME2ztA9Io1yzpzyr6
-         RGJbR6pFLF40Q==
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@FreeBSD.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Subject: [PATCH v1 1/1] acpica: use spinlocks to fix the data-races reported by the KCSAN
-Date:   Wed, 20 Sep 2023 02:01:40 +0200
-Message-Id: <20230920000139.15533-1-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        Tue, 19 Sep 2023 20:06:35 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F4795
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:06:28 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59e758d6236so39605527b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695168388; x=1695773188; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5rd6RU3HRliBkUXGA7dvU4/oAlmDxBiQOYh5+rVz/qQ=;
+        b=Sw0IzeNcJA2AtfNyV7zxGCxoHcj/0gaWvz4BYe52qWlZ9ZBjtdOcvfhju3HGSutNv8
+         KoAe8Ank8mwqoWS0MHP8FUfTx55qZg+Sen6Xr0OIkR4n/dgzJgMypgUd3r1vgb9b4bQw
+         bH/dyZbFuQIhvXUK/uGVRPsZQ5XW64lcZPe5w9DJMwDk0Cib0n7jlNtuS+4Z9Tktkrvr
+         yVgzT6z7CEJoeUywdAyIeGBOMp/t1M3EOx35o4EPOKz4J/hP6dVtCb0eEawFkESvnRKp
+         q8f/JGldH2lhcgJ0BY6NBJNci/8CVMYIOqXIaM0nermit6e18KOPtR3szDyDUE4t8dG2
+         SVdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695168388; x=1695773188;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5rd6RU3HRliBkUXGA7dvU4/oAlmDxBiQOYh5+rVz/qQ=;
+        b=rMjn5UVKh2qE2Riz2t8BQtsVtkPAYY/5lZdSN4ixSq1K+/ruHznTUkzQkVf/zzhvjx
+         TJL4XB9b2S5WmCFM3vfpH7IZNpdo4MTdNYTTLdnjtuYcrDB2/HFhcE2ARUbVhXCN1LuB
+         BpB5U2+q748wCRrpNfgqVc5ovX0PuwxfsY9oU2BUQSBd5IVx+tXFX0zazC8GZG9H/zpQ
+         y4pQoUwLWVe2wr5tDVfW1MXaDeo2X1UFOFZB89jY4qtwkKAU9TPRnd+knAt9QgiHFPU1
+         suQ0r1z0cQD8dha7RKA/DRd7z3+1Kfyfsb2mLHoSdgPKJFjMzzPXsktF+NjkQsUADa5b
+         yKZA==
+X-Gm-Message-State: AOJu0YzSQZLJI28Z2QobZYhB9XsgDJRoKerQTCWdBFG47TigVutKqXUO
+        Ebo8epx6PmnZFIxKJ61zkQ2MpMm+vQ0C
+X-Google-Smtp-Source: AGHT+IH4cs/oiZyDXv/ATj9aw5qsfHykk8ex8y+da30gXiWOt3s7LHwc/2ecXT5PvnqABQTXtj82FwJmLgOE
+X-Received: from joshdon-desktop.svl.corp.google.com ([2620:15c:2a3:200:abfd:1a0d:38de:e671])
+ (user=joshdon job=sendgmr) by 2002:a81:b656:0:b0:59b:f493:813c with SMTP id
+ h22-20020a81b656000000b0059bf493813cmr15081ywk.9.1695168388169; Tue, 19 Sep
+ 2023 17:06:28 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 17:05:59 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230920000559.3872416-1-joshdon@google.com>
+Subject: [PATCH] sched: fix warning in bandwidth distribution
+From:   Josh Don <joshdon@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,280 +73,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KCSAN reported hundreds of instances of data-races in ACPICA like this one:
+We've observed the following warning being hit in
+distribute_cfs_runtime():
+	SCHED_WARN_ON(cfs_rq->runtime_remaining > 0)
 
-[    6.994149] ==================================================================
-[    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
+We have the following race:
 
-[    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
-[    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
-[    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
-[    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
-[    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
-[    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
-[    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
-[    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
-[    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
-[    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
-[    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
-[    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
-[    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
-[    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+- cpu0: running bandwidth distribution (distribute_cfs_runtime).
+  Inspects the local cfs_rq and makes its runtime_remaining positive.
+  However, we defer unthrottling the local cfs_rq until after
+  considering all remote cfs_rq's.
+- cpu1: starts running bandwidth distribution from the slack timer. When
+  it finds the cfs_rq for cpu 0 on the throttled list, it observers the
+  that the cfs_rq is throttled, yet is not on the CSD list, and has a
+  positive runtime_remaining, thus triggering the warning in
+  distribute_cfs_runtime.
 
-[    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
-[    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
-[    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
-[    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
-[    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
-[    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
-[    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
-[    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
-[    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
-[    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
-[    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
-[    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
-[    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
-[    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
-[    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
-[    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
-[    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+To fix this, we can rework the local unthrottling logic to put the local
+cfs_rq on a local list, so that any future bandwidth distributions will
+realize that the cfs_rq is about to be unthrottled.
 
-[    6.995476] value changed: 0x00000004 -> 0x00000002
-
-[    6.995629] Reported by Kernel Concurrency Sanitizer on:
-[    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
-[    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[    6.995765] ==================================================================
-
-Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
-
-A number of unprotected increments:
-
-        acpi_gbl_nesting_level++;
-
-and conditional statements:
-
-        if (acpi_gbl_nesting_level) {
-                acpi_gbl_nesting_level--;
-        }
-
-no longer work in SMP environment.
-
-Proper locking like
-
-        spin_lock(&acpi_utdebug_lock);
-        acpi_gbl_nesting_level++;
-        spin_unlock(&acpi_utdebug_lock);
-
-and
-
-        spin_lock(&acpi_utdebug_lock);
-        if (acpi_gbl_nesting_level) {
-                acpi_gbl_nesting_level--;
-        }
-        spin_unlock(&acpi_utdebug_lock);
-
-makes these data-races go away.
-
-Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
-acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
-stuff the optmisers do.
-
-The patch eliminates KCSAN BUG warnings.
-
-Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
-Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
-Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
-Fixes: ^1da177e4c3f4 ("Initial git repository build.")
-Cc: Jung-uk Kim <jkim@FreeBSD.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Erik Kaneda <erik.kaneda@intel.com>
-Cc: Bob Moore <robert.moore@intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: Len Brown <lenb@kernel.org>
-Cc: linux-acpi@vger.kernel.org
-Cc: acpica-devel@lists.linuxfoundation.org
-Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Signed-off-by: Josh Don <joshdon@google.com>
 ---
-v1:
- Preliminary RFC version of the patch.
+ kernel/sched/fair.c | 36 +++++++++++++++++++++++++-----------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
 
- drivers/acpi/acpica/utdebug.c | 40 ++++++++++++++++++++++++++++++-----
- 1 file changed, 35 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
-index c5f6c85a3a09..148f2b820c88 100644
---- a/drivers/acpi/acpica/utdebug.c
-+++ b/drivers/acpi/acpica/utdebug.c
-@@ -16,6 +16,8 @@
- #define _COMPONENT          ACPI_UTILITIES
- ACPI_MODULE_NAME("utdebug")
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 384900bf87eb..509bc74262ad 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5743,13 +5743,13 @@ static void unthrottle_cfs_rq_async(struct cfs_rq *cfs_rq)
  
-+static DEFINE_SPINLOCK(acpi_utdebug_lock);
-+
- #ifdef ACPI_DEBUG_OUTPUT
- static acpi_thread_id acpi_gbl_previous_thread_id = (acpi_thread_id) 0xFFFFFFFF;
- static const char *acpi_gbl_function_entry_prefix = "----Entry";
-@@ -60,13 +62,16 @@ void acpi_ut_init_stack_ptr_trace(void)
- void acpi_ut_track_stack_ptr(void)
+ static bool distribute_cfs_runtime(struct cfs_bandwidth *cfs_b)
  {
- 	acpi_size current_sp;
-+	u32 nesting_level;
+-	struct cfs_rq *local_unthrottle = NULL;
+ 	int this_cpu = smp_processor_id();
+ 	u64 runtime, remaining = 1;
+ 	bool throttled = false;
+-	struct cfs_rq *cfs_rq;
++	struct cfs_rq *cfs_rq, *tmp;
+ 	struct rq_flags rf;
+ 	struct rq *rq;
++	LIST_HEAD(local_unthrottle);
  
- 	if (&current_sp < acpi_gbl_lowest_stack_pointer) {
- 		acpi_gbl_lowest_stack_pointer = &current_sp;
- 	}
+ 	rcu_read_lock();
+ 	list_for_each_entry_rcu(cfs_rq, &cfs_b->throttled_cfs_rq,
+@@ -5786,11 +5786,17 @@ static bool distribute_cfs_runtime(struct cfs_bandwidth *cfs_b)
  
--	if (acpi_gbl_nesting_level > acpi_gbl_deepest_nesting) {
--		acpi_gbl_deepest_nesting = acpi_gbl_nesting_level;
-+	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
-+
-+	if (nesting_level > acpi_gbl_deepest_nesting) {
-+		acpi_gbl_deepest_nesting = nesting_level;
- 	}
- }
- 
-@@ -137,6 +142,7 @@ acpi_debug_print(u32 requested_debug_level,
- #ifdef ACPI_APPLICATION
- 	int fill_count;
- #endif
-+	u32 nesting_level;
- 
- 	/* Check if debug output enabled */
- 
-@@ -156,7 +162,7 @@ acpi_debug_print(u32 requested_debug_level,
+ 		/* we check whether we're throttled above */
+ 		if (cfs_rq->runtime_remaining > 0) {
+-			if (cpu_of(rq) != this_cpu ||
+-			    SCHED_WARN_ON(local_unthrottle))
++			if (cpu_of(rq) != this_cpu) {
+ 				unthrottle_cfs_rq_async(cfs_rq);
+-			else
+-				local_unthrottle = cfs_rq;
++			} else {
++				/*
++				 * We currently only expect to be unthrottling
++				 * a single cfs_rq locally.
++				 */
++				SCHED_WARN_ON(!list_empty(&local_unthrottle));
++				list_add_tail(&cfs_rq->throttled_csd_list,
++					      &local_unthrottle);
++			}
+ 		} else {
+ 			throttled = true;
  		}
- 
- 		acpi_gbl_previous_thread_id = thread_id;
--		acpi_gbl_nesting_level = 0;
-+		WRITE_ONCE(acpi_gbl_nesting_level, 0);
+@@ -5798,15 +5804,23 @@ static bool distribute_cfs_runtime(struct cfs_bandwidth *cfs_b)
+ next:
+ 		rq_unlock_irqrestore(rq, &rf);
  	}
+-	rcu_read_unlock();
  
- 	/*
-@@ -176,14 +182,16 @@ acpi_debug_print(u32 requested_debug_level,
- 		acpi_os_printf("[%u] ", (u32)thread_id);
- 	}
- 
--	fill_count = 48 - acpi_gbl_nesting_level -
-+	fill_count = 48 - READ_ONCE(acpi_gbl_nesting_level) -
- 	    strlen(acpi_ut_trim_function_name(function_name));
- 	if (fill_count < 0) {
- 		fill_count = 0;
- 	}
- 
-+	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
+-	if (local_unthrottle) {
+-		rq = cpu_rq(this_cpu);
++	list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
++				 throttled_csd_list) {
++		struct rq *rq = rq_of(cfs_rq);
 +
- 	acpi_os_printf("[%02d] %*s",
--		       acpi_gbl_nesting_level, acpi_gbl_nesting_level + 1, " ");
-+		       nesting_level, nesting_level + 1, " ");
- 	acpi_os_printf("%s%*s: ",
- 		       acpi_ut_trim_function_name(function_name), fill_count,
- 		       " ");
-@@ -260,7 +268,10 @@ acpi_ut_trace(u32 line_number,
- 	      const char *module_name, u32 component_id)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
+ 		rq_lock_irqsave(rq, &rf);
+-		if (cfs_rq_throttled(local_unthrottle))
+-			unthrottle_cfs_rq(local_unthrottle);
 +
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -298,7 +309,10 @@ acpi_ut_trace_ptr(u32 line_number,
- 		  u32 component_id, const void *pointer)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
++		list_del_init(&cfs_rq->throttled_csd_list);
 +
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -334,7 +348,10 @@ acpi_ut_trace_str(u32 line_number,
- 		  const char *module_name, u32 component_id, const char *string)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
++		if (cfs_rq_throttled(cfs_rq))
++			unthrottle_cfs_rq(cfs_rq);
 +
- 	acpi_ut_track_stack_ptr();
- 
- 	/* Check if enabled up-front for performance */
-@@ -370,7 +387,10 @@ acpi_ut_trace_u32(u32 line_number,
- 		  const char *module_name, u32 component_id, u32 integer)
- {
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	acpi_gbl_nesting_level++;
-+	spin_unlock(&acpi_utdebug_lock);
+ 		rq_unlock_irqrestore(rq, &rf);
+ 	}
++	SCHED_WARN_ON(!list_empty(&local_unthrottle));
 +
- 	acpi_ut_track_stack_ptr();
++	rcu_read_unlock();
  
- 	/* Check if enabled up-front for performance */
-@@ -414,9 +434,11 @@ acpi_ut_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
+ 	return throttled;
  }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_exit)
-@@ -463,9 +485,11 @@ acpi_ut_status_exit(u32 line_number,
- 		}
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
-@@ -502,9 +526,11 @@ acpi_ut_value_exit(u32 line_number,
- 				 ACPI_FORMAT_UINT64(value));
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
-@@ -540,9 +566,11 @@ acpi_ut_ptr_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix, ptr);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- /*******************************************************************************
-@@ -577,9 +605,11 @@ acpi_ut_str_exit(u32 line_number,
- 				 acpi_gbl_function_exit_prefix, string);
- 	}
- 
-+	spin_lock(&acpi_utdebug_lock);
- 	if (acpi_gbl_nesting_level) {
- 		acpi_gbl_nesting_level--;
- 	}
-+	spin_unlock(&acpi_utdebug_lock);
- }
- 
- /*******************************************************************************
 -- 
-2.34.1
+2.42.0.459.ge4e396fd5e-goog
 
