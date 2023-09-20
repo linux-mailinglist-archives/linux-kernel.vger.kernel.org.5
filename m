@@ -2,143 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF037A7CA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173F77A7C49
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235145AbjITMCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S235040AbjITMAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235037AbjITMCm (ORCPT
+        with ESMTP id S235036AbjITL7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:02:42 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1F3D3;
-        Wed, 20 Sep 2023 05:02:29 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RrH9s05X7zNnfV;
-        Wed, 20 Sep 2023 19:58:41 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 20 Sep 2023 20:02:27 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <bpf@vger.kernel.org>
-Subject: [PATCH net-next v9 6/6] net: veth: use newly added page pool API for veth with xdp
-Date:   Wed, 20 Sep 2023 19:58:55 +0800
-Message-ID: <20230920115855.27631-7-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230920115855.27631-1-linyunsheng@huawei.com>
-References: <20230920115855.27631-1-linyunsheng@huawei.com>
+        Wed, 20 Sep 2023 07:59:48 -0400
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 303BDA3;
+        Wed, 20 Sep 2023 04:59:42 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.02,161,1688396400"; 
+   d="scan'208";a="176655460"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 20 Sep 2023 20:59:41 +0900
+Received: from localhost.localdomain (unknown [10.226.93.39])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 19F804328CA5;
+        Wed, 20 Sep 2023 20:59:37 +0900 (JST)
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.au@gmail.com>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Subject: [PATCH] alarmtimer: Fix rebind failure
+Date:   Wed, 20 Sep 2023 12:59:35 +0100
+Message-Id: <20230920115935.144391-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use page_pool[_cache]_alloc() API to allocate memory with
-least memory utilization and performance penalty.
+The resources allocated in alarmtimer_rtc_add_device() are not freed
+leading to re-bind failure for the endpoint driver. Fix this issue
+by adding alarmtimer_rtc_remove_device().
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-CC: Lorenzo Bianconi <lorenzo@kernel.org>
-CC: Alexander Duyck <alexander.duyck@gmail.com>
-CC: Liang Chen <liangchen.linux@gmail.com>
-CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
- drivers/net/veth.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+This issue is found while adding irq support for built in RTC
+found on Renesas PMIC RAA215300 device. This issue should present
+on all RTC drivers which calls device_init_wakeup() in probe(). 
+---
+ kernel/time/alarmtimer.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 0deefd1573cf..470791b0b533 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -737,10 +737,11 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 	if (skb_shared(skb) || skb_head_is_locked(skb) ||
- 	    skb_shinfo(skb)->nr_frags ||
- 	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
--		u32 size, len, max_head_size, off;
-+		u32 size, len, max_head_size, off, truesize, page_offset;
- 		struct sk_buff *nskb;
- 		struct page *page;
- 		int i, head_off;
-+		void *data;
+diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+index 8d9f13d847f0..592668136bb5 100644
+--- a/kernel/time/alarmtimer.c
++++ b/kernel/time/alarmtimer.c
+@@ -61,6 +61,7 @@ static DEFINE_SPINLOCK(freezer_delta_lock);
+ /* rtc timer and device for setting alarm wakeups at suspend */
+ static struct rtc_timer		rtctimer;
+ static struct rtc_device	*rtcdev;
++static struct platform_device	*rtc_pdev;
+ static DEFINE_SPINLOCK(rtcdev_lock);
  
- 		/* We need a private copy of the skb and data buffers since
- 		 * the ebpf program can modify it. We segment the original skb
-@@ -753,14 +754,17 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 		if (skb->len > PAGE_SIZE * MAX_SKB_FRAGS + max_head_size)
- 			goto drop;
- 
-+		size = min_t(u32, skb->len, max_head_size);
-+		truesize = SKB_HEAD_ALIGN(size) + VETH_XDP_HEADROOM;
-+
- 		/* Allocate skb head */
--		page = page_pool_dev_alloc_pages(rq->page_pool);
--		if (!page)
-+		data = page_pool_dev_cache_alloc(rq->page_pool, &truesize);
-+		if (!data)
- 			goto drop;
- 
--		nskb = napi_build_skb(page_address(page), PAGE_SIZE);
-+		nskb = napi_build_skb(data, truesize);
- 		if (!nskb) {
--			page_pool_put_full_page(rq->page_pool, page, true);
-+			page_pool_cache_free(rq->page_pool, data, true);
- 			goto drop;
+ /**
+@@ -109,6 +110,7 @@ static int alarmtimer_rtc_add_device(struct device *dev)
  		}
  
-@@ -768,7 +772,6 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 		skb_copy_header(nskb, skb);
- 		skb_mark_for_recycle(nskb);
+ 		rtcdev = rtc;
++		rtc_pdev = pdev;
+ 		/* hold a reference so it doesn't go away */
+ 		get_device(dev);
+ 		pdev = NULL;
+@@ -123,6 +125,23 @@ static int alarmtimer_rtc_add_device(struct device *dev)
+ 	return ret;
+ }
  
--		size = min_t(u32, skb->len, max_head_size);
- 		if (skb_copy_bits(skb, 0, nskb->data, size)) {
- 			consume_skb(nskb);
- 			goto drop;
-@@ -783,14 +786,18 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 		len = skb->len - off;
- 
- 		for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
--			page = page_pool_dev_alloc_pages(rq->page_pool);
-+			size = min_t(u32, len, PAGE_SIZE);
-+			truesize = size;
++static void alarmtimer_rtc_remove_device(struct device *dev)
++{
++	struct rtc_device *rtc = to_rtc_device(dev);
 +
-+			page = page_pool_dev_alloc(rq->page_pool, &page_offset,
-+						   &truesize);
- 			if (!page) {
- 				consume_skb(nskb);
- 				goto drop;
- 			}
++	if (rtc_pdev) {
++		module_put(rtc->owner);
++		if (device_may_wakeup(rtc->dev.parent))
++			device_init_wakeup(&rtc_pdev->dev, false);
++
++		platform_device_unregister(rtc_pdev);
++		put_device(dev);
++	}
++
++	rtcdev = NULL;
++	rtc_pdev = NULL;
++}
++
+ static inline void alarmtimer_rtc_timer_init(void)
+ {
+ 	rtc_timer_init(&rtctimer, NULL, NULL);
+@@ -130,6 +149,7 @@ static inline void alarmtimer_rtc_timer_init(void)
  
--			size = min_t(u32, len, PAGE_SIZE);
--			skb_add_rx_frag(nskb, i, page, 0, size, PAGE_SIZE);
-+			skb_add_rx_frag(nskb, i, page, page_offset, size,
-+					truesize);
- 			if (skb_copy_bits(skb, off, page_address(page),
- 					  size)) {
- 				consume_skb(nskb);
+ static struct class_interface alarmtimer_rtc_interface = {
+ 	.add_dev = &alarmtimer_rtc_add_device,
++	.remove_dev = &alarmtimer_rtc_remove_device,
+ };
+ 
+ static int alarmtimer_rtc_interface_setup(void)
 -- 
-2.33.0
+2.25.1
 
