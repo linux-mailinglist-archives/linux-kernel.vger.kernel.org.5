@@ -2,249 +2,522 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CA07A72AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE5A7A72B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbjITGQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
+        id S233106AbjITGSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbjITGQt (ORCPT
+        with ESMTP id S230447AbjITGSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:16:49 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A739F;
-        Tue, 19 Sep 2023 23:16:42 -0700 (PDT)
-X-UUID: 408a477e577d11eea33bb35ae8d461a2-20230920
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=of/5GxF1/d6c9dZJzpaUuPveZgRxacFJo/BTS4JwHlU=;
-        b=VYMahJiClkqdf7Jq2l6XwNV1Ujb6Ah9tmRbBtdihn3XMVc1Lh6qFHQJcFuaDNfnB78zti748KzczMcfYrosKnPkkFuE49D+K19z2bsC6bkm5zj6qHeOAl9mZUdkpT+GmXhZI6vtZU6vhhl0zR8NZk691r1Pv27r0VVPY+GaUmYk=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:7e6fdb36-968c-40f5-af12-90f3742e35e6,IP:0,U
-        RL:25,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:25
-X-CID-META: VersionHash:5f78ec9,CLOUDID:7f842614-4929-4845-9571-38c601e9c3c9,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 408a477e577d11eea33bb35ae8d461a2-20230920
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 876961147; Wed, 20 Sep 2023 14:16:36 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 20 Sep 2023 14:16:34 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 20 Sep 2023 14:16:34 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xn19NbbqepT6UqxyIKUabcxi/sWhUU+L1bDZMQ0DHtmbB/vgk+h9v+ccR/M8JtNoWqm5HH6V5ww6RSFdkwXWqYM4EHCN4vxbj+hCt6j9i4/aZ7VOi02PzEBOwrYQf9xzTO8+c4CqiZrm13NQW6zGFZdI2m84tDH2poYIxZUP6+UWksMPqtGtocY3oBnLkqPA+O6Km2sK38qpBdNwetTUFZnmAUGYHxeIcpoSPSPXa4wUPuw3yw/KRKa1wjHi12LEfW5qhslisXfvzezf/u3Idg1O8EoGZeh6pcdpv8zbTalDrhKRwdLJmw+669NddxOGFkkRfSBBnNyde4VO7+2KOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=of/5GxF1/d6c9dZJzpaUuPveZgRxacFJo/BTS4JwHlU=;
- b=IszrcT1jKpzjbbCfojgLhtf+sQCgBx0zU4tZ4+H+JVKIYNIuK4QoU6xR8QIkyiarwvfE6i6XDhF7x2TGWE4nz0BphMJJFYKy7VV4G2DeWVkZzTxng+QGZUtbU/pjJcP/NaKQsEwaV7l8cRyWynK6rW6DA3FaZebTQsfuvpxMEcd8oyFahqBYJpyl/6sIVVdjFXPQrighuVD+LJmwwGNerUhGn2oqgyYswhE+g8IDjKqMExE77EKb/1/bLK2YdDBAloGXPYh2qW0dP6lkJ6Fp65Yg0PEw6HrXazW6nW5pPLfpa7T51V4uDjrvvVSkuEQeCt4rdT2LoKL1P5v2f0wlTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=of/5GxF1/d6c9dZJzpaUuPveZgRxacFJo/BTS4JwHlU=;
- b=Jad8Dg3wlW2z1SLpA8iIfFNQXW7/IemZb+vBgLATkwLsUxjGeJXvE8ioEVNrdYiqeCqfJpwqlwU960lr/mD4oQEy2RoaLUleipjpHodC87XPE7zfm556BWhmUyJmQPLjsnjB6mLSxni8UiNjz4bUwOGGCyNuFQdEmfjknQXcjZA=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by SG2PR03MB6609.apcprd03.prod.outlook.com (2603:1096:4:1d8::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.23; Wed, 20 Sep
- 2023 06:16:31 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984%6]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 06:16:31 +0000
-From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To:     =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
-        <Shawn.Sung@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
-        <Singo.Chang@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "nfraprado@collabora.com" <nfraprado@collabora.com>
-Subject: Re: [RESEND PATCH v6 04/20] dt-bindings: display: mediatek: padding:
- Add MT8188
-Thread-Topic: [RESEND PATCH v6 04/20] dt-bindings: display: mediatek: padding:
- Add MT8188
-Thread-Index: AQHZ5IO9CD6AUvSBrEiQWiPbvOcwZLAjSvUA
-Date:   Wed, 20 Sep 2023 06:16:31 +0000
-Message-ID: <61877347f684e1a47f1b31fb0021cca35efafdce.camel@mediatek.com>
-References: <20230911074233.31556-1-shawn.sung@mediatek.com>
-         <20230911074233.31556-5-shawn.sung@mediatek.com>
-In-Reply-To: <20230911074233.31556-5-shawn.sung@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SG2PR03MB6609:EE_
-x-ms-office365-filtering-correlation-id: bf58961b-85c5-4158-6af7-08dbb9a121d1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2NgjYPiBsFpKDLEUnOPDurFfaFzkqNvbpG39siKvq6eG156FaSbQ52RRKrrsHoyT9JiT9T/QxThEoiIsxbxiZ/MQV/zSVo1p2RR5o7r3Go+C9vZtMfX8oRrz0RdVQug0QaZOX1WtWWvr4PMdp0U/1Qy8K3m66D8RDg8uA0Tdv6PL7tXVDqh8/NMTqUppJbR5Penv4bShHT0neV0662BXi9XbcEuvl84qM4sn/O2qk47+ZyraUp79PKNfRD9dXPgyH18ZeXK79kWU5tyk2XSuE3kfRCjiWDNNaEg+JWDR/Bx4bNyYiuzWKrnTZinwoVNGH9nlXwDB7rGOQJbyKiQANNVIJlMrOnw+QMKlM2jECaZUEI1BrK5aaRlg9zHbViZdyXNFrvk1JCIMvpDQTqDxQpZ5+ds+j372/7VgByKlGvHw7WnKHbzNnznhUi7vSuj/Aih5AemrfymdPdh9HdR9j9fBLL8X3igfeYLyeI6dm1hxmw2IFEmxVFH8v2OtYN7/BWoc0yXnepUQRQmcaPqEOQNwAm6OYRj53fxbj49f21J64v66SP1Rk/U0SxMsw2pPA/SI3/22j3Gdn+vjx7N1yQQ+Uq6RAB9SGkp6NxS6qQBJH3v13EkYLB7JNrQ2J5aBCkglFHUjE/mW0Cw+MTpK65xUhmYzayU2uryWuNefQVgO2d9IdlEuYP59Dg2PAFdz
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(39860400002)(396003)(376002)(186009)(1800799009)(451199024)(66899024)(316002)(66946007)(66556008)(26005)(76116006)(110136005)(66476007)(54906003)(64756008)(66446008)(2616005)(83380400001)(6512007)(71200400001)(6506007)(122000001)(86362001)(6486002)(38100700002)(38070700005)(478600001)(966005)(2906002)(7416002)(85182001)(36756003)(4326008)(8676002)(41300700001)(8936002)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MWc4QWF0MFZ1K093TTBnWHIrUjJQUXJsdys2Q1BocWNCdnAvek9tMVpBOGlE?=
- =?utf-8?B?bmJUemlhTnE1NWhDR1pMYkpTWGRabTBkSXAxWko2cTAydWZmVmx2QUZFY3Nk?=
- =?utf-8?B?TzFPbnQ5eHVxU3dVQnhBOWVxTnoyeE9reHpkVjNVSitRQmdKdjRoQktJVERy?=
- =?utf-8?B?U0M1ellaQ0tDR0YrQjhINnhuRGphZFRkdSt4WE5KcEdMU1pUVlFNekt4VGVP?=
- =?utf-8?B?ckVhYU14WXJQWm9OUzlRK1FTQXNRS1F2Vy82YTZjKzJ4UVo5UzA4bkdkbExG?=
- =?utf-8?B?QmpOamNXMlB5YmQ0ZVp0Q0xXdDBpWVM3VnNSWWlvZ2tjbVI3MWpYWmN5Q05Z?=
- =?utf-8?B?U09naWMvdEl5SVlDSnVFZlJ3WUZtQStvQVdZMDh0QjJYS2ZUQ2d5a0UvcGFH?=
- =?utf-8?B?OWJhQUxBRXV2YXFwaHNtS3BiclhmUzQzWTRBZmtpVnVTZm1FVDZBREdvTGxs?=
- =?utf-8?B?RDJNM1Jlb2xuSWNNUFhyUXg1MFZuUmxhOU1UODNMYnA4dUFaZmFUb2h0dXRl?=
- =?utf-8?B?cnVDZFhNd3crUTRTUm8zY0E4a0dXaGQveEFqT2prOHRvbTNveWhkYmlHNDY2?=
- =?utf-8?B?MmtLVjUxd1RXN3ltaElwQmFGVURWNFRRVHI2SmVBdGwzVEVQcVlUU0xjMTBH?=
- =?utf-8?B?TDhxK2JRUW5uMkR3UUx0YnpOTlQzaTRWSHd1RXpsdFAwb0FVcVZTendrNWU2?=
- =?utf-8?B?STdLWXB2ZjdkYTdtb0tNN3QyUlkyTDA5OU1kaFY5ZENad1lFMDMzYUdWM3hn?=
- =?utf-8?B?QjY1ZTE1ajY0YkoycnkxcW5hM09sdS9lNlIvcWhMMk9BSDczc1FuTWdCanZ0?=
- =?utf-8?B?NmE5a0JLNElSVTRnc0RUbHdnV3Zjd2hqK2tIWlRLR1E4aDB0dFl4OU1Gbldw?=
- =?utf-8?B?bVVkTmhxMkdYOGtJRGN0U0FXdzhkQXQ4UWkxVk1OVmNLbFVEN3pQVURoSWxn?=
- =?utf-8?B?cGF3eUdnUHhpZjBwM2crZGxHS25yRUpYRUc0M2s4NjdwTjk0NFdLS2l6NVBs?=
- =?utf-8?B?RXhRNjNsRDkvZjRhWlk2UFF6OHY0d296ckF4ekdDa25ZZ0JWVUpqMkVkYUhE?=
- =?utf-8?B?R3o4LzdjajFwTHVXYXd4bDNWNENXN3RxL2VQRDlFV1V5Z2lCWEFidmVOSVQ2?=
- =?utf-8?B?eVgydDJmcVhuZkR2dU9jblBGc1ZwTW53KzlDVVlDSVlSZ0JhMkFzT2ZTa0tK?=
- =?utf-8?B?cGNNV2NZMVlCcnpxdG55TndsdHFIeXYxR0lPRVlIZEc3MS9PcExMYlVVWGZz?=
- =?utf-8?B?akt4YmMvRlBuVjhJODVBVEZTd0d3cjY1SGFwbjh0cmozZWNOeFYyU0FodXZF?=
- =?utf-8?B?MUg1WFNMNXlqdWNURXVBci92WEluM0FHMWh1eERwRGN6eHEwRE1MYXVxT0lU?=
- =?utf-8?B?b1kwSCszTFh5UmdXMDBZKzZGakpaeENsSVVPSkhqTmdjSkdFSmZmM2l1WjRB?=
- =?utf-8?B?Mnp5dmV4THZ1c3V0WWZyMHdQWkF0dnl4S0xuV1Qwc1p1MXN1ck0rSy9GcHhL?=
- =?utf-8?B?Q3VMY0xxZTVJWUFRSXE2b0JlczEySFZCejliRUl6K3JoWU1mSE9OYVVVRERL?=
- =?utf-8?B?WUJJOWc5ZUNmNHpkRTJPZHdTRmtOem5WRDR5Z0o5K2JRUWRMcDg4cXU3VUlF?=
- =?utf-8?B?UUdIaDlzSkNQaTY1eW9IeC9ramczNFV4cjBPT1VNMUJxa0dpd0drNDJnR2x0?=
- =?utf-8?B?WWlVcDNleTMveGF4dXVTYzFMekZjbmx1cnZ6UTFMMC8rMWMrQS92UmN6SjBu?=
- =?utf-8?B?MkVOdnhRZHBNb1V1TTVnaVhKQktSaDZEWFJvMlRNeUg5ZitpSTJhdStIaERB?=
- =?utf-8?B?S3ZEbGc1OTRrd1BJaUhHVlhFRmVuQVYxU3FmeVY0NHI1N1BMTU5GQVplTTFJ?=
- =?utf-8?B?TWJMK09ZTzVWdnp5MHlWcFBoNFZGZVBpKzZaRlgrbnQ1bVNOZlRCdFQ5ZWl6?=
- =?utf-8?B?Z09ITGhZR205QUpMT2hDK2REMWJNWVNyS2dRblIybXJubVc3QXFaNmh1VE5J?=
- =?utf-8?B?TzRHMDIvbXdwelIvYXhlYUQ0YTlDeWcxQ3IyRm8xaWMwN3lZa3NGakVMK2k4?=
- =?utf-8?B?dUZYYW5UNGcvNWdlYU1CYmZlQzJkS3lMMXF4RXREajRGdzZUbTdYTVhRNnh1?=
- =?utf-8?Q?1C/n3dLFG1BhopzKIIg9KSb2U?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <278B1BF45F5AF64BA34EA833D7B0FF34@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 20 Sep 2023 02:18:50 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D189D;
+        Tue, 19 Sep 2023 23:18:43 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id E7DBB60157;
+        Wed, 20 Sep 2023 08:18:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695190718; bh=LHuGey4TTsCHQfhZeL2CAsAnbsLEBdvwK2SjAiHcwIE=;
+        h=Date:From:Subject:To:Cc:From;
+        b=DLbJ+0RUaTILV9c8RqT1F2T8y/0BQF243H2IA5bmO27MeKuJBM4NgD9U9sMGYkUfQ
+         y3yrP5DKzm29Z+Sn6Kubwb3bOJO7nhgpdyRs5P4v2MPnrchvIr3gdmmqo0k08gQNHP
+         hVO/+kKqkggk/8R29f9q0J9uWRUS6PFsGZ0YVTZdV0O1JOQYIfK94u2Mc2LiSEPpUO
+         oTGCk9eDwjJVgTuAbhnLyqPG5TvWru+bqSPntzAzCb+P0HsnMY7x8h1h4PCWu+tasn
+         CM1HT1UDsRQBeA2+vWXmhqSHQhgNSZlGvZArBJI4kEWPDE8JyLZIpwyIIoSNcfasuH
+         mfwNQ3N7x5oTQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id nkcAFhpHWtSl; Wed, 20 Sep 2023 08:18:36 +0200 (CEST)
+Received: from [192.168.1.6] (78-2-200-2.adsl.net.t-com.hr [78.2.200.2])
+        by domac.alu.hr (Postfix) with ESMTPSA id AC60460152;
+        Wed, 20 Sep 2023 08:18:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695190715; bh=LHuGey4TTsCHQfhZeL2CAsAnbsLEBdvwK2SjAiHcwIE=;
+        h=Date:From:Subject:To:Cc:From;
+        b=wmjacRb9nZ05EdDCqFterWlfuKQIyta8edvfJpzJA06U9Y6NpPklJFADAfk9s5G5A
+         n0TIgreoAPwAKuW0pHvfQDGDO+soIjJnBxCPPCjCv6T9lQmne5OeNSn3Nlen1LVstx
+         7tO8AAGIiFdZmwG8D6huCWFoqdzkfaNhB+0MAM5577+SrtPPWpasS0wfvwp/Owx11g
+         o8jBf1TgHttD/yjFb6hvyHRJu4jWAA8xaTReRsXUxwl7OCe79xI3GtPZ1S2rctxPqq
+         F14/YqmKsJt/dSNuIAFZ5bDdfdTIFtVN1ZQtZiMq++ewPt8NmhWmtHa2yThS9T4mWs
+         WWmph5Sm+y/vw==
+Message-ID: <c9e4e480-6f52-949b-e4b6-3eb0fcda3f83@alu.unizg.hr>
+Date:   Wed, 20 Sep 2023 08:18:35 +0200
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf58961b-85c5-4158-6af7-08dbb9a121d1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2023 06:16:31.1310
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: y7udempL4Ah2JE0JSYxm4G1mR6LlML7bYcguMQdHJ/aZCUlO0pezQ8Yvb0a6f4gLdf1Q6IFsQBJZJiqbpy39lw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR03MB6609
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Subject: BUG: KCSAN: data-race in btrfs_calculate_inode_block_rsv_size [btrfs]
+ / btrfs_use_block_rsv [btrfs] [EXPERIMENTAL PATCH]
+To:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaWFvLWNoaWVuOg0KDQpPbiBNb24sIDIwMjMtMDktMTEgYXQgMTU6NDIgKzA4MDAsIEhz
-aWFvIENoaWVuIFN1bmcgd3JvdGU6DQo+IFBhZGRpbmcgaXMgYSBuZXcgaGFyZHdhcmUgbW9kdWxl
-IG9uIE1lZGlhVGVrIE1UODE4OCwNCj4gYWRkIGR0LWJpbmRpbmdzIGZvciBpdC4NCj4gDQo+IFJl
-dmlld2VkLWJ5OiBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFy
-by5vcmc+DQo+IFNpZ25lZC1vZmYtYnk6IEhzaWFvIENoaWVuIFN1bmcgPHNoYXduLnN1bmdAbWVk
-aWF0ZWsuY29tPg0KPiAtLS0NCj4gIC4uLi9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLHBhZGRp
-bmcueWFtbCAgICB8IDgxDQo+ICsrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2Vk
-LCA4MSBpbnNlcnRpb25zKCspDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWsscGFkZGluZy55
-DQo+IGFtbA0KPiANCj4gZGlmZiAtLWdpdA0KPiBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLHBhZGRpbmcNCj4gLnlhbWwNCj4gYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRl
-ayxwYWRkaW5nDQo+IC55YW1sDQo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAw
-MDAwMDAwMC4uZGIyNDgwMWViYzQ4DQo+IC0tLSAvZGV2L251bGwNCj4gKysrDQo+IGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWsscGFk
-ZGluZw0KPiAueWFtbA0KPiBAQCAtMCwwICsxLDgxIEBADQo+ICsjIFNQRFgtTGljZW5zZS1JZGVu
-dGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNsYXVzZSkNCj4gKyVZQU1MIDEuMg0KPiAr
-LS0tDQo+ICskaWQ6IA0KPiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9kaXNwbGF5L21l
-ZGlhdGVrL21lZGlhdGVrLHBhZGRpbmcueWFtbCMNCj4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0
-cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPiArDQo+ICt0aXRsZTogTWVkaWFUZWsg
-RGlzcGxheSBQYWRkaW5nDQo+ICsNCj4gK21haW50YWluZXJzOg0KPiArICAtIENodW4tS3Vhbmcg
-SHUgPGNodW5rdWFuZy5odUBrZXJuZWwub3JnPg0KPiArICAtIFBoaWxpcHAgWmFiZWwgPHAuemFi
-ZWxAcGVuZ3V0cm9uaXguZGU+DQo+ICsNCj4gK2Rlc2NyaXB0aW9uOg0KPiArICBQYWRkaW5nIHBy
-b3ZpZGVzIGFiaWxpdHkgdG8gYWRkIHBpeGVscyB0byB3aWR0aCBhbmQgaGVpZ2h0IG9mIGENCj4g
-bGF5ZXIgd2l0aA0KPiArICBzcGVjaWZpZWQgY29sb3JzLiBEdWUgdG8gaGFyZHdhcmUgZGVzaWdu
-LCBNaXhlciBpbiBWRE9TWVMxDQo+IHJlcXVpcmVzDQo+ICsgIHdpZHRoIG9mIGEgbGF5ZXIgdG8g
-YmUgMi1waXhlbC1hbGlnbiwgb3IgNC1waXhlbC1hbGlnbiB3aGVuIEVUSERSDQo+IGlzIGVuYWJs
-ZWQsDQo+ICsgIHdlIG5lZWQgUGFkZGluZyB0byBkZWFsIHdpdGggb2RkIHdpZHRoLg0KPiArICBQ
-bGVhc2Ugbm90aWNlIHRoYXQgZXZlbiBpZiB0aGUgUGFkZGluZyBpcyBpbiBieXBhc3MgbW9kZSwg
-c2V0dGluZ3MNCj4gaW4NCj4gKyAgcmVnaXN0ZXIgbXVzdCBiZSBjbGVhcmVkIHRvIDAsIG9yIHVu
-ZGVmaW5lZCBiZWhhdmlvcnMgY291bGQNCj4gaGFwcGVuLg0KPiArDQo+ICtwcm9wZXJ0aWVzOg0K
-PiArICBjb21wYXRpYmxlOg0KPiArICAgIGNvbnN0OiBtZWRpYXRlayxtdDgxODgtcGFkZGluZw0K
-PiArDQo+ICsgIHJlZzoNCj4gKyAgICBtYXhJdGVtczogMQ0KPiArDQo+ICsgIHBvd2VyLWRvbWFp
-bnM6DQo+ICsgICAgbWF4SXRlbXM6IDENCj4gKw0KPiArICBjbG9ja3M6DQo+ICsgICAgaXRlbXM6
-DQo+ICsgICAgICAtIGRlc2NyaXB0aW9uOiBSRE1BIENsb2NrDQo+ICsNCj4gKyAgbWVkaWF0ZWss
-Z2NlLWNsaWVudC1yZWc6DQo+ICsgICAgZGVzY3JpcHRpb246DQo+ICsgICAgICBHQ0UgKEdsb2Jh
-bCBDb21tYW5kIEVuZ2luZSkgaXMgYSBtdWx0aS1jb3JlIG1pY3JvIHByb2Nlc3Nvcg0KPiB0aGF0
-IGhlbHBzDQo+ICsgICAgICBpdHMgY2xpZW50cyB0byBleGVjdXRlIGNvbW1hbmRzIHdpdGhvdXQg
-aW50ZXJydXB0aW5nIENQVS4gVGhpcw0KPiBwcm9wZXJ0eQ0KPiArICAgICAgZGVzY3JpYmVzIEdD
-RSBjbGllbnQncyBpbmZvcm1hdGlvbiB0aGF0IGlzIGNvbXBvc2VkIGJ5IDQNCj4gZmllbGRzLg0K
-PiArICAgICAgMS4gUGhhbmRsZSBvZiB0aGUgR0NFICh0aGVyZSBtYXkgYmUgc2V2ZXJhbCBHQ0Ug
-cHJvY2Vzc29ycykNCj4gKyAgICAgIDIuIFN1Yi1zeXN0ZW0gSUQgZGVmaW5lZCBpbiB0aGUgZHQt
-YmluZGluZyBsaWtlIGEgdXNlciBJRA0KPiArICAgICAgICAgKFBsZWFzZSByZWZlciB0byBpbmNs
-dWRlL2R0LWJpbmRpbmdzL2djZS88Y2hpcD4tZ2NlLmgpDQo+ICsgICAgICAzLiBPZmZzZXQgZnJv
-bSBiYXNlIGFkZHJlc3Mgb2YgdGhlIHN1YnN5cyB5b3UgYXJlIGF0DQo+ICsgICAgICA0LiBTaXpl
-IG9mIHRoZSByZWdpc3RlciB0aGUgY2xpZW50IG5lZWRzDQo+ICsgICAgJHJlZjogL3NjaGVtYXMv
-dHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvcGhhbmRsZS1hcnJheQ0KPiArICAgIGl0ZW1zOg0KPiAr
-ICAgICAgaXRlbXM6DQo+ICsgICAgICAgIC0gZGVzY3JpcHRpb246IFBoYW5kbGUgb2YgdGhlIEdD
-RQ0KPiArICAgICAgICAtIGRlc2NyaXB0aW9uOiBTdWJzeXMgSUQgZGVmaW5lZCBpbiB0aGUgZHQt
-YmluZGluZw0KPiArICAgICAgICAtIGRlc2NyaXB0aW9uOiBPZmZzZXQgZnJvbSBiYXNlIGFkZHJl
-c3Mgb2YgdGhlIHN1YnN5cw0KPiArICAgICAgICAtIGRlc2NyaXB0aW9uOiBTaXplIG9mIHJlZ2lz
-dGVyDQo+ICsgICAgbWF4SXRlbXM6IDENCj4gKw0KPiArcmVxdWlyZWQ6DQo+ICsgIC0gY29tcGF0
-aWJsZQ0KPiArICAtIHJlZw0KPiArICAtIHBvd2VyLWRvbWFpbnMNCj4gKyAgLSBjbG9ja3MNCj4g
-KyAgLSBtZWRpYXRlayxnY2UtY2xpZW50LXJlZw0KDQpJIHRoaW5rIHBhZGRpbmcgY291bGQgd29y
-ayB3aXRob3V0IGdjZS4gQWZ0ZXIgZHJvcCB0aGlzLA0KDQpSZXZpZXdlZC1ieTogQ0sgSHUgPGNr
-Lmh1QG1lZGlhdGVrLmNvbT4NCg0KPiArDQo+ICthZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UN
-Cj4gKw0KPiArZXhhbXBsZXM6DQo+ICsgIC0gfA0KPiArICAgICNpbmNsdWRlIDxkdC1iaW5kaW5n
-cy9pbnRlcnJ1cHQtY29udHJvbGxlci9hcm0tZ2ljLmg+DQo+ICsgICAgI2luY2x1ZGUgPGR0LWJp
-bmRpbmdzL2Nsb2NrL21lZGlhdGVrLG10ODE4OC1jbGsuaD4NCj4gKyAgICAjaW5jbHVkZSA8ZHQt
-YmluZGluZ3MvcG93ZXIvbWVkaWF0ZWssbXQ4MTg4LXBvd2VyLmg+DQo+ICsgICAgI2luY2x1ZGUg
-PGR0LWJpbmRpbmdzL2djZS9tdDgxOTUtZ2NlLmg+DQo+ICsNCj4gKyAgICBzb2Mgew0KPiArICAg
-ICAgICAjYWRkcmVzcy1jZWxscyA9IDwyPjsNCj4gKyAgICAgICAgI3NpemUtY2VsbHMgPSA8Mj47
-DQo+ICsNCj4gKyAgICAgICAgcGFkZGluZzA6IHBhZGRpbmdAMWMxMWQwMDAgew0KPiArICAgICAg
-ICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODgtcGFkZGluZyI7DQo+ICsgICAgICAg
-ICAgICByZWcgPSA8MCAweDFjMTFkMDAwIDAgMHgxMDAwPjsNCj4gKyAgICAgICAgICAgIGNsb2Nr
-cyA9IDwmdmRvc3lzMSBDTEtfVkRPMV9QQURESU5HMD47DQo+ICsgICAgICAgICAgICBwb3dlci1k
-b21haW5zID0gPCZzcG0gTVQ4MTg4X1BPV0VSX0RPTUFJTl9WRE9TWVMxPjsNCj4gKyAgICAgICAg
-ICAgIG1lZGlhdGVrLGdjZS1jbGllbnQtcmVnID0gPCZnY2UwIFNVQlNZU18xYzExWFhYWCAweGQw
-MDANCj4gMHgxMDAwPjsNCj4gKyAgICAgICAgfTsNCj4gKyAgICB9Ow0KPiAtLQ0KPiAyLjE4LjAN
-Cj4gDQo=
+Hi,
+
+This is your friendly bug reporter again.
+
+Please don't throw stuff at me, as I found another KCSAN data-race problem.
+
+I feel like a boy who cried wolf ...
+
+I hope this will get some attention, as it looks this time like a real btrfs problem that could cause
+the kernel module to make a wrong turn when managing storage in different threads simultaneously and
+lead to the corruption of data. However, I do not have an example of this corruption, it is by now only
+theoretical in this otherwise great filesystem.
+
+In fact, I can announce quite a number of KCSAN bugs already in dmesg log:
+
+    # of
+occuren
+     ces problematic function
+-------------------------------------------
+     182 __bitmap_and+0xa3/0x110
+       2 __bitmap_weight+0x62/0xa0
+     138 __call_rcu_common.constprop.0
+       3 __cgroup_account_cputime
+       1 __dentry_kill
+       3 __mod_lruvec_page_state
+      15 __percpu_counter_compare
+       1 __percpu_counter_sum+0x8f/0x120
+       1 acpi_ut_acquire_mutex
+       2 amdgpu_fence_emit
+       1 btrfs_calculate_inode_block_rsv_size
+       1 btrfs_page_set_uptodate
+      28 copy_from_read_buf
+       3 d_add
+       3 d_splice_alias
+       1 delayacct_add_tsk+0x10d/0x630
+       7 do_epoll_ctl
+       1 do_vmi_align_munmap
+      86 drm_sched_entity_is_ready
+       4 drm_sched_entity_pop_job
+       3 enqueue_timer
+       1 finish_fault+0xde/0x360
+       2 generic_fillattr
+       2 getrusage
+       9 getrusage+0x3ba/0xaa0
+       1 getrusage+0x3df/0xaa0
+       6 inode_needs_update_time
+       1 inode_set_ctime_current
+       1 inode_update_timestamps
+       3 kernfs_refresh_inode
+      22 ktime_get_mono_fast_ns+0x87/0x120
+      13 ktime_get_mono_fast_ns+0xb0/0x120
+      24 ktime_get_mono_fast_ns+0xc0/0x120
+      79 mas_topiary_replace
+      12 mas_wr_modify
+      61 mas_wr_node_store
+       1 memchr_inv+0x71/0x160
+       1 memchr_inv+0xcf/0x160
+      19 n_tty_check_unthrottle
+       5 n_tty_kick_worker
+      35 n_tty_poll
+      32 n_tty_read
+       1 n_tty_read+0x5f8/0xaf0
+       3 osq_lock
+      27 process_one_work
+       4 process_one_work+0x169/0x700
+       2 rcu_implicit_dynticks_qs
+       1 show_stat+0x45b/0xb70
+       3 task_mem
+     344 tick_nohz_idle_stop_tick
+      32 tick_nohz_next_event
+       1 tick_nohz_next_event+0xe7/0x1e0
+      90 tick_sched_do_timer
+       5 tick_sched_do_timer+0x2c/0x120
+       1 wbt_done
+       1 wbt_issue
+       2 wq_worker_tick
+      37 xas_clear_mark
+
+------------------------------------------------------
+
+This report is from a vanilla torvalds tree 6.6-rc2 kernel on Ubuntu 22.04:
+
+[13429.116126] ==================================================================
+[13429.116794] BUG: KCSAN: data-race in btrfs_calculate_inode_block_rsv_size [btrfs] / btrfs_use_block_rsv [btrfs]
+
+[13429.118113] write to 0xffff8884c38043f8 of 8 bytes by task 25471 on cpu 30:
+[13429.118124] btrfs_calculate_inode_block_rsv_size (/home/marvin/linux/kernel/torvalds2/fs/btrfs/delalloc-space.c:276) btrfs
+[13429.118819] btrfs_delalloc_release_metadata (/home/marvin/linux/kernel/torvalds2/./include/linux/spinlock.h:391 /home/marvin/linux/kernel/torvalds2/fs/btrfs/delalloc-space.c:400) btrfs
+[13429.119479] btrfs_remove_ordered_extent (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:606) btrfs
+[13429.120135] btrfs_finish_one_ordered (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3221) btrfs
+[13429.120789] btrfs_finish_ordered_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3234) btrfs
+[13429.121439] finish_ordered_fn (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:304) btrfs
+[13429.122095] btrfs_work_helper (/home/marvin/linux/kernel/torvalds2/fs/btrfs/async-thread.c:314) btrfs
+[13429.122781] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
+[13429.122794] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
+[13429.122804] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
+[13429.122813] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
+[13429.122825] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
+
+[13429.122842] read to 0xffff8884c38043f8 of 8 bytes by task 25472 on cpu 25:
+[13429.122853] btrfs_use_block_rsv (/home/marvin/linux/kernel/torvalds2/fs/btrfs/block-rsv.c:496) btrfs
+[13429.123513] btrfs_alloc_tree_block (/home/marvin/linux/kernel/torvalds2/fs/btrfs/extent-tree.c:4925) btrfs
+[13429.124162] __btrfs_cow_block (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ctree.c:546) btrfs
+[13429.124806] btrfs_cow_block (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ctree.c:712) btrfs
+[13429.125452] btrfs_search_slot (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ctree.c:2194) btrfs
+[13429.126094] btrfs_lookup_file_extent (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file-item.c:271) btrfs
+[13429.126742] btrfs_drop_extents (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file.c:250) btrfs
+[13429.127392] insert_reserved_file_extent (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:2900) btrfs
+[13429.128040] btrfs_finish_one_ordered (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3111) btrfs
+[13429.128689] btrfs_finish_ordered_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3234) btrfs
+[13429.129338] finish_ordered_fn (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:304) btrfs
+[13429.129992] btrfs_work_helper (/home/marvin/linux/kernel/torvalds2/fs/btrfs/async-thread.c:314) btrfs
+[13429.130648] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
+[13429.130659] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
+[13429.130670] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
+[13429.130678] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
+[13429.130689] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
+
+[13429.130704] value changed: 0x0000000000760000 -> 0x0000000000720000
+
+[13429.130718] Reported by Kernel Concurrency Sanitizer on:
+[13429.130727] CPU: 25 PID: 25472 Comm: kworker/u66:3 Tainted: G             L     6.6.0-rc2-kcsan-00003-g16819584c239-dirty #22
+[13429.130739] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[13429.130747] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
+[13429.131404] ==================================================================
+
+The code is:
+
+fs/btrfs/delalloc-space.c
+---------------------------------------------------------------------------------
+   242 static void btrfs_calculate_inode_block_rsv_size(struct btrfs_fs_info *fs_info,
+   243                                                  struct btrfs_inode *inode)
+   244 {
+   245         struct btrfs_block_rsv *block_rsv = &inode->block_rsv;
+   246         u64 reserve_size = 0;
+   247         u64 qgroup_rsv_size = 0;
+   248         u64 csum_leaves;
+   249         unsigned outstanding_extents;
+   250
+   251         lockdep_assert_held(&inode->lock);
+   252         outstanding_extents = inode->outstanding_extents;
+   253
+   254         /*
+   255          * Insert size for the number of outstanding extents, 1 normal size for
+   256          * updating the inode.
+   257          */
+   258         if (outstanding_extents) {
+   259                 reserve_size = btrfs_calc_insert_metadata_size(fs_info,
+   260                                                 outstanding_extents);
+   261                 reserve_size += btrfs_calc_metadata_size(fs_info, 1);
+   262         }
+   263         csum_leaves = btrfs_csum_bytes_to_leaves(fs_info,
+   264                                                  inode->csum_bytes);
+   265         reserve_size += btrfs_calc_insert_metadata_size(fs_info,
+   266                                                         csum_leaves);
+   267         /*
+   268          * For qgroup rsv, the calculation is very simple:
+   269          * account one nodesize for each outstanding extent
+   270          *
+   271          * This is overestimating in most cases.
+   272          */
+   273         qgroup_rsv_size = (u64)outstanding_extents * fs_info->nodesize;
+   274
+   275         spin_lock(&block_rsv->lock);
+→ 276         block_rsv->size = reserve_size;
+   277         block_rsv->qgroup_rsv_size = qgroup_rsv_size;
+   278         spin_unlock(&block_rsv->lock);
+   279 }
+
+fs/btrfs/block-rsv.c
+-------------------------------------------------------------------------------
+   477 struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+   478                                             struct btrfs_root *root,
+   479                                             u32 blocksize)
+   480 {
+   481         struct btrfs_fs_info *fs_info = root->fs_info;
+   482         struct btrfs_block_rsv *block_rsv;
+   483         struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+   484         int ret;
+   485         bool global_updated = false;
+   486
+   487         block_rsv = get_block_rsv(trans, root);
+   488
+   489         if (unlikely(block_rsv->size == 0))
+   490                 goto try_reserve;
+   491 again:
+   492         ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
+   493         if (!ret)
+   494                 return block_rsv;
+   495
+→ 496         if (block_rsv->failfast)
+   497                 return ERR_PTR(ret);
+   498
+   499         if (block_rsv->type == BTRFS_BLOCK_RSV_GLOBAL && !global_updated) {
+   500                 global_updated = true;
+   501                 btrfs_update_global_block_rsv(fs_info);
+   502                 goto again;
+   503         }
+   504
+   505         /*
+   506          * The global reserve still exists to save us from ourselves, so don't
+   507          * warn_on if we are short on our delayed refs reserve.
+   508          */
+   509         if (block_rsv->type != BTRFS_BLOCK_RSV_DELREFS &&
+   510             btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
+   511                 static DEFINE_RATELIMIT_STATE(_rs,
+   512                                 DEFAULT_RATELIMIT_INTERVAL * 10,
+   513                                 /*DEFAULT_RATELIMIT_BURST*/ 1);
+   514                 if (__ratelimit(&_rs))
+   515                         WARN(1, KERN_DEBUG
+   516                                 "BTRFS: block rsv %d returned %d\n",
+   517                                 block_rsv->type, ret);
+   518         }
+   519 try_reserve:
+   520         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
+   521                                            BTRFS_RESERVE_NO_FLUSH);
+   522         if (!ret)
+   523                 return block_rsv;
+   524         /*
+   525          * If we couldn't reserve metadata bytes try and use some from
+   526          * the global reserve if its space type is the same as the global
+   527          * reservation.
+   528          */
+   529         if (block_rsv->type != BTRFS_BLOCK_RSV_GLOBAL &&
+   530             block_rsv->space_info == global_rsv->space_info) {
+   531                 ret = btrfs_block_rsv_use_bytes(global_rsv, blocksize);
+   532                 if (!ret)
+   533                         return global_rsv;
+   534         }
+   535
+   536         /*
+   537          * All hope is lost, but of course our reservations are overly
+   538          * pessimistic, so instead of possibly having an ENOSPC abort here, try
+   539          * one last time to force a reservation if there's enough actual space
+   540          * on disk to make the reservation.
+   541          */
+   542         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
+   543                                            BTRFS_RESERVE_FLUSH_EMERGENCY);
+   544         if (!ret)
+   545                 return block_rsv;
+   546
+   547         return ERR_PTR(ret);
+   548 }
+
+Now, see the logical problem: when these two threads are (obviously) executed in parallel,
+the write side uses spin_lock(&block_srv) from *inode it changes the reserve_size of,
+however it seems that this line 496 of btrfs_use_block_rsv() reads these struct members
+without a lock and they can change during the operation.
+
+To illustrate this, an experimental patch is provided:
+
+(NOTE that btrfs_block_rsv_use_bytes() uses spin_lock(&block_rsv->lock), so it had to be
+  moved upwards.)
+
+----------------------------------------
+diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+index 77684c5e0c8b..8153814c7861 100644
+--- a/fs/btrfs/block-rsv.c
++++ b/fs/btrfs/block-rsv.c
+@@ -166,7 +166,9 @@ int btrfs_block_rsv_migrate(struct btrfs_block_rsv *src,
+  {
+         int ret;
+  
++       spin_lock(&src->lock);
+         ret = btrfs_block_rsv_use_bytes(src, num_bytes);
++       spin_unlock(&src->lock);
+         if (ret)
+                 return ret;
+  
+@@ -298,14 +300,12 @@ int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
+  {
+         int ret = -ENOSPC;
+  
+-       spin_lock(&block_rsv->lock);
+         if (block_rsv->reserved >= num_bytes) {
+                 block_rsv->reserved -= num_bytes;
+                 if (block_rsv->reserved < block_rsv->size)
+                         block_rsv->full = false;
+                 ret = 0;
+         }
+-       spin_unlock(&block_rsv->lock);
+         return ret;
+  }
+  
+@@ -486,15 +486,16 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+  
+         block_rsv = get_block_rsv(trans, root);
+  
++       spin_lock(&block_rsv->lock);
+         if (unlikely(block_rsv->size == 0))
+                 goto try_reserve;
+  again:
+         ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
+         if (!ret)
+-               return block_rsv;
++               goto exit_ret_block_rsv;
+  
+         if (block_rsv->failfast)
+-               return ERR_PTR(ret);
++               goto exit_ret_err;
+  
+         if (block_rsv->type == BTRFS_BLOCK_RSV_GLOBAL && !global_updated) {
+                 global_updated = true;
+@@ -520,7 +521,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
+                                            BTRFS_RESERVE_NO_FLUSH);
+         if (!ret)
+-               return block_rsv;
++               goto exit_ret_block_rsv;
+         /*
+          * If we couldn't reserve metadata bytes try and use some from
+          * the global reserve if its space type is the same as the global
+@@ -530,7 +531,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+             block_rsv->space_info == global_rsv->space_info) {
+                 ret = btrfs_block_rsv_use_bytes(global_rsv, blocksize);
+                 if (!ret)
+-                       return global_rsv;
++                       goto exit_ret_global_rsv;
+         }
+  
+         /*
+@@ -542,9 +543,20 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
+                                            BTRFS_RESERVE_FLUSH_EMERGENCY);
+         if (!ret)
+-               return block_rsv;
++               goto exit_ret_block_rsv;
+  
++exit_ret_err:
++       spin_unlock(&block_rsv->lock);
+         return ERR_PTR(ret);
++
++exit_ret_block_rsv:
++       spin_unlock(&block_rsv->lock);
++       return block_rsv;
++
++exit_ret_global_rsv:
++       spin_unlock(&block_rsv->lock);
++       return global_rsv;
++
+  }
+  
+  int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
+---
+
+This is of course just a symptomatic patch, but since btrfs_block_rsv_use_bytes() is not used outside
+of fs/btrfs/block-rsv.c,it could just work as PoC.
+
+OTOH, this version might be more elegant:
+
+----------------------------------------------------------------------
+diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+index 77684c5e0c8b..192be99cc6f4 100644
+--- a/fs/btrfs/block-rsv.c
++++ b/fs/btrfs/block-rsv.c
+@@ -294,18 +294,28 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
+                                        qgroup_to_release);
+  }
+  
+-int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
++static
++int __btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
+  {
+         int ret = -ENOSPC;
+  
+-       spin_lock(&block_rsv->lock);
+         if (block_rsv->reserved >= num_bytes) {
+                 block_rsv->reserved -= num_bytes;
+                 if (block_rsv->reserved < block_rsv->size)
+                         block_rsv->full = false;
+                 ret = 0;
+         }
++       return ret;
++}
++
++int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
++{
++       int ret;
++
++       spin_lock(&block_rsv->lock);
++       ret = __btrfs_block_rsv_use_bytes(block_rsv, num_bytes);
+         spin_unlock(&block_rsv->lock);
++
+         return ret;
+  }
+  
+@@ -486,15 +496,16 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+  
+         block_rsv = get_block_rsv(trans, root);
+  
++       spin_lock(&block_rsv->lock);
+         if (unlikely(block_rsv->size == 0))
+                 goto try_reserve;
+  again:
+-       ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
++       ret = __btrfs_block_rsv_use_bytes(block_rsv, blocksize);
+         if (!ret)
+-               return block_rsv;
++               goto exit_ret_block_rsv;
+  
+         if (block_rsv->failfast)
+-               return ERR_PTR(ret);
++               goto exit_ret_err;
+  
+         if (block_rsv->type == BTRFS_BLOCK_RSV_GLOBAL && !global_updated) {
+                 global_updated = true;
+@@ -520,7 +531,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
+                                            BTRFS_RESERVE_NO_FLUSH);
+         if (!ret)
+-               return block_rsv;
++               goto exit_ret_block_rsv;
+         /*
+          * If we couldn't reserve metadata bytes try and use some from
+          * the global reserve if its space type is the same as the global
+@@ -528,9 +539,9 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+          */
+         if (block_rsv->type != BTRFS_BLOCK_RSV_GLOBAL &&
+             block_rsv->space_info == global_rsv->space_info) {
+-               ret = btrfs_block_rsv_use_bytes(global_rsv, blocksize);
++               ret = __btrfs_block_rsv_use_bytes(global_rsv, blocksize);
+                 if (!ret)
+-                       return global_rsv;
++                       goto exit_ret_global_rsv;
+         }
+  
+         /*
+@@ -542,9 +553,20 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+         ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
+                                            BTRFS_RESERVE_FLUSH_EMERGENCY);
+         if (!ret)
+-               return block_rsv;
++               goto exit_ret_block_rsv;
+  
++exit_ret_err:
++       spin_unlock(&block_rsv->lock);
+         return ERR_PTR(ret);
++
++exit_ret_block_rsv:
++       spin_unlock(&block_rsv->lock);
++       return block_rsv;
++
++exit_ret_global_rsv:
++       spin_unlock(&block_rsv->lock);
++       return global_rsv;
++
+  }
+  
+  int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
+---
+
+Of course, I did not run these patches on a production system, I just verified that they build.
+
+Best regards,
+Mirsad Todorovac
