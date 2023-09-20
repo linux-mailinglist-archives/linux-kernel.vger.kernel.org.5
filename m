@@ -2,173 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4267A6FC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81E17A6FC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbjITAGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 20:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
+        id S229627AbjITAMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 20:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjITAGf (ORCPT
+        with ESMTP id S229590AbjITAMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 20:06:35 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F4795
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:06:28 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59e758d6236so39605527b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:06:28 -0700 (PDT)
+        Tue, 19 Sep 2023 20:12:17 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EEE95
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:12:11 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-502b1bbe5c3so10471226e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:12:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695168388; x=1695773188; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5rd6RU3HRliBkUXGA7dvU4/oAlmDxBiQOYh5+rVz/qQ=;
-        b=Sw0IzeNcJA2AtfNyV7zxGCxoHcj/0gaWvz4BYe52qWlZ9ZBjtdOcvfhju3HGSutNv8
-         KoAe8Ank8mwqoWS0MHP8FUfTx55qZg+Sen6Xr0OIkR4n/dgzJgMypgUd3r1vgb9b4bQw
-         bH/dyZbFuQIhvXUK/uGVRPsZQ5XW64lcZPe5w9DJMwDk0Cib0n7jlNtuS+4Z9Tktkrvr
-         yVgzT6z7CEJoeUywdAyIeGBOMp/t1M3EOx35o4EPOKz4J/hP6dVtCb0eEawFkESvnRKp
-         q8f/JGldH2lhcgJ0BY6NBJNci/8CVMYIOqXIaM0nermit6e18KOPtR3szDyDUE4t8dG2
-         SVdw==
+        d=atishpatra.org; s=google; t=1695168730; x=1695773530; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1CviEhhoBlZKiA8T16gFI1fJMTl09yzCTO8KzCGSqRk=;
+        b=hYWcC2IGPnNYvnqdaw67I8Vv39Vgo+M0I2LOUt9NM/Uxj/k4EYFtf4+pwnp9w7RqxS
+         fGtuxenfZBJoR66WL+70p8rCJDOdWxtHZdsTmaXT/5WL3qnm4iu3JBrpLRBde88HXnh3
+         kCMy5ntUhv1ATGGuHh9igu0rs4e9rKLctQLgo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695168388; x=1695773188;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5rd6RU3HRliBkUXGA7dvU4/oAlmDxBiQOYh5+rVz/qQ=;
-        b=rMjn5UVKh2qE2Riz2t8BQtsVtkPAYY/5lZdSN4ixSq1K+/ruHznTUkzQkVf/zzhvjx
-         TJL4XB9b2S5WmCFM3vfpH7IZNpdo4MTdNYTTLdnjtuYcrDB2/HFhcE2ARUbVhXCN1LuB
-         BpB5U2+q748wCRrpNfgqVc5ovX0PuwxfsY9oU2BUQSBd5IVx+tXFX0zazC8GZG9H/zpQ
-         y4pQoUwLWVe2wr5tDVfW1MXaDeo2X1UFOFZB89jY4qtwkKAU9TPRnd+knAt9QgiHFPU1
-         suQ0r1z0cQD8dha7RKA/DRd7z3+1Kfyfsb2mLHoSdgPKJFjMzzPXsktF+NjkQsUADa5b
-         yKZA==
-X-Gm-Message-State: AOJu0YzSQZLJI28Z2QobZYhB9XsgDJRoKerQTCWdBFG47TigVutKqXUO
-        Ebo8epx6PmnZFIxKJ61zkQ2MpMm+vQ0C
-X-Google-Smtp-Source: AGHT+IH4cs/oiZyDXv/ATj9aw5qsfHykk8ex8y+da30gXiWOt3s7LHwc/2ecXT5PvnqABQTXtj82FwJmLgOE
-X-Received: from joshdon-desktop.svl.corp.google.com ([2620:15c:2a3:200:abfd:1a0d:38de:e671])
- (user=joshdon job=sendgmr) by 2002:a81:b656:0:b0:59b:f493:813c with SMTP id
- h22-20020a81b656000000b0059bf493813cmr15081ywk.9.1695168388169; Tue, 19 Sep
- 2023 17:06:28 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 17:05:59 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230920000559.3872416-1-joshdon@google.com>
-Subject: [PATCH] sched: fix warning in bandwidth distribution
-From:   Josh Don <joshdon@google.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
+        d=1e100.net; s=20230601; t=1695168730; x=1695773530;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1CviEhhoBlZKiA8T16gFI1fJMTl09yzCTO8KzCGSqRk=;
+        b=hQkb6+v/7atLNAeiIZEdIuvEUO50Zq6O4UVy7/GQDgEBcupbpxsVAk7N1phSxblmSa
+         00kmtXY1QKFkZea12/ggxdYv5CxTf8ujjTE0pvZoR2x6aiSZtDxeJJAU+zsV1OGytlB5
+         TZ/2RSqnMlUEhiHiBYEbWb7k0CYXvqxsniz7zU1zFVAbU2Hqq6WsFRuycEs7MxbLAK8q
+         cFMnHRLH7sW1Ivd4SkUsEYFkc9UCpLtFES6oClIsJtpKqfhpxHmctUOnQLTDN8Ev+0Rx
+         9albmVdcpfl98oqfuZfE28jQU8e2VJPrmXLmgjGqPRkmXOjF4hOQr0ZHP0msJIwo6X/9
+         8c2w==
+X-Gm-Message-State: AOJu0Yxty5OjA64laCqSYElzhrzKI6flH1nXfCKnQvFmKAyNaI83zJ75
+        7q1Z9ho2PQHysWVPq2nrCEMhJhaDMX8VkOpdMJwn
+X-Google-Smtp-Source: AGHT+IE8zP3BzZusNhL+aAwkiDwCmIGdHT4wX12zJCKO252ijdL/DxCfHuNz/3MG+5CSLu9l+w9+0x7JLX8hmpsYVXk=
+X-Received: by 2002:a05:6512:3ca6:b0:501:c1d4:cf68 with SMTP id
+ h38-20020a0565123ca600b00501c1d4cf68mr1309878lfv.15.1695168729533; Tue, 19
+ Sep 2023 17:12:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230912174928.528414-1-apatel@ventanamicro.com> <20230912174928.528414-2-apatel@ventanamicro.com>
+In-Reply-To: <20230912174928.528414-2-apatel@ventanamicro.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 19 Sep 2023 17:11:58 -0700
+Message-ID: <CAOnJCU+0iUR+ziwkPnEykoS+Ym8zkG-Afs_XyyCSD4fi8wjP6w@mail.gmail.com>
+Subject: Re: [PATCH v8 01/16] RISC-V: Don't fail in riscv_of_parent_hartid()
+ for disabled HARTs
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We've observed the following warning being hit in
-distribute_cfs_runtime():
-	SCHED_WARN_ON(cfs_rq->runtime_remaining > 0)
+On Tue, Sep 12, 2023 at 10:50=E2=80=AFAM Anup Patel <apatel@ventanamicro.co=
+m> wrote:
+>
+> The riscv_of_processor_hartid() used by riscv_of_parent_hartid() fails
+> for HARTs disabled in the DT. This results in the following warning
+> thrown by the RISC-V INTC driver for the E-core on SiFive boards:
+>
+> [    0.000000] riscv-intc: unable to find hart id for /cpus/cpu@0/interru=
+pt-controller
+>
+> The riscv_of_parent_hartid() is only expected to read the hartid from
+> the DT so we should directly call of_get_cpu_hwid() instead of calling
+> riscv_of_processor_hartid().
+>
+> Fixes: ad635e723e17 ("riscv: cpu: Add 64bit hartid support on RV64")
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  arch/riscv/kernel/cpu.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+> index c17dacb1141c..157ace8b262c 100644
+> --- a/arch/riscv/kernel/cpu.c
+> +++ b/arch/riscv/kernel/cpu.c
+> @@ -125,13 +125,14 @@ int __init riscv_early_of_processor_hartid(struct d=
+evice_node *node, unsigned lo
+>   */
+>  int riscv_of_parent_hartid(struct device_node *node, unsigned long *hart=
+id)
+>  {
+> -       int rc;
+> -
+>         for (; node; node =3D node->parent) {
+>                 if (of_device_is_compatible(node, "riscv")) {
+> -                       rc =3D riscv_of_processor_hartid(node, hartid);
+> -                       if (!rc)
+> -                               return 0;
+> +                       *hartid =3D (unsigned long)of_get_cpu_hwid(node, =
+0);
+> +                       if (*hartid =3D=3D ~0UL) {
+> +                               pr_warn("Found CPU without hart ID\n");
+> +                               return -ENODEV;
+> +                       }
+> +                       return 0;
+>                 }
+>         }
+>
+> --
+> 2.34.1
+>
 
-We have the following race:
+LGTM.
 
-- cpu0: running bandwidth distribution (distribute_cfs_runtime).
-  Inspects the local cfs_rq and makes its runtime_remaining positive.
-  However, we defer unthrottling the local cfs_rq until after
-  considering all remote cfs_rq's.
-- cpu1: starts running bandwidth distribution from the slack timer. When
-  it finds the cfs_rq for cpu 0 on the throttled list, it observers the
-  that the cfs_rq is throttled, yet is not on the CSD list, and has a
-  positive runtime_remaining, thus triggering the warning in
-  distribute_cfs_runtime.
+Reviewed-by: Atish Patra <atishp@rivosinc.com>
 
-To fix this, we can rework the local unthrottling logic to put the local
-cfs_rq on a local list, so that any future bandwidth distributions will
-realize that the cfs_rq is about to be unthrottled.
-
-Signed-off-by: Josh Don <joshdon@google.com>
----
- kernel/sched/fair.c | 36 +++++++++++++++++++++++++-----------
- 1 file changed, 25 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 384900bf87eb..509bc74262ad 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5743,13 +5743,13 @@ static void unthrottle_cfs_rq_async(struct cfs_rq *cfs_rq)
- 
- static bool distribute_cfs_runtime(struct cfs_bandwidth *cfs_b)
- {
--	struct cfs_rq *local_unthrottle = NULL;
- 	int this_cpu = smp_processor_id();
- 	u64 runtime, remaining = 1;
- 	bool throttled = false;
--	struct cfs_rq *cfs_rq;
-+	struct cfs_rq *cfs_rq, *tmp;
- 	struct rq_flags rf;
- 	struct rq *rq;
-+	LIST_HEAD(local_unthrottle);
- 
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(cfs_rq, &cfs_b->throttled_cfs_rq,
-@@ -5786,11 +5786,17 @@ static bool distribute_cfs_runtime(struct cfs_bandwidth *cfs_b)
- 
- 		/* we check whether we're throttled above */
- 		if (cfs_rq->runtime_remaining > 0) {
--			if (cpu_of(rq) != this_cpu ||
--			    SCHED_WARN_ON(local_unthrottle))
-+			if (cpu_of(rq) != this_cpu) {
- 				unthrottle_cfs_rq_async(cfs_rq);
--			else
--				local_unthrottle = cfs_rq;
-+			} else {
-+				/*
-+				 * We currently only expect to be unthrottling
-+				 * a single cfs_rq locally.
-+				 */
-+				SCHED_WARN_ON(!list_empty(&local_unthrottle));
-+				list_add_tail(&cfs_rq->throttled_csd_list,
-+					      &local_unthrottle);
-+			}
- 		} else {
- 			throttled = true;
- 		}
-@@ -5798,15 +5804,23 @@ static bool distribute_cfs_runtime(struct cfs_bandwidth *cfs_b)
- next:
- 		rq_unlock_irqrestore(rq, &rf);
- 	}
--	rcu_read_unlock();
- 
--	if (local_unthrottle) {
--		rq = cpu_rq(this_cpu);
-+	list_for_each_entry_safe(cfs_rq, tmp, &local_unthrottle,
-+				 throttled_csd_list) {
-+		struct rq *rq = rq_of(cfs_rq);
-+
- 		rq_lock_irqsave(rq, &rf);
--		if (cfs_rq_throttled(local_unthrottle))
--			unthrottle_cfs_rq(local_unthrottle);
-+
-+		list_del_init(&cfs_rq->throttled_csd_list);
-+
-+		if (cfs_rq_throttled(cfs_rq))
-+			unthrottle_cfs_rq(cfs_rq);
-+
- 		rq_unlock_irqrestore(rq, &rf);
- 	}
-+	SCHED_WARN_ON(!list_empty(&local_unthrottle));
-+
-+	rcu_read_unlock();
- 
- 	return throttled;
- }
--- 
-2.42.0.459.ge4e396fd5e-goog
-
+--=20
+Regards,
+Atish
