@@ -2,204 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E8F7A8E38
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B417A8E1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjITVJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 17:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        id S230120AbjITVAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 17:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjITVJt (ORCPT
+        with ESMTP id S230016AbjITVAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 17:09:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65B8B9;
-        Wed, 20 Sep 2023 14:09:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695244182; x=1726780182;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=/OLf6yVcUQv1IBXzI1oglS9PMmE7XdbBrH0xNUQIKvY=;
-  b=CIEe39ivbE+AVrF4QQ5gMOX7BALFBVfsYrhX0HoAOsqDKAR1h/23U1va
-   mtaVGbI3RIxtKNq0i6rLTDbMYJsjiyi/lA+Ocr0co65VR54iBhfkWV8Jr
-   m9NxgEbuflcVzBRslrza955CKHHcc38jRl1T+veqaC4T0rHTyOXShPaQS
-   RO/b84V4eGJnVVBt2XCwlGL+RgAKjBTNy3ZaBVA3rEntFZdgUWzQIK3k+
-   cLxju3hu3wxFPXi2c+eriXC4rlYkbu3Hxja6nok4gHF9yKwWtESgLKVPz
-   kMaPo4JhndMhzh/htStFftDs9B/zSkLp3fafw1pPSqD8J7ylpWQ7BeVWh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="411286739"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="411286739"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 13:54:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="746792263"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="746792263"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Sep 2023 13:54:53 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 20 Sep 2023 13:54:53 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 20 Sep 2023 13:54:53 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 20 Sep 2023 13:54:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V/AWkzV+aZZQf+ffzwSdOveGbLaRfF58/PkWQxRUa9OufKKx8e5Yc4Tozl/8ScnZulzzNpifiLKNunYjMdjtOCakpZhT5T3hSbjlkbeOID13/kOjulsTV2NVjXGuNY8DpPlrQBu0rDMpLltnUVguBGMCFoSvO201ZiNb+wVzZyEXvrMHxsvQeveHAf2QqOiNB0PcGzL9/yPNCn4YOaqAZjV3hlPeL6xTxTwitfpMdwHSjasDDj6TgoCjcfASq2uwCjfoWNWE8NH2Yvq7d0ClXCOGLjKFtjiYYtCPPEtowMOqGSt6mSl6VR9kUCDzzTXD+StPykiLAqeU0tk685ooHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WjgYLdlVs0MPJfq1xQeQr+NYMfouSIqU8dThORsWixE=;
- b=OnjF+uRin38rIGf5ZUcWFzg3fe8VzJIpGxTLPvIPbn2dy0WWNWMrXW87Jukj7JwCiE7EcXWqz0tODLg8oOyuH+u5mfdR8TxS9v9firmQjliLrGnFiLA9Fiv7V4sWMwmkDZl+QZY2AjMn+XZYiI+N3DkZYfWsB3kvGKphh9O2EhaZw8vlxHIXgvTKZsaXS8kGDslRFjXVdKdCE2yiWpMGi5Gz0f8oSdqnxDVmYXgu4sNc/mPyl6eZy3GtzBcHAwD1uXar/PKHq03o5vc2FT0MxjzSPoAsL9IwH1vjcBMIdfEDCYjLclswCuTFc3BCOPbt738NN/9/PxjoonurlzOqgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
- by SN7PR11MB7491.namprd11.prod.outlook.com (2603:10b6:806:349::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Wed, 20 Sep
- 2023 20:54:51 +0000
-Received: from MN0PR11MB6059.namprd11.prod.outlook.com
- ([fe80::6d0b:5bc6:8723:593]) by MN0PR11MB6059.namprd11.prod.outlook.com
- ([fe80::6d0b:5bc6:8723:593%6]) with mapi id 15.20.6792.022; Wed, 20 Sep 2023
- 20:54:50 +0000
-Date:   Wed, 20 Sep 2023 16:54:45 -0400
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Justin Stitt <justinstitt@google.com>
-CC:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/i915: refactor deprecated strncpy
-Message-ID: <ZQtcFQuPkiO6aS3O@intel.com>
-References: <20230919-strncpy-drivers-gpu-drm-i915-gem-selftests-mock_context-c-v2-1-0b5778423bd7@google.com>
+        Wed, 20 Sep 2023 17:00:31 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1E1C9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:00:24 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8186d705a9so421047276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:00:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695243624; x=1695848424; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WD85YU6GCdPtOsLZeVlIeZZfzAYdtoOH/7wu6gyWXNI=;
+        b=lrXR4KDKyB3CuUyGP5uNfXTfoHTjrrZkUVpu9kQNuYv9InUBqUeB4fMdB30349PPIZ
+         RcGYV8CUadyrYi4ihZfTHpQg/09qpPl+c/zYxq0o2P7dwkfgXkXcp+bq3MVEF+9duUBe
+         HTtCh9+ypTXfAcyFaAzJk68f4w++iv6tmGozumlieWuG+llNlw0IlHzHC0WhvmQeQ47D
+         BIPb11gg7udeYiklPqgWMrsDyd383pwOvV8mQ+zScwuU8lJXO0Vahq5kKfJ4f6dThPzb
+         EXaItMpjNVLeAY+6Kq+gMt7n0juNGBqQvhqE4dZEpjqEgFDXknQSWJecxRAUASzTRNFm
+         LQQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695243624; x=1695848424;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WD85YU6GCdPtOsLZeVlIeZZfzAYdtoOH/7wu6gyWXNI=;
+        b=SsvX2zrrVDfM60G0GVOkgWoJIKgkEFNbVf2D7Q747INntxPGB8rTpEiyviCjmnO0pR
+         +rqsCUYip5vP8Fdvs29L/Db80qiMM2uH3ukILNkx8Glv3RtIXzqALhhY29WH3aNNU0Q3
+         CJszFO1xMRyTJ7k2+PPgIuZeZvn8lPrhbn1JsNRCQoM2+U2QUL+btUpb8r/R4FvMpzjS
+         wZKbiokCWe89uVCG1rRXf6oO57VSYPFfJY9yshVDNn8vlVvdAqUaSrCT0dxgPuE4jwSD
+         R65dUj45NGiCmMTVOMBUo9Vl1nLqRePBBXF0s2uA+4ocB0LXAaDdnpeUOSF/0f2E+kWP
+         btNg==
+X-Gm-Message-State: AOJu0YyTK+US+EFAIfg5zlNPt5S0NxhyOiZHUMz2udSmEecRmu/UvZ49
+        CXs1ExOK14hiBKrUjC84udGYuAluHdU=
+X-Google-Smtp-Source: AGHT+IE6bowhyf6hyHthYBPyW6IZfmwFxVZA3ErkF6QZibGvin1ESoG81Vf7MPhR8G5wDRxCxsmQT8EV7w4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:496:0:b0:d7f:2cb6:7d88 with SMTP id
+ 144-20020a250496000000b00d7f2cb67d88mr58003ybe.13.1695243624102; Wed, 20 Sep
+ 2023 14:00:24 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 14:00:22 -0700
+In-Reply-To: <ZQP6ZqXH81V24Lj/@yzhao56-desk.sh.intel.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-12-seanjc@google.com>
+ <ZQP6ZqXH81V24Lj/@yzhao56-desk.sh.intel.com>
+Message-ID: <ZQtdZmJ3SekURjiQ@google.com>
+Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230919-strncpy-drivers-gpu-drm-i915-gem-selftests-mock_context-c-v2-1-0b5778423bd7@google.com>
-X-ClientProxiedBy: SJ0PR03CA0120.namprd03.prod.outlook.com
- (2603:10b6:a03:333::35) To MN0PR11MB6059.namprd11.prod.outlook.com
- (2603:10b6:208:377::9)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|SN7PR11MB7491:EE_
-X-MS-Office365-Filtering-Correlation-Id: ba73884b-9608-47e8-1c45-08dbba1bd50b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4aw1Jl0LWnXQhMYd5kwGtkzZYKYlD2Vfe7WHEVA5dpypHPoQUl2Ll+yBtFwZBRAtMPjCXgfIQWLm+Bd7CshmP39eCFeKxDfVK/KOXeCuxacz0HHv86QDPIAxOykE+qTZpzaxAwsrL6HEfi8cYpqh2XT1201SBUab6UrqrkGZM3PmOeEfe8Z+NH0w+fsaYp2z94osbdAEDOPh63mL645xm5Py1bHfu2g29N96uVJYaGCykDUxqF1hqRMjSUzRJwza0Q+WHZ9v1Rv1Oo6Fpk5FNj7JuybJdaTJISDZhZUkkBIjJ8wUNu7yQWP1Ktq130M+ii/jTLFeTZMKU3SG1bPOBeZ946Be94GVvFCZPzO0uHvtqb4Ys8od25dW0r+oFIxo2x+d7DnVF3zh2dSRHu5NLUPl6NIQISOZz8PrvVEYjs7fs/wutmkZvdoQOk4262WugTTVHmZbAIkM5vsuBo9LKGYN17B/QZV4gyHxDdpEBBZBdlAC8I0ZVV0sdEJwIeCL+Q9F1npW7D5DPOa5hA2BtLLRyaAbGxmammKNCodRUgO7Js/9ANX1+7IP73JxR6oFLKczbxXA9QGpYbI1Tugn63IY78nFsSwrOf6LoJLPilkKdiT0Wr25dC5c0v2Wc9vDx4eBgB/ut5Bg1XTwemtekA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(366004)(396003)(346002)(186009)(1800799009)(451199024)(6486002)(6666004)(6506007)(82960400001)(36756003)(86362001)(38100700002)(2906002)(44832011)(26005)(8936002)(2616005)(8676002)(6512007)(478600001)(83380400001)(41300700001)(5660300002)(966005)(66556008)(4326008)(316002)(54906003)(7416002)(66946007)(6916009)(66476007)(156123004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5z0jZ7gI3FWlNBieUXjc4OmvSqfin59zpZndfhNcJ3/iplE0twvWoFT34qXk?=
- =?us-ascii?Q?0SjHkgMcLOjZyYxy9lJVeGhZkGGoUoMj+GUi9OHomltKkU7Aw9lrraiTAOGZ?=
- =?us-ascii?Q?dSy5PxqAciXFaAtVyAYbAz1bXWyO6la5PCwOPEyGMIa4G0KykhzFIBSsJr0g?=
- =?us-ascii?Q?wDVvaicDwLEKwVPW6NegTEpcS0zIJqoLEECwciZrMWONkHRIaNgcmszRBTxW?=
- =?us-ascii?Q?L/+BDWsND/QJOZxiVCTNE+Y9c/h9CGgosr+H9FRey4pAaaU0W/z3kAl1N9o/?=
- =?us-ascii?Q?0M0t3x85sMvuzwMt6ZmnB5FLMlJs6WfTfpJCxkhi2Yux9AMjNElLMAHU5sUU?=
- =?us-ascii?Q?Fp7/YNdLrRvIfPN0eZyQdnKyUENHu7+K1E1i5Kus9wnpFa9iPKEFumn7txcB?=
- =?us-ascii?Q?4JmgyIQ5XrMCupDF9LzSHiOu5uG+1oKOtpBWQEvUzyG3OqK6roqkK+Se+dVR?=
- =?us-ascii?Q?FpUcy7goBv1vE7INcbJIJ08RdgNwGGoRQFZDolO1Q0wrwuSs7NG/gbdQWN4g?=
- =?us-ascii?Q?WUpmkeHqlpfJU6VxhWqAJ7Mwz7ebiyZ9+Yae1mJo9h9DtkRSuwZGGZbZieux?=
- =?us-ascii?Q?w8ftneVsJxs+/VwTsxTcV04hWG+aLVI8/EH0yRShGPpOpEuFhTt+lzbcvrtk?=
- =?us-ascii?Q?tR7yqD4Cv1/Bid2oSAwbFoC8u6J/Nj3oFOoeLiL1+h1P2Z2nGnzYdubmaoex?=
- =?us-ascii?Q?NU9te6l2SgmwhEepYOZJwpWbMif8bqUNjZPWjbUS4SOeWb8SF0nagRPcdYYb?=
- =?us-ascii?Q?T/K6cRVm60GUC/YMaIxFmkK8HKQGcez6c2XgxfVu+NX9DKAh4sK27wMHIzrZ?=
- =?us-ascii?Q?wMpGxl6hz3FrXf046lj9mmsxovcCKU4+x0dxdN2l0Ec8jFYon38RDxzSHOCs?=
- =?us-ascii?Q?SRdyZXLxfhHTImChcogaap7m/0n9R6mTQlejZCZbrZJnlt3vnbKKoWSN5UO1?=
- =?us-ascii?Q?bHb9hU3vX8hU2F45e0owdeyLu1PVsMoD5Z5YaDlnQyai1I3u7osgidywhXNw?=
- =?us-ascii?Q?X1KgRnzdhs7KSJj+zbn+xOgwxCJmj6aqQKOUQtLx3REJVIvMQ0w0tKcrbLnB?=
- =?us-ascii?Q?SPJA47rhQs4o+Q6zh5KWimzwZ7ilk8EyiphdFYBnkeqyNMijDuNlnDJFaomQ?=
- =?us-ascii?Q?kVo4o/AJpMu1tenMKpyAoxVyEW2T90iYSJNpaTl9R7pqE7PVBIcTXB5+kg2O?=
- =?us-ascii?Q?BxMcoMnDm3CXKlkNX0GBVsVqk4TVOknzSlsavIKF4tvrBSFj9WMZO6GzZBwf?=
- =?us-ascii?Q?XMZylPDveEme+ui2B8nxtlkrdrKpfPi3BupouB12waZZ1n/jk8o25fjBJ+Gn?=
- =?us-ascii?Q?SDZnYdJkeBXdpVyvuHAk0ISwtww3R3h3Rv1DcEfikrJSzDKL0GAcI9OD44VU?=
- =?us-ascii?Q?4L5Wn+QaMLgWMx7dlmuauObSOHyVsV8rY/FTQNM9eGil7oUErD0N19Hx9z+E?=
- =?us-ascii?Q?JpktTPKWQ/asMXE7aGC98NpWJRVKEEw8LW0efRnoMin53PqDCBgjWYVz4TMx?=
- =?us-ascii?Q?dlwnsqk/I6TtpHvFrK7benzz8nImQcr0yVP1AGsdLlDyCHN9MQ8b1smCQbtD?=
- =?us-ascii?Q?lCJAQCXMzGblJzwD5YqlsLryK/J5JUpK1iqH99hQX9JtjLqMWlAvxEBD7b0Q?=
- =?us-ascii?Q?Tw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba73884b-9608-47e8-1c45-08dbba1bd50b
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 20:54:50.6406
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gGl9zqIFsWnG1qNAXPonUfbdEttP+uuTy9BbKlpz2yKA+5Alo82W1H8RVrG1PmS743AOIW54lnw0w3nnskKWpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7491
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 04:45:31AM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> We should prefer more robust and less ambiguous string interfaces.
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on the destination buffer without
-> unnecessarily NUL-padding. `ctx` is zero allocated and as such strncpy's
-> NUL-padding behavior was strictly a performance hit which is now
-> resolved.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Changes in v2:
-> - drop the `... - 1` (thanks Kees)
-> - Link to v1: https://lore.kernel.org/r/20230914-strncpy-drivers-gpu-drm-i915-gem-selftests-mock_context-c-v1-1-c3f92df942e0@google.com
-> ---
+On Fri, Sep 15, 2023, Yan Zhao wrote:
+> On Wed, Sep 13, 2023 at 06:55:09PM -0700, Sean Christopherson wrote:
+> > From: Chao Peng <chao.p.peng@linux.intel.com>
+> > 
+> > In confidential computing usages, whether a page is private or shared is
+> > necessary information for KVM to perform operations like page fault
+> > handling, page zapping etc. There are other potential use cases for
+> > per-page memory attributes, e.g. to make memory read-only (or no-exec,
+> > or exec-only, etc.) without having to modify memslots.
+> > 
+> ...
+> >> +bool kvm_range_has_memory_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
+> > +				     unsigned long attrs)
+> > +{
+> > +	XA_STATE(xas, &kvm->mem_attr_array, start);
+> > +	unsigned long index;
+> > +	bool has_attrs;
+> > +	void *entry;
+> > +
+> > +	rcu_read_lock();
+> > +
+> > +	if (!attrs) {
+> > +		has_attrs = !xas_find(&xas, end);
+> > +		goto out;
+> > +	}
+> > +
+> > +	has_attrs = true;
+> > +	for (index = start; index < end; index++) {
+> > +		do {
+> > +			entry = xas_next(&xas);
+> > +		} while (xas_retry(&xas, entry));
+> > +
+> > +		if (xas.xa_index != index || xa_to_value(entry) != attrs) {
+> Should "xa_to_value(entry) != attrs" be "!(xa_to_value(entry) & attrs)" ?
 
+No, the exact comparsion is deliberate.  The intent of the API is to determine
+if the entire range already has the desired attributes, not if there is overlap
+between the two.
 
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+E.g. if/when RWX attributes are supported, the exact comparison is needed to
+handle a RW => R conversion.
 
-and pushing it right now to drm-intel-gt-next
+> > +			has_attrs = false;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +out:
+> > +	rcu_read_unlock();
+> > +	return has_attrs;
+> > +}
+> > +
+> ...
+> > +/* Set @attributes for the gfn range [@start, @end). */
+> > +static int kvm_vm_set_mem_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
+> > +				     unsigned long attributes)
+> > +{
+> > +	struct kvm_mmu_notifier_range pre_set_range = {
+> > +		.start = start,
+> > +		.end = end,
+> > +		.handler = kvm_arch_pre_set_memory_attributes,
+> > +		.on_lock = kvm_mmu_invalidate_begin,
+> > +		.flush_on_ret = true,
+> > +		.may_block = true,
+> > +	};
+> > +	struct kvm_mmu_notifier_range post_set_range = {
+> > +		.start = start,
+> > +		.end = end,
+> > +		.arg.attributes = attributes,
+> > +		.handler = kvm_arch_post_set_memory_attributes,
+> > +		.on_lock = kvm_mmu_invalidate_end,
+> > +		.may_block = true,
+> > +	};
+> > +	unsigned long i;
+> > +	void *entry;
+> > +	int r = 0;
+> > +
+> > +	entry = attributes ? xa_mk_value(attributes) : NULL;
+> Also here, do we need to get existing attributes of a GFN first ?
 
->  drivers/gpu/drm/i915/gem/selftests/mock_context.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gem/selftests/mock_context.c b/drivers/gpu/drm/i915/gem/selftests/mock_context.c
-> index 8ac6726ec16b..e199d7dbb876 100644
-> --- a/drivers/gpu/drm/i915/gem/selftests/mock_context.c
-> +++ b/drivers/gpu/drm/i915/gem/selftests/mock_context.c
-> @@ -36,7 +36,7 @@ mock_context(struct drm_i915_private *i915,
->  	if (name) {
->  		struct i915_ppgtt *ppgtt;
->  
-> -		strncpy(ctx->name, name, sizeof(ctx->name) - 1);
-> +		strscpy(ctx->name, name, sizeof(ctx->name));
->  
->  		ppgtt = mock_ppgtt(i915, name);
->  		if (!ppgtt)
-> 
-> ---
-> base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
-> change-id: 20230914-strncpy-drivers-gpu-drm-i915-gem-selftests-mock_context-c-980c8ecc9142
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
+No?  @entry is the new value that will be set for all entries.  This line doesn't
+touch the xarray in any way.  Maybe I'm just not understanding your question.
