@@ -2,105 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE707A7FAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C637F7A7FD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235861AbjITM33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
+        id S236055AbjITMar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234642AbjITM32 (ORCPT
+        with ESMTP id S235282AbjITMal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:29:28 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2124D8F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:29:22 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qiwKT-0008Hr-Qa; Wed, 20 Sep 2023 14:29:17 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qiwKS-007gUa-CY; Wed, 20 Sep 2023 14:29:16 +0200
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qiwKS-00ACFb-8L; Wed, 20 Sep 2023 14:29:16 +0200
-Date:   Wed, 20 Sep 2023 14:29:16 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Subject: Re: [PATCH] ARM: dts: stm32: omit unused pinctrl groups from dtb
- files
-Message-ID: <20230920122916.GV637806@pengutronix.de>
-References: <20230920121147.2807758-1-s.hauer@pengutronix.de>
- <33956b8b-465f-3a99-0331-7ed784c502f3@pengutronix.de>
+        Wed, 20 Sep 2023 08:30:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852D6C2;
+        Wed, 20 Sep 2023 05:30:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78689C433C9;
+        Wed, 20 Sep 2023 12:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695213035;
+        bh=WHZrBC/vCXejBhe9fn64G41JLovo0BEJWmvdteNc0Wk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WIRTz6HXDVqX9R+IM4F055cFjYqJUHAaAphvCvM/Qs3rFYyu+o45qITxyVEEQe8sD
+         OZKQGBLgPMy9ZQ/IKUNbd2jq1LQ/06FUsXC8DsLI+wujFWH/bm4rfowjDYq17j/WCK
+         V9a6LRQPh03AImZwfBpV4GCtWBYD+sb0xQ1LOvI0/IKyxSRYx9klJmbtk2qkIJL1PW
+         HokBPEoncH4Fp+Fp/h+14dDnVpiAuUDVvIuiNyohCScr9S3zuoJ7s1wYlGcfHEI8Lp
+         /vc3aX7T32ZRtncWVs9lNg9/PlkMdS8qxAYp6Ag1NTY0/p+HvsS2fDIFql73KoyeP8
+         25jWhQpdbIVoQ==
+Date:   Wed, 20 Sep 2023 14:30:15 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Bruno Haible <bruno@clisp.org>,
+        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bo b Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <l@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+Message-ID: <20230920-endspiel-grenzenlos-a48ae1ebab74@brauner>
+References: <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+ <4511209.uG2h0Jr0uP@nimes>
+ <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
+ <20230920-leerung-krokodil-52ec6cb44707@brauner>
+ <20230920101731.ym6pahcvkl57guto@quack3>
+ <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
+ <20230920-raser-teehaus-029cafd5a6e4@brauner>
+ <35c28758a9cc28a276a6b4b4ae8a420a1444e711.camel@kernel.org>
+ <20230920-kahlkopf-tonlage-ab6ca571465e@brauner>
+ <08b4e3275bad93ed99ea2892bd1950ff401ab912.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <33956b8b-465f-3a99-0331-7ed784c502f3@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <08b4e3275bad93ed99ea2892bd1950ff401ab912.camel@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 02:15:24PM +0200, Ahmad Fatoum wrote:
-> Hello Sascha,
+> I don't, actually. I'm just mentioning that it's possible if we find the
+> mount option to be unpalatable.
+
+Ok.
+
 > 
-> On 20.09.23 14:11, Sascha Hauer wrote:
-> > stm32mp15-pinctrl.dtsi contains nearly all pinctrl groups collected from
-> > all boards. Most of them end up unused by a board and only waste binary
-> > space. Add /omit-if-no-ref/ to the groups to scrub the unused groups
-> > from the dtbs.
+> > @Jan, what do you think?
 > > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 228 ++++++++++++++++++++
-> >  1 file changed, 228 insertions(+)
+> > > My plan was to take a stab at doing this for a later kernel release.
 > > 
-> > diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-> > index e1df345801dc2..778a83471df4c 100644
-> > --- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-> > +++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-> > @@ -7,6 +7,7 @@
-> >  
-> >  &pinctrl {
-> >  	adc1_ain_pins_a: adc1-ain-0 {
-> > +		/omit-if-no-ref/
+> > Ok.
 > 
-> I think the correct place is above the node name that would be referenced,
-> i.e. before adc1_ain_pins_a: adc1-ain-0 here.
+> If it works out, then we may be able to eventually remove the mount
+> option, but that is a separate project altogether.
 
-Argh! You are right. I'll send a v2 once my fingers are no longer
-bleeding.
-
-Sascha
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+It would just become a nop for anyone setting it which is fine by me.
