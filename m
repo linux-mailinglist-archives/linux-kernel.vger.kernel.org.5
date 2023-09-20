@@ -2,192 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 784C37A83DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0007A83DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236182AbjITNuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        id S236393AbjITNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236231AbjITNuB (ORCPT
+        with ESMTP id S234936AbjITNuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:50:01 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0915CA
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:49:54 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-565e54cb93aso4031068a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695217794; x=1695822594; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lyKrFqZ6pe873R1m/St9homGtI5DVB4Bs4vDfySSmyA=;
-        b=ov3W+Y1h5haJhja/3rDUZDGJozRUmn71LF7tPrGTrzStr9/tMJHuqigqWG3EO3ygvo
-         czFTEHZ6DPHB0hcXysYSBP1hULo6L4ovpB/K0mAJruNhTSyltm0ShmiiDL+MKPTFqJ/Q
-         +Ox0xcSgWAKc5Zk5K9yrkhsn1Ghkl8TTZFkSCoVgIxgwCFDwfjlk7kIHIWgRntTLBYvH
-         bhP4lduvHqoCeJsWdJ7t9bI+zPmrcWu9its1jJXlqNGHDXm6BBY4OJhW3aF/sl3/1uXp
-         sKS6Z7ZuzejaKlgn65GYAqpLWmkodak7o65pQDxAMXF5TH+ewzrtaXaGx34Xz+uF1jHS
-         VrWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695217794; x=1695822594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lyKrFqZ6pe873R1m/St9homGtI5DVB4Bs4vDfySSmyA=;
-        b=tFb6tTVXjJW7amOGaBYHgxdYm0hqzOhdTL7h/+Srb+frLCPvXHpm7zKLrC/db6IVkY
-         P7cZeV6bMbL/GzQcwRgm0qu75vIkR671LeDEjix0pW9lmIi96FiHnk8vddbdXW0B8y3i
-         G6eUHRmcDt9C52VVon6qq0KzCnCLsR/sq5OJiMMPVi2YcyFrFYuIzWgkxnTGNtioQKaZ
-         F4PflFmKQpiuO305tXxwYdfMBiDKAIPvK5i/gUGAIYmhjMw8RJfMWqRUFTZ66wTtnM6F
-         sFJCcX0A88Y2trcHzgBxtFwYuxjBUHUC+IPyvBdyOIkt736DElhXdNSl1Xu5XFOpzhzN
-         OPHg==
-X-Gm-Message-State: AOJu0YyzzD6/WCTEoVwmZAF+W1tzLW78LnL3VBtWVRfDgEGZR+ZMHII+
-        wT6IDDkixzlO0S7Gf7yX0DxJmlg4IPtIFgoLt1nW5w==
-X-Google-Smtp-Source: AGHT+IGgvZvXWV6O+m42o/WLo0Z7TC1OAA74vrGK11yPNbc2oxi+bWkJM6MYqS+QjE0clefOThdvmutuQ8u628EY1RM=
-X-Received: by 2002:a17:90a:7c01:b0:274:b4ce:7049 with SMTP id
- v1-20020a17090a7c0100b00274b4ce7049mr2566829pjf.34.1695217793948; Wed, 20 Sep
- 2023 06:49:53 -0700 (PDT)
+        Wed, 20 Sep 2023 09:50:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34E6D6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:50:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05B44C433C8;
+        Wed, 20 Sep 2023 13:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695217804;
+        bh=6LBg8rWGE6wunIHc9/YosolnqJC3Zt1oTMggO9I04Dk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YMiYqqgpYqYGc1Jjs6rEQMdzmL7iB+V+aupac4b8lBBC4V0gMI4RuAtXJd0gyChfn
+         X+8XLj+ZK0aDfrB80REhuwgjbCfQqezAm9BK2G+zNMdsQSVS0JZpGcyeOhaAk9W5zW
+         Djy507/y969w7S76BcPubuwqCcK06//Amj/7wsKrNdK2wFIqu4dE/vUdwzQS4xtlUO
+         Ea6EPNPyDkFRISXHgTdhoizH2SLeJKIdi7L4QEBW6kWvkv7zgT9h4LByjcaL0FYH15
+         KqgwHPA2DcF5t4SI5sOmKyEfluZkr1/ialnre7ozIwdsdmSY+CXl7ftpE+AEPPFf/W
+         5qJHjRSwBFW2w==
+Date:   Wed, 20 Sep 2023 15:50:01 +0200
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] soundwire: bus: Make IRQ handling conditionally built
+Message-ID: <ZQr4iYRmDppFJS0w@matsya>
+References: <20230918161026.472405-1-ckeepax@opensource.cirrus.com>
+ <ZQqZqalGdqy86qdD@matsya>
+ <20230920085133.GE103419@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
-References: <20230918180646.1398384-1-apatel@ventanamicro.com>
- <20230918180646.1398384-5-apatel@ventanamicro.com> <20230920-d524c40b616536d0ad8213c3@orel>
-In-Reply-To: <20230920-d524c40b616536d0ad8213c3@orel>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Wed, 20 Sep 2023 19:19:42 +0530
-Message-ID: <CAK9=C2V-9s1ErSCLcaPwNTrGAWTP69vVmAV0kSsuRn841aofhg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] KVM: riscv: selftests: Selectively filter-out AIA registers
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920085133.GE103419@ediswmail.ad.cirrus.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 10:54=E2=80=AFAM Andrew Jones <ajones@ventanamicro.=
-com> wrote:
->
-> On Mon, Sep 18, 2023 at 11:36:46PM +0530, Anup Patel wrote:
-> > Currently the AIA ONE_REG registers are reported by get-reg-list
-> > as new registers for various vcpu_reg_list configs whenever Ssaia
-> > is available on the host because Ssaia extension can only be
-> > disabled by Smstateen extension which is not always available.
-> >
-> > To tackle this, we should filter-out AIA ONE_REG registers only
-> > when Ssaia can't be disabled for a VCPU.
-> >
-> > Fixes: 477069398ed6 ("KVM: riscv: selftests: Add get-reg-list test")
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  .../selftests/kvm/riscv/get-reg-list.c        | 23 +++++++++++++++++--
-> >  1 file changed, 21 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/t=
-esting/selftests/kvm/riscv/get-reg-list.c
-> > index 76c0ad11e423..85907c86b835 100644
-> > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > @@ -12,6 +12,8 @@
-> >
-> >  #define REG_MASK (KVM_REG_ARCH_MASK | KVM_REG_SIZE_MASK)
-> >
-> > +static bool isa_ext_cant_disable[KVM_RISCV_ISA_EXT_MAX];
-> > +
-> >  bool filter_reg(__u64 reg)
-> >  {
-> >       switch (reg & ~REG_MASK) {
-> > @@ -48,6 +50,15 @@ bool filter_reg(__u64 reg)
-> >       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
-> >       case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
-> >               return true;
-> > +     /* AIA registers are always available when Ssaia can't be disable=
-d */
-> > +     case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(siselect):
-> > +     case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(iprio1):
-> > +     case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(iprio2):
-> > +     case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(sieh):
-> > +     case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(siph):
-> > +     case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(iprio1h):
-> > +     case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CS=
-R_AIA_REG(iprio2h):
-> > +             return isa_ext_cant_disable[KVM_RISCV_ISA_EXT_SSAIA] ? tr=
-ue : false;
->
-> No need for the '? true : false'
+On 20-09-23, 08:51, Charles Keepax wrote:
+> On Wed, Sep 20, 2023 at 09:05:13AM +0200, Vinod Koul wrote:
+> > On 18-09-23, 17:10, Charles Keepax wrote:
+> > > SoundWire has provisions for a simple callback for the IRQ handling so
+> > > has no hard dependency on IRQ_DOMAIN, but the recent addition of IRQ
+> > > handling was causing builds without IRQ_DOMAIN to fail. Resolve this by
+> > > moving the IRQ handling into its own file and only add it to the build
+> > > when IRQ_DOMAIN is included in the kernel.
+> > > 
+> > > Fixes: 12a95123bfe1 ("soundwire: bus: Allow SoundWire peripherals to register IRQ handlers")
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Closes: https://lore.kernel.org/oe-kbuild-all/202309150522.MoKeF4jx-lkp@intel.com/
+> > > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> > > ---
+> > >  drivers/soundwire/Makefile   |  4 +++
+> > >  drivers/soundwire/bus.c      | 31 +++----------------
+> > >  drivers/soundwire/bus_type.c | 11 +++----
+> > >  drivers/soundwire/irq.c      | 59 ++++++++++++++++++++++++++++++++++++
+> > >  drivers/soundwire/irq.h      | 43 ++++++++++++++++++++++++++
+> > >  5 files changed, 115 insertions(+), 33 deletions(-)
+> > >  create mode 100644 drivers/soundwire/irq.c
+> > >  create mode 100644 drivers/soundwire/irq.h
+> > > 
+> > > diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+> > > index c3d3ab3262d3a..657f5888a77b0 100644
+> > > --- a/drivers/soundwire/Makefile
+> > > +++ b/drivers/soundwire/Makefile
+> > > @@ -15,6 +15,10 @@ ifdef CONFIG_DEBUG_FS
+> > >  soundwire-bus-y += debugfs.o
+> > >  endif
+> > >  
+> > > +ifdef CONFIG_IRQ_DOMAIN
+> > > +soundwire-bus-y += irq.o
+> > > +endif
+> > 
+> > Any reason why we cant use depends for this?
+> > 
+> 
+> No reason we can't, but my thinking was really that SoundWire doesn't
+> really have a dependency on IRQ_DOMAIN, as you can use the original
+> callback mechanism. It seemed a shame to force it as a dependency,
+> when the whole subsystem can function happily without it.
+> 
+> That said, I am happy to switch to a simple dependency if you prefer?
+> It would certainly be a much simpler change.
 
-Okay, I will update.
+That is very valid point, not every user needs it... I guess lets go
+with this change now, can you fix the comment style and we can merge
+this
 
->
-> >       default:
-> >               break;
-> >       }
-> > @@ -71,14 +82,22 @@ static inline bool vcpu_has_ext(struct kvm_vcpu *vc=
-pu, int ext)
-> >
-> >  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
-> >  {
-> > +     int rc;
-> >       struct vcpu_reg_sublist *s;
-> > +     unsigned long isa_ext_state[KVM_RISCV_ISA_EXT_MAX] =3D { 0 };
->
-> nit: I think we prefer reverse xmas tree in kselftests, but whatever.
-
-Okay, I will update.
-
->
-> > +
-> > +     for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
-> > +             __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(i), &isa_ext_state=
-[i]);
-> >
-> >       /*
-> >        * Disable all extensions which were enabled by default
-> >        * if they were available in the risc-v host.
-> >        */
-> > -     for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++)
-> > -             __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
-> > +     for (int i =3D 0; i < KVM_RISCV_ISA_EXT_MAX; i++) {
-> > +             rc =3D __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(i), 0);
-> > +             if (rc && isa_ext_state[i])
->
-> How helpful is it to check that isa_ext_state[i] isn't zero? The value of
-> the register could be zero, right? Shouldn't we instead capture the retur=
-n
-> values from __vcpu_get_reg and if the return value is zero for a get,
-> but nonzero for a set, then we know we have it, but can't disable it.
-
-The intent is to find-out the ISA_EXT registers which are enabled but
-we are not able to disable it.
-
->
-> > +                     isa_ext_cant_disable[i] =3D true;
-> > +     }
-> >
-> >       for_each_sublist(c, s) {
-> >               if (!s->feature)
-> > --
-> > 2.34.1
-> >
->
-> Thanks,
-> drew
-
-Regards,
-Anup
+-- 
+~Vinod
