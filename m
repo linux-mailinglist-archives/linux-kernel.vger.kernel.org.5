@@ -2,164 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19D47A8912
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1447A8914
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236733AbjITP6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        id S236793AbjITP6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235018AbjITP6C (ORCPT
+        with ESMTP id S235556AbjITP6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:58:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B8EB9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:57:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695225477; x=1726761477;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=U06UEjfbDpwUyjwQ4zD2dI4F8pWZSId0Txotlq8VNgs=;
-  b=R0FJiiHoKI3hqEcA0oTScePZYmIXutzdhX+2Bf31r2bP1boKviYoTJ6K
-   H+i56KulRNw95pLkm4hLnCcQ/nIuSOUBvoAGuQqmHSzhyqwBMNkAZHTyE
-   1XkLh8eVqBtmdhi5VvHxDmko43nP8cwv//TvgTpNij5n3FQ9h7aHTjX7T
-   gjeJ0uVyaNBGL6TK6eTc5/GUg3+wtXO3XWjaDsLZyWnCaPMW3Ab4dJ0bn
-   eCz7jo3H+0WQZXbbJNq2mmwM36iemo+4mkIlXXUhBJXmXWjMWuRwsJReY
-   /GkWHk3r3wXJAyU0Ftj0kzuYS8qg+r/BrW/lzYgxnHkyqFPh5qP2kXXou
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="466571405"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="466571405"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 08:57:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="816960208"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="816960208"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Sep 2023 08:57:54 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qizaK-0008uG-0v;
-        Wed, 20 Sep 2023 15:57:52 +0000
-Date:   Wed, 20 Sep 2023 23:57:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
+        Wed, 20 Sep 2023 11:58:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCC8C6;
+        Wed, 20 Sep 2023 08:57:57 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 17:57:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695225475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DpJgK3AoeiL0qj/8hSRWzm5J6WB7MCZiwbQ65O5g5hE=;
+        b=HoVeYs+Fzkh4C3WRSaDVyKTi7I2akLKNQqMscfyApQI2XrdYmjd8ckESHwBYByCH/J0ejO
+        LJcDH5QZl08p3I5rBaO9y4WS6XfaOrBETJzWcWupGyDH3vTse6b9oXJQGBXQ6FSnG7kjz8
+        BufhIGn5JvWFFzfLdbdc69Tn1qUAOY5E9UXh9ejZckIH+vp8MbD2PvbrkTEX+LyLZvoDA/
+        4vUEP1cP8ldVwfltw4l8ny9Dq7Qxfs9j/8AOFHz0FYbqDA+Tf3YVBTp/nN6zX6+tCrDTXN
+        xhEXFXXfOydt4+MsPosxo9KSnwGyfEq6P6RqbtSa2cEAxTHeBcd+1GaAS4yQXQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695225475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DpJgK3AoeiL0qj/8hSRWzm5J6WB7MCZiwbQ65O5g5hE=;
+        b=AgatWMwCIEwvEz7hCBga346W0evtLm84oXwufeiosrpS5dp02LijPUYp/zDPRKriM4tgfd
+        xcEa+JV7TLddAyCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH] printk/nbcon: Add assert that CPU migration is disabled
- when calling nbcon_context_try_acquire()
-Message-ID: <202309202313.vdq31WtT-lkp@intel.com>
-References: <20230920125136.15504-1-pmladek@suse.com>
+        Wander Lairson Costa <wander@redhat.com>
+Subject: Re: [RFC PATCH net-next 1/2] net: Use SMP threads for backlog NAPI.
+Message-ID: <20230920155754.KzYGXMWh@linutronix.de>
+References: <20230814093528.117342-1-bigeasy@linutronix.de>
+ <20230814093528.117342-2-bigeasy@linutronix.de>
+ <0a842574fd0acc113ef925c48d2ad9e67aa0e101.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230920125136.15504-1-pmladek@suse.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <0a842574fd0acc113ef925c48d2ad9e67aa0e101.camel@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
+On 2023-08-23 15:35:41 [+0200], Paolo Abeni wrote:
+> On Mon, 2023-08-14 at 11:35 +0200, Sebastian Andrzej Siewior wrote:
+> > @@ -4781,7 +4733,7 @@ static int enqueue_to_backlog(struct sk_buff *skb, int cpu,
+> >  		 * We can use non atomic operation since we own the queue lock
+> >  		 */
+> >  		if (!__test_and_set_bit(NAPI_STATE_SCHED, &sd->backlog.state))
+> > -			napi_schedule_rps(sd);
+> > +			__napi_schedule_irqoff(&sd->backlog);
+> >  		goto enqueue;
+> >  	}
+> >  	reason = SKB_DROP_REASON_CPU_BACKLOG;
+> 
+> I *think* that the above could be quite dangerous when cpu ==
+> smp_processor_id() - that is, with plain veth usage.
+> 
+> Currently, each packet runs into the rx path just after
+> enqueue_to_backlog()/tx completes.
+> 
+> With this patch there will be a burst effect, where the backlog thread
+> will run after a few (several) packets will be enqueued, when the
+> process scheduler will decide - note that the current CPU is already
+> hosting a running process, the tx thread.
+> 
+> The above can cause packet drops (due to limited buffering) or very
+> high latency (due to long burst), even in non overload situation, quite
+> hard to debug.
+> 
+> I think the above needs to be an opt-in, but I guess that even RT
+> deployments doing some packet forwarding will not be happy with this
+> on.
 
-kernel test robot noticed the following build errors:
+I've been looking at this again and have been thinking what you said
+here. I think part of the problem is that we lack a policy/ mechanism
+when a DoS is happening and what to do.
 
-[auto build test ERROR on next-20230920]
-[cannot apply to linus/master v6.6-rc2 v6.6-rc1 v6.5 v6.6-rc2]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Before commit d15121be74856 ("Revert "softirq: Let ksoftirqd do its
+job"") when a lot of network packets are processed then processing is
+moved to ksoftirqd and continues based on how the scheduler schedules
+the SCHED_OTHER ksoftirqd task. This avoids lock-ups of the system and
+it can do something else in between. Any interrupt will not continue the
+outstanding softirq backlog but wait for ksoftirqd. So it basically
+avoids the networking overload. It throttles the throughput if needed.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Petr-Mladek/printk-nbcon-Add-assert-that-CPU-migration-is-disabled-when-calling-nbcon_context_try_acquire/20230920-205406
-base:   next-20230920
-patch link:    https://lore.kernel.org/r/20230920125136.15504-1-pmladek%40suse.com
-patch subject: [PATCH] printk/nbcon: Add assert that CPU migration is disabled when calling nbcon_context_try_acquire()
-config: powerpc-allnoconfig (https://download.01.org/0day-ci/archive/20230920/202309202313.vdq31WtT-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309202313.vdq31WtT-lkp@intel.com/reproduce)
+This isn't the case after that commit. Now, the CPU can be stuck with
+processing networking packets if the packets come in fast enough. Even
+if ksoftirqd is woken up, the next interrupt (say the timer) will
+continue with at least one round.
+By using NAPI-threads it is possible to give the control back to the
+scheduler which can throttle the NAPI processing in favour of other
+threads that ask for CPU. As you pointed out, waking the thread does not
+guarantee that it will immediately do the NAPI work. It can be delayed
+based on current load on the system.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309202313.vdq31WtT-lkp@intel.com/
+This could be influenced by assigning the NAPI-thread a SCHED_FIFO
+priority. Based on the priority it could be ensured that the thread
+starts right away or "later" if something else is more important.
+However, this opens the DoS window again: The scheduler will put the
+NAPI thread on CPU as long as it asks for it with no throttling.
 
-All errors (new ones prefixed by >>):
+If we could somehow define a DoS condition once we are overwhelmed with
+packets, then we could act on it and throttle it. This in turn would
+allow a SCHED_FIFO priority without the fear of a lockup if the system
+is flooded with packets.
 
-   kernel/printk/nbcon.c: In function 'nbcon_context_try_acquire':
->> kernel/printk/nbcon.c:595:9: error: implicit declaration of function 'nbcon_assert_cpu_migration_disabled'; did you mean 'nbcon_assert_cpu_migration'? [-Werror=implicit-function-declaration]
-     595 |         nbcon_assert_cpu_migration_disabled();
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |         nbcon_assert_cpu_migration
-   cc1: some warnings being treated as errors
+> Cheers,
+> 
+> Paolo
 
-
-vim +595 kernel/printk/nbcon.c
-
-   575	
-   576	/**
-   577	 * nbcon_context_try_acquire - Try to acquire nbcon console
-   578	 * @ctxt:	The context of the caller
-   579	 *
-   580	 * Return:	True if the console was acquired. False otherwise.
-   581	 *
-   582	 * If the caller allowed an unsafe hostile takeover, on success the
-   583	 * caller should check the current console state to see if it is
-   584	 * in an unsafe state. Otherwise, on success the caller may assume
-   585	 * the console is not in an unsafe state.
-   586	 */
-   587	__maybe_unused
-   588	static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
-   589	{
-   590		unsigned int cpu = smp_processor_id();
-   591		struct console *con = ctxt->console;
-   592		struct nbcon_state cur;
-   593		int err;
-   594	
- > 595		nbcon_assert_cpu_migration_disabled();
-   596	
-   597		nbcon_state_read(con, &cur);
-   598	try_again:
-   599		err = nbcon_context_try_acquire_direct(ctxt, &cur);
-   600		if (err != -EBUSY)
-   601			goto out;
-   602	
-   603		err = nbcon_context_try_acquire_handover(ctxt, &cur);
-   604		if (err == -EAGAIN)
-   605			goto try_again;
-   606		if (err != -EBUSY)
-   607			goto out;
-   608	
-   609		err = nbcon_context_try_acquire_hostile(ctxt, &cur);
-   610	out:
-   611		if (err)
-   612			return false;
-   613	
-   614		/* Acquire succeeded. */
-   615	
-   616		/* Assign the appropriate buffer for this context. */
-   617		if (atomic_read(&panic_cpu) == cpu)
-   618			ctxt->pbufs = &panic_nbcon_pbufs;
-   619		else
-   620			ctxt->pbufs = con->pbufs;
-   621	
-   622		/* Set the record sequence for this context to print. */
-   623		ctxt->seq = nbcon_seq_read(ctxt->console);
-   624	
-   625		return true;
-   626	}
-   627	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sebastian
