@@ -2,370 +2,1343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF97A7963
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13207A7966
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbjITKfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        id S234432AbjITKfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233376AbjITKfc (ORCPT
+        with ESMTP id S234384AbjITKfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:35:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBE3AD;
-        Wed, 20 Sep 2023 03:35:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04647C433C7;
-        Wed, 20 Sep 2023 10:35:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695206125;
-        bh=K2lTJnCgosym5o0oHZC21PlpMcbDPAGRzGpQMsH+RNE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=DQraYbgnbA8u42xIprJlGq919tAZP4oSOdbkdBTrPg4E020AuJU3vm+IxDgIAtub4
-         0ualIwtp20Irlnr5UkTgSXB/6dLY+vOyf0EwAPBcmnJdBqIsbV/q8wd+oKJBDukCmC
-         /GGkmmgnqoNA7fAJABwddnMG0NDO1gl1EM1jlFcVcGauNmnScyO0k32UToSskpKj7Z
-         IDirVhj/0pNpBeARBmUePperJeyjvV4b3EGol9t/AUaUdbdstRRauxjUUZvhy5PZAK
-         37rI5uERCd6DxALjpO+Wq3SS9dt0mP5kZEJ0WiE3vmZJqNiMvhEhUe+Cvf5i6voNam
-         ksh/5ZQ5h3mdg==
-Message-ID: <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>
-Cc:     Bruno Haible <bruno@clisp.org>,
-        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bo b Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <l@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Wed, 20 Sep 2023 06:35:18 -0400
-In-Reply-To: <20230920101731.ym6pahcvkl57guto@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-         <20230919110457.7fnmzo4nqsi43yqq@quack3>
-         <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
-         <4511209.uG2h0Jr0uP@nimes>
-         <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
-         <20230920-leerung-krokodil-52ec6cb44707@brauner>
-         <20230920101731.ym6pahcvkl57guto@quack3>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 20 Sep 2023 06:35:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA694;
+        Wed, 20 Sep 2023 03:35:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695206130; x=1726742130;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=5f4HCxvISHoyV+sJE0rk4befjacmuYLJiadaWMEz5m0=;
+  b=Hf9iZrPYAWTR0YnQxHL+N+azdHRKy+yxNEMf7xOPdmSMkO9qk+XNPwz+
+   MpAwotfYtar8Ia0PVtPL1zxksP6mSkBXO4Hjf1syo5OzRrTl5jd0430bA
+   2iLtCE3PEGQoAhulwpLVcafQ0RcgDtqSsAJ+kI3YbnNgXZabWAAMaI+J3
+   MeSyd+fmQA9apkKuVelUma+v90lz/kFtVHga9AaurCtGC5kNON9wqj7ft
+   u3I8h5s53cKVyxGZpif4MpldQX/WLl56+aZP8X++vw9oBImT66q/h6rr8
+   rj8NO1bP77ccXOY83IXG8sxV6XPUsrpwAcZIt8zG19O4cgt+DanVq+jM1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="411130124"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="411130124"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 03:35:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="723223149"
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="scan'208";a="723223149"
+Received: from swegrzyn-mobl.ger.corp.intel.com ([10.252.52.91])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 03:35:24 -0700
+Date:   Wed, 20 Sep 2023 13:35:18 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Henry Shi <henryshi2018@gmail.com>
+cc:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, Hans de Goede <hdegoede@redhat.com>,
+        markgross@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
+Subject: Re: [PATCH v7] platform/x86: Add Silicom Platform Driver
+In-Reply-To: <20230919211650.25325-1-henryshi2018@gmail.com>
+Message-ID: <81161eda-dc57-4732-9fa6-f9c82ce86335@linux.intel.com>
+References: <20230919211650.25325-1-henryshi2018@gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-644801291-1695206128=:1961"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-20 at 12:17 +0200, Jan Kara wrote:
-> On Wed 20-09-23 10:41:30, Christian Brauner wrote:
-> > > > f1 was last written to *after* f2 was last written to. If the times=
-tamp of f1
-> > > > is then lower than the timestamp of f2, timestamps are fundamentall=
-y broken.
-> > > >=20
-> > > > Many things in user-space depend on timestamps, such as build syste=
-m
-> > > > centered around 'make', but also 'find ... -newer ...'.
-> > > >=20
-> > >=20
-> > >=20
-> > > What does breakage with make look like in this situation? The "fuzz"
-> > > here is going to be on the order of a jiffy. The typical case for mak=
-e
-> > > timestamp comparisons is comparing source files vs. a build target. I=
-f
-> > > those are being written nearly simultaneously, then that could be an
-> > > issue, but is that a typical behavior? It seems like it would be hard=
- to
-> > > rely on that anyway, esp. given filesystems like NFS that can do lazy
-> > > writeback.
-> > >=20
-> > > One of the operating principles with this series is that timestamps c=
-an
-> > > be of varying granularity between different files. Note that Linux
-> > > already violates this assumption when you're working across filesyste=
-ms
-> > > of different types.
-> > >=20
-> > > As to potential fixes if this is a real problem:
-> > >=20
-> > > I don't really want to put this behind a mount or mkfs option (a'la
-> > > relatime, etc.), but that is one possibility.
-> > >=20
-> > > I wonder if it would be feasible to just advance the coarse-grained
-> > > current_time whenever we end up updating a ctime with a fine-grained
-> > > timestamp? It might produce some inode write amplification. Files tha=
-t
-> >=20
-> > Less than ideal imho.
-> >=20
-> > If this risks breaking existing workloads by enabling it unconditionall=
-y
-> > and there isn't a clear way to detect and handle these situations
-> > without risk of regression then we should move this behind a mount
-> > option.
-> >=20
-> > So how about the following:
-> >=20
-> > From cb14add421967f6e374eb77c36cc4a0526b10d17 Mon Sep 17 00:00:00 2001
-> > From: Christian Brauner <brauner@kernel.org>
-> > Date: Wed, 20 Sep 2023 10:00:08 +0200
-> > Subject: [PATCH] vfs: move multi-grain timestamps behind a mount option
-> >=20
-> > While we initially thought we can do this unconditionally it turns out
-> > that this might break existing workloads that rely on timestamps in ver=
-y
-> > specific ways and we always knew this was a possibility. Move
-> > multi-grain timestamps behind a vfs mount option.
-> >=20
-> > Signed-off-by: Christian Brauner <brauner@kernel.org>
->=20
-> Surely this is a safe choice as it moves the responsibility to the sysadm=
-in
-> and the cases where finegrained timestamps are required. But I kind of
-> wonder how is the sysadmin going to decide whether mgtime is safe for his
-> system or not? Because the possible breakage needn't be obvious at the
-> first sight...
->=20
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-That's the main reason I really didn't want to go with a mount option.
-Documenting that may be difficult. While there is some pessimism around
-it, I may still take a stab at just advancing the coarse clock whenever
-we fetch a fine-grained timestamp. It'd be nice to remove this option in
-the future if that turns out to be feasible.
+--8323329-644801291-1695206128=:1961
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-> If I were a sysadmin, I'd rather opt for something like
-> finegrained timestamps + lazytime (if I needed the finegrained timestamps
-> functionality). That should avoid the IO overhead of finegrained timestam=
-ps
-> as well and I'd know I can have problems with timestamps only after a
-> system crash.
+On Tue, 19 Sep 2023, Henry Shi wrote:
 
-> I've just got another idea how we could solve the problem: Couldn't we
-> always just report coarsegrained timestamp to userspace and provide acces=
-s
-> to finegrained value only to NFS which should know what it's doing?
->=20
+> The Silicom platform (silicom-platform) Linux driver for Swisscom
+> Business Box (Swisscom BB) as well as Cordoba family products is a 
+> software solution designed to facilitate the efficient management
+> and control of devices through the integration of various Linux
+> frameworks. This platform driver provides seamless support for
+> device management via the Linux LED framework, GPIO framework,
+> Hardware Monitoring (HWMON), and device attributes. The Silicom
+> platform driver's compatibility with these Linux frameworks allows
+> applications to access and control Cordoba family devices using
+> existing software that is compatible with these frameworks. This
+> compatibility simplifies the development process, reduces
+> dependencies on proprietary solutions, and promotes
+> interoperability with other Linux-based systems and software.
+> 
+> Changes from v1 to v2:
+> ===========================
+> 
+> Suggested by Hans de Goede <hdegoede@redhat.com>
+> .Use git send-email to submit patch.
+> .patch contents should be in message body.
+> .Kconfig bit for the driver should be in drivers/platform/x86/Kconfig.
+> 
+> changes from patch v2 to v3
+> ===========================
+> 
+> changes suggested by Guenter Roeck <groeck7@gmail.com>
+> .Removed unnecessary include file linux/thermal.h.
+> .Removed EXPORT_SYMBOL for mutex lock/unlock function.
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> .Remove extra new line in code on multiple position.
+> .Use table instead of space in code.
+> .Uss Linux defined bit operation MACRO define.
+> .Removed local variable in rpm_get().
+> .Corrected typo in comments.
+> .Corrected incorrect indentation.
+> .Removed unnecessary comments in silicom_mc_leds_register().
+> .Rewrite efuse_status_show() to used defined variable and removed 
+> uncessary local variables.
+> .Rewrite uc_version_show() to used defined variable and removed 
+> uncessary local variables.
+> .Removed unused MACRO define: #define CHANNEL_TO_BIT(chan) ((chan) & 0x07).
+> .Rewrite powercycle_uc() to used defined variable and removed uncessary 
+> local variables.
+> .use GENMASK() and use FIELD_GET() instead of bit shift.
+> .Added define for constant 0x28 used in  efuse_status_show().
+> .Added define for constant 0x0 used in  uc_version_show().
+> .Added define for constant 0x0 used in  powercycle_uc().
+> .Rearrange functions to avoid uncessary pre-define.
+> .Rewrite rpm_get() to used defined variable and removed uncessary 
+> local variables.
+> .Rewrite temp_get() to used defined variable and removed uncessary 
+> local variables.
+> .Use FIELD_GET instead of bit shift in temp_get().
+> .Used #define for constant variable 0/1.
+> 
+> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+> .use "if (!led->subled_info)" instead of
+> "if (IS_ERR_OR_NULL(led->subled_info))
+> "in silicom_mc_leds_register
+> 
+> changes from patch v3 to v4
+> ===========================
+> 
+> changes suggested by Guenter Roeck <groeck7@gmail.com>
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+> .Rewrite silicom_mec_led/gpip_set/get() functions to use two newly created
+> silicom_mec_port_get()/silicom_mec_port_set() which have common code.
+> .Remove duplicate code in silicom_mec_port_get()
+> .Rewrite uc_version_show() to use Linux bit operation MACRO, and add
+> logic to check un-supported register value.
+> .Added "#define MEC_EFUSE_LSB_ADDR 0x28" and "#define
+> MEC_POWER_CYCLE_ADDR 0x24"
+> .Added "#define MEC_VERSION_MAJOR GENMASK(15, 14)" and "#define
+> MEC_VERSION_MINOR GENMASK(13, 8)".
+> 
+> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+> .Used a local variable to store "sizeof(struct mc_subled)" in function
+> silicom_mc_leds_register().
+> 
+> change from patch v4 to v5
+> ===========================================
+> 
+> changes suggested by Guenter Roeck <groeck7@gmail.com>:
+> .Corrected return value in temp_get() to return 1/10000th degree.
+> .Removed local variable struct silicom_fan_control_data *ctl in
+> silicom_fan_control_read_fan(),
+> removed storing rpm value to ctl variable.
+> .Removed local variable struct silicom_fan_control_data *ctl in 
+> silicom_fan_control_read_temp(),
+> .removed storing rpm value to ctl variable.
+> .Changed return string in silicom_fan_control_read_labels() to 
+> specific string for Silicom platform driver.
+> .Removed silicom_fan_control_data structure.
+> .Removed static variable mec_io_base and mec_io_len, and added
+> "#define MEC_IO_BASE 0x0800 and #define MEC_IO_LEN 0x8".
+> .Removed ".write = NULL" in silicom_fan_control_hwmon_ops
+> structure defination.
+> .Removed unnecessary function silicom_fan_control_write().
+> .Removed unnecessary check for silicom_led_info in function
+> silicom_platform_probe.
+> .Removed unnecessary local variable "silicom_fan_control_data *ctl"
+> in silicom_platform_probe().
+> .Clean out driver initialization error handling in
+> silicom_platform_init();
+> .Add patch version and changelog for patch submission.
+> 
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+> .Rename "#define MEC_DATA(offset) to "#define MEC_DATA_OFFSET(offset).
+> .Use constant defined in include/linux/units.h instead of a literal.
+> .return directly instead of go to err condition when
+> platform_device_register_simple() failed.
+> .Remove unnecessary check for silicom_led_info and silicom_gpiochip.
+> .Use a local variable to how multiple use of array size.
+> .Align the arguments to the same column in
+> silicom_mec_led_mc_brightness_set.
+> .Add patch version and changelog that shows version to version changes
+> for patch submission.
+> 
+> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+> .Use "sizeof(*led)" instead of "sizeof(struct led_classdev_mc)"
+> .Use "if (!led)" instead of "if (IS_ERR_OR_NULL(led))" 
+> .Removed unnecessary error message:
+> "dev_err(dev, "Failed to alloc led_classdev_mc[%d]:
+> %ld\n", i, PTR_ERR(led)).
+> 
+> change from patch vv5 to v6
+> ===========================================
+> 
+> changes suggested by Guenter Roeck <groeck7@gmail.com>:
+> .Removed checkpath warnings. 
+> .Resoved dependencies between CONFIG_HWMON and CONFIG_SILICOM_PLATFORM.
+> 
+> change from patch v6 to v7 (current patch)
+> ===========================================
+> 
+> changes suggested by Hans de Goede <hdegoede@redhat.com>:
+> .Usa a proper subsystem prefix for this patch subject:
+> Subject: platform/x86: Add Silicom Platform Driver.
+> 
+> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+> ---
+>  drivers/platform/x86/Kconfig            |   24 +
+>  drivers/platform/x86/Makefile           |    1 +
+>  drivers/platform/x86/silicom-platform.c | 1053 +++++++++++++++++++++++
+>  3 files changed, 1078 insertions(+)
+>  create mode 100644 drivers/platform/x86/silicom-platform.c
+> 
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 22052031c719..aba2d45f7ccd 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -188,6 +188,30 @@ config ACER_WMI
+>  	  If you have an ACPI-WMI compatible Acer/ Wistron laptop, say Y or M
+>  	  here.
+>  
+> +config SILICOM_PLATFORM
+> +	tristate "Silicom Edge Networking device support"
+> +	depends on HWMON
+> +	select LEDS_CLASS_MULTICOLOR
+> +	help
+> +	  This option enables support for the LEDs/GPIO/etc downstream of the
+> +	  embedded controller on Silicom "Cordoba" hardware and derivatives.
+> +
+> +	  The Silicom platform (silicom-platform) Linux driver for Swisscom
+> +	  Business Box (Swisscom BB) as well as Cordoba family products is a
+> +	  software solution designed to facilitate the efficient management
+> +	  and control of devices through the integration of various Linux
+> +	  frameworks. This platform driver provides seamless support for
+> +	  device management via the Linux LED framework, GPIO framework,
+> +	  Hardware Monitoring (HWMON), and device attributes. The Silicom
+> +	  platform driver's compatibility with these Linux frameworks allows
+> +	  applications to access and control Cordoba family devices using
+> +	  existing software that is compatible with these frameworks. This
+> +	  compatibility simplifies the development process, reduces
+> +	  dependencies on proprietary solutions, and promotes
+> +	  interoperability with other Linux-based systems and software.
+> +
+> +	  If you have a Silicom network appliance, say Y or M here.
+> +
+>  source "drivers/platform/x86/amd/Kconfig"
+>  
+>  config ADV_SWBUTTON
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> index 2cafe51ec4d8..9355ebbc56ca 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -113,6 +113,7 @@ obj-$(CONFIG_SERIAL_MULTI_INSTANTIATE)	+= serial-multi-instantiate.o
+>  obj-$(CONFIG_MLX_PLATFORM)		+= mlx-platform.o
+>  obj-$(CONFIG_TOUCHSCREEN_DMI)		+= touchscreen_dmi.o
+>  obj-$(CONFIG_WIRELESS_HOTKEY)		+= wireless-hotkey.o
+> +obj-$(CONFIG_SILICOM_PLATFORM)		+= silicom-platform.o
+>  obj-$(CONFIG_X86_ANDROID_TABLETS)	+= x86-android-tablets/
+>  
+>  # Intel uncore drivers
+> diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
+> new file mode 100644
+> index 000000000000..4ca68c589f03
+> --- /dev/null
+> +++ b/drivers/platform/x86/silicom-platform.c
+> @@ -0,0 +1,1053 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +//
+> +// silicom-platform.c - Silicom MEC170x platform driver
+> +//
+> +// Copyright (C) 2023 Henry Shi <henrys@silicom-usa.com>
+> +#include <linux/dmi.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/init.h>
+> +#include <linux/ioport.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/led-class-multicolor.h>
+> +#include <linux/module.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/string.h>
+> +#include <linux/kobject.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/bits.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/units.h>
+> +
+> +#define MEC_EFUSE_LSB_ADDR 0x28
+> +#define MEC_POWER_CYCLE_ADDR 0x24
+> +#define MEC_PORT_OFFSET_MASK 0xfc
+> +#define MEC_PORT_CHANNEL_MASK 0x7
+> +#define MEC_DATA_OFFSET_MASK 0x03
+> +#define MEC_GPIO_IN_POS 0x08
+> +#define MEC_IO_BASE 0x0800
+> +#define MEC_IO_LEN 0x8
+> +#define MEC_ADDR ((MEC_IO_BASE) + 0x02)
+> +#define MEC_DATA_OFFSET(offset) ((MEC_IO_BASE) + 0x04 + (offset))
+> +#define EC_ADDR_LSB MEC_ADDR
+> +#define EC_ADDR_MSB ((MEC_IO_BASE) + MEC_DATA_OFFSET_MASK)
+> +#define SILICOM_MEC_MAGIC 0x5a
+> +#define OFFSET_BIT_TO_CHANNEL(off, bit) ((((off) + 0x014) << 3) | (bit))
+> +#define CHANNEL_TO_OFFSET(chan) (((chan) >> 3) - 0x14)
+> +#define MEC_VERSION_MAJOR GENMASK(15, 14)
+> +#define MEC_VERSION_MINOR GENMASK(13, 8)
+> +#define IO_REG_BANK 0x0
+> +#define DEFAULT_CHAN_LO 0
+> +#define DEFAULT_CHAN_HI 0
+> +#define DEFAULT_CHAN_LO_T 0xc
+> +
+> +static DEFINE_MUTEX(mec_io_mutex);
+> +static struct device *my_dev;
+> +static int efuse_status;
+> +static int mec_uc_version;
+> +static int power_cycle;
+> +
+> +static const struct hwmon_channel_info *silicom_fan_control_info[] = {
+> +	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_LABEL),
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL),
+> +	NULL
+> +};
+> +
+> +struct silicom_platform_info {
+> +	int io_base;
+> +	int io_len;
+> +	struct led_classdev_mc *led_info;
+> +	struct gpio_chip *gpiochip;
+> +	u8 *gpio_channels;
+> +	u16 ngpio;
+> +};
+> +
+> +static const char * const plat_0222_gpio_names[] = {
+> +	"AUTOM0_SFP_TX_FAULT",
+> +	"SLOT2_LED_OUT",
+> +	"SIM_M2_SLOT2_B_DET",
+> +	"SIM_M2_SLOT2_A_DET",
+> +	"SLOT1_LED_OUT",
+> +	"SIM_M2_SLOT1_B_DET",
+> +	"SIM_M2_SLOT1_A_DET",
+> +	"SLOT0_LED_OUT",
+> +	"WAN_SFP0_RX_LOS",
+> +	"WAN_SFP0_PRSNT_N",
+> +	"WAN_SFP0_TX_FAULT",
+> +	"AUTOM1_SFP_RX_LOS",
+> +	"AUTOM1_SFP_PRSNT_N",
+> +	"AUTOM1_SFP_TX_FAULT",
+> +	"AUTOM0_SFP_RX_LOS",
+> +	"AUTOM0_SFP_PRSNT_N",
+> +	"WAN_SFP1_RX_LOS",
+> +	"WAN_SFP1_PRSNT_N",
+> +	"WAN_SFP1_TX_FAULT",
+> +	"SIM_M2_SLOT1_MUX_SEL",
+> +	"W_DISABLE_M2_SLOT1_N",
+> +	"W_DISABLE_MPCIE_SLOT0_N",
+> +	"W_DISABLE_M2_SLOT0_N",
+> +	"BT_COMMAND_MODE",
+> +	"WAN_SFP1_TX_DISABLE",
+> +	"WAN_SFP0_TX_DISABLE",
+> +	"AUTOM1_SFP_TX_DISABLE",
+> +	"AUTOM0_SFP_TX_DISABLE",
+> +	"SIM_M2_SLOT2_MUX_SEL",
+> +	"W_DISABLE_M2_SLOT2_N",
+> +	"RST_CTL_M2_SLOT_1_N",
+> +	"RST_CTL_M2_SLOT_2_N",
+> +	"PM_USB_PWR_EN_BOT",
+> +	"PM_USB_PWR_EN_TOP",
+> +};
+> +
+> +static u8 plat_0222_gpio_channels[] = {
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 3),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 4),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 5),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 6),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 7),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 3),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 4),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 5),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 6),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 7),
+> +	OFFSET_BIT_TO_CHANNEL(0x02, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x02, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x02, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x09, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x09, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x09, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x09, 3),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 3),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 4),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 5),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 6),
+> +	OFFSET_BIT_TO_CHANNEL(0x0b, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x0b, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x0b, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x0b, 3),
+> +};
+> +
+> +static struct platform_device *silicom_platform_dev;
+> +static struct led_classdev_mc *silicom_led_info __initdata;
+> +static struct gpio_chip *silicom_gpiochip __initdata;
+> +static u8 *silicom_gpio_channels __initdata;
+> +
+> +static int silicom_mec_port_get(unsigned int offset)
+> +{
+> +	u8 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Get the dword offset from the channel */
+> +	outb(FIELD_GET(GENMASK(31, 3), offset) & MEC_PORT_OFFSET_MASK, MEC_ADDR);
+> +
+> +	/* Get the current register */
+> +	reg = inb(MEC_DATA_OFFSET(FIELD_GET(GENMASK(31, 3), offset) & MEC_DATA_OFFSET_MASK));
 
-I think that'd be hard. First of all, where would we store the second
-timestamp? We can't just truncate the fine-grained ones to come up with
-a coarse-grained one. It might also be confusing having nfsd and local
-filesystems present different attributes.
+There are still way too many GENMASK() within to code itself. Usually 
+there shouldn't any in the functions part of the .c file. You should put 
+them as #defines before the functions (with name for each that describes 
+its purpose).
+
+-- 
+ i.
 
 
-> > ---
-> >  fs/fs_context.c     | 18 ++++++++++++++++++
-> >  fs/inode.c          |  4 ++--
-> >  fs/proc_namespace.c |  1 +
-> >  fs/stat.c           |  2 +-
-> >  include/linux/fs.h  |  4 +++-
-> >  5 files changed, 25 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/fs/fs_context.c b/fs/fs_context.c
-> > index a0ad7a0c4680..dd4dade0bb9e 100644
-> > --- a/fs/fs_context.c
-> > +++ b/fs/fs_context.c
-> > @@ -44,6 +44,7 @@ static const struct constant_table common_set_sb_flag=
-[] =3D {
-> >  	{ "mand",	SB_MANDLOCK },
-> >  	{ "ro",		SB_RDONLY },
-> >  	{ "sync",	SB_SYNCHRONOUS },
-> > +	{ "mgtime",	SB_MGTIME },
-> >  	{ },
-> >  };
-> > =20
-> > @@ -52,18 +53,32 @@ static const struct constant_table common_clear_sb_=
-flag[] =3D {
-> >  	{ "nolazytime",	SB_LAZYTIME },
-> >  	{ "nomand",	SB_MANDLOCK },
-> >  	{ "rw",		SB_RDONLY },
-> > +	{ "nomgtime",	SB_MGTIME },
-> >  	{ },
-> >  };
-> > =20
-> > +static inline int check_mgtime(unsigned int token, const struct fs_con=
-text *fc)
-> > +{
-> > +	if (token !=3D SB_MGTIME)
-> > +		return 0;
-> > +	if (!(fc->fs_type->fs_flags & FS_MGTIME))
-> > +		return invalf(fc, "Filesystem doesn't support multi-grain timestamps=
-");
-> > +	return 0;
-> > +}
-> > +
-> >  /*
-> >   * Check for a common mount option that manipulates s_flags.
-> >   */
-> >  static int vfs_parse_sb_flag(struct fs_context *fc, const char *key)
-> >  {
-> >  	unsigned int token;
-> > +	int ret;
-> > =20
-> >  	token =3D lookup_constant(common_set_sb_flag, key, 0);
-> >  	if (token) {
-> > +		ret =3D check_mgtime(token, fc);
-> > +		if (ret)
-> > +			return ret;
-> >  		fc->sb_flags |=3D token;
-> >  		fc->sb_flags_mask |=3D token;
-> >  		return 0;
-> > @@ -71,6 +86,9 @@ static int vfs_parse_sb_flag(struct fs_context *fc, c=
-onst char *key)
-> > =20
-> >  	token =3D lookup_constant(common_clear_sb_flag, key, 0);
-> >  	if (token) {
-> > +		ret =3D check_mgtime(token, fc);
-> > +		if (ret)
-> > +			return ret;
-> >  		fc->sb_flags &=3D ~token;
-> >  		fc->sb_flags_mask |=3D token;
-> >  		return 0;
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index 54237f4242ff..fd1a2390aaa3 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -2141,7 +2141,7 @@ EXPORT_SYMBOL(current_mgtime);
-> > =20
-> >  static struct timespec64 current_ctime(struct inode *inode)
-> >  {
-> > -	if (is_mgtime(inode))
-> > +	if (IS_MGTIME(inode))
-> >  		return current_mgtime(inode);
-> >  	return current_time(inode);
-> >  }
-> > @@ -2588,7 +2588,7 @@ struct timespec64 inode_set_ctime_current(struct =
-inode *inode)
-> >  		now =3D current_time(inode);
-> > =20
-> >  		/* Just copy it into place if it's not multigrain */
-> > -		if (!is_mgtime(inode)) {
-> > +		if (!IS_MGTIME(inode)) {
-> >  			inode_set_ctime_to_ts(inode, now);
-> >  			return now;
-> >  		}
-> > diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
-> > index 250eb5bf7b52..08f5bf4d2c6c 100644
-> > --- a/fs/proc_namespace.c
-> > +++ b/fs/proc_namespace.c
-> > @@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct su=
-per_block *sb)
-> >  		{ SB_DIRSYNC, ",dirsync" },
-> >  		{ SB_MANDLOCK, ",mand" },
-> >  		{ SB_LAZYTIME, ",lazytime" },
-> > +		{ SB_MGTIME, ",mgtime" },
-> >  		{ 0, NULL }
-> >  	};
-> >  	const struct proc_fs_opts *fs_infop;
-> > diff --git a/fs/stat.c b/fs/stat.c
-> > index 6e60389d6a15..2f18dd5de18b 100644
-> > --- a/fs/stat.c
-> > +++ b/fs/stat.c
-> > @@ -90,7 +90,7 @@ void generic_fillattr(struct mnt_idmap *idmap, u32 re=
-quest_mask,
-> >  	stat->size =3D i_size_read(inode);
-> >  	stat->atime =3D inode->i_atime;
-> > =20
-> > -	if (is_mgtime(inode)) {
-> > +	if (IS_MGTIME(inode)) {
-> >  		fill_mg_cmtime(stat, request_mask, inode);
-> >  	} else {
-> >  		stat->mtime =3D inode->i_mtime;
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index 4aeb3fa11927..03e415fb3a7c 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -1114,6 +1114,7 @@ extern int send_sigurg(struct fown_struct *fown);
-> >  #define SB_NODEV        BIT(2)	/* Disallow access to device special fi=
-les */
-> >  #define SB_NOEXEC       BIT(3)	/* Disallow program execution */
-> >  #define SB_SYNCHRONOUS  BIT(4)	/* Writes are synced at once */
-> > +#define SB_MGTIME	BIT(5)	/* Use multi-grain timestamps */
-> >  #define SB_MANDLOCK     BIT(6)	/* Allow mandatory locks on an FS */
-> >  #define SB_DIRSYNC      BIT(7)	/* Directory modifications are synchron=
-ous */
-> >  #define SB_NOATIME      BIT(10)	/* Do not update access times. */
-> > @@ -2105,6 +2106,7 @@ static inline bool sb_rdonly(const struct super_b=
-lock *sb) { return sb->s_flags
-> >  					((inode)->i_flags & (S_SYNC|S_DIRSYNC)))
-> >  #define IS_MANDLOCK(inode)	__IS_FLG(inode, SB_MANDLOCK)
-> >  #define IS_NOATIME(inode)	__IS_FLG(inode, SB_RDONLY|SB_NOATIME)
-> > +#define IS_MGTIME(inode)	__IS_FLG(inode, SB_MGTIME)
-> >  #define IS_I_VERSION(inode)	__IS_FLG(inode, SB_I_VERSION)
-> > =20
-> >  #define IS_NOQUOTA(inode)	((inode)->i_flags & S_NOQUOTA)
-> > @@ -2366,7 +2368,7 @@ struct file_system_type {
-> >   */
-> >  static inline bool is_mgtime(const struct inode *inode)
-> >  {
-> > -	return inode->i_sb->s_type->fs_flags & FS_MGTIME;
-> > +	return inode->i_sb->s_flags & SB_MGTIME;
-> >  }
-> > =20
-> >  extern struct dentry *mount_bdev(struct file_system_type *fs_type,
-> > --=20
-> > 2.34.1
-> >=20
-
---=20
-Jeff Layton <jlayton@kernel.org>
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	return (reg >> (offset & MEC_PORT_CHANNEL_MASK)) & 0x01;
+> +}
+> +
+> +static enum led_brightness silicom_mec_led_get(int channel)
+> +{
+> +	/* Outputs are active low */
+> +	return silicom_mec_port_get(channel) ? LED_OFF : LED_ON;
+> +}
+> +
+> +static void silicom_mec_port_set(int channel, int on)
+> +{
+> +	u8 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Get the dword offset from the channel */
+> +	outb(FIELD_GET(GENMASK(31, 3), channel) & MEC_PORT_OFFSET_MASK, MEC_ADDR);
+> +
+> +	/* Get the current port settings */
+> +	reg = inb(MEC_DATA_OFFSET(FIELD_GET(GENMASK(31, 3), channel) & MEC_DATA_OFFSET_MASK));
+> +	/* Outputs are active low, so clear the bit for on, or set it for off */
+> +	if (on)
+> +		reg &= ~(1 << (channel & MEC_PORT_CHANNEL_MASK));
+> +	else
+> +		reg |= 1 << (channel & MEC_PORT_CHANNEL_MASK);
+> +	/* Write back the updated register */
+> +	outb(reg, MEC_DATA_OFFSET(FIELD_GET(GENMASK(31, 3), channel) & MEC_DATA_OFFSET_MASK));
+> +	mutex_unlock(&mec_io_mutex);
+> +}
+> +
+> +static enum led_brightness silicom_mec_led_mc_brightness_get(struct led_classdev *led_cdev)
+> +{
+> +	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
+> +	enum led_brightness brightness = LED_OFF;
+> +	int i;
+> +
+> +	for (i = 0; i < mc_cdev->num_colors; i++) {
+> +		mc_cdev->subled_info[i].brightness =
+> +			silicom_mec_led_get(mc_cdev->subled_info[i].channel);
+> +		/* Mark the overall brightness as LED_ON if any of the subleds are on */
+> +		if (mc_cdev->subled_info[i].brightness != LED_OFF)
+> +			brightness = LED_ON;
+> +	}
+> +
+> +	return brightness;
+> +}
+> +
+> +static void silicom_mec_led_mc_brightness_set(struct led_classdev *led_cdev,
+> +				enum led_brightness brightness)
+> +{
+> +	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
+> +	int i;
+> +
+> +	led_mc_calc_color_components(mc_cdev, brightness);
+> +	for (i = 0; i < mc_cdev->num_colors; i++) {
+> +		silicom_mec_port_set(mc_cdev->subled_info[i].channel,
+> +		mc_cdev->subled_info[i].brightness);
+> +	}
+> +}
+> +
+> +static int silicom_gpio_get_direction(struct gpio_chip *gc,
+> +				unsigned int offset)
+> +{
+> +	u8 *channels = gpiochip_get_data(gc);
+> +
+> +	/* Input registers have offsets between [0x00, 0x07] */
+> +	if (CHANNEL_TO_OFFSET(channels[offset]) < MEC_GPIO_IN_POS)
+> +		return GPIO_LINE_DIRECTION_IN;
+> +
+> +	return GPIO_LINE_DIRECTION_OUT;
+> +}
+> +
+> +static int silicom_gpio_direction_input(struct gpio_chip *gc,
+> +				unsigned int offset)
+> +{
+> +	int direction = silicom_gpio_get_direction(gc, offset);
+> +
+> +	return direction == GPIO_LINE_DIRECTION_IN ? 0 : -EINVAL;
+> +}
+> +
+> +static void silicom_gpio_set(struct gpio_chip *gc,
+> +							unsigned int offset,
+> +							int value)
+> +{
+> +	u8 *channels = gpiochip_get_data(gc);
+> +	int direction = silicom_gpio_get_direction(gc, offset);
+> +	int channel = channels[offset];
+> +
+> +	if (direction == GPIO_LINE_DIRECTION_IN)
+> +		return;
+> +
+> +	if (value)
+> +		silicom_mec_port_set(channel, 0);
+> +	else if (value == 0)
+> +		silicom_mec_port_set(channel, 1);
+> +	else
+> +		pr_err("Wrong argument value: %d\n", value);
+> +}
+> +
+> +static int silicom_gpio_direction_output(struct gpio_chip *gc,
+> +							unsigned int offset,
+> +							int value)
+> +{
+> +	int direction = silicom_gpio_get_direction(gc, offset);
+> +
+> +	if (direction == GPIO_LINE_DIRECTION_IN)
+> +		return -EINVAL;
+> +
+> +	silicom_gpio_set(gc, offset, value);
+> +
+> +	return 0;
+> +}
+> +
+> +static int silicom_gpio_get(struct gpio_chip *gc, unsigned int offset)
+> +{
+> +	u8 *channels = gpiochip_get_data(gc);
+> +	int channel = channels[offset];
+> +
+> +	return silicom_mec_port_get(channel);
+> +}
+> +
+> +static struct mc_subled plat_0222_wan_mc_subled_info[] __initdata = {
+> +	{
+> +		.color_index = LED_COLOR_ID_WHITE,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 7),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_YELLOW,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 6),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_RED,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 5),
+> +	},
+> +};
+> +
+> +static struct mc_subled plat_0222_sys_mc_subled_info[] __initdata = {
+> +	{
+> +		.color_index = LED_COLOR_ID_WHITE,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 4),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_AMBER,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 3),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_RED,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 2),
+> +	},
+> +};
+> +
+> +static struct mc_subled plat_0222_stat1_mc_subled_info[] __initdata = {
+> +	{
+> +		.color_index = LED_COLOR_ID_RED,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 1),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_GREEN,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 0),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_BLUE,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 7),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_YELLOW,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 6),
+> +	},
+> +};
+> +
+> +static struct mc_subled plat_0222_stat2_mc_subled_info[] __initdata = {
+> +	{
+> +		.color_index = LED_COLOR_ID_RED,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 5),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_GREEN,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 4),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_BLUE,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 3),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_YELLOW,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 2),
+> +	},
+> +};
+> +
+> +static struct mc_subled plat_0222_stat3_mc_subled_info[] __initdata = {
+> +	{
+> +		.color_index = LED_COLOR_ID_RED,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 1),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_GREEN,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 0),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_BLUE,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0e, 1),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_YELLOW,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0e, 0),
+> +	},
+> +};
+> +
+> +static struct led_classdev_mc plat_0222_mc_led_info[] __initdata = {
+> +	{
+> +		.led_cdev = {
+> +			.name = "multicolor:wan",
+> +			.brightness = 0,
+> +			.max_brightness = 1,
+> +			.brightness_set = silicom_mec_led_mc_brightness_set,
+> +			.brightness_get = silicom_mec_led_mc_brightness_get,
+> +		},
+> +		.num_colors = ARRAY_SIZE(plat_0222_wan_mc_subled_info),
+> +		.subled_info = plat_0222_wan_mc_subled_info,
+> +	},
+> +	{
+> +		.led_cdev = {
+> +			.name = "multicolor:sys",
+> +			.brightness = 0,
+> +			.max_brightness = 1,
+> +			.brightness_set = silicom_mec_led_mc_brightness_set,
+> +			.brightness_get = silicom_mec_led_mc_brightness_get,
+> +		},
+> +		.num_colors = ARRAY_SIZE(plat_0222_sys_mc_subled_info),
+> +		.subled_info = plat_0222_sys_mc_subled_info,
+> +	},
+> +	{
+> +		.led_cdev = {
+> +			.name = "multicolor:stat1",
+> +			.brightness = 0,
+> +			.max_brightness = 1,
+> +			.brightness_set = silicom_mec_led_mc_brightness_set,
+> +			.brightness_get = silicom_mec_led_mc_brightness_get,
+> +		},
+> +		.num_colors = ARRAY_SIZE(plat_0222_stat1_mc_subled_info),
+> +		.subled_info = plat_0222_stat1_mc_subled_info,
+> +	},
+> +	{
+> +		.led_cdev = {
+> +			.name = "multicolor:stat2",
+> +			.brightness = 0,
+> +			.max_brightness = 1,
+> +			.brightness_set = silicom_mec_led_mc_brightness_set,
+> +			.brightness_get = silicom_mec_led_mc_brightness_get,
+> +		},
+> +		.num_colors = ARRAY_SIZE(plat_0222_stat2_mc_subled_info),
+> +		.subled_info = plat_0222_stat2_mc_subled_info,
+> +	},
+> +	{
+> +		.led_cdev = {
+> +			.name = "multicolor:stat3",
+> +			.brightness = 0,
+> +			.max_brightness = 1,
+> +			.brightness_set = silicom_mec_led_mc_brightness_set,
+> +			.brightness_get = silicom_mec_led_mc_brightness_get,
+> +		},
+> +		.num_colors = ARRAY_SIZE(plat_0222_stat3_mc_subled_info),
+> +		.subled_info = plat_0222_stat3_mc_subled_info,
+> +	},
+> +	{ },
+> +};
+> +
+> +static struct gpio_chip silicom_gpio_chip = {
+> +	.label = "silicom-gpio",
+> +	.get_direction = silicom_gpio_get_direction,
+> +	.direction_input = silicom_gpio_direction_input,
+> +	.direction_output = silicom_gpio_direction_output,
+> +	.get = silicom_gpio_get,
+> +	.set = silicom_gpio_set,
+> +	.base = -1,
+> +	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
+> +	.names = plat_0222_gpio_names,
+> +	/* We're using a mutex to protect the indirect access, so we can sleep
+> +	 * if the lock blocks
+> +	 */
+> +	.can_sleep = true,
+> +};
+> +
+> +static struct silicom_platform_info silicom_plat_0222_cordoba_info __initdata = {
+> +	.io_base = MEC_IO_BASE,
+> +	.io_len = MEC_IO_LEN,
+> +	.led_info = plat_0222_mc_led_info,
+> +	.gpiochip = &silicom_gpio_chip,
+> +	.gpio_channels = plat_0222_gpio_channels,
+> +	/* The original generic cordoba does not have the last 4 outputs of the
+> +	 * plat_0222 variant, the rest are the same, so use the same longer list,
+> +	 * but ignore the last entries here
+> +	 */
+> +	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
+> +
+> +};
+> +
+> +static struct mc_subled cordoba_fp_left_mc_subled_info[] __initdata = {
+> +	{
+> +		.color_index = LED_COLOR_ID_RED,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 6),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_GREEN,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 5),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_BLUE,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 7),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_AMBER,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 4),
+> +	},
+> +};
+> +
+> +static struct mc_subled cordoba_fp_center_mc_subled_info[] __initdata = {
+> +	{
+> +		.color_index = LED_COLOR_ID_RED,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 7),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_GREEN,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 4),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_BLUE,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 3),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_AMBER,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 6),
+> +	},
+> +};
+> +
+> +static struct mc_subled cordoba_fp_right_mc_subled_info[] __initdata = {
+> +	{
+> +		.color_index = LED_COLOR_ID_RED,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 2),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_GREEN,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 1),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_BLUE,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 0),
+> +	},
+> +	{
+> +		.color_index = LED_COLOR_ID_AMBER,
+> +		.brightness = 1,
+> +		.intensity = 0,
+> +		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 5),
+> +	},
+> +};
+> +
+> +static struct led_classdev_mc cordoba_mc_led_info[] __initdata = {
+> +	{
+> +		.led_cdev = {
+> +			.name = "multicolor:fp_left",
+> +			.brightness = 0,
+> +			.max_brightness = 1,
+> +			.brightness_set = silicom_mec_led_mc_brightness_set,
+> +			.brightness_get = silicom_mec_led_mc_brightness_get,
+> +		},
+> +		.num_colors = ARRAY_SIZE(cordoba_fp_left_mc_subled_info),
+> +		.subled_info = cordoba_fp_left_mc_subled_info,
+> +	},
+> +	{
+> +		.led_cdev = {
+> +			.name = "multicolor:fp_center",
+> +			.brightness = 0,
+> +			.max_brightness = 1,
+> +			.brightness_set = silicom_mec_led_mc_brightness_set,
+> +			.brightness_get = silicom_mec_led_mc_brightness_get,
+> +		},
+> +		.num_colors = ARRAY_SIZE(cordoba_fp_center_mc_subled_info),
+> +		.subled_info = cordoba_fp_center_mc_subled_info,
+> +	},
+> +	{
+> +		.led_cdev = {
+> +			.name = "multicolor:fp_right",
+> +			.brightness = 0,
+> +			.max_brightness = 1,
+> +			.brightness_set = silicom_mec_led_mc_brightness_set,
+> +			.brightness_get = silicom_mec_led_mc_brightness_get,
+> +		},
+> +		.num_colors = ARRAY_SIZE(cordoba_fp_right_mc_subled_info),
+> +		.subled_info = cordoba_fp_right_mc_subled_info,
+> +	},
+> +	{ },
+> +};
+> +
+> +static struct silicom_platform_info silicom_generic_cordoba_info __initdata = {
+> +	.io_base = MEC_IO_BASE,
+> +	.io_len = MEC_IO_LEN,
+> +	.led_info = cordoba_mc_led_info,
+> +	.gpiochip = &silicom_gpio_chip,
+> +	.gpio_channels = plat_0222_gpio_channels,
+> +	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
+> +};
+> +
+> +static struct platform_driver silicom_platform_driver = {
+> +	.driver = {
+> +		.name = "silicom-platform",
+> +	},
+> +};
+> +
+> +static ssize_t efuse_status_show(struct device *dev,
+> +								struct device_attribute *attr,
+> +								char *buf)
+> +{
+> +	u32 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Select memory region */
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(MEC_EFUSE_LSB_ADDR, EC_ADDR_LSB);
+> +
+> +	/* Get current data from the address */
+> +	reg = inl(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	efuse_status = reg & 0x1;
+> +
+> +	return sprintf(buf, "%d\n", efuse_status);
+> +}
+> +
+> +static ssize_t uc_version_show(struct device *dev,
+> +								struct device_attribute *attr,
+> +								char *buf)
+> +{
+> +	u32 reg;
+> +	int uc_version;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(DEFAULT_CHAN_LO, EC_ADDR_LSB);
+> +
+> +	reg = inl(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
+> +	mutex_unlock(&mec_io_mutex);
+> +	uc_version = FIELD_GET(GENMASK(15, 8), reg);
+> +	if (uc_version >= 192)
+> +		pr_err("uc version not supported\n");
+> +
+> +	uc_version = FIELD_GET(MEC_VERSION_MAJOR, reg) * CENTI +
+> +				FIELD_GET(MEC_VERSION_MINOR, reg);
+> +
+> +	mec_uc_version = uc_version;
+> +	return sprintf(buf, "%d\n", mec_uc_version);
+> +}
+> +
+> +static ssize_t power_cycle_show(struct device *dev,
+> +								struct device_attribute *attr,
+> +								char *buf)
+> +{
+> +	return sprintf(buf, "%d\n", power_cycle);
+> +}
+> +
+> +static void powercycle_uc(void)
+> +{
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Select memory region */
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(MEC_POWER_CYCLE_ADDR, EC_ADDR_LSB);
+> +
+> +	/* Set to 1 for current data from the address */
+> +	outb(1, MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
+> +	mutex_unlock(&mec_io_mutex);
+> +}
+> +
+> +static ssize_t power_cycle_store(struct device *dev,
+> +								struct device_attribute *attr,
+> +								const char *buf, size_t count)
+> +{
+> +	if (sscanf(buf, "%du", &power_cycle) != 1) {
+> +		dev_err(dev, "Failed to read power_cycle\n");
+> +		return -EINVAL;
+> +	}
+> +	if (power_cycle > 0)
+> +		powercycle_uc();
+> +
+> +	return count;
+> +}
+> +
+> +static struct device_attribute my_dev_attr[] = {
+> +	{
+> +		.attr = {.name = "efuse_status", .mode = 0644},
+> +		.show = efuse_status_show,
+> +		.store = NULL
+> +	},
+> +	{
+> +		.attr = {.name = "uc_version", .mode = 0644},
+> +		.show = uc_version_show,
+> +		.store = NULL
+> +	},
+> +	{
+> +		.attr = {.name = "power_cycle", .mode = 0644},
+> +		.show = power_cycle_show,
+> +		.store = power_cycle_store
+> +	},
+> +};
+> +
+> +static int __init silicom_mc_leds_register(struct device *dev,
+> +				const struct led_classdev_mc *mc_leds)
+> +{
+> +	struct led_classdev_mc *led;
+> +	int i, err;
+> +	int size = sizeof(struct mc_subled);
+> +
+> +	for (i = 0; mc_leds[i].led_cdev.name; i++) {
+> +
+> +		led = devm_kzalloc(dev, sizeof(*led), GFP_KERNEL);
+> +		if (!led)
+> +			return -ENOMEM;
+> +		memcpy(led, &mc_leds[i], sizeof(*led));
+> +
+> +		led->subled_info = devm_kzalloc(dev, led->num_colors * size, GFP_KERNEL);
+> +		if (!led->subled_info)
+> +			return -ENOMEM;
+> +		memcpy(led->subled_info, mc_leds[i].subled_info, led->num_colors * size);
+> +
+> +		err = devm_led_classdev_multicolor_register(dev, led);
+> +		if (err) {
+> +			dev_err(dev, "Failed to register[%d]: %d\n", i, err);
+> +			return err;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static u32 rpm_get(void)
+> +{
+> +	u32 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Select memory region */
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(DEFAULT_CHAN_LO_T, EC_ADDR_LSB);
+> +	/* Get current data from the address */
+> +	reg = inw(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	return reg;
+> +}
+> +
+> +static u32 temp_get(void)
+> +{
+> +	u32 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Select memory region */
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(DEFAULT_CHAN_LO_T, EC_ADDR_LSB);
+> +	/* Get current data from the address */
+> +	reg = inl(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	return FIELD_GET(GENMASK(31, 16), reg) * CENTI;
+> +}
+> +
+> +static umode_t silicom_fan_control_fan_is_visible(const u32 attr)
+> +{
+> +	switch (attr) {
+> +	case hwmon_fan_input:
+> +	case hwmon_fan_label:
+> +		return 0444;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static umode_t silicom_fan_control_temp_is_visible(const u32 attr)
+> +{
+> +	switch (attr) {
+> +	case hwmon_temp_input:
+> +	case hwmon_temp_label:
+> +		return 0444;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static int silicom_fan_control_read_fan(struct device *dev, u32 attr, long *val)
+> +{
+> +	switch (attr) {
+> +	case hwmon_fan_input:
+> +		*val = rpm_get();
+> +		return 0;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static int silicom_fan_control_read_temp(struct device *dev, u32 attr, long *val)
+> +{
+> +	switch (attr) {
+> +	case hwmon_temp_input:
+> +		*val = temp_get();
+> +		return 0;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static umode_t silicom_fan_control_is_visible(const void *data,
+> +					  enum hwmon_sensor_types type,
+> +					  u32 attr, int channel)
+> +{
+> +	switch (type) {
+> +	case hwmon_fan:
+> +		return silicom_fan_control_fan_is_visible(attr);
+> +	case hwmon_temp:
+> +		return silicom_fan_control_temp_is_visible(attr);
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static int silicom_fan_control_read(struct device *dev,
+> +					enum hwmon_sensor_types type,
+> +					u32 attr, int channel,
+> +					long *val)
+> +{
+> +	switch (type) {
+> +	case hwmon_fan:
+> +		return silicom_fan_control_read_fan(dev, attr, val);
+> +	case hwmon_temp:
+> +		return silicom_fan_control_read_temp(dev, attr, val);
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static int silicom_fan_control_read_labels(struct device *dev,
+> +					enum hwmon_sensor_types type,
+> +					u32 attr, int channel,
+> +					const char **str)
+> +{
+> +	switch (type) {
+> +	case hwmon_fan:
+> +		*str = "Silicom_platfomr: Fan Speed";
+> +		return 0;
+> +	case hwmon_temp:
+> +		*str = "Silicom_platform: Thermostat Sensor";
+> +		return 0;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static const struct hwmon_ops silicom_fan_control_hwmon_ops = {
+> +	.is_visible = silicom_fan_control_is_visible,
+> +	.read = silicom_fan_control_read,
+> +	.read_string = silicom_fan_control_read_labels,
+> +};
+> +
+> +static const struct hwmon_chip_info silicom_chip_info = {
+> +	.ops = &silicom_fan_control_hwmon_ops,
+> +	.info = silicom_fan_control_info,
+> +};
+> +
+> +static int __init silicom_platform_probe(struct platform_device *device)
+> +{
+> +	int i, err;
+> +	u8 magic, ver;
+> +	struct device *hwmon_dev;
+> +	const char *name = "Silocom_Fan_Monitor";
+> +	const char *dev_name = "Silicom_platform";
+> +
+> +	if (!devm_request_region(&device->dev, MEC_IO_BASE, MEC_IO_LEN, "mec")) {
+> +		dev_err(&device->dev, "couldn't reserve MEC io ports\n");
+> +		return -EBUSY;
+> +	}
+> +
+> +	/* Sanity check magic number read for EC */
+> +	outb(IO_REG_BANK, MEC_ADDR);
+> +	magic = inb(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
+> +	ver = inb(MEC_DATA_OFFSET(DEFAULT_CHAN_HI));
+> +	dev_dbg(&device->dev, "EC magic 0x%02x, version 0x%02x\n", magic, ver);
+> +
+> +	if (magic != SILICOM_MEC_MAGIC) {
+> +		dev_err(&device->dev, "Bad EC magic 0x%02x!\n", magic);
+> +		return -ENODEV;
+> +	}
+> +
+> +	err = silicom_mc_leds_register(&device->dev, silicom_led_info);
+> +	if (err) {
+> +		dev_err(&device->dev, "Failed to register LEDs\n");
+> +		return err;
+> +	}
+> +
+> +	err = devm_gpiochip_add_data(&device->dev, silicom_gpiochip,
+> +									silicom_gpio_channels);
+> +	if (err) {
+> +		dev_err(&device->dev, "Failed to register gpiochip: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	hwmon_dev = devm_hwmon_device_register_with_info(&device->dev, name, NULL,
+> +				&silicom_chip_info, NULL);
+> +	err = PTR_ERR_OR_ZERO(hwmon_dev);
+> +	if (err) {
+> +		dev_err(&device->dev, "Failed to register hwmon_dev: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	my_dev = root_device_register(dev_name);
+> +	for (i = 0; i < ARRAY_SIZE(my_dev_attr); i++) {
+> +		err = sysfs_create_file(&my_dev->kobj, &my_dev_attr[i].attr);
+> +		if (err) {
+> +			pr_debug("failed to create /sys/devices/Silicom_platform\n");
+> +			break;
+> +		}
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +static int __init silicom_platform_info_init(const struct dmi_system_id *id)
+> +{
+> +	struct silicom_platform_info *info = id->driver_data;
+> +
+> +	dev_info(&silicom_platform_dev->dev, "Detected %s\n", id->ident);
+> +
+> +	silicom_led_info = info->led_info;
+> +	silicom_gpio_channels = info->gpio_channels;
+> +	silicom_gpiochip = info->gpiochip;
+> +	silicom_gpiochip->ngpio = info->ngpio;
+> +
+> +	return 1;
+> +}
+> +
+> +static const struct dmi_system_id silicom_dmi_ids[] __initconst = {
+> +	{
+> +		.callback = silicom_platform_info_init,
+> +		.ident = "Silicom Cordoba (Generic)",
+> +		.matches = {
+> +			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
+> +			DMI_MATCH(DMI_BOARD_NAME, "80300-0214-G"),
+> +		},
+> +		.driver_data = &silicom_generic_cordoba_info,
+> +	},
+> +	{
+> +		.callback = silicom_platform_info_init,
+> +		.ident = "Silicom Cordoba (Generic)",
+> +		.matches = {
+> +			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
+> +			DMI_MATCH(DMI_BOARD_NAME, "80500-0214-G"),
+> +		},
+> +		.driver_data = &silicom_generic_cordoba_info,
+> +	},
+> +	{
+> +		 .callback = silicom_platform_info_init,
+> +		 .ident = "Silicom Cordoba (plat_0222)",
+> +		 .matches = {
+> +			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
+> +			DMI_MATCH(DMI_BOARD_NAME, "80300-0222-G"),
+> +		 },
+> +		.driver_data = &silicom_plat_0222_cordoba_info,
+> +	},
+> +	{ },
+> +};
+> +
+> +static int __init silicom_platform_init(void)
+> +{
+> +	struct device *dev;
+> +	int err;
+> +
+> +	/* register a platform device to act as the parent for LEDS, etc. */
+> +	silicom_platform_dev = platform_device_register_simple("silicom-platform",
+> +			-1, NULL, 0);
+> +	if (IS_ERR(silicom_platform_dev)) {
+> +		err = PTR_ERR(silicom_platform_dev);
+> +		pr_err("failed to register silicom-platform device: %d\n", err);
+> +		return err;
+> +	}
+> +	dev = &silicom_platform_dev->dev;
+> +
+> +	err = dmi_check_system(silicom_dmi_ids);
+> +	if (err == 0) {
+> +		dev_err(dev, "No DMI match for this platform\n");
+> +		err = -ENODEV;
+> +		goto silicom_dmi_check_err;
+> +	}
+> +
+> +	/* Directly probe the platform driver in init since this isn't a
+> +	 * hotpluggable device.  That means we don't need to register a driver
+> +	 * that needs to wait around in memory on the chance a matching device
+> +	 * would get added.  Instead run once in __init so that we can free all
+> +	 * those resources when the __init region is wiped
+> +	 */
+> +	err = platform_driver_probe(&silicom_platform_driver, silicom_platform_probe);
+> +	if (err) {
+> +		dev_err(dev, "Failed to probe platform driver %d\n", err);
+> +		goto silicom_init_probe_err;
+> +	}
+> +	return 0;
+> +
+> +silicom_init_probe_err:
+> +	if (my_dev) {
+> +		root_device_unregister(my_dev);
+> +		my_dev = NULL;
+> +	}
+> +
+> +silicom_dmi_check_err:
+> +	if (silicom_platform_dev) {
+> +		platform_device_unregister(silicom_platform_dev);
+> +		silicom_platform_dev = NULL;
+> +	}
+> +	return err;
+> +}
+> +
+> +static void __exit silicom_platform_exit(void)
+> +{
+> +	int i;
+> +
+> +	if (silicom_platform_dev) {
+> +		platform_device_unregister(silicom_platform_dev);
+> +		platform_driver_unregister(&silicom_platform_driver);
+> +	}
+> +
+> +	if (my_dev) {
+> +		for (i = 0; i < ARRAY_SIZE(my_dev_attr); i++)
+> +			sysfs_remove_file(&my_dev->kobj, &my_dev_attr[i].attr);
+> +		root_device_unregister(my_dev);
+> +	}
+> +	mutex_destroy(&mec_io_mutex);
+> +}
+> +
+> +module_init(silicom_platform_init);
+> +module_exit(silicom_platform_exit);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Henry Shi <henrys@silicom-usa.com>");
+> +MODULE_DESCRIPTION("Platform driver for Silicom network appliances");
+> +
+> +MODULE_DEVICE_TABLE(dmi, silicom_dmi_ids);
+> 
+--8323329-644801291-1695206128=:1961--
