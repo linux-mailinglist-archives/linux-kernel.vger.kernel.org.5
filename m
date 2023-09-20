@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4DA7A7375
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76957A737A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233364AbjITG6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        id S233491AbjITG6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbjITG6X (ORCPT
+        with ESMTP id S232245AbjITG60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:58:23 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D964AD
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:58:16 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bfb17435e4so104887111fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695193094; x=1695797894; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0wrCOVhLC2r5zAg8aEKZ+Z8LShRgLvtb2yTC7pbk7TQ=;
-        b=YQiMcdBV9Ocw5NEAxkdBv4TlHAOthCsVhiIrMOKfVs5cJI7pvixMp6eJ26/ixtJdy6
-         TVm7q9AhxJLv3NP5GTLOYorEPcxjcNWErVx931jlp49iJ4fPvTCCmJpvogrL4vPmml9C
-         qFbFtYzq3+ufRpB2jPy4Duh2Hnf8meaBL/vVwJvDymvGyFPvUz+JtoJUheIbZEUL/bJF
-         uAeqxQov0NiQlyRiT458cVdpZ4ONNcDMdKDY6RQLKcdrvNHFB0fpYVOz1ZV1EzGdO+z9
-         GGKuE1F31Ft5PNTxFim+XFj82ivuI5jxi1dB8mjdSkFwIsddDkpBzBSAx5NJK5S2HB2t
-         ByRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695193094; x=1695797894;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0wrCOVhLC2r5zAg8aEKZ+Z8LShRgLvtb2yTC7pbk7TQ=;
-        b=nZOC02e/Ea0TalQmJ6AM2b4lWakqf20j9UljUZdDKTPIYiAGWGOXzcf0eYpRFSnVbX
-         /a9xvc1wLpIQ8I1DIXpFZqgzK+vd+uMC5vj4+4HQvGwAfhz5y4eM7bZpVd3xiYaPqQvn
-         lSB/TAudtWOGhNbRuLRJ816YbUiGKy14SQ2SYyckj6tt14/KoW8/SqUTl3PL/WqTOaDZ
-         I0c8KEFCCQW5lU/2IiUlRDZGipAG2XhGlLePx1mYv0I65EJqcL5BHsG6q3d+pKWqDvgZ
-         tPhSiyXGEW8kQ9G68BX0IqxuIUTygqiObewp6gMkPbHnvOZLNiOgKNFamiC9JXy7rwNz
-         KNUA==
-X-Gm-Message-State: AOJu0Yxz7bW6mp6ZT5k4DFYXJ2hfkfVQkJo22YQZ1laK4ySpwCIy3e/9
-        k/xwS/+b+8GSqaGaDNb/vGLebw==
-X-Google-Smtp-Source: AGHT+IGGRGWJd2RdfNcTxy8s5cuxAYG70VTNMg3Wae8gXHW03xrfqtu1s97T1TvazYsLDmqBBx8TpQ==
-X-Received: by 2002:a2e:924d:0:b0:2c0:300a:82ed with SMTP id v13-20020a2e924d000000b002c0300a82edmr1360955ljg.7.1695193094292;
-        Tue, 19 Sep 2023 23:58:14 -0700 (PDT)
-Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id rn5-20020a170906d92500b0099bd5d28dc4sm8839120ejb.195.2023.09.19.23.58.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 23:58:13 -0700 (PDT)
-Message-ID: <d2f6bfbb-fd08-a551-51d3-f81d9237e060@linaro.org>
-Date:   Wed, 20 Sep 2023 08:58:12 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM4450 pinctrl
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
-        agross@kernel.org, konrad.dybcio@linaro.org,
-        linus.walleij@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
-        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
-        quic_ajipan@quicinc.com, kernel@quicinc.com
-References: <20230920064739.12562-1-quic_tengfan@quicinc.com>
- <20230920064739.12562-2-quic_tengfan@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230920064739.12562-2-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 02:58:26 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6294AD
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 23:58:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5E6231F385;
+        Wed, 20 Sep 2023 06:58:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695193097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AU/S14PFj+HSKAHNrVMLXPOUtuJzNO4drT/vg2xb5Nk=;
+        b=ZTvwWH7DlfDaJyvjkaxKXMcKVrd6Pkjt2zKhadlrRH23fdTulAKDj5GG0pavlHUe48qTqB
+        amTYuVEhRtEcKmehvmf7ZkWUnZprqaN0OL/eYbnz3iBsg6wK8JA1K1vPP3ObwktLmRYwVC
+        baYwDmwlEUjY+kHC7FmQjVLQ+er3rzw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695193097;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AU/S14PFj+HSKAHNrVMLXPOUtuJzNO4drT/vg2xb5Nk=;
+        b=Ti67fr5ghtbbifLv6sylB2kBYwRiZqotBW0DzMpoa7W9QE4wcIrwdEOJ7CLR/YO/Hb5mti
+        e/MEo+RZKbKCQBCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C37E1333E;
+        Wed, 20 Sep 2023 06:58:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id g58LCgmYCmUlIwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 20 Sep 2023 06:58:17 +0000
+Date:   Wed, 20 Sep 2023 08:58:16 +0200
+Message-ID: <8734z9wctz.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Stefan Binding <sbinding@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH v3 1/2] ALSA: hda: cs35l41: Support mute notifications for CS35L41 HDA
+In-Reply-To: <20230919142240.467682-2-sbinding@opensource.cirrus.com>
+References: <20230919142240.467682-1-sbinding@opensource.cirrus.com>
+        <20230919142240.467682-2-sbinding@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2023 08:47, Tengfei Fan wrote:
-> Add device tree binding Documentation details for Qualcomm SM4450
-> TLMM device.
+On Tue, 19 Sep 2023 16:22:39 +0200,
+Stefan Binding wrote:
 > 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> 
+> Some laptops require a hardware based mute system, where when a hotkey
+> is pressed, it forces the amp to be muted.
+> 
+> For CS35L41, when the hotkey is pressed, an acpi notification is sent
+> to the CS35L41 Device Node. The driver needs to handle this notification
+> and call a _DSM function to retrieve the mute state.
+> 
+> Since the amp is only muted during playback, the driver will only mute
+> or unmute if playback is occurring, otherwise it will save the mute
+> state for when playback starts.
+> 
+> Only one handler can be registered for the acpi notification, but all
+> amps need to receive that notification, we can register a single handler
+> inside the Realtek HDA driver, so that it can then notify through the
+> component framework.
+> 
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+
+The patch is a bit lengthy.  I'd split the binding of patch_realtek.c
+into another patch.  That part is fairly generic.
+
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+(snip)
+> +static void comp_acpi_device_notify(acpi_handle handle, u32 event, void *data)
+> +{
+> +	struct hda_codec *cdc = data;
+> +	struct alc_spec *spec = cdc->spec;
+> +	int i;
+> +
+> +	codec_info(cdc, "ACPI Notification %d\n", event);
+> +
+> +	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
+> +		if (spec->comps[i].dev && spec->comps[i].acpi_notify)
+> +			spec->comps[i].acpi_notify(acpi_device_handle(spec->comps[i].adev), event,
+> +						   spec->comps[i].dev);
+> +	}
+> +}
+
+This function should be in #ifdef CONFIG_ACPI, too.
 
 
+thanks,
 
-> +    properties:
-> +      pins:
-> +        description:
-> +          List of gpio pins affected by the properties specified in this
-> +          subnode.
-> +        items:
-> +          oneOf:
-> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-5])$"
-
-Your driver and gpio-ranges in example tell you have 136 GPIOs, not 126.
-It's v3 but still counting GPIOs is incorrect :/
-
-Best regards,
-Krzysztof
-
+Takashi
