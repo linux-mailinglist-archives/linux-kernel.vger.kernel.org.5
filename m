@@ -2,42 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 924E87A7048
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D707A7051
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbjITCSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 22:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S231260AbjITC1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 22:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbjITCSv (ORCPT
+        with ESMTP id S229521AbjITC1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 22:18:51 -0400
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F9ABE
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 19:18:45 -0700 (PDT)
-Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qimn9-0006me-2m;
-        Tue, 19 Sep 2023 22:18:15 -0400
-From:   riel@surriel.com
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@meta.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org, muchun.song@linux.dev,
-        mike.kravetz@oracle.com, leit@meta.com,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH 2/2] hugetlbfs: close race between MADV_DONTNEED and page fault
-Date:   Tue, 19 Sep 2023 22:16:10 -0400
-Message-ID: <20230920021811.3095089-3-riel@surriel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230920021811.3095089-1-riel@surriel.com>
-References: <20230920021811.3095089-1-riel@surriel.com>
+        Tue, 19 Sep 2023 22:27:05 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA866C5;
+        Tue, 19 Sep 2023 19:26:59 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690ce3c55f1so865133b3a.0;
+        Tue, 19 Sep 2023 19:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695176819; x=1695781619; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4TeNOz0+PeBM7BS0zrNE2nATuP8C0d/z2oGULXDhCZQ=;
+        b=BqFKLBpvLiycvX+dyOV+UzlLac0xVAzO8/Hqt9ICNk16lziniDUXae6X6Hn0oASf3W
+         +bbwFhAsDbwiOYeigDKKFiRWXBEEnOHYEqd2m+ifyEBVJqY1CQ7sfKdSfFQW2WtKtaZv
+         acn+VpfNZYXoAOfv27S7q4Ym6XwWxOOs62ZkWZdG2NI/6fyXB1PXUYBP9pkJ6HWjhejZ
+         tszmsHWbKDD/UMLsjhDVyBIRcgJejI33VwPJbrOLjvhZXR+ojeM5gDzXKiY59+lTgLro
+         Fj4U7MKYx5CIq6XJmRuIyDHcyj2OPIHGUIBZAx1ONgoHjm7YAWP+VL7KSypeRpeh3Q2L
+         V/hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695176819; x=1695781619;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4TeNOz0+PeBM7BS0zrNE2nATuP8C0d/z2oGULXDhCZQ=;
+        b=oB5C6hz36XXf2RgO5jTDcY/M/UsUKGSXxNrB4GyZ0iWt/ew6OaqJqXkGzWX8x9bZDk
+         1uA3rBp6VrwEZDOgjBI1K0ViZqCuOVyNgywxTokoi4TtJp40s+wb7OjCaFNQ5+Q2Jzrz
+         PFTeA7ZJSTGowG4b7K4yW7eZjbBbeA8DYHecsCI1quXdL7iAnOHNzpgQrsBfTRqq9gtZ
+         YrUWkejwdA/uczrVvqqYCro3+SHMLlDpTVZgt9J+bpIGDpubnQNo2OrZe/qonFX4pKlE
+         8BN3VpJJj5pgwhlPwlo5hGTIRL1UlSb5lVk+co9AmM36aYyuK+/5PX/6Dd8gHAaUULEM
+         Al9w==
+X-Gm-Message-State: AOJu0YxeEEv6FGkr2IIszyVyy+UOtQgW90HgguuqlrqXcYtIDQNU7sDU
+        P2xCTkCGsS7mu46pXzZ3O1ioyq5OyUg=
+X-Google-Smtp-Source: AGHT+IGBXJfd4cgxjFnjRb5i6arxZ4iVWAZIY64RPJk1KFlERIjGyhc8lXcthOwLN9wlP0Ha2b8rzw==
+X-Received: by 2002:a05:6a00:21cc:b0:68b:bf33:2957 with SMTP id t12-20020a056a0021cc00b0068bbf332957mr1583146pfj.22.1695176818903;
+        Tue, 19 Sep 2023 19:26:58 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:646:a201:19d0:9ca3:318f:421e:68cb])
+        by smtp.gmail.com with ESMTPSA id p15-20020a62ab0f000000b0067aea93af40sm9224757pff.2.2023.09.19.19.26.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 19:26:57 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH v2 0/5] serial: add drivers for the ESP32xx serial devices
+Date:   Tue, 19 Sep 2023 19:26:39 -0700
+Message-Id: <20230920022644.2712651-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: riel@surriel.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,187 +76,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rik van Riel <riel@surriel.com>
+Hello,
 
-Malloc libraries, like jemalloc and tcalloc, take decisions on when
-to call madvise independently from the code in the main application.
+this series adds drivers for the UART and ACM controllers found in the
+Espressif ESP32 and ESP32S3 SoCs.
 
-This sometimes results in the application page faulting on an address,
-right after the malloc library has shot down the backing memory with
-MADV_DONTNEED.
+Changes v1->v2:
+- address review comments, listed in each patch
+- add cleanup for the uart_get_baud_rate function
 
-Usually this is harmless, because we always have some 4kB pages
-sitting around to satisfy a page fault. However, with hugetlbfs
-systems often allocate only the exact number of huge pages that
-the application wants.
+Max Filippov (5):
+  serial: core: tidy invalid baudrate handling in uart_get_baud_rate
+  dt-bindings: serial: document esp32-uart
+  drivers/tty/serial: add driver for the ESP32 UART
+  dt-bindings: serial: document esp32s3-acm
+  drivers/tty/serial: add ESP32S3 ACM device driver
 
-Due to TLB batching, hugetlbfs MADV_DONTNEED will free pages outside of
-any lock taken on the page fault path, which can open up the following
-race condition:
+ .../bindings/serial/esp,esp32-acm.yaml        |  39 +
+ .../bindings/serial/esp,esp32-uart.yaml       |  48 ++
+ drivers/tty/serial/Kconfig                    |  27 +
+ drivers/tty/serial/Makefile                   |   2 +
+ drivers/tty/serial/esp32_acm.c                | 458 +++++++++++
+ drivers/tty/serial/esp32_uart.c               | 749 ++++++++++++++++++
+ drivers/tty/serial/serial_core.c              |   5 +-
+ include/uapi/linux/serial_core.h              |   6 +
+ 8 files changed, 1331 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml
+ create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-uart.yaml
+ create mode 100644 drivers/tty/serial/esp32_acm.c
+ create mode 100644 drivers/tty/serial/esp32_uart.c
 
-       CPU 1                            CPU 2
-
-       MADV_DONTNEED
-       unmap page
-       shoot down TLB entry
-                                       page fault
-                                       fail to allocate a huge page
-                                       killed with SIGBUS
-       free page
-
-Fix that race by pulling the locking from __unmap_hugepage_final_range
-into helper functions called from zap_page_range_single. This ensures
-page faults stay locked out of the MADV_DONTNEED VMA until the
-huge pages have actually been freed.
-
-Signed-off-by: Rik van Riel <riel@surriel.com>
----
- include/linux/hugetlb.h | 35 +++++++++++++++++++++++++++++++++--
- mm/hugetlb.c            | 20 +++++++++++---------
- mm/memory.c             |  7 +++----
- 3 files changed, 47 insertions(+), 15 deletions(-)
-
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 694928fa06a3..d9ec500cfef9 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -139,7 +139,7 @@ struct page *hugetlb_follow_page_mask(struct vm_area_struct *vma,
- void unmap_hugepage_range(struct vm_area_struct *,
- 			  unsigned long, unsigned long, struct page *,
- 			  zap_flags_t);
--void __unmap_hugepage_range_final(struct mmu_gather *tlb,
-+void __unmap_hugepage_range(struct mmu_gather *tlb,
- 			  struct vm_area_struct *vma,
- 			  unsigned long start, unsigned long end,
- 			  struct page *ref_page, zap_flags_t zap_flags);
-@@ -246,6 +246,25 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
- void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
- 				unsigned long *start, unsigned long *end);
- 
-+extern void __hugetlb_zap_begin(struct vm_area_struct *vma,
-+				unsigned long *begin, unsigned long *end);
-+extern void __hugetlb_zap_end(struct vm_area_struct *vma,
-+			      struct zap_details *details);
-+
-+static inline void hugetlb_zap_begin(struct vm_area_struct *vma,
-+				     unsigned long *start, unsigned long *end)
-+{
-+	if (is_vm_hugetlb_page(vma))
-+		__hugetlb_zap_begin(vma, start, end);
-+}
-+
-+static inline void hugetlb_zap_end(struct vm_area_struct *vma,
-+				   struct zap_details *details)
-+{
-+	if (is_vm_hugetlb_page(vma))
-+		__hugetlb_zap_end(vma, details);
-+}
-+
- void hugetlb_vma_lock_read(struct vm_area_struct *vma);
- void hugetlb_vma_unlock_read(struct vm_area_struct *vma);
- void hugetlb_vma_lock_write(struct vm_area_struct *vma);
-@@ -297,6 +316,18 @@ static inline void adjust_range_if_pmd_sharing_possible(
- {
- }
- 
-+static inline void hugetlb_zap_begin(
-+				struct vm_area_struct *vma,
-+				unsigned long *start, unsigned long *end)
-+{
-+}
-+
-+static inline void hugetlb_zap_end(
-+				struct vm_area_struct *vma,
-+				struct zap_details *details)
-+{
-+}
-+
- static inline struct page *hugetlb_follow_page_mask(
-     struct vm_area_struct *vma, unsigned long address, unsigned int flags,
-     unsigned int *page_mask)
-@@ -442,7 +473,7 @@ static inline long hugetlb_change_protection(
- 	return 0;
- }
- 
--static inline void __unmap_hugepage_range_final(struct mmu_gather *tlb,
-+static inline void __unmap_hugepage_range(struct mmu_gather *tlb,
- 			struct vm_area_struct *vma, unsigned long start,
- 			unsigned long end, struct page *ref_page,
- 			zap_flags_t zap_flags)
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index b99d215d2939..3510e2bf23da 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5301,9 +5301,9 @@ int move_hugetlb_page_tables(struct vm_area_struct *vma,
- 	return len + old_addr - old_end;
- }
- 
--static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
--				   unsigned long start, unsigned long end,
--				   struct page *ref_page, zap_flags_t zap_flags)
-+void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
-+			    unsigned long start, unsigned long end,
-+			    struct page *ref_page, zap_flags_t zap_flags)
- {
- 	struct mm_struct *mm = vma->vm_mm;
- 	unsigned long address;
-@@ -5430,16 +5430,18 @@ static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct
- 		tlb_flush_mmu_tlbonly(tlb);
- }
- 
--void __unmap_hugepage_range_final(struct mmu_gather *tlb,
--			  struct vm_area_struct *vma, unsigned long start,
--			  unsigned long end, struct page *ref_page,
--			  zap_flags_t zap_flags)
-+void __hugetlb_zap_begin(struct vm_area_struct *vma,
-+			 unsigned long *start, unsigned long *end)
- {
-+	adjust_range_if_pmd_sharing_possible(vma, start, end);
- 	hugetlb_vma_lock_write(vma);
- 	i_mmap_lock_write(vma->vm_file->f_mapping);
-+}
- 
--	/* mmu notification performed in caller */
--	__unmap_hugepage_range(tlb, vma, start, end, ref_page, zap_flags);
-+void __hugetlb_zap_end(struct vm_area_struct *vma,
-+		       struct zap_details *details)
-+{
-+	zap_flags_t zap_flags = details ? details->zap_flags : 0;
- 
- 	if (zap_flags & ZAP_FLAG_UNMAP) {	/* final unmap */
- 		/*
-diff --git a/mm/memory.c b/mm/memory.c
-index 6c264d2f969c..a07ae3b60530 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1683,7 +1683,7 @@ static void unmap_single_vma(struct mmu_gather *tlb,
- 			if (vma->vm_file) {
- 				zap_flags_t zap_flags = details ?
- 				    details->zap_flags : 0;
--				__unmap_hugepage_range_final(tlb, vma, start, end,
-+				__unmap_hugepage_range(tlb, vma, start, end,
- 							     NULL, zap_flags);
- 			}
- 		} else
-@@ -1753,9 +1753,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
- 	lru_add_drain();
- 	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma->vm_mm,
- 				address, end);
--	if (is_vm_hugetlb_page(vma))
--		adjust_range_if_pmd_sharing_possible(vma, &range.start,
--						     &range.end);
-+	hugetlb_zap_begin(vma, &range.start, &range.end);
- 	tlb_gather_mmu(&tlb, vma->vm_mm);
- 	update_hiwater_rss(vma->vm_mm);
- 	mmu_notifier_invalidate_range_start(&range);
-@@ -1766,6 +1764,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
- 	unmap_single_vma(&tlb, vma, address, end, details, false);
- 	mmu_notifier_invalidate_range_end(&range);
- 	tlb_finish_mmu(&tlb);
-+	hugetlb_zap_end(vma, details);
- }
- 
- /**
 -- 
-2.41.0
+2.30.2
 
