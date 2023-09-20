@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 523627A77A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A999F7A77B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234200AbjITJey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S234153AbjITJhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234190AbjITJeu (ORCPT
+        with ESMTP id S234122AbjITJhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:34:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2E293;
-        Wed, 20 Sep 2023 02:34:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51BA7C433C8;
-        Wed, 20 Sep 2023 09:34:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695202484;
-        bh=QRqraJthrB8s9rPFRvGC6l5CWWwWQnee/47O8rOjCCw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=hHW7X4m7KYpDH5gfY61PdqOpjN3Y7rHvb8kCZPi2x4QeZ4282xmLjtH/VG98fLLt2
-         nnMOFneixT9add37HLtFNJq4cPxFz0G0CYiPYBF4mfuu0Wd7Ylcic2Yyig9S88zxI/
-         wZ1y138LMKQb3ZE6Dc99cRaKauE718Qsi7GkZqONwyB7rIFvccLpXII9v54328Y5Xf
-         QMXEZusEupYfBMolEIdWaI69MR1OWSs30AEjcVl3TLDIdedsK3IFxjtHA+Oc2h17Q8
-         HkBgJqIzsp7+r3Xf1XkVKFMg6EwaPxvbBnArHbwZ0wuxPx8VLJEKw6szjW+9BTpb7T
-         nXEayUPV2CyBA==
-From:   Lee Jones <lee@kernel.org>
-To:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-In-Reply-To: <528425d6472176bb1d02d79596b51f8c28a551cc.1692376361.git.christophe.leroy@csgroup.eu>
-References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
- <528425d6472176bb1d02d79596b51f8c28a551cc.1692376361.git.christophe.leroy@csgroup.eu>
-Subject: Re: (subset) [PATCH v4 23/28] mfd: core: Ensure disabled devices
- are skiped without aborting
-Message-Id: <169520247904.3353856.9378855807085829647.b4-ty@kernel.org>
-Date:   Wed, 20 Sep 2023 10:34:39 +0100
+        Wed, 20 Sep 2023 05:37:10 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D7ECF;
+        Wed, 20 Sep 2023 02:37:03 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id D77E6320034E;
+        Wed, 20 Sep 2023 05:37:01 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 20 Sep 2023 05:37:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695202621; x=1695289021; bh=JN
+        1ZzaiwVFExq/3/5UGUuW9E0CnaSmXvojZmxi01Kcc=; b=Pm8O1gOEIViOo1Budb
+        3EuwADD286hOxA3J0GYhoMDrkIH2t+PFfEvg0aXIhz0gunW1x4kkTzPTdL6SYqwP
+        51VKokd80Hj0RKh5FRGxLiBRHUzF9obSnYMI9afTQHdZ1rTx4fisINLeMvhCevFd
+        Bj8hrQ7WU4yFBfMYTG8mPuf/f7xJpGFXIszmhFNUvkuQN9ZqWeIcnQzxlMusZEUJ
+        bk9Hmaio42ziipwIOrrQ8eV45RBWqhlD8mJVj2SEcSsnmMrInFbhuUGxsXWfWw8e
+        v6/Fy91qyfbQJaZ8SBcAC88Oj4dTC5X+ZfBwcUZ/E/ATPWljbBKmwdAY+G9nhfgm
+        tVPw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695202621; x=1695289021; bh=JN1ZzaiwVFExq
+        /3/5UGUuW9E0CnaSmXvojZmxi01Kcc=; b=oTLvY1yG2kMqEXf+HxPvuLCeLFu2a
+        yc7o2PutX7FVP+lscX+cfS/PXM4eaUK4e0tOpFtx7QeQ3xBfgEZY+Ld0bSFQlKUm
+        7pWSMhxBJGuFH161aX1ClZtZfOuohRiYr0D05oEyaO5CGJfNw91UhzmngSsmGccX
+        70O7NCkbEpnCUFi1QUkbNbHX7cUQeCE9aQkF6+VrYJIu7CowvpblQkkIP54GteUS
+        rXnSxAxt7/L0ReZMCDvZmbo/dEayKb6f/cq0HA49K1BFEi8D8cZW5BKmU04V3McE
+        BqPA/P5oypt8f0hu3unvgt0vtaIXK2BRC8a3oJKSnkmzHm/2Vm83ywBUQ==
+X-ME-Sender: <xms:PL0KZb6lhtH46k9GGSDj5yk3j3mZCRrBS_Y1L90S1ZtH339ksLcHiw>
+    <xme:PL0KZQ5iWwZ1otcgXt1LERwxEL9Pnw5fYYFBdfbcKEZGIAuEoxrteY-4aE83qCFLt
+    r0ChJoV6Gf7daf8cFM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekfedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:PL0KZSesSU9ywtQ-tngRXbTJzPcxuA5Y4tWyJOpAnBc3oR4QgLSlUQ>
+    <xmx:PL0KZcLC4L0R3ZVR_u8sCugVuSFd1G8xcy7oRTLxNHilU6r7CSCTZA>
+    <xmx:PL0KZfL8yMrsJ4QfdwTs9P7QEPSw5txNRgGXNKJysQ6QXmT5ii8DIQ>
+    <xmx:Pb0KZZBQfFXY91QZ2moim8ARvgr9ZxEf03fqNy_kz4cHxc8rreKIhQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 14CB2B60089; Wed, 20 Sep 2023 05:37:00 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <e43c9fb0-1869-4328-a984-33b35caf58ba@app.fastmail.com>
+In-Reply-To: <20230919230909.530174-2-gregory.price@memverge.com>
+References: <20230919230909.530174-1-gregory.price@memverge.com>
+ <20230919230909.530174-2-gregory.price@memverge.com>
+Date:   Wed, 20 Sep 2023 05:36:39 -0400
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Gregory Price" <gourry.memverge@gmail.com>,
+        linux-mm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-api@vger.kernel.org, linux-cxl@vger.kernel.org,
+        "Andy Lutomirski" <luto@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>, x86@kernel.org,
+        "Gregory Price" <gregory.price@memverge.com>
+Subject: Re: [RFC v2 1/5] mm/migrate: fix do_pages_move for compat pointers
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 18:39:17 +0200, Christophe Leroy wrote:
-> The loop searching for a matching device based on its compatible
-> string is aborted when a matching disabled device is found.
-> This abort prevents to add devices as soon as one disabled device
-> is found.
-> 
-> Continue searching for an other device instead of aborting on the
-> first disabled one fixes the issue.
-> 
-> [...]
+On Tue, Sep 19, 2023, at 19:09, Gregory Price wrote:
+> do_pages_move does not handle compat pointers for the page list.
+> correctly.  Add in_compat_syscall check and appropriate get_user
+> fetch when iterating the page list.
+>
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Co-developed-by: Arnd Bergmann <arnd@arndb.de>
 
-Applied, thanks!
+Looks correct to me, thanks for fixing it!
 
-[23/28] mfd: core: Ensure disabled devices are skiped without aborting
-        commit: 36d139dc63db18eb95165fcc2bd3c670c948d605
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
---
-Lee Jones [李琼斯]
+You can also blame me for breaking it in the first place
 
+Fixes: 5b1b561ba73c ("mm: simplify compat_sys_move_pages")
+
+      Arnd
