@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BDF7A8DDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0E47A8DE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjITUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 16:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
+        id S229798AbjITUiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 16:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjITUiI (ORCPT
+        with ESMTP id S229741AbjITUiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 16:38:08 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2052.outbound.protection.outlook.com [40.107.8.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8769C2;
-        Wed, 20 Sep 2023 13:38:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TJVabQgVcAnRyKiskRj83p8GBIt1HLaliwMDZ4hxlrUQXLc3ZDTM93/sMAuVIeG7JpYSka3EmTn5HHI4hoZxaCT9JwtQuVMb1ov3wewxt7E1jXj2rUVzoXbOmA5sxR3XPKjZi6t3xBhaSjWpw/+BZgB+AkBlLlsJafih8FCCyIsL3YXPRxobPtGCK/kIr0nXDhl81A0RuQJzTQeIiAbm4fDyWKi/P6q+WHRkw+5UyOcA1iwCAEAtVeLwaNc+BlcMv9qUCaDaxbzPY4A61uSTxiIHUVuo+4WbBaqeaz8H7mQ+XhkFE/XpzrhG3RWx6sFRBoWlOk9pV4K3S62Gc/LDkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yAVl07Mj+b2bnHwCqU4ORdz97ykl6zmyBuZmnqicyE8=;
- b=SE2wAPYnG/+qtflo9kHXpP/3qIAxnnS4ZkBE0jKi8VHIMF5aBw6F0idnTmM4JBv+bh0vjWAoZBVJtC8ZB59AWwMMw1vFjcFVRt6wpihmEH0yPCPvR7Zw/TTg+aOcl2UWHKRnDLA3/HygkUWYDCwaeE66ZADcnd7M+7bPFybxxlHGIfgV3cUWBZBGkCrM7Qn4gV4GqNvC4r2xloaJeOnC7CsHPcNJmwQ5nog1Ax9HPtPbRTXRA8SXWmIliW6bpcJ2Lj/mcv/V/YmzfHopLsBsMqkZq3soFg1yeEGd59SYIpGb6yuQaismk3ebu8KQclwtEVHnxyYyMBWFmMe3eWdWtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yAVl07Mj+b2bnHwCqU4ORdz97ykl6zmyBuZmnqicyE8=;
- b=k/Gccu2tqTYWdX8XycaOKS88W7eY/hm1ZRfFudBrxs8RO/7KGYBgjWrcJFTAT+ZIwyWqPAhYjSm/7CZHfki1HCdfrIQVx7lZS4o7GpBXll5JDZeaDM2USalUoUmyzJvTk9n7IcNyf0hhfrU2+VXBwkwDu5lcXyHHgzY15nnjU7E=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by DBBPR04MB7819.eurprd04.prod.outlook.com (2603:10a6:10:1e9::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
- 2023 20:38:00 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 20:38:00 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        imx@lists.linux.dev (open list:FREESCALE eDMA DRIVER),
-        dmaengine@vger.kernel.org (open list:FREESCALE eDMA DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/1] dmaengine: fsl-dma: fix DMA error when enabling sg if 'DONE' bit is set
-Date:   Wed, 20 Sep 2023 16:37:41 -0400
-Message-Id: <20230920203741.3184727-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 20 Sep 2023 16:38:16 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BD9BB;
+        Wed, 20 Sep 2023 13:38:10 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KKasQD027552;
+        Wed, 20 Sep 2023 20:37:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : from : to : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=scE1A9etrMncLHYaIsPfkg+IMQEkMqQ5BvwvmAUKuaA=;
+ b=hDkRIbRyZh013Cmlg9suulc7MywXqA79o2MyGOOd3ZhHZmubs7XSimg7EqJnJ3H6tH9D
+ oMCJHM5LiC6LEDv6Vc+HCXwngnMDUDwm99E1PGTYtP8l6Fb3RLrA7puokB51Js0nsTvj
+ fkGNzC0/QPLQDdQYL9T+NfxHXd7sIHU3pjjRLtYFC97acQfOjom09OjFMH9cL/HGz30X
+ zx1erfjVOKVs1fUygqn1xvVFM7pVt4PcRbkuI7BWKOybF+hvJIiG4Eub2qsedlLSAcRj
+ GLiOkSoc3Df8Q5lyEgrI4CWZGPNxNWCKpPN2NwMGL8hFBm63o4fBbwTLKLzXOKxyzmiK xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t848sx521-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 20:37:52 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38KKbOwA029721;
+        Wed, 20 Sep 2023 20:37:52 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t848sx51a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 20:37:52 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38KJrI4P016451;
+        Wed, 20 Sep 2023 20:37:51 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t5sd28qh0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 20:37:51 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38KKbo1g6750762
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Sep 2023 20:37:51 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE74F5805A;
+        Wed, 20 Sep 2023 20:37:50 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 341C558056;
+        Wed, 20 Sep 2023 20:37:50 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed, 20 Sep 2023 20:37:50 +0000 (GMT)
+Message-ID: <8a65f5eb-2b59-9903-c6b8-84971f8765ae@linux.ibm.com>
+Date:   Wed, 20 Sep 2023 16:37:49 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [syzbot] [integrity] [overlayfs] general protection fault in
+ d_path
+Content-Language: en-US
+From:   Stefan Berger <stefanb@linux.ibm.com>
+To:     syzbot <syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com>,
+        amir73il@gmail.com, brauner@kernel.org, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com,
+        zohar@linux.ibm.com, casey@schaufler-ca.com
+References: <000000000000259bd8060596e33f@google.com>
+ <bed99e92-cb7c-868d-94f3-ddf53e2b262a@linux.ibm.com>
+In-Reply-To: <bed99e92-cb7c-868d-94f3-ddf53e2b262a@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Kbc4INJMNgj4ReNRe8sxaQgKTckhzWu5
+X-Proofpoint-ORIG-GUID: 8S0Dh3bbjUOU1Cc6xdcX6ucNZtaUTEIW
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR05CA0051.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::26) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DBBPR04MB7819:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4478de67-24e1-4a87-1945-08dbba197a99
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YSvqRE5X48De3hJCjptDyDW37qiUj+LMXimcOTjD1FrvW03LmrcfrBzysQvDIsf4EeZPzzOAbx3cbQIIbzdrwf5cVZFk4b8lN/qzuX173TJzW7q0JHzExeG3Q3itFOYV1DyaXirJN+e1jbLCGgLuy00aCDfCzxhP+HaLR6e+LXDZ8K3Dx5pXsn7ICpGQA0QsPp/VQDVsQ+lJLUqYjHDXTZNBbz9XJ647YVX2jIYNddVjqB/MCc/qYUoAwJRDE6qQrntXlvrrZ2LgmoBQ3kcFYM2BN1JRmL+PzSe1Wsdu2HR/BLNJk8G9WCzdB7eyRjofvjewtgqHLnHlBljwY/EEp2pnXev27N7kjxbUyixMq6TlHhLRwYl5neKkbmKuI+TmXamXoUjzIb8t4A0l4gjLF+UIk6ZLQUlqPDr6aPCRi4NR1ezeLfVnZKSHXO5HFuUKoIbq00hpTPgdLkUboBgmA6P2BM5XbJodL/xd7brcMJJwhByRkxJer5jIUl+8rKjtux5z/nm3WyMYYMlWPj9nS1thIMrvwJWc9vo1/4Nv1P7L3YvEBX14rPcWyrFg85vBlwFKCoEugdy5uNsGtk0Fzw5SWPVhvEWxDDfaANeR3HSCYteeOqCRl4lcG1CBKFZ6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(39860400002)(136003)(366004)(186009)(1800799009)(451199024)(52116002)(6512007)(6486002)(6506007)(6666004)(86362001)(38100700002)(83380400001)(38350700002)(36756003)(2616005)(1076003)(26005)(8676002)(41300700001)(66476007)(66556008)(8936002)(66946007)(316002)(5660300002)(478600001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GmHGZmbCRJqzKPr0PTDLn9sf4lhPJ/h8WqoT4CDJcvseplTL/UkiLdOEtEaV?=
- =?us-ascii?Q?8yQBvJE8//gbz/ly8HGuR06FEQxlQJ2iz60dwtk6XoqLxJ6dGhndarXcOYoJ?=
- =?us-ascii?Q?yyC4aSXeycV9+qJpLPxIr7+s0OSYMqtQm1GkS5hozGDo2X4ZRPUCajQBC4Dw?=
- =?us-ascii?Q?82JL4+3dlgD8/80s/Z8AQxNd1X06tCH9DnP1Su7kNcWe4zF3NoVWOpheLQsf?=
- =?us-ascii?Q?xnhhv88eotA984/L6AqOghyFnmS7eIkzKs+yyTWU65ThhW4DPgbHFSgyta/0?=
- =?us-ascii?Q?O0QOzjzOj5bOAea6+o7dyjWfOii73B6X1OCejAn/R4VVCBzCwaThpTtYU67L?=
- =?us-ascii?Q?Fre0QbgEVqYaRdJEM0dHKVFsfeENwBPXeObp117PHRl21ghzN1tdfC2ttAch?=
- =?us-ascii?Q?KFXX9gEsI/hsYs5zucsYx8rztPD+bz6CIEw/UNNxaOXlEESXaLwsYakudPki?=
- =?us-ascii?Q?sChm/NvT/sdzKtVRtO/1QN4IYnK3P1bXIoumev3JapMl7aAbW45pgluYndix?=
- =?us-ascii?Q?RQaAzOPNI+//ylt7zGNMmWUiggqtSXo2bCW62E7RdxMJ6sUYNOKFBQ5/GQw3?=
- =?us-ascii?Q?J7dIq+PsrnMOfJp4v6FBteIVRX5qT3OfaID6ODBB6sJisjyIN9Txx/UsSB/i?=
- =?us-ascii?Q?1n9BlmUl2qs1KGj2qNfWTghFIFclLcQjr9t+8yetoqfX306Uy4f4HgR79cBd?=
- =?us-ascii?Q?xGD1AAbB0b/6JKui033zE712gKs5vHgy328hOCrVIPvXiZbztSapS92MjhLF?=
- =?us-ascii?Q?OaNU1vMNXHsQq2CKQ7/u9ywF8XPKL++JdhgdDI04HugWet+4N5tzPLXSFtAM?=
- =?us-ascii?Q?fNcDzJQqlmHfeCUprr+d0FUzrYHry8z/RyDMn+QoY7IJ9U/1hfSjSxblI5ro?=
- =?us-ascii?Q?jI9Pfxy0j9vgwFtMDzh6pM662iMSqnLlIXsvtu3hn4eOQFOHadvSs53ZgoRc?=
- =?us-ascii?Q?8Da76JLFvWbf/x3aF53xCCBYVhKoTS0z3vYjOOqOWmTPOf2lNAdgAOsboLxl?=
- =?us-ascii?Q?h26vm1lAq4U8ihXQ3adVM1mpP7KMnGYlFPZjqGnVoblY6Is45nDE2pjs7Q1o?=
- =?us-ascii?Q?kb52Zw6UHBcDp0JkdeXQ0OLhAVnuPnSaDLa/PomUkjtrY7Z/AG4BlrBHQWbn?=
- =?us-ascii?Q?SRiThMe2UbPbGrf5zhkWN70/06VJPyxWzyjp+ZmXXh6FeQ2OAOjuoKv4n/hy?=
- =?us-ascii?Q?Tipm/PdJh9DkluvgyU4mND2d1sMs7prQ7MAFkxCUHioPFtfqi43gswTxd5J0?=
- =?us-ascii?Q?x/5pV4NSBdXtUEP+vJkbJ3lTLYD9qjTwtopQ2XeBXYxVKJrNuTA/gpb4tiGi?=
- =?us-ascii?Q?Mmgi/S50b50fPQ89+JYt6Ky2MUz3j63/OAlCH9G9974TRYApvNOn0EoZT5u7?=
- =?us-ascii?Q?/1i/3bTwRuvkqzVu8VmsJxMLOwxtCKd2EYT/drLoDWDUnskgjMjvi9M9I0QG?=
- =?us-ascii?Q?v6wVJJUhNpGS9mPMsNR7j8uzhmMMqzanjJuGAFvhCjzVIwT93SIpkycdZG/8?=
- =?us-ascii?Q?Mg8eWZyeNCY18LDXYzWAnIcs5lUs7lQ3m1g+LDGvHRaC7NgVQM1cXiF69aoq?=
- =?us-ascii?Q?/wMvEp+ZZElVtjIbDEA=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4478de67-24e1-4a87-1945-08dbba197a99
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 20:37:59.9502
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B0tsRJE3qceWBH+qN2MZ9tMzi9FgljjPcK5M8XgvDWRRuZdHYjFK+b8KcjoLboY4UH9TRQMmmXGis7jjfRQYhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7819
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_11,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ adultscore=0 impostorscore=0 lowpriorityscore=0 mlxlogscore=317
+ suspectscore=0 clxscore=1015 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309200172
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -112,83 +100,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In eDMAv3, clearing 'DONE' bit (bit 30) of CHn_CSR is required when
-enabling scatter-gather (SG). eDMAv4 does not require this change.
 
-Cc: <stable@vger.kernel.org>
-Fixes: 72f5801a4e2b ("dmaengine: fsl-edma: integrate v3 support")
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- drivers/dma/fsl-edma-common.c | 12 ++++++++++++
- drivers/dma/fsl-edma-common.h | 14 +++++++++++++-
- drivers/dma/fsl-edma-main.c   |  2 +-
- 3 files changed, 26 insertions(+), 2 deletions(-)
+On 9/20/23 13:01, Stefan Berger wrote:
+>
+> On 9/17/23 20:04, syzbot wrote:
+>> syzbot has bisected this issue to:
+>>
+>> commit db1d1e8b9867aae5c3e61ad7859abfcc4a6fd6c7
+>> Author: Jeff Layton <jlayton@kernel.org>
+>> Date:   Mon Apr 17 16:55:51 2023 +0000
+>>
+>>      IMA: use vfs_getattr_nosec to get the i_version
+>>
+>> bisection log: 
+>> https://syzkaller.appspot.com/x/bisect.txt?x=106f7e54680000
+>> start commit:   a747acc0b752 Merge tag 'linux-kselftest-next-6.6-rc2' 
+>> of g..
+>> git tree:       upstream
+>> final oops: https://syzkaller.appspot.com/x/report.txt?x=126f7e54680000
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=146f7e54680000
+>> kernel config: 
+>> https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
+>> dashboard link: 
+>> https://syzkaller.appspot.com/bug?extid=a67fc5321ffb4b311c98
+>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=1671b694680000
+>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=14ec94d8680000
+>>
+>> Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
+>> Fixes: db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
+>>
+>> For information about bisection process see: 
+>> https://goo.gl/tpsmEJ#bisection
+>
+> The final oops shows this here:
+>
+> BUG: kernel NULL pointer dereference, address: 0000000000000058
+> #PF: supervisor read access in kernel mode
+> #PF: error_code(0x0000) - not-present page
+> PGD 0 P4D 0
+> Oops: 0000 [#1] PREEMPT SMP
+> CPU: 0 PID: 3192 Comm: syz-executor.0 Not tainted 6.4.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, 
+> BIOS Google 08/04/2023
+> RIP: 0010:__lock_acquire+0x35/0x490 kernel/locking/lockdep.c:4946
+> Code: 83 ec 18 65 4c 8b 35 aa 60 f4 7e 83 3d b7 11 e4 02 00 0f 84 05 
+> 02 00 00 4c 89 cb 89 cd 41 89 d5 49 89 ff 83 fe 01 77 0c 89 f0 <49> 8b 
+> 44 c7 08 48 85 c0 75 1b 4c 89 ff 31 d2 45 89 c4 e8 74 f6 ff
+> RSP: 0018:ffffc90002edb840 EFLAGS: 00010097
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000002
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000050
+> RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: ffff888102ea5340 R15: 0000000000000050
+> FS:  0000000000000000(0000) GS:ffff88813bc00000(0000) 
+> knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000058 CR3: 0000000003aa8000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  lock_acquire+0xd8/0x1f0 kernel/locking/lockdep.c:5691
+>  seqcount_lockdep_reader_access include/linux/seqlock.h:102 [inline]
+>  get_fs_root_rcu fs/d_path.c:243 [inline]
+>  d_path+0xd1/0x1f0 fs/d_path.c:285
+>  audit_log_d_path+0x65/0x130 kernel/audit.c:2139
+>  dump_common_audit_data security/lsm_audit.c:224 [inline]
+>  common_lsm_audit+0x3b3/0x840 security/lsm_audit.c:458
+>  smack_log+0xad/0x130 security/smack/smack_access.c:383
+>  smk_tskacc+0xb1/0xd0 security/smack/smack_access.c:253
+>  smack_inode_getattr+0x8a/0xb0 security/smack/smack_lsm.c:1187
+>  security_inode_getattr+0x32/0x50 security/security.c:2114
+>  vfs_getattr+0x1b/0x40 fs/stat.c:167
+>  ovl_getattr+0xa6/0x3e0 fs/overlayfs/inode.c:173
+>  ima_check_last_writer security/integrity/ima/ima_main.c:171 [inline]
+>  ima_file_free+0xbd/0x130 security/integrity/ima/ima_main.c:203
+>  __fput+0xc7/0x220 fs/file_table.c:315
+>  task_work_run+0x7d/0xa0 kernel/task_work.c:179
+>  exit_task_work include/linux/task_work.h:38 [inline]
+>  do_exit+0x2c7/0xa80 kernel/exit.c:871 <-----------------------
+>  do_group_exit+0x85/0xa0 kernel/exit.c:1021
+>  get_signal+0x73c/0x7f0 kernel/signal.c:2874
+>  arch_do_signal_or_restart+0x89/0x290 arch/x86/kernel/signal.c:306
+>  exit_to_user_mode_loop+0x61/0xb0 kernel/entry/common.c:168
+>  exit_to_user_mode_prepare+0x64/0xb0 kernel/entry/common.c:204
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+>  syscall_exit_to_user_mode+0x2b/0x1d0 kernel/entry/common.c:297
+>  do_syscall_64+0x4d/0x90 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+>
+> do_exit has called exit_fs(tsk) [ 
+> https://elixir.bootlin.com/linux/v6.4-rc2/source/kernel/exit.c#L867 ]
+>
+> exit_fs(tsk) has set tsk->fs = NULL [ 
+> https://elixir.bootlin.com/linux/v6.4-rc2/source/fs/fs_struct.c#L103 ]
+>
+> I think this then bites in d_path() where it calls:
+>
+>     get_fs_root_rcu(current->fs, &root);   [ 
+> https://elixir.bootlin.com/linux/v6.4-rc2/source/fs/d_path.c#L285 ]
+>
+> current->fs is likely NULL here.
+>
+> If this was correct it would have nothing to do with the actual patch, 
+> though, but rather with the fact that smack logs on process 
+> termination. I am not sure what the solution would be other than 
+> testing for current->fs == NULL in d_path before using it and 
+> returning an error that is not normally returned or trying to 
+> intercept this case in smack.
 
-diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
-index 70e24e76d73b6..2b834502e30a5 100644
---- a/drivers/dma/fsl-edma-common.c
-+++ b/drivers/dma/fsl-edma-common.c
-@@ -460,6 +460,18 @@ static void fsl_edma_set_tcd_regs(struct fsl_edma_chan *fsl_chan,
- 		tcd->csr = cpu_to_le16(csr);
- 	}
- 
-+	/*
-+	 * Must clear CHn_CSR[DONE] bit before enable TCDn_CSR[ESG] at EDMAv3
-+	 * eDMAv4 have not such requirement.
-+	 * Change MLINK need clear CHn_CSR[DONE] for both eDMAv3 and eDMAv4.
-+	 */
-+	if (((fsl_edma_drvflags(fsl_chan) & FSL_EDMA_DRV_CLEAR_DONE_E_SG) &&
-+		(tcd->csr & EDMA_TCD_CSR_E_SG)) ||
-+	    ((fsl_edma_drvflags(fsl_chan) & FSL_EDMA_DRV_CLEAR_DONE_E_LINK) &&
-+		(tcd->csr & EDMA_TCD_CSR_E_LINK)))
-+		edma_writel_chreg(fsl_chan, edma_readl_chreg(fsl_chan, ch_csr), ch_csr);
-+
-+
- 	edma_write_tcdreg(fsl_chan, tcd->csr, csr);
- }
- 
-diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.h
-index a9e27110ac7d7..6a74bf9facaa0 100644
---- a/drivers/dma/fsl-edma-common.h
-+++ b/drivers/dma/fsl-edma-common.h
-@@ -183,11 +183,23 @@ struct fsl_edma_desc {
- #define FSL_EDMA_DRV_BUS_8BYTE		BIT(10)
- #define FSL_EDMA_DRV_DEV_TO_DEV		BIT(11)
- #define FSL_EDMA_DRV_ALIGN_64BYTE	BIT(12)
-+/* Need clean CHn_CSR DONE before enable TCD's ESG */
-+#define FSL_EDMA_DRV_CLEAR_DONE_E_SG	BIT(13)
-+/* Need clean CHn_CSR DONE before enable TCD's MAJORELINK */
-+#define FSL_EDMA_DRV_CLEAR_DONE_E_LINK	BIT(14)
- 
- #define FSL_EDMA_DRV_EDMA3	(FSL_EDMA_DRV_SPLIT_REG |	\
- 				 FSL_EDMA_DRV_BUS_8BYTE |	\
- 				 FSL_EDMA_DRV_DEV_TO_DEV |	\
--				 FSL_EDMA_DRV_ALIGN_64BYTE)
-+				 FSL_EDMA_DRV_ALIGN_64BYTE |	\
-+				 FSL_EDMA_DRV_CLEAR_DONE_E_SG |	\
-+				 FSL_EDMA_DRV_CLEAR_DONE_E_LINK)
-+
-+#define FSL_EDMA_DRV_EDMA4	(FSL_EDMA_DRV_SPLIT_REG |	\
-+				 FSL_EDMA_DRV_BUS_8BYTE |	\
-+				 FSL_EDMA_DRV_DEV_TO_DEV |	\
-+				 FSL_EDMA_DRV_ALIGN_64BYTE |	\
-+				 FSL_EDMA_DRV_CLEAR_DONE_E_LINK)
- 
- struct fsl_edma_drvdata {
- 	u32			dmamuxs; /* only used before v3 */
-diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
-index 2c20460e53aa9..4f8312b64f144 100644
---- a/drivers/dma/fsl-edma-main.c
-+++ b/drivers/dma/fsl-edma-main.c
-@@ -357,7 +357,7 @@ static struct fsl_edma_drvdata imx93_data3 = {
- };
- 
- static struct fsl_edma_drvdata imx93_data4 = {
--	.flags = FSL_EDMA_DRV_HAS_CHMUX | FSL_EDMA_DRV_HAS_DMACLK | FSL_EDMA_DRV_EDMA3,
-+	.flags = FSL_EDMA_DRV_HAS_CHMUX | FSL_EDMA_DRV_HAS_DMACLK | FSL_EDMA_DRV_EDMA4,
- 	.chreg_space_sz = 0x8000,
- 	.chreg_off = 0x10000,
- 	.setup_irq = fsl_edma3_irq_init,
--- 
-2.34.1
+I have now been able to recreate the syzbot issue with the test program 
+and the issue is exactly the one described here, current->fs == NULL.
+
+    Stefan
+
 
