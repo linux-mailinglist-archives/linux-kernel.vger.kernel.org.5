@@ -2,142 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35B77A80E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139CB7A80E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236217AbjITMkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
+        id S236258AbjITMkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236142AbjITMkl (ORCPT
+        with ESMTP id S236213AbjITMkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:40:41 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2093.outbound.protection.outlook.com [40.92.19.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442D38F;
-        Wed, 20 Sep 2023 05:40:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Se1Lm/jMvTI2o50ISjfWdNIINrxvh5y+zHGjhfkEH/aEMPjXK/sKna5VPfTOi+FRGQ1xoUtBIYvR5/VCXxJfE8ek+diB1tCy2tBVZdx8Se5MAN2pWApNiRsRK67WSf/HvJM8PtYZghFqNr01SZ1PcAUerZ61UydIZ5ShCB9Ci56nQmUlvYPyGqdYbncQ9h7y8UrYGzC+Qz7PDhi5H0qdqzW7KcAbHkS7dH5XEVzo9Vey326tWW99+fSg3rF/krCBWrekB5Z9h+YH6RUlxwn/ngn8KLNoDlpY707IV8RAEwp7xgbTArQSH82S+3T5AQO5ZKGTlZm1RYLooA6JKU0hBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AIsqo+XA6IjhVishFwl6bRrjZLsgFpgu72rV/maQ800=;
- b=c2bYysoM2eVOSk+M0rsSxH1Q1vHzLzpR/6qUrdLMphHjFpZueRRuEUI/SiVu/aMRXvSpSERfSeeV3xpPPEfn1KBIwToATTzeSD/qRZh4ljiGa2ljP6EfufPScgvEsB2aMOKLI2yJ24mVAIZYNcbzTTmv4NlvaTZ0l7klr0UCOPoRSjrSTmnfDprbSXd6kYXEiKLJr+hUgJ5jqanyqIXFpMe7rqfT+Z8Tn0nD8XBtkcYHzJ1IJ0eZbunW4g1C384XZ1YRob6UG8eIs3fS4SmWsNXiDBNem1JoV+o3osU6fc144ZxW+25tm9WIz7Iy2bWfnJ6ujjsGXXnKHk0qZdFqsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AIsqo+XA6IjhVishFwl6bRrjZLsgFpgu72rV/maQ800=;
- b=XTdh4Fr5bc+P1gOLfjrUeOaXn5O+VTc3rz7VmT+amEXjT0qBEQ4lUo7ZHQY2j4lTCghiTBi0U34lMuSxCJ8NZXoZNCIRhGyZ4+ow5+rZxRhzuIAwKdE90cBLYnYjgM2axuiyAigYjoNYtVbyXUPrucesZqYvUJUjeBHyCzDALFPjqQQC+LkRXdMJpHR02ZA+ibVNCAlu9TVBXRdpWShEeh2RZNks2yj4Zilzs+oGSy8L4HFP2navoiGcxKNPXquYCoVsFP5AHU6cRWCp03SHsQ43Dcxeg6vkJbXL+YmLM5bG9mqhNDEPEc1ODgbjN3vELrmYjfd7DYkQVIaZU3E/Jg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by IA1PR20MB6270.namprd20.prod.outlook.com (2603:10b6:208:3ff::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20; Wed, 20 Sep
- 2023 12:40:32 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263%4]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 12:40:32 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
-        evicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
-        guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>,
-        Inochi Amaoto <inochiama@outlook.com>
-Subject: Re: [PATCH v2 06/11] dt-bindings: timer: Add Sophgo sg2042 clint
-Date:   Wed, 20 Sep 2023 20:40:07 +0800
-Message-ID: <IA1PR20MB49536BFE1254ADEE0E795A26BBF9A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <66b988f0-39fc-2ed3-8f38-151d6a3c9e52@linaro.org>
-References: <66b988f0-39fc-2ed3-8f38-151d6a3c9e52@linaro.org>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [fAQusCy4zV8xnIj5aAb8ga9Y/1a4Hnk4E48hniRYXRM=]
-X-ClientProxiedBy: TYBP286CA0013.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:404:ce::25) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20230920124007.204314-1-inochiama@outlook.com>
+        Wed, 20 Sep 2023 08:40:45 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6F193
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:40:38 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so7956346a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695213637; x=1695818437; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=siMb1j/2ui4QtBBCTUzAmiO4Q/tO1NXELA6kziDpDac=;
+        b=SsS342ZtRpBhTU6smlP0nYWGc/44R7Qvcv3TzpTUIFWvw5l2P1reZBoW5YGao/SNgI
+         LO3XbOR2y+twjRso3E0Y5bNIHzBl6Kpq5XczAEPDIlimwCuOdPNwqmwFgIomyhdgmHim
+         b1v0SD0tghBR1dgBJBP4biUokKxskNPPQ4flVSwOYjVyUGeUl+QcmdusdX4PABOBPdZh
+         IB2eXJMhaQDp2NH43eEyR4cH2K4CwDSHx+F7SElJS0bKelkivQ98BdDzt3a22vqdFxe0
+         J476w4vDDb5YsNBCVzeVuUHS/JrvHIR//Yf4o/xZcoSSXomG71hE6Kz+jfaCWVboftt1
+         WVbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695213637; x=1695818437;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=siMb1j/2ui4QtBBCTUzAmiO4Q/tO1NXELA6kziDpDac=;
+        b=v641e6qF9z7NXqe4FoMrV36CKywp1AD8YWJoiDjp/ITIuu1JnAOEnR6VYDnI/VXUef
+         dFORgJ8YrzI1Cri4wMFEyQQNFC/G9TeBjnFjU0TE9P4ixwa8hw/04H/RheeCycrE9y8l
+         p71JdL1FADOppVCXgfbGGiPwA/aQNxOy/duxuIyjdShOhU1wZpht70qjQF0j57L73X3v
+         ikDOA7pI6PSAiiP59lW02BYr9kfnM4sW6uFenw/3uU0jZNgj9j8tPInAx+Ta4xI1l4a7
+         0VPYHsJ87ifW+GgeWlSEGW9QWP5jDskRaySIb9FPDbYV/jjq4eU/gfN25G7gYgE6TcWF
+         TXKQ==
+X-Gm-Message-State: AOJu0YzNlubrknLR4+wCLSioKO3/5WYPDJ09XH5dqFmXRkgJXpYB4mmH
+        mCSwq8dFKXppVn2TKnEIuxqLb+PI+vAZV988IaxHdA==
+X-Google-Smtp-Source: AGHT+IFJLGYt97ceCa1zxstXLFOdTK8xonUjuIs1RQdUe7jEz92yZb6b8+8I1ELjdpmdMXutyNKR5TceTpD+ln0DnUo=
+X-Received: by 2002:aa7:c54f:0:b0:530:ccf7:37af with SMTP id
+ s15-20020aa7c54f000000b00530ccf737afmr2050462edr.12.1695213637092; Wed, 20
+ Sep 2023 05:40:37 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|IA1PR20MB6270:EE_
-X-MS-Office365-Filtering-Correlation-Id: 21aa47f7-a0fd-432b-64aa-08dbb9d6c737
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DHFQIhLM3O3ZafbqZSBSv5A4jJ4+pcMeW9G82Xc1Lv3J5yZ75ErDGr2K7YPr3kFDyFiCiMX5fVF88P32GArnUXl6aFmdWLxlj/jq0UYUvmzzIki0aANuuhICoRy+dBOIKJz70o+JGr1fRjJ5fT3yq9qXJKYnCCvmaXg88UjXHUj2UcuV7+uBdEOf2+9uDUsklMW2h5sLrx5AWiMjX4q+J8HTD3Vm7UXHnYz6WZMKYTyC5UhVeFoTsbklVANhQAp71sM/YZ9e9wB2QqNJtzf6cA6m1juk7ATzDj9dO39u/Bzjmk4ubDqUoJb0oev4IXZVHvJLk5625bYhlkDlWZyMvBpGT8840wrJnTnvMxdt4hoK8DFBv09c+GOd43Qd7I4x5eOtRB3nCOKcTPMTiB3oyT3xKRorOpHLq5a3V3R71yKDg49P28/IKm584ZAfXIE6hZMMpNAIEyrpsBcQCOnOUjhD4oYwXL2DYXAycPQE9wfLwTzBHvfGpcP7CraPenEHYyPkj7UPaXunvKQkGflKsA9LtLH1W028zNeGYmRQj3zAPt1ZVIsepgurMOtNUKH09AjM4ETL9HEUWmUlsME2xhrHVk3IpqNkbW11IxWuu7Gk166Ovt4F13pl/Q18QOJ8
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6HZy0fOQ5CFnARlgxbLCEiC9c/3VDqdxydyQQYR1pr57NYkVD+658DaBzETf?=
- =?us-ascii?Q?EBIqK12O35KT/Bw2wbmNNqZ66zDEgPDJuwjKYQaHBHVjrSHKt6zqSeU2Mxie?=
- =?us-ascii?Q?7SgeQ0ki6PodZth9JBEq80n059z2XbRpknWKffrvRDBksTqGG2Zq9a0lu1Wn?=
- =?us-ascii?Q?psMqVtvwQ1jsBBDicSWNa6QEm7CD5ACqytBePiGJFXntpM7ahecd1A0C10/3?=
- =?us-ascii?Q?UTrPT3z+LWR79xD32ZU579joxlQUUUsxQXl4uF2rO0Kx9x10ktxsehlPnCJu?=
- =?us-ascii?Q?7fgXkPD4jDajNrmQ/LXxPKY9xjWT07moDlCZr7sC9V2toRtm9gaEiCUrBiHG?=
- =?us-ascii?Q?s8E+XzQfVkP4uh7hU1gMYI9fgjw8XOfq5vxWxXY2KS9+AOkoglLhv/ugn3Ox?=
- =?us-ascii?Q?QG0qAQAX00+gyZfwzRg1VDsVVUTVi1DCICOjAUQP9MOJS8FtCjUFZuXDZuT0?=
- =?us-ascii?Q?9iv3tRVE7Qxzc26JhfvyLS20nYyEXgZ7DQadltBF6ImW5a6LTVYkJ87hXTeg?=
- =?us-ascii?Q?HxaAFjk4debISB9Hr8CCHtgY7MhL5oBa+jrnOgc+ASQ2rNCXl+ZBuWGXzMc7?=
- =?us-ascii?Q?afPHRSWssEXZMPkWMOd1F1a7rD+ldrYL3BLA2h0GRkyq4R4htuFz4b79bRTj?=
- =?us-ascii?Q?F8qLzSVZQBs/6vKtlGFlhu/B5OFeO0pSqrf1ouFslVKbxHHzE2FSuLisbv7d?=
- =?us-ascii?Q?U0jZ3Oj9zRx+GfJQlFYeNOXKZKFMPAiehAYwnbYV5QEUsJ3kTALS0VmHkQHF?=
- =?us-ascii?Q?GNAMPDgOnn/sESEpH1fbcu4DzmVBFJWnw4EXXMS/D3EW+tcBnfOqqFbq61de?=
- =?us-ascii?Q?qSWAXhnIpLsgrKsvWZfM1HZHAjHjLHk7NBgqpYxomhJG8UdYdKRjQSH3YOjP?=
- =?us-ascii?Q?l+m2iXY3oQq7+JDimMOdzExlcNY0xnXAm9hhsto0H+kFO5+mXLn6ebk4E1hj?=
- =?us-ascii?Q?7v2FVy+Qc3xheEr7sFh+n6j7ODpvXkWAhWatxiOLssb12EyP2WJgCIXwfuzQ?=
- =?us-ascii?Q?YGCktV1bdWvHskqRntFZxYCdxl6wPbJ00ZMbqpr0NeKz6+uNkMTVT/1QhQva?=
- =?us-ascii?Q?0I6KL7YEKyyttF1OAaTCucdLVL3CuDRXKubxAwvQyZLceLMLxEQtBtO1HwTJ?=
- =?us-ascii?Q?bGctAcWn8kzpVUYvwDz9I1Iyt4YlKMNcb1x/yzpgwBNdxwI9SnIk8+vaGulQ?=
- =?us-ascii?Q?dVr6iN3R/A67i6UkCKWEgkIwAIVTKEV/0WO974T1tXwowbXEZMV6yu6C5uo?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21aa47f7-a0fd-432b-64aa-08dbb9d6c737
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 12:40:32.2354
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR20MB6270
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 20 Sep 2023 14:40:24 +0200
+Message-ID: <CA+G9fYtio=EY-fitOJZgAWsgVHX8XhgdNQnfMoUBVFrnSP5TZg@mail.gmail.com>
+Subject: selftests: user_events: ftrace_test: Internal error: Oops: 0000000096000021
+To:     lkft-triage@lists.linaro.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 20/09/2023 14:15, Inochi Amaoto wrote:
->>> On 20/09/2023 08:39, Chen Wang wrote:
->>>> From: Inochi Amaoto <inochiama@outlook.com>
->>>>
->>>> Add two new compatible string formatted like `C9xx-clint-xxx` to identify
->>>> the timer and ipi device separately, and do not allow c900-clint as the
->>>
->>> Why?
->>>
->>
->> If use the same compatible, SBI will process this twice in both ipi and
->> timer, use different compatible will allow SBI to treat these as different.
->> AFAIK, the aclint in SBI use the same concepts, which make hard to use the
->> second register range. I have explained in another response.
->
->What is a SBI? Linux driver? If so, why some intermediate Linux driver
->choice should affect bindings?
->Best regards,
->Krzysztof
->
+Following selftests: user_events: ftrace_test running on arm64 Juno-r2
+Linux next-20230919.
 
-SBI (Supervisor Binary Interface) is defined by riscv, which is an interface
-between the Supervisor Execution Environment (SEE) and the supervisor. The
-detailed documentation can be found in [1].
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-The implement of SBI needs fdt info of the platform, which is provided by
-kernel. So we need a dt-bindings for these devices, and these will be
-processed by SBI.
+kselftest: Running tests in user_events
+TAP version 13
+1..4
+# timeout set to 90
+# selftests: user_events: ftrace_test
+[ 1138.755735] Unable to handle kernel paging request at virtual
+address ffff00082fc89ed4
+[ 1138.763768] Mem abort info:
+[ 1138.766692]   ESR = 0x0000000096000021
+[ 1138.770495]   EC = 0x25: DABT (current EL), IL = 32 bits
+[ 1138.775879]   SET = 0, FnV = 0
+[ 1138.779018]   EA = 0, S1PTW = 0
+[ 1138.782264]   FSC = 0x21: alignment fault
+[ 1138.786399] Data abort info:
+[ 1138.789356]   ISV = 0, ISS = 0x00000021, ISS2 = 0x00000000
+[ 1138.794969]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[ 1138.800095]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[ 1138.805436] swapper pgtable: 4k pages, 48-bit VAs, pgdp=000000008265b000
+[ 1138.812175] [ffff00082fc89ed4] pgd=18000009ffdf8003,
+p4d=18000009ffdf8003, pud=18000009ffa0e003, pmd=18000009ff88f003,
+pte=00680008afc89707
+[ 1138.824824] Internal error: Oops: 0000000096000021 [#1] PREEMPT SMP
+# TAP[ 1138.831117] Modules linked in: tda998x hdlcd onboard_usb_hub
+crct10dif_ce cec drm_dma_helper drm_kms_helper drm fuse backlight
+dm_mod ip_tables x_tables
+[ 1138.845227] CPU: 1 PID: 4752 Comm: ftrace_test Not tainted
+6.6.0-rc2-next-20230919 #1
+v[e r1s1i3o8n. 81533080] Hardware name: ARM Juno development board (r2) (DT)
 
-[1] https://github.com/riscv-non-isa/riscv-sbi-doc
+# 1..6
+# # Starting 6 tests from 1 test cases.
+# #  RUN           user.register_events ...
+[ 1138.868317] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[ 1138.875291] pc : user_event_enabler_write
+(arch/arm64/include/asm/atomic_ll_sc.h:210 (discriminator 2)
+arch/arm64/include/asm/atomic.h:64 (discriminator 2)
+include/linux/atomic/atomic-arch-fallback.h:3656 (discriminator 2)
+include/linux/atomic/atomic-long.h:964 (discriminator 2)
+include/asm-generic/bitops/atomic.h:25 (discriminator 2)
+include/asm-generic/bitops/instrumented-atomic.h:42 (discriminator 2)
+kernel/trace/trace_events_user.c:520 (discriminator 2))
+[ 1138.880362] lr : user_event_enabler_write
+(kernel/trace/trace_events_user.c:503 (discriminator 1))
+[ 1138.885337] sp : ffff80008a593b70
+[ 1138.888656] x29: ffff80008a593b70 x28: ffff000800908040 x27: ffff00082767ac40
+[ 1138.895817] x26: 0000000000000000 x25: ffff000827732600 x24: 0000ffffc2a46ca0
+[ 1138.902972] x23: 0000000000000000 x22: ffff000822773a00 x21: 0000000000000ed4
+[ 1138.910128] x20: ffff80008a593c40 x19: ffff00082767ac40 x18: 0000000000000000
+[ 1138.917283] x17: ffff8000816f1aa0 x16: ffff80008002ce90 x15: ffff800081cea0b8
+[ 1138.924439] x14: ffffffffffffffff x13: 0000ffffadc52000 x12: 1fffe001048d5b21
+[ 1138.931597] x11: ffff0008246ad900 x10: ffff0008246ad908 x9 : ffff80008003bc40
+[ 1138.938752] x8 : ffff80008a5937d8 x7 : 0000000000000000 x6 : 0000000000000001
+[ 1138.945905] x5 : 0000000000000001 x4 : fffffc0020bf2240 x3 : 000000000000001f
+[ 1138.953058] x2 : 0000000000000000 x1 : 0000000080000000 x0 : ffff00082fc89ed4
+[ 1138.960212] Call trace:
+[ 1138.962656] user_event_enabler_write
+(arch/arm64/include/asm/atomic_ll_sc.h:210 (discriminator 2)
+arch/arm64/include/asm/atomic.h:64 (discriminator 2)
+include/linux/atomic/atomic-arch-fallback.h:3656 (discriminator 2)
+include/linux/atomic/atomic-long.h:964 (discriminator 2)
+include/asm-generic/bitops/atomic.h:25 (discriminator 2)
+include/asm-generic/bitops/instrumented-atomic.h:42 (discriminator 2)
+kernel/trace/trace_events_user.c:520 (discriminator 2))
+[ 1138.967372] user_events_ioctl (kernel/trace/trace_events_user.c:858
+kernel/trace/trace_events_user.c:2314
+kernel/trace/trace_events_user.c:2475)
+[ 1138.971477] __arm64_sys_ioctl (fs/ioctl.c:52 fs/ioctl.c:871
+fs/ioctl.c:857 fs/ioctl.c:857)
+[ 1138.975497] invoke_syscall (arch/arm64/include/asm/current.h:19
+arch/arm64/kernel/syscall.c:56)
+[ 1138.979255] el0_svc_common.constprop.0
+(include/linux/thread_info.h:127 (discriminator 2)
+arch/arm64/kernel/syscall.c:144 (discriminator 2))
+[ 1138.984056] do_el0_svc (arch/arm64/kernel/syscall.c:156)
+[ 1138.987377] el0_svc (arch/arm64/include/asm/daifflags.h:28
+arch/arm64/kernel/entry-common.c:133
+arch/arm64/kernel/entry-common.c:144
+arch/arm64/kernel/entry-common.c:679)
+[ 1138.990439] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:697)
+[ 1138.994805] el0t_64_sync (arch/arm64/kernel/entry.S:591)
+[ 1138.998474] Code: 14000009 f821301f 17ffffed f9800011 (c85f7c02)
+All code
+========
+   0:* 09 00                or     %eax,(%rax) <-- trapping instruction
+   2: 00 14 1f              add    %dl,(%rdi,%rbx,1)
+   5: 30 21                xor    %ah,(%rcx)
+   7: f8                    clc
+   8: ed                    in     (%dx),%eax
+   9: ff                    (bad)
+   a: ff 17                callq  *(%rdi)
+   c: 11 00                adc    %eax,(%rax)
+   e: 80 f9 02              cmp    $0x2,%cl
+  11: 7c 5f                jl     0x72
+  13: c8                    .byte 0xc8
+
+Code starting with the faulting instruction
+===========================================
+   0: 02 7c 5f c8          add    -0x38(%rdi,%rbx,2),%bh
+[ 1139.004575] ---[ end trace 0000000000000000 ]---
+# # register_events: Test terminated by timeout
+# #          FAIL  user.register_events
+# not ok 1 user.register_events
+# #  RUN           user.write_events ...
+# # write_events: Test terminated by timeout
+# #          FAIL  user.write_events
+# not ok 2 user.write_events
+# #  RUN           user.write_empty_events ...
+
+
+Log:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230919/testrun/20073395/suite/log-parser-test/test/check-kernel-oops/log
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230919/testrun/20073395/suite/log-parser-test/test/check-kernel-oops/details/
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2VbYWmjbGM16bFDtcoFx62Kdds2/
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
