@@ -2,147 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D119E7A8AF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 19:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85DD7A8B03
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjITRz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 13:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        id S229536AbjITSBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 14:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjITRz6 (ORCPT
+        with ESMTP id S229481AbjITSBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 13:55:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1215ACF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:55:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695232507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NnqOeIozWLoSx9J0xtQeCKdqhemo3EjzKycC15MNaXI=;
-        b=SzKDMcCNnBBP6byCzE2SirR83Sn6/tTo6qEk0byuZHezX5Sv9AN+4nKmL/sIZDvJlgdGJs
-        H0R64p7wYptixyOx9rgL4GzGBr/H07NpCQevtkJkLNHgUrQLD3SSUjkRfFRpBFg0Yxwase
-        dwKc2S6KA2/NgZZcnSbD5ZBbirOKUww=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-90-n8Hv9srlNnC_zxzHJ6YXdw-1; Wed, 20 Sep 2023 13:55:05 -0400
-X-MC-Unique: n8Hv9srlNnC_zxzHJ6YXdw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-320004980a2so63234f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 10:55:05 -0700 (PDT)
+        Wed, 20 Sep 2023 14:01:04 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A26194
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:00:58 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-991c786369cso3160666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695232856; x=1695837656; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=x11cnA5i6BYv1UJiZcsle56884GMaZKBKvxZRyq2WDI=;
+        b=VKR465u9CXmsEXo4ZRqDBUaU2yBeod36deI03WvyzkYMm6flakkoBOWFSc2pHMc/4n
+         tLs/7s6MITBuDEdA28jHSkQIrdC0FdDnrlAihMb5FAVGMAJCyzQ6MnEC2LdRin0SAh/j
+         xEG+rAghFqYUQpdX5RrcXsE8k/O8918GIO5sI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695232504; x=1695837304;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NnqOeIozWLoSx9J0xtQeCKdqhemo3EjzKycC15MNaXI=;
-        b=lirQsRZxFcAVbygvATNMl2CPuUSoWGV01cTNPiORrHdHVWU3joAXVFYlFIepBC30Ea
-         J3MV08yZCPjq9xqkInj7Id5ZOGH5jujUfl13RVHcxrhjcW2OWLiR7b575vYO+20CWhdl
-         P7VprGfGanlnb+Ph8ej1N6d1CXwqLPCZPE2y+eB4BGKcFrios8sSvPO0geHTX7ASQ7dQ
-         p3qMpZTOyjG0B/VIhbK2iliq4s4oUzVD9t5fyLsn/g3jlm4jJ8HoQZ6lO6fIfFN3P78d
-         abROylD9OmB83dWw4Wo/T7EJwJqp9mxMB7y2zjIk211ysiPu+C4PEPmO2+vHg7pKXWZU
-         gIwA==
-X-Gm-Message-State: AOJu0YwmhR9IlGQQdZTl8J5q3DYqcOt0cdyJWzVPHOu1QuQ/6xi6KVCk
-        /dmYL42gn7XC6oj1SaW9x5QA80P/L/wN3ua3cUhVdUm5xjeHRBFggvEPmmnjP0Cke6QJO7RfxiA
-        0F/J6oWypdUvNUEPV9ae2VwW+
-X-Received: by 2002:adf:ee88:0:b0:313:ecd3:7167 with SMTP id b8-20020adfee88000000b00313ecd37167mr2737757wro.42.1695232504611;
-        Wed, 20 Sep 2023 10:55:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG0pIzmkmEwrfJkDIWYrHXNUyhISLDh7IqFEh0BjNiUe37zgzv0CZuijHzQCZR9e7yYqC6CoA==
-X-Received: by 2002:adf:ee88:0:b0:313:ecd3:7167 with SMTP id b8-20020adfee88000000b00313ecd37167mr2737745wro.42.1695232504286;
-        Wed, 20 Sep 2023 10:55:04 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id w11-20020a5d608b000000b0031ad5fb5a0fsm10876963wrt.58.2023.09.20.10.55.00
+        d=1e100.net; s=20230601; t=1695232856; x=1695837656;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x11cnA5i6BYv1UJiZcsle56884GMaZKBKvxZRyq2WDI=;
+        b=GZ5K2FIkMTKDViuKT+CvXtcSOj3GIpVXAS7vKa0/CYXJy78zlwLEl4QQQPN4jmuL4w
+         aVsZZ6h3Do85dSA0xt9RMd8hnp4XrlvwdgnN632ie5BLm4Oq0DNV9pK8LlmCz9JMnYZb
+         jyqq62QpcvHGbDu6gAMV+TDxYX+b46fV1JwVxR7wc7zxXZywZLtX0wjP/ykIQeLYtpX3
+         lhGuEmknAYvnDiUmcH3NqOhbV6GxLaEl2tgEzGBQSC1wIB2EsuBXojy9TFpOypQGhqkw
+         HVFrgGvp26ml5PxuHFABGmhRpVrZNGKZMU7QbJYar1oudlKM1W6C1xyOWjXLITNpy7hQ
+         1k7Q==
+X-Gm-Message-State: AOJu0YxcKOHxdm20pP/RDLA1DYBkSzKbi2RJGDLRLB7RIGvoJQF8nJcR
+        DA3ZgA5mcQ+8byTk2hPjpmbon0jW3DfOcXP38Wxt3w==
+X-Google-Smtp-Source: AGHT+IEXNeZUAX4OAU22aEyqbbSLMKzIXjcBce5ACYaTC0w2AJjtB5KKkQa8AMMcYHFe6Uu3NkqCGQ==
+X-Received: by 2002:a17:906:cc1:b0:9a1:b967:aca9 with SMTP id l1-20020a1709060cc100b009a1b967aca9mr2854429ejh.63.1695232856536;
+        Wed, 20 Sep 2023 11:00:56 -0700 (PDT)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id vl3-20020a170907b60300b009adc77fe164sm8625161ejc.66.2023.09.20.11.00.55
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 10:55:03 -0700 (PDT)
-Message-ID: <26b92bbb-0519-8b94-07fc-75d900fde600@redhat.com>
-Date:   Wed, 20 Sep 2023 19:54:59 +0200
+        Wed, 20 Sep 2023 11:00:55 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so18351a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:00:55 -0700 (PDT)
+X-Received: by 2002:a05:6402:719:b0:532:ac24:5c00 with SMTP id
+ w25-20020a056402071900b00532ac245c00mr2453767edx.40.1695232855125; Wed, 20
+ Sep 2023 11:00:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v10 34/38] KVM: VMX: Call fred_entry_from_kvm() for
- IRQ/NMI handling
-Content-Language: en-US
-To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, seanjc@google.com, peterz@infradead.org,
-        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        andrew.cooper3@citrix.com, jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-35-xin3.li@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230914044805.301390-35-xin3.li@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918-hirte-neuzugang-4c2324e7bae3@brauner>
+ <CAHk-=wiTNktN1k+D-3uJ-jGOMw8nxf45xSHHf8TzpjKj6HaYqQ@mail.gmail.com>
+ <e321d3cfaa5facdc8f167d42d9f3cec9246f40e4.camel@kernel.org>
+ <CAHk-=wgxpneOTcf_05rXMMc-djV44HD-Sx6RdM9dnfvL3m10EA@mail.gmail.com>
+ <2020b8dfd062afb41cd8b74f1a41e61de0684d3f.camel@kernel.org>
+ <CAHk-=whACfXMFPP+dPdsJmuF0F6g+YHfUtOxiESM+wxvZ22-GA@mail.gmail.com>
+ <20230919-kranz-entsagen-064754671396@brauner> <20230920-fixpunkt-besingen-128f43c16416@brauner>
+In-Reply-To: <20230920-fixpunkt-besingen-128f43c16416@brauner>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 20 Sep 2023 11:00:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi5gYo-rYLUxyR_oBGgZ4hMy1EaOk5c2NE9C4RJ6WB_NQ@mail.gmail.com>
+Message-ID: <CAHk-=wi5gYo-rYLUxyR_oBGgZ4hMy1EaOk5c2NE9C4RJ6WB_NQ@mail.gmail.com>
+Subject: Re: [GIT PULL] timestamp fixes
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 06:48, Xin Li wrote:
-> When FRED is enabled, call fred_entry_from_kvm() to handle IRQ/NMI in
-> IRQ/NMI induced VM exits.
-> 
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
+On Wed, 20 Sept 2023 at 09:22, Christian Brauner <brauner@kernel.org> wrote:
+>
+> In the meantime we had a report that unconditionally enabling
+> multi-grain timestamps causes a regression for some users workloads.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Ok.
 
-> ---
->   arch/x86/kvm/vmx/vmx.c | 12 +++++++++---
->   1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 72e3943f3693..db55b8418fa3 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -38,6 +38,7 @@
->   #include <asm/desc.h>
->   #include <asm/fpu/api.h>
->   #include <asm/fpu/xstate.h>
-> +#include <asm/fred.h>
->   #include <asm/idtentry.h>
->   #include <asm/io.h>
->   #include <asm/irq_remapping.h>
-> @@ -6962,14 +6963,16 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
->   {
->   	u32 intr_info = vmx_get_intr_info(vcpu);
->   	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
-> -	gate_desc *desc = (gate_desc *)host_idt_base + vector;
->   
->   	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
->   	    "unexpected VM-Exit interrupt info: 0x%x", intr_info))
->   		return;
->   
->   	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
-> -	vmx_do_interrupt_irqoff(gate_offset(desc));
-> +	if (cpu_feature_enabled(X86_FEATURE_FRED))
-> +		fred_entry_from_kvm(EVENT_TYPE_EXTINT, vector);
-> +	else
-> +		vmx_do_interrupt_irqoff(gate_offset((gate_desc *)host_idt_base + vector));
->   	kvm_after_interrupt(vcpu);
->   
->   	vcpu->arch.at_instruction_boundary = true;
-> @@ -7262,7 +7265,10 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->   	if ((u16)vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI &&
->   	    is_nmi(vmx_get_intr_info(vcpu))) {
->   		kvm_before_interrupt(vcpu, KVM_HANDLING_NMI);
-> -		vmx_do_nmi_irqoff();
-> +		if (cpu_feature_enabled(X86_FEATURE_FRED))
-> +			fred_entry_from_kvm(EVENT_TYPE_NMI, NMI_VECTOR);
-> +		else
-> +			vmx_do_nmi_irqoff();
->   		kvm_after_interrupt(vcpu);
->   	}
->   
+> I'll be putting the reverts into -next now and I'll get you a pull
+> request by the end of the week. In case you'd rather do it right now
+> it's already here:
 
+By the end of the week is fine, I'll wait for the proper pull request.
+
+Thanks,
+
+             Linus
