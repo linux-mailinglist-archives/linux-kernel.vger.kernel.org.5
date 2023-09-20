@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC797A72E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DE27A72E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbjITGiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S233259AbjITGif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbjITGiW (ORCPT
+        with ESMTP id S233245AbjITGic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:38:22 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD091C6;
-        Tue, 19 Sep 2023 23:38:16 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3add255c88aso317146b6e.1;
-        Tue, 19 Sep 2023 23:38:16 -0700 (PDT)
+        Wed, 20 Sep 2023 02:38:32 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7AEF1;
+        Tue, 19 Sep 2023 23:38:21 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c44a25bd0bso4047155ad.0;
+        Tue, 19 Sep 2023 23:38:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695191895; x=1695796695; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695191901; x=1695796701; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uqOL131eM6+9EM2kWhV9SIhEDvrKv/6vCDQf5HCxj68=;
-        b=erXMafqGbK0HdnktfuZgha6FPs5s7RFEeDdeqb2t0ZWFFLzAzE4Y9Sjs5ekgujKeTQ
-         EqYvXc4mA0bEZz/psX6wzU3/t8+Rf1qaKHgT61saR2W4cNB0fwNNVZfp8u1RV3tiGeCD
-         jUh39aKeJmTBWw8iF1S8JqZrAmM3gt6Fta6cUW8zBqdBPEdFpb2ZczHr8xMLYbVJfgVe
-         BznQLCD4JptpHT2M1M5EnS9DGLylWzj93YMZY0HF6S5IPEOpKrM8UAeGdFbYWoWE1Wzc
-         wlXTC38MSUd5GdDAmuQOZY3xcvMk8U+/b3kdy02Lw2I3gw1VS/OAJXDB3U38PYo2B2tK
-         /maA==
+        bh=RJ58+idyugsX9uMTOlAMwq7qziULzVNhZk7UwhCb5C0=;
+        b=EsJsP/tLvyd/50JJiK0StGvHHqFEhIfiolXZGYCvd8TGc2jDIFve9+XUbOYn8SB9ok
+         aFsU7H8kqnzJLxCnjvns5/m3VmeVTrplYyzNugz3vOZg8Y8nXPv/rogE0Rg6pU5m2qmt
+         G79dfs/6dfY35tcbTaTW5GP8HMZMeClW4sBTOcY66tD3b8HzIKPxs6nihryiJq7Kqmz9
+         8ls31pt94p21CvdkAa0mBW/gEJ2e3nq+JiJRUrGuZm2SUuH5pnGCM0rAdZrE9tkIRO3Y
+         ph3NSQK+uNrOnb0ymnXkN2Qq9WIIXuVExohE4qm9fgxg3/4ADY/dSjOl9AFBPY6uhCYs
+         zk3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695191895; x=1695796695;
+        d=1e100.net; s=20230601; t=1695191901; x=1695796701;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uqOL131eM6+9EM2kWhV9SIhEDvrKv/6vCDQf5HCxj68=;
-        b=KUhkWwZY23YT+AYrX42YM+Dq7J5kRelmk3ukbHEUerM/azwpdgoe9KkW2ZiaQZl1Gk
-         i1eDK1zJrHFP7eJKylo+ceIRapiM8ERlXJJVF6nwA/Nv2bdFphXZoLPe1yK6NL4hqWY0
-         APliEud+4RbMkmxrU/9ehUa3H9pY95sDuOp6AWQr0ttIFprhYbxyZ5ILrUu7iDdB1lD1
-         jlcOsODAld7b6T4PaQVrdoDQtwehH00RGOwyJMzbLjJxC4akyy0N+0m5yPsX9oMFmuPv
-         L8sigkNloGCvtNUz8C1Vfo9q7wioWgIB99ciz29/kK8Qrozi//jFrpGrMRFWdPlvLdqH
-         6KWA==
-X-Gm-Message-State: AOJu0Yzggv2Dq4W8Yt+1kxrITb9YLCielWHYHjXM/FhSvEYKa5/cMabs
-        3XJc08uo4VslTxnVmDmebAWs8pURJ8/9QWM9
-X-Google-Smtp-Source: AGHT+IEcsKynrDvut/VM3OUOKYAEi4DE+22EYsG87JkRtkakAbHE0xLs89S1n6DB50p+QYwC2S5VLQ==
-X-Received: by 2002:a05:6808:d47:b0:3a7:33bb:e5e2 with SMTP id w7-20020a0568080d4700b003a733bbe5e2mr1286693oik.16.1695191895536;
-        Tue, 19 Sep 2023 23:38:15 -0700 (PDT)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id a23-20020a05680802d700b003ab6461c8fbsm5604896oid.31.2023.09.19.23.38.14
+        bh=RJ58+idyugsX9uMTOlAMwq7qziULzVNhZk7UwhCb5C0=;
+        b=cepsFRD7m3pm3qZgGqleS+9ji4I7xZOsJCKhnxEj9ESMgct8VYh8C8TkSyJpV7EFAH
+         IfITdqO4lIRzOvHIOQPz9ix2hl4N3gy89g9ZEVKXKKaueAQo1LI7i+c0X9YKdH33tAiV
+         r3Xf0brtOHhuoPOjoIiiiAIEiqPf0kJUX3fM5nut2pgdEieXZ+PrWT8uIwpHDyikUEVG
+         qPE1cjg8NBsmoJWV4gk27srI1vz2nxHreDqaRq9DwC18QMxC9c0khTzlziWq+WVcUVNY
+         YR7nyx7SXFGGga1DIDCn3g6umbbddMgGJB5m5AM9kejPLE9tP13hPtFfHL0YjVdqHMQG
+         dneA==
+X-Gm-Message-State: AOJu0Ywp00cXTJtrp4aFkX2DlPQXcfO0KQVwHzAjYn7koZMxiBlV2QwM
+        RKU+sXamTp3RLJsz1GCIJ7E=
+X-Google-Smtp-Source: AGHT+IG6gy9m1cKXvKlZF82i9zbmIvvbKo3CfvV1KJgXkk+Ud/7hM166Wq8fhqhG26/3OTvF73AWVQ==
+X-Received: by 2002:a17:902:da88:b0:1c4:1195:6de4 with SMTP id j8-20020a170902da8800b001c411956de4mr6347009plx.9.1695191900820;
+        Tue, 19 Sep 2023 23:38:20 -0700 (PDT)
+Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
+        by smtp.gmail.com with ESMTPSA id l3-20020a170903244300b001b80d399730sm6843689pls.242.2023.09.19.23.38.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 23:38:15 -0700 (PDT)
-From:   Chen Wang <unicornxw@gmail.com>
-X-Google-Original-From: Chen Wang <wangchen20@iscas.ac.cn>
-To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
-        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
-        guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com
-Cc:     Chen Wang <wangchen20@iscas.ac.cn>
-Subject: [PATCH v2 04/11] dt-bindings: riscv: Add T-HEAD C920 compatibles
-Date:   Wed, 20 Sep 2023 14:38:08 +0800
-Message-Id: <c5061fbe8ef9c4971cd45de7b5d8408dc1b848b4.1695189879.git.wangchen20@iscas.ac.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1695189879.git.wangchen20@iscas.ac.cn>
-References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
+        Tue, 19 Sep 2023 23:38:20 -0700 (PDT)
+From:   Edward AD <twuufnxlz@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     eadavis@sina.com, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, twuufnxlz@gmail.com
+Subject: Re: [PATCH] tty: fix memory leak in gsm_activate_mux
+Date:   Wed, 20 Sep 2023 14:38:13 +0800
+Message-ID: <20230920063812.577917-2-twuufnxlz@gmail.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <2023091921-duke-gory-866e@gregkh>
+References: <2023091921-duke-gory-866e@gregkh>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_FILL_THIS_FORM_SHORT autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The C920 is RISC-V CPU cores from T-HEAD Semiconductor.
-Notably, the C920 core is used in the SOPHGO SG2042 SoC.
+On Tue, 19 Sep 2023 11:31:57 +0200 Greg KH wrote:
+> > On Tue, 19 Sep 2023 10:29:08 +0200 Greg KH wrote:
+> > > > When the call to gsm_register_devices() fails, we need to reclaim the memory
+> > > > requested in gsm_dlci_alloc().
+> > > >
+> > > > Fixes: 01aecd917114 ("tty: n_gsm: fix tty registration before control channel open")
+> > > > Reported-and-tested-by: syzbot+b5d1f455d385b2c7da3c@syzkaller.appspotmail.com
+> > > > Signed-off-by: Edward AD <twuufnxlz@gmail.com>
+> > >
+> > > Please use your company name/email address, and then just set a manual
+> > > "From:" line as the first line in the changelog as the documentation
+> > > asks.  That's how developers work around their broken corporate email
+> > > systems (but really, you should go and poke your IT group to fix it.)
+> > This repair was completed in my personal time. Additionally, there may be a
+> > possibility of the company's email being thrown away by 'lore.kernel.org'.
+> > If you are not very strict with this, I will continue to use my private email.
+> 
+> As you previously submitted this under your company name/address, we
+> have to be strict for obvious reasons, sorry.
+Before sending this email, according to your reply, I sent a new patch via email eadavis@sina.com.
+But we can't see that email in lore.kernel.org
+> 
+> > I will only keep one line starting with 'From:' in the patch.
+> 
+> I don't understand what you mean by this.
+Just set a manual "From:" line as the first line in the changelog as the 
+documentation asks.
 
-Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
-Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
----
- Documentation/devicetree/bindings/riscv/cpus.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-index 38c0b5213736..185a0191bad6 100644
---- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-+++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-@@ -47,6 +47,7 @@ properties:
-               - sifive,u74-mc
-               - thead,c906
-               - thead,c910
-+              - thead,c920
-           - const: riscv
-       - items:
-           - enum:
--- 
-2.25.1
-
+Thanks,
+edward
