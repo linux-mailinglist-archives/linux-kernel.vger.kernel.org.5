@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA22E7A72F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2187A72ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbjITGkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S233288AbjITGj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233324AbjITGkS (ORCPT
+        with ESMTP id S233243AbjITGjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:40:18 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894C7C6;
-        Tue, 19 Sep 2023 23:40:10 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38K5nH73025101;
-        Wed, 20 Sep 2023 06:39:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6fAan/TtUAMcsM2JANJzhYYORw6sSETX7nv3yKLaNfg=;
- b=D3ODHT5bLy9wTX9k4P+v2NdtImtD3Jy5YFAv+VNVIdDs+cXJ9/9XwMgflwZiSkrGq5HZ
- 96vz1sqQCJxWSK9OVWHxjZnk7rEZp7+Y+IAf+Rb9ZDQK3FXrIo2uKZxXx4fIcjtL9dnN
- xom7+VUFMLTurix9hf0vSonjg+VUXktK0W0gXa5ZxZSkNEpytlFWp/KelLAGypKXZ1jb
- t9nX/EBlggsFitXYoD/u6hbXYA/oqZNbvezP+DLwyonRQlN9BqWbzWpCp+OOL2ikchWL
- mKcgSJYme254jup59qfpnfEPcaZdW6Qb/32kEq+2mk/9wK2gI/+Qfn2sTYfXspWa7tKM KQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7qujgcb5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 06:39:33 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38K6dVXD023667
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Sep 2023 06:39:31 GMT
-Received: from [10.216.3.234] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 19 Sep
- 2023 23:39:22 -0700
-Message-ID: <a4c9baae-f328-22b5-48d7-fc7df0b62a79@quicinc.com>
-Date:   Wed, 20 Sep 2023 12:09:18 +0530
+        Wed, 20 Sep 2023 02:39:52 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0740AB0;
+        Tue, 19 Sep 2023 23:39:47 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6befdb1f545so4507136a34.3;
+        Tue, 19 Sep 2023 23:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695191986; x=1695796786; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xIS769hMse1vDi7mpkrCqnYIQ3QwZYvHFR8ADh3yuGA=;
+        b=lFAudFNhrBA4ZnDgB3a+jeL/HC//SVvy6DWZYhJo3J3bZtvWXDwzpEvTEgF9ue2NlC
+         QThz1nLtJNVcumaOQ8ZXkxmuHYdJEAgU3aFySUBoqjvRXQahg9/L8cuPqC/Ys56reYGZ
+         Hlm3n0NQ4Mkyc5Gb6Sj5C7yV33uVpS4C5bra3+f0xhcoFZkAa/0WOhFp0SZe6xeghAb3
+         60bjZI6peiVj6mduRVHlgtlNDMqVVFdiNph5HTjED2kf72K/XwB/icVm7B9Ri7uXchh7
+         Q99l0XwrCuzCMuW4ACZv63U0lb58mXZ6WPmQsdraYyXgb9NDNraG73b94X62uZ4VcFE6
+         z6qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695191986; x=1695796786;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xIS769hMse1vDi7mpkrCqnYIQ3QwZYvHFR8ADh3yuGA=;
+        b=ssB4u/IKNIVlVOGmv6rQM4VWtOzxCuikTwtkUz1wwtHrPtnswHSlsEUfgT0nuFEHvM
+         h1KsMZ6J8M6NulKX8s+4NQrHl8CBBIbnkez6PzVZUf6OX1EF3VF3rCpfclS+VYhYEjfy
+         kz4ENUw0LV5xRJgOL1J3lS3B70xnK/sSbyxVgcg09Pzhzg1aCdYCK4x10tdQ0qHs+7Qr
+         RxHU83mEsD6VUE8dioOxDiKwPx2aYUcvPIf0JrtP8XNfRbu3t0giZlgT8dZI/svsw1NT
+         L99VU7Qs7fbaEBFdX4wZdXa0bjmTjXSf2euoVar0TiaD+BfKtrRX11PnNgr1harLZt9Y
+         yUkg==
+X-Gm-Message-State: AOJu0YwXdI2KZpu/uxTozWowR8ggeF6N1ImeN2xRYaw/HmB3PUssKrIF
+        0U6KkUz98ctG8+5l4G2a1Aw=
+X-Google-Smtp-Source: AGHT+IGvOZR9TEOpFxR7CU19sAHd0S0o7LQPvKu+dpiaEQBrFkNJITq/KyqRguWGoKOQD5qCXe3qBg==
+X-Received: by 2002:a05:6870:c6a5:b0:1d5:4fb0:105 with SMTP id cv37-20020a056870c6a500b001d54fb00105mr1753205oab.20.1695191986216;
+        Tue, 19 Sep 2023 23:39:46 -0700 (PDT)
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id m10-20020a056870560a00b001c02f12abd0sm6282986oao.38.2023.09.19.23.39.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 23:39:46 -0700 (PDT)
+From:   Chen Wang <unicornxw@gmail.com>
+X-Google-Original-From: Chen Wang <wangchen20@iscas.ac.cn>
+To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
+        guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com
+Cc:     Inochi Amaoto <inochiama@outlook.com>,
+        Chen Wang <wangchen20@iscas.ac.cn>
+Subject: [PATCH v2 06/11] dt-bindings: timer: Add Sophgo sg2042 clint
+Date:   Wed, 20 Sep 2023 14:39:39 +0800
+Message-Id: <55865e1ce40d2017f047d3a9e1a9ee30043b271f.1695189879.git.wangchen20@iscas.ac.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1695189879.git.wangchen20@iscas.ac.cn>
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V2 5/7] clk: qcom: Add NSS clock Controller driver for
- IPQ9574
-Content-Language: en-US
-From:   Devi Priya <quic_devipriy@quicinc.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <p.zabel@pengutronix.de>, <richardcochran@gmail.com>,
-        <arnd@arndb.de>, <geert+renesas@glider.be>,
-        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <quic_saahtoma@quicinc.com>
-References: <20230825091234.32713-1-quic_devipriy@quicinc.com>
- <20230825091234.32713-6-quic_devipriy@quicinc.com>
- <CAA8EJpr+Wwgot-PDRtj-LVi79aD13B9WVREmjTXiR-8XEEx-rQ@mail.gmail.com>
- <652b55cc-87dd-46d1-e480-e25f5f22b8d8@quicinc.com>
-In-Reply-To: <652b55cc-87dd-46d1-e480-e25f5f22b8d8@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3CAXM7ggkK5yO1BpRomINjl1UQxnF7ER
-X-Proofpoint-ORIG-GUID: 3CAXM7ggkK5yO1BpRomINjl1UQxnF7ER
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_02,2023-09-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- mlxscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
- impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309200053
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -93,295 +79,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Inochi Amaoto <inochiama@outlook.com>
 
+Add two new compatible string formatted like `C9xx-clint-xxx` to identify
+the timer and ipi device separately, and do not allow c900-clint as the
+fallback to avoid conflict.
 
-On 9/12/2023 7:38 PM, Devi Priya wrote:
-> 
-> 
-> On 8/25/2023 5:14 PM, Dmitry Baryshkov wrote:
->> On Fri, 25 Aug 2023 at 12:15, Devi Priya <quic_devipriy@quicinc.com> 
->> wrote:
->>>
->>> Add Networking Sub System Clock Controller(NSSCC) driver for ipq9574 
->>> based
->>> devices.
->>>
->>> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
->>> ---
->>>   Changes in V2:
->>>          - Added depends on ARM64 || COMPILE_TEST in Kconfig
->>>          - Added module_platform_driver
->>>          - Dropped patch [2/6] - clk: qcom: gcc-ipq9574: Mark nssnoc 
->>> clocks as critical
->>>             & added pm_clk for nssnoc clocks
->>>          - Updated the uniphy clock names
->>>
->>>   drivers/clk/qcom/Kconfig         |    7 +
->>>   drivers/clk/qcom/Makefile        |    1 +
->>>   drivers/clk/qcom/nsscc-ipq9574.c | 3109 ++++++++++++++++++++++++++++++
->>>   3 files changed, 3117 insertions(+)
->>>   create mode 100644 drivers/clk/qcom/nsscc-ipq9574.c
->>>
->>> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
->>> index bd9bfb11b328..3ecc11e2c8e3 100644
->>> --- a/drivers/clk/qcom/Kconfig
->>> +++ b/drivers/clk/qcom/Kconfig
->>> @@ -203,6 +203,13 @@ config IPQ_GCC_9574
->>>            i2c, USB, SD/eMMC, etc. Select this for the root clock
->>>            of ipq9574.
->>>
->>> +config IPQ_NSSCC_9574
->>> +       tristate "IPQ9574 NSS Clock Controller"
->>> +       depends on ARM64 || COMPILE_TEST
->>> +       depends on IPQ_GCC_9574
->>> +       help
->>> +         Support for NSS clock controller on ipq9574 devices.
->>> +
->>>   config MSM_GCC_8660
->>>          tristate "MSM8660 Global Clock Controller"
->>>          depends on ARM || COMPILE_TEST
->>> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
->>> index 4790c8cca426..3f084928962e 100644
->>> --- a/drivers/clk/qcom/Makefile
->>> +++ b/drivers/clk/qcom/Makefile
->>> @@ -30,6 +30,7 @@ obj-$(CONFIG_IPQ_GCC_6018) += gcc-ipq6018.o
->>>   obj-$(CONFIG_IPQ_GCC_806X) += gcc-ipq806x.o
->>>   obj-$(CONFIG_IPQ_GCC_8074) += gcc-ipq8074.o
->>>   obj-$(CONFIG_IPQ_GCC_9574) += gcc-ipq9574.o
->>> +obj-$(CONFIG_IPQ_NSSCC_9574)   += nsscc-ipq9574.o
->>>   obj-$(CONFIG_IPQ_LCC_806X) += lcc-ipq806x.o
->>>   obj-$(CONFIG_MDM_GCC_9607) += gcc-mdm9607.o
->>>   obj-$(CONFIG_MDM_GCC_9615) += gcc-mdm9615.o
->>> diff --git a/drivers/clk/qcom/nsscc-ipq9574.c 
->>> b/drivers/clk/qcom/nsscc-ipq9574.c
->>> new file mode 100644
->>> index 000000000000..65bdb449ae5f
->>> --- /dev/null
->>> +++ b/drivers/clk/qcom/nsscc-ipq9574.c
->>> @@ -0,0 +1,3109 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/*
->>> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
->>> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights 
->>> reserved.
->>> + */
->>> +
->>> +#include <linux/clk-provider.h>
->>> +#include <linux/err.h>
->>> +#include <linux/kernel.h>
->>> +#include <linux/module.h>
->>> +#include <linux/of.h>
->>> +#include <linux/of_device.h>
->>> +#include <linux/regmap.h>
->>> +#include <linux/pm_clock.h>
->>> +#include <linux/pm_runtime.h>
->>> +
->>> +#include <dt-bindings/clock/qcom,ipq9574-nsscc.h>
->>> +#include <dt-bindings/reset/qcom,ipq9574-nsscc.h>
->>> +
->>> +#include "clk-alpha-pll.h"
->>> +#include "clk-branch.h"
->>> +#include "clk-pll.h"
->>> +#include "clk-rcg.h"
->>> +#include "clk-regmap.h"
->>> +#include "clk-regmap-divider.h"
->>> +#include "clk-regmap-mux.h"
->>> +#include "common.h"
->>> +#include "reset.h"
->>> +
->>> +/* Need to match the order of clocks in DT binding */
->>> +enum {
->>> +       DT_NSSNOC_NSSCC_CLK,
->>> +       DT_NSSNOC_SNOC_CLK,
->>> +       DT_NSSNOC_SNOC_1_CLK,
->>
->> Not using the index makes it seem that these clocks are not used,
->> until one scrolls down to pm_clks.
-> Okay, got it
->>
->> BTW: The NSSNOC_SNOC clocks make it look like there is an interconnect
->> here (not a simple NIU).
-> 
-> Hi Dmitry, We are exploring on the ICC driver. In the meantime to 
-> unblock PCIe/NSS changes getting merged, shall we use regmap_update_bits 
-> and turn on the critical NSSNOC clocks, ANOC & SNOC pcie clocks in the 
-> probe function of the gcc driver itself as like sm8550 driver to get the 
-> changes merged?
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/qcom/gcc-sm8550.c#n3347
+Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+---
+ Documentation/devicetree/bindings/timer/sifive,clint.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Hi Dmitry,
-Just curious to know if we could send out the next series with the 
-proposed approach if that holds good.
+diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+index a0185e15a42f..ae69696c5c75 100644
+--- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
++++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+@@ -39,6 +39,14 @@ properties:
+               - allwinner,sun20i-d1-clint
+               - thead,th1520-clint
+           - const: thead,c900-clint
++      - items:
++          - enum:
++              - sophgo,sg2042-clint-mtimer
++          - const: thead,c900-clint-mtimer
++      - items:
++          - enum:
++              - sophgo,sg2042-clint-mswi
++          - const: thead,c900-clint-mswi
+       - items:
+           - const: sifive,clint0
+           - const: riscv,clint0
+-- 
+2.25.1
 
-Thanks,
-Devi Priya
-
->>
->>> +       DT_BIAS_PLL_CC_CLK,
->>> +       DT_BIAS_PLL_NSS_NOC_CLK,
->>> +       DT_BIAS_PLL_UBI_NC_CLK,
->>> +       DT_GCC_GPLL0_OUT_AUX,
->>> +       DT_UNIPHY0_NSS_RX_CLK,
->>> +       DT_UNIPHY0_NSS_TX_CLK,
->>> +       DT_UNIPHY1_NSS_RX_CLK,
->>> +       DT_UNIPHY1_NSS_TX_CLK,
->>> +       DT_UNIPHY2_NSS_RX_CLK,
->>> +       DT_UNIPHY2_NSS_TX_CLK,
->>> +       DT_XO,
->>
->> As I wrote, please move DT_XO closer to the beginning of the list.
->>
->>> +};
->>> +
->>> +enum {
->>> +       P_BIAS_PLL_CC_CLK,
->>> +       P_BIAS_PLL_NSS_NOC_CLK,
->>> +       P_BIAS_PLL_UBI_NC_CLK,
->>> +       P_GCC_GPLL0_OUT_AUX,
->>> +       P_UBI32_PLL_OUT_MAIN,
->>> +       P_UNIPHY0_NSS_RX_CLK,
->>> +       P_UNIPHY0_NSS_TX_CLK,
->>> +       P_UNIPHY1_NSS_RX_CLK,
->>> +       P_UNIPHY1_NSS_TX_CLK,
->>> +       P_UNIPHY2_NSS_RX_CLK,
->>> +       P_UNIPHY2_NSS_TX_CLK,
->>> +       P_XO,
->>> +};
->>> +
->>> +static const struct alpha_pll_config ubi32_pll_config = {
->>> +       .l = 0x3e,
->>> +       .alpha = 0x6666,
->>> +       .config_ctl_val = 0x200d4aa8,
->>> +       .config_ctl_hi_val = 0x3c,
->>> +       .main_output_mask = BIT(0),
->>> +       .aux_output_mask = BIT(1),
->>> +       .pre_div_val = 0x0,
->>> +       .pre_div_mask = BIT(12),
->>> +       .post_div_val = 0x0,
->>> +       .post_div_mask = GENMASK(9, 8),
->>> +       .alpha_en_mask = BIT(24),
->>> +       .test_ctl_val = 0x1c0000c0,
->>> +       .test_ctl_hi_val = 0x4000,
->>> +};
->>> +
->>> +static struct clk_alpha_pll ubi32_pll_main = {
->>> +       .offset = 0x28000,
->>> +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_NSS_HUAYRA],
->>> +       .flags = SUPPORTS_DYNAMIC_UPDATE,
->>> +       .clkr = {
->>> +               .hw.init = &(const struct clk_init_data) {
->>> +                       .name = "ubi32_pll_main",
->>> +                       .parent_data = &(const struct clk_parent_data) {
->>> +                               .index = DT_XO,
->>> +                       },
->>> +                       .num_parents = 1,
->>> +                       .ops = &clk_alpha_pll_huayra_ops,
->>> +               },
->>> +       },
->>> +};
->>> +
->>> +static struct clk_alpha_pll_postdiv ubi32_pll = {
->>> +       .offset = 0x28000,
->>> +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_NSS_HUAYRA],
->>> +       .width = 2,
->>> +       .clkr.hw.init = &(const struct clk_init_data) {
->>> +               .name = "ubi32_pll",
->>> +               .parent_hws = (const struct clk_hw *[]) {
->>> +                       &ubi32_pll_main.clkr.hw
->>> +               },
->>> +               .num_parents = 1,
->>> +               .ops = &clk_alpha_pll_postdiv_ro_ops,
->>> +               .flags = CLK_SET_RATE_PARENT,
->>> +       },
->>> +};
->>> +
->>
->> [skipped clock tables, LGTM]
->>
->>> +static const struct of_device_id nss_cc_ipq9574_match_table[] = {
->>> +       { .compatible = "qcom,ipq9574-nsscc" },
->>> +       { }
->>> +};
->>> +MODULE_DEVICE_TABLE(of, nss_cc_ipq9574_match_table);
->>> +
->>> +static int nss_cc_ipq9574_probe(struct platform_device *pdev)
->>> +{
->>> +       struct regmap *regmap;
->>> +       struct qcom_cc_desc nsscc_ipq9574_desc = nss_cc_ipq9574_desc;
->>> +
->>> +       int ret;
->>> +
->>> +       ret = devm_pm_runtime_enable(&pdev->dev);
->>> +       if (ret < 0)
->>> +               return ret;
->>> +
->>> +       ret = devm_pm_clk_create(&pdev->dev);
->>> +       if (ret < 0)
->>> +               return ret;
->>> +
->>> +       ret = of_pm_clk_add_clk(&pdev->dev, "nssnoc_nsscc");
->>
->> As we are switching to DT indices, better add new API that takes index
->> rather than mixing indices and names.
-> sure okay
-> 
-> Thanks,
-> Devi Priya
->>
->>> +       if (ret < 0) {
->>> +               dev_err(&pdev->dev, "Failed to acquire nssnoc_nsscc 
->>> clock\n");
->>> +               return ret;
->>> +       }
->>> +
->>> +       ret = of_pm_clk_add_clk(&pdev->dev, "nssnoc_snoc");
->>> +       if (ret < 0) {
->>> +               dev_err(&pdev->dev, "Failed to acquire nssnoc_snoc 
->>> clock\n");
->>> +               return ret;
->>> +       }
->>> +
->>> +       ret = of_pm_clk_add_clk(&pdev->dev, "nssnoc_snoc_1");
->>> +       if (ret < 0) {
->>> +               dev_err(&pdev->dev, "Failed to acquire nssnoc_snoc_1 
->>> clock\n");
->>> +               return ret;
->>> +       }
->>> +
->>> +       ret = pm_runtime_get(&pdev->dev);
->>> +       if (ret)
->>> +               return ret;
->>> +
->>> +       regmap = qcom_cc_map(pdev, &nsscc_ipq9574_desc);
->>> +       if (IS_ERR(regmap))
->>> +               return PTR_ERR(regmap);
->>> +
->>> +       clk_alpha_pll_configure(&ubi32_pll_main, regmap, 
->>> &ubi32_pll_config);
->>> +
->>> +       return qcom_cc_really_probe(pdev, &nsscc_ipq9574_desc, regmap);
->>> +}
->>> +
->>> +static const struct dev_pm_ops nss_cc_pm_ops = {
->>> +       SET_RUNTIME_PM_OPS(pm_clk_suspend, pm_clk_resume, NULL)
->>> +};
->>> +
->>> +static struct platform_driver nss_cc_ipq9574_driver = {
->>> +       .probe = nss_cc_ipq9574_probe,
->>> +       .driver = {
->>> +               .name = "qcom,nsscc-ipq9574",
->>> +               .of_match_table = nss_cc_ipq9574_match_table,
->>> +               .pm = &nss_cc_pm_ops,
->>> +       },
->>> +};
->>> +
->>> +module_platform_driver(nss_cc_ipq9574_driver);
->>> +
->>> +MODULE_DESCRIPTION("QTI NSS_CC IPQ9574 Driver");
->>> +MODULE_LICENSE("GPL");
->>> -- 
->>> 2.34.1
->>>
->>
->>
