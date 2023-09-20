@@ -2,139 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 017F87A8423
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3187A844B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236599AbjITN4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S235013AbjITN5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236533AbjITNzi (ORCPT
+        with ESMTP id S236471AbjITNzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:55:38 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769A1DD
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:55:07 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5924b2aac52so89054627b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 06:55:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695218106; x=1695822906; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0APReAt4bNnnd5kx+NahuCYj0tgbUgwxY6/xmv3q1x8=;
-        b=qYN6MLIfTj4icmmBpIkd0WLhJxjSRWRnp5CVrZ5zO23Hc6SEWKaxnDv2NJItwfDuFQ
-         6RVvMGhZPLFVWocauiDyLryXn63S6KPTLdALA3Qsdgqj3uuPB/A2o/4ptf1HYp9bQI/0
-         1cYLmwlGz2SJqRrIPPncawpZ4aDzCTJ8sW2gL6tfKGnzilsZLa6El4ASlO1PaFkjNm/O
-         bYywfPO/0UW/nevxIlFfp0aeaozdgulhoho9Sa50zXYSvg9W6zOTkgKB/8FODKp3Zw2Z
-         dwA7/f8AInE7LDVv1jVJABSqsl1VCpa8fzDiXuUQzjW4V/dFydMGpeKFv2KS3ghLlvrS
-         QzZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695218106; x=1695822906;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0APReAt4bNnnd5kx+NahuCYj0tgbUgwxY6/xmv3q1x8=;
-        b=RzRaYkBXrAgiktUOfUVjR5GgoaSA9u+X2e7PKFLTzzlr68y2Ed66/y8e5va7Lz9SWS
-         l084oW8BNNuRInOJHxbwNzd6bVQfwBIcSgZtopVfTMz6Z8Rie/yJ0UyOyktZeLpETGnt
-         7Aq46kHQ8Bswj0I2AO9LLOSVf26DC9lWVxtunbivWxUGq/wohSTguxoV0w8PBisD4EeD
-         1/OtjQC2vKq9SCmKNvEil+bKFlFf84fsageoXuI79CsVtcrKDEWEIrmXv271YWYaMgSu
-         c8EenUjOQrr4wR6c9ZfhVlklneYAZptoNy+2w7fFw6SUcA5YdgFW6iQMyN6i3QYLvcQI
-         6Ekg==
-X-Gm-Message-State: AOJu0YxaIVLYJyWMk6xiKZR8PfC7S1k902soaume8umBj240inN+ue9x
-        hCM6evsxh0M1ZIX80ThWsvKQmK0/Dn4=
-X-Google-Smtp-Source: AGHT+IHuQ24Hy0wlZqpKThD2hndi3rYWapG+J/d1L/ai4z7W/k7rmZdxNg2zwHr4zmYKJTJyjaSKmjFgB/U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ae57:0:b0:59b:ee27:bbe9 with SMTP id
- g23-20020a81ae57000000b0059bee27bbe9mr35901ywk.9.1695218106527; Wed, 20 Sep
- 2023 06:55:06 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 06:55:05 -0700
-In-Reply-To: <ZQqMBEL61p739dpF@yilunxu-OptiPlex-7050>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-3-seanjc@google.com>
- <ZQqMBEL61p739dpF@yilunxu-OptiPlex-7050>
-Message-ID: <ZQr5uXhV6Cnx4DYT@google.com>
-Subject: Re: [RFC PATCH v12 02/33] KVM: Use gfn instead of hva for mmu_notifier_retry
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 09:55:55 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE3F183;
+        Wed, 20 Sep 2023 06:55:48 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KD2jtS029243;
+        Wed, 20 Sep 2023 13:55:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=gmiNOzH70KTIQKvlXxIDsxkrtjc5h3SDXj+dbWfOA10=;
+ b=BgssTlGuvo1MkbEIocWpMK16Ybdj/c5+ghULxODc88LAHMSxuMupi8LpTfxa3JXSv9l8
+ YNcI4GO2i8j1pX4hix4KMlfmUeOC4fTuuCYh+q7LvBHtLUH+L966PkqsWbOCe7spYeNy
+ mj78qCKt0Cazyxs3mVbL8x1covEa87NG+8Pf/svbg+HIbc5HANsZ7z/Vqvql6rF3cIBc
+ DxG68CmxpyvQXo+YL/2wTbk9loj+8JehpzMJTOTJNfZul/c8KX4QbFS1CneqOoJz/Q4d
+ /QFW0+RPAuSu5ZJsTjuK5SBAF4U6MGnqCEXfRRStmD38kt36YgUqZmIIPTwN9zDNSDzE YQ== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7amnb3cb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 13:55:23 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38KDtJfQ008187;
+        Wed, 20 Sep 2023 13:55:19 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3t55ekk8nc-1;
+        Wed, 20 Sep 2023 13:55:19 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38KDtJ1p008180;
+        Wed, 20 Sep 2023 13:55:19 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 38KDtJmX008179;
+        Wed, 20 Sep 2023 13:55:19 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
+        id 5A3004070; Wed, 20 Sep 2023 19:25:18 +0530 (+0530)
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org
+Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+        linux-phy@lists.infradead.org
+Subject: [PATCH v1 0/5] arm64: qcom: sa8775p: add support for EP PCIe
+Date:   Wed, 20 Sep 2023 19:25:07 +0530
+Message-Id: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: fPKXbNU7iR4WPwLLNIOZvtyCsimCg41G
+X-Proofpoint-ORIG-GUID: fPKXbNU7iR4WPwLLNIOZvtyCsimCg41G
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_05,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ clxscore=1011 bulkscore=0 priorityscore=1501 suspectscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=523 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309200114
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023, Xu Yilun wrote:
-> On 2023-09-13 at 18:55:00 -0700, Sean Christopherson wrote:
-> > +void kvm_mmu_invalidate_range_add(struct kvm *kvm, gfn_t start, gfn_t end)
-> > +{
-> > +	lockdep_assert_held_write(&kvm->mmu_lock);
-> > +
-> > +	WARN_ON_ONCE(!kvm->mmu_invalidate_in_progress);
-> > +
-> >  	if (likely(kvm->mmu_invalidate_in_progress == 1)) {
-> >  		kvm->mmu_invalidate_range_start = start;
-> >  		kvm->mmu_invalidate_range_end = end;
-> 
-> IIUC, Now we only add or override a part of the invalidate range in
-> these fields, IOW only the range in last slot is stored when we unlock.
+This series adds the relavent DT bindings, new compatible string,
+update PHY, add support to EPF driver and add EP PCIe node in dtsi
+file for ep pcie0 controller.
 
-Ouch.  Good catch!
+Mrinmay Sarkar (5):
+  dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
+  PCI: qcom-ep: Add support for SA8775P SoC
+  phy: qcom-qmp-pcie: add endpoint support for sa8775p
+  PCI: epf-mhi: Add support for SA8775P
+  arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
 
-> That may break mmu_invalidate_retry_gfn() cause it can never know the
-> whole invalidate range.
-> 
-> How about we extend the mmu_invalidate_range_start/end everytime so that
-> it records the whole invalidate range:
-> 
-> if (kvm->mmu_invalidate_range_start == INVALID_GPA) {
-> 	kvm->mmu_invalidate_range_start = start;
-> 	kvm->mmu_invalidate_range_end = end;
-> } else {
-> 	kvm->mmu_invalidate_range_start =
-> 		min(kvm->mmu_invalidate_range_start, start);
-> 	kvm->mmu_invalidate_range_end =
-> 		max(kvm->mmu_invalidate_range_end, end);
-> }
+ .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 130 +++++++++++++++++----
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi              |  45 +++++++
+ drivers/pci/controller/dwc/pcie-qcom-ep.c          |   1 +
+ drivers/pci/endpoint/functions/pci-epf-mhi.c       |  18 +++
+ drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           |  41 +++++++
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h         |   2 +
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v5.h |   1 +
+ 7 files changed, 216 insertions(+), 22 deletions(-)
 
-Yeah, that does seem to be the easiest solution.
+-- 
+2.7.4
 
-I'll post a fixup patch, unless you want the honors.
