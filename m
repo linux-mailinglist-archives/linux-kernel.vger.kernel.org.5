@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 923A47A7C5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D51C7A7C62
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235182AbjITMAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
+        id S234890AbjITMAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235118AbjITMAf (ORCPT
+        with ESMTP id S235178AbjITMAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:00:35 -0400
+        Wed, 20 Sep 2023 08:00:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064DDDC;
-        Wed, 20 Sep 2023 05:00:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E87C433D9;
-        Wed, 20 Sep 2023 12:00:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944F3F0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:00:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F167C433C7;
+        Wed, 20 Sep 2023 12:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695211228;
-        bh=7+a+uAHSC7OO3XQfH2arscb7AzKCNbmMMLk8wqn0vsc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=B/lIJRSxCPB+5p7f3G1Ajfn2qqX/tE0cpwCITQxi+/PIchJFouA/fvycyzSAWEtoy
-         vZVpjLxdrhYNzxEnVT5N44TE016Uwds4qfY6/G8FH7VA/xSu8CmUS5Q4Pk32GcdxR5
-         M2eDlL0Ep5Y87U58MQPbFeiFp2MRl6z7XD3rsMV8w8TcyTdKXMTj4pNC122tvVu+Gw
-         lZl0uPbzxG9mZ9BWHs0FD2QUlJpFht4AyWAtIGjlLJ89R7SIghY1RWIT4lXs8KgqIF
-         OjkYqCfy27g/JS9U8ERwmQxXaxhphmjwYxJFNNV2jy5krHM33whRZcwa0hT8oS4SvT
-         tUZbsMtPW1QQw==
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5731fe1d2bfso3560158eaf.3;
-        Wed, 20 Sep 2023 05:00:28 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy9iNND5Cukoq8LXAl3/LkZ9A/J9gljVJ5QzFJLHvoWG4mfTwwe
-        vbDz5zY5lFUmHtLC7VVZjRhT/YtUo3/tQlBAM0k=
-X-Google-Smtp-Source: AGHT+IFacjCfE9QLw4t2LilDhTkbFLM6Ag1SJY8p8K1VUW2unuqEzeBOzExdeLRwU+74XE39uVC4FBrJVod9wxEl+p4=
-X-Received: by 2002:a05:6871:291:b0:1bb:eb37:1d69 with SMTP id
- i17-20020a056871029100b001bbeb371d69mr2712706oae.14.1695211227907; Wed, 20
- Sep 2023 05:00:27 -0700 (PDT)
+        s=k20201202; t=1695211231;
+        bh=Gpo7IFxOMHVfLfErDMr8zJLUwe68KnlMTkhGYKp8fE4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=m+1uJB+lC0jlX5JbcWUOlg1r1lKINlxPDY4xDrERrG7jCmAomAlmnaM6e7BczxRPa
+         LZyWB7DfOm6dGp/jIva0ieg6Sz4uZLG73jHECfPprSQ/1tQvOjlLUYEcVKc/Cbx3bp
+         iNNtn5OqaFuz8/pS/P+jllzR4nAtPChwDhZu8fcRotIvzpHtJisUrshnem67hhaXMC
+         o+/5B+D5flMcS68o1MVRyYJiNahYCULmXEnoYcOg3AWw+gD2aVNd9osc/Mb5KxnlDr
+         1hxMdzuO7zCqmWXEudNau/7WEpukfHjoEiRFzOv8WHh97BNIdBoemPeRM5LpsOhVFr
+         zextEa7yGmvhw==
+From:   Robert Foss <rfoss@kernel.org>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     Robert Foss <rfoss@kernel.org>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: [PATCH v4 00/12] drm/bridge: tc358768: Fixes and timings improvements
+Date:   Wed, 20 Sep 2023 14:00:21 +0200
+Message-ID: <169521116429.2929556.5545990396411063334.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230906-tc358768-v4-0-31725f008a50@ideasonboard.com>
+References: <20230906-tc358768-v4-0-31725f008a50@ideasonboard.com>
 MIME-Version: 1.0
-References: <20230920015559.1877441-1-aik@amd.com>
-In-Reply-To: <20230920015559.1877441-1-aik@amd.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 20 Sep 2023 20:59:51 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARrb_NLpBL19LHEdg0WJKsncaUPQLk-wxhR+Rh8sps3jQ@mail.gmail.com>
-Message-ID: <CAK7LNARrb_NLpBL19LHEdg0WJKsncaUPQLk-wxhR+Rh8sps3jQ@mail.gmail.com>
-Subject: Re: [PATCH kernel] kbuild: get rid of unwanted "+" when
- CONFIG_LOCALVERSION is set
-To:     Alexey Kardashevskiy <aik@amd.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -61,72 +64,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 10:56=E2=80=AFAM Alexey Kardashevskiy <aik@amd.com>=
- wrote:
->
-> The scripts/setlocalversion script correctly tries not adding "+" when
-> CONFIG_LOCALVERSION is defined.
+On Wed, 06 Sep 2023 09:50:47 +0300, Tomi Valkeinen wrote:
+> This series contains various fixes and cleanups for TC358768. The target
+> of this work is to get TC358768 working on Toradex's AM62 based board,
+> which has the following display pipeline:
+> 
+> AM62 DPI -> TC358768 -> LT8912B -> HDMI connector
+> 
+> The main thing the series does is to improve the DSI HSW, HFP and VSDly
+> calculations.
+> 
+> [...]
 
-I am afraid you are misunderstanding the script.
+I fixed formatting warnings.
 
-CONFIG_LOCALVERSION and the "+" sign is unrelated.
+Applied, thanks!
 
-
-> However, instead of grepping for it
-> (as it is done for CONFIG_LOCALVERSION_AUTO=3Dy), it relies on LOCALVERSI=
-ON
-> set in the shell which is not.
->
-> Export LOCALVERSION so scripts/setlocalversion could see it and not add
-> unwanted "+" at the end of the kernelrelease.
->
-> Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
-
-
-So, scripts/setlocalversion will always see
-defined LOCALVERSION.
-
-With your patch, LOCALVERSION would be set to an empty value,
-which would make the following condition always false.
-
-elif [ "${LOCALVERSION+set}" !=3D "set" ]; then
-
-
-Your patch is equivalent to deleting
-line 175-183 of scripts/setlocalversion.
-
-Of course, that is wrong and unacceptable.
-
-
-
-
-
-
-
-> ---
->  Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index 57698d048e2c..fc45bed69790 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -368,7 +368,7 @@ include $(srctree)/scripts/Kbuild.include
->  # Read KERNELRELEASE from include/config/kernel.release (if it exists)
->  KERNELRELEASE =3D $(call read-file, include/config/kernel.release)
->  KERNELVERSION =3D $(VERSION)$(if $(PATCHLEVEL),.$(PATCHLEVEL)$(if $(SUBL=
-EVEL),.$(SUBLEVEL)))$(EXTRAVERSION)
-> -export VERSION PATCHLEVEL SUBLEVEL KERNELRELEASE KERNELVERSION
-> +export VERSION PATCHLEVEL SUBLEVEL KERNELRELEASE KERNELVERSION LOCALVERS=
-ION
->
->  include $(srctree)/scripts/subarch.include
->
-> --
-> 2.41.0
->
+[01/12] drm/tegra: rgb: Parameterize V- and H-sync polarities
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=1716b1891e1d
+[02/12] drm/bridge: tc358768: Fix use of uninitialized variable
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=a2d9036615f0
+[03/12] drm/bridge: tc358768: Default to positive h/v syncs
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=aa23099f4733
+[04/12] drm/bridge: tc358768: Fix bit updates
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=66962d5c3c51
+[05/12] drm/bridge: tc358768: Cleanup PLL calculations
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=1e08e78871df
+[06/12] drm/bridge: tc358768: Use struct videomode
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=e5fb21678136
+[07/12] drm/bridge: tc358768: Print logical values, not raw register values
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=013ea98cdfcc
+[08/12] drm/bridge: tc358768: Use dev for dbg prints, not priv->dev
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=89cfd50e13f1
+[09/12] drm/bridge: tc358768: Rename dsibclk to hsbyteclk
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=699cf62a7d45
+[10/12] drm/bridge: tc358768: Clean up clock period code
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=b3aa7b34924a
+[11/12] drm/bridge: tc358768: Fix tc358768_ns_to_cnt()
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=f1dabbe64506
+[12/12] drm/bridge: tc358768: Attempt to fix DSI horizontal timings
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=9fc75c40faa2
 
 
---=20
-Best Regards
-Masahiro Yamada
+
+Rob
+
