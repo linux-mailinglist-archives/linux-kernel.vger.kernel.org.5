@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 538447A80E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0459D7A7DBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbjITMkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S235361AbjITMLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236189AbjITMkm (ORCPT
+        with ESMTP id S235375AbjITMLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:40:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7989193;
-        Wed, 20 Sep 2023 05:40:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B16CC433D9;
-        Wed, 20 Sep 2023 12:40:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695213636;
-        bh=f4AJNlVtXUMhhf1Uggc5Hzzx4YqoWhmVPrv6HVPU9F8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=grDrSjgSnyojjGWGoUL6EI8iTJH0poYF0txS/clvCjQZSkX9PUtQUWc89BywTzwBG
-         lenxSqlMP6mjNPnd0DC+Ygp8LOUlhMETI1E5AvHw4JWoZmTJe0R6r7c9T1d4N6M6Ar
-         7pnu8Crkcykbb/ROD9O+GsLieuLRyS1BxAbZbrCo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev,
-        syzbot+5e53f70e69ff0c0a1c0c@syzkaller.appspotmail.com,
-        Takeshi Misawa <jeliantsurux@gmail.com>,
-        Fedor Pchelkin <pchelkin@ispras.ru>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Ian Kent <raven@themaw.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrei Vagin <avagin@gmail.com>, autofs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 310/367] autofs: fix memory leak of waitqueues in autofs_catatonic_mode
-Date:   Wed, 20 Sep 2023 13:31:27 +0200
-Message-ID: <20230920112906.580988977@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230920112858.471730572@linuxfoundation.org>
-References: <20230920112858.471730572@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+        Wed, 20 Sep 2023 08:11:46 -0400
+Received: from cstnet.cn (smtp85.cstnet.cn [159.226.251.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C298BAD;
+        Wed, 20 Sep 2023 05:11:37 -0700 (PDT)
+Received: from wangchen20$iscas.ac.cn ( [222.95.63.58] ) by
+ ajax-webmail-APP-13 (Coremail) ; Wed, 20 Sep 2023 20:03:50 +0800
+ (GMT+08:00)
+X-Originating-IP: [222.95.63.58]
+Date:   Wed, 20 Sep 2023 20:03:50 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   =?UTF-8?B?5rGq6L6w?= <wangchen20@iscas.ac.cn>
+To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+Cc:     "Chen Wang" <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, conor@kernel.org, devicetree@vger.kernel.org,
+        emil.renner.berthing@canonical.com, guoren@kernel.org,
+        jszhang@kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, xiaoguang.xing@sophgo.com
+Subject: Re: Re: [PATCH v2 03/11] dt-bindings: riscv: add sophgo sg2042
+ bindings
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.15 build 20230321(1bf45b10)
+ Copyright (c) 2002-2023 www.mailtech.cn cnic.cn
+In-Reply-To: <ec11eb6a-c37b-08bd-5997-8fc390fd58c8@linaro.org>
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
+ <c6aea83bb1df563b1f2a66c5f230c3861aed1e15.1695189879.git.wangchen20@iscas.ac.cn>
+ <ec11eb6a-c37b-08bd-5997-8fc390fd58c8@linaro.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Message-ID: <3d2bba58.29898.18ab279a15c.Coremail.wangchen20@iscas.ac.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: twCowAB3BOam3wpl01IMAA--.34858W
+X-CM-SenderInfo: 5zdqwuhkhqji46lvutnvoduhdfq/1tbiBwIABmUKzVQmtwABsl
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,110 +57,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5.4-stable review patch.  If anyone has any objections, please let me know.
-
-------------------
-
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-
-[ Upstream commit ccbe77f7e45dfb4420f7f531b650c00c6e9c7507 ]
-
-Syzkaller reports a memory leak:
-
-BUG: memory leak
-unreferenced object 0xffff88810b279e00 (size 96):
-  comm "syz-executor399", pid 3631, jiffies 4294964921 (age 23.870s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 08 9e 27 0b 81 88 ff ff  ..........'.....
-    08 9e 27 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ..'.............
-  backtrace:
-    [<ffffffff814cfc90>] kmalloc_trace+0x20/0x90 mm/slab_common.c:1046
-    [<ffffffff81bb75ca>] kmalloc include/linux/slab.h:576 [inline]
-    [<ffffffff81bb75ca>] autofs_wait+0x3fa/0x9a0 fs/autofs/waitq.c:378
-    [<ffffffff81bb88a7>] autofs_do_expire_multi+0xa7/0x3e0 fs/autofs/expire.c:593
-    [<ffffffff81bb8c33>] autofs_expire_multi+0x53/0x80 fs/autofs/expire.c:619
-    [<ffffffff81bb6972>] autofs_root_ioctl_unlocked+0x322/0x3b0 fs/autofs/root.c:897
-    [<ffffffff81bb6a95>] autofs_root_ioctl+0x25/0x30 fs/autofs/root.c:910
-    [<ffffffff81602a9c>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff81602a9c>] __do_sys_ioctl fs/ioctl.c:870 [inline]
-    [<ffffffff81602a9c>] __se_sys_ioctl fs/ioctl.c:856 [inline]
-    [<ffffffff81602a9c>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:856
-    [<ffffffff84608225>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84608225>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84800087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-autofs_wait_queue structs should be freed if their wait_ctr becomes zero.
-Otherwise they will be lost.
-
-In this case an AUTOFS_IOC_EXPIRE_MULTI ioctl is done, then a new
-waitqueue struct is allocated in autofs_wait(), its initial wait_ctr
-equals 2. After that wait_event_killable() is interrupted (it returns
--ERESTARTSYS), so that 'wq->name.name == NULL' condition may be not
-satisfied. Actually, this condition can be satisfied when
-autofs_wait_release() or autofs_catatonic_mode() is called and, what is
-also important, wait_ctr is decremented in those places. Upon the exit of
-autofs_wait(), wait_ctr is decremented to 1. Then the unmounting process
-begins: kill_sb calls autofs_catatonic_mode(), which should have freed the
-waitqueues, but it only decrements its usage counter to zero which is not
-a correct behaviour.
-
-edit:imk
-This description is of course not correct. The umount performed as a result
-of an expire is a umount of a mount that has been automounted, it's not the
-autofs mount itself. They happen independently, usually after everything
-mounted within the autofs file system has been expired away. If everything
-hasn't been expired away the automount daemon can still exit leaving mounts
-in place. But expires done in both cases will result in a notification that
-calls autofs_wait_release() with a result status. The problem case is the
-summary execution of of the automount daemon. In this case any waiting
-processes won't be woken up until either they are terminated or the mount
-is umounted.
-end edit: imk
-
-So in catatonic mode we should free waitqueues which counter becomes zero.
-
-edit: imk
-Initially I was concerned that the calling of autofs_wait_release() and
-autofs_catatonic_mode() was not mutually exclusive but that can't be the
-case (obviously) because the queue entry (or entries) is removed from the
-list when either of these two functions are called. Consequently the wait
-entry will be freed by only one of these functions or by the woken process
-in autofs_wait() depending on the order of the calls.
-end edit: imk
-
-Reported-by: syzbot+5e53f70e69ff0c0a1c0c@syzkaller.appspotmail.com
-Suggested-by: Takeshi Misawa <jeliantsurux@gmail.com>
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Signed-off-by: Ian Kent <raven@themaw.net>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andrei Vagin <avagin@gmail.com>
-Cc: autofs@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-Id: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/autofs/waitq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
-index b04c528b19d34..1230bdf329898 100644
---- a/fs/autofs/waitq.c
-+++ b/fs/autofs/waitq.c
-@@ -32,8 +32,9 @@ void autofs_catatonic_mode(struct autofs_sb_info *sbi)
- 		wq->status = -ENOENT; /* Magic is gone - report failure */
- 		kfree(wq->name.name);
- 		wq->name.name = NULL;
--		wq->wait_ctr--;
- 		wake_up_interruptible(&wq->queue);
-+		if (!--wq->wait_ctr)
-+			kfree(wq);
- 		wq = nwq;
- 	}
- 	fput(sbi->pipe);	/* Close the pipe */
--- 
-2.40.1
-
-
-
+U29ycnksIG15IG1pc3Rha2UgdG8gZm9yZ2V0IGFkZGluZyB0aGUgdGFnLCB3aWxsIGFkZCBpbiBu
+ZXh0IHJldmlzaW9uLgoKCiZndDsgLS0tLS3ljp/lp4vpgq7ku7YtLS0tLQomZ3Q7IOWPkeS7tuS6
+ujogIktyenlzenRvZiBLb3psb3dza2kiIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+
+CiZndDsg5Y+R6YCB5pe26Ze0OiAyMDIzLTA5LTIwIDE5OjU1OjMwICjmmJ/mnJ/kuIkpCiZndDsg
+5pS25Lu25Lq6OiAiQ2hlbiBXYW5nIiA8dW5pY29ybnh3QGdtYWlsLmNvbT4sIGFvdUBlZWNzLmJl
+cmtlbGV5LmVkdSwgY2hhby53ZWlAc29waGdvLmNvbSwgY29ub3JAa2VybmVsLm9yZywgZGV2aWNl
+dHJlZUB2Z2VyLmtlcm5lbC5vcmcsIGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20s
+IGd1b3JlbkBrZXJuZWwub3JnLCBqc3poYW5nQGtlcm5lbC5vcmcsIGtyenlzenRvZi5rb3psb3dz
+a2krZHRAbGluYXJvLm9yZywgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZywgbGludXgtcmlz
+Y3ZAbGlzdHMuaW5mcmFkZWFkLm9yZywgcGFsbWVyQGRhYmJlbHQuY29tLCBwYXVsLndhbG1zbGV5
+QHNpZml2ZS5jb20sIHJvYmgrZHRAa2VybmVsLm9yZywgeGlhb2d1YW5nLnhpbmdAc29waGdvLmNv
+bQomZ3Q7IOaKhOmAgTogIkNoZW4gV2FuZyIgPHdhbmdjaGVuMjBAaXNjYXMuYWMuY24+CiZndDsg
+5Li76aKYOiBSZTogW1BBVENIIHYyIDAzLzExXSBkdC1iaW5kaW5nczogcmlzY3Y6IGFkZCBzb3Bo
+Z28gc2cyMDQyIGJpbmRpbmdzCiZndDsgCiZndDsgT24gMjAvMDkvMjAyMyAwODozNywgQ2hlbiBX
+YW5nIHdyb3RlOgomZ3Q7ICZndDsgQWRkIERUIGJpbmRpbmcgZG9jdW1lbnRhdGlvbiBmb3IgdGhl
+IFNvcGhnbyBTRzIwNDIgU29jIFsxXSBhbmQgdGhlCiZndDsgJmd0OyBNaWxrLVYgUGlvbmVlciBi
+b2FyZCBbMl0uCiZndDsgJmd0OyAKJmd0OyAmZ3Q7IFsxXTogaHR0cHM6Ly9lbi5zb3BoZ28uY29t
+L3Byb2R1Y3QvaW50cm9kdWNlL3NnMjA0Mi5odG1sCiZndDsgJmd0OyBbMl06IGh0dHBzOi8vbWls
+a3YuaW8vcGlvbmVlcgomZ3Q7IAomZ3Q7IFRoaXMgaXMgYSBmcmllbmRseSByZW1pbmRlciBkdXJp
+bmcgdGhlIHJldmlldyBwcm9jZXNzLgomZ3Q7IAomZ3Q7IEl0IGxvb2tzIGxpa2UgeW91IHJlY2Vp
+dmVkIGEgdGFnIGFuZCBmb3Jnb3QgdG8gYWRkIGl0LgomZ3Q7IAomZ3Q7IElmIHlvdSBkbyBub3Qg
+a25vdyB0aGUgcHJvY2VzcywgaGVyZSBpcyBhIHNob3J0IGV4cGxhbmF0aW9uOgomZ3Q7IFBsZWFz
+ZSBhZGQgQWNrZWQtYnkvUmV2aWV3ZWQtYnkvVGVzdGVkLWJ5IHRhZ3Mgd2hlbiBwb3N0aW5nIG5l
+dwomZ3Q7IHZlcnNpb25zLCB1bmRlciBvciBhYm92ZSB5b3VyIFNpZ25lZC1vZmYtYnkgdGFnLiBU
+YWcgaXMgInJlY2VpdmVkIiwgd2hlbgomZ3Q7IHByb3ZpZGVkIGluIGEgbWVzc2FnZSByZXBsaWVk
+IHRvIHlvdSBvbiB0aGUgbWFpbGluZyBsaXN0LiBUb29scyBsaWtlIGI0CiZndDsgY2FuIGhlbHAg
+aGVyZS4gSG93ZXZlciwgdGhlcmUncyBubyBuZWVkIHRvIHJlcG9zdCBwYXRjaGVzICpvbmx5KiB0
+byBhZGQKJmd0OyB0aGUgdGFncy4gVGhlIHVwc3RyZWFtIG1haW50YWluZXIgd2lsbCBkbyB0aGF0
+IGZvciB0YWdzIHJlY2VpdmVkIG9uIHRoZQomZ3Q7IHZlcnNpb24gdGhleSBhcHBseS4KJmd0OyAK
+Jmd0OyBodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC92Ni41LXJjMy9zb3VyY2UvRG9j
+dW1lbnRhdGlvbi9wcm9jZXNzL3N1Ym1pdHRpbmctcGF0Y2hlcy5yc3QjTDU3NwomZ3Q7IAomZ3Q7
+IElmIGEgdGFnIHdhcyBub3QgYWRkZWQgb24gcHVycG9zZSwgcGxlYXNlIHN0YXRlIHdoeSBhbmQg
+d2hhdCBjaGFuZ2VkLgomZ3Q7IAomZ3Q7IEJlc3QgcmVnYXJkcywKJmd0OyBLcnp5c3p0b2YKCgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCkJlc3QgUmVnYXJkcyAKIAog5rGq6L6wKFdh
+bmcgQ2hlbikgCgo8L3dhbmdjaGVuMjBAaXNjYXMuYWMuY24+PC91bmljb3JueHdAZ21haWwuY29t
+Pjwva3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPg==
