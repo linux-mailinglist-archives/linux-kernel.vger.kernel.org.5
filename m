@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C90237A72CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394C07A72C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 08:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbjITGbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 02:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        id S233141AbjITGad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 02:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbjITGa6 (ORCPT
+        with ESMTP id S230447AbjITGab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 02:30:58 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2D39F;
-        Tue, 19 Sep 2023 23:30:51 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38K6UY59026086;
-        Wed, 20 Sep 2023 01:30:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695191434;
-        bh=Sgfm2GQGXWeDVEeCHx4rcPP9ZMWXDNPyH31HQnZvABc=;
-        h=From:To:CC:Subject:Date;
-        b=jZIoYoyLTNN81nGaF/HMXoO2fK5zbWe1xcDPZbPUal8krrpAnap/9XuvV30ZsN3aK
-         z0CAQ7iUKedeSQLqZNO5B2aDeNuKkzmt4sm857IMoeLaaX0oz1OYP8PEVBQKGzD5Y8
-         EqyN6TmY3bgUnaSnGUXmCmFs4VZeDDWG/2mmEmVc=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38K6UYiQ039837
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 Sep 2023 01:30:34 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 20
- Sep 2023 01:30:34 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 20 Sep 2023 01:30:34 -0500
-Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38K6UU65016867;
-        Wed, 20 Sep 2023 01:30:31 -0500
-From:   Neha Malcom Francis <n-francis@ti.com>
-To:     <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <n-francis@ti.com>, <u-kumar1@ti.com>
-Subject: [PATCH 1/1] arm64: dts: ti: k3-j721e-mcu-wakeup: Add MCU domain ESM instance
-Date:   Wed, 20 Sep 2023 12:00:29 +0530
-Message-ID: <20230920063029.3081579-1-n-francis@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 20 Sep 2023 02:30:31 -0400
+Received: from out28-77.mail.aliyun.com (out28-77.mail.aliyun.com [115.124.28.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958CA9F;
+        Tue, 19 Sep 2023 23:30:24 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2589378|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00268874-0.000101508-0.99721;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=michael@allwinnertech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.Ujk16e._1695191419;
+Received: from SunxiBot.allwinnertech.com(mailfrom:michael@allwinnertech.com fp:SMTPD_---.Ujk16e._1695191419)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Sep 2023 14:30:20 +0800
+From:   Michael Wu <michael@allwinnertech.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND v2] usb:typec:tcpm:support double Rp to Vbus cable as sink
+Date:   Wed, 20 Sep 2023 14:30:30 +0800
+Message-Id: <20230920063030.66312-1-michael@allwinnertech.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently J721E defines only the main_esm in DTS. Add node for mcu_esm
-as well.
+The USB Type-C Cable and Connector Specification defines the wire
+connections for the USB Type-C to USB 2.0 Standard-A cable assembly
+(Release 2.2, Chapter 3.5.2).
+The Notes says that Pin A5 (CC) of the USB Type-C plug shall be connected
+to Vbus through a resister Rp.
+However, there is a large amount of such double Rp connected to Vbus
+non-standard cables which produced by UGREEN circulating on the market, and
+it can affects the normal operations of the state machine easily,
+especially to CC1 and CC2 be pulled up at the same time.
+In fact, we can regard those cables as sink to avoid abnormal state.
 
-Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+Message as follow:
+[   58.900212] VBUS on
+[   59.265433] CC1: 0 -> 3, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
+[   62.623308] CC1: 3 -> 0, CC2: 3 -> 0 [state TOGGLING, polarity 0, disconnected]
+[   62.625006] VBUS off
+[   62.625012] VBUS VSAFE0V
+
+Signed-off-by: Michael Wu <michael@allwinnertech.com>
 ---
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+v1 -> v2: Simplify expression and add a comment to the code.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-index 05d6ef127ba7..fa8af20c7818 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-@@ -671,4 +671,11 @@ wkup_vtm0: temperature-sensor@42040000 {
- 		power-domains = <&k3_pds 154 TI_SCI_PD_EXCLUSIVE>;
- 		#thermal-sensor-cells = <1>;
- 	};
-+
-+	mcu_esm: esm@40800000 {
-+		compatible = "ti,j721e-esm";
-+		reg = <0x00 0x40800000 0x00 0x1000>;
-+		ti,esm-pins = <95>;
-+		bootph-pre-ram;
-+	};
- };
+ drivers/usb/typec/tcpm/tcpm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+Signed-off-by: Michael Wu <michael@allwinnertech.com>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index d962f67c95ae6..6e843c511b856 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -517,9 +517,9 @@ static const char * const pd_rev[] = {
+ 	((cc) == TYPEC_CC_RP_DEF || (cc) == TYPEC_CC_RP_1_5 || \
+ 	 (cc) == TYPEC_CC_RP_3_0)
+ 
++/* As long as cc is pulled up, we can consider it as sink. */
+ #define tcpm_port_is_sink(port) \
+-	((tcpm_cc_is_sink((port)->cc1) && !tcpm_cc_is_sink((port)->cc2)) || \
+-	 (tcpm_cc_is_sink((port)->cc2) && !tcpm_cc_is_sink((port)->cc1)))
++	(tcpm_cc_is_sink((port)->cc1) || tcpm_cc_is_sink((port)->cc2))
+ 
+ #define tcpm_cc_is_source(cc) ((cc) == TYPEC_CC_RD)
+ #define tcpm_cc_is_audio(cc) ((cc) == TYPEC_CC_RA)
 -- 
-2.34.1
+2.29.0
 
