@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 778617A7029
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052BB7A702B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 04:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbjITCKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 22:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
+        id S231911AbjITCKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 22:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbjITCKB (ORCPT
+        with ESMTP id S231840AbjITCKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 22:10:01 -0400
+        Tue, 19 Sep 2023 22:10:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F039F;
-        Tue, 19 Sep 2023 19:09:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B2F7C433CA;
-        Wed, 20 Sep 2023 02:09:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D556BE;
+        Tue, 19 Sep 2023 19:09:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ED8CC433CD;
+        Wed, 20 Sep 2023 02:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695175796;
-        bh=ahu76PmIf0loEOsIZvlQKEsmmgqXjKmIxSpJWKbM5kc=;
+        s=k20201202; t=1695175797;
+        bh=X231F0W4UNjrve3JRnUM4cCtW/rxv8gXIFxjWMkm1Yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jzIImjapkUX1xV3F1Z7fIuHcoGbC5vzQV3q0uzns7Llxs50vsFBg+4mfY2eWNkK+3
-         i3DuSHifgOkfX490MvhWLCK+lMQOu6KMwH+90RlDtmQwBifVVvztzmZetUFRFM7E9q
-         SqlubYUNgEgbqJminV7xUWdPsnbVoSlOLrtY6o62yKWgyK/BfNdy+UBexcktz/sni4
-         tdEHz9Nbi2Np8d5VudDzmZKLMN5ZV9Yo8dI7jPqfLHJJhyHpuA1E/gsOL0+zCEN33U
-         5ewFbLBmvsh0t04gVCkBY1E8BJPRm1SPMuPvJzsGwuiIpUuetEcJP4hkPkEXUj4+kg
-         tkdQxwrr0V74Q==
+        b=c5BR//i5gD2qkTtwKeEJrlvf7gPrylBzHrbXB2qeguKAO/fEhtc221UyK3wSlu6kB
+         OH4ZX0ain5DaFpJnhe3dDNBQnpJdRtzRcuVHcfmMPUmirvRXGRWdo/rAmevd3V4wsw
+         oWgXQ7Zm4tzaj2RxAOZcYtAqNMYTOKEPTu92QKMWCBEux5aHAYfcX52DNClYJ+GYjD
+         7nekmamYzI7+Lj3Zt/K4eaiRGnd8nuCE42twU5YYnolgn8RIHGW+oCsWdJKBzkO7I/
+         wDIpIdDbc9G+HKJeE3R9fkd9e8RXVkrTDDWqKZnsMi3AFZrOE54ZbaTtNQ6hzPvhtC
+         qpI+fo1Hu5zjQ==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     agross@kernel.org, konrad.dybcio@linaro.org, lee@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, sboyd@kernel.org, luca.weiss@fairphone.com,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v9 0/7] Add Qualcomm PMIC TPCM support
-Date:   Tue, 19 Sep 2023 19:13:56 -0700
-Message-ID: <169517603993.822793.12743751382669071299.b4-ty@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
+        Andy Gross <agross@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH 1/2] arm64: dts: qcom: sc7180: Move trogdor rt5682s bits to a fragment
+Date:   Tue, 19 Sep 2023 19:13:57 -0700
+Message-ID: <169517603992.822793.4084645192755492251.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230816115151.501736-1-bryan.odonoghue@linaro.org>
-References: <20230816115151.501736-1-bryan.odonoghue@linaro.org>
+In-Reply-To: <20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3e01923220@changeid>
+References: <20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3e01923220@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,32 +57,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 16 Aug 2023 12:51:44 +0100, Bryan O'Donoghue wrote:
-> V9:
+On Wed, 16 Aug 2023 11:21:53 -0700, Douglas Anderson wrote:
+> Several trogdor boards have moved from the older rt5862i to the newer
+> rt5862s, at least on newer revisions of boards. Let's get rid of the
+> dts duplication across boards and promote this to a fragment.
 > 
-> - Reuses glink ports {} definitions and locations per Bjorn's request
-> - Adds additional port @ 2 to 8250.dtsi as a result - Bjorn
-> - Drops logic in previous patch
->   "dt-bindings: phy: qcom,sc7180-qmp-usb3-dp-phy: Add input and output ports"
->   No longer required
-> - I've amended the names of the endpoints to match sc8280xp too - bod
+> Note: The old boards used to override the "compatible" in the "sound"
+> node with the exact same thing that was in "sc7180-trogdor.dtsi"
+> ("google,sc7180-trogdor"). I got rid of that.
 > 
 > [...]
 
 Applied, thanks!
 
-[2/7] arm64: dts: qcom: sm8250: Define ports for qmpphy orientation-switching
-      commit: ea96b90a58cf5d2e91ac177f081118ff26b85c1d
-[3/7] arm64: dts: qcom: pm8150b: Add a TCPM description
-      commit: 5a0539515cbfad30b3e08a00004ed0c86136add5
-[4/7] arm64: dts: qcom: qrb5165-rb5: Switch on Type-C VBUS boost
-      commit: c627d7337aae4d83b4db621fdb9e8f638056dcee
-[5/7] arm64: dts: qcom: qrb5165-rb5: Switch on basic TCPM
-      commit: 5b1b6da9d39d515395d85dc678ddac7ff1689438
-[6/7] arm64: dts: qcom: qrb5165-rb5: Switch on TCPM usb-role-switching for usb_1
-      commit: 25defdca4d902b338c05bc01a1de1064a6d3b7f3
-[7/7] arm64: dts: qcom: qrb5165-rb5: Switch on TCPM orientation-switch for usb_1_qmpphy
-      commit: 45219a6b9497cb7713dd2bc221248ee1a7e9bb3d
+[1/2] arm64: dts: qcom: sc7180: Move trogdor rt5682s bits to a fragment
+      commit: 8ff1aaba032dd00e71aadeafa0ef2f79d3693c99
+[2/2] arm64: dts: qcom: sc7180: Reorganize trogdor rt5682 audio codec dts
+      commit: 214945cbf375cc27d684f4cd2abb569e8c888688
 
 Best regards,
 -- 
