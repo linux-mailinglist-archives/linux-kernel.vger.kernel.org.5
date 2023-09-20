@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE3D7A8E8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76817A8E90
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 23:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjITVhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 17:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        id S229532AbjITVjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 17:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjITVhi (ORCPT
+        with ESMTP id S229445AbjITVi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 17:37:38 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091209E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:37:33 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-797ea09af91so4525839f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:37:33 -0700 (PDT)
+        Wed, 20 Sep 2023 17:38:59 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05978A3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:38:52 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-79e27406225so5556239f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 14:38:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1695245852; x=1695850652; darn=vger.kernel.org;
+        d=linuxfoundation.org; s=google; t=1695245931; x=1695850731; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=dTMZOz7zfHEZnxo271y0b24B0nwEkFYYZgLSU5ara0Y=;
-        b=Z+Szb6LP0i2gtMuiE1Z4/+Tros+n5A2uR4l7kapcRkD97JS+NudCenqj20qhzeM7fC
-         m+CvYJoH/4b0vKfPT6fZN40T5kmqlMVdUlddRh8gxn3K5i6C9xIl1dCVd7rCTUkOEX60
-         gQBp9n/kaWrpFYBsjAWo/a86rpH1wrT4dpXck=
+        bh=QY8PVgVpIHAID+AJM7qZltvMhQbKxhG6t29eKHUi9O0=;
+        b=Wb4lmqOsd6Y1VdqTr8MN1/PodcE6dfpZJschv+UhNCci2Npo1ncRHR+urZbUJ8OTVl
+         QVynQnvWeJsBe8AkvZa8z75GFVns6Hn0B8BkVG6YjejO5azTCwS9QhtMQ135cOH9tWuc
+         Qw+OykMgEbeeAZSbIHYINy6CZ4hPc4Xc3urg4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695245852; x=1695850652;
+        d=1e100.net; s=20230601; t=1695245931; x=1695850731;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dTMZOz7zfHEZnxo271y0b24B0nwEkFYYZgLSU5ara0Y=;
-        b=si5ngq3QuSEs1ooQT1ddX96QGPNvGbWZXzH39XZl828PG2xx2ebqE4aC2AVMXVQFVO
-         6tlBQMAoBtCVr80lOEbDdXWkp5jzCfS+T2T7pXOppql3uGvjQE1e/hqyRV2YemGpEhBK
-         jM+dbwMM/lx2luxs5z/uHiqNdUeSl+IlTpO+WYrf4jDtjhGS2z3N0acqxA2oMnrZ06D6
-         MWloybsrFQVJgpeK0ERK//BYKyrWmlKmhFrPJEP5SyH93S5qg2CJKTBJucNvujSIr697
-         Wg2XJ3iRrjGkYFixecEMA/OqOLAF3bZiB74NfTAyqEFWfsKcaloolpGV4Gvli/8bDdbO
-         04FA==
-X-Gm-Message-State: AOJu0YyDwz35/GDQH7G+TvkGmEKjQoALrrj3alIOd6Cxo4q61z9UBGz4
-        di1DhkWE9X39CZqJFRGamz/qAA==
-X-Google-Smtp-Source: AGHT+IG+gK+YYQCk4IAiV2PPKsJx5uyC6ZxdPHbNqGW18/9b8GKsVSaBcs6rXtre0KtZ7uGd7+FmAg==
-X-Received: by 2002:a05:6602:121a:b0:795:172f:977a with SMTP id y26-20020a056602121a00b00795172f977amr4007024iot.1.1695245852407;
-        Wed, 20 Sep 2023 14:37:32 -0700 (PDT)
+        bh=QY8PVgVpIHAID+AJM7qZltvMhQbKxhG6t29eKHUi9O0=;
+        b=Ff8Rx3bxGBynKyecAv9FCqDjOEWlR6IQnffkZtED59VdG3v3vKasm6ektlZ3rlSVRp
+         5Zhhg/H5DowWNoOzNPGh1BIh6HIlMGfiddphiWds2/aueZCfydkpCbd06EJhx/sZLTGw
+         amW2Ts8nFV9yd7j8ih/YB3NogXAfFKSnC0y3K5J3639TbNJDAPqbHlVzJRUhleVlZ0yh
+         tXsYsWScCGCAH2QDlgxt0/83Vkjfbl3PwL3Ao6Ijjm6ANhLq+txK54NyK7AlyB4+V9lg
+         6s2+JEmoHF0WVy/jgZoA07jiJ3kL/ThCKcc8Oe2xTxd06KLQZfl4MRw8vqe9r5/lFki9
+         8cRA==
+X-Gm-Message-State: AOJu0YznyvDDpY1Y/M/E7jTKW/bEzt9vQQbKhHpyPSoLvLIT1OHx/BHA
+        NtpWZWjguyNRSxc2t8Rr7u4WaQ==
+X-Google-Smtp-Source: AGHT+IGeHWyarZCNN2M1V8niROtMVtxRAlyZHQiX5ZEUHbSs7i9apmB2jBsqQqYB8J9AtOBuxissgA==
+X-Received: by 2002:a05:6602:13c2:b0:79d:1c65:9bde with SMTP id o2-20020a05660213c200b0079d1c659bdemr5599120iov.1.1695245931384;
+        Wed, 20 Sep 2023 14:38:51 -0700 (PDT)
 Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id f5-20020a02b785000000b0042b2f0b77aasm4203305jam.95.2023.09.20.14.37.31
+        by smtp.gmail.com with ESMTPSA id n2-20020a02a902000000b004290fd3a68dsm4262773jam.1.2023.09.20.14.38.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 14:37:32 -0700 (PDT)
-Message-ID: <96958c2b-bc0d-72b5-fcee-51d86bb5f7de@linuxfoundation.org>
-Date:   Wed, 20 Sep 2023 15:37:31 -0600
+        Wed, 20 Sep 2023 14:38:50 -0700 (PDT)
+Message-ID: <db56cb31-9615-c4a7-3740-17fa61e7bffd@linuxfoundation.org>
+Date:   Wed, 20 Sep 2023 15:38:50 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 5.4 000/367] 5.4.257-rc1 review
+Subject: Re: [PATCH 4.19 000/273] 4.19.295-rc1 review
 Content-Language: en-US
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org
@@ -63,9 +63,9 @@ Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
         f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
         srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
         Shuah Khan <skhan@linuxfoundation.org>
-References: <20230920112858.471730572@linuxfoundation.org>
+References: <20230920112846.440597133@linuxfoundation.org>
 From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230920112858.471730572@linuxfoundation.org>
+In-Reply-To: <20230920112846.440597133@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -78,9 +78,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/23 05:26, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.257 release.
-> There are 367 patches in this series, all will be posted as a response
+On 9/20/23 05:27, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.295 release.
+> There are 273 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -88,9 +88,9 @@ On 9/20/23 05:26, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.257-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.295-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
 > and the diffstat can be found below.
 > 
 > thanks,
@@ -104,3 +104,4 @@ Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
 thanks,
 -- Shuah
+
