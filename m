@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75E17A6FEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC1C7A6FEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbjITAjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 20:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
+        id S231660AbjITAoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 20:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbjITAi7 (ORCPT
+        with ESMTP id S230447AbjITAoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 20:38:59 -0400
-Received: from out-217.mta1.migadu.com (out-217.mta1.migadu.com [95.215.58.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0F3AD
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:38:53 -0700 (PDT)
-Date:   Tue, 19 Sep 2023 20:38:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695170331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kaQ4quY2FOsV6dNr0SfZBxe3SAq2X9fKDNK/mTJUPJo=;
-        b=fcDGTbVMFIQBEQQkC1wwEadLsMgzFYjQD45cjxVUPdUiWnXP7BAGG2BBy9HL98dl1VVqv8
-        MrbxQqzERfO5k8wwlYNRmfFUpUB/liPIKJRtQ+IXJZCPp6TRaP2iiSJG8RAaSd6ifLb7yc
-        vSjQ5g13+izc5myuYNdH/3DYZgCA+AA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Use snprintf() instead of scnprintf() when
- appropriate
-Message-ID: <20230920003847.nus6l45zqhv5hseb@moria.home.lan>
-References: <9a998be3e2dbedcd3a9eae5f81ae6dcc6c0f98c4.1694849375.git.christophe.jaillet@wanadoo.fr>
- <ZQmfZ/nPMgiJK9eW@bfoster>
- <20230919190234.2k7v75htqlbfqofh@moria.home.lan>
- <011234f5-19f3-21c5-f0cf-8027971397e7@wanadoo.fr>
+        Tue, 19 Sep 2023 20:44:11 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3F2AB
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:44:04 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VsStaA0_1695170641;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VsStaA0_1695170641)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Sep 2023 08:44:02 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     airlied@gmail.com, daniel@ffwll.ch, andrzej.hajda@intel.com,
+        neil.armstrong@linaro.org, rfoss@kernel.org
+Cc:     Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] drm/bridge: clean up some inconsistent indentings
+Date:   Wed, 20 Sep 2023 08:44:00 +0800
+Message-Id: <20230920004400.81091-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <011234f5-19f3-21c5-f0cf-8027971397e7@wanadoo.fr>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:23:47PM +0200, Christophe JAILLET wrote:
-> Le 19/09/2023 à 21:02, Kent Overstreet a écrit :
-> > On Tue, Sep 19, 2023 at 09:17:27AM -0400, Brian Foster wrote:
-> > > On Sat, Sep 16, 2023 at 09:30:19AM +0200, Christophe JAILLET wrote:
-> > > > snprintf() and scnprintf() are the same, except for the returned value.
-> > > > When this value is not used, it is more logical to use snprintf() which is
-> > > > slightly simpler.
-> > > > 
-> > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > > ---
-> > > 
-> > > Seems reasonable:
-> > > 
-> > > Reviewed-by: Brian Foster <bfoster@redhat.com>
-> > 
-> > No, let's stay with scnprintf as the default - snprintf should be
-> > deprecated except for when its return value is actually needed, using it
-> > incorrectly has been a source of buffer overruns in the past.
-> > 
-> 
-> Ok, I was not aware of it.
-> 
-> In this case, there are also some s/snprintf/scnprintf/ opportunities in
-> fs/bcachefs
-> 
-> Does it make sense to update them or is it too low value changes?
+drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c:336 dw_hdmi_cec_suspend() warn: inconsistent indenting
 
-Not terribly important - long term, I want to depracate both snprintf
-and scnprintf and convert everything to printbufs.
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+index 673661160e54..fe2ff4984fc5 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+@@ -333,9 +333,9 @@ static int __maybe_unused dw_hdmi_cec_suspend(struct device *dev)
+ 	struct dw_hdmi_cec *cec = dev_get_drvdata(dev);
+ 
+ 	/* store interrupt status/mask registers */
+-	 cec->regs_polarity = dw_hdmi_read(cec, HDMI_CEC_POLARITY);
+-	 cec->regs_mask = dw_hdmi_read(cec, HDMI_CEC_MASK);
+-	 cec->regs_mute_stat0 = dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STAT0);
++	cec->regs_polarity = dw_hdmi_read(cec, HDMI_CEC_POLARITY);
++	cec->regs_mask = dw_hdmi_read(cec, HDMI_CEC_MASK);
++	cec->regs_mute_stat0 = dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STAT0);
+ 
+ 	return 0;
+ }
+-- 
+2.20.1.7.g153144c
+
