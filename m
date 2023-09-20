@@ -2,107 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D076B7A7179
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 06:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628A27A717A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 06:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbjITEPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 00:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
+        id S232565AbjITEQm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 00:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjITEPA (ORCPT
+        with ESMTP id S229534AbjITEQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 00:15:00 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DF7CA
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:14:54 -0700 (PDT)
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 074993F680
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:14:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1695183293;
-        bh=9EvSlPl6agaWTAcgjdEpRt93clJ5AzKIreNbbX3/T8E=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=FVYimQUtwWwCJkoAr+B2sk0kH7RdJx7MtsS55o3ztMmm2LfxTyANAyRyi75q3kLNB
-         DcgZ7uFBfzVA29xOAbjRWMRU/+jzJYyvTb3c9FipSRiRnwaOPBGMqQpexjMyOXvd0W
-         P+ujbkiRms/vGywVkzH0swUv4URzvmaUeuNj6PmlwV/FZJ8IYYtxPj8Q1ml5V7LGKZ
-         OqkG2xZ4P/NYG0o+ZYnyjrjyAYA0KXMS8ChtBd0AF29oB2ajDRY2VLbJZvPspL+19b
-         MvOw4mBsHiVrtXnb3NU1O7M1vDUSj8kufc+qbHoZn6dB4YEe7VzY7mM5pBbVwskd3d
-         xkrjBjDGYBdiQ==
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2764e63b6abso3033008a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 21:14:52 -0700 (PDT)
+        Wed, 20 Sep 2023 00:16:40 -0400
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CC5AC;
+        Tue, 19 Sep 2023 21:16:34 -0700 (PDT)
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-795547f055fso225984839f.0;
+        Tue, 19 Sep 2023 21:16:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695183289; x=1695788089;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9EvSlPl6agaWTAcgjdEpRt93clJ5AzKIreNbbX3/T8E=;
-        b=Mcv8IsD4I3cYGszUlGbzb97qXZQgZRFZq96bjw2ZXdr5RkrSqLzmbtS25QzsgWgwg0
-         TLpCF1QwKSpt4bMIcqxhzcu7dZpzxKCLwN1fXTsf9HI0fy2RLaKO4jsG/A40XGbpovm+
-         xerTl++VGRahbpGaDMxiAKZsiytDWJt2nPFGNHR9tnSm1iDfNEcwanYNfGBGbccMUSBX
-         iUCoqVk2uUbYPlF4v6dyvQ1Xl4mHGRVOn92I2q5qpiyOVbEguBAKeTV3uiNgXsa3KWap
-         Iv0/nxyrjUs1QHK9yzn6crxdA+UR+0lELU38B/u0/uu69OUPeWrfBu5yWMhib3Q68Jbf
-         cNXQ==
-X-Gm-Message-State: AOJu0YxP6d2duEXJm8SYzfWytUg53/TQxYIrNIOMADKsmD3tQTXPL+ii
-        Qb9KqxqBLAHxsYSb5fn/DZx7gEo3xEOurhzm+4Vi3EYjlwdP0pHGqYlTuQUuuHc/rRsY67ChYi0
-        dOvtyZy88rtyj3QePbKw1XR7uN1h953K0UFVn3hMllQ==
-X-Received: by 2002:a17:90a:8d0a:b0:267:fb26:32bd with SMTP id c10-20020a17090a8d0a00b00267fb2632bdmr1598821pjo.7.1695183289302;
-        Tue, 19 Sep 2023 21:14:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEtMWX1vRkRmkdHXVrH//u7RSJ6kA4XAgXlQzAmWikvv3pQ4DLvVIvlXkWSt3seiMrND4ecHA==
-X-Received: by 2002:a17:90a:8d0a:b0:267:fb26:32bd with SMTP id c10-20020a17090a8d0a00b00267fb2632bdmr1598811pjo.7.1695183288894;
-        Tue, 19 Sep 2023 21:14:48 -0700 (PDT)
-Received: from canonical.com (211-75-139-218.hinet-ip.hinet.net. [211.75.139.218])
-        by smtp.gmail.com with ESMTPSA id t24-20020a17090ad51800b0026596b8f33asm360059pju.40.2023.09.19.21.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 21:14:47 -0700 (PDT)
-From:   Koba Ko <koba.ko@canonical.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH] x86/arch: Fix access invalid member when disable CONFIG_UNWINDER_ORC
-Date:   Wed, 20 Sep 2023 12:14:46 +0800
-Message-Id: <20230920041446.300415-1-koba.ko@canonical.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1695183394; x=1695788194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TByPd9bJxyXIOoM/l5SEaA4+xKnA5Fi2G8S6RG6nvLw=;
+        b=Cka1xYt7SD58HKLzlu7N4+2+7cgYrCVGQTrkCl5+wPSm36K1ArLE3e4NyIPhnpJExG
+         JItGMktwLY7JAeOoS+PJ/NfdlQLbP2+ZsIIidPfsuWINSDeid3HltTEz4N/yEnMgtX/E
+         B6coKvVrTAt8Ed/yGlNSrCf7Ikm6trhpgSuzvDPCK75Ok6bhjSqq6T7vnBVGnZWfNO6n
+         3gx4Hfke3XVNHPPZkWtyVo7d5jhaRmhY7Wm+80Lkbn7QL3myv2RauvRjbZRYQSLk05LG
+         AYisy72y0euslaBv52GvzOXJ36TFdOt1wngQ+GWHXiPON8ySQCVVfM1VLieEG28XEoKH
+         S4+A==
+X-Gm-Message-State: AOJu0YyUaURFnjAMm8+iX1BeyYYART8Wai5ScKayTv1YlYgPl8cT2PKo
+        BJDGyQVlmCYZJzf7idlNb2lS9i84xA2rienzaqc=
+X-Google-Smtp-Source: AGHT+IGJvDTyDwqDXaSxojHGI3tNfZnSPUprUxpgJRnVtkygmR99Dw8cwT2RNSpCsPmaoDGGH7y2cnkV0hB+pf3Ap7k=
+X-Received: by 2002:a05:6602:24cf:b0:791:2db5:c779 with SMTP id
+ h15-20020a05660224cf00b007912db5c779mr1969074ioe.10.1695183394112; Tue, 19
+ Sep 2023 21:16:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230919080929.3807123-1-xu.yang_2@nxp.com> <CAP-5=fX46xYdE2bheU+LhW2Joce+De42=d-XqBuFS9F-CPsQsg@mail.gmail.com>
+ <DB7PR04MB450509DB2DBE1FAEF5F06CCD8CF9A@DB7PR04MB4505.eurprd04.prod.outlook.com>
+In-Reply-To: <DB7PR04MB450509DB2DBE1FAEF5F06CCD8CF9A@DB7PR04MB4505.eurprd04.prod.outlook.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 19 Sep 2023 21:16:23 -0700
+Message-ID: <CAM9d7chjjYqLrsE7+_GYJ7B5aSJtESi_0dSmahHKOGjwMYPN+w@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH] perf jevents: fix no member named 'entries' issue
+To:     Xu Yang <xu.yang_2@nxp.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CONFIG_UNWINDER_DRAME_POINTER doesn't have bp and sp members.
-this leads the compilation error when only enable CONFIG_UNWINDER_DRAME_POINTER.
+Hello,
 
-arch/x86/net/bpf_jit_comp.c:3022:72: error: 'struct unwind_state' has no member named
-'sp'; did you mean 'bp'?
-3022 | if (!addr || !consume_fn(cookie, (u64)addr, (u64)state.sp, (u64)state.bp))
+On Tue, Sep 19, 2023 at 7:07 PM Xu Yang <xu.yang_2@nxp.com> wrote:
+>
+> Hi Lan,
+>
+> > On Tue, Sep 19, 2023 at 1:04 AM Xu Yang <xu.yang_2@nxp.com> wrote:
+> > >
+> > > The struct "pmu_events_table" has been changed after commit
+> > > 2e255b4f9f41 (perf jevents: Group events by PMU, 2023-08-23).
+> > > So there doesn't exist 'entries' in pmu_events_table anymore.
+> > > This will align the members with that commit. Othewise, below
+> > > errors will be printed when run jevent.py:
+> > >
+> > > pmu-events/pmu-events.c:5485:26: error: ‘struct pmu_metrics_table’ has no member named ‘entries’
+> > >  5485 |                         .entries = pmu_metrics__freescale_imx8dxl_sys,
+> > >
+> > > Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> >
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+> >
+> > Thanks Xu! I wasn't able to repeat the failure but the fix looks good
+> > to me. Is the failure caused by adding new imx8dxl metrics? I'd like
+>
+> Yes.
+>
+> > to make sure we have testing coverage so this doesn't happen again.
+> > I'm trying:
+> > $ make -C tools/perf O=/tmp/perf JEVENTS_ARCH=all
+> > Could you confirm that this make command was broken without your fix
+> > plus the metric changes you've done?
+>
+> Below steps will repeat the failure.
+>
+> $ cd tools/
+> $ rm perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
+> $ make clean
+> $ make JEVENTS_ARCH=all perf
+>
+> pmu-events/pmu-events.c:76586:26: error: ‘struct pmu_metrics_table’ has no member named ‘entries’
+> 76586 |                         .entries = pmu_metrics__freescale_imx8mm_sys,
+>       |                          ^~~~~~~
+> pmu-events/pmu-events.c:76587:26: error: ‘struct pmu_metrics_table’ has no member named ‘length’
+> 76587 |                         .length = ARRAY_SIZE(pmu_metrics__freescale_imx8mm_sys)
+>       |                          ^~~~~~
+>
+> If only metric table exists, then this error may occur.
 
-Fixes: f18b03fabaa9 ("bpf: Implement BPF exceptions")
-Signed-off-by: Koba Ko <koba.ko@canonical.com>
----
- arch/x86/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I can reproduce the error and confirm it fixed.
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 84005f2114e09..db2b09949d407 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -3012,7 +3012,7 @@ bool bpf_jit_supports_exceptions(void)
- 
- void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
- {
--#if defined(CONFIG_UNWINDER_ORC) || defined(CONFIG_UNWINDER_FRAME_POINTER)
-+#if defined(CONFIG_UNWINDER_ORC)
- 	struct unwind_state state;
- 	unsigned long addr;
- 
--- 
-2.34.1
+Tested-by: Namhyung Kim <namhyung@kernel.org>
 
+Thanks,
+Namhyung
