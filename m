@@ -2,836 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E57B7A7E30
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079057A7E9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235541AbjITMQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
+        id S235612AbjITMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbjITMQB (ORCPT
+        with ESMTP id S235605AbjITMTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:16:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90511EC
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:15:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF28C433A9;
-        Wed, 20 Sep 2023 12:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695212147;
-        bh=olT8E3TU+IwynXmwLR5iExMQ4jqe1iQFSIY8O+8jh2A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LETuaAgThyDhTW115q8CbVGS1mD3aWN5j/ZfeulsFI0xXs4rm4odpbyuoKtAT0g7h
-         GtX0HNXnCYA+RUhFAcdvxBMh9rqzDSBzYBA7wFmovx9G1naBn4SiVlj7A+ufZj8gGG
-         zm+Fn1s93I+eTsGh2gsqRU7QpJ099Ujb1/2V0ig0/7P3IloFaVnJ5xG9R0LhMno6Bj
-         a27jaET6dLjSB32iEUUj529AdoUJCcnxVF9CG+5QzY27U/DyGXqKhcGyTakUWR27Xn
-         ArTEKrRJkSs7ClQcBNGEbc3qdj48nwzpJW63WMqPDt/4Pzm/DDalc4DtBJkXvEuddA
-         kDZwKO0tz4dJg==
-From:   Roger Quadros <rogerq@kernel.org>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, vladimir.oltean@nxp.com
-Cc:     horms@kernel.org, s-vadapalli@ti.com, srk@ti.com, vigneshr@ti.com,
-        p-varis@ti.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rogerq@kernel.org
-Subject: [PATCH net-next v4 3/3] net: ethernet: ti: am65-cpsw-qos: Add Frame Preemption MAC Merge support
-Date:   Wed, 20 Sep 2023 15:15:30 +0300
-Message-Id: <20230920121530.4710-4-rogerq@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230920121530.4710-1-rogerq@kernel.org>
-References: <20230920121530.4710-1-rogerq@kernel.org>
+        Wed, 20 Sep 2023 08:19:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AA393
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:18:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695212302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MpxD2hJq5Q02/WUxDjsbTdvI7uGw6aRa+lEV9QFIfas=;
+        b=W5NJsTeO4mAlAp5OxNzUmrRpxCFmK4UpCxeV11zKNv8EeZClORgeweNZ5Xwn8B0AJZpNWh
+        WDEVdLkrtfTUiB/bbyA10H/l2ehMuSPEJWN/tGpwiFJgjRaOiXYmeTnth+z3Te2726XyM/
+        yewXlJAKqid4XyDch4CwXDt0sXvRr4g=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-488--JriAQfKNxKxR3-Ka-mSmg-1; Wed, 20 Sep 2023 08:18:21 -0400
+X-MC-Unique: -JriAQfKNxKxR3-Ka-mSmg-1
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-34ff38866b2so1467255ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:18:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695212300; x=1695817100;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MpxD2hJq5Q02/WUxDjsbTdvI7uGw6aRa+lEV9QFIfas=;
+        b=FT132XtyU98zd+vE9p2aKaghOfmNf/7fHU7x8W8ROhMdLYWjKSEDc1F1ib9ljjUQYo
+         WMYwh8e88stR07Zghq0gHsDBMPL/3YtblB0/6gMiocZbOff9+W85JX4jg6wG8s+QvXMJ
+         FB1lrkiWill99GWR+EK1gPKLsmJM6wZJsJLH+9TakVAyfPd2F7XWLMo3hkdUvtESAGtr
+         FWlENGbXV7Obap0OfURWszHaPOCfs5TQnhIkeYZyZdbxLd7HJWxJOnDJd3/M8hqJaZBF
+         c42z2q9dy3gBcOfMqeZTp4PdwkVwutrL/caQHFDOQeEkfktw0XSshz8DypF9pxic8vUo
+         CY7A==
+X-Gm-Message-State: AOJu0YwWroCD6mKThL4uqbexSC6VMropR5jZIlqAyYscW+FG3pkFk+OQ
+        L+udNU7FwznroKYXFR+SmzLakaD45KPGTy6o8kpa5ZEDitzYcedxmDNNGkwbi9Z/gav8ems3q66
+        1bmdLbYt2NmnQTHwAgP6hCsJiclgk2dszCtdJoIBH
+X-Received: by 2002:a05:6e02:78e:b0:34e:2a69:883c with SMTP id q14-20020a056e02078e00b0034e2a69883cmr2827782ils.1.1695212300422;
+        Wed, 20 Sep 2023 05:18:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGuN+RjycMrzIAxyvkpRg7LMrQtSGUJq88OT4C2QVsI1Kuc+7i2ddznpJxQZ/LNCTk9SANCQ9TbEYbhsm+Ayas=
+X-Received: by 2002:a05:6e02:78e:b0:34e:2a69:883c with SMTP id
+ q14-20020a056e02078e00b0034e2a69883cmr2827761ils.1.1695212300056; Wed, 20 Sep
+ 2023 05:18:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20230911052535.335770-1-kernel@jfarr.cc> <20230913160045.40d377f9@rotkaeppchen>
+ <63952cb0-5217-42a8-9b62-8be6d03f5844@app.fastmail.com> <CALu+AoTAUWWtx8yChQMKF9J5X_Qd8+x0hz0jzVwoOvAvh5VmHA@mail.gmail.com>
+ <CALu+AoRiok-bzM4OQbiix44O-PUgO2N6Yi+_qTOn4iWtk_u4cg@mail.gmail.com>
+ <CAMj1kXFkQ+T9OjK6NkKjfyR8gW4EZKFw5rEk0rgrzkHyK2BNXQ@mail.gmail.com> <CALu+AoTwqL3y=NhojN2Sb=Ms33id9Nco9QU8JccFrJ_nza5jAQ@mail.gmail.com>
+In-Reply-To: <CALu+AoTwqL3y=NhojN2Sb=Ms33id9Nco9QU8JccFrJ_nza5jAQ@mail.gmail.com>
+From:   Dave Young <dyoung@redhat.com>
+Date:   Wed, 20 Sep 2023 20:18:00 +0800
+Message-ID: <CALu+AoRZ0CHiu_LLoCNxecBtVgwFDkzytw9suv5n0et9j7dX5g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Jan Hendrik Farr <kernel@jfarr.cc>,
+        Philipp Rudo <prudo@redhat.com>, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
+        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
+        akpm@linux-foundation.org, Baoquan He <bhe@redhat.com>,
+        bhelgaas@google.com, Luca Boccassi <bluca@debian.org>,
+        lennart@poettering.net, "Liu, Pingfan" <piliu@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver support for viewing / changing the MAC Merge sublayer
-parameters and seeing the verification state machine's current state
-via ethtool.
+On Wed, 20 Sept 2023 at 20:07, Dave Young <dyoung@redhat.com> wrote:
+>
+> On Wed, 20 Sept 2023 at 18:50, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Wed, 20 Sept 2023 at 08:40, Dave Young <dyoung@redhat.com> wrote:
+> > >
+> > > On Wed, 20 Sept 2023 at 15:43, Dave Young <dyoung@redhat.com> wrote:
+> > > >
+> > > > > > In the end the only benefit this series brings is to extend the
+> > > > > > signature checking on the whole UKI except of just the kernel image.
+> > > > > > Everything else can also be done in user space. Compared to the
+> > > > > > problems described above this is a very small gain for me.
+> > > > >
+> > > > > Correct. That is the benefit of pulling the UKI apart in the
+> > > > > kernel. However having to sign the kernel inside the UKI defeats
+> > > > > the whole point.
+> > > >
+> > > >
+> > > > Pingfan added the zboot load support in kexec-tools, I know that he is
+> > > > trying to sign the zboot image and the inside kernel twice. So
+> > > > probably there are some common areas which can be discussed.
+> > > > Added Ard and Pingfan in cc.
+> > > > http://lists.infradead.org/pipermail/kexec/2023-August/027674.html
+> > > >
+> > >
+> > > Here is another thread of the initial try in kernel with a few more
+> > > options eg. some fake efi service helpers.
+> > > https://lore.kernel.org/linux-arm-kernel/ZBvKSis+dfnqa+Vz@piliu.users.ipa.redhat.com/T/#m42abb0ad3c10126b8b3bfae8a596deb707d6f76e
+> > >
+> >
+>
+> Ard, thanks for the comments.
+>
+> > Currently, UKI's external interface is defined in terms of EFI
+> > services, i.e., it is an executable PE/COFF binary that encapsulates
+> > all the logic that performs the unpacking of the individual sections,
+> > and loads the kernel as a PE/COFF binary as well (i.e., via
+> > LoadImage/StartImage)
+> >
+> > As soon as we add support to Linux to unpack a UKI and boot the
+> > encapsulated kernel using a boot protocol other than EFI, we are
+> > painting ourselves into a corner, severely limiting the freedom of the
+> > UKI effort to make changes to the interfaces that were implementation
+> > details up to this point.
+>
+> Agreed, it seems UKI is more flexible and complex than the zboot,
+> we do need to carefully think about a better solution.
+>
+> >
+> > It also means that UKI handling in kexec will need to be taught about
+> > every individual architecture again, which is something we are trying
+> > to avoid with EFI support in general. Breaking the abstraction like
+> > this lets the cat out of the bag, and will add yet another variation
+> > of kexec that we will need to support and maintain forever.
+> >
+> > So the only way to do this properly and portably is to implement the
+> > minimal set of EFI boot services [0] that Linux actually needs to run
+> > its EFI stub (which is mostly identical to the set that UKI relies on
+> > afaict), and expose them to the kexec image as it is being loaded.
+> > This is not as bad as it sounds - I have some Rust code that could be
+> > used as an inspiration [1] and which could be reused and shared
+> > between architectures.
+>
+> Great!
+>
+> >
+> > This would also reduce/remove the need for a purgatory: loading a EFI
+> > binary in this way would run it up to the point were it calls
+> > ExitBootServices(), and the actual kexec would invoke the image as if
+> > it was returning from ExitBootServices().
+> >
+> > The only fundamental problem here is the need to allocate large chunks
+> > of physical memory, which would need some kind of CMA support, I
+> > imagine?
+>
+> Hmm, I thought that your idea is to write the efi stub code in "purgatory"
+> so kexec can jump to it while rebooting then it will be able to access the
+> whole usable memory, but it seems you want an efi app run under linux
+> and somehow provide services to kexec?  My EFI knowledge is incomplete
+> and outdated,  If my understanding of your proposal is true how can it keep
+> running after switching to the new kernel stub?
 
-As hardware does not support interrupt notification for verification
-events we resort to polling on link up. On link up we try a couple of
-times for verification success and if unsuccessful then give up.
+Oops,  please ignore the quick reply and questioins, I apparently
+forgot that this is the kexec loading
+phase instead of the rebooting phase.  Yes as you said CMA might be
+the only choice
+for that proposal.
 
-The Frame Preemption feature is described in the Technical Reference
-Manual [1] in section:
-	12.3.1.4.6.7 Intersperced Express Traffic (IET – P802.3br/D2.0)
-
-Due to Silicon Errata i2208 [2] we set limit min IET fragment size to 124.
-
-[1] AM62x TRM - https://www.ti.com/lit/ug/spruiv7a/spruiv7a.pdf
-[2] AM62x Silicon Errata - https://www.ti.com/lit/er/sprz487c/sprz487c.pdf
-
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
- drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 150 ++++++++++++
- drivers/net/ethernet/ti/am65-cpsw-nuss.c    |   2 +
- drivers/net/ethernet/ti/am65-cpsw-nuss.h    |   5 +
- drivers/net/ethernet/ti/am65-cpsw-qos.c     | 240 ++++++++++++++++----
- drivers/net/ethernet/ti/am65-cpsw-qos.h     | 104 +++++++++
- 5 files changed, 454 insertions(+), 47 deletions(-)
-
-Changelog:
----------
-v4:
-- Rebase and include in the same series as mqprio support.
-
-v3:
-- Rebase on top of v6.6-rc1 and mqprio support [1]
-- Support ethtool_ops :: get_mm_stats()
-- drop unused variables cmn_ctrl and verify_cnt
-- make am65_cpsw_iet_link_state_update() and
-  am65_cpsw_iet_change_preemptible_tcs() static
-
-[1] https://lore.kernel.org/all/20230918075358.5878-1-rogerq@kernel.org/
-
-v2:
-- Use proper control bits for PMAC enable (AM65_CPSW_PN_CTL_IET_PORT_EN)
-  and TX enable (AM65_CPSW_PN_IET_MAC_PENABLE)
-- Common IET Enable (AM65_CPSW_CTL_IET_EN) is set if any port has
-  AM65_CPSW_PN_CTL_IET_PORT_EN set.
-- Fix workaround for erratum i2208. i.e. Limit rx_min_frag_size to 124
-- Fix am65_cpsw_iet_get_verify_timeout_ms() to default to timeout for
-  1G link if link is inactive.
-- resize the RX FIFO based on pmac_enabled, not tx_enabled.
-
-Test Procedure:
-
-- 2 EVMs with AM65-CPSW network port connected to each other
-- Run iet-setup-mqprio.sh on both
-
-#!/bin/sh
-#iet-setup-mqprio.sh
-
-ifconfig eth0 down
-ifconfig eth1 down
-ethtool -L eth0 tx 4
-ethtool --set-mm eth0 pmac-enabled on tx-enabled on verify-enabled on verify-time 10 tx-min-frag-size 124
-ifconfig eth0 up
-sleep 10
-
-tc qdisc add dev eth0 handle 100: root mqprio \
-num_tc 4 \
-map 0 1 2 3 \
-queues 1@0 1@1 1@2 1@3 \
-hw 1 \
-mode dcb \
-fp P P P E
-
-tc -g class show dev eth0
-tc qdisc add dev eth0 clsact
-tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5002 0xffff action skbedit priority 2
-tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5003 0xffff action skbedit priority 3
-ip addr add 192.168.3.102/24 dev eth0 
-
-- check that MAC merge verification has succeeded
-
-ethtool --show-mm eth0
-
-        MAC Merge layer state for eth0:
-        pMAC enabled: on
-        TX enabled: on
-        TX active: on
-        TX minimum fragment size: 124
-        RX minimum fragment size: 124
-        Verify enabled: on
-        Verify time: 10
-        Max verify time: 134
-        Verification status: SUCCEEDED
-
-- On receiver EVM run 2 iperf instances
-
-iperf3 -s -i30 -p5002&
-iperf3 -s -i30 -p5003&
-
-- On sender EVM run 2 iperf instances
-
-iperf3 -c 192.168.3.102 -u -b200M -l1472 -u -t5 -i30 -p5002&
-iperf3 -c 192.168.3.102 -u -b50M -l1472 -u -t5 -i30 -p5003&
-
-- Check IET stats on sender. Look for MACMergeFragCountTx: increments
-
-ethtool -I --show-mm eth0
-MAC Merge layer state for eth0:
-pMAC enabled: on
-TX enabled: on
-TX active: on
-TX minimum fragment size: 124
-RX minimum fragment size: 124
-Verify enabled: on
-Verify time: 10
-Max verify time: 134
-Verification status: SUCCEEDED
-Statistics:
-  MACMergeFrameAssErrorCount: 0
-  MACMergeFrameSmdErrorCount: 0
-  MACMergeFrameAssOkCount: 0
-  MACMergeFragCountRx: 0
-  MACMergeFragCountTx: 57824
-  MACMergeHoldCount: 0
-
-- Check IET stats on receiver. Look for MACMergeFragCountRx: and
-  MACMergeFrameAssOkCount:
-
-ethtool -I --show-mm eth0
-MAC Merge layer state for eth0:
-pMAC enabled: on
-TX enabled: on
-TX active: on
-TX minimum fragment size: 124
-RX minimum fragment size: 124
-Verify enabled: on
-Verify time: 10
-Max verify time: 134
-Verification status: SUCCEEDED
-Statistics:
-  MACMergeFrameAssErrorCount: 0
-  MACMergeFrameSmdErrorCount: 0
-  MACMergeFrameAssOkCount: 57018
-  MACMergeFragCountRx: 57824
-  MACMergeFragCountTx: 0
-  MACMergeHoldCount: 0
-
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-index c51e2af91f69..f6b081b7e754 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-@@ -11,6 +11,7 @@
- #include <linux/pm_runtime.h>
- 
- #include "am65-cpsw-nuss.h"
-+#include "am65-cpsw-qos.h"
- #include "cpsw_ale.h"
- #include "am65-cpts.h"
- 
-@@ -715,6 +716,152 @@ static int am65_cpsw_set_ethtool_priv_flags(struct net_device *ndev, u32 flags)
- 	return 0;
- }
- 
-+static void am65_cpsw_port_iet_rx_enable(struct am65_cpsw_port *port, bool enable)
-+{
-+	u32 val;
-+
-+	val = readl(port->port_base + AM65_CPSW_PN_REG_CTL);
-+	if (enable)
-+		val |= AM65_CPSW_PN_CTL_IET_PORT_EN;
-+	else
-+		val &= ~AM65_CPSW_PN_CTL_IET_PORT_EN;
-+
-+	writel(val, port->port_base + AM65_CPSW_PN_REG_CTL);
-+	am65_cpsw_iet_common_enable(port->common);
-+}
-+
-+static void am65_cpsw_port_iet_tx_enable(struct am65_cpsw_port *port, bool enable)
-+{
-+	u32 val;
-+
-+	val = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+	if (enable)
-+		val |= AM65_CPSW_PN_IET_MAC_PENABLE;
-+	else
-+		val &= ~AM65_CPSW_PN_IET_MAC_PENABLE;
-+
-+	writel(val, port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+}
-+
-+static int am65_cpsw_get_mm(struct net_device *ndev, struct ethtool_mm_state *state)
-+{
-+	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-+	struct am65_cpsw_ndev_priv *priv = netdev_priv(ndev);
-+	u32 port_ctrl, iet_ctrl, iet_status;
-+	u32 add_frag_size;
-+
-+	mutex_lock(&priv->mm_lock);
-+
-+	iet_ctrl = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+	port_ctrl = readl(port->port_base + AM65_CPSW_PN_REG_CTL);
-+
-+	state->tx_enabled = !!(iet_ctrl & AM65_CPSW_PN_IET_MAC_PENABLE);
-+	state->pmac_enabled = !!(port_ctrl & AM65_CPSW_PN_CTL_IET_PORT_EN);
-+
-+	iet_status = readl(port->port_base + AM65_CPSW_PN_REG_IET_STATUS);
-+
-+	if (iet_ctrl & AM65_CPSW_PN_IET_MAC_DISABLEVERIFY)
-+		state->verify_status = ETHTOOL_MM_VERIFY_STATUS_DISABLED;
-+	else if (iet_status & AM65_CPSW_PN_MAC_VERIFIED)
-+		state->verify_status = ETHTOOL_MM_VERIFY_STATUS_SUCCEEDED;
-+	else if (iet_status & AM65_CPSW_PN_MAC_VERIFY_FAIL)
-+		state->verify_status = ETHTOOL_MM_VERIFY_STATUS_FAILED;
-+	else
-+		state->verify_status = ETHTOOL_MM_VERIFY_STATUS_UNKNOWN;
-+
-+	add_frag_size = AM65_CPSW_PN_IET_MAC_GET_ADDFRAGSIZE(iet_ctrl);
-+	state->tx_min_frag_size = ethtool_mm_frag_size_add_to_min(add_frag_size);
-+
-+	/* Errata i2208: RX min fragment size cannot be less than 124 */
-+	state->rx_min_frag_size = 124;
-+
-+	/* FPE active if common tx_enabled and verification success or disabled (forced) */
-+	state->tx_active = state->tx_enabled &&
-+			   (state->verify_status == ETHTOOL_MM_VERIFY_STATUS_SUCCEEDED ||
-+			    state->verify_status == ETHTOOL_MM_VERIFY_STATUS_DISABLED);
-+	state->verify_enabled = !(iet_ctrl & AM65_CPSW_PN_IET_MAC_DISABLEVERIFY);
-+
-+	state->verify_time = port->qos.iet.verify_time_ms;
-+	state->max_verify_time = am65_cpsw_iet_get_verify_timeout_ms(AM65_CPSW_PN_MAC_VERIFY_CNT_MASK,
-+								     port);
-+	mutex_unlock(&priv->mm_lock);
-+
-+	return 0;
-+}
-+
-+static int am65_cpsw_set_mm(struct net_device *ndev, struct ethtool_mm_cfg *cfg,
-+			    struct netlink_ext_ack *extack)
-+{
-+	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-+	struct am65_cpsw_ndev_priv *priv = netdev_priv(ndev);
-+	struct am65_cpsw_iet *iet = &port->qos.iet;
-+	u32 val, add_frag_size;
-+	int err;
-+
-+	err = ethtool_mm_frag_size_min_to_add(cfg->tx_min_frag_size, &add_frag_size, extack);
-+	if (err)
-+		return err;
-+
-+	mutex_lock(&priv->mm_lock);
-+
-+	if (cfg->pmac_enabled) {
-+		/* change TX & RX FIFO MAX_BLKS as per TRM recommendation */
-+		if (!iet->original_max_blks)
-+			iet->original_max_blks = readl(port->port_base + AM65_CPSW_PN_REG_MAX_BLKS);
-+
-+		writel(AM65_CPSW_PN_TX_RX_MAX_BLKS_IET,
-+		       port->port_base + AM65_CPSW_PN_REG_MAX_BLKS);
-+	} else {
-+		/* restore RX & TX FIFO MAX_BLKS */
-+		if (iet->original_max_blks) {
-+			writel(iet->original_max_blks,
-+			       port->port_base + AM65_CPSW_PN_REG_MAX_BLKS);
-+		}
-+	}
-+
-+	am65_cpsw_port_iet_rx_enable(port, cfg->pmac_enabled);
-+	am65_cpsw_port_iet_tx_enable(port, cfg->tx_enabled);
-+
-+	val = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+	if (cfg->verify_enabled) {
-+		val &= ~AM65_CPSW_PN_IET_MAC_DISABLEVERIFY;
-+		/* Reset Verify state machine. Verification won't start here.
-+		 * Verification will be done once link-up.
-+		 */
-+		val |= AM65_CPSW_PN_IET_MAC_LINKFAIL;
-+	} else {
-+		val |= AM65_CPSW_PN_IET_MAC_DISABLEVERIFY;
-+	}
-+
-+	val &= ~AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_MASK;
-+	val |= AM65_CPSW_PN_IET_MAC_SET_ADDFRAGSIZE(add_frag_size);
-+	writel(val, port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+
-+	/* verify_timeout_count can only be set at valid link */
-+	port->qos.iet.verify_time_ms = cfg->verify_time;
-+
-+	/* enable/disable pre-emption based on link status */
-+	am65_cpsw_iet_commit_preemptible_tcs(port);
-+
-+	mutex_unlock(&priv->mm_lock);
-+
-+	return 0;
-+}
-+
-+static void am65_cpsw_get_mm_stats(struct net_device *ndev,
-+				   struct ethtool_mm_stats *s)
-+{
-+	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-+	void __iomem *base = port->stat_base;
-+
-+	s->MACMergeFrameAssOkCount = readl(base + AM65_CPSW_STATN_IET_RX_ASSEMBLY_OK);
-+	s->MACMergeFrameAssErrorCount = readl(base + AM65_CPSW_STATN_IET_RX_ASSEMBLY_ERROR);
-+	s->MACMergeFrameSmdErrorCount = readl(base + AM65_CPSW_STATN_IET_RX_SMD_ERROR);
-+	s->MACMergeFragCountRx = readl(base + AM65_CPSW_STATN_IET_RX_FRAG);
-+	s->MACMergeFragCountTx = readl(base + AM65_CPSW_STATN_IET_TX_FRAG);
-+	s->MACMergeHoldCount = readl(base + AM65_CPSW_STATN_IET_TX_HOLD);
-+}
-+
- const struct ethtool_ops am65_cpsw_ethtool_ops_slave = {
- 	.begin			= am65_cpsw_ethtool_op_begin,
- 	.complete		= am65_cpsw_ethtool_op_complete,
-@@ -743,4 +890,7 @@ const struct ethtool_ops am65_cpsw_ethtool_ops_slave = {
- 	.get_eee		= am65_cpsw_get_eee,
- 	.set_eee		= am65_cpsw_set_eee,
- 	.nway_reset		= am65_cpsw_nway_reset,
-+	.get_mm			= am65_cpsw_get_mm,
-+	.set_mm			= am65_cpsw_set_mm,
-+	.get_mm_stats		= am65_cpsw_get_mm_stats,
- };
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index bea6fc0f324c..2004f6a020d3 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -2161,6 +2161,8 @@ am65_cpsw_nuss_init_port_ndev(struct am65_cpsw_common *common, u32 port_idx)
- 	ndev_priv = netdev_priv(port->ndev);
- 	ndev_priv->port = port;
- 	ndev_priv->msg_enable = AM65_CPSW_DEBUG;
-+	mutex_init(&ndev_priv->mm_lock);
-+	port->qos.link_speed = SPEED_UNKNOWN;
- 	SET_NETDEV_DEV(port->ndev, dev);
- 
- 	eth_hw_addr_set(port->ndev, port->slave.mac_addr);
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-index f3dad2ab9828..1e4a045057fc 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-@@ -145,6 +145,7 @@ struct am65_cpsw_common {
- 	bool			pf_p0_rx_ptype_rrobin;
- 	struct am65_cpts	*cpts;
- 	int			est_enabled;
-+	bool			iet_enabled;
- 
- 	bool		is_emac_mode;
- 	u16			br_members;
-@@ -170,6 +171,10 @@ struct am65_cpsw_ndev_priv {
- 	struct am65_cpsw_port	*port;
- 	struct am65_cpsw_ndev_stats __percpu *stats;
- 	bool offload_fwd_mark;
-+	/* Serialize access to MAC Merge state between ethtool requests
-+	 * and link state updates
-+	 */
-+	struct mutex		mm_lock;
- };
- 
- #define am65_ndev_to_priv(ndev) \
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.c b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-index d49a2bc97289..90f9ed4bd4d0 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-qos.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-@@ -4,9 +4,11 @@
-  *
-  * quality of service module includes:
-  * Enhanced Scheduler Traffic (EST - P802.1Qbv/D2.2)
-+ * Interspersed Express Traffic (IET - P802.3br/D2.0)
-  */
- 
- #include <linux/pm_runtime.h>
-+#include <linux/units.h>
- #include <linux/time.h>
- #include <net/pkt_cls.h>
- 
-@@ -15,50 +17,6 @@
- #include "am65-cpts.h"
- #include "cpsw_ale.h"
- 
--#define AM65_CPSW_REG_CTL			0x004
--#define AM65_CPSW_P0_REG_TX_PRI_MAP		0x018
--#define AM65_CPSW_P0_REG_RX_PRI_MAP		0x020
--#define AM65_CPSW_P0_REG_FIFO_STATUS		0x050
--#define AM65_CPSW_P0_REG_PRI_CIR(pri)		(0x140 + 4 * (pri))
--#define AM65_CPSW_P0_REG_PRI_EIR(pri)		(0x160 + 4 * (pri))
--
--#define AM65_CPSW_PN_REG_CTL			0x004
--#define AM65_CPSW_PN_REG_TX_PRI_MAP		0x018
--#define AM65_CPSW_PN_REG_RX_PRI_MAP		0x020
--#define AM65_CPSW_PN_REG_FIFO_STATUS		0x050
--#define AM65_CPSW_PN_REG_EST_CTL		0x060
--#define AM65_CPSW_PN_REG_PRI_CIR(pri)		(0x140 + 4 * (pri))
--#define AM65_CPSW_PN_REG_PRI_EIR(pri)		(0x160 + 4 * (pri))
--
--/* AM65_CPSW_REG_CTL register fields */
--#define AM65_CPSW_CTL_EST_EN			BIT(18)
--
--/* AM65_CPSW_PN_REG_CTL register fields */
--#define AM65_CPSW_PN_CTL_EST_PORT_EN		BIT(17)
--
--/* AM65_CPSW_PN_REG_EST_CTL register fields */
--#define AM65_CPSW_PN_EST_ONEBUF			BIT(0)
--#define AM65_CPSW_PN_EST_BUFSEL			BIT(1)
--#define AM65_CPSW_PN_EST_TS_EN			BIT(2)
--#define AM65_CPSW_PN_EST_TS_FIRST		BIT(3)
--#define AM65_CPSW_PN_EST_ONEPRI			BIT(4)
--#define AM65_CPSW_PN_EST_TS_PRI_MSK		GENMASK(7, 5)
--
--/* AM65_CPSW_PN_REG_FIFO_STATUS register fields */
--#define AM65_CPSW_PN_FST_TX_PRI_ACTIVE_MSK	GENMASK(7, 0)
--#define AM65_CPSW_PN_FST_TX_E_MAC_ALLOW_MSK	GENMASK(15, 8)
--#define AM65_CPSW_PN_FST_EST_CNT_ERR		BIT(16)
--#define AM65_CPSW_PN_FST_EST_ADD_ERR		BIT(17)
--#define AM65_CPSW_PN_FST_EST_BUFACT		BIT(18)
--
--/* EST FETCH COMMAND RAM */
--#define AM65_CPSW_FETCH_RAM_CMD_NUM		0x80
--#define AM65_CPSW_FETCH_CNT_MSK			GENMASK(21, 8)
--#define AM65_CPSW_FETCH_CNT_MAX			(AM65_CPSW_FETCH_CNT_MSK >> 8)
--#define AM65_CPSW_FETCH_CNT_OFFSET		8
--#define AM65_CPSW_FETCH_ALLOW_MSK		GENMASK(7, 0)
--#define AM65_CPSW_FETCH_ALLOW_MAX		AM65_CPSW_FETCH_ALLOW_MSK
--
- #define TO_MBPS(x)	((x) * 8 / 1000000)
- 
- enum timer_act {
-@@ -67,10 +25,193 @@ enum timer_act {
- 	TACT_SKIP_PROG,		/* just buffer can be updated */
- };
- 
--/* number of priority queues per port FIFO */
--#define AM65_CPSW_PN_FIFO_PRIO_NUM		8
--#define AM65_CPSW_PN_TX_PRI_MAP_DEFAULT		0x76543210
-+/* IET */
-+static int am65_cpsw_iet_set_verify_timeout_count(struct am65_cpsw_port *port)
-+{
-+	int verify_time_ms = port->qos.iet.verify_time_ms;
-+	int link_speed = port->qos.link_speed;
-+	u32 val;
-+
-+	if (WARN_ON(link_speed == SPEED_UNKNOWN))
-+		return -ENODEV;
-+
-+	/* The number of wireside clocks contained in the verify
-+	 * timeout counter. The default is 0x1312d0
-+	 * (10ms at 125Mhz in 1G mode).
-+	 */
-+	val = 125 * HZ_PER_MHZ;	/* assuming 125MHz wireside clock */
-+
-+	val /= MILLIHZ_PER_HZ;		/* count per ms timeout */
-+	val *= verify_time_ms;		/* count for timeout ms */
-+	if (link_speed < SPEED_1000)
-+		val <<= 1;	/* FIXME: Is this correct? */
-+
-+	if (val > AM65_CPSW_PN_MAC_VERIFY_CNT_MASK)
-+		return -EINVAL;
-+
-+	writel(val, port->port_base + AM65_CPSW_PN_REG_IET_VERIFY);
-+
-+	return 0;
-+}
-+
-+unsigned int am65_cpsw_iet_get_verify_timeout_ms(u32 count, struct am65_cpsw_port *port)
-+{
-+	int link_speed = port->qos.link_speed;
-+	u32 val = 125 * HZ_PER_MHZ;	/* assuming 125MHz wireside clock */
-+	unsigned int timeout_ms;
-+
-+	if (link_speed == SPEED_UNKNOWN)
-+		link_speed = SPEED_1000;
-+
-+	val /= MILLIHZ_PER_HZ;		/* count per ms timeout */
-+
-+	timeout_ms = count / val;
-+
-+	if (link_speed < SPEED_1000)
-+		timeout_ms >>= 1;	/* FIXME: Is this correct? */
-+
-+	return timeout_ms;
-+}
-+
-+static int am65_cpsw_iet_verify_wait(struct am65_cpsw_port *port)
-+{
-+	u32 ctrl, status;
-+	int try;
-+
-+	try = 20;
-+	do {
-+		/* Clear MAC_LINKFAIL bit to start Verify. */
-+		ctrl = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+		ctrl &= ~AM65_CPSW_PN_IET_MAC_LINKFAIL;
-+		writel(ctrl, port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+
-+		msleep(port->qos.iet.verify_time_ms);
-+
-+		status = readl(port->port_base + AM65_CPSW_PN_REG_IET_STATUS);
-+		if (status & AM65_CPSW_PN_MAC_VERIFIED)
-+			return 0;
-+
-+		if (status & AM65_CPSW_PN_MAC_VERIFY_FAIL) {
-+			netdev_dbg(port->ndev,
-+				   "MAC Merge verify failed, trying again");
-+			/* Reset the verify state machine by writing 1
-+			 * to LINKFAIL
-+			 */
-+			ctrl = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+			ctrl |= AM65_CPSW_PN_IET_MAC_LINKFAIL;
-+			writel(ctrl, port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+			continue;
-+		}
-+
-+		if (status & AM65_CPSW_PN_MAC_RESPOND_ERR) {
-+			netdev_dbg(port->ndev, "MAC Merge respond error");
-+			return -ENODEV;
-+		}
-+
-+		if (status & AM65_CPSW_PN_MAC_VERIFY_ERR) {
-+			netdev_dbg(port->ndev, "MAC Merge verify error");
-+			return -ENODEV;
-+		}
-+	} while (try-- > 0);
-+
-+	netdev_dbg(port->ndev, "MAC Merge verify timeout");
-+	return -ETIMEDOUT;
-+}
-+
-+static void am65_cpsw_iet_set_preempt_mask(struct am65_cpsw_port *port, u8 preemptible_tcs)
-+{
-+	u32 val;
-+
-+	val = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+	val &= ~AM65_CPSW_PN_IET_MAC_PREMPT_MASK;
-+	val |= AM65_CPSW_PN_IET_MAC_SET_PREEMPT(preemptible_tcs);
-+	writel(val, port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+}
-+
-+/* enable common IET_ENABLE only if at least 1 port has rx IET enabled.
-+ * UAPI doesn't allow tx enable without rx enable.
-+ */
-+void am65_cpsw_iet_common_enable(struct am65_cpsw_common *common)
-+{
-+	struct am65_cpsw_port *port;
-+	bool rx_enable = false;
-+	u32 val;
-+	int i;
-+
-+	for (i = 0; i < common->port_num; i++) {
-+		port = &common->ports[i];
-+		val = readl(port->port_base + AM65_CPSW_PN_REG_CTL);
-+		rx_enable = !!(val & AM65_CPSW_PN_CTL_IET_PORT_EN);
-+		if (rx_enable)
-+			break;
-+	}
-+
-+	val = readl(common->cpsw_base + AM65_CPSW_REG_CTL);
-+
-+	if (rx_enable)
-+		val |= AM65_CPSW_CTL_IET_EN;
-+	else
-+		val &= ~AM65_CPSW_CTL_IET_EN;
-+
-+	writel(val, common->cpsw_base + AM65_CPSW_REG_CTL);
-+	common->iet_enabled = rx_enable;
-+}
-+
-+/* CPSW does not have an IRQ to notify changes to the MAC Merge TX status
-+ * (active/inactive), but the preemptible traffic classes should only be
-+ * committed to hardware once TX is active. Resort to polling.
-+ */
-+void am65_cpsw_iet_commit_preemptible_tcs(struct am65_cpsw_port *port)
-+{
-+	u8 preemptible_tcs = 0;
-+	int err;
-+	u32 val;
-+
-+	if (port->qos.link_speed == SPEED_UNKNOWN)
-+		return;
-+
-+	val = readl(port->port_base + AM65_CPSW_PN_REG_CTL);
-+	if (!(val & AM65_CPSW_PN_CTL_IET_PORT_EN))
-+		return;
-+
-+	/* update common IET enable */
-+	am65_cpsw_iet_common_enable(port->common);
- 
-+	/* update verify count */
-+	err = am65_cpsw_iet_set_verify_timeout_count(port);
-+	if (err) {
-+		netdev_err(port->ndev, "couldn't set verify count: %d\n", err);
-+		return;
-+	}
-+
-+	val = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-+	if (!(val & AM65_CPSW_PN_IET_MAC_DISABLEVERIFY)) {
-+		err = am65_cpsw_iet_verify_wait(port);
-+		if (err)
-+			return;
-+	}
-+
-+	preemptible_tcs = port->qos.iet.preemptible_tcs;
-+	am65_cpsw_iet_set_preempt_mask(port, preemptible_tcs);
-+}
-+
-+static void am65_cpsw_iet_change_preemptible_tcs(struct am65_cpsw_port *port, u8 preemptible_tcs)
-+{
-+	port->qos.iet.preemptible_tcs = preemptible_tcs;
-+	am65_cpsw_iet_commit_preemptible_tcs(port);
-+}
-+
-+static void am65_cpsw_iet_link_state_update(struct net_device *ndev)
-+{
-+	struct am65_cpsw_ndev_priv *priv = am65_ndev_to_priv(ndev);
-+	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-+
-+	mutex_lock(&priv->mm_lock);
-+	am65_cpsw_iet_commit_preemptible_tcs(port);
-+	mutex_unlock(&priv->mm_lock);
-+}
-+
-+/* EST */
- static int am65_cpsw_port_est_enabled(struct am65_cpsw_port *port)
- {
- 	return port->qos.est_oper || port->qos.est_admin;
-@@ -602,6 +743,8 @@ static int am65_cpsw_setup_taprio(struct net_device *ndev, void *type_data)
- 	if (port->qos.link_speed == SPEED_UNKNOWN)
- 		return -ENOLINK;
- 
-+	am65_cpsw_iet_change_preemptible_tcs(port, taprio->mqprio.preemptible_tcs);
-+
- 	return am65_cpsw_set_taprio(ndev, type_data);
- }
- 
-@@ -1143,6 +1286,7 @@ static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data)
- 	       port->port_base + AM65_CPSW_PN_REG_TX_PRI_MAP);
- 
- 	am65_cpsw_tx_pn_shaper_apply(port);
-+	am65_cpsw_iet_change_preemptible_tcs(port, mqprio->preemptible_tcs);
- 
- exit_put:
- 	pm_runtime_put(common->dev);
-@@ -1172,6 +1316,7 @@ void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed)
- 
- 	port->qos.link_speed = link_speed;
- 	am65_cpsw_tx_pn_shaper_apply(port);
-+	am65_cpsw_iet_link_state_update(ndev);
- 
- 	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
- 		return;
-@@ -1186,6 +1331,7 @@ void am65_cpsw_qos_link_down(struct net_device *ndev)
- 
- 	port->qos.link_speed = SPEED_UNKNOWN;
- 	am65_cpsw_tx_pn_shaper_apply(port);
-+	am65_cpsw_iet_link_state_update(ndev);
- 
- 	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
- 		return;
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.h b/drivers/net/ethernet/ti/am65-cpsw-qos.h
-index e4508fe5c2c8..cf5bdd3dba2b 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-qos.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-qos.h
-@@ -23,6 +23,12 @@ struct am65_cpsw_mqprio {
- 	bool shaper_en;
- };
- 
-+struct am65_cpsw_iet {
-+	u8 preemptible_tcs;
-+	u32 original_max_blks;
-+	int verify_time_ms;
-+};
-+
- struct am65_cpsw_ale_ratelimit {
- 	unsigned long cookie;
- 	u64 rate_packet_ps;
-@@ -34,6 +40,7 @@ struct am65_cpsw_qos {
- 	ktime_t link_down_time;
- 	int link_speed;
- 	struct am65_cpsw_mqprio mqprio;
-+	struct am65_cpsw_iet iet;
- 
- 	struct am65_cpsw_ale_ratelimit ale_bc_ratelimit;
- 	struct am65_cpsw_ale_ratelimit ale_mc_ratelimit;
-@@ -46,4 +53,101 @@ void am65_cpsw_qos_link_down(struct net_device *ndev);
- int am65_cpsw_qos_ndo_tx_p0_set_maxrate(struct net_device *ndev, int queue, u32 rate_mbps);
- void am65_cpsw_qos_tx_p0_rate_init(struct am65_cpsw_common *common);
- 
-+void am65_cpsw_iet_commit_preemptible_tcs(struct am65_cpsw_port *port);
-+unsigned int am65_cpsw_iet_get_verify_timeout_ms(u32 count, struct am65_cpsw_port *port);
-+void am65_cpsw_iet_common_enable(struct am65_cpsw_common *common);
-+
-+#define AM65_CPSW_REG_CTL			0x004
-+#define AM65_CPSW_PN_REG_CTL			0x004
-+#define AM65_CPSW_PN_REG_MAX_BLKS		0x008
-+#define AM65_CPSW_PN_REG_TX_PRI_MAP		0x018
-+#define AM65_CPSW_PN_REG_RX_PRI_MAP		0x020
-+#define AM65_CPSW_PN_REG_IET_CTRL		0x040
-+#define AM65_CPSW_PN_REG_IET_STATUS		0x044
-+#define AM65_CPSW_PN_REG_IET_VERIFY		0x048
-+#define AM65_CPSW_PN_REG_FIFO_STATUS		0x050
-+#define AM65_CPSW_PN_REG_EST_CTL		0x060
-+#define AM65_CPSW_PN_REG_PRI_CIR(pri)		(0x140 + 4 * (pri))
-+#define AM65_CPSW_PN_REG_PRI_EIR(pri)		(0x160 + 4 * (pri))
-+
-+/* AM65_CPSW_REG_CTL register fields */
-+#define AM65_CPSW_CTL_IET_EN			BIT(17)
-+#define AM65_CPSW_CTL_EST_EN			BIT(18)
-+
-+/* AM65_CPSW_PN_REG_CTL register fields */
-+#define AM65_CPSW_PN_CTL_IET_PORT_EN		BIT(16)
-+#define AM65_CPSW_PN_CTL_EST_PORT_EN		BIT(17)
-+
-+/* AM65_CPSW_PN_REG_EST_CTL register fields */
-+#define AM65_CPSW_PN_EST_ONEBUF			BIT(0)
-+#define AM65_CPSW_PN_EST_BUFSEL			BIT(1)
-+#define AM65_CPSW_PN_EST_TS_EN			BIT(2)
-+#define AM65_CPSW_PN_EST_TS_FIRST		BIT(3)
-+#define AM65_CPSW_PN_EST_ONEPRI			BIT(4)
-+#define AM65_CPSW_PN_EST_TS_PRI_MSK		GENMASK(7, 5)
-+
-+/* AM65_CPSW_PN_REG_IET_CTRL register fields */
-+#define AM65_CPSW_PN_IET_MAC_PENABLE		BIT(0)
-+#define AM65_CPSW_PN_IET_MAC_DISABLEVERIFY	BIT(2)
-+#define AM65_CPSW_PN_IET_MAC_LINKFAIL		BIT(3)
-+#define AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_MASK	GENMASK(10, 8)
-+#define AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_OFFSET	8
-+#define AM65_CPSW_PN_IET_MAC_PREMPT_MASK		GENMASK(23, 16)
-+#define AM65_CPSW_PN_IET_MAC_PREMPT_OFFSET		16
-+
-+#define AM65_CPSW_PN_IET_MAC_SET_ADDFRAGSIZE(n)	(((n) << AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_OFFSET) & \
-+						  AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_MASK)
-+#define AM65_CPSW_PN_IET_MAC_GET_ADDFRAGSIZE(n)	(((n) & AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_MASK) >> \
-+						  AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_OFFSET)
-+#define AM65_CPSW_PN_IET_MAC_SET_PREEMPT(n)	(((n) << AM65_CPSW_PN_IET_MAC_PREMPT_OFFSET) & \
-+						 AM65_CPSW_PN_IET_MAC_PREMPT_MASK)
-+#define AM65_CPSW_PN_IET_MAC_GET_PREEMPT(n)	(((n) & AM65_CPSW_PN_IET_MAC_PREMPT_MASK) >> \
-+						 AM65_CPSW_PN_IET_MAC_PREMPT_OFFSET)
-+
-+/* AM65_CPSW_PN_REG_IET_STATUS register fields */
-+#define AM65_CPSW_PN_MAC_STATUS			GENMASK(3, 0)
-+#define AM65_CPSW_PN_MAC_VERIFIED		BIT(0)
-+#define AM65_CPSW_PN_MAC_VERIFY_FAIL		BIT(1)
-+#define AM65_CPSW_PN_MAC_RESPOND_ERR		BIT(2)
-+#define AM65_CPSW_PN_MAC_VERIFY_ERR		BIT(3)
-+
-+/* AM65_CPSW_PN_REG_IET_VERIFY register fields */
-+#define AM65_CPSW_PN_MAC_VERIFY_CNT_MASK	GENMASK(23, 0)
-+#define AM65_CPSW_PN_MAC_GET_VERIFY_CNT(n)	((n) & AM65_CPSW_PN_MAC_VERIFY_CNT_MASK)
-+/* 10 msec converted to NSEC */
-+#define AM65_CPSW_IET_VERIFY_CNT_MS		(10)
-+#define AM65_CPSW_IET_VERIFY_CNT_NS		(AM65_CPSW_IET_VERIFY_CNT_MS * \
-+						 NSEC_PER_MSEC)
-+
-+/* AM65_CPSW_PN_REG_FIFO_STATUS register fields */
-+#define AM65_CPSW_PN_FST_TX_PRI_ACTIVE_MSK	GENMASK(7, 0)
-+#define AM65_CPSW_PN_FST_TX_E_MAC_ALLOW_MSK	GENMASK(15, 8)
-+#define AM65_CPSW_PN_FST_EST_CNT_ERR		BIT(16)
-+#define AM65_CPSW_PN_FST_EST_ADD_ERR		BIT(17)
-+#define AM65_CPSW_PN_FST_EST_BUFACT		BIT(18)
-+
-+/* EST FETCH COMMAND RAM */
-+#define AM65_CPSW_FETCH_RAM_CMD_NUM		0x80
-+#define AM65_CPSW_FETCH_CNT_MSK			GENMASK(21, 8)
-+#define AM65_CPSW_FETCH_CNT_MAX			(AM65_CPSW_FETCH_CNT_MSK >> 8)
-+#define AM65_CPSW_FETCH_CNT_OFFSET		8
-+#define AM65_CPSW_FETCH_ALLOW_MSK		GENMASK(7, 0)
-+#define AM65_CPSW_FETCH_ALLOW_MAX		AM65_CPSW_FETCH_ALLOW_MSK
-+
-+/* AM65_CPSW_PN_REG_MAX_BLKS fields for IET and No IET cases */
-+/* 7 blocks for pn_rx_max_blks, 13 for pn_tx_max_blks*/
-+#define AM65_CPSW_PN_TX_RX_MAX_BLKS_IET		0xD07
-+
-+/* Slave IET Stats. register offsets */
-+#define AM65_CPSW_STATN_IET_RX_ASSEMBLY_ERROR	0x140
-+#define AM65_CPSW_STATN_IET_RX_ASSEMBLY_OK	0x144
-+#define AM65_CPSW_STATN_IET_RX_SMD_ERROR	0x148
-+#define AM65_CPSW_STATN_IET_RX_FRAG		0x14c
-+#define AM65_CPSW_STATN_IET_TX_HOLD		0x150
-+#define AM65_CPSW_STATN_IET_TX_FRAG		0x154
-+
-+/* number of priority queues per port FIFO */
-+#define AM65_CPSW_PN_FIFO_PRIO_NUM		8
-+#define AM65_CPSW_PN_TX_PRI_MAP_DEFAULT		0x76543210
-+
- #endif /* AM65_CPSW_QOS_H_ */
--- 
-2.34.1
+>
+> >
+> > Maybe we should do a BoF at LPC to discuss this further?
+>
+> It does deserve more discussion, unfortunately I will not be able to join LPC,
+> Philipp Rudo (cced) planned attend the conf, so I think you guys can
+> discuss together with
+> other people interested. I think I will watch the recordings or
+> joining virtually if possible.
+>
+> >
+> > [0] this is not as bad as it sounds: beyond a protocol database, a
+> > heap allocator and a memory map, there is actually very little needed
+> > to boot Linux via the EFI stub (although UKI needs
+> > LoadImage/StartImage as well)
+> >
+> > [1] https://github.com/ardbiesheuvel/efilite
+> >
 
