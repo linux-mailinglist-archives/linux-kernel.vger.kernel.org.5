@@ -2,51 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 119797A839D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFA67A83A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 15:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235925AbjITNkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 09:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
+        id S235052AbjITNmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 09:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236133AbjITNkC (ORCPT
+        with ESMTP id S234626AbjITNmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:40:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AC1A9;
-        Wed, 20 Sep 2023 06:39:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFC9C433C8;
-        Wed, 20 Sep 2023 13:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695217196;
-        bh=Z6ejmmjRTjZqLnbvfZ8oZxem+kdH68CzZ5r8tDSPkVA=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=PoUwz4Fh01i0saDu8+MZ160+t4E0BW+Kol97RGoAA7DHTezdDsrSPp5MD7uy4sd1l
-         ThDbzIakglaWQ6GdDPV0NoH8o/EqV1yGAxaq5eRowqotGOz4crQehkoSZt3620c2wZ
-         2MK69ykqngfoIdNC4qTHijpVSmyWqmzKR6hllz0Pl3ORhTTC0zmvc8FFYe6cv6sQnA
-         5CqTqmul+EnIMz5WqkBoGVKZilx65+HJ0I+h9OuauPSHOuQaDcsB8Q252jwWVIkAO0
-         D0MBDEjSWCEG0lfvMGDK41Z1O7QdHF88jPEsiiG61VjS3BsP6o45U60dN1zzp4Uu3T
-         mpCo3Gi6ZAEVA==
-From:   Lee Jones <lee@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>, Kees Cook <keescook@chromium.org>
-Cc:     Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-In-Reply-To: <20230915201010.never.399-kees@kernel.org>
-References: <20230915201010.never.399-kees@kernel.org>
-Subject: Re: (subset) [PATCH] leds: lm3697: Annotate struct lm3697 with
- __counted_by
-Message-Id: <169521719452.3442331.11802360098056654412.b4-ty@kernel.org>
-Date:   Wed, 20 Sep 2023 14:39:54 +0100
+        Wed, 20 Sep 2023 09:42:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C26C8A9;
+        Wed, 20 Sep 2023 06:42:15 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB38E1FB;
+        Wed, 20 Sep 2023 06:42:52 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 369C23F67D;
+        Wed, 20 Sep 2023 06:42:14 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     cristian.marussi@arm.com, lukasz.luba@arm.com,
+        Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_rjendra@quicinc.com, srinivas.kandagatla@linaro.org,
+        Chandra Sekhar Lingutla <quic_lingutla@quicinc.com>
+Subject: Re: [PATCH] firmware: arm_scmi: Fixup perf microwatt support
+Date:   Wed, 20 Sep 2023 14:42:05 +0100
+Message-ID: <169521729499.2982112.1662024331315358592.b4-ty@arm.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230811204818.30928-1-quic_sibis@quicinc.com>
+References: <20230811204818.30928-1-quic_sibis@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,22 +46,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sep 2023 13:10:10 -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct lm3697.
-> 
-> [...]
+On Sat, 12 Aug 2023 02:18:18 +0530, Sibi Sankar wrote:
+> The perf power scale value would currently be reported as bogowatts if the
+> platform firmware supports microwatt power scale and meets the perf major
+> version requirements. Fix this by populating version information in the
+> driver private data before the call to protocol attributes is made.
+>
 
-Applied, thanks!
+Applied to sudeep.holla/linux (for-next/scmi/fixes), thanks!
 
-[1/1] leds: lm3697: Annotate struct lm3697 with __counted_by
-      commit: 1a210f7d060854f541be9a613bf942849fd5c0b5
-
+[1/1] firmware: arm_scmi: Fixup perf microwatt support
+      https://git.kernel.org/sudeep.holla/c/c3638b851bc1
 --
-Lee Jones [李琼斯]
+Regards,
+Sudeep
 
