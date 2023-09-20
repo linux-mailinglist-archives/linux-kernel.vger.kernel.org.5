@@ -2,49 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2310C7A7B94
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C22F7A7B8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234506AbjITLxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
+        id S234763AbjITLxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234769AbjITLx0 (ORCPT
+        with ESMTP id S234750AbjITLxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:53:26 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 04:53:18 PDT
-Received: from ssh247.corpemail.net (ssh247.corpemail.net [210.51.61.247])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7C4B4;
-        Wed, 20 Sep 2023 04:53:18 -0700 (PDT)
-Received: from ssh247.corpemail.net
-        by ssh247.corpemail.net ((D)) with ASMTP (SSL) id QMV00011;
-        Wed, 20 Sep 2023 19:52:11 +0800
-Received: from localhost.localdomain (10.200.104.15) by
- jtjnmail201621.home.langchao.com (10.100.2.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 20 Sep 2023 19:52:10 +0800
-From:   wangkaiyuan <wangkaiyuan@inspur.com>
-To:     <ed.cashin@acm.org>, <axboe@kernel.dk>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        wangkaiyuan <wangkaiyuan@inspur.com>
-Subject: [PATCH] aoe: Use helper function IS_ERR_OR_NULL()
-Date:   Wed, 20 Sep 2023 19:52:08 +0800
-Message-ID: <20230920115208.2733-1-wangkaiyuan@inspur.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 20 Sep 2023 07:53:23 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0B692
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:53:17 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5789de5c677so2038731a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:53:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695210797; x=1695815597; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wUnxZNH0dOlLHPQB9Zz2zvwD5zJY9wSryj3LYDqZfxo=;
+        b=J0KaFsfnkmB5CmNPqu8PfENsG6fJo9uXqtNvVyIxjC03Exi5Upy7upFdbFvSlZi0jy
+         WDfKnas/YZ2b+wcOvjUWcUZV6ASxw4nkEfVlG7HSXhlXlUwY3avxtgvMGnAEh4vC2VNB
+         dd3tEJHspe7muWf+IvbOJhONwQQva6amkp6xY/L0Q/Ol4dC4p1x0F5C8SxEKcjqHmhJp
+         O9xVGwdLt1B1TBHIUfwGDI6IC0y/GJ9j6gTLkly8UDkAVUHOxzvnZBUSiIfvVe1JpHY0
+         lugBRklqTxiwxYUQOyajUdh8wW3dczvfAOgIEfQOB7hJzOQHizPCsnAr4kuk863NYnQc
+         w6Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695210797; x=1695815597;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wUnxZNH0dOlLHPQB9Zz2zvwD5zJY9wSryj3LYDqZfxo=;
+        b=vs11PIiMbF/fnYY11zakBtFrxnf1X50tb+lxEtYu5wRQZtCORXdqE5zJ0DMTDhH9XJ
+         q/oNrU4yBJ5ChysDWo6JL4m7PXGKqx4gMykNe3GAgJ9g4W8bxorZqLiPYc1R11INiYjZ
+         AyPEkrZi47xo6XdmplfohBf5XB9L+r3Xe7dn7vbEda+NXqFkoqdXHSLPJGp9BPgzXONX
+         HdXY/mHhBfKWUeG7KlHId9n4MoQogc139eQ2WWBYfGVaNfA4oclSmxBs80tL0giQOV6D
+         e5ZVtAdfTPGPui0ptWw8nbAFM7h65dHM3s3PTz+pATe8C7IVuN99oYirjs36MiK5IvfM
+         C/bA==
+X-Gm-Message-State: AOJu0Yz8eBqycdkCWmyVF6JjWvSiVAGpBPJ5WtHP8NFqk3dYC90i4eVT
+        Z1ORWcJ9sEDu7f7dl1NP4Q3nSHf8/wdeSX85zQI=
+X-Google-Smtp-Source: AGHT+IGz5wWSPTM/J3WojDjpiCRtNNQHcZVwNPhOZHdi8IAF1iNFD4Smr+yYmu41WmG2tPmTam4WNX3R82mg4+F+9rA=
+X-Received: by 2002:a17:90a:f815:b0:26b:6a2f:7d90 with SMTP id
+ ij21-20020a17090af81500b0026b6a2f7d90mr2405287pjb.23.1695210797252; Wed, 20
+ Sep 2023 04:53:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.200.104.15]
-X-ClientProxiedBy: Jtjnmail201618.home.langchao.com (10.100.2.18) To
- jtjnmail201621.home.langchao.com (10.100.2.21)
-tUid:   202392019521190ae24927acef3f0f1ae5d15cc908102
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230920052139.10570-1-rdunlap@infradead.org> <20230920052139.10570-2-rdunlap@infradead.org>
+In-Reply-To: <20230920052139.10570-2-rdunlap@infradead.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Wed, 20 Sep 2023 04:53:05 -0700
+Message-ID: <CAMo8BfJs-yygU8UbS5nsSNVVVRVhJMvXAcgScNAX9NNP6tt4Eg@mail.gmail.com>
+Subject: Re: [PATCH 01/16] xtensa: FSF: define XCHAL_HAVE_DIV32
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Chris Zankel <chris@zankel.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,27 +70,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use IS_ERR_OR_NULL() to detect an error pointer or a null pointer
-open-coding to simplify the code.
+On Tue, Sep 19, 2023 at 10:21=E2=80=AFPM Randy Dunlap <rdunlap@infradead.or=
+g> wrote:
+>
+> When variant FSF is set, XCHAL_HAVE_DIV32 is not defined,
+> so add the define for FSF to prevent build warnings:
+>
+> arch/xtensa/lib/divsi3.S:9:5: warning: "XCHAL_HAVE_DIV32" is not defined,=
+ evaluates to 0 [-Wundef]
+>     9 | #if XCHAL_HAVE_DIV32
+> arch/xtensa/lib/modsi3.S:9:5: warning: "XCHAL_HAVE_DIV32" is not defined,=
+ evaluates to 0 [-Wundef]
+>     9 | #if XCHAL_HAVE_DIV32
+>
+> Fixes: 173d6681380a ("xtensa: remove extra header files")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: lore.kernel.org/r/202309150556.t0yCdv3g-lkp@intel.com
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> ---
+>  arch/xtensa/variants/fsf/include/variant/core.h |    1 +
+>  1 file changed, 1 insertion(+)
 
-Signed-off-by: wangkaiyuan <wangkaiyuan@inspur.com>
----
- drivers/block/aoe/aoecmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If this configuration overlay doesn't define that macro then other
+configurations
+from that era may have similar issue. I've posted a different fix that
+adds a default
+definition for XCHAL_HAVE_DIV32 to asm/core.h instead.
 
-diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
-index d7317425be51..94a7aa6cf58a 100644
---- a/drivers/block/aoe/aoecmd.c
-+++ b/drivers/block/aoe/aoecmd.c
-@@ -1256,7 +1256,7 @@ aoe_ktstart(struct ktstate *k)
- 
- 	init_completion(&k->rendez);
- 	task = kthread_run(kthread, k, "%s", k->name);
--	if (task == NULL || IS_ERR(task))
-+	if (IS_ERR_OR_NULL(backend))
- 		return -ENOMEM;
- 	k->task = task;
- 	wait_for_completion(&k->rendez); /* allow kthread to start */
--- 
-2.31.1
-
+--=20
+Thanks.
+-- Max
