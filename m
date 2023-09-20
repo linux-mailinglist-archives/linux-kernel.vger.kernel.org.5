@@ -2,159 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 240E47A7787
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8817A778A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbjITJaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
+        id S233877AbjITJad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234166AbjITJaM (ORCPT
+        with ESMTP id S234093AbjITJab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:30:12 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2041.outbound.protection.outlook.com [40.107.105.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75A2F2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:30:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RiDrCBMmvGRBXu2dvYHZ7uUu9aqZnNA92m+y8WK3otNXdnatc8ll66zROMaX8MVw+DdzzglfeczpiiMwWdr4E7FfNE9ivdGSJQf1cCi6+vlmiYggZCHX/f2OAO8yKnk7+itgsAxjERaEoJcsnS4TxPhPjPrHihUXxOmaxMl6BQ9hczA5BgH6AzDmc3IlqsTI04YcSfKJpSJPD8KQpasVBWAk7I47x0/CY9CWwm3XuNe6T24FZkWPbTF0ZsK/4QJMD5r5TO7MZKFqkypNpeq9z7YvVsA6an/quQFs8tIe2iPS7Bc9Ag0S+1FpbVFQ68Vbc/IBOg5rowp9SaCBga1hHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ETxwG1C92BPfOZv7FEnEaHasZMmFKdYI8XFzRuLJVyU=;
- b=Oz0wnHADUpq7xbp5olxOq/XiHGk/tVQ4IxLNhWOh9quiLMrAkVPikp1VN+rlpRJDU6FXZ/yXzZo4E5ycIRJrQON07STAGcGiaBJqubX3t3ryC0zNZ5CisSFAP1Eyq8vv8tkHoifd+8g7YwPB6IfVLul8u7ojA31v40sB8SJQnGstgqcGUlEEk9uRwLNzH0prkFhCh0j661/tQTpEwxgEo2wA7885LdDIiVOvc0NUXFnYSSqllCQavuGKUa9N9wr8ROK4qg3aIYdO0LUu0SG53KUlcuSwr3BJhp+KP03huIVLXdqj+U2Rh2E+4I4gb8M+Tf59r01g2E1lZaflgAB8Fg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ETxwG1C92BPfOZv7FEnEaHasZMmFKdYI8XFzRuLJVyU=;
- b=JDXqUAkzn61GMnT13adyurF0hefwU7dmmtTATQK98QjrkQqZk9XBbVrX4sTccOg6hbiSsONAD8l21qhwDgZmFTciTjTaoN5boGIm14E72wojZw0vWnN3Vm2FuDR+OaUmLGhFzeQ3bxK1DLsAsbzv25YK0tY4iiM48Ts2F6f/FnI=
-Received: from DB8PR04MB7051.eurprd04.prod.outlook.com (2603:10a6:10:fd::20)
- by DB9PR04MB8447.eurprd04.prod.outlook.com (2603:10a6:10:2be::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
- 2023 09:30:02 +0000
-Received: from DB8PR04MB7051.eurprd04.prod.outlook.com
- ([fe80::6f5f:4224:1dc1:731a]) by DB8PR04MB7051.eurprd04.prod.outlook.com
- ([fe80::6f5f:4224:1dc1:731a%4]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 09:30:02 +0000
-From:   Ying Liu <victor.liu@nxp.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>
-CC:     "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-        "rfoss@kernel.org" <rfoss@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "ehristev@collabora.com" <ehristev@collabora.com>,
-        "wenst@chromium.org" <wenst@chromium.org>
-Subject: RE: [PATCH v2] drm/bridge: panel: Fix device link for
- DRM_BRIDGE_ATTACH_NO_CONNECTOR
-Thread-Topic: [PATCH v2] drm/bridge: panel: Fix device link for
- DRM_BRIDGE_ATTACH_NO_CONNECTOR
-Thread-Index: AQHZ65xVPwJWT9OuK0+bOARGRXgXgrAjchKA
-Date:   Wed, 20 Sep 2023 09:30:02 +0000
-Message-ID: <DB8PR04MB70513CD4C2C41B1E6865A5DC98F9A@DB8PR04MB7051.eurprd04.prod.outlook.com>
-References: <20230920082727.57729-1-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230920082727.57729-1-angelogioacchino.delregno@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB8PR04MB7051:EE_|DB9PR04MB8447:EE_
-x-ms-office365-filtering-correlation-id: 14e605f5-46ca-4f9c-c0d2-08dbb9bc2ab7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2sMSBIZ8L/eBqD6eUq+yHCPkgIGL4tKR666hPsiDb1/eURB+eNMeI01zb1AABOdxEvdm8jGxlVaXeQEg4B6eyv+pk1/pgBNGse7Vf9Dk9S0XNMyw69cu7JziAKkdqTmL9H6kDL6OAxk6b41Fc+rL7ndMOJRkMPL+i6TMfFdz+16WQvvWdvGCwNJHnALXM5/XT2jTE7h3+UjmO8La3qK0kutuW+t5UDjak19l8vmwe7HGhha5KZ3Kq0VQo7NbY3MK+v/aaRikuMSCD6w7DoTPcTls16e6gIL0YvRcYOvNV2pV7zdsKZijWK4rvCsUFpzWp3HE4rc7aJTqYNuh32BJC0d6ViMkgpLc2xuNVjiBsJEevcZQkpKfcJ8zY2n9pJfZV0g+J31kFs/iriUaehYrIZItdT+29B75jtxbV2L458bzPCp/mrcRm3YrsvyiK65aKLBCUtu2kBM/Q0dSpBfitG5bVFcsG3uW/tUMvnPsrZ9Qw3yM8yMNgJxVwT8qNAKuVtcp11S5wU3NNpcR2aXbhOCpVd42GkoRfEoc2TjjEp8tJHZI0LAzwyCpdxod6wcmTo8Pli0sAtxe4ArTrSBWs/StTCJq8kgkGMGwSkfoEYpl/KSt2Xiut7C+4d9mxvmL
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7051.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(396003)(136003)(346002)(451199024)(1800799009)(186009)(2906002)(7416002)(52536014)(5660300002)(26005)(55016003)(66556008)(41300700001)(66476007)(66946007)(316002)(64756008)(54906003)(66446008)(110136005)(76116006)(478600001)(8676002)(8936002)(4326008)(7696005)(71200400001)(6506007)(53546011)(9686003)(38070700005)(122000001)(38100700002)(86362001)(33656002)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GSYjOiRYnbjnMr9OfPlt7LxdYoV9eVFWHYWCz8xPnUncLnC9b4/ItPUjyHvU?=
- =?us-ascii?Q?myiArBmQeVNeGk/jkDzpcAgrVGVa9uFaAgTjColvnUb0y92Dyea/LJOAk7Qr?=
- =?us-ascii?Q?Bi5N14niOjPl1MySVmh8HBQnuTguxhAYcymcZMyz6GXBfYSZSZNzqzsT262L?=
- =?us-ascii?Q?+jxa9V4ipC3O1oe9kXvpj7Eya29WaAnDvL/2dZKyDWv6TjoI/137dwVU2DG8?=
- =?us-ascii?Q?POz8xEhWtIQfffYkLBpicdjWpky27HBTSP+5g31oEYEUArx+niNN88Q1lCwp?=
- =?us-ascii?Q?JTsPbzT0dvixeJBfvpmaxpyD6OUbXYch7keyHp/pL7rb5C9zMBODn1sQtmWh?=
- =?us-ascii?Q?1rDX7H5K4MoqkOW3TwbRYIfQpjr7x67sNQmLIVzEId9QHnaDqiwr3LWaQs+A?=
- =?us-ascii?Q?89MKnUZD4FA9dYkbNxiD43ECpzc6Rib+fN01kFLIyi++4/6/QHava4V84+o1?=
- =?us-ascii?Q?eb/X4Pd5URGFsYMNiWjLGppAUgWnfkidcbvuTaqUqr0NkbnZAUujiJNr7Peo?=
- =?us-ascii?Q?/AIf61URR243UsnRUrI+iV1Yg4En8IAjX3jynzmCkleeXZl7OcLVw5AzeYSn?=
- =?us-ascii?Q?b8YjlzB/OWhFwXIQDcywgIpWc/j40ANI13nnZ5tfmELPc8fEr34IlgEGCWry?=
- =?us-ascii?Q?BoVlIOleKpuuQe8Lk+C72aGxHaYeY/no5dAeWwh6ilRcRgzKJK/+L8vacuOb?=
- =?us-ascii?Q?02J0RwTrWbSrzCsAXTlqJ3lea04jAP3+AnxoaBV/kdTqQaNKdSzrnsrpI7UL?=
- =?us-ascii?Q?8i1PCwy4Ownh8Igeo9QU6ZIiWm9T/I1n68MvjsmLGKGieBfOaFdo7c3+gIxS?=
- =?us-ascii?Q?68K82tO5KNUxYkkLkWUbNpU46ZmRc4Dc+Q8FTBBxZB9rlyX3p+LpL/Cvsrmd?=
- =?us-ascii?Q?nSOG/6Sa3e+Rz3QnAsKh2k7ryG+cWUEka4VlFBL7D+nG1coup1wxbxh3uw+k?=
- =?us-ascii?Q?08WTuklSrD+xdqLMgr1QKfQeGr+pGJmmI5TlKSvGzrc/8USN+0oIECqt8XaX?=
- =?us-ascii?Q?XhlpuX7GpVp5EbuOUxVupmd6NadRbCO/uHO+SvXqJgNqr+bEG16c0ihcLjQo?=
- =?us-ascii?Q?WGt6+i82meKyqoT11FjaD23DEozgsE4/LO70SgXZDOMPNESg2KL5f5E6kUpX?=
- =?us-ascii?Q?l8Tl4YNnPxLUlv8Uf41RL3DE0gL2RoFTPDOD020zvK1stvn43AhEve5spCju?=
- =?us-ascii?Q?NpPB+JRhxEMi9cZiFub8IaVRlp/ObhzJqQs8klIQwkdx7pXXuC+4WyyVYqf7?=
- =?us-ascii?Q?3j/nYgbV6R4/7YGZx2ZojJfgGGliEJZZfKKjlPa4HsHqeId72PZKO8fC/xfr?=
- =?us-ascii?Q?qSaS8KnOb6h9/ecKm7G1likd5Iz1qEALH6Sa4F3HPq0qjOdn9HInxwQOVqf3?=
- =?us-ascii?Q?+gLJe/gXRHiBR8i6nh22Y1W+khfGB/6gOwi/9M/lJaxV81w2rqC9lz09KUD9?=
- =?us-ascii?Q?COeOXdyNtU524kpce22YA86vZ2CD+yg0CmT0bpzEL76zxcnRNUiaH011ksLJ?=
- =?us-ascii?Q?rqPYIcb13E9CDPNWajMFiIsgFtWRi8pFxui0fMa1kmYys072kz1lmwEGKjPA?=
- =?us-ascii?Q?3rLxZlRfV1grUSad2ro=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 20 Sep 2023 05:30:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3091D3;
+        Wed, 20 Sep 2023 02:30:22 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 11:30:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695202218;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=hhCYI+PeWEvc67H6YD9WCNTIMASfjH2wx16HCENacCE=;
+        b=rfCR8vEaESxonkkT7GovT/1/5BmcBNeGyDMKKlFSNZaLkzePT5vhDCPs82DWVug3KF5M44
+        Ddqh1k/swKDT3f0SH/G2vgRpRSv7hUk6dZ8/XO0CV9ALCzDUb+/4LfVkqA1mi1JOQURG1r
+        /r5WkkSB7kTpRpsJo/XAt6SE29FRmrQEqT4UThKFWrwT7+Onf5f8sbBClWTXd8ySKFR+Zp
+        /0x5AXX4OVi3qqTn2ev9pI2znSX9ELDvJ9W7q5bwpXYObsdTHjfHZXxnFRHYL1bKCh6fUa
+        ahj2qQIt7rh9IsYbqBIq72tWlJnSZAqZsS+4ef4PyhMUqfaRiAYEpYS/Op8acA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695202218;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=hhCYI+PeWEvc67H6YD9WCNTIMASfjH2wx16HCENacCE=;
+        b=FOZHJQ0/1sXkeAQoO/fyp8vCk2CQN/8MyfyXU81exOyQ81lChOm6jiVZhfTAvOHXOF1Mjo
+        bzasBbEirmJtuiDw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v6.6-rc2-rt3
+Message-ID: <20230920093016.xGpZHYvz@linutronix.de>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7051.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14e605f5-46ca-4f9c-c0d2-08dbb9bc2ab7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2023 09:30:02.4482
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RX1SalJxFFSNfdaoEndx9FqF3aSF5LCq6QnT//Xsu2SHyvj5/+a+1dKE47Vz2wX9ezRkDuCh3U50ZgNtkDjA8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8447
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, September 20, 2023 4:27 PM AngeloGioacchino Del Regno <angelo=
-gioacchino.delregno@collabora.com> wrote:
-> When external bridges are attached with
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR,
-> the panel bridge may also get the same flag, but in the .attach()
-> callback for the panel bridge a device link is added only when this
-> flag is not present; To make things worse, the .detach() callback
-> tries to delete the device link unconditionally and without checking
-> if it was created in the first place, crashing the kernel with a NULL
-> pointer kernel panic upon calling panel_bridge_detach().
->=20
-> Fix that by moving the device_link_add() call before checking if the
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is present.
->=20
-> Fixes: 199cf07ebd2b ("drm/bridge: panel: Add a device link between drm
-> device and panel device")
-> Signed-off-by: AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com>
-> ---
->=20
-> Changes in v2:
->  - Added device_link_del() for (!bridge->encoder) error condition
->=20
->  drivers/gpu/drm/bridge/panel.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
+Dear RT folks!
 
-Reviewed-by: Liu Ying <victor.liu@nxp.com>
+I'm pleased to announce the v6.6-rc2-rt3 patch set. 
+
+Changes since v6.6-rc2-rt2:
+
+  - The locking patches for flushed queued I/O have been applied to the
+    tip tree. This update synchronises the patches with the version as
+    applied to the tip tree.
+
+Known issues
+     None
+
+The delta patch against v6.6-rc2-rt2 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/incr/patch-6.6-rc2-rt2-rt3.patch.xz
+
+You can get this release via the git tree at:
+
+    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.6-rc2-rt3
+
+The RT patch against v6.6-rc2 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6-rc2-rt3.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patches-6.6-rc2-rt3.tar.xz
+
+Sebastian
+
+diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
+index 58fbc34a59811..b5379c0e6d6d1 100644
+--- a/kernel/futex/futex.h
++++ b/kernel/futex/futex.h
+@@ -254,29 +254,6 @@ double_unlock_hb(struct futex_hash_bucket *hb1, struct futex_hash_bucket *hb2)
+ 		spin_unlock(&hb2->lock);
+ }
+ 
+-static inline void futex_trylock_hblock(spinlock_t *lock)
+-{
+-	do {
+-		ktime_t chill_time;;
+-
+-		/*
+-		 * Current is not longer pi_blocked_on if it owns the lock. It
+-		 * can still have pi_blocked_on set if the lock acquiring was
+-		 * interrupted by signal or timeout. The trylock operation does
+-		 * not clobber pi_blocked_on so it is the only option.
+-		 * Should the try-lock operation fail then it needs leave the CPU
+-		 * to avoid a busy loop in case it is the task with the highest
+-		 * priority.
+-		 */
+-		if (spin_trylock(lock))
+-			return;
+-
+-		chill_time = ktime_set(0, NSEC_PER_MSEC);
+-		set_current_state(TASK_UNINTERRUPTIBLE);
+-		schedule_hrtimeout(&chill_time, HRTIMER_MODE_REL_HARD);
+-	} while (1);
+-}
+-
+ /* syscalls */
+ 
+ extern int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags, u32
+diff --git a/kernel/futex/pi.c b/kernel/futex/pi.c
+index 1440fdcdbfd8c..d636a1bbd7d06 100644
+--- a/kernel/futex/pi.c
++++ b/kernel/futex/pi.c
+@@ -611,29 +611,16 @@ int futex_lock_pi_atomic(u32 __user *uaddr, struct futex_hash_bucket *hb,
+ /*
+  * Caller must hold a reference on @pi_state.
+  */
+-static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_state)
++static int wake_futex_pi(u32 __user *uaddr, u32 uval,
++			 struct futex_pi_state *pi_state,
++			 struct rt_mutex_waiter *top_waiter)
+ {
+-	struct rt_mutex_waiter *top_waiter;
+ 	struct task_struct *new_owner;
+ 	bool postunlock = false;
+ 	DEFINE_RT_WAKE_Q(wqh);
+ 	u32 curval, newval;
+ 	int ret = 0;
+ 
+-	top_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
+-	if (WARN_ON_ONCE(!top_waiter)) {
+-		/*
+-		 * As per the comment in futex_unlock_pi() this should not happen.
+-		 *
+-		 * When this happens, give up our locks and try again, giving
+-		 * the futex_lock_pi() instance time to complete, either by
+-		 * waiting on the rtmutex or removing itself from the futex
+-		 * queue.
+-		 */
+-		ret = -EAGAIN;
+-		goto out_unlock;
+-	}
+-
+ 	new_owner = top_waiter->task;
+ 
+ 	/*
+@@ -1046,21 +1033,37 @@ int futex_lock_pi(u32 __user *uaddr, unsigned int flags, ktime_t *time, int tryl
+ 	ret = rt_mutex_wait_proxy_lock(&q.pi_state->pi_mutex, to, &rt_waiter);
+ 
+ cleanup:
+-	rt_mutex_post_schedule();
+-
+-	futex_trylock_hblock(q.lock_ptr);
+-
+ 	/*
+ 	 * If we failed to acquire the lock (deadlock/signal/timeout), we must
+-	 * first acquire the hb->lock before removing the lock from the
+-	 * rt_mutex waitqueue, such that we can keep the hb and rt_mutex wait
+-	 * lists consistent.
++	 * must unwind the above, however we canont lock hb->lock because
++	 * rt_mutex already has a waiter enqueued and hb->lock can itself try
++	 * and enqueue an rt_waiter through rtlock.
+ 	 *
+-	 * In particular; it is important that futex_unlock_pi() can not
+-	 * observe this inconsistency.
++	 * Doing the cleanup without holding hb->lock can cause inconsistent
++	 * state between hb and pi_state, but only in the direction of not
++	 * seeing a waiter that is leaving.
++	 *
++	 * See futex_unlock_pi(), it deals with this inconsistency.
++	 *
++	 * There be dragons here, since we must deal with the inconsistency on
++	 * the way out (here), it is impossible to detect/warn about the race
++	 * the other way around (missing an incoming waiter).
++	 *
++	 * What could possibly go wrong...
+ 	 */
+ 	if (ret && !rt_mutex_cleanup_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter))
+ 		ret = 0;
++
++	/*
++	 * Now that the rt_waiter has been dequeued, it is safe to use
++	 * spinlock/rtlock (which might enqueue its own rt_waiter) and fix up
++	 * the
++	 */
++	spin_lock(q.lock_ptr);
++	/*
++	 * Waiter is unqueued.
++	 */
++	rt_mutex_post_schedule();
+ no_block:
+ 	/*
+ 	 * Fixup the pi_state owner and possibly acquire the lock if we
+@@ -1141,6 +1144,7 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
+ 	top_waiter = futex_top_waiter(hb, &key);
+ 	if (top_waiter) {
+ 		struct futex_pi_state *pi_state = top_waiter->pi_state;
++		struct rt_mutex_waiter *rt_waiter;
+ 
+ 		ret = -EINVAL;
+ 		if (!pi_state)
+@@ -1153,22 +1157,39 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
+ 		if (pi_state->owner != current)
+ 			goto out_unlock;
+ 
+-		get_pi_state(pi_state);
+ 		/*
+ 		 * By taking wait_lock while still holding hb->lock, we ensure
+-		 * there is no point where we hold neither; and therefore
+-		 * wake_futex_p() must observe a state consistent with what we
+-		 * observed.
++		 * there is no point where we hold neither; and thereby
++		 * wake_futex_pi() must observe any new waiters.
++		 *
++		 * Since the cleanup: case in futex_lock_pi() removes the
++		 * rt_waiter without holding hb->lock, it is possible for
++		 * wake_futex_pi() to not find a waiter while the above does,
++		 * in this case the waiter is on the way out and it can be
++		 * ignored.
+ 		 *
+ 		 * In particular; this forces __rt_mutex_start_proxy() to
+ 		 * complete such that we're guaranteed to observe the
+-		 * rt_waiter. Also see the WARN in wake_futex_pi().
++		 * rt_waiter.
+ 		 */
+ 		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
++
++		/*
++		 * Futex vs rt_mutex waiter state -- if there are no rt_mutex
++		 * waiters even though futex thinks there are, then the waiter
++		 * is leaving and the uncontended path is safe to take.
++		 */
++		rt_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
++		if (!rt_waiter) {
++			raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
++			goto do_uncontended;
++		}
++
++		get_pi_state(pi_state);
+ 		spin_unlock(&hb->lock);
+ 
+ 		/* drops pi_state->pi_mutex.wait_lock */
+-		ret = wake_futex_pi(uaddr, uval, pi_state);
++		ret = wake_futex_pi(uaddr, uval, pi_state, rt_waiter);
+ 
+ 		put_pi_state(pi_state);
+ 
+@@ -1196,6 +1217,7 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
+ 		return ret;
+ 	}
+ 
++do_uncontended:
+ 	/*
+ 	 * We have no kernel internal state, i.e. no waiters in the
+ 	 * kernel. Waiters which are about to queue themselves are stuck
+diff --git a/kernel/futex/requeue.c b/kernel/futex/requeue.c
+index 26888cfa74449..4c73e0b81accd 100644
+--- a/kernel/futex/requeue.c
++++ b/kernel/futex/requeue.c
+@@ -850,11 +850,13 @@ int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 		pi_mutex = &q.pi_state->pi_mutex;
+ 		ret = rt_mutex_wait_proxy_lock(pi_mutex, to, &rt_waiter);
+ 
+-		futex_trylock_hblock(q.lock_ptr);
+-
++		/*
++		 * See futex_unlock_pi()'s cleanup: comment.
++		 */
+ 		if (ret && !rt_mutex_cleanup_proxy_lock(pi_mutex, &rt_waiter))
+ 			ret = 0;
+ 
++		spin_lock(q.lock_ptr);
+ 		debug_rt_mutex_free_waiter(&rt_waiter);
+ 		/*
+ 		 * Fixup the pi_state owner and possibly acquire the lock if we
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index e56585ef489c8..4a10e8c16fd2b 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -1166,13 +1166,10 @@ try_to_take_rt_mutex(struct rt_mutex_base *lock, struct task_struct *task,
+ 	 * Clear @task->pi_blocked_on. Requires protection by
+ 	 * @task->pi_lock. Redundant operation for the @waiter == NULL
+ 	 * case, but conditionals are more expensive than a redundant
+-	 * store. But then there is FUTEX and if rt_mutex_wait_proxy_lock()
+-	 * did not acquire the lock it try-locks another lock before it clears
+-	 * @task->pi_blocked_on so we mustn't clear it here premature.
++	 * store.
+ 	 */
+ 	raw_spin_lock(&task->pi_lock);
+-	if (waiter)
+-		task->pi_blocked_on = NULL;
++	task->pi_blocked_on = NULL;
+ 	/*
+ 	 * Finish the lock acquisition. @task is the new owner. If
+ 	 * other waiters exist we have to insert the highest priority
+diff --git a/localversion-rt b/localversion-rt
+index c3054d08a1129..1445cd65885cd 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt2
++-rt3
