@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FEE7A8CCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539537A8CCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 21:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbjITT2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 15:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
+        id S230071AbjITT2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 15:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjITT2d (ORCPT
+        with ESMTP id S230096AbjITT2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:28:33 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1F5CF;
-        Wed, 20 Sep 2023 12:28:25 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so388987e87.2;
-        Wed, 20 Sep 2023 12:28:25 -0700 (PDT)
+        Wed, 20 Sep 2023 15:28:39 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A61DDD;
+        Wed, 20 Sep 2023 12:28:28 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bfc1d8f2d2so1527691fa.0;
+        Wed, 20 Sep 2023 12:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695238103; x=1695842903; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695238106; x=1695842906; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lSZwUqk2LhSLToURZdxj4BC7qr/BbA6pyW8daToL0QU=;
-        b=GOGFa5ZnwkOyvD39t7dB/bRq9FH81IB5xGCcpy2qCyGmjF1ZGJ/kqJeMUCXPgqg9hB
-         uhjgGHAlfQW2mO6E03NCubxWAhGFvOnuoozdEreTErIEXUZEasazSd54ECyuB6mlCJS7
-         Q8iUhktLkOy5RNY4K26Ed6S3rWbOKU4r0LT/9j1C4KLU/gnwJi2EzEp5mCopfVhHsRgq
-         zg23FUo8xdtL0LgWoFIyDFypEwwxaAqe09ONTJM6YLmzTk2McnB1uOh3Jvg4p8F/c+2a
-         YkvLEqh/9zCzpLvBqoLgJaDDR+i06Bi3FRjYEKsMePj7n/qA+F+Iw5KYBLCScjJp/tTU
-         4brQ==
+        bh=yRpb2GxtnVP5nWSE0kBTW6FlNIFe1bv1+IIvLCRkryM=;
+        b=J89/KX1rrGeSm7nZZXyjFhCIYQi2CTeY96kmWBC0FVvy4u9hIPHDsK/p1DyRWpyBMJ
+         fxxCPDURZmZSsIuPhPBkqjoOtHLTPuy+okI5DJOi4ZiqJi6d32s/+wrzbsIsxH72ZRss
+         1O+vT04WvaiY2x5pD9E3oR526f21VcA4qgz6CFXknitRWPxBIaEK0spJyhleXN+qyaJg
+         pVdYOs3g3KcnabVkv2OrDKltjDkMVB2S7J0cCk+OhuM9Eu1D3bnowI2PjF4m+tag7PYN
+         ubm+Q5cBm8qAYQ8CCbn7VfXwtspHxa1DK+0NfCKviFy1ayGi3S/HMFlIrDJlJNY/Te9g
+         kcAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695238103; x=1695842903;
+        d=1e100.net; s=20230601; t=1695238106; x=1695842906;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lSZwUqk2LhSLToURZdxj4BC7qr/BbA6pyW8daToL0QU=;
-        b=uxfS3YSwyoCsI8+h9kLVqRgwCnLwBMrVfUYaqk60TPWCKW59sYiwRPvdO3w5+OGmR3
-         uXSWDvk4efaKXuLKqnBNBRjV4wzaf3azYl4xyjnfgiNi3OMYXgFRP0oQ+LFKIo3WJ15V
-         dJz+apn1Ft0+IRLzDG7hGfj1KBtP92jUzwNYoMnI5losoQ2GIMCrXAVuZnJrATnkcYsj
-         Kf13TwhkP26o7IjOz9iVDEAQ1p0vmsfBleAl4PN9MsIEaj4qlZgrygEwEcyhxUa9tt0Q
-         0UlCzlXLCSYsH5PEs+MNNrwQHIbPWzfngG9hCar9rwwQkmGV75QLO3WtjIwMtkJYVOpa
-         Q2+g==
-X-Gm-Message-State: AOJu0YxaYBmmJBaUjYFXaKG4v22Sze7WwBREWMrQAg5hqKxwBfVat7mk
-        C6FZg6vNUOhhJZILbyWiTQE=
-X-Google-Smtp-Source: AGHT+IHu9ipPueyvMIh6eHJbINo45HFjPnT1i9SCVvpQktfQ6hYhHXC08wGvzUA0gWFFZYqbkjqqLQ==
-X-Received: by 2002:a19:ca03:0:b0:500:b42f:1830 with SMTP id a3-20020a19ca03000000b00500b42f1830mr2620543lfg.63.1695238103285;
-        Wed, 20 Sep 2023 12:28:23 -0700 (PDT)
-Received: from localhost ([178.176.81.142])
-        by smtp.gmail.com with ESMTPSA id i25-20020a056512007900b0050332394bcasm802769lfo.150.2023.09.20.12.28.22
+        bh=yRpb2GxtnVP5nWSE0kBTW6FlNIFe1bv1+IIvLCRkryM=;
+        b=wyXMbnoVznsu/dxDgZRiSXisqDcJ7Lrc++9owLbxuxzP3IXlLKo8TRR4Nxm+36Ry4V
+         9tajnphzFNzQ/DjtHlYxsqBhnBuZF2sXs7xgrCQ9FkpMYzfOs40HOPus8YE+6hKd5ftS
+         lKqY/fRAR4gw/Uem4tS7s0GI044ONokYFjO4UOFa+ZmczHgONDAuNy+PZumIEIanW7rs
+         QBZEqwi2s00ATOGOOaN/CZPckz0qi433jsBtZ80v0mWZi5xyxqNZ9Z8i8tMeRwP+pNcM
+         qoNQFQ1Aqb79xGbigp6ivRZsB6HT8Hw7V5qOoJ751F0WU4clW3fABAod8lNXuPECpKii
+         gDBg==
+X-Gm-Message-State: AOJu0YyZXRbvbleQFPDDk8QRTRdmSOrXCdqHWgbuXOkC4C7lV4WPHkYf
+        Xi9rVv/21VcTPXaU3tuE0OU=
+X-Google-Smtp-Source: AGHT+IGyHrILRPaV9pJ2zQgJeEVuZslG3NO98MRbEvq/YyXB/RrkwS0N6dvP/s2RWOZgLB2ubbRn0Q==
+X-Received: by 2002:a2e:a60b:0:b0:2bf:f90e:2794 with SMTP id v11-20020a2ea60b000000b002bff90e2794mr2545427ljp.23.1695238106225;
+        Wed, 20 Sep 2023 12:28:26 -0700 (PDT)
+Received: from localhost ([178.176.85.138])
+        by smtp.gmail.com with ESMTPSA id d19-20020a2eb053000000b002b9ec22d9fasm1105300ljl.29.2023.09.20.12.28.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 12:28:22 -0700 (PDT)
+        Wed, 20 Sep 2023 12:28:25 -0700 (PDT)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Michal Simek <michal.simek@amd.com>,
         Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -66,9 +66,9 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 02/18] EDAC/mc: Extend memtypes with LPDDR(mDDR) and LPDDR2
-Date:   Wed, 20 Sep 2023 22:26:47 +0300
-Message-ID: <20230920192806.29960-3-fancer.lancer@gmail.com>
+Subject: [PATCH v4 03/18] EDAC/synopsys: Extend memtypes supported by controller
+Date:   Wed, 20 Sep 2023 22:26:48 +0300
+Message-ID: <20230920192806.29960-4-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230920192806.29960-1-fancer.lancer@gmail.com>
 References: <20230920192806.29960-1-fancer.lancer@gmail.com>
@@ -77,7 +77,7 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,85 +85,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are normal memory types [1] which can be met on the real hardware.
-DW uMCTL2 DDRC IP-core can be configured to have them supported [2,3].
-Extend the EDAC memory types enumeration with the corresponding IDs then.
+In accordance with [1] the DW uMCTL2 DDR controllers can support the next
+DDR protocols: LPDDR, (LP)DDR(2|3|4). Even if the controller is configured
+to support several of these memory chip types only one of these modes
+could be enabled at runtime [2].
 
-[1] https://en.wikipedia.org/wiki/LPDDR
+Taking all of that into account update the snps_get_mtype() procedure so
+the DW uMCTL2 DDRC driver would be able to detect all the claimed to be
+supported memory types in accordance with the table defined in [2]. Note
+alas it's not possible do determine which MEMC DDR configs were enabled at
+the IP-core synthesize. Therefore there is no other choice but to
+initialize the EDAC MC mem-types capability field with all the types
+claimed to be supported by the IP-core.
+
+[1] DesignWare® Cores Enhanced Universal DDR Memory Controller (uMCTL2)
+Databook, Version 3.91a, October 2020, p.501
 [2] DesignWare® Cores Enhanced Universal DDR Memory Controller (uMCTL2)
 Databook, Version 3.91a, October 2020, p.501
-[3] DesignWare® Cores Enhanced Universal DDR Memory Controller (uMCTL2)
-Databook, Version 3.91a, October 2020, p.1717
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- drivers/edac/edac_mc.c | 2 ++
- include/linux/edac.h   | 6 ++++++
- 2 files changed, 8 insertions(+)
+ drivers/edac/synopsys_edac.c | 41 ++++++++++++++++++++++++------------
+ 1 file changed, 27 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
-index 634c41ea7804..e353e98e01e2 100644
---- a/drivers/edac/edac_mc.c
-+++ b/drivers/edac/edac_mc.c
-@@ -151,10 +151,12 @@ const char * const edac_mem_types[] = {
- 	[MEM_RDR]	= "Registered-SDR",
- 	[MEM_DDR]	= "Unbuffered-DDR",
- 	[MEM_RDDR]	= "Registered-DDR",
-+	[MEM_LPDDR]	= "Low-Power-(m)DDR-RAM",
- 	[MEM_RMBS]	= "RMBS",
- 	[MEM_DDR2]	= "Unbuffered-DDR2",
- 	[MEM_FB_DDR2]	= "FullyBuffered-DDR2",
- 	[MEM_RDDR2]	= "Registered-DDR2",
-+	[MEM_LPDDR2]	= "Low-Power-DDR2-RAM",
- 	[MEM_XDR]	= "XDR",
- 	[MEM_DDR3]	= "Unbuffered-DDR3",
- 	[MEM_RDDR3]	= "Registered-DDR3",
-diff --git a/include/linux/edac.h b/include/linux/edac.h
-index fa4bda2a70f6..89167a4459d5 100644
---- a/include/linux/edac.h
-+++ b/include/linux/edac.h
-@@ -157,6 +157,7 @@ static inline char *mc_event_error_type(const unsigned int err_type)
-  *			This is a variant of the DDR memories.
-  *			A registered memory has a buffer inside it, hiding
-  *			part of the memory details to the memory controller.
-+ * @MEM_LPDDR:		Low-Power DDR memory (mDDR).
-  * @MEM_RMBS:		Rambus DRAM, used on a few Pentium III/IV controllers.
-  * @MEM_DDR2:		DDR2 RAM, as described at JEDEC JESD79-2F.
-  *			Those memories are labeled as "PC2-" instead of "PC" to
-@@ -167,6 +168,7 @@ static inline char *mc_event_error_type(const unsigned int err_type)
-  *			a chip select signal.
-  * @MEM_RDDR2:		Registered DDR2 RAM
-  *			This is a variant of the DDR2 memories.
-+ * @MEM_LPDDR2:		Low-Power DDR2 memory.
-  * @MEM_XDR:		Rambus XDR
-  *			It is an evolution of the original RAMBUS memories,
-  *			created to compete with DDR2. Weren't used on any
-@@ -199,10 +201,12 @@ enum mem_type {
- 	MEM_RDR,
- 	MEM_DDR,
- 	MEM_RDDR,
-+	MEM_LPDDR,
- 	MEM_RMBS,
- 	MEM_DDR2,
- 	MEM_FB_DDR2,
- 	MEM_RDDR2,
-+	MEM_LPDDR2,
- 	MEM_XDR,
- 	MEM_DDR3,
- 	MEM_RDDR3,
-@@ -230,10 +234,12 @@ enum mem_type {
- #define MEM_FLAG_RDR		BIT(MEM_RDR)
- #define MEM_FLAG_DDR		BIT(MEM_DDR)
- #define MEM_FLAG_RDDR		BIT(MEM_RDDR)
-+#define MEM_FLAG_LPDDR		BIT(MEM_LPDDR)
- #define MEM_FLAG_RMBS		BIT(MEM_RMBS)
- #define MEM_FLAG_DDR2		BIT(MEM_DDR2)
- #define MEM_FLAG_FB_DDR2	BIT(MEM_FB_DDR2)
- #define MEM_FLAG_RDDR2		BIT(MEM_RDDR2)
-+#define MEM_FLAG_LPDDR2		BIT(MEM_LPDDR2)
- #define MEM_FLAG_XDR		BIT(MEM_XDR)
- #define MEM_FLAG_DDR3		BIT(MEM_DDR3)
- #define MEM_FLAG_RDDR3		BIT(MEM_RDDR3)
+diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
+index 10716f365c6f..e08e9f3c81cb 100644
+--- a/drivers/edac/synopsys_edac.c
++++ b/drivers/edac/synopsys_edac.c
+@@ -102,11 +102,14 @@
+ #define DDR_MSTR_BUSWIDTH_16		2
+ #define DDR_MSTR_BUSWIDTH_32		1
+ #define DDR_MSTR_BUSWIDTH_64		0
++#define DDR_MSTR_MEM_MASK		GENMASK(5, 0)
+ #define DDR_MSTR_MEM_LPDDR4		BIT(5)
+ #define DDR_MSTR_MEM_DDR4		BIT(4)
+ #define DDR_MSTR_MEM_LPDDR3		BIT(3)
+-#define DDR_MSTR_MEM_DDR2		BIT(2)
++#define DDR_MSTR_MEM_LPDDR2		BIT(2)
++#define DDR_MSTR_MEM_LPDDR		BIT(1)
+ #define DDR_MSTR_MEM_DDR3		BIT(0)
++#define DDR_MSTR_MEM_DDR2		0
+ 
+ /* ECC CFG0 register definitions */
+ #define ECC_CFG0_MODE_MASK		GENMASK(2, 0)
+@@ -535,21 +538,29 @@ static u32 snps_get_memsize(void)
+  */
+ static enum mem_type snps_get_mtype(const void __iomem *base)
+ {
+-	enum mem_type mt;
+-	u32 memtype;
++	u32 regval;
+ 
+-	memtype = readl(base + DDR_MSTR_OFST);
++	regval = readl(base + DDR_MSTR_OFST);
++	regval = FIELD_GET(DDR_MSTR_MEM_MASK, regval);
+ 
+-	if ((memtype & DDR_MSTR_MEM_DDR3) || (memtype & DDR_MSTR_MEM_LPDDR3))
+-		mt = MEM_DDR3;
+-	else if (memtype & DDR_MSTR_MEM_DDR2)
+-		mt = MEM_RDDR2;
+-	else if ((memtype & DDR_MSTR_MEM_LPDDR4) || (memtype & DDR_MSTR_MEM_DDR4))
+-		mt = MEM_DDR4;
+-	else
+-		mt = MEM_EMPTY;
++	switch (regval) {
++	case DDR_MSTR_MEM_DDR2:
++		return MEM_DDR2;
++	case DDR_MSTR_MEM_DDR3:
++		return MEM_DDR3;
++	case DDR_MSTR_MEM_LPDDR:
++		return MEM_LPDDR;
++	case DDR_MSTR_MEM_LPDDR2:
++		return MEM_LPDDR2;
++	case DDR_MSTR_MEM_LPDDR3:
++		return MEM_LPDDR3;
++	case DDR_MSTR_MEM_DDR4:
++		return MEM_DDR4;
++	case DDR_MSTR_MEM_LPDDR4:
++		return MEM_LPDDR4;
++	}
+ 
+-	return mt;
++	return MEM_RESERVED;
+ }
+ 
+ /**
+@@ -597,7 +608,9 @@ static void snps_mc_init(struct mem_ctl_info *mci, struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, mci);
+ 
+ 	/* Initialize controller capabilities and configuration */
+-	mci->mtype_cap = MEM_FLAG_DDR3 | MEM_FLAG_DDR2;
++	mci->mtype_cap = MEM_FLAG_LPDDR | MEM_FLAG_DDR2 | MEM_FLAG_LPDDR2 |
++			 MEM_FLAG_DDR3 | MEM_FLAG_LPDDR3 |
++			 MEM_FLAG_DDR4 | MEM_FLAG_LPDDR4;
+ 	mci->edac_ctl_cap = EDAC_FLAG_NONE | EDAC_FLAG_SECDED;
+ 	mci->scrub_cap = SCRUB_FLAG_HW_SRC;
+ 	mci->scrub_mode = SCRUB_NONE;
 -- 
 2.41.0
 
