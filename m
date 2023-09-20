@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BEF7A8F73
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 00:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9AE7A8F87
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 00:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjITWdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 18:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
+        id S229592AbjITWjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 18:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjITWdM (ORCPT
+        with ESMTP id S229558AbjITWjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 18:33:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633D5AC;
-        Wed, 20 Sep 2023 15:33:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A37B8C433C8;
-        Wed, 20 Sep 2023 22:33:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695249187;
-        bh=fD0+k5jlOk1+esg3/yex9x7rq8+uB1F3iOO9pGrNP/s=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=RA5ATx83odooP+9SP/UgBA1oYQcTYqVM4GNzxLoXO1G3fs5He+/F+GAMcCWiNU17+
-         xbzN20OmmydQR57UyPUQGY7Gb4jgVLSsV0Z5ogh/glvb3zVPIxKYA4lFW1/VodWX7h
-         CkP6FsgfGqEOqxszM4+IZi5XrUUSJ8diOzeqdmKppXUC7xdc4lcuLG5DoUoTgIi/YO
-         qxKs5BukW3rRyeFIARX4zgWj9BtipWBo/ARex/Ja72UipSfFtC9Q1oNvslXahyNqNd
-         6+82TL4XL7nutjHDfJLOc18120/E/g4T0JwLL8Fp5bjI1IyagwNBrWXq1kKBYPYU4R
-         e33l1IE/OW7Dw==
-Received: (nullmailer pid 3103970 invoked by uid 1000);
-        Wed, 20 Sep 2023 22:33:04 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Wed, 20 Sep 2023 18:39:00 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7066FCC
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 15:38:53 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3ade37f4e50so216336b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 15:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1695249533; x=1695854333; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1CFASXI8WL+dneofPZI+e0hjnEpkK/1rD0JOrrCGQjw=;
+        b=dI85TGgUuKbqlNXCfnvsqBMCo5yvuswHQscujd5VMJtGvCDyLqzHlHgnNPR0DQ1eCG
+         7vkeue103rD2OB7HZTx5GFt51gad3Cv5AgAkAlpPmCxtXAJJm5EF12OIR8NYfNLkyq9Q
+         4yGsRhylz+v15m+kDLKL9E5S8AUBR+Pw3WS70=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695249533; x=1695854333;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1CFASXI8WL+dneofPZI+e0hjnEpkK/1rD0JOrrCGQjw=;
+        b=Rv3elpXrWSVlKr7rlekW1UVh70cMAy9iTFKIfNrjIvYCjPGa9x0I1WiVTL9qOXvcR/
+         pco+osaceCACCHgzYgCGeMThAsjXjITvn8atb8KXl7pWprSwtegxjvyShWy4kO3R49nS
+         lJ11Pc5Skv4FCcdjvKRXMBH5RJw1vmKrPscR/tMklFlbch4HxCtiJlE7W2LYYNyMvcpH
+         asRKYoDhGOvb/upT658bwOvuCXvf2nIM/nGcPWiQvcAlXYoa1ozEeen8h86oezo1Ai2+
+         k0FW2nkbIIOkaMWgDfPL1Yz9lM4jc8bXnKnwX4rVUooH1EHf1cppBvrdwRBhC6ieOPY4
+         Ax6g==
+X-Gm-Message-State: AOJu0Ywv4o1/Uqt1shbj7arfkp4YQR+NP1snxLSMiPoqmKeFH/DpyTeS
+        mGy0gDCo3ngh6zASoPGpuVRxfw==
+X-Google-Smtp-Source: AGHT+IGhUbWmEAffQC5yTBBemEJib/r36R7qLuhAsphONKsVaV8sfYP8KCR7H+a40zjz8GJXoTbr6A==
+X-Received: by 2002:a05:6808:1912:b0:3a4:ccf:6a63 with SMTP id bf18-20020a056808191200b003a40ccf6a63mr4107683oib.55.1695249532790;
+        Wed, 20 Sep 2023 15:38:52 -0700 (PDT)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id v14-20020a056808004e00b003a9cd23980esm52020oic.8.2023.09.20.15.38.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 15:38:51 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Date:   Wed, 20 Sep 2023 17:38:50 -0500
+From:   Justin Forbes <jforbes@fedoraproject.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 6.5 000/211] 6.5.5-rc1 review
+Message-ID: <ZQt0enUSOWLGAReo@fedora64.linuxtx.org>
+References: <20230920112845.859868994@linuxfoundation.org>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, Axel Haslam <ahaslam@baylibre.com>,
-        devicetree@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        Apelete Seketeli <aseketeli@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-In-Reply-To: <20230920170253.203395-2-dlechner@baylibre.com>
-References: <20230920170253.203395-1-dlechner@baylibre.com>
- <20230920170253.203395-2-dlechner@baylibre.com>
-Message-Id: <169524918396.3103912.5071083113284747603.robh@kernel.org>
-Subject: Re: [PATCH 1/4] dt-bindings: iio: resolver: add devicetree
- bindings for ad2s1210
-Date:   Wed, 20 Sep 2023 17:33:04 -0500
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920112845.859868994@linuxfoundation.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 20 Sep 2023 12:02:50 -0500, David Lechner wrote:
-> This adds new DeviceTree bindings for the Analog Devices, Inc. AD2S1210
-> resolver-to-digital converter.
+On Wed, Sep 20, 2023 at 01:27:24PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.5 release.
+> There are 211 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Apelete Seketeli <aseketeli@baylibre.com>
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> ---
->  .../bindings/iio/resolver/adi,ad2s1210.yaml   | 150 ++++++++++++++++++
->  1 file changed, 150 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
+> Responses should be made by Fri, 22 Sep 2023 11:28:09 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
+x86_64), and boot tested x86_64. No regressions noted.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml:102:12: [error] string value is redundantly quoted with any quotes (quoted-strings)
-./Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml:102:22: [error] string value is redundantly quoted with any quotes (quoted-strings)
-./Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml:102:34: [error] string value is redundantly quoted with any quotes (quoted-strings)
-
-dtschema/dtc warnings/errors:
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230920170253.203395-2-dlechner@baylibre.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
