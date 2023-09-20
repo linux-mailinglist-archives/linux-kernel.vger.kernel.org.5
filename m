@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D285B7A8876
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84B97A889A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236661AbjITPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
+        id S236715AbjITPks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235323AbjITPdB (ORCPT
+        with ESMTP id S236627AbjITPkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:33:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21B2B9;
-        Wed, 20 Sep 2023 08:32:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695223974; x=1726759974;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=a7HKqSTQd2pJTS++JjjmKo7EjWkTiEjMiBb8rRIWewA=;
-  b=bVtHmeChnvQLCjZfAAui6+HaKJGG3fFmaxCivMOgYmnuBYsRr0VMV/yn
-   PC3SqFKW4C05w/JnNx+P1c6Z+Ir+OZHqF4ILe5UoSGP2Ype2BqcPHGuBb
-   T7U6V8y2WhTln7N1NJPET5FYQIUOK/G58EVq5Ol56K41v/HPiu2DdCg3H
-   B11irndVd9jlKZNrfO9hduR2dcD83W708Ix+7MzLZPtLLWUpYcBoXDWr/
-   xg7/1hi4dPpNbQd9p2CAcPcbhLjaMUz62NHU6Uq4pOW0hO9faLRwBYvBX
-   46yf1+6efe6NEuDpTPbz4+rAALqNO6qNTTq923mdqbICQcagnJv9Fy5yR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="411198688"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="411198688"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 08:32:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="696337302"
-X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="696337302"
-Received: from conorbyr-mobl1.ger.corp.intel.com (HELO [10.213.199.161]) ([10.213.199.161])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 08:32:48 -0700
-Message-ID: <ccfa3697-b015-ff35-fb92-0efcbd1d7d7c@linux.intel.com>
-Date:   Wed, 20 Sep 2023 16:32:46 +0100
+        Wed, 20 Sep 2023 11:40:46 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA309D9;
+        Wed, 20 Sep 2023 08:40:38 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8093122008;
+        Wed, 20 Sep 2023 15:40:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695224437;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qGHbOYY7FsnjaS3nEMPoYfjC2fCOhS5YY3UGPdYWWqA=;
+        b=eUEUXDPJpfeyk0v2ba1gL0uQKM+jaVmIO63x8U5ylhQzfXlh8sClPT8caUaVp1Okm1lvDH
+        vkSmEXH5KFJtIEIx5rkx3XuwqyJRvNxg5RHjnl+ynx4ocAGvtvLd7bIi9mQqVlzBub0ivQ
+        XKWoywhL5PGOnZrOHiQu3M8EEHa9P6w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695224437;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qGHbOYY7FsnjaS3nEMPoYfjC2fCOhS5YY3UGPdYWWqA=;
+        b=f87QlHrOYk6ACyn7nYXDy+EjkZ/aqwGw6soUlxxliaVK2q1+VSJYLg0A7BWUvXuhR2zpl3
+        gypAKvtw9+KA7uBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 37275132C7;
+        Wed, 20 Sep 2023 15:40:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id waTIDHUSC2XXTAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 20 Sep 2023 15:40:37 +0000
+Date:   Wed, 20 Sep 2023 17:34:03 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] btrfs: fix 64bit division in
+ btrfs_insert_striped_mirrored_raid_extents
+Message-ID: <20230920153403.GD2268@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
+ <20230918-rst-updates-v1-1-17686dc06859@wdc.com>
+ <CAMuHMdWM3_cj4Nb96pZQfErx7n+0Cd7RUQZV+bpvr1Tz5T3sgw@mail.gmail.com>
+ <e12a171e-d3b8-401e-b01a-9440f5c75293@wdc.com>
+ <20230918162448.GI2747@suse.cz>
+ <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
+ <20230919135810.GT2747@twin.jikos.cz>
+ <a364f344-b718-48ff-9e2a-484c5ded6e7f@gmx.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 6/6] drm/drm-file: Show finer-grained BO sizes in
- drm_show_memory_stats
-Content-Language: en-US
-To:     =?UTF-8?Q?Adri=c3=a1n_Larumbe?= <adrian.larumbe@collabora.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, healych@amazon.com,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        kernel@collabora.com, freedreno@lists.freedesktop.org
-References: <20230919233556.1458793-1-adrian.larumbe@collabora.com>
- <20230919233556.1458793-7-adrian.larumbe@collabora.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <20230919233556.1458793-7-adrian.larumbe@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a364f344-b718-48ff-9e2a-484c5ded6e7f@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 20/09/2023 00:34, Adrián Larumbe wrote:
-> The current implementation will try to pick the highest available size
-> display unit as soon as the BO size exceeds that of the previous
-> multiplier. That can lead to loss of precision in contexts of low memory
-> usage.
+On Wed, Sep 20, 2023 at 07:20:49AM +0930, Qu Wenruo wrote:
+> >>>>> What if the quotient does not fit in a signed 32-bit value?
+> >>>>
+> >>>> Then you've bought a lot of HDDs ;-)
+> >>>>
+> >>>> Jokes aside, yes this is theoretically correct. Dave can you fix
+> >>>> max_stripes up to be u64 when applying?
+> >>>
+> >>> I think we can keep it int, or unsigned int if needed, we can't hit such
+> >>> huge values for rw_devices. The 'theoretically' would fit for a machine
+> >>> with infinite resources, otherwise the maximum number of devices I'd
+> >>> expect is a few thousand.
+> >>
+> >> In fact, we already have an check in btrfs_validate_super(), if the
+> >> num_devices is over 1<<31, we would reject the fs.
+> >
+> > No, it's just a warning in that case.
 > 
-> The new selection criteria try to preserve precision, whilst also
-> increasing the display unit selection threshold to render more accurate
-> values.
+> We can make it a proper reject.
 > 
-> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Reviewed-by: Steven Price <steven.price@arm.com>
-> ---
->   drivers/gpu/drm/drm_file.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> >> I think we should be safe to further reduce the threshold.
+> >>
+> >> U16_MAX sounds a valid and sane value to me.
+> >> If no rejection I can send out a patch for this.
+> >>
+> >> And later change internal rw_devices/num_devices to u16.
+> >
+> > U16 does not make sense here, it's not a native int type on many
+> > architectures and generates awkward assembly code. We use it in
+> > justified cases where it's saving space in structures that are allocated
+> > thousand times. The arbitrary limit 65536 is probably sane but not
+> > much different than 1<<31, practically not hit and was useful to
+> > note fuzzed superblocks.
 > 
-> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-> index 762965e3d503..34cfa128ffe5 100644
-> --- a/drivers/gpu/drm/drm_file.c
-> +++ b/drivers/gpu/drm/drm_file.c
-> @@ -872,6 +872,8 @@ void drm_send_event(struct drm_device *dev, struct drm_pending_event *e)
->   }
->   EXPORT_SYMBOL(drm_send_event);
->   
-> +#define UPPER_UNIT_THRESHOLD 100
-> +
->   static void print_size(struct drm_printer *p, const char *stat,
->   		       const char *region, u64 sz)
->   {
-> @@ -879,7 +881,8 @@ static void print_size(struct drm_printer *p, const char *stat,
->   	unsigned u;
->   
->   	for (u = 0; u < ARRAY_SIZE(units) - 1; u++) {
-> -		if (sz < SZ_1K)
-> +		if ((sz & (SZ_1K - 1)) &&
+> OK, we can make it unsigned int (mostly u32) for fs_info::*_devices, but
+> still do extra limits on things like device add to limit it to U16_MAX.
+> 
+> Would this be a better solution?
+> At least it would still half the width while keep it native to most (if
+> not all) archs.
 
-IS_ALIGNED worth it at all?
-
-> +		    sz < UPPER_UNIT_THRESHOLD * SZ_1K)
->   			break;
-
-Excuse me for a late comment (I was away). I did not get what what is 
-special about a ~10% threshold? Sounds to me just going with the lower 
-unit, when size is not aligned to the higher one, would be better than 
-sometimes precision-sometimes-not.
-
-Regards,
-
-Tvrtko
-
->   		sz = div_u64(sz, SZ_1K);
->   	}
+I don't see much point changing it from u64, it copies the on-disk type,
+we validate the value on input, then use it as an int type. There are
+not even theoretical problems stemming from the type width. With the
+validations in place we don't need to add any artificial limits to the
+number of devices, like we don't add such limitations elsewhere if not
+necessary.
