@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C61EC7A8B3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DF17A8B2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 20:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjITSJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 14:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        id S229643AbjITSI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 14:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjITSJ1 (ORCPT
+        with ESMTP id S229617AbjITSIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 14:09:27 -0400
+        Wed, 20 Sep 2023 14:08:55 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D8C94;
-        Wed, 20 Sep 2023 11:09:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C770EB9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 11:08:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695233359; x=1726769359;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9v3tuq5QMpq6FKi4RwFSg7GiSz0pETN22pnlW81jpvc=;
-  b=Gu0oIzlie/ACL7UpdhI6pUocntPigOJQG8c571qNh37/+8SqSL/fgt08
-   b/hZf/sNAAm/FtrJSpPQG3CnsAayvI/UaeRqq1fXUI04mxlbYx71x8DsL
-   lbM3rEudLP9wIGkW6MC43/BW+wxaoNVD408q7wUhqLDDmOapXkYeuumGC
-   EP4rVBYZq1bGtlx9cICJ4qBwFeTcQEy+eklusA3VdidequtXufPMOPV8b
-   0/ujVcllyGIovf0p0dAVCVfS9YoNyXSVxc57GoYQRwvx+8x8wxLj6eGAo
-   /gsyvTv2OUqwK3oRN5+UW2RQIyV7Yrfm3tM/8BYjPxA8EAEXvTHiAeCWH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="359685198"
+  t=1695233329; x=1726769329;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+v3bN4jZAuS5dnJ4c3CbLpISfxHCdKuf8qMN+4iFJNg=;
+  b=k1MtCZwwXsW/mOuF1ySe4tzMP8LxghkoiTC1Ty5Lq0lJQDHdOJFwN5oL
+   eOKALLjhLWNBdE1IU6fqNVMM+On1vzrcMo7V7BL3LQfyu6pD3ma5B7OCF
+   uvfU8F0Ep33Dbh01s6/NWu816nBFsMgPLA76uPiNlFaqkl9DgPcC7wTa5
+   0iwOQiclXAXZdj1p1dT1rhCKf5lI2ZZK0ICpmBjI8fvqWeyIcPbkvvt+U
+   k9RElm4pWpI6F0zDvqRm/aqYQPgTSKHNCCZlw2gHtiuAV25DVOrBRFaGb
+   L4ghSTv7esmDH3jKr0gv1sUpwRpnA+DWLbypqvq1KeHikVpJsEpGltM2/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="359684993"
 X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="359685198"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 11:09:19 -0700
+   d="scan'208";a="359684993"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 11:08:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="870469703"
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="993713790"
 X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
-   d="scan'208";a="870469703"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orsmga004.jf.intel.com with ESMTP; 20 Sep 2023 11:09:16 -0700
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Michal Michalik <michal.michalik@intel.com>,
-        Milena Olech <milena.olech@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH net-next 3/3] idpf: fix undefined reference to tcp_gro_complete() when !CONFIG_INET
-Date:   Wed, 20 Sep 2023 20:07:45 +0200
-Message-ID: <20230920180745.1607563-4-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230920180745.1607563-1-aleksander.lobakin@intel.com>
-References: <20230920180745.1607563-1-aleksander.lobakin@intel.com>
+   d="scan'208";a="993713790"
+Received: from pkmanna-mobl3.amr.corp.intel.com (HELO [10.209.53.192]) ([10.209.53.192])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 11:08:48 -0700
+Message-ID: <f56b6e51-d2b6-49b3-a3e0-a9d9c90019c5@linux.intel.com>
+Date:   Wed, 20 Sep 2023 11:08:49 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] virt: tdx-guest: Add Quote generation support using
+ TSM_REPORTS
+Content-Language: en-US
+To:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Wander Lairson Costa <wander@redhat.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Qinkun Bao <qinkun@apache.org>,
+        Guorui Yu <GuoRui.Yu@linux.alibaba.com>,
+        linux-coco@lists.linux.dev, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230914031349.23516-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20230920131633.ig6ldmwavpu7uhss@box.shutemov.name>
+ <0031e031-10a8-43b1-a29c-8e1cf913eaad@linux.intel.com>
+ <20230920175248.6foe67cwfe5oaa7u@box.shutemov.name>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20230920175248.6foe67cwfe5oaa7u@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_INET is not set, tcp_gro_complete is not compiled, although
-the drivers using it may still be compiled (spotted by Randy):
 
-aarch64-linux-ld: drivers/net/ethernet/intel/idpf/idpf_txrx.o:
-in function `idpf_rx_rsc.isra.0':
-drivers/net/ethernet/intel/idpf/idpf_txrx.c:2909:(.text+0x40cc):
-undefined reference to `tcp_gro_complete'
 
-The drivers need to guard the calls to it manually.
-Return early from the RSC completion function if !CONFIG_INET, it won't
-work properly either way. This effectively makes it be compiled-out
-almost entirely on such builds.
+On 9/20/2023 10:52 AM, Kirill A . Shutemov wrote:
+> On Wed, Sep 20, 2023 at 08:27:39AM -0700, Kuppuswamy Sathyanarayanan wrote:
+>>
+>>
+>> On 9/20/2023 6:16 AM, Kirill A . Shutemov wrote:
+>>>> +static u8 *tdx_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
+>>>> +{
+>>>> +	struct tdx_quote_buf *quote_buf = quote_data;
+>>>> +	int ret;
+>>>> +	u8 *buf;
+>>>> +	u64 err;
+>>>> +
+>>>> +	if (mutex_lock_interruptible(&quote_lock))
+>>>> +		return ERR_PTR(-EINTR);
+>>>> +
+>>>> +	/*
+>>>> +	 * If the previous request is timedout or interrupted, and the
+>>>> +	 * Quote buf status is still in GET_QUOTE_IN_FLIGHT (owned by
+>>>> +	 * VMM), don't permit any new request.
+>>>> +	 */
+>>>> +	if (quote_buf->status == GET_QUOTE_IN_FLIGHT) {
+>>>> +		ret = -EBUSY;
+>>>> +		goto done;
+>>>> +	}
+>>>> +
+>>>> +	if (desc->inblob_len != TDX_REPORTDATA_LEN) {
+>>>> +		ret = -EINVAL;
+>>>> +		goto done;
+>>>> +	}
+>>>> +
+>>>> +	/* TDX attestation only supports default format request */
+>>>> +	if (desc->outblob_format != TSM_FORMAT_DEFAULT) {
+>>>> +		ret = -EINVAL;
+>>>> +		goto done;
+>>>> +	}
+>>>> +
+>>>> +	u8 *reportdata __free(kfree) = kmalloc(TDX_REPORTDATA_LEN, GFP_KERNEL);
+>>> __free() is new to me. Good to know.
+>>>
+>>> But are we okay now with declaring variables in the middle of the
+>>> function? Any reason we can't do at the top?
+>>
+>> Declaring variables at the top is no longer a hard requirement. The main reason
+>> for declaring it here is to use __free cleanup function. If we use top
+>> declaration, then we have free it manually.
+> 
+> What's wrong with allocating it it there too?
 
-Fixes: 3a8845af66ed ("idpf: add RX splitq napi poll support")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Closes: https://lore.kernel.org/linux-next/4c84eb7b-3dec-467b-934b-8a0240f7fb12@infradead.org
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- drivers/net/ethernet/intel/idpf/idpf_txrx.c | 3 +++
- 1 file changed, 3 insertions(+)
+My thinking is to allocate it when we really need it. We only need this memory if the
+GetQuote hypercall is successful. We can also allocate it at the top and there is
+nothing wrong with it, but it will not be used in failure cases. Since top declarations
+are not a requirement, why allocate it early? 
 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 6fa79898c42c..aa45afeb6496 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -2876,6 +2876,9 @@ static int idpf_rx_rsc(struct idpf_queue *rxq, struct sk_buff *skb,
- 	if (unlikely(!(ipv4 ^ ipv6)))
- 		return -EINVAL;
- 
-+	if (!IS_ENABLED(CONFIG_INET))
-+		return 0;
-+
- 	rsc_segments = DIV_ROUND_UP(skb->data_len, rsc_seg_len);
- 	if (unlikely(rsc_segments == 1))
- 		return 0;
+
+> 
+
 -- 
-2.41.0
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
