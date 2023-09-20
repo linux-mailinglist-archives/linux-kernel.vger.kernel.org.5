@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B1C7A798F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B437A7991
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234511AbjITKpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        id S234396AbjITKpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234444AbjITKpV (ORCPT
+        with ESMTP id S234307AbjITKpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:45:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E82EA1B9;
-        Wed, 20 Sep 2023 03:45:02 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B98951FB;
-        Wed, 20 Sep 2023 03:45:39 -0700 (PDT)
-Received: from [10.163.63.253] (unknown [10.163.63.253])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84ACA3F5A1;
-        Wed, 20 Sep 2023 03:44:59 -0700 (PDT)
-Message-ID: <21bc7889-e456-e95b-7155-2563f1b6c3e4@arm.com>
-Date:   Wed, 20 Sep 2023 16:14:56 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V5 - RESEND 2/3] coresight: etm: Make cycle count
- threshold user configurable
-Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Wed, 20 Sep 2023 06:45:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDE0197;
+        Wed, 20 Sep 2023 03:45:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3628BC433CB;
+        Wed, 20 Sep 2023 10:45:01 +0000 (UTC)
+Date:   Wed, 20 Sep 2023 11:44:58 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Jan Bottorff <janb@os.amperecomputing.com>
+Cc:     Yann Sionneau <ysionneau@kalrayinc.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Yann Sionneau <yann@sionneau.net>,
         Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20230915093649.435163-1-anshuman.khandual@arm.com>
- <20230915093649.435163-3-anshuman.khandual@arm.com>
- <e29f83cc-6a00-0e5a-20ca-55d39dc2e3a3@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <e29f83cc-6a00-0e5a-20ca-55d39dc2e3a3@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
+Message-ID: <ZQrNKo8fTy0Rh5su@arm.com>
+References: <a7a85428-d40d-4adb-8f84-75e1dabe19c9@os.amperecomputing.com>
+ <xxnggfauhkfum63p5bkgxsu3m5odyjda7pnwpb5ocwf4gez7fh@4lu6qyqy6dvh>
+ <37e10c3d-b5ab-75ec-3c96-76e15eb9bef8@sionneau.net>
+ <v4hdblxwhl6ncdfxre5gyrve7bgdsorfqpqj53ib6q4tr7aguy@4kfr6ergb3jn>
+ <9de89e14-35bd-415d-97f1-4b6db1258997@os.amperecomputing.com>
+ <ZQlwC9TCSwWJpuxy@arm.com>
+ <ZQl1zwVkx9n2MPvr@shikoro>
+ <da400d3e-a357-1ae8-cb92-728cc4974b67@kalrayinc.com>
+ <ZQm1UyZ0g7KxRW3a@arm.com>
+ <cde7e2fc-2e13-4b82-98b3-3d3a52c4c185@os.amperecomputing.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cde7e2fc-2e13-4b82-98b3-3d3a52c4c185@os.amperecomputing.com>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 19, 2023 at 11:54:10AM -0700, Jan Bottorff wrote:
+> On 9/19/2023 7:51 AM, Catalin Marinas wrote:
+> > While smp_* is ok, it really depends on what the regmap_write() does. Is
+> > it a write to a shared peripheral (if not, you may need a DSB)? Does the
+> > regmap_write() caller know this? That's why I think having the barrier
+> > in dw_reg_write() is better.
+> > 
+> > If you do want to stick to a fix in i2c_dw_xfer_init(), you could go for
+> > dma_wmb(). While this is not strictly DMA, it's sharing data with
+> > another coherent agent (a different CPU in this instance). The smp_wmb()
+> > is more about communication via memory not involving I/O. But this still
+> > assumes that the caller knows regmap_write() ends up with an I/O
+> > write*() (potentially relaxed).
+> 
+> If we wanted maximum correctness wouldn't we need something like
+> writel_triggers_interrupt/regmap_write_triggers_interrupt or maybe
+> preinterrupt_wmb?
 
+Well, if you want to have an API for all things that can be triggered
+(interrupts, device DMA), you can try but I think it would make things
+more confusing and driver writers won't bother (if, say, they only test
+on x86 and never see a problem). The other way around - barriers by
+default and only relax if you see a performance issue - seems more
+sensible. But I don't maintain these drivers, so it's up to you guys.
 
-On 9/20/23 14:52, Suzuki K Poulose wrote:
-> On 15/09/2023 10:36, Anshuman Khandual wrote:
->> Cycle counting is enabled, when requested and supported but with a default
->> threshold value ETM_CYC_THRESHOLD_DEFAULT i.e 0x100 getting into TRCCCCTLR,
->> representing the minimum interval between cycle count trace packets.
-> 
-> minor nit:
-> 
-> When Cycle counting is enabled, we use a default threshold value (0x100) for the instruction trace cycle counting.
->>
->> This makes cycle threshold user configurable, from the user space via perf
->> event attributes. Although it falls back using ETM_CYC_THRESHOLD_DEFAULT,
->> in case no explicit request.
-> 
-> Minor nit:
-> 
-> This patch makes the cycle threshold user configurable via perf event
-> attributes( 'cc_threshold' => event->attr.config3[11:0] ), falling back
-> to the the current default if unspecified.
-> 
-> 
-> 
->> As expected it creates a sysfs file as well.
-> 
-> 
->>
->> /sys/bus/event_source/devices/cs_etm/format/cc_threshold
->>
->> New 'cc_threshold' uses 'event->attr.config3' as no more space is available
->> in 'event->attr.config1' or 'event->attr.config2'.
-> 
-> Trim the above part.
-> 
-> 
-> Rest looks fine to me.
+> The ARM docs do have a specific example case where the device write triggers
+> an interrupt, and that example specifically says a DSB barrier is needed.
 
-Will change the commit message as follows.
+Yeah, the Arm ARM is not very precise here on what the mailbox is,
+whether it's a local or shared peripheral and they went for the
+stronger DMB. Will added a good explanation on why a DMB is sufficient
+in commit 22ec71615d82 ("arm64: io: Relax implicit barriers in default
+I/O accessors"). It talks about DMA but it applies equally to another
+CPU accessing the memory. It's pretty subtle though.
 
+> If I look at the ARM GIC IPI send function gic_ipi_send_mask in
+> https://elixir.bootlin.com/linux/v6.6-rc2/source/drivers/irqchip/irq-gic-v3.c#L1354
+> is says:
+> 
+>         /*
+> 	 * Ensure that stores to Normal memory are visible to the
+> 	 * other CPUs before issuing the IPI.
+> 	 */
+> 	dsb(ishst);
+> 
+> I would think the IPI send code is very carefully tuned for performance, and
+> would not use a barrier any stronger than required.
 
-    coresight: etm: Make cycle count threshold user configurable
-    
-    When cycle counting is enabled, we use a default threshold value i.e 0x100
-    for the instruction trace cycle counting.
-    
-    This patch makes the cycle threshold user configurable via perf event
-    attributes( 'cc_threshold' => event->attr.config3[11:0] ), falling back
-    to the current default if unspecified.
+That's why I mentioned in my previous reply that it really depends on
+what the regmap_write() does, where the I/O go shared peripheral or some
+local CPU interface). In the GIC example above, there's not even an I/O
+access but a system register write (MSR, see gic_write_sgi1r()), hence
+the DSB. If you look at gic_ipi_send_mask() in irq-gic.c (GICv2), there
+is a dmb(ishst) since the interrupt is sent with an I/O write to the GIC
+distributor (shared peripheral).
+
+> I believe dma_wmb maps to DMB on ARM64.
+
+Yes, it does.
+
+-- 
+Catalin
