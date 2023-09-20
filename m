@@ -2,131 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ED77A74AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894187A74B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbjITHrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        id S233958AbjITHra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234015AbjITHqb (ORCPT
+        with ESMTP id S234087AbjITHrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:46:31 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEE5138
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:46:05 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-404fbfac998so40880815e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695195964; x=1695800764; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NCQ64axOzYWQoVJr89JJGEJBkzqcHIgukSDri2Lu2nY=;
-        b=gyy/EoGYbXfyOyLpfHmDk2WWbOm9L6Zqt4sjxcvHKfTBm6XNcQ8YSz6YjLKJRGyUSJ
-         c91AkGYNN/LlvPGeoNjPduIyomQsXUhY48vcfafjMUSBTZ6A0SLRO0nkPfMTmzdn+DPx
-         apOLtHGVcULHy/b/KcG9CvQ9J7MFWuybFZHJ91cBojYo2OvxoT8gcBispXSV5r8+Df+Z
-         EBITdzHl5MLglRy+VRQkEM5U6hVwfgLOffEFUXZE8ubWnzR8QKA1fjYqMxtSKqgKXrJ8
-         ay993suO4Qh93QmcU/F9s/Hmm8u1lZWM3Wzh30RzmXuM5YRsU7H7DSH4qeRMdRP5X5Of
-         JQdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695195964; x=1695800764;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NCQ64axOzYWQoVJr89JJGEJBkzqcHIgukSDri2Lu2nY=;
-        b=vs1sibx9TxJ1DWaxBf/DRbh+uRQCTaDR7PJDc9qxoEIh0+KcP1unJR6dKdF02e1m3K
-         bU5dFjCOQM3ShclRqPuaKBpGxSFiF/qeOZHVdgcT6jOawdDLOkjavwfuKN77XafXm4Fm
-         EsDovoejWHLDvBcukFdAUbG0niuPA3XXPvzerKDAlurE1AX9oLptPg/6wSuOHoy71iiP
-         LoCcn8JjiENkRKdiGd54cQapne1l/4wo00y0OiUPF5nbwy6iq18jvMEQ85yO5DDctkAw
-         CPDzhxUB6FocAjHGGYSIuZyPyHs1/zf2JUL89Dai58F/zvnLGcShc6yEJHfzyDR4MFNv
-         sBfQ==
-X-Gm-Message-State: AOJu0YzmMo6iF15k1yvn8rmxQoYEe0D4fgHRpb2I2GZJPHzVuPUVGdT2
-        Fb+sAy1A9RQuxo11nVk5mpOtdw==
-X-Google-Smtp-Source: AGHT+IGLhZyo0JLpS7qrAayTtRpx8WJ35UC8iBDR4G+V5sBDzN/EMK5surVVEn79abyRomu1HrsACQ==
-X-Received: by 2002:a7b:cd94:0:b0:401:b204:3b85 with SMTP id y20-20020a7bcd94000000b00401b2043b85mr1635240wmj.36.1695195963742;
-        Wed, 20 Sep 2023 00:46:03 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id j5-20020a5d6045000000b0032008f99216sm10914828wrt.96.2023.09.20.00.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 00:46:03 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 09:46:02 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 3/7] RISC-V: KVM: Allow XVentanaCondOps extension for
- Guest/VM
-Message-ID: <20230920-64bd7206b92e056d76cd9715@orel>
-References: <20230919035343.1399389-1-apatel@ventanamicro.com>
- <20230919035343.1399389-4-apatel@ventanamicro.com>
+        Wed, 20 Sep 2023 03:47:04 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB1FF2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 00:46:42 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230920074639euoutp026eddd5085539f0722c7c09be1e806bf8~Gi8eyCgxr2955629556euoutp02z
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 07:46:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230920074639euoutp026eddd5085539f0722c7c09be1e806bf8~Gi8eyCgxr2955629556euoutp02z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695195999;
+        bh=mpadb/9tFj+5PzcSP6XTgQODzpOlX5ctR1kmrU44hZQ=;
+        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
+        b=RqiJiqir9mni6uSwxjTyCnAyWsdN66fOTrl3lQQdEGPJKUJ45r+ASLOrVcv36+UK1
+         0aTPfkQlZE6CZ6N5HikIWQtuv+04NMYz4datyc8HU9DzNSvYtr+77Q/qltcH+TQcK2
+         6HcspKq0gtSmF4a45V7nVv9l8Mml8UUX5krX5mNY=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230920074639eucas1p2315f875b51eefe3573cc37eed8e420d1~Gi8eV8OOj2272522725eucas1p2x;
+        Wed, 20 Sep 2023 07:46:39 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 23.C8.37758.E53AA056; Wed, 20
+        Sep 2023 08:46:39 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230920074638eucas1p2f7dfdd629156a591697f8ba3376446e8~Gi8dldIsw1101511015eucas1p2H;
+        Wed, 20 Sep 2023 07:46:38 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230920074638eusmtrp267241c28aabb2e2e221d362156a13169~Gi8dh4NqC1560015600eusmtrp2C;
+        Wed, 20 Sep 2023 07:46:38 +0000 (GMT)
+X-AuditID: cbfec7f5-01f15a800002937e-11-650aa35e2c32
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id A6.EE.10549.E53AA056; Wed, 20
+        Sep 2023 08:46:38 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230920074637eusmtip1832c020440adb3cb8ad9bab001921d4e~Gi8dT7wug1555115551eusmtip1w;
+        Wed, 20 Sep 2023 07:46:37 +0000 (GMT)
+Received: from [192.168.8.209] (106.210.248.121) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Wed, 20 Sep 2023 08:46:36 +0100
+Message-ID: <fb53a533-e430-eb1b-9e2c-ef424e466db4@samsung.com>
+Date:   Wed, 20 Sep 2023 09:46:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230919035343.1399389-4-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+        Thunderbird/102.15.1
+Subject: Re: [RFC 02/23] pagemap: use mapping_min_order in fgf_set_order()
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>,
+        Pankaj Raghav <kernel@pankajraghav.com>
+CC:     <linux-xfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <david@fromorbit.com>, <da.gomez@samsung.com>,
+        <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <djwong@kernel.org>, <linux-mm@kvack.org>,
+        <chandan.babu@oracle.com>, <mcgrof@kernel.org>,
+        <gost.dev@samsung.com>
+From:   Pankaj Raghav <p.raghav@samsung.com>
+In-Reply-To: <ZQSokGztDTbXBxBU@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [106.210.248.121]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDKsWRmVeSWpSXmKPExsWy7djP87rxi7lSDU6VWsxZv4bN4tJROYst
+        x+4xWlx+wmdx5uVnFos9e0+yWFzeNYfN4t6a/6wWu/7sYLe4MeEpo8XvH3PYHLg9Ti2S8Ni8
+        Qstj06pONo9Nnyaxe5yY8ZvF4+PTWyweZ1c6enzeJBfAEcVlk5Kak1mWWqRvl8CVcWuZVsFH
+        9opj6x+yNDBeZe1i5OSQEDCReHPoC5DNxSEksIJR4vqGOywQzhdGiU1fF7NDOJ8ZJaY2PmKG
+        aWnYchCqajmjxPKbl5nhqp6dfwQ1bDdQ/6vd7CAtvAJ2EsvW/GACsVkEVCWu3FzHBhEXlDg5
+        8wkLiC0qEC0xc9pCRhBbWMBL4s2Ml2DrmAXEJW49mQ/Uy8EhIhAs8fqsGch8ZoGlTBIfzv5m
+        AYmzCWhJNHaCreIEuu7unq9sEK2aEq3bf7ND2PIS29/OgfpAWeLU9u/sEHatxKktt5hAZkoI
+        LOeU+Lt8NRtEwkWiqWMrNJSEJV4d3wLVICPxf+d8Jgi7WuLpjd/MEM0tjBL9O9ezgRwkIWAt
+        0XcmB6LGUWLR82WMEGE+iRtvBSHu4ZOYtG068wRG1VlIITELycezkLwwC8kLCxhZVjGKp5YW
+        56anFhvnpZbrFSfmFpfmpesl5+duYgQmsNP/jn/dwbji1Ue9Q4xMHIyHGCU4mJVEeHPVuFKF
+        eFMSK6tSi/Lji0pzUosPMUpzsCiJ82rbnkwWEkhPLEnNTk0tSC2CyTJxcEo1MJXus/rPu/Bt
+        /P+/TyXl7pX+fHAyhqfPZ/qlEDWxnQ+q5jptvhyy35n/3I7HsTwzhYuXNX0KFHWUudcjYOEQ
+        0yqsyLErZ3r2saUmfvunO1RqLei8xSmbcY+/9GCASLLnSumF50O2L9xsUbZM3PQh499r13cG
+        zXvB+OUM0/vfh1/HfV6a/sX9i/eJ+3f/8Kx/Kq8s4bd0jbL0sgn7Np30fquzr1V+I8uqtF+r
+        H3rKtwXrpK9OsLXn1VdMn1nxbN9CF9cP01xvhd5LKXBtPZv70FNk8bwdZtFehtfW552eJnir
+        6uIl28Ckx/171dZOPHWr3lnvbv2mDdv5na9O6le6uZo9+uab7JAWb7v5wrcEFycqsRRnJBpq
+        MRcVJwIAsTFFx88DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrIIsWRmVeSWpSXmKPExsVy+t/xu7pxi7lSDf7cZbOYs34Nm8Wlo3IW
+        W47dY7S4/ITP4szLzywWe/aeZLG4vGsOm8W9Nf9ZLXb92cFucWPCU0aL3z/msDlwe5xaJOGx
+        eYWWx6ZVnWwemz5NYvc4MeM3i8fHp7dYPM6udPT4vEkugCNKz6Yov7QkVSEjv7jEVina0MJI
+        z9DSQs/IxFLP0Ng81srIVEnfziYlNSezLLVI3y5BL+PWMq2Cj+wVx9Y/ZGlgvMraxcjJISFg
+        ItGw5SBLFyMXh5DAUkaJRwuPMEMkZCQ2foEpEpb4c62LDaLoI6PEti0/oDp2M0oc2D+VDaSK
+        V8BOYtmaH0wgNouAqsSVm+ug4oISJ2c+AWrg4BAViJboemkMEhYW8JJ4M+Ml2DJmAXGJW0/m
+        M4GUiAgES7w+awYynllgKZPEh7O/WeAWNzy6xQZSxCagJdHYyQ7Sywn0wd09X9kg5mhKtG7/
+        zQ5hy0tsfzsH6hlliVPbv7ND2LUSn/8+Y5zAKDoLyXWzkJwxC8moWUhGLWBkWcUoklpanJue
+        W2yoV5yYW1yal66XnJ+7iREY99uO/dy8g3Heq496hxiZOBgPMUpwMCuJ8OaqcaUK8aYkVlal
+        FuXHF5XmpBYfYjQFBtFEZinR5Hxg4skriTc0MzA1NDGzNDC1NDNWEuf1LOhIFBJITyxJzU5N
+        LUgtgulj4uCUamCy1uEMWfyofLkd3/mAoAvfa/dVvb9eH+YSc+ugsQBLbdntntBttV1zIkoi
+        RSfzfSmf9z4rulF807PExjXCzxOyXi5WcZcV9lVvEt20ddaf4zF6WVen1n2YUZwYu6YoxHqu
+        Qf5179U9nzWcL26aHWyu3b5W4r5ztNSxLE6tS+dZjntv9S8tiD/BYik4Y/bRapsdP3s1JT1n
+        7NwisLzxxoP9FRNZ5EvypuxfmX/GR21ekaLk/cKmxaq6W5YzRi9nE7BaOX1a3m8VazudE+1l
+        ASxpy1a7vti8wrJRo9xPXbg0rewfw6dj810FzL87Tmi8OkPh344DjvcWX/xmVXPC4oj5SSb9
+        dTGLa5l03+na3FFiKc5INNRiLipOBAAZe6NShAMAAA==
+X-CMS-MailID: 20230920074638eucas1p2f7dfdd629156a591697f8ba3376446e8
+X-Msg-Generator: CA
+X-RootMTR: 20230915185527eucas1p1dc822c08a58effe30e3bf487103b22a0
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230915185527eucas1p1dc822c08a58effe30e3bf487103b22a0
+References: <20230915183848.1018717-1-kernel@pankajraghav.com>
+        <20230915183848.1018717-3-kernel@pankajraghav.com>
+        <CGME20230915185527eucas1p1dc822c08a58effe30e3bf487103b22a0@eucas1p1.samsung.com>
+        <ZQSokGztDTbXBxBU@casper.infradead.org>
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 09:23:39AM +0530, Anup Patel wrote:
-> We extend the KVM ISA extension ONE_REG interface to allow KVM
-> user space to detect and enable XVentanaCondOps extension for
-> Guest/VM.
+On 2023-09-15 20:55, Matthew Wilcox wrote:
+> On Fri, Sep 15, 2023 at 08:38:27PM +0200, Pankaj Raghav wrote:
+>> From: Pankaj Raghav <p.raghav@samsung.com>
+>>
+>> fgf_set_order() encodes optimal order in fgp flags. Set it to at least
+>> mapping_min_order from the page cache. Default to the old behaviour if
+>> min_order is not set.
 > 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/uapi/asm/kvm.h | 1 +
->  arch/riscv/kvm/vcpu_onereg.c      | 2 ++
->  2 files changed, 3 insertions(+)
+> Why not simply:
 > 
-> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
-> index b1baf6f096a3..e030c12c7dfc 100644
-> --- a/arch/riscv/include/uapi/asm/kvm.h
-> +++ b/arch/riscv/include/uapi/asm/kvm.h
-> @@ -138,6 +138,7 @@ enum KVM_RISCV_ISA_EXT_ID {
->  	KVM_RISCV_ISA_EXT_ZIFENCEI,
->  	KVM_RISCV_ISA_EXT_ZIHPM,
->  	KVM_RISCV_ISA_EXT_SMSTATEEN,
-> +	KVM_RISCV_ISA_EXT_XVENTANACONDOPS,
->  	KVM_RISCV_ISA_EXT_MAX,
->  };
->  
-> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
-> index 388599fcf684..17a847a1114b 100644
-> --- a/arch/riscv/kvm/vcpu_onereg.c
-> +++ b/arch/riscv/kvm/vcpu_onereg.c
-> @@ -40,6 +40,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
->  	KVM_ISA_EXT_ARR(SVINVAL),
->  	KVM_ISA_EXT_ARR(SVNAPOT),
->  	KVM_ISA_EXT_ARR(SVPBMT),
-> +	KVM_ISA_EXT_ARR(XVENTANACONDOPS),
->  	KVM_ISA_EXT_ARR(ZBA),
->  	KVM_ISA_EXT_ARR(ZBB),
->  	KVM_ISA_EXT_ARR(ZBS),
-> @@ -89,6 +90,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
->  	case KVM_RISCV_ISA_EXT_SSTC:
->  	case KVM_RISCV_ISA_EXT_SVINVAL:
->  	case KVM_RISCV_ISA_EXT_SVNAPOT:
-> +	case KVM_RISCV_ISA_EXT_XVENTANACONDOPS:
->  	case KVM_RISCV_ISA_EXT_ZBA:
->  	case KVM_RISCV_ISA_EXT_ZBB:
->  	case KVM_RISCV_ISA_EXT_ZBS:
-> -- 
-> 2.34.1
->
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+That is a good idea to move this to filemap instead of changing it in iomap. I will do that!
+
+> +++ b/mm/filemap.c
+> @@ -1906,9 +1906,12 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>                 folio_wait_stable(folio);
+>  no_page:
+>         if (!folio && (fgp_flags & FGP_CREAT)) {
+> -               unsigned order = FGF_GET_ORDER(fgp_flags);
+> +               unsigned order;
+>                 int err;
+> 
+> +               order = min(mapping_min_folio_order(mapping),
+> +                               FGF_GET_ORDER(fgp_flags));
+> 
+
+I think this needs to max(mapping..., FGF...)
