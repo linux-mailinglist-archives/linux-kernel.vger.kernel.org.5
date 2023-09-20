@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C43417A8DD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FDE7A8DD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 22:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjITUcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 16:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S229694AbjITUc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 16:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjITUcD (ORCPT
+        with ESMTP id S229593AbjITUc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 16:32:03 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2A6A1;
-        Wed, 20 Sep 2023 13:31:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695241913;
-        bh=LFTg2HI9qSgWo74IMrI4kpPpJmSuShGV+RDCu1SwzLY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oYFQvsLmzUKk6ZvESRg9d6ggoFp3AkHPOKEb53Pxt/C/TWbQ3KUsve5hBovnqXblm
-         TC6E0Ef4tI1ZwM7ig4Kiy/YMBIscwbO1bCnF00IobWX9xTWXm7IGhq0eod2j3SZDKi
-         B0F9zzOi5YNbC3Cy8u4/5ZqauCo/Pkve3FTzC5s0eOS774/BPeY99AWFFBgUP+V9p/
-         mMjIzp3oAHk7VQOiU1FYUJNZs5Z7So6UqPvE5ujsvny6vwRoNVcnL8Z/pX4ZFCq3hh
-         dt2PQxSTATeg5zAKAQIu/ZHPbZwigYOZVGq2nNsM7K9f59Lv/ZarWA2hmzE3sPslPk
-         MLYsvBOg1pn0w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RrVZ06wGNz4xPN;
-        Thu, 21 Sep 2023 06:31:52 +1000 (AEST)
-Date:   Thu, 21 Sep 2023 06:31:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the btrfs-fixes tree
-Message-ID: <20230921063141.7ab60044@canb.auug.org.au>
+        Wed, 20 Sep 2023 16:32:56 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78268AB
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:32:50 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50300141a64so545058e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:32:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695241968; x=1695846768; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5A++2mX03Hcr44T/e+yZZvTQBTnG7Z4Hfb7UlqgoOko=;
+        b=Q+tf13eEfIK1ZDdhriHkszIP/K2CAz1MGYtZesaema1BQCiiQlDmVFZO9+5ySWB3e0
+         mmUUl73ocIhPGPe/lWKCxhg+jcmHeQBATIxNp02HRRIWF+00233zX17fDmTpC6eMi9W9
+         ZK5Xt3a4wIqNSpC8IZhW0ZkG3PbRWPLwe0OYA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695241968; x=1695846768;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5A++2mX03Hcr44T/e+yZZvTQBTnG7Z4Hfb7UlqgoOko=;
+        b=NohhNqfUYew0eJp+ljqYCYON3on5keTKzfAm9tw6cIwx/tyvQFXaz0ViPYBDjpqgWP
+         ycZFe9WteJDzLtKBLzfJGT8U92Vd136xdda2a69qmtX9NbtVpCqA2gRdkG2lVTPp5TCO
+         ZpohznqRkhdOVIXeT3cOQOBFKiGuNJm5ev/Cy2FwlzKg6JUY5GlDVDiU4ujFyd8088bz
+         fJVPuUQ4A8n9yRUND7whMuA6Dik4Usnymd+RErupo1xzbaji3aRIckbZaFs9jFYWHkTf
+         XQgkvgd6Vu4bvVb5qpBItucuaGomQcSKGBc3FlQ1MuLATWrZ/xn5qIlrJyn14ANuZURX
+         0/Sw==
+X-Gm-Message-State: AOJu0YzkuqergElqgqIREl0U0Tdd3/IhARe7gUpaNRMn/w58BBatvNdY
+        qWzJkgURgBvRU3ia8Vkb1QhqAcPxQFpjaoG2rmdRWG0e
+X-Google-Smtp-Source: AGHT+IE1MKRPcyoR5fpwxdieos9/a+a3gj4ecj3SqWCyqyhSYeiBrqsUv/UYExGwjdGiuaXvB06Zgg==
+X-Received: by 2002:a05:6512:3150:b0:503:38fe:4598 with SMTP id s16-20020a056512315000b0050338fe4598mr3065758lfi.64.1695241968384;
+        Wed, 20 Sep 2023 13:32:48 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id p5-20020a056512328500b004fe0fead9e2sm2100426lfe.165.2023.09.20.13.32.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 13:32:47 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-501eec0a373so503795e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 13:32:47 -0700 (PDT)
+X-Received: by 2002:a05:6512:39ca:b0:503:7c0:ae96 with SMTP id
+ k10-20020a05651239ca00b0050307c0ae96mr4520271lfu.20.1695241967063; Wed, 20
+ Sep 2023 13:32:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/O77yK9Wu/ee7qpLNByZlsuq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230920060615.GA2739@sol.localdomain> <CAHk-=wja26UmHQCu48n_HN5t5w3fa6ocm5d_VrJe6-RhCU_x9A@mail.gmail.com>
+ <20230920193203.GA914@sol.localdomain> <CAHk-=wicaC9BhbgufM_Ym6bkjrRcB7ZXSK00fYEmiAcFmwN3Kg@mail.gmail.com>
+ <20230920202126.GC914@sol.localdomain>
+In-Reply-To: <20230920202126.GC914@sol.localdomain>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 20 Sep 2023 13:32:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgu4a=ckih8+JgfwYPZcp-uvc1Nh2LTGBSzSVKMYRk+-w@mail.gmail.com>
+Message-ID: <CAHk-=wgu4a=ckih8+JgfwYPZcp-uvc1Nh2LTGBSzSVKMYRk+-w@mail.gmail.com>
+Subject: Re: [RFC] Should writes to /dev/urandom immediately affect reads?
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/O77yK9Wu/ee7qpLNByZlsuq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 20 Sept 2023 at 13:21, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> It seems that what you're claiming (in addition to the RNG always being
+> initialized quickly on platforms that are "relevant", whatever that means) is
+> that once the RNG is "initialized", there's no need to reseed it anymore.
 
-Hi all,
+No. You are literally putting words in my mouth that I at no point
+even implied. You're making up an argument.
 
-The following commits are also in Linus Torvalds' tree as different
-commits (but the same patches):
+I *LITERALLY* am asking a very simple question: WHO DO YOU EVEN CARE
+ABOUT THIS "IMMEDIATE" EFFECT.
 
-  3a5260210762 ("btrfs: fix race between reading a directory and adding ent=
-ries to it")
-  994649f7da1b ("btrfs: refresh dir last index during a rewinddir(3) call")
-  3a7b9dc311b9 ("btrfs: set last dir index to the current last index when o=
-pening dir")
+Give me a real reason. Give me *any* reason.
 
-These are commits
+Don't try to turn this into some other discussion. I'm asking WHY DOES
+ANY OF THIS MATTER?
 
-  8e7f82deb0c0 ("btrfs: fix race between reading a directory and adding ent=
-ries to it")
-  e60aa5da14d0 ("btrfs: refresh dir last index during a rewinddir(3) call")
-  357950361cbc ("btrfs: set last dir index to the current last index when o=
-pening dir")
+The immediacy has changed several times, as you yourself lined up. And
+as far as I can tell, none of this matter in the least.
 
-in Linus' tree.
+> The question is, given that, shouldn't the RNG also reseed right
+> away when userspace explicitly adds something to it
 
---=20
-Cheers,
-Stephen Rothwell
+I don't see that there is any "given" at all.
 
---Sig_/O77yK9Wu/ee7qpLNByZlsuq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+We do re-seed regularly. I'm not arguing against that.
 
------BEGIN PGP SIGNATURE-----
+I'm literally arguing against applying random changes without giving
+any actual reason for them.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmULVq0ACgkQAVBC80lX
-0Gzsqwf9GnDOpo1Q10b0wA48qyjk/FkbRMS8FPm5stVR0kue9l1HrvcHQ/GDRKAg
-4GgPYA3dOnsdEuPOz+pggdyQN1nQGQJka1ZGA3r6HfOKb1aaVW9ICvdFKvVHyn/K
-rlMmnf/t7t6A0MTy7JVKinK7OS4Nb0mkvAVacv/QDRRxwh7cpiIlFYxkB9TFhztr
-g9SFlaUKlThw2YvOjd0xhomIcHj/29JKs0WHYBB2BFujhIcg5Rk5wo6sKoFXxmXX
-zGp3VnV9Ewen5llLDhBuVjQsdJ2grXEcOoFZZvIupFmR3tDKTs5aMxdabSmpK7DR
-qZyLtLahHnPljZw2qmV3Qhq0SmjyFg==
-=InTM
------END PGP SIGNATURE-----
+Which is why I'm asking "why do you care"? Give em a *reason*. Why
+would a user space write matter at all?
 
---Sig_/O77yK9Wu/ee7qpLNByZlsuq--
+It was why I also asked about entropy. Because *if* you argue that the
+user-space write contains entropy, then that would be a reason.
+
+You didn't.
+
+You argue that the current behavior hasn't been the universal behavior. I agree.
+
+But considering that we've switched behaviors apparently at least
+three times, and at no point did it make any difference, my argument
+is really that without a *REASON*, why would we switch behavior *four*
+times?
+
+Is it just "four changes is better than three"?
+
+             Linus
