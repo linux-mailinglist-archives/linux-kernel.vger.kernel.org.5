@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338E27A76FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322427A7701
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 11:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbjITJOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 05:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        id S233988AbjITJOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 05:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbjITJOV (ORCPT
+        with ESMTP id S233917AbjITJOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 05:14:21 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82FBD3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 02:14:15 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 61CFF2000B;
-        Wed, 20 Sep 2023 09:14:09 +0000 (UTC)
-Message-ID: <876d3cd5-bb99-edd0-47c0-6dc34c8402d1@ghiti.fr>
-Date:   Wed, 20 Sep 2023 11:14:09 +0200
+        Wed, 20 Sep 2023 05:14:48 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0217091;
+        Wed, 20 Sep 2023 02:14:42 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-4527ba546d2so1146321137.2;
+        Wed, 20 Sep 2023 02:14:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695201281; x=1695806081; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7mF6CeWKLwBn15UINCBFcbVA7YfC1Xb7XUsRVvGCQiA=;
+        b=lVHFkwJipBehCTfoV99RYRBWBmepqzW67fyWhzhMR1hyD3b4u6/BZAwm5cLgWDpns2
+         JOHHG18FYyJq9K+1YyiJzl5BHyTFGidCJG4iBC2PLuMUiyRFheaEMQj96mZNcUy/lBxi
+         So2pQlZHMuB7TbremK2/Xh+fxTLJQNrFMS9ymIeHTi7k5MoBPjS0VhepHK5Qgn8ZHWXf
+         ZGN2gYUQMmd3MUjX+VxXCIoPGD5a0l2Yxo4AHbZz7+oQpx6u5A+Vm2djkIIqbdT929SR
+         WfhyFHwP/6+AhlZ322ooRXYhlgUsCgLqooYuS0x3mNWl0FB2DxvbJsJPXr8jBjWlZwCg
+         t6aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695201281; x=1695806081;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7mF6CeWKLwBn15UINCBFcbVA7YfC1Xb7XUsRVvGCQiA=;
+        b=PvMlduzrRCDebndut/BpTCt5nbPoPMX2tUJI/0yjrehGY2F1UGAQoecEIhl3rQpVGB
+         8WwXm7u2dYNQ5CU9imPy+r9AYGpc7v8q/H65qRYdxOHVv/PHg4LWg9nnPz2Crjlix/QJ
+         AnJ9T7U8J6/MPcnPcMMpwyHFDIH51xsItNMU5Zqj4HgESuLDHY9MKH2IO/blZoV5lllK
+         5K01YEhsFJp4S5wPj20sTYGtaCMa/fX5ONLe9pzecAUZA9Oe5cg+OAnl9jTK0ekKXOub
+         veFXdBnXxb1673BQjIvtjJ4/SEytUr6WvRk/VujXBAK5nthYve9uuteurdWtNK38C4Wg
+         YMvQ==
+X-Gm-Message-State: AOJu0YzkQ3KAq+v4oJ5D/zzl9dskTamPIZ3/ngceiEjJ5U2tGDuTkY7G
+        tnmy/BWxppTvgKKOG4PCQhpZLsZMbBn6x92tYr4=
+X-Google-Smtp-Source: AGHT+IGxzQADeWT6kYJOJKC8HUxl0HRk5ruso9MvtCd8ytX6mRPXAwEeqntPJQ9v3bijs8zJu0D+of8PjYf6VROe+40=
+X-Received: by 2002:a67:ebc1:0:b0:452:6fc1:a3e5 with SMTP id
+ y1-20020a67ebc1000000b004526fc1a3e5mr1782743vso.1.1695201280888; Wed, 20 Sep
+ 2023 02:14:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 3/3] riscv: Introduce NAPOT field to PTDUMP
-Content-Language: en-US
-To:     Yu Chien Peter Lin <peterlin@andestech.com>,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, david@redhat.com, akpm@linux-foundation.org,
-        alexghiti@rivosinc.com, bjorn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     conor.dooley@microchip.com
-References: <20230920035522.3180558-1-peterlin@andestech.com>
- <20230920035522.3180558-3-peterlin@andestech.com>
-From:   Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20230920035522.3180558-3-peterlin@andestech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn> <dbd7d823a73d8a9484efcd55f6616f5392daf608.1695189879.git.wangchen20@iscas.ac.cn>
+ <20230920-unable-impish-373fd26b7d16@wendy>
+In-Reply-To: <20230920-unable-impish-373fd26b7d16@wendy>
+From:   Chen Wang <unicornxw@gmail.com>
+Date:   Wed, 20 Sep 2023 17:14:29 +0800
+Message-ID: <CAHAQgRAj74HJ2j_Rt+hGxps9T3E1z9c+s61aa-dneWgPmnD2cw@mail.gmail.com>
+Subject: Re: [PATCH v2 02/11] dt-bindings: vendor-prefixes: add milkv/sophgo
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
+        guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Chen Wang <wangchen20@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Regards,
 
-On 20/09/2023 05:55, Yu Chien Peter Lin wrote:
-> This patch introduces the NAPOT field to PTDUMP, allowing it
-> to display the letter "N" for pages that have the 63rd bit set.
+unicornx
+
+Conor Dooley <conor.dooley@microchip.com> =E4=BA=8E2023=E5=B9=B49=E6=9C=882=
+0=E6=97=A5=E5=91=A8=E4=B8=89 16:23=E5=86=99=E9=81=93=EF=BC=9A
 >
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> ---
-> Changes v1 -> v3
-> - no change
-> ---
->   arch/riscv/mm/ptdump.c | 4 ++++
->   1 file changed, 4 insertions(+)
+> Yo,
 >
-> diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-> index 13997cf3fe36..b71f08b91e53 100644
-> --- a/arch/riscv/mm/ptdump.c
-> +++ b/arch/riscv/mm/ptdump.c
-> @@ -136,6 +136,10 @@ struct prot_bits {
->   static const struct prot_bits pte_bits[] = {
->   	{
->   #ifdef CONFIG_64BIT
-> +		.mask = _PAGE_NAPOT,
-> +		.set = "N",
-> +		.clear = ".",
-> +	}, {
->   		.mask = _PAGE_MTMASK_SVPBMT,
->   		.set = "MT(%s)",
->   		.clear = "  ..  ",
+> On Wed, Sep 20, 2023 at 02:37:28PM +0800, Chen Wang wrote:
+> > Add new vendor strings to dt bindings.
+> > These new vendor strings are used by
+> > - Sophgo SG2042 SoC [1]
+> > - Milk-V Pioneer board [2], which uses SG2042 chip.
+> >
+> > [1]: https://en.sophgo.com/product/introduce/sg2042.html
+> > [2]: https://milkv.io/pioneer
+>
+> If you resend, make these link tags please. Otherwise,
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>
+Sure, I will correct them in next revision. Thanks.
 
-Nice to see that we actually transparently use napot mappings:
-
----[ PCI I/O start ]---
-0xffff8d7fff000000-0xffff8d7fff010000    0x0000000003000000 64K PTE N   
-..     ..   D A G . . W R V
-
-You can add:
-
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Tested-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Thanks for the series, really appreciated!
-
-Alex
-
+> Thanks,
+> Conor.
+>
+> > Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> > Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+> > ---
+> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/D=
+ocumentation/devicetree/bindings/vendor-prefixes.yaml
+> > index 573578db9509..fcca9e070a9a 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -863,6 +863,8 @@ patternProperties:
+> >      description: MikroElektronika d.o.o.
+> >    "^mikrotik,.*":
+> >      description: MikroTik
+> > +  "^milkv,.*":
+> > +    description: MilkV Technology Co., Ltd
+> >    "^miniand,.*":
+> >      description: Miniand Tech
+> >    "^minix,.*":
+> > @@ -1273,6 +1275,8 @@ patternProperties:
+> >      description: Solomon Systech Limited
+> >    "^sony,.*":
+> >      description: Sony Corporation
+> > +  "^sophgo,.*":
+> > +    description: Sophgo Technology Inc.
+> >    "^sourceparts,.*":
+> >      description: Source Parts Inc.
+> >    "^spansion,.*":
+> > --
+> > 2.25.1
+> >
