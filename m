@@ -2,244 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43727A755E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8197A7564
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbjITIIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        id S232286AbjITIJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbjITIIc (ORCPT
+        with ESMTP id S232575AbjITIJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:08:32 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5B897
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:08:26 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 78A0366028F5;
-        Wed, 20 Sep 2023 09:08:24 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695197305;
-        bh=xWTJKdiQL/zsJInvZzW3QMO4ZtXOI8FVcEemZ/E7TgY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=KSRRJP2AFK0D/W7GRW1VVZDFdvt4hACRxlJv1JhWU0dWe8vmy89VwBzxbH9ThOcYD
-         YoMYNnjHJ4yA/0yk8b8KV45b8XtkhW0ZreCg1q39UhrqZeTn7wafaiZO6jBGt0aUh4
-         JAkv/97mWVpyG0BA6bTRT/dBdsq4puOyUb4n6fp9MZ0iRyE4x78m3dFr663WWdUcvs
-         bR2XFt+7ww08dUiBI+sArdZX5DPhyv16HdvIYe9epBsSO2nsNGnBvgaQwyH47wSFtg
-         IooxKtFD6gRZJIUYSsPCN+HGgpPQlxHeQ5TSLMdjP1XODALawfTrgJA0sa12MSmDxy
-         4KWYWgGB8ehLg==
-Message-ID: <4b1b3614-6a76-1ce9-7274-b5bb4deb6b74@collabora.com>
-Date:   Wed, 20 Sep 2023 10:08:21 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v10 03/16] drm/mediatek: gamma: Support SoC specific LUT
- size
-Content-Language: en-US
-To:     =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-Cc:     "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amergnat@baylibre.com" <amergnat@baylibre.com>,
-        "ehristev@collabora.com" <ehristev@collabora.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-References: <20230804072850.89365-1-angelogioacchino.delregno@collabora.com>
- <20230804072850.89365-4-angelogioacchino.delregno@collabora.com>
- <ab2981b2f2278a7e9a02c4f3f9aa5b6c9677c1b9.camel@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <ab2981b2f2278a7e9a02c4f3f9aa5b6c9677c1b9.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 04:09:01 -0400
+Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A3CD6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:08:54 -0700 (PDT)
+Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1c02d6efee4so10246619fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695197334; x=1695802134; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=REAWAikAYJXQC/q1dB6BWiV4dg8+qBHJA6pZo9MKtrQ=;
+        b=d4stG3mmwMKvayPoqNJywOfduTCqejfe/ff/r2PSb9wIzh5m3uYpvcOLm352qPmUbs
+         TA0voN4bBdkzl5U0ihgFuC3TGrC8ghqplRUA+PL5PXRX0rwUuyaXhHfs703Y7qW7oJOJ
+         K+H0pEhMVGdIRWLPDfOmhsQe9sr4DCZuJSXvCefYKTG/qatI9Rszfr43o0hbxHkypZ4s
+         UdE9pjtU31ax5EFJ5Qf00o//vh+vQKZvRUEYdoCYbkAhCE2DJbLnSI49aR59aA7yxz0i
+         oRAfugO+2HFEobV7eO6BA8k2mqZ0Pd6f8xIowXuKZRNDXH0q92NuIIRHBJ7FyFE6/VYc
+         GwzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695197334; x=1695802134;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=REAWAikAYJXQC/q1dB6BWiV4dg8+qBHJA6pZo9MKtrQ=;
+        b=BTeRROFZdAdu/NAN5drj6DzfDC7ndqrLUuJjFmTpMjT8C0+kxXBQWV90wLD9Gl34do
+         fqTCbIA4aHoU4x6miQa9ZcFaCnP4xWqT89KW6yqk6ayR6dCLmx4gNp38ej2kQpIM6xkQ
+         lGZx6eRYKwlb9U7X+TZCShZJzJDu+2jbIcGoP/a0BN90YuKFJEMYOSYQNgLLOKBHj1Dd
+         oEN+f1MIV7PiYnweOiy6C1mR/LIFJuNob+/YNFxEHvVWfALVfFctRGI5ptYv9ZrEAPNO
+         feFZzPkWg0uzxOisHmWZNnTPwILbTxOep+ijjbXjv1pQT7EwGYtd2JQusvvuIYwTmX02
+         dWvg==
+X-Gm-Message-State: AOJu0Yxsl61UD62+opHcEatimpXgqfFi+/oBrnwDMwkeHhiC5IJrm4Me
+        8Q9ypt0nXIjdFEeohp+/e91Ijjfs4jYXoW+IMw==
+X-Google-Smtp-Source: AGHT+IEprTy2S7DDywHlMknBrYSwbbE1mFZmKv4PQM+CHnVjbh7wziEtHIiWVjrM4IRkiEMalxvMkv2HUNQB8D7/PQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:76ae:b0:1d6:aa05:c733 with
+ SMTP id dx46-20020a05687076ae00b001d6aa05c733mr683064oab.5.1695197334295;
+ Wed, 20 Sep 2023 01:08:54 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 08:08:52 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJOoCmUC/yWNMQ7CMAwAv1J5xlJiVBB8BTEYxwUvIbKhAlX9O
+ 1HZ7pa7BULdNOA8LOA6W9izdsm7AeTB9a5opTtQon06UcJ4eZX2xeI2qwcaCd7eEfpHaXTIIwo yF06TEvMxQ68118k+2+lyXdcfp11yS3kAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695197333; l=1890;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=peY/eB5hS5lFuPdGG7LKSdDML84Nket0C8FattpjfI8=; b=sgpIFQ7oSn1XZ9OMjko5WEhP6Q5ktCLe0KgZ/OEqR0rGjxM+3HnxdRCXnTgkCRJYoMtT4Lgoj
+ TqIRI/KQxrPBTsdjEtbmnlrYumsTKSf/bIFwMnGkJPmXrDcEd5SfvOX
+X-Mailer: b4 0.12.3
+Message-ID: <20230920-strncpy-drivers-i2c-busses-i2c-cp2615-c-v1-1-11406a996794@google.com>
+Subject: [PATCH] i2c: cp2615: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     "=?utf-8?q?Bence_Cs=C3=B3k=C3=A1s?=" <bence98@sch.bme.hu>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 18/09/23 04:30, CK Hu (胡俊光) ha scritto:
-> Hi, Angelo:
-> 
-> On Fri, 2023-08-04 at 09:28 +0200, AngeloGioacchino Del Regno wrote:
->> Newer SoCs support a bigger Gamma LUT table: wire up a callback
->> to retrieve the correct LUT size for each different Gamma IP.
->>
->> Co-developed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> [Angelo: Rewritten commit message/description + porting]
->> Signed-off-by: AngeloGioacchino Del Regno <
->> angelogioacchino.delregno@collabora.com>
->> Reviewed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
->> ---
->>   drivers/gpu/drm/mediatek/mtk_disp_aal.c     | 17 ++++++++++++++-
->>   drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  2 ++
->>   drivers/gpu/drm/mediatek/mtk_disp_gamma.c   | 23 ++++++++++++++++++-
->> --
->>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |  8 +++++--
->>   drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |  1 -
->>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c |  2 ++
->>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  9 ++++++++
->>   7 files changed, 55 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
->> b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
->> index 2f602f1f1c49..e2e4155faf01 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
->> @@ -19,7 +19,7 @@
->>   #define AAL_EN						BIT(0)
->>   #define DISP_AAL_SIZE				0x0030
->>   #define DISP_AAL_OUTPUT_SIZE			0x04d8
->> -
->> +#define DISP_AAL_LUT_SIZE			512
->>   
->>   struct mtk_disp_aal_data {
->>   	bool has_gamma;
->> @@ -61,6 +61,21 @@ void mtk_aal_config(struct device *dev, unsigned
->> int w,
->>   	mtk_ddp_write(cmdq_pkt, w << 16 | h, &aal->cmdq_reg, aal->regs,
->> DISP_AAL_OUTPUT_SIZE);
->>   }
->>   
->> +/**
->> + * mtk_aal_gamma_get_lut_size() - Get gamma LUT size for AAL
->> + * @dev: Pointer to struct device
->> + *
->> + * Return: 0 if gamma control not supported in AAL or gamma LUT size
->> + */
->> +unsigned int mtk_aal_gamma_get_lut_size(struct device *dev)
->> +{
->> +	struct mtk_disp_aal *aal = dev_get_drvdata(dev);
->> +
->> +	if (aal->data && aal->data->has_gamma)
->> +		return DISP_AAL_LUT_SIZE;
->> +	return 0;
->> +}
->> +
->>   void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state
->> *state)
->>   {
->>   	struct mtk_disp_aal *aal = dev_get_drvdata(dev);
->> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
->> b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
->> index 75045932353e..ca377265e5eb 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
->> +++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
->> @@ -17,6 +17,7 @@ void mtk_aal_clk_disable(struct device *dev);
->>   void mtk_aal_config(struct device *dev, unsigned int w,
->>   		    unsigned int h, unsigned int vrefresh,
->>   		    unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
->> +unsigned int mtk_aal_gamma_get_lut_size(struct device *dev);
->>   void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state
->> *state);
->>   void mtk_aal_start(struct device *dev);
->>   void mtk_aal_stop(struct device *dev);
->> @@ -53,6 +54,7 @@ void mtk_gamma_clk_disable(struct device *dev);
->>   void mtk_gamma_config(struct device *dev, unsigned int w,
->>   		      unsigned int h, unsigned int vrefresh,
->>   		      unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
->> +unsigned int mtk_gamma_get_lut_size(struct device *dev);
->>   void mtk_gamma_set(struct device *dev, struct drm_crtc_state
->> *state);
->>   void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
->> struct drm_crtc_state *state);
->>   void mtk_gamma_start(struct device *dev);
->> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> index 47751864bd5c..7575237625d2 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> @@ -24,10 +24,12 @@
->>   #define DISP_GAMMA_LUT				0x0700
->>   
->>   #define LUT_10BIT_MASK				0x03ff
->> +#define LUT_SIZE_DEFAULT			512
->>   
->>   struct mtk_disp_gamma_data {
->>   	bool has_dither;
->>   	bool lut_diff;
->> +	u16 lut_size;
->>   };
->>   
->>   /*
->> @@ -54,6 +56,15 @@ void mtk_gamma_clk_disable(struct device *dev)
->>   	clk_disable_unprepare(gamma->clk);
->>   }
->>   
->> +unsigned int mtk_gamma_get_lut_size(struct device *dev)
->> +{
->> +	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
->> +
->> +	if (gamma && gamma->data)
->> +		return gamma->data->lut_size;
->> +	return LUT_SIZE_DEFAULT;
->> +}
->> +
->>   void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
->> struct drm_crtc_state *state)
->>   {
->>   	struct mtk_disp_gamma *gamma;
->> @@ -61,6 +72,7 @@ void mtk_gamma_set_common(struct device *dev, void
->> __iomem *regs, struct drm_crt
->>   	struct drm_color_lut *lut;
->>   	void __iomem *lut_base;
->>   	bool lut_diff;
->> +	u16 lut_size;
->>   	u32 word;
->>   	u32 diff[3] = {0};
->>   
->> @@ -71,17 +83,20 @@ void mtk_gamma_set_common(struct device *dev,
->> void __iomem *regs, struct drm_crt
->>   	/* If we're called from AAL, dev is NULL */
->>   	gamma = dev ? dev_get_drvdata(dev) : NULL;
->>   
->> -	if (gamma && gamma->data)
->> +	if (gamma && gamma->data) {
->>   		lut_diff = gamma->data->lut_diff;
->> -	else
->> +		lut_size = gamma->data->lut_size;
->> +	} else {
->>   		lut_diff = false;
->> +		lut_size = LUT_SIZE_DEFAULT;
-> 
-> Only AAL use this definiton. As previous discussion,
-> mtk_gamm_set_common() would not be common and has gamma version and AAL
-> version.
-> 
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Hello CK,
+We should prefer more robust and less ambiguous string interfaces.
 
-Yes, that's true, but every patch has to work on its own: this means that
-I forcefully have to add this here to avoid breaking functionality!
+We expect name to be NUL-terminated based on its numerous uses with
+functions that expect NUL-terminated strings.
 
-Please check patch [08/16] where I de-commonize the gamma_set function, as
-there I am removing the AAL-only definition and adding a AAL-specific
-gamma_set() callback.
+For example in i2c-core-base.c +1533:
+| dev_dbg(&adap->dev, "adapter [%s] registered\n", adap->name);
 
-I've done it this way for multiple reasons, one of which is to show why a
-de-commonization of this function is required.
+NUL-padding is not required as `adap` is already zero-alloacted with:
+| adap = devm_kzalloc(&usbif->dev, sizeof(struct i2c_adapter), GFP_KERNEL);
 
-Regards,
-Angelo
+With the above in mind, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
-> Regards,
-> CK
-> 
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ drivers/i2c/busses/i2c-cp2615.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-cp2615.c b/drivers/i2c/busses/i2c-cp2615.c
+index 3ded28632e4c..20f8f7c9a8cd 100644
+--- a/drivers/i2c/busses/i2c-cp2615.c
++++ b/drivers/i2c/busses/i2c-cp2615.c
+@@ -298,7 +298,7 @@ cp2615_i2c_probe(struct usb_interface *usbif, const struct usb_device_id *id)
+ 	if (!adap)
+ 		return -ENOMEM;
+ 
+-	strncpy(adap->name, usbdev->serial, sizeof(adap->name) - 1);
++	strscpy(adap->name, usbdev->serial, sizeof(adap->name));
+ 	adap->owner = THIS_MODULE;
+ 	adap->dev.parent = &usbif->dev;
+ 	adap->dev.of_node = usbif->dev.of_node;
+
+---
+base-commit: 2cf0f715623872823a72e451243bbf555d10d032
+change-id: 20230920-strncpy-drivers-i2c-busses-i2c-cp2615-c-aada0fe2aa71
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
