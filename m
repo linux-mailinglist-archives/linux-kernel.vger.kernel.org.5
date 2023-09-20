@@ -2,127 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D917A7399
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB507A739F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 09:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbjITHDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 03:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S233544AbjITHEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 03:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbjITHDn (ORCPT
+        with ESMTP id S232245AbjITHEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 03:03:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E0792;
-        Wed, 20 Sep 2023 00:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695193418; x=1726729418;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6EtTh13CKXNbPz2a7ayAQwbnTJR4U+Lo4uuuRZZuaJM=;
-  b=EUb17RjvO6/66502O3oHssQNrCLHbDf6YCV1e5qkB+nDahVOyW/5+7Ew
-   d2u1t0HZtb7ACNUFwYLTYuO/T8FTkJmfzRYWdB3Ieu5d+Ot4aOXEMlDuV
-   ZBub74ew4saRRMvcs3y9S+4QpjStk8ULR4UjNmMEXtdtekd/PuH7LLdqM
-   6GjfjmsBqJ7goyC89ruO3SIHGO2Yr0ihU2qshWbAjn/+T/wufGayARxpb
-   TiiBbvL5b2m15RM9biTgyYr7934JM2i+wgxK3xsTTWAyStvCl9Qx4Z/0q
-   5xwc+bWFMr7GeZsskj0Qr0rawainzgRNOC1/qO77pQBCYT87v0hwgctKQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="380045018"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="380045018"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 00:03:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="920164837"
-X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
-   d="scan'208";a="920164837"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 20 Sep 2023 00:03:33 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qirFD-0008Qi-1g;
-        Wed, 20 Sep 2023 07:03:31 +0000
-Date:   Wed, 20 Sep 2023 15:02:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     oe-kbuild-all@lists.linux.dev, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 06/18] net/smc: extend GID to 128bits for
- virtual ISM device
-Message-ID: <202309201408.95QRxHEl-lkp@intel.com>
-References: <1695134522-126655-7-git-send-email-guwen@linux.alibaba.com>
+        Wed, 20 Sep 2023 03:04:32 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE4E90;
+        Wed, 20 Sep 2023 00:04:26 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38K5J11D014364;
+        Wed, 20 Sep 2023 07:04:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=sirRTSMtALGb40cFMEEIy3VWwp5E5wl1OmAjQoPdOKU=;
+ b=Ujy2+bvZro+UN5VKEriI7WKasObZZe0boUUYk3Y14fDOWtf5/71GCjU02BK7gu/dvoSb
+ M5e2CiD7mJu17DahaBA/sTvXTf7jDk5ZamWhveuhgaZHR6c506IBkdeczXzfOOAfO0rC
+ U8972mMih38JPCUNzolfDlGngI9jrmKf5fNJeBNLSSISnVL+XRZ2q2CESEeQ8zvn4WO8
+ e5pHcZKjK3QoMrUd7QlBpz/3FgzgDHji2D2rveKojsc1X4J2Ft2KAsiQqvdpd0ibf+Du
+ Zn4oGDCxn2Q35GiFvVoIVQAQ0cZGKmKS6sTicA/sMgp8NRHCF654PwId6rrIzBe/aX9p bg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t6v2dkkhf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 07:04:22 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38K74Ljd009072
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Sep 2023 07:04:21 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 20 Sep
+ 2023 00:04:14 -0700
+Message-ID: <dbf09ddd-910b-4c1f-8dbe-8d1bcb7183d0@quicinc.com>
+Date:   Wed, 20 Sep 2023 15:04:11 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1695134522-126655-7-git-send-email-guwen@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM4450 pinctrl
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
+        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
+        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
+        <quic_ajipan@quicinc.com>, <kernel@quicinc.com>
+References: <20230920064739.12562-1-quic_tengfan@quicinc.com>
+ <20230920064739.12562-2-quic_tengfan@quicinc.com>
+ <d2f6bfbb-fd08-a551-51d3-f81d9237e060@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <d2f6bfbb-fd08-a551-51d3-f81d9237e060@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 6pu_d-fLPeyPjqGHJlwS0likcd-WIFlJ
+X-Proofpoint-GUID: 6pu_d-fLPeyPjqGHJlwS0likcd-WIFlJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_02,2023-09-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=774 spamscore=0
+ suspectscore=0 priorityscore=1501 bulkscore=0 malwarescore=0 phishscore=0
+ impostorscore=0 clxscore=1015 mlxscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309200056
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wen,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Wen-Gu/net-smc-decouple-ism_dev-from-SMC-D-device-dump/20230920-010019
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/1695134522-126655-7-git-send-email-guwen%40linux.alibaba.com
-patch subject: [PATCH net-next 06/18] net/smc: extend GID to 128bits for virtual ISM device
-config: s390-defconfig (https://download.01.org/0day-ci/archive/20230920/202309201408.95QRxHEl-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230920/202309201408.95QRxHEl-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309201408.95QRxHEl-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   net/smc/smc_ism.c: In function 'smc_ism_signal_shutdown':
->> net/smc/smc_ism.c:539:57: error: incompatible type for argument 2 of 'lgr-><U72f8>.<U7260>.smcd->ops->signal_event'
-     539 |         rc = lgr->smcd->ops->signal_event(lgr->smcd, lgr->peer_gid,
-         |                                                      ~~~^~~~~~~~~~
-         |                                                         |
-         |                                                         struct smcd_gid
-   net/smc/smc_ism.c:539:57: note: expected 'u64' {aka 'long long unsigned int'} but argument is of type 'struct smcd_gid'
 
 
-vim +539 net/smc/smc_ism.c
-
-820f21009f1bc7a Stefan Raspl 2023-01-23  526  
-820f21009f1bc7a Stefan Raspl 2023-01-23  527  int smc_ism_signal_shutdown(struct smc_link_group *lgr)
-820f21009f1bc7a Stefan Raspl 2023-01-23  528  {
-820f21009f1bc7a Stefan Raspl 2023-01-23  529  	int rc = 0;
-820f21009f1bc7a Stefan Raspl 2023-01-23  530  #if IS_ENABLED(CONFIG_ISM)
-820f21009f1bc7a Stefan Raspl 2023-01-23  531  	union smcd_sw_event_info ev_info;
-820f21009f1bc7a Stefan Raspl 2023-01-23  532  
-820f21009f1bc7a Stefan Raspl 2023-01-23  533  	if (lgr->peer_shutdown)
-820f21009f1bc7a Stefan Raspl 2023-01-23  534  		return 0;
-820f21009f1bc7a Stefan Raspl 2023-01-23  535  
-820f21009f1bc7a Stefan Raspl 2023-01-23  536  	memcpy(ev_info.uid, lgr->id, SMC_LGR_ID_SIZE);
-820f21009f1bc7a Stefan Raspl 2023-01-23  537  	ev_info.vlan_id = lgr->vlan_id;
-820f21009f1bc7a Stefan Raspl 2023-01-23  538  	ev_info.code = ISM_EVENT_REQUEST;
-820f21009f1bc7a Stefan Raspl 2023-01-23 @539  	rc = lgr->smcd->ops->signal_event(lgr->smcd, lgr->peer_gid,
-820f21009f1bc7a Stefan Raspl 2023-01-23  540  					  ISM_EVENT_REQUEST_IR,
-820f21009f1bc7a Stefan Raspl 2023-01-23  541  					  ISM_EVENT_CODE_SHUTDOWN,
-820f21009f1bc7a Stefan Raspl 2023-01-23  542  					  ev_info.info);
-820f21009f1bc7a Stefan Raspl 2023-01-23  543  #endif
-820f21009f1bc7a Stefan Raspl 2023-01-23  544  	return rc;
-820f21009f1bc7a Stefan Raspl 2023-01-23  545  }
-201091ebb2a161a Ursula Braun 2020-09-26  546  
+在 9/20/2023 2:58 PM, Krzysztof Kozlowski 写道:
+> On 20/09/2023 08:47, Tengfei Fan wrote:
+>> Add device tree binding Documentation details for Qualcomm SM4450
+>> TLMM device.
+>>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> 
+> 
+> 
+>> +    properties:
+>> +      pins:
+>> +        description:
+>> +          List of gpio pins affected by the properties specified in this
+>> +          subnode.
+>> +        items:
+>> +          oneOf:
+>> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-5])$"
+> 
+> Your driver and gpio-ranges in example tell you have 136 GPIOs, not 126.
+> It's v3 but still counting GPIOs is incorrect :/
+> 
+> Best regards,
+> Krzysztof
+> 
+Hi Krzysztof,
+my fault, misunderstand to other platform's setting when reference, will 
+update.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thx and BRs,
+Tengfei Fan
