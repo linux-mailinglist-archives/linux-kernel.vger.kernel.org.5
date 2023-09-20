@@ -2,122 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BA17A7864
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C877A7867
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234331AbjITKAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
+        id S234386AbjITKAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234327AbjITKAM (ORCPT
+        with ESMTP id S234370AbjITKAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:00:12 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A8EAC
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:00:05 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso881789966b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695204004; x=1695808804; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fBd3XO3VXcZ5Eq/j57aWQEchJJdUk3Puq2N4/Qm3ZrE=;
-        b=fIFFSWd4ZzHRni5pAcyyNjQcaD1AlBQwSWO3blkfpxagEQUBg/rP3i6Q9oV0LwGfeN
-         64FfCRlIebfZb5MYiqvtONHekRd0i1q7+1h2Mqz1OkGj2LG/DihZkvje50J1jWhpOVkP
-         ofj1ciHP+aCBHNk6q6r1lSH1pBN8q7d3RRi1hji6UylODXD5n33AWIbMO5zfvN5fIpZS
-         XryUThF/QkCYGXMoyWDjPdyuhCUGGB4kYJZhTY86wwiuy+TLhCqEL2jhkMfyzxayy92t
-         qmUPljhe4NLAN6UX/xquW5vpYNHHGMhwgPM9HG85HWad7FC29GLtfn0HeYplS78L4U99
-         xCnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695204004; x=1695808804;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fBd3XO3VXcZ5Eq/j57aWQEchJJdUk3Puq2N4/Qm3ZrE=;
-        b=aUu84d6I4lT/W4HWMG2phhvd2+TePAbnr+K898G0m8nahV5S/TjwqUCycwxP+RsW6G
-         Vn2UbmOqNtKxAHdx16ruvFxwyqzJ6BKrZxPXWwt9GdSTRJwcH+15WOsM6ti+VMYQXloY
-         lNYlSIcZcRxvowvMN+K+rT9bEkVCfgrI+C10vk3aJzI1/Ar4mlETYDjRV4R8tZvhCZ7q
-         pXUFJSIdOavqzvsKTPeTOu1RuMhO4+Ku6/I1/TUQcp23XyhT/pikh8lsjeU/iNmI9/M1
-         d/fUbMBhw6W/uD7t0Q5WCG/ypWmOGv2j2fFNQk62TSoKZcNS67muGyQQqCChVg/YuKE6
-         HvCA==
-X-Gm-Message-State: AOJu0YwsraSoxTsl6jrbzhys5MZ65lDZdHRn3xPn8lo8vKvwbPGK0/aP
-        EeeUxowRr8X4jesbjbatq+GxJA==
-X-Google-Smtp-Source: AGHT+IFzx44j6/2ljA8qYlX2Z/kLYtXcrrNf5TI8l2xvWsgQAei8ep7dJ2ovnEU2Nlx9asEfjVeJ3g==
-X-Received: by 2002:a17:906:3091:b0:9a1:ddb9:6546 with SMTP id 17-20020a170906309100b009a1ddb96546mr1621996ejv.61.1695204003913;
-        Wed, 20 Sep 2023 03:00:03 -0700 (PDT)
-Received: from [172.20.86.172] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id n25-20020a170906b31900b0099bcdfff7cbsm9184201ejz.160.2023.09.20.03.00.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 03:00:03 -0700 (PDT)
-Message-ID: <21b8b019-42b8-6e47-e640-8bca28d2d784@linaro.org>
-Date:   Wed, 20 Sep 2023 12:00:02 +0200
+        Wed, 20 Sep 2023 06:00:18 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1931A9;
+        Wed, 20 Sep 2023 03:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1695204007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HDgBkqd7CGwUFR4E4j39QdMs+mSsvXlDvmJsLeLhHLs=;
+        b=oBuPzZNyJyn2WqpUcwM4yY0CbL+6sASmYva4EkuAJKej+9dHR3XMuqIwW8wVXOpJIJhrod
+        nnKSf78q2YvMmretbr5VHtunUSO5Ry+82tPpw5o98iAJsIM3gVjymEkGivly8k2VgLg4JB
+        iMctt2UAMOuViPWBAMaXkCVnMpEkryA=
+Message-ID: <46a28af1045211edd6c44f7b6aa4c23e7b3a208d.camel@crapouillou.net>
+Subject: Re: [PATCH v3] PM: Fix symbol export for _SIMPLE_ variants of
+ _PM_OPS()
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
+        Jonathan.Cameron@huawei.com, andriy.shevchenko@linux.intel.com,
+        rf@opensource.cirrus.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Date:   Wed, 20 Sep 2023 12:00:05 +0200
+In-Reply-To: <ZQq8V5D06CaMxWqQ@black.fi.intel.com>
+References: <20230920084121.14131-1-raag.jadav@intel.com>
+         <790fac97ce79534733fe0bbd93cc0c9eaa835bf2.camel@crapouillou.net>
+         <ZQq8V5D06CaMxWqQ@black.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 3/5] arm64: dts: qcom: sm4450: Add RPMH and Global
- clock
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, tglx@linutronix.de, maz@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org
-Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
-        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
-        quic_ajipan@quicinc.com, kernel@quicinc.com
-References: <20230920065459.12738-1-quic_tengfan@quicinc.com>
- <20230920065459.12738-4-quic_tengfan@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230920065459.12738-4-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le mercredi 20 septembre 2023 =C3=A0 12:33 +0300, Raag Jadav a =C3=A9crit=
+=C2=A0:
+> On Wed, Sep 20, 2023 at 10:53:23AM +0200, Paul Cercueil wrote:
+> > Le mercredi 20 septembre 2023 =C3=A0 14:11 +0530, Raag Jadav a =C3=A9cr=
+it=C2=A0:
+> > > Currently EXPORT_*_SIMPLE_DEV_PM_OPS() use EXPORT_*_DEV_PM_OPS()
+> > > set
+> > > of macros to export dev_pm_ops symbol, which export the symbol in
+> > > case
+> > > CONFIG_PM=3Dy but don't take CONFIG_PM_SLEEP into consideration.
+> > >=20
+> > > Since _SIMPLE_ variants of _PM_OPS() do not include runtime PM
+> > > handles
+> > > and are only used in case CONFIG_PM_SLEEP=3Dy, we should not be
+> > > exporting
+> > > their dev_pm_ops symbol in case CONFIG_PM_SLEEP=3Dn.
+> > >=20
+> > > This can be fixed by having two distinct set of export macros for
+> > > both
+> > > _RUNTIME_ and _SIMPLE_ variants of _PM_OPS(), such that the
+> > > export of
+> > > dev_pm_ops symbol used in each variant depends on CONFIG_PM and
+> > > CONFIG_PM_SLEEP respectively.
+> > >=20
+> > > Introduce _DEV_SLEEP_PM_OPS() set of export macros for _SIMPLE_
+> > > variants
+> > > of _PM_OPS(), which export dev_pm_ops symbol only in case
+> > > CONFIG_PM_SLEEP=3Dy
+> > > and discard it otherwise.
+> > >=20
+> > > Fixes: 34e1ed189fab ("PM: Improve EXPORT_*_DEV_PM_OPS macros")
+> > > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> > > ---
+> > > PS: This is a standalone fix and works without updating any
+> > > drivers.
+> >=20
+> > I had to double-check that, to make sure that none of the drivers
+> > using
+> > these macros also use pm_ptr() instead of pm_sleep_ptr() to access
+> > the
+> > exported dev_pm_ops.
+> >=20
+> > I did not check extensively but everything seems to use
+> > pm_sleep_ptr(),
+> > so it looks safe enough.
+>=20
+> I have tested it against -rc2 without any problems.
 
+You'd need to test an "allyesconfig" with CONFIG_PM=3Dy, and
+CONFIG_PM_SLEEP disabled. Is that what you tested?
 
-On 9/20/23 08:54, Tengfei Fan wrote:
-> Add device node for RPMH and Global clock controller on Qualcomm
-> SM4450 platform.
-> 
-> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
->   arch/arm64/boot/dts/qcom/sm4450.dtsi | 23 +++++++++++++++++++++++
->   1 file changed, 23 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm4450.dtsi b/arch/arm64/boot/dts/qcom/sm4450.dtsi
-> index 3d9d3b5e9510..c27f17a41699 100644
-> --- a/arch/arm64/boot/dts/qcom/sm4450.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm4450.dtsi
-> @@ -3,6 +3,8 @@
->    * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
->    */
->   
-> +#include <dt-bindings/clock/qcom,rpmh.h>
-> +#include <dt-bindings/clock/qcom,sm4450-gcc.h>
-These should be sorted alphabetically.
+>=20
+> > > Changes since v2:
+> > > - Drop redundant patches
+> > >=20
+> > > Changes since v1:
+> > > - Update drivers to new set of macros
+> > >=20
+> > > =C2=A0include/linux/pm.h | 43 +++++++++++++++++++++++++++++----------=
+-
+> > > ---
+> > > =C2=A01 file changed, 29 insertions(+), 14 deletions(-)
+> > >=20
+> > > diff --git a/include/linux/pm.h b/include/linux/pm.h
+> > > index 1400c37b29c7..99a8146fa479 100644
+> > > --- a/include/linux/pm.h
+> > > +++ b/include/linux/pm.h
+> > > @@ -374,24 +374,39 @@ const struct dev_pm_ops name =3D { \
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0RUNTIME_PM_OPS(runtim=
+e_suspend_fn, runtime_resume_fn,
+> > > idle_fn) \
+> > > =C2=A0}
+> > > =C2=A0
+> > > -#ifdef CONFIG_PM
+> > > -#define _EXPORT_DEV_PM_OPS(name, license,
+> > > ns)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0\
+> > > +#define _EXPORT_PM_OPS(name, license,
+> > > ns)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0\
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const struct dev_pm_o=
+ps
+> > > name;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0\
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0__EXPORT_SYMBOL(name,=
+ license,
+> > > ns);=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0\
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const struct dev_pm_o=
+ps name
+> > > -#define EXPORT_PM_FN_GPL(name)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0EXPORT_SYMBOL_GPL(name)
+> > > -#define EXPORT_PM_FN_NS_GPL(name,
+> > > ns)=C2=A0=C2=A0EXPORT_SYMBOL_NS_GPL(name,
+> > > ns)
+> > > -#else
+> > > -#define _EXPORT_DEV_PM_OPS(name, license,
+> > > ns)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0\
+> > > +
+> > > +#define _PM_OPS(name, license,
+> >=20
+> > This macro creates a dev_pm_ops that's meant to be garbage-
+> > collected by
+> > the compiler; so maybe name it _USELESS_PM_OPS() or something like
+> > that.
+>=20
+> _USELESS_PM_OPS() sounds a bit heavy handed ;)
+> Gives the impression that the macro itelf is not used anywhere in
+> code.
+>=20
+> Something like _DISCARD_PM_OPS() makes more sense.
 
-[...]
+Works for me.
 
-> +			rpmhcc: clock-controller {
-> +				compatible = "qcom,sm4450-rpmh-clk";
-> +				#clock-cells = <1>;
-> +				clock-names = "xo";
-> +				clocks = <&xo_board>;
-property
-property-names
+>=20
+> Raag
 
-Konrad
+Cheers,
+-Paul
