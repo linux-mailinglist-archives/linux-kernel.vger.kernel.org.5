@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8647A7B28
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757B47A7B3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 13:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234671AbjITLtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 07:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
+        id S234616AbjITLuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 07:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234681AbjITLtn (ORCPT
+        with ESMTP id S234612AbjITLuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:49:43 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A490DD6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:49:27 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-274736d0f64so3972124a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:49:27 -0700 (PDT)
+        Wed, 20 Sep 2023 07:50:13 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DA8D8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:50:07 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690ba63891dso1972714b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 04:50:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695210567; x=1695815367; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695210607; x=1695815407; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=B/8PZWUPuda+ZQQwAeWfXpYiv/2viHxcEiF7//a7Xh4=;
-        b=U4c4BOHINgPedw1tFVd0+EZ/3zi4+7jCY6/nPswZz6RvJ5vsFyCS1bk+nE7FWsWOfl
-         o+Qmj5BTgpByodjXiBOfPm1SkCWAHTjW4qV7IOaxCOtTpHraCATV5XcYP7x7ZOp7U5Er
-         ApdP8JC2p18JF41Wu3uxCPkmeHqZ2TFbctbfnZzdzFY0npuHNimq8aNZ9FA1tepl0y4V
-         HAxWaXXA7PPSe8xH6BUn5y0P6eUd+O9GLfHh4/0uWpkZ+ymGLo8k1fl5TWV6eAQv+WKC
-         sCrIlTsBYbqctZhkgGycAv2aLkEIFnv+yMIPYSX3rRyx1VbNeFPuY8ac5wh+n4lnwuQW
-         g+OA==
+        bh=ViRd+Gr7Vea/QsHKqz0MVpGhjqXSzaa4q8ebpul4oxo=;
+        b=jaVMKYsiAri3TRLO/HxbUjKvG2LbeZJKkshmmF/5j4AxmUFaF/LY+tcUzpVW6OoAqM
+         9NPVy+tW59XTxp1EHZ6M186BvfMDCQpBjnxD/SPTiDZu2Xvuw9SLaM8RaUB0u98C4sZk
+         1zgDp+v2luDYzyL/V+RPtecndc3/lr+BDzZz4/ugf6kc5aPeTzkkNSJyA09xZ7Yx6NMd
+         kG3EoPo70qd88beZN4BlF4yWL4xt5Fq6qKV30q2K86eLYEvXKz9PkbYvOlDxX+wLc7HM
+         pnu3dGNTK/X+O102HczLR8fKpSoefyGIU4SpZ4/sVZyLYtI8+Sli1Y5C2s4zYqkkvA/2
+         B+zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695210567; x=1695815367;
+        d=1e100.net; s=20230601; t=1695210607; x=1695815407;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=B/8PZWUPuda+ZQQwAeWfXpYiv/2viHxcEiF7//a7Xh4=;
-        b=RFY3XZojrm7M1LKgMXXmcFDooZ60L3yyiRUZAoa9MCjgiDRSybx+mOtIM30xln2Kub
-         9eZ/oJ9906nQLcM65ViN7X5JpzQ0qQCyrMDwWnpdfaFztv9+eYus7IKeF+crRD4XVXHu
-         PegKIfY747RowsIrMZgWjQJA0+64qH7v/mMlbSTv03JmUlVJydXwRKb9YIsWExzJMJYk
-         xcfXhI38vWQbIq9sw6fYGLR1t6jILvov6bijTnC7bWjqnYbgk9pGy/exOYkjnqIiR3l5
-         JX1UBu4it4hM4y/BUG3Mkzx2XBpFUHbe8JkipcTPrBfdJiDk+ZqqIWTQiOuI0QFsCAV6
-         Si0A==
-X-Gm-Message-State: AOJu0Yy0gNHLlDSs04MaKvjk6GtuUMfvfoPC8kn3XCeiAqrCH8bkvVQQ
-        JHj0EF9VPn62VVwZWSi93kLMkWQLaBo=
-X-Google-Smtp-Source: AGHT+IFmzx3xf+hs33ILf5/gTMht1n0M1UHToe+04qf6B7SAq9QVz1gAXVPonqfUruHj2JnwYwuugw==
-X-Received: by 2002:a17:90a:ce96:b0:26d:2ae0:9b63 with SMTP id g22-20020a17090ace9600b0026d2ae09b63mr2390425pju.16.1695210566731;
-        Wed, 20 Sep 2023 04:49:26 -0700 (PDT)
+        bh=ViRd+Gr7Vea/QsHKqz0MVpGhjqXSzaa4q8ebpul4oxo=;
+        b=JdemCP6DdE9G/0ylEWzOGRg09BqrzwI7P43y8G9yks66mJtmPHN8/9D8JMeXtYIyRH
+         ogf3ZgXYr4zOT9Yo/OGoYsEO2wQqSlN9elTq/j59F+L2S6dHuRFqluvcehltX28tpIiA
+         2Y7HwFVUiheFw5FTIvbUzmVDMf8tzHVJ6T6U3hr9EXER0W1pRC7kTrUyMyvjrE6MBDKW
+         HHRHD/NHUQi7nl7631t4VgY/dpQEjvidRfjbY7WZ+6ZdmtMdYQDtGG2jqANxISYk+Sgj
+         OfjiApBedNNaRMRAdpnYNfl0ARaU6QKr7MFf5kwnlQny9wR3Zpvdu6WBLVwYmbtgRpXM
+         bgSg==
+X-Gm-Message-State: AOJu0YzYSQPKVpTL6p4w2VDXwuIaVsjEQc5FmVUCoJM2vsAuYjRuc0f8
+        28ASH41ZopFrhl4OsJKKZP5mlZfIxbY=
+X-Google-Smtp-Source: AGHT+IGuGev2R0kahPW3KV6Hfe7MvELk7GDzooXB6TRzjhqb0HYc5PLdhPuHiY8H7orSuApcq4GavA==
+X-Received: by 2002:a05:6a20:dd87:b0:153:616c:7ca4 with SMTP id kw7-20020a056a20dd8700b00153616c7ca4mr1962296pzb.61.1695210606677;
+        Wed, 20 Sep 2023 04:50:06 -0700 (PDT)
 Received: from octofox.hsd1.ca.comcast.net ([2601:646:a201:19d0:9ca3:318f:421e:68cb])
-        by smtp.gmail.com with ESMTPSA id v9-20020a17090a458900b00274c541ac9esm1180511pjg.48.2023.09.20.04.49.25
+        by smtp.gmail.com with ESMTPSA id dh2-20020a056a00478200b00690bd3c0723sm2917295pfb.99.2023.09.20.04.50.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 04:49:25 -0700 (PDT)
+        Wed, 20 Sep 2023 04:50:06 -0700 (PDT)
 From:   Max Filippov <jcmvbkbc@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] xtensa: add default definition for XCHAL_HAVE_DIV32
-Date:   Wed, 20 Sep 2023 04:49:12 -0700
-Message-Id: <20230920114912.2793258-1-jcmvbkbc@gmail.com>
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] xtensa: boot/lib: fix function prototypes
+Date:   Wed, 20 Sep 2023 04:49:34 -0700
+Message-Id: <20230920114934.2793310-1-jcmvbkbc@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -70,38 +69,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When variant FSF is set, XCHAL_HAVE_DIV32 is not defined. Add default
-definition for that macro to prevent build warnings:
+Add function prototype for gunzip() to the boot library code and make
+exit() and zalloc() static.
 
-arch/xtensa/lib/divsi3.S:9:5: warning: "XCHAL_HAVE_DIV32" is not defined, evaluates to 0 [-Wundef]
-    9 | #if XCHAL_HAVE_DIV32
-arch/xtensa/lib/modsi3.S:9:5: warning: "XCHAL_HAVE_DIV32" is not defined, evaluates to 0 [-Wundef]
-    9 | #if XCHAL_HAVE_DIV32
+arch/xtensa/boot/lib/zmem.c:8:6: warning: no previous prototype for 'exit' [-Wmissing-prototypes]
+    8 | void exit (void)
+arch/xtensa/boot/lib/zmem.c:13:7: warning: no previous prototype for 'zalloc' [-Wmissing-prototypes]
+   13 | void *zalloc(unsigned size)
+arch/xtensa/boot/lib/zmem.c:35:6: warning: no previous prototype for 'gunzip' [-Wmissing-prototypes]
+   35 | void gunzip (void *dst, int dstlen, unsigned char *src, int *lenp)
 
-Fixes: 173d6681380a ("xtensa: remove extra header files")
+Fixes: 4bedea945451 ("xtensa: Architecture support for Tensilica Xtensa Part 2")
+Fixes: e7d163f76665 ("xtensa: Removed local copy of zlib and fixed O= support")
 Suggested-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: lore.kernel.org/r/202309150556.t0yCdv3g-lkp@intel.com
 ---
- arch/xtensa/include/asm/core.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/xtensa/boot/lib/zmem.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/xtensa/include/asm/core.h b/arch/xtensa/include/asm/core.h
-index 3f5ffae89b58..6f02f6f21890 100644
---- a/arch/xtensa/include/asm/core.h
-+++ b/arch/xtensa/include/asm/core.h
-@@ -6,6 +6,10 @@
+diff --git a/arch/xtensa/boot/lib/zmem.c b/arch/xtensa/boot/lib/zmem.c
+index e3ecd743c515..b89189355122 100644
+--- a/arch/xtensa/boot/lib/zmem.c
++++ b/arch/xtensa/boot/lib/zmem.c
+@@ -4,13 +4,14 @@
+ /* bits taken from ppc */
  
- #include <variant/core.h>
+ extern void *avail_ram, *end_avail;
++void gunzip(void *dst, int dstlen, unsigned char *src, int *lenp);
  
-+#ifndef XCHAL_HAVE_DIV32
-+#define XCHAL_HAVE_DIV32 0
-+#endif
-+
- #ifndef XCHAL_HAVE_EXCLUSIVE
- #define XCHAL_HAVE_EXCLUSIVE 0
- #endif
+-void exit (void)
++static void exit(void)
+ {
+   for (;;);
+ }
+ 
+-void *zalloc(unsigned size)
++static void *zalloc(unsigned int size)
+ {
+         void *p = avail_ram;
+ 
 -- 
 2.30.2
 
