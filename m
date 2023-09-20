@@ -2,134 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B52757A8821
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A553C7A8823
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235257AbjITPVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 11:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
+        id S234934AbjITPV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236580AbjITPV3 (ORCPT
+        with ESMTP id S236515AbjITPVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:21:29 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E05F4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:21:23 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68fac16ee5fso6071354b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:21:23 -0700 (PDT)
+        Wed, 20 Sep 2023 11:21:50 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECEFF1;
+        Wed, 20 Sep 2023 08:21:43 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-404314388ceso74827955e9.2;
+        Wed, 20 Sep 2023 08:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695223283; x=1695828083; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695223302; x=1695828102; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nj0Up56e4jhyRDntXlBwHRnq4btg0+rUisOZhPGaioQ=;
-        b=eVq/TQgqDWMwpKTtSeeBiYrtFXHOxoHP9JubB1pnvBM2OgptkcusNt/OnWIN/VTAua
-         MSY7Cg3/G1rQ5KMGxeNPIlEXyZgHIpUS67A4QJ04hP0rrcNq4k8vKdF8eTLOoSIhtY3F
-         5x65Z3FyQj7WRTTmgcrOmXCIp6GQsEcxOBOOA=
+        bh=7ndytcNwjogwuE9vld+zk4GipkAa+bZ+yvXsaST4Qa4=;
+        b=mU5MtFcPsEz1Suw8Cs6gzx+xPJo+gW1GoTAbvkIIqMMGjdnZkChub/XCR2DeI1wDl5
+         DnHmcr/w1qSiVdGLYOifNvKuJwePOAzTclOWYHG3iChVUaJbc5LQvYWyuGjjAmizFoG1
+         KtDoIEoJieHZS4Cty1AwpihlU2CuJDoif2GpFKTLPJyTWS2IPEC35PUwB8Q+kmhAzbuo
+         wDvRGNgtKlAoneVZFsq23CvKWp/f7W20kRBR6Uv/6EgUkCRqXJjndQadBhAa2RTFVgAr
+         XKh/uioisOtTxwvBEVmbyTfVPFLZM+PqFrVqIRe7931X0tODCRBC7UgOKBCXfIv2IU+6
+         WU3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695223283; x=1695828083;
+        d=1e100.net; s=20230601; t=1695223302; x=1695828102;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nj0Up56e4jhyRDntXlBwHRnq4btg0+rUisOZhPGaioQ=;
-        b=ELf/Qn3liZvwrwx73Iuq9CZLgDPxCH8v8htYnNrFswKuN5S/7Bn9jDG8zg9W+jQkXo
-         rEoqLR/bcmnj87sHQtGKtaLRp6EdGm/W1JjXG2Y6JFyHHFOpkcpP1cEe+zck1dAR/vEE
-         CMpXqNeD5d80QC7aTvlUWwyT5PoBSN/evDrxBMX48UUsAULpNHZQBTeFPho4WdPgRfCE
-         bGDUMPvXvwYkfpHaSyP8NSf8IE3xyw/DAYZlDOtLlTHq2mgznWFF9Yfd8p5ywgSu0LDz
-         vY7yIFy2pmBQDxKKXZIf4kgCgLdsvsk1j0rFHYlmR5ugMI57OSor273iANFrs5qqEpTV
-         QS/A==
-X-Gm-Message-State: AOJu0Yxvdhh4AxhiUx1E6FwvDCiFwIayqJpVq+qmMj5CY/rUZ3BkegK4
-        G0LqDDXADMAA7URw3RbboZRLnQ==
-X-Google-Smtp-Source: AGHT+IFPYnfY4ZnT4mS9lyLDNarWzh8z6aSCWPIWyTeIFEaiQYdFrwRvYO2C7rT3RNjJEk08REBh2Q==
-X-Received: by 2002:a05:6300:8002:b0:157:877a:5f5e with SMTP id an2-20020a056300800200b00157877a5f5emr2137943pzc.61.1695223282582;
-        Wed, 20 Sep 2023 08:21:22 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s22-20020aa78d56000000b0068fc48fcaa8sm10279190pfe.155.2023.09.20.08.21.21
+        bh=7ndytcNwjogwuE9vld+zk4GipkAa+bZ+yvXsaST4Qa4=;
+        b=qNtHMhwlpL5o+B0lNATc8qPmvPTVdz48JA3lTb4aQVAZZSuJPTxBsOBOKUJJoGhZuF
+         TZNMpeNMUwJVCRuOMhUlH1hselJ51ToDGmNp/TcufEufnwMmdtsfS1TSyD60k7mbQVLe
+         zfnO6CULMTJdrBzvQ3elcLyve53nBBISTxwLZ8ASb1mTkWDUTcNnKwYf5gkKWI+d6x/2
+         TGDjcxPwmlHbQrOcx0V5mQAA+33fXtAcOHBHxJ9sZp54gWXsv6gIqF9k5wyN1V8mTB1/
+         3wI43XsBb0IQ3oObguZdBGHtz4GCQ8ciIzp7XU4NlalQwq1nkWc4lWpAJ+Cy+8YowyyL
+         ci3w==
+X-Gm-Message-State: AOJu0Yx8f1VBG9LLyhtDejib2y4VzXWjubXHq95devqqEn/0/KRmR1Vl
+        ENjao39nm2GKYbFwq+qgjGo=
+X-Google-Smtp-Source: AGHT+IFqlLk7XhluQ0MPa1+L883EOj4GTHCKbmC7suG1Q8L8HSn3/4TKpm+v92OpbRxvZRhbbZp4kA==
+X-Received: by 2002:a5d:51cd:0:b0:317:3c89:7f03 with SMTP id n13-20020a5d51cd000000b003173c897f03mr2726596wrv.5.1695223301943;
+        Wed, 20 Sep 2023 08:21:41 -0700 (PDT)
+Received: from primary ([212.34.23.120])
+        by smtp.gmail.com with ESMTPSA id o9-20020a5d62c9000000b00317afc7949csm18775710wrv.50.2023.09.20.08.21.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 08:21:21 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 08:21:21 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: linux-next: Tree for Sep 12 (bcachefs)
-Message-ID: <202309200813.C46E52F4@keescook>
-References: <20230912152645.0868a96a@canb.auug.org.au>
- <202309131803.6A3C1D05A@keescook>
- <20230914193807.ozcmylp6n6dsqkbi@moria.home.lan>
- <202309141708.C8B61D4D@keescook>
- <20230919212318.6kr772hz3m5dsyck@moria.home.lan>
+        Wed, 20 Sep 2023 08:21:41 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 11:21:38 -0400
+From:   Abdel Alkuor <alkuor@gmail.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        abdelalkuor@geotab.com, ryan.eleceng@gmail.com
+Subject: Re: [PATCH v5 00/15] Add TPS25750 USB type-C PD controller support
+Message-ID: <ZQsOAi2bkBk8zHMr@primary>
+References: <20230917152639.21443-1-alkuor@gmail.com>
+ <ZQhXXeVo6LaZe20a@kuha.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230919212318.6kr772hz3m5dsyck@moria.home.lan>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZQhXXeVo6LaZe20a@kuha.fi.intel.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 05:23:18PM -0400, Kent Overstreet wrote:
-> On Thu, Sep 14, 2023 at 05:20:41PM -0700, Kees Cook wrote:
-> > Because they're ambiguous and then the compiler can't do appropriate
-> > bounds checking, compile-time diagnostics, etc. Maybe it's actually zero
-> > sized, maybe it's not. Nothing stops them from being in the middle of
-> > the structure so if someone accidentally tries to put members after it
-> > (which has happened before), we end up with bizarre corruptions, etc,
-> > etc. Flexible arrays are unambiguous, and that's why we committed to
-> > converting all the fake flex arrays. The compiler does not have to guess
-> > (or as has been the case: give up on) figuring out what was intended.
+On Mon, Sep 18, 2023 at 04:57:49PM +0300, Heikki Krogerus wrote:
+> On Sun, Sep 17, 2023 at 11:26:24AM -0400, Abdel Alkuor wrote:
+> > From: Abdel Alkuor <abdelalkuor@geotab.com>
+> > 
+> > TPS25750 USB type-C PD controller has the same register offsets as
+> > tps6598x. The following is a summary of incorporating TPS25750 into
+> > TPS6598x driver:
+> > 
+> > - Only Check VID register (0x00) for TPS6598x and cd321x, as TPS25750 doesn't
+> >   have VID register.
+> > 
+> > - TypeC port registration will be registered differently for each PD
+> >   controller. TPS6598x uses system configuration register (0x28) to get
+> >   pr/dr capabilities. On the other hand, TPS25750 will use data role property
+> >   and PD status register (0x40) to get pr/dr capabilities as TPS25750 doesn't
+> >   have register 0x28 supported.
+> > 
+> > - TPS25750 requires writing a binary configuration to switch PD
+> >   controller from PTCH mode to APP mode which needs the following changes:
+> >   - Add PTCH mode to the modes list.
+> >   - Add an argument to tps6598x_check_mode to return the current mode.
+> >   - Currently, tps6598x_exec_cmd has cmd timeout hardcoded to 1 second,
+> >     and doesn't wait before checking DATA_OUT response. In TPS25750, patch 4CCs
+> >     take longer than 1 second to execute and some requires a delay before
+> >     checking DATA_OUT. To accommodate that, cmd_timeout and response_delay will
+> >     be added as arguments to tps6598x_exec_cmd.
+> >   - Implement applying patch sequence for TPS25750.
+> > 
+> > - In pm suspend callback, patch mode needs to be checked and the binary
+> >   configuration should be applied if needed.
+> > 
+> > - For interrupt, TPS25750 has only one event register (0x14) and one mask
+> >   register (0x16) of 11 bytes each, where TPS6598x has two event
+> >   and two mask registers of 8 bytes each. Both TPS25750 and TPS65986x
+> >   shares the same bit field offsets for events/masks/clear but many of
+> >   there fields are reserved in TPS25750, the following needs to be done in
+> >   tps6598x_interrupt:
+> >   - Read EVENT1 register as a block of 11 bytes when tps25750 is present
+> >   - Write CLEAR1 register as a block of 11 bytes when tps25750 is present
+> >   - Add trace_tps25750_irq
+> >   - During testing, I noticed that when a cable is plugged into the PD
+> >     controller and before PD controller switches to APP mode, there is a
+> >     lag between dr/pr updates and PlugInsertOrRemoval Event, so a check
+> >     for dr/pr change needs to be added along TPS_REG_INT_PLUG_EVENT check
+> > 
+> > - Add TPS25750 traces for status and power status registers. Trace for
+> >   data register won't be added as it doesn't exist in the device.
+> > 
+> > - Configure sleep mode for TPS25750.
 > 
-> So it does seem like we need to be able to distinguish between normal
-> flex arrays that go at the end of a struct vs. - what should we call
-> them, markers? that go in the middle.
-
-As long as markers are just treated as address offsets in an struct, I
-don't see a problem with them being 0-length arrays. I personally find
-them confusing since whatever follows the marker is usually what I'm
-trying to address, so the marker serves no purpose.
-
-In the case of finding the offset to a subset of struct members, we
-moved all of those in the kernel to using struct_group() instead. But
-again, this was just for removing ambiguity for the compiler's ability
-to enforce bounds checking (in this case on the memcpy()-family of
-functions).
-
+> This looks mostly okay, but I'm a bit uncomfortable with flags like
+> is_tps25750.
 > 
-> > Regardless, I'm just trying to help make sure folks that run with
-> > CONFIG_UBSAN_BOUNDS=y (as done in Android, Ubuntu, etc) will be able to
-> > use bcachefs without runtime warnings, etc. Indexing through a 0-sized
-> > array is going to trip the diagnostic either at runtime or when building
-> > with -Warray-bounds.
+> I think a better way would be to supply driver data. In it you would
+> have a callback for everything that needs to be customised.
 > 
-> I do have CONFIG_UBSAN_BOUNDS=y testing in my own CI, so all the runtime
-> errors should be fixed now (some of them with casts, but the casts are
-> in helpers that know what they're doing, not scattered around at
-> random).
-
-Great! Thank you for chasing them all down. If you also have
-CONFIG_FORTIFY_SOURCE=y then that should also be checking all the
-strcpy()/memcpy() families too. The only thing that may be a problem in
-the future is our effort to enable -Warray-bounds at build time. GCC
-still has one false positive[1] remaining, but once that's fixed
-(hopefully for GCC 14) the rest of the kernel is (was?) warning-free
-(in our local testing where CONFIG_CC_NO_ARRAY_BOUNDS has been disabled).
-
+> struct tipd_data {
+>         int (*interrupt)(int irq, void *data);
+>         ...
+> };
+> ...
+> static const struct tipd_data tps25750_data = {
+>         .interrupt = tps25750_interrupt,
+> ...
 > 
-> So I think we're good for now - I'm going to hold off on more cleanup
-> for now unless reports of actual ubsan splats turn up, since I'm getting
-> a bit bombarded at the moment :)
+> Something like that. You can on top of that still check
+> device_is_compatible(dev, "...") in some places.
+>
+Sounds good. I will create callbacks factory struct as you suggested
+and remove the flag.
+> 
+> thanks,
+> 
+> -- 
+> heikki
 
-Understood! :)
-
--Kees
-
-[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=109071
-
--- 
-Kees Cook
+Thanks,
+Abdel
