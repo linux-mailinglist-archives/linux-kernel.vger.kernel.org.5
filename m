@@ -2,137 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D81E17A6FC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777437A6FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 02:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjITAMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 20:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        id S229969AbjITARj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 20:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjITAMR (ORCPT
+        with ESMTP id S229534AbjITARi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 20:12:17 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EEE95
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:12:11 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-502b1bbe5c3so10471226e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:12:11 -0700 (PDT)
+        Tue, 19 Sep 2023 20:17:38 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25CEAB
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:17:32 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b6a51f360so70967917b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 17:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1695168730; x=1695773530; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1CviEhhoBlZKiA8T16gFI1fJMTl09yzCTO8KzCGSqRk=;
-        b=hYWcC2IGPnNYvnqdaw67I8Vv39Vgo+M0I2LOUt9NM/Uxj/k4EYFtf4+pwnp9w7RqxS
-         fGtuxenfZBJoR66WL+70p8rCJDOdWxtHZdsTmaXT/5WL3qnm4iu3JBrpLRBde88HXnh3
-         kCMy5ntUhv1ATGGuHh9igu0rs4e9rKLctQLgo=
+        d=google.com; s=20230601; t=1695169052; x=1695773852; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tT8RTtiIvMH0jr3h5GfFxiVuJzDdiA1NvVC8sxpn06Q=;
+        b=NnS8rvEjStTsox1SybNVAn5om+cHQtX9dZb8cenUc5AFD5/QjRWATh/3NWcDv3nMY6
+         9I/sGmwyTHp0VKD9+td4FJvO9W/ua6gOYfrAGx0EHfRuPSk5AB1yBcRuWDJJA86h3iUB
+         DbbXGZivz0gb4mddw2TPNRzwOccLZdgPcRFlOoe5ZOWezoyjcDykoFkhnH3VhoDQ7usY
+         S6wr48nwPcp854QNbMo++nAjONinYDSw/KigvEn52nU9fotX0vGB1NVH0tW0mlOY43rD
+         FZyacfOw3VhzwRqfh0Hju3HLDJms54bnvJUKTFNpiKQ9R+kkzCRS4qpGZ77Vsemqmr5u
+         SA1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695168730; x=1695773530;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1CviEhhoBlZKiA8T16gFI1fJMTl09yzCTO8KzCGSqRk=;
-        b=hQkb6+v/7atLNAeiIZEdIuvEUO50Zq6O4UVy7/GQDgEBcupbpxsVAk7N1phSxblmSa
-         00kmtXY1QKFkZea12/ggxdYv5CxTf8ujjTE0pvZoR2x6aiSZtDxeJJAU+zsV1OGytlB5
-         TZ/2RSqnMlUEhiHiBYEbWb7k0CYXvqxsniz7zU1zFVAbU2Hqq6WsFRuycEs7MxbLAK8q
-         cFMnHRLH7sW1Ivd4SkUsEYFkc9UCpLtFES6oClIsJtpKqfhpxHmctUOnQLTDN8Ev+0Rx
-         9albmVdcpfl98oqfuZfE28jQU8e2VJPrmXLmgjGqPRkmXOjF4hOQr0ZHP0msJIwo6X/9
-         8c2w==
-X-Gm-Message-State: AOJu0Yxty5OjA64laCqSYElzhrzKI6flH1nXfCKnQvFmKAyNaI83zJ75
-        7q1Z9ho2PQHysWVPq2nrCEMhJhaDMX8VkOpdMJwn
-X-Google-Smtp-Source: AGHT+IE8zP3BzZusNhL+aAwkiDwCmIGdHT4wX12zJCKO252ijdL/DxCfHuNz/3MG+5CSLu9l+w9+0x7JLX8hmpsYVXk=
-X-Received: by 2002:a05:6512:3ca6:b0:501:c1d4:cf68 with SMTP id
- h38-20020a0565123ca600b00501c1d4cf68mr1309878lfv.15.1695168729533; Tue, 19
- Sep 2023 17:12:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230912174928.528414-1-apatel@ventanamicro.com> <20230912174928.528414-2-apatel@ventanamicro.com>
-In-Reply-To: <20230912174928.528414-2-apatel@ventanamicro.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 19 Sep 2023 17:11:58 -0700
-Message-ID: <CAOnJCU+0iUR+ziwkPnEykoS+Ym8zkG-Afs_XyyCSD4fi8wjP6w@mail.gmail.com>
-Subject: Re: [PATCH v8 01/16] RISC-V: Don't fail in riscv_of_parent_hartid()
- for disabled HARTs
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
+        d=1e100.net; s=20230601; t=1695169052; x=1695773852;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tT8RTtiIvMH0jr3h5GfFxiVuJzDdiA1NvVC8sxpn06Q=;
+        b=TBf48LvSvU7L1X5xnKhEb2JwlsHCTr1hDO6GeB4gtC1QLDNOiGCnOEdCnpL/amLZxM
+         rbhg8qOmOF1khyxKQQTn3zsPHh8J0iPy5fXVHgbzcyfXbC6eCNIw/IlASkAivhroBBqI
+         k6pwTXyXLduQieaKeHhEBnYJGnw6qANDJb12PMB/PAr2654WO54tUFAlpIOrNc0lXE1G
+         bVhpDfEBmbzFsPQJblrGoSNgNqfIOhfXqffxK4mfja/31EQrvq9JiRU86Hat3knYQlnn
+         f36n93m3fs8Gw2hrwCCJ/OnTEBwhW05YcFyU5534rD9C9dj8gvYXbQNpjpOmsPkWtUp8
+         9GNQ==
+X-Gm-Message-State: AOJu0YzHRR1biMMBLDMPMaf6REMwDAiT89QY70rejMXSGw2wCrARpMTR
+        ti3ojoN4TPJCdTyHBXq/ja/RQqtwGLsk
+X-Google-Smtp-Source: AGHT+IHXYkvHxsnm+XtyucMHmTP6WHJAmizuj0WQQpgTjADkwA/bJi/QLtEi5t/MKjFM1E/F7Det8is3uPc/
+X-Received: from maskray.svl.corp.google.com ([2620:15c:2d3:205:57db:b73a:fd87:4f18])
+ (user=maskray job=sendgmr) by 2002:a81:b1c8:0:b0:58c:7cb1:10f with SMTP id
+ p191-20020a81b1c8000000b0058c7cb1010fmr15525ywh.9.1695169051817; Tue, 19 Sep
+ 2023 17:17:31 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 17:17:28 -0700
+Mime-Version: 1.0
+Message-ID: <20230920001728.1439947-1-maskray@google.com>
+Subject: [PATCH] x86/speculation, objtool: Use absolute relocations for annotations
+From:   Fangrui Song <maskray@google.com>
+To:     x86@kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 10:50=E2=80=AFAM Anup Patel <apatel@ventanamicro.co=
-m> wrote:
->
-> The riscv_of_processor_hartid() used by riscv_of_parent_hartid() fails
-> for HARTs disabled in the DT. This results in the following warning
-> thrown by the RISC-V INTC driver for the E-core on SiFive boards:
->
-> [    0.000000] riscv-intc: unable to find hart id for /cpus/cpu@0/interru=
-pt-controller
->
-> The riscv_of_parent_hartid() is only expected to read the hartid from
-> the DT so we should directly call of_get_cpu_hwid() instead of calling
-> riscv_of_processor_hartid().
->
-> Fixes: ad635e723e17 ("riscv: cpu: Add 64bit hartid support on RV64")
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/kernel/cpu.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-> index c17dacb1141c..157ace8b262c 100644
-> --- a/arch/riscv/kernel/cpu.c
-> +++ b/arch/riscv/kernel/cpu.c
-> @@ -125,13 +125,14 @@ int __init riscv_early_of_processor_hartid(struct d=
-evice_node *node, unsigned lo
->   */
->  int riscv_of_parent_hartid(struct device_node *node, unsigned long *hart=
-id)
->  {
-> -       int rc;
-> -
->         for (; node; node =3D node->parent) {
->                 if (of_device_is_compatible(node, "riscv")) {
-> -                       rc =3D riscv_of_processor_hartid(node, hartid);
-> -                       if (!rc)
-> -                               return 0;
-> +                       *hartid =3D (unsigned long)of_get_cpu_hwid(node, =
-0);
-> +                       if (*hartid =3D=3D ~0UL) {
-> +                               pr_warn("Found CPU without hart ID\n");
-> +                               return -ENODEV;
-> +                       }
-> +                       return 0;
->                 }
->         }
->
-> --
-> 2.34.1
->
+.discard.retpoline_safe sections do not have the SHF_ALLOC flag.  These
+sections referencing text sections' STT_SECTION symbols with PC-relative
+relocations like R_386_PC32 [0] is conceptually not suitable.  Newer
+LLD will report warnings for REL relocations even for relocatable links
+[1].
 
-LGTM.
+    ld.lld: warning: vmlinux.a(drivers/i2c/busses/i2c-i801.o):(.discard.retpoline_safe+0x120): has non-ABS relocation R_386_PC32 against symbol ''
 
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+Switch to absolute relocations instead, which indicate link-time
+addresses.  In a relocatable link, these addresses are also output
+section offsets, used by checks in tools/objtool/check.c.  When linking
+vmlinux, these .discard.* sections will be discarded, therefore it is
+not a problem that R_X86_64_32 cannot represent a kernel address.
 
---=20
-Regards,
-Atish
+Alternatively, we could set the SHF_ALLOC flag for .discard.* sections,
+but I think non-SHF_ALLOC for sections to be discarded makes more sense.
+
+Note: if we decide to never support REL architectures (e.g. arm, i386),
+we can utilize R_*_NONE relocations (.reloc ., BFD_RELOC_NONE, sym),
+making .discard.* sections zero-sized.  That said, the section content
+waste is 4 bytes per entry, much smaller than sizeof(Elf{32,64}_Rel).
+
+[0] commit 1c0c1faf5692 ("objtool: Use relative pointers for annotations")
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1937 [1]
+Signed-off-by: Fangrui Song <maskray@google.com>
+---
+ arch/x86/include/asm/alternative.h   |  4 ++--
+ arch/x86/include/asm/nospec-branch.h |  4 ++--
+ include/linux/objtool.h              | 10 +++++-----
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
+index 9c4da699e11a..65f79092c9d9 100644
+--- a/arch/x86/include/asm/alternative.h
++++ b/arch/x86/include/asm/alternative.h
+@@ -58,7 +58,7 @@
+ #define ANNOTATE_IGNORE_ALTERNATIVE				\
+ 	"999:\n\t"						\
+ 	".pushsection .discard.ignore_alts\n\t"			\
+-	".long 999b - .\n\t"					\
++	".long 999b\n\t"					\
+ 	".popsection\n\t"
+ 
+ /*
+@@ -352,7 +352,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
+ .macro ANNOTATE_IGNORE_ALTERNATIVE
+ 	.Lannotate_\@:
+ 	.pushsection .discard.ignore_alts
+-	.long .Lannotate_\@ - .
++	.long .Lannotate_\@
+ 	.popsection
+ .endm
+ 
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index c55cc243592e..4952b73d944e 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -196,7 +196,7 @@
+ .macro ANNOTATE_RETPOLINE_SAFE
+ .Lhere_\@:
+ 	.pushsection .discard.retpoline_safe
+-	.long .Lhere_\@ - .
++	.long .Lhere_\@
+ 	.popsection
+ .endm
+ 
+@@ -334,7 +334,7 @@
+ #define ANNOTATE_RETPOLINE_SAFE					\
+ 	"999:\n\t"						\
+ 	".pushsection .discard.retpoline_safe\n\t"		\
+-	".long 999b - .\n\t"					\
++	".long 999b\n\t"					\
+ 	".popsection\n\t"
+ 
+ typedef u8 retpoline_thunk_t[RETPOLINE_THUNK_SIZE];
+diff --git a/include/linux/objtool.h b/include/linux/objtool.h
+index 03f82c2c2ebf..6f6da95fe7f9 100644
+--- a/include/linux/objtool.h
++++ b/include/linux/objtool.h
+@@ -48,13 +48,13 @@
+ #define ANNOTATE_NOENDBR					\
+ 	"986: \n\t"						\
+ 	".pushsection .discard.noendbr\n\t"			\
+-	".long 986b - .\n\t"					\
++	".long 986b\n\t"					\
+ 	".popsection\n\t"
+ 
+ #define ASM_REACHABLE							\
+ 	"998:\n\t"							\
+ 	".pushsection .discard.reachable\n\t"				\
+-	".long 998b - .\n\t"						\
++	".long 998b\n\t"						\
+ 	".popsection\n\t"
+ 
+ #else /* __ASSEMBLY__ */
+@@ -66,7 +66,7 @@
+ #define ANNOTATE_INTRA_FUNCTION_CALL				\
+ 	999:							\
+ 	.pushsection .discard.intra_function_calls;		\
+-	.long 999b - .;						\
++	.long 999b;						\
+ 	.popsection;
+ 
+ /*
+@@ -118,7 +118,7 @@
+ .macro ANNOTATE_NOENDBR
+ .Lhere_\@:
+ 	.pushsection .discard.noendbr
+-	.long	.Lhere_\@ - .
++	.long	.Lhere_\@
+ 	.popsection
+ .endm
+ 
+@@ -141,7 +141,7 @@
+ .macro REACHABLE
+ .Lhere_\@:
+ 	.pushsection .discard.reachable
+-	.long	.Lhere_\@ - .
++	.long	.Lhere_\@
+ 	.popsection
+ .endm
+ 
+-- 
+2.42.0.459.ge4e396fd5e-goog
+
