@@ -2,94 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E04F7A827D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEFC7A8278
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 14:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236278AbjITM7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 08:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
+        id S236189AbjITM7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 08:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236090AbjITM70 (ORCPT
+        with ESMTP id S236324AbjITM7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 08:59:26 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 05:59:20 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38KCx5La045258;
-        Wed, 20 Sep 2023 07:59:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695214745;
-        bh=hdo+tzS4ia/0mO/1cuvpBQdoVnI6w8AOqdw1l9UCOHQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=le1AWPMJOqz4H0ioNw/BXhKgO2nA7DBzIc9KbWHJ+/AsjC5j/XoDMvfK8mDhtS5NU
-         5HsEo+8gAxAOsBCmaFtu0vCkCiP0FbfijO0X/rRWxtGfgJW1VT9c3yljElAPT6DdTz
-         1gjeLRY4LkDOvZo4VGHoG1xH9qU2+tKJjPWIuiIM=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38KCx4kT006292
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 Sep 2023 07:59:05 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 20
- Sep 2023 07:59:04 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 20 Sep 2023 07:59:04 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38KCx47Y107533;
-        Wed, 20 Sep 2023 07:59:04 -0500
-Date:   Wed, 20 Sep 2023 07:59:04 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Dhruva Gole <d-gole@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <u.kleine-koenig@pengutronix.de>,
-        Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <vibhore@ti.com>
-Subject: Re: [PATCH] firmware: ti_sci: Mark driver as non removable
-Message-ID: <20230920125904.omqvmzr2xlxqcouu@bonfire>
-References: <20230907171700.1922453-1-d-gole@ti.com>
+        Wed, 20 Sep 2023 08:59:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4946D129;
+        Wed, 20 Sep 2023 05:59:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E2A9C433C9;
+        Wed, 20 Sep 2023 12:59:06 +0000 (UTC)
+Message-ID: <a3c61e5a-e5cb-43d5-a3dc-80806f8da672@xs4all.nl>
+Date:   Wed, 20 Sep 2023 14:59:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230907171700.1922453-1-d-gole@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 1/7] media: v4l2: Add ignore_streaming flag
+Content-Language: en-US, nl
+To:     Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Robert Beckett <bob.beckett@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
+ <20230915-wave5_v12_on_media_master-v12-1-92fc66cd685d@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20230915-wave5_v12_on_media_master-v12-1-92fc66cd685d@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22:47-20230907, Dhruva Gole wrote:
-> The TI-SCI message protocol provides a way to communicate between
-> various compute processors with a central system controller entity. It
-> provides the fundamental device management capability and clock control
-> in the SOCs that it's used in.
+On 15/09/2023 23:11, Sebastian Fricke wrote:
+> Add a new flag to the `struct v4l2_m2m_dev` to toggle whether a queue
+> must be streaming in order to allow queuing jobs to the ready queue.
+> Currently, both queues (CAPTURE & OUTPUT) must be streaming in order to
+> allow adding new jobs. This behavior limits the usability of M2M for
+> some drivers, as these have to be able, to perform analysis of the
+
+able, to -> able to
+
+> sequence to ensure, that userspace prepares the CAPTURE queue correctly.
+
+ensure, that -> ensure that
+
 > 
-> Ensure that the driver isn't unbound by suppressing its bind and unbind
-> sysfs attributes. As the driver is built-in there is no way to remove
-> device once bound.
+> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> ---
+>  include/media/v4l2-mem2mem.h | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
-> We can also remove the ti_sci_remove call along with the
-> ti_sci_debugfs_destroy as there are no callers for it any longer.
-> 
-> Fixes: aa276781a64a ("firmware: Add basic support for TI System Control Interface (TI-SCI) protocol")
-> Suggested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Dhruva Gole <d-gole@ti.com>
+> diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
+> index d6c8eb2b5201..97a48e61e358 100644
+> --- a/include/media/v4l2-mem2mem.h
+> +++ b/include/media/v4l2-mem2mem.h
+> @@ -57,6 +57,16 @@ struct v4l2_m2m_dev;
+>   * @rdy_spinlock: spin lock to protect the struct usage
+>   * @num_rdy:	number of buffers ready to be processed
+>   * @buffered:	is the queue buffered?
+> + * @ignore_streaming: Dictates whether the queue must be streaming for a job to
+> + *		      be queued.
+> + *		      This is useful, for example, when the driver requires to
+> + *		      initialize the sequence with a firmware, where only a
+> + *		      queued OUTPUT queue buffer and STREAMON on the OUTPUT
+> + *		      queue is required to perform the anlysis of the bitstream
+> + *		      header.
+> + *		      This means the driver is responsible for implementing the
+> + *		      job_ready callback correctly to make sure that requirements
+> + *		      for actual decoding are met.
 
-Add Reported-by and Closes tags
+This is a bad description and field name.
 
-Also please address the comment from Uwe on improving the commit message
+Basically what this field does is that, if true, the streaming state of the
+capture queue is ignored. So just call it that: ignore_cap_streaming.
 
-[...]
+And explain that, if true, job_ready() will be called even if the capture
+queue is not streaming, and that that can be used to allow hardware to
+analyze the bitstream header that arrives on the OUTPUT queue.
 
--- 
+Also, doesn't this field belong to struct v4l2_m2m_ctx? It makes no sense
+for the output queue, this is really a configuration for the m2m context as
+a whole.
+
+>   *
+>   * Queue for buffers ready to be processed as soon as this
+>   * instance receives access to the device.
+> @@ -69,6 +79,7 @@ struct v4l2_m2m_queue_ctx {
+>  	spinlock_t		rdy_spinlock;
+>  	u8			num_rdy;
+>  	bool			buffered;
+> +	bool			ignore_streaming;
+>  };
+>  
+>  /**
+> @@ -564,6 +575,12 @@ static inline void v4l2_m2m_set_dst_buffered(struct v4l2_m2m_ctx *m2m_ctx,
+>  	m2m_ctx->cap_q_ctx.buffered = buffered;
+>  }
+>  
+> +static inline void v4l2_m2m_set_dst_ignore_streaming(struct v4l2_m2m_ctx *m2m_ctx,
+> +						     bool ignore_streaming)
+> +{
+> +	m2m_ctx->cap_q_ctx.ignore_streaming = ignore_streaming;
+> +}
+> +
+
+I think this is overkill, esp. when the field is moved to m2m_ctx. Just clearly
+document that drivers can set this.
+
 Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
+	Hans
+
+>  /**
+>   * v4l2_m2m_ctx_release() - release m2m context
+>   *
+> 
+
