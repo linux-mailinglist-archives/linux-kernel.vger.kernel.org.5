@@ -2,127 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC507A7590
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988597A7599
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 10:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbjITIPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 04:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
+        id S232073AbjITIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 04:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbjITIPI (ORCPT
+        with ESMTP id S230447AbjITIR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 04:15:08 -0400
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D79E9E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 01:15:02 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VsUU2iq_1695197698;
-Received: from 30.97.48.72(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VsUU2iq_1695197698)
-          by smtp.aliyun-inc.com;
-          Wed, 20 Sep 2023 16:14:59 +0800
-Message-ID: <0d92b375-c583-a21e-4e5b-355932a8b30e@linux.alibaba.com>
-Date:   Wed, 20 Sep 2023 16:15:03 +0800
+        Wed, 20 Sep 2023 04:17:57 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C784292;
+        Wed, 20 Sep 2023 01:17:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695197871; x=1726733871;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uscGBvmgvNEc+s+JZQTVBQ0oYKPyV4d4IvX6BfOqdrY=;
+  b=oYvOOBsnJ7l/6dtoQPgDfdTDdDnRAVOg5gm756PHaPjEVSR9Il09AisN
+   v9ircF4GyXEXqTbJwBbTRgLgZFtpw25My42wnVKKG4v/pCwUoiYJHJXHZ
+   u8nGwgFReQRWJq3809ZbRwt4KItQmJ7+VlfJGSTw174A+49T3haMlYJaO
+   j4R35XRf0XUD2yzobqk6lj5/A9N1sYM1tb01z3Mu6+MS6rDrVvzesBWQT
+   VbcbUHK1axmEKCTdyfwDvzhwJYtHQ+imW2ylWfeLvppml5r5uoAdcFidv
+   ND8pvlFm4PIbP5b/kxAvnDzDicBaawEBK+mhJrxINwEq5or3Wb2ioI69/
+   A==;
+X-CSE-ConnectionGUID: G6ieCjkyQ2aMLIcShOg63A==
+X-CSE-MsgGUID: fFvmlZASSraejIWgrHECZg==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,161,1688454000"; 
+   d="asc'?scan'208";a="5607864"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Sep 2023 01:17:39 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 20 Sep 2023 01:17:13 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 20 Sep 2023 01:17:10 -0700
+Date:   Wed, 20 Sep 2023 09:16:53 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Chen Wang <unicornxw@gmail.com>
+CC:     <aou@eecs.berkeley.edu>, <chao.wei@sophgo.com>, <conor@kernel.org>,
+        <devicetree@vger.kernel.org>, <emil.renner.berthing@canonical.com>,
+        <guoren@kernel.org>, <jszhang@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
+        <robh+dt@kernel.org>, <xiaoguang.xing@sophgo.com>,
+        Chen Wang <wangchen20@iscas.ac.cn>
+Subject: Re: [PATCH v2 10/11] riscv: dts: sophgo: add Milk-V Pioneer board
+ device tree
+Message-ID: <20230920-papyrus-corned-e121fb9dd7b1@wendy>
+References: <cover.1695189879.git.wangchen20@iscas.ac.cn>
+ <e9ff83e4fac9a9ebd217ef10e5f8d3260342102b.1695189879.git.wangchen20@iscas.ac.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 2/4] mm/compaction: optimize >0 order folio compaction
- with free page split.
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rohan Puri <rohan.puri15@gmail.com>,
-        Mcgrof Chamberlain <mcgrof@kernel.org>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        John Hubbard <jhubbard@nvidia.com>
-References: <20230912162815.440749-1-zi.yan@sent.com>
- <20230912162815.440749-3-zi.yan@sent.com>
- <28f76c7c-4b84-5e08-2f27-07592d8078a2@linux.alibaba.com>
- <40CD5F50-FC29-46FB-A3E2-76C6D14D390E@nvidia.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <40CD5F50-FC29-46FB-A3E2-76C6D14D390E@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DKUtOVTQQHokYjGs"
+Content-Disposition: inline
+In-Reply-To: <e9ff83e4fac9a9ebd217ef10e5f8d3260342102b.1695189879.git.wangchen20@iscas.ac.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--DKUtOVTQQHokYjGs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hey,
 
-On 9/19/2023 1:20 AM, Zi Yan wrote:
-> On 18 Sep 2023, at 3:34, Baolin Wang wrote:
-> 
->> On 9/13/2023 12:28 AM, Zi Yan wrote:
->>> From: Zi Yan <ziy@nvidia.com>
->>>
->>> During migration in a memory compaction, free pages are placed in an array
->>> of page lists based on their order. But the desired free page order (i.e.,
->>> the order of a source page) might not be always present, thus leading to
->>> migration failures. Split a high order free pages when source migration
->>> page has a lower order to increase migration successful rate.
->>>
->>> Note: merging free pages when a migration fails and a lower order free
->>> page is returned via compaction_free() is possible, but there is too much
->>> work. Since the free pages are not buddy pages, it is hard to identify
->>> these free pages using existing PFN-based page merging algorithm.
->>>
->>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>> ---
->>>    mm/compaction.c | 40 +++++++++++++++++++++++++++++++++++++++-
->>>    1 file changed, 39 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/mm/compaction.c b/mm/compaction.c
->>> index 868e92e55d27..45747ab5f380 100644
->>> --- a/mm/compaction.c
->>> +++ b/mm/compaction.c
->>> @@ -1801,9 +1801,46 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->>>    	struct compact_control *cc = (struct compact_control *)data;
->>>    	struct folio *dst;
->>>    	int order = folio_order(src);
->>> +	bool has_isolated_pages = false;
->>>   +again:
->>>    	if (!cc->freepages[order].nr_free) {
->>> -		isolate_freepages(cc);
->>> +		int i;
->>> +
->>> +		for (i = order + 1; i <= MAX_ORDER; i++) {
->>> +			if (cc->freepages[i].nr_free) {
->>> +				struct page *freepage =
->>> +					list_first_entry(&cc->freepages[i].pages,
->>> +							 struct page, lru);
->>> +
->>> +				int start_order = i;
->>> +				unsigned long size = 1 << start_order;
->>> +
->>> +				list_del(&freepage->lru);
->>> +				cc->freepages[i].nr_free--;
->>> +
->>> +				while (start_order > order) {
->>> +					start_order--;
->>> +					size >>= 1;
->>> +
->>> +					list_add(&freepage[size].lru,
->>> +						&cc->freepages[start_order].pages);
->>> +					cc->freepages[start_order].nr_free++;
->>> +					set_page_private(&freepage[size], start_order);
->>
->> IIUC, these split pages should also call functions to initialize? e.g. prep_compound_page()?
-> 
-> Not at this place. It is done right below and above "done" label. When free pages
-> are on cc->freepages, we want to keep them without being post_alloc_hook() or
-> prep_compound_page() processed for a possible future split. A free page is
-> only initialized when it is returned by compaction_alloc().
+On Wed, Sep 20, 2023 at 02:40:53PM +0800, Chen Wang wrote:
+> Milk-V Pioneer [1] is a developer motherboard based on SOPHON
+> SG2042 in a standard mATX form factor.
 
-Ah, I see. Thanks for explanation.
+> It is a good
+> choice for RISC-V developers and hardware pioneers to
+> experience the cutting edge technology of RISC-V.
+
+I'd rather we didn't put advertising into commit messages.
+
+> Currently only support booting into console with only uart
+> enabled, other features will be added soon later.
+>=20
+> [1]: https://milkv.io/pioneer
+
+Make this a link tag please
+
+Link: https://milkv.io/pioneer [1]
+> Acked-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+> ---
+>  arch/riscv/boot/dts/Makefile                  |  1 +
+>  arch/riscv/boot/dts/sophgo/Makefile           |  3 +++
+>  .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  | 19 +++++++++++++++++++
+>  3 files changed, 23 insertions(+)
+>  create mode 100644 arch/riscv/boot/dts/sophgo/Makefile
+>  create mode 100644 arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
+>=20
+> diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
+> index f60a280abb15..94788486f13e 100644
+> --- a/arch/riscv/boot/dts/Makefile
+> +++ b/arch/riscv/boot/dts/Makefile
+> @@ -6,5 +6,6 @@ subdir-y +=3D renesas
+>  subdir-y +=3D sifive
+>  subdir-y +=3D starfive
+>  subdir-y +=3D thead
+> +subdir-y +=3D sophgo
+
+Alphanumerical order please.
+
+Thanks,
+Conor.
+
+> =20
+>  obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
+> diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/so=
+phgo/Makefile
+> new file mode 100644
+> index 000000000000..5a471b19df22
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/sophgo/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +dtb-$(CONFIG_ARCH_SOPHGO) +=3D sg2042-milkv-pioneer.dtb
+> +
+> diff --git a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts b/arch/r=
+iscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
+> new file mode 100644
+> index 000000000000..d6e8c0285d1e
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
+> @@ -0,0 +1,19 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> +/*
+> + * Copyright (C) 2022 Sophgo Technology Inc. All rights reserved.
+> + */
+> +
+> +#include "sg2042.dtsi"
+> +
+> +/ {
+> +	model =3D "Milk-V Pioneer";
+> +	compatible =3D "milkv,pioneer", "sophgo,sg2042";
+> +
+> +	chosen: chosen {
+> +		stdout-path =3D "serial0";
+> +	};
+> +};
+> +
+> +&uart0 {
+> +	status =3D "okay";
+> +};
+> --=20
+> 2.25.1
+>=20
+
+--DKUtOVTQQHokYjGs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQqqagAKCRB4tDGHoIJi
+0kvOAP9pT8N0unm3d9107Xii5Hc5v6uDLVvVjIg3qUcN0aE6swD/ZyuhzMbHo9vI
+DVlBtRVexx2a45InVtBHxBpRyfyUrQ0=
+=pTAC
+-----END PGP SIGNATURE-----
+
+--DKUtOVTQQHokYjGs--
