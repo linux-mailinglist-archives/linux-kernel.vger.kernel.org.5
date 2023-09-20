@@ -2,258 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 010AE7A6FFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 03:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CE87A7002
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 03:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbjITBM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Sep 2023 21:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
+        id S231808AbjITBPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Sep 2023 21:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbjITBMY (ORCPT
+        with ESMTP id S229641AbjITBPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Sep 2023 21:12:24 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5043B3;
-        Tue, 19 Sep 2023 18:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695172332;
-        bh=naroMBErSn2t3KbKYiTgYiGNYwV6PHYlOn96MGhMVbU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eQhvCkGQy6/Zb2WjeJo7Q0LxmIDUIvRrFY3Vv9TAIwmeq0MYlPuzrgfJffsVYAToE
-         mU8tGlAN/uCQhcdWBDbg2hh8080qBybcRGIu9srJg8Mu/29jGnl9Qpv9iNKd34GgQF
-         fbssHai6RLXbVsIb8eypLsQM2l1UQCheHX6a/wCcaWcTUbi2memdDNPwSWFV+7zI37
-         WAE3/gULCeuT2Pa5MBg6Orm61rPdfFo88ZLx8MukYpErYU+AqoojpCdAAVGE2zgY0a
-         qXyRAZy7d4G+cnreP6M4soU9Yoa4ZSZ9Z9X6AblzWHOwg1PWzQydRTDh7S9cvuEoXZ
-         kggzWQdIXTxag==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rr0qw0Fyhz4xGM;
-        Wed, 20 Sep 2023 11:12:11 +1000 (AEST)
-Date:   Wed, 20 Sep 2023 11:12:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, Karol Herbst <kherbst@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>
-Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
-Message-ID: <20230920111210.505e5daa@canb.auug.org.au>
+        Tue, 19 Sep 2023 21:15:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E0BBD
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 18:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695172495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=99BVBvPZ3yZ06BgSazMx7Jl4RmSGfTzaJowoaUdSNng=;
+        b=fW5q/tPisdAnb8N30fxrCSi8jFCgF6nEqBQ85ia2RevSVLLAWXmSdTeSwczGSsJN1fL5Bn
+        jiui+xHlj/XvgPc2f1+xLhM4z7rzCDBs74LSHX6ntA08YkMKsLa+WlXX2W1Y0tPCxWrmqL
+        1MfV5ke5C6OasRm9tEhdXTTMYYWuasQ=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-693-JtHHZnEKMNOGr_RswbgLqA-1; Tue, 19 Sep 2023 21:14:53 -0400
+X-MC-Unique: JtHHZnEKMNOGr_RswbgLqA-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2bcc2fd542bso77938761fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Sep 2023 18:14:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695172492; x=1695777292;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=99BVBvPZ3yZ06BgSazMx7Jl4RmSGfTzaJowoaUdSNng=;
+        b=S87kbw6vzLYfgXaBxdF6Yj3prx067ZraTp6J93eVS/SjgugtHM0FX8JirafsBp4AIO
+         QJX1KAl32JOo1dWsxe8MAPAXrRexmpY2lEH4omSoMZ/zJZPSh+OrEle5XAT03XhU7DrG
+         CAt0wDgX1MOByONV3LXlvES11MIiJ/eLUNXZfphBt95VZwJs+JYj/Iod2muq3vtQdcSz
+         DXCIVXfceV0O0r+dRBWl92ZmkRNxzw8kCwx+uU6FpDVBNOkBseLHgrtCHsrUGNxKXxkH
+         DfW4IzsC7dYIZkQ6g3oy1FHFfjwGYGemSQa7R5VcMLiykfnKo9qKRFyxCDhRdwpw01fa
+         0s2g==
+X-Gm-Message-State: AOJu0YyJ142cJvTEoEA9XJPQFE8Gr5j3mOfZMV4a11ZWdXwbc0APbpaa
+        xjGxnxV++IgDusGcrc+i+6zJsHoR06IJz022Z5AMQqiOq8impv0WnU0TDCkxWBeSEvoHoUJdsbo
+        sIZDMF5AiA2y+eEvVVSpX1jkxIIYAw4BD+Lqx+VaK
+X-Received: by 2002:a19:2d15:0:b0:500:acf1:b432 with SMTP id k21-20020a192d15000000b00500acf1b432mr902222lfj.63.1695172492109;
+        Tue, 19 Sep 2023 18:14:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHj7eAx4jZAQah1riRAQMhwzq3vg+DaA8QjTtiq/c1iWCtJMTr/gNV0zbLVkJXSfKfeswovEpIUFLQUMBtrxoc=
+X-Received: by 2002:a19:2d15:0:b0:500:acf1:b432 with SMTP id
+ k21-20020a192d15000000b00500acf1b432mr902204lfj.63.1695172491630; Tue, 19 Sep
+ 2023 18:14:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/o52gEQ/sgnm94h5t6ow.E0z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230912130132.561193-1-dtatulea@nvidia.com> <CAPpAL=w6KeBG5Ur037GNQa=n_fdoUwrFo+ATsFtX9HbWPHZvsg@mail.gmail.com>
+ <CAJaqyWeVjKTPmGWwZ26TgebuzCaN8Z2FmPontHvZauOTQj0brQ@mail.gmail.com> <b223d828-2c08-841f-47fb-7cb072fa5ec9@oracle.com>
+In-Reply-To: <b223d828-2c08-841f-47fb-7cb072fa5ec9@oracle.com>
+From:   Lei Yang <leiyang@redhat.com>
+Date:   Wed, 20 Sep 2023 09:14:14 +0800
+Message-ID: <CAPpAL=zwz32gVmXzqEHEe6nZPfuE-GTXHdUa2MF9brpdZWw5+Q@mail.gmail.com>
+Subject: Re: [PATCH 00/16] vdpa: Add support for vq descriptor mappings
+To:     Si-Wei Liu <si-wei.liu@oracle.com>,
+        Eugenio Perez Martin <eperezma@redhat.com>,
+        Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/o52gEQ/sgnm94h5t6ow.E0z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+QE tested this series with regression testing on real nic, there are
+no new issues.
 
-Hi all,
+Tested-by: Lei Yang <leiyang@redhat.com>
 
-Today's linux-next merge of the drm-misc tree got a conflict in:
 
-  drivers/gpu/drm/nouveau/nouveau_connector.c
 
-between commit:
+On Fri, Sep 15, 2023 at 2:34=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.com> =
+wrote:
+>
+>
+>
+> On 9/13/2023 9:08 AM, Eugenio Perez Martin wrote:
+> > On Wed, Sep 13, 2023 at 3:03=E2=80=AFAM Lei Yang <leiyang@redhat.com> w=
+rote:
+> >> Hi Dragos, Eugenio and Si-Wei
+> >>
+> >> My name is Lei Yang, a software Quality Engineer from Red Hat.  And
+> >> always paying attention to improving the live migration downtime
+> >> issues because there are others QE asked about this problem when I
+> >> share live migration status  recently. Therefore I would like to test
+> >> it in my environment. Before the testing I want to know if there is an
+> >> expectation of downtime range based on this series of patches? In
+> >> addition, QE also can help do a regression test based on this series
+> >> of patches if there is a requirement.
+> >>
+> > Hi Lei,
+> >
+> > Thanks for offering the testing bandwidth!
+> >
+> > I think we can only do regression tests here, as the userland part is
+> > still not sent to qemu.
+> Right. Regression for now, even QEMU has it, to exercise the relevant
+> feature it would need a supporting firmware that is not yet available
+> for now. Just stay tuned.
+>
+> thanks for your patience,
+> -Siwei
+> >
+> >> Regards and thanks
+> >> Lei
+> >>
+> >>
+> >> On Tue, Sep 12, 2023 at 9:04=E2=80=AFPM Dragos Tatulea <dtatulea@nvidi=
+a.com> wrote:
+> >>> This patch series adds support for vq descriptor table mappings which
+> >>> are used to improve vdpa live migration downtime. The improvement com=
+es
+> >>> from using smaller mappings which take less time to create and destro=
+y
+> >>> in hw.
+> >>>
+> >>> The first part adds the vdpa core changes from Si-Wei [0].
+> >>>
+> >>> The second part adds support in mlx5_vdpa:
+> >>> - Refactor the mr code to be able to cleanly add descriptor mappings.
+> >>> - Add hardware descriptor mr support.
+> >>> - Properly update iotlb for cvq during ASID switch.
+> >>>
+> >>> [0] https://lore.kernel.org/virtualization/1694248959-13369-1-git-sen=
+d-email-si-wei.liu@oracle.com
+> >>>
+> >>> Dragos Tatulea (13):
+> >>>    vdpa/mlx5: Create helper function for dma mappings
+> >>>    vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
+> >>>    vdpa/mlx5: Take cvq iotlb lock during refresh
+> >>>    vdpa/mlx5: Collapse "dvq" mr add/delete functions
+> >>>    vdpa/mlx5: Rename mr destroy functions
+> >>>    vdpa/mlx5: Allow creation/deletion of any given mr struct
+> >>>    vdpa/mlx5: Move mr mutex out of mr struct
+> >>>    vdpa/mlx5: Improve mr update flow
+> >>>    vdpa/mlx5: Introduce mr for vq descriptor
+> >>>    vdpa/mlx5: Enable hw support for vq descriptor mapping
+> >>>    vdpa/mlx5: Make iotlb helper functions more generic
+> >>>    vdpa/mlx5: Update cvq iotlb mapping on ASID change
+> >>>    Cover letter: vdpa/mlx5: Add support for vq descriptor mappings
+> >>>
+> >>> Si-Wei Liu (3):
+> >>>    vdpa: introduce dedicated descriptor group for virtqueue
+> >>>    vhost-vdpa: introduce descriptor group backend feature
+> >>>    vhost-vdpa: uAPI to get dedicated descriptor group id
+> >>>
+> >>>   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
+> >>>   drivers/vdpa/mlx5/core/mr.c        | 191 ++++++++++++++++----------=
+---
+> >>>   drivers/vdpa/mlx5/core/resources.c |   6 +-
+> >>>   drivers/vdpa/mlx5/net/mlx5_vnet.c  | 100 ++++++++++-----
+> >>>   drivers/vhost/vdpa.c               |  27 ++++
+> >>>   include/linux/mlx5/mlx5_ifc.h      |   8 +-
+> >>>   include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
+> >>>   include/linux/vdpa.h               |  11 ++
+> >>>   include/uapi/linux/vhost.h         |   8 ++
+> >>>   include/uapi/linux/vhost_types.h   |   5 +
+> >>>   10 files changed, 264 insertions(+), 130 deletions(-)
+> >>>
+> >>> --
+> >>> 2.41.0
+> >>>
+>
 
-  1b254b791d7b ("drm/nouveau/disp: fix use-after-free in error handling of =
-nouveau_connector_create")
-
-from Linus' tree and commit:
-
-  8b7d92cad953 ("drm/nouveau/kms/nv50-: create connectors based on nvkm inf=
-o")
-
-from the drm-misc tree.
-
-I fixed it up (I think, see below) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/nouveau/nouveau_connector.c
-index 79ea30aac31f,94498c15b50e..000000000000
---- a/drivers/gpu/drm/nouveau/nouveau_connector.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
-@@@ -1295,70 -1303,76 +1303,75 @@@ nouveau_connector_create(struct drm_dev
-  	nv_connector->index =3D index;
-  	INIT_WORK(&nv_connector->irq_work, nouveau_dp_irq);
- =20
-- 	/* attempt to parse vbios connector type and hotplug gpio */
-- 	nv_connector->dcb =3D olddcb_conn(dev, index);
-- 	if (nv_connector->dcb) {
-- 		u32 entry =3D ROM16(nv_connector->dcb[0]);
-- 		if (olddcb_conntab(dev)[3] >=3D 4)
-- 			entry |=3D (u32)ROM16(nv_connector->dcb[2]) << 16;
--=20
-- 		nv_connector->type =3D nv_connector->dcb[0];
-- 		if (drm_conntype_from_dcb(nv_connector->type) =3D=3D
-- 					  DRM_MODE_CONNECTOR_Unknown) {
-- 			NV_WARN(drm, "unknown connector type %02x\n",
-- 				nv_connector->type);
-- 			nv_connector->type =3D DCB_CONNECTOR_NONE;
-+ 	if (disp->disp.conn_mask & BIT(nv_connector->index)) {
-+ 		ret =3D nvif_conn_ctor(&disp->disp, nv_connector->base.name, nv_connect=
-or->index,
-+ 				     &nv_connector->conn);
-+ 		if (ret) {
- -			kfree(nv_connector);
- -			return ERR_PTR(ret);
-++			goto drm_conn_err;
-  		}
- =20
-- 		/* Gigabyte NX85T */
-- 		if (nv_match_device(dev, 0x0421, 0x1458, 0x344c)) {
-- 			if (nv_connector->type =3D=3D DCB_CONNECTOR_HDMI_1)
-- 				nv_connector->type =3D DCB_CONNECTOR_DVI_I;
-+ 		switch (nv_connector->conn.info.type) {
-+ 		case NVIF_CONN_VGA      : type =3D DCB_CONNECTOR_VGA; break;
-+ 		case NVIF_CONN_DVI_I    : type =3D DCB_CONNECTOR_DVI_I; break;
-+ 		case NVIF_CONN_DVI_D    : type =3D DCB_CONNECTOR_DVI_D; break;
-+ 		case NVIF_CONN_LVDS     : type =3D DCB_CONNECTOR_LVDS; break;
-+ 		case NVIF_CONN_LVDS_SPWG: type =3D DCB_CONNECTOR_LVDS_SPWG; break;
-+ 		case NVIF_CONN_DP       : type =3D DCB_CONNECTOR_DP; break;
-+ 		case NVIF_CONN_EDP      : type =3D DCB_CONNECTOR_eDP; break;
-+ 		case NVIF_CONN_HDMI     : type =3D DCB_CONNECTOR_HDMI_0; break;
-+ 		default:
-+ 			WARN_ON(1);
-+ 			return NULL;
-  		}
- =20
-- 		/* Gigabyte GV-NX86T512H */
-- 		if (nv_match_device(dev, 0x0402, 0x1458, 0x3455)) {
-- 			if (nv_connector->type =3D=3D DCB_CONNECTOR_HDMI_1)
-- 				nv_connector->type =3D DCB_CONNECTOR_DVI_I;
-- 		}
-+ 		nv_connector->type =3D type;
-  	} else {
-- 		nv_connector->type =3D DCB_CONNECTOR_NONE;
-- 	}
-+ 		u8 *dcb =3D olddcb_conn(dev, nv_connector->index);
- =20
-- 	/* no vbios data, or an unknown dcb connector type - attempt to
-- 	 * figure out something suitable ourselves
-- 	 */
-- 	if (nv_connector->type =3D=3D DCB_CONNECTOR_NONE) {
-- 		struct nouveau_drm *drm =3D nouveau_drm(dev);
-- 		struct dcb_table *dcbt =3D &drm->vbios.dcb;
-- 		u32 encoders =3D 0;
-- 		int i;
-+ 		if (dcb)
-+ 			nv_connector->type =3D dcb[0];
-+ 		else
-+ 			nv_connector->type =3D DCB_CONNECTOR_NONE;
- =20
-- 		for (i =3D 0; i < dcbt->entries; i++) {
-- 			if (dcbt->entry[i].connector =3D=3D nv_connector->index)
-- 				encoders |=3D (1 << dcbt->entry[i].type);
-+ 		/* attempt to parse vbios connector type and hotplug gpio */
-+ 		if (nv_connector->type !=3D DCB_CONNECTOR_NONE) {
-+ 			if (drm_conntype_from_dcb(nv_connector->type) =3D=3D
-+ 						  DRM_MODE_CONNECTOR_Unknown) {
-+ 				NV_WARN(drm, "unknown connector type %02x\n",
-+ 					nv_connector->type);
-+ 				nv_connector->type =3D DCB_CONNECTOR_NONE;
-+ 			}
-  		}
- =20
-- 		if (encoders & (1 << DCB_OUTPUT_DP)) {
-- 			if (encoders & (1 << DCB_OUTPUT_TMDS))
-- 				nv_connector->type =3D DCB_CONNECTOR_DP;
-- 			else
-- 				nv_connector->type =3D DCB_CONNECTOR_eDP;
-- 		} else
-- 		if (encoders & (1 << DCB_OUTPUT_TMDS)) {
-- 			if (encoders & (1 << DCB_OUTPUT_ANALOG))
-- 				nv_connector->type =3D DCB_CONNECTOR_DVI_I;
-- 			else
-- 				nv_connector->type =3D DCB_CONNECTOR_DVI_D;
-- 		} else
-- 		if (encoders & (1 << DCB_OUTPUT_ANALOG)) {
-- 			nv_connector->type =3D DCB_CONNECTOR_VGA;
-- 		} else
-- 		if (encoders & (1 << DCB_OUTPUT_LVDS)) {
-- 			nv_connector->type =3D DCB_CONNECTOR_LVDS;
-- 		} else
-- 		if (encoders & (1 << DCB_OUTPUT_TV)) {
-- 			nv_connector->type =3D DCB_CONNECTOR_TV_0;
-+ 		/* no vbios data, or an unknown dcb connector type - attempt to
-+ 		 * figure out something suitable ourselves
-+ 		 */
-+ 		if (nv_connector->type =3D=3D DCB_CONNECTOR_NONE &&
-+ 		    !WARN_ON(drm->client.device.info.family >=3D NV_DEVICE_INFO_V0_TESL=
-A)) {
-+ 			struct dcb_table *dcbt =3D &drm->vbios.dcb;
-+ 			u32 encoders =3D 0;
-+ 			int i;
-+=20
-+ 			for (i =3D 0; i < dcbt->entries; i++) {
-+ 				if (dcbt->entry[i].connector =3D=3D nv_connector->index)
-+ 					encoders |=3D (1 << dcbt->entry[i].type);
-+ 			}
-+=20
-+ 			if (encoders & (1 << DCB_OUTPUT_TMDS)) {
-+ 				if (encoders & (1 << DCB_OUTPUT_ANALOG))
-+ 					nv_connector->type =3D DCB_CONNECTOR_DVI_I;
-+ 				else
-+ 					nv_connector->type =3D DCB_CONNECTOR_DVI_D;
-+ 			} else
-+ 			if (encoders & (1 << DCB_OUTPUT_ANALOG)) {
-+ 				nv_connector->type =3D DCB_CONNECTOR_VGA;
-+ 			} else
-+ 			if (encoders & (1 << DCB_OUTPUT_LVDS)) {
-+ 				nv_connector->type =3D DCB_CONNECTOR_LVDS;
-+ 			} else
-+ 			if (encoders & (1 << DCB_OUTPUT_TV)) {
-+ 				nv_connector->type =3D DCB_CONNECTOR_TV_0;
-+ 			}
-  		}
-  	}
- =20
-@@@ -1367,11 -1387,10 +1386,9 @@@
-  		ret =3D nouveau_bios_parse_lvds_table(dev, 0, &dummy, &dummy);
-  		if (ret) {
-  			NV_ERROR(drm, "Error parsing LVDS table, disabling\n");
---			kfree(nv_connector);
---			return ERR_PTR(ret);
-++			goto drm_conn_err;
-  		}
- =20
-- 		funcs =3D &nouveau_connector_funcs_lvds;
-  		break;
-  	case DRM_MODE_CONNECTOR_DisplayPort:
-  	case DRM_MODE_CONNECTOR_eDP:
-
---Sig_/o52gEQ/sgnm94h5t6ow.E0z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUKRusACgkQAVBC80lX
-0Gz/Jwf9EpFciQytMrB9EGPZlDQNNqcVzmXmhOf9lPP86jVE4c9drE/m/V3hI+HJ
-+1rtkzxoagrKym44GM5O+lE0ojheWp0hDejTFjAqeBkMGoj/WAzxW7bb8gAjDXkd
-NNUZcT1EmM9EfbBgH8fvBX2158atvl+82mOAlBpoT1jnEMnR3gQjer+rJN5leVlq
-TEQl8CB0fkGjqaqTEt/AHh4Wv8/jM5CTrsTUqM3ZBz+ffD/zPYiEFA49PxQX8WHb
-cllEMe1zIJsR2I//LPTFnmuvRIwC1Ws02STVlb5Sy1LTvbCDEJX1+TpGnuq+Hxl+
-6oZ4vG+hqHnZCyxHLW8mlLVlJAdw8Q==
-=BmcH
------END PGP SIGNATURE-----
-
---Sig_/o52gEQ/sgnm94h5t6ow.E0z--
