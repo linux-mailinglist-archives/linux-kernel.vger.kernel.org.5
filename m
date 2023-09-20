@@ -2,163 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C76BA7A78FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3236E7A78FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbjITKSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        id S234061AbjITKSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234405AbjITKSK (ORCPT
+        with ESMTP id S234310AbjITKSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:18:10 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2059.outbound.protection.outlook.com [40.107.243.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D48D1AC
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:17:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PgdXUMQyGf7Lux7K4htciuyxMsh+zZhMn5kh3hDp6m1M6XnDKtIpnrJzgPTm2ZbJzoS6nOWCM/E0JeXFXuCorYUMv+dTrdRNfVl1iOG5g0yhQeHUEJa7lYP9XO7PVCHaIKIm53wqYW4m798vxiSWHvVuCUnWyh2yKTPhL+Dgw4inXjA1Ti3YF7tNSk60gnX+jJuJdbL6eLulM0Wyv3Nj2HFENdKRbpRSGInpj5CQvtfKSVN+tpL0KtZMbQV7ROCiE47EGeFlff3ziLMdBHEyUrCeilG0VyD02mnzNN29hCBK+W2DC3ngcytWFzsiSkYXWP4g8qyJf5l8FX2qhVijQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OCTNBsCpZtjPX2Mm+WCQOweUJw01/xtDvdiZEnWubnQ=;
- b=PcOhUi/Z+vWIzaY1vA0P2Gk+CJA/pGv0xpmjWLy40vzo4MnM0d1P2WX1R2DESYxsIJC/fOshW/lyd9j3ewxGZmFBI4xtCQbttXidvsNZWE+bf5N4LTJxQrgOvavB+ppLMeNxY8RunXubNvrh7mncLMeF80fkZT4gHMX877k2OqhOM/R1fLypbohgVO2O2LLOQL3a1aVYJMWAVJ1Nd4fBzeMwTXk/r0YvUesFRUP3TJ4iqNMkhr5m4wpfBDeJM+Z1y2Idh8k7y6jTYlJF6B4W2nAcCbo0Oq32tCbdHbXNkGLMG0Mntt9jZiwUqsfcYDJV/QRpTKDGH6RHtSvHMTnQIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OCTNBsCpZtjPX2Mm+WCQOweUJw01/xtDvdiZEnWubnQ=;
- b=LNAkm+mN8A5T+iGVOt08BSeprN1GGDpXIFtbgPDxSPmwfGXrVI1BeDd656n3ko1xQ6ZI4Nv379MgIGgAq5pjGlyndVGeut91HxyChnrIgy0m3NCzTMAVkpwhxkFE5cVY0BluWQGLM2rYG8O81ED+D1moxUB8DMet/T1+FUwhn8fFZCaub2pkwN9CFrjJ7ZXG075yPeRbLykgS9P4NAAMhpE6mE7JvhiVdGjnzln24XImu4ijeYISND0HyLATuJmyu+4iCNP1zdbtkm0KXJ/otwl86GAh69V+N2rlrZ3MavznYgTMMvjvwssmWelbP8mys/bay9eLUWvxGwBPwJdTqg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM8PR12MB5413.namprd12.prod.outlook.com (2603:10b6:8:3b::8) by
- SA1PR12MB7293.namprd12.prod.outlook.com (2603:10b6:806:2b9::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.36; Wed, 20 Sep 2023 10:17:52 +0000
-Received: from DM8PR12MB5413.namprd12.prod.outlook.com
- ([fe80::705a:137:c5df:60e8]) by DM8PR12MB5413.namprd12.prod.outlook.com
- ([fe80::705a:137:c5df:60e8%6]) with mapi id 15.20.6813.018; Wed, 20 Sep 2023
- 10:17:52 +0000
-Date:   Wed, 20 Sep 2023 12:17:46 +0200
-From:   Thierry Reding <treding@nvidia.com>
-To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc:     joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
-        jgg@nvidia.com, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iommu: map reserved memory as cacheable if device is
- coherent
-Message-ID: <ZQrGyqQ7K96PFXQ1@orome>
-References: <20230914125258.19640-1-laurentiu.tudor@nxp.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="l5ynBMd9YR5I0Y9k"
-Content-Disposition: inline
-In-Reply-To: <20230914125258.19640-1-laurentiu.tudor@nxp.com>
-X-NVConfidentiality: public
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-ClientProxiedBy: FR2P281CA0156.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:98::13) To DM8PR12MB5413.namprd12.prod.outlook.com
- (2603:10b6:8:3b::8)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5413:EE_|SA1PR12MB7293:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5cfd795b-e640-4205-038f-08dbb9c2d91d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zqtJUg1IpAqMu2o4XXdFiR6UZl1snuY5JaWT5ZQVNSe1Ih39p5dkecaqHFwbnV7G+43ABcJdeLoMlriw6YrW2/0NsV42IbiZkZ03jBi8iIiJNCjwNK1scDYAgQq0QIPpPmk4nB+nSkmzeKeLRtzEFvRMhozO6HQ1T4C84ajfdcr9oMc/t6AII4vh7SXrYgj7LDQIP777646nAwkmjoyftnGFHGUrERUDetj9Ht9924gKeh+MGYaDSUS4ZkSt0of+td2dOhw4/Z8H2JixNosOPRRP5n4DOMVwVwBBSxsu5eObtEaZKJBPiPTezj0Jno05yevJMv01nxerCCehQfGrvrqQQlo4s6tUhmI2cB2p2YTQd/yFgSxDFhjIfvAwVMZilFoeC0LHc8BgScOQ5j1NbMfwHMCQlNByMMRvK76oDVuqe+v9vWoL3rHAFWRxrWLMwdKHDhrSzk3UPR+Wa5zrhi0e2tfFflS9+2aIjBx3zQEhdSYCKu4/PUmphrg3wVZwzeuyFwUWwKbHjm+aQguE2Vq1nB1STzzkSlO+Uy2QFHRh5tnK0R1i8wJg9cC9EX8svrwlufXNuwK/ZP0kdWvJ+sImQUcv9sw5RBaOVgTmAoGWtHNU2crXj+PTHhpeM9s3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR12MB5413.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(346002)(39860400002)(136003)(376002)(451199024)(186009)(1800799009)(38100700002)(6486002)(6506007)(44144004)(86362001)(21480400003)(478600001)(9686003)(6512007)(6666004)(2906002)(8676002)(4326008)(5660300002)(6916009)(8936002)(41300700001)(316002)(33716001)(66946007)(83380400001)(66556008)(66476007)(2700100001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/jF4FreU2NmKPxl53nDFXganDEHGSyYbk3Y2xiTCHfInE5U25oMITrj68Bvr?=
- =?us-ascii?Q?Vxo+hMQdvH575vNarb7JJpmpycr/fQ9LbeRuvpdqdlzCOSdNIYUQ4MxJldB4?=
- =?us-ascii?Q?Tu/uL51o5feAjrFp7LIH2SmP6EfJlKs6EBQKfXWX20ET8r/2nfYe3A0Z2sXi?=
- =?us-ascii?Q?o69e4SHJ/7LsJx1rDELRIKt090t3W+KUHy6M/kqmczwcdRCM4jIrc2vt4LIY?=
- =?us-ascii?Q?K6n17JOlbNGmhpMUaXUJHw0qjrxF+qiVqJLWVDccrjMoFEjoIrpEK+JzUzPw?=
- =?us-ascii?Q?5Dzg3eBQQlLEa2yEyjx3eYTaeS0QUP72ehHV64utOkANnH62jCVs8O3C9Ne1?=
- =?us-ascii?Q?LKN1FI0qjKldjurkdqNhudlmlQ44fZ7bMzhP53PfIiZmWsgb2PcLUJ6f4z8i?=
- =?us-ascii?Q?xKyZdS0Z6uGE865ZR45LQyoQY6LmXKqtCR2cMj5BdAxoH3aGyKRqNMZS1ZXr?=
- =?us-ascii?Q?ThWmdnu81cJ2UMLGKHwkZICbB3G4n+UTIRL4kBBlxgKbok1qgR13tqf2CrWf?=
- =?us-ascii?Q?ILJEYt3sBwXJa2N20Q1dZt5vhdN89X+r1F4zLsspeNNg6cG9xi6TV8qPctAv?=
- =?us-ascii?Q?pLtERkkMeusUPTNqLFOR9qz4F97pTm7Ty2eNg3JRZWIb+Go+VqSU0LO6oEfk?=
- =?us-ascii?Q?QSCenbjm6Zh2s8H85v/gylMIK0XNn+lMS/Hu7z1O6Wsx6v2x2OVTuIfmtNAY?=
- =?us-ascii?Q?ni+/NAqocLEKbFPOAiB0NWOONYb1OEVhgw0N1mBpNa8GAlzvdOe96kXVadpx?=
- =?us-ascii?Q?fNIUph6Cpglw3Vwdi5n4xycnJzcr3aI474ZwuozF3PEKTFEsxZ9yqtVAtrTC?=
- =?us-ascii?Q?Lab89Q5yJg5FeGukRQOCc9Pc8YLXoYPZ2VBzV1g4nINFP0VTYBaZw1QQcM3b?=
- =?us-ascii?Q?4GJe0dfbIhoed8NeTB1wYkVBuo4lQbSnakRv8jaJ08Kaa1FMglqvfalWWFRk?=
- =?us-ascii?Q?qYVx3GAQmN5I95TyC1EO4LaH+mx2mP16A+xdtFn75G+zMQkmamL2SQZTq2ZN?=
- =?us-ascii?Q?B1lvlCoKJ3GOSCuJW8fPxDxkUef1o9N8V4L7CC9IayaWe1AmlbnSk+OHhlUP?=
- =?us-ascii?Q?bv1gUl+oJqQEzcP0pXzDjVDYaVGbC92zKcjmLSkttgpLPWojxwXnVRAmYwrW?=
- =?us-ascii?Q?8+mpX2A5OsdAvAoBp/iMRmHh13FsDqnu94nXNKqR7W/XleOK1zPZvvw+8oCa?=
- =?us-ascii?Q?2waeaXZEIvGeSckpbRA3Tsbe0p5jnqpCEt55T3WULszcks9WINU9veCf/BMV?=
- =?us-ascii?Q?ZEhVQRV7QN5ZLhoPeHxI5Ty6v4uUWuqdhIgWYxFBgZUmPt2hjGxKfnTrZOOc?=
- =?us-ascii?Q?fMDdnMwEA8L4wVjj4wC2wgxdtwjoPptLoWp0sB6xKoPTlXmD+lqJ/fLKqEq9?=
- =?us-ascii?Q?3P6VXh++qw0FkzX/N32k42H5JTUCTLQKiE73wyt2Kvl11asnvEugAA8RPsuy?=
- =?us-ascii?Q?q473Pv4DTYT1rb8Sv0v9Oh5B6IdAKcKOMhALSToZnrlfUSJ3UQkvqiVwePK0?=
- =?us-ascii?Q?TsJiVR0O1ohVoq8hUhN0X5BdUWqLZVXdbnjaxMhv2T3KG136oUBI6uvjnJ59?=
- =?us-ascii?Q?YQo2gaO1n+jsGGacmaPaicrZ0Rk1IZTD/wZyZXlPHMzlYyflXCSyqNyZiS0n?=
- =?us-ascii?Q?sowzbBdhCoz5k5J7C7OzcHDiC+G9ec7FS2RC3U/XvqYS?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5cfd795b-e640-4205-038f-08dbb9c2d91d
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR12MB5413.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 10:17:52.1827
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R/fCsqlfFE9DoaPyAKWb14tZotlhQC1DMs0W8t4/jdpfHHNtyFmrzqoi0PouvwY+kQizvbvCpLNXCjWYK+5TcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7293
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 06:18:14 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56581B4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:18:08 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c4586b12feso27960235ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1695205088; x=1695809888; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gaiz04gdR9OAn8hUhTxFnO5z/99PYRYgbxmLEMvi0GU=;
+        b=fV5oO6UTGdTPuWxF0IQw/TWTkQJ/B8CFJ4w5rgDXf0k5RmFs7cud6ynn1RoEYS+9DO
+         tprHF6OQnGllNLBHpRMPodOG8AAdQ5L+nsG77FDy37b8IOzJ5uJ3AEeMuI89RA/AOwY0
+         jUUe9VcyaYHd4saQ8xWYg2Ua7kSV9Ov0tuhudTfDZO0W6UAnn81ZZjJFb+uakSR1qqvZ
+         XGtf5MeNdIovdVQjU8iGKVzR5wBrj8zZZ1NNvLQAs8O4718WL2gzpSVdVkJMirIJpgxT
+         ZN+s/TS087vZxrvcbE/Vu00uXcwgxP3No7p4IrbqSDRcM5HAvMp/c4xI+vuu15yJsFEK
+         Nx1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695205088; x=1695809888;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gaiz04gdR9OAn8hUhTxFnO5z/99PYRYgbxmLEMvi0GU=;
+        b=Lpd3UpAixWTPn3nQdBy34vsgaf/jwYkZ9HjAlpAtzAtkS2osTanAcox0b+SBFHIDwn
+         E0b95yRqCJDXgy9IcqWTGMiloDbVAeDr+32VU2lLfmod5w0GLYYPXeP09p6xPkV9ymol
+         5VkEMX+lwxrislsx/TTZAlYjZp2cVhEWlvNAri/QRk4aFvw6IR275n5eFbk8LXKwSO1p
+         7mzzPE2ZXbVKiS8piC1vVycwwA3QEdKWJ5vLaIga4Be13RodXHo+5Op3chagjMi78rdn
+         V71H7OfLfXCpcPrVCF6yesDmCvyidWtawGKXENfnC2jnr8G7xq2tsYIZC83B5kmr5Ld2
+         c6cQ==
+X-Gm-Message-State: AOJu0YxR9GbHrtAWHyJ61p8cGsPICogu/VDpGL8aATcpU6tX5Zp6NNbq
+        V76z6EO0xWD1oEzDgDqqPjLaRl548PXxSythz5F+Nw==
+X-Google-Smtp-Source: AGHT+IEQYtBpZ58/YQnBwJBLpvN8uGqez/p/gojg8PHBbN+rUIEdYg4vTrGGIU7fSfJ7RgF2tGOjzA==
+X-Received: by 2002:a17:902:748a:b0:1bb:f82f:fb93 with SMTP id h10-20020a170902748a00b001bbf82ffb93mr1759975pll.2.1695205087644;
+        Wed, 20 Sep 2023 03:18:07 -0700 (PDT)
+Received: from localhost ([51.52.155.79])
+        by smtp.gmail.com with ESMTPSA id y4-20020a170902ed4400b001c456b3c012sm7479840plb.298.2023.09.20.03.18.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 03:18:07 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 03:18:07 -0700 (PDT)
+X-Google-Original-Date: Wed, 20 Sep 2023 03:18:02 PDT (-0700)
+Subject:     Re: [PATCH] irqchip/sifive-plic: Avoid clearing the per-hart enable bits
+In-Reply-To: <86zg3ttvsi.wl-maz@kernel.org>
+CC:     samuel.holland@sifive.com,
+        Paul Walmsley <paul.walmsley@sifive.com>, samuel@sholland.org,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Marc Zyngier <maz@kernel.org>
+Message-ID: <mhng-3622fd7f-23c4-4709-9082-0a62d49762ce@palmer-ri-x1c9a>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---l5ynBMd9YR5I0Y9k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, 18 Jul 2023 02:26:37 PDT (-0700), Marc Zyngier wrote:
+> On Mon, 17 Jul 2023 19:58:40 +0100,
+> Samuel Holland <samuel.holland@sifive.com> wrote:
+>>
+>> Writes to the PLIC completion register are ignored if the enable bit for
+>> that (interrupt, hart) combination is cleared. This leaves the interrupt
+>> in a claimed state, preventing it from being triggered again.
+>>
+>> Originally, the enable bit was cleared in the .irq_mask operation, and
+>> commit 69ea463021be ("irqchip/sifive-plic: Fixup EOI failed when masked")
+>> added a workaround for this issue. Later, commit a1706a1c5062
+>> ("irqchip/sifive-plic: Separate the enable and mask operations") moved
+>> toggling the enable bit to the .irq_enable/.irq_disable operations and
+>> removed the workaround.
+>>
+>> However, there are still places where .irq_disable can be called from
+>> inside the hard IRQ handler, for example in irq_pm_check_wakeup(). As a
+>> result, this issue causes an interrupt to get stuck in a claimed state
+>> after being used to wake the system from s2idle.
+>>
+>> There is no real benefit to implementing the .irq_enable/.irq_disable
+>> operations using the enable bits. In fact, the existing mask/unmask
+>> implementation using the threshold register is already more efficient,
+>> as it requires no read/modify/write cycles. So let's leave the enable
+>> bits set for the lifetime of the IRQ, using them only to control its
+>> affinity.
+>
+> Side question, which doesn't affect this patch: what happens with
+> interrupts that are firing while the interrupt is in a disabled state?
+> It's fine for levels, but what of edge interrupts?
+>
+> My reading of the spec is that it is the role of the "gateway" to hold
+> the signal, and that this is upstream of the PLIC itself, so it
+> *should* be fine, but I'd like confirmation on that.
 
-On Thu, Sep 14, 2023 at 03:52:58PM +0300, Laurentiu Tudor wrote:
-> Check if the device is marked as DMA coherent in the DT and if so,
-> map its reserved memory as cacheable in the IOMMU.
-> This fixes the recently added IOMMU reserved memory support which
-> uses IOMMU_RESV_DIRECT without properly building the PROT for the
-> mapping.
->=20
-> Fixes: a5bf3cfce8cb ("iommu: Implement of_iommu_get_resv_regions()")
-> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
-> Changes in v2:
->  - added Reviewed-by tag
->=20
->  drivers/iommu/of_iommu.c | 3 +++
->  1 file changed, 3 insertions(+)
+Which spec are you reading?  I'm not seeing anything in 
+<https://github.com/riscv/riscv-plic-spec>, but I've sort of only 
+skimmed it.  I don't remember us ever really figuring out edge triggered 
+interrupts, it was sort of just a "vendors should make sure they do 
+something reasonable" type plan.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---l5ynBMd9YR5I0Y9k
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUKxsoACgkQ3SOs138+
-s6E5Nw/7BYBpHpklVqYfz0op9mksacRAPuGUax0iogiYThKoFV/0VWg8chM1GyFC
-xNnC6JcKc99NhAlQaz9HSY7haNGaJOcmSHzYzs7HSPycOEPj/0JgkNnQmlZfZUFv
-2cdwYDsYCkIQCKGoyq63q/RF18rlftkMO99lz9X3gVSCbbn2k8A51llbCxt5V25U
-XE/894KiVW1Yst+jUiwzmF7D5ePjp18Z+eDjxKN9ZeyP4f4KioAwe5YFKZvTSQ5P
-0UY1kZFQUXiaVjP0Y5f9Bk8bmdhHJ2/Dpzax1CbaFIAp91NLRCHCMEodZ7yYwauM
-Z7AjcRsvdfSvoXCi4wjOPmqLGLI14kFAc5PMT2sHQt2zTENydqoD5TabGdiKq7nX
-vfqvMWyDQVkiLUZcJaxaxpzimmd5IsEKblFOor2VM6EYx6M0wk2xgFDsZWqJuRo6
-HuiOpZC7BZ7kA1bvjGcPwJXjHlQWRiTr0R38VpRtUTjdEi1jZG+COvqjJP+Ghdqw
-YUlIuOBf1R/b8NgmpI0ZV0EL1l6NrLX5zuo107J/Bpomc5VDmusofenHo3sS8/4A
-5osFG4TurkcoR/MHyMQfcSmRuCz5Q+I7EVWAHhRsNjxMGIUz8yXp5ZDfIEncRh+1
-K0Aqa3qJhZkVjDyOXhMILehIN9N+gHbVbk7hXH48B0q+Um1mlDM=
-=xEFx
------END PGP SIGNATURE-----
-
---l5ynBMd9YR5I0Y9k--
+> Thanks,
+>
+> 	M.
