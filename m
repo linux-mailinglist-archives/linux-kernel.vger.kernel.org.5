@@ -2,118 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3236E7A78FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78127A78FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 12:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbjITKSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 06:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
+        id S234281AbjITKT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 06:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234310AbjITKSO (ORCPT
+        with ESMTP id S234069AbjITKT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 06:18:14 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56581B4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:18:08 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c4586b12feso27960235ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 03:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1695205088; x=1695809888; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gaiz04gdR9OAn8hUhTxFnO5z/99PYRYgbxmLEMvi0GU=;
-        b=fV5oO6UTGdTPuWxF0IQw/TWTkQJ/B8CFJ4w5rgDXf0k5RmFs7cud6ynn1RoEYS+9DO
-         tprHF6OQnGllNLBHpRMPodOG8AAdQ5L+nsG77FDy37b8IOzJ5uJ3AEeMuI89RA/AOwY0
-         jUUe9VcyaYHd4saQ8xWYg2Ua7kSV9Ov0tuhudTfDZO0W6UAnn81ZZjJFb+uakSR1qqvZ
-         XGtf5MeNdIovdVQjU8iGKVzR5wBrj8zZZ1NNvLQAs8O4718WL2gzpSVdVkJMirIJpgxT
-         ZN+s/TS087vZxrvcbE/Vu00uXcwgxP3No7p4IrbqSDRcM5HAvMp/c4xI+vuu15yJsFEK
-         Nx1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695205088; x=1695809888;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gaiz04gdR9OAn8hUhTxFnO5z/99PYRYgbxmLEMvi0GU=;
-        b=Lpd3UpAixWTPn3nQdBy34vsgaf/jwYkZ9HjAlpAtzAtkS2osTanAcox0b+SBFHIDwn
-         E0b95yRqCJDXgy9IcqWTGMiloDbVAeDr+32VU2lLfmod5w0GLYYPXeP09p6xPkV9ymol
-         5VkEMX+lwxrislsx/TTZAlYjZp2cVhEWlvNAri/QRk4aFvw6IR275n5eFbk8LXKwSO1p
-         7mzzPE2ZXbVKiS8piC1vVycwwA3QEdKWJ5vLaIga4Be13RodXHo+5Op3chagjMi78rdn
-         V71H7OfLfXCpcPrVCF6yesDmCvyidWtawGKXENfnC2jnr8G7xq2tsYIZC83B5kmr5Ld2
-         c6cQ==
-X-Gm-Message-State: AOJu0YxR9GbHrtAWHyJ61p8cGsPICogu/VDpGL8aATcpU6tX5Zp6NNbq
-        V76z6EO0xWD1oEzDgDqqPjLaRl548PXxSythz5F+Nw==
-X-Google-Smtp-Source: AGHT+IEQYtBpZ58/YQnBwJBLpvN8uGqez/p/gojg8PHBbN+rUIEdYg4vTrGGIU7fSfJ7RgF2tGOjzA==
-X-Received: by 2002:a17:902:748a:b0:1bb:f82f:fb93 with SMTP id h10-20020a170902748a00b001bbf82ffb93mr1759975pll.2.1695205087644;
-        Wed, 20 Sep 2023 03:18:07 -0700 (PDT)
-Received: from localhost ([51.52.155.79])
-        by smtp.gmail.com with ESMTPSA id y4-20020a170902ed4400b001c456b3c012sm7479840plb.298.2023.09.20.03.18.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 03:18:07 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 03:18:07 -0700 (PDT)
-X-Google-Original-Date: Wed, 20 Sep 2023 03:18:02 PDT (-0700)
-Subject:     Re: [PATCH] irqchip/sifive-plic: Avoid clearing the per-hart enable bits
-In-Reply-To: <86zg3ttvsi.wl-maz@kernel.org>
-CC:     samuel.holland@sifive.com,
-        Paul Walmsley <paul.walmsley@sifive.com>, samuel@sholland.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Marc Zyngier <maz@kernel.org>
-Message-ID: <mhng-3622fd7f-23c4-4709-9082-0a62d49762ce@palmer-ri-x1c9a>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 20 Sep 2023 06:19:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82E6AC;
+        Wed, 20 Sep 2023 03:19:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5682C433C7;
+        Wed, 20 Sep 2023 10:19:17 +0000 (UTC)
+Message-ID: <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl>
+Date:   Wed, 20 Sep 2023 12:19:16 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v4 09/11] media: uapi: Add
+ V4L2_CID_USER_IMX_ASRC_RATIO_MOD control
+Content-Language: en-US, nl
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <1695202370-24678-1-git-send-email-shengjiu.wang@nxp.com>
+ <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ xsFNBFQ84W0BEAC7EF1iL4s3tY8cRTVkJT/297h0Hz0ypA+ByVM4CdU9sN6ua/YoFlr9k0K4
+ BFUlg7JzJoUuRbKxkYb8mmqOe722j7N3HO8+ofnio5cAP5W0WwDpM0kM84BeHU0aPSTsWiGR
+ yw55SOK2JBSq7hueotWLfJLobMWhQii0Zd83hGT9SIt9uHaHjgwmtTH7MSTIiaY6N14nw2Ud
+ C6Uykc1va0Wqqc2ov5ihgk/2k2SKa02ookQI3e79laOrbZl5BOXNKR9LguuOZdX4XYR3Zi6/
+ BsJ7pVCK9xkiVf8svlEl94IHb+sa1KrlgGv3fn5xgzDw8Z222TfFceDL/2EzUyTdWc4GaPMC
+ E/c1B4UOle6ZHg02+I8tZicjzj5+yffv1lB5A1btG+AmoZrgf0X2O1B96fqgHx8w9PIpVERN
+ YsmkfxvhfP3MO3oHh8UY1OLKdlKamMneCLk2up1Zlli347KMjHAVjBAiy8qOguKF9k7HOjif
+ JCLYTkggrRiEiE1xg4tblBNj8WGyKH+u/hwwwBqCd/Px2HvhAsJQ7DwuuB3vBAp845BJYUU3
+ 06kRihFqbO0vEt4QmcQDcbWINeZ2zX5TK7QQ91ldHdqJn6MhXulPKcM8tCkdD8YNXXKyKqNl
+ UVqXnarz8m2JCbHgjEkUlAJCNd6m3pfESLZwSWsLYL49R5yxIwARAQABzSFIYW5zIFZlcmt1
+ aWwgPGh2ZXJrdWlsQHhzNGFsbC5ubD7CwZUEEwECACgFAlQ84W0CGwMFCRLMAwAGCwkIBwMC
+ BhUIAgkKCwQWAgMBAh4BAheAACEJEL0tYUhmFDtMFiEEBSzee8IVBTtonxvKvS1hSGYUO0wT
+ 7w//frEmPBAwu3OdvAk9VDkH7X+7RcFpiuUcJxs3Xl6jpaA+SdwtZra6W1uMrs2RW8eXXiq/
+ 80HXJtYnal1Y8MKUBoUVhT/+5+KcMyfVQK3VFRHnNxCmC9HZV+qdyxAGwIscUd4hSlweuU6L
+ 6tI7Dls6NzKRSTFbbGNZCRgl8OrF01TBH+CZrcFIoDgpcJA5Pw84mxo+wd2BZjPA4TNyq1od
+ +slSRbDqFug1EqQaMVtUOdgaUgdlmjV0+GfBHoyCGedDE0knv+tRb8v5gNgv7M3hJO3Nrl+O
+ OJVoiW0G6OWVyq92NNCKJeDy8XCB1yHCKpBd4evO2bkJNV9xcgHtLrVqozqxZAiCRKN1elWF
+ 1fyG8KNquqItYedUr+wZZacqW+uzpVr9pZmUqpVCk9s92fzTzDZcGAxnyqkaO2QTgdhPJT2m
+ wpG2UwIKzzi13tmwakY7OAbXm76bGWVZCO3QTHVnNV8ku9wgeMc/ZGSLUT8hMDZlwEsW7u/D
+ qt+NlTKiOIQsSW7u7h3SFm7sMQo03X/taK9PJhS2BhhgnXg8mOa6U+yNaJy+eU0Lf5hEUiDC
+ vDOI5x++LD3pdrJVr/6ZB0Qg3/YzZ0dk+phQ+KlP6HyeO4LG662toMbFbeLcBjcC/ceEclII
+ 90QNEFSZKM6NVloM+NaZRYVO3ApxWkFu+1mrVTXOwU0EVDzhbQEQANzLiI6gHkIhBQKeQaYs
+ p2SSqF9c++9LOy5x6nbQ4s0X3oTKaMGfBZuiKkkU6NnHCSa0Az5ScRWLaRGu1PzjgcVwzl5O
+ sDawR1BtOG/XoPRNB2351PRp++W8TWo2viYYY0uJHKFHML+ku9q0P+NkdTzFGJLP+hn7x0RT
+ DMbhKTHO3H2xJz5TXNE9zTJuIfGAz3ShDpijvzYieY330BzZYfpgvCllDVM5E4XgfF4F/N90
+ wWKu50fMA01ufwu+99GEwTFVG2az5T9SXd7vfSgRSkzXy7hcnxj4IhOfM6Ts85/BjMeIpeqy
+ TDdsuetBgX9DMMWxMWl7BLeiMzMGrfkJ4tvlof0sVjurXibTibZyfyGR2ricg8iTbHyFaAzX
+ 2uFVoZaPxrp7udDfQ96sfz0hesF9Zi8d7NnNnMYbUmUtaS083L/l2EDKvCIkhSjd48XF+aO8
+ VhrCfbXWpGRaLcY/gxi2TXRYG9xCa7PINgz9SyO34sL6TeFPSZn4bPQV5O1j85Dj4jBecB1k
+ z2arzwlWWKMZUbR04HTeAuuvYvCKEMnfW3ABzdonh70QdqJbpQGfAF2p4/iCETKWuqefiOYn
+ pR8PqoQA1DYv3t7y9DIN5Jw/8Oj5wOeEybw6vTMB0rrnx+JaXvxeHSlFzHiD6il/ChDDkJ9J
+ /ejCHUQIl40wLSDRABEBAAHCwXwEGAECAA8FAlQ84W0CGwwFCRLMAwAAIQkQvS1hSGYUO0wW
+ IQQFLN57whUFO2ifG8q9LWFIZhQ7TA1WD/9yxJvQrpf6LcNrr8uMlQWCg2iz2q1LGt1Itkuu
+ KaavEF9nqHmoqhSfZeAIKAPn6xuYbGxXDrpN7dXCOH92fscLodZqZtK5FtbLvO572EPfxneY
+ UT7JzDc/5LT9cFFugTMOhq1BG62vUm/F6V91+unyp4dRlyryAeqEuISykhvjZCVHk/woaMZv
+ c1Dm4Uvkv0Ilelt3Pb9J7zhcx6sm5T7v16VceF96jG61bnJ2GFS+QZerZp3PY27XgtPxRxYj
+ AmFUeF486PHx/2Yi4u1rQpIpC5inPxIgR1+ZFvQrAV36SvLFfuMhyCAxV6WBlQc85ArOiQZB
+ Wm7L0repwr7zEJFEkdy8C81WRhMdPvHkAIh3RoY1SGcdB7rB3wCzfYkAuCBqaF7Zgfw8xkad
+ KEiQTexRbM1sc/I8ACpla3N26SfQwrfg6V7TIoweP0RwDrcf5PVvwSWsRQp2LxFCkwnCXOra
+ gYmkrmv0duG1FStpY+IIQn1TOkuXrciTVfZY1cZD0aVxwlxXBnUNZZNslldvXFtndxR0SFat
+ sflovhDxKyhFwXOP0Rv8H378/+14TaykknRBIKEc0+lcr+EMOSUR5eg4aURb8Gc3Uc7fgQ6q
+ UssTXzHPyj1hAyDpfu8DzAwlh4kKFTodxSsKAjI45SLjadSc94/5Gy8645Y1KgBzBPTH7Q==
+In-Reply-To: <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 02:26:37 PDT (-0700), Marc Zyngier wrote:
-> On Mon, 17 Jul 2023 19:58:40 +0100,
-> Samuel Holland <samuel.holland@sifive.com> wrote:
->>
->> Writes to the PLIC completion register are ignored if the enable bit for
->> that (interrupt, hart) combination is cleared. This leaves the interrupt
->> in a claimed state, preventing it from being triggered again.
->>
->> Originally, the enable bit was cleared in the .irq_mask operation, and
->> commit 69ea463021be ("irqchip/sifive-plic: Fixup EOI failed when masked")
->> added a workaround for this issue. Later, commit a1706a1c5062
->> ("irqchip/sifive-plic: Separate the enable and mask operations") moved
->> toggling the enable bit to the .irq_enable/.irq_disable operations and
->> removed the workaround.
->>
->> However, there are still places where .irq_disable can be called from
->> inside the hard IRQ handler, for example in irq_pm_check_wakeup(). As a
->> result, this issue causes an interrupt to get stuck in a claimed state
->> after being used to wake the system from s2idle.
->>
->> There is no real benefit to implementing the .irq_enable/.irq_disable
->> operations using the enable bits. In fact, the existing mask/unmask
->> implementation using the threshold register is already more efficient,
->> as it requires no read/modify/write cycles. So let's leave the enable
->> bits set for the lifetime of the IRQ, using them only to control its
->> affinity.
->
-> Side question, which doesn't affect this patch: what happens with
-> interrupts that are firing while the interrupt is in a disabled state?
-> It's fine for levels, but what of edge interrupts?
->
-> My reading of the spec is that it is the role of the "gateway" to hold
-> the signal, and that this is upstream of the PLIC itself, so it
-> *should* be fine, but I'd like confirmation on that.
+On 20/09/2023 11:32, Shengjiu Wang wrote:
+> The input clock and output clock may not be the accurate
+> rate as the sample rate, there is some drift, so the convert
+> ratio of i.MX ASRC module need to be changed according to
+> actual clock rate.
+> 
+> Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD control for user to
+> adjust the ratio.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  Documentation/userspace-api/media/v4l/control.rst | 5 +++++
+>  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 1 +
+>  include/uapi/linux/v4l2-controls.h                | 1 +
+>  3 files changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
+> index 4463fce694b0..2bc175900a34 100644
+> --- a/Documentation/userspace-api/media/v4l/control.rst
+> +++ b/Documentation/userspace-api/media/v4l/control.rst
+> @@ -318,6 +318,11 @@ Control IDs
+>      depending on particular custom controls should check the driver name
+>      and version, see :ref:`querycap`.
+>  
+> +.. _v4l2-audio-imx:
+> +
+> +``V4L2_CID_USER_IMX_ASRC_RATIO_MOD``
+> +    sets the rasampler ratio modifier of i.MX asrc module.
 
-Which spec are you reading?  I'm not seeing anything in 
-<https://github.com/riscv/riscv-plic-spec>, but I've sort of only 
-skimmed it.  I don't remember us ever really figuring out edge triggered 
-interrupts, it was sort of just a "vendors should make sure they do 
-something reasonable" type plan.
+rasampler -> resampler (I think?)
 
-> Thanks,
->
-> 	M.
+This doesn't document at all what the type of the control is or how to interpret it.
+
+> +
+>  Applications can enumerate the available controls with the
+>  :ref:`VIDIOC_QUERYCTRL` and
+>  :ref:`VIDIOC_QUERYMENU <VIDIOC_QUERYCTRL>` ioctls, get and set a
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> index 8696eb1cdd61..16f66f66198c 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> @@ -1242,6 +1242,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
+>  	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
+>  	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
+> +	case V4L2_CID_USER_IMX_ASRC_RATIO_MOD:			return "ASRC RATIO MOD";
+
+Let's stay consistent with the other control names:
+
+"ASRC Ratio Modifier"
+
+But if this is a driver specific control, then this doesn't belong here.
+
+Driver specific controls are defined in the driver itself, including this
+description.
+
+Same for the control documentation: if it is driver specific, then that
+typically is documented either in a driver-specific public header, or
+possibly in driver-specific documentation (Documentation/admin-guide/media/).
+
+But is this imx specific? Wouldn't other similar devices need this?
+
+>  	default:
+>  		return NULL;
+>  	}
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index c3604a0a3e30..b1c319906d12 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -162,6 +162,7 @@ enum v4l2_colorfx {
+>  /* The base for the imx driver controls.
+>   * We reserve 16 controls for this driver. */
+>  #define V4L2_CID_USER_IMX_BASE			(V4L2_CID_USER_BASE + 0x10b0)
+> +#define V4L2_CID_USER_IMX_ASRC_RATIO_MOD	(V4L2_CID_USER_IMX_BASE + 0)
+>  
+>  /*
+>   * The base for the atmel isc driver controls.
+
+Regards,
+
+	Hans
