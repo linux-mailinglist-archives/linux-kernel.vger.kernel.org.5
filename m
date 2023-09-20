@@ -2,624 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0F27A8830
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABED57A8832
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Sep 2023 17:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235417AbjITPYW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Sep 2023 11:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
+        id S235421AbjITPY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 11:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235376AbjITPYU (ORCPT
+        with ESMTP id S234610AbjITPYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:24:20 -0400
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A7383
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 08:24:06 -0700 (PDT)
-Received: from [2601:18c:9101:a8b6:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qiz3B-0006ny-2v;
-        Wed, 20 Sep 2023 11:23:37 -0400
-Date:   Wed, 20 Sep 2023 11:23:29 -0400
-From:   Rik van Riel <riel@surriel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        muchun.song@linux.dev, mike.kravetz@oracle.com, leit@meta.com
-Subject: [RFC PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with
- invalidate_lock
-Message-ID: <20230920112329.529c47ad@imladris.surriel.com>
-In-Reply-To: <ZQptrdK69wvJ2NXP@casper.infradead.org>
-References: <20230920021811.3095089-1-riel@surriel.com>
-        <20230920021811.3095089-2-riel@surriel.com>
-        <ZQptrdK69wvJ2NXP@casper.infradead.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 20 Sep 2023 11:24:55 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC5083;
+        Wed, 20 Sep 2023 08:24:47 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 7805E60157;
+        Wed, 20 Sep 2023 17:24:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695223474; bh=0LrRE20n2yy7FNMjcg5NhNn0IdQaZndxWlnmcfK7RUc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=pRgYU44EMtTqnqBcPWbTyVrQJXPKPwD3/Go9JFcYoYXWEbxSKunPqo0DQBzfLAHCV
+         iYiRJicgnO+02mHmy6KNndyAWFKLXVQnqZorSOlOJuqhUKFZ+CgSW8LjT/p+RBZC15
+         E28BA7U/3qkW2Im097iHlWfy7/yKNdcBjHcpiUeSzNmqBz1o9Z9b/rYzIp3MUXY3zl
+         dJnEYSgokixViKPfOY5a+qQK0rbAgjLjQZlqlPVvk/3utvYIexdsKyj9YjQe53B08F
+         z0ZExvNRf0HctUaqrP62SBDB28PCp9IGdgXF6G7dgrG3gjQq0lcSVEkIQXor1YmQ0q
+         uGfpIfAlStutw==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1hCAAeEfgwdw; Wed, 20 Sep 2023 17:24:31 +0200 (CEST)
+Received: from [192.168.1.6] (78-2-200-2.adsl.net.t-com.hr [78.2.200.2])
+        by domac.alu.hr (Postfix) with ESMTPSA id A03A560152;
+        Wed, 20 Sep 2023 17:24:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695223471; bh=0LrRE20n2yy7FNMjcg5NhNn0IdQaZndxWlnmcfK7RUc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GEsXdPYOaI1Y2NmagbFccRKAsAAb6PMj49xY4zOj2ZrK5N030O5eiTHp1dUDuM5Da
+         0euxn36/IT5A3mBGdY8AFBNVHCwI5AQgRGmt2KdV9jb6m18nPKzPsxY2xKfoyH/XNg
+         fDmfM49knnKv0eTJ+aBMQCfHp7+De+IYi9v9p+2yA8+FdOGYkR4ro8Db+MPU/6Nx+Q
+         019M0aphBF40rKf0ekZU/YnpAJJqgb6Ws0sVjFCHEo3F8oSQ3aYhkFyKDNWBoA8skz
+         HDimbeUMOf/wwcDVXMWUmVh1S+18M1ckAcxyP3IkLaj9wZCgGdCO9rkLvyt/p82/ez
+         YfYYg9utElzQQ==
+Message-ID: <9ece2346-9e86-46f0-a476-afbcb3010057@alu.unizg.hr>
+Date:   Wed, 20 Sep 2023 17:24:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
-Sender: riel@surriel.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] acpica: use spinlocks to fix the data-races
+ reported by the KCSAN
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Jung-uk Kim <jkim@freebsd.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Erik Kaneda <erik.kaneda@intel.com>
+References: <20230920074158.3605-1-mirsad.todorovac@alu.unizg.hr>
+ <CAJZ5v0j5d-jc8LRODvcjcu63URZV+EVgekQXDzN9xsWnabTaLQ@mail.gmail.com>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <CAJZ5v0j5d-jc8LRODvcjcu63URZV+EVgekQXDzN9xsWnabTaLQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sep 2023 04:57:33 +0100
-Matthew Wilcox <willy@infradead.org> wrote:
-> On Tue, Sep 19, 2023 at 10:16:09PM -0400, riel@surriel.com wrote:
-> > From: Rik van Riel <riel@surriel.com>
-> > 
-> > Extend the locking scheme used to protect shared hugetlb mappings
-> > from truncate vs page fault races, in order to protect private
-> > hugetlb mappings (with resv_map) against MADV_DONTNEED.
-
-> This feels an awful lot like the invalidate_lock in struct address_space
-> which was recently added by Jan Kara.
+On 9/20/23 11:53, Rafael J. Wysocki wrote:
+> On Wed, Sep 20, 2023 at 9:44 AM Mirsad Goran Todorovac
+> <mirsad.todorovac@alu.unizg.hr> wrote:
+>>
+>> KCSAN reported hundreds of instances of data-races in ACPICA like this one:
 > 
+> If you want to make changes in the ACPICA code, the way to do that is
+> to submit a pull request for the upstream ACPICA project on GitHub.
 
-Sure enough, the invalidate_lock is looking really similar.
-This has the potential to simplify the hugetlbfs code a bunch!
+I think I have succeeded in this: https://github.com/acpica/acpica/pull/893
 
-On the flip side, this is a large change, and it may make sense
-to merge it separately to help with bisectability?
+> Then you can resend the Linux patch with a Link: tag pointing to the
+> upstream pull request.
 
-Thank you for the suggestion!
+Guess the linuxize.sh-d version goes into the Linux patch ...
 
-Mike, did I forget a spot somewhere? :)
+Will do right after the testing.
 
----8<---
+Best regards,
+Mirsad Todorovac
 
-From 11ea3afbd836fff6d20ef946b52544162466cb9c Mon Sep 17 00:00:00 2001
-From: Rik van Riel <riel@surriel.com>
-Date: Wed, 20 Sep 2023 10:54:10 -0400
-Subject: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with invalidate_lock
-
-Replace the custom hugetlbfs VMA locking code with the recently
-introduced invalidate_lock. This greatly simplifies things.
-
-However, this is a large enough change that it should probably go in
-separately from the other changes.
-
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Rik van Riel <riel@surriel.com>
----
- fs/hugetlbfs/inode.c    |  68 +-----------
- include/linux/fs.h      |   6 ++
- include/linux/hugetlb.h |   7 --
- kernel/fork.c           |   6 --
- mm/hugetlb.c            | 233 +++-------------------------------------
- 5 files changed, 26 insertions(+), 294 deletions(-)
-
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 316c4cebd3f3..5ff18b0933bc 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -485,7 +485,6 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 					struct folio *folio, pgoff_t index)
- {
- 	struct rb_root_cached *root = &mapping->i_mmap;
--	struct hugetlb_vma_lock *vma_lock;
- 	struct page *page = &folio->page;
- 	struct vm_area_struct *vma;
- 	unsigned long v_start;
-@@ -496,8 +495,8 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 	end = (index + 1) * pages_per_huge_page(h);
- 
- 	i_mmap_lock_write(mapping);
--retry:
--	vma_lock = NULL;
-+	filemap_invalidate_lock(mapping);
-+
- 	vma_interval_tree_foreach(vma, root, start, end - 1) {
- 		v_start = vma_offset_start(vma, start);
- 		v_end = vma_offset_end(vma, end);
-@@ -505,62 +504,13 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 		if (!hugetlb_vma_maps_page(vma, v_start, page))
- 			continue;
- 
--		if (!hugetlb_vma_trylock_write(vma)) {
--			vma_lock = vma->vm_private_data;
--			/*
--			 * If we can not get vma lock, we need to drop
--			 * immap_sema and take locks in order.  First,
--			 * take a ref on the vma_lock structure so that
--			 * we can be guaranteed it will not go away when
--			 * dropping immap_sema.
--			 */
--			kref_get(&vma_lock->refs);
--			break;
--		}
--
- 		unmap_hugepage_range(vma, v_start, v_end, NULL,
- 				     ZAP_FLAG_DROP_MARKER);
- 		hugetlb_vma_unlock_write(vma);
- 	}
- 
-+	filemap_invalidate_unlock(mapping);
- 	i_mmap_unlock_write(mapping);
--
--	if (vma_lock) {
--		/*
--		 * Wait on vma_lock.  We know it is still valid as we have
--		 * a reference.  We must 'open code' vma locking as we do
--		 * not know if vma_lock is still attached to vma.
--		 */
--		down_write(&vma_lock->rw_sema);
--		i_mmap_lock_write(mapping);
--
--		vma = vma_lock->vma;
--		if (!vma) {
--			/*
--			 * If lock is no longer attached to vma, then just
--			 * unlock, drop our reference and retry looking for
--			 * other vmas.
--			 */
--			up_write(&vma_lock->rw_sema);
--			kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--			goto retry;
--		}
--
--		/*
--		 * vma_lock is still attached to vma.  Check to see if vma
--		 * still maps page and if so, unmap.
--		 */
--		v_start = vma_offset_start(vma, start);
--		v_end = vma_offset_end(vma, end);
--		if (hugetlb_vma_maps_page(vma, v_start, page))
--			unmap_hugepage_range(vma, v_start, v_end, NULL,
--					     ZAP_FLAG_DROP_MARKER);
--
--		kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--		hugetlb_vma_unlock_write(vma);
--
--		goto retry;
--	}
- }
- 
- static void
-@@ -578,20 +528,10 @@ hugetlb_vmdelete_list(struct rb_root_cached *root, pgoff_t start, pgoff_t end,
- 		unsigned long v_start;
- 		unsigned long v_end;
- 
--		if (!hugetlb_vma_trylock_write(vma))
--			continue;
--
- 		v_start = vma_offset_start(vma, start);
- 		v_end = vma_offset_end(vma, end);
- 
- 		unmap_hugepage_range(vma, v_start, v_end, NULL, zap_flags);
--
--		/*
--		 * Note that vma lock only exists for shared/non-private
--		 * vmas.  Therefore, lock is not held when calling
--		 * unmap_hugepage_range for private vmas.
--		 */
--		hugetlb_vma_unlock_write(vma);
- 	}
- }
- 
-@@ -726,9 +666,11 @@ static void hugetlb_vmtruncate(struct inode *inode, loff_t offset)
- 
- 	i_size_write(inode, offset);
- 	i_mmap_lock_write(mapping);
-+	filemap_invalidate_lock(mapping);
- 	if (!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root))
- 		hugetlb_vmdelete_list(&mapping->i_mmap, pgoff, 0,
- 				      ZAP_FLAG_DROP_MARKER);
-+	filemap_invalidate_unlock(mapping);
- 	i_mmap_unlock_write(mapping);
- 	remove_inode_hugepages(inode, offset, LLONG_MAX);
- }
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 4aeb3fa11927..b455a8913db4 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -847,6 +847,12 @@ static inline void filemap_invalidate_lock(struct address_space *mapping)
- 	down_write(&mapping->invalidate_lock);
- }
- 
-+static inline int filemap_invalidate_trylock(
-+					struct address_space *mapping)
-+{
-+	return down_write_trylock(&mapping->invalidate_lock);
-+}
-+
- static inline void filemap_invalidate_unlock(struct address_space *mapping)
- {
- 	up_write(&mapping->invalidate_lock);
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index d9ec500cfef9..af60b67ed828 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -60,7 +60,6 @@ struct resv_map {
- 	long adds_in_progress;
- 	struct list_head region_cache;
- 	long region_cache_count;
--	struct rw_semaphore rw_sema;
- #ifdef CONFIG_CGROUP_HUGETLB
- 	/*
- 	 * On private mappings, the counter to uncharge reservations is stored
-@@ -107,12 +106,6 @@ struct file_region {
- #endif
- };
- 
--struct hugetlb_vma_lock {
--	struct kref refs;
--	struct rw_semaphore rw_sema;
--	struct vm_area_struct *vma;
--};
--
- extern struct resv_map *resv_map_alloc(void);
- void resv_map_release(struct kref *ref);
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 3b6d20dfb9a8..42453437b615 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -743,12 +743,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 			i_mmap_unlock_write(mapping);
- 		}
- 
--		/*
--		 * Copy/update hugetlb private vma information.
--		 */
--		if (is_vm_hugetlb_page(tmp))
--			hugetlb_dup_vma_private(tmp);
--
- 		/* Link the vma into the MT */
- 		if (vma_iter_bulk_store(&vmi, tmp))
- 			goto fail_nomem_vmi_store;
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 3510e2bf23da..3b97bd762049 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -92,9 +92,6 @@ struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
- 
- /* Forward declaration */
- static int hugetlb_acct_memory(struct hstate *h, long delta);
--static void hugetlb_vma_lock_free(struct vm_area_struct *vma);
--static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma);
--static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma);
- static void hugetlb_unshare_pmds(struct vm_area_struct *vma,
- 		unsigned long start, unsigned long end);
- static struct resv_map *vma_resv_map(struct vm_area_struct *vma);
-@@ -264,165 +261,41 @@ static inline struct hugepage_subpool *subpool_vma(struct vm_area_struct *vma)
-  */
- void hugetlb_vma_lock_read(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_read(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		down_read(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_lock_shared(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_unlock_read(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		up_read(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		up_read(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_unlock_shared(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_lock_write(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_write(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		down_write(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_lock(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_unlock_write(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		up_write(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		up_write(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_unlock(vma->vm_file->f_mapping);
- }
- 
- int hugetlb_vma_trylock_write(struct vm_area_struct *vma)
- {
- 
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		return down_write_trylock(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		return down_write_trylock(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		return filemap_invalidate_trylock(vma->vm_file->f_mapping);
- 
- 	return 1;
- }
- 
- void hugetlb_vma_assert_locked(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		lockdep_assert_held(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		lockdep_assert_held(&resv_map->rw_sema);
--	}
--}
--
--void hugetlb_vma_lock_release(struct kref *kref)
--{
--	struct hugetlb_vma_lock *vma_lock = container_of(kref,
--			struct hugetlb_vma_lock, refs);
--
--	kfree(vma_lock);
--}
--
--static void __hugetlb_vma_unlock_write_put(struct hugetlb_vma_lock *vma_lock)
--{
--	struct vm_area_struct *vma = vma_lock->vma;
--
--	/*
--	 * vma_lock structure may or not be released as a result of put,
--	 * it certainly will no longer be attached to vma so clear pointer.
--	 * Semaphore synchronizes access to vma_lock->vma field.
--	 */
--	vma_lock->vma = NULL;
--	vma->vm_private_data = NULL;
--	up_write(&vma_lock->rw_sema);
--	kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--}
--
--static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
--{
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		__hugetlb_vma_unlock_write_put(vma_lock);
--	}
--}
--
--static void hugetlb_vma_lock_free(struct vm_area_struct *vma)
--{
--	/*
--	 * Only present in sharable vmas.
--	 */
--	if (!vma || !__vma_shareable_lock(vma))
--		return;
--
--	if (vma->vm_private_data) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_write(&vma_lock->rw_sema);
--		__hugetlb_vma_unlock_write_put(vma_lock);
--	}
--}
--
--static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma)
--{
--	struct hugetlb_vma_lock *vma_lock;
--
--	/* Only establish in (flags) sharable vmas */
--	if (!vma || !(vma->vm_flags & VM_MAYSHARE))
--		return;
--
--	/* Should never get here with non-NULL vm_private_data */
--	if (vma->vm_private_data)
--		return;
--
--	vma_lock = kmalloc(sizeof(*vma_lock), GFP_KERNEL);
--	if (!vma_lock) {
--		/*
--		 * If we can not allocate structure, then vma can not
--		 * participate in pmd sharing.  This is only a possible
--		 * performance enhancement and memory saving issue.
--		 * However, the lock is also used to synchronize page
--		 * faults with truncation.  If the lock is not present,
--		 * unlikely races could leave pages in a file past i_size
--		 * until the file is removed.  Warn in the unlikely case of
--		 * allocation failure.
--		 */
--		pr_warn_once("HugeTLB: unable to allocate vma specific lock\n");
--		return;
--	}
--
--	kref_init(&vma_lock->refs);
--	init_rwsem(&vma_lock->rw_sema);
--	vma_lock->vma = vma;
--	vma->vm_private_data = vma_lock;
-+	if (vma->vm_file)
-+		lockdep_assert_held(&vma->vm_file->f_mapping->invalidate_lock);
- }
- 
- /* Helper that removes a struct file_region from the resv_map cache and returns
-@@ -1095,7 +968,6 @@ struct resv_map *resv_map_alloc(void)
- 	kref_init(&resv_map->refs);
- 	spin_lock_init(&resv_map->lock);
- 	INIT_LIST_HEAD(&resv_map->regions);
--	init_rwsem(&resv_map->rw_sema);
- 
- 	resv_map->adds_in_progress = 0;
- 	/*
-@@ -1185,30 +1057,6 @@ static int is_vma_resv_set(struct vm_area_struct *vma, unsigned long flag)
- 	return (get_vma_private_data(vma) & flag) != 0;
- }
- 
--void hugetlb_dup_vma_private(struct vm_area_struct *vma)
--{
--	VM_BUG_ON_VMA(!is_vm_hugetlb_page(vma), vma);
--	/*
--	 * Clear vm_private_data
--	 * - For shared mappings this is a per-vma semaphore that may be
--	 *   allocated in a subsequent call to hugetlb_vm_op_open.
--	 *   Before clearing, make sure pointer is not associated with vma
--	 *   as this will leak the structure.  This is the case when called
--	 *   via clear_vma_resv_huge_pages() and hugetlb_vm_op_open has already
--	 *   been called to allocate a new structure.
--	 * - For MAP_PRIVATE mappings, this is the reserve map which does
--	 *   not apply to children.  Faults generated by the children are
--	 *   not guaranteed to succeed, even if read-only.
--	 */
--	if (vma->vm_flags & VM_MAYSHARE) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		if (vma_lock && vma_lock->vma != vma)
--			vma->vm_private_data = NULL;
--	} else
--		vma->vm_private_data = NULL;
--}
--
- /*
-  * Reset and decrement one ref on hugepage private reservation.
-  * Called with mm->mmap_lock writer semaphore held.
-@@ -1236,8 +1084,6 @@ void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
- 		resv_map_put_hugetlb_cgroup_uncharge_info(reservations);
- 		kref_put(&reservations->refs, resv_map_release);
- 	}
--
--	hugetlb_dup_vma_private(vma);
- }
- 
- /* Returns true if the VMA has associated reserve pages */
-@@ -4841,25 +4687,6 @@ static void hugetlb_vm_op_open(struct vm_area_struct *vma)
- 		resv_map_dup_hugetlb_cgroup_uncharge_info(resv);
- 		kref_get(&resv->refs);
- 	}
--
--	/*
--	 * vma_lock structure for sharable mappings is vma specific.
--	 * Clear old pointer (if copied via vm_area_dup) and allocate
--	 * new structure.  Before clearing, make sure vma_lock is not
--	 * for this vma.
--	 */
--	if (vma->vm_flags & VM_MAYSHARE) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		if (vma_lock) {
--			if (vma_lock->vma != vma) {
--				vma->vm_private_data = NULL;
--				hugetlb_vma_lock_alloc(vma);
--			} else
--				pr_warn("HugeTLB: vma_lock already exists in %s.\n", __func__);
--		} else
--			hugetlb_vma_lock_alloc(vma);
--	}
- }
- 
- static void hugetlb_vm_op_close(struct vm_area_struct *vma)
-@@ -4870,8 +4697,6 @@ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
- 	unsigned long reserve, start, end;
- 	long gbl_reserve;
- 
--	hugetlb_vma_lock_free(vma);
--
- 	resv = vma_resv_map(vma);
- 	if (!resv || !is_vma_resv_set(vma, HPAGE_RESV_OWNER))
- 		return;
-@@ -5441,24 +5266,8 @@ void __hugetlb_zap_begin(struct vm_area_struct *vma,
- void __hugetlb_zap_end(struct vm_area_struct *vma,
- 		       struct zap_details *details)
- {
--	zap_flags_t zap_flags = details ? details->zap_flags : 0;
--
--	if (zap_flags & ZAP_FLAG_UNMAP) {	/* final unmap */
--		/*
--		 * Unlock and free the vma lock before releasing i_mmap_rwsem.
--		 * When the vma_lock is freed, this makes the vma ineligible
--		 * for pmd sharing.  And, i_mmap_rwsem is required to set up
--		 * pmd sharing.  This is important as page tables for this
--		 * unmapped range will be asynchrously deleted.  If the page
--		 * tables are shared, there will be issues when accessed by
--		 * someone else.
--		 */
--		__hugetlb_vma_unlock_write_free(vma);
--		i_mmap_unlock_write(vma->vm_file->f_mapping);
--	} else {
--		i_mmap_unlock_write(vma->vm_file->f_mapping);
--		hugetlb_vma_unlock_write(vma);
--	}
-+	i_mmap_unlock_write(vma->vm_file->f_mapping);
-+	hugetlb_vma_unlock_write(vma);
- }
- 
- void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
-@@ -6701,12 +6510,6 @@ bool hugetlb_reserve_pages(struct inode *inode,
- 		return false;
- 	}
- 
--	/*
--	 * vma specific semaphore used for pmd sharing and fault/truncation
--	 * synchronization
--	 */
--	hugetlb_vma_lock_alloc(vma);
--
- 	/*
- 	 * Only apply hugepage reservation if asked. At fault time, an
- 	 * attempt will be made for VM_NORESERVE to allocate a page
-@@ -6829,7 +6632,6 @@ bool hugetlb_reserve_pages(struct inode *inode,
- 	hugetlb_cgroup_uncharge_cgroup_rsvd(hstate_index(h),
- 					    chg * pages_per_huge_page(h), h_cg);
- out_err:
--	hugetlb_vma_lock_free(vma);
- 	if (!vma || vma->vm_flags & VM_MAYSHARE)
- 		/* Only call region_abort if the region_chg succeeded but the
- 		 * region_add failed or didn't run.
-@@ -6899,13 +6701,10 @@ static unsigned long page_table_shareable(struct vm_area_struct *svma,
- 	/*
- 	 * match the virtual addresses, permission and the alignment of the
- 	 * page table page.
--	 *
--	 * Also, vma_lock (vm_private_data) is required for sharing.
- 	 */
- 	if (pmd_index(addr) != pmd_index(saddr) ||
- 	    vm_flags != svm_flags ||
--	    !range_in_vma(svma, sbase, s_end) ||
--	    !svma->vm_private_data)
-+	    !range_in_vma(svma, sbase, s_end))
- 		return 0;
- 
- 	return saddr;
-@@ -6925,8 +6724,6 @@ bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
- 	 */
- 	if (!(vma->vm_flags & VM_MAYSHARE))
- 		return false;
--	if (!vma->vm_private_data)	/* vma lock required for sharing */
--		return false;
- 	if (!range_in_vma(vma, start, end))
- 		return false;
- 	return true;
--- 
-2.41.0
-
+>> [    6.994149] ==================================================================
+>> [    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
+>>
+>> [    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
+>> [    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
+>> [    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
+>> [    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+>> [    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+>> [    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+>> [    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+>> [    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+>> [    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+>> [    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+>> [    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+>> [    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+>> [    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+>> [    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>>
+>> [    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
+>> [    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
+>> [    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
+>> [    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
+>> [    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
+>> [    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
+>> [    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+>> [    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+>> [    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+>> [    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+>> [    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+>> [    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+>> [    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+>> [    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+>> [    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+>> [    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+>> [    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
+>>
+>> [    6.995476] value changed: 0x00000004 -> 0x00000002
+>>
+>> [    6.995629] Reported by Kernel Concurrency Sanitizer on:
+>> [    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+>> [    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+>> [    6.995765] ==================================================================
+>>
+>> Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
+>>
+>> A number of unprotected increments:
+>>
+>>          acpi_gbl_nesting_level++;
+>>
+>> and conditional statements:
+>>
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>>
+>> no longer work in SMP environment.
+>>
+>> Proper locking like
+>>
+>>          spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>>          spin_unlock(&acpi_utdebug_lock);
+>>
+>> and
+>>
+>>          spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>>          spin_unlock(&acpi_utdebug_lock);
+>>
+>> makes these data-races go away.
+>>
+>> Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
+>> acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
+>> stuff the optmisers do.
+>>
+>> The patch eliminates KCSAN BUG warnings.
+>>
+>> Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+>> Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
+>> Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
+>> Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
+>> Fixes: ^1da177e4c3f4 ("Initial git repository build.")
+>> Cc: Jung-uk Kim <jkim@FreeBSD.org>
+>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>> Cc: Erik Kaneda <erik.kaneda@intel.com>
+>> Cc: Bob Moore <robert.moore@intel.com>
+>> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+>> Cc: Len Brown <lenb@kernel.org>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: acpica-devel@lists.linuxfoundation.org
+>> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes: https://lore.kernel.org/oe-kbuild-all/202309201331.S2c1JL2h-lkp@intel.com/
+>> ---
+>> v1 -> v2:
+>>   Moved the declaration of 'u32 nesting_level' inside #ifdef ACPI_APPLICATION ... #endif
+>>   according to the unused variable warning of the kernel test robot.
+>>
+>> v1:
+>>   Preliminary RFC version of the patch.
+>>
+>>   drivers/acpi/acpica/utdebug.c | 40 ++++++++++++++++++++++++++++++-----
+>>   1 file changed, 35 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
+>> index c5f6c85a3a09..1faf7dc144f0 100644
+>> --- a/drivers/acpi/acpica/utdebug.c
+>> +++ b/drivers/acpi/acpica/utdebug.c
+>> @@ -16,6 +16,8 @@
+>>   #define _COMPONENT          ACPI_UTILITIES
+>>   ACPI_MODULE_NAME("utdebug")
+>>
+>> +static DEFINE_SPINLOCK(acpi_utdebug_lock);
+>> +
+>>   #ifdef ACPI_DEBUG_OUTPUT
+>>   static acpi_thread_id acpi_gbl_previous_thread_id = (acpi_thread_id) 0xFFFFFFFF;
+>>   static const char *acpi_gbl_function_entry_prefix = "----Entry";
+>> @@ -60,13 +62,16 @@ void acpi_ut_init_stack_ptr_trace(void)
+>>   void acpi_ut_track_stack_ptr(void)
+>>   {
+>>          acpi_size current_sp;
+>> +       u32 nesting_level;
+>>
+>>          if (&current_sp < acpi_gbl_lowest_stack_pointer) {
+>>                  acpi_gbl_lowest_stack_pointer = &current_sp;
+>>          }
+>>
+>> -       if (acpi_gbl_nesting_level > acpi_gbl_deepest_nesting) {
+>> -               acpi_gbl_deepest_nesting = acpi_gbl_nesting_level;
+>> +       nesting_level = READ_ONCE(acpi_gbl_nesting_level);
+>> +
+>> +       if (nesting_level > acpi_gbl_deepest_nesting) {
+>> +               acpi_gbl_deepest_nesting = nesting_level;
+>>          }
+>>   }
+>>
+>> @@ -136,6 +141,7 @@ acpi_debug_print(u32 requested_debug_level,
+>>          va_list args;
+>>   #ifdef ACPI_APPLICATION
+>>          int fill_count;
+>> +       u32 nesting_level;
+>>   #endif
+>>
+>>          /* Check if debug output enabled */
+>> @@ -156,7 +162,7 @@ acpi_debug_print(u32 requested_debug_level,
+>>                  }
+>>
+>>                  acpi_gbl_previous_thread_id = thread_id;
+>> -               acpi_gbl_nesting_level = 0;
+>> +               WRITE_ONCE(acpi_gbl_nesting_level, 0);
+>>          }
+>>
+>>          /*
+>> @@ -176,14 +182,16 @@ acpi_debug_print(u32 requested_debug_level,
+>>                  acpi_os_printf("[%u] ", (u32)thread_id);
+>>          }
+>>
+>> -       fill_count = 48 - acpi_gbl_nesting_level -
+>> +       fill_count = 48 - READ_ONCE(acpi_gbl_nesting_level) -
+>>              strlen(acpi_ut_trim_function_name(function_name));
+>>          if (fill_count < 0) {
+>>                  fill_count = 0;
+>>          }
+>>
+>> +       nesting_level = READ_ONCE(acpi_gbl_nesting_level);
+>> +
+>>          acpi_os_printf("[%02d] %*s",
+>> -                      acpi_gbl_nesting_level, acpi_gbl_nesting_level + 1, " ");
+>> +                      nesting_level, nesting_level + 1, " ");
+>>          acpi_os_printf("%s%*s: ",
+>>                         acpi_ut_trim_function_name(function_name), fill_count,
+>>                         " ");
+>> @@ -260,7 +268,10 @@ acpi_ut_trace(u32 line_number,
+>>                const char *module_name, u32 component_id)
+>>   {
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>> +       spin_unlock(&acpi_utdebug_lock);
+>> +
+>>          acpi_ut_track_stack_ptr();
+>>
+>>          /* Check if enabled up-front for performance */
+>> @@ -298,7 +309,10 @@ acpi_ut_trace_ptr(u32 line_number,
+>>                    u32 component_id, const void *pointer)
+>>   {
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>> +       spin_unlock(&acpi_utdebug_lock);
+>> +
+>>          acpi_ut_track_stack_ptr();
+>>
+>>          /* Check if enabled up-front for performance */
+>> @@ -334,7 +348,10 @@ acpi_ut_trace_str(u32 line_number,
+>>                    const char *module_name, u32 component_id, const char *string)
+>>   {
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>> +       spin_unlock(&acpi_utdebug_lock);
+>> +
+>>          acpi_ut_track_stack_ptr();
+>>
+>>          /* Check if enabled up-front for performance */
+>> @@ -370,7 +387,10 @@ acpi_ut_trace_u32(u32 line_number,
+>>                    const char *module_name, u32 component_id, u32 integer)
+>>   {
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          acpi_gbl_nesting_level++;
+>> +       spin_unlock(&acpi_utdebug_lock);
+>> +
+>>          acpi_ut_track_stack_ptr();
+>>
+>>          /* Check if enabled up-front for performance */
+>> @@ -414,9 +434,11 @@ acpi_ut_exit(u32 line_number,
+>>                                   acpi_gbl_function_exit_prefix);
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   ACPI_EXPORT_SYMBOL(acpi_ut_exit)
+>> @@ -463,9 +485,11 @@ acpi_ut_status_exit(u32 line_number,
+>>                  }
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
+>> @@ -502,9 +526,11 @@ acpi_ut_value_exit(u32 line_number,
+>>                                   ACPI_FORMAT_UINT64(value));
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
+>> @@ -540,9 +566,11 @@ acpi_ut_ptr_exit(u32 line_number,
+>>                                   acpi_gbl_function_exit_prefix, ptr);
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   /*******************************************************************************
+>> @@ -577,9 +605,11 @@ acpi_ut_str_exit(u32 line_number,
+>>                                   acpi_gbl_function_exit_prefix, string);
+>>          }
+>>
+>> +       spin_lock(&acpi_utdebug_lock);
+>>          if (acpi_gbl_nesting_level) {
+>>                  acpi_gbl_nesting_level--;
+>>          }
+>> +       spin_unlock(&acpi_utdebug_lock);
+>>   }
+>>
+>>   /*******************************************************************************
+>> --
+>> 2.34.1
+>>
