@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53BC57A9687
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A9E7A97B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjIURBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
+        id S230133AbjIUR1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjIURBA (ORCPT
+        with ESMTP id S230007AbjIUR0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:01:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CB1CDD;
-        Thu, 21 Sep 2023 09:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695315562; x=1726851562;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oZ26NaKC2zv5YONE8y6jW8KHDfibqQbE4Lcj557476A=;
-  b=Xkm+iGlBE6orJWszf3h/H4m+HtQA60DEUHwyUtmg9i5jaWDT1S9FR8hj
-   YtEipiPub8bi9mHzl/Fr81HyOkvRvNtT0YrBXT+3HaBEzzQ1sUxwsaS6C
-   pfHGU46eOVUiEDEZ3xb645ixhLZ5XlzmImCHNozhHQ/WlHR72aSrebSFc
-   TxYc74ca32GhUTwfalEh0chny9CW4gkGVohFKopw0l0Iht8Tv4JsBnkWO
-   hKQ/Fk8xJlhLWLLqa3LBD+Nq4ScdGTjikwcKLZBYF21Or2parWQ2yty81
-   CBbWjQLqAU+4W7BZ7L7xXcz7UlbJalHuoJWQ44Gfcpm3XagCA84ek5F7u
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="466734468"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="466734468"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 22:51:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="837187245"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="837187245"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.17.222]) ([10.93.17.222])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 22:51:36 -0700
-Message-ID: <ef36db9d-bb9c-e042-2617-830cf44602de@linux.intel.com>
-Date:   Thu, 21 Sep 2023 13:51:34 +0800
+        Thu, 21 Sep 2023 13:26:48 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9065C35A1;
+        Thu, 21 Sep 2023 10:03:16 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3ae0b0e9a68so368987b6e.0;
+        Thu, 21 Sep 2023 10:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695315719; x=1695920519; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ByKVtqUJEPBxmLb9T4BpOvxQKgM29af3ZdN5g2GbQ1I=;
+        b=gc0h7mB4n3qqxjuA+c5Ann4FRuAvfXty1UmWmSuOgzGn9+I4YaQ0w0av4LzNNM33NO
+         aJBabGgXbKzt3hW9Lu5p62DQ6JRA7uh5SJTO+2hhZoG66CsiFz0wr1mixgF6cfIaJHvV
+         kOKkoDXHaS/TWEUsJLCfaT/v+G6cX8RkGl3JpLaKk7zpWEoXoJEkuKLx8BxLBwqtRFle
+         n2zaAkn9CsuNI7wYYHVXmlMrhEYT682x/D8nTkM06E29T4oxsEFFYZ2dwNOWL7yOxbgT
+         Zz5I621ZggTIpsm+CvsGEW/JIdEpiGw57mDqPEGsVriRBXAu1qIetEBaeGWxMnIzyvC+
+         Mnww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695315719; x=1695920519;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ByKVtqUJEPBxmLb9T4BpOvxQKgM29af3ZdN5g2GbQ1I=;
+        b=umnlNBNjlG4/lhtAy7maCTKp3AmBQju2+orb4Zo5iAoVoqjocfs+agyf2MLwQLFllD
+         e/TAlRLjaz7cYump+mM53gbaYyeUcfFeHDbBrHJ7tIlYLKO3JESBzjMiDteiBUCzs1FV
+         zjGEE/zj+/p63C/4IUPM1VQSG95KV3WtdrclZi8pOqXIda9hGDLyu3geKmWRggFzDhPK
+         4uI+tbDfUHSOsrFpBv3WUEsCVPjDQt9GXN55587GMuEreXAjrc6GLoSbkCLc9kNb590v
+         ovtV/U9/I2hmZQvLqBERLI5hZxCxhF0OfZsjG2fBR8Ux9TI7BZilfycoE7TqQTBYLj6z
+         Z00Q==
+X-Gm-Message-State: AOJu0YwDwqxYeiZveXngojQX9Ge8onR3lHAL7KQwJfHgFzgqL3mbCU95
+        o2ZGt/aS1EchwzwK1x09xWFDiiccb9wbgHet
+X-Google-Smtp-Source: AGHT+IGXrdoFdG68RUqDxGV7VidK+l0gZOEp2HsNGA87ZiME15dPxqRFNQ8j+4u7RkVol1rv3GUA6Q==
+X-Received: by 2002:a17:902:ec83:b0:1c3:308b:ecb9 with SMTP id x3-20020a170902ec8300b001c3308becb9mr4793970plg.11.1695275765372;
+        Wed, 20 Sep 2023 22:56:05 -0700 (PDT)
+Received: from toolbox.alistair23.me (2403-580b-97e8-0-321-6fb2-58f1-a1b1.ip6.aussiebb.net. [2403:580b:97e8:0:321:6fb2:58f1:a1b1])
+        by smtp.gmail.com with ESMTPSA id jw18-20020a170903279200b001adf6b21c77sm502841plb.107.2023.09.20.22.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 22:56:04 -0700 (PDT)
+From:   Alistair Francis <alistair23@gmail.com>
+X-Google-Original-From: Alistair Francis <alistair.francis@wdc.com>
+To:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, lukas@wunner.de
+Cc:     alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, gregkh@linuxfoundation.org, logang@deltatee.com,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        chaitanyak@nvidia.com, rdunlap@infradead.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: [PATCH v8 1/3] PCI/DOE: Rename DOE protocol to feature
+Date:   Thu, 21 Sep 2023 15:55:29 +1000
+Message-ID: <20230921055531.2028834-1-alistair.francis@wdc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v12 18/33] KVM: x86/mmu: Handle page fault for private
- memory
-To:     Sean Christopherson <seanjc@google.com>,
-        Yan Zhao <yan.y.zhao@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230914015531.1419405-1-seanjc@google.com>
- <20230914015531.1419405-19-seanjc@google.com>
- <ZQPuMK6D/7UzDH+D@yzhao56-desk.sh.intel.com> <ZQRpiOd1DNDDJQ3r@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZQRpiOd1DNDDJQ3r@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,78 +74,281 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+DOE r1.1 replaced all occurrences of "protocol" with the term "feature"
+or "Data Object Type".
 
+PCIe r6.1 (which was published July 24) incorporated that change.
 
-On 9/15/2023 10:26 PM, Sean Christopherson wrote:
-> On Fri, Sep 15, 2023, Yan Zhao wrote:
->> On Wed, Sep 13, 2023 at 06:55:16PM -0700, Sean Christopherson wrote:
->> ....
->>> +static void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
->>> +					      struct kvm_page_fault *fault)
->>> +{
->>> +	kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT,
->>> +				      PAGE_SIZE, fault->write, fault->exec,
->>> +				      fault->is_private);
->>> +}
->>> +
->>> +static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
->>> +				   struct kvm_page_fault *fault)
->>> +{
->>> +	int max_order, r;
->>> +
->>> +	if (!kvm_slot_can_be_private(fault->slot)) {
->>> +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
->>> +		return -EFAULT;
->>> +	}
->>> +
->>> +	r = kvm_gmem_get_pfn(vcpu->kvm, fault->slot, fault->gfn, &fault->pfn,
->>> +			     &max_order);
->>> +	if (r) {
->>> +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
->>> +		return r;
->>> +	}
->>> +
->>> +	fault->max_level = min(kvm_max_level_for_order(max_order),
->>> +			       fault->max_level);
->>> +	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
->>> +
->>> +	return RET_PF_CONTINUE;
->>> +}
->>> +
->>>   static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
->>>   {
->>>   	struct kvm_memory_slot *slot = fault->slot;
->>> @@ -4293,6 +4356,14 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
->>>   			return RET_PF_EMULATE;
->>>   	}
->>>   
->>> +	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
->> In patch 21,
->> fault->is_private is set as:
->> 	".is_private = kvm_mem_is_private(vcpu->kvm, cr2_or_gpa >> PAGE_SHIFT)",
->> then, the inequality here means memory attribute has been updated after
->> last check.
->> So, why an exit to user space for converting is required instead of a mere retry?
->>
->> Or, is it because how .is_private is assigned in patch 21 is subjected to change
->> in future?
-> This.  Retrying on SNP or TDX would hang the guest.  I suppose we could special
-> case VMs where .is_private is derived from the memory attributes, but the
-> SW_PROTECTED_VM type is primary a development vehicle at this point.  I'd like to
-> have it mimic SNP/TDX as much as possible; performance is a secondary concern.
-So when .is_private is derived from the memory attributes, and if I 
-didn't miss
-anything, there is no explicit conversion mechanism introduced yet so 
-far, does
-it mean for pure sw-protected VM (withouth SNP/TDX), the page fault will be
-handled according to the memory attributes setup by host/user vmm, no 
-implicit
-conversion will be triggered, right?
+This patch renames the existing terms protocol with feature.
 
+Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+---
+v8:
+ - Rename prot to feat as well
+v7:
+ - Initial patch
 
->
-> E.g. userspace needs to be prepared for "spurious" exits due to races on SNP and
-> TDX, which this can theoretically exercise.  Though the window is quite small so
-> I doubt that'll actually happen in practice; which of course also makes it less
-> important to retry instead of exiting.
+ drivers/pci/doe.c | 88 +++++++++++++++++++++++------------------------
+ 1 file changed, 44 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
+index e3aab5edaf70..78ce79e031cd 100644
+--- a/drivers/pci/doe.c
++++ b/drivers/pci/doe.c
+@@ -43,7 +43,7 @@
+  *
+  * @pdev: PCI device this mailbox belongs to
+  * @cap_offset: Capability offset
+- * @prots: Array of protocols supported (encoded as long values)
++ * @feats: Array of features supported (encoded as long values)
+  * @wq: Wait queue for work item
+  * @work_queue: Queue of pci_doe_work items
+  * @flags: Bit array of PCI_DOE_FLAG_* flags
+@@ -51,14 +51,14 @@
+ struct pci_doe_mb {
+ 	struct pci_dev *pdev;
+ 	u16 cap_offset;
+-	struct xarray prots;
++	struct xarray feats;
+ 
+ 	wait_queue_head_t wq;
+ 	struct workqueue_struct *work_queue;
+ 	unsigned long flags;
+ };
+ 
+-struct pci_doe_protocol {
++struct pci_doe_feature {
+ 	u16 vid;
+ 	u8 type;
+ };
+@@ -66,7 +66,7 @@ struct pci_doe_protocol {
+ /**
+  * struct pci_doe_task - represents a single query/response
+  *
+- * @prot: DOE Protocol
++ * @feat: DOE Feature
+  * @request_pl: The request payload
+  * @request_pl_sz: Size of the request payload (bytes)
+  * @response_pl: The response payload
+@@ -78,7 +78,7 @@ struct pci_doe_protocol {
+  * @doe_mb: Used internally by the mailbox
+  */
+ struct pci_doe_task {
+-	struct pci_doe_protocol prot;
++	struct pci_doe_feature feat;
+ 	const __le32 *request_pl;
+ 	size_t request_pl_sz;
+ 	__le32 *response_pl;
+@@ -171,8 +171,8 @@ static int pci_doe_send_req(struct pci_doe_mb *doe_mb,
+ 		length = 0;
+ 
+ 	/* Write DOE Header */
+-	val = FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_1_VID, task->prot.vid) |
+-		FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, task->prot.type);
++	val = FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_1_VID, task->feat.vid) |
++		FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, task->feat.type);
+ 	pci_write_config_dword(pdev, offset + PCI_DOE_WRITE, val);
+ 	pci_write_config_dword(pdev, offset + PCI_DOE_WRITE,
+ 			       FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_2_LENGTH,
+@@ -217,12 +217,12 @@ static int pci_doe_recv_resp(struct pci_doe_mb *doe_mb, struct pci_doe_task *tas
+ 	int i = 0;
+ 	u32 val;
+ 
+-	/* Read the first dword to get the protocol */
++	/* Read the first dword to get the feature */
+ 	pci_read_config_dword(pdev, offset + PCI_DOE_READ, &val);
+-	if ((FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_VID, val) != task->prot.vid) ||
+-	    (FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, val) != task->prot.type)) {
+-		dev_err_ratelimited(&pdev->dev, "[%x] expected [VID, Protocol] = [%04x, %02x], got [%04x, %02x]\n",
+-				    doe_mb->cap_offset, task->prot.vid, task->prot.type,
++	if ((FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_VID, val) != task->feat.vid) ||
++	    (FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, val) != task->feat.type)) {
++		dev_err_ratelimited(&pdev->dev, "[%x] expected [VID, Feature] = [%04x, %02x], got [%04x, %02x]\n",
++				    doe_mb->cap_offset, task->feat.vid, task->feat.type,
+ 				    FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_VID, val),
+ 				    FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, val));
+ 		return -EIO;
+@@ -384,7 +384,7 @@ static void pci_doe_task_complete(struct pci_doe_task *task)
+ }
+ 
+ static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
+-			     u8 *protocol)
++			     u8 *feature)
+ {
+ 	u32 request_pl = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX,
+ 				    *index);
+@@ -404,7 +404,7 @@ static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
+ 
+ 	response_pl = le32_to_cpu(response_pl_le);
+ 	*vid = FIELD_GET(PCI_DOE_DATA_OBJECT_DISC_RSP_3_VID, response_pl);
+-	*protocol = FIELD_GET(PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL,
++	*feature = FIELD_GET(PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL,
+ 			      response_pl);
+ 	*index = FIELD_GET(PCI_DOE_DATA_OBJECT_DISC_RSP_3_NEXT_INDEX,
+ 			   response_pl);
+@@ -412,12 +412,12 @@ static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
+ 	return 0;
+ }
+ 
+-static void *pci_doe_xa_prot_entry(u16 vid, u8 prot)
++static void *pci_doe_xa_feat_entry(u16 vid, u8 type)
+ {
+-	return xa_mk_value((vid << 8) | prot);
++	return xa_mk_value((vid << 8) | type);
+ }
+ 
+-static int pci_doe_cache_protocols(struct pci_doe_mb *doe_mb)
++static int pci_doe_cache_features(struct pci_doe_mb *doe_mb)
+ {
+ 	u8 index = 0;
+ 	u8 xa_idx = 0;
+@@ -425,18 +425,18 @@ static int pci_doe_cache_protocols(struct pci_doe_mb *doe_mb)
+ 	do {
+ 		int rc;
+ 		u16 vid;
+-		u8 prot;
++		u8 type;
+ 
+-		rc = pci_doe_discovery(doe_mb, &index, &vid, &prot);
++		rc = pci_doe_discovery(doe_mb, &index, &vid, &type);
+ 		if (rc)
+ 			return rc;
+ 
+ 		pci_dbg(doe_mb->pdev,
+-			"[%x] Found protocol %d vid: %x prot: %x\n",
+-			doe_mb->cap_offset, xa_idx, vid, prot);
++			"[%x] Found feature %d vid: %x type: %x\n",
++			doe_mb->cap_offset, xa_idx, vid, type);
+ 
+-		rc = xa_insert(&doe_mb->prots, xa_idx++,
+-			       pci_doe_xa_prot_entry(vid, prot), GFP_KERNEL);
++		rc = xa_insert(&doe_mb->feats, xa_idx++,
++			       pci_doe_xa_feat_entry(vid, type), GFP_KERNEL);
+ 		if (rc)
+ 			return rc;
+ 	} while (index);
+@@ -460,7 +460,7 @@ static void pci_doe_cancel_tasks(struct pci_doe_mb *doe_mb)
+  * @pdev: PCI device to create the DOE mailbox for
+  * @cap_offset: Offset of the DOE mailbox
+  *
+- * Create a single mailbox object to manage the mailbox protocol at the
++ * Create a single mailbox object to manage the mailbox feature at the
+  * cap_offset specified.
+  *
+  * RETURNS: created mailbox object on success
+@@ -479,7 +479,7 @@ static struct pci_doe_mb *pci_doe_create_mb(struct pci_dev *pdev,
+ 	doe_mb->pdev = pdev;
+ 	doe_mb->cap_offset = cap_offset;
+ 	init_waitqueue_head(&doe_mb->wq);
+-	xa_init(&doe_mb->prots);
++	xa_init(&doe_mb->feats);
+ 
+ 	doe_mb->work_queue = alloc_ordered_workqueue("%s %s DOE [%x]", 0,
+ 						dev_bus_name(&pdev->dev),
+@@ -502,11 +502,11 @@ static struct pci_doe_mb *pci_doe_create_mb(struct pci_dev *pdev,
+ 
+ 	/*
+ 	 * The state machine and the mailbox should be in sync now;
+-	 * Use the mailbox to query protocols.
++	 * Use the mailbox to query features.
+ 	 */
+-	rc = pci_doe_cache_protocols(doe_mb);
++	rc = pci_doe_cache_features(doe_mb);
+ 	if (rc) {
+-		pci_err(pdev, "[%x] failed to cache protocols : %d\n",
++		pci_err(pdev, "[%x] failed to cache features : %d\n",
+ 			doe_mb->cap_offset, rc);
+ 		goto err_cancel;
+ 	}
+@@ -515,7 +515,7 @@ static struct pci_doe_mb *pci_doe_create_mb(struct pci_dev *pdev,
+ 
+ err_cancel:
+ 	pci_doe_cancel_tasks(doe_mb);
+-	xa_destroy(&doe_mb->prots);
++	xa_destroy(&doe_mb->feats);
+ err_destroy_wq:
+ 	destroy_workqueue(doe_mb->work_queue);
+ err_free:
+@@ -533,31 +533,31 @@ static struct pci_doe_mb *pci_doe_create_mb(struct pci_dev *pdev,
+ static void pci_doe_destroy_mb(struct pci_doe_mb *doe_mb)
+ {
+ 	pci_doe_cancel_tasks(doe_mb);
+-	xa_destroy(&doe_mb->prots);
++	xa_destroy(&doe_mb->feats);
+ 	destroy_workqueue(doe_mb->work_queue);
+ 	kfree(doe_mb);
+ }
+ 
+ /**
+- * pci_doe_supports_prot() - Return if the DOE instance supports the given
+- *			     protocol
++ * pci_doe_supports_feat() - Return if the DOE instance supports the given
++ *			     feature
+  * @doe_mb: DOE mailbox capability to query
+- * @vid: Protocol Vendor ID
+- * @type: Protocol type
++ * @vid: Feature Vendor ID
++ * @type: Feature type
+  *
+- * RETURNS: True if the DOE mailbox supports the protocol specified
++ * RETURNS: True if the DOE mailbox supports the feature specified
+  */
+-static bool pci_doe_supports_prot(struct pci_doe_mb *doe_mb, u16 vid, u8 type)
++static bool pci_doe_supports_feat(struct pci_doe_mb *doe_mb, u16 vid, u8 type)
+ {
+ 	unsigned long index;
+ 	void *entry;
+ 
+-	/* The discovery protocol must always be supported */
++	/* The discovery feature must always be supported */
+ 	if (vid == PCI_VENDOR_ID_PCI_SIG && type == PCI_DOE_PROTOCOL_DISCOVERY)
+ 		return true;
+ 
+-	xa_for_each(&doe_mb->prots, index, entry)
+-		if (entry == pci_doe_xa_prot_entry(vid, type))
++	xa_for_each(&doe_mb->feats, index, entry)
++		if (entry == pci_doe_xa_feat_entry(vid, type))
+ 			return true;
+ 
+ 	return false;
+@@ -585,7 +585,7 @@ static bool pci_doe_supports_prot(struct pci_doe_mb *doe_mb, u16 vid, u8 type)
+ static int pci_doe_submit_task(struct pci_doe_mb *doe_mb,
+ 			       struct pci_doe_task *task)
+ {
+-	if (!pci_doe_supports_prot(doe_mb, task->prot.vid, task->prot.type))
++	if (!pci_doe_supports_feat(doe_mb, task->feat.vid, task->feat.type))
+ 		return -EINVAL;
+ 
+ 	if (test_bit(PCI_DOE_FLAG_DEAD, &doe_mb->flags))
+@@ -631,8 +631,8 @@ int pci_doe(struct pci_doe_mb *doe_mb, u16 vendor, u8 type,
+ {
+ 	DECLARE_COMPLETION_ONSTACK(c);
+ 	struct pci_doe_task task = {
+-		.prot.vid = vendor,
+-		.prot.type = type,
++		.feat.vid = vendor,
++		.feat.type = type,
+ 		.request_pl = request,
+ 		.request_pl_sz = request_sz,
+ 		.response_pl = response,
+@@ -659,7 +659,7 @@ EXPORT_SYMBOL_GPL(pci_doe);
+  * @vendor: Vendor ID
+  * @type: Data Object Type
+  *
+- * Find first DOE mailbox of a PCI device which supports the given protocol.
++ * Find first DOE mailbox of a PCI device which supports the given feature.
+  *
+  * RETURNS: Pointer to the DOE mailbox or NULL if none was found.
+  */
+@@ -670,7 +670,7 @@ struct pci_doe_mb *pci_find_doe_mailbox(struct pci_dev *pdev, u16 vendor,
+ 	unsigned long index;
+ 
+ 	xa_for_each(&pdev->doe_mbs, index, doe_mb)
+-		if (pci_doe_supports_prot(doe_mb, vendor, type))
++		if (pci_doe_supports_feat(doe_mb, vendor, type))
+ 			return doe_mb;
+ 
+ 	return NULL;
+-- 
+2.41.0
 
