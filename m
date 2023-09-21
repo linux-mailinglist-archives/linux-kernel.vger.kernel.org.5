@@ -2,124 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5427AA380
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366C87A9FAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbjIUVvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
+        id S231931AbjIUU0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbjIUVvD (ORCPT
+        with ESMTP id S231860AbjIUU0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:51:03 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3128B102
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:41:14 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59bf1dde73fso15855387b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695318074; x=1695922874; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2yMALxVMz8eu5uuCFT9jsKazczGt2OLOMSS4WKXUPfs=;
-        b=KUe3Yn4Qk+Cm8iYHZzReyst2Xjxc7WlC0ngG29bpEZYbsH7+e1oPHws2UR8Rvi1Esi
-         U9jUFt55o9B+N76AaJQ0PlGpwFG6nBiqfnWQTDxLiY1KePzqF41B1L9rWJogtBbGmzIj
-         yASLRgxMjKrx18jQ2rFFZTwjMFaJwoKQbPz16Lk1Y2QGaFbX3SJA3ZFupUI7AlshtIsY
-         bsAgLUm6BMSTTPoNWXVH1Y6cYdARExFzTSBRSehwI5kTPnuzvWDfLS1tSR66jCXOTVRa
-         CBBtryUTm+6yRCZwohsfw25/48VdvjTG94yz6Fi8By+lzOGkqqdzJpqICZv/zPaDoCzW
-         gVaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318074; x=1695922874;
-        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2yMALxVMz8eu5uuCFT9jsKazczGt2OLOMSS4WKXUPfs=;
-        b=L532Y2UvwTqUFyrOmyqA3z1cJSRD3gWmClmsguP+ngvN/5Zff+WmgbCxEJolaPSaij
-         nr2DcThfQLeJIKma7SzE43uXr0ANnYPo7YXYSigzb1BQx9bmAgvT8JH+PRn7Pt3M4Qx3
-         IcGraAdTJynihoFHJJ+ZZvJYIEV+KIyoREW2L+/Yfgc3ryfjq0IfPOdNAKZ6WLsO+DPq
-         5k6LKgrObyIobfMopoji85l9n9Ttia7WsQR7pqhTidWxQIMmgY3Lcm+wBZcIIZZEkZE1
-         RQJIzazguIVtovs13MWcgq89VKglAYRKBs3acCVcrXVcDsA5WGqDELab0NJks04PChs8
-         GYLw==
-X-Gm-Message-State: AOJu0YwIN/vY6gcDsMbiluRSttjFk2/A+0IdsW9JhrhytFBjJKp3+CSm
-        9/DxWDiGK+ggx52kMILB4A3UmsFDjrtKnTO3AQCLC3VImjypXDY2fLQ=
-X-Google-Smtp-Source: AGHT+IG2MD5sh61wBj+qCb/GndH+IXTfCKZ2fjrPeCIUS4IVd/M7asl1O3/m4e4yOmvEJ6GOztcpu0F6OSG4Kp/sp4E=
-X-Received: by 2002:a1f:ca03:0:b0:490:aa9b:4809 with SMTP id
- a3-20020a1fca03000000b00490aa9b4809mr4281527vkg.4.1695283936991; Thu, 21 Sep
- 2023 01:12:16 -0700 (PDT)
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 21 Sep 2023 01:12:16 -0700
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-In-Reply-To: <ZQr3E/7crMrVxMp9@smile.fi.intel.com>
+        Thu, 21 Sep 2023 16:26:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA9537BEE
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695318582; x=1726854582;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8ZHu1hIXWBCsZA57pJrAZEA7etlLyQOr5qWeEtcu1xo=;
+  b=KiGHv5h8a8Fi71xC7Ts2GQHn2ngYFDXbvxMRGVjTNMp/MbE+bAYDeeuk
+   nORMxV0OArgYtCvuREExokcxnEL3wRREX1a4iA5KQi3Zndgux7s42BEUM
+   otsZg/AACvgZAnEWpUpjZc2qiUd5hMVR4cpYqg70e6hqv3qJX+JCMcwGL
+   TDLJsvcNH+yohfgT41tD4t7l2wQWibEMyir/u79gD6RUko2AhwPsl4JJ9
+   f3Qn+MYvSeEzZDNB0FcEvniFpwpCGkoIvrVtpqA38oLPeYfODu7JqCcfU
+   5j3NCHNgEjed5zx4Zakn3VdcdTDs4DnbNVwcHKG2z8Rg1GAfdcX5MyVIm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="446924941"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
+   d="scan'208";a="446924941"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 01:31:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="862380081"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
+   d="scan'208";a="862380081"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Sep 2023 01:31:36 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qjF5v-0009ma-2S;
+        Thu, 21 Sep 2023 08:31:33 +0000
+Date:   Thu, 21 Sep 2023 16:31:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nathan Lynch <nathanl@linux.ibm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Andrew Donnellan <ajd@linux.ibm.com>
+Subject: arch/powerpc/kernel/rtas-proc.c:771: warning: Function parameter or
+ member 'm' not described in 'ppc_rtas_rmo_buf_show'
+Message-ID: <202309211645.1Lvwmbv4-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230920073253.51742-1-brgl@bgdev.pl> <ZQr3E/7crMrVxMp9@smile.fi.intel.com>
-Date:   Thu, 21 Sep 2023 01:12:16 -0700
-Message-ID: <CAMRc=MfvOL-ovQ89i7FASg=RoWHQPARGsc5Pxu9kC+roGqaE4g@mail.gmail.com>
-Subject: Re: [PATCH v5] gpio: sim: fix an invalid __free() usage
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        akpm@linux-foundation.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sep 2023 15:43:47 +0200, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> said:
-> On Wed, Sep 20, 2023 at 09:32:53AM +0200, Bartosz Golaszewski wrote:
->> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>
->> gpio_sim_make_line_names() returns NULL or ERR_PTR() so we must not use
->> __free(kfree) on the returned address. Split this function into two, one
->> that determines the size of the "gpio-line-names" array to allocate and
->> one that actually sets the names at correct offsets. The allocation and
->> assignment of the managed pointer happens in between.
->
-> ...
->
->>  	list_for_each_entry(line, &bank->line_list, siblings) {
->> -		if (line->offset >= bank->num_lines)
->> +		if (!line->name || (line->offset >= bank->num_lines))
->>  			continue;
->>
->> -		if (line->name) {
->> -			if (line->offset > max_offset)
->> -				max_offset = line->offset;
->> -
->> -			/*
->> -			 * max_offset can stay at 0 so it's not an indicator
->> -			 * of whether line names were configured at all.
->> -			 */
->> -			has_line_names = true;
->> -		}
->> +		size = max(size, line->offset + 1);
->>  	}
->
-> As for the material to be backported it's fine, but I'm wondering if we
-> actually can add the entries in a sorted manner, so we would need the exact
-> what I mentioned in previous review round, just search backwards to the first
-> satisfying entry. I don't believe the adding an entry to the list is a
-> hot-path, so would be fine to call list_sort().
->
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   42dc814987c1feb6410904e58cfd4c36c4146150
+commit: c13ff6f3251318f5e1ff5b1a6d05f76996db672a powerpc/rtas: improve ppc_rtas_rmo_buf_show documentation
+date:   2 years, 5 months ago
+config: powerpc-mgcoge_defconfig (https://download.01.org/0day-ci/archive/20230921/202309211645.1Lvwmbv4-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230921/202309211645.1Lvwmbv4-lkp@intel.com/reproduce)
 
-Given the need for the callback function, this would result in bigger code.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309211645.1Lvwmbv4-lkp@intel.com/
 
-Also calling:
+All warnings (new ones prefixed by >>):
 
-    list_add_tail();
-    list_sort();
+>> arch/powerpc/kernel/rtas-proc.c:771: warning: Function parameter or member 'm' not described in 'ppc_rtas_rmo_buf_show'
+>> arch/powerpc/kernel/rtas-proc.c:771: warning: Function parameter or member 'v' not described in 'ppc_rtas_rmo_buf_show'
 
-is not very elegant. I would possibly go for adding list_add_sorted() but
-that's a separate change for the future.
 
-Bart
+vim +771 arch/powerpc/kernel/rtas-proc.c
+
+^1da177e4c3f41 arch/ppc64/kernel/rtas-proc.c   Linus Torvalds 2005-04-16  759  
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  760  /**
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  761   * ppc_rtas_rmo_buf_show() - Describe RTAS-addressable region for user space.
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  762   *
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  763   * Base + size description of a range of RTAS-addressable memory set
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  764   * aside for user space to use as work area(s) for certain RTAS
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  765   * functions. User space accesses this region via /dev/mem. Apart from
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  766   * security policies, the kernel does not arbitrate or serialize
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  767   * access to this region, and user space must ensure that concurrent
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  768   * users do not interfere with each other.
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  769   */
+^1da177e4c3f41 arch/ppc64/kernel/rtas-proc.c   Linus Torvalds 2005-04-16  770  static int ppc_rtas_rmo_buf_show(struct seq_file *m, void *v)
+^1da177e4c3f41 arch/ppc64/kernel/rtas-proc.c   Linus Torvalds 2005-04-16 @771  {
+
+:::::: The code at line 771 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
