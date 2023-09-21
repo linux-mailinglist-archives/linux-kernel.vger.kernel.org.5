@@ -2,473 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5F57A9AB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0A07A9E14
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbjIUSsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
+        id S230394AbjIUTzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjIUSrw (ORCPT
+        with ESMTP id S230424AbjIUTyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:47:52 -0400
-Received: from mail-yw1-f207.google.com (mail-yw1-f207.google.com [209.85.128.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8E4EE845
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:47:40 -0700 (PDT)
-Received: by mail-yw1-f207.google.com with SMTP id 00721157ae682-59f1be93bd4so8088637b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:47:40 -0700 (PDT)
+        Thu, 21 Sep 2023 15:54:32 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DF16901C;
+        Thu, 21 Sep 2023 12:02:06 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-4525cfe255bso1681147137.1;
+        Thu, 21 Sep 2023 12:02:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695322925; x=1695927725; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1bVL+jGs6sqP7VG1dEZazWMAPQBBD+mX9InFJhTfc4M=;
+        b=YtQz/Fp4aeyUfVE6lgsa8mx9dgE0UFXPyJRfwKQsfM34H4uPI9KPAMySLZmgOh4klB
+         59r/aLK5R3gCNoFH1xts88xmsw5jKKTrk5h72yjxcADRw88ipZNMiOCvh7snAFYMUwCZ
+         Un7YdvBlI3Dgd92+1HrDMlBNoO4jdwQlMvNCqTQcp5/+y2JO+ltI0J9lDAo4DRh3fIdN
+         HL916lDdhxhiJBW+IncpacsAVs9BD6OGL+UxNIzziO2RdlpJ/z7YL7cFsigX2lSxwFr5
+         xjRGyPbTiNLHjDYopfCdxDwxwhPyZ/gOfHzS2tbOMOi+of8UHHWJiEEwKlqLi0c2CGrd
+         jLhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695322060; x=1695926860;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+8QGzJrCYmfRoQWsGWPX3YB4TdmaJK4nkiaW/u7OvpQ=;
-        b=wWVPgrARWrsBkGZu8kXsRoPVCWQns7jdBkPKHJuVbryYXDo0UMzDyemKgnfwuDO52q
-         1Vu4wO4C7s1KTiix8QzqXbZyHYH+UDv4yGSIS3+4rBmY5g2pqhLfqZcJAHrPK8uepufv
-         BmBqF7bbNtjTV/bqz8MiN4T4BEZledCOpedbTg5sqypQsQ5Yxt+HxSbvZVm7tUZy2uS+
-         1LZoVY4hwdTc8DSuDnA40MONKyOhRwpblH691+eJ1NyFOM8QzV0UlT+cXEJ7OBAGrDn2
-         3u7PyrnGQ3rLTIWHSdpPetSzNzaMQJjwkznNGE4fjHMZExvlNI/cIsjLePYsUua7APOk
-         Ijng==
-X-Gm-Message-State: AOJu0YxJnIxX0CytWWf8oW6PEj1tSA5jjUxgx63ylDTnExswMqLmYKhl
-        +E5OJpBid7tZ1D+aTqqjkodknUPTCVihbBNhAlNeWr61s5u7
-X-Google-Smtp-Source: AGHT+IFoyeGVbYSzKAxaDLyuyOwlz508qpLzWfyhPCZ3y9wOAy8KeYkmHzCKyH5GTD96J8br4EqL9ptVl+lVf8ueSyqZHoEldRjv
+        d=1e100.net; s=20230601; t=1695322925; x=1695927725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1bVL+jGs6sqP7VG1dEZazWMAPQBBD+mX9InFJhTfc4M=;
+        b=gV+5M0MQxCY5z0aDMCNYR1wxRRR+IjsoaKDRqHPvR7GHoR0wEx4h8BCOQ2+Uh1EF8n
+         niXYbnQrQJ6CfPDOSCIa1miB12MdG9m/kn5Ld3LbZMUL/Jc7HZAfZZejpv7SUiH8D7gk
+         1TXX5KNlxkqw3B2/FOp7/M17U+pdk82AyrCmnqe8vDvG2gqB94IZAX+DNWpcRSt1X0uF
+         Dh4Y36lEKGf9krgAr37SkYmfEUDMMahy/mAMhKlOK5ZcWowyR6J4Gsvgn3i3FLOVrXq+
+         Cxy5ZIX+7f+RK00heCpxtSskY2QhXuDp12Uu2KXAic3/PoKPzOtuBffxHHooTZbRcLIF
+         IcsQ==
+X-Gm-Message-State: AOJu0Ywfh9Q1PEIaliK8QgGWPwOViTgQLG4r6gQ6TkPOVDlB9M8WhY0d
+        fIVVbeiWaq9sEj3gYaX+HrKOmndTyzwrgnv4VommOJsYVtI=
+X-Google-Smtp-Source: AGHT+IFVBrCouVQWwD+e2QYzdo6XT481j2Idi0aW4ihmGivrnNEgvLCRqXRTybpDG6APLo336LaCnJUTntu6YTFsRW0=
+X-Received: by 2002:a17:90b:1482:b0:276:6be8:8bfe with SMTP id
+ js2-20020a17090b148200b002766be88bfemr7106957pjb.23.1695279348052; Wed, 20
+ Sep 2023 23:55:48 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:b7a5:b0:1d6:6040:7c7 with SMTP id
- ed37-20020a056870b7a500b001d6604007c7mr1971375oab.9.1695279168613; Wed, 20
- Sep 2023 23:52:48 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 23:52:48 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a3f3d40605d8f0f8@google.com>
-Subject: [syzbot] [fs?] memory leak in fasync_helper (2)
-From:   syzbot <syzbot+5f1acda7e06a2298fae6@syzkaller.appspotmail.com>
-To:     brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <1695202370-24678-1-git-send-email-shengjiu.wang@nxp.com>
+ <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com> <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl>
+In-Reply-To: <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 21 Sep 2023 14:55:36 +0800
+Message-ID: <CAA+D8APyNGFSry1GUv6TOW0nKYHKSwQd5bTcRNuT7cu0Xf8eUA@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 09/11] media: uapi: Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD
+ control
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
-X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 20, 2023 at 6:19=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> w=
+rote:
+>
+> On 20/09/2023 11:32, Shengjiu Wang wrote:
+> > The input clock and output clock may not be the accurate
+> > rate as the sample rate, there is some drift, so the convert
+> > ratio of i.MX ASRC module need to be changed according to
+> > actual clock rate.
+> >
+> > Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD control for user to
+> > adjust the ratio.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  Documentation/userspace-api/media/v4l/control.rst | 5 +++++
+> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 1 +
+> >  include/uapi/linux/v4l2-controls.h                | 1 +
+> >  3 files changed, 7 insertions(+)
+> >
+> > diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Docume=
+ntation/userspace-api/media/v4l/control.rst
+> > index 4463fce694b0..2bc175900a34 100644
+> > --- a/Documentation/userspace-api/media/v4l/control.rst
+> > +++ b/Documentation/userspace-api/media/v4l/control.rst
+> > @@ -318,6 +318,11 @@ Control IDs
+> >      depending on particular custom controls should check the driver na=
+me
+> >      and version, see :ref:`querycap`.
+> >
+> > +.. _v4l2-audio-imx:
+> > +
+> > +``V4L2_CID_USER_IMX_ASRC_RATIO_MOD``
+> > +    sets the rasampler ratio modifier of i.MX asrc module.
+>
+> rasampler -> resampler (I think?)
+>
+> This doesn't document at all what the type of the control is or how to in=
+terpret it.
+>
+> > +
+> >  Applications can enumerate the available controls with the
+> >  :ref:`VIDIOC_QUERYCTRL` and
+> >  :ref:`VIDIOC_QUERYMENU <VIDIOC_QUERYCTRL>` ioctls, get and set a
+> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/=
+v4l2-core/v4l2-ctrls-defs.c
+> > index 8696eb1cdd61..16f66f66198c 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > @@ -1242,6 +1242,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+> >       case V4L2_CID_COLORIMETRY_CLASS:        return "Colorimetry Contr=
+ols";
+> >       case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:               return "H=
+DR10 Content Light Info";
+> >       case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:      return "H=
+DR10 Mastering Display";
+> > +     case V4L2_CID_USER_IMX_ASRC_RATIO_MOD:                  return "A=
+SRC RATIO MOD";
+>
+> Let's stay consistent with the other control names:
+>
+> "ASRC Ratio Modifier"
+>
+> But if this is a driver specific control, then this doesn't belong here.
+>
+> Driver specific controls are defined in the driver itself, including this
+> description.
+>
+> Same for the control documentation: if it is driver specific, then that
+> typically is documented either in a driver-specific public header, or
+> possibly in driver-specific documentation (Documentation/admin-guide/medi=
+a/).
+>
+> But is this imx specific? Wouldn't other similar devices need this?
 
-syzbot found the following issue on:
+It is imx specific.
 
-HEAD commit:    f0b0d403eabb Merge tag 'kbuild-fixes-v6.6' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=144e498c680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=943a94479fa8e863
-dashboard link: https://syzkaller.appspot.com/bug?extid=5f1acda7e06a2298fae6
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=161ac702680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16515418680000
+Does this mean that I need to create a header file in include/uapi/linux
+folder to put this definition?  I just hesitate if this is necessary.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/47695e593bcd/disk-f0b0d403.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/306f9aca0df9/vmlinux-f0b0d403.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/25549b4deb42/bzImage-f0b0d403.xz
+There is folder Documentation/userspace-api/media/drivers/ for drivers
+Should this document in this folder, not in the
+Documentation/admin-guide/media/?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5f1acda7e06a2298fae6@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff888114ac69c0 (size 48):
-  comm "syz-executor199", pid 5124, jiffies 4294947402 (age 21.830s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 81 0f 09 81 88 ff ff  ................
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114a7ecf0 (size 48):
-  comm "syz-executor199", pid 5133, jiffies 4294947484 (age 21.010s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 21 ac 14 81 88 ff ff  .........!......
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114eec180 (size 48):
-  comm "syz-executor199", pid 5138, jiffies 4294947529 (age 20.560s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 7a 51 09 81 88 ff ff  .........zQ.....
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114ac69c0 (size 48):
-  comm "syz-executor199", pid 5124, jiffies 4294947402 (age 25.300s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 81 0f 09 81 88 ff ff  ................
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114a7ecf0 (size 48):
-  comm "syz-executor199", pid 5133, jiffies 4294947484 (age 24.480s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 21 ac 14 81 88 ff ff  .........!......
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114eec180 (size 48):
-  comm "syz-executor199", pid 5138, jiffies 4294947529 (age 24.030s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 7a 51 09 81 88 ff ff  .........zQ.....
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114ac69c0 (size 48):
-  comm "syz-executor199", pid 5124, jiffies 4294947402 (age 26.490s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 81 0f 09 81 88 ff ff  ................
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114a7ecf0 (size 48):
-  comm "syz-executor199", pid 5133, jiffies 4294947484 (age 25.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 21 ac 14 81 88 ff ff  .........!......
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114eec180 (size 48):
-  comm "syz-executor199", pid 5138, jiffies 4294947529 (age 25.220s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 7a 51 09 81 88 ff ff  .........zQ.....
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff8881145bba00 (size 512):
-  comm "kworker/0:4", pid 5093, jiffies 4294947640 (age 24.110s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 0b 25 86 ff ff ff ff  ..........%.....
-    80 f7 54 12 81 88 ff ff c8 9b ff ff 00 00 00 00  ..T.............
-  backtrace:
-    [<ffffffff815744cb>] __do_kmalloc_node mm/slab_common.c:1022 [inline]
-    [<ffffffff815744cb>] __kmalloc+0x4b/0x150 mm/slab_common.c:1036
-    [<ffffffff83ef17b2>] kmalloc include/linux/slab.h:603 [inline]
-    [<ffffffff83ef17b2>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83ef17b2>] neigh_alloc net/core/neighbour.c:486 [inline]
-    [<ffffffff83ef17b2>] ___neigh_create+0xf2/0xe10 net/core/neighbour.c:640
-    [<ffffffff8434480b>] ip6_finish_output2+0x73b/0x980 net/ipv6/ip6_output.c:126
-    [<ffffffff84349c21>] __ip6_finish_output net/ipv6/ip6_output.c:196 [inline]
-    [<ffffffff84349c21>] ip6_finish_output+0x291/0x510 net/ipv6/ip6_output.c:207
-    [<ffffffff84349f41>] NF_HOOK_COND include/linux/netfilter.h:293 [inline]
-    [<ffffffff84349f41>] ip6_output+0xa1/0x1c0 net/ipv6/ip6_output.c:228
-    [<ffffffff84399fd9>] dst_output include/net/dst.h:458 [inline]
-    [<ffffffff84399fd9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:304
-    [<ffffffff8439a2c3>] mld_sendpack+0x223/0x350 net/ipv6/mcast.c:1818
-    [<ffffffff8439add5>] mld_send_initial_cr.part.0.isra.0+0x75/0x80 net/ipv6/mcast.c:2237
-    [<ffffffff8439dae9>] mld_send_initial_cr net/ipv6/mcast.c:2225 [inline]
-    [<ffffffff8439dae9>] mld_dad_work+0x59/0x220 net/ipv6/mcast.c:2260
-    [<ffffffff812c8edd>] process_one_work+0x23d/0x530 kernel/workqueue.c:2630
-    [<ffffffff812c9a87>] process_scheduled_works kernel/workqueue.c:2703 [inline]
-    [<ffffffff812c9a87>] worker_thread+0x327/0x590 kernel/workqueue.c:2784
-    [<ffffffff812d6f5b>] kthread+0x12b/0x170 kernel/kthread.c:388
-    [<ffffffff81149e95>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
-    [<ffffffff81002be1>] ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-BUG: memory leak
-unreferenced object 0xffff888114169600 (size 512):
-  comm "kworker/1:7", pid 5101, jiffies 4294947640 (age 24.110s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 0b 25 86 ff ff ff ff  ..........%.....
-    c0 99 e3 12 81 88 ff ff c8 9b ff ff 00 00 00 00  ................
-  backtrace:
-    [<ffffffff815744cb>] __do_kmalloc_node mm/slab_common.c:1022 [inline]
-    [<ffffffff815744cb>] __kmalloc+0x4b/0x150 mm/slab_common.c:1036
-    [<ffffffff83ef17b2>] kmalloc include/linux/slab.h:603 [inline]
-    [<ffffffff83ef17b2>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83ef17b2>] neigh_alloc net/core/neighbour.c:486 [inline]
-    [<ffffffff83ef17b2>] ___neigh_create+0xf2/0xe10 net/core/neighbour.c:640
-    [<ffffffff8434480b>] ip6_finish_output2+0x73b/0x980 net/ipv6/ip6_output.c:126
-    [<ffffffff84349c21>] __ip6_finish_output net/ipv6/ip6_output.c:196 [inline]
-    [<ffffffff84349c21>] ip6_finish_output+0x291/0x510 net/ipv6/ip6_output.c:207
-    [<ffffffff84349f41>] NF_HOOK_COND include/linux/netfilter.h:293 [inline]
-    [<ffffffff84349f41>] ip6_output+0xa1/0x1c0 net/ipv6/ip6_output.c:228
-    [<ffffffff843836f9>] dst_output include/net/dst.h:458 [inline]
-    [<ffffffff843836f9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:304
-    [<ffffffff84383a09>] ndisc_send_skb+0x249/0x3c0 net/ipv6/ndisc.c:509
-    [<ffffffff843886e5>] ndisc_send_ns+0x85/0xf0 net/ipv6/ndisc.c:667
-    [<ffffffff8435cd0e>] addrconf_dad_work+0x67e/0x980 net/ipv6/addrconf.c:4213
-    [<ffffffff812c8edd>] process_one_work+0x23d/0x530 kernel/workqueue.c:2630
-    [<ffffffff812c9a87>] process_scheduled_works kernel/workqueue.c:2703 [inline]
-    [<ffffffff812c9a87>] worker_thread+0x327/0x590 kernel/workqueue.c:2784
-    [<ffffffff812d6f5b>] kthread+0x12b/0x170 kernel/kthread.c:388
-    [<ffffffff81149e95>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
-    [<ffffffff81002be1>] ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-BUG: memory leak
-unreferenced object 0xffff888114ac69c0 (size 48):
-  comm "syz-executor199", pid 5124, jiffies 4294947402 (age 27.680s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 81 0f 09 81 88 ff ff  ................
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114a7ecf0 (size 48):
-  comm "syz-executor199", pid 5133, jiffies 4294947484 (age 26.860s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 21 ac 14 81 88 ff ff  .........!......
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888114eec180 (size 48):
-  comm "syz-executor199", pid 5138, jiffies 4294947529 (age 26.410s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 01 46 00 00 03 00 00 00  .........F......
-    00 00 00 00 00 00 00 00 00 7a 51 09 81 88 ff ff  .........zQ.....
-  backtrace:
-    [<ffffffff816b06bd>] fasync_alloc fs/fcntl.c:892 [inline]
-    [<ffffffff816b06bd>] fasync_add_entry fs/fcntl.c:950 [inline]
-    [<ffffffff816b06bd>] fasync_helper+0x3d/0xc0 fs/fcntl.c:979
-    [<ffffffff83e8f2cb>] sock_fasync+0x4b/0xa0 net/socket.c:1427
-    [<ffffffff816b18d6>] ioctl_fioasync fs/ioctl.c:380 [inline]
-    [<ffffffff816b18d6>] do_vfs_ioctl+0x306/0xe80 fs/ioctl.c:792
-    [<ffffffff816b27d5>] __do_sys_ioctl fs/ioctl.c:869 [inline]
-    [<ffffffff816b27d5>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816b27d5>] __x64_sys_ioctl+0xb5/0x140 fs/ioctl.c:857
-    [<ffffffff84b30008>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b30008>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff8881141b9600 (size 512):
-  comm "kworker/1:7", pid 5101, jiffies 4294947640 (age 25.300s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 0b 25 86 ff ff ff ff  ..........%.....
-    00 00 95 12 81 88 ff ff c8 9b ff ff 00 00 00 00  ................
-  backtrace:
-    [<ffffffff815744cb>] __do_kmalloc_node mm/slab_common.c:1022 [inline]
-    [<ffffffff815744cb>] __kmalloc+0x4b/0x150 mm/slab_common.c:1036
-    [<ffffffff83ef17b2>] kmalloc include/linux/slab.h:603 [inline]
-    [<ffffffff83ef17b2>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83ef17b2>] neigh_alloc net/core/neighbour.c:486 [inline]
-    [<ffffffff83ef17b2>] ___neigh_create+0xf2/0xe10 net/core/neighbour.c:640
-    [<ffffffff8434480b>] ip6_finish_output2+0x73b/0x980 net/ipv6/ip6_output.c:126
-    [<ffffffff84349c21>] __ip6_finish_output net/ipv6/ip6_output.c:196 [inline]
-    [<ffffffff84349c21>] ip6_finish_output+0x291/0x510 net/ipv6/ip6_output.c:207
-    [<ffffffff84349f41>] NF_HOOK_COND include/linux/netfilter.h:293 [inline]
-    [<ffffffff84349f41>] ip6_output+0xa1/0x1c0 net/ipv6/ip6_output.c:228
-    [<ffffffff84399fd9>] dst_output include/net/dst.h:458 [inline]
-    [<ffffffff84399fd9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:304
-    [<ffffffff8439a2c3>] mld_sendpack+0x223/0x350 net/ipv6/mcast.c:1818
-    [<ffffffff8439add5>] mld_send_initial_cr.part.0.isra.0+0x75/0x80 net/ipv6/mcast.c:2237
-    [<ffffffff843a16b9>] mld_send_initial_cr net/ipv6/mcast.c:2225 [inline]
-    [<ffffffff843a16b9>] ipv6_mc_dad_complete+0x79/0x190 net/ipv6/mcast.c:2245
-    [<ffffffff8435c4b1>] addrconf_dad_completed+0x4d1/0x6b0 net/ipv6/addrconf.c:4271
-    [<ffffffff8435cac0>] addrconf_dad_work+0x430/0x980 net/ipv6/addrconf.c:4199
-    [<ffffffff812c8edd>] process_one_work+0x23d/0x530 kernel/workqueue.c:2630
-    [<ffffffff812c9a87>] process_scheduled_works kernel/workqueue.c:2703 [inline]
-    [<ffffffff812c9a87>] worker_thread+0x327/0x590 kernel/workqueue.c:2784
-    [<ffffffff812d6f5b>] kthread+0x12b/0x170 kernel/kthread.c:388
-    [<ffffffff81149e95>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
-    [<ffffffff81002be1>] ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-BUG: memory leak
-unreferenced object 0xffff88811418a000 (size 512):
-  comm "kworker/1:7", pid 5101, jiffies 4294947640 (age 25.300s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 0b 25 86 ff ff ff ff  ..........%.....
-    00 00 95 12 81 88 ff ff c8 9b ff ff 00 00 00 00  ................
-  backtrace:
-    [<ffffffff815744cb>] __do_kmalloc_node mm/slab_common.c:1022 [inline]
-    [<ffffffff815744cb>] __kmalloc+0x4b/0x150 mm/slab_common.c:1036
-    [<ffffffff83ef17b2>] kmalloc include/linux/slab.h:603 [inline]
-    [<ffffffff83ef17b2>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83ef17b2>] neigh_alloc net/core/neighbour.c:486 [inline]
-    [<ffffffff83ef17b2>] ___neigh_create+0xf2/0xe10 net/core/neighbour.c:640
-    [<ffffffff8434480b>] ip6_finish_output2+0x73b/0x980 net/ipv6/ip6_output.c:126
-    [<ffffffff84349c21>] __ip6_finish_output net/ipv6/ip6_output.c:196 [inline]
-    [<ffffffff84349c21>] ip6_finish_output+0x291/0x510 net/ipv6/ip6_output.c:207
-    [<ffffffff84349f41>] NF_HOOK_COND include/linux/netfilter.h:293 [inline]
-    [<ffffffff84349f41>] ip6_output+0xa1/0x1c0 net/ipv6/ip6_output.c:228
-    [<ffffffff843836f9>] dst_output include/net/dst.h:458 [inline]
-    [<ffffffff843836f9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:304
-    [<ffffffff84383a09>] ndisc_send_skb+0x249/0x3c0 net/ipv6/ndisc.c:509
-    [<ffffffff8438897a>] ndisc_send_rs+0x7a/0x290 net/ipv6/ndisc.c:719
-    [<ffffffff8435c198>] addrconf_dad_completed+0x1b8/0x6b0 net/ipv6/addrconf.c:4291
-    [<ffffffff8435cac0>] addrconf_dad_work+0x430/0x980 net/ipv6/addrconf.c:4199
-    [<ffffffff812c8edd>] process_one_work+0x23d/0x530 kernel/workqueue.c:2630
-    [<ffffffff812c9a87>] process_scheduled_works kernel/workqueue.c:2703 [inline]
-    [<ffffffff812c9a87>] worker_thread+0x327/0x590 kernel/workqueue.c:2784
-    [<ffffffff812d6f5b>] kthread+0x12b/0x170 kernel/kthread.c:388
-    [<ffffffff81149e95>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
-    [<ffffffff81002be1>] ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-executing program
-executing program
-executing program
-executing program
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Best regards
+Wang shengjiu
+>
+> >       default:
+> >               return NULL;
+> >       }
+> > diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4=
+l2-controls.h
+> > index c3604a0a3e30..b1c319906d12 100644
+> > --- a/include/uapi/linux/v4l2-controls.h
+> > +++ b/include/uapi/linux/v4l2-controls.h
+> > @@ -162,6 +162,7 @@ enum v4l2_colorfx {
+> >  /* The base for the imx driver controls.
+> >   * We reserve 16 controls for this driver. */
+> >  #define V4L2_CID_USER_IMX_BASE                       (V4L2_CID_USER_BA=
+SE + 0x10b0)
+> > +#define V4L2_CID_USER_IMX_ASRC_RATIO_MOD     (V4L2_CID_USER_IMX_BASE +=
+ 0)
+> >
+> >  /*
+> >   * The base for the atmel isc driver controls.
+>
+> Regards,
+>
+>         Hans
