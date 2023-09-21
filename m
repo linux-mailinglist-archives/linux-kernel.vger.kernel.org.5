@@ -2,174 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A277A98A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0B37A970E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjIURuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
+        id S230229AbjIURLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjIURuI (ORCPT
+        with ESMTP id S229924AbjIURJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:50:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45F9472AA
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:22:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA0FF16F2;
-        Thu, 21 Sep 2023 09:04:01 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.36.171])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF1B23F59C;
-        Thu, 21 Sep 2023 09:03:23 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 17:03:18 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org,
-        sumit.garg@linaro.org, swboyd@chromium.org
-Subject: Re: [PATCH] lkdtm/bugs: add test for panic() with stuck secondary
- CPUs
-Message-ID: <ZQxpRj2ZayFSIZSo@FVFF77S0Q05N>
-References: <20230831101026.3122590-1-mark.rutland@arm.com>
- <CAD=FV=Wb0TRE1AEr=f7f-iGWrnF=Wabdde5XJW2XNjMpy+uJGQ@mail.gmail.com>
+        Thu, 21 Sep 2023 13:09:24 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 007F27281
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:05:24 -0700 (PDT)
+Received: from spock.localnet (unknown [94.142.239.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 5B08E150B9B2;
+        Thu, 21 Sep 2023 18:03:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1695312216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QxsO6UkNvxMnaFNUASnMsSuKlQTdxo+O3u8ycIHVlUc=;
+        b=oaQWT3Kzb4K5+aOUjPKPbiQf6IWki7Osf4bE/fWdYLN5HY9SsjuVaXG2jYRHSz1/q9wpVG
+        0tkVCbGHHmiNN5zGTlbWeUZZykzTP9L3ZMsNG78SDMHxl+9Law0Clmpr+5ydPUzqzKJP50
+        yg8Nm0Do/mnojCQeQBnhZW61Vq32naU=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-wireless@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] wifi: mt76: mt7915: remove VHT160 capability on MT7915
+Date:   Thu, 21 Sep 2023 18:03:23 +0200
+Message-ID: <4862789.31r3eYUQgx@natalenko.name>
+In-Reply-To: <2023092145-luxury-fender-d5b9@gregkh>
+References: <20230726091704.25795-1-nbd@nbd.name> <12289744.O9o76ZdvQC@natalenko.name>
+ <2023092145-luxury-fender-d5b9@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=Wb0TRE1AEr=f7f-iGWrnF=Wabdde5XJW2XNjMpy+uJGQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Type: multipart/signed; boundary="nextPart4513970.LvFx2qVVIh";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 09:16:31AM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Aug 31, 2023 at 3:10 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > Upon a panic() the kernel will use either smp_send_stop() or
-> > crash_smp_send_stop() to attempt to stop secondary CPUs via an IPI,
-> > which may or may not be an NMI. Generally it's preferable that this is an
-> > NMI so that CPUs can be stopped in as many situations as possible, but
-> > it's not always possible to provide an NMI, and there are cases where
-> > CPUs may be unable to handle the NMI regardless.
-> >
-> > This patch adds a test for panic() where all other CPUs are stuck with
-> > interrupts disabled, which can be used to check whether the kernel
-> > gracefully handles CPUs failing to respond to a stop, and whe NMIs stops
-> > work.
-> >
-> > For example, on arm64 *without* an NMI, this results in:
-> >
-> > | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
-> > | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
-> > | Kernel panic - not syncing: panic stop irqoff test
-> > | CPU: 2 PID: 24 Comm: migration/2 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
-> > | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
-> > | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
-> > | Call trace:
-> > |  dump_backtrace+0x94/0xec
-> > |  show_stack+0x18/0x24
-> > |  dump_stack_lvl+0x74/0xc0
-> > |  dump_stack+0x18/0x24
-> > |  panic+0x358/0x3e8
-> > |  lkdtm_PANIC+0x0/0x18
-> > |  multi_cpu_stop+0x9c/0x1a0
-> > |  cpu_stopper_thread+0x84/0x118
-> > |  smpboot_thread_fn+0x224/0x248
-> > |  kthread+0x114/0x118
-> > |  ret_from_fork+0x10/0x20
-> > | SMP: stopping secondary CPUs
-> > | SMP: failed to stop secondary CPUs 0-3
-> > | Kernel Offset: 0x401cf3490000 from 0xffff800080000000
-> > | PHYS_OFFSET: 0x40000000
-> > | CPU features: 0x00000000,68c167a1,cce6773f
-> > | Memory Limit: none
-> > | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
-> >
-> > On arm64 *with* an NMI, this results in:
-> >
-> > | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
-> > | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
-> > | Kernel panic - not syncing: panic stop irqoff test
-> > | CPU: 1 PID: 19 Comm: migration/1 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
-> > | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
-> > | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
-> > | Call trace:
-> > |  dump_backtrace+0x94/0xec
-> > |  show_stack+0x18/0x24
-> > |  dump_stack_lvl+0x74/0xc0
-> > |  dump_stack+0x18/0x24
-> > |  panic+0x358/0x3e8
-> > |  lkdtm_PANIC+0x0/0x18
-> > |  multi_cpu_stop+0x9c/0x1a0
-> > |  cpu_stopper_thread+0x84/0x118
-> > |  smpboot_thread_fn+0x224/0x248
-> > |  kthread+0x114/0x118
-> > |  ret_from_fork+0x10/0x20
-> > | SMP: stopping secondary CPUs
-> > | Kernel Offset: 0x55a9c0bc0000 from 0xffff800080000000
-> > | PHYS_OFFSET: 0x40000000
-> > | CPU features: 0x00000000,68c167a1,fce6773f
-> > | Memory Limit: none
-> > | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
-> 
-> Since Sumit didn't notice it and I had to use a "diff" tool to help me
-> spot the difference in your two examples, maybe telegraph for the
-> reader of the commit message that the important thing is the lack of
-> "SMP: failed to stop secondary CPUs" in your example.
+--nextPart4513970.LvFx2qVVIh
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Thu, 21 Sep 2023 18:03:23 +0200
+Message-ID: <4862789.31r3eYUQgx@natalenko.name>
+In-Reply-To: <2023092145-luxury-fender-d5b9@gregkh>
+MIME-Version: 1.0
 
-Sure; I've added explicit "note" lines to v2 for that.
+Hello.
 
-> > +static void lkdtm_PANIC_STOP_IRQOFF(void)
-> > +{
-> > +       atomic_t v = ATOMIC_INIT(0);
-> > +
-> > +       cpus_read_lock();
-> > +       stop_machine(panic_stop_irqoff_fn, &v, cpu_online_mask);
-> 
-> It broke my brain just a little bit that stop_machine() isn't backed
-> by "IPI_CPU_STOP" since the point of this was to test the patch
-> modifying how "IPI_CPU_STOP" worked. ;-) Assuming I didn't mess up, I
-> guess stop_machine() is just used to get all the CPUs running with
-> interrupts disabled and then the last CPU does a panic. The _panic_
-> then tests "IPI_CPU_STOP" / "IPI_CPU_CRASH_STOP".
+On =C4=8Dtvrtek 21. z=C3=A1=C5=99=C3=AD 2023 9:19:58 CEST Greg Kroah-Hartma=
+n wrote:
+> On Thu, Sep 21, 2023 at 07:02:41AM +0200, Oleksandr Natalenko wrote:
+> > Hello Felix.
+> >=20
+> > On st=C5=99eda 26. =C4=8Dervence 2023 11:17:02 CEST Felix Fietkau wrote:
+> > > The IEEE80211_VHT_CAP_EXT_NSS_BW value already indicates support for =
+half-NSS
+> > > 160 MHz support, so it is wrong to also advertise full 160 MHz suppor=
+t.
+> > >=20
+> > > Fixes: c2f73eacee3b ("wifi: mt76: mt7915: add back 160MHz channel wid=
+th support for MT7915")
+> > > Signed-off-by: Felix Fietkau <nbd@nbd.name>
+> > > ---
+> > >  drivers/net/wireless/mediatek/mt76/mt7915/init.c | 1 -
+> > >  1 file changed, 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drive=
+rs/net/wireless/mediatek/mt76/mt7915/init.c
+> > > index ee976657bfc3..78552f10b377 100644
+> > > --- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+> > > +++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+> > > @@ -414,7 +414,6 @@ mt7915_init_wiphy(struct mt7915_phy *phy)
+> > >  			if (!dev->dbdc_support)
+> > >  				vht_cap->cap |=3D
+> > >  					IEEE80211_VHT_CAP_SHORT_GI_160 |
+> > > -					IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ |
+> > >  					FIELD_PREP(IEEE80211_VHT_CAP_EXT_NSS_BW_MASK, 1);
+> > >  		} else {
+> > >  			vht_cap->cap |=3D
+> > >=20
+> >=20
+> > For some reason this got backported into the stable kernel:
+> >=20
+> > ```
+> > $ git log --oneline v6.5.2..v6.5.4 -- drivers/net/wireless/mediatek/mt7=
+6/mt7915/
+> > c43017fbebcc3 wifi: mt76: mt7915: fix power-limits while chan_switch
+> > edb1afe042c74 wifi: mt76: mt7915: fix tlv length of mt7915_mcu_get_chan=
+_mib_info
+> > 9ec0dec0baea3 wifi: mt76: mt7915: remove VHT160 capability on MT7915
+> > 0e61f73e6ebc0 wifi: mt76: mt7915: fix capabilities in non-AP mode
+> > 6bce28ce28390 wifi: mt76: mt7915: fix command timeout in AP stop period
+> > 7af917d4864c6 wifi: mt76: mt7915: rework tx bytes counting when WED is =
+active
+> > feae00c6468ce wifi: mt76: mt7915: rework tx packets counting when WED i=
+s active
+> > 70bbcc4ad6544 wifi: mt76: mt7915: fix background radar event being bloc=
+ked
+> > ```
+> >=20
+> > and this broke my mt7915-based AP.
+> >=20
+> > However, if I remove `[VT160]` capability from the hostapd config, thin=
+gs go back to normal. It does seem that 160 MHz still works even.
+> >=20
+> > Is this expected?
+>=20
+> Is your device also broken in 6.6-rc2?
 
-Yup; I had hoped that the comment within panic_stop_irqoff_fn() was sufficient
-for that:
+Yes, the same behaviour is observed with v6.6-rc2:
 
-	/*
-	 * Trigger the panic after all other CPUs have entered this function,
-	 * so that they are guaranteed to have IRQs disabled.
-	 */
+```
+hostapd[1316]: Configured VHT capability [VHT_CAP_SUPP_CHAN_WIDTH_MASK] exc=
+eeds max value supported by the driver (1 > 0)
+```
 
-I've made that a bit more explicit now:
+while having `[VT160]` in `vht_capab=3D`.
 
-	/*
-	 * As stop_machine() disables interrupts, all CPUs within this function
-	 * have interrupts disabled and cannot take a regular IPI.
-	 *
-	 * The last CPU which enters here will trigger a panic, and as all CPUs
-	 * cannot take a regular IPI, we'll only be able to stop secondaries if
-	 * smp_send_stop() or crash_smp_send_stop() uses an NMI.
-	 */ 
+Thanks.
 
-> Probably this is obvious to everyone but me, so no action is needed
-> unless you agree that it's confusing and can think of a good comment /
-> commit message addition to help.
+> thanks,
+>=20
+> greg k-h
+>=20
 
-Hopefully the above is good enough?
 
-I agree the stop_machine() naming is also somewhat confusing here, but I can't
-do much about that.
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart4513970.LvFx2qVVIh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-> In any case, after Sumit's feedback is addressed:
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+-----BEGIN PGP SIGNATURE-----
 
-Thanks!
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmUMaUsACgkQil/iNcg8
+M0vq2BAAuqUjADQGA+kGleFQ3VOqGsfXScI5KLV6AdTLuLpWqs9aFt/DsrE8hj+B
+lUkTpEdWJvWRcMrWluTVp4wM+DVmrIid0+nY7yLJ9YwQEW2IzCIhrQrmoSrP09+6
+MFmtvwolHlnAB6Mfat+uEPY6Bj6x6AY6BwHuqOpZVhI6mYZ/AUfVl0nmnuHRfiNw
+ztpYDirxtQiG+zeEfegFzgRsYh3icFXo5G7R4nGmJrJWtr8DXd4NqObMFFtCLufH
+vzNzk+isp/tA++kPE5gHwSXAJGjKWzecNdKuZNrr9X+FaF69yo6sCsF0scq1lvz5
+i2zOzi6/jU6NMDJZbRsPLIrXKKZxj9DS3UEypFTI39oHgqHmqaWGMRutb5G9PeyQ
+yhNj0ozWPOJxsSUfDQWs9plYwoHSvDc3L1T0NsjNojlDdkn8jJEaezV4RlcvJ5xU
+iDVzTDru1jiCUnJ+RZyh9bLj9XdoR8l80w90DFnQ+BTbX2fUVARzub/4CJPfoTGy
+1llvYYCi4sOrDMKuhxvgzVllwWy9exd2P4yMKifoYXjKhZeSgndSvhjF1f6TS6VQ
+DWGYK4GWAwYUkTHpgdQSL/Mpo7Uz2yGLLKuoKorEMVtHA6HuMd83Mk7ABNsk6Nha
+bNyC27xssOgbzCQPQOwIzouEE+Gnj2OfCko0DoDxzrvHreRGZY0=
+=NwXY
+-----END PGP SIGNATURE-----
 
-Mark.
+--nextPart4513970.LvFx2qVVIh--
+
+
+
