@@ -2,167 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AA07AA598
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C627AA4C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbjIUXZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 19:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
+        id S233060AbjIUWU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjIUXZW (ORCPT
+        with ESMTP id S231905AbjIUWUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 19:25:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46F4F9;
-        Thu, 21 Sep 2023 11:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=9OUktNkwNXjB5runbwWnUkYaH4gkQXyoyA8wphj6CxQ=; b=GGxYiouDxwMhpCaPcVH40k98P/
-        XAfPr7EX2gzP8TckrBbk0itBDqh1K7L47qzj5ufg0WUG7Olk8Cby/mGQk/MfSUHpFcAoHFbPrC9vs
-        EjyJVceNWZaOGslnAhpSgFyQciPs7Zl7wH+N2XntEXFqDsPfCoE6LiaK/AnohyGjrKsGsSQ089gs3
-        hlcFVZvN0eJHab3vYggwHl9ShJvSk4C58uCtLGwBHhEyqjaQe2iX2kH0aoMJkbcnplJDonkvdIIhK
-        hXDu6aGgekrKWj5LYF6dmt9W2ciUrqRrAGk+jg2tMV2PEMXwjpNtLXqPV9S9yK+8ASFpo1IaN/Y4q
-        uQIXkbmg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qjHQO-00BTom-U1; Thu, 21 Sep 2023 11:00:49 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-        id 26D833008D6; Thu, 21 Sep 2023 13:00:43 +0200 (CEST)
-Message-Id: <20230921105249.108410391@noisy.programming.kicks-ass.net>
-User-Agent: quilt/0.65
-Date:   Thu, 21 Sep 2023 12:45:19 +0200
-From:   peterz@infradead.org
-To:     tglx@linutronix.de, axboe@kernel.dk
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, dvhart@infradead.org, dave@stgolabs.net,
-        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
-        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de
-Subject: [PATCH v3 14/15] futex: Enable FUTEX2_{8,16}
-References: <20230921104505.717750284@noisy.programming.kicks-ass.net>
+        Thu, 21 Sep 2023 18:20:21 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DBEA70DA;
+        Thu, 21 Sep 2023 11:00:45 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2D9361221;
+        Thu, 21 Sep 2023 12:52:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1695293533;
+        bh=evsrHftkQwFAxL8amZWxtP/1lqAGbj0iizDgAfNOiGc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GTpuehWEjiEy2hxVAiR3Ku96s1dd8dttvDDsLbOHZRECt4msxNU2ugIxPPfebTFlU
+         J0zud40J3oO+9Q8xmfAO5kmQA+78GfHwIfTOcUmtxpLfr3V+Jkl999w+IkBMUq8a7Y
+         tIdh3m6JY89vtWMo3GYl+qufioD85LlAq+SbhKQU=
+Message-ID: <6200f2c7-4e56-ee07-ec1e-589ba81c1b32@ideasonboard.com>
+Date:   Thu, 21 Sep 2023 13:53:45 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline; filename=peterz-futex2-small.patch
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] omap: dsi: do not WARN on detach if dsidev was never
+ attached
+Content-Language: en-US
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>, tony@atomide.com,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        sre@kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
+References: <929c46beecf77f2ebfa9f8c9b1c09f6ec610c31a.1695130648.git.hns@goldelico.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <929c46beecf77f2ebfa9f8c9b1c09f6ec610c31a.1695130648.git.hns@goldelico.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When futexes are no longer u32 aligned, the lower offset bits are no
-longer available to put type info in. However, since offset is the
-offset within a page, there are plenty bits available on the top end.
+Hi,
 
-After that, pass flags into futex_get_value_locked() for WAIT and
-disallow FUTEX2_SIZE_U64 instead of mandating FUTEX2_SIZE_U32.
+On 19/09/2023 16:37, H. Nikolaus Schaller wrote:
+> dsi_init_output() called by dsi_probe() may fail. In that
+> case mipi_dsi_host_unregister() is called which may call
+> omap_dsi_host_detach() with uninitialized dsi->dsidev
+> because omap_dsi_host_attach() was never called before.
+> 
+> This happens if the panel driver asks for an EPROBE_DEFER.
+> 
+> So let's suppress the WARN() in this special case.
+> 
+> [    7.416759] WARNING: CPU: 0 PID: 32 at drivers/gpu/drm/omapdrm/dss/dsi.c:4419 omap_dsi_host_detach+0x3c/0xbc [omapdrm]
+> [    7.436053] Modules linked in: ina2xx_adc snd_soc_ts3a227e bq2429x_charger bq27xxx_battery_i2c(+) bq27xxx_battery ina2xx tca8418_keypad as5013(+) omapdrm hci_uart cec palmas_pwrbutton btbcm bmp280_spi palmas_gpadc bluetooth usb3503 ecdh_generic bmc150_accel_i2c bmg160_i2c ecc bmc150_accel_core bmg160_core bmc150_magn_i2c bmp280_i2c bmc150_magn bno055 industrialio_triggered_buffer bmp280 kfifo_buf snd_soc_omap_aess display_connector drm_kms_helper syscopyarea snd_soc_omap_mcbsp snd_soc_ti_sdma sysfillrect ti_tpd12s015 sysimgblt fb_sys_fops wwan_on_off snd_soc_gtm601 generic_adc_battery drm snd_soc_w2cbw003_bt industrialio drm_panel_orientation_quirks pwm_bl pwm_omap_dmtimer ip_tables x_tables ipv6 autofs4
+> [    7.507068] CPU: 0 PID: 32 Comm: kworker/u4:2 Tainted: G        W          6.1.0-rc3-letux-lpae+ #11107
+> [    7.516964] Hardware name: Generic OMAP5 (Flattened Device Tree)
+> [    7.523284] Workqueue: events_unbound deferred_probe_work_func
+> [    7.529456]  unwind_backtrace from show_stack+0x10/0x14
+> [    7.534972]  show_stack from dump_stack_lvl+0x40/0x4c
+> [    7.540315]  dump_stack_lvl from __warn+0xb0/0x164
+> [    7.545379]  __warn from warn_slowpath_fmt+0x70/0x9c
+> [    7.550625]  warn_slowpath_fmt from omap_dsi_host_detach+0x3c/0xbc [omapdrm]
+> [    7.558137]  omap_dsi_host_detach [omapdrm] from mipi_dsi_remove_device_fn+0x10/0x20
+> [    7.566376]  mipi_dsi_remove_device_fn from device_for_each_child+0x60/0x94
+> [    7.573729]  device_for_each_child from mipi_dsi_host_unregister+0x20/0x54
+> [    7.580992]  mipi_dsi_host_unregister from dsi_probe+0x5d8/0x744 [omapdrm]
+> [    7.588315]  dsi_probe [omapdrm] from platform_probe+0x58/0xa8
+> [    7.594542]  platform_probe from really_probe+0x144/0x2ac
+> [    7.600249]  really_probe from __driver_probe_device+0xc4/0xd8
+> [    7.606411]  __driver_probe_device from driver_probe_device+0x3c/0xb8
+> [    7.613216]  driver_probe_device from __device_attach_driver+0x58/0xbc
+> [    7.620115]  __device_attach_driver from bus_for_each_drv+0xa0/0xb4
+> [    7.626737]  bus_for_each_drv from __device_attach+0xdc/0x150
+> [    7.632808]  __device_attach from bus_probe_device+0x28/0x80
+> [    7.638792]  bus_probe_device from deferred_probe_work_func+0x84/0xa0
+> [    7.645595]  deferred_probe_work_func from process_one_work+0x1a4/0x2d8
+> [    7.652587]  process_one_work from worker_thread+0x214/0x2b8
+> [    7.658567]  worker_thread from kthread+0xe4/0xf0
+> [    7.663542]  kthread from ret_from_fork+0x14/0x1c
+> [    7.668515] Exception stack(0xf01b5fb0 to 0xf01b5ff8)
+> [    7.673827] 5fa0:                                     00000000 00000000 00000000 00000000
+> [    7.682435] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [    7.691038] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> 
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>   drivers/gpu/drm/omapdrm/dss/dsi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> index ea63c64d3a1ab..c37eb6b1b9a39 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -4411,7 +4411,7 @@ static int omap_dsi_host_detach(struct mipi_dsi_host *host,
+>   {
+>   	struct dsi_data *dsi = host_to_omap(host);
+>   
+> -	if (WARN_ON(dsi->dsidev != client))
+> +	if (!dsi->dsidev || WARN_ON(dsi->dsidev != client))
+>   		return -EINVAL;
+>   
+>   	cancel_delayed_work_sync(&dsi->dsi_disable_work);
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/futex.h   |   11 ++++++-----
- kernel/futex/core.c     |    9 +++++++++
- kernel/futex/futex.h    |    4 ++--
- kernel/futex/waitwake.c |    5 +++--
- 4 files changed, 20 insertions(+), 9 deletions(-)
+I sent a patch to the DSI framework code,
+"[PATCH] drm/mipi-dsi: Fix detach call without attach".
 
-Index: linux-2.6/include/linux/futex.h
-===================================================================
---- linux-2.6.orig/include/linux/futex.h
-+++ linux-2.6/include/linux/futex.h
-@@ -16,18 +16,19 @@ struct task_struct;
-  * The key type depends on whether it's a shared or private mapping.
-  * Don't rearrange members without looking at hash_futex().
-  *
-- * offset is aligned to a multiple of sizeof(u32) (== 4) by definition.
-- * We use the two low order bits of offset to tell what is the kind of key :
-+ * offset is the position within a page and is in the range [0, PAGE_SIZE).
-+ * The high bits of the offset indicate what kind of key this is:
-  *  00 : Private process futex (PTHREAD_PROCESS_PRIVATE)
-  *       (no reference on an inode or mm)
-  *  01 : Shared futex (PTHREAD_PROCESS_SHARED)
-  *	mapped on a file (reference on the underlying inode)
-  *  10 : Shared futex (PTHREAD_PROCESS_SHARED)
-  *       (but private mapping on an mm, and reference taken on it)
--*/
-+ */
- 
--#define FUT_OFF_INODE    1 /* We set bit 0 if key has a reference on inode */
--#define FUT_OFF_MMSHARED 2 /* We set bit 1 if key has a reference on mm */
-+#define FUT_OFF_INODE    (PAGE_SIZE << 0)
-+#define FUT_OFF_MMSHARED (PAGE_SIZE << 1)
-+#define FUT_OFF_SIZE	 (PAGE_SIZE << 2)
- 
- union futex_key {
- 	struct {
-Index: linux-2.6/kernel/futex/core.c
-===================================================================
---- linux-2.6.orig/kernel/futex/core.c
-+++ linux-2.6/kernel/futex/core.c
-@@ -311,6 +311,15 @@ int get_futex_key(void __user *uaddr, un
- 	}
- 
- 	/*
-+	 * Encode the futex size in the offset. This makes cross-size
-+	 * wake-wait fail -- see futex_match().
-+	 *
-+	 * NOTE that cross-size wake-wait is fundamentally broken wrt
-+	 * FLAGS_NUMA.
-+	 */
-+	key->both.offset |= FUT_OFF_SIZE * (flags & FLAGS_SIZE_MASK);
-+
-+	/*
- 	 * PROCESS_PRIVATE futexes are fast.
- 	 * As the mm cannot disappear under us and the 'key' only needs
- 	 * virtual address, we dont even have to find the underlying vma.
-Index: linux-2.6/kernel/futex/futex.h
-===================================================================
---- linux-2.6.orig/kernel/futex/futex.h
-+++ linux-2.6/kernel/futex/futex.h
-@@ -79,8 +79,8 @@ static inline bool futex_flags_valid(uns
- 			return false;
- 	}
- 
--	/* Only 32bit futexes are implemented -- for now */
--	if ((flags & FLAGS_SIZE_MASK) != FLAGS_SIZE_32)
-+	/* 64bit futexes aren't implemented -- yet */
-+	if ((flags & FLAGS_SIZE_MASK) == FLAGS_SIZE_64)
- 		return false;
- 
- 	/*
-Index: linux-2.6/kernel/futex/waitwake.c
-===================================================================
---- linux-2.6.orig/kernel/futex/waitwake.c
-+++ linux-2.6/kernel/futex/waitwake.c
-@@ -437,11 +437,12 @@ retry:
- 
- 	for (i = 0; i < count; i++) {
- 		u32 __user *uaddr = (u32 __user *)(unsigned long)vs[i].w.uaddr;
-+		unsigned int flags = vs[i].w.flags;
- 		struct futex_q *q = &vs[i].q;
- 		u32 val = vs[i].w.val;
- 
- 		hb = futex_q_lock(q);
--		ret = futex_get_value_locked(&uval, uaddr, FLAGS_SIZE_32);
-+		ret = futex_get_value_locked(&uval, uaddr, flags);
- 
- 		if (!ret && uval == val) {
- 			/*
-@@ -609,7 +610,7 @@ retry:
- retry_private:
- 	*hb = futex_q_lock(q);
- 
--	ret = futex_get_value_locked(&uval, uaddr, FLAGS_SIZE_32);
-+	ret = futex_get_value_locked(&uval, uaddr, flags);
- 
- 	if (ret) {
- 		futex_q_unlock(*hb);
+If that fixes the issue (please test, I don't have a suitable platform), 
+perhaps it's a better fix as detach really shouldn't be called if attach 
+has not been called.
 
+  Tomi
 
