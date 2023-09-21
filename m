@@ -2,406 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A197A9751
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216337A965C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjIURWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
+        id S229804AbjIURC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjIURWZ (ORCPT
+        with ESMTP id S229933AbjIURCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:22:25 -0400
-Received: from smtp-8fac.mail.infomaniak.ch (smtp-8fac.mail.infomaniak.ch [83.166.143.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA5510901
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:07:29 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RrlYC18FHzMqhBG;
-        Thu, 21 Sep 2023 06:17:03 +0000 (UTC)
-Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4RrlYB4Xq2zMppKP;
-        Thu, 21 Sep 2023 08:17:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1695277023;
-        bh=tfluk0tM+VKusjLjyhKOpiGufsPkbpoIakP1eY7gXNs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kNfrZh6IDKZrDicB2+bARdYE6NtmcpduNn5qRqObGXEJru5ZIJQDWeYW2R7BGlgl7
-         f0s3As+HsvTImQURLGsLLzza6ouTcvPDM/dWFoI1eXF24ERqXtW6GNBOuIJxftRo4U
-         BpJI1H8QL3dQ+Lr0nGxZbxCi4kd9hWSbWYBe4/mM=
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
-        Paul Moore <paul@paul-moore.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Ben Scarlato <akhna@google.com>,
-        =?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-        Jeff Xu <jeffxu@google.com>,
-        Jorge Lucangeli Obes <jorgelo@google.com>,
-        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [RFC PATCH v1 5/7] landlock: Log file-related requests
-Date:   Thu, 21 Sep 2023 08:16:39 +0200
-Message-ID: <20230921061641.273654-6-mic@digikod.net>
-In-Reply-To: <20230921061641.273654-1-mic@digikod.net>
-References: <20230921061641.273654-1-mic@digikod.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 21 Sep 2023 13:02:06 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536381718
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 09:59:35 -0700 (PDT)
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230921061946epoutp032662f0eb0f4f74624200f5879a8193f6~G1Z5zFATZ0935509355epoutp03S
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 06:19:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230921061946epoutp032662f0eb0f4f74624200f5879a8193f6~G1Z5zFATZ0935509355epoutp03S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695277186;
+        bh=0Zxt+m+/iw1yKBopL/xFUFW5MptDCFQTFwP3AhppyOY=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Vnuxlz+jmYOwJQSN7rTpgDst0u+eLD8N+8a0tqHQIGSvLIk4U2XT1HBbnJ7iq6lDM
+         t309spe8/kFC/XM8PHHWX6HVZCSYWoyU49z7WNbqEzeRZ9DU5mZMvQEEC0WmUZJKPb
+         DSZz85gOLNk+zmlCN8si0gXqJu/IIEWHQuPrjM6E=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230921061945epcas1p1186d256be4b9d290dda3b1408ac14a35~G1Z5TSyG60965009650epcas1p1t;
+        Thu, 21 Sep 2023 06:19:45 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.36.223]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4RrlcK2gdjz4x9Q3; Thu, 21 Sep
+        2023 06:19:45 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        66.E9.10012.180EB056; Thu, 21 Sep 2023 15:19:45 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230921061944epcas1p2f8a022282709da12840b33c0f5898b5f~G1Z4kfhwH0410304103epcas1p2E;
+        Thu, 21 Sep 2023 06:19:44 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230921061944epsmtrp2ac12d2c49dd394b444e84e6ee537632f~G1Z4jmSC-0762207622epsmtrp29;
+        Thu, 21 Sep 2023 06:19:44 +0000 (GMT)
+X-AuditID: b6c32a35-50fff7000000271c-91-650be081c968
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        40.02.08742.080EB056; Thu, 21 Sep 2023 15:19:44 +0900 (KST)
+Received: from jaewon-linux.10.32.193.11 (unknown [10.253.104.99]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230921061944epsmtip185f493ca9c43ba7d268ba45508fee6ef~G1Z4YHAxs2652326523epsmtip1W;
+        Thu, 21 Sep 2023 06:19:44 +0000 (GMT)
+From:   Jaewon Kim <jaewon31.kim@samsung.com>
+To:     rostedt@goodmis.org, yuzhao@google.com, tjmercier@google.com,
+        kaleshsingh@google.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        hannes@cmpxchg.org
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-mm@kvack.org, jaewon31.kim@gmail.com,
+        Jaewon Kim <jaewon31.kim@samsung.com>
+Subject: [PATCH v2] vmscan: add trace events for lru_gen
+Date:   Thu, 21 Sep 2023 15:22:06 +0900
+Message-Id: <20230921062206.14429-1-jaewon31.kim@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmnm7jA+5Ug/+NQhZz1q9hs1i9ydei
+        e/NMRove96+YLJr2zWS3uLxrDpvFvTX/WS2OrD/LYrGv4wGTxbv1X9gsZjf2MVq8m/CF1YHH
+        4/Cb98weO2fdZfdo2XeL3WPBplKPTZ8msXucmPGbxaNvyypGjzMLjrB7fN4kF8AZlW2TkZqY
+        klqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA3SxkkJZYk4pUCgg
+        sbhYSd/Opii/tCRVISO/uMRWKbUgJafArECvODG3uDQvXS8vtcTK0MDAyBSoMCE749udNywF
+        fx0rjvZ+Y29gXGbexcjJISFgIjFrxm32LkYuDiGBHYwSB69fgnI+MUqsuL+BGcL5xiixedYc
+        NpiWG69eQlXtZZT48v41I4TznVHi8ebVjCBVbALaEu8XTGIFSYgIzGaUOHvqOwuIwwzivN9w
+        CWyWsICFRPf6/+wgNouAqsTj+dPA4rwCthJvL7xhhtgnL7F6wwEo+yu7xNkmGwjbReLutyWM
+        ELawxKvjW9ghbCmJz+/2Qt2aL3Hh4iumLkYOILtGYuFEQ4iwvcSurzNYQcLMApoS63fpQ4QV
+        JXb+ngs2kVmAT+Ld1x5WiE5eiY42IYgSNYmWZ19ZIWwZib//nkHZHhKzX91mArGFBGIlJr5+
+        yDiBUXYWwoIFjIyrGMVSC4pz01OLDQsM4bGUnJ+7iRGcCrVMdzBOfPtB7xAjEwfjIUYJDmYl
+        Ed7kT1ypQrwpiZVVqUX58UWlOanFhxhNgaE1kVlKNDkfmIzzSuINTSwNTMyMTCyMLY3NlMR5
+        mR/1pggJpCeWpGanphakFsH0MXFwSjUwGYfZ1bzlXOJ9Zt+Tfq/LK7kmaF8wNfScvoX9nZtn
+        9tamaJ+TuxPnN5bf38e5wteufu93l6CpE6T8NENVxDc2v5Y94P58z3WGLi/73ELvnfsf/jFq
+        3xJc8OSXB2vAA6ldx2VOCRSeOWRxTvr0V0/mox7Fl6YrRbm+miC+SPy5wh1VbT7F8uoNRgtl
+        ddjXvcuW3yos+kFdUHTbyvLFz/maWdNPBB/1YV61ujtvWVtz5HrnV2uSPkbNn+jXGqvfuv5j
+        t4Cr4r5F09WypnTJVDKatf1ZEqg/5+O5TUlbS847ZpyunypexSwbkXPy06FnkVvmz9v2ZPoR
+        j8TDmgHBjzIzf0rckJp/zvnULeZ/d699VGIpzkg01GIuKk4EALWaihYOBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJLMWRmVeSWpSXmKPExsWy7bCSnG7DA+5Ug+MnjS3mrF/DZrF6k69F
+        9+aZjBa9718xWTTtm8lucXnXHDaLe2v+s1ocWX+WxWJfxwMmi3frv7BZzG7sY7R4N+ELqwOP
+        x+E375k9ds66y+7Rsu8Wu8eCTaUemz5NYvc4MeM3i0ffllWMHmcWHGH3+LxJLoAzissmJTUn
+        syy1SN8ugSvj2503LAV/HSuO9n5jb2BcZt7FyMkhIWAicePVS3YQW0hgN6PEubcGEHEZiTfn
+        n7J0MXIA2cIShw8XdzFyAZV8ZZQ4//MmI0gNm4C2xPsFk1hBEiICixklHl9rYwVJMAvMZ5R4
+        MCUAxBYWsJDoXv8fbAGLgKrE4/nT2EBsXgFbibcX3jBDLJOXWL3hAPMERp4FjAyrGCVTC4pz
+        03OLDQsM81LL9YoTc4tL89L1kvNzNzGCQ1NLcwfj9lUf9A4xMnEwHmKU4GBWEuFN/sSVKsSb
+        klhZlVqUH19UmpNafIhRmoNFSZxX/EVvipBAemJJanZqakFqEUyWiYNTqoFJcqHLrsKXZz79
+        /tq4oSr2Fc+S1nK9O84F4XouHkb/f2Vt5nnd4hNiYbjpT8kUldvTr0zV4NoYV/GcefKfTI7W
+        eddcykx8jVbfXqD3/V7i3h3x7T394u11RVw33T5O7Aje/oH7aam18B+vTwU8r9pnW4UeCz9e
+        Mlc/3nhDktn1Ezfy5OQDym6v21z/MyFEY6aNtZp2kka3Oh/nXtv6Ze+Ez+gYb7hU8m1upTD7
+        1ymOl87I8fYdnqk+z6D1YuKWmQcFRRcfY3v5Wm4LN992l8vfZKq3/b1ecNU7ZGWztOn2h/P5
+        DA6xT50/58Vf48BLJ+1yQ3hs/rzf07Zw0nQeGY9/az8wlh82mVtx4evjgFldSizFGYmGWsxF
+        xYkA6MA8NrwCAAA=
+X-CMS-MailID: 20230921061944epcas1p2f8a022282709da12840b33c0f5898b5f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230921061944epcas1p2f8a022282709da12840b33c0f5898b5f
+References: <CGME20230921061944epcas1p2f8a022282709da12840b33c0f5898b5f@epcas1p2.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add audit support for mkdir, mknod, symlink, unlink, rmdir, truncate,
-and open requests.
+As the legacy lru provides, the lru_gen needs some trace events for
+debugging.
 
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
+This commit introduces 2 trace events.
+  trace_mm_vmscan_lru_gen_scan
+  trace_mm_vmscan_lru_gen_evict
+
+Each event is similar to the following legacy events.
+  trace_mm_vmscan_lru_isolate,
+  trace_mm_vmscan_lru_shrink_[in]active
+
+Here's an example
+  mm_vmscan_lru_gen_scan: isolate_mode=0 classzone=1 order=9 nr_requested=4096 nr_scanned=431 nr_skipped=0 nr_taken=55 lru=anon
+  mm_vmscan_lru_gen_evict: nid=0 nr_reclaimed=42 nr_dirty=0 nr_writeback=0 nr_congested=0 nr_immediate=0 nr_activate_anon=13 nr_activate_file=0 nr_ref_keep=0 nr_unmap_fail=0 priority=2 flags=RECLAIM_WB_ANON|RECLAIM_WB_ASYNC
+  mm_vmscan_lru_gen_scan: isolate_mode=0 classzone=1 order=9 nr_requested=4096 nr_scanned=66 nr_skipped=0 nr_taken=64 lru=file
+  mm_vmscan_lru_gen_evict: nid=0 nr_reclaimed=62 nr_dirty=0 nr_writeback=0 nr_congested=0 nr_immediate=0 nr_activate_anon=0 nr_activate_file=2 nr_ref_keep=0 nr_unmap_fail=0 priority=2 flags=RECLAIM_WB_FILE|RECLAIM_WB_ASYNC
+
+Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
 ---
- security/landlock/audit.c | 114 ++++++++++++++++++++++++++++++++++++++
- security/landlock/audit.h |  32 +++++++++++
- security/landlock/fs.c    |  62 ++++++++++++++++++---
- 3 files changed, 199 insertions(+), 9 deletions(-)
+v2: use condition and make it aligned
+v1: introduce trace events
+---
+ include/trace/events/mmflags.h |  5 ++
+ include/trace/events/vmscan.h  | 98 ++++++++++++++++++++++++++++++++++
+ mm/vmscan.c                    | 17 ++++--
+ 3 files changed, 115 insertions(+), 5 deletions(-)
 
-diff --git a/security/landlock/audit.c b/security/landlock/audit.c
-index d9589d07e126..148fc0fafef4 100644
---- a/security/landlock/audit.c
-+++ b/security/landlock/audit.c
-@@ -14,6 +14,25 @@
+diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
+index 1478b9dd05fa..44e9b38f83e7 100644
+--- a/include/trace/events/mmflags.h
++++ b/include/trace/events/mmflags.h
+@@ -274,6 +274,10 @@ IF_HAVE_VM_SOFTDIRTY(VM_SOFTDIRTY,	"softdirty"	)		\
+ 		EM (LRU_ACTIVE_FILE, "active_file") \
+ 		EMe(LRU_UNEVICTABLE, "unevictable")
  
- atomic64_t ruleset_and_domain_counter = ATOMIC64_INIT(0);
++#define LRU_GEN_NAMES		\
++		EM (LRU_GEN_ANON, "anon") \
++		EMe(LRU_GEN_FILE, "file")
++
+ /*
+  * First define the enums in the above macros to be exported to userspace
+  * via TRACE_DEFINE_ENUM().
+@@ -288,6 +292,7 @@ COMPACTION_PRIORITY
+ /* COMPACTION_FEEDBACK are defines not enums. Not needed here. */
+ ZONE_TYPE
+ LRU_NAMES
++LRU_GEN_NAMES
  
-+static const char *op_to_string(enum landlock_operation operation)
-+{
-+	const char *const desc[] = {
-+		[0] = "",
-+		[LANDLOCK_OP_MKDIR] = "mkdir",
-+		[LANDLOCK_OP_MKNOD] = "mknod",
-+		[LANDLOCK_OP_SYMLINK] = "symlink",
-+		[LANDLOCK_OP_UNLINK] = "unlink",
-+		[LANDLOCK_OP_RMDIR] = "rmdir",
-+		[LANDLOCK_OP_TRUNCATE] = "truncate",
-+		[LANDLOCK_OP_OPEN] = "open",
-+	};
-+
-+	if (WARN_ON_ONCE(operation < 0 || operation > ARRAY_SIZE(desc)))
-+		return "unknown";
-+
-+	return desc[operation];
-+}
-+
- #define BIT_INDEX(bit) HWEIGHT(bit - 1)
+ /*
+  * Now redefine the EM() and EMe() macros to map the enums to the strings
+diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
+index d2123dd960d5..f0c3a4bd72db 100644
+--- a/include/trace/events/vmscan.h
++++ b/include/trace/events/vmscan.h
+@@ -327,6 +327,57 @@ TRACE_EVENT(mm_vmscan_lru_isolate,
+ 		__print_symbolic(__entry->lru, LRU_NAMES))
+ );
  
- static void log_accesses(struct audit_buffer *const ab,
-@@ -141,3 +160,98 @@ void landlock_log_release_ruleset(const struct landlock_ruleset *const ruleset)
- 	audit_log_format(ab, "op=release-%s %s=%llu", name, name, id);
- 	audit_log_end(ab);
- }
++TRACE_EVENT_CONDITION(mm_vmscan_lru_gen_scan,
++	TP_PROTO(int highest_zoneidx,
++		int order,
++		unsigned long nr_requested,
++		unsigned long nr_scanned,
++		unsigned long nr_skipped,
++		unsigned long nr_taken,
++		isolate_mode_t isolate_mode,
++		int lru),
 +
-+/* Update request.youngest_domain and request.missing_access */
-+static void
-+update_request(struct landlock_request *const request,
-+	       const struct landlock_ruleset *const domain,
-+	       const access_mask_t access_request,
-+	       const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
-+{
-+	const unsigned long access_req = access_request;
-+	unsigned long access_bit;
-+	long youngest_denied_layer = -1;
-+	const struct landlock_hierarchy *node = domain->hierarchy;
-+	size_t i;
++	TP_ARGS(highest_zoneidx, order, nr_requested, nr_scanned, nr_skipped, nr_taken, isolate_mode, lru),
 +
-+	WARN_ON_ONCE(request->youngest_domain);
-+	WARN_ON_ONCE(request->missing_access);
++	TP_CONDITION(nr_scanned),
 +
-+	if (WARN_ON_ONCE(!access_request))
-+		return;
++	TP_STRUCT__entry(
++		__field(int, highest_zoneidx)
++		__field(int, order)
++		__field(unsigned long, nr_requested)
++		__field(unsigned long, nr_scanned)
++		__field(unsigned long, nr_skipped)
++		__field(unsigned long, nr_taken)
++		__field(unsigned int, isolate_mode)
++		__field(int, lru)
++	),
 +
-+	if (WARN_ON_ONCE(!layer_masks))
-+		return;
++	TP_fast_assign(
++		__entry->highest_zoneidx = highest_zoneidx;
++		__entry->order = order;
++		__entry->nr_requested = nr_requested;
++		__entry->nr_scanned = nr_scanned;
++		__entry->nr_skipped = nr_skipped;
++		__entry->nr_taken = nr_taken;
++		__entry->isolate_mode = (__force unsigned int)isolate_mode;
++		__entry->lru = lru;
++	),
 +
-+	for_each_set_bit(access_bit, &access_req, ARRAY_SIZE(*layer_masks)) {
-+		long domain_layer;
++	/*
++	 * classzone is previous name of the highest_zoneidx.
++	 * Reason not to change it is the ABI requirement of the tracepoint.
++	 */
++	TP_printk("isolate_mode=%d classzone=%d order=%d nr_requested=%lu nr_scanned=%lu nr_skipped=%lu nr_taken=%lu lru=%s",
++		__entry->isolate_mode,
++		__entry->highest_zoneidx,
++		__entry->order,
++		__entry->nr_requested,
++		__entry->nr_scanned,
++		__entry->nr_skipped,
++		__entry->nr_taken,
++		__print_symbolic(__entry->lru, LRU_GEN_NAMES))
++);
 +
-+		if (!(*layer_masks)[access_bit])
-+			continue;
-+
-+		domain_layer = __fls((*layer_masks)[access_bit]);
-+
-+		/*
-+		 * Gets the access rights that are missing from
-+		 * the youngest (i.e. closest) domain.
-+		 */
-+		if (domain_layer == youngest_denied_layer) {
-+			request->missing_access |= BIT_ULL(access_bit);
-+		} else if (domain_layer > youngest_denied_layer) {
-+			youngest_denied_layer = domain_layer;
-+			request->missing_access = BIT_ULL(access_bit);
-+		}
-+	}
-+
-+	WARN_ON_ONCE(!request->missing_access);
-+	WARN_ON_ONCE(youngest_denied_layer < 0);
-+
-+	/* Gets the nearest domain ID that denies request.missing_access */
-+	for (i = domain->num_layers - youngest_denied_layer - 1; i > 0; i--)
-+		node = node->parent;
-+	request->youngest_domain = node->id;
-+}
-+
-+static void
-+log_request(const int error, struct landlock_request *const request,
-+	    const struct landlock_ruleset *const domain,
-+	    const access_mask_t access_request,
-+	    const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
-+{
-+	struct audit_buffer *ab;
-+
-+	if (WARN_ON_ONCE(!error))
-+		return;
-+	if (WARN_ON_ONCE(!request))
-+		return;
-+	if (WARN_ON_ONCE(!domain || !domain->hierarchy))
-+		return;
-+
-+	/* Uses GFP_ATOMIC to not sleep. */
-+	ab = audit_log_start(audit_context(), GFP_ATOMIC | __GFP_NOWARN,
-+			     AUDIT_LANDLOCK);
-+	if (!ab)
-+		return;
-+
-+	update_request(request, domain, access_request, layer_masks);
-+
-+	log_task(ab);
-+	audit_log_format(ab, " domain=%llu op=%s errno=%d missing-fs-accesses=",
-+			 request->youngest_domain,
-+			 op_to_string(request->operation), -error);
-+	log_accesses(ab, request->missing_access);
-+	audit_log_lsm_data(ab, &request->audit);
-+	audit_log_end(ab);
-+}
-+
-+// TODO: Make it generic, not FS-centric.
-+int landlock_log_request(
-+	const int error, struct landlock_request *const request,
-+	const struct landlock_ruleset *const domain,
-+	const access_mask_t access_request,
-+	const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
-+{
-+	/* No need to log the access request, only the missing accesses. */
-+	log_request(error, request, domain, access_request, layer_masks);
-+	return error;
-+}
-diff --git a/security/landlock/audit.h b/security/landlock/audit.h
-index bc17dc8ca6f1..8edc68b98fca 100644
---- a/security/landlock/audit.h
-+++ b/security/landlock/audit.h
-@@ -13,6 +13,23 @@
+ TRACE_EVENT(mm_vmscan_write_folio,
  
- #include "ruleset.h"
+ 	TP_PROTO(struct folio *folio),
+@@ -437,6 +488,53 @@ TRACE_EVENT(mm_vmscan_lru_shrink_active,
+ 		show_reclaim_flags(__entry->reclaim_flags))
+ );
  
-+enum landlock_operation {
-+	LANDLOCK_OP_MKDIR = 1,
-+	LANDLOCK_OP_MKNOD,
-+	LANDLOCK_OP_SYMLINK,
-+	LANDLOCK_OP_UNLINK,
-+	LANDLOCK_OP_RMDIR,
-+	LANDLOCK_OP_TRUNCATE,
-+	LANDLOCK_OP_OPEN,
-+};
++TRACE_EVENT(mm_vmscan_lru_gen_evict,
 +
-+struct landlock_request {
-+	const enum landlock_operation operation;
-+	access_mask_t missing_access;
-+	u64 youngest_domain;
-+	struct common_audit_data audit;
-+};
++	TP_PROTO(int nid, unsigned long nr_reclaimed,
++		struct reclaim_stat *stat, int priority, int file),
 +
- #ifdef CONFIG_AUDIT
- 
- void landlock_log_create_ruleset(struct landlock_ruleset *const ruleset);
-@@ -20,6 +37,12 @@ void landlock_log_restrict_self(struct landlock_ruleset *const domain,
- 				struct landlock_ruleset *const ruleset);
- void landlock_log_release_ruleset(const struct landlock_ruleset *const ruleset);
- 
-+int landlock_log_request(
-+	const int error, struct landlock_request *const request,
-+	const struct landlock_ruleset *const domain,
-+	const access_mask_t access_request,
-+	const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS]);
++	TP_ARGS(nid, nr_reclaimed, stat, priority, file),
 +
- #else /* CONFIG_AUDIT */
- 
- static inline void
-@@ -38,6 +61,15 @@ landlock_log_release_ruleset(const struct landlock_ruleset *const ruleset)
- {
- }
- 
-+static inline int landlock_log_request(
-+	const int error, struct landlock_request *const request,
-+	const struct landlock_ruleset *const domain,
-+	const access_mask_t access_request,
-+	const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
-+{
-+	return error;
-+}
++	TP_STRUCT__entry(
++		__field(unsigned long, nr_reclaimed)
++		__field(unsigned long, nr_dirty)
++		__field(unsigned long, nr_writeback)
++		__field(unsigned long, nr_congested)
++		__field(unsigned long, nr_immediate)
++		__field(unsigned int, nr_activate0)
++		__field(unsigned int, nr_activate1)
++		__field(unsigned long, nr_ref_keep)
++		__field(unsigned long, nr_unmap_fail)
++		__field(int, nid)
++		__field(int, priority)
++		__field(int, reclaim_flags)
++	),
 +
- #endif /* CONFIG_AUDIT */
- 
- #endif /* _SECURITY_LANDLOCK_AUDIT_H */
-diff --git a/security/landlock/fs.c b/security/landlock/fs.c
-index 978e325d8708..104dfb2abc32 100644
---- a/security/landlock/fs.c
-+++ b/security/landlock/fs.c
-@@ -18,6 +18,7 @@
- #include <linux/kernel.h>
- #include <linux/limits.h>
- #include <linux/list.h>
-+#include <linux/lsm_audit.h>
- #include <linux/lsm_hooks.h>
- #include <linux/mount.h>
- #include <linux/namei.h>
-@@ -30,6 +31,7 @@
- #include <linux/workqueue.h>
- #include <uapi/linux/landlock.h>
- 
-+#include "audit.h"
- #include "common.h"
- #include "cred.h"
- #include "fs.h"
-@@ -636,7 +638,8 @@ static bool is_access_to_paths_allowed(
- }
- 
- static int current_check_access_path(const struct path *const path,
--				     access_mask_t access_request)
-+				     access_mask_t access_request,
-+				     struct landlock_request *const request)
- {
- 	const struct landlock_ruleset *const dom =
- 		landlock_get_current_domain();
-@@ -650,7 +653,10 @@ static int current_check_access_path(const struct path *const path,
- 				       NULL, 0, NULL, NULL))
- 		return 0;
- 
--	return -EACCES;
-+	request->audit.type = LSM_AUDIT_DATA_PATH;
-+	request->audit.u.path = *path;
-+	return landlock_log_request(-EACCES, request, dom, access_request,
-+				    &layer_masks);
- }
- 
- static inline access_mask_t get_mode_access(const umode_t mode)
-@@ -1097,6 +1103,7 @@ static int hook_path_link(struct dentry *const old_dentry,
- 			  const struct path *const new_dir,
- 			  struct dentry *const new_dentry)
- {
-+	// TODO: Implement fine-grained audit
- 	return current_check_refer_path(old_dentry, new_dir, new_dentry, false,
- 					false);
- }
-@@ -1115,38 +1122,67 @@ static int hook_path_rename(const struct path *const old_dir,
- static int hook_path_mkdir(const struct path *const dir,
- 			   struct dentry *const dentry, const umode_t mode)
- {
--	return current_check_access_path(dir, LANDLOCK_ACCESS_FS_MAKE_DIR);
-+	struct landlock_request request = {
-+		.operation = LANDLOCK_OP_MKDIR,
-+	};
++	TP_fast_assign(
++		__entry->nid = nid;
++		__entry->nr_reclaimed = nr_reclaimed;
++		__entry->nr_dirty = stat->nr_dirty;
++		__entry->nr_writeback = stat->nr_writeback;
++		__entry->nr_congested = stat->nr_congested;
++		__entry->nr_immediate = stat->nr_immediate;
++		__entry->nr_activate0 = stat->nr_activate[0];
++		__entry->nr_activate1 = stat->nr_activate[1];
++		__entry->nr_ref_keep = stat->nr_ref_keep;
++		__entry->nr_unmap_fail = stat->nr_unmap_fail;
++		__entry->priority = priority;
++		__entry->reclaim_flags = trace_reclaim_flags(file);
++	),
 +
-+	return current_check_access_path(dir, LANDLOCK_ACCESS_FS_MAKE_DIR,
-+					 &request);
- }
- 
- static int hook_path_mknod(const struct path *const dir,
- 			   struct dentry *const dentry, const umode_t mode,
- 			   const unsigned int dev)
- {
--	return current_check_access_path(dir, get_mode_access(mode));
-+	struct landlock_request request = {
-+		.operation = LANDLOCK_OP_MKNOD,
-+	};
++	TP_printk("nid=%d nr_reclaimed=%ld nr_dirty=%ld nr_writeback=%ld nr_congested=%ld nr_immediate=%ld nr_activate_anon=%d nr_activate_file=%d nr_ref_keep=%ld nr_unmap_fail=%ld priority=%d flags=%s",
++		__entry->nid, __entry->nr_reclaimed,
++		__entry->nr_dirty, __entry->nr_writeback,
++		__entry->nr_congested, __entry->nr_immediate,
++		__entry->nr_activate0, __entry->nr_activate1,
++		__entry->nr_ref_keep, __entry->nr_unmap_fail,
++		__entry->priority,
++		show_reclaim_flags(__entry->reclaim_flags))
++);
 +
-+	return current_check_access_path(dir, get_mode_access(mode), &request);
- }
+ TRACE_EVENT(mm_vmscan_node_reclaim_begin,
  
- static int hook_path_symlink(const struct path *const dir,
- 			     struct dentry *const dentry,
- 			     const char *const old_name)
- {
--	return current_check_access_path(dir, LANDLOCK_ACCESS_FS_MAKE_SYM);
-+	struct landlock_request request = {
-+		.operation = LANDLOCK_OP_SYMLINK,
-+	};
-+
-+	return current_check_access_path(dir, LANDLOCK_ACCESS_FS_MAKE_SYM,
-+					 &request);
- }
+ 	TP_PROTO(int nid, int order, gfp_t gfp_flags),
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6f13394b112e..f453a0f8ceef 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -5005,6 +5005,7 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+ 	int sorted = 0;
+ 	int scanned = 0;
+ 	int isolated = 0;
++	int skipped = 0;
+ 	int remaining = MAX_LRU_BATCH;
+ 	struct lru_gen_folio *lrugen = &lruvec->lrugen;
+ 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+@@ -5018,7 +5019,7 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
  
- static int hook_path_unlink(const struct path *const dir,
- 			    struct dentry *const dentry)
- {
--	return current_check_access_path(dir, LANDLOCK_ACCESS_FS_REMOVE_FILE);
-+	struct landlock_request request = {
-+		.operation = LANDLOCK_OP_UNLINK,
-+	};
-+
-+	return current_check_access_path(dir, LANDLOCK_ACCESS_FS_REMOVE_FILE,
-+					 &request);
- }
+ 	for (i = MAX_NR_ZONES; i > 0; i--) {
+ 		LIST_HEAD(moved);
+-		int skipped = 0;
++		int skipped_zone = 0;
+ 		int zone = (sc->reclaim_idx + i) % MAX_NR_ZONES;
+ 		struct list_head *head = &lrugen->folios[gen][type][zone];
  
- static int hook_path_rmdir(const struct path *const dir,
- 			   struct dentry *const dentry)
- {
--	return current_check_access_path(dir, LANDLOCK_ACCESS_FS_REMOVE_DIR);
-+	struct landlock_request request = {
-+		.operation = LANDLOCK_OP_RMDIR,
-+	};
-+
-+	return current_check_access_path(dir, LANDLOCK_ACCESS_FS_REMOVE_DIR,
-+					 &request);
- }
+@@ -5040,16 +5041,17 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+ 				isolated += delta;
+ 			} else {
+ 				list_move(&folio->lru, &moved);
+-				skipped += delta;
++				skipped_zone += delta;
+ 			}
  
- static int hook_path_truncate(const struct path *const path)
- {
--	return current_check_access_path(path, LANDLOCK_ACCESS_FS_TRUNCATE);
-+	struct landlock_request request = {
-+		.operation = LANDLOCK_OP_TRUNCATE,
-+	};
-+
-+	return current_check_access_path(path, LANDLOCK_ACCESS_FS_TRUNCATE,
-+					 &request);
- }
+-			if (!--remaining || max(isolated, skipped) >= MIN_LRU_BATCH)
++			if (!--remaining || max(isolated, skipped_zone) >= MIN_LRU_BATCH)
+ 				break;
+ 		}
  
- /* File hooks */
-@@ -1199,6 +1235,13 @@ static int hook_file_open(struct file *const file)
- 	const access_mask_t optional_access = LANDLOCK_ACCESS_FS_TRUNCATE;
- 	const struct landlock_ruleset *const dom =
- 		landlock_get_current_domain();
-+	struct landlock_request request = {
-+		.operation = LANDLOCK_OP_OPEN,
-+		.audit = {
-+			.type = LSM_AUDIT_DATA_PATH,
-+			.u.path = file->f_path,
-+		},
-+	};
+-		if (skipped) {
++		if (skipped_zone) {
+ 			list_splice(&moved, head);
+-			__count_zid_vm_events(PGSCAN_SKIP, zone, skipped);
++			__count_zid_vm_events(PGSCAN_SKIP, zone, skipped_zone);
++			skipped += skipped_zone;
+ 		}
  
- 	if (!dom)
- 		return 0;
-@@ -1249,7 +1292,8 @@ static int hook_file_open(struct file *const file)
- 	if ((open_access_request & allowed_access) == open_access_request)
- 		return 0;
+ 		if (!remaining || isolated >= MIN_LRU_BATCH)
+@@ -5065,6 +5067,9 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+ 	__count_memcg_events(memcg, PGREFILL, sorted);
+ 	__count_vm_events(PGSCAN_ANON + type, isolated);
  
--	return -EACCES;
-+	return landlock_log_request(-EACCES, &request, dom, open_access_request,
-+				    &layer_masks);
- }
++	trace_mm_vmscan_lru_gen_scan(sc->reclaim_idx, sc->order, MAX_LRU_BATCH,
++			scanned, skipped, isolated,
++			sc->may_unmap ? 0 : ISOLATE_UNMAPPED, type);
+ 	/*
+ 	 * There might not be eligible folios due to reclaim_idx. Check the
+ 	 * remaining to prevent livelock if it's not making progress.
+@@ -5194,6 +5199,8 @@ static int evict_folios(struct lruvec *lruvec, struct scan_control *sc, int swap
+ retry:
+ 	reclaimed = shrink_folio_list(&list, pgdat, sc, &stat, false);
+ 	sc->nr_reclaimed += reclaimed;
++	trace_mm_vmscan_lru_gen_evict(pgdat->node_id, reclaimed, &stat,
++				      sc->priority, type);
  
- static int hook_file_truncate(struct file *const file)
+ 	list_for_each_entry_safe_reverse(folio, next, &list, lru) {
+ 		if (!folio_evictable(folio)) {
 -- 
-2.42.0
+2.17.1
 
