@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F897A9D46
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA487A9A26
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbjIUTaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
+        id S229534AbjIUSgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbjIUTaF (ORCPT
+        with ESMTP id S229602AbjIUSg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:30:05 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5F5ADF21
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:04:44 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-579de633419so15256597b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695319484; x=1695924284; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AdMCh/+yCsduMbxg3dBOP8pPO/0inss321VX5z7Cslw=;
-        b=4cF7X2KPVdvj/7607ekIQaEkhcmXERPq1+VVvEJRyxyWaezd5rbC9thCnzqB94ztKQ
-         +TfEJjXpFjfWkyJ7KrTjFUq/3rbF6WwXPHNTkgibkgKgzTNtmgz6JLTqCy7o63154Lw3
-         JkijIXtRuB5qgVnzVQDXUkKyg8OcoA9NjUM5tN1WkyYYZ/MTOyy3tiwOJUzqcpq7ffVi
-         mppntYxKiaZkni8p7pmOPe1W7cLQWJ6GIpyVeefZ94o1e7MaT8OitlV73/fewMZGB8gU
-         ec6vw1Nrqc9ThSRrDbZO2GoHt7qiX1QK5AIYPua8zhISucW8WmL7bZS3PgjfWV60lQU2
-         Ip4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695319484; x=1695924284;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AdMCh/+yCsduMbxg3dBOP8pPO/0inss321VX5z7Cslw=;
-        b=AfkYkawZYHLQKRZYP5lna4PA+b5hNIoSAb8OpNaRf2YeaNsX4xzkacXC8WupTQ9Fep
-         7saWhITTgmR2YDpb0q9etKWNFPmFqfsIVJW1t/ARqWSU4/EI3Yvgdj/14iduWIFI6Myi
-         hGjvNwAqj+PVYeqlrqi7AHOcsxqnP1uzr37QsopJgi04+r0yiVL2xWJRkSFLhHhLJbRJ
-         0q7wrcIs/4oEFp2aX6ZpQfd22VrrFQHMOPSlIBQbHT5a3hzg5VCNsB+txo2VBTLGY4hI
-         rcz2WCe/xhwZcFKgJLj8pGYIgO3kpOyoSvgjMbLEOKAgk9tLJdzv8Lf1d8Tgl23nEXjs
-         DBWg==
-X-Gm-Message-State: AOJu0YybcvlcCNQH5FYMWU4+gwFQOD8CBej2lrcB6wqvGyv4JjTIdg7Q
-        5rLqJ3z4eEVqtPa7eG7dzO4cUbenX9+6OFHXZv+qvQ==
-X-Google-Smtp-Source: AGHT+IFlXUKdQWPSBHJn1j/MDvMjTmPT/VMWQg4H/xOs81/J/jwuJ8JJXX1pfb+Adw8urZJBbplJpBr1hxqfZ6IXHLI=
-X-Received: by 2002:a25:dbca:0:b0:d5c:ce73:6528 with SMTP id
- g193-20020a25dbca000000b00d5cce736528mr5584392ybf.35.1695319483599; Thu, 21
- Sep 2023 11:04:43 -0700 (PDT)
+        Thu, 21 Sep 2023 14:36:27 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17704AF69C;
+        Thu, 21 Sep 2023 11:07:22 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 2fecdf3dfb7fb0c9; Thu, 21 Sep 2023 20:07:21 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 0973A664EBE;
+        Thu, 21 Sep 2023 20:07:21 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v1 13/13] ACPI: thermal: Rename structure fields holding temperature in deci-Kelvin
+Date:   Thu, 21 Sep 2023 20:06:58 +0200
+Message-ID: <1968603.yKVeVyVuyW@kreacher>
+In-Reply-To: <1957441.PYKUYFuaPT@kreacher>
+References: <1957441.PYKUYFuaPT@kreacher>
 MIME-Version: 1.0
-References: <20230914152620.2743033-1-surenb@google.com> <20230914152620.2743033-3-surenb@google.com>
- <ZQNMze6SXdIm13CW@casper.infradead.org> <e77b75f9-ab9e-f20b-6484-22f73524c159@redhat.com>
- <f6e350f4-1bf3-ca10-93f8-c11db44ce62b@redhat.com>
-In-Reply-To: <f6e350f4-1bf3-ca10-93f8-c11db44ce62b@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 21 Sep 2023 18:04:30 +0000
-Message-ID: <CAJuCfpGqt1V5puRMhLkjG6F2T4xtsDY8qy--ZfBPNL9kxPyWtg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhn
+ thgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,104 +56,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 6:45=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 14.09.23 20:43, David Hildenbrand wrote:
-> > On 14.09.23 20:11, Matthew Wilcox wrote:
-> >> On Thu, Sep 14, 2023 at 08:26:12AM -0700, Suren Baghdasaryan wrote:
-> >>> +++ b/include/linux/userfaultfd_k.h
-> >>> @@ -93,6 +93,23 @@ extern int mwriteprotect_range(struct mm_struct *d=
-st_mm,
-> >>>    extern long uffd_wp_range(struct vm_area_struct *vma,
-> >>>                       unsigned long start, unsigned long len, bool en=
-able_wp);
-> >>>
-> >>> +/* remap_pages */
-> >>> +extern void double_pt_lock(spinlock_t *ptl1, spinlock_t *ptl2);
-> >>> +extern void double_pt_unlock(spinlock_t *ptl1, spinlock_t *ptl2);
-> >>> +extern ssize_t remap_pages(struct mm_struct *dst_mm,
-> >>> +                      struct mm_struct *src_mm,
-> >>> +                      unsigned long dst_start,
-> >>> +                      unsigned long src_start,
-> >>> +                      unsigned long len, __u64 flags);
-> >>> +extern int remap_pages_huge_pmd(struct mm_struct *dst_mm,
-> >>> +                           struct mm_struct *src_mm,
-> >>> +                           pmd_t *dst_pmd, pmd_t *src_pmd,
-> >>> +                           pmd_t dst_pmdval,
-> >>> +                           struct vm_area_struct *dst_vma,
-> >>> +                           struct vm_area_struct *src_vma,
-> >>> +                           unsigned long dst_addr,
-> >>> +                           unsigned long src_addr);
-> >>
-> >> Drop the 'extern' markers from function declarations.
-> >>
-> >>> +int remap_pages_huge_pmd(struct mm_struct *dst_mm,
-> >>> +                    struct mm_struct *src_mm,
-> >>> +                    pmd_t *dst_pmd, pmd_t *src_pmd,
-> >>> +                    pmd_t dst_pmdval,
-> >>> +                    struct vm_area_struct *dst_vma,
-> >>> +                    struct vm_area_struct *src_vma,
-> >>> +                    unsigned long dst_addr,
-> >>> +                    unsigned long src_addr)
-> >>> +{
-> >>> +   pmd_t _dst_pmd, src_pmdval;
-> >>> +   struct page *src_page;
-> >>> +   struct anon_vma *src_anon_vma, *dst_anon_vma;
-> >>> +   spinlock_t *src_ptl, *dst_ptl;
-> >>> +   pgtable_t pgtable;
-> >>> +   struct mmu_notifier_range range;
-> >>> +
-> >>> +   src_pmdval =3D *src_pmd;
-> >>> +   src_ptl =3D pmd_lockptr(src_mm, src_pmd);
-> >>> +
-> >>> +   BUG_ON(!pmd_trans_huge(src_pmdval));
-> >>> +   BUG_ON(!pmd_none(dst_pmdval));
-> >>> +   BUG_ON(!spin_is_locked(src_ptl));
-> >>> +   mmap_assert_locked(src_mm);
-> >>> +   mmap_assert_locked(dst_mm);
-> >>> +   BUG_ON(src_addr & ~HPAGE_PMD_MASK);
-> >>> +   BUG_ON(dst_addr & ~HPAGE_PMD_MASK);
-> >>> +
-> >>> +   src_page =3D pmd_page(src_pmdval);
-> >>> +   BUG_ON(!PageHead(src_page));
-> >>> +   BUG_ON(!PageAnon(src_page));
-> >>
-> >> Better to add a src_folio =3D page_folio(src_page);
-> >> and then folio_test_anon() here.
-> >>
-> >>> +   if (unlikely(page_mapcount(src_page) !=3D 1)) {
-> >>
-> >> Brr, this is going to miss PTE mappings of this folio.  I think you
-> >> actually want folio_mapcount() instead, although it'd be more efficien=
-t
-> >> to look at folio->_entire_mapcount =3D=3D 1 and _nr_pages_mapped =3D=
-=3D 0.
-> >> Not wure what a good name for that predicate would be.
-> >
-> > We have
-> >
-> >    * It only works on non shared anonymous pages because those can
-> >    * be relocated without generating non linear anon_vmas in the rmap
-> >    * code.
-> >    *
-> >    * It provides a zero copy mechanism to handle userspace page faults.
-> >    * The source vma pages should have mapcount =3D=3D 1, which can be
-> >    * enforced by using madvise(MADV_DONTFORK) on src vma.
-> >
-> > Use PageAnonExclusive(). As long as KSM is not involved and you don't
-> > use fork(), that flag should be good enough for that use case here.
-> >
-> ... and similarly don't do any of that swapcount stuff and only check if
-> the swap pte is anon exclusive.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH v1] 
 
-I'm preparing v2 and this is the only part left for me to address but
-I'm not clear how. David, could you please clarify how I should be
-checking swap pte to be exclusive without swapcount?
+Rename structure fields holding temperature values in deci-Kelvin so as
+to avoid temperature units confusion.
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/thermal.c |   44 ++++++++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -82,7 +82,7 @@ MODULE_PARM_DESC(psv, "Disable or overri
+ static struct workqueue_struct *acpi_thermal_pm_queue;
+ 
+ struct acpi_thermal_trip {
+-	unsigned long temperature;
++	unsigned long temp_dk;
+ 	struct acpi_handle_list devices;
+ };
+ 
+@@ -105,8 +105,8 @@ struct acpi_thermal_trips {
+ struct acpi_thermal {
+ 	struct acpi_device *device;
+ 	acpi_bus_id name;
+-	unsigned long temperature;
+-	unsigned long last_temperature;
++	unsigned long temp_dk;
++	unsigned long last_temp_dk;
+ 	unsigned long polling_frequency;
+ 	volatile u8 zombie;
+ 	struct acpi_thermal_trips trips;
+@@ -131,16 +131,16 @@ static int acpi_thermal_get_temperature(
+ 	if (!tz)
+ 		return -EINVAL;
+ 
+-	tz->last_temperature = tz->temperature;
++	tz->last_temp_dk = tz->temp_dk;
+ 
+ 	status = acpi_evaluate_integer(tz->device->handle, "_TMP", NULL, &tmp);
+ 	if (ACPI_FAILURE(status))
+ 		return -ENODEV;
+ 
+-	tz->temperature = tmp;
++	tz->temp_dk = tmp;
+ 
+ 	acpi_handle_debug(tz->device->handle, "Temperature is %lu dK\n",
+-			  tz->temperature);
++			  tz->temp_dk);
+ 
+ 	return 0;
+ }
+@@ -175,7 +175,7 @@ static int acpi_thermal_temp(struct acpi
+ 
+ static bool acpi_thermal_trip_valid(struct acpi_thermal_trip *acpi_trip)
+ {
+-	return acpi_trip->temperature != THERMAL_TEMP_INVALID;
++	return acpi_trip->temp_dk != THERMAL_TEMP_INVALID;
+ }
+ 
+ static long get_passive_temp(struct acpi_thermal *tz)
+@@ -197,7 +197,7 @@ static void acpi_thermal_update_passive_
+ 	if (!acpi_thermal_trip_valid(acpi_trip) || psv > 0)
+ 		return;
+ 
+-	acpi_trip->temperature = get_passive_temp(tz);
++	acpi_trip->temp_dk = get_passive_temp(tz);
+ 	if (!acpi_thermal_trip_valid(acpi_trip))
+ 		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+ }
+@@ -244,7 +244,7 @@ static void acpi_thermal_update_trip_dev
+ 		return;
+ 	}
+ 
+-	acpi_trip->temperature = THERMAL_TEMP_INVALID;
++	acpi_trip->temp_dk = THERMAL_TEMP_INVALID;
+ 	ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+ }
+ 
+@@ -278,7 +278,7 @@ static void acpi_thermal_update_active_t
+ 	if (!acpi_thermal_trip_valid(acpi_trip))
+ 		return;
+ 
+-	acpi_trip->temperature = get_active_temp(tz, index);
++	acpi_trip->temp_dk = get_active_temp(tz, index);
+ 	if (!acpi_thermal_trip_valid(acpi_trip))
+ 		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+ }
+@@ -292,7 +292,7 @@ static int acpi_thermal_adjust_trip(stru
+ 		return 0;
+ 
+ 	if (acpi_thermal_trip_valid(acpi_trip))
+-		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temperature);
++		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
+ 	else
+ 		trip->temperature = THERMAL_TEMP_INVALID;
+ 
+@@ -447,11 +447,11 @@ static bool acpi_thermal_init_trip(struc
+ 	if (!update_trip_devices(tz, acpi_trip, index, false))
+ 		goto fail;
+ 
+-	acpi_trip->temperature = temp;
++	acpi_trip->temp_dk = temp;
+ 	return true;
+ 
+ fail:
+-	acpi_trip->temperature = THERMAL_TEMP_INVALID;
++	acpi_trip->temp_dk = THERMAL_TEMP_INVALID;
+ 	return false;
+ }
+ 
+@@ -488,7 +488,7 @@ static int thermal_get_temp(struct therm
+ 	if (result)
+ 		return result;
+ 
+-	*temp = deci_kelvin_to_millicelsius_with_offset(tz->temperature,
++	*temp = deci_kelvin_to_millicelsius_with_offset(tz->temp_dk,
+ 							tz->kelvin_offset);
+ 	return 0;
+ }
+@@ -510,10 +510,10 @@ static int thermal_get_trend(struct ther
+ 
+ 	switch (trip->type) {
+ 	case THERMAL_TRIP_PASSIVE:
+-		t = tz->trips.passive.tc1 * (tz->temperature -
+-						tz->last_temperature) +
+-			tz->trips.passive.tc2 * (tz->temperature -
+-						acpi_trip->temperature);
++		t = tz->trips.passive.tc1 * (tz->temp_dk -
++						tz->last_temp_dk) +
++			tz->trips.passive.tc2 * (tz->temp_dk -
++						acpi_trip->temp_dk);
+ 		if (t > 0)
+ 			*trend = THERMAL_TREND_RAISING;
+ 		else if (t < 0)
+@@ -524,7 +524,7 @@ static int thermal_get_trend(struct ther
+ 		return 0;
+ 
+ 	case THERMAL_TRIP_ACTIVE:
+-		t = acpi_thermal_temp(tz, tz->temperature);
++		t = acpi_thermal_temp(tz, tz->temp_dk);
+ 		if (t <= trip->temperature)
+ 			break;
+ 
+@@ -894,7 +894,7 @@ static int acpi_thermal_add(struct acpi_
+ 		passive_delay = tz->trips.passive.tsp * 100;
+ 
+ 		trip->type = THERMAL_TRIP_PASSIVE;
+-		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temperature);
++		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
+ 		trip->priv = acpi_trip;
+ 		trip++;
+ 	}
+@@ -906,7 +906,7 @@ static int acpi_thermal_add(struct acpi_
+ 			break;
+ 
+ 		trip->type = THERMAL_TRIP_ACTIVE;
+-		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temperature);
++		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
+ 		trip->priv = acpi_trip;
+ 		trip++;
+ 	}
+@@ -920,7 +920,7 @@ static int acpi_thermal_add(struct acpi_
+ 	INIT_WORK(&tz->thermal_check_work, acpi_thermal_check_fn);
+ 
+ 	pr_info("%s [%s] (%ld C)\n", acpi_device_name(device),
+-		acpi_device_bid(device), deci_kelvin_to_celsius(tz->temperature));
++		acpi_device_bid(device), deci_kelvin_to_celsius(tz->temp_dk));
+ 
+ 	result = acpi_dev_install_notify_handler(device, ACPI_DEVICE_NOTIFY,
+ 						 acpi_thermal_notify);
+
+
+
