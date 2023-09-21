@@ -2,91 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9C07A9F88
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4A87AA069
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbjIUUXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
+        id S232213AbjIUUgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjIUUWq (ORCPT
+        with ESMTP id S232808AbjIUUfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:22:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D268D5491E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695316629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oo4GNctLz8Shf19nIoryBMjQyKRYmeTybgYDXDbksM4=;
-        b=PwCzORY5We0QtRqIy4eR7RIK030z5MfL9ut7Zzu29SNKsKTBsXrDSKHu1w2NQxZODKM7/h
-        fHVE5yju/otgp5UT8gSvchbSgp0e0jst5lmCIDGkLz7RU+COQ2QIHxHSEDrj6CA/umsFNC
-        5XHPq7XhmhhX4eBsaob+r8T+zv64M/w=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-679-hp6VtaakNtupnp-MguiVZA-1; Thu, 21 Sep 2023 11:03:47 -0400
-X-MC-Unique: hp6VtaakNtupnp-MguiVZA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7FF71C01EA3;
-        Thu, 21 Sep 2023 15:03:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A56CC40C200E;
-        Thu, 21 Sep 2023 15:03:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <87o7hvzn12.wl-tiwai@suse.de>
-References: <87o7hvzn12.wl-tiwai@suse.de> <20230920222231.686275-1-dhowells@redhat.com> <20230920222231.686275-2-dhowells@redhat.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     dhowells@redhat.com, Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v5 01/11] sound: Fix snd_pcm_readv()/writev() to use iov access functions
+        Thu, 21 Sep 2023 16:35:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 96A3266362
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:34:16 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89DDA16A3;
+        Thu, 21 Sep 2023 08:04:14 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D70353F59C;
+        Thu, 21 Sep 2023 08:03:35 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 16:03:33 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Yicong Yang <yangyicong@huawei.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        rafael@kernel.org, jonathan.cameron@huawei.com,
+        prime.zeng@hisilicon.com, linuxarm@huawei.com,
+        yangyicong@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arch_topology: Support SMT control on arm64
+Message-ID: <20230921150333.c2zqigs3xxwcg4ln@bogus>
+References: <20230919123319.23785-1-yangyicong@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <809185.1695308608.1@warthog.procyon.org.uk>
-Date:   Thu, 21 Sep 2023 16:03:28 +0100
-Message-ID: <809186.1695308608@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919123319.23785-1-yangyicong@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Takashi Iwai <tiwai@suse.de> wrote:
+On Tue, Sep 19, 2023 at 08:33:19PM +0800, Yicong Yang wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> The core CPU control framework supports runtime SMT control which
+> is not yet supported on arm64. Besides the general vulnerabilities
+> concerns we want this runtime control on our arm64 server for:
+> 
+> - better single CPU performance in some cases
+> - saving overall power consumption
+> 
+> This patch implements it in the following aspects:
+> 
+> - implement the callbacks of the core
+> - update the SMT status after the topology enumerated on arm64
+> - select HOTPLUG_SMT for arm64
+> 
+> For disabling SMT we'll offline all the secondary threads and
+> only leave the primary thread. Since we don't have restriction
+> for primary thread selection, the first thread is chosen as the
+> primary thread in this implementation.
+> 
+> Tests has been done on our ACPI based arm64 server and on
+> ACPI/OF based QEMU VMs.
+> 
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  arch/arm64/Kconfig            |  1 +
+>  drivers/base/arch_topology.c  | 63 +++++++++++++++++++++++++++++++++++
+>  include/linux/arch_topology.h | 11 ++++++
+>  3 files changed, 75 insertions(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index b10515c0200b..531a71c7f499 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -233,6 +233,7 @@ config ARM64
+>  	select HAVE_KRETPROBES
+>  	select HAVE_GENERIC_VDSO
+>  	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+> +	select HOTPLUG_SMT if SMP
+>  	select IRQ_DOMAIN
+>  	select IRQ_FORCED_THREADING
+>  	select KASAN_VMALLOC if KASAN
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index b741b5ba82bd..75a693834fff 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -729,6 +729,63 @@ const struct cpumask *cpu_clustergroup_mask(int cpu)
+>  	return &cpu_topology[cpu].cluster_sibling;
+>  }
+>  
+> +#ifdef CONFIG_HOTPLUG_SMT
+> +static int topology_smt_num_threads = 1;
+> +
+> +void __init topology_smt_set_num_threads(void)
+> +{
+> +	int cpu, sibling, threads;
+> +
+> +	/*
+> +	 * Walk all the CPUs to find the largest thread number, in case we're
+> +	 * on a heterogeneous platform with only part of the CPU cores support
+> +	 * SMT.
+> +	 *
+> +	 * Get the thread number by checking the CPUs with same core id
+> +	 * rather than checking the topology_sibling_cpumask(), since the
+> +	 * sibling mask will not cover all the CPUs if there's CPU offline.
+> +	 */
+> +	for_each_possible_cpu(cpu) {
+> +		threads = 1;
+> +
+> +		/* Invalid thread id, this CPU is not in a SMT core */
+> +		if (cpu_topology[cpu].thread_id == -1)
+> +			continue;
+> +
+> +		for_each_possible_cpu(sibling) {
 
-> Would you apply it through your tree, or shall I apply this one via
-> sound git tree?
+I would really like to avoid parsing all the cpus here(O(cpu^2))
 
-It's a prerequisite for a later patch in this series, so I'd prefer to keep it
-with my other patches.
+Another random thought(just looking at DT parsing) is we can count threads
+while parsing itself if we need the info early before the topology cpumasks
+are setup. Need to look at ACPI parsing and how to make that generic but
+thought of checking the idea here first.
 
-David
+[...]
 
+> @@ -841,6 +898,12 @@ void __init init_cpu_topology(void)
+>  		reset_cpu_topology();
+>  	}
+>  
+> +	/*
+> +	 * By this stage we get to know whether we support SMT or not, update
+> +	 * the information for the core.
+> +	 */
+> +	topology_smt_set_num_threads();
+> +
+
+Does this have to be done this early ? I was wondering if we can defer until
+all the cpumasks are set and you can rely on the thread_sibling mask ?
+You can just get the weight of that mask on all cpus and choose the max value.
+
+-- 
+Regards,
+Sudeep
