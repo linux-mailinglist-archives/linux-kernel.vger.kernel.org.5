@@ -2,337 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 952577A971B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9077A9606
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbjIURLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59022 "EHLO
+        id S229636AbjIUQ6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 12:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjIURKI (ORCPT
+        with ESMTP id S229542AbjIUQ6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:10:08 -0400
-Received: from out-214.mta0.migadu.com (out-214.mta0.migadu.com [91.218.175.214])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1859986B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:05:32 -0700 (PDT)
-Message-ID: <306da2a1-0dd4-e858-930f-211947a466d2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695288716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pKhMatc/zWl01dwnOp27ljqTW92ejv5Ec290/gJM4Oc=;
-        b=m0Jnoa2kFHdll+Nw+8YnTmeEIwb1Qj3RIrdsl47EiO7ljvbjft3oKzBWTirdSVRjMUHAU/
-        K2XmHtNKpOqv0nt4wZZPC5TjLH2zn+oTFkXU06GdO711LpFzbh+H14uFT817248Qak9shi
-        juAQiSFgXk8L27noIldHR/Y+88UFCm0=
-Date:   Thu, 21 Sep 2023 17:31:47 +0800
+        Thu, 21 Sep 2023 12:58:40 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B39128
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 09:58:09 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405361bb93bso7490625e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 09:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695315485; x=1695920285; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Drrb5cgIdX9bQlcJOAIQy6p22Hd1U/QgsuYhc+HIXtc=;
+        b=ciuzlhmbvucY7t8kFwQX7szPJX/8c0YZah6t/QI7qYXYOF6Ge7rcZGhwWD4lwbtUs4
+         HwFTgaBHYWHxgM/IZfL7U1ciIOLHqLY/U29HvPeDNAdcKl5or5t8+6d5s8RftIrHn6jv
+         BBV9KlTj3SN55VyazRRUGQ75L97JWIJWWgba0hg9VVvfy9NTsNklNAq7RjSPH0PQlJIl
+         /isO1dtcIZq8z4gBaizh1tnau7xH8w+YNAhdDDFzJkuaZrhX5SVQtqdAPYGd7XkroY7q
+         GAFcmSnE6Nm5evwih3is+Vey/MqWo0CXMxRAEHasAe+5guElvkhb5VvLpLUDClD2ILsf
+         yBHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695315485; x=1695920285;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Drrb5cgIdX9bQlcJOAIQy6p22Hd1U/QgsuYhc+HIXtc=;
+        b=Rg75M993zoZVeYzRHJNJNNhoFTAZ5O0yZYU/PyysRXierX4fnG3K0Lq/ke15jvGVo9
+         JkyZkGJBKCxmZ8+xXBOFp1aAHsbtiyHjKzmbBZWCo//1r+8/gZhSgfW5B81U4LqD6hR0
+         PZwaUzlKsOAITYJdOQVYlSPxwGIlWskfW7RNQ71WubhEdxMBoG4jeG/tEQ/odaylVwnU
+         PD9+9Pav5xnAVx7pq9myH6szTBAUq1FoW/XDbb7yDXnAdBE7JSRdhmbZN5vAzwmA9Uq4
+         fjxwUlpKDzEwC4a6cpprCPTnw6VlB/PBrEd8x2i/0Z6JUpTiPOwKqlMEgvUoCCHw9NJW
+         IiOw==
+X-Gm-Message-State: AOJu0YyxW95jBm0epAWm7n7t8R5I38xTi0mMSSXXA6eUBH6FQ8+p1ZDK
+        TETD3kQCsTJoRn1avO8T23sp1+K+hUvPU3ibPcFQn1SlZ6cJv4pG90IiFw==
+X-Google-Smtp-Source: AGHT+IHtAdCqWfyKxt1ELmKKg//qfdzKK9qhy8uM34Bqm0u8o8sOZrkwXfRLF0pU4lRrTWBBCH79wK6kC1VudFfOvFA=
+X-Received: by 2002:a05:6402:3228:b0:533:f22:17b9 with SMTP id
+ g40-20020a056402322800b005330f2217b9mr3895347eda.19.1695289023375; Thu, 21
+ Sep 2023 02:37:03 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 4/8] hugetlb: perform vmemmap restoration on a list of
- pages
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20230918230202.254631-1-mike.kravetz@oracle.com>
- <20230918230202.254631-5-mike.kravetz@oracle.com>
- <b9d03e01-7582-8ec9-d219-941184166835@linux.dev>
- <20230919205756.GB425719@monkey>
- <CED64A95-00E8-4B52-A77A-8B13D2795507@linux.dev>
- <2FDB2018-74AE-4514-9B43-01664A8E5DBF@linux.dev>
- <20230921011223.GC4065@monkey>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230921011223.GC4065@monkey>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <ME3P282MB270323F98B97A1A98A50F8F7BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
+ <ZQF+PHTYDZRX1gql@nanopsycho>
+In-Reply-To: <ZQF+PHTYDZRX1gql@nanopsycho>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Thu, 21 Sep 2023 11:36:26 +0200
+Message-ID: <CAMZdPi-qZ3JjZmEAtEmJETNzKd+k6UcLnLkM0MZoSZ1hKaOXuA@mail.gmail.com>
+Subject: Re: [net-next v4 0/5] net: wwan: t7xx: fw flashing & coredump support
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     Jinjian Song <songjinjian@hotmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        corbet@lwn.net, ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
+        chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
+        chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
+        m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nmarupaka@google.com,
+        vsankar@lenovo.com, danielwinkler@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/21 09:12, Mike Kravetz wrote:
-> On 09/20/23 11:03, Muchun Song wrote:
->>> On Sep 20, 2023, at 10:56, Muchun Song <muchun.song@linux.dev> wrote:
->>>> On Sep 20, 2023, at 04:57, Mike Kravetz <mike.kravetz@oracle.com> wrote:
->>>> On 09/19/23 17:52, Muchun Song wrote:
->>>>> On 2023/9/19 07:01, Mike Kravetz wrote:
->>>>>
->>>>> I still think we should free a non-optimized HugeTLB page if we
->>>>> encounter an OOM situation instead of continue to restore
->>>>> vemmmap pages. Restoring vmemmmap pages will only aggravate
->>>>> the OOM situation. The suitable appraoch is to free a non-optimized
->>>>> HugeTLB page to satisfy our allocation of vmemmap pages, what's
->>>>> your opinion, Mike?
->>>> I agree.
->>>>
->>>> As you mentioned previously, this may complicate this code path a bit.
->>>> I will rewrite to make this happen.
->>> Maybe we could introduced two list passed to update_and_free_pages_bulk (this
->>> will be easy for the callers of it), one is for non-optimized huge page,
->>> another is optimized one. In update_and_free_pages_bulk, we could first
->>> free those non-optimized huge page, and then restore vemmmap pages for
->>> those optimized ones, in which case, the code could be simple.
->>> hugetlb_vmemmap_restore_folios() dose not need to add complexity, which
->>> still continue to restore vmemmap pages and will stop once we encounter
->>> an OOM situation.
-> I am not sure if passing in optimized and non-optimized lists to
-> update_and_free_pages_bulk will help much.  IIUC, it will almost always
-> be the case where only one list has entries.  Is that mostly accurate?
-
-I think you are right. It will be less helpful since most of
-pages will be not optimized when HVO is enabled.
-
->> BTW, maybe we should try again iff there are some non-optimized huge page
->> whose vmemmap pages are restored successfully previously and could be freed
->> first, then continue to restore the vmemmap pages of the remaining huge pages.
->> I think the retry code could be done in update_and_free_pages_bulk() as well.
-> I came up with a new routine to handle these ENOMEM returns from
-> hugetlb_vmemmap_restore_folios.  I 'think' it handles these situations.
-> Here is an updated version of this patch.  Sorry, diff makes it a bit
-> hard to read.
+On Wed, 13 Sept 2023 at 11:17, Jiri Pirko <jiri@resnulli.us> wrote:
 >
->  From b13bdccb01730f995191944769f87d0725c289ad Mon Sep 17 00:00:00 2001
-> From: Mike Kravetz <mike.kravetz@oracle.com>
-> Date: Sun, 10 Sep 2023 16:14:50 -0700
-> Subject: [PATCH] hugetlb: perform vmemmap restoration on a list of pages
+> Tue, Sep 12, 2023 at 11:48:40AM CEST, songjinjian@hotmail.com wrote:
+> >Adds support for t7xx wwan device firmware flashing & coredump collection
+> >using devlink.
 >
-> The routine update_and_free_pages_bulk already performs vmemmap
-> restoration on the list of hugetlb pages in a separate step.  In
-> preparation for more functionality to be added in this step, create a
-> new routine hugetlb_vmemmap_restore_folios() that will restore
-> vmemmap for a list of folios.
+> I don't believe that use of devlink is correct here. It seems like a
+> misfit. IIUC, what you need is to communicate with the modem. Basically
+> a communication channel to modem. The other wwan drivers implement these
+> channels in _ctrl.c files, using multiple protocols. Why can't you do
+> something similar and let devlink out of this please?
 >
-> This new routine must provide sufficient feedback about errors and
-> actual restoration performed so that update_and_free_pages_bulk can
-> perform optimally.
->
-> Special care must be taken when encountering a ENOMEM error from
-> hugetlb_vmemmap_restore_folios.  We want to continue making as much
-> forward progress as possible.  A new routine bulk_vmemmap_restore_enomem
-> handles this specific situation.
->
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->   mm/hugetlb.c         | 83 ++++++++++++++++++++++++++++++++++----------
->   mm/hugetlb_vmemmap.c | 39 +++++++++++++++++++++
->   mm/hugetlb_vmemmap.h | 11 ++++++
->   3 files changed, 115 insertions(+), 18 deletions(-)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 70fedf8682c4..52abe56cf38a 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1834,38 +1834,85 @@ static void update_and_free_hugetlb_folio(struct hstate *h, struct folio *folio,
->   		schedule_work(&free_hpage_work);
->   }
->   
-> -static void update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
-> +static void bulk_vmemmap_restore_enomem(struct hstate *h,
-> +						struct list_head *list,
-> +						unsigned long restored)
->   {
->   	struct folio *folio, *t_folio;
-> -	bool clear_dtor = false;
->   
-> -	/*
-> -	 * First allocate required vmemmmap (if necessary) for all folios on
-> -	 * list.  If vmemmap can not be allocated, we can not free folio to
-> -	 * lower level allocator, so add back as hugetlb surplus page.
-> -	 * add_hugetlb_folio() removes the page from THIS list.
-> -	 * Use clear_dtor to note if vmemmap was successfully allocated for
-> -	 * ANY page on the list.
-> -	 */
-> -	list_for_each_entry_safe(folio, t_folio, list, lru) {
-> -		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
-> +	if (restored) {
-> +		/*
-> +		 * On ENOMEM error, free any restored hugetlb pages so that
-> +		 * restore of the entire list can be retried.
-> +		 * The idea is that by freeing hugetlb pages with vmemmap
-> +		 * (those previously restored) we will free up memory so that
-> +		 * we can allocate vmemmap for more hugetlb pages.
-> +		 * We must examine and possibly free EVERY hugetlb page on list
-> +		 * in order to call hugetlb_vmemmap_restore_folios again.
-> +		 * This is not optimal, but is an error case that should not
-> +		 * happen frequently.
-> +		 */
-> +		list_for_each_entry_safe(folio, t_folio, list, lru)
-> +			if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
-> +				list_del(&folio->lru);
-> +				spin_lock_irq(&hugetlb_lock);
-> +				__clear_hugetlb_destructor(h, folio);
-> +				spin_unlock_irq(&hugetlb_lock);
-> +				update_and_free_hugetlb_folio(h, folio, false);
-> +				cond_resched();
-> +			}
-> +	} else {
-> +		/*
-> +		 * In the case where vmemmap was not restored for ANY folios,
-> +		 * we loop through them trying to restore individually in the
-> +		 * hope that someone elsewhere may free enough memory.
-> +		 * If unable to restore a page, the hugetlb page is made a
-> +		 * surplus page and removed from the list.
-> +		 * If are able to restore vmemmap for one hugetlb page, we free
-> +		 * it and quit processing the list to retry the bulk operation.
-> +		 */
-> +		list_for_each_entry_safe(folio, t_folio, list, lru)
->   			if (hugetlb_vmemmap_restore(h, &folio->page)) {
->   				spin_lock_irq(&hugetlb_lock);
->   				add_hugetlb_folio(h, folio, true);
->   				spin_unlock_irq(&hugetlb_lock);
-> -			} else
-> -				clear_dtor = true;
-> -		}
-> +			} else {
-> +				list_del(&folio->lru);
-> +				spin_lock_irq(&hugetlb_lock);
-> +				__clear_hugetlb_destructor(h, folio);
-> +				spin_unlock_irq(&hugetlb_lock);
-> +				update_and_free_hugetlb_folio(h, folio, false);
-> +				break;
-> +			}
->   	}
-> +}
-> +
-> +static void update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
-> +{
-> +	int ret;
-> +	unsigned long restored;
-> +	struct folio *folio, *t_folio;
->   
->   	/*
-> -	 * If vmemmmap allocation was performed on any folio above, take lock
-> -	 * to clear destructor of all folios on list.  This avoids the need to
-> +	 * First allocate required vmemmmap (if necessary) for all folios.
-> +	 * Carefully handle ENOMEM errors and free up any available hugetlb
-> +	 * pages in order to make forward progress.
-> +	 */
-> +retry:
-> +	ret = hugetlb_vmemmap_restore_folios(h, list, &restored);
-> +	if (ret == -ENOMEM) {
-> +		bulk_vmemmap_restore_enomem(h, list, restored);
-> +		goto retry;
-> +	}
-> +
-> +	/*
-> +	 * If vmemmmap allocation was performed on ANY folio , take lock to
-> +	 * clear destructor of all folios on list.  This avoids the need to
->   	 * lock/unlock for each individual folio.
->   	 * The assumption is vmemmap allocation was performed on all or none
->   	 * of the folios on the list.  This is true expect in VERY rare cases.
->   	 */
-> -	if (clear_dtor) {
-> +	if (restored) {
->   		spin_lock_irq(&hugetlb_lock);
->   		list_for_each_entry(folio, list, lru)
->   			__clear_hugetlb_destructor(h, folio);
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 4558b814ffab..cc91edbfb68b 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -480,6 +480,45 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
->   	return ret;
->   }
->   
-> +/**
-> + * hugetlb_vmemmap_restore_folios - restore vmemmap for every folio on the list.
-> + * @h:		struct hstate.
-> + * @folio_list:	list of folios.
-> + * @restored:	Set to number of folios for which vmemmap was restored
-> + *		successfully if caller passes a non-NULL pointer.
-> + *
-> + * Return: %0 if vmemmap exists for all folios on the list.  If an error is
-> + *		encountered restoring vmemmap for ANY folio, an error code
-> + *		will be returned to the caller.  It is then the responsibility
-> + *		of the caller to check the hugetlb vmemmap optimized flag of
-> + *		each folio to determine if vmemmap was actually restored.
-> + *		Note that processing is stopped when first error is encountered.
-> + */
-> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
-> +					struct list_head *folio_list,
-> +					unsigned long *restored)
+> Until you put in arguments why you really need devlink and why is it a
+> good fit, I'm against this. Please don't send any other versions of this
+> patchset that use devlink.
 
-How about changing parameter of @restored to a list_head type which
-returns the non-optimized (previously) or vmemmap-restored-sucessful 
-huge pages?
-In which case, the caller could traverse this returned list to free
-them first like you have implemented in bulk_vmemmap_restore_enomem(),
-it will be more efficient. The meaning of returned value should also
-be changed accordingly since update_and_free_pages_bulk() wants to
-whether there is a vmemmap-optimized huge page being restored sucessfully
-to determine if it should clear hugetlb flag. So 
-hugetlb_vmemmap_restore_folios()
-could return how many huge pages being restored successful, if a negative
-number is returned meaning there is some error in the process of restoring
-of vmemmap.
+The t7xx driver already has regular wwan data and control interfaces
+registered with the wwan framework, making it functional. Here the
+exposed low level resources are not really wwan/class specific as it
+is for firmware upgrade and coredump, so I think that is why Jinjian
+chose the 'feature agnostic' devlink framework. IMHO I think it makes
+sense to rely on such a framework, or maybe on the devcoredump class.
 
-Thanks.
+That said, I see the protocol for flashing and doing the coreboot is
+fastboot, which is already supported on the user side with the
+fastboot tool, so I'm not sure abstracting it here makes sense. If the
+protocol is really fasboot compliant, Wouldn't it be simpler to
+directly expose it as a new device/channel? and rely on a userspace
+tool for regular fastboot operations (flash, boot, dump). This may
+require slightly modifying the fastboot tool to detect and support
+that new transport (in addition to the existing usb and ethernet
+support).
 
-> +{
-> +	unsigned long num_restored;
-> +	struct folio *folio;
-> +	int ret = 0;
-> +
-> +	num_restored = 0;
-> +	list_for_each_entry(folio, folio_list, lru) {
-> +		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
-> +			ret = hugetlb_vmemmap_restore(h, &folio->page);
-> +			if (ret)
-> +				goto out;
-> +			else
-> +				num_restored++;
-> +		}
-> +	}
-> +
-> +out:
-> +	if (*restored)
-> +		*restored = num_restored;
-> +	return ret;
-> +}
-> +
->   /* Return true iff a HugeTLB whose vmemmap should and can be optimized. */
->   static bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
->   {
-> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> index c512e388dbb4..bb58453c3cc0 100644
-> --- a/mm/hugetlb_vmemmap.h
-> +++ b/mm/hugetlb_vmemmap.h
-> @@ -19,6 +19,8 @@
->   
->   #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
->   int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head);
-> +int hugetlb_vmemmap_restore_folios(const struct hstate *h,
-> +			struct list_head *folio_list, unsigned long *restored);
->   void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head);
->   void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list);
->   
-> @@ -45,6 +47,15 @@ static inline int hugetlb_vmemmap_restore(const struct hstate *h, struct page *h
->   	return 0;
->   }
->   
-> +static inline int hugetlb_vmemmap_restore_folios(const struct hstate *h,
-> +					struct list_head *folio_list,
-> +					unsigned long *restored)
-> +{
-> +	if (restored)
-> +		*restored = 0;
-> +	return 0;
-> +}
-> +
->   static inline void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
->   {
->   }
-
+Regards,
+Loic
