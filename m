@@ -2,142 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB237AA5B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1743B7AA5AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbjIUXhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 19:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
+        id S229927AbjIUXeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 19:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbjIUXhi (ORCPT
+        with ESMTP id S229509AbjIUXeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 19:37:38 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4650E129;
-        Thu, 21 Sep 2023 16:37:29 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38LNbLQq001748;
-        Thu, 21 Sep 2023 23:37:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : from : subject : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=J4tPXsGAIwPWKiDS0fRDZ3GSuFmDHRRzMOCHHXbXTNI=;
- b=jUMDd6s+YrFom/9i5YFDnXx/DOisLyRKxnVuRvbUrrAznZ2vi5DkTKVN3iXF43zjGpik
- zzP/sSunnfQKgDvbaeteKAfeW2HAgU3vOv3eMsIqNQxHKsFj5+xWWKm7Fruy/ccsO3lu
- 38brUJUSh81BItccWQsX3NM7kIwc0mv2/mY+knmZ37cmiZ3y2iHLFvpHNnROBM0HZfQu
- mZ1rhVLJSU1cpkIsRHNZgPEZ5IbA0DCTo18ifC7y+gP54JMXMQyZIhQmgTv7cEuq53KT
- 2hdXuloFhRxvaPSsuwiGTjJRS7gRXt2rZ7hEts+eYhBn6CuAwLIPpIWydJiyjWO95vh2 Sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t8w11uwjb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 23:37:24 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38LNbMEg001904;
-        Thu, 21 Sep 2023 23:37:23 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t8w11uw9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 23:37:22 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38LNAYmd025939;
-        Thu, 21 Sep 2023 23:32:37 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t8tspmrb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 23:32:37 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38LNWbVU21758336
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Sep 2023 23:32:37 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE45858053;
-        Thu, 21 Sep 2023 23:32:36 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 927AA58043;
-        Thu, 21 Sep 2023 23:32:34 +0000 (GMT)
-Received: from [9.171.4.137] (unknown [9.171.4.137])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 21 Sep 2023 23:32:34 +0000 (GMT)
-Message-ID: <0a150c58-5fdc-5e8d-1ea6-861406f2c70a@linux.ibm.com>
-Date:   Fri, 22 Sep 2023 01:32:33 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-Subject: Re: [PATCH net-next v3 05/18] net/smc: reserve CHID range for SMC-D
- virtual device
-To:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        Thu, 21 Sep 2023 19:34:10 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5788F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:34:04 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-6562330d68dso7998596d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 16:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1695339243; x=1695944043; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GedEWxpKSzrGPRM6lMkTBIu3LFHKqvL1k9LSqu1VR6k=;
+        b=nymOKQgkXMA6woRCS2H0juZvdrRpL3SW+Hf1u5ftOTpQecml4IebiIRPBVClQsXPed
+         BNFiaS8IXnJIGWImNlm3WRQbQ0SyOTk+GXmdwOXUxgtWo6JhmLZGYYCBj4KN+hkTjuwg
+         ildXGaYheLJ77IQq9L1kRtLhQzT0rT9M+D9pfQpirThrq6zXeLXuquifT3nn1MsD+V9s
+         jRMGUdiu+5VFar6X+EBXMxtyqbkNhNUgYcHDZy19wPQYEK40oOowu68Z60kbhjyQw7vQ
+         Fr99DnK7xfniqJMmiVLOITqDycMPhaJ+nq+jv7uyecRAXuyhzBzXPY81RoMH0v04nOZT
+         NPFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695339243; x=1695944043;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GedEWxpKSzrGPRM6lMkTBIu3LFHKqvL1k9LSqu1VR6k=;
+        b=kUpIGfIX0G6FX9MR5oYaNfHLFSwTsVfjS1a46o8FIFF/s8oeeX2T29k/WQ+F1YR/0E
+         SXEdcaXkkT+1+TSM9oHq1utUYF9F/4GkE3DAammRKbYmyPJ010KJHnH0HYcFd4CWDsg7
+         2I02KjDhc1ypLleRfNCh5vzH3FazltCDYH5VFrP95I+C5R+Uo1UtFy9MhaZBOyFED7HU
+         nr9pATpZBhkbsR7l7OxxUjwkL+hIJCmWxAYMJi6nZUUAAvMBam79qZO/Ou9sz1scEJUZ
+         /YVONEug4ORN6SNhDS3iO0jiWadcKlc5Rk0zOqFKRgRF2lZOXspgYb6SFws5HgmjDYkS
+         SIXA==
+X-Gm-Message-State: AOJu0YzGvDvsVLkYA0MQFUORAi93KmkJfoKjP6EcIxxzg+PNZdNQ//Bu
+        Lbyy6qyEbLwPRWeVmmF2f3PekA==
+X-Google-Smtp-Source: AGHT+IGyPvvaH53YFg/+nfLkgh+wJ6GTD1U2RciFZyYgWxuFiG/EgPxEd0ck5941lJVaQIWktR+A+g==
+X-Received: by 2002:a05:6214:4602:b0:658:310c:f6ca with SMTP id oq2-20020a056214460200b00658310cf6camr7598389qvb.42.1695339243709;
+        Thu, 21 Sep 2023 16:34:03 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id o3-20020a0ce403000000b006263a9e7c63sm947595qvl.104.2023.09.21.16.34.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 16:34:03 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qjTBK-000Uup-Kq;
+        Thu, 21 Sep 2023 20:34:02 -0300
+Date:   Thu, 21 Sep 2023 20:34:02 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Liu, Jingqi" <jingqi.liu@intel.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <1695302360-46691-1-git-send-email-guwen@linux.alibaba.com>
- <1695302360-46691-6-git-send-email-guwen@linux.alibaba.com>
-In-Reply-To: <1695302360-46691-6-git-send-email-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Q_NCqUikah0oJnJqcpPiaUiAp1LeTz-o
-X-Proofpoint-GUID: R0t4DEMOwiRSCu9U8-jWZl9kEOzVC1wW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-21_19,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 phishscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309210205
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v5 09/12] iommu: Make iommu_queue_iopf() more generic
+Message-ID: <20230921233402.GC13795@ziepe.ca>
+References: <20230914085638.17307-1-baolu.lu@linux.intel.com>
+ <20230914085638.17307-10-baolu.lu@linux.intel.com>
+ <f20b9e78-3a63-ca3e-6c04-1d80ec857898@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f20b9e78-3a63-ca3e-6c04-1d80ec857898@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 21.09.23 15:19, Wen Gu wrote:
-> This patch reserve CHID range from 0xFF00 to 0xFFFF for SMC-D virtual
-> device and introduces helpers to identify them.
+On Thu, Sep 21, 2023 at 11:25:56PM +0800, Liu, Jingqi wrote:
 > 
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
->   net/smc/smc_ism.h | 15 +++++++++++++++
->   1 file changed, 15 insertions(+)
+> On 9/14/2023 4:56 PM, Lu Baolu wrote:
+> > Make iommu_queue_iopf() more generic by making the iopf_group a minimal
+> > set of iopf's that an iopf handler of domain should handle and respond
+> > to. Add domain parameter to struct iopf_group so that the handler can
+> > retrieve and use it directly.
+> > 
+> > Change iommu_queue_iopf() to forward groups of iopf's to the domain's
+> > iopf handler. This is also a necessary step to decouple the sva iopf
+> > handling code from this interface.
+> > 
+> > Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> > ---
+> >   include/linux/iommu.h      |  4 ++--
+> >   drivers/iommu/iommu-sva.h  |  6 ++---
+> >   drivers/iommu/io-pgfault.c | 49 ++++++++++++++++++++++++++++----------
+> >   drivers/iommu/iommu-sva.c  |  3 +--
+> >   4 files changed, 42 insertions(+), 20 deletions(-)
+> > 
+> ......
 > 
-> diff --git a/net/smc/smc_ism.h b/net/smc/smc_ism.h
-> index 14d2e77..2ecc8de 100644
-> --- a/net/smc/smc_ism.h
-> +++ b/net/smc/smc_ism.h
-> @@ -15,6 +15,9 @@
->   
->   #include "smc.h"
->   
-> +#define SMC_VIRT_ISM_CHID_MAX		0xFFFF
-> +#define SMC_VIRT_ISM_CHID_MIN		0xFF00
-> +
->   struct smcd_dev_list {	/* List of SMCD devices */
->   	struct list_head list;
->   	struct mutex mutex;	/* Protects list of devices */
-> @@ -57,4 +60,16 @@ static inline int smc_ism_write(struct smcd_dev *smcd, u64 dmb_tok,
->   	return rc < 0 ? rc : 0;
->   }
->   
-> +static inline bool __smc_ism_is_virtdev(u16 chid)
-> +{
-> +	return (chid >= SMC_VIRT_ISM_CHID_MIN && chid <= SMC_VIRT_ISM_CHID_MAX);
-> +}
-> +
-> +static inline bool smc_ism_is_virtdev(struct smcd_dev *smcd)
-> +{
-> +	u16 chid = smcd->ops->get_chid(smcd);
-> +
-> +	return __smc_ism_is_virtdev(chid);
-> +}
-> +
-I'm wondering if barrier is needed here.
->   #endif
+> > @@ -112,6 +110,7 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
+> >   {
+> >   	int ret;
+> >   	struct iopf_group *group;
+> > +	struct iommu_domain *domain;
+> >   	struct iopf_fault *iopf, *next;
+> >   	struct iommu_fault_param *iopf_param;
+> >   	struct dev_iommu *param = dev->iommu;
+> > @@ -143,6 +142,19 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
+> >   		return 0;
+> >   	}
+> > +	if (fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID)
+> > +		domain = iommu_get_domain_for_dev_pasid(dev, fault->prm.pasid, 0);
+> > +	else
+> > +		domain = iommu_get_domain_for_dev(dev);
+> > +
+> > +	if (!domain || !domain->iopf_handler) {
+> 
+> Does it need to check if 'domain' is error ?  Like below:
+> 
+>          if (!domain || IS_ERR(domain) || !domain->iopf_handler)
+
+Urk, yes, but not like that
+
+The IF needs to be moved into the else block as each individual
+function has its own return convention.
+
+Jason
