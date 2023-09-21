@@ -2,171 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053A37AA58D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 01:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934137AA4F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbjIUXU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 19:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        id S230072AbjIUW0a convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Sep 2023 18:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjIUXUU (ORCPT
+        with ESMTP id S233228AbjIUWZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 19:20:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7027DA9F2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:07:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0D01C116D5;
-        Thu, 21 Sep 2023 08:51:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695286301;
-        bh=2+pljEhHPpECFX9HUqc8WA+cUF3GqSlRSTmRXo3wy7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ku9ihcIro8BAf5sXD67a08F3/JbSI7c2WN3oWjCrlKwlyQrIrN7X+0mQowomnJK77
-         y+ORdVvSdyiF/rZdGqptp5h3GctvB2DbzyrxUKH6e7ViW/k5UfWmic95Sbpfnl7ti7
-         h+HTvRoE7eqFVT/RNtQZyaRdDbp4od+13Oh2sn2cVRMKkkxwqaosK7BIskQr6+LXf5
-         OI+AdhhQzO6TqxRqMD6P1WPU3+YkoSGiwUByCp1ASV+rpaxtccu5hqdMQnqongCEf/
-         Kh1x0YQMZkbeWAM4u06UwiknxqEvlcF5OipzQZeI+y93rNmih4zPl0NfO1d1SaJl+8
-         kCpaAQk+RC3MA==
-Date:   Thu, 21 Sep 2023 10:51:38 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
- drm_*_helper_funcs callbacks
-Message-ID: <yz2wo76us5bsshdsyiybanpsxa2izqwuj6ts3b76lnfo74ypgz@kx5vqwi6cjap>
-References: <20230914195138.1518065-1-javierm@redhat.com>
- <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
- <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
- <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
- <CAMuHMdUGVgj6V+N865QZaAusqD7O2f1askE544Z4MF0h4zBERg@mail.gmail.com>
- <2p53aei56tlr7k6w5oawlwpmv2k7agpbb6wfwpxcg3rqyueyrx@2as7tijrgnh4>
- <CAMuHMdV9Q=F6D=FgBYazjxGL8HY1cRLJUxdfdvr8=6fwgn+EHQ@mail.gmail.com>
+        Thu, 21 Sep 2023 18:25:36 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B10A4AA2;
+        Thu, 21 Sep 2023 10:58:19 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-57b45b7e4a5so651745eaf.1;
+        Thu, 21 Sep 2023 10:58:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695319099; x=1695923899;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=McBssJIFman3vDfY3Lya/lUW6BvCQvI1WsK86xV7B60=;
+        b=cLojXCDhgF0GQ6gXXu4UiNJBAXOTmNgVYlO+XwmzjiQatzm1So79YVuEYZs3rbk6sS
+         OvNJspuJOdoa7jBV8mA0nUU4ByDA6GIj6uSvV0Lj40U/jzRI5qCfsRDYUGaX3RraXSLe
+         WeMEf3OVTp5IitpkL3x6fks+DBXvWzl6LysPYFmEk/IGI1zW63pJlg2urGTydajTdZSH
+         todIUjsQivGLZDD1tOQ8a2z6RqnNQYYPYmAojDKAq/KzXxz6Jj0wlmJdIZtLxz9GtORA
+         tpiCMgGURjFJxONI0Ccx2c6YPEtbYFLHGymkZ+OuOBkc5fMYJooK7n4NBEOoPxyZefFj
+         9dsQ==
+X-Gm-Message-State: AOJu0Yz8zyY6+wzYtoXjkXCF4070snmD1s3MDYJJaD2PnTVvniX2rtIj
+        7TPeFmm4WqJ/3hcRKKyGCEAYVgqZzkMOAKTY
+X-Google-Smtp-Source: AGHT+IF8rNCnD/Yl0uSen1jk3GJDDkgY/UU4H3ZmOfpWlJNr4jl9B78ZMoZHarWcou2uRFKIORt2bA==
+X-Received: by 2002:a25:824e:0:b0:d80:1bbf:fabf with SMTP id d14-20020a25824e000000b00d801bbffabfmr4723954ybn.2.1695286361528;
+        Thu, 21 Sep 2023 01:52:41 -0700 (PDT)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id a125-20020a254d83000000b00d7bb3c4893fsm249790ybb.8.2023.09.21.01.52.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 01:52:41 -0700 (PDT)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d81dd7d76e0so858065276.1;
+        Thu, 21 Sep 2023 01:52:41 -0700 (PDT)
+X-Received: by 2002:a25:c54c:0:b0:d06:f0ab:e17b with SMTP id
+ v73-20020a25c54c000000b00d06f0abe17bmr5004172ybe.55.1695286361107; Thu, 21
+ Sep 2023 01:52:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xausph7vkn4i5qzv"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdV9Q=F6D=FgBYazjxGL8HY1cRLJUxdfdvr8=6fwgn+EHQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230802184849.1019466-1-arnd@kernel.org> <20230802184849.1019466-4-arnd@kernel.org>
+ <CAMuHMdVjmD357K-yxxW-jn-6vKsXTg+u1Psw9DftyxH=dQoMEg@mail.gmail.com>
+ <5dad2d86-78ea-4a39-8ee1-98e3eb134d36@app.fastmail.com> <CAMuHMdVYcvPL+JpPw9sA48=615cdfwa8d0LP-bVp0NWqbQ+JOw@mail.gmail.com>
+ <190041c8-2d99-4bc3-adc3-6fbe902c1265@app.fastmail.com> <CAMuHMdXyLHitBWOMp74cqtJbSs6q_4sPOEee+x72tE-E2G-KWg@mail.gmail.com>
+ <d2f5cdc1-4bff-4f1d-a7b2-38eee6a6a86d@app.fastmail.com> <f61e1f218ee4d5a87121c0e5ee0d8694364ea2dd.camel@physik.fu-berlin.de>
+In-Reply-To: <f61e1f218ee4d5a87121c0e5ee0d8694364ea2dd.camel@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 21 Sep 2023 10:52:29 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXFSvyTGvYrc2af_Bba9hHNQ-taufOMXRPrKJGNiCP8mw@mail.gmail.com>
+Message-ID: <CAMuHMdXFSvyTGvYrc2af_Bba9hHNQ-taufOMXRPrKJGNiCP8mw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
+        linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Adrian,
 
---xausph7vkn4i5qzv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Sep 21, 2023 at 10:46:05AM +0200, Geert Uytterhoeven wrote:
-> On Thu, Sep 21, 2023 at 10:12=E2=80=AFAM Maxime Ripard <mripard@kernel.or=
-g> wrote:
-> > On Thu, Sep 21, 2023 at 09:57:22AM +0200, Geert Uytterhoeven wrote:
-> > > On Thu, Sep 21, 2023 at 9:44=E2=80=AFAM Maxime Ripard <mripard@kernel=
-=2Eorg> wrote:
-> > > > On Mon, Sep 18, 2023 at 09:19:07AM +0200, Javier Martinez Canillas =
-wrote:
-> > > > > Thomas Zimmermann <tzimmermann@suse.de> writes:
-> > > > > > Am 14.09.23 um 21:51 schrieb Javier Martinez Canillas:
-> > > > > >> The driver uses a naming convention where functions for struct=
- drm_*_funcs
-> > > > > >> callbacks are named ssd130x_$object_$operation, while the call=
-backs for
-> > > > > >> struct drm_*_helper_funcs are named ssd130x_$object_helper_$op=
-eration.
-> > > > > >>
-> > > > > >> The idea is that this helper_ prefix in the function names den=
-ote that are
-> > > > > >> for struct drm_*_helper_funcs callbacks. This convention was c=
-opied from
-> > > > > >> other drivers, when ssd130x was written but Maxime pointed out=
- that is the
-> > > > > >> exception rather than the norm.
-> > > > > >
-> > > > > > I guess you found this in my code. I want to point out that I u=
-se the
-> > > > > > _helper infix to signal that these are callback for
-> > > > > > drm_primary_plane_helper_funcs and *not* drm_primary_plane_func=
-s. The
-> > > > > > naming is intentional.
-> > > > >
-> > > > > Yes, that's what tried to say in the commit message and indeed I =
-got the
-> > > > > convention from drivers in drivers/gpu/drm/tiny. In fact I believ=
-e these
-> > > > > function names are since first iteration of the driver, when was =
-meant to
-> > > > > be a tiny driver.
-> > > > >
-> > > > > According to Maxime it's the exception rather than the rule and s=
-uggested
-> > > > > to change it, I don't really have a strong opinion on either nami=
-ng TBH.
+On Thu, Sep 21, 2023 at 9:45 AM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Fri, 2023-09-15 at 17:49 +0200, Arnd Bergmann wrote:
+> > On Fri, Sep 15, 2023, at 17:41, Geert Uytterhoeven wrote:
+> > > On Wed, Sep 13, 2023 at 4:30 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > On Wed, Sep 13, 2023, at 16:13, Geert Uytterhoeven wrote:
 > > > >
-> > > > Maybe that's just me, but the helper in the name indeed throws me o=
-ff. In my
-> > > > mind, it's supposed to be used only for helpers, not functions impl=
-ementing the
-> > > > helpers hooks.
+> > > > Right, it looks like the GENERIC_IOMAP part if gone from that
+> > > > series, and I also see that the PCI host bridge does not actually
 > > >
-> > > With several callbacks using the same (field) name, it is very helpful
-> > > to name the actual implementation by combining the struct type name
-> > > and the field name.
+> > > No, 02/30 still enables it.
 > >
-> > I can't think of any (at least for a given object). Which one do you ha=
-ve in
-> > mind?
->=20
-> E.g. atomic_check():
->=20
->     drm_crtc_helper_funcs.atomic_check()
->     drm_encoder_helper_funcs.atomic_check()
->     drm_connector_helper_funcs.atomic_check()
->     drm_plane_helper_funcs.atomic_check()
-
-Right, but that's between objects, not between drm_$OBJECT_funcs and
-drm_$OBJECT_helper_funcs. So conflicts for a single given driver is unlikel=
-y,
-and can be solved by using, say, $DRIVER_crtc_atomic_check and
-$DRIVER_plane_atomic_check.
-
-> Interestingly, drm_mode_config_helper_funcs does not have an
-> atomic_check() callback, but drm_mode_config_funcs has.
->=20
-> > > Anything else confuses the casual reader. Perhaps the real question i=
-s whether
-> > > the structures should have "helper" in their name in the first place?
+> > Ok.
 > >
-> > Those structures are meant for functions used by the helpers, they are =
-not
-> > helper functions.
->=20
-> That might be how they started, but to me it looks like all these helpers
-> are no longer helpers, but part of the core...
+> > > > map the port I/O window. That's usually fine because very few
+> > > > drivers actually need it, and it also means that there should be
+> > > > no need for GENERIC_IOMAP or the simpler alternative.
+> > > >
+> > > > The first version probably only did it accidentally, which is a
+> > > > common mistake, and I think the ones for hexagon, m68k, and
+> > > > mips can probably be removed as well with some simplifiations.
+> > >
+> > > When not selecting GENERIC_IOMAP in v2, the build fails with:
+> > >
+> > > sh4-linux-gnu-ld: lib/devres.o: in function `pcim_iomap_release':
+> > > devres.c:(.text+0x234): undefined reference to `pci_iounmap'
+> >
+> > Odd, that one is provided based on CONFIG_GENERIC_PCI_IOMAP
+> > and should be provided by common code, despite the similar
+> > naming this is unrelated to CONFIG_GENERIC_IOMAP.
+>
+> So, what would be the suggestion now to move forward? Shall I include this
+> series for 6.7 or better wait until after Yoshinori's series to convert
+> to device tree has been merged?
 
-They are part of the core, but very much optional still. i915 doesn't use a=
- lot
-of helpers, vc4 (used to?) rolls its own atomic_commit implementation, etc.=
- It's
-really not uncommon.
+I think including Arnd's cleanups (that is, his v2) in v6.7 is fine.
+Sato-san's series needs more work, and is easy to fix for Arnd's cleanup
+(just provide sh_io_port_base unconditionally).
 
-Maxime
+Gr{oetje,eeting}s,
 
---xausph7vkn4i5qzv
-Content-Type: application/pgp-signature; name="signature.asc"
+                        Geert
 
------BEGIN PGP SIGNATURE-----
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZQwEGgAKCRDj7w1vZxhR
-xYz7AQCBEp34X1kCaihJf5Lq28yeEGdWAmNA3zyOuq9raBubOQEA04SOQI8XPbCN
-6cD8oulAR+yTmqwrZazae7cFizHObQw=
-=kv2D
------END PGP SIGNATURE-----
-
---xausph7vkn4i5qzv--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
