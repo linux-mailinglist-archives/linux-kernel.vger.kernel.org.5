@@ -2,67 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7093F7A99AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5AD57A9B23
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbjIUSQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        id S230124AbjIUSyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbjIUSQi (ORCPT
+        with ESMTP id S229648AbjIUSyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:16:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200518610F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:37:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E63CC4E752;
-        Thu, 21 Sep 2023 14:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695305437;
-        bh=8DU895BVITKTTvymEWRzE9Sk1uN+QLlJTB0x6HTf/VI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X8E1MnvB3YYqlO4zctA/yPpB7HqtuhDkokA/y2B7rIrdWklp2mJJ4Al7isgvuuEGh
-         czxP5Mm9G+nf3dUk529m5qXcFz7vBCPbdGuhQaR8D8FERL5meV8wZlTfFXbJtnAiwC
-         zmZlstf/6HvMJsmzXezjbnY8HR9dj7RPS9eIWG0z47lPFOOMs+G0iGDt0gXOX0YKt3
-         gyy9aax9HME8cahkQkhOohXz4qVR/rRdmw5TVWdyTZjOEPokFdasDSoMRFh1q3bRh9
-         D/uiuyKSpASrH3xzJEcfrnkG7Lw+VhTyvRUJ/Kmz5i2SSHlK8h8QcEKh6MepwNMnxD
-         gLO2mmOesFSXA==
-Date:   Thu, 21 Sep 2023 15:10:25 +0100
-From:   Simon Horman <horms@kernel.org>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
-        gakula@marvell.com, jerinj@marvell.com, lcherian@marvell.com,
-        sbhatta@marvell.com, naveenm@marvell.com, edumazet@google.com,
-        pabeni@redhat.com
-Subject: Re: [net-net Patchv2] octeontx2-pf: Tc flower offload support for
- MPLS
-Message-ID: <20230921141025.GN224399@kernel.org>
-References: <20230919141832.5931-1-hkelam@marvell.com>
+        Thu, 21 Sep 2023 14:54:12 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2B692398;
+        Thu, 21 Sep 2023 10:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rAUrRXnUzYYs/ew/1+KqF9kOieRZwvt3pCV3uohg47o=; b=vWr3hI5zrx2FBuVlw2/LK0K2+J
+        RpsmBaMqsSd3EBLE9EatFJIs6wU1AuyBFBpv7ZlhQMRpsiHfe9mfdme077m0HBvbhlkF5FvLBvsPP
+        c7gjed8tcT51Qn6sahiTz19sfcwAM3pG1xCNVhx09514YVO/JH1j5Oaa1AjpHBIeuIuARn9EerZ7l
+        E+AqCdBxT8P4SouR5gGlkLRM+efMa0XWs152eUSvVU3McDVVOTvCtX6a2y+8T9qg+TnSW0MN35jcP
+        nPMsXRyYy4krU5S9F1ZlbBMVtUtQCsG8g0jgZAWjKkBoEpEE+Jzuyy8HZLyihMuagq7sJnmcmRfc9
+        BVMXFjyw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41288)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qjKPl-0004n3-2L;
+        Thu, 21 Sep 2023 15:12:21 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qjKPj-0003bq-AL; Thu, 21 Sep 2023 15:12:19 +0100
+Date:   Thu, 21 Sep 2023 15:12:19 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+        Tan Tee Min <tee.min.tan@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next v2 0/5] TSN auto negotiation between 1G and 2.5G
+Message-ID: <ZQxPQ9t8/TKcjlo8@shell.armlinux.org.uk>
+References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
+ <5bd05ba2-fd88-4e5c-baed-9971ff917484@lunn.ch>
+ <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
+ <37fe9352-ec84-47b8-bb49-9441987ca1b9@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230919141832.5931-1-hkelam@marvell.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <37fe9352-ec84-47b8-bb49-9441987ca1b9@lunn.ch>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 07:48:32PM +0530, Hariprasad Kelam wrote:
-> This patch extends flower offload support for MPLS protocol.
-> Due to hardware limitation, currently driver supports lse
-> depth up to 4.
+On Thu, Sep 21, 2023 at 03:21:00PM +0200, Andrew Lunn wrote:
+> > Hi Andrew,
+> > 
+> > After conducting a comprehensive study, it seems that implementing
+> > out-of-band for all link modes might not be feasible. I may have missed some
+> > key aspects during my analysis.
+> > 
+> > Would you be open to sharing a high-level idea of how we could potentially
+> > make this feasible? Your insights would be greatly appreciated.
 > 
-> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> ---
-> v2 * instead of magic number 0xffffff00 use appropriate mask OTX2_FLOWER_MASK_MPLS_NON_TTL
+> stmmac_mac_link_up() gets passed interface, speed and duplex. That
+> tells you what the PHY has negotiated. Is there anything else you need
+> to know?
 
-Assuming this is for net-next, this looks good to me.
+The problem is... the stmmac driver is utter bollocks - that information
+is *not* passed to the BSP. Instead, stmmac parse and store information
+such as the PHY interface mode at initialisation time. BSPs also re-
+parse and store e.g. the PHY interface mode at initialisation time.
+The driver ignores what it gets from phylink.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+The driver is basically utter crap. That's an area I _had_ patches to
+clean up. I no longer do. stmmac is crap crap crap and will stay crap
+until they become more receptive to patches to fix it, even if the
+patches are not 100% to their liking but are in fact correct. Maybe
+if I ever decide to touch that driver in the future. Which I doubt
+given my recent experience.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
