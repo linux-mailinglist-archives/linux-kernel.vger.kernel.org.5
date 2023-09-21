@@ -2,242 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7017AA215
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA737AA204
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjIUVM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57696 "EHLO
+        id S231977AbjIUVL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbjIUVLA (ORCPT
+        with ESMTP id S232859AbjIUVFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:11:00 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2E4AD18E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:03:14 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 151286607314;
-        Thu, 21 Sep 2023 15:25:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695306313;
-        bh=DlUl7K2Jfdpi0pNYf8DOEltxjHEAnDBJ4slsXEHa5Fw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lxeB5v9MSblUV0VbcWui7WJlTULdDdSip6T5/ZurFg4X6FXn5MAtWl25ISvL5YQWO
-         GqSgyzYihLnwtsUb1lvhMrpJXhhBQRaAALUI7Lv9dO5Tbi2PKDHhR2iuHPLyaZNV2a
-         uudbxB24sAYh764BvOOWE90RkTCj9HfrYaUgykqUz+TkwiaDEmoReka91JemOvh4GZ
-         Fj3mcjVCPj7oFVpNXKy9sZZjEZlJ1pjPEmodG/cuhk+1xi6LTILiVwAbunUNfb5iww
-         /s8Y9gbR2wprbtXlnqY51jnmqO5OWGkMZKo/VN0kPL/DACbYZQFi6v/C/rbG3yXqzP
-         O/y0yji02T4gQ==
-Date:   Thu, 21 Sep 2023 16:25:10 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, faith.ekstrand@collabora.com,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v4 4/8] drm/gpuvm: add common dma-resv per
- struct drm_gpuvm
-Message-ID: <20230921162510.10903d90@collabora.com>
-In-Reply-To: <964a1bdd-549d-7850-9a8c-8278c4cd32ec@redhat.com>
-References: <20230920144343.64830-1-dakr@redhat.com>
-        <20230920144343.64830-5-dakr@redhat.com>
-        <7951dc11-6047-6beb-8ef8-98c862e26ec3@amd.com>
-        <964a1bdd-549d-7850-9a8c-8278c4cd32ec@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 21 Sep 2023 17:05:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13FA86138;
+        Thu, 21 Sep 2023 10:37:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B7CDC4E75F;
+        Thu, 21 Sep 2023 14:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695306378;
+        bh=Y6tF5Sxcca3uknZoiD/RUnNmXLKJdlsB7DP2Xfz3jH8=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=Oow2mZRnk+semWy/ipKx+k8QwxReBm+OSDMXyq0ak5vClB9HJH5RTVQKBHHNFj0AS
+         OJ76rfLM1FPKDS5/qRKPEPl5giDEPW1xtnUQlonfcZZakQPFUqTxwh6tVDi8F37Til
+         G7s5rZwh9z7iiwlhIgOVPEo5Zn711BAhrxARs3bGfkxs2g/jRCS0CB6U+5AQMtknlb
+         Os4crsN1kXLjpB3s/2ZZjlnUJP8XsCCW44uA+lEJhSB8SI6R9SEtLfCgRKZozptoTM
+         Wko0pEZ8kXpoyUk3VJ1Gn3xGa1k5l+YSgiNq0NmieVaXv4EMEN/o1lotfFZ8FIBnjp
+         V9rqMxpUe5eYw==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        kishon@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Varadarajan Narayanan <quic_varada@quicinc.com>
+In-Reply-To: <1694069452-3794-1-git-send-email-quic_varada@quicinc.com>
+References: <1694069452-3794-1-git-send-email-quic_varada@quicinc.com>
+Subject: Re: [PATCH] phy: qcom: m31: Remove unwanted qphy->vreg is NULL
+ check
+Message-Id: <169530637607.106093.6024035938522205244.b4-ty@kernel.org>
+Date:   Thu, 21 Sep 2023 16:26:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 15:34:44 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
 
-> On 9/21/23 09:39, Christian K=C3=B6nig wrote:
-> > Am 20.09.23 um 16:42 schrieb Danilo Krummrich: =20
-> >> Provide a common dma-resv for GEM objects not being used outside of th=
-is
-> >> GPU-VM. This is used in a subsequent patch to generalize dma-resv,
-> >> external and evicted object handling and GEM validation.
-> >>
-> >> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> >> ---
-> >> =C2=A0 drivers/gpu/drm/drm_gpuvm.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 9 +++++++--
-> >> =C2=A0 drivers/gpu/drm/nouveau/nouveau_uvmm.c |=C2=A0 2 +-
-> >> =C2=A0 include/drm/drm_gpuvm.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 17 ++++++++++++++++-
-> >> =C2=A0 3 files changed, 24 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
-> >> index bfea4a8a19ec..cbf4b738a16c 100644
-> >> --- a/drivers/gpu/drm/drm_gpuvm.c
-> >> +++ b/drivers/gpu/drm/drm_gpuvm.c
-> >> @@ -655,6 +655,7 @@ drm_gpuva_range_valid(struct drm_gpuvm *gpuvm,
-> >> =C2=A0 /**
-> >> =C2=A0=C2=A0 * drm_gpuvm_init() - initialize a &drm_gpuvm
-> >> =C2=A0=C2=A0 * @gpuvm: pointer to the &drm_gpuvm to initialize
-> >> + * @drm: the drivers &drm_device
-> >> =C2=A0=C2=A0 * @name: the name of the GPU VA space
-> >> =C2=A0=C2=A0 * @start_offset: the start offset of the GPU VA space
-> >> =C2=A0=C2=A0 * @range: the size of the GPU VA space
-> >> @@ -668,7 +669,7 @@ drm_gpuva_range_valid(struct drm_gpuvm *gpuvm,
-> >> =C2=A0=C2=A0 * &name is expected to be managed by the surrounding driv=
-er structures.
-> >> =C2=A0=C2=A0 */
-> >> =C2=A0 void
-> >> -drm_gpuvm_init(struct drm_gpuvm *gpuvm,
-> >> +drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_device *drm,
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 const char *name,
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 u64 start_offset, u64 range,
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 u64 reserve_offset, u64 reserve_range,
-> >> @@ -694,6 +695,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm,
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 reserve_range)))
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 __drm_gpuva_insert(gpuvm, &gpuvm->kernel_alloc_node);
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >> +
-> >> +=C2=A0=C2=A0=C2=A0 drm_gem_private_object_init(drm, &gpuvm->d_obj, 0);
-> >> =C2=A0 }
-> >> =C2=A0 EXPORT_SYMBOL_GPL(drm_gpuvm_init);
-> >> @@ -713,7 +716,9 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __drm_gpuva_rem=
-ove(&gpuvm->kernel_alloc_node);
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WARN(!RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_=
-root),
-> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "GPUVA tree is not e=
-mpty, potentially leaking memory.");
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "GPUVA tree is not e=
-mpty, potentially leaking memory.\n");
-> >> +
-> >> +=C2=A0=C2=A0=C2=A0 drm_gem_private_object_fini(&gpuvm->d_obj);
-> >> =C2=A0 }
-> >> =C2=A0 EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
-> >> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/=
-nouveau/nouveau_uvmm.c
-> >> index 6c86b64273c3..a80ac8767843 100644
-> >> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> >> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> >> @@ -1836,7 +1836,7 @@ nouveau_uvmm_init(struct nouveau_uvmm *uvmm, str=
-uct nouveau_cli *cli,
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uvmm->kernel_managed_addr =3D kernel_ma=
-naged_addr;
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uvmm->kernel_managed_size =3D kernel_ma=
-naged_size;
-> >> -=C2=A0=C2=A0=C2=A0 drm_gpuvm_init(&uvmm->base, cli->name,
-> >> +=C2=A0=C2=A0=C2=A0 drm_gpuvm_init(&uvmm->base, cli->drm->dev, cli->na=
-me,
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 NOUVEAU_VA_SPACE_START,
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 NOUVEAU_VA_SPACE_END,
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 kernel_managed_addr, kernel_managed_size,
-> >> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
-> >> index 0e802676e0a9..6666c07d7c3e 100644
-> >> --- a/include/drm/drm_gpuvm.h
-> >> +++ b/include/drm/drm_gpuvm.h
-> >> @@ -240,14 +240,29 @@ struct drm_gpuvm {
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @ops: &drm_gpuvm_ops providing =
-the split/merge steps to drivers
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct drm_gpuvm_ops *ops;
-> >> +
-> >> +=C2=A0=C2=A0=C2=A0 /**
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0 * @d_obj: Dummy GEM object; used internally =
-to pass the GPU VMs
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0 * dma-resv to &drm_exec. Provides the GPUVM'=
-s &dma-resv.
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> >> +=C2=A0=C2=A0=C2=A0 struct drm_gem_object d_obj; =20
-> >=20
-> > Yeah, as pointed out in the other mail that won't work like this. =20
->=20
-> Which one? Seems that I missed it.
->=20
-> >=20
-> > The GPUVM contains GEM objects and therefore should probably have a ref=
-erence to those objects.
-> >=20
-> > When those GEM objects now use the dma-resv object embedded inside the =
-GPUVM then they also need a reference to the GPUVM to make sure the dma-res=
-v object won't be freed before they are freed. =20
->=20
-> My assumption here is that GEM objects being local to a certain VM never =
-out-live the VM. We never share it with anyone, otherwise it would be exter=
-nal and hence wouldn't carray the VM's dma-resv. The only references I see =
-are from the VM itself (which is fine) and from userspace. The latter isn't=
- a problem as long as all GEM handles are closed before the VM is destroyed=
- on FD close.
+On Thu, 07 Sep 2023 12:20:52 +0530, Varadarajan Narayanan wrote:
+> Fix the following Smatch complaint:
+> 	drivers/phy/qualcomm/phy-qcom-m31.c:175 m31usb_phy_init()
+> 	warn: variable dereferenced before check 'qphy->vreg' (see line 167)
+> 
+> drivers/phy/qualcomm/phy-qcom-m31.c
+>    166
+>    167		ret = regulator_enable(qphy->vreg);
+>                                        ^^^^^^^^^^
+> Unchecked dereference
+> 
+> [...]
 
-But we don't want to rely on userspace doing the right thing (calling
-GEM_CLOSE before releasing the VM), do we?
+Applied, thanks!
 
-BTW, even though my private BOs have a ref to their exclusive VM, I just
-ran into a bug because drm_gem_shmem_free() acquires the resv lock
-(which is questionable, but that's not the topic :-)) and
-I was calling vm_put(bo->exclusive_vm) before drm_gem_shmem_free(),
-leading to a use-after-free when the gem->resv is acquired. This has
-nothing to do with drm_gpuvm, but it proves that this sort of bug is
-likely to happen if we don't pay attention.
+[1/1] phy: qcom: m31: Remove unwanted qphy->vreg is NULL check
+      commit: ecec1de5c58f8f3ab6959fcf8d68752eeb65311d
 
->=20
-> Do I miss something? Do we have use cases where this isn't true?
+Best regards,
+-- 
+~Vinod
 
-The other case I can think of is GEM being v[un]map-ed (kernel
-mapping) after the VM was released.
 
->=20
-> >=20
-> > This is a circle reference dependency.
-
-FWIW, I solved that by having a vm_destroy() function that kills all the
-mappings in a VM, which in turn releases all the refs the VM had on
-private BOs. Then, it's just a matter of waiting for all private GEMs
-to be destroyed to get the final steps of the VM destruction, which is
-really just about releasing resources (it's called panthor_vm_release()
-in my case) executed when the VM refcount drops to zero.
-
-> >=20
-> > The simplest solution I can see is to let the driver provide the GEM ob=
-ject to use. Amdgpu uses the root page directory object for this. =20
->=20
-> Sure, we can do that, if we see cases where VM local GEM objects can out-=
-live the VM.
-> >=20
-> > Apart from that I strongly think that we shouldn't let the GPUVM code c=
-reate a driver GEM object. We did that in TTM for the ghost objects and it =
-turned out to be a bad idea. =20
-
-Would that really solve the circular ref issue? I mean, if you're
-taking the root page dir object as your VM resv, you still have to make
-sure it outlives the private GEMs, which means, you either need
-to take a ref on the object, leading to the same circular ref mess, or
-you need to reset private GEMs resvs before destroying this root page
-dir GEM (whose lifecyle is likely the same as your VM object which
-embeds the drm_gpuvm instance).
-
-Making it driver-specific just moves the responsibility back to drivers
-(and also allows re-using an real GEM object instead of a dummy one,
-but I'm not sure we care about saving a few hundreds bytes at that
-point), which is a good way to not take the blame if the driver does
-something wrong, but also doesn't really help people do the right thing.
