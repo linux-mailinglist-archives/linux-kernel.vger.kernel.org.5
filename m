@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C0F7A9D4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC597A9B03
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbjIUTap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
+        id S230224AbjIUSxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbjIUTaJ (ORCPT
+        with ESMTP id S229998AbjIUSwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:30:09 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C9BA7B7F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:01:40 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-792965813e7so48580639f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:01:40 -0700 (PDT)
+        Thu, 21 Sep 2023 14:52:42 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569C890F36;
+        Thu, 21 Sep 2023 10:47:30 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-49970221662so463548e0c.0;
+        Thu, 21 Sep 2023 10:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695319300; x=1695924100; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695318449; x=1695923249; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=g7keM3Y6fMhMfFMuWtMa5jx/7Kzyqu5FnvjTMxZXwko=;
-        b=bPthNlKHuX9vNaMKhARaQldhaz2bk8ptFedf1LHMyQumGQFxu13+s/HIXEHS9dV3aP
-         obmP8IOIYCLG7cOPtbNhCH01uzKkzAcGOYDLBSmXVuJT2sRG9lqlUfs68h6YpY8qYuet
-         8M2irE35I01PnyHoqnQKTBgdU1SCXdlVs/BHRgckwL3u7x7zIrVpKuOt+CDDgV5MbxfR
-         /+jSwGcoVvhqY3rtlV3zBXwEP31QcNM6ejYnzuE2B1/26QbWozQ0w1+EnTqQFAfuZzdj
-         7TMK9F9WK1elwk04lRpjYwXX2uTHxA/Kj337pY1NYBG7sC0b4iJ0PfXX9VXGFOpnm6VE
-         qG7w==
+        bh=2QMJzQRVdpXl092C0YB+p9u+FvBSdDJvGwaFoHe9mXs=;
+        b=GW5mu62j5GAI8vx+EUr37uPb2r6AqNVp61yF0br8XOte7zKmB0/kPBFQGwR4LGVQKi
+         EjfufBC0Lyq2lmGiHbOoNFbcxsvSOb9266c8nMSaUWme1J7QHknyYlgCK0H1ndyNOSDB
+         fA+3TMwN7Syd9tHw8Uv08c/THQX7TY8a+4cLO1MmVygOBnQlRSOKw1iEeN3yFQvb7AWS
+         XFUhgH/Ka5UbrqC3oyZLxwmthJF05wP1FSO8pVilIEOC+W4Z59cUN+O2FuhPjv3hR+v2
+         mcY465v9Lv0/Eqj9vJauSf5cJ6Wpu0b09jHCgLckqMDaaKeyvhS8lAFF2IcohtYWkGtQ
+         zRNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695319300; x=1695924100;
+        d=1e100.net; s=20230601; t=1695318449; x=1695923249;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g7keM3Y6fMhMfFMuWtMa5jx/7Kzyqu5FnvjTMxZXwko=;
-        b=TZqeGyEEQjYx1kxm+rnjG1mBjm2U5cJorI2JNVl9AAm4H6n6Epl33jyfsBVe+jIEbn
-         /WyA7RTsQb1NQVZ0v4ApKHDW5v7vkjnRVEfcGMhrj7mlIKqN3aQaOvvh9kgmNr/iLgnU
-         lQXSm+FusHpOBjy9zO0mzqO2Bdh2ClOdv8MWodrEyBx2LWvgXRNhk9+InrfNzUt8YrB9
-         lZsy02+QfENtNUpQFLIacEYfWQImgDsaIf375TgGLfv+gWydw+PcMr1DG3g9tj+dH1t2
-         F1UUCovAS1Px2YYhYCG0FKPTRKiRhUTyZeAOdoyMndBRbiSW5ncsyvMGJ3TCPey3mFar
-         y5wg==
-X-Gm-Message-State: AOJu0YyAKn0aRoT/mRow1czGuMVVkS4ggGpYRP5bgtyJYvQGAZQnmZnH
-        ZHJygmkI52atGA58n+RqKo/s6bnM13JwC5krFCir2O7LAg0qomCuLuA=
-X-Google-Smtp-Source: AGHT+IGFiuq2yAavaGohC3doXrEfCSrTTz4ql7Ccof0B/BskF92xcU/mBMfs+tpyTmR+iHwFXILbeDL6YKk4w7qSnnY=
-X-Received: by 2002:a25:8201:0:b0:d78:20d6:6f4e with SMTP id
- q1-20020a258201000000b00d7820d66f4emr5008759ybk.38.1695302610815; Thu, 21 Sep
- 2023 06:23:30 -0700 (PDT)
+        bh=2QMJzQRVdpXl092C0YB+p9u+FvBSdDJvGwaFoHe9mXs=;
+        b=cfv+VjYkfHrs+fWjptct3o4+YYe9k8KR/R+115hzrOT/QI6q8/xHDJveSQk0UeZLly
+         oaSQpzrzq9aqOolVa3c+ch//D5SK27rY1wTYjMRgvPr2o1VkKZMFA1D5B+wLw0QGsfvJ
+         V6FHmH2uepBq6KoyYekxkeErFVEdFoYeBEjiQOAIkfwzi24lozC5ZLx4C/85aCOa2S9S
+         4D+Q8fNCSuGomlm2hPpjMeY26hkPsObhyF6Ym3cmj2tO5sgGRXl1YruXSvf2bVGBoX/G
+         h+Z/nIf4eaWB4e5BjvPP+PCJdEVJYaRpKtdx1aYSw/1LB8zpiAftkpaaVnUfkVVa4xUs
+         2BKA==
+X-Gm-Message-State: AOJu0Yxo+m/RlCNMCAbgNssFdfD8zmmuj6M6uCgatoRjbdW/kNzS1Wcy
+        omwlnJAgQQGx9EVzoL4pKdsP12Yuq7aDp+miLJwiIZgG
+X-Google-Smtp-Source: AGHT+IEQIBnn00pB2IJpNVNOufGxL6gAIwGGykOexSbWRjQHbZV1E1O5Pn75njZHId7nUUnh90Ubb2uF3bofkKYX24k=
+X-Received: by 2002:a67:e2d7:0:b0:451:64e:4645 with SMTP id
+ i23-20020a67e2d7000000b00451064e4645mr5954736vsm.12.1695302660371; Thu, 21
+ Sep 2023 06:24:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230825112633.236607-1-ulf.hansson@linaro.org>
- <20230825112633.236607-9-ulf.hansson@linaro.org> <20230921111110.tbffr5sik3ycw7gf@bogus>
-In-Reply-To: <20230921111110.tbffr5sik3ycw7gf@bogus>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Sep 2023 15:22:54 +0200
-Message-ID: <CAPDyKFrSkgSee=8zruR65TALvAj+hcWw1CaUOUwD3EpdxymtBg@mail.gmail.com>
-Subject: Re: [PATCH v3 08/13] dt-bindings: arm: cpus: Add a power-domain-name
- for a performance-domain
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20230920022812.601800-1-milkfafa@gmail.com> <20230920022812.601800-8-milkfafa@gmail.com>
+ <fb74f6b8-3139-4652-b36a-1de396d0ca23@xs4all.nl>
+In-Reply-To: <fb74f6b8-3139-4652-b36a-1de396d0ca23@xs4all.nl>
+From:   Kun-Fa Lin <milkfafa@gmail.com>
+Date:   Thu, 21 Sep 2023 21:24:09 +0800
+Message-ID: <CADnNmFp9meVx5MMbCcvjSQaMv12K7j=_kB_ajJi5GoYEWegZcg@mail.gmail.com>
+Subject: Re: [PATCH v15 7/7] media: nuvoton: Add driver for NPCM video capture
+ and encoding engine
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     mchehab@kernel.org, avifishman70@gmail.com, tmaimon77@gmail.com,
+        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, andrzej.p@collabora.com,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        kwliu@nuvoton.com, kflin@nuvoton.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sept 2023 at 13:11, Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Fri, Aug 25, 2023 at 01:26:28PM +0200, Ulf Hansson wrote:
-> > When an CPU's performance domain is managed through the SCMI firmware,
-> > let's enable us describe this as a consumer of a power-domain provider,
-> > which is the de-facto standard to use for performance domains. In this
-> > case, let's specify a corresponding power-domain-name, to point out the
-> > corresponding index for it.
-> >
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> > Cc: Conor Dooley <conor+dt@kernel.org>
-> > Cc: devicetree@vger.kernel.org
-> > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >
-> > Changes in v3:
-> >       - New patch.
->
-> This patch and 10/13 are quite generic. I am happy to take it as part of
-> this series but just thought of checking again if that is what you prefer ?
+Hi Hans,
 
-Yes please, go ahead and pick this up through your scmi tree.
+Thanks for your review.
 
-Kind regards
-Uffe
+> > +static const struct v4l2_ctrl_config npcm_ctrl_rect_count = {
+> > +     .id = V4L2_CID_NPCM_RECT_COUNT,
+> > +     .name = "NPCM Compressed Hextile Rectangle Count",
+>
+> This name is too long, it should be max 31 characters. Dropping the "Compressed " part
+> might be best, I think that word isn't needed.
+>
+> > +     .type = V4L2_CTRL_TYPE_INTEGER,
+> > +     .min = 0,
+> > +     .max = (MAX_WIDTH / RECT_W) * (MAX_HEIGHT / RECT_H),
+> > +     .step = 1,
+> > +     .def = 0,
+> > +};
+>
+> With this fixed, and the sparse warnings fixed, it should be ready for merging.
+
+OK. Will fix them in the next version.
+
+Regards,
+Marvin
