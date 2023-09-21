@@ -2,671 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D837AA0D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033E57AA1AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbjIUUtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
+        id S232592AbjIUVGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232468AbjIUUsb (ORCPT
+        with ESMTP id S232616AbjIUVEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:48:31 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EC7E890F0D;
-        Thu, 21 Sep 2023 10:47:21 -0700 (PDT)
-Received: from pwmachine.localnet (unknown [84.232.150.101])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 15678212C5B7;
-        Thu, 21 Sep 2023 04:48:32 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 15678212C5B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695296917;
-        bh=eiwknSMO6gOPG6GXnXGJVCG4zh6xm5v/whvqYJur2mE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=coX0ubyyQrBiwakCvl4pVGhl4hemBcb+4RptEFBWnrE9r3RiHFpLhQcCq4QYgtYjk
-         L0U22UOUDZsFH4rd02W4E6IKE6FoKu0AaJZATuImixC/ssoSnqVT3yxQljL1VIDJG3
-         aqIYhtbcUPG1F5LFVdjL+ZmbyWzoHys5ioumcymk=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     Alessandro Carminati <alessandro.carminati@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        Eugene Loh <eugene.loh@oracle.com>,
-        Viktor Malik <vmalik@redhat.com>,
-        Petr Mladek <pmladek@suse.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] scripts/link-vmlinux.sh: Add alias to duplicate symbols for kallsyms
-Date:   Thu, 21 Sep 2023 14:48:29 +0300
-Message-ID: <5711978.DvuYhMxLoT@pwmachine>
-In-Reply-To: <CAPp5cGQH1QYM6fr_TRqh6BJDgYS89ncPzx3que5q92o2b0gmLw@mail.gmail.com>
-References: <20230919193948.465340-1-alessandro.carminati@gmail.com> <4833924.GXAFRqVoOG@pwmachine> <CAPp5cGQH1QYM6fr_TRqh6BJDgYS89ncPzx3que5q92o2b0gmLw@mail.gmail.com>
+        Thu, 21 Sep 2023 17:04:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E4784F39;
+        Thu, 21 Sep 2023 10:37:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F8C9C4AF7C;
+        Thu, 21 Sep 2023 11:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695296929;
+        bh=Mb1ZgE7Y7q8GQSF+hHzT62xviTbe48TY2S+J6rJGHnw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l+gGOPgvpXdx/F/C7YcRazZ8kQHiH72KfkhasEhHaH+k5/7LVYmjCCm73BeJCNeY0
+         Ps2fIvp36Wbq/eTZUEvBWg08iu4RQ04ZSLX++UbGFsllhlySd63E2owXLdLiRBl+Yq
+         3I1viAX986rMTz4ijdN7AsR+NVBDA2i6uFyP+i1PvtZLXVwRR7GCotqYwPoVNujxpi
+         NmfoQMffakKgrGv8OaVpGzYMKGIRbehnzPOdVbX8o9Pbco91VTcCYlH5Y0kxxDmEVw
+         T68FrKfzuD2DgN4z59a3hcck8jr0+5dM3NaXsxi9HiNJQXBCFm9VjjzQl1RyaN7Ck8
+         HF+tdaiZXpiag==
+Date:   Thu, 21 Sep 2023 13:48:43 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        syzbot <syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com>,
+        amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [integrity] [overlayfs] general protection fault in
+ d_path
+Message-ID: <20230921-gedanken-salzwasser-40d25b921162@brauner>
+References: <000000000000259bd8060596e33f@google.com>
+ <bed99e92-cb7c-868d-94f3-ddf53e2b262a@linux.ibm.com>
+ <8a65f5eb-2b59-9903-c6b8-84971f8765ae@linux.ibm.com>
+ <ab7df5e93b5493de5fa379ccab48859fe953d7ae.camel@kernel.org>
+ <b16550ac-f589-c5d7-e139-d585e8771cfd@linux.ibm.com>
+ <00dbd1e7-dfc8-86bc-536f-264a929ebb35@linux.ibm.com>
+ <94b4686a-fee8-c545-2692-b25285b9a152@schaufler-ca.com>
+ <d59d40426c388789c195d94e7e72048ef45fec5e.camel@kernel.org>
+ <7caa3aa06cc2d7f8d075306b92b259dab3e9bc21.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7caa3aa06cc2d7f8d075306b92b259dab3e9bc21.camel@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+On Thu, Sep 21, 2023 at 07:24:23AM -0400, Mimi Zohar wrote:
+> On Thu, 2023-09-21 at 06:32 -0400, Jeff Layton wrote:
+> > On Wed, 2023-09-20 at 17:52 -0700, Casey Schaufler wrote:
+> > > On 9/20/2023 5:10 PM, Stefan Berger wrote:
+> > > > 
+> > > > On 9/20/23 18:09, Stefan Berger wrote:
+> > > > > 
+> > > > > On 9/20/23 17:16, Jeff Layton wrote:
+> > > > > > On Wed, 2023-09-20 at 16:37 -0400, Stefan Berger wrote:
+> > > > > > > On 9/20/23 13:01, Stefan Berger wrote:
+> > > > > > > > On 9/17/23 20:04, syzbot wrote:
+> > > > > > > > > syzbot has bisected this issue to:
+> > > > > > > > > 
+> > > > > > > > > commit db1d1e8b9867aae5c3e61ad7859abfcc4a6fd6c7
+> > > > > > > > > Author: Jeff Layton <jlayton@kernel.org>
+> > > > > > > > > Date:   Mon Apr 17 16:55:51 2023 +0000
+> > > > > > > > > 
+> > > > > > > > >       IMA: use vfs_getattr_nosec to get the i_version
+> > > > > > > > > 
+> > > > > > > > > bisection log:
+> > > > > > > > > https://syzkaller.appspot.com/x/bisect.txt?x=106f7e54680000
+> > > > > > > > > start commit:   a747acc0b752 Merge tag
+> > > > > > > > > 'linux-kselftest-next-6.6-rc2'
+> > > > > > > > > of g..
+> > > > > > > > > git tree:       upstream
+> > > > > > > > > final oops:
+> > > > > > > > > https://syzkaller.appspot.com/x/report.txt?x=126f7e54680000
+> > > > > > > > > console output:
+> > > > > > > > > https://syzkaller.appspot.com/x/log.txt?x=146f7e54680000
+> > > > > > > > > kernel config:
+> > > > > > > > > https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
+> > > > > > > > > dashboard link:
+> > > > > > > > > https://syzkaller.appspot.com/bug?extid=a67fc5321ffb4b311c98
+> > > > > > > > > syz repro:
+> > > > > > > > > https://syzkaller.appspot.com/x/repro.syz?x=1671b694680000
+> > > > > > > > > C reproducer:
+> > > > > > > > > https://syzkaller.appspot.com/x/repro.c?x=14ec94d8680000
+> > > > > > > > > 
+> > > > > > > > > Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
+> > > > > > > > > Fixes: db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the
+> > > > > > > > > i_version")
+> > > > > > > > > 
+> > > > > > > > > For information about bisection process see:
+> > > > > > > > > https://goo.gl/tpsmEJ#bisection
+> > > > > > > > The final oops shows this here:
+> > > > > > > > 
+> > > > > > > > BUG: kernel NULL pointer dereference, address: 0000000000000058
+> > > > > > > > #PF: supervisor read access in kernel mode
+> > > > > > > > #PF: error_code(0x0000) - not-present page
+> > > > > > > > PGD 0 P4D 0
+> > > > > > > > Oops: 0000 [#1] PREEMPT SMP
+> > > > > > > > CPU: 0 PID: 3192 Comm: syz-executor.0 Not tainted
+> > > > > > > > 6.4.0-rc2-syzkaller #0
+> > > > > > > > Hardware name: Google Google Compute Engine/Google Compute Engine,
+> > > > > > > > BIOS Google 08/04/2023
+> > > > > > > > RIP: 0010:__lock_acquire+0x35/0x490 kernel/locking/lockdep.c:4946
+> > > > > > > > Code: 83 ec 18 65 4c 8b 35 aa 60 f4 7e 83 3d b7 11 e4 02 00 0f 84 05
+> > > > > > > > 02 00 00 4c 89 cb 89 cd 41 89 d5 49 89 ff 83 fe 01 77 0c 89 f0
+> > > > > > > > <49> 8b
+> > > > > > > > 44 c7 08 48 85 c0 75 1b 4c 89 ff 31 d2 45 89 c4 e8 74 f6 ff
+> > > > > > > > RSP: 0018:ffffc90002edb840 EFLAGS: 00010097
+> > > > > > > > RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000002
+> > > > > > > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000050
+> > > > > > > > RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
+> > > > > > > > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> > > > > > > > R13: 0000000000000000 R14: ffff888102ea5340 R15: 0000000000000050
+> > > > > > > > FS:  0000000000000000(0000) GS:ffff88813bc00000(0000)
+> > > > > > > > knlGS:0000000000000000
+> > > > > > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > > > > > CR2: 0000000000000058 CR3: 0000000003aa8000 CR4: 00000000003506f0
+> > > > > > > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > > > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > > > > > Call Trace:
+> > > > > > > >   <TASK>
+> > > > > > > >   lock_acquire+0xd8/0x1f0 kernel/locking/lockdep.c:5691
+> > > > > > > >   seqcount_lockdep_reader_access include/linux/seqlock.h:102 [inline]
+> > > > > > > >   get_fs_root_rcu fs/d_path.c:243 [inline]
+> > > > > > > >   d_path+0xd1/0x1f0 fs/d_path.c:285
+> > > > > > > >   audit_log_d_path+0x65/0x130 kernel/audit.c:2139
+> > > > > > > >   dump_common_audit_data security/lsm_audit.c:224 [inline]
+> > > > > > > >   common_lsm_audit+0x3b3/0x840 security/lsm_audit.c:458
+> > > > > > > >   smack_log+0xad/0x130 security/smack/smack_access.c:383
+> > > > > > > >   smk_tskacc+0xb1/0xd0 security/smack/smack_access.c:253
+> > > > > > > >   smack_inode_getattr+0x8a/0xb0 security/smack/smack_lsm.c:1187
+> > > > > > > >   security_inode_getattr+0x32/0x50 security/security.c:2114
+> > > > > > > >   vfs_getattr+0x1b/0x40 fs/stat.c:167
+> > > > > > > >   ovl_getattr+0xa6/0x3e0 fs/overlayfs/inode.c:173
+> > > > > > > >   ima_check_last_writer security/integrity/ima/ima_main.c:171
+> > > > > > > > [inline]
+> > > > > > > >   ima_file_free+0xbd/0x130 security/integrity/ima/ima_main.c:203
+> > > > > > > >   __fput+0xc7/0x220 fs/file_table.c:315
+> > > > > > > >   task_work_run+0x7d/0xa0 kernel/task_work.c:179
+> > > > > > > >   exit_task_work include/linux/task_work.h:38 [inline]
+> > > > > > > >   do_exit+0x2c7/0xa80 kernel/exit.c:871 <-----------------------
+> > > > > > > >   do_group_exit+0x85/0xa0 kernel/exit.c:1021
+> > > > > > > >   get_signal+0x73c/0x7f0 kernel/signal.c:2874
+> > > > > > > >   arch_do_signal_or_restart+0x89/0x290 arch/x86/kernel/signal.c:306
+> > > > > > > >   exit_to_user_mode_loop+0x61/0xb0 kernel/entry/common.c:168
+> > > > > > > >   exit_to_user_mode_prepare+0x64/0xb0 kernel/entry/common.c:204
+> > > > > > > >   __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+> > > > > > > >   syscall_exit_to_user_mode+0x2b/0x1d0 kernel/entry/common.c:297
+> > > > > > > >   do_syscall_64+0x4d/0x90 arch/x86/entry/common.c:86
+> > > > > > > >   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > > > > > > 
+> > > > > > > > 
+> > > > > > > > do_exit has called exit_fs(tsk) [
+> > > > > > > > https://elixir.bootlin.com/linux/v6.4-rc2/source/kernel/exit.c#L867 ]
+> > > > > > > > 
+> > > > > > > > exit_fs(tsk) has set tsk->fs = NULL [
+> > > > > > > > https://elixir.bootlin.com/linux/v6.4-rc2/source/fs/fs_struct.c#L103
+> > > > > > > > ]
+> > > > > > > > 
+> > > > > > > > I think this then bites in d_path() where it calls:
+> > > > > > > > 
+> > > > > > > >      get_fs_root_rcu(current->fs, &root);   [
+> > > > > > > > https://elixir.bootlin.com/linux/v6.4-rc2/source/fs/d_path.c#L285 ]
+> > > > > > > > 
+> > > > > > > > current->fs is likely NULL here.
+> > > > > > > > 
+> > > > > > > > If this was correct it would have nothing to do with the actual
+> > > > > > > > patch,
+> > > > > > > > though, but rather with the fact that smack logs on process
+> > > > > > > > termination. I am not sure what the solution would be other than
+> > > > > > > > testing for current->fs == NULL in d_path before using it and
+> > > > > > > > returning an error that is not normally returned or trying to
+> > > > > > > > intercept this case in smack.
+> > > > > > > I have now been able to recreate the syzbot issue with the test
+> > > > > > > program
+> > > > > > > and the issue is exactly the one described here, current->fs == NULL.
+> > > > > > > 
+> > > > > > Earlier in this thread, Amir had a diagnosis that IMA is
+> > > > > > inappropriately
+> > > > > > trying to use f_path directly instead of using the helpers that are
+> > > > > > friendly for stacking filesystems.
+> > > > > > 
+> > > > > > https://lore.kernel.org/linux-fsdevel/CAOQ4uxgjnYyeQL-LbS5kQ7+C0d6sjzKqMDWAtZW8cAkPaed6=Q@mail.gmail.com/
+> > > > > > 
+> > > > > > 
+> > > > > > I'm not an IMA hacker so I'm not planning to roll a fix here. Perhaps
+> > > > > > someone on the IMA team could try this approach?
+> > > > > 
+> > > > > 
+> > > > > I have applied this patch here from Amir now and it does NOT resolve
+> > > > > the issue:
+> > > > > 
+> > > > > https://lore.kernel.org/linux-integrity/296dae962a2a488bde682d3def074db91686e1c3.camel@linux.ibm.com/T/#m4ebdb780bf6952e7f210c55e87950d0cfa1d5eb0
+> > > > > 
+> > > > > 
+> > > > 
+> > > > This seems to resolve the issue:
+> > > > 
+> > > > diff --git a/security/smack/smack_access.c
+> > > > b/security/smack/smack_access.c
+> > > > index 585e5e35710b..57afcea1e39b 100644
+> > > > --- a/security/smack/smack_access.c
+> > > > +++ b/security/smack/smack_access.c
+> > > > @@ -347,6 +347,9 @@ void smack_log(char *subject_label, char
+> > > > *object_label, int request,
+> > > >         struct smack_audit_data *sad;
+> > > >         struct common_audit_data *a = &ad->a;
+> > > > 
+> > > > +       if (current->flags & PF_EXITING)
+> > > > +               return;
+> > > > +
+> > > 
+> > > Based on what I see here I can understand that this prevents the panic,
+> > > but it isn't so clear what changed that introduced the problem.
+> > > 
+> > > >         /* check if we have to log the current event */
+> > > >         if (result < 0 && (log_policy & SMACK_AUDIT_DENIED) == 0)
+> > > >                 return;
+> > > > 
+> > > > 
+> > 
+> > Apparently, it's this patch:
+> > 
+> >     db1d1e8b9867 IMA: use vfs_getattr_nosec to get the i_version
+> 
+> Yes, the syzbot was updated with that info.
+> 
+> > At one time, IMA would reach directly into the inode to get the
+> > i_version and ctime. That was fine for certain filesystems, but with
+> > more recent changes it needs to go through ->getattr instead. Evidently,
+> > it's selecting the wrong inode to query when dealing with overlayfs and
+> > that's causing panics at times.
+> > 
+> > As to why the above patch helps, I'm not sure, but given that it doesn't
+> > seem to change which inode is being queried via getattr, it seems like
+> > this is probably papering over the real bug. That said, IMA and
+> > overlayfs are not really in my wheelhouse, so I could be very wrong
+> > here.
+> 
+> The call to vfs_getattr_nosec() somehow triggers a call to
+> security_inode_getattr().  Without the call neither ovl_getattr() nor
+> smack_inode_getattr() would be called.
 
-Le mercredi 20 septembre 2023, 21:04:42 EEST Alessandro Carminati a =E9crit=
- :
-> Hello Francis,
->=20
-> Thanks a lot for the review.
+ima_file_free()
+-> ima_check_last_writer()
+   -> vfs_getattr_nosec()
+      -> i_op->getattr() == ovl_getattr()
+         -> vfs_getattr()
+            -> security_inode_getattr()
+	    -> real_i_op->getattr()
 
-You are welcome.
-I also tested it and it works well:
-root@vm-amd64:~# grep ' name_show' /proc/kallsyms | head -6
-ffffffff810fa070 t name_show
-ffffffff810fa070 t name_show@kernel_irq_irqdesc_c_264
-ffffffff815e67c0 t name_show
-ffffffff815e67c0 t name_show@drivers_pnp_card_c_186
-ffffffff81728bb0 t name_show
-ffffffff81728bb0 t name_show@drivers_gpu_drm_i915_gt_sysfs_engines_c_26
+is the callchain that triggers this.
 
-> Il giorno mer 20 set 2023 alle ore 12:53 Francis Laniel
->=20
-> <flaniel@linux.microsoft.com> ha scritto:
-> > Hi.
-> >=20
-> > Le mardi 19 septembre 2023, 22:39:48 EEST Alessandro Carminati (Red Hat=
-) a
-> >=20
-> > =E9crit :
-> > > It is not uncommon for drivers or modules related to similar peripher=
-als
-> > > to have symbols with the exact same name.
-> > > While this is not a problem for the kernel's binary itself, it becomes
-> > > an
-> > > issue when attempting to trace or probe specific functions using
-> > > infrastructure like ftrace or kprobe.
-> > >=20
-> > > The tracing subsystem relies on the `nm -n vmlinux` output, which
-> > > provides
-> > > symbol information from the kernel's ELF binary. However, when multip=
-le
-> > > symbols share the same name, the standard nm output does not
-> > > differentiate
-> > > between them. This can lead to confusion and difficulty when trying to
-> > > probe the intended symbol.
-> > >=20
-> > >  ~ # cat /proc/kallsyms | grep " name_show"
-> > >  ffffffff8c4f76d0 t name_show
-> > >  ffffffff8c9cccb0 t name_show
-> > >  ffffffff8cb0ac20 t name_show
-> > >  ffffffff8cc728c0 t name_show
-> > >  ffffffff8ce0efd0 t name_show
-> > >  ffffffff8ce126c0 t name_show
-> > >  ffffffff8ce1dd20 t name_show
-> > >  ffffffff8ce24e70 t name_show
-> > >  ffffffff8d1104c0 t name_show
-> > >  ffffffff8d1fe480 t name_show
-> > >=20
-> > > kas_alias addresses this challenge by enhancing symbol names with
-> > > meaningful suffixes generated from the source file and line number
-> > > during the kernel build process.
-> > > These newly generated aliases provide tracers with the ability to
-> > > comprehend the symbols they are interacting with when utilizing the
-> > > ftracefs interface.
-> > > This approach may also allow for the probing by name of previously
-> > > inaccessible symbols.
-> > >=20
-> > >  ~ # cat /proc/kallsyms | grep gic_mask_irq
-> > >  ffffd15671e505ac t gic_mask_irq
-> > >  ffffd15671e505ac t gic_mask_irq@drivers_irqchip_irq_gic_c_167
-> > >  ffffd15671e532a4 t gic_mask_irq
-> > >  ffffd15671e532a4 t gic_mask_irq@drivers_irqchip_irq_gic_v3_c_407
-> > >  ~ #
-> > >=20
-> > > Changes from v1:
-> > > - Integrated changes requested by Masami to exclude symbols with
-> > > prefixes
-> > >=20
-> > >   "_cfi" and "_pfx".
-> > >=20
-> > > - Introduced a small framework to handle patterns that need to be
-> > > excluded
-> > >=20
-> > >   from the alias production.
-> > >=20
-> > > - Excluded other symbols using the framework.
-> > > - Introduced the ability to discriminate between text and data symbol=
-s.
-> > > - Added two new config symbols in this version:
-> > > CONFIG_KALLSYMS_ALIAS_DATA,
-> > >=20
-> > >   which allows data for data, and CONFIG_KALLSYMS_ALIAS_DATA_ALL, whi=
-ch
-> > >   excludes all filters and provides an alias for each duplicated symb=
-ol.
-> > >=20
-> > > https://lore.kernel.org/all/20230711151925.1092080-1-alessandro.carmi=
-nat
-> > > i@gm ail.com/
-> > >=20
-> > > Changes from v2:
-> > > - Alias tags are created by querying DWARF information from the vmlin=
-ux.
-> > > - The filename + line number is normalized and appended to the origin=
-al
-> > >=20
-> > >   name.
-> > >=20
-> > > - The tag begins with '@' to indicate the symbol source.
-> > > - Not a change, but worth mentioning, since the alias is added to the
-> > >=20
-> > >   existing list, the old duplicated name is preserved, and the livepa=
-tch
-> > >   way of dealing with duplicates is maintained.
-> > >=20
-> > > - Acknowledging the existence of scenarios where inlined functions
-> > >=20
-> > >   declared in header files may result in multiple copies due to compi=
-ler
-> > >   behavior, though it is not actionable as it does not pose an
-> > >   operational
-> > >   issue.
-> > >=20
-> > > - Highlighting a single exception where the same name refers to
-> > > different
-> > >=20
-> > >   functions: the case of "compat_binfmt_elf.c," which directly includ=
-es
-> > >   "binfmt_elf.c" producing identical function copies in two separate
-> > >   modules.
-> > >=20
-> > > https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carmi=
-nat
-> > > i@gm ail.com/
-> > >=20
-> > > Changes from v3:
-> > > - kas_alias was rewritten in Python to create a more concise and
-> > >=20
-> > >   maintainable codebase.
-> > >=20
-> > > - The previous automation process used by kas_alias to locate the
-> > > vmlinux
-> > >=20
-> > >   and the addr2line has been replaced with an explicit command-line
-> > >   switch
-> > >   for specifying these requirements.
-> > >=20
-> > > - addr2line has been added into the main Makefile.
-> > > - A new command-line switch has been introduced, enabling users to
-> > > extend
-> > >=20
-> > >   the alias to global data names.
-> > >=20
-> > > https://lore.kernel.org/all/20230828080423.3539686-1-alessandro.carmi=
-nat
-> > > i@gm ail.com/
-> > >=20
-> > > NOTE:
-> > > About the symbols name duplication that happens as consequence of the
-> > > inclusion compat_binfmt_elf.c does, it is evident that this corner is
-> > > inherently challenging the addr2line approach.
-> > > Attempting to conceal this limitation would be counterproductive.
-> > >=20
-> > > compat_binfmt_elf.c includes directly binfmt_elf.c, addr2line can't h=
-elp
-> > > but report all functions and data declared by that file, coming from
-> > > binfmt_elf.c.
-> > >=20
-> > > My position is that, rather than producing a more complicated pipeline
-> > > to handle this corner case, it is better to fix the compat_binfmt_elf=
-=2Ec
-> > > anomaly.
-> > >=20
-> > > This patch does not deal with the two potentially problematic symbols
-> > > defined by compat_binfmt_elf.c
-> >=20
-> > First, thank you for the v4, you will find in the remaining of the
-> > messages
-> > some comments but for now, I did not test it (this is planned).
-> > On a general way, using python really helps here as the code is more
-> > straightforward, thank you for this change.
-> >=20
-> > Regarding the problem with compat_binfmt_elf.c, do you have any idea on
-> > how to address it?
-> > I can maybe take a look at it but I would like to avoid breaking
-> > everything.
-> compat_binfmt_elf.c is a clever hack that enables sharing source code
-> between two different modules while allowing for command differences thro=
-ugh
-> config macros [1] [2].
-> The key lies in the fact they have only few differences.
->=20
-> In my view, a good approach would be to refactor both compat_binfmt_elf.c
-> and binfmt_elf.c, extracting common code and accessing it through wrapper=
-s.
-> This way, anyone looking to explore the functionality provided by either
-> module would have distinct symbols to work with.
-> Consolidating the two functions into one also seems beneficial, including=
- in
-> contexts like livepatch scenarios.
->=20
-> The trade-off here is that the modifications currently made using macros
-> would need to be done at runtime.
-> Fortunately, from what I see in the code, these changes appear to be
-> relatively modest, and the functions don't seem to be critical loops.
-> Therefore, sacrificing a few cycles to evaluate a flag doesn't appear to =
-be
-> a game-changer.
+ima_file_free() is called in a very sensitive location: __fput() that
+can be called from task work when the process is already PF_EXITING.
 
-Thank you for all this information, I will take a deeper look at it but can=
-not=20
-guarantee I will come back with something.
-
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/f=
-s/
-> binfmt_elf.c#n754 [2]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/f=
-s/
-> binfmt_elf.c#n1317
-> > > Signed-off-by: Alessandro Carminati (Red Hat)
-> > > <alessandro.carminati@gmail.com> ---
-> > >=20
-> > >  Makefile                |   4 +-
-> > >  init/Kconfig            |  22 +++++++
-> > >  scripts/kas_alias.py    | 132 ++++++++++++++++++++++++++++++++++++++=
-++
-> > >  scripts/link-vmlinux.sh |  20 +++++-
-> > >  4 files changed, 175 insertions(+), 3 deletions(-)
-> > >  create mode 100755 scripts/kas_alias.py
-> > >=20
-> > > diff --git a/Makefile b/Makefile
-> > > index 4f283d915e54..f33c179f4cc3 100644
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -488,6 +488,7 @@ OBJCOPY           =3D $(LLVM_PREFIX)llvm-objcopy$
-> >=20
-> > (LLVM_SUFFIX)
-> >=20
-> > >  OBJDUMP              =3D $(LLVM_PREFIX)llvm-objdump$(LLVM_SUFFIX)
-> > >  READELF              =3D $(LLVM_PREFIX)llvm-readelf$(LLVM_SUFFIX)
-> > >  STRIP                =3D $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
-> > >=20
-> > > +ADDR2LINE    =3D $(LLVM_PREFIX)llvm-addr2line$(LLVM_SUFFIX)
-> > >=20
-> > >  else
-> > >  CC           =3D $(CROSS_COMPILE)gcc
-> > >  LD           =3D $(CROSS_COMPILE)ld
-> > >=20
-> > > @@ -497,6 +498,7 @@ OBJCOPY           =3D $(CROSS_COMPILE)objcopy
-> > >=20
-> > >  OBJDUMP              =3D $(CROSS_COMPILE)objdump
-> > >  READELF              =3D $(CROSS_COMPILE)readelf
-> > >  STRIP                =3D $(CROSS_COMPILE)strip
-> > >=20
-> > > +ADDR2LINE    =3D $(CROSS_COMPILE)addr2line
-> > >=20
-> > >  endif
-> > >  RUSTC                =3D rustc
-> > >  RUSTDOC              =3D rustdoc
-> > >=20
-> > > @@ -611,7 +613,7 @@ export RUSTC_BOOTSTRAP :=3D 1
-> > >=20
-> > >  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS
-> > >=20
-> > > CROSS_COMPILE LD CC HOSTPKG_CONFIG export RUSTC RUSTDOC RUSTFMT
-> > > RUSTC_OR_CLIPPY_QUIET RUSTC_OR_CLIPPY BINDGEN CARGO export HOSTRUSTC
-> > > KBUILD_HOSTRUSTFLAGS
-> > > -export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS
-> > > LEX
-> > > YACC AWK INSTALLKERNEL +export CPP AR NM STRIP OBJCOPY OBJDUMP READELF
-> > > ADDR2LINE PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL export PERL
-> > > PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
-> > >=20
-> > >  export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
-> > >  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS
-> > >=20
-> > > LDFLAGS_MODULE diff --git a/init/Kconfig b/init/Kconfig
-> > > index 6d35728b94b2..d45dd423e1ec 100644
-> > > --- a/init/Kconfig
-> > > +++ b/init/Kconfig
-> > > @@ -1738,6 +1738,28 @@ config KALLSYMS_BASE_RELATIVE
-> > >=20
-> > >         time constants, and no relocation pass is required at runtime=
- to
-> > >         fix
-> > >         up the entries based on the runtime load address of the kerne=
-l.
-> > >=20
-> > > +config KALLSYMS_ALIAS_SRCLINE
-> > > +     bool "Produces alias for duplicated text symbols" if EXPERT
-> > > +     depends on KALLSYMS && DEBUG_INFO && !DEBUG_INFO_SPLIT
-> > > +     help
-> > > +       It is not uncommon for drivers or modules related to similar
-> > > +       peripherals to have symbols with the exact same name.
-> > > +       While this is not a problem for the kernel's binary itself, it
-> > > +       becomes an issue when attempting to trace or probe specific
-> > > +       functions using infrastructure like ftrace or kprobe.
-> > > +
-> > > +       This option addresses this challenge, producing alias for text
-> > > +       symbol names that include the file name and line where the
-> > > symbols
-> > > +       are defined in the source code.
-> > > +
-> > > +config KALLSYMS_ALIAS_SRCLINE_DATA
-> > > +     bool "Produces alias also for global variables names"
-> > > +     depends on KALLSYMS_ALIAS_SRCLINE
-> > > +     help
-> > > +       Sometimes it can be useful to refer to global vars by name.
-> > > Since
-> > > +       they suffer the same issue as text symbols, this config option
-> > > +       allows having aliases for global variables names too.
-> > > +
-> > >=20
-> > >  # end of the "standard kernel features (expert users)" menu
-> > > =20
-> > >  # syscall, maps, verifier
-> > >=20
-> > > diff --git a/scripts/kas_alias.py b/scripts/kas_alias.py
-> > > new file mode 100755
-> > > index 000000000000..8cc2a2178da6
-> > > --- /dev/null
-> > > +++ b/scripts/kas_alias.py
-> > > @@ -0,0 +1,132 @@
-> > > +#!/usr/bin/env python3
-> > > +# SPDX-License-Identifier: GPL-2.0-only
-> > > +#
-> > > +# Copyright (C) 2023 Red Hat, Inc. Alessandro Carminati
-> > > <alessandro.carminati@gmail.com> +#
-> > > +# kas_alias: Adds alias to duplicate symbols in the kallsyms output.
-> > > +
-> > > +import subprocess
-> > > +import sys
-> > > +import os
-> > > +import argparse
-> > > +import re
-> > > +from collections import namedtuple
-> > > +
-> > > +regex_filter =3D [
-> > > +        "^__compound_literal\\.[0-9]+$",
-> > > +        "^__[wm]*key\\.[0-9]+$",
-> > > +        "^_*TRACE_SYSTEM.*$",
-> > > +        "^__already_done\\.[0-9]+$",
-> > > +        "^__msg\\.[0-9]+$",
-> > > +        "^__func__\\.[0-9]+$",
-> > > +        "^CSWTCH\\.[0-9]+$",
-> > > +        "^_rs\\.[0-9]+$",
-> > > +        "^___tp_str\\.[0-9]+$",
-> > > +        "^__flags\\.[0-9]+$",
-> > > +        "^___done\\.[0-9]+$",
-> > > +        "^__print_once\\.[0-9]+$",
-> > > +        "^___once_key\\.[0-9]+$",
-> > > +        "^__pfx_.*$",
-> > > +        "^__cfi_.*$"
-> > > +        ]
-> > > +
-> > > +class SeparatorType:
-> > > +    def __call__(self, separator):
-> > > +        if len(separator) !=3D 1:
-> > > +            raise argparse.ArgumentTypeError("Separator must be a
-> > > single
-> > > character") +        return separator
-> > > +
-> > > +Line =3D namedtuple('Line', ['address', 'type', 'name'])
-> > > +
-> > > +def parse_file(filename):
-> > > +    symbol_list =3D []
-> > > +    name_occurrences =3D {}
-> > > +
-> > > +    with open(filename, 'r') as file:
-> > > +        for line in file:
-> > > +            fields =3D line.strip().split()
-> > > +
-> > > +            if len(fields) >=3D 3:
-> > > +                address, type, name =3D fields[0], fields[1], '
-> > > '.join(fields[2:]) +                symbol_list.append(Line(address,
-> > > type,
-> > > name))
-> > > +                name_occurrences[name] =3D name_occurrences.get(name=
-, 0)
-> > > + 1
-> > > +
-> > > +    return symbol_list, name_occurrences
-> > > +
-> > > +def find_duplicate(symbol_list, name_occurrences):
-> > > +    name_to_lines =3D {}
-> > > +    duplicate_lines =3D []
-> > > +
-> > > +    for line in symbol_list:
-> > > +        if line.name in name_to_lines:
-> > > +            first_occurrence =3D name_to_lines[line.name]
-> > > +            duplicate_lines.extend([first_occurrence, line])
-> > > +        else:
-> > > +            name_to_lines[line.name] =3D line
-> > > +
-> > > +    return duplicate_lines
-> > > +
-> > > +def start_addr2line_process(binary_file, addr2line_file):
-> > > +    try:
-> > > +        addr2line_process =3D subprocess.Popen([addr2line_file, '-fe=
-',
-> > > binary_file], +
-> > > stdin=3Dsubprocess.PIPE, +
-> > > stdout=3Dsubprocess.PIPE, +
-> > > stderr=3Dsubprocess.PIPE, +
-> > > text=3DTrue)
-> > > +        return addr2line_process
-> > > +    except Exception as e:
-> > > +        print(f"Error starting addr2line process: {str(e)}")
-> > > +        return None
-> >=20
-> > Here, you can raise another exception, otherwise this error message will
-> > be
-> > printed on stdout as you use print().
-> >=20
-> > > +
-> > > +def addr2line_fetch_address(addr2line_process, address):
-> > > +    try:
-> > > +        addr2line_process.stdin.write(address + '\n')
-> > > +        addr2line_process.stdin.flush()
-> > > +        addr2line_process.stdout.readline().strip()
-> > > +        output =3D addr2line_process.stdout.readline().strip()
-> > > +
-> > > +        return os.path.normpath(output)
-> > > +    except Exception as e:
-> > > +        print(f"Error communicating with addr2line: {str(e)}")
-> > > +        return None
-> >=20
-> > Same comment than above.
->=20
-> Hmm, you might be onto something there.
-> The issue here is that I probably shouldn't return at all and should just
-> go ahead and terminate the program. I mean, if I hit this exception, it
-> means I couldn't spawn addr2line or fetch results from it.
-> In that case, I can't provide the functionality anyway.
-> When I initially wrote the function, my idea was to prevent the kernel
-> build pipeline from failing completely by taking the input and pushing it
-> to the output (even though the application wouldn't provide the
-> functionality).
-> But now I started thinking about it from the perspective of a user who
-> really needs that functionality.
-> Despite having to enable it, it does not present itself.
-> That way I'm just complicating the debug.
->=20
-> I came to the conclusion that it's best to just crash the application and
-> halt the pipeline if either of the two fails.
-> I will change it accordingly.
->=20
-> > > +def process_line(line, config):
-> > line should be named obj here.
->=20
-> fair.
->=20
-> > > +    if config:
-> > > +        return not (any(re.match(regex, obj.name) for regex in
-> > > regex_filter)) +    else:
-> > > +        return obj.type in {"T", "t"}
-> > > +if __name__ =3D=3D "__main__":
-> > > +    parser =3D argparse.ArgumentParser(description=3D'Add alias to m=
-ultiple
-> > > occurring symbols name in kallsyms') +    parser.add_argument('-a',
-> > > "--addr2line", dest=3D"addr2line_file", required=3DTrue) +
-> > > parser.add_argument('-v', "--vmlinux", dest=3D"vmlinux_file",
-> > > required=3DTrue)
-> > > +    parser.add_argument('-o', "--outfile", dest=3D"output_file",
-> > > required=3DTrue) +    parser.add_argument('-n', "--nmdata",
-> > > dest=3D"nm_data_file", required=3DTrue) +    parser.add_argument('-s',
-> > > "--separator", dest=3D"separator", required=3DFalse, default=3D"@",
-> > > type=3DSeparatorType()) +    parser.add_argument('-d', "--data",
-> > > dest=3D"include_data", required=3DFalse, action=3D'store_true') +    =
-config =3D
-> > > parser.parse_args()
-> > > +
-> > > +    try:
-> > > +        config.linux_base_dir =3D os.getcwd()+"/"
-> > > +        symbol_list, name_occurrences =3D parse_file(config.nm_data_=
-file)
-> > > +        addr2line_process =3D
-> > > start_addr2line_process(config.vmlinux_file,
-> > > config.addr2line_file) +
-> > > +        with open(config.output_file, 'w') as file:
-> > > +            for obj in symbol_list:
-> > > +                file.write("{} {} {}\n".format(obj.address, obj.type,
-> > > obj.name))
-> >=20
-> > I am not a python expert but is there something which prevents using
-> > f-string here?
->=20
-> Agree, best to have a single style.
->=20
-> > > +                if (name_occurrences[obj.name] > 1) and
-> > > process_line(obj, config.include_data) : +                    output =
-=3D
-> > > addr2line_fetch_address(addr2line_process, obj.address) +
-> > >=20
-> > >  decoration =3D config.separator + "".join(
-> > >=20
-> > > +                        "_" if not c.isalnum() else c for c in
-> > > output.replace(config.linux_base_dir, "") +                    )
-> >=20
-> > Cannot the above be simplified to:
-> > decoration =3D config.separator + config.linux_base_dir + ("_" if not
-> > c.isalnum() else c for c in output)
-> >=20
-> > > +                    if decoration !=3D config.separator + "____":
-> > Why exactly "____" and not "_+" (+ in the regex meaning of {1, n})?
->=20
-> The reason for using "____" is because when addr2line emits the special
-> string "?:??" its normalized version becomes "____" .
-> "?:??" occurs when addr2line can not find the specified address in the
-> DWARF section, which is typical of symbols introduced by the compiler.
-> In such cases, emitting an alias wouldn't make sense, so I skip it.
-
-OK, this makes sense!
-I am wondering nonetheless what do you think about adding a comment which=20
-would indicate that "____" is the translation of "?:??"? This would be usef=
-ul=20
-for people, like me, who does not have a great knowledge about addr2line.
-
-> > > +                        file.write("{} {} {}\n".format(obj.address,
-> > > obj.type, obj.name + decoration)) +
-> > > +        addr2line_process.stdin.close()
-> > > +        addr2line_process.stdout.close()
-> > > +        addr2line_process.stderr.close()
-> > > +        addr2line_process.wait()
-> > > +
-> > > +    except Exception as e:
-> > > +        print(f"An error occurred: {str(e)}")
-> > > +        raise SystemExit("Script terminated due to an error")
-> >=20
-> > Maybe you can fuse the two:
-> > raise SystemExit(f"Script terminated due to an error: {str(e)}")
->=20
-> Got it, thanks
->=20
-> > > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> > > index a432b171be82..7cc24fd5f6b4 100755
-> > > --- a/scripts/link-vmlinux.sh
-> > > +++ b/scripts/link-vmlinux.sh
-> > > @@ -91,7 +91,12 @@ vmlinux_link()
-> > >=20
-> > >       # The kallsyms linking does not need debug symbols included.
-> > >       if [ "$output" !=3D "${output#.tmp_vmlinux.kallsyms}" ] ; then
-> > >=20
-> > > -             ldflags=3D"${ldflags} ${wl}--strip-debug"
-> > > +             # The kallsyms linking does not need debug symbols
-> > > included,
-> > > +             # unless the KALLSYMS_ALIAS_SRCLINE.
-> > > +             if ! is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE && \
-> > > +                [ "$output" !=3D "${output#.tmp_vmlinux.kallsyms}" ]=
- ;
-> > > then
-> > > +                     ldflags=3D"${ldflags} ${wl}--strip-debug"
-> > > +             fi
-> > >=20
-> > >       fi
-> > >      =20
-> > >       if is_enabled CONFIG_VMLINUX_MAP; then
-> > >=20
-> > > @@ -161,7 +166,18 @@ kallsyms()
-> > >=20
-> > >       fi
-> > >      =20
-> > >       info KSYMS ${2}
-> > >=20
-> > > -     scripts/kallsyms ${kallsymopt} ${1} > ${2}
-> > > +     ALIAS=3D""
-> > > +     KAS_DATA=3D""
-> > > +     if is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE_DATA; then
-> > > +             KAS_DATA=3D"-d"
-> > > +     fi
-> > > +     if is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE; then
-> > > +             ALIAS=3D".alias"
-> > > +             scripts/kas_alias.py \
-> > > +                     -a ${ADDR2LINE} -v ${kallsyms_vmlinux} -n ${1} \
-> > > +                     -o ${1}${ALIAS} -s @ ${KAS_DATA}
-> >=20
-> > The separator can indeed be set for the python script but is hardcoded
-> > from
-> > the kernel point of view as there are no corresponding CONFIG_.
-> > This is totally fine for me, as if someone wants a specific separator
-> > he/she can edit this file, but was it your goal?
->=20
-> Indeed.
-> While your earlier point made sense to me, Petr's arguments were quite
-> convincing.
-> So, the kernel does hardcode the separator, but if someone really wants
-> to change it, they can simply edit a character in the
-> scripts/link-vmlinux.sh file.
-
-I totally agree with Petr's comment.
-I think adding a format or other complicated stuff is just a remix of "the=
-=20
-highway to hell is paved with good intentions".
-So better to let it as it, and expert users can just edit the script.
-
-> > > +     fi
-> > > +     scripts/kallsyms ${kallsymopt} ${1}${ALIAS} > ${2}
-> > >=20
-> > >  }
-> > > =20
-> > >  # Perform one step in kallsyms generation, including temporary linki=
-ng
-> > >  of
-> >=20
-> > Best regards.
-
-Best regards.
+The ideal solution would be for ima to stop calling back into the
+filesystems in this location at all but that's probably not going to
+happen because I now realize you also set extended attributes from
+__fput():
 
 
+ima_check_last_writer()
+-> ima_update_xatt()
+   -> ima_fix_xattr()
+      -> __vfs_setxattr_noperm()
+
+The __vfs_setxattr_noperm() codepath can itself trigger
+security_inode_post_setxattr() and security_inode_setsecurity(). So
+those hooks are hopefully safe to be called with PF_EXITING tasks as
+well...
+
+Imho, this is all very wild but I'm not judging.
+
+Two solutions imho:
+(1) teach stacking filesystems like overlayfs and ecryptfs to use
+    vfs_getattr_nosec() in their ->getattr() implementation when they
+    are themselves called via vfs_getattr_nosec(). This will fix this by
+    not triggering another LSM hook.
+(2) make all ->getattr() LSM hooks PF_EXITING safe ideally don't do
+    anything
