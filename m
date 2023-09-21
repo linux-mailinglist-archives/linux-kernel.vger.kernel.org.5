@@ -2,57 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0B17A9E68
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E7B7A9DB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbjIUUBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
+        id S230506AbjIUTp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjIUUAm (ORCPT
+        with ESMTP id S231202AbjIUTpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:00:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BE751F7B;
-        Thu, 21 Sep 2023 10:17:07 -0700 (PDT)
+        Thu, 21 Sep 2023 15:45:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4987A7EA02;
+        Thu, 21 Sep 2023 10:50:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695316628; x=1726852628;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lTXXgtikZK8fOV2paXgb9h3Lt1o9zA5yS/eHowFJJOE=;
-  b=KRDmTtOpSMmjsqzHqliaUmm1/gPNKHP9zItXGpAmm3GSIo190LktVyMS
-   MFX+oi4UUxD/tcunceT50U5RjLrV8tAaSv1Z6P8VkiYRtIu731xR3Az8T
-   rUx5ozMX+yj8aehngSm4fuE4u7vbINM+5ZnmxjuLXltnU+QcbWaFtoGXF
-   uUtzUMlNM4C92ZoO1BbqKl2DCzmU2tke41q3asfKGXF/7d+49Yob3kYRb
-   7l+NH4DQowtbGOLKStDdHoPcl68w8b3voNcgpcTKzQqE7zTQWJxib5GXW
-   W24uGTchsFLgpv7Ys2OQstkOaW83HA4cDQqHjOoX4t5m6l/duXBlavBiP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="444608265"
+  t=1695318647; x=1726854647;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=xzUHdYuTPX8UEPkN1RU7vl2/b1DAaw7BomhJXS2mn5U=;
+  b=C1x6IMkzybQYgmnhFfnSwg+lFuiSlzY1GJQk9HodNkYa1ZktK+/YHZf8
+   W2bJECY5Ud5E0lG6KryKrZYdD7i1iZHqFZMUz0aoquzOTcHnMhCme/MSI
+   tizhZQQK+6+qy5XCfivaUwFI6YB0kCDwPg8Yu0XRQvrvRtxTeH7Au7Xmt
+   3Q6/FGLy+13lpm0/tRI75f8Ir51AixXOghoBu6/bPwDxlvNoPoSAO2S1k
+   QiFPVxbVasxcP4+i1SSft6rqUNPdnZQ3nDSJ3Mxfp0Xu6Q3/y62pbtT5O
+   NdJFrOP5679r0BSJohoHDE98baNq+WG8wdJuzRsdKloCGmOrzlMHbAyr3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="384344978"
 X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="444608265"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:20:59 -0700
+   d="scan'208";a="384344978"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:25:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="862441935"
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="776399273"
 X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="862441935"
-Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Sep 2023 05:20:48 -0700
-From:   Choong Yong Liang <yong.liang.choong@linux.intel.com>
-To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+   d="scan'208";a="776399273"
+Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.215.240.199]) ([10.215.240.199])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:25:29 -0700
+Message-ID: <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
+Date:   Thu, 21 Sep 2023 20:25:05 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v2 0/5] TSN auto negotiation between 1G and 2.5G
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
         David E Box <david.e.box@linux.intel.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Mark Gross <markgross@kernel.org>,
         Jose Abreu <Jose.Abreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
         "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
         Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Giuseppe Cavallaro <peppe.cavallaro@st.com>,
@@ -71,11 +76,7 @@ To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
         Revanth Kumar Uppala <ruppala@nvidia.com>,
         Shenwei Wang <shenwei.wang@nxp.com>,
         Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>
-Cc:     David E Box <david.e.box@intel.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org,
@@ -84,84 +85,58 @@ Cc:     David E Box <david.e.box@intel.com>,
         Tan Tee Min <tee.min.tan@linux.intel.com>,
         Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
         Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: [PATCH net-next v3 3/5] net: phy: update in-band AN mode when changing interface by PHY driver
-Date:   Thu, 21 Sep 2023 20:19:44 +0800
-Message-Id: <20230921121946.3025771-4-yong.liang.choong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
-References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
-MIME-Version: 1.0
+References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
+ <5bd05ba2-fd88-4e5c-baed-9971ff917484@lunn.ch>
+Content-Language: en-US
+From:   Choong Yong Liang <yong.liang.choong@linux.intel.com>
+In-Reply-To: <5bd05ba2-fd88-4e5c-baed-9971ff917484@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As there is a mechanism in PHY drivers to switch the PHY interface
-between SGMII and 2500BaseX according to link speed. In this case,
-the in-band AN mode should be switching based on the PHY interface
-as well, if the PHY interface has been changed/updated by PHY driver.
 
-For e.g., disable in-band AN in 2500BaseX mode, or enable in-band AN
-back for SGMII mode (10/100/1000Mbps).
 
-Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
----
- drivers/net/phy/phylink.c | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+On 4/8/2023 8:04 pm, Andrew Lunn wrote:
+> On Fri, Aug 04, 2023 at 04:45:22PM +0800, Choong Yong Liang wrote:
+>> Intel platforms’ integrated Gigabit Ethernet controllers support
+>> 2.5Gbps mode statically using BIOS programming. In the current
+>> implementation, the BIOS menu provides an option to select between
+>> 10/100/1000Mbps and 2.5Gbps modes. Based on the selection, the BIOS
+>> programs the Phase Lock Loop (PLL) registers. The BIOS also read the
+>> TSN lane registers from Flexible I/O Adapter (FIA) block and provided
+>> 10/100/1000Mbps/2.5Gbps information to the stmmac driver. But
+>> auto-negotiation between 10/100/1000Mbps and 2.5Gbps is not allowed.
+>> The new proposal is to support auto-negotiation between 10/100/1000Mbps
+>> and 2.5Gbps . Auto-negotiation between 10, 100, 1000Mbps will use
+>> in-band auto negotiation. Auto-negotiation between 10/100/1000Mbps and
+>> 2.5Gbps will work as the following proposed flow, the stmmac driver reads
+>> the PHY link status registers then identifies the negotiated speed.
+>> Based on the speed stmmac driver will identify TSN lane registers from
+>> FIA then send IPC command to the Power Management controller (PMC)
+>> through PMC driver/API. PMC will act as a proxy to programs the
+>> PLL registers.
+> 
+> Have you considered using out of band for all link modes? You might
+> end up with a cleaner architecture, and not need any phylink/phylib
+> hacks.
+> 
+> 	Andrew
+Hi Andrew,
 
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index 0d7354955d62..5811c8086149 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -1723,6 +1723,34 @@ bool phylink_expects_phy(struct phylink *pl)
- }
- EXPORT_SYMBOL_GPL(phylink_expects_phy);
- 
-+/**
-+ * phylink_interface_change() - update both cfg_link_an_mode and
-+ * cur_link_an_mode when there is a change in the interface.
-+ * @phydev: pointer to &struct phy_device
-+ *
-+ * When the PHY interface switches between SGMII and 2500BaseX in
-+ * accordance with the link speed, the in-band AN mode should also switch
-+ * based on the PHY interface
-+ */
-+static void phylink_interface_change(struct phy_device *phydev)
-+{
-+	struct phylink *pl = phydev->phylink;
-+
-+	if (pl->phy_state.interface != phydev->interface) {
-+		/* Fallback to the correct AN mode. */
-+		if (phy_interface_mode_is_8023z(phydev->interface) &&
-+		    pl->cfg_link_an_mode == MLO_AN_INBAND) {
-+			pl->cfg_link_an_mode = MLO_AN_PHY;
-+			pl->cur_link_an_mode = MLO_AN_PHY;
-+		} else if (pl->config->ovr_an_inband) {
-+			pl->cfg_link_an_mode = MLO_AN_INBAND;
-+			pl->cur_link_an_mode = MLO_AN_INBAND;
-+		}
-+
-+		pl->phy_state.interface = phydev->interface;
-+	}
-+}
-+
- static void phylink_phy_change(struct phy_device *phydev, bool up)
- {
- 	struct phylink *pl = phydev->phylink;
-@@ -1739,7 +1767,7 @@ static void phylink_phy_change(struct phy_device *phydev, bool up)
- 		pl->phy_state.pause |= MLO_PAUSE_TX;
- 	if (rx_pause)
- 		pl->phy_state.pause |= MLO_PAUSE_RX;
--	pl->phy_state.interface = phydev->interface;
-+	phylink_interface_change(phydev);
- 	pl->phy_state.link = up;
- 	mutex_unlock(&pl->state_mutex);
- 
--- 
-2.25.1
+After conducting a comprehensive study, it seems that implementing 
+out-of-band for all link modes might not be feasible. I may have missed 
+some key aspects during my analysis.
 
+Would you be open to sharing a high-level idea of how we could potentially 
+make this feasible? Your insights would be greatly appreciated.
+
+By the way, I've submitted a new design that not exposing phylink's AN mode 
+into phylib. Please help review it to determine if it is acceptable.
