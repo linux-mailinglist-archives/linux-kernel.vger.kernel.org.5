@@ -2,93 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA407A9BA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600E17A9B0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjIUTDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
+        id S229539AbjIUSxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbjIUTCr (ORCPT
+        with ESMTP id S229672AbjIUSxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:02:47 -0400
-Received: from icts-p-cavspool-1.kulnet.kuleuven.be (icts-p-cavspool-1.kulnet.kuleuven.be [134.58.240.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410058CC95;
-        Thu, 21 Sep 2023 10:42:40 -0700 (PDT)
-Received: from icts-p-cavuit-2.kulnet.kuleuven.be (icts-p-cavuit-2.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:131])
-        by icts-p-cavspool-1.kulnet.kuleuven.be (Postfix) with ESMTP id 53AC529C5;
-        Thu, 21 Sep 2023 16:37:01 +0200 (CEST)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 02F7F2017B.A086B
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:140:242:ac11:1d])
-        by icts-p-cavuit-2.kulnet.kuleuven.be (Postfix) with ESMTP id 02F7F2017B;
-        Thu, 21 Sep 2023 16:36:40 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1695306999;
-        bh=y3u0nX3ul5ivumfYWCjSC3RyTGxb8qELHwEuTshYGl0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=n5V8Ujoh6eaZ3QJKxbKFTAvj+oQSTZIPx+XKqmTqghek+SqSf/E3YAhshasCgXds8
-         haJARW6joFgXGpV4zytb9xSk5tbMIYW3mjppgIaKzT4WXpiPi74bjUjIcBpstXrUzs
-         CeTRD+CvcIl0bsZH3ApS+qGgLvvKyXE8lk+u0HGE=
-Received: from localhost.localdomain (ptr-82s0fs8p4onqm1q5sl7.18120a2.ip6.access.telenet.be [IPv6:2a02:1811:d31:8b00:c962:1db3:c9ed:fdfb])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id BF2E6D4F30837;
-        Thu, 21 Sep 2023 16:36:39 +0200 (CEST)
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-To:     jarkko@kernel.org, kai.huang@intel.com, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com,
-        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Subject: [PATCH v6 09/13] selftests/sgx: Fix linker script asserts
-Date:   Thu, 21 Sep 2023 16:36:00 +0200
-Message-Id: <20230921143604.6561-10-jo.vanbulck@cs.kuleuven.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921143604.6561-1-jo.vanbulck@cs.kuleuven.be>
-References: <20230921143604.6561-1-jo.vanbulck@cs.kuleuven.be>
+        Thu, 21 Sep 2023 14:53:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487B18E6B6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695318821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bkHFfbf/ZTFOoIFuqGa85GazmdlDm6edHrXHnYQgl0Q=;
+        b=ipDF/0uyeEozezjD7bXp8tSDc6WAWw9lJ2ROWrIrHfub/8FqbjvIonagaZ1w8DvGELSFYs
+        eiu7ccfOwohFOkPUGQbR2uArbXDPlPowcVJ58Os9rwl6jADyfs4brIsf88iTdZEGoZhmf+
+        4716Wq5Z/7zfP1TmZmTFLQTsQdYgxLA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-410-wDRf4tzHOkSs2Cf-drc60Q-1; Thu, 21 Sep 2023 10:38:14 -0400
+X-MC-Unique: wDRf4tzHOkSs2Cf-drc60Q-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fe182913c5so8242895e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 07:38:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695307093; x=1695911893;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bkHFfbf/ZTFOoIFuqGa85GazmdlDm6edHrXHnYQgl0Q=;
+        b=wWfGaODn3dc/rSmaVubEHz0Cd0JFGUXDSboNFAS0giP59+vlRVrT0Dv/fCZ1cMiz4n
+         PtQvZHGyu8VZ9SouEIMTXWD7pg1dePnQFOMgUNYewM0UgTq4IfHHC8wdQXAjSZPxlXo7
+         u8jJp1fU9+i84Uk5DxVziTsQldSeuluv3Psu1jkqGQgmjV5i8N94L3WaxXeA9OCnwTMe
+         91t/TWfnriHvJCVqr3EGiNzR8OjPRlh+zxhQkDU8PAZl/G0PrDVMnNmChCV4xgBKhSN7
+         V6JE6vDxxW8WyFaV4hD20qHbSNnvz3hJCSttCMx/2ajZr5CGpBg+F7rgWgDqm3StLFg0
+         35tw==
+X-Gm-Message-State: AOJu0Yy1AWkQuSOeKgFtlxlUexDrZzIvwTvxc+AO8iSKzja+IqgvQgCP
+        HbcdmvslcaC/D06o/nj+JNYsSbwSxIJbVJQTUIUqme6duwf7YbfRWq1FNLDviuapBAZtwokF2i0
+        wRP4kGlJ6lrUd9rn1aNRAtlKG
+X-Received: by 2002:a05:600c:2a41:b0:405:1c14:9227 with SMTP id x1-20020a05600c2a4100b004051c149227mr5682677wme.33.1695307093444;
+        Thu, 21 Sep 2023 07:38:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHbrKfOcZLrs93IQniuXuejhGT188/4BVcBUTOQCzgVMgciO13Y3byKebIcjb+fBASC8IWBXQ==
+X-Received: by 2002:a05:600c:2a41:b0:405:1c14:9227 with SMTP id x1-20020a05600c2a4100b004051c149227mr5682648wme.33.1695307092877;
+        Thu, 21 Sep 2023 07:38:12 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id c3-20020a05600c0ac300b004047ac770d1sm4976095wmr.8.2023.09.21.07.38.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 07:38:12 -0700 (PDT)
+Message-ID: <55a55ed5-0c67-a26f-df5f-18d3b2be278e@redhat.com>
+Date:   Thu, 21 Sep 2023 16:38:10 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH drm-misc-next v4 4/8] drm/gpuvm: add common dma-resv per
+ struct drm_gpuvm
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, faith.ekstrand@collabora.com,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230920144343.64830-1-dakr@redhat.com>
+ <20230920144343.64830-5-dakr@redhat.com>
+ <7951dc11-6047-6beb-8ef8-98c862e26ec3@amd.com>
+ <964a1bdd-549d-7850-9a8c-8278c4cd32ec@redhat.com>
+ <20230921162510.10903d90@collabora.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20230921162510.10903d90@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DEFINED only considers symbols, not section names. Hence, replace the
-check for .got.plt with the _GLOBAL_OFFSET_TABLE_ symbol and remove other
-(non-essential) asserts.
+On 9/21/23 16:25, Boris Brezillon wrote:
+> On Thu, 21 Sep 2023 15:34:44 +0200
+> Danilo Krummrich <dakr@redhat.com> wrote:
+> 
+>> On 9/21/23 09:39, Christian König wrote:
+>>> Am 20.09.23 um 16:42 schrieb Danilo Krummrich:
+>>>> Provide a common dma-resv for GEM objects not being used outside of this
+>>>> GPU-VM. This is used in a subsequent patch to generalize dma-resv,
+>>>> external and evicted object handling and GEM validation.
+>>>>
+>>>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+>>>> ---
+>>>>    drivers/gpu/drm/drm_gpuvm.c            |  9 +++++++--
+>>>>    drivers/gpu/drm/nouveau/nouveau_uvmm.c |  2 +-
+>>>>    include/drm/drm_gpuvm.h                | 17 ++++++++++++++++-
+>>>>    3 files changed, 24 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
+>>>> index bfea4a8a19ec..cbf4b738a16c 100644
+>>>> --- a/drivers/gpu/drm/drm_gpuvm.c
+>>>> +++ b/drivers/gpu/drm/drm_gpuvm.c
+>>>> @@ -655,6 +655,7 @@ drm_gpuva_range_valid(struct drm_gpuvm *gpuvm,
+>>>>    /**
+>>>>     * drm_gpuvm_init() - initialize a &drm_gpuvm
+>>>>     * @gpuvm: pointer to the &drm_gpuvm to initialize
+>>>> + * @drm: the drivers &drm_device
+>>>>     * @name: the name of the GPU VA space
+>>>>     * @start_offset: the start offset of the GPU VA space
+>>>>     * @range: the size of the GPU VA space
+>>>> @@ -668,7 +669,7 @@ drm_gpuva_range_valid(struct drm_gpuvm *gpuvm,
+>>>>     * &name is expected to be managed by the surrounding driver structures.
+>>>>     */
+>>>>    void
+>>>> -drm_gpuvm_init(struct drm_gpuvm *gpuvm,
+>>>> +drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_device *drm,
+>>>>               const char *name,
+>>>>               u64 start_offset, u64 range,
+>>>>               u64 reserve_offset, u64 reserve_range,
+>>>> @@ -694,6 +695,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm,
+>>>>                                 reserve_range)))
+>>>>                __drm_gpuva_insert(gpuvm, &gpuvm->kernel_alloc_node);
+>>>>        }
+>>>> +
+>>>> +    drm_gem_private_object_init(drm, &gpuvm->d_obj, 0);
+>>>>    }
+>>>>    EXPORT_SYMBOL_GPL(drm_gpuvm_init);
+>>>> @@ -713,7 +716,9 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
+>>>>            __drm_gpuva_remove(&gpuvm->kernel_alloc_node);
+>>>>        WARN(!RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
+>>>> -         "GPUVA tree is not empty, potentially leaking memory.");
+>>>> +         "GPUVA tree is not empty, potentially leaking memory.\n");
+>>>> +
+>>>> +    drm_gem_private_object_fini(&gpuvm->d_obj);
+>>>>    }
+>>>>    EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
+>>>> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+>>>> index 6c86b64273c3..a80ac8767843 100644
+>>>> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+>>>> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+>>>> @@ -1836,7 +1836,7 @@ nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
+>>>>        uvmm->kernel_managed_addr = kernel_managed_addr;
+>>>>        uvmm->kernel_managed_size = kernel_managed_size;
+>>>> -    drm_gpuvm_init(&uvmm->base, cli->name,
+>>>> +    drm_gpuvm_init(&uvmm->base, cli->drm->dev, cli->name,
+>>>>                   NOUVEAU_VA_SPACE_START,
+>>>>                   NOUVEAU_VA_SPACE_END,
+>>>>                   kernel_managed_addr, kernel_managed_size,
+>>>> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
+>>>> index 0e802676e0a9..6666c07d7c3e 100644
+>>>> --- a/include/drm/drm_gpuvm.h
+>>>> +++ b/include/drm/drm_gpuvm.h
+>>>> @@ -240,14 +240,29 @@ struct drm_gpuvm {
+>>>>         * @ops: &drm_gpuvm_ops providing the split/merge steps to drivers
+>>>>         */
+>>>>        const struct drm_gpuvm_ops *ops;
+>>>> +
+>>>> +    /**
+>>>> +     * @d_obj: Dummy GEM object; used internally to pass the GPU VMs
+>>>> +     * dma-resv to &drm_exec. Provides the GPUVM's &dma-resv.
+>>>> +     */
+>>>> +    struct drm_gem_object d_obj;
+>>>
+>>> Yeah, as pointed out in the other mail that won't work like this.
+>>
+>> Which one? Seems that I missed it.
+>>
+>>>
+>>> The GPUVM contains GEM objects and therefore should probably have a reference to those objects.
+>>>
+>>> When those GEM objects now use the dma-resv object embedded inside the GPUVM then they also need a reference to the GPUVM to make sure the dma-resv object won't be freed before they are freed.
+>>
+>> My assumption here is that GEM objects being local to a certain VM never out-live the VM. We never share it with anyone, otherwise it would be external and hence wouldn't carray the VM's dma-resv. The only references I see are from the VM itself (which is fine) and from userspace. The latter isn't a problem as long as all GEM handles are closed before the VM is destroyed on FD close.
+> 
+> But we don't want to rely on userspace doing the right thing (calling
+> GEM_CLOSE before releasing the VM), do we?
 
-Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- tools/testing/selftests/sgx/test_encl.lds | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+I assume VM's are typically released on postclose() and drm_gem_release() is
+called previously. But yeah, I guess there are indeed other issues.
 
-diff --git a/tools/testing/selftests/sgx/test_encl.lds b/tools/testing/selftests/sgx/test_encl.lds
-index 62d37160f59b..6ffdfc9fb4cf 100644
---- a/tools/testing/selftests/sgx/test_encl.lds
-+++ b/tools/testing/selftests/sgx/test_encl.lds
-@@ -35,8 +35,4 @@ SECTIONS
- 	}
- }
- 
--ASSERT(!DEFINED(.altinstructions), "ALTERNATIVES are not supported in enclaves")
--ASSERT(!DEFINED(.altinstr_replacement), "ALTERNATIVES are not supported in enclaves")
--ASSERT(!DEFINED(.discard.retpoline_safe), "RETPOLINE ALTERNATIVES are not supported in enclaves")
--ASSERT(!DEFINED(.discard.nospec), "RETPOLINE ALTERNATIVES are not supported in enclaves")
--ASSERT(!DEFINED(.got.plt), "Libcalls are not supported in enclaves")
-+ASSERT(!DEFINED(_GLOBAL_OFFSET_TABLE_), "Libcalls through GOT are not supported in enclaves")
--- 
-2.25.1
+> 
+> BTW, even though my private BOs have a ref to their exclusive VM, I just
+> ran into a bug because drm_gem_shmem_free() acquires the resv lock
+> (which is questionable, but that's not the topic :-)) and
+> I was calling vm_put(bo->exclusive_vm) before drm_gem_shmem_free(),
+> leading to a use-after-free when the gem->resv is acquired. This has
+> nothing to do with drm_gpuvm, but it proves that this sort of bug is
+> likely to happen if we don't pay attention.
+> 
+>>
+>> Do I miss something? Do we have use cases where this isn't true?
+> 
+> The other case I can think of is GEM being v[un]map-ed (kernel
+> mapping) after the VM was released.
+> 
+>>
+>>>
+>>> This is a circle reference dependency.
+> 
+> FWIW, I solved that by having a vm_destroy() function that kills all the
+> mappings in a VM, which in turn releases all the refs the VM had on
+> private BOs. Then, it's just a matter of waiting for all private GEMs
+> to be destroyed to get the final steps of the VM destruction, which is
+> really just about releasing resources (it's called panthor_vm_release()
+> in my case) executed when the VM refcount drops to zero.
+> 
+>>>
+>>> The simplest solution I can see is to let the driver provide the GEM object to use. Amdgpu uses the root page directory object for this.
+>>
+>> Sure, we can do that, if we see cases where VM local GEM objects can out-live the VM.
+>>>
+>>> Apart from that I strongly think that we shouldn't let the GPUVM code create a driver GEM object. We did that in TTM for the ghost objects and it turned out to be a bad idea.
+> 
+> Would that really solve the circular ref issue? I mean, if you're
+> taking the root page dir object as your VM resv, you still have to make
+> sure it outlives the private GEMs, which means, you either need
+> to take a ref on the object, leading to the same circular ref mess, or
+> you need to reset private GEMs resvs before destroying this root page
+> dir GEM (whose lifecyle is likely the same as your VM object which
+> embeds the drm_gpuvm instance).
+> 
+> Making it driver-specific just moves the responsibility back to drivers
+> (and also allows re-using an real GEM object instead of a dummy one,
+> but I'm not sure we care about saving a few hundreds bytes at that
+> point), which is a good way to not take the blame if the driver does
+> something wrong, but also doesn't really help people do the right thing.
+> 
 
