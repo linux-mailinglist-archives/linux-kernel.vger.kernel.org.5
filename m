@@ -2,171 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 168227A96EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B737A98C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjIURGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        id S229874AbjIURxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbjIURGD (ORCPT
+        with ESMTP id S230234AbjIURws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:06:03 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D88C49D2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:04:24 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-503f39d3236so2097994e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695315763; x=1695920563; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y5XZRvh5FJ3F9RXkqi8NbBrwtIOGm1RUjmAFGYn0SWM=;
-        b=JdpOrZX9ujV0U2ciOIMBSCUTjIEeoVLoYKzv1A/P50NlQx0NoDH8jSrtNeMDT/qDSU
-         pyFK90T8gbCNetzY21+QjfJVLihkMS2F8qNShxnHsMo+5ZhuSiORoQq32zHIIzTU/Olv
-         3BJ6gE6yB+AQwkRKdBRx1MjVCdEmvQWBpkPcrMurzlCslvBo07AbYynyWaUNdmNL3zXp
-         cD0LE8HCIMp0tJtgGefjiCl6+nrqNz5X/SBZEUdW9llW7ciojUAbuQN73R85AtFWkjNk
-         BCRDcaVpb2qPcfxOH4UnaDM3OqwGK2xMq6C45mGIoBn7K6BlqZT1B7ORXil/PKWd5Kma
-         bYOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695315763; x=1695920563;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y5XZRvh5FJ3F9RXkqi8NbBrwtIOGm1RUjmAFGYn0SWM=;
-        b=EboRr5giaVdFB1Opfuck56Ma3P5qvJW3D0M8M6Kf352DLRWTXpIwmYnHnvlpxKXWVV
-         0aID+nksOksQaMvOolWGcpvdy7CEg2fYlJO9TwBKu0forg2q6/BuOPVddSMkceYgBy8C
-         0n/Wtz1YX3QLDe3yi3tBl1pPdJ32Wt7WzK+bSvp2+RD7zNunH2oUyIHiZtx8goJKp86y
-         6fTcyGhdikRQpVuo7/6j+mCl3PnERQRkgTG/8WaL2b9D7sqYZ2eiYWjayp/gQuPNLViz
-         vu0zmzRh6a305k8lmYgH+7iMghwy/rl3iTtWrAG0gKeb1BF8JSqe7bOAfS1N3TAW1OKJ
-         zbIA==
-X-Gm-Message-State: AOJu0YxeF4F7e3Wy+3QO4k34EgAeQsYQ7ndn57GRD1a5CInGR3NKJAZa
-        LaXrvkLBdyhuwc/0Br0JIHZKofGFIy1xQ3Wam/YG9pMl
-X-Google-Smtp-Source: AGHT+IGCZngJGw2TLbVAmHBkA5Ct02TLdu6cufs/nlp002BSIPnQTHy4JPAWFAoql4McGwV/17mztQ==
-X-Received: by 2002:a05:600c:2117:b0:3fe:e7b2:c97f with SMTP id u23-20020a05600c211700b003fee7b2c97fmr5472970wml.36.1695306168409;
-        Thu, 21 Sep 2023 07:22:48 -0700 (PDT)
-Received: from localhost.localdomain (abordeaux-655-1-129-86.w90-5.abo.wanadoo.fr. [90.5.10.86])
-        by smtp.gmail.com with ESMTPSA id n11-20020a5d4c4b000000b0031fbbe347ebsm1901426wrt.22.2023.09.21.07.22.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 07:22:48 -0700 (PDT)
-From:   David Lechner <dlechner@baylibre.com>
-To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        David Lechner <dlechner@baylibre.com>
-Subject: [v2 18/19] staging: iio: resolver: ad2s1210: add phase_lock_range attributes
-Date:   Thu, 21 Sep 2023 09:19:46 -0500
-Message-Id: <20230921141947.57784-21-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230921141947.57784-1-dlechner@baylibre.com>
-References: <20230921141947.57784-1-dlechner@baylibre.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 21 Sep 2023 13:52:48 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC7E55AE1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:26:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9BC5B338AE;
+        Thu, 21 Sep 2023 14:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695306169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=dAByBnUbQAl1SQvnA25eJTkQ4kYNbs+cOljAgZy1glQ=;
+        b=ihuedW6AQRN6KrxUPlX4T3TCnlVS65NkDbgKPIWp7QfWvADp7a7fBi68vxXbOsVA8jAugT
+        B9ZixAZ52PeczId0qP1u66p7GuItfw3J2UbLaBiCRgS3uyR7zo1MXftRJs/XaGT1rd2UO3
+        IFmoLgQalJoCWFTXjpPMGkhXfWW94Ao=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695306169;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=dAByBnUbQAl1SQvnA25eJTkQ4kYNbs+cOljAgZy1glQ=;
+        b=xTv0WW5e/xEwS9bvr3UEVb/k8U3JFYzWIGwIDRhbkhXzJEwPAQSyLTroCcYlfHIQaY8QhO
+        cGmBerg682JN5eAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F0F913513;
+        Thu, 21 Sep 2023 14:22:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Z/QCGrlRDGXVVAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 21 Sep 2023 14:22:49 +0000
+Date:   Thu, 21 Sep 2023 16:22:48 +0200
+Message-ID: <87a5tfzjuv.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.6-rc3
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds new phase_lock_range and phase_lock_range_available attributes
-to the ad2s1210 resolver driver. These attributes allow the user to set
-the phase lock range bit in the control register to modify the behavior
-of the resolver to digital converter.
+Linus,
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
+please pull sound fixes for v6.6-rc3 from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.6-rc3
+
+The topmost commit is 0eb0e272e4bba794d7bf679780bf8336799e7cc0
+
+----------------------------------------------------------------
+
+sound fixes for 6.6-rc3
+
+A large collection of fixes around this time.
+All small and mostly trivial fixes.
+
+- Lots of fixes for the new -Wformat-truncation warnings
+- A fix in ALSA rawmidi core regression and UMP handling
+- Series of Cirrus codec fixes
+- ASoC Intel and Realtek codec fixes
+- Usual HD- and USB-audio quirks and AMD ASoC quirks
+
+----------------------------------------------------------------
+
+August Wikerfors (1):
+      ASoC: amd: yc: Fix non-functional mic on Lenovo 82QF and 82UG
+
+Bard Liao (1):
+      ASoC: SOF: ipc4-topology: fix wrong sizeof argument
+
+Chancel Liu (1):
+      ASoC: imx-rpmsg: Set ignore_pmdown_time for dai_link
+
+Charles Keepax (2):
+      ASoC: soc-pcm: Shrink stack frame for __soc_pcm_hw_params
+      ASoC: cs42l43: Add shared IRQ flag for shutters
+
+Chen Ni (1):
+      ASoC: hdaudio.c: Add missing check for devm_kstrdup
+
+Dan Carpenter (1):
+      ASoC: codecs: aw88395: Fix some error codes
+
+Ding Xiang (1):
+      selftests: ALSA: remove unused variables
+
+Guenter Roeck (1):
+      ASoC: wm8960: Fix error handling in probe
+
+Hans de Goede (6):
+      ASoC: rt5640: Revert "Fix sleep in atomic context"
+      ASoC: rt5640: Fix sleep in atomic context
+      ASoC: rt5640: Do not disable/enable IRQ twice on suspend/resume
+      ASoC: rt5640: Enable the IRQ on resume after configuring jack-detect
+      ASoC: rt5640: Fix IRQ not being free-ed for HDA jack detect mode
+      ASoC: rt5640: Only cancel jack-detect work on suspend if active
+
+Jerome Brunet (1):
+      ASoC: meson: spdifin: start hw on dai probe
+
+Julia Lawall (1):
+      ASoC: rsnd: add missing of_node_put
+
+Kailang Yang (3):
+      ALSA: hda/realtek - Fixed two speaker platform
+      ALSA: hda: Disable power save for solving pop issue on Lenovo ThinkCentre M70q
+      ALSA: hda/realtek - ALC287 Realtek I2S speaker platform support
+
+Knyazev Arseniy (1):
+      ALSA: hda/realtek: Splitting the UX3402 into two separate models
+
+Peter Ujfalusi (6):
+      ALSA: core: Use dev_name of card_dev as debugfs directory name
+      ALSA: hda: intel-sdw-acpi: Use u8 type for link index
+      ALSA: usb-audio: mixer: Remove temporary string use in parse_clock_source_unit
+      ASoC: SOF: sof-audio: Fix DSP core put imbalance on widget setup failure
+      ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful
+      ALSA: usb-audio: scarlett_gen2: Fix another -Wformat-truncation warning
+
+Ranjani Sridharan (1):
+      ASoC: SOF: Intel: MTL: Reduce the DSP init timeout
+
+Richard Fitzgerald (12):
+      ASoC: cs35l56: Call pm_runtime_dont_use_autosuspend()
+      ALSA: hda: cs35l56: Call pm_runtime_dont_use_autosuspend()
+      ASoC: cs35l56: Disable low-power hibernation mode
+      ALSA: hda: cs35l56: Disable low-power hibernation mode
+      ASoC: cs42l42: Ensure a reset pulse meets minimum pulse width.
+      ASoC: cs42l42: Don't rely on GPIOD_OUT_LOW to set RESET initially low
+      ASoC: cs42l42: Avoid stale SoundWire ATTACH after hard reset
+      firmware: cirrus: cs_dsp: Only log list of algorithms in debug build
+      ASoC: wm_adsp: Fix missing locking in wm_adsp_[read|write]_ctl()
+      ALSA: hda: cs35l56: Don't 'return ret' if ret is always zero
+      ALSA: hda: cs35l56: Fix missing RESET GPIO if _SUB is missing
+      ALSA: hda: cs35l56: Use the new RUNTIME_PM_OPS() macro
+
+Sameer Pujar (2):
+      ASoC: soc-utils: Export snd_soc_dai_is_dummy() symbol
+      ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
+
+Shengjiu Wang (2):
+      ASoC: fsl: imx-pcm-rpmsg: Add SNDRV_PCM_INFO_BATCH flag
+      ASoC: imx-audmix: Fix return error with devm_clk_get()
+
+Takashi Iwai (19):
+      ALSA: docs: Fix a typo of midi2_ump_probe option for snd-usb-audio
+      ALSA: seq: Avoid delivery of events for disabled UMP groups
+      ALSA: seq: ump: Fix -Wformat-truncation warning
+      ALSA: seq: midi: Fix -Wformat-truncation warning
+      ALSA: usb-audio: scarlett_gen2: Fix -Wformat-truncation warning
+      ALSA: caiaq: Fix -Wformat-truncation warning
+      ALSA: sscape: Fix -Wformat-truncation warning
+      ALSA: cs4236: Fix -Wformat-truncation warning
+      ALSA: es1688: Fix -Wformat-truncation warning
+      ALSA: opti9x: Fix -Wformat-truncation warning
+      ALSA: xen: Fix -Wformat-truncation warning
+      ALSA: firewire: Fix -Wformat-truncation warning for longname string
+      ALSA: firewire: Fix -Wformat-truncation warning for MIDI stream names
+      ALSA: cmipci: Fix -Wformat-truncation warning
+      ALSA: hda: generic: Check potential mixer name string truncation
+      ALSA: ad1848: Fix -Wformat-truncation warning for longname string
+      ALSA: cs4231: Fix -Wformat-truncation warning for longname string
+      ALSA: riptide: Fix -Wformat-truncation warning for longname string
+      ALSA: rawmidi: Fix NULL dereference at proc read
+
+Walt Holman (1):
+      Add DMI ID for MSI Bravo 15 B7ED
+
 ---
- drivers/staging/iio/resolver/ad2s1210.c | 58 +++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
-
-diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-index 71f0913b7e2e..f5b8b290e860 100644
---- a/drivers/staging/iio/resolver/ad2s1210.c
-+++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -259,6 +259,60 @@ static ssize_t excitation_frequency_store(struct device *dev,
- 	return ret;
- }
- 
-+static ssize_t phase_lock_range_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = regmap_test_bits(st->regmap, AD2S1210_REG_CONTROL,
-+			       AD2S1210_PHASE_LOCK_RANGE_44);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	ret = sprintf(buf, "%d\n", ret ? 44 : 360);
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+	return ret;
-+}
-+
-+static ssize_t phase_lock_range_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t len)
-+{
-+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
-+	u16 udata;
-+	int ret;
-+
-+	ret = kstrtou16(buf, 10, &udata);
-+	if (ret < 0 || (udata != 44 && udata != 360))
-+		return -EINVAL;
-+
-+	mutex_lock(&st->lock);
-+
-+	ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
-+				 AD2S1210_PHASE_LOCK_RANGE_44,
-+				 udata == 44 ? AD2S1210_PHASE_LOCK_RANGE_44 : 0);
-+	if (ret < 0)
-+		goto error_ret;
-+
-+	ret = len;
-+
-+error_ret:
-+	mutex_unlock(&st->lock);
-+	return ret;
-+}
-+
-+static ssize_t phase_lock_range_available_show(struct device *dev,
-+					       struct device_attribute *attr,
-+					       char *buf)
-+{
-+	return sprintf(buf, "44 360\n");
-+}
-+
- /* read the fault register since last sample */
- static ssize_t ad2s1210_show_fault(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
-@@ -506,6 +560,8 @@ static int ad2s1210_write_raw(struct iio_dev *indio_dev,
- }
- 
- static IIO_DEVICE_ATTR_RW(excitation_frequency, 0);
-+static IIO_DEVICE_ATTR_RW(phase_lock_range, 0);
-+static IIO_DEVICE_ATTR_RO(phase_lock_range_available, 0);
- static IIO_DEVICE_ATTR(fault, 0644,
- 		       ad2s1210_show_fault, ad2s1210_clear_fault, 0);
- 
-@@ -552,6 +608,8 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
- 
- static struct attribute *ad2s1210_attributes[] = {
- 	&iio_dev_attr_excitation_frequency.dev_attr.attr,
-+	&iio_dev_attr_phase_lock_range.dev_attr.attr,
-+	&iio_dev_attr_phase_lock_range_available.dev_attr.attr,
- 	&iio_dev_attr_fault.dev_attr.attr,
- 	&iio_dev_attr_los_thrd.dev_attr.attr,
- 	&iio_dev_attr_dos_ovr_thrd.dev_attr.attr,
--- 
-2.34.1
+ Documentation/sound/designs/midi-2.0.rst           |  4 +-
+ drivers/firmware/cirrus/cs_dsp.c                   | 34 +++++++--------
+ sound/core/init.c                                  |  7 +---
+ sound/core/rawmidi.c                               |  2 +-
+ sound/core/seq/seq_midi.c                          |  4 +-
+ sound/core/seq/seq_ump_client.c                    | 24 ++++++++++-
+ sound/core/seq/seq_ump_convert.c                   |  2 +
+ sound/firewire/bebob/bebob_midi.c                  |  6 +--
+ sound/firewire/dice/dice-midi.c                    |  4 +-
+ sound/firewire/digi00x/digi00x-midi.c              | 14 +++----
+ sound/firewire/fireface/ff-midi.c                  |  4 +-
+ sound/firewire/fireworks/fireworks.c               | 10 ++---
+ sound/firewire/fireworks/fireworks_midi.c          |  4 +-
+ sound/firewire/motu/motu-midi.c                    |  4 +-
+ sound/firewire/oxfw/oxfw-midi.c                    |  6 +--
+ sound/firewire/oxfw/oxfw.c                         | 10 ++---
+ sound/firewire/tascam/tascam-midi.c                | 12 +++---
+ sound/hda/intel-sdw-acpi.c                         |  8 ++--
+ sound/isa/ad1848/ad1848.c                          | 12 +++---
+ sound/isa/cs423x/cs4231.c                          | 12 +++---
+ sound/isa/cs423x/cs4236.c                          | 14 +++----
+ sound/isa/es1688/es1688.c                          |  6 +--
+ sound/isa/opti9xx/miro.c                           |  8 ++--
+ sound/isa/opti9xx/opti92x-ad1848.c                 | 16 +++----
+ sound/isa/sscape.c                                 |  2 +-
+ sound/pci/cmipci.c                                 |  8 ++--
+ sound/pci/hda/cs35l56_hda.c                        | 21 +++++-----
+ sound/pci/hda/cs35l56_hda_i2c.c                    |  1 -
+ sound/pci/hda/hda_generic.c                        |  6 ++-
+ sound/pci/hda/hda_intel.c                          |  1 +
+ sound/pci/hda/patch_realtek.c                      | 13 ++++--
+ sound/pci/riptide/riptide.c                        | 16 +++----
+ sound/soc/amd/yc/acp6x-mach.c                      | 21 ++++++++++
+ sound/soc/codecs/aw88395/aw88395_lib.c             |  2 +
+ sound/soc/codecs/cs35l56-i2c.c                     |  1 -
+ sound/soc/codecs/cs35l56.c                         |  1 +
+ sound/soc/codecs/cs42l42-sdw.c                     | 20 +++++++++
+ sound/soc/codecs/cs42l42.c                         | 21 +++++++++-
+ sound/soc/codecs/cs42l42.h                         |  1 +
+ sound/soc/codecs/cs42l43.c                         | 14 ++++---
+ sound/soc/codecs/rt5640.c                          | 29 ++++++-------
+ sound/soc/codecs/wm8960.c                          | 19 ++++++---
+ sound/soc/codecs/wm_adsp.c                         | 13 +++++-
+ sound/soc/fsl/imx-audmix.c                         |  2 +-
+ sound/soc/fsl/imx-pcm-rpmsg.c                      |  1 +
+ sound/soc/fsl/imx-rpmsg.c                          |  8 ++++
+ sound/soc/intel/avs/boards/hdaudio.c               |  3 ++
+ sound/soc/meson/axg-spdifin.c                      | 49 ++++++++--------------
+ sound/soc/sh/rcar/core.c                           |  1 +
+ sound/soc/soc-pcm.c                                | 23 +++++-----
+ sound/soc/soc-utils.c                              |  1 +
+ sound/soc/sof/core.c                               |  3 +-
+ sound/soc/sof/intel/mtl.c                          |  2 +-
+ sound/soc/sof/intel/mtl.h                          |  1 -
+ sound/soc/sof/ipc4-topology.c                      |  2 +-
+ sound/soc/sof/sof-audio.c                          |  3 +-
+ sound/soc/tegra/tegra_audio_graph_card.c           | 30 +++++++------
+ sound/usb/caiaq/device.c                           |  2 +-
+ sound/usb/mixer.c                                  |  6 +--
+ sound/usb/mixer_scarlett_gen2.c                    |  8 ++--
+ sound/xen/xen_snd_front_cfg.c                      |  2 +-
+ tools/testing/selftests/alsa/conf.c                |  1 -
+ tools/testing/selftests/alsa/mixer-test.c          | 11 ++---
+ tools/testing/selftests/alsa/pcm-test.c            |  4 +-
+ tools/testing/selftests/alsa/test-pcmtest-driver.c |  1 -
+ 65 files changed, 352 insertions(+), 249 deletions(-)
 
