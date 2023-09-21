@@ -2,128 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 968B97AA5DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 02:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D70B7AA66F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 03:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbjIVAC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 20:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58334 "EHLO
+        id S229574AbjIVBWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 21:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjIVACZ (ORCPT
+        with ESMTP id S229458AbjIVBWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 20:02:25 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1ECF9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 17:02:18 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-690f9c787baso1356941b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 17:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695340938; x=1695945738; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lIlWllockWVHn+USccr9bcIlaTuabHf1MxHz684jmAo=;
-        b=hdvSg8hmq3Sesldu2kDZ0la0kgUjNWL1SZ1l3H0w1inJyDBp3oVpOXbv7NVLEBU1ZO
-         7PZa3FKrP3mhzML5XtfIfOAjBpqyt5FGsSAzt0fD5f3PT6wiCypPO07MTXmlgAjgH30t
-         2JrXC2GsDB6+qGemjtJHrQCoEHYZZ2NpS6hM/2USvlh3m0jeMhCcvj12k8aGXBqzhdQi
-         RszxGxa0pto1iGp5SMaCm9qOKlKavHneOKJcMACICzJoSrfrW2m7BMzWKOT3RUM6mK3o
-         ouejkNqrnRFjiGVfFaIFtkEfTyR0caEzTQlNKSE8Dkc943VeIHVq3H4ht1NK3grCL6/G
-         1AZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695340938; x=1695945738;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lIlWllockWVHn+USccr9bcIlaTuabHf1MxHz684jmAo=;
-        b=UdyxHmNEysuwTtVwo594R8MNInCRsdWn6xPw83wJ2lIq5rxsF68E5seMh/gEqoxdDT
-         K/fSQWBQrJqke5mrBr0n4V46au2RLwUnAkmX2VKcLTF7Pud9DpnKF+qw8anJsBipJqWV
-         0cvFAwSHFVe0/+dy7NB1JQr/M07PDd+BCnSzFpeyD9lxr1mthdPBsDnsiBoD9G91XYT9
-         GpHfZXj0plVsnXOXvxO5u6+UepX1khMVCvnN1YYcdrswQ3EOBq+uZpt2FbMWlICbg1/k
-         xjQRTK6GEbd8XkHC/uZFlGliqd+df0n3pbetThJhWVniG/+UxqoKRi8mb1q9RYEyACLr
-         W38Q==
-X-Gm-Message-State: AOJu0YwKatO2D+dpmYlcDwHBP5EbtuVnZMKyEmaZwvIq12xFa/w0yK/Y
-        ui90fE834opZutOXS7XgdZM=
-X-Google-Smtp-Source: AGHT+IFYHBSesDnJjmWGQ1ZQ0T9N+LxNIP5SZuAef88AoxvyO2avFf//tfqoENhODbAU8Q+z2mKUZQ==
-X-Received: by 2002:a05:6a20:324c:b0:10c:7c72:bdf9 with SMTP id hm12-20020a056a20324c00b0010c7c72bdf9mr5869719pzc.29.1695340938184;
-        Thu, 21 Sep 2023 17:02:18 -0700 (PDT)
-Received: from [192.168.0.106] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id z13-20020a170903018d00b001c0a414695dsm2136863plg.62.2023.09.21.17.02.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 17:02:17 -0700 (PDT)
-Message-ID: <49a92f24-bd70-483c-aaaa-49d00c339b12@gmail.com>
-Date:   Fri, 22 Sep 2023 07:02:09 +0700
+        Thu, 21 Sep 2023 21:22:02 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28807CE;
+        Thu, 21 Sep 2023 18:21:56 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38L69SBZ015460;
+        Thu, 21 Sep 2023 01:09:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695276568;
+        bh=VJXrid2kPeeupJMKwSjbH7n+scpImlf2w0s3YRl2uVQ=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=bArd5Jm15c5+wH4z7oAtGjpBjoZO8HI7Mahh3Wc95vdEMtYPC3HF188vNhqMJ9eU6
+         HzwJm86AVcxL4RluOTON6tSkxYTv0o9ymi1EgEKAmvovGaZMMfK/bHcClm+/lnwTEa
+         xLuwruQ5FD6jlh825KuEhFMwM0sdSGoQZ23sAH6k=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38L69SWW031296
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 Sep 2023 01:09:28 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Sep 2023 01:09:28 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Sep 2023 01:09:28 -0500
+Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38L69SSH098462;
+        Thu, 21 Sep 2023 01:09:28 -0500
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.199])
+        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 38L69Rm1006999;
+        Thu, 21 Sep 2023 01:09:27 -0500
+From:   MD Danish Anwar <danishanwar@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+CC:     <afd@ti.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <r-gunasekaran@ti.com>, <danishanwar@ti.com>
+Subject: [PATCH v2 1/4] arm64: dts: ti: k3-am65-main: Add ICSSG IEP nodes
+Date:   Thu, 21 Sep 2023 11:39:10 +0530
+Message-ID: <20230921060913.721336-2-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230921060913.721336-1-danishanwar@ti.com>
+References: <20230921060913.721336-1-danishanwar@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Greentime Hu <greentime.hu@sifive.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Vineet Gupta <vineetg@rivosinc.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        matoro <matoro_bugzilla_kernel@matoro.tk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RISC-V <linux-riscv@lists.infradead.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: [bisected][regression] rustc userspace crashes on riscv in
- kernel 6.5
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The ICSSG IP on AM65x SoCs have two Industrial Ethernet Peripherals (IEPs)
+to manage/generate Industrial Ethernet functions such as time stamping.
+Each IEP sub-module is sourced from an internal clock mux that can be
+sourced from either of the IP instance's ICSSG_IEP_GCLK or ICSSG_ICLK.
+Add the IEP nodes for all the ICSSG instances.
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 36 ++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-
-> Since this commit:
-> 
-> commit 8ee0b41898fa26f66e32237f179b6989c65600d6
-> Author: Greentime Hu <greentime.hu@sifive.com>
-> Date:   Mon Jun 5 11:07:11 2023 +0000
-> 
->     riscv: signal: Add sigcontext save/restore for vector
-> 
-> running rustc on riscv produces output like this:
-> 
-> $ rustc test.rs
-> /usr/lib/rust/lib/librustc_driver-f0248bec779deb29.so(+0xe8ebdc)[0x3f8dc8ebdc]
-> linux-vdso.so.1(__vdso_rt_sigreturn+0x0)[0x3f8fb91800]
-> /lib64/libc.so.6(syscall+0x16)[0x3f8cbfacbe]
-> /usr/lib/rust/lib/libstd-985e4b663b8154c3.so(_ZN3std3sys4unix5locks13futex_condvar7Condvar4wait17h4e3b669d2690824dE+0x64)[0x3f8cd45f68]
-> /usr/lib/rust/lib/librustc_driver-f0248bec779deb29.so(+0x715ab6)[0x3f8d515ab6]
-> /usr/lib/rust/lib/librustc_driver-f0248bec779deb29.so(+0x7159ce)[0x3f8d5159ce]
-> /usr/lib/rust/lib/librustc_driver-f0248bec779deb29.so(+0x6b64f6)[0x3f8d4b64f6]
-> /usr/lib/rust/lib/librustc_driver-f0248bec779deb29.so(+0x715534)[0x3f8d515534]
-> /usr/lib/rust/lib/libstd-985e4b663b8154c3.so(rust_metadata_std_9e9c65f710e3ce43+0xaba32)[0x3f8cd44a32]
-> /lib64/libc.so.6(+0x6a8e4)[0x3f8cbab8e4]
-> /lib64/libc.so.6(+0xbb49c)[0x3f8cbfc49c]
-> 
-> even for a simple hello world program.  The output being present does not necessarily mean that the compilation failed, in fact often it will still return 0 and produce a working binary despite the output, but often it does not, frequently enough that it's impossible to build large rust packages.  See the attached log for an example of a real build which fails partway through (despite the fact that all compilation lines emit the traceback).
-
-See Bugzilla for the full thread and attached rust build log.
-
-The reporter (Cc'ed) confirms that this regression occurs on all rust toolchain
-distributions (both from the distro and from rustup (maybe?)).
-
-Anyway, I'm adding it to regzbot:
-
-#regzbot introduced: 8ee0b41898fa26 https://bugzilla.kernel.org/show_bug.cgi?id=217923
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217923
-
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index bc460033a37a..fdb042d04ad9 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -1151,6 +1151,18 @@ icssg0_iepclk_mux: iepclk-mux@30 {
+ 			};
+ 		};
+ 
++		icssg0_iep0: iep@2e000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2e000 0x1000>;
++			clocks = <&icssg0_iepclk_mux>;
++		};
++
++		icssg0_iep1: iep@2f000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2f000 0x1000>;
++			clocks = <&icssg0_iepclk_mux>;
++		};
++
+ 		icssg0_mii_rt: mii-rt@32000 {
+ 			compatible = "ti,pruss-mii", "syscon";
+ 			reg = <0x32000 0x100>;
+@@ -1293,6 +1305,18 @@ icssg1_iepclk_mux: iepclk-mux@30 {
+ 			};
+ 		};
+ 
++		icssg1_iep0: iep@2e000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2e000 0x1000>;
++			clocks = <&icssg1_iepclk_mux>;
++		};
++
++		icssg1_iep1: iep@2f000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2f000 0x1000>;
++			clocks = <&icssg1_iepclk_mux>;
++		};
++
+ 		icssg1_mii_rt: mii-rt@32000 {
+ 			compatible = "ti,pruss-mii", "syscon";
+ 			reg = <0x32000 0x100>;
+@@ -1435,6 +1459,18 @@ icssg2_iepclk_mux: iepclk-mux@30 {
+ 			};
+ 		};
+ 
++		icssg2_iep0: iep@2e000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2e000 0x1000>;
++			clocks = <&icssg2_iepclk_mux>;
++		};
++
++		icssg2_iep1: iep@2f000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2f000 0x1000>;
++			clocks = <&icssg2_iepclk_mux>;
++		};
++
+ 		icssg2_mii_rt: mii-rt@32000 {
+ 			compatible = "ti,pruss-mii", "syscon";
+ 			reg = <0x32000 0x100>;
 -- 
-An old man doll... just what I always wanted! - Clara
+2.34.1
+
