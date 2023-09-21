@@ -2,103 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15A77AA00F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92547AA225
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjIUUbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 16:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
+        id S231981AbjIUVNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbjIUUbT (ORCPT
+        with ESMTP id S232266AbjIUVMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:31:19 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26467ADC70
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:04:36 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d776e1f181bso1558712276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:04:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695319475; x=1695924275; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=F2iVUKRDazi3scGbQVKzP0TAbm4bJPvzK2OVT1wMEJk=;
-        b=ihCE/CO6f0msFcDogY4QtRpMIRxcqeKg28OLw3FLeHy5UtGUzqEEHj5/HxQHdrFhuM
-         UGWbPwm9sLMU1ziBNOPxeeNcX/YLtEngKbexspepy8x2zePYE6FWKEYmHO6vVt7a+8Ty
-         VJSs/yAJHdPIKmnGEwzVEoldYGhJQ9HPCVITRzzDmsWM2o/3YZ10sD36P9i0Plz8XEr9
-         3M9jp2zVqV5/flLouzwLLPUye8+/YnLYJIwG4whufhhpTjUziqCUCQwxlUz+cWYqNpvw
-         wjgDjGiFIIUXbMqzTG9FtjLHmOI4qtEM1mpoiYuMYzYucVLJe9fykqx1ILB/iZLlZ8iu
-         xUSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695319475; x=1695924275;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F2iVUKRDazi3scGbQVKzP0TAbm4bJPvzK2OVT1wMEJk=;
-        b=RwRRC9ELErH4u956rd10nvx9F2TIZ/48mmaHLoxHuCllQb43MW1g5i4Y4nzg3SHydj
-         JFquA0mgeCMMDguIHk19x7a1qIbwgClOKifWJz31P9iw6tG/s5WSENYeY042DPIfywjV
-         Wv9grujQYUuNxJJvYl5YkxscSzTZmHRrsVgaA46Vv8SZ69nbMiMJiHWvIh8LGGHAR4nL
-         Q2Sw/H0g5wH7HUpzGhLMj1j0jeDqfCiNP7IaHbG3OVn1GVLtB4zxbptTpzEUC5u98chG
-         I+POHfh4fFZ7d2p66s5hGmeLOY6WrnU7E/8IL3MuyRYsWRUDg4733yOVGtpZ8aDV35zs
-         82bQ==
-X-Gm-Message-State: AOJu0YzSemNmxsuCH3UznOmwSc7LNjfVJz0Gm537Ctj8a2l+uEvvqkEC
-        F1odJqfC1tgwrIkddoRgr+iux//PHR/QxOkljBdSboZtnTpHSojuqic=
-X-Google-Smtp-Source: AGHT+IGBGzSSuWFuR2CMHZuIrQTlTZeWSJ2mzK6C15pX7OZvwpMOeVL7zOjvauq3dqsE+276vjD7PnFCpmTJ4T71ZBo=
-X-Received: by 2002:a5b:f91:0:b0:cf8:1070:82d3 with SMTP id
- q17-20020a5b0f91000000b00cf8107082d3mr5445675ybh.32.1695303482171; Thu, 21
- Sep 2023 06:38:02 -0700 (PDT)
+        Thu, 21 Sep 2023 17:12:24 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5078E98A72;
+        Thu, 21 Sep 2023 10:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=etZ2gpA0uz+JRPag03uqb6cfh/kPa8Z3gAMOKitX9GI=; b=XJFeAWsJK6qNPSOEXR7+0kE+V4
+        4M/gOJKBPlGa+X30hfCd+WanZJzjvHIg3FOF+0PiDMyYKdq2GmP3ET7jaqP+coWsJhapZAKkw8XBp
+        YXoEu+OSuRKJy8kMvQA+1uK6bnykQqT3wiDi16tAorZtuVizYtC0+q1DOQqAlh1wAjC8THQ5j1tBb
+        n/IVlVmgzyC3E/JOKzyKNxwUAzemhr/7mg2Mnn9ljY2801G2xkTtLiqJpDZMyMiXD40F4Rjw8bpZ1
+        iLzGICk+q44J1b1OKypm+kQ/qteOXGLyEtKJFXgJpGWWDjwMCPUvm9uR4EZYSUOWmQK0fR8ZT1pgq
+        aMWFFDyg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46552)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qjJuR-0004g0-21;
+        Thu, 21 Sep 2023 14:39:59 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qjJuO-0003aT-Te; Thu, 21 Sep 2023 14:39:56 +0100
+Date:   Thu, 21 Sep 2023 14:39:56 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+        Tan Tee Min <tee.min.tan@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next v2 0/5] TSN auto negotiation between 1G and 2.5G
+Message-ID: <ZQxHrPS5C13SfTfA@shell.armlinux.org.uk>
+References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
+ <5bd05ba2-fd88-4e5c-baed-9971ff917484@lunn.ch>
+ <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
 MIME-Version: 1.0
-References: <20230919121605.7304-1-ulf.hansson@linaro.org> <20230921113328.3208651-1-sudeep.holla@arm.com>
- <CAPDyKFrGDZzyp4G1fS5PGCE95b3_w4kJyZfnDs=BEuYLzJ7uXA@mail.gmail.com> <20230921133343.h3chbszl2iuf2b55@bogus>
-In-Reply-To: <20230921133343.h3chbszl2iuf2b55@bogus>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Sep 2023 15:37:25 +0200
-Message-ID: <CAPDyKFrQAKhofKikc4xV5o=oqAoGOfD9XLiqHNUSBmeCmWE5-w@mail.gmail.com>
-Subject: Re: [PATCH] firmware: arm_scmi: Move power-domain driver to the
- pmdomain dir
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sept 2023 at 15:33, Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Thu, Sep 21, 2023 at 03:10:56PM +0200, Ulf Hansson wrote:
-> > On Thu, 21 Sept 2023 at 13:33, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > >
-> > > To simplify with maintenance let's move the Arm SCMI power-domain driver
-> > > to the new pmdomain directory.
-> > >
-> > > Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> > > Cc: Cristian Marussi <cristian.marussi@arm.com>
-> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> >
-> > Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> >
-> > Feel free to take it through your scmi tree!
-> >
-> > Note that, we should move the Kconfig options too, but that requires
-> > changes that I am carrying in my pmdomain tree. We can either wait
-> > until the next cycle or you could send your pull-request to me this
-> > time (instead of through arm-soc), then we can fix this as a late
-> > minute change. The decision is yours.
-> >
->
-> OK. Lets us just delay SCMI Kconfig changes for the next cycle then. I assume
-> you would have other changes merged by then. Or may be as a fix as it would
-> be hardlt 10-15 line with 2 Kconfig options. Let me know if you disagree or
-> have other ideas.
+On Thu, Sep 21, 2023 at 08:25:05PM +0800, Choong Yong Liang wrote:
+> 
+> 
+> On 4/8/2023 8:04 pm, Andrew Lunn wrote:
+> > On Fri, Aug 04, 2023 at 04:45:22PM +0800, Choong Yong Liang wrote:
+> > > Intel platforms’ integrated Gigabit Ethernet controllers support
+> > > 2.5Gbps mode statically using BIOS programming. In the current
+> > > implementation, the BIOS menu provides an option to select between
+> > > 10/100/1000Mbps and 2.5Gbps modes. Based on the selection, the BIOS
+> > > programs the Phase Lock Loop (PLL) registers. The BIOS also read the
+> > > TSN lane registers from Flexible I/O Adapter (FIA) block and provided
+> > > 10/100/1000Mbps/2.5Gbps information to the stmmac driver. But
+> > > auto-negotiation between 10/100/1000Mbps and 2.5Gbps is not allowed.
+> > > The new proposal is to support auto-negotiation between 10/100/1000Mbps
+> > > and 2.5Gbps . Auto-negotiation between 10, 100, 1000Mbps will use
+> > > in-band auto negotiation. Auto-negotiation between 10/100/1000Mbps and
+> > > 2.5Gbps will work as the following proposed flow, the stmmac driver reads
+> > > the PHY link status registers then identifies the negotiated speed.
+> > > Based on the speed stmmac driver will identify TSN lane registers from
+> > > FIA then send IPC command to the Power Management controller (PMC)
+> > > through PMC driver/API. PMC will act as a proxy to programs the
+> > > PLL registers.
+> > 
+> > Have you considered using out of band for all link modes? You might
+> > end up with a cleaner architecture, and not need any phylink/phylib
+> > hacks.
+> > 
+> > 	Andrew
+> Hi Andrew,
+> 
+> After conducting a comprehensive study, it seems that implementing
+> out-of-band for all link modes might not be feasible. I may have missed some
+> key aspects during my analysis.
 
-Let's delay, it's probably easier. Maybe a fix for rc1 would be best.
+You need to provide details of why you think it's not feasible, because
+you're making those reading your message have to guess.
 
-Kind regards
-Uffe
+We _do_ have cases where this is already supported. The DM7052 SFP
+module for example has a BCM84881 PHY on board that has no in-band
+support, so always has to use out-of-band. This module supports 10G,
+5G, 2.5G, 1G, 100M and 10M speeds. It switches its interface between
+10G, 2500base-X and SGMII mode. It's been supported in Linux for a
+while with MAC/PCS that implement phylink _correctly_.
+
+I wouldn't call stmmac a proper phylink implementation, especially
+when it comes to switching between different interfaces.
+
+My attempt at starting to clean up the stmmac code was thwarted by
+niggly review comments (over whether %u or %d should be used to print
+a _signed integer_ that stmmac stupidly implicitly casts to an unsigned
+integer. That lead me to decide that stmmac was beyond being cleaned
+up, so I junked the large patch set of improvements that I had - along
+with multiple issues that I had found in the driver.
+
+Someone else needs to sort stmmac out, and I suspect that may be a
+pre-requisit for your changes so that stmmac operates _correctly_ with
+phylink.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
