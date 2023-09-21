@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FEF7AA31A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D747AA074
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 22:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbjIUVrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
+        id S232242AbjIUUh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 16:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbjIUVrG (ORCPT
+        with ESMTP id S232149AbjIUUhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:47:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A193610EC
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695317163;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1Wdj4gmGyib5pMNvMgx8QBu8AD7+XWhaNCUkURKcfP8=;
-        b=gMxAAfio1QneeZg+IHbTXg/yaHYVeT7psLPFt41PHWGaZNUJ+AMih/LwI51gzJGN/Dl41v
-        oobi5WRKETVv0ISY9IIQK4Dw01UvFmTurOW+KHw0eKaAvh6vJ0xqJ+rXLoWNC6w7EZb67q
-        pSsxwU+PHbAtpNudyLvT2J4pAHJWyk4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-619-0ZGUPsKnPD2QM_dEKXz7gA-1; Thu, 21 Sep 2023 09:07:23 -0400
-X-MC-Unique: 0ZGUPsKnPD2QM_dEKXz7gA-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9a9cd336c9cso21753066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 06:07:23 -0700 (PDT)
+        Thu, 21 Sep 2023 16:37:31 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F2889200
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:39:35 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3ae093798c0so416161b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695317974; x=1695922774; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JKBCWQGoZXYISlj4ce5hI/hMxdBTdeB63Q+PfDkksMw=;
+        b=CgtDFKhRELvuukHOVjL5ohuaThWsAFw3LUnPMjDoM7GpxNxxiZw4RncQgj93zqJjSe
+         mFCNRnSZX3aDkcB8mzZaqAcLdYUGDd0Y4bCHp13DwNGVtQGEOhnq/tgDCkS4ZO1x//C5
+         gHymp5nJa5qFTZNZ5G6kUGWH33aJBavfLn658ett59UJLHI8dCrYItbvmc14TPByHZbH
+         0JDyqtjjHC6D8QzXizyPdQoxxgXY6rEjElrQl/PTDtvgXS2JQg/wY4or00wdK7tKw2iL
+         nFgkZZkPFebAzU57kdvlhdSo3tSUMe906DMt+bfqgI5dVxhq3RXeSS8K70LnADiVFWri
+         x3Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695301642; x=1695906442;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1Wdj4gmGyib5pMNvMgx8QBu8AD7+XWhaNCUkURKcfP8=;
-        b=i2dqyxokwcGV3U798bUEa+rTXCNy4tQXX74DC8hQPAwrJSmJiUXfrpy1v43F/VvbJ0
-         6KTc7xCu4kX/Fo9fiIHN2RvNLcXF32uQ27i9WUuZ02sfQmHlIyW/NGPLh2afArajDOiz
-         5EX58rUXFH8aDRiClPdkPxDjYVtYAQd8qA6NuWA4QzEoI1CBiikSMF/WAQszB3RE3g4r
-         6zbRWWwEXVtDPmAhVKgZLECKQ4pfJId9ljIZyqbuoKjBVIZqsJ0if4PYZUd6yfOndww7
-         35hroYh9cGxwRJ3nn6kI60WYZ6AUXnfqM5znXOCo8dBVbDbc6vjYgnTn7CYHtcJ0KZQp
-         klsA==
-X-Gm-Message-State: AOJu0Yyoth0CM3Vlrwmi+DHVX/0SPDc4fzbjy3mq7FWjklT8sQ2ks3b1
-        2grFOyVS7YxIkFeXqMIlO6O2vf7mBTuokabyZqqYMfXyz0Ka7QdyiNlzfQ/cAhgIcXvH47Xr9qH
-        zU252AHC1k19xBVHv66IcksNt
-X-Received: by 2002:a17:906:208d:b0:9ae:3ee2:6feb with SMTP id 13-20020a170906208d00b009ae3ee26febmr4648496ejq.2.1695301642755;
-        Thu, 21 Sep 2023 06:07:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE3W1LmJ2SxmmQZv7FoDBvo0P2UY69D+N3DmcsbEdcSOJH+3jb8tLq0YNrFjbHs9IerRt7Jcg==
-X-Received: by 2002:a17:906:208d:b0:9ae:3ee2:6feb with SMTP id 13-20020a170906208d00b009ae3ee26febmr4648483ejq.2.1695301642389;
-        Thu, 21 Sep 2023 06:07:22 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-251-4.dyn.eolo.it. [146.241.251.4])
-        by smtp.gmail.com with ESMTPSA id rh27-20020a17090720fb00b0099b6becb107sm1030565ejb.95.2023.09.21.06.07.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 06:07:21 -0700 (PDT)
-Message-ID: <b638de8abaa2e468bbcda116368c8e690a461a5d.camel@redhat.com>
-Subject: Re: [PATCH net-next] netdev: Remove unneeded semicolon
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        arkadiusz.kubalewski@intel.com, jiri@resnulli.us
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Date:   Thu, 21 Sep 2023 15:07:20 +0200
-In-Reply-To: <0ae9f426-7225-ac4b-4ecd-d53e36dbf365@linux.dev>
-References: <20230919010305.120991-1-yang.lee@linux.alibaba.com>
-         <0ae9f426-7225-ac4b-4ecd-d53e36dbf365@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        d=1e100.net; s=20230601; t=1695317974; x=1695922774;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JKBCWQGoZXYISlj4ce5hI/hMxdBTdeB63Q+PfDkksMw=;
+        b=ZOFNcONqpmAUjh0WsK+uMn8c3TqbpVZFMyu8qM5cfRx6lNt+kVfbxidf4OC7ePGWoi
+         6XOSS30Uf41xUgGxMJoSw0qdFTpD7frh3ynLljosqxw8Tts8ZqM/pf8VEfoAEFnfYPQJ
+         YOjUJt5KGdoKEF1OI/BNHbPA4Uet8YSOzOdKSTJ9eshqQTkZLvt1/xOWldBSt44vt+IG
+         LUs8bVMu2mz0N9qVVe5zoHg5yIx3lSK4aS8gI6I9Xd5aswf+nCEl/ErkfT5GBO+oWDLI
+         iOEk+ZhRZvXKb12UmXRE5cHm6WIiv335V7jkdLZ4e6FBWmDv+8J8tRPWcQfTloBiByjP
+         PgJA==
+X-Gm-Message-State: AOJu0YwSOdkezt3aQrVTCPZJCrsQ3QhtOFP3ZjqI4KcBclS4gVrfhDO2
+        qMVsahF4r78QDNN0EJIuw4kAKuhmfKXzNvXJ4y9ZBnaiF9r2O3z6ZxE=
+X-Google-Smtp-Source: AGHT+IF4etN+Lj1MoiBPYE9O7MxBCxBGEDBcLLZyD6+EOR0BOfhOgfmrV9Rjd46Xx5Okz8nIXqKXRgGlicgkoa5JBtk=
+X-Received: by 2002:a25:cb14:0:b0:d44:af:3cce with SMTP id b20-20020a25cb14000000b00d4400af3ccemr5617959ybg.27.1695301892106;
+ Thu, 21 Sep 2023 06:11:32 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230919121605.7304-1-ulf.hansson@linaro.org> <20230921113328.3208651-1-sudeep.holla@arm.com>
+In-Reply-To: <20230921113328.3208651-1-sudeep.holla@arm.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 21 Sep 2023 15:10:56 +0200
+Message-ID: <CAPDyKFrGDZzyp4G1fS5PGCE95b3_w4kJyZfnDs=BEuYLzJ7uXA@mail.gmail.com>
+Subject: Re: [PATCH] firmware: arm_scmi: Move power-domain driver to the
+ pmdomain dir
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-20 at 12:10 +0100, Vadim Fedorenko wrote:
-> On 19/09/2023 02:03, Yang Li wrote:
-> > ./drivers/dpll/dpll_netlink.c:847:3-4: Unneeded semicolon
-> >=20
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D6605
-> > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
->=20
-> Hi Yang!
-> There was a report from Intel's bot too about the issue, could you=20
-> please add the tags from it?
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes:=20
-> https://lore.kernel.org/oe-kbuild-all/202309190540.RFwfIgO7-lkp@intel.com=
-/
+On Thu, 21 Sept 2023 at 13:33, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> To simplify with maintenance let's move the Arm SCMI power-domain driver
+> to the new pmdomain directory.
+>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Cristian Marussi <cristian.marussi@arm.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 
-No need to repost, the pw tools import the above tags automatically.
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Cheers,
+Feel free to take it through your scmi tree!
 
-Paolo
+Note that, we should move the Kconfig options too, but that requires
+changes that I am carrying in my pmdomain tree. We can either wait
+until the next cycle or you could send your pull-request to me this
+time (instead of through arm-soc), then we can fix this as a late
+minute change. The decision is yours.
 
+Kind regards
+Uffe
+
+> ---
+>
+> Hi Ulf,
+>
+> If you are happy with this, please cck. I would like to take this along
+> with your scmi_perf_domain change as part of you series.
+>
+> Regards,
+> Sudeep
+>
+>  drivers/firmware/arm_scmi/Makefile                           | 1 -
+>  drivers/pmdomain/arm/Makefile                                | 1 +
+>  drivers/{firmware/arm_scmi => pmdomain/arm}/scmi_pm_domain.c | 0
+>  3 files changed, 1 insertion(+), 1 deletion(-)
+>  rename drivers/{firmware/arm_scmi => pmdomain/arm}/scmi_pm_domain.c (100%)
+>
+> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
+> index b31d78fa66cc..a7bc4796519c 100644
+> --- a/drivers/firmware/arm_scmi/Makefile
+> +++ b/drivers/firmware/arm_scmi/Makefile
+> @@ -16,7 +16,6 @@ scmi-module-objs := $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transport-y)
+>  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-core.o
+>  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
+>
+> -obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
+>  obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
+>
+>  ifeq ($(CONFIG_THUMB2_KERNEL)$(CONFIG_CC_IS_CLANG),yy)
+> diff --git a/drivers/pmdomain/arm/Makefile b/drivers/pmdomain/arm/Makefile
+> index 7128db96deac..cfcb1f6cdd90 100644
+> --- a/drivers/pmdomain/arm/Makefile
+> +++ b/drivers/pmdomain/arm/Makefile
+> @@ -1,3 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>
+>  obj-$(CONFIG_ARM_SCMI_PERF_DOMAIN) += scmi_perf_domain.o
+> +obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
+> diff --git a/drivers/firmware/arm_scmi/scmi_pm_domain.c b/drivers/pmdomain/arm/scmi_pm_domain.c
+> similarity index 100%
+> rename from drivers/firmware/arm_scmi/scmi_pm_domain.c
+> rename to drivers/pmdomain/arm/scmi_pm_domain.c
+> --
+> 2.42.0
+>
