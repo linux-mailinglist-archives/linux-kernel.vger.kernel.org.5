@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F30BD7A9A4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C377A9A56
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjIUSiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
+        id S230345AbjIUSi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbjIUSh0 (ORCPT
+        with ESMTP id S230350AbjIUSho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:37:26 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C46D868E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:25 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79f96830e4dso3977839f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:29:25 -0700 (PDT)
+        Thu, 21 Sep 2023 14:37:44 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFEFD9D0B
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:30:43 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bffd6c1460so20213801fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695320964; x=1695925764; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T07+FrfCPjZBo72MwSk6fDllH6IdPm+PDxNrxWagj38=;
-        b=XjA2LfKPRX+SU4/H3+AzQrupIHosj67NBFlTc+tdPDTcz80R3VLJdTkJbxnt7UBDUQ
-         vUX1tgdxThvBw1zkH5+1zRqOkiW4z0wlx0ktvE6DHny6BykYkJAAhvWA+ubOtrpuL/8u
-         cybB1u1BzyVqBz3TRKvMJmNixNnUZ9XEuariQQY00UzjikcFKxckzQjfqrD61y+fCmrl
-         f4nRBls5SBjvucuEynYf1z4b2BR8c+FR071nsUQ+sDX752TYzPIPKeJGS4nxQtQZml7u
-         E/54/7GOVAbRqLb74PFGj9B71Phh+fb9NMX+WJgyfCItr4EJTsHAGf4D+VxxHFzuTo9j
-         vHXA==
+        d=linux-foundation.org; s=google; t=1695321041; x=1695925841; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=je3lP1GqCpTp1WJIazL9sCEzHC84Hlh5WUKnq4wtUQQ=;
+        b=XlulifhbCFajWGBJyUp5ueWde0aAaVK4pzUc+F3lS+RxIJRU1GKc0zQCk/S5ClXjge
+         3LukVAfwxTiAYsNBEaMaEX4bsMmOzlBhsKBzy/j5FSVqGTmsxd5SMBeoyZOkcNrXEgPy
+         vj3CmKHfENTPmC4aAgI6GZm0gqd72MdWV8sf4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695320964; x=1695925764;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T07+FrfCPjZBo72MwSk6fDllH6IdPm+PDxNrxWagj38=;
-        b=O6arO8B9TDS89sWzmqx6APaQjdQC1LdYurIO8+eFEfR8G+0Wgl9Ub3U7u4aonGehzl
-         rkoM8pLyhaUsQuuvFuAeFVGshp1CGAVNTGAXMLzr7HkMjcEGPElHZswcXxSYoqcwMyhN
-         dnvQkQVhSCSSIWyflFHUylyDqPEJ9vtKs5IATmZ0pvoxZqbb45mSxrb2q9O5NcUHqEj+
-         p+J+rCxjOGYuwLMcCufzPymAy3ftBh9gbJmcpvvEi0lGb303f6GwsWNhEN0GG3c3wgm3
-         5rhRHX1okstFEmusPf8b7yubCTn7+gET02BYYay1R8iYd8rX6O0ZpVwgGc3r17fs5WGq
-         yVsw==
-X-Gm-Message-State: AOJu0YxX18Hmmi1u18zPGIP/EGvi9VInzHy8RY7gmgpAtRHKy8l+hxYV
-        iQgeqtFA9/bWQtVWTz1pATUNlQ==
-X-Google-Smtp-Source: AGHT+IHHeGJYB3BCeWiqyDSINsxeVgZhZetGoHC2AFY9MnSBSKh1BEBTLr68Bh1E8VMEO0o+TJc9UQ==
-X-Received: by 2002:a05:6602:13c2:b0:79d:1c65:9bde with SMTP id o2-20020a05660213c200b0079d1c659bdemr8647351iov.1.1695320964457;
-        Thu, 21 Sep 2023 11:29:24 -0700 (PDT)
-Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id o25-20020a02c6b9000000b0042b227eb1ddsm500441jan.55.2023.09.21.11.29.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 11:29:23 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 8/8] io_uring: add support for vectored futex waits
-Date:   Thu, 21 Sep 2023 12:29:08 -0600
-Message-Id: <20230921182908.160080-9-axboe@kernel.dk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230921182908.160080-1-axboe@kernel.dk>
-References: <20230921182908.160080-1-axboe@kernel.dk>
+        d=1e100.net; s=20230601; t=1695321041; x=1695925841;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=je3lP1GqCpTp1WJIazL9sCEzHC84Hlh5WUKnq4wtUQQ=;
+        b=P0vCwSScpiAYkQvjC93qwvEYhv0NldwE3cMc1zVu+FKeGY2MNs0q5czX6ApmWLSAqC
+         NolU2UzpOKq6FXfTWi2ym35+b6SYKQL9MlvKRA98bT86UKLZ5A86Vo5f7DlJOSDv7mh8
+         3CxzgUQNMYMFmFV13FUQvOhBDMPQzQKv+EHFgT5QRZKskSGKjwRFwtKLx65tbt3vQIuv
+         bwcnD/Wd/GBJm3tbfDjPJ6XDABGilOG+x7ybm0zKHvO8cSIAbwL4iecSoOEMrYGSsRcE
+         7AX53DVLlqZx0MlQRNN4ToG3K5frB7WmDd3BFnMAGbO1EH8YTkDoZqzOvLZXHVTZAXia
+         BhqQ==
+X-Gm-Message-State: AOJu0Yx9ardiIt9Ih7+UoHT6H8/72kvKCPimejEhrmM3rQpDHpD4CyWE
+        orohDtJm/4so90aBWi9MCW7/QxwVJwWMLJ398ty4KQSm
+X-Google-Smtp-Source: AGHT+IEQyLRNDIB/PB1as2CR6uqo6PKaHNMkONpr49kZPERgQull/fF/H5UIZnNzw/QdjTHKfRyY+g==
+X-Received: by 2002:a2e:910f:0:b0:2bf:ff17:811e with SMTP id m15-20020a2e910f000000b002bfff17811emr5319930ljg.14.1695321041216;
+        Thu, 21 Sep 2023 11:30:41 -0700 (PDT)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id h9-20020a17090619c900b009ae54eba5casm1412890ejd.102.2023.09.21.11.30.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 11:30:40 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-532aaba8747so1594846a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:30:40 -0700 (PDT)
+X-Received: by 2002:aa7:d4d7:0:b0:525:691c:cd50 with SMTP id
+ t23-20020aa7d4d7000000b00525691ccd50mr5853774edr.24.1695321040242; Thu, 21
+ Sep 2023 11:30:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <a15822902e9e751b982a07621d180e3fa00353d4.camel@redhat.com>
+In-Reply-To: <a15822902e9e751b982a07621d180e3fa00353d4.camel@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Sep 2023 11:30:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whsTjLdt7RX-f-sFxqu_PieiBz=2OTjBF1CgW4j+OHfag@mail.gmail.com>
+Message-ID: <CAHk-=whsTjLdt7RX-f-sFxqu_PieiBz=2OTjBF1CgW4j+OHfag@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for 6.6-rc3
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,309 +74,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for IORING_OP_FUTEX_WAITV, which allows registering a
-notification for a number of futexes at once. If one of the futexes are
-woken, then the request will complete with the index of the futex that got
-woken as the result. This is identical to what the normal vectored futex
-waitv operation does.
+On Thu, 21 Sept 2023 at 07:35, Paolo Abeni <pabeni@redhat.com> wrote:
+>
+> I'm wondering is if my PR reached somehow your inbox and/or if I have
+> to re-send it.
 
-Use like IORING_OP_FUTEX_WAIT, except sqe->addr must now contain the a
-pointer to a struct futex_waitv array, and sqe->off must now contain the
-number of elements in that array.
+I got it fine, and just merged it (still going through the build test etc)
 
-For cancelations, FUTEX_WAITV does not rely on the futex_unqueue()
-return value as we're dealing with multiple futexes. Instead, a separate
-per io_uring request atomic is used to claim ownership of the request.
-
-Waiting on N futexes could be done with IORING_OP_FUTEX_WAIT as well,
-but that punts a lot of the work to the application:
-
-1) Application would need to submit N IORING_OP_FUTEX_WAIT requests,
-   rather than just a single IORING_OP_FUTEX_WAITV.
-
-2) When one futex is woken, application would need to cancel the
-   remaining N-1 requests that didn't trigger.
-
-While this is of course doable, having a single vectored futex wait
-makes for much simpler application code.
-
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- include/uapi/linux/io_uring.h |   1 +
- io_uring/futex.c              | 164 ++++++++++++++++++++++++++++++++--
- io_uring/futex.h              |   2 +
- io_uring/opdef.c              |  11 +++
- 4 files changed, 169 insertions(+), 9 deletions(-)
-
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 4ddd7bdbbfb8..172472626f5b 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -246,6 +246,7 @@ enum io_uring_op {
- 	IORING_OP_WAITID,
- 	IORING_OP_FUTEX_WAIT,
- 	IORING_OP_FUTEX_WAKE,
-+	IORING_OP_FUTEX_WAITV,
- 
- 	/* this goes last, obviously */
- 	IORING_OP_LAST,
-diff --git a/io_uring/futex.c b/io_uring/futex.c
-index 4278302d212c..0c07df8668aa 100644
---- a/io_uring/futex.c
-+++ b/io_uring/futex.c
-@@ -14,10 +14,15 @@
- 
- struct io_futex {
- 	struct file	*file;
--	u32 __user	*uaddr;
-+	union {
-+		u32 __user			*uaddr;
-+		struct futex_waitv __user	*uwaitv;
-+	};
- 	unsigned long	futex_val;
- 	unsigned long	futex_mask;
-+	unsigned long	futexv_owned;
- 	u32		futex_flags;
-+	unsigned int	futex_nr;
- };
- 
- struct io_futex_data {
-@@ -44,6 +49,13 @@ void io_futex_cache_free(struct io_ring_ctx *ctx)
- 	io_alloc_cache_free(&ctx->futex_cache, io_futex_cache_entry_free);
- }
- 
-+static void __io_futex_complete(struct io_kiocb *req, struct io_tw_state *ts)
-+{
-+	req->async_data = NULL;
-+	hlist_del_init(&req->hash_node);
-+	io_req_task_complete(req, ts);
-+}
-+
- static void io_futex_complete(struct io_kiocb *req, struct io_tw_state *ts)
- {
- 	struct io_futex_data *ifd = req->async_data;
-@@ -52,22 +64,59 @@ static void io_futex_complete(struct io_kiocb *req, struct io_tw_state *ts)
- 	io_tw_lock(ctx, ts);
- 	if (!io_alloc_cache_put(&ctx->futex_cache, &ifd->cache))
- 		kfree(ifd);
--	req->async_data = NULL;
--	hlist_del_init(&req->hash_node);
--	io_req_task_complete(req, ts);
-+	__io_futex_complete(req, ts);
- }
- 
--static bool __io_futex_cancel(struct io_ring_ctx *ctx, struct io_kiocb *req)
-+static void io_futexv_complete(struct io_kiocb *req, struct io_tw_state *ts)
- {
--	struct io_futex_data *ifd = req->async_data;
-+	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-+	struct futex_vector *futexv = req->async_data;
-+	struct io_ring_ctx *ctx = req->ctx;
-+	int res = 0;
- 
--	/* futex wake already done or in progress */
--	if (!futex_unqueue(&ifd->q))
-+	io_tw_lock(ctx, ts);
-+
-+	res = futex_unqueue_multiple(futexv, iof->futex_nr);
-+	if (res != -1)
-+		io_req_set_res(req, res, 0);
-+
-+	kfree(req->async_data);
-+	req->flags &= ~REQ_F_ASYNC_DATA;
-+	__io_futex_complete(req, ts);
-+}
-+
-+static bool io_futexv_claimed(struct io_futex *iof)
-+{
-+	return test_bit(0, &iof->futexv_owned);
-+}
-+
-+static bool io_futexv_claim(struct io_futex *iof)
-+{
-+	if (test_bit(0, &iof->futexv_owned) ||
-+	    test_and_set_bit(0, &iof->futexv_owned))
- 		return false;
-+	return true;
-+}
-+
-+static bool __io_futex_cancel(struct io_ring_ctx *ctx, struct io_kiocb *req)
-+{
-+	/* futex wake already done or in progress */
-+	if (req->opcode == IORING_OP_FUTEX_WAIT) {
-+		struct io_futex_data *ifd = req->async_data;
-+
-+		if (!futex_unqueue(&ifd->q))
-+			return false;
-+		req->io_task_work.func = io_futex_complete;
-+	} else {
-+		struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-+
-+		if (!io_futexv_claim(iof))
-+			return false;
-+		req->io_task_work.func = io_futexv_complete;
-+	}
- 
- 	hlist_del_init(&req->hash_node);
- 	io_req_set_res(req, -ECANCELED, 0);
--	req->io_task_work.func = io_futex_complete;
- 	io_req_task_work_add(req);
- 	return true;
- }
-@@ -146,6 +195,54 @@ int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- 	return 0;
- }
- 
-+static void io_futex_wakev_fn(struct wake_q_head *wake_q, struct futex_q *q)
-+{
-+	struct io_kiocb *req = q->wake_data;
-+	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-+
-+	if (!io_futexv_claim(iof))
-+		return;
-+	if (unlikely(!__futex_wake_mark(q)))
-+		return;
-+
-+	io_req_set_res(req, 0, 0);
-+	req->io_task_work.func = io_futexv_complete;
-+	io_req_task_work_add(req);
-+}
-+
-+int io_futexv_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
-+{
-+	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-+	struct futex_vector *futexv;
-+	int ret;
-+
-+	/* No flags or mask supported for waitv */
-+	if (unlikely(sqe->fd || sqe->buf_index || sqe->file_index ||
-+		     sqe->addr2 || sqe->addr3))
-+		return -EINVAL;
-+
-+	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
-+	iof->futex_nr = READ_ONCE(sqe->len);
-+	if (!iof->futex_nr || iof->futex_nr > FUTEX_WAITV_MAX)
-+		return -EINVAL;
-+
-+	futexv = kcalloc(iof->futex_nr, sizeof(*futexv), GFP_KERNEL);
-+	if (!futexv)
-+		return -ENOMEM;
-+
-+	ret = futex_parse_waitv(futexv, iof->uwaitv, iof->futex_nr,
-+				io_futex_wakev_fn, req);
-+	if (ret) {
-+		kfree(futexv);
-+		return ret;
-+	}
-+
-+	iof->futexv_owned = 0;
-+	req->flags |= REQ_F_ASYNC_DATA;
-+	req->async_data = futexv;
-+	return 0;
-+}
-+
- static void io_futex_wake_fn(struct wake_q_head *wake_q, struct futex_q *q)
- {
- 	struct io_futex_data *ifd = container_of(q, struct io_futex_data, q);
-@@ -170,6 +267,55 @@ static struct io_futex_data *io_alloc_ifd(struct io_ring_ctx *ctx)
- 	return kmalloc(sizeof(struct io_futex_data), GFP_NOWAIT);
- }
- 
-+int io_futexv_wait(struct io_kiocb *req, unsigned int issue_flags)
-+{
-+	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-+	struct futex_vector *futexv = req->async_data;
-+	struct io_ring_ctx *ctx = req->ctx;
-+	int ret, woken = -1;
-+
-+	io_ring_submit_lock(ctx, issue_flags);
-+
-+	ret = futex_wait_multiple_setup(futexv, iof->futex_nr, &woken);
-+
-+	/*
-+	 * The above call leaves us potentially non-running. This is fine
-+	 * for the sync syscall as it'll be blocking unless we already got
-+	 * one of the futexes woken, but it obviously won't work for an async
-+	 * invocation. Mark us runnable again.
-+	 */
-+	__set_current_state(TASK_RUNNING);
-+
-+	/*
-+	 * We got woken while setting up, let that side do the completion
-+	 */
-+	if (io_futexv_claimed(iof)) {
-+skip:
-+		io_ring_submit_unlock(ctx, issue_flags);
-+		return IOU_ISSUE_SKIP_COMPLETE;
-+	}
-+
-+	/*
-+	 * 0 return means that we successfully setup the waiters, and that
-+	 * nobody triggered a wakeup while we were doing so. < 0 or 1 return
-+	 * is either an error or we got a wakeup while setting up.
-+	 */
-+	if (!ret) {
-+		hlist_add_head(&req->hash_node, &ctx->futex_list);
-+		goto skip;
-+	}
-+
-+	io_ring_submit_unlock(ctx, issue_flags);
-+	if (ret < 0)
-+		req_set_fail(req);
-+	else if (woken != -1)
-+		ret = woken;
-+	io_req_set_res(req, ret, 0);
-+	kfree(futexv);
-+	req->flags &= ~REQ_F_ASYNC_DATA;
-+	return IOU_OK;
-+}
-+
- int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags)
- {
- 	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-diff --git a/io_uring/futex.h b/io_uring/futex.h
-index ddc9e0d73c52..0847e9e8a127 100644
---- a/io_uring/futex.h
-+++ b/io_uring/futex.h
-@@ -3,7 +3,9 @@
- #include "cancel.h"
- 
- int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
-+int io_futexv_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
- int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags);
-+int io_futexv_wait(struct io_kiocb *req, unsigned int issue_flags);
- int io_futex_wake(struct io_kiocb *req, unsigned int issue_flags);
- 
- #if defined(CONFIG_FUTEX)
-diff --git a/io_uring/opdef.c b/io_uring/opdef.c
-index 31a3a421e94d..25a3515a177c 100644
---- a/io_uring/opdef.c
-+++ b/io_uring/opdef.c
-@@ -459,6 +459,14 @@ const struct io_issue_def io_issue_defs[] = {
- 		.issue			= io_futex_wake,
- #else
- 		.prep			= io_eopnotsupp_prep,
-+#endif
-+	},
-+	[IORING_OP_FUTEX_WAITV] = {
-+#if defined(CONFIG_FUTEX)
-+		.prep			= io_futexv_prep,
-+		.issue			= io_futexv_wait,
-+#else
-+		.prep			= io_eopnotsupp_prep,
- #endif
- 	},
- };
-@@ -693,6 +701,9 @@ const struct io_cold_def io_cold_defs[] = {
- 	[IORING_OP_FUTEX_WAKE] = {
- 		.name			= "FUTEX_WAKE",
- 	},
-+	[IORING_OP_FUTEX_WAITV] = {
-+		.name			= "FUTEX_WAITV",
-+	},
- };
- 
- const char *io_uring_get_opcode(u8 opcode)
--- 
-2.40.1
-
+                Linus
