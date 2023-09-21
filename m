@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE057A9AAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4E97A9AB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbjIUSrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
+        id S229836AbjIUSr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjIUSrL (ORCPT
+        with ESMTP id S229802AbjIUSrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:47:11 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5ED0EE855
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:46:57 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c012232792so22302971fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:46:57 -0700 (PDT)
+        Thu, 21 Sep 2023 14:47:52 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09D8EE5BD
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:47:43 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-533352059fdso1460179a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695322014; x=1695926814; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695322060; x=1695926860; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oGNO3fxjlHQ6BuBtNnDhbEjBaZDga+bo39FJcPPhcUQ=;
-        b=gLtdpyfu5uB4UVBy+Bx6JsEvwaCK5CsYxt0yaKBRAzSqXryNRu3k3e2pavmCsjZu9Z
-         nTh3Jj8WUMC7hQgu4HhjIufZPWIpNAZw2IvpkVmKLRyUxCNCKtGGj096aSJCFc0so1mc
-         V43xkaV0MUFq+PaNvgg8Z0esTLdSJ2ObjAPtg=
+        bh=ZE8jn6HHsFTTLGSwFTvjr4C1qpDw4tvtE+zZqrkJga0=;
+        b=L7EbKCeMwRt0CrwM2OlAejV+4C+N7UGG2opaprsWphw/CnEBDex2J6GsBeqB+wcWhu
+         t9D5o1kjzNKaqMsWywsFf30Mtqk556OUE5w5AJmWx7LC+NzMH826NsvLN28yVpD2DjHa
+         42k70lf6dC6EuAkuOch+1cWoHxVgjMpaPEkAA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695322014; x=1695926814;
+        d=1e100.net; s=20230601; t=1695322060; x=1695926860;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oGNO3fxjlHQ6BuBtNnDhbEjBaZDga+bo39FJcPPhcUQ=;
-        b=Zo9Z7QE2POW1jszmdus1qaLYYBYgS1tHoQTLqlwKM8K/NRi91eyj1c5INMImoRWuV2
-         2WUOdKE1vAB1Cn1tvuoeX+0opPm2n+n6duORG3uZejYTFmuLm7eg17NKGTaXpSGE5jkT
-         RFwYry97MfjmNTUsa8Ui9F7yHHLCSAlmYjL7lL3gWWg3gszg5l9LnAtUyANQfjpjwUtz
-         LsPbXuErTS9BGo53UKpyoNYDNA7KrsufK/1G7AnuiT9DUpXYt9IZWSnTScylI8auuOsQ
-         vMxcDfTf0o9yoeKW0lE2CVr589Omlh5VI0xOnVBw870Ije1dYWMI7VEzZWy4wsclrih5
-         H/OQ==
-X-Gm-Message-State: AOJu0YySBI4Cq+N9eTptzvdKmqzizZjmCSABdO1D9ojWGFdhW0Tl+8bs
-        y2Xlz9dQT1wEhUirAB2UbwLM2c//OMsoWLZkAKj3Sw==
-X-Google-Smtp-Source: AGHT+IHPQRCiEs7r7vdL9iTIGnxq9/bu2WXx7KghfSpz+QKbRoEJ9XhdFeDypSMn8EuytZSKcQJLNA==
-X-Received: by 2002:a2e:95d0:0:b0:2c0:1385:8c86 with SMTP id y16-20020a2e95d0000000b002c013858c86mr5593521ljh.25.1695322013930;
-        Thu, 21 Sep 2023 11:46:53 -0700 (PDT)
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
-        by smtp.gmail.com with ESMTPSA id y4-20020a17090614c400b00992b510089asm1435971ejc.84.2023.09.21.11.46.53
+        bh=ZE8jn6HHsFTTLGSwFTvjr4C1qpDw4tvtE+zZqrkJga0=;
+        b=pU9vmHfTQjaYc+PbdP2gCuHHIY6kxwyeJjShiAkoizFumtywhPzChhK5dMMGcQyy7e
+         m7P7QKwjxStJ6j+KFhZzblhMlqYTwURT4yfE6bMxyt8iE40vTilhuf2nUk6VuhW9tUyy
+         CHG3KLWgAmiV9UyEubvDbQ4dmQ7t2rSjkijUZtzo5DgJEc3BhEcfLqcC1c7drs9jmTUr
+         msHKITuZfmNwCPMJG58cgrnsyy+VnAsLxkYCB60BKT2wqK1JrKql98k2DQ4vCH4oETMI
+         j/Z9dPiXkATqKL0dG6o2d57fuNpZQlbUsW+bQLyElH4DwUUZTOuNsETpUcNe65wL5jPt
+         s80A==
+X-Gm-Message-State: AOJu0YyvyBAPniQKhKtPQrVM3hS8QSj5LahgcKv2g9cQswWoOZjfwxtj
+        JBufiZNiPxIjc6lv+NSCb+CA7LxvYchKX1Ltz4TQZelH
+X-Google-Smtp-Source: AGHT+IEwO6Vjd4GPAcmS077JAs2bxZiOyH8ED5J5XWa8ad59K63s25oGaQxBDoVDNQWLZKhQtIlkPw==
+X-Received: by 2002:a17:906:196:b0:9ad:df85:97ae with SMTP id 22-20020a170906019600b009addf8597aemr5456660ejb.66.1695322060514;
+        Thu, 21 Sep 2023 11:47:40 -0700 (PDT)
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com. [209.85.128.48])
+        by smtp.gmail.com with ESMTPSA id bu10-20020a170906a14a00b0099bd7b26639sm1451740ejb.6.2023.09.21.11.47.39
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 11:46:53 -0700 (PDT)
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso20315e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:46:53 -0700 (PDT)
-X-Received: by 2002:a05:600c:d3:b0:405:38d1:e146 with SMTP id
- u19-20020a05600c00d300b0040538d1e146mr59361wmm.4.1695322013017; Thu, 21 Sep
- 2023 11:46:53 -0700 (PDT)
+        Thu, 21 Sep 2023 11:47:39 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-404f881aa48so18875e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 11:47:39 -0700 (PDT)
+X-Received: by 2002:a05:600c:3caa:b0:3f7:3e85:36a with SMTP id
+ bg42-20020a05600c3caa00b003f73e85036amr104085wmb.7.1695322058640; Thu, 21 Sep
+ 2023 11:47:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230901234015.566018-1-dianders@chromium.org> <20230901163944.RFT.3.I10dbe099fb1059d304ba847d19fc45054f7ffe9f@changeid>
-In-Reply-To: <20230901163944.RFT.3.I10dbe099fb1059d304ba847d19fc45054f7ffe9f@changeid>
+References: <20230901234015.566018-1-dianders@chromium.org> <20230901163944.RFT.4.I4752a39ad9f8fd08b32c2b78a8a3e40491bfb5eb@changeid>
+In-Reply-To: <20230901163944.RFT.4.I4752a39ad9f8fd08b32c2b78a8a3e40491bfb5eb@changeid>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 21 Sep 2023 11:46:40 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VTDuvjD8t8amWg=4r8=z3EhnbVms1DcskmYNX8sG4-kw@mail.gmail.com>
-Message-ID: <CAD=FV=VTDuvjD8t8amWg=4r8=z3EhnbVms1DcskmYNX8sG4-kw@mail.gmail.com>
-Subject: Re: [RFT PATCH 3/6] drm/vc4: Call drm_atomic_helper_shutdown() at
- shutdown time
+Date:   Thu, 21 Sep 2023 11:47:21 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XrhPxrYRP4A4vcKyq+euhfyWq3rzs2egXB51fdFNSLZQ@mail.gmail.com>
+Message-ID: <CAD=FV=XrhPxrYRP4A4vcKyq+euhfyWq3rzs2egXB51fdFNSLZQ@mail.gmail.com>
+Subject: Re: [RFT PATCH 4/6] drm/ssd130x: Call drm_atomic_helper_shutdown() at
+ remove time
 To:     dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, emma@anholt.net,
+Cc:     airlied@gmail.com, daniel@ffwll.ch, javierm@redhat.com,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -82,13 +82,12 @@ Hi,
 On Fri, Sep 1, 2023 at 4:40=E2=80=AFPM Douglas Anderson <dianders@chromium.=
 org> wrote:
 >
-> Based on grepping through the source code these drivers appear to be
-> missing a call to drm_atomic_helper_shutdown() at system shutdown
-> time. Among other things, this means that if a panel is in use that it
-> won't be cleanly powered off at system shutdown time.
+> Based on grepping through the source code, this driver appears to be
+> missing a call to drm_atomic_helper_shutdown() at remove time. Let's
+> add it.
 >
 > The fact that we should call drm_atomic_helper_shutdown() in the case
-> of OS shutdown/restart comes straight out of the kernel doc "driver
+> of OS driver remove comes straight out of the kernel doc "driver
 > instance overview" in drm_drv.c.
 >
 > Suggested-by: Maxime Ripard <mripard@kernel.org>
@@ -96,22 +95,13 @@ org> wrote:
 > ---
 > This commit is only compile-time tested.
 >
-> Though this patch could be squashed into the patch ("drm: Call
-> drm_atomic_helper_shutdown() at shutdown time for misc drivers"), I
-> kept it separate to call attention to this driver. While writing this
-> patch, I noticed that the bind() function is using "devm" and thus
-> assumes it doesn't need to do much explicit error handling. That's
-> actually a bug. As per kernel docs [1] "the lifetime of the aggregate
-> driver does not align with any of the underlying struct device
-> instances. Therefore devm cannot be used and all resources acquired or
-> allocated in this callback must be explicitly released in the unbind
-> callback". Fixing that is outside the scope of this commit.
+> NOTE: I'm not 100% sure this is the correct thing to do, but I _think_
+> so. Please shout if you know better.
 >
-> [1] https://docs.kernel.org/driver-api/component.html
->
->  drivers/gpu/drm/vc4/vc4_drv.c | 36 ++++++++++++++++++++++-------------
->  1 file changed, 23 insertions(+), 13 deletions(-)
+>  drivers/gpu/drm/solomon/ssd130x.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Landed to drm-misc-next:
+Landed this to drm-misc-next. Since I wasn't 100% sure, if someone
+finds that this is bad after-the-fact, we can certainly revert.
 
-013d382d11a2 drm/vc4: Call drm_atomic_helper_shutdown() at shutdown time
+10c8204c8b17 drm/ssd130x: Call drm_atomic_helper_shutdown() at remove time
