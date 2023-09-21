@@ -2,53 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B0E7AA4CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F097AA4BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Sep 2023 00:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbjIUWVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 18:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
+        id S231304AbjIUWQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 18:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232215AbjIUWUo (ORCPT
+        with ESMTP id S233065AbjIUWPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 18:20:44 -0400
+        Thu, 21 Sep 2023 18:15:33 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A20FA9F7;
-        Thu, 21 Sep 2023 10:07:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15B06C433D9;
-        Thu, 21 Sep 2023 06:30:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E99157B470;
+        Thu, 21 Sep 2023 10:37:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7122AC433B7;
+        Thu, 21 Sep 2023 07:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695277858;
-        bh=T+AarZU1OTWE4tfG5KCNEN7xu+9uCv63xpcrlLBPzs4=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=F8spp6f20lSgSPHJDALIiU808mf39UoqBTNdF7qImjbNCJwTFAC3eIT2dM1d9jnJx
-         Hz7Ek/XGl4FJw8IyEj87AlnDMKzuVWv2Jyn50UdvQz54g8Pda4wteEZiOpW/e606MW
-         aiQ+wR1I9Zzr5RI1fXHVsD6oki6FitbWIfn8AMbAIz0iwUpoQh+fREph4mexqnHQm+
-         CDt8pTl83zrSp3k8q50qdg3OsV+ag3dJcCuF0cxmfBx6cbMdcYsav3J3rKJrbW62TD
-         ucDYT+V8I9UpkPPQPbR3w1onrFv9hIr47UeFE3OL8c05hPDHSDmJ+be9gmwtjb4mH/
-         0Tlelv86F33bQ==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wifi: ipw2x00: Annotate struct libipw_txb with
- __counted_by
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20230915200602.never.582-kees@kernel.org>
-References: <20230915200602.never.582-kees@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-wireless@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169527785383.1469888.6111719451945571724.kvalo@kernel.org>
-Date:   Thu, 21 Sep 2023 06:30:55 +0000 (UTC)
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        s=k20201202; t=1695280543;
+        bh=Tx02dogxcOVuPJ+DWswlMoAIUz1labuHXlWuvwBTGiM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PNotydpZJebiJsWK5x0zEj2ZxGXRYyowWYd29aCMRjMrCNF+XG1/DU8Vjfrf9vbja
+         Xp6odIA+k1f/1V4BIB98EJYWH5PCdxXO4S/BCEMtM2Nyy4s80mdEqSXK3SLHwNkSFd
+         1U9Hbb/LZOHBD+Rzo9o3GkqiH+fKjMFPAwgC91MTCh00CvroDgqH4XWyuZtgdIy3lx
+         H1nwB3eOdTwCCvzpJeylIodw2LhDR2IjGDe8mTNGTK5Ig5dMslkxETpn+TTdSiA807
+         QSM/6JR4RJkvnE2+qQlkq2ej0hSH4qtVP95dg3pJ20IXxNL4q6zA5OskKJTgkVhMQk
+         pBWxYrU6Uhsjw==
+Received: from 82-132-232-12.dab.02.net ([82.132.232.12] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qjDuW-00Erv1-Pd;
+        Thu, 21 Sep 2023 08:15:41 +0100
+Date:   Thu, 21 Sep 2023 08:15:36 +0100
+Message-ID: <877cok3skn.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Suraj Jitindar Singh <surajjs@amazon.com>
+Cc:     <stable@vger.kernel.org>, <james.morse@arm.com>,
+        <alexandru.elisei@arm.com>, <suzuki.poulose@arm.com>,
+        <oliver.upton@linux.dev>, <catalin.marinas@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
+        <sjitindarsingh@gmail.com>, Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH stable 6.1.y 2/2] KVM: arm64: Prevent unconditional donation of unmapped regions from the host
+In-Reply-To: <20230920192729.694309-2-surajjs@amazon.com>
+References: <20230920192729.694309-1-surajjs@amazon.com>
+        <20230920192729.694309-2-surajjs@amazon.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 82.132.232.12
+X-SA-Exim-Rcpt-To: surajjs@amazon.com, stable@vger.kernel.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, oliver.upton@linux.dev, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, sjitindarsingh@gmail.com, will@kernel.org, qperret@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,30 +67,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> wrote:
-
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Wed, 20 Sep 2023 20:27:29 +0100,
+Suraj Jitindar Singh <surajjs@amazon.com> wrote:
 > 
-> As found with Coccinelle[1], add __counted_by for struct libipw_txb.
+> From: Will Deacon <will@kernel.org>
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> commit 09cce60bddd6461a93a5bf434265a47827d1bc6f upstream.
 > 
-> Cc: Stanislav Yakovlev <stas.yakovlev@gmail.com>
-> Cc: Kalle Valo <kvalo@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Since host stage-2 mappings are created lazily, we cannot rely solely on
+> the pte in order to recover the target physical address when checking a
+> host-initiated memory transition as this permits donation of unmapped
+> regions corresponding to MMIO or "no-map" memory.
+> 
+> Instead of inspecting the pte, move the addr_is_allowed_memory() check
+> into the host callback function where it is passed the physical address
+> directly from the walker.
+> 
+> Cc: Quentin Perret <qperret@google.com>
+> Fixes: e82edcc75c4e ("KVM: arm64: Implement do_share() helper for sharing memory")
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Link: https://lore.kernel.org/r/20230518095844.1178-1-will@kernel.org
+> [ bp: s/ctx->addr/addr in __check_page_state_visitor due to missing commit
+>       "KVM: arm64: Combine visitor arguments into a context structure"
+>       in stable.
+> ]
 
-Patch applied to wireless-next.git, thanks.
+Same question.
 
-357be7ebba38 wifi: ipw2x00: Annotate struct libipw_txb with __counted_by
+> Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+
+Again, I find this backport pretty pointless. What is the rationale
+for it?
+
+	M.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20230915200602.never.582-kees@kernel.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Without deviation from the norm, progress is not possible.
