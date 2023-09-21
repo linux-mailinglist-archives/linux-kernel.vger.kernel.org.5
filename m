@@ -2,231 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D337A9908
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC8A7A9AA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 20:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjIUSKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 14:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54294 "EHLO
+        id S229652AbjIUSqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 14:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjIUSKi (ORCPT
+        with ESMTP id S229545AbjIUSqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 14:10:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D59785D3D;
-        Thu, 21 Sep 2023 10:37:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEF7DC4E74B;
-        Thu, 21 Sep 2023 13:48:08 +0000 (UTC)
-Message-ID: <13b47528-153d-417d-8fe3-0288aa4d1003@xs4all.nl>
-Date:   Thu, 21 Sep 2023 15:48:06 +0200
+        Thu, 21 Sep 2023 14:46:42 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BCFEE805;
+        Thu, 21 Sep 2023 11:46:31 -0700 (PDT)
+Received: from kwepemd100003.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rrxbh1p9szNnjs;
+        Thu, 21 Sep 2023 21:49:52 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemd100003.china.huawei.com (7.221.188.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.23; Thu, 21 Sep 2023 21:53:24 +0800
+Message-ID: <cf166ee6-273a-42be-0537-7f0d3543e198@huawei.com>
+Date:   Thu, 21 Sep 2023 21:53:23 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 45/49] media: core: Add bitmap manage bufs array
- entries
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
- <20230914133323.198857-46-benjamin.gaignard@collabora.com>
- <1142bbb4-b8f1-44ec-962e-9347a231782f@xs4all.nl>
- <20b6b93e-eef8-3d7b-a3c2-795f220059d4@collabora.com>
- <470682b4-c14b-4237-bc46-fddfdd085026@xs4all.nl>
- <31f298ec-6280-d21b-3d8a-c7bf1c9c0c30@collabora.com>
- <b10a7414-b710-4fb9-a72d-e2d7eff2616d@xs4all.nl>
- <aa649adf-8faf-801b-f6bd-d4a4760e040f@collabora.com>
- <a6a6da68-d9f2-44d3-9741-aa2cf83fac6d@xs4all.nl>
- <c8b7db47-3875-a10b-8d81-a0b3dcbc564a@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <c8b7db47-3875-a10b-8d81-a0b3dcbc564a@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
+Content-Language: en-US
+To:     Puranjay Mohan <puranjay12@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, <bpf@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20230917000045.56377-1-puranjay12@gmail.com>
+ <20230917000045.56377-2-puranjay12@gmail.com>
+ <041d4f6b-1350-105e-6ab0-73980aba26ea@huaweicloud.com>
+ <mb61pil83k6nr.fsf@gmail.com>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <mb61pil83k6nr.fsf@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd100003.china.huawei.com (7.221.188.180)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 14:46, Benjamin Gaignard wrote:
+On 9/21/2023 9:16 PM, Puranjay Mohan wrote:
+> Xu Kuohai <xukuohai@huaweicloud.com> writes:
 > 
-> Le 21/09/2023 à 14:13, Hans Verkuil a écrit :
->> On 21/09/2023 14:05, Benjamin Gaignard wrote:
->>> Le 21/09/2023 à 12:24, Hans Verkuil a écrit :
->>>> On 21/09/2023 11:28, Benjamin Gaignard wrote:
->>>>> Le 20/09/2023 à 16:56, Hans Verkuil a écrit :
->>>>>> On 20/09/2023 16:30, Benjamin Gaignard wrote:
->>>>>> <snip>
->>>>>>
->>>>>>>>>          num_buffers = min_t(unsigned int, num_buffers,
->>>>>>>>>                      q->max_allowed_buffers - vb2_get_num_buffers(q));
->>>>>>>>>      -    first_index = vb2_get_num_buffers(q);
->>>>>>>>> +    first_index = bitmap_find_next_zero_area(q->bufs_map, q->max_allowed_buffers,
->>>>>>>>> +                         0, num_buffers, 0);
->>>>>>>>>            if (first_index >= q->max_allowed_buffers)
->>>>>>>>>              return 0;
->>>>>>>>> @@ -675,7 +678,13 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
->>>>>>>>>        struct vb2_buffer *vb2_get_buffer(struct vb2_queue *q, unsigned int index)
->>>>>>>>>      {
->>>>>>>>> -    if (index < q->num_buffers)
->>>>>>>>> +    if (!q->bufs_map || !q->bufs)
->>>>>>>>> +        return NULL;
->>>>>>>> I don't think this can ever happen.
->>>>>>> I got kernel crash without them.
->>>>>>> I will keep them.
->>>>>> What is the backtrace? How can this happen? It feels wrong that this can be
->>>>>> called with a vb2_queue that apparently is not properly initialized.
->>>>> I have this log when adding dump_stack() in vb2_get_buffer() if !q->bufs_bitmap:
->>>>>
->>>>> [   18.924627] Call trace:
->>>>> [   18.927090]  dump_backtrace+0x94/0xec
->>>>> [   18.930787]  show_stack+0x18/0x24
->>>>> [   18.934137]  dump_stack_lvl+0x48/0x60
->>>>> [   18.937833]  dump_stack+0x18/0x24
->>>>> [   18.941166]  __vb2_queue_cancel+0x23c/0x2f0
->>>>> [   18.945365]  vb2_core_queue_release+0x24/0x6c
->>>>> [   18.949740]  vb2_queue_release+0x10/0x1c
->>>>> [   18.953677]  v4l2_m2m_ctx_release+0x20/0x40
->>>>> [   18.957892]  hantro_release+0x20/0x54
->>>>> [   18.961584]  v4l2_release+0x74/0xec
->>>>> [   18.965110]  __fput+0xb4/0x274
->>>>> [   18.968205]  __fput_sync+0x50/0x5c
->>>>> [   18.971626]  __arm64_sys_close+0x38/0x7c
->>>>> [   18.975562]  invoke_syscall+0x48/0x114
->>>>> [   18.979329]  el0_svc_common.constprop.0+0xc0/0xe0
->>>>> [   18.984068]  do_el0_svc+0x1c/0x28
->>>>> [   18.987402]  el0_svc+0x40/0xe8
->>>>> [   18.990470]  el0t_64_sync_handler+0x100/0x12c
->>>>> [   18.994842]  el0t_64_sync+0x190/0x194
->>>>>
->>>>> This happen at boot time when hantro driver is open and close without other actions.
->>>> Ah, now I see the problem. q->bufs and q->bufs_map are allocated in
->>>> vb2_core_create_bufs and vb2_core_reqbufs, but they should be allocated
->>>> in vb2_queue_init: that's the counterpart of vb2_core_queue_release.
->>>>
->>>> With that change you shouldn't have to check for q->bufs/bufs_map anymore.
->>> It is a better solution but even like this vb2_core_queue_release() is called
->>> at least 2 times on the same vivid queue and without testing q->bufs_bitmap
->>> makes kernel crash.
->> Do you have a stacktrace for that? Perhaps vb2_core_queue_release should check
->> for q->bufs/q->bufs_map and return if those are NULL. But it could also be a
->> bug that it is called twice, it just was never noticed because it was harmless
->> before.
+>> On 9/17/2023 8:00 AM, Puranjay Mohan wrote:
+>>> Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be used
+>>> by bpf_throw() to unwind till the program marked as exception boundary and
+>>> run the callback with the stack of the main program.
+>>>
+>>> The prologue generation code has been modified to make the callback
+>>> program use the stack of the program marked as exception boundary where
+>>> callee-saved registers are already pushed.
+>>>
+>>> As the bpf_throw function never returns, if it clobbers any callee-saved
+>>> registers, they would remain clobbered. So, the prologue of the
+>>> exception-boundary program is modified to push R23 and R24 as well,
+>>> which the callback will then recover in its epilogue.
+>>>
+>>> The Procedure Call Standard for the Arm 64-bit Architecture[1] states
+>>> that registers r19 to r28 should be saved by the callee. BPF programs on
+>>> ARM64 already save all callee-saved registers except r23 and r24. This
+>>> patch adds an instruction in prologue of the  program to save these
+>>> two registers and another instruction in the epilogue to recover them.
+>>>
+>>> These extra instructions are only added if bpf_throw() used. Otherwise
+>>> the emitted prologue/epilogue remains unchanged.
+>>>
+>>> [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
+>>>
+>>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+>>> ---
+>>>    arch/arm64/net/bpf_jit_comp.c                | 98 ++++++++++++++++----
+>>>    tools/testing/selftests/bpf/DENYLIST.aarch64 |  1 -
+>>>    2 files changed, 79 insertions(+), 20 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+>>> index 7d4af64e3982..fcc55e558863 100644
+>>> --- a/arch/arm64/net/bpf_jit_comp.c
+>>> +++ b/arch/arm64/net/bpf_jit_comp.c
+>>> @@ -21,6 +21,7 @@
+>>>    #include <asm/insn.h>
+>>>    #include <asm/patching.h>
+>>>    #include <asm/set_memory.h>
+>>> +#include <asm/stacktrace.h>
+>>>    
+>>>    #include "bpf_jit.h"
+>>>    
+>>> @@ -285,7 +286,7 @@ static bool is_lsi_offset(int offset, int scale)
+>>>    /* Tail call offset to jump into */
+>>>    #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
+>>>    
+>>> -static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>>> +static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf, bool is_exception_cb)
+>>>    {
+>>>    	const struct bpf_prog *prog = ctx->prog;
+>>>    	const bool is_main_prog = !bpf_is_subprog(prog);
+>>> @@ -333,19 +334,28 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>>>    	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
+>>>    	emit(A64_NOP, ctx);
+>>>    
+>>> -	/* Sign lr */
+>>> -	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
+>>> -		emit(A64_PACIASP, ctx);
+>>> -
+>>> -	/* Save FP and LR registers to stay align with ARM64 AAPCS */
+>>> -	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
+>>> -	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
+>>> -
+>>> -	/* Save callee-saved registers */
+>>> -	emit(A64_PUSH(r6, r7, A64_SP), ctx);
+>>> -	emit(A64_PUSH(r8, r9, A64_SP), ctx);
+>>> -	emit(A64_PUSH(fp, tcc, A64_SP), ctx);
+>>> -	emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
+>>> +	if (!is_exception_cb) {
+>>> +		/* Sign lr */
+>>> +		if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
+>>> +			emit(A64_PACIASP, ctx);
+>>> +		/* Save FP and LR registers to stay align with ARM64 AAPCS */
+>>> +		emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
+>>> +		emit(A64_MOV(1, A64_FP, A64_SP), ctx);
+>>> +
+>>> +		/* Save callee-saved registers */
+>>> +		emit(A64_PUSH(r6, r7, A64_SP), ctx);
+>>> +		emit(A64_PUSH(r8, r9, A64_SP), ctx);
+>>> +		emit(A64_PUSH(fp, tcc, A64_SP), ctx);
+>>> +		emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
+>>> +	} else {
+>>> +		/* Exception callback receives FP of Main Program as third parameter */
+>>> +		emit(A64_MOV(1, A64_FP, A64_R(2)), ctx);
+>>> +		/*
+>>> +		 * Main Program already pushed the frame record and the callee-saved registers. The
+>>> +		 * exception callback will not push anything and re-use the main program's stack.
+>>> +		 */
+>>> +		emit(A64_SUB_I(1, A64_SP, A64_FP, 80), ctx); /* 10 registers are on the stack */
+>>
+>> To ensure th calculated A6_SP is always correct, add an assertion
+>> to ensure the distance between A64_FP and A64_SP is 80 after all
+>> callee-registers are pushed to the stack?
+>>
 > 
-> I have added some printk to log that when running test-media on vivid:
+> I agree that this should be done. Can you give an example how this
+> should be implemented?
+>
+
+IIUC, bpf_throw is essentially a tail call to the exception boundary prog, so
+can we reset the SP to the PROLOGUE_OFFSET position? If so, we can rely on the
+assertion of PROLOGUE_OFFSET in build_prologue, or we can add a simliar assertion.
+
+>>> +	}
+>>>    
+>>>    	/* Set up BPF prog stack base register */
+>>>    	emit(A64_MOV(1, fp, A64_SP), ctx);
+>>> @@ -365,6 +375,13 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>>>    		emit_bti(A64_BTI_J, ctx);
+>>>    	}
+>>>    
+>>> +	/*
+>>> +	 * Program acting as exception boundary should save all ARM64 Callee-saved registers as the
+>>> +	 * exception callback needs to recover all ARM64 Callee-saved registers in its epilogue.
+>>> +	 */
+>>> +	if (prog->aux->exception_boundary)
+>>> +		emit(A64_PUSH(A64_R(23), A64_R(24), A64_SP), ctx);
+>>
+>> Blindly storing x23/x24 to BPF_FP -8/16 is incorrect, as the stack
+>> space below BPF_FP might be written with other values by the bpf
+>> prog.
+>>
 > 
-> [  130.497426] vb2_core_queue_init queue cap-0000000050d195ab allocate q->bufs 00000000dc2c15ed and q->bufs_bitmap 000000008173fc5a
-> ...
-> [  130.733967] vb2_core_queue_release queue cap-0000000050d195ab release q->bufs and q->bufs_bitmap
-> [  133.866345] vb2_get_buffer queue cap-0000000050d195ab q->bufs_bitmap is NULL
-> [  133.873454] CPU: 1 PID: 321 Comm: v4l2-ctl Not tainted 6.6.0-rc1+ #542
-> [  133.879997] Hardware name: NXP i.MX8MQ EVK (DT)
-> [  133.884536] Call trace:
-> [  133.886988]  dump_backtrace+0x94/0xec
-> [  133.890673]  show_stack+0x18/0x24
-> [  133.894002]  dump_stack_lvl+0x48/0x60
-> [  133.897681]  dump_stack+0x18/0x24
-> [  133.901009]  __vb2_queue_cancel+0x250/0x31c
-> [  133.905209]  vb2_core_queue_release+0x24/0x88
-> [  133.909580]  _vb2_fop_release+0xb0/0xbc
-> [  133.913428]  vb2_fop_release+0x2c/0x58
-> [  133.917187]  vivid_fop_release+0x80/0x388 [vivid]
-> [  133.921948]  v4l2_release+0x74/0xec
-> [  133.925452]  __fput+0xb4/0x274
-> [  133.928520]  __fput_sync+0x50/0x5c
-> [  133.931934]  __arm64_sys_close+0x38/0x7c
-> [  133.935868]  invoke_syscall+0x48/0x114
-> [  133.939630]  el0_svc_common.constprop.0+0x40/0xe0
-> [  133.944349]  do_el0_svc+0x1c/0x28
-> [  133.947677]  el0_svc+0x40/0xe8
-> [  133.950741]  el0t_64_sync_handler+0x100/0x12c
-> [  133.955109]  el0t_64_sync+0x190/0x194
+> Thanks for pointing this out. I will set fp = A64_SP - 16 so to allocate
+> space for saving x23/x24. And I will take care while poping back in the epilogue.
 > 
-> and later I have a call to reqbufs on the same queue without call to vb2_core_queue_init before
+>>> +
+>>>    	emit(A64_SUB_I(1, fpb, fp, ctx->fpb_offset), ctx);
+>>>    
+>>>    	/* Stack must be multiples of 16B */
+>>> @@ -653,7 +670,7 @@ static void build_plt(struct jit_ctx *ctx)
+>>>    		plt->target = (u64)&dummy_tramp;
+>>>    }
+>>>    
+>>> -static void build_epilogue(struct jit_ctx *ctx)
+>>> +static void build_epilogue(struct jit_ctx *ctx, bool is_exception_cb)
+>>>    {
+>>>    	const u8 r0 = bpf2a64[BPF_REG_0];
+>>>    	const u8 r6 = bpf2a64[BPF_REG_6];
+>>> @@ -666,6 +683,14 @@ static void build_epilogue(struct jit_ctx *ctx)
+>>>    	/* We're done with BPF stack */
+>>>    	emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
+>>>    
+>>> +	/*
+>>> +	 * Program acting as exception boundary pushes R23 and R24 in addition to BPF callee-saved
+>>> +	 * registers. Exception callback uses the boundary program's stack frame, so recover these
+>>
+>> Keep the line width within 80 characters?
 > 
-> [   58.696812] __vb2_queue_alloc queue cap- 0000000050d195abq->bufs_bitmap is NULL
-> [   58.704148] CPU: 1 PID: 319 Comm: v4l2-compliance Not tainted 6.6.0-rc1+ #544
-> [   58.711291] Hardware name: NXP i.MX8MQ EVK (DT)
-> [   58.715826] Call trace:
-> [   58.718274]  dump_backtrace+0x94/0xec
-> [   58.721951]  show_stack+0x18/0x24
-> [   58.725274]  dump_stack_lvl+0x48/0x60
-> [   58.728946]  dump_stack+0x18/0x24
-> [   58.732268]  __vb2_queue_alloc+0x4a8/0x50c
-> [   58.736374]  vb2_core_reqbufs+0x274/0x46c
-> [   58.740391]  vb2_ioctl_reqbufs+0xb0/0xe8
-> [   58.744320]  vidioc_reqbufs+0x50/0x64 [vivid]
-> [   58.748717]  v4l_reqbufs+0x50/0x64
-> [   58.752125]  __video_do_ioctl+0x164/0x3c8
-> [   58.756140]  video_usercopy+0x200/0x668
-> [   58.759982]  video_ioctl2+0x18/0x28
-> [   58.763475]  v4l2_ioctl+0x40/0x60
-> [   58.766798]  __arm64_sys_ioctl+0xac/0xf0
-> [   58.770730]  invoke_syscall+0x48/0x114
-> [   58.774487]  el0_svc_common.constprop.0+0x40/0xe0
-> [   58.779199]  do_el0_svc+0x1c/0x28
-> [   58.782520]  el0_svc+0x40/0xe8
-> [   58.785580]  el0t_64_sync_handler+0x100/0x12c
-> [   58.789942]  el0t_64_sync+0x190/0x194
+> bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
+> removed the warning so I started using 100 character lines.
+> 
 
-Argh, I see what is happening. The root cause is that vb2_core_queue_release
-is actually not a true counterpart to vb2_core_queue_init.
+80-column is not a hard limit, but it's still preferred, right?
+And I don't think it's a good idea to include two different line
+width styles in a single file.
 
-The '_release' part refers to when a file handle is released, and not to
-releasing resources allocated in queue_init.
-
-The queue_init function never actually allocated any resources, so there
-was never a reason to make a counterpart to that, but now that bites us.
-
-Changing this would be a huge amount of work, and it is not worth the
-effort, IMHO.
-
-But at least we shouldn't have to test for both bufs and bufs_map,
-they are either both set or both NULL. Just test one of the two.
-
-The vb2_core_queue_init() function documentation in the header
-should perhaps be more clear about the fact that this function
-does not allocate any resources, and that there is no cleanup
-counterpart.
-
-It is what got me confused...
-
-Regards,
-
-	Hans
-
+>>
+>>> +	 * extra registers in the above two cases.
+>>> +	 */
+>>> +	if (ctx->prog->aux->exception_boundary || is_exception_cb)
+>>> +		emit(A64_POP(A64_R(23), A64_R(24), A64_SP), ctx);
+>>> +
+>>>    	/* Restore x27 and x28 */
+>>>    	emit(A64_POP(fpb, A64_R(28), A64_SP), ctx);
+>>>    	/* Restore fs (x25) and x26 */
+>>> @@ -1575,7 +1600,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>>>    	 * BPF line info needs ctx->offset[i] to be the offset of
+>>>    	 * instruction[i] in jited image, so build prologue first.
+>>>    	 */
+>>> -	if (build_prologue(&ctx, was_classic)) {
+>>> +	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb)) {
+>>>    		prog = orig_prog;
+>>>    		goto out_off;
+>>>    	}
+>>> @@ -1586,7 +1611,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>>>    	}
+>>>    
+>>>    	ctx.epilogue_offset = ctx.idx;
+>>> -	build_epilogue(&ctx);
+>>> +	build_epilogue(&ctx, prog->aux->exception_cb);
+>>>    	build_plt(&ctx);
+>>>    
+>>>    	extable_align = __alignof__(struct exception_table_entry);
+>>> @@ -1614,7 +1639,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>>>    	ctx.idx = 0;
+>>>    	ctx.exentry_idx = 0;
+>>>    
+>>> -	build_prologue(&ctx, was_classic);
+>>> +	build_prologue(&ctx, was_classic, prog->aux->exception_cb);
+>>>    
+>>>    	if (build_body(&ctx, extra_pass)) {
+>>>    		bpf_jit_binary_free(header);
+>>> @@ -1622,7 +1647,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>>>    		goto out_off;
+>>>    	}
+>>>    
+>>> -	build_epilogue(&ctx);
+>>> +	build_epilogue(&ctx, prog->aux->exception_cb);
+>>>    	build_plt(&ctx);
+>>>    
+>>>    	/* 3. Extra pass to validate JITed code. */
+>>> @@ -2286,3 +2311,38 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+>>>    
+>>>    	return ret;
+>>>    }
+>>> +
+>>> +bool bpf_jit_supports_exceptions(void)
+>>> +{
+>>> +	/* We unwind through both kernel frames (starting from within bpf_throw call) and
+>>> +	 * BPF frames. Therefore we require FP unwinder to be enabled to walk kernel frames and
+>>> +	 * reach BPF frames in the stack trace.
+>>> +	 * ARM64 kernel is aways compiled with CONFIG_FRAME_POINTER=y
+>>> +	 */
+>>> +	return true;
+>>> +}
+>>> +
+>>> +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
+>>> +{
+>>> +	struct stack_info stacks[] = {
+>>> +		stackinfo_get_task(current),
+>>> +	};
+>>> +
+>>
+>> Seems there is no need to define "stacks" as an array
+> 
+> Sure, will change in next version.
 > 
 >>
->> Regards,
+>>> +	struct unwind_state state = {
+>>> +		.stacks = stacks,
+>>> +		.nr_stacks = ARRAY_SIZE(stacks),
+>>> +	};
+>>> +	unwind_init_common(&state, current);
+>>> +	state.fp = (unsigned long)__builtin_frame_address(1);
+>>> +	state.pc = (unsigned long)__builtin_return_address(0);
+>>> +
+>>> +	if (unwind_next_frame_record(&state))
+>>> +		return;
+>>> +	while (1) {
+>>> +		/* We only use the fp in the exception callback. Pass 0 for sp as it's unavailable*/
+>>> +		if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.fp))
+>>> +			break;
+>>> +		if (unwind_next_frame_record(&state))
 >>
->>     Hans
+>> When PTR_AUTH is implemented, lr is encoded before being pushed to
+>> the stack, but unwind_next_frame_record() does not decode state.pc
+>> when fetching it from the stack.
+> 
+> Thanks for pointing this out. I will fix this in the next version.
+> 
+>>> +			break;
+>>> +	}
 >>
->>>> Regards,
->>>>
->>>>      Hans
->>>>
->>>>>    
->>>>>>>>> +
->>>>>>>>> +    return (bitmap_weight(q->bufs_map, q->max_allowed_buffers) > 0);
->>>>>>>> How about:
->>>>>>>>
->>>>>>>>        return vb2_get_num_buffers(q) > 0;
->>>>>>> vb2_get_num_buffers is defined in videobuf2-core.c, I'm not sure that
->>>>>>> an inline function could depend of a module function.
->>>>>> Not a problem. E.g. v4l2-ctrls.h is full of such static inlines.
->>>>>>
->>>>>> Regards,
->>>>>>
->>>>>>       Hans
->>>>>>
+>> And it's better to simplify the if-while(1)-if to:
 >>
+>> while (!unwind_next_frame_record(&state)) {
+>>       ...
+>> }
+> 
+> Sure,
+> Will use this method in the next version.
+> 
+>>
+>>> +}
+>>> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+>>> index f5065576cae9..7f768d335698 100644
+>>> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
+>>> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+>>> @@ -1,6 +1,5 @@
+>>>    bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+>>>    bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+>>> -exceptions					 # JIT does not support calling kfunc bpf_throw: -524
+>>>    fexit_sleep                                      # The test never returns. The remaining tests cannot start.
+>>>    kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+>>>    kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+> 
+> 
+> Thanks,
+> Puranjay
 
