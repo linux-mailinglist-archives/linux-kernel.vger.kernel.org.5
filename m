@@ -2,183 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F271A7AA26E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E217AA293
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 23:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbjIUVQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 17:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
+        id S231596AbjIUVU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 17:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbjIUVP3 (ORCPT
+        with ESMTP id S232519AbjIUVOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:15:29 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76DAE3A4;
-        Thu, 21 Sep 2023 10:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=KcbEGqZWRjDRIS84NcPwJ70wJrRePDMy7FnnB2l/XTc=;
-        t=1695316084; x=1696525684; b=IQW96roGNxzONuN9PjcFsaqTedRIWrD2bO14nXq8M2es3l8
-        bnZzAgnlNO6iaNG8dZUfCxVtzGQIk7LmP08aymBYLKrVBRpBMA070wDeZbXvgFBJtc1e8tMHt8hE+
-        HKYHvfTAa1XJVyjEPdBJT4NVHQBbX1kiKr8XZxsNK7qVjLpfa5rJn2wsMYeuoqj24HR603rRzp0vx
-        WeVqVWhCvy2IAjHVj0dFk4AEnkppQMzs3yUq0/1LQMyGb16wbeJ7NDcibUv1pgYG0IUANitDQPVCU
-        kgDCgNuXOBRi7p5RKLqVnYBNBe/V6nNAB9yQWy0R4gQT+O6ZIiv44a76jalixKbA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.96)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qjFPm-00D3lb-0E;
-        Thu, 21 Sep 2023 10:52:02 +0200
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [RFC PATCH 2/4] net: dropreason: use new __print_sym() in tracing
-Date:   Thu, 21 Sep 2023 10:51:32 +0200
-Message-ID: <20230921105129.2f2774a87760.I075de1ac698b47710b94c631afdfb328f07be961@changeid>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230921085129.261556-5-johannes@sipsolutions.net>
-References: <20230921085129.261556-5-johannes@sipsolutions.net>
+        Thu, 21 Sep 2023 17:14:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB6419B5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:09:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 43C471F896;
+        Thu, 21 Sep 2023 08:52:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695286335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=o0NOwzSQa3Pa2SpcHXwUu0UZoc7VtkIvvy2WMbZ3kvo=;
+        b=L2kv7taxrSVvvvLd7zX5r60fIN+Mtr77BCpCp6TZAoiKmWRq3cO2+Gu0v7cUz4UpiTLhvi
+        ASgfWvCLr9xZyee+NIZCO25HcRq51KN1Jt7aSqXETO3SZ4OLnMoWdl3FfGLR7gERYa6y1t
+        ROLhcCa2T9rD4NuxjNpn2KS3oOKtN6s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695286335;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=o0NOwzSQa3Pa2SpcHXwUu0UZoc7VtkIvvy2WMbZ3kvo=;
+        b=4vOidfRBRjQFn1NCodNiy18GyVcZEh5s/CSx8AzmORBDOFnkFChT8zRQHEdTDIjTB17S3X
+        FTlv53aPKE57XHAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 22D91134B0;
+        Thu, 21 Sep 2023 08:52:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZoerBz8EDGURJQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 21 Sep 2023 08:52:15 +0000
+Message-ID: <d1f26dbd-5f32-4eb2-af16-f15fe95cc2ec@suse.de>
+Date:   Thu, 21 Sep 2023 10:52:14 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
+ drm_*_helper_funcs callbacks
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+References: <20230914195138.1518065-1-javierm@redhat.com>
+ <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
+ <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
+ <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------0g0fXN1cz6o1j6bRC2foj9Fh"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------0g0fXN1cz6o1j6bRC2foj9Fh
+Content-Type: multipart/mixed; boundary="------------bbbG8C04OCexU0wEJt5Qiq00";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Maxime Ripard <mripard@kernel.org>,
+ Javier Martinez Canillas <javierm@redhat.com>
+Cc: dri-devel@lists.freedesktop.org, Geert Uytterhoeven
+ <geert@linux-m68k.org>, linux-kernel@vger.kernel.org
+Message-ID: <d1f26dbd-5f32-4eb2-af16-f15fe95cc2ec@suse.de>
+Subject: Re: [PATCH] drm/ssd130x: Drop _helper prefix from struct
+ drm_*_helper_funcs callbacks
+References: <20230914195138.1518065-1-javierm@redhat.com>
+ <f5620d32-2705-498b-a65c-7dc663340a6d@suse.de>
+ <87wmwo3q50.fsf@minerva.mail-host-address-is-not-set>
+ <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
+In-Reply-To: <552hpgr7qzbjxuyei3n5m7rsn7ekwbdgzv25oe5vy6qb35gf23@q4etussk5jwl>
 
-The __print_symbolic() could only ever print the core
-drop reasons, since that's the way the infrastructure
-works. Now that we have __print_sym() with all the
-advantages mentioned in that commit, convert to that
-and get all the drop reasons from all subsystems. As
-we already have a list of them, that's really easy.
+--------------bbbG8C04OCexU0wEJt5Qiq00
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-This is a little bit of .text (~100 bytes in my build)
-and saves a lot of .data (~17k).
+SGkNCg0KQW0gMjEuMDkuMjMgdW0gMDk6NDQgc2NocmllYiBNYXhpbWUgUmlwYXJkOg0KPiBI
+aSwNCj4gDQo+IE9uIE1vbiwgU2VwIDE4LCAyMDIzIGF0IDA5OjE5OjA3QU0gKzAyMDAsIEph
+dmllciBNYXJ0aW5leiBDYW5pbGxhcyB3cm90ZToNCj4+IFRob21hcyBaaW1tZXJtYW5uIDx0
+emltbWVybWFubkBzdXNlLmRlPiB3cml0ZXM6DQo+Pg0KPj4+IEhpDQo+Pj4NCj4+PiBBbSAx
+NC4wOS4yMyB1bSAyMTo1MSBzY2hyaWViIEphdmllciBNYXJ0aW5leiBDYW5pbGxhczoNCj4+
+Pj4gVGhlIGRyaXZlciB1c2VzIGEgbmFtaW5nIGNvbnZlbnRpb24gd2hlcmUgZnVuY3Rpb25z
+IGZvciBzdHJ1Y3QgZHJtXypfZnVuY3MNCj4+Pj4gY2FsbGJhY2tzIGFyZSBuYW1lZCBzc2Qx
+MzB4XyRvYmplY3RfJG9wZXJhdGlvbiwgd2hpbGUgdGhlIGNhbGxiYWNrcyBmb3INCj4+Pj4g
+c3RydWN0IGRybV8qX2hlbHBlcl9mdW5jcyBhcmUgbmFtZWQgc3NkMTMweF8kb2JqZWN0X2hl
+bHBlcl8kb3BlcmF0aW9uLg0KPj4+Pg0KPj4+PiBUaGUgaWRlYSBpcyB0aGF0IHRoaXMgaGVs
+cGVyXyBwcmVmaXggaW4gdGhlIGZ1bmN0aW9uIG5hbWVzIGRlbm90ZSB0aGF0IGFyZQ0KPj4+
+PiBmb3Igc3RydWN0IGRybV8qX2hlbHBlcl9mdW5jcyBjYWxsYmFja3MuIFRoaXMgY29udmVu
+dGlvbiB3YXMgY29waWVkIGZyb20NCj4+Pj4gb3RoZXIgZHJpdmVycywgd2hlbiBzc2QxMzB4
+IHdhcyB3cml0dGVuIGJ1dCBNYXhpbWUgcG9pbnRlZCBvdXQgdGhhdCBpcyB0aGUNCj4+Pj4g
+ZXhjZXB0aW9uIHJhdGhlciB0aGFuIHRoZSBub3JtLg0KPj4+DQo+Pj4gSSBndWVzcyB5b3Ug
+Zm91bmQgdGhpcyBpbiBteSBjb2RlLiBJIHdhbnQgdG8gcG9pbnQgb3V0IHRoYXQgSSB1c2Ug
+dGhlDQo+Pj4gX2hlbHBlciBpbmZpeCB0byBzaWduYWwgdGhhdCB0aGVzZSBhcmUgY2FsbGJh
+Y2sgZm9yDQo+Pj4gZHJtX3ByaW1hcnlfcGxhbmVfaGVscGVyX2Z1bmNzIGFuZCAqbm90KiBk
+cm1fcHJpbWFyeV9wbGFuZV9mdW5jcy4gVGhlDQo+Pj4gbmFtaW5nIGlzIGludGVudGlvbmFs
+Lg0KPj4+DQo+Pg0KPj4gWWVzLCB0aGF0J3Mgd2hhdCB0cmllZCB0byBzYXkgaW4gdGhlIGNv
+bW1pdCBtZXNzYWdlIGFuZCBpbmRlZWQgSSBnb3QgdGhlDQo+PiBjb252ZW50aW9uIGZyb20g
+ZHJpdmVycyBpbiBkcml2ZXJzL2dwdS9kcm0vdGlueS4gSW4gZmFjdCBJIGJlbGlldmUgdGhl
+c2UNCj4+IGZ1bmN0aW9uIG5hbWVzIGFyZSBzaW5jZSBmaXJzdCBpdGVyYXRpb24gb2YgdGhl
+IGRyaXZlciwgd2hlbiB3YXMgbWVhbnQgdG8NCj4+IGJlIGEgdGlueSBkcml2ZXIuDQo+Pg0K
+Pj4gQWNjb3JkaW5nIHRvIE1heGltZSBpdCdzIHRoZSBleGNlcHRpb24gcmF0aGVyIHRoYW4g
+dGhlIHJ1bGUgYW5kIHN1Z2dlc3RlZA0KPj4gdG8gY2hhbmdlIGl0LCBJIGRvbid0IHJlYWxs
+eSBoYXZlIGEgc3Ryb25nIG9waW5pb24gb24gZWl0aGVyIG5hbWluZyBUQkguDQo+IA0KPiBN
+YXliZSB0aGF0J3MganVzdCBtZSwgYnV0IHRoZSBoZWxwZXIgaW4gdGhlIG5hbWUgaW5kZWVk
+IHRocm93cyBtZSBvZmYuIEluIG15DQo+IG1pbmQsIGl0J3Mgc3VwcG9zZWQgdG8gYmUgdXNl
+ZCBvbmx5IGZvciBoZWxwZXJzLCBub3QgZnVuY3Rpb25zIGltcGxlbWVudGluZyB0aGUNCj4g
+aGVscGVycyBob29rcy4NCg0KVHlpbmcgdGhlIGZ1bmN0aW9uIG5hbWUgdG8gaXRzIF9mdW5j
+cyBzdHJ1Y3R1cmUgbWFrZXMgcGVyZmVjdCBzZW5zZSB0byANCm1lLCBhcyBpdCBoZWxwcyB0
+byBzdHJ1Y3R1cmUgdGhlIGRyaXZlciBjb2RlLiBTbyBJIGFsd2F5cyB1c2UgdGhlIA0KX2hl
+bHBlcl8gaW5maXguDQoNCkluIGNvbnRyYXN0LCB0aGUgRFJNIGhlbHBlcnMgdGhhdCBpbXBs
+ZW1lbnQgY2VydGFpbiBmdW5jdGlvbmFsaXR5IGRvZXMgDQpub3Qgc2VlbSB0byBmb2xsb3cg
+YW55IG5hbWluZyBzY2hlbWUuIEZvciBleGFtcGxlIA0KZHJtX2F0b21pY19oZWxwZXJfY2hl
+Y2soKSBpbXBsZW1lbnRzIHN0cnVjdCANCmRybV9tb2RlX2NvbmZpZ19mdW5jcy5hdG9taWNf
+Y2hlY2suIFRvIG1lLCBpdCdzIG5vdCBvYnZpb3VzIHRoYXQgdGhlc2UgDQp0d28gYmVsb25n
+IHRvZ2V0aGVyLiAgQW5kIGluIHRoZSBzYW1lIHN0cnVjdHVyZSwgdGhlcmUncyBmYl9jcmVh
+dGUsIA0Kd2hpY2ggaXMgcHJvdmlkZWQgYnkgZHJtX2dlbV9mYl9jcmVhdGVfd2l0aF9kaXJ0
+eSgpLiBUaGlzIG9uZSBkb2Vzbid0IA0KZXZlbiBtZW50aW9uIHRoYXQgaXQncyBhIGhlbHBl
+ci4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4gTWF4aW1lDQoNCi0tIA0KVGhv
+bWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdh
+cmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBO
+dWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3
+IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- include/net/dropreason.h   |  5 +++++
- include/trace/events/skb.h | 16 +++-----------
- net/core/skbuff.c          | 43 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 51 insertions(+), 13 deletions(-)
 
-diff --git a/include/net/dropreason.h b/include/net/dropreason.h
-index 56cb7be92244..c157070b5303 100644
---- a/include/net/dropreason.h
-+++ b/include/net/dropreason.h
-@@ -42,6 +42,11 @@ struct drop_reason_list {
- extern const struct drop_reason_list __rcu *
- drop_reasons_by_subsys[SKB_DROP_REASON_SUBSYS_NUM];
- 
-+#ifdef CONFIG_TRACEPOINTS
-+const char *drop_reason_lookup(unsigned long long value);
-+void drop_reason_show(struct seq_file *m);
-+#endif
-+
- void drop_reasons_register_subsys(enum skb_drop_reason_subsys subsys,
- 				  const struct drop_reason_list *list);
- void drop_reasons_unregister_subsys(enum skb_drop_reason_subsys subsys);
-diff --git a/include/trace/events/skb.h b/include/trace/events/skb.h
-index 07e0715628ec..8a1a63f9e796 100644
---- a/include/trace/events/skb.h
-+++ b/include/trace/events/skb.h
-@@ -8,15 +8,9 @@
- #include <linux/skbuff.h>
- #include <linux/netdevice.h>
- #include <linux/tracepoint.h>
-+#include <net/dropreason.h>
- 
--#undef FN
--#define FN(reason)	TRACE_DEFINE_ENUM(SKB_DROP_REASON_##reason);
--DEFINE_DROP_REASON(FN, FN)
--
--#undef FN
--#undef FNe
--#define FN(reason)	{ SKB_DROP_REASON_##reason, #reason },
--#define FNe(reason)	{ SKB_DROP_REASON_##reason, #reason }
-+TRACE_DEFINE_SYM_FNS(drop_reason, drop_reason_lookup, drop_reason_show);
- 
- /*
-  * Tracepoint for free an sk_buff:
-@@ -44,13 +38,9 @@ TRACE_EVENT(kfree_skb,
- 
- 	TP_printk("skbaddr=%p protocol=%u location=%pS reason: %s",
- 		  __entry->skbaddr, __entry->protocol, __entry->location,
--		  __print_symbolic(__entry->reason,
--				   DEFINE_DROP_REASON(FN, FNe)))
-+		  __print_sym(__entry->reason, drop_reason ))
- );
- 
--#undef FN
--#undef FNe
--
- TRACE_EVENT(consume_skb,
- 
- 	TP_PROTO(struct sk_buff *skb, void *location),
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 4eaf7ed0d1f4..415329b76921 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -132,6 +132,49 @@ drop_reasons_by_subsys[SKB_DROP_REASON_SUBSYS_NUM] = {
- };
- EXPORT_SYMBOL(drop_reasons_by_subsys);
- 
-+#ifdef CONFIG_TRACEPOINTS
-+const char *drop_reason_lookup(unsigned long long value)
-+{
-+	unsigned long long subsys_id = value >> SKB_DROP_REASON_SUBSYS_SHIFT;
-+	u32 reason = value & ~SKB_DROP_REASON_SUBSYS_MASK;
-+	const struct drop_reason_list *subsys;
-+
-+	if (subsys_id >= SKB_DROP_REASON_SUBSYS_NUM)
-+		return NULL;
-+
-+	subsys = rcu_dereference(drop_reasons_by_subsys[subsys_id]);
-+	if (!subsys)
-+		return NULL;
-+	if (reason >= subsys->n_reasons)
-+		return NULL;
-+	return subsys->reasons[reason];
-+}
-+
-+void drop_reason_show(struct seq_file *m)
-+{
-+	u32 subsys_id;
-+
-+	rcu_read_lock();
-+	for (subsys_id = 0; subsys_id < SKB_DROP_REASON_SUBSYS_NUM; subsys_id++) {
-+		const struct drop_reason_list *subsys;
-+		u32 i;
-+
-+		subsys = rcu_dereference(drop_reasons_by_subsys[subsys_id]);
-+		if (!subsys)
-+			continue;
-+
-+		for (i = 0; i < subsys->n_reasons; i++) {
-+			if (!subsys->reasons[i])
-+				continue;
-+			seq_printf(m, ", { %u, \"%s\" }",
-+				   (subsys_id << SKB_DROP_REASON_SUBSYS_SHIFT) | i,
-+				   subsys->reasons[i]);
-+		}
-+	}
-+	rcu_read_unlock();
-+}
-+#endif
-+
- /**
-  * drop_reasons_register_subsys - register another drop reason subsystem
-  * @subsys: the subsystem to register, must not be the core
--- 
-2.41.0
+--------------bbbG8C04OCexU0wEJt5Qiq00--
 
+--------------0g0fXN1cz6o1j6bRC2foj9Fh
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUMBD4FAwAAAAAACgkQlh/E3EQov+Dd
+Ng/8CjBynjHcTnMR2v4ZJ+79Txtn2lg00qOXovH4kqhSw+dhlYUd3Na6vaEQ5RxzUdcGl9L4sZJa
+XJaHdr11JogKM+fUUwe9uBkq8xDYFfXmwaCTIzBsiwlwW01r/kUIjEnqgkvKlIGxCPXxPXK08SOW
+0v5tFw0I1IQPr1LtJk8N84aTJDfJv3MQwfXGVZ7hUwivHbeqCwo1GYtxEbGXJk6pKs92MWgK1QCm
+y0yhhdFfZMgbdNG3zG/ecLP5QBiJbqga/E3H0RQfmdaOE74Iv2V9QROXB/N7bRJFOpxnbw7yRfCc
+KPnng7bHJ5MryQc84k5Ys4yZVFEG4Ea+/za08omsKZnqVRkzlY7Sg75lTqKwO6J5Qo/KTmZaYyBM
+uIPBJBWcwHJeswFQoX9gydH5TAXWSCvG4xUUw9GpZSzge7O5/vCuYlQjeyRPulg2Ac8Zh3ADI8Vk
+hPWCMm5jE0tZQS+IE/lp9vfku9yxc0DtGccnD6b4NBrhbK6K62VofanaSrc6WehRHn1WVL3xM7pA
+kVFojnJbVJS+euYqua82jQ7pukhkh5SltxLvLQ8N0ldqZXwkA9/gFRwjFtAsKg//c4+GsnPYTprj
+WQMyFimzF5cPDmeh/TZg87shaW0U0hfrlMHl+ylGZoUUZ4RO7DBbKscYOQRxxtpHrBkWc3CgGT42
+QsE=
+=Iw6T
+-----END PGP SIGNATURE-----
+
+--------------0g0fXN1cz6o1j6bRC2foj9Fh--
