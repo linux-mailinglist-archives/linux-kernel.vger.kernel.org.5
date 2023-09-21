@@ -2,70 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2527A9DB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470CF7A9D7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 21:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbjIUTp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 15:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
+        id S229714AbjIUTiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 15:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjIUTpm (ORCPT
+        with ESMTP id S230268AbjIUThp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:45:42 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A8CD8AB7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:09:11 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-414ba610766so73311cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:09:11 -0700 (PDT)
+        Thu, 21 Sep 2023 15:37:45 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98104EBCFD
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:10:39 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59beea5ce93so25729497b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 12:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695323350; x=1695928150; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BLlJX9huq9ej0iAVLAlYlRkGYLAh3a+BqLGjUG3BDUo=;
-        b=gCwpbrpBnjCkHBljVLlGxCiWkWTVNtBSPV5VAb4PvGI0wTP+FzNG5/5rlRqC7DGYpP
-         K2u62JW4+rzn8B5xgUrxbiQqz7lc0tCRJ6dKspc8RbRc+C1NJakVwfT6gNPnB08ybSYn
-         +TLEhhvBgZ2JHcje25VDiNg8OQXf1nP5qo9I4wQKFXbfU8UqHH4CnunyEy7qwUoSUFhT
-         CA8QzHunt3xwPX67pd9DED3sK8OOboRag0sSTj2XnYeIKGGs3EwXmnS80mmUvytKo2Az
-         nlB3WVKseGQWKOs7pKcZz37g3sBt0kqkyXhy5tPHvwhW6didaGgqLqXKjkbIAenneVSg
-         FEtw==
+        d=google.com; s=20230601; t=1695323438; x=1695928238; darn=vger.kernel.org;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=msCRqftjzvMka6Rl5V/NvDEz768neF2Qswneru1ptF4=;
+        b=ANIsopKH6FB/YfeeiHhknjvBJ5XAITWb1M/gbs+yBeC/ao6mEHXNiCijAVIw3AUBEu
+         /L10qRlBCqsFUCKjuQ13ougwWzehqWocSM7xFbHiwYegbOYJIt/J8GRTSphAAc/IXNxA
+         o/QR0WmMt3Rr9/Z8RTFG6WRUg72slcENJ91CRvg4tLf3p19skDGjdSesRMqooJ1TxrwN
+         kPhHasmtBgG5lahnT+KGJMN8FxVv+FrAn5x5/Kv9qYOj8nLmDk3goWg8x91Iiv6qr5n8
+         fwxGc9VtkPBY6BwtxtcN575WzcMCKX9wO1T2K3HDKmiEMiuIAhwnOqpeTpRRAHJ8OTQF
+         ea5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695323350; x=1695928150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BLlJX9huq9ej0iAVLAlYlRkGYLAh3a+BqLGjUG3BDUo=;
-        b=wh/FH//NiYlLwklswYZeN5Ufo5V3BrR+pNem4CfnGBwHc2ugBRG46hH1I7m7WF0q/e
-         YJRncBhM6QGJGOn+fAWgIukziGHLVAqsDybvp3Zpt1hVgu/MKqXCY+DjK82KruRpLIbl
-         Ue/IzD/9unVgBqtVXvx+FRPDZqfZUVos6k0yXQ+3A66OBUgpFDGYtDfFtloFtGUat6aW
-         BvsyCgmqI89/J4kH2v/q+lGCDrA0eBJQ7qSCYLiHc+xptsBWtpHq+6fIUZL4HRJvYzZe
-         YTrJRKJilADQZb7it+otoRrDYCbV2HwHAlz6AmOh3rXR2gkCledLVm+6wgq7oo8eMYqa
-         ZJXw==
-X-Gm-Message-State: AOJu0YzZUcxegE7ty7M82xXB0vUEjRn+v+7/sQxuXU1u9mht/JkHgYzb
-        r8uX+pZUcZXqOMFq14PUYjiFrT2lx6IRIuO45J6/QQ==
-X-Google-Smtp-Source: AGHT+IFaC8NIJjQt0QoTmTynybk6RbTtja9Lkkg5vf8GHyAoht+PdhqbPUUlFvAA29EGIPq5KyWh7IwVg+3+0xP7sCA=
-X-Received: by 2002:a05:622a:24b:b0:410:9855:ac6 with SMTP id
- c11-20020a05622a024b00b0041098550ac6mr333593qtx.14.1695323349892; Thu, 21 Sep
- 2023 12:09:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230921190429.1970766-1-i.maximets@ovn.org>
-In-Reply-To: <20230921190429.1970766-1-i.maximets@ovn.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 21 Sep 2023 21:08:58 +0200
-Message-ID: <CANn89iJeAFBKF=5=VjO4pZWT0-o5GrTZhZvDD4OGBt5U27P+LA@mail.gmail.com>
-Subject: Re: [PATCH net-next] openvswitch: reduce stack usage in do_execute_actions
-To:     Ilya Maximets <i.maximets@ovn.org>
-Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        dev@openvswitch.org, Pravin B Shelar <pshelar@ovn.org>,
-        Eelco Chaudron <echaudro@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1695323438; x=1695928238;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=msCRqftjzvMka6Rl5V/NvDEz768neF2Qswneru1ptF4=;
+        b=elGAZCPAxQnnhCC+eYZBcmNgeYDQJeEWs2tW6Q6X+GWAHb30Giag8v4AWFdkV3n3fZ
+         WREvFern78Bm2QhBUkaBMREAyT7Vbe+ybNclA2ZgA5rF0ZF+5tx+S3iG9Ahvp7WSvMjQ
+         RrK65JkDjPfPcQa9FSa8sDpfNoZma363RZZGp0yPfWXyENSwYAVL/bLD5r/8I4pkeb+K
+         TQfatz9KxXxGa+14PwAuix5h6qA/8QTjcclmMsqbyqMzMB+xfEAJP00x3FKzIorDdNI2
+         VJ1/its2njGJah+6jY2f3DVnII60fd6X1iqaPZZgPWzcUnZRGUueq7TbbN/dklV5gR5M
+         Y5kw==
+X-Gm-Message-State: AOJu0Yxkhd7NY64+e2m745nll36B5e21C8p68Xes8cChSi3WEkURZCYL
+        4sAt8gNfEq1Q3gbOLVO7E7IA04tAHF8=
+X-Google-Smtp-Source: AGHT+IHW881nAqFnjABVXUT4908B5v4pAo/onJespz4HnG5MCVd8NLEq9DsMcDxqDXD3hJb4Zo/K0u0JOVE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:70a:b0:58c:e8da:4d1a with SMTP id
+ bs10-20020a05690c070a00b0058ce8da4d1amr8361ywb.2.1695323438500; Thu, 21 Sep
+ 2023 12:10:38 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 12:10:36 -0700
+In-Reply-To: <20230914015531.1419405-15-seanjc@google.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-15-seanjc@google.com>
+Message-ID: <ZQyVLEKXbpJ9Wvud@google.com>
+Subject: Re: [RFC PATCH v12 14/33] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,87 +102,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 9:03=E2=80=AFPM Ilya Maximets <i.maximets@ovn.org> =
-wrote:
->
-> do_execute_actions() function can be called recursively multiple
-> times while executing actions that require pipeline forking or
-> recirculations.  It may also be re-entered multiple times if the packet
-> leaves openvswitch module and re-enters it through a different port.
->
-> Currently, there is a 256-byte array allocated on stack in this
-> function that is supposed to hold NSH header.  Compilers tend to
-> pre-allocate that space right at the beginning of the function:
->
->      a88:       48 81 ec b0 01 00 00    sub    $0x1b0,%rsp
->
-> NSH is not a very common protocol, but the space is allocated on every
-> recursive call or re-entry multiplying the wasted stack space.
->
-> Move the stack allocation to push_nsh() function that is only used
-> if NSH actions are actually present.  push_nsh() is also a simple
-> function without a possibility for re-entry, so the stack is returned
-> right away.
->
-> With this change the preallocated space is reduced by 256 B per call:
->
->      b18:       48 81 ec b0 00 00 00    sub    $0xb0,%rsp
->
-> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
-> ---
->  net/openvswitch/actions.c | 20 +++++++++-----------
->  1 file changed, 9 insertions(+), 11 deletions(-)
->
-> diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
-> index 5f8094acd056..80cc5c512d7b 100644
-> --- a/net/openvswitch/actions.c
-> +++ b/net/openvswitch/actions.c
-> @@ -312,10 +312,16 @@ static int push_eth(struct sk_buff *skb, struct sw_=
-flow_key *key,
->  }
->
->  static int push_nsh(struct sk_buff *skb, struct sw_flow_key *key,
-> -                   const struct nshhdr *nh)
-> +                   const struct nlattr *a)
+On Wed, Sep 13, 2023, Sean Christopherson wrote:
+>  virt/kvm/guest_mem.c       | 593 +++++++++++++++++++++++++++++++++++++
 
-Presumably this function should be inlined. (one caller only)
+Getting to the really important stuff...
 
-I would add noinline_for_stack to make sure the compiler will not play
-games with this attempt.
+Anyone object to naming the new file guest_memfd.c instead of guest_mem.c?  Just
+the file, i.e. still keep the gmem namespace.
 
->  {
-> +       u8 buffer[NSH_HDR_MAX_LEN];
-> +       struct nshhdr *nh =3D (struct nshhdr *)buffer;
->         int err;
->
-> +       err =3D nsh_hdr_from_nlattr(a, nh, NSH_HDR_MAX_LEN);
-> +       if (err)
-> +               return err;
-> +
->         err =3D nsh_push(skb, nh);
->         if (err)
->                 return err;
-> @@ -1439,17 +1445,9 @@ static int do_execute_actions(struct datapath *dp,=
- struct sk_buff *skb,
->                         err =3D pop_eth(skb, key);
->                         break;
->
-> -               case OVS_ACTION_ATTR_PUSH_NSH: {
-> -                       u8 buffer[NSH_HDR_MAX_LEN];
-> -                       struct nshhdr *nh =3D (struct nshhdr *)buffer;
-> -
-> -                       err =3D nsh_hdr_from_nlattr(nla_data(a), nh,
-> -                                                 NSH_HDR_MAX_LEN);
-> -                       if (unlikely(err))
-> -                               break;
-> -                       err =3D push_nsh(skb, key, nh);
-> +               case OVS_ACTION_ATTR_PUSH_NSH:
-> +                       err =3D push_nsh(skb, key, nla_data(a));
->                         break;
-> -               }
->
->                 case OVS_ACTION_ATTR_POP_NSH:
->                         err =3D pop_nsh(skb, key);
-> --
-> 2.41.0
->
+Using guest_memfd.c would make it much more obvious that the file holds more than
+generic "guest memory" APIs, and would provide a stronger conceptual connection
+with memfd.c.
