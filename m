@@ -2,60 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C61C17A9046
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 02:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575E77A9049
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 02:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbjIUA4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 20:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
+        id S229737AbjIUA5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 20:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjIUA4G (ORCPT
+        with ESMTP id S229640AbjIUA5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 20:56:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CE0C9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Sep 2023 17:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XYGTgVIYSEjTmo7UUNoXwCNhcc4oFR5jFDgdsjYRdSc=; b=aQvHTE/CAouVoyLi7Y7viO15No
-        /fc9Xmw/lA4lnnkN3fJIiRJqNbLgH0qoyhmEaOmPm4r+eXwzfN1oFrx+cExguCfbCUjoGSCVS8jc6
-        2h/oD8fj2Evg47CJ0Hcqw3hLDZRwreNraeRT+/JlB3u+Gm222Ju/KBerliVpB0f3l+/Z1lN5V4fL6
-        fja1tgtj/BGfM8bdOW/Qzk7Nf/qEos9C0x/OQrFmHfde8+6NB0TeciPvNTfnhVqcD5dlEKphnvTu7
-        3zdazoKNtDbjBhK9sjYvnIB0Es0qRR7BHOto/ju0wIhr9qNgYG4LU/JDJaH65bGSpe/lHtalY7auA
-        7i3cnUsA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qj7yx-004aIp-2u;
-        Thu, 21 Sep 2023 00:55:51 +0000
-Date:   Wed, 20 Sep 2023 17:55:51 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rohan Puri <rohan.puri15@gmail.com>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 0/4] Enable >0 order folio memory compaction
-Message-ID: <ZQuUl2DdwDlzKoeM@bombadil.infradead.org>
-References: <20230912162815.440749-1-zi.yan@sent.com>
+        Wed, 20 Sep 2023 20:57:01 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31CBD3;
+        Wed, 20 Sep 2023 17:56:54 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-690f7d73a3aso353944b3a.0;
+        Wed, 20 Sep 2023 17:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695257814; x=1695862614; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bagVEl6M2d5FIlSzY0anx8WgPT2rmaHrI3Hcd6Q8CcI=;
+        b=ZiVcYiXEdK/8EZhVniQPvOwzRDp3H46UM40v2C1HRFmAGB2iRiLF+WlTJsAW7RfPF9
+         z5ZxyBmsL0B8/AiykZbffZ6C2IXkv4GHovXLUIhmqxZw+ZgAjpig/aTvFHgiAjELV2zE
+         B+HQw7hJs+aMisnQfN1ydMK1Bstq8HceK0NzvLzLVg/UKSyQBIuZPI5uXDJ35k6nf+4O
+         cq1hyOjvlJss/sBYqItJTWcE+vbbtbOSfe4jIFu4VDEVO5XqzbGXkvB7Omm/iS8R2yHB
+         3jIoCfG0GAKkfPPp/T3W2nJyU36HcY5lqF5tosy0plJTjqXUgjo+yWXhmtDpHkfpQ1Cx
+         qSMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695257814; x=1695862614;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bagVEl6M2d5FIlSzY0anx8WgPT2rmaHrI3Hcd6Q8CcI=;
+        b=B1kQWN7t6wnZm1OePVqDOSWv7kC6WyS40j18O+t8fAWdnWLnhl+JIF//w+ureXL9Vc
+         /qKb3DLZtv53gotdNVxtny9U2VrNJ0jdtkmusG0bZ/8Qo5klXJDewDg6Mm5ppGywzc0d
+         65mSPrBBRllQBBQNk/JqPQa8jWqLOayhdRaF5nECqshRfBq4zYOhmudvW29gyI3DH658
+         5Eu1kJI1WrkakFZQ6ZO08SsFJt32D7Kp0clf1tEG8qcwnykgNoOG6AsYGuE2JZgm+9LD
+         0Nm++x4C0//J97b2af3y1dk//RWCTxEdqfp1iNkmYKsGIr+QCFRMfrCA+cVchJhkrHZ2
+         mYiQ==
+X-Gm-Message-State: AOJu0YxO3ni4ICkTlVVydtJs24G+9SVbWfH0W40KAQInl4S7Z10r4Aal
+        HbWYZjw3Zjaz29PTlJMXNG8=
+X-Google-Smtp-Source: AGHT+IFUcPFST8m/McJD1VU6r71vUMY0Tmsem/TpC8OsulBLO3kYTcnPgQvWIbb0N1edCoMuvFgXwg==
+X-Received: by 2002:a05:6a21:78a7:b0:136:e26b:6401 with SMTP id bf39-20020a056a2178a700b00136e26b6401mr4781000pzc.16.1695257814004;
+        Wed, 20 Sep 2023 17:56:54 -0700 (PDT)
+Received: from localhost.localdomain ([104.28.226.90])
+        by smtp.gmail.com with ESMTPSA id d17-20020aa78e51000000b00688c733fe92sm123696pfr.215.2023.09.20.17.56.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 17:56:53 -0700 (PDT)
+From:   Sieng-Piaw Liew <liew.s.piaw@gmail.com>
+To:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Sieng-Piaw Liew <liew.s.piaw@gmail.com>
+Subject: [PATCH net-next] net: atl1c: switch to napi_consume_skb()
+Date:   Thu, 21 Sep 2023 08:56:23 +0800
+Message-Id: <20230921005623.3768-1-liew.s.piaw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912162815.440749-1-zi.yan@sent.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,69 +70,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:28:11PM -0400, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> Feel free to give comments and ask questions.
+Switch to napi_consume_skb() to take advantage of bulk free, and skb
+reuse through skb cache in conjunction with napi_build_skb().
 
-How about testing? I'm looking with an eye towards creating a
-pathalogical situation which can be automated for fragmentation and see
-how things go.
+When parameter 'budget' = 0, indicating non-NAPI context,
+dev_consume_skb_any() is called internally.
 
-Mel Gorman's original artificial fragmentation taken from his first
-patches ot help with fragmentation avoidance from 2018 suggested he
-tried [0]:
+Signed-off-by: Sieng-Piaw Liew <liew.s.piaw@gmail.com>
+---
+ drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
------- From 2018
-a) Create an XFS filesystem
+diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+index 74b78164cf74..46cdc32b4e31 100644
+--- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
++++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+@@ -842,7 +842,8 @@ static int atl1c_sw_init(struct atl1c_adapter *adapter)
+ }
+ 
+ static inline void atl1c_clean_buffer(struct pci_dev *pdev,
+-				struct atl1c_buffer *buffer_info)
++				      struct atl1c_buffer *buffer_info,
++				      int budget)
+ {
+ 	u16 pci_driection;
+ 	if (buffer_info->flags & ATL1C_BUFFER_FREE)
+@@ -861,7 +862,7 @@ static inline void atl1c_clean_buffer(struct pci_dev *pdev,
+ 				       buffer_info->length, pci_driection);
+ 	}
+ 	if (buffer_info->skb)
+-		dev_consume_skb_any(buffer_info->skb);
++		napi_consume_skb(buffer_info->skb, budget);
+ 	buffer_info->dma = 0;
+ 	buffer_info->skb = NULL;
+ 	ATL1C_SET_BUFFER_STATE(buffer_info, ATL1C_BUFFER_FREE);
+@@ -882,7 +883,7 @@ static void atl1c_clean_tx_ring(struct atl1c_adapter *adapter,
+ 	ring_count = tpd_ring->count;
+ 	for (index = 0; index < ring_count; index++) {
+ 		buffer_info = &tpd_ring->buffer_info[index];
+-		atl1c_clean_buffer(pdev, buffer_info);
++		atl1c_clean_buffer(pdev, buffer_info, 0);
+ 	}
+ 
+ 	netdev_tx_reset_queue(netdev_get_tx_queue(adapter->netdev, queue));
+@@ -909,7 +910,7 @@ static void atl1c_clean_rx_ring(struct atl1c_adapter *adapter, u32 queue)
+ 
+ 	for (j = 0; j < rfd_ring->count; j++) {
+ 		buffer_info = &rfd_ring->buffer_info[j];
+-		atl1c_clean_buffer(pdev, buffer_info);
++		atl1c_clean_buffer(pdev, buffer_info, 0);
+ 	}
+ 	/* zero out the descriptor ring */
+ 	memset(rfd_ring->desc, 0, rfd_ring->size);
+@@ -1607,7 +1608,7 @@ static int atl1c_clean_tx(struct napi_struct *napi, int budget)
+ 			total_bytes += buffer_info->skb->len;
+ 			total_packets++;
+ 		}
+-		atl1c_clean_buffer(pdev, buffer_info);
++		atl1c_clean_buffer(pdev, buffer_info, budget);
+ 		if (++next_to_clean == tpd_ring->count)
+ 			next_to_clean = 0;
+ 		atomic_set(&tpd_ring->next_to_clean, next_to_clean);
+@@ -2151,7 +2152,7 @@ static void atl1c_tx_rollback(struct atl1c_adapter *adpt,
+ 	while (index != tpd_ring->next_to_use) {
+ 		tpd = ATL1C_TPD_DESC(tpd_ring, index);
+ 		buffer_info = &tpd_ring->buffer_info[index];
+-		atl1c_clean_buffer(adpt->pdev, buffer_info);
++		atl1c_clean_buffer(adpt->pdev, buffer_info, 0);
+ 		memset(tpd, 0, sizeof(struct atl1c_tpd_desc));
+ 		if (++index == tpd_ring->count)
+ 			index = 0;
+-- 
+2.34.1
 
-b) Start 4 fio threads that write a number of 64K files inefficiently.
-Inefficiently means that files are created on first access and not
-created in advance (fio parameterr create_on_open=1) and fallocate is
-not used (fallocate=none). With multiple IO issuers this creates a mix
-of slab and page cache allocations over time. The total size of the
-files is 150% physical memory so that the slabs and page cache pages get
-mixed
-
-c) Warm up a number of fio read-only threads accessing the same files
-created in step 2. This part runs for the same length of time it took to
-create the files. It'll fault back in old data and further interleave
-slab and page cache allocations. As it's now low on memory due to step
-2, fragmentation occurs as pageblocks get stolen. While step 3 is still
-running, start a process that tries to allocate 75% of memory as huge
-pages with a number of threads. The number of threads is based on a
-(NR_CPUS_SOCKET - NR_FIO_THREADS)/4 to avoid THP threads contending with
-fio, any other threads or forcing cross-NUMA scheduling. Note that the
-test has not been used on a machine with less than 8 cores. The
-benchmark records whether huge pages were allocated and what the fault
-latency was in microseconds
-
-d) Measure the number of events potentially causing external fragmentation,
-the fault latency and the huge page allocation success rate.
-------- end of extract
-
-These days we can probably do a bit more damage. There has been concerns
-that LBS support (block size > ps) could hinder fragmentation, one of
-the reasons is that any file created despite it's size will require at
-least the block size, and if using 64k block size that means 64k
-allocation for each new file on that 64k block size filesystem, so
-clearly you may run out of lower order allocations pretty quickly. You
-can also create different larg eblock filesystems too, one for 64k
-another for 32k. Although LBS is new and we're still ironing out the
-kinks if you wanna give it a go we've rebased the patches onto Linus'
-tree [1], and if you wanted to ramp up fast you could use kdevops [2] which
-let's you pick that branch and also a series of NVMe drives (by enabling
-CONFIG_LIBVIRT_EXTRA_STORAGE_DRIVE_NVME) for large IO experimentation (by
-enabling CONFIG_VAGRANT_ENABLE_LARGEIO). Creating different filesystem
-with large block size (64k, 32k, 16k) on a 4k sector size drive
-(mkfs.xfs -f -b size=64k -s size=4k) should let you easily do tons of
-crazy pathalogical things.
-
-Are there other known recipes test help test this stuff?
-How do we measure success in your patches for fragmentation exactly?
-
-[0] https://lwn.net/Articles/770235/
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=large-block-linus-nobdev
-[2] https://github.com/linux-kdevops/kdevops
-
-  Luis
