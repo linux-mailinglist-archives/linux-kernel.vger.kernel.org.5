@@ -2,184 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC967A971C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E257A98C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjIURL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
+        id S229809AbjIURxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjIURKI (ORCPT
+        with ESMTP id S230033AbjIURwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:10:08 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B1186BD
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:05:31 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qjKBp-0003Gb-Ij; Thu, 21 Sep 2023 15:57:57 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qjKBo-007wRQ-7M; Thu, 21 Sep 2023 15:57:56 +0200
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qjKBo-00Ao2Z-3V; Thu, 21 Sep 2023 15:57:56 +0200
-Date:   Thu, 21 Sep 2023 15:57:56 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Chen-Yu Tsai <wens@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        kernel@pengutronix.de,
-        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 1/3] pinctrl: rockchip: add support for io-domain
- dependency
-Message-ID: <20230921135756.GT637806@pengutronix.de>
-References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
- <20230904115816.1237684-2-s.hauer@pengutronix.de>
- <CACRpkdYxRdToUM3JcEeNK_K87D5WDzzSLvVEbtqqdQEhz3k_Ow@mail.gmail.com>
- <CAGb2v65G-8EECNjqnpKCxqAD5nATAb0S7AA_WMiGXYOR1avrvg@mail.gmail.com>
- <20230913065843.GF637806@pengutronix.de>
- <CAGETcx8rO=aykjb6=5k0wpOyscqokNwSL6w-AHnodY7pNXyzGQ@mail.gmail.com>
- <20230915065120.GQ637806@pengutronix.de>
- <CAGETcx-stUfkVmkwGhj7iBWfCRsY5uZ=CxJdX9pPY6OO6oGUhg@mail.gmail.com>
+        Thu, 21 Sep 2023 13:52:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F0A566D5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:18:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695316681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TlC67XxjnP+ZVW2NhM88mr2tYX+uJkcJVmDqrakHLxg=;
+        b=VU2LT1mz5JbntVTGf/ZCuhURAY0yN0iDepEZ/jNpIn2EZzhx9v8drAs6xhHKEbxT0aoojT
+        /PS+WiCetrv8E5/KKCa/elPi8FGVnH6fPlyfjvgFyEb7i+vJlrQIFaySlqxY5A9T/AQqod
+        V1zec4+gT5J7K6KSn8D4Ua2/yTVKJTQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-112-UZPwVDKVOYeOMyvXxZ7hyg-1; Thu, 21 Sep 2023 10:02:34 -0400
+X-MC-Unique: UZPwVDKVOYeOMyvXxZ7hyg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-320004980a2so640488f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 07:02:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695304949; x=1695909749;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TlC67XxjnP+ZVW2NhM88mr2tYX+uJkcJVmDqrakHLxg=;
+        b=LNZkKNVG7yizjwzZNWzoFZDxxKLBMXz6X/+ute6ISXv+28ZTBwBwIb+Zy8vZleE7g9
+         GDBXEsR0qIvjA8W8cxGo7lazSxgn/l0bb1i714TO8YSWmcFyU8W4nwVgHqOjsz2vAhaa
+         cengJxG1Y0R3DMkqvZHlYIeDVVVtsHH9750XO/Bp1Ek/6V6KMnY60pT9XprRC2Jbo14Q
+         x/nbP4q3XdGYCeEdTpLKzdyHlcPflMXKfxV7VmlVcuchWpmreo/hqhsdbcWnVpnd8Ksg
+         UXihBD26aTECmbTZSHQzYOMGL0RaZSUnUYvAO9xXwjUP+EkrEnFbNqNgZpCjg/xxTumx
+         Oc8w==
+X-Gm-Message-State: AOJu0Yxa1drOwA3GTZmi0NS7NZ9RJddlwT+hnCpykSdNo6HwsRQojl8g
+        a2VHLQ9TuxlKGXUEFIaRW3YfYQcCqlgXq64U02+9M3S0e5EEtbM7v1DIcBEaYmPkqB1blKEVq/y
+        UN9ZTPsjJO5GzGx1NLI6oa1QHXyfIvulLUhRBKQvk7a3DlQVQkB0=
+X-Received: by 2002:a5d:6909:0:b0:31f:f1f4:ca8e with SMTP id t9-20020a5d6909000000b0031ff1f4ca8emr5334191wru.36.1695304949267;
+        Thu, 21 Sep 2023 07:02:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNTL6nYnReHMxIE2eeSXN3WfDyrQQNkn8rAgYHxF7+Q3qpnqcBEXgV8EV9/Y02we+Lvs9Dzqktaq7bM20Yrgk=
+X-Received: by 2002:a5d:6909:0:b0:31f:f1f4:ca8e with SMTP id
+ t9-20020a5d6909000000b0031ff1f4ca8emr5334163wru.36.1695304948913; Thu, 21 Sep
+ 2023 07:02:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGETcx-stUfkVmkwGhj7iBWfCRsY5uZ=CxJdX9pPY6OO6oGUhg@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-5-lulu@redhat.com>
+ <CACGkMEtCYG8-Pt+V-OOwUV7fYFp_cnxU68Moisfxju9veJ-=qw@mail.gmail.com>
+In-Reply-To: <CACGkMEtCYG8-Pt+V-OOwUV7fYFp_cnxU68Moisfxju9veJ-=qw@mail.gmail.com>
+From:   Cindy Lu <lulu@redhat.com>
+Date:   Thu, 21 Sep 2023 22:01:46 +0800
+Message-ID: <CACLfguW3NS_4+YhqTtGqvQb70mVazGVfheryHx4aCBn+=Skf9w@mail.gmail.com>
+Subject: Re: [RFC v2 4/4] vduse: Add new ioctl VDUSE_GET_RECONNECT_INFO
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, maxime.coquelin@redhat.com,
+        xieyongji@bytedance.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 03:00:28PM -0700, Saravana Kannan wrote:
-> On Thu, Sep 14, 2023 at 11:51 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+On Mon, Sep 18, 2023 at 4:49=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
+ote:
+>
+> On Tue, Sep 12, 2023 at 11:01=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote=
+:
 > >
-> > On Wed, Sep 13, 2023 at 01:48:12PM -0700, Saravana Kannan wrote:
-> > > On Tue, Sep 12, 2023 at 11:58 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > > >
-> > > > On Wed, Sep 13, 2023 at 12:37:54PM +0800, Chen-Yu Tsai wrote:
-> > > > > On Tue, Sep 12, 2023 at 4:07 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > > > > >
-> > > > > > Top posting to bring Saravana Kannan into this discussion.
-> > > > > >
-> > > > > > This looks like a big hack to me, Saravana has been working
-> > > > > > tirelessly to make the device tree probe order "sort itself out"
-> > > > > > and I am pretty sure this issue needs to be fixed at the DT
-> > > > > > core level and not in a driver.
-> > > > >
-> > > > > We could merge all the IO domain stuff into the pinctrl node/driver,
-> > > > > like is done for Allwinner? Maybe that would simplify things a bit?
-> > > >
-> > > > I thought about this as well. On Rockchip the pinctrl driver and the IO
-> > > > domain driver even work on the same register space, so putting these
-> > > > into a single node/driver would even feel more natural than what we have
-> > > > now.
-> > >
-> > > Then we should try to do this and fix any issues blocking us.
-> > >
-> > > > However, with that the pinctrl node would get the supplies that the IO
-> > > > domain node now has and we would never get into the probe of the pinctrl
-> > > > driver due to the circular dependencies.
-> > >
-> > > From a fw_devlink perspective, the circular dependency shouldn't be a
-> > > problem. It's smart enough to recognize all cycle possibilities (since
-> > > 6.3) and not enforce ordering between nodes in a cycle.
-> > >
-> > > So, this is really only a matter of pinctrl not trying to do
-> > > regulator_get() in its probe function. You need to do the
-> > > regulator_get() when the pins that depend on the io-domain are
-> > > requested. And if the regulator isn't ready yet, return -EPROBE_DEFER?
+> > In VDUSE_GET_RECONNECT_INFO, the Userspace App can get the map size
+> > and The number of mapping memory pages from the kernel. The userspace
+> > App can use this information to map the pages.
 > >
-> > That's basically what my series does already, I return -EPROBE_DEFER
-> > from the pinctrl driver when a pin is requested and the IO domain is not
-> > yet ready.
+> > Signed-off-by: Cindy Lu <lulu@redhat.com>
+> > ---
+> >  drivers/vdpa/vdpa_user/vduse_dev.c | 15 +++++++++++++++
+> >  include/uapi/linux/vduse.h         | 15 +++++++++++++++
+> >  2 files changed, 30 insertions(+)
 > >
-> > >
-> > > Is there something that prevents us from doing that?
+> > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_use=
+r/vduse_dev.c
+> > index 680b23dbdde2..c99f99892b5c 100644
+> > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > @@ -1368,6 +1368,21 @@ static long vduse_dev_ioctl(struct file *file, u=
+nsigned int cmd,
+> >                 ret =3D 0;
+> >                 break;
+> >         }
+> > +       case VDUSE_GET_RECONNECT_INFO: {
+> > +               struct vduse_reconnect_mmap_info info;
+> > +
+> > +               ret =3D -EFAULT;
+> > +               if (copy_from_user(&info, argp, sizeof(info)))
+> > +                       break;
+> > +
+> > +               info.size =3D PAGE_SIZE;
+> > +               info.max_index =3D dev->vq_num + 1;
+> > +
+> > +               if (copy_to_user(argp, &info, sizeof(info)))
+> > +                       break;
+> > +               ret =3D 0;
+> > +               break;
+> > +       }
+> >         default:
+> >                 ret =3D -ENOIOCTLCMD;
+> >                 break;
+> > diff --git a/include/uapi/linux/vduse.h b/include/uapi/linux/vduse.h
+> > index d585425803fd..ce55e34f63d7 100644
+> > --- a/include/uapi/linux/vduse.h
+> > +++ b/include/uapi/linux/vduse.h
+> > @@ -356,4 +356,19 @@ struct vhost_reconnect_vring {
+> >         _Bool avail_wrap_counter;
+> >  };
 > >
-> > No. We could do that, but it wouldn't buy us anthing. I am glad to hear
-> > that fw_devlink can break the circular dependencies. With this we could
-> > add the supplies to the pinctrl node and the pinctrl driver would still
-> > be probed.
+> > +/**
+> > + * struct vduse_reconnect_mmap_info
+> > + * @size: mapping memory size, always page_size here
+> > + * @max_index: the number of pages allocated in kernel,just
+> > + * use for check
+> > + */
+> > +
+> > +struct vduse_reconnect_mmap_info {
+> > +       __u32 size;
+> > +       __u32 max_index;
+> > +};
+>
+> One thing I didn't understand is that, aren't the things we used to
+> store connection info belong to uAPI? If not, how can we make sure the
+> connections work across different vendors/implementations. If yes,
+> where?
+>
+> Thanks
+>
+The process for this reconnecttion  is
+A.The first-time connection
+1> The userland app checks if the device exists
+2>  use the ioctl to create the vduse device
+3> Mapping the kernel page to userland and save the
+App-version/features/other information to this page
+4>  if the Userland app needs to exit, then the Userland app will only
+unmap the page and then exit
+
+B, the re-connection
+1> the userland app finds the device is existing
+2> Mapping the kernel page to userland
+3> check if the information in shared memory is satisfied to
+reconnect,if ok then continue to reconnect
+4> continue working
+
+ For now these information are all from userland,So here the page will
+be maintained by the userland App
+in the previous code we only saved the api-version by uAPI .  if  we
+need to support reconnection maybe we need to add 2 new uAPI for this,
+one of the uAPI is to save the reconnect  information and another is
+to get the information
+
+maybe something like
+
+struct vhost_reconnect_data {
+uint32_t version;
+uint64_t features;
+uint8_t status;
+struct virtio_net_config config;
+uint32_t nr_vrings;
+};
+
+#define VDUSE_GET_RECONNECT_INFO _IOR (VDUSE_BASE, 0x1c, struct
+vhost_reconnect_data)
+
+#define VDUSE_SET_RECONNECT_INFO  _IOWR(VDUSE_BASE, 0x1d, struct
+vhost_reconnect_data)
+
+Thanks
+Cindy
+
+
+
+
+> > +
+> > +#define VDUSE_GET_RECONNECT_INFO \
+> > +       _IOWR(VDUSE_BASE, 0x1b, struct vduse_reconnect_mmap_info)
+> > +
+> >  #endif /* _UAPI_VDUSE_H_ */
+> > --
+> > 2.34.3
 > >
-> > With the IO domain supplies added to the pinctrl node our binding would
-> > be cleaner, but still we would have to defer probe of many requested
-> > pins until finally the I2C driver providing access to the PMIC comes
-> > along. We also still need a "Do not defer probe for these pins" property
-> > in the pingrp needed for the I2C driver.
-> 
-> Sorry about the slow reply. Been a bit busy.
-> 
-> Oh, this is not true though. With the example binding I gave,
-> fw_devlink will automatically defer the probe of devices that depend
-> on pins that need an iodomain/regulator.
-> 
-> pinctrl {
->     compatible = "rockchip,rk3568-pinctrl";
->     i2c0 {
->                 /omit-if-no-ref/
->                 i2c0_xfer: i2c0-xfer {
->                         rockchip,pins =
->                                 /* i2c0_scl */
->                                 <0 RK_PB1 1 &pcfg_pull_none_smt>,
->                                 /* i2c0_sda */
->                                 <0 RK_PB2 1 &pcfg_pull_none_smt>;
->                 };
->     }
->     ...
->     ...
->     pinctrl-io {
->         compatible = "rockchip,rk3568-pinctrl-io";
->         pmuio1-supply = <&vcc3v3_pmu>;
->         cam {
->             ....
->         }
->         ....
->         ....
-> }
-> 
-> consumerA {
->    pinctrl-0 = <&cam>;
-> }
-> 
-> With this model above, there are no cycles anymore.
+>
 
-The cycles are gone because you skipped the problematic case in your
-example.
-
-Replace consumerA in your example with the I2C node providing access to
-the PMIC which provides &vcc3v3_pmu and then you have the cycles back.
-
-The I2C master device needs the IO domain which needs a regulator
-provided by a client on the very same I2C master. The cycles are
-actually there in hardware, you can't define them away ;)
-
-Sascha
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
