@@ -2,55 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F1C7A97BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EFA7A9791
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 19:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjIUR1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Sep 2023 13:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
+        id S229669AbjIURZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Sep 2023 13:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjIUR0u (ORCPT
+        with ESMTP id S229533AbjIURZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:26:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70867358A;
-        Thu, 21 Sep 2023 10:03:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D694C32782;
-        Thu, 21 Sep 2023 09:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695290096;
-        bh=AAkcEZ8SOnbyAVmoBkWR8hTOYh67xx0DW3GiCa+pnsk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=a8m2Dv3U6PR5d6/4NRo3l0dnC/OEkxMLBJlKn2U6YDSXQWR8Fvc/uf9KQdMF0JlDX
-         /5wg6DVZnHSxPF308rv3bIlxOBQqtogUEfmupzBCPD7EtLqIz0cIke6Td/xtykEX5N
-         HyIhHaGimgYJ055R1LqPOQ+M2GE/HTLxFRNce5OMy2Ud+urKOqXSAM+lPb+2wKxIiw
-         219RWFkKtbyMvae/++P+jio0zrDhp9w4DCAXCbaKqIVI7spzZ443GJNh4n0W1yS7Dy
-         yZ3AqPiFaiyWGlxbFrPPrmVFK5K9P0zc5UQl3oNnaNbNoK66pulup+33yCpwjX48/8
-         MshfmXESiBnuw==
-Message-ID: <19d2bc5c-2662-6ed8-cc3d-7efb82fd1825@kernel.org>
-Date:   Thu, 21 Sep 2023 11:54:48 +0200
+        Thu, 21 Sep 2023 13:25:09 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBCC40666
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:13:15 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-4132c2cee1dso7433401cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Sep 2023 10:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695316391; x=1695921191; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dcy4s/y9QrO7HyaGbG5mBXkJxd9gLjLKZbDI7oXicRU=;
+        b=SXEwamodmmxtQYKjF3iTAy5NpAN6thYsN2+QTK/mdDG1bJarxGnQX7ybpWV77sEILC
+         kXIuHLWPD8LRiAy6tqGVeQOTdH2ZlBJNI9r0xC2K5DtbC0lz1JloaX+GMUK5utBZa+Ck
+         84WQLBIENt9IHgixyQjOuW+bd1Cfgn2SmAbyQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316391; x=1695921191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dcy4s/y9QrO7HyaGbG5mBXkJxd9gLjLKZbDI7oXicRU=;
+        b=cexvpMmpohzksIbE17Cm8kRNctswJxqgHlW5fVHd3eouX7ladkm9HGvwUnVt0RSBdL
+         /0cB0fWiHRj5nfIbI3b8RfFAqJYn0H7TuJJ//uRid/a2uoGaO4waO7WJyuBIRMtZrvBW
+         L7k76KE2PmhS/UBZPEKD0/SQX1SPq7U9iUEbq8nFF+GLETOgT7XpV9QMD90HTDTXSoQN
+         4Ov/7bIhjo56zCbaX6IleHn+BDzurf16gBKJ0u2+TeWHw5729oxXKYaCz2evGLIIFdMt
+         r66yIekcRhilsX0rWEpKtuzOAWHBIhKMIrPl5Rf/9vfTQJQbOZZ1svcUY38od4tjJL1V
+         ZuNg==
+X-Gm-Message-State: AOJu0Yx12Kwbkxi75mH2BPuhXjDCJRytkUguSloXYf/l0vr2oiFGV+db
+        BbxH7USVMO8OLbffScFzGlxg2KmNWrjY0tE+YOszVkqBM+jAiMgO
+X-Google-Smtp-Source: AGHT+IENHY2NWzp2t7oTLLYtLJAusFJoXLC4LiTtWC/n27+ddm0+GulmSKnIh4apJN5/NUozS6cXcoxavCqIAMRMCSA=
+X-Received: by 2002:a17:90a:5305:b0:276:c6b8:eaae with SMTP id
+ x5-20020a17090a530500b00276c6b8eaaemr3846719pjh.7.1695290273607; Thu, 21 Sep
+ 2023 02:57:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/2] dt-bindings: media: imx-jpeg: Assign slot for imx
- jpeg encoder/decoder
-To:     Ming Qian <ming.qian@nxp.com>, mirela.rabulea@oss.nxp.com,
-        robh+dt@kernel.org, shawnguo@kernel.org
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
-        linux-imx@nxp.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230921063620.22962-1-ming.qian@nxp.com>
- <20230921063620.22962-2-ming.qian@nxp.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20230921063620.22962-2-ming.qian@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230828150858.393570-1-revest@chromium.org> <CABRcYm+u1AHMrXbYrfkxW-2vrjdq-1cx13FsX_DFo=wwWB8rbA@mail.gmail.com>
+ <ZQwSas2aA/TCLTOf@arm.com>
+In-Reply-To: <ZQwSas2aA/TCLTOf@arm.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Thu, 21 Sep 2023 11:57:42 +0200
+Message-ID: <CABRcYmJ92F-y_q8NEDg_jy6aJf4nLseTWbWum6SzqRvy8LTfEw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] MDWE without inheritance
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        joey.gouly@arm.com, mhocko@suse.com, keescook@chromium.org,
+        david@redhat.com, peterx@redhat.com, izbyshev@ispras.ru,
+        broonie@kernel.org, szabolcs.nagy@arm.com, kpsingh@kernel.org,
+        gthelen@google.com, toiwoton@gmail.com, ayush.jain3@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,64 +71,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 08:36, Ming Qian wrote:
-> There are total 4 slots available in the IP,
-> and we only need to use one slot in one os,
-> assign a single slot,
-> configure interrupt and power domain only for 1 slot,
-> not for the all 4 slots.
+On Thu, Sep 21, 2023 at 11:52=E2=80=AFAM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> On Wed, Sep 20, 2023 at 09:56:08PM +0200, Florent Revest wrote:
+> > It looks like this series got quite a few Reviewed-by now. What should
+> > be the next steps to have it merged ?
+>
+> Does it still apply on top of 6.6-rc2? Maybe Andrew can pick it up
+> through the mm tree?
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
-
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time, thus I will skip this patch entirely till you follow
-the process allowing the patch to be tested.
-
-Please kindly resend and include all necessary To/Cc entries.
-
-> 
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> ---
->  .../bindings/media/nxp,imx8-jpeg.yaml         | 40 ++++++++-----------
->  1 file changed, 16 insertions(+), 24 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> index 3d9d1db37040..5f0e2fc1ea9c 100644
-> --- a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> +++ b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> @@ -32,25 +32,27 @@ properties:
->      maxItems: 1
->  
->    interrupts:
-> -    description: |
-> -      There are 4 slots available in the IP, which the driver may use
-> -      If a certain slot is used, it should have an associated interrupt
-> -      The interrupt with index i is assumed to be for slot i
-> -    minItems: 1               # At least one slot is needed by the driver
-> -    maxItems: 4               # The IP has 4 slots available for use
-> +    description:
-> +      Interrupt number for slot
-> +    maxItems: 1
->  
->    power-domains:
->      description:
->        List of phandle and PM domain specifier as documented in
->        Documentation/devicetree/bindings/power/power_domain.txt
-> -    minItems: 2               # Wrapper and 1 slot
-> -    maxItems: 5               # Wrapper and 4 slots
-> +    minItems: 1               # VPUMIX
-> +    maxItems: 2               # Wrapper and 1 slot
-> +
-> +  slot:
-> +    description:
-> +      Integer number of slot index used. the value range is from 0 to 3
-
-Don't you have here obvious errors reported by testing? Did you test this?
-
-Best regards,
-Krzysztof
-
+Luckily, yes, it still applies! :)
