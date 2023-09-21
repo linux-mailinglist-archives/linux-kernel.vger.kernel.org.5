@@ -2,97 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 756837A9024
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 02:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0617A9026
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Sep 2023 02:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbjIUAZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Sep 2023 20:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
+        id S229667AbjIUA0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Sep 2023 20:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjIUAZ2 (ORCPT
+        with ESMTP id S229478AbjIUA0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Sep 2023 20:25:28 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D31AA3;
-        Wed, 20 Sep 2023 17:25:21 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c3d6d88231so3209535ad.0;
-        Wed, 20 Sep 2023 17:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695255920; x=1695860720; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DczeM/Y/ll/HO5aTU1FZs9q/jGteDrPwoT1dCCvthrk=;
-        b=AFibqjw46Xk3SQJfSZaDE4mo59JNIGGfQofnaZbxucbCElsiPUyIAw1cpuGsG9efUn
-         vCBBOC81J8/EuFzdzIHkXAFCDzcTJd826q3PCI6j61MYVgDh5A1q6JAkuagoJfvXLqM1
-         QZgdJZytZBEdQ0l8FEBEc2DquAZJwx4wp1/E3eASq6Qt8LTuQI5t5bFTDCBkkMJhXPgm
-         zJxAj4BTs6Q+6ZMV26h66tXy+YbtkaYH7AeuIdcyTUsYtvDEjEe44q0jZFNWytXari0H
-         o/97lAme7GS1/Em6G3w1+fszDF8WEpt7k/chkaRL+4e+oM9JpSfeelP1dtlBzL6ahuRN
-         KvMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695255920; x=1695860720;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DczeM/Y/ll/HO5aTU1FZs9q/jGteDrPwoT1dCCvthrk=;
-        b=EcjZcW/QvsF8dByEyLEAuoCPa2QSx/IrRzpzBOhYJ3Diilz4G+/UrepdQ8xo4cG0gH
-         JGv4sfsqLAENh07rH2pl7g1TLE5lSABiDDTAHdeS76G+olMkAGVmk9hfCaIBBOYeH7QZ
-         4PAfCJ+3g1tRCxF3a5CogtzSN0M6dXDMI2NqqPnKBUzID7O97gwrNDyokMWS88Mb7wyI
-         DjUnot0rWjJ2E2NVVAzD62/1QdWQIJeRRvuNfDV200Y3PfWotNbX8ekyBlJ2WogaLP8J
-         mMlTN08a/bvr2+iLqx2o81hhT8/3QAcvQ+rmTkWe9Hpxm6JO64/OinPPMZ3ZBaTqeLgt
-         CruQ==
-X-Gm-Message-State: AOJu0YxauH/VJfMTSMnv3iOz0IairLOdSImjx+PgemwSlz8erprT6GNo
-        SDc4P/lVJ/3Z8nCgCfKZJ73TJzdWnJOI+g==
-X-Google-Smtp-Source: AGHT+IEborYCvHbvZKLnVJxX+AOOqYd3ehjy+iJcuUM00XR24BNq0vdPJf1tfv2ENzbw8STYhGpymQ==
-X-Received: by 2002:a17:902:e74b:b0:1bb:8931:ee94 with SMTP id p11-20020a170902e74b00b001bb8931ee94mr4001271plf.67.1695255920421;
-        Wed, 20 Sep 2023 17:25:20 -0700 (PDT)
-Received: from localhost ([162.243.44.213])
-        by smtp.gmail.com with ESMTPSA id q3-20020a170902dac300b001b9c5e07bc3sm88735plx.238.2023.09.20.17.25.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 17:25:19 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 08:24:25 +0800
-From:   Jianguo Bao <roidinev@gmail.com>
-To:     Manmohan Shukla <manmshuk@gmail.com>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: error: Markdown style nit
-Message-ID: <f6azofsmelve5eeppckk5vn6wvjghadt2bduq3lzxcqdk2azos@f73u4yyszooq>
-References: <20230906204857.85619-1-manmshuk@gmail.com>
+        Wed, 20 Sep 2023 20:26:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE799D7;
+        Wed, 20 Sep 2023 17:26:36 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38L0QRU1005211;
+        Thu, 21 Sep 2023 00:26:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=hiFCCl/MJHW12WaPm21+mtf9pdSpv8QL8D+K6g5ozQU=;
+ b=GJAiIcVhPBP2epM0fRlLXLhMudaIR4OEilS6FY46jD6BHN6EnddPOTniw6YE7V+ppjKX
+ AE3mb+nex4TjmpZ0cxhUjmQNbDqe4eyj7gU1d4Q1arYnnn7By9Lkf4mqcn3LMut/DYEt
+ +xUgloYnI9wszyxdJ4QN3qqRr70vKwIVSHZUclck06YgoDEntSq5ljwm33bLkta9CMCj
+ ELn1KSkbpMjdGGbF6TL9VLvR6mEZeD24sPNR7av22yM6qNJuRWVIjdRUwHh0V81SH+Gm
+ AkX/X7tlt8t2txWEktQWl25D+xGDaUtRi6bHvh+gXvq0FqiCaDLjn8yhN0t7+NK5T4tx qg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t7rhutkr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 00:26:27 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38L0QQZJ003410
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 00:26:26 GMT
+Received: from [192.168.142.6] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 20 Sep
+ 2023 17:26:25 -0700
+Message-ID: <349a7b1c-915f-4f58-260f-900aa7e3db65@quicinc.com>
+Date:   Wed, 20 Sep 2023 17:26:25 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906204857.85619-1-manmshuk@gmail.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 net-next 2/2] net: qrtr: Add support for processing
+ DEL_PROC type control message
+Content-Language: en-US
+To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        <mani@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <quic_viswanat@quicinc.com>,
+        <horms@kernel.org>
+References: <20230920053317.2165867-1-quic_srichara@quicinc.com>
+ <20230920053317.2165867-3-quic_srichara@quicinc.com>
+From:   Chris Lew <quic_clew@quicinc.com>
+In-Reply-To: <20230920053317.2165867-3-quic_srichara@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: dQ90yI795B6dzzHNMLJKua5wLu4G7y-r
+X-Proofpoint-GUID: dQ90yI795B6dzzHNMLJKua5wLu4G7y-r
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-20_12,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1011 adultscore=0 mlxlogscore=999 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309210001
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 02:18:57AM +0530, Manmohan Shukla wrote:
-> This patch fixes a trivial markdown style nit in the `SAFETY` comment.
-> 
-> Signed-off-by: Manmohan Shukla <manmshuk@gmail.com>
-> ---
->  rust/kernel/error.rs | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
-> index 05fcab6abfe6..6233021daa8a 100644
-> --- a/rust/kernel/error.rs
-> +++ b/rust/kernel/error.rs
-> @@ -133,7 +133,7 @@ pub fn to_errno(self) -> core::ffi::c_int {
->      /// Returns the error encoded as a pointer.
->      #[allow(dead_code)]
->      pub(crate) fn to_ptr<T>(self) -> *mut T {
-> -        // SAFETY: self.0 is a valid error due to its invariant.
-> +        // SAFETY: `self.0` is a valid error due to its invariant.
->          unsafe { bindings::ERR_PTR(self.0.into()) as *mut _ }
->      }
->  
-> -- 
-> 2.34.1
 
-Reviewed-by: Jianguo Bao <roidinev@gmail.com>
+On 9/19/2023 10:33 PM, Sricharan Ramabadhran wrote:
+
+> @@ -122,6 +123,9 @@ static DEFINE_XARRAY_ALLOC(qrtr_ports);
+>    * @qrtr_tx_lock: lock for qrtr_tx_flow inserts
+>    * @rx_queue: receive queue
+>    * @item: list item for broadcast list
+> + * @kworker: worker thread for recv work
+> + * @task: task to run the worker thread
+> + * @read_data: scheduled work for recv work
+
+I think I made these descriptions a bit ambiguous with "recv work". 
+Since we are only parsing DEL_PROC messages at the moment, the 
+descriptions should be more accurate on what they are for.
+
+>    */
+>   struct qrtr_node {
+>   	struct mutex ep_lock;
+> @@ -134,6 +138,9 @@ struct qrtr_node {
+>   
+>   	struct sk_buff_head rx_queue;
+>   	struct list_head item;
+> +	struct kthread_worker kworker;
+> +	struct task_struct *task;
+> +	struct kthread_work read_data;
+
+I think our own kthread here might have been overkill. I forget why we 
+needed it instead of using a workqueue.
+
+> +		if (cb->type == QRTR_TYPE_DEL_PROC) {
+> +			/* Free tx flow counters */
+> +			mutex_lock(&node->qrtr_tx_lock);
+> +			radix_tree_for_each_slot(slot, &node->qrtr_tx_flow, &iter, 0) {
+> +				flow = rcu_dereference_raw(*slot);
+> +				wake_up_interruptible_all(&flow->resume_tx);
+> +			}
+> +			mutex_unlock(&node->qrtr_tx_lock);
+> +
+
+I don't see any other places where we use rcu_dereference_raw for the 
+flow. Does this need to be updated for the rest of the places we get the 
+flow?
+
+The same loop is done in qrtr_endpoint_unregister() so maybe we should 
+look into adding a helper for this logic?
+
+> +			/* Translate DEL_PROC to BYE for local enqueue */
+> +			cb->type = QRTR_TYPE_BYE;
+> +			pkt = (struct qrtr_ctrl_pkt *)skb->data;
+> +			memset(pkt, 0, sizeof(*pkt));
+> +			pkt->cmd = cpu_to_le32(QRTR_TYPE_BYE);
+> +
+
+Are we relying on the remote to program the destination of this packet 
+to be the control port?
+
+Thanks,
+Chris
